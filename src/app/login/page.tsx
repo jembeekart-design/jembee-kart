@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
+import { loginAdmin } from "@/lib/auth";
 
 export default function LoginPage() {
   const router = useRouter();
@@ -11,18 +12,29 @@ export default function LoginPage() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
 
+  const [loading, setLoading] = useState(false);
+
   useEffect(() => {
     const saved = localStorage.getItem("themeColor");
     if (saved) setThemeColor(saved);
   }, []);
 
-  const handleLogin = () => {
-    // 🔥 Dummy login (replace with Firebase later)
-    if (email === "admin@gmail.com" && password === "1234") {
-      localStorage.setItem("isAdmin", "true");
+  const handleLogin = async () => {
+    if (!email || !password) {
+      alert("Please enter email & password");
+      return;
+    }
+
+    try {
+      setLoading(true);
+
+      await loginAdmin(email, password);
+
       router.push("/admin");
-    } else {
-      alert("Invalid credentials ❌");
+    } catch (e: any) {
+      alert(e.message);
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -52,21 +64,23 @@ export default function LoginPage() {
           className="w-full p-3 rounded-xl bg-white/10 border border-white/20 outline-none"
         />
 
-        {/* Login Button */}
+        {/* Button */}
         <button
           onClick={handleLogin}
+          disabled={loading}
           className="w-full py-3 rounded-xl font-medium"
           style={{
             background: themeColor,
             boxShadow: `0 0 20px ${themeColor}55`,
+            opacity: loading ? 0.7 : 1,
           }}
         >
-          Login
+          {loading ? "Logging in..." : "Login"}
         </button>
 
         {/* Info */}
         <p className="text-xs text-center opacity-60">
-          Demo: admin@gmail.com / 1234
+          Use your Firebase admin account
         </p>
       </div>
     </div>
