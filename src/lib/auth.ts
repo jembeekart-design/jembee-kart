@@ -6,17 +6,30 @@ import {
   onAuthStateChanged,
   User,
 } from "firebase/auth";
-import { auth } from "./firebase";
 
-// 🔐 Login
+import { doc, getDoc, setDoc } from "firebase/firestore";
+import { auth, db } from "./firebase";
+
+// 🔐 Login + Admin Check
 export const loginAdmin = async (email: string, password: string) => {
   try {
     const res = await signInWithEmailAndPassword(auth, email, password);
+    const user = res.user;
 
-    // optional: role check later
-    localStorage.setItem("isAdmin", "true");
+    // 🔥 Admin check from Firestore
+    const adminRef = doc(db, "admins", user.uid);
+    const adminSnap = await getDoc(adminRef);
 
-    return res.user;
+    // 👉 अगर admin नहीं है → first time create (optional)
+    if (!adminSnap.exists()) {
+      await setDoc(adminRef, {
+        email: user.email,
+        role: "admin",
+        createdAt: new Date(),
+      });
+    }
+
+    return user;
   } catch (error: any) {
     throw new Error(error.message);
   }
@@ -25,7 +38,6 @@ export const loginAdmin = async (email: string, password: string) => {
 // 🚪 Logout
 export const logoutAdmin = async () => {
   await signOut(auth);
-  localStorage.removeItem("isAdmin");
 };
 
 // 👤 Get current user
