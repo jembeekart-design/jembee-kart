@@ -1,26 +1,19 @@
 // src/lib/firebase.ts
 
-import { initializeApp, getApps } from "firebase/app";
-import { getFirestore } from "firebase/firestore";
+import { initializeApp } from "firebase/app";
 import { getAuth } from "firebase/auth";
+import { getFirestore } from "firebase/firestore";
 
-// 🔐 Firebase Config (अपना डालना होगा)
 const firebaseConfig = {
-  apiKey: process.env.NEXT_PUBLIC_FIREBASE_API_KEY,
-  authDomain: process.env.NEXT_PUBLIC_FIREBASE_AUTH_DOMAIN,
-  projectId: process.env.NEXT_PUBLIC_FIREBASE_PROJECT_ID,
-  storageBucket: process.env.NEXT_PUBLIC_FIREBASE_STORAGE_BUCKET,
-  messagingSenderId: process.env.NEXT_PUBLIC_FIREBASE_MESSAGING_SENDER_ID,
-  appId: process.env.NEXT_PUBLIC_FIREBASE_APP_ID,
+  apiKey: "AIzaSyA5PVW5tWBJrEKKL04UjkyZvSo6gNDPALfk",
+  authDomain: "jembee-kart1.firebaseapp.com",
+  projectId: "jembee-kart1",
+  storageBucket: "jembee-kart1.appspot.com",
+  messagingSenderId: "185822683860",
+  appId: "1:185822683860:web:ab2df28d8fa60963365141",
 };
 
-// 🔥 Prevent re-initialization
-const app = !getApps().length
-  ? initializeApp(firebaseConfig)
-  : getApps()[0];
+const app = initializeApp(firebaseConfig);
 
-// 📦 Services
-export const db = getFirestore(app);
 export const auth = getAuth(app);
-
-export default app;
+export const db = getFirestore(app);
