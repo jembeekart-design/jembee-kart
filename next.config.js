@@ -3,17 +3,14 @@
 const nextConfig = {
   reactStrictMode: true,
 
-  // ⚡ Images (external URLs allow)
+  // ⚡ Images
   images: {
     domains: ["images.unsplash.com", "i.ibb.co"],
   },
 
-  // ⚡ Experimental (safe)
-  experimental: {
-    appDir: true,
-  },
+  // ❌ experimental हटाओ (appDir अब default है)
 
-  // ⚡ Webpack fallback (firebase safe)
+  // ⚡ Firebase safe fallback
   webpack: (config) => {
     config.resolve.fallback = {
       fs: false,
