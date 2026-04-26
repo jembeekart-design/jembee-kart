@@ -10,17 +10,25 @@ export default function RootLayout({
 }) {
 
   useEffect(() => {
+    const root = document.documentElement;
+
+    // 🔥 Smooth transition (premium feel)
+    root.style.transition =
+      "all 0.3s cubic-bezier(0.4, 0, 0.2, 1)";
+
+    // 🎨 Theme load from admin/localStorage
     const color = localStorage.getItem("themeColor") || "#6366f1";
-    const mode = localStorage.getItem("darkMode") === "false" ? "light" : "dark";
+    const mode =
+      localStorage.getItem("darkMode") === "false" ? "light" : "dark";
 
-    // 🎨 CSS variable set (पूरे app के लिए)
-    document.documentElement.style.setProperty("--primary", color);
+    // 🎯 Apply color
+    root.style.setProperty("--primary", color);
 
-    // 🌙 Dark / Light mode
-    document.documentElement.classList.remove("light", "dark");
-    document.documentElement.classList.add(mode);
+    // 🌙 Apply mode
+    root.classList.remove("light", "dark");
+    root.classList.add(mode);
 
-    // 🔥 Status bar + browser UI color
+    // 🔝 Status bar + browser UI color
     let meta = document.querySelector('meta[name="theme-color"]');
 
     if (!meta) {
