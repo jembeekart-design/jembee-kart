@@ -1,12 +1,14 @@
 import { NextResponse } from 'next/server';
 
 export async function GET() {
-  // Aapke Live API Credentials (Source: Dashboard Screenshot)
-  const CLIENT_ID = "827265200202480";
-  const CLIENT_SECRET = "412b38894b18d959c59a9e861f66dcba0da47a7a0be4fe240711bcccecf1d093";
+  const CLIENT_ID = "827265200202480"; 
+  const CLIENT_SECRET = "412b38894b18d959c59a9e861f66dcba0da47a7a0be4fe240711bcccecf1d093"; 
 
   try {
-    const response = await fetch('https://api.qikink.com/v1/products', {
+    console.log("--- Qikink Sync Started ---");
+    
+    // Sabse pehle 'my_products' check karte hain
+    const response = await fetch('https://api.qikink.com/v1/my_products', {
       method: 'GET',
       headers: {
         'Content-Type': 'application/json',
@@ -15,15 +17,23 @@ export async function GET() {
       }
     });
 
-    const data = await response.json();
-    
-    // Response check karne ke liye
-    if (!response.ok) {
-        return NextResponse.json({ error: "Qikink API Error" }, { status: response.status });
-    }
+    const status = response.status;
+    const rawData = await response.json();
 
-    return NextResponse.json(data);
+    console.log("Response Status:", status);
+    console.log("Raw Response Data:", JSON.stringify(rawData));
+
+    // Agar status 200 hai par data empty hai toh humein Qikink ko contact karna hoga
+    return NextResponse.json({
+      status,
+      success: rawData.success || false,
+      message: rawData.message || "No message from API",
+      data: rawData.data || rawData.products || [],
+      fullResponse: rawData // Ye debugging ke liye hai
+    });
+
   } catch (error: any) {
+    console.error("Critical Sync Error:", error.message);
     return NextResponse.json({ error: error.message }, { status: 500 });
   }
 }
