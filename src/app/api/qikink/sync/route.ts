@@ -5,12 +5,10 @@ export async function GET() {
   const CLIENT_SECRET = process.env.QIKINK_CLIENT_SECRET!;
   const BASE_URL = process.env.QIKINK_BASE_URL!;
 
-  // 🔍 Debug logs
   console.log("BASE_URL:", BASE_URL);
-  console.log("CLIENT_ID:", CLIENT_ID);
 
   try {
-    // 🔑 STEP 1: TOKEN GENERATE
+    // 🔑 TOKEN
     const tokenRes = await fetch(`${BASE_URL}/api/token`, {
       method: "POST",
       headers: {
@@ -23,57 +21,38 @@ export async function GET() {
     });
 
     const tokenData = await tokenRes.json();
+    console.log("TOKEN:", tokenData);
 
-    console.log("TOKEN RESPONSE:", tokenData);
-
-    if (!tokenRes.ok || !tokenData.Accesstoken) {
+    if (!tokenData.Accesstoken) {
       return NextResponse.json({
         success: false,
-        message: "Token generation failed",
+        message: "Token failed",
         tokenData,
       });
     }
 
     const accessToken = tokenData.Accesstoken;
 
-    console.log("ACCESS TOKEN:", accessToken);
-
-    // 📦 STEP 2: PRODUCTS FETCH
-    const productRes = await fetch(`${BASE_URL}/api/products`, {
-      method: "GET",
+    // 📦 PRODUCTS
+    const res = await fetch(`${BASE_URL}/api/products`, {
       headers: {
         ClientId: CLIENT_ID,
         Accesstoken: accessToken,
       },
     });
 
-    const productData = await productRes.json();
-
-    console.log("Qikink Data:", productData);
-
-    if (!productRes.ok) {
-      return NextResponse.json({
-        success: false,
-        message: "Product fetch failed",
-        productData,
-      });
-    }
+    const data = await res.json();
+    console.log("Qikink Data:", data);
 
     return NextResponse.json({
       success: true,
-      data: productData,
+      data,
     });
 
-  } catch (error: any) {
-    console.log("ERROR:", error);
-
-    return NextResponse.json(
-      {
-        success: false,
-        message: "Server error",
-        error: error.message,
-      },
-      { status: 500 }
-    );
+  } catch (err: any) {
+    return NextResponse.json({
+      success: false,
+      message: err.message,
+    });
   }
 }
