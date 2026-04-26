@@ -1,5 +1,5 @@
 import "@/styles/globals.css";
-import ThemeProvider from "@/components/admin/ThemeProvider";
+import ThemeProvider from "@/components/ThemeProvider";
 
 export const metadata = {
   title: "JembeeKart",
