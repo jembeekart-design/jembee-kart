@@ -1,0 +1,146 @@
+/* =========================
+   🌐 ROOT THEME VARIABLES
+========================= */
+
+:root {
+  --primary: #6366f1;
+
+  --bg: #0f172a;
+  --text: #ffffff;
+
+  --surface: rgba(255, 255, 255, 0.08);
+  --border: rgba(255, 255, 255, 0.2);
+
+  --glass-blur: 14px;
+  --glass-radius: 16px;
+
+  --shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
+}
+
+/* =========================
+   🌙 LIGHT MODE
+========================= */
+
+.light {
+  --bg: #f1f5f9;
+  --text: #0f172a;
+
+  --surface: rgba(255, 255, 255, 0.7);
+  --border: rgba(0, 0, 0, 0.1);
+}
+
+/* =========================
+   🌙 DARK MODE
+========================= */
+
+.dark {
+  --bg: #0f172a;
+  --text: #ffffff;
+
+  --surface: rgba(255, 255, 255, 0.08);
+  --border: rgba(255, 255, 255, 0.2);
+}
+
+/* =========================
+   🧱 BASE RESET
+========================= */
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+html, body {
+  background: var(--bg);
+  color: var(--text);
+  font-family: system-ui, sans-serif;
+  min-height: 100vh;
+}
+
+/* =========================
+   🧊 GLOBAL GLASS SYSTEM
+========================= */
+
+.glass {
+  background: var(--surface);
+  backdrop-filter: blur(var(--glass-blur));
+  border: 1px solid var(--border);
+  border-radius: var(--glass-radius);
+  box-shadow: var(--shadow);
+}
+
+/* =========================
+   ✨ GLOW EFFECT (THEME BASED)
+========================= */
+
+.glow {
+  box-shadow: 0 0 20px var(--primary);
+}
+
+/* =========================
+   🎛 PRIMARY BUTTON
+========================= */
+
+.btn-primary {
+  background: var(--primary);
+  color: #fff;
+  border: none;
+  border-radius: 12px;
+  padding: 10px 16px;
+  cursor: pointer;
+  transition: 0.3s;
+}
+
+.btn-primary:hover {
+  opacity: 0.9;
+  box-shadow: 0 0 15px var(--primary);
+}
+
+/* =========================
+   📦 CARD (AUTO GLASS)
+========================= */
+
+.card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  backdrop-filter: blur(var(--glass-blur));
+  border-radius: var(--glass-radius);
+  padding: 16px;
+}
+
+/* =========================
+   🧭 INPUT FIELD
+========================= */
+
+.input {
+  width: 100%;
+  padding: 10px;
+  border-radius: 10px;
+  border: 1px solid var(--border);
+  background: transparent;
+  color: var(--text);
+  outline: none;
+}
+
+/* =========================
+   🔗 LINK
+========================= */
+
+a {
+  color: var(--primary);
+  text-decoration: none;
+}
+
+/* =========================
+   📊 SCROLLBAR (optional premium)
+========================= */
+
+::-webkit-scrollbar {
+  width: 6px;
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--primary);
+  border-radius: 10px;
+}
