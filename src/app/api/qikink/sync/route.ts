@@ -1,9 +1,16 @@
 import { NextResponse } from 'next/server';
 
 export async function GET() {
-  const CLIENT_ID = process.env.QIKINK_CLIENT_ID!;
-  const CLIENT_SECRET = process.env.QIKINK_CLIENT_SECRET!;
+  const CLIENT_ID = process.env.QIKINK_CLIENT_ID;
+  const CLIENT_SECRET = process.env.QIKINK_CLIENT_SECRET;
   const BASE_URL = "https://api.qikink.com";
+
+  if (!CLIENT_ID || !CLIENT_SECRET) {
+    return NextResponse.json({
+      success: false,
+      error: "Missing ENV variables",
+    }, { status: 500 });
+  }
 
   try {
     // 🔑 TOKEN
@@ -18,10 +25,22 @@ export async function GET() {
       }),
     });
 
-    const tokenData = await tokenRes.json();
-    console.log("Token:", tokenData);
+    const tokenText = await tokenRes.text();
+    let tokenData: any;
 
-    if (!tokenRes.ok) {
+    try {
+      tokenData = JSON.parse(tokenText);
+    } catch {
+      return NextResponse.json({
+        success: false,
+        error: "Invalid token response",
+        raw: tokenText,
+      });
+    }
+
+    console.log("🔑 Token:", tokenData);
+
+    if (!tokenRes.ok || !tokenData.Accesstoken) {
       return NextResponse.json({
         success: false,
         error: "Token failed",
@@ -33,14 +52,28 @@ export async function GET() {
 
     // 📦 PRODUCTS
     const productRes = await fetch(`${BASE_URL}/api/products`, {
+      method: "GET",
       headers: {
         ClientId: CLIENT_ID,
         Accesstoken: accessToken,
+        "Content-Type": "application/json",
       },
     });
 
-    const productData = await productRes.json();
-    console.log("Products:", productData);
+    const productText = await productRes.text();
+    let productData: any;
+
+    try {
+      productData = JSON.parse(productText);
+    } catch {
+      return NextResponse.json({
+        success: false,
+        error: "Invalid product response",
+        raw: productText,
+      });
+    }
+
+    console.log("📦 Products:", productData);
 
     if (!productRes.ok) {
       return NextResponse.json({
@@ -56,9 +89,10 @@ export async function GET() {
     });
 
   } catch (err: any) {
+    console.error("❌ Server Error:", err);
     return NextResponse.json({
       success: false,
       error: err.message,
-    });
+    }, { status: 500 });
   }
 }
