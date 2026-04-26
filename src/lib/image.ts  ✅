@@ -1,0 +1,38 @@
+// src/lib/image.ts
+
+import imageCompression from "browser-image-compression";
+import { getStorage, ref, uploadBytes, getDownloadURL } from "firebase/storage";
+import { app } from "@/lib/firebase";
+
+// 🔥 Compress
+export const compressImage = async (file: File): Promise<File> => {
+  if (!file.type.startsWith("image/")) {
+    throw new Error("Only image allowed");
+  }
+
+  const options = {
+    maxSizeMB: 0.3,
+    maxWidthOrHeight: 800,
+    useWebWorker: true,
+    fileType: "image/jpeg",
+  };
+
+  return await imageCompression(file, options);
+};
+
+// 🖼 Preview
+export const getPreview = (file: File) => {
+  return URL.createObjectURL(file);
+};
+
+// 🔥 Upload
+export const uploadImage = async (file: File): Promise<string> => {
+  const storage = getStorage(app);
+
+  const fileName = `products/${Date.now()}-${file.name}`;
+  const storageRef = ref(storage, fileName);
+
+  await uploadBytes(storageRef, file);
+
+  return await getDownloadURL(storageRef);
+};
