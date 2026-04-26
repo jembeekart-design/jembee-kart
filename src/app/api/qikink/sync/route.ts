@@ -1,11 +1,11 @@
 import { NextResponse } from 'next/server';
 
 export async function GET() {
-  const CLIENT_ID = "827265200202480"; 
-  const CLIENT_SECRET = "412b38894b18d959c59a9e861f66dcba0da47a7a0be4fe240711bcccecf1d093"; 
+  // Aapke Live API Credentials (Source: Dashboard Screenshot)
+  const CLIENT_ID = "827265200202480";
+  const CLIENT_SECRET = "412b38894b18d959c59a9e861f66dcba0da47a7a0be4fe240711bcccecf1d093";
 
   try {
-    // 💡 Tip: Agar 'products' se data nahi aa raha, toh 'my_products' try karein
     const response = await fetch('https://api.qikink.com/v1/products', {
       method: 'GET',
       headers: {
@@ -16,9 +16,11 @@ export async function GET() {
     });
 
     const data = await response.json();
-
-    // Debugging: Vercel logs mein check karne ke liye
-    console.log("Qikink API Response:", JSON.stringify(data));
+    
+    // Response check karne ke liye
+    if (!response.ok) {
+        return NextResponse.json({ error: "Qikink API Error" }, { status: response.status });
+    }
 
     return NextResponse.json(data);
   } catch (error: any) {
