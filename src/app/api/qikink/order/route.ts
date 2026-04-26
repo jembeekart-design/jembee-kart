@@ -1,6 +1,6 @@
 export async function POST() {
   try {
-    // 🔐 STEP 1: Token generate
+    // 🔐 Token API
     const tokenRes = await fetch("https://sandbox.qikink.com/api/token", {
       method: "POST",
       body: new URLSearchParams({
@@ -18,17 +18,16 @@ export async function POST() {
       });
     }
 
-    // 📦 STEP 2: Order create
+    // 📦 Order API
     const orderRes = await fetch(
       "https://sandbox.qikink.com/api/order/create",
       {
         method: "POST",
         headers: {
-          "ClientId": process.env.QIKINK_CLIENT_ID!,
-          "Accesstoken": tokenData.Accesstoken,
+          ClientId: process.env.QIKINK_CLIENT_ID!,
+          Accesstoken: tokenData.Accesstoken,
           "Content-Type": "application/json",
         },
-
         body: JSON.stringify({
           order_number: "test_" + Date.now(),
           qikink_shipping: "1",
@@ -40,17 +39,13 @@ export async function POST() {
               search_from_my_products: 0,
               quantity: "1",
               price: "500",
-
-              // ⚠️ VALID SKU (जरूरत पड़े तो बदलना)
               sku: "UHd-Wh-M",
 
               designs: [
                 {
                   placement_sku: "fr",
-
                   design_link:
                     "https://sgp1.digitaloceanspaces.com/cdn.qikink.com/erp2/assets/designs/83/1696668376.jpg",
-
                   mockup_link:
                     "https://sgp1.digitaloceanspaces.com/cdn.qikink.com/erp2/assets/designs/83/1696668376.jpg",
                 },
@@ -75,8 +70,6 @@ export async function POST() {
 
     const orderData = await orderRes.json();
 
-    console.log("ORDER RESPONSE:", orderData);
-
     return Response.json(orderData);
 
   } catch (err) {
@@ -84,3 +77,5 @@ export async function POST() {
       error: "Server error",
       err,
     });
+  }
+}
