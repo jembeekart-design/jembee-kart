@@ -1,35 +1,46 @@
+import { NextResponse } from "next/server";
+
 export async function POST() {
   try {
-    // 🔐 Token API
+    // 🔐 ENV variables
+    const CLIENT_ID = process.env.QIKINK_CLIENT_ID!;
+    const CLIENT_SECRET = process.env.QIKINK_CLIENT_SECRET!;
+
+    // 🔥 Step 1: Get Token
     const tokenRes = await fetch("https://sandbox.qikink.com/api/token", {
       method: "POST",
+      headers: {
+        "Content-Type": "application/x-www-form-urlencoded",
+      },
       body: new URLSearchParams({
-        ClientId: process.env.QIKINK_CLIENT_ID!,
-        client_secret: process.env.QIKINK_CLIENT_SECRET!,
+        ClientId: CLIENT_ID,
+        client_secret: CLIENT_SECRET,
       }),
     });
 
     const tokenData = await tokenRes.json();
 
-    if (!tokenData?.Accesstoken) {
-      return Response.json({
+    if (!tokenData.Accesstoken) {
+      return NextResponse.json({
         error: "Token failed",
         tokenData,
       });
     }
 
-    // 📦 Order API
+    // 🔥 Step 2: Create Order
     const orderRes = await fetch(
       "https://sandbox.qikink.com/api/order/create",
       {
         method: "POST",
         headers: {
-          ClientId: process.env.QIKINK_CLIENT_ID!,
-          Accesstoken: tokenData.Accesstoken,
           "Content-Type": "application/json",
+          ClientId: CLIENT_ID,
+          Accesstoken: tokenData.Accesstoken,
         },
+
         body: JSON.stringify({
-          order_number: "test_" + Date.now(),
+          order_number: "ORD" + Date.now().toString().slice(-8),
+
           qikink_shipping: "1",
           gateway: "COD",
           total_order_value: "500",
@@ -70,12 +81,11 @@ export async function POST() {
 
     const orderData = await orderRes.json();
 
-    return Response.json(orderData);
-
+    return NextResponse.json(orderData);
   } catch (err) {
-    return Response.json({
+    return NextResponse.json({
       error: "Server error",
-      err,
+      details: err,
     });
   }
 }
