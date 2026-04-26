@@ -1,4 +1,4 @@
-import { NextResponse } from 'next/server';
+import { NextResponse } from "next/server";
 
 export async function GET() {
   const CLIENT_ID = process.env.QIKINK_CLIENT_ID;
@@ -8,23 +8,20 @@ export async function GET() {
   console.log("🚀 START QIKINK SYNC");
 
   // ✅ ENV CHECK
-  console.log("🔍 ENV CHECK:");
-  console.log("CLIENT_ID:", CLIENT_ID ? "✅ OK" : "❌ MISSING");
-  console.log("CLIENT_SECRET:", CLIENT_SECRET ? "✅ OK" : "❌ MISSING");
-
   if (!CLIENT_ID || !CLIENT_SECRET) {
+    console.log("❌ ENV MISSING");
     return NextResponse.json({
       success: false,
       step: "ENV",
       error: "Missing ENV variables",
-    }, { status: 500 });
+    });
   }
 
   try {
     // =========================
     // 🔑 STEP 1: TOKEN
     // =========================
-    console.log("🔑 STEP 1: TOKEN REQUEST");
+    console.log("🔑 TOKEN REQUEST");
 
     const tokenRes = await fetch(`${BASE_URL}/api/token`, {
       method: "POST",
@@ -37,25 +34,10 @@ export async function GET() {
       }),
     });
 
-    const tokenText = await tokenRes.text();
-    console.log("🔑 RAW TOKEN RESPONSE:", tokenText);
+    const tokenData = await tokenRes.json();
+    console.log("🔑 TOKEN RESPONSE:", tokenData);
 
-    let tokenData: any;
-    try {
-      tokenData = JSON.parse(tokenText);
-    } catch {
-      return NextResponse.json({
-        success: false,
-        step: "TOKEN_PARSE",
-        error: "Invalid JSON in token response",
-        raw: tokenText,
-      });
-    }
-
-    console.log("🔑 TOKEN STATUS:", tokenRes.status);
-    console.log("🔑 TOKEN DATA:", tokenData);
-
-    if (!tokenRes.ok || !tokenData.Accesstoken) {
+    if (!tokenRes.ok || !tokenData?.Accesstoken) {
       return NextResponse.json({
         success: false,
         step: "TOKEN_FAILED",
@@ -65,14 +47,13 @@ export async function GET() {
     }
 
     const accessToken = tokenData.Accesstoken;
-    console.log("✅ TOKEN SUCCESS:", accessToken);
 
     // =========================
-    // 📦 STEP 2: CATALOG
+    // 📦 STEP 2: PRODUCTS (FIXED)
     // =========================
-    console.log("📦 STEP 2: FETCH CATALOG");
+    console.log("📦 FETCH PRODUCTS");
 
-    const productRes = await fetch(`${BASE_URL}/api/catalog`, {
+    const productRes = await fetch(`${BASE_URL}/api/product`, {
       method: "GET",
       headers: {
         ClientId: CLIENT_ID,
@@ -80,35 +61,20 @@ export async function GET() {
       },
     });
 
-    const productText = await productRes.text();
-    console.log("📦 RAW PRODUCT RESPONSE:", productText);
-
-    let productData: any;
-    try {
-      productData = JSON.parse(productText);
-    } catch {
-      return NextResponse.json({
-        success: false,
-        step: "PRODUCT_PARSE",
-        error: "Invalid JSON in product response",
-        raw: productText,
-      });
-    }
-
-    console.log("📦 PRODUCT STATUS:", productRes.status);
-    console.log("📦 PRODUCT DATA:", productData);
+    const productData = await productRes.json();
+    console.log("📦 PRODUCT RESPONSE:", productData);
 
     if (!productRes.ok) {
       return NextResponse.json({
         success: false,
         step: "PRODUCT_FAILED",
-        error: "Catalog API failed",
+        error: "Product API failed",
         details: productData,
       });
     }
 
     // =========================
-    // 🧠 STEP 3: DATA EXTRACTION
+    // 🧠 STEP 3: SAFE EXTRACTION
     // =========================
     const items =
       productData.products ||
@@ -116,14 +82,14 @@ export async function GET() {
       productData.items ||
       [];
 
-    console.log("📦 EXTRACTED ITEMS:", items.length);
+    console.log("📦 TOTAL ITEMS:", items.length);
 
-    if (items.length === 0) {
+    if (!Array.isArray(items) || items.length === 0) {
       return NextResponse.json({
         success: true,
-        step: "EMPTY_DATA",
-        warning: "No products found in catalog",
-        rawStructure: productData,
+        step: "EMPTY",
+        message: "No products found in Qikink",
+        raw: productData,
       });
     }
 
@@ -134,17 +100,17 @@ export async function GET() {
       success: true,
       step: "SUCCESS",
       totalProducts: items.length,
-      sample: items.slice(0, 2), // sample data show
+      sample: items.slice(0, 2),
       data: items,
     });
 
   } catch (err: any) {
-    console.error("❌ FINAL ERROR:", err);
+    console.error("❌ SERVER ERROR:", err);
 
     return NextResponse.json({
       success: false,
       step: "CRASH",
       error: err.message,
-    }, { status: 500 });
+    });
   }
 }
