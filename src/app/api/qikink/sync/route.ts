@@ -1,14 +1,19 @@
-import { NextResponse } from "next/server";
+import { NextResponse } from 'next/server';
 
 export async function GET() {
+  // 🔐 ENV variables (Vercel me set hone chahiye)
   const CLIENT_ID = process.env.QIKINK_CLIENT_ID!;
   const CLIENT_SECRET = process.env.QIKINK_CLIENT_SECRET!;
-  const BASE_URL = process.env.QIKINK_BASE_URL!;
 
-  console.log("BASE_URL:", BASE_URL);
+  // 🔥 LIVE API (sandbox nahi)
+  const BASE_URL = "https://api.qikink.com";
 
   try {
-    // 🔑 TOKEN
+    console.log("BASE_URL:", BASE_URL);
+
+    // =========================
+    // 🔑 STEP 1: TOKEN GENERATE
+    // =========================
     const tokenRes = await fetch(`${BASE_URL}/api/token`, {
       method: "POST",
       headers: {
@@ -21,38 +26,78 @@ export async function GET() {
     });
 
     const tokenData = await tokenRes.json();
-    console.log("TOKEN:", tokenData);
 
-    if (!tokenData.Accesstoken) {
+    console.log("Token Response:", tokenData);
+
+    if (!tokenRes.ok) {
       return NextResponse.json({
         success: false,
-        message: "Token failed",
+        error: "Token generation failed",
         tokenData,
       });
     }
 
     const accessToken = tokenData.Accesstoken;
 
-    // 📦 PRODUCTS
-    const res = await fetch(`${BASE_URL}/api/products`, {
+    // =========================
+    // 📦 STEP 2: PRODUCTS FETCH
+    // =========================
+    const productRes = await fetch(`${BASE_URL}/api/products`, {
+      method: "GET",
       headers: {
         ClientId: CLIENT_ID,
         Accesstoken: accessToken,
       },
     });
 
-    const data = await res.json();
-    console.log("Qikink Data:", data);
+    const productData = await productRes.json();
 
+    console.log("Qikink Products Data:", productData);
+
+    if (!productRes.ok) {
+      return NextResponse.json({
+        success: false,
+        error: "Product fetch failed",
+        productData,
+      });
+    }
+
+    // =========================
+    // 🔍 SAFE DATA EXTRACTION
+    // =========================
+    const items =
+      productData.products ||
+      productData.data ||
+      productData.items ||
+      [];
+
+    // अगर empty है
+    if (items.length === 0) {
+      return NextResponse.json({
+        success: true,
+        message: "No products found",
+        data: [],
+        raw: productData,
+      });
+    }
+
+    // =========================
+    // ✅ FINAL RESPONSE
+    // =========================
     return NextResponse.json({
       success: true,
-      data,
+      message: "Products fetched successfully",
+      count: items.length,
+      data: items,
     });
 
-  } catch (err: any) {
+  } catch (error: any) {
+    console.error("Server Error:", error);
+
     return NextResponse.json({
       success: false,
-      message: err.message,
-    });
+      error: "Server connection failed",
+      message: error.message,
+    }, { status: 500 });
   }
 }
