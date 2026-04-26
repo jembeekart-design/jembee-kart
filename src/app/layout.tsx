@@ -1,11 +1,5 @@
-import type { Metadata } from "next";
-import "../styles/globals.css";
-import ThemeProvider from "@/components/ThemeProvider";
-
-export const metadata: Metadata = {
-  title: "Jembee Kart Admin",
-  description: "Premium Glassmorphism Dashboard",
-};
+import "./../styles/globals.css";
+import ThemeProvider from "@/components/admin/ThemeProvider";
 
 export default function RootLayout({
   children,
@@ -14,9 +8,6 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en">
-      <head>
-        <meta name="theme-color" content="#0f172a" />
-      </head>
       <body>
         <ThemeProvider>
           {children}
