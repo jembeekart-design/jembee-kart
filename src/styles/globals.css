@@ -1,146 +1,114 @@
-/* =========================
-   🌐 ROOT THEME VARIABLES
-========================= */
-
+/* =========================================
+   🌐 DYNAMIC ROOT VARIABLES (Admin Controlled)
+   ========================================= */
 :root {
+  /* Core Colors */
   --primary: #6366f1;
-
+  --primary-rgb: 99, 102, 241;
+  
+  /* Guardian Gradient Colors */
+  --guardian-start: #6366f1;
+  --guardian-end: #a855f7;
+  
+  /* Glass Settings */
+  --glass-blur: 16px;
+  --glass-opacity: 0.08;
+  --glass-radius: 20px;
+  --glass-saturate: 180%;
+  
+  /* Base Theme */
   --bg: #0f172a;
   --text: #ffffff;
-
-  --surface: rgba(255, 255, 255, 0.08);
-  --border: rgba(255, 255, 255, 0.2);
-
-  --glass-blur: 14px;
-  --glass-radius: 16px;
-
-  --shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
+  --border: rgba(255, 255, 255, 0.12);
+  --shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
 }
 
-/* =========================
-   🌙 LIGHT MODE
-========================= */
-
+/* =========================================
+   🌓 ADAPTIVE MODES (Light/Dark)
+   ========================================= */
 .light {
-  --bg: #f1f5f9;
+  --bg: #f8fafc;
   --text: #0f172a;
-
-  --surface: rgba(255, 255, 255, 0.7);
-  --border: rgba(0, 0, 0, 0.1);
+  --border: rgba(0, 0, 0, 0.08);
+  --glass-opacity: 0.7;
 }
-
-/* =========================
-   🌙 DARK MODE
-========================= */
 
 .dark {
   --bg: #0f172a;
   --text: #ffffff;
-
-  --surface: rgba(255, 255, 255, 0.08);
-  --border: rgba(255, 255, 255, 0.2);
+  --border: rgba(255, 255, 255, 0.12);
+  --glass-opacity: 0.08;
 }
 
-/* =========================
-   🧱 BASE RESET
-========================= */
+/* =========================================
+   🧊 PREMIUM GLASS SYSTEM
+   ========================================= */
 
-* {
-  margin: 0;
-  padding: 0;
-  box-sizing: border-box;
-}
-
-html, body {
-  background: var(--bg);
-  color: var(--text);
-  font-family: system-ui, sans-serif;
-  min-height: 100vh;
-}
-
-/* =========================
-   🧊 GLOBAL GLASS SYSTEM
-========================= */
-
-.glass {
-  background: var(--surface);
+/* 1. Normal Glass (Minimal & Clean) */
+.glass-normal {
+  background: rgba(var(--primary-rgb), var(--glass-opacity));
   backdrop-filter: blur(var(--glass-blur));
+  -webkit-backdrop-filter: blur(var(--glass-blur));
   border: 1px solid var(--border);
   border-radius: var(--glass-radius);
   box-shadow: var(--shadow);
+  transition: all 0.3s ease;
 }
 
-/* =========================
-   ✨ GLOW EFFECT (THEME BASED)
-========================= */
-
-.glow {
-  box-shadow: 0 0 20px var(--primary);
-}
-
-/* =========================
-   🎛 PRIMARY BUTTON
-========================= */
-
-.btn-primary {
-  background: var(--primary);
-  color: #fff;
-  border: none;
-  border-radius: 12px;
-  padding: 10px 16px;
-  cursor: pointer;
-  transition: 0.3s;
-}
-
-.btn-primary:hover {
-  opacity: 0.9;
-  box-shadow: 0 0 15px var(--primary);
-}
-
-/* =========================
-   📦 CARD (AUTO GLASS)
-========================= */
-
-.card {
-  background: var(--surface);
+/* 2. Guardian Glass (Premium Gradient Glow) */
+.glass-guardian {
+  position: relative;
+  background: linear-gradient(
+    135deg, 
+    rgba(255, 255, 255, 0.05) 0%, 
+    rgba(255, 255, 255, 0.01) 100%
+  );
+  backdrop-filter: blur(var(--glass-blur)) saturate(var(--glass-saturate));
+  -webkit-backdrop-filter: blur(var(--glass-blur)) saturate(var(--glass-saturate));
   border: 1px solid var(--border);
-  backdrop-filter: blur(var(--glass-blur));
   border-radius: var(--glass-radius);
-  padding: 16px;
+  overflow: hidden;
 }
 
-/* =========================
-   🧭 INPUT FIELD
-========================= */
-
-.input {
-  width: 100%;
-  padding: 10px;
-  border-radius: 10px;
-  border: 1px solid var(--border);
-  background: transparent;
-  color: var(--text);
-  outline: none;
+/* Guardian Accent Line (Top glow) */
+.glass-guardian::after {
+  content: "";
+  position: absolute;
+  top: 0; left: 0; right: 0;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, var(--guardian-start), var(--guardian-end), transparent);
+  opacity: 0.5;
 }
 
-/* =========================
-   🔗 LINK
-========================= */
+/* =========================================
+   ✨ PREMIUM EFFECTS & UI
+   ========================================= */
 
-a {
-  color: var(--primary);
-  text-decoration: none;
+/* Guardian Button */
+.btn-guardian {
+  background: linear-gradient(135deg, var(--guardian-start), var(--guardian-end));
+  color: white;
+  border: none;
+  padding: 12px 24px;
+  border-radius: 12px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+  box-shadow: 0 4px 15px rgba(var(--primary-rgb), 0.3);
 }
 
-/* =========================
-   📊 SCROLLBAR (optional premium)
-========================= */
+.btn-guardian:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 25px rgba(var(--primary-rgb), 0.5);
+  filter: brightness(1.1);
+}
 
+/* Advanced Scrollbar */
 ::-webkit-scrollbar {
-  width: 6px;
+  width: 5px;
 }
 
 ::-webkit-scrollbar-thumb {
-  background: var(--primary);
+  background: linear-gradient(to bottom, var(--guardian-start), var(--guardian-end));
   border-radius: 10px;
 }
