@@ -15,28 +15,43 @@ export default function QikinkInventory() {
   const [products, setProducts] = useState<any[]>([]);
   const [loading, setLoading] = useState(false);
 
+  // 🔄 Load Firestore data
   const loadData = async () => {
-    const snap = await getDocs(collection(db, "products"));
-    setProducts(snap.docs.map(d => ({ id: d.id, ...d.data() })));
+    try {
+      const snap = await getDocs(collection(db, "products"));
+      const list = snap.docs.map(d => ({ id: d.id, ...d.data() }));
+      setProducts(list);
+    } catch (e) {
+      console.error("Firestore Load Error:", e);
+    }
   };
 
-  useEffect(() => { loadData(); }, []);
+  useEffect(() => {
+    loadData();
+  }, []);
 
+  // 🚀 SYNC FUNCTION
   const syncFromQikink = async () => {
     setLoading(true);
 
     try {
-      const res = await fetch('/api/qikink/sync');
+      const res = await fetch("/api/qikink/sync");
+
+      console.log("🌐 STATUS:", res.status);
+
       const result = await res.json();
 
-      console.log("FULL RESPONSE:", result);
+      console.log("🔥 FULL RESPONSE:", result);
+
+      // 🔥 DEBUG ALERT (VERY IMPORTANT)
+      alert(JSON.stringify(result, null, 2));
 
       if (!result.success) {
-        alert("❌ API Error");
+        alert("❌ API Error: " + (result.error || "Unknown error"));
         return;
       }
 
-      // 🔥 SAFE DATA EXTRACTION
+      // 📦 SAFE EXTRACTION
       const apiData = result.data || {};
       const items =
         apiData.products ||
@@ -44,15 +59,17 @@ export default function QikinkInventory() {
         apiData.items ||
         [];
 
-      // ⚠️ अगर empty है
-      if (items.length === 0) {
-        alert("⚠️ No products found (Live API empty)");
+      console.log("📦 ITEMS:", items);
 
-        // 🔥 Dummy fallback (important)
+      // ⚠️ EMPTY CASE
+      if (items.length === 0) {
+        alert("⚠️ No products found");
+
+        // 🔥 Dummy fallback
         const dummy = [
           {
-            product_name: "Demo T-Shirt",
-            id: "demo1",
+            name: "Demo T-Shirt",
+            sku: "demo1",
             price: 200,
             image: "https://via.placeholder.com/150",
           },
@@ -60,8 +77,8 @@ export default function QikinkInventory() {
 
         for (const item of dummy) {
           await addDoc(collection(db, "products"), {
-            name: item.product_name,
-            sku: item.id,
+            name: item.name,
+            sku: item.sku,
             basePrice: item.price,
             finalPrice: item.price + 150,
             image: item.image,
@@ -74,11 +91,13 @@ export default function QikinkInventory() {
         return;
       }
 
+      // ✅ SAVE PRODUCTS
       let added = 0;
 
       for (const item of items) {
         const sku = String(item.id || item.product_id || item.sku);
 
+        // Duplicate check
         const exists = products.find(p => p.sku === sku);
         if (exists) continue;
 
@@ -89,7 +108,10 @@ export default function QikinkInventory() {
           sku,
           basePrice: price,
           finalPrice: price + 150,
-          image: item.image || item.product_image || "https://via.placeholder.com/150",
+          image:
+            item.image ||
+            item.product_image ||
+            "https://via.placeholder.com/150",
           source: "qikink_live",
           createdAt: serverTimestamp(),
         });
@@ -100,25 +122,89 @@ export default function QikinkInventory() {
       alert(`✅ ${added} products synced`);
       loadData();
 
-    } catch (err) {
-      alert("❌ Server error");
+    } catch (err: any) {
+      console.error("❌ ERROR:", err);
+      alert("❌ Server error: " + err.message);
     } finally {
       setLoading(false);
     }
   };
 
+  // 🗑️ DELETE
+  const deleteProduct = async (id: string) => {
+    if (!confirm("Delete product?")) return;
+
+    await deleteDoc(doc(db, "products", id));
+    loadData();
+  };
+
   return (
-    <div style={{ padding: 20 }}>
+    <div style={{ padding: 20, maxWidth: 900, margin: "0 auto" }}>
       <h2>📦 Qikink Live Sync</h2>
 
-      <button onClick={syncFromQikink} disabled={loading}>
+      <button
+        onClick={syncFromQikink}
+        disabled={loading}
+        style={{
+          padding: "10px 20px",
+          background: "#6366f1",
+          color: "#fff",
+          border: "none",
+          borderRadius: 8,
+          cursor: "pointer",
+        }}
+      >
         {loading ? "Syncing..." : "🚀 Sync Products"}
       </button>
 
+      {/* 📦 Product List */}
       <div style={{ marginTop: 20 }}>
+        {products.length === 0 && (
+          <p style={{ color: "#888" }}>No products yet</p>
+        )}
+
         {products.map(p => (
-          <div key={p.id}>
-            {p.name} - ₹{p.finalPrice}
+          <div
+            key={p.id}
+            style={{
+              display: "flex",
+              alignItems: "center",
+              gap: 15,
+              padding: 10,
+              border: "1px solid #eee",
+              borderRadius: 10,
+              marginBottom: 10,
+            }}
+          >
+            <img
+              src={p.image}
+              alt=""
+              style={{
+                width: 60,
+                height: 60,
+                objectFit: "cover",
+                borderRadius: 8,
+              }}
+            />
+
+            <div style={{ flex: 1 }}>
+              <div style={{ fontWeight: "bold" }}>{p.name}</div>
+              <div style={{ fontSize: 12, color: "#666" }}>
+                SKU: {p.sku} | ₹{p.finalPrice}
+              </div>
+            </div>
+
+            <button
+              onClick={() => deleteProduct(p.id)}
+              style={{
+                border: "none",
+                background: "none",
+                color: "red",
+                cursor: "pointer",
+              }}
+            >
+              🗑️
+            </button>
           </div>
         ))}
       </div>
