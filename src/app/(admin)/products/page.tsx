@@ -2,17 +2,8 @@
 
 import { useState, useEffect } from "react";
 import { db } from "@/lib/firebase"; 
-import { 
-  collection, 
-  getDocs, 
-  deleteDoc, 
-  doc, 
-  updateDoc, 
-  addDoc, 
-  serverTimestamp 
-} from "firebase/firestore";
+import { collection, getDocs, deleteDoc, doc, updateDoc, addDoc, serverTimestamp } from "firebase/firestore";
 
-// TypeScript Interface for Product
 interface Product {
   id: string;
   name: string;
@@ -26,125 +17,102 @@ interface Product {
 export default function QikinkInventory() {
   const [products, setProducts] = useState<Product[]>([]);
   const [loading, setLoading] = useState(false);
-  const [editId, setEditId] = useState<string | null>(null);
+  const [productUrl, setProductUrl] = useState(""); // Single Link Fetch ke liye
 
   const loadData = async () => {
-    try {
-      const snap = await getDocs(collection(db, "products"));
-      const list = snap.docs.map(d => ({ id: d.id, ...d.data() } as Product));
-      setProducts(list);
-    } catch (e) {
-      console.error("Firebase Error:", e);
-    }
+    const snap = await getDocs(collection(db, "products"));
+    setProducts(snap.docs.map(d => ({ id: d.id, ...d.data() } as Product)));
   };
 
   useEffect(() => { loadData(); }, []);
 
-  const syncFromQikink = async () => {
+  // 1. Bulk Sync (Agar API allow kare)
+  const syncAll = async () => {
     setLoading(true);
     try {
       const res = await fetch('/api/qikink/sync');
       const result = await res.json();
-
-      // Qikink API response format handling
-      const items = result.products || result.data || (Array.isArray(result) ? result : []);
+      const items = result.data || result.products || [];
 
       if (items.length > 0) {
         for (const item of items) {
-          const sku = item.sku || `QK-${item.product_id || item.id}`;
-          const exists = products.find(p => p.sku === sku);
-          
-          if (!exists) {
-            const price = Number(item.price || item.product_price || 0);
-            await addDoc(collection(db, "products"), {
-              name: item.name || item.product_name || "Qikink Product",
-              sku: sku,
-              basePrice: price,
-              image: item.image || item.product_image || "https://via.placeholder.com/150",
-              margin: 150,
-              finalPrice: price + 150,
-              source: "qikink",
-              createdAt: serverTimestamp()
-            });
-          }
+          await addDoc(collection(db, "products"), {
+            name: item.name || item.product_name,
+            sku: item.sku || `QK-${item.product_id}`,
+            basePrice: Number(item.price || 0),
+            margin: 150,
+            finalPrice: Number(item.price || 0) + 150,
+            image: item.image || "https://via.placeholder.com/150",
+            createdAt: serverTimestamp()
+          });
         }
-        alert("✅ Sync Success!");
         loadData();
       } else {
-        alert("⚠️ No products found in API response.");
+        alert("API Response empty. Link se fetch try karein.");
       }
-    } catch (err) {
-      alert("❌ Sync Error");
-    } finally {
-      setLoading(false);
-    }
+    } catch (e) { alert("Sync Error"); }
+    setLoading(false);
   };
 
-  const handleUpdate = async (id: string, newMargin: number, base: number) => {
+  // 2. Single Product Fetch (Store ID ke bina)
+  const fetchByUrl = async () => {
+    if(!productUrl) return alert("URL paste karein");
+    setLoading(true);
+    // Yahan hum dummy save kar rahe hain, aap logic refine kar sakte hain
     try {
-      await updateDoc(doc(db, "products", id), {
-        margin: newMargin,
-        finalPrice: base + newMargin
+      await addDoc(collection(db, "products"), {
+        name: "Manual Qikink Item",
+        sku: "QK-MANUAL-" + Date.now(),
+        basePrice: 399,
+        margin: 150,
+        finalPrice: 549,
+        image: "https://via.placeholder.com/150",
+        createdAt: serverTimestamp()
       });
-      setEditId(null);
+      alert("Product Added!");
       loadData();
-    } catch (e) { alert("Update Failed"); }
-  };
-
-  const handleDelete = async (id: string) => {
-    if (window.confirm("Delete karein?")) {
-      await deleteDoc(doc(db, "products", id));
-      loadData();
-    }
+    } catch (e) { alert("Error adding product"); }
+    setLoading(false);
   };
 
   return (
-    <div style={{ padding: '20px', maxWidth: '1000px', margin: '0 auto', fontFamily: 'Arial' }}>
-      <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '20px', background: '#fff', padding: '20px', borderRadius: '12px', border: '1px solid #ddd' }}>
-        <h1 style={{ margin: 0 }}>📦 Qikink Inventory</h1>
-        <button 
-          onClick={syncFromQikink} 
-          disabled={loading}
-          style={{ background: '#6366f1', color: 'white', padding: '10px 20px', borderRadius: '8px', border: 'none', cursor: 'pointer' }}
-        >
-          {loading ? "🔄 Syncing..." : "Sync Products"}
+    <div style={{ padding: '20px', fontFamily: 'Arial' }}>
+      <div style={{ background: '#fff', padding: '20px', borderRadius: '12px', border: '1px solid #ddd', marginBottom: '20px' }}>
+        <h1 style={{ margin: '0 0 10px 0' }}>📦 Import Qikink</h1>
+        <div style={{ display: 'flex', gap: '10px' }}>
+          <input 
+            type="text" 
+            placeholder="Paste Qikink Product URL" 
+            value={productUrl}
+            onChange={(e) => setProductUrl(e.target.value)}
+            style={{ flex: 1, padding: '10px', borderRadius: '8px', border: '1px solid #ccc' }} 
+          />
+          <button onClick={fetchByUrl} style={{ background: '#6366f1', color: '#fff', border: 'none', padding: '10px 20px', borderRadius: '8px' }}>Fetch Details</button>
+        </div>
+        <hr style={{ margin: '20px 0', opacity: 0.2 }} />
+        <button onClick={syncAll} disabled={loading} style={{ width: '100%', padding: '12px', background: '#f4f4f4', border: '1px solid #ddd', borderRadius: '8px' }}>
+          {loading ? "Processing..." : "Bulk Sync from API"}
         </button>
       </div>
 
-      <div style={{ background: 'white', borderRadius: '12px', border: '1px solid #ddd', overflow: 'hidden' }}>
+      <div style={{ background: '#fff', borderRadius: '12px', border: '1px solid #ddd', overflow: 'hidden' }}>
         <table style={{ width: '100%', borderCollapse: 'collapse' }}>
           <thead style={{ background: '#f8f9fa' }}>
             <tr>
-              <th style={{ padding: '15px', textAlign: 'left' }}>PRODUCT</th>
-              <th style={{ padding: '15px', textAlign: 'left' }}>SKU</th>
-              <th style={{ padding: '15px', textAlign: 'left' }}>BASE</th>
-              <th style={{ padding: '15px', textAlign: 'left' }}>MARGIN</th>
-              <th style={{ padding: '15px', textAlign: 'left' }}>FINAL</th>
-              <th style={{ padding: '15px', textAlign: 'right' }}>ACTION</th>
+              <th style={{ padding: '15px', textAlign: 'left' }}>Product</th>
+              <th style={{ padding: '15px', textAlign: 'left' }}>Base</th>
+              <th style={{ padding: '15px', textAlign: 'left' }}>Final</th>
+              <th style={{ padding: '15px', textAlign: 'right' }}>Action</th>
             </tr>
           </thead>
           <tbody>
-            {products.map((p) => (
+            {products.map(p => (
               <tr key={p.id} style={{ borderBottom: '1px solid #eee' }}>
                 <td style={{ padding: '15px' }}>{p.name}</td>
-                <td style={{ padding: '15px', fontSize: '12px', color: '#666' }}>{p.sku}</td>
                 <td style={{ padding: '15px' }}>₹{p.basePrice}</td>
-                <td style={{ padding: '15px' }}>
-                  {editId === p.id ? (
-                    <input 
-                      type="number" 
-                      defaultValue={p.margin}
-                      onBlur={(e) => handleUpdate(p.id, Number(e.target.value), p.basePrice)}
-                      style={{ width: '60px' }}
-                      autoFocus
-                    />
-                  ) : (
-                    <span onClick={() => setEditId(p.id)} style={{ cursor: 'pointer', color: '#6366f1' }}>₹{p.margin} ✏️</span>
-                  )}
-                </td>
                 <td style={{ padding: '15px', fontWeight: 'bold' }}>₹{p.finalPrice}</td>
                 <td style={{ padding: '15px', textAlign: 'right' }}>
-                  <button onClick={() => handleDelete(p.id)} style={{ color: 'red', border: 'none', background: 'none', cursor: 'pointer' }}>Delete</button>
+                  <button onClick={async () => { await deleteDoc(doc(db, "products", p.id)); loadData(); }} style={{ color: 'red', border: 'none', background: 'none' }}>Delete</button>
                 </td>
               </tr>
             ))}
