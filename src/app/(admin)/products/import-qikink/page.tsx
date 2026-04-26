@@ -1,125 +1,126 @@
 'use client';
 
-import { useState } from "react";
-import { db } from "@/lib/firebase"; // Database connection
-import { collection, addDoc, serverTimestamp } from "firebase/firestore";
+import { useState, useEffect } from "react";
+import { db } from "@/lib/firebase"; 
+import { collection, addDoc, getDocs, deleteDoc, doc, updateDoc, serverTimestamp } from "firebase/firestore";
 
-export default function ImportQikinkPage() {
-  const [url, setUrl] = useState("");
+export default function QikinkManager() {
+  const [url, setUrl] = useState("https://dashboard.qikink.com/products/list");
   const [loading, setLoading] = useState(false);
-  const [product, setProduct] = useState<any>(null);
-  const [margin, setMargin] = useState(150);
+  const [importedProducts, setImportedProducts] = useState<any[]>([]);
+  const [editingId, setEditingId] = useState<string | null>(null);
 
-  // 🎯 1. Smart Fetch Logic
-  const fetchProduct = async () => {
-    if (!url.includes("qikink.com/products/view/")) {
-      alert("❌ Error: Please paste a specific Product VIEW URL, not the list page.");
-      return;
-    }
-
-    setLoading(true);
-    
-    // Fake API Simulation (In production, use fetch('/api/qikink/fetch'))
-    setTimeout(() => {
-      // URL se ID nikaalne ka logic (Example: .../view/12345)
-      const productId = url.split('/').pop(); 
-      
-      setProduct({
-        id: productId,
-        name: "Qikink Premium Apparel",
-        price: 399,
-        image: "https://via.placeholder.com/400", // Actual image will come from API
-        sku: `QK-PROD-${productId}`,
-      });
-      setLoading(false);
-    }, 1000);
+  // 1. Fetch products from Firestore (Jo humne pehle save kiye hain)
+  const loadStoredProducts = async () => {
+    const querySnapshot = await getDocs(collection(db, "products"));
+    const products = querySnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+    setImportedProducts(products);
   };
 
-  // 💾 2. Save to Firestore Logic
-  const saveToStore = async () => {
-    if (!product) return;
+  useEffect(() => { loadStoredProducts(); }, []);
+
+  // 2. Qikink List se Bulk Import (Simulation)
+  const handleBulkImport = async () => {
     setLoading(true);
+    // Note: Actual implementation mein Qikink API se data map hoga
+    const mockBulkData = [
+      { name: "T-Shirt 01", price: 350, sku: "QK-TS-01", image: "https://via.placeholder.com/150" },
+      { name: "Hoodie 02", price: 750, sku: "QK-HD-02", image: "https://via.placeholder.com/150" }
+    ];
 
-    try {
+    for (const item of mockBulkData) {
       await addDoc(collection(db, "products"), {
-        name: product.name,
-        sku: product.sku,
-        basePrice: product.price,
-        margin: Number(margin),
-        finalPrice: product.price + Number(margin),
-        image: product.image,
-        source: "qikink",
-        createdAt: serverTimestamp(),
+        ...item,
+        margin: 150,
+        finalPrice: item.price + 150,
+        createdAt: serverTimestamp()
       });
-
-      alert("✅ Product synced to your Firebase Storefront!");
-      setProduct(null);
-      setUrl("");
-    } catch (err) {
-      console.error(err);
-      alert("❌ Database Error: Check your Firebase permissions.");
-    } finally {
-      setLoading(false);
     }
+    await loadStoredProducts();
+    setLoading(false);
+    alert("✅ List Imported & Saved to Firebase!");
+  };
+
+  // 3. Delete Function
+  const handleDelete = async (id: string) => {
+    if (confirm("Are you sure you want to delete this product?")) {
+      await deleteDoc(doc(db, "products", id));
+      loadStoredProducts();
+    }
+  };
+
+  // 4. Edit Margin Function
+  const handleUpdateMargin = async (id: string, newMargin: number, basePrice: number) => {
+    const productRef = doc(db, "products", id);
+    await updateDoc(productRef, {
+      margin: newMargin,
+      finalPrice: basePrice + newMargin
+    });
+    setEditingId(null);
+    loadStoredProducts();
   };
 
   return (
-    <div className="space-y-6">
-      <h1 className="text-2xl font-bold">Qikink Integration</h1>
-
-      {/* Input Area */}
-      <div className="p-6 border rounded-xl bg-gray-50 dark:bg-white/5">
-        <label className="block text-xs font-bold mb-2 uppercase">Qikink Product View Link</label>
-        <div className="flex gap-2">
-          <input
-            type="text"
-            placeholder="Paste individual product URL here..."
-            className="flex-1 p-3 rounded-lg border dark:bg-black"
-            value={url}
-            onChange={(e) => setUrl(e.target.value)}
-          />
-          <button 
-            onClick={fetchProduct}
-            className="bg-indigo-600 px-6 py-2 rounded-lg text-white font-bold"
-          >
-            {loading ? "..." : "Fetch"}
-          </button>
-        </div>
+    <div className="space-y-8 animate-in fade-in duration-700">
+      <div className="flex justify-between items-center">
+        <h1 className="text-3xl font-black text-white">📦 Qikink Inventory</h1>
+        <button 
+          onClick={handleBulkImport}
+          className="btn-guardian px-6 py-3 text-xs uppercase font-bold"
+        >
+          {loading ? "Syncing..." : "🔄 Sync List from Qikink"}
+        </button>
       </div>
 
-      {/* Preview & Save */}
-      {product && (
-        <div className="p-6 border rounded-xl animate-in fade-in slide-in-from-top-4">
-          <div className="flex gap-6">
-             <img src={product.image} className="w-32 h-32 rounded-lg" alt="" />
-             <div className="flex-1 space-y-4">
-                <h3 className="text-xl font-bold">{product.name}</h3>
-                <p className="text-sm">Base Price: <span className="font-bold">₹{product.price}</span></p>
-                
-                <div className="flex flex-col gap-1">
-                  <label className="text-xs opacity-60 font-bold">Set Profit Margin (₹)</label>
-                  <input 
-                    type="number"
-                    value={margin}
-                    onChange={(e) => setMargin(Number(e.target.value))}
-                    className="p-2 border rounded bg-transparent"
-                  />
-                </div>
-
-                <div className="text-lg font-black text-indigo-500">
-                  Total Listing Price: ₹{product.price + margin}
-                </div>
-
-                <button 
-                  onClick={saveToStore}
-                  className="w-full bg-green-600 py-3 rounded-xl text-white font-bold uppercase tracking-widest"
-                >
-                  {loading ? "Saving..." : "Confirm & Push to Firebase"}
-                </button>
-             </div>
-          </div>
-        </div>
-      )}
+      {/* Product Table with Edit/Delete */}
+      <div className="glass-guardian overflow-hidden">
+        <table className="w-full text-left border-collapse">
+          <thead>
+            <tr className="bg-white/5 border-b border-white/10 text-[10px] uppercase tracking-widest font-black text-white/50">
+              <th className="p-5">Product</th>
+              <th className="p-5">Base Price</th>
+              <th className="p-5">Margin</th>
+              <th className="p-5">Final Price</th>
+              <th className="p-5 text-right">Actions</th>
+            </tr>
+          </thead>
+          <tbody className="divide-y divide-white/5">
+            {importedProducts.map((p) => (
+              <tr key={p.id} className="hover:bg-white/[0.02] transition-colors">
+                <td className="p-5 flex items-center gap-4">
+                  <img src={p.image} className="w-10 h-10 rounded-lg" alt="" />
+                  <span className="font-bold text-sm">{p.name}</span>
+                </td>
+                <td className="p-5 text-sm">₹{p.price || p.basePrice}</td>
+                <td className="p-5">
+                  {editingId === p.id ? (
+                    <input 
+                      type="number"
+                      defaultValue={p.margin}
+                      onBlur={(e) => handleUpdateMargin(p.id, Number(e.target.value), p.price || p.basePrice)}
+                      className="w-20 bg-black/50 border border-[var(--primary)] rounded px-2 py-1 text-white"
+                      autoFocus
+                    />
+                  ) : (
+                    <span onClick={() => setEditingId(p.id)} className="cursor-pointer text-[var(--primary)] font-bold">
+                      ₹{p.margin} ✏️
+                    </span>
+                  )}
+                </td>
+                <td className="p-5 font-black text-lg text-white">₹{p.finalPrice}</td>
+                <td className="p-5 text-right space-x-2">
+                  <button 
+                    onClick={() => handleDelete(p.id)}
+                    className="text-[10px] font-bold text-red-400 hover:text-red-200 uppercase"
+                  >
+                    Delete
+                  </button>
+                </td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
     </div>
   );
 }
