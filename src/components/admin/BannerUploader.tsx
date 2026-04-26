@@ -1,7 +1,6 @@
 'use client';
 
 import { useEffect, useState } from "react";
-import { compressImage } from "@/lib/imageCompression";
 
 type Props = {
   onChange: (file: File, preview: string) => void;
