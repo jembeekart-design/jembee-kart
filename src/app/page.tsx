@@ -6,14 +6,20 @@ export default function Home() {
   const [color, setColor] = useState("#6366f1");
   const [loading, setLoading] = useState(false);
 
+  // 🔥 Load saved theme
   useEffect(() => {
     const saved = localStorage.getItem("themeColor");
     if (saved) {
       setColor(saved);
       applyTheme(saved);
     }
+
+    // smooth transition
+    document.documentElement.style.transition =
+      "all 0.3s cubic-bezier(0.4, 0, 0.2, 1)";
   }, []);
 
+  // 🎨 Apply theme
   const applyTheme = (newColor: string) => {
     document.documentElement.style.setProperty("--primary", newColor);
     localStorage.setItem("themeColor", newColor);
@@ -38,12 +44,22 @@ export default function Home() {
         method: "POST",
       });
 
-      const data = await res.json();
+      let data;
 
-      alert(data.message || JSON.stringify(data));
+      try {
+        data = await res.json();
+      } catch {
+        throw new Error("Invalid server response");
+      }
 
-    } catch (err) {
-      alert("❌ Server connection fail ho gaya");
+      if (!res.ok) {
+        throw new Error(data?.error || "Order failed");
+      }
+
+      alert(data.message || "✅ Order created successfully");
+
+    } catch (err: any) {
+      alert("❌ " + (err.message || "Server error"));
     } finally {
       setLoading(false);
     }
@@ -77,6 +93,7 @@ export default function Home() {
                 cursor: "pointer",
                 background: c,
                 boxShadow: `0 0 10px ${c}`,
+                outline: color === c ? "2px solid white" : "none",
               }}
             />
           ))}
@@ -110,7 +127,7 @@ export default function Home() {
             border: "none",
             background: "#10b981",
             color: "#fff",
-            cursor: "pointer",
+            cursor: loading ? "not-allowed" : "pointer",
             boxShadow: "0 0 10px #10b981",
             opacity: loading ? 0.6 : 1,
           }}
