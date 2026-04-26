@@ -4,14 +4,27 @@ import { useEffect } from "react";
 import { doc, onSnapshot } from "firebase/firestore";
 import { db } from "@/lib/firebase";
 
-const DEFAULT_COLOR = "#6366f1";
+const DEFAULT_THEME = {
+  primary: "#6366f1",
+  secondary: "#22c55e",
+  accent: "#f59e0b",
+  bg: "#0f172a",
+  text: "#ffffff",
+};
 
-export default function ThemeProvider({ children }: { children: React.ReactNode }) {
+export default function ThemeProvider({
+  children,
+}: {
+  children: React.ReactNode;
+}) {
 
-  const applyTheme = (color: string) => {
-    document.documentElement.style.setProperty("--primary", color);
+  // 🎨 APPLY FULL THEME
+  const applyTheme = (theme: any) => {
+    Object.entries(theme).forEach(([key, value]) => {
+      document.documentElement.style.setProperty(`--${key}`, value as string);
+    });
 
-    // 🔝 status bar
+    // 🔝 STATUS BAR COLOR
     let meta = document.querySelector('meta[name="theme-color"]') as HTMLMetaElement | null;
 
     if (!meta) {
@@ -20,17 +33,23 @@ export default function ThemeProvider({ children }: { children: React.ReactNode 
       document.head.appendChild(meta);
     }
 
-    meta.content = color;
+    meta.content = theme.primary || DEFAULT_THEME.primary;
   };
 
   useEffect(() => {
-    // ⚡ STEP 1: Instant load from localStorage
-    const cached = localStorage.getItem("themeColor");
+
+    // ⚡ STEP 1: LocalStorage instant load
+    const cached = localStorage.getItem("theme");
 
     if (cached) {
-      applyTheme(cached);
+      try {
+        const parsed = JSON.parse(cached);
+        applyTheme(parsed);
+      } catch {
+        applyTheme(DEFAULT_THEME);
+      }
     } else {
-      applyTheme(DEFAULT_COLOR);
+      applyTheme(DEFAULT_THEME);
     }
 
     // 🔥 STEP 2: Firestore realtime sync
@@ -39,15 +58,19 @@ export default function ThemeProvider({ children }: { children: React.ReactNode 
     const unsubscribe = onSnapshot(ref, (snap) => {
       if (snap.exists()) {
         const data = snap.data();
-        const color = data.primary || DEFAULT_COLOR;
 
-        applyTheme(color);
+        const theme = {
+          ...DEFAULT_THEME,
+          ...data,
+        };
+
+        applyTheme(theme);
 
         // 💾 cache update
-        localStorage.setItem("themeColor", color);
+        localStorage.setItem("theme", JSON.stringify(theme));
       } else {
-        console.warn("⚠️ Theme doc missing, using default");
-        applyTheme(DEFAULT_COLOR);
+        console.warn("⚠️ Theme doc missing");
+        applyTheme(DEFAULT_THEME);
       }
     });
 
