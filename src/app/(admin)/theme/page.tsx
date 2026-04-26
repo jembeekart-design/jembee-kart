@@ -1,106 +1,157 @@
 'use client';
 
-import { useEffect, useState } from "react";
+import { useState, useEffect } from "react";
+import { doc, setDoc, getDoc } from "firebase/firestore";
+import { db } from "@/lib/firebase";
+
+type ThemeType = {
+  primary: string;
+  secondary: string;
+  accent: string;
+  bg: string;
+  text: string;
+};
+
+const defaultTheme: ThemeType = {
+  primary: "#6366f1",
+  secondary: "#22c55e",
+  accent: "#f59e0b",
+  bg: "#0f172a",
+  text: "#ffffff",
+};
 
 export default function ThemePage() {
-  const [themeColor, setThemeColor] = useState("#6366f1");
-  const [darkMode, setDarkMode] = useState(true);
+  const [theme, setTheme] = useState<ThemeType>(defaultTheme);
+  const [loading, setLoading] = useState(false);
 
+  // 🔥 Load theme from Firestore
   useEffect(() => {
-    const savedColor = localStorage.getItem("themeColor");
-    const savedMode = localStorage.getItem("darkMode");
+    const loadTheme = async () => {
+      const ref = doc(db, "settings", "theme");
+      const snap = await getDoc(ref);
 
-    if (savedColor) setThemeColor(savedColor);
-    if (savedMode) setDarkMode(savedMode === "true");
+      if (snap.exists()) {
+        const data = snap.data() as ThemeType;
+        setTheme({ ...defaultTheme, ...data });
+        applyTheme({ ...defaultTheme, ...data });
+      }
+    };
+
+    loadTheme();
   }, []);
 
-  const applyTheme = () => {
-    localStorage.setItem("themeColor", themeColor);
-    localStorage.setItem("darkMode", darkMode.toString());
+  // 🎨 Apply theme live preview
+  const applyTheme = (t: ThemeType) => {
+    document.documentElement.style.setProperty("--primary", t.primary);
+    document.documentElement.style.setProperty("--secondary", t.secondary);
+    document.documentElement.style.setProperty("--accent", t.accent);
+    document.documentElement.style.setProperty("--bg", t.bg);
+    document.documentElement.style.setProperty("--text", t.text);
+  };
 
-    // apply instantly
-    document.documentElement.style.setProperty(
-      "--primary",
-      themeColor
-    );
+  // 🔄 Update state + preview
+  const handleChange = (key: keyof ThemeType, value: string) => {
+    const updated = { ...theme, [key]: value };
+    setTheme(updated);
+    applyTheme(updated);
+  };
 
-    alert("Theme Updated 🚀");
+  // 💾 Save to Firestore
+  const saveTheme = async () => {
+    setLoading(true);
+
+    try {
+      await setDoc(doc(db, "settings", "theme"), {
+        ...theme,
+        updatedAt: new Date(),
+      });
+
+      alert("✅ Theme saved successfully");
+    } catch (err) {
+      console.error(err);
+      alert("❌ Failed to save theme");
+    }
+
+    setLoading(false);
   };
 
   return (
-    <div className="space-y-6 text-white">
-      {/* Title */}
-      <h1 className="text-3xl font-bold">🎨 Theme Settings</h1>
+    <div style={{ padding: 20 }}>
 
-      <div className="glass p-6 rounded-2xl space-y-5">
-        {/* Color Picker */}
-        <div>
-          <label className="text-sm opacity-70">
-            Primary Color
-          </label>
+      <h1 className="text-primary">🎨 Theme Settings (Admin)</h1>
+      <p className="text-muted">Customize full app theme</p>
 
+      {/* 🎨 COLOR PICKERS */}
+      <div className="glass card" style={{ marginTop: 20 }}>
+        
+        <div className="flex">
+          <label>Primary</label>
           <input
             type="color"
-            value={themeColor}
-            onChange={(e) => setThemeColor(e.target.value)}
-            className="w-20 h-10 mt-2 cursor-pointer"
+            value={theme.primary}
+            onChange={(e) => handleChange("primary", e.target.value)}
           />
-
-          <p className="text-sm mt-1 opacity-60">
-            Selected: {themeColor}
-          </p>
         </div>
 
-        {/* Dark Mode */}
-        <div className="flex items-center gap-3">
-          <label>Dark Mode</label>
-
-          <button
-            onClick={() => setDarkMode(!darkMode)}
-            className={`px-4 py-1 rounded-full text-sm ${
-              darkMode
-                ? "bg-green-500/30 text-green-400"
-                : "bg-gray-500/30 text-gray-300"
-            }`}
-          >
-            {darkMode ? "Enabled" : "Disabled"}
-          </button>
+        <div className="flex">
+          <label>Secondary</label>
+          <input
+            type="color"
+            value={theme.secondary}
+            onChange={(e) => handleChange("secondary", e.target.value)}
+          />
         </div>
 
-        {/* Preview */}
-        <div className="glass p-4 rounded-xl">
-          <p className="text-sm opacity-70 mb-2">
-            Preview:
-          </p>
-
-          <button
-            className="px-4 py-2 rounded-xl font-medium"
-            style={{
-              background: themeColor,
-              boxShadow: `0 0 20px ${themeColor}55`,
-            }}
-          >
-            Sample Button
-          </button>
+        <div className="flex">
+          <label>Accent</label>
+          <input
+            type="color"
+            value={theme.accent}
+            onChange={(e) => handleChange("accent", e.target.value)}
+          />
         </div>
 
-        {/* Save */}
-        <button
-          onClick={applyTheme}
-          className="px-6 py-2 rounded-xl font-medium"
-          style={{
-            background: themeColor,
-            boxShadow: `0 0 20px ${themeColor}55`,
-          }}
-        >
-          Save Theme
+        <div className="flex">
+          <label>Background</label>
+          <input
+            type="color"
+            value={theme.bg}
+            onChange={(e) => handleChange("bg", e.target.value)}
+          />
+        </div>
+
+        <div className="flex">
+          <label>Text</label>
+          <input
+            type="color"
+            value={theme.text}
+            onChange={(e) => handleChange("text", e.target.value)}
+          />
+        </div>
+
+      </div>
+
+      {/* 🔥 PREVIEW CARD */}
+      <div className="glass glow card" style={{ marginTop: 20 }}>
+        <h2>Live Preview</h2>
+        <p className="text-muted">This is how your app will look</p>
+
+        <button className="btn btn-primary">Primary Button</button>
+        <button className="btn btn-secondary" style={{ marginLeft: 10 }}>
+          Secondary
         </button>
       </div>
 
-      {/* Info */}
-      <div className="glass p-4 rounded-xl text-sm opacity-70">
-        This will change the theme across the entire admin panel instantly.
-      </div>
+      {/* 💾 SAVE BUTTON */}
+      <button
+        onClick={saveTheme}
+        disabled={loading}
+        className="btn btn-primary"
+        style={{ marginTop: 20 }}
+      >
+        {loading ? "Saving..." : "💾 Save Theme"}
+      </button>
+
     </div>
   );
 }
