@@ -2,113 +2,80 @@
 
 import { useState, useEffect } from "react";
 import { db } from "@/lib/firebase"; 
-import { collection, getDocs, deleteDoc, doc, updateDoc, addDoc, serverTimestamp } from "firebase/firestore";
-
-interface Product {
-  id: string;
-  name: string;
-  sku: string;
-  basePrice: number;
-  image: string;
-  margin: number;
-  finalPrice: number;
-}
+import { collection, getDocs, deleteDoc, doc, addDoc, serverTimestamp } from "firebase/firestore";
 
 export default function QikinkInventory() {
-  const [products, setProducts] = useState<Product[]>([]);
+  const [products, setProducts] = useState<any[]>([]);
   const [loading, setLoading] = useState(false);
-  const [productUrl, setProductUrl] = useState("");
+  
+  // Inputs for Real Product Data
+  const [pName, setPName] = useState("");
+  const [pPrice, setPPrice] = useState("");
+  const [pSku, setPSku] = useState("");
+  const [pImg, setPImg] = useState(""); // Image URL ke liye
 
   const loadData = async () => {
-    try {
-      const snap = await getDocs(collection(db, "products"));
-      setProducts(snap.docs.map(d => ({ id: d.id, ...d.data() } as Product)));
-    } catch (e) {
-      console.error("Firestore error:", e);
-    }
+    const snap = await getDocs(collection(db, "products"));
+    setProducts(snap.docs.map(d => ({ id: d.id, ...d.data() })));
   };
 
   useEffect(() => { loadData(); }, []);
 
-  // Is function ko dhyan se replace karein
-  const fetchByUrl = async () => {
-    if (!productUrl) return alert("Pehle URL paste karein!");
-    
-    setLoading(true); // "Processing..." shuru
-
+  const addProduct = async () => {
+    if (!pName || !pPrice) return alert("Product Name aur Price zaroori hai!");
+    setLoading(true);
     try {
-      // Chunki Store ID nahi hai, hum yahan template data use kar rahe hain
-      // Baad mein hum product scraping logic yahan daal sakte hain
-      const newProduct = {
-        name: "Qikink Custom T-Shirt",
-        sku: "QK-" + Math.floor(Math.random() * 10000),
-        basePrice: 399,
+      await addDoc(collection(db, "products"), {
+        name: pName,
+        sku: pSku || "QK-" + Math.floor(Math.random() * 1000),
+        basePrice: Number(pPrice),
         margin: 150,
-        finalPrice: 549,
-        image: "https://via.placeholder.com/150",
-        source: "manual_url",
+        finalPrice: Number(pPrice) + 150,
+        image: pImg || "https://via.placeholder.com/150",
         createdAt: serverTimestamp()
-      };
-
-      await addDoc(collection(db, "products"), newProduct);
-      
-      setProductUrl(""); // Input clear karein
-      alert("✅ Product successfully added to Firestore!");
-      await loadData();
-    } catch (error: any) {
-      console.error("Error:", error);
-      alert("❌ Error: " + error.message);
-    } finally {
-      setLoading(false); // "Processing..." hamesha band hoga
-    }
+      });
+      // Clear inputs
+      setPName(""); setPPrice(""); setPSku(""); setPImg("");
+      alert("✅ Product Store mein add ho gaya!");
+      loadData();
+    } catch (e) { alert("Error adding product"); }
+    finally { setLoading(false); }
   };
 
   return (
-    <div style={{ padding: '15px', maxWidth: '600px', margin: '0 auto', fontFamily: 'sans-serif' }}>
-      <div style={{ background: '#fff', padding: '20px', borderRadius: '15px', border: '1px solid #eee', marginBottom: '20px', textAlign: 'center' }}>
-         <h2 style={{ margin: '0 0 15px 0' }}>📦 Import Qikink</h2>
-         <input 
-            type="text" 
-            placeholder="Paste Product URL here..." 
-            value={productUrl}
-            onChange={(e) => setProductUrl(e.target.value)}
-            style={{ width: '100%', padding: '12px', borderRadius: '10px', border: '1px solid #ddd', marginBottom: '10px', boxSizing: 'border-box' }} 
-          />
-          <button 
-            onClick={fetchByUrl} 
-            disabled={loading}
-            style={{ 
-              width: '100%', 
-              padding: '12px', 
-              background: loading ? '#ccc' : '#6366f1', 
-              color: '#fff', 
-              border: 'none', 
-              borderRadius: '10px', 
-              fontWeight: 'bold',
-              cursor: loading ? 'not-allowed' : 'pointer'
-            }}
-          >
-            {loading ? "Processing..." : "Fetch Details"}
-          </button>
+    <div style={{ padding: '20px', maxWidth: '600px', margin: '0 auto', fontFamily: 'sans-serif' }}>
+      <div style={{ background: '#fff', padding: '20px', borderRadius: '15px', border: '1px solid #ddd', marginBottom: '20px', boxShadow: '0 4px 6px rgba(0,0,0,0.05)' }}>
+        <h3 style={{ marginTop: 0, color: '#444' }}>📦 Add Real Product from Qikink</h3>
+        
+        <p style={{ fontSize: '12px', color: '#888' }}>Dashboard se details dekh kar yahan bhariye:</p>
+        
+        <input placeholder="Product Name (e.g. Unisex Classic Crew T-Shirt)" value={pName} onChange={(e)=>setPName(e.target.value)} style={inputStyle} />
+        <input placeholder="Product Price (e.g. 191.60)" type="number" value={pPrice} onChange={(e)=>setPPrice(e.target.value)} style={inputStyle} />
+        <input placeholder="Product ID / SKU (e.g. 63917376)" value={pSku} onChange={(e)=>setPSku(e.target.value)} style={inputStyle} />
+        <input placeholder="Image URL (Dashboard se image link copy karein)" value={pImg} onChange={(e)=>setPImg(e.target.value)} style={inputStyle} />
+        
+        <button onClick={addProduct} disabled={loading} style={btnStyle}>
+          {loading ? "Adding..." : "Confirm & Add to Store"}
+        </button>
       </div>
 
-      {/* List Display */}
-      <div style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
+      <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
+        <h4 style={{ margin: '10px 0' }}>Current Store Inventory ({products.length})</h4>
         {products.map(p => (
-          <div key={p.id} style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', background: '#fff', padding: '15px', borderRadius: '12px', border: '1px solid #f0f0f0' }}>
-            <div>
-              <div style={{ fontWeight: 'bold' }}>{p.name}</div>
-              <div style={{ fontSize: '12px', color: '#888' }}>Base: ₹{p.basePrice} | Final: ₹{p.finalPrice}</div>
+          <div key={p.id} style={cardStyle}>
+            <img src={p.image} alt={p.name} style={{ width: '50px', height: '50px', borderRadius: '8px', objectFit: 'cover' }} />
+            <div style={{ flex: 1, marginLeft: '15px' }}>
+              <div style={{ fontWeight: 'bold', fontSize: '14px' }}>{p.name}</div>
+              <div style={{ fontSize: '12px', color: '#666' }}>SKU: {p.sku} | Customer Price: <b>₹{p.finalPrice}</b></div>
             </div>
-            <button 
-              onClick={async () => { await deleteDoc(doc(db, "products", p.id)); loadData(); }}
-              style={{ color: '#ff4444', border: 'none', background: 'none', cursor: 'pointer' }}
-            >
-              Delete
-            </button>
+            <button onClick={async () => { if(confirm("Delete?")) { await deleteDoc(doc(db, "products", p.id)); loadData(); } }} style={{ color: '#ff4444', border: 'none', background: 'none', cursor: 'pointer', fontSize: '18px' }}>🗑️</button>
           </div>
         ))}
       </div>
     </div>
   );
 }
+
+const inputStyle = { width: '100%', padding: '12px', marginBottom: '12px', borderRadius: '10px', border: '1px solid #ddd', boxSizing: 'border-box' as const };
+const btnStyle = { width: '100%', padding: '14px', background: '#4f46e5', color: '#fff', border: 'none', borderRadius: '10px', fontWeight: 'bold' as const, cursor: 'pointer', fontSize: '16px' };
+const cardStyle = { display: 'flex', alignItems: 'center', background: '#fff', padding: '12px', borderRadius: '15px', border: '1px solid #f0f0f0', boxShadow: '0 2px 4px rgba(0,0,0,0.02)' };
