@@ -5,24 +5,15 @@ export async function GET() {
   const CLIENT_SECRET = process.env.QIKINK_CLIENT_SECRET;
   const BASE_URL = "https://api.qikink.com";
 
-  console.log("🚀 START QIKINK SYNC");
-
-  // ✅ ENV CHECK
   if (!CLIENT_ID || !CLIENT_SECRET) {
-    console.log("❌ ENV MISSING");
     return NextResponse.json({
       success: false,
-      step: "ENV",
       error: "Missing ENV variables",
     });
   }
 
   try {
-    // =========================
-    // 🔑 STEP 1: TOKEN
-    // =========================
-    console.log("🔑 TOKEN REQUEST");
-
+    // 🔑 TOKEN
     const tokenRes = await fetch(`${BASE_URL}/api/token`, {
       method: "POST",
       headers: {
@@ -35,25 +26,19 @@ export async function GET() {
     });
 
     const tokenData = await tokenRes.json();
-    console.log("🔑 TOKEN RESPONSE:", tokenData);
 
-    if (!tokenRes.ok || !tokenData?.Accesstoken) {
+    if (!tokenData?.Accesstoken) {
       return NextResponse.json({
         success: false,
-        step: "TOKEN_FAILED",
-        error: "Token generation failed",
+        error: "Token failed",
         details: tokenData,
       });
     }
 
     const accessToken = tokenData.Accesstoken;
 
-    // =========================
-    // 📦 STEP 2: PRODUCTS (FIXED)
-    // =========================
-    console.log("📦 FETCH PRODUCTS");
-
-    const productRes = await fetch(`${BASE_URL}/api/product`, {
+    // ✅ ✅ CORRECT API HERE
+    const productRes = await fetch(`${BASE_URL}/api/products/list`, {
       method: "GET",
       headers: {
         ClientId: CLIENT_ID,
@@ -62,54 +47,25 @@ export async function GET() {
     });
 
     const productData = await productRes.json();
-    console.log("📦 PRODUCT RESPONSE:", productData);
+
+    console.log("🔥 FINAL PRODUCT DATA:", productData);
 
     if (!productRes.ok) {
       return NextResponse.json({
         success: false,
-        step: "PRODUCT_FAILED",
         error: "Product API failed",
         details: productData,
       });
     }
 
-    // =========================
-    // 🧠 STEP 3: SAFE EXTRACTION
-    // =========================
-    const items =
-      productData.products ||
-      productData.data ||
-      productData.items ||
-      [];
-
-    console.log("📦 TOTAL ITEMS:", items.length);
-
-    if (!Array.isArray(items) || items.length === 0) {
-      return NextResponse.json({
-        success: true,
-        step: "EMPTY",
-        message: "No products found in Qikink",
-        raw: productData,
-      });
-    }
-
-    // =========================
-    // ✅ FINAL RESPONSE
-    // =========================
     return NextResponse.json({
       success: true,
-      step: "SUCCESS",
-      totalProducts: items.length,
-      sample: items.slice(0, 2),
-      data: items,
+      data: productData,
     });
 
   } catch (err: any) {
-    console.error("❌ SERVER ERROR:", err);
-
     return NextResponse.json({
       success: false,
-      step: "CRASH",
       error: err.message,
     });
   }
