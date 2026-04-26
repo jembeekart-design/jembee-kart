@@ -4,6 +4,7 @@ import { useState, useEffect } from "react";
 
 export default function Home() {
   const [color, setColor] = useState("#6366f1");
+  const [loading, setLoading] = useState(false);
 
   useEffect(() => {
     const saved = localStorage.getItem("themeColor");
@@ -14,13 +15,9 @@ export default function Home() {
   }, []);
 
   const applyTheme = (newColor: string) => {
-    // 🎨 CSS variable change
     document.documentElement.style.setProperty("--primary", newColor);
-
-    // 💾 save
     localStorage.setItem("themeColor", newColor);
 
-    // 🔝 status bar color
     const meta = document.querySelector('meta[name="theme-color"]');
     if (meta) {
       meta.setAttribute("content", newColor);
@@ -32,9 +29,29 @@ export default function Home() {
     applyTheme(newColor);
   };
 
+  // 🔥 Qikink Order function
+  const createOrder = async () => {
+    try {
+      setLoading(true);
+
+      const res = await fetch("/api/qikink/order", {
+        method: "POST",
+      });
+
+      const data = await res.json();
+
+      alert(data.message || JSON.stringify(data));
+
+    } catch (err) {
+      alert("❌ Server connection fail ho gaya");
+    } finally {
+      setLoading(false);
+    }
+  };
+
   return (
     <div style={{ padding: 20 }}>
-      
+
       {/* 🔥 Glass Card */}
       <div className="glass glow" style={{ padding: 20 }}>
         <h1>🚀 JembeeKart Theme Test</h1>
@@ -65,7 +82,7 @@ export default function Home() {
           ))}
         </div>
 
-        {/* 🎛 Button */}
+        {/* 🎛 Theme Button */}
         <button
           style={{
             marginTop: 20,
@@ -80,6 +97,27 @@ export default function Home() {
         >
           Primary Button
         </button>
+
+        {/* 🔥 Qikink Order Button */}
+        <button
+          onClick={createOrder}
+          disabled={loading}
+          style={{
+            marginTop: 20,
+            marginLeft: 10,
+            padding: "10px 20px",
+            borderRadius: 10,
+            border: "none",
+            background: "#10b981",
+            color: "#fff",
+            cursor: "pointer",
+            boxShadow: "0 0 10px #10b981",
+            opacity: loading ? 0.6 : 1,
+          }}
+        >
+          {loading ? "Creating..." : "Create Qikink Order"}
+        </button>
+
       </div>
     </div>
   );
