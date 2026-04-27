@@ -7,52 +7,47 @@ export default function AdminPage() {
 
   const pages = [
     { name: "Dashboard", path: "/admin" },
-    { name: "Products", path: "/products" },
-    { name: "Import Qikink", path: "/products/import-qikink" },
-    { name: "Edit Product", path: "/products/edit/1" },
+    { name: "Products", path: "/admin/products" },
+    { name: "Import Qikink", path: "/admin/products/import-qikink" },
 
-    { name: "Orders", path: "/orders" },
-    { name: "Order Details", path: "/orders/1" },
-    { name: "Qikink Sync", path: "/orders/qikink-sync" },
+    { name: "Edit Product", path: "/admin/products/edit/1" },
+    { name: "Orders", path: "/admin/orders" },
+    { name: "Order Details", path: "/admin/orders/1" },
 
-    { name: "Categories", path: "/categories" },
+    { name: "Qikink Sync", path: "/admin/orders/qikink-sync" },
+    { name: "Categories", path: "/admin/categories" },
+    { name: "Festival Banner", path: "/admin/marketing/festival-banner" },
 
-    { name: "Festival Banner", path: "/marketing/festival-banner" },
-    { name: "Add Banner", path: "/marketing/festival-banner/add" },
-    { name: "Edit Banner", path: "/marketing/festival-banner/edit/1" },
+    { name: "Add Banner", path: "/admin/marketing/festival-banner/add" },
+    { name: "Edit Banner", path: "/admin/marketing/festival-banner/edit/1" },
+    { name: "Flash Sale", path: "/admin/marketing/flash-sale" },
 
-    { name: "Flash Sale", path: "/marketing/flash-sale" },
-    { name: "Add Flash Sale", path: "/marketing/flash-sale/add" },
+    { name: "Add Flash Sale", path: "/admin/marketing/flash-sale/add" },
+    { name: "Offers", path: "/admin/marketing/offers" },
+    { name: "Theme Settings", path: "/admin/theme" },
 
-    { name: "Offers", path: "/marketing/offers" },
+    { name: "Theme Colors", path: "/admin/theme/colors" },
+    { name: "Notifications", path: "/admin/notifications" },
+    { name: "Settings", path: "/admin/settings" },
 
-    { name: "Theme Settings", path: "/theme" },
-    { name: "Theme Colors", path: "/theme/colors" },
-
-    { name: "Notifications", path: "/notifications" },
-
-    { name: "Settings", path: "/settings" },
-    { name: "Qikink Settings", path: "/settings/qikink" },
-
+    { name: "Qikink Settings", path: "/admin/settings/qikink" },
     { name: "Login Page", path: "/login" },
   ];
 
   return (
-    <div className="admin-container">
+    <div>
 
-      {/* 🔥 Header */}
-      <div className="glass card header">
+      <div className="glass card glow">
         <h1 className="text-primary">⚙️ Admin Panel</h1>
-        <p className="text-muted">Manage your entire app from here</p>
+        <p className="text-muted">Manage your entire app</p>
       </div>
 
-      {/* 🔥 Grid */}
-      <div className="grid">
+      <div className="admin-grid">
         {pages.map((item, i) => (
           <button
             key={i}
-            onClick={() => router.push(`/admin${item.path}`)}
-            className="glass button-card"
+            className="admin-btn"
+            onClick={() => router.push(item.path)}
           >
             {item.name}
           </button>
