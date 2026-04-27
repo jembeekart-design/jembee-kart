@@ -34,8 +34,16 @@ export default function ThemePage() {
         const snap = await getDoc(ref);
 
         if (snap.exists()) {
-          const data = snap.data() as ThemeType;
-          const merged = { ...defaultTheme, ...data };
+          const data = snap.data() as Partial<ThemeType>;
+
+          const merged: ThemeType = {
+            primary: data.primary || defaultTheme.primary,
+            secondary: data.secondary || defaultTheme.secondary,
+            accent: data.accent || defaultTheme.accent,
+            bg: data.bg || defaultTheme.bg,
+            text: data.text || defaultTheme.text,
+            statusBar: data.statusBar || data.primary || defaultTheme.primary,
+          };
 
           setTheme(merged);
           applyTheme(merged);
@@ -56,7 +64,7 @@ export default function ThemePage() {
     document.documentElement.style.setProperty("--bg", t.bg);
     document.documentElement.style.setProperty("--text", t.text);
 
-    // 🔥 STATUS BAR AUTO UPDATE
+    // 🔝 STATUS BAR UPDATE
     let meta = document.querySelector(
       'meta[name="theme-color"]'
     ) as HTMLMetaElement | null;
@@ -72,10 +80,10 @@ export default function ThemePage() {
 
   // 🔄 Update state + preview
   const handleChange = (key: keyof ThemeType, value: string) => {
-    const updated = {
+    const updated: ThemeType = {
       ...theme,
       [key]: value,
-      statusBar: key === "primary" ? value : theme.statusBar, // 🔥 sync with primary
+      statusBar: key === "primary" ? value : theme.statusBar,
     };
 
     setTheme(updated);
@@ -88,7 +96,12 @@ export default function ThemePage() {
 
     try {
       await setDoc(doc(db, "settings", "theme"), {
-        ...theme,
+        primary: theme.primary,
+        secondary: theme.secondary,
+        accent: theme.accent,
+        bg: theme.bg,
+        text: theme.text,
+        statusBar: theme.statusBar || theme.primary,
         updatedAt: new Date(),
       });
 
