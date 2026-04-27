@@ -40,41 +40,23 @@ export default function Home() {
 
       {/* 🔥 Glass Card */}
       <div className="glass glow" style={{ padding: 20 }}>
-        <h1>🚀 JembeeKart Theme Test</h1>
-        <p>Theme controlled from Admin panel 👇</p>
+        <h1 className="text-primary">🚀 JembeeKart Theme Test</h1>
+        <p className="text-muted">Theme controlled from Admin panel 👇</p>
 
         {/* 🎛 Primary Button */}
         <button
-          style={{
-            marginTop: 20,
-            padding: "10px 20px",
-            borderRadius: 10,
-            border: "none",
-            background: "var(--primary)",
-            color: "#fff",
-            cursor: "pointer",
-            boxShadow: "0 0 15px var(--primary)",
-          }}
+          className="btn btn-primary"
+          style={{ marginTop: 20 }}
         >
           Primary Button
         </button>
 
-        {/* 🔥 Qikink Order Button */}
+        {/* 🔥 Secondary Button (Theme Controlled) */}
         <button
           onClick={createOrder}
           disabled={loading}
-          style={{
-            marginTop: 20,
-            marginLeft: 10,
-            padding: "10px 20px",
-            borderRadius: 10,
-            border: "none",
-            background: "#10b981",
-            color: "#fff",
-            cursor: loading ? "not-allowed" : "pointer",
-            boxShadow: "0 0 10px #10b981",
-            opacity: loading ? 0.6 : 1,
-          }}
+          className="btn btn-secondary"
+          style={{ marginTop: 20, marginLeft: 10 }}
         >
           {loading ? "Creating..." : "Create Qikink Order"}
         </button>
