@@ -2,35 +2,26 @@
    🌍 ROOT THEME VARIABLES
 ========================= */
 :root {
-  /* 🎨 COLORS */
   --primary: #6366f1;
   --secondary: #22c55e;
   --accent: #f59e0b;
   --danger: #ef4444;
 
-  /* 🌑 BACKGROUND */
   --bg: #0f172a;
   --card-bg: rgba(255,255,255,0.05);
 
-  /* ✍ TEXT */
   --text: #ffffff;
   --text-muted: rgba(255,255,255,0.6);
 
-  /* 🌈 GLOW */
   --glow: 0 0 20px var(--primary);
   --glow-strong: 0 0 40px var(--primary);
 
-  /* 🧊 GLASS */
   --glass-blur: blur(20px);
   --glass-border: rgba(255,255,255,0.1);
 
-  /* 🟣 RADIUS */
   --radius: 16px;
-
-  /* ⚡ TRANSITION */
   --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 
-  /* 🌙 SYSTEM */
   color-scheme: dark;
 }
 
@@ -53,7 +44,6 @@ html, body {
   overscroll-behavior: none;
 }
 
-/* 📱 SAFE AREA */
 body {
   padding-bottom: env(safe-area-inset-bottom);
 }
@@ -127,6 +117,7 @@ button {
 .btn:hover {
   transform: translateY(-2px) scale(1.02);
   opacity: 0.9;
+  box-shadow: 0 0 20px var(--accent); /* 🔥 accent hover */
 }
 
 button:disabled {
@@ -145,6 +136,10 @@ button:disabled {
   color: var(--text-muted);
 }
 
+.text-accent {
+  color: var(--accent);
+}
+
 /* =========================
    🧱 CARD SYSTEM
 ========================= */
@@ -153,6 +148,29 @@ button:disabled {
   border-radius: var(--radius);
   background: var(--card-bg);
   border: 1px solid var(--glass-border);
+
+  position: relative;   /* 🔥 required */
+  overflow: hidden;     /* 🔥 required */
+}
+
+/* 🔥 FIXED BORDER EFFECT (IMPORTANT) */
+.card::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  padding: 1px;
+  background: linear-gradient(120deg, transparent, var(--accent), transparent);
+
+  -webkit-mask: 
+    linear-gradient(#000 0 0) content-box, 
+    linear-gradient(#000 0 0);
+  -webkit-mask-composite: xor;
+  mask-composite: exclude;
+
+  opacity: 0.4;
+
+  pointer-events: none; /* ✅ 🔥 BUTTON FIX */
 }
 
 /* =========================
@@ -201,8 +219,8 @@ input, textarea {
 input:focus,
 textarea:focus {
   outline: none;
-  border-color: var(--primary);
-  box-shadow: 0 0 8px var(--primary);
+  border-color: var(--accent); /* 🔥 accent focus */
+  box-shadow: 0 0 10px var(--accent);
 }
 
 /* =========================
@@ -242,58 +260,13 @@ img {
   gap: 10px;
 }
 
-/* =========================================
-   🔥 NEW: ACCENT SYSTEM (ADDED ONLY)
-========================================= */
-
-/* Accent Glow */
+/* =========================
+   🔥 ACCENT EXTRA
+========================= */
 .accent-glow {
   box-shadow: 0 0 12px var(--accent);
 }
 
-/* Input Accent Focus */
-input:focus,
-textarea:focus {
-  border-color: var(--accent);
-  box-shadow: 0 0 10px var(--accent);
-}
-
-/* Label Hover Accent */
-label {
-  transition: var(--transition);
-}
-
 .flex:hover label {
   color: var(--accent);
-}
-
-/* Button Accent Hover */
-.btn:hover {
-  box-shadow: 0 0 20px var(--accent);
-}
-
-/* Accent Text */
-.text-accent {
-  color: var(--accent);
-}
-
-/* Premium Glass Border Effect */
-.card {
-  position: relative;
-  overflow: hidden;
-}
-
-.card::before {
-  content: "";
-  position: absolute;
-  inset: 0;
-  border-radius: inherit;
-  padding: 1px;
-  background: linear-gradient(120deg, transparent, var(--accent), transparent);
-  -webkit-mask: 
-    linear-gradient(#000 0 0) content-box, 
-    linear-gradient(#000 0 0);
-  -webkit-mask-composite: xor;
-  mask-composite: exclude;
-  opacity: 0.4;
 }
