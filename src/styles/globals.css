@@ -50,8 +50,6 @@ html, body {
   min-height: 100dvh;
   transition: var(--transition);
   font-family: sans-serif;
-
-  /* 🔥 mobile scroll fix */
   overscroll-behavior: none;
 }
 
@@ -242,4 +240,60 @@ img {
 .flex {
   display: flex;
   gap: 10px;
+}
+
+/* =========================================
+   🔥 NEW: ACCENT SYSTEM (ADDED ONLY)
+========================================= */
+
+/* Accent Glow */
+.accent-glow {
+  box-shadow: 0 0 12px var(--accent);
+}
+
+/* Input Accent Focus */
+input:focus,
+textarea:focus {
+  border-color: var(--accent);
+  box-shadow: 0 0 10px var(--accent);
+}
+
+/* Label Hover Accent */
+label {
+  transition: var(--transition);
+}
+
+.flex:hover label {
+  color: var(--accent);
+}
+
+/* Button Accent Hover */
+.btn:hover {
+  box-shadow: 0 0 20px var(--accent);
+}
+
+/* Accent Text */
+.text-accent {
+  color: var(--accent);
+}
+
+/* Premium Glass Border Effect */
+.card {
+  position: relative;
+  overflow: hidden;
+}
+
+.card::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  padding: 1px;
+  background: linear-gradient(120deg, transparent, var(--accent), transparent);
+  -webkit-mask: 
+    linear-gradient(#000 0 0) content-box, 
+    linear-gradient(#000 0 0);
+  -webkit-mask-composite: xor;
+  mask-composite: exclude;
+  opacity: 0.4;
 }
