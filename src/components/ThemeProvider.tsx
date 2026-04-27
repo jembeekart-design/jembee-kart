@@ -4,7 +4,15 @@ import { useEffect } from "react";
 import { doc, onSnapshot } from "firebase/firestore";
 import { db } from "@/lib/firebase";
 
-const DEFAULT_THEME = {
+type ThemeType = {
+  primary: string;
+  secondary: string;
+  accent: string;
+  bg: string;
+  text: string;
+};
+
+const DEFAULT_THEME: ThemeType = {
   primary: "#6366f1",
   secondary: "#22c55e",
   accent: "#f59e0b",
@@ -18,13 +26,15 @@ export default function ThemeProvider({
   children: React.ReactNode;
 }) {
 
-  // 🎨 APPLY FULL THEME
-  const applyTheme = (theme: any) => {
-    Object.entries(theme).forEach(([key, value]) => {
-      document.documentElement.style.setProperty(`--${key}`, value as string);
-    });
+  // 🎨 SAFE APPLY FUNCTION
+  const applyTheme = (theme: ThemeType) => {
+    document.documentElement.style.setProperty("--primary", theme.primary);
+    document.documentElement.style.setProperty("--secondary", theme.secondary);
+    document.documentElement.style.setProperty("--accent", theme.accent);
+    document.documentElement.style.setProperty("--bg", theme.bg);
+    document.documentElement.style.setProperty("--text", theme.text);
 
-    // 🔝 STATUS BAR COLOR
+    // 🔝 Status bar
     let meta = document.querySelector('meta[name="theme-color"]') as HTMLMetaElement | null;
 
     if (!meta) {
@@ -33,18 +43,18 @@ export default function ThemeProvider({
       document.head.appendChild(meta);
     }
 
-    meta.content = theme.primary || DEFAULT_THEME.primary;
+    meta.content = theme.primary;
   };
 
   useEffect(() => {
 
-    // ⚡ STEP 1: LocalStorage instant load
+    // ⚡ STEP 1: LocalStorage (instant, no flicker)
     const cached = localStorage.getItem("theme");
 
     if (cached) {
       try {
         const parsed = JSON.parse(cached);
-        applyTheme(parsed);
+        applyTheme({ ...DEFAULT_THEME, ...parsed });
       } catch {
         applyTheme(DEFAULT_THEME);
       }
@@ -52,24 +62,26 @@ export default function ThemeProvider({
       applyTheme(DEFAULT_THEME);
     }
 
-    // 🔥 STEP 2: Firestore realtime sync
+    // 🔥 STEP 2: Firestore realtime
     const ref = doc(db, "settings", "theme");
 
     const unsubscribe = onSnapshot(ref, (snap) => {
       if (snap.exists()) {
         const data = snap.data();
 
-        const theme = {
-          ...DEFAULT_THEME,
-          ...data,
+        const theme: ThemeType = {
+          primary: data.primary || DEFAULT_THEME.primary,
+          secondary: data.secondary || DEFAULT_THEME.secondary,
+          accent: data.accent || DEFAULT_THEME.accent,
+          bg: data.bg || DEFAULT_THEME.bg,
+          text: data.text || DEFAULT_THEME.text,
         };
 
         applyTheme(theme);
 
-        // 💾 cache update
+        // 💾 cache
         localStorage.setItem("theme", JSON.stringify(theme));
       } else {
-        console.warn("⚠️ Theme doc missing");
         applyTheme(DEFAULT_THEME);
       }
     });
