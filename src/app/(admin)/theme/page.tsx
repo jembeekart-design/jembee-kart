@@ -10,6 +10,7 @@ type ThemeType = {
   accent: string;
   bg: string;
   text: string;
+  statusBar?: string; // 🔥 internal use only
 };
 
 const defaultTheme: ThemeType = {
@@ -18,6 +19,7 @@ const defaultTheme: ThemeType = {
   accent: "#f59e0b",
   bg: "#0f172a",
   text: "#ffffff",
+  statusBar: "#6366f1",
 };
 
 export default function ThemePage() {
@@ -27,31 +29,55 @@ export default function ThemePage() {
   // 🔥 Load theme from Firestore
   useEffect(() => {
     const loadTheme = async () => {
-      const ref = doc(db, "settings", "theme");
-      const snap = await getDoc(ref);
+      try {
+        const ref = doc(db, "settings", "theme");
+        const snap = await getDoc(ref);
 
-      if (snap.exists()) {
-        const data = snap.data() as ThemeType;
-        setTheme({ ...defaultTheme, ...data });
-        applyTheme({ ...defaultTheme, ...data });
+        if (snap.exists()) {
+          const data = snap.data() as ThemeType;
+          const merged = { ...defaultTheme, ...data };
+
+          setTheme(merged);
+          applyTheme(merged);
+        }
+      } catch (err) {
+        console.error("Theme load error:", err);
       }
     };
 
     loadTheme();
   }, []);
 
-  // 🎨 Apply theme live preview
+  // 🎨 Apply theme (LIVE PREVIEW + STATUS BAR)
   const applyTheme = (t: ThemeType) => {
     document.documentElement.style.setProperty("--primary", t.primary);
     document.documentElement.style.setProperty("--secondary", t.secondary);
     document.documentElement.style.setProperty("--accent", t.accent);
     document.documentElement.style.setProperty("--bg", t.bg);
     document.documentElement.style.setProperty("--text", t.text);
+
+    // 🔥 STATUS BAR AUTO UPDATE
+    let meta = document.querySelector(
+      'meta[name="theme-color"]'
+    ) as HTMLMetaElement | null;
+
+    if (!meta) {
+      meta = document.createElement("meta");
+      meta.name = "theme-color";
+      document.head.appendChild(meta);
+    }
+
+    meta.content = t.statusBar || t.primary;
   };
 
   // 🔄 Update state + preview
   const handleChange = (key: keyof ThemeType, value: string) => {
-    const updated = { ...theme, [key]: value };
+    const updated = {
+      ...theme,
+      [key]: value,
+      statusBar: key === "primary" ? value : theme.statusBar, // 🔥 sync with primary
+    };
+
     setTheme(updated);
     applyTheme(updated);
   };
