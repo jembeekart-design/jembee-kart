@@ -10,14 +10,14 @@ export default function AdminLayout({
   return (
     <div className="admin-root bg-[var(--bg)]">
 
-      {/* 🎭 BACKGROUND GLOW */}
+      {/* 🌈 BACKGROUND GLOW */}
       <div className="fixed inset-0 pointer-events-none z-0">
         <div className="absolute top-[-10%] left-[-10%] w-[50%] h-[50%] bg-[var(--primary)] opacity-[0.05] blur-[120px]" />
         <div className="absolute bottom-[-10%] right-[-10%] w-[40%] h-[40%] bg-[var(--accent)] opacity-[0.05] blur-[100px]" />
       </div>
 
-      {/* ⚡ MAIN CONTENT (FULL WIDTH) */}
-      <div className="admin-main w-full relative z-10">
+      {/* MAIN */}
+      <div className="admin-main relative z-10">
 
         {/* HEADER */}
         <Header />
