@@ -21,51 +21,73 @@ export default function Header({
     router.push("/login");
   };
 
-  const changeColor = (color: string) => {
-    setThemeColor(color);
-    localStorage.setItem("themeColor", color);
-    setShowPicker(false); // 🔥 auto close
-  };
-
-  const toggleDark = () => {
-    const newMode = !darkMode;
-    setDarkMode(newMode);
-    localStorage.setItem("darkMode", newMode.toString());
-  };
-
   return (
-    <header className="glass flex items-center justify-between px-4 py-3 sticky top-0 z-50">
-
+    <header
+      className="glass"
+      style={{
+        display: "flex",
+        alignItems: "center",
+        justifyContent: "space-between",
+        padding: "10px 12px",
+        position: "sticky",
+        top: 0,
+        zIndex: 50,
+      }}
+    >
       {/* LEFT */}
-      <h2 className="text-base sm:text-lg font-semibold">
-        Welcome Admin 👋
+      <h2 style={{ fontSize: "14px", fontWeight: 600 }}>
+        Welcome 👋
       </h2>
 
       {/* RIGHT */}
-      <div className="flex items-center gap-2 sm:gap-4">
-
-        {/* 🎨 THEME COLOR */}
-        <div className="relative">
-          <button
+      <div
+        style={{
+          display: "flex",
+          alignItems: "center",
+          gap: "8px",
+        }}
+      >
+        {/* 🎨 COLOR DOT */}
+        <div style={{ position: "relative" }}>
+          <div
             onClick={() => setShowPicker(!showPicker)}
-            className="w-8 h-8 rounded-full border border-white/20"
-            style={{ background: themeColor }}
+            style={{
+              width: "22px",
+              height: "22px",
+              borderRadius: "50%",
+              background: themeColor,
+              border: "1px solid rgba(255,255,255,0.2)",
+              cursor: "pointer",
+            }}
           />
 
           {showPicker && (
-            <div className="absolute right-0 mt-2 glass p-2 rounded-xl flex gap-2 shadow-lg">
-              {[
-                "#6366f1",
-                "#22c55e",
-                "#ef4444",
-                "#f59e0b",
-                "#0ea5e9",
-              ].map((color) => (
+            <div
+              className="glass"
+              style={{
+                position: "absolute",
+                right: 0,
+                marginTop: "6px",
+                padding: "6px",
+                borderRadius: "10px",
+                display: "flex",
+                gap: "6px",
+              }}
+            >
+              {["#6366f1", "#22c55e", "#ef4444", "#f59e0b"].map((c) => (
                 <div
-                  key={color}
-                  onClick={() => changeColor(color)}
-                  className="w-6 h-6 rounded-full cursor-pointer hover:scale-110 transition"
-                  style={{ background: color }}
+                  key={c}
+                  onClick={() => {
+                    setThemeColor(c);
+                    setShowPicker(false);
+                  }}
+                  style={{
+                    width: "18px",
+                    height: "18px",
+                    borderRadius: "50%",
+                    background: c,
+                    cursor: "pointer",
+                  }}
                 />
               ))}
             </div>
@@ -74,36 +96,52 @@ export default function Header({
 
         {/* 🌙 DARK MODE */}
         <button
-          onClick={toggleDark}
-          className="px-2 sm:px-3 py-1 rounded-lg text-xs sm:text-sm"
+          onClick={() => setDarkMode(!darkMode)}
           style={{
+            fontSize: "14px",
+            padding: "4px 6px",
+            borderRadius: "6px",
             border: `1px solid ${themeColor}`,
             color: themeColor,
+            background: "transparent",
           }}
         >
           {darkMode ? "🌙" : "☀️"}
         </button>
 
         {/* 🔔 NOTIFICATION */}
-        <button
-          className="relative text-lg hover:scale-110 transition"
-          onClick={() => alert("No new notifications")}
-        >
-          🔔
-          {/* Badge */}
-          <span className="absolute -top-1 -right-1 bg-red-500 text-white text-[10px] px-1 rounded-full">
+        <div style={{ position: "relative" }}>
+          <span style={{ fontSize: "16px" }}>🔔</span>
+          <span
+            style={{
+              position: "absolute",
+              top: "-4px",
+              right: "-6px",
+              fontSize: "9px",
+              background: "red",
+              color: "#fff",
+              borderRadius: "50%",
+              padding: "1px 4px",
+            }}
+          >
             3
           </span>
-        </button>
+        </div>
 
         {/* 🚪 LOGOUT */}
         <button
           onClick={handleLogout}
-          className="px-2 sm:px-3 py-1 rounded-lg text-xs sm:text-sm bg-red-500/20 text-red-400 hover:bg-red-500/30 transition"
+          style={{
+            fontSize: "12px",
+            padding: "4px 8px",
+            borderRadius: "6px",
+            background: "rgba(255,0,0,0.15)",
+            color: "#ff4d4f",
+            border: "none",
+          }}
         >
           Logout
         </button>
-
       </div>
     </header>
   );
