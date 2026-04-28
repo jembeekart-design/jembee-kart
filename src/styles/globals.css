@@ -338,3 +338,57 @@ img {
 .flex:hover label {
   color: var(--accent);
 }
+
+/* =========================
+   🔥 ICON GRID (BROWSER STYLE)
+========================= */
+
+.admin-grid-icon {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(90px, 1fr));
+  gap: 20px;
+  margin-top: 20px;
+}
+
+/* TILE */
+.admin-tile {
+  padding: 15px 10px;
+  text-align: center;
+  border-radius: var(--radius);
+  cursor: pointer;
+  transition: var(--transition);
+}
+
+/* ICON */
+.admin-icon {
+  font-size: 28px;
+  margin-bottom: 8px;
+}
+
+/* TEXT */
+.admin-label {
+  font-size: 12px;
+  color: var(--text);
+  opacity: 0.9;
+}
+
+/* HOVER EFFECT */
+.admin-tile:hover {
+  transform: translateY(-5px) scale(1.05);
+  box-shadow: 0 0 20px var(--primary);
+}
+
+/* ACTIVE PRESS */
+.admin-tile:active {
+  transform: scale(0.95);
+}
+
+/* =========================
+   📱 MOBILE PERFECT
+========================= */
+
+@media (max-width: 768px) {
+  .admin-grid-icon {
+    grid-template-columns: repeat(4, 1fr);
+  }
+}
