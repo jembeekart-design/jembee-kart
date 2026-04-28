@@ -414,3 +414,25 @@ img {
     grid-template-columns: repeat(4, 1fr);
   }
 }
+
+/* 🔥 SCROLL SYSTEM FIX (MOST IMPORTANT) */
+
+html, body {
+  height: 100%;
+  overflow: hidden; /* ✅ body scroll band */
+}
+
+.admin-root {
+  height: 100vh; /* ✅ full screen lock */
+  overflow: hidden;
+}
+
+.admin-main {
+  height: 100vh; /* ✅ container fix */
+}
+
+.admin-scroll {
+  flex: 1;
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch; /* ✅ smooth mobile scroll */
+}
