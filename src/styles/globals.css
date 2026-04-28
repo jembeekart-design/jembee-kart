@@ -3,12 +3,15 @@
 ========================= */
 
 .admin-root {
-  display: block; /* 🔥 FIX */
+  display: block;
   min-height: 100vh;
   position: relative;
+  width: 100%;
+  max-width: 100%;
+  overflow-x: hidden;
 }
 
-/* Sidebar fix (hidden only, removed नहीं) */
+/* Sidebar hidden (remove नहीं किया) */
 .sidebar {
   width: 240px;
   min-width: 240px;
@@ -16,30 +19,32 @@
   position: sticky;
   top: 0;
   z-index: 20;
-
-  display: none !important; /* 🔥 hide only */
+  display: none !important;
 }
 
-/* Main fix */
+/* MAIN */
 .admin-main {
-  flex: 1;
+  width: 100%;
+  max-width: 100%;
   display: flex;
   flex-direction: column;
   min-width: 0;
   z-index: 10;
-  width: 100%; /* 🔥 FIX */
+  overflow-x: hidden;
 }
 
-/* Scroll area */
+/* SCROLL AREA */
 .admin-scroll {
   flex: 1;
   overflow-y: auto;
-  padding: 16px; /* 🔥 FIX */
+  overflow-x: hidden;
+  padding: 16px;
   width: 100%;
+  max-width: 100%;
   box-sizing: border-box;
 }
 
-/* Glass guardian */
+/* GLASS GUARDIAN */
 .glass-guardian {
   background: var(--card-bg);
   backdrop-filter: blur(20px);
@@ -70,7 +75,7 @@
   --glass-border: rgba(255,255,255,0.1);
 
   --radius: 16px;
-  --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  --transition: all 0.3s ease;
 
   color-scheme: dark;
 }
@@ -85,19 +90,20 @@ html {
 }
 
 html, body {
+  width: 100%;
+  max-width: 100%;
+  overflow-x: hidden;
   background: var(--bg);
   color: var(--text);
   margin: 0;
   padding: 0;
   min-height: 100dvh;
-  transition: var(--transition);
   font-family: sans-serif;
   overscroll-behavior: none;
 }
 
 body {
   padding-bottom: env(safe-area-inset-bottom);
-  overflow-x: hidden;
 }
 
 /* =========================
@@ -111,9 +117,10 @@ body {
   border: 1px solid var(--glass-border);
   transition: var(--transition);
   will-change: transform;
-
   position: relative;
   z-index: 1;
+  width: 100%;
+  box-sizing: border-box;
 }
 
 .glass * {
@@ -214,13 +221,13 @@ button:disabled {
   border-radius: var(--radius);
   background: var(--card-bg);
   border: 1px solid var(--glass-border);
-
   position: relative;
   overflow: hidden;
   width: 100%;
+  box-sizing: border-box;
 }
 
-/* Border glow fix */
+/* BORDER EFFECT */
 .card::before {
   content: "";
   position: absolute;
@@ -235,7 +242,7 @@ button:disabled {
   -webkit-mask-composite: xor;
   mask-composite: exclude;
 
-  opacity: 0.4;
+  opacity: 0.3;
   pointer-events: none;
 }
 
@@ -266,7 +273,7 @@ a {
 ========================= */
 
 ::-webkit-scrollbar {
-  width: 6px;
+  width: 5px;
 }
 
 ::-webkit-scrollbar-thumb {
@@ -284,7 +291,6 @@ input, textarea {
   color: var(--text);
   border-radius: var(--radius);
   padding: 10px;
-  pointer-events: auto;
 }
 
 input:focus,
@@ -309,6 +315,7 @@ textarea:focus {
 
 * {
   -webkit-tap-highlight-color: transparent;
+  box-sizing: border-box; /* 🔥 GLOBAL FIX */
 }
 
 /* =========================
@@ -348,45 +355,54 @@ img {
 }
 
 /* =========================
-   🔥 ICON GRID
+   🔥 ICON GRID (FINAL)
 ========================= */
 
 .admin-grid-icon {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(85px, 1fr));
-  gap: 16px;
+  grid-template-columns: repeat(auto-fit, minmax(80px, 1fr));
+  gap: 14px;
   margin-top: 20px;
+  width: 100%;
 }
 
+/* TILE */
 .admin-tile {
-  padding: 14px 8px;
+  padding: 12px 6px;
   text-align: center;
-  border-radius: var(--radius);
+  border-radius: 14px;
   cursor: pointer;
   transition: var(--transition);
 
   backdrop-filter: blur(12px);
   background: rgba(255,255,255,0.05);
   border: 1px solid var(--glass-border);
+
+  width: 100%;
 }
 
+/* ICON */
 .admin-icon {
-  font-size: 26px;
-  margin-bottom: 6px;
+  font-size: 24px;
+  margin-bottom: 5px;
 }
 
+/* TEXT */
 .admin-label {
   font-size: 11px;
   color: var(--text);
+  opacity: 0.9;
 }
 
+/* HOVER */
 .admin-tile:hover {
-  transform: translateY(-4px);
-  box-shadow: 0 0 15px var(--primary);
+  transform: translateY(-3px);
+  box-shadow: 0 0 10px var(--primary);
 }
 
+/* CLICK */
 .admin-tile:active {
-  transform: scale(0.95);
+  transform: scale(0.96);
 }
 
 /* =========================
