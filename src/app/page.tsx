@@ -1,4 +1,3 @@
-cat > src/app/page.tsx << 'EOF'
 export default function Home() {
   return (
     <main style={{
@@ -22,4 +21,3 @@ export default function Home() {
     </main>
   )
 }
-EOF
