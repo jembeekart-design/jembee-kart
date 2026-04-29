@@ -1,0 +1,62 @@
+{
+  "root": true,
+
+  "extends": [
+    "next/core-web-vitals",
+    "eslint:recommended",
+    "plugin:@typescript-eslint/recommended"
+  ],
+
+  "parser": "@typescript-eslint/parser",
+
+  "plugins": [
+    "@typescript-eslint",
+    "react",
+    "react-hooks"
+  ],
+
+  "rules": {
+    /* =========================
+       GENERAL
+    ========================= */
+    "no-console": ["warn"],
+    "no-debugger": "error",
+
+    /* =========================
+       TYPESCRIPT
+    ========================= */
+    "@typescript-eslint/no-unused-vars": ["error"],
+    "@typescript-eslint/no-explicit-any": "warn",
+    "@typescript-eslint/consistent-type-imports": "error",
+
+    /* =========================
+       REACT
+    ========================= */
+    "react/react-in-jsx-scope": "off",
+    "react/jsx-uses-react": "off",
+
+    /* =========================
+       HOOKS
+    ========================= */
+    "react-hooks/rules-of-hooks": "error",
+    "react-hooks/exhaustive-deps": "warn",
+
+    /* =========================
+       IMPORTS (CLEAN ARCH)
+    ========================= */
+    "no-restricted-imports": [
+      "error",
+      {
+        "patterns": [
+          "../*"
+        ]
+      }
+    ]
+  },
+
+  "settings": {
+    "react": {
+      "version": "detect"
+    }
+  }
+}

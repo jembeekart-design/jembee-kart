@@ -1,0 +1,89 @@
+{
+  "name": "jembeekart",
+  "version": "1.0.0",
+  "private": true,
+  "description": "JembeeKart - Enterprise E-commerce (Glass UI + Admin Theme Control + Qikink Ready)",
+  "author": "MD Alim Ansari",
+  "license": "MIT",
+
+  "scripts": {
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start",
+
+    "lint": "eslint . --ext .ts,.tsx",
+    "lint:fix": "eslint . --fix",
+
+    "format": "prettier --write .",
+
+    "type-check": "tsc --noEmit",
+
+    "prepare": "husky install",
+
+    "test": "jest",
+    "test:watch": "jest --watch",
+
+    "clean": "rm -rf .next node_modules"
+  },
+
+  "dependencies": {
+    "next": "14.2.0",
+    "react": "18.2.0",
+    "react-dom": "18.2.0",
+
+    "firebase": "^10.12.0",
+    "axios": "^1.6.0",
+
+    "zustand": "^4.5.2",
+
+    "zod": "^3.23.8",
+
+    "clsx": "^2.1.1",
+    "lodash": "^4.17.21",
+
+    "uuid": "^9.0.1",
+    "date-fns": "^3.6.0",
+
+    "framer-motion": "^11.2.10",
+    "react-icons": "^5.2.1",
+    "lucide-react": "^0.400.0",
+
+    "tailwindcss": "^3.4.3",
+    "postcss": "^8.4.38",
+    "autoprefixer": "^10.4.19",
+    "tailwind-merge": "^2.3.0",
+
+    "socket.io-client": "^4.7.5",
+
+    "jwt-decode": "^4.0.0"
+  },
+
+  "devDependencies": {
+    "typescript": "^5.4.0",
+
+    "eslint": "^8.50.0",
+    "eslint-config-next": "14.2.0",
+
+    "prettier": "^3.0.0",
+
+    "husky": "^9.0.0",
+    "lint-staged": "^15.2.0",
+    "@commitlint/cli": "^19.0.0",
+    "@commitlint/config-conventional": "^19.0.0",
+
+    "jest": "^29.7.0",
+    "ts-jest": "^29.1.1",
+    "@types/jest": "^29.5.12",
+
+    "@types/node": "^20.11.30",
+    "@types/react": "^18.2.66",
+    "@types/react-dom": "^18.2.22"
+  },
+
+  "lint-staged": {
+    "*.{ts,tsx}": [
+      "eslint --fix",
+      "prettier --write"
+    ]
+  }
+}

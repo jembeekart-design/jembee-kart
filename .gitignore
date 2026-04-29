@@ -1,0 +1,129 @@
+# ================================
+# NODE MODULES
+# ================================
+node_modules/
+.pnp
+.pnp.js
+
+# ================================
+# NEXT.JS BUILD
+# ================================
+.next/
+out/
+build/
+dist/
+
+# ================================
+# ENV FILES (SECURITY 🔥)
+# ================================
+.env
+.env.local
+.env.development
+.env.production
+.env.test
+
+# allow template
+!.env.example
+
+# ================================
+# LOGS
+# ================================
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+
+# ================================
+# OS FILES
+# ================================
+.DS_Store
+Thumbs.db
+
+# ================================
+# IDE / EDITOR
+# ================================
+.vscode/
+.idea/
+
+# ================================
+# CACHE
+# ================================
+.cache/
+.tmp/
+temp/
+
+# ================================
+# TYPESCRIPT
+# ================================
+*.tsbuildinfo
+
+# ================================
+# TEST OUTPUT
+# ================================
+coverage/
+jest.config.js.snap
+
+# ================================
+# UPLOADS / FILE STORAGE
+# ================================
+uploads/
+public/uploads/
+storage/
+temp-uploads/
+
+# ================================
+# FIREBASE LOCAL FILES
+# ================================
+.firebase/
+firebase-debug.log
+
+# ================================
+# DOCKER
+# ================================
+docker-compose.override.yml
+
+# ================================
+# ANALYTICS / DEBUG
+# ================================
+logs/
+debug.log
+
+# ================================
+# THEME CACHE (ADMIN UI)
+# ================================
+theme-cache/
+theme-temp/
+theme-export/
+
+# ================================
+# BUILD ARTIFACTS
+# ================================
+*.log
+*.lock
+*.bak
+*.tmp
+
+# ================================
+# SECURITY FILES
+# ================================
+secrets/
+keys/
+*.pem
+*.key
+*.crt
+# ================================
+# NEXT CACHE / TURBO
+# ================================
+.next/cache/
+
+# ================================
+# VERCEL
+# ================================
+.vercel/
+
+# ================================
+# NODE LOCK FILES (optional)
+# ================================
+package-lock.json
+yarn.lock
+pnpm-lock.yaml
