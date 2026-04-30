@@ -1,0 +1,10 @@
+export default function SellerDashboard() {
+  return (
+    <div>
+      <h1>📊 Seller Dashboard</h1>
+
+      <div className="glass">Total Sales: ₹0</div>
+      <div className="glass">Orders: 0</div>
+    </div>
+  );
+}

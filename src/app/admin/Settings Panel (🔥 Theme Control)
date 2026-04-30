@@ -1,0 +1,25 @@
+"use client";
+
+import { useTheme } from "@/hooks/useTheme";
+
+export default function SettingsAdmin() {
+  const { setTheme } = useTheme();
+
+  return (
+    <div>
+      <h1>Settings</h1>
+
+      <button
+        onClick={() =>
+          setTheme({
+            primary: "#0ea5e9",
+            blur: 20,
+            opacity: 0.15,
+          })
+        }
+      >
+        Change Theme
+      </button>
+    </div>
+  );
+}

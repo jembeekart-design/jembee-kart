@@ -1,0 +1,20 @@
+"use client";
+
+import { createProduct } from "@/shared/modules/product/productService";
+
+export default function ProductsAdmin() {
+  const add = () => {
+    createProduct({
+      title: "New Product",
+      basePrice: 500,
+    });
+  };
+
+  return (
+    <div>
+      <h1>Products</h1>
+
+      <button onClick={add}>Add Product</button>
+    </div>
+  );
+}

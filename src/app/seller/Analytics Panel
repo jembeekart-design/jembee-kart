@@ -1,0 +1,16 @@
+"use client";
+
+import { getConversionStats } from "@/shared/services/conversionTracker";
+
+export default function SellerAnalytics() {
+  const stats = getConversionStats();
+
+  return (
+    <div>
+      <h1>Analytics</h1>
+
+      <p>Revenue: ₹{stats.revenue}</p>
+      <p>Orders: {stats.purchases}</p>
+    </div>
+  );
+}
