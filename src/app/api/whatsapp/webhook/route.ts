@@ -1,6 +1,8 @@
 import { NextResponse } from "next/server";
-import { verifyWebhook, parseWebhook } from "@/integrations/whatsapp/webhook";
-import { handleAutoReply } from "@/integrations/whatsapp/autoReply";
+
+// ✅ FIXED PATH
+import { verifyWebhook, parseWebhook } from "@/shared/integrations/whatsapp/webhook";
+import { handleAutoReply } from "@/shared/integrations/whatsapp/autoReply";
 
 export async function GET(req: Request) {
   try {
