@@ -1,66 +1,44 @@
 rules_version = '2';
 
-service cloud.firestore {
-  match /databases/{database}/documents {
+service firebase.storage {
+  match /b/{bucket}/o {
 
-    // 🔹 Helper Functions
+    // 🔹 Helper
     function isAuth() {
       return request.auth != null;
-    }
-
-    function isOwner(userId) {
-      return request.auth.uid == userId;
     }
 
     function isAdmin() {
       return request.auth.token.role == "admin";
     }
 
-    // 👤 USERS
-    match /users/{userId} {
-      allow read: if isOwner(userId) || isAdmin();
-      allow write: if isOwner(userId);
-    }
-
-    // 🛍️ PRODUCTS (Public read, Admin write)
-    match /products/{productId} {
-      allow read: if true;
-      allow create, update, delete: if isAdmin();
-    }
-
-    // 🛒 CART
-    match /cart/{userId} {
-      allow read, write: if isOwner(userId);
-    }
-
-    // 💳 ORDERS
-    match /orders/{orderId} {
-      allow create: if isAuth();
-      allow read: if isOwner(resource.data.userId) || isAdmin();
-      allow update: if isAdmin();
-    }
-
-    // 🔔 NOTIFICATIONS
-    match /notifications/{id} {
-      allow read, write: if isOwner(resource.data.userId);
-    }
-
-    // 🎨 THEME SYSTEM (🔥 ADMIN CONTROL)
-    match /theme/global {
-      allow read: if true;
-      allow write: if isAdmin(); // only admin can change UI
-    }
-
-    // 💎 UI CONFIG (Glass Engine)
-    match /ui/config {
+    // 📦 PRODUCT IMAGES
+    match /images/products/{allPaths=**} {
       allow read: if true;
       allow write: if isAdmin();
     }
 
-    // 🔗 AFFILIATE
-    match /affiliate/{id} {
-      allow read: if isOwner(resource.data.userId) || isAdmin();
-      allow write: if isOwner(request.resource.data.userId);
+    // 👤 USER AVATAR
+    match /images/users/{userId}/{file} {
+      allow read: if true;
+      allow write: if request.auth.uid == userId;
+    }
+
+    // 🎨 BANNERS (Admin only)
+    match /images/banners/{allPaths=**} {
+      allow read: if true;
+      allow write: if isAdmin();
+    }
+
+    // ⚠️ TEMP UPLOADS
+    match /temp/uploads/{userId}/{file} {
+      allow read, write: if request.auth.uid == userId;
+    }
+
+    // ⚡ PROCESSED IMAGES (read only)
+    match /processed/{allPaths=**} {
+      allow read: if true;
+      allow write: if isAdmin();
     }
   }
 }
