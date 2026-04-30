@@ -1,0 +1,11 @@
+"use client";
+
+export default function ExperimentsAdmin() {
+  return (
+    <div>
+      <h1>Experiments</h1>
+
+      <p>A/B testing system</p>
+    </div>
+  );
+}

@@ -1,0 +1,19 @@
+"use client";
+
+import { useOrders } from "@/hooks/useOrders";
+
+export default function SellerOrders() {
+  const { orders } = useOrders();
+
+  return (
+    <div>
+      <h1>My Orders</h1>
+
+      {orders.map((o: any) => (
+        <div key={o.id}>
+          {o.id} - {o.status}
+        </div>
+      ))}
+    </div>
+  );
+}

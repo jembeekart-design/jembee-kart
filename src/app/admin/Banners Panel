@@ -1,0 +1,10 @@
+"use client";
+
+export default function BannersAdmin() {
+  return (
+    <div>
+      <h1>Banners</h1>
+      <p>Upload homepage banners</p>
+    </div>
+  );
+}

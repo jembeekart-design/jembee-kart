@@ -1,0 +1,18 @@
+"use client";
+
+import { createAffiliateLink } from "@/shared/modules/affiliate/affiliateService";
+
+export default function AffiliatePanel() {
+  const generate = () => {
+    const link = createAffiliateLink("seller1", "product1");
+    alert(link);
+  };
+
+  return (
+    <div>
+      <h1>Affiliate</h1>
+
+      <button onClick={generate}>Generate Link</button>
+    </div>
+  );
+}
