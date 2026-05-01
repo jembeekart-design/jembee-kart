@@ -12,8 +12,8 @@ type Theme = {
   bg2: string;
 };
 
-// ================= THEMES =================
-const THEMES: Theme[] = [
+// ================= DEFAULT THEMES =================
+const DEFAULT_THEMES: Theme[] = [
   {
     name: "Indigo",
     primary: "#6366f1",
@@ -38,22 +38,29 @@ const THEMES: Theme[] = [
 export default function HomePage() {
   const router = useRouter();
 
-  const [theme, setTheme] = useState<Theme>(THEMES[0]);
-  const [dark, setDark] = useState(true);
+  const [theme, setTheme] = useState<Theme>(DEFAULT_THEMES[0]);
+  const [loading, setLoading] = useState(true);
 
   // ================= LOAD THEME =================
   useEffect(() => {
-    loadTheme().then((t) => {
-      if (t) {
-        setTheme(t);
-        applyTheme(t);
-      } else {
-        applyTheme(theme);
-      }
-    });
+    const init = async () => {
+      try {
+        const t = await loadTheme();
 
-    const savedDark = localStorage.getItem("darkMode");
-    if (savedDark) setDark(savedDark === "true");
+        if (t) {
+          setTheme(t);
+          applyTheme(t);
+        } else {
+          applyTheme(DEFAULT_THEMES[0]);
+        }
+      } catch (err) {
+        console.log("Theme load error", err);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    init();
   }, []);
 
   // ================= APPLY THEME =================
@@ -63,6 +70,19 @@ export default function HomePage() {
     document.documentElement.style.setProperty("--bg2", t.bg2);
   };
 
+  // ================= NAVIGATION =================
+  const goShop = () => router.push("/products");
+  const goAdmin = () => router.push("/admin");
+
+  // ================= LOADING =================
+  if (loading) {
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-black text-white">
+        Loading...
+      </div>
+    );
+  }
+
   // ================= UI =================
   return (
     <div
@@ -71,73 +91,66 @@ export default function HomePage() {
         background: `linear-gradient(135deg, var(--bg1), var(--bg2))`,
       }}
     >
-      {/* 🔥 BACKGROUND EFFECTS */}
-      <div className="absolute w-[600px] h-[600px] bg-[var(--primary)] opacity-20 blur-3xl rounded-full top-[-150px] left-[-150px]" />
-      <div className="absolute w-[500px] h-[500px] bg-purple-500 opacity-20 blur-3xl rounded-full bottom-[-150px] right-[-150px]" />
+      {/* 🌌 Background Effects */}
+      <div className="absolute w-[700px] h-[700px] bg-[var(--primary)] opacity-20 blur-3xl rounded-full top-[-200px] left-[-200px]" />
+      <div className="absolute w-[600px] h-[600px] bg-purple-500 opacity-20 blur-3xl rounded-full bottom-[-200px] right-[-200px]" />
 
-      {/* 🧊 GLASS CARD */}
-      <div className="backdrop-blur-2xl bg-white/10 border border-white/20 shadow-2xl rounded-3xl p-8 w-full max-w-lg text-center z-10">
+      {/* 🧊 Glass Card */}
+      <div className="backdrop-blur-2xl bg-white/10 border border-white/20 shadow-2xl rounded-3xl p-10 w-full max-w-xl text-center z-10">
 
-        {/* LOGO */}
+        {/* 🚀 Logo */}
         <h1 className="text-4xl font-bold text-white mb-2 tracking-wide">
           JembeeKart 🚀
         </h1>
 
         <p className="text-gray-300 mb-6">
-          Enterprise Glass UI eCommerce Platform
+          AI Powered Print-on-Demand eCommerce (Qikink Integrated)
         </p>
 
-        {/* ACTION BUTTONS */}
-        <div className="flex gap-3 justify-center mb-6">
+        {/* 🔘 Buttons */}
+        <div className="flex gap-4 justify-center mb-8">
           <button
-            onClick={() => router.push("/products")}
-            className="px-6 py-2 rounded-xl text-white font-semibold transition hover:scale-105"
+            onClick={goShop}
+            className="px-6 py-3 rounded-xl text-white font-semibold transition hover:scale-105"
             style={{ background: "var(--primary)" }}
           >
             🛍 Shop Now
           </button>
 
           <button
-            onClick={() => router.push("/admin")}
-            className="px-6 py-2 rounded-xl border border-white/30 text-white hover:bg-white/10"
+            onClick={goAdmin}
+            className="px-6 py-3 rounded-xl border border-white/30 text-white hover:bg-white/10"
           >
-            ⚙ Admin
+            ⚙ Admin Panel
           </button>
         </div>
 
-        {/* THEME SWITCHER */}
+        {/* 🎨 Theme Switcher */}
         <div>
-          <p className="text-xs text-gray-400 mb-2">
-            Theme Control
+          <p className="text-xs text-gray-400 mb-3">
+            Theme Control (Admin Override Supported)
           </p>
 
           <div className="flex justify-center gap-3">
-            {THEMES.map((t) => (
+            {DEFAULT_THEMES.map((t) => (
               <div
                 key={t.name}
                 onClick={() => {
                   setTheme(t);
                   applyTheme(t);
-                  saveTheme(t); // 🔥 Firestore + Local
+                  saveTheme(t); // 🔥 Local + Firestore sync
                 }}
-                className="w-8 h-8 rounded-full cursor-pointer border border-white/30 hover:scale-110 transition"
+                className="w-9 h-9 rounded-full cursor-pointer border border-white/30 hover:scale-110 transition"
                 style={{ background: t.primary }}
               />
             ))}
           </div>
         </div>
 
-        {/* DARK MODE */}
-        <button
-          onClick={() => {
-            const val = !dark;
-            setDark(val);
-            localStorage.setItem("darkMode", String(val));
-          }}
-          className="mt-6 text-xs text-gray-400 hover:text-white transition"
-        >
-          {dark ? "🌙 Dark Mode" : "☀️ Light Mode"}
-        </button>
+        {/* 📊 Future Features Note */}
+        <p className="text-[10px] text-gray-500 mt-6">
+          Powered by Qikink • Cashfree • Firebase • WhatsApp Automation
+        </p>
 
       </div>
     </div>
