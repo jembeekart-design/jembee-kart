@@ -1,0 +1,42 @@
+name: JembeeKart CI
+
+on:
+  push:
+    branches: ["main"]
+  pull_request:
+    branches: ["main"]
+
+jobs:
+  build-and-test:
+    runs-on: ubuntu-latest
+
+    steps:
+      # 📥 Code fetch
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      # 🟢 Node setup
+      - name: Setup Node
+        uses: actions/setup-node@v3
+        with:
+          node-version: 18
+
+      # 📦 Install dependencies
+      - name: Install packages
+        run: npm install
+
+      # 🧪 Type check
+      - name: TypeScript check
+        run: npm run type-check
+
+      # 🧪 Lint check (optional)
+      - name: Lint
+        run: npm run lint || true
+
+      # 🏗 Build check (IMPORTANT)
+      - name: Build project
+        run: npm run build
+
+      # 🧪 Test (optional)
+      - name: Run tests
+        run: npm test || true
