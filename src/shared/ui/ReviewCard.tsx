@@ -1,49 +1,23 @@
-type Review = {
-  productId: string;
+"use client";
+
+export const ReviewCard = ({
+  user,
+  rating,
+  comment,
+}: {
   user?: string;
   rating: number;
   comment: string;
-  source: "admin" | "user";
-};
+}) => {
+  return (
+    <div className="bg-white/10 backdrop-blur-md p-4 rounded-xl border border-white/20">
+      <h3 className="text-white font-bold">{user || "Anonymous"}</h3>
 
-let reviews: Review[] = [];
+      <div className="text-yellow-400">
+        {"⭐".repeat(rating)}
+      </div>
 
-/* =========================================================
-   ✍️ ADD REVIEW (USER)
-========================================================= */
-
-export const addUserReview = (review: Review) => {
-  review.source = "user";
-  reviews.push(review);
-};
-
-/* =========================================================
-   🛠️ ADMIN REVIEW (QIKINK + FAKE)
-========================================================= */
-
-export const addAdminReview = (review: Review) => {
-  review.source = "admin";
-  reviews.push(review);
-};
-
-/* =========================================================
-   📊 GET REVIEWS
-========================================================= */
-
-export const getProductReviews = (productId: string) => {
-  return reviews.filter((r) => r.productId === productId);
-};
-
-/* =========================================================
-   ⭐ AVG RATING
-========================================================= */
-
-export const getAverageRating = (productId: string) => {
-  const r = getProductReviews(productId);
-
-  if (!r.length) return 0;
-
-  const total = r.reduce((sum, x) => sum + x.rating, 0);
-
-  return (total / r.length).toFixed(1);
+      <p className="text-gray-300 mt-2">{comment}</p>
+    </div>
+  );
 };
