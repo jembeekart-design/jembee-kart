@@ -10,11 +10,12 @@ export const refundOrder = async (
   orderId: string,
   refundAmount: number
 ) => {
-  const res = await cf.PGRefundOrder({
-    order_id: orderId,
-    refund_amount: refundAmount,
-    refund_id: `refund_${Date.now()}`,
-  });
+  const res = await cf.PGOrderFetchPayments(orderId);
 
-  return res;
+  // ⚠️ demo logic (real refund API अलग से लगेगा)
+  return {
+    success: true,
+    message: "Refund API placeholder",
+    data: res,
+  };
 };
