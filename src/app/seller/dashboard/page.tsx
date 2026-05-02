@@ -1,8 +1,8 @@
 "use client";
 
-import { useTheme } from "@/shared/hooks/useTheme";
-import { GlassCard } from "@/shared/ui/GlassCard";
-import { Button } from "@/shared/ui/Button";
+import { useTheme } from "../../../../shared/hooks/useTheme";
+import { GlassCard } from "../../../../shared/ui/GlassCard";
+import { Button } from "../../../../shared/ui/Button";
 
 export default function SellerDashboard() {
   const { theme } = useTheme();
