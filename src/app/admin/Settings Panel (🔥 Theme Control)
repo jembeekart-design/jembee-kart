@@ -1,25 +1,66 @@
 "use client";
 
-import { useTheme } from "@/hooks/useTheme";
+import { useTheme } from "@/shared/hooks/useTheme";
+import { GlassCard } from "@/shared/ui/GlassCard";
+import { Button } from "@/shared/ui/Button";
+import { defaultTheme } from "@/shared/core/theme";
 
-export default function SettingsAdmin() {
-  const { setTheme } = useTheme();
+export default function AdminTheme() {
+  const { theme, updateTheme } = useTheme();
 
   return (
-    <div>
-      <h1>Settings</h1>
+    <div
+      style={{
+        background: "var(--bg)",
+        minHeight: "100vh",
+        padding: "30px",
+        color: "var(--text)",
+      }}
+    >
+      <h1 style={{ fontSize: "28px", marginBottom: "20px" }}>
+        🎨 Theme Control Panel
+      </h1>
 
-      <button
-        onClick={() =>
-          setTheme({
-            primary: "#0ea5e9",
-            blur: 20,
-            opacity: 0.15,
-          })
-        }
-      >
-        Change Theme
-      </button>
+      <GlassCard>
+        <div style={{ display: "grid", gap: "15px" }}>
+          
+          {/* Primary */}
+          <label>Primary Color</label>
+          <input
+            type="color"
+            value={theme.primary}
+            onChange={(e) =>
+              updateTheme({ ...theme, primary: e.target.value })
+            }
+          />
+
+          {/* Accent */}
+          <label>Accent Color</label>
+          <input
+            type="color"
+            value={theme.accent}
+            onChange={(e) =>
+              updateTheme({ ...theme, accent: e.target.value })
+            }
+          />
+
+          {/* Background */}
+          <label>Background</label>
+          <input
+            type="color"
+            value={theme.bg}
+            onChange={(e) =>
+              updateTheme({ ...theme, bg: e.target.value })
+            }
+          />
+
+          {/* Reset */}
+          <Button onClick={() => updateTheme(defaultTheme)}>
+            Reset Theme
+          </Button>
+
+        </div>
+      </GlassCard>
     </div>
   );
 }
