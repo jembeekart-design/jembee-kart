@@ -1,11 +1,7 @@
 {
   "compilerOptions": {
     "target": "ES2020",
-    "lib": [
-      "dom",
-      "dom.iterable",
-      "esnext"
-    ],
+    "lib": ["dom", "dom.iterable", "esnext"],
     "allowJs": false,
     "skipLibCheck": true,
     "strict": true,
@@ -17,52 +13,26 @@
     "isolatedModules": true,
     "jsx": "preserve",
     "incremental": true,
-    /* 🔥 IMPORTANT FIX */
+
     "baseUrl": ".",
+
     "paths": {
-      "@/*": [
-        "./src/*"
-      ],
-      "@/shared/*": [
-        "./src/shared/*"
-      ],
-      "@/modules/*": [
-        "./src/shared/modules/*"
-      ],
-      "@/components/*": [
-        "./src/shared/ui/*"
-      ],
-      "@/hooks/*": [
-        "./src/hooks/*"
-      ],
-      "@/store/*": [
-        "./src/shared/store/*"
-      ],
-      "@/services/*": [
-        "./src/shared/services/*"
-      ],
-      "@/utils/*": [
-        "./src/shared/utils/*"
-      ]
+      "@/*": ["./src/*"],
+      "@/shared/*": ["./src/shared/*"],
+      "@/ui/*": ["./src/shared/ui/*"],
+      "@/hooks/*": ["./src/shared/hooks/*"],
+      "@/store/*": ["./src/shared/store/*"]
     },
-    "types": [
-      "node"
-    ],
-    "plugins": [
-      {
-        "name": "next"
-      }
-    ]
+
+    "types": ["node"],
+    "plugins": [{ "name": "next" }]
   },
+
   "include": [
     "next-env.d.ts",
-    "**/*.ts",
-    "**/*.tsx",
+    "src/**/*",
     ".next/types/**/*.ts"
   ],
-  "exclude": [
-    "node_modules",
-    ".next",
-    "dist"
-  ]
+
+  "exclude": ["node_modules"]
 }
