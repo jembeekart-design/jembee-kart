@@ -1,10 +1,10 @@
 "use client";
 
-import { useTheme } from "../../../../shared/hooks/useTheme";
-import { GlassCard } from "../../../../shared/ui/GlassCard";
-import { Button } from "../../../../shared/ui/Button";
+import { useTheme } from "@/shared/hooks/useTheme";
+import { GlassCard } from "@/shared/ui/GlassCard";
+import { Button } from "@/shared/ui/Button";
 
-export default function SellerDashboard() {
+export default function SellerDashboardPage() {
   const { theme } = useTheme();
 
   return (
@@ -15,8 +15,8 @@ export default function SellerDashboard() {
       }}
     >
       {/* HEADER */}
-      <div className="flex justify-between items-center mb-5">
-        <h1 className="text-xl font-bold text-white">
+      <div className="flex justify-between items-center mb-6">
+        <h1 className="text-2xl font-bold text-white">
           Seller Dashboard 💼
         </h1>
 
@@ -24,7 +24,7 @@ export default function SellerDashboard() {
       </div>
 
       {/* STATS */}
-      <div className="grid grid-cols-2 gap-4 mb-5">
+      <div className="grid grid-cols-2 gap-4 mb-6">
         <GlassCard title="Sales" value="₹1,24,500" />
         <GlassCard title="Orders" value="342" />
         <GlassCard title="Products" value="28" />
@@ -33,10 +33,10 @@ export default function SellerDashboard() {
 
       {/* ACTION */}
       <div className="grid grid-cols-2 gap-4">
-        <GlassCard title="Add Product" />
-        <GlassCard title="Orders" />
-        <GlassCard title="Analytics" />
-        <GlassCard title="Withdraw" />
+        <GlassCard title="Add Product" value="+" />
+        <GlassCard title="Orders" value="View" />
+        <GlassCard title="Analytics" value="Open" />
+        <GlassCard title="Withdraw" value="₹" />
       </div>
     </div>
   );
