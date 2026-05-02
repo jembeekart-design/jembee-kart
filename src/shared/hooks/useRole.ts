@@ -1,9 +1,13 @@
 "use client";
 
+type Role = "admin" | "seller" | "user";
+
 export const useRole = () => {
-  const role = "admin"; // future: from Firebase/Auth
+  // 🔥 future: Firebase / auth से आएगा
+  const role: Role = "admin";
 
   return {
+    role,
     isAdmin: role === "admin",
     isSeller: role === "seller",
   };
