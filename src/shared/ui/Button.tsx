@@ -1,16 +1,19 @@
 "use client";
 
-export const Button = ({
-  children,
-  onClick,
-}: {
-  children: React.ReactNode;
-  onClick?: () => void;
-}) => {
+export const Button = ({ children, onClick }: any) => {
   return (
     <button
       onClick={onClick}
-      className="px-5 py-2 rounded-xl bg-primary text-white hover:opacity-80 transition"
+      style={{
+        background: "linear-gradient(135deg, var(--primary), var(--accent))",
+        color: "#fff",
+        padding: "10px 18px",
+        borderRadius: "12px",
+        border: "none",
+        fontWeight: "600",
+        cursor: "pointer",
+        boxShadow: "0 6px 20px rgba(0,0,0,0.4)",
+      }}
     >
       {children}
     </button>
