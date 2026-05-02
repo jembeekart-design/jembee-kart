@@ -21,7 +21,7 @@ const defaultTheme: ThemeType = {
 };
 
 export const useTheme = () => {
-  const [theme, setTheme] = useState<ThemeType>(defaultTheme);
+  const [theme, setTheme] = useState(defaultTheme);
 
   useEffect(() => {
     const root = document.documentElement;
@@ -38,8 +38,5 @@ export const useTheme = () => {
     setTheme((prev) => ({ ...prev, ...newTheme }));
   };
 
-  return {
-    theme,
-    updateTheme,
-  };
+  return { theme, updateTheme };
 };
