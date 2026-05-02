@@ -1,61 +1,35 @@
 "use client";
 
 import { AdminLayout } from "@/shared/ui/AdminLayout";
-import { GlassCard } from "@/shared/ui/GlassCard";
-import { Button } from "@/shared/ui/Button";
-import { useTheme } from "@/hooks/useTheme";
+import { AdminChart } from "@/shared/ui/AdminChart";
+import { OrdersTable } from "@/shared/ui/OrdersTable";
+import { ProductManager } from "@/shared/ui/ProductManager";
+import { NotificationBell } from "@/shared/ui/NotificationBell";
+import { useRole } from "@/hooks/useRole";
 
-export default function AdminDashboard() {
-  const { updateTheme } = useTheme();
+export default function Dashboard() {
+  const { isAdmin } = useRole();
+
+  if (!isAdmin) {
+    return <div>Access Denied</div>;
+  }
 
   return (
     <AdminLayout>
-      {/* Header */}
-      <div className="flex justify-between items-center mb-6">
-        <h1 className="text-2xl font-bold">Dashboard</h1>
-
-        <Button
-          onClick={() =>
-            updateTheme({
-              primary: "#22c55e",
-              accent: "#f59e0b",
-            })
-          }
-        >
-          Change Theme
-        </Button>
+      {/* Top bar */}
+      <div className="flex justify-between mb-6">
+        <h1 className="text-2xl font-bold">Admin Dashboard</h1>
+        <NotificationBell />
       </div>
 
-      {/* Stats */}
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-        <GlassCard>
-          <h2 className="text-lg">Total Orders</h2>
-          <p className="text-3xl font-bold mt-2">1,245</p>
-        </GlassCard>
+      {/* Chart */}
+      <AdminChart />
 
-        <GlassCard>
-          <h2 className="text-lg">Revenue</h2>
-          <p className="text-3xl font-bold mt-2">₹2.4L</p>
-        </GlassCard>
+      {/* Orders */}
+      <OrdersTable />
 
-        <GlassCard>
-          <h2 className="text-lg">Users</h2>
-          <p className="text-3xl font-bold mt-2">8,230</p>
-        </GlassCard>
-      </div>
-
-      {/* Activity */}
-      <div className="mt-8">
-        <GlassCard>
-          <h2 className="text-lg mb-4">Recent Activity</h2>
-
-          <ul className="space-y-2 text-sm">
-            <li>🟢 New order received</li>
-            <li>🔵 Product added</li>
-            <li>🟡 User registered</li>
-          </ul>
-        </GlassCard>
-      </div>
+      {/* Product */}
+      <ProductManager />
     </AdminLayout>
   );
 }
