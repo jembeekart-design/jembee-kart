@@ -1,42 +1,20 @@
 "use client";
 
 import { useEffect, useState } from "react";
-
-type ThemeType = {
-  primary: string;
-  secondary: string;
-  accent: string;
-  bg: string;
-  surface: string;
-  text: string;
-};
-
-const defaultTheme: ThemeType = {
-  primary: "#6366f1",
-  secondary: "#8b5cf6",
-  accent: "#22c55e",
-  bg: "#020617",
-  surface: "#0f172a",
-  text: "#ffffff",
-};
+import { themeStore } from "@/store/themeStore";
 
 export const useTheme = () => {
-  const [theme, setTheme] = useState(defaultTheme);
+  const [theme, setTheme] = useState(themeStore.get());
 
   useEffect(() => {
-    const root = document.documentElement;
+    const saved = localStorage.getItem("theme");
+    if (saved) themeStore.set(JSON.parse(saved));
 
-    root.style.setProperty("--color-primary", theme.primary);
-    root.style.setProperty("--color-secondary", theme.secondary);
-    root.style.setProperty("--color-accent", theme.accent);
-    root.style.setProperty("--color-bg", theme.bg);
-    root.style.setProperty("--color-surface", theme.surface);
-    root.style.setProperty("--color-text", theme.text);
-  }, [theme]);
+    return themeStore.subscribe(setTheme);
+  }, []);
 
-  const updateTheme = (newTheme: Partial<ThemeType>) => {
-    setTheme((prev) => ({ ...prev, ...newTheme }));
+  return {
+    theme,
+    updateTheme: themeStore.set,
   };
-
-  return { theme, updateTheme };
 };
