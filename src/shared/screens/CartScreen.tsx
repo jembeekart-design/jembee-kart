@@ -1,19 +1,23 @@
 "use client";
 
-import { useCart } from "@/hooks/useCart";
+import { useCart } from "@/shared/hooks/useCart";
 
 export const CartScreen = () => {
   const { cart } = useCart();
 
   return (
-    <div style={{ padding: 20, color: "white" }}>
-      <h2>Your Cart 🛒</h2>
+    <div>
+      <h1>Cart</h1>
 
-      {cart.map((item: any) => (
-        <div key={item.id}>
-          {item.id} - {item.qty}
-        </div>
-      ))}
+      {cart.length === 0 ? (
+        <p>No items</p>
+      ) : (
+        cart.map((item) => (
+          <div key={item.id}>
+            {item.name} - ₹{item.price}
+          </div>
+        ))
+      )}
     </div>
   );
 };
