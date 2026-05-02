@@ -1,14 +1,8 @@
-export const GlassCard = ({ children }: any) => {
+"use client";
+
+export const GlassCard = ({ children }: { children: React.ReactNode }) => {
   return (
-    <div
-      style={{
-        backdropFilter: "blur(var(--glass-blur))",
-        background: "rgba(255,255,255,var(--glass-opacity))",
-        borderRadius: "16px",
-        padding: "16px",
-        border: "1px solid rgba(255,255,255,0.2)",
-      }}
-    >
+    <div className="glass p-6 rounded-2xl border border-white/20 shadow-xl">
       {children}
     </div>
   );
