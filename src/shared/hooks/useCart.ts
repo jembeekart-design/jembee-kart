@@ -6,7 +6,6 @@ type CartItem = {
   id: string;
   name: string;
   price: number;
-  qty: number;
 };
 
 export const useCart = () => {
@@ -17,12 +16,8 @@ export const useCart = () => {
   };
 
   const removeFromCart = (id: string) => {
-    setCart((prev) => prev.filter((item) => item.id !== id));
+    setCart((prev) => prev.filter((i) => i.id !== id));
   };
 
-  return {
-    cart,
-    addToCart,
-    removeFromCart,
-  };
+  return { cart, addToCart, removeFromCart };
 };
