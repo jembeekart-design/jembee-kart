@@ -1,10 +1,17 @@
 "use client";
 
-type Role = "admin" | "seller" | "user";
+import { useEffect, useState } from "react";
+
+type Role = "admin" | "seller" | "user" | null;
 
 export const useRole = () => {
-  // 🔥 future: Firebase / auth से आएगा
-  const role: Role = "admin";
+  const [role, setRole] = useState<Role>(null);
+
+  useEffect(() => {
+    // 👉 future: Firebase / API से आएगा
+    const savedRole = localStorage.getItem("role") as Role;
+    setRole(savedRole || "user");
+  }, []);
 
   return {
     role,
