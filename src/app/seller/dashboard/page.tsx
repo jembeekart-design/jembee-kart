@@ -1,43 +1,42 @@
 "use client";
 
 import { useTheme } from "@/shared/hooks/useTheme";
-import { GlassCard } from "@/shared/ui/GlassCard";
-import { Button } from "@/shared/ui/Button";
 
-export default function SellerDashboardPage() {
-  const { theme } = useTheme();
+export default function SellerDashboard() {
+  const { theme, updateTheme } = useTheme();
 
   return (
-    <div
-      className="min-h-screen p-5"
-      style={{
-        background: `linear-gradient(135deg, ${theme.bg1}, ${theme.bg2})`,
-      }}
-    >
-      {/* HEADER */}
-      <div className="flex justify-between items-center mb-6">
-        <h1 className="text-2xl font-bold text-white">
-          Seller Dashboard 💼
+    <div className="min-h-screen flex flex-col items-center justify-center gap-6 p-6">
+
+      {/* 🔥 Glass Card */}
+      <div className="glass w-full max-w-md text-center">
+        <h1 className="text-2xl font-bold mb-4">
+          Seller Dashboard
         </h1>
 
-        <Button>Logout</Button>
+        <p className="mb-4">
+          Current Primary Color:
+        </p>
+
+        <div
+          className="w-10 h-10 mx-auto rounded-full mb-4"
+          style={{ background: theme.primary }}
+        />
+
+        {/* 🔥 Button */}
+        <button
+          className="px-4 py-2 rounded-lg bg-indigo-600 hover:bg-indigo-700"
+          onClick={() =>
+            updateTheme({
+              primary: "#22c55e",
+              accent: "#f59e0b"
+            })
+          }
+        >
+          Change Theme
+        </button>
       </div>
 
-      {/* STATS */}
-      <div className="grid grid-cols-2 gap-4 mb-6">
-        <GlassCard title="Sales" value="₹1,24,500" />
-        <GlassCard title="Orders" value="342" />
-        <GlassCard title="Products" value="28" />
-        <GlassCard title="Earnings" value="₹42,300" />
-      </div>
-
-      {/* ACTION */}
-      <div className="grid grid-cols-2 gap-4">
-        <GlassCard title="Add Product" value="+" />
-        <GlassCard title="Orders" value="View" />
-        <GlassCard title="Analytics" value="Open" />
-        <GlassCard title="Withdraw" value="₹" />
-      </div>
     </div>
   );
 }
