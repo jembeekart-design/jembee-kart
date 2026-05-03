@@ -1,22 +1,22 @@
 "use client";
 
-import { useTheme } from "@/hooks/useTheme";
-import { useRole } from "@/hooks/useRole";
-import { useOrders } from "@/hooks/useOrders";
-import { useProducts } from "@/hooks/useProducts";
-import { useRealtime } from "@/hooks/useRealtime";
+import { useTheme } from "@/shared/hooks/useTheme";
+import { useRole } from "@/shared/hooks/useRole";
+import { useOrders } from "@/shared/hooks/useOrders";
+import { useProducts } from "@/shared/hooks/useProducts";
+import { useRealtime } from "@/shared/hooks/useRealtime";
 
-import { GlassCard } from "@/ui/GlassCard";
-import { Button } from "@/ui/Button";
-import { NotificationBell } from "@/ui/NotificationBell";
+import { GlassCard } from "@/shared/ui/GlassCard";
+import { Button } from "@/shared/ui/Button";
+import { NotificationBell } from "@/shared/ui/NotificationBell";
 
 export default function SellerDashboard() {
-  const { theme, updateTheme } = useTheme();
+  const { theme, updatePartialTheme } = useTheme();
   const { isSeller } = useRole();
 
   const { orders } = useOrders();
   const { products } = useProducts();
-  const { isConnected } = useRealtime();
+  const { connected } = useRealtime();
 
   // 🔐 Role Guard
   if (!isSeller) {
@@ -61,22 +61,21 @@ export default function SellerDashboard() {
           <span
             className="text-sm px-3 py-1 rounded-full"
             style={{
-              background: isConnected
+              background: connected
                 ? "var(--success)"
                 : "var(--error)",
               color: "#fff",
             }}
           >
-            {isConnected ? "Live" : "Offline"}
+            {connected ? "Live" : "Offline"}
           </span>
 
           <NotificationBell />
 
-          {/* 🎨 Theme Switch */}
+          {/* 🎨 Theme Switch (FIXED) */}
           <Button
             onClick={() =>
-              updateTheme({
-                ...theme,
+              updatePartialTheme({
                 primary: "#22c55e",
                 accent: "#f59e0b",
               })
@@ -87,7 +86,7 @@ export default function SellerDashboard() {
         </div>
       </div>
 
-      {/* 📊 STATS GRID */}
+      {/* 📊 STATS */}
       <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
         <GlassCard>
           <h3>Total Orders</h3>
@@ -110,7 +109,7 @@ export default function SellerDashboard() {
         </GlassCard>
       </div>
 
-      {/* 📦 ORDERS TABLE */}
+      {/* 📦 ORDERS */}
       <div className="mt-8">
         <GlassCard>
           <h2 className="mb-4 text-xl font-semibold">
@@ -152,7 +151,7 @@ export default function SellerDashboard() {
         </GlassCard>
       </div>
 
-      {/* 🧠 QUICK ACTIONS */}
+      {/* 🧠 ACTIONS */}
       <div className="mt-8 grid md:grid-cols-3 gap-6">
         <GlassCard>
           <h3>Add Product</h3>
