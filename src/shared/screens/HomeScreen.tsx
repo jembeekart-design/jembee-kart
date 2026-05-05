@@ -2,113 +2,103 @@
 
 export const HomeScreen = () => {
   return (
-    <div className="bg-bg text-text min-h-screen w-full overflow-x-hidden">
+    <div className="bg-[#020617] text-white min-h-screen w-full overflow-x-hidden">
 
       {/* 🔥 NAVBAR */}
-      <header className="sticky top-0 z-50 w-full backdrop-blur-xl bg-black/40 border-b border-white/10">
-        <div className="max-w-7xl mx-auto px-4 py-3 flex items-center gap-3">
+      <header className="sticky top-0 z-50 backdrop-blur-xl bg-black/30 border-b border-white/10">
+        <div className="max-w-6xl mx-auto px-4 py-3 flex items-center gap-3">
 
-          {/* LOGO */}
-          <h1 className="text-xl font-bold text-gradient whitespace-nowrap">
+          <h1 className="text-xl font-bold text-purple-400 whitespace-nowrap">
             JembeeKart 🚀
           </h1>
 
-          {/* SEARCH */}
           <input
-            className="w-full md:flex-1 md:max-w-md bg-surface/50 border border-white/10 rounded-lg px-4 py-2 outline-none focus:ring-2 focus:ring-primary"
+            className="flex-1 bg-white/5 border border-white/10 rounded-xl px-4 py-2 outline-none focus:ring-2 focus:ring-purple-500"
             placeholder="Search products..."
           />
 
-          {/* ACTIONS */}
-          <div className="flex gap-2">
-            <button className="px-4 py-2 rounded-lg bg-surface/50 hover:bg-surface transition">
-              Login
-            </button>
-            <button className="px-4 py-2 rounded-lg bg-gradient-primary text-white shadow-glow">
-              Cart
-            </button>
-          </div>
+          <button className="px-4 py-2 rounded-xl bg-white/10">Login</button>
+          <button className="px-4 py-2 rounded-xl bg-gradient-to-r from-purple-500 to-indigo-500 shadow-lg">
+            Cart
+          </button>
         </div>
       </header>
 
       {/* 🔥 HERO */}
-      <section className="max-w-7xl mx-auto px-4 mt-6 w-full">
-        <div className="glass p-6 md:p-10 flex flex-col md:flex-row items-center justify-between gap-6">
+      <section className="max-w-6xl mx-auto px-4 mt-6">
+        <div className="rounded-3xl p-6 bg-gradient-to-br from-purple-900/40 to-black border border-white/10 shadow-xl">
 
-          <div>
-            <h2 className="text-3xl md:text-5xl font-bold text-gradient">
-              Big Sale Live 🚀
-            </h2>
+          <h2 className="text-3xl font-bold text-purple-400">
+            Big Sale Live 🚀
+          </h2>
 
-            <p className="text-gray-400 mt-2">
-              Up to 70% OFF on all products
-            </p>
+          <p className="text-gray-400 mt-2">
+            Up to 70% OFF on all products
+          </p>
 
-            <button className="mt-4 bg-gradient-primary px-6 py-2 rounded-xl text-white shadow-glow">
-              Shop Now
-            </button>
-          </div>
-
-          <div className="w-32 h-32 md:w-40 md:h-40 bg-surface rounded-xl" />
+          <button className="mt-4 px-6 py-2 rounded-xl bg-gradient-to-r from-purple-500 to-indigo-500 shadow-lg">
+            Shop Now
+          </button>
         </div>
       </section>
 
       {/* 🔥 CATEGORIES */}
-      <section className="max-w-7xl mx-auto px-4 mt-6 w-full">
-        <h3 className="text-lg font-semibold mb-3">Categories</h3>
+      <section className="max-w-6xl mx-auto px-4 mt-6">
+        <h3 className="mb-3 text-gray-300">Categories</h3>
 
-        <div className="flex gap-3 overflow-x-auto">
-          {["Fashion", "Mobiles", "Beauty", "Electronics", "Home"].map(
-            (cat) => (
-              <div
-                key={cat}
-                className="min-w-[120px] glass text-center p-3 rounded-xl"
-              >
-                {cat}
-              </div>
-            )
-          )}
-        </div>
-      </section>
-
-      {/* 🔥 DEALS */}
-      <section className="max-w-7xl mx-auto px-4 mt-8 w-full">
-        <h3 className="text-lg font-semibold mb-4">🔥 Deals for you</h3>
-
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-          {[1, 2, 3, 4].map((item) => (
-            <div key={item} className="glass p-4 rounded-2xl">
-              
-              <div className="h-32 bg-surface rounded-lg mb-3"></div>
-
-              <p className="font-medium">Product {item}</p>
-              <p className="text-sm text-gray-400">₹999</p>
-
-              <button className="btn-primary w-full mt-3">
-                Buy Now
-              </button>
+        <div className="flex gap-3 overflow-x-auto pb-2 scrollbar-hide">
+          {["Fashion", "Mobiles", "Beauty", "Electronics"].map((cat) => (
+            <div
+              key={cat}
+              className="min-w-[120px] text-center px-4 py-3 rounded-xl bg-white/5 border border-white/10 hover:bg-white/10 transition"
+            >
+              {cat}
             </div>
           ))}
         </div>
       </section>
 
-      {/* 🔥 TRENDING */}
-      <section className="max-w-7xl mx-auto px-4 mt-8 w-full">
-        <h3 className="text-lg font-semibold mb-3">Trending</h3>
+      {/* 🔥 DEALS */}
+      <section className="max-w-6xl mx-auto px-4 mt-8">
+        <h3 className="mb-4 text-lg">🔥 Deals for you</h3>
 
-        <div className="flex gap-3 overflow-x-auto">
-          {[1, 2, 3, 4].map((i) => (
-            <div key={i} className="min-w-[140px] glass p-3 text-center rounded-xl">
+        <div className="grid grid-cols-2 gap-4">
+
+          {[1,2,3,4].map((item) => (
+            <div
+              key={item}
+              className="rounded-2xl p-3 bg-white/5 border border-white/10 hover:scale-105 transition duration-300"
+            >
+              <div className="h-28 bg-gradient-to-br from-purple-900/30 to-black rounded-xl mb-3" />
+
+              <p className="font-medium">Product {item}</p>
+              <p className="text-gray-400 text-sm">₹999</p>
+
+              <button className="mt-3 w-full py-2 rounded-xl bg-gradient-to-r from-purple-500 to-indigo-500 shadow-md">
+                Buy Now
+              </button>
+            </div>
+          ))}
+
+        </div>
+      </section>
+
+      {/* 🔥 TRENDING */}
+      <section className="max-w-6xl mx-auto px-4 mt-8 pb-10">
+        <h3 className="mb-3 text-gray-300">Trending</h3>
+
+        <div className="flex gap-3 overflow-x-auto pb-2 scrollbar-hide">
+          {[1,2,3,4].map((i) => (
+            <div
+              key={i}
+              className="min-w-[140px] text-center px-4 py-3 rounded-xl bg-white/5 border border-white/10"
+            >
               Product {i}
             </div>
           ))}
         </div>
       </section>
 
-      {/* 🔥 FOOTER */}
-      <footer className="text-center text-sm text-gray-500 py-10">
-        © 2026 JembeeKart — Premium UI
-      </footer>
     </div>
   );
 };
