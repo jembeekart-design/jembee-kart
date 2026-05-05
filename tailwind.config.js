@@ -19,18 +19,27 @@ module.exports = {
     },
 
     extend: {
-      // 🎨 RGB THEME SYSTEM (IMPORTANT FIX)
+      // 🎨 THEME COLORS (CSS VARIABLE BASED)
       colors: {
-        primary: "rgb(var(--color-primary) / <alpha-value>)",
-        secondary: "rgb(var(--color-secondary) / <alpha-value>)",
-        accent: "rgb(var(--color-accent) / <alpha-value>)",
+        primary: {
+          DEFAULT: "rgb(var(--color-primary) / <alpha-value>)",
+          foreground: "#ffffff",
+        },
+        secondary: {
+          DEFAULT: "rgb(var(--color-secondary) / <alpha-value>)",
+          foreground: "#ffffff",
+        },
+        accent: {
+          DEFAULT: "rgb(var(--color-accent) / <alpha-value>)",
+          foreground: "#000000",
+        },
 
         bg: "rgb(var(--color-bg) / <alpha-value>)",
         surface: "rgb(var(--color-surface) / <alpha-value>)",
         text: "rgb(var(--color-text) / <alpha-value>)",
       },
 
-      // 🌈 Gradient system
+      // 🌈 PREMIUM GRADIENTS
       backgroundImage: {
         "gradient-primary":
           "linear-gradient(135deg, rgb(var(--color-primary)), rgb(var(--color-secondary)))",
@@ -38,28 +47,29 @@ module.exports = {
           "linear-gradient(135deg, rgb(var(--color-accent)), #ef4444)",
       },
 
-      // 🔥 Shadows (premium feel)
+      // 🔥 SHADOW SYSTEM (REALISTIC)
       boxShadow: {
         soft: "0 10px 30px rgba(0,0,0,0.15)",
-        card: "0 6px 25px rgba(0,0,0,0.2)",
-        glow: "0 0 30px rgba(99,102,241,0.4)",
+        card: "0 8px 30px rgba(0,0,0,0.25)",
+        glow: "0 0 30px rgba(99,102,241,0.5)",
       },
 
-      // 🧱 Border radius
+      // 🧱 BORDER RADIUS
       borderRadius: {
         xl: "1rem",
         "2xl": "1.5rem",
         "3xl": "2rem",
       },
 
-      // 🌫️ Glass blur support
+      // 🌫️ GLASS BLUR
       backdropBlur: {
         xs: "2px",
         sm: "6px",
         md: "12px",
+        lg: "20px",
       },
 
-      // ⚡ Animations
+      // ⚡ ANIMATIONS
       keyframes: {
         fadeIn: {
           "0%": { opacity: 0, transform: "translateY(10px)" },
@@ -76,7 +86,7 @@ module.exports = {
         float: "float 3s ease-in-out infinite",
       },
 
-      // 📱 Typography
+      // 📱 TYPOGRAPHY SCALE
       fontSize: {
         xs: ["0.75rem", "1rem"],
         sm: ["0.875rem", "1.25rem"],
@@ -88,7 +98,7 @@ module.exports = {
         "4xl": ["2.5rem", "3rem"],
       },
 
-      // ⚡ Smooth transitions
+      // ⚡ SMOOTH MOTION
       transitionTimingFunction: {
         smooth: "cubic-bezier(0.4, 0, 0.2, 1)",
       },
