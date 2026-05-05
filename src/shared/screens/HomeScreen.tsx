@@ -1,91 +1,78 @@
 "use client";
 
-import React from "react";
-
-const categories = [
-  { name: "Fashion", icon: "👕" },
-  { name: "Mobiles", icon: "📱" },
-  { name: "Beauty", icon: "💄" },
-  { name: "Electronics", icon: "💻" },
-  { name: "Home", icon: "🏠" },
-];
-
-const products = [
-  { id: 1, name: "Running Shoes", price: 999 },
-  { id: 2, name: "Earbuds", price: 799 },
-  { id: 3, name: "Smart Watch", price: 1499 },
-  { id: 4, name: "T-Shirt", price: 499 },
-];
-
 export const HomeScreen = () => {
   return (
-    <div className="bg-bg text-text min-h-screen">
+    <div className="min-h-screen bg-bg text-text">
 
-      {/* 🔥 HEADER */}
-      <header className="sticky top-0 z-50 bg-surface/60 backdrop-blur-md border-b border-white/10">
-        <div className="flex items-center justify-between px-4 py-3 gap-2">
+      {/* 🔥 NAVBAR */}
+      <header className="sticky top-0 z-50 backdrop-blur-md bg-surface/60 border-b border-white/10">
+        <div className="max-w-7xl mx-auto px-4 py-3 flex items-center justify-between">
 
-          <h1 className="text-lg font-bold text-gradient whitespace-nowrap">
+          <h1 className="text-xl font-bold text-gradient">
             JembeeKart 🚀
           </h1>
 
-          <input
-            placeholder="Search products..."
-            className="flex-1 px-3 py-2 rounded-lg bg-bg border border-white/10 text-sm outline-none"
-          />
+          <div className="flex gap-3 items-center">
+            <input
+              placeholder="Search products..."
+              className="px-3 py-1 rounded-lg bg-surface border border-white/10 outline-none"
+            />
 
-          <button className="btn-primary px-4 py-2 text-sm">
-            Cart
-          </button>
+            <button className="px-3 py-1 rounded-lg bg-surface/50">
+              Login
+            </button>
+
+            <button className="px-3 py-1 rounded-lg bg-gradient-primary text-white">
+              Cart
+            </button>
+          </div>
         </div>
       </header>
 
       {/* 🔥 HERO */}
-      <section className="px-4 py-6">
-        <div className="glass p-6 text-center space-y-3">
-          <h2 className="text-2xl md:text-4xl font-bold text-gradient">
-            Premium Shopping Experience
-          </h2>
+      <section className="max-w-7xl mx-auto px-4 py-10 text-center">
+        <h2 className="text-4xl md:text-6xl font-bold text-gradient">
+          Premium Shopping Experience
+        </h2>
 
-          <p className="text-gray-400 text-sm">
-            Fast delivery • Smart pricing • Best deals
-          </p>
+        <p className="text-gray-400 mt-3">
+          Fast delivery • Smart pricing • Best deals
+        </p>
 
-          <button className="btn-primary px-6 py-2">
-            Shop Now
-          </button>
-        </div>
+        <button className="mt-6 btn-primary text-lg px-8 py-3">
+          Shop Now
+        </button>
       </section>
 
-      {/* 🔥 CATEGORY SCROLL */}
-      <section className="px-4 py-4">
-        <div className="flex gap-4 overflow-x-auto no-scrollbar">
-          {categories.map((cat) => (
+      {/* 🔥 CATEGORY GRID */}
+      <section className="max-w-7xl mx-auto px-4 py-6">
+        <h3 className="text-xl font-semibold mb-4">Categories</h3>
+
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+          {["Fashion", "Mobiles", "Beauty", "Electronics"].map((cat) => (
             <div
-              key={cat.name}
-              className="glass p-3 flex flex-col items-center min-w-[80px] cursor-pointer hover:scale-105 transition"
+              key={cat}
+              className="glass p-6 text-center cursor-pointer hover:scale-105 transition"
             >
-              <span className="text-xl">{cat.icon}</span>
-              <p className="text-xs mt-1">{cat.name}</p>
+              {cat}
             </div>
           ))}
         </div>
       </section>
 
-      {/* 🔥 DEALS */}
-      <section className="px-4 py-6">
-        <h3 className="text-lg font-semibold mb-4">🔥 Deals for you</h3>
+      {/* 🔥 PRODUCTS GRID */}
+      <section className="max-w-7xl mx-auto px-4 py-6">
+        <h3 className="text-xl font-semibold mb-4">🔥 Deals for you</h3>
 
-        <div className="grid grid-cols-2 gap-4">
-          {products.map((p) => (
-            <div key={p.id} className="glass p-4 space-y-2">
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
+          {[1, 2, 3, 4].map((i) => (
+            <div key={i} className="glass p-4 space-y-3">
+              <div className="h-40 bg-surface rounded-lg"></div>
 
-              <div className="h-28 bg-surface rounded-lg"></div>
+              <p className="font-medium">Product {i}</p>
+              <p className="text-sm text-gray-400">₹999</p>
 
-              <p className="text-sm font-medium">{p.name}</p>
-              <p className="text-xs text-gray-400">₹{p.price}</p>
-
-              <button className="btn-primary w-full text-sm py-1">
+              <button className="btn-primary w-full">
                 Buy Now
               </button>
             </div>
@@ -94,23 +81,26 @@ export const HomeScreen = () => {
       </section>
 
       {/* 🔥 TRENDING */}
-      <section className="px-4 py-6">
-        <h3 className="text-lg font-semibold mb-4">Trending</h3>
+      <section className="max-w-7xl mx-auto px-4 py-6">
+        <h3 className="text-xl font-semibold mb-4">Trending</h3>
 
-        <div className="grid grid-cols-2 gap-4">
-          {products.map((p) => (
-            <div key={p.id} className="glass p-4">
-              <div className="h-20 bg-surface rounded-lg mb-2"></div>
-              <p className="text-sm">{p.name}</p>
+        <div className="flex gap-4 overflow-x-auto">
+          {[1, 2, 3, 4].map((i) => (
+            <div
+              key={i}
+              className="min-w-[160px] glass p-4"
+            >
+              Product {i}
             </div>
           ))}
         </div>
       </section>
 
       {/* 🔥 FOOTER */}
-      <footer className="text-center text-xs text-gray-500 py-6">
+      <footer className="text-center py-6 text-sm text-gray-500">
         © 2026 JembeeKart — Premium UI System
       </footer>
+
     </div>
   );
 };
