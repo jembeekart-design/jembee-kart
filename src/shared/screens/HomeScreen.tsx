@@ -1,179 +1,130 @@
-"use client";
+export default function Home() {
 
-import { useState } from "react";
-
-const categories = ["Fashion", "Mobiles", "Beauty", "Electronics", "Home"];
-
-const products = [
-  { id: 1, name: "Running Shoes", price: 999 },
-  { id: 2, name: "Earbuds", price: 799 },
-  { id: 3, name: "Smart Watch", price: 1499 },
-  { id: 4, name: "T-Shirt", price: 499 },
-  { id: 5, name: "Headphones", price: 1199 },
-  { id: 6, name: "Laptop Bag", price: 699 },
-];
-
-export const HomeScreen = () => {
-  const [query, setQuery] = useState("");
+  const deals = [
+    {
+      img: "https://rukminim2.flixcart.com/image/300/300/xif0q/headphone/q/f/9/-original-imagz5f2w6h9zzgh.jpeg",
+      title: "True Wireless",
+      price: "Min. 50% Off",
+    },
+    {
+      img: "https://rukminim2.flixcart.com/image/300/300/xif0q/smartwatch/x/s/l/-original-imagxp8tfb8zqzpb.jpeg",
+      title: "Smart Watches",
+      price: "Min. 40% Off",
+    },
+    {
+      img: "https://rukminim2.flixcart.com/image/300/300/xif0q/trimmer/k/3/z/-original-imagzq8hzvphh8jt.jpeg",
+      title: "Trimmers",
+      price: "Min. 50% Off",
+    },
+    {
+      img: "https://rukminim2.flixcart.com/image/300/300/xif0q/mixer-grinder-juicer/j/h/o/-original-imagk6kz7cz5f3ny.jpeg",
+      title: "Mixer Grinder",
+      price: "Min. 50% Off",
+    },
+  ];
 
   return (
-    <div className="min-h-screen bg-bg text-text">
+    <main className="bg-[#f1f3f6] min-h-screen pb-20">
 
-      {/* 🔥 NAVBAR */}
-      <header className="navbar">
-        <div className="container-custom flex items-center gap-3 py-3">
+      {/* 🔵 HEADER */}
+      <div className="bg-blue-600 p-3 sticky top-0 z-50">
+        <input
+          placeholder="Search for Products"
+          className="w-full rounded-full px-4 py-2 outline-none"
+        />
+      </div>
 
-          <h1 className="text-xl font-bold text-gradient whitespace-nowrap">
-            JembeeKart 🚀
-          </h1>
+      {/* 🧭 CATEGORY BAR */}
+      <div className="flex gap-4 overflow-x-auto bg-white p-3 text-sm font-medium">
+        {["For You", "Fashion", "Mobiles", "Beauty", "Electronics"].map((c) => (
+          <span key={c} className="whitespace-nowrap">
+            {c}
+          </span>
+        ))}
+      </div>
 
-          {/* SEARCH */}
-          <input
-            value={query}
-            onChange={(e) => setQuery(e.target.value)}
-            placeholder="Search for products..."
-            className="flex-1 bg-white/5 border border-white/10 rounded-xl px-4 py-2 outline-none focus:ring-2 focus:ring-purple-500"
-          />
+      {/* 🎯 BANNER */}
+      <div className="p-3">
+        <img
+          src="https://rukminim2.flixcart.com/fk-p-flap/844/140/image/2c1f4f9f5c2a6e3c.jpg"
+          className="rounded-lg w-full"
+        />
+      </div>
 
-          <button className="px-4 py-2 rounded-xl bg-white/10 hover:bg-white/20 transition">
-            Login
-          </button>
-
-          <button className="btn-primary">
-            Cart
+      {/* 🔥 DEAL SECTION */}
+      <div className="bg-white mx-3 rounded-lg p-3 mb-4">
+        <div className="flex justify-between items-center mb-3">
+          <h2 className="font-semibold text-lg">
+            Best Gadgets & Appliances
+          </h2>
+          <button className="bg-black text-white px-3 py-1 rounded-full">
+            →
           </button>
         </div>
-      </header>
 
-      <main className="container-custom py-6 space-y-10">
-
-        {/* 🔥 HERO */}
-        <section>
-          <div className="glass p-6 md:p-10 relative overflow-hidden">
-
-            <div className="absolute -top-10 -right-10 w-40 h-40 bg-purple-500/20 blur-3xl rounded-full"></div>
-
-            <h1 className="heading text-gradient">
-              India’s Fastest Shopping 🚀
-            </h1>
-
-            <p className="opacity-70 mt-2">
-              Best deals • Fast delivery • Trusted quality
-            </p>
-
-            <div className="flex gap-3 mt-4">
-              <button className="btn-primary">
-                Explore Products
-              </button>
-              <button className="px-4 py-2 rounded-xl bg-white/10">
-                View Offers
-              </button>
+        <div className="grid grid-cols-2 gap-3">
+          {deals.map((item, i) => (
+            <div key={i} className="bg-gray-100 rounded-lg p-2">
+              <img src={item.img} className="rounded-lg mb-2" />
+              <p className="text-sm">{item.title}</p>
+              <p className="font-semibold text-sm">{item.price}</p>
             </div>
+          ))}
+        </div>
+      </div>
 
-          </div>
-        </section>
+      {/* 🧴 BEAUTY SECTION */}
+      <div className="bg-white mx-3 rounded-lg p-3 mb-4">
+        <h2 className="font-semibold text-lg mb-3">
+          Hair & Skincare Essentials
+        </h2>
 
-        {/* 🔥 TRUST */}
-        <section>
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-4 text-center">
-            {[
-              "🚚 Fast Delivery",
-              "💰 Best Prices",
-              "🔒 Secure Payment",
-              "⭐ Top Quality",
-            ].map((item) => (
-              <div key={item} className="glass p-4">
-                {item}
-              </div>
-            ))}
-          </div>
-        </section>
+        <div className="grid grid-cols-2 gap-3">
+          {deals.map((item, i) => (
+            <div key={i} className="bg-gray-100 rounded-lg p-2">
+              <img src={item.img} className="rounded-lg mb-2" />
+              <p className="text-sm">{item.title}</p>
+              <p className="font-semibold text-sm">Min. 50% Off</p>
+            </div>
+          ))}
+        </div>
+      </div>
 
-        {/* 🔥 CATEGORIES */}
-        <section>
-          <h2 className="text-xl font-semibold mb-4">Categories</h2>
+      {/* 🛍 PRODUCTS */}
+      <div className="px-3">
+        <h2 className="font-semibold text-lg mb-3">
+          More products for you
+        </h2>
 
-          <div className="flex gap-3 overflow-x-auto scrollbar-hide pb-2">
-            {categories.map((cat) => (
-              <div
-                key={cat}
-                className="glass min-w-[130px] text-center py-3 cursor-pointer hover:bg-white/10 transition"
-              >
-                {cat}
-              </div>
-            ))}
-          </div>
-        </section>
+        <div className="grid grid-cols-2 gap-3">
+          {deals.map((item, i) => (
+            <div key={i} className="bg-white rounded-lg p-2 shadow-sm">
+              <img src={item.img} className="rounded-lg mb-2" />
+              <p className="text-sm truncate">
+                Product name example long text
+              </p>
+              <p className="font-bold">₹999</p>
+            </div>
+          ))}
+        </div>
+      </div>
 
-        {/* 🔥 DEALS */}
-        <section>
-          <h2 className="text-xl font-semibold mb-4">
-            🔥 Trending Deals
-          </h2>
+      {/* 🔻 BOTTOM NAV */}
+      <div className="fixed bottom-0 left-0 right-0 bg-white border-t flex justify-around py-2 text-xs">
+        <div className="flex flex-col items-center text-blue-600">
+          🏠 Home
+        </div>
+        <div className="flex flex-col items-center">
+          📂 Categories
+        </div>
+        <div className="flex flex-col items-center">
+          👤 Account
+        </div>
+        <div className="flex flex-col items-center">
+          🛒 Cart
+        </div>
+      </div>
 
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-5">
-            {products.slice(0, 4).map((item) => (
-              <div key={item.id} className="glass p-3 group">
-
-                <div className="h-32 rounded-xl bg-gradient-to-br from-purple-900/30 to-black mb-3"></div>
-
-                <p className="font-medium">{item.name}</p>
-                <p className="text-gray-400 text-sm">₹{item.price}</p>
-
-                <button className="btn-primary w-full mt-3 group-hover:scale-105 transition">
-                  Buy Now
-                </button>
-
-              </div>
-            ))}
-          </div>
-        </section>
-
-        {/* 🔥 OFFER BANNER */}
-        <section>
-          <div className="glass p-6 text-center">
-
-            <h2 className="text-2xl font-bold text-gradient">
-              Mega Sale 🎉
-            </h2>
-
-            <p className="opacity-70 mt-2">
-              Up to 70% OFF — Limited Time
-            </p>
-
-          </div>
-        </section>
-
-        {/* 🔥 RECOMMENDED */}
-        <section>
-          <h2 className="text-xl font-semibold mb-4">
-            🛍️ Recommended For You
-          </h2>
-
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-5">
-            {products.slice(2).map((item) => (
-              <div key={item.id} className="glass p-3">
-
-                <div className="h-32 rounded-xl bg-gradient-to-br from-indigo-900/30 to-black mb-3"></div>
-
-                <p className="font-medium">{item.name}</p>
-                <p className="text-gray-400 text-sm">₹{item.price}</p>
-
-                <button className="btn-primary w-full mt-3">
-                  Buy Now
-                </button>
-
-              </div>
-            ))}
-          </div>
-        </section>
-
-        {/* 🔥 FOOTER */}
-        <footer className="text-center text-gray-500 text-sm pt-6">
-          © 2026 JembeeKart — Premium Experience
-        </footer>
-
-      </main>
-    </div>
+    </main>
   );
-};
+}
