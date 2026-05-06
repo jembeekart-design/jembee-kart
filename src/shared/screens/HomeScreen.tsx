@@ -1,7 +1,6 @@
 "use client";
 
 import Navbar from "@/components/layout/Navbar";
-import CategoryBar from "@/components/layout/CategoryBar";
 import Banner from "@/components/layout/Banner";
 import Section from "@/components/sections/Section";
 import NavItem from "@/components/ui/NavItem";
