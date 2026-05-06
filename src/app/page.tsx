@@ -1,5 +1,2 @@
-import { HomeScreen } from "@/shared/screens/HomeScreen";
-
-export default function Page() {
-  return <HomeScreen />;
-}
+- import { HomeScreen } from "@/shared/screens/HomeScreen";
++ import HomeScreen from "@/shared/screens/HomeScreen";
