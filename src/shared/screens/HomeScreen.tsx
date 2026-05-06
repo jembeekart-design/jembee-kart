@@ -1,6 +1,6 @@
 "use client";
 
-import Navbar from "@/components/Navbar";
+import Navbar from "@/components/layout/Navbar";
 import CategoryBar from "@/shared/components/CategoryBar";
 import Banner from "@/components/layout/Banner";
 import Section from "@/components/sections/Section";
