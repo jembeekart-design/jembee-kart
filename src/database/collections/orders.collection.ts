@@ -1,0 +1,3 @@
+export const ORDERS_COLLECTION = "orders";
+
+// THEME ADMIN PANEL SE CHANGE HOGA
