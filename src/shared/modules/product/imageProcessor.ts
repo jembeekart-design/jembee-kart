@@ -1,1 +1,0 @@
-export const optimizeImage = async (file: File) => file;
