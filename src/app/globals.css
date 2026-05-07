@@ -1,0 +1,28 @@
+:root {
+  --background: #ffffff;
+  --foreground: #000000;
+  --primary: #2563eb;
+  --secondary: #7c3aed;
+  --border-radius: 12px;
+}
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+html,
+body {
+  width: 100%;
+  min-height: 100%;
+  background: var(--background);
+  color: var(--foreground);
+  font-family: sans-serif;
+}
+
+button {
+  cursor: pointer;
+}
+
+// THEME ADMIN PANEL SE CHANGE HOGA
