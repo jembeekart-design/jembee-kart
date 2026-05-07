@@ -1,0 +1,3 @@
+export const ADMINS_COLLECTION = "admins";
+
+// THEME ADMIN PANEL SE CHANGE HOGA
