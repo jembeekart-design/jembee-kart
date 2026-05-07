@@ -1,34 +1,40 @@
-import { defaultTheme, Theme } from "../core/theme";
+"use client";
 
-let theme: Theme = defaultTheme;
+import { create } from "zustand";
 
-let listeners: ((t: Theme) => void)[] = [];
+interface ThemeStore {
+  setTheme: (
+    primary: string,
+    secondary: string,
+    accent: string
+  ) => void;
+}
 
-export const themeStore = {
-  get: () => theme,
+export const useThemeStore = create<ThemeStore>(() => ({
+  setTheme: (primary, secondary, accent) => {
 
-  set: (newTheme: Theme) => {
-    theme = newTheme;
+    document.documentElement.style.setProperty(
+      "--color-primary",
+      primary
+    );
 
-    localStorage.setItem("theme", JSON.stringify(newTheme));
+    document.documentElement.style.setProperty(
+      "--color-secondary",
+      secondary
+    );
 
-    listeners.forEach((l) => l(theme));
+    document.documentElement.style.setProperty(
+      "--color-accent",
+      accent
+    );
 
-    // 🌈 Apply CSS variables
-    const root = document.documentElement;
-
-    root.style.setProperty("--primary", newTheme.primary);
-    root.style.setProperty("--bg", newTheme.bg);
-    root.style.setProperty("--card", newTheme.card);
-    root.style.setProperty("--text", newTheme.text);
-    root.style.setProperty("--accent", newTheme.accent);
-    root.style.setProperty("--blur", newTheme.blur);
+    localStorage.setItem(
+      "admin-theme",
+      JSON.stringify({
+        primary,
+        secondary,
+        accent,
+      })
+    );
   },
-
-  subscribe: (cb: (t: Theme) => void) => {
-    listeners.push(cb);
-    return () => {
-      listeners = listeners.filter((l) => l !== cb);
-    };
-  },
-};
+}));
