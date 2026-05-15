@@ -1,0 +1,95 @@
+{
+  "notificationAutomationSystemEnabled": true,
+
+  "adminControlledNotificationAutomation": true,
+
+  "notificationAutomationStyle": "advanced_ai_notification_system",
+
+  "enablePushNotifications": true,
+
+  "enableEmailNotifications": true,
+
+  "enableWhatsAppNotifications": true,
+
+  "enableSMSNotifications": false,
+
+  "enableInAppNotifications": true,
+
+  "enableRealtimeNotifications": true,
+
+  "enableOrderNotifications": true,
+
+  "enablePaymentNotifications": true,
+
+  "enableWalletNotifications": true,
+
+  "enableAffiliateNotifications": true,
+
+  "enableResellerNotifications": true,
+
+  "enableMLMNotifications": true,
+
+  "enableSellerNotifications": true,
+
+  "enableTrainingNotifications": true,
+
+  "enableMarketingNotifications": true,
+
+  "enableSecurityNotifications": true,
+
+  "enableAIRecommendedNotifications": true,
+
+  "enableAISmartScheduling": true,
+
+  "enableNotificationAnalytics": true,
+
+  "enableNotificationTemplates": true,
+
+  "enableDynamicNotificationContent": true,
+
+  "enableUserNotificationPreferences": true,
+
+  "enableBulkNotifications": true,
+
+  "enableScheduledNotifications": true,
+
+  "enableNotificationLogs": true,
+
+  "notificationChannels": [
+    {
+      "channelId": "push",
+
+      "channelName": "Push Notification",
+
+      "enabled": true
+    },
+
+    {
+      "channelId": "email",
+
+      "channelName": "Email Notification",
+
+      "enabled": true
+    },
+
+    {
+      "channelId": "whatsapp",
+
+      "channelName": "WhatsApp Notification",
+
+      "enabled": true
+    },
+
+    {
+      "channelId": "in_app",
+
+      "channelName": "In App Notification",
+
+      "enabled": true
+    }
+  ],
+
+  "desktopLayoutStyle": "advanced_notification_dashboard",
+
+  "mobileLayoutStyle": "stacked_mobile_notification_dashboard"
+}
