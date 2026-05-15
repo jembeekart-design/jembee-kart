@@ -1,3 +1,0 @@
-export const CART_COLLECTION = "cart";
-
-// THEME ADMIN PANEL SE CHANGE HOGA
