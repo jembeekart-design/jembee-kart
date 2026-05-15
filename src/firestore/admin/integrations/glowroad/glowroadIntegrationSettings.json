@@ -1,0 +1,92 @@
+{
+  "glowroadIntegrationEnabled": true,
+
+  "adminControlledGlowroadIntegration": true,
+
+  "platformName": "GlowRoad",
+
+  "platformType": "reseller_marketplace",
+
+  "integrationMode": "catalog_sync_based",
+
+  "apiConfiguration": {
+    "apiKey": "",
+
+    "apiSecret": "",
+
+    "partnerId": "",
+
+    "webhookSecret": ""
+  },
+
+  "catalogSettings": {
+    "enableCatalogImport": true,
+
+    "enableRealtimeCatalogSync": true,
+
+    "enableAutomaticCategoryMapping": true,
+
+    "enableSupplierProductSync": true
+  },
+
+  "resellerSettings": {
+    "enableResellerProgram": true,
+
+    "enableProfitMarginControl": true,
+
+    "enableCustomSellingPrice": true,
+
+    "enableOneClickReselling": true,
+
+    "enableWhatsappSharing": true
+  },
+
+  "orderManagementSettings": {
+    "enableOrderSync": true,
+
+    "enableRealtimeOrderTracking": true,
+
+    "enableAutomaticOrderUpdates": true,
+
+    "enableCODOrders": true,
+
+    "enablePrepaidOrders": true
+  },
+
+  "commissionSettings": {
+    "enableCommissionTracking": true,
+
+    "defaultCommissionPercentage": 20,
+
+    "enableLevelBasedCommission": true,
+
+    "enableReferralCommission": true
+  },
+
+  "analyticsSettings": {
+    "enableSalesAnalytics": true,
+
+    "enableTopResellerTracking": true,
+
+    "enableProductPerformanceAnalytics": true,
+
+    "enableRealtimeReports": true
+  },
+
+  "supportedFeatures": [
+    "catalog_reselling",
+    "whatsapp_selling",
+    "supplier_products",
+    "commission_earning",
+    "reseller_dashboard",
+    "mobile_reselling"
+  ],
+
+  "uiSettings": {
+    "dashboardStyle": "modern_reseller_dashboard",
+
+    "catalogCardStyle": "premium_catalog_cards",
+
+    "productSharingStyle": "one_click_share_buttons"
+  }
+}
