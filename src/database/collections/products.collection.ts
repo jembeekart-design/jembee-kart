@@ -1,3 +1,0 @@
-export const PRODUCTS_COLLECTION = "products";
-
-// THEME ADMIN PANEL SE CHANGE HOGA

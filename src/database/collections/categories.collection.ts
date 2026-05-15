@@ -1,3 +1,0 @@
-export const CATEGORIES_COLLECTION = "categories";
-
-// THEME ADMIN PANEL SE CHANGE HOGA

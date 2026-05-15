@@ -1,3 +1,0 @@
-export const WISHLIST_COLLECTION = "wishlist";
-
-// THEME ADMIN PANEL SE CHANGE HOGA
