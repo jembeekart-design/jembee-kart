@@ -1,0 +1,163 @@
+{
+  "sellerDashboardEnabled": true,
+
+  "adminControlledSellerDashboard": true,
+
+  "sellerDashboardStyle": "modern_multivendor_business_dashboard",
+
+  "sellerDashboardLayoutType": "dynamic_drag_drop_layout",
+
+  "enableDynamicSections": true,
+
+  "enableRealtimeDashboardUpdates": true,
+
+  "enableDragAndDropSections": true,
+
+  "enableDarkModeSupport": true,
+
+  "enableGlassmorphismEffects": true,
+
+  "enableAIRecommendations": true,
+
+  "enableAnimatedSections": true,
+
+  "enableResponsiveLayouts": true,
+
+  "sellerDashboardContainerSettings": {
+    "backgroundColor": "#f1f3f6",
+
+    "maxWidth": "100%",
+
+    "padding": "20px",
+
+    "gapBetweenSections": "20px"
+  },
+
+  "sellerDashboardSections": [
+    {
+      "sectionId": "store_overview",
+
+      "sectionTitle": "Store Overview",
+
+      "sectionType": "analytics_cards",
+
+      "visible": true,
+
+      "position": 1,
+
+      "sectionStyle": "gradient_business_cards"
+    },
+
+    {
+      "sectionId": "recent_orders",
+
+      "sectionTitle": "Recent Orders",
+
+      "sectionType": "orders_table",
+
+      "visible": true,
+
+      "position": 2,
+
+      "sectionStyle": "modern_orders_table"
+    },
+
+    {
+      "sectionId": "inventory_management",
+
+      "sectionTitle": "Inventory Management",
+
+      "sectionType": "inventory_cards",
+
+      "visible": true,
+
+      "position": 3,
+
+      "sectionStyle": "premium_inventory_cards"
+    },
+
+    {
+      "sectionId": "supplier_management",
+
+      "sectionTitle": "Supplier Management",
+
+      "sectionType": "supplier_cards",
+
+      "visible": true,
+
+      "position": 4,
+
+      "sectionStyle": "modern_supplier_cards"
+    },
+
+    {
+      "sectionId": "revenue_analytics",
+
+      "sectionTitle": "Revenue Analytics",
+
+      "sectionType": "analytics_graphs",
+
+      "visible": true,
+
+      "position": 5,
+
+      "sectionStyle": "gradient_chart_cards"
+    },
+
+    {
+      "sectionId": "affiliate_reseller_tools",
+
+      "sectionTitle": "Affiliate & Reseller Tools",
+
+      "sectionType": "business_tools",
+
+      "visible": true,
+
+      "position": 6,
+
+      "sectionStyle": "business_growth_tool_cards"
+    },
+
+    {
+      "sectionId": "ai_store_optimization",
+
+      "sectionTitle": "AI Store Optimization",
+
+      "sectionType": "ai_optimization_cards",
+
+      "visible": true,
+
+      "position": 7,
+
+      "sectionStyle": "glassmorphism_ai_cards"
+    },
+
+    {
+      "sectionId": "business_training",
+
+      "sectionTitle": "Seller Growth Academy",
+
+      "sectionType": "training_courses",
+
+      "visible": true,
+
+      "position": 8,
+
+      "sectionStyle": "premium_training_cards"
+    },
+
+    {
+      "sectionId": "notifications",
+
+      "sectionTitle": "Seller Notifications",
+
+      "sectionType": "notification_center",
+
+      "visible": true,
+
+      "position": 9,
+
+      "sectionStyle": "modern_notification_cards"
+    }
+  ]
+}
