@@ -1,0 +1,231 @@
+{
+  "mlmSystemEnabled": true,
+
+  "mlmSystemStyle": "modern_network_marketing_system",
+
+  "adminControlledMLMSystem": true,
+
+  "enableReferralRegistration": true,
+
+  "enableReferralCodeSystem": true,
+
+  "enableReferralLinkSystem": true,
+
+  "enableAutomaticTeamPlacement": true,
+
+  "enableBinaryMLMPlan": false,
+
+  "enableLevelBasedMLMPlan": true,
+
+  "enableMatrixMLMPlan": false,
+
+  "enableUnilevelMLMPlan": true,
+
+  "enableDailyIncomeTracking": true,
+
+  "enableTeamIncomeTracking": true,
+
+  "enablePassiveIncomeTracking": true,
+
+  "enableReferralWallet": true,
+
+  "enableWithdrawalSystem": true,
+
+  "enableMLMAnalytics": true,
+
+  "enableTeamLeaderboard": true,
+
+  "enableReferralRewards": true,
+
+  "enableRankAchievementSystem": true,
+
+  "enableAIReferralGrowthTips": true,
+
+  "enableTrainingAcademy": true,
+
+  "enableReferralNotifications": true,
+
+  "enableTeamPerformanceReports": true,
+
+  "mlmDashboardStyle": "modern_mlm_dashboard",
+
+  "mlmCardStyle": "gradient_income_cards",
+
+  "mlmButtonStyle": "rounded_gradient_buttons",
+
+  "defaultDirectReferralCommissionPercentage": 10,
+
+  "defaultLevelIncomePercentage": 5,
+
+  "maximumMLMLevels": 10,
+
+  "minimumWithdrawalAmount": 100,
+
+  "withdrawalProcessingTime": "24_hours",
+
+  "supportedWithdrawalMethods": [
+    "upi",
+    "bank_transfer",
+    "paypal"
+  ],
+
+  "rankSystem": [
+    {
+      "id": "bronze",
+
+      "title": "Bronze Member",
+
+      "requiredTeamSize": 10,
+
+      "reward": "Bronze Badge"
+    },
+
+    {
+      "id": "silver",
+
+      "title": "Silver Member",
+
+      "requiredTeamSize": 50,
+
+      "reward": "Silver Badge"
+    },
+
+    {
+      "id": "gold",
+
+      "title": "Gold Member",
+
+      "requiredTeamSize": 200,
+
+      "reward": "Gold Badge"
+    },
+
+    {
+      "id": "diamond",
+
+      "title": "Diamond Leader",
+
+      "requiredTeamSize": 1000,
+
+      "reward": "Diamond Trophy"
+    }
+  ],
+
+  "mlmTrainingSections": [
+    {
+      "id": "mlm_intro",
+
+      "title": "Introduction To MLM",
+
+      "visible": true,
+
+      "position": 1
+    },
+
+    {
+      "id": "team_building",
+
+      "title": "How To Build Team",
+
+      "visible": true,
+
+      "position": 2
+    },
+
+    {
+      "id": "referral_strategy",
+
+      "title": "Referral Strategy",
+
+      "visible": true,
+
+      "position": 3
+    },
+
+    {
+      "id": "passive_income",
+
+      "title": "Passive Income System",
+
+      "visible": true,
+
+      "position": 4
+    },
+
+    {
+      "id": "social_growth",
+
+      "title": "Social Growth Tips",
+
+      "visible": true,
+
+      "position": 5
+    }
+  ],
+
+  "mlmDashboardSections": [
+    {
+      "id": "direct_income",
+
+      "title": "Direct Income",
+
+      "visible": true,
+
+      "position": 1
+    },
+
+    {
+      "id": "level_income",
+
+      "title": "Level Income",
+
+      "visible": true,
+
+      "position": 2
+    },
+
+    {
+      "id": "team_members",
+
+      "title": "Team Members",
+
+      "visible": true,
+
+      "position": 3
+    },
+
+    {
+      "id": "rank_progress",
+
+      "title": "Rank Progress",
+
+      "visible": true,
+
+      "position": 4
+    },
+
+    {
+      "id": "withdrawal_history",
+
+      "title": "Withdrawal History",
+
+      "visible": true,
+
+      "position": 5
+    },
+
+    {
+      "id": "ai_growth_tips",
+
+      "title": "AI MLM Growth Tips",
+
+      "visible": true,
+
+      "position": 6
+    }
+  ],
+
+  "desktopLayoutStyle": "sidebar_mlm_dashboard",
+
+  "mobileLayoutStyle": "stacked_mobile_mlm_dashboard"
+}
