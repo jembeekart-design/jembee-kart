@@ -21,5 +21,19 @@ jobs:
       - name: Install Dependencies
         run: npm install
 
+      - name: Check Firebase Config
+        run: |
+          echo "Checking firebase config..."
+          ls -la src/firebase
+          cat src/firebase/config.ts
+
+      - name: Check App Imports
+        run: |
+          echo "Checking imports..."
+          grep -R "@/firebase/config" src || true
+
+      - name: Type Check
+        run: npx tsc --noEmit
+
       - name: Build App
         run: npm run build
