@@ -1,0 +1,102 @@
+{
+  "loginPageEnabled": true,
+
+  "loginPageStyle": "modern_flipkart_login",
+
+  "adminControlledLoginPage": true,
+
+  "pageBackgroundType": "gradient_background",
+
+  "pageBackgroundColor": "#f1f3f6",
+
+  "pageGradientColors": [
+    "#2874f0",
+    "#4f46e5"
+  ],
+
+  "loginContainerBackgroundColor": "#ffffff",
+
+  "loginContainerBorderRadius": "24px",
+
+  "loginContainerShadow": "soft_shadow",
+
+  "enableGlassmorphismLogin": false,
+
+  "enableLoginAnimations": true,
+
+  "enableFloatingShapes": true,
+
+  "enableAIBackgroundEffects": true,
+
+  "showLogo": true,
+
+  "showWelcomeText": true,
+
+  "welcomeTitle": "Welcome Back to JembeeKart",
+
+  "welcomeSubtitle": "Login to continue shopping and earning",
+
+  "showEmailLogin": true,
+
+  "showPhoneLogin": true,
+
+  "showGoogleLogin": true,
+
+  "showFacebookLogin": false,
+
+  "showAppleLogin": false,
+
+  "showForgotPassword": true,
+
+  "showRememberMe": true,
+
+  "showSignupRedirect": true,
+
+  "showTermsAndConditions": true,
+
+  "showPrivacyPolicy": true,
+
+  "showAIHelperSection": true,
+
+  "showBusinessBenefitsSection": true,
+
+  "enableOTPLogin": true,
+
+  "enableMagicLinkLogin": false,
+
+  "loginInputStyle": "rounded_glass_input",
+
+  "loginButtonStyle": "primary_gradient_button",
+
+  "socialLoginButtonStyle": "modern_social_buttons",
+
+  "businessBenefits": [
+    {
+      "id": "shopping",
+      "title": "Smart Shopping",
+      "description": "Shop trending products at best prices"
+    },
+
+    {
+      "id": "reselling",
+      "title": "Reseller Business",
+      "description": "Earn profit by reselling products"
+    },
+
+    {
+      "id": "affiliate",
+      "title": "Affiliate Earnings",
+      "description": "Share products and earn commissions"
+    },
+
+    {
+      "id": "mlm",
+      "title": "MLM Referral Income",
+      "description": "Build team and earn passive income"
+    }
+  ],
+
+  "desktopLayoutStyle": "left_banner_right_login",
+
+  "mobileLayoutStyle": "stacked_mobile_login"
+}
