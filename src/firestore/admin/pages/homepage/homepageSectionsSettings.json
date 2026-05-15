@@ -1,0 +1,179 @@
+{
+  "homepageEnabled": true,
+
+  "adminControlledHomepage": true,
+
+  "homepageStyle": "flipkart_ai_business_homepage",
+
+  "homepageLayoutType": "dynamic_drag_drop_layout",
+
+  "enableDynamicSections": true,
+
+  "enableRealtimeHomepageUpdates": true,
+
+  "enableDragAndDropSections": true,
+
+  "enableDarkModeSupport": true,
+
+  "enableGlassmorphismEffects": true,
+
+  "enableAIRecommendations": true,
+
+  "enablePersonalizedHomepage": true,
+
+  "enableAnimatedSections": true,
+
+  "enableResponsiveLayouts": true,
+
+  "homepageContainerSettings": {
+    "backgroundColor": "#f1f3f6",
+
+    "maxWidth": "100%",
+
+    "padding": "0px",
+
+    "gapBetweenSections": "20px"
+  },
+
+  "homepageSections": [
+    {
+      "sectionId": "hero_banner",
+
+      "sectionTitle": "Hero Banner",
+
+      "sectionType": "banner_slider",
+
+      "visible": true,
+
+      "position": 1,
+
+      "sectionStyle": "fullwidth_animated_slider"
+    },
+
+    {
+      "sectionId": "top_categories",
+
+      "sectionTitle": "Top Categories",
+
+      "sectionType": "category_grid",
+
+      "visible": true,
+
+      "position": 2,
+
+      "sectionStyle": "rounded_scrollable_categories"
+    },
+
+    {
+      "sectionId": "flash_sale",
+
+      "sectionTitle": "Flash Sale",
+
+      "sectionType": "product_slider",
+
+      "visible": true,
+
+      "position": 3,
+
+      "sectionStyle": "countdown_flash_sale_cards"
+    },
+
+    {
+      "sectionId": "trending_products",
+
+      "sectionTitle": "Trending Products",
+
+      "sectionType": "product_grid",
+
+      "visible": true,
+
+      "position": 4,
+
+      "sectionStyle": "modern_product_grid"
+    },
+
+    {
+      "sectionId": "reseller_products",
+
+      "sectionTitle": "Reseller Products",
+
+      "sectionType": "reseller_product_slider",
+
+      "visible": true,
+
+      "position": 5,
+
+      "sectionStyle": "business_product_cards"
+    },
+
+    {
+      "sectionId": "affiliate_products",
+
+      "sectionTitle": "Affiliate Products",
+
+      "sectionType": "affiliate_product_slider",
+
+      "visible": true,
+
+      "position": 6,
+
+      "sectionStyle": "affiliate_highlight_cards"
+    },
+
+    {
+      "sectionId": "seller_stores",
+
+      "sectionTitle": "Top Seller Stores",
+
+      "sectionType": "seller_store_grid",
+
+      "visible": true,
+
+      "position": 7,
+
+      "sectionStyle": "modern_store_cards"
+    },
+
+    {
+      "sectionId": "business_training",
+
+      "sectionTitle": "Business Growth Academy",
+
+      "sectionType": "training_section",
+
+      "visible": true,
+
+      "position": 8,
+
+      "sectionStyle": "premium_training_cards"
+    },
+
+    {
+      "sectionId": "ai_business_tips",
+
+      "sectionTitle": "AI Business Tips",
+
+      "sectionType": "ai_tips_slider",
+
+      "visible": true,
+
+      "position": 9,
+
+      "sectionStyle": "glassmorphism_ai_cards"
+    },
+
+    {
+      "sectionId": "footer",
+
+      "sectionTitle": "Footer",
+
+      "sectionType": "footer_section",
+
+      "visible": true,
+
+      "position": 10,
+
+      "sectionStyle": "modern_footer_layout"
+    }
+  ]
+}
