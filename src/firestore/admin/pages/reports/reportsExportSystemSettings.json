@@ -1,0 +1,95 @@
+{
+  "reportsExportSystemEnabled": true,
+
+  "adminControlledReportsExport": true,
+
+  "reportsExportStyle": "advanced_ai_reports_export_system",
+
+  "enableSalesReports": true,
+
+  "enableOrderReports": true,
+
+  "enableUserReports": true,
+
+  "enableAffiliateReports": true,
+
+  "enableResellerReports": true,
+
+  "enableMLMReports": true,
+
+  "enableSellerReports": true,
+
+  "enableWalletReports": true,
+
+  "enableInventoryReports": true,
+
+  "enableTaxReports": true,
+
+  "enableGSTReports": true,
+
+  "enableAIInsightsReports": true,
+
+  "enableRealtimeReports": true,
+
+  "enableScheduledReports": true,
+
+  "enableAutomaticEmailReports": true,
+
+  "enableExportPDF": true,
+
+  "enableExportExcel": true,
+
+  "enableExportCSV": true,
+
+  "enableExportJSON": true,
+
+  "enableCustomReportBuilder": true,
+
+  "enableRealtimeAnalyticsReports": true,
+
+  "enableDataVisualizationReports": true,
+
+  "enableAITrendReports": true,
+
+  "enableBusinessForecastReports": true,
+
+  "enableReportAccessControl": true,
+
+  "reportModules": [
+    {
+      "moduleId": "sales_reports",
+
+      "moduleName": "Sales Reports",
+
+      "enabled": true
+    },
+
+    {
+      "moduleId": "order_reports",
+
+      "moduleName": "Order Reports",
+
+      "enabled": true
+    },
+
+    {
+      "moduleId": "affiliate_reports",
+
+      "moduleName": "Affiliate Reports",
+
+      "enabled": true
+    },
+
+    {
+      "moduleId": "wallet_reports",
+
+      "moduleName": "Wallet Reports",
+
+      "enabled": true
+    }
+  ],
+
+  "desktopLayoutStyle": "advanced_reports_dashboard",
+
+  "mobileLayoutStyle": "stacked_mobile_reports_dashboard"
+}
