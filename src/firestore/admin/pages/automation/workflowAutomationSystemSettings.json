@@ -1,0 +1,91 @@
+{
+  "workflowAutomationSystemEnabled": true,
+
+  "adminControlledWorkflowAutomation": true,
+
+  "workflowAutomationStyle": "advanced_ai_workflow_automation_system",
+
+  "enableRealtimeWorkflowExecution": true,
+
+  "enableDragDropWorkflowBuilder": true,
+
+  "enableConditionalLogic": true,
+
+  "enableAutomatedEmailFlows": true,
+
+  "enableAutomatedWhatsAppFlows": true,
+
+  "enableAutomatedNotifications": true,
+
+  "enableAutomatedOrderFlows": true,
+
+  "enableAutomatedCommissionDistribution": true,
+
+  "enableAutomatedWalletTransactions": true,
+
+  "enableAutomatedSupplierRouting": true,
+
+  "enableAutomatedRefundProcessing": true,
+
+  "enableAutomatedTrainingFlows": true,
+
+  "enableAIWorkflowSuggestions": true,
+
+  "enableAIWorkflowOptimization": true,
+
+  "enableWorkflowAnalytics": true,
+
+  "enableWorkflowErrorTracking": true,
+
+  "enableWorkflowVersioning": true,
+
+  "enableWorkflowTemplates": true,
+
+  "enableCustomWorkflowTriggers": true,
+
+  "enableWebhookTriggers": true,
+
+  "enableScheduledWorkflows": true,
+
+  "enableRealtimeWorkflowLogs": true,
+
+  "enableWorkflowSecurityControls": true,
+
+  "workflowModules": [
+    {
+      "moduleId": "order_automation",
+
+      "moduleName": "Order Automation",
+
+      "enabled": true
+    },
+
+    {
+      "moduleId": "wallet_automation",
+
+      "moduleName": "Wallet Automation",
+
+      "enabled": true
+    },
+
+    {
+      "moduleId": "marketing_automation",
+
+      "moduleName": "Marketing Automation",
+
+      "enabled": true
+    },
+
+    {
+      "moduleId": "support_automation",
+
+      "moduleName": "Support Automation",
+
+      "enabled": true
+    }
+  ],
+
+  "desktopLayoutStyle": "advanced_workflow_dashboard",
+
+  "mobileLayoutStyle": "stacked_mobile_workflow_dashboard"
+}
