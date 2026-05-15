@@ -1,0 +1,95 @@
+{
+  "socialCommerceSystemEnabled": true,
+
+  "adminControlledSocialCommerce": true,
+
+  "socialCommerceStyle": "advanced_ai_social_commerce_system",
+
+  "enableSocialProductSharing": true,
+
+  "enableWhatsAppCommerce": true,
+
+  "enableInstagramCommerce": true,
+
+  "enableFacebookCommerce": true,
+
+  "enableTelegramCommerce": true,
+
+  "enableYouTubeCommerce": true,
+
+  "enableSocialAffiliateLinks": true,
+
+  "enableSocialResellerLinks": true,
+
+  "enableSocialReferralTracking": true,
+
+  "enableInfluencerCollaborations": true,
+
+  "enableCreatorDashboards": true,
+
+  "enableRealtimeSocialAnalytics": true,
+
+  "enableAISocialCaptions": true,
+
+  "enableAISocialHashtags": true,
+
+  "enableAISocialPostSuggestions": true,
+
+  "enableSocialCampaignTracking": true,
+
+  "enableSocialEngagementTracking": true,
+
+  "enableSocialReviews": true,
+
+  "enableSocialLogin": true,
+
+  "enableSocialNotifications": true,
+
+  "enableSocialRewards": true,
+
+  "enableViralReferralPrograms": true,
+
+  "enableLiveSocialSelling": true,
+
+  "enableSocialStories": false,
+
+  "enableSocialFeed": true,
+
+  "socialPlatforms": [
+    {
+      "platformId": "whatsapp",
+
+      "platformName": "WhatsApp",
+
+      "enabled": true
+    },
+
+    {
+      "platformId": "instagram",
+
+      "platformName": "Instagram",
+
+      "enabled": true
+    },
+
+    {
+      "platformId": "facebook",
+
+      "platformName": "Facebook",
+
+      "enabled": true
+    },
+
+    {
+      "platformId": "youtube",
+
+      "platformName": "YouTube",
+
+      "enabled": true
+    }
+  ],
+
+  "desktopLayoutStyle": "advanced_social_dashboard",
+
+  "mobileLayoutStyle": "stacked_mobile_social_dashboard"
+}
