@@ -1,0 +1,107 @@
+{
+  "productCardEnabled": true,
+
+  "productCardStyle": "flipkart_modern_product_card",
+
+  "adminControlledProductCard": true,
+
+  "cardBackgroundColor": "#ffffff",
+
+  "cardTextColor": "#111827",
+
+  "cardBorderRadius": "18px",
+
+  "cardShadow": "soft_shadow",
+
+  "cardHoverAnimation": "lift_hover_effect",
+
+  "cardSpacing": "20px",
+
+  "cardPadding": "16px",
+
+  "showProductImage": true,
+
+  "productImageStyle": "contain",
+
+  "productImageHeightDesktop": "260px",
+
+  "productImageHeightMobile": "180px",
+
+  "showProductTitle": true,
+
+  "showProductDescription": false,
+
+  "showProductPrice": true,
+
+  "showDiscountPrice": true,
+
+  "showDiscountPercentage": true,
+
+  "showRating": true,
+
+  "showStockStatus": true,
+
+  "showWishlistButton": true,
+
+  "showAddToCartButton": true,
+
+  "showBuyNowButton": true,
+
+  "showResellerButton": true,
+
+  "showAffiliateButton": true,
+
+  "showShareButton": true,
+
+  "showQuickViewButton": true,
+
+  "addToCartButtonStyle": "gradient_primary_button",
+
+  "buyNowButtonStyle": "solid_buy_button",
+
+  "wishlistButtonStyle": "icon_circle_button",
+
+  "productGridDesktopColumns": 5,
+
+  "productGridTabletColumns": 3,
+
+  "productGridMobileColumns": 2,
+
+  "enableInfiniteScroll": true,
+
+  "enableProductHoverPreview": true,
+
+  "enableDynamicProductBadges": true,
+
+  "productBadges": [
+    {
+      "type": "trending",
+
+      "label": "Trending",
+
+      "backgroundColor": "#ef4444",
+
+      "textColor": "#ffffff"
+    },
+
+    {
+      "type": "best_seller",
+
+      "label": "Best Seller",
+
+      "backgroundColor": "#22c55e",
+
+      "textColor": "#ffffff"
+    },
+
+    {
+      "type": "new_arrival",
+
+      "label": "New",
+
+      "backgroundColor": "#3b82f6",
+
+      "textColor": "#ffffff"
+    }
+  ]
+}
