@@ -1,0 +1,159 @@
+{
+  "aiPopupAssistantEnabled": true,
+
+  "aiPopupAssistantStyle": "modern_floating_ai_assistant",
+
+  "adminControlledAIPopupAssistant": true,
+
+  "assistantName": "Jembee AI Girl",
+
+  "assistantRole": "Business Growth Assistant",
+
+  "assistantAvatarStyle": "professional_ai_girl_avatar",
+
+  "assistantPositionDesktop": "bottom_right",
+
+  "assistantPositionMobile": "bottom_center",
+
+  "assistantPopupAnimation": "floating_bounce_animation",
+
+  "assistantBackgroundStyle": "glassmorphism_popup",
+
+  "assistantPrimaryColor": "#2874f0",
+
+  "assistantSecondaryColor": "#7c3aed",
+
+  "assistantTextColor": "#ffffff",
+
+  "assistantBorderRadius": "24px",
+
+  "assistantShadowStyle": "soft_glow_shadow",
+
+  "enableVoiceAssistant": true,
+
+  "enableAIChatSuggestions": true,
+
+  "enableRealtimeBusinessTips": true,
+
+  "enableSmartRecommendations": true,
+
+  "enablePageBasedSuggestions": true,
+
+  "enableMultilanguageSupport": true,
+
+  "enableAIAnimations": true,
+
+  "enableAutoPopupMessages": true,
+
+  "enableVoicePlayback": true,
+
+  "enableTextChat": true,
+
+  "enableQuickReplyButtons": true,
+
+  "enableBusinessCoachingMode": true,
+
+  "enableShoppingAssistantMode": true,
+
+  "enableAffiliateTrainingMode": true,
+
+  "enableResellerTrainingMode": true,
+
+  "enableMLMCoachingMode": true,
+
+  "enableSellerGrowthMode": true,
+
+  "showOnHomepage": true,
+
+  "showOnProductPages": true,
+
+  "showOnDashboard": true,
+
+  "showOnAffiliatePages": true,
+
+  "showOnResellerPages": true,
+
+  "showOnSellerPages": true,
+
+  "showOnCheckoutPages": false,
+
+  "supportedLanguages": [
+    "english",
+    "hindi",
+    "urdu",
+    "bengali",
+    "tamil"
+  ],
+
+  "assistantQuickReplies": [
+    {
+      "id": "start_reselling",
+
+      "title": "How To Start Reselling?",
+
+      "enabled": true
+    },
+
+    {
+      "id": "affiliate_income",
+
+      "title": "How Affiliate Income Works?",
+
+      "enabled": true
+    },
+
+    {
+      "id": "mlm_growth",
+
+      "title": "How To Grow MLM Team?",
+
+      "enabled": true
+    },
+
+    {
+      "id": "seller_tips",
+
+      "title": "Seller Growth Tips",
+
+      "enabled": true
+    },
+
+    {
+      "id": "wallet_help",
+
+      "title": "Wallet & Withdrawal Help",
+
+      "enabled": true
+    }
+  ],
+
+  "autoPopupMessages": [
+    {
+      "id": "welcome_message",
+
+      "message": "Welcome to JembeeKart! Need help growing your online business?",
+
+      "enabled": true
+    },
+
+    {
+      "id": "reseller_tip",
+
+      "message": "You can start reselling products without inventory investment.",
+
+      "enabled": true
+    },
+
+    {
+      "id": "affiliate_tip",
+
+      "message": "Share affiliate links and earn commissions on every order.",
+
+      "enabled": true
+    }
+  ],
+
+  "desktopLayoutStyle": "floating_ai_popup_layout",
+
+  "mobileLayoutStyle": "bottom_sheet_ai_popup_layout"
+}
