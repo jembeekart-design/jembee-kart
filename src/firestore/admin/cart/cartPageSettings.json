@@ -1,0 +1,111 @@
+{
+  "cartPageEnabled": true,
+
+  "cartPageStyle": "flipkart_modern_cart_page",
+
+  "adminControlledCartPage": true,
+
+  "pageBackgroundColor": "#f1f3f6",
+
+  "cartContainerBackgroundColor": "#ffffff",
+
+  "cartContainerBorderRadius": "20px",
+
+  "cartContainerShadow": "soft_shadow",
+
+  "enableCartAnimations": true,
+
+  "enableStickyPriceSummary": true,
+
+  "showCartProductImage": true,
+
+  "showProductTitle": true,
+
+  "showProductPrice": true,
+
+  "showDiscountPrice": true,
+
+  "showQuantitySelector": true,
+
+  "showRemoveButton": true,
+
+  "showSaveForLaterButton": true,
+
+  "showWishlistMoveButton": true,
+
+  "showDeliveryEstimate": true,
+
+  "showStockStatus": true,
+
+  "showCouponSection": true,
+
+  "showWalletBalance": true,
+
+  "showAffiliateCommissionInfo": true,
+
+  "showResellerProfitInfo": true,
+
+  "showMLMRewardInfo": true,
+
+  "showRecommendedProducts": true,
+
+  "showRecentlyViewedProducts": true,
+
+  "showEmptyCartAnimation": true,
+
+  "showContinueShoppingButton": true,
+
+  "showProceedToCheckoutButton": true,
+
+  "couponInputStyle": "rounded_coupon_input",
+
+  "quantitySelectorStyle": "modern_quantity_selector",
+
+  "checkoutButtonStyle": "primary_gradient_button",
+
+  "continueShoppingButtonStyle": "secondary_outline_button",
+
+  "priceSummaryStyle": "modern_price_summary_card",
+
+  "desktopLayoutStyle": "left_cart_right_summary",
+
+  "mobileLayoutStyle": "stacked_mobile_cart",
+
+  "priceSummarySections": [
+    {
+      "id": "subtotal",
+      "title": "Subtotal",
+      "visible": true
+    },
+
+    {
+      "id": "discount",
+      "title": "Discount",
+      "visible": true
+    },
+
+    {
+      "id": "coupon_discount",
+      "title": "Coupon Discount",
+      "visible": true
+    },
+
+    {
+      "id": "delivery_charge",
+      "title": "Delivery Charge",
+      "visible": true
+    },
+
+    {
+      "id": "wallet_deduction",
+      "title": "Wallet Deduction",
+      "visible": true
+    },
+
+    {
+      "id": "final_total",
+      "title": "Total Amount",
+      "visible": true
+    }
+  ]
+}
