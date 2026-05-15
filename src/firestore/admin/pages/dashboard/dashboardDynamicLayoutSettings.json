@@ -1,0 +1,163 @@
+{
+  "dashboardPageEnabled": true,
+
+  "adminControlledDashboardPage": true,
+
+  "dashboardStyle": "modern_ai_business_dashboard",
+
+  "dashboardLayoutType": "dynamic_drag_drop_layout",
+
+  "enableDynamicSections": true,
+
+  "enableRealtimeDashboardUpdates": true,
+
+  "enableDragAndDropSections": true,
+
+  "enableDarkModeSupport": true,
+
+  "enableGlassmorphismEffects": true,
+
+  "enableAIRecommendations": true,
+
+  "enableAnimatedSections": true,
+
+  "enableResponsiveLayouts": true,
+
+  "dashboardContainerSettings": {
+    "backgroundColor": "#f1f3f6",
+
+    "maxWidth": "100%",
+
+    "padding": "20px",
+
+    "gapBetweenSections": "20px"
+  },
+
+  "dashboardSections": [
+    {
+      "sectionId": "wallet_overview",
+
+      "sectionTitle": "Wallet Overview",
+
+      "sectionType": "wallet_card",
+
+      "visible": true,
+
+      "position": 1,
+
+      "sectionStyle": "gradient_balance_cards"
+    },
+
+    {
+      "sectionId": "recent_orders",
+
+      "sectionTitle": "Recent Orders",
+
+      "sectionType": "order_table",
+
+      "visible": true,
+
+      "position": 2,
+
+      "sectionStyle": "modern_order_table"
+    },
+
+    {
+      "sectionId": "affiliate_earnings",
+
+      "sectionTitle": "Affiliate Earnings",
+
+      "sectionType": "analytics_cards",
+
+      "visible": true,
+
+      "position": 3,
+
+      "sectionStyle": "affiliate_gradient_cards"
+    },
+
+    {
+      "sectionId": "reseller_earnings",
+
+      "sectionTitle": "Reseller Earnings",
+
+      "sectionType": "analytics_cards",
+
+      "visible": true,
+
+      "position": 4,
+
+      "sectionStyle": "reseller_gradient_cards"
+    },
+
+    {
+      "sectionId": "mlm_income",
+
+      "sectionTitle": "MLM Income",
+
+      "sectionType": "analytics_cards",
+
+      "visible": true,
+
+      "position": 5,
+
+      "sectionStyle": "mlm_gradient_cards"
+    },
+
+    {
+      "sectionId": "seller_store",
+
+      "sectionTitle": "Seller Store Analytics",
+
+      "sectionType": "store_analytics",
+
+      "visible": true,
+
+      "position": 6,
+
+      "sectionStyle": "modern_store_analytics_cards"
+    },
+
+    {
+      "sectionId": "ai_business_tips",
+
+      "sectionTitle": "AI Business Tips",
+
+      "sectionType": "ai_tips_slider",
+
+      "visible": true,
+
+      "position": 7,
+
+      "sectionStyle": "glassmorphism_ai_cards"
+    },
+
+    {
+      "sectionId": "business_training",
+
+      "sectionTitle": "Business Training Academy",
+
+      "sectionType": "training_courses",
+
+      "visible": true,
+
+      "position": 8,
+
+      "sectionStyle": "premium_training_cards"
+    },
+
+    {
+      "sectionId": "notifications",
+
+      "sectionTitle": "Notifications",
+
+      "sectionType": "notification_center",
+
+      "visible": true,
+
+      "position": 9,
+
+      "sectionStyle": "modern_notification_cards"
+    }
+  ]
+}
