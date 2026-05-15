@@ -1,0 +1,165 @@
+{
+  "productPageEnabled": true,
+
+  "adminControlledProductPage": true,
+
+  "productPageStyle": "flipkart_ai_product_page",
+
+  "productPageLayoutType": "dynamic_drag_drop_layout",
+
+  "enableDynamicSections": true,
+
+  "enableRealtimeProductPageUpdates": true,
+
+  "enableDragAndDropSections": true,
+
+  "enableDarkModeSupport": true,
+
+  "enableGlassmorphismEffects": true,
+
+  "enableAIRecommendations": true,
+
+  "enablePersonalizedProductSuggestions": true,
+
+  "enableAnimatedSections": true,
+
+  "enableResponsiveLayouts": true,
+
+  "productPageContainerSettings": {
+    "backgroundColor": "#f1f3f6",
+
+    "maxWidth": "100%",
+
+    "padding": "20px",
+
+    "gapBetweenSections": "20px"
+  },
+
+  "productPageSections": [
+    {
+      "sectionId": "product_gallery",
+
+      "sectionTitle": "Product Gallery",
+
+      "sectionType": "image_gallery",
+
+      "visible": true,
+
+      "position": 1,
+
+      "sectionStyle": "zoomable_modern_gallery"
+    },
+
+    {
+      "sectionId": "product_information",
+
+      "sectionTitle": "Product Information",
+
+      "sectionType": "product_details",
+
+      "visible": true,
+
+      "position": 2,
+
+      "sectionStyle": "premium_product_details_card"
+    },
+
+    {
+      "sectionId": "price_and_offers",
+
+      "sectionTitle": "Price & Offers",
+
+      "sectionType": "pricing_section",
+
+      "visible": true,
+
+      "position": 3,
+
+      "sectionStyle": "offer_highlight_cards"
+    },
+
+    {
+      "sectionId": "affiliate_and_reseller",
+
+      "sectionTitle": "Affiliate & Reseller Earnings",
+
+      "sectionType": "earning_section",
+
+      "visible": true,
+
+      "position": 4,
+
+      "sectionStyle": "gradient_earning_cards"
+    },
+
+    {
+      "sectionId": "seller_information",
+
+      "sectionTitle": "Seller Information",
+
+      "sectionType": "seller_details",
+
+      "visible": true,
+
+      "position": 5,
+
+      "sectionStyle": "modern_seller_card"
+    },
+
+    {
+      "sectionId": "product_specifications",
+
+      "sectionTitle": "Specifications",
+
+      "sectionType": "specifications_table",
+
+      "visible": true,
+
+      "position": 6,
+
+      "sectionStyle": "premium_specification_table"
+    },
+
+    {
+      "sectionId": "customer_reviews",
+
+      "sectionTitle": "Customer Reviews",
+
+      "sectionType": "reviews_section",
+
+      "visible": true,
+
+      "position": 7,
+
+      "sectionStyle": "modern_review_cards"
+    },
+
+    {
+      "sectionId": "recommended_products",
+
+      "sectionTitle": "Recommended Products",
+
+      "sectionType": "product_slider",
+
+      "visible": true,
+
+      "position": 8,
+
+      "sectionStyle": "ai_recommended_product_slider"
+    },
+
+    {
+      "sectionId": "business_training",
+
+      "sectionTitle": "Business Growth Tips",
+
+      "sectionType": "training_tips_section",
+
+      "visible": true,
+
+      "position": 9,
+
+      "sectionStyle": "glassmorphism_training_cards"
+    }
+  ]
+}
