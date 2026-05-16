@@ -263,6 +263,26 @@ export default function AdminPage() {
                   </div>
 
                 </div>
+                <div>
+
+  <label className="mb-2 block font-semibold text-gray-700">
+    Position
+  </label>
+
+  <input
+    type="number"
+    value={section.position}
+    onChange={(event) => {
+      updateField(
+        section.id,
+        "position",
+        Number(event.target.value)
+      );
+    }}
+    className="w-full rounded-2xl border border-gray-200 bg-gray-100 px-4 py-3 outline-none"
+  />
+
+</div>
 
                 <div className="mt-5">
 
