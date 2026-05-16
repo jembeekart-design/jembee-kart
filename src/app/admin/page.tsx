@@ -123,7 +123,7 @@ export default function AdminPage() {
   }
 
   return (
-    <main className="min-h-screen w-screen max-w-full overflow-x-hidden bg-gray-100 px-4 py-4">
+    <main className="min-h-screen w-full max-w-full overflow-x-hidden bg-gray-100 px-4 py-4">
 
       <div className="mx-auto w-full max-w-full overflow-hidden">
 
