@@ -275,13 +275,41 @@ export default function Homepage() {
   return (
     <main className="min-h-screen bg-gray-100 p-4 md:p-6">
       <div className="mx-auto flex max-w-7xl flex-col gap-6">
-        {homepageSections.map((section) => {
-          return (
-            <div key={section.sectionId}>
-              {renderHomepageSection(section)}
+
+        {homepageSections.length === 0 ? (
+          <div className="rounded-3xl bg-white p-10 text-center shadow-xl">
+            <h1 className="text-5xl font-bold text-blue-600">
+              JembeeKart
+            </h1>
+
+            <p className="mt-4 text-lg text-gray-600">
+              Firebase Connected Successfully
+            </p>
+
+            <div className="mt-8 grid gap-5 md:grid-cols-3">
+              <div className="rounded-3xl bg-blue-100 p-6">
+                Fashion
+              </div>
+
+              <div className="rounded-3xl bg-indigo-100 p-6">
+                Electronics
+              </div>
+
+              <div className="rounded-3xl bg-purple-100 p-6">
+                Affiliate System
+              </div>
             </div>
-          );
-        })}
+          </div>
+        ) : (
+          homepageSections.map((section) => {
+            return (
+              <div key={section.sectionId}>
+                {renderHomepageSection(section)}
+              </div>
+            );
+          })
+        )}
+
       </div>
     </main>
   );
