@@ -50,8 +50,14 @@ export default function AdminPage() {
           const sectionsData =
             snapshot.docs.map(
               (document) => {
+                const firestoreData =
+                  document.data() as Omit<
+                    HomepageSection,
+                    "id"
+                  >;
+
                 return {
-                  ...(document.data() as HomepageSection),
+                  ...firestoreData,
                   id: document.id
                 };
               }
@@ -59,9 +65,12 @@ export default function AdminPage() {
 
           const sortedSections =
             sectionsData.sort(
-              (a, b) =>
-                a.position -
-                b.position
+              (a, b) => {
+                return (
+                  a.position -
+                  b.position
+                );
+              }
             );
 
           setSections(sortedSections);
@@ -73,7 +82,7 @@ export default function AdminPage() {
 
   function updateField(
     id: string,
-    field: string,
+    field: keyof HomepageSection,
     value:
       | string
       | number
@@ -123,35 +132,35 @@ export default function AdminPage() {
   }
 
   return (
-    <main className="min-h-screen w-full max-w-full overflow-x-hidden bg-gray-100 px-4 py-4">
+    <main className="min-h-screen w-full overflow-x-hidden bg-gray-100 px-4 py-8">
 
-      <div className="mx-auto w-full max-w-full overflow-hidden">
+      <div className="mx-auto w-full max-w-5xl">
 
-        <h1 className="mb-6 break-words text-2xl font-black leading-tight text-blue-600 sm:text-3xl md:text-4xl">
+        <h1 className="mb-8 text-3xl font-black text-blue-600 md:text-5xl">
           JembeeKart Admin Panel
         </h1>
 
-        <div className="flex w-full flex-col gap-6">
+        <div className="space-y-8">
 
           {sections.map(
             (section) => {
               return (
                 <div
                   key={section.id}
-                  className="w-full max-w-full overflow-hidden rounded-[24px] bg-white p-4 shadow-xl"
+                  className="w-full rounded-[30px] bg-white p-6 shadow-xl md:p-8"
                 >
 
-                  <div className="mb-6 flex flex-col gap-4">
+                  <div className="mb-8 flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
 
-                    <div className="w-full min-w-0">
+                    <div>
 
-                      <h2 className="break-words text-2xl font-black text-gray-800">
+                      <h2 className="text-3xl font-black text-gray-800">
                         {
                           section.sectionType
                         }
                       </h2>
 
-                      <p className="break-words text-gray-500">
+                      <p className="mt-2 text-gray-500">
                         Firestore Section Editor
                       </p>
 
@@ -159,7 +168,7 @@ export default function AdminPage() {
 
                     <label className="flex items-center gap-3">
 
-                      <span className="font-semibold text-gray-700">
+                      <span className="text-lg font-bold">
                         Visible
                       </span>
 
@@ -178,18 +187,18 @@ export default function AdminPage() {
                               .checked
                           );
                         }}
-                        className="h-5 w-5"
+                        className="h-6 w-6"
                       />
 
                     </label>
 
                   </div>
 
-                  <div className="grid grid-cols-1 gap-4">
+                  <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
 
-                    <div className="w-full min-w-0">
+                    <div>
 
-                      <label className="mb-2 block font-semibold text-gray-700">
+                      <label className="mb-3 block text-lg font-bold text-gray-700">
                         Title
                       </label>
 
@@ -209,14 +218,14 @@ export default function AdminPage() {
                               .value
                           );
                         }}
-                        className="block w-full max-w-full rounded-2xl border border-gray-200 bg-gray-100 px-4 py-3 text-sm outline-none"
+                        className="w-full rounded-[20px] border border-gray-200 bg-gray-100 px-5 py-4 text-lg outline-none"
                       />
 
                     </div>
 
-                    <div className="w-full min-w-0">
+                    <div>
 
-                      <label className="mb-2 block font-semibold text-gray-700">
+                      <label className="mb-3 block text-lg font-bold text-gray-700">
                         Button Text
                       </label>
 
@@ -236,14 +245,14 @@ export default function AdminPage() {
                               .value
                           );
                         }}
-                        className="block w-full max-w-full rounded-2xl border border-gray-200 bg-gray-100 px-4 py-3 text-sm outline-none"
+                        className="w-full rounded-[20px] border border-gray-200 bg-gray-100 px-5 py-4 text-lg outline-none"
                       />
 
                     </div>
 
-                    <div className="w-full min-w-0">
+                    <div>
 
-                      <label className="mb-2 block font-semibold text-gray-700">
+                      <label className="mb-3 block text-lg font-bold text-gray-700">
                         Secondary Button
                       </label>
 
@@ -263,14 +272,14 @@ export default function AdminPage() {
                               .value
                           );
                         }}
-                        className="block w-full max-w-full rounded-2xl border border-gray-200 bg-gray-100 px-4 py-3 text-sm outline-none"
+                        className="w-full rounded-[20px] border border-gray-200 bg-gray-100 px-5 py-4 text-lg outline-none"
                       />
 
                     </div>
 
-                    <div className="w-full min-w-0">
+                    <div>
 
-                      <label className="mb-2 block font-semibold text-gray-700">
+                      <label className="mb-3 block text-lg font-bold text-gray-700">
                         Position
                       </label>
 
@@ -286,26 +295,26 @@ export default function AdminPage() {
                             section.id,
                             "position",
                             Number(
-                              event
-                                .target
+                              event.target
                                 .value
                             )
                           );
                         }}
-                        className="block w-full max-w-full rounded-2xl border border-gray-200 bg-gray-100 px-4 py-3 text-sm outline-none"
+                        className="w-full rounded-[20px] border border-gray-200 bg-gray-100 px-5 py-4 text-lg outline-none"
                       />
 
                     </div>
 
                   </div>
 
-                  <div className="mt-5 w-full min-w-0">
+                  <div className="mt-6">
 
-                    <label className="mb-2 block font-semibold text-gray-700">
+                    <label className="mb-3 block text-lg font-bold text-gray-700">
                       Subtitle / Description
                     </label>
 
                     <textarea
+                      rows={6}
                       value={
                         section.subtitle ||
                         section.description ||
@@ -321,8 +330,7 @@ export default function AdminPage() {
                             .value
                         );
                       }}
-                      rows={5}
-                      className="block w-full max-w-full rounded-2xl border border-gray-200 bg-gray-100 px-4 py-3 text-sm outline-none"
+                      className="w-full rounded-[20px] border border-gray-200 bg-gray-100 px-5 py-4 text-lg outline-none"
                     />
 
                   </div>
@@ -333,7 +341,7 @@ export default function AdminPage() {
                         section
                       );
                     }}
-                    className="mt-6 block w-full max-w-full rounded-2xl bg-blue-600 px-6 py-4 text-sm font-bold text-white"
+                    className="mt-8 w-full rounded-[20px] bg-blue-600 px-6 py-4 text-lg font-black text-white transition-all duration-300 hover:bg-blue-700"
                   >
                     Save Section
                   </button>
