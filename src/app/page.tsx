@@ -36,7 +36,7 @@ interface HomepageSection {
 
   visible: boolean;
 
-  position: number;
+  position?: number;
 
   title?: string;
 
@@ -47,12 +47,29 @@ interface HomepageSection {
   buttonText?: string;
 
   secondaryButtonText?: string;
+
+  titleSize?: string;
+
+  subtitleSize?: string;
+
+  backgroundColor?: string;
+
+  textColor?: string;
+
+  buttonColor?: string;
+
+  buttonTextColor?: string;
+
+  sectionPadding?: string;
+
+  borderRadius?: string;
 }
 
 export default function HomePage() {
-  const [sections, setSections] = useState<
-    HomepageSection[]
-  >([]);
+  const [sections, setSections] =
+    useState<
+      HomepageSection[]
+    >([]);
 
   useEffect(() => {
     const unsubscribe =
@@ -82,8 +99,12 @@ export default function HomePage() {
             data.sort(
               (a, b) => {
                 return (
-                  a.position -
-                  b.position
+                  Number(
+                    a.position || 0
+                  ) -
+                  Number(
+                    b.position || 0
+                  )
                 );
               }
             );
@@ -110,19 +131,43 @@ export default function HomePage() {
       case "hero":
         return (
           <HeroSection
-  title={section.title}
-  subtitle={section.subtitle}
-  buttonText={section.buttonText}
-  secondaryButtonText={section.secondaryButtonText}
-  titleSize={section.titleSize}
-  subtitleSize={section.subtitleSize}
-  backgroundColor={section.backgroundColor}
-  textColor={section.textColor}
-  buttonColor={section.buttonColor}
-  buttonTextColor={section.buttonTextColor}
-  sectionPadding={section.sectionPadding}
-  borderRadius={section.borderRadius}
-/>
+            title={
+              section.title
+            }
+            subtitle={
+              section.subtitle
+            }
+            buttonText={
+              section.buttonText
+            }
+            secondaryButtonText={
+              section.secondaryButtonText
+            }
+            titleSize={
+              section.titleSize
+            }
+            subtitleSize={
+              section.subtitleSize
+            }
+            backgroundColor={
+              section.backgroundColor
+            }
+            textColor={
+              section.textColor
+            }
+            buttonColor={
+              section.buttonColor
+            }
+            buttonTextColor={
+              section.buttonTextColor
+            }
+            sectionPadding={
+              section.sectionPadding
+            }
+            borderRadius={
+              section.borderRadius
+            }
+          />
         );
 
       case "category":
