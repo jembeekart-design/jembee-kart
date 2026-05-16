@@ -2,35 +2,29 @@
 
 import Header from "@/components/navigation/Header";
 
-import HeroSection from "@/components/homepage_sections/HeroSection";
+import HeroSection from "@/components/homepage/HeroSection";
 
-import CategorySection from "@/components/homepage_sections/CategorySection";
+import CategorySection from "@/components/homepage/CategorySection";
 
-import ProductSection from "@/components/homepage_sections/ProductSection";
+import ProductSection from "@/components/homepage/ProductSection";
 
-import SellerSection from "@/components/homepage_sections/SellerSection";
+import SellerSection from "@/components/homepage/SellerSection";
 
-import AffiliateSection from "@/components/homepage_sections/AffiliateSection";
+import AffiliateSection from "@/components/homepage/AffiliateSection";
 
-import TipsSection from "@/components/homepage_sections/TipsSection";
+import TipsSection from "@/components/homepage/TipsSection";
 
-import FooterSection from "@/components/homepage_sections/FooterSection";
+import FooterSection from "@/components/homepage/FooterSection";
 
 export default function Page() {
   return (
     <main className="min-h-screen w-full overflow-x-hidden bg-gray-100">
 
-      <div className="w-full max-w-full overflow-x-hidden">
-
-        {/* HEADER */}
+      <div className="w-full overflow-x-hidden">
 
         <Header />
 
-        {/* PAGE CONTENT */}
-
         <div className="flex w-full flex-col gap-5 overflow-x-hidden py-5">
-
-          {/* HERO */}
 
           <HeroSection
             title="Build Your Ecommerce Empire"
@@ -38,8 +32,6 @@ export default function Page() {
             buttonText="Start Shopping"
             secondaryButtonText="Become Seller"
           />
-
-          {/* CATEGORIES */}
 
           <CategorySection
             categories={[
@@ -53,8 +45,6 @@ export default function Page() {
               "Kids"
             ]}
           />
-
-          {/* PRODUCTS */}
 
           <ProductSection
             products={[
@@ -91,8 +81,6 @@ export default function Page() {
             ]}
           />
 
-          {/* SELLER */}
-
           <SellerSection
             sellerTitle="Become A Seller"
             sellerDescription="Sell products with AI powered tools, analytics and advanced ecommerce automation."
@@ -102,15 +90,11 @@ export default function Page() {
             resellerButtonText="Join Now"
           />
 
-          {/* AFFILIATE */}
-
           <AffiliateSection
             title="Earn With Affiliate Marketing"
             description="Share products, grow your network and earn passive income daily with JembeeKart affiliate ecosystem."
             buttonText="Join Affiliate Program"
           />
-
-          {/* TIPS */}
 
           <TipsSection
             tips={[
@@ -121,8 +105,6 @@ export default function Page() {
           />
 
         </div>
-
-        {/* FOOTER */}
 
         <FooterSection />
 
