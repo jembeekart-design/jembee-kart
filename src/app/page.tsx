@@ -1,205 +1,132 @@
 "use client";
 
-import { useEffect, useState } from "react";
-
-import {
-  collection,
-  onSnapshot
-} from "firebase/firestore";
-
-import { db } from "@/firebase/config";
-
 import Header from "@/components/navigation/Header";
 
-import BottomNavbar from "@/components/navigation/BottomNavbar";
+import HeroSection from "@/components/homepage_sections/HeroSection";
 
-import WhatsAppButton from "@/components/navigation/WhatsAppButton";
+import CategorySection from "@/components/homepage_sections/CategorySection";
 
-import HeroSection from "@/components/homepage/HeroSection";
+import ProductSection from "@/components/homepage_sections/ProductSection";
 
-import CategorySection from "@/components/homepage/CategorySection";
+import SellerSection from "@/components/homepage_sections/SellerSection";
 
-import ProductSection from "@/components/homepage/ProductSection";
+import AffiliateSection from "@/components/homepage_sections/AffiliateSection";
 
-import AffiliateSection from "@/components/homepage/AffiliateSection";
+import TipsSection from "@/components/homepage_sections/TipsSection";
 
-import SellerSection from "@/components/homepage/SellerSection";
+import FooterSection from "@/components/homepage_sections/FooterSection";
 
-import TipsSection from "@/components/homepage/TipsSection";
+export default function Page() {
+  return (
+    <main className="min-h-screen w-full overflow-x-hidden bg-gray-100">
 
-import FooterSection from "@/components/homepage/FooterSection";
+      <div className="w-full max-w-full overflow-x-hidden">
 
-interface HomepageSection {
-  id?: string;
+        {/* HEADER */}
 
-  sectionType: string;
+        <Header />
 
-  visible: boolean;
+        {/* PAGE CONTENT */}
 
-  position: number;
+        <div className="flex w-full flex-col gap-5 overflow-x-hidden py-5">
 
-  title?: string;
+          {/* HERO */}
 
-  subtitle?: string;
-
-  description?: string;
-
-  buttonText?: string;
-
-  secondaryButtonText?: string;
-}
-
-export default function Homepage() {
-  const [sections, setSections] = useState<
-    HomepageSection[]
-  >([]);
-
-  const [loading, setLoading] =
-    useState(true);
-
-  useEffect(() => {
-    const sectionsCollection =
-      collection(
-        db,
-        "homepage_sections"
-      );
-
-    const unsubscribe =
-      onSnapshot(
-        sectionsCollection,
-        (snapshot) => {
-          const sectionsData =
-            snapshot.docs.map(
-              (document) => {
-                return {
-                  id: document.id,
-                  ...(document.data() as HomepageSection)
-                };
-              }
-            );
-
-          const sortedSections =
-            sectionsData.sort(
-              (a, b) => {
-                return (
-                  a.position -
-                  b.position
-                );
-              }
-            );
-
-          setSections(sortedSections);
-
-          setLoading(false);
-        }
-      );
-
-    return () => unsubscribe();
-  }, []);
-
-  function renderSection(
-    section: HomepageSection
-  ) {
-    if (!section.visible) {
-      return null;
-    }
-
-    switch (
-      section.sectionType
-    ) {
-      case "hero":
-        return (
           <HeroSection
-            title={section.title}
-            subtitle={
-              section.subtitle
-            }
-            buttonText={
-              section.buttonText
-            }
-            secondaryButtonText={
-              section.secondaryButtonText
-            }
+            title="Build Your Ecommerce Empire"
+            subtitle="AI Powered Ecommerce, Affiliate Marketing, Reselling, MLM and Seller Ecosystem."
+            buttonText="Start Shopping"
+            secondaryButtonText="Become Seller"
           />
-        );
 
-      case "category":
-        return (
-          <CategorySection />
-        );
+          {/* CATEGORIES */}
 
-      case "product":
-        return (
-          <ProductSection />
-        );
+          <CategorySection
+            categories={[
+              "Fashion",
+              "Electronics",
+              "Beauty",
+              "Shoes",
+              "Mobiles",
+              "Accessories",
+              "Home",
+              "Kids"
+            ]}
+          />
 
-      case "affiliate":
-        return (
+          {/* PRODUCTS */}
+
+          <ProductSection
+            products={[
+              {
+                id: 1,
+                name: "Premium Hoodie",
+                price: "₹999"
+              },
+              {
+                id: 2,
+                name: "Wireless Earbuds",
+                price: "₹1499"
+              },
+              {
+                id: 3,
+                name: "Smart Watch",
+                price: "₹2499"
+              },
+              {
+                id: 4,
+                name: "Sneakers",
+                price: "₹1999"
+              },
+              {
+                id: 5,
+                name: "Beauty Kit",
+                price: "₹799"
+              },
+              {
+                id: 6,
+                name: "Bluetooth Speaker",
+                price: "₹1299"
+              }
+            ]}
+          />
+
+          {/* SELLER */}
+
+          <SellerSection
+            sellerTitle="Become A Seller"
+            sellerDescription="Sell products with AI powered tools, analytics and advanced ecommerce automation."
+            sellerButtonText="Start Selling"
+            resellerTitle="Reseller Program"
+            resellerDescription="Start reselling products without inventory and grow your online business easily."
+            resellerButtonText="Join Now"
+          />
+
+          {/* AFFILIATE */}
+
           <AffiliateSection
-            title={section.title}
-            description={
-              section.description
-            }
-            buttonText={
-              section.buttonText
-            }
+            title="Earn With Affiliate Marketing"
+            description="Share products, grow your network and earn passive income daily with JembeeKart affiliate ecosystem."
+            buttonText="Join Affiliate Program"
           />
-        );
 
-      case "seller":
-        return (
-          <SellerSection />
-        );
+          {/* TIPS */}
 
-      case "tips":
-        return (
-          <TipsSection />
-        );
+          <TipsSection
+            tips={[
+              "Use trending products daily",
+              "Share products on WhatsApp",
+              "Build passive affiliate income"
+            ]}
+          />
 
-      case "footer":
-        return (
-          <FooterSection />
-        );
-
-      default:
-        return null;
-    }
-  }
-
-  if (loading) {
-    return (
-      <main className="flex min-h-screen items-center justify-center bg-gray-100">
-
-        <div className="text-2xl font-black text-blue-600">
-          Loading JembeeKart...
         </div>
 
-      </main>
-    );
-  }
+        {/* FOOTER */}
 
-  return (
-    <main className="min-h-screen w-full overflow-x-hidden bg-gray-100 pb-28">
+        <FooterSection />
 
-      <Header />
-
-      {sections.map(
-        (section) => {
-          return (
-            <div
-              key={section.id}
-            >
-              {renderSection(
-                section
-              )}
-            </div>
-          );
-        }
-      )}
-
-      <WhatsAppButton />
-
-      <BottomNavbar />
+      </div>
 
     </main>
   );
