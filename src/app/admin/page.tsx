@@ -51,8 +51,8 @@ export default function AdminPage() {
             snapshot.docs.map(
               (document) => {
                 return {
-                  id: document.id,
-                  ...(document.data() as HomepageSection)
+                  ...(document.data() as HomepageSection),
+                  id: document.id
                 };
               }
             );
@@ -77,7 +77,10 @@ export default function AdminPage() {
   function updateField(
     id: string,
     field: string,
-    value: string | number | boolean
+    value:
+      | string
+      | number
+      | boolean
   ) {
     setSections((previous) => {
       return previous.map(
