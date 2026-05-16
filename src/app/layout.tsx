@@ -1,10 +1,11 @@
 import type { Metadata } from "next";
+
 import "./globals.css";
 
 export const metadata: Metadata = {
   title: "JembeeKart",
   description: "AI Ecommerce Ecosystem",
-  viewport: "width=device-width, initial-scale=1",
+  viewport: "width=device-width, initial-scale=1"
 };
 
 export default function RootLayout({
@@ -14,9 +15,11 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
+
       <body className="overflow-x-hidden bg-gray-100">
         {children}
       </body>
+
     </html>
   );
 }
