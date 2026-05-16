@@ -110,19 +110,19 @@ export default function HomePage() {
       case "hero":
         return (
           <HeroSection
-            title={
-              section.title
-            }
-            subtitle={
-              section.subtitle
-            }
-            buttonText={
-              section.buttonText
-            }
-            secondaryButtonText={
-              section.secondaryButtonText
-            }
-          />
+  title={section.title}
+  subtitle={section.subtitle}
+  buttonText={section.buttonText}
+  secondaryButtonText={section.secondaryButtonText}
+  titleSize={section.titleSize}
+  subtitleSize={section.subtitleSize}
+  backgroundColor={section.backgroundColor}
+  textColor={section.textColor}
+  buttonColor={section.buttonColor}
+  buttonTextColor={section.buttonTextColor}
+  sectionPadding={section.sectionPadding}
+  borderRadius={section.borderRadius}
+/>
         );
 
       case "category":
