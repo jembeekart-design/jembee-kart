@@ -16,21 +16,21 @@ export default function AffiliateSection({
   buttonText = "Join Affiliate Program"
 }: AffiliateSectionProps) {
   return (
-    <section className="w-full overflow-hidden px-4 py-6 md:px-6">
+    <section className="w-full overflow-hidden px-3 py-5 md:px-6">
 
-      <div className="mx-auto max-w-7xl overflow-hidden rounded-[30px] bg-gradient-to-r from-black to-gray-900 p-6 text-white shadow-2xl md:rounded-[50px] md:p-16">
+      <div className="w-full overflow-hidden rounded-[24px] bg-gradient-to-r from-black to-gray-900 p-5 text-white shadow-2xl md:rounded-[50px] md:p-16">
 
-        <div className="max-w-3xl">
+        <div className="w-full max-w-3xl min-w-0">
 
-          <h2 className="text-3xl font-black leading-tight md:text-6xl">
+          <h2 className="break-words text-3xl font-black leading-tight md:text-6xl">
             {title}
           </h2>
 
-          <p className="mt-5 text-lg leading-relaxed text-gray-300 md:text-2xl">
+          <p className="mt-4 break-words text-base leading-relaxed text-gray-300 md:mt-5 md:text-2xl">
             {description}
           </p>
 
-          <button className="mt-8 rounded-2xl bg-blue-600 px-6 py-3 font-bold text-white transition-all duration-300 hover:scale-105 hover:bg-blue-700 md:px-16 md:py-5">
+          <button className="mt-6 w-full rounded-2xl bg-blue-600 px-5 py-3 text-sm font-bold text-white transition-all duration-300 hover:bg-blue-700 md:mt-8 md:w-auto md:px-16 md:py-5 md:text-base">
             {buttonText}
           </button>
 
