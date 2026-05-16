@@ -22,30 +22,12 @@ body {
 input,
 textarea,
 button {
-  width: 100%;
   max-width: 100%;
 }
 
 img,
 svg,
-video,
-canvas {
+video {
   max-width: 100%;
   height: auto;
-}
-*,
-*::before,
-*::after {
-  box-sizing: border-box;
-}
-
-body {
-  overflow-x: hidden;
-}
-
-input,
-textarea,
-button,
-div {
-  max-width: 100%;
 }
