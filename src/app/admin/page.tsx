@@ -130,7 +130,7 @@ export default function AdminPage() {
 
       <div className="mx-auto w-full max-w-6xl overflow-hidden">
 
-        <h1 className="mb-8 text-4xl font-black text-blue-600">
+        <h1 className="mb-8 break-words text-3xl font-black text-blue-600 md:text-4xl">
           JembeeKart Admin Panel
         </h1>
 
@@ -144,17 +144,17 @@ export default function AdminPage() {
                   className="w-full overflow-hidden rounded-[30px] bg-white p-4 shadow-xl md:p-6"
                 >
 
-                  <div className="mb-6 flex items-center justify-between gap-4">
+                  <div className="mb-6 flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
 
-                    <div>
+                    <div className="min-w-0">
 
-                      <h2 className="text-2xl font-black text-gray-800">
+                      <h2 className="break-words text-xl font-black text-gray-800 md:text-2xl">
                         {
                           section.sectionType
                         }
                       </h2>
 
-                      <p className="text-gray-500">
+                      <p className="break-words text-gray-500">
                         Firestore
                         Section
                         Editor
@@ -190,9 +190,9 @@ export default function AdminPage() {
 
                   </div>
 
-                  <div className="grid gap-5 md:grid-cols-2">
+                  <div className="grid w-full gap-5 md:grid-cols-2">
 
-                    <div>
+                    <div className="w-full">
 
                       <label className="mb-2 block font-semibold text-gray-700">
                         Title
@@ -219,7 +219,7 @@ export default function AdminPage() {
 
                     </div>
 
-                    <div>
+                    <div className="w-full">
 
                       <label className="mb-2 block font-semibold text-gray-700">
                         Button Text
@@ -246,7 +246,7 @@ export default function AdminPage() {
 
                     </div>
 
-                    <div>
+                    <div className="w-full">
 
                       <label className="mb-2 block font-semibold text-gray-700">
                         Secondary
@@ -274,7 +274,7 @@ export default function AdminPage() {
 
                     </div>
 
-                    <div>
+                    <div className="w-full">
 
                       <label className="mb-2 block font-semibold text-gray-700">
                         Position
@@ -305,7 +305,7 @@ export default function AdminPage() {
 
                   </div>
 
-                  <div className="mt-5">
+                  <div className="mt-5 w-full">
 
                     <label className="mb-2 block font-semibold text-gray-700">
                       Subtitle /
