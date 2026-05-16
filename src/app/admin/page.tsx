@@ -59,12 +59,9 @@ export default function AdminPage() {
 
           const sortedSections =
             sectionsData.sort(
-              (a, b) => {
-                return (
-                  a.position -
-                  b.position
-                );
-              }
+              (a, b) =>
+                a.position -
+                b.position
             );
 
           setSections(sortedSections);
@@ -126,9 +123,9 @@ export default function AdminPage() {
   }
 
   return (
-    <main className="min-h-screen w-full overflow-x-hidden bg-gray-100 p-2 sm:p-3 md:p-6">
+    <main className="min-h-screen overflow-x-hidden bg-gray-100 px-2 py-4 sm:px-4 md:px-6">
 
-      <div className="mx-auto w-full max-w-6xl">
+      <div className="mx-auto w-full max-w-6xl overflow-hidden">
 
         <h1 className="mb-6 break-words text-2xl font-black leading-tight text-blue-600 sm:text-3xl md:text-4xl">
           JembeeKart Admin Panel
@@ -141,7 +138,7 @@ export default function AdminPage() {
               return (
                 <div
                   key={section.id}
-                  className="w-full rounded-[24px] bg-white p-3 shadow-xl sm:p-4 md:p-6"
+                  className="w-full max-w-full overflow-hidden rounded-[24px] bg-white p-3 shadow-xl sm:p-4 md:p-6"
                 >
 
                   <div className="mb-6 flex flex-col gap-4">
@@ -154,8 +151,10 @@ export default function AdminPage() {
                         }
                       </h2>
 
-                      <p className="text-sm break-words text-gray-500">
-                        Firestore Section Editor
+                      <p className="break-words text-sm text-gray-500">
+                        Firestore
+                        Section
+                        Editor
                       </p>
 
                     </div>
@@ -212,7 +211,7 @@ export default function AdminPage() {
                               .value
                           );
                         }}
-                        className="w-full min-w-0 rounded-2xl border border-gray-200 bg-gray-100 px-4 py-3 text-sm outline-none"
+                        className="block w-full max-w-full rounded-2xl border border-gray-200 bg-gray-100 px-4 py-3 text-sm outline-none"
                       />
 
                     </div>
@@ -239,7 +238,7 @@ export default function AdminPage() {
                               .value
                           );
                         }}
-                        className="w-full min-w-0 rounded-2xl border border-gray-200 bg-gray-100 px-4 py-3 text-sm outline-none"
+                        className="block w-full max-w-full rounded-2xl border border-gray-200 bg-gray-100 px-4 py-3 text-sm outline-none"
                       />
 
                     </div>
@@ -247,7 +246,8 @@ export default function AdminPage() {
                     <div className="min-w-0">
 
                       <label className="mb-2 block font-semibold text-gray-700">
-                        Secondary Button
+                        Secondary
+                        Button
                       </label>
 
                       <input
@@ -266,7 +266,7 @@ export default function AdminPage() {
                               .value
                           );
                         }}
-                        className="w-full min-w-0 rounded-2xl border border-gray-200 bg-gray-100 px-4 py-3 text-sm outline-none"
+                        className="block w-full max-w-full rounded-2xl border border-gray-200 bg-gray-100 px-4 py-3 text-sm outline-none"
                       />
 
                     </div>
@@ -295,7 +295,7 @@ export default function AdminPage() {
                             )
                           );
                         }}
-                        className="w-full min-w-0 rounded-2xl border border-gray-200 bg-gray-100 px-4 py-3 text-sm outline-none"
+                        className="block w-full max-w-full rounded-2xl border border-gray-200 bg-gray-100 px-4 py-3 text-sm outline-none"
                       />
 
                     </div>
@@ -305,7 +305,8 @@ export default function AdminPage() {
                   <div className="mt-5 min-w-0">
 
                     <label className="mb-2 block font-semibold text-gray-700">
-                      Subtitle / Description
+                      Subtitle /
+                      Description
                     </label>
 
                     <textarea
@@ -325,7 +326,7 @@ export default function AdminPage() {
                         );
                       }}
                       rows={4}
-                      className="w-full min-w-0 rounded-2xl border border-gray-200 bg-gray-100 px-4 py-3 text-sm outline-none"
+                      className="block w-full max-w-full rounded-2xl border border-gray-200 bg-gray-100 px-4 py-3 text-sm outline-none"
                     />
 
                   </div>
@@ -336,7 +337,7 @@ export default function AdminPage() {
                         section
                       );
                     }}
-                    className="mt-6 w-full rounded-2xl bg-blue-600 px-6 py-4 text-sm font-bold text-white"
+                    className="mt-6 block w-full max-w-full rounded-2xl bg-blue-600 px-6 py-4 text-sm font-bold text-white"
                   >
                     Save Section
                   </button>
