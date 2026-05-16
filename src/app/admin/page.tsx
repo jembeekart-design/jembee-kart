@@ -126,25 +126,25 @@ export default function AdminPage() {
   }
 
   return (
-    <main className="min-h-screen w-full overflow-x-hidden bg-gray-100 p-3 md:p-6">
+    <main className="min-h-screen w-full overflow-x-hidden bg-gray-100 p-2 sm:p-3 md:p-6">
 
-      <div className="mx-auto w-full max-w-6xl overflow-hidden">
+      <div className="mx-auto w-full max-w-6xl">
 
-        <h1 className="mb-8 break-words text-3xl font-black text-blue-600 md:text-4xl">
+        <h1 className="mb-6 break-words text-2xl font-black leading-tight text-blue-600 sm:text-3xl md:text-4xl">
           JembeeKart Admin Panel
         </h1>
 
-        <div className="grid gap-6">
+        <div className="flex flex-col gap-6">
 
           {sections.map(
             (section) => {
               return (
                 <div
                   key={section.id}
-                  className="w-full overflow-hidden rounded-[30px] bg-white p-4 shadow-xl md:p-6"
+                  className="w-full rounded-[24px] bg-white p-3 shadow-xl sm:p-4 md:p-6"
                 >
 
-                  <div className="mb-6 flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
+                  <div className="mb-6 flex flex-col gap-4">
 
                     <div className="min-w-0">
 
@@ -154,10 +154,8 @@ export default function AdminPage() {
                         }
                       </h2>
 
-                      <p className="break-words text-gray-500">
-                        Firestore
-                        Section
-                        Editor
+                      <p className="text-sm break-words text-gray-500">
+                        Firestore Section Editor
                       </p>
 
                     </div>
@@ -190,9 +188,9 @@ export default function AdminPage() {
 
                   </div>
 
-                  <div className="grid w-full gap-5 md:grid-cols-2">
+                  <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
 
-                    <div className="w-full">
+                    <div className="min-w-0">
 
                       <label className="mb-2 block font-semibold text-gray-700">
                         Title
@@ -214,12 +212,12 @@ export default function AdminPage() {
                               .value
                           );
                         }}
-                        className="w-full rounded-2xl border border-gray-200 bg-gray-100 px-4 py-3 outline-none"
+                        className="w-full min-w-0 rounded-2xl border border-gray-200 bg-gray-100 px-4 py-3 text-sm outline-none"
                       />
 
                     </div>
 
-                    <div className="w-full">
+                    <div className="min-w-0">
 
                       <label className="mb-2 block font-semibold text-gray-700">
                         Button Text
@@ -241,16 +239,15 @@ export default function AdminPage() {
                               .value
                           );
                         }}
-                        className="w-full rounded-2xl border border-gray-200 bg-gray-100 px-4 py-3 outline-none"
+                        className="w-full min-w-0 rounded-2xl border border-gray-200 bg-gray-100 px-4 py-3 text-sm outline-none"
                       />
 
                     </div>
 
-                    <div className="w-full">
+                    <div className="min-w-0">
 
                       <label className="mb-2 block font-semibold text-gray-700">
-                        Secondary
-                        Button
+                        Secondary Button
                       </label>
 
                       <input
@@ -269,12 +266,12 @@ export default function AdminPage() {
                               .value
                           );
                         }}
-                        className="w-full rounded-2xl border border-gray-200 bg-gray-100 px-4 py-3 outline-none"
+                        className="w-full min-w-0 rounded-2xl border border-gray-200 bg-gray-100 px-4 py-3 text-sm outline-none"
                       />
 
                     </div>
 
-                    <div className="w-full">
+                    <div className="min-w-0">
 
                       <label className="mb-2 block font-semibold text-gray-700">
                         Position
@@ -298,18 +295,17 @@ export default function AdminPage() {
                             )
                           );
                         }}
-                        className="w-full rounded-2xl border border-gray-200 bg-gray-100 px-4 py-3 outline-none"
+                        className="w-full min-w-0 rounded-2xl border border-gray-200 bg-gray-100 px-4 py-3 text-sm outline-none"
                       />
 
                     </div>
 
                   </div>
 
-                  <div className="mt-5 w-full">
+                  <div className="mt-5 min-w-0">
 
                     <label className="mb-2 block font-semibold text-gray-700">
-                      Subtitle /
-                      Description
+                      Subtitle / Description
                     </label>
 
                     <textarea
@@ -329,7 +325,7 @@ export default function AdminPage() {
                         );
                       }}
                       rows={4}
-                      className="w-full rounded-2xl border border-gray-200 bg-gray-100 px-4 py-3 outline-none"
+                      className="w-full min-w-0 rounded-2xl border border-gray-200 bg-gray-100 px-4 py-3 text-sm outline-none"
                     />
 
                   </div>
@@ -340,7 +336,7 @@ export default function AdminPage() {
                         section
                       );
                     }}
-                    className="mt-6 w-full rounded-2xl bg-blue-600 px-6 py-4 font-bold text-white transition-all duration-300 hover:scale-105"
+                    className="mt-6 w-full rounded-2xl bg-blue-600 px-6 py-4 text-sm font-bold text-white"
                   >
                     Save Section
                   </button>
