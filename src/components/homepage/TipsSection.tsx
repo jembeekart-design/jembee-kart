@@ -12,17 +12,17 @@ export default function TipsSection({
   ]
 }: TipsSectionProps) {
   return (
-    <section className="mx-auto max-w-7xl px-4 py-6 md:px-6">
+    <section className="w-full overflow-hidden px-4 py-6 md:px-6">
 
-      <div className="rounded-[30px] bg-white p-5 shadow-xl md:rounded-[40px] md:p-8">
+      <div className="mx-auto max-w-7xl rounded-[30px] bg-white p-5 shadow-xl md:rounded-[40px] md:p-8">
 
         <div className="mb-8">
 
-          <h2 className="text-3xl font-black text-gray-800 md:text-5xl">
+          <h2 className="text-3xl font-black leading-tight text-gray-800 md:text-5xl">
             AI Business Tips
           </h2>
 
-          <p className="mt-3 text-gray-500">
+          <p className="mt-3 text-gray-500 md:text-lg">
             Grow faster with AI powered ecommerce strategies.
           </p>
 
@@ -34,14 +34,14 @@ export default function TipsSection({
             return (
               <div
                 key={tip}
-                className="rounded-[25px] bg-gradient-to-br from-gray-900 to-black p-6 text-white shadow-xl transition-all duration-300 hover:-translate-y-1 hover:shadow-2xl"
+                className="overflow-hidden rounded-[25px] bg-gradient-to-br from-gray-900 to-black p-6 text-white shadow-xl transition-all duration-300 hover:-translate-y-1 hover:shadow-2xl"
               >
 
                 <div className="mb-5 text-4xl">
                   🚀
                 </div>
 
-                <h3 className="text-xl font-bold leading-relaxed">
+                <h3 className="text-xl font-bold leading-relaxed md:text-2xl">
                   {tip}
                 </h3>
 
