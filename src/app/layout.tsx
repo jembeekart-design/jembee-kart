@@ -4,8 +4,7 @@ import "./globals.css";
 
 export const metadata: Metadata = {
   title: "JembeeKart",
-  description: "AI Ecommerce Ecosystem",
-  viewport: "width=device-width, initial-scale=1"
+  description: "AI Ecommerce Ecosystem"
 };
 
 export default function RootLayout({
@@ -16,7 +15,7 @@ export default function RootLayout({
   return (
     <html lang="en">
 
-      <body className="overflow-x-hidden bg-gray-100">
+      <body className="w-full overflow-x-hidden">
         {children}
       </body>
 
