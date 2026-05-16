@@ -47,36 +47,36 @@ export default function ProductSection({
   ]
 }: ProductSectionProps) {
   return (
-    <section className="w-full overflow-hidden px-4 py-6 md:px-6">
+    <section className="w-full overflow-hidden px-3 py-5 md:px-6">
 
-      <div className="mx-auto max-w-7xl rounded-[30px] bg-white p-5 shadow-xl md:rounded-[40px] md:p-8">
+      <div className="w-full overflow-hidden rounded-[24px] bg-white p-4 shadow-xl md:rounded-[40px] md:p-8">
 
-        <div className="mb-8 flex items-center justify-between">
+        <div className="mb-6 flex items-center justify-between gap-3">
 
-          <h2 className="text-3xl font-black text-gray-800 md:text-5xl">
+          <h2 className="break-words text-2xl font-black text-gray-800 sm:text-3xl md:text-5xl">
             Trending Products
           </h2>
 
-          <button className="font-bold text-blue-600">
+          <button className="shrink-0 text-sm font-bold text-blue-600 md:text-base">
             Explore
           </button>
 
         </div>
 
-        <div className="grid grid-cols-2 gap-4 md:grid-cols-3 lg:grid-cols-5">
+        <div className="grid grid-cols-2 gap-3 md:grid-cols-3 lg:grid-cols-5">
 
           {products.map((product) => {
             return (
               <div
                 key={product.id}
-                className="overflow-hidden rounded-[25px] border border-gray-100 bg-white shadow-md transition-all duration-300 hover:-translate-y-1 hover:shadow-2xl"
+                className="min-w-0 overflow-hidden rounded-[22px] border border-gray-100 bg-white shadow-md transition-all duration-300 hover:-translate-y-1 hover:shadow-2xl"
               >
 
-                <div className="h-32 bg-gradient-to-br from-blue-100 to-purple-100 md:h-44" />
+                <div className="h-28 bg-gradient-to-br from-blue-100 to-purple-100 md:h-44" />
 
-                <div className="p-4">
+                <div className="p-3 md:p-4">
 
-                  <h3 className="text-base font-bold text-gray-800 md:text-lg">
+                  <h3 className="break-words text-sm font-bold text-gray-800 md:text-lg">
                     {product.name}
                   </h3>
 
@@ -84,7 +84,7 @@ export default function ProductSection({
                     {product.price}
                   </p>
 
-                  <button className="mt-4 w-full rounded-2xl bg-blue-600 py-3 text-sm font-bold text-white transition-all duration-300 hover:bg-blue-700 md:text-base">
+                  <button className="mt-4 w-full rounded-2xl bg-blue-600 py-3 text-xs font-bold text-white transition-all duration-300 hover:bg-blue-700 md:text-base">
                     Add To Cart
                   </button>
 
