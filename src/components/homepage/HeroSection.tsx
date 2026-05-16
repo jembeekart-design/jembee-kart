@@ -20,27 +20,27 @@ export default function HeroSection({
   secondaryButtonText = "Become Seller"
 }: HeroSectionProps) {
   return (
-    <section className="w-full overflow-hidden px-4 py-6 md:px-6">
+    <section className="w-full overflow-hidden px-3 py-5 md:px-6">
 
-      <div className="mx-auto max-w-7xl overflow-hidden rounded-[30px] bg-gradient-to-r from-blue-600 via-indigo-600 to-purple-700 p-6 text-white shadow-2xl md:rounded-[50px] md:p-16">
+      <div className="w-full overflow-hidden rounded-[24px] bg-gradient-to-r from-blue-600 via-indigo-600 to-purple-700 p-5 text-white shadow-2xl md:rounded-[50px] md:p-16">
 
-        <div className="max-w-3xl">
+        <div className="w-full max-w-3xl min-w-0">
 
-          <h1 className="text-4xl font-black leading-tight md:text-7xl">
+          <h1 className="break-words text-3xl font-black leading-tight sm:text-4xl md:text-7xl">
             {title}
           </h1>
 
-          <p className="mt-5 text-lg leading-relaxed text-blue-100 md:text-2xl">
+          <p className="mt-4 break-words text-base leading-relaxed text-blue-100 md:mt-5 md:text-2xl">
             {subtitle}
           </p>
 
-          <div className="mt-8 flex flex-col gap-4 md:flex-row md:gap-6">
+          <div className="mt-6 flex w-full flex-col gap-3 md:mt-8 md:flex-row md:gap-6">
 
-            <button className="rounded-2xl bg-white px-6 py-3 font-bold text-blue-700 shadow-xl transition-all duration-300 hover:scale-105 md:px-16 md:py-5">
+            <button className="w-full rounded-2xl bg-white px-6 py-3 text-sm font-bold text-blue-700 shadow-xl transition-all duration-300 hover:scale-[1.02] md:w-auto md:px-16 md:py-5 md:text-base">
               {buttonText}
             </button>
 
-            <button className="rounded-2xl border border-white/30 bg-white/10 px-6 py-3 font-bold text-white backdrop-blur-xl transition-all duration-300 hover:bg-white/20 md:px-16 md:py-5">
+            <button className="w-full rounded-2xl border border-white/30 bg-white/10 px-6 py-3 text-sm font-bold text-white backdrop-blur-xl transition-all duration-300 hover:bg-white/20 md:w-auto md:px-16 md:py-5 md:text-base">
               {secondaryButtonText}
             </button>
 
