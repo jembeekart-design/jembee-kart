@@ -47,13 +47,13 @@ export default function ProductSection({
   ]
 }: ProductSectionProps) {
   return (
-    <section className="mx-auto max-w-7xl px-4 py-6 md:px-6">
+    <section className="w-full overflow-hidden px-4 py-6 md:px-6">
 
-      <div className="rounded-[30px] bg-white p-5 shadow-xl md:rounded-[40px] md:p-8">
+      <div className="mx-auto max-w-7xl rounded-[30px] bg-white p-5 shadow-xl md:rounded-[40px] md:p-8">
 
         <div className="mb-8 flex items-center justify-between">
 
-          <h2 className="text-2xl font-black text-gray-800 md:text-4xl">
+          <h2 className="text-3xl font-black text-gray-800 md:text-5xl">
             Trending Products
           </h2>
 
@@ -63,7 +63,7 @@ export default function ProductSection({
 
         </div>
 
-        <div className="grid grid-cols-2 gap-4 md:grid-cols-3 lg:grid-cols-6">
+        <div className="grid grid-cols-2 gap-4 md:grid-cols-3 lg:grid-cols-5">
 
           {products.map((product) => {
             return (
@@ -76,15 +76,15 @@ export default function ProductSection({
 
                 <div className="p-4">
 
-                  <h3 className="font-bold text-gray-800">
+                  <h3 className="text-base font-bold text-gray-800 md:text-lg">
                     {product.name}
                   </h3>
 
-                  <p className="mt-2 text-lg font-black text-blue-600 md:text-xl">
+                  <p className="mt-2 text-lg font-black text-blue-600 md:text-2xl">
                     {product.price}
                   </p>
 
-                  <button className="mt-4 w-full rounded-2xl bg-blue-600 py-3 font-bold text-white transition-all duration-300 hover:bg-blue-700">
+                  <button className="mt-4 w-full rounded-2xl bg-blue-600 py-3 text-sm font-bold text-white transition-all duration-300 hover:bg-blue-700 md:text-base">
                     Add To Cart
                   </button>
 
