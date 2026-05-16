@@ -4,7 +4,7 @@ import { useEffect, useState } from "react";
 
 import {
   collection,
-  getDocs
+  onSnapshot
 } from "firebase/firestore";
 
 import { db } from "@/firebase/config";
@@ -54,44 +54,47 @@ export default function Homepage() {
     HomepageSection[]
   >([]);
 
-  const [loading, setLoading] = useState(true);
+  const [loading, setLoading] =
+    useState(true);
 
   useEffect(() => {
-    async function loadHomepageSections() {
-      try {
-        const sectionsCollection = collection(
-          db,
-          "homepage_sections"
-        );
+    const sectionsCollection =
+      collection(
+        db,
+        "homepage_sections"
+      );
 
-        const sectionsSnapshot =
-          await getDocs(sectionsCollection);
+    const unsubscribe =
+      onSnapshot(
+        sectionsCollection,
+        (snapshot) => {
+          const sectionsData =
+            snapshot.docs.map(
+              (document) => {
+                return {
+                  id: document.id,
+                  ...(document.data() as HomepageSection)
+                };
+              }
+            );
 
-        const sectionsData: HomepageSection[] =
-          sectionsSnapshot.docs.map((document) => {
-            return {
-              id: document.id,
-              ...(document.data() as HomepageSection)
-            };
-          });
+          const sortedSections =
+            sectionsData.sort(
+              (a, b) => {
+                return (
+                  a.position -
+                  b.position
+                );
+              }
+            );
 
-        const sortedSections =
-          sectionsData.sort((a, b) => {
-            return a.position - b.position;
-          });
+          setSections(sortedSections);
 
-        setSections(sortedSections);
-      } catch (error) {
-        console.error(
-          "Homepage loading error:",
-          error
-        );
-      } finally {
-        setLoading(false);
-      }
-    }
+          setLoading(false);
+        }
+      );
 
-    loadHomepageSections();
+    return () => unsubscribe();
   }, []);
 
   function renderSection(
@@ -101,14 +104,19 @@ export default function Homepage() {
       return null;
     }
 
-    switch (section.sectionType) {
-
+    switch (
+      section.sectionType
+    ) {
       case "hero":
         return (
           <HeroSection
             title={section.title}
-            subtitle={section.subtitle}
-            buttonText={section.buttonText}
+            subtitle={
+              section.subtitle
+            }
+            buttonText={
+              section.buttonText
+            }
             secondaryButtonText={
               section.secondaryButtonText
             }
@@ -129,8 +137,12 @@ export default function Homepage() {
         return (
           <AffiliateSection
             title={section.title}
-            description={section.description}
-            buttonText={section.buttonText}
+            description={
+              section.description
+            }
+            buttonText={
+              section.buttonText
+            }
           />
         );
 
@@ -171,13 +183,19 @@ export default function Homepage() {
 
       <Header />
 
-      {sections.map((section) => {
-        return (
-          <div key={section.id}>
-            {renderSection(section)}
-          </div>
-        );
-      })}
+      {sections.map(
+        (section) => {
+          return (
+            <div
+              key={section.id}
+            >
+              {renderSection(
+                section
+              )}
+            </div>
+          );
+        }
+      )}
 
       <WhatsAppButton />
 
