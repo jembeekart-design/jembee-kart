@@ -4,26 +4,12 @@ import { useEffect, useState } from "react";
 
 import {
   collection,
-  onSnapshot
+  doc,
+  onSnapshot,
+  setDoc
 } from "firebase/firestore";
 
 import { db } from "@/firebase/config";
-
-import Header from "@/components/navigation/Header";
-
-import HeroSection from "@/components/homepage/HeroSection";
-
-import CategorySection from "@/components/homepage/CategorySection";
-
-import ProductSection from "@/components/homepage/ProductSection";
-
-import SellerSection from "@/components/homepage/SellerSection";
-
-import AffiliateSection from "@/components/homepage/AffiliateSection";
-
-import TipsSection from "@/components/homepage/TipsSection";
-
-import FooterSection from "@/components/homepage/FooterSection";
 
 interface HomepageSection {
   id: string;
@@ -45,136 +31,327 @@ interface HomepageSection {
   secondaryButtonText?: string;
 }
 
-export default function Page() {
+export default function AdminPage() {
   const [sections, setSections] = useState<
     HomepageSection[]
   >([]);
 
   useEffect(() => {
+    const sectionsCollection =
+      collection(
+        db,
+        "homepage_sections"
+      );
+
     const unsubscribe =
       onSnapshot(
-        collection(
-          db,
-          "homepage_sections"
-        ),
+        sectionsCollection,
         (snapshot) => {
-          const data =
+          const sectionsData =
             snapshot.docs.map(
               (document) => {
+                const firestoreData =
+                  document.data() as Omit<
+                    HomepageSection,
+                    "id"
+                  >;
+
                 return {
-                  id: document.id,
-                  ...(document.data() as HomepageSection)
+                  ...firestoreData,
+                  id: document.id
                 };
               }
             );
 
-          const sorted =
-            data.sort(
-              (a, b) =>
-                a.position -
-                b.position
+          const sortedSections =
+            sectionsData.sort(
+              (a, b) => {
+                return (
+                  a.position -
+                  b.position
+                );
+              }
             );
 
-          setSections(sorted);
+          setSections(sortedSections);
         }
       );
 
     return () => unsubscribe();
   }, []);
 
-  function renderSection(
+  function updateField(
+    id: string,
+    field: keyof HomepageSection,
+    value:
+      | string
+      | number
+      | boolean
+  ) {
+    setSections((previous) => {
+      return previous.map(
+        (section) => {
+          if (
+            section.id === id
+          ) {
+            return {
+              ...section,
+              [field]: value
+            };
+          }
+
+          return section;
+        }
+      );
+    });
+  }
+
+  async function saveSection(
     section: HomepageSection
   ) {
-    if (!section.visible)
-      return null;
+    try {
+      await setDoc(
+        doc(
+          db,
+          "homepage_sections",
+          section.id
+        ),
+        section
+      );
 
-    switch (
-      section.sectionType
-    ) {
-      case "hero":
-        return (
-          <HeroSection
-            title={
-              section.title
-            }
-            subtitle={
-              section.subtitle
-            }
-            buttonText={
-              section.buttonText
-            }
-            secondaryButtonText={
-              section.secondaryButtonText
-            }
-          />
-        );
+      alert(
+        "Section Saved Successfully"
+      );
+    } catch (error) {
+      console.error(error);
 
-      case "category":
-        return (
-          <CategorySection />
-        );
-
-      case "products":
-        return (
-          <ProductSection />
-        );
-
-      case "seller":
-        return (
-          <SellerSection />
-        );
-
-      case "affiliate":
-        return (
-          <AffiliateSection
-            title={
-              section.title
-            }
-            description={
-              section.description
-            }
-            buttonText={
-              section.buttonText
-            }
-          />
-        );
-
-      case "tips":
-        return <TipsSection />;
-
-      default:
-        return null;
+      alert(
+        "Error Saving Section"
+      );
     }
   }
 
   return (
-    <main className="min-h-screen w-full overflow-x-hidden bg-gray-100">
+    <main className="min-h-screen w-full overflow-x-hidden bg-gray-100 px-4 py-8">
 
-      <div className="w-full overflow-x-hidden">
+      <div className="mx-auto w-full max-w-5xl">
 
-        <Header />
+        <h1 className="mb-8 text-3xl font-black text-blue-600 md:text-5xl">
+          JembeeKart Admin Panel
+        </h1>
 
-        <div className="flex w-full flex-col gap-5 overflow-x-hidden py-5">
+        <div className="space-y-8">
 
           {sections.map(
             (section) => {
               return (
                 <div
-                  key={
-                    section.id
-                  }
+                  key={section.id}
+                  className="w-full rounded-[30px] bg-white p-6 shadow-xl md:p-8"
                 >
-                  {renderSection(
-                    section
-                  )}
+
+                  <div className="mb-8 flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
+
+                    <div>
+
+                      <h2 className="text-3xl font-black text-gray-800">
+                        {
+                          section.sectionType
+                        }
+                      </h2>
+
+                      <p className="mt-2 text-gray-500">
+                        Firestore Section Editor
+                      </p>
+
+                    </div>
+
+                    <label className="flex items-center gap-3">
+
+                      <span className="text-lg font-bold">
+                        Visible
+                      </span>
+
+                      <input
+                        type="checkbox"
+                        checked={
+                          section.visible
+                        }
+                        onChange={(
+                          event
+                        ) => {
+                          updateField(
+                            section.id,
+                            "visible",
+                            event.target
+                              .checked
+                          );
+                        }}
+                        className="h-6 w-6"
+                      />
+
+                    </label>
+
+                  </div>
+
+                  <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
+
+                    <div>
+
+                      <label className="mb-3 block text-lg font-bold text-gray-700">
+                        Title
+                      </label>
+
+                      <input
+                        type="text"
+                        value={
+                          section.title ||
+                          ""
+                        }
+                        onChange={(
+                          event
+                        ) => {
+                          updateField(
+                            section.id,
+                            "title",
+                            event.target
+                              .value
+                          );
+                        }}
+                        className="w-full rounded-[20px] border border-gray-200 bg-gray-100 px-5 py-4 text-lg outline-none"
+                      />
+
+                    </div>
+
+                    <div>
+
+                      <label className="mb-3 block text-lg font-bold text-gray-700">
+                        Button Text
+                      </label>
+
+                      <input
+                        type="text"
+                        value={
+                          section.buttonText ||
+                          ""
+                        }
+                        onChange={(
+                          event
+                        ) => {
+                          updateField(
+                            section.id,
+                            "buttonText",
+                            event.target
+                              .value
+                          );
+                        }}
+                        className="w-full rounded-[20px] border border-gray-200 bg-gray-100 px-5 py-4 text-lg outline-none"
+                      />
+
+                    </div>
+
+                    <div>
+
+                      <label className="mb-3 block text-lg font-bold text-gray-700">
+                        Secondary Button
+                      </label>
+
+                      <input
+                        type="text"
+                        value={
+                          section.secondaryButtonText ||
+                          ""
+                        }
+                        onChange={(
+                          event
+                        ) => {
+                          updateField(
+                            section.id,
+                            "secondaryButtonText",
+                            event.target
+                              .value
+                          );
+                        }}
+                        className="w-full rounded-[20px] border border-gray-200 bg-gray-100 px-5 py-4 text-lg outline-none"
+                      />
+
+                    </div>
+
+                    <div>
+
+                      <label className="mb-3 block text-lg font-bold text-gray-700">
+                        Position
+                      </label>
+
+                      <input
+                        type="number"
+                        value={
+                          section.position
+                        }
+                        onChange={(
+                          event
+                        ) => {
+                          updateField(
+                            section.id,
+                            "position",
+                            Number(
+                              event.target
+                                .value
+                            )
+                          );
+                        }}
+                        className="w-full rounded-[20px] border border-gray-200 bg-gray-100 px-5 py-4 text-lg outline-none"
+                      />
+
+                    </div>
+
+                  </div>
+
+                  <div className="mt-6">
+
+                    <label className="mb-3 block text-lg font-bold text-gray-700">
+                      Subtitle / Description
+                    </label>
+
+                    <textarea
+                      rows={6}
+                      value={
+                        section.subtitle ||
+                        section.description ||
+                        ""
+                      }
+                      onChange={(
+                        event
+                      ) => {
+                        updateField(
+                          section.id,
+                          "subtitle",
+                          event.target
+                            .value
+                        );
+                      }}
+                      className="w-full rounded-[20px] border border-gray-200 bg-gray-100 px-5 py-4 text-lg outline-none"
+                    />
+
+                  </div>
+
+                  <button
+                    onClick={() => {
+                      saveSection(
+                        section
+                      );
+                    }}
+                    className="mt-8 w-full rounded-[20px] bg-blue-600 px-6 py-4 text-lg font-black text-white transition-all duration-300 hover:bg-blue-700"
+                  >
+                    Save Section
+                  </button>
+
                 </div>
               );
             }
           )}
 
         </div>
-
-        <FooterSection />
 
       </div>
 
