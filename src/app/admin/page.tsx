@@ -126,9 +126,9 @@ export default function AdminPage() {
   }
 
   return (
-    <main className="min-h-screen bg-gray-100 p-4 md:p-6">
+    <main className="min-h-screen w-full overflow-x-hidden bg-gray-100 p-3 md:p-6">
 
-      <div className="mx-auto max-w-6xl">
+      <div className="mx-auto w-full max-w-6xl overflow-hidden">
 
         <h1 className="mb-8 text-4xl font-black text-blue-600">
           JembeeKart Admin Panel
@@ -141,10 +141,10 @@ export default function AdminPage() {
               return (
                 <div
                   key={section.id}
-                  className="rounded-[30px] bg-white p-6 shadow-xl"
+                  className="w-full overflow-hidden rounded-[30px] bg-white p-4 shadow-xl md:p-6"
                 >
 
-                  <div className="mb-6 flex items-center justify-between">
+                  <div className="mb-6 flex items-center justify-between gap-4">
 
                     <div>
 
@@ -340,7 +340,7 @@ export default function AdminPage() {
                         section
                       );
                     }}
-                    className="mt-6 rounded-2xl bg-blue-600 px-8 py-4 font-bold text-white transition-all duration-300 hover:scale-105"
+                    className="mt-6 w-full rounded-2xl bg-blue-600 px-6 py-4 font-bold text-white transition-all duration-300 hover:scale-105"
                   >
                     Save Section
                   </button>
