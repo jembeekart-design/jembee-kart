@@ -20,7 +20,7 @@ import FooterSection from "@/components/homepage/FooterSection";
 
 export default function Homepage() {
   return (
-    <main className="min-h-screen bg-gray-100 pb-24">
+    <main className="min-h-screen w-full overflow-x-hidden bg-gray-100 pb-28">
 
       <Header />
 
