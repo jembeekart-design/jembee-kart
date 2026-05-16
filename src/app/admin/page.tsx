@@ -14,11 +14,11 @@ import { db } from "@/firebase/config";
 interface HomepageSection {
   id: string;
 
-  sectionType: string;
+  sectionType?: string;
 
-  visible: boolean;
+  visible?: boolean;
 
-  position: number;
+  position?: number;
 
   title?: string;
 
@@ -46,6 +46,8 @@ interface HomepageSection {
 
   buttonColor?: string;
 
+  buttonTextColor?: string;
+
   [key: string]:
     | string
     | number
@@ -54,9 +56,10 @@ interface HomepageSection {
 }
 
 export default function AdminPage() {
-  const [sections, setSections] = useState<
-    HomepageSection[]
-  >([]);
+  const [sections, setSections] =
+    useState<
+      HomepageSection[]
+    >([]);
 
   const [
     newFieldNames,
@@ -96,17 +99,24 @@ export default function AdminPage() {
             sectionsData.sort(
               (a, b) => {
                 return (
-                  a.position -
-                  b.position
+                  Number(
+                    a.position || 0
+                  ) -
+                  Number(
+                    b.position || 0
+                  )
                 );
               }
             );
 
-          setSections(sortedSections);
+          setSections(
+            sortedSections
+          );
         }
       );
 
-    return () => unsubscribe();
+    return () =>
+      unsubscribe();
   }, []);
 
   function updateField(
@@ -117,22 +127,30 @@ export default function AdminPage() {
       | number
       | boolean
   ) {
-    setSections((previous) => {
-      return previous.map(
-        (section) => {
-          if (
-            section.id === id
-          ) {
-            return {
-              ...section,
-              [field]: value
-            };
-          }
+    setSections(
+      (previous) => {
+        return previous.map(
+          (section) => {
+            if (
+              section.id === id
+            ) {
+              return {
+                ...section,
+                [field]:
+                  field ===
+                  "position"
+                    ? Number(
+                        value
+                      )
+                    : value
+              };
+            }
 
-          return section;
-        }
-      );
-    });
+            return section;
+          }
+        );
+      }
+    );
   }
 
   function addCustomField(
@@ -141,30 +159,32 @@ export default function AdminPage() {
     const fieldName =
       newFieldNames[
         sectionId
-      ];
+      ]?.trim();
 
     if (!fieldName) {
       return;
     }
 
-    setSections((previous) => {
-      return previous.map(
-        (section) => {
-          if (
-            section.id ===
-            sectionId
-          ) {
-            return {
-              ...section,
-              [fieldName]:
-                ""
-            };
-          }
+    setSections(
+      (previous) => {
+        return previous.map(
+          (section) => {
+            if (
+              section.id ===
+              sectionId
+            ) {
+              return {
+                ...section,
+                [fieldName]:
+                  ""
+              };
+            }
 
-          return section;
-        }
-      );
-    });
+            return section;
+          }
+        );
+      }
+    );
 
     setNewFieldNames(
       (previous) => {
@@ -193,7 +213,9 @@ export default function AdminPage() {
         "Section Saved Successfully"
       );
     } catch (error) {
-      console.error(error);
+      console.error(
+        error
+      );
 
       alert(
         "Error Saving Section"
@@ -206,7 +228,7 @@ export default function AdminPage() {
 
       <div className="mx-auto w-full max-w-5xl">
 
-        <h1 className="mb-8 text-3xl font-black text-blue-600 md:text-5xl">
+        <h1 className="mb-8 break-words text-3xl font-black text-blue-600 md:text-5xl">
           JembeeKart Admin Panel
         </h1>
 
@@ -216,15 +238,17 @@ export default function AdminPage() {
             (section) => {
               return (
                 <div
-                  key={section.id}
-                  className="w-full rounded-[30px] bg-white p-6 shadow-xl md:p-8"
+                  key={
+                    section.id
+                  }
+                  className="w-full overflow-hidden rounded-[30px] bg-white p-6 shadow-xl md:p-8"
                 >
 
                   <div className="mb-8 flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
 
-                    <div>
+                    <div className="min-w-0">
 
-                      <h2 className="text-3xl font-black text-gray-800">
+                      <h2 className="break-words text-3xl font-black text-gray-800">
                         {
                           section.sectionType
                         }
@@ -245,7 +269,9 @@ export default function AdminPage() {
                       <input
                         type="checkbox"
                         checked={
-                          section.visible
+                          Boolean(
+                            section.visible
+                          )
                         }
                         onChange={(
                           event
@@ -253,7 +279,8 @@ export default function AdminPage() {
                           updateField(
                             section.id,
                             "visible",
-                            event.target
+                            event
+                              .target
                               .checked
                           );
                         }}
@@ -287,9 +314,10 @@ export default function AdminPage() {
                             key={
                               key
                             }
+                            className="min-w-0"
                           >
 
-                            <label className="mb-3 block text-lg font-bold capitalize text-gray-700">
+                            <label className="mb-3 block break-words text-lg font-bold capitalize text-gray-700">
                               {key}
                             </label>
 
@@ -315,7 +343,12 @@ export default function AdminPage() {
                               />
                             ) : (
                               <input
-                                type="text"
+                                type={
+                                  key ===
+                                  "position"
+                                    ? "number"
+                                    : "text"
+                                }
                                 value={
                                   String(
                                     value ||
@@ -333,7 +366,7 @@ export default function AdminPage() {
                                       .value
                                   );
                                 }}
-                                className="w-full rounded-[20px] border border-gray-200 bg-gray-100 px-5 py-4 text-lg outline-none"
+                                className="w-full min-w-0 rounded-[20px] border border-gray-200 bg-gray-100 px-5 py-4 text-base outline-none md:text-lg"
                               />
                             )}
 
@@ -344,11 +377,9 @@ export default function AdminPage() {
 
                   </div>
 
-                  {/* ADD NEW FIELD */}
+                  <div className="mt-8 overflow-hidden rounded-[25px] border border-dashed border-blue-300 bg-blue-50 p-5">
 
-                  <div className="mt-8 rounded-[25px] border border-dashed border-blue-300 bg-blue-50 p-5">
-
-                    <h3 className="mb-4 text-xl font-black text-blue-700">
+                    <h3 className="mb-4 break-words text-xl font-black text-blue-700">
                       Add Custom Field
                     </h3>
 
@@ -379,7 +410,7 @@ export default function AdminPage() {
                             }
                           );
                         }}
-                        className="flex-1 rounded-[20px] border border-gray-200 bg-white px-5 py-4 text-lg outline-none"
+                        className="flex-1 rounded-[20px] border border-gray-200 bg-white px-5 py-4 text-base outline-none md:text-lg"
                       />
 
                       <button
@@ -388,28 +419,28 @@ export default function AdminPage() {
                             section.id
                           );
                         }}
-                        className="rounded-[20px] bg-black px-8 py-4 text-lg font-bold text-white"
+                        className="rounded-[20px] bg-black px-8 py-4 text-base font-bold text-white md:text-lg"
                       >
                         Add Field
                       </button>
 
                     </div>
 
-                    <div className="mt-4 text-sm text-gray-600">
+                    <div className="mt-4 break-words text-sm leading-relaxed text-gray-600">
 
                       Examples:
                       titleSize,
+                      subtitleSize,
                       backgroundColor,
                       textColor,
                       buttonColor,
+                      buttonTextColor,
                       sectionPadding,
                       borderRadius
 
                     </div>
 
                   </div>
-
-                  {/* SAVE BUTTON */}
 
                   <button
                     onClick={() => {
