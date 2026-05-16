@@ -24,12 +24,15 @@ interface HeroSectionProps {
   sectionPadding?: string;
 
   borderRadius?: string;
+
+  sectionHeight?: string;
 }
 
 export default function HeroSection({
   title = "Build Your Ecommerce Empire",
 
-  subtitle = "AI Powered Ecommerce, Affiliate Marketing, Reselling, MLM and Seller Ecosystem.",
+  subtitle =
+    "AI Powered Ecommerce, Affiliate Marketing, Reselling, MLM and Seller Ecosystem.",
 
   buttonText = "Start Shopping",
 
@@ -39,7 +42,8 @@ export default function HeroSection({
 
   subtitleSize = "22px",
 
-  backgroundColor = "linear-gradient(90deg,#2563eb,#7c3aed)",
+  backgroundColor =
+    "linear-gradient(90deg,#2563eb,#7c3aed)",
 
   textColor = "#ffffff",
 
@@ -49,7 +53,9 @@ export default function HeroSection({
 
   sectionPadding = "24px",
 
-  borderRadius = "24px"
+  borderRadius = "24px",
+
+  sectionHeight = "320px"
 }: HeroSectionProps) {
   return (
     <section className="w-full overflow-hidden px-3 py-5 md:px-6">
@@ -58,9 +64,14 @@ export default function HeroSection({
         className="w-full overflow-hidden shadow-2xl"
         style={{
           background: backgroundColor,
+
           color: textColor,
+
           padding: sectionPadding,
-          borderRadius: borderRadius
+
+          borderRadius: borderRadius,
+
+          height: sectionHeight
         }}
       >
 
@@ -70,6 +81,7 @@ export default function HeroSection({
             className="break-words font-black leading-tight"
             style={{
               fontSize: titleSize,
+
               lineHeight: "1.1"
             }}
           >
@@ -91,6 +103,7 @@ export default function HeroSection({
               className="w-full rounded-2xl px-6 py-3 text-sm font-bold shadow-xl transition-all duration-300 hover:scale-[1.02] md:w-auto md:px-16 md:py-5 md:text-base"
               style={{
                 background: buttonColor,
+
                 color: buttonTextColor
               }}
             >
