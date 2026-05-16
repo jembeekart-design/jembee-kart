@@ -123,45 +123,43 @@ export default function AdminPage() {
   }
 
   return (
-    <main className="min-h-screen overflow-x-hidden bg-gray-100 px-2 py-4 sm:px-4 md:px-6">
+    <main className="min-h-screen w-screen max-w-full overflow-x-hidden bg-gray-100 px-4 py-4">
 
-      <div className="mx-auto w-full max-w-6xl overflow-hidden">
+      <div className="mx-auto w-full max-w-full overflow-hidden">
 
         <h1 className="mb-6 break-words text-2xl font-black leading-tight text-blue-600 sm:text-3xl md:text-4xl">
           JembeeKart Admin Panel
         </h1>
 
-        <div className="flex flex-col gap-6">
+        <div className="flex w-full flex-col gap-6">
 
           {sections.map(
             (section) => {
               return (
                 <div
                   key={section.id}
-                  className="w-full max-w-full overflow-hidden rounded-[24px] bg-white p-3 shadow-xl sm:p-4 md:p-6"
+                  className="w-full max-w-full overflow-hidden rounded-[24px] bg-white p-4 shadow-xl"
                 >
 
                   <div className="mb-6 flex flex-col gap-4">
 
-                    <div className="min-w-0">
+                    <div className="w-full min-w-0">
 
-                      <h2 className="break-words text-xl font-black text-gray-800 md:text-2xl">
+                      <h2 className="break-words text-2xl font-black text-gray-800">
                         {
                           section.sectionType
                         }
                       </h2>
 
-                      <p className="break-words text-sm text-gray-500">
-                        Firestore
-                        Section
-                        Editor
+                      <p className="break-words text-gray-500">
+                        Firestore Section Editor
                       </p>
 
                     </div>
 
                     <label className="flex items-center gap-3">
 
-                      <span className="font-semibold">
+                      <span className="font-semibold text-gray-700">
                         Visible
                       </span>
 
@@ -187,9 +185,9 @@ export default function AdminPage() {
 
                   </div>
 
-                  <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
+                  <div className="grid grid-cols-1 gap-4">
 
-                    <div className="min-w-0">
+                    <div className="w-full min-w-0">
 
                       <label className="mb-2 block font-semibold text-gray-700">
                         Title
@@ -216,7 +214,7 @@ export default function AdminPage() {
 
                     </div>
 
-                    <div className="min-w-0">
+                    <div className="w-full min-w-0">
 
                       <label className="mb-2 block font-semibold text-gray-700">
                         Button Text
@@ -243,11 +241,10 @@ export default function AdminPage() {
 
                     </div>
 
-                    <div className="min-w-0">
+                    <div className="w-full min-w-0">
 
                       <label className="mb-2 block font-semibold text-gray-700">
-                        Secondary
-                        Button
+                        Secondary Button
                       </label>
 
                       <input
@@ -271,7 +268,7 @@ export default function AdminPage() {
 
                     </div>
 
-                    <div className="min-w-0">
+                    <div className="w-full min-w-0">
 
                       <label className="mb-2 block font-semibold text-gray-700">
                         Position
@@ -302,11 +299,10 @@ export default function AdminPage() {
 
                   </div>
 
-                  <div className="mt-5 min-w-0">
+                  <div className="mt-5 w-full min-w-0">
 
                     <label className="mb-2 block font-semibold text-gray-700">
-                      Subtitle /
-                      Description
+                      Subtitle / Description
                     </label>
 
                     <textarea
@@ -325,7 +321,7 @@ export default function AdminPage() {
                             .value
                         );
                       }}
-                      rows={4}
+                      rows={5}
                       className="block w-full max-w-full rounded-2xl border border-gray-200 bg-gray-100 px-4 py-3 text-sm outline-none"
                     />
 
