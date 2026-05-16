@@ -1,11 +1,9 @@
-import type { Metadata } from "next";
+export const metadata = {
+  title: "JembeeKart",
+  description: "AI Ecommerce Ecosystem",
+};
 
 import "./globals.css";
-
-export const metadata: Metadata = {
-  title: "JembeeKart",
-  description: "AI Powered Ecommerce Ecosystem"
-};
 
 export default function RootLayout({
   children,
@@ -14,11 +12,11 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-
       <body>
-        {children}
+        <div className="w-full overflow-x-hidden">
+          {children}
+        </div>
       </body>
-
     </html>
   );
 }
