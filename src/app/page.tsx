@@ -17,13 +17,17 @@ import CategorySection from "@/components/homepage/CategorySection";
 
 import ProductSection from "@/components/homepage/ProductSection";
 
-import SellerSection from "@/components/homepage/SellerSection";
-
 import AffiliateSection from "@/components/homepage/AffiliateSection";
+
+import SellerSection from "@/components/homepage/SellerSection";
 
 import TipsSection from "@/components/homepage/TipsSection";
 
 import FooterSection from "@/components/homepage/FooterSection";
+
+import BottomNavbar from "@/components/navigation/BottomNavbar";
+
+import WhatsAppButton from "@/components/navigation/WhatsAppButton";
 
 interface HomepageSection {
   id: string;
@@ -45,7 +49,7 @@ interface HomepageSection {
   secondaryButtonText?: string;
 }
 
-export default function Page() {
+export default function HomePage() {
   const [sections, setSections] = useState<
     HomepageSection[]
   >([]);
@@ -61,21 +65,32 @@ export default function Page() {
           const data =
             snapshot.docs.map(
               (document) => {
+                const firestoreData =
+                  document.data() as Omit<
+                    HomepageSection,
+                    "id"
+                  >;
+
                 return {
-                  id: document.id,
-                  ...(document.data() as HomepageSection)
+                  ...firestoreData,
+                  id: document.id
                 };
               }
             );
 
-          const sorted =
+          const sortedData =
             data.sort(
-              (a, b) =>
-                a.position -
-                b.position
+              (a, b) => {
+                return (
+                  a.position -
+                  b.position
+                );
+              }
             );
 
-          setSections(sorted);
+          setSections(
+            sortedData
+          );
         }
       );
 
@@ -85,8 +100,9 @@ export default function Page() {
   function renderSection(
     section: HomepageSection
   ) {
-    if (!section.visible)
+    if (!section.visible) {
       return null;
+    }
 
     switch (
       section.sectionType
@@ -119,11 +135,6 @@ export default function Page() {
           <ProductSection />
         );
 
-      case "seller":
-        return (
-          <SellerSection />
-        );
-
       case "affiliate":
         return (
           <AffiliateSection
@@ -131,7 +142,8 @@ export default function Page() {
               section.title
             }
             description={
-              section.description
+              section.description ||
+              section.subtitle
             }
             buttonText={
               section.buttonText
@@ -139,8 +151,20 @@ export default function Page() {
           />
         );
 
+      case "seller":
+        return (
+          <SellerSection />
+        );
+
       case "tips":
-        return <TipsSection />;
+        return (
+          <TipsSection />
+        );
+
+      case "footer":
+        return (
+          <FooterSection />
+        );
 
       default:
         return null;
@@ -154,7 +178,7 @@ export default function Page() {
 
         <Header />
 
-        <div className="flex w-full flex-col gap-5 overflow-x-hidden py-5">
+        <div className="w-full overflow-x-hidden pb-32">
 
           {sections.map(
             (section) => {
@@ -163,6 +187,7 @@ export default function Page() {
                   key={
                     section.id
                   }
+                  className="w-full overflow-hidden"
                 >
                   {renderSection(
                     section
@@ -174,7 +199,9 @@ export default function Page() {
 
         </div>
 
-        <FooterSection />
+        <WhatsAppButton />
+
+        <BottomNavbar />
 
       </div>
 
