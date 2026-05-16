@@ -40,6 +40,8 @@ interface HomepageSection {
 
   sectionPadding?: string;
 
+  sectionHeight?: string;
+
   borderRadius?: string;
 
   backgroundColor?: string;
@@ -81,6 +83,7 @@ export default function AdminPage() {
               (document) => {
                 return {
                   id: document.id,
+
                   ...(document.data() as Omit<
                     HomepageSection,
                     "id"
@@ -131,6 +134,7 @@ export default function AdminPage() {
           ) {
             return {
               ...section,
+
               [field]: value
             };
           }
@@ -162,6 +166,7 @@ export default function AdminPage() {
           ) {
             return {
               ...section,
+
               [fieldName]:
                 ""
             };
@@ -176,6 +181,7 @@ export default function AdminPage() {
       (previous) => {
         return {
           ...previous,
+
           [sectionId]: ""
         };
       }
@@ -370,6 +376,7 @@ export default function AdminPage() {
                             ) => {
                               return {
                                 ...previous,
+
                                 [section.id]:
                                   event
                                     .target
@@ -395,6 +402,7 @@ export default function AdminPage() {
                     </div>
 
                     <div className="mt-4 text-sm text-gray-600">
+
                       Examples:
                       titleSize,
                       subtitleSize,
@@ -403,7 +411,9 @@ export default function AdminPage() {
                       buttonColor,
                       buttonTextColor,
                       sectionPadding,
+                      sectionHeight,
                       borderRadius
+
                     </div>
 
                   </div>
