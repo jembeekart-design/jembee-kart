@@ -29,12 +29,41 @@ interface HomepageSection {
   buttonText?: string;
 
   secondaryButtonText?: string;
+
+  titleSize?: string;
+
+  subtitleSize?: string;
+
+  buttonSize?: string;
+
+  sectionPadding?: string;
+
+  borderRadius?: string;
+
+  backgroundColor?: string;
+
+  textColor?: string;
+
+  buttonColor?: string;
+
+  [key: string]:
+    | string
+    | number
+    | boolean
+    | undefined;
 }
 
 export default function AdminPage() {
   const [sections, setSections] = useState<
     HomepageSection[]
   >([]);
+
+  const [
+    newFieldNames,
+    setNewFieldNames
+  ] = useState<{
+    [key: string]: string;
+  }>({});
 
   useEffect(() => {
     const sectionsCollection =
@@ -82,7 +111,7 @@ export default function AdminPage() {
 
   function updateField(
     id: string,
-    field: keyof HomepageSection,
+    field: string,
     value:
       | string
       | number
@@ -104,6 +133,47 @@ export default function AdminPage() {
         }
       );
     });
+  }
+
+  function addCustomField(
+    sectionId: string
+  ) {
+    const fieldName =
+      newFieldNames[
+        sectionId
+      ];
+
+    if (!fieldName) {
+      return;
+    }
+
+    setSections((previous) => {
+      return previous.map(
+        (section) => {
+          if (
+            section.id ===
+            sectionId
+          ) {
+            return {
+              ...section,
+              [fieldName]:
+                ""
+            };
+          }
+
+          return section;
+        }
+      );
+    });
+
+    setNewFieldNames(
+      (previous) => {
+        return {
+          ...previous,
+          [sectionId]: ""
+        };
+      }
+    );
   }
 
   async function saveSection(
@@ -196,144 +266,150 @@ export default function AdminPage() {
 
                   <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
 
-                    <div>
-
-                      <label className="mb-3 block text-lg font-bold text-gray-700">
-                        Title
-                      </label>
-
-                      <input
-                        type="text"
-                        value={
-                          section.title ||
-                          ""
-                        }
-                        onChange={(
-                          event
-                        ) => {
-                          updateField(
-                            section.id,
-                            "title",
-                            event.target
-                              .value
-                          );
-                        }}
-                        className="w-full rounded-[20px] border border-gray-200 bg-gray-100 px-5 py-4 text-lg outline-none"
-                      />
-
-                    </div>
-
-                    <div>
-
-                      <label className="mb-3 block text-lg font-bold text-gray-700">
-                        Button Text
-                      </label>
-
-                      <input
-                        type="text"
-                        value={
-                          section.buttonText ||
-                          ""
-                        }
-                        onChange={(
-                          event
-                        ) => {
-                          updateField(
-                            section.id,
-                            "buttonText",
-                            event.target
-                              .value
-                          );
-                        }}
-                        className="w-full rounded-[20px] border border-gray-200 bg-gray-100 px-5 py-4 text-lg outline-none"
-                      />
-
-                    </div>
-
-                    <div>
-
-                      <label className="mb-3 block text-lg font-bold text-gray-700">
-                        Secondary Button
-                      </label>
-
-                      <input
-                        type="text"
-                        value={
-                          section.secondaryButtonText ||
-                          ""
-                        }
-                        onChange={(
-                          event
-                        ) => {
-                          updateField(
-                            section.id,
-                            "secondaryButtonText",
-                            event.target
-                              .value
-                          );
-                        }}
-                        className="w-full rounded-[20px] border border-gray-200 bg-gray-100 px-5 py-4 text-lg outline-none"
-                      />
-
-                    </div>
-
-                    <div>
-
-                      <label className="mb-3 block text-lg font-bold text-gray-700">
-                        Position
-                      </label>
-
-                      <input
-                        type="number"
-                        value={
-                          section.position
-                        }
-                        onChange={(
-                          event
-                        ) => {
-                          updateField(
-                            section.id,
-                            "position",
-                            Number(
-                              event.target
-                                .value
-                            )
-                          );
-                        }}
-                        className="w-full rounded-[20px] border border-gray-200 bg-gray-100 px-5 py-4 text-lg outline-none"
-                      />
-
-                    </div>
-
-                  </div>
-
-                  <div className="mt-6">
-
-                    <label className="mb-3 block text-lg font-bold text-gray-700">
-                      Subtitle / Description
-                    </label>
-
-                    <textarea
-                      rows={6}
-                      value={
-                        section.subtitle ||
-                        section.description ||
-                        ""
-                      }
-                      onChange={(
-                        event
+                    {Object.entries(
+                      section
+                    ).map(
+                      (
+                        [
+                          key,
+                          value
+                        ]
                       ) => {
-                        updateField(
-                          section.id,
-                          "subtitle",
-                          event.target
-                            .value
+                        if (
+                          key ===
+                          "id"
+                        ) {
+                          return null;
+                        }
+
+                        return (
+                          <div
+                            key={
+                              key
+                            }
+                          >
+
+                            <label className="mb-3 block text-lg font-bold capitalize text-gray-700">
+                              {key}
+                            </label>
+
+                            {typeof value ===
+                            "boolean" ? (
+                              <input
+                                type="checkbox"
+                                checked={
+                                  value
+                                }
+                                onChange={(
+                                  event
+                                ) => {
+                                  updateField(
+                                    section.id,
+                                    key,
+                                    event
+                                      .target
+                                      .checked
+                                  );
+                                }}
+                                className="h-6 w-6"
+                              />
+                            ) : (
+                              <input
+                                type="text"
+                                value={
+                                  String(
+                                    value ||
+                                      ""
+                                  )
+                                }
+                                onChange={(
+                                  event
+                                ) => {
+                                  updateField(
+                                    section.id,
+                                    key,
+                                    event
+                                      .target
+                                      .value
+                                  );
+                                }}
+                                className="w-full rounded-[20px] border border-gray-200 bg-gray-100 px-5 py-4 text-lg outline-none"
+                              />
+                            )}
+
+                          </div>
                         );
-                      }}
-                      className="w-full rounded-[20px] border border-gray-200 bg-gray-100 px-5 py-4 text-lg outline-none"
-                    />
+                      }
+                    )}
 
                   </div>
+
+                  {/* ADD NEW FIELD */}
+
+                  <div className="mt-8 rounded-[25px] border border-dashed border-blue-300 bg-blue-50 p-5">
+
+                    <h3 className="mb-4 text-xl font-black text-blue-700">
+                      Add Custom Field
+                    </h3>
+
+                    <div className="flex flex-col gap-4 md:flex-row">
+
+                      <input
+                        type="text"
+                        placeholder="Example: titleSize"
+                        value={
+                          newFieldNames[
+                            section.id
+                          ] || ""
+                        }
+                        onChange={(
+                          event
+                        ) => {
+                          setNewFieldNames(
+                            (
+                              previous
+                            ) => {
+                              return {
+                                ...previous,
+                                [section.id]:
+                                  event
+                                    .target
+                                    .value
+                              };
+                            }
+                          );
+                        }}
+                        className="flex-1 rounded-[20px] border border-gray-200 bg-white px-5 py-4 text-lg outline-none"
+                      />
+
+                      <button
+                        onClick={() => {
+                          addCustomField(
+                            section.id
+                          );
+                        }}
+                        className="rounded-[20px] bg-black px-8 py-4 text-lg font-bold text-white"
+                      >
+                        Add Field
+                      </button>
+
+                    </div>
+
+                    <div className="mt-4 text-sm text-gray-600">
+
+                      Examples:
+                      titleSize,
+                      backgroundColor,
+                      textColor,
+                      buttonColor,
+                      sectionPadding,
+                      borderRadius
+
+                    </div>
+
+                  </div>
+
+                  {/* SAVE BUTTON */}
 
                   <button
                     onClick={() => {
