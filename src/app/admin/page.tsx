@@ -1,5 +1,7 @@
 "use client";
 
+export const dynamic = "force-dynamic";
+
 import { useEffect, useState } from "react";
 
 import {
@@ -57,9 +59,7 @@ interface HomepageSection {
 
 export default function AdminPage() {
   const [sections, setSections] =
-    useState<
-      HomepageSection[]
-    >([]);
+    useState<HomepageSection[]>([]);
 
   const [
     newFieldNames,
@@ -91,7 +91,10 @@ export default function AdminPage() {
 
           const sortedSections =
             sectionsData.sort(
-              (a, b) => {
+              (
+                a: HomepageSection,
+                b: HomepageSection
+              ) => {
                 return (
                   Number(
                     a.position || 0
@@ -216,7 +219,9 @@ export default function AdminPage() {
         <div className="space-y-8">
 
           {sections.map(
-            (section) => {
+            (
+              section: HomepageSection
+            ) => {
               return (
                 <div
                   key={section.id}
@@ -247,11 +252,9 @@ export default function AdminPage() {
 
                       <input
                         type="checkbox"
-                        checked={
-                          Boolean(
-                            section.visible
-                          )
-                        }
+                        checked={Boolean(
+                          section.visible
+                        )}
                         onChange={(
                           event
                         ) => {
@@ -274,24 +277,19 @@ export default function AdminPage() {
                     {Object.entries(
                       section
                     ).map(
-                      (
-                        [
-                          key,
-                          value
-                        ]
-                      ) => {
+                      ([
+                        key,
+                        value
+                      ]) => {
                         if (
-                          key ===
-                          "id"
+                          key === "id"
                         ) {
                           return null;
                         }
 
                         return (
                           <div
-                            key={
-                              key
-                            }
+                            key={key}
                           >
 
                             <label className="mb-3 block text-lg font-bold capitalize text-gray-700">
@@ -302,9 +300,9 @@ export default function AdminPage() {
                             "boolean" ? (
                               <input
                                 type="checkbox"
-                                checked={
+                                checked={Boolean(
                                   value
-                                }
+                                )}
                                 onChange={(
                                   event
                                 ) => {
@@ -321,12 +319,10 @@ export default function AdminPage() {
                             ) : (
                               <input
                                 type="text"
-                                value={
-                                  String(
-                                    value ||
-                                      ""
-                                  )
-                                }
+                                value={String(
+                                  value ||
+                                    ""
+                                )}
                                 onChange={(
                                   event
                                 ) => {
@@ -399,7 +395,6 @@ export default function AdminPage() {
                     </div>
 
                     <div className="mt-4 text-sm text-gray-600">
-
                       Examples:
                       titleSize,
                       subtitleSize,
@@ -409,7 +404,6 @@ export default function AdminPage() {
                       buttonTextColor,
                       sectionPadding,
                       borderRadius
-
                     </div>
 
                   </div>
