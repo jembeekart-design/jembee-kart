@@ -14,11 +14,11 @@ import { db } from "@/firebase/config";
 interface HomepageSection {
   id: string;
 
-  sectionType: string;
+  sectionType?: string;
 
-  visible: boolean;
+  visible?: boolean;
 
-  position: number;
+  position?: number;
 
   title?: string;
 
@@ -56,9 +56,10 @@ interface HomepageSection {
 }
 
 export default function AdminPage() {
-  const [sections, setSections] = useState<
-    HomepageSection[]
-  >([]);
+  const [sections, setSections] =
+    useState<
+      HomepageSection[]
+    >([]);
 
   const [
     newFieldNames,
@@ -68,28 +69,22 @@ export default function AdminPage() {
   }>({});
 
   useEffect(() => {
-    const sectionsCollection =
-      collection(
-        db,
-        "homepage_sections"
-      );
-
     const unsubscribe =
       onSnapshot(
-        sectionsCollection,
+        collection(
+          db,
+          "homepage_sections"
+        ),
         (snapshot) => {
-          const sectionsData =
+          const sectionsData: HomepageSection[] =
             snapshot.docs.map(
               (document) => {
-                const firestoreData =
-                  document.data() as Omit<
+                return {
+                  id: document.id,
+                  ...(document.data() as Omit<
                     HomepageSection,
                     "id"
-                  >;
-
-                return {
-                  ...firestoreData,
-                  id: document.id
+                  >)
                 };
               }
             );
@@ -99,14 +94,10 @@ export default function AdminPage() {
               (a, b) => {
                 return (
                   Number(
-                    (
-                      a as HomepageSection
-                    ).position || 0
+                    a.position || 0
                   ) -
                   Number(
-                    (
-                      b as HomepageSection
-                    ).position || 0
+                    b.position || 0
                   )
                 );
               }
@@ -257,7 +248,9 @@ export default function AdminPage() {
                       <input
                         type="checkbox"
                         checked={
-                          section.visible
+                          Boolean(
+                            section.visible
+                          )
                         }
                         onChange={(
                           event
