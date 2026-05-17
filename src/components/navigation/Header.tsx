@@ -2,9 +2,63 @@
 
 import { Mic, Search } from "lucide-react";
 
-export default function Header() {
+interface HeaderProps {
+  headerBackgroundColor?: string;
+
+  headerTextColor?: string;
+
+  searchBarColor?: string;
+
+  statusBarColor?: string;
+}
+
+export default function Header({
+  headerBackgroundColor = "#ffffff",
+
+  headerTextColor = "#2563eb",
+
+  searchBarColor = "#f3f4f6",
+
+  statusBarColor = "#ffffff"
+}: HeaderProps) {
+  // STATUS BAR COLOR CHANGE
+
+  if (typeof document !== "undefined") {
+    let metaTheme =
+      document.querySelector(
+        'meta[name="theme-color"]'
+      );
+
+    if (!metaTheme) {
+      metaTheme =
+        document.createElement(
+          "meta"
+        );
+
+      metaTheme.setAttribute(
+        "name",
+        "theme-color"
+      );
+
+      document.head.appendChild(
+        metaTheme
+      );
+    }
+
+    metaTheme.setAttribute(
+      "content",
+      statusBarColor
+    );
+  }
+
   return (
-    <header className="fixed left-0 top-0 z-50 w-full border-b border-gray-200 bg-white/95 backdrop-blur-xl">
+    <header
+      className="fixed left-0 top-0 z-50 w-full border-b border-gray-200 backdrop-blur-xl"
+      style={{
+        backgroundColor:
+          headerBackgroundColor
+      }}
+    >
 
       <div className="w-full px-3 pt-[env(safe-area-inset-top)] pb-3 md:px-6">
 
@@ -16,7 +70,13 @@ export default function Header() {
 
           <div className="min-w-0">
 
-            <h1 className="truncate text-3xl font-black leading-none text-blue-600 md:text-4xl">
+            <h1
+              className="truncate text-3xl font-black leading-none md:text-4xl"
+              style={{
+                color:
+                  headerTextColor
+              }}
+            >
               JembeeKart
             </h1>
 
@@ -51,7 +111,11 @@ export default function Header() {
           <input
             type="text"
             placeholder="Search products..."
-            className="w-full rounded-2xl border border-gray-200 bg-gray-100 py-3 pl-12 pr-14 text-sm outline-none transition-all duration-300 focus:border-blue-500 focus:bg-white md:text-base"
+            className="w-full rounded-2xl border border-gray-200 py-3 pl-12 pr-14 text-sm outline-none transition-all duration-300 focus:border-blue-500 focus:bg-white md:text-base"
+            style={{
+              backgroundColor:
+                searchBarColor
+            }}
           />
 
           {/* VOICE BUTTON */}
