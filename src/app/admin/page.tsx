@@ -151,11 +151,15 @@ export default function AdminPage() {
     const fieldName =
       newFieldNames[
         sectionId
-      ];
+      ]?.trim();
 
     if (!fieldName) {
       return;
     }
+
+    const normalizedField =
+      fieldName.charAt(0).toLowerCase() +
+      fieldName.slice(1);
 
     setSections((previous) => {
       return previous.map(
@@ -167,7 +171,7 @@ export default function AdminPage() {
             return {
               ...section,
 
-              [fieldName]:
+              [normalizedField]:
                 ""
             };
           }
@@ -293,13 +297,27 @@ export default function AdminPage() {
                           return null;
                         }
 
+                        const label =
+                          key
+                            .replace(
+                              /([A-Z])/g,
+                              " $1"
+                            )
+                            .replace(
+                              /^./,
+                              (
+                                character
+                              ) =>
+                                character.toUpperCase()
+                            );
+
                         return (
                           <div
                             key={key}
                           >
 
-                            <label className="mb-3 block text-lg font-bold capitalize text-gray-700">
-                              {key}
+                            <label className="mb-3 block text-lg font-bold text-gray-700">
+                              {label}
                             </label>
 
                             {typeof value ===
@@ -361,7 +379,7 @@ export default function AdminPage() {
 
                       <input
                         type="text"
-                        placeholder="Example: titleSize"
+                        placeholder="Example: subtitleSize"
                         value={
                           newFieldNames[
                             section.id
@@ -404,14 +422,32 @@ export default function AdminPage() {
                     <div className="mt-4 text-sm text-gray-600">
 
                       Examples:
-                      titleSize,
-                      subtitleSize,
-                      backgroundColor,
-                      textColor,
-                      buttonColor,
-                      buttonTextColor,
-                      sectionPadding,
-                      sectionHeight,
+                      <br />
+
+                      titleSize
+                      <br />
+
+                      subtitleSize
+                      <br />
+
+                      backgroundColor
+                      <br />
+
+                      textColor
+                      <br />
+
+                      buttonColor
+                      <br />
+
+                      buttonTextColor
+                      <br />
+
+                      sectionPadding
+                      <br />
+
+                      sectionHeight
+                      <br />
+
                       borderRadius
 
                     </div>
