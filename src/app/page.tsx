@@ -69,6 +69,18 @@ interface HomepageSection {
   borderRadius?: string;
 
   sectionHeight?: string;
+
+  sellerTitle?: string;
+
+  sellerDescription?: string;
+
+  sellerButtonText?: string;
+
+  resellerTitle?: string;
+
+  resellerDescription?: string;
+
+  resellerButtonText?: string;
 }
 
 export default function HomePage() {
@@ -214,23 +226,29 @@ export default function HomePage() {
       case "seller":
         return (
           <SellerSection
-            title={
-              section.title
+            sellerTitle={
+              section.sellerTitle ||
+              "Become A Seller"
             }
-            subtitle={
-              section.subtitle
+            sellerDescription={
+              section.sellerDescription ||
+              "Sell products with AI powered tools, analytics and advanced ecommerce automation."
             }
-            buttonText={
-              section.buttonText
+            sellerButtonText={
+              section.sellerButtonText ||
+              "Start Selling"
             }
-            backgroundColor={
-              section.backgroundColor
+            resellerTitle={
+              section.resellerTitle ||
+              "Reseller Program"
             }
-            gradientColor={
-              section.gradientColor
+            resellerDescription={
+              section.resellerDescription ||
+              "Start reselling products without inventory and grow your online business easily."
             }
-            textColor={
-              section.textColor
+            resellerButtonText={
+              section.resellerButtonText ||
+              "Join Now"
             }
           />
         );
