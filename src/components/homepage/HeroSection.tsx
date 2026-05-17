@@ -29,37 +29,6 @@ interface HeroSectionProps {
 
   borderRadius?: string;
 
-"use client";
-
-interface HeroSectionProps {
-  title?: string;
-
-  subtitle?: string;
-
-  buttonText?: string;
-
-  secondaryButtonText?: string;
-
-  titleSize?: string;
-
-  subtitleSize?: string;
-
-  buttonSize?: string;
-
-  backgroundColor?: string;
-
-  gradientColor?: string;
-
-  textColor?: string;
-
-  buttonColor?: string;
-
-  buttonTextColor?: string;
-
-  sectionPadding?: string;
-
-  borderRadius?: string;
-
   sectionHeight?: string;
 }
 
@@ -102,13 +71,9 @@ export default function HeroSection({
         className="flex w-full flex-col justify-center overflow-hidden shadow-2xl"
         style={{
           background: `linear-gradient(90deg, ${backgroundColor}, ${gradientColor})`,
-
           color: textColor,
-
           padding: sectionPadding,
-
           borderRadius: borderRadius,
-
           minHeight: sectionHeight
         }}
       >
@@ -119,7 +84,6 @@ export default function HeroSection({
             className="break-words font-black leading-tight"
             style={{
               fontSize: titleSize,
-
               lineHeight: "1.1"
             }}
           >
@@ -141,9 +105,7 @@ export default function HeroSection({
               className="w-full rounded-2xl px-6 py-3 font-bold shadow-xl transition-all duration-300 hover:scale-[1.02] md:w-auto"
               style={{
                 background: buttonColor,
-
                 color: buttonTextColor,
-
                 fontSize: buttonSize
               }}
             >
