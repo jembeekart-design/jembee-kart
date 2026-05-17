@@ -54,6 +54,14 @@ interface HomepageSection {
 
   buttonTextColor?: string;
 
+  headerBackgroundColor?: string;
+
+  headerTextColor?: string;
+
+  searchBarColor?: string;
+
+  statusBarColor?: string;
+
   sellerTitle?: string;
 
   sellerDescription?: string;
@@ -455,7 +463,7 @@ export default function AdminPage() {
 
                       <input
                         type="text"
-                        placeholder="Example: sellerTitle"
+                        placeholder="Example: headerBackgroundColor"
                         value={
                           newFieldNames[
                             section.id
@@ -498,6 +506,18 @@ export default function AdminPage() {
                     <div className="mt-4 text-sm text-gray-600">
 
                       Examples:
+                      <br />
+
+                      headerBackgroundColor
+                      <br />
+
+                      headerTextColor
+                      <br />
+
+                      searchBarColor
+                      <br />
+
+                      statusBarColor
                       <br />
 
                       sellerTitle
