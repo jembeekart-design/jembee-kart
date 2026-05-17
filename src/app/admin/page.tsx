@@ -46,6 +46,8 @@ interface HomepageSection {
 
   backgroundColor?: string;
 
+  gradientColor?: string;
+
   textColor?: string;
 
   buttonColor?: string;
@@ -340,6 +342,62 @@ export default function AdminPage() {
                                 }}
                                 className="h-6 w-6"
                               />
+                            ) : key
+                                .toLowerCase()
+                                .includes(
+                                  "color"
+                                ) ? (
+                              <div className="flex items-center gap-4">
+
+                                <input
+                                  type="color"
+                                  value={
+                                    String(
+                                      value ||
+                                        "#000000"
+                                    ).startsWith(
+                                      "#"
+                                    )
+                                      ? String(
+                                          value
+                                        )
+                                      : "#000000"
+                                  }
+                                  onChange={(
+                                    event
+                                  ) => {
+                                    updateField(
+                                      section.id,
+                                      key,
+                                      event
+                                        .target
+                                        .value
+                                    );
+                                  }}
+                                  className="h-16 w-20 rounded-xl border-none bg-transparent"
+                                />
+
+                                <input
+                                  type="text"
+                                  value={String(
+                                    value ||
+                                      ""
+                                  )}
+                                  onChange={(
+                                    event
+                                  ) => {
+                                    updateField(
+                                      section.id,
+                                      key,
+                                      event
+                                        .target
+                                        .value
+                                    );
+                                  }}
+                                  className="flex-1 rounded-[20px] border border-gray-200 bg-gray-100 px-5 py-4 text-lg outline-none"
+                                />
+
+                              </div>
                             ) : (
                               <input
                                 type="text"
@@ -379,7 +437,7 @@ export default function AdminPage() {
 
                       <input
                         type="text"
-                        placeholder="Example: subtitleSize"
+                        placeholder="Example: gradientColor"
                         value={
                           newFieldNames[
                             section.id
@@ -430,7 +488,13 @@ export default function AdminPage() {
                       subtitleSize
                       <br />
 
+                      buttonSize
+                      <br />
+
                       backgroundColor
+                      <br />
+
+                      gradientColor
                       <br />
 
                       textColor
