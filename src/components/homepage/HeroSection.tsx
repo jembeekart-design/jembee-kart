@@ -71,7 +71,9 @@ export default function HeroSection({
 
           borderRadius: borderRadius,
 
-          minHeight: sectionHeight
+          height: sectionHeight,
+
+          maxHeight: sectionHeight
         }}
       >
 
