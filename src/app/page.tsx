@@ -70,6 +70,14 @@ interface HomepageSection {
 
   sectionHeight?: string;
 
+  headerBackgroundColor?: string;
+
+  headerTextColor?: string;
+
+  searchBarColor?: string;
+
+  statusBarColor?: string;
+
   sellerTitle?: string;
 
   sellerDescription?: string;
@@ -273,7 +281,24 @@ export default function HomePage() {
 
       <div className="w-full overflow-x-hidden">
 
-        <Header />
+        <Header
+          headerBackgroundColor={
+            sections[0]
+              ?.headerBackgroundColor
+          }
+          headerTextColor={
+            sections[0]
+              ?.headerTextColor
+          }
+          searchBarColor={
+            sections[0]
+              ?.searchBarColor
+          }
+          statusBarColor={
+            sections[0]
+              ?.statusBarColor
+          }
+        />
 
         <div className="w-full overflow-x-hidden pb-32">
 
