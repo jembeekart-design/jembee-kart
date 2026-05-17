@@ -61,7 +61,7 @@ export default function HeroSection({
     <section className="w-full overflow-hidden px-3 py-5 md:px-6">
 
       <div
-        className="w-full overflow-hidden shadow-2xl"
+        className="w-full overflow-hidden shadow-2xl flex flex-col justify-center"
         style={{
           background: backgroundColor,
 
@@ -71,7 +71,7 @@ export default function HeroSection({
 
           borderRadius: borderRadius,
 
-          height: sectionHeight
+          minHeight: sectionHeight
         }}
       >
 
