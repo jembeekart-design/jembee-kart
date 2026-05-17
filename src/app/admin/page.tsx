@@ -54,6 +54,18 @@ interface HomepageSection {
 
   buttonTextColor?: string;
 
+  sellerTitle?: string;
+
+  sellerDescription?: string;
+
+  sellerButtonText?: string;
+
+  resellerTitle?: string;
+
+  resellerDescription?: string;
+
+  resellerButtonText?: string;
+
   [key: string]:
     | string
     | number
@@ -174,7 +186,13 @@ export default function AdminPage() {
               ...section,
 
               [normalizedField]:
-                ""
+                normalizedField
+                  .toLowerCase()
+                  .includes(
+                    "color"
+                  )
+                  ? "#000000"
+                  : ""
             };
           }
 
@@ -437,7 +455,7 @@ export default function AdminPage() {
 
                       <input
                         type="text"
-                        placeholder="Example: gradientColor"
+                        placeholder="Example: sellerTitle"
                         value={
                           newFieldNames[
                             section.id
@@ -480,6 +498,24 @@ export default function AdminPage() {
                     <div className="mt-4 text-sm text-gray-600">
 
                       Examples:
+                      <br />
+
+                      sellerTitle
+                      <br />
+
+                      sellerDescription
+                      <br />
+
+                      sellerButtonText
+                      <br />
+
+                      resellerTitle
+                      <br />
+
+                      resellerDescription
+                      <br />
+
+                      resellerButtonText
                       <br />
 
                       titleSize
