@@ -52,7 +52,11 @@ interface HomepageSection {
 
   subtitleSize?: string;
 
+  buttonSize?: string;
+
   backgroundColor?: string;
+
+  gradientColor?: string;
 
   textColor?: string;
 
@@ -92,7 +96,6 @@ export default function HomePage() {
 
                 return {
                   ...firestoreData,
-
                   id: document.id
                 };
               }
@@ -152,8 +155,14 @@ export default function HomePage() {
             subtitleSize={
               section.subtitleSize
             }
+            buttonSize={
+              section.buttonSize
+            }
             backgroundColor={
               section.backgroundColor
+            }
+            gradientColor={
+              section.gradientColor
             }
             textColor={
               section.textColor
