@@ -63,6 +63,8 @@ interface HomepageSection {
   sectionPadding?: string;
 
   borderRadius?: string;
+
+  sectionHeight?: string;
 }
 
 export default function HomePage() {
@@ -90,6 +92,7 @@ export default function HomePage() {
 
                 return {
                   ...firestoreData,
+
                   id: document.id
                 };
               }
@@ -166,6 +169,9 @@ export default function HomePage() {
             }
             borderRadius={
               section.borderRadius
+            }
+            sectionHeight={
+              section.sectionHeight
             }
           />
         );
