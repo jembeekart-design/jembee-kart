@@ -213,7 +213,26 @@ export default function HomePage() {
 
       case "seller":
         return (
-          <SellerSection />
+          <SellerSection
+            title={
+              section.title
+            }
+            subtitle={
+              section.subtitle
+            }
+            buttonText={
+              section.buttonText
+            }
+            backgroundColor={
+              section.backgroundColor
+            }
+            gradientColor={
+              section.gradientColor
+            }
+            textColor={
+              section.textColor
+            }
+          />
         );
 
       case "tips":
