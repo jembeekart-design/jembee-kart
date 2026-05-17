@@ -13,7 +13,11 @@ interface HeroSectionProps {
 
   subtitleSize?: string;
 
+  buttonSize?: string;
+
   backgroundColor?: string;
+
+  gradientColor?: string;
 
   textColor?: string;
 
@@ -42,8 +46,11 @@ export default function HeroSection({
 
   subtitleSize = "22px",
 
-  backgroundColor =
-    "linear-gradient(90deg,#2563eb,#7c3aed)",
+  buttonSize = "20px",
+
+  backgroundColor = "#2563eb",
+
+  gradientColor = "#7c3aed",
 
   textColor = "#ffffff",
 
@@ -63,7 +70,7 @@ export default function HeroSection({
       <div
         className="w-full overflow-hidden shadow-2xl flex flex-col justify-center"
         style={{
-          background: backgroundColor,
+          background: `linear-gradient(90deg, ${backgroundColor}, ${gradientColor})`,
 
           color: textColor,
 
@@ -71,9 +78,7 @@ export default function HeroSection({
 
           borderRadius: borderRadius,
 
-          height: sectionHeight,
-
-          maxHeight: sectionHeight
+          minHeight: sectionHeight
         }}
       >
 
@@ -102,18 +107,23 @@ export default function HeroSection({
           <div className="mt-6 flex w-full flex-col gap-3 md:flex-row md:gap-6">
 
             <button
-              className="w-full rounded-2xl px-6 py-3 text-sm font-bold shadow-xl transition-all duration-300 hover:scale-[1.02] md:w-auto md:px-16 md:py-5 md:text-base"
+              className="w-full rounded-2xl px-6 py-3 font-bold shadow-xl transition-all duration-300 hover:scale-[1.02] md:w-auto"
               style={{
                 background: buttonColor,
 
-                color: buttonTextColor
+                color: buttonTextColor,
+
+                fontSize: buttonSize
               }}
             >
               {buttonText}
             </button>
 
             <button
-              className="w-full rounded-2xl border border-white/30 bg-white/10 px-6 py-3 text-sm font-bold text-white backdrop-blur-xl transition-all duration-300 hover:bg-white/20 md:w-auto md:px-16 md:py-5 md:text-base"
+              className="w-full rounded-2xl border border-white/30 bg-white/10 px-6 py-3 font-bold text-white backdrop-blur-xl transition-all duration-300 hover:bg-white/20 md:w-auto"
+              style={{
+                fontSize: buttonSize
+              }}
             >
               {secondaryButtonText}
             </button>
