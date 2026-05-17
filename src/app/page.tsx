@@ -269,7 +269,7 @@ export default function HomePage() {
   }
 
   return (
-    <main className="min-h-screen w-full overflow-x-hidden bg-gray-100 pt-[170px] md:pt-[150px]">
+    <main className="min-h-screen w-full overflow-x-hidden bg-gray-100 pt-[160px] md:pt-[150px]">
 
       <div className="w-full overflow-x-hidden">
 
