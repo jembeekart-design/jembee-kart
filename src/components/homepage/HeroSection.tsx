@@ -29,6 +29,37 @@ interface HeroSectionProps {
 
   borderRadius?: string;
 
+"use client";
+
+interface HeroSectionProps {
+  title?: string;
+
+  subtitle?: string;
+
+  buttonText?: string;
+
+  secondaryButtonText?: string;
+
+  titleSize?: string;
+
+  subtitleSize?: string;
+
+  buttonSize?: string;
+
+  backgroundColor?: string;
+
+  gradientColor?: string;
+
+  textColor?: string;
+
+  buttonColor?: string;
+
+  buttonTextColor?: string;
+
+  sectionPadding?: string;
+
+  borderRadius?: string;
+
   sectionHeight?: string;
 }
 
