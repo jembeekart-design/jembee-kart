@@ -15,7 +15,7 @@ import HeroSection from "@/components/homepage/HeroSection";
 
 import CategorySection from "@/components/homepage/CategorySection";
 
-import ProductSection from "@/components/homepage/ProductSection";
+import FirestoreProductGrid from "@/components/products/FirestoreProductGrid";
 
 import AffiliateSection from "@/components/homepage/AffiliateSection";
 
@@ -116,6 +116,7 @@ export default function HomePage() {
 
                 return {
                   ...firestoreData,
+
                   id: document.id
                 };
               }
@@ -212,7 +213,7 @@ export default function HomePage() {
 
       case "products":
         return (
-          <ProductSection />
+          <FirestoreProductGrid />
         );
 
       case "affiliate":
