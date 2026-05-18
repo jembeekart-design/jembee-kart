@@ -29,6 +29,16 @@ interface Category {
   position?: number;
 
   visible?: boolean;
+
+  cardStyle?: string;
+
+  borderRadius?: string;
+
+  cardHeight?: string;
+
+  imageHeight?: string;
+
+  titleSize?: string;
 }
 
 export default function CategoriesAdminPage() {
@@ -107,7 +117,17 @@ export default function CategoriesAdminPage() {
             categories.length +
             1,
 
-          visible: true
+          visible: true,
+
+          cardStyle: "rounded",
+
+          borderRadius: "28px",
+
+          cardHeight: "260px",
+
+          imageHeight: "190px",
+
+          titleSize: "38px"
         }
       );
     } catch (error) {
@@ -373,6 +393,126 @@ export default function CategoriesAdminPage() {
                           />
 
                         </div>
+
+                      </div>
+
+                      {/* BORDER RADIUS */}
+
+                      <div>
+
+                        <label className="mb-3 block text-lg font-bold text-gray-700">
+                          Border Radius
+                        </label>
+
+                        <input
+                          type="text"
+                          value={
+                            category.borderRadius ||
+                            ""
+                          }
+                          onChange={(
+                            event
+                          ) => {
+                            updateCategory(
+                              category.id,
+                              "borderRadius",
+                              event
+                                .target
+                                .value
+                            );
+                          }}
+                          className="w-full rounded-2xl border border-gray-200 bg-gray-100 px-5 py-4 outline-none"
+                        />
+
+                      </div>
+
+                      {/* CARD HEIGHT */}
+
+                      <div>
+
+                        <label className="mb-3 block text-lg font-bold text-gray-700">
+                          Card Height
+                        </label>
+
+                        <input
+                          type="text"
+                          value={
+                            category.cardHeight ||
+                            ""
+                          }
+                          onChange={(
+                            event
+                          ) => {
+                            updateCategory(
+                              category.id,
+                              "cardHeight",
+                              event
+                                .target
+                                .value
+                            );
+                          }}
+                          className="w-full rounded-2xl border border-gray-200 bg-gray-100 px-5 py-4 outline-none"
+                        />
+
+                      </div>
+
+                      {/* IMAGE HEIGHT */}
+
+                      <div>
+
+                        <label className="mb-3 block text-lg font-bold text-gray-700">
+                          Image Height
+                        </label>
+
+                        <input
+                          type="text"
+                          value={
+                            category.imageHeight ||
+                            ""
+                          }
+                          onChange={(
+                            event
+                          ) => {
+                            updateCategory(
+                              category.id,
+                              "imageHeight",
+                              event
+                                .target
+                                .value
+                            );
+                          }}
+                          className="w-full rounded-2xl border border-gray-200 bg-gray-100 px-5 py-4 outline-none"
+                        />
+
+                      </div>
+
+                      {/* TITLE SIZE */}
+
+                      <div>
+
+                        <label className="mb-3 block text-lg font-bold text-gray-700">
+                          Title Size
+                        </label>
+
+                        <input
+                          type="text"
+                          value={
+                            category.titleSize ||
+                            ""
+                          }
+                          onChange={(
+                            event
+                          ) => {
+                            updateCategory(
+                              category.id,
+                              "titleSize",
+                              event
+                                .target
+                                .value
+                            );
+                          }}
+                          className="w-full rounded-2xl border border-gray-200 bg-gray-100 px-5 py-4 outline-none"
+                        />
 
                       </div>
 
