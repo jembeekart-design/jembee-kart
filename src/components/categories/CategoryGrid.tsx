@@ -12,6 +12,14 @@ interface Category {
   backgroundColor?: string;
 
   textColor?: string;
+
+  borderRadius?: string;
+
+  cardHeight?: string;
+
+  imageHeight?: string;
+
+  titleSize?: string;
 }
 
 interface CategoryGridProps {
@@ -30,7 +38,15 @@ export default function CategoryGrid({
 
       backgroundColor: "#2563eb",
 
-      textColor: "#ffffff"
+      textColor: "#ffffff",
+
+      borderRadius: "40px",
+
+      cardHeight: "320px",
+
+      imageHeight: "230px",
+
+      titleSize: "22px"
     },
 
     {
@@ -43,7 +59,15 @@ export default function CategoryGrid({
 
       backgroundColor: "#7c3aed",
 
-      textColor: "#ffffff"
+      textColor: "#ffffff",
+
+      borderRadius: "40px",
+
+      cardHeight: "320px",
+
+      imageHeight: "230px",
+
+      titleSize: "22px"
     },
 
     {
@@ -56,7 +80,15 @@ export default function CategoryGrid({
 
       backgroundColor: "#db2777",
 
-      textColor: "#ffffff"
+      textColor: "#ffffff",
+
+      borderRadius: "40px",
+
+      cardHeight: "320px",
+
+      imageHeight: "230px",
+
+      titleSize: "22px"
     },
 
     {
@@ -69,7 +101,15 @@ export default function CategoryGrid({
 
       backgroundColor: "#ea580c",
 
-      textColor: "#ffffff"
+      textColor: "#ffffff",
+
+      borderRadius: "40px",
+
+      cardHeight: "320px",
+
+      imageHeight: "230px",
+
+      titleSize: "22px"
     }
   ]
 }: CategoryGridProps) {
@@ -101,6 +141,18 @@ export default function CategoryGrid({
               }
               textColor={
                 category.textColor
+              }
+              borderRadius={
+                category.borderRadius
+              }
+              cardHeight={
+                category.cardHeight
+              }
+              imageHeight={
+                category.imageHeight
+              }
+              titleSize={
+                category.titleSize
               }
             />
           );
