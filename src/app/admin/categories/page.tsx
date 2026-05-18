@@ -36,6 +36,8 @@ interface Category {
 
   cardHeight?: string;
 
+  cardWidth?: string;
+
   imageHeight?: string;
 
   titleSize?: string;
@@ -124,6 +126,8 @@ export default function CategoriesAdminPage() {
           borderRadius: "28px",
 
           cardHeight: "260px",
+
+          cardWidth: "100%",
 
           imageHeight: "190px",
 
@@ -416,9 +420,7 @@ export default function CategoriesAdminPage() {
                             updateCategory(
                               category.id,
                               "borderRadius",
-                              event
-                                .target
-                                .value
+                              event.target.value
                             );
                           }}
                           className="w-full rounded-2xl border border-gray-200 bg-gray-100 px-5 py-4 outline-none"
@@ -446,9 +448,35 @@ export default function CategoriesAdminPage() {
                             updateCategory(
                               category.id,
                               "cardHeight",
-                              event
-                                .target
-                                .value
+                              event.target.value
+                            );
+                          }}
+                          className="w-full rounded-2xl border border-gray-200 bg-gray-100 px-5 py-4 outline-none"
+                        />
+
+                      </div>
+
+                      {/* CARD WIDTH */}
+
+                      <div>
+
+                        <label className="mb-3 block text-lg font-bold text-gray-700">
+                          Card Width
+                        </label>
+
+                        <input
+                          type="text"
+                          value={
+                            category.cardWidth ||
+                            ""
+                          }
+                          onChange={(
+                            event
+                          ) => {
+                            updateCategory(
+                              category.id,
+                              "cardWidth",
+                              event.target.value
                             );
                           }}
                           className="w-full rounded-2xl border border-gray-200 bg-gray-100 px-5 py-4 outline-none"
@@ -476,9 +504,7 @@ export default function CategoriesAdminPage() {
                             updateCategory(
                               category.id,
                               "imageHeight",
-                              event
-                                .target
-                                .value
+                              event.target.value
                             );
                           }}
                           className="w-full rounded-2xl border border-gray-200 bg-gray-100 px-5 py-4 outline-none"
@@ -506,9 +532,7 @@ export default function CategoriesAdminPage() {
                             updateCategory(
                               category.id,
                               "titleSize",
-                              event
-                                .target
-                                .value
+                              event.target.value
                             );
                           }}
                           className="w-full rounded-2xl border border-gray-200 bg-gray-100 px-5 py-4 outline-none"
@@ -537,8 +561,7 @@ export default function CategoriesAdminPage() {
                               category.id,
                               "position",
                               Number(
-                                event
-                                  .target
+                                event.target
                                   .value
                               )
                             );
@@ -567,9 +590,7 @@ export default function CategoriesAdminPage() {
                             updateCategory(
                               category.id,
                               "visible",
-                              event
-                                .target
-                                .checked
+                              event.target.checked
                             );
                           }}
                           className="h-6 w-6"
