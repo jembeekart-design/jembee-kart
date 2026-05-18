@@ -1,6 +1,6 @@
 "use client";
 
-import CategoryCard from "./CategoryCard";
+import CategoryCard from "@/components/categories/CategoryCard";
 
 interface Category {
   id: string;
@@ -76,6 +76,8 @@ export default function CategoryGrid({
   return (
     <section className="w-full overflow-hidden px-3 py-5 md:px-6">
 
+      {/* HEADER */}
+
       <div className="mb-5 flex items-center justify-between">
 
         <h2 className="text-2xl font-black text-gray-800 md:text-4xl">
@@ -83,6 +85,8 @@ export default function CategoryGrid({
         </h2>
 
       </div>
+
+      {/* GRID */}
 
       <div className="grid grid-cols-2 gap-4 md:grid-cols-4">
 
@@ -95,7 +99,9 @@ export default function CategoryGrid({
               backgroundColor={
                 category.backgroundColor
               }
-              textColor={category.textColor}
+              textColor={
+                category.textColor
+              }
             />
           );
         })}
