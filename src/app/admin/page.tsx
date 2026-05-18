@@ -92,6 +92,11 @@ export default function AdminPage() {
     [key: string]: string;
   }>({});
 
+  const [
+    copiedField,
+    setCopiedField
+  ] = useState("");
+
   useEffect(() => {
     const unsubscribe =
       onSnapshot(
@@ -245,6 +250,20 @@ export default function AdminPage() {
     }
   }
 
+  function copyFieldName(
+    fieldName: string
+  ) {
+    navigator.clipboard.writeText(
+      fieldName
+    );
+
+    setCopiedField(fieldName);
+
+    setTimeout(() => {
+      setCopiedField("");
+    }, 2000);
+  }
+
   return (
     <main className="min-h-screen w-full overflow-x-hidden bg-gray-100 px-4 py-8">
 
@@ -265,6 +284,8 @@ export default function AdminPage() {
                   key={section.id}
                   className="w-full rounded-[30px] bg-white p-6 shadow-xl md:p-8"
                 >
+
+                  {/* HEADER */}
 
                   <div className="mb-8 flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
 
@@ -310,6 +331,8 @@ export default function AdminPage() {
 
                   </div>
 
+                  {/* FIELDS */}
+
                   <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
 
                     {Object.entries(
@@ -342,11 +365,40 @@ export default function AdminPage() {
                         return (
                           <div
                             key={key}
+                            className="rounded-[24px] border border-gray-200 bg-gray-50 p-5"
                           >
 
-                            <label className="mb-3 block text-lg font-bold text-gray-700">
-                              {label}
-                            </label>
+                            {/* FIELD HEADER */}
+
+                            <div className="mb-4 flex items-center justify-between gap-3">
+
+                              <label className="text-lg font-black text-gray-700">
+                                {label}
+                              </label>
+
+                              <button
+                                onClick={() => {
+                                  copyFieldName(
+                                    key
+                                  );
+                                }}
+                                className="rounded-xl bg-black px-4 py-2 text-sm font-bold text-white"
+                              >
+                                {copiedField ===
+                                key
+                                  ? "Copied"
+                                  : "Copy"}
+                              </button>
+
+                            </div>
+
+                            {/* FIELD NAME */}
+
+                            <div className="mb-4 rounded-xl bg-blue-100 px-4 py-3 text-sm font-bold text-blue-700 break-all">
+                              {key}
+                            </div>
+
+                            {/* BOOLEAN */}
 
                             {typeof value ===
                             "boolean" ? (
@@ -366,7 +418,7 @@ export default function AdminPage() {
                                       .checked
                                   );
                                 }}
-                                className="h-6 w-6"
+                                className="h-7 w-7"
                               />
                             ) : key
                                 .toLowerCase()
@@ -420,7 +472,7 @@ export default function AdminPage() {
                                         .value
                                     );
                                   }}
-                                  className="flex-1 rounded-[20px] border border-gray-200 bg-gray-100 px-5 py-4 text-lg outline-none"
+                                  className="flex-1 rounded-[20px] border border-gray-200 bg-white px-5 py-4 text-lg outline-none"
                                 />
 
                               </div>
@@ -442,7 +494,7 @@ export default function AdminPage() {
                                       .value
                                   );
                                 }}
-                                className="w-full rounded-[20px] border border-gray-200 bg-gray-100 px-5 py-4 text-lg outline-none"
+                                className="w-full rounded-[20px] border border-gray-200 bg-white px-5 py-4 text-lg outline-none"
                               />
                             )}
 
@@ -452,6 +504,8 @@ export default function AdminPage() {
                     )}
 
                   </div>
+
+                  {/* CUSTOM FIELD */}
 
                   <div className="mt-8 rounded-[25px] border border-dashed border-blue-300 bg-blue-50 p-5">
 
@@ -503,76 +557,9 @@ export default function AdminPage() {
 
                     </div>
 
-                    <div className="mt-4 text-sm text-gray-600">
-
-                      Examples:
-                      <br />
-
-                      headerBackgroundColor
-                      <br />
-
-                      headerTextColor
-                      <br />
-
-                      searchBarColor
-                      <br />
-
-                      statusBarColor
-                      <br />
-
-                      sellerTitle
-                      <br />
-
-                      sellerDescription
-                      <br />
-
-                      sellerButtonText
-                      <br />
-
-                      resellerTitle
-                      <br />
-
-                      resellerDescription
-                      <br />
-
-                      resellerButtonText
-                      <br />
-
-                      titleSize
-                      <br />
-
-                      subtitleSize
-                      <br />
-
-                      buttonSize
-                      <br />
-
-                      backgroundColor
-                      <br />
-
-                      gradientColor
-                      <br />
-
-                      textColor
-                      <br />
-
-                      buttonColor
-                      <br />
-
-                      buttonTextColor
-                      <br />
-
-                      sectionPadding
-                      <br />
-
-                      sectionHeight
-                      <br />
-
-                      borderRadius
-
-                    </div>
-
                   </div>
+
+                  {/* SAVE */}
 
                   <button
                     onClick={() => {
