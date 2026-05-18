@@ -2,13 +2,17 @@ import type { Metadata } from "next";
 
 import "./globals.css";
 
+import Providers from "./providers";
+
 export const metadata: Metadata = {
   title: "JembeeKart",
-  description: "AI Ecommerce Ecosystem"
+
+  description:
+    "AI Ecommerce Ecosystem"
 };
 
 export default function RootLayout({
-  children,
+  children
 }: Readonly<{
   children: React.ReactNode;
 }>) {
@@ -17,9 +21,15 @@ export default function RootLayout({
 
       <body>
 
-        <div className="w-full overflow-hidden">
-          {children}
-        </div>
+        <Providers>
+
+          <div className="w-full overflow-hidden">
+
+            {children}
+
+          </div>
+
+        </Providers>
 
       </body>
 
