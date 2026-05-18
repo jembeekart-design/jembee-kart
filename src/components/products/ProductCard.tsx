@@ -1,6 +1,10 @@
 "use client";
 
+import { useCart } from "@/context/CartContext";
+
 interface ProductCardProps {
+  id?: string;
+
   title?: string;
 
   image?: string;
@@ -29,6 +33,8 @@ interface ProductCardProps {
 }
 
 export default function ProductCard({
+  id = "",
+
   title = "Premium Sneakers",
 
   image = "https://images.unsplash.com/photo-1542291026-7eec264c27ff",
@@ -55,6 +61,9 @@ export default function ProductCard({
 
   stock = 10
 }: ProductCardProps) {
+  const { addToCart } =
+    useCart();
+
   const discountPercentage =
     Math.round(
       ((price -
@@ -167,6 +176,24 @@ export default function ProductCard({
         <div className="mt-5 flex gap-3">
 
           <button
+            onClick={(
+              event
+            ) => {
+              event.preventDefault();
+
+              addToCart({
+                id,
+
+                title,
+
+                image,
+
+                price:
+                  discountPrice,
+
+                quantity: 1
+              });
+            }}
             className="flex-1 rounded-2xl px-4 py-3 text-sm font-black transition-all duration-300 hover:scale-[1.02]"
             style={{
               backgroundColor:
