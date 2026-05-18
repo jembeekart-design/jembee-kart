@@ -74,10 +74,10 @@ export default function CategoryCard({
 
       {/* CONTENT */}
 
-      <div className="p-4">
+      <div className="flex items-center justify-center p-4 text-center">
 
         <h2
-          className="line-clamp-2 font-black"
+          className="line-clamp-2 w-full font-black text-center"
           style={{
             color: textColor,
 
