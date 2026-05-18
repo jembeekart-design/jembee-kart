@@ -24,6 +24,8 @@ interface ProductCardProps {
   cardWidth?: string;
 
   imageHeight?: string;
+
+  stock?: number;
 }
 
 export default function ProductCard({
@@ -49,15 +51,27 @@ export default function ProductCard({
 
   cardWidth = "100%",
 
-  imageHeight = "240px"
+  imageHeight = "240px",
+
+  stock = 10
 }: ProductCardProps) {
+  const discountPercentage =
+    Math.round(
+      ((price -
+        discountPrice) /
+        price) *
+        100
+    );
+
   return (
     <div
       className="overflow-hidden shadow-xl transition-all duration-300 hover:-translate-y-1 hover:shadow-2xl"
       style={{
-        backgroundColor: backgroundColor,
+        backgroundColor:
+          backgroundColor,
 
-        borderRadius: borderRadius,
+        borderRadius:
+          borderRadius,
 
         width: cardWidth
       }}
@@ -78,13 +92,30 @@ export default function ProductCard({
           className="h-full w-full object-cover"
         />
 
-        {/* DISCOUNT BADGE */}
+        {/* DISCOUNT */}
 
         <div className="absolute left-3 top-3 rounded-full bg-red-500 px-3 py-1 text-xs font-black text-white shadow-lg">
 
-          SALE
+          {discountPercentage}%
+          OFF
 
         </div>
+
+        {/* STOCK */}
+
+        {stock <= 0 ? (
+          <div className="absolute right-3 top-3 rounded-full bg-black px-3 py-1 text-xs font-black text-white">
+
+            OUT OF STOCK
+
+          </div>
+        ) : (
+          <div className="absolute right-3 top-3 rounded-full bg-green-500 px-3 py-1 text-xs font-black text-white">
+
+            IN STOCK
+
+          </div>
+        )}
 
       </div>
 
@@ -138,16 +169,20 @@ export default function ProductCard({
           <button
             className="flex-1 rounded-2xl px-4 py-3 text-sm font-black transition-all duration-300 hover:scale-[1.02]"
             style={{
-              backgroundColor: buttonColor,
+              backgroundColor:
+                buttonColor,
 
-              color: buttonTextColor
+              color:
+                buttonTextColor
             }}
           >
             Add To Cart
           </button>
 
           <button className="rounded-2xl border border-gray-200 bg-gray-100 px-4 py-3 text-sm font-black text-gray-700 transition-all duration-300 hover:bg-gray-200">
+
             Buy
+
           </button>
 
         </div>
