@@ -17,6 +17,8 @@ interface Category {
 
   cardHeight?: string;
 
+  cardWidth?: string;
+
   imageHeight?: string;
 
   titleSize?: string;
@@ -44,6 +46,8 @@ export default function CategoryGrid({
 
       cardHeight: "320px",
 
+      cardWidth: "100%",
+
       imageHeight: "230px",
 
       titleSize: "22px"
@@ -64,6 +68,8 @@ export default function CategoryGrid({
       borderRadius: "40px",
 
       cardHeight: "320px",
+
+      cardWidth: "100%",
 
       imageHeight: "230px",
 
@@ -86,6 +92,8 @@ export default function CategoryGrid({
 
       cardHeight: "320px",
 
+      cardWidth: "100%",
+
       imageHeight: "230px",
 
       titleSize: "22px"
@@ -106,6 +114,8 @@ export default function CategoryGrid({
       borderRadius: "40px",
 
       cardHeight: "320px",
+
+      cardWidth: "100%",
 
       imageHeight: "230px",
 
@@ -128,7 +138,7 @@ export default function CategoryGrid({
 
       {/* GRID */}
 
-      <div className="grid grid-cols-2 gap-4 md:grid-cols-4">
+      <div className="flex flex-wrap gap-4">
 
         {categories.map((category) => {
           return (
@@ -147,6 +157,9 @@ export default function CategoryGrid({
               }
               cardHeight={
                 category.cardHeight
+              }
+              cardWidth={
+                category.cardWidth
               }
               imageHeight={
                 category.imageHeight
