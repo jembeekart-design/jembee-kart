@@ -8,6 +8,14 @@ interface CategoryCardProps {
   backgroundColor?: string;
 
   textColor?: string;
+
+  borderRadius?: string;
+
+  cardHeight?: string;
+
+  imageHeight?: string;
+
+  titleSize?: string;
 }
 
 export default function CategoryCard({
@@ -17,19 +25,36 @@ export default function CategoryCard({
 
   backgroundColor = "#2563eb",
 
-  textColor = "#ffffff"
+  textColor = "#ffffff",
+
+  borderRadius = "28px",
+
+  cardHeight = "260px",
+
+  imageHeight = "170px",
+
+  titleSize = "32px"
 }: CategoryCardProps) {
   return (
     <div
-      className="relative w-full overflow-hidden rounded-[28px] shadow-xl transition-all duration-300 hover:scale-[1.02]"
+      className="relative w-full overflow-hidden shadow-xl transition-all duration-300 hover:scale-[1.02]"
       style={{
-        background: backgroundColor
+        background: backgroundColor,
+
+        borderRadius: borderRadius,
+
+        height: cardHeight
       }}
     >
 
       {/* IMAGE */}
 
-      <div className="relative h-[170px] w-full overflow-hidden">
+      <div
+        className="relative w-full overflow-hidden"
+        style={{
+          height: imageHeight
+        }}
+      >
 
         <img
           src={image}
@@ -46,9 +71,11 @@ export default function CategoryCard({
       <div className="p-4">
 
         <h2
-          className="line-clamp-1 text-xl font-black"
+          className="line-clamp-2 font-black"
           style={{
-            color: textColor
+            color: textColor,
+
+            fontSize: titleSize
           }}
         >
           {title}
