@@ -153,6 +153,7 @@ export default function FirestoreProductGrid() {
             >
 
               <ProductCard
+                id={product.id}
                 title={product.title}
                 image={product.image}
                 price={product.price}
