@@ -2,6 +2,8 @@
 
 import { useEffect, useState } from "react";
 
+import Link from "next/link";
+
 import {
   collection,
   onSnapshot
@@ -145,37 +147,43 @@ export default function FirestoreProductGrid() {
 
         {products.map((product) => {
           return (
-            <ProductCard
+            <Link
               key={product.id}
-              title={product.title}
-              image={product.image}
-              price={product.price}
-              discountPrice={
-                product.discountPrice
-              }
-              rating={product.rating}
-              backgroundColor={
-                product.backgroundColor
-              }
-              textColor={
-                product.textColor
-              }
-              buttonColor={
-                product.buttonColor
-              }
-              buttonTextColor={
-                product.buttonTextColor
-              }
-              borderRadius={
-                product.borderRadius
-              }
-              cardWidth={
-                product.cardWidth
-              }
-              imageHeight={
-                product.imageHeight
-              }
-            />
+              href={`/product/${product.id}`}
+            >
+
+              <ProductCard
+                title={product.title}
+                image={product.image}
+                price={product.price}
+                discountPrice={
+                  product.discountPrice
+                }
+                rating={product.rating}
+                backgroundColor={
+                  product.backgroundColor
+                }
+                textColor={
+                  product.textColor
+                }
+                buttonColor={
+                  product.buttonColor
+                }
+                buttonTextColor={
+                  product.buttonTextColor
+                }
+                borderRadius={
+                  product.borderRadius
+                }
+                cardWidth={
+                  product.cardWidth
+                }
+                imageHeight={
+                  product.imageHeight
+                }
+              />
+
+            </Link>
           );
         })}
 
