@@ -13,6 +13,8 @@ interface CategoryCardProps {
 
   cardHeight?: string;
 
+  cardWidth?: string;
+
   imageHeight?: string;
 
   titleSize?: string;
@@ -31,19 +33,23 @@ export default function CategoryCard({
 
   cardHeight = "260px",
 
+  cardWidth = "100%",
+
   imageHeight = "170px",
 
   titleSize = "32px"
 }: CategoryCardProps) {
   return (
     <div
-      className="relative w-full overflow-hidden shadow-xl transition-all duration-300 hover:scale-[1.02]"
+      className="relative overflow-hidden shadow-xl transition-all duration-300 hover:scale-[1.02]"
       style={{
         background: backgroundColor,
 
         borderRadius: borderRadius,
 
-        height: cardHeight
+        height: cardHeight,
+
+        width: cardWidth
       }}
     >
 
