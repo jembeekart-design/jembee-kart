@@ -160,6 +160,7 @@ export default function FirestoreProductGrid() {
                   product.discountPrice
                 }
                 rating={product.rating}
+                stock={product.stock}
                 backgroundColor={
                   product.backgroundColor
                 }
