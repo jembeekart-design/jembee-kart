@@ -1,6 +1,6 @@
 "use client";
 
-import { useCart } from "@/context/CartContext";
+import { Heart } from "lucide-react";
 
 interface ProductCardProps {
   id?: string;
@@ -15,52 +15,23 @@ interface ProductCardProps {
 
   rating?: number;
 
-  backgroundColor?: string;
-
-  textColor?: string;
-
-  buttonColor?: string;
-
-  buttonTextColor?: string;
-
-  borderRadius?: string;
-
-  cardWidth?: string;
-
-  stock?: number;
+  reviews?: number;
 }
 
 export default function ProductCard({
-  id = "",
+  title = "PETER ENGLAND Polo",
 
-  title = "Premium Sneakers",
+  image = "https://images.unsplash.com/photo-1581655353564-df123a1eb820",
 
-  image = "https://images.unsplash.com/photo-1542291026-7eec264c27ff",
+  price = 1099,
 
-  price = 2999,
+  discountPrice = 539,
 
-  discountPrice = 1999,
+  rating = 4.2,
 
-  rating = 4.8,
-
-  backgroundColor = "#ffffff",
-
-  textColor = "#111827",
-
-  buttonColor = "#2563eb",
-
-  buttonTextColor = "#ffffff",
-
-  borderRadius = "18px",
-
-  cardWidth = "100%",
-
-  stock = 10
+  reviews = 5000
 }: ProductCardProps) {
-  const { addToCart } =
-    useCart();
-
-  const discountPercentage =
+  const discount =
     Math.round(
       ((price -
         discountPrice) /
@@ -69,55 +40,41 @@ export default function ProductCard({
     );
 
   return (
-    <div
-      className="overflow-hidden shadow-md transition-all duration-300 hover:-translate-y-1 hover:shadow-xl"
-      style={{
-        backgroundColor:
-          backgroundColor,
-
-        borderRadius:
-          borderRadius,
-
-        width: cardWidth
-      }}
-    >
+    <div className="overflow-hidden rounded-xl bg-white shadow-sm">
 
       {/* IMAGE */}
 
-      <div className="relative aspect-square w-full overflow-hidden bg-gray-100">
+      <div className="relative">
 
         <img
-          src={
-            image ||
-            "https://via.placeholder.com/300x300"
-          }
+          src={image}
           alt={title}
-          className="h-full w-full object-cover"
+          className="h-[220px] w-full object-cover"
         />
 
-        {/* DISCOUNT */}
+        {/* WISHLIST */}
 
-        <div className="absolute left-1.5 top-1.5 rounded-full bg-red-500 px-2 py-[2px] text-[9px] font-black text-white">
+        <button className="absolute right-2 top-2 flex h-8 w-8 items-center justify-center rounded-full bg-white shadow">
 
-          {discountPercentage}% OFF
+          <Heart
+            size={18}
+            className="text-gray-700"
+          />
+
+        </button>
+
+        {/* RATING */}
+
+        <div className="absolute bottom-2 left-2 rounded bg-white px-2 py-1 text-[11px] font-bold text-black shadow">
+
+          {rating} ★ |{" "}
+          {reviews >= 1000
+            ? `${Math.floor(
+                reviews / 1000
+              )}k`
+            : reviews}
 
         </div>
-
-        {/* STOCK */}
-
-        {stock <= 0 ? (
-          <div className="absolute right-1.5 top-1.5 rounded-full bg-black px-2 py-[2px] text-[9px] font-black text-white">
-
-            OUT
-
-          </div>
-        ) : (
-          <div className="absolute right-1.5 top-1.5 rounded-full bg-green-500 px-2 py-[2px] text-[9px] font-black text-white">
-
-            STOCK
-
-          </div>
-        )}
 
       </div>
 
@@ -127,83 +84,49 @@ export default function ProductCard({
 
         {/* TITLE */}
 
-        <h2
-          className="line-clamp-2 text-sm font-black leading-tight"
-          style={{
-            color: textColor
-          }}
-        >
+        <h3 className="truncate text-[15px] font-bold text-black">
+
           {title}
-        </h2>
 
-        {/* RATING */}
+        </h3>
 
-        <div className="mt-1 flex items-center gap-1">
+        {/* SUBTITLE */}
 
-          <span className="text-[10px] text-yellow-500">
-            ⭐
-          </span>
+        <p className="truncate text-xs text-gray-500">
 
-          <span className="text-[11px] font-bold text-gray-600">
-            {rating}
-          </span>
+          Men Solid Polo Neck...
 
-        </div>
+        </p>
 
         {/* PRICE */}
 
-        <div className="mt-1.5 flex items-center gap-1.5">
+        <div className="mt-1 flex items-center gap-2">
 
-          <span className="text-lg font-black text-gray-900">
-            ₹{discountPrice}
+          <span className="text-sm font-bold text-green-600">
+
+            ↓{discount}%
+
           </span>
 
-          <span className="text-[11px] font-semibold text-gray-400 line-through">
+          <span className="text-xs text-gray-400 line-through">
+
             ₹{price}
+
+          </span>
+
+          <span className="text-lg font-bold text-black">
+
+            ₹{discountPrice}
+
           </span>
 
         </div>
 
-        {/* BUTTONS */}
+        {/* DEAL */}
 
-        <div className="mt-2 flex gap-1.5">
+        <div className="mt-2 inline-block rounded bg-green-100 px-2 py-1 text-[11px] font-semibold text-green-700">
 
-          <button
-            onClick={(
-              event
-            ) => {
-              event.preventDefault();
-
-              addToCart({
-                id,
-
-                title,
-
-                image,
-
-                price:
-                  discountPrice,
-
-                quantity: 1
-              });
-            }}
-            className="flex-1 rounded-lg px-2 py-2 text-[10px] font-black transition-all duration-300 hover:scale-[1.02]"
-            style={{
-              backgroundColor:
-                buttonColor,
-
-              color:
-                buttonTextColor
-            }}
-          >
-            Add Cart
-          </button>
-
-          <button className="rounded-lg border border-gray-200 bg-gray-100 px-3 py-2 text-[10px] font-black text-gray-700 transition-all duration-300 hover:bg-gray-200">
-
-            Buy
-
-          </button>
+          Hot Deal
 
         </div>
 
