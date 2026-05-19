@@ -11,6 +11,12 @@ import {
   setDoc
 } from "firebase/firestore";
 
+import {
+  ChevronDown,
+  ChevronUp,
+  Grid3X3
+} from "lucide-react";
+
 import { db } from "@/firebase/config";
 
 interface HomepageSection {
@@ -49,23 +55,6 @@ const FIELD_SUGGESTIONS = [
   "searchBarColor",
   "statusBarColor",
 
-  "cardBackgroundColor",
-  "cardTextColor",
-
-  "sectionPadding",
-  "sectionHeight",
-
-  "borderRadius",
-
-  "titleSize",
-  "subtitleSize",
-  "buttonSize",
-
-  "cardWidth",
-  "cardHeight",
-
-  "imageHeight",
-
   "sellerTitle",
   "sellerDescription",
   "sellerButtonText",
@@ -99,6 +88,13 @@ export default function AdminPage() {
 
   const [search, setSearch] =
     useState("");
+
+  const [
+    expandedSections,
+    setExpandedSections
+  ] = useState<{
+    [key: string]: boolean;
+  }>({});
 
   const [
     newFieldNames,
@@ -181,6 +177,21 @@ export default function AdminPage() {
         }
       );
     }, [sections, search]);
+
+  function toggleSection(
+    id: string
+  ) {
+    setExpandedSections(
+      (previous) => {
+        return {
+          ...previous,
+
+          [id]:
+            !previous[id]
+        };
+      }
+    );
+  }
 
   function updateField(
     id: string,
@@ -294,83 +305,6 @@ export default function AdminPage() {
     }
   }
 
-  async function createSellerSection() {
-    try {
-      await setDoc(
-        doc(
-          db,
-          "homepage_sections",
-          "seller_section"
-        ),
-        {
-          id: "seller_section",
-
-          sectionType:
-            "seller",
-
-          visible: true,
-
-          position: 5,
-
-          sellerTitle:
-            "Become A Seller",
-
-          sellerDescription:
-            "Sell products with AI powered tools",
-
-          sellerButtonText:
-            "Start Selling",
-
-          resellerTitle:
-            "Reseller Program",
-
-          resellerDescription:
-            "Start reselling products",
-
-          resellerButtonText:
-            "Join Now",
-
-          sellerBackgroundColor:
-            "#0000ff",
-
-          sellerGradientColor:
-            "#ff0000",
-
-          resellerBackgroundColor:
-            "#00ff00",
-
-          resellerGradientColor:
-            "#ffff00",
-
-          sellerButtonColor:
-            "#ffffff",
-
-          sellerButtonTextColor:
-            "#000000",
-
-          resellerButtonColor:
-            "#ffffff",
-
-          resellerButtonTextColor:
-            "#000000"
-        },
-        {
-          merge: true
-        }
-      );
-
-      alert(
-        "Seller Section Created"
-      );
-    } catch (error) {
-      console.error(error);
-
-      alert(
-        "Error Creating Seller Section"
-      );
-    }
-  }
-
   function copyFieldName(
     fieldName: string
   ) {
@@ -405,21 +339,6 @@ export default function AdminPage() {
 
         </div>
 
-        {/* CREATE SELLER SECTION */}
-
-        <div className="mb-8">
-
-          <button
-            onClick={
-              createSellerSection
-            }
-            className="w-full rounded-2xl bg-gradient-to-r from-green-600 to-emerald-600 px-8 py-5 text-xl font-black text-white shadow-2xl"
-          >
-            Create Seller Section
-          </button>
-
-        </div>
-
         {/* SEARCH */}
 
         <div className="mb-8">
@@ -438,295 +357,371 @@ export default function AdminPage() {
 
         </div>
 
-        {/* SECTIONS */}
+        {/* SECTION CARDS */}
 
-        <div className="space-y-10">
+        <div className="space-y-6">
 
           {filteredSections.map(
             (
               section: HomepageSection
             ) => {
+              const isExpanded =
+                expandedSections[
+                  section.id
+                ];
+
               return (
                 <div
                   key={section.id}
                   className="overflow-hidden rounded-[35px] bg-white shadow-2xl"
                 >
 
-                  {/* TOP */}
+                  {/* TOP BAR */}
 
-                  <div className="flex flex-col gap-5 bg-black p-6 text-white md:flex-row md:items-center md:justify-between">
+                  <div className="flex items-center justify-between bg-black p-5 text-white">
 
-                    <div>
+                    <div className="flex items-center gap-4">
 
-                      <h2 className="text-3xl font-black capitalize">
-                        {
-                          section.sectionType
-                        }
-                      </h2>
+                      {/* GRID BUTTON */}
+
+                      <button
+                        onClick={() => {
+                          toggleSection(
+                            section.id
+                          );
+                        }}
+                        className="flex h-14 w-14 items-center justify-center rounded-2xl bg-gradient-to-r from-blue-600 to-purple-600 shadow-xl"
+                      >
+                        <Grid3X3
+                          size={26}
+                        />
+                      </button>
+
+                      <div>
+
+                        <h2 className="text-2xl font-black capitalize">
+
+                          {
+                            section.sectionType
+                          }
+
+                        </h2>
+
+                        <p className="text-sm text-gray-400">
+                          Click grid icon
+                          to open form
+                        </p>
+
+                      </div>
 
                     </div>
 
                     <div className="flex items-center gap-4">
 
-                      <span className="font-bold">
-                        Visible
-                      </span>
+                      <div className="flex items-center gap-3">
 
-                      <input
-                        type="checkbox"
-                        checked={Boolean(
-                          section.visible
-                        )}
-                        onChange={(
-                          event
-                        ) => {
-                          updateField(
-                            section.id,
-                            "visible",
-                            event.target.checked
-                          );
-                        }}
-                        className="h-6 w-6 accent-green-500"
-                      />
+                        <span className="font-bold">
+                          Visible
+                        </span>
 
-                    </div>
-
-                  </div>
-
-                  {/* FIELDS */}
-
-                  <div className="grid grid-cols-1 gap-6 p-6 md:grid-cols-2">
-
-                    {Object.entries(
-                      section
-                    )
-                      .filter(
-                        ([key]) =>
-                          key !== "id"
-                      )
-                      .map(
-                        ([
-                          key,
-                          value
-                        ]) => {
-                          return (
-                            <div
-                              key={key}
-                              className="rounded-[25px] border border-gray-200 bg-white p-5 shadow-lg"
-                            >
-
-                              <div className="mb-3 flex items-center justify-between">
-
-                                <h3 className="text-lg font-black">
-
-                                  {key}
-
-                                </h3>
-
-                                <button
-                                  onClick={() => {
-                                    copyFieldName(
-                                      key
-                                    );
-                                  }}
-                                  className="rounded-xl bg-black px-4 py-2 text-sm font-bold text-white"
-                                >
-                                  {copiedField ===
-                                  key
-                                    ? "Copied"
-                                    : "Copy"}
-                                </button>
-
-                              </div>
-
-                              {typeof value ===
-                              "boolean" ? (
-                                <input
-                                  type="checkbox"
-                                  checked={Boolean(
-                                    value
-                                  )}
-                                  onChange={(
-                                    event
-                                  ) => {
-                                    updateField(
-                                      section.id,
-                                      key,
-                                      event.target.checked
-                                    );
-                                  }}
-                                  className="h-7 w-7 accent-blue-600"
-                                />
-                              ) : key
-                                  .toLowerCase()
-                                  .includes(
-                                    "color"
-                                  ) ? (
-                                <div className="flex items-center gap-4">
-
-                                  <input
-                                    type="color"
-                                    value={
-                                      String(
-                                        value ||
-                                          "#000000"
-                                      ).startsWith(
-                                        "#"
-                                      )
-                                        ? String(
-                                            value
-                                          )
-                                        : "#000000"
-                                    }
-                                    onChange={(
-                                      event
-                                    ) => {
-                                      updateField(
-                                        section.id,
-                                        key,
-                                        event.target.value
-                                      );
-                                    }}
-                                    className="h-16 w-20"
-                                  />
-
-                                  <input
-                                    type="text"
-                                    value={String(
-                                      value ||
-                                        ""
-                                    )}
-                                    onChange={(
-                                      event
-                                    ) => {
-                                      updateField(
-                                        section.id,
-                                        key,
-                                        event.target.value
-                                      );
-                                    }}
-                                    className="flex-1 rounded-2xl border border-gray-200 bg-gray-100 px-4 py-4"
-                                  />
-
-                                </div>
-                              ) : (
-                                <input
-                                  type="text"
-                                  value={String(
-                                    value ||
-                                      ""
-                                  )}
-                                  onChange={(
-                                    event
-                                  ) => {
-                                    updateField(
-                                      section.id,
-                                      key,
-                                      event.target.value
-                                    );
-                                  }}
-                                  className="w-full rounded-2xl border border-gray-200 bg-gray-100 px-4 py-4"
-                                />
-                              )}
-
-                            </div>
-                          );
-                        }
-                      )}
-
-                  </div>
-
-                  {/* ADD FIELD */}
-
-                  <div className="p-6">
-
-                    <div className="flex flex-col gap-4 md:flex-row">
-
-                      <input
-                        type="text"
-                        list={`field-suggestions-${section.id}`}
-                        placeholder="Add custom field"
-                        value={
-                          newFieldNames[
-                            section.id
-                          ] || ""
-                        }
-                        onChange={(
-                          event
-                        ) => {
-                          setNewFieldNames(
-                            (
-                              previous
-                            ) => {
-                              return {
-                                ...previous,
-
-                                [section.id]:
-                                  event.target.value
-                              };
-                            }
-                          );
-                        }}
-                        className="flex-1 rounded-2xl border border-gray-200 bg-white px-5 py-4"
-                      />
-
-                      <datalist
-                        id={`field-suggestions-${section.id}`}
-                      >
-
-                        {FIELD_SUGGESTIONS.map(
-                          (
-                            field
+                        <input
+                          type="checkbox"
+                          checked={Boolean(
+                            section.visible
+                          )}
+                          onChange={(
+                            event
                           ) => {
-                            return (
-                              <option
-                                key={field}
-                                value={field}
-                              />
+                            updateField(
+                              section.id,
+                              "visible",
+                              event.target
+                                .checked
                             );
-                          }
-                        )}
+                          }}
+                          className="h-6 w-6 accent-green-500"
+                        />
 
-                      </datalist>
+                      </div>
 
                       <button
                         onClick={() => {
-                          addCustomField(
+                          toggleSection(
                             section.id
                           );
                         }}
-                        className="rounded-2xl bg-black px-8 py-4 font-black text-white"
+                        className="rounded-xl bg-white/10 p-3"
                       >
-                        Add Field
+                        {isExpanded ? (
+                          <ChevronUp />
+                        ) : (
+                          <ChevronDown />
+                        )}
                       </button>
 
                     </div>
 
                   </div>
 
-                  {/* SAVE */}
+                  {/* FORM */}
 
-                  <div className="p-6 pt-0">
+                  {isExpanded && (
+                    <>
 
-                    <button
-                      onClick={() => {
-                        saveSection(
+                      {/* FIELDS */}
+
+                      <div className="grid grid-cols-1 gap-6 p-6 md:grid-cols-2">
+
+                        {Object.entries(
                           section
-                        );
-                      }}
-                      disabled={
-                        savingId ===
-                        section.id
-                      }
-                      className="w-full rounded-2xl bg-gradient-to-r from-blue-600 to-purple-600 px-6 py-5 text-xl font-black text-white"
-                    >
-                      {savingId ===
-                      section.id
-                        ? "Saving..."
-                        : "Save Section"}
-                    </button>
+                        )
+                          .filter(
+                            ([key]) =>
+                              key !==
+                              "id"
+                          )
+                          .map(
+                            ([
+                              key,
+                              value
+                            ]) => {
+                              return (
+                                <div
+                                  key={
+                                    key
+                                  }
+                                  className="rounded-[25px] border border-gray-200 bg-white p-5 shadow-lg"
+                                >
 
-                  </div>
+                                  <div className="mb-3 flex items-center justify-between">
+
+                                    <h3 className="text-lg font-black">
+
+                                      {key}
+
+                                    </h3>
+
+                                    <button
+                                      onClick={() => {
+                                        copyFieldName(
+                                          key
+                                        );
+                                      }}
+                                      className="rounded-xl bg-black px-4 py-2 text-sm font-bold text-white"
+                                    >
+                                      {copiedField ===
+                                      key
+                                        ? "Copied"
+                                        : "Copy"}
+                                    </button>
+
+                                  </div>
+
+                                  {typeof value ===
+                                  "boolean" ? (
+                                    <input
+                                      type="checkbox"
+                                      checked={Boolean(
+                                        value
+                                      )}
+                                      onChange={(
+                                        event
+                                      ) => {
+                                        updateField(
+                                          section.id,
+                                          key,
+                                          event
+                                            .target
+                                            .checked
+                                        );
+                                      }}
+                                      className="h-7 w-7 accent-blue-600"
+                                    />
+                                  ) : key
+                                      .toLowerCase()
+                                      .includes(
+                                        "color"
+                                      ) ? (
+                                    <div className="flex items-center gap-4">
+
+                                      <input
+                                        type="color"
+                                        value={
+                                          String(
+                                            value ||
+                                              "#000000"
+                                          ).startsWith(
+                                            "#"
+                                          )
+                                            ? String(
+                                                value
+                                              )
+                                            : "#000000"
+                                        }
+                                        onChange={(
+                                          event
+                                        ) => {
+                                          updateField(
+                                            section.id,
+                                            key,
+                                            event
+                                              .target
+                                              .value
+                                          );
+                                        }}
+                                        className="h-16 w-20"
+                                      />
+
+                                      <input
+                                        type="text"
+                                        value={String(
+                                          value ||
+                                            ""
+                                        )}
+                                        onChange={(
+                                          event
+                                        ) => {
+                                          updateField(
+                                            section.id,
+                                            key,
+                                            event
+                                              .target
+                                              .value
+                                          );
+                                        }}
+                                        className="flex-1 rounded-2xl border border-gray-200 bg-gray-100 px-4 py-4"
+                                      />
+
+                                    </div>
+                                  ) : (
+                                    <input
+                                      type="text"
+                                      value={String(
+                                        value ||
+                                          ""
+                                      )}
+                                      onChange={(
+                                        event
+                                      ) => {
+                                        updateField(
+                                          section.id,
+                                          key,
+                                          event
+                                            .target
+                                            .value
+                                        );
+                                      }}
+                                      className="w-full rounded-2xl border border-gray-200 bg-gray-100 px-4 py-4"
+                                    />
+                                  )}
+
+                                </div>
+                              );
+                            }
+                          )}
+
+                      </div>
+
+                      {/* ADD FIELD */}
+
+                      <div className="p-6">
+
+                        <div className="flex flex-col gap-4 md:flex-row">
+
+                          <input
+                            type="text"
+                            list={`field-suggestions-${section.id}`}
+                            placeholder="Add custom field"
+                            value={
+                              newFieldNames[
+                                section.id
+                              ] || ""
+                            }
+                            onChange={(
+                              event
+                            ) => {
+                              setNewFieldNames(
+                                (
+                                  previous
+                                ) => {
+                                  return {
+                                    ...previous,
+
+                                    [section.id]:
+                                      event
+                                        .target
+                                        .value
+                                  };
+                                }
+                              );
+                            }}
+                            className="flex-1 rounded-2xl border border-gray-200 bg-white px-5 py-4"
+                          />
+
+                          <datalist
+                            id={`field-suggestions-${section.id}`}
+                          >
+
+                            {FIELD_SUGGESTIONS.map(
+                              (
+                                field
+                              ) => {
+                                return (
+                                  <option
+                                    key={
+                                      field
+                                    }
+                                    value={
+                                      field
+                                    }
+                                  />
+                                );
+                              }
+                            )}
+
+                          </datalist>
+
+                          <button
+                            onClick={() => {
+                              addCustomField(
+                                section.id
+                              );
+                            }}
+                            className="rounded-2xl bg-black px-8 py-4 font-black text-white"
+                          >
+                            Add Field
+                          </button>
+
+                        </div>
+
+                      </div>
+
+                      {/* SAVE */}
+
+                      <div className="p-6 pt-0">
+
+                        <button
+                          onClick={() => {
+                            saveSection(
+                              section
+                            );
+                          }}
+                          disabled={
+                            savingId ===
+                            section.id
+                          }
+                          className="w-full rounded-2xl bg-gradient-to-r from-blue-600 to-purple-600 px-6 py-5 text-xl font-black text-white"
+                        >
+                          {savingId ===
+                          section.id
+                            ? "Saving..."
+                            : "Save Section"}
+                        </button>
+
+                      </div>
+
+                    </>
+                  )}
 
                 </div>
               );
