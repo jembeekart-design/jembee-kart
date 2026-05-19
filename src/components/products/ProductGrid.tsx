@@ -15,17 +15,7 @@ interface Product {
 
   rating?: number;
 
-  backgroundColor?: string;
-
-  textColor?: string;
-
-  buttonColor?: string;
-
-  buttonTextColor?: string;
-
-  borderRadius?: string;
-
-  cardWidth?: string;
+  reviews?: number;
 }
 
 interface ProductGridProps {
@@ -37,132 +27,108 @@ export default function ProductGrid({
     {
       id: "1",
 
-      title: "Premium Sneakers",
+      title: "PETER ENGLAND Polo T-Shirt",
 
       image:
-        "https://images.unsplash.com/photo-1542291026-7eec264c27ff",
+        "https://images.unsplash.com/photo-1581655353564-df123a1eb820",
 
-      price: 2999,
+      price: 1099,
 
-      discountPrice: 1999,
+      discountPrice: 539,
 
-      rating: 4.8,
+      rating: 4.2,
 
-      backgroundColor: "#ffffff",
-
-      textColor: "#111827",
-
-      buttonColor: "#2563eb",
-
-      buttonTextColor: "#ffffff",
-
-      borderRadius: "18px",
-
-      cardWidth: "100%"
+      reviews: 5000
     },
 
     {
       id: "2",
 
-      title: "Smart Watch",
+      title: "US Polo Casual T-Shirt",
 
       image:
-        "https://images.unsplash.com/photo-1523275335684-37898b6baf30",
+        "https://images.unsplash.com/photo-1521572163474-6864f9cf17ab",
 
-      price: 5999,
+      price: 1499,
 
-      discountPrice: 3999,
+      discountPrice: 699,
 
-      rating: 4.6,
+      rating: 4.3,
 
-      backgroundColor: "#ffffff",
-
-      textColor: "#111827",
-
-      buttonColor: "#7c3aed",
-
-      buttonTextColor: "#ffffff",
-
-      borderRadius: "18px",
-
-      cardWidth: "100%"
+      reviews: 829
     },
 
     {
       id: "3",
 
-      title: "Wireless Headphones",
+      title: "THE BEAR HOUSE Shirt",
 
       image:
-        "https://images.unsplash.com/photo-1505740420928-5e560c06d30e",
+        "https://images.unsplash.com/photo-1602810318383-e386cc2a3ccf",
 
-      price: 4999,
+      price: 1999,
 
-      discountPrice: 2999,
+      discountPrice: 999,
 
-      rating: 4.7,
+      rating: 4.1,
 
-      backgroundColor: "#ffffff",
-
-      textColor: "#111827",
-
-      buttonColor: "#db2777",
-
-      buttonTextColor: "#ffffff",
-
-      borderRadius: "18px",
-
-      cardWidth: "100%"
+      reviews: 1000
     },
 
     {
       id: "4",
 
-      title: "Luxury Backpack",
+      title: "Premium Fashion Polo",
 
       image:
-        "https://images.unsplash.com/photo-1548036328-c9fa89d128fa",
+        "https://images.unsplash.com/photo-1503342217505-b0a15ec3261c",
 
-      price: 3499,
+      price: 1299,
 
-      discountPrice: 2499,
+      discountPrice: 599,
 
-      rating: 4.5,
+      rating: 4.4,
 
-      backgroundColor: "#ffffff",
-
-      textColor: "#111827",
-
-      buttonColor: "#ea580c",
-
-      buttonTextColor: "#ffffff",
-
-      borderRadius: "18px",
-
-      cardWidth: "100%"
+      reviews: 2200
     }
   ]
 }: ProductGridProps) {
   return (
-    <section className="w-full overflow-hidden px-2 py-4">
+    <section className="w-full bg-[#f1f3f6] px-2 py-3">
 
-      {/* HEADER */}
+      {/* TOP FILTER BAR */}
 
-      <div className="mb-4 flex items-center justify-between">
+      <div className="mb-4 flex items-center justify-between rounded-xl bg-white px-4 py-3 shadow-sm">
 
-        <h2 className="text-2xl font-black text-gray-900">
-          Trending Products
-        </h2>
+        {/* SORT */}
 
-        <button className="text-sm font-black text-blue-600">
-          View All
+        <button className="flex flex-1 items-center justify-center gap-2 border-r border-gray-200 text-sm font-bold text-gray-800">
+
+          <span className="text-lg">
+            ⇅
+          </span>
+
+          Sort
+
+        </button>
+
+        {/* FILTER */}
+
+        <button className="flex flex-1 items-center justify-center gap-2 text-sm font-bold text-gray-800">
+
+          <span className="text-lg">
+            ⚙
+          </span>
+
+          Filter
+
         </button>
 
       </div>
 
-      {/* GRID */}
+      {/* PRODUCT GRID */}
 
-      <div className="grid grid-cols-2 gap-2">
+      <div className="grid grid-cols-2 gap-3">
 
         {products.map((product) => {
           return (
@@ -176,22 +142,7 @@ export default function ProductGrid({
                 product.discountPrice
               }
               rating={product.rating}
-              backgroundColor={
-                product.backgroundColor
-              }
-              textColor={
-                product.textColor
-              }
-              buttonColor={
-                product.buttonColor
-              }
-              buttonTextColor={
-                product.buttonTextColor
-              }
-              borderRadius={
-                product.borderRadius
-              }
-              cardWidth="100%"
+              reviews={product.reviews}
             />
           );
         })}
