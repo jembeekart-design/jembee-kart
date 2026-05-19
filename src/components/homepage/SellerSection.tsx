@@ -12,6 +12,22 @@ interface SellerSectionProps {
   resellerDescription?: string;
 
   resellerButtonText?: string;
+
+  sellerBackgroundColor?: string;
+
+  sellerGradientColor?: string;
+
+  resellerBackgroundColor?: string;
+
+  resellerGradientColor?: string;
+
+  sellerButtonColor?: string;
+
+  sellerButtonTextColor?: string;
+
+  resellerButtonColor?: string;
+
+  resellerButtonTextColor?: string;
 }
 
 export default function SellerSection({
@@ -25,7 +41,23 @@ export default function SellerSection({
 
   resellerDescription = "Start reselling products without inventory and grow your online business easily.",
 
-  resellerButtonText = "Join Now"
+  resellerButtonText = "Join Now",
+
+  sellerBackgroundColor = "#4f46e5",
+
+  sellerGradientColor = "#7e22ce",
+
+  resellerBackgroundColor = "#ec4899",
+
+  resellerGradientColor = "#e11d48",
+
+  sellerButtonColor = "#ffffff",
+
+  sellerButtonTextColor = "#4338ca",
+
+  resellerButtonColor = "#ffffff",
+
+  resellerButtonTextColor = "#e11d48"
 }: SellerSectionProps) {
   return (
     <section className="w-full overflow-hidden px-3 py-5 md:px-6">
@@ -34,7 +66,12 @@ export default function SellerSection({
 
         {/* SELLER CARD */}
 
-        <div className="w-full overflow-hidden rounded-[24px] bg-gradient-to-br from-indigo-600 to-purple-700 p-5 text-white shadow-2xl md:rounded-[50px] md:p-10">
+        <div
+          className="w-full overflow-hidden rounded-[24px] p-5 text-white shadow-2xl transition-all duration-300 hover:scale-[1.01] md:rounded-[50px] md:p-10"
+          style={{
+            background: `linear-gradient(135deg, ${sellerBackgroundColor}, ${sellerGradientColor})`
+          }}
+        >
 
           <div className="w-full min-w-0">
 
@@ -42,11 +79,20 @@ export default function SellerSection({
               {sellerTitle}
             </h2>
 
-            <p className="mt-4 break-words text-base leading-relaxed text-indigo-100 md:mt-5 md:text-2xl">
+            <p className="mt-4 break-words text-base leading-relaxed text-white/90 md:mt-5 md:text-2xl">
               {sellerDescription}
             </p>
 
-            <button className="mt-6 w-full rounded-2xl bg-white px-6 py-3 text-sm font-bold text-indigo-700 transition-all duration-300 hover:scale-[1.02] md:mt-8 md:w-auto md:px-12 md:py-5 md:text-base">
+            <button
+              className="mt-6 w-full rounded-2xl px-6 py-3 text-sm font-bold transition-all duration-300 hover:scale-[1.02] md:mt-8 md:w-auto md:px-12 md:py-5 md:text-base"
+              style={{
+                backgroundColor:
+                  sellerButtonColor,
+
+                color:
+                  sellerButtonTextColor
+              }}
+            >
               {sellerButtonText}
             </button>
 
@@ -56,7 +102,12 @@ export default function SellerSection({
 
         {/* RESELLER CARD */}
 
-        <div className="w-full overflow-hidden rounded-[24px] bg-gradient-to-br from-pink-500 to-rose-600 p-5 text-white shadow-2xl md:rounded-[50px] md:p-10">
+        <div
+          className="w-full overflow-hidden rounded-[24px] p-5 text-white shadow-2xl transition-all duration-300 hover:scale-[1.01] md:rounded-[50px] md:p-10"
+          style={{
+            background: `linear-gradient(135deg, ${resellerBackgroundColor}, ${resellerGradientColor})`
+          }}
+        >
 
           <div className="w-full min-w-0">
 
@@ -64,11 +115,20 @@ export default function SellerSection({
               {resellerTitle}
             </h2>
 
-            <p className="mt-4 break-words text-base leading-relaxed text-pink-100 md:mt-5 md:text-2xl">
+            <p className="mt-4 break-words text-base leading-relaxed text-white/90 md:mt-5 md:text-2xl">
               {resellerDescription}
             </p>
 
-            <button className="mt-6 w-full rounded-2xl bg-white px-6 py-3 text-sm font-bold text-rose-600 transition-all duration-300 hover:scale-[1.02] md:mt-8 md:w-auto md:px-12 md:py-5 md:text-base">
+            <button
+              className="mt-6 w-full rounded-2xl px-6 py-3 text-sm font-bold transition-all duration-300 hover:scale-[1.02] md:mt-8 md:w-auto md:px-12 md:py-5 md:text-base"
+              style={{
+                backgroundColor:
+                  resellerButtonColor,
+
+                color:
+                  resellerButtonTextColor
+              }}
+            >
               {resellerButtonText}
             </button>
 
