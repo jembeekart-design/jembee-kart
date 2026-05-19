@@ -107,6 +107,11 @@ export default function AdminPage() {
     [key: string]: string;
   }>({});
 
+  const [
+    copiedField,
+    setCopiedField
+  ] = useState("");
+
   const [savingId, setSavingId] =
     useState("");
 
@@ -118,7 +123,7 @@ export default function AdminPage() {
           "homepage_sections"
         ),
         (snapshot) => {
-          const data =
+          const data: HomepageSection[] =
             snapshot.docs.map(
               (document) => {
                 return {
@@ -133,16 +138,21 @@ export default function AdminPage() {
             );
 
           const sorted =
-            data.sort((a, b) => {
-              return (
-                Number(
-                  a.position || 0
-                ) -
-                Number(
-                  b.position || 0
-                )
-              );
-            });
+            data.sort(
+              (
+                a: HomepageSection,
+                b: HomepageSection
+              ) => {
+                return (
+                  Number(
+                    a.position || 0
+                  ) -
+                  Number(
+                    b.position || 0
+                  )
+                );
+              }
+            );
 
           setSections(sorted);
         }
@@ -270,14 +280,32 @@ export default function AdminPage() {
         }
       );
 
-      alert("Saved Successfully");
+      alert(
+        "Section Saved Successfully"
+      );
     } catch (error) {
       console.error(error);
 
-      alert("Save Failed");
+      alert(
+        "Error Saving Section"
+      );
     } finally {
       setSavingId("");
     }
+  }
+
+  function copyFieldName(
+    fieldName: string
+  ) {
+    navigator.clipboard.writeText(
+      fieldName
+    );
+
+    setCopiedField(fieldName);
+
+    setTimeout(() => {
+      setCopiedField("");
+    }, 2000);
   }
 
   return (
@@ -294,7 +322,8 @@ export default function AdminPage() {
           </h1>
 
           <p className="mt-3 text-blue-100">
-            Dynamic Firestore Homepage Control Panel
+            Dynamic Firestore Homepage
+            Control Panel
           </p>
 
         </div>
@@ -322,7 +351,9 @@ export default function AdminPage() {
         <div className="space-y-10">
 
           {filteredSections.map(
-            (section) => {
+            (
+              section: HomepageSection
+            ) => {
               return (
                 <div
                   key={section.id}
@@ -401,6 +432,20 @@ export default function AdminPage() {
 
                                 </h3>
 
+                                <button
+                                  onClick={() => {
+                                    copyFieldName(
+                                      key
+                                    );
+                                  }}
+                                  className="rounded-xl bg-black px-4 py-2 text-sm font-bold text-white"
+                                >
+                                  {copiedField ===
+                                  key
+                                    ? "Copied"
+                                    : "Copy"}
+                                </button>
+
                               </div>
 
                               {typeof value ===
@@ -432,10 +477,18 @@ export default function AdminPage() {
 
                                   <input
                                     type="color"
-                                    value={String(
-                                      value ||
-                                        "#000000"
-                                    )}
+                                    value={
+                                      String(
+                                        value ||
+                                          "#000000"
+                                      ).startsWith(
+                                        "#"
+                                      )
+                                        ? String(
+                                            value
+                                          )
+                                        : "#000000"
+                                    }
                                     onChange={(
                                       event
                                     ) => {
