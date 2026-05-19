@@ -49,8 +49,6 @@ interface Product {
   borderRadius?: string;
 
   cardWidth?: string;
-
-  imageHeight?: string;
 }
 
 export default function FirestoreProductGrid() {
@@ -114,9 +112,9 @@ export default function FirestoreProductGrid() {
 
   if (loading) {
     return (
-      <div className="flex w-full items-center justify-center py-20">
+      <div className="flex w-full items-center justify-center py-10">
 
-        <p className="text-lg font-black text-gray-500">
+        <p className="text-base font-black text-gray-500">
           Loading Products...
         </p>
 
@@ -125,17 +123,17 @@ export default function FirestoreProductGrid() {
   }
 
   return (
-    <section className="w-full overflow-hidden px-2 py-4 md:px-6">
+    <section className="w-full overflow-hidden px-2 py-4">
 
       {/* HEADER */}
 
       <div className="mb-4 flex items-center justify-between">
 
-        <h2 className="text-2xl font-black text-gray-900 md:text-4xl">
+        <h2 className="text-2xl font-black text-gray-900">
           Trending Products
         </h2>
 
-        <button className="text-sm font-black text-blue-600 md:text-base">
+        <button className="text-sm font-black text-blue-600">
           View All
         </button>
 
@@ -143,14 +141,14 @@ export default function FirestoreProductGrid() {
 
       {/* PRODUCTS */}
 
-      <div className="grid grid-cols-2 gap-2 md:grid-cols-3 lg:grid-cols-4">
+      <div className="grid grid-cols-2 gap-2">
 
         {products.map((product) => {
           return (
             <Link
               key={product.id}
               href={`/product/${product.id}`}
-              className="w-full"
+              className="block w-full"
             >
 
               <ProductCard
@@ -178,12 +176,7 @@ export default function FirestoreProductGrid() {
                 borderRadius={
                   product.borderRadius
                 }
-                cardWidth={
-                  product.cardWidth
-                }
-                imageHeight={
-                  product.imageHeight
-                }
+                cardWidth="100%"
               />
 
             </Link>
