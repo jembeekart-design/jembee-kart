@@ -6,6 +6,20 @@ interface AffiliateSectionProps {
   description?: string;
 
   buttonText?: string;
+
+  backgroundColor?: string;
+
+  gradientColor?: string;
+
+  buttonColor?: string;
+
+  buttonTextColor?: string;
+
+  textColor?: string;
+
+  borderRadius?: string;
+
+  sectionPadding?: string;
 }
 
 export default function AffiliateSection({
@@ -13,24 +27,68 @@ export default function AffiliateSection({
 
   description = "Share products, grow your network and earn passive income daily with JembeeKart affiliate ecosystem.",
 
-  buttonText = "Join Affiliate Program"
+  buttonText = "Join Affiliate Program",
+
+  backgroundColor = "#000000",
+
+  gradientColor = "#001a4d",
+
+  buttonColor = "#2563eb",
+
+  buttonTextColor = "#ffffff",
+
+  textColor = "#ffffff",
+
+  borderRadius = "24px",
+
+  sectionPadding = "20px"
 }: AffiliateSectionProps) {
   return (
     <section className="w-full overflow-hidden px-3 py-5 md:px-6">
 
-      <div className="w-full overflow-hidden rounded-[24px] bg-gradient-to-r from-black to-gray-900 p-5 text-white shadow-2xl md:rounded-[50px] md:p-16">
+      <div
+        className="w-full overflow-hidden shadow-2xl transition-all duration-300 hover:scale-[1.01]"
+        style={{
+          background: `linear-gradient(135deg, ${backgroundColor}, ${gradientColor})`,
+
+          borderRadius: borderRadius,
+
+          padding: sectionPadding,
+
+          color: textColor
+        }}
+      >
 
         <div className="w-full max-w-3xl min-w-0">
 
-          <h2 className="break-words text-3xl font-black leading-tight md:text-6xl">
+          <h2
+            className="break-words text-3xl font-black leading-tight md:text-6xl"
+            style={{
+              color: textColor
+            }}
+          >
             {title}
           </h2>
 
-          <p className="mt-4 break-words text-base leading-relaxed text-gray-300 md:mt-5 md:text-2xl">
+          <p
+            className="mt-4 break-words text-base leading-relaxed md:mt-5 md:text-2xl"
+            style={{
+              color: textColor
+            }}
+          >
             {description}
           </p>
 
-          <button className="mt-6 w-full rounded-2xl bg-blue-600 px-5 py-3 text-sm font-bold text-white transition-all duration-300 hover:bg-blue-700 md:mt-8 md:w-auto md:px-16 md:py-5 md:text-base">
+          <button
+            className="mt-6 w-full rounded-2xl px-5 py-3 text-sm font-bold transition-all duration-300 hover:scale-[1.02] md:mt-8 md:w-auto md:px-16 md:py-5 md:text-base"
+            style={{
+              backgroundColor:
+                buttonColor,
+
+              color:
+                buttonTextColor
+            }}
+          >
             {buttonText}
           </button>
 
