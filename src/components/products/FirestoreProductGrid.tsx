@@ -116,7 +116,7 @@ export default function FirestoreProductGrid() {
     return (
       <div className="flex w-full items-center justify-center py-20">
 
-        <p className="text-xl font-black text-gray-500">
+        <p className="text-lg font-black text-gray-500">
           Loading Products...
         </p>
 
@@ -125,11 +125,11 @@ export default function FirestoreProductGrid() {
   }
 
   return (
-    <section className="w-full overflow-hidden px-3 py-5 md:px-6">
+    <section className="w-full overflow-hidden px-2 py-4 md:px-6">
 
       {/* HEADER */}
 
-      <div className="mb-6 flex items-center justify-between">
+      <div className="mb-4 flex items-center justify-between">
 
         <h2 className="text-2xl font-black text-gray-900 md:text-4xl">
           Trending Products
@@ -143,13 +143,14 @@ export default function FirestoreProductGrid() {
 
       {/* PRODUCTS */}
 
-      <div className="grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-4">
+      <div className="grid grid-cols-2 gap-2 md:grid-cols-3 lg:grid-cols-4">
 
         {products.map((product) => {
           return (
             <Link
               key={product.id}
               href={`/product/${product.id}`}
+              className="w-full"
             >
 
               <ProductCard
