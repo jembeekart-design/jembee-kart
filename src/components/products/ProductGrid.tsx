@@ -26,8 +26,6 @@ interface Product {
   borderRadius?: string;
 
   cardWidth?: string;
-
-  imageHeight?: string;
 }
 
 interface ProductGridProps {
@@ -58,11 +56,9 @@ export default function ProductGrid({
 
       buttonTextColor: "#ffffff",
 
-      borderRadius: "28px",
+      borderRadius: "18px",
 
-      cardWidth: "100%",
-
-      imageHeight: "240px"
+      cardWidth: "100%"
     },
 
     {
@@ -87,11 +83,9 @@ export default function ProductGrid({
 
       buttonTextColor: "#ffffff",
 
-      borderRadius: "28px",
+      borderRadius: "18px",
 
-      cardWidth: "100%",
-
-      imageHeight: "240px"
+      cardWidth: "100%"
     },
 
     {
@@ -116,11 +110,9 @@ export default function ProductGrid({
 
       buttonTextColor: "#ffffff",
 
-      borderRadius: "28px",
+      borderRadius: "18px",
 
-      cardWidth: "100%",
-
-      imageHeight: "240px"
+      cardWidth: "100%"
     },
 
     {
@@ -145,26 +137,24 @@ export default function ProductGrid({
 
       buttonTextColor: "#ffffff",
 
-      borderRadius: "28px",
+      borderRadius: "18px",
 
-      cardWidth: "100%",
-
-      imageHeight: "240px"
+      cardWidth: "100%"
     }
   ]
 }: ProductGridProps) {
   return (
-    <section className="w-full overflow-hidden px-3 py-5 md:px-6">
+    <section className="w-full overflow-hidden px-2 py-4">
 
       {/* HEADER */}
 
-      <div className="mb-6 flex items-center justify-between">
+      <div className="mb-4 flex items-center justify-between">
 
-        <h2 className="text-2xl font-black text-gray-900 md:text-4xl">
+        <h2 className="text-2xl font-black text-gray-900">
           Trending Products
         </h2>
 
-        <button className="text-sm font-black text-blue-600 md:text-base">
+        <button className="text-sm font-black text-blue-600">
           View All
         </button>
 
@@ -172,12 +162,13 @@ export default function ProductGrid({
 
       {/* GRID */}
 
-      <div className="grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-4">
+      <div className="grid grid-cols-2 gap-2">
 
         {products.map((product) => {
           return (
             <ProductCard
               key={product.id}
+              id={product.id}
               title={product.title}
               image={product.image}
               price={product.price}
@@ -200,12 +191,7 @@ export default function ProductGrid({
               borderRadius={
                 product.borderRadius
               }
-              cardWidth={
-                product.cardWidth
-              }
-              imageHeight={
-                product.imageHeight
-              }
+              cardWidth="100%"
             />
           );
         })}
