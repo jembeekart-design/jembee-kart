@@ -27,8 +27,6 @@ interface ProductCardProps {
 
   cardWidth?: string;
 
-  imageHeight?: string;
-
   stock?: number;
 }
 
@@ -53,11 +51,9 @@ export default function ProductCard({
 
   buttonTextColor = "#ffffff",
 
-  borderRadius = "16px",
+  borderRadius = "18px",
 
   cardWidth = "100%",
-
-  imageHeight = "80px",
 
   stock = 10
 }: ProductCardProps) {
@@ -74,22 +70,21 @@ export default function ProductCard({
 
   return (
     <div
-      className="overflow-hidden shadow-md"
+      className="overflow-hidden shadow-lg transition-all duration-300 hover:-translate-y-1 hover:shadow-2xl"
       style={{
-        backgroundColor,
-        borderRadius,
+        backgroundColor:
+          backgroundColor,
+
+        borderRadius:
+          borderRadius,
+
         width: cardWidth
       }}
     >
 
       {/* IMAGE */}
 
-      <div
-        className="relative w-full overflow-hidden bg-gray-100"
-        style={{
-          height: imageHeight
-        }}
-      >
+      <div className="relative aspect-square w-full overflow-hidden bg-gray-100">
 
         <img
           src={
@@ -128,12 +123,12 @@ export default function ProductCard({
 
       {/* CONTENT */}
 
-      <div className="p-2">
+      <div className="p-2.5">
 
         {/* TITLE */}
 
         <h2
-          className="line-clamp-2 text-xs font-black leading-tight"
+          className="line-clamp-2 text-sm font-black leading-tight"
           style={{
             color: textColor
           }}
@@ -145,11 +140,11 @@ export default function ProductCard({
 
         <div className="mt-1 flex items-center gap-1">
 
-          <span className="text-[10px]">
+          <span className="text-xs text-yellow-500">
             ⭐
           </span>
 
-          <span className="text-[10px] font-bold text-gray-500">
+          <span className="text-xs font-bold text-gray-600">
             {rating}
           </span>
 
@@ -157,13 +152,13 @@ export default function ProductCard({
 
         {/* PRICE */}
 
-        <div className="mt-1 flex items-center gap-1">
+        <div className="mt-2 flex items-center gap-2">
 
-          <span className="text-base font-black text-gray-900">
+          <span className="text-lg font-black text-gray-900">
             ₹{discountPrice}
           </span>
 
-          <span className="text-[9px] text-gray-400 line-through">
+          <span className="text-xs font-semibold text-gray-400 line-through">
             ₹{price}
           </span>
 
@@ -171,7 +166,7 @@ export default function ProductCard({
 
         {/* BUTTONS */}
 
-        <div className="mt-2 flex gap-1">
+        <div className="mt-3 flex gap-2">
 
           <button
             onClick={(
@@ -181,14 +176,18 @@ export default function ProductCard({
 
               addToCart({
                 id,
+
                 title,
+
                 image,
+
                 price:
                   discountPrice,
+
                 quantity: 1
               });
             }}
-            className="flex-1 rounded-lg px-2 py-1.5 text-[9px] font-black"
+            className="flex-1 rounded-xl px-2 py-2 text-[11px] font-black transition-all duration-300 hover:scale-[1.02]"
             style={{
               backgroundColor:
                 buttonColor,
@@ -200,7 +199,7 @@ export default function ProductCard({
             Cart
           </button>
 
-          <button className="rounded-lg border border-gray-200 bg-gray-100 px-2 py-1.5 text-[9px] font-black text-gray-700">
+          <button className="rounded-xl border border-gray-200 bg-gray-100 px-3 py-2 text-[11px] font-black text-gray-700 transition-all duration-300 hover:bg-gray-200">
 
             Buy
 
