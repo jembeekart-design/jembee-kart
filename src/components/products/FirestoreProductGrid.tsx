@@ -28,9 +28,9 @@ interface Product {
 
   discountPrice?: number;
 
-  stock?: number;
-
   rating?: number;
+
+  reviews?: number;
 
   featured?: boolean;
 
@@ -123,25 +123,59 @@ export default function FirestoreProductGrid() {
   }
 
   return (
-    <section className="w-full overflow-hidden px-2 py-4">
+    <section className="w-full bg-[#f1f3f6] px-2 py-3">
+
+      {/* TOP BAR */}
+
+      <div className="mb-4 flex items-center justify-between rounded-xl bg-white px-4 py-3 shadow-sm">
+
+        {/* SORT */}
+
+        <button className="flex flex-1 items-center justify-center gap-2 border-r border-gray-200 text-sm font-bold text-gray-800">
+
+          <span className="text-lg">
+            ⇅
+          </span>
+
+          Sort
+
+        </button>
+
+        {/* FILTER */}
+
+        <button className="flex flex-1 items-center justify-center gap-2 text-sm font-bold text-gray-800">
+
+          <span className="text-lg">
+            ⚙
+          </span>
+
+          Filter
+
+        </button>
+
+      </div>
 
       {/* HEADER */}
 
       <div className="mb-4 flex items-center justify-between">
 
         <h2 className="text-2xl font-black text-gray-900">
+
           Trending Products
+
         </h2>
 
         <button className="text-sm font-black text-blue-600">
+
           View All
+
         </button>
 
       </div>
 
       {/* PRODUCTS */}
 
-      <div className="grid grid-cols-2 gap-2">
+      <div className="grid grid-cols-2 gap-3">
 
         {products.map((product) => {
           return (
@@ -160,23 +194,7 @@ export default function FirestoreProductGrid() {
                   product.discountPrice
                 }
                 rating={product.rating}
-                stock={product.stock}
-                backgroundColor={
-                  product.backgroundColor
-                }
-                textColor={
-                  product.textColor
-                }
-                buttonColor={
-                  product.buttonColor
-                }
-                buttonTextColor={
-                  product.buttonTextColor
-                }
-                borderRadius={
-                  product.borderRadius
-                }
-                cardWidth="100%"
+                reviews={product.reviews}
               />
 
             </Link>
