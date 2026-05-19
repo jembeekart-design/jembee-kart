@@ -2,7 +2,7 @@
 
 export const dynamic = "force-dynamic";
 
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 
 import {
   collection,
@@ -28,6 +28,70 @@ interface HomepageSection {
     | boolean
     | undefined;
 }
+
+const FIELD_SUGGESTIONS = [
+  "title",
+  "subtitle",
+  "description",
+  "buttonText",
+  "secondaryButtonText",
+
+  "backgroundColor",
+  "gradientColor",
+  "textColor",
+
+  "buttonColor",
+  "buttonTextColor",
+
+  "headerBackgroundColor",
+  "headerTextColor",
+
+  "searchBarColor",
+  "statusBarColor",
+
+  "cardBackgroundColor",
+  "cardTextColor",
+
+  "sectionPadding",
+  "sectionHeight",
+
+  "borderRadius",
+
+  "titleSize",
+  "subtitleSize",
+  "buttonSize",
+
+  "cardWidth",
+  "cardHeight",
+
+  "imageHeight",
+
+  "sellerTitle",
+  "sellerDescription",
+  "sellerButtonText",
+
+  "sellerBackgroundColor",
+  "sellerGradientColor",
+
+  "sellerButtonColor",
+  "sellerButtonTextColor",
+
+  "resellerTitle",
+  "resellerDescription",
+  "resellerButtonText",
+
+  "resellerBackgroundColor",
+  "resellerGradientColor",
+
+  "resellerButtonColor",
+  "resellerButtonTextColor",
+
+  "affiliateBackgroundColor",
+  "affiliateGradientColor",
+
+  "affiliateButtonColor",
+  "affiliateButtonTextColor"
+];
 
 export default function AdminPage() {
   const [sections, setSections] =
@@ -95,6 +159,27 @@ export default function AdminPage() {
 
     return () => unsubscribe();
   }, []);
+
+  const filteredSections =
+    useMemo(() => {
+      if (!search.trim()) {
+        return sections;
+      }
+
+      return sections.filter(
+        (section) => {
+          return Object.keys(
+            section
+          ).some((key) =>
+            key
+              .toLowerCase()
+              .includes(
+                search.toLowerCase()
+              )
+          );
+        }
+      );
+    }, [sections, search]);
 
   function updateField(
     id: string,
@@ -188,7 +273,10 @@ export default function AdminPage() {
           "homepage_sections",
           section.id
         ),
-        section
+        section,
+        {
+          merge: true
+        }
       );
 
       alert(
@@ -220,29 +308,36 @@ export default function AdminPage() {
   }
 
   return (
-    <main className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-indigo-100 px-4 py-8">
+    <main className="min-h-screen bg-gradient-to-br from-slate-100 via-blue-50 to-indigo-100 px-4 py-6">
 
-      <div className="mx-auto max-w-6xl">
+      <div className="mx-auto max-w-7xl">
 
-        {/* TOP HEADER */}
+        {/* HEADER */}
 
-        <div className="mb-10 rounded-[35px] bg-gradient-to-r from-blue-600 via-indigo-600 to-purple-600 p-8 text-white shadow-2xl">
+        <div className="relative mb-8 overflow-hidden rounded-[35px] bg-gradient-to-r from-blue-700 via-indigo-700 to-purple-700 p-8 text-white shadow-2xl">
 
-          <h1 className="text-4xl font-black md:text-6xl">
-            JembeeKart Admin
-          </h1>
+          <div className="absolute right-[-40px] top-[-40px] h-40 w-40 rounded-full bg-white/10 blur-3xl" />
 
-          <p className="mt-3 text-lg text-blue-100">
-            Full Firestore Dynamic Homepage Control Panel
-          </p>
+          <div className="absolute bottom-[-50px] left-[-50px] h-40 w-40 rounded-full bg-cyan-300/20 blur-3xl" />
 
-          {/* LIVE STATUS */}
+          <div className="relative z-10">
 
-          <div className="mt-4 inline-flex items-center gap-2 rounded-full bg-white/10 px-4 py-2 text-sm text-blue-100 backdrop-blur-md">
+            <h1 className="text-4xl font-black md:text-6xl">
+              JembeeKart Admin
+            </h1>
 
-            <div className="h-2 w-2 rounded-full bg-green-400" />
+            <p className="mt-3 max-w-2xl text-base text-blue-100 md:text-xl">
+              Full Dynamic Firestore
+              Homepage Control Panel
+            </p>
 
-            Live Firestore Connected
+            <div className="mt-5 inline-flex items-center gap-3 rounded-full border border-white/20 bg-white/10 px-5 py-3 text-sm font-semibold backdrop-blur-xl">
+
+              <div className="h-3 w-3 rounded-full bg-green-400 shadow-[0_0_15px_#4ade80]" />
+
+              Firestore Connected Live
+
+            </div>
 
           </div>
 
@@ -252,17 +347,21 @@ export default function AdminPage() {
 
         <div className="mb-8">
 
-          <input
-            type="text"
-            placeholder="Search fields..."
-            value={search}
-            onChange={(event) => {
-              setSearch(
-                event.target.value
-              );
-            }}
-            className="w-full rounded-2xl border border-gray-200 bg-white px-5 py-4 text-lg font-semibold outline-none transition-all duration-300 focus:border-blue-500 focus:ring-4 focus:ring-blue-200"
-          />
+          <div className="rounded-[28px] border border-white/40 bg-white/80 p-3 shadow-xl backdrop-blur-xl">
+
+            <input
+              type="text"
+              placeholder="Search fields, sections, colors..."
+              value={search}
+              onChange={(event) => {
+                setSearch(
+                  event.target.value
+                );
+              }}
+              className="w-full rounded-2xl border border-gray-200 bg-gray-50 px-5 py-4 text-lg font-semibold outline-none transition-all duration-300 focus:border-blue-500 focus:bg-white focus:ring-4 focus:ring-blue-200"
+            />
+
+          </div>
 
         </div>
 
@@ -270,7 +369,7 @@ export default function AdminPage() {
 
         <div className="space-y-10">
 
-          {sections.map(
+          {filteredSections.map(
             (
               section: HomepageSection
             ) => {
@@ -280,25 +379,26 @@ export default function AdminPage() {
                   className="overflow-hidden rounded-[35px] border border-white/40 bg-white/90 shadow-2xl backdrop-blur-xl"
                 >
 
-                  {/* SECTION HEADER */}
+                  {/* TOP */}
 
-                  <div className="flex flex-col gap-5 border-b border-gray-100 bg-gradient-to-r from-gray-900 to-black p-6 text-white md:flex-row md:items-center md:justify-between">
+                  <div className="flex flex-col gap-5 bg-gradient-to-r from-black via-slate-900 to-black p-6 text-white md:flex-row md:items-center md:justify-between">
 
                     <div>
 
-                      <h2 className="text-3xl font-black capitalize md:text-4xl">
+                      <h2 className="text-3xl font-black capitalize md:text-5xl">
                         {
                           section.sectionType
                         }
                       </h2>
 
                       <p className="mt-2 text-gray-300">
-                        Dynamic Firestore Section Editor
+                        Dynamic Firestore
+                        Section Editor
                       </p>
 
                     </div>
 
-                    <div className="flex items-center gap-4 rounded-2xl bg-white/10 px-5 py-3 backdrop-blur-md">
+                    <div className="flex items-center gap-4 rounded-2xl border border-white/10 bg-white/10 px-5 py-4 backdrop-blur-xl">
 
                       <span className="text-lg font-bold">
                         Visible
@@ -335,6 +435,18 @@ export default function AdminPage() {
                     )
                       .filter(
                         ([key]) => {
+                          if (
+                            key === "id"
+                          ) {
+                            return false;
+                          }
+
+                          if (
+                            !search.trim()
+                          ) {
+                            return true;
+                          }
+
                           return key
                             .toLowerCase()
                             .includes(
@@ -347,12 +459,6 @@ export default function AdminPage() {
                           key,
                           value
                         ]) => {
-                          if (
-                            key === "id"
-                          ) {
-                            return null;
-                          }
-
                           const label =
                             key
                               .replace(
@@ -370,15 +476,17 @@ export default function AdminPage() {
                           return (
                             <div
                               key={key}
-                              className="rounded-[28px] border border-gray-200 bg-gradient-to-br from-white to-gray-50 p-5 shadow-lg transition-all duration-300 hover:-translate-y-1 hover:border-blue-300 hover:shadow-2xl"
+                              className="group rounded-[30px] border border-gray-200 bg-gradient-to-br from-white via-gray-50 to-white p-5 shadow-lg transition-all duration-300 hover:-translate-y-1 hover:border-blue-300 hover:shadow-2xl"
                             >
 
-                              {/* LABEL */}
+                              {/* HEADER */}
 
                               <div className="mb-4 flex items-center justify-between gap-3">
 
                                 <h3 className="text-lg font-black text-gray-800">
+
                                   {label}
+
                                 </h3>
 
                                 <button
@@ -387,7 +495,7 @@ export default function AdminPage() {
                                       key
                                     );
                                   }}
-                                  className="rounded-xl bg-gradient-to-r from-black to-gray-800 px-4 py-2 text-sm font-bold text-white transition-all duration-300 hover:scale-105"
+                                  className="rounded-xl bg-gradient-to-r from-black to-slate-800 px-4 py-2 text-sm font-bold text-white transition-all duration-300 hover:scale-105"
                                 >
                                   {copiedField ===
                                   key
@@ -400,14 +508,16 @@ export default function AdminPage() {
                               {/* FIELD NAME */}
 
                               <div className="mb-4 rounded-2xl bg-gradient-to-r from-blue-100 to-indigo-100 px-4 py-3 text-sm font-bold text-blue-700 break-all">
+
                                 {key}
+
                               </div>
 
                               {/* BOOLEAN */}
 
                               {typeof value ===
                               "boolean" ? (
-                                <div className="flex items-center justify-center rounded-2xl bg-gray-100 p-5">
+                                <div className="flex items-center justify-center rounded-2xl bg-gray-100 p-6">
 
                                   <input
                                     type="checkbox"
@@ -461,7 +571,7 @@ export default function AdminPage() {
                                           .value
                                       );
                                     }}
-                                    className="h-16 w-20 rounded-2xl border-none bg-transparent"
+                                    className="h-16 w-20 cursor-pointer rounded-2xl border-none bg-transparent"
                                   />
 
                                   <input
@@ -514,9 +624,9 @@ export default function AdminPage() {
 
                   </div>
 
-                  {/* CUSTOM FIELD */}
+                  {/* ADD FIELD */}
 
-                  <div className="m-6 rounded-[30px] border border-dashed border-blue-300 bg-gradient-to-r from-blue-50 to-indigo-50 p-6">
+                  <div className="m-6 rounded-[35px] border border-dashed border-blue-300 bg-gradient-to-r from-blue-50 via-indigo-50 to-purple-50 p-6">
 
                     <h3 className="mb-5 text-2xl font-black text-blue-700">
                       Add Custom Field
@@ -524,12 +634,12 @@ export default function AdminPage() {
 
                     <div className="flex flex-col gap-4 md:flex-row">
 
-                      <div className="relative flex-1">
+                      <div className="flex-1">
 
                         <input
                           type="text"
                           list={`field-suggestions-${section.id}`}
-                          placeholder="Example: headerBackgroundColor"
+                          placeholder="Example: sellerBackgroundColor"
                           value={
                             newFieldNames[
                               section.id
@@ -560,37 +670,22 @@ export default function AdminPage() {
                           id={`field-suggestions-${section.id}`}
                         >
 
-                          <option value="headerBackgroundColor" />
-                          <option value="headerTextColor" />
-                          <option value="searchBarColor" />
-                          <option value="statusBarColor" />
-                          <option value="title" />
-                          <option value="subtitle" />
-                          <option value="description" />
-                          <option value="buttonText" />
-                          <option value="secondaryButtonText" />
-                          <option value="titleSize" />
-                          <option value="subtitleSize" />
-                          <option value="buttonSize" />
-                          <option value="backgroundColor" />
-                          <option value="gradientColor" />
-                          <option value="textColor" />
-                          <option value="buttonColor" />
-                          <option value="buttonTextColor" />
-                          <option value="sectionPadding" />
-                          <option value="sectionHeight" />
-                          <option value="borderRadius" />
-                          <option value="cardWidth" />
-                          <option value="cardHeight" />
-                          <option value="imageHeight" />
-                          <option value="titleFontSize" />
-                          <option value="cardBackgroundColor" />
-                          <option value="sellerTitle" />
-                          <option value="sellerDescription" />
-                          <option value="sellerButtonText" />
-                          <option value="resellerTitle" />
-                          <option value="resellerDescription" />
-                          <option value="resellerButtonText" />
+                          {FIELD_SUGGESTIONS.map(
+                            (
+                              field
+                            ) => {
+                              return (
+                                <option
+                                  key={
+                                    field
+                                  }
+                                  value={
+                                    field
+                                  }
+                                />
+                              );
+                            }
+                          )}
 
                         </datalist>
 
@@ -602,7 +697,7 @@ export default function AdminPage() {
                             section.id
                           );
                         }}
-                        className="rounded-2xl bg-gradient-to-r from-black to-gray-800 px-8 py-4 text-lg font-black text-white transition-all duration-300 hover:scale-105"
+                        className="rounded-2xl bg-gradient-to-r from-black to-slate-800 px-8 py-4 text-lg font-black text-white transition-all duration-300 hover:scale-105"
                       >
                         Add Field
                       </button>
@@ -611,9 +706,9 @@ export default function AdminPage() {
 
                   </div>
 
-                  {/* SAVE BUTTON */}
+                  {/* SAVE */}
 
-                  <div className="sticky bottom-0 z-30 bg-white/80 p-6 pt-0 backdrop-blur-xl">
+                  <div className="sticky bottom-0 z-30 border-t border-gray-100 bg-white/90 p-6 backdrop-blur-xl">
 
                     <button
                       onClick={() => {
