@@ -294,6 +294,83 @@ export default function AdminPage() {
     }
   }
 
+  async function createSellerSection() {
+    try {
+      await setDoc(
+        doc(
+          db,
+          "homepage_sections",
+          "seller_section"
+        ),
+        {
+          id: "seller_section",
+
+          sectionType:
+            "seller",
+
+          visible: true,
+
+          position: 5,
+
+          sellerTitle:
+            "Become A Seller",
+
+          sellerDescription:
+            "Sell products with AI powered tools",
+
+          sellerButtonText:
+            "Start Selling",
+
+          resellerTitle:
+            "Reseller Program",
+
+          resellerDescription:
+            "Start reselling products",
+
+          resellerButtonText:
+            "Join Now",
+
+          sellerBackgroundColor:
+            "#0000ff",
+
+          sellerGradientColor:
+            "#ff0000",
+
+          resellerBackgroundColor:
+            "#00ff00",
+
+          resellerGradientColor:
+            "#ffff00",
+
+          sellerButtonColor:
+            "#ffffff",
+
+          sellerButtonTextColor:
+            "#000000",
+
+          resellerButtonColor:
+            "#ffffff",
+
+          resellerButtonTextColor:
+            "#000000"
+        },
+        {
+          merge: true
+        }
+      );
+
+      alert(
+        "Seller Section Created"
+      );
+    } catch (error) {
+      console.error(error);
+
+      alert(
+        "Error Creating Seller Section"
+      );
+    }
+  }
+
   function copyFieldName(
     fieldName: string
   ) {
@@ -325,6 +402,21 @@ export default function AdminPage() {
             Dynamic Firestore Homepage
             Control Panel
           </p>
+
+        </div>
+
+        {/* CREATE SELLER SECTION */}
+
+        <div className="mb-8">
+
+          <button
+            onClick={
+              createSellerSection
+            }
+            className="w-full rounded-2xl bg-gradient-to-r from-green-600 to-emerald-600 px-8 py-5 text-xl font-black text-white shadow-2xl"
+          >
+            Create Seller Section
+          </button>
 
         </div>
 
@@ -391,8 +483,7 @@ export default function AdminPage() {
                           updateField(
                             section.id,
                             "visible",
-                            event.target
-                              .checked
+                            event.target.checked
                           );
                         }}
                         className="h-6 w-6 accent-green-500"
@@ -461,9 +552,7 @@ export default function AdminPage() {
                                     updateField(
                                       section.id,
                                       key,
-                                      event
-                                        .target
-                                        .checked
+                                      event.target.checked
                                     );
                                   }}
                                   className="h-7 w-7 accent-blue-600"
@@ -495,9 +584,7 @@ export default function AdminPage() {
                                       updateField(
                                         section.id,
                                         key,
-                                        event
-                                          .target
-                                          .value
+                                        event.target.value
                                       );
                                     }}
                                     className="h-16 w-20"
@@ -515,9 +602,7 @@ export default function AdminPage() {
                                       updateField(
                                         section.id,
                                         key,
-                                        event
-                                          .target
-                                          .value
+                                        event.target.value
                                       );
                                     }}
                                     className="flex-1 rounded-2xl border border-gray-200 bg-gray-100 px-4 py-4"
@@ -537,9 +622,7 @@ export default function AdminPage() {
                                     updateField(
                                       section.id,
                                       key,
-                                      event
-                                        .target
-                                        .value
+                                      event.target.value
                                     );
                                   }}
                                   className="w-full rounded-2xl border border-gray-200 bg-gray-100 px-4 py-4"
@@ -579,9 +662,7 @@ export default function AdminPage() {
                                 ...previous,
 
                                 [section.id]:
-                                  event
-                                    .target
-                                    .value
+                                  event.target.value
                               };
                             }
                           );
@@ -599,12 +680,8 @@ export default function AdminPage() {
                           ) => {
                             return (
                               <option
-                                key={
-                                  field
-                                }
-                                value={
-                                  field
-                                }
+                                key={field}
+                                value={field}
                               />
                             );
                           }
