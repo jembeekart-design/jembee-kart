@@ -37,7 +37,7 @@ export default function ProductCard({
 
   title = "Premium Sneakers",
 
-  image = "",
+  image = "https://images.unsplash.com/photo-1542291026-7eec264c27ff",
 
   price = 2999,
 
@@ -53,11 +53,11 @@ export default function ProductCard({
 
   buttonTextColor = "#ffffff",
 
-  borderRadius = "24px",
+  borderRadius = "18px",
 
   cardWidth = "100%",
 
-  imageHeight = "160px",
+  imageHeight = "120px",
 
   stock = 10
 }: ProductCardProps) {
@@ -74,10 +74,14 @@ export default function ProductCard({
 
   return (
     <div
-      className="overflow-hidden shadow-lg transition-all duration-300 hover:-translate-y-1 hover:shadow-xl"
+      className="overflow-hidden shadow-lg transition-all duration-300 hover:-translate-y-1 hover:shadow-2xl"
       style={{
-        backgroundColor,
-        borderRadius,
+        backgroundColor:
+          backgroundColor,
+
+        borderRadius:
+          borderRadius,
+
         width: cardWidth
       }}
     >
@@ -91,38 +95,36 @@ export default function ProductCard({
         }}
       >
 
-        {image ? (
-          <img
-            src={image}
-            alt={title}
-            className="h-full w-full object-cover"
-          />
-        ) : (
-          <div className="flex h-full items-center justify-center text-sm font-bold text-gray-400">
-            No Image
-          </div>
-        )}
+        <img
+          src={
+            image ||
+            "https://via.placeholder.com/300x300?text=Product"
+          }
+          alt={title}
+          className="h-full w-full object-cover"
+        />
 
         {/* DISCOUNT */}
 
-        <div className="absolute left-2 top-2 rounded-full bg-red-500 px-3 py-1 text-[10px] font-black text-white shadow-md">
+        <div className="absolute left-2 top-2 rounded-full bg-red-500 px-2 py-1 text-[10px] font-black text-white shadow-lg">
 
-          {discountPercentage}% OFF
+          {discountPercentage}%
+          OFF
 
         </div>
 
         {/* STOCK */}
 
         {stock <= 0 ? (
-          <div className="absolute right-2 top-2 rounded-full bg-black px-3 py-1 text-[10px] font-black text-white">
+          <div className="absolute right-2 top-2 rounded-full bg-black px-2 py-1 text-[10px] font-black text-white">
 
-            OUT OF STOCK
+            OUT
 
           </div>
         ) : (
-          <div className="absolute right-2 top-2 rounded-full bg-green-500 px-3 py-1 text-[10px] font-black text-white">
+          <div className="absolute right-2 top-2 rounded-full bg-green-500 px-2 py-1 text-[10px] font-black text-white">
 
-            IN STOCK
+            STOCK
 
           </div>
         )}
@@ -131,12 +133,12 @@ export default function ProductCard({
 
       {/* CONTENT */}
 
-      <div className="p-3">
+      <div className="p-2.5">
 
         {/* TITLE */}
 
         <h2
-          className="line-clamp-2 text-base font-black md:text-lg"
+          className="line-clamp-2 text-sm font-black leading-tight md:text-base"
           style={{
             color: textColor
           }}
@@ -148,7 +150,7 @@ export default function ProductCard({
 
         <div className="mt-1 flex items-center gap-1">
 
-          <span className="text-yellow-500">
+          <span className="text-yellow-500 text-xs">
             ⭐
           </span>
 
@@ -162,7 +164,7 @@ export default function ProductCard({
 
         <div className="mt-2 flex items-center gap-2">
 
-          <span className="text-xl font-black text-gray-900">
+          <span className="text-lg font-black text-gray-900">
             ₹{discountPrice}
           </span>
 
@@ -174,7 +176,7 @@ export default function ProductCard({
 
         {/* BUTTONS */}
 
-        <div className="mt-4 flex gap-2">
+        <div className="mt-3 flex gap-2">
 
           <button
             onClick={(
@@ -184,14 +186,18 @@ export default function ProductCard({
 
               addToCart({
                 id,
+
                 title,
+
                 image,
+
                 price:
                   discountPrice,
+
                 quantity: 1
               });
             }}
-            className="flex-1 rounded-xl px-4 py-2 text-xs font-black transition-all duration-300 hover:scale-[1.02]"
+            className="flex-1 rounded-xl px-2 py-2 text-[11px] font-black transition-all duration-300 hover:scale-[1.02]"
             style={{
               backgroundColor:
                 buttonColor,
@@ -200,10 +206,10 @@ export default function ProductCard({
                 buttonTextColor
             }}
           >
-            Add To Cart
+            Add Cart
           </button>
 
-          <button className="rounded-xl border border-gray-200 bg-gray-100 px-4 py-2 text-xs font-black text-gray-700 transition-all duration-300 hover:bg-gray-200">
+          <button className="rounded-xl border border-gray-200 bg-gray-100 px-3 py-2 text-[11px] font-black text-gray-700 transition-all duration-300 hover:bg-gray-200">
 
             Buy
 
