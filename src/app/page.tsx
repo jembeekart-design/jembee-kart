@@ -1,5 +1,7 @@
 "use client";
 
+export const dynamic = "force-dynamic";
+
 import { useEffect, useState } from "react";
 
 import {
@@ -105,6 +107,14 @@ interface HomepageSection {
   resellerButtonColor?: string;
 
   resellerButtonTextColor?: string;
+
+  affiliateBackgroundColor?: string;
+
+  affiliateGradientColor?: string;
+
+  affiliateButtonColor?: string;
+
+  affiliateButtonTextColor?: string;
 }
 
 export default function HomePage() {
@@ -124,15 +134,13 @@ export default function HomePage() {
           const data =
             snapshot.docs.map(
               (document) => {
-                const firestoreData =
-                  document.data() as Omit<
+                return {
+                  id: document.id,
+
+                  ...(document.data() as Omit<
                     HomepageSection,
                     "id"
-                  >;
-
-                return {
-                  ...firestoreData,
-                  id: document.id
+                  >)
                 };
               }
             );
@@ -170,6 +178,8 @@ export default function HomePage() {
     switch (
       section.sectionType
     ) {
+      /* HERO */
+
       case "hero":
         return (
           <HeroSection
@@ -221,15 +231,21 @@ export default function HomePage() {
           />
         );
 
+      /* CATEGORY */
+
       case "category":
         return (
           <CategorySection />
         );
 
+      /* PRODUCTS */
+
       case "products":
         return (
           <ProductSection />
         );
+
+      /* AFFILIATE */
 
       case "affiliate":
         return (
@@ -244,8 +260,30 @@ export default function HomePage() {
             buttonText={
               section.buttonText
             }
+
+            backgroundColor={
+              section.affiliateBackgroundColor ||
+              section.backgroundColor
+            }
+
+            gradientColor={
+              section.affiliateGradientColor ||
+              section.gradientColor
+            }
+
+            buttonColor={
+              section.affiliateButtonColor ||
+              section.buttonColor
+            }
+
+            buttonTextColor={
+              section.affiliateButtonTextColor ||
+              section.buttonTextColor
+            }
           />
         );
+
+      /* SELLER */
 
       case "seller":
         return (
@@ -314,10 +352,14 @@ export default function HomePage() {
           />
         );
 
+      /* TIPS */
+
       case "tips":
         return (
           <TipsSection />
         );
+
+      /* FOOTER */
 
       case "footer":
         return (
@@ -333,6 +375,8 @@ export default function HomePage() {
     <main className="min-h-screen w-full overflow-x-hidden bg-[#f3f4f6] pt-[115px] md:pt-[150px]">
 
       <div className="w-full overflow-x-hidden">
+
+        {/* HEADER */}
 
         <Header
           headerBackgroundColor={
@@ -352,6 +396,8 @@ export default function HomePage() {
               ?.statusBarColor
           }
         />
+
+        {/* ALL SECTIONS */}
 
         <div className="w-full overflow-x-hidden pb-32">
 
@@ -374,7 +420,11 @@ export default function HomePage() {
 
         </div>
 
+        {/* FLOATING BUTTON */}
+
         <WhatsAppButton />
+
+        {/* BOTTOM NAVBAR */}
 
         <BottomNavbar />
 
