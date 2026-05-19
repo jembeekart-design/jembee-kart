@@ -45,6 +45,12 @@ export default function AdminPage() {
     setCopiedField
   ] = useState("");
 
+  const [savingId, setSavingId] =
+    useState("");
+
+  const [search, setSearch] =
+    useState("");
+
   useEffect(() => {
     const unsubscribe =
       onSnapshot(
@@ -174,6 +180,8 @@ export default function AdminPage() {
     section: HomepageSection
   ) {
     try {
+      setSavingId(section.id);
+
       await setDoc(
         doc(
           db,
@@ -192,6 +200,8 @@ export default function AdminPage() {
       alert(
         "Error Saving Section"
       );
+    } finally {
+      setSavingId("");
     }
   }
 
@@ -225,6 +235,34 @@ export default function AdminPage() {
           <p className="mt-3 text-lg text-blue-100">
             Full Firestore Dynamic Homepage Control Panel
           </p>
+
+          {/* LIVE STATUS */}
+
+          <div className="mt-4 inline-flex items-center gap-2 rounded-full bg-white/10 px-4 py-2 text-sm text-blue-100 backdrop-blur-md">
+
+            <div className="h-2 w-2 rounded-full bg-green-400" />
+
+            Live Firestore Connected
+
+          </div>
+
+        </div>
+
+        {/* SEARCH */}
+
+        <div className="mb-8">
+
+          <input
+            type="text"
+            placeholder="Search fields..."
+            value={search}
+            onChange={(event) => {
+              setSearch(
+                event.target.value
+              );
+            }}
+            className="w-full rounded-2xl border border-gray-200 bg-white px-5 py-4 text-lg font-semibold outline-none transition-all duration-300 focus:border-blue-500 focus:ring-4 focus:ring-blue-200"
+          />
 
         </div>
 
@@ -294,128 +332,160 @@ export default function AdminPage() {
 
                     {Object.entries(
                       section
-                    ).map(
-                      ([
-                        key,
-                        value
-                      ]) => {
-                        if (
-                          key === "id"
-                        ) {
-                          return null;
-                        }
-
-                        const label =
-                          key
-                            .replace(
-                              /([A-Z])/g,
-                              " $1"
-                            )
-                            .replace(
-                              /^./,
-                              (
-                                character
-                              ) =>
-                                character.toUpperCase()
+                    )
+                      .filter(
+                        ([key]) => {
+                          return key
+                            .toLowerCase()
+                            .includes(
+                              search.toLowerCase()
                             );
+                        }
+                      )
+                      .map(
+                        ([
+                          key,
+                          value
+                        ]) => {
+                          if (
+                            key === "id"
+                          ) {
+                            return null;
+                          }
 
-                        return (
-                          <div
-                            key={key}
-                            className="rounded-[28px] border border-gray-200 bg-gradient-to-br from-white to-gray-50 p-5 shadow-lg transition-all duration-300 hover:-translate-y-1 hover:shadow-2xl"
-                          >
+                          const label =
+                            key
+                              .replace(
+                                /([A-Z])/g,
+                                " $1"
+                              )
+                              .replace(
+                                /^./,
+                                (
+                                  character
+                                ) =>
+                                  character.toUpperCase()
+                              );
 
-                            {/* LABEL */}
+                          return (
+                            <div
+                              key={key}
+                              className="rounded-[28px] border border-gray-200 bg-gradient-to-br from-white to-gray-50 p-5 shadow-lg transition-all duration-300 hover:-translate-y-1 hover:border-blue-300 hover:shadow-2xl"
+                            >
 
-                            <div className="mb-4 flex items-center justify-between gap-3">
+                              {/* LABEL */}
 
-                              <h3 className="text-lg font-black text-gray-800">
-                                {label}
-                              </h3>
+                              <div className="mb-4 flex items-center justify-between gap-3">
 
-                              <button
-                                onClick={() => {
-                                  copyFieldName(
-                                    key
-                                  );
-                                }}
-                                className="rounded-xl bg-gradient-to-r from-black to-gray-800 px-4 py-2 text-sm font-bold text-white transition-all duration-300 hover:scale-105"
-                              >
-                                {copiedField ===
-                                key
-                                  ? "Copied"
-                                  : "Copy"}
-                              </button>
+                                <h3 className="text-lg font-black text-gray-800">
+                                  {label}
+                                </h3>
 
-                            </div>
-
-                            {/* FIELD NAME */}
-
-                            <div className="mb-4 rounded-2xl bg-gradient-to-r from-blue-100 to-indigo-100 px-4 py-3 text-sm font-bold text-blue-700 break-all">
-                              {key}
-                            </div>
-
-                            {/* BOOLEAN */}
-
-                            {typeof value ===
-                            "boolean" ? (
-                              <div className="flex items-center justify-center rounded-2xl bg-gray-100 p-5">
-
-                                <input
-                                  type="checkbox"
-                                  checked={Boolean(
-                                    value
-                                  )}
-                                  onChange={(
-                                    event
-                                  ) => {
-                                    updateField(
-                                      section.id,
-                                      key,
-                                      event
-                                        .target
-                                        .checked
+                                <button
+                                  onClick={() => {
+                                    copyFieldName(
+                                      key
                                     );
                                   }}
-                                  className="h-8 w-8 accent-blue-600"
-                                />
+                                  className="rounded-xl bg-gradient-to-r from-black to-gray-800 px-4 py-2 text-sm font-bold text-white transition-all duration-300 hover:scale-105"
+                                >
+                                  {copiedField ===
+                                  key
+                                    ? "Copied"
+                                    : "Copy"}
+                                </button>
 
                               </div>
-                            ) : key
-                                .toLowerCase()
-                                .includes(
-                                  "color"
-                                ) ? (
-                              <div className="flex items-center gap-4">
 
-                                <input
-                                  type="color"
-                                  value={
-                                    String(
-                                      value ||
-                                        "#000000"
-                                    ).startsWith(
-                                      "#"
-                                    )
-                                      ? String(
-                                          value
-                                        )
-                                      : "#000000"
-                                  }
-                                  onChange={(
-                                    event
-                                  ) => {
-                                    updateField(
-                                      section.id,
-                                      key,
+                              {/* FIELD NAME */}
+
+                              <div className="mb-4 rounded-2xl bg-gradient-to-r from-blue-100 to-indigo-100 px-4 py-3 text-sm font-bold text-blue-700 break-all">
+                                {key}
+                              </div>
+
+                              {/* BOOLEAN */}
+
+                              {typeof value ===
+                              "boolean" ? (
+                                <div className="flex items-center justify-center rounded-2xl bg-gray-100 p-5">
+
+                                  <input
+                                    type="checkbox"
+                                    checked={Boolean(
+                                      value
+                                    )}
+                                    onChange={(
                                       event
-                                        .target
-                                        .value
-                                    );
-                                  }}
-                                  className="h-16 w-20 rounded-2xl border-none bg-transparent"
-                                />
+                                    ) => {
+                                      updateField(
+                                        section.id,
+                                        key,
+                                        event
+                                          .target
+                                          .checked
+                                      );
+                                    }}
+                                    className="h-8 w-8 accent-blue-600"
+                                  />
 
+                                </div>
+                              ) : key
+                                  .toLowerCase()
+                                  .includes(
+                                    "color"
+                                  ) ? (
+                                <div className="flex items-center gap-4">
+
+                                  <input
+                                    type="color"
+                                    value={
+                                      String(
+                                        value ||
+                                          "#000000"
+                                      ).startsWith(
+                                        "#"
+                                      )
+                                        ? String(
+                                            value
+                                          )
+                                        : "#000000"
+                                    }
+                                    onChange={(
+                                      event
+                                    ) => {
+                                      updateField(
+                                        section.id,
+                                        key,
+                                        event
+                                          .target
+                                          .value
+                                      );
+                                    }}
+                                    className="h-16 w-20 rounded-2xl border-none bg-transparent"
+                                  />
+
+                                  <input
+                                    type="text"
+                                    value={String(
+                                      value ||
+                                        ""
+                                    )}
+                                    onChange={(
+                                      event
+                                    ) => {
+                                      updateField(
+                                        section.id,
+                                        key,
+                                        event
+                                          .target
+                                          .value
+                                      );
+                                    }}
+                                    className="flex-1 rounded-2xl border border-gray-200 bg-gray-100 px-5 py-4 text-lg font-semibold outline-none transition-all duration-300 focus:border-blue-500 focus:bg-white focus:ring-4 focus:ring-blue-200"
+                                  />
+
+                                </div>
+                              ) : (
                                 <input
                                   type="text"
                                   value={String(
@@ -433,36 +503,14 @@ export default function AdminPage() {
                                         .value
                                     );
                                   }}
-                                  className="flex-1 rounded-2xl border border-gray-200 bg-gray-100 px-5 py-4 text-lg font-semibold outline-none focus:border-blue-500"
+                                  className="w-full rounded-2xl border border-gray-200 bg-gray-100 px-5 py-4 text-lg font-semibold outline-none transition-all duration-300 focus:border-blue-500 focus:bg-white focus:ring-4 focus:ring-blue-200"
                                 />
+                              )}
 
-                              </div>
-                            ) : (
-                              <input
-                                type="text"
-                                value={String(
-                                  value ||
-                                    ""
-                                )}
-                                onChange={(
-                                  event
-                                ) => {
-                                  updateField(
-                                    section.id,
-                                    key,
-                                    event
-                                      .target
-                                      .value
-                                  );
-                                }}
-                                className="w-full rounded-2xl border border-gray-200 bg-gray-100 px-5 py-4 text-lg font-semibold outline-none transition-all duration-300 focus:border-blue-500 focus:bg-white"
-                              />
-                            )}
-
-                          </div>
-                        );
-                      }
-                    )}
+                            </div>
+                          );
+                        }
+                      )}
 
                   </div>
 
@@ -475,8 +523,6 @@ export default function AdminPage() {
                     </h3>
 
                     <div className="flex flex-col gap-4 md:flex-row">
-
-                      {/* INPUT WITH SUGGESTIONS */}
 
                       <div className="relative flex-1">
 
@@ -507,75 +553,43 @@ export default function AdminPage() {
                               }
                             );
                           }}
-                          className="w-full rounded-2xl border border-gray-200 bg-white px-5 py-4 text-lg font-semibold outline-none focus:border-blue-500"
+                          className="w-full rounded-2xl border border-gray-200 bg-white px-5 py-4 text-lg font-semibold outline-none transition-all duration-300 focus:border-blue-500 focus:ring-4 focus:ring-blue-200"
                         />
-
-                        {/* SUGGESTIONS */}
 
                         <datalist
                           id={`field-suggestions-${section.id}`}
                         >
 
                           <option value="headerBackgroundColor" />
-
                           <option value="headerTextColor" />
-
                           <option value="searchBarColor" />
-
                           <option value="statusBarColor" />
-
                           <option value="title" />
-
                           <option value="subtitle" />
-
                           <option value="description" />
-
                           <option value="buttonText" />
-
                           <option value="secondaryButtonText" />
-
                           <option value="titleSize" />
-
                           <option value="subtitleSize" />
-
                           <option value="buttonSize" />
-
                           <option value="backgroundColor" />
-
                           <option value="gradientColor" />
-
                           <option value="textColor" />
-
                           <option value="buttonColor" />
-
                           <option value="buttonTextColor" />
-
                           <option value="sectionPadding" />
-
                           <option value="sectionHeight" />
-
                           <option value="borderRadius" />
-
                           <option value="cardWidth" />
-
                           <option value="cardHeight" />
-
                           <option value="imageHeight" />
-
                           <option value="titleFontSize" />
-
                           <option value="cardBackgroundColor" />
-
                           <option value="sellerTitle" />
-
                           <option value="sellerDescription" />
-
                           <option value="sellerButtonText" />
-
                           <option value="resellerTitle" />
-
                           <option value="resellerDescription" />
-
                           <option value="resellerButtonText" />
 
                         </datalist>
@@ -599,7 +613,7 @@ export default function AdminPage() {
 
                   {/* SAVE BUTTON */}
 
-                  <div className="p-6 pt-0">
+                  <div className="sticky bottom-0 z-30 bg-white/80 p-6 pt-0 backdrop-blur-xl">
 
                     <button
                       onClick={() => {
@@ -607,9 +621,16 @@ export default function AdminPage() {
                           section
                         );
                       }}
-                      className="w-full rounded-[24px] bg-gradient-to-r from-blue-600 via-indigo-600 to-purple-600 px-6 py-5 text-xl font-black text-white shadow-2xl transition-all duration-300 hover:scale-[1.01]"
+                      disabled={
+                        savingId ===
+                        section.id
+                      }
+                      className="w-full rounded-[24px] bg-gradient-to-r from-blue-600 via-indigo-600 to-purple-600 px-6 py-5 text-xl font-black text-white shadow-2xl transition-all duration-300 hover:scale-[1.01] disabled:opacity-50"
                     >
-                      Save Section
+                      {savingId ===
+                      section.id
+                        ? "Saving..."
+                        : "Save Section"}
                     </button>
 
                   </div>
