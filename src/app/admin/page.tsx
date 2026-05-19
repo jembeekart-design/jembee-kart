@@ -476,34 +476,111 @@ export default function AdminPage() {
 
                     <div className="flex flex-col gap-4 md:flex-row">
 
-                      <input
-                        type="text"
-                        placeholder="Example: headerBackgroundColor"
-                        value={
-                          newFieldNames[
-                            section.id
-                          ] || ""
-                        }
-                        onChange={(
-                          event
-                        ) => {
-                          setNewFieldNames(
-                            (
-                              previous
-                            ) => {
-                              return {
-                                ...previous,
+                      {/* INPUT WITH SUGGESTIONS */}
 
-                                [section.id]:
-                                  event
-                                    .target
-                                    .value
-                              };
-                            }
-                          );
-                        }}
-                        className="flex-1 rounded-2xl border border-gray-200 bg-white px-5 py-4 text-lg font-semibold outline-none focus:border-blue-500"
-                      />
+                      <div className="relative flex-1">
+
+                        <input
+                          type="text"
+                          list={`field-suggestions-${section.id}`}
+                          placeholder="Example: headerBackgroundColor"
+                          value={
+                            newFieldNames[
+                              section.id
+                            ] || ""
+                          }
+                          onChange={(
+                            event
+                          ) => {
+                            setNewFieldNames(
+                              (
+                                previous
+                              ) => {
+                                return {
+                                  ...previous,
+
+                                  [section.id]:
+                                    event
+                                      .target
+                                      .value
+                                };
+                              }
+                            );
+                          }}
+                          className="w-full rounded-2xl border border-gray-200 bg-white px-5 py-4 text-lg font-semibold outline-none focus:border-blue-500"
+                        />
+
+                        {/* SUGGESTIONS */}
+
+                        <datalist
+                          id={`field-suggestions-${section.id}`}
+                        >
+
+                          <option value="headerBackgroundColor" />
+
+                          <option value="headerTextColor" />
+
+                          <option value="searchBarColor" />
+
+                          <option value="statusBarColor" />
+
+                          <option value="title" />
+
+                          <option value="subtitle" />
+
+                          <option value="description" />
+
+                          <option value="buttonText" />
+
+                          <option value="secondaryButtonText" />
+
+                          <option value="titleSize" />
+
+                          <option value="subtitleSize" />
+
+                          <option value="buttonSize" />
+
+                          <option value="backgroundColor" />
+
+                          <option value="gradientColor" />
+
+                          <option value="textColor" />
+
+                          <option value="buttonColor" />
+
+                          <option value="buttonTextColor" />
+
+                          <option value="sectionPadding" />
+
+                          <option value="sectionHeight" />
+
+                          <option value="borderRadius" />
+
+                          <option value="cardWidth" />
+
+                          <option value="cardHeight" />
+
+                          <option value="imageHeight" />
+
+                          <option value="titleFontSize" />
+
+                          <option value="cardBackgroundColor" />
+
+                          <option value="sellerTitle" />
+
+                          <option value="sellerDescription" />
+
+                          <option value="sellerButtonText" />
+
+                          <option value="resellerTitle" />
+
+                          <option value="resellerDescription" />
+
+                          <option value="resellerButtonText" />
+
+                        </datalist>
+
+                      </div>
 
                       <button
                         onClick={() => {
