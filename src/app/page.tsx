@@ -15,7 +15,7 @@ import HeroSection from "@/components/homepage/HeroSection";
 
 import CategorySection from "@/components/homepage/CategorySection";
 
-import FirestoreProductGrid from "@/components/products/FirestoreProductGrid";
+import ProductSection from "@/components/homepage/ProductSection";
 
 import AffiliateSection from "@/components/homepage/AffiliateSection";
 
@@ -89,6 +89,22 @@ interface HomepageSection {
   resellerDescription?: string;
 
   resellerButtonText?: string;
+
+  sellerBackgroundColor?: string;
+
+  sellerGradientColor?: string;
+
+  resellerBackgroundColor?: string;
+
+  resellerGradientColor?: string;
+
+  sellerButtonColor?: string;
+
+  sellerButtonTextColor?: string;
+
+  resellerButtonColor?: string;
+
+  resellerButtonTextColor?: string;
 }
 
 export default function HomePage() {
@@ -116,7 +132,6 @@ export default function HomePage() {
 
                 return {
                   ...firestoreData,
-
                   id: document.id
                 };
               }
@@ -213,7 +228,7 @@ export default function HomePage() {
 
       case "products":
         return (
-          <FirestoreProductGrid />
+          <ProductSection />
         );
 
       case "affiliate":
@@ -239,25 +254,62 @@ export default function HomePage() {
               section.sellerTitle ||
               "Become A Seller"
             }
+
             sellerDescription={
               section.sellerDescription ||
-              "Sell products with AI powered tools, analytics and advanced ecommerce automation."
+              "Sell products with AI powered tools and ecommerce automation."
             }
+
             sellerButtonText={
               section.sellerButtonText ||
               "Start Selling"
             }
+
             resellerTitle={
               section.resellerTitle ||
               "Reseller Program"
             }
+
             resellerDescription={
               section.resellerDescription ||
-              "Start reselling products without inventory and grow your online business easily."
+              "Start reselling products without inventory."
             }
+
             resellerButtonText={
               section.resellerButtonText ||
               "Join Now"
+            }
+
+            sellerBackgroundColor={
+              section.sellerBackgroundColor
+            }
+
+            sellerGradientColor={
+              section.sellerGradientColor
+            }
+
+            resellerBackgroundColor={
+              section.resellerBackgroundColor
+            }
+
+            resellerGradientColor={
+              section.resellerGradientColor
+            }
+
+            sellerButtonColor={
+              section.sellerButtonColor
+            }
+
+            sellerButtonTextColor={
+              section.sellerButtonTextColor
+            }
+
+            resellerButtonColor={
+              section.resellerButtonColor
+            }
+
+            resellerButtonTextColor={
+              section.resellerButtonTextColor
             }
           />
         );
@@ -278,7 +330,7 @@ export default function HomePage() {
   }
 
   return (
-    <main className="min-h-screen w-full overflow-x-hidden bg-gray-100 pt-[115px] md:pt-[150px]">
+    <main className="min-h-screen w-full overflow-x-hidden bg-[#f3f4f6] pt-[115px] md:pt-[150px]">
 
       <div className="w-full overflow-x-hidden">
 
