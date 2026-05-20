@@ -2,21 +2,28 @@
 
 import {
   useEffect,
+  useMemo,
   useState
 } from "react";
 
 import {
+  addDoc,
+  collection,
   doc,
   getDoc
 } from "firebase/firestore";
 
 import {
-  ChevronLeft,
-  ChevronRight,
   Heart,
+  Minus,
+  Plus,
   Share2,
   ShoppingCart,
-  Star
+  Star,
+  Truck,
+  ShieldCheck,
+  ChevronLeft,
+  ChevronRight
 } from "lucide-react";
 
 import { db } from "@/firebase/config";
@@ -29,6 +36,20 @@ interface ProductPageProps {
   params: {
     id: string;
   };
+}
+
+interface Review {
+  name: string;
+
+  rating: number;
+
+  message: string;
+}
+
+interface Seller {
+  name?: string;
+
+  rating?: number;
 }
 
 interface Product {
@@ -51,6 +72,16 @@ interface Product {
   stock?: number;
 
   rating?: number;
+
+  reviews?: Review[];
+
+  seller?: Seller;
+
+  sizes?: string[];
+
+  colors?: string[];
+
+  coupons?: string[];
 
   featured?: boolean;
 
@@ -75,6 +106,21 @@ export default function ProductDetailsPage({
   const [currentImage, setCurrentImage] =
     useState(0);
 
+  const [selectedSize, setSelectedSize] =
+    useState("");
+
+  const [selectedColor, setSelectedColor] =
+    useState("");
+
+  const [wishlist, setWishlist] =
+    useState(false);
+
+  const [zoomed, setZoomed] =
+    useState(false);
+
+  const [buyAnimation, setBuyAnimation] =
+    useState(false);
+
   /* ======================================================
   FETCH PRODUCT
   ====================================================== */
@@ -97,14 +143,27 @@ export default function ProductDetailsPage({
         if (
           snapshot.exists()
         ) {
+          const data =
+            snapshot.data() as Omit<
+              Product,
+              "id"
+            >;
+
           setProduct({
             id: snapshot.id,
 
-            ...(snapshot.data() as Omit<
-              Product,
-              "id"
-            >)
+            ...data
           });
+
+          setSelectedSize(
+            data.sizes?.[0] ||
+              ""
+          );
+
+          setSelectedColor(
+            data.colors?.[0] ||
+              ""
+          );
         }
 
         setLoading(false);
@@ -119,6 +178,136 @@ export default function ProductDetailsPage({
   }, [params.id]);
 
   /* ======================================================
+  DISCOUNT
+  ====================================================== */
+
+  const discount =
+    useMemo(() => {
+      if (!product) {
+        return 0;
+      }
+
+      return Math.round(
+        (((product.price ||
+          0) -
+          (product.discountPrice ||
+            0)) /
+          (product.price ||
+            1)) *
+          100
+      );
+    }, [product]);
+
+  /* ======================================================
+  DELIVERY DATE
+  ====================================================== */
+
+  const deliveryDate =
+    useMemo(() => {
+      const date =
+        new Date();
+
+      date.setDate(
+        date.getDate() + 4
+      );
+
+      return date.toDateString();
+    }, []);
+
+  /* ======================================================
+  CART
+  ====================================================== */
+
+  async function addToCart() {
+    if (!product) {
+      return;
+    }
+
+    try {
+      await addDoc(
+        collection(
+          db,
+          "cart"
+        ),
+        {
+          productId:
+            product.id,
+
+          title:
+            product.title,
+
+          image:
+            product.images?.[0] ||
+            "",
+
+          price:
+            product.discountPrice,
+
+          size:
+            selectedSize,
+
+          color:
+            selectedColor,
+
+          quantity: 1,
+
+          createdAt:
+            Date.now()
+        }
+      );
+
+      alert(
+        "Added To Cart"
+      );
+    } catch (error) {
+      console.error(error);
+
+      alert(
+        "Cart Failed"
+      );
+    }
+  }
+
+  /* ======================================================
+  BUY NOW
+  ====================================================== */
+
+  function handleBuyNow() {
+    setBuyAnimation(true);
+
+    setTimeout(() => {
+      setBuyAnimation(
+        false
+      );
+
+      alert(
+        "Proceed To Checkout"
+      );
+    }, 900);
+  }
+
+  /* ======================================================
+  SHARE
+  ====================================================== */
+
+  async function handleShare() {
+    try {
+      await navigator.share({
+        title:
+          product?.title,
+
+        text:
+          product?.description,
+
+        url:
+          window.location.href
+      });
+    } catch (error) {
+      console.error(error);
+    }
+  }
+
+  /* ======================================================
   LOADING
   ====================================================== */
 
@@ -127,7 +316,7 @@ export default function ProductDetailsPage({
       <main className="flex min-h-screen items-center justify-center bg-[#f5f5f5]">
 
         <h1 className="text-xl font-black text-gray-500">
-          Loading Product...
+          Loading...
         </h1>
 
       </main>
@@ -155,44 +344,7 @@ export default function ProductDetailsPage({
   ====================================================== */
 
   const images =
-    product.images ||
-    [];
-
-  const discount =
-    Math.round(
-      (((product.price || 0) -
-        (product.discountPrice ||
-          0)) /
-        (product.price || 1)) *
-        100
-    );
-
-  /* ======================================================
-  NEXT IMAGE
-  ====================================================== */
-
-  function nextImage() {
-    if (
-      currentImage <
-      images.length - 1
-    ) {
-      setCurrentImage(
-        currentImage + 1
-      );
-    }
-  }
-
-  /* ======================================================
-  PREV IMAGE
-  ====================================================== */
-
-  function prevImage() {
-    if (currentImage > 0) {
-      setCurrentImage(
-        currentImage - 1
-      );
-    }
-  }
+    product.images || [];
 
   /* ======================================================
   UI
@@ -211,48 +363,48 @@ export default function ProductDetailsPage({
 
         <div className="relative">
 
-          {images.length > 0 ? (
-            <img
-              src={
-                images[
-                  currentImage
-                ]
-              }
-              alt={
-                product.title
-              }
-              className="
-                h-[420px]
-                w-full
-                object-cover
-                rounded-b-[40px]
-              "
-            />
-          ) : (
-            <div
-              className="
-                flex
-                h-[420px]
-                items-center
-                justify-center
-                bg-gray-200
-                rounded-b-[40px]
-              "
-            >
+          <img
+            src={
+              images[
+                currentImage
+              ] ||
+              "/placeholder.png"
+            }
+            alt={
+              product.title
+            }
+            onClick={() => {
+              setZoomed(
+                !zoomed
+              );
+            }}
+            className={`
+              w-full
+              rounded-b-[45px]
+              bg-white
+              object-cover
+              transition-all
+              duration-300
 
-              No Image
-
-            </div>
-          )}
+              ${
+                zoomed
+                  ? "h-[520px] scale-125"
+                  : "h-[420px]"
+              }
+            `}
+          />
 
           {/* LEFT */}
 
           {currentImage >
             0 && (
             <button
-              onClick={
-                prevImage
-              }
+              onClick={() => {
+                setCurrentImage(
+                  currentImage -
+                    1
+                );
+              }}
               className="
                 absolute
                 left-3
@@ -264,7 +416,7 @@ export default function ProductDetailsPage({
                 items-center
                 justify-center
                 rounded-full
-                bg-white/80
+                bg-white
                 shadow-lg
               "
             >
@@ -280,9 +432,12 @@ export default function ProductDetailsPage({
             images.length -
               1 && (
             <button
-              onClick={
-                nextImage
-              }
+              onClick={() => {
+                setCurrentImage(
+                  currentImage +
+                    1
+                );
+              }}
               className="
                 absolute
                 right-3
@@ -294,7 +449,7 @@ export default function ProductDetailsPage({
                 items-center
                 justify-center
                 rounded-full
-                bg-white/80
+                bg-white
                 shadow-lg
               "
             >
@@ -306,9 +461,14 @@ export default function ProductDetailsPage({
 
           {/* TOP BUTTONS */}
 
-          <div className="absolute right-3 top-3 flex gap-2">
+          <div className="absolute right-4 top-4 flex gap-3">
 
             <button
+              onClick={() => {
+                setWishlist(
+                  !wishlist
+                );
+              }}
               className="
                 flex
                 h-11
@@ -317,15 +477,29 @@ export default function ProductDetailsPage({
                 justify-center
                 rounded-full
                 bg-white
-                shadow-lg
+                shadow-xl
               "
             >
 
-              <Heart />
+              <Heart
+                fill={
+                  wishlist
+                    ? "red"
+                    : "transparent"
+                }
+                className={
+                  wishlist
+                    ? "text-red-500"
+                    : ""
+                }
+              />
 
             </button>
 
             <button
+              onClick={
+                handleShare
+              }
               className="
                 flex
                 h-11
@@ -334,7 +508,7 @@ export default function ProductDetailsPage({
                 justify-center
                 rounded-full
                 bg-white
-                shadow-lg
+                shadow-xl
               "
             >
 
@@ -390,6 +564,7 @@ export default function ProductDetailsPage({
                     overflow-hidden
                     rounded-2xl
                     border-2
+
                     ${
                       currentImage ===
                       index
@@ -461,7 +636,7 @@ export default function ProductDetailsPage({
 
         {/* RATING */}
 
-        <div className="mt-4 flex items-center gap-2">
+        <div className="mt-4 flex items-center gap-3">
 
           <div
             className="
@@ -487,7 +662,7 @@ export default function ProductDetailsPage({
 
           </div>
 
-          <p className="text-sm font-semibold text-gray-500">
+          <p className="font-semibold text-gray-500">
 
             Premium Quality
 
@@ -522,7 +697,7 @@ export default function ProductDetailsPage({
 
           </p>
 
-          <p className="text-lg font-black text-green-600">
+          <p className="font-black text-green-600">
 
             {discount}% OFF
 
@@ -530,48 +705,280 @@ export default function ProductDetailsPage({
 
         </div>
 
-        {/* STOCK */}
+        {/* DELIVERY */}
 
-        <div className="mt-4">
+        <div
+          className="
+            mt-5
+            flex
+            items-center
+            gap-3
+            rounded-3xl
+            bg-white
+            p-4
+            shadow-sm
+          "
+        >
 
-          <span
-            className="
-              rounded-full
-              bg-green-100
-              px-4
-              py-2
-              text-sm
-              font-bold
-              text-green-700
-            "
-          >
+          <Truck />
 
-            In Stock :
-            {" "}
-            {product.stock}
+          <div>
 
-          </span>
+            <p className="font-black">
+              Delivery By
+            </p>
+
+            <p className="text-sm text-gray-500">
+              {deliveryDate}
+            </p>
+
+          </div>
 
         </div>
 
-        {/* DESCRIPTION */}
+        {/* COD */}
 
-        <div className="mt-8">
+        <div
+          className="
+            mt-4
+            flex
+            items-center
+            gap-3
+            rounded-3xl
+            bg-white
+            p-4
+            shadow-sm
+          "
+        >
 
-          <h2 className="text-xl font-black text-black">
+          <ShieldCheck />
 
-            Product Details
+          <div>
 
+            <p className="font-black">
+              Cash On Delivery
+            </p>
+
+            <p className="text-sm text-gray-500">
+              Available
+            </p>
+
+          </div>
+
+        </div>
+
+        {/* SIZE */}
+
+        <div className="mt-7">
+
+          <h2 className="mb-3 text-xl font-black">
+            Select Size
           </h2>
 
-          <p
-            className="
-              mt-3
-              text-[15px]
-              leading-7
-              text-gray-600
-            "
-          >
+          <div className="flex flex-wrap gap-3">
+
+            {product.sizes?.map(
+              (size) => {
+                return (
+                  <button
+                    key={size}
+                    onClick={() => {
+                      setSelectedSize(
+                        size
+                      );
+                    }}
+                    className={`
+                      rounded-2xl
+                      border
+                      px-5
+                      py-3
+                      font-bold
+
+                      ${
+                        selectedSize ===
+                        size
+                          ? "border-black bg-black text-white"
+                          : "bg-white"
+                      }
+                    `}
+                  >
+
+                    {size}
+
+                  </button>
+                );
+              }
+            )}
+
+          </div>
+
+        </div>
+
+        {/* COLOR */}
+
+        <div className="mt-7">
+
+          <h2 className="mb-3 text-xl font-black">
+            Select Color
+          </h2>
+
+          <div className="flex gap-4">
+
+            {product.colors?.map(
+              (color) => {
+                return (
+                  <button
+                    key={color}
+                    onClick={() => {
+                      setSelectedColor(
+                        color
+                      );
+                    }}
+                    style={{
+                      background:
+                        color
+                    }}
+                    className={`
+                      h-12
+                      w-12
+                      rounded-full
+                      border-4
+
+                      ${
+                        selectedColor ===
+                        color
+                          ? "border-black"
+                          : "border-white"
+                      }
+                    `}
+                  />
+                );
+              }
+            )}
+
+          </div>
+
+        </div>
+
+        {/* COUPONS */}
+
+        <div className="mt-7">
+
+          <h2 className="mb-3 text-xl font-black">
+            Offers & Coupons
+          </h2>
+
+          <div className="space-y-3">
+
+            {product.coupons?.map(
+              (coupon) => {
+                return (
+                  <div
+                    key={coupon}
+                    className="
+                      rounded-3xl
+                      border-2
+                      border-dashed
+                      border-green-500
+                      bg-green-50
+                      p-4
+                    "
+                  >
+
+                    <p className="font-black text-green-700">
+
+                      {coupon}
+
+                    </p>
+
+                  </div>
+                );
+              }
+            )}
+
+          </div>
+
+        </div>
+
+        {/* SELLER */}
+
+        <div
+          className="
+            mt-7
+            rounded-[30px]
+            bg-white
+            p-5
+            shadow-sm
+          "
+        >
+
+          <h2 className="text-xl font-black">
+            Seller Details
+          </h2>
+
+          <div className="mt-4">
+
+            <p className="text-lg font-black">
+              {
+                product.seller
+                  ?.name
+              }
+            </p>
+
+            <p className="mt-1 text-gray-500">
+              Seller Rating :
+              {" "}
+              {
+                product.seller
+                  ?.rating
+              }
+            </p>
+
+          </div>
+
+        </div>
+
+        {/* VIDEO */}
+
+        {product.video && (
+          <div className="mt-7">
+
+            <h2 className="mb-3 text-xl font-black">
+              Product Reel
+            </h2>
+
+            <video
+              src={product.video}
+              controls
+              autoPlay
+              muted
+              loop
+              className="
+                w-full
+                rounded-[35px]
+              "
+            />
+
+          </div>
+        )}
+
+        {/* DESCRIPTION */}
+
+        <div
+          className="
+            mt-7
+            rounded-[30px]
+            bg-white
+            p-5
+            shadow-sm
+          "
+        >
+
+          <h2 className="text-xl font-black">
+            Product Details
+          </h2>
+
+          <p className="mt-4 leading-7 text-gray-600">
 
             {
               product.description
@@ -581,33 +988,85 @@ export default function ProductDetailsPage({
 
         </div>
 
-        {/* VIDEO */}
+        {/* REVIEWS */}
 
-        {product.video && (
-          <div className="mt-8">
+        <div
+          className="
+            mt-7
+            rounded-[30px]
+            bg-white
+            p-5
+            shadow-sm
+          "
+        >
 
-            <h2 className="mb-3 text-xl font-black">
+          <h2 className="text-xl font-black">
+            Customer Reviews
+          </h2>
 
-              Product Video
+          <div className="mt-5 space-y-5">
 
-            </h2>
+            {product.reviews?.map(
+              (
+                review,
+                index
+              ) => {
+                return (
+                  <div
+                    key={index}
+                    className="border-b pb-4"
+                  >
 
-            <video
-              src={product.video}
-              controls
-              className="
-                w-full
-                rounded-[28px]
-              "
-            />
+                    <div className="flex items-center gap-2">
+
+                      <p className="font-black">
+                        {
+                          review.name
+                        }
+                      </p>
+
+                      <div
+                        className="
+                          rounded-full
+                          bg-green-600
+                          px-2
+                          py-[2px]
+                          text-xs
+                          font-bold
+                          text-white
+                        "
+                      >
+
+                        {
+                          review.rating
+                        }
+                        ★
+
+                      </div>
+
+                    </div>
+
+                    <p className="mt-2 text-gray-600">
+
+                      {
+                        review.message
+                      }
+
+                    </p>
+
+                  </div>
+                );
+              }
+            )}
 
           </div>
-        )}
+
+        </div>
 
       </section>
 
       {/* ======================================================
-      STICKY BUTTONS
+      STICKY BUY BAR
       ====================================================== */}
 
       <div
@@ -626,6 +1085,9 @@ export default function ProductDetailsPage({
       >
 
         <button
+          onClick={
+            addToCart
+          }
           className="
             flex
             flex-1
@@ -643,23 +1105,35 @@ export default function ProductDetailsPage({
 
           <ShoppingCart />
 
-          Cart
+          Add To Cart
 
         </button>
 
         <button
-          className="
+          onClick={
+            handleBuyNow
+          }
+          className={`
             flex-1
             rounded-2xl
-            bg-blue-600
             py-4
             text-lg
             font-black
             text-white
-          "
+            transition-all
+            duration-300
+
+            ${
+              buyAnimation
+                ? "scale-95 bg-green-600"
+                : "bg-blue-600"
+            }
+          `}
         >
 
-          Buy Now
+          {buyAnimation
+            ? "Processing..."
+            : "Buy Now"}
 
         </button>
 
