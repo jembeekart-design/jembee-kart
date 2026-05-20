@@ -614,26 +614,55 @@ export default function ProductPage() {
 
           {/* DELIVERY */}
 
-          <div className="mt-4 flex items-center gap-3 rounded-[16px] border bg-white p-3 shadow-sm">
+          <div className="mt-4 space-y-3">
 
-            <Truck
-              size={18}
-              className="text-purple-600"
-            />
+            <div className="flex items-center gap-3 rounded-[16px] border bg-white p-3 shadow-sm">
 
-            <div>
+              <Truck
+                size={18}
+                className="text-green-600"
+              />
 
-              <h3 className="text-sm font-bold text-purple-600">
+              <div>
 
-                Free Delivery
+                <h3 className="text-sm font-bold">
 
-              </h3>
+                  Delivery
 
-              <p className="text-[11px] text-gray-500">
+                </h3>
 
-                Delivery by {deliveryDate}
+                <p className="text-[18px] font-black text-green-600">
 
-              </p>
+                  {deliveryDate}
+
+                </p>
+
+              </div>
+
+            </div>
+
+            <div className="flex items-center gap-3 rounded-[16px] border bg-white p-3 shadow-sm">
+
+              <Zap
+                size={18}
+                className="text-orange-500"
+              />
+
+              <div>
+
+                <h3 className="text-sm font-bold">
+
+                  Cash on Delivery
+
+                </h3>
+
+                <p className="text-[11px] text-gray-500">
+
+                  Pay when you receive
+
+                </p>
+
+              </div>
 
             </div>
 
@@ -809,150 +838,66 @@ export default function ProductPage() {
 
         </div>
 
-        {/* SELLER */}
+        {/* COUPONS */}
 
-        <div className="rounded-[18px] bg-white p-4 shadow-sm">
+        <div>
 
-          <h2 className="text-base font-black">
+          <div className="mb-3 flex items-center justify-between">
 
-            Seller Details
+            <h2 className="text-[15px] font-black">
 
-          </h2>
+              Offers & Coupons
 
-          <div className="mt-3 flex items-center justify-between">
+            </h2>
 
-            <div className="flex items-center gap-3">
+            <button className="text-[11px] font-bold text-purple-600">
 
-              <div className="flex h-10 w-10 items-center justify-center rounded-full bg-purple-100">
-
-                <Store
-                  size={18}
-                  className="text-purple-600"
-                />
-
-              </div>
-
-              <div>
-
-                <h3 className="text-sm font-bold">
-
-                  {
-                    product.seller
-                      ?.name
-                  }
-
-                </h3>
-
-                <p className="text-[11px] text-gray-500">
-
-                  {
-                    product.seller
-                      ?.rating
-                  }
-                  ★ Seller Rating
-
-                </p>
-
-              </div>
-
-            </div>
-
-            <button className="rounded-xl border border-purple-400 px-3 py-2 text-xs font-bold text-purple-600">
-
-              View Store
+              View All
 
             </button>
 
           </div>
 
-        </div>
+          <div className="space-y-3">
 
-        {/* DESCRIPTION */}
+            {product.coupons?.map(
+              (coupon) => (
 
-        <div className="rounded-[18px] bg-white p-4 shadow-sm">
+                <div
+                  key={coupon}
+                  className="flex items-center justify-between rounded-[16px] border border-dashed border-purple-300 bg-white px-3 py-3 shadow-sm"
+                >
 
-          <h2 className="text-base font-black">
+                  <div>
 
-            Product Details
+                    <h3 className="text-[18px] font-black leading-none">
 
-          </h2>
-
-          <p className="mt-3 text-[12px] leading-6 text-gray-600">
-
-            {product.description}
-
-          </p>
-
-        </div>
-
-        {/* RELATED PRODUCTS */}
-
-        {relatedProducts.length > 0 && (
-
-          <div>
-
-            <h2 className="mb-3 text-base font-black">
-
-              Related Products
-
-            </h2>
-
-            <div className="grid grid-cols-2 gap-3">
-
-              {relatedProducts.map(
-                (item) => (
-
-                  <Link
-                    key={item.id}
-                    href={`/product/${item.id}`}
-                    className="rounded-[18px] bg-white p-2 shadow-sm"
-                  >
-
-                    <img
-                      src={
-                        item.images?.[0] ||
-                        item.image
-                      }
-                      alt={item.title}
-                      className="h-32 w-full rounded-[14px] object-cover"
-                    />
-
-                    <h3 className="mt-2 line-clamp-1 text-[12px] font-bold">
-
-                      {item.title}
+                      {coupon}
 
                     </h3>
 
-                    <div className="mt-1 flex items-center gap-2">
+                    <p className="mt-1 text-[11px] text-gray-500">
 
-                      <p className="text-sm font-black">
+                      Extra discount available
 
-                        ₹
-                        {
-                          item.discountPrice
-                        }
+                    </p>
 
-                      </p>
+                  </div>
 
-                      <p className="text-[10px] text-gray-400 line-through">
+                  <button className="rounded-[10px] bg-gradient-to-r from-violet-600 to-fuchsia-500 px-4 py-2 text-[11px] font-bold text-white shadow-sm">
 
-                        ₹
-                        {item.price}
+                    Apply
 
-                      </p>
+                  </button>
 
-                    </div>
+                </div>
 
-                  </Link>
-
-                )
-              )}
-
-            </div>
+              )
+            )}
 
           </div>
 
-        )}
+        </div>
 
       </section>
 
