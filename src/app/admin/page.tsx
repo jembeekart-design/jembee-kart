@@ -1,569 +1,1137 @@
+/* =========================================================
+FILE:
+src/app/admin/page.tsx
+========================================================= */
+
 "use client";
 
 export const dynamic = "force-dynamic";
 
-import { useEffect, useMemo, useState } from "react";
+import {
+  useEffect,
+  useMemo,
+  useRef,
+  useState
+} from "react";
 
-import Link from "next/link";
-
-import { useParams } from "next/navigation";
+import Image from "next/image";
 
 import {
-  addDoc,
   collection,
+  deleteDoc,
   doc,
-  getDoc,
-  getDocs,
-  query,
-  where
+  onSnapshot,
+  setDoc,
+  updateDoc
 } from "firebase/firestore";
 
 import {
-  ArrowLeft,
-  BadgeCheck,
-  ChevronLeft,
-  ChevronRight,
-  Headphones,
-  Heart,
-  RotateCcw,
-  Share2,
-  ShieldCheck,
-  ShoppingCart,
-  Star,
-  Store,
-  Truck,
-  Zap
+  ChevronDown,
+  ChevronUp,
+  Eye,
+  EyeOff,
+  GripVertical,
+  Grid3X3,
+  ImagePlus,
+  Monitor,
+  Plus,
+  Smartphone,
+  Trash2,
+  Video
 } from "lucide-react";
 
 import { db } from "@/firebase/config";
 
-interface Product {
+import {
+  uploadToCloudinary
+} from "@/lib/cloudinary";
+
+/* =========================================================
+TYPES
+========================================================= */
+
+interface BannerSlide {
   id: string;
+
   title?: string;
-  description?: string;
-  image?: string;
-  images?: string[];
-  category?: string;
-  price?: number;
-  discountPrice?: number;
-  rating?: number;
-  stock?: number;
-  sizes?: string[];
-  colors?: string[];
-  coupons?: string[];
-  seller?: {
-    name?: string;
-    rating?: number;
-  };
+
+  subtitle?: string;
+
+  buttonText?: string;
+
+  buttonLink?: string;
+
+  backgroundColor?: string;
+
+  gradientColor?: string;
+
+  textColor?: string;
+
+  buttonColor?: string;
+
+  buttonTextColor?: string;
+
+  imageUrl?: string;
+
+  videoUrl?: string;
+
+  mediaType?: string;
+
+  visible?: boolean;
+
+  position?: number;
+
+  [key: string]:
+    | string
+    | number
+    | boolean
+    | undefined;
 }
 
-export default function ProductPage() {
+/* =========================================================
+COMPONENT
+========================================================= */
 
-  const params = useParams();
+export default function AdminPage() {
+  /* =========================================================
+  STATES
+  ========================================================= */
 
-  const productId = Array.isArray(params.id)
-    ? params.id[0]
-    : params.id;
+  const [banners, setBanners] =
+    useState<
+      BannerSlide[]
+    >([]);
 
-  const [product, setProduct] =
-    useState<Product | null>(null);
+  const [search, setSearch] =
+    useState("");
 
-  const [relatedProducts, setRelatedProducts] =
-    useState<Product[]>([]);
+  const [
+    expandedBanners,
+    setExpandedBanners
+  ] = useState<{
+    [key: string]: boolean;
+  }>({});
 
-  const [loading, setLoading] =
-    useState(true);
+  const [savingId, setSavingId] =
+    useState("");
 
-  const [currentImage, setCurrentImage] =
-    useState(0);
+  const [
+    draggedBanner,
+    setDraggedBanner
+  ] = useState("");
 
-  const [selectedSize, setSelectedSize] =
-    useState("M");
+  const [
+    mobilePreview,
+    setMobilePreview
+  ] = useState(true);
 
-  const [selectedColor, setSelectedColor] =
-    useState("#7c3aed");
+  const fileInputRefs =
+    useRef<{
+      [key: string]: HTMLInputElement | null;
+    }>({});
 
-  const [wishlist, setWishlist] =
-    useState(false);
+  const videoInputRefs =
+    useRef<{
+      [key: string]: HTMLInputElement | null;
+    }>({});
 
-  const [quantity, setQuantity] =
-    useState(1);
+  /* =========================================================
+  GET BANNERS
+  ========================================================= */
 
   useEffect(() => {
-
-    async function fetchProduct() {
-
-      try {
-
-        const productRef = doc(
+    const unsubscribe =
+      onSnapshot(
+        collection(
           db,
-          "products",
-          String(productId)
-        );
+          "homepage_banners"
+        ),
+        (snapshot) => {
+          const data: BannerSlide[] =
+            snapshot.docs.map(
+              (document) => {
+                return {
+                  id: document.id,
 
-        const snapshot =
-          await getDoc(productRef);
-
-        if (snapshot.exists()) {
-
-          const data =
-            snapshot.data() as Omit<
-              Product,
-              "id"
-            >;
-
-          const finalProduct = {
-            id: snapshot.id,
-
-            ...data,
-
-            images:
-              data.images?.length
-                ? data.images
-                : data.image
-                ? [data.image]
-                : [],
-
-            sizes:
-              data.sizes || [
-                "S",
-                "M",
-                "L",
-                "XL",
-                "XXL"
-              ],
-
-            colors:
-              data.colors || [
-                "#ffffff",
-                "#000000",
-                "#93c5fd",
-                "#d6c6a5"
-              ],
-
-            coupons:
-              data.coupons || [
-                "SAVE50",
-                "FREESHIP",
-                "EXTRA100"
-              ],
-
-            seller:
-              data.seller || {
-                name:
-                  "JembeeKart Official",
-                rating: 4.6
+                  ...(document.data() as Omit<
+                    BannerSlide,
+                    "id"
+                  >)
+                };
               }
-          };
-
-          setProduct(finalProduct);
-
-          if (data.category) {
-
-            const q = query(
-              collection(
-                db,
-                "products"
-              ),
-              where(
-                "category",
-                "==",
-                data.category
-              )
             );
 
-            const relatedSnap =
-              await getDocs(q);
-
-            const related =
-              relatedSnap.docs
-                .filter(
-                  (doc) =>
-                    doc.id !==
-                    snapshot.id
-                )
-                .map((doc) => ({
-                  id: doc.id,
-                  ...doc.data()
-                })) as Product[];
-
-            setRelatedProducts(
-              related.slice(0, 6)
+          const sorted =
+            data.sort(
+              (a, b) => {
+                return (
+                  Number(
+                    a.position || 0
+                  ) -
+                  Number(
+                    b.position || 0
+                  )
+                );
+              }
             );
-          }
-        }
 
-        setLoading(false);
-
-      } catch (error) {
-
-        console.error(error);
-
-        setLoading(false);
-      }
-    }
-
-    fetchProduct();
-
-  }, [productId]);
-
-  const discount = useMemo(() => {
-
-    if (!product) return 0;
-
-    return Math.round(
-      (((product.price || 0) -
-        (product.discountPrice || 0)) /
-        (product.price || 1)) *
-        100
-    );
-
-  }, [product]);
-
-  const deliveryDate = useMemo(() => {
-
-    const date = new Date();
-
-    date.setDate(
-      date.getDate() + 4
-    );
-
-    return date.toDateString();
-
-  }, []);
-
-  async function addToCart() {
-
-    if (!product) return;
-
-    try {
-
-      await addDoc(
-        collection(db, "cart"),
-        {
-          productId: product.id,
-          title: product.title,
-          image:
-            product.images?.[0],
-          price:
-            product.discountPrice,
-          size: selectedSize,
-          color: selectedColor,
-          quantity,
-          createdAt: Date.now()
+          setBanners(sorted);
         }
       );
 
-      alert("Added To Cart");
+    return () => unsubscribe();
+  }, []);
 
-    } catch (error) {
+  /* =========================================================
+  FILTER
+  ========================================================= */
 
-      console.error(error);
-    }
-  }
+  const filteredBanners =
+    useMemo(() => {
+      if (!search.trim()) {
+        return banners;
+      }
 
-  async function toggleWishlist() {
+      return banners.filter(
+        (banner) => {
+          return (
+            banner.title
+              ?.toLowerCase()
+              .includes(
+                search.toLowerCase()
+              ) ||
+            banner.subtitle
+              ?.toLowerCase()
+              .includes(
+                search.toLowerCase()
+              )
+          );
+        }
+      );
+    }, [banners, search]);
 
-    setWishlist(!wishlist);
+  /* =========================================================
+  TOGGLE
+  ========================================================= */
 
-    alert(
-      !wishlist
-        ? "Added To Wishlist"
-        : "Removed From Wishlist"
+  function toggleBanner(
+    id: string
+  ) {
+    setExpandedBanners(
+      (previous) => {
+        return {
+          ...previous,
+
+          [id]:
+            !previous[id]
+        };
+      }
     );
   }
 
-  async function shareProduct() {
+  /* =========================================================
+  UPDATE
+  ========================================================= */
 
-    if (!product) return;
+  function updateBannerField(
+    id: string,
+    field: string,
+    value:
+      | string
+      | boolean
+      | number
+  ) {
+    setBanners((previous) => {
+      return previous.map(
+        (banner) => {
+          if (
+            banner.id === id
+          ) {
+            return {
+              ...banner,
+
+              [field]: value
+            };
+          }
+
+          return banner;
+        }
+      );
+    });
+  }
+
+  /* =========================================================
+  CREATE NEW BANNER
+  ========================================================= */
+
+  async function createNewBanner() {
+    try {
+      const newBannerRef =
+        doc(
+          collection(
+            db,
+            "homepage_banners"
+          )
+        );
+
+      await setDoc(
+        newBannerRef,
+        {
+          title:
+            "New Banner",
+
+          subtitle:
+            "Banner Subtitle",
+
+          buttonText:
+            "Explore",
+
+          buttonLink: "/",
+
+          backgroundColor:
+            "#7c3aed",
+
+          gradientColor:
+            "#ec4899",
+
+          textColor:
+            "#ffffff",
+
+          buttonColor:
+            "#ffffff",
+
+          buttonTextColor:
+            "#000000",
+
+          imageUrl: "",
+
+          videoUrl: "",
+
+          mediaType:
+            "image",
+
+          visible: true,
+
+          position:
+            banners.length + 1
+        }
+      );
+
+      alert(
+        "Banner Created"
+      );
+    } catch (error) {
+      console.error(error);
+
+      alert(
+        "Error Creating Banner"
+      );
+    }
+  }
+
+  /* =========================================================
+  DELETE BANNER
+  ========================================================= */
+
+  async function deleteBanner(
+    id: string
+  ) {
+    const confirmDelete =
+      confirm(
+        "Delete this banner?"
+      );
+
+    if (!confirmDelete) {
+      return;
+    }
 
     try {
+      await deleteDoc(
+        doc(
+          db,
+          "homepage_banners",
+          id
+        )
+      );
 
-      await navigator.share({
-        title: product.title,
-        text: product.description,
-        url: window.location.href
-      });
-
+      alert(
+        "Banner Deleted"
+      );
     } catch (error) {
-
       console.error(error);
+
+      alert(
+        "Delete Failed"
+      );
     }
   }
 
-  if (loading) {
-    return (
-      <main className="flex min-h-screen items-center justify-center bg-[#f6f6f6]">
-        <h1 className="text-sm font-bold">
-          Loading...
-        </h1>
-      </main>
-    );
+  /* =========================================================
+  SAVE BANNER
+  ========================================================= */
+
+  async function saveBanner(
+    banner: BannerSlide
+  ) {
+    try {
+      setSavingId(banner.id);
+
+      await setDoc(
+        doc(
+          db,
+          "homepage_banners",
+          banner.id
+        ),
+        banner,
+        {
+          merge: true
+        }
+      );
+
+      alert(
+        "Banner Saved"
+      );
+    } catch (error) {
+      console.error(error);
+
+      alert(
+        "Save Failed"
+      );
+    } finally {
+      setSavingId("");
+    }
   }
 
-  if (!product) {
-    return (
-      <main className="flex min-h-screen items-center justify-center bg-[#f6f6f6]">
-        <h1 className="text-sm font-bold text-red-500">
-          Product Not Found
-        </h1>
-      </main>
-    );
+  /* =========================================================
+  IMAGE UPLOAD
+  ========================================================= */
+
+  async function uploadImage(
+    bannerId: string,
+    file: File
+  ) {
+    try {
+      const response =
+        await uploadToCloudinary(
+          file,
+          "image"
+        );
+
+      updateBannerField(
+        bannerId,
+        "imageUrl",
+        response.secure_url
+      );
+
+      updateBannerField(
+        bannerId,
+        "mediaType",
+        "image"
+      );
+
+      alert(
+        "Image Uploaded"
+      );
+    } catch (error) {
+      console.error(error);
+
+      alert(
+        "Upload Failed"
+      );
+    }
   }
 
-  const images =
-    product.images || [];
+  /* =========================================================
+  VIDEO UPLOAD
+  ========================================================= */
+
+  async function uploadVideo(
+    bannerId: string,
+    file: File
+  ) {
+    try {
+      const response =
+        await uploadToCloudinary(
+          file,
+          "video"
+        );
+
+      updateBannerField(
+        bannerId,
+        "videoUrl",
+        response.secure_url
+      );
+
+      updateBannerField(
+        bannerId,
+        "mediaType",
+        "video"
+      );
+
+      alert(
+        "Video Uploaded"
+      );
+    } catch (error) {
+      console.error(error);
+
+      alert(
+        "Video Upload Failed"
+      );
+    }
+  }
+
+  /* =========================================================
+  DRAG DROP
+  ========================================================= */
+
+  async function handleDrop(
+    targetId: string
+  ) {
+    if (
+      !draggedBanner ||
+      draggedBanner === targetId
+    ) {
+      return;
+    }
+
+    const updated =
+      [...banners];
+
+    const draggedIndex =
+      updated.findIndex(
+        (item) =>
+          item.id ===
+          draggedBanner
+      );
+
+    const targetIndex =
+      updated.findIndex(
+        (item) =>
+          item.id === targetId
+      );
+
+    const draggedItem =
+      updated[
+        draggedIndex
+      ];
+
+    updated.splice(
+      draggedIndex,
+      1
+    );
+
+    updated.splice(
+      targetIndex,
+      0,
+      draggedItem
+    );
+
+    const reordered =
+      updated.map(
+        (
+          item,
+          index
+        ) => ({
+          ...item,
+
+          position:
+            index + 1
+        })
+      );
+
+    setBanners(reordered);
+
+    for (const item of reordered) {
+      await updateDoc(
+        doc(
+          db,
+          "homepage_banners",
+          item.id
+        ),
+        {
+          position:
+            item.position
+        }
+      );
+    }
+  }
+
+  /* =========================================================
+  UI
+  ========================================================= */
 
   return (
+    <main className="min-h-screen bg-gradient-to-br from-slate-100 via-blue-50 to-indigo-100 p-4">
 
-    <main className="min-h-screen bg-[#f6f6f6] pb-[90px]">
+      <div className="mx-auto max-w-7xl">
 
-      {/* TOPBAR */}
+        {/* HEADER */}
 
-      <div className="sticky top-0 z-50 bg-[#f6f6f6]/90 backdrop-blur-md px-3 pt-3">
+        <div className="mb-8 rounded-[35px] bg-gradient-to-r from-blue-700 via-indigo-700 to-purple-700 p-8 text-white shadow-2xl">
 
-        <div className="flex items-center justify-between rounded-[18px] bg-white px-3 py-2.5 shadow-sm">
-
-          <div className="flex items-center gap-2">
-
-            <Link
-              href="/"
-              className="flex h-8 w-8 items-center justify-center rounded-full bg-gray-100"
-            >
-              <ArrowLeft size={16} />
-            </Link>
-
-            <h1 className="text-[18px] font-black text-purple-600">
-              JembeeKart
-            </h1>
-
-          </div>
-
-          <div className="flex items-center gap-3">
-
-            <button
-              onClick={toggleWishlist}
-            >
-              <Heart
-                size={18}
-                fill={
-                  wishlist
-                    ? "red"
-                    : "transparent"
-                }
-                className={
-                  wishlist
-                    ? "text-red-500"
-                    : ""
-                }
-              />
-            </button>
-
-            <button
-              onClick={shareProduct}
-            >
-              <Share2 size={17} />
-            </button>
-
-          </div>
-
-        </div>
-
-      </div>
-
-      <section className="space-y-4 px-3 pt-2">
-
-        {/* IMAGE */}
-
-        <div className="rounded-[20px] bg-white p-2.5 shadow-sm">
-
-          <div className="relative overflow-hidden rounded-[18px]">
-
-            <img
-              src={
-                images[
-                  currentImage
-                ] ||
-                "/placeholder.png"
-              }
-              alt={product.title}
-              className="h-[240px] w-full rounded-[18px] bg-gray-100 object-cover"
-            />
-
-          </div>
-
-        </div>
-
-        {/* DETAILS */}
-
-        <div>
-
-          <p className="text-[11px] font-bold text-purple-600">
-
-            {product.category}
-
-          </p>
-
-          <h1 className="mt-1 text-[22px] font-black leading-[26px] text-black">
-
-            {product.title}
-
+          <h1 className="text-4xl font-black md:text-6xl">
+            JembeeKart Admin
           </h1>
 
-          <div className="mt-2 flex items-center gap-2 text-[11px]">
-
-            <div className="flex items-center gap-1 text-green-600">
-
-              <Star
-                size={12}
-                fill="green"
-              />
-
-              <span className="font-bold">
-
-                {product.rating || 4.5}
-
-              </span>
-
-            </div>
-
-            <span className="text-gray-500">
-
-              (128 Reviews)
-
-            </span>
-
-          </div>
-
-          {/* PRICE */}
-
-          <div className="mt-3 flex items-center gap-2">
-
-            <h2 className="text-[24px] font-black leading-none">
-
-              ₹{product.discountPrice}
-
-            </h2>
-
-            <p className="text-[15px] font-bold text-gray-400 line-through">
-
-              ₹{product.price}
-
-            </p>
-
-          </div>
+          <p className="mt-3 text-blue-100">
+            Advanced Homepage Slider
+          </p>
 
         </div>
 
-        {/* COUPONS */}
+        {/* BUTTONS */}
 
-        <div>
+        <div className="mb-8 flex flex-wrap gap-4">
 
-          <div className="mb-3 flex items-center justify-between">
+          <button
+            onClick={() => {
+              createNewBanner();
+            }}
+            className="flex items-center gap-3 rounded-2xl bg-gradient-to-r from-pink-600 to-purple-600 px-6 py-4 font-black text-white"
+          >
+            <Plus size={22} />
 
-            <h2 className="text-[15px] font-black">
+            Create Banner
+          </button>
 
-              Offers & Coupons
+          <button
+            onClick={() => {
+              setMobilePreview(
+                !mobilePreview
+              );
+            }}
+            className="flex items-center gap-3 rounded-2xl bg-black px-6 py-4 font-black text-white"
+          >
+            {mobilePreview ? (
+              <Smartphone />
+            ) : (
+              <Monitor />
+            )}
 
-            </h2>
+            {mobilePreview
+              ? "Mobile Preview"
+              : "Desktop Preview"}
+          </button>
 
-            <button className="text-[11px] font-bold text-purple-600">
+        </div>
 
-              View All
+        {/* SEARCH */}
 
-            </button>
+        <div className="mb-8">
 
-          </div>
+          <input
+            type="text"
+            placeholder="Search Banner..."
+            value={search}
+            onChange={(e) => {
+              setSearch(
+                e.target.value
+              );
+            }}
+            className="w-full rounded-2xl border border-gray-200 bg-white px-5 py-4 text-lg font-semibold outline-none"
+          />
 
-          <div className="space-y-3">
+        </div>
 
-            {product.coupons?.map(
-              (coupon) => (
+        {/* BANNERS */}
 
+        <div className="space-y-6">
+
+          {filteredBanners.map(
+            (banner) => {
+              const isExpanded =
+                expandedBanners[
+                  banner.id
+                ];
+
+              return (
                 <div
-                  key={coupon}
-                  className="flex items-center justify-between rounded-[16px] border border-dashed border-purple-300 bg-white px-4 py-3 shadow-sm"
+                  key={banner.id}
+                  draggable
+                  onDragStart={() => {
+                    setDraggedBanner(
+                      banner.id
+                    );
+                  }}
+                  onDragOver={(
+                    e
+                  ) => {
+                    e.preventDefault();
+                  }}
+                  onDrop={() => {
+                    handleDrop(
+                      banner.id
+                    );
+                  }}
+                  className="overflow-hidden rounded-[35px] bg-white shadow-2xl"
                 >
 
-                  {/* LEFT */}
+                  {/* TOP */}
 
-                  <div className="min-w-0 flex-1">
+                  <div className="flex flex-wrap items-center justify-between gap-4 bg-gradient-to-r from-pink-600 to-purple-600 p-5 text-white">
 
-                    <h3 className="truncate text-[15px] font-black leading-none">
+                    <div className="flex items-center gap-4">
 
-                      {coupon}
+                      <div className="cursor-grab rounded-2xl bg-white/20 p-3">
+                        <GripVertical />
+                      </div>
 
-                    </h3>
+                      <button
+                        onClick={() => {
+                          toggleBanner(
+                            banner.id
+                          );
+                        }}
+                        className="flex h-14 w-14 items-center justify-center rounded-2xl bg-white/20"
+                      >
+                        <Grid3X3 />
+                      </button>
 
-                    <p className="mt-1 text-[10px] text-gray-500">
+                      <div>
 
-                      Extra discount available
+                        <h2 className="text-2xl font-black">
+                          {
+                            banner.title
+                          }
+                        </h2>
 
-                    </p>
+                        <p className="text-pink-100">
+                          Drag & Drop Enabled
+                        </p>
+
+                      </div>
+
+                    </div>
+
+                    <div className="flex items-center gap-3">
+
+                      <button
+                        onClick={() => {
+                          updateBannerField(
+                            banner.id,
+                            "visible",
+                            !banner.visible
+                          );
+                        }}
+                        className="rounded-2xl bg-white/20 p-3"
+                      >
+                        {banner.visible ? (
+                          <Eye />
+                        ) : (
+                          <EyeOff />
+                        )}
+                      </button>
+
+                      <button
+                        onClick={() => {
+                          deleteBanner(
+                            banner.id
+                          );
+                        }}
+                        className="rounded-2xl bg-red-500 p-3"
+                      >
+                        <Trash2 />
+                      </button>
+
+                      <button
+                        onClick={() => {
+                          toggleBanner(
+                            banner.id
+                          );
+                        }}
+                        className="rounded-2xl bg-white/20 p-3"
+                      >
+                        {isExpanded ? (
+                          <ChevronUp />
+                        ) : (
+                          <ChevronDown />
+                        )}
+                      </button>
+
+                    </div>
 
                   </div>
 
-                  {/* RIGHT */}
+                  {/* CONTENT */}
 
-                  <button
-                    className="ml-3 shrink-0 rounded-[10px] bg-gradient-to-r from-violet-600 to-fuchsia-500 px-4 py-2 text-[11px] font-bold text-white shadow-sm"
-                  >
+                  {isExpanded && (
+                    <div className="grid gap-8 p-6 lg:grid-cols-2">
 
-                    Apply
+                      {/* LEFT */}
 
-                  </button>
+                      <div className="space-y-5">
+
+                        {Object.entries(
+                          banner
+                        ).map(
+                          ([
+                            key,
+                            value
+                          ]) => {
+                            if (
+                              key === "id"
+                            ) {
+                              return null;
+                            }
+
+                            return (
+                              <div
+                                key={key}
+                                className="rounded-2xl border border-gray-200 p-4"
+                              >
+
+                                <h3 className="mb-3 text-lg font-black capitalize">
+                                  {key}
+                                </h3>
+
+                                {key
+                                  .toLowerCase()
+                                  .includes(
+                                    "color"
+                                  ) ? (
+                                  <div className="flex gap-3">
+
+                                    <input
+                                      type="color"
+                                      value={String(
+                                        value ||
+                                          "#000000"
+                                      )}
+                                      onChange={(
+                                        e
+                                      ) => {
+                                        updateBannerField(
+                                          banner.id,
+                                          key,
+                                          e
+                                            .target
+                                            .value
+                                        );
+                                      }}
+                                      className="h-14 w-20"
+                                    />
+
+                                    <input
+                                      type="text"
+                                      value={String(
+                                        value ||
+                                          ""
+                                      )}
+                                      onChange={(
+                                        e
+                                      ) => {
+                                        updateBannerField(
+                                          banner.id,
+                                          key,
+                                          e
+                                            .target
+                                            .value
+                                        );
+                                      }}
+                                      className="flex-1 rounded-xl border border-gray-200 px-4 py-3"
+                                    />
+
+                                  </div>
+                                ) : typeof value ===
+                                  "boolean" ? (
+                                  <input
+                                    type="checkbox"
+                                    checked={Boolean(
+                                      value
+                                    )}
+                                    onChange={(
+                                      e
+                                    ) => {
+                                        updateBannerField(
+                                          banner.id,
+                                          key,
+                                          e
+                                            .target
+                                            .checked
+                                        );
+                                      }}
+                                    className="h-7 w-7"
+                                  />
+                                ) : (
+                                  <input
+                                    type="text"
+                                    value={String(
+                                      value ||
+                                        ""
+                                    )}
+                                    onChange={(
+                                      e
+                                    ) => {
+                                        updateBannerField(
+                                          banner.id,
+                                          key,
+                                          e
+                                            .target
+                                            .value
+                                        );
+                                      }}
+                                    className="w-full rounded-xl border border-gray-200 px-4 py-3"
+                                  />
+                                )}
+
+                              </div>
+                            );
+                          }
+                        )}
+
+                        {/* MEDIA */}
+
+                        <div className="rounded-2xl border border-dashed border-gray-300 p-5">
+
+                          <h3 className="mb-4 text-lg font-black">
+                            Upload Media
+                          </h3>
+
+                          <div className="flex flex-wrap gap-3">
+
+                            <button
+                              onClick={() => {
+                                fileInputRefs.current[
+                                  banner.id
+                                ]?.click();
+                              }}
+                              className="flex items-center gap-2 rounded-2xl bg-blue-600 px-5 py-3 font-black text-white"
+                            >
+                              <ImagePlus />
+
+                              Upload Image
+                            </button>
+
+                            <button
+                              onClick={() => {
+                                videoInputRefs.current[
+                                  banner.id
+                                ]?.click();
+                              }}
+                              className="flex items-center gap-2 rounded-2xl bg-purple-600 px-5 py-3 font-black text-white"
+                            >
+                              <Video />
+
+                              Upload Video
+                            </button>
+
+                          </div>
+
+                          {/* IMAGE INPUT */}
+
+                          <input
+                            ref={(element) => {
+                              fileInputRefs.current[
+                                banner.id
+                              ] = element;
+                            }}
+                            type="file"
+                            accept="image/*"
+                            hidden
+                            onChange={async (
+                              event
+                            ) => {
+                              const file =
+                                event
+                                  .target
+                                  .files?.[0];
+
+                              if (
+                                file
+                              ) {
+                                await uploadImage(
+                                  banner.id,
+                                  file
+                                );
+                              }
+                            }}
+                          />
+
+                          {/* VIDEO INPUT */}
+
+                          <input
+                            ref={(element) => {
+                              videoInputRefs.current[
+                                banner.id
+                              ] = element;
+                            }}
+                            type="file"
+                            accept="video/*"
+                            hidden
+                            onChange={async (
+                              event
+                            ) => {
+                              const file =
+                                event
+                                  .target
+                                  .files?.[0];
+
+                              if (
+                                file
+                              ) {
+                                await uploadVideo(
+                                  banner.id,
+                                  file
+                                );
+                              }
+                            }}
+                          />
+
+                        </div>
+
+                        {/* SAVE */}
+
+                        <button
+                          onClick={() => {
+                            saveBanner(
+                              banner
+                            );
+                          }}
+                          disabled={
+                            savingId ===
+                            banner.id
+                          }
+                          className="w-full rounded-2xl bg-gradient-to-r from-pink-600 to-purple-600 px-6 py-5 text-xl font-black text-white"
+                        >
+                          {savingId ===
+                          banner.id
+                            ? "Saving..."
+                            : "Save Banner"}
+                        </button>
+
+                      </div>
+
+                      {/* LIVE PREVIEW */}
+
+                      <div>
+
+                        <h2 className="mb-5 text-2xl font-black">
+                          Live Preview
+                        </h2>
+
+                        <div
+                          className={`overflow-hidden rounded-[35px] shadow-2xl ${
+                            mobilePreview
+                              ? "mx-auto max-w-[380px]"
+                              : "w-full"
+                          }`}
+                        >
+
+                          <div
+                            className="relative flex min-h-[420px] flex-col justify-center overflow-hidden p-8"
+                            style={{
+                              background: `linear-gradient(135deg, ${
+                                banner.backgroundColor ||
+                                "#7c3aed"
+                              }, ${
+                                banner.gradientColor ||
+                                "#ec4899"
+                              })`
+                            }}
+                          >
+
+                            {/* IMAGE */}
+
+                            {banner.mediaType ===
+                              "image" &&
+                              banner.imageUrl && (
+                                <Image
+                                  src={String(
+                                    banner.imageUrl
+                                  )}
+                                  alt="Banner"
+                                  fill
+                                  className="object-cover opacity-30"
+                                />
+                              )}
+
+                            {/* VIDEO */}
+
+                            {banner.mediaType ===
+                              "video" &&
+                              banner.videoUrl && (
+                                <video
+                                  src={String(
+                                    banner.videoUrl
+                                  )}
+                                  autoPlay
+                                  muted
+                                  loop
+                                  playsInline
+                                  className="absolute inset-0 h-full w-full object-cover"
+                                />
+                              )}
+
+                            {/* CONTENT */}
+
+                            <div className="relative z-10">
+
+                              <h2
+                                className="text-4xl font-black leading-tight"
+                                style={{
+                                  color:
+                                    String(
+                                      banner.textColor ||
+                                        "#ffffff"
+                                    )
+                                }}
+                              >
+                                {
+                                  banner.title
+                                }
+                              </h2>
+
+                              <p
+                                className="mt-4 text-lg"
+                                style={{
+                                  color:
+                                    String(
+                                      banner.textColor ||
+                                        "#ffffff"
+                                    )
+                                }}
+                              >
+                                {
+                                  banner.subtitle
+                                }
+                              </p>
+
+                              <button
+                                className="mt-6 rounded-2xl px-8 py-4 text-lg font-black"
+                                style={{
+                                  backgroundColor:
+                                    String(
+                                      banner.buttonColor ||
+                                        "#ffffff"
+                                    ),
+
+                                  color:
+                                    String(
+                                      banner.buttonTextColor ||
+                                        "#000000"
+                                    )
+                                }}
+                              >
+                                {
+                                  banner.buttonText
+                                }
+                              </button>
+
+                            </div>
+
+                          </div>
+
+                        </div>
+
+                      </div>
+
+                    </div>
+                  )}
 
                 </div>
-
-              )
-            )}
-
-          </div>
-
-        </div>
-
-      </section>
-
-      {/* BOTTOM BAR */}
-
-      <div className="fixed bottom-0 left-0 z-50 w-full border-t bg-white px-3 py-2">
-
-        <div className="flex items-center gap-2">
-
-          <div>
-
-            <h2 className="text-[20px] font-black">
-
-              ₹{product.discountPrice}
-
-            </h2>
-
-            <p className="text-[10px] font-bold text-green-600">
-
-              {discount}% OFF
-
-            </p>
-
-          </div>
-
-          <button
-            onClick={addToCart}
-            className="flex flex-1 items-center justify-center gap-1 rounded-[14px] border bg-white py-2 text-[12px] font-bold"
-          >
-
-            <ShoppingCart size={15} />
-
-            Cart
-
-          </button>
-
-          <button className="flex flex-1 items-center justify-center gap-1 rounded-[14px] bg-gradient-to-r from-violet-600 to-fuchsia-500 py-2 text-[12px] font-bold text-white">
-
-            <Zap size={14} />
-
-            Buy Now
-
-          </button>
+              );
+            }
+          )}
 
         </div>
 
