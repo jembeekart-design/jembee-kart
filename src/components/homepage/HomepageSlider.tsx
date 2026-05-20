@@ -159,9 +159,9 @@ export default function HomepageSlider() {
   return (
     <section className="w-full overflow-hidden">
 
-      <div className="relative w-full overflow-hidden rounded-b-[32px] shadow-2xl">
+      <div className="relative w-full overflow-hidden rounded-b-[26px] shadow-xl">
 
-        {/* SLIDES */}
+        {/* SLIDER */}
 
         <div
           className="flex transition-all duration-700"
@@ -182,24 +182,28 @@ export default function HomepageSlider() {
                     className="
                       relative
                       flex
-                      min-h-[220px]
+                      min-h-[170px]
                       w-full
-                      justify-center
+                      items-center
                       overflow-hidden
-                      px-5
-                      py-6
+                      px-4
+                      py-4
 
                       md:min-h-[320px]
                       md:px-12
                     "
                     style={{
-                      background: `linear-gradient(135deg, ${
-                        slide.backgroundColor ||
-                        "#7c3aed"
-                      }, ${
-                        slide.gradientColor ||
-                        "#ec4899"
-                      })`
+                      background: `linear-gradient(
+                        135deg,
+                        ${
+                          slide.backgroundColor ||
+                          "#2563eb"
+                        },
+                        ${
+                          slide.gradientColor ||
+                          "#7c3aed"
+                        }
+                      )`
                     }}
                   >
 
@@ -221,7 +225,7 @@ export default function HomepageSlider() {
                           className="
                             object-contain
                             object-right-bottom
-                            opacity-95
+                            opacity-100
                           "
                         />
                       )}
@@ -239,7 +243,13 @@ export default function HomepageSlider() {
                           muted
                           loop
                           playsInline
-                          className="absolute inset-0 h-full w-full object-cover"
+                          className="
+                            absolute
+                            inset-0
+                            h-full
+                            w-full
+                            object-cover
+                          "
                         />
                       )}
 
@@ -253,13 +263,13 @@ export default function HomepageSlider() {
 
                       {/* LEFT */}
 
-                      <div className="max-w-[58%]">
+                      <div className="max-w-[52%]">
 
                         {/* TITLE */}
 
                         <h2
                           className="
-                            text-[34px]
+                            text-[24px]
                             font-black
                             leading-[1.05]
 
@@ -280,10 +290,10 @@ export default function HomepageSlider() {
 
                         <p
                           className="
-                            mt-3
-                            text-[15px]
+                            mt-2
+                            text-[12px]
                             font-medium
-                            leading-6
+                            leading-5
 
                             md:text-2xl
                           "
@@ -300,7 +310,7 @@ export default function HomepageSlider() {
 
                         {/* BUTTON */}
 
-                        <div className="mt-5">
+                        <div className="mt-4">
 
                           <Link
                             href={
@@ -311,10 +321,10 @@ export default function HomepageSlider() {
 
                             <button
                               className="
-                                rounded-2xl
-                                px-6
-                                py-3
-                                text-sm
+                                rounded-xl
+                                px-4
+                                py-2
+                                text-[11px]
                                 font-black
                                 shadow-xl
                                 transition-all
@@ -371,21 +381,25 @@ export default function HomepageSlider() {
           }}
           className="
             absolute
-            left-3
+            left-2
             top-1/2
             z-20
             flex
-            h-11
-            w-11
+            h-8
+            w-8
             -translate-y-1/2
             items-center
             justify-center
             rounded-full
             bg-white/20
-            text-xl
+            text-sm
             font-black
             text-white
             backdrop-blur-md
+
+            md:h-11
+            md:w-11
+            md:text-xl
           "
         >
           ←
@@ -406,21 +420,25 @@ export default function HomepageSlider() {
           }}
           className="
             absolute
-            right-3
+            right-2
             top-1/2
             z-20
             flex
-            h-11
-            w-11
+            h-8
+            w-8
             -translate-y-1/2
             items-center
             justify-center
             rounded-full
             bg-white/20
-            text-xl
+            text-sm
             font-black
             text-white
             backdrop-blur-md
+
+            md:h-11
+            md:w-11
+            md:text-xl
           "
         >
           →
@@ -428,7 +446,17 @@ export default function HomepageSlider() {
 
         {/* DOTS */}
 
-        <div className="absolute bottom-4 left-1/2 z-20 flex -translate-x-1/2 gap-2">
+        <div
+          className="
+            absolute
+            bottom-3
+            left-1/2
+            z-20
+            flex
+            -translate-x-1/2
+            gap-2
+          "
+        >
 
           {slides.map(
             (
@@ -443,11 +471,11 @@ export default function HomepageSlider() {
                       index
                     );
                   }}
-                  className={`h-2.5 rounded-full transition-all duration-300 ${
+                  className={`rounded-full transition-all duration-300 ${
                     current ===
                     index
-                      ? "w-8 bg-white"
-                      : "w-2.5 bg-white/50"
+                      ? "h-2 w-6 bg-white"
+                      : "h-2 w-2 bg-white/50"
                   }`}
                 />
               );
