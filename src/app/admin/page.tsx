@@ -2,7 +2,11 @@
 
 export const dynamic = "force-dynamic";
 
-import { useEffect, useMemo, useState } from "react";
+import {
+  useEffect,
+  useMemo,
+  useState
+} from "react";
 
 import {
   collection,
@@ -19,6 +23,8 @@ import {
 
 import { db } from "@/firebase/config";
 
+/* ---------------- TYPES ---------------- */
+
 interface HomepageSection {
   id: string;
 
@@ -34,6 +40,34 @@ interface HomepageSection {
     | boolean
     | undefined;
 }
+
+interface BannerSlide {
+  id: string;
+
+  title?: string;
+
+  subtitle?: string;
+
+  buttonText?: string;
+
+  buttonLink?: string;
+
+  backgroundColor?: string;
+
+  gradientColor?: string;
+
+  textColor?: string;
+
+  buttonColor?: string;
+
+  buttonTextColor?: string;
+
+  visible?: boolean;
+
+  position?: number;
+}
+
+/* ---------------- FIELD SUGGESTIONS ---------------- */
 
 const FIELD_SUGGESTIONS = [
   "title",
@@ -82,9 +116,18 @@ const FIELD_SUGGESTIONS = [
   "affiliateButtonTextColor"
 ];
 
+/* ---------------- COMPONENT ---------------- */
+
 export default function AdminPage() {
   const [sections, setSections] =
-    useState<HomepageSection[]>([]);
+    useState<
+      HomepageSection[]
+    >([]);
+
+  const [banners, setBanners] =
+    useState<
+      BannerSlide[]
+    >([]);
 
   const [search, setSearch] =
     useState("");
@@ -111,6 +154,8 @@ export default function AdminPage() {
   const [savingId, setSavingId] =
     useState("");
 
+  /* ---------------- HOMEPAGE SECTIONS ---------------- */
+
   useEffect(() => {
     const unsubscribe =
       onSnapshot(
@@ -135,10 +180,7 @@ export default function AdminPage() {
 
           const sorted =
             data.sort(
-              (
-                a: HomepageSection,
-                b: HomepageSection
-              ) => {
+              (a, b) => {
                 return (
                   Number(
                     a.position || 0
@@ -156,6 +198,53 @@ export default function AdminPage() {
 
     return () => unsubscribe();
   }, []);
+
+  /* ---------------- HOMEPAGE BANNERS ---------------- */
+
+  useEffect(() => {
+    const unsubscribe =
+      onSnapshot(
+        collection(
+          db,
+          "homepage_banners"
+        ),
+        (snapshot) => {
+          const data: BannerSlide[] =
+            snapshot.docs.map(
+              (document) => {
+                return {
+                  id: document.id,
+
+                  ...(document.data() as Omit<
+                    BannerSlide,
+                    "id"
+                  >)
+                };
+              }
+            );
+
+          const sorted =
+            data.sort(
+              (a, b) => {
+                return (
+                  Number(
+                    a.position || 0
+                  ) -
+                  Number(
+                    b.position || 0
+                  )
+                );
+              }
+            );
+
+          setBanners(sorted);
+        }
+      );
+
+    return () => unsubscribe();
+  }, []);
+
+  /* ---------------- FILTER ---------------- */
 
   const filteredSections =
     useMemo(() => {
@@ -178,6 +267,8 @@ export default function AdminPage() {
       );
     }, [sections, search]);
 
+  /* ---------------- TOGGLE ---------------- */
+
   function toggleSection(
     id: string
   ) {
@@ -192,6 +283,8 @@ export default function AdminPage() {
       }
     );
   }
+
+  /* ---------------- UPDATE SECTION ---------------- */
 
   function updateField(
     id: string,
@@ -219,6 +312,37 @@ export default function AdminPage() {
       );
     });
   }
+
+  /* ---------------- UPDATE BANNER ---------------- */
+
+  function updateBannerField(
+    id: string,
+    field: string,
+    value:
+      | string
+      | boolean
+      | number
+  ) {
+    setBanners((previous) => {
+      return previous.map(
+        (banner) => {
+          if (
+            banner.id === id
+          ) {
+            return {
+              ...banner,
+
+              [field]: value
+            };
+          }
+
+          return banner;
+        }
+      );
+    });
+  }
+
+  /* ---------------- ADD FIELD ---------------- */
 
   function addCustomField(
     sectionId: string
@@ -273,6 +397,8 @@ export default function AdminPage() {
     );
   }
 
+  /* ---------------- SAVE SECTION ---------------- */
+
   async function saveSection(
     section: HomepageSection
   ) {
@@ -305,6 +431,42 @@ export default function AdminPage() {
     }
   }
 
+  /* ---------------- SAVE BANNER ---------------- */
+
+  async function saveBanner(
+    banner: BannerSlide
+  ) {
+    try {
+      setSavingId(banner.id);
+
+      await setDoc(
+        doc(
+          db,
+          "homepage_banners",
+          banner.id
+        ),
+        banner,
+        {
+          merge: true
+        }
+      );
+
+      alert(
+        "Banner Saved Successfully"
+      );
+    } catch (error) {
+      console.error(error);
+
+      alert(
+        "Error Saving Banner"
+      );
+    } finally {
+      setSavingId("");
+    }
+  }
+
+  /* ---------------- COPY FIELD ---------------- */
+
   function copyFieldName(
     fieldName: string
   ) {
@@ -318,6 +480,8 @@ export default function AdminPage() {
       setCopiedField("");
     }, 2000);
   }
+
+  /* ---------------- UI ---------------- */
 
   return (
     <main className="min-h-screen bg-gradient-to-br from-slate-100 via-blue-50 to-indigo-100 px-4 py-6">
@@ -357,6 +521,165 @@ export default function AdminPage() {
 
         </div>
 
+        {/* BANNER MANAGER */}
+
+        <div className="mb-10">
+
+          <h2 className="mb-6 text-3xl font-black text-gray-900">
+            Homepage Slider Banners
+          </h2>
+
+          <div className="space-y-6">
+
+            {banners.map(
+              (banner) => {
+                return (
+                  <div
+                    key={banner.id}
+                    className="rounded-[30px] bg-white p-6 shadow-2xl"
+                  >
+
+                    <div className="grid grid-cols-1 gap-5 md:grid-cols-2">
+
+                      {Object.entries(
+                        banner
+                      ).map(
+                        ([
+                          key,
+                          value
+                        ]) => {
+                          if (
+                            key === "id"
+                          ) {
+                            return null;
+                          }
+
+                          return (
+                            <div
+                              key={key}
+                              className="rounded-2xl border border-gray-200 p-4"
+                            >
+
+                              <h3 className="mb-3 text-lg font-black">
+                                {key}
+                              </h3>
+
+                              {typeof value ===
+                              "boolean" ? (
+                                <input
+                                  type="checkbox"
+                                  checked={Boolean(
+                                    value
+                                  )}
+                                  onChange={(
+                                    event
+                                  ) => {
+                                    updateBannerField(
+                                      banner.id,
+                                      key,
+                                      event
+                                        .target
+                                        .checked
+                                    );
+                                  }}
+                                  className="h-6 w-6"
+                                />
+                              ) : key
+                                  .toLowerCase()
+                                  .includes(
+                                    "color"
+                                  ) ? (
+                                <div className="flex gap-3">
+
+                                  <input
+                                    type="color"
+                                    value={String(
+                                      value ||
+                                        "#000000"
+                                    )}
+                                    onChange={(
+                                      event
+                                    ) => {
+                                      updateBannerField(
+                                        banner.id,
+                                        key,
+                                        event
+                                          .target
+                                          .value
+                                      );
+                                    }}
+                                    className="h-14 w-20"
+                                  />
+
+                                  <input
+                                    type="text"
+                                    value={String(
+                                      value ||
+                                        ""
+                                    )}
+                                    onChange={(
+                                      event
+                                    ) => {
+                                      updateBannerField(
+                                        banner.id,
+                                        key,
+                                        event
+                                          .target
+                                          .value
+                                      );
+                                    }}
+                                    className="flex-1 rounded-xl border border-gray-200 px-4 py-3"
+                                  />
+
+                                </div>
+                              ) : (
+                                <input
+                                  type="text"
+                                  value={String(
+                                    value || ""
+                                  )}
+                                  onChange={(
+                                    event
+                                  ) => {
+                                    updateBannerField(
+                                      banner.id,
+                                      key,
+                                      event
+                                        .target
+                                        .value
+                                    );
+                                  }}
+                                  className="w-full rounded-xl border border-gray-200 px-4 py-3"
+                                />
+                              )}
+
+                            </div>
+                          );
+                        }
+                      )}
+
+                    </div>
+
+                    <button
+                      onClick={() => {
+                        saveBanner(
+                          banner
+                        );
+                      }}
+                      className="mt-6 w-full rounded-2xl bg-gradient-to-r from-pink-600 to-purple-600 px-6 py-5 text-xl font-black text-white"
+                    >
+                      Save Banner
+                    </button>
+
+                  </div>
+                );
+              }
+            )}
+
+          </div>
+
+        </div>
+
         {/* SECTION CARDS */}
 
         <div className="space-y-6">
@@ -382,8 +705,6 @@ export default function AdminPage() {
 
                     <div className="flex items-center gap-4">
 
-                      {/* GRID BUTTON */}
-
                       <button
                         onClick={() => {
                           toggleSection(
@@ -400,11 +721,9 @@ export default function AdminPage() {
                       <div>
 
                         <h2 className="text-2xl font-black capitalize">
-
                           {
                             section.sectionType
                           }
-
                         </h2>
 
                         <p className="text-sm text-gray-400">
@@ -468,8 +787,6 @@ export default function AdminPage() {
                   {isExpanded && (
                     <>
 
-                      {/* FIELDS */}
-
                       <div className="grid grid-cols-1 gap-6 p-6 md:grid-cols-2">
 
                         {Object.entries(
@@ -496,9 +813,7 @@ export default function AdminPage() {
                                   <div className="mb-3 flex items-center justify-between">
 
                                     <h3 className="text-lg font-black">
-
                                       {key}
-
                                     </h3>
 
                                     <button
