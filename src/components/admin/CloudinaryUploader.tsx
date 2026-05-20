@@ -1,23 +1,34 @@
 "use client";
 
+/* =======================================================
+   FILE:
+   src/components/admin/CloudinaryUploader.tsx
+======================================================= */
+
 import {
   useRef,
   useState
 } from "react";
 
 import {
-  Image,
+  ImageIcon,
+  Loader2,
   Upload,
-  Video,
-  Loader2
+  Video
 } from "lucide-react";
 
 import {
   uploadToCloudinary
 } from "@/lib/cloudinary";
 
-interface Props {
-  type?: "image" | "video";
+/* =======================================================
+   TYPES
+======================================================= */
+
+interface CloudinaryUploaderProps {
+  type?:
+    | "image"
+    | "video";
 
   value?: string;
 
@@ -26,20 +37,28 @@ interface Props {
   ) => void;
 }
 
+/* =======================================================
+   COMPONENT
+======================================================= */
+
 export default function CloudinaryUploader({
   type = "image",
 
-  value,
+  value = "",
 
   onChange
-}: Props) {
-  const inputRef =
+}: CloudinaryUploaderProps) {
+  /* ---------------- STATE ---------------- */
+
+  const [loading, setLoading] =
+    useState(false);
+
+  const fileInputRef =
     useRef<HTMLInputElement>(
       null
     );
 
-  const [loading, setLoading] =
-    useState(false);
+  /* ---------------- HANDLE UPLOAD ---------------- */
 
   async function handleUpload(
     event: React.ChangeEvent<HTMLInputElement>
@@ -63,6 +82,14 @@ export default function CloudinaryUploader({
       onChange(
         response.secure_url
       );
+
+      alert(
+        `${
+          type === "image"
+            ? "Image"
+            : "Video"
+        } Uploaded Successfully`
+      );
     } catch (error) {
       console.error(error);
 
@@ -74,54 +101,81 @@ export default function CloudinaryUploader({
     }
   }
 
+  /* ---------------- REMOVE ---------------- */
+
+  function removeFile() {
+    onChange("");
+  }
+
+  /* =======================================================
+     UI
+  ======================================================= */
+
   return (
     <div className="space-y-4">
 
-      {/* PREVIEW */}
+      {/* PREVIEW BOX */}
 
-      <div className="overflow-hidden rounded-3xl border border-gray-200 bg-gray-100">
+      <div className="overflow-hidden rounded-[28px] border border-gray-200 bg-gray-100 shadow-lg">
 
-        {value ? (
-          type === "image" ? (
-            <img
-              src={value}
-              alt="preview"
-              className="h-64 w-full object-cover"
-            />
-          ) : (
-            <video
-              src={value}
-              controls
-              className="h-64 w-full object-cover"
-            />
-          )
-        ) : (
-          <div className="flex h-64 flex-col items-center justify-center gap-4 text-gray-400">
+        {/* IMAGE PREVIEW */}
+
+        {value &&
+        type ===
+          "image" ? (
+          <img
+            src={value}
+            alt="Uploaded"
+            className="h-[260px] w-full object-cover"
+          />
+        ) : null}
+
+        {/* VIDEO PREVIEW */}
+
+        {value &&
+        type ===
+          "video" ? (
+          <video
+            src={value}
+            controls
+            className="h-[260px] w-full object-cover"
+          />
+        ) : null}
+
+        {/* EMPTY */}
+
+        {!value ? (
+          <div className="flex h-[260px] flex-col items-center justify-center gap-4 text-gray-400">
 
             {type ===
             "image" ? (
-              <Image
-                size={60}
+              <ImageIcon
+                size={70}
               />
             ) : (
               <Video
-                size={60}
+                size={70}
               />
             )}
 
-            <p className="font-bold">
-              No File Uploaded
+            <p className="text-lg font-black">
+              No{" "}
+              {type ===
+              "image"
+                ? "Image"
+                : "Video"}{" "}
+              Uploaded
             </p>
 
           </div>
-        )}
+        ) : null}
 
       </div>
 
-      {/* INPUT */}
+      {/* HIDDEN INPUT */}
 
       <input
-        ref={inputRef}
+        ref={fileInputRef}
         type="file"
         accept={
           type === "image"
@@ -134,30 +188,70 @@ export default function CloudinaryUploader({
         className="hidden"
       />
 
-      {/* BUTTON */}
+      {/* BUTTONS */}
 
-      <button
-        type="button"
-        onClick={() => {
-          inputRef.current?.click();
-        }}
-        disabled={loading}
-        className="flex w-full items-center justify-center gap-3 rounded-2xl bg-gradient-to-r from-blue-600 to-purple-600 px-6 py-4 text-lg font-black text-white shadow-xl"
-      >
-        {loading ? (
-          <>
-            <Loader2 className="animate-spin" />
+      <div className="flex gap-3">
 
-            Uploading...
-          </>
-        ) : (
-          <>
-            <Upload />
+        {/* UPLOAD */}
 
-            Upload {type}
-          </>
-        )}
-      </button>
+        <button
+          type="button"
+          onClick={() => {
+            fileInputRef.current?.click();
+          }}
+          disabled={loading}
+          className="flex flex-1 items-center justify-center gap-3 rounded-2xl bg-gradient-to-r from-blue-600 to-purple-600 px-6 py-4 text-base font-black text-white shadow-xl transition-all duration-300 hover:scale-[1.02]"
+        >
+          {loading ? (
+            <>
+              <Loader2 className="animate-spin" />
+
+              Uploading...
+            </>
+          ) : (
+            <>
+              <Upload />
+
+              Upload{" "}
+              {type}
+            </>
+          )}
+        </button>
+
+        {/* DELETE */}
+
+        {value ? (
+          <button
+            type="button"
+            onClick={
+              removeFile
+            }
+            className="rounded-2xl bg-red-500 px-6 py-4 text-base font-black text-white shadow-xl transition-all duration-300 hover:bg-red-600"
+          >
+            Delete
+          </button>
+        ) : null}
+
+      </div>
+
+      {/* URL */}
+
+      {value ? (
+        <div className="rounded-2xl border border-gray-200 bg-white p-4">
+
+          <p className="mb-2 text-sm font-black text-gray-700">
+            Uploaded URL
+          </p>
+
+          <input
+            type="text"
+            value={value}
+            readOnly
+            className="w-full rounded-xl border border-gray-200 bg-gray-100 px-4 py-3 text-sm"
+          />
+
+        </div>
+      ) : null}
 
     </div>
   );
