@@ -3,9 +3,7 @@
 export const dynamic = "force-dynamic";
 
 import { useEffect, useMemo, useState } from "react";
-
 import Link from "next/link";
-
 import { useParams } from "next/navigation";
 
 import {
@@ -45,7 +43,7 @@ interface Product {
   discountPrice?: number;
   rating?: number;
   stock?: number;
-  sizes?: string[];
+ sizes?: string[];
   colors?: string[];
   coupons?: string[];
   seller?: {
@@ -226,7 +224,7 @@ export default function ProductPage() {
     product.images || [];
 
   return (
-    <main className="min-h-screen bg-[#f6f6f6] pb-[80px]">
+    <main className="min-h-screen bg-[#f6f6f6] pb-[85px]">
 
       {/* TOPBAR */}
 
@@ -364,6 +362,13 @@ export default function ProductPage() {
               </button>
             )}
 
+            <div className="absolute bottom-2 right-2 rounded-full bg-black/70 px-2 py-1 text-[10px] font-bold text-white">
+
+              {currentImage + 1}/
+              {images.length}
+
+            </div>
+
           </div>
 
           {/* THUMBNAILS */}
@@ -442,6 +447,14 @@ export default function ProductPage() {
 
               (128 Reviews)
 
+            </span>
+
+            <span className="text-gray-300">
+              |
+            </span>
+
+            <span className="text-gray-500">
+              5k+ sold
             </span>
 
           </div>
@@ -632,6 +645,237 @@ export default function ProductPage() {
             </div>
 
           </div>
+
+          <div className="flex items-center gap-2">
+
+            <BadgeCheck
+              size={18}
+              className="text-blue-600"
+            />
+
+            <div>
+
+              <h3 className="text-[12px] font-bold">
+                Secure Payment
+              </h3>
+
+              <p className="text-[10px] text-gray-500">
+                Protected
+              </p>
+
+            </div>
+
+          </div>
+
+          <div className="flex items-center gap-2">
+
+            <Headphones
+              size={18}
+              className="text-orange-500"
+            />
+
+            <div>
+
+              <h3 className="text-[12px] font-bold">
+                Support
+              </h3>
+
+              <p className="text-[10px] text-gray-500">
+                24/7 Help
+              </p>
+
+            </div>
+
+          </div>
+
+        </div>
+
+        {/* DELIVERY + COD */}
+
+        <div className="space-y-3">
+
+          <div className="rounded-[18px] bg-white p-4 shadow-sm">
+
+            <div className="flex gap-3">
+
+              <Truck
+                size={18}
+                className="text-green-600"
+              />
+
+              <div>
+
+                <h3 className="text-sm font-bold">
+                  Delivery
+                </h3>
+
+                <p className="mt-1 text-[18px] font-black text-green-600">
+
+                  {deliveryDate}
+
+                </p>
+
+              </div>
+
+            </div>
+
+          </div>
+
+          <div className="rounded-[18px] bg-white p-4 shadow-sm">
+
+            <div className="flex gap-3">
+
+              <Zap
+                size={18}
+                className="text-orange-500"
+              />
+
+              <div>
+
+                <h3 className="text-sm font-bold">
+                  Cash on Delivery
+                </h3>
+
+                <p className="text-[11px] text-gray-500">
+
+                  Pay when you receive
+
+                </p>
+
+              </div>
+
+            </div>
+
+          </div>
+
+        </div>
+
+        {/* COUPONS */}
+
+        <div>
+
+          <div className="mb-3 flex items-center justify-between">
+
+            <h2 className="text-[18px] font-black">
+
+              Offers & Coupons
+
+            </h2>
+
+            <button className="text-xs font-bold text-purple-600">
+
+              View All
+
+            </button>
+
+          </div>
+
+          <div className="space-y-3">
+
+            {product.coupons?.map(
+              (coupon) => (
+                <div
+                  key={coupon}
+                  className="rounded-[18px] border border-dashed border-purple-300 bg-white p-4"
+                >
+
+                  <h3 className="text-[20px] font-black">
+
+                    {coupon}
+
+                  </h3>
+
+                  <p className="mt-1 text-[11px] text-gray-500">
+
+                    Extra discount available
+
+                  </p>
+
+                  <button className="mt-3 rounded-lg bg-gradient-to-r from-violet-600 to-fuchsia-500 px-4 py-1.5 text-[11px] font-bold text-white">
+
+                    Apply
+
+                  </button>
+
+                </div>
+              )
+            )}
+
+          </div>
+
+        </div>
+
+        {/* SELLER */}
+
+        <div className="rounded-[18px] bg-white p-4 shadow-sm">
+
+          <h2 className="text-[18px] font-black">
+
+            Seller Details
+
+          </h2>
+
+          <div className="mt-3 flex items-center justify-between">
+
+            <div className="flex items-center gap-3">
+
+              <div className="flex h-10 w-10 items-center justify-center rounded-full bg-purple-100">
+
+                <Store
+                  size={18}
+                  className="text-purple-600"
+                />
+
+              </div>
+
+              <div>
+
+                <h3 className="text-[13px] font-black">
+
+                  {
+                    product.seller?.name
+                  }
+
+                </h3>
+
+                <p className="text-[11px] text-gray-500">
+
+                  {
+                    product.seller?.rating
+                  }
+                  ★ Seller Rating
+
+                </p>
+
+              </div>
+
+            </div>
+
+            <button className="rounded-xl border border-purple-400 px-3 py-2 text-[11px] font-bold text-purple-600">
+
+              View Store
+
+            </button>
+
+          </div>
+
+        </div>
+
+        {/* DESCRIPTION */}
+
+        <div className="rounded-[18px] bg-white p-4 shadow-sm">
+
+          <h2 className="text-[18px] font-black">
+
+            Product Details
+
+          </h2>
+
+          <p className="mt-2 text-[12px] leading-6 text-gray-600">
+
+            {product.description}
+
+          </p>
 
         </div>
 
