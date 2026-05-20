@@ -213,8 +213,7 @@ export default function ProductPage() {
 
     return Math.round(
       (((product.price || 0) -
-        (product.discountPrice ||
-          0)) /
+        (product.discountPrice || 0)) /
         (product.price || 1)) *
         100
     );
@@ -282,8 +281,7 @@ export default function ProductPage() {
 
       await navigator.share({
         title: product.title,
-        text:
-          product.description,
+        text: product.description,
         url: window.location.href
       });
 
@@ -465,8 +463,7 @@ export default function ProductPage() {
                     )
                   }
                   className={`overflow-hidden rounded-lg border ${
-                    currentImage ===
-                    index
+                    currentImage === index
                       ? "border-purple-600"
                       : "border-transparent"
                   }`}
@@ -584,10 +581,10 @@ export default function ProductPage() {
 
                 <div
                   key={coupon}
-                  className="flex items-center justify-between rounded-[16px] border border-dashed border-purple-300 bg-white px-3 py-3 shadow-sm"
+                  className="flex items-center justify-between rounded-[16px] border border-dashed border-purple-300 bg-white px-4 py-4 shadow-sm"
                 >
 
-                  <div className="flex-1">
+                  <div>
 
                     <h3 className="text-[16px] font-black leading-none">
 
@@ -603,7 +600,7 @@ export default function ProductPage() {
 
                   </div>
 
-                  <button className="ml-3 whitespace-nowrap rounded-[10px] bg-gradient-to-r from-violet-600 to-fuchsia-500 px-4 py-2 text-[11px] font-bold text-white shadow-sm">
+                  <button className="rounded-[10px] bg-gradient-to-r from-violet-600 to-fuchsia-500 px-4 py-2 text-[11px] font-bold text-white shadow-sm">
 
                     Apply
 
@@ -645,17 +642,13 @@ export default function ProductPage() {
 
                 <h3 className="text-sm font-bold">
 
-                  {
-                    product.seller?.name
-                  }
+                  {product.seller?.name}
 
                 </h3>
 
                 <p className="text-[11px] text-gray-500">
 
-                  {
-                    product.seller?.rating
-                  }
+                  {product.seller?.rating}
                   ★ Seller Rating
 
                 </p>
@@ -704,10 +697,7 @@ export default function ProductPage() {
 
             <h2 className="text-[20px] font-black">
 
-              ₹
-              {
-                product.discountPrice
-              }
+              ₹{product.discountPrice}
 
             </h2>
 
