@@ -1,8 +1,13 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import {
+  useEffect,
+  useState
+} from "react";
 
 import Link from "next/link";
+
+import Image from "next/image";
 
 import {
   collection,
@@ -10,6 +15,10 @@ import {
 } from "firebase/firestore";
 
 import { db } from "@/firebase/config";
+
+/* ======================================================
+TYPES
+====================================================== */
 
 interface Slide {
   id: string;
@@ -32,10 +41,20 @@ interface Slide {
 
   buttonTextColor?: string;
 
+  imageUrl?: string;
+
+  videoUrl?: string;
+
+  mediaType?: string;
+
   visible?: boolean;
 
   position?: number;
 }
+
+/* ======================================================
+COMPONENT
+====================================================== */
 
 export default function HomepageSlider() {
   const [slides, setSlides] =
@@ -43,6 +62,10 @@ export default function HomepageSlider() {
 
   const [current, setCurrent] =
     useState(0);
+
+  /* ======================================================
+  GET SLIDES
+  ====================================================== */
 
   useEffect(() => {
     const unsubscribe =
@@ -92,7 +115,9 @@ export default function HomepageSlider() {
     return () => unsubscribe();
   }, []);
 
-  /* AUTO SLIDE */
+  /* ======================================================
+  AUTO SLIDE
+  ====================================================== */
 
   useEffect(() => {
     if (
@@ -111,11 +136,15 @@ export default function HomepageSlider() {
             );
           }
         );
-      }, 4000);
+      }, 5000);
 
     return () =>
       clearInterval(interval);
   }, [slides]);
+
+  /* ======================================================
+  EMPTY
+  ====================================================== */
 
   if (
     slides.length === 0
@@ -123,10 +152,14 @@ export default function HomepageSlider() {
     return null;
   }
 
+  /* ======================================================
+  UI
+  ====================================================== */
+
   return (
     <section className="w-full overflow-hidden px-3 py-3 md:px-6">
 
-      <div className="relative overflow-hidden rounded-[32px] shadow-2xl">
+      <div className="relative overflow-hidden rounded-[35px] shadow-2xl">
 
         {/* SLIDES */}
 
@@ -146,7 +179,7 @@ export default function HomepageSlider() {
                 >
 
                   <div
-                    className="flex min-h-[280px] flex-col justify-center px-6 py-10 md:min-h-[420px] md:px-16"
+                    className="relative flex min-h-[300px] flex-col justify-center overflow-hidden px-6 py-10 md:min-h-[500px] md:px-16"
                     style={{
                       background: `linear-gradient(135deg, ${
                         slide.backgroundColor ||
@@ -158,69 +191,109 @@ export default function HomepageSlider() {
                     }}
                   >
 
-                    {/* TITLE */}
+                    {/* IMAGE */}
 
-                    <h2
-                      className="max-w-3xl text-4xl font-black leading-tight md:text-7xl"
-                      style={{
-                        color:
-                          slide.textColor ||
-                          "#ffffff"
-                      }}
-                    >
+                    {slide.mediaType ===
+                      "image" &&
+                      slide.imageUrl && (
+                        <Image
+                          src={
+                            slide.imageUrl
+                          }
+                          alt={
+                            slide.title ||
+                            "Banner"
+                          }
+                          fill
+                          priority
+                          className="object-cover opacity-30"
+                        />
+                      )}
 
-                      {slide.title}
+                    {/* VIDEO */}
 
-                    </h2>
+                    {slide.mediaType ===
+                      "video" &&
+                      slide.videoUrl && (
+                        <video
+                          src={
+                            slide.videoUrl
+                          }
+                          autoPlay
+                          muted
+                          loop
+                          playsInline
+                          className="absolute inset-0 h-full w-full object-cover"
+                        />
+                      )}
 
-                    {/* SUBTITLE */}
+                    {/* DARK OVERLAY */}
 
-                    <p
-                      className="mt-4 max-w-2xl text-base font-medium md:text-2xl"
-                      style={{
-                        color:
-                          slide.textColor ||
-                          "#ffffff"
-                      }}
-                    >
+                    <div className="absolute inset-0 bg-black/30" />
 
-                      {
-                        slide.subtitle
-                      }
+                    {/* CONTENT */}
 
-                    </p>
+                    <div className="relative z-10">
 
-                    {/* BUTTON */}
+                      {/* TITLE */}
 
-                    <div className="mt-7">
-
-                      <Link
-                        href={
-                          slide.buttonLink ||
-                          "/"
-                        }
+                      <h2
+                        className="max-w-3xl text-4xl font-black leading-tight md:text-7xl"
+                        style={{
+                          color:
+                            slide.textColor ||
+                            "#ffffff"
+                        }}
                       >
+                        {slide.title}
+                      </h2>
 
-                        <button
-                          className="rounded-2xl px-8 py-4 text-sm font-black shadow-2xl transition-all duration-300 hover:scale-105 md:px-12 md:py-5 md:text-lg"
-                          style={{
-                            backgroundColor:
-                              slide.buttonColor ||
-                              "#ffffff",
+                      {/* SUBTITLE */}
 
-                            color:
-                              slide.buttonTextColor ||
-                              "#000000"
-                          }}
+                      <p
+                        className="mt-4 max-w-2xl text-base font-medium md:text-2xl"
+                        style={{
+                          color:
+                            slide.textColor ||
+                            "#ffffff"
+                        }}
+                      >
+                        {
+                          slide.subtitle
+                        }
+                      </p>
+
+                      {/* BUTTON */}
+
+                      <div className="mt-7">
+
+                        <Link
+                          href={
+                            slide.buttonLink ||
+                            "/"
+                          }
                         >
 
-                          {
-                            slide.buttonText
-                          }
+                          <button
+                            className="rounded-2xl px-8 py-4 text-sm font-black shadow-2xl transition-all duration-300 hover:scale-105 md:px-12 md:py-5 md:text-lg"
+                            style={{
+                              backgroundColor:
+                                slide.buttonColor ||
+                                "#ffffff",
 
-                        </button>
+                              color:
+                                slide.buttonTextColor ||
+                                "#000000"
+                            }}
+                          >
+                            {
+                              slide.buttonText
+                            }
+                          </button>
 
-                      </Link>
+                        </Link>
+
+                      </div>
 
                     </div>
 
@@ -233,9 +306,44 @@ export default function HomepageSlider() {
 
         </div>
 
+        {/* LEFT BUTTON */}
+
+        <button
+          onClick={() => {
+            setCurrent(
+              (previous) => {
+                return previous === 0
+                  ? slides.length - 1
+                  : previous - 1;
+              }
+            );
+          }}
+          className="absolute left-3 top-1/2 z-20 flex h-12 w-12 -translate-y-1/2 items-center justify-center rounded-full bg-white/20 text-2xl font-black text-white backdrop-blur-md"
+        >
+          ←
+        </button>
+
+        {/* RIGHT BUTTON */}
+
+        <button
+          onClick={() => {
+            setCurrent(
+              (previous) => {
+                return (
+                  (previous + 1) %
+                  slides.length
+                );
+              }
+            );
+          }}
+          className="absolute right-3 top-1/2 z-20 flex h-12 w-12 -translate-y-1/2 items-center justify-center rounded-full bg-white/20 text-2xl font-black text-white backdrop-blur-md"
+        >
+          →
+        </button>
+
         {/* DOTS */}
 
-        <div className="absolute bottom-4 left-1/2 flex -translate-x-1/2 gap-2">
+        <div className="absolute bottom-4 left-1/2 z-20 flex -translate-x-1/2 gap-2">
 
           {slides.map(
             (
