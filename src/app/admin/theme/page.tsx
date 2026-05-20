@@ -1,496 +1,427 @@
-// src/admin/theme/page.tsx
-
 "use client";
 
-import Link from "next/link";
+export const dynamic = "force-dynamic";
+
+import { useEffect, useState } from "react";
 
 import {
-  BarChart3,
-  Bell,
-  Box,
-  CreditCard,
-  DollarSign,
-  Home,
-  Layers3,
-  Package,
-  Palette,
-  Settings,
-  ShoppingCart,
-  Store,
-  Users
-} from "lucide-react";
+  doc,
+  getDoc
+} from "firebase/firestore";
+
+import { db } from "@/firebase/config";
+
+interface ThemeData {
+  statusBarColor?: string;
+  headerBackgroundColor?: string;
+  backgroundColor?: string;
+  gradientColor?: string;
+  textColor?: string;
+  buttonColor?: string;
+  buttonTextColor?: string;
+  sellerBackgroundColor?: string;
+  sellerGradientColor?: string;
+  sellerButtonColor?: string;
+  resellerBackgroundColor?: string;
+  resellerGradientColor?: string;
+  resellerButtonColor?: string;
+}
 
 export default function ThemePage() {
 
+  const [heroTheme, setHeroTheme] =
+    useState<ThemeData | null>(null);
+
+  const [affiliateTheme, setAffiliateTheme] =
+    useState<ThemeData | null>(null);
+
+  const [sellerTheme, setSellerTheme] =
+    useState<ThemeData | null>(null);
+
+  const [bannerTheme, setBannerTheme] =
+    useState<ThemeData | null>(null);
+
+  const [loading, setLoading] =
+    useState(true);
+
+  useEffect(() => {
+
+    async function fetchTheme() {
+
+      try {
+
+        const heroRef = doc(
+          db,
+          "homepage_sections",
+          "hero_section"
+        );
+
+        const affiliateRef = doc(
+          db,
+          "homepage_sections",
+          "affiliate_section"
+        );
+
+        const sellerRef = doc(
+          db,
+          "homepage_sections",
+          "seller_section"
+        );
+
+        const bannerRef = doc(
+          db,
+          "homepage_banner",
+          "JoPe2zxbNgJa7rn7zDOq"
+        );
+
+        const [
+          heroSnap,
+          affiliateSnap,
+          sellerSnap,
+          bannerSnap
+        ] = await Promise.all([
+          getDoc(heroRef),
+          getDoc(affiliateRef),
+          getDoc(sellerRef),
+          getDoc(bannerRef)
+        ]);
+
+        if (heroSnap.exists()) {
+          setHeroTheme(
+            heroSnap.data() as ThemeData
+          );
+        }
+
+        if (affiliateSnap.exists()) {
+          setAffiliateTheme(
+            affiliateSnap.data() as ThemeData
+          );
+        }
+
+        if (sellerSnap.exists()) {
+          setSellerTheme(
+            sellerSnap.data() as ThemeData
+          );
+        }
+
+        if (bannerSnap.exists()) {
+          setBannerTheme(
+            bannerSnap.data() as ThemeData
+          );
+        }
+
+      } catch (error) {
+
+        console.error(error);
+
+      } finally {
+
+        setLoading(false);
+
+      }
+    }
+
+    fetchTheme();
+
+  }, []);
+
+  if (loading) {
+    return (
+      <div className="flex min-h-screen items-center justify-center bg-black text-white">
+        Loading Theme...
+      </div>
+    );
+  }
+
   return (
 
-    <main className="min-h-screen bg-[#f6f6f6]">
+    <main className="min-h-screen bg-[#0f0f0f] p-4 text-white">
 
-      {/* TOPBAR */}
+      <h1 className="mb-6 text-center text-3xl font-black">
+        JembeeKart Theme Panel
+      </h1>
 
-      <div className="sticky top-0 z-50 border-b bg-white px-4 py-4">
+      {/* HERO SECTION */}
 
-        <div className="flex items-center justify-between">
+      <div
+        className="mb-6 rounded-[24px] p-5 shadow-xl"
+        style={{
+          background:
+            heroTheme?.backgroundColor ||
+            "#111111"
+        }}
+      >
 
-          <div>
+        <h2 className="mb-4 text-xl font-black">
+          Hero Section
+        </h2>
 
-            <h1 className="text-[24px] font-black text-purple-600">
+        <div className="grid gap-3">
 
-              JembeeKart Admin
+          <ThemeBox
+            label="Status Bar Color"
+            color={
+              heroTheme?.statusBarColor
+            }
+          />
 
-            </h1>
+          <ThemeBox
+            label="Header Background"
+            color={
+              heroTheme?.headerBackgroundColor
+            }
+          />
 
-            <p className="text-[11px] text-gray-500">
+          <ThemeBox
+            label="Background Color"
+            color={
+              heroTheme?.backgroundColor
+            }
+          />
 
-              Full Theme Control Panel
+          <ThemeBox
+            label="Gradient Color"
+            color={
+              heroTheme?.gradientColor
+            }
+          />
 
-            </p>
+          <ThemeBox
+            label="Text Color"
+            color={
+              heroTheme?.textColor
+            }
+          />
 
-          </div>
+          <ThemeBox
+            label="Button Color"
+            color={
+              heroTheme?.buttonColor
+            }
+          />
 
-          <button className="rounded-xl bg-gradient-to-r from-violet-600 to-fuchsia-500 px-4 py-2 text-[12px] font-bold text-white shadow-sm">
-
-            Save Changes
-
-          </button>
+          <ThemeBox
+            label="Button Text Color"
+            color={
+              heroTheme?.buttonTextColor
+            }
+          />
 
         </div>
 
       </div>
 
-      <div className="flex">
+      {/* AFFILIATE SECTION */}
 
-        {/* SIDEBAR */}
+      <div
+        className="mb-6 rounded-[24px] p-5 shadow-xl"
+        style={{
+          background:
+            affiliateTheme?.backgroundColor ||
+            "#111111"
+        }}
+      >
 
-        <div className="hidden min-h-screen w-[250px] border-r bg-white lg:block">
+        <h2 className="mb-4 text-xl font-black">
+          Affiliate Section
+        </h2>
 
-          <div className="space-y-2 p-4">
+        <div className="grid gap-3">
 
-            <Link
-              href="/admin/theme"
-              className="flex items-center gap-3 rounded-xl bg-purple-100 px-4 py-3 text-sm font-bold text-purple-700"
-            >
-              <Home size={18} />
-              Dashboard
-            </Link>
+          <ThemeBox
+            label="Background Color"
+            color={
+              affiliateTheme?.backgroundColor
+            }
+          />
 
-            <Link
-              href="/admin/theme/products"
-              className="flex items-center gap-3 rounded-xl px-4 py-3 text-sm font-bold hover:bg-purple-50"
-            >
-              <Package size={18} />
-              Products
-            </Link>
+          <ThemeBox
+            label="Button Color"
+            color={
+              affiliateTheme?.buttonColor
+            }
+          />
 
-            <Link
-              href="/admin/theme/orders"
-              className="flex items-center gap-3 rounded-xl px-4 py-3 text-sm font-bold hover:bg-purple-50"
-            >
-              <ShoppingCart size={18} />
-              Orders
-            </Link>
+          <ThemeBox
+            label="Button Text Color"
+            color={
+              affiliateTheme?.buttonTextColor
+            }
+          />
 
-            <Link
-              href="/admin/theme/customers"
-              className="flex items-center gap-3 rounded-xl px-4 py-3 text-sm font-bold hover:bg-purple-50"
-            >
-              <Users size={18} />
-              Customers
-            </Link>
+          <ThemeBox
+            label="Seller Background"
+            color={
+              affiliateTheme?.sellerBackgroundColor
+            }
+          />
 
-            <Link
-              href="/admin/theme/analytics"
-              className="flex items-center gap-3 rounded-xl px-4 py-3 text-sm font-bold hover:bg-purple-50"
-            >
-              <BarChart3 size={18} />
-              Analytics
-            </Link>
-
-            <Link
-              href="/admin/theme/earnings"
-              className="flex items-center gap-3 rounded-xl px-4 py-3 text-sm font-bold hover:bg-purple-50"
-            >
-              <DollarSign size={18} />
-              Earnings
-            </Link>
-
-            <Link
-              href="/admin/theme/banners"
-              className="flex items-center gap-3 rounded-xl px-4 py-3 text-sm font-bold hover:bg-purple-50"
-            >
-              <Layers3 size={18} />
-              Banners
-            </Link>
-
-            <Link
-              href="/admin/theme/settings"
-              className="flex items-center gap-3 rounded-xl px-4 py-3 text-sm font-bold hover:bg-purple-50"
-            >
-              <Settings size={18} />
-              Settings
-            </Link>
-
-          </div>
+          <ThemeBox
+            label="Seller Gradient"
+            color={
+              affiliateTheme?.sellerGradientColor
+            }
+          />
 
         </div>
 
-        {/* CONTENT */}
-
-        <div className="flex-1 p-4">
-
-          {/* STATS */}
-
-          <div className="grid grid-cols-2 gap-4 lg:grid-cols-4">
-
-            <div className="rounded-[22px] bg-white p-5 shadow-sm">
-
-              <div className="flex items-center justify-between">
-
-                <div>
-
-                  <p className="text-[11px] font-bold text-gray-500">
-
-                    Total Sales
-
-                  </p>
-
-                  <h2 className="mt-2 text-[28px] font-black">
-
-                    ₹84K
-
-                  </h2>
-
-                </div>
-
-                <div className="flex h-12 w-12 items-center justify-center rounded-full bg-purple-100">
-
-                  <DollarSign
-                    size={22}
-                    className="text-purple-600"
-                  />
-
-                </div>
-
-              </div>
-
-            </div>
-
-            <div className="rounded-[22px] bg-white p-5 shadow-sm">
-
-              <div className="flex items-center justify-between">
-
-                <div>
-
-                  <p className="text-[11px] font-bold text-gray-500">
-
-                    Orders
-
-                  </p>
-
-                  <h2 className="mt-2 text-[28px] font-black">
-
-                    2,450
-
-                  </h2>
-
-                </div>
-
-                <div className="flex h-12 w-12 items-center justify-center rounded-full bg-blue-100">
-
-                  <ShoppingCart
-                    size={22}
-                    className="text-blue-600"
-                  />
-
-                </div>
-
-              </div>
-
-            </div>
-
-            <div className="rounded-[22px] bg-white p-5 shadow-sm">
-
-              <div className="flex items-center justify-between">
-
-                <div>
-
-                  <p className="text-[11px] font-bold text-gray-500">
-
-                    Customers
-
-                  </p>
-
-                  <h2 className="mt-2 text-[28px] font-black">
-
-                    9,210
-
-                  </h2>
-
-                </div>
-
-                <div className="flex h-12 w-12 items-center justify-center rounded-full bg-pink-100">
-
-                  <Users
-                    size={22}
-                    className="text-pink-600"
-                  />
-
-                </div>
-
-              </div>
-
-            </div>
-
-            <div className="rounded-[22px] bg-white p-5 shadow-sm">
-
-              <div className="flex items-center justify-between">
-
-                <div>
-
-                  <p className="text-[11px] font-bold text-gray-500">
-
-                    Products
-
-                  </p>
-
-                  <h2 className="mt-2 text-[28px] font-black">
-
-                    1,200
-
-                  </h2>
-
-                </div>
-
-                <div className="flex h-12 w-12 items-center justify-center rounded-full bg-green-100">
-
-                  <Box
-                    size={22}
-                    className="text-green-600"
-                  />
-
-                </div>
-
-              </div>
-
-            </div>
-
-          </div>
-
-          {/* THEME SETTINGS */}
-
-          <div className="mt-5 grid gap-4 lg:grid-cols-2">
-
-            {/* COLORS */}
-
-            <div className="rounded-[22px] bg-white p-5 shadow-sm">
-
-              <div className="flex items-center gap-2">
-
-                <Palette
-                  size={20}
-                  className="text-purple-600"
-                />
-
-                <h2 className="text-[18px] font-black">
-
-                  Theme Colors
-
-                </h2>
-
-              </div>
-
-              <div className="mt-5 space-y-4">
-
-                <div>
-
-                  <label className="text-[12px] font-bold">
-
-                    Primary Color
-
-                  </label>
-
-                  <input
-                    type="color"
-                    defaultValue="#7c3aed"
-                    className="mt-2 h-12 w-full rounded-xl border"
-                  />
-
-                </div>
-
-                <div>
-
-                  <label className="text-[12px] font-bold">
-
-                    Background Color
-
-                  </label>
-
-                  <input
-                    type="color"
-                    defaultValue="#f6f6f6"
-                    className="mt-2 h-12 w-full rounded-xl border"
-                  />
-
-                </div>
-
-                <div>
-
-                  <label className="text-[12px] font-bold">
-
-                    Sidebar Color
-
-                  </label>
-
-                  <input
-                    type="color"
-                    defaultValue="#ffffff"
-                    className="mt-2 h-12 w-full rounded-xl border"
-                  />
-
-                </div>
-
-              </div>
-
-            </div>
-
-            {/* STORE SETTINGS */}
-
-            <div className="rounded-[22px] bg-white p-5 shadow-sm">
-
-              <div className="flex items-center gap-2">
-
-                <Store
-                  size={20}
-                  className="text-purple-600"
-                />
-
-                <h2 className="text-[18px] font-black">
-
-                  Store Settings
-
-                </h2>
-
-              </div>
-
-              <div className="mt-5 space-y-4">
-
-                <div>
-
-                  <label className="text-[12px] font-bold">
-
-                    Store Name
-
-                  </label>
-
-                  <input
-                    type="text"
-                    placeholder="JembeeKart"
-                    className="mt-2 w-full rounded-xl border px-4 py-3 text-sm outline-none"
-                  />
-
-                </div>
-
-                <div>
-
-                  <label className="text-[12px] font-bold">
-
-                    Store Description
-
-                  </label>
-
-                  <textarea
-                    placeholder="Enter store description"
-                    className="mt-2 h-[120px] w-full rounded-xl border p-4 text-sm outline-none"
-                  />
-
-                </div>
-
-              </div>
-
-            </div>
-
-          </div>
-
-          {/* QUICK ACTIONS */}
-
-          <div className="mt-5 rounded-[22px] bg-white p-5 shadow-sm">
-
-            <h2 className="text-[18px] font-black">
-
-              Quick Actions
-
-            </h2>
-
-            <div className="mt-5 grid grid-cols-2 gap-4 lg:grid-cols-4">
-
-              <button className="rounded-2xl bg-purple-100 p-5">
-
-                <Package
-                  size={26}
-                  className="mx-auto text-purple-600"
-                />
-
-                <p className="mt-3 text-[12px] font-black">
-
-                  Add Product
-
-                </p>
-
-              </button>
-
-              <button className="rounded-2xl bg-pink-100 p-5">
-
-                <Bell
-                  size={26}
-                  className="mx-auto text-pink-600"
-                />
-
-                <p className="mt-3 text-[12px] font-black">
-
-                  Notifications
-
-                </p>
-
-              </button>
-
-              <button className="rounded-2xl bg-green-100 p-5">
-
-                <CreditCard
-                  size={26}
-                  className="mx-auto text-green-600"
-                />
-
-                <p className="mt-3 text-[12px] font-black">
-
-                  Payments
-
-                </p>
-
-              </button>
-
-              <button className="rounded-2xl bg-blue-100 p-5">
-
-                <Layers3
-                  size={26}
-                  className="mx-auto text-blue-600"
-                />
-
-                <p className="mt-3 text-[12px] font-black">
-
-                  Banners
-
-                </p>
-
-              </button>
-
-            </div>
-
-          </div>
+      </div>
+
+      {/* SELLER SECTION */}
+
+      <div
+        className="mb-6 rounded-[24px] p-5 shadow-xl"
+        style={{
+          background:
+            sellerTheme?.sellerBackgroundColor ||
+            "#111111"
+        }}
+      >
+
+        <h2 className="mb-4 text-xl font-black">
+          Seller Section
+        </h2>
+
+        <div className="grid gap-3">
+
+          <ThemeBox
+            label="Seller Background"
+            color={
+              sellerTheme?.sellerBackgroundColor
+            }
+          />
+
+          <ThemeBox
+            label="Seller Gradient"
+            color={
+              sellerTheme?.sellerGradientColor
+            }
+          />
+
+          <ThemeBox
+            label="Seller Button"
+            color={
+              sellerTheme?.sellerButtonColor
+            }
+          />
+
+          <ThemeBox
+            label="Reseller Background"
+            color={
+              sellerTheme?.resellerBackgroundColor
+            }
+          />
+
+          <ThemeBox
+            label="Reseller Gradient"
+            color={
+              sellerTheme?.resellerGradientColor
+            }
+          />
+
+          <ThemeBox
+            label="Reseller Button"
+            color={
+              sellerTheme?.resellerButtonColor
+            }
+          />
+
+        </div>
+
+      </div>
+
+      {/* BANNER SECTION */}
+
+      <div
+        className="rounded-[24px] p-5 shadow-xl"
+        style={{
+          background:
+            bannerTheme?.backgroundColor ||
+            "#111111"
+        }}
+      >
+
+        <h2 className="mb-4 text-xl font-black">
+          Banner Section
+        </h2>
+
+        <div className="grid gap-3">
+
+          <ThemeBox
+            label="Background Color"
+            color={
+              bannerTheme?.backgroundColor
+            }
+          />
+
+          <ThemeBox
+            label="Gradient Color"
+            color={
+              bannerTheme?.gradientColor
+            }
+          />
+
+          <ThemeBox
+            label="Text Color"
+            color={
+              bannerTheme?.textColor
+            }
+          />
+
+          <ThemeBox
+            label="Button Color"
+            color={
+              bannerTheme?.buttonColor
+            }
+          />
+
+          <ThemeBox
+            label="Button Text Color"
+            color={
+              bannerTheme?.buttonTextColor
+            }
+          />
 
         </div>
 
       </div>
 
     </main>
+  );
+}
+
+function ThemeBox({
+  label,
+  color
+}: {
+  label: string;
+  color?: string;
+}) {
+
+  return (
+
+    <div className="flex items-center justify-between rounded-2xl bg-white/10 p-4">
+
+      <div>
+
+        <h3 className="text-sm font-bold">
+          {label}
+        </h3>
+
+        <p className="mt-1 text-xs text-gray-300">
+          {color || "No Color"}
+        </p>
+
+      </div>
+
+      <div
+        className="h-12 w-12 rounded-full border-4 border-white"
+        style={{
+          background:
+            color || "#000000"
+        }}
+      />
+
+    </div>
   );
 }
