@@ -1,625 +1,511 @@
 "use client";
 
-export const dynamic = "force-dynamic";
-
-import { useEffect, useState } from "react";
+import {
+  useState
+} from "react";
 
 import {
-  addDoc,
-  collection,
-  deleteDoc,
-  doc,
-  onSnapshot,
-  updateDoc
-} from "firebase/firestore";
+  ChevronDown,
+  ChevronUp,
+  Grid3X3,
+  Plus
+} from "lucide-react";
 
-import { db } from "@/firebase/config";
+/* ======================================================
+TYPES
+====================================================== */
 
-interface Category {
+interface CategoryItem {
   id: string;
 
-  title?: string;
+  name: string;
 
-  image?: string;
+  image: string;
 
-  backgroundColor?: string;
+  backgroundColor: string;
 
-  textColor?: string;
+  textColor: string;
 
-  position?: number;
-
-  visible?: boolean;
-
-  cardStyle?: string;
-
-  borderRadius?: string;
-
-  cardHeight?: string;
-
-  cardWidth?: string;
-
-  imageHeight?: string;
-
-  titleSize?: string;
+  visible: boolean;
 }
 
-export default function CategoriesAdminPage() {
+/* ======================================================
+COMPONENT
+====================================================== */
+
+export default function CategoryAdmin() {
   const [categories, setCategories] =
-    useState<Category[]>([]);
+    useState<CategoryItem[]>([
+      {
+        id: "1",
 
-  const [loading, setLoading] =
-    useState(true);
+        name: "Fashion",
 
-  useEffect(() => {
-    const unsubscribe =
-      onSnapshot(
-        collection(
-          db,
-          "categories"
-        ),
-        (snapshot) => {
-          const data =
-            snapshot.docs.map(
-              (document) => {
-                return {
-                  id: document.id,
+        image:
+          "https://images.unsplash.com/photo-1441986300917-64674bd600d8",
 
-                  ...(document.data() as Omit<
-                    Category,
-                    "id"
-                  >)
-                };
-              }
-            );
+        backgroundColor:
+          "#ffffff",
 
-          const sortedData =
-            data.sort(
-              (a, b) => {
-                return (
-                  Number(
-                    a.position || 0
-                  ) -
-                  Number(
-                    b.position || 0
-                  )
-                );
-              }
-            );
+        textColor:
+          "#000000",
 
-          setCategories(
-            sortedData
-          );
+        visible: true
+      },
 
-          setLoading(false);
-        }
-      );
+      {
+        id: "2",
 
-    return () => unsubscribe();
-  }, []);
+        name: "Electronics",
 
-  async function addCategory() {
-    try {
-      await addDoc(
-        collection(
-          db,
-          "categories"
-        ),
-        {
-          title: "New Category",
+        image:
+          "https://images.unsplash.com/photo-1511707171634-5f897ff02aa9",
 
-          image: "",
+        backgroundColor:
+          "#ffffff",
 
-          backgroundColor:
-            "#2563eb",
+        textColor:
+          "#000000",
 
-          textColor:
-            "#ffffff",
+        visible: true
+      }
+    ]);
 
-          position:
-            categories.length +
-            1,
+  /* ======================================================
+  EXPAND STATE
+  ====================================================== */
 
-          visible: true,
+  const [
+    expandedCategories,
+    setExpandedCategories
+  ] = useState<{
+    [key: string]: boolean;
+  }>({});
 
-          cardStyle: "rounded",
+  /* ======================================================
+  TOGGLE
+  ====================================================== */
 
-          borderRadius: "28px",
+  function toggleCategory(
+    id: string
+  ) {
+    setExpandedCategories(
+      (previous) => {
+        return {
+          ...previous,
 
-          cardHeight: "260px",
-
-          cardWidth: "100%",
-
-          imageHeight: "190px",
-
-          titleSize: "38px"
-        }
-      );
-    } catch (error) {
-      console.error(error);
-    }
+          [id]:
+            !previous[id]
+        };
+      }
+    );
   }
 
-  async function updateCategory(
+  /* ======================================================
+  UPDATE FIELD
+  ====================================================== */
+
+  function updateCategoryField(
     id: string,
     field: string,
     value:
       | string
-      | number
       | boolean
   ) {
-    try {
-      await updateDoc(
-        doc(
-          db,
-          "categories",
-          id
-        ),
-        {
-          [field]: value
-        }
-      );
-    } catch (error) {
-      console.error(error);
-    }
+    setCategories(
+      (previous) => {
+        return previous.map(
+          (category) => {
+            if (
+              category.id === id
+            ) {
+              return {
+                ...category,
+
+                [field]:
+                  value
+              };
+            }
+
+            return category;
+          }
+        );
+      }
+    );
   }
 
-  async function deleteCategory(
-    id: string
-  ) {
-    try {
-      await deleteDoc(
-        doc(
-          db,
-          "categories",
-          id
-        )
-      );
-    } catch (error) {
-      console.error(error);
-    }
+  /* ======================================================
+  CREATE CATEGORY
+  ====================================================== */
+
+  function createCategory() {
+    const newCategory = {
+      id:
+        Date.now().toString(),
+
+      name:
+        "New Category",
+
+      image:
+        "https://images.unsplash.com/photo-1523275335684-37898b6baf30",
+
+      backgroundColor:
+        "#ffffff",
+
+      textColor:
+        "#000000",
+
+      visible: true
+    };
+
+    setCategories(
+      (previous) => {
+        return [
+          ...previous,
+
+          newCategory
+        ];
+      }
+    );
   }
+
+  /* ======================================================
+  UI
+  ====================================================== */
 
   return (
-    <main className="min-h-screen bg-gray-100 px-4 py-8">
+    <main className="min-h-screen bg-slate-100 p-4">
 
-      <div className="mx-auto max-w-6xl">
+      <div className="mx-auto max-w-5xl">
 
         {/* HEADER */}
 
-        <div className="mb-8 flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
+        <div className="mb-8 rounded-[30px] bg-gradient-to-r from-blue-700 to-purple-700 p-6 text-white shadow-2xl">
 
-          <div>
+          <h1 className="text-4xl font-black">
+            Category Admin
+          </h1>
 
-            <h1 className="text-3xl font-black text-gray-900 md:text-5xl">
-              Categories Admin
-            </h1>
-
-            <p className="mt-2 text-gray-500">
-              Manage ecommerce categories
-            </p>
-
-          </div>
-
-          <button
-            onClick={
-              addCategory
-            }
-            className="rounded-2xl bg-blue-600 px-6 py-4 text-lg font-bold text-white shadow-xl transition-all duration-300 hover:bg-blue-700"
-          >
-            Add Category
-          </button>
+          <p className="mt-2 text-blue-100">
+            Compact Category Manager
+          </p>
 
         </div>
 
-        {/* LOADING */}
+        {/* CREATE BUTTON */}
 
-        {loading ? (
-          <div className="text-center text-xl font-bold text-gray-500">
-            Loading...
-          </div>
-        ) : (
-          <div className="space-y-6">
+        <button
+          onClick={() => {
+            createCategory();
+          }}
+          className="
+            mb-8
+            flex
+            items-center
+            gap-3
+            rounded-2xl
+            bg-black
+            px-6
+            py-4
+            font-black
+            text-white
+          "
+        >
+          <Plus />
 
-            {categories.map(
-              (category) => {
-                return (
+          Create Category
+        </button>
+
+        {/* CATEGORY LIST */}
+
+        <div className="space-y-5">
+
+          {categories.map(
+            (category) => {
+              const isExpanded =
+                expandedCategories[
+                  category.id
+                ];
+
+              return (
+                <div
+                  key={
+                    category.id
+                  }
+                  className="
+                    overflow-hidden
+                    rounded-[28px]
+                    bg-white
+                    shadow-xl
+                  "
+                >
+
+                  {/* TOP BAR */}
+
                   <div
-                    key={
-                      category.id
-                    }
-                    className="rounded-[30px] bg-white p-6 shadow-xl"
+                    className="
+                      flex
+                      items-center
+                      justify-between
+                      p-4
+                    "
                   >
 
-                    <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
+                    {/* LEFT */}
+
+                    <div
+                      className="
+                        flex
+                        items-center
+                        gap-4
+                      "
+                    >
+
+                      {/* CATEGORY ICON */}
+
+                      <div
+                        className="
+                          flex
+                          h-16
+                          w-16
+                          items-center
+                          justify-center
+                          overflow-hidden
+                          rounded-2xl
+                          bg-gray-100
+                        "
+                      >
+
+                        <img
+                          src={
+                            category.image
+                          }
+                          alt={
+                            category.name
+                          }
+                          className="
+                            h-full
+                            w-full
+                            object-cover
+                          "
+                        />
+
+                      </div>
 
                       {/* TITLE */}
 
                       <div>
 
-                        <label className="mb-3 block text-lg font-bold text-gray-700">
-                          Title
-                        </label>
-
-                        <input
-                          type="text"
-                          value={
-                            category.title ||
-                            ""
+                        <h2
+                          className="
+                            text-xl
+                            font-black
+                          "
+                        >
+                          {
+                            category.name
                           }
-                          onChange={(
-                            event
-                          ) => {
-                            updateCategory(
-                              category.id,
-                              "title",
-                              event
-                                .target
-                                .value
-                            );
-                          }}
-                          className="w-full rounded-2xl border border-gray-200 bg-gray-100 px-5 py-4 outline-none"
-                        />
+                        </h2>
 
-                      </div>
-
-                      {/* IMAGE */}
-
-                      <div>
-
-                        <label className="mb-3 block text-lg font-bold text-gray-700">
-                          Image URL
-                        </label>
-
-                        <input
-                          type="text"
-                          value={
-                            category.image ||
-                            ""
-                          }
-                          onChange={(
-                            event
-                          ) => {
-                            updateCategory(
-                              category.id,
-                              "image",
-                              event
-                                .target
-                                .value
-                            );
-                          }}
-                          className="w-full rounded-2xl border border-gray-200 bg-gray-100 px-5 py-4 outline-none"
-                        />
-
-                      </div>
-
-                      {/* BACKGROUND COLOR */}
-
-                      <div>
-
-                        <label className="mb-3 block text-lg font-bold text-gray-700">
-                          Background Color
-                        </label>
-
-                        <div className="flex items-center gap-4">
-
-                          <input
-                            type="color"
-                            value={
-                              category.backgroundColor ||
-                              "#2563eb"
-                            }
-                            onChange={(
-                              event
-                            ) => {
-                              updateCategory(
-                                category.id,
-                                "backgroundColor",
-                                event
-                                  .target
-                                  .value
-                              );
-                            }}
-                            className="h-14 w-20 rounded-xl"
-                          />
-
-                          <input
-                            type="text"
-                            value={
-                              category.backgroundColor ||
-                              ""
-                            }
-                            onChange={(
-                              event
-                            ) => {
-                              updateCategory(
-                                category.id,
-                                "backgroundColor",
-                                event
-                                  .target
-                                  .value
-                              );
-                            }}
-                            className="flex-1 rounded-2xl border border-gray-200 bg-gray-100 px-5 py-4 outline-none"
-                          />
-
-                        </div>
-
-                      </div>
-
-                      {/* TEXT COLOR */}
-
-                      <div>
-
-                        <label className="mb-3 block text-lg font-bold text-gray-700">
-                          Text Color
-                        </label>
-
-                        <div className="flex items-center gap-4">
-
-                          <input
-                            type="color"
-                            value={
-                              category.textColor ||
-                              "#ffffff"
-                            }
-                            onChange={(
-                              event
-                            ) => {
-                              updateCategory(
-                                category.id,
-                                "textColor",
-                                event
-                                  .target
-                                  .value
-                              );
-                            }}
-                            className="h-14 w-20 rounded-xl"
-                          />
-
-                          <input
-                            type="text"
-                            value={
-                              category.textColor ||
-                              ""
-                            }
-                            onChange={(
-                              event
-                            ) => {
-                              updateCategory(
-                                category.id,
-                                "textColor",
-                                event
-                                  .target
-                                  .value
-                              );
-                            }}
-                            className="flex-1 rounded-2xl border border-gray-200 bg-gray-100 px-5 py-4 outline-none"
-                          />
-
-                        </div>
-
-                      </div>
-
-                      {/* BORDER RADIUS */}
-
-                      <div>
-
-                        <label className="mb-3 block text-lg font-bold text-gray-700">
-                          Border Radius
-                        </label>
-
-                        <input
-                          type="text"
-                          value={
-                            category.borderRadius ||
-                            ""
-                          }
-                          onChange={(
-                            event
-                          ) => {
-                            updateCategory(
-                              category.id,
-                              "borderRadius",
-                              event.target.value
-                            );
-                          }}
-                          className="w-full rounded-2xl border border-gray-200 bg-gray-100 px-5 py-4 outline-none"
-                        />
-
-                      </div>
-
-                      {/* CARD HEIGHT */}
-
-                      <div>
-
-                        <label className="mb-3 block text-lg font-bold text-gray-700">
-                          Card Height
-                        </label>
-
-                        <input
-                          type="text"
-                          value={
-                            category.cardHeight ||
-                            ""
-                          }
-                          onChange={(
-                            event
-                          ) => {
-                            updateCategory(
-                              category.id,
-                              "cardHeight",
-                              event.target.value
-                            );
-                          }}
-                          className="w-full rounded-2xl border border-gray-200 bg-gray-100 px-5 py-4 outline-none"
-                        />
-
-                      </div>
-
-                      {/* CARD WIDTH */}
-
-                      <div>
-
-                        <label className="mb-3 block text-lg font-bold text-gray-700">
-                          Card Width
-                        </label>
-
-                        <input
-                          type="text"
-                          value={
-                            category.cardWidth ||
-                            ""
-                          }
-                          onChange={(
-                            event
-                          ) => {
-                            updateCategory(
-                              category.id,
-                              "cardWidth",
-                              event.target.value
-                            );
-                          }}
-                          className="w-full rounded-2xl border border-gray-200 bg-gray-100 px-5 py-4 outline-none"
-                        />
-
-                      </div>
-
-                      {/* IMAGE HEIGHT */}
-
-                      <div>
-
-                        <label className="mb-3 block text-lg font-bold text-gray-700">
-                          Image Height
-                        </label>
-
-                        <input
-                          type="text"
-                          value={
-                            category.imageHeight ||
-                            ""
-                          }
-                          onChange={(
-                            event
-                          ) => {
-                            updateCategory(
-                              category.id,
-                              "imageHeight",
-                              event.target.value
-                            );
-                          }}
-                          className="w-full rounded-2xl border border-gray-200 bg-gray-100 px-5 py-4 outline-none"
-                        />
-
-                      </div>
-
-                      {/* TITLE SIZE */}
-
-                      <div>
-
-                        <label className="mb-3 block text-lg font-bold text-gray-700">
-                          Title Size
-                        </label>
-
-                        <input
-                          type="text"
-                          value={
-                            category.titleSize ||
-                            ""
-                          }
-                          onChange={(
-                            event
-                          ) => {
-                            updateCategory(
-                              category.id,
-                              "titleSize",
-                              event.target.value
-                            );
-                          }}
-                          className="w-full rounded-2xl border border-gray-200 bg-gray-100 px-5 py-4 outline-none"
-                        />
-
-                      </div>
-
-                      {/* POSITION */}
-
-                      <div>
-
-                        <label className="mb-3 block text-lg font-bold text-gray-700">
-                          Position
-                        </label>
-
-                        <input
-                          type="number"
-                          value={
-                            category.position ||
-                            0
-                          }
-                          onChange={(
-                            event
-                          ) => {
-                            updateCategory(
-                              category.id,
-                              "position",
-                              Number(
-                                event.target
-                                  .value
-                              )
-                            );
-                          }}
-                          className="w-full rounded-2xl border border-gray-200 bg-gray-100 px-5 py-4 outline-none"
-                        />
-
-                      </div>
-
-                      {/* VISIBLE */}
-
-                      <div className="flex items-center gap-4">
-
-                        <label className="text-lg font-bold text-gray-700">
-                          Visible
-                        </label>
-
-                        <input
-                          type="checkbox"
-                          checked={Boolean(
-                            category.visible
-                          )}
-                          onChange={(
-                            event
-                          ) => {
-                            updateCategory(
-                              category.id,
-                              "visible",
-                              event.target.checked
-                            );
-                          }}
-                          className="h-6 w-6"
-                        />
+                        <p
+                          className="
+                            text-sm
+                            text-gray-500
+                          "
+                        >
+                          Category Item
+                        </p>
 
                       </div>
 
                     </div>
 
-                    {/* DELETE BUTTON */}
+                    {/* RIGHT */}
 
                     <button
                       onClick={() => {
-                        deleteCategory(
+                        toggleCategory(
                           category.id
                         );
                       }}
-                      className="mt-8 rounded-2xl bg-red-600 px-6 py-4 text-lg font-bold text-white transition-all duration-300 hover:bg-red-700"
+                      className="
+                        flex
+                        h-12
+                        w-12
+                        items-center
+                        justify-center
+                        rounded-2xl
+                        bg-black
+                        text-white
+                      "
                     >
-                      Delete Category
+                      {isExpanded ? (
+                        <ChevronUp />
+                      ) : (
+                        <Grid3X3 />
+                      )}
                     </button>
 
                   </div>
-                );
-              }
-            )}
 
-          </div>
-        )}
+                  {/* FORM */}
+
+                  {isExpanded && (
+                    <div className="border-t border-gray-100 p-5">
+
+                      <div className="grid gap-5 md:grid-cols-2">
+
+                        {/* NAME */}
+
+                        <div>
+
+                          <h3 className="mb-2 font-black">
+                            Category Name
+                          </h3>
+
+                          <input
+                            type="text"
+                            value={
+                              category.name
+                            }
+                            onChange={(
+                              event
+                            ) => {
+                              updateCategoryField(
+                                category.id,
+                                "name",
+                                event
+                                  .target
+                                  .value
+                              );
+                            }}
+                            className="
+                              w-full
+                              rounded-2xl
+                              border
+                              border-gray-200
+                              px-4
+                              py-3
+                              outline-none
+                            "
+                          />
+
+                        </div>
+
+                        {/* IMAGE */}
+
+                        <div>
+
+                          <h3 className="mb-2 font-black">
+                            Image URL
+                          </h3>
+
+                          <input
+                            type="text"
+                            value={
+                              category.image
+                            }
+                            onChange={(
+                              event
+                            ) => {
+                              updateCategoryField(
+                                category.id,
+                                "image",
+                                event
+                                  .target
+                                  .value
+                              );
+                            }}
+                            className="
+                              w-full
+                              rounded-2xl
+                              border
+                              border-gray-200
+                              px-4
+                              py-3
+                              outline-none
+                            "
+                          />
+
+                        </div>
+
+                        {/* BACKGROUND */}
+
+                        <div>
+
+                          <h3 className="mb-2 font-black">
+                            Background Color
+                          </h3>
+
+                          <input
+                            type="color"
+                            value={
+                              category.backgroundColor
+                            }
+                            onChange={(
+                              event
+                            ) => {
+                              updateCategoryField(
+                                category.id,
+                                "backgroundColor",
+                                event
+                                  .target
+                                  .value
+                              );
+                            }}
+                            className="
+                              h-14
+                              w-full
+                              rounded-2xl
+                            "
+                          />
+
+                        </div>
+
+                        {/* TEXT COLOR */}
+
+                        <div>
+
+                          <h3 className="mb-2 font-black">
+                            Text Color
+                          </h3>
+
+                          <input
+                            type="color"
+                            value={
+                              category.textColor
+                            }
+                            onChange={(
+                              event
+                            ) => {
+                              updateCategoryField(
+                                category.id,
+                                "textColor",
+                                event
+                                  .target
+                                  .value
+                              );
+                            }}
+                            className="
+                              h-14
+                              w-full
+                              rounded-2xl
+                            "
+                          />
+
+                        </div>
+
+                      </div>
+
+                    </div>
+                  )}
+
+                </div>
+              );
+            }
+          )}
+
+        </div>
 
       </div>
 
