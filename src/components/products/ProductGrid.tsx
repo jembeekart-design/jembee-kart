@@ -2,10 +2,16 @@
 
 import ProductCard from "@/components/products/ProductCard";
 
+/* ======================================================
+TYPES
+====================================================== */
+
 interface Product {
   id: string;
 
   title?: string;
+
+  images?: string[];
 
   image?: string;
 
@@ -22,15 +28,21 @@ interface ProductGridProps {
   products?: Product[];
 }
 
+/* ======================================================
+COMPONENT
+====================================================== */
+
 export default function ProductGrid({
   products = [
     {
       id: "1",
 
-      title: "PETER ENGLAND Polo T-Shirt",
+      title:
+        "PETER ENGLAND Polo T-Shirt",
 
-      image:
-        "https://images.unsplash.com/photo-1581655353564-df123a1eb820",
+      images: [
+        "https://images.unsplash.com/photo-1581655353564-df123a1eb820"
+      ],
 
       price: 1099,
 
@@ -44,10 +56,12 @@ export default function ProductGrid({
     {
       id: "2",
 
-      title: "US Polo Casual T-Shirt",
+      title:
+        "US Polo Casual T-Shirt",
 
-      image:
-        "https://images.unsplash.com/photo-1521572163474-6864f9cf17ab",
+      images: [
+        "https://images.unsplash.com/photo-1521572163474-6864f9cf17ab"
+      ],
 
       price: 1499,
 
@@ -61,10 +75,12 @@ export default function ProductGrid({
     {
       id: "3",
 
-      title: "THE BEAR HOUSE Shirt",
+      title:
+        "THE BEAR HOUSE Shirt",
 
-      image:
-        "https://images.unsplash.com/photo-1602810318383-e386cc2a3ccf",
+      images: [
+        "https://images.unsplash.com/photo-1602810318383-e386cc2a3ccf"
+      ],
 
       price: 1999,
 
@@ -78,10 +94,12 @@ export default function ProductGrid({
     {
       id: "4",
 
-      title: "Premium Fashion Polo",
+      title:
+        "Premium Fashion Polo",
 
-      image:
-        "https://images.unsplash.com/photo-1503342217505-b0a15ec3261c",
+      images: [
+        "https://images.unsplash.com/photo-1503342217505-b0a15ec3261c"
+      ],
 
       price: 1299,
 
@@ -98,11 +116,36 @@ export default function ProductGrid({
 
       {/* TOP FILTER BAR */}
 
-      <div className="mb-4 flex items-center justify-between rounded-xl bg-white px-4 py-3 shadow-sm">
+      <div
+        className="
+          mb-4
+          flex
+          items-center
+          justify-between
+          rounded-2xl
+          bg-white
+          px-4
+          py-3
+          shadow-sm
+        "
+      >
 
         {/* SORT */}
 
-        <button className="flex flex-1 items-center justify-center gap-2 border-r border-gray-200 text-sm font-bold text-gray-800">
+        <button
+          className="
+            flex
+            flex-1
+            items-center
+            justify-center
+            gap-2
+            border-r
+            border-gray-200
+            text-sm
+            font-bold
+            text-gray-800
+          "
+        >
 
           <span className="text-lg">
             ⇅
@@ -114,7 +157,18 @@ export default function ProductGrid({
 
         {/* FILTER */}
 
-        <button className="flex flex-1 items-center justify-center gap-2 text-sm font-bold text-gray-800">
+        <button
+          className="
+            flex
+            flex-1
+            items-center
+            justify-center
+            gap-2
+            text-sm
+            font-bold
+            text-gray-800
+          "
+        >
 
           <span className="text-lg">
             ⚙
@@ -134,15 +188,33 @@ export default function ProductGrid({
           return (
             <ProductCard
               key={product.id}
+
               id={product.id}
+
               title={product.title}
-              image={product.image}
+
+              images={
+                product.images ||
+                (
+                  product.image
+                    ? [product.image]
+                    : []
+                )
+              }
+
               price={product.price}
+
               discountPrice={
                 product.discountPrice
               }
-              rating={product.rating}
-              reviews={product.reviews}
+
+              rating={
+                product.rating
+              }
+
+              reviews={
+                product.reviews
+              }
             />
           );
         })}
