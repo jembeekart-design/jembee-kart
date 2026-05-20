@@ -1,1137 +1,1004 @@
-/* =========================================================
-FILE:
-src/app/admin/page.tsx
-========================================================= */
-
 "use client";
 
 export const dynamic = "force-dynamic";
 
-import {
-  useEffect,
-  useMemo,
-  useRef,
-  useState
-} from "react";
+import { useEffect, useMemo, useState } from "react";
 
-import Image from "next/image";
+import Link from "next/link";
+
+import { useParams } from "next/navigation";
 
 import {
+  addDoc,
   collection,
-  deleteDoc,
   doc,
-  onSnapshot,
-  setDoc,
-  updateDoc
+  getDoc,
+  getDocs,
+  query,
+  where
 } from "firebase/firestore";
 
 import {
-  ChevronDown,
-  ChevronUp,
-  Eye,
-  EyeOff,
-  GripVertical,
-  Grid3X3,
-  ImagePlus,
-  Monitor,
-  Plus,
-  Smartphone,
-  Trash2,
-  Video
+  ArrowLeft,
+  BadgeCheck,
+  ChevronLeft,
+  ChevronRight,
+  Headphones,
+  Heart,
+  RotateCcw,
+  Share2,
+  ShieldCheck,
+  ShoppingCart,
+  Star,
+  Store,
+  Truck,
+  Zap
 } from "lucide-react";
 
 import { db } from "@/firebase/config";
 
-import {
-  uploadToCloudinary
-} from "@/lib/cloudinary";
-
-/* =========================================================
-TYPES
-========================================================= */
-
-interface BannerSlide {
+interface Product {
   id: string;
-
   title?: string;
-
-  subtitle?: string;
-
-  buttonText?: string;
-
-  buttonLink?: string;
-
-  backgroundColor?: string;
-
-  gradientColor?: string;
-
-  textColor?: string;
-
-  buttonColor?: string;
-
-  buttonTextColor?: string;
-
-  imageUrl?: string;
-
-  videoUrl?: string;
-
-  mediaType?: string;
-
-  visible?: boolean;
-
-  position?: number;
-
-  [key: string]:
-    | string
-    | number
-    | boolean
-    | undefined;
+  description?: string;
+  image?: string;
+  images?: string[];
+  category?: string;
+  price?: number;
+  discountPrice?: number;
+  rating?: number;
+  stock?: number;
+  sizes?: string[];
+  colors?: string[];
+  coupons?: string[];
+  seller?: {
+    name?: string;
+    rating?: number;
+  };
 }
 
-/* =========================================================
-COMPONENT
-========================================================= */
+export default function ProductPage() {
 
-export default function AdminPage() {
-  /* =========================================================
-  STATES
-  ========================================================= */
+  const params = useParams();
 
-  const [banners, setBanners] =
-    useState<
-      BannerSlide[]
-    >([]);
+  const productId = Array.isArray(params.id)
+    ? params.id[0]
+    : params.id;
 
-  const [search, setSearch] =
-    useState("");
+  const [product, setProduct] =
+    useState<Product | null>(null);
 
-  const [
-    expandedBanners,
-    setExpandedBanners
-  ] = useState<{
-    [key: string]: boolean;
-  }>({});
+  const [relatedProducts, setRelatedProducts] =
+    useState<Product[]>([]);
 
-  const [savingId, setSavingId] =
-    useState("");
+  const [loading, setLoading] =
+    useState(true);
 
-  const [
-    draggedBanner,
-    setDraggedBanner
-  ] = useState("");
+  const [currentImage, setCurrentImage] =
+    useState(0);
 
-  const [
-    mobilePreview,
-    setMobilePreview
-  ] = useState(true);
+  const [selectedSize, setSelectedSize] =
+    useState("M");
 
-  const fileInputRefs =
-    useRef<{
-      [key: string]: HTMLInputElement | null;
-    }>({});
+  const [selectedColor, setSelectedColor] =
+    useState("#7c3aed");
 
-  const videoInputRefs =
-    useRef<{
-      [key: string]: HTMLInputElement | null;
-    }>({});
+  const [wishlist, setWishlist] =
+    useState(false);
 
-  /* =========================================================
-  GET BANNERS
-  ========================================================= */
+  const [quantity, setQuantity] =
+    useState(1);
 
   useEffect(() => {
-    const unsubscribe =
-      onSnapshot(
-        collection(
+
+    async function fetchProduct() {
+
+      try {
+
+        const productRef = doc(
           db,
-          "homepage_banners"
-        ),
-        (snapshot) => {
-          const data: BannerSlide[] =
-            snapshot.docs.map(
-              (document) => {
-                return {
-                  id: document.id,
+          "products",
+          String(productId)
+        );
 
-                  ...(document.data() as Omit<
-                    BannerSlide,
-                    "id"
-                  >)
-                };
+        const snapshot =
+          await getDoc(productRef);
+
+        if (snapshot.exists()) {
+
+          const data =
+            snapshot.data() as Omit<
+              Product,
+              "id"
+            >;
+
+          const finalProduct = {
+            id: snapshot.id,
+
+            ...data,
+
+            images:
+              data.images?.length
+                ? data.images
+                : data.image
+                ? [data.image]
+                : [],
+
+            sizes:
+              data.sizes || [
+                "S",
+                "M",
+                "L",
+                "XL",
+                "XXL"
+              ],
+
+            colors:
+              data.colors || [
+                "#ffffff",
+                "#000000",
+                "#93c5fd",
+                "#d6c6a5"
+              ],
+
+            coupons:
+              data.coupons || [
+                "SAVE50",
+                "FREESHIP",
+                "EXTRA100"
+              ],
+
+            seller:
+              data.seller || {
+                name:
+                  "JembeeKart Official",
+                rating: 4.6
               }
+          };
+
+          setProduct(finalProduct);
+
+          if (data.category) {
+
+            const q = query(
+              collection(
+                db,
+                "products"
+              ),
+              where(
+                "category",
+                "==",
+                data.category
+              )
             );
 
-          const sorted =
-            data.sort(
-              (a, b) => {
-                return (
-                  Number(
-                    a.position || 0
-                  ) -
-                  Number(
-                    b.position || 0
-                  )
-                );
-              }
-            );
+            const relatedSnap =
+              await getDocs(q);
 
-          setBanners(sorted);
+            const related =
+              relatedSnap.docs
+                .filter(
+                  (doc) =>
+                    doc.id !==
+                    snapshot.id
+                )
+                .map((doc) => ({
+                  id: doc.id,
+                  ...doc.data()
+                })) as Product[];
+
+            setRelatedProducts(
+              related.slice(0, 6)
+            );
+          }
         }
-      );
 
-    return () => unsubscribe();
+        setLoading(false);
+
+      } catch (error) {
+
+        console.error(error);
+
+        setLoading(false);
+      }
+    }
+
+    fetchProduct();
+
+  }, [productId]);
+
+  const discount = useMemo(() => {
+
+    if (!product) return 0;
+
+    return Math.round(
+      (((product.price || 0) -
+        (product.discountPrice ||
+          0)) /
+        (product.price || 1)) *
+        100
+    );
+
+  }, [product]);
+
+  const deliveryDate = useMemo(() => {
+
+    const date = new Date();
+
+    date.setDate(
+      date.getDate() + 4
+    );
+
+    return date.toDateString();
+
   }, []);
 
-  /* =========================================================
-  FILTER
-  ========================================================= */
+  async function addToCart() {
 
-  const filteredBanners =
-    useMemo(() => {
-      if (!search.trim()) {
-        return banners;
-      }
+    if (!product) return;
 
-      return banners.filter(
-        (banner) => {
-          return (
-            banner.title
-              ?.toLowerCase()
-              .includes(
-                search.toLowerCase()
-              ) ||
-            banner.subtitle
-              ?.toLowerCase()
-              .includes(
-                search.toLowerCase()
-              )
-          );
+    try {
+
+      await addDoc(
+        collection(db, "cart"),
+        {
+          productId: product.id,
+          title: product.title,
+          image:
+            product.images?.[0],
+          price:
+            product.discountPrice,
+          size: selectedSize,
+          color: selectedColor,
+          quantity,
+          createdAt: Date.now()
         }
       );
-    }, [banners, search]);
 
-  /* =========================================================
-  TOGGLE
-  ========================================================= */
+      alert("Added To Cart");
 
-  function toggleBanner(
-    id: string
-  ) {
-    setExpandedBanners(
-      (previous) => {
-        return {
-          ...previous,
+    } catch (error) {
 
-          [id]:
-            !previous[id]
-        };
-      }
+      console.error(error);
+    }
+  }
+
+  async function toggleWishlist() {
+
+    setWishlist(!wishlist);
+
+    alert(
+      !wishlist
+        ? "Added To Wishlist"
+        : "Removed From Wishlist"
     );
   }
 
-  /* =========================================================
-  UPDATE
-  ========================================================= */
+  async function shareProduct() {
 
-  function updateBannerField(
-    id: string,
-    field: string,
-    value:
-      | string
-      | boolean
-      | number
-  ) {
-    setBanners((previous) => {
-      return previous.map(
-        (banner) => {
-          if (
-            banner.id === id
-          ) {
-            return {
-              ...banner,
-
-              [field]: value
-            };
-          }
-
-          return banner;
-        }
-      );
-    });
-  }
-
-  /* =========================================================
-  CREATE NEW BANNER
-  ========================================================= */
-
-  async function createNewBanner() {
-    try {
-      const newBannerRef =
-        doc(
-          collection(
-            db,
-            "homepage_banners"
-          )
-        );
-
-      await setDoc(
-        newBannerRef,
-        {
-          title:
-            "New Banner",
-
-          subtitle:
-            "Banner Subtitle",
-
-          buttonText:
-            "Explore",
-
-          buttonLink: "/",
-
-          backgroundColor:
-            "#7c3aed",
-
-          gradientColor:
-            "#ec4899",
-
-          textColor:
-            "#ffffff",
-
-          buttonColor:
-            "#ffffff",
-
-          buttonTextColor:
-            "#000000",
-
-          imageUrl: "",
-
-          videoUrl: "",
-
-          mediaType:
-            "image",
-
-          visible: true,
-
-          position:
-            banners.length + 1
-        }
-      );
-
-      alert(
-        "Banner Created"
-      );
-    } catch (error) {
-      console.error(error);
-
-      alert(
-        "Error Creating Banner"
-      );
-    }
-  }
-
-  /* =========================================================
-  DELETE BANNER
-  ========================================================= */
-
-  async function deleteBanner(
-    id: string
-  ) {
-    const confirmDelete =
-      confirm(
-        "Delete this banner?"
-      );
-
-    if (!confirmDelete) {
-      return;
-    }
+    if (!product) return;
 
     try {
-      await deleteDoc(
-        doc(
-          db,
-          "homepage_banners",
-          id
-        )
-      );
 
-      alert(
-        "Banner Deleted"
-      );
+      await navigator.share({
+        title: product.title,
+        text:
+          product.description,
+        url: window.location.href
+      });
+
     } catch (error) {
-      console.error(error);
 
-      alert(
-        "Delete Failed"
-      );
+      console.error(error);
     }
   }
 
-  /* =========================================================
-  SAVE BANNER
-  ========================================================= */
-
-  async function saveBanner(
-    banner: BannerSlide
-  ) {
-    try {
-      setSavingId(banner.id);
-
-      await setDoc(
-        doc(
-          db,
-          "homepage_banners",
-          banner.id
-        ),
-        banner,
-        {
-          merge: true
-        }
-      );
-
-      alert(
-        "Banner Saved"
-      );
-    } catch (error) {
-      console.error(error);
-
-      alert(
-        "Save Failed"
-      );
-    } finally {
-      setSavingId("");
-    }
-  }
-
-  /* =========================================================
-  IMAGE UPLOAD
-  ========================================================= */
-
-  async function uploadImage(
-    bannerId: string,
-    file: File
-  ) {
-    try {
-      const response =
-        await uploadToCloudinary(
-          file,
-          "image"
-        );
-
-      updateBannerField(
-        bannerId,
-        "imageUrl",
-        response.secure_url
-      );
-
-      updateBannerField(
-        bannerId,
-        "mediaType",
-        "image"
-      );
-
-      alert(
-        "Image Uploaded"
-      );
-    } catch (error) {
-      console.error(error);
-
-      alert(
-        "Upload Failed"
-      );
-    }
-  }
-
-  /* =========================================================
-  VIDEO UPLOAD
-  ========================================================= */
-
-  async function uploadVideo(
-    bannerId: string,
-    file: File
-  ) {
-    try {
-      const response =
-        await uploadToCloudinary(
-          file,
-          "video"
-        );
-
-      updateBannerField(
-        bannerId,
-        "videoUrl",
-        response.secure_url
-      );
-
-      updateBannerField(
-        bannerId,
-        "mediaType",
-        "video"
-      );
-
-      alert(
-        "Video Uploaded"
-      );
-    } catch (error) {
-      console.error(error);
-
-      alert(
-        "Video Upload Failed"
-      );
-    }
-  }
-
-  /* =========================================================
-  DRAG DROP
-  ========================================================= */
-
-  async function handleDrop(
-    targetId: string
-  ) {
-    if (
-      !draggedBanner ||
-      draggedBanner === targetId
-    ) {
-      return;
-    }
-
-    const updated =
-      [...banners];
-
-    const draggedIndex =
-      updated.findIndex(
-        (item) =>
-          item.id ===
-          draggedBanner
-      );
-
-    const targetIndex =
-      updated.findIndex(
-        (item) =>
-          item.id === targetId
-      );
-
-    const draggedItem =
-      updated[
-        draggedIndex
-      ];
-
-    updated.splice(
-      draggedIndex,
-      1
+  if (loading) {
+    return (
+      <main className="flex min-h-screen items-center justify-center bg-[#f6f6f6]">
+        <h1 className="text-sm font-bold">
+          Loading...
+        </h1>
+      </main>
     );
-
-    updated.splice(
-      targetIndex,
-      0,
-      draggedItem
-    );
-
-    const reordered =
-      updated.map(
-        (
-          item,
-          index
-        ) => ({
-          ...item,
-
-          position:
-            index + 1
-        })
-      );
-
-    setBanners(reordered);
-
-    for (const item of reordered) {
-      await updateDoc(
-        doc(
-          db,
-          "homepage_banners",
-          item.id
-        ),
-        {
-          position:
-            item.position
-        }
-      );
-    }
   }
 
-  /* =========================================================
-  UI
-  ========================================================= */
+  if (!product) {
+    return (
+      <main className="flex min-h-screen items-center justify-center bg-[#f6f6f6]">
+        <h1 className="text-sm font-bold text-red-500">
+          Product Not Found
+        </h1>
+      </main>
+    );
+  }
+
+  const images =
+    product.images || [];
 
   return (
-    <main className="min-h-screen bg-gradient-to-br from-slate-100 via-blue-50 to-indigo-100 p-4">
 
-      <div className="mx-auto max-w-7xl">
+    <main className="min-h-screen bg-[#f6f6f6] pb-[90px]">
 
-        {/* HEADER */}
+      {/* TOPBAR */}
 
-        <div className="mb-8 rounded-[35px] bg-gradient-to-r from-blue-700 via-indigo-700 to-purple-700 p-8 text-white shadow-2xl">
+      <div className="sticky top-0 z-50 bg-[#f6f6f6]/90 backdrop-blur-md px-3 pt-3">
 
-          <h1 className="text-4xl font-black md:text-6xl">
-            JembeeKart Admin
+        <div className="flex items-center justify-between rounded-[18px] bg-white px-3 py-2.5 shadow-sm">
+
+          <div className="flex items-center gap-2">
+
+            <Link
+              href="/"
+              className="flex h-8 w-8 items-center justify-center rounded-full bg-gray-100"
+            >
+              <ArrowLeft size={16} />
+            </Link>
+
+            <h1 className="text-[18px] font-black text-purple-600">
+              JembeeKart
+            </h1>
+
+          </div>
+
+          <div className="flex items-center gap-3">
+
+            <button
+              onClick={toggleWishlist}
+            >
+              <Heart
+                size={18}
+                fill={
+                  wishlist
+                    ? "red"
+                    : "transparent"
+                }
+                className={
+                  wishlist
+                    ? "text-red-500"
+                    : ""
+                }
+              />
+            </button>
+
+            <button
+              onClick={shareProduct}
+            >
+              <Share2 size={17} />
+            </button>
+
+          </div>
+
+        </div>
+
+      </div>
+
+      <section className="space-y-4 px-3 pt-2">
+
+        {/* IMAGE */}
+
+        <div className="rounded-[20px] bg-white p-2.5 shadow-sm">
+
+          <div className="relative overflow-hidden rounded-[18px]">
+
+            <img
+              src={
+                images[
+                  currentImage
+                ] ||
+                "/placeholder.png"
+              }
+              alt={product.title}
+              className="h-[240px] w-full rounded-[18px] bg-gray-100 object-cover"
+            />
+
+            <div className="absolute left-2 top-2 rounded-lg bg-red-500 px-2.5 py-1 text-[10px] font-bold text-white">
+
+              {discount}% OFF
+
+            </div>
+
+            <button
+              onClick={toggleWishlist}
+              className="absolute right-2 top-2 flex h-8 w-8 items-center justify-center rounded-full bg-white shadow-sm"
+            >
+
+              <Heart
+                size={16}
+                fill={
+                  wishlist
+                    ? "red"
+                    : "transparent"
+                }
+                className={
+                  wishlist
+                    ? "text-red-500"
+                    : ""
+                }
+              />
+
+            </button>
+
+            {currentImage > 0 && (
+              <button
+                onClick={() =>
+                  setCurrentImage(
+                    currentImage - 1
+                  )
+                }
+                className="absolute left-2 top-1/2 flex h-8 w-8 -translate-y-1/2 items-center justify-center rounded-full bg-white shadow-sm"
+              >
+                <ChevronLeft size={18} />
+              </button>
+            )}
+
+            {currentImage <
+              images.length - 1 && (
+              <button
+                onClick={() =>
+                  setCurrentImage(
+                    currentImage + 1
+                  )
+                }
+                className="absolute right-2 top-1/2 flex h-8 w-8 -translate-y-1/2 items-center justify-center rounded-full bg-white shadow-sm"
+              >
+                <ChevronRight size={18} />
+              </button>
+            )}
+
+          </div>
+
+          {/* THUMBNAILS */}
+
+          <div className="mt-3 flex gap-2 overflow-x-auto">
+
+            {images.map(
+              (
+                image,
+                index
+              ) => (
+                <button
+                  key={index}
+                  onClick={() =>
+                    setCurrentImage(
+                      index
+                    )
+                  }
+                  className={`overflow-hidden rounded-lg border ${
+                    currentImage ===
+                    index
+                      ? "border-purple-600"
+                      : "border-transparent"
+                  }`}
+                >
+
+                  <img
+                    src={image}
+                    alt="thumb"
+                    className="h-12 w-12 object-cover"
+                  />
+
+                </button>
+              )
+            )}
+
+          </div>
+
+        </div>
+
+        {/* DETAILS */}
+
+        <div>
+
+          <p className="text-[11px] font-bold text-purple-600">
+
+            {product.category}
+
+          </p>
+
+          <h1 className="mt-1 text-[22px] font-black leading-[26px] text-black">
+
+            {product.title}
+
           </h1>
 
-          <p className="mt-3 text-blue-100">
-            Advanced Homepage Slider
+          <div className="mt-2 flex items-center gap-2 text-[11px]">
+
+            <div className="flex items-center gap-1 text-green-600">
+
+              <Star
+                size={12}
+                fill="green"
+              />
+
+              <span className="font-bold">
+
+                {product.rating ||
+                  4.5}
+
+              </span>
+
+            </div>
+
+            <span className="text-gray-500">
+
+              (128 Reviews)
+
+            </span>
+
+            <span className="text-gray-300">
+              |
+            </span>
+
+            <span className="text-gray-500">
+              5k+ sold
+            </span>
+
+          </div>
+
+          {/* PRICE */}
+
+          <div className="mt-3 flex items-center gap-2">
+
+            <h2 className="text-[24px] font-black leading-none">
+
+              ₹
+              {
+                product.discountPrice
+              }
+
+            </h2>
+
+            <p className="text-[15px] font-bold text-gray-400 line-through">
+
+              ₹
+              {product.price}
+
+            </p>
+
+          </div>
+
+          <p className="mt-1 text-[13px] font-bold text-green-600">
+
+            You save ₹
+            {(product.price || 0) -
+              (product.discountPrice ||
+                0)}
+            {" "}
+            ({discount}%)
+
+          </p>
+
+          {/* QUANTITY */}
+
+          <div className="mt-4">
+
+            <h2 className="mb-2 text-sm font-bold">
+
+              Quantity
+
+            </h2>
+
+            <div className="flex items-center gap-3">
+
+              <button
+                onClick={() =>
+                  quantity > 1 &&
+                  setQuantity(
+                    quantity - 1
+                  )
+                }
+                className="flex h-8 w-8 items-center justify-center rounded-lg border bg-white font-bold"
+              >
+                -
+              </button>
+
+              <span className="text-sm font-bold">
+                {quantity}
+              </span>
+
+              <button
+                onClick={() =>
+                  setQuantity(
+                    quantity + 1
+                  )
+                }
+                className="flex h-8 w-8 items-center justify-center rounded-lg border bg-white font-bold"
+              >
+                +
+              </button>
+
+            </div>
+
+          </div>
+
+          {/* DELIVERY */}
+
+          <div className="mt-4 flex items-center gap-3 rounded-[16px] border bg-white p-3 shadow-sm">
+
+            <Truck
+              size={18}
+              className="text-purple-600"
+            />
+
+            <div>
+
+              <h3 className="text-sm font-bold text-purple-600">
+
+                Free Delivery
+
+              </h3>
+
+              <p className="text-[11px] text-gray-500">
+
+                Delivery by {deliveryDate}
+
+              </p>
+
+            </div>
+
+          </div>
+
+          {/* SIZE */}
+
+          <div className="mt-5">
+
+            <h2 className="mb-2 text-sm font-bold">
+
+              Select Size
+
+            </h2>
+
+            <div className="flex flex-wrap gap-2">
+
+              {product.sizes?.map(
+                (size) => (
+                  <button
+                    key={size}
+                    onClick={() =>
+                      setSelectedSize(
+                        size
+                      )
+                    }
+                    className={`min-w-[46px] rounded-[12px] border px-3 py-1.5 text-[12px] font-bold ${
+                      selectedSize ===
+                      size
+                        ? "border-purple-600 bg-purple-600 text-white"
+                        : "bg-white"
+                    }`}
+                  >
+
+                    {size}
+
+                  </button>
+                )
+              )}
+
+            </div>
+
+          </div>
+
+          {/* COLORS */}
+
+          <div className="mt-5">
+
+            <h2 className="mb-2 text-sm font-bold">
+
+              Select Color
+
+            </h2>
+
+            <div className="flex gap-3">
+
+              {product.colors?.map(
+                (color) => (
+                  <button
+                    key={color}
+                    onClick={() =>
+                      setSelectedColor(
+                        color
+                      )
+                    }
+                    style={{
+                      background:
+                        color
+                    }}
+                    className={`h-8 w-8 rounded-full border-2 ${
+                      selectedColor ===
+                      color
+                        ? "border-purple-600"
+                        : "border-gray-200"
+                    }`}
+                  />
+                )
+              )}
+
+            </div>
+
+          </div>
+
+        </div>
+
+        {/* FEATURES */}
+
+        <div className="grid grid-cols-2 gap-3 rounded-[18px] bg-white p-3 shadow-sm">
+
+          <div className="flex items-center gap-2">
+
+            <ShieldCheck
+              size={18}
+              className="text-green-600"
+            />
+
+            <div>
+
+              <h3 className="text-[12px] font-bold">
+                Original
+              </h3>
+
+              <p className="text-[10px] text-gray-500">
+                Authentic
+              </p>
+
+            </div>
+
+          </div>
+
+          <div className="flex items-center gap-2">
+
+            <RotateCcw
+              size={18}
+              className="text-violet-600"
+            />
+
+            <div>
+
+              <h3 className="text-[12px] font-bold">
+                7 Day Return
+              </h3>
+
+              <p className="text-[10px] text-gray-500">
+                Easy Return
+              </p>
+
+            </div>
+
+          </div>
+
+          <div className="flex items-center gap-2">
+
+            <BadgeCheck
+              size={18}
+              className="text-blue-600"
+            />
+
+            <div>
+
+              <h3 className="text-[12px] font-bold">
+                Secure Payment
+              </h3>
+
+              <p className="text-[10px] text-gray-500">
+                Protected
+              </p>
+
+            </div>
+
+          </div>
+
+          <div className="flex items-center gap-2">
+
+            <Headphones
+              size={18}
+              className="text-orange-500"
+            />
+
+            <div>
+
+              <h3 className="text-[12px] font-bold">
+                24/7 Support
+              </h3>
+
+              <p className="text-[10px] text-gray-500">
+                Always Here
+              </p>
+
+            </div>
+
+          </div>
+
+        </div>
+
+        {/* SELLER */}
+
+        <div className="rounded-[18px] bg-white p-4 shadow-sm">
+
+          <h2 className="text-base font-black">
+
+            Seller Details
+
+          </h2>
+
+          <div className="mt-3 flex items-center justify-between">
+
+            <div className="flex items-center gap-3">
+
+              <div className="flex h-10 w-10 items-center justify-center rounded-full bg-purple-100">
+
+                <Store
+                  size={18}
+                  className="text-purple-600"
+                />
+
+              </div>
+
+              <div>
+
+                <h3 className="text-sm font-bold">
+
+                  {
+                    product.seller
+                      ?.name
+                  }
+
+                </h3>
+
+                <p className="text-[11px] text-gray-500">
+
+                  {
+                    product.seller
+                      ?.rating
+                  }
+                  ★ Seller Rating
+
+                </p>
+
+              </div>
+
+            </div>
+
+            <button className="rounded-xl border border-purple-400 px-3 py-2 text-xs font-bold text-purple-600">
+
+              View Store
+
+            </button>
+
+          </div>
+
+        </div>
+
+        {/* DESCRIPTION */}
+
+        <div className="rounded-[18px] bg-white p-4 shadow-sm">
+
+          <h2 className="text-base font-black">
+
+            Product Details
+
+          </h2>
+
+          <p className="mt-3 text-[12px] leading-6 text-gray-600">
+
+            {product.description}
+
           </p>
 
         </div>
 
-        {/* BUTTONS */}
+        {/* RELATED PRODUCTS */}
 
-        <div className="mb-8 flex flex-wrap gap-4">
+        {relatedProducts.length > 0 && (
+
+          <div>
+
+            <h2 className="mb-3 text-base font-black">
+
+              Related Products
+
+            </h2>
+
+            <div className="grid grid-cols-2 gap-3">
+
+              {relatedProducts.map(
+                (item) => (
+
+                  <Link
+                    key={item.id}
+                    href={`/product/${item.id}`}
+                    className="rounded-[18px] bg-white p-2 shadow-sm"
+                  >
+
+                    <img
+                      src={
+                        item.images?.[0] ||
+                        item.image
+                      }
+                      alt={item.title}
+                      className="h-32 w-full rounded-[14px] object-cover"
+                    />
+
+                    <h3 className="mt-2 line-clamp-1 text-[12px] font-bold">
+
+                      {item.title}
+
+                    </h3>
+
+                    <div className="mt-1 flex items-center gap-2">
+
+                      <p className="text-sm font-black">
+
+                        ₹
+                        {
+                          item.discountPrice
+                        }
+
+                      </p>
+
+                      <p className="text-[10px] text-gray-400 line-through">
+
+                        ₹
+                        {item.price}
+
+                      </p>
+
+                    </div>
+
+                  </Link>
+
+                )
+              )}
+
+            </div>
+
+          </div>
+
+        )}
+
+      </section>
+
+      {/* BOTTOM BAR */}
+
+      <div className="fixed bottom-0 left-0 z-50 w-full border-t bg-white px-3 py-2">
+
+        <div className="flex items-center gap-2">
+
+          <div>
+
+            <h2 className="text-[20px] font-black">
+
+              ₹
+              {
+                product.discountPrice
+              }
+
+            </h2>
+
+            <p className="text-[10px] font-bold text-green-600">
+
+              {discount}% OFF
+
+            </p>
+
+          </div>
 
           <button
-            onClick={() => {
-              createNewBanner();
-            }}
-            className="flex items-center gap-3 rounded-2xl bg-gradient-to-r from-pink-600 to-purple-600 px-6 py-4 font-black text-white"
+            onClick={addToCart}
+            className="flex flex-1 items-center justify-center gap-1 rounded-[14px] border bg-white py-2 text-[12px] font-bold"
           >
-            <Plus size={22} />
 
-            Create Banner
+            <ShoppingCart size={15} />
+
+            Cart
+
           </button>
 
-          <button
-            onClick={() => {
-              setMobilePreview(
-                !mobilePreview
-              );
-            }}
-            className="flex items-center gap-3 rounded-2xl bg-black px-6 py-4 font-black text-white"
-          >
-            {mobilePreview ? (
-              <Smartphone />
-            ) : (
-              <Monitor />
-            )}
+          <button className="flex flex-1 items-center justify-center gap-1 rounded-[14px] bg-gradient-to-r from-violet-600 to-fuchsia-500 py-2 text-[12px] font-bold text-white">
 
-            {mobilePreview
-              ? "Mobile Preview"
-              : "Desktop Preview"}
+            <Zap size={14} />
+
+            Buy Now
+
           </button>
-
-        </div>
-
-        {/* SEARCH */}
-
-        <div className="mb-8">
-
-          <input
-            type="text"
-            placeholder="Search Banner..."
-            value={search}
-            onChange={(e) => {
-              setSearch(
-                e.target.value
-              );
-            }}
-            className="w-full rounded-2xl border border-gray-200 bg-white px-5 py-4 text-lg font-semibold outline-none"
-          />
-
-        </div>
-
-        {/* BANNERS */}
-
-        <div className="space-y-6">
-
-          {filteredBanners.map(
-            (banner) => {
-              const isExpanded =
-                expandedBanners[
-                  banner.id
-                ];
-
-              return (
-                <div
-                  key={banner.id}
-                  draggable
-                  onDragStart={() => {
-                    setDraggedBanner(
-                      banner.id
-                    );
-                  }}
-                  onDragOver={(
-                    e
-                  ) => {
-                    e.preventDefault();
-                  }}
-                  onDrop={() => {
-                    handleDrop(
-                      banner.id
-                    );
-                  }}
-                  className="overflow-hidden rounded-[35px] bg-white shadow-2xl"
-                >
-
-                  {/* TOP */}
-
-                  <div className="flex flex-wrap items-center justify-between gap-4 bg-gradient-to-r from-pink-600 to-purple-600 p-5 text-white">
-
-                    <div className="flex items-center gap-4">
-
-                      <div className="cursor-grab rounded-2xl bg-white/20 p-3">
-                        <GripVertical />
-                      </div>
-
-                      <button
-                        onClick={() => {
-                          toggleBanner(
-                            banner.id
-                          );
-                        }}
-                        className="flex h-14 w-14 items-center justify-center rounded-2xl bg-white/20"
-                      >
-                        <Grid3X3 />
-                      </button>
-
-                      <div>
-
-                        <h2 className="text-2xl font-black">
-                          {
-                            banner.title
-                          }
-                        </h2>
-
-                        <p className="text-pink-100">
-                          Drag & Drop Enabled
-                        </p>
-
-                      </div>
-
-                    </div>
-
-                    <div className="flex items-center gap-3">
-
-                      <button
-                        onClick={() => {
-                          updateBannerField(
-                            banner.id,
-                            "visible",
-                            !banner.visible
-                          );
-                        }}
-                        className="rounded-2xl bg-white/20 p-3"
-                      >
-                        {banner.visible ? (
-                          <Eye />
-                        ) : (
-                          <EyeOff />
-                        )}
-                      </button>
-
-                      <button
-                        onClick={() => {
-                          deleteBanner(
-                            banner.id
-                          );
-                        }}
-                        className="rounded-2xl bg-red-500 p-3"
-                      >
-                        <Trash2 />
-                      </button>
-
-                      <button
-                        onClick={() => {
-                          toggleBanner(
-                            banner.id
-                          );
-                        }}
-                        className="rounded-2xl bg-white/20 p-3"
-                      >
-                        {isExpanded ? (
-                          <ChevronUp />
-                        ) : (
-                          <ChevronDown />
-                        )}
-                      </button>
-
-                    </div>
-
-                  </div>
-
-                  {/* CONTENT */}
-
-                  {isExpanded && (
-                    <div className="grid gap-8 p-6 lg:grid-cols-2">
-
-                      {/* LEFT */}
-
-                      <div className="space-y-5">
-
-                        {Object.entries(
-                          banner
-                        ).map(
-                          ([
-                            key,
-                            value
-                          ]) => {
-                            if (
-                              key === "id"
-                            ) {
-                              return null;
-                            }
-
-                            return (
-                              <div
-                                key={key}
-                                className="rounded-2xl border border-gray-200 p-4"
-                              >
-
-                                <h3 className="mb-3 text-lg font-black capitalize">
-                                  {key}
-                                </h3>
-
-                                {key
-                                  .toLowerCase()
-                                  .includes(
-                                    "color"
-                                  ) ? (
-                                  <div className="flex gap-3">
-
-                                    <input
-                                      type="color"
-                                      value={String(
-                                        value ||
-                                          "#000000"
-                                      )}
-                                      onChange={(
-                                        e
-                                      ) => {
-                                        updateBannerField(
-                                          banner.id,
-                                          key,
-                                          e
-                                            .target
-                                            .value
-                                        );
-                                      }}
-                                      className="h-14 w-20"
-                                    />
-
-                                    <input
-                                      type="text"
-                                      value={String(
-                                        value ||
-                                          ""
-                                      )}
-                                      onChange={(
-                                        e
-                                      ) => {
-                                        updateBannerField(
-                                          banner.id,
-                                          key,
-                                          e
-                                            .target
-                                            .value
-                                        );
-                                      }}
-                                      className="flex-1 rounded-xl border border-gray-200 px-4 py-3"
-                                    />
-
-                                  </div>
-                                ) : typeof value ===
-                                  "boolean" ? (
-                                  <input
-                                    type="checkbox"
-                                    checked={Boolean(
-                                      value
-                                    )}
-                                    onChange={(
-                                      e
-                                    ) => {
-                                        updateBannerField(
-                                          banner.id,
-                                          key,
-                                          e
-                                            .target
-                                            .checked
-                                        );
-                                      }}
-                                    className="h-7 w-7"
-                                  />
-                                ) : (
-                                  <input
-                                    type="text"
-                                    value={String(
-                                      value ||
-                                        ""
-                                    )}
-                                    onChange={(
-                                      e
-                                    ) => {
-                                        updateBannerField(
-                                          banner.id,
-                                          key,
-                                          e
-                                            .target
-                                            .value
-                                        );
-                                      }}
-                                    className="w-full rounded-xl border border-gray-200 px-4 py-3"
-                                  />
-                                )}
-
-                              </div>
-                            );
-                          }
-                        )}
-
-                        {/* MEDIA */}
-
-                        <div className="rounded-2xl border border-dashed border-gray-300 p-5">
-
-                          <h3 className="mb-4 text-lg font-black">
-                            Upload Media
-                          </h3>
-
-                          <div className="flex flex-wrap gap-3">
-
-                            <button
-                              onClick={() => {
-                                fileInputRefs.current[
-                                  banner.id
-                                ]?.click();
-                              }}
-                              className="flex items-center gap-2 rounded-2xl bg-blue-600 px-5 py-3 font-black text-white"
-                            >
-                              <ImagePlus />
-
-                              Upload Image
-                            </button>
-
-                            <button
-                              onClick={() => {
-                                videoInputRefs.current[
-                                  banner.id
-                                ]?.click();
-                              }}
-                              className="flex items-center gap-2 rounded-2xl bg-purple-600 px-5 py-3 font-black text-white"
-                            >
-                              <Video />
-
-                              Upload Video
-                            </button>
-
-                          </div>
-
-                          {/* IMAGE INPUT */}
-
-                          <input
-                            ref={(element) => {
-                              fileInputRefs.current[
-                                banner.id
-                              ] = element;
-                            }}
-                            type="file"
-                            accept="image/*"
-                            hidden
-                            onChange={async (
-                              event
-                            ) => {
-                              const file =
-                                event
-                                  .target
-                                  .files?.[0];
-
-                              if (
-                                file
-                              ) {
-                                await uploadImage(
-                                  banner.id,
-                                  file
-                                );
-                              }
-                            }}
-                          />
-
-                          {/* VIDEO INPUT */}
-
-                          <input
-                            ref={(element) => {
-                              videoInputRefs.current[
-                                banner.id
-                              ] = element;
-                            }}
-                            type="file"
-                            accept="video/*"
-                            hidden
-                            onChange={async (
-                              event
-                            ) => {
-                              const file =
-                                event
-                                  .target
-                                  .files?.[0];
-
-                              if (
-                                file
-                              ) {
-                                await uploadVideo(
-                                  banner.id,
-                                  file
-                                );
-                              }
-                            }}
-                          />
-
-                        </div>
-
-                        {/* SAVE */}
-
-                        <button
-                          onClick={() => {
-                            saveBanner(
-                              banner
-                            );
-                          }}
-                          disabled={
-                            savingId ===
-                            banner.id
-                          }
-                          className="w-full rounded-2xl bg-gradient-to-r from-pink-600 to-purple-600 px-6 py-5 text-xl font-black text-white"
-                        >
-                          {savingId ===
-                          banner.id
-                            ? "Saving..."
-                            : "Save Banner"}
-                        </button>
-
-                      </div>
-
-                      {/* LIVE PREVIEW */}
-
-                      <div>
-
-                        <h2 className="mb-5 text-2xl font-black">
-                          Live Preview
-                        </h2>
-
-                        <div
-                          className={`overflow-hidden rounded-[35px] shadow-2xl ${
-                            mobilePreview
-                              ? "mx-auto max-w-[380px]"
-                              : "w-full"
-                          }`}
-                        >
-
-                          <div
-                            className="relative flex min-h-[420px] flex-col justify-center overflow-hidden p-8"
-                            style={{
-                              background: `linear-gradient(135deg, ${
-                                banner.backgroundColor ||
-                                "#7c3aed"
-                              }, ${
-                                banner.gradientColor ||
-                                "#ec4899"
-                              })`
-                            }}
-                          >
-
-                            {/* IMAGE */}
-
-                            {banner.mediaType ===
-                              "image" &&
-                              banner.imageUrl && (
-                                <Image
-                                  src={String(
-                                    banner.imageUrl
-                                  )}
-                                  alt="Banner"
-                                  fill
-                                  className="object-cover opacity-30"
-                                />
-                              )}
-
-                            {/* VIDEO */}
-
-                            {banner.mediaType ===
-                              "video" &&
-                              banner.videoUrl && (
-                                <video
-                                  src={String(
-                                    banner.videoUrl
-                                  )}
-                                  autoPlay
-                                  muted
-                                  loop
-                                  playsInline
-                                  className="absolute inset-0 h-full w-full object-cover"
-                                />
-                              )}
-
-                            {/* CONTENT */}
-
-                            <div className="relative z-10">
-
-                              <h2
-                                className="text-4xl font-black leading-tight"
-                                style={{
-                                  color:
-                                    String(
-                                      banner.textColor ||
-                                        "#ffffff"
-                                    )
-                                }}
-                              >
-                                {
-                                  banner.title
-                                }
-                              </h2>
-
-                              <p
-                                className="mt-4 text-lg"
-                                style={{
-                                  color:
-                                    String(
-                                      banner.textColor ||
-                                        "#ffffff"
-                                    )
-                                }}
-                              >
-                                {
-                                  banner.subtitle
-                                }
-                              </p>
-
-                              <button
-                                className="mt-6 rounded-2xl px-8 py-4 text-lg font-black"
-                                style={{
-                                  backgroundColor:
-                                    String(
-                                      banner.buttonColor ||
-                                        "#ffffff"
-                                    ),
-
-                                  color:
-                                    String(
-                                      banner.buttonTextColor ||
-                                        "#000000"
-                                    )
-                                }}
-                              >
-                                {
-                                  banner.buttonText
-                                }
-                              </button>
-
-                            </div>
-
-                          </div>
-
-                        </div>
-
-                      </div>
-
-                    </div>
-                  )}
-
-                </div>
-              );
-            }
-          )}
 
         </div>
 
