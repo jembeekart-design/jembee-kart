@@ -1,14 +1,16 @@
 import {
   initializeApp,
   getApps,
-  getApp,
+  getApp
 } from "firebase/app";
 
-import { getAuth } from "firebase/auth";
+import { getAuth }
+from "firebase/auth";
 
-import { getFirestore } from "firebase/firestore";
+import { getFirestore }
+from "firebase/firestore";
 
-import { getStorage } from "firebase/storage";
+/* FIREBASE CONFIG */
 
 const firebaseConfig = {
   apiKey:
@@ -33,8 +35,10 @@ const firebaseConfig = {
 
   appId:
     process.env
-      .NEXT_PUBLIC_FIREBASE_APP_ID,
+      .NEXT_PUBLIC_FIREBASE_APP_ID
 };
+
+/* APP */
 
 const app =
   getApps().length > 0
@@ -43,13 +47,12 @@ const app =
         firebaseConfig
       );
 
+/* SERVICES */
+
 export const auth =
   getAuth(app);
 
 export const db =
   getFirestore(app);
-
-export const storage =
-  getStorage(app);
 
 export default app;
