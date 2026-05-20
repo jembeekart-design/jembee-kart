@@ -131,6 +131,12 @@ export default function ThemePage() {
         [field]: value
       });
 
+      console.log(
+        "Updated:",
+        field,
+        value
+      );
+
     } catch (error) {
 
       console.log(error);
@@ -154,41 +160,37 @@ export default function ThemePage() {
         JembeeKart Live Theme
       </h1>
 
-      {/* HERO */}
-
       <ThemeSection
         title="Hero Section"
         data={heroTheme}
+        setData={setHeroTheme}
         collectionName="homepage_sections"
         documentId="hero_section"
         updateTheme={updateTheme}
       />
 
-      {/* AFFILIATE */}
-
       <ThemeSection
         title="Affiliate Section"
         data={affiliateTheme}
+        setData={setAffiliateTheme}
         collectionName="homepage_sections"
         documentId="affiliate_section"
         updateTheme={updateTheme}
       />
 
-      {/* SELLER */}
-
       <ThemeSection
         title="Seller Section"
         data={sellerTheme}
+        setData={setSellerTheme}
         collectionName="homepage_sections"
         documentId="seller_section"
         updateTheme={updateTheme}
       />
 
-      {/* BANNER */}
-
       <ThemeSection
         title="Banner Section"
         data={bannerTheme}
+        setData={setBannerTheme}
         collectionName="homepage_banner"
         documentId="JoPe2zxbNgJa7rn7zDOq"
         updateTheme={updateTheme}
@@ -201,6 +203,7 @@ export default function ThemePage() {
 function ThemeSection({
   title,
   data,
+  setData,
   collectionName,
   documentId,
   updateTheme
@@ -234,13 +237,21 @@ function ThemeSection({
                 value.startsWith(
                   "#"
                 ) ||
-                value === "white" ||
-                value === "black" ||
-                value === "White" ||
-                value === "Black"
+                value.toLowerCase() ===
+                  "white" ||
+                value.toLowerCase() ===
+                  "black"
               );
 
             if (!isColor) return null;
+
+            const currentColor =
+              value.startsWith("#")
+                ? value
+                : value.toLowerCase() ===
+                  "white"
+                ? "#ffffff"
+                : "#000000";
 
             return (
 
@@ -263,7 +274,7 @@ function ThemeSection({
 
                     <p className="text-sm text-gray-200">
 
-                      {value}
+                      {currentColor}
 
                     </p>
 
@@ -273,21 +284,17 @@ function ThemeSection({
                     className="h-14 w-14 rounded-full border-4 border-white"
                     style={{
                       background:
-                        value
+                        currentColor
                     }}
                   />
 
                 </div>
 
+                {/* LIVE COLOR PICKER */}
+
                 <input
                   type="color"
-                  value={
-                    value.startsWith(
-                      "#"
-                    )
-                      ? value
-                      : "#ffffff"
-                  }
+                  value={currentColor}
                   onChange={async (
                     e
                   ) => {
@@ -295,18 +302,29 @@ function ThemeSection({
                     const newColor =
                       e.target.value;
 
-                    updateTheme(
+                    /* UI LIVE UPDATE */
+
+                    setData(
+                      (
+                        prev: ThemeData
+                      ) => ({
+                        ...prev,
+                        [key]:
+                          newColor
+                      })
+                    );
+
+                    /* FIRESTORE UPDATE */
+
+                    await updateTheme(
                       collectionName,
                       documentId,
                       key,
                       newColor
                     );
 
-                    data[key] =
-                      newColor;
-
                   }}
-                  className="h-12 w-full cursor-pointer rounded-xl border-none"
+                  className="h-[55px] w-full cursor-pointer rounded-2xl border-none bg-transparent"
                 />
 
               </div>
