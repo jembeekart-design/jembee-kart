@@ -390,95 +390,6 @@ export default function ProductPage() {
               className="h-[240px] w-full rounded-[18px] bg-gray-100 object-cover"
             />
 
-            <div className="absolute left-2 top-2 rounded-lg bg-red-500 px-2.5 py-1 text-[10px] font-bold text-white">
-
-              {discount}% OFF
-
-            </div>
-
-            <button
-              onClick={toggleWishlist}
-              className="absolute right-2 top-2 flex h-8 w-8 items-center justify-center rounded-full bg-white shadow-sm"
-            >
-
-              <Heart
-                size={16}
-                fill={
-                  wishlist
-                    ? "red"
-                    : "transparent"
-                }
-                className={
-                  wishlist
-                    ? "text-red-500"
-                    : ""
-                }
-              />
-
-            </button>
-
-            {currentImage > 0 && (
-              <button
-                onClick={() =>
-                  setCurrentImage(
-                    currentImage - 1
-                  )
-                }
-                className="absolute left-2 top-1/2 flex h-8 w-8 -translate-y-1/2 items-center justify-center rounded-full bg-white shadow-sm"
-              >
-                <ChevronLeft size={18} />
-              </button>
-            )}
-
-            {currentImage <
-              images.length - 1 && (
-              <button
-                onClick={() =>
-                  setCurrentImage(
-                    currentImage + 1
-                  )
-                }
-                className="absolute right-2 top-1/2 flex h-8 w-8 -translate-y-1/2 items-center justify-center rounded-full bg-white shadow-sm"
-              >
-                <ChevronRight size={18} />
-              </button>
-            )}
-
-          </div>
-
-          {/* THUMBNAILS */}
-
-          <div className="mt-3 flex gap-2 overflow-x-auto">
-
-            {images.map(
-              (
-                image,
-                index
-              ) => (
-                <button
-                  key={index}
-                  onClick={() =>
-                    setCurrentImage(
-                      index
-                    )
-                  }
-                  className={`overflow-hidden rounded-lg border ${
-                    currentImage === index
-                      ? "border-purple-600"
-                      : "border-transparent"
-                  }`}
-                >
-
-                  <img
-                    src={image}
-                    alt="thumb"
-                    className="h-12 w-12 object-cover"
-                  />
-
-                </button>
-              )
-            )}
-
           </div>
 
         </div>
@@ -542,16 +453,6 @@ export default function ProductPage() {
 
           </div>
 
-          <p className="mt-1 text-[13px] font-bold text-green-600">
-
-            You save ₹
-            {(product.price || 0) -
-              (product.discountPrice || 0)}
-            {" "}
-            ({discount}%)
-
-          </p>
-
         </div>
 
         {/* COUPONS */}
@@ -581,12 +482,14 @@ export default function ProductPage() {
 
                 <div
                   key={coupon}
-                  className="flex items-center justify-between rounded-[16px] border border-dashed border-purple-300 bg-white px-4 py-4 shadow-sm"
+                  className="flex items-center justify-between rounded-[16px] border border-dashed border-purple-300 bg-white px-4 py-3 shadow-sm"
                 >
 
-                  <div>
+                  {/* LEFT */}
 
-                    <h3 className="text-[16px] font-black leading-none">
+                  <div className="min-w-0 flex-1">
+
+                    <h3 className="truncate text-[15px] font-black leading-none">
 
                       {coupon}
 
@@ -600,7 +503,11 @@ export default function ProductPage() {
 
                   </div>
 
-                  <button className="rounded-[10px] bg-gradient-to-r from-violet-600 to-fuchsia-500 px-4 py-2 text-[11px] font-bold text-white shadow-sm">
+                  {/* RIGHT */}
+
+                  <button
+                    className="ml-3 shrink-0 rounded-[10px] bg-gradient-to-r from-violet-600 to-fuchsia-500 px-4 py-2 text-[11px] font-bold text-white shadow-sm"
+                  >
 
                     Apply
 
@@ -612,76 +519,6 @@ export default function ProductPage() {
             )}
 
           </div>
-
-        </div>
-
-        {/* SELLER */}
-
-        <div className="rounded-[18px] bg-white p-4 shadow-sm">
-
-          <h2 className="text-base font-black">
-
-            Seller Details
-
-          </h2>
-
-          <div className="mt-3 flex items-center justify-between">
-
-            <div className="flex items-center gap-3">
-
-              <div className="flex h-10 w-10 items-center justify-center rounded-full bg-purple-100">
-
-                <Store
-                  size={18}
-                  className="text-purple-600"
-                />
-
-              </div>
-
-              <div>
-
-                <h3 className="text-sm font-bold">
-
-                  {product.seller?.name}
-
-                </h3>
-
-                <p className="text-[11px] text-gray-500">
-
-                  {product.seller?.rating}
-                  ★ Seller Rating
-
-                </p>
-
-              </div>
-
-            </div>
-
-            <button className="rounded-xl border border-purple-400 px-3 py-2 text-xs font-bold text-purple-600">
-
-              View Store
-
-            </button>
-
-          </div>
-
-        </div>
-
-        {/* DESCRIPTION */}
-
-        <div className="rounded-[18px] bg-white p-4 shadow-sm">
-
-          <h2 className="text-base font-black">
-
-            Product Details
-
-          </h2>
-
-          <p className="mt-3 text-[12px] leading-6 text-gray-600">
-
-            {product.description}
-
-          </p>
 
         </div>
 
