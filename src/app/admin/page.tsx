@@ -513,8 +513,7 @@ export default function ProductPage() {
 
               <span className="font-bold">
 
-                {product.rating ||
-                  4.5}
+                {product.rating || 4.5}
 
               </span>
 
@@ -526,14 +525,6 @@ export default function ProductPage() {
 
             </span>
 
-            <span className="text-gray-300">
-              |
-            </span>
-
-            <span className="text-gray-500">
-              5k+ sold
-            </span>
-
           </div>
 
           {/* PRICE */}
@@ -542,17 +533,13 @@ export default function ProductPage() {
 
             <h2 className="text-[24px] font-black leading-none">
 
-              ₹
-              {
-                product.discountPrice
-              }
+              ₹{product.discountPrice}
 
             </h2>
 
             <p className="text-[15px] font-bold text-gray-400 line-through">
 
-              ₹
-              {product.price}
+              ₹{product.price}
 
             </p>
 
@@ -562,279 +549,11 @@ export default function ProductPage() {
 
             You save ₹
             {(product.price || 0) -
-              (product.discountPrice ||
-                0)}
+              (product.discountPrice || 0)}
             {" "}
             ({discount}%)
 
           </p>
-
-          {/* QUANTITY */}
-
-          <div className="mt-4">
-
-            <h2 className="mb-2 text-sm font-bold">
-
-              Quantity
-
-            </h2>
-
-            <div className="flex items-center gap-3">
-
-              <button
-                onClick={() =>
-                  quantity > 1 &&
-                  setQuantity(
-                    quantity - 1
-                  )
-                }
-                className="flex h-8 w-8 items-center justify-center rounded-lg border bg-white font-bold"
-              >
-                -
-              </button>
-
-              <span className="text-sm font-bold">
-                {quantity}
-              </span>
-
-              <button
-                onClick={() =>
-                  setQuantity(
-                    quantity + 1
-                  )
-                }
-                className="flex h-8 w-8 items-center justify-center rounded-lg border bg-white font-bold"
-              >
-                +
-              </button>
-
-            </div>
-
-          </div>
-
-          {/* DELIVERY */}
-
-          <div className="mt-4 space-y-3">
-
-            <div className="flex items-center gap-3 rounded-[16px] border bg-white p-3 shadow-sm">
-
-              <Truck
-                size={18}
-                className="text-green-600"
-              />
-
-              <div>
-
-                <h3 className="text-sm font-bold">
-
-                  Delivery
-
-                </h3>
-
-                <p className="text-[18px] font-black text-green-600">
-
-                  {deliveryDate}
-
-                </p>
-
-              </div>
-
-            </div>
-
-            <div className="flex items-center gap-3 rounded-[16px] border bg-white p-3 shadow-sm">
-
-              <Zap
-                size={18}
-                className="text-orange-500"
-              />
-
-              <div>
-
-                <h3 className="text-sm font-bold">
-
-                  Cash on Delivery
-
-                </h3>
-
-                <p className="text-[11px] text-gray-500">
-
-                  Pay when you receive
-
-                </p>
-
-              </div>
-
-            </div>
-
-          </div>
-
-          {/* SIZE */}
-
-          <div className="mt-5">
-
-            <h2 className="mb-2 text-sm font-bold">
-
-              Select Size
-
-            </h2>
-
-            <div className="flex flex-wrap gap-2">
-
-              {product.sizes?.map(
-                (size) => (
-                  <button
-                    key={size}
-                    onClick={() =>
-                      setSelectedSize(
-                        size
-                      )
-                    }
-                    className={`min-w-[46px] rounded-[12px] border px-3 py-1.5 text-[12px] font-bold ${
-                      selectedSize ===
-                      size
-                        ? "border-purple-600 bg-purple-600 text-white"
-                        : "bg-white"
-                    }`}
-                  >
-
-                    {size}
-
-                  </button>
-                )
-              )}
-
-            </div>
-
-          </div>
-
-          {/* COLORS */}
-
-          <div className="mt-5">
-
-            <h2 className="mb-2 text-sm font-bold">
-
-              Select Color
-
-            </h2>
-
-            <div className="flex gap-3">
-
-              {product.colors?.map(
-                (color) => (
-                  <button
-                    key={color}
-                    onClick={() =>
-                      setSelectedColor(
-                        color
-                      )
-                    }
-                    style={{
-                      background:
-                        color
-                    }}
-                    className={`h-8 w-8 rounded-full border-2 ${
-                      selectedColor ===
-                      color
-                        ? "border-purple-600"
-                        : "border-gray-200"
-                    }`}
-                  />
-                )
-              )}
-
-            </div>
-
-          </div>
-
-        </div>
-
-        {/* FEATURES */}
-
-        <div className="grid grid-cols-2 gap-3 rounded-[18px] bg-white p-3 shadow-sm">
-
-          <div className="flex items-center gap-2">
-
-            <ShieldCheck
-              size={18}
-              className="text-green-600"
-            />
-
-            <div>
-
-              <h3 className="text-[12px] font-bold">
-                Original
-              </h3>
-
-              <p className="text-[10px] text-gray-500">
-                Authentic
-              </p>
-
-            </div>
-
-          </div>
-
-          <div className="flex items-center gap-2">
-
-            <RotateCcw
-              size={18}
-              className="text-violet-600"
-            />
-
-            <div>
-
-              <h3 className="text-[12px] font-bold">
-                7 Day Return
-              </h3>
-
-              <p className="text-[10px] text-gray-500">
-                Easy Return
-              </p>
-
-            </div>
-
-          </div>
-
-          <div className="flex items-center gap-2">
-
-            <BadgeCheck
-              size={18}
-              className="text-blue-600"
-            />
-
-            <div>
-
-              <h3 className="text-[12px] font-bold">
-                Secure Payment
-              </h3>
-
-              <p className="text-[10px] text-gray-500">
-                Protected
-              </p>
-
-            </div>
-
-          </div>
-
-          <div className="flex items-center gap-2">
-
-            <Headphones
-              size={18}
-              className="text-orange-500"
-            />
-
-            <div>
-
-              <h3 className="text-[12px] font-bold">
-                24/7 Support
-              </h3>
-
-              <p className="text-[10px] text-gray-500">
-                Always Here
-              </p>
-
-            </div>
-
-          </div>
 
         </div>
 
@@ -868,15 +587,15 @@ export default function ProductPage() {
                   className="flex items-center justify-between rounded-[16px] border border-dashed border-purple-300 bg-white px-3 py-3 shadow-sm"
                 >
 
-                  <div>
+                  <div className="flex-1">
 
-                    <h3 className="text-[18px] font-black leading-none">
+                    <h3 className="text-[16px] font-black leading-none">
 
                       {coupon}
 
                     </h3>
 
-                    <p className="mt-1 text-[11px] text-gray-500">
+                    <p className="mt-1 text-[10px] text-gray-500">
 
                       Extra discount available
 
@@ -884,7 +603,7 @@ export default function ProductPage() {
 
                   </div>
 
-                  <button className="rounded-[10px] bg-gradient-to-r from-violet-600 to-fuchsia-500 px-4 py-2 text-[11px] font-bold text-white shadow-sm">
+                  <button className="ml-3 whitespace-nowrap rounded-[10px] bg-gradient-to-r from-violet-600 to-fuchsia-500 px-4 py-2 text-[11px] font-bold text-white shadow-sm">
 
                     Apply
 
@@ -896,6 +615,80 @@ export default function ProductPage() {
             )}
 
           </div>
+
+        </div>
+
+        {/* SELLER */}
+
+        <div className="rounded-[18px] bg-white p-4 shadow-sm">
+
+          <h2 className="text-base font-black">
+
+            Seller Details
+
+          </h2>
+
+          <div className="mt-3 flex items-center justify-between">
+
+            <div className="flex items-center gap-3">
+
+              <div className="flex h-10 w-10 items-center justify-center rounded-full bg-purple-100">
+
+                <Store
+                  size={18}
+                  className="text-purple-600"
+                />
+
+              </div>
+
+              <div>
+
+                <h3 className="text-sm font-bold">
+
+                  {
+                    product.seller?.name
+                  }
+
+                </h3>
+
+                <p className="text-[11px] text-gray-500">
+
+                  {
+                    product.seller?.rating
+                  }
+                  ★ Seller Rating
+
+                </p>
+
+              </div>
+
+            </div>
+
+            <button className="rounded-xl border border-purple-400 px-3 py-2 text-xs font-bold text-purple-600">
+
+              View Store
+
+            </button>
+
+          </div>
+
+        </div>
+
+        {/* DESCRIPTION */}
+
+        <div className="rounded-[18px] bg-white p-4 shadow-sm">
+
+          <h2 className="text-base font-black">
+
+            Product Details
+
+          </h2>
+
+          <p className="mt-3 text-[12px] leading-6 text-gray-600">
+
+            {product.description}
+
+          </p>
 
         </div>
 
