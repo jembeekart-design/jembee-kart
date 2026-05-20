@@ -51,6 +51,13 @@ export default function HomePage() {
       HomepageSection[]
     >([]);
 
+  const [
+    headerSection,
+    setHeaderSection
+  ] = useState<
+    HomepageSection | undefined
+  >(undefined);
+
   useEffect(() => {
     const unsubscribe =
       onSnapshot(
@@ -89,6 +96,17 @@ export default function HomePage() {
 
           setSections(
             sortedData
+          );
+
+          const headerData =
+            sortedData.find(
+              (section) =>
+                section.sectionType ===
+                "hero"
+            );
+
+          setHeaderSection(
+            headerData
           );
         }
       );
@@ -148,24 +166,20 @@ export default function HomePage() {
 
         <Header
           headerBackgroundColor={
-            sections[0]
-              ?.headerBackgroundColor
+            headerSection?.headerBackgroundColor
           }
           headerTextColor={
-            sections[0]
-              ?.headerTextColor
+            headerSection?.headerTextColor
           }
           searchBarColor={
-            sections[0]
-              ?.searchBarColor
+            headerSection?.searchBarColor
           }
           statusBarColor={
-            sections[0]
-              ?.statusBarColor
+            headerSection?.statusBarColor
           }
         />
 
-        {/* ALL SECTIONS */}
+        {/* PAGE CONTENT */}
 
         <div className="w-full overflow-x-hidden pb-32">
 
@@ -194,11 +208,11 @@ export default function HomePage() {
 
         </div>
 
-        {/* FLOATING BUTTON */}
+        {/* FLOATING WHATSAPP */}
 
         <WhatsAppButton />
 
-        {/* BOTTOM NAVBAR */}
+        {/* BOTTOM NAVIGATION */}
 
         <BottomNavbar />
 
