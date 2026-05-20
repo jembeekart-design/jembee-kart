@@ -13,6 +13,10 @@ import { db } from "@/firebase/config";
 
 import ProductCard from "@/components/products/ProductCard";
 
+/* ======================================================
+TYPES
+====================================================== */
+
 interface Product {
   id: string;
 
@@ -20,7 +24,11 @@ interface Product {
 
   description?: string;
 
+  images?: string[];
+
   image?: string;
+
+  video?: string;
 
   category?: string;
 
@@ -51,12 +59,20 @@ interface Product {
   cardWidth?: string;
 }
 
+/* ======================================================
+COMPONENT
+====================================================== */
+
 export default function FirestoreProductGrid() {
   const [products, setProducts] =
     useState<Product[]>([]);
 
   const [loading, setLoading] =
     useState(true);
+
+  /* ======================================================
+  GET PRODUCTS
+  ====================================================== */
 
   useEffect(() => {
     const unsubscribe =
@@ -110,6 +126,10 @@ export default function FirestoreProductGrid() {
     return () => unsubscribe();
   }, []);
 
+  /* ======================================================
+  LOADING
+  ====================================================== */
+
   if (loading) {
     return (
       <div className="flex w-full items-center justify-center py-10">
@@ -122,16 +142,45 @@ export default function FirestoreProductGrid() {
     );
   }
 
+  /* ======================================================
+  UI
+  ====================================================== */
+
   return (
     <section className="w-full bg-[#f1f3f6] px-2 py-3">
 
       {/* TOP BAR */}
 
-      <div className="mb-4 flex items-center justify-between rounded-xl bg-white px-4 py-3 shadow-sm">
+      <div
+        className="
+          mb-4
+          flex
+          items-center
+          justify-between
+          rounded-2xl
+          bg-white
+          px-4
+          py-3
+          shadow-sm
+        "
+      >
 
         {/* SORT */}
 
-        <button className="flex flex-1 items-center justify-center gap-2 border-r border-gray-200 text-sm font-bold text-gray-800">
+        <button
+          className="
+            flex
+            flex-1
+            items-center
+            justify-center
+            gap-2
+            border-r
+            border-gray-200
+            text-sm
+            font-bold
+            text-gray-800
+          "
+        >
 
           <span className="text-lg">
             ⇅
@@ -143,7 +192,18 @@ export default function FirestoreProductGrid() {
 
         {/* FILTER */}
 
-        <button className="flex flex-1 items-center justify-center gap-2 text-sm font-bold text-gray-800">
+        <button
+          className="
+            flex
+            flex-1
+            items-center
+            justify-center
+            gap-2
+            text-sm
+            font-bold
+            text-gray-800
+          "
+        >
 
           <span className="text-lg">
             ⚙
@@ -159,13 +219,25 @@ export default function FirestoreProductGrid() {
 
       <div className="mb-4 flex items-center justify-between">
 
-        <h2 className="text-2xl font-black text-gray-900">
+        <h2
+          className="
+            text-2xl
+            font-black
+            text-gray-900
+          "
+        >
 
           Trending Products
 
         </h2>
 
-        <button className="text-sm font-black text-blue-600">
+        <button
+          className="
+            text-sm
+            font-black
+            text-blue-600
+          "
+        >
 
           View All
 
@@ -188,13 +260,29 @@ export default function FirestoreProductGrid() {
               <ProductCard
                 id={product.id}
                 title={product.title}
-                image={product.image}
+
+                images={
+                  product.images ||
+                  (
+                    product.image
+                      ? [product.image]
+                      : []
+                  )
+                }
+
                 price={product.price}
+
                 discountPrice={
                   product.discountPrice
                 }
-                rating={product.rating}
-                reviews={product.reviews}
+
+                rating={
+                  product.rating
+                }
+
+                reviews={
+                  product.reviews
+                }
               />
 
             </Link>
