@@ -137,13 +137,13 @@ export default function CategoryAdmin() {
           "20px",
 
         cardWidth:
-          "80px",
+          "90px",
 
         cardHeight:
-          "95px",
+          "90px",
 
         imageHeight:
-          "55px",
+          "90px",
 
         titleSize:
           "12px",
@@ -216,7 +216,7 @@ export default function CategoryAdmin() {
   }
 
   /* ======================================================
-  IMAGE COMPRESS
+  COMPRESS IMAGE
   ====================================================== */
 
   async function compressImage(
@@ -245,7 +245,7 @@ export default function CategoryAdmin() {
             img.height;
 
           const maxWidth =
-            500;
+            700;
 
           if (
             width >
@@ -299,7 +299,7 @@ export default function CategoryAdmin() {
 
             "image/jpeg",
 
-            0.6
+            0.7
           );
         };
 
@@ -461,51 +461,70 @@ export default function CategoryAdmin() {
                       "
                     >
 
-                      {/* ICON */}
+                      {/* CATEGORY CARD */}
 
                       <div
-                        style={{
-                          background:
-                            category.backgroundColor,
-
-                          borderRadius:
-                            category.borderRadius,
-
-                          width:
-                            category.cardWidth,
-
-                          height:
-                            category.cardHeight
-                        }}
                         className="
                           flex
                           flex-col
                           items-center
-                          justify-center
-                          overflow-hidden
-                          p-1
-                          shadow-md
                         "
                       >
 
-                        {category.image && (
-                          <img
-                            src={
-                              category.image
-                            }
-                            alt={
-                              category.title
-                            }
-                            style={{
-                              height:
-                                category.imageHeight
-                            }}
-                            className="
-                              object-contain
-                              rounded-xl
-                            "
-                          />
-                        )}
+                        {/* IMAGE CARD */}
+
+                        <div
+                          style={{
+                            background:
+                              category.backgroundColor,
+
+                            borderRadius:
+                              category.borderRadius,
+
+                            width:
+                              category.cardWidth,
+
+                            height:
+                              category.cardHeight
+                          }}
+                          className="
+                            relative
+                            overflow-hidden
+                            shadow-md
+                          "
+                        >
+
+                          {category.image ? (
+                            <img
+                              src={
+                                category.image
+                              }
+                              alt={
+                                category.title
+                              }
+                              className="
+                                h-full
+                                w-full
+                                object-cover
+                              "
+                            />
+                          ) : (
+                            <div
+                              className="
+                                flex
+                                h-full
+                                w-full
+                                items-center
+                                justify-center
+                              "
+                            >
+                              <Grid3X3 />
+                            </div>
+                          )}
+
+                        </div>
+
+                        {/* CATEGORY NAME */}
 
                         <p
                           style={{
@@ -516,7 +535,8 @@ export default function CategoryAdmin() {
                               category.titleSize
                           }}
                           className="
-                            mt-[2px]
+                            mt-2
+                            text-center
                             font-semibold
                             leading-none
                           "
@@ -608,12 +628,9 @@ export default function CategoryAdmin() {
                               updateField(
                                 category.id,
                                 "title",
-                                event
-                                  .target
-                                  .value
+                                event.target.value
                               );
                             }}
-                            placeholder="Category Name"
                             className="
                               w-full
                               rounded-2xl
@@ -624,7 +641,7 @@ export default function CategoryAdmin() {
 
                         </div>
 
-                        {/* IMAGE BUTTON */}
+                        {/* IMAGE */}
 
                         <div>
 
@@ -708,9 +725,7 @@ export default function CategoryAdmin() {
                               updateField(
                                 category.id,
                                 "backgroundColor",
-                                event
-                                  .target
-                                  .value
+                                event.target.value
                               );
                             }}
                             className="
@@ -742,9 +757,7 @@ export default function CategoryAdmin() {
                               updateField(
                                 category.id,
                                 "textColor",
-                                event
-                                  .target
-                                  .value
+                                event.target.value
                               );
                             }}
                             className="
@@ -776,9 +789,7 @@ export default function CategoryAdmin() {
                               updateField(
                                 category.id,
                                 "cardWidth",
-                                event
-                                  .target
-                                  .value
+                                event.target.value
                               );
                             }}
                             className="
@@ -810,43 +821,7 @@ export default function CategoryAdmin() {
                               updateField(
                                 category.id,
                                 "cardHeight",
-                                event
-                                  .target
-                                  .value
-                              );
-                            }}
-                            className="
-                              w-full
-                              rounded-2xl
-                              border
-                              p-4
-                            "
-                          />
-
-                        </div>
-
-                        {/* IMAGE HEIGHT */}
-
-                        <div>
-
-                          <p className="mb-2 font-bold">
-                            Image Height
-                          </p>
-
-                          <input
-                            type="text"
-                            value={
-                              category.imageHeight
-                            }
-                            onChange={(
-                              event
-                            ) => {
-                              updateField(
-                                category.id,
-                                "imageHeight",
-                                event
-                                  .target
-                                  .value
+                                event.target.value
                               );
                             }}
                             className="
@@ -878,9 +853,7 @@ export default function CategoryAdmin() {
                               updateField(
                                 category.id,
                                 "titleSize",
-                                event
-                                  .target
-                                  .value
+                                event.target.value
                               );
                             }}
                             className="
@@ -912,9 +885,7 @@ export default function CategoryAdmin() {
                               updateField(
                                 category.id,
                                 "borderRadius",
-                                event
-                                  .target
-                                  .value
+                                event.target.value
                               );
                             }}
                             className="
