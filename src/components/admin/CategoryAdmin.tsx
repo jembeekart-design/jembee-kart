@@ -7,17 +7,15 @@ import {
 } from "react";
 
 import {
-  collection,
   addDoc,
-  onSnapshot,
-  updateDoc,
+  collection,
   deleteDoc,
-  doc
+  doc,
+  onSnapshot,
+  updateDoc
 } from "firebase/firestore";
 
-import {
-  db
-} from "@/firebase/config";
+import { db } from "@/firebase/config";
 
 import {
   ChevronUp,
@@ -130,25 +128,25 @@ export default function CategoryAdmin() {
         image: "",
 
         backgroundColor:
-          "#2563eb",
-
-        textColor:
           "#ffffff",
 
+        textColor:
+          "#000000",
+
         borderRadius:
-          "28px",
+          "20px",
 
         cardWidth:
-          "95px",
+          "80px",
 
         cardHeight:
-          "110px",
+          "95px",
 
         imageHeight:
-          "75px",
+          "55px",
 
         titleSize:
-          "13px",
+          "12px",
 
         visible: true,
 
@@ -185,17 +183,16 @@ export default function CategoryAdmin() {
   async function updateField(
     id: string,
     field: string,
-    value: string | boolean
+    value:
+      | string
+      | boolean
   ) {
-    const reference =
+    await updateDoc(
       doc(
         db,
         "categories",
         id
-      );
-
-    await updateDoc(
-      reference,
+      ),
       {
         [field]: value
       }
@@ -338,7 +335,6 @@ export default function CategoryAdmin() {
 
       formData.append(
         "upload_preset",
-
         process.env
           .NEXT_PUBLIC_CLOUDINARY_UPLOAD_PRESET ||
           ""
@@ -487,6 +483,8 @@ export default function CategoryAdmin() {
                           items-center
                           justify-center
                           overflow-hidden
+                          p-1
+                          shadow-md
                         "
                       >
 
@@ -504,6 +502,7 @@ export default function CategoryAdmin() {
                             }}
                             className="
                               object-contain
+                              rounded-xl
                             "
                           />
                         )}
@@ -517,8 +516,9 @@ export default function CategoryAdmin() {
                               category.titleSize
                           }}
                           className="
-                            mt-1
-                            font-bold
+                            mt-[2px]
+                            font-semibold
+                            leading-none
                           "
                         >
                           {
@@ -591,33 +591,46 @@ export default function CategoryAdmin() {
 
                         {/* TITLE */}
 
-                        <input
-                          type="text"
-                          value={
-                            category.title
-                          }
-                          onChange={(
-                            event
-                          ) => {
-                            updateField(
-                              category.id,
-                              "title",
+                        <div>
+
+                          <p className="mb-2 font-bold">
+                            Category Name
+                          </p>
+
+                          <input
+                            type="text"
+                            value={
+                              category.title
+                            }
+                            onChange={(
                               event
-                                .target
-                                .value
-                            );
-                          }}
-                          placeholder="Category Name"
-                          className="
-                            rounded-2xl
-                            border
-                            p-4
-                          "
-                        />
+                            ) => {
+                              updateField(
+                                category.id,
+                                "title",
+                                event
+                                  .target
+                                  .value
+                              );
+                            }}
+                            placeholder="Category Name"
+                            className="
+                              w-full
+                              rounded-2xl
+                              border
+                              p-4
+                            "
+                          />
+
+                        </div>
 
                         {/* IMAGE BUTTON */}
 
                         <div>
+
+                          <p className="mb-2 font-bold">
+                            Category Image
+                          </p>
 
                           <button
                             onClick={() => {
@@ -672,6 +685,244 @@ export default function CategoryAdmin() {
                                 );
                               }
                             }}
+                          />
+
+                        </div>
+
+                        {/* BACKGROUND COLOR */}
+
+                        <div>
+
+                          <p className="mb-2 font-bold">
+                            Background Color
+                          </p>
+
+                          <input
+                            type="color"
+                            value={
+                              category.backgroundColor
+                            }
+                            onChange={(
+                              event
+                            ) => {
+                              updateField(
+                                category.id,
+                                "backgroundColor",
+                                event
+                                  .target
+                                  .value
+                              );
+                            }}
+                            className="
+                              h-14
+                              w-full
+                              rounded-2xl
+                              border
+                            "
+                          />
+
+                        </div>
+
+                        {/* TEXT COLOR */}
+
+                        <div>
+
+                          <p className="mb-2 font-bold">
+                            Text Color
+                          </p>
+
+                          <input
+                            type="color"
+                            value={
+                              category.textColor
+                            }
+                            onChange={(
+                              event
+                            ) => {
+                              updateField(
+                                category.id,
+                                "textColor",
+                                event
+                                  .target
+                                  .value
+                              );
+                            }}
+                            className="
+                              h-14
+                              w-full
+                              rounded-2xl
+                              border
+                            "
+                          />
+
+                        </div>
+
+                        {/* CARD WIDTH */}
+
+                        <div>
+
+                          <p className="mb-2 font-bold">
+                            Card Width
+                          </p>
+
+                          <input
+                            type="text"
+                            value={
+                              category.cardWidth
+                            }
+                            onChange={(
+                              event
+                            ) => {
+                              updateField(
+                                category.id,
+                                "cardWidth",
+                                event
+                                  .target
+                                  .value
+                              );
+                            }}
+                            className="
+                              w-full
+                              rounded-2xl
+                              border
+                              p-4
+                            "
+                          />
+
+                        </div>
+
+                        {/* CARD HEIGHT */}
+
+                        <div>
+
+                          <p className="mb-2 font-bold">
+                            Card Height
+                          </p>
+
+                          <input
+                            type="text"
+                            value={
+                              category.cardHeight
+                            }
+                            onChange={(
+                              event
+                            ) => {
+                              updateField(
+                                category.id,
+                                "cardHeight",
+                                event
+                                  .target
+                                  .value
+                              );
+                            }}
+                            className="
+                              w-full
+                              rounded-2xl
+                              border
+                              p-4
+                            "
+                          />
+
+                        </div>
+
+                        {/* IMAGE HEIGHT */}
+
+                        <div>
+
+                          <p className="mb-2 font-bold">
+                            Image Height
+                          </p>
+
+                          <input
+                            type="text"
+                            value={
+                              category.imageHeight
+                            }
+                            onChange={(
+                              event
+                            ) => {
+                              updateField(
+                                category.id,
+                                "imageHeight",
+                                event
+                                  .target
+                                  .value
+                              );
+                            }}
+                            className="
+                              w-full
+                              rounded-2xl
+                              border
+                              p-4
+                            "
+                          />
+
+                        </div>
+
+                        {/* TITLE SIZE */}
+
+                        <div>
+
+                          <p className="mb-2 font-bold">
+                            Title Size
+                          </p>
+
+                          <input
+                            type="text"
+                            value={
+                              category.titleSize
+                            }
+                            onChange={(
+                              event
+                            ) => {
+                              updateField(
+                                category.id,
+                                "titleSize",
+                                event
+                                  .target
+                                  .value
+                              );
+                            }}
+                            className="
+                              w-full
+                              rounded-2xl
+                              border
+                              p-4
+                            "
+                          />
+
+                        </div>
+
+                        {/* BORDER RADIUS */}
+
+                        <div>
+
+                          <p className="mb-2 font-bold">
+                            Border Radius
+                          </p>
+
+                          <input
+                            type="text"
+                            value={
+                              category.borderRadius
+                            }
+                            onChange={(
+                              event
+                            ) => {
+                              updateField(
+                                category.id,
+                                "borderRadius",
+                                event
+                                  .target
+                                  .value
+                              );
+                            }}
+                            className="
+                              w-full
+                              rounded-2xl
+                              border
+                              p-4
+                            "
                           />
 
                         </div>
