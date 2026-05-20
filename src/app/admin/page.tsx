@@ -5,41 +5,47 @@ export const dynamic = "force-dynamic";
 import {
   useEffect,
   useMemo,
+  useRef,
   useState
 } from "react";
 
+import Image from "next/image";
+
 import {
   collection,
+  deleteDoc,
   doc,
   onSnapshot,
-  setDoc
+  setDoc,
+  updateDoc
 } from "firebase/firestore";
+
+import {
+  deleteObject,
+  getDownloadURL,
+  ref,
+  uploadBytes
+} from "firebase/storage";
 
 import {
   ChevronDown,
   ChevronUp,
-  Grid3X3
+  Eye,
+  EyeOff,
+  GripVertical,
+  Grid3X3,
+  ImagePlus,
+  Monitor,
+  Plus,
+  Smartphone,
+  Trash2,
+  Upload,
+  Video
 } from "lucide-react";
 
-import { db } from "@/firebase/config";
+import { db, storage } from "@/firebase/config";
 
 /* ---------------- TYPES ---------------- */
-
-interface HomepageSection {
-  id: string;
-
-  sectionType?: string;
-
-  visible?: boolean;
-
-  position?: number;
-
-  [key: string]:
-    | string
-    | number
-    | boolean
-    | undefined;
-}
 
 interface BannerSlide {
   id: string;
@@ -62,9 +68,21 @@ interface BannerSlide {
 
   buttonTextColor?: string;
 
+  imageUrl?: string;
+
+  videoUrl?: string;
+
+  mediaType?: string;
+
   visible?: boolean;
 
   position?: number;
+
+  [key: string]:
+    | string
+    | number
+    | boolean
+    | undefined;
 }
 
 /* ---------------- FIELD SUGGESTIONS ---------------- */
@@ -72,58 +90,20 @@ interface BannerSlide {
 const FIELD_SUGGESTIONS = [
   "title",
   "subtitle",
-  "description",
   "buttonText",
-  "secondaryButtonText",
-
+  "buttonLink",
   "backgroundColor",
   "gradientColor",
   "textColor",
-
   "buttonColor",
   "buttonTextColor",
-
-  "headerBackgroundColor",
-  "headerTextColor",
-
-  "searchBarColor",
-  "statusBarColor",
-
-  "sellerTitle",
-  "sellerDescription",
-  "sellerButtonText",
-
-  "sellerBackgroundColor",
-  "sellerGradientColor",
-
-  "sellerButtonColor",
-  "sellerButtonTextColor",
-
-  "resellerTitle",
-  "resellerDescription",
-  "resellerButtonText",
-
-  "resellerBackgroundColor",
-  "resellerGradientColor",
-
-  "resellerButtonColor",
-  "resellerButtonTextColor",
-
-  "affiliateBackgroundColor",
-  "affiliateGradientColor",
-
-  "affiliateButtonColor",
-  "affiliateButtonTextColor"
+  "imageUrl",
+  "videoUrl"
 ];
 
 /* ---------------- COMPONENT ---------------- */
 
 export default function AdminPage() {
-  const [sections, setSections] =
-    useState<
-      HomepageSection[]
-    >([]);
-
   const [banners, setBanners] =
     useState<
       BannerSlide[]
@@ -133,73 +113,31 @@ export default function AdminPage() {
     useState("");
 
   const [
-    expandedSections,
-    setExpandedSections
+    expandedBanners,
+    setExpandedBanners
   ] = useState<{
     [key: string]: boolean;
   }>({});
 
-  const [
-    newFieldNames,
-    setNewFieldNames
-  ] = useState<{
-    [key: string]: string;
-  }>({});
-
-  const [
-    copiedField,
-    setCopiedField
-  ] = useState("");
-
   const [savingId, setSavingId] =
     useState("");
 
-  /* ---------------- HOMEPAGE SECTIONS ---------------- */
+  const [
+    draggedBanner,
+    setDraggedBanner
+  ] = useState("");
 
-  useEffect(() => {
-    const unsubscribe =
-      onSnapshot(
-        collection(
-          db,
-          "homepage_sections"
-        ),
-        (snapshot) => {
-          const data: HomepageSection[] =
-            snapshot.docs.map(
-              (document) => {
-                return {
-                  id: document.id,
+  const [
+    mobilePreview,
+    setMobilePreview
+  ] = useState(true);
 
-                  ...(document.data() as Omit<
-                    HomepageSection,
-                    "id"
-                  >)
-                };
-              }
-            );
+  const fileInputRefs =
+    useRef<{
+      [key: string]: HTMLInputElement | null;
+    }>({});
 
-          const sorted =
-            data.sort(
-              (a, b) => {
-                return (
-                  Number(
-                    a.position || 0
-                  ) -
-                  Number(
-                    b.position || 0
-                  )
-                );
-              }
-            );
-
-          setSections(sorted);
-        }
-      );
-
-    return () => unsubscribe();
-  }, []);
-
-  /* ---------------- HOMEPAGE BANNERS ---------------- */
+  /* ---------------- GET BANNERS ---------------- */
 
   useEffect(() => {
     const unsubscribe =
@@ -246,33 +184,36 @@ export default function AdminPage() {
 
   /* ---------------- FILTER ---------------- */
 
-  const filteredSections =
+  const filteredBanners =
     useMemo(() => {
       if (!search.trim()) {
-        return sections;
+        return banners;
       }
 
-      return sections.filter(
-        (section) => {
-          return Object.keys(
-            section
-          ).some((key) =>
-            key
-              .toLowerCase()
+      return banners.filter(
+        (banner) => {
+          return (
+            banner.title
+              ?.toLowerCase()
+              .includes(
+                search.toLowerCase()
+              ) ||
+            banner.subtitle
+              ?.toLowerCase()
               .includes(
                 search.toLowerCase()
               )
           );
         }
       );
-    }, [sections, search]);
+    }, [banners, search]);
 
   /* ---------------- TOGGLE ---------------- */
 
-  function toggleSection(
+  function toggleBanner(
     id: string
   ) {
-    setExpandedSections(
+    setExpandedBanners(
       (previous) => {
         return {
           ...previous,
@@ -284,36 +225,7 @@ export default function AdminPage() {
     );
   }
 
-  /* ---------------- UPDATE SECTION ---------------- */
-
-  function updateField(
-    id: string,
-    field: string,
-    value:
-      | string
-      | boolean
-      | number
-  ) {
-    setSections((previous) => {
-      return previous.map(
-        (section) => {
-          if (
-            section.id === id
-          ) {
-            return {
-              ...section,
-
-              [field]: value
-            };
-          }
-
-          return section;
-        }
-      );
-    });
-  }
-
-  /* ---------------- UPDATE BANNER ---------------- */
+  /* ---------------- UPDATE ---------------- */
 
   function updateBannerField(
     id: string,
@@ -342,96 +254,109 @@ export default function AdminPage() {
     });
   }
 
-  /* ---------------- ADD FIELD ---------------- */
+  /* ---------------- CREATE ---------------- */
 
-  function addCustomField(
-    sectionId: string
-  ) {
-    const fieldName =
-      newFieldNames[
-        sectionId
-      ]?.trim();
-
-    if (!fieldName) {
-      return;
-    }
-
-    const normalizedField =
-      fieldName.charAt(0).toLowerCase() +
-      fieldName.slice(1);
-
-    setSections((previous) => {
-      return previous.map(
-        (section) => {
-          if (
-            section.id ===
-            sectionId
-          ) {
-            return {
-              ...section,
-
-              [normalizedField]:
-                normalizedField
-                  .toLowerCase()
-                  .includes(
-                    "color"
-                  )
-                  ? "#000000"
-                  : ""
-            };
-          }
-
-          return section;
-        }
-      );
-    });
-
-    setNewFieldNames(
-      (previous) => {
-        return {
-          ...previous,
-
-          [sectionId]: ""
-        };
-      }
-    );
-  }
-
-  /* ---------------- SAVE SECTION ---------------- */
-
-  async function saveSection(
-    section: HomepageSection
-  ) {
+  async function createNewBanner() {
     try {
-      setSavingId(section.id);
+      const newBannerRef =
+        doc(
+          collection(
+            db,
+            "homepage_banners"
+          )
+        );
 
       await setDoc(
-        doc(
-          db,
-          "homepage_sections",
-          section.id
-        ),
-        section,
+        newBannerRef,
         {
-          merge: true
+          title:
+            "New Banner",
+
+          subtitle:
+            "Banner Subtitle",
+
+          buttonText:
+            "Explore",
+
+          buttonLink: "/",
+
+          backgroundColor:
+            "#7c3aed",
+
+          gradientColor:
+            "#ec4899",
+
+          textColor:
+            "#ffffff",
+
+          buttonColor:
+            "#ffffff",
+
+          buttonTextColor:
+            "#000000",
+
+          mediaType:
+            "image",
+
+          imageUrl: "",
+
+          videoUrl: "",
+
+          visible: true,
+
+          position:
+            banners.length + 1
         }
       );
 
       alert(
-        "Section Saved Successfully"
+        "Banner Created"
       );
     } catch (error) {
       console.error(error);
 
       alert(
-        "Error Saving Section"
+        "Error Creating Banner"
       );
-    } finally {
-      setSavingId("");
     }
   }
 
-  /* ---------------- SAVE BANNER ---------------- */
+  /* ---------------- DELETE ---------------- */
+
+  async function deleteBanner(
+    id: string
+  ) {
+    const confirmDelete =
+      confirm(
+        "Delete this banner?"
+      );
+
+    if (!confirmDelete) {
+      return;
+    }
+
+    try {
+      await deleteDoc(
+        doc(
+          db,
+          "homepage_banners",
+          id
+        )
+      );
+
+      alert(
+        "Banner Deleted"
+      );
+    } catch (error) {
+      console.error(error);
+
+      alert(
+        "Delete Failed"
+      );
+    }
+  }
+
+  /* ---------------- SAVE ---------------- */
 
   async function saveBanner(
     banner: BannerSlide
@@ -452,39 +377,226 @@ export default function AdminPage() {
       );
 
       alert(
-        "Banner Saved Successfully"
+        "Banner Saved"
       );
     } catch (error) {
       console.error(error);
 
       alert(
-        "Error Saving Banner"
+        "Save Failed"
       );
     } finally {
       setSavingId("");
     }
   }
 
-  /* ---------------- COPY FIELD ---------------- */
+  /* ---------------- IMAGE COMPRESS ---------------- */
 
-  function copyFieldName(
-    fieldName: string
+  async function compressImage(
+    file: File
   ) {
-    navigator.clipboard.writeText(
-      fieldName
+    return new Promise<File>(
+      (resolve) => {
+        const canvas =
+          document.createElement(
+            "canvas"
+          );
+
+        const ctx =
+          canvas.getContext(
+            "2d"
+          );
+
+        const img =
+          new window.Image();
+
+        img.onload = () => {
+          const maxWidth =
+            1200;
+
+          const scale =
+            maxWidth /
+            img.width;
+
+          canvas.width =
+            maxWidth;
+
+          canvas.height =
+            img.height *
+            scale;
+
+          ctx?.drawImage(
+            img,
+            0,
+            0,
+            canvas.width,
+            canvas.height
+          );
+
+          canvas.toBlob(
+            (blob) => {
+              if (!blob) {
+                resolve(file);
+                return;
+              }
+
+              const compressedFile =
+                new File(
+                  [blob],
+                  file.name,
+                  {
+                    type:
+                      "image/jpeg"
+                  }
+                );
+
+              resolve(
+                compressedFile
+              );
+            },
+            "image/jpeg",
+            0.7
+          );
+        };
+
+        img.src =
+          URL.createObjectURL(
+            file
+          );
+      }
+    );
+  }
+
+  /* ---------------- UPLOAD IMAGE ---------------- */
+
+  async function uploadImage(
+    bannerId: string,
+    file: File
+  ) {
+    try {
+      const compressedFile =
+        await compressImage(
+          file
+        );
+
+      const storageRef =
+        ref(
+          storage,
+          `homepage_banners/${Date.now()}-${compressedFile.name}`
+        );
+
+      await uploadBytes(
+        storageRef,
+        compressedFile
+      );
+
+      const downloadURL =
+        await getDownloadURL(
+          storageRef
+        );
+
+      updateBannerField(
+        bannerId,
+        "imageUrl",
+        downloadURL
+      );
+
+      updateBannerField(
+        bannerId,
+        "mediaType",
+        "image"
+      );
+
+      alert(
+        "Image Uploaded"
+      );
+    } catch (error) {
+      console.error(error);
+
+      alert(
+        "Upload Failed"
+      );
+    }
+  }
+
+  /* ---------------- DRAG ---------------- */
+
+  async function handleDrop(
+    targetId: string
+  ) {
+    if (
+      !draggedBanner ||
+      draggedBanner === targetId
+    ) {
+      return;
+    }
+
+    const updated =
+      [...banners];
+
+    const draggedIndex =
+      updated.findIndex(
+        (item) =>
+          item.id ===
+          draggedBanner
+      );
+
+    const targetIndex =
+      updated.findIndex(
+        (item) =>
+          item.id === targetId
+      );
+
+    const draggedItem =
+      updated[
+        draggedIndex
+      ];
+
+    updated.splice(
+      draggedIndex,
+      1
     );
 
-    setCopiedField(fieldName);
+    updated.splice(
+      targetIndex,
+      0,
+      draggedItem
+    );
 
-    setTimeout(() => {
-      setCopiedField("");
-    }, 2000);
+    const reordered =
+      updated.map(
+        (
+          item,
+          index
+        ) => ({
+          ...item,
+
+          position:
+            index + 1
+        })
+      );
+
+    setBanners(reordered);
+
+    for (const item of reordered) {
+      await updateDoc(
+        doc(
+          db,
+          "homepage_banners",
+          item.id
+        ),
+        {
+          position:
+            item.position
+        }
+      );
+    }
   }
 
   /* ---------------- UI ---------------- */
 
   return (
-    <main className="min-h-screen bg-gradient-to-br from-slate-100 via-blue-50 to-indigo-100 px-4 py-6">
+    <main className="min-h-screen bg-gradient-to-br from-slate-100 via-blue-50 to-indigo-100 p-4">
 
       <div className="mx-auto max-w-7xl">
 
@@ -497,9 +609,44 @@ export default function AdminPage() {
           </h1>
 
           <p className="mt-3 text-blue-100">
-            Dynamic Firestore Homepage
-            Control Panel
+            Advanced Homepage Slider
           </p>
+
+        </div>
+
+        {/* TOP BUTTONS */}
+
+        <div className="mb-8 flex flex-wrap gap-4">
+
+          <button
+            onClick={() => {
+              createNewBanner();
+            }}
+            className="flex items-center gap-3 rounded-2xl bg-gradient-to-r from-pink-600 to-purple-600 px-6 py-4 font-black text-white"
+          >
+            <Plus size={22} />
+
+            Create Banner
+          </button>
+
+          <button
+            onClick={() => {
+              setMobilePreview(
+                !mobilePreview
+              );
+            }}
+            className="flex items-center gap-3 rounded-2xl bg-black px-6 py-4 font-black text-white"
+          >
+            {mobilePreview ? (
+              <Smartphone />
+            ) : (
+              <Monitor />
+            )}
+
+            {mobilePreview
+              ? "Mobile Preview"
+              : "Desktop Preview"}
+          </button>
 
         </div>
 
@@ -509,267 +656,125 @@ export default function AdminPage() {
 
           <input
             type="text"
-            placeholder="Search fields..."
+            placeholder="Search Banner..."
             value={search}
-            onChange={(event) => {
+            onChange={(e) => {
               setSearch(
-                event.target.value
+                e.target.value
               );
             }}
-            className="w-full rounded-2xl border border-gray-200 bg-white px-5 py-4 text-lg font-semibold outline-none focus:border-blue-500"
+            className="w-full rounded-2xl border border-gray-200 bg-white px-5 py-4 text-lg font-semibold outline-none"
           />
 
         </div>
 
-        {/* BANNER MANAGER */}
-
-        <div className="mb-10">
-
-          <h2 className="mb-6 text-3xl font-black text-gray-900">
-            Homepage Slider Banners
-          </h2>
-
-          <div className="space-y-6">
-
-            {banners.map(
-              (banner) => {
-                return (
-                  <div
-                    key={banner.id}
-                    className="rounded-[30px] bg-white p-6 shadow-2xl"
-                  >
-
-                    <div className="grid grid-cols-1 gap-5 md:grid-cols-2">
-
-                      {Object.entries(
-                        banner
-                      ).map(
-                        ([
-                          key,
-                          value
-                        ]) => {
-                          if (
-                            key === "id"
-                          ) {
-                            return null;
-                          }
-
-                          return (
-                            <div
-                              key={key}
-                              className="rounded-2xl border border-gray-200 p-4"
-                            >
-
-                              <h3 className="mb-3 text-lg font-black">
-                                {key}
-                              </h3>
-
-                              {typeof value ===
-                              "boolean" ? (
-                                <input
-                                  type="checkbox"
-                                  checked={Boolean(
-                                    value
-                                  )}
-                                  onChange={(
-                                    event
-                                  ) => {
-                                    updateBannerField(
-                                      banner.id,
-                                      key,
-                                      event
-                                        .target
-                                        .checked
-                                    );
-                                  }}
-                                  className="h-6 w-6"
-                                />
-                              ) : key
-                                  .toLowerCase()
-                                  .includes(
-                                    "color"
-                                  ) ? (
-                                <div className="flex gap-3">
-
-                                  <input
-                                    type="color"
-                                    value={String(
-                                      value ||
-                                        "#000000"
-                                    )}
-                                    onChange={(
-                                      event
-                                    ) => {
-                                      updateBannerField(
-                                        banner.id,
-                                        key,
-                                        event
-                                          .target
-                                          .value
-                                      );
-                                    }}
-                                    className="h-14 w-20"
-                                  />
-
-                                  <input
-                                    type="text"
-                                    value={String(
-                                      value ||
-                                        ""
-                                    )}
-                                    onChange={(
-                                      event
-                                    ) => {
-                                      updateBannerField(
-                                        banner.id,
-                                        key,
-                                        event
-                                          .target
-                                          .value
-                                      );
-                                    }}
-                                    className="flex-1 rounded-xl border border-gray-200 px-4 py-3"
-                                  />
-
-                                </div>
-                              ) : (
-                                <input
-                                  type="text"
-                                  value={String(
-                                    value || ""
-                                  )}
-                                  onChange={(
-                                    event
-                                  ) => {
-                                    updateBannerField(
-                                      banner.id,
-                                      key,
-                                      event
-                                        .target
-                                        .value
-                                    );
-                                  }}
-                                  className="w-full rounded-xl border border-gray-200 px-4 py-3"
-                                />
-                              )}
-
-                            </div>
-                          );
-                        }
-                      )}
-
-                    </div>
-
-                    <button
-                      onClick={() => {
-                        saveBanner(
-                          banner
-                        );
-                      }}
-                      className="mt-6 w-full rounded-2xl bg-gradient-to-r from-pink-600 to-purple-600 px-6 py-5 text-xl font-black text-white"
-                    >
-                      Save Banner
-                    </button>
-
-                  </div>
-                );
-              }
-            )}
-
-          </div>
-
-        </div>
-
-        {/* SECTION CARDS */}
+        {/* BANNERS */}
 
         <div className="space-y-6">
 
-          {filteredSections.map(
-            (
-              section: HomepageSection
-            ) => {
+          {filteredBanners.map(
+            (banner) => {
               const isExpanded =
-                expandedSections[
-                  section.id
+                expandedBanners[
+                  banner.id
                 ];
 
               return (
                 <div
-                  key={section.id}
+                  key={banner.id}
+                  draggable
+                  onDragStart={() => {
+                    setDraggedBanner(
+                      banner.id
+                    );
+                  }}
+                  onDragOver={(
+                    e
+                  ) => {
+                    e.preventDefault();
+                  }}
+                  onDrop={() => {
+                    handleDrop(
+                      banner.id
+                    );
+                  }}
                   className="overflow-hidden rounded-[35px] bg-white shadow-2xl"
                 >
 
-                  {/* TOP BAR */}
+                  {/* TOP */}
 
-                  <div className="flex items-center justify-between bg-black p-5 text-white">
+                  <div className="flex flex-wrap items-center justify-between gap-4 bg-gradient-to-r from-pink-600 to-purple-600 p-5 text-white">
 
                     <div className="flex items-center gap-4">
 
+                      <div className="cursor-grab rounded-2xl bg-white/20 p-3">
+                        <GripVertical />
+                      </div>
+
                       <button
                         onClick={() => {
-                          toggleSection(
-                            section.id
+                          toggleBanner(
+                            banner.id
                           );
                         }}
-                        className="flex h-14 w-14 items-center justify-center rounded-2xl bg-gradient-to-r from-blue-600 to-purple-600 shadow-xl"
+                        className="flex h-14 w-14 items-center justify-center rounded-2xl bg-white/20"
                       >
-                        <Grid3X3
-                          size={26}
-                        />
+                        <Grid3X3 />
                       </button>
 
                       <div>
 
-                        <h2 className="text-2xl font-black capitalize">
+                        <h2 className="text-2xl font-black">
                           {
-                            section.sectionType
+                            banner.title
                           }
                         </h2>
 
-                        <p className="text-sm text-gray-400">
-                          Click grid icon
-                          to open form
+                        <p className="text-pink-100">
+                          Drag & Drop Enabled
                         </p>
 
                       </div>
 
                     </div>
 
-                    <div className="flex items-center gap-4">
-
-                      <div className="flex items-center gap-3">
-
-                        <span className="font-bold">
-                          Visible
-                        </span>
-
-                        <input
-                          type="checkbox"
-                          checked={Boolean(
-                            section.visible
-                          )}
-                          onChange={(
-                            event
-                          ) => {
-                            updateField(
-                              section.id,
-                              "visible",
-                              event.target
-                                .checked
-                            );
-                          }}
-                          className="h-6 w-6 accent-green-500"
-                        />
-
-                      </div>
+                    <div className="flex items-center gap-3">
 
                       <button
                         onClick={() => {
-                          toggleSection(
-                            section.id
+                          updateBannerField(
+                            banner.id,
+                            "visible",
+                            !banner.visible
                           );
                         }}
-                        className="rounded-xl bg-white/10 p-3"
+                        className="rounded-2xl bg-white/20 p-3"
+                      >
+                        {banner.visible ? (
+                          <Eye />
+                        ) : (
+                          <EyeOff />
+                        )}
+                      </button>
+
+                      <button
+                        onClick={() => {
+                          deleteBanner(
+                            banner.id
+                          );
+                        }}
+                        className="rounded-2xl bg-red-500 p-3"
+                      >
+                        <Trash2 />
+                      </button>
+
+                      <button
+                        onClick={() => {
+                          toggleBanner(
+                            banner.id
+                          );
+                        }}
+                        className="rounded-2xl bg-white/20 p-3"
                       >
                         {isExpanded ? (
                           <ChevronUp />
@@ -785,130 +790,62 @@ export default function AdminPage() {
                   {/* FORM */}
 
                   {isExpanded && (
-                    <>
+                    <div className="grid gap-8 p-6 lg:grid-cols-2">
 
-                      <div className="grid grid-cols-1 gap-6 p-6 md:grid-cols-2">
+                      {/* LEFT */}
+
+                      <div className="space-y-5">
 
                         {Object.entries(
-                          section
-                        )
-                          .filter(
-                            ([key]) =>
-                              key !==
-                              "id"
-                          )
-                          .map(
-                            ([
-                              key,
-                              value
-                            ]) => {
-                              return (
-                                <div
-                                  key={
-                                    key
-                                  }
-                                  className="rounded-[25px] border border-gray-200 bg-white p-5 shadow-lg"
-                                >
+                          banner
+                        ).map(
+                          ([
+                            key,
+                            value
+                          ]) => {
+                            if (
+                              key === "id"
+                            ) {
+                              return null;
+                            }
 
-                                  <div className="mb-3 flex items-center justify-between">
+                            return (
+                              <div
+                                key={key}
+                                className="rounded-2xl border border-gray-200 p-4"
+                              >
 
-                                    <h3 className="text-lg font-black">
-                                      {key}
-                                    </h3>
+                                <h3 className="mb-3 text-lg font-black capitalize">
+                                  {key}
+                                </h3>
 
-                                    <button
-                                      onClick={() => {
-                                        copyFieldName(
-                                          key
-                                        );
-                                      }}
-                                      className="rounded-xl bg-black px-4 py-2 text-sm font-bold text-white"
-                                    >
-                                      {copiedField ===
-                                      key
-                                        ? "Copied"
-                                        : "Copy"}
-                                    </button>
+                                {key
+                                  .toLowerCase()
+                                  .includes(
+                                    "color"
+                                  ) ? (
+                                  <div className="flex gap-3">
 
-                                  </div>
-
-                                  {typeof value ===
-                                  "boolean" ? (
                                     <input
-                                      type="checkbox"
-                                      checked={Boolean(
-                                        value
+                                      type="color"
+                                      value={String(
+                                        value ||
+                                          "#000000"
                                       )}
                                       onChange={(
-                                        event
+                                        e
                                       ) => {
-                                        updateField(
-                                          section.id,
+                                        updateBannerField(
+                                          banner.id,
                                           key,
-                                          event
+                                          e
                                             .target
-                                            .checked
+                                            .value
                                         );
                                       }}
-                                      className="h-7 w-7 accent-blue-600"
+                                      className="h-14 w-20"
                                     />
-                                  ) : key
-                                      .toLowerCase()
-                                      .includes(
-                                        "color"
-                                      ) ? (
-                                    <div className="flex items-center gap-4">
 
-                                      <input
-                                        type="color"
-                                        value={
-                                          String(
-                                            value ||
-                                              "#000000"
-                                          ).startsWith(
-                                            "#"
-                                          )
-                                            ? String(
-                                                value
-                                              )
-                                            : "#000000"
-                                        }
-                                        onChange={(
-                                          event
-                                        ) => {
-                                          updateField(
-                                            section.id,
-                                            key,
-                                            event
-                                              .target
-                                              .value
-                                          );
-                                        }}
-                                        className="h-16 w-20"
-                                      />
-
-                                      <input
-                                        type="text"
-                                        value={String(
-                                          value ||
-                                            ""
-                                        )}
-                                        onChange={(
-                                          event
-                                        ) => {
-                                          updateField(
-                                            section.id,
-                                            key,
-                                            event
-                                              .target
-                                              .value
-                                          );
-                                        }}
-                                        className="flex-1 rounded-2xl border border-gray-200 bg-gray-100 px-4 py-4"
-                                      />
-
-                                    </div>
-                                  ) : (
                                     <input
                                       type="text"
                                       value={String(
@@ -916,126 +853,283 @@ export default function AdminPage() {
                                           ""
                                       )}
                                       onChange={(
-                                        event
+                                        e
                                       ) => {
-                                        updateField(
-                                          section.id,
+                                        updateBannerField(
+                                          banner.id,
                                           key,
-                                          event
+                                          e
                                             .target
                                             .value
                                         );
                                       }}
-                                      className="w-full rounded-2xl border border-gray-200 bg-gray-100 px-4 py-4"
+                                      className="flex-1 rounded-xl border border-gray-200 px-4 py-3"
                                     />
-                                  )}
 
-                                </div>
-                              );
-                            }
-                          )}
+                                  </div>
+                                ) : typeof value ===
+                                  "boolean" ? (
+                                  <input
+                                    type="checkbox"
+                                    checked={Boolean(
+                                      value
+                                    )}
+                                    onChange={(
+                                      e
+                                    ) => {
+                                      updateBannerField(
+                                        banner.id,
+                                        key,
+                                        e
+                                          .target
+                                          .checked
+                                      );
+                                    }}
+                                    className="h-7 w-7"
+                                  />
+                                ) : (
+                                  <input
+                                    type="text"
+                                    value={String(
+                                      value ||
+                                        ""
+                                    )}
+                                    onChange={(
+                                      e
+                                    ) => {
+                                      updateBannerField(
+                                        banner.id,
+                                        key,
+                                        e
+                                          .target
+                                          .value
+                                      );
+                                    }}
+                                    className="w-full rounded-xl border border-gray-200 px-4 py-3"
+                                  />
+                                )}
+
+                              </div>
+                            );
+                          }
+                        )}
+
+                        {/* IMAGE UPLOAD */}
+
+                        <div className="rounded-2xl border border-dashed border-gray-300 p-5">
+
+                          <h3 className="mb-4 text-lg font-black">
+                            Upload Media
+                          </h3>
+
+                          <div className="flex flex-wrap gap-3">
+
+                            <button
+                              onClick={() => {
+                                fileInputRefs.current[
+                                  banner.id
+                                ]?.click();
+                              }}
+                              className="flex items-center gap-2 rounded-2xl bg-blue-600 px-5 py-3 font-black text-white"
+                            >
+                              <ImagePlus />
+
+                              Upload Image
+                            </button>
+
+                            <button
+                              onClick={() => {
+                                updateBannerField(
+                                  banner.id,
+                                  "mediaType",
+                                  "video"
+                                );
+                              }}
+                              className="flex items-center gap-2 rounded-2xl bg-purple-600 px-5 py-3 font-black text-white"
+                            >
+                              <Video />
+
+                              Video Slider
+                            </button>
+
+                          </div>
+
+                          <input
+                            ref={(element) => {
+                              fileInputRefs.current[
+                                banner.id
+                              ] = element;
+                            }}
+                            type="file"
+                            accept="image/*"
+                            hidden
+                            onChange={async (
+                              event
+                            ) => {
+                              const file =
+                                event
+                                  .target
+                                  .files?.[0];
+
+                              if (
+                                file
+                              ) {
+                                await uploadImage(
+                                  banner.id,
+                                  file
+                                );
+                              }
+                            }}
+                          />
+
+                        </div>
+
+                        {/* SAVE */}
+
+                        <button
+                          onClick={() => {
+                            saveBanner(
+                              banner
+                            );
+                          }}
+                          disabled={
+                            savingId ===
+                            banner.id
+                          }
+                          className="w-full rounded-2xl bg-gradient-to-r from-pink-600 to-purple-600 px-6 py-5 text-xl font-black text-white"
+                        >
+                          {savingId ===
+                          banner.id
+                            ? "Saving..."
+                            : "Save Banner"}
+                        </button>
 
                       </div>
 
-                      {/* ADD FIELD */}
+                      {/* LIVE PREVIEW */}
 
-                      <div className="p-6">
+                      <div>
 
-                        <div className="flex flex-col gap-4 md:flex-row">
+                        <h2 className="mb-5 text-2xl font-black">
+                          Live Preview
+                        </h2>
 
-                          <input
-                            type="text"
-                            list={`field-suggestions-${section.id}`}
-                            placeholder="Add custom field"
-                            value={
-                              newFieldNames[
-                                section.id
-                              ] || ""
-                            }
-                            onChange={(
-                              event
-                            ) => {
-                              setNewFieldNames(
-                                (
-                                  previous
-                                ) => {
-                                  return {
-                                    ...previous,
+                        <div
+                          className={`overflow-hidden rounded-[35px] shadow-2xl ${
+                            mobilePreview
+                              ? "mx-auto max-w-[380px]"
+                              : "w-full"
+                          }`}
+                        >
 
-                                    [section.id]:
-                                      event
-                                        .target
-                                        .value
-                                  };
+                          <div
+                            className="relative flex min-h-[420px] flex-col justify-center overflow-hidden p-8"
+                            style={{
+                              background: `linear-gradient(135deg, ${
+                                banner.backgroundColor ||
+                                "#7c3aed"
+                              }, ${
+                                banner.gradientColor ||
+                                "#ec4899"
+                              })`
+                            }}
+                          >
+
+                            {/* IMAGE */}
+
+                            {banner.mediaType ===
+                              "image" &&
+                              banner.imageUrl && (
+                                <Image
+                                  src={
+                                    String(
+                                      banner.imageUrl
+                                    )
+                                  }
+                                  alt="Banner"
+                                  fill
+                                  className="object-cover opacity-25"
+                                />
+                              )}
+
+                            {/* VIDEO */}
+
+                            {banner.mediaType ===
+                              "video" &&
+                              banner.videoUrl && (
+                                <video
+                                  src={String(
+                                    banner.videoUrl
+                                  )}
+                                  autoPlay
+                                  muted
+                                  loop
+                                  className="absolute inset-0 h-full w-full object-cover"
+                                />
+                              )}
+
+                            <div className="relative z-10">
+
+                              <h2
+                                className="text-4xl font-black leading-tight"
+                                style={{
+                                  color:
+                                    String(
+                                      banner.textColor ||
+                                        "#ffffff"
+                                    )
+                                }}
+                              >
+                                {
+                                  banner.title
                                 }
-                              );
-                            }}
-                            className="flex-1 rounded-2xl border border-gray-200 bg-white px-5 py-4"
-                          />
+                              </h2>
 
-                          <datalist
-                            id={`field-suggestions-${section.id}`}
-                          >
+                              <p
+                                className="mt-4 text-lg"
+                                style={{
+                                  color:
+                                    String(
+                                      banner.textColor ||
+                                        "#ffffff"
+                                    )
+                                }}
+                              >
+                                {
+                                  banner.subtitle
+                                }
+                              </p>
 
-                            {FIELD_SUGGESTIONS.map(
-                              (
-                                field
-                              ) => {
-                                return (
-                                  <option
-                                    key={
-                                      field
-                                    }
-                                    value={
-                                      field
-                                    }
-                                  />
-                                );
-                              }
-                            )}
+                              <button
+                                className="mt-6 rounded-2xl px-8 py-4 text-lg font-black"
+                                style={{
+                                  backgroundColor:
+                                    String(
+                                      banner.buttonColor ||
+                                        "#ffffff"
+                                    ),
 
-                          </datalist>
+                                  color:
+                                    String(
+                                      banner.buttonTextColor ||
+                                        "#000000"
+                                    )
+                                }}
+                              >
+                                {
+                                  banner.buttonText
+                                }
+                              </button>
 
-                          <button
-                            onClick={() => {
-                              addCustomField(
-                                section.id
-                              );
-                            }}
-                            className="rounded-2xl bg-black px-8 py-4 font-black text-white"
-                          >
-                            Add Field
-                          </button>
+                            </div>
+
+                          </div>
 
                         </div>
 
                       </div>
 
-                      {/* SAVE */}
-
-                      <div className="p-6 pt-0">
-
-                        <button
-                          onClick={() => {
-                            saveSection(
-                              section
-                            );
-                          }}
-                          disabled={
-                            savingId ===
-                            section.id
-                          }
-                          className="w-full rounded-2xl bg-gradient-to-r from-blue-600 to-purple-600 px-6 py-5 text-xl font-black text-white"
-                        >
-                          {savingId ===
-                          section.id
-                            ? "Saving..."
-                            : "Save Section"}
-                        </button>
-
-                      </div>
-
-                    </>
+                    </div>
                   )}
 
                 </div>
