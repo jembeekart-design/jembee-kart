@@ -1,3 +1,8 @@
+/* =========================================================
+FILE:
+src/app/admin/page.tsx
+========================================================= */
+
 "use client";
 
 export const dynamic = "force-dynamic";
@@ -21,13 +26,6 @@ import {
 } from "firebase/firestore";
 
 import {
-  deleteObject,
-  getDownloadURL,
-  ref,
-  uploadBytes
-} from "firebase/storage";
-
-import {
   ChevronDown,
   ChevronUp,
   Eye,
@@ -39,13 +37,18 @@ import {
   Plus,
   Smartphone,
   Trash2,
-  Upload,
   Video
 } from "lucide-react";
 
-import { db, storage } from "@/firebase/config";
+import { db } from "@/firebase/config";
 
-/* ---------------- TYPES ---------------- */
+import {
+  uploadToCloudinary
+} from "@/lib/cloudinary";
+
+/* =========================================================
+TYPES
+========================================================= */
 
 interface BannerSlide {
   id: string;
@@ -85,25 +88,15 @@ interface BannerSlide {
     | undefined;
 }
 
-/* ---------------- FIELD SUGGESTIONS ---------------- */
-
-const FIELD_SUGGESTIONS = [
-  "title",
-  "subtitle",
-  "buttonText",
-  "buttonLink",
-  "backgroundColor",
-  "gradientColor",
-  "textColor",
-  "buttonColor",
-  "buttonTextColor",
-  "imageUrl",
-  "videoUrl"
-];
-
-/* ---------------- COMPONENT ---------------- */
+/* =========================================================
+COMPONENT
+========================================================= */
 
 export default function AdminPage() {
+  /* =========================================================
+  STATES
+  ========================================================= */
+
   const [banners, setBanners] =
     useState<
       BannerSlide[]
@@ -137,7 +130,14 @@ export default function AdminPage() {
       [key: string]: HTMLInputElement | null;
     }>({});
 
-  /* ---------------- GET BANNERS ---------------- */
+  const videoInputRefs =
+    useRef<{
+      [key: string]: HTMLInputElement | null;
+    }>({});
+
+  /* =========================================================
+  GET BANNERS
+  ========================================================= */
 
   useEffect(() => {
     const unsubscribe =
@@ -182,7 +182,9 @@ export default function AdminPage() {
     return () => unsubscribe();
   }, []);
 
-  /* ---------------- FILTER ---------------- */
+  /* =========================================================
+  FILTER
+  ========================================================= */
 
   const filteredBanners =
     useMemo(() => {
@@ -208,7 +210,9 @@ export default function AdminPage() {
       );
     }, [banners, search]);
 
-  /* ---------------- TOGGLE ---------------- */
+  /* =========================================================
+  TOGGLE
+  ========================================================= */
 
   function toggleBanner(
     id: string
@@ -225,7 +229,9 @@ export default function AdminPage() {
     );
   }
 
-  /* ---------------- UPDATE ---------------- */
+  /* =========================================================
+  UPDATE
+  ========================================================= */
 
   function updateBannerField(
     id: string,
@@ -254,7 +260,9 @@ export default function AdminPage() {
     });
   }
 
-  /* ---------------- CREATE ---------------- */
+  /* =========================================================
+  CREATE NEW BANNER
+  ========================================================= */
 
   async function createNewBanner() {
     try {
@@ -295,12 +303,12 @@ export default function AdminPage() {
           buttonTextColor:
             "#000000",
 
-          mediaType:
-            "image",
-
           imageUrl: "",
 
           videoUrl: "",
+
+          mediaType:
+            "image",
 
           visible: true,
 
@@ -321,7 +329,9 @@ export default function AdminPage() {
     }
   }
 
-  /* ---------------- DELETE ---------------- */
+  /* =========================================================
+  DELETE BANNER
+  ========================================================= */
 
   async function deleteBanner(
     id: string
@@ -356,7 +366,9 @@ export default function AdminPage() {
     }
   }
 
-  /* ---------------- SAVE ---------------- */
+  /* =========================================================
+  SAVE BANNER
+  ========================================================= */
 
   async function saveBanner(
     banner: BannerSlide
@@ -390,115 +402,25 @@ export default function AdminPage() {
     }
   }
 
-  /* ---------------- IMAGE COMPRESS ---------------- */
-
-  async function compressImage(
-    file: File
-  ) {
-    return new Promise<File>(
-      (resolve) => {
-        const canvas =
-          document.createElement(
-            "canvas"
-          );
-
-        const ctx =
-          canvas.getContext(
-            "2d"
-          );
-
-        const img =
-          new window.Image();
-
-        img.onload = () => {
-          const maxWidth =
-            1200;
-
-          const scale =
-            maxWidth /
-            img.width;
-
-          canvas.width =
-            maxWidth;
-
-          canvas.height =
-            img.height *
-            scale;
-
-          ctx?.drawImage(
-            img,
-            0,
-            0,
-            canvas.width,
-            canvas.height
-          );
-
-          canvas.toBlob(
-            (blob) => {
-              if (!blob) {
-                resolve(file);
-                return;
-              }
-
-              const compressedFile =
-                new File(
-                  [blob],
-                  file.name,
-                  {
-                    type:
-                      "image/jpeg"
-                  }
-                );
-
-              resolve(
-                compressedFile
-              );
-            },
-            "image/jpeg",
-            0.7
-          );
-        };
-
-        img.src =
-          URL.createObjectURL(
-            file
-          );
-      }
-    );
-  }
-
-  /* ---------------- UPLOAD IMAGE ---------------- */
+  /* =========================================================
+  IMAGE UPLOAD
+  ========================================================= */
 
   async function uploadImage(
     bannerId: string,
     file: File
   ) {
     try {
-      const compressedFile =
-        await compressImage(
-          file
-        );
-
-      const storageRef =
-        ref(
-          storage,
-          `homepage_banners/${Date.now()}-${compressedFile.name}`
-        );
-
-      await uploadBytes(
-        storageRef,
-        compressedFile
-      );
-
-      const downloadURL =
-        await getDownloadURL(
-          storageRef
+      const response =
+        await uploadToCloudinary(
+          file,
+          "image"
         );
 
       updateBannerField(
         bannerId,
         "imageUrl",
-        downloadURL
+        response.secure_url
       );
 
       updateBannerField(
@@ -519,7 +441,48 @@ export default function AdminPage() {
     }
   }
 
-  /* ---------------- DRAG ---------------- */
+  /* =========================================================
+  VIDEO UPLOAD
+  ========================================================= */
+
+  async function uploadVideo(
+    bannerId: string,
+    file: File
+  ) {
+    try {
+      const response =
+        await uploadToCloudinary(
+          file,
+          "video"
+        );
+
+      updateBannerField(
+        bannerId,
+        "videoUrl",
+        response.secure_url
+      );
+
+      updateBannerField(
+        bannerId,
+        "mediaType",
+        "video"
+      );
+
+      alert(
+        "Video Uploaded"
+      );
+    } catch (error) {
+      console.error(error);
+
+      alert(
+        "Video Upload Failed"
+      );
+    }
+  }
+
+  /* =========================================================
+  DRAG DROP
+  ========================================================= */
 
   async function handleDrop(
     targetId: string
@@ -593,7 +556,9 @@ export default function AdminPage() {
     }
   }
 
-  /* ---------------- UI ---------------- */
+  /* =========================================================
+  UI
+  ========================================================= */
 
   return (
     <main className="min-h-screen bg-gradient-to-br from-slate-100 via-blue-50 to-indigo-100 p-4">
@@ -614,7 +579,7 @@ export default function AdminPage() {
 
         </div>
 
-        {/* TOP BUTTONS */}
+        {/* BUTTONS */}
 
         <div className="mb-8 flex flex-wrap gap-4">
 
@@ -787,7 +752,7 @@ export default function AdminPage() {
 
                   </div>
 
-                  {/* FORM */}
+                  {/* CONTENT */}
 
                   {isExpanded && (
                     <div className="grid gap-8 p-6 lg:grid-cols-2">
@@ -877,14 +842,14 @@ export default function AdminPage() {
                                     onChange={(
                                       e
                                     ) => {
-                                      updateBannerField(
-                                        banner.id,
-                                        key,
-                                        e
-                                          .target
-                                          .checked
-                                      );
-                                    }}
+                                        updateBannerField(
+                                          banner.id,
+                                          key,
+                                          e
+                                            .target
+                                            .checked
+                                        );
+                                      }}
                                     className="h-7 w-7"
                                   />
                                 ) : (
@@ -897,14 +862,14 @@ export default function AdminPage() {
                                     onChange={(
                                       e
                                     ) => {
-                                      updateBannerField(
-                                        banner.id,
-                                        key,
-                                        e
-                                          .target
-                                          .value
-                                      );
-                                    }}
+                                        updateBannerField(
+                                          banner.id,
+                                          key,
+                                          e
+                                            .target
+                                            .value
+                                        );
+                                      }}
                                     className="w-full rounded-xl border border-gray-200 px-4 py-3"
                                   />
                                 )}
@@ -914,7 +879,7 @@ export default function AdminPage() {
                           }
                         )}
 
-                        {/* IMAGE UPLOAD */}
+                        {/* MEDIA */}
 
                         <div className="rounded-2xl border border-dashed border-gray-300 p-5">
 
@@ -939,20 +904,20 @@ export default function AdminPage() {
 
                             <button
                               onClick={() => {
-                                updateBannerField(
-                                  banner.id,
-                                  "mediaType",
-                                  "video"
-                                );
+                                videoInputRefs.current[
+                                  banner.id
+                                ]?.click();
                               }}
                               className="flex items-center gap-2 rounded-2xl bg-purple-600 px-5 py-3 font-black text-white"
                             >
                               <Video />
 
-                              Video Slider
+                              Upload Video
                             </button>
 
                           </div>
+
+                          {/* IMAGE INPUT */}
 
                           <input
                             ref={(element) => {
@@ -975,6 +940,36 @@ export default function AdminPage() {
                                 file
                               ) {
                                 await uploadImage(
+                                  banner.id,
+                                  file
+                                );
+                              }
+                            }}
+                          />
+
+                          {/* VIDEO INPUT */}
+
+                          <input
+                            ref={(element) => {
+                              videoInputRefs.current[
+                                banner.id
+                              ] = element;
+                            }}
+                            type="file"
+                            accept="video/*"
+                            hidden
+                            onChange={async (
+                              event
+                            ) => {
+                              const file =
+                                event
+                                  .target
+                                  .files?.[0];
+
+                              if (
+                                file
+                              ) {
+                                await uploadVideo(
                                   banner.id,
                                   file
                                 );
@@ -1041,14 +1036,12 @@ export default function AdminPage() {
                               "image" &&
                               banner.imageUrl && (
                                 <Image
-                                  src={
-                                    String(
-                                      banner.imageUrl
-                                    )
-                                  }
+                                  src={String(
+                                    banner.imageUrl
+                                  )}
                                   alt="Banner"
                                   fill
-                                  className="object-cover opacity-25"
+                                  className="object-cover opacity-30"
                                 />
                               )}
 
@@ -1064,9 +1057,12 @@ export default function AdminPage() {
                                   autoPlay
                                   muted
                                   loop
+                                  playsInline
                                   className="absolute inset-0 h-full w-full object-cover"
                                 />
                               )}
+
+                            {/* CONTENT */}
 
                             <div className="relative z-10">
 
