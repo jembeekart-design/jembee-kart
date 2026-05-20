@@ -7,7 +7,7 @@ interface ProductCardProps {
 
   title?: string;
 
-  image?: string;
+  images?: string[];
 
   price?: number;
 
@@ -37,7 +37,7 @@ export default function ProductCard({
 
   title = "PETER ENGLAND Polo",
 
-  image = "https://images.unsplash.com/photo-1581655353564-df123a1eb820",
+  images = [],
 
   price = 1099,
 
@@ -55,7 +55,13 @@ export default function ProductCard({
         100
     );
 
-  /* AUTO RANDOM COLOR */
+  /* FIRST IMAGE */
+
+  const firstImage =
+    images?.[0] ||
+    "https://images.unsplash.com/photo-1581655353564-df123a1eb820";
+
+  /* RANDOM CARD COLOR */
 
   const colorIndex =
     id.length %
@@ -68,7 +74,7 @@ export default function ProductCard({
     <div
       className={`
         overflow-hidden
-        rounded-2xl
+        rounded-[24px]
         bg-gradient-to-br
         ${gradientColor}
         p-[1.5px]
@@ -79,18 +85,25 @@ export default function ProductCard({
       `}
     >
 
-      <div className="overflow-hidden rounded-2xl bg-white">
+      <div
+        className="
+          overflow-hidden
+          rounded-[22px]
+          bg-white
+        "
+      >
 
-        {/* IMAGE */}
+        {/* IMAGE AREA */}
 
         <div className="relative">
 
           <img
-            src={image}
+            src={firstImage}
             alt={title}
             className="
-              h-[155px]
+              h-[165px]
               w-full
+              rounded-b-[32px]
               object-cover
             "
           />
@@ -103,18 +116,18 @@ export default function ProductCard({
               right-2
               top-2
               flex
-              h-7
-              w-7
+              h-8
+              w-8
               items-center
               justify-center
               rounded-full
               bg-white
-              shadow
+              shadow-lg
             "
           >
 
             <Heart
-              size={15}
+              size={16}
               className="text-gray-700"
             />
 
@@ -127,10 +140,10 @@ export default function ProductCard({
               absolute
               bottom-2
               left-2
-              rounded
+              rounded-xl
               bg-white
               px-2
-              py-[3px]
+              py-1
               text-[10px]
               font-bold
               text-black
@@ -147,11 +160,35 @@ export default function ProductCard({
 
           </div>
 
+          {/* MULTI IMAGE BADGE */}
+
+          {images.length >
+            1 && (
+            <div
+              className="
+                absolute
+                bottom-2
+                right-2
+                rounded-xl
+                bg-black/70
+                px-2
+                py-1
+                text-[10px]
+                font-bold
+                text-white
+                backdrop-blur-md
+              "
+            >
+              +{images.length}
+              Photos
+            </div>
+          )}
+
         </div>
 
         {/* CONTENT */}
 
-        <div className="p-2">
+        <div className="p-2.5">
 
           {/* TITLE */}
 
@@ -186,7 +223,7 @@ export default function ProductCard({
 
           <div
             className="
-              mt-1
+              mt-1.5
               flex
               items-center
               gap-1.5
@@ -219,8 +256,8 @@ export default function ProductCard({
 
             <span
               className="
-                text-[15px]
-                font-bold
+                text-[16px]
+                font-black
                 text-black
               "
             >
@@ -235,14 +272,14 @@ export default function ProductCard({
 
           <div
             className="
-              mt-1.5
+              mt-2
               inline-block
-              rounded
+              rounded-lg
               bg-green-100
               px-2
-              py-[3px]
+              py-[4px]
               text-[10px]
-              font-semibold
+              font-bold
               text-green-700
             "
           >
