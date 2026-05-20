@@ -43,7 +43,7 @@ interface Product {
   discountPrice?: number;
   rating?: number;
   stock?: number;
- sizes?: string[];
+  sizes?: string[];
   colors?: string[];
   coupons?: string[];
   seller?: {
@@ -53,6 +53,7 @@ interface Product {
 }
 
 export default function ProductPage() {
+
   const params = useParams();
 
   const productId = Array.isArray(params.id)
@@ -78,8 +79,11 @@ export default function ProductPage() {
     useState(false);
 
   useEffect(() => {
+
     async function fetchProduct() {
+
       try {
+
         const productRef = doc(
           db,
           "products",
@@ -90,6 +94,7 @@ export default function ProductPage() {
           await getDoc(productRef);
 
         if (snapshot.exists()) {
+
           const data =
             snapshot.data() as Omit<
               Product,
@@ -142,7 +147,9 @@ export default function ProductPage() {
         }
 
         setLoading(false);
+
       } catch (error) {
+
         console.error(error);
 
         setLoading(false);
@@ -150,21 +157,24 @@ export default function ProductPage() {
     }
 
     fetchProduct();
+
   }, [productId]);
 
   const discount = useMemo(() => {
+
     if (!product) return 0;
 
     return Math.round(
       (((product.price || 0) -
-        (product.discountPrice ||
-          0)) /
+        (product.discountPrice || 0)) /
         (product.price || 1)) *
         100
     );
+
   }, [product]);
 
   const deliveryDate = useMemo(() => {
+
     const date = new Date();
 
     date.setDate(
@@ -172,12 +182,15 @@ export default function ProductPage() {
     );
 
     return date.toDateString();
+
   }, []);
 
   async function addToCart() {
+
     if (!product) return;
 
     try {
+
       await addDoc(
         collection(db, "cart"),
         {
@@ -195,7 +208,9 @@ export default function ProductPage() {
       );
 
       alert("Added To Cart");
+
     } catch (error) {
+
       console.error(error);
     }
   }
@@ -224,6 +239,7 @@ export default function ProductPage() {
     product.images || [];
 
   return (
+
     <main className="min-h-screen bg-[#f6f6f6] pb-[85px]">
 
       {/* TOPBAR */}
@@ -251,9 +267,7 @@ export default function ProductPage() {
 
             <button
               onClick={() =>
-                setWishlist(
-                  !wishlist
-                )
+                setWishlist(!wishlist)
               }
             >
               <Heart
@@ -291,9 +305,7 @@ export default function ProductPage() {
 
             <img
               src={
-                images[
-                  currentImage
-                ] ||
+                images[currentImage] ||
                 "/placeholder.png"
               }
               alt={product.title}
@@ -308,9 +320,7 @@ export default function ProductPage() {
 
             <button
               onClick={() =>
-                setWishlist(
-                  !wishlist
-                )
+                setWishlist(!wishlist)
               }
               className="absolute right-2 top-2 flex h-8 w-8 items-center justify-center rounded-full bg-white shadow-sm"
             >
@@ -331,13 +341,11 @@ export default function ProductPage() {
 
             </button>
 
-            {currentImage >
-              0 && (
+            {currentImage > 0 && (
               <button
                 onClick={() =>
                   setCurrentImage(
-                    currentImage -
-                      1
+                    currentImage - 1
                   )
                 }
                 className="absolute left-2 top-1/2 flex h-8 w-8 -translate-y-1/2 items-center justify-center rounded-full bg-white shadow-sm"
@@ -347,13 +355,11 @@ export default function ProductPage() {
             )}
 
             {currentImage <
-              images.length -
-                1 && (
+              images.length - 1 && (
               <button
                 onClick={() =>
                   setCurrentImage(
-                    currentImage +
-                      1
+                    currentImage + 1
                   )
                 }
                 className="absolute right-2 top-1/2 flex h-8 w-8 -translate-y-1/2 items-center justify-center rounded-full bg-white shadow-sm"
@@ -383,13 +389,10 @@ export default function ProductPage() {
                 <button
                   key={index}
                   onClick={() =>
-                    setCurrentImage(
-                      index
-                    )
+                    setCurrentImage(index)
                   }
                   className={`overflow-hidden rounded-lg border ${
-                    currentImage ===
-                    index
+                    currentImage === index
                       ? "border-purple-600"
                       : "border-transparent"
                   }`}
@@ -436,17 +439,14 @@ export default function ProductPage() {
 
               <span className="font-bold">
 
-                {product.rating ||
-                  4.5}
+                {product.rating || 4.5}
 
               </span>
 
             </div>
 
             <span className="text-gray-500">
-
               (128 Reviews)
-
             </span>
 
             <span className="text-gray-300">
@@ -465,17 +465,13 @@ export default function ProductPage() {
 
             <h2 className="text-[24px] font-black leading-none">
 
-              ₹
-              {
-                product.discountPrice
-              }
+              ₹{product.discountPrice}
 
             </h2>
 
             <p className="text-[15px] font-bold text-gray-400 line-through">
 
-              ₹
-              {product.price}
+              ₹{product.price}
 
             </p>
 
@@ -484,18 +480,20 @@ export default function ProductPage() {
           <p className="mt-1 text-[13px] font-bold text-green-600">
 
             You save ₹
-            {(product.price ||
-              0) -
-              (product.discountPrice ||
-                0)}
+            {(product.price || 0) -
+              (product.discountPrice || 0)}
             {" "}
             ({discount}%)
 
           </p>
 
-          {/* DELIVERY */}
+        </div>
 
-          <div className="mt-4 flex items-center gap-3 rounded-[16px] border bg-white p-3 shadow-sm">
+        {/* DELIVERY */}
+
+        <div className="rounded-[18px] bg-white p-3 shadow-sm">
+
+          <div className="flex items-center gap-3">
 
             <Truck
               size={18}
@@ -520,81 +518,75 @@ export default function ProductPage() {
 
           </div>
 
-          {/* SIZE */}
+        </div>
 
-          <div className="mt-5">
+        {/* SIZE */}
 
-            <h2 className="mb-2 text-sm font-bold">
+        <div>
 
-              Select Size
+          <h2 className="mb-2 text-sm font-bold">
 
-            </h2>
+            Select Size
 
-            <div className="flex flex-wrap gap-2">
+          </h2>
 
-              {product.sizes?.map(
-                (size) => (
-                  <button
-                    key={size}
-                    onClick={() =>
-                      setSelectedSize(
-                        size
-                      )
-                    }
-                    className={`min-w-[46px] rounded-[12px] border px-3 py-1.5 text-[12px] font-bold ${
-                      selectedSize ===
-                      size
-                        ? "border-purple-600 bg-purple-600 text-white"
-                        : "bg-white"
-                    }`}
-                  >
+          <div className="flex flex-wrap gap-2">
 
-                    {size}
+            {product.sizes?.map(
+              (size) => (
+                <button
+                  key={size}
+                  onClick={() =>
+                    setSelectedSize(size)
+                  }
+                  className={`min-w-[46px] rounded-[12px] border px-3 py-1.5 text-[12px] font-bold ${
+                    selectedSize === size
+                      ? "border-purple-600 bg-purple-600 text-white"
+                      : "bg-white"
+                  }`}
+                >
 
-                  </button>
-                )
-              )}
+                  {size}
 
-            </div>
+                </button>
+              )
+            )}
 
           </div>
 
-          {/* COLORS */}
+        </div>
 
-          <div className="mt-5">
+        {/* COLORS */}
 
-            <h2 className="mb-2 text-sm font-bold">
+        <div>
 
-              Select Color
+          <h2 className="mb-2 text-sm font-bold">
 
-            </h2>
+            Select Color
 
-            <div className="flex gap-3">
+          </h2>
 
-              {product.colors?.map(
-                (color) => (
-                  <button
-                    key={color}
-                    onClick={() =>
-                      setSelectedColor(
-                        color
-                      )
-                    }
-                    style={{
-                      background:
-                        color
-                    }}
-                    className={`h-8 w-8 rounded-full border-2 ${
-                      selectedColor ===
+          <div className="flex gap-3">
+
+            {product.colors?.map(
+              (color) => (
+                <button
+                  key={color}
+                  onClick={() =>
+                    setSelectedColor(color)
+                  }
+                  style={{
+                    background:
                       color
-                        ? "border-purple-600"
-                        : "border-gray-200"
-                    }`}
-                  />
-                )
-              )}
-
-            </div>
+                  }}
+                  className={`h-8 w-8 rounded-full border-2 ${
+                    selectedColor === color
+                      ? "border-purple-600"
+                      : "border-gray-200"
+                  }`}
+                />
+              )
+            )}
 
           </div>
 
@@ -770,28 +762,32 @@ export default function ProductPage() {
 
           </div>
 
-          <div className="space-y-3">
+          <div className="space-y-2">
 
             {product.coupons?.map(
               (coupon) => (
                 <div
                   key={coupon}
-                  className="rounded-[18px] border border-dashed border-purple-300 bg-white p-4"
+                  className="flex items-center justify-between rounded-[16px] border border-dashed border-purple-300 bg-white px-3 py-3 shadow-sm"
                 >
 
-                  <h3 className="text-[20px] font-black">
+                  <div>
 
-                    {coupon}
+                    <h3 className="text-[14px] font-black">
 
-                  </h3>
+                      {coupon}
 
-                  <p className="mt-1 text-[11px] text-gray-500">
+                    </h3>
 
-                    Extra discount available
+                    <p className="mt-1 text-[10px] text-gray-500">
 
-                  </p>
+                      Extra discount available
 
-                  <button className="mt-3 rounded-lg bg-gradient-to-r from-violet-600 to-fuchsia-500 px-4 py-1.5 text-[11px] font-bold text-white">
+                    </p>
+
+                  </div>
+
+                  <button className="rounded-lg bg-gradient-to-r from-violet-600 to-fuchsia-500 px-3 py-1.5 text-[10px] font-bold text-white">
 
                     Apply
 
@@ -832,17 +828,13 @@ export default function ProductPage() {
 
                 <h3 className="text-[13px] font-black">
 
-                  {
-                    product.seller?.name
-                  }
+                  {product.seller?.name}
 
                 </h3>
 
                 <p className="text-[11px] text-gray-500">
 
-                  {
-                    product.seller?.rating
-                  }
+                  {product.seller?.rating}
                   ★ Seller Rating
 
                 </p>
@@ -891,10 +883,7 @@ export default function ProductPage() {
 
             <h2 className="text-[20px] font-black">
 
-              ₹
-              {
-                product.discountPrice
-              }
+              ₹{product.discountPrice}
 
             </h2>
 
