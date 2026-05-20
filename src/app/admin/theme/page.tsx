@@ -6,40 +6,29 @@ import { useEffect, useState } from "react";
 
 import {
   doc,
-  getDoc
+  getDoc,
+  updateDoc
 } from "firebase/firestore";
 
 import { db } from "@/firebase/config";
 
 interface ThemeData {
-  statusBarColor?: string;
-  headerBackgroundColor?: string;
-  backgroundColor?: string;
-  gradientColor?: string;
-  textColor?: string;
-  buttonColor?: string;
-  buttonTextColor?: string;
-  sellerBackgroundColor?: string;
-  sellerGradientColor?: string;
-  sellerButtonColor?: string;
-  resellerBackgroundColor?: string;
-  resellerGradientColor?: string;
-  resellerButtonColor?: string;
+  [key: string]: any;
 }
 
 export default function ThemePage() {
 
   const [heroTheme, setHeroTheme] =
-    useState<ThemeData | null>(null);
+    useState<ThemeData>({});
 
   const [affiliateTheme, setAffiliateTheme] =
-    useState<ThemeData | null>(null);
+    useState<ThemeData>({});
 
   const [sellerTheme, setSellerTheme] =
-    useState<ThemeData | null>(null);
+    useState<ThemeData>({});
 
   const [bannerTheme, setBannerTheme] =
-    useState<ThemeData | null>(null);
+    useState<ThemeData>({});
 
   const [loading, setLoading] =
     useState(true);
@@ -87,32 +76,30 @@ export default function ThemePage() {
         ]);
 
         if (heroSnap.exists()) {
-          setHeroTheme(
-            heroSnap.data() as ThemeData
-          );
+          setHeroTheme(heroSnap.data());
         }
 
         if (affiliateSnap.exists()) {
           setAffiliateTheme(
-            affiliateSnap.data() as ThemeData
+            affiliateSnap.data()
           );
         }
 
         if (sellerSnap.exists()) {
           setSellerTheme(
-            sellerSnap.data() as ThemeData
+            sellerSnap.data()
           );
         }
 
         if (bannerSnap.exists()) {
           setBannerTheme(
-            bannerSnap.data() as ThemeData
+            bannerSnap.data()
           );
         }
 
       } catch (error) {
 
-        console.error(error);
+        console.log(error);
 
       } finally {
 
@@ -125,303 +112,227 @@ export default function ThemePage() {
 
   }, []);
 
+  async function updateTheme(
+    collectionName: string,
+    documentId: string,
+    field: string,
+    value: string
+  ) {
+
+    try {
+
+      const ref = doc(
+        db,
+        collectionName,
+        documentId
+      );
+
+      await updateDoc(ref, {
+        [field]: value
+      });
+
+    } catch (error) {
+
+      console.log(error);
+
+    }
+  }
+
   if (loading) {
     return (
       <div className="flex min-h-screen items-center justify-center bg-black text-white">
-        Loading Theme...
+        Loading...
       </div>
     );
   }
 
   return (
 
-    <main className="min-h-screen bg-[#0f0f0f] p-4 text-white">
+    <main className="min-h-screen bg-black p-4 text-white">
 
       <h1 className="mb-6 text-center text-3xl font-black">
-        JembeeKart Theme Panel
+        JembeeKart Live Theme
       </h1>
 
-      {/* HERO SECTION */}
+      {/* HERO */}
 
-      <div
-        className="mb-6 rounded-[24px] p-5 shadow-xl"
-        style={{
-          background:
-            heroTheme?.backgroundColor ||
-            "#111111"
-        }}
-      >
+      <ThemeSection
+        title="Hero Section"
+        data={heroTheme}
+        collectionName="homepage_sections"
+        documentId="hero_section"
+        updateTheme={updateTheme}
+      />
 
-        <h2 className="mb-4 text-xl font-black">
-          Hero Section
-        </h2>
+      {/* AFFILIATE */}
 
-        <div className="grid gap-3">
+      <ThemeSection
+        title="Affiliate Section"
+        data={affiliateTheme}
+        collectionName="homepage_sections"
+        documentId="affiliate_section"
+        updateTheme={updateTheme}
+      />
 
-          <ThemeBox
-            label="Status Bar Color"
-            color={
-              heroTheme?.statusBarColor
-            }
-          />
+      {/* SELLER */}
 
-          <ThemeBox
-            label="Header Background"
-            color={
-              heroTheme?.headerBackgroundColor
-            }
-          />
+      <ThemeSection
+        title="Seller Section"
+        data={sellerTheme}
+        collectionName="homepage_sections"
+        documentId="seller_section"
+        updateTheme={updateTheme}
+      />
 
-          <ThemeBox
-            label="Background Color"
-            color={
-              heroTheme?.backgroundColor
-            }
-          />
+      {/* BANNER */}
 
-          <ThemeBox
-            label="Gradient Color"
-            color={
-              heroTheme?.gradientColor
-            }
-          />
-
-          <ThemeBox
-            label="Text Color"
-            color={
-              heroTheme?.textColor
-            }
-          />
-
-          <ThemeBox
-            label="Button Color"
-            color={
-              heroTheme?.buttonColor
-            }
-          />
-
-          <ThemeBox
-            label="Button Text Color"
-            color={
-              heroTheme?.buttonTextColor
-            }
-          />
-
-        </div>
-
-      </div>
-
-      {/* AFFILIATE SECTION */}
-
-      <div
-        className="mb-6 rounded-[24px] p-5 shadow-xl"
-        style={{
-          background:
-            affiliateTheme?.backgroundColor ||
-            "#111111"
-        }}
-      >
-
-        <h2 className="mb-4 text-xl font-black">
-          Affiliate Section
-        </h2>
-
-        <div className="grid gap-3">
-
-          <ThemeBox
-            label="Background Color"
-            color={
-              affiliateTheme?.backgroundColor
-            }
-          />
-
-          <ThemeBox
-            label="Button Color"
-            color={
-              affiliateTheme?.buttonColor
-            }
-          />
-
-          <ThemeBox
-            label="Button Text Color"
-            color={
-              affiliateTheme?.buttonTextColor
-            }
-          />
-
-          <ThemeBox
-            label="Seller Background"
-            color={
-              affiliateTheme?.sellerBackgroundColor
-            }
-          />
-
-          <ThemeBox
-            label="Seller Gradient"
-            color={
-              affiliateTheme?.sellerGradientColor
-            }
-          />
-
-        </div>
-
-      </div>
-
-      {/* SELLER SECTION */}
-
-      <div
-        className="mb-6 rounded-[24px] p-5 shadow-xl"
-        style={{
-          background:
-            sellerTheme?.sellerBackgroundColor ||
-            "#111111"
-        }}
-      >
-
-        <h2 className="mb-4 text-xl font-black">
-          Seller Section
-        </h2>
-
-        <div className="grid gap-3">
-
-          <ThemeBox
-            label="Seller Background"
-            color={
-              sellerTheme?.sellerBackgroundColor
-            }
-          />
-
-          <ThemeBox
-            label="Seller Gradient"
-            color={
-              sellerTheme?.sellerGradientColor
-            }
-          />
-
-          <ThemeBox
-            label="Seller Button"
-            color={
-              sellerTheme?.sellerButtonColor
-            }
-          />
-
-          <ThemeBox
-            label="Reseller Background"
-            color={
-              sellerTheme?.resellerBackgroundColor
-            }
-          />
-
-          <ThemeBox
-            label="Reseller Gradient"
-            color={
-              sellerTheme?.resellerGradientColor
-            }
-          />
-
-          <ThemeBox
-            label="Reseller Button"
-            color={
-              sellerTheme?.resellerButtonColor
-            }
-          />
-
-        </div>
-
-      </div>
-
-      {/* BANNER SECTION */}
-
-      <div
-        className="rounded-[24px] p-5 shadow-xl"
-        style={{
-          background:
-            bannerTheme?.backgroundColor ||
-            "#111111"
-        }}
-      >
-
-        <h2 className="mb-4 text-xl font-black">
-          Banner Section
-        </h2>
-
-        <div className="grid gap-3">
-
-          <ThemeBox
-            label="Background Color"
-            color={
-              bannerTheme?.backgroundColor
-            }
-          />
-
-          <ThemeBox
-            label="Gradient Color"
-            color={
-              bannerTheme?.gradientColor
-            }
-          />
-
-          <ThemeBox
-            label="Text Color"
-            color={
-              bannerTheme?.textColor
-            }
-          />
-
-          <ThemeBox
-            label="Button Color"
-            color={
-              bannerTheme?.buttonColor
-            }
-          />
-
-          <ThemeBox
-            label="Button Text Color"
-            color={
-              bannerTheme?.buttonTextColor
-            }
-          />
-
-        </div>
-
-      </div>
+      <ThemeSection
+        title="Banner Section"
+        data={bannerTheme}
+        collectionName="homepage_banner"
+        documentId="JoPe2zxbNgJa7rn7zDOq"
+        updateTheme={updateTheme}
+      />
 
     </main>
   );
 }
 
-function ThemeBox({
-  label,
-  color
-}: {
-  label: string;
-  color?: string;
-}) {
+function ThemeSection({
+  title,
+  data,
+  collectionName,
+  documentId,
+  updateTheme
+}: any) {
 
   return (
 
-    <div className="flex items-center justify-between rounded-2xl bg-white/10 p-4">
+    <div
+      className="mb-6 rounded-[30px] p-5 shadow-2xl"
+      style={{
+        background:
+          data.backgroundColor ||
+          data.gradientColor ||
+          "#111111"
+      }}
+    >
 
-      <div>
+      <h2 className="mb-5 text-2xl font-black">
+        {title}
+      </h2>
 
-        <h3 className="text-sm font-bold">
-          {label}
-        </h3>
+      <div className="space-y-4">
 
-        <p className="mt-1 text-xs text-gray-300">
-          {color || "No Color"}
-        </p>
+        {Object.entries(data).map(
+          ([key, value]: any) => {
+
+            const isColor =
+              typeof value ===
+                "string" &&
+              (
+                value.startsWith(
+                  "#"
+                ) ||
+                value === "white" ||
+                value === "black" ||
+                value === "White" ||
+                value === "Black"
+              );
+
+            if (!isColor) return null;
+
+            return (
+
+              <div
+                key={key}
+                className="rounded-[24px] bg-white/10 p-4 backdrop-blur-lg"
+              >
+
+                <div className="mb-3 flex items-center justify-between">
+
+                  <div>
+
+                    <h3 className="text-lg font-bold">
+
+                      {formatLabel(
+                        key
+                      )}
+
+                    </h3>
+
+                    <p className="text-sm text-gray-200">
+
+                      {value}
+
+                    </p>
+
+                  </div>
+
+                  <div
+                    className="h-14 w-14 rounded-full border-4 border-white"
+                    style={{
+                      background:
+                        value
+                    }}
+                  />
+
+                </div>
+
+                <input
+                  type="color"
+                  value={
+                    value.startsWith(
+                      "#"
+                    )
+                      ? value
+                      : "#ffffff"
+                  }
+                  onChange={async (
+                    e
+                  ) => {
+
+                    const newColor =
+                      e.target.value;
+
+                    updateTheme(
+                      collectionName,
+                      documentId,
+                      key,
+                      newColor
+                    );
+
+                    data[key] =
+                      newColor;
+
+                  }}
+                  className="h-12 w-full cursor-pointer rounded-xl border-none"
+                />
+
+              </div>
+
+            );
+          }
+        )}
 
       </div>
 
-      <div
-        className="h-12 w-12 rounded-full border-4 border-white"
-        style={{
-          background:
-            color || "#000000"
-        }}
-      />
-
     </div>
   );
+}
+
+function formatLabel(
+  value: string
+) {
+
+  return value
+    .replace(
+      /([A-Z])/g,
+      " $1"
+    )
+    .replace(
+      /^./,
+      (str) =>
+        str.toUpperCase()
+    );
 }
