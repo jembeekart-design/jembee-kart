@@ -2,7 +2,11 @@
 
 export const dynamic = "force-dynamic";
 
-import { useEffect, useState } from "react";
+import {
+  useEffect,
+  useRef,
+  useState
+} from "react";
 
 import {
   addDoc,
@@ -14,6 +18,10 @@ import {
 } from "firebase/firestore";
 
 import { db } from "@/firebase/config";
+
+/* ======================================================
+TYPES
+====================================================== */
 
 interface Product {
   id: string;
@@ -39,28 +47,32 @@ interface Product {
   visible?: boolean;
 
   position?: number;
-
-  backgroundColor?: string;
-
-  textColor?: string;
-
-  buttonColor?: string;
-
-  buttonTextColor?: string;
-
-  borderRadius?: string;
-
-  cardWidth?: string;
-
-  imageHeight?: string;
 }
+
+/* ======================================================
+COMPONENT
+====================================================== */
 
 export default function ProductsAdminPage() {
   const [products, setProducts] =
     useState<Product[]>([]);
 
+  const [categories, setCategories] =
+    useState<string[]>([]);
+
   const [loading, setLoading] =
     useState(true);
+
+  const fileInputRefs =
+    useRef<{
+      [key: string]:
+        | HTMLInputElement
+        | null;
+    }>({});
+
+  /* ======================================================
+  GET PRODUCTS
+  ====================================================== */
 
   useEffect(() => {
     const unsubscribe =
@@ -84,7 +96,7 @@ export default function ProductsAdminPage() {
               }
             );
 
-          const sortedData =
+          const sorted =
             data.sort(
               (a, b) => {
                 return (
@@ -99,15 +111,52 @@ export default function ProductsAdminPage() {
             );
 
           setProducts(
-            sortedData
+            sorted
           );
 
           setLoading(false);
         }
       );
 
-    return () => unsubscribe();
+    return () =>
+      unsubscribe();
   }, []);
+
+  /* ======================================================
+  GET CATEGORIES
+  ====================================================== */
+
+  useEffect(() => {
+    const unsubscribe =
+      onSnapshot(
+        collection(
+          db,
+          "categories"
+        ),
+        (snapshot) => {
+          const categoryList =
+            snapshot.docs.map(
+              (document) => {
+                return String(
+                  document.data()
+                    .title || ""
+                );
+              }
+            );
+
+          setCategories(
+            categoryList
+          );
+        }
+      );
+
+    return () =>
+      unsubscribe();
+  }, []);
+
+  /* ======================================================
+  ADD PRODUCT
+  ====================================================== */
 
   async function addProduct() {
     try {
@@ -117,14 +166,17 @@ export default function ProductsAdminPage() {
           "products"
         ),
         {
-          title: "New Product",
+          title:
+            "New Product",
 
           description:
             "Premium Product",
 
           image: "",
 
-          category: "Fashion",
+          category:
+            categories[0] ||
+            "Fashion",
 
           price: 2999,
 
@@ -139,34 +191,17 @@ export default function ProductsAdminPage() {
           visible: true,
 
           position:
-            products.length + 1,
-
-          backgroundColor:
-            "#ffffff",
-
-          textColor:
-            "#111827",
-
-          buttonColor:
-            "#2563eb",
-
-          buttonTextColor:
-            "#ffffff",
-
-          borderRadius:
-            "28px",
-
-          cardWidth:
-            "100%",
-
-          imageHeight:
-            "240px"
+            products.length + 1
         }
       );
     } catch (error) {
       console.error(error);
     }
   }
+
+  /* ======================================================
+  UPDATE PRODUCT
+  ====================================================== */
 
   async function updateProduct(
     id: string,
@@ -192,6 +227,10 @@ export default function ProductsAdminPage() {
     }
   }
 
+  /* ======================================================
+  DELETE PRODUCT
+  ====================================================== */
+
   async function deleteProduct(
     id: string
   ) {
@@ -208,23 +247,189 @@ export default function ProductsAdminPage() {
     }
   }
 
+  /* ======================================================
+  IMAGE COMPRESS
+  ====================================================== */
+
+  async function compressImage(
+    file: File
+  ) {
+    return new Promise<File>(
+      (resolve) => {
+        const canvas =
+          document.createElement(
+            "canvas"
+          );
+
+        const ctx =
+          canvas.getContext(
+            "2d"
+          );
+
+        const img =
+          new window.Image();
+
+        img.onload = () => {
+          let width =
+            img.width;
+
+          let height =
+            img.height;
+
+          const maxWidth =
+            700;
+
+          if (
+            width >
+            maxWidth
+          ) {
+            height =
+              (height *
+                maxWidth) /
+              width;
+
+            width =
+              maxWidth;
+          }
+
+          canvas.width =
+            width;
+
+          canvas.height =
+            height;
+
+          ctx?.drawImage(
+            img,
+            0,
+            0,
+            width,
+            height
+          );
+
+          canvas.toBlob(
+            (blob) => {
+              if (!blob) {
+                resolve(file);
+
+                return;
+              }
+
+              const compressedFile =
+                new File(
+                  [blob],
+                  file.name,
+                  {
+                    type:
+                      "image/jpeg"
+                  }
+                );
+
+              resolve(
+                compressedFile
+              );
+            },
+
+            "image/jpeg",
+
+            0.6
+          );
+        };
+
+        img.src =
+          URL.createObjectURL(
+            file
+          );
+      }
+    );
+  }
+
+  /* ======================================================
+  UPLOAD IMAGE
+  ====================================================== */
+
+  async function uploadImage(
+    productId: string,
+    file: File
+  ) {
+    try {
+      const compressedFile =
+        await compressImage(
+          file
+        );
+
+      const formData =
+        new FormData();
+
+      formData.append(
+        "file",
+        compressedFile
+      );
+
+      formData.append(
+        "upload_preset",
+
+        process.env
+          .NEXT_PUBLIC_CLOUDINARY_UPLOAD_PRESET ||
+          ""
+      );
+
+      const response =
+        await fetch(
+          `https://api.cloudinary.com/v1_1/${
+            process.env
+              .NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME
+          }/image/upload`,
+          {
+            method:
+              "POST",
+
+            body:
+              formData
+          }
+        );
+
+      const data =
+        await response.json();
+
+      await updateProduct(
+        productId,
+        "image",
+        data.secure_url
+      );
+
+      alert(
+        "Image Uploaded"
+      );
+    } catch (error) {
+      console.error(error);
+
+      alert(
+        "Upload Failed"
+      );
+    }
+  }
+
+  /* ======================================================
+  UI
+  ====================================================== */
+
   return (
-    <main className="min-h-screen bg-gray-100 px-4 py-8">
+    <main className="min-h-screen bg-gray-100 p-4">
 
       <div className="mx-auto max-w-6xl">
 
         {/* HEADER */}
 
-        <div className="mb-8 flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
+        <div className="mb-8 flex items-center justify-between">
 
           <div>
 
-            <h1 className="text-3xl font-black text-gray-900 md:text-5xl">
+            <h1 className="text-4xl font-black text-gray-900">
               Products Admin
             </h1>
 
             <p className="mt-2 text-gray-500">
-              Manage ecommerce products
+              Manage Products
             </p>
 
           </div>
@@ -233,7 +438,14 @@ export default function ProductsAdminPage() {
             onClick={
               addProduct
             }
-            className="rounded-2xl bg-blue-600 px-6 py-4 text-lg font-bold text-white shadow-xl transition-all duration-300 hover:bg-blue-700"
+            className="
+              rounded-2xl
+              bg-blue-600
+              px-6
+              py-4
+              font-bold
+              text-white
+            "
           >
             Add Product
           </button>
@@ -243,7 +455,7 @@ export default function ProductsAdminPage() {
         {/* LOADING */}
 
         {loading ? (
-          <div className="text-center text-xl font-bold text-gray-500">
+          <div className="text-center text-xl font-bold">
             Loading...
           </div>
         ) : (
@@ -254,16 +466,21 @@ export default function ProductsAdminPage() {
                 return (
                   <div
                     key={product.id}
-                    className="rounded-[30px] bg-white p-6 shadow-xl"
+                    className="
+                      rounded-[30px]
+                      bg-white
+                      p-5
+                      shadow-xl
+                    "
                   >
 
-                    <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
+                    <div className="grid gap-5 md:grid-cols-2">
 
                       {/* TITLE */}
 
                       <div>
 
-                        <label className="mb-3 block text-lg font-bold text-gray-700">
+                        <label className="mb-2 block font-bold">
                           Product Title
                         </label>
 
@@ -284,7 +501,13 @@ export default function ProductsAdminPage() {
                                 .value
                             );
                           }}
-                          className="w-full rounded-2xl border border-gray-200 bg-gray-100 px-5 py-4 outline-none"
+                          className="
+                            w-full
+                            rounded-2xl
+                            border
+                            bg-gray-100
+                            p-4
+                          "
                         />
 
                       </div>
@@ -293,29 +516,77 @@ export default function ProductsAdminPage() {
 
                       <div>
 
-                        <label className="mb-3 block text-lg font-bold text-gray-700">
+                        <label className="mb-2 block font-bold">
                           Product Image
                         </label>
 
+                        <button
+                          onClick={() => {
+                            fileInputRefs.current[
+                              product.id
+                            ]?.click();
+                          }}
+                          className="
+                            rounded-2xl
+                            bg-blue-600
+                            px-5
+                            py-4
+                            font-bold
+                            text-white
+                          "
+                        >
+                          Upload Image
+                        </button>
+
                         <input
-                          type="text"
-                          value={
-                            product.image ||
-                            ""
-                          }
-                          onChange={(
+                          ref={(
+                            element
+                          ) => {
+                            fileInputRefs.current[
+                              product.id
+                            ] =
+                              element;
+                          }}
+                          type="file"
+                          accept="image/*"
+                          capture="environment"
+                          hidden
+                          onChange={async (
                             event
                           ) => {
-                            updateProduct(
-                              product.id,
-                              "image",
+                            const file =
                               event
                                 .target
-                                .value
-                            );
+                                .files?.[0];
+
+                            if (
+                              file
+                            ) {
+                              await uploadImage(
+                                product.id,
+                                file
+                              );
+                            }
                           }}
-                          className="w-full rounded-2xl border border-gray-200 bg-gray-100 px-5 py-4 outline-none"
                         />
+
+                        {product.image && (
+                          <img
+                            src={
+                              product.image
+                            }
+                            alt={
+                              product.title
+                            }
+                            className="
+                              mt-4
+                              h-32
+                              w-32
+                              rounded-2xl
+                              object-cover
+                            "
+                          />
+                        )}
 
                       </div>
 
@@ -323,12 +594,11 @@ export default function ProductsAdminPage() {
 
                       <div>
 
-                        <label className="mb-3 block text-lg font-bold text-gray-700">
+                        <label className="mb-2 block font-bold">
                           Category
                         </label>
 
-                        <input
-                          type="text"
+                        <select
                           value={
                             product.category ||
                             ""
@@ -344,8 +614,37 @@ export default function ProductsAdminPage() {
                                 .value
                             );
                           }}
-                          className="w-full rounded-2xl border border-gray-200 bg-gray-100 px-5 py-4 outline-none"
-                        />
+                          className="
+                            w-full
+                            rounded-2xl
+                            border
+                            bg-gray-100
+                            p-4
+                          "
+                        >
+
+                          {categories.map(
+                            (
+                              category
+                            ) => {
+                              return (
+                                <option
+                                  key={
+                                    category
+                                  }
+                                  value={
+                                    category
+                                  }
+                                >
+                                  {
+                                    category
+                                  }
+                                </option>
+                              );
+                            }
+                          )}
+
+                        </select>
 
                       </div>
 
@@ -353,7 +652,7 @@ export default function ProductsAdminPage() {
 
                       <div>
 
-                        <label className="mb-3 block text-lg font-bold text-gray-700">
+                        <label className="mb-2 block font-bold">
                           Original Price
                         </label>
 
@@ -375,7 +674,13 @@ export default function ProductsAdminPage() {
                               )
                             );
                           }}
-                          className="w-full rounded-2xl border border-gray-200 bg-gray-100 px-5 py-4 outline-none"
+                          className="
+                            w-full
+                            rounded-2xl
+                            border
+                            bg-gray-100
+                            p-4
+                          "
                         />
 
                       </div>
@@ -384,7 +689,7 @@ export default function ProductsAdminPage() {
 
                       <div>
 
-                        <label className="mb-3 block text-lg font-bold text-gray-700">
+                        <label className="mb-2 block font-bold">
                           Discount Price
                         </label>
 
@@ -406,7 +711,13 @@ export default function ProductsAdminPage() {
                               )
                             );
                           }}
-                          className="w-full rounded-2xl border border-gray-200 bg-gray-100 px-5 py-4 outline-none"
+                          className="
+                            w-full
+                            rounded-2xl
+                            border
+                            bg-gray-100
+                            p-4
+                          "
                         />
 
                       </div>
@@ -415,7 +726,7 @@ export default function ProductsAdminPage() {
 
                       <div>
 
-                        <label className="mb-3 block text-lg font-bold text-gray-700">
+                        <label className="mb-2 block font-bold">
                           Stock
                         </label>
 
@@ -437,49 +748,24 @@ export default function ProductsAdminPage() {
                               )
                             );
                           }}
-                          className="w-full rounded-2xl border border-gray-200 bg-gray-100 px-5 py-4 outline-none"
+                          className="
+                            w-full
+                            rounded-2xl
+                            border
+                            bg-gray-100
+                            p-4
+                          "
                         />
 
                       </div>
 
-                      {/* POSITION */}
+                    </div>
 
-                      <div>
+                    {/* FEATURED */}
 
-                        <label className="mb-3 block text-lg font-bold text-gray-700">
-                          Position
-                        </label>
+                    <div className="mt-6 flex gap-6">
 
-                        <input
-                          type="number"
-                          value={
-                            product.position ||
-                            0
-                          }
-                          onChange={(
-                            event
-                          ) => {
-                            updateProduct(
-                              product.id,
-                              "position",
-                              Number(
-                                event.target
-                                  .value
-                              )
-                            );
-                          }}
-                          className="w-full rounded-2xl border border-gray-200 bg-gray-100 px-5 py-4 outline-none"
-                        />
-
-                      </div>
-
-                      {/* FEATURED */}
-
-                      <div className="flex items-center gap-4">
-
-                        <label className="text-lg font-bold text-gray-700">
-                          Featured
-                        </label>
+                      <div className="flex items-center gap-3">
 
                         <input
                           type="checkbox"
@@ -496,18 +782,16 @@ export default function ProductsAdminPage() {
                                 .checked
                             );
                           }}
-                          className="h-6 w-6"
+                          className="h-5 w-5"
                         />
+
+                        <p className="font-bold">
+                          Featured
+                        </p>
 
                       </div>
 
-                      {/* VISIBLE */}
-
-                      <div className="flex items-center gap-4">
-
-                        <label className="text-lg font-bold text-gray-700">
-                          Visible
-                        </label>
+                      <div className="flex items-center gap-3">
 
                         <input
                           type="checkbox"
@@ -524,14 +808,18 @@ export default function ProductsAdminPage() {
                                 .checked
                             );
                           }}
-                          className="h-6 w-6"
+                          className="h-5 w-5"
                         />
+
+                        <p className="font-bold">
+                          Visible
+                        </p>
 
                       </div>
 
                     </div>
 
-                    {/* DELETE BUTTON */}
+                    {/* DELETE */}
 
                     <button
                       onClick={() => {
@@ -539,7 +827,15 @@ export default function ProductsAdminPage() {
                           product.id
                         );
                       }}
-                      className="mt-8 rounded-2xl bg-red-600 px-6 py-4 text-lg font-bold text-white transition-all duration-300 hover:bg-red-700"
+                      className="
+                        mt-6
+                        rounded-2xl
+                        bg-red-600
+                        px-5
+                        py-3
+                        font-bold
+                        text-white
+                      "
                     >
                       Delete Product
                     </button>
