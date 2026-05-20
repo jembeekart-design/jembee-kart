@@ -66,7 +66,17 @@ export default function ProductCard({
 
   return (
     <div
-      className={`overflow-hidden rounded-2xl bg-gradient-to-br ${gradientColor} p-[2px] shadow-lg transition-all duration-300 hover:-translate-y-1`}
+      className={`
+        overflow-hidden
+        rounded-2xl
+        bg-gradient-to-br
+        ${gradientColor}
+        p-[1.5px]
+        shadow-md
+        transition-all
+        duration-300
+        hover:-translate-y-1
+      `}
     >
 
       <div className="overflow-hidden rounded-2xl bg-white">
@@ -78,15 +88,33 @@ export default function ProductCard({
           <img
             src={image}
             alt={title}
-            className="h-[220px] w-full object-cover"
+            className="
+              h-[155px]
+              w-full
+              object-cover
+            "
           />
 
           {/* WISHLIST */}
 
-          <button className="absolute right-2 top-2 flex h-8 w-8 items-center justify-center rounded-full bg-white shadow">
+          <button
+            className="
+              absolute
+              right-2
+              top-2
+              flex
+              h-7
+              w-7
+              items-center
+              justify-center
+              rounded-full
+              bg-white
+              shadow
+            "
+          >
 
             <Heart
-              size={18}
+              size={15}
               className="text-gray-700"
             />
 
@@ -94,7 +122,21 @@ export default function ProductCard({
 
           {/* RATING */}
 
-          <div className="absolute bottom-2 left-2 rounded bg-white px-2 py-1 text-[11px] font-bold text-black shadow">
+          <div
+            className="
+              absolute
+              bottom-2
+              left-2
+              rounded
+              bg-white
+              px-2
+              py-[3px]
+              text-[10px]
+              font-bold
+              text-black
+              shadow
+            "
+          >
 
             {rating} ★ |{" "}
             {reviews >= 1000
@@ -113,7 +155,14 @@ export default function ProductCard({
 
           {/* TITLE */}
 
-          <h3 className="truncate text-[15px] font-bold text-black">
+          <h3
+            className="
+              truncate
+              text-[13px]
+              font-bold
+              text-black
+            "
+          >
 
             {title}
 
@@ -121,7 +170,13 @@ export default function ProductCard({
 
           {/* SUBTITLE */}
 
-          <p className="truncate text-xs text-gray-500">
+          <p
+            className="
+              truncate
+              text-[10px]
+              text-gray-500
+            "
+          >
 
             Premium Fashion Product
 
@@ -129,21 +184,46 @@ export default function ProductCard({
 
           {/* PRICE */}
 
-          <div className="mt-1 flex items-center gap-2">
+          <div
+            className="
+              mt-1
+              flex
+              items-center
+              gap-1.5
+            "
+          >
 
-            <span className="text-sm font-bold text-green-600">
+            <span
+              className="
+                text-[11px]
+                font-bold
+                text-green-600
+              "
+            >
 
               ↓{discount}%
 
             </span>
 
-            <span className="text-xs text-gray-400 line-through">
+            <span
+              className="
+                text-[10px]
+                text-gray-400
+                line-through
+              "
+            >
 
               ₹{price}
 
             </span>
 
-            <span className="text-lg font-bold text-black">
+            <span
+              className="
+                text-[15px]
+                font-bold
+                text-black
+              "
+            >
 
               ₹{discountPrice}
 
@@ -153,7 +233,19 @@ export default function ProductCard({
 
           {/* HOT DEAL */}
 
-          <div className="mt-2 inline-block rounded bg-green-100 px-2 py-1 text-[11px] font-semibold text-green-700">
+          <div
+            className="
+              mt-1.5
+              inline-block
+              rounded
+              bg-green-100
+              px-2
+              py-[3px]
+              text-[10px]
+              font-semibold
+              text-green-700
+            "
+          >
 
             Hot Deal
 
