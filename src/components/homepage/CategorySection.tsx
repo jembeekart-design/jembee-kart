@@ -1,75 +1,228 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import {
+  useEffect,
+  useState
+} from "react";
 
 import {
   collection,
-  onSnapshot,
-  query,
-  orderBy
+  onSnapshot
 } from "firebase/firestore";
 
 import { db } from "@/firebase/config";
 
-import CategoryGrid from "@/components/categories/CategoryGrid";
+/* ======================================================
+TYPES
+====================================================== */
 
-interface Category {
+interface CategoryItem {
   id: string;
 
-  title?: string;
+  title: string;
 
-  image?: string;
+  image: string;
 
-  backgroundColor?: string;
+  backgroundColor: string;
 
-  textColor?: string;
+  textColor: string;
 
-  position?: number;
+  borderRadius: string;
 
-  visible?: boolean;
+  cardWidth: string;
+
+  cardHeight: string;
+
+  imageHeight: string;
+
+  titleSize: string;
+
+  visible: boolean;
+
+  position: number;
 }
+
+/* ======================================================
+COMPONENT
+====================================================== */
 
 export default function CategorySection() {
   const [categories, setCategories] =
-    useState<Category[]>([]);
+    useState<CategoryItem[]>([]);
+
+  /* ======================================================
+  GET DATA
+  ====================================================== */
 
   useEffect(() => {
-    const categoryQuery = query(
-      collection(db, "categories"),
-      orderBy("position", "asc")
-    );
+    const unsubscribe =
+      onSnapshot(
+        collection(
+          db,
+          "categories"
+        ),
+        (snapshot) => {
+          const data =
+            snapshot.docs.map(
+              (document) => {
+                return {
+                  id: document.id,
 
-    const unsubscribe = onSnapshot(
-      categoryQuery,
-      (snapshot) => {
-        const categoryData =
-          snapshot.docs.map((doc) => {
-            return {
-              id: doc.id,
-              ...doc.data()
-            };
-          }) as Category[];
+                  ...(document.data() as Omit<
+                    CategoryItem,
+                    "id"
+                  >)
+                };
+              }
+            );
 
-        const visibleCategories =
-          categoryData.filter(
-            (category) =>
-              category.visible !== false
+          const filtered =
+            data
+              .filter(
+                (item) =>
+                  item.visible
+              )
+              .sort(
+                (a, b) => {
+                  return (
+                    Number(
+                      a.position || 0
+                    ) -
+                    Number(
+                      b.position || 0
+                    )
+                  );
+                }
+              );
+
+          setCategories(
+            filtered
           );
+        }
+      );
 
-        setCategories(
-          visibleCategories
-        );
-      }
-    );
-
-    return () => unsubscribe();
+    return () =>
+      unsubscribe();
   }, []);
 
+  /* ======================================================
+  UI
+  ====================================================== */
+
   return (
-    <section className="w-full overflow-hidden">
-      <CategoryGrid
-        categories={categories}
-      />
+    <section className="px-5 py-5">
+
+      {/* TITLE */}
+
+      <h2
+        className="
+          mb-5
+          text-3xl
+          font-black
+          text-slate-900
+        "
+      >
+        Shop By Category
+      </h2>
+
+      {/* CATEGORY LIST */}
+
+      <div
+        className="
+          flex
+          gap-5
+          overflow-x-auto
+          scrollbar-hide
+        "
+      >
+
+        {categories.map(
+          (category) => {
+            return (
+              <div
+                key={
+                  category.id
+                }
+                className="
+                  flex
+                  flex-col
+                  items-center
+                  gap-2
+                  shrink-0
+                "
+              >
+
+                {/* IMAGE CARD */}
+
+                <div
+                  style={{
+                    background:
+                      category.backgroundColor,
+
+                    borderRadius:
+                      category.borderRadius,
+
+                    width:
+                      category.cardWidth,
+
+                    height:
+                      category.cardHeight
+                  }}
+                  className="
+                    overflow-hidden
+                    shadow-lg
+                  "
+                >
+
+                  {/* IMAGE */}
+
+                  {category.image && (
+                    <img
+                      src={
+                        category.image
+                      }
+                      alt={
+                        category.title
+                      }
+                      className="
+                        h-full
+                        w-full
+                        object-cover
+                      "
+                    />
+                  )}
+
+                </div>
+
+                {/* CATEGORY TITLE */}
+
+                <p
+                  style={{
+                    color:
+                      category.textColor,
+
+                    fontSize:
+                      category.titleSize
+                  }}
+                  className="
+                    max-w-[110px]
+                    text-center
+                    font-semibold
+                    leading-tight
+                  "
+                >
+                  {
+                    category.title
+                  }
+                </p>
+
+              </div>
+            );
+          }
+        )}
+
+      </div>
+
     </section>
   );
 }
