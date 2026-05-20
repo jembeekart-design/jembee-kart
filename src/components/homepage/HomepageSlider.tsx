@@ -157,9 +157,9 @@ export default function HomepageSlider() {
   ====================================================== */
 
   return (
-    <section className="w-full overflow-hidden px-3 py-3 md:px-6">
+    <section className="w-full overflow-hidden">
 
-      <div className="relative overflow-hidden rounded-[35px] shadow-2xl">
+      <div className="relative w-full overflow-hidden rounded-b-[32px] shadow-2xl">
 
         {/* SLIDES */}
 
@@ -179,7 +179,19 @@ export default function HomepageSlider() {
                 >
 
                   <div
-                    className="relative flex min-h-[300px] flex-col justify-center overflow-hidden px-6 py-10 md:min-h-[500px] md:px-16"
+                    className="
+                      relative
+                      flex
+                      min-h-[220px]
+                      w-full
+                      justify-center
+                      overflow-hidden
+                      px-5
+                      py-6
+
+                      md:min-h-[320px]
+                      md:px-12
+                    "
                     style={{
                       background: `linear-gradient(135deg, ${
                         slide.backgroundColor ||
@@ -206,7 +218,11 @@ export default function HomepageSlider() {
                           }
                           fill
                           priority
-                          className="object-cover opacity-30"
+                          className="
+                            object-contain
+                            object-right-bottom
+                            opacity-95
+                          "
                         />
                       )}
 
@@ -227,71 +243,106 @@ export default function HomepageSlider() {
                         />
                       )}
 
-                    {/* DARK OVERLAY */}
+                    {/* OVERLAY */}
 
-                    <div className="absolute inset-0 bg-black/30" />
+                    <div className="absolute inset-0 bg-black/10" />
 
                     {/* CONTENT */}
 
-                    <div className="relative z-10">
+                    <div className="relative z-10 flex w-full items-center">
 
-                      {/* TITLE */}
+                      {/* LEFT */}
 
-                      <h2
-                        className="max-w-3xl text-4xl font-black leading-tight md:text-7xl"
-                        style={{
-                          color:
-                            slide.textColor ||
-                            "#ffffff"
-                        }}
-                      >
-                        {slide.title}
-                      </h2>
+                      <div className="max-w-[58%]">
 
-                      {/* SUBTITLE */}
+                        {/* TITLE */}
 
-                      <p
-                        className="mt-4 max-w-2xl text-base font-medium md:text-2xl"
-                        style={{
-                          color:
-                            slide.textColor ||
-                            "#ffffff"
-                        }}
-                      >
-                        {
-                          slide.subtitle
-                        }
-                      </p>
+                        <h2
+                          className="
+                            text-[34px]
+                            font-black
+                            leading-[1.05]
 
-                      {/* BUTTON */}
-
-                      <div className="mt-7">
-
-                        <Link
-                          href={
-                            slide.buttonLink ||
-                            "/"
-                          }
+                            md:text-6xl
+                          "
+                          style={{
+                            color:
+                              slide.textColor ||
+                              "#ffffff"
+                          }}
                         >
+                          {
+                            slide.title
+                          }
+                        </h2>
 
-                          <button
-                            className="rounded-2xl px-8 py-4 text-sm font-black shadow-2xl transition-all duration-300 hover:scale-105 md:px-12 md:py-5 md:text-lg"
-                            style={{
-                              backgroundColor:
-                                slide.buttonColor ||
-                                "#ffffff",
+                        {/* SUBTITLE */}
 
-                              color:
-                                slide.buttonTextColor ||
-                                "#000000"
-                            }}
-                          >
-                            {
-                              slide.buttonText
+                        <p
+                          className="
+                            mt-3
+                            text-[15px]
+                            font-medium
+                            leading-6
+
+                            md:text-2xl
+                          "
+                          style={{
+                            color:
+                              slide.textColor ||
+                              "#ffffff"
+                          }}
+                        >
+                          {
+                            slide.subtitle
+                          }
+                        </p>
+
+                        {/* BUTTON */}
+
+                        <div className="mt-5">
+
+                          <Link
+                            href={
+                              slide.buttonLink ||
+                              "/"
                             }
-                          </button>
+                          >
 
-                        </Link>
+                            <button
+                              className="
+                                rounded-2xl
+                                px-6
+                                py-3
+                                text-sm
+                                font-black
+                                shadow-xl
+                                transition-all
+                                duration-300
+                                hover:scale-105
+
+                                md:px-10
+                                md:py-4
+                                md:text-lg
+                              "
+                              style={{
+                                backgroundColor:
+                                  slide.buttonColor ||
+                                  "#ffffff",
+
+                                color:
+                                  slide.buttonTextColor ||
+                                  "#000000"
+                              }}
+                            >
+                              {
+                                slide.buttonText
+                              }
+                            </button>
+
+                          </Link>
+
+                        </div>
 
                       </div>
 
@@ -318,7 +369,24 @@ export default function HomepageSlider() {
               }
             );
           }}
-          className="absolute left-3 top-1/2 z-20 flex h-12 w-12 -translate-y-1/2 items-center justify-center rounded-full bg-white/20 text-2xl font-black text-white backdrop-blur-md"
+          className="
+            absolute
+            left-3
+            top-1/2
+            z-20
+            flex
+            h-11
+            w-11
+            -translate-y-1/2
+            items-center
+            justify-center
+            rounded-full
+            bg-white/20
+            text-xl
+            font-black
+            text-white
+            backdrop-blur-md
+          "
         >
           ←
         </button>
@@ -336,7 +404,24 @@ export default function HomepageSlider() {
               }
             );
           }}
-          className="absolute right-3 top-1/2 z-20 flex h-12 w-12 -translate-y-1/2 items-center justify-center rounded-full bg-white/20 text-2xl font-black text-white backdrop-blur-md"
+          className="
+            absolute
+            right-3
+            top-1/2
+            z-20
+            flex
+            h-11
+            w-11
+            -translate-y-1/2
+            items-center
+            justify-center
+            rounded-full
+            bg-white/20
+            text-xl
+            font-black
+            text-white
+            backdrop-blur-md
+          "
         >
           →
         </button>
@@ -358,11 +443,11 @@ export default function HomepageSlider() {
                       index
                     );
                   }}
-                  className={`h-3 rounded-full transition-all duration-300 ${
+                  className={`h-2.5 rounded-full transition-all duration-300 ${
                     current ===
                     index
                       ? "w-8 bg-white"
-                      : "w-3 bg-white/50"
+                      : "w-2.5 bg-white/50"
                   }`}
                 />
               );
