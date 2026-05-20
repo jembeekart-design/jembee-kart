@@ -146,6 +146,7 @@ export default function ProductPage() {
         setLoading(false);
       } catch (error) {
         console.error(error);
+
         setLoading(false);
       }
     }
@@ -204,7 +205,7 @@ export default function ProductPage() {
   if (loading) {
     return (
       <main className="flex min-h-screen items-center justify-center bg-[#f5f5f5]">
-        <h1 className="text-xl font-bold">
+        <h1 className="text-lg font-bold">
           Loading...
         </h1>
       </main>
@@ -214,7 +215,7 @@ export default function ProductPage() {
   if (!product) {
     return (
       <main className="flex min-h-screen items-center justify-center bg-[#f5f5f5]">
-        <h1 className="text-xl font-bold text-red-500">
+        <h1 className="text-lg font-bold text-red-500">
           Product Not Found
         </h1>
       </main>
@@ -225,11 +226,11 @@ export default function ProductPage() {
     product.images || [];
 
   return (
-    <main className="min-h-screen bg-[#f6f6f6] pb-[110px]">
+    <main className="min-h-screen bg-[#f6f6f6] pb-[95px]">
 
       {/* TOPBAR */}
 
-      <div className="sticky top-0 z-50 bg-[#f6f6f6] p-3">
+      <div className="sticky top-0 z-50 bg-[#f6f6f6]/90 backdrop-blur-md px-3 pt-3">
 
         <div className="flex items-center justify-between rounded-[22px] bg-white px-4 py-3 shadow-sm">
 
@@ -239,10 +240,10 @@ export default function ProductPage() {
               href="/"
               className="flex h-10 w-10 items-center justify-center rounded-full bg-gray-100"
             >
-              <ArrowLeft size={22} />
+              <ArrowLeft size={20} />
             </Link>
 
-            <h1 className="text-2xl font-black text-purple-600">
+            <h1 className="text-[26px] font-black text-purple-600">
               JembeeKart
             </h1>
 
@@ -258,7 +259,7 @@ export default function ProductPage() {
               }
             >
               <Heart
-                size={24}
+                size={22}
                 fill={
                   wishlist
                     ? "red"
@@ -273,7 +274,7 @@ export default function ProductPage() {
             </button>
 
             <button>
-              <Share2 size={22} />
+              <Share2 size={21} />
             </button>
 
           </div>
@@ -282,9 +283,9 @@ export default function ProductPage() {
 
       </div>
 
-      <section className="px-3">
+      <section className="space-y-5 px-3 pt-3">
 
-        {/* IMAGE CARD */}
+        {/* IMAGE */}
 
         <div className="rounded-[28px] bg-white p-3 shadow-sm">
 
@@ -298,7 +299,7 @@ export default function ProductPage() {
                 "/placeholder.png"
               }
               alt={product.title}
-              className="h-[320px] w-full object-cover"
+              className="h-[320px] w-full rounded-[24px] bg-gray-100 object-cover"
             />
 
             <div className="absolute left-3 top-3 rounded-xl bg-red-500 px-3 py-2 text-sm font-bold text-white">
@@ -313,11 +314,11 @@ export default function ProductPage() {
                   !wishlist
                 )
               }
-              className="absolute right-3 top-3 flex h-11 w-11 items-center justify-center rounded-full bg-white"
+              className="absolute right-3 top-3 flex h-11 w-11 items-center justify-center rounded-full bg-white shadow-sm"
             >
 
               <Heart
-                size={22}
+                size={21}
                 fill={
                   wishlist
                     ? "red"
@@ -341,9 +342,9 @@ export default function ProductPage() {
                       1
                   )
                 }
-                className="absolute left-3 top-1/2 flex h-11 w-11 -translate-y-1/2 items-center justify-center rounded-full bg-white"
+                className="absolute left-3 top-1/2 flex h-10 w-10 -translate-y-1/2 items-center justify-center rounded-full bg-white shadow-sm"
               >
-                <ChevronLeft size={24} />
+                <ChevronLeft size={22} />
               </button>
             )}
 
@@ -357,18 +358,16 @@ export default function ProductPage() {
                       1
                   )
                 }
-                className="absolute right-3 top-1/2 flex h-11 w-11 -translate-y-1/2 items-center justify-center rounded-full bg-white"
+                className="absolute right-3 top-1/2 flex h-10 w-10 -translate-y-1/2 items-center justify-center rounded-full bg-white shadow-sm"
               >
-                <ChevronRight size={24} />
+                <ChevronRight size={22} />
               </button>
             )}
 
-            <div className="absolute bottom-3 right-3 rounded-full bg-black/70 px-3 py-1 text-sm font-bold text-white">
+            <div className="absolute bottom-3 right-3 rounded-full bg-black/70 px-3 py-1 text-xs font-bold text-white">
 
               {currentImage + 1}/
-              {
-                images.length
-              }
+              {images.length}
 
             </div>
 
@@ -390,10 +389,10 @@ export default function ProductPage() {
                       index
                     )
                   }
-                  className={`overflow-hidden rounded-2xl border-2 ${
+                  className={`overflow-hidden rounded-2xl border-2 transition-all ${
                     currentImage ===
                     index
-                      ? "border-purple-600"
+                      ? "scale-105 border-purple-600"
                       : "border-transparent"
                   }`}
                 >
@@ -414,17 +413,15 @@ export default function ProductPage() {
 
         {/* DETAILS */}
 
-        <div className="mt-5">
+        <div>
 
-          <p className="text-base font-bold text-purple-600">
+          <p className="text-sm font-bold text-purple-600">
 
-            {
-              product.category
-            }
+            {product.category}
 
           </p>
 
-          <h1 className="mt-1 text-3xl font-black leading-tight">
+          <h1 className="mt-1 text-[42px] font-black leading-[44px] text-black">
 
             {product.title}
 
@@ -435,7 +432,7 @@ export default function ProductPage() {
             <div className="flex items-center gap-1 text-green-600">
 
               <Star
-                size={16}
+                size={15}
                 fill="green"
               />
 
@@ -472,7 +469,7 @@ export default function ProductPage() {
 
           <div className="mt-4 flex items-center gap-3">
 
-            <h2 className="text-3xl font-black">
+            <h2 className="text-[42px] font-black leading-none">
 
               ₹
               {
@@ -481,7 +478,7 @@ export default function ProductPage() {
 
             </h2>
 
-            <p className="text-xl font-bold text-gray-400 line-through">
+            <p className="text-2xl font-bold text-gray-400 line-through">
 
               ₹
               {product.price}
@@ -490,7 +487,7 @@ export default function ProductPage() {
 
           </div>
 
-          <p className="mt-1 text-lg font-bold text-green-600">
+          <p className="mt-1 text-xl font-bold text-green-600">
 
             You save ₹
             {(product.price ||
@@ -504,9 +501,12 @@ export default function ProductPage() {
 
           {/* DELIVERY */}
 
-          <div className="mt-5 flex items-center gap-3 rounded-[22px] border bg-white p-4">
+          <div className="mt-5 flex items-center gap-3 rounded-[22px] border bg-white p-4 shadow-sm">
 
-            <Truck className="text-purple-600" />
+            <Truck
+              size={22}
+              className="text-purple-600"
+            />
 
             <div>
 
@@ -530,7 +530,7 @@ export default function ProductPage() {
 
           <div className="mt-6">
 
-            <h2 className="mb-3 text-2xl font-bold">
+            <h2 className="mb-3 text-[18px] font-bold">
 
               Select Size
 
@@ -547,10 +547,10 @@ export default function ProductPage() {
                         size
                       )
                     }
-                    className={`min-w-[60px] rounded-2xl border px-5 py-3 text-base font-bold ${
+                    className={`min-w-[58px] rounded-[18px] border px-4 py-2.5 text-[17px] font-bold transition-all ${
                       selectedSize ===
                       size
-                        ? "bg-purple-600 text-white"
+                        ? "border-purple-600 bg-purple-600 text-white"
                         : "bg-white"
                     }`}
                   >
@@ -569,7 +569,7 @@ export default function ProductPage() {
 
           <div className="mt-6">
 
-            <h2 className="mb-3 text-2xl font-bold">
+            <h2 className="mb-3 text-[18px] font-bold">
 
               Select Color
 
@@ -590,10 +590,10 @@ export default function ProductPage() {
                       background:
                         color
                     }}
-                    className={`h-12 w-12 rounded-full border-[3px] ${
+                    className={`h-11 w-11 rounded-full border-[3px] transition-all ${
                       selectedColor ===
                       color
-                        ? "border-purple-600"
+                        ? "scale-110 border-purple-600"
                         : "border-gray-200"
                     }`}
                   />
@@ -608,19 +608,22 @@ export default function ProductPage() {
 
         {/* FEATURES */}
 
-        <div className="mt-6 grid grid-cols-2 gap-4 rounded-[24px] bg-white p-4 shadow-sm">
+        <div className="grid grid-cols-2 gap-4 rounded-[24px] bg-white p-4 shadow-sm">
 
           <div className="flex items-center gap-3">
 
-            <ShieldCheck className="text-green-600" />
+            <ShieldCheck
+              size={22}
+              className="text-green-600"
+            />
 
             <div>
 
-              <h3 className="font-bold">
+              <h3 className="text-sm font-bold">
                 100% Original
               </h3>
 
-              <p className="text-sm text-gray-500">
+              <p className="text-xs text-gray-500">
                 Authentic
               </p>
 
@@ -630,15 +633,18 @@ export default function ProductPage() {
 
           <div className="flex items-center gap-3">
 
-            <RotateCcw className="text-violet-600" />
+            <RotateCcw
+              size={22}
+              className="text-violet-600"
+            />
 
             <div>
 
-              <h3 className="font-bold">
+              <h3 className="text-sm font-bold">
                 7 Days Return
               </h3>
 
-              <p className="text-sm text-gray-500">
+              <p className="text-xs text-gray-500">
                 Easy Returns
               </p>
 
@@ -648,15 +654,18 @@ export default function ProductPage() {
 
           <div className="flex items-center gap-3">
 
-            <BadgeCheck className="text-blue-600" />
+            <BadgeCheck
+              size={22}
+              className="text-blue-600"
+            />
 
             <div>
 
-              <h3 className="font-bold">
+              <h3 className="text-sm font-bold">
                 Secure Payment
               </h3>
 
-              <p className="text-sm text-gray-500">
+              <p className="text-xs text-gray-500">
                 Protected
               </p>
 
@@ -666,15 +675,18 @@ export default function ProductPage() {
 
           <div className="flex items-center gap-3">
 
-            <Headphones className="text-orange-500" />
+            <Headphones
+              size={22}
+              className="text-orange-500"
+            />
 
             <div>
 
-              <h3 className="font-bold">
+              <h3 className="text-sm font-bold">
                 24/7 Support
               </h3>
 
-              <p className="text-sm text-gray-500">
+              <p className="text-xs text-gray-500">
                 Always Here
               </p>
 
@@ -686,7 +698,7 @@ export default function ProductPage() {
 
         {/* DELIVERY */}
 
-        <div className="mt-6 space-y-4">
+        <div className="space-y-4">
 
           <div className="rounded-[24px] bg-white p-5 shadow-sm">
 
@@ -700,13 +712,13 @@ export default function ProductPage() {
                   Delivery
                 </h3>
 
-                <p className="mt-2 text-2xl font-black text-green-600">
+                <p className="mt-2 text-[28px] font-black leading-tight text-green-600">
 
                   {deliveryDate}
 
                 </p>
 
-                <p className="text-gray-500">
+                <p className="mt-1 text-sm text-gray-500">
 
                   Order within 3h 45m
 
@@ -730,7 +742,7 @@ export default function ProductPage() {
                   Cash on Delivery
                 </h3>
 
-                <p className="mt-2 text-gray-500">
+                <p className="mt-1 text-sm text-gray-500">
                   Pay when you receive
                 </p>
 
@@ -744,17 +756,17 @@ export default function ProductPage() {
 
         {/* COUPONS */}
 
-        <div className="mt-7">
+        <div>
 
           <div className="mb-4 flex items-center justify-between">
 
-            <h2 className="text-2xl font-black">
+            <h2 className="text-[28px] font-black">
 
               Offers & Coupons
 
             </h2>
 
-            <button className="font-bold text-purple-600">
+            <button className="text-sm font-bold text-purple-600">
 
               View All
 
@@ -762,28 +774,28 @@ export default function ProductPage() {
 
           </div>
 
-          <div className="space-y-4">
+          <div className="space-y-3">
 
             {product.coupons?.map(
               (coupon) => (
                 <div
                   key={coupon}
-                  className="rounded-[24px] border border-dashed border-purple-300 bg-white p-5"
+                  className="rounded-[22px] border border-dashed border-purple-300 bg-white p-4"
                 >
 
-                  <h3 className="text-2xl font-black">
+                  <h3 className="text-[34px] font-black leading-none">
 
                     {coupon}
 
                   </h3>
 
-                  <p className="mt-2 text-gray-500">
+                  <p className="mt-2 text-sm text-gray-500">
 
                     Get extra discount on orders
 
                   </p>
 
-                  <button className="mt-4 rounded-xl bg-purple-600 px-5 py-2 font-bold text-white">
+                  <button className="mt-3 rounded-xl bg-gradient-to-r from-violet-600 to-purple-500 px-5 py-2 text-sm font-bold text-white shadow-md">
 
                     Apply
 
@@ -799,17 +811,17 @@ export default function ProductPage() {
 
         {/* SELLER */}
 
-        <div className="mt-7 rounded-[24px] bg-white p-5 shadow-sm">
+        <div className="rounded-[24px] bg-white p-5 shadow-sm">
 
-          <h2 className="text-2xl font-black">
+          <h2 className="text-[28px] font-black">
 
             Seller Details
 
           </h2>
 
-          <div className="mt-4 flex items-center justify-between">
+          <div className="mt-4 flex items-center justify-between gap-3">
 
-            <div className="flex items-center gap-4">
+            <div className="flex items-center gap-3">
 
               <div className="flex h-14 w-14 items-center justify-center rounded-full bg-purple-100">
 
@@ -819,7 +831,7 @@ export default function ProductPage() {
 
               <div>
 
-                <h3 className="text-xl font-black">
+                <h3 className="text-[18px] font-black leading-tight">
 
                   {
                     product.seller
@@ -828,7 +840,7 @@ export default function ProductPage() {
 
                 </h3>
 
-                <p className="text-gray-500">
+                <p className="text-sm text-gray-500">
 
                   {
                     product.seller
@@ -842,7 +854,7 @@ export default function ProductPage() {
 
             </div>
 
-            <button className="rounded-2xl border border-purple-500 px-4 py-3 font-bold text-purple-600">
+            <button className="rounded-2xl border border-purple-400 px-4 py-3 text-sm font-bold text-purple-600">
 
               View Store
 
@@ -854,15 +866,15 @@ export default function ProductPage() {
 
         {/* DESCRIPTION */}
 
-        <div className="mt-7 rounded-[24px] bg-white p-5 shadow-sm">
+        <div className="rounded-[24px] bg-white p-5 shadow-sm">
 
-          <h2 className="text-2xl font-black">
+          <h2 className="text-[28px] font-black">
 
             Product Details
 
           </h2>
 
-          <p className="mt-4 leading-7 text-gray-600">
+          <p className="mt-3 text-[15px] leading-7 text-gray-600">
 
             {
               product.description
@@ -876,13 +888,13 @@ export default function ProductPage() {
 
       {/* BOTTOM BAR */}
 
-      <div className="fixed bottom-0 left-0 z-50 w-full border-t bg-white p-3">
+      <div className="fixed bottom-0 left-0 z-50 w-full border-t bg-white/95 px-3 py-2 backdrop-blur-md">
 
         <div className="flex items-center gap-3">
 
           <div>
 
-            <h2 className="text-2xl font-black">
+            <h2 className="text-[34px] font-black leading-none">
 
               ₹
               {
@@ -891,7 +903,7 @@ export default function ProductPage() {
 
             </h2>
 
-            <p className="font-bold text-green-600">
+            <p className="text-sm font-bold text-green-600">
 
               {discount}% OFF
 
@@ -901,18 +913,18 @@ export default function ProductPage() {
 
           <button
             onClick={addToCart}
-            className="flex flex-1 items-center justify-center gap-2 rounded-2xl border-2 py-3 text-base font-bold"
+            className="flex flex-1 items-center justify-center gap-2 rounded-[20px] border-2 bg-white py-3 text-[17px] font-bold"
           >
 
-            <ShoppingCart size={20} />
+            <ShoppingCart size={19} />
 
             Add to Cart
 
           </button>
 
-          <button className="flex flex-1 items-center justify-center gap-2 rounded-2xl bg-gradient-to-r from-violet-600 to-purple-500 py-3 text-base font-bold text-white">
+          <button className="flex flex-1 items-center justify-center gap-2 rounded-[20px] bg-gradient-to-r from-violet-600 to-fuchsia-500 py-3 text-[17px] font-bold text-white shadow-lg">
 
-            <Zap size={20} />
+            <Zap size={18} />
 
             Buy Now
 
