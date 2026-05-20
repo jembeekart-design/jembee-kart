@@ -159,7 +159,7 @@ export default function HomepageSlider() {
   return (
     <section className="w-full overflow-hidden">
 
-      <div className="relative w-full overflow-hidden rounded-b-[26px] shadow-xl">
+      <div className="relative w-full overflow-hidden shadow-xl">
 
         {/* SLIDER */}
 
