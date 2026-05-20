@@ -30,7 +30,9 @@ interface Product {
 
   description?: string;
 
-  image?: string;
+  images?: string[];
+
+  videos?: string[];
 
   category?: string;
 
@@ -63,7 +65,14 @@ export default function ProductsAdminPage() {
   const [loading, setLoading] =
     useState(true);
 
-  const fileInputRefs =
+  const imageInputRefs =
+    useRef<{
+      [key: string]:
+        | HTMLInputElement
+        | null;
+    }>({});
+
+  const videoInputRefs =
     useRef<{
       [key: string]:
         | HTMLInputElement
@@ -96,23 +105,7 @@ export default function ProductsAdminPage() {
               }
             );
 
-          const sorted =
-            data.sort(
-              (a, b) => {
-                return (
-                  Number(
-                    a.position || 0
-                  ) -
-                  Number(
-                    b.position || 0
-                  )
-                );
-              }
-            );
-
-          setProducts(
-            sorted
-          );
+          setProducts(data);
 
           setLoading(false);
         }
@@ -159,44 +152,42 @@ export default function ProductsAdminPage() {
   ====================================================== */
 
   async function addProduct() {
-    try {
-      await addDoc(
-        collection(
-          db,
-          "products"
-        ),
-        {
-          title:
-            "New Product",
+    await addDoc(
+      collection(
+        db,
+        "products"
+      ),
+      {
+        title:
+          "New Product",
 
-          description:
-            "Premium Product",
+        description:
+          "Premium Product",
 
-          image: "",
+        images: [],
 
-          category:
-            categories[0] ||
-            "Fashion",
+        videos: [],
 
-          price: 2999,
+        category:
+          categories[0] ||
+          "Fashion",
 
-          discountPrice: 1999,
+        price: 2999,
 
-          stock: 100,
+        discountPrice: 1999,
 
-          rating: 4.5,
+        stock: 100,
 
-          featured: false,
+        rating: 4.5,
 
-          visible: true,
+        featured: false,
 
-          position:
-            products.length + 1
-        }
-      );
-    } catch (error) {
-      console.error(error);
-    }
+        visible: true,
+
+        position:
+          products.length + 1
+      }
+    );
   }
 
   /* ======================================================
@@ -206,25 +197,18 @@ export default function ProductsAdminPage() {
   async function updateProduct(
     id: string,
     field: string,
-    value:
-      | string
-      | number
-      | boolean
+    value: any
   ) {
-    try {
-      await updateDoc(
-        doc(
-          db,
-          "products",
-          id
-        ),
-        {
-          [field]: value
-        }
-      );
-    } catch (error) {
-      console.error(error);
-    }
+    await updateDoc(
+      doc(
+        db,
+        "products",
+        id
+      ),
+      {
+        [field]: value
+      }
+    );
   }
 
   /* ======================================================
@@ -234,17 +218,13 @@ export default function ProductsAdminPage() {
   async function deleteProduct(
     id: string
   ) {
-    try {
-      await deleteDoc(
-        doc(
-          db,
-          "products",
-          id
-        )
-      );
-    } catch (error) {
-      console.error(error);
-    }
+    await deleteDoc(
+      doc(
+        db,
+        "products",
+        id
+      )
+    );
   }
 
   /* ======================================================
@@ -347,64 +327,161 @@ export default function ProductsAdminPage() {
   UPLOAD IMAGE
   ====================================================== */
 
-  async function uploadImage(
-    productId: string,
-    file: File
+  async function uploadImages(
+    product: Product,
+    files: FileList
   ) {
     try {
-      const compressedFile =
-        await compressImage(
-          file
+      const uploadedImages:
+        string[] = [];
+
+      for (
+        let i = 0;
+        i < files.length;
+        i++
+      ) {
+        const compressedFile =
+          await compressImage(
+            files[i]
+          );
+
+        const formData =
+          new FormData();
+
+        formData.append(
+          "file",
+          compressedFile
         );
 
-      const formData =
-        new FormData();
+        formData.append(
+          "upload_preset",
 
-      formData.append(
-        "file",
-        compressedFile
-      );
-
-      formData.append(
-        "upload_preset",
-
-        process.env
-          .NEXT_PUBLIC_CLOUDINARY_UPLOAD_PRESET ||
-          ""
-      );
-
-      const response =
-        await fetch(
-          `https://api.cloudinary.com/v1_1/${
-            process.env
-              .NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME
-          }/image/upload`,
-          {
-            method:
-              "POST",
-
-            body:
-              formData
-          }
+          process.env
+            .NEXT_PUBLIC_CLOUDINARY_UPLOAD_PRESET ||
+            ""
         );
 
-      const data =
-        await response.json();
+        const response =
+          await fetch(
+            `https://api.cloudinary.com/v1_1/${
+              process.env
+                .NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME
+            }/image/upload`,
+            {
+              method:
+                "POST",
+
+              body:
+                formData
+            }
+          );
+
+        const data =
+          await response.json();
+
+        uploadedImages.push(
+          data.secure_url
+        );
+      }
 
       await updateProduct(
-        productId,
-        "image",
-        data.secure_url
+        product.id,
+        "images",
+        [
+          ...(product.images ||
+            []),
+
+          ...uploadedImages
+        ]
       );
 
       alert(
-        "Image Uploaded"
+        "Images Uploaded"
       );
     } catch (error) {
       console.error(error);
 
       alert(
         "Upload Failed"
+      );
+    }
+  }
+
+  /* ======================================================
+  UPLOAD VIDEO
+  ====================================================== */
+
+  async function uploadVideos(
+    product: Product,
+    files: FileList
+  ) {
+    try {
+      const uploadedVideos:
+        string[] = [];
+
+      for (
+        let i = 0;
+        i < files.length;
+        i++
+      ) {
+        const formData =
+          new FormData();
+
+        formData.append(
+          "file",
+          files[i]
+        );
+
+        formData.append(
+          "upload_preset",
+
+          process.env
+            .NEXT_PUBLIC_CLOUDINARY_UPLOAD_PRESET ||
+            ""
+        );
+
+        const response =
+          await fetch(
+            `https://api.cloudinary.com/v1_1/${
+              process.env
+                .NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME
+            }/video/upload`,
+            {
+              method:
+                "POST",
+
+              body:
+                formData
+            }
+          );
+
+        const data =
+          await response.json();
+
+        uploadedVideos.push(
+          data.secure_url
+        );
+      }
+
+      await updateProduct(
+        product.id,
+        "videos",
+        [
+          ...(product.videos ||
+            []),
+
+          ...uploadedVideos
+        ]
+      );
+
+      alert(
+        "Videos Uploaded"
+      );
+    } catch (error) {
+      console.error(error);
+
+      alert(
+        "Video Upload Failed"
       );
     }
   }
@@ -424,7 +501,7 @@ export default function ProductsAdminPage() {
 
           <div>
 
-            <h1 className="text-4xl font-black text-gray-900">
+            <h1 className="text-4xl font-black">
               Products Admin
             </h1>
 
@@ -467,7 +544,7 @@ export default function ProductsAdminPage() {
                   <div
                     key={product.id}
                     className="
-                      rounded-[30px]
+                      rounded-[35px]
                       bg-white
                       p-5
                       shadow-xl
@@ -491,13 +568,12 @@ export default function ProductsAdminPage() {
                             ""
                           }
                           onChange={(
-                            event
+                            e
                           ) => {
                             updateProduct(
                               product.id,
                               "title",
-                              event
-                                .target
+                              e.target
                                 .value
                             );
                           }}
@@ -509,84 +585,6 @@ export default function ProductsAdminPage() {
                             p-4
                           "
                         />
-
-                      </div>
-
-                      {/* IMAGE */}
-
-                      <div>
-
-                        <label className="mb-2 block font-bold">
-                          Product Image
-                        </label>
-
-                        <button
-                          onClick={() => {
-                            fileInputRefs.current[
-                              product.id
-                            ]?.click();
-                          }}
-                          className="
-                            rounded-2xl
-                            bg-blue-600
-                            px-5
-                            py-4
-                            font-bold
-                            text-white
-                          "
-                        >
-                          Upload Image
-                        </button>
-
-                        <input
-                          ref={(
-                            element
-                          ) => {
-                            fileInputRefs.current[
-                              product.id
-                            ] =
-                              element;
-                          }}
-                          type="file"
-                          accept="image/*"
-                          capture="environment"
-                          hidden
-                          onChange={async (
-                            event
-                          ) => {
-                            const file =
-                              event
-                                .target
-                                .files?.[0];
-
-                            if (
-                              file
-                            ) {
-                              await uploadImage(
-                                product.id,
-                                file
-                              );
-                            }
-                          }}
-                        />
-
-                        {product.image && (
-                          <img
-                            src={
-                              product.image
-                            }
-                            alt={
-                              product.title
-                            }
-                            className="
-                              mt-4
-                              h-32
-                              w-32
-                              rounded-2xl
-                              object-cover
-                            "
-                          />
-                        )}
 
                       </div>
 
@@ -604,13 +602,12 @@ export default function ProductsAdminPage() {
                             ""
                           }
                           onChange={(
-                            event
+                            e
                           ) => {
                             updateProduct(
                               product.id,
                               "category",
-                              event
-                                .target
+                              e.target
                                 .value
                             );
                           }}
@@ -648,172 +645,190 @@ export default function ProductsAdminPage() {
 
                       </div>
 
-                      {/* PRICE */}
+                    </div>
 
-                      <div>
+                    {/* IMAGE UPLOAD */}
 
-                        <label className="mb-2 block font-bold">
-                          Original Price
-                        </label>
+                    <div className="mt-6">
 
-                        <input
-                          type="number"
-                          value={
-                            product.price ||
-                            0
-                          }
-                          onChange={(
+                      <label className="mb-3 block font-bold">
+                        Product Images
+                      </label>
+
+                      <button
+                        onClick={() => {
+                          imageInputRefs.current[
+                            product.id
+                          ]?.click();
+                        }}
+                        className="
+                          rounded-2xl
+                          bg-blue-600
+                          px-5
+                          py-4
+                          font-bold
+                          text-white
+                        "
+                      >
+                        Upload 3-4 Images
+                      </button>
+
+                      <input
+                        ref={(
+                          element
+                        ) => {
+                          imageInputRefs.current[
+                            product.id
+                          ] =
+                            element;
+                        }}
+                        type="file"
+                        multiple
+                        accept="image/*"
+                        capture="environment"
+                        hidden
+                        onChange={async (
+                          event
+                        ) => {
+                          const files =
                             event
-                          ) => {
-                            updateProduct(
-                              product.id,
-                              "price",
-                              Number(
-                                event.target
-                                  .value
-                              )
+                              .target
+                              .files;
+
+                          if (
+                            files
+                          ) {
+                            await uploadImages(
+                              product,
+                              files
                             );
-                          }}
-                          className="
-                            w-full
-                            rounded-2xl
-                            border
-                            bg-gray-100
-                            p-4
-                          "
-                        />
-
-                      </div>
-
-                      {/* DISCOUNT PRICE */}
-
-                      <div>
-
-                        <label className="mb-2 block font-bold">
-                          Discount Price
-                        </label>
-
-                        <input
-                          type="number"
-                          value={
-                            product.discountPrice ||
-                            0
                           }
-                          onChange={(
-                            event
+                        }}
+                      />
+
+                      {/* IMAGES */}
+
+                      <div className="mt-5 flex gap-4 overflow-x-auto pb-2">
+
+                        {product.images?.map(
+                          (
+                            image,
+                            index
                           ) => {
-                            updateProduct(
-                              product.id,
-                              "discountPrice",
-                              Number(
-                                event.target
-                                  .value
-                              )
+                            return (
+                              <img
+                                key={
+                                  index
+                                }
+                                src={
+                                  image
+                                }
+                                alt=""
+                                className="
+                                  h-40
+                                  w-32
+                                  rounded-b-[40px]
+                                  rounded-t-[20px]
+                                  object-cover
+                                  shadow-lg
+                                "
+                              />
                             );
-                          }}
-                          className="
-                            w-full
-                            rounded-2xl
-                            border
-                            bg-gray-100
-                            p-4
-                          "
-                        />
-
-                      </div>
-
-                      {/* STOCK */}
-
-                      <div>
-
-                        <label className="mb-2 block font-bold">
-                          Stock
-                        </label>
-
-                        <input
-                          type="number"
-                          value={
-                            product.stock ||
-                            0
                           }
-                          onChange={(
-                            event
-                          ) => {
-                            updateProduct(
-                              product.id,
-                              "stock",
-                              Number(
-                                event.target
-                                  .value
-                              )
-                            );
-                          }}
-                          className="
-                            w-full
-                            rounded-2xl
-                            border
-                            bg-gray-100
-                            p-4
-                          "
-                        />
+                        )}
 
                       </div>
 
                     </div>
 
-                    {/* FEATURED */}
+                    {/* VIDEO UPLOAD */}
 
-                    <div className="mt-6 flex gap-6">
+                    <div className="mt-8">
 
-                      <div className="flex items-center gap-3">
+                      <label className="mb-3 block font-bold">
+                        Product Videos
+                      </label>
 
-                        <input
-                          type="checkbox"
-                          checked={Boolean(
-                            product.featured
-                          )}
-                          onChange={(
+                      <button
+                        onClick={() => {
+                          videoInputRefs.current[
+                            product.id
+                          ]?.click();
+                        }}
+                        className="
+                          rounded-2xl
+                          bg-purple-600
+                          px-5
+                          py-4
+                          font-bold
+                          text-white
+                        "
+                      >
+                        Upload Video
+                      </button>
+
+                      <input
+                        ref={(
+                          element
+                        ) => {
+                          videoInputRefs.current[
+                            product.id
+                          ] =
+                            element;
+                        }}
+                        type="file"
+                        multiple
+                        accept="video/*"
+                        hidden
+                        onChange={async (
+                          event
+                        ) => {
+                          const files =
                             event
-                          ) => {
-                            updateProduct(
-                              product.id,
-                              "featured",
-                              event.target
-                                .checked
+                              .target
+                              .files;
+
+                          if (
+                            files
+                          ) {
+                            await uploadVideos(
+                              product,
+                              files
                             );
-                          }}
-                          className="h-5 w-5"
-                        />
+                          }
+                        }}
+                      />
 
-                        <p className="font-bold">
-                          Featured
-                        </p>
+                      {/* VIDEOS */}
 
-                      </div>
+                      <div className="mt-5 flex gap-4 overflow-x-auto pb-2">
 
-                      <div className="flex items-center gap-3">
-
-                        <input
-                          type="checkbox"
-                          checked={Boolean(
-                            product.visible
-                          )}
-                          onChange={(
-                            event
+                        {product.videos?.map(
+                          (
+                            video,
+                            index
                           ) => {
-                            updateProduct(
-                              product.id,
-                              "visible",
-                              event.target
-                                .checked
+                            return (
+                              <video
+                                key={
+                                  index
+                                }
+                                src={
+                                  video
+                                }
+                                controls
+                                className="
+                                  h-44
+                                  w-36
+                                  rounded-b-[40px]
+                                  rounded-t-[20px]
+                                  object-cover
+                                  shadow-lg
+                                "
+                              />
                             );
-                          }}
-                          className="h-5 w-5"
-                        />
-
-                        <p className="font-bold">
-                          Visible
-                        </p>
+                          }
+                        )}
 
                       </div>
 
@@ -828,7 +843,7 @@ export default function ProductsAdminPage() {
                         );
                       }}
                       className="
-                        mt-6
+                        mt-8
                         rounded-2xl
                         bg-red-600
                         px-5
