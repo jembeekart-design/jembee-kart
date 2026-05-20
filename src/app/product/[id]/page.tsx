@@ -204,8 +204,8 @@ export default function ProductPage() {
 
   if (loading) {
     return (
-      <main className="flex min-h-screen items-center justify-center bg-[#f5f5f5]">
-        <h1 className="text-lg font-bold">
+      <main className="flex min-h-screen items-center justify-center bg-[#f6f6f6]">
+        <h1 className="text-sm font-bold">
           Loading...
         </h1>
       </main>
@@ -214,8 +214,8 @@ export default function ProductPage() {
 
   if (!product) {
     return (
-      <main className="flex min-h-screen items-center justify-center bg-[#f5f5f5]">
-        <h1 className="text-lg font-bold text-red-500">
+      <main className="flex min-h-screen items-center justify-center bg-[#f6f6f6]">
+        <h1 className="text-sm font-bold text-red-500">
           Product Not Found
         </h1>
       </main>
@@ -226,30 +226,30 @@ export default function ProductPage() {
     product.images || [];
 
   return (
-    <main className="min-h-screen bg-[#f6f6f6] pb-[95px]">
+    <main className="min-h-screen bg-[#f6f6f6] pb-[80px]">
 
       {/* TOPBAR */}
 
       <div className="sticky top-0 z-50 bg-[#f6f6f6]/90 backdrop-blur-md px-3 pt-3">
 
-        <div className="flex items-center justify-between rounded-[22px] bg-white px-4 py-3 shadow-sm">
+        <div className="flex items-center justify-between rounded-[18px] bg-white px-3 py-2.5 shadow-sm">
 
-          <div className="flex items-center gap-3">
+          <div className="flex items-center gap-2">
 
             <Link
               href="/"
-              className="flex h-10 w-10 items-center justify-center rounded-full bg-gray-100"
+              className="flex h-8 w-8 items-center justify-center rounded-full bg-gray-100"
             >
-              <ArrowLeft size={20} />
+              <ArrowLeft size={16} />
             </Link>
 
-            <h1 className="text-[26px] font-black text-purple-600">
+            <h1 className="text-[18px] font-black text-purple-600">
               JembeeKart
             </h1>
 
           </div>
 
-          <div className="flex items-center gap-4">
+          <div className="flex items-center gap-3">
 
             <button
               onClick={() =>
@@ -259,7 +259,7 @@ export default function ProductPage() {
               }
             >
               <Heart
-                size={22}
+                size={18}
                 fill={
                   wishlist
                     ? "red"
@@ -274,7 +274,7 @@ export default function ProductPage() {
             </button>
 
             <button>
-              <Share2 size={21} />
+              <Share2 size={17} />
             </button>
 
           </div>
@@ -283,13 +283,13 @@ export default function ProductPage() {
 
       </div>
 
-      <section className="space-y-5 px-3 pt-3">
+      <section className="space-y-4 px-3 pt-2">
 
         {/* IMAGE */}
 
-        <div className="rounded-[28px] bg-white p-3 shadow-sm">
+        <div className="rounded-[20px] bg-white p-2.5 shadow-sm">
 
-          <div className="relative overflow-hidden rounded-[24px]">
+          <div className="relative overflow-hidden rounded-[18px]">
 
             <img
               src={
@@ -299,10 +299,10 @@ export default function ProductPage() {
                 "/placeholder.png"
               }
               alt={product.title}
-              className="h-[320px] w-full rounded-[24px] bg-gray-100 object-cover"
+              className="h-[240px] w-full rounded-[18px] bg-gray-100 object-cover"
             />
 
-            <div className="absolute left-3 top-3 rounded-xl bg-red-500 px-3 py-2 text-sm font-bold text-white">
+            <div className="absolute left-2 top-2 rounded-lg bg-red-500 px-2.5 py-1 text-[10px] font-bold text-white">
 
               {discount}% OFF
 
@@ -314,11 +314,11 @@ export default function ProductPage() {
                   !wishlist
                 )
               }
-              className="absolute right-3 top-3 flex h-11 w-11 items-center justify-center rounded-full bg-white shadow-sm"
+              className="absolute right-2 top-2 flex h-8 w-8 items-center justify-center rounded-full bg-white shadow-sm"
             >
 
               <Heart
-                size={21}
+                size={16}
                 fill={
                   wishlist
                     ? "red"
@@ -342,9 +342,9 @@ export default function ProductPage() {
                       1
                   )
                 }
-                className="absolute left-3 top-1/2 flex h-10 w-10 -translate-y-1/2 items-center justify-center rounded-full bg-white shadow-sm"
+                className="absolute left-2 top-1/2 flex h-8 w-8 -translate-y-1/2 items-center justify-center rounded-full bg-white shadow-sm"
               >
-                <ChevronLeft size={22} />
+                <ChevronLeft size={18} />
               </button>
             )}
 
@@ -358,24 +358,17 @@ export default function ProductPage() {
                       1
                   )
                 }
-                className="absolute right-3 top-1/2 flex h-10 w-10 -translate-y-1/2 items-center justify-center rounded-full bg-white shadow-sm"
+                className="absolute right-2 top-1/2 flex h-8 w-8 -translate-y-1/2 items-center justify-center rounded-full bg-white shadow-sm"
               >
-                <ChevronRight size={22} />
+                <ChevronRight size={18} />
               </button>
             )}
-
-            <div className="absolute bottom-3 right-3 rounded-full bg-black/70 px-3 py-1 text-xs font-bold text-white">
-
-              {currentImage + 1}/
-              {images.length}
-
-            </div>
 
           </div>
 
           {/* THUMBNAILS */}
 
-          <div className="mt-4 flex gap-3 overflow-x-auto pb-1">
+          <div className="mt-3 flex gap-2 overflow-x-auto">
 
             {images.map(
               (
@@ -389,10 +382,10 @@ export default function ProductPage() {
                       index
                     )
                   }
-                  className={`overflow-hidden rounded-2xl border-2 transition-all ${
+                  className={`overflow-hidden rounded-lg border ${
                     currentImage ===
                     index
-                      ? "scale-105 border-purple-600"
+                      ? "border-purple-600"
                       : "border-transparent"
                   }`}
                 >
@@ -400,7 +393,7 @@ export default function ProductPage() {
                   <img
                     src={image}
                     alt="thumb"
-                    className="h-16 w-16 object-cover"
+                    className="h-12 w-12 object-cover"
                   />
 
                 </button>
@@ -415,24 +408,24 @@ export default function ProductPage() {
 
         <div>
 
-          <p className="text-sm font-bold text-purple-600">
+          <p className="text-[11px] font-bold text-purple-600">
 
             {product.category}
 
           </p>
 
-          <h1 className="mt-1 text-[42px] font-black leading-[44px] text-black">
+          <h1 className="mt-1 text-[22px] font-black leading-[26px] text-black">
 
             {product.title}
 
           </h1>
 
-          <div className="mt-3 flex items-center gap-2 text-sm">
+          <div className="mt-2 flex items-center gap-2 text-[11px]">
 
             <div className="flex items-center gap-1 text-green-600">
 
               <Star
-                size={15}
+                size={12}
                 fill="green"
               />
 
@@ -451,25 +444,13 @@ export default function ProductPage() {
 
             </span>
 
-            <span className="text-gray-300">
-
-              |
-
-            </span>
-
-            <span className="text-gray-500">
-
-              5k+ sold
-
-            </span>
-
           </div>
 
           {/* PRICE */}
 
-          <div className="mt-4 flex items-center gap-3">
+          <div className="mt-3 flex items-center gap-2">
 
-            <h2 className="text-[42px] font-black leading-none">
+            <h2 className="text-[24px] font-black leading-none">
 
               ₹
               {
@@ -478,7 +459,7 @@ export default function ProductPage() {
 
             </h2>
 
-            <p className="text-2xl font-bold text-gray-400 line-through">
+            <p className="text-[15px] font-bold text-gray-400 line-through">
 
               ₹
               {product.price}
@@ -487,7 +468,7 @@ export default function ProductPage() {
 
           </div>
 
-          <p className="mt-1 text-xl font-bold text-green-600">
+          <p className="mt-1 text-[13px] font-bold text-green-600">
 
             You save ₹
             {(product.price ||
@@ -501,24 +482,24 @@ export default function ProductPage() {
 
           {/* DELIVERY */}
 
-          <div className="mt-5 flex items-center gap-3 rounded-[22px] border bg-white p-4 shadow-sm">
+          <div className="mt-4 flex items-center gap-3 rounded-[16px] border bg-white p-3 shadow-sm">
 
             <Truck
-              size={22}
+              size={18}
               className="text-purple-600"
             />
 
             <div>
 
-              <h3 className="text-lg font-bold text-purple-600">
+              <h3 className="text-sm font-bold text-purple-600">
 
                 Free Delivery
 
               </h3>
 
-              <p className="text-sm text-gray-500">
+              <p className="text-[11px] text-gray-500">
 
-                On orders above ₹499
+                Delivery by {deliveryDate}
 
               </p>
 
@@ -528,15 +509,15 @@ export default function ProductPage() {
 
           {/* SIZE */}
 
-          <div className="mt-6">
+          <div className="mt-5">
 
-            <h2 className="mb-3 text-[18px] font-bold">
+            <h2 className="mb-2 text-sm font-bold">
 
               Select Size
 
             </h2>
 
-            <div className="flex flex-wrap gap-3">
+            <div className="flex flex-wrap gap-2">
 
               {product.sizes?.map(
                 (size) => (
@@ -547,7 +528,7 @@ export default function ProductPage() {
                         size
                       )
                     }
-                    className={`min-w-[58px] rounded-[18px] border px-4 py-2.5 text-[17px] font-bold transition-all ${
+                    className={`min-w-[46px] rounded-[12px] border px-3 py-1.5 text-[12px] font-bold ${
                       selectedSize ===
                       size
                         ? "border-purple-600 bg-purple-600 text-white"
@@ -567,15 +548,15 @@ export default function ProductPage() {
 
           {/* COLORS */}
 
-          <div className="mt-6">
+          <div className="mt-5">
 
-            <h2 className="mb-3 text-[18px] font-bold">
+            <h2 className="mb-2 text-sm font-bold">
 
               Select Color
 
             </h2>
 
-            <div className="flex gap-4">
+            <div className="flex gap-3">
 
               {product.colors?.map(
                 (color) => (
@@ -590,10 +571,10 @@ export default function ProductPage() {
                       background:
                         color
                     }}
-                    className={`h-11 w-11 rounded-full border-[3px] transition-all ${
+                    className={`h-8 w-8 rounded-full border-2 ${
                       selectedColor ===
                       color
-                        ? "scale-110 border-purple-600"
+                        ? "border-purple-600"
                         : "border-gray-200"
                     }`}
                   />
@@ -608,22 +589,22 @@ export default function ProductPage() {
 
         {/* FEATURES */}
 
-        <div className="grid grid-cols-2 gap-4 rounded-[24px] bg-white p-4 shadow-sm">
+        <div className="grid grid-cols-2 gap-3 rounded-[18px] bg-white p-3 shadow-sm">
 
-          <div className="flex items-center gap-3">
+          <div className="flex items-center gap-2">
 
             <ShieldCheck
-              size={22}
+              size={18}
               className="text-green-600"
             />
 
             <div>
 
-              <h3 className="text-sm font-bold">
-                100% Original
+              <h3 className="text-[12px] font-bold">
+                Original
               </h3>
 
-              <p className="text-xs text-gray-500">
+              <p className="text-[10px] text-gray-500">
                 Authentic
               </p>
 
@@ -631,256 +612,26 @@ export default function ProductPage() {
 
           </div>
 
-          <div className="flex items-center gap-3">
+          <div className="flex items-center gap-2">
 
             <RotateCcw
-              size={22}
+              size={18}
               className="text-violet-600"
             />
 
             <div>
 
-              <h3 className="text-sm font-bold">
-                7 Days Return
+              <h3 className="text-[12px] font-bold">
+                7 Day Return
               </h3>
 
-              <p className="text-xs text-gray-500">
-                Easy Returns
+              <p className="text-[10px] text-gray-500">
+                Easy Return
               </p>
 
             </div>
 
           </div>
-
-          <div className="flex items-center gap-3">
-
-            <BadgeCheck
-              size={22}
-              className="text-blue-600"
-            />
-
-            <div>
-
-              <h3 className="text-sm font-bold">
-                Secure Payment
-              </h3>
-
-              <p className="text-xs text-gray-500">
-                Protected
-              </p>
-
-            </div>
-
-          </div>
-
-          <div className="flex items-center gap-3">
-
-            <Headphones
-              size={22}
-              className="text-orange-500"
-            />
-
-            <div>
-
-              <h3 className="text-sm font-bold">
-                24/7 Support
-              </h3>
-
-              <p className="text-xs text-gray-500">
-                Always Here
-              </p>
-
-            </div>
-
-          </div>
-
-        </div>
-
-        {/* DELIVERY */}
-
-        <div className="space-y-4">
-
-          <div className="rounded-[24px] bg-white p-5 shadow-sm">
-
-            <div className="flex gap-3">
-
-              <Truck className="text-green-600" />
-
-              <div>
-
-                <h3 className="font-bold">
-                  Delivery
-                </h3>
-
-                <p className="mt-2 text-[28px] font-black leading-tight text-green-600">
-
-                  {deliveryDate}
-
-                </p>
-
-                <p className="mt-1 text-sm text-gray-500">
-
-                  Order within 3h 45m
-
-                </p>
-
-              </div>
-
-            </div>
-
-          </div>
-
-          <div className="rounded-[24px] bg-white p-5 shadow-sm">
-
-            <div className="flex gap-3">
-
-              <Zap className="text-orange-500" />
-
-              <div>
-
-                <h3 className="font-bold">
-                  Cash on Delivery
-                </h3>
-
-                <p className="mt-1 text-sm text-gray-500">
-                  Pay when you receive
-                </p>
-
-              </div>
-
-            </div>
-
-          </div>
-
-        </div>
-
-        {/* COUPONS */}
-
-        <div>
-
-          <div className="mb-4 flex items-center justify-between">
-
-            <h2 className="text-[28px] font-black">
-
-              Offers & Coupons
-
-            </h2>
-
-            <button className="text-sm font-bold text-purple-600">
-
-              View All
-
-            </button>
-
-          </div>
-
-          <div className="space-y-3">
-
-            {product.coupons?.map(
-              (coupon) => (
-                <div
-                  key={coupon}
-                  className="rounded-[22px] border border-dashed border-purple-300 bg-white p-4"
-                >
-
-                  <h3 className="text-[34px] font-black leading-none">
-
-                    {coupon}
-
-                  </h3>
-
-                  <p className="mt-2 text-sm text-gray-500">
-
-                    Get extra discount on orders
-
-                  </p>
-
-                  <button className="mt-3 rounded-xl bg-gradient-to-r from-violet-600 to-purple-500 px-5 py-2 text-sm font-bold text-white shadow-md">
-
-                    Apply
-
-                  </button>
-
-                </div>
-              )
-            )}
-
-          </div>
-
-        </div>
-
-        {/* SELLER */}
-
-        <div className="rounded-[24px] bg-white p-5 shadow-sm">
-
-          <h2 className="text-[28px] font-black">
-
-            Seller Details
-
-          </h2>
-
-          <div className="mt-4 flex items-center justify-between gap-3">
-
-            <div className="flex items-center gap-3">
-
-              <div className="flex h-14 w-14 items-center justify-center rounded-full bg-purple-100">
-
-                <Store className="text-purple-600" />
-
-              </div>
-
-              <div>
-
-                <h3 className="text-[18px] font-black leading-tight">
-
-                  {
-                    product.seller
-                      ?.name
-                  }
-
-                </h3>
-
-                <p className="text-sm text-gray-500">
-
-                  {
-                    product.seller
-                      ?.rating
-                  }
-                  ★ Seller Rating
-
-                </p>
-
-              </div>
-
-            </div>
-
-            <button className="rounded-2xl border border-purple-400 px-4 py-3 text-sm font-bold text-purple-600">
-
-              View Store
-
-            </button>
-
-          </div>
-
-        </div>
-
-        {/* DESCRIPTION */}
-
-        <div className="rounded-[24px] bg-white p-5 shadow-sm">
-
-          <h2 className="text-[28px] font-black">
-
-            Product Details
-
-          </h2>
-
-          <p className="mt-3 text-[15px] leading-7 text-gray-600">
-
-            {
-              product.description
-            }
-
-          </p>
 
         </div>
 
@@ -888,13 +639,13 @@ export default function ProductPage() {
 
       {/* BOTTOM BAR */}
 
-      <div className="fixed bottom-0 left-0 z-50 w-full border-t bg-white/95 px-3 py-2 backdrop-blur-md">
+      <div className="fixed bottom-0 left-0 z-50 w-full border-t bg-white px-3 py-2">
 
-        <div className="flex items-center gap-3">
+        <div className="flex items-center gap-2">
 
           <div>
 
-            <h2 className="text-[34px] font-black leading-none">
+            <h2 className="text-[20px] font-black">
 
               ₹
               {
@@ -903,7 +654,7 @@ export default function ProductPage() {
 
             </h2>
 
-            <p className="text-sm font-bold text-green-600">
+            <p className="text-[10px] font-bold text-green-600">
 
               {discount}% OFF
 
@@ -913,18 +664,18 @@ export default function ProductPage() {
 
           <button
             onClick={addToCart}
-            className="flex flex-1 items-center justify-center gap-2 rounded-[20px] border-2 bg-white py-3 text-[17px] font-bold"
+            className="flex flex-1 items-center justify-center gap-1 rounded-[14px] border bg-white py-2 text-[12px] font-bold"
           >
 
-            <ShoppingCart size={19} />
+            <ShoppingCart size={15} />
 
-            Add to Cart
+            Cart
 
           </button>
 
-          <button className="flex flex-1 items-center justify-center gap-2 rounded-[20px] bg-gradient-to-r from-violet-600 to-fuchsia-500 py-3 text-[17px] font-bold text-white shadow-lg">
+          <button className="flex flex-1 items-center justify-center gap-1 rounded-[14px] bg-gradient-to-r from-violet-600 to-fuchsia-500 py-2 text-[12px] font-bold text-white">
 
-            <Zap size={18} />
+            <Zap size={14} />
 
             Buy Now
 
