@@ -13,11 +13,10 @@ import {
 } from "firebase/firestore";
 
 import {
-  User,
-  Shield,
   Trash2,
-  Crown,
-  CheckCircle2
+  Eye,
+  EyeOff,
+  User
 } from "lucide-react";
 
 import { db } from "@/firebase/config";
@@ -26,10 +25,9 @@ interface UserItem {
   id: string;
   name: string;
   email: string;
-  phone: string;
   role: string;
-  active: boolean;
-  image: string;
+  visible: boolean;
+  profileImage: string;
 }
 
 export default function UsersPage() {
@@ -186,16 +184,27 @@ export default function UsersPage() {
 
               <div className="flex items-center justify-between border-b border-white/10 p-4">
 
-                <div className="flex items-center gap-3">
+                <div className="flex items-center gap-4">
 
-                  <img
-                    src={
-                      user.image ||
-                      "https://placehold.co/200/png"
-                    }
-                    alt={user.name}
-                    className="h-14 w-14 rounded-full object-cover"
-                  />
+                  {user.profileImage ? (
+
+                    <img
+                      src={
+                        user.profileImage
+                      }
+                      alt={user.name}
+                      className="h-16 w-16 rounded-full object-cover"
+                    />
+
+                  ) : (
+
+                    <div className="flex h-16 w-16 items-center justify-center rounded-full bg-violet-600">
+
+                      <User size={28} />
+
+                    </div>
+
+                  )}
 
                   <div>
 
@@ -203,7 +212,7 @@ export default function UsersPage() {
                       {user.name}
                     </h2>
 
-                    <p className="text-xs text-gray-400">
+                    <p className="text-sm text-gray-400">
                       {user.email}
                     </p>
 
@@ -211,52 +220,95 @@ export default function UsersPage() {
 
                 </div>
 
-                <button
-                  onClick={() =>
-                    deleteUser(
-                      user.id
-                    )
-                  }
-                  className="flex h-10 w-10 items-center justify-center rounded-xl bg-red-500/20 text-red-500"
-                >
+                <div className="flex items-center gap-2">
 
-                  <Trash2 size={18} />
+                  <button
+                    onClick={() =>
+                      updateUser(
+                        user.id,
+                        "visible",
+                        !user.visible
+                      )
+                    }
+                    className="flex h-10 w-10 items-center justify-center rounded-xl bg-white/10"
+                  >
 
-                </button>
+                    {user.visible ? (
+
+                      <Eye size={18} />
+
+                    ) : (
+
+                      <EyeOff size={18} />
+
+                    )}
+
+                  </button>
+
+                  <button
+                    onClick={() =>
+                      deleteUser(
+                        user.id
+                      )
+                    }
+                    className="flex h-10 w-10 items-center justify-center rounded-xl bg-red-500/20 text-red-500"
+                  >
+
+                    <Trash2 size={18} />
+
+                  </button>
+
+                </div>
 
               </div>
 
               {/* BODY */}
 
-              <div className="space-y-4 p-4">
+              <div className="space-y-5 p-4">
 
-                {/* INFO */}
+                {/* NAME */}
 
-                <div className="rounded-2xl bg-[#1b1b1b] p-4">
+                <div>
 
-                  <div className="mb-3 flex items-center gap-2">
+                  <p className="mb-2 text-sm font-bold">
+                    User Name
+                  </p>
 
-                    <User size={16} />
+                  <input
+                    type="text"
+                    value={user.name}
+                    onChange={(e) =>
+                      updateUser(
+                        user.id,
+                        "name",
+                        e.target.value
+                      )
+                    }
+                    className="w-full rounded-2xl border border-white/10 bg-[#1e1e1e] px-4 py-3 text-sm outline-none"
+                  />
 
-                    <p className="text-sm font-bold">
-                      User Information
-                    </p>
+                </div>
 
-                  </div>
+                {/* EMAIL */}
 
-                  <div className="space-y-2 text-sm text-gray-300">
+                <div>
 
-                    <p>
-                      Phone:
-                      {user.phone}
-                    </p>
+                  <p className="mb-2 text-sm font-bold">
+                    Email
+                  </p>
 
-                    <p>
-                      Role:
-                      {user.role}
-                    </p>
-
-                  </div>
+                  <input
+                    type="text"
+                    value={user.email}
+                    onChange={(e) =>
+                      updateUser(
+                        user.id,
+                        "email",
+                        e.target.value
+                      )
+                    }
+                    className="w-full rounded-2xl border border-white/10 bg-[#1e1e1e] px-4 py-3 text-sm outline-none"
+                  />
 
                 </div>
 
@@ -264,14 +316,108 @@ export default function UsersPage() {
 
                 <div>
 
-                  <p className="mb-3 text-sm font-bold">
-                    User Role
+                  <p className="mb-2 text-sm font-bold">
+                    Role
                   </p>
 
-                  <div className="grid grid-cols-3 gap-3">
+                  <input
+                    type="text"
+                    value={user.role}
+                    onChange={(e) =>
+                      updateUser(
+                        user.id,
+                        "role",
+                        e.target.value
+                      )
+                    }
+                    className="w-full rounded-2xl border border-white/10 bg-[#1e1e1e] px-4 py-3 text-sm outline-none"
+                  />
 
-                    <button
-                      onClick={() =>
-                        updateUser(
-                          user.id,
-                          "
+                </div>
+
+                {/* PROFILE IMAGE */}
+
+                <div>
+
+                  <p className="mb-2 text-sm font-bold">
+                    Profile Image
+                  </p>
+
+                  <input
+                    type="text"
+                    value={
+                      user.profileImage
+                    }
+                    onChange={(e) =>
+                      updateUser(
+                        user.id,
+                        "profileImage",
+                        e.target.value
+                      )
+                    }
+                    className="w-full rounded-2xl border border-white/10 bg-[#1e1e1e] px-4 py-3 text-sm outline-none"
+                  />
+
+                </div>
+
+                {/* LIVE CARD */}
+
+                <div className="rounded-[28px] bg-gradient-to-br from-violet-600 to-fuchsia-600 p-5">
+
+                  <div className="flex items-center gap-4">
+
+                    {user.profileImage ? (
+
+                      <img
+                        src={
+                          user.profileImage
+                        }
+                        alt={user.name}
+                        className="h-20 w-20 rounded-full object-cover"
+                      />
+
+                    ) : (
+
+                      <div className="flex h-20 w-20 items-center justify-center rounded-full bg-white/20">
+
+                        <User size={32} />
+
+                      </div>
+
+                    )}
+
+                    <div>
+
+                      <h2 className="text-2xl font-black">
+                        {user.name}
+                      </h2>
+
+                      <p className="text-sm text-white/80">
+                        {user.email}
+                      </p>
+
+                      <div className="mt-3 inline-block rounded-full bg-white/20 px-4 py-2 text-xs font-bold">
+
+                        {user.role}
+
+                      </div>
+
+                    </div>
+
+                  </div>
+
+                </div>
+
+              </div>
+
+            </div>
+
+          )
+        )}
+
+      </div>
+
+    </main>
+
+  );
+}
