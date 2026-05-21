@@ -16,8 +16,7 @@ import {
   Shield,
   Link2,
   CheckCircle,
-  AlertTriangle,
-  ExternalLink
+  Server
 } from "lucide-react";
 
 import { db } from "@/firebase/config";
@@ -26,8 +25,8 @@ interface DomainSettings {
   mainDomain: string;
   adminDomain: string;
   apiDomain: string;
-  customDomainEnabled: boolean;
   sslEnabled: boolean;
+  maintenanceMode: boolean;
 }
 
 export default function DomainsPage() {
@@ -37,8 +36,8 @@ export default function DomainsPage() {
       mainDomain: "",
       adminDomain: "",
       apiDomain: "",
-      customDomainEnabled: true,
-      sslEnabled: true
+      sslEnabled: true,
+      maintenanceMode: false
     });
 
   const [loading, setLoading] =
@@ -49,11 +48,11 @@ export default function DomainsPage() {
 
   useEffect(() => {
 
-    fetchDomains();
+    fetchSettings();
 
   }, []);
 
-  async function fetchDomains() {
+  async function fetchSettings() {
 
     try {
 
@@ -85,7 +84,7 @@ export default function DomainsPage() {
     }
   }
 
-  async function saveDomains() {
+  async function saveSettings() {
 
     try {
 
@@ -162,7 +161,7 @@ export default function DomainsPage() {
             </h1>
 
             <p className="mt-1 text-sm text-gray-400">
-              Manage website & API domains
+              Manage website domains
             </p>
 
           </div>
@@ -170,7 +169,7 @@ export default function DomainsPage() {
         </div>
 
         <button
-          onClick={saveDomains}
+          onClick={saveSettings}
           disabled={saving}
           className="flex items-center gap-2 rounded-2xl bg-cyan-500 px-5 py-3 font-bold"
         >
@@ -189,12 +188,15 @@ export default function DomainsPage() {
 
       <div className="grid grid-cols-1 gap-5 md:grid-cols-2">
 
-        <DomainCard
+        <InputCard
           title="Main Website Domain"
+          icon={
+            <Globe size={22} />
+          }
           value={
             settings.mainDomain
           }
-          onChange={(value) =>
+          onChange={(value: string) =>
             updateField(
               "mainDomain",
               value
@@ -202,12 +204,15 @@ export default function DomainsPage() {
           }
         />
 
-        <DomainCard
-          title="Admin Domain"
+        <InputCard
+          title="Admin Panel Domain"
+          icon={
+            <Shield size={22} />
+          }
           value={
             settings.adminDomain
           }
-          onChange={(value) =>
+          onChange={(value: string) =>
             updateField(
               "adminDomain",
               value
@@ -215,12 +220,15 @@ export default function DomainsPage() {
           }
         />
 
-        <DomainCard
+        <InputCard
           title="API Domain"
+          icon={
+            <Server size={22} />
+          }
           value={
             settings.apiDomain
           }
-          onChange={(value) =>
+          onChange={(value: string) =>
             updateField(
               "apiDomain",
               value
@@ -230,37 +238,13 @@ export default function DomainsPage() {
 
       </div>
 
-      {/* SETTINGS */}
+      {/* TOGGLES */}
 
       <div className="mt-6 grid grid-cols-1 gap-5 md:grid-cols-2">
 
-        {/* CUSTOM DOMAIN */}
-
         <ToggleCard
-          title="Custom Domain"
-          description="Enable custom connected domains"
-          icon={
-            <Link2 size={24} />
-          }
-          enabled={
-            settings.customDomainEnabled
-          }
-          onClick={() =>
-            updateField(
-              "customDomainEnabled",
-              !settings.customDomainEnabled
-            )
-          }
-        />
-
-        {/* SSL */}
-
-        <ToggleCard
-          title="SSL Security"
-          description="Enable HTTPS SSL encryption"
-          icon={
-            <Shield size={24} />
-          }
+          title="SSL Protection"
+          description="Enable HTTPS security"
           enabled={
             settings.sslEnabled
           }
@@ -272,93 +256,106 @@ export default function DomainsPage() {
           }
         />
 
-      </div>
-
-      {/* STATUS */}
-
-      <div className="mt-6 grid grid-cols-1 gap-5 md:grid-cols-3">
-
-        <StatusCard
-          title="Main Domain"
-          value="Connected"
-          icon={
-            <CheckCircle
-              size={26}
-            />
+        <ToggleCard
+          title="Maintenance Mode"
+          description="Temporarily disable domains"
+          enabled={
+            settings.maintenanceMode
           }
-          color="bg-green-500"
-        />
-
-        <StatusCard
-          title="SSL Status"
-          value={
-            settings.sslEnabled
-              ? "Protected"
-              : "Disabled"
+          onClick={() =>
+            updateField(
+              "maintenanceMode",
+              !settings.maintenanceMode
+            )
           }
-          icon={
-            settings.sslEnabled
-              ? (
-                <Shield
-                  size={26}
-                />
-              )
-              : (
-                <AlertTriangle
-                  size={26}
-                />
-              )
-          }
-          color={
-            settings.sslEnabled
-              ? "bg-cyan-500"
-              : "bg-red-500"
-          }
-        />
-
-        <StatusCard
-          title="API Access"
-          value="Online"
-          icon={
-            <ExternalLink
-              size={26}
-            />
-          }
-          color="bg-violet-600"
         />
 
       </div>
 
-      {/* LIVE PREVIEW */}
+      {/* LIVE STATUS */}
 
       <div className="mt-6 rounded-[30px] bg-gradient-to-r from-cyan-500 to-blue-600 p-6">
 
-        <h2 className="text-3xl font-black">
-          Connected Domains
-        </h2>
+        <div className="flex items-center gap-3">
 
-        <div className="mt-6 space-y-3 text-white/90">
+          <CheckCircle size={28} />
 
-          <p>
-            🌐
-            {" "}
-            {settings.mainDomain ||
-              "No Main Domain"}
-          </p>
+          <h2 className="text-3xl font-black">
+            Domain Status
+          </h2>
 
-          <p>
-            🛠️
-            {" "}
-            {settings.adminDomain ||
-              "No Admin Domain"}
-          </p>
+        </div>
 
-          <p>
-            ⚡
-            {" "}
-            {settings.apiDomain ||
-              "No API Domain"}
-          </p>
+        <div className="mt-6 space-y-4">
+
+          <div className="rounded-2xl bg-white/10 p-4">
+
+            <div className="flex items-center gap-3">
+
+              <Link2 size={20} />
+
+              <div>
+
+                <p className="font-bold">
+                  Main Domain
+                </p>
+
+                <p className="text-sm text-white/80">
+                  {settings.mainDomain ||
+                    "Not Configured"}
+                </p>
+
+              </div>
+
+            </div>
+
+          </div>
+
+          <div className="rounded-2xl bg-white/10 p-4">
+
+            <div className="flex items-center gap-3">
+
+              <Shield size={20} />
+
+              <div>
+
+                <p className="font-bold">
+                  Admin Domain
+                </p>
+
+                <p className="text-sm text-white/80">
+                  {settings.adminDomain ||
+                    "Not Configured"}
+                </p>
+
+              </div>
+
+            </div>
+
+          </div>
+
+          <div className="rounded-2xl bg-white/10 p-4">
+
+            <div className="flex items-center gap-3">
+
+              <Server size={20} />
+
+              <div>
+
+                <p className="font-bold">
+                  API Domain
+                </p>
+
+                <p className="text-sm text-white/80">
+                  {settings.apiDomain ||
+                    "Not Configured"}
+                </p>
+
+              </div>
+
+            </div>
+
+          </div>
 
         </div>
 
@@ -369,19 +366,33 @@ export default function DomainsPage() {
   );
 }
 
-function DomainCard({
+function InputCard({
   title,
   value,
-  onChange
-}: any) {
+  onChange,
+  icon
+}: {
+  title: string;
+  value: string;
+  onChange: (
+    value: string
+  ) => void;
+  icon: React.ReactNode;
+}) {
 
   return (
 
     <div className="rounded-[30px] bg-[#151515] p-5">
 
-      <h2 className="mb-4 text-2xl font-black">
-        {title}
-      </h2>
+      <div className="mb-4 flex items-center gap-3">
+
+        {icon}
+
+        <h2 className="text-2xl font-black">
+          {title}
+        </h2>
+
+      </div>
 
       <input
         type="text"
@@ -391,7 +402,6 @@ function DomainCard({
             e.target.value
           )
         }
-        placeholder="https://example.com"
         className="w-full rounded-2xl bg-black px-4 py-4 outline-none"
       />
 
@@ -403,10 +413,14 @@ function DomainCard({
 function ToggleCard({
   title,
   description,
-  icon,
   enabled,
   onClick
-}: any) {
+}: {
+  title: string;
+  description: string;
+  enabled: boolean;
+  onClick: () => void;
+}) {
 
   return (
 
@@ -414,25 +428,15 @@ function ToggleCard({
 
       <div className="flex items-center justify-between">
 
-        <div className="flex items-center gap-3">
+        <div>
 
-          <div className="flex h-14 w-14 items-center justify-center rounded-2xl bg-black">
+          <h2 className="text-2xl font-black">
+            {title}
+          </h2>
 
-            {icon}
-
-          </div>
-
-          <div>
-
-            <h2 className="text-xl font-black">
-              {title}
-            </h2>
-
-            <p className="text-sm text-gray-400">
-              {description}
-            </p>
-
-          </div>
+          <p className="mt-2 text-sm text-gray-400">
+            {description}
+          </p>
 
         </div>
 
@@ -450,46 +454,6 @@ function ToggleCard({
             : "Disabled"}
 
         </button>
-
-      </div>
-
-    </div>
-
-  );
-}
-
-function StatusCard({
-  title,
-  value,
-  icon,
-  color
-}: any) {
-
-  return (
-
-    <div className="rounded-[30px] bg-[#151515] p-5">
-
-      <div className="flex items-center justify-between">
-
-        <div>
-
-          <p className="text-sm text-gray-400">
-            {title}
-          </p>
-
-          <h2 className="mt-2 text-2xl font-black">
-            {value}
-          </h2>
-
-        </div>
-
-        <div
-          className={`flex h-14 w-14 items-center justify-center rounded-2xl ${color}`}
-        >
-
-          {icon}
-
-        </div>
 
       </div>
 
