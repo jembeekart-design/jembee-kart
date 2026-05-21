@@ -229,7 +229,7 @@ export default function APIPage() {
           }
           onChange={(value: string) =>
             updateField(
-              "WebhookUrl",
+              "webhookUrl",
               value
             )
           }
@@ -328,6 +328,13 @@ export default function APIPage() {
             ⚡ Version:
             {" "}
             {settings.apiVersion}
+          </p>
+
+          <p className="text-white/90">
+            🔄 Webhook:
+            {" "}
+            {settings.webhookUrl ||
+              "Not Configured"}
           </p>
 
           <p className="text-white/90">
