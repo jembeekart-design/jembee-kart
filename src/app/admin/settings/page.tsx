@@ -18,8 +18,8 @@ import {
   Mail,
   MapPin,
   Facebook,
-  InstagramIcon,
-  Play
+  Play,
+  Circle
 } from "lucide-react";
 
 import { db } from "@/firebase/config";
@@ -478,7 +478,7 @@ export default function SettingsPage() {
 
             <div className="flex h-12 w-12 items-center justify-center rounded-full bg-white/20">
 
-              <InstagramIcon size={20} />
+              <Circle size={20} />
 
             </div>
 
