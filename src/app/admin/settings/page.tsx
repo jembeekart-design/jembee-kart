@@ -17,8 +17,6 @@ import {
   Phone,
   Mail,
   MapPin,
-  Facebook,
-  Play,
   Circle
 } from "lucide-react";
 
@@ -472,7 +470,7 @@ export default function SettingsPage() {
 
             <div className="flex h-12 w-12 items-center justify-center rounded-full bg-white/20">
 
-              <Facebook size={20} />
+              <Circle size={20} />
 
             </div>
 
@@ -484,7 +482,7 @@ export default function SettingsPage() {
 
             <div className="flex h-12 w-12 items-center justify-center rounded-full bg-white/20">
 
-              <Play size={20} />
+              <Circle size={20} />
 
             </div>
 
