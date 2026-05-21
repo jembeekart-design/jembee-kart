@@ -19,7 +19,7 @@ import {
   MapPin,
   Facebook,
   Instagram,
-  Youtube
+  Play
 } from "lucide-react";
 
 import { db } from "@/firebase/config";
@@ -113,7 +113,7 @@ export default function SettingsPage() {
       );
 
       alert(
-        "Settings Saved"
+        "Settings Saved Successfully"
       );
 
     } catch (error) {
@@ -170,22 +170,24 @@ export default function SettingsPage() {
         <button
           onClick={saveSettings}
           disabled={saving}
-          className="flex items-center gap-2 rounded-2xl bg-violet-600 px-5 py-3 text-sm font-bold"
+          className="flex items-center gap-2 rounded-2xl bg-violet-600 px-5 py-3 text-sm font-bold text-white"
         >
 
           <Save size={18} />
 
-          Save Settings
+          {saving
+            ? "Saving..."
+            : "Save Settings"}
 
         </button>
 
       </div>
 
-      {/* SETTINGS CARD */}
+      {/* SETTINGS */}
 
       <div className="space-y-5">
 
-        {/* APP */}
+        {/* GENERAL */}
 
         <div className="rounded-[30px] border border-white/10 bg-[#151515] p-5">
 
@@ -398,7 +400,7 @@ export default function SettingsPage() {
 
               </div>
 
-              <p className="mt-2 text-sm">
+              <p className="mt-2 text-sm break-all">
                 {
                   settings.supportEmail
                 }
@@ -456,13 +458,15 @@ export default function SettingsPage() {
 
               </div>
 
-              <p className="mt-2 text-sm">
+              <p className="mt-2 text-sm break-all">
                 {settings.website}
               </p>
 
             </div>
 
           </div>
+
+          {/* SOCIAL ICONS */}
 
           <div className="mt-6 flex items-center gap-4">
 
@@ -480,7 +484,7 @@ export default function SettingsPage() {
 
             <div className="flex h-12 w-12 items-center justify-center rounded-full bg-white/20">
 
-              <Youtube size={20} />
+              <Play size={20} />
 
             </div>
 
@@ -522,7 +526,7 @@ function InputField({
             e.target.value
           )
         }
-        className="w-full rounded-2xl border border-white/10 bg-[#1e1e1e] px-4 py-3 outline-none"
+        className="w-full rounded-2xl border border-white/10 bg-[#1e1e1e] px-4 py-3 text-sm text-white outline-none"
       />
 
     </div>
