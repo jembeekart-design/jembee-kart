@@ -15,7 +15,6 @@ import {
   Save,
   Bell,
   Shield,
-  Download,
   Globe,
   RefreshCcw
 } from "lucide-react";
@@ -197,7 +196,7 @@ export default function MobileAppPage() {
         <InputCard
           title="App Name"
           value={settings.appName}
-          onChange={(value) =>
+          onChange={(value: string) =>
             updateField(
               "appName",
               value
@@ -210,7 +209,7 @@ export default function MobileAppPage() {
           value={
             settings.packageName
           }
-          onChange={(value) =>
+          onChange={(value: string) =>
             updateField(
               "packageName",
               value
@@ -221,7 +220,7 @@ export default function MobileAppPage() {
         <InputCard
           title="App Version"
           value={settings.version}
-          onChange={(value) =>
+          onChange={(value: string) =>
             updateField(
               "version",
               value
@@ -232,7 +231,7 @@ export default function MobileAppPage() {
         <InputCard
           title="Play Store Link"
           value={settings.appLink}
-          onChange={(value) =>
+          onChange={(value: string) =>
             updateField(
               "appLink",
               value
@@ -375,7 +374,13 @@ function InputCard({
   title,
   value,
   onChange
-}: any) {
+}: {
+  title: string;
+  value: string;
+  onChange: (
+    value: string
+  ) => void;
+}) {
 
   return (
 
@@ -407,7 +412,13 @@ function ToggleCard({
   icon,
   enabled,
   onClick
-}: any) {
+}: {
+  title: string;
+  description: string;
+  icon: React.ReactNode;
+  enabled: boolean;
+  onClick: () => void;
+}) {
 
   return (
 
@@ -426,3 +437,52 @@ function ToggleCard({
           <div>
 
             <h2 className="text-xl font-black">
+              {title}
+            </h2>
+
+            <p className="text-sm text-gray-400">
+              {description}
+            </p>
+
+          </div>
+
+        </div>
+
+        <button
+          onClick={onClick}
+          className={`rounded-full px-5 py-3 text-sm font-bold ${
+            enabled
+              ? "bg-green-500"
+              : "bg-red-500"
+          }`}
+        >
+
+          {enabled
+            ? "Enabled"
+            : "Disabled"}
+
+        </button>
+
+      </div>
+
+    </div>
+
+  );
+}
+
+function PreviewBadge({
+  title
+}: {
+  title: string;
+}) {
+
+  return (
+
+    <div className="rounded-full bg-white/20 px-5 py-3 text-sm font-bold backdrop-blur-lg">
+
+      {title}
+
+    </div>
+
+  );
+}
