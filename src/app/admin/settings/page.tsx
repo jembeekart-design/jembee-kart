@@ -18,7 +18,7 @@ import {
   Mail,
   MapPin,
   Facebook,
-  Instagram,
+  InstagramIcon,
   Play
 } from "lucide-react";
 
@@ -478,7 +478,7 @@ export default function SettingsPage() {
 
             <div className="flex h-12 w-12 items-center justify-center rounded-full bg-white/20">
 
-              <Instagram size={20} />
+              <InstagramIcon size={20} />
 
             </div>
 
