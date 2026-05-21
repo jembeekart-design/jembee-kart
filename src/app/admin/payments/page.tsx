@@ -17,8 +17,10 @@ export default function PaymentsPage() {
   const [cashfreeAppId, setCashfreeAppId] =
     useState("");
 
-  const [cashfreeSecretKey, setCashfreeSecretKey] =
-    useState("");
+  const [
+    cashfreeSecretKey,
+    setCashfreeSecretKey
+  ] = useState("");
 
   const [codEnabled, setCodEnabled] =
     useState(true);
@@ -26,8 +28,10 @@ export default function PaymentsPage() {
   const [upiEnabled, setUpiEnabled] =
     useState(true);
 
-  const [walletEnabled, setWalletEnabled] =
-    useState(true);
+  const [
+    walletEnabled,
+    setWalletEnabled
+  ] = useState(true);
 
   function saveSettings() {
 
@@ -68,7 +72,7 @@ export default function PaymentsPage() {
 
         <button
           onClick={saveSettings}
-          className="flex items-center gap-2 rounded-2xl bg-blue-600 px-5 py-3 text-sm font-bold"
+          className="flex items-center gap-2 rounded-2xl bg-blue-600 px-5 py-3 text-sm font-bold text-white"
         >
 
           <Save size={18} />
@@ -79,9 +83,11 @@ export default function PaymentsPage() {
 
       </div>
 
-      {/* CASHFREE APP ID */}
+      {/* SETTINGS */}
 
       <div className="space-y-5">
+
+        {/* CASHFREE APP ID */}
 
         <div className="rounded-[30px] bg-[#151515] p-5">
 
@@ -112,7 +118,7 @@ export default function PaymentsPage() {
 
         </div>
 
-        {/* CASHFREE SECRET KEY */}
+        {/* SECRET KEY */}
 
         <div className="rounded-[30px] bg-[#151515] p-5">
 
@@ -268,7 +274,7 @@ export default function PaymentsPage() {
 
       </div>
 
-      {/* LIVE PREVIEW */}
+      {/* PREVIEW */}
 
       <div className="mt-6 rounded-[30px] bg-gradient-to-r from-blue-600 to-cyan-500 p-6">
 
