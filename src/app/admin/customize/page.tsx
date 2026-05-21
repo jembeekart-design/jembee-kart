@@ -266,4 +266,223 @@ export default function CustomizePage() {
               className="text-violet-400"
             />
 
-            <h2 className="text-2xl
+            <h2 className="text-2xl font-black">
+              Primary Color
+            </h2>
+
+          </div>
+
+          <input
+            type="color"
+            value={settings.primaryColor}
+            onChange={(e) =>
+              updateField(
+                "primaryColor",
+                e.target.value
+              )
+            }
+            className="h-16 w-full rounded-2xl bg-transparent"
+          />
+
+        </div>
+
+        {/* SECONDARY COLOR */}
+
+        <div className="rounded-[30px] bg-[#151515] p-5">
+
+          <div className="mb-4 flex items-center gap-3">
+
+            <Palette
+              size={24}
+              className="text-fuchsia-400"
+            />
+
+            <h2 className="text-2xl font-black">
+              Secondary Color
+            </h2>
+
+          </div>
+
+          <input
+            type="color"
+            value={settings.secondaryColor}
+            onChange={(e) =>
+              updateField(
+                "secondaryColor",
+                e.target.value
+              )
+            }
+            className="h-16 w-full rounded-2xl bg-transparent"
+          />
+
+        </div>
+
+        {/* FONT */}
+
+        <div className="rounded-[30px] bg-[#151515] p-5">
+
+          <div className="mb-4 flex items-center gap-3">
+
+            <LayoutTemplate
+              size={24}
+              className="text-yellow-400"
+            />
+
+            <h2 className="text-2xl font-black">
+              Font Family
+            </h2>
+
+          </div>
+
+          <input
+            type="text"
+            value={settings.fontFamily}
+            onChange={(e) =>
+              updateField(
+                "fontFamily",
+                e.target.value
+              )
+            }
+            className="w-full rounded-2xl bg-black px-4 py-4 outline-none"
+          />
+
+        </div>
+
+        {/* RADIUS */}
+
+        <div className="rounded-[30px] bg-[#151515] p-5">
+
+          <div className="mb-4 flex items-center gap-3">
+
+            <MonitorSmartphone
+              size={24}
+              className="text-green-400"
+            />
+
+            <h2 className="text-2xl font-black">
+              Border Radius
+            </h2>
+
+          </div>
+
+          <input
+            type="number"
+            value={settings.borderRadius}
+            onChange={(e) =>
+              updateField(
+                "borderRadius",
+                e.target.value
+              )
+            }
+            className="w-full rounded-2xl bg-black px-4 py-4 outline-none"
+          />
+
+        </div>
+
+      </div>
+
+      {/* DARK MODE */}
+
+      <div className="mt-6 rounded-[30px] bg-[#151515] p-5">
+
+        <div className="flex items-center justify-between">
+
+          <div>
+
+            <h2 className="text-2xl font-black">
+              Dark Mode
+            </h2>
+
+            <p className="mt-2 text-sm text-gray-400">
+              Enable or disable dark UI mode
+            </p>
+
+          </div>
+
+          <button
+            onClick={() =>
+              updateField(
+                "darkMode",
+                !settings.darkMode
+              )
+            }
+            className={`rounded-full px-6 py-3 text-sm font-bold ${
+              settings.darkMode
+                ? "bg-green-500"
+                : "bg-red-500"
+            }`}
+          >
+
+            {settings.darkMode
+              ? "Enabled"
+              : "Disabled"}
+
+          </button>
+
+        </div>
+
+      </div>
+
+      {/* LIVE PREVIEW */}
+
+      <div
+        className="mt-6 rounded-[30px] p-6"
+        style={{
+          background: `linear-gradient(135deg, ${settings.primaryColor}, ${settings.secondaryColor})`
+        }}
+      >
+
+        <h2
+          className="text-4xl font-black"
+          style={{
+            fontFamily:
+              settings.fontFamily
+          }}
+        >
+
+          {settings.siteTitle}
+
+        </h2>
+
+        <p className="mt-2 text-white/80">
+          Live website customization preview
+        </p>
+
+        <div className="mt-6 flex gap-4">
+
+          <div
+            className="px-6 py-3 font-bold text-white"
+            style={{
+              borderRadius:
+                `${settings.borderRadius}px`,
+              background:
+                "rgba(255,255,255,0.15)"
+            }}
+          >
+
+            Primary Button
+
+          </div>
+
+          <div
+            className="px-6 py-3 font-bold text-white"
+            style={{
+              borderRadius:
+                `${settings.borderRadius}px`,
+              background:
+                "rgba(0,0,0,0.25)"
+            }}
+          >
+
+            Secondary Button
+
+          </div>
+
+        </div>
+
+      </div>
+
+    </main>
+
+  );
+}
