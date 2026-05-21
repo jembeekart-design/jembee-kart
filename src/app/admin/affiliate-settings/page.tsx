@@ -267,7 +267,7 @@ export default function AffiliateSettingsPage() {
 
       </div>
 
-      {/* COMMISSION INPUTS */}
+      {/* INPUTS */}
 
       <div className="mt-6 grid grid-cols-1 gap-5 md:grid-cols-2">
 
@@ -304,4 +304,217 @@ export default function AffiliateSettingsPage() {
           }
           onChange={(value: string) =>
             updateField(
-              "level3
+              "level3Commission",
+              value
+            )
+          }
+        />
+
+        <InputCard
+          title="Joining Bonus"
+          value={
+            settings.joiningBonus
+          }
+          onChange={(value: string) =>
+            updateField(
+              "joiningBonus",
+              value
+            )
+          }
+        />
+
+        <InputCard
+          title="Minimum Payout"
+          value={
+            settings.minimumPayout
+          }
+          onChange={(value: string) =>
+            updateField(
+              "minimumPayout",
+              value
+            )
+          }
+        />
+
+      </div>
+
+      {/* STATUS */}
+
+      <div className="mt-6 rounded-[30px] bg-gradient-to-r from-orange-500 to-red-500 p-6">
+
+        <div className="flex items-center gap-3">
+
+          <Percent size={28} />
+
+          <h2 className="text-3xl font-black">
+            Commission Status
+          </h2>
+
+        </div>
+
+        <div className="mt-6 grid grid-cols-1 gap-4 md:grid-cols-3">
+
+          <StatusCard
+            title="Level 1"
+            value={`${settings.level1Commission}%`}
+          />
+
+          <StatusCard
+            title="Level 2"
+            value={`${settings.level2Commission}%`}
+          />
+
+          <StatusCard
+            title="Level 3"
+            value={`${settings.level3Commission}%`}
+          />
+
+          <StatusCard
+            title="Joining Bonus"
+            value={`₹${settings.joiningBonus}`}
+          />
+
+          <StatusCard
+            title="Minimum Payout"
+            value={`₹${settings.minimumPayout}`}
+          />
+
+        </div>
+
+      </div>
+
+    </main>
+
+  );
+}
+
+function InputCard({
+  title,
+  value,
+  onChange
+}: {
+  title: string;
+  value: string;
+  onChange: (
+    value: string
+  ) => void;
+}) {
+
+  return (
+
+    <div className="rounded-[30px] bg-[#151515] p-5">
+
+      <div className="mb-4 flex items-center gap-3">
+
+        <Percent size={22} />
+
+        <h2 className="text-2xl font-black">
+          {title}
+        </h2>
+
+      </div>
+
+      <input
+        type="text"
+        value={value}
+        onChange={(e) =>
+          onChange(
+            e.target.value
+          )
+        }
+        className="w-full rounded-2xl bg-black px-4 py-4 outline-none"
+      />
+
+    </div>
+
+  );
+}
+
+function ToggleCard({
+  title,
+  description,
+  icon,
+  enabled,
+  onClick
+}: {
+  title: string;
+  description: string;
+  icon: React.ReactNode;
+  enabled: boolean;
+  onClick: () => void;
+}) {
+
+  return (
+
+    <div className="rounded-[30px] bg-[#151515] p-5">
+
+      <div className="flex items-center justify-between">
+
+        <div className="flex items-center gap-3">
+
+          <div className="flex h-14 w-14 items-center justify-center rounded-2xl bg-black">
+
+            {icon}
+
+          </div>
+
+          <div>
+
+            <h2 className="text-xl font-black">
+              {title}
+            </h2>
+
+            <p className="text-sm text-gray-400">
+              {description}
+            </p>
+
+          </div>
+
+        </div>
+
+        <button
+          onClick={onClick}
+          className={`rounded-full px-5 py-3 text-sm font-bold ${
+            enabled
+              ? "bg-green-500"
+              : "bg-red-500"
+          }`}
+        >
+
+          {enabled
+            ? "Enabled"
+            : "Disabled"}
+
+        </button>
+
+      </div>
+
+    </div>
+
+  );
+}
+
+function StatusCard({
+  title,
+  value
+}: {
+  title: string;
+  value: string;
+}) {
+
+  return (
+
+    <div className="rounded-2xl bg-white/10 p-4">
+
+      <p className="text-sm text-white/70">
+        {title}
+      </p>
+
+      <h3 className="mt-2 text-2xl font-black">
+        {value}
+      </h3>
+
+    </div>
+
+  );
+}
