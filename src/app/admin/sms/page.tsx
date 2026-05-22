@@ -122,7 +122,7 @@ export default function SMSPage() {
 
   function updateField(
     field: keyof SMSSettings,
-    value: any
+    value: string | boolean
   ) {
 
     setSettings((prev) => ({
@@ -220,7 +220,7 @@ export default function SMSPage() {
           value={
             settings.smsProvider
           }
-          onChange={(value) =>
+          onChange={(value: string) =>
             updateField(
               "smsProvider",
               value
@@ -233,7 +233,7 @@ export default function SMSPage() {
           value={
             settings.senderId
           }
-          onChange={(value) =>
+          onChange={(value: string) =>
             updateField(
               "senderId",
               value
@@ -246,7 +246,7 @@ export default function SMSPage() {
           value={
             settings.apiKey
           }
-          onChange={(value) =>
+          onChange={(value: string) =>
             updateField(
               "apiKey",
               value
@@ -259,7 +259,7 @@ export default function SMSPage() {
           value={
             settings.testPhone
           }
-          onChange={(value) =>
+          onChange={(value: string) =>
             updateField(
               "testPhone",
               value
@@ -343,7 +343,7 @@ export default function SMSPage() {
 
       </div>
 
-      {/* TEST */}
+      {/* TEST SECTION */}
 
       <div className="mt-6 rounded-[30px] bg-gradient-to-r from-sky-500 to-cyan-500 p-6">
 
@@ -357,7 +357,7 @@ export default function SMSPage() {
 
         <button
           onClick={sendTestSMS}
-          className="mt-6 flex items-center gap-2 rounded-2xl bg-black px-5 py-4 font-bold"
+          className="mt-6 flex items-center gap-2 rounded-2xl bg-black px-5 py-4 font-bold text-white"
         >
 
           <Send size={18} />
@@ -377,7 +377,13 @@ function InputCard({
   title,
   value,
   onChange
-}: any) {
+}: {
+  title: string;
+  value: string;
+  onChange: (
+    value: string
+  ) => void;
+}) {
 
   return (
 
@@ -409,7 +415,13 @@ function ToggleCard({
   enabled,
   icon,
   onClick
-}: any) {
+}: {
+  title: string;
+  description: string;
+  enabled: boolean;
+  icon: React.ReactNode;
+  onClick: () => void;
+}) {
 
   return (
 
@@ -444,7 +456,7 @@ function ToggleCard({
           className={`rounded-full px-5 py-3 text-sm font-bold ${
             enabled
               ? "bg-green-500 text-black"
-              : "bg-red-500"
+              : "bg-red-500 text-white"
           }`}
         >
 
