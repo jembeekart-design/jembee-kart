@@ -75,7 +75,8 @@ import {
   Wallet,
   WalletCards,
   Wand2,
-  Zap
+  Zap,
+  Share2
 } from "lucide-react";
 
 const pages = [
