@@ -132,6 +132,7 @@ export default function MembershipPage() {
       ...prev,
       [field]: value
     }));
+
   }
 
   if (loading) {
@@ -383,3 +384,131 @@ export default function MembershipPage() {
       </div>
 
     </main>
+
+  );
+}
+
+function InputCard({
+  title,
+  value,
+  onChange
+}: {
+  title: string;
+  value: string;
+  onChange: (
+    value: string
+  ) => void;
+}) {
+
+  return (
+
+    <div className="rounded-[30px] bg-[#151515] p-5">
+
+      <h2 className="mb-4 text-2xl font-black">
+        {title}
+      </h2>
+
+      <input
+        type="text"
+        value={value}
+        onChange={(e) =>
+          onChange(
+            e.target.value
+          )
+        }
+        className="w-full rounded-2xl bg-black px-4 py-4 outline-none"
+      />
+
+    </div>
+
+  );
+}
+
+function ToggleCard({
+  title,
+  description,
+  icon,
+  enabled,
+  onClick
+}: {
+  title: string;
+  description: string;
+  icon: React.ReactNode;
+  enabled: boolean;
+  onClick: () => void;
+}) {
+
+  return (
+
+    <div className="rounded-[30px] bg-[#151515] p-5">
+
+      <div className="flex items-center justify-between">
+
+        <div className="flex items-center gap-3">
+
+          <div className="flex h-14 w-14 items-center justify-center rounded-2xl bg-black">
+
+            {icon}
+
+          </div>
+
+          <div>
+
+            <h2 className="text-xl font-black">
+              {title}
+            </h2>
+
+            <p className="text-sm text-gray-400">
+              {description}
+            </p>
+
+          </div>
+
+        </div>
+
+        <button
+          onClick={onClick}
+          className={`rounded-full px-5 py-3 text-sm font-bold ${
+            enabled
+              ? "bg-green-500"
+              : "bg-red-500"
+          }`}
+        >
+
+          {enabled
+            ? "Enabled"
+            : "Disabled"}
+
+        </button>
+
+      </div>
+
+    </div>
+
+  );
+}
+
+function StatusCard({
+  title,
+  value
+}: {
+  title: string;
+  value: string;
+}) {
+
+  return (
+
+    <div className="rounded-2xl bg-white/10 p-4">
+
+      <p className="text-sm text-black/70">
+        {title}
+      </p>
+
+      <h3 className="mt-2 text-2xl font-black text-black">
+        {value}
+      </h3>
+
+    </div>
+
+  );
+}
