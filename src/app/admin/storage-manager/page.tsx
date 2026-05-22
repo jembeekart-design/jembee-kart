@@ -335,4 +335,48 @@ export default function StorageManagerPage() {
 
       {/* STATUS */}
 
-      <div className="
+<div className="mt-6 rounded-[30px] bg-gradient-to-r from-cyan-500 to-blue-500 p-6">
+
+  <div className="flex items-center gap-3">
+
+    <ShieldCheck size={28} />
+
+    <h2 className="text-3xl font-black text-black">
+      Storage Status
+    </h2>
+
+  </div>
+
+  <div className="mt-6 grid grid-cols-1 gap-4 md:grid-cols-2">
+
+    <StatusCard
+      title="Cloud Storage"
+      value={
+        settings.cloudStorage
+          ? "Enabled"
+          : "Disabled"
+      }
+    />
+
+    <StatusCard
+      title="Max File Size"
+      value={`${settings.maxFileSize} MB`}
+    />
+
+    <StatusCard
+      title="Storage Limit"
+      value={`${settings.storageLimit} GB`}
+    />
+
+    <StatusCard
+      title="Auto Cleanup"
+      value={
+        settings.autoCleanup
+          ? "Enabled"
+          : "Disabled"
+      }
+    />
+
+  </div>
+
+</div>
