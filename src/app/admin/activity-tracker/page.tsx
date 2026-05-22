@@ -315,3 +315,36 @@ export default function ActivityTrackerPage() {
 
   );
 }
+
+function StatCard({
+  title,
+  value,
+  icon
+}: {
+  title: string;
+  value: string;
+  icon: React.ReactNode;
+}) {
+
+  return (
+
+    <div className="rounded-[28px] border border-white/10 bg-[#151515] p-5">
+
+      <div className="flex h-14 w-14 items-center justify-center rounded-2xl bg-pink-500 text-black">
+
+        {icon}
+
+      </div>
+
+      <p className="mt-4 text-sm text-gray-400">
+        {title}
+      </p>
+
+      <h2 className="mt-2 text-3xl font-black">
+        {value}
+      </h2>
+
+    </div>
+
+  );
+}
