@@ -321,4 +321,193 @@ export default function RewardsPage() {
           }
           onChange={(value: string) =>
             updateField(
-              "referral
+              "referralRewardPoints",
+              value
+            )
+          }
+        />
+
+        <InputCard
+          title="VIP Minimum Points"
+          value={
+            settings.vipMinimumPoints
+          }
+          onChange={(value: string) =>
+            updateField(
+              "vipMinimumPoints",
+              value
+            )
+          }
+        />
+
+      </div>
+
+      {/* STATUS */}
+
+      <div className="mt-6 rounded-[30px] bg-gradient-to-r from-pink-500 to-purple-500 p-6">
+
+        <div className="flex items-center gap-3">
+
+          <ShieldCheck size={28} />
+
+          <h2 className="text-3xl font-black">
+            Reward Status
+          </h2>
+
+        </div>
+
+        <div className="mt-6 grid grid-cols-1 gap-4 md:grid-cols-2">
+
+          <StatusCard
+            title="Signup Bonus"
+            value={`${settings.signupReward} Points`}
+          />
+
+          <StatusCard
+            title="Daily Reward"
+            value={`${settings.dailyRewardPoints} Points`}
+          />
+
+          <StatusCard
+            title="Referral Reward"
+            value={`${settings.referralRewardPoints} Points`}
+          />
+
+          <StatusCard
+            title="VIP Requirement"
+            value={`${settings.vipMinimumPoints} Points`}
+          />
+
+        </div>
+
+      </div>
+
+    </main>
+
+  );
+}
+
+function InputCard({
+  title,
+  value,
+  onChange
+}: {
+  title: string;
+  value: string;
+  onChange: (
+    value: string
+  ) => void;
+}) {
+
+  return (
+
+    <div className="rounded-[30px] bg-[#151515] p-5">
+
+      <h2 className="mb-4 text-2xl font-black">
+        {title}
+      </h2>
+
+      <input
+        type="text"
+        value={value}
+        onChange={(e) =>
+          onChange(
+            e.target.value
+          )
+        }
+        className="w-full rounded-2xl bg-black px-4 py-4 outline-none"
+      />
+
+    </div>
+
+  );
+}
+
+function ToggleCard({
+  title,
+  description,
+  icon,
+  enabled,
+  onClick
+}: {
+  title: string;
+  description: string;
+  icon: React.ReactNode;
+  enabled: boolean;
+  onClick: () => void;
+}) {
+
+  return (
+
+    <div className="rounded-[30px] bg-[#151515] p-5">
+
+      <div className="flex items-center justify-between">
+
+        <div className="flex items-center gap-3">
+
+          <div className="flex h-14 w-14 items-center justify-center rounded-2xl bg-black">
+
+            {icon}
+
+          </div>
+
+          <div>
+
+            <h2 className="text-xl font-black">
+              {title}
+            </h2>
+
+            <p className="text-sm text-gray-400">
+              {description}
+            </p>
+
+          </div>
+
+        </div>
+
+        <button
+          onClick={onClick}
+          className={`rounded-full px-5 py-3 text-sm font-bold ${
+            enabled
+              ? "bg-green-500"
+              : "bg-red-500"
+          }`}
+        >
+
+          {enabled
+            ? "Enabled"
+            : "Disabled"}
+
+        </button>
+
+      </div>
+
+    </div>
+
+  );
+}
+
+function StatusCard({
+  title,
+  value
+}: {
+  title: string;
+  value: string;
+}) {
+
+  return (
+
+    <div className="rounded-2xl bg-white/10 p-4">
+
+      <p className="text-sm text-white/70">
+        {title}
+      </p>
+
+      <h3 className="mt-2 text-2xl font-black">
+        {value}
+      </h3>
+
+    </div>
+
+  );
+}
