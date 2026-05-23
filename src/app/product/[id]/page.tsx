@@ -1074,8 +1074,10 @@ const [touchEnd, setTouchEnd] =
     disabled: true
   }}
   panning={{
-    disabled: true
+    disabled: false
   }}
+        wheel={{
+    disabled: true
 >
 
         <TransformComponent>
