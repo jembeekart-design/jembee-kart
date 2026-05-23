@@ -990,7 +990,7 @@ const [touchEnd, setTouchEnd] =
       </div>
       {showZoom && (
 
-  <div className="fixed inset-0 z-[999] bg-black">
+  <div className="fixed inset-0 z-[999] bg-white/95 backdrop-blur-sm">
 
     <button
       onClick={() =>
