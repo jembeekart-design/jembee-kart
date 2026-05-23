@@ -176,7 +176,7 @@ export default function HomepageSlider() {
           }
         );
 
-      }, 5000);
+      }, 4500);
 
     return () =>
       clearInterval(
@@ -245,7 +245,7 @@ export default function HomepageSlider() {
 
     return (
 
-      <div className="h-[140px] animate-pulse bg-gray-200 md:h-[280px]" />
+      <div className="h-[135px] animate-pulse rounded-b-[24px] bg-gray-200 md:h-[260px]" />
 
     );
 
@@ -280,7 +280,7 @@ export default function HomepageSlider() {
       {...swipeHandlers}
     >
 
-      <div className="relative w-full overflow-hidden shadow-2xl">
+      <div className="relative w-full overflow-hidden shadow-xl">
 
         {/* SLIDER */}
 
@@ -308,14 +308,14 @@ export default function HomepageSlider() {
                     className="
                       relative
                       flex
-                      min-h-[190px]
+                      min-h-[145px]
                       w-full
                       items-center
                       overflow-hidden
                       px-4
-                      py-5
+                      py-4
 
-                      md:min-h-[550px]
+                      md:min-h-[300px]
                       md:px-16
                     "
                     style={{
@@ -357,6 +357,7 @@ export default function HomepageSlider() {
                           className="
                             object-cover
                             object-center
+                            opacity-90
 
                             md:object-contain
                             md:object-right-bottom
@@ -392,7 +393,7 @@ export default function HomepageSlider() {
 
                     {/* OVERLAY */}
 
-                    <div className="absolute inset-0 bg-black/30" />
+                    <div className="absolute inset-0 bg-black/20" />
 
                     {/* CONTENT */}
 
@@ -405,20 +406,20 @@ export default function HomepageSlider() {
                         {slide.badge && (
 
                           <div className="
-                            mb-4
+                            mb-2
                             inline-flex
                             rounded-full
                             bg-white/20
-                            px-4
-                            py-2
-                            text-[10px]
+                            px-3
+                            py-1
+                            text-[8px]
                             font-black
                             uppercase
                             tracking-widest
                             text-white
                             backdrop-blur-xl
 
-                            md:text-sm
+                            md:text-xs
                           ">
 
                             {slide.badge}
@@ -431,11 +432,11 @@ export default function HomepageSlider() {
 
                         <h2
                           className="
-                            text-[26px]
+                            text-[18px]
                             font-black
                             leading-[1.05]
 
-                            md:text-7xl
+                            md:text-5xl
                           "
                           style={{
                             color:
@@ -452,14 +453,14 @@ export default function HomepageSlider() {
 
                         <p
                           className="
-                            mt-3
-                            text-[12px]
+                            mt-2
+                            text-[10px]
                             font-medium
-                            leading-5
+                            leading-4
 
-                            md:mt-6
-                            md:text-2xl
-                            md:leading-10
+                            md:mt-5
+                            md:text-xl
+                            md:leading-8
                           "
                           style={{
                             color:
@@ -474,7 +475,7 @@ export default function HomepageSlider() {
 
                         {/* BUTTON */}
 
-                        <div className="mt-5 md:mt-8">
+                        <div className="mt-3 md:mt-7">
 
                           <Link
                             href={
@@ -485,19 +486,19 @@ export default function HomepageSlider() {
 
                             <button
                               className="
-                                rounded-2xl
-                                px-5
-                                py-3
-                                text-[11px]
+                                rounded-xl
+                                px-3
+                                py-1.5
+                                text-[10px]
                                 font-black
-                                shadow-2xl
+                                shadow-xl
                                 transition-all
                                 duration-300
                                 hover:scale-105
 
-                                md:px-10
-                                md:py-5
-                                md:text-lg
+                                md:px-8
+                                md:py-4
+                                md:text-base
                               "
                               style={{
 
@@ -543,12 +544,12 @@ export default function HomepageSlider() {
           }
           className="
             absolute
-            left-3
+            left-2
             top-1/2
             z-20
             flex
-            h-10
-            w-10
+            h-8
+            w-8
             -translate-y-1/2
             items-center
             justify-center
@@ -558,14 +559,13 @@ export default function HomepageSlider() {
             backdrop-blur-xl
             transition-all
             duration-300
-            hover:scale-110
 
-            md:h-14
-            md:w-14
+            md:h-12
+            md:w-12
           "
         >
 
-          <ChevronLeft size={26} />
+          <ChevronLeft size={20} />
 
         </button>
 
@@ -577,12 +577,12 @@ export default function HomepageSlider() {
           }
           className="
             absolute
-            right-3
+            right-2
             top-1/2
             z-20
             flex
-            h-10
-            w-10
+            h-8
+            w-8
             -translate-y-1/2
             items-center
             justify-center
@@ -592,14 +592,13 @@ export default function HomepageSlider() {
             backdrop-blur-xl
             transition-all
             duration-300
-            hover:scale-110
 
-            md:h-14
-            md:w-14
+            md:h-12
+            md:w-12
           "
         >
 
-          <ChevronRight size={26} />
+          <ChevronRight size={20} />
 
         </button>
 
@@ -608,14 +607,14 @@ export default function HomepageSlider() {
         <div
           className="
             absolute
-            bottom-4
+            bottom-2
             left-1/2
             z-20
             flex
             -translate-x-1/2
             gap-2
 
-            md:bottom-8
+            md:bottom-6
           "
         >
 
@@ -637,7 +636,7 @@ export default function HomepageSlider() {
                   className={`rounded-full transition-all duration-300 ${
                     current ===
                     index
-                      ? "h-2 w-8 bg-white md:h-3 md:w-12"
+                      ? "h-2 w-6 bg-white md:h-3 md:w-10"
                       : "h-2 w-2 bg-white/50 md:h-3 md:w-3"
                   }`}
                 />
