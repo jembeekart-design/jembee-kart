@@ -245,7 +245,7 @@ export default function HomepageSlider() {
 
     return (
 
-      <div className="h-[170px] animate-pulse bg-gray-200 md:h-[320px]" />
+      <div className="h-[140px] animate-pulse bg-gray-200 md:h-[280px]" />
 
     );
 
