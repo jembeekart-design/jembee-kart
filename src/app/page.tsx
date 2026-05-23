@@ -27,6 +27,8 @@ import BottomNavbar from "@/components/navigation/BottomNavbar";
 
 import WhatsAppButton from "@/components/navigation/WhatsAppButton";
 
+import IntroVideo from "@/components/IntroVideo";
+
 interface HomepageSection {
 
   id: string;
@@ -199,121 +201,131 @@ export default function HomePage() {
 
   return (
 
-    <main
-      className="
-        min-h-screen
-        w-full
-        overflow-x-hidden
-        bg-[#f3f4f6]
-        pt-[115px]
+    <>
 
-        md:pt-[150px]
-      "
-    >
+      {/* ======================================================
+      INTRO VIDEO
+      ====================================================== */}
 
-      <div className="w-full overflow-x-hidden">
+      <IntroVideo />
 
-        {/* ======================================================
-        HEADER
-        ====================================================== */}
+      <main
+        className="
+          min-h-screen
+          w-full
+          overflow-x-hidden
+          bg-[#f3f4f6]
+          pt-[115px]
 
-        <Header
-          headerBackgroundColor={
-            headerSection?.headerBackgroundColor
-          }
-          headerTextColor={
-            headerSection?.headerTextColor
-          }
-          searchBarColor={
-            headerSection?.searchBarColor
-          }
-          statusBarColor={
-            headerSection?.statusBarColor
-          }
-        />
+          md:pt-[150px]
+        "
+      >
 
-        {/* ======================================================
-        PAGE CONTENT
-        ====================================================== */}
-
-        <div className="w-full overflow-x-hidden pb-32">
+        <div className="w-full overflow-x-hidden">
 
           {/* ======================================================
-          HERO SLIDER
+          HEADER
           ====================================================== */}
 
-          <HomepageSlider />
+          <Header
+            headerBackgroundColor={
+              headerSection?.headerBackgroundColor
+            }
+            headerTextColor={
+              headerSection?.headerTextColor
+            }
+            searchBarColor={
+              headerSection?.searchBarColor
+            }
+            statusBarColor={
+              headerSection?.statusBarColor
+            }
+          />
 
           {/* ======================================================
-          CATEGORY SECTION
+          PAGE CONTENT
           ====================================================== */}
 
-          <CategorySection />
+          <div className="w-full overflow-x-hidden pb-32">
 
-          {/* ======================================================
-          PRODUCT SECTION
-          ====================================================== */}
+            {/* ======================================================
+            HERO SLIDER
+            ====================================================== */}
 
-          <ProductSection />
+            <HomepageSlider />
 
-          {/* ======================================================
-          DYNAMIC OTHER SECTIONS
-          ====================================================== */}
+            {/* ======================================================
+            CATEGORY SECTION
+            ====================================================== */}
 
-          {sections.map(
-            (section) => {
+            <CategorySection />
 
-              if (
-                section.sectionType ===
-                  "category" ||
-                section.sectionType ===
-                  "products"
-              ) {
+            {/* ======================================================
+            PRODUCT SECTION
+            ====================================================== */}
 
-                return null;
+            <ProductSection />
+
+            {/* ======================================================
+            DYNAMIC OTHER SECTIONS
+            ====================================================== */}
+
+            {sections.map(
+              (section) => {
+
+                if (
+                  section.sectionType ===
+                    "category" ||
+                  section.sectionType ===
+                    "products"
+                ) {
+
+                  return null;
+
+                }
+
+                return (
+
+                  <div
+                    key={
+                      section.id
+                    }
+                    className="
+                      w-full
+                      overflow-hidden
+                    "
+                  >
+
+                    {renderSection(
+                      section
+                    )}
+
+                  </div>
+
+                );
 
               }
+            )}
 
-              return (
+          </div>
 
-                <div
-                  key={
-                    section.id
-                  }
-                  className="
-                    w-full
-                    overflow-hidden
-                  "
-                >
+          {/* ======================================================
+          FLOATING WHATSAPP
+          ====================================================== */}
 
-                  {renderSection(
-                    section
-                  )}
+          <WhatsAppButton />
 
-                </div>
+          {/* ======================================================
+          BOTTOM NAVIGATION
+          ====================================================== */}
 
-              );
-
-            }
-          )}
+          <BottomNavbar />
 
         </div>
 
-        {/* ======================================================
-        FLOATING WHATSAPP
-        ====================================================== */}
+      </main>
 
-        <WhatsAppButton />
-
-        {/* ======================================================
-        BOTTOM NAVIGATION
-        ====================================================== */}
-
-        <BottomNavbar />
-
-      </div>
-
-    </main>
+    </>
 
   );
 
