@@ -30,6 +30,11 @@ import {
   Zap
 } from "lucide-react";
 
+import {
+  TransformWrapper,
+  TransformComponent
+} from "react-zoom-pan-pinch";
+
 import { db } from "@/firebase/config";
 
 interface Product {
@@ -77,6 +82,14 @@ export default function ProductPage() {
 
   const [wishlist, setWishlist] =
     useState(false);
+  const [showZoom, setShowZoom] =
+  useState(false);
+
+const [touchStart, setTouchStart] =
+  useState(0);
+
+const [touchEnd, setTouchEnd] =
+  useState(0);
 
   useEffect(() => {
 
