@@ -1161,7 +1161,6 @@ const [touchEnd, setTouchEnd] =
 
 )}
 
-</TransformWrapper>
 
     </div>
 
