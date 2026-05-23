@@ -316,14 +316,72 @@ const [touchEnd, setTouchEnd] =
 
           <div className="relative overflow-hidden rounded-[18px]">
 
-            <img
-              src={
-                images[currentImage] ||
-                "/placeholder.png"
-              }
-              alt={product.title}
-              className="h-[240px] w-full rounded-[18px] bg-gray-100 object-cover"
-            />
+<img
+  src={
+    images[currentImage] ||
+    "/placeholder.png"
+  }
+  alt={product.title}
+
+  onClick={() =>
+    setShowZoom(true)
+  }
+
+  onTouchStart={(e) =>
+    setTouchStart(
+      e.targetTouches[0].clientX
+    )
+  }
+
+  onTouchMove={(e) =>
+    setTouchEnd(
+      e.targetTouches[0].clientX
+    )
+  }
+
+  onTouchEnd={() => {
+
+    if (
+      touchStart - touchEnd >
+      50
+    ) {
+
+      if (
+        currentImage <
+        images.length - 1
+      ) {
+
+        setCurrentImage(
+          currentImage + 1
+        );
+      }
+    }
+
+    if (
+      touchEnd - touchStart >
+      50
+    ) {
+
+      if (
+        currentImage > 0
+      ) {
+
+        setCurrentImage(
+          currentImage - 1
+        );
+      }
+    }
+  }}
+
+  className="
+    h-[240px]
+    w-full
+    rounded-[18px]
+    bg-gray-100
+    object-cover
+    cursor-zoom-in
+  "
+/>
 
             <div className="absolute left-2 top-2 rounded-lg bg-red-500 px-2.5 py-1 text-[10px] font-bold text-white">
 
