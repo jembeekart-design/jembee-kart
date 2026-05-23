@@ -988,6 +988,56 @@ const [touchEnd, setTouchEnd] =
         </div>
 
       </div>
+      {showZoom && (
+
+  <div className="fixed inset-0 z-[999] bg-black">
+
+    <button
+      onClick={() =>
+        setShowZoom(false)
+      }
+      className="
+        absolute
+        right-4
+        top-4
+        z-50
+        rounded-full
+        bg-white
+        p-2
+      "
+    >
+
+      ✕
+
+    </button>
+
+    <div className="flex h-full items-center justify-center">
+
+      <TransformWrapper>
+
+        <TransformComponent>
+
+          <img
+            src={
+              images[currentImage]
+            }
+            alt="zoom"
+            className="
+              max-h-screen
+              w-full
+              object-contain
+            "
+          />
+
+        </TransformComponent>
+
+      </TransformWrapper>
+
+    </div>
+
+  </div>
+
+)}
 
     </main>
   );
