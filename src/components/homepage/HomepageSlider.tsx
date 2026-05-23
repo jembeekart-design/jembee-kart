@@ -14,6 +14,15 @@ import {
   onSnapshot
 } from "firebase/firestore";
 
+import {
+  ChevronLeft,
+  ChevronRight
+} from "lucide-react";
+
+import {
+  useSwipeable
+} from "react-swipeable";
+
 import { db } from "@/firebase/config";
 
 /* ======================================================
@@ -21,6 +30,7 @@ TYPES
 ====================================================== */
 
 interface Slide {
+
   id: string;
 
   title?: string;
@@ -50,6 +60,9 @@ interface Slide {
   visible?: boolean;
 
   position?: number;
+
+  badge?: string;
+
 }
 
 /* ======================================================
@@ -57,17 +70,25 @@ COMPONENT
 ====================================================== */
 
 export default function HomepageSlider() {
+
   const [slides, setSlides] =
     useState<Slide[]>([]);
 
   const [current, setCurrent] =
     useState(0);
 
+  const [loading, setLoading] =
+    useState(true);
+
+  const [paused, setPaused] =
+    useState(false);
+
   /* ======================================================
   GET SLIDES
   ====================================================== */
 
   useEffect(() => {
+
     const unsubscribe =
       onSnapshot(
         collection(
@@ -75,17 +96,23 @@ export default function HomepageSlider() {
           "homepage_banners"
         ),
         (snapshot) => {
+
           const data =
             snapshot.docs.map(
               (document) => {
+
                 return {
-                  id: document.id,
+
+                  id:
+                    document.id,
 
                   ...(document.data() as Omit<
                     Slide,
                     "id"
                   >)
+
                 };
+
               }
             );
 
@@ -97,6 +124,7 @@ export default function HomepageSlider() {
               )
               .sort(
                 (a, b) => {
+
                   return (
                     Number(
                       a.position || 0
@@ -105,14 +133,20 @@ export default function HomepageSlider() {
                       b.position || 0
                     )
                   );
+
                 }
               );
 
           setSlides(filtered);
+
+          setLoading(false);
+
         }
       );
 
-    return () => unsubscribe();
+    return () =>
+      unsubscribe();
+
   }, []);
 
   /* ======================================================
@@ -120,27 +154,102 @@ export default function HomepageSlider() {
   ====================================================== */
 
   useEffect(() => {
+
     if (
-      slides.length <= 1
+      slides.length <= 1 ||
+      paused
     ) {
       return;
     }
 
     const interval =
       setInterval(() => {
+
         setCurrent(
           (previous) => {
+
             return (
               (previous + 1) %
               slides.length
             );
+
           }
         );
+
       }, 5000);
 
     return () =>
-      clearInterval(interval);
-  }, [slides]);
+      clearInterval(
+        interval
+      );
+
+  }, [slides, paused]);
+
+  /* ======================================================
+  FUNCTIONS
+  ====================================================== */
+
+  function nextSlide() {
+
+    setCurrent(
+      (previous) => {
+
+        return (
+          (previous + 1) %
+          slides.length
+        );
+
+      }
+    );
+
+  }
+
+  function previousSlide() {
+
+    setCurrent(
+      (previous) => {
+
+        return previous === 0
+          ? slides.length - 1
+          : previous - 1;
+
+      }
+    );
+
+  }
+
+  /* ======================================================
+  SWIPE
+  ====================================================== */
+
+  const swipeHandlers =
+    useSwipeable({
+
+      onSwipedLeft() {
+        nextSlide();
+      },
+
+      onSwipedRight() {
+        previousSlide();
+      },
+
+      trackMouse: true
+
+    });
+
+  /* ======================================================
+  LOADING
+  ====================================================== */
+
+  if (loading) {
+
+    return (
+
+      <div className="h-[170px] animate-pulse bg-gray-200 md:h-[320px]" />
+
+    );
+
+  }
 
   /* ======================================================
   EMPTY
@@ -149,7 +258,9 @@ export default function HomepageSlider() {
   if (
     slides.length === 0
   ) {
+
     return null;
+
   }
 
   /* ======================================================
@@ -157,22 +268,37 @@ export default function HomepageSlider() {
   ====================================================== */
 
   return (
-    <section className="w-full overflow-hidden">
 
-      <div className="relative w-full overflow-hidden shadow-xl">
+    <section
+      className="w-full overflow-hidden"
+      onMouseEnter={() => {
+        setPaused(true);
+      }}
+      onMouseLeave={() => {
+        setPaused(false);
+      }}
+      {...swipeHandlers}
+    >
+
+      <div className="relative w-full overflow-hidden shadow-2xl">
 
         {/* SLIDER */}
 
         <div
-          className="flex transition-all duration-700"
+          className="flex transition-all duration-700 ease-in-out"
           style={{
             transform: `translateX(-${current * 100}%)`
           }}
         >
 
           {slides.map(
-            (slide) => {
+            (
+              slide,
+              index
+            ) => {
+
               return (
+
                 <div
                   key={slide.id}
                   className="min-w-full"
@@ -182,17 +308,18 @@ export default function HomepageSlider() {
                     className="
                       relative
                       flex
-                      min-h-[170px]
+                      min-h-[190px]
                       w-full
                       items-center
                       overflow-hidden
                       px-4
-                      py-4
+                      py-5
 
-                      md:min-h-[320px]
-                      md:px-12
+                      md:min-h-[550px]
+                      md:px-16
                     "
                     style={{
+
                       background: `linear-gradient(
                         135deg,
                         ${
@@ -204,6 +331,7 @@ export default function HomepageSlider() {
                           "#7c3aed"
                         }
                       )`
+
                     }}
                   >
 
@@ -212,6 +340,7 @@ export default function HomepageSlider() {
                     {slide.mediaType ===
                       "image" &&
                       slide.imageUrl && (
+
                         <Image
                           src={
                             slide.imageUrl
@@ -221,13 +350,19 @@ export default function HomepageSlider() {
                             "Banner"
                           }
                           fill
-                          priority
+                          priority={
+                            current ===
+                            index
+                          }
                           className="
-                            object-contain
-                            object-right-bottom
-                            opacity-100
+                            object-cover
+                            object-center
+
+                            md:object-contain
+                            md:object-right-bottom
                           "
                         />
+
                       )}
 
                     {/* VIDEO */}
@@ -235,6 +370,7 @@ export default function HomepageSlider() {
                     {slide.mediaType ===
                       "video" &&
                       slide.videoUrl && (
+
                         <video
                           src={
                             slide.videoUrl
@@ -251,29 +387,55 @@ export default function HomepageSlider() {
                             object-cover
                           "
                         />
+
                       )}
 
                     {/* OVERLAY */}
 
-                    <div className="absolute inset-0 bg-black/10" />
+                    <div className="absolute inset-0 bg-black/30" />
 
                     {/* CONTENT */}
 
                     <div className="relative z-10 flex w-full items-center">
 
-                      {/* LEFT */}
+                      <div className="max-w-[58%]">
 
-                      <div className="max-w-[52%]">
+                        {/* BADGE */}
+
+                        {slide.badge && (
+
+                          <div className="
+                            mb-4
+                            inline-flex
+                            rounded-full
+                            bg-white/20
+                            px-4
+                            py-2
+                            text-[10px]
+                            font-black
+                            uppercase
+                            tracking-widest
+                            text-white
+                            backdrop-blur-xl
+
+                            md:text-sm
+                          ">
+
+                            {slide.badge}
+
+                          </div>
+
+                        )}
 
                         {/* TITLE */}
 
                         <h2
                           className="
-                            text-[24px]
+                            text-[26px]
                             font-black
                             leading-[1.05]
 
-                            md:text-6xl
+                            md:text-7xl
                           "
                           style={{
                             color:
@@ -281,21 +443,23 @@ export default function HomepageSlider() {
                               "#ffffff"
                           }}
                         >
-                          {
-                            slide.title
-                          }
+
+                          {slide.title}
+
                         </h2>
 
                         {/* SUBTITLE */}
 
                         <p
                           className="
-                            mt-2
+                            mt-3
                             text-[12px]
                             font-medium
                             leading-5
 
+                            md:mt-6
                             md:text-2xl
+                            md:leading-10
                           "
                           style={{
                             color:
@@ -303,14 +467,14 @@ export default function HomepageSlider() {
                               "#ffffff"
                           }}
                         >
-                          {
-                            slide.subtitle
-                          }
+
+                          {slide.subtitle}
+
                         </p>
 
                         {/* BUTTON */}
 
-                        <div className="mt-4">
+                        <div className="mt-5 md:mt-8">
 
                           <Link
                             href={
@@ -321,21 +485,22 @@ export default function HomepageSlider() {
 
                             <button
                               className="
-                                rounded-xl
-                                px-4
-                                py-2
+                                rounded-2xl
+                                px-5
+                                py-3
                                 text-[11px]
                                 font-black
-                                shadow-xl
+                                shadow-2xl
                                 transition-all
                                 duration-300
                                 hover:scale-105
 
                                 md:px-10
-                                md:py-4
+                                md:py-5
                                 md:text-lg
                               "
                               style={{
+
                                 backgroundColor:
                                   slide.buttonColor ||
                                   "#ffffff",
@@ -343,11 +508,12 @@ export default function HomepageSlider() {
                                 color:
                                   slide.buttonTextColor ||
                                   "#000000"
+
                               }}
                             >
-                              {
-                                slide.buttonText
-                              }
+
+                              {slide.buttonText}
+
                             </button>
 
                           </Link>
@@ -361,7 +527,9 @@ export default function HomepageSlider() {
                   </div>
 
                 </div>
+
               );
+
             }
           )}
 
@@ -370,78 +538,69 @@ export default function HomepageSlider() {
         {/* LEFT BUTTON */}
 
         <button
-          onClick={() => {
-            setCurrent(
-              (previous) => {
-                return previous === 0
-                  ? slides.length - 1
-                  : previous - 1;
-              }
-            );
-          }}
+          onClick={
+            previousSlide
+          }
           className="
             absolute
-            left-2
+            left-3
             top-1/2
             z-20
             flex
-            h-8
-            w-8
+            h-10
+            w-10
             -translate-y-1/2
             items-center
             justify-center
             rounded-full
             bg-white/20
-            text-sm
-            font-black
             text-white
-            backdrop-blur-md
+            backdrop-blur-xl
+            transition-all
+            duration-300
+            hover:scale-110
 
-            md:h-11
-            md:w-11
-            md:text-xl
+            md:h-14
+            md:w-14
           "
         >
-          ←
+
+          <ChevronLeft size={26} />
+
         </button>
 
         {/* RIGHT BUTTON */}
 
         <button
-          onClick={() => {
-            setCurrent(
-              (previous) => {
-                return (
-                  (previous + 1) %
-                  slides.length
-                );
-              }
-            );
-          }}
+          onClick={
+            nextSlide
+          }
           className="
             absolute
-            right-2
+            right-3
             top-1/2
             z-20
             flex
-            h-8
-            w-8
+            h-10
+            w-10
             -translate-y-1/2
             items-center
             justify-center
             rounded-full
             bg-white/20
-            text-sm
-            font-black
             text-white
-            backdrop-blur-md
+            backdrop-blur-xl
+            transition-all
+            duration-300
+            hover:scale-110
 
-            md:h-11
-            md:w-11
-            md:text-xl
+            md:h-14
+            md:w-14
           "
         >
-          →
+
+          <ChevronRight size={26} />
+
         </button>
 
         {/* DOTS */}
@@ -449,12 +608,14 @@ export default function HomepageSlider() {
         <div
           className="
             absolute
-            bottom-3
+            bottom-4
             left-1/2
             z-20
             flex
             -translate-x-1/2
             gap-2
+
+            md:bottom-8
           "
         >
 
@@ -463,7 +624,9 @@ export default function HomepageSlider() {
               _slide,
               index
             ) => {
+
               return (
+
                 <button
                   key={index}
                   onClick={() => {
@@ -474,11 +637,13 @@ export default function HomepageSlider() {
                   className={`rounded-full transition-all duration-300 ${
                     current ===
                     index
-                      ? "h-2 w-6 bg-white"
-                      : "h-2 w-2 bg-white/50"
+                      ? "h-2 w-8 bg-white md:h-3 md:w-12"
+                      : "h-2 w-2 bg-white/50 md:h-3 md:w-3"
                   }`}
                 />
+
               );
+
             }
           )}
 
@@ -487,5 +652,7 @@ export default function HomepageSlider() {
       </div>
 
     </section>
+
   );
+
 }
