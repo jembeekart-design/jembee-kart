@@ -2,15 +2,15 @@
 
 export const dynamic = "force-dynamic";
 
-import Image from "next/image";
-import Link from "next/link";
-import { useParams } from "next/navigation";
-
 import {
   useEffect,
   useMemo,
   useState
 } from "react";
+
+import Link from "next/link";
+
+import { useParams } from "next/navigation";
 
 import {
   addDoc,
@@ -18,6 +18,11 @@ import {
   doc,
   getDoc
 } from "firebase/firestore";
+
+import {
+  TransformWrapper,
+  TransformComponent
+} from "react-zoom-pan-pinch";
 
 import {
   ArrowLeft,
@@ -43,6 +48,7 @@ TYPES
 ====================================================== */
 
 interface Product {
+
   id: string;
 
   title?: string;
@@ -73,6 +79,7 @@ interface Product {
     name?: string;
     rating?: number;
   };
+
 }
 
 /* ======================================================
@@ -106,6 +113,9 @@ export default function ProductPage() {
   const [wishlist, setWishlist] =
     useState(false);
 
+  const [fullscreenImage, setFullscreenImage] =
+    useState(false);
+
   /* ======================================================
   GET PRODUCT
   ====================================================== */
@@ -115,8 +125,6 @@ export default function ProductPage() {
     async function fetchProduct() {
 
       try {
-
-        if (!productId) return;
 
         const productRef = doc(
           db,
@@ -137,7 +145,8 @@ export default function ProductPage() {
 
           setProduct({
 
-            id: snapshot.id,
+            id:
+              snapshot.id,
 
             ...data,
 
@@ -146,7 +155,7 @@ export default function ProductPage() {
                 ? data.images
                 : data.image
                 ? [data.image]
-                : ["/placeholder.png"],
+                : [],
 
             sizes:
               data.sizes || [
@@ -174,9 +183,12 @@ export default function ProductPage() {
 
             seller:
               data.seller || {
+
                 name:
                   "JembeeKart Official",
+
                 rating: 4.6
+
               }
 
           });
@@ -212,12 +224,16 @@ export default function ProductPage() {
         (
           (
             (
-              (product.price || 0) -
-              (product.discountPrice || 0)
-            ) /
-            (product.price || 1)
-          ) * 100
-        )
+              product.price || 0
+            ) -
+            (
+              product.discountPrice || 0
+            )
+          ) /
+          (
+            product.price || 1
+          )
+        ) * 100
       );
 
     }, [product]);
@@ -252,6 +268,7 @@ export default function ProductPage() {
       await addDoc(
         collection(db, "cart"),
         {
+
           productId:
             product.id,
 
@@ -274,10 +291,13 @@ export default function ProductPage() {
 
           createdAt:
             Date.now()
+
         }
       );
 
-      alert("Added To Cart");
+      alert(
+        "Added To Cart"
+      );
 
     } catch (error) {
 
@@ -297,7 +317,7 @@ export default function ProductPage() {
 
       <main className="flex min-h-screen items-center justify-center bg-[#f6f6f6]">
 
-        <h1 className="text-sm font-black">
+        <h1 className="text-sm font-bold">
 
           Loading...
 
@@ -319,7 +339,7 @@ export default function ProductPage() {
 
       <main className="flex min-h-screen items-center justify-center bg-[#f6f6f6]">
 
-        <h1 className="text-sm font-black text-red-500">
+        <h1 className="text-sm font-bold text-red-500">
 
           Product Not Found
 
@@ -340,13 +360,13 @@ export default function ProductPage() {
 
   return (
 
-    <main className="min-h-screen bg-[#f6f6f6] pb-[90px]">
+    <main className="min-h-screen bg-[#f6f6f6] pb-[85px]">
 
       {/* ======================================================
       TOPBAR
       ====================================================== */}
 
-      <div className="sticky top-0 z-50 bg-[#f6f6f6]/90 px-3 pt-3 backdrop-blur-md">
+      <div className="sticky top-0 z-50 bg-[#f6f6f6]/90 backdrop-blur-md px-3 pt-3">
 
         <div className="flex items-center justify-between rounded-[18px] bg-white px-3 py-2.5 shadow-sm">
 
@@ -417,24 +437,30 @@ export default function ProductPage() {
 
           <div className="relative overflow-hidden rounded-[18px]">
 
-            <Image
+            <img
               src={
                 images[currentImage] ||
                 "/placeholder.png"
               }
               alt={
-                product.title ||
-                "product"
+                product.title
               }
-              width={800}
-              height={800}
-              priority
-              className="h-[240px] w-full rounded-[18px] bg-gray-100 object-cover"
+              onClick={() =>
+                setFullscreenImage(true)
+              }
+              className="
+                h-[240px]
+                w-full
+                cursor-zoom-in
+                rounded-[18px]
+                bg-gray-100
+                object-cover
+              "
             />
 
             {/* DISCOUNT */}
 
-            <div className="absolute left-2 top-2 rounded-lg bg-red-500 px-2.5 py-1 text-[10px] font-black text-white">
+            <div className="absolute left-2 top-2 rounded-lg bg-red-500 px-2.5 py-1 text-[10px] font-bold text-white">
 
               {discount}% OFF
 
@@ -467,42 +493,55 @@ export default function ProductPage() {
 
             {/* LEFT */}
 
-            {currentImage > 0 && (
+            {
+              currentImage > 0 && (
 
-              <button
-                onClick={() =>
-                  setCurrentImage(
-                    currentImage - 1
-                  )
-                }
-                className="absolute left-2 top-1/2 flex h-8 w-8 -translate-y-1/2 items-center justify-center rounded-full bg-white shadow-sm"
-              >
+                <button
+                  onClick={() =>
+                    setCurrentImage(
+                      currentImage - 1
+                    )
+                  }
+                  className="absolute left-2 top-1/2 flex h-8 w-8 -translate-y-1/2 items-center justify-center rounded-full bg-white shadow-sm"
+                >
 
-                <ChevronLeft size={18} />
+                  <ChevronLeft size={18} />
 
-              </button>
+                </button>
 
-            )}
+              )
+            }
 
             {/* RIGHT */}
 
-            {currentImage <
-              images.length - 1 && (
+            {
+              currentImage <
+                images.length - 1 && (
 
-              <button
-                onClick={() =>
-                  setCurrentImage(
-                    currentImage + 1
-                  )
-                }
-                className="absolute right-2 top-1/2 flex h-8 w-8 -translate-y-1/2 items-center justify-center rounded-full bg-white shadow-sm"
-              >
+                <button
+                  onClick={() =>
+                    setCurrentImage(
+                      currentImage + 1
+                    )
+                  }
+                  className="absolute right-2 top-1/2 flex h-8 w-8 -translate-y-1/2 items-center justify-center rounded-full bg-white shadow-sm"
+                >
 
-                <ChevronRight size={18} />
+                  <ChevronRight size={18} />
 
-              </button>
+                </button>
 
-            )}
+              )
+            }
+
+            {/* COUNT */}
+
+            <div className="absolute bottom-2 right-2 rounded-full bg-black/70 px-2 py-1 text-[10px] font-bold text-white">
+
+              {currentImage + 1}/
+              {images.length}
+
+            </div>
 
           </div>
 
@@ -510,46 +549,46 @@ export default function ProductPage() {
 
           <div className="mt-3 flex gap-2 overflow-x-auto">
 
-            {images.map(
-              (
-                image,
-                index
-              ) => (
+            {
+              images.map(
+                (
+                  image,
+                  index
+                ) => (
 
-                <button
-                  key={index}
-                  onClick={() =>
-                    setCurrentImage(index)
-                  }
-                  className={`overflow-hidden rounded-lg border ${
-                    currentImage === index
-                      ? "border-purple-600"
-                      : "border-transparent"
-                  }`}
-                >
+                  <button
+                    key={index}
+                    onClick={() =>
+                      setCurrentImage(index)
+                    }
+                    className={`overflow-hidden rounded-lg border ${
+                      currentImage === index
+                        ? "border-purple-600"
+                        : "border-transparent"
+                    }`}
+                  >
 
-                  <Image
-                    src={image}
-                    alt="thumb"
-                    width={100}
-                    height={100}
-                    className="h-12 w-12 object-cover"
-                  />
+                    <img
+                      src={image}
+                      alt="thumb"
+                      className="h-12 w-12 object-cover"
+                    />
 
-                </button>
+                  </button>
 
+                )
               )
-            )}
+            }
 
           </div>
 
         </div>
 
-        {/* TITLE */}
+        {/* DETAILS */}
 
         <div>
 
-          <p className="text-[11px] font-black text-purple-600">
+          <p className="text-[11px] font-bold text-purple-600">
 
             {product.category}
 
@@ -570,7 +609,7 @@ export default function ProductPage() {
                 fill="green"
               />
 
-              <span className="font-black">
+              <span className="font-bold">
 
                 {product.rating || 4.5}
 
@@ -590,7 +629,7 @@ export default function ProductPage() {
 
           <div className="mt-3 flex items-center gap-2">
 
-            <h2 className="text-[24px] font-black">
+            <h2 className="text-[24px] font-black leading-none">
 
               ₹{product.discountPrice}
 
@@ -616,20 +655,36 @@ export default function ProductPage() {
 
         <div className="flex items-center gap-2">
 
+          <div>
+
+            <h2 className="text-[20px] font-black">
+
+              ₹{product.discountPrice}
+
+            </h2>
+
+            <p className="text-[10px] font-bold text-green-600">
+
+              {discount}% OFF
+
+            </p>
+
+          </div>
+
           <button
             onClick={addToCart}
-            className="flex flex-1 items-center justify-center gap-2 rounded-[14px] border bg-white py-3 text-[12px] font-black"
+            className="flex flex-1 items-center justify-center gap-1 rounded-[14px] border bg-white py-2 text-[12px] font-bold"
           >
 
-            <ShoppingCart size={16} />
+            <ShoppingCart size={15} />
 
             Cart
 
           </button>
 
-          <button className="flex flex-1 items-center justify-center gap-2 rounded-[14px] bg-gradient-to-r from-violet-600 to-fuchsia-500 py-3 text-[12px] font-black text-white">
+          <button className="flex flex-1 items-center justify-center gap-1 rounded-[14px] bg-gradient-to-r from-violet-600 to-fuchsia-500 py-2 text-[12px] font-bold text-white">
 
-            <Zap size={15} />
+            <Zap size={14} />
 
             Buy Now
 
@@ -638,6 +693,135 @@ export default function ProductPage() {
         </div>
 
       </div>
+
+      {/* ======================================================
+      FULLSCREEN IMAGE VIEWER
+      ====================================================== */}
+
+      {
+        fullscreenImage && (
+
+          <div className="
+            fixed
+            inset-0
+            z-[9999]
+            flex
+            items-center
+            justify-center
+            bg-black
+          ">
+
+            {/* CLOSE */}
+
+            <button
+              onClick={() =>
+                setFullscreenImage(false)
+              }
+              className="
+                absolute
+                right-4
+                top-4
+                z-50
+                rounded-full
+                bg-white
+                px-4
+                py-2
+                text-sm
+                font-black
+              "
+            >
+
+              Close
+
+            </button>
+
+            {/* LEFT */}
+
+            {
+              currentImage > 0 && (
+
+                <button
+                  onClick={() =>
+                    setCurrentImage(
+                      currentImage - 1
+                    )
+                  }
+                  className="
+                    absolute
+                    left-3
+                    top-1/2
+                    z-50
+                    -translate-y-1/2
+                    rounded-full
+                    bg-white
+                    p-3
+                  "
+                >
+
+                  <ChevronLeft />
+
+                </button>
+
+              )
+            }
+
+            {/* RIGHT */}
+
+            {
+              currentImage <
+                images.length - 1 && (
+
+                <button
+                  onClick={() =>
+                    setCurrentImage(
+                      currentImage + 1
+                    )
+                  }
+                  className="
+                    absolute
+                    right-3
+                    top-1/2
+                    z-50
+                    -translate-y-1/2
+                    rounded-full
+                    bg-white
+                    p-3
+                  "
+                >
+
+                  <ChevronRight />
+
+                </button>
+
+              )
+            }
+
+            {/* ZOOM */}
+
+            <TransformWrapper>
+
+              <TransformComponent>
+
+                <img
+                  src={
+                    images[currentImage]
+                  }
+                  alt="zoom"
+                  className="
+                    max-h-screen
+                    max-w-full
+                    object-contain
+                  "
+                />
+
+              </TransformComponent>
+
+            </TransformWrapper>
+
+          </div>
+
+        )
+      }
 
     </main>
 
