@@ -1095,8 +1095,6 @@ const [touchEnd, setTouchEnd] =
 
         </TransformComponent>
 
-        </TransformComponent>
-
 {currentImage > 0 && (
 
   <button
