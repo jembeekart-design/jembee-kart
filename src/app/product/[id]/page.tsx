@@ -2,15 +2,15 @@
 
 export const dynamic = "force-dynamic";
 
+import Image from "next/image";
+import Link from "next/link";
+import { useParams } from "next/navigation";
+
 import {
   useEffect,
   useMemo,
   useState
 } from "react";
-
-import Link from "next/link";
-
-import { useParams } from "next/navigation";
 
 import {
   addDoc,
@@ -36,10 +36,6 @@ import {
   Zap
 } from "lucide-react";
 
-import {
-  useSwipeable
-} from "react-swipeable";
-
 import { db } from "@/firebase/config";
 
 /* ======================================================
@@ -47,7 +43,6 @@ TYPES
 ====================================================== */
 
 interface Product {
-
   id: string;
 
   title?: string;
@@ -75,13 +70,9 @@ interface Product {
   coupons?: string[];
 
   seller?: {
-
     name?: string;
-
     rating?: number;
-
   };
-
 }
 
 /* ======================================================
@@ -90,38 +81,27 @@ COMPONENT
 
 export default function ProductPage() {
 
-  const params =
-    useParams();
+  const params = useParams();
 
   const productId =
-    Array.isArray(
-      params.id
-    )
+    Array.isArray(params.id)
       ? params.id[0]
       : params.id;
 
   const [product, setProduct] =
-    useState<Product | null>(
-      null
-    );
+    useState<Product | null>(null);
 
   const [loading, setLoading] =
     useState(true);
 
-  const [
-    currentImage,
-    setCurrentImage
-  ] = useState(0);
+  const [currentImage, setCurrentImage] =
+    useState(0);
 
-  const [
-    selectedSize,
-    setSelectedSize
-  ] = useState("M");
+  const [selectedSize, setSelectedSize] =
+    useState("M");
 
-  const [
-    selectedColor,
-    setSelectedColor
-  ] = useState("#7c3aed");
+  const [selectedColor, setSelectedColor] =
+    useState("#7c3aed");
 
   const [wishlist, setWishlist] =
     useState(false);
@@ -136,21 +116,18 @@ export default function ProductPage() {
 
       try {
 
-        const productRef =
-          doc(
-            db,
-            "products",
-            String(productId)
-          );
+        if (!productId) return;
+
+        const productRef = doc(
+          db,
+          "products",
+          String(productId)
+        );
 
         const snapshot =
-          await getDoc(
-            productRef
-          );
+          await getDoc(productRef);
 
-        if (
-          snapshot.exists()
-        ) {
+        if (snapshot.exists()) {
 
           const data =
             snapshot.data() as Omit<
@@ -160,20 +137,16 @@ export default function ProductPage() {
 
           setProduct({
 
-            id:
-              snapshot.id,
+            id: snapshot.id,
 
             ...data,
 
             images:
-              data.images
-                ?.length
+              data.images?.length
                 ? data.images
                 : data.image
-                ? [
-                    data.image
-                  ]
-                : [],
+                ? [data.image]
+                : ["/placeholder.png"],
 
             sizes:
               data.sizes || [
@@ -201,12 +174,9 @@ export default function ProductPage() {
 
             seller:
               data.seller || {
-
                 name:
                   "JembeeKart Official",
-
                 rating: 4.6
-
               }
 
           });
@@ -217,9 +187,7 @@ export default function ProductPage() {
 
       } catch (error) {
 
-        console.error(
-          error
-        );
+        console.error(error);
 
         setLoading(false);
 
@@ -238,15 +206,18 @@ export default function ProductPage() {
   const discount =
     useMemo(() => {
 
-      if (
-        !product
-      ) return 0;
+      if (!product) return 0;
 
       return Math.round(
-        (((product.price || 0) -
-          (product.discountPrice || 0)) /
-          (product.price || 1)) *
-          100
+        (
+          (
+            (
+              (product.price || 0) -
+              (product.discountPrice || 0)
+            ) /
+            (product.price || 1)
+          ) * 100
+        )
       );
 
     }, [product]);
@@ -258,8 +229,7 @@ export default function ProductPage() {
   const deliveryDate =
     useMemo(() => {
 
-      const date =
-        new Date();
+      const date = new Date();
 
       date.setDate(
         date.getDate() + 4
@@ -275,19 +245,13 @@ export default function ProductPage() {
 
   async function addToCart() {
 
-    if (
-      !product
-    ) return;
+    if (!product) return;
 
     try {
 
       await addDoc(
-        collection(
-          db,
-          "cart"
-        ),
+        collection(db, "cart"),
         {
-
           productId:
             product.id,
 
@@ -310,19 +274,14 @@ export default function ProductPage() {
 
           createdAt:
             Date.now()
-
         }
       );
 
-      alert(
-        "Added To Cart"
-      );
+      alert("Added To Cart");
 
     } catch (error) {
 
-      console.error(
-        error
-      );
+      console.error(error);
 
     }
 
@@ -338,7 +297,7 @@ export default function ProductPage() {
 
       <main className="flex min-h-screen items-center justify-center bg-[#f6f6f6]">
 
-        <h1 className="text-sm font-bold">
+        <h1 className="text-sm font-black">
 
           Loading...
 
@@ -351,7 +310,7 @@ export default function ProductPage() {
   }
 
   /* ======================================================
-  NOT FOUND
+  PRODUCT NOT FOUND
   ====================================================== */
 
   if (!product) {
@@ -360,7 +319,7 @@ export default function ProductPage() {
 
       <main className="flex min-h-screen items-center justify-center bg-[#f6f6f6]">
 
-        <h1 className="text-sm font-bold text-red-500">
+        <h1 className="text-sm font-black text-red-500">
 
           Product Not Found
 
@@ -376,46 +335,6 @@ export default function ProductPage() {
     product.images || [];
 
   /* ======================================================
-  SWIPE
-  ====================================================== */
-
-  const swipeHandlers =
-    useSwipeable({
-
-      onSwipedLeft() {
-
-        if (
-          currentImage <
-          images.length - 1
-        ) {
-
-          setCurrentImage(
-            currentImage + 1
-          );
-
-        }
-
-      },
-
-      onSwipedRight() {
-
-        if (
-          currentImage > 0
-        ) {
-
-          setCurrentImage(
-            currentImage - 1
-          );
-
-        }
-
-      },
-
-      trackMouse: true
-
-    });
-
-  /* ======================================================
   UI
   ====================================================== */
 
@@ -427,7 +346,7 @@ export default function ProductPage() {
       TOPBAR
       ====================================================== */}
 
-      <div className="sticky top-0 z-50 bg-[#f6f6f6]/90 px-3 pt-3 backdrop-blur-xl">
+      <div className="sticky top-0 z-50 bg-[#f6f6f6]/90 px-3 pt-3 backdrop-blur-md">
 
         <div className="flex items-center justify-between rounded-[18px] bg-white px-3 py-2.5 shadow-sm">
 
@@ -454,9 +373,7 @@ export default function ProductPage() {
 
             <button
               onClick={() =>
-                setWishlist(
-                  !wishlist
-                )
+                setWishlist(!wishlist)
               }
             >
 
@@ -494,41 +411,30 @@ export default function ProductPage() {
 
       <section className="space-y-4 px-3 pt-2">
 
-        {/* ======================================================
-        IMAGE
-        ====================================================== */}
+        {/* IMAGE */}
 
         <div className="rounded-[20px] bg-white p-2.5 shadow-sm">
 
-          <div
-            {...swipeHandlers}
-            className="relative overflow-hidden rounded-[18px]"
-          >
+          <div className="relative overflow-hidden rounded-[18px]">
 
-            <img
+            <Image
               src={
-                images[
-                  currentImage
-                ] ||
+                images[currentImage] ||
                 "/placeholder.png"
               }
               alt={
-                product.title
+                product.title ||
+                "product"
               }
-              className="
-                h-[320px]
-                w-full
-                rounded-[18px]
-                bg-gray-100
-                object-cover
-
-                md:h-[500px]
-              "
+              width={800}
+              height={800}
+              priority
+              className="h-[240px] w-full rounded-[18px] bg-gray-100 object-cover"
             />
 
             {/* DISCOUNT */}
 
-            <div className="absolute left-2 top-2 rounded-lg bg-red-500 px-2.5 py-1 text-[10px] font-bold text-white">
+            <div className="absolute left-2 top-2 rounded-lg bg-red-500 px-2.5 py-1 text-[10px] font-black text-white">
 
               {discount}% OFF
 
@@ -538,9 +444,7 @@ export default function ProductPage() {
 
             <button
               onClick={() =>
-                setWishlist(
-                  !wishlist
-                )
+                setWishlist(!wishlist)
               }
               className="absolute right-2 top-2 flex h-8 w-8 items-center justify-center rounded-full bg-white shadow-sm"
             >
@@ -563,8 +467,7 @@ export default function ProductPage() {
 
             {/* LEFT */}
 
-            {currentImage >
-              0 && (
+            {currentImage > 0 && (
 
               <button
                 onClick={() =>
@@ -584,8 +487,7 @@ export default function ProductPage() {
             {/* RIGHT */}
 
             {currentImage <
-              images.length -
-                1 && (
+              images.length - 1 && (
 
               <button
                 onClick={() =>
@@ -602,15 +504,6 @@ export default function ProductPage() {
 
             )}
 
-            {/* IMAGE COUNT */}
-
-            <div className="absolute bottom-2 right-2 rounded-full bg-black/70 px-2 py-1 text-[10px] font-bold text-white">
-
-              {currentImage + 1}/
-              {images.length}
-
-            </div>
-
           </div>
 
           {/* THUMBNAILS */}
@@ -626,22 +519,21 @@ export default function ProductPage() {
                 <button
                   key={index}
                   onClick={() =>
-                    setCurrentImage(
-                      index
-                    )
+                    setCurrentImage(index)
                   }
                   className={`overflow-hidden rounded-lg border ${
-                    currentImage ===
-                    index
+                    currentImage === index
                       ? "border-purple-600"
                       : "border-transparent"
                   }`}
                 >
 
-                  <img
+                  <Image
                     src={image}
                     alt="thumb"
-                    className="h-14 w-14 object-cover"
+                    width={100}
+                    height={100}
+                    className="h-12 w-12 object-cover"
                   />
 
                 </button>
@@ -653,19 +545,17 @@ export default function ProductPage() {
 
         </div>
 
-        {/* ======================================================
-        DETAILS
-        ====================================================== */}
+        {/* TITLE */}
 
         <div>
 
-          <p className="text-[11px] font-bold text-purple-600">
+          <p className="text-[11px] font-black text-purple-600">
 
             {product.category}
 
           </p>
 
-          <h1 className="mt-1 text-[22px] font-black leading-[28px] text-black">
+          <h1 className="mt-1 text-[22px] font-black leading-[26px] text-black">
 
             {product.title}
 
@@ -680,7 +570,7 @@ export default function ProductPage() {
                 fill="green"
               />
 
-              <span className="font-bold">
+              <span className="font-black">
 
                 {product.rating || 4.5}
 
@@ -694,53 +584,25 @@ export default function ProductPage() {
 
             </span>
 
-            <span className="text-gray-300">
-
-              |
-
-            </span>
-
-            <span className="text-gray-500">
-
-              5k+ sold
-
-            </span>
-
           </div>
 
           {/* PRICE */}
 
           <div className="mt-3 flex items-center gap-2">
 
-            <h2 className="text-[26px] font-black leading-none">
+            <h2 className="text-[24px] font-black">
 
-              ₹{
-                product.discountPrice
-              }
+              ₹{product.discountPrice}
 
             </h2>
 
             <p className="text-[15px] font-bold text-gray-400 line-through">
 
-              ₹{
-                product.price
-              }
+              ₹{product.price}
 
             </p>
 
           </div>
-
-          <p className="mt-1 text-[13px] font-bold text-green-600">
-
-            You save ₹
-            {(product.price ||
-              0) -
-              (product.discountPrice ||
-                0)}
-            {" "}
-            ({discount}%)
-
-          </p>
 
         </div>
 
@@ -754,53 +616,24 @@ export default function ProductPage() {
 
         <div className="flex items-center gap-2">
 
-          <div>
-
-            <h2 className="text-[20px] font-black">
-
-              ₹{
-                product.discountPrice
-              }
-
-            </h2>
-
-            <p className="text-[10px] font-bold text-green-600">
-
-              {discount}% OFF
-
-            </p>
-
-          </div>
-
-          {/* CART */}
-
           <button
-            onClick={
-              addToCart
-            }
-            className="flex flex-1 items-center justify-center gap-1 rounded-[14px] border bg-white py-2 text-[12px] font-bold"
+            onClick={addToCart}
+            className="flex flex-1 items-center justify-center gap-2 rounded-[14px] border bg-white py-3 text-[12px] font-black"
           >
 
-            <ShoppingCart
-              size={15}
-            />
+            <ShoppingCart size={16} />
 
             Cart
 
           </button>
 
-          {/* BUY NOW */}
+          <button className="flex flex-1 items-center justify-center gap-2 rounded-[14px] bg-gradient-to-r from-violet-600 to-fuchsia-500 py-3 text-[12px] font-black text-white">
 
-          <Link
-            href="/checkout"
-            className="flex flex-1 items-center justify-center gap-1 rounded-[14px] bg-gradient-to-r from-violet-600 to-fuchsia-500 py-2 text-[12px] font-bold text-white"
-          >
-
-            <Zap size={14} />
+            <Zap size={15} />
 
             Buy Now
 
-          </Link>
+          </button>
 
         </div>
 
