@@ -1011,7 +1011,60 @@ const [touchEnd, setTouchEnd] =
 
     </button>
 
-    <div className="flex h-full items-center justify-center">
+    <div
+  className="
+    flex
+    h-full
+    items-center
+    justify-center
+  "
+
+  onTouchStart={(e) =>
+    setTouchStart(
+      e.targetTouches[0].clientX
+    )
+  }
+
+  onTouchMove={(e) =>
+    setTouchEnd(
+      e.targetTouches[0].clientX
+    )
+  }
+
+  onTouchEnd={() => {
+
+    if (
+      touchStart - touchEnd >
+      50
+    ) {
+
+      if (
+        currentImage <
+        images.length - 1
+      ) {
+
+        setCurrentImage(
+          currentImage + 1
+        );
+      }
+    }
+
+    if (
+      touchEnd - touchStart >
+      50
+    ) {
+
+      if (
+        currentImage > 0
+      ) {
+
+        setCurrentImage(
+          currentImage - 1
+        );
+      }
+    }
+  }}
+>
 
       <TransformWrapper>
 
