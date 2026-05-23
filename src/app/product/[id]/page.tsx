@@ -1095,6 +1095,73 @@ const [touchEnd, setTouchEnd] =
 
         </TransformComponent>
 
+        </TransformComponent>
+
+{currentImage > 0 && (
+
+  <button
+    onClick={() =>
+      setCurrentImage(
+        currentImage - 1
+      )
+    }
+    className="
+      absolute
+      left-3
+      top-1/2
+      z-50
+      flex
+      h-10
+      w-10
+      -translate-y-1/2
+      items-center
+      justify-center
+      rounded-full
+      bg-black/50
+      text-white
+    "
+  >
+
+    <ChevronLeft size={22} />
+
+  </button>
+
+)}
+
+{currentImage <
+  images.length - 1 && (
+
+  <button
+    onClick={() =>
+      setCurrentImage(
+        currentImage + 1
+      )
+    }
+    className="
+      absolute
+      right-3
+      top-1/2
+      z-50
+      flex
+      h-10
+      w-10
+      -translate-y-1/2
+      items-center
+      justify-center
+      rounded-full
+      bg-black/50
+      text-white
+    "
+  >
+
+    <ChevronRight size={22} />
+
+  </button>
+
+)}
+
+</TransformWrapper>
+
       </TransformWrapper>
 
     </div>
