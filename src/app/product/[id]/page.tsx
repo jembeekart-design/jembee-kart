@@ -1096,6 +1096,7 @@ const [touchEnd, setTouchEnd] =
           />
 
         </TransformComponent>
+      </TransformWrapper>
 
 {currentImage > 0 && (
 
