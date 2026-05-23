@@ -1066,7 +1066,17 @@ const [touchEnd, setTouchEnd] =
   }}
 >
 
-      <TransformWrapper>
+      <TransformWrapper
+  pinch={{
+    disabled: false
+  }}
+  doubleClick={{
+    disabled: true
+  }}
+  panning={{
+    disabled: true
+  }}
+>
 
         <TransformComponent>
 
