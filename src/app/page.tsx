@@ -28,6 +28,7 @@ import BottomNavbar from "@/components/navigation/BottomNavbar";
 import WhatsAppButton from "@/components/navigation/WhatsAppButton";
 
 interface HomepageSection {
+
   id: string;
 
   sectionType: string;
@@ -43,9 +44,11 @@ interface HomepageSection {
   searchBarColor?: string;
 
   statusBarColor?: string;
+
 }
 
 export default function HomePage() {
+
   const [sections, setSections] =
     useState<
       HomepageSection[]
@@ -58,7 +61,12 @@ export default function HomePage() {
     HomepageSection | undefined
   >(undefined);
 
+  /* ======================================================
+  GET HOMEPAGE SECTIONS
+  ====================================================== */
+
   useEffect(() => {
+
     const unsubscribe =
       onSnapshot(
         collection(
@@ -66,23 +74,30 @@ export default function HomePage() {
           "homepage_sections"
         ),
         (snapshot) => {
+
           const data =
             snapshot.docs.map(
               (document) => {
+
                 return {
-                  id: document.id,
+
+                  id:
+                    document.id,
 
                   ...(document.data() as Omit<
                     HomepageSection,
                     "id"
                   >)
+
                 };
+
               }
             );
 
           const sortedData =
             data.sort(
               (a, b) => {
+
                 return (
                   Number(
                     a.position || 0
@@ -91,6 +106,7 @@ export default function HomePage() {
                     b.position || 0
                   )
                 );
+
               }
             );
 
@@ -108,25 +124,39 @@ export default function HomePage() {
           setHeaderSection(
             headerData
           );
+
         }
       );
 
-    return () => unsubscribe();
+    return () =>
+      unsubscribe();
+
   }, []);
+
+  /* ======================================================
+  RENDER SECTION
+  ====================================================== */
 
   function renderSection(
     section: HomepageSection
   ) {
-    if (!section.visible) {
+
+    if (
+      !section.visible
+    ) {
+
       return null;
+
     }
 
     switch (
       section.sectionType
     ) {
+
       /* CATEGORY */
 
       case "category":
+
         return (
           <CategorySection />
         );
@@ -134,6 +164,7 @@ export default function HomePage() {
       /* PRODUCTS */
 
       case "products":
+
         return (
           <ProductSection />
         );
@@ -141,6 +172,7 @@ export default function HomePage() {
       /* TIPS */
 
       case "tips":
+
         return (
           <TipsSection />
         );
@@ -148,21 +180,42 @@ export default function HomePage() {
       /* FOOTER */
 
       case "footer":
+
         return (
           <FooterSection />
         );
 
       default:
+
         return null;
+
     }
+
   }
 
+  /* ======================================================
+  UI
+  ====================================================== */
+
   return (
-    <main className="min-h-screen w-full overflow-x-hidden bg-[#f3f4f6] pt-[115px] md:pt-[150px]">
+
+    <main
+      className="
+        min-h-screen
+        w-full
+        overflow-x-hidden
+        bg-[#f3f4f6]
+        pt-[115px]
+
+        md:pt-[150px]
+      "
+    >
 
       <div className="w-full overflow-x-hidden">
 
-        {/* HEADER */}
+        {/* ======================================================
+        HEADER
+        ====================================================== */}
 
         <Header
           headerBackgroundColor={
@@ -179,45 +232,89 @@ export default function HomePage() {
           }
         />
 
-        {/* PAGE CONTENT */}
+        {/* ======================================================
+        PAGE CONTENT
+        ====================================================== */}
 
         <div className="w-full overflow-x-hidden pb-32">
 
-          {/* SLIDER */}
+          {/* ======================================================
+          HERO SLIDER
+          ====================================================== */}
 
           <HomepageSlider />
 
-          {/* OTHER SECTIONS */}
+          {/* ======================================================
+          CATEGORY SECTION
+          ====================================================== */}
+
+          <CategorySection />
+
+          {/* ======================================================
+          PRODUCT SECTION
+          ====================================================== */}
+
+          <ProductSection />
+
+          {/* ======================================================
+          DYNAMIC OTHER SECTIONS
+          ====================================================== */}
 
           {sections.map(
             (section) => {
+
+              if (
+                section.sectionType ===
+                  "category" ||
+                section.sectionType ===
+                  "products"
+              ) {
+
+                return null;
+
+              }
+
               return (
+
                 <div
                   key={
                     section.id
                   }
-                  className="w-full overflow-hidden"
+                  className="
+                    w-full
+                    overflow-hidden
+                  "
                 >
+
                   {renderSection(
                     section
                   )}
+
                 </div>
+
               );
+
             }
           )}
 
         </div>
 
-        {/* FLOATING WHATSAPP */}
+        {/* ======================================================
+        FLOATING WHATSAPP
+        ====================================================== */}
 
         <WhatsAppButton />
 
-        {/* BOTTOM NAVIGATION */}
+        {/* ======================================================
+        BOTTOM NAVIGATION
+        ====================================================== */}
 
         <BottomNavbar />
 
       </div>
 
     </main>
+
   );
+
 }
