@@ -1086,10 +1086,11 @@ const [touchEnd, setTouchEnd] =
             }
             alt="zoom"
             className="
-              max-h-screen
-              w-full
-              object-contain
-            "
+  max-h-screen
+  w-full
+  object-contain
+  touch-pan-y
+"
           />
 
         </TransformComponent>
