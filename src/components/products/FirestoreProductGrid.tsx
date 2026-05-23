@@ -56,18 +56,6 @@ interface Product {
 
   position?: number;
 
-  backgroundColor?: string;
-
-  textColor?: string;
-
-  buttonColor?: string;
-
-  buttonTextColor?: string;
-
-  borderRadius?: string;
-
-  cardWidth?: string;
-
 }
 
 /* ======================================================
@@ -154,7 +142,7 @@ export default function FirestoreProductGrid() {
   }, []);
 
   /* ======================================================
-  SORTED PRODUCTS
+  SORT
   ====================================================== */
 
   const sortedProducts =
@@ -230,11 +218,11 @@ export default function FirestoreProductGrid() {
 
     return (
 
-      <div className="flex w-full items-center justify-center py-14">
+      <div className="flex w-full items-center justify-center py-12">
 
         <div className="flex flex-col items-center gap-3">
 
-          <div className="h-12 w-12 animate-spin rounded-full border-4 border-gray-200 border-t-blue-600" />
+          <div className="h-10 w-10 animate-spin rounded-full border-4 border-gray-200 border-t-blue-600" />
 
           <p className="text-sm font-black text-gray-500">
 
@@ -256,13 +244,13 @@ export default function FirestoreProductGrid() {
 
   return (
 
-    <section className="w-full bg-[#f4f5f7] px-3 py-4 md:px-6 md:py-6">
+    <section className="w-full bg-[#f4f5f7] px-3 py-3">
 
-      {/* TOP BAR */}
+      {/* SORT FILTER */}
 
       <div
         className="
-          mb-5
+          mb-4
           flex
           items-center
           justify-between
@@ -317,19 +305,16 @@ export default function FirestoreProductGrid() {
           }}
           className="
             flex
-            h-[54px]
+            h-[52px]
             flex-1
             items-center
             justify-center
             gap-2
             rounded-2xl
-            bg-[#f7f7f7]
+            bg-[#f8f8f8]
             text-sm
             font-black
             text-gray-800
-            transition-all
-            duration-300
-            active:scale-95
           "
         >
 
@@ -348,19 +333,16 @@ export default function FirestoreProductGrid() {
         <button
           className="
             flex
-            h-[54px]
+            h-[52px]
             flex-1
             items-center
             justify-center
             gap-2
             rounded-2xl
-            bg-[#f7f7f7]
+            bg-[#f8f8f8]
             text-sm
             font-black
             text-gray-800
-            transition-all
-            duration-300
-            active:scale-95
           "
         >
 
@@ -376,19 +358,16 @@ export default function FirestoreProductGrid() {
 
       {/* HEADER */}
 
-      <div className="mb-5 flex items-center justify-between">
+      <div className="mb-4 flex items-center justify-between">
 
         <div>
 
           <h2
             className="
-              text-[34px]
+              text-[28px]
               font-black
               leading-none
-              tracking-tight
-              text-[#101828]
-
-              md:text-5xl
+              text-[#111827]
             "
           >
 
@@ -398,12 +377,10 @@ export default function FirestoreProductGrid() {
 
           <p
             className="
-              mt-2
-              text-xs
+              mt-1
+              text-[12px]
               font-semibold
               text-gray-500
-
-              md:text-base
             "
           >
 
@@ -429,20 +406,13 @@ export default function FirestoreProductGrid() {
             font-black
             text-white
             shadow-lg
-            transition-all
-            duration-300
-            hover:scale-105
-
-            md:px-6
-            md:py-3
-            md:text-sm
           "
         >
 
           View All
 
           <ArrowRight
-            size={16}
+            size={14}
           />
 
         </Link>
