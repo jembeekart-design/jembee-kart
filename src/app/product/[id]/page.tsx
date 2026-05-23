@@ -44,6 +44,11 @@ import {
   TransformComponent
 } from "react-zoom-pan-pinch";
 
+import {
+  TransformWrapper,
+  TransformComponent
+} from "react-zoom-pan-pinch";
+
 import { db } from "@/firebase/config";
 
 interface Product {
