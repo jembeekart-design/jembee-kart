@@ -976,7 +976,7 @@ onTouchEnd={() => {
 
       </div>
 
-      {/* FIXED ZOOM MODAL */}
+      {/* FIXED ZOOM MODAL WITH TOUCH SWIPE */}
       {showZoom && (
         <div className="fixed inset-0 z-[999] bg-white/95 backdrop-blur-sm">
           <button
@@ -994,15 +994,42 @@ onTouchEnd={() => {
               wheel={{ disabled: false }}
               initialScale={1}
             >
-              <TransformComponent>
-                <div className="flex h-full w-full items-center justify-center">
-                  <img
-                    src={images[currentImage]}
-                    alt="zoom"
-                    className="max-h-screen max-w-full object-contain pointer-events-auto"
-                  />
-                </div>
-              </TransformComponent>
+              {({ state }) => (
+                <TransformComponent>
+                  <div 
+                    className="flex h-full w-full items-center justify-center"
+                    onTouchStart={(e) => {
+                      if (state.scale === 1) {
+                        touchStartX.current = e.targetTouches[0].clientX;
+                      }
+                    }}
+                    onTouchMove={(e) => {
+                      if (state.scale === 1) {
+                        touchEndX.current = e.targetTouches[0].clientX;
+                      }
+                    }}
+                    onTouchEnd={() => {
+                      if (state.scale === 1) {
+                        const distance = touchStartX.current - touchEndX.current;
+                        if (distance > 40) {
+                          setCurrentImage((prev) =>
+                            prev < images.length - 1 ? prev + 1 : prev
+                          );
+                        }
+                        if (distance < -40) {
+                          setCurrentImage((prev) => (prev > 0 ? prev - 1 : prev));
+                        }
+                      }
+                    }}
+                  >
+                    <img
+                      src={images[currentImage]}
+                      alt="zoom"
+                      className="max-h-screen max-w-full object-contain pointer-events-auto select-none"
+                    />
+                  </div>
+                </TransformComponent>
+              )}
             </TransformWrapper>
           </div>
 
