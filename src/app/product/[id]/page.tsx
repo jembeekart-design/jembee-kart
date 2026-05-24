@@ -1023,7 +1023,7 @@ onTouchEnd={() => {
     touchEndX.current;
 
   if (
-    swipeDistance > 50 &&
+    swipeDistance > 5 &&
     currentImage <
       images.length - 1
   ) {
