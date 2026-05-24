@@ -1005,44 +1005,6 @@ onTouchEnd={() => {
     items-center
     justify-center
   "
-
-  onTouchStart={(e) => {
-  touchStartX.current =
-    e.targetTouches[0].clientX;
-}}
-
-onTouchMove={(e) => {
-  touchEndX.current =
-    e.targetTouches[0].clientX;
-}}
-
-onTouchEnd={() => {
-
-  const swipeDistance =
-    touchStartX.current -
-    touchEndX.current;
-
-  if (
-    swipeDistance > 5 &&
-    currentImage <
-      images.length - 1
-  ) {
-
-    setCurrentImage(
-      (prev) => prev + 1
-    );
-  }
-
-  if (
-    swipeDistance < -50 &&
-    currentImage > 0
-  ) {
-
-    setCurrentImage(
-      (prev) => prev - 1
-    );
-  }
-}}
 >
 <TransformWrapper
   pinch={{
