@@ -1052,7 +1052,7 @@ onTouchEnd={() => {
     disabled: true
   }}
   panning={{
-    disabled: false
+    disabled: true
   }}
   wheel={{
     disabled: true
