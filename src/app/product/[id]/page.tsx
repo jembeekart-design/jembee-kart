@@ -85,11 +85,9 @@ export default function ProductPage() {
   const [showZoom, setShowZoom] =
   useState(false);
 
-const [touchStart, setTouchStart] =
-  useState(0);
+const touchStartX = useRef(0);
 
-const [touchEnd, setTouchEnd] =
-  useState(0);
+const touchEndX = useRef(0);
 
   useEffect(() => {
 
