@@ -986,7 +986,7 @@ onTouchEnd={() => {
             ✕
           </button>
 
-          <div className="flex h-full w-full items-center justify-center">
+          <div className="flex h-full w-full items-center justify-center [&>.react-transform-wrapper]:!w-full [&>.react-transform-wrapper]:!h-full [&>.react-transform-component]:!w-full [&>.react-transform-component]:!h-full">
             <TransformWrapper
               pinch={{ disabled: false }}
               doubleClick={{ disabled: false }}
@@ -994,12 +994,14 @@ onTouchEnd={() => {
               wheel={{ disabled: false }}
               initialScale={1}
             >
-              <TransformComponent wrapperClassName="!w-full !h-full" contentClassName="!w-full !h-full flex items-center justify-center">
-                <img
-                  src={images[currentImage]}
-                  alt="zoom"
-                  className="max-h-screen max-w-full object-contain pointer-events-auto"
-                />
+              <TransformComponent>
+                <div className="flex h-full w-full items-center justify-center">
+                  <img
+                    src={images[currentImage]}
+                    alt="zoom"
+                    className="max-h-screen max-w-full object-contain pointer-events-auto"
+                  />
+                </div>
               </TransformComponent>
             </TransformWrapper>
           </div>
