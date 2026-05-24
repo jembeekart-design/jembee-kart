@@ -1070,7 +1070,7 @@ onTouchEnd={() => {
         max-h-screen
         w-full
         object-contain
-        touch-pan-y
+        touch-none
       "
     />
 
