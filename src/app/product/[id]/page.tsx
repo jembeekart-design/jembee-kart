@@ -83,7 +83,7 @@ export default function ProductPage() {
   const [wishlist, setWishlist] =
     useState(false);
   const [showZoom, setShowZoom] =
-  useState(false);
+    useState(false);
 
   const touchStartX = useRef(0);
   const touchEndX = useRef(0);
@@ -307,7 +307,7 @@ export default function ProductPage() {
 
       <section className="space-y-4 px-3 pt-2">
 
-        {/* MAIN PRODUCT IMAGE WITH FINGER SWIPE */}
+        {/* IMAGE */}
 
         <div className="rounded-[20px] bg-white p-2.5 shadow-sm">
 
@@ -326,7 +326,7 @@ export default function ProductPage() {
 
               onTouchStart={(e) => {
                 touchStartX.current = e.targetTouches[0].clientX;
-                touchEndX.current = e.targetTouches[0].clientX; // Initial safe value
+                touchEndX.current = e.targetTouches[0].clientX;
               }}
 
               onTouchMove={(e) => {
@@ -335,17 +335,15 @@ export default function ProductPage() {
 
               onTouchEnd={() => {
                 const distance = touchStartX.current - touchEndX.current;
-                
-                // Swipe Left -> Show Next Image
+
                 if (distance > 40) {
                   setCurrentImage((prev) =>
                     prev < images.length - 1 ? prev + 1 : prev
                   );
                 }
-                
-                // Swipe Right -> Show Previous Image
+
                 if (distance < -40) {
-                  setCurrentImage((prev) => 
+                  setCurrentImage((prev) =>
                     prev > 0 ? prev - 1 : prev
                   );
                 }
@@ -968,61 +966,61 @@ export default function ProductPage() {
 
       </div>
 
-      {/* FIXED ZOOM MODAL WITH SMOOTH TOUCH SWIPE AND PAN OVERRIDE */}
+      {/* ZOOM MODAL WITHOUT TYPE ERROR & FIXED TOUCH OVERLAY SWIPE */}
       {showZoom && (
-        <div className="fixed inset-0 z-[999] bg-white/95 backdrop-blur-sm">
+        <div className="fixed inset-0 z-[999] bg-white/95 backdrop-blur-sm select-none">
           <button
             onClick={() => setShowZoom(false)}
-            className="absolute right-4 top-4 z-[1000] rounded-full bg-gray-100 p-2 text-black font-bold shadow-md"
+            className="absolute right-4 top-4 z-[1001] rounded-full bg-gray-100 p-2 text-black font-bold shadow-md h-9 w-9 flex items-center justify-center"
           >
             ✕
           </button>
 
-          <div className="flex h-full w-full items-center justify-center [&>.react-transform-wrapper]:!w-full [&>.react-transform-wrapper]:!h-full [&>.react-transform-component]:!w-full [&>.react-transform-component]:!h-full">
+          <div className="relative flex h-full w-full items-center justify-center">
             <TransformWrapper
-              pinch={{ disabled: false }}
-              doubleClick={{ disabled: false }}
-              panning={{ disabled: false }}
-              wheel={{ disabled: false }}
               initialScale={1}
+              minScale={1}
+              maxScale={4}
+              centerOnInit={true}
             >
               {({ state }) => (
-                <TransformComponent>
-                  <div 
-                    className="flex h-full w-full items-center justify-center"
-                    onTouchStart={(e) => {
-                      // Swipe only works when image is at default scale (1x)
-                      if (state.scale === 1) {
+                <div className="relative h-full w-full flex items-center justify-center">
+                  
+                  {/* SMOOTH OVERLAY FOR SWIPING (ONLY ACTIVE AT SCALE = 1) */}
+                  {state.scale === 1 && (
+                    <div
+                      className="absolute inset-0 z-[1000] bg-transparent cursor-grab active:cursor-grabbing"
+                      onTouchStart={(e) => {
                         touchStartX.current = e.targetTouches[0].clientX;
                         touchEndX.current = e.targetTouches[0].clientX;
-                      }
-                    }}
-                    onTouchMove={(e) => {
-                      if (state.scale === 1) {
+                      }}
+                      onTouchMove={(e) => {
                         touchEndX.current = e.targetTouches[0].clientX;
-                      }
-                    }}
-                    onTouchEnd={() => {
-                      if (state.scale === 1) {
+                      }}
+                      onTouchEnd={() => {
                         const distance = touchStartX.current - touchEndX.current;
-                        if (distance > 40) {
+                        if (distance > 45) {
                           setCurrentImage((prev) =>
                             prev < images.length - 1 ? prev + 1 : prev
                           );
                         }
-                        if (distance < -40) {
+                        if (distance < -45) {
                           setCurrentImage((prev) => (prev > 0 ? prev - 1 : prev));
                         }
-                      }
-                    }}
-                  >
-                    <img
-                      src={images[currentImage]}
-                      alt="zoom"
-                      className="max-h-screen max-w-full object-contain pointer-events-auto select-none"
+                      }}
                     />
-                  </div>
-                </TransformComponent>
+                  )}
+
+                  <TransformComponent wrapperStyle={{ width: "100%", height: "100%" }}>
+                    <div className="flex h-screen w-screen items-center justify-center bg-transparent">
+                      <img
+                        src={images[currentImage]}
+                        alt="zoom-product"
+                        className="max-h-screen max-w-full object-contain pointer-events-none"
+                      />
+                    </div>
+                  </TransformComponent>
+                </div>
               )}
             </TransformWrapper>
           </div>
@@ -1030,18 +1028,18 @@ export default function ProductPage() {
           {currentImage > 0 && (
             <button
               onClick={() => setCurrentImage(currentImage - 1)}
-              className="absolute left-3 top-1/2 z-[1000] flex h-10 w-10 -translate-y-1/2 items-center justify-center rounded-full bg-black/50 text-white"
+              className="absolute left-3 top-1/2 z-[1001] flex h-10 w-10 -translate-y-1/2 items-center justify-center rounded-full bg-black/50 text-white"
             >
-              <ChevronLeft size={22} />
+              <ChevronLeft size={24} />
             </button>
           )}
 
           {currentImage < images.length - 1 && (
             <button
               onClick={() => setCurrentImage(currentImage + 1)}
-              className="absolute right-3 top-1/2 z-[1000] flex h-10 w-10 -translate-y-1/2 items-center justify-center rounded-full bg-black/50 text-white"
+              className="absolute right-3 top-1/2 z-[1001] flex h-10 w-10 -translate-y-1/2 items-center justify-center rounded-full bg-black/50 text-white"
             >
-              <ChevronRight size={22} />
+              <ChevronRight size={24} />
             </button>
           )}
         </div>
