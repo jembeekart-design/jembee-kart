@@ -82,12 +82,15 @@ export default function ProductPage() {
 
   const [wishlist, setWishlist] =
     useState(false);
+
   const [showZoom, setShowZoom] =
-  useState(false);
+    useState(false);
 
-const touchStartX = useRef(0);
+  const touchStartX = useRef(0);
+  const touchEndX = useRef(0);
 
-const touchEndX = useRef(0);
+  const zoomSwipeStart = useRef(0);
+  const zoomSwipeEnd = useRef(0);
 
   useEffect(() => {
 
@@ -314,61 +317,61 @@ const touchEndX = useRef(0);
 
           <div className="relative overflow-hidden rounded-[18px]">
 
-<img
-  src={
-    images[currentImage] ||
-    "/placeholder.png"
-  }
-  alt={product.title}
+            <img
+              src={
+                images[currentImage] ||
+                "/placeholder.png"
+              }
+              alt={product.title}
 
-  onClick={() =>
-    setShowZoom(true)
-  }
+              onClick={() =>
+                setShowZoom(true)
+              }
 
-  onTouchStart={(e) => {
-  touchStartX.current =
-    e.targetTouches[0].clientX;
-}}
+              onTouchStart={(e) => {
+                touchStartX.current =
+                  e.targetTouches[0].clientX;
+              }}
 
-onTouchMove={(e) => {
-  touchEndX.current =
-    e.targetTouches[0].clientX;
-}}
+              onTouchMove={(e) => {
+                touchEndX.current =
+                  e.targetTouches[0].clientX;
+              }}
 
-onTouchEnd={() => {
+              onTouchEnd={() => {
 
-  const distance =
-    touchStartX.current -
-    touchEndX.current;
+                const distance =
+                  touchStartX.current -
+                  touchEndX.current;
 
-  if (distance > 30) {
+                if (distance > 50) {
 
-    setCurrentImage((prev) =>
-      prev < images.length - 1
-        ? prev + 1
-        : prev
-    );
-  }
+                  setCurrentImage((prev) =>
+                    prev < images.length - 1
+                      ? prev + 1
+                      : prev
+                  );
+                }
 
-  if (distance < -10) {
+                if (distance < -50) {
 
-    setCurrentImage((prev) =>
-      prev > 0
-        ? prev - 1
-        : prev
-    );
-  }
-}}
+                  setCurrentImage((prev) =>
+                    prev > 0
+                      ? prev - 1
+                      : prev
+                  );
+                }
+              }}
 
-  className="
-    h-[240px]
-    w-full
-    rounded-[18px]
-    bg-gray-100
-    object-cover
-    cursor-zoom-in
-  "
-/>
+              className="
+                h-[240px]
+                w-full
+                rounded-[18px]
+                bg-gray-100
+                object-cover
+                cursor-zoom-in
+              "
+            />
 
             <div className="absolute left-2 top-2 rounded-lg bg-red-500 px-2.5 py-1 text-[10px] font-bold text-white">
 
@@ -470,465 +473,6 @@ onTouchEnd={() => {
 
         </div>
 
-        {/* DETAILS */}
-
-        <div>
-
-          <p className="text-[11px] font-bold text-purple-600">
-
-            {product.category}
-
-          </p>
-
-          <h1 className="mt-1 text-[22px] font-black leading-[26px] text-black">
-
-            {product.title}
-
-          </h1>
-
-          <div className="mt-2 flex items-center gap-2 text-[11px]">
-
-            <div className="flex items-center gap-1 text-green-600">
-
-              <Star
-                size={12}
-                fill="green"
-              />
-
-              <span className="font-bold">
-
-                {product.rating || 4.5}
-
-              </span>
-
-            </div>
-
-            <span className="text-gray-500">
-              (128 Reviews)
-            </span>
-
-            <span className="text-gray-300">
-              |
-            </span>
-
-            <span className="text-gray-500">
-              5k+ sold
-            </span>
-
-          </div>
-
-          {/* PRICE */}
-
-          <div className="mt-3 flex items-center gap-2">
-
-            <h2 className="text-[24px] font-black leading-none">
-
-              ₹{product.discountPrice}
-
-            </h2>
-
-            <p className="text-[15px] font-bold text-gray-400 line-through">
-
-              ₹{product.price}
-
-            </p>
-
-          </div>
-
-          <p className="mt-1 text-[13px] font-bold text-green-600">
-
-            You save ₹
-            {(product.price || 0) -
-              (product.discountPrice || 0)}
-            {" "}
-            ({discount}%)
-
-          </p>
-
-        </div>
-
-        {/* DELIVERY */}
-
-        <div className="rounded-[18px] bg-white p-3 shadow-sm">
-
-          <div className="flex items-center gap-3">
-
-            <Truck
-              size={18}
-              className="text-purple-600"
-            />
-
-            <div>
-
-              <h3 className="text-sm font-bold text-purple-600">
-
-                Free Delivery
-
-              </h3>
-
-              <p className="text-[11px] text-gray-500">
-
-                Delivery by {deliveryDate}
-
-              </p>
-
-            </div>
-
-          </div>
-
-        </div>
-
-        {/* SIZE */}
-
-        <div>
-
-          <h2 className="mb-2 text-sm font-bold">
-
-            Select Size
-
-          </h2>
-
-          <div className="flex flex-wrap gap-2">
-
-            {product.sizes?.map(
-              (size) => (
-                <button
-                  key={size}
-                  onClick={() =>
-                    setSelectedSize(size)
-                  }
-                  className={`min-w-[46px] rounded-[12px] border px-3 py-1.5 text-[12px] font-bold ${
-                    selectedSize === size
-                      ? "border-purple-600 bg-purple-600 text-white"
-                      : "bg-white"
-                  }`}
-                >
-
-                  {size}
-
-                </button>
-              )
-            )}
-
-          </div>
-
-        </div>
-
-        {/* COLORS */}
-
-        <div>
-
-          <h2 className="mb-2 text-sm font-bold">
-
-            Select Color
-
-          </h2>
-
-          <div className="flex gap-3">
-
-            {product.colors?.map(
-              (color) => (
-                <button
-                  key={color}
-                  onClick={() =>
-                    setSelectedColor(color)
-                  }
-                  style={{
-                    background:
-                      color
-                  }}
-                  className={`h-8 w-8 rounded-full border-2 ${
-                    selectedColor === color
-                      ? "border-purple-600"
-                      : "border-gray-200"
-                  }`}
-                />
-              )
-            )}
-
-          </div>
-
-        </div>
-
-        {/* FEATURES */}
-
-        <div className="grid grid-cols-2 gap-3 rounded-[18px] bg-white p-3 shadow-sm">
-
-          <div className="flex items-center gap-2">
-
-            <ShieldCheck
-              size={18}
-              className="text-green-600"
-            />
-
-            <div>
-
-              <h3 className="text-[12px] font-bold">
-                Original
-              </h3>
-
-              <p className="text-[10px] text-gray-500">
-                Authentic
-              </p>
-
-            </div>
-
-          </div>
-
-          <div className="flex items-center gap-2">
-
-            <RotateCcw
-              size={18}
-              className="text-violet-600"
-            />
-
-            <div>
-
-              <h3 className="text-[12px] font-bold">
-                7 Day Return
-              </h3>
-
-              <p className="text-[10px] text-gray-500">
-                Easy Return
-              </p>
-
-            </div>
-
-          </div>
-
-          <div className="flex items-center gap-2">
-
-            <BadgeCheck
-              size={18}
-              className="text-blue-600"
-            />
-
-            <div>
-
-              <h3 className="text-[12px] font-bold">
-                Secure Payment
-              </h3>
-
-              <p className="text-[10px] text-gray-500">
-                Protected
-              </p>
-
-            </div>
-
-          </div>
-
-          <div className="flex items-center gap-2">
-
-            <Headphones
-              size={18}
-              className="text-orange-500"
-            />
-
-            <div>
-
-              <h3 className="text-[12px] font-bold">
-                Support
-              </h3>
-
-              <p className="text-[10px] text-gray-500">
-                24/7 Help
-              </p>
-
-            </div>
-
-          </div>
-
-        </div>
-
-        {/* DELIVERY + COD */}
-
-        <div className="space-y-3">
-
-          <div className="rounded-[18px] bg-white p-4 shadow-sm">
-
-            <div className="flex gap-3">
-
-              <Truck
-                size={18}
-                className="text-green-600"
-              />
-
-              <div>
-
-                <h3 className="text-sm font-bold">
-                  Delivery
-                </h3>
-
-                <p className="mt-1 text-[18px] font-black text-green-600">
-
-                  {deliveryDate}
-
-                </p>
-
-              </div>
-
-            </div>
-
-          </div>
-
-          <div className="rounded-[18px] bg-white p-4 shadow-sm">
-
-            <div className="flex gap-3">
-
-              <Zap
-                size={18}
-                className="text-orange-500"
-              />
-
-              <div>
-
-                <h3 className="text-sm font-bold">
-                  Cash on Delivery
-                </h3>
-
-                <p className="text-[11px] text-gray-500">
-
-                  Pay when you receive
-
-                </p>
-
-              </div>
-
-            </div>
-
-          </div>
-
-        </div>
-
-        {/* COUPONS */}
-
-        <div>
-
-          <div className="mb-3 flex items-center justify-between">
-
-            <h2 className="text-[18px] font-black">
-
-              Offers & Coupons
-
-            </h2>
-
-            <button className="text-xs font-bold text-purple-600">
-
-              View All
-
-            </button>
-
-          </div>
-
-          <div className="space-y-2">
-
-            {product.coupons?.map(
-              (coupon) => (
-                <div
-                  key={coupon}
-                  className="flex items-center justify-between rounded-[16px] border border-dashed border-purple-300 bg-white px-3 py-3 shadow-sm"
-                >
-
-                  <div>
-
-                    <h3 className="text-[14px] font-black">
-
-                      {coupon}
-
-                    </h3>
-
-                    <p className="mt-1 text-[10px] text-gray-500">
-
-                      Extra discount available
-
-                    </p>
-
-                  </div>
-
-                  <button className="rounded-lg bg-gradient-to-r from-violet-600 to-fuchsia-500 px-3 py-1.5 text-[10px] font-bold text-white">
-
-                    Apply
-
-                  </button>
-
-                </div>
-              )
-            )}
-
-          </div>
-
-        </div>
-
-        {/* SELLER */}
-
-        <div className="rounded-[18px] bg-white p-4 shadow-sm">
-
-          <h2 className="text-[18px] font-black">
-
-            Seller Details
-
-          </h2>
-
-          <div className="mt-3 flex items-center justify-between">
-
-            <div className="flex items-center gap-3">
-
-              <div className="flex h-10 w-10 items-center justify-center rounded-full bg-purple-100">
-
-                <Store
-                  size={18}
-                  className="text-purple-600"
-                />
-
-              </div>
-
-              <div>
-
-                <h3 className="text-[13px] font-black">
-
-                  {product.seller?.name}
-
-                </h3>
-
-                <p className="text-[11px] text-gray-500">
-
-                  {product.seller?.rating}
-                  ★ Seller Rating
-
-                </p>
-
-              </div>
-
-            </div>
-
-            <button className="rounded-xl border border-purple-400 px-3 py-2 text-[11px] font-bold text-purple-600">
-
-              View Store
-
-            </button>
-
-          </div>
-
-        </div>
-
-        {/* DESCRIPTION */}
-
-        <div className="rounded-[18px] bg-white p-4 shadow-sm">
-
-          <h2 className="text-[18px] font-black">
-
-            Product Details
-
-          </h2>
-
-          <p className="mt-2 text-[12px] leading-6 text-gray-600">
-
-            {product.description}
-
-          </p>
-
-        </div>
-
       </section>
 
       {/* BOTTOM BAR */}
@@ -975,140 +519,217 @@ onTouchEnd={() => {
         </div>
 
       </div>
+
+      {/* ZOOM VIEW */}
+
       {showZoom && (
 
-  <div className="fixed inset-0 z-[999] bg-white/95 backdrop-blur-sm">
+        <div className="fixed inset-0 z-[999] bg-black">
 
-    <button
-      onClick={() =>
-        setShowZoom(false)
-      }
-      className="
-        absolute
-        right-4
-        top-4
-        z-50
-        rounded-full
-        bg-white
-        p-2
-      "
-    >
+          <button
+            onClick={() =>
+              setShowZoom(false)
+            }
+            className="
+              absolute
+              right-4
+              top-4
+              z-50
+              rounded-full
+              bg-white
+              p-2
+              text-black
+            "
+          >
 
-      ✕
+            ✕
 
-    </button>
+          </button>
 
-    <div
-  className="
-    flex
-    h-full
-    items-center
-    justify-center
-  "
->
-<TransformWrapper
-  pinch={{
-    disabled: false
-  }}
-  doubleClick={{
-    disabled: true
-  }}
-  panning={{
-    disabled: true
-  }}
-  wheel={{
-    disabled: true
-  }}
->
+          <div
+            className="
+              flex
+              h-full
+              w-full
+              items-center
+              justify-center
+            "
+          >
 
-  <TransformComponent>
+            <TransformWrapper
 
-    <img
-      src={
-        images[currentImage]
-      }
-      alt="zoom"
-      className="
-        max-h-screen
-        w-full
-        object-contain
-        touch-none
-      "
-    />
+              initialScale={1}
 
-  </TransformComponent>
+              minScale={1}
 
-  {currentImage > 0 && (
+              maxScale={5}
 
-    <button
-      onClick={() =>
-        setCurrentImage(
-          currentImage - 1
-        )
-      }
-      className="
-        absolute
-        left-3
-        top-1/2
-        z-50
-        flex
-        h-10
-        w-10
-        -translate-y-1/2
-        items-center
-        justify-center
-        rounded-full
-        bg-black/50
-        text-white
-      "
-    >
+              centerOnInit
 
-      <ChevronLeft size={22} />
+              doubleClick={{
+                disabled: true
+              }}
 
-    </button>
+              wheel={{
+                disabled: true
+              }}
 
-  )}
+              pinch={{
+                step: 5
+              }}
 
-  {currentImage <
-    images.length - 1 && (
+              panning={{
+                disabled: false
+              }}
 
-    <button
-      onClick={() =>
-        setCurrentImage(
-          currentImage + 1
-        )
-      }
-      className="
-        absolute
-        right-3
-        top-1/2
-        z-50
-        flex
-        h-10
-        w-10
-        -translate-y-1/2
-        items-center
-        justify-center
-        rounded-full
-        bg-black/50
-        text-white
-      "
-    >
+            >
 
-      <ChevronRight size={22} />
+              {() => (
 
-    </button>
+                <>
 
-  )}
+                  <TransformComponent
+                    wrapperClass="
+                      !w-full
+                      !h-full
+                    "
+                    contentClass="
+                      flex
+                      items-center
+                      justify-center
+                      w-full
+                      h-full
+                    "
+                  >
 
-</TransformWrapper>
+                    <img
+                      src={
+                        images[currentImage]
+                      }
+                      alt="zoom"
 
-</div>
+                      onTouchStart={(e) => {
+                        zoomSwipeStart.current =
+                          e.targetTouches[0].clientX;
+                      }}
 
-</div>
+                      onTouchMove={(e) => {
+                        zoomSwipeEnd.current =
+                          e.targetTouches[0].clientX;
+                      }}
 
-)}
+                      onTouchEnd={() => {
 
-</main>
-);
+                        const distance =
+                          zoomSwipeStart.current -
+                          zoomSwipeEnd.current;
+
+                        if (distance > 80) {
+
+                          setCurrentImage((prev) =>
+                            prev < images.length - 1
+                              ? prev + 1
+                              : prev
+                          );
+                        }
+
+                        if (distance < -80) {
+
+                          setCurrentImage((prev) =>
+                            prev > 0
+                              ? prev - 1
+                              : prev
+                          );
+                        }
+                      }}
+
+                      className="
+                        max-h-screen
+                        w-full
+                        object-contain
+                        select-none
+                      "
+                    />
+
+                  </TransformComponent>
+
+                  {currentImage > 0 && (
+
+                    <button
+                      onClick={() =>
+                        setCurrentImage(
+                          currentImage - 1
+                        )
+                      }
+                      className="
+                        absolute
+                        left-3
+                        top-1/2
+                        z-50
+                        flex
+                        h-10
+                        w-10
+                        -translate-y-1/2
+                        items-center
+                        justify-center
+                        rounded-full
+                        bg-white/20
+                        text-white
+                        backdrop-blur-md
+                      "
+                    >
+
+                      <ChevronLeft size={22} />
+
+                    </button>
+
+                  )}
+
+                  {currentImage <
+                    images.length - 1 && (
+
+                    <button
+                      onClick={() =>
+                        setCurrentImage(
+                          currentImage + 1
+                        )
+                      }
+                      className="
+                        absolute
+                        right-3
+                        top-1/2
+                        z-50
+                        flex
+                        h-10
+                        w-10
+                        -translate-y-1/2
+                        items-center
+                        justify-center
+                        rounded-full
+                        bg-white/20
+                        text-white
+                        backdrop-blur-md
+                      "
+                    >
+
+                      <ChevronRight size={22} />
+
+                    </button>
+
+                  )}
+
+                </>
+
+              )}
+
+            </TransformWrapper>
+
+          </div>
+
+        </div>
+
+      )}
+
+    </main>
+  );
 }
