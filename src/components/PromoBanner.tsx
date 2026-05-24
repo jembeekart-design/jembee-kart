@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 
 import {
   Crown,
@@ -15,13 +15,31 @@ export default function PromoBanner() {
   const [showBanner, setShowBanner] =
     useState(true);
 
+  const timerRef =
+    useRef<NodeJS.Timeout | null>(
+      null
+    );
+
   useEffect(() => {
 
-    const timer = setTimeout(() => {
-      setShowBanner(false);
-    }, 7000);
+    timerRef.current =
+      setTimeout(() => {
 
-    return () => clearTimeout(timer);
+        setShowBanner(false);
+
+      }, 7000);
+
+    return () => {
+
+      if (timerRef.current) {
+
+        clearTimeout(
+          timerRef.current
+        );
+
+      }
+
+    };
 
   }, []);
 
@@ -42,7 +60,7 @@ export default function PromoBanner() {
       "
     >
 
-      {/* HALF SCREEN BANNER */}
+      {/* HALF SCREEN */}
 
       <div
         className="
@@ -60,7 +78,6 @@ export default function PromoBanner() {
           pt-5
           text-white
           shadow-2xl
-          animate-[slideUp_.35s_ease]
         "
       >
 
@@ -289,4 +306,5 @@ export default function PromoBanner() {
     </div>
 
   );
+
 }
