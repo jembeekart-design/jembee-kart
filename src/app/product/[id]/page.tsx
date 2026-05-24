@@ -350,7 +350,7 @@ onTouchEnd={() => {
     );
   }
 
-  if (distance < -30) {
+  if (distance < -10) {
 
     setCurrentImage((prev) =>
       prev > 0
