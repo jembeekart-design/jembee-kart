@@ -27,7 +27,7 @@ import BottomNavbar from "@/components/navigation/BottomNavbar";
 
 import WhatsAppButton from "@/components/navigation/WhatsAppButton";
 
-import IntroVideo from "@/components/IntroVideo";
+import PromoBanner from "@/components/PromoBanner";
 
 interface HomepageSection {
 
