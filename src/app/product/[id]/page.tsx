@@ -85,9 +85,8 @@ export default function ProductPage() {
   const [showZoom, setShowZoom] =
   useState(false);
 
-const touchStartX = useRef(0);
-
-const touchEndX = useRef(0);
+  const touchStartX = useRef(0);
+  const touchEndX = useRef(0);
 
   useEffect(() => {
 
@@ -308,67 +307,60 @@ const touchEndX = useRef(0);
 
       <section className="space-y-4 px-3 pt-2">
 
-        {/* IMAGE */}
+        {/* MAIN PRODUCT IMAGE WITH FINGER SWIPE */}
 
         <div className="rounded-[20px] bg-white p-2.5 shadow-sm">
 
           <div className="relative overflow-hidden rounded-[18px]">
 
-<img
-  src={
-    images[currentImage] ||
-    "/placeholder.png"
-  }
-  alt={product.title}
+            <img
+              src={
+                images[currentImage] ||
+                "/placeholder.png"
+              }
+              alt={product.title}
 
-  onClick={() =>
-    setShowZoom(true)
-  }
+              onClick={() =>
+                setShowZoom(true)
+              }
 
-  onTouchStart={(e) => {
-  touchStartX.current =
-    e.targetTouches[0].clientX;
-}}
+              onTouchStart={(e) => {
+                touchStartX.current = e.targetTouches[0].clientX;
+                touchEndX.current = e.targetTouches[0].clientX; // Initial safe value
+              }}
 
-onTouchMove={(e) => {
-  touchEndX.current =
-    e.targetTouches[0].clientX;
-}}
+              onTouchMove={(e) => {
+                touchEndX.current = e.targetTouches[0].clientX;
+              }}
 
-onTouchEnd={() => {
+              onTouchEnd={() => {
+                const distance = touchStartX.current - touchEndX.current;
+                
+                // Swipe Left -> Show Next Image
+                if (distance > 40) {
+                  setCurrentImage((prev) =>
+                    prev < images.length - 1 ? prev + 1 : prev
+                  );
+                }
+                
+                // Swipe Right -> Show Previous Image
+                if (distance < -40) {
+                  setCurrentImage((prev) => 
+                    prev > 0 ? prev - 1 : prev
+                  );
+                }
+              }}
 
-  const distance =
-    touchStartX.current -
-    touchEndX.current;
-
-  if (distance > 30) {
-
-    setCurrentImage((prev) =>
-      prev < images.length - 1
-        ? prev + 1
-        : prev
-    );
-  }
-
-  if (distance < -10) {
-
-    setCurrentImage((prev) =>
-      prev > 0
-        ? prev - 1
-        : prev
-    );
-  }
-}}
-
-  className="
-    h-[240px]
-    w-full
-    rounded-[18px]
-    bg-gray-100
-    object-cover
-    cursor-zoom-in
-  "
-/>
+              className="
+                h-[240px]
+                w-full
+                rounded-[18px]
+                bg-gray-100
+                object-cover
+                cursor-zoom-in
+                select-none
+              "
+            />
 
             <div className="absolute left-2 top-2 rounded-lg bg-red-500 px-2.5 py-1 text-[10px] font-bold text-white">
 
@@ -976,7 +968,7 @@ onTouchEnd={() => {
 
       </div>
 
-      {/* FIXED ZOOM MODAL WITH TOUCH SWIPE */}
+      {/* FIXED ZOOM MODAL WITH SMOOTH TOUCH SWIPE AND PAN OVERRIDE */}
       {showZoom && (
         <div className="fixed inset-0 z-[999] bg-white/95 backdrop-blur-sm">
           <button
@@ -999,8 +991,10 @@ onTouchEnd={() => {
                   <div 
                     className="flex h-full w-full items-center justify-center"
                     onTouchStart={(e) => {
+                      // Swipe only works when image is at default scale (1x)
                       if (state.scale === 1) {
                         touchStartX.current = e.targetTouches[0].clientX;
+                        touchEndX.current = e.targetTouches[0].clientX;
                       }
                     }}
                     onTouchMove={(e) => {
