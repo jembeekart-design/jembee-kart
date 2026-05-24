@@ -325,51 +325,40 @@ const touchEndX = useRef(0);
     setShowZoom(true)
   }
 
-  onTouchStart={(e) =>
-    setTouchStart(
-      e.targetTouches[0].clientX
-    )
+  onTouchStart={(e) => {
+  touchStartX.current =
+    e.targetTouches[0].clientX;
+}}
+
+onTouchMove={(e) => {
+  touchEndX.current =
+    e.targetTouches[0].clientX;
+}}
+
+onTouchEnd={() => {
+
+  const distance =
+    touchStartX.current -
+    touchEndX.current;
+
+  if (distance > 30) {
+
+    setCurrentImage((prev) =>
+      prev < images.length - 1
+        ? prev + 1
+        : prev
+    );
   }
 
-  onTouchMove={(e) =>
-    setTouchEnd(
-      e.targetTouches[0].clientX
-    )
+  if (distance < -30) {
+
+    setCurrentImage((prev) =>
+      prev > 0
+        ? prev - 1
+        : prev
+    );
   }
-
-  onTouchEnd={() => {
-
-    if (
-      touchStart - touchEnd >
-      50
-    ) {
-
-      if (
-        currentImage <
-        images.length - 1
-      ) {
-
-        setCurrentImage(
-          currentImage + 1
-        );
-      }
-    }
-
-    if (
-      touchEnd - touchStart >
-      50
-    ) {
-
-      if (
-        currentImage > 0
-      ) {
-
-        setCurrentImage(
-          currentImage - 1
-        );
-      }
-    }
-  }}
+}}
 
   className="
     h-[240px]
