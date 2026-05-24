@@ -1006,51 +1006,43 @@ onTouchEnd={() => {
     justify-center
   "
 
-  onTouchStart={(e) =>
-    setTouchStart(
-      e.targetTouches[0].clientX
-    )
+  onTouchStart={(e) => {
+  touchStartX.current =
+    e.targetTouches[0].clientX;
+}}
+
+onTouchMove={(e) => {
+  touchEndX.current =
+    e.targetTouches[0].clientX;
+}}
+
+onTouchEnd={() => {
+
+  const swipeDistance =
+    touchStartX.current -
+    touchEndX.current;
+
+  if (
+    swipeDistance > 50 &&
+    currentImage <
+      images.length - 1
+  ) {
+
+    setCurrentImage(
+      (prev) => prev + 1
+    );
   }
 
-  onTouchMove={(e) =>
-    setTouchEnd(
-      e.targetTouches[0].clientX
-    )
+  if (
+    swipeDistance < -50 &&
+    currentImage > 0
+  ) {
+
+    setCurrentImage(
+      (prev) => prev - 1
+    );
   }
-
-  onTouchEnd={() => {
-
-    if (
-      touchStart - touchEnd >
-      50
-    ) {
-
-      if (
-        currentImage <
-        images.length - 1
-      ) {
-
-        setCurrentImage(
-          currentImage + 1
-        );
-      }
-    }
-
-    if (
-      touchEnd - touchStart >
-      50
-    ) {
-
-      if (
-        currentImage > 0
-      ) {
-
-        setCurrentImage(
-          currentImage - 1
-        );
-      }
-    }
-  }}
+}}
 >
 <TransformWrapper
   pinch={{
