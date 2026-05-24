@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
+import { useState } from "react";
 
 import {
   Crown,
@@ -15,34 +15,6 @@ export default function PromoBanner() {
   const [showBanner, setShowBanner] =
     useState(true);
 
-  const timerRef =
-    useRef<NodeJS.Timeout | null>(
-      null
-    );
-
-  useEffect(() => {
-
-    timerRef.current =
-      setTimeout(() => {
-
-        setShowBanner(false);
-
-      }, 7000);
-
-    return () => {
-
-      if (timerRef.current) {
-
-        clearTimeout(
-          timerRef.current
-        );
-
-      }
-
-    };
-
-  }, []);
-
   if (!showBanner) return null;
 
   return (
@@ -55,8 +27,8 @@ export default function PromoBanner() {
         flex
         items-end
         justify-center
-        bg-black/40
-        backdrop-blur-[2px]
+        bg-black/50
+        backdrop-blur-sm
       "
     >
 
@@ -81,7 +53,7 @@ export default function PromoBanner() {
         "
       >
 
-        {/* SKIP */}
+        {/* CLEAR SKIP BUTTON */}
 
         <button
           onClick={() =>
@@ -91,20 +63,22 @@ export default function PromoBanner() {
             absolute
             right-4
             top-4
+            z-50
             flex
             items-center
-            gap-1
+            gap-2
             rounded-full
-            bg-white/20
-            px-3
-            py-1.5
-            text-[11px]
-            font-bold
-            backdrop-blur-md
+            bg-white
+            px-4
+            py-2
+            text-[13px]
+            font-black
+            text-black
+            shadow-xl
           "
         >
 
-          <X size={14} />
+          <X size={16} />
 
           Skip
 
@@ -138,7 +112,7 @@ export default function PromoBanner() {
 
             </h2>
 
-            <p className="mt-1 text-[12px] font-semibold text-white/80">
+            <p className="mt-1 text-[12px] font-semibold text-white/90">
 
               MLM • Reseller • Affiliate
 
@@ -152,7 +126,7 @@ export default function PromoBanner() {
 
         <div className="mt-5">
 
-          <h3 className="text-[22px] font-black leading-[28px]">
+          <h3 className="text-[24px] font-black leading-[30px]">
 
             Start Earning
             <br />
@@ -160,12 +134,12 @@ export default function PromoBanner() {
 
           </h3>
 
-          <p className="mt-2 text-[12px] leading-5 text-white/85">
+          <p className="mt-2 text-[13px] leading-6 text-white/90">
 
             Invite people, sell products,
-            share affiliate links and grow
-            your income directly from
-            your phone.
+            share affiliate links and
+            build your own income system
+            directly from your phone.
 
           </p>
 
@@ -191,13 +165,13 @@ export default function PromoBanner() {
 
             <div>
 
-              <h3 className="text-[14px] font-black">
+              <h3 className="text-[15px] font-black">
 
                 MLM Income
 
               </h3>
 
-              <p className="text-[11px] text-white/80">
+              <p className="text-[11px] text-white/85">
 
                 Team build karke earning
 
@@ -223,13 +197,13 @@ export default function PromoBanner() {
 
             <div>
 
-              <h3 className="text-[14px] font-black">
+              <h3 className="text-[15px] font-black">
 
                 Reseller Program
 
               </h3>
 
-              <p className="text-[11px] text-white/80">
+              <p className="text-[11px] text-white/85">
 
                 Without stock selling
 
@@ -255,13 +229,13 @@ export default function PromoBanner() {
 
             <div>
 
-              <h3 className="text-[14px] font-black">
+              <h3 className="text-[15px] font-black">
 
                 Affiliate Rewards
 
               </h3>
 
-              <p className="text-[11px] text-white/80">
+              <p className="text-[11px] text-white/85">
 
                 Share links & earn commission
 
@@ -273,7 +247,7 @@ export default function PromoBanner() {
 
         </div>
 
-        {/* BUTTON */}
+        {/* CTA */}
 
         <button
           className="
@@ -282,7 +256,7 @@ export default function PromoBanner() {
             rounded-2xl
             bg-white
             py-3
-            text-[14px]
+            text-[15px]
             font-black
             text-violet-700
             shadow-lg
@@ -292,14 +266,6 @@ export default function PromoBanner() {
           Start Earning Now
 
         </button>
-
-        {/* TIMER */}
-
-        <p className="mt-3 text-center text-[10px] font-bold text-white/70">
-
-          Auto close in 7 seconds
-
-        </p>
 
       </div>
 
