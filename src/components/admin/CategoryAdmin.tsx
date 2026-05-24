@@ -683,7 +683,6 @@ export default function CategoryAdmin() {
                             }}
                             type="file"
                             accept="image/*"
-                            capture="environment"
                             hidden
                             onChange={async (
                               event
