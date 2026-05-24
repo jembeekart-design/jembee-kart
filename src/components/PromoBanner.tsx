@@ -1,5 +1,7 @@
 "use client";
 
+import Link from "next/link";
+
 import { useState } from "react";
 
 import {
@@ -27,7 +29,7 @@ export default function PromoBanner() {
         flex
         items-end
         justify-center
-        bg-black/50
+        bg-black/30
         backdrop-blur-sm
       "
     >
@@ -39,21 +41,18 @@ export default function PromoBanner() {
           relative
           h-[58vh]
           w-full
-          overflow-hidden
+          overflow-y-auto
           rounded-t-[35px]
-          bg-gradient-to-br
-          from-violet-700
-          via-fuchsia-600
-          to-orange-500
+          bg-white
           px-5
           pb-6
           pt-5
-          text-white
+          text-black
           shadow-2xl
         "
       >
 
-        {/* CLEAR SKIP BUTTON */}
+        {/* SKIP BUTTON */}
 
         <button
           onClick={() =>
@@ -68,13 +67,15 @@ export default function PromoBanner() {
             items-center
             gap-2
             rounded-full
-            bg-white
+            border
+            border-gray-200
+            bg-gray-100
             px-4
             py-2
             text-[13px]
             font-black
             text-black
-            shadow-xl
+            shadow-sm
           "
         >
 
@@ -96,7 +97,8 @@ export default function PromoBanner() {
               items-center
               justify-center
               rounded-full
-              bg-white/20
+              bg-violet-100
+              text-violet-700
             "
           >
 
@@ -106,13 +108,13 @@ export default function PromoBanner() {
 
           <div>
 
-            <h2 className="text-[28px] font-black leading-none">
+            <h2 className="text-[28px] font-black leading-none text-violet-700">
 
               JembeeKart
 
             </h2>
 
-            <p className="mt-1 text-[12px] font-semibold text-white/90">
+            <p className="mt-1 text-[12px] font-semibold text-gray-500">
 
               MLM • Reseller • Affiliate
 
@@ -126,7 +128,7 @@ export default function PromoBanner() {
 
         <div className="mt-5">
 
-          <h3 className="text-[24px] font-black leading-[30px]">
+          <h3 className="text-[24px] font-black leading-[30px] text-black">
 
             Start Earning
             <br />
@@ -134,7 +136,7 @@ export default function PromoBanner() {
 
           </h3>
 
-          <p className="mt-2 text-[13px] leading-6 text-white/90">
+          <p className="mt-3 text-[13px] leading-6 text-gray-600">
 
             Invite people, sell products,
             share affiliate links and
@@ -149,101 +151,173 @@ export default function PromoBanner() {
 
         <div className="mt-6 space-y-3">
 
-          <div
-            className="
-              flex
-              items-center
-              gap-3
-              rounded-2xl
-              bg-white/10
-              p-3
-              backdrop-blur-md
-            "
-          >
+          {/* MLM */}
 
-            <Users size={20} />
+          <Link href="/mlm">
 
-            <div>
+            <div
+              className="
+                flex
+                items-center
+                gap-3
+                rounded-2xl
+                border
+                border-violet-100
+                bg-violet-50
+                p-4
+                active:scale-[0.98]
+                transition
+              "
+            >
 
-              <h3 className="text-[15px] font-black">
+              <div
+                className="
+                  flex
+                  h-11
+                  w-11
+                  items-center
+                  justify-center
+                  rounded-full
+                  bg-violet-200
+                  text-violet-700
+                "
+              >
 
-                MLM Income
+                <Users size={20} />
 
-              </h3>
+              </div>
 
-              <p className="text-[11px] text-white/85">
+              <div>
 
-                Team build karke earning
+                <h3 className="text-[15px] font-black text-black">
 
-              </p>
+                  MLM Income
 
-            </div>
+                </h3>
 
-          </div>
+                <p className="text-[11px] text-gray-600">
 
-          <div
-            className="
-              flex
-              items-center
-              gap-3
-              rounded-2xl
-              bg-white/10
-              p-3
-              backdrop-blur-md
-            "
-          >
+                  Team build karke earning
 
-            <Gift size={20} />
+                </p>
 
-            <div>
-
-              <h3 className="text-[15px] font-black">
-
-                Reseller Program
-
-              </h3>
-
-              <p className="text-[11px] text-white/85">
-
-                Without stock selling
-
-              </p>
+              </div>
 
             </div>
 
-          </div>
+          </Link>
 
-          <div
-            className="
-              flex
-              items-center
-              gap-3
-              rounded-2xl
-              bg-white/10
-              p-3
-              backdrop-blur-md
-            "
-          >
+          {/* RESELLER */}
 
-            <Share2 size={20} />
+          <Link href="/reseller">
 
-            <div>
+            <div
+              className="
+                flex
+                items-center
+                gap-3
+                rounded-2xl
+                border
+                border-pink-100
+                bg-pink-50
+                p-4
+                active:scale-[0.98]
+                transition
+              "
+            >
 
-              <h3 className="text-[15px] font-black">
+              <div
+                className="
+                  flex
+                  h-11
+                  w-11
+                  items-center
+                  justify-center
+                  rounded-full
+                  bg-pink-200
+                  text-pink-700
+                "
+              >
 
-                Affiliate Rewards
+                <Gift size={20} />
 
-              </h3>
+              </div>
 
-              <p className="text-[11px] text-white/85">
+              <div>
 
-                Share links & earn commission
+                <h3 className="text-[15px] font-black text-black">
 
-              </p>
+                  Reseller Program
+
+                </h3>
+
+                <p className="text-[11px] text-gray-600">
+
+                  Without stock selling
+
+                </p>
+
+              </div>
 
             </div>
 
-          </div>
+          </Link>
+
+          {/* AFFILIATE */}
+
+          <Link href="/affiliate">
+
+            <div
+              className="
+                flex
+                items-center
+                gap-3
+                rounded-2xl
+                border
+                border-orange-100
+                bg-orange-50
+                p-4
+                active:scale-[0.98]
+                transition
+              "
+            >
+
+              <div
+                className="
+                  flex
+                  h-11
+                  w-11
+                  items-center
+                  justify-center
+                  rounded-full
+                  bg-orange-200
+                  text-orange-700
+                "
+              >
+
+                <Share2 size={20} />
+
+              </div>
+
+              <div>
+
+                <h3 className="text-[15px] font-black text-black">
+
+                  Affiliate Rewards
+
+                </h3>
+
+                <p className="text-[11px] text-gray-600">
+
+                  Share links & earn commission
+
+                </p>
+
+              </div>
+
+            </div>
+
+          </Link>
 
         </div>
 
@@ -254,11 +328,13 @@ export default function PromoBanner() {
             mt-6
             w-full
             rounded-2xl
-            bg-white
+            bg-gradient-to-r
+            from-violet-600
+            to-fuchsia-500
             py-3
             text-[15px]
             font-black
-            text-violet-700
+            text-white
             shadow-lg
           "
         >
