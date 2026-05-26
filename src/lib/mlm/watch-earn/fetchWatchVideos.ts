@@ -3,7 +3,8 @@ import {
   getDocs,
   orderBy,
   query,
-  limit
+  limit,
+  where
 } from "firebase/firestore";
 
 import { db }
@@ -12,6 +13,8 @@ from "@/firebase/config";
 export interface WatchVideo {
 
   id: string;
+
+  userId?: string;
 
   username: string;
 
@@ -22,6 +25,8 @@ export interface WatchVideo {
   music: string;
 
   verified: boolean;
+
+  sponsor?: boolean;
 
   video: string;
 
@@ -35,7 +40,17 @@ export interface WatchVideo {
 
   shares: number;
 
-  sponsor?: boolean;
+  saves?: number;
+
+  views?: number;
+
+  active?: boolean;
+
+  featured?: boolean;
+
+  status?: string;
+
+  moderation?: string;
 
   createdAt?: number;
 }
@@ -45,15 +60,29 @@ fetchWatchVideos() {
 
   try {
 
-    const videosRef =
-      collection(
-        db,
-        "watchEarnVideos"
-      );
+    /* =========================
+       QUERY
+    ========================= */
 
     const videosQuery =
       query(
-        videosRef,
+
+        collection(
+          db,
+          "watchEarnVideos"
+        ),
+
+        where(
+          "active",
+          "==",
+          true
+        ),
+
+        where(
+          "status",
+          "==",
+          "approved"
+        ),
 
         orderBy(
           "createdAt",
@@ -62,6 +91,10 @@ fetchWatchVideos() {
 
         limit(50)
       );
+
+    /* =========================
+       GET DOCS
+    ========================= */
 
     const snapshot =
       await getDocs(
@@ -78,8 +111,12 @@ fetchWatchVideos() {
           docItem.data();
 
         videos.push({
+
           id:
             docItem.id,
+
+          userId:
+            data.userId || "",
 
           username:
             data.username || "",
@@ -95,6 +132,9 @@ fetchWatchVideos() {
 
           verified:
             data.verified || false,
+
+          sponsor:
+            data.sponsor || false,
 
           video:
             data.video || "",
@@ -114,8 +154,23 @@ fetchWatchVideos() {
           shares:
             data.shares || 0,
 
-          sponsor:
-            data.sponsor || false,
+          saves:
+            data.saves || 0,
+
+          views:
+            data.views || 0,
+
+          active:
+            data.active || false,
+
+          featured:
+            data.featured || false,
+
+          status:
+            data.status || "",
+
+          moderation:
+            data.moderation || "",
 
           createdAt:
             data.createdAt || 0
@@ -124,6 +179,7 @@ fetchWatchVideos() {
     );
 
     return {
+
       success: true,
 
       videos
@@ -137,6 +193,7 @@ fetchWatchVideos() {
     );
 
     return {
+
       success: false,
 
       videos: []
