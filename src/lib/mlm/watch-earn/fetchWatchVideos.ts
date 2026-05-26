@@ -1,20 +1,16 @@
 import {
-  collection,
-  getDocs,
-  orderBy,
-  query,
-  limit,
-  where
+  addDoc,
+  collection
 } from "firebase/firestore";
 
 import { db }
 from "@/firebase/config";
 
-export interface WatchVideo {
+interface UploadWatchVideoData {
 
-  id: string;
+  file: File;
 
-  userId?: string;
+  userId: string;
 
   username: string;
 
@@ -24,171 +20,202 @@ export interface WatchVideo {
 
   music: string;
 
-  verified: boolean;
-
   sponsor?: boolean;
-
-  video: string;
-
-  thumbnail?: string;
-
-  coins: number;
-
-  likes: number;
-
-  comments: number;
-
-  shares: number;
-
-  saves?: number;
-
-  views?: number;
-
-  active?: boolean;
-
-  featured?: boolean;
-
-  status?: string;
-
-  moderation?: string;
-
-  createdAt?: number;
 }
 
 export async function
-fetchWatchVideos() {
+uploadWatchVideo({
+  file,
+  userId,
+  username,
+  caption,
+  hashtags,
+  music,
+  sponsor
+}: UploadWatchVideoData) {
 
   try {
 
     /* =========================
-       QUERY
+       VALIDATION
     ========================= */
 
-    const videosQuery =
-      query(
+    if (!file) {
+
+      return {
+        success: false,
+
+        message:
+          "Video required"
+      };
+    }
+
+    if (!userId) {
+
+      return {
+        success: false,
+
+        message:
+          "Login required"
+      };
+    }
+
+    if (
+      !file.type.startsWith(
+        "video/"
+      )
+    ) {
+
+      return {
+        success: false,
+
+        message:
+          "Only video allowed"
+      };
+    }
+
+    /* =========================
+       AUTO COINS
+    ========================= */
+
+    const rewardCoins =
+      sponsor
+        ? 25
+        : 5;
+
+    /* =========================
+       CLOUDINARY FORM DATA
+    ========================= */
+
+    const formData =
+      new FormData();
+
+    formData.append(
+      "file",
+      file
+    );
+
+    formData.append(
+      "upload_preset",
+      "jembeekart"
+    );
+
+    /* =========================
+       UPLOAD CLOUDINARY
+    ========================= */
+
+    const response =
+      await fetch(
+
+        "https://api.cloudinary.com/v1_1/YOUR_CLOUD_NAME/video/upload",
+
+        {
+          method: "POST",
+
+          body: formData
+        }
+      );
+
+    const data =
+      await response.json();
+
+    /* =========================
+       FAILED
+    ========================= */
+
+    if (!data.secure_url) {
+
+      return {
+        success: false,
+
+        message:
+          "Cloudinary upload failed"
+      };
+    }
+
+    /* =========================
+       SAVE FIRESTORE
+    ========================= */
+
+    const docRef =
+      await addDoc(
 
         collection(
           db,
           "watchEarnVideos"
         ),
 
-        where(
-          "active",
-          "==",
-          true
-        ),
-
-        where(
-          "status",
-          "==",
-          "approved"
-        ),
-
-        orderBy(
-          "createdAt",
-          "desc"
-        ),
-
-        limit(50)
-      );
-
-    /* =========================
-       GET DOCS
-    ========================= */
-
-    const snapshot =
-      await getDocs(
-        videosQuery
-      );
-
-    const videos:
-      WatchVideo[] = [];
-
-    snapshot.forEach(
-      (docItem) => {
-
-        const data =
-          docItem.data();
-
-        videos.push({
-
-          id:
-            docItem.id,
-
+        {
           userId:
-            data.userId || "",
+            userId,
 
           username:
-            data.username || "",
+            username,
 
           caption:
-            data.caption || "",
+            caption || "",
 
           hashtags:
-            data.hashtags || [],
+            hashtags || [],
 
           music:
-            data.music || "",
+            music || "",
 
           verified:
-            data.verified || false,
+            false,
 
           sponsor:
-            data.sponsor || false,
+            sponsor || false,
 
           video:
-            data.video || "",
+            data.secure_url,
 
           thumbnail:
-            data.thumbnail || "",
+            data.secure_url,
 
           coins:
-            data.coins || 0,
+            rewardCoins,
 
-          likes:
-            data.likes || 0,
+          likes: 0,
 
-          comments:
-            data.comments || 0,
+          comments: 0,
 
-          shares:
-            data.shares || 0,
+          shares: 0,
 
-          saves:
-            data.saves || 0,
+          saves: 0,
 
-          views:
-            data.views || 0,
+          views: 0,
 
-          active:
-            data.active || false,
+          active: true,
 
-          featured:
-            data.featured || false,
+          featured: false,
 
           status:
-            data.status || "",
+            "approved",
 
           moderation:
-            data.moderation || "",
+            "safe",
 
           createdAt:
-            data.createdAt || 0
-        });
-      }
-    );
+            Date.now()
+        }
+      );
 
     return {
 
       success: true,
 
-      videos
+      videoId:
+        docRef.id,
+
+      videoUrl:
+        data.secure_url
     };
 
   } catch (error) {
 
     console.error(
-      "FETCH WATCH VIDEOS ERROR:",
+      "UPLOAD VIDEO ERROR:",
       error
     );
 
@@ -196,7 +223,8 @@ fetchWatchVideos() {
 
       success: false,
 
-      videos: []
+      message:
+        "Upload failed"
     };
   }
 }
