@@ -1,16 +1,17 @@
 import {
-  addDoc,
-  collection
+  collection,
+  getDocs,
+  limit,
+  orderBy,
+  query
 } from "firebase/firestore";
 
 import { db }
 from "@/firebase/config";
 
-interface UploadWatchVideoData {
+export interface WatchVideo {
 
-  file: File;
-
-  userId: string;
+  id: string;
 
   username: string;
 
@@ -20,202 +21,121 @@ interface UploadWatchVideoData {
 
   music: string;
 
+  verified: boolean;
+
+  video: string;
+
+  thumbnail?: string;
+
+  coins: number;
+
+  likes: number;
+
+  comments: number;
+
+  shares: number;
+
   sponsor?: boolean;
+
+  createdAt?: number;
 }
 
 export async function
-uploadWatchVideo({
-  file,
-  userId,
-  username,
-  caption,
-  hashtags,
-  music,
-  sponsor
-}: UploadWatchVideoData) {
+fetchWatchVideos() {
 
   try {
 
-    /* =========================
-       VALIDATION
-    ========================= */
-
-    if (!file) {
-
-      return {
-        success: false,
-
-        message:
-          "Video required"
-      };
-    }
-
-    if (!userId) {
-
-      return {
-        success: false,
-
-        message:
-          "Login required"
-      };
-    }
-
-    if (
-      !file.type.startsWith(
-        "video/"
-      )
-    ) {
-
-      return {
-        success: false,
-
-        message:
-          "Only video allowed"
-      };
-    }
-
-    /* =========================
-       AUTO COINS
-    ========================= */
-
-    const rewardCoins =
-      sponsor
-        ? 25
-        : 5;
-
-    /* =========================
-       CLOUDINARY FORM DATA
-    ========================= */
-
-    const formData =
-      new FormData();
-
-    formData.append(
-      "file",
-      file
-    );
-
-    formData.append(
-      "upload_preset",
-      "jembeekart"
-    );
-
-    /* =========================
-       UPLOAD CLOUDINARY
-    ========================= */
-
-    const response =
-      await fetch(
-
-        "https://api.cloudinary.com/v1_1/YOUR_CLOUD_NAME/video/upload",
-
-        {
-          method: "POST",
-
-          body: formData
-        }
+    const videosRef =
+      collection(
+        db,
+        "watchEarnVideos"
       );
 
-    const data =
-      await response.json();
+    const videosQuery =
+      query(
 
-    /* =========================
-       FAILED
-    ========================= */
+        videosRef,
 
-    if (!data.secure_url) {
-
-      return {
-        success: false,
-
-        message:
-          "Cloudinary upload failed"
-      };
-    }
-
-    /* =========================
-       SAVE FIRESTORE
-    ========================= */
-
-    const docRef =
-      await addDoc(
-
-        collection(
-          db,
-          "watchEarnVideos"
+        orderBy(
+          "createdAt",
+          "desc"
         ),
 
-        {
-          userId:
-            userId,
+        limit(50)
+      );
+
+    const snapshot =
+      await getDocs(
+        videosQuery
+      );
+
+    const videos:
+      WatchVideo[] = [];
+
+    snapshot.forEach(
+      (docItem) => {
+
+        const data =
+          docItem.data();
+
+        videos.push({
+
+          id:
+            docItem.id,
 
           username:
-            username,
+            data.username || "",
 
           caption:
-            caption || "",
+            data.caption || "",
 
           hashtags:
-            hashtags || [],
+            data.hashtags || [],
 
           music:
-            music || "",
+            data.music || "",
 
           verified:
-            false,
-
-          sponsor:
-            sponsor || false,
+            data.verified || false,
 
           video:
-            data.secure_url,
+            data.video || "",
 
           thumbnail:
-            data.secure_url,
+            data.thumbnail || "",
 
           coins:
-            rewardCoins,
+            data.coins || 0,
 
-          likes: 0,
+          likes:
+            data.likes || 0,
 
-          comments: 0,
+          comments:
+            data.comments || 0,
 
-          shares: 0,
+          shares:
+            data.shares || 0,
 
-          saves: 0,
-
-          views: 0,
-
-          active: true,
-
-          featured: false,
-
-          status:
-            "approved",
-
-          moderation:
-            "safe",
+          sponsor:
+            data.sponsor || false,
 
           createdAt:
-            Date.now()
-        }
-      );
+            data.createdAt || 0
+        });
+      }
+    );
 
     return {
 
       success: true,
 
-      videoId:
-        docRef.id,
-
-      videoUrl:
-        data.secure_url
+      videos
     };
 
   } catch (error) {
 
     console.error(
-      "UPLOAD VIDEO ERROR:",
+      "FETCH WATCH VIDEOS ERROR:",
       error
     );
 
@@ -223,8 +143,7 @@ uploadWatchVideo({
 
       success: false,
 
-      message:
-        "Upload failed"
+      videos: []
     };
   }
 }
