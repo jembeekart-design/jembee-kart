@@ -22,37 +22,73 @@ autoJoinMLMOnPurchase(
 
   try {
 
-    const userRef = doc(
-      db,
-      "users",
-      userId
-    );
+    /* =========================
+       USER REF
+    ========================= */
+
+    const userRef =
+      doc(
+        db,
+        "users",
+        userId
+      );
 
     const userSnap =
-      await getDoc(userRef);
+      await getDoc(
+        userRef
+      );
 
-    if (!userSnap.exists()) {
-      return;
+    if (
+      !userSnap.exists()
+    ) {
+
+      return {
+        success: false,
+
+        message:
+          "User not found"
+      };
     }
 
     const userData =
       userSnap.data();
 
+    /* =========================
+       ALREADY JOINED
+    ========================= */
+
     if (
       userData.mlmJoined
     ) {
-      return;
+
+      return {
+        success: false,
+
+        message:
+          "Already joined MLM"
+      };
     }
 
+    /* =========================
+       REFERRAL CODE
+    ========================= */
+
     const referralCode =
-      generateReferralCode();
+      generateReferralCode(
+        userId
+      );
+
+    /* =========================
+       UPDATE USER
+    ========================= */
 
     await updateDoc(
       userRef,
       {
         mlmJoined: true,
 
-        referralCode,
+        referralCode:
+          referralCode,
 
         sponsorId:
           sponsorId || null,
@@ -60,7 +96,8 @@ autoJoinMLMOnPurchase(
         joinedAt:
           Date.now(),
 
-        rank: "Starter",
+        rank:
+          "Starter",
 
         totalEarning: 0,
 
@@ -68,9 +105,17 @@ autoJoinMLMOnPurchase(
 
         directReferrals: 0,
 
-        teamBusiness: 0
+        teamBusiness: 0,
+
+        totalOrders: 1,
+
+        active: true
       }
     );
+
+    /* =========================
+       UPDATE TREE
+    ========================= */
 
     if (sponsorId) {
 
@@ -80,6 +125,10 @@ autoJoinMLMOnPurchase(
       );
     }
 
+    /* =========================
+       MLM USERS
+    ========================= */
+
     await setDoc(
       doc(
         db,
@@ -87,14 +136,19 @@ autoJoinMLMOnPurchase(
         userId
       ),
       {
-        userId,
+        userId:
+          userId,
 
         sponsorId:
           sponsorId || null,
 
-        referralCode,
+        referralCode:
+          referralCode,
 
         active: true,
+
+        joinedFrom:
+          "product-purchase",
 
         createdAt:
           Date.now()
