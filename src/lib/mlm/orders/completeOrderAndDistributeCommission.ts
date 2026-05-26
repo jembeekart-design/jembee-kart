@@ -83,7 +83,7 @@ completeOrderAndDistributeCommission(
     );
 
     /* =========================
-       ORDER DATA
+       ORDER DETAILS
     ========================= */
 
     const userId =
@@ -113,13 +113,16 @@ completeOrderAndDistributeCommission(
     });
 
     /* =========================
-       DISTRIBUTE MLM COMMISSION
+       MLM COMMISSION
     ========================= */
 
-    await distributeLevelCommission(
-      userId,
-      amount
-    );
+    await distributeLevelCommission({
+      userId:
+        userId,
+
+      amount:
+        amount
+    });
 
     /* =========================
        SAVE HISTORY
