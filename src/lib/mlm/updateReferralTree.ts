@@ -2,27 +2,31 @@ import {
   arrayUnion,
   doc,
   getDoc,
+  setDoc,
   updateDoc
 } from "firebase/firestore";
 
-import { db } from "@/firebase/config";
+import { db }
+from "@/firebase/config";
 
 interface UpdateReferralTreeData {
 
-  newUserId: string;
-
   sponsorId: string;
+
+  newUserId: string;
 
 }
 
-export async function updateReferralTree(
-  data: UpdateReferralTreeData
+export async function
+updateReferralTree(
+  data:
+  UpdateReferralTreeData
 ) {
 
   try {
 
     /* ======================================================
-    LEVEL 1 UPDATE
+       CREATE REFERRAL DOC IF NOT EXISTS
     ====================================================== */
 
     const sponsorRef =
@@ -32,18 +36,46 @@ export async function updateReferralTree(
         data.sponsorId
       );
 
+    const sponsorRefSnap =
+      await getDoc(
+        sponsorRef
+      );
+
+    if (
+      !sponsorRefSnap.exists()
+    ) {
+
+      await setDoc(
+        sponsorRef,
+        {
+          level1: [],
+          level2: [],
+          level3: [],
+          createdAt:
+            Date.now()
+        }
+      );
+    }
+
+    /* ======================================================
+       LEVEL 1
+    ====================================================== */
+
     await updateDoc(
       sponsorRef,
       {
         level1:
           arrayUnion(
             data.newUserId
-          )
+          ),
+
+        updatedAt:
+          Date.now()
       }
     );
 
     /* ======================================================
-    GET SPONSOR DATA
+       GET SPONSOR USER
     ====================================================== */
 
     const sponsorUserRef =
@@ -62,8 +94,9 @@ export async function updateReferralTree(
       !sponsorSnapshot.exists()
     ) {
 
-      return;
-
+      return {
+        success: false
+      };
     }
 
     const sponsorData =
@@ -73,7 +106,7 @@ export async function updateReferralTree(
       sponsorData.sponsorId;
 
     /* ======================================================
-    LEVEL 2 UPDATE
+       LEVEL 2
     ====================================================== */
 
     if (
@@ -87,18 +120,42 @@ export async function updateReferralTree(
           level2SponsorId
         );
 
+      const level2Snap =
+        await getDoc(
+          level2Ref
+        );
+
+      if (
+        !level2Snap.exists()
+      ) {
+
+        await setDoc(
+          level2Ref,
+          {
+            level1: [],
+            level2: [],
+            level3: [],
+            createdAt:
+              Date.now()
+          }
+        );
+      }
+
       await updateDoc(
         level2Ref,
         {
           level2:
             arrayUnion(
               data.newUserId
-            )
+            ),
+
+          updatedAt:
+            Date.now()
         }
       );
 
       /* ======================================================
-      GET LEVEL 2 USER
+         GET LEVEL 2 USER
       ====================================================== */
 
       const level2UserRef =
@@ -124,7 +181,7 @@ export async function updateReferralTree(
           level2Data.sponsorId;
 
         /* ======================================================
-        LEVEL 3 UPDATE
+           LEVEL 3
         ====================================================== */
 
         if (
@@ -138,13 +195,37 @@ export async function updateReferralTree(
               level3SponsorId
             );
 
+          const level3Snap =
+            await getDoc(
+              level3Ref
+            );
+
+          if (
+            !level3Snap.exists()
+          ) {
+
+            await setDoc(
+              level3Ref,
+              {
+                level1: [],
+                level2: [],
+                level3: [],
+                createdAt:
+                  Date.now()
+              }
+            );
+          }
+
           await updateDoc(
             level3Ref,
             {
               level3:
                 arrayUnion(
                   data.newUserId
-                )
+                ),
+
+              updatedAt:
+                Date.now()
             }
           );
 
@@ -158,6 +239,10 @@ export async function updateReferralTree(
       "Referral Tree Updated"
     );
 
+    return {
+      success: true
+    };
+
   } catch (error) {
 
     console.error(
@@ -165,6 +250,8 @@ export async function updateReferralTree(
       error
     );
 
+    return {
+      success: false
+    };
   }
-
 }
