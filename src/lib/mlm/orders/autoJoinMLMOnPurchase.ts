@@ -22,10 +22,6 @@ autoJoinMLMOnPurchase(
 
   try {
 
-    /* =========================
-       USER REF
-    ========================= */
-
     const userRef =
       doc(
         db,
@@ -44,7 +40,6 @@ autoJoinMLMOnPurchase(
 
       return {
         success: false,
-
         message:
           "User not found"
       };
@@ -53,96 +48,21 @@ autoJoinMLMOnPurchase(
     const userData =
       userSnap.data();
 
-    /* =========================
-       ALREADY JOINED
-    ========================= */
-
-    if (
-      userData.mlmJoined
-    ) {
-import {
-  doc,
-  getDoc,
-  setDoc,
-  updateDoc
-} from "firebase/firestore";
-
-import { db }
-from "@/firebase/config";
-
-import { generateReferralCode }
-from "../generateReferralCode";
-
-import { updateReferralTree }
-from "../updateReferralTree";
-
-export async function
-autoJoinMLMOnPurchase(
-  userId: string,
-  sponsorId?: string
-) {
-
-  try {
-
-    /* =========================
-       USER REF
-    ========================= */
-
-    const userRef =
-      doc(
-        db,
-        "users",
-        userId
-      );
-
-    const userSnap =
-      await getDoc(
-        userRef
-      );
-
-    if (
-      !userSnap.exists()
-    ) {
-
-      return {
-        success: false,
-
-        message:
-          "User not found"
-      };
-    }
-
-    const userData =
-      userSnap.data();
-
-    /* =========================
-       ALREADY MLM JOINED
-    ========================= */
-
     if (
       userData.mlmJoined
     ) {
 
       return {
         success: false,
-
         message:
           "Already MLM joined"
       };
     }
 
-    /* =========================
-       GENERATE REFERRAL CODE
-    ========================= */
-
     const referralCode =
       generateReferralCode(
         userId
       );
-
-    /* =========================
-       UPDATE USER
-    ========================= */
 
     await updateDoc(
       userRef,
@@ -175,10 +95,6 @@ autoJoinMLMOnPurchase(
       }
     );
 
-    /* =========================
-       UPDATE REFERRAL TREE
-    ========================= */
-
     if (sponsorId) {
 
       await updateReferralTree({
@@ -189,10 +105,6 @@ autoJoinMLMOnPurchase(
           userId
       });
     }
-
-    /* =========================
-       MLM USERS COLLECTION
-    ========================= */
 
     await setDoc(
       doc(
