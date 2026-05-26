@@ -6,7 +6,8 @@ import {
   collection
 } from "firebase/firestore";
 
-import { db } from "@/firebase/config";
+import { db }
+from "@/firebase/config";
 
 import { distributeLevelCommission }
 from "../distributeLevelCommission";
@@ -21,16 +22,26 @@ completeOrderAndDistributeCommission(
 
   try {
 
-    const orderRef = doc(
-      db,
-      "orders",
-      orderId
-    );
+    /* =========================
+       ORDER REF
+    ========================= */
+
+    const orderRef =
+      doc(
+        db,
+        "orders",
+        orderId
+      );
 
     const orderSnap =
-      await getDoc(orderRef);
+      await getDoc(
+        orderRef
+      );
 
-    if (!orderSnap.exists()) {
+    if (
+      !orderSnap.exists()
+    ) {
+
       throw new Error(
         "Order not found"
       );
@@ -39,21 +50,41 @@ completeOrderAndDistributeCommission(
     const order =
       orderSnap.data();
 
+    /* =========================
+       ALREADY COMPLETED
+    ========================= */
+
     if (
       order.status ===
       "completed"
     ) {
-      return;
+
+      return {
+        success: false,
+
+        message:
+          "Order already completed"
+      };
     }
+
+    /* =========================
+       UPDATE ORDER
+    ========================= */
 
     await updateDoc(
       orderRef,
       {
-        status: "completed",
+        status:
+          "completed",
+
         completedAt:
           Date.now()
       }
     );
+
+    /* =========================
+       ORDER DATA
+    ========================= */
 
     const userId =
       order.userId;
@@ -66,16 +97,33 @@ completeOrderAndDistributeCommission(
         amount * 0.05
       );
 
-    await creditWallet(
-      userId,
-      cashback,
-      "Cashback Income"
-    );
+    /* =========================
+       CREDIT CASHBACK
+    ========================= */
+
+    await creditWallet({
+      uid:
+        userId,
+
+      amount:
+        cashback,
+
+      incomeType:
+        "rewardIncome"
+    });
+
+    /* =========================
+       DISTRIBUTE MLM COMMISSION
+    ========================= */
 
     await distributeLevelCommission(
       userId,
       amount
     );
+
+    /* =========================
+       SAVE HISTORY
+    ========================= */
 
     await addDoc(
       collection(
@@ -83,10 +131,18 @@ completeOrderAndDistributeCommission(
         "orderIncomeHistory"
       ),
       {
-        userId,
-        orderId,
-        amount,
-        cashback,
+        userId:
+          userId,
+
+        orderId:
+          orderId,
+
+        amount:
+          amount,
+
+        cashback:
+          cashback,
+
         createdAt:
           Date.now()
       }
