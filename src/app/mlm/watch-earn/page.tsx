@@ -10,19 +10,41 @@ import {
   Heart,
   MessageCircle,
   Share2,
-  Coins
+  Coins,
+  Bookmark,
+  Bell,
+  Flame,
+  BadgeCheck,
+  Music2,
+  Send,
+  Copy,
+  Link2,
+  X
 } from "lucide-react";
 
 interface VideoItem {
+
   id: string;
 
   username: string;
 
   caption: string;
 
+  hashtags: string[];
+
+  music: string;
+
+  verified: boolean;
+
   video: string;
 
   coins: number;
+
+  likes: number;
+
+  comments: number;
+
+  shares: number;
 }
 
 export default function
@@ -44,10 +66,27 @@ WatchEarnPage() {
         caption:
           "Watch & Earn Coins 🔥",
 
+        hashtags: [
+          "earn",
+          "shopping",
+          "coins"
+        ],
+
+        music:
+          "Trending Beat",
+
+        verified: true,
+
         video:
           "https://www.w3schools.com/html/mov_bbb.mp4",
 
-        coins: 5
+        coins: 5,
+
+        likes: 12000,
+
+        comments: 900,
+
+        shares: 320
       },
 
       {
@@ -57,12 +96,29 @@ WatchEarnPage() {
           "Fashion Store",
 
         caption:
-          "New Trending Collection",
+          "New Trending Collection ✨",
+
+        hashtags: [
+          "fashion",
+          "style",
+          "viral"
+        ],
+
+        music:
+          "Fashion Music",
+
+        verified: false,
 
         video:
           "https://www.w3schools.com/html/movie.mp4",
 
-        coins: 10
+        coins: 10,
+
+        likes: 8500,
+
+        comments: 420,
+
+        shares: 150
       }
     ]);
 
@@ -74,7 +130,36 @@ WatchEarnPage() {
   const [
     earnedCoins,
     setEarnedCoins
+  ] = useState(1250);
+
+  const [
+    streak
+  ] = useState(7);
+
+  const [
+    showReward,
+    setShowReward
+  ] = useState(false);
+
+  const [
+    rewardCoinsValue,
+    setRewardCoinsValue
   ] = useState(0);
+
+  const [
+    commentOpen,
+    setCommentOpen
+  ] = useState(false);
+
+  const [
+    shareOpen,
+    setShareOpen
+  ] = useState(false);
+
+  const [
+    commentText,
+    setCommentText
+  ] = useState("");
 
   useEffect(() => {
 
@@ -84,7 +169,9 @@ WatchEarnPage() {
         index
       ) => {
 
-        if (!video) return;
+        if (!video) {
+          return;
+        }
 
         if (
           index ===
@@ -110,13 +197,37 @@ WatchEarnPage() {
       (prev) =>
         prev + coins
     );
+
+    setRewardCoinsValue(
+      coins
+    );
+
+    setShowReward(
+      true
+    );
+
+    setTimeout(() => {
+
+      setShowReward(
+        false
+      );
+
+    }, 3000);
   }
 
   return (
 
-    <main className="h-screen overflow-y-scroll snap-y snap-mandatory bg-black">
+    <main
+      className="
+        h-screen
+        overflow-y-scroll
+        snap-y
+        snap-mandatory
+        bg-black
+      "
+    >
 
-      {/* TOP BAR */}
+      {/* HEADER */}
 
       <div
         className="
@@ -129,41 +240,204 @@ WatchEarnPage() {
           justify-between
           px-4
           py-4
-          text-white
         "
       >
 
-        <h1 className="text-2xl font-black">
+        <div>
 
-          Watch & Earn
+          <h1
+            className="
+              text-3xl
+              font-black
+              text-white
+            "
+          >
 
-        </h1>
+            Watch & Earn
+
+          </h1>
+
+          <p
+            className="
+              mt-1
+              text-xs
+              font-semibold
+              text-gray-300
+            "
+          >
+
+            Watch videos & earn rewards
+
+          </p>
+
+        </div>
 
         <div
           className="
             flex
             items-center
-            gap-2
-            rounded-full
-            bg-black/40
-            px-4
-            py-2
+            gap-3
           "
         >
 
-          <Coins size={18} />
+          {/* STREAK */}
 
-          <span className="font-bold">
+          <div
+            className="
+              flex
+              items-center
+              gap-2
+              rounded-full
+              bg-orange-500/20
+              px-4
+              py-2
+              backdrop-blur-xl
+            "
+          >
 
-            {earnedCoins}
+            <Flame
+              size={18}
+              className="
+                text-orange-400
+              "
+            />
 
-          </span>
+            <span
+              className="
+                text-sm
+                font-black
+                text-white
+              "
+            >
+
+              {streak}
+
+            </span>
+
+          </div>
+
+          {/* COINS */}
+
+          <div
+            className="
+              flex
+              items-center
+              gap-2
+              rounded-full
+              bg-yellow-400/20
+              px-4
+              py-2
+              backdrop-blur-xl
+            "
+          >
+
+            <Coins
+              size={18}
+              className="
+                text-yellow-300
+              "
+            />
+
+            <span
+              className="
+                text-sm
+                font-black
+                text-white
+              "
+            >
+
+              {earnedCoins}
+
+            </span>
+
+          </div>
+
+          {/* BELL */}
+
+          <button
+            className="
+              flex
+              h-11
+              w-11
+              items-center
+              justify-center
+              rounded-full
+              bg-black/40
+              text-white
+              backdrop-blur-xl
+            "
+          >
+
+            <Bell size={20} />
+
+          </button>
 
         </div>
 
       </div>
 
-      {/* VIDEOS */}
+      {/* REWARD POPUP */}
+
+      {showReward && (
+
+        <div
+          className="
+            fixed
+            left-1/2
+            top-1/2
+            z-[999]
+            flex
+            -translate-x-1/2
+            -translate-y-1/2
+            items-center
+            gap-3
+            rounded-full
+            bg-yellow-400
+            px-6
+            py-4
+            shadow-2xl
+          "
+        >
+
+          <Coins
+            size={30}
+            className="
+              text-black
+            "
+          />
+
+          <div>
+
+            <h2
+              className="
+                text-2xl
+                font-black
+                text-black
+              "
+            >
+
+              +{rewardCoinsValue}
+
+            </h2>
+
+            <p
+              className="
+                text-xs
+                font-bold
+                text-black/70
+              "
+            >
+
+              Reward Added
+
+            </p>
+
+          </div>
+
+        </div>
+      )}
+
+      {/* VIDEO FEED */}
 
       {videos.map(
         (
@@ -180,6 +454,8 @@ WatchEarnPage() {
             "
           >
 
+            {/* VIDEO */}
+
             <video
               ref={(element) => {
 
@@ -195,6 +471,10 @@ WatchEarnPage() {
 
               loop
 
+              muted
+
+              autoPlay
+
               playsInline
 
               className="
@@ -207,13 +487,6 @@ WatchEarnPage() {
 
                 setCurrentIndex(
                   index
-                );
-              }}
-
-              onEnded={() => {
-
-                rewardCoins(
-                  video.coins
                 );
               }}
             />
@@ -231,7 +504,82 @@ WatchEarnPage() {
               "
             />
 
-            {/* TEXT */}
+            {/* PROGRESS BAR */}
+
+            <div
+              className="
+                absolute
+                left-4
+                right-4
+                top-24
+                z-40
+              "
+            >
+
+              <div
+                className="
+                  mb-2
+                  flex
+                  items-center
+                  justify-between
+                "
+              >
+
+                <span
+                  className="
+                    text-xs
+                    font-bold
+                    text-white
+                  "
+                >
+
+                  Watch to Earn
+
+                </span>
+
+                <span
+                  className="
+                    rounded-full
+                    bg-black/50
+                    px-3
+                    py-1
+                    text-xs
+                    font-black
+                    text-yellow-400
+                  "
+                >
+
+                  +{video.coins}
+
+                </span>
+
+              </div>
+
+              <div
+                className="
+                  h-3
+                  overflow-hidden
+                  rounded-full
+                  bg-white/20
+                "
+              >
+
+                <div
+                  className="
+                    h-full
+                    w-[70%]
+                    rounded-full
+                    bg-gradient-to-r
+                    from-yellow-300
+                    to-orange-500
+                  "
+                />
+
+              </div>
+
+            </div>
+
+            {/* VIDEO INFO */}
 
             <div
               className="
@@ -239,21 +587,129 @@ WatchEarnPage() {
                 bottom-24
                 left-4
                 z-20
+                max-w-[75%]
                 text-white
               "
             >
 
-              <h2 className="text-xl font-black">
+              <div
+                className="
+                  flex
+                  items-center
+                  gap-2
+                "
+              >
 
-                @{video.username}
+                <h2
+                  className="
+                    text-xl
+                    font-black
+                  "
+                >
 
-              </h2>
+                  @{video.username}
 
-              <p className="mt-2 max-w-[250px] text-sm">
+                </h2>
+
+                {video.verified && (
+
+                  <BadgeCheck
+                    size={18}
+                    className="
+                      fill-blue-500
+                      text-white
+                    "
+                  />
+
+                )}
+
+              </div>
+
+              <p
+                className="
+                  mt-3
+                  text-sm
+                  leading-6
+                "
+              >
 
                 {video.caption}
 
               </p>
+
+              {/* HASHTAGS */}
+
+              <div
+                className="
+                  mt-3
+                  flex
+                  flex-wrap
+                  gap-2
+                "
+              >
+
+                {video.hashtags.map(
+                  (tag) => (
+
+                    <span
+                      key={tag}
+                      className="
+                        rounded-full
+                        bg-white/10
+                        px-3
+                        py-1
+                        text-xs
+                        font-bold
+                        text-blue-200
+                      "
+                    >
+
+                      #{tag}
+
+                    </span>
+                  )
+                )}
+
+              </div>
+
+              {/* MUSIC */}
+
+              <div
+                className="
+                  mt-4
+                  flex
+                  items-center
+                  gap-2
+                  rounded-full
+                  bg-black/40
+                  px-4
+                  py-2
+                "
+              >
+
+                <Music2
+                  size={16}
+                  className="
+                    text-pink-400
+                  "
+                />
+
+                <p
+                  className="
+                    truncate
+                    text-xs
+                    font-bold
+                    text-white
+                  "
+                >
+
+                  {video.music}
+
+                </p>
+
+              </div>
+
+              {/* CLAIM BUTTON */}
 
               <button
                 onClick={() =>
@@ -262,11 +718,11 @@ WatchEarnPage() {
                   )
                 }
                 className="
-                  mt-4
+                  mt-5
                   rounded-full
                   bg-yellow-400
                   px-5
-                  py-2
+                  py-3
                   font-black
                   text-black
                 "
@@ -283,7 +739,7 @@ WatchEarnPage() {
             <div
               className="
                 absolute
-                bottom-28
+                bottom-24
                 right-3
                 z-20
                 flex
@@ -294,61 +750,179 @@ WatchEarnPage() {
               "
             >
 
+              {/* LIKE */}
+
               <button
                 className="
                   flex
                   flex-col
                   items-center
+                  gap-1
                 "
               >
 
-                <Heart
-                  size={28}
-                />
+                <div
+                  className="
+                    flex
+                    h-14
+                    w-14
+                    items-center
+                    justify-center
+                    rounded-full
+                    bg-black/40
+                  "
+                >
 
-                <span className="text-xs">
+                  <Heart
+                    size={28}
+                  />
 
-                  12K
+                </div>
+
+                <span
+                  className="
+                    text-xs
+                    font-bold
+                  "
+                >
+
+                  {video.likes}
 
                 </span>
 
               </button>
 
+              {/* COMMENT */}
+
               <button
+                onClick={() =>
+                  setCommentOpen(
+                    true
+                  )
+                }
                 className="
                   flex
                   flex-col
                   items-center
+                  gap-1
                 "
               >
 
-                <MessageCircle
-                  size={28}
-                />
+                <div
+                  className="
+                    flex
+                    h-14
+                    w-14
+                    items-center
+                    justify-center
+                    rounded-full
+                    bg-black/40
+                  "
+                >
 
-                <span className="text-xs">
+                  <MessageCircle
+                    size={28}
+                  />
 
-                  900
+                </div>
+
+                <span
+                  className="
+                    text-xs
+                    font-bold
+                  "
+                >
+
+                  {video.comments}
 
                 </span>
 
               </button>
 
+              {/* SHARE */}
+
+              <button
+                onClick={() =>
+                  setShareOpen(
+                    true
+                  )
+                }
+                className="
+                  flex
+                  flex-col
+                  items-center
+                  gap-1
+                "
+              >
+
+                <div
+                  className="
+                    flex
+                    h-14
+                    w-14
+                    items-center
+                    justify-center
+                    rounded-full
+                    bg-black/40
+                  "
+                >
+
+                  <Share2
+                    size={28}
+                  />
+
+                </div>
+
+                <span
+                  className="
+                    text-xs
+                    font-bold
+                  "
+                >
+
+                  {video.shares}
+
+                </span>
+
+              </button>
+
+              {/* SAVE */}
+
               <button
                 className="
                   flex
                   flex-col
                   items-center
+                  gap-1
                 "
               >
 
-                <Share2
-                  size={28}
-                />
+                <div
+                  className="
+                    flex
+                    h-14
+                    w-14
+                    items-center
+                    justify-center
+                    rounded-full
+                    bg-black/40
+                  "
+                >
 
-                <span className="text-xs">
+                  <Bookmark
+                    size={26}
+                  />
 
-                  Share
+                </div>
+
+                <span
+                  className="
+                    text-xs
+                    font-bold
+                  "
+                >
+
+                  Save
 
                 </span>
 
@@ -359,6 +933,508 @@ WatchEarnPage() {
           </section>
         )
       )}
+
+      {/* COMMENT DRAWER */}
+
+      <div
+        className={`
+          fixed
+          bottom-0
+          left-0
+          right-0
+          z-[999]
+          rounded-t-[35px]
+          bg-[#121212]
+          transition-all
+          duration-300
+
+          ${
+            commentOpen
+              ? "translate-y-0"
+              : "translate-y-full"
+          }
+        `}
+      >
+
+        <div
+          className="
+            flex
+            items-center
+            justify-between
+            border-b
+            border-white/10
+            px-5
+            py-4
+          "
+        >
+
+          <h2
+            className="
+              text-lg
+              font-black
+              text-white
+            "
+          >
+
+            Comments
+
+          </h2>
+
+          <button
+            onClick={() =>
+              setCommentOpen(
+                false
+              )
+            }
+            className="
+              text-white
+            "
+          >
+
+            <X />
+
+          </button>
+
+        </div>
+
+        <div
+          className="
+            h-[350px]
+            overflow-y-auto
+            px-5
+            py-5
+          "
+        >
+
+          <div
+            className="
+              space-y-5
+            "
+          >
+
+            <div>
+
+              <h3
+                className="
+                  text-sm
+                  font-black
+                  text-white
+                "
+              >
+
+                @Rahul
+
+              </h3>
+
+              <p
+                className="
+                  mt-1
+                  text-sm
+                  text-gray-300
+                "
+              >
+
+                Amazing video 🔥
+
+              </p>
+
+            </div>
+
+            <div>
+
+              <h3
+                className="
+                  text-sm
+                  font-black
+                  text-white
+                "
+              >
+
+                @Aman
+
+              </h3>
+
+              <p
+                className="
+                  mt-1
+                  text-sm
+                  text-gray-300
+                "
+              >
+
+                Watch & earn is awesome
+
+              </p>
+
+            </div>
+
+          </div>
+
+        </div>
+
+        {/* COMMENT INPUT */}
+
+        <div
+          className="
+            flex
+            items-center
+            gap-3
+            border-t
+            border-white/10
+            px-4
+            py-4
+          "
+        >
+
+          <input
+            value={commentText}
+
+            onChange={(e) =>
+              setCommentText(
+                e.target.value
+              )
+            }
+
+            placeholder="Write comment..."
+
+            className="
+              flex-1
+              rounded-full
+              border
+              border-white/10
+              bg-white/5
+              px-5
+              py-3
+              text-sm
+              text-white
+              outline-none
+            "
+          />
+
+          <button
+            className="
+              flex
+              h-12
+              w-12
+              items-center
+              justify-center
+              rounded-full
+              bg-gradient-to-r
+              from-violet-600
+              to-fuchsia-500
+              text-white
+            "
+          >
+
+            <Send
+              size={18}
+            />
+
+          </button>
+
+        </div>
+
+      </div>
+
+      {/* SHARE DRAWER */}
+
+      <div
+        className={`
+          fixed
+          bottom-0
+          left-0
+          right-0
+          z-[999]
+          rounded-t-[35px]
+          bg-[#121212]
+          transition-all
+          duration-300
+
+          ${
+            shareOpen
+              ? "translate-y-0"
+              : "translate-y-full"
+          }
+        `}
+      >
+
+        <div
+          className="
+            flex
+            items-center
+            justify-between
+            border-b
+            border-white/10
+            px-5
+            py-4
+          "
+        >
+
+          <h2
+            className="
+              text-lg
+              font-black
+              text-white
+            "
+          >
+
+            Share Video
+
+          </h2>
+
+          <button
+            onClick={() =>
+              setShareOpen(
+                false
+              )
+            }
+            className="
+              text-white
+            "
+          >
+
+            <X />
+
+          </button>
+
+        </div>
+
+        <div
+          className="
+            grid
+            grid-cols-4
+            gap-5
+            px-5
+            py-8
+          "
+        >
+
+          <button
+            className="
+              flex
+              flex-col
+              items-center
+              gap-3
+            "
+          >
+
+            <div
+              className="
+                flex
+                h-16
+                w-16
+                items-center
+                justify-center
+                rounded-full
+                bg-green-500/20
+              "
+            >
+
+              <MessageCircle
+                size={28}
+                className="
+                  text-green-400
+                "
+              />
+
+            </div>
+
+            <span
+              className="
+                text-xs
+                font-bold
+                text-white
+              "
+            >
+
+              WhatsApp
+
+            </span>
+
+          </button>
+
+          <button
+            className="
+              flex
+              flex-col
+              items-center
+              gap-3
+            "
+          >
+
+            <div
+              className="
+                flex
+                h-16
+                w-16
+                items-center
+                justify-center
+                rounded-full
+                bg-sky-500/20
+              "
+            >
+
+              <Send
+                size={28}
+                className="
+                  text-sky-400
+                "
+              />
+
+            </div>
+
+            <span
+              className="
+                text-xs
+                font-bold
+                text-white
+              "
+            >
+
+              Telegram
+
+            </span>
+
+          </button>
+
+          <button
+            className="
+              flex
+              flex-col
+              items-center
+              gap-3
+            "
+          >
+
+            <div
+              className="
+                flex
+                h-16
+                w-16
+                items-center
+                justify-center
+                rounded-full
+                bg-blue-500/20
+              "
+            >
+
+              <Share2
+                size={28}
+                className="
+                  text-blue-400
+                "
+              />
+
+            </div>
+
+            <span
+              className="
+                text-xs
+                font-bold
+                text-white
+              "
+            >
+
+              Share
+
+            </span>
+
+          </button>
+
+          <button
+            className="
+              flex
+              flex-col
+              items-center
+              gap-3
+            "
+          >
+
+            <div
+              className="
+                flex
+                h-16
+                w-16
+                items-center
+                justify-center
+                rounded-full
+                bg-yellow-500/20
+              "
+            >
+
+              <Copy
+                size={28}
+                className="
+                  text-yellow-300
+                "
+              />
+
+            </div>
+
+            <span
+              className="
+                text-xs
+                font-bold
+                text-white
+              "
+            >
+
+              Copy
+
+            </span>
+
+          </button>
+
+        </div>
+
+        {/* LINK */}
+
+        <div
+          className="
+            px-5
+            pb-8
+          "
+        >
+
+          <div
+            className="
+              flex
+              items-center
+              gap-3
+              rounded-2xl
+              border
+              border-white/10
+              bg-white/5
+              px-4
+              py-4
+            "
+          >
+
+            <Link2
+              size={18}
+              className="
+                text-gray-400
+              "
+            />
+
+            <p
+              className="
+                flex-1
+                truncate
+                text-sm
+                text-gray-300
+              "
+            >
+
+              https://jembeekart.com/watch/video
+
+            </p>
+
+          </div>
+
+        </div>
+
+      </div>
 
     </main>
   );
