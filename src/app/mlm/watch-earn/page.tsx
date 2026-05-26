@@ -22,30 +22,10 @@ import {
   X
 } from "lucide-react";
 
-interface VideoItem {
-
-  id: string;
-
-  username: string;
-
-  caption: string;
-
-  hashtags: string[];
-
-  music: string;
-
-  verified: boolean;
-
-  video: string;
-
-  coins: number;
-
-  likes: number;
-
-  comments: number;
-
-  shares: number;
-}
+import {
+  fetchWatchVideos,
+  WatchVideo
+} from "@/lib/mlm/watch-earn/fetchWatchVideos";
 
 export default function
 WatchEarnPage() {
@@ -55,72 +35,25 @@ WatchEarnPage() {
       HTMLVideoElement[]
     >([]);
 
-  const [videos] =
-    useState<VideoItem[]>([
-      {
-        id: "1",
+  /* =========================
+     VIDEOS
+  ========================= */
 
-        username:
-          "JembeeKart",
+  const [
+    videos,
+    setVideos
+  ] = useState<
+    WatchVideo[]
+  >([]);
 
-        caption:
-          "Watch & Earn Coins 🔥",
+  const [
+    loadingVideos,
+    setLoadingVideos
+  ] = useState(true);
 
-        hashtags: [
-          "earn",
-          "shopping",
-          "coins"
-        ],
-
-        music:
-          "Trending Beat",
-
-        verified: true,
-
-        video:
-          "https://www.w3schools.com/html/mov_bbb.mp4",
-
-        coins: 5,
-
-        likes: 12000,
-
-        comments: 900,
-
-        shares: 320
-      },
-
-      {
-        id: "2",
-
-        username:
-          "Fashion Store",
-
-        caption:
-          "New Trending Collection ✨",
-
-        hashtags: [
-          "fashion",
-          "style",
-          "viral"
-        ],
-
-        music:
-          "Fashion Music",
-
-        verified: false,
-
-        video:
-          "https://www.w3schools.com/html/movie.mp4",
-
-        coins: 10,
-
-        likes: 8500,
-
-        comments: 420,
-
-        shares: 150
-      }
-    ]);
+  /* =========================
+     STATES
+  ========================= */
 
   const [
     currentIndex,
@@ -168,6 +101,55 @@ WatchEarnPage() {
     []
   );
 
+  /* =========================
+     FETCH VIDEOS
+  ========================= */
+
+  useEffect(() => {
+
+    async function
+    loadVideos() {
+
+      try {
+
+        setLoadingVideos(
+          true
+        );
+
+        const result =
+          await fetchWatchVideos();
+
+        if (
+          result.success
+        ) {
+
+          setVideos(
+            result.videos
+          );
+        }
+
+      } catch (error) {
+
+        console.error(
+          error
+        );
+
+      } finally {
+
+        setLoadingVideos(
+          false
+        );
+      }
+    }
+
+    loadVideos();
+
+  }, []);
+
+  /* =========================
+     AUTO PLAY
+  ========================= */
+
   useEffect(() => {
 
     videoRefs.current.forEach(
@@ -195,6 +177,10 @@ WatchEarnPage() {
     );
 
   }, [currentIndex]);
+
+  /* =========================
+     REWARD
+  ========================= */
 
   function rewardCoins(
     videoId: string,
@@ -237,6 +223,40 @@ WatchEarnPage() {
       );
 
     }, 3000);
+  }
+
+  /* =========================
+     LOADING
+  ========================= */
+
+  if (loadingVideos) {
+
+    return (
+
+      <main
+        className="
+          flex
+          min-h-screen
+          items-center
+          justify-center
+          bg-black
+        "
+      >
+
+        <p
+          className="
+            text-lg
+            font-black
+            text-white
+          "
+        >
+
+          Loading videos...
+
+        </p>
+
+      </main>
+    );
   }
 
   return (
@@ -461,6 +481,34 @@ WatchEarnPage() {
         </div>
       )}
 
+      {/* NO VIDEOS */}
+
+      {videos.length === 0 && (
+
+        <div
+          className="
+            flex
+            min-h-screen
+            items-center
+            justify-center
+          "
+        >
+
+          <p
+            className="
+              text-lg
+              font-black
+              text-white
+            "
+          >
+
+            No videos found
+
+          </p>
+
+        </div>
+      )}
+
       {/* VIDEO FEED */}
 
       {videos.map(
@@ -472,7 +520,6 @@ WatchEarnPage() {
           <section
             key={video.id}
             className="
-              watch-video-item
               relative
               h-screen
               snap-start
@@ -500,6 +547,8 @@ WatchEarnPage() {
 
               playsInline
 
+              controls={false}
+
               className="
                 h-full
                 w-full
@@ -526,90 +575,6 @@ WatchEarnPage() {
                 to-transparent
               "
             />
-
-            {/* PROGRESS BAR */}
-
-            <div
-              className="
-                absolute
-                left-4
-                right-4
-                top-24
-                z-40
-              "
-            >
-
-              <div
-                className="
-                  mb-2
-                  flex
-                  items-center
-                  justify-between
-                "
-              >
-
-                <span
-                  className="
-                    text-xs
-                    font-bold
-                    text-white
-                  "
-                >
-
-                  Watch to Earn
-
-                </span>
-
-                <span
-                  className="
-                    rounded-full
-                    bg-black/50
-                    px-3
-                    py-1
-                    text-xs
-                    font-black
-                    text-yellow-400
-                  "
-                >
-
-                  +{video.coins}
-
-                </span>
-
-              </div>
-
-              <div
-                className="
-                  h-3
-                  overflow-hidden
-                  rounded-full
-                  bg-white/20
-                "
-              >
-
-                <div
-                  className="
-                    h-full
-                    rounded-full
-                    bg-gradient-to-r
-                    from-yellow-300
-                    to-orange-500
-                    transition-all
-                    duration-500
-                  "
-                  style={{
-                    width: `${
-                      currentIndex ===
-                      index
-                        ? 70
-                        : 0
-                    }%`
-                  }}
-                />
-
-              </div>
-
-            </div>
 
             {/* VIDEO INFO */}
 
@@ -680,7 +645,7 @@ WatchEarnPage() {
                 "
               >
 
-                {video.hashtags.map(
+                {video.hashtags?.map(
                   (tag) => (
 
                     <span
@@ -982,369 +947,6 @@ WatchEarnPage() {
           </section>
         )
       )}
-
-      {/* COMMENT DRAWER */}
-
-      <div
-        className={`
-          fixed
-          bottom-0
-          left-0
-          right-0
-          z-[999]
-          rounded-t-[35px]
-          bg-[#121212]
-          transition-all
-          duration-300
-          ${
-            commentOpen
-              ? "translate-y-0"
-              : "translate-y-full"
-          }
-        `}
-      >
-
-        <div
-          className="
-            flex
-            items-center
-            justify-between
-            border-b
-            border-white/10
-            px-5
-            py-4
-          "
-        >
-
-          <h2
-            className="
-              text-lg
-              font-black
-              text-white
-            "
-          >
-
-            Comments
-
-          </h2>
-
-          <button
-            onClick={() =>
-              setCommentOpen(
-                false
-              )
-            }
-            className="
-              text-white
-            "
-          >
-
-            <X />
-
-          </button>
-
-        </div>
-
-      </div>
-
-      {/* SHARE DRAWER */}
-
-      <div
-        className={`
-          fixed
-          bottom-0
-          left-0
-          right-0
-          z-[999]
-          rounded-t-[35px]
-          bg-[#121212]
-          transition-all
-          duration-300
-          ${
-            shareOpen
-              ? "translate-y-0"
-              : "translate-y-full"
-          }
-        `}
-      >
-
-        <div
-          className="
-            flex
-            items-center
-            justify-between
-            border-b
-            border-white/10
-            px-5
-            py-4
-          "
-        >
-
-          <h2
-            className="
-              text-lg
-              font-black
-              text-white
-            "
-          >
-
-            Share Video
-
-          </h2>
-
-          <button
-            onClick={() =>
-              setShareOpen(
-                false
-              )
-            }
-            className="
-              text-white
-            "
-          >
-
-            <X />
-
-          </button>
-
-        </div>
-
-        <div
-          className="
-            grid
-            grid-cols-4
-            gap-5
-            px-5
-            py-8
-          "
-        >
-
-          <button
-            className="
-              flex
-              flex-col
-              items-center
-              gap-3
-            "
-          >
-
-            <div
-              className="
-                flex
-                h-16
-                w-16
-                items-center
-                justify-center
-                rounded-full
-                bg-green-500/20
-              "
-            >
-
-              <MessageCircle
-                size={28}
-                className="
-                  text-green-400
-                "
-              />
-
-            </div>
-
-            <span
-              className="
-                text-xs
-                font-bold
-                text-white
-              "
-            >
-
-              WhatsApp
-
-            </span>
-
-          </button>
-
-          <button
-            className="
-              flex
-              flex-col
-              items-center
-              gap-3
-            "
-          >
-
-            <div
-              className="
-                flex
-                h-16
-                w-16
-                items-center
-                justify-center
-                rounded-full
-                bg-sky-500/20
-              "
-            >
-
-              <Send
-                size={28}
-                className="
-                  text-sky-400
-                "
-              />
-
-            </div>
-
-            <span
-              className="
-                text-xs
-                font-bold
-                text-white
-              "
-            >
-
-              Telegram
-
-            </span>
-
-          </button>
-
-          <button
-            className="
-              flex
-              flex-col
-              items-center
-              gap-3
-            "
-          >
-
-            <div
-              className="
-                flex
-                h-16
-                w-16
-                items-center
-                justify-center
-                rounded-full
-                bg-blue-500/20
-              "
-            >
-
-              <Share2
-                size={28}
-                className="
-                  text-blue-400
-                "
-              />
-
-            </div>
-
-            <span
-              className="
-                text-xs
-                font-bold
-                text-white
-              "
-            >
-
-              Share
-
-            </span>
-
-          </button>
-
-          <button
-            className="
-              flex
-              flex-col
-              items-center
-              gap-3
-            "
-          >
-
-            <div
-              className="
-                flex
-                h-16
-                w-16
-                items-center
-                justify-center
-                rounded-full
-                bg-yellow-500/20
-              "
-            >
-
-              <Copy
-                size={28}
-                className="
-                  text-yellow-300
-                "
-              />
-
-            </div>
-
-            <span
-              className="
-                text-xs
-                font-bold
-                text-white
-              "
-            >
-
-              Copy
-
-            </span>
-
-          </button>
-
-        </div>
-
-        {/* LINK */}
-
-        <div
-          className="
-            px-5
-            pb-8
-          "
-        >
-
-          <div
-            className="
-              flex
-              items-center
-              gap-3
-              rounded-2xl
-              border
-              border-white/10
-              bg-white/5
-              px-4
-              py-4
-            "
-          >
-
-            <Link2
-              size={18}
-              className="
-                text-gray-400
-              "
-            />
-
-            <p
-              className="
-                flex-1
-                truncate
-                text-sm
-                text-gray-300
-              "
-            >
-
-              https://jembeekart.com/watch/video
-
-            </p>
-
-          </div>
-
-        </div>
-
-      </div>
 
     </main>
   );
