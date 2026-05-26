@@ -60,17 +60,79 @@ autoJoinMLMOnPurchase(
     if (
       userData.mlmJoined
     ) {
+import {
+  doc,
+  getDoc,
+  setDoc,
+  updateDoc
+} from "firebase/firestore";
+
+import { db }
+from "@/firebase/config";
+
+import { generateReferralCode }
+from "../generateReferralCode";
+
+import { updateReferralTree }
+from "../updateReferralTree";
+
+export async function
+autoJoinMLMOnPurchase(
+  userId: string,
+  sponsorId?: string
+) {
+
+  try {
+
+    /* =========================
+       USER REF
+    ========================= */
+
+    const userRef =
+      doc(
+        db,
+        "users",
+        userId
+      );
+
+    const userSnap =
+      await getDoc(
+        userRef
+      );
+
+    if (
+      !userSnap.exists()
+    ) {
 
       return {
         success: false,
 
         message:
-          "Already joined MLM"
+          "User not found"
+      };
+    }
+
+    const userData =
+      userSnap.data();
+
+    /* =========================
+       ALREADY MLM JOINED
+    ========================= */
+
+    if (
+      userData.mlmJoined
+    ) {
+
+      return {
+        success: false,
+
+        message:
+          "Already MLM joined"
       };
     }
 
     /* =========================
-       REFERRAL CODE
+       GENERATE REFERRAL CODE
     ========================= */
 
     const referralCode =
@@ -114,19 +176,22 @@ autoJoinMLMOnPurchase(
     );
 
     /* =========================
-       UPDATE TREE
+       UPDATE REFERRAL TREE
     ========================= */
 
     if (sponsorId) {
 
-      await updateReferralTree(
-        sponsorId,
-        userId
-      );
+      await updateReferralTree({
+        sponsorId:
+          sponsorId,
+
+        newUserId:
+          userId
+      });
     }
 
     /* =========================
-       MLM USERS
+       MLM USERS COLLECTION
     ========================= */
 
     await setDoc(
