@@ -3,16 +3,8 @@ import {
   collection
 } from "firebase/firestore";
 
-import {
-  getDownloadURL,
-  ref,
-  uploadBytes
-} from "firebase/storage";
-
-import {
-  db,
-  storage
-} from "@/firebase/config";
+import { db }
+from "@/firebase/config";
 
 interface UploadWatchVideoData {
 
@@ -51,6 +43,7 @@ uploadWatchVideo({
     if (!userId) {
 
       return {
+
         success: false,
 
         message:
@@ -65,6 +58,7 @@ uploadWatchVideo({
     if (!file) {
 
       return {
+
         success: false,
 
         message:
@@ -83,6 +77,7 @@ uploadWatchVideo({
     ) {
 
       return {
+
         success: false,
 
         message:
@@ -103,6 +98,7 @@ uploadWatchVideo({
     ) {
 
       return {
+
         success: false,
 
         message:
@@ -120,49 +116,94 @@ uploadWatchVideo({
         : 5;
 
     /* =========================
-       STORAGE PATH
+       CLOUDINARY FORM DATA
     ========================= */
 
-    const fileName =
-      `${Date.now()}-${
-        file.name
-      }`;
+    const formData =
+      new FormData();
 
-    const storageRef =
-      ref(
-        storage,
-        `watch-videos/${fileName}`
-      );
-
-    /* =========================
-       UPLOAD VIDEO
-    ========================= */
-
-    await uploadBytes(
-      storageRef,
+    formData.append(
+      "file",
       file
     );
+
+    formData.append(
+      "upload_preset",
+      "jembeekart"
+    );
+
+    /* =========================
+       CLOUDINARY UPLOAD
+    ========================= */
+
+    const response =
+      await fetch(
+
+        "https://api.cloudinary.com/v1_1/db4bgno7i/video/upload",
+
+        {
+          method: "POST",
+
+          body: formData
+        }
+      );
+
+    const cloudinaryData =
+      await response.json();
+
+    /* =========================
+       UPLOAD FAILED
+    ========================= */
+
+    if (
+      !cloudinaryData.secure_url
+    ) {
+
+      console.error(
+        cloudinaryData
+      );
+
+      return {
+
+        success: false,
+
+        message:
+          "Cloudinary upload failed"
+      };
+    }
 
     /* =========================
        VIDEO URL
     ========================= */
 
     const videoUrl =
-      await getDownloadURL(
-        storageRef
-      );
+      cloudinaryData.secure_url;
+
+    const thumbnailUrl =
+      cloudinaryData.secure_url
+        .replace(
+          "/video/upload/",
+          "/video/upload/so_1/"
+        )
+        .replace(
+          ".mp4",
+          ".jpg"
+        );
 
     /* =========================
-       SAVE VIDEO
+       SAVE FIRESTORE
     ========================= */
 
     const docRef =
       await addDoc(
+
         collection(
           db,
           "watchEarnVideos"
         ),
+
         {
+
           userId:
             userId,
 
@@ -188,7 +229,7 @@ uploadWatchVideo({
             videoUrl,
 
           thumbnail:
-            "",
+            thumbnailUrl,
 
           coins:
             rewardCoins,
@@ -210,10 +251,10 @@ uploadWatchVideo({
           featured: false,
 
           status:
-            "pending",
+            "approved",
 
           moderation:
-            "review",
+            "safe",
 
           createdAt:
             Date.now()
@@ -221,12 +262,16 @@ uploadWatchVideo({
       );
 
     return {
+
       success: true,
 
       videoId:
         docRef.id,
 
       videoUrl,
+
+      thumbnail:
+        thumbnailUrl,
 
       coins:
         rewardCoins
@@ -240,6 +285,7 @@ uploadWatchVideo({
     );
 
     return {
+
       success: false,
 
       message:
