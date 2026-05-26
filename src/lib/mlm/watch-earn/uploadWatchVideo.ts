@@ -28,10 +28,7 @@ interface UploadWatchVideoData {
 
   music: string;
 
-  coins: number;
-
   sponsor?: boolean;
-
 }
 
 export async function
@@ -42,22 +39,99 @@ uploadWatchVideo({
   caption,
   hashtags,
   music,
-  coins,
   sponsor
 }: UploadWatchVideoData) {
 
   try {
 
     /* =========================
-       STORAGE REF
+       USER CHECK
     ========================= */
+
+    if (!userId) {
+
+      return {
+        success: false,
+
+        message:
+          "User not found"
+      };
+    }
+
+    /* =========================
+       FILE CHECK
+    ========================= */
+
+    if (!file) {
+
+      return {
+        success: false,
+
+        message:
+          "Video file required"
+      };
+    }
+
+    /* =========================
+       VIDEO TYPE CHECK
+    ========================= */
+
+    if (
+      !file.type.startsWith(
+        "video/"
+      )
+    ) {
+
+      return {
+        success: false,
+
+        message:
+          "Only video upload allowed"
+      };
+    }
+
+    /* =========================
+       FILE SIZE CHECK
+       MAX 100MB
+    ========================= */
+
+    const maxSize =
+      100 * 1024 * 1024;
+
+    if (
+      file.size > maxSize
+    ) {
+
+      return {
+        success: false,
+
+        message:
+          "Video too large"
+      };
+    }
+
+    /* =========================
+       AUTO REWARD SYSTEM
+    ========================= */
+
+    const rewardCoins =
+      sponsor
+        ? 25
+        : 5;
+
+    /* =========================
+       STORAGE PATH
+    ========================= */
+
+    const fileName =
+      `${Date.now()}-${
+        file.name
+      }`;
 
     const storageRef =
       ref(
         storage,
-        `watch-videos/${
-          Date.now()
-        }-${file.name}`
+        `watch-videos/${fileName}`
       );
 
     /* =========================
@@ -70,7 +144,7 @@ uploadWatchVideo({
     );
 
     /* =========================
-       DOWNLOAD URL
+       VIDEO URL
     ========================= */
 
     const videoUrl =
@@ -79,7 +153,7 @@ uploadWatchVideo({
       );
 
     /* =========================
-       SAVE FIRESTORE
+       SAVE VIDEO
     ========================= */
 
     const docRef =
@@ -96,13 +170,13 @@ uploadWatchVideo({
             username,
 
           caption:
-            caption,
+            caption || "",
 
           hashtags:
-            hashtags,
+            hashtags || [],
 
           music:
-            music,
+            music || "",
 
           verified:
             false,
@@ -113,8 +187,11 @@ uploadWatchVideo({
           video:
             videoUrl,
 
+          thumbnail:
+            "",
+
           coins:
-            coins,
+            rewardCoins,
 
           likes: 0,
 
@@ -122,10 +199,21 @@ uploadWatchVideo({
 
           shares: 0,
 
+          saves: 0,
+
           views: 0,
+
+          watchTime: 0,
+
+          active: true,
+
+          featured: false,
 
           status:
             "pending",
+
+          moderation:
+            "review",
 
           createdAt:
             Date.now()
@@ -138,7 +226,10 @@ uploadWatchVideo({
       videoId:
         docRef.id,
 
-      videoUrl
+      videoUrl,
+
+      coins:
+        rewardCoins
     };
 
   } catch (error) {
@@ -149,7 +240,10 @@ uploadWatchVideo({
     );
 
     return {
-      success: false
+      success: false,
+
+      message:
+        "Upload failed"
     };
   }
 }
