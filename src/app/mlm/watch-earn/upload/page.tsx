@@ -7,8 +7,9 @@ import {
 import {
   Upload,
   Loader2,
-  Coins,
-  Music2
+  Music2,
+  BadgeCheck,
+  ShieldCheck
 } from "lucide-react";
 
 import {
@@ -45,11 +46,6 @@ UploadWatchVideoPage() {
     setMusic
   ] = useState("");
 
-  const [
-    coins,
-    setCoins
-  ] = useState(10);
-
   async function
   handleUpload() {
 
@@ -80,11 +76,16 @@ UploadWatchVideoPage() {
 
           hashtags:
             hashtags
-              .split(","),
+              .split(",")
 
-          music,
+              .map(
+                (tag) =>
+                  tag.trim()
+              )
 
-          coins
+              .filter(Boolean),
+
+          music
         });
 
       if (
@@ -101,13 +102,12 @@ UploadWatchVideoPage() {
 
         setMusic("");
 
-        setCoins(10);
-
         setFile(null);
 
       } else {
 
         alert(
+          result.message ||
           "Upload failed"
         );
       }
@@ -116,6 +116,10 @@ UploadWatchVideoPage() {
 
       console.error(
         error
+      );
+
+      alert(
+        "Something went wrong"
       );
 
     } finally {
@@ -129,7 +133,7 @@ UploadWatchVideoPage() {
     <main
       className="
         min-h-screen
-        bg-[#0f0f12]
+        bg-[#0a0a0f]
         px-4
         py-6
       "
@@ -143,29 +147,140 @@ UploadWatchVideoPage() {
         "
       >
 
-        <h1
+        <div
           className="
-            text-3xl
-            font-black
-            text-white
+            flex
+            items-center
+            gap-3
           "
         >
 
-          Upload Watch Video
+          <div
+            className="
+              flex
+              h-14
+              w-14
+              items-center
+              justify-center
+              rounded-3xl
+              bg-violet-500/20
+            "
+          >
 
-        </h1>
+            <Upload
+              size={28}
+              className="
+                text-violet-400
+              "
+            />
 
-        <p
+          </div>
+
+          <div>
+
+            <h1
+              className="
+                text-3xl
+                font-black
+                text-white
+              "
+            >
+
+              Upload Video
+
+            </h1>
+
+            <p
+              className="
+                mt-1
+                text-sm
+                text-gray-400
+              "
+            >
+
+              Upload videos for Watch & Earn
+
+            </p>
+
+          </div>
+
+        </div>
+
+      </div>
+
+      {/* INFO BOX */}
+
+      <div
+        className="
+          mb-6
+          rounded-3xl
+          border
+          border-violet-500/20
+          bg-violet-500/10
+          p-5
+        "
+      >
+
+        <div
           className="
-            mt-2
-            text-sm
-            text-gray-400
+            flex
+            items-start
+            gap-4
           "
         >
 
-          Upload videos & earn from views
+          <ShieldCheck
+            size={24}
+            className="
+              mt-1
+              text-violet-300
+            "
+          />
 
-        </p>
+          <div>
+
+            <h2
+              className="
+                text-lg
+                font-black
+                text-white
+              "
+            >
+
+              Video Rules
+
+            </h2>
+
+            <ul
+              className="
+                mt-3
+                space-y-2
+                text-sm
+                text-violet-100
+              "
+            >
+
+              <li>
+                • Only original videos allowed
+              </li>
+
+              <li>
+                • Spam & copied videos rejected
+              </li>
+
+              <li>
+                • Admin automatically sets rewards
+              </li>
+
+              <li>
+                • Viral videos may get featured
+              </li>
+
+            </ul>
+
+          </div>
+
+        </div>
 
       </div>
 
@@ -186,28 +301,44 @@ UploadWatchVideoPage() {
             flex-col
             items-center
             justify-center
-            rounded-3xl
+            rounded-[32px]
             border-2
             border-dashed
             border-white/10
-            bg-white/5
+            bg-gradient-to-b
+            from-white/5
+            to-white/[0.02]
             px-5
-            py-12
+            py-14
             text-center
           "
         >
 
-          <Upload
-            size={42}
+          <div
             className="
-              text-violet-400
+              flex
+              h-20
+              w-20
+              items-center
+              justify-center
+              rounded-full
+              bg-violet-500/20
             "
-          />
+          >
+
+            <Upload
+              size={42}
+              className="
+                text-violet-400
+              "
+            />
+
+          </div>
 
           <p
             className="
-              mt-4
-              text-lg
+              mt-5
+              text-2xl
               font-black
               text-white
             "
@@ -260,17 +391,55 @@ UploadWatchVideoPage() {
 
           <div
             className="
-              rounded-2xl
+              flex
+              items-center
+              justify-between
+              rounded-3xl
+              border
+              border-violet-500/20
               bg-violet-500/10
-              px-4
-              py-4
-              text-sm
-              font-bold
-              text-violet-300
+              px-5
+              py-5
             "
           >
 
-            {file.name}
+            <div>
+
+              <p
+                className="
+                  text-xs
+                  font-bold
+                  uppercase
+                  tracking-wider
+                  text-violet-300
+                "
+              >
+
+                Selected Video
+
+              </p>
+
+              <p
+                className="
+                  mt-2
+                  text-sm
+                  font-black
+                  text-white
+                "
+              >
+
+                {file.name}
+
+              </p>
+
+            </div>
+
+            <BadgeCheck
+              size={24}
+              className="
+                text-violet-300
+              "
+            />
 
           </div>
 
@@ -278,55 +447,99 @@ UploadWatchVideoPage() {
 
         {/* CAPTION */}
 
-        <textarea
-          value={caption}
-
-          onChange={(e) =>
-            setCaption(
-              e.target.value
-            )
-          }
-
-          placeholder="Write caption..."
-
+        <div
           className="
-            h-32
-            w-full
             rounded-3xl
             border
             border-white/10
             bg-white/5
             p-5
-            text-white
-            outline-none
           "
-        />
+        >
+
+          <p
+            className="
+              mb-3
+              text-sm
+              font-black
+              text-white
+            "
+          >
+
+            Caption
+
+          </p>
+
+          <textarea
+            value={caption}
+
+            onChange={(e) =>
+              setCaption(
+                e.target.value
+              )
+            }
+
+            placeholder="Write your video caption..."
+
+            className="
+              h-32
+              w-full
+              resize-none
+              bg-transparent
+              text-white
+              outline-none
+              placeholder:text-gray-500
+            "
+          />
+
+        </div>
 
         {/* HASHTAGS */}
 
-        <input
-          value={hashtags}
-
-          onChange={(e) =>
-            setHashtags(
-              e.target.value
-            )
-          }
-
-          placeholder="fashion,viral,trending"
-
+        <div
           className="
-            w-full
-            rounded-2xl
+            rounded-3xl
             border
             border-white/10
             bg-white/5
-            px-5
-            py-4
-            text-white
-            outline-none
+            p-5
           "
-        />
+        >
+
+          <p
+            className="
+              mb-3
+              text-sm
+              font-black
+              text-white
+            "
+          >
+
+            Hashtags
+
+          </p>
+
+          <input
+            value={hashtags}
+
+            onChange={(e) =>
+              setHashtags(
+                e.target.value
+              )
+            }
+
+            placeholder="fashion,viral,trending"
+
+            className="
+              w-full
+              bg-transparent
+              text-white
+              outline-none
+              placeholder:text-gray-500
+            "
+          />
+
+        </div>
 
         {/* MUSIC */}
 
@@ -334,22 +547,36 @@ UploadWatchVideoPage() {
           className="
             flex
             items-center
-            gap-3
-            rounded-2xl
+            gap-4
+            rounded-3xl
             border
             border-white/10
             bg-white/5
             px-5
-            py-4
+            py-5
           "
         >
 
-          <Music2
-            size={20}
+          <div
             className="
-              text-pink-400
+              flex
+              h-12
+              w-12
+              items-center
+              justify-center
+              rounded-full
+              bg-pink-500/20
             "
-          />
+          >
+
+            <Music2
+              size={22}
+              className="
+                text-pink-400
+              "
+            />
+
+          </div>
 
           <input
             value={music}
@@ -367,54 +594,35 @@ UploadWatchVideoPage() {
               bg-transparent
               text-white
               outline-none
+              placeholder:text-gray-500
             "
           />
 
         </div>
 
-        {/* COINS */}
+        {/* AUTO REWARD */}
 
         <div
           className="
-            flex
-            items-center
-            gap-3
-            rounded-2xl
+            rounded-3xl
             border
-            border-white/10
-            bg-white/5
-            px-5
-            py-4
+            border-yellow-500/20
+            bg-yellow-500/10
+            p-5
           "
         >
 
-          <Coins
-            size={20}
+          <p
             className="
+              text-sm
+              font-black
               text-yellow-300
             "
-          />
+          >
 
-          <input
-            type="number"
+            Rewards are automatically managed by JembeeKart Admin.
 
-            value={coins}
-
-            onChange={(e) =>
-              setCoins(
-                Number(
-                  e.target.value
-                )
-              )
-            }
-
-            className="
-              flex-1
-              bg-transparent
-              text-white
-              outline-none
-            "
-          />
+          </p>
 
         </div>
 
@@ -431,22 +639,24 @@ UploadWatchVideoPage() {
             items-center
             justify-center
             gap-3
-            rounded-3xl
+            rounded-[30px]
             bg-gradient-to-r
             from-violet-600
             to-fuchsia-500
             px-5
-            py-4
+            py-5
             text-lg
             font-black
             text-white
+            shadow-2xl
+            shadow-violet-500/20
           "
         >
 
           {loading ? (
 
             <Loader2
-              size={22}
+              size={24}
               className="
                 animate-spin
               "
@@ -455,7 +665,7 @@ UploadWatchVideoPage() {
           ) : (
 
             <Upload
-              size={22}
+              size={24}
             />
 
           )}
