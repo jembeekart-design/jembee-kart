@@ -1,254 +1,195 @@
 import {
-  collection,
   doc,
-  getDoc,
-  addDoc,
-  updateDoc,
-  increment
+  getDoc
 } from "firebase/firestore";
 
-import { db } from "@/firebase/config";
+import { db }
+from "@/firebase/config";
 
-interface DistributeCommissionData {
+import { creditWallet }
+from "./creditWallet";
+
+interface DistributeLevelCommissionData {
 
   userId: string;
 
-  packageAmount: number;
+  amount: number;
 
 }
 
-export async function distributeLevelCommission(
-  data: DistributeCommissionData
+export async function
+distributeLevelCommission(
+  data:
+  DistributeLevelCommissionData
 ) {
 
   try {
 
-    /* ======================================================
-    COMMISSION PERCENTAGES
-    ====================================================== */
+    /* =========================
+       USER
+    ========================= */
 
-    const commissions = [
+    const userRef =
+      doc(
+        db,
+        "users",
+        data.userId
+      );
 
-      {
-        level: 1,
-        percent: 10
-      },
+    const userSnap =
+      await getDoc(
+        userRef
+      );
 
-      {
-        level: 2,
-        percent: 5
-      },
-
-      {
-        level: 3,
-        percent: 2
-      }
-
-    ];
-
-    /* ======================================================
-    START USER
-    ====================================================== */
-
-    let currentUserId =
-      data.userId;
-
-    /* ======================================================
-    LOOP LEVELS
-    ====================================================== */
-
-    for (
-      let i = 0;
-      i < commissions.length;
-      i++
+    if (
+      !userSnap.exists()
     ) {
 
-      const currentLevel =
-        commissions[i];
+      return {
+        success: false
+      };
+    }
 
-      /* ======================================================
-      GET CURRENT USER
-      ====================================================== */
+    const userData =
+      userSnap.data();
 
-      const userRef =
+    const sponsorId =
+      userData.sponsorId;
+
+    /* =========================
+       LEVEL 1
+    ========================= */
+
+    if (sponsorId) {
+
+      const level1Commission =
+        Math.floor(
+          data.amount * 0.10
+        );
+
+      await creditWallet({
+        uid:
+          sponsorId,
+
+        amount:
+          level1Commission,
+
+        incomeType:
+          "directIncome"
+      });
+
+      /* =========================
+         LEVEL 2
+      ========================= */
+
+      const level1UserRef =
         doc(
           db,
           "users",
-          currentUserId
-        );
-
-      const userSnapshot =
-        await getDoc(
-          userRef
-        );
-
-      if (
-        !userSnapshot.exists()
-      ) {
-
-        break;
-
-      }
-
-      const userData =
-        userSnapshot.data();
-
-      const sponsorId =
-        userData.sponsorId;
-
-      /* ======================================================
-      NO SPONSOR
-      ====================================================== */
-
-      if (!sponsorId) {
-
-        break;
-
-      }
-
-      /* ======================================================
-      CALCULATE COMMISSION
-      ====================================================== */
-
-      const commissionAmount =
-        Math.floor(
-          (
-            data.packageAmount *
-            currentLevel.percent
-          ) / 100
-        );
-
-      /* ======================================================
-      UPDATE SPONSOR WALLET
-      ====================================================== */
-
-      const walletRef =
-        doc(
-          db,
-          "wallets",
           sponsorId
         );
 
-      await updateDoc(
-        walletRef,
-        {
-          totalBalance:
-            increment(
-              commissionAmount
-            ),
+      const level1UserSnap =
+        await getDoc(
+          level1UserRef
+        );
 
-          withdrawableBalance:
-            increment(
-              commissionAmount
-            ),
+      if (
+        level1UserSnap.exists()
+      ) {
 
-          totalEarnings:
-            increment(
-              commissionAmount
-            )
+        const level1Data =
+          level1UserSnap.data();
+
+        const level2SponsorId =
+          level1Data.sponsorId;
+
+        if (
+          level2SponsorId
+        ) {
+
+          const level2Commission =
+            Math.floor(
+              data.amount * 0.05
+            );
+
+          await creditWallet({
+            uid:
+              level2SponsorId,
+
+            amount:
+              level2Commission,
+
+            incomeType:
+              "levelIncome"
+          });
+
+          /* =========================
+             LEVEL 3
+          ========================= */
+
+          const level2UserRef =
+            doc(
+              db,
+              "users",
+              level2SponsorId
+            );
+
+          const level2UserSnap =
+            await getDoc(
+              level2UserRef
+            );
+
+          if (
+            level2UserSnap.exists()
+          ) {
+
+            const level2Data =
+              level2UserSnap.data();
+
+            const level3SponsorId =
+              level2Data.sponsorId;
+
+            if (
+              level3SponsorId
+            ) {
+
+              const level3Commission =
+                Math.floor(
+                  data.amount * 0.02
+                );
+
+              await creditWallet({
+                uid:
+                  level3SponsorId,
+
+                amount:
+                  level3Commission,
+
+                incomeType:
+                  "levelIncome"
+              });
+
+            }
+
+          }
+
         }
-      );
 
-      /* ======================================================
-      SAVE TRANSACTION
-      ====================================================== */
-
-      await addDoc(
-        collection(
-          db,
-          "transactions"
-        ),
-        {
-          userId:
-            sponsorId,
-
-          sourceUserId:
-            data.userId,
-
-          type:
-            "level_commission",
-
-          level:
-            currentLevel.level,
-
-          percent:
-            currentLevel.percent,
-
-          amount:
-            commissionAmount,
-
-          status:
-            "success",
-
-          createdAt:
-            Date.now()
-        }
-      );
-
-      /* ======================================================
-      SAVE NOTIFICATION
-      ====================================================== */
-
-      await addDoc(
-        collection(
-          db,
-          "notifications"
-        ),
-        {
-          userId:
-            sponsorId,
-
-          title:
-            `Level ${currentLevel.level} Income`,
-
-          message:
-            `You received ₹${commissionAmount} level income.`,
-
-          type:
-            "commission",
-
-          isRead:
-            false,
-
-          createdAt:
-            Date.now()
-        }
-      );
-
-      /* ======================================================
-      NEXT LEVEL
-      ====================================================== */
-
-      currentUserId =
-        sponsorId;
+      }
 
     }
 
     return {
-
-      success: true,
-
-      message:
-        "Level Commission Distributed"
-
+      success: true
     };
 
   } catch (error) {
 
-    console.error(
-      "LEVEL COMMISSION ERROR:",
-      error
-    );
+    console.error(error);
 
     return {
-
-      success: false,
-
-      message:
-        "Something went wrong"
-
+      success: false
     };
-
   }
-
 }
