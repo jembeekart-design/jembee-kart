@@ -161,6 +161,13 @@ WatchEarnPage() {
     setCommentText
   ] = useState("");
 
+  const [
+    claimedVideos,
+    setClaimedVideos
+  ] = useState<string[]>(
+    []
+  );
+
   useEffect(() => {
 
     videoRefs.current.forEach(
@@ -190,8 +197,25 @@ WatchEarnPage() {
   }, [currentIndex]);
 
   function rewardCoins(
+    videoId: string,
     coins: number
   ) {
+
+    if (
+      claimedVideos.includes(
+        videoId
+      )
+    ) {
+
+      return;
+    }
+
+    setClaimedVideos(
+      (prev) => [
+        ...prev,
+        videoId
+      ]
+    );
 
     setEarnedCoins(
       (prev) =>
@@ -448,6 +472,7 @@ WatchEarnPage() {
           <section
             key={video.id}
             className="
+              watch-video-item
               relative
               h-screen
               snap-start
@@ -470,8 +495,6 @@ WatchEarnPage() {
               src={video.video}
 
               loop
-
-              muted
 
               autoPlay
 
@@ -567,12 +590,21 @@ WatchEarnPage() {
                 <div
                   className="
                     h-full
-                    w-[70%]
                     rounded-full
                     bg-gradient-to-r
                     from-yellow-300
                     to-orange-500
+                    transition-all
+                    duration-500
                   "
+                  style={{
+                    width: `${
+                      currentIndex ===
+                      index
+                        ? 70
+                        : 0
+                    }%`
+                  }}
                 />
 
               </div>
@@ -714,21 +746,38 @@ WatchEarnPage() {
               <button
                 onClick={() =>
                   rewardCoins(
+                    video.id,
                     video.coins
                   )
                 }
-                className="
+
+                disabled={claimedVideos.includes(
+                  video.id
+                )}
+
+                className={`
                   mt-5
                   rounded-full
-                  bg-yellow-400
                   px-5
                   py-3
                   font-black
-                  text-black
-                "
+                  transition-all
+
+                  ${
+                    claimedVideos.includes(
+                      video.id
+                    )
+                      ? "bg-green-500 text-white"
+                      : "bg-yellow-400 text-black"
+                  }
+                `}
               >
 
-                Claim {video.coins} Coins
+                {claimedVideos.includes(
+                  video.id
+                )
+                  ? "Claimed"
+                  : `Claim ${video.coins} Coins`}
 
               </button>
 
@@ -947,7 +996,6 @@ WatchEarnPage() {
           bg-[#121212]
           transition-all
           duration-300
-
           ${
             commentOpen
               ? "translate-y-0"
@@ -997,143 +1045,6 @@ WatchEarnPage() {
 
         </div>
 
-        <div
-          className="
-            h-[350px]
-            overflow-y-auto
-            px-5
-            py-5
-          "
-        >
-
-          <div
-            className="
-              space-y-5
-            "
-          >
-
-            <div>
-
-              <h3
-                className="
-                  text-sm
-                  font-black
-                  text-white
-                "
-              >
-
-                @Rahul
-
-              </h3>
-
-              <p
-                className="
-                  mt-1
-                  text-sm
-                  text-gray-300
-                "
-              >
-
-                Amazing video 🔥
-
-              </p>
-
-            </div>
-
-            <div>
-
-              <h3
-                className="
-                  text-sm
-                  font-black
-                  text-white
-                "
-              >
-
-                @Aman
-
-              </h3>
-
-              <p
-                className="
-                  mt-1
-                  text-sm
-                  text-gray-300
-                "
-              >
-
-                Watch & earn is awesome
-
-              </p>
-
-            </div>
-
-          </div>
-
-        </div>
-
-        {/* COMMENT INPUT */}
-
-        <div
-          className="
-            flex
-            items-center
-            gap-3
-            border-t
-            border-white/10
-            px-4
-            py-4
-          "
-        >
-
-          <input
-            value={commentText}
-
-            onChange={(e) =>
-              setCommentText(
-                e.target.value
-              )
-            }
-
-            placeholder="Write comment..."
-
-            className="
-              flex-1
-              rounded-full
-              border
-              border-white/10
-              bg-white/5
-              px-5
-              py-3
-              text-sm
-              text-white
-              outline-none
-            "
-          />
-
-          <button
-            className="
-              flex
-              h-12
-              w-12
-              items-center
-              justify-center
-              rounded-full
-              bg-gradient-to-r
-              from-violet-600
-              to-fuchsia-500
-              text-white
-            "
-          >
-
-            <Send
-              size={18}
-            />
-
-          </button>
-
-        </div>
-
       </div>
 
       {/* SHARE DRAWER */}
@@ -1149,7 +1060,6 @@ WatchEarnPage() {
           bg-[#121212]
           transition-all
           duration-300
-
           ${
             shareOpen
               ? "translate-y-0"
