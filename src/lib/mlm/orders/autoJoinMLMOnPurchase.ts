@@ -39,9 +39,7 @@ autoJoinMLMOnPurchase(
     ) {
 
       return {
-        success: false,
-        message:
-          "User not found"
+        success: false
       };
     }
 
@@ -53,9 +51,7 @@ autoJoinMLMOnPurchase(
     ) {
 
       return {
-        success: false,
-        message:
-          "Already MLM joined"
+        success: false
       };
     }
 
