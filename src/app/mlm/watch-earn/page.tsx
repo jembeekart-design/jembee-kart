@@ -16,10 +16,8 @@ import {
   Flame,
   BadgeCheck,
   Music2,
-  Send,
-  Copy,
-  Link2,
-  X
+  Play,
+  Pause
 } from "lucide-react";
 
 import {
@@ -80,23 +78,15 @@ WatchEarnPage() {
   ] = useState(0);
 
   const [
-    commentOpen,
-    setCommentOpen
-  ] = useState(false);
-
-  const [
-    shareOpen,
-    setShareOpen
-  ] = useState(false);
-
-  const [
-    commentText,
-    setCommentText
-  ] = useState("");
-
-  const [
     claimedVideos,
     setClaimedVideos
+  ] = useState<string[]>(
+    []
+  );
+
+  const [
+    pausedVideos,
+    setPausedVideos
   ] = useState<string[]>(
     []
   );
@@ -167,7 +157,9 @@ WatchEarnPage() {
           currentIndex
         ) {
 
-          video.play();
+          video
+            .play()
+            .catch(() => {});
 
         } else {
 
@@ -176,7 +168,10 @@ WatchEarnPage() {
       }
     );
 
-  }, [currentIndex]);
+  }, [
+    currentIndex,
+    videos
+  ]);
 
   /* =========================
      REWARD
@@ -223,6 +218,51 @@ WatchEarnPage() {
       );
 
     }, 3000);
+  }
+
+  /* =========================
+     PLAY / PAUSE
+  ========================= */
+
+  function toggleVideo(
+    videoId: string,
+    index: number
+  ) {
+
+    const video =
+      videoRefs.current[
+        index
+      ];
+
+    if (!video) {
+      return;
+    }
+
+    if (video.paused) {
+
+      video
+        .play()
+        .catch(() => {});
+
+      setPausedVideos(
+        (prev) =>
+          prev.filter(
+            (id) =>
+              id !== videoId
+          )
+      );
+
+    } else {
+
+      video.pause();
+
+      setPausedVideos(
+        (prev) => [
+          ...prev,
+          videoId
+        ]
+      );
+    }
   }
 
   /* =========================
@@ -543,9 +583,13 @@ WatchEarnPage() {
 
               loop
 
+              muted
+
               autoPlay
 
               playsInline
+
+              preload="auto"
 
               controls={false}
 
@@ -555,9 +599,24 @@ WatchEarnPage() {
                 object-cover
               "
 
+              onCanPlay={(e) => {
+
+                e.currentTarget
+                  .play()
+                  .catch(() => {});
+              }}
+
               onPlay={() => {
 
                 setCurrentIndex(
+                  index
+                );
+              }}
+
+              onClick={() => {
+
+                toggleVideo(
+                  video.id,
                   index
                 );
               }}
@@ -575,6 +634,57 @@ WatchEarnPage() {
                 to-transparent
               "
             />
+
+            {/* PLAY PAUSE BUTTON */}
+
+            <button
+              onClick={() =>
+                toggleVideo(
+                  video.id,
+                  index
+                )
+              }
+              className="
+                absolute
+                left-1/2
+                top-1/2
+                z-40
+                flex
+                h-20
+                w-20
+                -translate-x-1/2
+                -translate-y-1/2
+                items-center
+                justify-center
+                rounded-full
+                bg-black/40
+                backdrop-blur-xl
+              "
+            >
+
+              {pausedVideos.includes(
+                video.id
+              ) ? (
+
+                <Play
+                  size={35}
+                  className="
+                    text-white
+                  "
+                />
+
+              ) : (
+
+                <Pause
+                  size={35}
+                  className="
+                    text-white
+                  "
+                />
+
+              )}
+
+            </button>
 
             {/* VIDEO INFO */}
 
@@ -706,7 +816,7 @@ WatchEarnPage() {
 
               </div>
 
-              {/* CLAIM BUTTON */}
+              {/* CLAIM */}
 
               <button
                 onClick={() =>
@@ -809,11 +919,6 @@ WatchEarnPage() {
               {/* COMMENT */}
 
               <button
-                onClick={() =>
-                  setCommentOpen(
-                    true
-                  )
-                }
                 className="
                   flex
                   flex-col
@@ -856,11 +961,6 @@ WatchEarnPage() {
               {/* SHARE */}
 
               <button
-                onClick={() =>
-                  setShareOpen(
-                    true
-                  )
-                }
                 className="
                   flex
                   flex-col
