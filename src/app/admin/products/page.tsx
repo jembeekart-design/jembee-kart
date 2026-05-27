@@ -22,9 +22,9 @@ import {
   Trash2,
   ImagePlus,
   Video,
-  Star,
   Eye,
-  EyeOff
+  EyeOff,
+  Pencil
 } from "lucide-react";
 
 import { db } from "@/firebase/config";
@@ -33,89 +33,25 @@ import { db } from "@/firebase/config";
 TYPES
 ====================================================== */
 
-interface Variant {
-
-  size: string;
-
-  color: string;
-
-  stock: number;
-
-  price: number;
-}
-
-interface Specification {
-
-  title: string;
-
-  value: string;
-}
-
 interface Product {
 
   id: string;
 
   title: string;
 
-  slug: string;
-
-  shortDescription: string;
-
-  description: string;
-
   category: string;
-
-  brand: string;
-
-  tags: string[];
-
-  images: string[];
-
-  videos: string[];
-
-  thumbnail: string;
 
   price: number;
 
   discountPrice: number;
 
-  costPrice: number;
-
-  profit: number;
-
   stock: number;
 
-  sku: string;
+  images: string[];
 
-  rating: number;
-
-  reviews: number;
-
-  featured: boolean;
+  videos: string[];
 
   visible: boolean;
-
-  cod: boolean;
-
-  freeShipping: boolean;
-
-  weight: number;
-
-  variants: Variant[];
-
-  specifications: Specification[];
-
-  seoTitle: string;
-
-  seoDescription: string;
-
-  affiliateCommission: number;
-
-  mlmCommission: number;
-
-  provider: string;
-
-  createdAt: number;
 }
 
 /* ======================================================
@@ -133,6 +69,16 @@ export default function ProductsAdminPage() {
     loading,
     setLoading
   ] = useState(true);
+
+  const [
+    selectedCategory,
+    setSelectedCategory
+  ] = useState("All");
+
+  const [
+    editingProductId,
+    setEditingProductId
+  ] = useState("");
 
   const imageInputRefs =
     useRef<{
@@ -195,24 +141,36 @@ export default function ProductsAdminPage() {
   }, []);
 
   /* ======================================================
-  GENERATE SLUG
+  CATEGORY LIST
   ====================================================== */
 
-  function generateSlug(
-    text: string
-  ) {
+  const categories = [
 
-    return text
+    "All",
 
-      .toLowerCase()
+    ...new Set(
+      products.map(
+        (product) =>
+          product.category
+      )
+    )
+  ];
 
-      .replace(/\s+/g, "-")
+  /* ======================================================
+  FILTER PRODUCTS
+  ====================================================== */
 
-      .replace(
-        /[^a-z0-9-]/g,
-        ""
-      );
-  }
+  const filteredProducts =
+    selectedCategory ===
+    "All"
+
+      ? products
+
+      : products.filter(
+          (product) =>
+            product.category ===
+            selectedCategory
+        );
 
   /* ======================================================
   ADD PRODUCT
@@ -232,73 +190,21 @@ export default function ProductsAdminPage() {
         title:
           "New Product",
 
-        slug:
-          "new-product",
-
-        shortDescription:
-          "",
-
-        description:
-          "",
-
         category:
           "Fashion",
 
-        brand:
-          "JembeeKart",
+        price: 999,
 
-        tags: [],
+        discountPrice:
+          799,
+
+        stock: 100,
 
         images: [],
 
         videos: [],
 
-        thumbnail: "",
-
-        price: 2999,
-
-        discountPrice: 1999,
-
-        costPrice: 1000,
-
-        profit: 999,
-
-        stock: 100,
-
-        sku:
-          "SKU-" +
-          Date.now(),
-
-        rating: 4.5,
-
-        reviews: 0,
-
-        featured: false,
-
-        visible: true,
-
-        cod: true,
-
-        freeShipping: false,
-
-        weight: 0.5,
-
-        variants: [],
-
-        specifications: [],
-
-        seoTitle: "",
-
-        seoDescription: "",
-
-        affiliateCommission: 5,
-
-        mlmCommission: 10,
-
-        provider: "manual",
-
-        createdAt:
-          Date.now()
+        visible: true
       }
     );
   }
@@ -336,6 +242,17 @@ export default function ProductsAdminPage() {
     id: string
   ) {
 
+    const confirmDelete =
+      confirm(
+        "Delete Product?"
+      );
+
+    if (
+      !confirmDelete
+    ) {
+      return;
+    }
+
     await deleteDoc(
 
       doc(
@@ -347,64 +264,7 @@ export default function ProductsAdminPage() {
   }
 
   /* ======================================================
-  ADD VARIANT
-  ====================================================== */
-
-  async function addVariant(
-    product: Product
-  ) {
-
-    const variants = [
-
-      ...(product.variants || []),
-
-      {
-        size: "M",
-
-        color: "Black",
-
-        stock: 10,
-
-        price:
-          product.price
-      }
-    ];
-
-    await updateProduct(
-      product.id,
-      "variants",
-      variants
-    );
-  }
-
-  /* ======================================================
-  ADD SPECIFICATION
-  ====================================================== */
-
-  async function addSpecification(
-    product: Product
-  ) {
-
-    const specifications = [
-
-      ...(product.specifications || []),
-
-      {
-        title: "Fabric",
-
-        value: "Cotton"
-      }
-    ];
-
-    await updateProduct(
-      product.id,
-      "specifications",
-      specifications
-    );
-  }
-
-  /* ======================================================
-  UPLOAD IMAGE
+  UPLOAD IMAGES
   ====================================================== */
 
   async function uploadImages(
@@ -471,7 +331,8 @@ export default function ProductsAdminPage() {
         "images",
 
         [
-          ...(product.images || []),
+          ...(product.images ||
+            []),
 
           ...uploaded
         ]
@@ -486,7 +347,7 @@ export default function ProductsAdminPage() {
   }
 
   /* ======================================================
-  UPLOAD VIDEO
+  UPLOAD VIDEOS
   ====================================================== */
 
   async function uploadVideos(
@@ -553,7 +414,8 @@ export default function ProductsAdminPage() {
         "videos",
 
         [
-          ...(product.videos || []),
+          ...(product.videos ||
+            []),
 
           ...uploaded
         ]
@@ -573,13 +435,13 @@ export default function ProductsAdminPage() {
 
   return (
 
-    <main className="min-h-screen bg-gray-100 p-5">
+    <main className="min-h-screen bg-[#f5f5f5] p-4">
 
       <div className="mx-auto max-w-7xl">
 
         {/* HEADER */}
 
-        <div className="mb-10 flex items-center justify-between">
+        <div className="mb-6 flex items-center justify-between">
 
           <div>
 
@@ -588,7 +450,7 @@ export default function ProductsAdminPage() {
             </h1>
 
             <p className="mt-2 text-gray-500">
-              Advanced Product Management
+              Manage all products
             </p>
 
           </div>
@@ -598,23 +460,63 @@ export default function ProductsAdminPage() {
               addProduct
             }
             className="
-              flex
-              items-center
-              gap-3
-              rounded-2xl
+              rounded-3xl
               bg-blue-600
-              px-7
-              py-4
-              font-bold
+              px-6
+              py-5
+              text-xl
+              font-black
               text-white
             "
           >
 
-            <Plus size={22} />
-
             Add Product
 
           </button>
+
+        </div>
+
+        {/* CATEGORY BAR */}
+
+        <div className="mb-7 flex gap-3 overflow-x-auto pb-2">
+
+          {categories.map(
+            (category) => {
+
+              return (
+
+                <button
+                  key={category}
+                  onClick={() =>
+                    setSelectedCategory(
+                      category
+                    )
+                  }
+                  className={`
+                    whitespace-nowrap
+                    rounded-full
+                    px-5
+                    py-3
+                    text-sm
+                    font-bold
+
+                    ${
+                      selectedCategory ===
+                      category
+
+                        ? "bg-black text-white"
+
+                        : "bg-white text-black"
+                    }
+                  `}
+                >
+
+                  {category}
+
+                </button>
+              );
+            }
+          )}
 
         </div>
 
@@ -630,10 +532,14 @@ export default function ProductsAdminPage() {
 
         ) : (
 
-          <div className="space-y-8">
+          <div className="grid gap-5">
 
-            {products.map(
+            {filteredProducts.map(
               (product) => {
+
+                const editing =
+                  editingProductId ===
+                  product.id;
 
                 return (
 
@@ -642,433 +548,474 @@ export default function ProductsAdminPage() {
                     className="
                       rounded-[35px]
                       bg-white
-                      p-6
-                      shadow-xl
+                      p-5
+                      shadow-lg
                     "
                   >
 
-                    {/* TITLE */}
+                    {/* TOP */}
 
-                    <input
-                      type="text"
-                      value={
-                        product.title
-                      }
-                      onChange={(
-                        e
-                      ) => {
+                    <div className="flex items-start justify-between gap-4">
 
-                        updateProduct(
-                          product.id,
-                          "title",
-                          e.target
-                            .value
-                        );
+                      <div className="flex gap-4">
 
-                        updateProduct(
-                          product.id,
-                          "slug",
+                        <img
+                          src={
+                            product
+                              .images?.[0] ||
+                            "https://placehold.co/200x200"
+                          }
+                          alt=""
+                          className="
+                            h-28
+                            w-28
+                            rounded-3xl
+                            object-cover
+                          "
+                        />
 
-                          generateSlug(
-                            e.target
-                              .value
-                          )
-                        );
-                      }}
-                      className="
-                        w-full
-                        rounded-2xl
-                        border
-                        p-4
-                        text-2xl
-                        font-black
-                      "
-                    />
+                        <div>
 
-                    {/* PRICE */}
+                          {editing ? (
 
-                    <div className="mt-5 grid gap-4 md:grid-cols-4">
+                            <input
+                              type="text"
+                              value={
+                                product.title
+                              }
+                              onChange={(
+                                e
+                              ) =>
+                                updateProduct(
+                                  product.id,
+                                  "title",
+                                  e.target
+                                    .value
+                                )
+                              }
+                              className="
+                                rounded-2xl
+                                border
+                                p-3
+                                text-xl
+                                font-black
+                              "
+                            />
 
-                      <input
-                        type="number"
-                        value={
-                          product.price
-                        }
-                        onChange={(
-                          e
-                        ) => {
-                          updateProduct(
-                            product.id,
-                            "price",
-                            Number(
-                              e.target
-                                .value
+                          ) : (
+
+                            <h2 className="text-2xl font-black">
+
+                              {
+                                product.title
+                              }
+
+                            </h2>
+
+                          )}
+
+                          <p className="mt-2 text-sm font-bold text-gray-500">
+
+                            {
+                              product.category
+                            }
+
+                          </p>
+
+                          <div className="mt-3 flex gap-3">
+
+                            <p className="text-lg font-black text-green-600">
+
+                              ₹
+                              {
+                                product.discountPrice
+                              }
+
+                            </p>
+
+                            <p className="text-sm font-bold text-gray-400 line-through">
+
+                              ₹
+                              {
+                                product.price
+                              }
+
+                            </p>
+
+                          </div>
+
+                          <p className="mt-2 text-sm font-bold">
+
+                            Stock:
+                            {" "}
+                            {
+                              product.stock
+                            }
+
+                          </p>
+
+                        </div>
+
+                      </div>
+
+                      {/* ACTIONS */}
+
+                      <div className="flex flex-col gap-3">
+
+                        <button
+                          onClick={() => {
+
+                            if (
+                              editing
+                            ) {
+
+                              setEditingProductId(
+                                ""
+                              );
+
+                            } else {
+
+                              setEditingProductId(
+                                product.id
+                              );
+                            }
+                          }}
+                          className="
+                            flex
+                            items-center
+                            gap-2
+                            rounded-2xl
+                            bg-blue-600
+                            px-4
+                            py-3
+                            font-bold
+                            text-white
+                          "
+                        >
+
+                          <Pencil size={18} />
+
+                          {editing
+                            ? "Save"
+                            : "Edit"}
+
+                        </button>
+
+                        <button
+                          onClick={() => {
+
+                            updateProduct(
+                              product.id,
+                              "visible",
+
+                              !product.visible
+                            );
+                          }}
+                          className={`
+                            flex
+                            items-center
+                            gap-2
+                            rounded-2xl
+                            px-4
+                            py-3
+                            font-bold
+                            text-white
+
+                            ${
+                              product.visible
+                                ? "bg-green-600"
+                                : "bg-gray-500"
+                            }
+                          `}
+                        >
+
+                          {product.visible ? (
+                            <Eye size={18} />
+                          ) : (
+                            <EyeOff size={18} />
+                          )}
+
+                          Visible
+
+                        </button>
+
+                        <button
+                          onClick={() =>
+                            deleteProduct(
+                              product.id
                             )
-                          );
-                        }}
-                        placeholder="Price"
-                        className="
-                          rounded-2xl
-                          border
-                          p-4
-                        "
-                      />
+                          }
+                          className="
+                            flex
+                            items-center
+                            gap-2
+                            rounded-2xl
+                            bg-red-600
+                            px-4
+                            py-3
+                            font-bold
+                            text-white
+                          "
+                        >
 
-                      <input
-                        type="number"
-                        value={
-                          product.discountPrice
-                        }
-                        onChange={(
-                          e
-                        ) => {
-                          updateProduct(
-                            product.id,
-                            "discountPrice",
-                            Number(
-                              e.target
-                                .value
-                            )
-                          );
-                        }}
-                        placeholder="Discount Price"
-                        className="
-                          rounded-2xl
-                          border
-                          p-4
-                        "
-                      />
+                          <Trash2 size={18} />
 
-                      <input
-                        type="number"
-                        value={
-                          product.stock
-                        }
-                        onChange={(
-                          e
-                        ) => {
-                          updateProduct(
-                            product.id,
-                            "stock",
-                            Number(
-                              e.target
-                                .value
-                            )
-                          );
-                        }}
-                        placeholder="Stock"
-                        className="
-                          rounded-2xl
-                          border
-                          p-4
-                        "
-                      />
+                          Delete
 
-                      <input
-                        type="text"
-                        value={
-                          product.category
-                        }
-                        onChange={(
-                          e
-                        ) => {
-                          updateProduct(
-                            product.id,
-                            "category",
-                            e.target
-                              .value
-                          );
-                        }}
-                        placeholder="Category"
-                        className="
-                          rounded-2xl
-                          border
-                          p-4
-                        "
-                      />
+                        </button>
+
+                      </div>
 
                     </div>
 
-                    {/* BUTTONS */}
+                    {/* EDIT AREA */}
 
-                    <div className="mt-6 flex flex-wrap gap-4">
+                    {editing && (
 
-                      {/* IMAGE */}
+                      <div className="mt-6 space-y-5">
 
-                      <button
-                        onClick={() => {
-
-                          imageInputRefs.current[
-                            product.id
-                          ]?.click();
-                        }}
-                        className="
-                          flex
-                          items-center
-                          gap-2
-                          rounded-2xl
-                          bg-blue-600
-                          px-5
-                          py-4
-                          font-bold
-                          text-white
-                        "
-                      >
-
-                        <ImagePlus size={20} />
-
-                        Upload Images
-
-                      </button>
-
-                      <input
-                        ref={(
-                          element
-                        ) => {
-
-                          imageInputRefs.current[
-                            product.id
-                          ] =
-                            element;
-                        }}
-                        type="file"
-                        multiple
-                        hidden
-                        accept="image/*"
-                        onChange={async (
-                          event
-                        ) => {
-
-                          const files =
-                            event
-                              .target
-                              .files;
-
-                          if (
-                            files
-                          ) {
-
-                            await uploadImages(
-                              product,
-                              files
-                            );
+                        <input
+                          type="text"
+                          value={
+                            product.category
                           }
-                        }}
-                      />
-
-                      {/* VIDEO */}
-
-                      <button
-                        onClick={() => {
-
-                          videoInputRefs.current[
-                            product.id
-                          ]?.click();
-                        }}
-                        className="
-                          flex
-                          items-center
-                          gap-2
-                          rounded-2xl
-                          bg-purple-600
-                          px-5
-                          py-4
-                          font-bold
-                          text-white
-                        "
-                      >
-
-                        <Video size={20} />
-
-                        Upload Videos
-
-                      </button>
-
-                      <input
-                        ref={(
-                          element
-                        ) => {
-
-                          videoInputRefs.current[
-                            product.id
-                          ] =
-                            element;
-                        }}
-                        type="file"
-                        multiple
-                        hidden
-                        accept="video/*"
-                        onChange={async (
-                          event
-                        ) => {
-
-                          const files =
-                            event
-                              .target
-                              .files;
-
-                          if (
-                            files
-                          ) {
-
-                            await uploadVideos(
-                              product,
-                              files
-                            );
+                          onChange={(
+                            e
+                          ) =>
+                            updateProduct(
+                              product.id,
+                              "category",
+                              e.target
+                                .value
+                            )
                           }
-                        }}
-                      />
+                          placeholder="Category"
+                          className="
+                            w-full
+                            rounded-2xl
+                            border
+                            p-4
+                          "
+                        />
 
-                      {/* VARIANT */}
+                        <div className="grid gap-4 md:grid-cols-3">
 
-                      <button
-                        onClick={() =>
-                          addVariant(
-                            product
-                          )
-                        }
-                        className="
-                          rounded-2xl
-                          bg-green-600
-                          px-5
-                          py-4
-                          font-bold
-                          text-white
-                        "
-                      >
+                          <input
+                            type="number"
+                            value={
+                              product.price
+                            }
+                            onChange={(
+                              e
+                            ) =>
+                              updateProduct(
+                                product.id,
+                                "price",
+                                Number(
+                                  e.target
+                                    .value
+                                )
+                              )
+                            }
+                            placeholder="Price"
+                            className="
+                              rounded-2xl
+                              border
+                              p-4
+                            "
+                          />
 
-                        Add Variant
+                          <input
+                            type="number"
+                            value={
+                              product.discountPrice
+                            }
+                            onChange={(
+                              e
+                            ) =>
+                              updateProduct(
+                                product.id,
+                                "discountPrice",
+                                Number(
+                                  e.target
+                                    .value
+                                )
+                              )
+                            }
+                            placeholder="Discount Price"
+                            className="
+                              rounded-2xl
+                              border
+                              p-4
+                            "
+                          />
 
-                      </button>
+                          <input
+                            type="number"
+                            value={
+                              product.stock
+                            }
+                            onChange={(
+                              e
+                            ) =>
+                              updateProduct(
+                                product.id,
+                                "stock",
+                                Number(
+                                  e.target
+                                    .value
+                                )
+                              )
+                            }
+                            placeholder="Stock"
+                            className="
+                              rounded-2xl
+                              border
+                              p-4
+                            "
+                          />
 
-                      {/* SPEC */}
+                        </div>
 
-                      <button
-                        onClick={() =>
-                          addSpecification(
-                            product
-                          )
-                        }
-                        className="
-                          rounded-2xl
-                          bg-orange-600
-                          px-5
-                          py-4
-                          font-bold
-                          text-white
-                        "
-                      >
+                        {/* UPLOAD */}
 
-                        Add Specification
+                        <div className="flex flex-wrap gap-4">
 
-                      </button>
+                          {/* IMAGE */}
 
-                      {/* FEATURED */}
+                          <button
+                            onClick={() => {
 
-                      <button
-                        onClick={() => {
+                              imageInputRefs.current[
+                                product.id
+                              ]?.click();
+                            }}
+                            className="
+                              flex
+                              items-center
+                              gap-2
+                              rounded-2xl
+                              bg-blue-600
+                              px-5
+                              py-4
+                              font-bold
+                              text-white
+                            "
+                          >
 
-                          updateProduct(
-                            product.id,
-                            "featured",
-                            !product.featured
-                          );
-                        }}
-                        className={`
-                          flex
-                          items-center
-                          gap-2
-                          rounded-2xl
-                          px-5
-                          py-4
-                          font-bold
-                          text-white
+                            <ImagePlus size={20} />
 
-                          ${
-                            product.featured
-                              ? "bg-yellow-500"
-                              : "bg-gray-500"
-                          }
-                        `}
-                      >
+                            Upload Images
 
-                        <Star size={20} />
+                          </button>
 
-                        Featured
+                          <input
+                            ref={(
+                              element
+                            ) => {
 
-                      </button>
+                              imageInputRefs.current[
+                                product.id
+                              ] =
+                                element;
+                            }}
+                            type="file"
+                            hidden
+                            multiple
+                            accept="image/*"
+                            onChange={async (
+                              event
+                            ) => {
 
-                      {/* VISIBLE */}
+                              const files =
+                                event
+                                  .target
+                                  .files;
 
-                      <button
-                        onClick={() => {
+                              if (
+                                files
+                              ) {
 
-                          updateProduct(
-                            product.id,
-                            "visible",
-                            !product.visible
-                          );
-                        }}
-                        className={`
-                          flex
-                          items-center
-                          gap-2
-                          rounded-2xl
-                          px-5
-                          py-4
-                          font-bold
-                          text-white
+                                await uploadImages(
+                                  product,
+                                  files
+                                );
+                              }
+                            }}
+                          />
 
-                          ${
-                            product.visible
-                              ? "bg-green-600"
-                              : "bg-red-600"
-                          }
-                        `}
-                      >
+                          {/* VIDEO */}
 
-                        {product.visible ? (
-                          <Eye size={20} />
-                        ) : (
-                          <EyeOff size={20} />
-                        )}
+                          <button
+                            onClick={() => {
 
-                        Visible
+                              videoInputRefs.current[
+                                product.id
+                              ]?.click();
+                            }}
+                            className="
+                              flex
+                              items-center
+                              gap-2
+                              rounded-2xl
+                              bg-purple-600
+                              px-5
+                              py-4
+                              font-bold
+                              text-white
+                            "
+                          >
 
-                      </button>
+                            <Video size={20} />
 
-                      {/* DELETE */}
+                            Upload Videos
 
-                      <button
-                        onClick={() =>
-                          deleteProduct(
-                            product.id
-                          )
-                        }
-                        className="
-                          flex
-                          items-center
-                          gap-2
-                          rounded-2xl
-                          bg-red-600
-                          px-5
-                          py-4
-                          font-bold
-                          text-white
-                        "
-                      >
+                          </button>
 
-                        <Trash2 size={20} />
+                          <input
+                            ref={(
+                              element
+                            ) => {
 
-                        Delete
+                              videoInputRefs.current[
+                                product.id
+                              ] =
+                                element;
+                            }}
+                            type="file"
+                            hidden
+                            multiple
+                            accept="video/*"
+                            onChange={async (
+                              event
+                            ) => {
 
-                      </button>
+                              const files =
+                                event
+                                  .target
+                                  .files;
 
-                    </div>
+                              if (
+                                files
+                              ) {
+
+                                await uploadVideos(
+                                  product,
+                                  files
+                                );
+                              }
+                            }}
+                          />
+
+                        </div>
+
+                      </div>
+
+                    )}
 
                     {/* IMAGES */}
 
-                    <div className="mt-7 flex gap-4 overflow-x-auto">
+                    <div className="mt-5 flex gap-3 overflow-x-auto">
 
                       {product.images?.map(
                         (
@@ -1083,9 +1030,9 @@ export default function ProductsAdminPage() {
                               src={image}
                               alt=""
                               className="
-                                h-40
-                                w-32
-                                rounded-3xl
+                                h-28
+                                w-28
+                                rounded-2xl
                                 object-cover
                               "
                             />
@@ -1097,7 +1044,7 @@ export default function ProductsAdminPage() {
 
                     {/* VIDEOS */}
 
-                    <div className="mt-7 flex gap-4 overflow-x-auto">
+                    <div className="mt-5 flex gap-3 overflow-x-auto">
 
                       {product.videos?.map(
                         (
@@ -1112,9 +1059,9 @@ export default function ProductsAdminPage() {
                               src={video}
                               controls
                               className="
-                                h-44
-                                w-36
-                                rounded-3xl
+                                h-40
+                                w-32
+                                rounded-2xl
                                 object-cover
                               "
                             />
@@ -1130,6 +1077,7 @@ export default function ProductsAdminPage() {
             )}
 
           </div>
+
         )}
 
       </div>
