@@ -3,8 +3,9 @@ import {
   collection
 } from "firebase/firestore";
 
-import { db }
-from "@/firebase/config";
+import {
+  db
+} from "@/firebase/config";
 
 interface UploadWatchVideoData {
 
@@ -25,13 +26,21 @@ interface UploadWatchVideoData {
 
 export async function
 uploadWatchVideo({
+
   file,
+
   userId,
+
   username,
+
   caption,
+
   hashtags,
+
   music,
+
   sponsor
+
 }: UploadWatchVideoData) {
 
   try {
@@ -107,7 +116,7 @@ uploadWatchVideo({
     }
 
     /* =========================
-       AUTO REWARD SYSTEM
+       AUTO REWARD
     ========================= */
 
     const rewardCoins =
@@ -116,7 +125,7 @@ uploadWatchVideo({
         : 5;
 
     /* =========================
-       CLOUDINARY FORM DATA
+       FORM DATA
     ========================= */
 
     const formData =
@@ -148,18 +157,39 @@ uploadWatchVideo({
         }
       );
 
+    /* =========================
+       DEBUG STATUS
+    ========================= */
+
+    console.log(
+      "UPLOAD STATUS:",
+      response.status
+    );
+
     const cloudinaryData =
       await response.json();
 
+    console.log(
+      "CLOUDINARY RESPONSE:",
+      cloudinaryData
+    );
+
     /* =========================
-       UPLOAD FAILED
+       FAILED
     ========================= */
 
     if (
       !cloudinaryData.secure_url
     ) {
 
+      alert(
+        JSON.stringify(
+          cloudinaryData
+        )
+      );
+
       console.error(
+        "CLOUDINARY FAILED:",
         cloudinaryData
       );
 
@@ -173,7 +203,7 @@ uploadWatchVideo({
     }
 
     /* =========================
-       VIDEO URL
+       URLS
     ========================= */
 
     const videoUrl =
@@ -181,17 +211,19 @@ uploadWatchVideo({
 
     const thumbnailUrl =
       cloudinaryData.secure_url
+
         .replace(
           "/video/upload/",
           "/video/upload/so_1/"
         )
+
         .replace(
           ".mp4",
           ".jpg"
         );
 
     /* =========================
-       SAVE FIRESTORE
+       FIRESTORE SAVE
     ========================= */
 
     const docRef =
@@ -204,11 +236,9 @@ uploadWatchVideo({
 
         {
 
-          userId:
-            userId,
+          userId,
 
-          username:
-            username,
+          username,
 
           caption:
             caption || "",
@@ -234,21 +264,29 @@ uploadWatchVideo({
           coins:
             rewardCoins,
 
-          likes: 0,
+          likes:
+            0,
 
-          comments: 0,
+          comments:
+            0,
 
-          shares: 0,
+          shares:
+            0,
 
-          saves: 0,
+          saves:
+            0,
 
-          views: 0,
+          views:
+            0,
 
-          watchTime: 0,
+          watchTime:
+            0,
 
-          active: true,
+          active:
+            true,
 
-          featured: false,
+          featured:
+            false,
 
           status:
             "approved",
@@ -260,6 +298,10 @@ uploadWatchVideo({
             Date.now()
         }
       );
+
+    /* =========================
+       SUCCESS
+    ========================= */
 
     return {
 
@@ -282,6 +324,12 @@ uploadWatchVideo({
     console.error(
       "UPLOAD WATCH VIDEO ERROR:",
       error
+    );
+
+    alert(
+      JSON.stringify(
+        error
+      )
     );
 
     return {
