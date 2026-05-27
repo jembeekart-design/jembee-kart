@@ -26,7 +26,8 @@ import {
   EyeOff,
   ImagePlus,
   Video,
-  X
+  X,
+  UploadCloud
 } from "lucide-react";
 
 import { db } from "@/firebase/config";
@@ -43,11 +44,15 @@ interface Product {
 
   category: string;
 
+  description: string;
+
   price: number;
 
   discountPrice: number;
 
   stock: number;
+
+  sku: string;
 
   images: string[];
 
@@ -90,7 +95,7 @@ export default function ProductsAdminPage() {
   ] = useState("");
 
   /* ======================================================
-  ADD FORM
+  FORM STATES
   ====================================================== */
 
   const [
@@ -101,6 +106,11 @@ export default function ProductsAdminPage() {
   const [
     category,
     setCategory
+  ] = useState("");
+
+  const [
+    description,
+    setDescription
   ] = useState("");
 
   const [
@@ -117,6 +127,26 @@ export default function ProductsAdminPage() {
     stock,
     setStock
   ] = useState("");
+
+  const [
+    sku,
+    setSku
+  ] = useState("");
+
+  const [
+    selectedSizes,
+    setSelectedSizes
+  ] = useState<string[]>([]);
+
+  const [
+    selectedColor,
+    setSelectedColor
+  ] = useState("Black");
+
+  const [
+    uploading,
+    setUploading
+  ] = useState(false);
 
   const imageInputRefs =
     useRef<{
@@ -241,6 +271,8 @@ export default function ProductsAdminPage() {
 
         category,
 
+        description,
+
         price:
           Number(price),
 
@@ -251,6 +283,8 @@ export default function ProductsAdminPage() {
 
         stock:
           Number(stock),
+
+        sku,
 
         images: [],
 
@@ -264,11 +298,15 @@ export default function ProductsAdminPage() {
 
     setCategory("");
 
+    setDescription("");
+
     setPrice("");
 
     setDiscountPrice("");
 
     setStock("");
+
+    setSku("");
 
     setActiveTab(
       "products"
@@ -340,6 +378,10 @@ export default function ProductsAdminPage() {
 
     try {
 
+      setUploading(
+        true
+      );
+
       const uploaded:
         string[] = [];
 
@@ -409,6 +451,12 @@ export default function ProductsAdminPage() {
       console.error(
         error
       );
+
+    } finally {
+
+      setUploading(
+        false
+      );
     }
   }
 
@@ -422,6 +470,10 @@ export default function ProductsAdminPage() {
   ) {
 
     try {
+
+      setUploading(
+        true
+      );
 
       const uploaded:
         string[] = [];
@@ -492,6 +544,43 @@ export default function ProductsAdminPage() {
       console.error(
         error
       );
+
+    } finally {
+
+      setUploading(
+        false
+      );
+    }
+  }
+
+  /* ======================================================
+  TOGGLE SIZE
+  ====================================================== */
+
+  function toggleSize(
+    size: string
+  ) {
+
+    if (
+      selectedSizes.includes(
+        size
+      )
+    ) {
+
+      setSelectedSizes(
+
+        selectedSizes.filter(
+          (item) =>
+            item !== size
+        )
+      );
+
+    } else {
+
+      setSelectedSizes([
+        ...selectedSizes,
+        size
+      ]);
     }
   }
 
@@ -501,7 +590,7 @@ export default function ProductsAdminPage() {
 
   return (
 
-    <main className="min-h-screen bg-[#f4f4f4] p-4">
+    <main className="min-h-screen bg-[#060312] p-4">
 
       <div className="mx-auto max-w-7xl">
 
@@ -511,87 +600,106 @@ export default function ProductsAdminPage() {
 
           <div>
 
-            <h1 className="text-5xl font-black">
-              Products Admin
+            <h1
+              className="
+                text-5xl
+                font-black
+                text-white
+              "
+            >
+
+              POD Dashboard
+
             </h1>
 
-            <p className="mt-2 text-gray-500">
-              Manage Products
+            <p
+              className="
+                mt-2
+                text-gray-400
+              "
+            >
+
+              Qikink / Printrove
+              Product Manager
+
             </p>
 
           </div>
 
-          {/* TOP BUTTONS */}
+          {/* TABS */}
 
           <div className="flex gap-3">
 
             <button
               onClick={() =>
                 setActiveTab(
-                  "products"
+                  "add"
                 )
               }
               className={`
                 flex
                 items-center
                 gap-2
-                rounded-3xl
-                px-6
-                py-5
-                text-lg
-                font-black
+                rounded-2xl
+                border
+                px-5
+                py-4
+                font-bold
 
                 ${
                   activeTab ===
-                  "products"
+                  "add"
 
-                    ? "bg-black text-white"
+                    ? "border-purple-500 bg-purple-500/20 text-white shadow-[0_0_20px_rgba(168,85,247,0.7)]"
 
-                    : "bg-white text-black"
+                    : "border-white/10 bg-white/5 text-gray-300"
                 }
               `}
             >
 
-              <Package2
-                size={22}
-              />
+              <Plus size={20} />
 
-              Products
+              Add Product
 
             </button>
 
             <button
               onClick={() =>
                 setActiveTab(
-                  "add"
+                  "products"
                 )
               }
               className={`
                 flex
                 items-center
                 gap-2
-                rounded-3xl
-                px-6
-                py-5
-                text-lg
-                font-black
+                rounded-2xl
+                border
+                px-5
+                py-4
+                font-bold
 
                 ${
                   activeTab ===
-                  "add"
+                  "products"
 
-                    ? "bg-blue-600 text-white"
+                    ? "border-purple-500 bg-purple-500/20 text-white shadow-[0_0_20px_rgba(168,85,247,0.7)]"
 
-                    : "bg-white text-black"
+                    : "border-white/10 bg-white/5 text-gray-300"
                 }
               `}
             >
 
-              <Plus
-                size={22}
+              <Package2
+                size={20}
               />
 
-              Add Product
+              My Products
+              (
+              {
+                products.length
+              }
+              )
 
             </button>
 
@@ -600,7 +708,7 @@ export default function ProductsAdminPage() {
         </div>
 
         {/* ======================================================
-        ADD PRODUCT FORM
+        ADD PRODUCT
         ====================================================== */}
 
         {activeTab ===
@@ -608,10 +716,12 @@ export default function ProductsAdminPage() {
 
           <div
             className="
-              rounded-[35px]
-              bg-white
+              rounded-[40px]
+              border
+              border-purple-500/20
+              bg-[#0f0b1f]
               p-6
-              shadow-xl
+              shadow-[0_0_40px_rgba(168,85,247,0.25)]
             "
           >
 
@@ -619,129 +729,579 @@ export default function ProductsAdminPage() {
               className="
                 text-3xl
                 font-black
+                text-white
               "
             >
 
-              Add New Product
+              Add Product
 
             </h2>
 
-            <div className="mt-6 grid gap-5">
+            {/* TITLE + SKU */}
 
-              <input
-                type="text"
-                value={title}
+            <div className="mt-6 grid gap-5 md:grid-cols-2">
+
+              <div>
+
+                <label className="mb-2 block text-sm font-bold text-gray-300">
+
+                  Product Title
+
+                </label>
+
+                <input
+                  type="text"
+                  value={title}
+                  onChange={(e) =>
+                    setTitle(
+                      e.target.value
+                    )
+                  }
+                  placeholder="Samurai Tee"
+                  className="
+                    w-full
+                    rounded-2xl
+                    border
+                    border-purple-500/30
+                    bg-[#151027]
+                    p-4
+                    text-white
+                    outline-none
+                  "
+                />
+
+              </div>
+
+              <div>
+
+                <label className="mb-2 block text-sm font-bold text-gray-300">
+
+                  Vendor SKU
+
+                </label>
+
+                <input
+                  type="text"
+                  value={sku}
+                  onChange={(e) =>
+                    setSku(
+                      e.target.value
+                    )
+                  }
+                  placeholder="TS-1001"
+                  className="
+                    w-full
+                    rounded-2xl
+                    border
+                    border-purple-500/30
+                    bg-[#151027]
+                    p-4
+                    text-white
+                    outline-none
+                  "
+                />
+
+              </div>
+
+            </div>
+
+            {/* DESCRIPTION */}
+
+            <div className="mt-5">
+
+              <label className="mb-2 block text-sm font-bold text-gray-300">
+
+                Description
+
+              </label>
+
+              <textarea
+                value={description}
                 onChange={(e) =>
-                  setTitle(
+                  setDescription(
                     e.target.value
                   )
                 }
-                placeholder="Product Title"
+                rows={4}
+                placeholder="Premium cotton oversized t-shirt..."
                 className="
+                  w-full
                   rounded-2xl
                   border
-                  p-5
-                  text-lg
+                  border-purple-500/30
+                  bg-[#151027]
+                  p-4
+                  text-white
+                  outline-none
                 "
               />
 
-              <input
-                type="text"
-                value={category}
-                onChange={(e) =>
-                  setCategory(
-                    e.target.value
-                  )
-                }
-                placeholder="Category"
-                className="
-                  rounded-2xl
-                  border
-                  p-5
-                  text-lg
-                "
-              />
+            </div>
 
-              <input
-                type="number"
-                value={price}
-                onChange={(e) =>
-                  setPrice(
-                    e.target.value
-                  )
-                }
-                placeholder="Price"
-                className="
-                  rounded-2xl
-                  border
-                  p-5
-                  text-lg
-                "
-              />
+            {/* PRICE */}
 
-              <input
-                type="number"
-                value={
-                  discountPrice
-                }
-                onChange={(e) =>
-                  setDiscountPrice(
-                    e.target.value
-                  )
-                }
-                placeholder="Discount Price"
-                className="
-                  rounded-2xl
-                  border
-                  p-5
-                  text-lg
-                "
-              />
+            <div className="mt-5 grid gap-5 md:grid-cols-2">
 
-              <input
-                type="number"
-                value={stock}
-                onChange={(e) =>
-                  setStock(
-                    e.target.value
-                  )
-                }
-                placeholder="Stock"
-                className="
-                  rounded-2xl
-                  border
-                  p-5
-                  text-lg
-                "
-              />
+              <div>
 
-              <button
-                onClick={
-                  addProduct
-                }
+                <label className="mb-2 block text-sm font-bold text-gray-300">
+
+                  Base Price
+
+                </label>
+
+                <input
+                  type="number"
+                  value={price}
+                  onChange={(e) =>
+                    setPrice(
+                      e.target.value
+                    )
+                  }
+                  placeholder="349"
+                  className="
+                    w-full
+                    rounded-2xl
+                    border
+                    border-purple-500/30
+                    bg-[#151027]
+                    p-4
+                    text-white
+                    outline-none
+                  "
+                />
+
+              </div>
+
+              <div>
+
+                <label className="mb-2 block text-sm font-bold text-gray-300">
+
+                  Discount Price
+
+                </label>
+
+                <input
+                  type="number"
+                  value={
+                    discountPrice
+                  }
+                  onChange={(e) =>
+                    setDiscountPrice(
+                      e.target.value
+                    )
+                  }
+                  placeholder="299"
+                  className="
+                    w-full
+                    rounded-2xl
+                    border
+                    border-purple-500/30
+                    bg-[#151027]
+                    p-4
+                    text-white
+                    outline-none
+                  "
+                />
+
+              </div>
+
+            </div>
+
+            {/* CATEGORY + STOCK */}
+
+            <div className="mt-5 grid gap-5 md:grid-cols-2">
+
+              <div>
+
+                <label className="mb-2 block text-sm font-bold text-gray-300">
+
+                  Category
+
+                </label>
+
+                <select
+                  value={category}
+                  onChange={(e) =>
+                    setCategory(
+                      e.target.value
+                    )
+                  }
+                  className="
+                    w-full
+                    rounded-2xl
+                    border
+                    border-purple-500/30
+                    bg-[#151027]
+                    p-4
+                    text-white
+                    outline-none
+                  "
+                >
+
+                  <option>
+                    Oversized Tee
+                  </option>
+
+                  <option>
+                    Hoodie
+                  </option>
+
+                  <option>
+                    Sweatshirt
+                  </option>
+
+                </select>
+
+              </div>
+
+              <div>
+
+                <label className="mb-2 block text-sm font-bold text-gray-300">
+
+                  Stock
+
+                </label>
+
+                <input
+                  type="number"
+                  value={stock}
+                  onChange={(e) =>
+                    setStock(
+                      e.target.value
+                    )
+                  }
+                  placeholder="100"
+                  className="
+                    w-full
+                    rounded-2xl
+                    border
+                    border-purple-500/30
+                    bg-[#151027]
+                    p-4
+                    text-white
+                    outline-none
+                  "
+                />
+
+              </div>
+
+            </div>
+
+            {/* COLORS */}
+
+            <div className="mt-7">
+
+              <h3
                 className="
-                  rounded-3xl
-                  bg-blue-600
-                  px-6
-                  py-5
-                  text-xl
+                  text-lg
                   font-black
                   text-white
                 "
               >
 
-                Save Product
+                Colors
 
-              </button>
+              </h3>
+
+              <div className="mt-4 flex gap-4">
+
+                {[
+                  "Black",
+                  "White",
+                  "Blue",
+                  "Red"
+                ].map((color) => {
+
+                  return (
+
+                    <button
+                      key={color}
+                      onClick={() =>
+                        setSelectedColor(
+                          color
+                        )
+                      }
+                      className={`
+                        h-12
+                        w-12
+                        rounded-full
+                        border-4
+
+                        ${
+                          selectedColor ===
+                          color
+
+                            ? "border-purple-500"
+
+                            : "border-transparent"
+                        }
+
+                        ${
+                          color ===
+                          "Black"
+
+                            ? "bg-black"
+
+                            : color ===
+                              "White"
+
+                            ? "bg-white"
+
+                            : color ===
+                              "Blue"
+
+                            ? "bg-blue-600"
+
+                            : "bg-red-600"
+                        }
+                      `}
+                    />
+                  );
+                })}
+
+              </div>
 
             </div>
+
+            {/* SIZE */}
+
+            <div className="mt-7">
+
+              <h3
+                className="
+                  text-lg
+                  font-black
+                  text-white
+                "
+              >
+
+                Sizes
+
+              </h3>
+
+              <div className="mt-4 flex flex-wrap gap-3">
+
+                {[
+                  "S",
+                  "M",
+                  "L",
+                  "XL",
+                  "XXL"
+                ].map((size) => {
+
+                  const active =
+                    selectedSizes.includes(
+                      size
+                    );
+
+                  return (
+
+                    <button
+                      key={size}
+                      onClick={() =>
+                        toggleSize(
+                          size
+                        )
+                      }
+                      className={`
+                        rounded-xl
+                        border
+                        px-5
+                        py-3
+                        text-sm
+                        font-bold
+
+                        ${
+                          active
+
+                            ? "border-purple-500 bg-purple-600 text-white"
+
+                            : "border-white/10 bg-white/5 text-gray-300"
+                        }
+                      `}
+                    >
+
+                      {size}
+
+                    </button>
+                  );
+                })}
+
+              </div>
+
+            </div>
+
+            {/* MOCKUP */}
+
+            <div className="mt-8">
+
+              <h3
+                className="
+                  text-lg
+                  font-black
+                  text-white
+                "
+              >
+
+                Media
+
+              </h3>
+
+              <div className="mt-5 grid gap-4 md:grid-cols-3">
+
+                <div
+                  className="
+                    flex
+                    h-48
+                    flex-col
+                    items-center
+                    justify-center
+                    rounded-3xl
+                    border-2
+                    border-dashed
+                    border-purple-500/30
+                    bg-[#151027]
+                  "
+                >
+
+                  <UploadCloud
+                    size={40}
+                    className="
+                      text-purple-400
+                    "
+                  />
+
+                  <p
+                    className="
+                      mt-4
+                      text-sm
+                      font-bold
+                      text-gray-300
+                    "
+                  >
+
+                    Front Mockup
+
+                  </p>
+
+                </div>
+
+                <div
+                  className="
+                    flex
+                    h-48
+                    flex-col
+                    items-center
+                    justify-center
+                    rounded-3xl
+                    border-2
+                    border-dashed
+                    border-purple-500/30
+                    bg-[#151027]
+                  "
+                >
+
+                  <UploadCloud
+                    size={40}
+                    className="
+                      text-purple-400
+                    "
+                  />
+
+                  <p
+                    className="
+                      mt-4
+                      text-sm
+                      font-bold
+                      text-gray-300
+                    "
+                  >
+
+                    Back Mockup
+
+                  </p>
+
+                </div>
+
+                <div
+                  className="
+                    flex
+                    h-48
+                    flex-col
+                    items-center
+                    justify-center
+                    rounded-3xl
+                    border-2
+                    border-dashed
+                    border-purple-500/30
+                    bg-[#151027]
+                  "
+                >
+
+                  <UploadCloud
+                    size={40}
+                    className="
+                      text-purple-400
+                    "
+                  />
+
+                  <p
+                    className="
+                      mt-4
+                      text-sm
+                      font-bold
+                      text-gray-300
+                    "
+                  >
+
+                    Design File
+
+                  </p>
+
+                </div>
+
+              </div>
+
+            </div>
+
+            {/* SAVE */}
+
+            <button
+              onClick={
+                addProduct
+              }
+              disabled={
+                uploading
+              }
+              className="
+                mt-8
+                w-full
+                rounded-3xl
+                bg-gradient-to-r
+                from-purple-600
+                to-pink-500
+                px-6
+                py-5
+                text-xl
+                font-black
+                text-white
+                shadow-[0_0_30px_rgba(168,85,247,0.8)]
+              "
+            >
+
+              {uploading
+                ? "Uploading..."
+                : "Submit & Publish"}
+
+            </button>
 
           </div>
 
         )}
 
         {/* ======================================================
-        PRODUCTS LIST
+        PRODUCTS TAB
         ====================================================== */}
 
         {activeTab ===
@@ -751,7 +1311,7 @@ export default function ProductsAdminPage() {
 
             {/* CATEGORY */}
 
-            <div className="mb-7 mt-3 flex gap-3 overflow-x-auto pb-2">
+            <div className="mb-7 flex gap-3 overflow-x-auto">
 
               {categories.map(
                 (category) => {
@@ -759,9 +1319,7 @@ export default function ProductsAdminPage() {
                   return (
 
                     <button
-                      key={
-                        category
-                      }
+                      key={category}
                       onClick={() =>
                         setSelectedCategory(
                           category
@@ -779,9 +1337,9 @@ export default function ProductsAdminPage() {
                           selectedCategory ===
                           category
 
-                            ? "bg-black text-white"
+                            ? "bg-purple-600 text-white"
 
-                            : "bg-white text-black"
+                            : "bg-white/5 text-gray-300"
                         }
                       `}
                     >
@@ -795,11 +1353,18 @@ export default function ProductsAdminPage() {
 
             </div>
 
-            {/* LOADING */}
+            {/* PRODUCTS */}
 
             {loading ? (
 
-              <div className="text-center text-2xl font-black">
+              <div
+                className="
+                  text-center
+                  text-2xl
+                  font-black
+                  text-white
+                "
+              >
 
                 Loading...
 
@@ -810,13 +1375,7 @@ export default function ProductsAdminPage() {
               <div className="grid gap-5">
 
                 {filteredProducts.map(
-                  (
-                    product
-                  ) => {
-
-                    const editing =
-                      editingProductId ===
-                      product.id;
+                  (product) => {
 
                     return (
 
@@ -826,13 +1385,12 @@ export default function ProductsAdminPage() {
                         }
                         className="
                           rounded-[35px]
-                          bg-white
+                          border
+                          border-white/10
+                          bg-[#0f0b1f]
                           p-5
-                          shadow-lg
                         "
                       >
-
-                        {/* TOP */}
 
                         <div className="flex items-start justify-between gap-4">
 
@@ -842,6 +1400,7 @@ export default function ProductsAdminPage() {
                               src={
                                 product
                                   .images?.[0] ||
+
                                 "https://placehold.co/200x200"
                               }
                               alt=""
@@ -855,45 +1414,28 @@ export default function ProductsAdminPage() {
 
                             <div>
 
-                              {editing ? (
+                              <h2
+                                className="
+                                  text-2xl
+                                  font-black
+                                  text-white
+                                "
+                              >
 
-                                <input
-                                  type="text"
-                                  value={
-                                    product.title
-                                  }
-                                  onChange={(
-                                    e
-                                  ) =>
-                                    updateProduct(
-                                      product.id,
-                                      "title",
-                                      e.target
-                                        .value
-                                    )
-                                  }
-                                  className="
-                                    rounded-2xl
-                                    border
-                                    p-3
-                                    text-xl
-                                    font-black
-                                  "
-                                />
+                                {
+                                  product.title
+                                }
 
-                              ) : (
+                              </h2>
 
-                                <h2 className="text-2xl font-black">
-
-                                  {
-                                    product.title
-                                  }
-
-                                </h2>
-
-                              )}
-
-                              <p className="mt-2 text-sm font-bold text-gray-500">
+                              <p
+                                className="
+                                  mt-2
+                                  text-sm
+                                  font-bold
+                                  text-gray-400
+                                "
+                              >
 
                                 {
                                   product.category
@@ -903,7 +1445,13 @@ export default function ProductsAdminPage() {
 
                               <div className="mt-3 flex gap-3">
 
-                                <p className="text-lg font-black text-green-600">
+                                <p
+                                  className="
+                                    text-lg
+                                    font-black
+                                    text-green-400
+                                  "
+                                >
 
                                   ₹
                                   {
@@ -912,7 +1460,14 @@ export default function ProductsAdminPage() {
 
                                 </p>
 
-                                <p className="text-sm font-bold text-gray-400 line-through">
+                                <p
+                                  className="
+                                    text-sm
+                                    font-bold
+                                    text-gray-500
+                                    line-through
+                                  "
+                                >
 
                                   ₹
                                   {
@@ -923,7 +1478,14 @@ export default function ProductsAdminPage() {
 
                               </div>
 
-                              <p className="mt-2 text-sm font-bold">
+                              <p
+                                className="
+                                  mt-2
+                                  text-sm
+                                  font-bold
+                                  text-gray-300
+                                "
+                              >
 
                                 Stock:
                                 {" "}
@@ -937,28 +1499,16 @@ export default function ProductsAdminPage() {
 
                           </div>
 
-                          {/* BUTTONS */}
+                          {/* ACTIONS */}
 
                           <div className="flex flex-col gap-3">
 
                             <button
-                              onClick={() => {
-
-                                if (
-                                  editing
-                                ) {
-
-                                  setEditingProductId(
-                                    ""
-                                  );
-
-                                } else {
-
-                                  setEditingProductId(
-                                    product.id
-                                  );
-                                }
-                              }}
+                              onClick={() =>
+                                setEditingProductId(
+                                  product.id
+                                )
+                              }
                               className="
                                 flex
                                 items-center
@@ -972,11 +1522,11 @@ export default function ProductsAdminPage() {
                               "
                             >
 
-                              <Pencil size={18} />
+                              <Pencil
+                                size={18}
+                              />
 
-                              {editing
-                                ? "Save"
-                                : "Edit"}
+                              Edit
 
                             </button>
 
@@ -1002,23 +1552,21 @@ export default function ProductsAdminPage() {
 
                                 ${
                                   product.visible
+
                                     ? "bg-green-600"
-                                    : "bg-gray-500"
+
+                                    : "bg-gray-600"
                                 }
                               `}
                             >
 
                               {product.visible ? (
                                 <Eye
-                                  size={
-                                    18
-                                  }
+                                  size={18}
                                 />
                               ) : (
                                 <EyeOff
-                                  size={
-                                    18
-                                  }
+                                  size={18}
                                 />
                               )}
 
@@ -1046,9 +1594,7 @@ export default function ProductsAdminPage() {
                             >
 
                               <Trash2
-                                size={
-                                  18
-                                }
+                                size={18}
                               />
 
                               Delete
@@ -1056,381 +1602,6 @@ export default function ProductsAdminPage() {
                             </button>
 
                           </div>
-
-                        </div>
-
-                        {/* EDIT AREA */}
-
-                        {editing && (
-
-                          <div className="mt-6 space-y-5">
-
-                            <div className="grid gap-4 md:grid-cols-3">
-
-                              <input
-                                type="number"
-                                value={
-                                  product.price
-                                }
-                                onChange={(
-                                  e
-                                ) =>
-                                  updateProduct(
-                                    product.id,
-                                    "price",
-                                    Number(
-                                      e.target
-                                        .value
-                                    )
-                                  )
-                                }
-                                placeholder="Price"
-                                className="
-                                  rounded-2xl
-                                  border
-                                  p-4
-                                "
-                              />
-
-                              <input
-                                type="number"
-                                value={
-                                  product.discountPrice
-                                }
-                                onChange={(
-                                  e
-                                ) =>
-                                  updateProduct(
-                                    product.id,
-                                    "discountPrice",
-                                    Number(
-                                      e.target
-                                        .value
-                                    )
-                                  )
-                                }
-                                placeholder="Discount Price"
-                                className="
-                                  rounded-2xl
-                                  border
-                                  p-4
-                                "
-                              />
-
-                              <input
-                                type="number"
-                                value={
-                                  product.stock
-                                }
-                                onChange={(
-                                  e
-                                ) =>
-                                  updateProduct(
-                                    product.id,
-                                    "stock",
-                                    Number(
-                                      e.target
-                                        .value
-                                    )
-                                  )
-                                }
-                                placeholder="Stock"
-                                className="
-                                  rounded-2xl
-                                  border
-                                  p-4
-                                "
-                              />
-
-                            </div>
-
-                            {/* UPLOAD */}
-
-                            <div className="flex flex-wrap gap-4">
-
-                              {/* IMAGE */}
-
-                              <button
-                                onClick={() => {
-
-                                  imageInputRefs.current[
-                                    product.id
-                                  ]?.click();
-                                }}
-                                className="
-                                  flex
-                                  items-center
-                                  gap-2
-                                  rounded-2xl
-                                  bg-blue-600
-                                  px-5
-                                  py-4
-                                  font-bold
-                                  text-white
-                                "
-                              >
-
-                                <ImagePlus size={20} />
-
-                                Upload Images
-
-                              </button>
-
-                              <input
-                                ref={(
-                                  element
-                                ) => {
-
-                                  imageInputRefs.current[
-                                    product.id
-                                  ] =
-                                    element;
-                                }}
-                                type="file"
-                                hidden
-                                multiple
-                                accept="image/*"
-                                onChange={async (
-                                  event
-                                ) => {
-
-                                  const files =
-                                    event
-                                      .target
-                                      .files;
-
-                                  if (
-                                    files
-                                  ) {
-
-                                    await uploadImages(
-                                      product,
-                                      files
-                                    );
-                                  }
-                                }}
-                              />
-
-                              {/* VIDEO */}
-
-                              <button
-                                onClick={() => {
-
-                                  videoInputRefs.current[
-                                    product.id
-                                  ]?.click();
-                                }}
-                                className="
-                                  flex
-                                  items-center
-                                  gap-2
-                                  rounded-2xl
-                                  bg-purple-600
-                                  px-5
-                                  py-4
-                                  font-bold
-                                  text-white
-                                "
-                              >
-
-                                <Video size={20} />
-
-                                Upload Videos
-
-                              </button>
-
-                              <input
-                                ref={(
-                                  element
-                                ) => {
-
-                                  videoInputRefs.current[
-                                    product.id
-                                  ] =
-                                    element;
-                                }}
-                                type="file"
-                                hidden
-                                multiple
-                                accept="video/*"
-                                onChange={async (
-                                  event
-                                ) => {
-
-                                  const files =
-                                    event
-                                      .target
-                                      .files;
-
-                                  if (
-                                    files
-                                  ) {
-
-                                    await uploadVideos(
-                                      product,
-                                      files
-                                    );
-                                  }
-                                }}
-                              />
-
-                            </div>
-
-                          </div>
-
-                        )}
-
-                        {/* IMAGES */}
-
-                        <div className="mt-5 flex gap-3 overflow-x-auto">
-
-                          {product.images?.map(
-                            (
-                              image,
-                              index
-                            ) => {
-
-                              return (
-
-                                <div
-                                  key={
-                                    index
-                                  }
-                                  className="relative"
-                                >
-
-                                  <img
-                                    src={
-                                      image
-                                    }
-                                    alt=""
-                                    className="
-                                      h-28
-                                      w-28
-                                      rounded-2xl
-                                      object-cover
-                                    "
-                                  />
-
-                                  <button
-                                    onClick={async () => {
-
-                                      const updated =
-                                        product.images.filter(
-                                          (
-                                            _,
-                                            i
-                                          ) =>
-                                            i !==
-                                            index
-                                        );
-
-                                      await updateProduct(
-                                        product.id,
-                                        "images",
-                                        updated
-                                      );
-                                    }}
-                                    className="
-                                      absolute
-                                      right-1
-                                      top-1
-                                      rounded-full
-                                      bg-red-600
-                                      p-1
-                                      text-white
-                                    "
-                                  >
-
-                                    <X
-                                      size={
-                                        14
-                                      }
-                                    />
-
-                                  </button>
-
-                                </div>
-                              );
-                            }
-                          )}
-
-                        </div>
-
-                        {/* VIDEOS */}
-
-                        <div className="mt-5 flex gap-3 overflow-x-auto">
-
-                          {product.videos?.map(
-                            (
-                              video,
-                              index
-                            ) => {
-
-                              return (
-
-                                <div
-                                  key={
-                                    index
-                                  }
-                                  className="relative"
-                                >
-
-                                  <video
-                                    src={
-                                      video
-                                    }
-                                    controls
-                                    className="
-                                      h-40
-                                      w-32
-                                      rounded-2xl
-                                      object-cover
-                                    "
-                                  />
-
-                                  <button
-                                    onClick={async () => {
-
-                                      const updated =
-                                        product.videos.filter(
-                                          (
-                                            _,
-                                            i
-                                          ) =>
-                                            i !==
-                                            index
-                                        );
-
-                                      await updateProduct(
-                                        product.id,
-                                        "videos",
-                                        updated
-                                      );
-                                    }}
-                                    className="
-                                      absolute
-                                      right-1
-                                      top-1
-                                      rounded-full
-                                      bg-red-600
-                                      p-1
-                                      text-white
-                                    "
-                                  >
-
-                                    <X
-                                      size={
-                                        14
-                                      }
-                                    />
-
-                                  </button>
-
-                                </div>
-                              );
-                            }
-                          )}
 
                         </div>
 
