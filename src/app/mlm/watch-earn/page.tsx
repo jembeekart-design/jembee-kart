@@ -25,14 +25,13 @@ import {
   WatchVideo
 } from "@/lib/mlm/watch-earn/fetchWatchVideos";
 
-/* ========================================================
-   NOTE: Make sure your WatchVideo TypeScript interface 
-   includes these new Firestore fields:
-   - sponsor?: boolean;
-   - adVideo?: boolean;
-   - rewardCoins?: number;
-   - adRevenue?: number;
-======================================================== */
+// Extending the interface locally to stop TypeScript build errors
+interface ExtendedWatchVideo extends WatchVideo {
+  sponsor?: boolean;
+  adVideo?: boolean;
+  rewardCoins?: number;
+  adRevenue?: number;
+}
 
 export default function WatchEarnPage() {
   const videoRefs = useRef<HTMLVideoElement[]>([]);
@@ -40,7 +39,7 @@ export default function WatchEarnPage() {
   /* =========================
      VIDEOS
      ========================= */
-  const [videos, setVideos] = useState<WatchVideo[]>([]);
+  const [videos, setVideos] = useState<ExtendedWatchVideo[]>([]);
   const [loadingVideos, setLoadingVideos] = useState(true);
 
   /* =========================
@@ -70,7 +69,7 @@ export default function WatchEarnPage() {
         setLoadingVideos(true);
         const result = await fetchWatchVideos();
         if (result.success) {
-          setVideos(result.videos);
+          setVideos(result.videos as ExtendedWatchVideo[]);
         }
       } catch (error) {
         console.error(error);
@@ -95,7 +94,6 @@ export default function WatchEarnPage() {
         return;
       }
       if (index === currentIndex) {
-        // Play only if not manually paused
         const videoId = videos[index]?.id;
         if (videoId && !pausedVideos.includes(videoId)) {
           video.play().catch(() => {});
@@ -153,7 +151,6 @@ export default function WatchEarnPage() {
 
       const currentId = currentVideo.id;
 
-      // Skip progress if already rewarded or if manually paused
       if (rewardedVideos.includes(currentId)) return;
       if (pausedVideos.includes(currentId)) return;
 
@@ -173,7 +170,7 @@ export default function WatchEarnPage() {
           setTimeout(() => {
             setAdPlaying(false);
             
-            // Firestore priority: rewardCoins -> coins -> default 20
+            // Fixed the type safety issue here
             const targetCoins = currentVideo.rewardCoins ?? currentVideo.coins ?? 20;
             
             rewardCoins(currentId, targetCoins);
@@ -312,7 +309,7 @@ export default function WatchEarnPage() {
               {video.verified && (
                 <BadgeCheck size={18} className=" fill-blue-500 text-white " />
               )}
-              {/* SPONSOR BADGE FROM FIRESTORE */}
+              {/* SPONSOR BADGE */}
               {video.sponsor && (
                 <span className="rounded bg-amber-500 px-2 py-0.5 text-[10px] font-black text-black uppercase tracking-wider">
                   Sponsored
@@ -349,7 +346,7 @@ export default function WatchEarnPage() {
               </div>
             </div>
 
-            {/* AUTO CLAIM BUTTON USING NEW FIRESTORE FIELDS */}
+            {/* AUTO CLAIM BUTTON */}
             <button
               disabled
               className={` mt-5 rounded-full px-5 py-3 font-black transition-all ${
@@ -363,7 +360,7 @@ export default function WatchEarnPage() {
                 : `Watch ${100 - (watchProgress[video.id] || 0)}% More (Get ${video.rewardCoins ?? video.coins ?? 20} Coins)`}
             </button>
             
-            {/* OPTIONAL: AD REVENUE LOG DISPLAY FOR SPONSORED VIDEOS */}
+            {/* AD REVENUE DISPLAY */}
             {video.adVideo && video.adRevenue && (
               <p className="text-[10px] text-gray-400 mt-2 font-medium">
                 Ad Unit Rev: ${video.adRevenue}
