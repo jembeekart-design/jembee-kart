@@ -25,21 +25,13 @@ import {
   WatchVideo
 } from "@/lib/mlm/watch-earn/fetchWatchVideos";
 
-// Extending the interface locally to stop TypeScript build errors
-interface ExtendedWatchVideo extends WatchVideo {
-  sponsor?: boolean;
-  adVideo?: boolean;
-  rewardCoins?: number;
-  adRevenue?: number;
-}
-
 export default function WatchEarnPage() {
   const videoRefs = useRef<HTMLVideoElement[]>([]);
 
   /* =========================
      VIDEOS
      ========================= */
-  const [videos, setVideos] = useState<ExtendedWatchVideo[]>([]);
+  const [videos, setVideos] = useState<WatchVideo[]>([]);
   const [loadingVideos, setLoadingVideos] = useState(true);
 
   /* =========================
@@ -61,7 +53,7 @@ export default function WatchEarnPage() {
   const [adPlaying, setAdPlaying] = useState(false);
 
   /* =========================
-     FETCH VIDEOS
+     FETCH VIDEOS (Original Working Logic)
      ========================= */
   useEffect(() => {
     async function loadVideos() {
@@ -69,7 +61,7 @@ export default function WatchEarnPage() {
         setLoadingVideos(true);
         const result = await fetchWatchVideos();
         if (result.success) {
-          setVideos(result.videos as ExtendedWatchVideo[]);
+          setVideos(result.videos);
         }
       } catch (error) {
         console.error(error);
@@ -81,7 +73,7 @@ export default function WatchEarnPage() {
   }, []);
 
   /* =========================
-     AUTO PLAY / PAUSE LOGIC
+     AUTO PLAY
      ========================= */
   useEffect(() => {
     if (adPlaying) {
@@ -90,19 +82,14 @@ export default function WatchEarnPage() {
     }
 
     videoRefs.current.forEach((video, index) => {
-      if (!video) {
-        return;
-      }
+      if (!video) return;
       if (index === currentIndex) {
-        const videoId = videos[index]?.id;
-        if (videoId && !pausedVideos.includes(videoId)) {
-          video.play().catch(() => {});
-        }
+        video.play().catch(() => {});
       } else {
         video.pause();
       }
     });
-  }, [currentIndex, videos, adPlaying, pausedVideos]);
+  }, [currentIndex, videos, adPlaying]);
 
   /* =========================
      REWARD
@@ -145,9 +132,7 @@ export default function WatchEarnPage() {
 
     const interval = setInterval(() => {
       const currentVideo = videos[currentIndex];
-      if (!currentVideo) {
-        return;
-      }
+      if (!currentVideo) return;
 
       const currentId = currentVideo.id;
 
@@ -156,10 +141,7 @@ export default function WatchEarnPage() {
 
       setWatchProgress((prev) => {
         const current = prev[currentId] || 0;
-
-        if (current >= 100) {
-          return prev;
-        }
+        if (current >= 100) return prev;
 
         const updated = current + 5;
 
@@ -170,15 +152,12 @@ export default function WatchEarnPage() {
           setTimeout(() => {
             setAdPlaying(false);
             
-            // Fixed the type safety issue here
-            const targetCoins = currentVideo.rewardCoins ?? currentVideo.coins ?? 20;
+            // Safe reading with explicit bypass for custom fields
+            const anyVideo = currentVideo as any;
+            const targetCoins = anyVideo.rewardCoins ?? anyVideo.coins ?? 20;
             
             rewardCoins(currentId, targetCoins);
-
-            setRewardedVideos((prevRewarded) => [
-              ...prevRewarded,
-              currentId
-            ]);
+            setRewardedVideos((prevRewarded) => [...prevRewarded, currentId]);
           }, 5000);
         }
 
@@ -257,147 +236,153 @@ export default function WatchEarnPage() {
       )}
 
       {/* VIDEO FEED */}
-      {videos.map((video, index) => (
-        <section key={video.id} className=" relative h-screen snap-start ">
-          {/* VIDEO */}
-          <video
-            ref={(element) => {
-              if (element) {
-                videoRefs.current[index] = element;
-              }
-            }}
-            src={video.video}
-            loop
-            muted
-            autoPlay
-            playsInline
-            preload="auto"
-            controls={false}
-            className=" h-full w-full object-cover "
-            onCanPlay={(e) => {
-              if (index === currentIndex && !adPlaying && !pausedVideos.includes(video.id)) {
-                e.currentTarget.play().catch(() => {});
-              }
-            }}
-            onPlay={() => {
-              setCurrentIndex(index);
-            }}
-            onClick={() => {
-              toggleVideo(video.id, index);
-            }}
-          />
+      {videos.map((video, index) => {
+        const anyVideo = video as any;
+        return (
+          <section key={video.id} className=" relative h-screen snap-start ">
+            {/* VIDEO */}
+            <video
+              ref={(element) => {
+                if (element) {
+                  videoRefs.current[index] = element;
+                }
+              }}
+              src={video.video}
+              loop
+              muted
+              autoPlay
+              playsInline
+              preload="auto"
+              controls={false}
+              className=" h-full w-full object-cover "
+              onCanPlay={(e) => {
+                if (index === currentIndex && !adPlaying && !pausedVideos.includes(video.id)) {
+                  e.currentTarget.play().catch(() => {});
+                }
+              }}
+              onPlay={() => {
+                setCurrentIndex(index);
+              }}
+              onClick={() => {
+                toggleVideo(video.id, index);
+              }}
+            />
 
-          {/* OVERLAY */}
-          <div className=" absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent " />
+            {/* OVERLAY */}
+            <div className=" absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent " />
 
-          {/* PLAY PAUSE BUTTON */}
-          <button
-            onClick={() => toggleVideo(video.id, index)}
-            className=" absolute left-1/2 top-1/2 z-40 flex h-20 w-20 -translate-x-1/2 -translate-y-1/2 items-center justify-center rounded-full bg-black/40 backdrop-blur-xl "
-          >
-            {pausedVideos.includes(video.id) ? (
-              <Play size={35} className=" text-white " />
-            ) : (
-              <Pause size={35} className=" text-white " />
-            )}
-          </button>
-
-          {/* VIDEO INFO */}
-          <div className=" absolute bottom-24 left-4 z-20 max-w-[75%] text-white ">
-            <div className=" flex items-center gap-2 ">
-              <h2 className=" text-xl font-black "> @{video.username} </h2>
-              {video.verified && (
-                <BadgeCheck size={18} className=" fill-blue-500 text-white " />
-              )}
-              {/* SPONSOR BADGE */}
-              {video.sponsor && (
-                <span className="rounded bg-amber-500 px-2 py-0.5 text-[10px] font-black text-black uppercase tracking-wider">
-                  Sponsored
-                </span>
-              )}
-            </div>
-            
-            <p className=" mt-3 text-sm leading-6 "> {video.caption} </p>
-
-            {/* HASHTAGS */}
-            <div className=" mt-3 flex flex-wrap gap-2 ">
-              {video.hashtags?.map((tag) => (
-                <span key={tag} className=" rounded-full bg-white/10 px-3 py-1 text-xs font-bold text-blue-200 ">
-                  #{tag}
-                </span>
-              ))}
-            </div>
-
-            {/* MUSIC */}
-            <div className=" mt-4 flex items-center gap-2 rounded-full bg-black/40 px-4 py-2 ">
-              <Music2 size={16} className=" text-pink-400 " />
-              <p className=" truncate text-xs font-bold text-white "> {video.music} </p>
-            </div>
-
-            {/* PROGRESS BAR */}
-            <div className="mt-4 w-full">
-              <div className=" h-3 overflow-hidden rounded-full bg-white/20 ">
-                <div
-                  className=" h-full rounded-full bg-gradient-to-r from-yellow-300 to-orange-500 transition-all duration-500"
-                  style={{
-                    width: `${watchProgress[video.id] || 0}%`
-                  }}
-                />
-              </div>
-            </div>
-
-            {/* AUTO CLAIM BUTTON */}
+            {/* PLAY PAUSE BUTTON */}
             <button
-              disabled
-              className={` mt-5 rounded-full px-5 py-3 font-black transition-all ${
-                rewardedVideos.includes(video.id)
-                  ? "bg-green-500 text-white"
-                  : "bg-yellow-400 text-black"
-              } `}
+              onClick={() => toggleVideo(video.id, index)}
+              className=" absolute left-1/2 top-1/2 z-40 flex h-20 w-20 -translate-x-1/2 -translate-y-1/2 items-center justify-center rounded-full bg-black/40 backdrop-blur-xl "
             >
-              {rewardedVideos.includes(video.id)
-                ? "Reward Claimed"
-                : `Watch ${100 - (watchProgress[video.id] || 0)}% More (Get ${video.rewardCoins ?? video.coins ?? 20} Coins)`}
+              {pausedVideos.includes(video.id) ? (
+                <Play size={35} className=" text-white " />
+              ) : (
+                <Pause size={35} className=" text-white " />
+              )}
             </button>
-            
-            {/* AD REVENUE DISPLAY */}
-            {video.adVideo && video.adRevenue && (
-              <p className="text-[10px] text-gray-400 mt-2 font-medium">
-                Ad Unit Rev: ${video.adRevenue}
-              </p>
-            )}
-          </div>
 
-          {/* RIGHT ACTIONS */}
-          <div className=" absolute bottom-24 right-3 z-20 flex flex-col items-center gap-5 text-white ">
-            {/* LIKE */}
-            <button className=" flex flex-col items-center gap-1 ">
-              <div className=" flex h-14 w-14 items-center justify-center rounded-full bg-black/40 ">
-                <Heart size={28} />
+            {/* VIDEO INFO */}
+            <div className=" absolute bottom-24 left-4 z-20 max-w-[75%] text-white ">
+              <div className=" flex items-center gap-2 ">
+                <h2 className=" text-xl font-black "> @{video.username} </h2>
+                {video.verified && (
+                  <BadgeCheck size={18} className=" fill-blue-500 text-white " />
+                )}
+                {/* SPONSOR BADGE */}
+                {anyVideo.sponsor && (
+                  <span className="rounded bg-amber-500 px-2 py-0.5 text-[10px] font-black text-black uppercase tracking-wider">
+                    Sponsored
+                  </span>
+                )}
               </div>
-              <span className=" text-xs font-bold "> {video.likes} </span>
-            </button> {/* COMMENT */}
-            <button className=" flex flex-col items-center gap-1 ">
-              <div className=" flex h-14 w-14 items-center justify-center rounded-full bg-black/40 ">
-                <MessageCircle size={28} />
+              
+              <p className=" mt-3 text-sm leading-6 "> {video.caption} </p>
+
+              {/* HASHTAGS */}
+              <div className=" mt-3 flex flex-wrap gap-2 ">
+                {video.hashtags?.map((tag) => (
+                  <span key={tag} className=" rounded-full bg-white/10 px-3 py-1 text-xs font-bold text-blue-200 ">
+                    #{tag}
+                  </span>
+                ))}
               </div>
-              <span className=" text-xs font-bold "> {video.comments} </span>
-            </button> {/* SHARE */}
-            <button className=" flex flex-col items-center gap-1 ">
-              <div className=" flex h-14 w-14 items-center justify-center rounded-full bg-black/40 ">
-                <Share2 size={28} />
+
+              {/* MUSIC */}
+              <div className=" mt-4 flex items-center gap-2 rounded-full bg-black/40 px-4 py-2 ">
+                <Music2 size={16} className=" text-pink-400 " />
+                <p className=" truncate text-xs font-bold text-white "> {video.music} </p>
               </div>
-              <span className=" text-xs font-bold "> {video.shares} </span>
-            </button> {/* SAVE */}
-            <button className=" flex flex-col items-center gap-1 ">
-              <div className=" flex h-14 w-14 items-center justify-center rounded-full bg-black/40 ">
-                <Bookmark size={26} />
+
+              {/* PROGRESS BAR */}
+              <div className="mt-4 w-full">
+                <div className=" h-3 overflow-hidden rounded-full bg-white/20 ">
+                  <div
+                    className=" h-full rounded-full bg-gradient-to-r from-yellow-300 to-orange-500 transition-all duration-500"
+                    style={{
+                      width: `${watchProgress[video.id] || 0}%`
+                    }}
+                  />
+                </div>
               </div>
-              <span className=" text-xs font-bold "> Save </span>
-            </button>
-          </div>
-        </section>
-      ))}
+
+              {/* AUTO CLAIM BUTTON */}
+              <button
+                disabled
+                className={` mt-5 rounded-full px-5 py-3 font-black transition-all ${
+                  rewardedVideos.includes(video.id)
+                    ? "bg-green-500 text-white"
+                    : "bg-yellow-400 text-black"
+                } `}
+              >
+                {rewardedVideos.includes(video.id)
+                  ? "Reward Claimed"
+                  : `Watch ${100 - (watchProgress[video.id] || 0)}% More (Get ${anyVideo.rewardCoins ?? video.coins ?? 20} Coins)`}
+              </button>
+              
+              {/* AD REVENUE LOG */}
+              {anyVideo.adVideo && anyVideo.adRevenue && (
+                <p className="text-[10px] text-gray-400 mt-2 font-medium">
+                  Ad Unit Rev: ${anyVideo.adRevenue}
+                </p>
+              )}
+            </div>
+
+            {/* RIGHT ACTIONS */}
+            <div className=" absolute bottom-24 right-3 z-20 flex flex-col items-center gap-5 text-white ">
+              {/* LIKE */}
+              <button className=" flex flex-col items-center gap-1 ">
+                <div className=" flex h-14 w-14 items-center justify-center rounded-full bg-black/40 ">
+                  <Heart size={28} />
+                </div>
+                <span className=" text-xs font-bold "> {video.likes} </span>
+              </button>
+              {/* COMMENT */}
+              <button className=" flex flex-col items-center gap-1 ">
+                <div className=" flex h-14 w-14 items-center justify-center rounded-full bg-black/40 ">
+                  <MessageCircle size={28} />
+                </div>
+                <span className=" text-xs font-bold "> {video.comments} </span>
+              </button>
+              {/* SHARE */}
+              <button className=" flex flex-col items-center gap-1 ">
+                <div className=" flex h-14 w-14 items-center justify-center rounded-full bg-black/40 ">
+                  <Share2 size={28} />
+                </div>
+                <span className=" text-xs font-bold "> {video.shares} </span>
+              </button>
+              {/* SAVE */}
+              <button className=" flex flex-col items-center gap-1 ">
+                <div className=" flex h-14 w-14 items-center justify-center rounded-full bg-black/40 ">
+                  <Bookmark size={26} />
+                </div>
+                <span className=" text-xs font-bold "> Save </span>
+              </button>
+            </div>
+          </section>
+        );
+      })}
     </main>
   );
 }
