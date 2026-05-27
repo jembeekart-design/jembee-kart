@@ -32,6 +32,10 @@ export default function WatchEarnPage() {
       []
     );
 
+  /* =========================
+     VIDEOS
+  ========================= */
+
   const [
     videos,
     setVideos
@@ -40,9 +44,13 @@ export default function WatchEarnPage() {
   >([]);
 
   const [
-    loading,
-    setLoading
+    loadingVideos,
+    setLoadingVideos
   ] = useState(true);
+
+  /* =========================
+     STATES
+  ========================= */
 
   const [
     currentIndex,
@@ -55,16 +63,18 @@ export default function WatchEarnPage() {
   ] = useState(1250);
 
   const [
-    adPlaying,
-    setAdPlaying
+    streak
+  ] = useState(7);
+
+  const [
+    showReward,
+    setShowReward
   ] = useState(false);
 
   const [
-    rewardedVideos,
-    setRewardedVideos
-  ] = useState<string[]>(
-    []
-  );
+    rewardCoinsValue,
+    setRewardCoinsValue
+  ] = useState(0);
 
   const [
     pausedVideos,
@@ -74,11 +84,23 @@ export default function WatchEarnPage() {
   );
 
   const [
-    progress,
-    setProgress
+    watchProgress,
+    setWatchProgress
   ] = useState<{
     [key: string]: number;
   }>({});
+
+  const [
+    rewardedVideos,
+    setRewardedVideos
+  ] = useState<string[]>(
+    []
+  );
+
+  const [
+    adPlaying,
+    setAdPlaying
+  ] = useState(false);
 
   /* =========================
      FETCH VIDEOS
@@ -86,24 +108,42 @@ export default function WatchEarnPage() {
 
   useEffect(() => {
 
-    async function load() {
+    async function
+    loadVideos() {
 
-      const result =
-        await fetchWatchVideos();
+      try {
 
-      if (
-        result.success
-      ) {
+        setLoadingVideos(
+          true
+        );
 
-        setVideos(
-          result.videos
+        const result =
+          await fetchWatchVideos();
+
+        if (
+          result.success
+        ) {
+
+          setVideos(
+            result.videos
+          );
+        }
+
+      } catch (error) {
+
+        console.error(
+          error
+        );
+
+      } finally {
+
+        setLoadingVideos(
+          false
         );
       }
-
-      setLoading(false);
     }
 
-    load();
+    loadVideos();
 
   }, []);
 
@@ -161,111 +201,34 @@ export default function WatchEarnPage() {
   ]);
 
   /* =========================
-     AUTO WATCH REWARD
+     REWARD
   ========================= */
 
-  useEffect(() => {
+  function rewardCoins(
+    coins: number
+  ) {
 
-    if (
-      videos.length === 0
-    ) {
-      return;
-    }
+    setEarnedCoins(
+      (prev) =>
+        prev + coins
+    );
 
-    if (adPlaying) {
-      return;
-    }
+    setRewardCoinsValue(
+      coins
+    );
 
-    const interval =
-      setInterval(() => {
+    setShowReward(
+      true
+    );
 
-        const currentVideo =
-          videos[currentIndex];
+    setTimeout(() => {
 
-        if (!currentVideo) {
-          return;
-        }
-
-        if (
-          pausedVideos.includes(
-            currentVideo.id
-          )
-        ) {
-          return;
-        }
-
-        if (
-          rewardedVideos.includes(
-            currentVideo.id
-          )
-        ) {
-          return;
-        }
-
-        setProgress(
-          (prev) => {
-
-            const old =
-              prev[
-                currentVideo.id
-              ] || 0;
-
-            const updated =
-              old + 10;
-
-            if (
-              updated >= 100
-            ) {
-
-              setAdPlaying(
-                true
-              );
-
-              setTimeout(() => {
-
-                setAdPlaying(
-                  false
-                );
-
-                setEarnedCoins(
-                  (prevCoins) =>
-                    prevCoins +
-                    currentVideo.coins
-                );
-
-                setRewardedVideos(
-                  (prevRewarded) => [
-                    ...prevRewarded,
-                    currentVideo.id
-                  ]
-                );
-
-              }, 5000);
-            }
-
-            return {
-
-              ...prev,
-
-              [currentVideo.id]:
-                updated
-            };
-          });
-
-      }, 1000);
-
-    return () =>
-      clearInterval(
-        interval
+      setShowReward(
+        false
       );
 
-  }, [
-    currentIndex,
-    videos,
-    adPlaying,
-    pausedVideos,
-    rewardedVideos
-  ]);
+    }, 3000);
+  }
 
   /* =========================
      PLAY / PAUSE
@@ -317,10 +280,128 @@ export default function WatchEarnPage() {
   }
 
   /* =========================
+     AUTO WATCH
+  ========================= */
+
+  useEffect(() => {
+
+    if (
+      videos.length === 0
+    ) {
+      return;
+    }
+
+    if (adPlaying) {
+      return;
+    }
+
+    const interval =
+      setInterval(() => {
+
+        const currentVideo =
+          videos[currentIndex];
+
+        if (!currentVideo) {
+          return;
+        }
+
+        const currentId =
+          currentVideo.id;
+
+        if (
+          pausedVideos.includes(
+            currentId
+          )
+        ) {
+          return;
+        }
+
+        if (
+          rewardedVideos.includes(
+            currentId
+          )
+        ) {
+          return;
+        }
+
+        setWatchProgress(
+          (prev) => {
+
+            const current =
+              prev[currentId] ||
+              0;
+
+            const updated =
+              Math.min(
+                current + 5,
+                100
+              );
+
+            /* SHOW AD */
+
+            if (
+              updated >= 100 &&
+              !rewardedVideos.includes(
+                currentId
+              )
+            ) {
+
+              setAdPlaying(
+                true
+              );
+
+              setTimeout(() => {
+
+                setAdPlaying(
+                  false
+                );
+
+                rewardCoins(
+                  currentVideo.coins ||
+                    5
+                );
+
+                setRewardedVideos(
+                  (
+                    prevRewarded
+                  ) => [
+                    ...prevRewarded,
+                    currentId
+                  ]
+                );
+
+              }, 5000);
+            }
+
+            return {
+
+              ...prev,
+
+              [currentId]:
+                updated
+            };
+          });
+
+      }, 1000);
+
+    return () =>
+      clearInterval(
+        interval
+      );
+
+  }, [
+    currentIndex,
+    videos,
+    rewardedVideos,
+    pausedVideos,
+    adPlaying
+  ]);
+
+  /* =========================
      LOADING
   ========================= */
 
-  if (loading) {
+  if (loadingVideos) {
 
     return (
 
@@ -331,11 +412,20 @@ export default function WatchEarnPage() {
           items-center
           justify-center
           bg-black
-          text-white
         "
       >
 
-        Loading Videos...
+        <p
+          className="
+            text-lg
+            font-black
+            text-white
+          "
+        >
+
+          Loading videos...
+
+        </p>
 
       </main>
     );
@@ -369,17 +459,34 @@ export default function WatchEarnPage() {
         "
       >
 
-        <h1
-          className="
-            text-2xl
-            font-black
-            text-white
-          "
-        >
+        <div>
 
-          Watch & Earn
+          <h1
+            className="
+              text-3xl
+              font-black
+              text-white
+            "
+          >
 
-        </h1>
+            Watch & Earn
+
+          </h1>
+
+          <p
+            className="
+              mt-1
+              text-xs
+              font-semibold
+              text-gray-300
+            "
+          >
+
+            Watch videos & earn rewards
+
+          </p>
+
+        </div>
 
         <div
           className="
@@ -395,9 +502,44 @@ export default function WatchEarnPage() {
               items-center
               gap-2
               rounded-full
+              bg-orange-500/20
+              px-4
+              py-2
+              backdrop-blur-xl
+            "
+          >
+
+            <Flame
+              size={18}
+              className="
+                text-orange-400
+              "
+            />
+
+            <span
+              className="
+                text-sm
+                font-black
+                text-white
+              "
+            >
+
+              {streak}
+
+            </span>
+
+          </div>
+
+          <div
+            className="
+              flex
+              items-center
+              gap-2
+              rounded-full
               bg-yellow-400/20
               px-4
               py-2
+              backdrop-blur-xl
             "
           >
 
@@ -410,8 +552,9 @@ export default function WatchEarnPage() {
 
             <span
               className="
-                text-white
+                text-sm
                 font-black
+                text-white
               "
             >
 
@@ -424,17 +567,18 @@ export default function WatchEarnPage() {
           <button
             className="
               flex
-              h-10
-              w-10
+              h-11
+              w-11
               items-center
               justify-center
               rounded-full
               bg-black/40
               text-white
+              backdrop-blur-xl
             "
           >
 
-            <Bell size={18} />
+            <Bell size={20} />
 
           </button>
 
@@ -442,7 +586,68 @@ export default function WatchEarnPage() {
 
       </div>
 
-      {/* AD VIDEO */}
+      {/* REWARD */}
+
+      {showReward && (
+
+        <div
+          className="
+            fixed
+            left-1/2
+            top-1/2
+            z-[999]
+            flex
+            -translate-x-1/2
+            -translate-y-1/2
+            items-center
+            gap-3
+            rounded-full
+            bg-yellow-400
+            px-6
+            py-4
+            shadow-2xl
+          "
+        >
+
+          <Coins
+            size={30}
+            className="
+              text-black
+            "
+          />
+
+          <div>
+
+            <h2
+              className="
+                text-2xl
+                font-black
+                text-black
+              "
+            >
+
+              +{rewardCoinsValue}
+
+            </h2>
+
+            <p
+              className="
+                text-xs
+                font-bold
+                text-black/70
+              "
+            >
+
+              Reward Added
+
+            </p>
+
+          </div>
+
+        </div>
+      )}
+
+      {/* AD */}
 
       {adPlaying && (
 
@@ -451,51 +656,56 @@ export default function WatchEarnPage() {
             fixed
             inset-0
             z-[9999]
+            flex
+            flex-col
+            items-center
+            justify-center
             bg-black
+            text-white
           "
         >
 
-          <video
-            autoPlay
-            muted
-            playsInline
-            className="
-              h-full
-              w-full
-              object-cover
-            "
-          >
-
-            <source
-              src="https://res.cloudinary.com/db4bgno7i/video/upload/v1748400000/jembeekart-ad.mp4"
-              type="video/mp4"
-            />
-
-          </video>
-
           <div
             className="
-              absolute
-              top-5
-              right-5
+              mb-6
+              h-24
+              w-24
+              animate-pulse
               rounded-full
-              bg-black/60
-              px-4
-              py-2
-              text-sm
+              bg-gradient-to-r
+              from-violet-600
+              to-fuchsia-500
+            "
+          />
+
+          <h2
+            className="
+              text-3xl
               font-black
-              text-white
             "
           >
 
             Sponsored Ad
 
-          </div>
+          </h2>
+
+          <p
+            className="
+              mt-3
+              text-sm
+              text-gray-300
+            "
+          >
+
+            Watching ad...
+            Reward unlocking...
+
+          </p>
 
         </div>
       )}
 
-      {/* NO VIDEOS */}
+      {/* EMPTY */}
 
       {videos.length === 0 && (
 
@@ -505,16 +715,25 @@ export default function WatchEarnPage() {
             min-h-screen
             items-center
             justify-center
-            text-white
           "
         >
 
-          No videos found
+          <p
+            className="
+              text-lg
+              font-black
+              text-white
+            "
+          >
+
+            No videos found
+
+          </p>
 
         </div>
       )}
 
-      {/* VIDEO FEED */}
+      {/* VIDEOS */}
 
       {videos.map(
         (
@@ -548,8 +767,12 @@ export default function WatchEarnPage() {
 
               loop
               muted
-              playsInline
               autoPlay
+              playsInline
+
+              preload="auto"
+
+              controls={false}
 
               className="
                 h-full
@@ -557,11 +780,18 @@ export default function WatchEarnPage() {
                 object-cover
               "
 
-              onPlay={() => {
+              onCanPlay={(e) => {
 
-                setCurrentIndex(
-                  index
-                );
+                if (
+                  index ===
+                    currentIndex &&
+                  !adPlaying
+                ) {
+
+                  e.currentTarget
+                    .play()
+                    .catch(() => {});
+                }
               }}
 
               onClick={() => {
@@ -581,11 +811,12 @@ export default function WatchEarnPage() {
                 inset-0
                 bg-gradient-to-t
                 from-black/80
+                via-black/20
                 to-transparent
               "
             />
 
-            {/* CENTER BUTTON */}
+            {/* PLAY / PAUSE */}
 
             <button
               onClick={() =>
@@ -598,7 +829,7 @@ export default function WatchEarnPage() {
                 absolute
                 left-1/2
                 top-1/2
-                z-30
+                z-40
                 flex
                 h-20
                 w-20
@@ -608,6 +839,7 @@ export default function WatchEarnPage() {
                 justify-center
                 rounded-full
                 bg-black/40
+                backdrop-blur-xl
               "
             >
 
@@ -635,7 +867,7 @@ export default function WatchEarnPage() {
 
             </button>
 
-            {/* LEFT INFO */}
+            {/* INFO */}
 
             <div
               className="
@@ -673,6 +905,7 @@ export default function WatchEarnPage() {
                     size={18}
                     className="
                       fill-blue-500
+                      text-white
                     "
                   />
 
@@ -684,12 +917,48 @@ export default function WatchEarnPage() {
                 className="
                   mt-3
                   text-sm
+                  leading-6
                 "
               >
 
                 {video.caption}
 
               </p>
+
+              {/* HASHTAGS */}
+
+              <div
+                className="
+                  mt-3
+                  flex
+                  flex-wrap
+                  gap-2
+                "
+              >
+
+                {video.hashtags?.map(
+                  (tag) => (
+
+                    <span
+                      key={tag}
+                      className="
+                        rounded-full
+                        bg-white/10
+                        px-3
+                        py-1
+                        text-xs
+                        font-bold
+                        text-blue-200
+                      "
+                    >
+
+                      #{tag}
+
+                    </span>
+                  )
+                )}
+
+              </div>
 
               {/* MUSIC */}
 
@@ -699,6 +968,10 @@ export default function WatchEarnPage() {
                   flex
                   items-center
                   gap-2
+                  rounded-full
+                  bg-black/40
+                  px-4
+                  py-2
                 "
               >
 
@@ -711,8 +984,10 @@ export default function WatchEarnPage() {
 
                 <p
                   className="
+                    truncate
                     text-xs
                     font-bold
+                    text-white
                   "
                 >
 
@@ -738,11 +1013,15 @@ export default function WatchEarnPage() {
                   className="
                     h-full
                     rounded-full
-                    bg-yellow-400
+                    bg-gradient-to-r
+                    from-yellow-300
+                    to-orange-500
+                    transition-all
+                    duration-500
                   "
                   style={{
                     width: `${
-                      progress[
+                      watchProgress[
                         video.id
                       ] || 0
                     }%`
@@ -750,6 +1029,42 @@ export default function WatchEarnPage() {
                 />
 
               </div>
+
+              {/* REWARD BUTTON */}
+
+              <button
+                disabled
+                className={`
+                  mt-5
+                  rounded-full
+                  px-5
+                  py-3
+                  font-black
+
+                  ${
+                    rewardedVideos.includes(
+                      video.id
+                    )
+                      ? "bg-green-500 text-white"
+                      : "bg-yellow-400 text-black"
+                  }
+                `}
+              >
+
+                {rewardedVideos.includes(
+                  video.id
+                )
+                  ? "Reward Claimed"
+                  : `Watch ${
+                      100 -
+                      (
+                        watchProgress[
+                          video.id
+                        ] || 0
+                      )
+                    }% More`}
+
+              </button>
 
             </div>
 
@@ -778,7 +1093,23 @@ export default function WatchEarnPage() {
                 "
               >
 
-                <Heart size={28} />
+                <div
+                  className="
+                    flex
+                    h-14
+                    w-14
+                    items-center
+                    justify-center
+                    rounded-full
+                    bg-black/40
+                  "
+                >
+
+                  <Heart
+                    size={28}
+                  />
+
+                </div>
 
                 <span
                   className="
@@ -802,9 +1133,23 @@ export default function WatchEarnPage() {
                 "
               >
 
-                <MessageCircle
-                  size={28}
-                />
+                <div
+                  className="
+                    flex
+                    h-14
+                    w-14
+                    items-center
+                    justify-center
+                    rounded-full
+                    bg-black/40
+                  "
+                >
+
+                  <MessageCircle
+                    size={28}
+                  />
+
+                </div>
 
                 <span
                   className="
@@ -828,9 +1173,23 @@ export default function WatchEarnPage() {
                 "
               >
 
-                <Share2
-                  size={28}
-                />
+                <div
+                  className="
+                    flex
+                    h-14
+                    w-14
+                    items-center
+                    justify-center
+                    rounded-full
+                    bg-black/40
+                  "
+                >
+
+                  <Share2
+                    size={28}
+                  />
+
+                </div>
 
                 <span
                   className="
@@ -854,9 +1213,23 @@ export default function WatchEarnPage() {
                 "
               >
 
-                <Bookmark
-                  size={26}
-                />
+                <div
+                  className="
+                    flex
+                    h-14
+                    w-14
+                    items-center
+                    justify-center
+                    rounded-full
+                    bg-black/40
+                  "
+                >
+
+                  <Bookmark
+                    size={26}
+                  />
+
+                </div>
 
                 <span
                   className="
