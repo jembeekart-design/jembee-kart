@@ -201,7 +201,7 @@ export default function WatchEarnPage() {
   ]);
 
   /* =========================
-     REWARD FUNCTION
+     REWARD
   ========================= */
 
   function rewardCoins(
@@ -280,7 +280,7 @@ export default function WatchEarnPage() {
   }
 
   /* =========================
-     AUTO WATCH SYSTEM
+     AUTO WATCH
   ========================= */
 
   useEffect(() => {
@@ -496,8 +496,6 @@ export default function WatchEarnPage() {
           "
         >
 
-          {/* STREAK */}
-
           <div
             className="
               flex
@@ -531,8 +529,6 @@ export default function WatchEarnPage() {
             </span>
 
           </div>
-
-          {/* COINS */}
 
           <div
             className="
@@ -568,8 +564,6 @@ export default function WatchEarnPage() {
 
           </div>
 
-          {/* BELL */}
-
           <button
             className="
               flex
@@ -592,7 +586,7 @@ export default function WatchEarnPage() {
 
       </div>
 
-      {/* REWARD POPUP */}
+      {/* REWARD */}
 
       {showReward && (
 
@@ -653,7 +647,7 @@ export default function WatchEarnPage() {
         </div>
       )}
 
-      {/* AD POPUP */}
+      {/* AD */}
 
       {adPlaying && (
 
@@ -711,7 +705,7 @@ export default function WatchEarnPage() {
         </div>
       )}
 
-      {/* NO VIDEOS */}
+      {/* EMPTY */}
 
       {videos.length === 0 && (
 
@@ -739,7 +733,7 @@ export default function WatchEarnPage() {
         </div>
       )}
 
-      {/* VIDEO FEED */}
+      {/* VIDEOS */}
 
       {videos.map(
         (
@@ -772,14 +766,11 @@ export default function WatchEarnPage() {
               src={video.video}
 
               loop
-
               muted
-
+              autoPlay
               playsInline
 
-              autoPlay
-
-              preload="metadata"
+              preload="auto"
 
               controls={false}
 
@@ -789,21 +780,15 @@ export default function WatchEarnPage() {
                 object-cover
               "
 
-              onLoadedData={() => {
-
-                const currentVideo =
-                  videoRefs.current[
-                    index
-                  ];
+              onCanPlay={(e) => {
 
                 if (
-                  currentVideo &&
                   index ===
                     currentIndex &&
                   !adPlaying
                 ) {
 
-                  currentVideo
+                  e.currentTarget
                     .play()
                     .catch(() => {});
                 }
