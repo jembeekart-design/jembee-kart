@@ -26,363 +26,1245 @@ import {
 } from "@/lib/mlm/watch-earn/fetchWatchVideos";
 
 export default function WatchEarnPage() {
-  const videoRefs = useRef<HTMLVideoElement[]>([]);
+
+  const videoRefs =
+    useRef<HTMLVideoElement[]>(
+      []
+    );
 
   /* =========================
      VIDEOS
-     ========================= */
-  const [videos, setVideos] = useState<WatchVideo[]>([]);
-  const [loadingVideos, setLoadingVideos] = useState(true);
+  ========================= */
+
+  const [
+    videos,
+    setVideos
+  ] = useState<
+    WatchVideo[]
+  >([]);
+
+  const [
+    loadingVideos,
+    setLoadingVideos
+  ] = useState(true);
 
   /* =========================
      STATES
-     ========================= */
-  const [currentIndex, setCurrentIndex] = useState(0);
-  const [earnedCoins, setEarnedCoins] = useState(1250);
-  const [streak] = useState(7);
-  const [showReward, setShowReward] = useState(false);
-  const [rewardCoinsValue, setRewardCoinsValue] = useState(0);
-  const [claimedVideos, setClaimedVideos] = useState<string[]>([]);
-  const [pausedVideos, setPausedVideos] = useState<string[]>([]);
+  ========================= */
+
+  const [
+    currentIndex,
+    setCurrentIndex
+  ] = useState(0);
+
+  const [
+    earnedCoins,
+    setEarnedCoins
+  ] = useState(1250);
+
+  const [
+    streak
+  ] = useState(7);
+
+  const [
+    showReward,
+    setShowReward
+  ] = useState(false);
+
+  const [
+    rewardCoinsValue,
+    setRewardCoinsValue
+  ] = useState(0);
+
+  const [
+    pausedVideos,
+    setPausedVideos
+  ] = useState<string[]>(
+    []
+  );
+
+  const [
+    watchProgress,
+    setWatchProgress
+  ] = useState<{
+    [key: string]: number;
+  }>({});
+
+  const [
+    rewardedVideos,
+    setRewardedVideos
+  ] = useState<string[]>(
+    []
+  );
+
+  const [
+    adPlaying,
+    setAdPlaying
+  ] = useState(false);
 
   /* =========================
-     NEW STATES (PROGRESS & AD)
-     ========================= */
-  const [watchProgress, setWatchProgress] = useState<{ [key: string]: number }>({});
-  const [rewardedVideos, setRewardedVideos] = useState<string[]>([]);
-  const [adPlaying, setAdPlaying] = useState(false);
+     FETCH VIDEOS
+  ========================= */
 
-  /* =========================
-     FETCH VIDEOS (Original Working Logic)
-     ========================= */
   useEffect(() => {
-    async function loadVideos() {
+
+    async function
+    loadVideos() {
+
       try {
-        setLoadingVideos(true);
-        const result = await fetchWatchVideos();
-        if (result.success) {
-          setVideos(result.videos);
+
+        setLoadingVideos(
+          true
+        );
+
+        const result =
+          await fetchWatchVideos();
+
+        if (
+          result.success
+        ) {
+
+          setVideos(
+            result.videos
+          );
         }
+
       } catch (error) {
-        console.error(error);
+
+        console.error(
+          error
+        );
+
       } finally {
-        setLoadingVideos(false);
+
+        setLoadingVideos(
+          false
+        );
       }
     }
+
     loadVideos();
+
   }, []);
 
   /* =========================
      AUTO PLAY
-     ========================= */
+  ========================= */
+
   useEffect(() => {
+
     if (adPlaying) {
-      videoRefs.current.forEach((video) => video?.pause());
+
+      videoRefs.current.forEach(
+        (video) => {
+
+          if (video) {
+
+            video.pause();
+          }
+        }
+      );
+
       return;
     }
 
-    videoRefs.current.forEach((video, index) => {
-      if (!video) return;
-      if (index === currentIndex) {
-        video.play().catch(() => {});
-      } else {
-        video.pause();
+    videoRefs.current.forEach(
+      (
+        video,
+        index
+      ) => {
+
+        if (!video) {
+          return;
+        }
+
+        if (
+          index ===
+          currentIndex
+        ) {
+
+          video
+            .play()
+            .catch(() => {});
+
+        } else {
+
+          video.pause();
+        }
       }
-    });
-  }, [currentIndex, videos, adPlaying]);
+    );
+
+  }, [
+    currentIndex,
+    videos,
+    adPlaying
+  ]);
 
   /* =========================
-     REWARD
-     ========================= */
-  function rewardCoins(videoId: string, coins: number) {
-    if (claimedVideos.includes(videoId)) {
-      return;
-    }
-    setClaimedVideos((prev) => [...prev, videoId]);
-    setEarnedCoins((prev) => prev + coins);
-    setRewardCoinsValue(coins);
-    setShowReward(true);
+     REWARD FUNCTION
+  ========================= */
+
+  function rewardCoins(
+    coins: number
+  ) {
+
+    setEarnedCoins(
+      (prev) =>
+        prev + coins
+    );
+
+    setRewardCoinsValue(
+      coins
+    );
+
+    setShowReward(
+      true
+    );
+
     setTimeout(() => {
-      setShowReward(false);
+
+      setShowReward(
+        false
+      );
+
     }, 3000);
   }
 
   /* =========================
      PLAY / PAUSE
-     ========================= */
-  function toggleVideo(videoId: string, index: number) {
-    const video = videoRefs.current[index];
-    if (!video || adPlaying) {
+  ========================= */
+
+  function toggleVideo(
+    videoId: string,
+    index: number
+  ) {
+
+    if (adPlaying) {
       return;
     }
+
+    const video =
+      videoRefs.current[
+        index
+      ];
+
+    if (!video) {
+      return;
+    }
+
     if (video.paused) {
-      video.play().catch(() => {});
-      setPausedVideos((prev) => prev.filter((id) => id !== videoId));
+
+      video
+        .play()
+        .catch(() => {});
+
+      setPausedVideos(
+        (prev) =>
+          prev.filter(
+            (id) =>
+              id !== videoId
+          )
+      );
+
     } else {
+
       video.pause();
-      setPausedVideos((prev) => [...prev, videoId]);
+
+      setPausedVideos(
+        (prev) => [
+          ...prev,
+          videoId
+        ]
+      );
     }
   }
 
   /* =========================
-     AUTO WATCH TIMER & AD SYSTEM
-     ========================= */
+     AUTO WATCH SYSTEM
+  ========================= */
+
   useEffect(() => {
-    if (videos.length === 0 || adPlaying) return;
 
-    const interval = setInterval(() => {
-      const currentVideo = videos[currentIndex];
-      if (!currentVideo) return;
+    if (
+      videos.length === 0
+    ) {
+      return;
+    }
 
-      const currentId = currentVideo.id;
+    if (adPlaying) {
+      return;
+    }
 
-      if (rewardedVideos.includes(currentId)) return;
-      if (pausedVideos.includes(currentId)) return;
+    const interval =
+      setInterval(() => {
 
-      setWatchProgress((prev) => {
-        const current = prev[currentId] || 0;
-        if (current >= 100) return prev;
+        const currentVideo =
+          videos[currentIndex];
 
-        const updated = current + 5;
-
-        /* AUTO REWARD TRIGGER */
-        if (updated >= 100 && !rewardedVideos.includes(currentId)) {
-          setAdPlaying(true);
-
-          setTimeout(() => {
-            setAdPlaying(false);
-            
-            // Safe reading with explicit bypass for custom fields
-            const anyVideo = currentVideo as any;
-            const targetCoins = anyVideo.rewardCoins ?? anyVideo.coins ?? 20;
-            
-            rewardCoins(currentId, targetCoins);
-            setRewardedVideos((prevRewarded) => [...prevRewarded, currentId]);
-          }, 5000);
+        if (!currentVideo) {
+          return;
         }
 
-        return {
-          ...prev,
-          [currentId]: updated
-        };
-      });
-    }, 1000);
+        const currentId =
+          currentVideo.id;
 
-    return () => clearInterval(interval);
-  }, [currentIndex, videos, rewardedVideos, adPlaying, pausedVideos]);
+        if (
+          pausedVideos.includes(
+            currentId
+          )
+        ) {
+          return;
+        }
+
+        if (
+          rewardedVideos.includes(
+            currentId
+          )
+        ) {
+          return;
+        }
+
+        setWatchProgress(
+          (prev) => {
+
+            const current =
+              prev[currentId] ||
+              0;
+
+            const updated =
+              Math.min(
+                current + 5,
+                100
+              );
+
+            /* SHOW AD */
+
+            if (
+              updated >= 100 &&
+              !rewardedVideos.includes(
+                currentId
+              )
+            ) {
+
+              setAdPlaying(
+                true
+              );
+
+              setTimeout(() => {
+
+                setAdPlaying(
+                  false
+                );
+
+                rewardCoins(
+                  currentVideo.coins ||
+                    5
+                );
+
+                setRewardedVideos(
+                  (
+                    prevRewarded
+                  ) => [
+                    ...prevRewarded,
+                    currentId
+                  ]
+                );
+
+              }, 5000);
+            }
+
+            return {
+
+              ...prev,
+
+              [currentId]:
+                updated
+            };
+          });
+
+      }, 1000);
+
+    return () =>
+      clearInterval(
+        interval
+      );
+
+  }, [
+    currentIndex,
+    videos,
+    rewardedVideos,
+    pausedVideos,
+    adPlaying
+  ]);
 
   /* =========================
      LOADING
-     ========================= */
+  ========================= */
+
   if (loadingVideos) {
+
     return (
-      <main className=" flex min-h-screen items-center justify-center bg-black ">
-        <p className=" text-lg font-black text-white "> Loading videos... </p>
+
+      <main
+        className="
+          flex
+          min-h-screen
+          items-center
+          justify-center
+          bg-black
+        "
+      >
+
+        <p
+          className="
+            text-lg
+            font-black
+            text-white
+          "
+        >
+
+          Loading videos...
+
+        </p>
+
       </main>
     );
   }
 
   return (
-    <main className=" h-screen overflow-y-scroll snap-y snap-mandatory bg-black ">
+
+    <main
+      className="
+        h-screen
+        overflow-y-scroll
+        snap-y
+        snap-mandatory
+        bg-black
+      "
+    >
+
       {/* HEADER */}
-      <div className=" fixed top-0 z-50 flex w-full items-center justify-between px-4 py-4 ">
+
+      <div
+        className="
+          fixed
+          top-0
+          z-50
+          flex
+          w-full
+          items-center
+          justify-between
+          px-4
+          py-4
+        "
+      >
+
         <div>
-          <h1 className=" text-3xl font-black text-white "> Watch & Earn </h1>
-          <p className=" mt-1 text-xs font-semibold text-gray-300 "> Watch videos & earn rewards </p>
+
+          <h1
+            className="
+              text-3xl
+              font-black
+              text-white
+            "
+          >
+
+            Watch & Earn
+
+          </h1>
+
+          <p
+            className="
+              mt-1
+              text-xs
+              font-semibold
+              text-gray-300
+            "
+          >
+
+            Watch videos & earn rewards
+
+          </p>
+
         </div>
-        <div className=" flex items-center gap-3 ">
+
+        <div
+          className="
+            flex
+            items-center
+            gap-3
+          "
+        >
+
           {/* STREAK */}
-          <div className=" flex items-center gap-2 rounded-full bg-orange-500/20 px-4 py-2 backdrop-blur-xl ">
-            <Flame size={18} className=" text-orange-400 " />
-            <span className=" text-sm font-black text-white "> {streak} </span>
+
+          <div
+            className="
+              flex
+              items-center
+              gap-2
+              rounded-full
+              bg-orange-500/20
+              px-4
+              py-2
+              backdrop-blur-xl
+            "
+          >
+
+            <Flame
+              size={18}
+              className="
+                text-orange-400
+              "
+            />
+
+            <span
+              className="
+                text-sm
+                font-black
+                text-white
+              "
+            >
+
+              {streak}
+
+            </span>
+
           </div>
+
           {/* COINS */}
-          <div className=" flex items-center gap-2 rounded-full bg-yellow-400/20 px-4 py-2 backdrop-blur-xl ">
-            <Coins size={18} className=" text-yellow-300 " />
-            <span className=" text-sm font-black text-white "> {earnedCoins} </span>
+
+          <div
+            className="
+              flex
+              items-center
+              gap-2
+              rounded-full
+              bg-yellow-400/20
+              px-4
+              py-2
+              backdrop-blur-xl
+            "
+          >
+
+            <Coins
+              size={18}
+              className="
+                text-yellow-300
+              "
+            />
+
+            <span
+              className="
+                text-sm
+                font-black
+                text-white
+              "
+            >
+
+              {earnedCoins}
+
+            </span>
+
           </div>
+
           {/* BELL */}
-          <button className=" flex h-11 w-11 items-center justify-center rounded-full bg-black/40 text-white backdrop-blur-xl ">
+
+          <button
+            className="
+              flex
+              h-11
+              w-11
+              items-center
+              justify-center
+              rounded-full
+              bg-black/40
+              text-white
+              backdrop-blur-xl
+            "
+          >
+
             <Bell size={20} />
+
           </button>
+
         </div>
+
       </div>
 
       {/* REWARD POPUP */}
+
       {showReward && (
-        <div className=" fixed left-1/2 top-1/2 z-[999] flex -translate-x-1/2 -translate-y-1/2 items-center gap-3 rounded-full bg-yellow-400 px-6 py-4 shadow-2xl ">
-          <Coins size={30} className=" text-black " />
+
+        <div
+          className="
+            fixed
+            left-1/2
+            top-1/2
+            z-[999]
+            flex
+            -translate-x-1/2
+            -translate-y-1/2
+            items-center
+            gap-3
+            rounded-full
+            bg-yellow-400
+            px-6
+            py-4
+            shadow-2xl
+          "
+        >
+
+          <Coins
+            size={30}
+            className="
+              text-black
+            "
+          />
+
           <div>
-            <h2 className=" text-2xl font-black text-black "> +{rewardCoinsValue} </h2>
-            <p className=" text-xs font-bold text-black/70 "> Reward Added </p>
+
+            <h2
+              className="
+                text-2xl
+                font-black
+                text-black
+              "
+            >
+
+              +{rewardCoinsValue}
+
+            </h2>
+
+            <p
+              className="
+                text-xs
+                font-bold
+                text-black/70
+              "
+            >
+
+              Reward Added
+
+            </p>
+
           </div>
+
         </div>
       )}
 
-      {/* AUTO AD POPUP */}
+      {/* AD POPUP */}
+
       {adPlaying && (
-        <div className=" fixed inset-0 z-[9999] flex flex-col items-center justify-center bg-black text-white ">
-          <div className=" mb-6 h-24 w-24 animate-pulse rounded-full bg-gradient-to-r from-violet-600 to-fuchsia-500 " />
-          <h2 className=" text-3xl font-black "> Sponsored Ad </h2>
-          <p className=" mt-3 text-sm text-gray-300 "> Watching ad... Reward unlocking... </p>
+
+        <div
+          className="
+            fixed
+            inset-0
+            z-[9999]
+            flex
+            flex-col
+            items-center
+            justify-center
+            bg-black
+            text-white
+          "
+        >
+
+          <div
+            className="
+              mb-6
+              h-24
+              w-24
+              animate-pulse
+              rounded-full
+              bg-gradient-to-r
+              from-violet-600
+              to-fuchsia-500
+            "
+          />
+
+          <h2
+            className="
+              text-3xl
+              font-black
+            "
+          >
+
+            Sponsored Ad
+
+          </h2>
+
+          <p
+            className="
+              mt-3
+              text-sm
+              text-gray-300
+            "
+          >
+
+            Watching ad...
+            Reward unlocking...
+
+          </p>
+
         </div>
       )}
 
       {/* NO VIDEOS */}
+
       {videos.length === 0 && (
-        <div className=" flex min-h-screen items-center justify-center ">
-          <p className=" text-lg font-black text-white "> No videos found </p>
+
+        <div
+          className="
+            flex
+            min-h-screen
+            items-center
+            justify-center
+          "
+        >
+
+          <p
+            className="
+              text-lg
+              font-black
+              text-white
+            "
+          >
+
+            No videos found
+
+          </p>
+
         </div>
       )}
 
       {/* VIDEO FEED */}
-      {videos.map((video, index) => {
-        const anyVideo = video as any;
-        return (
-          <section key={video.id} className=" relative h-screen snap-start ">
+
+      {videos.map(
+        (
+          video,
+          index
+        ) => (
+
+          <section
+            key={video.id}
+            className="
+              relative
+              h-screen
+              snap-start
+            "
+          >
+
             {/* VIDEO */}
+
             <video
               ref={(element) => {
+
                 if (element) {
-                  videoRefs.current[index] = element;
+
+                  videoRefs.current[
+                    index
+                  ] = element;
                 }
               }}
+
               src={video.video}
+
               loop
+
               muted
-              autoPlay
+
               playsInline
-              preload="auto"
+
+              autoPlay
+
+              preload="metadata"
+
               controls={false}
-              className=" h-full w-full object-cover "
-              onCanPlay={(e) => {
-                if (index === currentIndex && !adPlaying && !pausedVideos.includes(video.id)) {
-                  e.currentTarget.play().catch(() => {});
+
+              className="
+                h-full
+                w-full
+                object-cover
+              "
+
+              onLoadedData={() => {
+
+                const currentVideo =
+                  videoRefs.current[
+                    index
+                  ];
+
+                if (
+                  currentVideo &&
+                  index ===
+                    currentIndex &&
+                  !adPlaying
+                ) {
+
+                  currentVideo
+                    .play()
+                    .catch(() => {});
                 }
               }}
-              onPlay={() => {
-                setCurrentIndex(index);
-              }}
+
               onClick={() => {
-                toggleVideo(video.id, index);
+
+                toggleVideo(
+                  video.id,
+                  index
+                );
               }}
             />
 
             {/* OVERLAY */}
-            <div className=" absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent " />
 
-            {/* PLAY PAUSE BUTTON */}
+            <div
+              className="
+                absolute
+                inset-0
+                bg-gradient-to-t
+                from-black/80
+                via-black/20
+                to-transparent
+              "
+            />
+
+            {/* PLAY / PAUSE */}
+
             <button
-              onClick={() => toggleVideo(video.id, index)}
-              className=" absolute left-1/2 top-1/2 z-40 flex h-20 w-20 -translate-x-1/2 -translate-y-1/2 items-center justify-center rounded-full bg-black/40 backdrop-blur-xl "
+              onClick={() =>
+                toggleVideo(
+                  video.id,
+                  index
+                )
+              }
+              className="
+                absolute
+                left-1/2
+                top-1/2
+                z-40
+                flex
+                h-20
+                w-20
+                -translate-x-1/2
+                -translate-y-1/2
+                items-center
+                justify-center
+                rounded-full
+                bg-black/40
+                backdrop-blur-xl
+              "
             >
-              {pausedVideos.includes(video.id) ? (
-                <Play size={35} className=" text-white " />
+
+              {pausedVideos.includes(
+                video.id
+              ) ? (
+
+                <Play
+                  size={35}
+                  className="
+                    text-white
+                  "
+                />
+
               ) : (
-                <Pause size={35} className=" text-white " />
+
+                <Pause
+                  size={35}
+                  className="
+                    text-white
+                  "
+                />
+
               )}
+
             </button>
 
-            {/* VIDEO INFO */}
-            <div className=" absolute bottom-24 left-4 z-20 max-w-[75%] text-white ">
-              <div className=" flex items-center gap-2 ">
-                <h2 className=" text-xl font-black "> @{video.username} </h2>
+            {/* INFO */}
+
+            <div
+              className="
+                absolute
+                bottom-24
+                left-4
+                z-20
+                max-w-[75%]
+                text-white
+              "
+            >
+
+              <div
+                className="
+                  flex
+                  items-center
+                  gap-2
+                "
+              >
+
+                <h2
+                  className="
+                    text-xl
+                    font-black
+                  "
+                >
+
+                  @{video.username}
+
+                </h2>
+
                 {video.verified && (
-                  <BadgeCheck size={18} className=" fill-blue-500 text-white " />
+
+                  <BadgeCheck
+                    size={18}
+                    className="
+                      fill-blue-500
+                      text-white
+                    "
+                  />
+
                 )}
-                {/* SPONSOR BADGE */}
-                {anyVideo.sponsor && (
-                  <span className="rounded bg-amber-500 px-2 py-0.5 text-[10px] font-black text-black uppercase tracking-wider">
-                    Sponsored
-                  </span>
-                )}
+
               </div>
-              
-              <p className=" mt-3 text-sm leading-6 "> {video.caption} </p>
+
+              <p
+                className="
+                  mt-3
+                  text-sm
+                  leading-6
+                "
+              >
+
+                {video.caption}
+
+              </p>
 
               {/* HASHTAGS */}
-              <div className=" mt-3 flex flex-wrap gap-2 ">
-                {video.hashtags?.map((tag) => (
-                  <span key={tag} className=" rounded-full bg-white/10 px-3 py-1 text-xs font-bold text-blue-200 ">
-                    #{tag}
-                  </span>
-                ))}
+
+              <div
+                className="
+                  mt-3
+                  flex
+                  flex-wrap
+                  gap-2
+                "
+              >
+
+                {video.hashtags?.map(
+                  (tag) => (
+
+                    <span
+                      key={tag}
+                      className="
+                        rounded-full
+                        bg-white/10
+                        px-3
+                        py-1
+                        text-xs
+                        font-bold
+                        text-blue-200
+                      "
+                    >
+
+                      #{tag}
+
+                    </span>
+                  )
+                )}
+
               </div>
 
               {/* MUSIC */}
-              <div className=" mt-4 flex items-center gap-2 rounded-full bg-black/40 px-4 py-2 ">
-                <Music2 size={16} className=" text-pink-400 " />
-                <p className=" truncate text-xs font-bold text-white "> {video.music} </p>
+
+              <div
+                className="
+                  mt-4
+                  flex
+                  items-center
+                  gap-2
+                  rounded-full
+                  bg-black/40
+                  px-4
+                  py-2
+                "
+              >
+
+                <Music2
+                  size={16}
+                  className="
+                    text-pink-400
+                  "
+                />
+
+                <p
+                  className="
+                    truncate
+                    text-xs
+                    font-bold
+                    text-white
+                  "
+                >
+
+                  {video.music}
+
+                </p>
+
               </div>
 
-              {/* PROGRESS BAR */}
-              <div className="mt-4 w-full">
-                <div className=" h-3 overflow-hidden rounded-full bg-white/20 ">
-                  <div
-                    className=" h-full rounded-full bg-gradient-to-r from-yellow-300 to-orange-500 transition-all duration-500"
-                    style={{
-                      width: `${watchProgress[video.id] || 0}%`
-                    }}
-                  />
-                </div>
+              {/* PROGRESS */}
+
+              <div
+                className="
+                  mt-4
+                  h-3
+                  overflow-hidden
+                  rounded-full
+                  bg-white/20
+                "
+              >
+
+                <div
+                  className="
+                    h-full
+                    rounded-full
+                    bg-gradient-to-r
+                    from-yellow-300
+                    to-orange-500
+                    transition-all
+                    duration-500
+                  "
+                  style={{
+                    width: `${
+                      watchProgress[
+                        video.id
+                      ] || 0
+                    }%`
+                  }}
+                />
+
               </div>
 
-              {/* AUTO CLAIM BUTTON */}
+              {/* REWARD BUTTON */}
+
               <button
                 disabled
-                className={` mt-5 rounded-full px-5 py-3 font-black transition-all ${
-                  rewardedVideos.includes(video.id)
-                    ? "bg-green-500 text-white"
-                    : "bg-yellow-400 text-black"
-                } `}
+                className={`
+                  mt-5
+                  rounded-full
+                  px-5
+                  py-3
+                  font-black
+
+                  ${
+                    rewardedVideos.includes(
+                      video.id
+                    )
+                      ? "bg-green-500 text-white"
+                      : "bg-yellow-400 text-black"
+                  }
+                `}
               >
-                {rewardedVideos.includes(video.id)
+
+                {rewardedVideos.includes(
+                  video.id
+                )
                   ? "Reward Claimed"
-                  : `Watch ${100 - (watchProgress[video.id] || 0)}% More (Get ${anyVideo.rewardCoins ?? video.coins ?? 20} Coins)`}
+                  : `Watch ${
+                      100 -
+                      (
+                        watchProgress[
+                          video.id
+                        ] || 0
+                      )
+                    }% More`}
+
               </button>
-              
-              {/* AD REVENUE LOG */}
-              {anyVideo.adVideo && anyVideo.adRevenue && (
-                <p className="text-[10px] text-gray-400 mt-2 font-medium">
-                  Ad Unit Rev: ${anyVideo.adRevenue}
-                </p>
-              )}
+
             </div>
 
             {/* RIGHT ACTIONS */}
-            <div className=" absolute bottom-24 right-3 z-20 flex flex-col items-center gap-5 text-white ">
-              {/* LIKE */}
-              <button className=" flex flex-col items-center gap-1 ">
-                <div className=" flex h-14 w-14 items-center justify-center rounded-full bg-black/40 ">
-                  <Heart size={28} />
+
+            <div
+              className="
+                absolute
+                bottom-24
+                right-3
+                z-20
+                flex
+                flex-col
+                items-center
+                gap-5
+                text-white
+              "
+            >
+
+              <button
+                className="
+                  flex
+                  flex-col
+                  items-center
+                  gap-1
+                "
+              >
+
+                <div
+                  className="
+                    flex
+                    h-14
+                    w-14
+                    items-center
+                    justify-center
+                    rounded-full
+                    bg-black/40
+                  "
+                >
+
+                  <Heart
+                    size={28}
+                  />
+
                 </div>
-                <span className=" text-xs font-bold "> {video.likes} </span>
+
+                <span
+                  className="
+                    text-xs
+                    font-bold
+                  "
+                >
+
+                  {video.likes}
+
+                </span>
+
               </button>
-              {/* COMMENT */}
-              <button className=" flex flex-col items-center gap-1 ">
-                <div className=" flex h-14 w-14 items-center justify-center rounded-full bg-black/40 ">
-                  <MessageCircle size={28} />
+
+              <button
+                className="
+                  flex
+                  flex-col
+                  items-center
+                  gap-1
+                "
+              >
+
+                <div
+                  className="
+                    flex
+                    h-14
+                    w-14
+                    items-center
+                    justify-center
+                    rounded-full
+                    bg-black/40
+                  "
+                >
+
+                  <MessageCircle
+                    size={28}
+                  />
+
                 </div>
-                <span className=" text-xs font-bold "> {video.comments} </span>
+
+                <span
+                  className="
+                    text-xs
+                    font-bold
+                  "
+                >
+
+                  {video.comments}
+
+                </span>
+
               </button>
-              {/* SHARE */}
-              <button className=" flex flex-col items-center gap-1 ">
-                <div className=" flex h-14 w-14 items-center justify-center rounded-full bg-black/40 ">
-                  <Share2 size={28} />
+
+              <button
+                className="
+                  flex
+                  flex-col
+                  items-center
+                  gap-1
+                "
+              >
+
+                <div
+                  className="
+                    flex
+                    h-14
+                    w-14
+                    items-center
+                    justify-center
+                    rounded-full
+                    bg-black/40
+                  "
+                >
+
+                  <Share2
+                    size={28}
+                  />
+
                 </div>
-                <span className=" text-xs font-bold "> {video.shares} </span>
+
+                <span
+                  className="
+                    text-xs
+                    font-bold
+                  "
+                >
+
+                  {video.shares}
+
+                </span>
+
               </button>
-              {/* SAVE */}
-              <button className=" flex flex-col items-center gap-1 ">
-                <div className=" flex h-14 w-14 items-center justify-center rounded-full bg-black/40 ">
-                  <Bookmark size={26} />
+
+              <button
+                className="
+                  flex
+                  flex-col
+                  items-center
+                  gap-1
+                "
+              >
+
+                <div
+                  className="
+                    flex
+                    h-14
+                    w-14
+                    items-center
+                    justify-center
+                    rounded-full
+                    bg-black/40
+                  "
+                >
+
+                  <Bookmark
+                    size={26}
+                  />
+
                 </div>
-                <span className=" text-xs font-bold "> Save </span>
+
+                <span
+                  className="
+                    text-xs
+                    font-bold
+                  "
+                >
+
+                  Save
+
+                </span>
+
               </button>
+
             </div>
+
           </section>
-        );
-      })}
+        )
+      )}
+
     </main>
   );
 }
