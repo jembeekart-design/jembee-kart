@@ -17,38 +17,105 @@ import {
   updateDoc
 } from "firebase/firestore";
 
+import {
+  Plus,
+  Trash2,
+  ImagePlus,
+  Video,
+  Star,
+  Eye,
+  EyeOff
+} from "lucide-react";
+
 import { db } from "@/firebase/config";
 
 /* ======================================================
 TYPES
 ====================================================== */
 
+interface Variant {
+
+  size: string;
+
+  color: string;
+
+  stock: number;
+
+  price: number;
+}
+
+interface Specification {
+
+  title: string;
+
+  value: string;
+}
+
 interface Product {
+
   id: string;
 
-  title?: string;
+  title: string;
 
-  description?: string;
+  slug: string;
 
-  images?: string[];
+  shortDescription: string;
 
-  videos?: string[];
+  description: string;
 
-  category?: string;
+  category: string;
 
-  price?: number;
+  brand: string;
 
-  discountPrice?: number;
+  tags: string[];
 
-  stock?: number;
+  images: string[];
 
-  rating?: number;
+  videos: string[];
 
-  featured?: boolean;
+  thumbnail: string;
 
-  visible?: boolean;
+  price: number;
 
-  position?: number;
+  discountPrice: number;
+
+  costPrice: number;
+
+  profit: number;
+
+  stock: number;
+
+  sku: string;
+
+  rating: number;
+
+  reviews: number;
+
+  featured: boolean;
+
+  visible: boolean;
+
+  cod: boolean;
+
+  freeShipping: boolean;
+
+  weight: number;
+
+  variants: Variant[];
+
+  specifications: Specification[];
+
+  seoTitle: string;
+
+  seoDescription: string;
+
+  affiliateCommission: number;
+
+  mlmCommission: number;
+
+  provider: string;
+
+  createdAt: number;
 }
 
 /* ======================================================
@@ -56,27 +123,27 @@ COMPONENT
 ====================================================== */
 
 export default function ProductsAdminPage() {
-  const [products, setProducts] =
-    useState<Product[]>([]);
 
-  const [categories, setCategories] =
-    useState<string[]>([]);
+  const [
+    products,
+    setProducts
+  ] = useState<Product[]>([]);
 
-  const [loading, setLoading] =
-    useState(true);
+  const [
+    loading,
+    setLoading
+  ] = useState(true);
 
   const imageInputRefs =
     useRef<{
       [key: string]:
-        | HTMLInputElement
-        | null;
+        HTMLInputElement | null;
     }>({});
 
   const videoInputRefs =
     useRef<{
       [key: string]:
-        | HTMLInputElement
-        | null;
+        HTMLInputElement | null;
     }>({});
 
   /* ======================================================
@@ -84,18 +151,25 @@ export default function ProductsAdminPage() {
   ====================================================== */
 
   useEffect(() => {
+
     const unsubscribe =
       onSnapshot(
+
         collection(
           db,
           "products"
         ),
+
         (snapshot) => {
+
           const data =
             snapshot.docs.map(
               (document) => {
+
                 return {
-                  id: document.id,
+
+                  id:
+                    document.id,
 
                   ...(document.data() as Omit<
                     Product,
@@ -105,87 +179,126 @@ export default function ProductsAdminPage() {
               }
             );
 
-          setProducts(data);
+          setProducts(
+            data
+          );
 
-          setLoading(false);
-        }
-      );
-
-    return () =>
-      unsubscribe();
-  }, []);
-
-  /* ======================================================
-  GET CATEGORIES
-  ====================================================== */
-
-  useEffect(() => {
-    const unsubscribe =
-      onSnapshot(
-        collection(
-          db,
-          "categories"
-        ),
-        (snapshot) => {
-          const categoryList =
-            snapshot.docs.map(
-              (document) => {
-                return String(
-                  document.data()
-                    .title || ""
-                );
-              }
-            );
-
-          setCategories(
-            categoryList
+          setLoading(
+            false
           );
         }
       );
 
     return () =>
       unsubscribe();
+
   }, []);
+
+  /* ======================================================
+  GENERATE SLUG
+  ====================================================== */
+
+  function generateSlug(
+    text: string
+  ) {
+
+    return text
+
+      .toLowerCase()
+
+      .replace(/\s+/g, "-")
+
+      .replace(
+        /[^a-z0-9-]/g,
+        ""
+      );
+  }
 
   /* ======================================================
   ADD PRODUCT
   ====================================================== */
 
   async function addProduct() {
+
     await addDoc(
+
       collection(
         db,
         "products"
       ),
+
       {
+
         title:
           "New Product",
 
+        slug:
+          "new-product",
+
+        shortDescription:
+          "",
+
         description:
-          "Premium Product",
+          "",
+
+        category:
+          "Fashion",
+
+        brand:
+          "JembeeKart",
+
+        tags: [],
 
         images: [],
 
         videos: [],
 
-        category:
-          categories[0] ||
-          "Fashion",
+        thumbnail: "",
 
         price: 2999,
 
         discountPrice: 1999,
 
+        costPrice: 1000,
+
+        profit: 999,
+
         stock: 100,
 
+        sku:
+          "SKU-" +
+          Date.now(),
+
         rating: 4.5,
+
+        reviews: 0,
 
         featured: false,
 
         visible: true,
 
-        position:
-          products.length + 1
+        cod: true,
+
+        freeShipping: false,
+
+        weight: 0.5,
+
+        variants: [],
+
+        specifications: [],
+
+        seoTitle: "",
+
+        seoDescription: "",
+
+        affiliateCommission: 5,
+
+        mlmCommission: 10,
+
+        provider: "manual",
+
+        createdAt:
+          Date.now()
       }
     );
   }
@@ -199,14 +312,18 @@ export default function ProductsAdminPage() {
     field: string,
     value: any
   ) {
+
     await updateDoc(
+
       doc(
         db,
         "products",
         id
       ),
+
       {
-        [field]: value
+        [field]:
+          value
       }
     );
   }
@@ -218,7 +335,9 @@ export default function ProductsAdminPage() {
   async function deleteProduct(
     id: string
   ) {
+
     await deleteDoc(
+
       doc(
         db,
         "products",
@@ -228,98 +347,59 @@ export default function ProductsAdminPage() {
   }
 
   /* ======================================================
-  IMAGE COMPRESS
+  ADD VARIANT
   ====================================================== */
 
-  async function compressImage(
-    file: File
+  async function addVariant(
+    product: Product
   ) {
-    return new Promise<File>(
-      (resolve) => {
-        const canvas =
-          document.createElement(
-            "canvas"
-          );
 
-        const ctx =
-          canvas.getContext(
-            "2d"
-          );
+    const variants = [
 
-        const img =
-          new window.Image();
+      ...(product.variants || []),
 
-        img.onload = () => {
-          let width =
-            img.width;
+      {
+        size: "M",
 
-          let height =
-            img.height;
+        color: "Black",
 
-          const maxWidth =
-            700;
+        stock: 10,
 
-          if (
-            width >
-            maxWidth
-          ) {
-            height =
-              (height *
-                maxWidth) /
-              width;
-
-            width =
-              maxWidth;
-          }
-
-          canvas.width =
-            width;
-
-          canvas.height =
-            height;
-
-          ctx?.drawImage(
-            img,
-            0,
-            0,
-            width,
-            height
-          );
-
-          canvas.toBlob(
-            (blob) => {
-              if (!blob) {
-                resolve(file);
-
-                return;
-              }
-
-              const compressedFile =
-                new File(
-                  [blob],
-                  file.name,
-                  {
-                    type:
-                      "image/jpeg"
-                  }
-                );
-
-              resolve(
-                compressedFile
-              );
-            },
-
-            "image/jpeg",
-
-            0.6
-          );
-        };
-
-        img.src =
-          URL.createObjectURL(
-            file
-          );
+        price:
+          product.price
       }
+    ];
+
+    await updateProduct(
+      product.id,
+      "variants",
+      variants
+    );
+  }
+
+  /* ======================================================
+  ADD SPECIFICATION
+  ====================================================== */
+
+  async function addSpecification(
+    product: Product
+  ) {
+
+    const specifications = [
+
+      ...(product.specifications || []),
+
+      {
+        title: "Fabric",
+
+        value: "Cotton"
+      }
+    ];
+
+    await updateProduct(
+      product.id,
+      "specifications",
+      specifications
     );
   }
 
@@ -331,8 +411,10 @@ export default function ProductsAdminPage() {
     product: Product,
     files: FileList
   ) {
+
     try {
-      const uploadedImages:
+
+      const uploaded:
         string[] = [];
 
       for (
@@ -340,90 +422,7 @@ export default function ProductsAdminPage() {
         i < files.length;
         i++
       ) {
-        const compressedFile =
-          await compressImage(
-            files[i]
-          );
 
-        const formData =
-          new FormData();
-
-        formData.append(
-          "file",
-          compressedFile
-        );
-
-        formData.append(
-          "upload_preset",
-
-          process.env
-            .NEXT_PUBLIC_CLOUDINARY_UPLOAD_PRESET ||
-            ""
-        );
-
-        const response =
-          await fetch(
-            `https://api.cloudinary.com/v1_1/${
-              process.env
-                .NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME
-            }/image/upload`,
-            {
-              method:
-                "POST",
-
-              body:
-                formData
-            }
-          );
-
-        const data =
-          await response.json();
-
-        uploadedImages.push(
-          data.secure_url
-        );
-      }
-
-      await updateProduct(
-        product.id,
-        "images",
-        [
-          ...(product.images ||
-            []),
-
-          ...uploadedImages
-        ]
-      );
-
-      alert(
-        "Images Uploaded"
-      );
-    } catch (error) {
-      console.error(error);
-
-      alert(
-        "Upload Failed"
-      );
-    }
-  }
-
-  /* ======================================================
-  UPLOAD VIDEO
-  ====================================================== */
-
-  async function uploadVideos(
-    product: Product,
-    files: FileList
-  ) {
-    try {
-      const uploadedVideos:
-        string[] = [];
-
-      for (
-        let i = 0;
-        i < files.length;
-        i++
-      ) {
         const formData =
           new FormData();
 
@@ -442,10 +441,12 @@ export default function ProductsAdminPage() {
 
         const response =
           await fetch(
+
             `https://api.cloudinary.com/v1_1/${
               process.env
                 .NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME
-            }/video/upload`,
+            }/image/upload`,
+
             {
               method:
                 "POST",
@@ -458,30 +459,110 @@ export default function ProductsAdminPage() {
         const data =
           await response.json();
 
-        uploadedVideos.push(
+        uploaded.push(
           data.secure_url
         );
       }
 
       await updateProduct(
-        product.id,
-        "videos",
-        [
-          ...(product.videos ||
-            []),
 
-          ...uploadedVideos
+        product.id,
+
+        "images",
+
+        [
+          ...(product.images || []),
+
+          ...uploaded
         ]
       );
 
-      alert(
-        "Videos Uploaded"
-      );
     } catch (error) {
-      console.error(error);
 
-      alert(
-        "Video Upload Failed"
+      console.error(
+        error
+      );
+    }
+  }
+
+  /* ======================================================
+  UPLOAD VIDEO
+  ====================================================== */
+
+  async function uploadVideos(
+    product: Product,
+    files: FileList
+  ) {
+
+    try {
+
+      const uploaded:
+        string[] = [];
+
+      for (
+        let i = 0;
+        i < files.length;
+        i++
+      ) {
+
+        const formData =
+          new FormData();
+
+        formData.append(
+          "file",
+          files[i]
+        );
+
+        formData.append(
+          "upload_preset",
+
+          process.env
+            .NEXT_PUBLIC_CLOUDINARY_UPLOAD_PRESET ||
+            ""
+        );
+
+        const response =
+          await fetch(
+
+            `https://api.cloudinary.com/v1_1/${
+              process.env
+                .NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME
+            }/video/upload`,
+
+            {
+              method:
+                "POST",
+
+              body:
+                formData
+            }
+          );
+
+        const data =
+          await response.json();
+
+        uploaded.push(
+          data.secure_url
+        );
+      }
+
+      await updateProduct(
+
+        product.id,
+
+        "videos",
+
+        [
+          ...(product.videos || []),
+
+          ...uploaded
+        ]
+      );
+
+    } catch (error) {
+
+      console.error(
+        error
       );
     }
   }
@@ -491,22 +572,23 @@ export default function ProductsAdminPage() {
   ====================================================== */
 
   return (
-    <main className="min-h-screen bg-gray-100 p-4">
 
-      <div className="mx-auto max-w-6xl">
+    <main className="min-h-screen bg-gray-100 p-5">
+
+      <div className="mx-auto max-w-7xl">
 
         {/* HEADER */}
 
-        <div className="mb-8 flex items-center justify-between">
+        <div className="mb-10 flex items-center justify-between">
 
           <div>
 
-            <h1 className="text-4xl font-black">
+            <h1 className="text-5xl font-black">
               Products Admin
             </h1>
 
             <p className="mt-2 text-gray-500">
-              Manage Products
+              Advanced Product Management
             </p>
 
           </div>
@@ -516,15 +598,22 @@ export default function ProductsAdminPage() {
               addProduct
             }
             className="
+              flex
+              items-center
+              gap-3
               rounded-2xl
               bg-blue-600
-              px-6
+              px-7
               py-4
               font-bold
               text-white
             "
           >
+
+            <Plus size={22} />
+
             Add Product
+
           </button>
 
         </div>
@@ -532,136 +621,191 @@ export default function ProductsAdminPage() {
         {/* LOADING */}
 
         {loading ? (
-          <div className="text-center text-xl font-bold">
+
+          <div className="text-center text-2xl font-black">
+
             Loading...
+
           </div>
+
         ) : (
-          <div className="space-y-6">
+
+          <div className="space-y-8">
 
             {products.map(
               (product) => {
+
                 return (
+
                   <div
                     key={product.id}
                     className="
                       rounded-[35px]
                       bg-white
-                      p-5
+                      p-6
                       shadow-xl
                     "
                   >
 
-                    <div className="grid gap-5 md:grid-cols-2">
+                    {/* TITLE */}
 
-                      {/* TITLE */}
+                    <input
+                      type="text"
+                      value={
+                        product.title
+                      }
+                      onChange={(
+                        e
+                      ) => {
 
-                      <div>
+                        updateProduct(
+                          product.id,
+                          "title",
+                          e.target
+                            .value
+                        );
 
-                        <label className="mb-2 block font-bold">
-                          Product Title
-                        </label>
+                        updateProduct(
+                          product.id,
+                          "slug",
 
-                        <input
-                          type="text"
-                          value={
-                            product.title ||
-                            ""
-                          }
-                          onChange={(
-                            e
-                          ) => {
-                            updateProduct(
-                              product.id,
-                              "title",
+                          generateSlug(
+                            e.target
+                              .value
+                          )
+                        );
+                      }}
+                      className="
+                        w-full
+                        rounded-2xl
+                        border
+                        p-4
+                        text-2xl
+                        font-black
+                      "
+                    />
+
+                    {/* PRICE */}
+
+                    <div className="mt-5 grid gap-4 md:grid-cols-4">
+
+                      <input
+                        type="number"
+                        value={
+                          product.price
+                        }
+                        onChange={(
+                          e
+                        ) => {
+                          updateProduct(
+                            product.id,
+                            "price",
+                            Number(
                               e.target
                                 .value
-                            );
-                          }}
-                          className="
-                            w-full
-                            rounded-2xl
-                            border
-                            bg-gray-100
-                            p-4
-                          "
-                        />
+                            )
+                          );
+                        }}
+                        placeholder="Price"
+                        className="
+                          rounded-2xl
+                          border
+                          p-4
+                        "
+                      />
 
-                      </div>
-
-                      {/* CATEGORY */}
-
-                      <div>
-
-                        <label className="mb-2 block font-bold">
-                          Category
-                        </label>
-
-                        <select
-                          value={
-                            product.category ||
-                            ""
-                          }
-                          onChange={(
-                            e
-                          ) => {
-                            updateProduct(
-                              product.id,
-                              "category",
+                      <input
+                        type="number"
+                        value={
+                          product.discountPrice
+                        }
+                        onChange={(
+                          e
+                        ) => {
+                          updateProduct(
+                            product.id,
+                            "discountPrice",
+                            Number(
                               e.target
                                 .value
-                            );
-                          }}
-                          className="
-                            w-full
-                            rounded-2xl
-                            border
-                            bg-gray-100
-                            p-4
-                          "
-                        >
+                            )
+                          );
+                        }}
+                        placeholder="Discount Price"
+                        className="
+                          rounded-2xl
+                          border
+                          p-4
+                        "
+                      />
 
-                          {categories.map(
-                            (
-                              category
-                            ) => {
-                              return (
-                                <option
-                                  key={
-                                    category
-                                  }
-                                  value={
-                                    category
-                                  }
-                                >
-                                  {
-                                    category
-                                  }
-                                </option>
-                              );
-                            }
-                          )}
+                      <input
+                        type="number"
+                        value={
+                          product.stock
+                        }
+                        onChange={(
+                          e
+                        ) => {
+                          updateProduct(
+                            product.id,
+                            "stock",
+                            Number(
+                              e.target
+                                .value
+                            )
+                          );
+                        }}
+                        placeholder="Stock"
+                        className="
+                          rounded-2xl
+                          border
+                          p-4
+                        "
+                      />
 
-                        </select>
-
-                      </div>
+                      <input
+                        type="text"
+                        value={
+                          product.category
+                        }
+                        onChange={(
+                          e
+                        ) => {
+                          updateProduct(
+                            product.id,
+                            "category",
+                            e.target
+                              .value
+                          );
+                        }}
+                        placeholder="Category"
+                        className="
+                          rounded-2xl
+                          border
+                          p-4
+                        "
+                      />
 
                     </div>
 
-                    {/* IMAGE UPLOAD */}
+                    {/* BUTTONS */}
 
-                    <div className="mt-6">
+                    <div className="mt-6 flex flex-wrap gap-4">
 
-                      <label className="mb-3 block font-bold">
-                        Product Images
-                      </label>
+                      {/* IMAGE */}
 
                       <button
                         onClick={() => {
+
                           imageInputRefs.current[
                             product.id
                           ]?.click();
                         }}
                         className="
+                          flex
+                          items-center
+                          gap-2
                           rounded-2xl
                           bg-blue-600
                           px-5
@@ -670,13 +814,18 @@ export default function ProductsAdminPage() {
                           text-white
                         "
                       >
-                        Upload 3-4 Images
+
+                        <ImagePlus size={20} />
+
+                        Upload Images
+
                       </button>
 
                       <input
                         ref={(
                           element
                         ) => {
+
                           imageInputRefs.current[
                             product.id
                           ] =
@@ -684,12 +833,12 @@ export default function ProductsAdminPage() {
                         }}
                         type="file"
                         multiple
-                        accept="image/*"
-                        capture="environment"
                         hidden
+                        accept="image/*"
                         onChange={async (
                           event
                         ) => {
+
                           const files =
                             event
                               .target
@@ -698,6 +847,7 @@ export default function ProductsAdminPage() {
                           if (
                             files
                           ) {
+
                             await uploadImages(
                               product,
                               files
@@ -706,56 +856,19 @@ export default function ProductsAdminPage() {
                         }}
                       />
 
-                      {/* IMAGES */}
-
-                      <div className="mt-5 flex gap-4 overflow-x-auto pb-2">
-
-                        {product.images?.map(
-                          (
-                            image,
-                            index
-                          ) => {
-                            return (
-                              <img
-                                key={
-                                  index
-                                }
-                                src={
-                                  image
-                                }
-                                alt=""
-                                className="
-                                  h-40
-                                  w-32
-                                  rounded-b-[40px]
-                                  rounded-t-[20px]
-                                  object-cover
-                                  shadow-lg
-                                "
-                              />
-                            );
-                          }
-                        )}
-
-                      </div>
-
-                    </div>
-
-                    {/* VIDEO UPLOAD */}
-
-                    <div className="mt-8">
-
-                      <label className="mb-3 block font-bold">
-                        Product Videos
-                      </label>
+                      {/* VIDEO */}
 
                       <button
                         onClick={() => {
+
                           videoInputRefs.current[
                             product.id
                           ]?.click();
                         }}
                         className="
+                          flex
+                          items-center
+                          gap-2
                           rounded-2xl
                           bg-purple-600
                           px-5
@@ -764,13 +877,18 @@ export default function ProductsAdminPage() {
                           text-white
                         "
                       >
-                        Upload Video
+
+                        <Video size={20} />
+
+                        Upload Videos
+
                       </button>
 
                       <input
                         ref={(
                           element
                         ) => {
+
                           videoInputRefs.current[
                             product.id
                           ] =
@@ -778,11 +896,12 @@ export default function ProductsAdminPage() {
                         }}
                         type="file"
                         multiple
-                        accept="video/*"
                         hidden
+                        accept="video/*"
                         onChange={async (
                           event
                         ) => {
+
                           const files =
                             event
                               .target
@@ -791,6 +910,7 @@ export default function ProductsAdminPage() {
                           if (
                             files
                           ) {
+
                             await uploadVideos(
                               product,
                               files
@@ -799,61 +919,210 @@ export default function ProductsAdminPage() {
                         }}
                       />
 
-                      {/* VIDEOS */}
+                      {/* VARIANT */}
 
-                      <div className="mt-5 flex gap-4 overflow-x-auto pb-2">
+                      <button
+                        onClick={() =>
+                          addVariant(
+                            product
+                          )
+                        }
+                        className="
+                          rounded-2xl
+                          bg-green-600
+                          px-5
+                          py-4
+                          font-bold
+                          text-white
+                        "
+                      >
 
-                        {product.videos?.map(
-                          (
-                            video,
-                            index
-                          ) => {
-                            return (
-                              <video
-                                key={
-                                  index
-                                }
-                                src={
-                                  video
-                                }
-                                controls
-                                className="
-                                  h-44
-                                  w-36
-                                  rounded-b-[40px]
-                                  rounded-t-[20px]
-                                  object-cover
-                                  shadow-lg
-                                "
-                              />
-                            );
+                        Add Variant
+
+                      </button>
+
+                      {/* SPEC */}
+
+                      <button
+                        onClick={() =>
+                          addSpecification(
+                            product
+                          )
+                        }
+                        className="
+                          rounded-2xl
+                          bg-orange-600
+                          px-5
+                          py-4
+                          font-bold
+                          text-white
+                        "
+                      >
+
+                        Add Specification
+
+                      </button>
+
+                      {/* FEATURED */}
+
+                      <button
+                        onClick={() => {
+
+                          updateProduct(
+                            product.id,
+                            "featured",
+                            !product.featured
+                          );
+                        }}
+                        className={`
+                          flex
+                          items-center
+                          gap-2
+                          rounded-2xl
+                          px-5
+                          py-4
+                          font-bold
+                          text-white
+
+                          ${
+                            product.featured
+                              ? "bg-yellow-500"
+                              : "bg-gray-500"
                           }
+                        `}
+                      >
+
+                        <Star size={20} />
+
+                        Featured
+
+                      </button>
+
+                      {/* VISIBLE */}
+
+                      <button
+                        onClick={() => {
+
+                          updateProduct(
+                            product.id,
+                            "visible",
+                            !product.visible
+                          );
+                        }}
+                        className={`
+                          flex
+                          items-center
+                          gap-2
+                          rounded-2xl
+                          px-5
+                          py-4
+                          font-bold
+                          text-white
+
+                          ${
+                            product.visible
+                              ? "bg-green-600"
+                              : "bg-red-600"
+                          }
+                        `}
+                      >
+
+                        {product.visible ? (
+                          <Eye size={20} />
+                        ) : (
+                          <EyeOff size={20} />
                         )}
 
-                      </div>
+                        Visible
+
+                      </button>
+
+                      {/* DELETE */}
+
+                      <button
+                        onClick={() =>
+                          deleteProduct(
+                            product.id
+                          )
+                        }
+                        className="
+                          flex
+                          items-center
+                          gap-2
+                          rounded-2xl
+                          bg-red-600
+                          px-5
+                          py-4
+                          font-bold
+                          text-white
+                        "
+                      >
+
+                        <Trash2 size={20} />
+
+                        Delete
+
+                      </button>
 
                     </div>
 
-                    {/* DELETE */}
+                    {/* IMAGES */}
 
-                    <button
-                      onClick={() => {
-                        deleteProduct(
-                          product.id
-                        );
-                      }}
-                      className="
-                        mt-8
-                        rounded-2xl
-                        bg-red-600
-                        px-5
-                        py-3
-                        font-bold
-                        text-white
-                      "
-                    >
-                      Delete Product
-                    </button>
+                    <div className="mt-7 flex gap-4 overflow-x-auto">
+
+                      {product.images?.map(
+                        (
+                          image,
+                          index
+                        ) => {
+
+                          return (
+
+                            <img
+                              key={index}
+                              src={image}
+                              alt=""
+                              className="
+                                h-40
+                                w-32
+                                rounded-3xl
+                                object-cover
+                              "
+                            />
+                          );
+                        }
+                      )}
+
+                    </div>
+
+                    {/* VIDEOS */}
+
+                    <div className="mt-7 flex gap-4 overflow-x-auto">
+
+                      {product.videos?.map(
+                        (
+                          video,
+                          index
+                        ) => {
+
+                          return (
+
+                            <video
+                              key={index}
+                              src={video}
+                              controls
+                              className="
+                                h-44
+                                w-36
+                                rounded-3xl
+                                object-cover
+                              "
+                            />
+                          );
+                        }
+                      )}
+
+                    </div>
 
                   </div>
                 );
