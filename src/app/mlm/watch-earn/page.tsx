@@ -91,6 +91,25 @@ WatchEarnPage() {
     []
   );
 
+  const [
+    watchProgress,
+    setWatchProgress
+  ] = useState<{
+    [key: string]: number;
+  }>({});
+
+  const [
+    rewardedVideos,
+    setRewardedVideos
+  ] = useState<string[]>(
+    []
+  );
+
+  const [
+    adPlaying,
+    setAdPlaying
+  ] = useState(false);
+
   /* =========================
      FETCH VIDEOS
   ========================= */
@@ -171,6 +190,96 @@ WatchEarnPage() {
   }, [
     currentIndex,
     videos
+  ]);
+
+  /* =========================
+     AUTO WATCH TIMER
+  ========================= */
+
+  useEffect(() => {
+
+    const interval =
+      setInterval(() => {
+
+        const currentVideo =
+          videos[currentIndex];
+
+        if (!currentVideo) {
+          return;
+        }
+
+        const currentId =
+          currentVideo.id;
+
+        setWatchProgress(
+          (prev) => {
+
+            const current =
+              prev[currentId] || 0;
+
+            if (current >= 100) {
+              return prev;
+            }
+
+            const updated =
+              current + 5;
+
+            /* AUTO REWARD */
+
+            if (
+              updated >= 100 &&
+              !rewardedVideos.includes(
+                currentId
+              )
+            ) {
+
+              setAdPlaying(
+                true
+              );
+
+              setTimeout(() => {
+
+                setAdPlaying(
+                  false
+                );
+
+                rewardCoins(
+                  currentId,
+                  currentVideo.coins
+                );
+
+                setRewardedVideos(
+                  (
+                    prevRewarded
+                  ) => [
+                    ...prevRewarded,
+                    currentId
+                  ]
+                );
+
+              }, 5000);
+            }
+
+            return {
+
+              ...prev,
+
+              [currentId]:
+                updated
+            };
+          });
+
+      }, 1000);
+
+    return () =>
+      clearInterval(
+        interval
+      );
+
+  }, [
+    currentIndex,
+    videos,
+    rewardedVideos
   ]);
 
   /* =========================
@@ -521,28 +630,58 @@ WatchEarnPage() {
         </div>
       )}
 
-      {/* NO VIDEOS */}
+      {/* AUTO AD */}
 
-      {videos.length === 0 && (
+      {adPlaying && (
 
         <div
           className="
+            fixed
+            inset-0
+            z-[9999]
             flex
-            min-h-screen
+            flex-col
             items-center
             justify-center
+            bg-black
+            text-white
           "
         >
 
-          <p
+          <div
             className="
-              text-lg
+              mb-6
+              h-24
+              w-24
+              animate-pulse
+              rounded-full
+              bg-gradient-to-r
+              from-violet-600
+              to-fuchsia-500
+            "
+          />
+
+          <h2
+            className="
+              text-3xl
               font-black
-              text-white
             "
           >
 
-            No videos found
+            Sponsored Ad
+
+          </h2>
+
+          <p
+            className="
+              mt-3
+              text-sm
+              text-gray-300
+            "
+          >
+
+            Watching ad...
+            Reward unlocking...
 
           </p>
 
@@ -635,7 +774,7 @@ WatchEarnPage() {
               "
             />
 
-            {/* PLAY PAUSE BUTTON */}
+            {/* PLAY PAUSE */}
 
             <button
               onClick={() =>
@@ -686,7 +825,7 @@ WatchEarnPage() {
 
             </button>
 
-            {/* VIDEO INFO */}
+            {/* INFO */}
 
             <div
               className="
@@ -779,6 +918,39 @@ WatchEarnPage() {
 
               </div>
 
+              {/* PROGRESS */}
+
+              <div
+                className="
+                  mt-4
+                  h-3
+                  overflow-hidden
+                  rounded-full
+                  bg-white/20
+                "
+              >
+
+                <div
+                  className="
+                    h-full
+                    rounded-full
+                    bg-gradient-to-r
+                    from-yellow-300
+                    to-orange-500
+                    transition-all
+                    duration-500
+                  "
+                  style={{
+                    width: `${
+                      watchProgress[
+                        video.id
+                      ] || 0
+                    }%`
+                  }}
+                />
+
+              </div>
+
               {/* MUSIC */}
 
               <div
@@ -819,17 +991,7 @@ WatchEarnPage() {
               {/* CLAIM */}
 
               <button
-                onClick={() =>
-                  rewardCoins(
-                    video.id,
-                    video.coins
-                  )
-                }
-
-                disabled={claimedVideos.includes(
-                  video.id
-                )}
-
+                disabled
                 className={`
                   mt-5
                   rounded-full
@@ -839,7 +1001,7 @@ WatchEarnPage() {
                   transition-all
 
                   ${
-                    claimedVideos.includes(
+                    rewardedVideos.includes(
                       video.id
                     )
                       ? "bg-green-500 text-white"
@@ -848,11 +1010,18 @@ WatchEarnPage() {
                 `}
               >
 
-                {claimedVideos.includes(
+                {rewardedVideos.includes(
                   video.id
                 )
-                  ? "Claimed"
-                  : `Claim ${video.coins} Coins`}
+                  ? "Reward Claimed"
+                  : `Watch ${
+                      100 -
+                      (
+                        watchProgress[
+                          video.id
+                        ] || 0
+                      )
+                    }% More`}
 
               </button>
 
