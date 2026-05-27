@@ -18,6 +18,7 @@ import { fetchWatchVideos, WatchVideo } from "@/lib/mlm/watch-earn/fetchWatchVid
 
 export default function WatchEarnPage() {
   const videoRefs = useRef<HTMLVideoElement[]>([]);
+  const containerRef = useRef<HTMLImageElement>(null);
 
   /* =========================
      VIDEOS
@@ -64,10 +65,41 @@ export default function WatchEarnPage() {
   }, []);
 
   /* =========================
+     INTERSECTION OBSERVER (SCROLL DETECT)
+     ========================= */
+  useEffect(() => {
+    if (videos.length === 0) return;
+
+    const observers: IntersectionObserver[] = [];
+
+    videoRefs.current.forEach((video, index) => {
+      if (!video) return;
+
+      const observer = new IntersectionObserver(
+        (entries) => {
+          entries.forEach((entry) => {
+            // Agar 60% se zyada video screen par dikh rahi hai
+            if (entry.isIntersecting && entry.intersectionRatio >= 0.6) {
+              setCurrentIndex(index);
+            }
+          });
+        },
+        { threshold: [0.6] }
+      );
+
+      observer.observe(video);
+      observers.push(observer);
+    });
+
+    return () => {
+      observers.forEach((obs) => obs.disconnect());
+    };
+  }, [videos]);
+
+  /* =========================
      AUTO PLAY / PAUSE LOGIC
      ========================= */
   useEffect(() => {
-    // Agar Ad chal raha hai, toh saare videos ko pause kar do
     if (adPlaying) {
       videoRefs.current.forEach((video) => video?.pause());
       return;
@@ -76,12 +108,16 @@ export default function WatchEarnPage() {
     videoRefs.current.forEach((video, index) => {
       if (!video) return;
       if (index === currentIndex) {
-        video.play().catch(() => {});
+        // Agar video manually paused nahi hai, tabhi play karein
+        const videoId = videos[index]?.id;
+        if (videoId && !pausedVideos.includes(videoId)) {
+          video.play().catch(() => {});
+        }
       } else {
         video.pause();
       }
     });
-  }, [currentIndex, videos, adPlaying]);
+  }, [currentIndex, videos, adPlaying, pausedVideos]);
 
   /* =========================
      REWARD FUNCTION
@@ -102,7 +138,7 @@ export default function WatchEarnPage() {
      ========================= */
   function toggleVideo(videoId: string, index: number) {
     const video = videoRefs.current[index];
-    if (!video || adPlaying) return; // Ad ke waqt toggle nahi hoga
+    if (!video || adPlaying) return;
 
     if (video.paused) {
       video.play().catch(() => {});
@@ -117,7 +153,6 @@ export default function WatchEarnPage() {
      AUTO WATCH TIMER & AD SYSTEM
      ========================= */
   useEffect(() => {
-    // Agar koi video nahi hai ya koi ad chal raha hai toh timer rok do
     if (videos.length === 0 || adPlaying) return;
 
     const interval = setInterval(() => {
@@ -126,15 +161,11 @@ export default function WatchEarnPage() {
 
       const currentId = currentVideo.id;
 
-      // Agar video pehle se hi fully rewarded hai, toh progress badhane ki zarurat nahi
       if (rewardedVideos.includes(currentId)) return;
-
-      // Agar video manually paused hai, toh progress pause rakhein
       if (pausedVideos.includes(currentId)) return;
 
       setWatchProgress((prev) => {
         const current = prev[currentId] || 0;
-
         if (current >= 100) return prev;
 
         const updated = current + 5;
@@ -172,7 +203,7 @@ export default function WatchEarnPage() {
   }
 
   return (
-    <main className="h-screen overflow-y-scroll snap-y snap-mandatory bg-black">
+    <main ref={containerRef} className="h-screen overflow-y-scroll snap-y snap-mandatory bg-black scrollbar-none">
       {/* HEADER */}
       <div className="fixed top-0 z-50 flex w-full items-center justify-between px-4 py-4">
         <div>
@@ -237,19 +268,10 @@ export default function WatchEarnPage() {
             src={video.video}
             loop
             muted
-            autoPlay
             playsInline
             preload="auto"
             controls={false}
             className="h-full w-full object-cover"
-            onCanPlay={(e) => {
-              if (index === currentIndex && !adPlaying) {
-                e.currentTarget.play().catch(() => {});
-              }
-            }}
-            onPlay={() => {
-              setCurrentIndex(index);
-            }}
             onClick={() => {
               toggleVideo(video.id, index);
             }}
