@@ -1,176 +1,122 @@
 "use client";
 
+import { useState } from "react";
+
 import {
-  GoogleAuthProvider,
-  signInWithPopup
+  RecaptchaVerifier,
+  signInWithPhoneNumber
 } from "firebase/auth";
 
-import {
-  doc,
-  setDoc
-} from "firebase/firestore";
-
-import {
-  auth,
-  db
-} from "@/lib/firebase";
+import { auth } from "@/lib/firebase";
 
 export default function LoginPage() {
 
-  async function login() {
+  const [phone, setPhone] =
+    useState("");
+
+  const [otp, setOtp] =
+    useState("");
+
+  const [confirm, setConfirm] =
+    useState<any>(null);
+
+  async function sendOTP() {
 
     try {
 
-      const provider =
-        new GoogleAuthProvider();
-
-      const result =
-        await signInWithPopup(
+      const verifier =
+        new RecaptchaVerifier(
           auth,
-          provider
+          "recaptcha-container",
+          {}
         );
 
-      const user =
-        result.user;
+      const confirmation =
+        await signInWithPhoneNumber(
+          auth,
+          phone,
+          verifier
+        );
 
-      /* SAVE USER */
+      setConfirm(
+        confirmation
+      );
 
-      await setDoc(
+      alert(
+        "OTP Sent"
+      );
 
-        doc(
-          db,
-          "users",
-          user.uid
-        ),
+    } catch (error) {
 
-        {
+      console.error(error);
 
-          uid:
-            user.uid,
+    }
 
-          name:
-            user.displayName,
+  }
 
-          email:
-            user.email,
+  async function verifyOTP() {
 
-          photo:
-            user.photoURL,
+    try {
 
-          createdAt:
-            Date.now()
-
-        },
-
-        {
-          merge: true
-        }
+      await confirm.confirm(
+        otp
       );
 
       alert(
         "Login Success"
       );
 
-      window.location.href =
-        "/account";
-
     } catch (error) {
 
       console.error(error);
 
-      alert(
-        "Login Failed"
-      );
     }
+
   }
 
   return (
 
-    <main
-      className="
-        flex
-        min-h-screen
-        items-center
-        justify-center
+    <main className="p-6">
 
-        bg-[#0f172a]
+      <div id="recaptcha-container" />
 
-        px-4
-      "
-    >
+      <input
+        type="text"
+        placeholder="+91XXXXXXXXXX"
+        value={phone}
+        onChange={(e) =>
+          setPhone(e.target.value)
+        }
+        className="border p-3"
+      />
 
-      <div
-        className="
-          w-full
-          max-w-sm
-
-          rounded-[32px]
-
-          bg-white
-
-          p-6
-
-          shadow-2xl
-        "
+      <button
+        onClick={sendOTP}
+        className="bg-black p-3 text-white"
       >
 
-        <h1
-          className="
-            text-center
-            text-3xl
-            font-black
-            text-violet-700
-          "
-        >
+        Send OTP
 
-          JembeeKart
+      </button>
 
-        </h1>
+      <input
+        type="text"
+        placeholder="Enter OTP"
+        value={otp}
+        onChange={(e) =>
+          setOtp(e.target.value)
+        }
+        className="border p-3"
+      />
 
-        <p
-          className="
-            mt-2
-            text-center
-            text-sm
-            text-gray-500
-          "
-        >
+      <button
+        onClick={verifyOTP}
+        className="bg-green-600 p-3 text-white"
+      >
 
-          Login to continue
+        Verify OTP
 
-        </p>
-
-        <button
-
-          onClick={login}
-
-          className="
-            mt-8
-
-            flex
-            w-full
-            items-center
-            justify-center
-
-            rounded-2xl
-
-            bg-gradient-to-r
-            from-violet-600
-            to-fuchsia-500
-
-            py-4
-
-            text-sm
-            font-black
-            text-white
-          "
-        >
-
-          Continue With Google
-
-        </button>
-
-      </div>
+      </button>
 
     </main>
 
