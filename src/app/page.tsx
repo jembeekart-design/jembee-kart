@@ -2,21 +2,18 @@
 FILE:
 src/app/page.tsx
 
-UPDATED FEATURES:
+UPDATED:
 
-✅ Category Image Back
 ✅ Product Image Clickable
-✅ Product Name Outside Card
-✅ Price Outside Card
+✅ Product Name Clickable
+✅ Search Bar Removed
+✅ Gradient Product Card
 ✅ Wishlist Button
-✅ Full Gradient Product Card
-✅ Voice Search
+✅ Category Image Back
 ✅ Firebase Sync
 ✅ Category Filter
 ✅ Product Sort
-✅ Mobile Responsive
-✅ Removed Add To Cart
-✅ Removed Buy Now
+✅ Responsive UI
 ====================================================== */
 
 "use client";
@@ -29,6 +26,8 @@ import {
   useState
 } from "react";
 
+import Link from "next/link";
+
 import {
   collection,
   onSnapshot
@@ -37,9 +36,6 @@ import {
 import {
   ArrowDownUp,
   Heart,
-  Mic,
-  MicOff,
-  Search,
   SlidersHorizontal
 } from "lucide-react";
 
@@ -126,6 +122,10 @@ COMPONENT
 
 export default function HomePage() {
 
+  /* ======================================================
+  STATES
+  ====================================================== */
+
   const [
     sections,
     setSections
@@ -159,84 +159,6 @@ export default function HomePage() {
     sortBy,
     setSortBy
   ] = useState("latest");
-
-  const [
-    search,
-    setSearch
-  ] = useState("");
-
-  const [
-    listening,
-    setListening
-  ] = useState(false);
-
-  /* ======================================================
-  VOICE SEARCH
-  ====================================================== */
-
-  function startVoiceSearch() {
-
-    if (
-      typeof window ===
-      "undefined"
-    ) {
-      return;
-    }
-
-    const SpeechRecognition =
-      (
-        window as any
-      ).SpeechRecognition ||
-
-      (
-        window as any
-      ).webkitSpeechRecognition;
-
-    if (
-      !SpeechRecognition
-    ) {
-
-      alert(
-        "Voice search not supported"
-      );
-
-      return;
-    }
-
-    const recognition =
-      new SpeechRecognition();
-
-    recognition.lang =
-      "en-IN";
-
-    recognition.start();
-
-    setListening(
-      true
-    );
-
-    recognition.onresult =
-      (
-        event: any
-      ) => {
-
-        const transcript =
-          event.results[0][0]
-            .transcript;
-
-        setSearch(
-          transcript
-        );
-      };
-
-    recognition.onend =
-      () => {
-
-        setListening(
-          false
-        );
-      };
-  }
 
   /* ======================================================
   GET HOMEPAGE SECTIONS
@@ -418,23 +340,6 @@ export default function HomePage() {
           );
       }
 
-      /* SEARCH */
-
-      if (
-        search
-      ) {
-
-        filtered =
-          filtered.filter(
-            (product) =>
-              product.title
-                .toLowerCase()
-                .includes(
-                  search.toLowerCase()
-                )
-          );
-      }
-
       /* SORT */
 
       switch (
@@ -483,8 +388,7 @@ export default function HomePage() {
     }, [
       products,
       selectedCategory,
-      sortBy,
-      search
+      sortBy
     ]);
 
   /* ======================================================
@@ -509,7 +413,9 @@ export default function HomePage() {
         "
       >
 
-        {/* HEADER */}
+        {/* ======================================================
+        HEADER
+        ====================================================== */}
 
         <Header
           headerBackgroundColor={
@@ -526,95 +432,22 @@ export default function HomePage() {
           }
         />
 
-        {/* HERO */}
+        {/* ======================================================
+        HERO
+        ====================================================== */}
 
         <HomepageSlider />
 
         {/* ======================================================
-        SEARCH
+        CATEGORY SECTION
         ====================================================== */}
 
-        <section className="mt-5 px-4">
-
-          <div
-            className="
-              flex
-              items-center
-              gap-3
-              rounded-3xl
-              bg-white
-              px-4
-              py-4
-              shadow-sm
-            "
-          >
-
-            <Search
-              size={20}
-              className="
-                text-gray-400
-              "
-            />
-
-            <input
-              type="text"
-
-              value={search}
-
-              onChange={(e) =>
-                setSearch(
-                  e.target.value
-                )
-              }
-
-              placeholder="Search products..."
-
-              className="
-                flex-1
-                bg-transparent
-                text-sm
-                font-semibold
-                outline-none
-              "
-            />
-
-            <button
-              onClick={
-                startVoiceSearch
-              }
-              className={`
-                flex
-                h-11
-                w-11
-                items-center
-                justify-center
-                rounded-full
-
-                ${
-                  listening
-                    ? "bg-red-500 text-white"
-                    : "bg-indigo-600 text-white"
-                }
-              `}
-            >
-
-              {listening ? (
-                <MicOff size={18} />
-              ) : (
-                <Mic size={18} />
-              )}
-
-            </button>
-
-          </div>
-
-        </section>
-
-        {/* ======================================================
-        CATEGORY
-        ====================================================== */}
-
-        <section className="mt-8 px-4">
+        <section
+          className="
+            mt-8
+            px-4
+          "
+        >
 
           <div
             className="
@@ -681,7 +514,7 @@ export default function HomePage() {
 
             </button>
 
-            {/* DYNAMIC */}
+            {/* CATEGORY */}
 
             {categories.map(
               (category) => {
@@ -706,8 +539,6 @@ export default function HomePage() {
                       items-center
                     "
                   >
-
-                    {/* IMAGE */}
 
                     <div
                       className={`
@@ -746,8 +577,6 @@ export default function HomePage() {
 
                     </div>
 
-                    {/* NAME */}
-
                     <p
                       className="
                         mt-2
@@ -780,7 +609,12 @@ export default function HomePage() {
         PRODUCTS
         ====================================================== */}
 
-        <section className="mt-8 px-4">
+        <section
+          className="
+            mt-8
+            px-4
+          "
+        >
 
           {/* TOP */}
 
@@ -902,7 +736,7 @@ export default function HomePage() {
 
           </div>
 
-          {/* GRID */}
+          {/* PRODUCTS GRID */}
 
           <div
             className="
@@ -923,9 +757,10 @@ export default function HomePage() {
                     }
                   >
 
-                    {/* PRODUCT IMAGE */}
+                    {/* PRODUCT CLICKABLE */}
 
-                    <button
+                    <Link
+                      href={`/product/${product.id}`}
                       className="
                         relative
                         block
@@ -1018,7 +853,7 @@ export default function HomePage() {
 
                       </div>
 
-                    </button>
+                    </Link>
 
                     {/* PRODUCT INFO */}
 
@@ -1046,12 +881,13 @@ export default function HomePage() {
 
                       </p>
 
-                      {/* TITLE */}
+                      {/* PRODUCT NAME */}
 
-                      <button
+                      <Link
+                        href={`/product/${product.id}`}
                         className="
                           mt-2
-                          text-left
+                          block
                         "
                       >
 
@@ -1071,7 +907,7 @@ export default function HomePage() {
 
                         </h3>
 
-                      </button>
+                      </Link>
 
                       {/* PRICE */}
 
@@ -1136,7 +972,9 @@ export default function HomePage() {
 
         </section>
 
-        {/* OTHER SECTIONS */}
+        {/* ======================================================
+        OTHER SECTIONS
+        ====================================================== */}
 
         {sections.map(
           (section) => {
