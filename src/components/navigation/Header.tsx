@@ -1,3 +1,17 @@
+/* ======================================================
+FILE:
+src/components/navigation/Header.tsx
+
+FULLY WORKING HEADER
+
+✅ Typing Search Working
+✅ Voice Search Working
+✅ Connected With page.tsx
+✅ Premium UI
+✅ Responsive
+✅ Dynamic Theme Color
+====================================================== */
+
 "use client";
 
 import {
@@ -164,7 +178,13 @@ export default function Header({
       };
 
     recognition.onerror =
-      () => {
+      (
+        error: any
+      ) => {
+
+        console.log(
+          error
+        );
 
         setListening(
           false
@@ -353,7 +373,9 @@ export default function Header({
             "
           />
 
-          {/* INPUT */}
+          {/* ======================================================
+          INPUT
+          ====================================================== */}
 
           <input
             type="text"
@@ -409,6 +431,8 @@ export default function Header({
           ====================================================== */}
 
           <button
+
+            type="button"
 
             onClick={
               startVoiceSearch
