@@ -1,19 +1,6 @@
 /* ======================================================
 FILE:
 src/app/page.tsx
-
-UPDATED:
-
-✅ Product Image Clickable
-✅ Product Name Clickable
-✅ Search Bar Removed
-✅ Gradient Product Card
-✅ Wishlist Button
-✅ Category Image Back
-✅ Firebase Sync
-✅ Category Filter
-✅ Product Sort
-✅ Responsive UI
 ====================================================== */
 
 "use client";
@@ -114,6 +101,10 @@ interface Product {
   images: string[];
 
   visible: boolean;
+
+  rating?: number;
+
+  sold?: number;
 }
 
 /* ======================================================
@@ -160,8 +151,13 @@ export default function HomePage() {
     setSortBy
   ] = useState("latest");
 
+  const [
+    wishlist,
+    setWishlist
+  ] = useState<string[]>([]);
+
   /* ======================================================
-  GET HOMEPAGE SECTIONS
+  HOMEPAGE SECTIONS
   ====================================================== */
 
   useEffect(() => {
@@ -178,21 +174,17 @@ export default function HomePage() {
 
           const data =
             snapshot.docs.map(
-              (document) => {
+              (document) => ({
 
-                return {
+                id:
+                  document.id,
 
-                  id:
-                    document.id,
+                ...(document.data() as Omit<
+                  HomepageSection,
+                  "id"
+                >)
 
-                  ...(document.data() as Omit<
-                    HomepageSection,
-                    "id"
-                  >)
-
-                };
-
-              }
+              })
             );
 
           setSections(
@@ -209,7 +201,6 @@ export default function HomePage() {
           setHeaderSection(
             hero
           );
-
         }
       );
 
@@ -219,7 +210,7 @@ export default function HomePage() {
   }, []);
 
   /* ======================================================
-  GET CATEGORIES
+  CATEGORIES
   ====================================================== */
 
   useEffect(() => {
@@ -236,27 +227,22 @@ export default function HomePage() {
 
           const data =
             snapshot.docs.map(
-              (document) => {
+              (document) => ({
 
-                return {
+                id:
+                  document.id,
 
-                  id:
-                    document.id,
+                ...(document.data() as Omit<
+                  Category,
+                  "id"
+                >)
 
-                  ...(document.data() as Omit<
-                    Category,
-                    "id"
-                  >)
-
-                };
-
-              }
+              })
             );
 
           setCategories(
             data
           );
-
         }
       );
 
@@ -266,7 +252,7 @@ export default function HomePage() {
   }, []);
 
   /* ======================================================
-  GET PRODUCTS
+  PRODUCTS
   ====================================================== */
 
   useEffect(() => {
@@ -283,27 +269,22 @@ export default function HomePage() {
 
           const data =
             snapshot.docs.map(
-              (document) => {
+              (document) => ({
 
-                return {
+                id:
+                  document.id,
 
-                  id:
-                    document.id,
+                ...(document.data() as Omit<
+                  Product,
+                  "id"
+                >)
 
-                  ...(document.data() as Omit<
-                    Product,
-                    "id"
-                  >)
-
-                };
-
-              }
+              })
             );
 
           setProducts(
             data
           );
-
         }
       );
 
@@ -325,8 +306,6 @@ export default function HomePage() {
             product.visible
         );
 
-      /* CATEGORY */
-
       if (
         selectedCategory !==
         "All"
@@ -339,8 +318,6 @@ export default function HomePage() {
               selectedCategory
           );
       }
-
-      /* SORT */
 
       switch (
         sortBy
@@ -392,6 +369,34 @@ export default function HomePage() {
     ]);
 
   /* ======================================================
+  WISHLIST
+  ====================================================== */
+
+  function toggleWishlist(
+    id: string
+  ) {
+
+    if (
+      wishlist.includes(id)
+    ) {
+
+      setWishlist(
+        wishlist.filter(
+          (item) =>
+            item !== id
+        )
+      );
+
+    } else {
+
+      setWishlist([
+        ...wishlist,
+        id
+      ]);
+    }
+  }
+
+  /* ======================================================
   UI
   ====================================================== */
 
@@ -405,7 +410,7 @@ export default function HomePage() {
         className="
           min-h-screen
           overflow-x-hidden
-          bg-[#f5f5f5]
+          bg-[#f6f7fb]
           pb-32
           pt-[115px]
 
@@ -413,9 +418,7 @@ export default function HomePage() {
         "
       >
 
-        {/* ======================================================
-        HEADER
-        ====================================================== */}
+        {/* HEADER */}
 
         <Header
           headerBackgroundColor={
@@ -432,9 +435,7 @@ export default function HomePage() {
           }
         />
 
-        {/* ======================================================
-        HERO
-        ====================================================== */}
+        {/* HERO */}
 
         <HomepageSlider />
 
@@ -444,7 +445,7 @@ export default function HomePage() {
 
         <section
           className="
-            mt-8
+            mt-7
             px-4
           "
         >
@@ -483,7 +484,10 @@ export default function HomePage() {
                   items-center
                   justify-center
                   rounded-full
-                  border-4
+                  border-[4px]
+                  bg-white
+                  text-3xl
+                  shadow-lg
 
                   ${
                     selectedCategory ===
@@ -546,7 +550,9 @@ export default function HomePage() {
                         w-20
                         overflow-hidden
                         rounded-full
-                        border-4
+                        border-[4px]
+                        bg-white
+                        shadow-lg
 
                         ${
                           selectedCategory ===
@@ -606,12 +612,12 @@ export default function HomePage() {
         </section>
 
         {/* ======================================================
-        PRODUCTS
+        PRODUCTS SECTION
         ====================================================== */}
 
         <section
           className="
-            mt-8
+            mt-9
             px-4
           "
         >
@@ -620,7 +626,7 @@ export default function HomePage() {
 
           <div
             className="
-              mb-5
+              mb-6
               flex
               items-center
               justify-between
@@ -674,6 +680,7 @@ export default function HomePage() {
                   bg-white
                   px-3
                   py-2
+                  shadow-sm
                 "
               >
 
@@ -723,6 +730,7 @@ export default function HomePage() {
                   justify-center
                   rounded-2xl
                   bg-white
+                  shadow-sm
                 "
               >
 
@@ -736,7 +744,7 @@ export default function HomePage() {
 
           </div>
 
-          {/* PRODUCTS GRID */}
+          {/* PRODUCTS */}
 
           <div
             className="
@@ -749,6 +757,11 @@ export default function HomePage() {
             {filteredProducts.map(
               (product) => {
 
+                const isLiked =
+                  wishlist.includes(
+                    product.id
+                  );
+
                 return (
 
                   <div
@@ -757,39 +770,41 @@ export default function HomePage() {
                     }
                   >
 
-                    {/* PRODUCT CLICKABLE */}
+                    {/* PRODUCT CARD */}
 
                     <Link
                       href={`/product/${product.id}`}
                       className="
+                        group
                         relative
                         block
-                        w-full
                         overflow-hidden
-                        rounded-[34px]
+                        rounded-[36px]
                         bg-gradient-to-br
                         from-indigo-500
                         via-purple-500
                         to-pink-500
                         p-[2px]
                         shadow-xl
+                        shadow-purple-500/20
                       "
                     >
 
                       <div
                         className="
-                          overflow-hidden
-                          rounded-[32px]
+                          rounded-[34px]
                           bg-white
                           p-3
                         "
                       >
 
+                        {/* IMAGE */}
+
                         <div
                           className="
                             relative
                             overflow-hidden
-                            rounded-[28px]
+                            rounded-[30px]
                             bg-gray-100
                           "
                         >
@@ -797,6 +812,7 @@ export default function HomePage() {
                           <div
                             className="
                               aspect-square
+                              overflow-hidden
                             "
                           >
 
@@ -814,9 +830,10 @@ export default function HomePage() {
                                 h-full
                                 w-full
                                 object-cover
-                                transition-transform
-                                duration-300
-                                hover:scale-110
+                                transition-all
+                                duration-500
+
+                                group-hover:scale-110
                               "
                             />
 
@@ -825,6 +842,18 @@ export default function HomePage() {
                           {/* WISHLIST */}
 
                           <button
+
+                            onClick={(
+                              event
+                            ) => {
+
+                              event.preventDefault();
+
+                              toggleWishlist(
+                                product.id
+                              );
+                            }}
+
                             className="
                               absolute
                               right-3
@@ -836,15 +865,24 @@ export default function HomePage() {
                               justify-center
                               rounded-full
                               bg-white/90
-                              shadow-md
+                              shadow-lg
+                              backdrop-blur-md
                             "
                           >
 
                             <Heart
                               size={18}
-                              className="
-                                text-pink-500
-                              "
+                              className={`
+                                transition-all
+
+                                ${
+                                  isLiked
+
+                                    ? "fill-pink-500 text-pink-500"
+
+                                    : "text-gray-600"
+                                }
+                              `}
                             />
 
                           </button>
@@ -855,10 +893,11 @@ export default function HomePage() {
 
                     </Link>
 
-                    {/* PRODUCT INFO */}
+                    {/* PRODUCT DETAILS */}
 
                     <div
                       className="
+                        px-1
                         pt-4
                       "
                     >
@@ -867,10 +906,10 @@ export default function HomePage() {
 
                       <p
                         className="
-                          text-xs
+                          text-[11px]
                           font-black
                           uppercase
-                          tracking-wide
+                          tracking-[1px]
                           text-indigo-600
                         "
                       >
@@ -881,18 +920,15 @@ export default function HomePage() {
 
                       </p>
 
-                      {/* PRODUCT NAME */}
+                      {/* TITLE */}
 
                       <Link
                         href={`/product/${product.id}`}
-                        className="
-                          mt-2
-                          block
-                        "
                       >
 
                         <h3
                           className="
+                            mt-2
                             line-clamp-2
                             text-sm
                             font-black
@@ -956,6 +992,52 @@ export default function HomePage() {
                           </p>
 
                         )}
+
+                      </div>
+
+                      {/* EXTRA */}
+
+                      <div
+                        className="
+                          mt-2
+                          flex
+                          items-center
+                          justify-between
+                        "
+                      >
+
+                        <p
+                          className="
+                            text-xs
+                            font-semibold
+                            text-gray-500
+                          "
+                        >
+
+                          ⭐
+                          {
+                            product.rating ||
+                            "4.8"
+                          }
+
+                        </p>
+
+                        <p
+                          className="
+                            text-xs
+                            font-semibold
+                            text-gray-500
+                          "
+                        >
+
+                          {
+                            product.sold ||
+                            "1.2k"
+                          }
+                          +
+                          sold
+
+                        </p>
 
                       </div>
 
