@@ -2,17 +2,21 @@
 FILE:
 src/app/page.tsx
 
-NEW FEATURES ADDED:
+FEATURES:
 
-✅ Category Name Outside Card
-✅ Voice Search Mic
-✅ Real Voice Recognition
-✅ Category Theme Color From Admin Panel
-✅ Product Sync
-✅ Product Filter
+✅ Product Image Only Inside Card
+✅ Product Name Outside Card
+✅ Price Outside Card
+✅ Add To Cart Button
+✅ Buy Now Button
+✅ Wishlist Button
+✅ Full Gradient Product Border
+✅ Product Clickable
+✅ Firebase Product Sync
+✅ Category Filter
 ✅ Product Sort
-✅ Firebase Live Sync
-✅ Mobile Responsive
+✅ Voice Search
+✅ Responsive UI
 ====================================================== */
 
 "use client";
@@ -33,9 +37,11 @@ import {
 import {
   ArrowDownUp,
   ChevronRight,
+  Heart,
   Mic,
   MicOff,
   Search,
+  ShoppingCart,
   SlidersHorizontal
 } from "lucide-react";
 
@@ -539,13 +545,13 @@ export default function HomePage() {
         />
 
         {/* ======================================================
-        HERO
+        HERO SLIDER
         ====================================================== */}
 
         <HomepageSlider />
 
         {/* ======================================================
-        SEARCH + MIC
+        SEARCH BAR
         ====================================================== */}
 
         <section
@@ -652,77 +658,15 @@ export default function HomePage() {
           "
         >
 
-          {/* TOP */}
-
-          <div
-            className="
-              mb-5
-              flex
-              items-center
-              justify-between
-            "
-          >
-
-            <div>
-
-              <h2
-                className="
-                  text-2xl
-                  font-black
-                "
-              >
-
-                Categories
-
-              </h2>
-
-              <p
-                className="
-                  text-sm
-                  text-gray-500
-                "
-              >
-
-                Browse categories
-
-              </p>
-
-            </div>
-
-            <button
-              className="
-                flex
-                items-center
-                gap-1
-                text-sm
-                font-bold
-                text-indigo-600
-              "
-            >
-
-              View All
-
-              <ChevronRight
-                size={16}
-              />
-
-            </button>
-
-          </div>
-
-          {/* CATEGORY LIST */}
-
           <div
             className="
               flex
-              gap-5
+              gap-4
               overflow-x-auto
               pb-2
               scrollbar-hide
             "
           >
-
-            {/* ALL */}
 
             <button
               onClick={() =>
@@ -730,69 +674,31 @@ export default function HomePage() {
                   "All"
                 )
               }
-              className="
-                shrink-0
-              "
+              className={`
+                rounded-full
+                px-5
+                py-3
+                text-sm
+                font-black
+                whitespace-nowrap
+
+                ${
+                  selectedCategory ===
+                  "All"
+
+                    ? "bg-indigo-600 text-white"
+
+                    : "bg-white text-black"
+                }
+              `}
             >
 
-              <div
-                className={`
-                  flex
-                  h-20
-                  w-20
-                  items-center
-                  justify-center
-                  rounded-[28px]
-                  text-3xl
-                  shadow-sm
-
-                  ${
-                    selectedCategory ===
-                    "All"
-
-                      ? "bg-indigo-600"
-
-                      : "bg-white"
-                  }
-                `}
-              >
-
-                🛍️
-
-              </div>
-
-              <p
-                className={`
-                  mt-3
-                  text-center
-                  text-sm
-                  font-black
-
-                  ${
-                    selectedCategory ===
-                    "All"
-
-                      ? "text-indigo-600"
-
-                      : "text-black"
-                  }
-                `}
-              >
-
-                All
-
-              </p>
+              All
 
             </button>
 
-            {/* DYNAMIC */}
-
             {categories.map(
               (category) => {
-
-                const active =
-                  selectedCategory ===
-                  category.title;
 
                 return (
 
@@ -807,81 +713,39 @@ export default function HomePage() {
                       )
                     }
 
-                    className="
-                      shrink-0
-                    "
+                    style={{
+                      background:
+                        selectedCategory ===
+                        category.title
+
+                          ? category.themeColor ||
+                            "#4f46e5"
+
+                          : "#ffffff"
+                    }}
+
+                    className={`
+                      rounded-full
+                      px-5
+                      py-3
+                      text-sm
+                      font-black
+                      whitespace-nowrap
+
+                      ${
+                        selectedCategory ===
+                        category.title
+
+                          ? "text-white"
+
+                          : "text-black"
+                      }
+                    `}
                   >
 
-                    {/* CARD */}
-
-                    <div
-                      style={{
-                        background:
-                          active
-
-                            ? category.themeColor ||
-                              "#4f46e5"
-
-                            : "#ffffff"
-                      }}
-
-                      className="
-                        flex
-                        h-20
-                        w-20
-                        items-center
-                        justify-center
-                        overflow-hidden
-                        rounded-[28px]
-                        shadow-sm
-                        transition-all
-                      "
-                    >
-
-                      <img
-                        src={
-                          category.image ||
-
-                          "https://placehold.co/200x200"
-                        }
-
-                        alt=""
-
-                        className="
-                          h-full
-                          w-full
-                          object-cover
-                        "
-                      />
-
-                    </div>
-
-                    {/* NAME OUTSIDE */}
-
-                    <p
-                      className={`
-                        mt-3
-                        w-20
-                        truncate
-                        text-center
-                        text-sm
-                        font-black
-
-                        ${
-                          active
-
-                            ? "text-indigo-600"
-
-                            : "text-black"
-                        }
-                      `}
-                    >
-
-                      {
-                        category.title
-                      }
-
-                    </p>
+                    {
+                      category.title
+                    }
 
                   </button>
 
@@ -894,7 +758,7 @@ export default function HomePage() {
         </section>
 
         {/* ======================================================
-        PRODUCTS
+        PRODUCTS SECTION
         ====================================================== */}
 
         <section
@@ -921,27 +785,29 @@ export default function HomePage() {
                 className="
                   text-2xl
                   font-black
+                  text-black
                 "
               >
 
-                Products
+                Trending Products
 
               </h2>
 
               <p
                 className="
+                  mt-1
                   text-sm
                   text-gray-500
                 "
               >
 
-                Live synced products
+                Premium live products
 
               </p>
 
             </div>
 
-            {/* FILTER */}
+            {/* SORT */}
 
             <div
               className="
@@ -1028,7 +894,7 @@ export default function HomePage() {
             className="
               grid
               grid-cols-2
-              gap-4
+              gap-5
             "
           >
 
@@ -1043,53 +909,132 @@ export default function HomePage() {
                     }
 
                     className="
-                      overflow-hidden
-                      rounded-[30px]
-                      bg-white
-                      shadow-sm
+                      relative
                     "
                   >
 
-                    {/* IMAGE */}
+                    {/* ======================================================
+                    IMAGE CARD
+                    ====================================================== */}
 
                     <div
                       className="
-                        aspect-square
+                        relative
                         overflow-hidden
+                        rounded-[34px]
+                        bg-gradient-to-br
+                        from-indigo-500
+                        via-purple-500
+                        to-pink-500
+                        p-[2px]
+                        shadow-xl
+                        shadow-purple-500/20
                       "
                     >
 
-                      <img
-                        src={
-                          product
-                            .images?.[0] ||
-
-                          "https://placehold.co/500x500"
-                        }
-
-                        alt=""
-
+                      <div
                         className="
-                          h-full
-                          w-full
-                          object-cover
+                          rounded-[32px]
+                          bg-white
+                          p-3
                         "
-                      />
+                      >
+
+                        {/* PRODUCT IMAGE */}
+
+                        <button
+                          className="
+                            relative
+                            block
+                            w-full
+                            overflow-hidden
+                            rounded-[28px]
+                            bg-gray-100
+                          "
+                        >
+
+                          <div
+                            className="
+                              aspect-square
+                              overflow-hidden
+                            "
+                          >
+
+                            <img
+                              src={
+                                product
+                                  .images?.[0] ||
+
+                                "https://placehold.co/600x600"
+                              }
+
+                              alt=""
+
+                              className="
+                                h-full
+                                w-full
+                                object-cover
+                                transition-transform
+                                duration-300
+
+                                hover:scale-110
+                              "
+                            />
+
+                          </div>
+
+                          {/* WISHLIST */}
+
+                          <button
+                            className="
+                              absolute
+                              right-3
+                              top-3
+                              flex
+                              h-10
+                              w-10
+                              items-center
+                              justify-center
+                              rounded-full
+                              bg-white/90
+                              shadow-md
+                            "
+                          >
+
+                            <Heart
+                              size={18}
+                              className="
+                                text-pink-500
+                              "
+                            />
+
+                          </button>
+
+                        </button>
+
+                      </div>
 
                     </div>
 
-                    {/* CONTENT */}
+                    {/* ======================================================
+                    CONTENT OUTSIDE CARD
+                    ====================================================== */}
 
                     <div
                       className="
-                        p-4
+                        px-1
+                        pt-4
                       "
                     >
+
+                      {/* CATEGORY */}
 
                       <p
                         className="
                           text-xs
-                          font-bold
+                          font-black
+                          uppercase
+                          tracking-wide
                           text-indigo-600
                         "
                       >
@@ -1100,20 +1045,33 @@ export default function HomePage() {
 
                       </p>
 
-                      <h3
+                      {/* PRODUCT NAME */}
+
+                      <button
                         className="
                           mt-2
-                          line-clamp-2
-                          text-sm
-                          font-black
+                          block
+                          text-left
                         "
                       >
 
-                        {
-                          product.title
-                        }
+                        <h3
+                          className="
+                            line-clamp-2
+                            text-sm
+                            font-black
+                            leading-5
+                            text-black
+                          "
+                        >
 
-                      </h3>
+                          {
+                            product.title
+                          }
+
+                        </h3>
+
+                      </button>
 
                       {/* PRICE */}
 
@@ -1128,8 +1086,9 @@ export default function HomePage() {
 
                         <p
                           className="
-                            text-lg
+                            text-xl
                             font-black
+                            text-black
                           "
                         >
 
@@ -1147,6 +1106,7 @@ export default function HomePage() {
                           <p
                             className="
                               text-xs
+                              font-bold
                               text-gray-400
                               line-through
                             "
@@ -1163,30 +1123,70 @@ export default function HomePage() {
 
                       </div>
 
-                      {/* BUTTON */}
+                      {/* BUTTONS */}
 
-                      <button
+                      <div
                         className="
                           mt-4
-                          w-full
-                          rounded-2xl
-                          bg-indigo-600
-                          py-3
-                          text-sm
-                          font-black
-                          text-white
+                          flex
+                          gap-2
                         "
                       >
 
-                        Add To Cart
+                        {/* ADD TO CART */}
 
-                      </button>
+                        <button
+                          className="
+                            flex
+                            flex-1
+                            items-center
+                            justify-center
+                            gap-2
+                            rounded-2xl
+                            bg-black
+                            py-3
+                            text-xs
+                            font-black
+                            text-white
+                          "
+                        >
+
+                          <ShoppingCart
+                            size={14}
+                          />
+
+                          Cart
+
+                        </button>
+
+                        {/* BUY NOW */}
+
+                        <button
+                          className="
+                            flex-1
+                            rounded-2xl
+                            bg-gradient-to-r
+                            from-indigo-600
+                            to-purple-600
+                            py-3
+                            text-xs
+                            font-black
+                            text-white
+                          "
+                        >
+
+                          Buy Now
+
+                        </button>
+
+                      </div>
 
                     </div>
 
                   </div>
 
                 );
+
               }
             )}
 
@@ -1245,7 +1245,7 @@ export default function HomePage() {
         )}
 
         {/* ======================================================
-        FLOATING
+        FLOATING BUTTONS
         ====================================================== */}
 
         <WhatsAppButton />
@@ -1257,4 +1257,5 @@ export default function HomePage() {
     </>
 
   );
+
 }
