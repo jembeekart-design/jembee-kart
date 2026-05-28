@@ -1,18 +1,6 @@
 /* ======================================================
 FILE:
 src/app/page.tsx
-
-FIXED:
-
-✅ Search Working
-✅ Voice Search Working
-✅ Product Image Clickable
-✅ Product Name Clickable
-✅ Wishlist Working
-✅ Category Filter Working
-✅ Product Sort Working
-✅ Firebase Sync
-✅ Responsive UI
 ====================================================== */
 
 "use client";
@@ -167,8 +155,6 @@ export default function HomePage() {
     wishlist,
     setWishlist
   ] = useState<string[]>([]);
-
-  /* SEARCH */
 
   const [
     search,
@@ -325,7 +311,7 @@ export default function HomePage() {
             product.visible
         );
 
-      /* CATEGORY */
+      /* CATEGORY FILTER */
 
       if (
         selectedCategory !==
@@ -340,7 +326,7 @@ export default function HomePage() {
           );
       }
 
-      /* SEARCH */
+      /* SEARCH FILTER */
 
       if (
         search.trim()
@@ -349,8 +335,15 @@ export default function HomePage() {
         filtered =
           filtered.filter(
             (product) =>
+
               product.title
-                .toLowerCase()
+                ?.toLowerCase()
+                .includes(
+                  search.toLowerCase()
+                ) ||
+
+              product.category
+                ?.toLowerCase()
                 .includes(
                   search.toLowerCase()
                 )
@@ -367,11 +360,11 @@ export default function HomePage() {
 
           filtered.sort(
             (a, b) =>
-              (
+              Number(
                 a.discountPrice ||
                 a.price
               ) -
-              (
+              Number(
                 b.discountPrice ||
                 b.price
               )
@@ -383,11 +376,11 @@ export default function HomePage() {
 
           filtered.sort(
             (a, b) =>
-              (
+              Number(
                 b.discountPrice ||
                 b.price
               ) -
-              (
+              Number(
                 a.discountPrice ||
                 a.price
               )
@@ -459,7 +452,9 @@ export default function HomePage() {
         "
       >
 
-        {/* HEADER */}
+        {/* ======================================================
+        HEADER
+        ====================================================== */}
 
         <Header
           headerBackgroundColor={
@@ -479,205 +474,520 @@ export default function HomePage() {
           setSearch={setSearch}
         />
 
-        {/* HERO */}
-
-        <HomepageSlider />
-
         {/* ======================================================
-        CATEGORY SECTION
+        SEARCH PRODUCTS
+        HEADER KE NICHE
         ====================================================== */}
 
-        <section
-          className="
-            mt-7
-            px-4
-          "
-        >
+        {search.trim() ? (
 
-          <div
+          <section
             className="
-              flex
-              gap-4
-              overflow-x-auto
-              pb-2
-              scrollbar-hide
+              px-4
+              pt-6
             "
           >
 
-            {/* ALL */}
-
-            <button
-              onClick={() =>
-                setSelectedCategory(
-                  "All"
-                )
-              }
+            <div
               className="
+                mb-5
                 flex
-                shrink-0
-                flex-col
                 items-center
+                justify-between
+              "
+            >
+
+              <div>
+
+                <h2
+                  className="
+                    text-2xl
+                    font-black
+                    text-black
+                  "
+                >
+
+                  Search Results
+
+                </h2>
+
+                <p
+                  className="
+                    mt-1
+                    text-sm
+                    text-gray-500
+                  "
+                >
+
+                  {
+                    filteredProducts.length
+                  }
+                  {" "}
+                  products found
+
+                </p>
+
+              </div>
+
+            </div>
+
+            {/* PRODUCTS GRID */}
+
+            <div
+              className="
+                grid
+                grid-cols-2
+                gap-5
+              "
+            >
+
+              {filteredProducts.map(
+                (product) => {
+
+                  const isLiked =
+                    wishlist.includes(
+                      product.id
+                    );
+
+                  return (
+
+                    <div
+                      key={
+                        product.id
+                      }
+                    >
+
+                      <Link
+                        href={`/product/${product.id}`}
+                        className="
+                          group
+                          relative
+                          block
+                          overflow-hidden
+                          rounded-[36px]
+                          bg-gradient-to-br
+                          from-indigo-500
+                          via-purple-500
+                          to-pink-500
+                          p-[2px]
+                          shadow-xl
+                        "
+                      >
+
+                        <div
+                          className="
+                            rounded-[34px]
+                            bg-white
+                            p-3
+                          "
+                        >
+
+                          <div
+                            className="
+                              relative
+                              overflow-hidden
+                              rounded-[30px]
+                              bg-gray-100
+                            "
+                          >
+
+                            <div
+                              className="
+                                aspect-square
+                              "
+                            >
+
+                              <img
+                                src={
+                                  product.images?.[0] ||
+
+                                  "https://placehold.co/600x600"
+                                }
+
+                                alt=""
+
+                                className="
+                                  h-full
+                                  w-full
+                                  object-cover
+                                  transition-all
+                                  duration-500
+
+                                  group-hover:scale-110
+                                "
+                              />
+
+                            </div>
+
+                            {/* WISHLIST */}
+
+                            <button
+
+                              onClick={(
+                                event
+                              ) => {
+
+                                event.preventDefault();
+
+                                toggleWishlist(
+                                  product.id
+                                );
+                              }}
+
+                              className="
+                                absolute
+                                right-3
+                                top-3
+                                flex
+                                h-10
+                                w-10
+                                items-center
+                                justify-center
+                                rounded-full
+                                bg-white/90
+                                shadow-lg
+                              "
+                            >
+
+                              <Heart
+                                size={18}
+                                className={`
+                                  transition-all
+
+                                  ${
+                                    isLiked
+
+                                      ? "fill-pink-500 text-pink-500"
+
+                                      : "text-gray-600"
+                                  }
+                                `}
+                              />
+
+                            </button>
+
+                          </div>
+
+                        </div>
+
+                      </Link>
+
+                      {/* DETAILS */}
+
+                      <div
+                        className="
+                          px-1
+                          pt-4
+                        "
+                      >
+
+                        <p
+                          className="
+                            text-[11px]
+                            font-black
+                            uppercase
+                            tracking-[1px]
+                            text-indigo-600
+                          "
+                        >
+
+                          {
+                            product.category
+                          }
+
+                        </p>
+
+                        <Link
+                          href={`/product/${product.id}`}
+                        >
+
+                          <h3
+                            className="
+                              mt-2
+                              line-clamp-2
+                              text-sm
+                              font-black
+                              leading-5
+                              text-black
+                            "
+                          >
+
+                            {
+                              product.title
+                            }
+
+                          </h3>
+
+                        </Link>
+
+                        {/* PRICE */}
+
+                        <div
+                          className="
+                            mt-3
+                            flex
+                            items-center
+                            gap-2
+                          "
+                        >
+
+                          <p
+                            className="
+                              text-xl
+                              font-black
+                              text-black
+                            "
+                          >
+
+                            ₹
+                            {
+                              product.discountPrice ||
+                              product.price
+                            }
+
+                          </p>
+
+                          {product.discountPrice >
+                            0 && (
+
+                            <p
+                              className="
+                                text-xs
+                                font-bold
+                                text-gray-400
+                                line-through
+                              "
+                            >
+
+                              ₹
+                              {
+                                product.price
+                              }
+
+                            </p>
+
+                          )}
+
+                        </div>
+
+                      </div>
+
+                    </div>
+
+                  );
+
+                }
+              )}
+
+            </div>
+
+          </section>
+
+        ) : (
+
+          <>
+
+            {/* HERO */}
+
+            <HomepageSlider />
+
+            {/* CATEGORY SECTION */}
+
+            <section
+              className="
+                mt-7
+                px-4
               "
             >
 
               <div
-                className={`
-                  flex
-                  h-20
-                  w-20
-                  items-center
-                  justify-center
-                  rounded-full
-                  border-[4px]
-                  bg-white
-                  text-3xl
-                  shadow-lg
-
-                  ${
-                    selectedCategory ===
-                    "All"
-
-                      ? "border-indigo-600"
-
-                      : "border-white"
-                  }
-                `}
-              >
-
-                🛍️
-
-              </div>
-
-              <p
                 className="
-                  mt-2
-                  text-xs
-                  font-black
+                  flex
+                  gap-4
+                  overflow-x-auto
+                  pb-2
+                  scrollbar-hide
                 "
               >
 
-                All
+                {/* ALL */}
 
-              </p>
+                <button
+                  onClick={() =>
+                    setSelectedCategory(
+                      "All"
+                    )
+                  }
+                  className="
+                    flex
+                    shrink-0
+                    flex-col
+                    items-center
+                  "
+                >
 
-            </button>
-
-            {/* CATEGORY */}
-
-            {categories.map(
-              (category) => {
-
-                return (
-
-                  <button
-                    key={
-                      category.id
-                    }
-
-                    onClick={() =>
-                      setSelectedCategory(
-                        category.title
-                      )
-                    }
-
-                    className="
+                  <div
+                    className={`
                       flex
-                      shrink-0
-                      flex-col
+                      h-20
+                      w-20
                       items-center
+                      justify-center
+                      rounded-full
+                      border-[4px]
+                      bg-white
+                      text-3xl
+                      shadow-lg
+
+                      ${
+                        selectedCategory ===
+                        "All"
+
+                          ? "border-indigo-600"
+
+                          : "border-white"
+                      }
+                    `}
+                  >
+
+                    🛍️
+
+                  </div>
+
+                  <p
+                    className="
+                      mt-2
+                      text-xs
+                      font-black
                     "
                   >
 
-                    <div
-                      className={`
-                        h-20
-                        w-20
-                        overflow-hidden
-                        rounded-full
-                        border-[4px]
-                        bg-white
-                        shadow-lg
+                    All
 
-                        ${
-                          selectedCategory ===
-                          category.title
+                  </p>
 
-                            ? "border-indigo-600"
+                </button>
 
-                            : "border-white"
-                        }
-                      `}
-                    >
+                {/* CATEGORIES */}
 
-                      <img
-                        src={
-                          category.image ||
+                {categories.map(
+                  (category) => {
 
-                          "https://placehold.co/200x200"
+                    return (
+
+                      <button
+                        key={
+                          category.id
                         }
 
-                        alt=""
+                        onClick={() =>
+                          setSelectedCategory(
+                            category.title
+                          )
+                        }
 
                         className="
-                          h-full
-                          w-full
-                          object-cover
+                          flex
+                          shrink-0
+                          flex-col
+                          items-center
                         "
-                      />
+                      >
 
-                    </div>
+                        <div
+                          className={`
+                            h-20
+                            w-20
+                            overflow-hidden
+                            rounded-full
+                            border-[4px]
+                            bg-white
+                            shadow-lg
 
-                    <p
-                      className="
-                        mt-2
-                        w-20
-                        truncate
-                        text-center
-                        text-xs
-                        font-black
-                      "
-                    >
+                            ${
+                              selectedCategory ===
+                              category.title
 
-                      {
-                        category.title
-                      }
+                                ? "border-indigo-600"
 
-                    </p>
+                                : "border-white"
+                            }
+                          `}
+                        >
 
-                  </button>
+                          <img
+                            src={
+                              category.image ||
 
-                );
+                              "https://placehold.co/200x200"
+                            }
 
-              }
-            )}
+                            alt=""
 
-          </div>
+                            className="
+                              h-full
+                              w-full
+                              object-cover
+                            "
+                          />
 
-        </section>
+                        </div>
+
+                        <p
+                          className="
+                            mt-2
+                            w-20
+                            truncate
+                            text-center
+                            text-xs
+                            font-black
+                          "
+                        >
+
+                          {
+                            category.title
+                          }
+
+                        </p>
+
+                      </button>
+
+                    );
+
+                  }
+                )}
+
+              </div>
+
+            </section>
+
+          </>
+
+        )}
 
         {/* ======================================================
         PRODUCTS SECTION
         ====================================================== */}
 
-        <section
-          className="
-            mt-9
-            px-4
-          "
-        >
+        {!search.trim() && (
 
-          {/* TOP */}
-
-          <div
+          <section
             className="
-              mb-6
-              flex
-              items-center
-              justify-between
+              mt-9
+              px-4
             "
           >
 
-            <div>
+            {/* TOP */}
+
+            <div
+              className="
+                mb-6
+                flex
+                items-center
+                justify-between
+              "
+            >
 
               <h2
                 className="
@@ -691,345 +1001,340 @@ export default function HomePage() {
 
               </h2>
 
-            </div>
-
-            {/* SORT */}
-
-            <div
-              className="
-                flex
-                items-center
-                gap-2
-              "
-            >
+              {/* SORT */}
 
               <div
                 className="
                   flex
                   items-center
                   gap-2
-                  rounded-2xl
-                  bg-white
-                  px-3
-                  py-2
-                  shadow-sm
                 "
               >
 
-                <ArrowDownUp
-                  size={16}
-                />
-
-                <select
-                  value={sortBy}
-
-                  onChange={(e) =>
-                    setSortBy(
-                      e.target.value
-                    )
-                  }
-
+                <div
                   className="
-                    bg-transparent
-                    text-sm
-                    font-bold
-                    outline-none
+                    flex
+                    items-center
+                    gap-2
+                    rounded-2xl
+                    bg-white
+                    px-3
+                    py-2
+                    shadow-sm
                   "
                 >
 
-                  <option value="latest">
-                    Latest
-                  </option>
+                  <ArrowDownUp
+                    size={16}
+                  />
 
-                  <option value="low">
-                    Price Low
-                  </option>
+                  <select
+                    value={sortBy}
 
-                  <option value="high">
-                    Price High
-                  </option>
+                    onChange={(e) =>
+                      setSortBy(
+                        e.target.value
+                      )
+                    }
 
-                </select>
+                    className="
+                      bg-transparent
+                      text-sm
+                      font-bold
+                      outline-none
+                    "
+                  >
+
+                    <option value="latest">
+                      Latest
+                    </option>
+
+                    <option value="low">
+                      Price Low
+                    </option>
+
+                    <option value="high">
+                      Price High
+                    </option>
+
+                  </select>
+
+                </div>
+
+                <button
+                  className="
+                    flex
+                    h-11
+                    w-11
+                    items-center
+                    justify-center
+                    rounded-2xl
+                    bg-white
+                    shadow-sm
+                  "
+                >
+
+                  <SlidersHorizontal
+                    size={18}
+                  />
+
+                </button>
 
               </div>
 
-              <button
-                className="
-                  flex
-                  h-11
-                  w-11
-                  items-center
-                  justify-center
-                  rounded-2xl
-                  bg-white
-                  shadow-sm
-                "
-              >
-
-                <SlidersHorizontal
-                  size={18}
-                />
-
-              </button>
-
             </div>
 
-          </div>
+            {/* PRODUCT GRID */}
 
-          {/* PRODUCTS */}
+            <div
+              className="
+                grid
+                grid-cols-2
+                gap-5
+              "
+            >
 
-          <div
-            className="
-              grid
-              grid-cols-2
-              gap-5
-            "
-          >
+              {filteredProducts.map(
+                (product) => {
 
-            {filteredProducts.map(
-              (product) => {
-
-                const isLiked =
-                  wishlist.includes(
-                    product.id
-                  );
-
-                return (
-
-                  <div
-                    key={
+                  const isLiked =
+                    wishlist.includes(
                       product.id
-                    }
-                  >
+                    );
 
-                    {/* PRODUCT CARD */}
+                  return (
 
-                    <Link
-                      href={`/product/${product.id}`}
-                      className="
-                        group
-                        relative
-                        block
-                        overflow-hidden
-                        rounded-[36px]
-                        bg-gradient-to-br
-                        from-indigo-500
-                        via-purple-500
-                        to-pink-500
-                        p-[2px]
-                        shadow-xl
-                      "
+                    <div
+                      key={
+                        product.id
+                      }
                     >
 
-                      <div
+                      <Link
+                        href={`/product/${product.id}`}
                         className="
-                          rounded-[34px]
-                          bg-white
-                          p-3
+                          group
+                          relative
+                          block
+                          overflow-hidden
+                          rounded-[36px]
+                          bg-gradient-to-br
+                          from-indigo-500
+                          via-purple-500
+                          to-pink-500
+                          p-[2px]
+                          shadow-xl
                         "
                       >
 
                         <div
                           className="
-                            relative
-                            overflow-hidden
-                            rounded-[30px]
-                            bg-gray-100
+                            rounded-[34px]
+                            bg-white
+                            p-3
                           "
                         >
 
-                          <div
-                            className="
-                              aspect-square
-                            "
-                          >
-
-                            <img
-                              src={
-                                product
-                                  .images?.[0] ||
-
-                                "https://placehold.co/600x600"
-                              }
-
-                              alt=""
-
+                            <div
                               className="
-                                h-full
-                                w-full
-                                object-cover
-                                transition-all
-                                duration-500
-
-                                group-hover:scale-110
+                                relative
+                                overflow-hidden
+                                rounded-[30px]
+                                bg-gray-100
                               "
-                            />
+                            >
 
-                          </div>
+                              <div
+                                className="
+                                  aspect-square
+                                "
+                              >
 
-                          {/* WISHLIST */}
+                                <img
+                                  src={
+                                    product.images?.[0] ||
 
-                          <button
+                                    "https://placehold.co/600x600"
+                                  }
 
-                            onClick={(
-                              event
-                            ) => {
+                                  alt=""
 
-                              event.preventDefault();
+                                  className="
+                                    h-full
+                                    w-full
+                                    object-cover
+                                    transition-all
+                                    duration-500
 
-                              toggleWishlist(
-                                product.id
-                              );
-                            }}
+                                    group-hover:scale-110
+                                  "
+                                />
 
-                            className="
-                              absolute
-                              right-3
-                              top-3
-                              flex
-                              h-10
-                              w-10
-                              items-center
-                              justify-center
-                              rounded-full
-                              bg-white/90
-                              shadow-lg
-                            "
-                          >
+                              </div>
 
-                            <Heart
-                              size={18}
-                              className={`
-                                transition-all
+                              {/* WISHLIST */}
 
-                                ${
-                                  isLiked
+                              <button
 
-                                    ? "fill-pink-500 text-pink-500"
+                                onClick={(
+                                  event
+                                ) => {
 
-                                    : "text-gray-600"
-                                }
-                              `}
-                            />
+                                  event.preventDefault();
 
-                          </button>
+                                  toggleWishlist(
+                                    product.id
+                                  );
+                                }}
+
+                                className="
+                                  absolute
+                                  right-3
+                                  top-3
+                                  flex
+                                  h-10
+                                  w-10
+                                  items-center
+                                  justify-center
+                                  rounded-full
+                                  bg-white/90
+                                  shadow-lg
+                                "
+                              >
+
+                                <Heart
+                                  size={18}
+                                  className={`
+                                    transition-all
+
+                                    ${
+                                      isLiked
+
+                                        ? "fill-pink-500 text-pink-500"
+
+                                        : "text-gray-600"
+                                    }
+                                  `}
+                                />
+
+                              </button>
+
+                            </div>
 
                         </div>
 
-                      </div>
-
-                    </Link>
-
-                    {/* PRODUCT DETAILS */}
-
-                    <div
-                      className="
-                        px-1
-                        pt-4
-                      "
-                    >
-
-                      <p
-                        className="
-                          text-[11px]
-                          font-black
-                          uppercase
-                          tracking-[1px]
-                          text-indigo-600
-                        "
-                      >
-
-                        {
-                          product.category
-                        }
-
-                      </p>
-
-                      <Link
-                        href={`/product/${product.id}`}
-                      >
-
-                        <h3
-                          className="
-                            mt-2
-                            line-clamp-2
-                            text-sm
-                            font-black
-                            leading-5
-                            text-black
-                          "
-                        >
-
-                          {
-                            product.title
-                          }
-
-                        </h3>
-
                       </Link>
 
-                      {/* PRICE */}
+                      {/* DETAILS */}
 
                       <div
                         className="
-                          mt-3
-                          flex
-                          items-center
-                          gap-2
+                          px-1
+                          pt-4
                         "
                       >
 
                         <p
                           className="
-                            text-xl
+                            text-[11px]
                             font-black
-                            text-black
+                            uppercase
+                            tracking-[1px]
+                            text-indigo-600
                           "
                         >
 
-                          ₹
                           {
-                            product.discountPrice ||
-                            product.price
+                            product.category
                           }
 
                         </p>
 
-                        {product.discountPrice >
-                          0 && (
+                        <Link
+                          href={`/product/${product.id}`}
+                        >
+
+                          <h3
+                            className="
+                              mt-2
+                              line-clamp-2
+                              text-sm
+                              font-black
+                              leading-5
+                              text-black
+                            "
+                          >
+
+                            {
+                              product.title
+                            }
+
+                          </h3>
+
+                        </Link>
+
+                        <div
+                          className="
+                            mt-3
+                            flex
+                            items-center
+                            gap-2
+                          "
+                        >
 
                           <p
                             className="
-                              text-xs
-                              font-bold
-                              text-gray-400
-                              line-through
+                              text-xl
+                              font-black
+                              text-black
                             "
                           >
 
                             ₹
                             {
+                              product.discountPrice ||
                               product.price
                             }
 
                           </p>
 
-                        )}
+                          {product.discountPrice >
+                            0 && (
+
+                            <p
+                              className="
+                                text-xs
+                                font-bold
+                                text-gray-400
+                                line-through
+                              "
+                            >
+
+                              ₹
+                              {
+                                product.price
+                              }
+
+                            </p>
+
+                          )}
+
+                        </div>
 
                       </div>
 
                     </div>
 
-                  </div>
+                  );
 
-                );
+                }
+              )}
 
-              }
-            )}
+            </div>
 
-          </div>
+          </section>
 
-        </section>
+        )}
 
         {/* OTHER SECTIONS */}
 
