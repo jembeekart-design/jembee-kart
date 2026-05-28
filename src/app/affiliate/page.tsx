@@ -2,49 +2,174 @@
 FILE:
 src/app/affiliate/page.tsx
 
-UPDATED:
+FEATURES:
 
-✅ User MLM Dashboard
-✅ Referral Copy
-✅ Team Stats
-✅ Total Earnings
-✅ Withdrawal Card
-✅ Referral List
-✅ Modern Gradient UI
-✅ Mobile Responsive
-✅ Bottom Navbar
-✅ WhatsApp Button
+✅ MLM Dashboard
+✅ Grid Menu
+✅ Earnings Card
+✅ Referral Card
+✅ Quick Navigation
+✅ Modern UI
+✅ Responsive
+✅ Gradient Cards
+✅ All MLM Pages Linked
 ====================================================== */
 
 "use client";
 
 export const dynamic = "force-dynamic";
 
-import {
-  useMemo,
-  useState
-} from "react";
-
 import Link from "next/link";
 
 import {
-  ArrowLeft,
+  ArrowRight,
   BadgeIndianRupee,
-  CheckCircle2,
-  Copy,
+  Bell,
   Crown,
   Gift,
+  LayoutDashboard,
+  Medal,
+  Network,
   ShieldCheck,
+  Trophy,
   Users,
   Wallet,
-  Zap
+  WalletCards,
+  Youtube,
+  CircleDollarSign,
+  BriefcaseBusiness,
+  ClipboardCheck,
+  Package,
+  LifeBuoy
 } from "lucide-react";
 
-import BottomNavbar
-from "@/components/navigation/BottomNavbar";
+/* ======================================================
+MENU ITEMS
+====================================================== */
 
-import WhatsAppButton
-from "@/components/navigation/WhatsAppButton";
+const dashboardItems = [
+
+  {
+    title: "Dashboard",
+    icon: LayoutDashboard,
+    href: "/mlm/dashboard",
+    color:
+      "from-indigo-500 to-blue-500"
+  },
+
+  {
+    title: "Invite",
+    icon: Users,
+    href: "/mlm/invite",
+    color:
+      "from-violet-500 to-fuchsia-500"
+  },
+
+  {
+    title: "Network",
+    icon: Network,
+    href: "/mlm/network",
+    color:
+      "from-cyan-500 to-sky-500"
+  },
+
+  {
+    title: "Earnings",
+    icon: BadgeIndianRupee,
+    href: "/mlm/earnings",
+    color:
+      "from-green-500 to-emerald-500"
+  },
+
+  {
+    title: "Wallet",
+    icon: Wallet,
+    href: "/mlm/wallet",
+    color:
+      "from-orange-500 to-amber-500"
+  },
+
+  {
+    title: "Withdraw",
+    icon: WalletCards,
+    href: "/mlm/withdraw",
+    color:
+      "from-pink-500 to-rose-500"
+  },
+
+  {
+    title: "Leaderboard",
+    icon: Trophy,
+    href: "/mlm/leaderboard",
+    color:
+      "from-yellow-500 to-orange-500"
+  },
+
+  {
+    title: "Ranks",
+    icon: Medal,
+    href: "/mlm/ranks",
+    color:
+      "from-purple-500 to-indigo-500"
+  },
+
+  {
+    title: "Cashback",
+    icon: Gift,
+    href: "/mlm/cashback",
+    color:
+      "from-teal-500 to-green-500"
+  },
+
+  {
+    title: "Watch Earn",
+    icon: Youtube,
+    href: "/mlm/watch-earn",
+    color:
+      "from-red-500 to-pink-500"
+  },
+
+  {
+    title: "Team Business",
+    icon: BriefcaseBusiness,
+    href: "/mlm/team-business",
+    color:
+      "from-sky-500 to-indigo-500"
+  },
+
+  {
+    title: "Orders",
+    icon: Package,
+    href: "/mlm/orders",
+    color:
+      "from-lime-500 to-green-500"
+  },
+
+  {
+    title: "Notifications",
+    icon: Bell,
+    href: "/mlm/notifications",
+    color:
+      "from-fuchsia-500 to-pink-500"
+  },
+
+  {
+    title: "Permissions",
+    icon: ClipboardCheck,
+    href: "/mlm/permissions",
+    color:
+      "from-gray-600 to-gray-800"
+  },
+
+  {
+    title: "Support",
+    icon: LifeBuoy,
+    href: "/mlm/support",
+    color:
+      "from-blue-500 to-cyan-500"
+  }
+
+];
 
 /* ======================================================
 COMPONENT
@@ -52,110 +177,8 @@ COMPONENT
 
 export default function AffiliatePage() {
 
-  /* ======================================================
-  USER DATA
-  ====================================================== */
-
-  const userName =
+  const referralName =
     "MD Alim Ansari";
-
-  const referralCode =
-    "ALIM7061";
-
-  const referralLink =
-    `https://jembeekart.com/register?ref=${referralCode}`;
-
-  /* ======================================================
-  MLM DATA
-  ====================================================== */
-
-  const totalTeam =
-    128;
-
-  const activeMembers =
-    92;
-
-  const totalIncome =
-    25840;
-
-  const todayIncome =
-    1280;
-
-  const withdrawable =
-    12450;
-
-  /* ======================================================
-  TEAM LIST
-  ====================================================== */
-
-  const teamMembers = [
-
-    {
-      name:
-        "Rahul Kumar",
-
-      joined:
-        "2 days ago",
-
-      income:
-        520
-    },
-
-    {
-      name:
-        "Aman Raj",
-
-      joined:
-        "5 days ago",
-
-      income:
-        840
-    },
-
-    {
-      name:
-        "Shivam",
-
-      joined:
-        "1 week ago",
-
-      income:
-        1250
-    }
-
-  ];
-
-  /* ======================================================
-  COPY LINK
-  ====================================================== */
-
-  async function copyReferral() {
-
-    try {
-
-      await navigator.clipboard.writeText(
-        `${userName}
-
-Referral Code:
-${referralCode}
-
-Referral Link:
-${referralLink}`
-      );
-
-      alert(
-        "Referral Details Copied"
-      );
-
-    } catch (error) {
-
-      console.error(error);
-    }
-  }
-
-  /* ======================================================
-  UI
-  ====================================================== */
 
   return (
 
@@ -168,293 +191,203 @@ ${referralLink}`
     >
 
       {/* ======================================================
-      HEADER
-      ====================================================== */}
-
-      <div
-        className="
-          sticky
-          top-0
-          z-50
-
-          bg-white/90
-          px-4
-          py-3
-
-          backdrop-blur-md
-          shadow-sm
-        "
-      >
-
-        <div
-          className="
-            flex
-            items-center
-            gap-3
-          "
-        >
-
-          <Link
-            href="/account"
-            className="
-              flex
-              h-10
-              w-10
-              items-center
-              justify-center
-
-              rounded-full
-
-              bg-violet-100
-              text-violet-700
-            "
-          >
-
-            <ArrowLeft
-              size={20}
-            />
-
-          </Link>
-
-          <div>
-
-            <h1
-              className="
-                text-[24px]
-                font-black
-                text-violet-700
-              "
-            >
-
-              Affiliate Dashboard
-
-            </h1>
-
-            <p
-              className="
-                text-[11px]
-                text-gray-500
-              "
-            >
-
-              Build Team & Earn Money
-
-            </p>
-
-          </div>
-
-        </div>
-
-      </div>
-
-      {/* ======================================================
-      HERO CARD
+      HERO
       ====================================================== */}
 
       <section
         className="
+          relative
+          overflow-hidden
+
+          bg-gradient-to-br
+          from-violet-700
+          via-fuchsia-600
+          to-orange-500
+
           px-4
-          pt-5
+          pb-10
+          pt-12
+
+          text-white
         "
       >
 
         <div
           className="
-            overflow-hidden
+            absolute
+            right-[-40px]
+            top-[-40px]
 
-            rounded-[35px]
+            h-40
+            w-40
 
-            bg-gradient-to-br
-            from-violet-700
-            via-fuchsia-600
-            to-orange-500
-
-            p-5
-
-            text-white
-
-            shadow-2xl
+            rounded-full
+            bg-white/10
           "
-        >
+        />
 
-          {/* TOP */}
+        <div
+          className="
+            absolute
+            bottom-[-60px]
+            left-[-40px]
+
+            h-44
+            w-44
+
+            rounded-full
+            bg-white/10
+          "
+        />
+
+        <div className="relative z-10">
 
           <div
             className="
               flex
               items-center
-              justify-between
+              gap-3
             "
           >
-
-            <div>
-
-              <p
-                className="
-                  text-[12px]
-                  text-white/80
-                "
-              >
-
-                Total Earnings
-
-              </p>
-
-              <h2
-                className="
-                  mt-2
-                  text-[38px]
-                  font-black
-                "
-              >
-
-                ₹
-                {totalIncome}
-
-              </h2>
-
-            </div>
 
             <div
               className="
                 flex
-                h-20
-                w-20
+                h-16
+                w-16
                 items-center
                 justify-center
 
                 rounded-full
-
                 bg-white/20
               "
             >
 
-              <Crown
-                size={38}
-              />
+              <Crown size={34} />
+
+            </div>
+
+            <div>
+
+              <h1
+                className="
+                  text-[30px]
+                  font-black
+                "
+              >
+
+                MLM Dashboard
+
+              </h1>
+
+              <p
+                className="
+                  text-sm
+                  text-white/80
+                "
+              >
+
+                Grow Team & Earn Daily
+
+              </p>
 
             </div>
 
           </div>
 
-          {/* TODAY */}
+          {/* USER */}
 
           <div
             className="
-              mt-5
-              flex
-              items-center
-              gap-2
-            "
-          >
-
-            <Zap
-              size={16}
-            />
-
-            <p
-              className="
-                text-sm
-                font-bold
-              "
-            >
-
-              Today Income:
-              {" "}
-              ₹{todayIncome}
-
-            </p>
-
-          </div>
-
-          {/* REFERRAL */}
-
-          <div
-            className="
-              mt-5
-
-              rounded-3xl
-
+              mt-8
+              rounded-[28px]
               bg-white/10
-
-              p-4
-
+              p-5
               backdrop-blur-md
             "
           >
 
             <p
               className="
-                text-[11px]
-                text-white/80
+                text-xs
+                text-white/70
               "
             >
 
-              Referral Code
+              Referral Name
 
             </p>
 
-            <h3
+            <h2
               className="
                 mt-1
-                text-[22px]
+                text-[28px]
                 font-black
               "
             >
 
-              {referralCode}
+              {referralName}
 
-            </h3>
+            </h2>
 
             <div
               className="
-                mt-4
-
-                rounded-2xl
-
-                bg-white/10
-
-                p-3
-
-                text-[11px]
-                break-all
+                mt-5
+                grid
+                grid-cols-3
+                gap-3
               "
             >
 
-              {referralLink}
+              <div>
+
+                <p className="text-xs text-white/70">
+
+                  Team
+
+                </p>
+
+                <h3 className="text-xl font-black">
+
+                  1,284
+
+                </h3>
+
+              </div>
+
+              <div>
+
+                <p className="text-xs text-white/70">
+
+                  Income
+
+                </p>
+
+                <h3 className="text-xl font-black">
+
+                  ₹58k
+
+                </h3>
+
+              </div>
+
+              <div>
+
+                <p className="text-xs text-white/70">
+
+                  Rank
+
+                </p>
+
+                <h3 className="text-xl font-black">
+
+                  Gold
+
+                </h3>
+
+              </div>
 
             </div>
-
-            <button
-              onClick={copyReferral}
-              className="
-                mt-4
-
-                flex
-                w-full
-                items-center
-                justify-center
-                gap-2
-
-                rounded-2xl
-
-                bg-white
-
-                py-3
-
-                text-sm
-                font-black
-                text-violet-700
-              "
-            >
-
-              <Copy
-                size={18}
-              />
-
-              Copy Referral Link
-
-            </button>
 
           </div>
 
@@ -463,12 +396,12 @@ ${referralLink}`
       </section>
 
       {/* ======================================================
-      STATS
+      QUICK STATS
       ====================================================== */}
 
       <section
         className="
-          mt-6
+          -mt-8
           px-4
         "
       >
@@ -481,14 +414,67 @@ ${referralLink}`
           "
         >
 
-          {/* TEAM */}
+          <div
+            className="
+              rounded-[28px]
+              bg-white
+              p-5
+              shadow-xl
+            "
+          >
+
+            <div
+              className="
+                flex
+                h-14
+                w-14
+                items-center
+                justify-center
+
+                rounded-2xl
+
+                bg-green-100
+                text-green-600
+              "
+            >
+
+              <CircleDollarSign size={30} />
+
+            </div>
+
+            <p
+              className="
+                mt-4
+                text-sm
+                font-semibold
+                text-gray-500
+              "
+            >
+
+              Today Income
+
+            </p>
+
+            <h2
+              className="
+                mt-1
+                text-[28px]
+                font-black
+              "
+            >
+
+              ₹2,850
+
+            </h2>
+
+          </div>
 
           <div
             className="
               rounded-[28px]
               bg-white
               p-5
-              shadow-sm
+              shadow-xl
             "
           >
 
@@ -503,97 +489,38 @@ ${referralLink}`
                 rounded-2xl
 
                 bg-violet-100
-                text-violet-700
+                text-violet-600
               "
             >
 
-              <Users
-                size={28}
-              />
+              <ShieldCheck size={28} />
 
             </div>
 
-            <h3
+            <p
               className="
                 mt-4
+                text-sm
+                font-semibold
+                text-gray-500
+              "
+            >
+
+              Total Withdraw
+
+            </p>
+
+            <h2
+              className="
+                mt-1
                 text-[28px]
                 font-black
               "
             >
 
-              {totalTeam}
+              ₹84k
 
-            </h3>
-
-            <p
-              className="
-                mt-1
-                text-sm
-                text-gray-500
-              "
-            >
-
-              Total Team
-
-            </p>
-
-          </div>
-
-          {/* ACTIVE */}
-
-          <div
-            className="
-              rounded-[28px]
-              bg-white
-              p-5
-              shadow-sm
-            "
-          >
-
-            <div
-              className="
-                flex
-                h-14
-                w-14
-                items-center
-                justify-center
-
-                rounded-2xl
-
-                bg-green-100
-                text-green-700
-              "
-            >
-
-              <CheckCircle2
-                size={28}
-              />
-
-            </div>
-
-            <h3
-              className="
-                mt-4
-                text-[28px]
-                font-black
-              "
-            >
-
-              {activeMembers}
-
-            </h3>
-
-            <p
-              className="
-                mt-1
-                text-sm
-                text-gray-500
-              "
-            >
-
-              Active Members
-
-            </p>
+            </h2>
 
           </div>
 
@@ -602,538 +529,154 @@ ${referralLink}`
       </section>
 
       {/* ======================================================
-      WITHDRAW CARD
+      GRID MENU
       ====================================================== */}
 
       <section
         className="
-          mt-6
+          mt-8
           px-4
         "
       >
 
         <div
           className="
-            rounded-[35px]
-
-            bg-white
-
-            p-6
-
-            shadow-sm
-          "
-        >
-
-          <div
-            className="
-              flex
-              items-center
-              justify-between
-            "
-          >
-
-            <div>
-
-              <p
-                className="
-                  text-sm
-                  text-gray-500
-                "
-              >
-
-                Withdrawable Balance
-
-              </p>
-
-              <h2
-                className="
-                  mt-2
-                  text-[36px]
-                  font-black
-                "
-              >
-
-                ₹
-                {withdrawable}
-
-              </h2>
-
-            </div>
-
-            <div
-              className="
-                flex
-                h-16
-                w-16
-                items-center
-                justify-center
-
-                rounded-full
-
-                bg-green-100
-                text-green-700
-              "
-            >
-
-              <Wallet
-                size={30}
-              />
-
-            </div>
-
-          </div>
-
-          <button
-            className="
-              mt-6
-
-              flex
-              w-full
-              items-center
-              justify-center
-              gap-2
-
-              rounded-[20px]
-
-              bg-gradient-to-r
-              from-violet-600
-              to-fuchsia-500
-
-              py-4
-
-              text-sm
-              font-black
-              text-white
-            "
-          >
-
-            <BadgeIndianRupee
-              size={18}
-            />
-
-            Withdraw Income
-
-          </button>
-
-        </div>
-
-      </section>
-
-      {/* ======================================================
-      HOW IT WORKS
-      ====================================================== */}
-
-      <section
-        className="
-          mt-7
-          px-4
-        "
-      >
-
-        <h2
-          className="
-            text-[24px]
-            font-black
-          "
-        >
-
-          How It Works?
-
-        </h2>
-
-        <div
-          className="
-            mt-4
-            space-y-3
-          "
-        >
-
-          {/* STEP */}
-
-          <div
-            className="
-              rounded-2xl
-              bg-white
-              p-4
-              shadow-sm
-            "
-          >
-
-            <div
-              className="
-                flex
-                items-center
-                gap-3
-              "
-            >
-
-              <div
-                className="
-                  flex
-                  h-12
-                  w-12
-                  items-center
-                  justify-center
-
-                  rounded-full
-
-                  bg-violet-100
-                  text-violet-700
-                "
-              >
-
-                <Users
-                  size={22}
-                />
-
-              </div>
-
-              <div>
-
-                <h3
-                  className="
-                    text-[16px]
-                    font-black
-                  "
-                >
-
-                  Invite People
-
-                </h3>
-
-                <p
-                  className="
-                    text-[12px]
-                    text-gray-600
-                  "
-                >
-
-                  Share your referral link.
-
-                </p>
-
-              </div>
-
-            </div>
-
-          </div>
-
-          <div
-            className="
-              rounded-2xl
-              bg-white
-              p-4
-              shadow-sm
-            "
-          >
-
-            <div
-              className="
-                flex
-                items-center
-                gap-3
-              "
-            >
-
-              <div
-                className="
-                  flex
-                  h-12
-                  w-12
-                  items-center
-                  justify-center
-
-                  rounded-full
-
-                  bg-orange-100
-                  text-orange-700
-                "
-              >
-
-                <Gift
-                  size={22}
-                />
-
-              </div>
-
-              <div>
-
-                <h3
-                  className="
-                    text-[16px]
-                    font-black
-                  "
-                >
-
-                  Build Team
-
-                </h3>
-
-                <p
-                  className="
-                    text-[12px]
-                    text-gray-600
-                  "
-                >
-
-                  Grow your referral network.
-
-                </p>
-
-              </div>
-
-            </div>
-
-          </div>
-
-          <div
-            className="
-              rounded-2xl
-              bg-white
-              p-4
-              shadow-sm
-            "
-          >
-
-            <div
-              className="
-                flex
-                items-center
-                gap-3
-              "
-            >
-
-              <div
-                className="
-                  flex
-                  h-12
-                  w-12
-                  items-center
-                  justify-center
-
-                  rounded-full
-
-                  bg-green-100
-                  text-green-700
-                "
-              >
-
-                <BadgeIndianRupee
-                  size={22}
-                />
-
-              </div>
-
-              <div>
-
-                <h3
-                  className="
-                    text-[16px]
-                    font-black
-                  "
-                >
-
-                  Earn Commission
-
-                </h3>
-
-                <p
-                  className="
-                    text-[12px]
-                    text-gray-600
-                  "
-                >
-
-                  Earn from orders & referrals.
-
-                </p>
-
-              </div>
-
-            </div>
-
-          </div>
-
-        </div>
-
-      </section>
-
-      {/* ======================================================
-      TEAM MEMBERS
-      ====================================================== */}
-
-      <section
-        className="
-          mt-7
-          px-4
-        "
-      >
-
-        <div
-          className="
+            mb-5
             flex
             items-center
             justify-between
           "
         >
 
-          <h2
-            className="
-              text-[24px]
-              font-black
-            "
-          >
+          <div>
 
-            My Team
+            <h2
+              className="
+                text-[28px]
+                font-black
+              "
+            >
 
-          </h2>
+              MLM Features
 
-          <button
-            className="
-              text-sm
-              font-black
-              text-violet-700
-            "
-          >
+            </h2>
 
-            View All
+            <p
+              className="
+                text-sm
+                text-gray-500
+              "
+            >
 
-          </button>
+              Manage your business
+
+            </p>
+
+          </div>
 
         </div>
 
         <div
           className="
-            mt-4
-            space-y-3
+            grid
+            grid-cols-2
+            gap-4
           "
         >
 
-          {teamMembers.map(
-            (member) => (
+          {dashboardItems.map(
+            (item) => {
 
-              <div
-                key={member.name}
-                className="
-                  flex
-                  items-center
-                  justify-between
+              const Icon =
+                item.icon;
 
-                  rounded-[24px]
+              return (
 
-                  bg-white
+                <Link
+                  key={item.title}
+                  href={item.href}
 
-                  p-4
-
-                  shadow-sm
-                "
-              >
-
-                <div
                   className="
-                    flex
-                    items-center
-                    gap-3
+                    group
+                    overflow-hidden
+                    rounded-[30px]
+                    bg-white
+                    p-4
+                    shadow-sm
+
+                    transition-all
+                    duration-300
+
+                    active:scale-[0.98]
                   "
                 >
 
                   <div
-                    className="
+                    className={`
                       flex
-                      h-14
-                      w-14
+                      h-16
+                      w-16
                       items-center
                       justify-center
 
-                      rounded-full
+                      rounded-2xl
 
-                      bg-gradient-to-r
-                      from-violet-600
-                      to-fuchsia-500
+                      bg-gradient-to-br
+                      ${item.color}
 
-                      text-lg
-                      font-black
                       text-white
-                    "
+                      shadow-lg
+                    `}
                   >
 
-                    {member.name.charAt(0)}
+                    <Icon size={30} />
 
                   </div>
-
-                  <div>
-
-                    <h3
-                      className="
-                        text-[15px]
-                        font-black
-                      "
-                    >
-
-                      {member.name}
-
-                    </h3>
-
-                    <p
-                      className="
-                        text-[11px]
-                        text-gray-500
-                      "
-                    >
-
-                      Joined {member.joined}
-
-                    </p>
-
-                  </div>
-
-                </div>
-
-                <div
-                  className="
-                    text-right
-                  "
-                >
-
-                  <p
-                    className="
-                      text-[11px]
-                      text-gray-500
-                    "
-                  >
-
-                    Income
-
-                  </p>
 
                   <h3
                     className="
-                      text-[18px]
+                      mt-4
+                      text-[16px]
                       font-black
-                      text-green-600
+                      text-black
                     "
                   >
 
-                    ₹{member.income}
+                    {item.title}
 
                   </h3>
 
-                </div>
+                  <div
+                    className="
+                      mt-3
+                      flex
+                      items-center
+                      gap-1
 
-              </div>
+                      text-xs
+                      font-bold
+                      text-violet-600
+                    "
+                  >
 
-            )
+                    Open
+
+                    <ArrowRight
+                      size={14}
+                    />
+
+                  </div>
+
+                </Link>
+
+              );
+
+            }
           )}
 
         </div>
 
       </section>
-
-      {/* FLOATING */}
-
-      <WhatsAppButton />
-
-      <BottomNavbar />
 
     </main>
 
