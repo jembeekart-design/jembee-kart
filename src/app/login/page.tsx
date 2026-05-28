@@ -1,26 +1,117 @@
-const firebaseConfig = {
+"use client";
 
-  apiKey:
-    process.env
-      .NEXT_PUBLIC_FIREBASE_API_KEY,
+import {
+  GoogleAuthProvider,
+  signInWithPopup
+} from "firebase/auth";
 
-  authDomain:
-    process.env
-      .NEXT_PUBLIC_FIREBASE_AUTH_DOMAIN,
+import { auth } from "@/lib/firebase";
 
-  projectId:
-    process.env
-      .NEXT_PUBLIC_FIREBASE_PROJECT_ID,
+export default function LoginPage() {
 
-  storageBucket:
-    process.env
-      .NEXT_PUBLIC_FIREBASE_STORAGE_BUCKET,
+  async function login() {
 
-  messagingSenderId:
-    process.env
-      .NEXT_PUBLIC_FIREBASE_MESSAGING_SENDER_ID,
+    try {
 
-  appId:
-    process.env
-      .NEXT_PUBLIC_FIREBASE_APP_ID
-};
+      const provider =
+        new GoogleAuthProvider();
+
+      await signInWithPopup(
+        auth,
+        provider
+      );
+
+      alert(
+        "Login Success"
+      );
+
+    } catch (error) {
+
+      console.error(error);
+
+      alert(
+        "Login Failed"
+      );
+    }
+  }
+
+  return (
+
+    <main
+      className="
+        flex
+        min-h-screen
+        items-center
+        justify-center
+        bg-[#0f172a]
+        px-4
+      "
+    >
+
+      <div
+        className="
+          w-full
+          max-w-sm
+          rounded-[32px]
+          bg-white
+          p-6
+          shadow-2xl
+        "
+      >
+
+        <h1
+          className="
+            text-center
+            text-3xl
+            font-black
+            text-violet-700
+          "
+        >
+
+          JembeeKart
+
+        </h1>
+
+        <p
+          className="
+            mt-2
+            text-center
+            text-sm
+            text-gray-500
+          "
+        >
+
+          Login to continue
+
+        </p>
+
+        <button
+          onClick={login}
+          className="
+            mt-8
+            flex
+            w-full
+            items-center
+            justify-center
+            rounded-2xl
+            bg-gradient-to-r
+            from-violet-600
+            to-fuchsia-500
+            py-4
+            text-sm
+            font-black
+            text-white
+          "
+        >
+
+          Continue With Google
+
+        </button>
+
+      </div>
+
+    </main>
+
+  );
+
+}
