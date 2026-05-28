@@ -1,18 +1,6 @@
 /* ======================================================
 FILE:
 src/app/affiliate/page.tsx
-
-FEATURES:
-
-✅ MLM Dashboard
-✅ Grid Menu
-✅ Earnings Card
-✅ Referral Card
-✅ Quick Navigation
-✅ Modern UI
-✅ Responsive
-✅ Gradient Cards
-✅ All MLM Pages Linked
 ====================================================== */
 
 "use client";
@@ -25,22 +13,22 @@ import {
   ArrowRight,
   BadgeIndianRupee,
   Bell,
+  BriefcaseBusiness,
+  CircleDollarSign,
+  ClipboardCheck,
   Crown,
   Gift,
   LayoutDashboard,
+  LifeBuoy,
   Medal,
   Network,
+  Package,
+  PlayCircle,
   ShieldCheck,
   Trophy,
   Users,
   Wallet,
-  WalletCards,
-  Youtube,
-  CircleDollarSign,
-  BriefcaseBusiness,
-  ClipboardCheck,
-  Package,
-  LifeBuoy
+  WalletCards
 } from "lucide-react";
 
 /* ======================================================
@@ -123,7 +111,7 @@ const dashboardItems = [
 
   {
     title: "Watch Earn",
-    icon: Youtube,
+    icon: PlayCircle,
     href: "/mlm/watch-earn",
     color:
       "from-red-500 to-pink-500"
@@ -191,7 +179,7 @@ export default function AffiliatePage() {
     >
 
       {/* ======================================================
-      HERO
+      HERO SECTION
       ====================================================== */}
 
       <section
@@ -211,6 +199,8 @@ export default function AffiliatePage() {
           text-white
         "
       >
+
+        {/* BG CIRCLES */}
 
         <div
           className="
@@ -241,6 +231,8 @@ export default function AffiliatePage() {
         />
 
         <div className="relative z-10">
+
+          {/* TOP */}
 
           <div
             className="
@@ -287,7 +279,7 @@ export default function AffiliatePage() {
                 "
               >
 
-                Grow Team & Earn Daily
+                Build Team & Earn Daily
 
               </p>
 
@@ -295,7 +287,7 @@ export default function AffiliatePage() {
 
           </div>
 
-          {/* USER */}
+          {/* USER CARD */}
 
           <div
             className="
@@ -329,6 +321,8 @@ export default function AffiliatePage() {
               {referralName}
 
             </h2>
+
+            {/* STATS */}
 
             <div
               className="
@@ -414,6 +408,8 @@ export default function AffiliatePage() {
           "
         >
 
+          {/* TODAY INCOME */}
+
           <div
             className="
               rounded-[28px]
@@ -468,6 +464,8 @@ export default function AffiliatePage() {
             </h2>
 
           </div>
+
+          {/* TOTAL WITHDRAW */}
 
           <div
             className="
@@ -542,39 +540,34 @@ export default function AffiliatePage() {
         <div
           className="
             mb-5
-            flex
-            items-center
-            justify-between
           "
         >
 
-          <div>
+          <h2
+            className="
+              text-[28px]
+              font-black
+            "
+          >
 
-            <h2
-              className="
-                text-[28px]
-                font-black
-              "
-            >
+            MLM Features
 
-              MLM Features
+          </h2>
 
-            </h2>
+          <p
+            className="
+              text-sm
+              text-gray-500
+            "
+          >
 
-            <p
-              className="
-                text-sm
-                text-gray-500
-              "
-            >
+            Manage your business
 
-              Manage your business
-
-            </p>
-
-          </div>
+          </p>
 
         </div>
+
+        {/* GRID */}
 
         <div
           className="
@@ -594,14 +587,20 @@ export default function AffiliatePage() {
 
                 <Link
                   key={item.title}
+
                   href={item.href}
 
                   className="
                     group
+
                     overflow-hidden
+
                     rounded-[30px]
+
                     bg-white
+
                     p-4
+
                     shadow-sm
 
                     transition-all
@@ -610,6 +609,8 @@ export default function AffiliatePage() {
                     active:scale-[0.98]
                   "
                 >
+
+                  {/* ICON */}
 
                   <div
                     className={`
@@ -625,6 +626,7 @@ export default function AffiliatePage() {
                       ${item.color}
 
                       text-white
+
                       shadow-lg
                     `}
                   >
@@ -632,6 +634,8 @@ export default function AffiliatePage() {
                     <Icon size={30} />
 
                   </div>
+
+                  {/* TITLE */}
 
                   <h3
                     className="
@@ -645,6 +649,8 @@ export default function AffiliatePage() {
                     {item.title}
 
                   </h3>
+
+                  {/* BUTTON */}
 
                   <div
                     className="
