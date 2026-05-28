@@ -1,14 +1,17 @@
 /* ======================================================
 FILE:
 src/app/page.tsx
-FULL HOMEPAGE WITH:
 
-✅ Category Clickable
+NEW FEATURES ADDED:
+
+✅ Category Name Outside Card
+✅ Voice Search Mic
+✅ Real Voice Recognition
+✅ Category Theme Color From Admin Panel
 ✅ Product Sync
 ✅ Product Filter
 ✅ Product Sort
 ✅ Firebase Live Sync
-✅ Dynamic Homepage Sections
 ✅ Mobile Responsive
 ====================================================== */
 
@@ -30,6 +33,9 @@ import {
 import {
   ArrowDownUp,
   ChevronRight,
+  Mic,
+  MicOff,
+  Search,
   SlidersHorizontal
 } from "lucide-react";
 
@@ -87,6 +93,8 @@ interface Category {
   title: string;
 
   image?: string;
+
+  themeColor?: string;
 }
 
 interface Product {
@@ -151,6 +159,84 @@ export default function HomePage() {
     sortBy,
     setSortBy
   ] = useState("latest");
+
+  const [
+    search,
+    setSearch
+  ] = useState("");
+
+  const [
+    listening,
+    setListening
+  ] = useState(false);
+
+  /* ======================================================
+  VOICE SEARCH
+  ====================================================== */
+
+  function startVoiceSearch() {
+
+    if (
+      typeof window ===
+      "undefined"
+    ) {
+      return;
+    }
+
+    const SpeechRecognition =
+      (
+        window as any
+      ).SpeechRecognition ||
+
+      (
+        window as any
+      ).webkitSpeechRecognition;
+
+    if (
+      !SpeechRecognition
+    ) {
+
+      alert(
+        "Voice search not supported"
+      );
+
+      return;
+    }
+
+    const recognition =
+      new SpeechRecognition();
+
+    recognition.lang =
+      "en-IN";
+
+    recognition.start();
+
+    setListening(
+      true
+    );
+
+    recognition.onresult =
+      (
+        event: any
+      ) => {
+
+        const transcript =
+          event.results[0][0]
+            .transcript;
+
+        setSearch(
+          transcript
+        );
+      };
+
+    recognition.onend =
+      () => {
+
+        setListening(
+          false
+        );
+      };
+  }
 
   /* ======================================================
   GET HOMEPAGE SECTIONS
@@ -342,9 +428,28 @@ export default function HomePage() {
           );
       }
 
+      /* SEARCH */
+
+      if (
+        search
+      ) {
+
+        filtered =
+          filtered.filter(
+            (product) =>
+              product.title
+                .toLowerCase()
+                .includes(
+                  search.toLowerCase()
+                )
+          );
+      }
+
       /* SORT */
 
-      switch (sortBy) {
+      switch (
+        sortBy
+      ) {
 
         case "low":
 
@@ -388,48 +493,9 @@ export default function HomePage() {
     }, [
       products,
       selectedCategory,
-      sortBy
+      sortBy,
+      search
     ]);
-
-  /* ======================================================
-  RENDER SECTION
-  ====================================================== */
-
-  function renderSection(
-    section: HomepageSection
-  ) {
-
-    if (
-      !section.visible
-    ) {
-
-      return null;
-
-    }
-
-    switch (
-      section.sectionType
-    ) {
-
-      case "tips":
-
-        return (
-          <TipsSection />
-        );
-
-      case "footer":
-
-        return (
-          <FooterSection />
-        );
-
-      default:
-
-        return null;
-
-    }
-
-  }
 
   /* ======================================================
   UI
@@ -444,9 +510,8 @@ export default function HomePage() {
       <main
         className="
           min-h-screen
-          w-full
           overflow-x-hidden
-          bg-[#f3f4f6]
+          bg-[#f5f5f5]
           pb-32
           pt-[115px]
 
@@ -474,10 +539,107 @@ export default function HomePage() {
         />
 
         {/* ======================================================
-        HERO SLIDER
+        HERO
         ====================================================== */}
 
         <HomepageSlider />
+
+        {/* ======================================================
+        SEARCH + MIC
+        ====================================================== */}
+
+        <section
+          className="
+            mt-5
+            px-4
+          "
+        >
+
+          <div
+            className="
+              flex
+              items-center
+              gap-3
+              rounded-3xl
+              bg-white
+              px-4
+              py-4
+              shadow-sm
+            "
+          >
+
+            <Search
+              size={20}
+              className="
+                text-gray-400
+              "
+            />
+
+            <input
+              type="text"
+
+              value={search}
+
+              onChange={(e) =>
+                setSearch(
+                  e.target.value
+                )
+              }
+
+              placeholder="
+                Search products...
+              "
+
+              className="
+                flex-1
+                bg-transparent
+                text-sm
+                font-semibold
+                outline-none
+              "
+            />
+
+            <button
+              onClick={
+                startVoiceSearch
+              }
+              className={`
+                flex
+                h-11
+                w-11
+                items-center
+                justify-center
+                rounded-full
+
+                ${
+                  listening
+
+                    ? "bg-red-500 text-white"
+
+                    : "bg-indigo-600 text-white"
+                }
+              `}
+            >
+
+              {listening ? (
+
+                <MicOff
+                  size={18}
+                />
+
+              ) : (
+
+                <Mic
+                  size={18}
+                />
+
+              )}
+
+            </button>
+
+          </div>
+
+        </section>
 
         {/* ======================================================
         CATEGORY SECTION
@@ -485,7 +647,7 @@ export default function HomePage() {
 
         <section
           className="
-            mt-6
+            mt-8
             px-4
           "
         >
@@ -507,7 +669,6 @@ export default function HomePage() {
                 className="
                   text-2xl
                   font-black
-                  text-black
                 "
               >
 
@@ -517,13 +678,12 @@ export default function HomePage() {
 
               <p
                 className="
-                  mt-1
                   text-sm
                   text-gray-500
                 "
               >
 
-                Shop by category
+                Browse categories
 
               </p>
 
@@ -555,7 +715,7 @@ export default function HomePage() {
           <div
             className="
               flex
-              gap-4
+              gap-5
               overflow-x-auto
               pb-2
               scrollbar-hide
@@ -570,39 +730,31 @@ export default function HomePage() {
                   "All"
                 )
               }
-              className={`
-                flex
+              className="
                 shrink-0
-                flex-col
-                items-center
-                rounded-3xl
-                border
-                px-4
-                py-4
-                transition-all
-
-                ${
-                  selectedCategory ===
-                  "All"
-
-                    ? "border-indigo-600 bg-indigo-600 text-white"
-
-                    : "border-gray-200 bg-white text-black"
-                }
-              `}
+              "
             >
 
               <div
-                className="
+                className={`
                   flex
-                  h-16
-                  w-16
+                  h-20
+                  w-20
                   items-center
                   justify-center
-                  rounded-full
-                  bg-gray-100
-                  text-2xl
-                "
+                  rounded-[28px]
+                  text-3xl
+                  shadow-sm
+
+                  ${
+                    selectedCategory ===
+                    "All"
+
+                      ? "bg-indigo-600"
+
+                      : "bg-white"
+                  }
+                `}
               >
 
                 🛍️
@@ -610,11 +762,21 @@ export default function HomePage() {
               </div>
 
               <p
-                className="
+                className={`
                   mt-3
+                  text-center
                   text-sm
                   font-black
-                "
+
+                  ${
+                    selectedCategory ===
+                    "All"
+
+                      ? "text-indigo-600"
+
+                      : "text-black"
+                  }
+                `}
               >
 
                 All
@@ -627,6 +789,10 @@ export default function HomePage() {
 
             {categories.map(
               (category) => {
+
+                const active =
+                  selectedCategory ===
+                  category.title;
 
                 return (
 
@@ -641,35 +807,34 @@ export default function HomePage() {
                       )
                     }
 
-                    className={`
-                      flex
+                    className="
                       shrink-0
-                      flex-col
-                      items-center
-                      rounded-3xl
-                      border
-                      px-4
-                      py-4
-                      transition-all
-
-                      ${
-                        selectedCategory ===
-                        category.title
-
-                          ? "border-indigo-600 bg-indigo-600 text-white"
-
-                          : "border-gray-200 bg-white text-black"
-                      }
-                    `}
+                    "
                   >
 
+                    {/* CARD */}
+
                     <div
+                      style={{
+                        background:
+                          active
+
+                            ? category.themeColor ||
+                              "#4f46e5"
+
+                            : "#ffffff"
+                      }}
+
                       className="
-                        h-16
-                        w-16
+                        flex
+                        h-20
+                        w-20
+                        items-center
+                        justify-center
                         overflow-hidden
-                        rounded-full
-                        bg-gray-100
+                        rounded-[28px]
+                        shadow-sm
+                        transition-all
                       "
                     >
 
@@ -691,15 +856,25 @@ export default function HomePage() {
 
                     </div>
 
+                    {/* NAME OUTSIDE */}
+
                     <p
-                      className="
+                      className={`
                         mt-3
                         w-20
                         truncate
                         text-center
                         text-sm
                         font-black
-                      "
+
+                        ${
+                          active
+
+                            ? "text-indigo-600"
+
+                            : "text-black"
+                        }
+                      `}
                     >
 
                       {
@@ -719,7 +894,7 @@ export default function HomePage() {
         </section>
 
         {/* ======================================================
-        PRODUCT SECTION
+        PRODUCTS
         ====================================================== */}
 
         <section
@@ -746,7 +921,6 @@ export default function HomePage() {
                 className="
                   text-2xl
                   font-black
-                  text-black
                 "
               >
 
@@ -756,13 +930,12 @@ export default function HomePage() {
 
               <p
                 className="
-                  mt-1
                   text-sm
                   text-gray-500
                 "
               >
 
-                Trending products
+                Live synced products
 
               </p>
 
@@ -787,7 +960,6 @@ export default function HomePage() {
                   bg-white
                   px-3
                   py-2
-                  shadow-sm
                 "
               >
 
@@ -837,7 +1009,6 @@ export default function HomePage() {
                   justify-center
                   rounded-2xl
                   bg-white
-                  shadow-sm
                 "
               >
 
@@ -851,7 +1022,7 @@ export default function HomePage() {
 
           </div>
 
-          {/* PRODUCTS */}
+          {/* PRODUCTS GRID */}
 
           <div
             className="
@@ -885,7 +1056,6 @@ export default function HomePage() {
                       className="
                         aspect-square
                         overflow-hidden
-                        bg-gray-100
                       "
                     >
 
@@ -936,7 +1106,6 @@ export default function HomePage() {
                           line-clamp-2
                           text-sm
                           font-black
-                          text-black
                         "
                       >
 
@@ -961,7 +1130,6 @@ export default function HomePage() {
                           className="
                             text-lg
                             font-black
-                            text-black
                           "
                         >
 
@@ -1044,27 +1212,40 @@ export default function HomePage() {
               return null;
             }
 
-            return (
+            switch (
+              section.sectionType
+            ) {
 
-              <div
-                key={
-                  section.id
-                }
-              >
+              case "tips":
 
-                {renderSection(
-                  section
-                )}
+                return (
+                  <TipsSection
+                    key={
+                      section.id
+                    }
+                  />
+                );
 
-              </div>
+              case "footer":
 
-            );
+                return (
+                  <FooterSection
+                    key={
+                      section.id
+                    }
+                  />
+                );
+
+              default:
+
+                return null;
+            }
 
           }
         )}
 
         {/* ======================================================
-        FLOATING BUTTONS
+        FLOATING
         ====================================================== */}
 
         <WhatsAppButton />
