@@ -2,19 +2,16 @@
 FILE:
 src/app/affiliate/page.tsx
 
-FEATURES:
+UPDATED:
 
-✅ Affiliate Dashboard
-✅ Referral Link Box
-✅ Copy Referral Link
-✅ Total Earnings Card
-✅ Referral Count
-✅ Commission Wallet
-✅ Withdraw Button
-✅ Referral Team List
-✅ Responsive Mobile UI
-✅ Gradient Cards
-✅ Firebase Ready
+✅ User MLM Dashboard
+✅ Referral Copy
+✅ Team Stats
+✅ Total Earnings
+✅ Withdrawal Card
+✅ Referral List
+✅ Modern Gradient UI
+✅ Mobile Responsive
 ✅ Bottom Navbar
 ✅ WhatsApp Button
 ====================================================== */
@@ -23,40 +20,31 @@ FEATURES:
 
 export const dynamic = "force-dynamic";
 
-import { useState } from "react";
+import {
+  useMemo,
+  useState
+} from "react";
+
+import Link from "next/link";
 
 import {
+  ArrowLeft,
+  BadgeIndianRupee,
+  CheckCircle2,
   Copy,
+  Crown,
   Gift,
-  IndianRupee,
-  Share2,
-  Trophy,
+  ShieldCheck,
   Users,
-  Wallet
+  Wallet,
+  Zap
 } from "lucide-react";
 
-import Header from "@/components/navigation/Header";
+import BottomNavbar
+from "@/components/navigation/BottomNavbar";
 
-import BottomNavbar from "@/components/navigation/BottomNavbar";
-
-import WhatsAppButton from "@/components/navigation/WhatsAppButton";
-
-/* ======================================================
-TYPES
-====================================================== */
-
-interface ReferralMember {
-
-  id: string;
-
-  name: string;
-
-  joinedDate: string;
-
-  earnings: number;
-
-  avatar: string;
-}
+import WhatsAppButton
+from "@/components/navigation/WhatsAppButton";
 
 /* ======================================================
 COMPONENT
@@ -68,129 +56,100 @@ export default function AffiliatePage() {
   USER DATA
   ====================================================== */
 
+  const userName =
+    "MD Alim Ansari";
+
   const referralCode =
-    "JEMBEE2026";
+    "ALIM7061";
 
   const referralLink =
     `https://jembeekart.com/register?ref=${referralCode}`;
 
   /* ======================================================
-  STATES
+  MLM DATA
   ====================================================== */
 
-  const [
-    copied,
-    setCopied
-  ] = useState(false);
+  const totalTeam =
+    128;
 
-  const [
-    teamMembers
-  ] = useState<ReferralMember[]>([
+  const activeMembers =
+    92;
+
+  const totalIncome =
+    25840;
+
+  const todayIncome =
+    1280;
+
+  const withdrawable =
+    12450;
+
+  /* ======================================================
+  TEAM LIST
+  ====================================================== */
+
+  const teamMembers = [
 
     {
-      id: "1",
-
       name:
         "Rahul Kumar",
 
-      joinedDate:
-        "12 Jun 2026",
+      joined:
+        "2 days ago",
 
-      earnings: 1200,
-
-      avatar:
-        "https://placehold.co/100x100"
+      income:
+        520
     },
 
     {
-      id: "2",
-
       name:
-        "Aman Singh",
+        "Aman Raj",
 
-      joinedDate:
-        "20 Jun 2026",
+      joined:
+        "5 days ago",
 
-      earnings: 850,
-
-      avatar:
-        "https://placehold.co/100x100"
+      income:
+        840
     },
 
     {
-      id: "3",
-
       name:
-        "Priya Das",
+        "Shivam",
 
-      joinedDate:
-        "25 Jun 2026",
+      joined:
+        "1 week ago",
 
-      earnings: 1450,
-
-      avatar:
-        "https://placehold.co/100x100"
+      income:
+        1250
     }
 
-  ]);
+  ];
 
   /* ======================================================
   COPY LINK
   ====================================================== */
 
-  async function copyLink() {
+  async function copyReferral() {
 
     try {
 
       await navigator.clipboard.writeText(
-        referralLink
+        `${userName}
+
+Referral Code:
+${referralCode}
+
+Referral Link:
+${referralLink}`
       );
-
-      setCopied(
-        true
-      );
-
-      setTimeout(() => {
-
-        setCopied(
-          false
-        );
-
-      }, 2000);
-
-    } catch {
 
       alert(
-        "Copy failed"
+        "Referral Details Copied"
       );
-    }
-  }
 
-  /* ======================================================
-  SHARE LINK
-  ====================================================== */
+    } catch (error) {
 
-  async function shareLink() {
-
-    if (
-      navigator.share
-    ) {
-
-      await navigator.share({
-
-        title:
-          "Join JembeeKart",
-
-        text:
-          "Join using my referral link",
-
-        url:
-          referralLink
-      });
-
-    } else {
-
-      copyLink();
+      console.error(error);
     }
   }
 
@@ -203,12 +162,8 @@ export default function AffiliatePage() {
     <main
       className="
         min-h-screen
-        overflow-x-hidden
         bg-[#f6f7fb]
         pb-32
-        pt-[115px]
-
-        md:pt-[150px]
       "
     >
 
@@ -216,31 +171,456 @@ export default function AffiliatePage() {
       HEADER
       ====================================================== */}
 
-      <Header />
+      <div
+        className="
+          sticky
+          top-0
+          z-50
+
+          bg-white/90
+          px-4
+          py-3
+
+          backdrop-blur-md
+          shadow-sm
+        "
+      >
+
+        <div
+          className="
+            flex
+            items-center
+            gap-3
+          "
+        >
+
+          <Link
+            href="/account"
+            className="
+              flex
+              h-10
+              w-10
+              items-center
+              justify-center
+
+              rounded-full
+
+              bg-violet-100
+              text-violet-700
+            "
+          >
+
+            <ArrowLeft
+              size={20}
+            />
+
+          </Link>
+
+          <div>
+
+            <h1
+              className="
+                text-[24px]
+                font-black
+                text-violet-700
+              "
+            >
+
+              Affiliate Dashboard
+
+            </h1>
+
+            <p
+              className="
+                text-[11px]
+                text-gray-500
+              "
+            >
+
+              Build Team & Earn Money
+
+            </p>
+
+          </div>
+
+        </div>
+
+      </div>
 
       {/* ======================================================
-      TOP SECTION
+      HERO CARD
       ====================================================== */}
 
       <section
         className="
           px-4
-          pt-4
+          pt-5
         "
       >
 
         <div
           className="
             overflow-hidden
+
             rounded-[35px]
+
             bg-gradient-to-br
-            from-indigo-600
-            via-purple-600
-            to-pink-500
+            from-violet-700
+            via-fuchsia-600
+            to-orange-500
+
+            p-5
+
+            text-white
+
+            shadow-2xl
+          "
+        >
+
+          {/* TOP */}
+
+          <div
+            className="
+              flex
+              items-center
+              justify-between
+            "
+          >
+
+            <div>
+
+              <p
+                className="
+                  text-[12px]
+                  text-white/80
+                "
+              >
+
+                Total Earnings
+
+              </p>
+
+              <h2
+                className="
+                  mt-2
+                  text-[38px]
+                  font-black
+                "
+              >
+
+                ₹
+                {totalIncome}
+
+              </h2>
+
+            </div>
+
+            <div
+              className="
+                flex
+                h-20
+                w-20
+                items-center
+                justify-center
+
+                rounded-full
+
+                bg-white/20
+              "
+            >
+
+              <Crown
+                size={38}
+              />
+
+            </div>
+
+          </div>
+
+          {/* TODAY */}
+
+          <div
+            className="
+              mt-5
+              flex
+              items-center
+              gap-2
+            "
+          >
+
+            <Zap
+              size={16}
+            />
+
+            <p
+              className="
+                text-sm
+                font-bold
+              "
+            >
+
+              Today Income:
+              {" "}
+              ₹{todayIncome}
+
+            </p>
+
+          </div>
+
+          {/* REFERRAL */}
+
+          <div
+            className="
+              mt-5
+
+              rounded-3xl
+
+              bg-white/10
+
+              p-4
+
+              backdrop-blur-md
+            "
+          >
+
+            <p
+              className="
+                text-[11px]
+                text-white/80
+              "
+            >
+
+              Referral Code
+
+            </p>
+
+            <h3
+              className="
+                mt-1
+                text-[22px]
+                font-black
+              "
+            >
+
+              {referralCode}
+
+            </h3>
+
+            <div
+              className="
+                mt-4
+
+                rounded-2xl
+
+                bg-white/10
+
+                p-3
+
+                text-[11px]
+                break-all
+              "
+            >
+
+              {referralLink}
+
+            </div>
+
+            <button
+              onClick={copyReferral}
+              className="
+                mt-4
+
+                flex
+                w-full
+                items-center
+                justify-center
+                gap-2
+
+                rounded-2xl
+
+                bg-white
+
+                py-3
+
+                text-sm
+                font-black
+                text-violet-700
+              "
+            >
+
+              <Copy
+                size={18}
+              />
+
+              Copy Referral Link
+
+            </button>
+
+          </div>
+
+        </div>
+
+      </section>
+
+      {/* ======================================================
+      STATS
+      ====================================================== */}
+
+      <section
+        className="
+          mt-6
+          px-4
+        "
+      >
+
+        <div
+          className="
+            grid
+            grid-cols-2
+            gap-4
+          "
+        >
+
+          {/* TEAM */}
+
+          <div
+            className="
+              rounded-[28px]
+              bg-white
+              p-5
+              shadow-sm
+            "
+          >
+
+            <div
+              className="
+                flex
+                h-14
+                w-14
+                items-center
+                justify-center
+
+                rounded-2xl
+
+                bg-violet-100
+                text-violet-700
+              "
+            >
+
+              <Users
+                size={28}
+              />
+
+            </div>
+
+            <h3
+              className="
+                mt-4
+                text-[28px]
+                font-black
+              "
+            >
+
+              {totalTeam}
+
+            </h3>
+
+            <p
+              className="
+                mt-1
+                text-sm
+                text-gray-500
+              "
+            >
+
+              Total Team
+
+            </p>
+
+          </div>
+
+          {/* ACTIVE */}
+
+          <div
+            className="
+              rounded-[28px]
+              bg-white
+              p-5
+              shadow-sm
+            "
+          >
+
+            <div
+              className="
+                flex
+                h-14
+                w-14
+                items-center
+                justify-center
+
+                rounded-2xl
+
+                bg-green-100
+                text-green-700
+              "
+            >
+
+              <CheckCircle2
+                size={28}
+              />
+
+            </div>
+
+            <h3
+              className="
+                mt-4
+                text-[28px]
+                font-black
+              "
+            >
+
+              {activeMembers}
+
+            </h3>
+
+            <p
+              className="
+                mt-1
+                text-sm
+                text-gray-500
+              "
+            >
+
+              Active Members
+
+            </p>
+
+          </div>
+
+        </div>
+
+      </section>
+
+      {/* ======================================================
+      WITHDRAW CARD
+      ====================================================== */}
+
+      <section
+        className="
+          mt-6
+          px-4
+        "
+      >
+
+        <div
+          className="
+            rounded-[35px]
+
+            bg-white
 
             p-6
-            text-white
-            shadow-2xl
+
+            shadow-sm
           "
         >
 
@@ -257,26 +637,26 @@ export default function AffiliatePage() {
               <p
                 className="
                   text-sm
-                  font-semibold
-                  text-white/80
+                  text-gray-500
                 "
               >
 
-                Affiliate Wallet
+                Withdrawable Balance
 
               </p>
 
-              <h1
+              <h2
                 className="
                   mt-2
-                  text-4xl
+                  text-[36px]
                   font-black
                 "
               >
 
-                ₹12,580
+                ₹
+                {withdrawable}
 
-              </h1>
+              </h2>
 
             </div>
 
@@ -287,9 +667,11 @@ export default function AffiliatePage() {
                 w-16
                 items-center
                 justify-center
+
                 rounded-full
-                bg-white/20
-                backdrop-blur-md
+
+                bg-green-100
+                text-green-700
               "
             >
 
@@ -301,26 +683,35 @@ export default function AffiliatePage() {
 
           </div>
 
-          {/* BUTTON */}
-
           <button
             className="
               mt-6
+
+              flex
               w-full
-              rounded-2xl
-              bg-white
+              items-center
+              justify-center
+              gap-2
+
+              rounded-[20px]
+
+              bg-gradient-to-r
+              from-violet-600
+              to-fuchsia-500
+
               py-4
+
               text-sm
               font-black
-              text-black
-              transition-all
-              duration-300
-
-              hover:scale-[1.02]
+              text-white
             "
           >
 
-            Withdraw Earnings
+            <BadgeIndianRupee
+              size={18}
+            />
+
+            Withdraw Income
 
           </button>
 
@@ -329,320 +720,237 @@ export default function AffiliatePage() {
       </section>
 
       {/* ======================================================
-      STATS
+      HOW IT WORKS
       ====================================================== */}
 
       <section
         className="
-          mt-6
-          grid
-          grid-cols-2
-          gap-4
+          mt-7
           px-4
         "
       >
 
-        {/* REFERRALS */}
-
-        <div
+        <h2
           className="
-            rounded-[30px]
-            bg-white
-            p-5
-            shadow-sm
+            text-[24px]
+            font-black
           "
         >
 
+          How It Works?
+
+        </h2>
+
+        <div
+          className="
+            mt-4
+            space-y-3
+          "
+        >
+
+          {/* STEP */}
+
           <div
             className="
-              flex
-              h-14
-              w-14
-              items-center
-              justify-center
               rounded-2xl
-              bg-indigo-100
-              text-indigo-600
-            "
-          >
-
-            <Users
-              size={26}
-            />
-
-          </div>
-
-          <h2
-            className="
-              mt-4
-              text-3xl
-              font-black
-              text-black
-            "
-          >
-
-            128
-
-          </h2>
-
-          <p
-            className="
-              mt-1
-              text-sm
-              font-semibold
-              text-gray-500
-            "
-          >
-
-            Total Referrals
-
-          </p>
-
-        </div>
-
-        {/* COMMISSION */}
-
-        <div
-          className="
-            rounded-[30px]
-            bg-white
-            p-5
-            shadow-sm
-          "
-        >
-
-          <div
-            className="
-              flex
-              h-14
-              w-14
-              items-center
-              justify-center
-              rounded-2xl
-              bg-pink-100
-              text-pink-600
-            "
-          >
-
-            <Gift
-              size={26}
-            />
-
-          </div>
-
-          <h2
-            className="
-              mt-4
-              text-3xl
-              font-black
-              text-black
-            "
-          >
-
-            ₹8.5K
-
-          </h2>
-
-          <p
-            className="
-              mt-1
-              text-sm
-              font-semibold
-              text-gray-500
-            "
-          >
-
-            Monthly Commission
-
-          </p>
-
-        </div>
-
-      </section>
-
-      {/* ======================================================
-      REFERRAL LINK
-      ====================================================== */}
-
-      <section
-        className="
-          mt-6
-          px-4
-        "
-      >
-
-        <div
-          className="
-            rounded-[35px]
-            bg-white
-            p-5
-            shadow-sm
-          "
-        >
-
-          <div
-            className="
-              flex
-              items-center
-              gap-3
+              bg-white
+              p-4
+              shadow-sm
             "
           >
 
             <div
               className="
                 flex
-                h-14
-                w-14
                 items-center
-                justify-center
-                rounded-2xl
-                bg-indigo-100
-                text-indigo-600
+                gap-3
               "
             >
 
-              <Share2
-                size={26}
-              />
-
-            </div>
-
-            <div>
-
-              <h2
+              <div
                 className="
-                  text-xl
-                  font-black
-                  text-black
+                  flex
+                  h-12
+                  w-12
+                  items-center
+                  justify-center
+
+                  rounded-full
+
+                  bg-violet-100
+                  text-violet-700
                 "
               >
 
-                Referral Link
+                <Users
+                  size={22}
+                />
 
-              </h2>
+              </div>
 
-              <p
-                className="
-                  text-sm
-                  text-gray-500
-                "
-              >
+              <div>
 
-                Share & earn commission
+                <h3
+                  className="
+                    text-[16px]
+                    font-black
+                  "
+                >
 
-              </p>
+                  Invite People
+
+                </h3>
+
+                <p
+                  className="
+                    text-[12px]
+                    text-gray-600
+                  "
+                >
+
+                  Share your referral link.
+
+                </p>
+
+              </div>
 
             </div>
 
           </div>
 
-          {/* LINK BOX */}
-
           <div
             className="
-              mt-5
-              overflow-hidden
               rounded-2xl
-              bg-gray-100
+              bg-white
               p-4
+              shadow-sm
             "
           >
 
-            <p
+            <div
               className="
-                break-all
-                text-sm
-                font-semibold
-                text-gray-700
+                flex
+                items-center
+                gap-3
               "
             >
 
-              {referralLink}
+              <div
+                className="
+                  flex
+                  h-12
+                  w-12
+                  items-center
+                  justify-center
 
-            </p>
+                  rounded-full
+
+                  bg-orange-100
+                  text-orange-700
+                "
+              >
+
+                <Gift
+                  size={22}
+                />
+
+              </div>
+
+              <div>
+
+                <h3
+                  className="
+                    text-[16px]
+                    font-black
+                  "
+                >
+
+                  Build Team
+
+                </h3>
+
+                <p
+                  className="
+                    text-[12px]
+                    text-gray-600
+                  "
+                >
+
+                  Grow your referral network.
+
+                </p>
+
+              </div>
+
+            </div>
 
           </div>
 
-          {/* BUTTONS */}
-
           <div
             className="
-              mt-5
-              flex
-              gap-3
+              rounded-2xl
+              bg-white
+              p-4
+              shadow-sm
             "
           >
 
-            <button
-
-              onClick={
-                copyLink
-              }
-
+            <div
               className="
                 flex
-                flex-1
                 items-center
-                justify-center
-                gap-2
-
-                rounded-2xl
-                bg-black
-                py-4
-
-                text-sm
-                font-black
-                text-white
+                gap-3
               "
             >
 
-              <Copy
-                size={18}
-              />
+              <div
+                className="
+                  flex
+                  h-12
+                  w-12
+                  items-center
+                  justify-center
 
-              {
-                copied
+                  rounded-full
 
-                  ? "Copied"
+                  bg-green-100
+                  text-green-700
+                "
+              >
 
-                  : "Copy"
-              }
+                <BadgeIndianRupee
+                  size={22}
+                />
 
-            </button>
+              </div>
 
-            <button
+              <div>
 
-              onClick={
-                shareLink
-              }
+                <h3
+                  className="
+                    text-[16px]
+                    font-black
+                  "
+                >
 
-              className="
-                flex
-                flex-1
-                items-center
-                justify-center
-                gap-2
+                  Earn Commission
 
-                rounded-2xl
-                bg-gradient-to-r
-                from-indigo-600
-                to-purple-600
+                </h3>
 
-                py-4
+                <p
+                  className="
+                    text-[12px]
+                    text-gray-600
+                  "
+                >
 
-                text-sm
-                font-black
-                text-white
-              "
-            >
+                  Earn from orders & referrals.
 
-              <Share2
-                size={18}
-              />
+                </p>
 
-              Share
+              </div>
 
-            </button>
+            </div>
 
           </div>
 
@@ -656,192 +964,124 @@ export default function AffiliatePage() {
 
       <section
         className="
-          mt-6
+          mt-7
           px-4
         "
       >
 
         <div
           className="
-            mb-5
             flex
             items-center
             justify-between
           "
         >
 
-          <div>
-
-            <h2
-              className="
-                text-2xl
-                font-black
-                text-black
-              "
-            >
-
-              Referral Team
-
-            </h2>
-
-            <p
-              className="
-                mt-1
-                text-sm
-                text-gray-500
-              "
-            >
-
-              Your active members
-
-            </p>
-
-          </div>
-
-          <div
+          <h2
             className="
-              flex
-              h-12
-              w-12
-              items-center
-              justify-center
-              rounded-2xl
-              bg-yellow-100
-              text-yellow-600
+              text-[24px]
+              font-black
             "
           >
 
-            <Trophy
-              size={22}
-            />
+            My Team
 
-          </div>
+          </h2>
+
+          <button
+            className="
+              text-sm
+              font-black
+              text-violet-700
+            "
+          >
+
+            View All
+
+          </button>
 
         </div>
 
-        {/* MEMBERS */}
-
         <div
           className="
-            space-y-4
+            mt-4
+            space-y-3
           "
         >
 
           {teamMembers.map(
-            (member) => {
+            (member) => (
 
-              return (
+              <div
+                key={member.name}
+                className="
+                  flex
+                  items-center
+                  justify-between
+
+                  rounded-[24px]
+
+                  bg-white
+
+                  p-4
+
+                  shadow-sm
+                "
+              >
 
                 <div
-                  key={
-                    member.id
-                  }
-
                   className="
                     flex
                     items-center
-                    justify-between
-
-                    rounded-[28px]
-                    bg-white
-                    p-4
-                    shadow-sm
+                    gap-3
                   "
                 >
-
-                  {/* LEFT */}
 
                   <div
                     className="
                       flex
+                      h-14
+                      w-14
                       items-center
-                      gap-4
+                      justify-center
+
+                      rounded-full
+
+                      bg-gradient-to-r
+                      from-violet-600
+                      to-fuchsia-500
+
+                      text-lg
+                      font-black
+                      text-white
                     "
                   >
 
-                    <img
-                      src={
-                        member.avatar
-                      }
-
-                      alt=""
-
-                      className="
-                        h-16
-                        w-16
-                        rounded-2xl
-                        object-cover
-                      "
-                    />
-
-                    <div>
-
-                      <h3
-                        className="
-                          text-lg
-                          font-black
-                          text-black
-                        "
-                      >
-
-                        {
-                          member.name
-                        }
-
-                      </h3>
-
-                      <p
-                        className="
-                          mt-1
-                          text-sm
-                          text-gray-500
-                        "
-                      >
-
-                        Joined
-                        {" "}
-                        {
-                          member.joinedDate
-                        }
-
-                      </p>
-
-                    </div>
+                    {member.name.charAt(0)}
 
                   </div>
 
-                  {/* RIGHT */}
+                  <div>
 
-                  <div
-                    className="
-                      text-right
-                    "
-                  >
-
-                    <p
+                    <h3
                       className="
-                        text-2xl
+                        text-[15px]
                         font-black
-                        text-indigo-600
                       "
                     >
 
-                      ₹
-                      {
-                        member.earnings
-                      }
+                      {member.name}
 
-                    </p>
+                    </h3>
 
                     <p
                       className="
-                        text-xs
-                        font-semibold
+                        text-[11px]
                         text-gray-500
                       "
                     >
 
-                      Earnings
+                      Joined {member.joined}
 
                     </p>
 
@@ -849,18 +1089,47 @@ export default function AffiliatePage() {
 
                 </div>
 
-              );
+                <div
+                  className="
+                    text-right
+                  "
+                >
 
-            }
+                  <p
+                    className="
+                      text-[11px]
+                      text-gray-500
+                    "
+                  >
+
+                    Income
+
+                  </p>
+
+                  <h3
+                    className="
+                      text-[18px]
+                      font-black
+                      text-green-600
+                    "
+                  >
+
+                    ₹{member.income}
+
+                  </h3>
+
+                </div>
+
+              </div>
+
+            )
           )}
 
         </div>
 
       </section>
 
-      {/* ======================================================
-      FLOATING BUTTONS
-      ====================================================== */}
+      {/* FLOATING */}
 
       <WhatsAppButton />
 
