@@ -1,22 +1,50 @@
 "use client";
 
 export default function WhatsAppButton() {
+
   return (
+
     <a
       href="https://wa.me/917061369212"
       target="_blank"
       rel="noopener noreferrer"
-      className="fixed bottom-24 right-4 z-50 flex items-center gap-3 rounded-full bg-green-500 px-5 py-4 text-white shadow-2xl transition-all duration-300 hover:scale-105 hover:bg-green-600"
+      className="
+        fixed
+        bottom-24
+        right-4
+        z-50
+
+        flex
+        h-16
+        w-16
+
+        items-center
+        justify-center
+
+        rounded-full
+
+        bg-green-500
+        text-white
+
+        shadow-2xl
+        shadow-green-500/40
+
+        transition-all
+        duration-300
+
+        hover:scale-110
+        hover:bg-green-600
+
+        active:scale-95
+      "
     >
 
-      <span className="text-2xl">
+      <span className="text-3xl">
         💬
       </span>
 
-      <span className="text-sm font-bold md:text-base">
-        WhatsApp
-      </span>
-
     </a>
+
   );
+
 }
