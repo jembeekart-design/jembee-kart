@@ -1,12 +1,19 @@
 "use client";
 
-import { useState } from "react";
+import {
+  useEffect,
+  useState
+} from "react";
 
 import {
   Mic,
   MicOff,
   Search
 } from "lucide-react";
+
+/* ======================================================
+PROPS
+====================================================== */
 
 interface HeaderProps {
 
@@ -17,7 +24,17 @@ interface HeaderProps {
   searchBarColor?: string;
 
   statusBarColor?: string;
+
+  search?: string;
+
+  setSearch?: (
+    value: string
+  ) => void;
 }
+
+/* ======================================================
+COMPONENT
+====================================================== */
 
 export default function Header({
 
@@ -27,18 +44,17 @@ export default function Header({
 
   searchBarColor = "#f3f4f6",
 
-  statusBarColor = "#ffffff"
+  statusBarColor = "#ffffff",
+
+  search = "",
+
+  setSearch
 
 }: HeaderProps) {
 
   /* ======================================================
   STATES
   ====================================================== */
-
-  const [
-    search,
-    setSearch
-  ] = useState("");
 
   const [
     listening,
@@ -49,10 +65,7 @@ export default function Header({
   STATUS BAR COLOR
   ====================================================== */
 
-  if (
-    typeof document !==
-    "undefined"
-  ) {
+  useEffect(() => {
 
     let metaTheme =
       document.querySelector(
@@ -80,7 +93,10 @@ export default function Header({
       "content",
       statusBarColor
     );
-  }
+
+  }, [
+    statusBarColor
+  ]);
 
   /* ======================================================
   VOICE SEARCH
@@ -109,7 +125,7 @@ export default function Header({
     ) {
 
       alert(
-        "Voice search not supported"
+        "Voice Search Not Supported"
       );
 
       return;
@@ -123,6 +139,9 @@ export default function Header({
 
     recognition.interimResults =
       false;
+
+    recognition.maxAlternatives =
+      1;
 
     recognition.start();
 
@@ -139,7 +158,7 @@ export default function Header({
           event.results[0][0]
             .transcript;
 
-        setSearch(
+        setSearch?.(
           transcript
         );
       };
@@ -208,7 +227,9 @@ export default function Header({
           "
         >
 
-          {/* LOGO */}
+          {/* ======================================================
+          LOGO
+          ====================================================== */}
 
           <div className="min-w-0">
 
@@ -247,7 +268,9 @@ export default function Header({
 
           </div>
 
-          {/* BUTTONS */}
+          {/* ======================================================
+          BUTTONS
+          ====================================================== */}
 
           <div
             className="
@@ -267,6 +290,7 @@ export default function Header({
                 text-sm
                 font-semibold
                 text-gray-700
+
                 transition-all
                 duration-300
 
@@ -287,6 +311,7 @@ export default function Header({
                 text-sm
                 font-semibold
                 text-white
+
                 transition-all
                 duration-300
 
@@ -309,7 +334,7 @@ export default function Header({
         <div
           className="
             relative
-            mt-3
+            mt-4
             w-full
           "
         >
@@ -336,7 +361,7 @@ export default function Header({
             value={search}
 
             onChange={(e) =>
-              setSearch(
+              setSearch?.(
                 e.target.value
               )
             }
@@ -347,20 +372,28 @@ export default function Header({
 
             className="
               w-full
-              rounded-2xl
+              rounded-3xl
               border
               border-gray-200
-              py-3
+
+              py-4
               pl-12
               pr-16
+
               text-sm
-              font-medium
+              font-semibold
+
+              text-black
+
               outline-none
+
               transition-all
               duration-300
 
               focus:border-blue-500
               focus:bg-white
+              focus:ring-4
+              focus:ring-blue-100
 
               md:text-base
             "
@@ -371,7 +404,9 @@ export default function Header({
             }}
           />
 
-          {/* VOICE BUTTON */}
+          {/* ======================================================
+          VOICE BUTTON
+          ====================================================== */}
 
           <button
 
@@ -385,27 +420,29 @@ export default function Header({
               top-1/2
 
               flex
-              h-10
-              w-10
+              h-11
+              w-11
               -translate-y-1/2
+
               items-center
               justify-center
 
               rounded-full
 
-              shadow-md
+              shadow-lg
 
               transition-all
               duration-300
 
-              hover:scale-105
+              hover:scale-110
+              active:scale-95
 
               ${
                 listening
 
                   ? "bg-red-500 text-white"
 
-                  : "bg-blue-600 text-white"
+                  : "bg-gradient-to-r from-indigo-600 to-purple-600 text-white"
               }
             `}
           >
