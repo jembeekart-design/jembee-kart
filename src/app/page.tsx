@@ -2,21 +2,21 @@
 FILE:
 src/app/page.tsx
 
-FEATURES:
+UPDATED FEATURES:
 
-✅ Product Image Only Inside Card
+✅ Category Image Back
+✅ Product Image Clickable
 ✅ Product Name Outside Card
 ✅ Price Outside Card
-✅ Add To Cart Button
-✅ Buy Now Button
 ✅ Wishlist Button
-✅ Full Gradient Product Border
-✅ Product Clickable
-✅ Firebase Product Sync
+✅ Full Gradient Product Card
+✅ Voice Search
+✅ Firebase Sync
 ✅ Category Filter
 ✅ Product Sort
-✅ Voice Search
-✅ Responsive UI
+✅ Mobile Responsive
+✅ Removed Add To Cart
+✅ Removed Buy Now
 ====================================================== */
 
 "use client";
@@ -36,12 +36,10 @@ import {
 
 import {
   ArrowDownUp,
-  ChevronRight,
   Heart,
   Mic,
   MicOff,
   Search,
-  ShoppingCart,
   SlidersHorizontal
 } from "lucide-react";
 
@@ -127,10 +125,6 @@ COMPONENT
 ====================================================== */
 
 export default function HomePage() {
-
-  /* ======================================================
-  STATES
-  ====================================================== */
 
   const [
     sections,
@@ -279,35 +273,19 @@ export default function HomePage() {
               }
             );
 
-          const sortedData =
-            data.sort(
-              (a, b) => {
-
-                return (
-                  Number(
-                    a.position || 0
-                  ) -
-                  Number(
-                    b.position || 0
-                  )
-                );
-
-              }
-            );
-
           setSections(
-            sortedData
+            data
           );
 
-          const headerData =
-            sortedData.find(
+          const hero =
+            data.find(
               (section) =>
                 section.sectionType ===
                 "hero"
             );
 
           setHeaderSection(
-            headerData
+            hero
           );
 
         }
@@ -347,13 +325,16 @@ export default function HomePage() {
                     Category,
                     "id"
                   >)
+
                 };
+
               }
             );
 
           setCategories(
             data
           );
+
         }
       );
 
@@ -391,13 +372,16 @@ export default function HomePage() {
                     Product,
                     "id"
                   >)
+
                 };
+
               }
             );
 
           setProducts(
             data
           );
+
         }
       );
 
@@ -407,7 +391,7 @@ export default function HomePage() {
   }, []);
 
   /* ======================================================
-  FILTER + SORT
+  FILTER PRODUCTS
   ====================================================== */
 
   const filteredProducts =
@@ -461,11 +445,11 @@ export default function HomePage() {
 
           filtered.sort(
             (a, b) =>
-              Number(
+              (
                 a.discountPrice ||
                 a.price
               ) -
-              Number(
+              (
                 b.discountPrice ||
                 b.price
               )
@@ -477,11 +461,11 @@ export default function HomePage() {
 
           filtered.sort(
             (a, b) =>
-              Number(
+              (
                 b.discountPrice ||
                 b.price
               ) -
-              Number(
+              (
                 a.discountPrice ||
                 a.price
               )
@@ -525,9 +509,7 @@ export default function HomePage() {
         "
       >
 
-        {/* ======================================================
-        HEADER
-        ====================================================== */}
+        {/* HEADER */}
 
         <Header
           headerBackgroundColor={
@@ -544,22 +526,15 @@ export default function HomePage() {
           }
         />
 
-        {/* ======================================================
-        HERO SLIDER
-        ====================================================== */}
+        {/* HERO */}
 
         <HomepageSlider />
 
         {/* ======================================================
-        SEARCH BAR
+        SEARCH
         ====================================================== */}
 
-        <section
-          className="
-            mt-5
-            px-4
-          "
-        >
+        <section className="mt-5 px-4">
 
           <div
             className="
@@ -592,9 +567,7 @@ export default function HomePage() {
                 )
               }
 
-              placeholder="
-                Search products...
-              "
+              placeholder="Search products..."
 
               className="
                 flex-1
@@ -619,26 +592,16 @@ export default function HomePage() {
 
                 ${
                   listening
-
                     ? "bg-red-500 text-white"
-
                     : "bg-indigo-600 text-white"
                 }
               `}
             >
 
               {listening ? (
-
-                <MicOff
-                  size={18}
-                />
-
+                <MicOff size={18} />
               ) : (
-
-                <Mic
-                  size={18}
-                />
-
+                <Mic size={18} />
               )}
 
             </button>
@@ -648,15 +611,10 @@ export default function HomePage() {
         </section>
 
         {/* ======================================================
-        CATEGORY SECTION
+        CATEGORY
         ====================================================== */}
 
-        <section
-          className="
-            mt-8
-            px-4
-          "
-        >
+        <section className="mt-8 px-4">
 
           <div
             className="
@@ -668,34 +626,62 @@ export default function HomePage() {
             "
           >
 
+            {/* ALL */}
+
             <button
               onClick={() =>
                 setSelectedCategory(
                   "All"
                 )
               }
-              className={`
-                rounded-full
-                px-5
-                py-3
-                text-sm
-                font-black
-                whitespace-nowrap
-
-                ${
-                  selectedCategory ===
-                  "All"
-
-                    ? "bg-indigo-600 text-white"
-
-                    : "bg-white text-black"
-                }
-              `}
+              className="
+                flex
+                shrink-0
+                flex-col
+                items-center
+              "
             >
 
-              All
+              <div
+                className={`
+                  flex
+                  h-20
+                  w-20
+                  items-center
+                  justify-center
+                  rounded-full
+                  border-4
+
+                  ${
+                    selectedCategory ===
+                    "All"
+
+                      ? "border-indigo-600"
+
+                      : "border-white"
+                  }
+                `}
+              >
+
+                🛍️
+
+              </div>
+
+              <p
+                className="
+                  mt-2
+                  text-xs
+                  font-black
+                "
+              >
+
+                All
+
+              </p>
 
             </button>
+
+            {/* DYNAMIC */}
 
             {categories.map(
               (category) => {
@@ -713,43 +699,76 @@ export default function HomePage() {
                       )
                     }
 
-                    style={{
-                      background:
-                        selectedCategory ===
-                        category.title
-
-                          ? category.themeColor ||
-                            "#4f46e5"
-
-                          : "#ffffff"
-                    }}
-
-                    className={`
-                      rounded-full
-                      px-5
-                      py-3
-                      text-sm
-                      font-black
-                      whitespace-nowrap
-
-                      ${
-                        selectedCategory ===
-                        category.title
-
-                          ? "text-white"
-
-                          : "text-black"
-                      }
-                    `}
+                    className="
+                      flex
+                      shrink-0
+                      flex-col
+                      items-center
+                    "
                   >
 
-                    {
-                      category.title
-                    }
+                    {/* IMAGE */}
+
+                    <div
+                      className={`
+                        h-20
+                        w-20
+                        overflow-hidden
+                        rounded-full
+                        border-4
+
+                        ${
+                          selectedCategory ===
+                          category.title
+
+                            ? "border-indigo-600"
+
+                            : "border-white"
+                        }
+                      `}
+                    >
+
+                      <img
+                        src={
+                          category.image ||
+
+                          "https://placehold.co/200x200"
+                        }
+
+                        alt=""
+
+                        className="
+                          h-full
+                          w-full
+                          object-cover
+                        "
+                      />
+
+                    </div>
+
+                    {/* NAME */}
+
+                    <p
+                      className="
+                        mt-2
+                        w-20
+                        truncate
+                        text-center
+                        text-xs
+                        font-black
+                      "
+                    >
+
+                      {
+                        category.title
+                      }
+
+                    </p>
 
                   </button>
 
                 );
+
               }
             )}
 
@@ -758,15 +777,10 @@ export default function HomePage() {
         </section>
 
         {/* ======================================================
-        PRODUCTS SECTION
+        PRODUCTS
         ====================================================== */}
 
-        <section
-          className="
-            mt-8
-            px-4
-          "
-        >
+        <section className="mt-8 px-4">
 
           {/* TOP */}
 
@@ -888,7 +902,7 @@ export default function HomePage() {
 
           </div>
 
-          {/* PRODUCTS GRID */}
+          {/* GRID */}
 
           <div
             className="
@@ -907,19 +921,15 @@ export default function HomePage() {
                     key={
                       product.id
                     }
-
-                    className="
-                      relative
-                    "
                   >
 
-                    {/* ======================================================
-                    IMAGE CARD
-                    ====================================================== */}
+                    {/* PRODUCT IMAGE */}
 
-                    <div
+                    <button
                       className="
                         relative
+                        block
+                        w-full
                         overflow-hidden
                         rounded-[34px]
                         bg-gradient-to-br
@@ -928,25 +938,21 @@ export default function HomePage() {
                         to-pink-500
                         p-[2px]
                         shadow-xl
-                        shadow-purple-500/20
                       "
                     >
 
                       <div
                         className="
+                          overflow-hidden
                           rounded-[32px]
                           bg-white
                           p-3
                         "
                       >
 
-                        {/* PRODUCT IMAGE */}
-
-                        <button
+                        <div
                           className="
                             relative
-                            block
-                            w-full
                             overflow-hidden
                             rounded-[28px]
                             bg-gray-100
@@ -956,7 +962,6 @@ export default function HomePage() {
                           <div
                             className="
                               aspect-square
-                              overflow-hidden
                             "
                           >
 
@@ -976,7 +981,6 @@ export default function HomePage() {
                                 object-cover
                                 transition-transform
                                 duration-300
-
                                 hover:scale-110
                               "
                             />
@@ -1010,19 +1014,16 @@ export default function HomePage() {
 
                           </button>
 
-                        </button>
+                        </div>
 
                       </div>
 
-                    </div>
+                    </button>
 
-                    {/* ======================================================
-                    CONTENT OUTSIDE CARD
-                    ====================================================== */}
+                    {/* PRODUCT INFO */}
 
                     <div
                       className="
-                        px-1
                         pt-4
                       "
                     >
@@ -1045,12 +1046,11 @@ export default function HomePage() {
 
                       </p>
 
-                      {/* PRODUCT NAME */}
+                      {/* TITLE */}
 
                       <button
                         className="
                           mt-2
-                          block
                           text-left
                         "
                       >
@@ -1123,64 +1123,6 @@ export default function HomePage() {
 
                       </div>
 
-                      {/* BUTTONS */}
-
-                      <div
-                        className="
-                          mt-4
-                          flex
-                          gap-2
-                        "
-                      >
-
-                        {/* ADD TO CART */}
-
-                        <button
-                          className="
-                            flex
-                            flex-1
-                            items-center
-                            justify-center
-                            gap-2
-                            rounded-2xl
-                            bg-black
-                            py-3
-                            text-xs
-                            font-black
-                            text-white
-                          "
-                        >
-
-                          <ShoppingCart
-                            size={14}
-                          />
-
-                          Cart
-
-                        </button>
-
-                        {/* BUY NOW */}
-
-                        <button
-                          className="
-                            flex-1
-                            rounded-2xl
-                            bg-gradient-to-r
-                            from-indigo-600
-                            to-purple-600
-                            py-3
-                            text-xs
-                            font-black
-                            text-white
-                          "
-                        >
-
-                          Buy Now
-
-                        </button>
-
-                      </div>
-
                     </div>
 
                   </div>
@@ -1194,9 +1136,7 @@ export default function HomePage() {
 
         </section>
 
-        {/* ======================================================
-        OTHER SECTIONS
-        ====================================================== */}
+        {/* OTHER SECTIONS */}
 
         {sections.map(
           (section) => {
@@ -1244,9 +1184,7 @@ export default function HomePage() {
           }
         )}
 
-        {/* ======================================================
-        FLOATING BUTTONS
-        ====================================================== */}
+        {/* FLOATING */}
 
         <WhatsAppButton />
 
