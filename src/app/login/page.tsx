@@ -1,66 +1,47 @@
 "use client";
 
 import { useState } from "react";
-import {
-  RecaptchaVerifier,
-  signInWithPhoneNumber,
-  GoogleAuthProvider,
-  signInWithPopup,
-  ConfirmationResult
+import { 
+  signInWithEmailAndPassword, 
+  GoogleAuthProvider, 
+  signInWithPopup 
 } from "firebase/auth";
 import { auth } from "@/lib/firebase";
 
 export default function LoginPage() {
-  const [phone, setPhone] = useState<string>("");
-  const [otp, setOtp] = useState<string>("");
-  const [confirm, setConfirm] = useState<ConfirmationResult | null>(null);
+  const [email, setEmail] = useState<string>("");
+  const [password, setPassword] = useState<string>("");
   const [loading, setLoading] = useState<boolean>(false);
 
-  // 1. Phone Auth: Send OTP
-  async function sendOTP() {
-    if (!phone) return alert("Please enter a phone number");
+  // 1. Email/Password Login Function
+  async function handleEmailLogin(e: React.FormEvent) {
+    e.preventDefault();
+    if (!email || !password) {
+      alert("Please fill in all fields");
+      return;
+    }
+
     setLoading(true);
     try {
-      const verifier = new RecaptchaVerifier(auth, "recaptcha-container", {
-        size: "invisible", // Invisible recaptcha user experience ke liye best hai
-      });
-
-      const confirmation = await signInWithPhoneNumber(auth, phone, verifier);
-      setConfirm(confirmation);
-      alert("OTP sent successfully!");
+      const userCredential = await signInWithEmailAndPassword(auth, email, password);
+      alert(`Welcome back! ${userCredential.user.email}`);
+      // Yahan redirect logic add karein (e.g., router.push('/dashboard'))
     } catch (error: any) {
-      console.error("Phone Auth Error:", error);
-      alert(error.message || "Failed to send OTP");
+      console.error("Email Login Error:", error);
+      alert(error.message || "Invalid email or password");
     } finally {
       setLoading(false);
     }
   }
 
-  // 2. Phone Auth: Verify OTP
-  async function verifyOTP() {
-    if (!otp) return alert("Please enter the OTP");
-    if (!confirm) return alert("Please request an OTP first");
-    
-    setLoading(true);
-    try {
-      await confirm.confirm(otp);
-      alert("Login successful!");
-    } catch (error: any) {
-      console.error("OTP Verification Error:", error);
-      alert("Invalid OTP. Please try again.");
-    } finally {
-      setLoading(false);
-    }
-  }
-
-  // 3. Google Login
-  async function loginWithGoogle() {
+  // 2. Google Login Function
+  async function handleGoogleLogin() {
     setLoading(true);
     const provider = new GoogleAuthProvider();
     try {
       const result = await signInWithPopup(auth, provider);
-      // User info access karne ke liye: const user = result.user;
-      alert(`Welcome ${result.user.displayName}!`);
+      alert(`Welcome ${result.user.displayName || "User"}!`);
+      // Yahan redirect logic add karein
     } catch (error: any) {
       console.error("Google Auth Error:", error);
       alert(error.message || "Google sign-in failed");
@@ -70,97 +51,91 @@ export default function LoginPage() {
   }
 
   return (
-    <main className="min-h-screen bg-gray-50 flex flex-col justify-center py-12 sm:px-6 lg:px-8">
+    <main className="min-h-screen bg-slate-50 flex flex-col justify-center py-12 sm:px-6 lg:px-8">
       <div className="sm:mx-auto sm:w-full sm:max-w-md">
-        <h2 className="mt-6 text-center text-3xl font-extrabold text-gray-900">
-          Welcome Back
+        <h2 className="text-center text-3xl font-extrabold text-slate-900 tracking-tight">
+          Sign In to Account
         </h2>
-        <p className="mt-2 text-center text-sm text-gray-600">
-          Sign in to your account
+        <p className="mt-2 text-center text-sm text-slate-500">
+          Enter your credentials or continue with Google
         </p>
       </div>
 
       <div className="mt-8 sm:mx-auto sm:w-full sm:max-w-md">
-        <div className="bg-white py-8 px-4 shadow sm:rounded-lg sm:px-10 space-y-6">
+        <div className="bg-white py-8 px-4 shadow-md sm:rounded-xl sm:px-10 border border-slate-100 space-y-6">
           
-          {/* Invisible Recaptcha Container */}
-          <div id="recaptcha-container" />
-
-          {/* Phone Number Input & Button */}
-          {!confirm ? (
-            <div className="space-y-2">
-              <label className="block text-sm font-medium text-gray-700">
-                Phone Number
+          {/* Email & Password Form */}
+          <form onSubmit={handleEmailLogin} className="space-y-4">
+            <div>
+              <label className="block text-sm font-semibold text-slate-700 mb-1">
+                Email Address
               </label>
-              <div className="flex gap-2">
-                <input
-                  type="tel"
-                  placeholder="+91XXXXXXXXXX"
-                  value={phone}
-                  onChange={(e) => setPhone(e.target.value)}
-                  disabled={loading}
-                  className="appearance-none block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
-                />
-                <button
-                  onClick={sendOTP}
-                  disabled={loading}
-                  className="w-32 inline-flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 disabled:opacity-50"
-                >
-                  {loading ? "Sending..." : "Send OTP"}
-                </button>
-              </div>
+              <input
+                type="email"
+                placeholder="you@example.com"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                disabled={loading}
+                className="block w-full px-3 py-2.5 border border-slate-300 rounded-lg shadow-sm placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 sm:text-sm disabled:opacity-60"
+                required
+              />
             </div>
-          ) : (
-            /* OTP Input & Button (Sirf tabhi dikhega jab OTP send ho chuka ho) */
-            <div className="space-y-2">
-              <label className="block text-sm font-medium text-gray-700">
-                Enter Verification Code
+
+            <div>
+              <label className="block text-sm font-semibold text-slate-700 mb-1">
+                Password
               </label>
-              <div className="flex gap-2">
-                <input
-                  type="text"
-                  placeholder="6-digit OTP"
-                  value={otp}
-                  onChange={(e) => setOtp(e.target.value)}
-                  disabled={loading}
-                  className="appearance-none block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-green-500 focus:border-green-500 sm:text-sm"
-                />
-                <button
-                  onClick={verifyOTP}
-                  disabled={loading}
-                  className="w-32 inline-flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-green-600 hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500 disabled:opacity-50"
-                >
-                  {loading ? "Verifying..." : "Verify OTP"}
-                </button>
-              </div>
+              <input
+                type="password"
+                placeholder="••••••••"
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                disabled={loading}
+                className="block w-full px-3 py-2.5 border border-slate-300 rounded-lg shadow-sm placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 sm:text-sm disabled:opacity-60"
+                required
+              />
+            </div>
+
+            {/* Forgot Password Link (Optional) */}
+            <div className="flex items-center justify-end">
               <button 
-                onClick={() => setConfirm(null)} 
-                className="text-xs text-indigo-600 hover:underline mt-1"
+                type="button"
+                className="text-xs font-medium text-blue-600 hover:underline"
               >
-                Change Phone Number
+                Forgot password?
               </button>
             </div>
-          )}
 
-          {/* Divider Line */}
+            {/* Submit Button */}
+            <button
+              type="submit"
+              disabled={loading}
+              className="w-full flex justify-center items-center py-2.5 px-4 border border-transparent rounded-lg shadow-sm text-sm font-medium text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 disabled:opacity-50 transition-colors"
+            >
+              {loading ? "Signing in..." : "Sign In with Email"}
+            </button>
+          </form>
+
+          {/* Divider "Or continue with" */}
           <div className="relative my-6">
             <div className="absolute inset-0 flex items-center">
-              <div className="w-full border-t border-gray-300" />
+              <div className="w-full border-t border-slate-200" />
             </div>
             <div className="relative flex justify-center text-sm">
-              <span className="px-2 bg-white text-gray-500">Or continue with</span>
+              <span className="px-3 bg-white text-slate-400 font-medium">Or continue with</span>
             </div>
           </div>
 
           {/* Google Login Button */}
           <div>
             <button
-              onClick={loginWithGoogle}
+              onClick={handleGoogleLogin}
               disabled={loading}
-              className="w-full inline-flex justify-center items-center py-2 px-4 border border-gray-300 rounded-md shadow-sm bg-white text-sm font-medium text-gray-500 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 disabled:opacity-50"
+              type="button"
+              className="w-full inline-flex justify-center items-center py-2.5 px-4 border border-slate-300 rounded-lg shadow-sm bg-white text-sm font-medium text-slate-700 hover:bg-slate-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 disabled:opacity-50 transition-colors"
             >
-              {/* Google Icon SVG */}
-              <svg className="w-5 h-5 mr-2" viewBox="0 0 24 24">
+              {/* Google SVG Icon */}
+              <svg className="w-5 h-5 mr-2.5" viewBox="0 0 24 24">
                 <path
                   fill="#4285F4"
                   d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"
