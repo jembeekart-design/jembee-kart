@@ -1,64 +1,52 @@
-/* ======================================================
-FILE:
-src/app/cart/page.tsx
-
-FEATURES:
-
-✅ Modern Cart UI
-✅ Quantity Increase/Decrease
-✅ Remove Product
-✅ Cart Total
-✅ Discount Price
-✅ Gradient Checkout Button
-✅ Firebase Ready
-✅ Mobile Responsive
-✅ Bottom Navbar
-✅ WhatsApp Floating Button
-====================================================== */
-
 "use client";
 
-import { useState } from "react";
-
-import Image from "next/image";
+export const dynamic = "force-dynamic";
 
 import {
+  useEffect,
+  useMemo,
+  useState
+} from "react";
+
+import Link from "next/link";
+
+import {
+  collection,
+  deleteDoc,
+  doc,
+  onSnapshot,
+  updateDoc
+} from "firebase/firestore";
+
+import {
+  ArrowLeft,
   Minus,
   Plus,
   ShoppingBag,
-  Trash2
+  Trash2,
+  Zap
 } from "lucide-react";
 
-import Header from "@/components/navigation/Header";
+import { db } from "@/firebase/config";
 
-import BottomNavbar from "@/components/navigation/BottomNavbar";
-
-import WhatsAppButton from "@/components/navigation/WhatsAppButton";
-
-/* ======================================================
-TYPES
-====================================================== */
-
-interface CartProduct {
+interface CartItem {
 
   id: string;
 
-  title: string;
+  productId: string;
 
-  category: string;
+  title: string;
 
   image: string;
 
   price: number;
 
-  discountPrice?: number;
-
   quantity: number;
-}
 
-/* ======================================================
-COMPONENT
-====================================================== */
+  size?: string;
+
+  color?: string;
+}
 
 export default function CartPage() {
 
@@ -69,142 +57,136 @@ export default function CartPage() {
   const [
     cartItems,
     setCartItems
-  ] = useState<CartProduct[]>([
+  ] = useState<CartItem[]>([]);
 
-    {
-      id: "1",
-
-      title:
-        "Premium Oversized T-Shirt",
-
-      category:
-        "Fashion",
-
-      image:
-        "https://placehold.co/600x600",
-
-      price: 1499,
-
-      discountPrice: 999,
-
-      quantity: 1
-    },
-
-    {
-      id: "2",
-
-      title:
-        "Streetwear Hoodie",
-
-      category:
-        "Hoodie",
-
-      image:
-        "https://placehold.co/600x600",
-
-      price: 2499,
-
-      discountPrice: 1899,
-
-      quantity: 2
-    }
-
-  ]);
+  const [
+    loading,
+    setLoading
+  ] = useState(true);
 
   /* ======================================================
-  QUANTITY
+  GET CART ITEMS
   ====================================================== */
 
-  function increaseQuantity(
-    id: string
+  useEffect(() => {
+
+    const unsubscribe =
+      onSnapshot(
+
+        collection(
+          db,
+          "cart"
+        ),
+
+        (snapshot) => {
+
+          const data =
+            snapshot.docs.map(
+              (document) => ({
+
+                id:
+                  document.id,
+
+                ...(document.data() as Omit<
+                  CartItem,
+                  "id"
+                >)
+
+              })
+            );
+
+          setCartItems(
+            data
+          );
+
+          setLoading(false);
+        }
+      );
+
+    return () =>
+      unsubscribe();
+
+  }, []);
+
+  /* ======================================================
+  TOTAL
+  ====================================================== */
+
+  const totalPrice =
+    useMemo(() => {
+
+      return cartItems.reduce(
+        (
+          total,
+          item
+        ) => {
+
+          return (
+            total +
+            item.price *
+              item.quantity
+          );
+        },
+        0
+      );
+
+    }, [cartItems]);
+
+  /* ======================================================
+  UPDATE QUANTITY
+  ====================================================== */
+
+  async function updateQuantity(
+    id: string,
+    quantity: number
   ) {
 
-    setCartItems(
+    if (quantity < 1) {
+      return;
+    }
 
-      cartItems.map(
-        (item) =>
+    try {
 
-          item.id === id
+      await updateDoc(
+        doc(
+          db,
+          "cart",
+          id
+        ),
+        {
+          quantity
+        }
+      );
 
-            ? {
-                ...item,
-                quantity:
-                  item.quantity + 1
-              }
+    } catch (error) {
 
-            : item
-      )
-    );
-  }
-
-  function decreaseQuantity(
-    id: string
-  ) {
-
-    setCartItems(
-
-      cartItems.map(
-        (item) =>
-
-          item.id === id
-
-            ? {
-                ...item,
-                quantity:
-                  item.quantity > 1
-
-                    ? item.quantity - 1
-
-                    : 1
-              }
-
-            : item
-      )
-    );
+      console.error(error);
+    }
   }
 
   /* ======================================================
   REMOVE ITEM
   ====================================================== */
 
-  function removeItem(
+  async function removeItem(
     id: string
   ) {
 
-    setCartItems(
+    try {
 
-      cartItems.filter(
-        (item) =>
-          item.id !== id
-      )
-    );
+      await deleteDoc(
+        doc(
+          db,
+          "cart",
+          id
+        )
+      );
+
+    } catch (error) {
+
+      console.error(error);
+    }
   }
-
-  /* ======================================================
-  TOTALS
-  ====================================================== */
-
-  const subtotal =
-    cartItems.reduce(
-
-      (total, item) =>
-
-        total +
-
-        (
-          item.discountPrice ||
-          item.price
-        ) *
-          item.quantity,
-
-      0
-    );
-
-  const shipping =
-    subtotal > 0 ? 99 : 0;
-
-  const total =
-    subtotal + shipping;
 
   /* ======================================================
   UI
@@ -215,12 +197,8 @@ export default function CartPage() {
     <main
       className="
         min-h-screen
-        overflow-x-hidden
-        bg-[#f6f7fb]
-        pb-40
-        pt-[115px]
-
-        md:pt-[150px]
+        bg-[#f6f6f6]
+        pb-[120px]
       "
     >
 
@@ -228,16 +206,16 @@ export default function CartPage() {
       HEADER
       ====================================================== */}
 
-      <Header />
-
-      {/* ======================================================
-      PAGE TITLE
-      ====================================================== */}
-
-      <section
+      <div
         className="
-          px-4
-          pt-5
+          sticky
+          top-0
+          z-50
+
+          bg-[#f6f6f6]/90
+          px-3
+          pt-3
+          backdrop-blur-md
         "
       >
 
@@ -246,117 +224,149 @@ export default function CartPage() {
             flex
             items-center
             justify-between
+
+            rounded-[18px]
+            bg-white
+
+            px-3
+            py-3
+
+            shadow-sm
           "
         >
 
-          <div>
+          <div
+            className="
+              flex
+              items-center
+              gap-3
+            "
+          >
 
-            <h1
+            <Link
+              href="/"
               className="
-                text-3xl
-                font-black
-                text-black
+                flex
+                h-9
+                w-9
+                items-center
+                justify-center
+
+                rounded-full
+
+                bg-gray-100
               "
             >
 
-              My Cart
+              <ArrowLeft
+                size={18}
+              />
 
-            </h1>
+            </Link>
 
-            <p
-              className="
-                mt-1
-                text-sm
-                text-gray-500
-              "
-            >
+            <div>
 
-              {
-                cartItems.length
-              }
-              {" "}
-              items in cart
+              <h1
+                className="
+                  text-[18px]
+                  font-black
+                "
+              >
 
-            </p>
+                My Cart
+
+              </h1>
+
+              <p
+                className="
+                  text-[11px]
+                  text-gray-500
+                "
+              >
+
+                {
+                  cartItems.length
+                }
+                {" "}
+                items
+
+              </p>
+
+            </div>
 
           </div>
 
           <div
             className="
               flex
-              h-14
-              w-14
+              h-10
+              w-10
               items-center
               justify-center
-              rounded-3xl
-              bg-gradient-to-br
-              from-indigo-600
-              to-purple-600
-              text-white
-              shadow-lg
+
+              rounded-full
+
+              bg-purple-100
             "
           >
 
             <ShoppingBag
-              size={24}
+              size={18}
+              className="
+                text-purple-600
+              "
             />
 
           </div>
 
         </div>
 
-      </section>
+      </div>
 
       {/* ======================================================
-      EMPTY CART
+      CONTENT
       ====================================================== */}
 
-      {cartItems.length === 0 && (
+      <section
+        className="
+          space-y-4
+          px-3
+          pt-4
+        "
+      >
 
-        <section
-          className="
-            px-4
-            pt-20
-          "
-        >
+        {loading ? (
 
           <div
             className="
-              rounded-[35px]
-              bg-white
-              p-10
+              py-20
               text-center
-              shadow-sm
+              text-sm
+              font-bold
             "
           >
 
-            <div
-              className="
-                mx-auto
-                flex
-                h-24
-                w-24
-                items-center
-                justify-center
-                rounded-full
-                bg-gray-100
-              "
-            >
+            Loading Cart...
 
-              🛒
+          </div>
 
-            </div>
+        ) : cartItems.length === 0 ? (
+
+          <div
+            className="
+              py-24
+              text-center
+            "
+          >
 
             <h2
               className="
-                mt-6
-                text-2xl
+                text-[22px]
                 font-black
-                text-black
               "
             >
 
-              Cart Is Empty
+              Cart is Empty
 
             </h2>
 
@@ -368,43 +378,23 @@ export default function CartPage() {
               "
             >
 
-              Add products to continue shopping
+              Add products to continue
 
             </p>
 
           </div>
 
-        </section>
+        ) : (
 
-      )}
-
-      {/* ======================================================
-      CART ITEMS
-      ====================================================== */}
-
-      <section
-        className="
-          mt-6
-          space-y-5
-          px-4
-        "
-      >
-
-        {cartItems.map(
-          (item) => {
-
-            return (
+          cartItems.map(
+            (item) => (
 
               <div
-                key={
-                  item.id
-                }
-
+                key={item.id}
                 className="
-                  overflow-hidden
-                  rounded-[35px]
+                  rounded-[22px]
                   bg-white
-                  p-4
+                  p-3
                   shadow-sm
                 "
               >
@@ -412,7 +402,7 @@ export default function CartPage() {
                 <div
                   className="
                     flex
-                    gap-4
+                    gap-3
                   "
                 >
 
@@ -420,35 +410,30 @@ export default function CartPage() {
 
                   <div
                     className="
-                      relative
-                      h-28
-                      w-28
-                      shrink-0
+                      h-[110px]
+                      w-[110px]
                       overflow-hidden
-                      rounded-[28px]
+
+                      rounded-[18px]
                       bg-gray-100
                     "
                   >
 
-                    <Image
+                    <img
                       src={
                         item.image
                       }
-
-                      alt={
-                        item.title
-                      }
-
-                      fill
-
+                      alt=""
                       className="
+                        h-full
+                        w-full
                         object-cover
                       "
                     />
 
                   </div>
 
-                  {/* CONTENT */}
+                  {/* DETAILS */}
 
                   <div
                     className="
@@ -456,29 +441,11 @@ export default function CartPage() {
                     "
                   >
 
-                    <p
+                    <h2
                       className="
-                        text-[11px]
+                        line-clamp-2
+                        text-[15px]
                         font-black
-                        uppercase
-                        tracking-[1px]
-                        text-indigo-600
-                      "
-                    >
-
-                      {
-                        item.category
-                      }
-
-                    </p>
-
-                    <h3
-                      className="
-                        mt-2
-                        text-lg
-                        font-black
-                        leading-6
-                        text-black
                       "
                     >
 
@@ -486,97 +453,117 @@ export default function CartPage() {
                         item.title
                       }
 
-                    </h3>
+                    </h2>
 
-                    {/* PRICE */}
+                    {/* SIZE */}
 
                     <div
                       className="
-                        mt-3
+                        mt-2
                         flex
                         items-center
                         gap-2
                       "
                     >
 
-                      <p
+                      <span
                         className="
-                          text-2xl
-                          font-black
-                          text-black
+                          rounded-lg
+                          bg-gray-100
+                          px-2
+                          py-1
+
+                          text-[10px]
+                          font-bold
                         "
                       >
 
-                        ₹
+                        Size:
+                        {" "}
                         {
-                          item.discountPrice ||
-                          item.price
+                          item.size
                         }
 
-                      </p>
+                      </span>
 
-                      {item.discountPrice && (
-
-                        <p
-                          className="
-                            text-sm
-                            font-bold
-                            text-gray-400
-                            line-through
-                          "
-                        >
-
-                          ₹
-                          {
-                            item.price
-                          }
-
-                        </p>
-
-                      )}
+                      <div
+                        style={{
+                          background:
+                            item.color
+                        }}
+                        className="
+                          h-5
+                          w-5
+                          rounded-full
+                          border
+                        "
+                      />
 
                     </div>
 
-                    {/* ACTIONS */}
+                    {/* PRICE */}
+
+                    <h3
+                      className="
+                        mt-3
+                        text-[22px]
+                        font-black
+                      "
+                    >
+
+                      ₹
+                      {
+                        item.price
+                      }
+
+                    </h3>
+
+                    {/* QUANTITY */}
 
                     <div
                       className="
-                        mt-4
+                        mt-3
                         flex
                         items-center
                         justify-between
                       "
                     >
 
-                      {/* QUANTITY */}
-
                       <div
                         className="
                           flex
                           items-center
-                          gap-3
-                          rounded-2xl
-                          bg-gray-100
-                          px-3
-                          py-2
+                          gap-2
                         "
                       >
 
                         <button
                           onClick={() =>
-                            decreaseQuantity(
-                              item.id
+                            updateQuantity(
+                              item.id,
+                              item.quantity - 1
                             )
                           }
+                          className="
+                            flex
+                            h-8
+                            w-8
+                            items-center
+                            justify-center
+
+                            rounded-full
+
+                            bg-gray-100
+                          "
                         >
 
                           <Minus
-                            size={16}
+                            size={14}
                           />
 
                         </button>
 
-                        <p
+                        <span
                           className="
                             min-w-[20px]
                             text-center
@@ -589,48 +576,61 @@ export default function CartPage() {
                             item.quantity
                           }
 
-                        </p>
+                        </span>
 
                         <button
                           onClick={() =>
-                            increaseQuantity(
-                              item.id
+                            updateQuantity(
+                              item.id,
+                              item.quantity + 1
                             )
                           }
+                          className="
+                            flex
+                            h-8
+                            w-8
+                            items-center
+                            justify-center
+
+                            rounded-full
+
+                            bg-purple-600
+                            text-white
+                          "
                         >
 
                           <Plus
-                            size={16}
+                            size={14}
                           />
 
                         </button>
 
                       </div>
 
-                      {/* DELETE */}
+                      {/* REMOVE */}
 
                       <button
-
                         onClick={() =>
                           removeItem(
                             item.id
                           )
                         }
-
                         className="
                           flex
-                          h-11
-                          w-11
+                          h-9
+                          w-9
                           items-center
                           justify-center
-                          rounded-2xl
-                          bg-red-50
+
+                          rounded-full
+
+                          bg-red-100
                           text-red-500
                         "
                       >
 
                         <Trash2
-                          size={18}
+                          size={16}
                         />
 
                       </button>
@@ -643,210 +643,113 @@ export default function CartPage() {
 
               </div>
 
-            );
+            )
+          )
 
-          }
         )}
 
       </section>
 
       {/* ======================================================
-      BILL DETAILS
+      BOTTOM CHECKOUT
       ====================================================== */}
 
       {cartItems.length > 0 && (
 
-        <section
+        <div
           className="
-            mt-8
-            px-4
+            fixed
+            bottom-0
+            left-0
+            z-50
+
+            w-full
+
+            border-t
+            bg-white
+
+            px-3
+            py-3
           "
         >
 
           <div
             className="
-              rounded-[35px]
-              bg-white
-              p-5
-              shadow-sm
+              flex
+              items-center
+              gap-3
             "
           >
 
-            <h2
-              className="
-                text-xl
-                font-black
-                text-black
-              "
-            >
-
-              Bill Details
-
-            </h2>
-
-            {/* SUBTOTAL */}
-
             <div
               className="
-                mt-5
-                flex
-                items-center
-                justify-between
+                flex-1
               "
             >
 
               <p
                 className="
-                  text-sm
-                  font-medium
+                  text-[11px]
+                  font-bold
                   text-gray-500
                 "
               >
 
-                Subtotal
+                Total Amount
 
               </p>
 
-              <p
+              <h2
                 className="
-                  text-sm
+                  text-[24px]
                   font-black
-                  text-black
                 "
               >
 
                 ₹
                 {
-                  subtotal
+                  totalPrice
                 }
 
-              </p>
+              </h2>
 
             </div>
-
-            {/* SHIPPING */}
-
-            <div
-              className="
-                mt-4
-                flex
-                items-center
-                justify-between
-              "
-            >
-
-              <p
-                className="
-                  text-sm
-                  font-medium
-                  text-gray-500
-                "
-              >
-
-                Shipping
-
-              </p>
-
-              <p
-                className="
-                  text-sm
-                  font-black
-                  text-black
-                "
-              >
-
-                ₹
-                {
-                  shipping
-                }
-
-              </p>
-
-            </div>
-
-            {/* TOTAL */}
-
-            <div
-              className="
-                mt-5
-                flex
-                items-center
-                justify-between
-                border-t
-                border-dashed
-                border-gray-200
-                pt-5
-              "
-            >
-
-              <p
-                className="
-                  text-lg
-                  font-black
-                  text-black
-                "
-              >
-
-                Total
-
-              </p>
-
-              <p
-                className="
-                  text-2xl
-                  font-black
-                  text-indigo-600
-                "
-              >
-
-                ₹
-                {
-                  total
-                }
-
-              </p>
-
-            </div>
-
-            {/* CHECKOUT BUTTON */}
 
             <button
               className="
-                mt-6
-                w-full
-                rounded-[25px]
+                flex
+                flex-1
+                items-center
+                justify-center
+                gap-2
+
+                rounded-[16px]
+
                 bg-gradient-to-r
-                from-indigo-600
-                to-purple-600
+                from-violet-600
+                to-fuchsia-500
+
                 py-4
-                text-sm
+
+                text-[14px]
                 font-black
                 text-white
-                shadow-xl
-                transition-all
-                duration-300
-
-                hover:scale-[1.02]
               "
             >
 
-              Proceed To Checkout
+              <Zap
+                size={16}
+              />
+
+              Checkout
 
             </button>
 
           </div>
 
-        </section>
+        </div>
 
       )}
-
-      {/* ======================================================
-      FLOATING BUTTONS
-      ====================================================== */}
-
-      <WhatsAppButton />
-
-      <BottomNavbar />
 
     </main>
 
