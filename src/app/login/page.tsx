@@ -1,179 +1,133 @@
 "use client";
 
+import { useState } from "react";
 import {
+  signInWithEmailAndPassword,
   GoogleAuthProvider,
-  signInWithPopup
+  signInWithRedirect,
 } from "firebase/auth";
 
-import {
-  doc,
-  setDoc
-} from "firebase/firestore";
-
-import {
-  auth,
-  db
-} from "@/lib/firebase";
+import { useRouter } from "next/navigation";
+import { auth } from "@/firebase/config";
 
 export default function LoginPage() {
+  const router = useRouter();
 
-  async function login() {
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [loading, setLoading] = useState(false);
+
+  async function handleEmailLogin(
+    e: React.FormEvent
+  ) {
+    e.preventDefault();
 
     try {
+      setLoading(true);
+
+      const result =
+        await signInWithEmailAndPassword(
+          auth,
+          email,
+          password
+        );
+
+      alert(
+        `Welcome ${result.user.email}`
+      );
+
+      router.push("/");
+    } catch (error: any) {
+      alert(error.message);
+      console.error(error);
+    } finally {
+      setLoading(false);
+    }
+  }
+
+  async function handleGoogleLogin() {
+    try {
+      setLoading(true);
 
       const provider =
         new GoogleAuthProvider();
 
-      const result =
-        await signInWithPopup(
-          auth,
-          provider
-        );
+      provider.setCustomParameters({
+        prompt: "select_account",
+      });
 
-      const user =
-        result.user;
-
-      /* SAVE USER */
-
-      await setDoc(
-
-        doc(
-          db,
-          "users",
-          user.uid
-        ),
-
-        {
-
-          uid:
-            user.uid,
-
-          name:
-            user.displayName,
-
-          email:
-            user.email,
-
-          photo:
-            user.photoURL,
-
-          createdAt:
-            Date.now()
-
-        },
-
-        {
-          merge: true
-        }
+      await signInWithRedirect(
+        auth,
+        provider
       );
-
-      alert(
-        "Login Success"
-      );
-
-      window.location.href =
-        "/account";
-
-    } catch (error) {
-
+    } catch (error: any) {
+      alert(error.message);
       console.error(error);
-
-      alert(
-        "Login Failed"
-      );
+      setLoading(false);
     }
   }
 
   return (
+    <main className="min-h-screen flex items-center justify-center bg-gray-100 p-4">
+      <div className="w-full max-w-md bg-white rounded-2xl shadow-lg p-6">
 
-    <main
-      className="
-        flex
-        min-h-screen
-        items-center
-        justify-center
-
-        bg-[#0f172a]
-
-        px-4
-      "
-    >
-
-      <div
-        className="
-          w-full
-          max-w-sm
-
-          rounded-[32px]
-
-          bg-white
-
-          p-6
-
-          shadow-2xl
-        "
-      >
-
-        <h1
-          className="
-            text-center
-            text-3xl
-            font-black
-            text-violet-700
-          "
-        >
-
-          JembeeKart
-
+        <h1 className="text-3xl font-bold text-center mb-2">
+          JembeeKart Login
         </h1>
 
-        <p
-          className="
-            mt-2
-            text-center
-            text-sm
-            text-gray-500
-          "
-        >
-
-          Login to continue
-
+        <p className="text-center text-gray-500 mb-6">
+          Login Or Create Account
         </p>
 
-        <button
-
-          onClick={login}
-
-          className="
-            mt-8
-
-            flex
-            w-full
-            items-center
-            justify-center
-
-            rounded-2xl
-
-            bg-gradient-to-r
-            from-violet-600
-            to-fuchsia-500
-
-            py-4
-
-            text-sm
-            font-black
-            text-white
-          "
+        <form
+          onSubmit={handleEmailLogin}
+          className="space-y-4"
         >
+          <input
+            type="email"
+            placeholder="Email"
+            value={email}
+            onChange={(e) =>
+              setEmail(e.target.value)
+            }
+            className="w-full border rounded-lg p-3"
+            required
+          />
 
+          <input
+            type="password"
+            placeholder="Password"
+            value={password}
+            onChange={(e) =>
+              setPassword(e.target.value)
+            }
+            className="w-full border rounded-lg p-3"
+            required
+          />
+
+          <button
+            type="submit"
+            disabled={loading}
+            className="w-full bg-blue-600 text-white p-3 rounded-lg"
+          >
+            {loading
+              ? "Please Wait..."
+              : "Login"}
+          </button>
+        </form>
+
+        <div className="text-center my-5">
+          OR
+        </div>
+
+        <button
+          onClick={handleGoogleLogin}
+          disabled={loading}
+          className="w-full bg-red-600 text-white p-3 rounded-lg"
+        >
           Continue With Google
-
         </button>
-
       </div>
-
     </main>
-
   );
-
 }
