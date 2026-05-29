@@ -6,7 +6,7 @@ import {
   GoogleAuthProvider, 
   signInWithPopup 
 } from "firebase/auth";
-import { auth } from "@/lib/firebase";
+import { auth } from "@/firebase/config";
 
 export default function LoginPage() {
   const [email, setEmail] = useState<string>("");
