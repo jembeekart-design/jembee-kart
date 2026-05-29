@@ -1,68 +1,117 @@
-import {
-  initializeApp,
-  getApps,
-  getApp
-} from "firebase/app";
+"use client";
 
 import {
-  getAuth
+  GoogleAuthProvider,
+  signInWithPopup
 } from "firebase/auth";
 
-import {
-  getFirestore
-} from "firebase/firestore";
+import { auth } from "@/lib/firebase";
 
-import {
-  getStorage
-} from "firebase/storage";
+export default function LoginPage() {
 
-/* FIREBASE CONFIG */
+  async function login() {
 
-const firebaseConfig = {
+    try {
 
-  apiKey:
-    process.env
-      .NEXT_PUBLIC_FIREBASE_API_KEY,
+      const provider =
+        new GoogleAuthProvider();
 
-  authDomain:
-    process.env
-      .NEXT_PUBLIC_FIREBASE_AUTH_DOMAIN,
-
-  projectId:
-    process.env
-      .NEXT_PUBLIC_FIREBASE_PROJECT_ID,
-
-  storageBucket:
-    process.env
-      .NEXT_PUBLIC_FIREBASE_STORAGE_BUCKET,
-
-  messagingSenderId:
-    process.env
-      .NEXT_PUBLIC_FIREBASE_MESSAGING_SENDER_ID,
-
-  appId:
-    process.env
-      .NEXT_PUBLIC_FIREBASE_APP_ID
-};
-
-/* APP */
-
-const app =
-  getApps().length > 0
-    ? getApp()
-    : initializeApp(
-        firebaseConfig
+      await signInWithPopup(
+        auth,
+        provider
       );
 
-/* SERVICES */
+      alert(
+        "Login Success"
+      );
 
-export const auth =
-  getAuth(app);
+    } catch (error) {
 
-export const db =
-  getFirestore(app);
+      console.error(error);
 
-export const storage =
-  getStorage(app);
+      alert(
+        "Login Failed"
+      );
+    }
+  }
 
-export default app;
+  return (
+
+    <main
+      className="
+        flex
+        min-h-screen
+        items-center
+        justify-center
+        bg-[#0f172a]
+        px-4
+      "
+    >
+
+      <div
+        className="
+          w-full
+          max-w-sm
+          rounded-[32px]
+          bg-white
+          p-6
+          shadow-2xl
+        "
+      >
+
+        <h1
+          className="
+            text-center
+            text-3xl
+            font-black
+            text-violet-700
+          "
+        >
+
+          JembeeKart
+
+        </h1>
+
+        <p
+          className="
+            mt-2
+            text-center
+            text-sm
+            text-gray-500
+          "
+        >
+
+          Login to continue
+
+        </p>
+
+        <button
+          onClick={login}
+          className="
+            mt-8
+            flex
+            w-full
+            items-center
+            justify-center
+            rounded-2xl
+            bg-gradient-to-r
+            from-violet-600
+            to-fuchsia-500
+            py-4
+            text-sm
+            font-black
+            text-white
+          "
+        >
+
+          Continue With Google
+
+        </button>
+
+      </div>
+
+    </main>
+
+  );
+
+}
