@@ -8,6 +8,7 @@ import {
   deleteDoc,
   doc,
   getDocs,
+  getDoc,
   updateDoc,
 } from "firebase/firestore";
 
@@ -23,7 +24,7 @@ import { db } from "@/firebase/config";
 
 interface Order {
   id: string;
-  userId: string; // Added to map user profile for MLM triggers
+  userId: string; 
   customerName: string;
   productTitle: string;
   amount: number;
@@ -56,6 +57,9 @@ export default function OrdersPage() {
     }
   }
 
+  /* ======================================================
+  UPDATE STATUS WITH NAME-BASED REFERRAL GENERATION
+  ====================================================== */
   async function updateStatus(id: string, status: string) {
     try {
       // 1. Update Order Status in Orders Collection
@@ -72,21 +76,38 @@ export default function OrdersPage() {
         const currentOrder = orders.find((o) => o.id === id);
         
         if (currentOrder && currentOrder.userId) {
-          // Dynamic unique code generator (e.g., JBK + Random 4 String)
-          const randomSuffix = Math.random().toString(36).substring(2, 6).toUpperCase();
-          const generatedReferralCode = `JBK${randomSuffix}`;
-
           const userProfileRef = doc(db, "users", currentOrder.userId);
+          const userSnap = await getDoc(userProfileRef);
           
-          // Updating the user document in firestore with requested scheme
-          await updateDoc(userProfileRef, {
-            mlmActive: true,
-            referralCode: generatedReferralCode,
-            walletBalance: 0,
-            totalIncome: 0 // Optional fallback tracking safeguard
-          });
+          if (userSnap.exists()) {
+            const userData = userSnap.data();
+            
+            // Spaces remove karke uppercase banaya (e.g., "MD ALIM ANSARI" -> "MDALIMANSARI")
+            const userName = (userData?.name || "USER")
+              .replace(/\s+/g, "")
+              .toUpperCase();
 
-          console.log(`MLM Activated for User: ${currentOrder.userId} with Code: ${generatedReferralCode}`);
+            // Random 4 character suffix generate kiya
+            const randomSuffix = Math.random()
+              .toString(36)
+              .substring(2, 6)
+              .toUpperCase();
+
+            // Dynamic format string interpolation (e.g., JBK + MDAL + X7Q9)
+            const generatedReferralCode = `JBK${userName.substring(0, 4)}${randomSuffix}`;
+
+            // User document update data integrity ke sath
+            await updateDoc(userProfileRef, {
+              mlmActive: true,
+              referralCode: generatedReferralCode,
+              walletBalance: userData?.walletBalance || 0,
+              totalIncome: userData?.totalIncome || 0
+            });
+
+            console.log(`MLM Activated with Name-Based Code: ${generatedReferralCode}`);
+          } else {
+            console.warn("User profile does not exist in Firestore.");
+          }
         } else {
           console.warn("Could not activate MLM. userId is missing in this order document.");
         }
