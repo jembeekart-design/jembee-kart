@@ -26,7 +26,7 @@ import BottomNavbar from "@/components/navigation/BottomNavbar";
 import WhatsAppButton from "@/components/navigation/WhatsAppButton";
 
 /* ======================================================
-TYPES (UPDATED)
+TYPES
 ====================================================== */
 interface UserProfile {
   uid: string;
@@ -50,51 +50,59 @@ export default function AccountPage() {
   const [loading, setLoading] = useState(true);
 
   /* ======================================================
-  AUTH STATE & FIRESTORE REALTIME SYNC (UPDATED)
+  AUTH STATE & FIRESTORE REALTIME SYNC (FIXED CLEANUP)
   ====================================================== */
   useEffect(() => {
+    let unsubscribeFirestore: (() => void) | undefined;
+
     const unsubscribeAuth = onAuthStateChanged(auth, (currentUser) => {
       if (!currentUser) {
         router.push("/login");
-      } else {
-        const docRef = doc(db, "users", currentUser.uid);
-        const unsubscribeFirestore = onSnapshot(docRef, (docSnap) => {
-          if (docSnap.exists()) {
-            const data = docSnap.data();
-            setUser({
-              uid: data.uid || currentUser.uid,
-              email: data.email || "",
-              name: data.name || "",
-              photo: data.photo || "",
-              phone: data.phone || "",
-              walletBalance: data.walletBalance || 0,
-              totalIncome: data.totalIncome || 0,
-              mlmActive: data.mlmActive || false,
-              referralCode: data.referralCode || "",
-              sponsorId: data.sponsorId || ""
-            });
-          } else {
-            setUser({
-              uid: currentUser.uid,
-              email: currentUser.email || "",
-              name: currentUser.displayName || "JembeeKart User",
-              photo: currentUser.photoURL || "",
-              phone: currentUser.phoneNumber || "",
-              walletBalance: 0,
-              totalIncome: 0,
-              mlmActive: false,
-              referralCode: "",
-              sponsorId: ""
-            });
-          }
-          setLoading(false);
-        });
-
-        return () => unsubscribeFirestore();
+        setLoading(false);
+        return;
       }
+
+      const docRef = doc(db, "users", currentUser.uid);
+
+      unsubscribeFirestore = onSnapshot(docRef, (docSnap) => {
+        if (docSnap.exists()) {
+          const data = docSnap.data();
+          setUser({
+            uid: data.uid || currentUser.uid,
+            email: data.email || "",
+            name: data.name || "",
+            photo: data.photo || "",
+            phone: data.phone || "",
+            walletBalance: data.walletBalance || 0,
+            totalIncome: data.totalIncome || 0,
+            mlmActive: data.mlmActive || false,
+            referralCode: data.referralCode || "",
+            sponsorId: data.sponsorId || ""
+          });
+        } else {
+          setUser({
+            uid: currentUser.uid,
+            email: currentUser.email || "",
+            name: currentUser.displayName || "JembeeKart User",
+            photo: currentUser.photoURL || "",
+            phone: currentUser.phoneNumber || "",
+            walletBalance: 0,
+            totalIncome: 0,
+            mlmActive: false,
+            referralCode: "",
+            sponsorId: ""
+          });
+        }
+        setLoading(false);
+      });
     });
 
-    return () => unsubscribeAuth();
+    return () => {
+      unsubscribeAuth();
+      if (unsubscribeFirestore) {
+        unsubscribeFirestore();
+      }
+    };
   }, [router]);
 
   /* ======================================================
@@ -185,13 +193,13 @@ export default function AccountPage() {
       </section>
 
       {/* ======================================================
-      PROFILE CARD (DYNAMIC)
+      PROFILE CARD
       ====================================================== */}
       <section className="mt-6 px-4">
         <div className="overflow-hidden rounded-[35px] bg-gradient-to-br from-indigo-600 via-purple-600 to-pink-500 p-6 text-white shadow-2xl">
           <div className="flex items-center gap-4">
             
-            {/* AVATAR / PROFILE PIC (UPDATED KEYS) */}
+            {/* AVATAR / PROFILE PIC */}
             <div className="flex h-24 w-24 items-center justify-center rounded-full border-4 border-white/30 bg-white/20 overflow-hidden text-3xl font-black backdrop-blur-md">
               {user?.photo ? (
                 <img src={user.photo} alt="User Avatar" className="w-full h-full object-cover" />
@@ -200,7 +208,7 @@ export default function AccountPage() {
               )}
             </div>
 
-            {/* USER INFO (UPDATED KEYS) */}
+            {/* USER INFO */}
             <div className="min-w-0 flex-1">
               <h2 className="truncate text-2xl font-black">{user?.name}</h2>
               <p className="mt-1 truncate text-sm text-white/80">{user?.email}</p>
@@ -210,7 +218,7 @@ export default function AccountPage() {
             </div>
           </div>
 
-          {/* WALLET BALANCE (UPDATED KEYS) */}
+          {/* WALLET BALANCE */}
           <div className="mt-6 rounded-3xl bg-white/15 p-5 backdrop-blur-md">
             <div className="flex items-center justify-between">
               <div>
@@ -225,7 +233,7 @@ export default function AccountPage() {
             </div>
           </div>
 
-          {/* MLM STATUS (ADDED) */}
+          {/* MLM STATUS */}
           <div className="mt-4 rounded-3xl bg-white/15 p-5 backdrop-blur-md">
             <p className="text-sm font-semibold text-white/80">
               MLM Status
@@ -235,7 +243,7 @@ export default function AccountPage() {
             </h3>
           </div>
 
-          {/* REFERRAL CODE (ADDED) */}
+          {/* REFERRAL CODE */}
           <div className="mt-4 rounded-3xl bg-white/15 p-5 backdrop-blur-md">
             <p className="text-sm font-semibold text-white/80">
               Referral Code
