@@ -1,117 +1,68 @@
-"use client";
+import {
+  initializeApp,
+  getApps,
+  getApp
+} from "firebase/app";
 
 import {
-  GoogleAuthProvider,
-  signInWithPopup
+  getAuth
 } from "firebase/auth";
 
-import { auth } from "@/lib/firebase";
+import {
+  getFirestore
+} from "firebase/firestore";
 
-export default function LoginPage() {
+import {
+  getStorage
+} from "firebase/storage";
 
-  async function login() {
+/* FIREBASE CONFIG */
 
-    try {
+const firebaseConfig = {
 
-      const provider =
-        new GoogleAuthProvider();
+  apiKey:
+    process.env
+      .NEXT_PUBLIC_FIREBASE_API_KEY,
 
-      await signInWithPopup(
-        auth,
-        provider
+  authDomain:
+    process.env
+      .NEXT_PUBLIC_FIREBASE_AUTH_DOMAIN,
+
+  projectId:
+    process.env
+      .NEXT_PUBLIC_FIREBASE_PROJECT_ID,
+
+  storageBucket:
+    process.env
+      .NEXT_PUBLIC_FIREBASE_STORAGE_BUCKET,
+
+  messagingSenderId:
+    process.env
+      .NEXT_PUBLIC_FIREBASE_MESSAGING_SENDER_ID,
+
+  appId:
+    process.env
+      .NEXT_PUBLIC_FIREBASE_APP_ID
+};
+
+/* APP */
+
+const app =
+  getApps().length > 0
+    ? getApp()
+    : initializeApp(
+        firebaseConfig
       );
 
-      alert(
-        "Login Success"
-      );
+/* SERVICES */
 
-    } catch (error) {
+export const auth =
+  getAuth(app);
 
-      console.error(error);
+export const db =
+  getFirestore(app);
 
-      alert(
-        "Login Failed"
-      );
-    }
-  }
+export const storage =
+  getStorage(app);
 
-  return (
-
-    <main
-      className="
-        flex
-        min-h-screen
-        items-center
-        justify-center
-        bg-[#0f172a]
-        px-4
-      "
-    >
-
-      <div
-        className="
-          w-full
-          max-w-sm
-          rounded-[32px]
-          bg-white
-          p-6
-          shadow-2xl
-        "
-      >
-
-        <h1
-          className="
-            text-center
-            text-3xl
-            font-black
-            text-violet-700
-          "
-        >
-
-          JembeeKart
-
-        </h1>
-
-        <p
-          className="
-            mt-2
-            text-center
-            text-sm
-            text-gray-500
-          "
-        >
-
-          Login to continue
-
-        </p>
-
-        <button
-          onClick={login}
-          className="
-            mt-8
-            flex
-            w-full
-            items-center
-            justify-center
-            rounded-2xl
-            bg-gradient-to-r
-            from-violet-600
-            to-fuchsia-500
-            py-4
-            text-sm
-            font-black
-            text-white
-          "
-        >
-
-          Continue With Google
-
-        </button>
-
-      </div>
-
-    </main>
-
-  );
-
-}
+export default app;
