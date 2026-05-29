@@ -26,15 +26,19 @@ import BottomNavbar from "@/components/navigation/BottomNavbar";
 import WhatsAppButton from "@/components/navigation/WhatsAppButton";
 
 /* ======================================================
-TYPES
+TYPES (UPDATED)
 ====================================================== */
 interface UserProfile {
   uid: string;
   email: string;
-  displayName: string;
-  photoURL: string;
+  name: string;
+  photo: string;
   phone?: string;
-  wallet?: number;
+  walletBalance: number;
+  totalIncome: number;
+  mlmActive: boolean;
+  referralCode: string;
+  sponsorId: string;
 }
 
 /* ======================================================
@@ -46,28 +50,41 @@ export default function AccountPage() {
   const [loading, setLoading] = useState(true);
 
   /* ======================================================
-  AUTH STATE & FIRESTORE REALTIME SYNC
+  AUTH STATE & FIRESTORE REALTIME SYNC (UPDATED)
   ====================================================== */
   useEffect(() => {
     const unsubscribeAuth = onAuthStateChanged(auth, (currentUser) => {
       if (!currentUser) {
-        // Agar login nahi hai, toh automatic login page par bhej dega
         router.push("/login");
       } else {
-        // User logged in hai, Firestore se live fetch karenge
         const docRef = doc(db, "users", currentUser.uid);
         const unsubscribeFirestore = onSnapshot(docRef, (docSnap) => {
           if (docSnap.exists()) {
-            setUser(docSnap.data() as UserProfile);
+            const data = docSnap.data();
+            setUser({
+              uid: data.uid || currentUser.uid,
+              email: data.email || "",
+              name: data.name || "",
+              photo: data.photo || "",
+              phone: data.phone || "",
+              walletBalance: data.walletBalance || 0,
+              totalIncome: data.totalIncome || 0,
+              mlmActive: data.mlmActive || false,
+              referralCode: data.referralCode || "",
+              sponsorId: data.sponsorId || ""
+            });
           } else {
-            // Fallback object agar firestore doc abhi create na hua ho
             setUser({
               uid: currentUser.uid,
               email: currentUser.email || "",
-              displayName: currentUser.displayName || "JembeeKart User",
-              photoURL: currentUser.photoURL || "",
-              phone: currentUser.phoneNumber || "No dynamic phone yet",
-              wallet: 0 // Default wallet balance
+              name: currentUser.displayName || "JembeeKart User",
+              photo: currentUser.photoURL || "",
+              phone: currentUser.phoneNumber || "",
+              walletBalance: 0,
+              totalIncome: 0,
+              mlmActive: false,
+              referralCode: "",
+              sponsorId: ""
             });
           }
           setLoading(false);
@@ -174,18 +191,18 @@ export default function AccountPage() {
         <div className="overflow-hidden rounded-[35px] bg-gradient-to-br from-indigo-600 via-purple-600 to-pink-500 p-6 text-white shadow-2xl">
           <div className="flex items-center gap-4">
             
-            {/* AVATAR / PROFILE PIC */}
+            {/* AVATAR / PROFILE PIC (UPDATED KEYS) */}
             <div className="flex h-24 w-24 items-center justify-center rounded-full border-4 border-white/30 bg-white/20 overflow-hidden text-3xl font-black backdrop-blur-md">
-              {user?.photoURL ? (
-                <img src={user.photoURL} alt="User Avatar" className="w-full h-full object-cover" />
+              {user?.photo ? (
+                <img src={user.photo} alt="User Avatar" className="w-full h-full object-cover" />
               ) : (
-                user?.displayName?.charAt(0).toUpperCase() || "U"
+                user?.name?.charAt(0).toUpperCase() || "U"
               )}
             </div>
 
-            {/* USER INFO */}
+            {/* USER INFO (UPDATED KEYS) */}
             <div className="min-w-0 flex-1">
-              <h2 className="truncate text-2xl font-black">{user?.displayName}</h2>
+              <h2 className="truncate text-2xl font-black">{user?.name}</h2>
               <p className="mt-1 truncate text-sm text-white/80">{user?.email}</p>
               {user?.phone && (
                 <p className="mt-1 text-sm text-white/80">{user.phone}</p>
@@ -193,19 +210,39 @@ export default function AccountPage() {
             </div>
           </div>
 
-          {/* WALLET */}
+          {/* WALLET BALANCE (UPDATED KEYS) */}
           <div className="mt-6 rounded-3xl bg-white/15 p-5 backdrop-blur-md">
             <div className="flex items-center justify-between">
               <div>
                 <p className="text-sm font-semibold text-white/80">Wallet Balance</p>
                 <h3 className="mt-2 text-4xl font-black">
-                  ₹{user?.wallet !== undefined ? user.wallet : 0}
+                  ₹{user?.walletBalance || 0}
                 </h3>
               </div>
               <div className="flex h-16 w-16 items-center justify-center rounded-full bg-white/20">
                 <Wallet size={30} />
               </div>
             </div>
+          </div>
+
+          {/* MLM STATUS (ADDED) */}
+          <div className="mt-4 rounded-3xl bg-white/15 p-5 backdrop-blur-md">
+            <p className="text-sm font-semibold text-white/80">
+              MLM Status
+            </p>
+            <h3 className="mt-2 text-xl font-black">
+              {user?.mlmActive ? "ACTIVE" : "INACTIVE"}
+            </h3>
+          </div>
+
+          {/* REFERRAL CODE (ADDED) */}
+          <div className="mt-4 rounded-3xl bg-white/15 p-5 backdrop-blur-md">
+            <p className="text-sm font-semibold text-white/80">
+              Referral Code
+            </p>
+            <h3 className="mt-2 text-xl font-black">
+              {user?.referralCode || "LOCKED"}
+            </h3>
           </div>
 
         </div>
