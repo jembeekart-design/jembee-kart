@@ -6,7 +6,7 @@ import {
   GoogleAuthProvider,
   signInWithPopup,
 } from "firebase/auth";
-import { doc, setDoc, serverTimestamp } from "firebase/firestore";
+import { doc, setDoc } from "firebase/firestore";
 import { auth, db } from "@/firebase/config";
 
 export default function LoginPage() {
@@ -14,17 +14,28 @@ export default function LoginPage() {
   const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
 
-  // Firestore mein User Data Save/Update karne ka function (For Email Users)
+  /* ======================================================
+  FIRESTORE SAVE HELPER (UPDATED SCHEMA FOR EMAIL LOGIN)
+  ====================================================== */
   async function saveUserToFirestore(user: any) {
     const userRef = doc(db, "users", user.uid);
     await setDoc(
       userRef,
       {
         uid: user.uid,
-        email: user.email,
-        displayName: user.displayName || "JembeeKart User",
-        photoURL: user.photoURL || "https://placehold.co/150x150",
-        lastLogin: serverTimestamp(),
+        name: user.displayName || "JembeeKart User",
+        email: user.email || "",
+        photo: user.photoURL || "https://placehold.co/150x150",
+
+        walletBalance: 0,
+        totalIncome: 0,
+        mlmActive: false,
+        referralCode: "",
+        sponsorId: "",
+        totalReferrals: 0,
+        rank: "Member",
+
+        createdAt: Date.now()
       },
       { merge: true }
     );
@@ -51,7 +62,7 @@ export default function LoginPage() {
   }
 
   /* ======================================================
-  GOOGLE LOGIN (UPDATED DATA STRUCTURE)
+  GOOGLE LOGIN (EXACTLY MATCHING REQUESTED SCHEMA)
   ====================================================== */
   async function handleGoogleLogin() {
     if (loading) return;
@@ -64,14 +75,13 @@ export default function LoginPage() {
       const result = await signInWithPopup(auth, provider);
       
       if (result.user) {
-        // Naye dynamic schema aur requirements ke mutabik setDoc block
         await setDoc(
           doc(db, "users", result.user.uid),
           {
             uid: result.user.uid,
-            displayName: result.user.displayName || "",
+            name: result.user.displayName || "",
             email: result.user.email || "",
-            photoURL: result.user.photoURL || "",
+            photo: result.user.photoURL || "",
 
             walletBalance: 0,
             totalIncome: 0,
