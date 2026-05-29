@@ -14,7 +14,7 @@ export default function LoginPage() {
   const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
 
-  // Firestore mein User Data Save/Update karne ka function
+  // Firestore mein User Data Save/Update karne ka function (For Email Users)
   async function saveUserToFirestore(user: any) {
     const userRef = doc(db, "users", user.uid);
     await setDoc(
@@ -26,7 +26,7 @@ export default function LoginPage() {
         photoURL: user.photoURL || "https://placehold.co/150x150",
         lastLogin: serverTimestamp(),
       },
-      { merge: true } // merge: true se purana data (jaise orders) delete nahi hoga
+      { merge: true }
     );
   }
 
@@ -41,7 +41,7 @@ export default function LoginPage() {
       setLoading(true);
       const result = await signInWithEmailAndPassword(auth, email, password);
       await saveUserToFirestore(result.user);
-      window.location.href = "/account"; // Direct Account page par bhejenge
+      window.location.href = "/account"; 
     } catch (error: any) {
       console.error(error);
       alert(error.message || "Invalid email or password");
@@ -51,7 +51,7 @@ export default function LoginPage() {
   }
 
   /* ======================================================
-  GOOGLE LOGIN
+  GOOGLE LOGIN (UPDATED DATA STRUCTURE)
   ====================================================== */
   async function handleGoogleLogin() {
     if (loading) return;
@@ -62,8 +62,30 @@ export default function LoginPage() {
       provider.setCustomParameters({ prompt: "select_account" });
 
       const result = await signInWithPopup(auth, provider);
+      
       if (result.user) {
-        await saveUserToFirestore(result.user);
+        // Naye dynamic schema aur requirements ke mutabik setDoc block
+        await setDoc(
+          doc(db, "users", result.user.uid),
+          {
+            uid: result.user.uid,
+            displayName: result.user.displayName || "",
+            email: result.user.email || "",
+            photoURL: result.user.photoURL || "",
+
+            walletBalance: 0,
+            totalIncome: 0,
+            mlmActive: false,
+            referralCode: "",
+            sponsorId: "",
+            totalReferrals: 0,
+            rank: "Member",
+
+            createdAt: Date.now()
+          },
+          { merge: true }
+        );
+
         window.location.href = "/account"; 
       }
     } catch (error: any) {
