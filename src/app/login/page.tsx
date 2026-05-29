@@ -5,7 +5,15 @@ import {
   signInWithPopup
 } from "firebase/auth";
 
-import { auth } from "@/lib/firebase";
+import {
+  doc,
+  setDoc
+} from "firebase/firestore";
+
+import {
+  auth,
+  db
+} from "@/lib/firebase";
 
 export default function LoginPage() {
 
@@ -16,14 +24,55 @@ export default function LoginPage() {
       const provider =
         new GoogleAuthProvider();
 
-      await signInWithPopup(
-        auth,
-        provider
+      const result =
+        await signInWithPopup(
+          auth,
+          provider
+        );
+
+      const user =
+        result.user;
+
+      /* SAVE USER */
+
+      await setDoc(
+
+        doc(
+          db,
+          "users",
+          user.uid
+        ),
+
+        {
+
+          uid:
+            user.uid,
+
+          name:
+            user.displayName,
+
+          email:
+            user.email,
+
+          photo:
+            user.photoURL,
+
+          createdAt:
+            Date.now()
+
+        },
+
+        {
+          merge: true
+        }
       );
 
       alert(
         "Login Success"
       );
+
+      window.location.href =
+        "/account";
 
     } catch (error) {
 
@@ -43,7 +92,9 @@ export default function LoginPage() {
         min-h-screen
         items-center
         justify-center
+
         bg-[#0f172a]
+
         px-4
       "
     >
@@ -52,9 +103,13 @@ export default function LoginPage() {
         className="
           w-full
           max-w-sm
+
           rounded-[32px]
+
           bg-white
+
           p-6
+
           shadow-2xl
         "
       >
@@ -86,18 +141,25 @@ export default function LoginPage() {
         </p>
 
         <button
+
           onClick={login}
+
           className="
             mt-8
+
             flex
             w-full
             items-center
             justify-center
+
             rounded-2xl
+
             bg-gradient-to-r
             from-violet-600
             to-fuchsia-500
+
             py-4
+
             text-sm
             font-black
             text-white
