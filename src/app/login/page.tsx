@@ -1,40 +1,117 @@
 "use client";
 
-import { useEffect, useState } from "react";
-import { onAuthStateChanged } from "firebase/auth";
-import { auth } from "@/firebase/config";
+import {
+  GoogleAuthProvider,
+  signInWithPopup
+} from "firebase/auth";
 
-export default function HomePage() {
-  const [user, setUser] = useState<any>(null);
-  const [loading, setLoading] = useState(true);
+import { auth } from "@/lib/firebase";
 
-  useEffect(() => {
-    const unsub = onAuthStateChanged(auth, (u) => {
-      console.log("USER =", u);
-      setUser(u);
-      setLoading(false);
-    });
+export default function LoginPage() {
 
-    return () => unsub();
-  }, []);
+  async function login() {
 
-  if (loading) {
-    return <h1>Loading...</h1>;
+    try {
+
+      const provider =
+        new GoogleAuthProvider();
+
+      await signInWithPopup(
+        auth,
+        provider
+      );
+
+      alert(
+        "Login Success"
+      );
+
+    } catch (error) {
+
+      console.error(error);
+
+      alert(
+        "Login Failed"
+      );
+    }
   }
 
   return (
-    <div style={{ padding: 20 }}>
-      <h1>Firebase Test</h1>
 
-      {user ? (
-        <>
-          <p>Logged In</p>
-          <p>{user.email}</p>
-          <p>{user.displayName}</p>
-        </>
-      ) : (
-        <p>Not Logged In</p>
-      )}
-    </div>
+    <main
+      className="
+        flex
+        min-h-screen
+        items-center
+        justify-center
+        bg-[#0f172a]
+        px-4
+      "
+    >
+
+      <div
+        className="
+          w-full
+          max-w-sm
+          rounded-[32px]
+          bg-white
+          p-6
+          shadow-2xl
+        "
+      >
+
+        <h1
+          className="
+            text-center
+            text-3xl
+            font-black
+            text-violet-700
+          "
+        >
+
+          JembeeKart
+
+        </h1>
+
+        <p
+          className="
+            mt-2
+            text-center
+            text-sm
+            text-gray-500
+          "
+        >
+
+          Login to continue
+
+        </p>
+
+        <button
+          onClick={login}
+          className="
+            mt-8
+            flex
+            w-full
+            items-center
+            justify-center
+            rounded-2xl
+            bg-gradient-to-r
+            from-violet-600
+            to-fuchsia-500
+            py-4
+            text-sm
+            font-black
+            text-white
+          "
+        >
+
+          Continue With Google
+
+        </button>
+
+      </div>
+
+    </main>
+
   );
+
 }
