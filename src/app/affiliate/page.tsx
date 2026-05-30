@@ -214,7 +214,7 @@ export default function AffiliatePage() {
       </section>
 
       {/* ======================================================
-      QUICK STATS
+      QUICK STATS (UPDATED FIELDS)
       ====================================================== */}
       <section className="-mt-8 px-4">
         <div className="grid grid-cols-2 gap-4">
@@ -226,7 +226,7 @@ export default function AffiliatePage() {
             </div>
             <p className="mt-4 text-sm font-semibold text-gray-500">Today Income</p>
             <h2 className="mt-1 text-[28px] font-black">
-              ₹0
+              ₹{userData?.todayIncome || 0}
             </h2>
           </div>
 
@@ -237,7 +237,7 @@ export default function AffiliatePage() {
             </div>
             <p className="mt-4 text-sm font-semibold text-gray-500">Total Withdraw</p>
             <h2 className="mt-1 text-[28px] font-black">
-              ₹0
+              ₹{userData?.totalWithdraw || 0}
             </h2>
           </div>
 
