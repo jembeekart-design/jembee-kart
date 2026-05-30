@@ -13,6 +13,12 @@ import {
   doc,
   setDoc,
   getDoc,
+  updateDoc,
+  increment,
+  query,
+  collection,
+  where,
+  getDocs,
 } from "firebase/firestore";
 
 import { auth, db } from "@/firebase/config";
@@ -26,7 +32,7 @@ export default function SignupPage() {
   const [loading, setLoading] = useState(false);
 
   /* ======================================================
-  DYNAMIC USER PROFILE INITIALIZATION (CONDITIONAL MLM JOIN)
+  DYNAMIC USER PROFILE INITIALIZATION (WITH REFERRAL INCREMENT)
   ====================================================== */
   async function createUserProfile(user: any, displayName?: string) {
     const userRef = doc(db, "users", user.uid);
@@ -66,7 +72,25 @@ export default function SignupPage() {
       lastLogin: Date.now(),
     });
 
-    // 4. Cache cleanup of temporary referral flags safely
+    // 4. Sponsor Telemetry Real-time Increment Engine
+    if (sponsorCode) {
+      const q = query(
+        collection(db, "users"),
+        where("referralCode", "==", sponsorCode)
+      );
+
+      const sponsorSnap = await getDocs(q);
+
+      if (!sponsorSnap.empty) {
+        const sponsorDoc = sponsorSnap.docs[0];
+
+        await updateDoc(sponsorDoc.ref, {
+          totalReferrals: increment(1),
+        });
+      }
+    }
+
+    // 5. Cache cleanup of temporary referral flags safely
     localStorage.removeItem("jbk_pending_ref");
   }
 
