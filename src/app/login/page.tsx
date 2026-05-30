@@ -1,12 +1,13 @@
 "use client";
 
 import { useState } from "react";
+import { useSearchParams } from "next/navigation";
 import {
   signInWithEmailAndPassword,
   GoogleAuthProvider,
   signInWithPopup,
 } from "firebase/auth";
-import { doc, setDoc } from "firebase/firestore";
+import { doc, getDoc, setDoc } from "firebase/firestore";
 import { auth, db } from "@/firebase/config";
 
 export default function LoginPage() {
@@ -14,11 +15,23 @@ export default function LoginPage() {
   const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
 
+  // URL Query Parameters check karne ke liye hook (?ref=YOUR_CODE)
+  const searchParams = useSearchParams();
+  const referralCode = searchParams.get("ref") || "";
+
   /* ======================================================
-  FIRESTORE SAVE HELPER (UPDATED SCHEMA FOR EMAIL LOGIN)
+  DYNAMIC FIRESTORE SAVE HELPER (WITH MLM SPONSOR TRACKING)
   ====================================================== */
   async function saveUserToFirestore(user: any) {
+    let sponsorId = "";
+    if (referralCode) {
+      sponsorId = referralCode;
+    }
+
     const userRef = doc(db, "users", user.uid);
+    const userSnap = await getDoc(userRef);
+    const isNewUser = !userSnap.exists();
+
     await setDoc(
       userRef,
       {
@@ -31,7 +44,9 @@ export default function LoginPage() {
         totalIncome: 0,
         mlmActive: false,
         referralCode: "",
-        sponsorId: "",
+
+        // Safeguard: Purane users ka sponsor update nahi hoga, naye users par assign hoga
+        sponsorId: isNewUser ? sponsorId : userSnap.data()?.sponsorId || "",
         totalReferrals: 0,
         rank: "Member",
 
@@ -62,7 +77,7 @@ export default function LoginPage() {
   }
 
   /* ======================================================
-  GOOGLE LOGIN (EXACTLY MATCHING REQUESTED SCHEMA)
+  GOOGLE LOGIN (UPDATED TO INTEGRATE UNIFIED FIRESTORE SAVER)
   ====================================================== */
   async function handleGoogleLogin() {
     if (loading) return;
@@ -75,27 +90,8 @@ export default function LoginPage() {
       const result = await signInWithPopup(auth, provider);
       
       if (result.user) {
-        await setDoc(
-          doc(db, "users", result.user.uid),
-          {
-            uid: result.user.uid,
-            name: result.user.displayName || "",
-            email: result.user.email || "",
-            photo: result.user.photoURL || "",
-
-            walletBalance: 0,
-            totalIncome: 0,
-            mlmActive: false,
-            referralCode: "",
-            sponsorId: "",
-            totalReferrals: 0,
-            rank: "Member",
-
-            createdAt: Date.now()
-          },
-          { merge: true }
-        );
-
+        // Redundant setDoc inline logic ko hata kar shared system function se replace kiya
+        await saveUserToFirestore(result.user);
         window.location.href = "/account"; 
       }
     } catch (error: any) {
@@ -108,11 +104,13 @@ export default function LoginPage() {
 
   return (
     <main className="min-h-screen flex items-center justify-center bg-[#f6f7fb] p-4 sm:p-6 lg:p-8">
+      {/* BACKGROUND ELEMENTS */}
       <div className="absolute top-0 left-0 w-full h-full overflow-hidden pointer-events-none z-0">
         <div className="absolute -top-40 -right-40 w-96 h-96 bg-indigo-200 rounded-full mix-blend-multiply filter blur-3xl opacity-30 animate-pulse"></div>
         <div className="absolute -bottom-40 -left-40 w-96 h-96 bg-pink-200 rounded-full mix-blend-multiply filter blur-3xl opacity-30 animate-pulse delay-1000"></div>
       </div>
 
+      {/* LOGIN CARD */}
       <div className="w-full max-w-md bg-white rounded-[32px] shadow-2xl border border-gray-100 p-8 md:p-10 z-10">
         <div className="text-center mb-8">
           <div className="inline-flex items-center justify-center w-16 h-16 rounded-2xl bg-gradient-to-br from-indigo-500 via-purple-500 to-pink-500 text-white text-3xl shadow-md mb-4">
@@ -124,6 +122,7 @@ export default function LoginPage() {
           <p className="text-sm font-medium text-gray-400 mt-2">Welcome back! Login to continue.</p>
         </div>
 
+        {/* INPUT FORM CONTAINER */}
         <form onSubmit={handleEmailLogin} className="space-y-5">
           <div>
             <label className="block text-xs font-black uppercase tracking-wider text-gray-500 mb-2">Email Address</label>
@@ -160,12 +159,14 @@ export default function LoginPage() {
           </button>
         </form>
 
+        {/* DIVIDER LAYOUT */}
         <div className="relative flex py-6 items-center">
           <div className="flex-grow border-t border-gray-100"></div>
           <span className="flex-shrink mx-4 text-xs font-black uppercase tracking-widest text-gray-400">Or</span>
           <div className="flex-grow border-t border-gray-100"></div>
         </div>
 
+        {/* GOOGLE INTEGRATION ACTION */}
         <button
           onClick={handleGoogleLogin}
           disabled={loading}
