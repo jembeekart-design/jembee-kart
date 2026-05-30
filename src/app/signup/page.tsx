@@ -32,7 +32,7 @@ export default function SignupPage() {
   const [loading, setLoading] = useState(false);
 
   /* ======================================================
-  DYNAMIC USER PROFILE INITIALIZATION (WITH REFERRAL INCREMENT)
+  DYNAMIC USER PROFILE INITIALIZATION (WITH DECOUPLED SPONSOR UID)
   ====================================================== */
   async function createUserProfile(user: any, displayName?: string) {
     const userRef = doc(db, "users", user.uid);
@@ -44,10 +44,27 @@ export default function SignupPage() {
       return;
     }
 
-    // 2. Conditional Sponsor Tracking Pipeline
+    // 2. Conditional Sponsor Tracking & UID Resolution Pipeline
     const sponsorCode = localStorage.getItem("jbk_pending_ref") || "";
+    let sponsorUid = "";
+    let sponsorDocRef = null;
 
-    // 3. Document Allocation Write with Referral Injection & Financial Trackers
+    if (sponsorCode) {
+      const q = query(
+        collection(db, "users"),
+        where("referralCode", "==", sponsorCode)
+      );
+
+      const sponsorSnap = await getDocs(q);
+
+      if (!sponsorSnap.empty) {
+        const sponsorDoc = sponsorSnap.docs[0];
+        sponsorUid = sponsorDoc.data().uid;
+        sponsorDocRef = sponsorDoc.ref; // Retained safely for the increment operation below
+      }
+    }
+
+    // 3. Document Allocation Write with Dual-Key Referral Injection
     await setDoc(userRef, {
       uid: user.uid,
       name: displayName || user.displayName || "JembeeKart User",
@@ -59,9 +76,10 @@ export default function SignupPage() {
       todayIncome: 0,
       totalWithdraw: 0,
       
-      // Dynamic Alignment based on passive storage parameters
-      mlmActive: sponsorCode ? true : false,
-      sponsorId: sponsorCode,
+      // Decoupled Relationship Architecture
+      mlmActive: sponsorUid ? true : false,
+      sponsorId: sponsorUid,                 // System Mapping & Tree Queries
+      sponsorReferralCode: sponsorCode,      // UI Display & Audit Logs
 
       referralCode: Math.random()
         .toString(36)
@@ -77,21 +95,10 @@ export default function SignupPage() {
     });
 
     // 4. Sponsor Telemetry Real-time Increment Engine
-    if (sponsorCode) {
-      const q = query(
-        collection(db, "users"),
-        where("referralCode", "==", sponsorCode)
-      );
-
-      const sponsorSnap = await getDocs(q);
-
-      if (!sponsorSnap.empty) {
-        const sponsorDoc = sponsorSnap.docs[0];
-
-        await updateDoc(sponsorDoc.ref, {
-          totalReferrals: increment(1),
-        });
-      }
+    if (sponsorDocRef) {
+      await updateDoc(sponsorDocRef, {
+        totalReferrals: increment(1),
+      });
     }
 
     // 5. Cache cleanup of temporary referral flags safely
