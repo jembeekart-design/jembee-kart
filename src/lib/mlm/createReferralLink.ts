@@ -41,7 +41,7 @@ export async function createReferralLink(
        CHECK REFERRAL CODE
     ====================================================== */
 
-    if (!userData.referralCode) {
+    if (!userData?.referralCode) {
       return {
         success: false,
         message: "Referral Code Missing"
@@ -54,19 +54,10 @@ export async function createReferralLink(
 
     const appUrl =
       data.baseUrl ||
-      (typeof window !== "undefined"
-        ? window.location.origin
-        : "");
-
-    if (!appUrl) {
-      return {
-        success: false,
-        message: "Base URL Missing"
-      };
-    }
+      "https://jembee-kart.vercel.app";
 
     /* ======================================================
-       CREATE REFERRAL LINK
+       REFERRAL LINK
     ====================================================== */
 
     const referralLink =
@@ -90,6 +81,10 @@ Use My Referral Link 👇
 ${referralLink}
     `.trim();
 
+    /* ======================================================
+       RETURN SUCCESS
+    ====================================================== */
+
     return {
       success: true,
       referralCode:
@@ -99,6 +94,7 @@ ${referralLink}
     };
 
   } catch (error) {
+
     console.error(
       "REFERRAL LINK ERROR:",
       error
