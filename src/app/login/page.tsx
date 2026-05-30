@@ -7,7 +7,7 @@ import {
   GoogleAuthProvider,
   signInWithPopup,
 } from "firebase/auth";
-import { doc, getDoc, setDoc } from "firebase/firestore";
+import { doc, getDoc, setDoc, collection, query, where, getDocs } from "firebase/firestore";
 import { auth, db } from "@/firebase/config";
 
 export default function LoginPage() {
@@ -20,22 +20,37 @@ export default function LoginPage() {
   const referralCode = searchParams.get("ref") || "";
 
   /* ======================================================
-  FIRESTORE SAVE HELPER (ANTI-LOOP & CLEAN STRUCTURING)
+  FIRESTORE SAVE HELPER (STRICT DYNAMIC REFERRAL VALIDATION)
   ====================================================== */
   async function saveUserToFirestore(user: any) {
     let sponsorId = "";
-
-    // SOLVED: Agar referralCode user ki apni hi UID hai, toh use block karein (Anti-Self-Referral)
-    if (referralCode && referralCode !== user.uid) {
-      sponsorId = referralCode;
-    }
 
     const userRef = doc(db, "users", user.uid);
     const userSnap = await getDoc(userRef);
     const isNewUser = !userSnap.exists();
 
+    // Verification logic sirf naye user registrations ke liye chalega
+    if (isNewUser && referralCode) {
+      try {
+        // Firestore query check karegi ki kya ye referralCode kisi existing valid sponsor ka hai
+        const sponsorQuery = query(
+          collection(db, "users"),
+          where("referralCode", "==", referralCode)
+        );
+        
+        const sponsorSnap = await getDocs(sponsorQuery);
+
+        // Agar database me matching code mila, tabhi sponsorId allocate hoga warna empty string rahega
+        if (!sponsorSnap.empty) {
+          sponsorId = referralCode;
+        }
+      } catch (error) {
+        console.error("Error verifying referral code validation:", error);
+      }
+    }
+
     if (isNewUser) {
-      // Sirf naye user ke liye initialization schema run hoga (SOLVED: Empty string fallbacks)
+      // New user schema write operation
       await setDoc(userRef, {
         uid: user.uid,
         name: user.displayName || "JembeeKart User",
@@ -46,7 +61,7 @@ export default function LoginPage() {
         totalIncome: 0,
         mlmActive: false,
         referralCode: "",
-        sponsorId,
+        sponsorId, // Verified valid referral string or empty string
 
         totalReferrals: 0,
         rank: "Member",
@@ -55,7 +70,7 @@ export default function LoginPage() {
         lastLogin: Date.now()
       });
     } else {
-      // Existing user ka wallet aur loop settings safe rahengi
+      // Existing profiles ke liye update snapshot run hoga bina nodes ko disturb kiye
       await setDoc(
         userRef,
         {
