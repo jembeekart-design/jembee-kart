@@ -1,72 +1,73 @@
 "use client";
 
+import { useEffect, useState } from "react";
 import Link from "next/link";
+
+import { onAuthStateChanged } from "firebase/auth";
+import {
+  collection,
+  query,
+  where,
+  getDocs,
+} from "firebase/firestore";
+
+import { auth, db } from "@/firebase/config";
 
 import {
   ArrowLeft,
   Crown,
   Users,
-  UserPlus2
+  UserPlus2,
 } from "lucide-react";
 
 export default function MLMNetworkPage() {
+  const [networkData, setNetworkData] = useState<any[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [directCount, setDirectCount] = useState(0);
 
-  const networkData = [
+  useEffect(() => {
+    const unsub = onAuthStateChanged(auth, async (user) => {
+      try {
+        if (!user) {
+          setLoading(false);
+          return;
+        }
 
-    {
-      name: "Rahul Kumar",
-      level: 1,
-      earnings: 1200
-    },
+        const q = query(
+          collection(db, "users"),
+          where("sponsorId", "==", user.uid)
+        );
 
-    {
-      name: "Aman Ali",
-      level: 1,
-      earnings: 950
-    },
+        const snap = await getDocs(q);
 
-    {
-      name: "Sana Parveen",
-      level: 2,
-      earnings: 600
-    },
+        const members = snap.docs.map((doc) => ({
+          id: doc.id,
+          ...doc.data(),
+        }));
 
-    {
-      name: "Rohit Raj",
-      level: 2,
-      earnings: 480
-    },
+        setNetworkData(members);
+        setDirectCount(members.length);
+      } catch (error) {
+        console.error("Network Load Error:", error);
+      } finally {
+        setLoading(false);
+      }
+    });
 
-    {
-      name: "Imran Khan",
-      level: 3,
-      earnings: 250
-    }
-
-  ];
+    return () => unsub();
+  }, []);
 
   return (
-
     <main className="min-h-screen bg-[#f6f6f6] pb-20">
 
       {/* HEADER */}
 
-      <div
-        className="
-          sticky
-          top-0
-          z-50
-          bg-white
-          px-4
-          py-3
-          shadow-sm
-        "
-      >
+      <div className="sticky top-0 z-50 bg-white px-4 py-3 shadow-sm">
 
         <div className="flex items-center gap-3">
 
           <Link
-            href="/mlm/dashboard"
+            href="/affiliate"
             className="
               flex
               h-10
@@ -78,25 +79,17 @@ export default function MLMNetworkPage() {
               text-violet-700
             "
           >
-
             <ArrowLeft size={20} />
-
           </Link>
 
           <div>
-
             <h1 className="text-[24px] font-black text-violet-700">
-
               MLM Network
-
             </h1>
 
             <p className="text-[11px] text-gray-500">
-
               Your Referral Team
-
             </p>
-
           </div>
 
         </div>
@@ -132,25 +125,18 @@ export default function MLMNetworkPage() {
               bg-white/20
             "
           >
-
             <Crown size={34} />
-
           </div>
 
           <h2 className="mt-5 text-[30px] font-black">
-
             Total Team
             <br />
-            125 Members 🚀
-
+            {directCount} Members 🚀
           </h2>
 
           <p className="mt-3 text-[13px] leading-6 text-white/90">
-
-            Aapke referral network me
-            jitne jyada log honge,
+            Aapke referral network me jitne jyada log honge,
             utni jyada earning hogi.
-
           </p>
 
         </div>
@@ -178,15 +164,11 @@ export default function MLMNetworkPage() {
             />
 
             <h3 className="mt-3 text-[24px] font-black">
-
-              25
-
+              {directCount}
             </h3>
 
             <p className="text-[12px] text-gray-500">
-
               Direct Referrals
-
             </p>
 
           </div>
@@ -206,15 +188,11 @@ export default function MLMNetworkPage() {
             />
 
             <h3 className="mt-3 text-[24px] font-black">
-
-              100
-
+              {directCount}
             </h3>
 
             <p className="text-[12px] text-gray-500">
-
               Team Members
-
             </p>
 
           </div>
@@ -237,18 +215,29 @@ export default function MLMNetworkPage() {
         >
 
           <h2 className="text-[22px] font-black">
-
-            Referral Tree
-
+            Referral Team
           </h2>
 
-          <div className="mt-5 space-y-4">
+          {loading ? (
 
-            {networkData.map(
-              (member, index) => (
+            <div className="mt-6 text-center text-gray-500">
+              Loading Team...
+            </div>
+
+          ) : networkData.length === 0 ? (
+
+            <div className="mt-6 text-center text-gray-500">
+              No referrals found.
+            </div>
+
+          ) : (
+
+            <div className="mt-5 space-y-4">
+
+              {networkData.map((member) => (
 
                 <div
-                  key={index}
+                  key={member.id}
                   className="
                     rounded-2xl
                     border
@@ -263,15 +252,15 @@ export default function MLMNetworkPage() {
                     <div>
 
                       <h3 className="text-[15px] font-black">
-
-                        {member.name}
-
+                        {member.name || "Unnamed User"}
                       </h3>
 
                       <p className="mt-1 text-[11px] text-gray-500">
+                        Direct Referral
+                      </p>
 
-                        Level {member.level} Referral
-
+                      <p className="mt-1 text-[11px] text-violet-600 break-all">
+                        {member.referralCode}
                       </p>
 
                     </div>
@@ -287,19 +276,18 @@ export default function MLMNetworkPage() {
                         text-violet-700
                       "
                     >
-
-                      ₹{member.earnings}
-
+                      ₹{member.totalIncome || 0}
                     </div>
 
                   </div>
 
                 </div>
 
-              )
-            )}
+              ))}
 
-          </div>
+            </div>
+
+          )}
 
         </div>
 
@@ -319,9 +307,7 @@ export default function MLMNetworkPage() {
         >
 
           <h2 className="text-[22px] font-black">
-
             MLM Levels
-
           </h2>
 
           <div className="mt-4 space-y-3">
@@ -338,19 +324,13 @@ export default function MLMNetworkPage() {
             >
 
               <div>
-
                 <h3 className="text-[15px] font-black">
-
                   Level 1
-
                 </h3>
 
                 <p className="text-[11px] text-gray-600">
-
                   Direct Joining Income
-
                 </p>
-
               </div>
 
               <div
@@ -364,9 +344,7 @@ export default function MLMNetworkPage() {
                   text-white
                 "
               >
-
                 10%
-
               </div>
 
             </div>
@@ -383,19 +361,13 @@ export default function MLMNetworkPage() {
             >
 
               <div>
-
                 <h3 className="text-[15px] font-black">
-
                   Level 2
-
                 </h3>
 
                 <p className="text-[11px] text-gray-600">
-
                   Team Referral Income
-
                 </p>
-
               </div>
 
               <div
@@ -409,9 +381,7 @@ export default function MLMNetworkPage() {
                   text-white
                 "
               >
-
                 5%
-
               </div>
 
             </div>
@@ -428,19 +398,13 @@ export default function MLMNetworkPage() {
             >
 
               <div>
-
                 <h3 className="text-[15px] font-black">
-
                   Level 3
-
                 </h3>
 
                 <p className="text-[11px] text-gray-600">
-
                   Passive Team Income
-
                 </p>
-
               </div>
 
               <div
@@ -454,9 +418,7 @@ export default function MLMNetworkPage() {
                   text-white
                 "
               >
-
                 2%
-
               </div>
 
             </div>
@@ -468,7 +430,5 @@ export default function MLMNetworkPage() {
       </section>
 
     </main>
-
   );
-
 }
