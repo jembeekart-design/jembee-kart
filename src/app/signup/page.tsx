@@ -75,7 +75,9 @@ export default function SignupPage() {
       setLoading(true);
       const result = await createUserWithEmailAndPassword(auth, email, password);
       await createUserProfile(result.user, name);
-      router.push("/account");
+      
+      // Fixed Alignment: Router push targeting root path directly
+      router.push("/");
     } catch (error: any) {
       console.error("Email Registration Error:", error);
       alert(error.message || "Signup Failed");
@@ -97,7 +99,9 @@ export default function SignupPage() {
 
       const result = await signInWithPopup(auth, provider);
       await createUserProfile(result.user);
-      router.push("/account");
+      
+      // Fixed Alignment: Router push targeting root path directly
+      router.push("/");
     } catch (error: any) {
       console.error("Google Registration Error:", error);
       alert(error.message || "Google Signup Failed");
