@@ -8,89 +8,74 @@ import {
 import { db } from "@/firebase/config";
 
 interface ReferralQRCodeData {
-
   userId: string;
-
   baseUrl?: string;
-
 }
 
 export async function generateReferralQRCode(
   data: ReferralQRCodeData
 ) {
-
   try {
-
     /* ======================================================
-    GET USER
+       GET USER
     ====================================================== */
 
-    const userRef =
-      doc(
-        db,
-        "users",
-        data.userId
-      );
+    const userRef = doc(
+      db,
+      "users",
+      data.userId
+    );
 
     const userSnapshot =
-      await getDoc(
-        userRef
-      );
+      await getDoc(userRef);
 
-    if (
-      !userSnapshot.exists()
-    ) {
-
+    if (!userSnapshot.exists()) {
       return {
-
         success: false,
-
-        message:
-          "User Not Found"
-
+        message: "User Not Found"
       };
-
     }
 
     const userData =
       userSnapshot.data();
 
     /* ======================================================
-    CHECK REFERRAL CODE
+       CHECK REFERRAL CODE
     ====================================================== */
 
-    if (
-      !userData.referralCode
-    ) {
-
+    if (!userData.referralCode) {
       return {
-
         success: false,
-
-        message:
-          "Referral Code Missing"
-
+        message: "Referral Code Missing"
       };
-
     }
 
     /* ======================================================
-    APP URL
+       APP URL
     ====================================================== */
 
     const appUrl =
       data.baseUrl ||
-      "https://jembeekart.com";
+      (typeof window !== "undefined"
+        ? window.location.origin
+        : "");
+
+    if (!appUrl) {
+      return {
+        success: false,
+        message: "Base URL Missing"
+      };
+    }
 
     /* ======================================================
-    REFERRAL LINK
+       REFERRAL LINK
     ====================================================== */
 
     const referralLink =
-      `${appUrl}/register?ref=${userData.referralCode}`;
+      `${appUrl}/login?ref=${userData.referralCode}`;
 
     /* ======================================================
-    GENERATE QR CODE
+       GENERATE QR CODE
     ====================================================== */
 
     const qrCodeImage =
@@ -98,44 +83,32 @@ export async function generateReferralQRCode(
         referralLink,
         {
           width: 500,
-
           margin: 2
         }
       );
 
     /* ======================================================
-    RETURN
+       RETURN
     ====================================================== */
 
     return {
-
       success: true,
-
       referralCode:
         userData.referralCode,
-
       referralLink,
-
       qrCodeImage
-
     };
 
   } catch (error) {
-
     console.error(
       "QR CODE ERROR:",
       error
     );
 
     return {
-
       success: false,
-
       message:
         "Something went wrong"
-
     };
-
   }
-
 }
