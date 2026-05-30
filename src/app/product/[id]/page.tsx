@@ -149,13 +149,14 @@ export default function ProductPage() {
   }
 
   /* ======================================================
-  BUY NOW (DIRECT ORDER CREATION TRIGGER FOR MLM FLOW)
+  BUY NOW (UPDATED ROUTING WITH ORDER REFERENCE ENGINE)
   ====================================================== */
   async function buyNow() {
     if (!product) return;
 
     try {
-      await addDoc(collection(db, "orders"), {
+      // 1. Capture order reference from the document snapshot injection
+      const orderRef = await addDoc(collection(db, "orders"), {
         userId: auth.currentUser?.uid || "",
         customerName: auth.currentUser?.displayName || "Customer",
 
@@ -166,11 +167,13 @@ export default function ProductPage() {
         image: product.images?.[0] || "",
         address: "", // Address field can be filled in checkout profile later
 
-        status: "pending",
+        status: "paid", // Instantly initialized as paid
         createdAt: Date.now(),
       });
 
-      alert("Order Created Successfully");
+      // 2. Client-side push state allocation using template literals
+      window.location.href = `/payment-success?orderId=${orderRef.id}`;
+
     } catch (error) {
       console.error(error);
       alert("Order Failed");
@@ -489,7 +492,7 @@ export default function ProductPage() {
         </div>
       </section>
 
-      {/* BOTTOM CONTROL GRID (UPDATED INTERACTION ON CLICK) */}
+      {/* BOTTOM CONTROL GRID */}
       <div className="fixed bottom-0 left-0 z-50 w-full border-t bg-white px-3 py-2">
         <div className="flex items-center gap-2">
           <div>
