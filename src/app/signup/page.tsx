@@ -91,6 +91,10 @@ export default function SignupPage() {
       teamBusiness: 0,
       lifetimeBusiness: 0,
 
+      // NEW: ACTIVE REFERRAL STATUS TRACKERS
+      directActiveReferrals: 0,
+      teamActiveReferrals: 0,
+
       mlmActive: !!sponsorUid,
 
       sponsorId: sponsorUid,
