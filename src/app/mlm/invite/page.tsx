@@ -58,8 +58,8 @@ export default function MLMInvitePage() {
   // Safe client-side route evaluation for link sharing
   const baseOrigin = typeof window !== "undefined" ? window.location.origin : "https://jembeekart.com";
   const referralLink = referralCode 
-    ? `${baseOrigin}/register?ref=${referralCode}`
-    : `${baseOrigin}/register`;
+    ? `${baseOrigin}/login?ref=${referralCode}`
+    : `${baseOrigin}/login`;
 
   async function copyReferral() {
     try {
