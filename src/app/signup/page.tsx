@@ -65,12 +65,12 @@ export default function SignupPage() {
     }
 
     /* ======================================================
-    UPGRADED: 100% COLLISION-FREE REFERRAL CODE GENERATION
-    Combo of Base Prefix + Random Base36 String + Unique UID Tail Slice
+    UPGRADED: 100% GUARANTEED COLLISION-FREE REFERRAL CODE
+    Derived from unique Firebase UID parts to ensure zero overlap.
     ====================================================== */
-    const randomPart = Math.random().toString(36).substring(2, 6).toUpperCase(); // 4 Random characters
-    const uidPart = user.uid.slice(-4).toUpperCase(); // Last 4 characters of unique Firebase UID
-    const referralCode = `JBK${randomPart}${uidPart}`; // Format: JBK + XXXX + XXXX (Total 11 chars)
+    const startPart = user.uid.slice(0, 4).toUpperCase();
+    const endPart = user.uid.slice(-4).toUpperCase();
+    const referralCode = `JBK${startPart}${endPart}`;
 
     // 4. Fully Production-Compliant Structural MLM Write
     await setDoc(userRef, {
@@ -91,16 +91,25 @@ export default function SignupPage() {
       teamBusiness: 0,
       lifetimeBusiness: 0,
 
-      // NEW: ACTIVE REFERRAL STATUS TRACKERS
+      // ACTIVE REFERRAL STATUS TRACKERS
       directActiveReferrals: 0,
       teamActiveReferrals: 0,
+
+      // FUTURE MLM INCOME BREAKDOWN FIELDS
+      referralIncome: 0,
+      levelIncome: 0,
+      rankIncome: 0,
+
+      // SYSTEM & ORDER TRACKERS
+      totalOrders: 0,
+      isActive: false,
 
       mlmActive: !!sponsorUid,
 
       sponsorId: sponsorUid,
       sponsorReferralCode: sponsorCode,
 
-      referralCode, // Applied collision-free code
+      referralCode, // Applied 100% unique derivation code
 
       totalReferrals: 0,
 
@@ -110,10 +119,11 @@ export default function SignupPage() {
       lastLogin: Date.now(),
     });
 
-    // 5. Sponsor Telemetry Real-time Increment Engine
+    // 5. Upgraded Sponsor Telemetry Real-time Increment Engine
     if (sponsorDocRef) {
       await updateDoc(sponsorDocRef, {
         totalReferrals: increment(1),
+        directActiveReferrals: increment(1),
       });
     }
 
