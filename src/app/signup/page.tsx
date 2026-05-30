@@ -76,10 +76,16 @@ export default function SignupPage() {
       email: user.email || "",
       photo: user.photoURL || "",
 
+      // WALLET & REVENUE COUNTERS
       walletBalance: 0,
       totalIncome: 0,
       todayIncome: 0,
       totalWithdraw: 0,
+
+      // BUSINESS VOLUME ENGINE COUNTERS (ADDED SUCCESSFULLY)
+      directBusiness: 0,
+      teamBusiness: 0,
+      lifetimeBusiness: 0,
 
       mlmActive: !!sponsorUid,
 
