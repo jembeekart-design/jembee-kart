@@ -32,7 +32,7 @@ export default function SignupPage() {
   const [loading, setLoading] = useState(false);
 
   /* ======================================================
-  DYNAMIC USER PROFILE INITIALIZATION (WITH DECOUPLED SPONSOR UID)
+  DYNAMIC USER PROFILE INITIALIZATION (OPTIMIZED COLLISION-FREE)
   ====================================================== */
   async function createUserProfile(user: any, displayName?: string) {
     const userRef = doc(db, "users", user.uid);
@@ -60,13 +60,22 @@ export default function SignupPage() {
       if (!sponsorSnap.empty) {
         const sponsorDoc = sponsorSnap.docs[0];
         sponsorUid = sponsorDoc.data().uid;
-        sponsorDocRef = sponsorDoc.ref; // Retained safely for the increment operation below
+        sponsorDocRef = sponsorDoc.ref;
       }
     }
 
-    // 3. Document Allocation Write with Dual-Key Referral Injection
+    // 3. Collision-Free Unique Brand Referral Code Generation
+    const referralCode =
+      "JBK" +
+      Math.random()
+        .toString(36)
+        .substring(2, 8)
+        .toUpperCase();
+
+    // 4. Document Allocation Write with Explicit Boolean & Formatted Referrals
     await setDoc(userRef, {
       uid: user.uid,
+
       name: displayName || user.displayName || "JembeeKart User",
       email: user.email || "",
       photo: user.photoURL || "",
@@ -75,33 +84,30 @@ export default function SignupPage() {
       totalIncome: 0,
       todayIncome: 0,
       totalWithdraw: 0,
-      
-      // Decoupled Relationship Architecture
-      mlmActive: sponsorUid ? true : false,
-      sponsorId: sponsorUid,                 // System Mapping & Tree Queries
-      sponsorReferralCode: sponsorCode,      // UI Display & Audit Logs
 
-      referralCode: Math.random()
-        .toString(36)
-        .substring(2, 10)
-        .toUpperCase(),
+      mlmActive: !!sponsorUid,
+
+      sponsorId: sponsorUid,
+      sponsorReferralCode: sponsorCode,
+
+      referralCode,
 
       totalReferrals: 0,
-      
+
       rank: "Member",
 
       createdAt: Date.now(),
       lastLogin: Date.now(),
     });
 
-    // 4. Sponsor Telemetry Real-time Increment Engine
+    // 5. Sponsor Telemetry Real-time Increment Engine
     if (sponsorDocRef) {
       await updateDoc(sponsorDocRef, {
         totalReferrals: increment(1),
       });
     }
 
-    // 5. Cache cleanup of temporary referral flags safely
+    // 6. Cache cleanup of temporary referral flags safely
     localStorage.removeItem("jbk_pending_ref");
   }
 
@@ -117,7 +123,6 @@ export default function SignupPage() {
       const result = await createUserWithEmailAndPassword(auth, email, password);
       await createUserProfile(result.user, name);
       
-      // Fixed Alignment: Router push targeting root path directly
       router.push("/");
     } catch (error: any) {
       console.error("Email Registration Error:", error);
@@ -141,7 +146,6 @@ export default function SignupPage() {
       const result = await signInWithPopup(auth, provider);
       await createUserProfile(result.user);
       
-      // Fixed Alignment: Router push targeting root path directly
       router.push("/");
     } catch (error: any) {
       console.error("Google Registration Error:", error);
