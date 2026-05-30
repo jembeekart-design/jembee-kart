@@ -21,7 +21,6 @@ import {
   Mail,
   Calendar,
   Shield,
-  Briefcase,
 } from "lucide-react";
 
 export default function MLMNetworkPage() {
@@ -29,15 +28,11 @@ export default function MLMNetworkPage() {
   const [activeLevel, setActiveLevel] = useState<number>(1);
   
   /* ======================================================
-  DYNAMIC SCALABLE NETWORK LEVEL RECORD STATE
+  FUTURE PROOF STATE: 100% DYNAMIC AND SCALABLE FOR 10+ LEVELS
   ====================================================== */
-  const [networkLevels, setNetworkLevels] = useState<Record<number, any[]>>({
-    1: [],
-    2: [],
-    3: [],
-  });
+  const [networkLevels, setNetworkLevels] = useState<Record<number, any[]>>({});
   
-  // Global performance matrices
+  // Core counter matrices
   const [directCount, setDirectCount] = useState(0);
   const [totalTeamCount, setTotalTeamCount] = useState(0);
 
@@ -50,7 +45,7 @@ export default function MLMNetworkPage() {
           return;
         }
 
-        // Local state maps for tracking deep generation loops safely
+        // Fresh multi-level operational mapping ledger
         const localLevels: Record<number, any[]> = {
           1: [],
           2: [],
@@ -81,7 +76,6 @@ export default function MLMNetworkPage() {
           const l1Uids = l1Members.map((m) => m.uid);
           const chunks = [];
           
-          // Firestore 'in' limitation safety batching
           for (let i = 0; i < l1Uids.length; i += 10) {
             chunks.push(l1Uids.slice(i, i + 10));
           }
@@ -125,13 +119,12 @@ export default function MLMNetworkPage() {
           }
         }
 
-        // Updating dynamic records schema
+        // Automatically saves records (Even if some levels are empty, Object.keys handles safely)
         setNetworkLevels(localLevels);
         
-        // Total downline calculations
-        setTotalTeamCount(
-          localLevels[1].length + localLevels[2].length + localLevels[3].length
-        );
+        // Comprehensive matrix count calculation
+        const overallCount = Object.values(localLevels).reduce((acc, curr) => acc + curr.length, 0);
+        setTotalTeamCount(overallCount);
 
       } catch (error) {
         console.error("Multi-level Network Record Processing Error:", error);
@@ -143,17 +136,16 @@ export default function MLMNetworkPage() {
     return () => unsub();
   }, []);
 
-  // Safe extraction matching current key configuration
   const currentLevelMembers = networkLevels[activeLevel] || [];
 
   return (
     <main className="min-h-screen bg-[#f6f7fb] pb-20">
       
-      {/* HEADER */}
+      {/* HEADER WITH UPDATED BACK ROUTE */}
       <div className="sticky top-0 z-50 bg-white px-4 py-3 shadow-sm">
         <div className="flex items-center gap-3">
           <Link
-            href="/affiliate"
+            href="/mlm/dashboard"
             className="flex h-10 w-10 items-center justify-center rounded-full bg-violet-100 text-violet-700"
           >
             <ArrowLeft size={20} />
@@ -165,7 +157,7 @@ export default function MLMNetworkPage() {
         </div>
       </div>
 
-      {/* HERO HERO CONTAINER */}
+      {/* HERO CONTAINER */}
       <section className="px-4 pt-5">
         <div className="overflow-hidden rounded-[30px] bg-gradient-to-br from-violet-700 via-fuchsia-600 to-orange-500 p-5 text-white shadow-xl">
           <div className="flex h-16 w-16 items-center justify-center rounded-full bg-white/20">
@@ -182,7 +174,7 @@ export default function MLMNetworkPage() {
         </div>
       </section>
 
-      {/* STATS PLATFORM */}
+      {/* ANALYTICS SNAPSHOTS */}
       <section className="mt-6 px-4">
         <div className="grid grid-cols-2 gap-3">
           <div className="rounded-2xl bg-white p-4 shadow-sm border border-gray-100">
@@ -199,16 +191,16 @@ export default function MLMNetworkPage() {
         </div>
       </section>
 
-      {/* DYNAMIC RECORD CHANGER TABS SYSTEM */}
+      {/* DYNAMIC AUTO-GENERATING LEVEL TABS */}
       <section className="mt-6 px-4">
-        <div className="flex bg-gray-200/60 p-1.5 rounded-2xl gap-1">
+        <div className="flex bg-gray-200/60 p-1.5 rounded-2xl gap-1 overflow-x-auto scrollbar-none">
           {Object.keys(networkLevels).map((levelStr) => {
             const lvl = Number(levelStr);
             return (
               <button
                 key={lvl}
                 onClick={() => setActiveLevel(lvl)}
-                className={`flex-1 py-3 text-center text-xs font-black rounded-xl transition-all ${
+                className={`flex-1 min-w-[75px] py-3 text-center text-xs font-black rounded-xl transition-all ${
                   activeLevel === lvl
                     ? "bg-gradient-to-r from-violet-600 to-indigo-600 text-white shadow-md"
                     : "text-gray-500 hover:text-gray-900"
@@ -221,7 +213,7 @@ export default function MLMNetworkPage() {
         </div>
       </section>
 
-      {/* RECURSIVE DISPLAY BOARD */}
+      {/* DOWNLINE NODE PANEL GRID */}
       <section className="mt-4 px-4">
         <div className="rounded-[28px] bg-white p-5 shadow-sm border border-gray-100">
           <h2 className="text-[22px] font-black text-gray-900 mb-2">
@@ -260,7 +252,7 @@ export default function MLMNetworkPage() {
                         </span>
                       </div>
 
-                      {/* BASIC CORE DETAILS */}
+                      {/* DATA RECEPTACLE INFO */}
                       <div className="flex flex-col gap-1 text-[11px] font-medium text-gray-500">
                         <p className="flex items-center gap-1.5">
                           <Mail size={12} className="text-gray-400" />
@@ -272,7 +264,7 @@ export default function MLMNetworkPage() {
                         </p>
                       </div>
 
-                      {/* BUSINESS VOLUME ANALYTICS MODULE */}
+                      {/* STRUCTURAL VOLUME TRACKERS */}
                       <div className="mt-2 pt-2 border-t border-gray-200/60 grid grid-cols-3 gap-2 bg-white p-2 rounded-xl border border-gray-100">
                         <div>
                           <p className="text-[9px] font-bold text-gray-400 uppercase">Direct Biz</p>
@@ -293,7 +285,7 @@ export default function MLMNetworkPage() {
                       </p>
                     </div>
 
-                    {/* EARNING MATRIX BLOCK */}
+                    {/* REVENUE STATUS CARDS */}
                     <div className="flex items-center justify-between sm:flex-col sm:justify-center sm:items-end border-t sm:border-0 border-gray-100 pt-2 sm:pt-0 gap-1">
                       <span className="text-[10px] sm:hidden text-gray-400 font-bold">Total Earnings:</span>
                       <div className="rounded-full bg-violet-100 px-3 py-1 text-[11px] font-black text-violet-700">
@@ -308,7 +300,7 @@ export default function MLMNetworkPage() {
         </div>
       </section>
 
-      {/* CONF SYSTEM LEVEL CONFIG CARD */}
+      {/* STANDARD BASELINE PAYOUT INFO CONFIG */}
       <section className="mt-6 px-4">
         <div className="rounded-[28px] bg-white p-5 shadow-sm border border-gray-100">
           <h2 className="text-[22px] font-black text-gray-900">Distribution Levels Configuration</h2>
