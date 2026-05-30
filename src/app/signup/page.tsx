@@ -26,7 +26,7 @@ export default function SignupPage() {
   const [loading, setLoading] = useState(false);
 
   /* ======================================================
-  CLEAN USER PROFILE INITIALIZATION (NO AUTOMATIC MLM JOIN)
+  DYNAMIC USER PROFILE INITIALIZATION (CONDITIONAL MLM JOIN)
   ====================================================== */
   async function createUserProfile(user: any, displayName?: string) {
     const userRef = doc(db, "users", user.uid);
@@ -38,7 +38,10 @@ export default function SignupPage() {
       return;
     }
 
-    // 2. Pure Baseline Document Allocation Write
+    // 2. Conditional Sponsor Tracking Pipeline
+    const sponsorCode = localStorage.getItem("jbk_pending_ref") || "";
+
+    // 3. Document Allocation Write with Referral Injection
     await setDoc(userRef, {
       uid: user.uid,
       name: displayName || user.displayName || "JembeeKart User",
@@ -48,10 +51,13 @@ export default function SignupPage() {
       walletBalance: 0,
       totalIncome: 0,
       
-      // Strict Alignment: Initial state requires explicit configuration later
-      mlmActive: false,
-      sponsorId: "",
-      referralCode: "",
+      // Dynamic Alignment based on passive storage parameters
+      mlmActive: sponsorCode ? true : false,
+      sponsorId: sponsorCode,
+      referralCode: Math.random()
+        .toString(36)
+        .substring(2, 10)
+        .toUpperCase(),
       totalReferrals: 0,
       
       rank: "Member",
@@ -60,7 +66,7 @@ export default function SignupPage() {
       lastLogin: Date.now(),
     });
 
-    // 3. Cache cleanup of temporary referral flags safely
+    // 4. Cache cleanup of temporary referral flags safely
     localStorage.removeItem("jbk_pending_ref");
   }
 
