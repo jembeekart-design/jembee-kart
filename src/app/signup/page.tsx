@@ -47,7 +47,7 @@ export default function SignupPage() {
     // 2. Conditional Sponsor Tracking Pipeline
     const sponsorCode = localStorage.getItem("jbk_pending_ref") || "";
 
-    // 3. Document Allocation Write with Referral Injection
+    // 3. Document Allocation Write with Referral Injection & Financial Trackers
     await setDoc(userRef, {
       uid: user.uid,
       name: displayName || user.displayName || "JembeeKart User",
@@ -56,14 +56,18 @@ export default function SignupPage() {
 
       walletBalance: 0,
       totalIncome: 0,
+      todayIncome: 0,
+      totalWithdraw: 0,
       
       // Dynamic Alignment based on passive storage parameters
       mlmActive: sponsorCode ? true : false,
       sponsorId: sponsorCode,
+
       referralCode: Math.random()
         .toString(36)
         .substring(2, 10)
         .toUpperCase(),
+
       totalReferrals: 0,
       
       rank: "Member",
