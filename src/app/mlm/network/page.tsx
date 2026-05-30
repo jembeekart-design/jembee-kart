@@ -126,7 +126,7 @@ export default function MLMNetworkPage() {
         setNetworkLevels(localLevels);
 
         /* ======================================================
-        DYNAMIC ACTIVE LEVEL SELECTION LOGIC (INTEGRATED)
+        DYNAMIC ACTIVE LEVEL SELECTION LOGIC
         ====================================================== */
         const availableLevels = Object.keys(localLevels)
           .map(Number)
@@ -238,7 +238,16 @@ export default function MLMNetworkPage() {
             {activeLevel > 1 && `Indirect accounts generated via Level ${activeLevel - 1} pipeline nodes.`}
           </p>
 
- (
+          {/* FIX ENGINE APPLIED HERE */}
+          {loading ? (
+            <div className="mt-6 py-8 text-center text-sm font-bold text-gray-400 animate-pulse">
+              Compiling Record Node Levels...
+            </div>
+          ) : currentLevelMembers.length === 0 ? (
+            <div className="mt-6 py-8 text-center text-sm font-semibold text-gray-400 bg-gray-50 rounded-2xl border-2 border-dashed border-gray-100">
+              Level {activeLevel} downline pipeline me koi active member nahi mila.
+            </div>
+          ) : (
             <div className="space-y-4">
               {currentLevelMembers.map((member) => (
                 <div
