@@ -20,7 +20,7 @@ export default function LoginPage() {
   const referralCode = searchParams.get("ref") || "";
 
   /* ======================================================
-  DYNAMIC FIRESTORE SAVE HELPER (WITH MLM SPONSOR TRACKING)
+  FIRESTORE SAVE HELPER (SOLVED: WALLET RESET & TIMESTAMPS)
   ====================================================== */
   async function saveUserToFirestore(user: any) {
     let sponsorId = "";
@@ -32,9 +32,9 @@ export default function LoginPage() {
     const userSnap = await getDoc(userRef);
     const isNewUser = !userSnap.exists();
 
-    await setDoc(
-      userRef,
-      {
+    if (isNewUser) {
+      // Sirf naye user ke liye initialization schema run hoga
+      await setDoc(userRef, {
         uid: user.uid,
         name: user.displayName || "JembeeKart User",
         email: user.email || "",
@@ -44,16 +44,27 @@ export default function LoginPage() {
         totalIncome: 0,
         mlmActive: false,
         referralCode: "",
+        sponsorId,
 
-        // Safeguard: Purane users ka sponsor update nahi hoga, naye users par assign hoga
-        sponsorId: isNewUser ? sponsorId : userSnap.data()?.sponsorId || "",
         totalReferrals: 0,
         rank: "Member",
 
-        createdAt: Date.now()
-      },
-      { merge: true }
-    );
+        createdAt: Date.now(),
+        lastLogin: Date.now()
+      });
+    } else {
+      // Existing user ka wallet data safe rahega, sirf essentials merge honge
+      await setDoc(
+        userRef,
+        {
+          name: user.displayName || "JembeeKart User",
+          email: user.email || "",
+          photo: user.photoURL || "https://placehold.co/150x150",
+          lastLogin: Date.now()
+        },
+        { merge: true }
+      );
+    }
   }
 
   /* ======================================================
@@ -77,7 +88,7 @@ export default function LoginPage() {
   }
 
   /* ======================================================
-  GOOGLE LOGIN (UPDATED TO INTEGRATE UNIFIED FIRESTORE SAVER)
+  GOOGLE LOGIN
   ====================================================== */
   async function handleGoogleLogin() {
     if (loading) return;
@@ -90,7 +101,6 @@ export default function LoginPage() {
       const result = await signInWithPopup(auth, provider);
       
       if (result.user) {
-        // Redundant setDoc inline logic ko hata kar shared system function se replace kiya
         await saveUserToFirestore(result.user);
         window.location.href = "/account"; 
       }
