@@ -1,5 +1,8 @@
 "use client";
 
+// Force Next.js to bypass static prerendering for this route to eliminate useSearchParams compilation flags
+export const dynamic = "force-dynamic";
+
 import { useState, useEffect, Suspense } from "react";
 import { useSearchParams } from "next/navigation";
 import Link from "next/link";
@@ -11,7 +14,6 @@ import {
 import { doc, getDoc, updateDoc } from "firebase/firestore";
 import { auth, db } from "@/firebase/config";
 
-// 1. Core Logic aur UI ko sub-component me isolated kiya
 function LoginCard() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -59,7 +61,6 @@ function LoginCard() {
       
       const isExistingUser = await verifyAndTelemetrySync(result.user);
       
-      // Fixed Alignment: Redirect to home route directly
       if (isExistingUser) {
         window.location.href = "/"; 
       } else {
@@ -90,7 +91,6 @@ function LoginCard() {
       if (result.user) {
         const isExistingUser = await verifyAndTelemetrySync(result.user);
         
-        // Fixed Alignment: Redirect to home route directly
         if (isExistingUser) {
           window.location.href = "/"; 
         } else {
@@ -198,7 +198,6 @@ export default function LoginPage() {
         <div className="absolute -bottom-40 -left-40 w-96 h-96 bg-pink-200 rounded-full mix-blend-multiply filter blur-3xl opacity-30 animate-pulse delay-1000"></div>
       </div>
 
-      {/* Next.js compilation issues bypass layer */}
       <Suspense fallback={
         <div className="w-full max-w-md bg-white rounded-[32px] p-10 shadow-xl text-center text-sm font-semibold text-gray-400">
           Loading Authorization Engine...
