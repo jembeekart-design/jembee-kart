@@ -1,13 +1,14 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useSearchParams } from "next/navigation";
+import Link from "next/link";
 import {
   signInWithEmailAndPassword,
   GoogleAuthProvider,
   signInWithPopup,
 } from "firebase/auth";
-import { doc, getDoc, setDoc, collection, query, where, getDocs } from "firebase/firestore";
+import { doc, getDoc, updateDoc } from "firebase/firestore";
 import { auth, db } from "@/firebase/config";
 
 export default function LoginPage() {
@@ -15,77 +16,39 @@ export default function LoginPage() {
   const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
 
-  // URL Query Parameters check karne ke liye hook (?ref=YOUR_CODE)
   const searchParams = useSearchParams();
   const referralCode = searchParams.get("ref") || "";
 
   /* ======================================================
-  FIRESTORE SAVE HELPER (STRICT DYNAMIC REFERRAL VALIDATION)
+  STEP 1: ONLY PASSIVE CAPTURE (Safe Transfer to Signup Engine)
   ====================================================== */
-  async function saveUserToFirestore(user: any) {
-    let sponsorId = "";
+  useEffect(() => {
+    if (referralCode) {
+      localStorage.setItem("jbk_pending_ref", referralCode);
+    }
+  }, [referralCode]);
 
+  /* ======================================================
+  VERIFY & TELEMETRY SYNC (STRICT EXISTING USERS ONLY)
+  ====================================================== */
+  async function verifyAndTelemetrySync(user: any) {
     const userRef = doc(db, "users", user.uid);
     const userSnap = await getDoc(userRef);
-    const isNewUser = !userSnap.exists();
 
-    // Verification logic sirf naye user registrations ke liye chalega
-    if (isNewUser && referralCode) {
-      try {
-        // Firestore query check karegi ki kya ye referralCode kisi existing valid sponsor ka hai
-        const sponsorQuery = query(
-          collection(db, "users"),
-          where("referralCode", "==", referralCode)
-        );
-        
-        const sponsorSnap = await getDocs(sponsorQuery);
-
-        // Agar database me matching code mila, tabhi sponsorId allocate hoga warna empty string rahega
-        if (!sponsorSnap.empty) {
-          sponsorId = referralCode;
-        }
-      } catch (error) {
-        console.error("Error verifying referral code validation:", error);
-      }
-    }
-
-    if (isNewUser) {
-      // New user schema write operation
-      await setDoc(userRef, {
-        uid: user.uid,
-        name: user.displayName || "JembeeKart User",
-        email: user.email || "",
-        photo: user.photoURL || "",
-
-        walletBalance: 0,
-        totalIncome: 0,
-        mlmActive: false,
-        referralCode: "",
-        sponsorId, // Verified valid referral string or empty string
-
-        totalReferrals: 0,
-        rank: "Member",
-
-        createdAt: Date.now(),
+    // Strict Enforcement: Agar user Firestore me nahi hai, toh hum document create NAI karenge.
+    if (userSnap.exists()) {
+      await updateDoc(userRef, {
         lastLogin: Date.now()
       });
+      return true;
     } else {
-      // Existing profiles ke liye update snapshot run hoga bina nodes ko disturb kiye
-      await setDoc(
-        userRef,
-        {
-          name: user.displayName || "JembeeKart User",
-          email: user.email || "",
-          photo: user.photoURL || "",
-          lastLogin: Date.now()
-        },
-        { merge: true }
-      );
+      // User Auth me aa gaya par Firestore profile nahi hai (e.g. Google Click on fresh user)
+      return false;
     }
   }
 
   /* ======================================================
-  EMAIL LOGIN
+  EMAIL AUTHENTICATION
   ====================================================== */
   async function handleEmailLogin(e: React.FormEvent) {
     e.preventDefault();
@@ -94,10 +57,17 @@ export default function LoginPage() {
     try {
       setLoading(true);
       const result = await signInWithEmailAndPassword(auth, email, password);
-      await saveUserToFirestore(result.user);
-      window.location.href = "/account"; 
+      
+      const isExistingUser = await verifyAndTelemetrySync(result.user);
+      
+      if (isExistingUser) {
+        window.location.href = "/account"; 
+      } else {
+        alert("Account records not found in JembeeKart database. Please Signup first.");
+        await auth.signOut();
+      }
     } catch (error: any) {
-      console.error(error);
+      console.error("Email Login Error:", error);
       alert(error.message || "Invalid email or password");
     } finally {
       setLoading(false);
@@ -105,7 +75,7 @@ export default function LoginPage() {
   }
 
   /* ======================================================
-  GOOGLE LOGIN
+  GOOGLE AUTHENTICATION
   ====================================================== */
   async function handleGoogleLogin() {
     if (loading) return;
@@ -118,11 +88,18 @@ export default function LoginPage() {
       const result = await signInWithPopup(auth, provider);
       
       if (result.user) {
-        await saveUserToFirestore(result.user);
-        window.location.href = "/account"; 
+        const isExistingUser = await verifyAndTelemetrySync(result.user);
+        
+        if (isExistingUser) {
+          window.location.href = "/account"; 
+        } else {
+          // Rule Match: Agar Google se fresh login try kiya, toh catch karke Signup par bhejenge
+          alert("No existing profile found. Redirecting to Signup page to apply your referral code.");
+          window.location.href = referralCode ? `/signup?ref=${referralCode}` : "/signup";
+        }
       }
     } catch (error: any) {
-      console.error(error);
+      console.error("Google Login Error:", error);
       alert(error.message || "Google sign-in failed");
     } finally {
       setLoading(false);
@@ -131,13 +108,13 @@ export default function LoginPage() {
 
   return (
     <main className="min-h-screen flex items-center justify-center bg-[#f6f7fb] p-4 sm:p-6 lg:p-8">
-      {/* BACKGROUND ELEMENTS */}
+      {/* BACKGROUND GRAPHICS */}
       <div className="absolute top-0 left-0 w-full h-full overflow-hidden pointer-events-none z-0">
         <div className="absolute -top-40 -right-40 w-96 h-96 bg-indigo-200 rounded-full mix-blend-multiply filter blur-3xl opacity-30 animate-pulse"></div>
         <div className="absolute -bottom-40 -left-40 w-96 h-96 bg-pink-200 rounded-full mix-blend-multiply filter blur-3xl opacity-30 animate-pulse delay-1000"></div>
       </div>
 
-      {/* LOGIN CARD */}
+      {/* CORE INTERFACE CARD */}
       <div className="w-full max-w-md bg-white rounded-[32px] shadow-2xl border border-gray-100 p-8 md:p-10 z-10">
         <div className="text-center mb-8">
           <div className="inline-flex items-center justify-center w-16 h-16 rounded-2xl bg-gradient-to-br from-indigo-500 via-purple-500 to-pink-500 text-white text-3xl shadow-md mb-4">
@@ -186,14 +163,25 @@ export default function LoginPage() {
           </button>
         </form>
 
-        {/* DIVIDER LAYOUT */}
-        <div className="relative flex py-6 items-center">
+        {/* DYNAMIC REGISTRATION ROUTE LINK */}
+        <p className="text-center text-xs font-bold text-gray-500 mt-5">
+          Don't have an account?{" "}
+          <Link 
+            href={referralCode ? `/signup?ref=${referralCode}` : "/signup"} 
+            className="text-indigo-600 hover:underline font-black"
+          >
+            Create an Account
+          </Link>
+        </p>
+
+        {/* LINE DISTINCTION */}
+        <div className="relative flex py-5 items-center">
           <div className="flex-grow border-t border-gray-100"></div>
           <span className="flex-shrink mx-4 text-xs font-black uppercase tracking-widest text-gray-400">Or</span>
           <div className="flex-grow border-t border-gray-100"></div>
         </div>
 
-        {/* GOOGLE INTEGRATION ACTION */}
+        {/* GOOGLE INTEGRATION ENTRY */}
         <button
           onClick={handleGoogleLogin}
           disabled={loading}
