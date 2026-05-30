@@ -21,6 +21,7 @@ import {
   Mail,
   Calendar,
   Shield,
+  Briefcase,
 } from "lucide-react";
 
 export default function MLMNetworkPage() {
@@ -28,13 +29,16 @@ export default function MLMNetworkPage() {
   const [activeLevel, setActiveLevel] = useState<number>(1);
   
   /* ======================================================
-  FUTURE PROOF STATE: 100% DYNAMIC AND SCALABLE FOR 10+ LEVELS
+  CONTROLLED LEVEL STATE: RESTRICTED TO 3 LEVELS FOR NETWORK SNAPSHOT
   ====================================================== */
   const [networkLevels, setNetworkLevels] = useState<Record<number, any[]>>({});
   
   // Core counter matrices
   const [directCount, setDirectCount] = useState(0);
   const [totalTeamCount, setTotalTeamCount] = useState(0);
+  
+  // Total Business Volume Tracker State
+  const [totalBusiness, setTotalBusiness] = useState(0);
 
   useEffect(() => {
     const unsub = onAuthStateChanged(auth, async (user) => {
@@ -46,9 +50,9 @@ export default function MLMNetworkPage() {
         }
 
         /* ======================================================
-        DYNAMIC 10-LEVEL INITIALIZATION
+        DYNAMIC 3-LEVEL INITIALIZATION
         ====================================================== */
-        const MAX_LEVEL = 10;
+        const MAX_LEVEL = 3;
         const localLevels: Record<number, any[]> = {};
 
         for (let i = 1; i <= MAX_LEVEL; i++) {
@@ -74,6 +78,7 @@ export default function MLMNetworkPage() {
 
         /* ======================================================
         LAYER 2: FETCH LEVEL 2 (DIRECTS OF LEVEL 1)
+        SAFE PLATFORM OPTIMIZATION: Restricted to 10 max element chunks
         ====================================================== */
         if (l1Members.length > 0) {
           const l1Uids = l1Members.map((m) => m.uid);
@@ -98,6 +103,7 @@ export default function MLMNetworkPage() {
 
           /* ======================================================
           LAYER 3: FETCH LEVEL 3 (DIRECTS OF LEVEL 2)
+          SAFE PLATFORM OPTIMIZATION: Restricted to 10 max element chunks
           ====================================================== */
           if (localLevels[2].length > 0) {
             const l2Uids = localLevels[2].map((m) => m.uid);
@@ -122,7 +128,7 @@ export default function MLMNetworkPage() {
           }
         }
 
-        // 1. Setting structural level records state
+        // Setting structural level records state
         setNetworkLevels(localLevels);
 
         /* ======================================================
@@ -139,6 +145,18 @@ export default function MLMNetworkPage() {
         // Comprehensive matrix count calculation
         const overallCount = Object.values(localLevels).reduce((acc, curr) => acc + curr.length, 0);
         setTotalTeamCount(overallCount);
+
+        /* ======================================================
+        COMPUTING TOTAL BUSINESS VOLUME PIPELINE
+        ====================================================== */
+        const business = Object.values(localLevels)
+          .flat()
+          .reduce(
+            (sum: number, member: any) => sum + (member.lifetimeBusiness || 0),
+            0
+          );
+
+        setTotalBusiness(business);
 
       } catch (error) {
         console.error("Multi-level Network Record Processing Error:", error);
@@ -166,7 +184,7 @@ export default function MLMNetworkPage() {
           </Link>
           <div>
             <h1 className="text-[24px] font-black text-violet-700">MLM Network</h1>
-            <p className="text-[11px] text-gray-500">Scalable Generation Model Infrastructure</p>
+            <p className="text-[11px] text-gray-500">3-Tier Generation Snapshot Model</p>
           </div>
         </div>
       </div>
@@ -178,13 +196,19 @@ export default function MLMNetworkPage() {
             <Crown size={34} />
           </div>
           <h2 className="mt-5 text-[30px] font-black leading-tight">
-            Total Network Tree
+            Network Summary
             <br />
             {totalTeamCount} Members 🚀
           </h2>
-          <p className="mt-3 text-[13px] leading-6 text-white/90">
-            Aapka level structure dynamic keys format par deployed hai. Isse structural deep nodes traversal handle karna 100% stable ho jata hai.
-          </p>
+          
+          {/* REAL-TIME TOTAL TEAM BUSINESS COUNTER DISPLAY */}
+          <div className="mt-4 flex items-center gap-2 bg-white/10 backdrop-blur-md rounded-2xl p-3 border border-white/20">
+            <Briefcase size={20} className="text-orange-200" />
+            <div>
+              <p className="text-[10px] font-bold uppercase text-white/70 tracking-wider">Total Team Business</p>
+              <p className="text-xl font-black">₹{totalBusiness}</p>
+            </div>
+          </div>
         </div>
       </section>
 
@@ -200,31 +224,39 @@ export default function MLMNetworkPage() {
           <div className="rounded-2xl bg-white p-4 shadow-sm border border-gray-100">
             <UserPlus2 size={28} className="text-green-600" />
             <h3 className="mt-3 text-[24px] font-black text-gray-900">{totalTeamCount}</h3>
-            <p className="text-[12px] font-bold text-gray-400">Total Generation Downline</p>
+            <p className="text-[12px] font-bold text-gray-400">Total 3-Level Team</p>
           </div>
         </div>
       </section>
 
-      {/* DYNAMIC AUTO-GENERATING LEVEL TABS */}
+      {/* HIGH-UX FILTERED AUTO-GENERATING LEVEL TABS */}
       <section className="mt-6 px-4">
-        <div className="flex bg-gray-200/60 p-1.5 rounded-2xl gap-1 overflow-x-auto scrollbar-none">
-          {Object.keys(networkLevels).map((levelStr) => {
-            const lvl = Number(levelStr);
-            return (
-              <button
-                key={lvl}
-                onClick={() => setActiveLevel(lvl)}
-                className={`flex-1 min-w-[75px] py-3 text-center text-xs font-black rounded-xl transition-all ${
-                  activeLevel === lvl
-                    ? "bg-gradient-to-r from-violet-600 to-indigo-600 text-white shadow-md"
-                    : "text-gray-500 hover:text-gray-900"
-                }`}
-              >
-                Lvl {lvl} ({networkLevels[lvl]?.length || 0})
-              </button>
-            );
-          })}
-        </div>
+        {Object.keys(networkLevels).filter((level) => networkLevels[Number(level)]?.length > 0).length === 0 ? (
+          <div className="text-xs font-bold text-gray-400 p-2 text-center bg-gray-100 rounded-xl">
+            No active levels to track
+          </div>
+        ) : (
+          <div className="flex bg-gray-200/60 p-1.5 rounded-2xl gap-1 overflow-x-auto scrollbar-none">
+            {Object.keys(networkLevels)
+              .filter((level) => networkLevels[Number(level)]?.length > 0)
+              .map((levelStr) => {
+                const lvl = Number(levelStr);
+                return (
+                  <button
+                    key={lvl}
+                    onClick={() => setActiveLevel(lvl)}
+                    className={`flex-1 min-w-[85px] py-3 text-center text-xs font-black rounded-xl transition-all ${
+                      activeLevel === lvl
+                        ? "bg-gradient-to-r from-violet-600 to-indigo-600 text-white shadow-md"
+                        : "text-gray-500 hover:text-gray-900"
+                    }`}
+                  >
+                    Lvl {lvl} ({networkLevels[lvl]?.length || 0})
+                  </button>
+                );
+              })}
+          </div>
+        )}
       </section>
 
       {/* DOWNLINE NODE PANEL GRID */}
@@ -238,14 +270,13 @@ export default function MLMNetworkPage() {
             {activeLevel > 1 && `Indirect accounts generated via Level ${activeLevel - 1} pipeline nodes.`}
           </p>
 
-          {/* FIX ENGINE APPLIED HERE */}
           {loading ? (
             <div className="mt-6 py-8 text-center text-sm font-bold text-gray-400 animate-pulse">
               Compiling Record Node Levels...
             </div>
           ) : currentLevelMembers.length === 0 ? (
             <div className="mt-6 py-8 text-center text-sm font-semibold text-gray-400 bg-gray-50 rounded-2xl border-2 border-dashed border-gray-100">
-              Level {activeLevel} downline pipeline me koi active member nahi mila.
+              Is level pipeline me filhal koi active member nahi hai.
             </div>
           ) : (
             <div className="space-y-4">
