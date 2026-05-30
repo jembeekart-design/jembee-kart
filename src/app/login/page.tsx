@@ -20,11 +20,13 @@ export default function LoginPage() {
   const referralCode = searchParams.get("ref") || "";
 
   /* ======================================================
-  FIRESTORE SAVE HELPER (SOLVED: WALLET RESET & TIMESTAMPS)
+  FIRESTORE SAVE HELPER (ANTI-LOOP & CLEAN STRUCTURING)
   ====================================================== */
   async function saveUserToFirestore(user: any) {
     let sponsorId = "";
-    if (referralCode) {
+
+    // SOLVED: Agar referralCode user ki apni hi UID hai, toh use block karein (Anti-Self-Referral)
+    if (referralCode && referralCode !== user.uid) {
       sponsorId = referralCode;
     }
 
@@ -33,12 +35,12 @@ export default function LoginPage() {
     const isNewUser = !userSnap.exists();
 
     if (isNewUser) {
-      // Sirf naye user ke liye initialization schema run hoga
+      // Sirf naye user ke liye initialization schema run hoga (SOLVED: Empty string fallbacks)
       await setDoc(userRef, {
         uid: user.uid,
         name: user.displayName || "JembeeKart User",
         email: user.email || "",
-        photo: user.photoURL || "https://placehold.co/150x150",
+        photo: user.photoURL || "",
 
         walletBalance: 0,
         totalIncome: 0,
@@ -53,13 +55,13 @@ export default function LoginPage() {
         lastLogin: Date.now()
       });
     } else {
-      // Existing user ka wallet data safe rahega, sirf essentials merge honge
+      // Existing user ka wallet aur loop settings safe rahengi
       await setDoc(
         userRef,
         {
           name: user.displayName || "JembeeKart User",
           email: user.email || "",
-          photo: user.photoURL || "https://placehold.co/150x150",
+          photo: user.photoURL || "",
           lastLogin: Date.now()
         },
         { merge: true }
