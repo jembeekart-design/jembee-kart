@@ -7,6 +7,7 @@ import {
   createUserWithEmailAndPassword,
   GoogleAuthProvider,
   signInWithPopup,
+  User,
 } from "firebase/auth";
 
 import {
@@ -19,6 +20,7 @@ import {
   collection,
   where,
   getDocs,
+  serverTimestamp,
 } from "firebase/firestore";
 
 import { auth, db } from "@/firebase/config";
@@ -32,9 +34,9 @@ export default function SignupPage() {
   const [loading, setLoading] = useState(false);
 
   /* ======================================================
-  DYNAMIC USER PROFILE INITIALIZATION (100% COLLISION-FREE)
+  DYNAMIC USER PROFILE INITIALIZATION
   ====================================================== */
-  async function createUserProfile(user: any, displayName?: string) {
+  async function createUserProfile(user: User, displayName?: string) {
     const userRef = doc(db, "users", user.uid);
 
     // 1. Duplicate Profile Protection Engine
@@ -52,7 +54,7 @@ export default function SignupPage() {
     if (sponsorCode) {
       const q = query(
         collection(db, "users"),
-        where("referralCode", "==", sponsorCode)
+        where("shareCode", "==", sponsorCode)
       );
 
       const sponsorSnap = await getDocs(q);
@@ -65,12 +67,15 @@ export default function SignupPage() {
     }
 
     /* ======================================================
-    UPGRADED: 100% GUARANTEED COLLISION-FREE REFERRAL CODE
-    Derived from unique Firebase UID parts to ensure zero overlap.
+    HIGH-ENTROPY TWO-END BALANCED SHARING ARCHITECTURE
+    - referralCode: Full unique UID for internal database relational queries.
+    - shareCode: Combo of First 6 + Last 4 of UID ensuring ultimate entropy & readability.
     ====================================================== */
-    const startPart = user.uid.slice(0, 4).toUpperCase();
-    const endPart = user.uid.slice(-4).toUpperCase();
-    const referralCode = `JBK${startPart}${endPart}`;
+    const internalReferralCode = user.uid;
+    
+    const firstPart = user.uid.slice(0, 6).toUpperCase();
+    const lastPart = user.uid.slice(-4).toUpperCase();
+    const marketingShareCode = `JBK${firstPart}${lastPart}`;
 
     // 4. Fully Production-Compliant Structural MLM Write
     await setDoc(userRef, {
@@ -79,51 +84,68 @@ export default function SignupPage() {
       name: displayName || user.displayName || "JembeeKart User",
       email: user.email || "",
       photo: user.photoURL || "",
+      mobileNumber: "", // Initialized empty for future profiling/OTP flows
 
       // WALLET & REVENUE COUNTERS
       walletBalance: 0,
+      commissionWallet: 0, 
+      rewardWallet: 0,     
       totalIncome: 0,
       todayIncome: 0,
       totalWithdraw: 0,
+      pendingWithdrawal: 0, 
 
       // BUSINESS VOLUME ENGINE COUNTERS
       directBusiness: 0,
       teamBusiness: 0,
+      totalTeamBusiness: 0, 
       lifetimeBusiness: 0,
 
       // ACTIVE REFERRAL STATUS TRACKERS
       directActiveReferrals: 0,
       teamActiveReferrals: 0,
 
+      // GENERATION PIPELINE COUNTS
+      level1Count: 0,
+      level2Count: 0,
+      level3Count: 0,
+      level4Count: 0, 
+      level5Count: 0, 
+
       // FUTURE MLM INCOME BREAKDOWN FIELDS
       referralIncome: 0,
       levelIncome: 0,
       rankIncome: 0,
 
-      // SYSTEM & ORDER TRACKERS
+      // SYSTEM, SECURITY, ORDER & CONTROL FLAGS
       totalOrders: 0,
-      isActive: false,
+      lastOrderAt: null, 
+      isActive: false,   // Controlled activation via first transaction checkout
+      isBlocked: false,  // Admin enforcement flag for account suspension
+      kycStatus: "pending", // Compliance/Payout clearance verification state
 
       mlmActive: !!sponsorUid,
 
       sponsorId: sponsorUid,
       sponsorReferralCode: sponsorCode,
 
-      referralCode, // Applied 100% unique derivation code
+      // Two-tier code management system
+      referralCode: internalReferralCode, 
+      shareCode: marketingShareCode,
 
       totalReferrals: 0,
 
       rank: "Member",
+      currentRankId: "member", 
 
-      createdAt: Date.now(),
-      lastLogin: Date.now(),
+      createdAt: serverTimestamp(), 
+      lastLogin: serverTimestamp(), 
     });
 
-    // 5. Upgraded Sponsor Telemetry Real-time Increment Engine
+    // 5. Sponsor Telemetry Real-time Increment Engine
     if (sponsorDocRef) {
       await updateDoc(sponsorDocRef, {
         totalReferrals: increment(1),
-        directActiveReferrals: increment(1),
       });
     }
 
@@ -143,7 +165,7 @@ export default function SignupPage() {
       const result = await createUserWithEmailAndPassword(auth, email, password);
       await createUserProfile(result.user, name);
       
-      router.push("/");
+      router.push("/mlm/dashboard");
     } catch (error: any) {
       console.error("Email Registration Error:", error);
       alert(error.message || "Signup Failed");
@@ -166,7 +188,7 @@ export default function SignupPage() {
       const result = await signInWithPopup(auth, provider);
       await createUserProfile(result.user);
       
-      router.push("/");
+      router.push("/mlm/dashboard");
     } catch (error: any) {
       console.error("Google Registration Error:", error);
       alert(error.message || "Google Signup Failed");
