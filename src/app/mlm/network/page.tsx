@@ -45,12 +45,15 @@ export default function MLMNetworkPage() {
           return;
         }
 
-        // Fresh multi-level operational mapping ledger
-        const localLevels: Record<number, any[]> = {
-          1: [],
-          2: [],
-          3: [],
-        };
+        /* ======================================================
+        DYNAMIC 10-LEVEL INITIALIZATION
+        ====================================================== */
+        const MAX_LEVEL = 10;
+        const localLevels: Record<number, any[]> = {};
+
+        for (let i = 1; i <= MAX_LEVEL; i++) {
+          localLevels[i] = [];
+        }
 
         /* ======================================================
         LAYER 1: FETCH LEVEL 1 (DIRECT REFERRALS)
@@ -119,8 +122,19 @@ export default function MLMNetworkPage() {
           }
         }
 
-        // Automatically saves records (Even if some levels are empty, Object.keys handles safely)
+        // 1. Setting structural level records state
         setNetworkLevels(localLevels);
+
+        /* ======================================================
+        DYNAMIC ACTIVE LEVEL SELECTION LOGIC
+        ====================================================== */
+        const availableLevels = Object.keys(localLevels)
+          .map(Number)
+          .filter((lvl) => localLevels[lvl].length > 0);
+
+        if (availableLevels.length > 0) {
+          setActiveLevel(availableLevels[0]);
+        }
         
         // Comprehensive matrix count calculation
         const overallCount = Object.values(localLevels).reduce((acc, curr) => acc + curr.length, 0);
@@ -206,7 +220,7 @@ export default function MLMNetworkPage() {
                     : "text-gray-500 hover:text-gray-900"
                 }`}
               >
-                Level {lvl} ({networkLevels[lvl]?.length || 0})
+                Lvl {lvl} ({networkLevels[lvl]?.length || 0})
               </button>
             );
           })}
@@ -221,8 +235,7 @@ export default function MLMNetworkPage() {
           </h2>
           <p className="text-xs text-gray-400 font-medium mb-4">
             {activeLevel === 1 && "Directly sponsored structural network accounts."}
-            {activeLevel === 2 && "Indirect accounts generated via Level 1 pipeline nodes."}
-            {activeLevel === 3 && "Passive generation tree elements from Level 2 team nodes."}
+            {activeLevel > 1 && `Indirect accounts generated via Level ${activeLevel - 1} pipeline nodes.`}
           </p>
 
           {loading ? (
@@ -297,38 +310,6 @@ export default function MLMNetworkPage() {
               ))}
             </div>
           )}
-        </div>
-      </section>
-
-      {/* STANDARD BASELINE PAYOUT INFO CONFIG */}
-      <section className="mt-6 px-4">
-        <div className="rounded-[28px] bg-white p-5 shadow-sm border border-gray-100">
-          <h2 className="text-[22px] font-black text-gray-900">Distribution Levels Configuration</h2>
-          <div className="mt-4 space-y-3">
-            <div className="flex items-center justify-between rounded-2xl bg-violet-50 p-4">
-              <div>
-                <h3 className="text-[15px] font-black text-violet-900">Level 1</h3>
-                <p className="text-[11px] font-semibold text-violet-600/80">Direct Joining Profit Tier</p>
-              </div>
-              <div className="rounded-full bg-violet-700 px-3 py-1 text-[11px] font-black text-white">10%</div>
-            </div>
-
-            <div className="flex items-center justify-between rounded-2xl bg-pink-50 p-4">
-              <div>
-                <h3 className="text-[15px] font-black text-pink-900">Level 2</h3>
-                <p className="text-[11px] font-semibold text-pink-600/80">Indirect Team Registration Income</p>
-              </div>
-              <div className="rounded-full bg-pink-600 px-3 py-1 text-[11px] font-black text-white">5%</div>
-            </div>
-
-            <div className="flex items-center justify-between rounded-2xl bg-orange-50 p-4">
-              <div>
-                <h3 className="text-[15px] font-black text-orange-900">Level 3</h3>
-                <p className="text-[11px] font-semibold text-orange-600/80">Passive Generation Team Stream</p>
-              </div>
-              <div className="rounded-full bg-orange-500 px-3 py-1 text-[11px] font-black text-white">2%</div>
-            </div>
-          </div>
         </div>
       </section>
 
