@@ -59,8 +59,9 @@ function LoginCard() {
       
       const isExistingUser = await verifyAndTelemetrySync(result.user);
       
+      // Fixed Alignment: Redirect to home route directly
       if (isExistingUser) {
-        window.location.href = "/account"; 
+        window.location.href = "/"; 
       } else {
         alert("Account records not found in JembeeKart database. Please Signup first.");
         await auth.signOut();
@@ -89,8 +90,9 @@ function LoginCard() {
       if (result.user) {
         const isExistingUser = await verifyAndTelemetrySync(result.user);
         
+        // Fixed Alignment: Redirect to home route directly
         if (isExistingUser) {
-          window.location.href = "/account"; 
+          window.location.href = "/"; 
         } else {
           alert("No existing profile found. Redirecting to Signup page to apply your referral code.");
           window.location.href = referralCode ? `/signup?ref=${referralCode}` : "/signup";
