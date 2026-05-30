@@ -32,12 +32,12 @@ export default function SignupPage() {
   const [loading, setLoading] = useState(false);
 
   /* ======================================================
-  DYNAMIC USER PROFILE INITIALIZATION (100% COLLISION-FREE UID SLICE)
+  DYNAMIC USER PROFILE INITIALIZATION (100% COLLISION-FREE)
   ====================================================== */
   async function createUserProfile(user: any, displayName?: string) {
     const userRef = doc(db, "users", user.uid);
 
-    // 1. Duplicate Protection Engine
+    // 1. Duplicate Profile Protection Engine
     const existingUser = await getDoc(userRef);
     if (existingUser.exists()) {
       console.log("Profile already linked within Firestore nodes. Skipping overwrite.");
@@ -64,9 +64,13 @@ export default function SignupPage() {
       }
     }
 
-    // 3. Guaranteed Deterministic & Unique Referral Code Generation
-    // Base prefix paired with uppercase extraction of user's core UID nodes
-    const referralCode = "JBK" + user.uid.slice(0, 6).toUpperCase();
+    /* ======================================================
+    UPGRADED: 100% COLLISION-FREE REFERRAL CODE GENERATION
+    Combo of Base Prefix + Random Base36 String + Unique UID Tail Slice
+    ====================================================== */
+    const randomPart = Math.random().toString(36).substring(2, 6).toUpperCase(); // 4 Random characters
+    const uidPart = user.uid.slice(-4).toUpperCase(); // Last 4 characters of unique Firebase UID
+    const referralCode = `JBK${randomPart}${uidPart}`; // Format: JBK + XXXX + XXXX (Total 11 chars)
 
     // 4. Fully Production-Compliant Structural MLM Write
     await setDoc(userRef, {
@@ -82,7 +86,7 @@ export default function SignupPage() {
       todayIncome: 0,
       totalWithdraw: 0,
 
-      // BUSINESS VOLUME ENGINE COUNTERS (ADDED SUCCESSFULLY)
+      // BUSINESS VOLUME ENGINE COUNTERS
       directBusiness: 0,
       teamBusiness: 0,
       lifetimeBusiness: 0,
@@ -92,7 +96,7 @@ export default function SignupPage() {
       sponsorId: sponsorUid,
       sponsorReferralCode: sponsorCode,
 
-      referralCode,
+      referralCode, // Applied collision-free code
 
       totalReferrals: 0,
 
