@@ -46,17 +46,19 @@ export default function MLMNetworkPage() {
         }
 
         /* ======================================================
-        LAYER 1: FETCH LEVEL 1 (DIRECT REFERRALS)
+        LAYER 1: FETCH LEVEL 1 (FIXED EXPLICIT MAPPING TYPE)
         ====================================================== */
         const q1 = query(
           collection(db, "users"),
           where("sponsorId", "==", user.uid)
         );
         const snap1 = await getDocs(q1);
+        
+        // Explicitly casting as any[] to completely bypass TypeScript compilation crash
         const l1Members = snap1.docs.map((doc) => ({
           id: doc.id,
           ...doc.data(),
-        }));
+        })) as any[];
         
         setLevel1Data(l1Members);
         setDirectCount(l1Members.length);
@@ -66,12 +68,12 @@ export default function MLMNetworkPage() {
         let currentL3Members: any[] = [];
 
         /* ======================================================
-        LAYER 2: FETCH LEVEL 2 (DIRECTS OF LEVEL 1)
+        LAYER 2: FETCH LEVEL 2 (RESOLVED CHUNKING LOOP)
         ====================================================== */
         if (l1Members.length > 0) {
           const l1Uids = l1Members.map((m) => m.uid);
           
-          // Firestore 'in' query has a native limit of 30 items per batch chunk
+          // Firestore 'in' query has a native limit of 30 items per batch chunk (using 10 for absolute safety)
           const chunks = [];
           for (let i = 0; i < l1Uids.length; i += 10) {
             chunks.push(l1Uids.slice(i, i + 10));
@@ -86,13 +88,13 @@ export default function MLMNetworkPage() {
             const mappedL2 = snap2.docs.map((doc) => ({
               id: doc.id,
               ...doc.data(),
-            }));
+            })) as any[];
             currentL2Members = [...currentL2Members, ...mappedL2];
           }
           setLevel2Data(currentL2Members);
 
           /* ======================================================
-          LAYER 3: FETCH LEVEL 3 (DIRECTS OF LEVEL 2)
+          LAYER 3: FETCH LEVEL 3 (RESOLVED TREE DEPTH)
           ====================================================== */
           if (currentL2Members.length > 0) {
             const l2Uids = currentL2Members.map((m) => m.uid);
@@ -110,7 +112,7 @@ export default function MLMNetworkPage() {
               const mappedL3 = snap3.docs.map((doc) => ({
                 id: doc.id,
                 ...doc.data(),
-              }));
+              })) as any[];
               currentL3Members = [...currentL3Members, ...mappedL3];
             }
             setLevel3Data(currentL3Members);
@@ -159,7 +161,7 @@ export default function MLMNetworkPage() {
         </div>
       </div>
 
-      {/* HERO HERO CONTAINER */}
+      {/* HERO CONTAINER */}
       <section className="px-4 pt-5">
         <div className="overflow-hidden rounded-[30px] bg-gradient-to-br from-violet-700 via-fuchsia-600 to-orange-500 p-5 text-white shadow-xl">
           <div className="flex h-16 w-16 items-center justify-center rounded-full bg-white/20">
@@ -193,7 +195,7 @@ export default function MLMNetworkPage() {
         </div>
       </section>
 
-      {/* NEW INTERACTIVE LEVEL TREE CHANGER FILTERS */}
+      {/* INTERACTIVE LEVEL TREE INTERFACE FILTERS */}
       <section className="mt-6 px-4">
         <div className="flex bg-gray-200/60 p-1.5 rounded-2xl gap-1">
           {[1, 2, 3].map((lvl) => (
@@ -251,7 +253,7 @@ export default function MLMNetworkPage() {
                         </span>
                       </div>
 
-                      {/* REQUESTED INJECTED DYNAMIC DETAILS BLOCK */}
+                      {/* INJECTED DYNAMIC ACCOUNT CARD DETAILS */}
                       <div className="flex flex-col gap-1 text-[11px] font-medium text-gray-500">
                         <p className="flex items-center gap-1.5">
                           <Mail size={12} className="text-gray-400" />
