@@ -9,16 +9,9 @@ import {
   signInWithPopup,
 } from "firebase/auth";
 
-// REQUIRED UPDATED IMPOSTS INTEGRATION
 import {
   doc,
   setDoc,
-  collection,
-  query,
-  where,
-  getDocs,
-  updateDoc,
-  increment,
   getDoc,
 } from "firebase/firestore";
 
@@ -33,7 +26,7 @@ export default function SignupPage() {
   const [loading, setLoading] = useState(false);
 
   /* ======================================================
-  UPDATED ENGINE: PROFILE INITIALIZATION & TREE TREE SYNC
+  CLEAN USER PROFILE INITIALIZATION (NO AUTOMATIC MLM JOIN)
   ====================================================== */
   async function createUserProfile(user: any, displayName?: string) {
     const userRef = doc(db, "users", user.uid);
@@ -45,47 +38,7 @@ export default function SignupPage() {
       return;
     }
 
-    let sponsorId = "";
-    const pendingRef = localStorage.getItem("jbk_pending_ref") || "";
-
-    if (pendingRef) {
-      try {
-        const sponsorQuery = query(
-          collection(db, "users"),
-          where("referralCode", "==", pendingRef)
-        );
-        const sponsorSnap = await getDocs(sponsorQuery);
-
-        if (!sponsorSnap.empty) {
-          sponsorId = pendingRef;
-        }
-      } catch (error) {
-        console.error("Sponsor detection runtime failure:", error);
-      }
-    }
-
-    // 2. Unique Referral Code Generator Sequence
-    let referralCode = "";
-    while (true) {
-      referralCode =
-        "JBK" +
-        Math.random()
-          .toString(36)
-          .substring(2, 8)
-          .toUpperCase();
-
-      const codeQuery = query(
-        collection(db, "users"),
-        where("referralCode", "==", referralCode)
-      );
-      const codeSnap = await getDocs(codeQuery);
-
-      if (codeSnap.empty) {
-        break; // Zero matches confirmed, break loop
-      }
-    }
-
-    // 3. Document Base Allocation Write
+    // 2. Pure Baseline Document Allocation Write
     await setDoc(userRef, {
       uid: user.uid,
       name: displayName || user.displayName || "JembeeKart User",
@@ -94,37 +47,20 @@ export default function SignupPage() {
 
       walletBalance: 0,
       totalIncome: 0,
+      
+      // Strict Alignment: Initial state requires explicit configuration later
       mlmActive: false,
-
-      sponsorId,
-      referralCode,
+      sponsorId: "",
+      referralCode: "",
       totalReferrals: 0,
+      
       rank: "Member",
 
       createdAt: Date.now(),
       lastLogin: Date.now(),
     });
 
-    // 4. Sponsor Referral Count Atomic Update
-    if (sponsorId) {
-      try {
-        const sponsorQuery = query(
-          collection(db, "users"),
-          where("referralCode", "==", sponsorId)
-        );
-        const sponsorSnap = await getDocs(sponsorQuery);
-
-        if (!sponsorSnap.empty) {
-          await updateDoc(sponsorSnap.docs[0].ref, {
-            totalReferrals: increment(1),
-          });
-        }
-      } catch (error) {
-        console.error("Failed to update parent network increment metric:", error);
-      }
-    }
-
-    // Cache clean
+    // 3. Cache cleanup of temporary referral flags safely
     localStorage.removeItem("jbk_pending_ref");
   }
 
@@ -141,7 +77,7 @@ export default function SignupPage() {
       await createUserProfile(result.user, name);
       router.push("/account");
     } catch (error: any) {
-      console.error(error);
+      console.error("Email Registration Error:", error);
       alert(error.message || "Signup Failed");
     } finally {
       setLoading(false);
@@ -163,7 +99,7 @@ export default function SignupPage() {
       await createUserProfile(result.user);
       router.push("/account");
     } catch (error: any) {
-      console.error(error);
+      console.error("Google Registration Error:", error);
       alert(error.message || "Google Signup Failed");
     } finally {
       setLoading(false);
