@@ -348,13 +348,14 @@ export default function SignupPage() {
             required
             className="w-full rounded-2xl border p-4 outline-none transition focus:border-indigo-500"
           />
-         <input
-  type="password"
-  placeholder="Confirm Password"
-  value={confirmPassword}
-  onChange={(e) => setConfirmPassword(e.target.value)}
-  required
-/>
+          <input
+            type="password"
+            placeholder="Password (Min 8 chars)"
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
+            required
+            className="w-full rounded-2xl border p-4 outline-none transition focus:border-indigo-500"
+          />
           <input
             type="password"
             placeholder="Confirm Password"
