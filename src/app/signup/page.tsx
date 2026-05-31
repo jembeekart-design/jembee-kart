@@ -23,8 +23,8 @@ import {
   getDoc,
   serverTimestamp,
   runTransaction,
-  increment,
   DocumentReference,
+  increment
 } from "firebase/firestore";
 
 import { auth, db } from "@/firebase/config";
@@ -58,7 +58,6 @@ export default function SignupPage() {
         limit(1)
       );
       const sponsorSnap = await getDocs(q);
-
       if (!sponsorSnap.empty) {
         const sponsorDoc = sponsorSnap.docs[0];
         let resolvedSponsorUid = sponsorDoc.data().uid;
@@ -71,7 +70,6 @@ export default function SignupPage() {
         } else {
           sponsorUid = resolvedSponsorUid;
           sponsorDocRef = sponsorDoc.ref;
-          
           const chain = sponsorDoc.data().parentChain;
           sponsorParentChain = Array.isArray(chain) ? chain : [];
         }
@@ -97,9 +95,7 @@ export default function SignupPage() {
         }
 
         // Materialized Lineage Array tightly capped at 10 levels for compliance
-        const currentParentChain = sponsorUid 
-          ? [sponsorUid, ...sponsorParentChain].slice(0, 10) 
-          : [];
+        const currentParentChain = sponsorUid ? [sponsorUid, ...sponsorParentChain].slice(0, 10) : [];
 
         // Write complete structured JembeeKart user layout
         transaction.set(userRef, {
@@ -107,17 +103,16 @@ export default function SignupPage() {
           name: displayName || user.displayName || "JembeeKart User",
           email: (user.email || "").toLowerCase(),
           photo: user.photoURL || "",
-          
-          mobileNumber: "", 
-          phoneVerified: false, 
-          emailVerified: user.emailVerified || false, // Asynchronously reloaded and verified downstream on verify-email page route lifecycle
-          authProvider: user.providerData?.[0]?.providerId || "password", 
-          role: "user", 
+          mobileNumber: "",
+          phoneVerified: false,
+          emailVerified: user.emailVerified || false,
+          authProvider: user.providerData?.[0]?.providerId || "password",
+          role: "user",
           walletLocked: false,
-          accountStatus: "active", 
+          accountStatus: "active",
           profileCompleted: false,
-          schemaVersion: 1,           // 🟡 Added for future data structure migrations mapping
-          lastPlatform: "web",        // 🟡 Added platform identifier tag for deep analytics tracking
+          schemaVersion: 1, 
+          lastPlatform: "web", 
 
           // Network Ancestry Lineage Array
           parentChain: currentParentChain,
@@ -126,24 +121,27 @@ export default function SignupPage() {
           joinedPackage: false,
           packageAmount: 0,
           activationDate: null,
-          activatedByOrderId: "", 
-          packageId: null,         
-          packageName: "",        
-          packageStatus: "inactive", 
+          activatedByOrderId: "",
+          packageId: null,
+          packageName: "",
+          packageStatus: "inactive",
 
           // FINANCIAL WALLET ENGINE
           walletBalance: 0,
-          commissionWallet: 0, 
-          rewardWallet: 0,     
+          commissionWallet: 0,
+          rewardWallet: 0,
           totalIncome: 0,
           todayIncome: 0,
           totalWithdraw: 0,
-          pendingWithdrawal: 0,       
+          pendingWithdrawal: 0,
+          
+          // ✅ ADDED: Structural dashboard metric hook initialization
+          rewardCount: 0,
 
           // BUSINESS & REFERRAL STATUS ENGINE
           directBusiness: 0,
           teamBusiness: 0,
-          totalTeamBusiness: 0, 
+          totalTeamBusiness: 0,
           lifetimeBusiness: 0,
           directActiveReferrals: 0,
           teamActiveReferrals: 0,
@@ -151,12 +149,12 @@ export default function SignupPage() {
           // COMMERCE PIPELINE
           totalProductsPurchased: 0,
 
-          // GENERATION PIPELINE COUNTS (Level 1 counts handled synchronously, higher levels delegated to execution routines)
+          // GENERATION PIPELINE COUNTS
           level1Count: 0,
           level2Count: 0,
           level3Count: 0,
-          level4Count: 0, 
-          level5Count: 0, 
+          level4Count: 0,
+          level5Count: 0,
 
           // MLM INCOME BREAKDOWN FIELDS
           referralIncome: 0,
@@ -165,38 +163,34 @@ export default function SignupPage() {
 
           // SYSTEM, SECURITY, ORDER & NOTIFICATION COUNTERS
           totalOrders: 0,
-          lastOrderAt: null, 
-          isActive: false,      
-          isBlocked: false,     
-          kycStatus: "pending", 
-          kycSubmittedAt: null, 
+          lastOrderAt: null,
+          isActive: false,
+          isBlocked: false,
+          kycStatus: "pending",
+          kycSubmittedAt: null,
           kycApprovedAt: null,
-          mlmActive: false, 
-          notificationCount: 0,       
-          unreadNotifications: 0,     
-
+          mlmActive: false,
+          notificationCount: 0,
+          unreadNotifications: 0,
           sponsorId: sponsorUid,
           sponsorReferralCode: sponsorUid ? sponsorCode : "",
           shareCode: marketingShareCode,
-          referralLink: "",           // 🟡 Dynamic parameter target bucket (populated asynchronously via cloud workers or lazy hook triggers)
-          
+          referralCode: marketingShareCode, // Set default value to match reference architecture safely
+          referralLink: "", 
           totalReferrals: 0,
           directReferrals: 0,
-          teamSize: 0, 
-
+          teamSize: 0,
           rank: "Member",
-          currentRankId: "member", 
+          currentRankId: "member",
           rankAchievedAt: null,
-
-          settings: {                 
+          settings: {
             darkMode: false,
             notifications: true,
           },
-
-          loginCount: 1, 
-          createdAt: serverTimestamp(), 
-          lastLogin: serverTimestamp(), 
-          lastSeenAt: serverTimestamp(), 
+          loginCount: 1,
+          createdAt: serverTimestamp(),
+          lastLogin: serverTimestamp(),
+          lastSeenAt: serverTimestamp(),
         });
 
         // Atomic metrics increments on direct sponsor node (Level 1 tracking)
@@ -211,10 +205,9 @@ export default function SignupPage() {
 
       console.log("Profile node committed successfully via transaction context.");
       localStorage.removeItem("jbk_pending_ref");
-      
     } catch (transactionError: any) {
       console.error("Critical Firestore Transaction Failed:", transactionError);
-      throw transactionError; 
+      throw transactionError;
     }
   }
 
@@ -244,9 +237,8 @@ export default function SignupPage() {
     e.preventDefault();
     if (loading) return;
 
-    // Strict Client Validation Gates & Sanitization
     const trimmedName = name.trim();
-    const cleanName = trimmedName.replace(/\s+/g, " "); 
+    const cleanName = trimmedName.replace(/\s+/g, " ");
 
     if (cleanName.length < 3) {
       alert("Please enter valid name");
@@ -256,17 +248,14 @@ export default function SignupPage() {
       alert("Name must be less than 50 characters");
       return;
     }
-
     if (password.length < 8) {
       alert("Password must be at least 8 characters");
       return;
     }
-
     if (password !== confirmPassword) {
       alert("Passwords do not match");
       return;
     }
-
     if (!acceptedTerms) {
       alert("Please accept Terms & Conditions");
       return;
@@ -279,14 +268,12 @@ export default function SignupPage() {
       setLoading(true);
       const result = await createUserWithEmailAndPassword(auth, normalizedEmail, password);
       createdAuthUser = result.user;
-      
-      // 🔴 Fix 3: Inverted Sequence - Commit complete database node baseline structure profile execution state FIRST
-      await createUserProfile(result.user, cleanName);
 
-      // 🔴 Fix 3 (Cont...): Post-profile transactional safety write, fire tracking token dispatch engine safely
+      // Commit profile data document model structure first
+      await createUserProfile(result.user, cleanName);
+      
       await sendEmailVerification(result.user);
       console.log("Verification email dispatched to target destination securely.");
-
       router.push("/verify-email");
     } catch (error: any) {
       console.error("Email Registration Sequence Fault:", error);
@@ -311,24 +298,20 @@ export default function SignupPage() {
     }
 
     let createdAuthUser: User | null = null;
-
     try {
       setLoading(true);
       const provider = new GoogleAuthProvider();
       provider.setCustomParameters({ prompt: "select_account" });
-
       const result = await signInWithPopup(auth, provider);
       createdAuthUser = result.user;
-      
+
       const userRef = doc(db, "users", result.user.uid);
       const userSnap = await getDoc(userRef);
 
       if (!userSnap.exists()) {
         await createUserProfile(result.user);
       }
-      
-      router.push("/mlm/dashboard"); 
-      
+      router.push("/mlm/dashboard");
     } catch (error: any) {
       console.error("Google Registration Sequence Fault:", error);
       if (createdAuthUser) {
@@ -341,11 +324,11 @@ export default function SignupPage() {
   }
 
   return (
-    <main className="min-h-screen flex items-center justify-center bg-[#f6f7fb] p-4">
-      <div className="w-full max-w-md rounded-[32px] bg-white p-8 shadow-2xl">
+    <main className="flex min-h-screen items-center justify-center bg-gray-50 px-4 py-12">
+      <div className="w-full max-w-md rounded-[32px] bg-white p-8 shadow-sm border border-gray-100">
         <div className="text-center mb-8">
-          <h1 className="text-3xl font-black text-indigo-600">Create Account</h1>
-          <p className="mt-2 text-sm text-gray-500">Join JembeeKart Today</p>
+          <h1 className="text-[28px] font-black text-indigo-600">Create Account</h1>
+          <p className="text-sm text-gray-400 mt-1">Join JembeeKart Today</p>
         </div>
 
         <form onSubmit={handleEmailSignup} className="space-y-4">
@@ -357,7 +340,6 @@ export default function SignupPage() {
             required
             className="w-full rounded-2xl border p-4 outline-none transition focus:border-indigo-500"
           />
-
           <input
             type="email"
             placeholder="Email Address"
@@ -366,25 +348,22 @@ export default function SignupPage() {
             required
             className="w-full rounded-2xl border p-4 outline-none transition focus:border-indigo-500"
           />
-
-          <input
-            type="password"
-            placeholder="Password (Min 8 chars)"
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
-            required
-            className="w-full rounded-2xl border p-4 outline-none transition focus:border-indigo-500"
-          />
-
+         <input
+  type="password"
+  placeholder="Confirm Password"
+  value={confirmPassword}
+  onChange={(e) => setConfirmPassword(e.target.value)}
+  required
+/>
           <input
             type="password"
             placeholder="Confirm Password"
             value={confirmPassword}
-            onChange={(e) => setConfirmPassword(e.target.value)}
+            onChange={(e) => setPassword(e.target.value)}
             required
             className="w-full rounded-2xl border p-4 outline-none transition focus:border-indigo-500"
           />
-
+          
           <div className="flex items-start gap-3 py-2 px-1">
             <input
               type="checkbox"
