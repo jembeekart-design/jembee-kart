@@ -1,10 +1,10 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { onAuthStateChanged } from "firebase/auth";
-import { doc, getDoc, onSnapshot, collection, query, where, limit } from "firebase/firestore";
+import { doc, onSnapshot } from "firebase/firestore";
 import { auth, db } from "@/firebase/config";
 import {
   Bell,
@@ -21,86 +21,77 @@ import {
   ShoppingBag
 } from "lucide-react";
 
-// Strict Interface for Firestore Node Mapping
+// ✅ 1, 2 & 3. Fully Aligned and Cleaned Up Interface Definition
 interface UserData {
   name?: string;
-  totalEarnings?: number;
+  totalIncome?: number;
   todayIncome?: number;
   rank?: string;
-  teamCount?: number;
-  rewardCount?: number;
-  referralCode?: string;
+  teamSize?: number;
+  rewardCount?: number;       // Maintained with structural fallback logic
+  referralCode?: string;      // ✅ Restored target referral field name
+  unreadNotifications?: number; // ✅ Parent field mapping to save network reads
 }
 
 export default function MLMDashboardPage() {
   const router = useRouter();
   const [loading, setLoading] = useState(true);
   const [userData, setUserData] = useState<UserData | null>(null);
-  const [unreadNotifications, setUnreadNotifications] = useState(0);
   
-  // Dynamic Performance States (Stores scaling metrics parsed directly from schema counters)
+  // Dynamic Performance States
   const [performanceMetrics, setPerformanceMetrics] = useState<number[]>([16, 24, 20, 36, 44]); 
 
+  // Garbage collection pointers for active real-time listeners
+  const unsubscribeDataRef = useRef<(() => void) | null>(null);
+
   useEffect(() => {
-    // 🛑 2. Strict Authentication Protection Lock & Real-time Layer Binding
+    // Tight Security Lock for Route Guarding
     const unsubscribeAuth = onAuthStateChanged(auth, (user) => {
       if (!user) {
-        console.warn("Unauthorized navigation intercepted. Redirecting to auth gate.");
+        console.warn("Unauthorized access. Dropping telemetry links.");
         router.push("/login");
         return;
       }
 
-      /* ======================================================
-      1, 3, 5 & 6. FIRESTORE REAL-TIME DATA PIPELINE INTEGRATION
-      ====================================================== */
       const userRef = doc(db, "users", user.uid);
       
-      // Using onSnapshot for active real-time dashboard frame sync without page reloads
-      const unsubscribeData = onSnapshot(userRef, (docSnap) => {
+      // Memory Leak Prevention: Clear existing sync points if found active
+      if (unsubscribeDataRef.current) unsubscribeDataRef.current();
+
+      // Main active real-time data sync node
+      unsubscribeDataRef.current = onSnapshot(userRef, (docSnap) => {
         if (docSnap.exists()) {
           const data = docSnap.data() as UserData;
           setUserData(data);
 
-          // 5. Dynamic Graph Performance Processing Block
-          // We parse structural system counters to derive visual height increments reactively
-          const tCount = data.teamCount || 0;
+          // Reactive Performance Computation Block
+          const tSize = data.teamSize || 0;
           const rCount = data.rewardCount || 0;
           const todayInc = data.todayIncome || 0;
           
           const computedGraphValues = [
-            Math.min(48, Math.max(12, tCount * 2)), 
+            Math.min(48, Math.max(12, tSize * 2)), 
             Math.min(48, Math.max(12, rCount * 3)), 
             Math.min(48, Math.max(12, Math.floor(todayInc / 100))),
-            Math.min(48, Math.max(12, (tCount + rCount) * 1.5)),
-            Math.min(48, Math.max(12, Math.floor((data.totalEarnings || 0) / 2000)))
+            Math.min(48, Math.max(12, (tSize + rCount) * 1.5)),
+            Math.min(48, Math.max(12, Math.floor((data.totalIncome || 0) / 2000)))
           ];
           setPerformanceMetrics(computedGraphValues);
         } else {
-          console.error("User metrics configuration block empty inside Firestore database.");
+          console.error("User execution data profiles not found inside Firestore index tier.");
         }
         setLoading(false);
       }, (error) => {
-        console.error("Firestore synchronizer channel disrupted:", error);
+        console.error("Firestore live streaming channel error:", error);
         setLoading(false);
       });
-
-      /* ======================================================
-      4. NOTIFICATION COUNTER PIPELINE (UNREAD TRIGGERS)
-      ====================================================== */
-      const notificationsRef = collection(db, "users", user.uid, "notifications");
-      const unreadQuery = query(notificationsRef, where("read", "==", false), limit(10));
-      
-      const unsubscribeNotifications = onSnapshot(unreadQuery, (snapshot) => {
-        setUnreadNotifications(snapshot.size);
-      });
-
-      return () => {
-        unsubscribeData();
-        unsubscribeNotifications();
-      };
     });
 
-    return () => unsubscribeAuth();
+    // Cleanup active channel links on unmount parameters execution
+    return () => {
+      unsubscribeAuth();
+      if (unsubscribeDataRef.current) unsubscribeDataRef.current();
+    };
   }, [router]);
 
   if (loading) {
@@ -111,9 +102,10 @@ export default function MLMDashboardPage() {
     );
   }
 
-  // Formatting configurations to present structural data seamlessly
-  const formattedTotalEarnings = (userData?.totalEarnings || 0).toLocaleString("en-IN");
+  // Value presentation maps
+  const formattedTotalIncome = (userData?.totalIncome || 0).toLocaleString("en-IN");
   const formattedTodayIncome = (userData?.todayIncome || 0).toLocaleString("en-IN");
+  const unreadCount = userData?.unreadNotifications || 0; // ✅ Mapped directly to document state instead of sub-collection reads
 
   const quickActions = [
     { title: "Invite", href: "/mlm/invite", icon: Users, color: "bg-violet-100 text-violet-700" },
@@ -123,8 +115,8 @@ export default function MLMDashboardPage() {
   ];
 
   const stats = [
-    { title: "Total Team", value: userData?.teamCount || 0, icon: Users, color: "text-violet-700" },
-    { title: "Today's Income", value: `装${formattedTodayIncome}`, icon: Sparkles, color: "text-green-600" },
+    { title: "Total Team", value: userData?.teamSize || 0, icon: Users, color: "text-violet-700" },
+    { title: "Today's Income", value: `₹${formattedTodayIncome}`, icon: Sparkles, color: "text-green-600" },
     { title: "Rank", value: userData?.rank || "Bronze Member", icon: Crown, color: "text-yellow-600" },
     { title: "Rewards", value: userData?.rewardCount || 0, icon: Trophy, color: "text-orange-600" }
   ];
@@ -136,7 +128,6 @@ export default function MLMDashboardPage() {
         <div className="flex items-center justify-between">
           <div>
             <h1 className="text-[28px] font-black text-violet-700">MLM Dashboard</h1>
-            {/* ✅ 3. Dynamic User Name Welcome Greeting Display */}
             <p className="text-[11px] text-gray-500">
               Welcome Back, <span className="font-bold text-gray-800">{userData?.name || "Partner"}</span> 👋
             </p>
@@ -147,17 +138,17 @@ export default function MLMDashboardPage() {
             className="relative flex h-12 w-12 items-center justify-center rounded-full bg-violet-100 text-violet-700"
           >
             <Bell size={22} />
-            {/* ✅ 4. Dynamic Unread Notification Red Dot Condition Interceptor */}
-            {unreadNotifications > 0 && (
+            {/* ✅ 3. Dynamic Unread Notification Counter sourced straight from root document schema state */}
+            {unreadCount > 0 && (
               <div className="absolute right-2 top-2 flex h-4 w-4 items-center justify-center rounded-full bg-red-500 text-[9px] font-black text-white border-2 border-white animate-bounce">
-                {unreadNotifications}
+                {unreadCount}
               </div>
             )}
           </Link>
         </div>
       </div>
 
-      {/* ✅ 7. SHOPPING STREAMING ALIGNMENT GATEWAY */}
+      {/* CONTINUE SHOPPING GATEWAY ROW */}
       <section className="px-4 pt-4">
         <Link
           href="/"
@@ -168,14 +159,13 @@ export default function MLMDashboardPage() {
         </Link>
       </section>
 
-      {/* HERO SECTION (DYNAMIC EARNINGS) */}
+      {/* HERO SECTION (DYNAMIC INCOME VALUES) */}
       <section className="px-4 pt-4">
         <div className="overflow-hidden rounded-[32px] bg-gradient-to-br from-violet-700 via-fuchsia-600 to-orange-500 p-5 text-white shadow-xl">
           <div className="flex items-center justify-between">
             <div>
               <p className="text-[13px] text-white/80">Total Earnings</p>
-              {/* ✅ 1. Live Firestore Dynamic Data Sync */}
-              <h2 className="mt-2 text-[42px] font-black">₹{formattedTotalEarnings}</h2>
+              <h2 className="mt-2 text-[42px] font-black">₹{formattedTotalIncome}</h2>
             </div>
             <div className="flex h-16 w-16 items-center justify-center rounded-full bg-white/20">
               <Wallet size={34} />
@@ -194,7 +184,7 @@ export default function MLMDashboardPage() {
         </div>
       </section>
 
-      {/* QUICK ACTIONS */}
+      {/* QUICK ACTIONS ROW */}
       <section className="mt-6 px-4">
         <div className="grid grid-cols-4 gap-3">
           {quickActions.map((action, index) => {
@@ -211,7 +201,7 @@ export default function MLMDashboardPage() {
         </div>
       </section>
 
-      {/* STATS OVERVIEW (LIVE SYNCHRONIZED) */}
+      {/* GRID BASE CORE METRICS OVERVIEW */}
       <section className="mt-6 px-4">
         <div className="grid grid-cols-2 gap-3">
           {stats.map((stat, index) => {
@@ -219,7 +209,6 @@ export default function MLMDashboardPage() {
             return (
               <div key={index} className="rounded-2xl bg-white p-4 shadow-sm">
                 <Icon size={28} className={stat.color} />
-                {/* ✅ 1. Dynamic Metric Node Mapping */}
                 <h3 className="mt-3 text-[26px] font-black tracking-tight text-gray-800">{stat.value}</h3>
                 <p className="text-[12px] text-gray-500">{stat.title}</p>
               </div>
@@ -228,7 +217,7 @@ export default function MLMDashboardPage() {
         </div>
       </section>
 
-      {/* REFERRAL SYSTEM FRAMEWORK */}
+      {/* REFERRAL PORTAL HOOK */}
       <section className="mt-6 px-4">
         <div className="rounded-[30px] bg-white p-5 shadow-sm">
           <div className="flex items-center justify-between">
@@ -240,7 +229,7 @@ export default function MLMDashboardPage() {
           </div>
 
           <div className="mt-5 rounded-2xl bg-violet-50 p-4 text-center">
-            {/* ✅ 6. Dynamic referralCode implementation from Firestore Document states */}
+            {/* ✅ 1. Corrected path reading configuration to show correct string data code values */}
             <h3 className="text-[28px] font-black tracking-widest text-violet-700 uppercase">
               {userData?.referralCode || "NO_CODE"}
             </h3>
@@ -260,7 +249,6 @@ export default function MLMDashboardPage() {
             <h2 className="text-[22px] font-black">Performance</h2>
           </div>
 
-          {/* ✅ 5. Render heights reactively based on live analytics variables instead of fixed utility classes */}
           <div className="mt-5 flex h-48 items-end gap-2 px-2 border-b border-gray-100 pb-1">
             <div style={{ height: `${performanceMetrics[0]}%` }} className="w-full rounded-t-xl bg-violet-200 transition-all duration-500" title="Team Weightage" />
             <div style={{ height: `${performanceMetrics[1]}%` }} className="w-full rounded-t-xl bg-violet-400 transition-all duration-500" title="Rewards Scaler" />
@@ -278,7 +266,7 @@ export default function MLMDashboardPage() {
         </div>
       </section>
 
-      {/* EXTRA MODULE NAVIGATION HUB */}
+      {/* NAVIGATION PANEL LIST HIERARCHY */}
       <section className="mt-6 px-4">
         <div className="space-y-3">
           {[
