@@ -10,8 +10,9 @@ import {
   signInWithEmailAndPassword,
   GoogleAuthProvider,
   signInWithPopup,
+  User, // Strict User type implementation
 } from "firebase/auth";
-import { doc, getDoc, updateDoc } from "firebase/firestore";
+import { doc, getDoc, updateDoc, serverTimestamp } from "firebase/firestore";
 import { auth, db } from "@/firebase/config";
 
 function LoginCard() {
@@ -34,13 +35,14 @@ function LoginCard() {
   /* ======================================================
   VERIFY & TELEMETRY SYNC (STRICT EXISTING USERS ONLY)
   ====================================================== */
-  async function verifyAndTelemetrySync(user: any) {
+  async function verifyAndTelemetrySync(user: User) {
     const userRef = doc(db, "users", user.uid);
     const userSnap = await getDoc(userRef);
 
     if (userSnap.exists()) {
+      // Server-side synchronized timestamp update
       await updateDoc(userRef, {
-        lastLogin: Date.now()
+        lastLogin: serverTimestamp()
       });
       return true;
     } else {
@@ -49,7 +51,7 @@ function LoginCard() {
   }
 
   /* ======================================================
-  EMAIL AUTHENTICATION
+  EMAIL AUTHENTICATION (SECURED WITH VERIFICATION INTERCEPTOR)
   ====================================================== */
   async function handleEmailLogin(e: React.FormEvent) {
     e.preventDefault();
@@ -57,18 +59,34 @@ function LoginCard() {
 
     try {
       setLoading(true);
-      const result = await signInWithEmailAndPassword(auth, email, password);
+
+      // Email Normalization Engine (Trims spacing & enforces lowercase standard)
+      const normalizedEmail = email.trim().toLowerCase();
+      const result = await signInWithEmailAndPassword(auth, normalizedEmail, password);
       
+      // Strict Reload Checkpoint: Force server telemetry pull to capture dynamic verification states
+      await result.user.reload();
+
+      // Security Gate: Prevent unverified users from bypassing credentials screening
+      if (!result.user.emailVerified) {
+        console.warn("Access Intercepted: Email verification is required.");
+        window.location.href = "/verify-email";
+        return;
+      }
+
       const isExistingUser = await verifyAndTelemetrySync(result.user);
       
       if (isExistingUser) {
+        // Clear cached reference tracking payloads safely
+        localStorage.removeItem("jbk_pending_ref");
+        // ✅ Redirect updated back to Root path as per requirement
         window.location.href = "/"; 
       } else {
         alert("Account records not found in JembeeKart database. Please Signup first.");
         await auth.signOut();
       }
     } catch (error: any) {
-      console.error("Email Login Error:", error);
+      console.error("Email Login Error Pipeline Exception:", error);
       alert(error.message || "Invalid email or password");
     } finally {
       setLoading(false);
@@ -76,7 +94,7 @@ function LoginCard() {
   }
 
   /* ======================================================
-  GOOGLE AUTHENTICATION
+  GOOGLE AUTHENTICATION (OAUTH BYPASS PIPELINE)
   ====================================================== */
   async function handleGoogleLogin() {
     if (loading) return;
@@ -92,6 +110,8 @@ function LoginCard() {
         const isExistingUser = await verifyAndTelemetrySync(result.user);
         
         if (isExistingUser) {
+          localStorage.removeItem("jbk_pending_ref");
+          // ✅ Redirect updated back to Root path as per requirement
           window.location.href = "/"; 
         } else {
           alert("No existing profile found. Redirecting to Signup page to apply your referral code.");
@@ -99,7 +119,7 @@ function LoginCard() {
         }
       }
     } catch (error: any) {
-      console.error("Google Login Error:", error);
+      console.error("Google Login Error Pipeline Exception:", error);
       alert(error.message || "Google sign-in failed");
     } finally {
       setLoading(false);
