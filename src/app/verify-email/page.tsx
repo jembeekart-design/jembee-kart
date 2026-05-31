@@ -3,7 +3,7 @@
 import { useEffect, useState, useRef } from "react";
 import { useRouter } from "next/navigation";
 import { doc, updateDoc, serverTimestamp } from "firebase/firestore";
-import { onAuthStateChanged, signOut } from "firebase/auth"; // ✅ Updated to Modular Import
+import { onAuthStateChanged, signOut } from "firebase/auth";
 import { auth, db } from "@/firebase/config";
 
 export default function VerifyEmailPage() {
@@ -11,10 +11,12 @@ export default function VerifyEmailPage() {
   const [checking, setChecking] = useState(false);
   const [resendLoading, setResendLoading] = useState(false);
   const [userEmail, setUserEmail] = useState("");
+  
   const intervalRef = useRef<NodeJS.Timeout | null>(null);
+  const syncedRef = useRef(false); // ✅ Strict Race-Condition Concurrency Lock
 
   useEffect(() => {
-    // Structural Gate: Lock validation layer context on execution mount using modular syntax
+    // Structural Gate: Lock validation layer context on execution mount
     const unsubscribe = onAuthStateChanged(auth, (user) => {
       if (!user) {
         router.push("/login");
@@ -22,9 +24,13 @@ export default function VerifyEmailPage() {
       }
       setUserEmail(user.email || "");
 
-      // 🛑 Google Provider Bypass Gate
-      if (user.providerData[0]?.providerId === "google.com") {
-        console.log("Google user detected. Bypassing email verification layer.");
+      // 🛑 Robust Google Provider Bypass Gate (.some() iteration array loop)
+      const isGoogleUser = user.providerData.some(
+        (provider) => provider.providerId === "google.com"
+      );
+
+      if (isGoogleUser) {
+        console.log("Google user verified via provider token. Bypassing activation layout.");
         router.push("/mlm/dashboard");
         return;
       }
@@ -61,30 +67,38 @@ export default function VerifyEmailPage() {
   CORE FIRESTORE VERIFICATION STATE SYNCHRONIZATION ENGINE
   ====================================================== */
   async function handleSyncAndRedirect(uid: string) {
+    // 🛑 Concurrency Interceptor Gate
+    if (syncedRef.current) {
+      console.log("Sync sequence already in progress or completed. Aborting duplicate run.");
+      return;
+    }
+    syncedRef.current = true; // Set block state instantly before async task execution
+
     try {
       const userRef = doc(db, "users", uid);
       
       // ✅ Enhanced Verification Audit Update
       await updateDoc(userRef, {
         emailVerified: true,
-        emailVerifiedAt: serverTimestamp(), // ➕ Added exact verification timestamp
-        accountStatus: "active",            // Synchronizes matching status field seamlessly
-        lastLogin: serverTimestamp()         // Audit telemetry synchronization
+        emailVerifiedAt: serverTimestamp(),
+        accountStatus: "active",            
+        lastLogin: serverTimestamp()         
       });
 
       console.log("Firestore emailVerified status successfully synchronized with Firebase Auth state.");
       router.push("/mlm/dashboard");
     } catch (syncError) {
       console.error("Critical State Mismatch Sync Error:", syncError);
+      syncedRef.current = false; // Reset lock to allow retry if transaction fails
       alert("Error synchronizing profile records. Please refresh or try again.");
     }
   }
 
   /* ======================================================
   MANUAL RE-VALIDATION ROUTINE (TRIGGERED BY ACTION CLICK)
-  ====================================================== */
+  ===================================================== */
   async function checkVerificationStatus() {
-    if (checking) return;
+    if (checking || syncedRef.current) return;
     try {
       setChecking(true);
       const currentUser = auth.currentUser;
@@ -167,15 +181,15 @@ export default function VerifyEmailPage() {
         <div className="space-y-3">
           <button
             onClick={checkVerificationStatus}
-            disabled={checking}
+            disabled={checking || syncedRef.current}
             className="w-full rounded-2xl bg-indigo-600 p-4 font-black text-white transition hover:bg-indigo-700 disabled:opacity-50"
           >
-            {checking ? "Checking System Records..." : "I Have Verified"}
+            {checking || syncedRef.current ? "Checking System Records..." : "I Have Verified"}
           </button>
 
           <button
             onClick={handleResendEmail}
-            disabled={resendLoading || checking}
+            disabled={resendLoading || checking || syncedRef.current}
             className="w-full rounded-2xl border border-gray-200 p-4 font-bold bg-white text-gray-700 hover:bg-gray-50 transition disabled:opacity-50 text-sm"
           >
             {resendLoading ? "Transmitting Packet..." : "Resend Verification Email"}
