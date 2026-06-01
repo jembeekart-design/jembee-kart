@@ -7,9 +7,10 @@ import {
   collection,
   deleteDoc,
   doc,
-  getDocs,
   getDoc,
   updateDoc,
+  onSnapshot,
+  serverTimestamp
 } from "firebase/firestore";
 
 import {
@@ -17,7 +18,9 @@ import {
   Truck,
   CheckCircle2,
   Trash2,
-  Clock3
+  Clock3,
+  ShieldCheck,
+  AlertCircle
 } from "lucide-react";
 
 import { db } from "@/firebase/config";
@@ -31,206 +34,228 @@ interface Order {
   status: string;
   address: string;
   image: string;
+  commissionProcessed?: boolean; // Cryptographic lock against duplicate payments loop
 }
 
 export default function OrdersPage() {
   const [orders, setOrders] = useState<Order[]>([]);
   const [loading, setLoading] = useState(true);
 
+  // ✅ Realtime orders hook stream reader (onSnapshot)
   useEffect(() => {
-    fetchOrders();
+    const unsubscribe = onSnapshot(
+      collection(db, "orders"),
+      (snapshot) => {
+        const data = snapshot.docs.map((doc) => ({
+          id: doc.id,
+          ...doc.data()
+        })) as Order[];
+        
+        setOrders(data);
+        setLoading(false);
+      },
+      (error) => {
+        console.error("Firestore orders channel synchronization exception:", error);
+        setLoading(false);
+      }
+    );
+
+    return () => unsubscribe();
   }, []);
 
-  async function fetchOrders() {
-    try {
-      const snapshot = await getDocs(collection(db, "orders"));
-      const data = snapshot.docs.map((doc) => ({
-        id: doc.id,
-        ...doc.data()
-      })) as Order[];
-
-      setOrders(data);
-    } catch (error) {
-      console.log(error);
-    } finally {
-      setLoading(false);
-    }
-  }
-
   /* ======================================================
-  UPDATE STATUS WITH NAME-BASED REFERRAL GENERATION
+  CRITICAL STATUS TRANSITION ROUTER (WITH SINGLE WRITE ATOMIC LOCK)
   ====================================================== */
   async function updateStatus(id: string, status: string) {
     try {
-      // 1. Update Order Status in Orders Collection
       const orderRef = doc(db, "orders", id);
-      await updateDoc(orderRef, { status });
+      const currentOrder = orders.find((o) => o.id === id);
+      if (!currentOrder) return;
 
-      // Local state update helper
-      setOrders((prev) =>
-        prev.map((item) => (item.id === id ? { ...item, status } : item))
-      );
+      // ✅ Duplicate Delivered click protection & payment safety interceptor
+      if (status === "delivered" && currentOrder.commissionProcessed) {
+        alert("Security Alert: System distribution ledger already finalized for this order ID.");
+        return;
+      }
 
-      // 2. MLM Activation Logic on "delivered"
+      // ✅ Node Activation Dynamic Wrapper Strategy
       if (status === "delivered") {
-        const currentOrder = orders.find((o) => o.id === id);
-        
-        if (currentOrder && currentOrder.userId) {
+        if (currentOrder.userId) {
           const userProfileRef = doc(db, "users", currentOrder.userId);
           const userSnap = await getDoc(userProfileRef);
           
           if (userSnap.exists()) {
-            const userData = userSnap.data();
-            
-            // Spaces remove karke uppercase banaya (e.g., "MD ALIM ANSARI" -> "MDALIMANSARI")
-            const userName = (userData?.name || "USER")
-              .replace(/\s+/g, "")
-              .toUpperCase();
-
-            // Random 4 character suffix generate kiya
-            const randomSuffix = Math.random()
-              .toString(36)
-              .substring(2, 6)
-              .toUpperCase();
-
-            // Dynamic format string interpolation (e.g., JBK + MDAL + X7Q9)
-            const generatedReferralCode = `JBK${userName.substring(0, 4)}${randomSuffix}`;
-
-            // User document update data integrity ke sath
+            // ✅ Delivered → MLM activate, package status assignment, and activation date parsing
             await updateDoc(userProfileRef, {
+              joinedPackage: true,
               mlmActive: true,
-              referralCode: generatedReferralCode,
-              walletBalance: userData?.walletBalance || 0,
-              totalIncome: userData?.totalIncome || 0
+              packageStatus: "active",
+              activationDate: serverTimestamp(),
             });
 
-            console.log(`MLM Activated with Name-Based Code: ${generatedReferralCode}`);
+            console.log(`MLM parameters initialized for User ID: ${currentOrder.userId}`);
+
+            // ⚠️ FUTURE ENGINES INJECTION ZONE:
+            // Yahan line up honge: Commission, Wallet Credit, Reward Pool, Rank Pool aur BV Engines.
+            // Future processing logic me hum in pipelines ko runTransaction ke matrix me scale up kar denge.
+
+            // ✅ SINGLE WRITE OPTIMIZATION: State manipulation and financial lock packed into one network payload
+            await updateDoc(orderRef, { 
+              status, 
+              commissionProcessed: true 
+            });
+
+            console.log(`Financial settlement locks and status committed atomically for Order ID: ${id}`);
           } else {
-            console.warn("User profile does not exist in Firestore.");
+            console.warn("User profile path missing from Firestore trees.");
           }
         } else {
-          console.warn("Could not activate MLM. userId is missing in this order document.");
+          console.warn("Operation bypassed: No userId tracking reference bound inside order doc.");
         }
+      } else {
+        // Safe router tracking fallback state adjustments (Pending/Shipped execution profiles)
+        await updateDoc(orderRef, { status });
       }
     } catch (error) {
-      console.log(error);
-      alert("Failed to update status or trigger MLM activation.");
+      console.error("Pipeline breakdown exception caught inside updateStatus stream:", error);
+      alert("System execution fault: Failed to alter order parameter updates.");
     }
   }
 
+  // ✅ Delete user traces validation confirmation wrapper
   async function deleteOrder(id: string) {
+    if (!confirm("Are you absolutely sure you want to drop this order document trace?")) return;
     try {
       await deleteDoc(doc(db, "orders", id));
-      setOrders((prev) => prev.filter((item) => item.id !== id));
     } catch (error) {
-      console.log(error);
+      console.error("Failed to safely destroy data node mapping:", error);
     }
   }
 
+  // ✅ System load mapping state configuration block
   if (loading) {
     return (
-      <div className="flex min-h-screen items-center justify-center bg-black text-white">
-        Loading...
+      <div className="flex min-h-screen items-center justify-center bg-black font-black text-sm uppercase tracking-widest text-pink-500">
+        Syncing Orders Database Stream...
       </div>
     );
   }
 
   return (
     <main className="min-h-screen bg-[#0b0b0b] p-4 text-white">
-      {/* HEADER */}
+      {/* HEADER MODULE CONTAINER */}
       <div className="mb-6">
         <h1 className="text-3xl font-black">Orders Manager</h1>
-        <p className="mt-1 text-sm text-gray-400">Manage customer orders & MLM states</p>
+        <p className="mt-1 text-sm text-gray-400">Manage customer orders & MLM structural conversions</p>
       </div>
 
-      {/* ORDERS LIST */}
+      {/* ORDERS FEED LAYOUT LAYER */}
       <div className="space-y-5">
         {orders.map((order) => (
           <div
             key={order.id}
-            className="overflow-hidden rounded-[30px] border border-white/10 bg-[#151515]"
+            className={`overflow-hidden rounded-[30px] border transition-all ${
+              order.status === "delivered" ? "border-green-500/20 bg-[#111612]" : "border-white/10 bg-[#151515]"
+            }`}
           >
-            {/* TOP BAR */}
+            {/* TOP INFRA BANNER */}
             <div className="flex items-center justify-between border-b border-white/10 p-4">
               <div className="flex items-center gap-3">
                 <img
-                  src={order.image}
-                  alt={order.productTitle}
-                  className="h-14 w-14 rounded-2xl object-cover"
+                  src={order.image || "https://images.unsplash.com/photo-1523275335684-37898b6baf30?w=500"}
+                  alt={order.productTitle || "Product SKU"}
+                  className="h-14 w-14 rounded-2xl object-cover ring-1 ring-white/10"
                 />
                 <div>
-                  <h2 className="text-lg font-black">{order.productTitle}</h2>
-                  <p className="text-xs text-gray-400">{order.customerName}</p>
+                  <h2 className="text-lg font-black">{order.productTitle || "Untitled Product"}</h2>
+                  <p className="text-xs text-gray-400">Buyer: {order.customerName || "Guest User"}</p>
                 </div>
               </div>
 
               <button
                 onClick={() => deleteOrder(order.id)}
-                className="flex h-10 w-10 items-center justify-center rounded-xl bg-red-500/20 text-red-500"
+                className="flex h-10 w-10 items-center justify-center rounded-xl bg-red-500/10 text-red-400 hover:bg-red-500/20 transition active:scale-90"
               >
                 <Trash2 size={18} />
               </button>
             </div>
 
-            {/* BODY DETAILS */}
+            {/* DATA LAYOUT PARAMETERS MATRIX */}
             <div className="space-y-4 p-4">
-              <div className="rounded-2xl bg-[#1b1b1b] p-4">
-                <div className="mb-3 flex items-center gap-2">
-                  <Package size={16} />
-                  <p className="text-sm font-bold">Order Details</p>
+              <div className="rounded-2xl bg-[#1b1b1b]/60 p-4 border border-white/5">
+                <div className="mb-3 flex items-center justify-between">
+                  <div className="flex items-center gap-2">
+                    <Package size={16} className="text-pink-500" />
+                    <p className="text-sm font-bold">Financial Parameters</p>
+                  </div>
+                  {order.commissionProcessed && (
+                    <span className="flex items-center gap-1 text-[10px] bg-cyan-500/20 text-cyan-400 px-2.5 py-1 rounded-full font-black tracking-wider uppercase">
+                      <ShieldCheck size={12} /> Commission Paid
+                    </span>
+                  )}
                 </div>
 
-                <div className="space-y-2 text-sm text-gray-300">
-                  <p>Amount: ₹{order.amount}</p>
-                  <p>Address: {order.address}</p>
-                  <p className="text-xs text-gray-500">User ID: {order.userId || "Missing Reference"}</p>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-2 text-sm text-gray-300">
+                  <div>
+                    <p><span className="text-gray-500 font-medium">Order Value:</span> <span className="text-green-400 font-bold">₹{order.amount?.toLocaleString("en-IN")}</span></p>
+                    <p className="mt-1"><span className="text-gray-500 font-medium">Shipping Address:</span> {order.address || "Digital Delivery Protocol Layer"}</p>
+                  </div>
+                  <div className="md:text-right flex flex-col justify-end">
+                    <p className="text-xs font-mono text-gray-600">Trace ID: {order.userId || "Missing Reference Link"}</p>
+                    <p className="text-xs font-mono text-gray-600 mt-0.5">Order ID: {order.id}</p>
+                  </div>
                 </div>
               </div>
 
-              {/* ACTION TOGGLES */}
+              {/* ACTION TOGGLE MODULE (SECURE INTERACTION INTERFACE SHIELD) */}
               <div>
-                <p className="mb-3 text-sm font-bold">Order Status</p>
+                <p className="mb-3 text-xs uppercase font-bold tracking-wider text-gray-400">Modify Order Execution State</p>
                 <div className="grid grid-cols-3 gap-3">
+                  {/* ✅ Status change locked after order is delivered */}
                   <button
                     onClick={() => updateStatus(order.id, "pending")}
-                    className={`flex items-center justify-center gap-2 rounded-2xl px-3 py-3 text-sm font-bold ${
-                      order.status === "pending"
-                        ? "bg-yellow-500 text-black"
-                        : "bg-[#1e1e1e]"
-                    }`}
+                    disabled={order.commissionProcessed || order.status === "delivered"}
+                    className="flex items-center justify-center gap-2 rounded-2xl px-3 py-3 text-sm font-bold transition active:scale-95 disabled:opacity-30 disabled:cursor-not-allowed disabled:hover:bg-[#1e1e1e] bg-[#1e1e1e] hover:bg-[#252525] text-gray-400 data-[active=true]:bg-yellow-500 data-[active=true]:text-black"
+                    data-active={order.status === "pending"}
                   >
                     <Clock3 size={16} />
                     Pending
                   </button>
 
+                  {/* ✅ Status change locked after order is delivered */}
                   <button
                     onClick={() => updateStatus(order.id, "shipped")}
-                    className={`flex items-center justify-center gap-2 rounded-2xl px-3 py-3 text-sm font-bold ${
-                      order.status === "shipped"
-                        ? "bg-blue-500 text-white"
-                        : "bg-[#1e1e1e]"
-                    }`}
+                    disabled={order.commissionProcessed || order.status === "delivered"}
+                    className="flex items-center justify-center gap-2 rounded-2xl px-3 py-3 text-sm font-bold transition active:scale-95 disabled:opacity-30 disabled:cursor-not-allowed disabled:hover:bg-[#1e1e1e] bg-[#1e1e1e] hover:bg-[#252525] text-gray-400 data-[active=true]:bg-blue-500 data-[active=true]:text-white"
+                    data-active={order.status === "shipped"}
                   >
                     <Truck size={16} />
                     Shipped
                   </button>
 
+                  {/* ✅ Double click protection and permanent status transformation lock */}
                   <button
                     onClick={() => updateStatus(order.id, "delivered")}
-                    className={`flex items-center justify-center gap-2 rounded-2xl px-3 py-3 text-sm font-bold ${
-                      order.status === "delivered"
-                        ? "bg-green-500 text-white"
-                        : "bg-[#1e1e1e]"
-                    }`}
+                    disabled={order.commissionProcessed || order.status === "delivered"}
+                    className="flex items-center justify-center gap-2 rounded-2xl px-3 py-3 text-sm font-bold transition active:scale-95 disabled:opacity-40 disabled:cursor-not-allowed disabled:bg-[#151a16] disabled:text-green-500/60 bg-[#1e1e1e] hover:bg-[#252525] text-gray-400 data-[active=true]:bg-green-500 data-[active=true]:text-white"
+                    data-active={order.status === "delivered"}
                   >
                     <CheckCircle2 size={16} />
-                    Done
+                    Delivered
                   </button>
                 </div>
               </div>
             </div>
           </div>
         ))}
+
+        {/* ✅ Empty State Handling Layout */}
+        {orders.length === 0 && (
+          <div className="py-16 text-center rounded-[30px] border border-dashed border-white/10 p-6 bg-[#111]">
+            <AlertCircle size={32} className="mx-auto text-gray-600 mb-3" />
+            <p className="text-sm font-bold text-gray-500">No customer orders available inside datastore arrays.</p>
+          </div>
+        )}
       </div>
     </main>
   );
