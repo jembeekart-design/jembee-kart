@@ -6,42 +6,30 @@ import {
   collection
 } from "firebase/firestore";
 
-import { db }
-from "@/firebase/config";
+import { db } from "@/firebase/config";
 
-import { distributeLevelCommission }
-from "../distributeLevelCommission";
+import { distributeLevelCommission } from "../distributeLevelCommission";
 
-import { creditWallet }
-from "../creditWallet";
+import { creditWallet } from "../creditWallet";
 
-export async function
-completeOrderAndDistributeCommission(
+export async function completeOrderAndDistributeCommission(
   orderId: string
 ) {
-
   try {
-
     /* =========================
        ORDER REF
     ========================= */
 
-    const orderRef =
-      doc(
-        db,
-        "orders",
-        orderId
-      );
+    const orderRef = doc(
+      db,
+      "orders",
+      orderId
+    );
 
     const orderSnap =
-      await getDoc(
-        orderRef
-      );
+      await getDoc(orderRef);
 
-    if (
-      !orderSnap.exists()
-    ) {
-
+    if (!orderSnap.exists()) {
       throw new Error(
         "Order not found"
       );
@@ -58,10 +46,8 @@ completeOrderAndDistributeCommission(
       order.status ===
       "completed"
     ) {
-
       return {
         success: false,
-
         message:
           "Order already completed"
       };
@@ -74,9 +60,7 @@ completeOrderAndDistributeCommission(
     await updateDoc(
       orderRef,
       {
-        status:
-          "completed",
-
+        status: "completed",
         completedAt:
           Date.now()
       }
@@ -102,12 +86,8 @@ completeOrderAndDistributeCommission(
     ========================= */
 
     await creditWallet({
-      uid:
-        userId,
-
-      amount:
-        cashback,
-
+      uid: userId,
+      amount: cashback,
       incomeType:
         "rewardIncome"
     });
@@ -117,11 +97,9 @@ completeOrderAndDistributeCommission(
     ========================= */
 
     await distributeLevelCommission({
-      userId:
-        userId,
-
-      amount:
-        amount
+      userId: userId,
+      amount: amount,
+      orderId: orderId
     });
 
     /* =========================
@@ -134,18 +112,10 @@ completeOrderAndDistributeCommission(
         "orderIncomeHistory"
       ),
       {
-        userId:
-          userId,
-
-        orderId:
-          orderId,
-
-        amount:
-          amount,
-
-        cashback:
-          cashback,
-
+        userId,
+        orderId,
+        amount,
+        cashback,
         createdAt:
           Date.now()
       }
@@ -154,9 +124,7 @@ completeOrderAndDistributeCommission(
     return {
       success: true
     };
-
   } catch (error) {
-
     console.error(error);
 
     return {
