@@ -25,6 +25,9 @@ import {
 
 import { db } from "@/firebase/config";
 
+// ✅ 1. Import MLM Level Distribution Engine Pipeline Hook
+import { distributeLevelCommission } from "@/lib/mlm/distributeLevelCommission";
+
 interface Order {
   id: string;
   userId: string; 
@@ -41,7 +44,7 @@ export default function OrdersPage() {
   const [orders, setOrders] = useState<Order[]>([]);
   const [loading, setLoading] = useState(true);
 
-  // ✅ Realtime orders hook stream reader (onSnapshot)
+  // Realtime orders hook stream reader (onSnapshot)
   useEffect(() => {
     const unsubscribe = onSnapshot(
       collection(db, "orders"),
@@ -64,7 +67,7 @@ export default function OrdersPage() {
   }, []);
 
   /* ======================================================
-  CRITICAL STATUS TRANSITION ROUTER (WITH SINGLE WRITE ATOMIC LOCK)
+  CRITICAL STATUS TRANSITION ROUTER (WITH INTEGRATED MLM ENGINE)
   ====================================================== */
   async function updateStatus(id: string, status: string) {
     try {
@@ -72,20 +75,20 @@ export default function OrdersPage() {
       const currentOrder = orders.find((o) => o.id === id);
       if (!currentOrder) return;
 
-      // ✅ Duplicate Delivered click protection & payment safety interceptor
+      // Duplicate Delivered click protection & payment safety interceptor
       if (status === "delivered" && currentOrder.commissionProcessed) {
         alert("Security Alert: System distribution ledger already finalized for this order ID.");
         return;
       }
 
-      // ✅ Node Activation Dynamic Wrapper Strategy
+      // Node Activation Dynamic Wrapper Strategy
       if (status === "delivered") {
         if (currentOrder.userId) {
           const userProfileRef = doc(db, "users", currentOrder.userId);
           const userSnap = await getDoc(userProfileRef);
           
           if (userSnap.exists()) {
-            // ✅ Delivered → MLM activate, package status assignment, and activation date parsing
+            // STEP 1: Delivered → MLM profile state activation tracking
             await updateDoc(userProfileRef, {
               joinedPackage: true,
               mlmActive: true,
@@ -95,11 +98,19 @@ export default function OrdersPage() {
 
             console.log(`MLM parameters initialized for User ID: ${currentOrder.userId}`);
 
-            // ⚠️ FUTURE ENGINES INJECTION ZONE:
-            // Yahan line up honge: Commission, Wallet Credit, Reward Pool, Rank Pool aur BV Engines.
-            // Future processing logic me hum in pipelines ko runTransaction ke matrix me scale up kar denge.
+            // ✅ STEP 2: Trigger Multi-level Commission Engine calculations and Audit Log insertions
+            await distributeLevelCommission({
+              userId: currentOrder.userId,
+              amount: currentOrder.amount,
+              orderId: currentOrder.id,
+            });
 
-            // ✅ SINGLE WRITE OPTIMIZATION: State manipulation and financial lock packed into one network payload
+            console.log(`Up-line level distribution sequence dispatched for order trace context: ${id}`);
+
+            // ⚠️ FUTURE SEED COUPLING LINKS:
+            // Yahan line up honge reward matrix nodes, rank pools, aur Business Volume calculations.
+
+            // ✅ STEP 3: Single write transaction lock pipeline settlement
             await updateDoc(orderRef, { 
               status, 
               commissionProcessed: true 
@@ -122,7 +133,7 @@ export default function OrdersPage() {
     }
   }
 
-  // ✅ Delete user traces validation confirmation wrapper
+  // Delete user traces validation confirmation wrapper
   async function deleteOrder(id: string) {
     if (!confirm("Are you absolutely sure you want to drop this order document trace?")) return;
     try {
@@ -132,7 +143,7 @@ export default function OrdersPage() {
     }
   }
 
-  // ✅ System load mapping state configuration block
+  // System load mapping state configuration block
   if (loading) {
     return (
       <div className="flex min-h-screen items-center justify-center bg-black font-black text-sm uppercase tracking-widest text-pink-500">
@@ -211,7 +222,6 @@ export default function OrdersPage() {
               <div>
                 <p className="mb-3 text-xs uppercase font-bold tracking-wider text-gray-400">Modify Order Execution State</p>
                 <div className="grid grid-cols-3 gap-3">
-                  {/* ✅ Status change locked after order is delivered */}
                   <button
                     onClick={() => updateStatus(order.id, "pending")}
                     disabled={order.commissionProcessed || order.status === "delivered"}
@@ -222,7 +232,6 @@ export default function OrdersPage() {
                     Pending
                   </button>
 
-                  {/* ✅ Status change locked after order is delivered */}
                   <button
                     onClick={() => updateStatus(order.id, "shipped")}
                     disabled={order.commissionProcessed || order.status === "delivered"}
@@ -233,7 +242,6 @@ export default function OrdersPage() {
                     Shipped
                   </button>
 
-                  {/* ✅ Double click protection and permanent status transformation lock */}
                   <button
                     onClick={() => updateStatus(order.id, "delivered")}
                     disabled={order.commissionProcessed || order.status === "delivered"}
@@ -249,7 +257,7 @@ export default function OrdersPage() {
           </div>
         ))}
 
-        {/* ✅ Empty State Handling Layout */}
+        {/* Empty State Handling Layout */}
         {orders.length === 0 && (
           <div className="py-16 text-center rounded-[30px] border border-dashed border-white/10 p-6 bg-[#111]">
             <AlertCircle size={32} className="mx-auto text-gray-600 mb-3" />
