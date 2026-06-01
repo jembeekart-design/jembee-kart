@@ -2,6 +2,7 @@ import {
   doc,
   increment,
   updateDoc,
+  setDoc,
   serverTimestamp
 } from "firebase/firestore";
 
@@ -22,9 +23,7 @@ interface CreditWalletData {
 export async function creditWallet(
   data: CreditWalletData
 ) {
-
   try {
-
     /* =========================
        UPDATE USER
     ========================= */
@@ -32,17 +31,14 @@ export async function creditWallet(
     await updateDoc(
       doc(db, "users", data.uid),
       {
-        walletBalance:
-          increment(data.amount),
+        walletBalance: increment(data.amount),
 
-        totalIncome:
-          increment(data.amount),
+        totalIncome: increment(data.amount),
 
         [data.incomeType]:
           increment(data.amount),
 
-        updatedAt:
-          serverTimestamp()
+        updatedAt: serverTimestamp()
       }
     );
 
@@ -50,17 +46,19 @@ export async function creditWallet(
        UPDATE WALLET
     ========================= */
 
-    await updateDoc(
+    await setDoc(
       doc(db, "wallets", data.uid),
       {
-        balance:
-          increment(data.amount),
+        uid: data.uid,
 
-        withdrawable:
-          increment(data.amount),
+        balance: increment(data.amount),
 
-        updatedAt:
-          serverTimestamp()
+        withdrawable: increment(data.amount),
+
+        updatedAt: serverTimestamp()
+      },
+      {
+        merge: true
       }
     );
 
@@ -71,37 +69,41 @@ export async function creditWallet(
     const transactionId =
       crypto.randomUUID();
 
-    await updateDoc(
+    await setDoc(
       doc(
         db,
         "transactions",
         transactionId
       ),
       {
+        transactionId,
+
         uid: data.uid,
 
         amount: data.amount,
 
         type: "credit",
 
-        incomeType:
-          data.incomeType,
+        incomeType: data.incomeType,
 
-        createdAt:
-          serverTimestamp()
+        status: "completed",
+
+        createdAt: serverTimestamp()
       }
     );
 
     return {
       success: true
     };
-
   } catch (error) {
-
-    console.error(error);
+    console.error(
+      "Wallet credit error:",
+      error
+    );
 
     return {
-      success: false
+      success: false,
+      error
     };
   }
 }
