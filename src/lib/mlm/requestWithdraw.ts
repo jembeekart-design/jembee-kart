@@ -3,153 +3,199 @@ import {
   collection,
   doc,
   getDoc,
+  increment,
+  serverTimestamp,
   updateDoc
 } from "firebase/firestore";
 
 import { db } from "@/firebase/config";
 
+import { createNotification }
+from "./createNotification";
+
 interface WithdrawData {
-
   userId: string;
-
   amount: number;
-
   upi: string;
-
 }
 
 export async function requestWithdraw(
   data: WithdrawData
 ) {
-
   try {
 
     /* ======================================================
-    VALIDATION
+       VALIDATION
     ====================================================== */
 
+    if (!data.userId?.trim()) {
+      return {
+        success: false,
+        message: "User ID Required"
+      };
+    }
+
     if (
+      !data.amount ||
       data.amount < 100
     ) {
-
       return {
-
         success: false,
-
         message:
-          "Minimum withdraw ₹100"
-
+          "Minimum Withdraw ₹100"
       };
+    }
 
+    if (!data.upi?.trim()) {
+      return {
+        success: false,
+        message:
+          "UPI ID Required"
+      };
     }
 
     /* ======================================================
-    GET WALLET
+       USER
     ====================================================== */
 
-    const walletRef =
-      doc(
-        db,
-        "wallets",
-        data.userId
-      );
+    const userRef = doc(
+      db,
+      "users",
+      data.userId
+    );
 
-    const walletSnapshot =
-      await getDoc(
-        walletRef
-      );
+    const userSnapshot =
+      await getDoc(userRef);
+
+    if (!userSnapshot.exists()) {
+      return {
+        success: false,
+        message:
+          "User Not Found"
+      };
+    }
+
+    const userData =
+      userSnapshot.data();
+
+    if (userData.isBlocked) {
+      return {
+        success: false,
+        message:
+          "Account Blocked"
+      };
+    }
 
     if (
-      !walletSnapshot.exists()
+      !userData.isKYCVerified
     ) {
-
       return {
-
         success: false,
+        message:
+          "Complete KYC First"
+      };
+    }
 
+    /* ======================================================
+       WALLET
+    ====================================================== */
+
+    const walletRef = doc(
+      db,
+      "wallets",
+      data.userId
+    );
+
+    const walletSnapshot =
+      await getDoc(walletRef);
+
+    if (!walletSnapshot.exists()) {
+      return {
+        success: false,
         message:
           "Wallet Not Found"
-
       };
-
     }
 
     const walletData =
       walletSnapshot.data();
 
-    const withdrawableBalance =
+    const balance =
       Number(
         walletData.withdrawableBalance || 0
       );
 
-    /* ======================================================
-    CHECK BALANCE
-    ====================================================== */
-
     if (
-      withdrawableBalance <
-      data.amount
+      balance < data.amount
     ) {
-
       return {
-
         success: false,
-
         message:
           "Insufficient Balance"
-
       };
-
     }
 
     /* ======================================================
-    CREATE WITHDRAW REQUEST
+       CREATE REQUEST
     ====================================================== */
 
-    await addDoc(
-      collection(
-        db,
-        "withdraws"
-      ),
-      {
-        userId:
-          data.userId,
+    const withdrawRef =
+      await addDoc(
+        collection(
+          db,
+          "withdraws"
+        ),
+        {
+          userId:
+            data.userId,
 
-        amount:
-          data.amount,
+          amount:
+            data.amount,
 
-        upi:
-          data.upi,
+          upi:
+            data.upi.trim(),
 
-        status:
-          "pending",
+          status:
+            "pending",
 
-        transactionId:
-          "",
+          transactionId:
+            "",
 
-        adminRemark:
-          "",
+          adminRemark:
+            "",
 
-        createdAt:
-          Date.now()
-      }
-    );
+          createdAt:
+            serverTimestamp(),
+
+          updatedAt:
+            serverTimestamp()
+        }
+      );
 
     /* ======================================================
-    DEDUCT WALLET BALANCE
+       HOLD BALANCE
     ====================================================== */
 
     await updateDoc(
       walletRef,
       {
         withdrawableBalance:
-          withdrawableBalance -
-          data.amount
+          increment(
+            -data.amount
+          ),
+
+        pendingWithdraw:
+          increment(
+            data.amount
+          ),
+
+        updatedAt:
+          serverTimestamp()
       }
     );
 
     /* ======================================================
-    SAVE TRANSACTION
+       TRANSACTION
     ====================================================== */
 
     await addDoc(
@@ -161,8 +207,11 @@ export async function requestWithdraw(
         userId:
           data.userId,
 
+        withdrawId:
+          withdrawRef.id,
+
         type:
-          "withdraw",
+          "withdraw_request",
 
         amount:
           data.amount,
@@ -171,47 +220,34 @@ export async function requestWithdraw(
           "pending",
 
         createdAt:
-          Date.now()
+          serverTimestamp()
       }
     );
 
     /* ======================================================
-    SAVE NOTIFICATION
+       NOTIFICATION
     ====================================================== */
 
-    await addDoc(
-      collection(
-        db,
-        "notifications"
-      ),
-      {
-        userId:
-          data.userId,
+    await createNotification({
+      userId:
+        data.userId,
 
-        title:
-          "Withdraw Requested",
-
-        message:
-          `Your withdraw request of ₹${data.amount} is pending approval.`,
-
-        type:
-          "withdraw",
-
-        isRead:
-          false,
-
-        createdAt:
-          Date.now()
-      }
-    );
-
-    return {
-
-      success: true,
+      title:
+        "Withdraw Requested",
 
       message:
-        "Withdraw Request Submitted"
+        `Your withdraw request of ₹${data.amount} is pending approval.`,
 
+      type:
+        "withdraw"
+    });
+
+    return {
+      success: true,
+      withdrawId:
+        withdrawRef.id,
+      message:
+        "Withdraw Request Submitted Successfully"
     };
 
   } catch (error) {
@@ -222,14 +258,9 @@ export async function requestWithdraw(
     );
 
     return {
-
       success: false,
-
       message:
         "Something went wrong"
-
     };
-
   }
-
 }
