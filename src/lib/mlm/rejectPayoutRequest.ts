@@ -4,86 +4,91 @@ import {
   doc,
   getDoc,
   increment,
+  serverTimestamp,
   updateDoc
 } from "firebase/firestore";
 
 import { db } from "@/firebase/config";
 
-import { createNotification }
-from "./createNotification";
+import { createNotification } from "./createNotification";
 
 interface RejectPayoutData {
-
   payoutRequestId: string;
-
   adminId: string;
-
   reason: string;
-
 }
 
 export async function rejectPayoutRequest(
   data: RejectPayoutData
 ) {
-
   try {
 
     /* ======================================================
-    GET PAYOUT REQUEST
+       VALIDATION
     ====================================================== */
 
-    const payoutRef =
-      doc(
-        db,
-        "payout_requests",
-        data.payoutRequestId
-      );
+    if (!data.payoutRequestId?.trim()) {
+      return {
+        success: false,
+        message: "Payout Request ID Required"
+      };
+    }
+
+    if (!data.adminId?.trim()) {
+      return {
+        success: false,
+        message: "Admin ID Required"
+      };
+    }
+
+    if (!data.reason?.trim()) {
+      return {
+        success: false,
+        message: "Rejection Reason Required"
+      };
+    }
+
+    /* ======================================================
+       GET PAYOUT REQUEST
+    ====================================================== */
+
+    const payoutRef = doc(
+      db,
+      "payout_requests",
+      data.payoutRequestId
+    );
 
     const payoutSnapshot =
-      await getDoc(
-        payoutRef
-      );
+      await getDoc(payoutRef);
 
-    if (
-      !payoutSnapshot.exists()
-    ) {
-
+    if (!payoutSnapshot.exists()) {
       return {
-
         success: false,
-
         message:
           "Payout Request Not Found"
-
       };
-
     }
 
     const payoutData =
       payoutSnapshot.data();
 
     /* ======================================================
-    ALREADY REJECTED
+       STATUS CHECK
     ====================================================== */
 
     if (
-      payoutData.status ===
-      "rejected"
+      payoutData.status !==
+      "pending"
     ) {
-
       return {
-
         success: false,
-
         message:
-          "Already Rejected"
-
+          "Payout Already Processed"
       };
-
     }
 
     /* ======================================================
-    UPDATE PAYOUT STATUS
+       UPDATE PAYOUT
     ====================================================== */
 
     await updateDoc(
@@ -96,23 +101,25 @@ export async function rejectPayoutRequest(
           data.adminId,
 
         rejectedReason:
-          data.reason,
+          data.reason.trim(),
 
         rejectedAt:
-          Date.now()
+          serverTimestamp(),
+
+        updatedAt:
+          serverTimestamp()
       }
     );
 
     /* ======================================================
-    REFUND USER WALLET
+       REFUND WALLET
     ====================================================== */
 
-    const walletRef =
-      doc(
-        db,
-        "wallets",
-        payoutData.userId
-      );
+    const walletRef = doc(
+      db,
+      "wallets",
+      payoutData.userId
+    );
 
     await updateDoc(
       walletRef,
@@ -120,12 +127,20 @@ export async function rejectPayoutRequest(
         withdrawableBalance:
           increment(
             payoutData.amount
-          )
+          ),
+
+        pendingWithdraw:
+          increment(
+            -payoutData.amount
+          ),
+
+        updatedAt:
+          serverTimestamp()
       }
     );
 
     /* ======================================================
-    SAVE TRANSACTION
+       TRANSACTION LOG
     ====================================================== */
 
     await addDoc(
@@ -147,18 +162,21 @@ export async function rejectPayoutRequest(
           payoutData.amount,
 
         reason:
-          data.reason,
+          data.reason.trim(),
 
         status:
           "rejected",
 
+        rejectedBy:
+          data.adminId,
+
         createdAt:
-          Date.now()
+          serverTimestamp()
       }
     );
 
     /* ======================================================
-    SAVE ADMIN LOG
+       ADMIN LOG
     ====================================================== */
 
     await addDoc(
@@ -173,22 +191,25 @@ export async function rejectPayoutRequest(
         payoutRequestId:
           data.payoutRequestId,
 
+        userId:
+          payoutData.userId,
+
         adminId:
           data.adminId,
-
-        reason:
-          data.reason,
 
         amount:
           payoutData.amount,
 
+        reason:
+          data.reason.trim(),
+
         createdAt:
-          Date.now()
+          serverTimestamp()
       }
     );
 
     /* ======================================================
-    CREATE NOTIFICATION
+       NOTIFICATION
     ====================================================== */
 
     await createNotification({
@@ -199,19 +220,16 @@ export async function rejectPayoutRequest(
         "Payout Rejected",
 
       message:
-        `Your payout request of ₹${payoutData.amount} was rejected. Reason: ${data.reason}`,
+        `Your payout request of ₹${payoutData.amount} was rejected. Reason: ${data.reason.trim()}`,
 
       type:
         "withdraw"
     });
 
     return {
-
       success: true,
-
       message:
         "Payout Rejected Successfully"
-
     };
 
   } catch (error) {
@@ -222,14 +240,9 @@ export async function rejectPayoutRequest(
     );
 
     return {
-
       success: false,
-
       message:
         "Something went wrong"
-
     };
-
   }
-
 }
