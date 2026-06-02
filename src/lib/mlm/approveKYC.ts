@@ -3,125 +3,92 @@ import {
   collection,
   doc,
   getDoc,
-  updateDoc
+  updateDoc,
+  serverTimestamp
 } from "firebase/firestore";
 
 import { db } from "@/firebase/config";
 
-import { createNotification }
-from "./createNotification";
+import { createNotification } from "./createNotification";
 
 interface ApproveKYCData {
-
   kycRequestId: string;
-
   adminId: string;
-
 }
 
 export async function approveKYC(
   data: ApproveKYCData
 ) {
-
   try {
 
-    /* ======================================================
-    GET KYC REQUEST
-    ====================================================== */
-
-    const kycRef =
-      doc(
-        db,
-        "kyc_requests",
-        data.kycRequestId
-      );
+    const kycRef = doc(
+      db,
+      "kyc_requests",
+      data.kycRequestId
+    );
 
     const kycSnapshot =
-      await getDoc(
-        kycRef
-      );
+      await getDoc(kycRef);
 
-    if (
-      !kycSnapshot.exists()
-    ) {
-
+    if (!kycSnapshot.exists()) {
       return {
-
         success: false,
-
-        message:
-          "KYC Request Not Found"
-
+        message: "KYC Request Not Found"
       };
-
     }
 
     const kycData =
       kycSnapshot.data();
 
-    /* ======================================================
-    ALREADY APPROVED
-    ====================================================== */
-
     if (
-      kycData.status ===
-      "approved"
+      kycData.status !==
+      "pending"
     ) {
-
       return {
-
         success: false,
-
         message:
-          "KYC Already Approved"
-
+          "KYC Request Already Processed"
       };
-
     }
 
-    /* ======================================================
-    UPDATE KYC STATUS
-    ====================================================== */
+    const userRef = doc(
+      db,
+      "users",
+      kycData.userId
+    );
+
+    const userSnapshot =
+      await getDoc(userRef);
+
+    if (!userSnapshot.exists()) {
+      return {
+        success: false,
+        message: "User Not Found"
+      };
+    }
 
     await updateDoc(
       kycRef,
       {
-        status:
-          "approved",
-
+        status: "approved",
         approvedBy:
           data.adminId,
-
         approvedAt:
-          Date.now()
+          serverTimestamp()
       }
     );
-
-    /* ======================================================
-    UPDATE USER
-    ====================================================== */
-
-    const userRef =
-      doc(
-        db,
-        "users",
-        kycData.userId
-      );
 
     await updateDoc(
       userRef,
       {
         kycStatus:
           "verified",
-
         isKYCVerified:
-          true
+          true,
+        kycVerifiedAt:
+          serverTimestamp()
       }
     );
-
-    /* ======================================================
-    SAVE TRANSACTION
-    ====================================================== */
 
     await addDoc(
       collection(
@@ -131,46 +98,32 @@ export async function approveKYC(
       {
         userId:
           kycData.userId,
-
         type:
           "kyc_approved",
-
         status:
           "success",
-
         approvedBy:
           data.adminId,
-
         createdAt:
-          Date.now()
+          serverTimestamp()
       }
     );
-
-    /* ======================================================
-    CREATE NOTIFICATION
-    ====================================================== */
 
     await createNotification({
       userId:
         kycData.userId,
-
       title:
         "KYC Approved",
-
       message:
         "Congratulations! Your KYC has been verified successfully.",
-
       type:
         "system"
     });
 
     return {
-
       success: true,
-
       message:
         "KYC Approved Successfully"
-
     };
 
   } catch (error) {
@@ -181,14 +134,9 @@ export async function approveKYC(
     );
 
     return {
-
       success: false,
-
       message:
         "Something went wrong"
-
     };
-
   }
-
 }
