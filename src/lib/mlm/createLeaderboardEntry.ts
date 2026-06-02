@@ -1,212 +1,191 @@
 import {
-  addDoc,
-  collection,
   doc,
   getDoc,
-  query,
-  serverTimestamp,
-  updateDoc,
-  where,
-  getDocs
+  setDoc,
+  serverTimestamp
 } from "firebase/firestore";
 
 import { db } from "@/firebase/config";
 
 interface LeaderboardData {
-
   userId: string;
-
 }
 
 export async function createLeaderboardEntry(
   data: LeaderboardData
 ) {
-
   try {
 
     /* ======================================================
-    GET USER
+       VALIDATION
     ====================================================== */
 
-    const userRef =
-      doc(
-        db,
-        "users",
-        data.userId
-      );
+    if (!data.userId?.trim()) {
+      return {
+        success: false,
+        message: "User ID Required"
+      };
+    }
+
+    /* ======================================================
+       GET USER
+    ====================================================== */
+
+    const userRef = doc(
+      db,
+      "users",
+      data.userId
+    );
 
     const userSnapshot =
-      await getDoc(
-        userRef
-      );
+      await getDoc(userRef);
 
-    if (
-      !userSnapshot.exists()
-    ) {
-
+    if (!userSnapshot.exists()) {
       return {
-
         success: false,
-
-        message:
-          "User Not Found"
-
+        message: "User Not Found"
       };
-
     }
 
     const userData =
       userSnapshot.data();
 
     /* ======================================================
-    GET WALLET
+       GET WALLET
     ====================================================== */
 
-    const walletRef =
-      doc(
-        db,
-        "wallets",
-        data.userId
-      );
+    const walletRef = doc(
+      db,
+      "wallets",
+      data.userId
+    );
 
     const walletSnapshot =
-      await getDoc(
-        walletRef
-      );
+      await getDoc(walletRef);
 
-    if (
-      !walletSnapshot.exists()
-    ) {
-
+    if (!walletSnapshot.exists()) {
       return {
-
         success: false,
-
-        message:
-          "Wallet Not Found"
-
+        message: "Wallet Not Found"
       };
-
     }
 
     const walletData =
       walletSnapshot.data();
 
     /* ======================================================
-    CHECK EXISTING ENTRY
+       LEADERBOARD DOC
+       DOC ID = USER ID
     ====================================================== */
 
-    const leaderboardQuery =
-      query(
-        collection(
-          db,
-          "leaderboards"
-        ),
-
-        where(
-          "userId",
-          "==",
-          data.userId
-        )
+    const leaderboardRef =
+      doc(
+        db,
+        "leaderboards",
+        data.userId
       );
 
     const leaderboardSnapshot =
-      await getDocs(
-        leaderboardQuery
+      await getDoc(
+        leaderboardRef
       );
 
     /* ======================================================
-    UPDATE EXISTING ENTRY
+       LEADERBOARD DATA
+    ====================================================== */
+
+    const leaderboardData = {
+      userId:
+        data.userId,
+
+      name:
+        userData.name || "",
+
+      referralCode:
+        userData.referralCode || "",
+
+      profilePhoto:
+        userData.photoURL || "",
+
+      currentRank:
+        userData.currentRank || "Member",
+
+      rankLevel:
+        Number(
+          userData.rankLevel || 0
+        ),
+
+      totalTeam:
+        Number(
+          userData.totalTeam || 0
+        ),
+
+      directReferrals:
+        Number(
+          userData.directReferrals || 0
+        ),
+
+      activeTeam:
+        Number(
+          userData.activeTeam || 0
+        ),
+
+      totalEarnings:
+        Number(
+          walletData.totalEarnings || 0
+        ),
+
+      lifetimeEarnings:
+        Number(
+          walletData.totalEarnings || 0
+        ),
+
+      monthlyEarnings:
+        Number(
+          walletData.monthlyEarnings || 0
+        ),
+
+      updatedAt:
+        serverTimestamp()
+    };
+
+    /* ======================================================
+       CREATE / UPDATE
     ====================================================== */
 
     if (
-      !leaderboardSnapshot.empty
+      leaderboardSnapshot.exists()
     ) {
 
-      const leaderboardDoc =
-        leaderboardSnapshot.docs[0];
-
-      await updateDoc(
-        doc(
-          db,
-          "leaderboards",
-          leaderboardDoc.id
-        ),
+      await setDoc(
+        leaderboardRef,
+        leaderboardData,
         {
-          name:
-            userData.name,
-
-          referralCode:
-            userData.referralCode,
-
-          currentRank:
-            userData.currentRank,
-
-          totalTeam:
-            userData.totalTeam || 0,
-
-          totalEarnings:
-            walletData.totalEarnings || 0,
-
-          updatedAt:
-            serverTimestamp()
+          merge: true
         }
       );
 
       return {
-
         success: true,
-
         message:
           "Leaderboard Updated"
-
       };
-
     }
 
-    /* ======================================================
-    CREATE NEW ENTRY
-    ====================================================== */
-
-    await addDoc(
-      collection(
-        db,
-        "leaderboards"
-      ),
+    await setDoc(
+      leaderboardRef,
       {
-        userId:
-          data.userId,
-
-        name:
-          userData.name,
-
-        referralCode:
-          userData.referralCode,
-
-        currentRank:
-          userData.currentRank,
-
-        totalTeam:
-          userData.totalTeam || 0,
-
-        totalEarnings:
-          walletData.totalEarnings || 0,
+        ...leaderboardData,
 
         createdAt:
-          serverTimestamp(),
-
-        updatedAt:
           serverTimestamp()
       }
     );
 
     return {
-
       success: true,
-
       message:
         "Leaderboard Entry Created"
-
     };
 
   } catch (error) {
@@ -217,14 +196,9 @@ export async function createLeaderboardEntry(
     );
 
     return {
-
       success: false,
-
       message:
         "Something went wrong"
-
     };
-
   }
-
 }
