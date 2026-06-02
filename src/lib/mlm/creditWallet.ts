@@ -1,12 +1,15 @@
 import {
   doc,
+  getDoc,
   increment,
-  updateDoc,
+  serverTimestamp,
   setDoc,
-  serverTimestamp
+  updateDoc
 } from "firebase/firestore";
 
 import { db } from "@/firebase/config";
+
+import { createNotification } from "./createNotification";
 
 interface CreditWalletData {
   uid: string;
@@ -24,21 +27,66 @@ export async function creditWallet(
   data: CreditWalletData
 ) {
   try {
+
+    /* =========================
+       VALIDATION
+    ========================= */
+
+    if (!data.uid?.trim()) {
+      return {
+        success: false,
+        message: "User ID Required"
+      };
+    }
+
+    if (
+      !data.amount ||
+      data.amount <= 0
+    ) {
+      return {
+        success: false,
+        message: "Invalid Amount"
+      };
+    }
+
+    /* =========================
+       USER
+    ========================= */
+
+    const userRef = doc(
+      db,
+      "users",
+      data.uid
+    );
+
+    const userSnapshot =
+      await getDoc(userRef);
+
+    if (!userSnapshot.exists()) {
+      return {
+        success: false,
+        message: "User Not Found"
+      };
+    }
+
     /* =========================
        UPDATE USER
     ========================= */
 
     await updateDoc(
-      doc(db, "users", data.uid),
+      userRef,
       {
-        walletBalance: increment(data.amount),
+        walletBalance:
+          increment(data.amount),
 
-        totalIncome: increment(data.amount),
+        totalIncome:
+          increment(data.amount),
 
         [data.incomeType]:
           increment(data.amount),
 
-        updatedAt: serverTimestamp()
+        updatedAt:
+          serverTimestamp()
       }
     );
 
@@ -47,15 +95,26 @@ export async function creditWallet(
     ========================= */
 
     await setDoc(
-      doc(db, "wallets", data.uid),
+      doc(
+        db,
+        "wallets",
+        data.uid
+      ),
       {
-        uid: data.uid,
+        uid:
+          data.uid,
 
-        balance: increment(data.amount),
+        totalBalance:
+          increment(data.amount),
 
-        withdrawable: increment(data.amount),
+        withdrawableBalance:
+          increment(data.amount),
 
-        updatedAt: serverTimestamp()
+        totalEarnings:
+          increment(data.amount),
+
+        updatedAt:
+          serverTimestamp()
       },
       {
         merge: true
@@ -63,7 +122,7 @@ export async function creditWallet(
     );
 
     /* =========================
-       SAVE TRANSACTION
+       TRANSACTION
     ========================= */
 
     const transactionId =
@@ -78,24 +137,50 @@ export async function creditWallet(
       {
         transactionId,
 
-        uid: data.uid,
+        uid:
+          data.uid,
 
-        amount: data.amount,
+        amount:
+          data.amount,
 
-        type: "credit",
+        type:
+          "credit",
 
-        incomeType: data.incomeType,
+        incomeType:
+          data.incomeType,
 
-        status: "completed",
+        status:
+          "completed",
 
-        createdAt: serverTimestamp()
+        createdAt:
+          serverTimestamp()
       }
     );
+
+    /* =========================
+       NOTIFICATION
+    ========================= */
+
+    await createNotification({
+      userId:
+        data.uid,
+
+      title:
+        "Income Credited",
+
+      message:
+        `₹${data.amount} has been credited to your wallet.`,
+
+      type:
+        "commission"
+    });
 
     return {
       success: true
     };
+
   } catch (error) {
+
     console.error(
       "Wallet credit error:",
       error
