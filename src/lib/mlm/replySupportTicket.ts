@@ -3,16 +3,15 @@ import {
   collection,
   doc,
   getDoc,
+  serverTimestamp,
   updateDoc
 } from "firebase/firestore";
 
 import { db } from "@/firebase/config";
 
-import { createNotification }
-from "./createNotification";
+import { createNotification } from "./createNotification";
 
 interface ReplySupportTicketData {
-
   ticketId: string;
 
   adminId: string;
@@ -24,76 +23,108 @@ interface ReplySupportTicketData {
     | "in_progress"
     | "resolved"
     | "closed";
-
 }
 
 export async function replySupportTicket(
   data: ReplySupportTicketData
 ) {
-
   try {
 
     /* ======================================================
-    GET TICKET
+       VALIDATION
     ====================================================== */
 
-    const ticketRef =
-      doc(
-        db,
-        "support_tickets",
-        data.ticketId
-      );
+    if (!data.ticketId?.trim()) {
+      return {
+        success: false,
+        message: "Ticket ID Required"
+      };
+    }
+
+    if (!data.adminId?.trim()) {
+      return {
+        success: false,
+        message: "Admin ID Required"
+      };
+    }
+
+    if (!data.reply?.trim()) {
+      return {
+        success: false,
+        message: "Reply Required"
+      };
+    }
+
+    /* ======================================================
+       GET TICKET
+    ====================================================== */
+
+    const ticketRef = doc(
+      db,
+      "support_tickets",
+      data.ticketId
+    );
 
     const ticketSnapshot =
-      await getDoc(
-        ticketRef
-      );
+      await getDoc(ticketRef);
 
-    if (
-      !ticketSnapshot.exists()
-    ) {
-
+    if (!ticketSnapshot.exists()) {
       return {
-
         success: false,
-
-        message:
-          "Ticket Not Found"
-
+        message: "Ticket Not Found"
       };
-
     }
 
     const ticketData =
       ticketSnapshot.data();
 
     /* ======================================================
-    UPDATE TICKET
+       STATUS CHECK
+    ====================================================== */
+
+    if (
+      ticketData.status ===
+      "closed"
+    ) {
+      return {
+        success: false,
+        message:
+          "Ticket Already Closed"
+      };
+    }
+
+    const newStatus =
+      data.status || "resolved";
+
+    /* ======================================================
+       UPDATE TICKET
     ====================================================== */
 
     await updateDoc(
       ticketRef,
       {
         adminReply:
-          data.reply,
+          data.reply.trim(),
 
         repliedBy:
           data.adminId,
 
         repliedAt:
-          Date.now(),
+          serverTimestamp(),
 
         status:
-          data.status ||
-          "resolved",
+          newStatus,
+
+        isClosed:
+          newStatus === "closed",
 
         updatedAt:
-          Date.now()
+          serverTimestamp()
       }
     );
 
     /* ======================================================
-    SAVE REPLY HISTORY
+       REPLY HISTORY
     ====================================================== */
 
     await addDoc(
@@ -105,19 +136,25 @@ export async function replySupportTicket(
         ticketId:
           data.ticketId,
 
+        userId:
+          ticketData.userId,
+
         adminId:
           data.adminId,
 
         reply:
-          data.reply,
+          data.reply.trim(),
+
+        status:
+          newStatus,
 
         createdAt:
-          Date.now()
+          serverTimestamp()
       }
     );
 
     /* ======================================================
-    SAVE ADMIN LOG
+       ADMIN LOG
     ====================================================== */
 
     await addDoc(
@@ -135,13 +172,16 @@ export async function replySupportTicket(
         adminId:
           data.adminId,
 
+        status:
+          newStatus,
+
         createdAt:
-          Date.now()
+          serverTimestamp()
       }
     );
 
     /* ======================================================
-    CREATE NOTIFICATION
+       USER NOTIFICATION
     ====================================================== */
 
     await createNotification({
@@ -159,12 +199,9 @@ export async function replySupportTicket(
     });
 
     return {
-
       success: true,
-
       message:
         "Reply Sent Successfully"
-
     };
 
   } catch (error) {
@@ -175,14 +212,9 @@ export async function replySupportTicket(
     );
 
     return {
-
       success: false,
-
       message:
         "Something went wrong"
-
     };
-
   }
-
 }
