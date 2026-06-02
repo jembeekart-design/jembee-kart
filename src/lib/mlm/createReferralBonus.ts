@@ -4,94 +4,174 @@ import {
   doc,
   getDoc,
   increment,
+  serverTimestamp,
+  setDoc,
   updateDoc
 } from "firebase/firestore";
 
 import { db } from "@/firebase/config";
 
-import { createNotification }
-from "./createNotification";
+import { createNotification } from "./createNotification";
 
 interface ReferralBonusData {
-
   sponsorId: string;
-
   newUserId: string;
-
   bonusAmount: number;
-
 }
 
 export async function createReferralBonus(
   data: ReferralBonusData
 ) {
-
   try {
 
     /* ======================================================
-    CHECK SPONSOR
+       VALIDATION
     ====================================================== */
 
-    const sponsorRef =
-      doc(
-        db,
-        "users",
-        data.sponsorId
+    if (!data.sponsorId?.trim()) {
+      return {
+        success: false,
+        message: "Sponsor ID Required"
+      };
+    }
+
+    if (!data.newUserId?.trim()) {
+      return {
+        success: false,
+        message: "New User ID Required"
+      };
+    }
+
+    if (
+      data.sponsorId ===
+      data.newUserId
+    ) {
+      return {
+        success: false,
+        message:
+          "Invalid Referral Relationship"
+      };
+    }
+
+    if (
+      !data.bonusAmount ||
+      data.bonusAmount <= 0
+    ) {
+      return {
+        success: false,
+        message:
+          "Invalid Bonus Amount"
+      };
+    }
+
+    /* ======================================================
+       UNIQUE BONUS DOC
+    ====================================================== */
+
+    const bonusDocId =
+      `${data.sponsorId}_${data.newUserId}`;
+
+    const bonusRef = doc(
+      db,
+      "referral_bonuses",
+      bonusDocId
+    );
+
+    const bonusSnapshot =
+      await getDoc(
+        bonusRef
       );
+
+    if (bonusSnapshot.exists()) {
+      return {
+        success: false,
+        message:
+          "Referral Bonus Already Paid"
+      };
+    }
+
+    /* ======================================================
+       SPONSOR
+    ====================================================== */
+
+    const sponsorRef = doc(
+      db,
+      "users",
+      data.sponsorId
+    );
 
     const sponsorSnapshot =
       await getDoc(
         sponsorRef
       );
 
-    if (
-      !sponsorSnapshot.exists()
-    ) {
-
+    if (!sponsorSnapshot.exists()) {
       return {
-
         success: false,
-
         message:
           "Sponsor Not Found"
-
       };
+    }
 
+    const sponsorData =
+      sponsorSnapshot.data();
+
+    if (sponsorData.isBlocked) {
+      return {
+        success: false,
+        message:
+          "Sponsor Account Blocked"
+      };
     }
 
     /* ======================================================
-    CHECK WALLET
+       NEW USER
     ====================================================== */
 
-    const walletRef =
-      doc(
-        db,
-        "wallets",
-        data.sponsorId
+    const newUserRef = doc(
+      db,
+      "users",
+      data.newUserId
+    );
+
+    const newUserSnapshot =
+      await getDoc(
+        newUserRef
       );
+
+    if (!newUserSnapshot.exists()) {
+      return {
+        success: false,
+        message:
+          "New User Not Found"
+      };
+    }
+
+    /* ======================================================
+       WALLET
+    ====================================================== */
+
+    const walletRef = doc(
+      db,
+      "wallets",
+      data.sponsorId
+    );
 
     const walletSnapshot =
       await getDoc(
         walletRef
       );
 
-    if (
-      !walletSnapshot.exists()
-    ) {
-
+    if (!walletSnapshot.exists()) {
       return {
-
         success: false,
-
         message:
           "Wallet Not Found"
-
       };
-
     }
 
     /* ======================================================
-    UPDATE WALLET
+       CREDIT WALLET
     ====================================================== */
 
     await updateDoc(
@@ -110,12 +190,20 @@ export async function createReferralBonus(
         totalEarnings:
           increment(
             data.bonusAmount
-          )
+          ),
+
+        referralIncome:
+          increment(
+            data.bonusAmount
+          ),
+
+        updatedAt:
+          serverTimestamp()
       }
     );
 
     /* ======================================================
-    UPDATE USER STATS
+       UPDATE USER STATS
     ====================================================== */
 
     await updateDoc(
@@ -125,19 +213,19 @@ export async function createReferralBonus(
           increment(1),
 
         totalTeam:
-          increment(1)
+          increment(1),
+
+        updatedAt:
+          serverTimestamp()
       }
     );
 
     /* ======================================================
-    SAVE BONUS RECORD
+       SAVE REFERRAL BONUS
     ====================================================== */
 
-    await addDoc(
-      collection(
-        db,
-        "referral_bonuses"
-      ),
+    await setDoc(
+      bonusRef,
       {
         sponsorId:
           data.sponsorId,
@@ -152,12 +240,12 @@ export async function createReferralBonus(
           "success",
 
         createdAt:
-          Date.now()
+          serverTimestamp()
       }
     );
 
     /* ======================================================
-    SAVE TRANSACTION
+       TRANSACTION
     ====================================================== */
 
     await addDoc(
@@ -182,12 +270,12 @@ export async function createReferralBonus(
           "success",
 
         createdAt:
-          Date.now()
+          serverTimestamp()
       }
     );
 
     /* ======================================================
-    CREATE NOTIFICATION
+       NOTIFICATION
     ====================================================== */
 
     await createNotification({
@@ -205,12 +293,11 @@ export async function createReferralBonus(
     });
 
     return {
-
       success: true,
-
+      amount:
+        data.bonusAmount,
       message:
-        "Referral Bonus Added"
-
+        "Referral Bonus Added Successfully"
     };
 
   } catch (error) {
@@ -221,14 +308,9 @@ export async function createReferralBonus(
     );
 
     return {
-
       success: false,
-
       message:
         "Something went wrong"
-
     };
-
   }
-
 }
