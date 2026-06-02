@@ -4,16 +4,15 @@ import {
   doc,
   getDoc,
   increment,
-  updateDoc
+  updateDoc,
+  serverTimestamp
 } from "firebase/firestore";
 
 import { db } from "@/firebase/config";
 
-import { createNotification }
-from "./createNotification";
+import { createNotification } from "./createNotification";
 
 interface PayoutRequestData {
-
   userId: string;
 
   amount: number;
@@ -29,143 +28,144 @@ interface PayoutRequestData {
   ifscCode?: string;
 
   accountHolderName?: string;
-
 }
 
 export async function createPayoutRequest(
   data: PayoutRequestData
 ) {
-
   try {
 
     /* ======================================================
-    VALIDATION
+       VALIDATION
     ====================================================== */
 
+    if (!data.userId) {
+      return {
+        success: false,
+        message: "User ID Required"
+      };
+    }
+
     if (
+      !data.amount ||
       data.amount < 100
     ) {
-
       return {
-
         success: false,
-
-        message:
-          "Minimum payout ₹100"
-
+        message: "Minimum Payout ₹100"
       };
+    }
 
+    if (
+      data.method === "upi" &&
+      !data.upiId?.trim()
+    ) {
+      return {
+        success: false,
+        message: "UPI ID Required"
+      };
+    }
+
+    if (
+      data.method === "bank"
+    ) {
+      if (
+        !data.accountNumber?.trim() ||
+        !data.ifscCode?.trim() ||
+        !data.accountHolderName?.trim()
+      ) {
+        return {
+          success: false,
+          message:
+            "Complete Bank Details Required"
+        };
+      }
     }
 
     /* ======================================================
-    GET USER
+       USER
     ====================================================== */
 
-    const userRef =
-      doc(
-        db,
-        "users",
-        data.userId
-      );
+    const userRef = doc(
+      db,
+      "users",
+      data.userId
+    );
 
     const userSnapshot =
-      await getDoc(
-        userRef
-      );
+      await getDoc(userRef);
 
-    if (
-      !userSnapshot.exists()
-    ) {
-
+    if (!userSnapshot.exists()) {
       return {
-
         success: false,
-
-        message:
-          "User Not Found"
-
+        message: "User Not Found"
       };
-
     }
 
     const userData =
       userSnapshot.data();
 
-    /* ======================================================
-    KYC CHECK
-    ====================================================== */
-
     if (
       !userData.isKYCVerified
     ) {
-
       return {
-
         success: false,
-
         message:
           "Complete KYC First"
-
       };
+    }
 
+    if (
+      userData.isBlocked
+    ) {
+      return {
+        success: false,
+        message:
+          "Account Blocked"
+      };
     }
 
     /* ======================================================
-    GET WALLET
+       WALLET
     ====================================================== */
 
-    const walletRef =
-      doc(
-        db,
-        "wallets",
-        data.userId
-      );
+    const walletRef = doc(
+      db,
+      "wallets",
+      data.userId
+    );
 
     const walletSnapshot =
-      await getDoc(
-        walletRef
-      );
+      await getDoc(walletRef);
 
-    if (
-      !walletSnapshot.exists()
-    ) {
-
+    if (!walletSnapshot.exists()) {
       return {
-
         success: false,
-
         message:
           "Wallet Not Found"
-
       };
-
     }
 
     const walletData =
       walletSnapshot.data();
 
-    /* ======================================================
-    BALANCE CHECK
-    ====================================================== */
+    const balance =
+      Number(
+        walletData.withdrawableBalance || 0
+      );
 
     if (
-      walletData.withdrawableBalance <
-      data.amount
+      balance < data.amount
     ) {
-
       return {
-
         success: false,
-
         message:
           "Insufficient Balance"
-
       };
-
     }
 
     /* ======================================================
-    CREATE PAYOUT REQUEST
+       CREATE PAYOUT REQUEST
     ====================================================== */
 
     const payoutRef =
@@ -179,7 +179,9 @@ export async function createPayoutRequest(
             data.userId,
 
           amount:
-            data.amount,
+            Number(
+              data.amount
+            ),
 
           method:
             data.method,
@@ -206,12 +208,12 @@ export async function createPayoutRequest(
             "",
 
           createdAt:
-            Date.now()
+            serverTimestamp()
         }
       );
 
     /* ======================================================
-    DEDUCT WALLET
+       HOLD BALANCE
     ====================================================== */
 
     await updateDoc(
@@ -220,12 +222,20 @@ export async function createPayoutRequest(
         withdrawableBalance:
           increment(
             -data.amount
-          )
+          ),
+
+        pendingWithdraw:
+          increment(
+            data.amount
+          ),
+
+        updatedAt:
+          serverTimestamp()
       }
     );
 
     /* ======================================================
-    SAVE TRANSACTION
+       TRANSACTION
     ====================================================== */
 
     await addDoc(
@@ -253,12 +263,12 @@ export async function createPayoutRequest(
           "pending",
 
         createdAt:
-          Date.now()
+          serverTimestamp()
       }
     );
 
     /* ======================================================
-    CREATE NOTIFICATION
+       NOTIFICATION
     ====================================================== */
 
     await createNotification({
@@ -276,15 +286,13 @@ export async function createPayoutRequest(
     });
 
     return {
-
       success: true,
 
       payoutRequestId:
         payoutRef.id,
 
       message:
-        "Payout Request Created"
-
+        "Payout Request Created Successfully"
     };
 
   } catch (error) {
@@ -295,14 +303,10 @@ export async function createPayoutRequest(
     );
 
     return {
-
       success: false,
 
       message:
         "Something went wrong"
-
     };
-
   }
-
 }
