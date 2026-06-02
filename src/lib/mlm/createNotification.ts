@@ -1,12 +1,12 @@
 import {
   addDoc,
-  collection
+  collection,
+  serverTimestamp
 } from "firebase/firestore";
 
 import { db } from "@/firebase/config";
 
 interface NotificationData {
-
   userId: string;
 
   title: string;
@@ -20,52 +20,81 @@ interface NotificationData {
     | "package"
     | "system"
     | "reward";
-
 }
 
 export async function createNotification(
   data: NotificationData
 ) {
-
   try {
 
     /* ======================================================
-    SAVE NOTIFICATION
+       VALIDATION
     ====================================================== */
 
-    await addDoc(
-      collection(
-        db,
-        "notifications"
-      ),
-      {
-        userId:
-          data.userId,
+    if (!data.userId?.trim()) {
+      return {
+        success: false,
+        message: "User ID Required"
+      };
+    }
 
-        title:
-          data.title,
+    if (!data.title?.trim()) {
+      return {
+        success: false,
+        message: "Title Required"
+      };
+    }
 
-        message:
-          data.message,
+    if (!data.message?.trim()) {
+      return {
+        success: false,
+        message: "Message Required"
+      };
+    }
 
-        type:
-          data.type,
+    /* ======================================================
+       CREATE NOTIFICATION
+    ====================================================== */
 
-        isRead:
-          false,
+    const notificationRef =
+      await addDoc(
+        collection(
+          db,
+          "notifications"
+        ),
+        {
+          userId:
+            data.userId,
 
-        createdAt:
-          Date.now()
-      }
-    );
+          title:
+            data.title.trim(),
+
+          message:
+            data.message.trim(),
+
+          type:
+            data.type,
+
+          isRead:
+            false,
+
+          isDeleted:
+            false,
+
+          createdAt:
+            serverTimestamp(),
+
+          updatedAt:
+            serverTimestamp()
+        }
+      );
 
     return {
-
       success: true,
-
+      notificationId:
+        notificationRef.id,
       message:
-        "Notification Created"
-
+        "Notification Created Successfully"
     };
 
   } catch (error) {
@@ -76,14 +105,9 @@ export async function createNotification(
     );
 
     return {
-
       success: false,
-
       message:
         "Something went wrong"
-
     };
-
   }
-
 }
