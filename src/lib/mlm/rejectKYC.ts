@@ -3,86 +3,102 @@ import {
   collection,
   doc,
   getDoc,
+  serverTimestamp,
   updateDoc
 } from "firebase/firestore";
 
 import { db } from "@/firebase/config";
 
-import { createNotification }
-from "./createNotification";
+import { createNotification } from "./createNotification";
 
 interface RejectKYCData {
-
   kycRequestId: string;
-
   adminId: string;
-
   reason: string;
-
 }
 
 export async function rejectKYC(
   data: RejectKYCData
 ) {
-
   try {
 
     /* ======================================================
-    GET KYC REQUEST
+       VALIDATION
     ====================================================== */
 
-    const kycRef =
-      doc(
-        db,
-        "kyc_requests",
-        data.kycRequestId
-      );
+    if (!data.kycRequestId?.trim()) {
+      return {
+        success: false,
+        message: "KYC Request ID Required"
+      };
+    }
+
+    if (!data.adminId?.trim()) {
+      return {
+        success: false,
+        message: "Admin ID Required"
+      };
+    }
+
+    if (!data.reason?.trim()) {
+      return {
+        success: false,
+        message: "Rejection Reason Required"
+      };
+    }
+
+    /* ======================================================
+       GET KYC REQUEST
+    ====================================================== */
+
+    const kycRef = doc(
+      db,
+      "kyc_requests",
+      data.kycRequestId
+    );
 
     const kycSnapshot =
-      await getDoc(
-        kycRef
-      );
+      await getDoc(kycRef);
 
-    if (
-      !kycSnapshot.exists()
-    ) {
-
+    if (!kycSnapshot.exists()) {
       return {
-
         success: false,
-
         message:
           "KYC Request Not Found"
-
       };
-
     }
 
     const kycData =
       kycSnapshot.data();
 
     /* ======================================================
-    ALREADY REJECTED
+       STATUS CHECK
     ====================================================== */
 
     if (
       kycData.status ===
       "rejected"
     ) {
-
       return {
-
         success: false,
-
         message:
           "KYC Already Rejected"
-
       };
+    }
 
+    if (
+      kycData.status ===
+      "approved"
+    ) {
+      return {
+        success: false,
+        message:
+          "Approved KYC Cannot Be Rejected"
+      };
     }
 
     /* ======================================================
-    UPDATE KYC STATUS
+       UPDATE KYC
     ====================================================== */
 
     await updateDoc(
@@ -95,23 +111,25 @@ export async function rejectKYC(
           data.adminId,
 
         rejectedReason:
-          data.reason,
+          data.reason.trim(),
 
         rejectedAt:
-          Date.now()
+          serverTimestamp(),
+
+        updatedAt:
+          serverTimestamp()
       }
     );
 
     /* ======================================================
-    UPDATE USER
+       UPDATE USER
     ====================================================== */
 
-    const userRef =
-      doc(
-        db,
-        "users",
-        kycData.userId
-      );
+    const userRef = doc(
+      db,
+      "users",
+      kycData.userId
+    );
 
     await updateDoc(
       userRef,
@@ -120,12 +138,15 @@ export async function rejectKYC(
           "rejected",
 
         isKYCVerified:
-          false
+          false,
+
+        updatedAt:
+          serverTimestamp()
       }
     );
 
     /* ======================================================
-    SAVE TRANSACTION
+       TRANSACTION LOG
     ====================================================== */
 
     await addDoc(
@@ -141,7 +162,7 @@ export async function rejectKYC(
           "kyc_rejected",
 
         reason:
-          data.reason,
+          data.reason.trim(),
 
         status:
           "rejected",
@@ -150,12 +171,42 @@ export async function rejectKYC(
           data.adminId,
 
         createdAt:
-          Date.now()
+          serverTimestamp()
       }
     );
 
     /* ======================================================
-    CREATE NOTIFICATION
+       ADMIN LOG
+    ====================================================== */
+
+    await addDoc(
+      collection(
+        db,
+        "admin_logs"
+      ),
+      {
+        action:
+          "reject_kyc",
+
+        kycRequestId:
+          data.kycRequestId,
+
+        userId:
+          kycData.userId,
+
+        adminId:
+          data.adminId,
+
+        reason:
+          data.reason.trim(),
+
+        createdAt:
+          serverTimestamp()
+      }
+    );
+
+    /* ======================================================
+       NOTIFICATION
     ====================================================== */
 
     await createNotification({
@@ -166,19 +217,16 @@ export async function rejectKYC(
         "KYC Rejected",
 
       message:
-        `Your KYC request was rejected. Reason: ${data.reason}`,
+        `Your KYC request was rejected. Reason: ${data.reason.trim()}`,
 
       type:
         "system"
     });
 
     return {
-
       success: true,
-
       message:
         "KYC Rejected Successfully"
-
     };
 
   } catch (error) {
@@ -189,14 +237,9 @@ export async function rejectKYC(
     );
 
     return {
-
       success: false,
-
       message:
         "Something went wrong"
-
     };
-
   }
-
 }
