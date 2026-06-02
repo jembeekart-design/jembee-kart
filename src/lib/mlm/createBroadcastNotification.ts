@@ -1,17 +1,15 @@
 import {
   addDoc,
   collection,
-  getDocs
+  serverTimestamp
 } from "firebase/firestore";
 
 import { db } from "@/firebase/config";
 
 interface BroadcastNotificationData {
-
   title: string;
-
   message: string;
-
+  adminId?: string;
   type:
     | "commission"
     | "withdraw"
@@ -19,100 +17,64 @@ interface BroadcastNotificationData {
     | "package"
     | "system"
     | "reward";
-
 }
 
 export async function createBroadcastNotification(
   data: BroadcastNotificationData
 ) {
-
   try {
 
     /* ======================================================
-    GET ALL USERS
+       VALIDATION
     ====================================================== */
 
-    const usersSnapshot =
-      await getDocs(
-        collection(
-          db,
-          "users"
-        )
-      );
-
-    if (
-      usersSnapshot.empty
-    ) {
-
+    if (!data.title?.trim()) {
       return {
-
         success: false,
-
-        message:
-          "No Users Found"
-
+        message: "Title Required"
       };
+    }
 
+    if (!data.message?.trim()) {
+      return {
+        success: false,
+        message: "Message Required"
+      };
     }
 
     /* ======================================================
-    SEND NOTIFICATION TO ALL USERS
+       CREATE BROADCAST NOTIFICATION
     ====================================================== */
 
-    const notificationPromises =
-      usersSnapshot.docs.map(
-        async (
-          userDoc
-        ) => {
+    const broadcastRef =
+      await addDoc(
+        collection(
+          db,
+          "broadcast_notifications"
+        ),
+        {
+          title:
+            data.title.trim(),
 
-          const userData =
-            userDoc.data();
+          message:
+            data.message.trim(),
 
-          /* SKIP BLOCKED USERS */
+          type:
+            data.type,
 
-          if (
-            userData.isBlocked
-          ) {
+          isActive:
+            true,
 
-            return;
+          createdBy:
+            data.adminId || null,
 
-          }
-
-          return addDoc(
-            collection(
-              db,
-              "notifications"
-            ),
-            {
-              userId:
-                userDoc.id,
-
-              title:
-                data.title,
-
-              message:
-                data.message,
-
-              type:
-                data.type,
-
-              isRead:
-                false,
-
-              createdAt:
-                Date.now()
-            }
-          );
-
+          createdAt:
+            serverTimestamp()
         }
       );
 
-    await Promise.all(
-      notificationPromises
-    );
-
     /* ======================================================
-    SAVE ADMIN LOG
+       ADMIN LOG
     ====================================================== */
 
     await addDoc(
@@ -124,51 +86,42 @@ export async function createBroadcastNotification(
         action:
           "broadcast_notification",
 
-        title:
-          data.title,
+        broadcastId:
+          broadcastRef.id,
 
-        message:
-          data.message,
+        adminId:
+          data.adminId || null,
+
+        title:
+          data.title.trim(),
 
         type:
           data.type,
 
-        totalUsers:
-          usersSnapshot.size,
-
         createdAt:
-          Date.now()
+          serverTimestamp()
       }
     );
 
     return {
-
       success: true,
-
-      totalUsers:
-        usersSnapshot.size,
-
+      broadcastId:
+        broadcastRef.id,
       message:
-        "Broadcast Notification Sent Successfully"
-
+        "Broadcast Notification Created Successfully"
     };
 
   } catch (error) {
 
     console.error(
-      "BROADCAST ERROR:",
+      "BROADCAST NOTIFICATION ERROR:",
       error
     );
 
     return {
-
       success: false,
-
       message:
         "Something went wrong"
-
     };
-
   }
-
 }
