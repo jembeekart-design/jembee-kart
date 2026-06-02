@@ -16,8 +16,20 @@ export async function generateReferralQRCode(
   data: ReferralQRCodeData
 ) {
   try {
+
     /* ======================================================
-       GET USER
+       VALIDATION
+    ====================================================== */
+
+    if (!data.userId?.trim()) {
+      return {
+        success: false,
+        message: "User ID Required"
+      };
+    }
+
+    /* ======================================================
+       USER
     ====================================================== */
 
     const userRef = doc(
@@ -39,14 +51,25 @@ export async function generateReferralQRCode(
     const userData =
       userSnapshot.data();
 
-    /* ======================================================
-       CHECK REFERRAL CODE
-    ====================================================== */
-
-    if (!userData.referralCode) {
+    if (userData.isBlocked) {
       return {
         success: false,
-        message: "Referral Code Missing"
+        message: "Account Blocked"
+      };
+    }
+
+    /* ======================================================
+       REFERRAL CODE
+    ====================================================== */
+
+    const referralCode =
+      userData.referralCode;
+
+    if (!referralCode) {
+      return {
+        success: false,
+        message:
+          "Referral Code Missing"
       };
     }
 
@@ -55,27 +78,22 @@ export async function generateReferralQRCode(
     ====================================================== */
 
     const appUrl =
-      data.baseUrl ||
-      (typeof window !== "undefined"
-        ? window.location.origin
-        : "");
-
-    if (!appUrl) {
-      return {
-        success: false,
-        message: "Base URL Missing"
-      };
-    }
+      (
+        data.baseUrl ||
+        "https://jembeekart.com"
+      ).replace(/\/$/, "");
 
     /* ======================================================
        REFERRAL LINK
     ====================================================== */
 
     const referralLink =
-      `${appUrl}/login?ref=${userData.referralCode}`;
+      `${appUrl}/register?ref=${encodeURIComponent(
+        referralCode
+      )}`;
 
     /* ======================================================
-       GENERATE QR CODE
+       QR CODE
     ====================================================== */
 
     const qrCodeImage =
@@ -83,7 +101,10 @@ export async function generateReferralQRCode(
         referralLink,
         {
           width: 500,
-          margin: 2
+          margin: 2,
+
+          errorCorrectionLevel:
+            "H"
         }
       );
 
@@ -93,13 +114,16 @@ export async function generateReferralQRCode(
 
     return {
       success: true,
-      referralCode:
-        userData.referralCode,
+
+      referralCode,
+
       referralLink,
+
       qrCodeImage
     };
 
   } catch (error) {
+
     console.error(
       "QR CODE ERROR:",
       error
