@@ -1,40 +1,49 @@
 export function generateReferralCode(
   name: string
 ) {
-
   try {
 
     /* ======================================================
-    CLEAN NAME
+       CLEAN NAME
     ====================================================== */
 
     const cleanName =
-      name
-        .replace(
-          /\s/g,
-          ""
-        )
+      (name || "")
+        .replace(/[^a-zA-Z0-9]/g, "")
         .toUpperCase()
         .slice(0, 6);
 
     /* ======================================================
-    RANDOM NUMBER
+       FALLBACK NAME
     ====================================================== */
 
-    const randomNumber =
-      Math.floor(
-        1000 +
-        Math.random() * 9000
-      );
+    const prefix =
+      cleanName || "USER";
 
     /* ======================================================
-    FINAL CODE
+       RANDOM PART
     ====================================================== */
 
-    const referralCode =
-      `${cleanName}${randomNumber}`;
+    const randomPart =
+      Math.random()
+        .toString(36)
+        .substring(2, 8)
+        .toUpperCase();
 
-    return referralCode;
+    /* ======================================================
+       TIMESTAMP PART
+    ====================================================== */
+
+    const timePart =
+      Date.now()
+        .toString()
+        .slice(-4);
+
+    /* ======================================================
+       FINAL CODE
+    ====================================================== */
+
+    return `${prefix}${randomPart}${timePart}`;
 
   } catch (error) {
 
@@ -43,14 +52,8 @@ export function generateReferralCode(
       error
     );
 
-    return (
-      "USER" +
-      Math.floor(
-        1000 +
-        Math.random() * 9000
-      )
-    );
-
+    return `USER${Date.now()
+      .toString()
+      .slice(-8)}`;
   }
-
 }
