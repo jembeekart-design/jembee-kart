@@ -3,83 +3,94 @@ import {
   collection,
   doc,
   getDoc,
+  increment,
+  serverTimestamp,
   updateDoc
 } from "firebase/firestore";
 
 import { db } from "@/firebase/config";
 
+import { createNotification } from "./createNotification";
+
 interface RejectWithdrawData {
-
   withdrawId: string;
-
   adminId: string;
-
   reason: string;
-
 }
 
 export async function rejectWithdraw(
   data: RejectWithdrawData
 ) {
-
   try {
 
     /* ======================================================
-    GET WITHDRAW REQUEST
+       VALIDATION
     ====================================================== */
 
-    const withdrawRef =
-      doc(
-        db,
-        "withdraws",
-        data.withdrawId
-      );
+    if (!data.withdrawId?.trim()) {
+      return {
+        success: false,
+        message: "Withdraw ID Required"
+      };
+    }
+
+    if (!data.adminId?.trim()) {
+      return {
+        success: false,
+        message: "Admin ID Required"
+      };
+    }
+
+    if (!data.reason?.trim()) {
+      return {
+        success: false,
+        message: "Reason Required"
+      };
+    }
+
+    /* ======================================================
+       GET WITHDRAW
+    ====================================================== */
+
+    const withdrawRef = doc(
+      db,
+      "withdraws",
+      data.withdrawId
+    );
 
     const withdrawSnapshot =
       await getDoc(
         withdrawRef
       );
 
-    if (
-      !withdrawSnapshot.exists()
-    ) {
-
+    if (!withdrawSnapshot.exists()) {
       return {
-
         success: false,
-
         message:
           "Withdraw Request Not Found"
-
       };
-
     }
 
     const withdrawData =
       withdrawSnapshot.data();
 
     /* ======================================================
-    ALREADY REJECTED
+       STATUS CHECK
     ====================================================== */
 
     if (
-      withdrawData.status ===
-      "rejected"
+      withdrawData.status !==
+      "pending"
     ) {
-
       return {
-
         success: false,
-
         message:
-          "Already Rejected"
-
+          "Withdraw Already Processed"
       };
-
     }
 
     /* ======================================================
-    UPDATE WITHDRAW STATUS
+       UPDATE WITHDRAW
     ====================================================== */
 
     await updateDoc(
@@ -92,52 +103,59 @@ export async function rejectWithdraw(
           data.adminId,
 
         rejectedReason:
-          data.reason,
+          data.reason.trim(),
 
         rejectedAt:
-          Date.now()
+          serverTimestamp(),
+
+        updatedAt:
+          serverTimestamp()
       }
     );
 
     /* ======================================================
-    REFUND USER WALLET
+       REFUND WALLET
     ====================================================== */
 
-    const walletRef =
-      doc(
-        db,
-        "wallets",
-        withdrawData.userId
-      );
+    const walletRef = doc(
+      db,
+      "wallets",
+      withdrawData.userId
+    );
 
     const walletSnapshot =
       await getDoc(
         walletRef
       );
 
-    if (
-      walletSnapshot.exists()
-    ) {
-
-      const walletData =
-        walletSnapshot.data();
-
-      await updateDoc(
-        walletRef,
-        {
-          withdrawableBalance:
-            Number(
-              walletData.withdrawableBalance || 0
-            ) + Number(
-              withdrawData.amount
-            )
-        }
-      );
-
+    if (!walletSnapshot.exists()) {
+      return {
+        success: false,
+        message:
+          "Wallet Not Found"
+      };
     }
 
+    await updateDoc(
+      walletRef,
+      {
+        withdrawableBalance:
+          increment(
+            withdrawData.amount
+          ),
+
+        pendingWithdraw:
+          increment(
+            -withdrawData.amount
+          ),
+
+        updatedAt:
+          serverTimestamp()
+      }
+    );
+
     /* ======================================================
-    SAVE TRANSACTION
+       TRANSACTION
     ====================================================== */
 
     await addDoc(
@@ -149,6 +167,9 @@ export async function rejectWithdraw(
         userId:
           withdrawData.userId,
 
+        withdrawId:
+          data.withdrawId,
+
         type:
           "withdraw_rejected",
 
@@ -156,53 +177,74 @@ export async function rejectWithdraw(
           withdrawData.amount,
 
         reason:
-          data.reason,
+          data.reason.trim(),
 
         status:
           "rejected",
 
+        rejectedBy:
+          data.adminId,
+
         createdAt:
-          Date.now()
+          serverTimestamp()
       }
     );
 
     /* ======================================================
-    SAVE NOTIFICATION
+       ADMIN LOG
     ====================================================== */
 
     await addDoc(
       collection(
         db,
-        "notifications"
+        "admin_logs"
       ),
       {
+        action:
+          "reject_withdraw",
+
+        withdrawId:
+          data.withdrawId,
+
         userId:
           withdrawData.userId,
 
-        title:
-          "Withdraw Rejected",
+        adminId:
+          data.adminId,
 
-        message:
-          `Your withdraw request was rejected. Reason: ${data.reason}`,
+        amount:
+          withdrawData.amount,
 
-        type:
-          "withdraw",
-
-        isRead:
-          false,
+        reason:
+          data.reason.trim(),
 
         createdAt:
-          Date.now()
+          serverTimestamp()
       }
     );
 
-    return {
+    /* ======================================================
+       NOTIFICATION
+    ====================================================== */
 
-      success: true,
+    await createNotification({
+      userId:
+        withdrawData.userId,
+
+      title:
+        "Withdraw Rejected",
 
       message:
-        "Withdraw Rejected Successfully"
+        `Your withdraw request of ₹${withdrawData.amount} was rejected. Reason: ${data.reason.trim()}`,
 
+      type:
+        "withdraw"
+    });
+
+    return {
+      success: true,
+      message:
+        "Withdraw Rejected Successfully"
     };
 
   } catch (error) {
@@ -213,14 +255,9 @@ export async function rejectWithdraw(
     );
 
     return {
-
       success: false,
-
       message:
         "Something went wrong"
-
     };
-
   }
-
 }
