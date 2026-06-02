@@ -1,31 +1,40 @@
 import {
-  addDoc,
-  collection,
   doc,
   getDoc,
+  setDoc,
+  updateDoc,
   increment,
-  updateDoc
+  serverTimestamp,
+  addDoc,
+  collection
 } from "firebase/firestore";
 
 import { db } from "@/firebase/config";
 
-import { createNotification }
-from "./createNotification";
+import { createNotification } from "./createNotification";
 
 interface DailyRewardData {
-
   userId: string;
-
 }
 
 export async function claimDailyReward(
   data: DailyRewardData
 ) {
-
   try {
 
     /* ======================================================
-    TODAY DATE
+       VALIDATION
+    ====================================================== */
+
+    if (!data.userId) {
+      return {
+        success: false,
+        message: "User ID Required"
+      };
+    }
+
+    /* ======================================================
+       TODAY DATE
     ====================================================== */
 
     const today =
@@ -34,38 +43,31 @@ export async function claimDailyReward(
         .split("T")[0];
 
     /* ======================================================
-    CHECK EXISTING CLAIM
+       REWARD DOC ID
     ====================================================== */
 
-    const rewardRef =
-      doc(
-        db,
-        "daily_rewards",
-        `${data.userId}_${today}`
-      );
+    const rewardDocId =
+      `${data.userId}_${today}`;
+
+    const rewardRef = doc(
+      db,
+      "daily_rewards",
+      rewardDocId
+    );
 
     const rewardSnapshot =
-      await getDoc(
-        rewardRef
-      );
+      await getDoc(rewardRef);
 
-    if (
-      rewardSnapshot.exists()
-    ) {
-
+    if (rewardSnapshot.exists()) {
       return {
-
         success: false,
-
         message:
           "Daily reward already claimed"
-
       };
-
     }
 
     /* ======================================================
-    RANDOM REWARD
+       RANDOM REWARD
     ====================================================== */
 
     const rewardAmount =
@@ -74,38 +76,28 @@ export async function claimDailyReward(
       ) + 10;
 
     /* ======================================================
-    GET WALLET
+       WALLET
     ====================================================== */
 
-    const walletRef =
-      doc(
-        db,
-        "wallets",
-        data.userId
-      );
+    const walletRef = doc(
+      db,
+      "wallets",
+      data.userId
+    );
 
     const walletSnapshot =
-      await getDoc(
-        walletRef
-      );
+      await getDoc(walletRef);
 
-    if (
-      !walletSnapshot.exists()
-    ) {
-
+    if (!walletSnapshot.exists()) {
       return {
-
         success: false,
-
         message:
           "Wallet Not Found"
-
       };
-
     }
 
     /* ======================================================
-    UPDATE WALLET
+       UPDATE WALLET
     ====================================================== */
 
     await updateDoc(
@@ -124,19 +116,19 @@ export async function claimDailyReward(
         totalEarnings:
           increment(
             rewardAmount
-          )
+          ),
+
+        updatedAt:
+          serverTimestamp()
       }
     );
 
     /* ======================================================
-    SAVE DAILY REWARD
+       SAVE REWARD
     ====================================================== */
 
-    await addDoc(
-      collection(
-        db,
-        "daily_rewards"
-      ),
+    await setDoc(
+      rewardRef,
       {
         userId:
           data.userId,
@@ -150,12 +142,12 @@ export async function claimDailyReward(
           "claimed",
 
         createdAt:
-          Date.now()
+          serverTimestamp()
       }
     );
 
     /* ======================================================
-    SAVE TRANSACTION
+       TRANSACTION
     ====================================================== */
 
     await addDoc(
@@ -177,12 +169,12 @@ export async function claimDailyReward(
           "success",
 
         createdAt:
-          Date.now()
+          serverTimestamp()
       }
     );
 
     /* ======================================================
-    NOTIFICATION
+       NOTIFICATION
     ====================================================== */
 
     await createNotification({
@@ -200,14 +192,10 @@ export async function claimDailyReward(
     });
 
     return {
-
       success: true,
-
       rewardAmount,
-
       message:
-        "Daily reward claimed"
-
+        "Daily Reward Claimed Successfully"
     };
 
   } catch (error) {
@@ -218,14 +206,9 @@ export async function claimDailyReward(
     );
 
     return {
-
       success: false,
-
       message:
         "Something went wrong"
-
     };
-
   }
-
 }
