@@ -1,87 +1,81 @@
 import {
+  addDoc,
+  collection,
   doc,
   getDoc,
+  increment,
+  serverTimestamp,
   updateDoc
 } from "firebase/firestore";
 
 import { db } from "@/firebase/config";
 
+import { createNotification } from "./createNotification";
+
 interface RankData {
-
   rank: string;
-
   requiredTeam: number;
-
   bonus: number;
-
 }
 
 const MLM_RANKS: RankData[] = [
-
   {
     rank: "Bronze",
     requiredTeam: 0,
     bonus: 0
   },
-
   {
     rank: "Silver",
     requiredTeam: 25,
     bonus: 500
   },
-
   {
     rank: "Gold",
     requiredTeam: 100,
     bonus: 2000
   },
-
   {
     rank: "Diamond",
     requiredTeam: 300,
     bonus: 10000
   },
-
   {
     rank: "Crown",
     requiredTeam: 1000,
     bonus: 50000
   }
-
 ];
 
 export async function updateRank(
   userId: string
 ) {
-
   try {
 
+    if (!userId?.trim()) {
+      return {
+        success: false,
+        message: "User ID Required"
+      };
+    }
+
     /* ======================================================
-    GET USER
+       USER
     ====================================================== */
 
-    const userRef =
-      doc(
-        db,
-        "users",
-        userId
-      );
+    const userRef = doc(
+      db,
+      "users",
+      userId
+    );
 
     const userSnapshot =
-      await getDoc(
-        userRef
-      );
+      await getDoc(userRef);
 
-    if (
-      !userSnapshot.exists()
-    ) {
-
-      console.log(
-        "User Not Found"
-      );
-
-      return;
-
+    if (!userSnapshot.exists()) {
+      return {
+        success: false,
+        message: "User Not Found"
+      };
     }
 
     const userData =
@@ -97,143 +91,153 @@ export async function updateRank(
       "Bronze";
 
     /* ======================================================
-    FIND NEW RANK
+       FIND NEW RANK
     ====================================================== */
 
     let newRank =
       currentRank;
 
-    let rankBonus =
-      0;
+    let rankBonus = 0;
 
-    MLM_RANKS.forEach(
-      (rankData) => {
+    for (const rank of MLM_RANKS) {
 
-        if (
-          totalTeam >=
-          rankData.requiredTeam
-        ) {
+      if (
+        totalTeam >=
+        rank.requiredTeam
+      ) {
+        newRank =
+          rank.rank;
 
-          newRank =
-            rankData.rank;
-
-          rankBonus =
-            rankData.bonus;
-
-        }
-
+        rankBonus =
+          rank.bonus;
       }
-    );
+    }
 
     /* ======================================================
-    SAME RANK
+       SAME RANK
     ====================================================== */
 
     if (
       newRank === currentRank
     ) {
-
-      console.log(
-        "Rank Already Updated"
-      );
-
-      return;
-
+      return {
+        success: true,
+        message:
+          "Rank Already Updated"
+      };
     }
 
     /* ======================================================
-    UPDATE USER RANK
+       UPDATE USER
     ====================================================== */
 
     await updateDoc(
       userRef,
       {
         currentRank:
-          newRank
+          newRank,
+
+        updatedAt:
+          serverTimestamp()
       }
     );
 
     /* ======================================================
-    UPDATE BONUS WALLET
+       BONUS
     ====================================================== */
 
-    const walletRef =
-      doc(
-        db,
-        "wallets",
-        userId
-      );
+    if (rankBonus > 0) {
 
-    const walletSnapshot =
-      await getDoc(
-        walletRef
-      );
+      const walletRef =
+        doc(
+          db,
+          "wallets",
+          userId
+        );
 
-    if (
-      walletSnapshot.exists()
-    ) {
+      const walletSnapshot =
+        await getDoc(
+          walletRef
+        );
 
-      const walletData =
-        walletSnapshot.data();
+      if (
+        walletSnapshot.exists()
+      ) {
 
-      await updateDoc(
-        walletRef,
+        await updateDoc(
+          walletRef,
+          {
+            bonusBalance:
+              increment(
+                rankBonus
+              ),
+
+            totalBalance:
+              increment(
+                rankBonus
+              ),
+
+            totalEarnings:
+              increment(
+                rankBonus
+              ),
+
+            updatedAt:
+              serverTimestamp()
+          }
+        );
+      }
+
+      await addDoc(
+        collection(
+          db,
+          "transactions"
+        ),
         {
-          bonusBalance:
-            Number(
-              walletData.bonusBalance || 0
-            ) + rankBonus,
+          userId,
 
-          totalBalance:
-            Number(
-              walletData.totalBalance || 0
-            ) + rankBonus,
+          type:
+            "rank_bonus",
 
-          totalEarnings:
-            Number(
-              walletData.totalEarnings || 0
-            ) + rankBonus
+          rank:
+            newRank,
+
+          amount:
+            rankBonus,
+
+          status:
+            "success",
+
+          createdAt:
+            serverTimestamp()
         }
       );
-
     }
 
     /* ======================================================
-    SAVE NOTIFICATION
+       NOTIFICATION
     ====================================================== */
 
-    const notificationRef =
-      doc(
-        db,
-        "notifications",
-        `${userId}_${Date.now()}`
-      );
+    await createNotification({
+      userId,
 
-    await updateDoc(
-      notificationRef,
-      {
-        userId,
+      title:
+        "Rank Upgraded",
 
-        title:
-          "Rank Upgraded",
+      message:
+        `Congratulations! Your new rank is ${newRank}.`,
 
-        message:
-          `Congratulations! Your new MLM rank is ${newRank}`,
+      type:
+        "rank"
+    });
 
-        type:
-          "rank",
-
-        isRead:
-          false,
-
-        createdAt:
-          Date.now()
-      }
-    );
-
-    console.log(
-      "Rank Updated Successfully"
-    );
+    return {
+      success: true,
+      rank:
+        newRank,
+      bonus:
+        rankBonus
+    };
 
   } catch (error) {
 
@@ -242,6 +246,10 @@ export async function updateRank(
       error
     );
 
+    return {
+      success: false,
+      message:
+        "Something went wrong"
+    };
   }
-
 }
