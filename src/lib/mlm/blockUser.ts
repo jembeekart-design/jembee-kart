@@ -3,106 +3,112 @@ import {
   collection,
   doc,
   getDoc,
-  updateDoc
+  updateDoc,
+  serverTimestamp
 } from "firebase/firestore";
 
 import { db } from "@/firebase/config";
 
-import { createNotification }
-from "./createNotification";
+import { createNotification } from "./createNotification";
 
 interface BlockUserData {
-
   userId: string;
-
   adminId: string;
-
   reason: string;
-
 }
 
 export async function blockUser(
   data: BlockUserData
 ) {
-
   try {
 
     /* ======================================================
-    GET USER
+       VALIDATION
     ====================================================== */
 
-    const userRef =
-      doc(
-        db,
-        "users",
-        data.userId
-      );
+    if (!data.reason?.trim()) {
+      return {
+        success: false,
+        message: "Block Reason Required"
+      };
+    }
+
+    if (data.userId === data.adminId) {
+      return {
+        success: false,
+        message: "You Cannot Block Yourself"
+      };
+    }
+
+    /* ======================================================
+       GET USER
+    ====================================================== */
+
+    const userRef = doc(
+      db,
+      "users",
+      data.userId
+    );
 
     const userSnapshot =
-      await getDoc(
-        userRef
-      );
+      await getDoc(userRef);
 
-    if (
-      !userSnapshot.exists()
-    ) {
-
+    if (!userSnapshot.exists()) {
       return {
-
         success: false,
-
-        message:
-          "User Not Found"
-
+        message: "User Not Found"
       };
-
     }
 
     const userData =
       userSnapshot.data();
 
     /* ======================================================
-    ALREADY BLOCKED
+       ALREADY BLOCKED
     ====================================================== */
 
-    if (
-      userData.isBlocked
-    ) {
-
+    if (userData.isBlocked) {
       return {
-
         success: false,
-
-        message:
-          "User Already Blocked"
-
+        message: "User Already Blocked"
       };
-
     }
 
     /* ======================================================
-    UPDATE USER
+       PROTECT SUPER ADMIN
+    ====================================================== */
+
+    if (
+      userData.role === "super_admin"
+    ) {
+      return {
+        success: false,
+        message:
+          "Super Admin Cannot Be Blocked"
+      };
+    }
+
+    /* ======================================================
+       UPDATE USER
     ====================================================== */
 
     await updateDoc(
       userRef,
       {
-        isBlocked:
-          true,
-
+        isBlocked: true,
         blockedBy:
           data.adminId,
-
         blockedReason:
-          data.reason,
-
+          data.reason.trim(),
         blockedAt:
-          Date.now()
+          serverTimestamp(),
+        updatedAt:
+          serverTimestamp()
       }
     );
 
     /* ======================================================
-    SAVE ADMIN LOG
+       ADMIN LOG
     ====================================================== */
 
     await addDoc(
@@ -121,15 +127,15 @@ export async function blockUser(
           data.adminId,
 
         reason:
-          data.reason,
+          data.reason.trim(),
 
         createdAt:
-          Date.now()
+          serverTimestamp()
       }
     );
 
     /* ======================================================
-    SAVE TRANSACTION
+       TRANSACTION LOG
     ====================================================== */
 
     await addDoc(
@@ -145,18 +151,21 @@ export async function blockUser(
           "account_blocked",
 
         reason:
-          data.reason,
+          data.reason.trim(),
 
         status:
           "blocked",
 
+        blockedBy:
+          data.adminId,
+
         createdAt:
-          Date.now()
+          serverTimestamp()
       }
     );
 
     /* ======================================================
-    CREATE NOTIFICATION
+       NOTIFICATION
     ====================================================== */
 
     await createNotification({
@@ -167,19 +176,16 @@ export async function blockUser(
         "Account Blocked",
 
       message:
-        `Your account has been blocked. Reason: ${data.reason}`,
+        `Your account has been blocked. Reason: ${data.reason.trim()}`,
 
       type:
         "system"
     });
 
     return {
-
       success: true,
-
       message:
         "User Blocked Successfully"
-
     };
 
   } catch (error) {
@@ -190,14 +196,9 @@ export async function blockUser(
     );
 
     return {
-
       success: false,
-
       message:
         "Something went wrong"
-
     };
-
   }
-
 }
