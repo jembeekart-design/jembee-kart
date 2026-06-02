@@ -3,110 +3,105 @@ import {
   collection,
   doc,
   getDoc,
+  serverTimestamp,
   updateDoc
 } from "firebase/firestore";
 
 import { db } from "@/firebase/config";
 
-import { createNotification }
-from "./createNotification";
+import { createNotification } from "./createNotification";
 
 interface UnblockUserData {
-
   userId: string;
-
   adminId: string;
-
 }
 
 export async function unblockUser(
   data: UnblockUserData
 ) {
-
   try {
 
     /* ======================================================
-    GET USER
+       VALIDATION
     ====================================================== */
 
-    const userRef =
-      doc(
-        db,
-        "users",
-        data.userId
-      );
+    if (!data.userId?.trim()) {
+      return {
+        success: false,
+        message: "User ID Required"
+      };
+    }
+
+    if (!data.adminId?.trim()) {
+      return {
+        success: false,
+        message: "Admin ID Required"
+      };
+    }
+
+    /* ======================================================
+       GET USER
+    ====================================================== */
+
+    const userRef = doc(
+      db,
+      "users",
+      data.userId
+    );
 
     const userSnapshot =
-      await getDoc(
-        userRef
-      );
+      await getDoc(userRef);
 
-    if (
-      !userSnapshot.exists()
-    ) {
-
+    if (!userSnapshot.exists()) {
       return {
-
         success: false,
-
-        message:
-          "User Not Found"
-
+        message: "User Not Found"
       };
-
     }
 
     const userData =
       userSnapshot.data();
 
     /* ======================================================
-    USER NOT BLOCKED
+       STATUS CHECK
     ====================================================== */
 
-    if (
-      !userData.isBlocked
-    ) {
-
+    if (!userData.isBlocked) {
       return {
-
         success: false,
-
         message:
           "User Already Active"
-
       };
-
     }
 
     /* ======================================================
-    UPDATE USER
+       UPDATE USER
     ====================================================== */
 
     await updateDoc(
       userRef,
       {
-        isBlocked:
-          false,
+        isBlocked: false,
 
-        blockedBy:
-          "",
+        blockedBy: null,
 
-        blockedReason:
-          "",
+        blockedReason: null,
 
-        blockedAt:
-          null,
+        blockedAt: null,
 
         unblockedBy:
           data.adminId,
 
         unblockedAt:
-          Date.now()
+          serverTimestamp(),
+
+        updatedAt:
+          serverTimestamp()
       }
     );
 
     /* ======================================================
-    SAVE ADMIN LOG
+       ADMIN LOG
     ====================================================== */
 
     await addDoc(
@@ -125,12 +120,12 @@ export async function unblockUser(
           data.adminId,
 
         createdAt:
-          Date.now()
+          serverTimestamp()
       }
     );
 
     /* ======================================================
-    SAVE TRANSACTION
+       ACCOUNT HISTORY
     ====================================================== */
 
     await addDoc(
@@ -149,12 +144,12 @@ export async function unblockUser(
           "success",
 
         createdAt:
-          Date.now()
+          serverTimestamp()
       }
     );
 
     /* ======================================================
-    CREATE NOTIFICATION
+       NOTIFICATION
     ====================================================== */
 
     await createNotification({
@@ -172,12 +167,9 @@ export async function unblockUser(
     });
 
     return {
-
       success: true,
-
       message:
         "User Unblocked Successfully"
-
     };
 
   } catch (error) {
@@ -188,14 +180,9 @@ export async function unblockUser(
     );
 
     return {
-
       success: false,
-
       message:
         "Something went wrong"
-
     };
-
   }
-
 }
