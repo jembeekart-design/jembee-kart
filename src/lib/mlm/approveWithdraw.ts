@@ -3,122 +3,99 @@ import {
   collection,
   doc,
   getDoc,
-  updateDoc
+  updateDoc,
+  serverTimestamp
 } from "firebase/firestore";
 
 import { db } from "@/firebase/config";
 
 interface ApproveWithdrawData {
-
   withdrawId: string;
-
   adminId: string;
-
   transactionId: string;
-
 }
 
 export async function approveWithdraw(
   data: ApproveWithdrawData
 ) {
-
   try {
+    if (!data.transactionId?.trim()) {
+      return {
+        success: false,
+        message: "Transaction ID Required"
+      };
+    }
 
     /* ======================================================
-    GET WITHDRAW REQUEST
+       GET WITHDRAW REQUEST
     ====================================================== */
 
-    const withdrawRef =
-      doc(
-        db,
-        "withdraws",
-        data.withdrawId
-      );
+    const withdrawRef = doc(
+      db,
+      "withdraws",
+      data.withdrawId
+    );
 
     const withdrawSnapshot =
-      await getDoc(
-        withdrawRef
-      );
+      await getDoc(withdrawRef);
 
-    if (
-      !withdrawSnapshot.exists()
-    ) {
-
+    if (!withdrawSnapshot.exists()) {
       return {
-
         success: false,
-
-        message:
-          "Withdraw Request Not Found"
-
+        message: "Withdraw Request Not Found"
       };
-
     }
 
     const withdrawData =
       withdrawSnapshot.data();
 
     /* ======================================================
-    ALREADY APPROVED
+       VALIDATE STATUS
     ====================================================== */
 
     if (
-      withdrawData.status ===
-      "approved"
+      withdrawData.status !== "pending"
     ) {
-
       return {
-
         success: false,
-
         message:
-          "Already Approved"
-
+          "Withdraw Request Already Processed"
       };
-
     }
 
     /* ======================================================
-    UPDATE WITHDRAW STATUS
+       UPDATE WITHDRAW STATUS
     ====================================================== */
 
     await updateDoc(
       withdrawRef,
       {
-        status:
-          "approved",
-
+        status: "approved",
         transactionId:
           data.transactionId,
-
         approvedBy:
           data.adminId,
-
         approvedAt:
-          Date.now()
+          serverTimestamp(),
+        updatedAt:
+          serverTimestamp()
       }
     );
 
     /* ======================================================
-    UPDATE WALLET
+       UPDATE WALLET STATS
     ====================================================== */
 
-    const walletRef =
-      doc(
-        db,
-        "wallets",
-        withdrawData.userId
-      );
+    const walletRef = doc(
+      db,
+      "wallets",
+      withdrawData.userId
+    );
 
     const walletSnapshot =
-      await getDoc(
-        walletRef
-      );
+      await getDoc(walletRef);
 
-    if (
-      walletSnapshot.exists()
-    ) {
-
+    if (walletSnapshot.exists()) {
       const walletData =
         walletSnapshot.data();
 
@@ -128,16 +105,19 @@ export async function approveWithdraw(
           totalWithdraw:
             Number(
               walletData.totalWithdraw || 0
-            ) + Number(
-              withdrawData.amount
-            )
+            ) +
+            Number(
+              withdrawData.amount || 0
+            ),
+
+          updatedAt:
+            serverTimestamp()
         }
       );
-
     }
 
     /* ======================================================
-    SAVE TRANSACTION
+       SAVE TRANSACTION
     ====================================================== */
 
     await addDoc(
@@ -149,25 +129,33 @@ export async function approveWithdraw(
         userId:
           withdrawData.userId,
 
+        withdrawId:
+          data.withdrawId,
+
         type:
           "withdraw_approved",
 
         amount:
-          withdrawData.amount,
+          Number(
+            withdrawData.amount || 0
+          ),
 
         transactionId:
           data.transactionId,
+
+        approvedBy:
+          data.adminId,
 
         status:
           "success",
 
         createdAt:
-          Date.now()
+          serverTimestamp()
       }
     );
 
     /* ======================================================
-    SAVE NOTIFICATION
+       SAVE NOTIFICATION
     ====================================================== */
 
     await addDoc(
@@ -183,7 +171,7 @@ export async function approveWithdraw(
           "Withdraw Approved",
 
         message:
-          `Your ₹${withdrawData.amount} withdraw request has been approved.`,
+          `Your ₹${withdrawData.amount} withdrawal request has been approved.`,
 
         type:
           "withdraw",
@@ -192,35 +180,25 @@ export async function approveWithdraw(
           false,
 
         createdAt:
-          Date.now()
+          serverTimestamp()
       }
     );
 
     return {
-
       success: true,
-
       message:
         "Withdraw Approved Successfully"
-
     };
-
   } catch (error) {
-
     console.error(
       "APPROVE WITHDRAW ERROR:",
       error
     );
 
     return {
-
       success: false,
-
       message:
         "Something went wrong"
-
     };
-
   }
-
 }
