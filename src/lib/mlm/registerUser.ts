@@ -2,10 +2,9 @@ import {
   collection,
   doc,
   getDocs,
-  increment,
   query,
+  serverTimestamp,
   setDoc,
-  updateDoc,
   where
 } from "firebase/firestore";
 
@@ -21,45 +20,50 @@ import {
 import { generateReferralCode }
 from "./generateReferralCode";
 
-import { giveCommission }
-from "./giveCommission";
-
 interface RegisterUserData {
-
   name: string;
-
   email: string;
-
   password: string;
-
   phone?: string;
-
   referralCode?: string;
-
 }
 
 export async function registerUser(
   data: RegisterUserData
 ) {
-
   try {
 
     /* ======================================================
-    CREATE AUTH USER
+       VALIDATION
     ====================================================== */
 
-    const userCredential =
-      await createUserWithEmailAndPassword(
-        auth,
-        data.email,
-        data.password
-      );
+    if (!data.name?.trim()) {
+      return {
+        success: false,
+        message: "Name Required"
+      };
+    }
 
-    const uid =
-      userCredential.user.uid;
+    if (!data.email?.trim()) {
+      return {
+        success: false,
+        message: "Email Required"
+      };
+    }
+
+    if (
+      !data.password ||
+      data.password.length < 6
+    ) {
+      return {
+        success: false,
+        message:
+          "Password must be at least 6 characters"
+      };
+    }
 
     /* ======================================================
-    FIND SPONSOR
+       FIND SPONSOR
     ====================================================== */
 
     let sponsorId:
@@ -68,9 +72,7 @@ export async function registerUser(
     let sponsorReferralCode:
       string | null = null;
 
-    if (
-      data.referralCode
-    ) {
+    if (data.referralCode?.trim()) {
 
       const referralQuery =
         query(
@@ -78,11 +80,10 @@ export async function registerUser(
             db,
             "users"
           ),
-
           where(
             "referralCode",
             "==",
-            data.referralCode
+            data.referralCode.trim()
           )
         );
 
@@ -94,29 +95,70 @@ export async function registerUser(
       if (
         !referralSnapshot.empty
       ) {
-
         sponsorId =
-          referralSnapshot
-            .docs[0].id;
+          referralSnapshot.docs[0].id;
 
         sponsorReferralCode =
-          data.referralCode;
-
+          data.referralCode.trim();
       }
-
     }
 
     /* ======================================================
-    GENERATE USER REFERRAL CODE
+       CREATE AUTH USER
     ====================================================== */
 
-    const myReferralCode =
-      generateReferralCode(
-        data.name
+    const userCredential =
+      await createUserWithEmailAndPassword(
+        auth,
+        data.email.trim(),
+        data.password
       );
 
+    const uid =
+      userCredential.user.uid;
+
     /* ======================================================
-    CREATE USER DOCUMENT
+       GENERATE UNIQUE REFERRAL CODE
+    ====================================================== */
+
+    let myReferralCode = "";
+
+    let isUnique = false;
+
+    while (!isUnique) {
+
+      myReferralCode =
+        generateReferralCode(
+          data.name
+        );
+
+      const codeQuery =
+        query(
+          collection(
+            db,
+            "users"
+          ),
+          where(
+            "referralCode",
+            "==",
+            myReferralCode
+          )
+        );
+
+      const codeSnapshot =
+        await getDocs(
+          codeQuery
+        );
+
+      if (
+        codeSnapshot.empty
+      ) {
+        isUnique = true;
+      }
+    }
+
+    /* ======================================================
+       CREATE USER
     ====================================================== */
 
     await setDoc(
@@ -129,10 +171,10 @@ export async function registerUser(
         uid,
 
         name:
-          data.name,
+          data.name.trim(),
 
         email:
-          data.email,
+          data.email.trim(),
 
         phone:
           data.phone || "",
@@ -152,7 +194,7 @@ export async function registerUser(
           "Bronze",
 
         package:
-          "Starter",
+          null,
 
         profileImage:
           "",
@@ -160,19 +202,37 @@ export async function registerUser(
         isBlocked:
           false,
 
+        isKYCVerified:
+          false,
+
+        kycStatus:
+          "not_submitted",
+
         totalTeam:
           0,
 
         directReferrals:
           0,
 
+        totalOrders:
+          0,
+
+        totalSpent:
+          0,
+
         joinedAt:
-          Date.now()
+          serverTimestamp(),
+
+        createdAt:
+          serverTimestamp(),
+
+        updatedAt:
+          serverTimestamp()
       }
     );
 
     /* ======================================================
-    CREATE WALLET
+       CREATE WALLET
     ====================================================== */
 
     await setDoc(
@@ -203,13 +263,19 @@ export async function registerUser(
         totalWithdraw:
           0,
 
+        pendingWithdraw:
+          0,
+
         createdAt:
-          Date.now()
+          serverTimestamp(),
+
+        updatedAt:
+          serverTimestamp()
       }
     );
 
     /* ======================================================
-    CREATE REFERRAL TREE
+       CREATE REFERRAL RECORD
     ====================================================== */
 
     await setDoc(
@@ -224,71 +290,31 @@ export async function registerUser(
 
         sponsorId,
 
-        level1: [],
-
-        level2: [],
-
-        level3: [],
-
         totalNetwork:
           0,
 
         createdAt:
-          Date.now()
+          serverTimestamp(),
+
+        updatedAt:
+          serverTimestamp()
       }
     );
 
     /* ======================================================
-    UPDATE SPONSOR
-    ====================================================== */
-
-    if (sponsorId) {
-
-      await updateDoc(
-        doc(
-          db,
-          "users",
-          sponsorId
-        ),
-        {
-          totalTeam:
-            increment(1),
-
-          directReferrals:
-            increment(1)
-        }
-      );
-
-      /* ======================================================
-      GIVE LEVEL 1 COMMISSION
-      ====================================================== */
-
-      await giveCommission({
-        sponsorId,
-
-        amount: 100,
-
-        level: 1,
-
-        sourceUserId:
-          uid
-      });
-
-    }
-
-    /* ======================================================
-    RETURN SUCCESS
+       SUCCESS
     ====================================================== */
 
     return {
-
       success: true,
 
       uid,
 
       referralCode:
-        myReferralCode
+        myReferralCode,
 
+      message:
+        "Registration Successful"
     };
 
   } catch (error) {
@@ -299,13 +325,10 @@ export async function registerUser(
     );
 
     return {
-
       success: false,
-
+      message:
+        "Registration Failed",
       error
-
     };
-
   }
-
 }
