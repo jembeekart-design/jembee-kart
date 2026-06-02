@@ -2,57 +2,88 @@ import {
   arrayUnion,
   doc,
   getDoc,
+  increment,
+  serverTimestamp,
   setDoc,
   updateDoc
 } from "firebase/firestore";
 
-import { db }
-from "@/firebase/config";
+import { db } from "@/firebase/config";
 
 interface UpdateReferralTreeData {
-
   sponsorId: string;
-
   newUserId: string;
-
 }
 
-export async function
-updateReferralTree(
-  data:
-  UpdateReferralTreeData
+export async function updateReferralTree(
+  data: UpdateReferralTreeData
 ) {
-
   try {
 
     /* ======================================================
-       CREATE REFERRAL DOC IF NOT EXISTS
+       VALIDATION
     ====================================================== */
 
-    const sponsorRef =
-      doc(
-        db,
-        "referrals",
-        data.sponsorId
-      );
+    if (!data.sponsorId?.trim()) {
+      return {
+        success: false,
+        message: "Sponsor ID Required"
+      };
+    }
 
-    const sponsorRefSnap =
+    if (!data.newUserId?.trim()) {
+      return {
+        success: false,
+        message: "User ID Required"
+      };
+    }
+
+    if (
+      data.sponsorId ===
+      data.newUserId
+    ) {
+      return {
+        success: false,
+        message:
+          "Invalid Referral Relationship"
+      };
+    }
+
+    /* ======================================================
+       SPONSOR REFERRAL DOC
+    ====================================================== */
+
+    const sponsorRef = doc(
+      db,
+      "referrals",
+      data.sponsorId
+    );
+
+    const sponsorSnap =
       await getDoc(
         sponsorRef
       );
 
-    if (
-      !sponsorRefSnap.exists()
-    ) {
+    if (!sponsorSnap.exists()) {
 
       await setDoc(
         sponsorRef,
         {
+          userId:
+            data.sponsorId,
+
           level1: [],
           level2: [],
           level3: [],
+
+          totalNetwork:
+            0,
+
           createdAt:
-            Date.now()
+            serverTimestamp(),
+
+          updatedAt:
+            serverTimestamp()
         }
       );
     }
@@ -69,13 +100,16 @@ updateReferralTree(
             data.newUserId
           ),
 
+        totalNetwork:
+          increment(1),
+
         updatedAt:
-          Date.now()
+          serverTimestamp()
       }
     );
 
     /* ======================================================
-       GET SPONSOR USER
+       SPONSOR USER
     ====================================================== */
 
     const sponsorUserRef =
@@ -85,22 +119,19 @@ updateReferralTree(
         data.sponsorId
       );
 
-    const sponsorSnapshot =
+    const sponsorUserSnap =
       await getDoc(
         sponsorUserRef
       );
 
-    if (
-      !sponsorSnapshot.exists()
-    ) {
-
+    if (!sponsorUserSnap.exists()) {
       return {
-        success: false
+        success: true
       };
     }
 
     const sponsorData =
-      sponsorSnapshot.data();
+      sponsorUserSnap.data();
 
     const level2SponsorId =
       sponsorData.sponsorId;
@@ -109,9 +140,7 @@ updateReferralTree(
        LEVEL 2
     ====================================================== */
 
-    if (
-      level2SponsorId
-    ) {
+    if (level2SponsorId) {
 
       const level2Ref =
         doc(
@@ -125,18 +154,26 @@ updateReferralTree(
           level2Ref
         );
 
-      if (
-        !level2Snap.exists()
-      ) {
+      if (!level2Snap.exists()) {
 
         await setDoc(
           level2Ref,
           {
+            userId:
+              level2SponsorId,
+
             level1: [],
             level2: [],
             level3: [],
+
+            totalNetwork:
+              0,
+
             createdAt:
-              Date.now()
+              serverTimestamp(),
+
+            updatedAt:
+              serverTimestamp()
           }
         );
       }
@@ -149,13 +186,16 @@ updateReferralTree(
               data.newUserId
             ),
 
+          totalNetwork:
+            increment(1),
+
           updatedAt:
-            Date.now()
+            serverTimestamp()
         }
       );
 
       /* ======================================================
-         GET LEVEL 2 USER
+         LEVEL 3 USER
       ====================================================== */
 
       const level2UserRef =
@@ -165,17 +205,17 @@ updateReferralTree(
           level2SponsorId
         );
 
-      const level2Snapshot =
+      const level2UserSnap =
         await getDoc(
           level2UserRef
         );
 
       if (
-        level2Snapshot.exists()
+        level2UserSnap.exists()
       ) {
 
         const level2Data =
-          level2Snapshot.data();
+          level2UserSnap.data();
 
         const level3SponsorId =
           level2Data.sponsorId;
@@ -184,9 +224,7 @@ updateReferralTree(
            LEVEL 3
         ====================================================== */
 
-        if (
-          level3SponsorId
-        ) {
+        if (level3SponsorId) {
 
           const level3Ref =
             doc(
@@ -207,11 +245,21 @@ updateReferralTree(
             await setDoc(
               level3Ref,
               {
+                userId:
+                  level3SponsorId,
+
                 level1: [],
                 level2: [],
                 level3: [],
+
+                totalNetwork:
+                  0,
+
                 createdAt:
-                  Date.now()
+                  serverTimestamp(),
+
+                updatedAt:
+                  serverTimestamp()
               }
             );
           }
@@ -224,23 +272,21 @@ updateReferralTree(
                   data.newUserId
                 ),
 
+              totalNetwork:
+                increment(1),
+
               updatedAt:
-                Date.now()
+                serverTimestamp()
             }
           );
-
         }
-
       }
-
     }
 
-    console.log(
-      "Referral Tree Updated"
-    );
-
     return {
-      success: true
+      success: true,
+      message:
+        "Referral Tree Updated"
     };
 
   } catch (error) {
@@ -251,7 +297,9 @@ updateReferralTree(
     );
 
     return {
-      success: false
+      success: false,
+      message:
+        "Something went wrong"
     };
   }
 }
