@@ -4,107 +4,125 @@ import {
   doc,
   getDoc,
   increment,
-  updateDoc
+  updateDoc,
+  serverTimestamp
 } from "firebase/firestore";
 
 import { db } from "@/firebase/config";
 
+import { createNotification }
+from "./createNotification";
+
 interface GiveCommissionData {
-
   sponsorId: string;
-
   amount: number;
-
   level: number;
-
   sourceUserId: string;
-
 }
 
 export async function giveCommission(
   data: GiveCommissionData
 ) {
-
   try {
 
     /* ======================================================
-    GET SPONSOR USER
+       VALIDATION
     ====================================================== */
 
-    const sponsorRef =
-      doc(
-        db,
-        "users",
-        data.sponsorId
-      );
+    if (!data.sponsorId) {
+      return {
+        success: false,
+        message: "Sponsor ID Required"
+      };
+    }
+
+    if (
+      !data.amount ||
+      data.amount <= 0
+    ) {
+      return {
+        success: false,
+        message: "Invalid Amount"
+      };
+    }
+
+    /* ======================================================
+       USER
+    ====================================================== */
+
+    const sponsorRef = doc(
+      db,
+      "users",
+      data.sponsorId
+    );
 
     const sponsorSnapshot =
       await getDoc(
         sponsorRef
       );
 
-    if (
-      !sponsorSnapshot.exists()
-    ) {
-
-      console.log(
-        "Sponsor Not Found"
-      );
-
-      return;
+    if (!sponsorSnapshot.exists()) {
+      return {
+        success: false,
+        message: "Sponsor Not Found"
+      };
     }
 
     const sponsorData =
       sponsorSnapshot.data();
 
-    /* ======================================================
-    CHECK USER BLOCKED
-    ====================================================== */
-
-    if (
-      sponsorData.isBlocked
-    ) {
-
-      console.log(
-        "Blocked User"
-      );
-
-      return;
+    if (sponsorData.isBlocked) {
+      return {
+        success: false,
+        message: "User Blocked"
+      };
     }
 
     /* ======================================================
-    UPDATE WALLET
+       WALLET
     ====================================================== */
 
-    const walletRef =
-      doc(
-        db,
-        "wallets",
-        data.sponsorId
+    const walletRef = doc(
+      db,
+      "wallets",
+      data.sponsorId
+    );
+
+    const walletSnapshot =
+      await getDoc(
+        walletRef
       );
+
+    if (!walletSnapshot.exists()) {
+      return {
+        success: false,
+        message: "Wallet Not Found"
+      };
+    }
+
+    /* ======================================================
+       CREDIT WALLET
+    ====================================================== */
 
     await updateDoc(
       walletRef,
       {
         totalBalance:
-          increment(
-            data.amount
-          ),
+          increment(data.amount),
 
         withdrawableBalance:
-          increment(
-            data.amount
-          ),
+          increment(data.amount),
 
         totalEarnings:
-          increment(
-            data.amount
-          )
+          increment(data.amount),
+
+        updatedAt:
+          serverTimestamp()
       }
     );
 
     /* ======================================================
-    SAVE TRANSACTION
+       TRANSACTION
     ====================================================== */
 
     await addDoc(
@@ -132,43 +150,33 @@ export async function giveCommission(
           "success",
 
         createdAt:
-          Date.now()
+          serverTimestamp()
       }
     );
 
     /* ======================================================
-    SAVE NOTIFICATION
+       NOTIFICATION
     ====================================================== */
 
-    await addDoc(
-      collection(
-        db,
-        "notifications"
-      ),
-      {
-        userId:
-          data.sponsorId,
+    await createNotification({
+      userId:
+        data.sponsorId,
 
-        title:
-          `Level ${data.level} Commission`,
+      title:
+        `Level ${data.level} Commission`,
 
-        message:
-          `You received ₹${data.amount} commission income.`,
+      message:
+        `You received ₹${data.amount} commission income.`,
 
-        type:
-          "commission",
+      type:
+        "commission"
+    });
 
-        isRead:
-          false,
-
-        createdAt:
-          Date.now()
-      }
-    );
-
-    console.log(
-      "Commission Added Successfully"
-    );
+    return {
+      success: true,
+      message:
+        "Commission Added Successfully"
+    };
 
   } catch (error) {
 
@@ -177,6 +185,10 @@ export async function giveCommission(
       error
     );
 
+    return {
+      success: false,
+      message:
+        "Something went wrong"
+    };
   }
-
 }
