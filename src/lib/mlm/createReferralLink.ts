@@ -14,6 +14,18 @@ export async function createReferralLink(
   data: ReferralLinkData
 ) {
   try {
+
+    /* ======================================================
+       VALIDATION
+    ====================================================== */
+
+    if (!data.userId?.trim()) {
+      return {
+        success: false,
+        message: "User ID Required"
+      };
+    }
+
     /* ======================================================
        GET USER
     ====================================================== */
@@ -38,13 +50,17 @@ export async function createReferralLink(
       userSnapshot.data();
 
     /* ======================================================
-       CHECK REFERRAL CODE
+       REFERRAL CODE
     ====================================================== */
 
-    if (!userData?.referralCode) {
+    const referralCode =
+      userData?.referralCode;
+
+    if (!referralCode) {
       return {
         success: false,
-        message: "Referral Code Missing"
+        message:
+          "Referral Code Missing"
       };
     }
 
@@ -53,22 +69,26 @@ export async function createReferralLink(
     ====================================================== */
 
     const appUrl =
-      data.baseUrl ||
-      "https://jembee-kart.vercel.app";
+      (
+        data.baseUrl ||
+        "https://jembeekart.com"
+      ).replace(/\/$/, "");
 
     /* ======================================================
        REFERRAL LINK
     ====================================================== */
 
     const referralLink =
-      `${appUrl}/login?ref=${userData.referralCode}`;
+      `${appUrl}/register?ref=${encodeURIComponent(
+        referralCode
+      )}`;
 
     /* ======================================================
        SHARE MESSAGE
     ====================================================== */
 
     const shareMessage = `
-🚀 Join JembeeKart MLM & Earn Online
+🚀 Join JembeeKart & Start Earning
 
 ✅ MLM Income
 ✅ Reseller Income
@@ -76,20 +96,24 @@ export async function createReferralLink(
 ✅ Daily Rewards
 ✅ Team Commission
 
-Use My Referral Link 👇
+Use my referral link 👇
 
 ${referralLink}
+
+Referral Code: ${referralCode}
     `.trim();
 
     /* ======================================================
-       RETURN SUCCESS
+       RETURN
     ====================================================== */
 
     return {
       success: true,
-      referralCode:
-        userData.referralCode,
+
+      referralCode,
+
       referralLink,
+
       shareMessage
     };
 
