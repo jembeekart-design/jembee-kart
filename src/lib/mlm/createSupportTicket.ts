@@ -2,16 +2,15 @@ import {
   addDoc,
   collection,
   doc,
-  getDoc
+  getDoc,
+  serverTimestamp
 } from "firebase/firestore";
 
 import { db } from "@/firebase/config";
 
-import { createNotification }
-from "./createNotification";
+import { createNotification } from "./createNotification";
 
 interface SupportTicketData {
-
   userId: string;
 
   subject: string;
@@ -25,51 +24,107 @@ interface SupportTicketData {
     | "technical"
     | "account"
     | "other";
-
 }
 
 export async function createSupportTicket(
   data: SupportTicketData
 ) {
-
   try {
 
     /* ======================================================
-    CHECK USER
+       VALIDATION
     ====================================================== */
 
-    const userRef =
-      doc(
-        db,
-        "users",
-        data.userId
-      );
+    if (!data.userId?.trim()) {
+      return {
+        success: false,
+        message: "User ID Required"
+      };
+    }
+
+    if (!data.subject?.trim()) {
+      return {
+        success: false,
+        message: "Subject Required"
+      };
+    }
+
+    if (data.subject.trim().length < 5) {
+      return {
+        success: false,
+        message:
+          "Subject must be at least 5 characters"
+      };
+    }
+
+    if (!data.message?.trim()) {
+      return {
+        success: false,
+        message: "Message Required"
+      };
+    }
+
+    if (data.message.trim().length < 10) {
+      return {
+        success: false,
+        message:
+          "Message must be at least 10 characters"
+      };
+    }
+
+    /* ======================================================
+       GET USER
+    ====================================================== */
+
+    const userRef = doc(
+      db,
+      "users",
+      data.userId
+    );
 
     const userSnapshot =
-      await getDoc(
-        userRef
-      );
+      await getDoc(userRef);
 
-    if (
-      !userSnapshot.exists()
-    ) {
-
+    if (!userSnapshot.exists()) {
       return {
-
         success: false,
-
-        message:
-          "User Not Found"
-
+        message: "User Not Found"
       };
-
     }
 
     const userData =
       userSnapshot.data();
 
     /* ======================================================
-    CREATE TICKET
+       BLOCKED USER CHECK
+    ====================================================== */
+
+    if (userData.isBlocked) {
+      return {
+        success: false,
+        message:
+          "Your account is blocked"
+      };
+    }
+
+    /* ======================================================
+       PRIORITY
+    ====================================================== */
+
+    let priority:
+      | "low"
+      | "normal"
+      | "high" = "normal";
+
+    if (
+      data.category === "withdraw" ||
+      data.category === "commission"
+    ) {
+      priority = "high";
+    }
+
+    /* ======================================================
+       CREATE TICKET
     ====================================================== */
 
     const ticketRef =
@@ -89,10 +144,10 @@ export async function createSupportTicket(
             userData.email || "",
 
           subject:
-            data.subject,
+            data.subject.trim(),
 
           message:
-            data.message,
+            data.message.trim(),
 
           category:
             data.category,
@@ -100,22 +155,24 @@ export async function createSupportTicket(
           status:
             "open",
 
-          priority:
-            "normal",
+          priority,
 
           adminReply:
             "",
 
+          isClosed:
+            false,
+
           createdAt:
-            Date.now(),
+            serverTimestamp(),
 
           updatedAt:
-            Date.now()
+            serverTimestamp()
         }
       );
 
     /* ======================================================
-    SAVE NOTIFICATION
+       USER NOTIFICATION
     ====================================================== */
 
     await createNotification({
@@ -126,14 +183,14 @@ export async function createSupportTicket(
         "Support Ticket Created",
 
       message:
-        `Your support ticket "${data.subject}" has been submitted.`,
+        `Your support ticket "${data.subject.trim()}" has been submitted successfully.`,
 
       type:
         "system"
     });
 
     /* ======================================================
-    ADMIN LOG
+       ADMIN LOG
     ====================================================== */
 
     await addDoc(
@@ -151,13 +208,17 @@ export async function createSupportTicket(
         userId:
           data.userId,
 
+        category:
+          data.category,
+
+        priority,
+
         createdAt:
-          Date.now()
+          serverTimestamp()
       }
     );
 
     return {
-
       success: true,
 
       ticketId:
@@ -165,7 +226,6 @@ export async function createSupportTicket(
 
       message:
         "Support Ticket Created Successfully"
-
     };
 
   } catch (error) {
@@ -176,14 +236,10 @@ export async function createSupportTicket(
     );
 
     return {
-
       success: false,
 
       message:
         "Something went wrong"
-
     };
-
   }
-
 }
