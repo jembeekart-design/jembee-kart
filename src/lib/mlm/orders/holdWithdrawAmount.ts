@@ -1,11 +1,9 @@
 import {
   doc,
-  increment,
-  updateDoc
+  runTransaction
 } from "firebase/firestore";
 
-import { db }
-from "@/firebase/config";
+import { db } from "@/firebase/config";
 
 interface HoldWithdrawAmountData {
   userId: string;
@@ -21,22 +19,76 @@ holdWithdrawAmount(
 
   try {
 
-    await updateDoc(
+    const userRef =
       doc(
         db,
         "users",
         data.userId
-      ),
-      {
-        walletBalance:
-          increment(
-            -data.amount
-          ),
+      );
 
-        holdBalance:
-          increment(
-            data.amount
-          )
+    await runTransaction(
+      db,
+      async (
+        transaction
+      ) => {
+
+        const userSnap =
+          await transaction.get(
+            userRef
+          );
+
+        if (
+          !userSnap.exists()
+        ) {
+          throw new Error(
+            "User not found"
+          );
+        }
+
+        const userData =
+          userSnap.data();
+
+        const walletBalance =
+          typeof userData.walletBalance ===
+          "number"
+            ? userData.walletBalance
+            : 0;
+
+        const pendingWithdrawal =
+          typeof userData.pendingWithdrawal ===
+          "number"
+            ? userData.pendingWithdrawal
+            : 0;
+
+        if (
+          data.amount <= 0
+        ) {
+          throw new Error(
+            "Invalid withdrawal amount"
+          );
+        }
+
+        if (
+          walletBalance <
+          data.amount
+        ) {
+          throw new Error(
+            "Insufficient wallet balance"
+          );
+        }
+
+        transaction.update(
+          userRef,
+          {
+            walletBalance:
+              walletBalance -
+              data.amount,
+
+            pendingWithdrawal:
+              pendingWithdrawal +
+              data.amount
+          }
+        );
       }
     );
 
@@ -46,7 +98,9 @@ holdWithdrawAmount(
 
   } catch (error) {
 
-    console.error(error);
+    console.error(
+      error
+    );
 
     return {
       success: false
