@@ -1,6 +1,8 @@
 import {
-  addDoc,
-  collection
+  collection,
+  doc,
+  runTransaction,
+  Timestamp
 } from "firebase/firestore";
 
 import { db }
@@ -26,47 +28,251 @@ createWithdrawTransaction(
 
   try {
 
-    await addDoc(
-      collection(
+    const userRef =
+      doc(
         db,
-        "withdrawTransactions"
-      ),
-      {
-        userId:
-          data.userId,
+        "users",
+        data.userId
+      );
 
-        amount:
-          data.amount,
+    await runTransaction(
+      db,
+      async (
+        transaction
+      ) => {
 
-        method:
-          data.method,
+        const userSnap =
+          await transaction.get(
+            userRef
+          );
 
-        accountNumber:
-          data.accountNumber ||
-          null,
+        if (
+          !userSnap.exists()
+        ) {
+          throw new Error(
+            "User not found"
+          );
+        }
 
-        upiId:
-          data.upiId ||
-          null,
+        const userData =
+          userSnap.data();
 
-        status:
-          "pending",
+        const walletBalance =
+          typeof userData.walletBalance ===
+          "number"
+            ? userData.walletBalance
+            : 0;
 
-        createdAt:
-          Date.now()
+        const pendingWithdrawal =
+          typeof userData.pendingWithdrawal ===
+          "number"
+            ? userData.pendingWithdrawal
+            : 0;
+
+        if (
+          data.amount <= 0
+        ) {
+          throw new Error(
+            "Invalid withdrawal amount"
+          );
+        }
+
+        if (
+          walletBalance <
+          data.amount
+        ) {
+          throw new Error(
+            "Insufficient wallet balance"
+          );
+        }
+
+        const updatedWalletBalance =
+          walletBalance -
+          data.amount;
+
+        const updatedPendingWithdrawal =
+          pendingWithdrawal +
+          data.amount;
+
+        transaction.update(
+          userRef,
+          {
+            walletBalance:
+              updatedWalletBalance,
+
+            pendingWithdrawal:
+              updatedPendingWithdrawal
+          }
+        );
+
+        const withdrawRef =
+          doc(
+            collection(
+              db,
+              "users",
+              data.userId,
+              "withdrawTransactions"
+            )
+          );
+
+        transaction.set(
+          withdrawRef,
+          {
+            withdrawalId:
+              withdrawRef.id,
+
+            userId:
+              data.userId,
+
+            type:
+              "withdrawal",
+
+            amount:
+              data.amount,
+
+            method:
+              data.method,
+
+            accountNumber:
+              data.accountNumber ||
+              null,
+
+            upiId:
+              data.upiId ||
+              null,
+
+            status:
+              "pending",
+
+            beforeWalletBalance:
+              walletBalance,
+
+            afterWalletBalance:
+              updatedWalletBalance,
+
+            createdAt:
+              Timestamp.now()
+          }
+        );
+
+        const adminWithdrawRef =
+          doc(
+            collection(
+              db,
+              "withdrawTransactions"
+            )
+          );
+
+        transaction.set(
+          adminWithdrawRef,
+          {
+            withdrawalId:
+              adminWithdrawRef.id,
+
+            userId:
+              data.userId,
+
+            type:
+              "withdrawal",
+
+            amount:
+              data.amount,
+
+            method:
+              data.method,
+
+            accountNumber:
+              data.accountNumber ||
+              null,
+
+            upiId:
+              data.upiId ||
+              null,
+
+            status:
+              "pending",
+
+            beforeWalletBalance:
+              walletBalance,
+
+            afterWalletBalance:
+              updatedWalletBalance,
+
+            createdAt:
+              Timestamp.now()
+          }
+        );
+
+        const walletTxRef =
+          doc(
+            collection(
+              db,
+              "users",
+              data.userId,
+              "walletTransactions"
+            )
+          );
+
+        transaction.set(
+          walletTxRef,
+          {
+            transactionId:
+              walletTxRef.id,
+
+            userId:
+              data.userId,
+
+            title:
+              "Withdrawal Request",
+
+            type:
+              "withdrawal",
+
+            amount:
+              data.amount,
+
+            status:
+              "pending",
+
+            walletType:
+              "walletBalance",
+
+            destinationWallet:
+              "bank_account",
+
+            beforeWalletBalance:
+              walletBalance,
+
+            afterWalletBalance:
+              updatedWalletBalance,
+
+            createdAt:
+              Timestamp.now()
+          }
+        );
       }
     );
 
     return {
-      success: true
+      success: true,
+
+      message:
+        "Withdrawal request submitted successfully"
     };
 
-  } catch (error) {
+  } catch (error: any) {
 
-    console.error(error);
+    console.error(
+      "Withdrawal Error:",
+      error
+    );
 
     return {
-      success: false
+      success: false,
+
+      message:
+        error?.message ||
+        "Withdrawal request failed"
     };
   }
 }
