@@ -3,132 +3,97 @@ import {
   getDoc,
   updateDoc,
   addDoc,
-  collection
+  collection,
+  serverTimestamp
 } from "firebase/firestore";
 
 import { db } from "@/firebase/config";
 
 import { distributeLevelCommission } from "../distributeLevelCommission";
-
 import { creditWallet } from "../creditWallet";
 
 export async function completeOrderAndDistributeCommission(
   orderId: string
 ) {
   try {
-    /* =========================
-       ORDER REF
-    ========================= */
+    const orderRef = doc(db, "orders", orderId);
 
-    const orderRef = doc(
-      db,
-      "orders",
-      orderId
-    );
-
-    const orderSnap =
-      await getDoc(orderRef);
+    const orderSnap = await getDoc(orderRef);
 
     if (!orderSnap.exists()) {
-      throw new Error(
-        "Order not found"
-      );
+      throw new Error("Order not found");
     }
 
-    const order =
-      orderSnap.data();
+    const order = orderSnap.data();
 
-    /* =========================
-       ALREADY COMPLETED
-    ========================= */
-
-    if (
-      order.status ===
-      "completed"
-    ) {
+    if (order.status === "completed") {
       return {
         success: false,
-        message:
-          "Order already completed"
+        message: "Order already completed"
       };
     }
 
-    /* =========================
-       UPDATE ORDER
-    ========================= */
+    if (order.commissionDistributed === true) {
+      return {
+        success: false,
+        message: "Commission already distributed"
+      };
+    }
 
-    await updateDoc(
-      orderRef,
-      {
-        status: "completed",
-        completedAt:
-          Date.now()
-      }
-    );
+    const userId = order.userId;
+    const amount = Number(order.totalAmount || 0);
 
-    /* =========================
-       ORDER DETAILS
-    ========================= */
+    if (!userId || amount <= 0) {
+      throw new Error("Invalid order data");
+    }
 
-    const userId =
-      order.userId;
+    const cashback = Math.floor(amount * 0.05);
 
-    const amount =
-      order.totalAmount || 0;
-
-    const cashback =
-      Math.floor(
-        amount * 0.05
-      );
-
-    /* =========================
-       CREDIT CASHBACK
-    ========================= */
+    await updateDoc(orderRef, {
+      status: "completed",
+      commissionDistributed: true,
+      completedAt: serverTimestamp()
+    });
 
     await creditWallet({
       uid: userId,
       amount: cashback,
-      incomeType:
-        "rewardIncome"
+      incomeType: "cashback"
     });
-
-    /* =========================
-       MLM COMMISSION
-    ========================= */
 
     await distributeLevelCommission({
-      userId: userId,
-      amount: amount,
-      orderId: orderId
+      userId,
+      amount,
+      orderId
     });
 
-    /* =========================
-       SAVE HISTORY
-    ========================= */
-
     await addDoc(
-      collection(
-        db,
-        "orderIncomeHistory"
-      ),
+      collection(db, "orderIncomeHistory"),
       {
         userId,
         orderId,
         amount,
         cashback,
-        createdAt:
-          Date.now()
+        createdAt: serverTimestamp()
       }
     );
 
     return {
-      success: true
+      success: true,
+      cashback,
+      amount
     };
-  } catch (error) {
-    console.error(error);
+  } catch (error: any) {
+    console.error(
+      "completeOrderAndDistributeCommission Error:",
+      error
+    );
 
     return {
-      success: false
+      success: false,
+      message:
+        error?.message ||
+        "Failed to complete order"
     };
   }
 }
