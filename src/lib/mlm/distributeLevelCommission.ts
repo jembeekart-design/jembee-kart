@@ -6,7 +6,6 @@ import {
 } from "firebase/firestore";
 
 import { db } from "@/firebase/config";
-
 import { creditWallet } from "./creditWallet";
 
 interface DistributeLevelCommissionData {
@@ -19,10 +18,9 @@ export async function distributeLevelCommission(
   data: DistributeLevelCommissionData
 ) {
   try {
-
-    /* ======================================================
+    /* =========================
        VALIDATION
-    ====================================================== */
+    ========================= */
 
     if (!data.userId) {
       return {
@@ -48,73 +46,78 @@ export async function distributeLevelCommission(
       };
     }
 
-    /* ======================================================
-       USER
-    ====================================================== */
+    /* =========================
+       BUYER
+    ========================= */
 
-    const userRef = doc(
+    const buyerRef = doc(
       db,
       "users",
       data.userId
     );
 
-    const userSnap =
-      await getDoc(userRef);
+    const buyerSnap =
+      await getDoc(buyerRef);
 
-    if (!userSnap.exists()) {
+    if (!buyerSnap.exists()) {
       return {
         success: false,
         message: "User Not Found"
       };
     }
 
-    const userData =
-      userSnap.data();
+    const buyerData =
+      buyerSnap.data();
 
     let sponsorId =
-      userData.sponsorId;
+      buyerData.sponsorId || "";
 
-    /* ======================================================
+    /* =========================
        MLM PLAN
-    ====================================================== */
+       FIXED COMMISSION
+    ========================= */
 
     const levels = [
       {
         level: 1,
-        percent: 10,
+        amount: 20,
         incomeType:
           "directIncome" as const
       },
       {
         level: 2,
-        percent: 5,
+        amount: 10,
         incomeType:
           "levelIncome" as const
       },
       {
         level: 3,
-        percent: 2,
+        amount: 5,
+        incomeType:
+          "levelIncome" as const
+      },
+      {
+        level: 4,
+        amount: 5,
         incomeType:
           "levelIncome" as const
       }
     ];
 
-    /* ======================================================
-       LOOP LEVELS
-    ====================================================== */
+    /* =========================
+       DISTRIBUTE
+    ========================= */
 
-    for (const config of levels) {
-
+    for (const levelConfig of levels) {
       if (!sponsorId) {
         break;
       }
 
-      const sponsorRef =
-        doc(
-          db,
-          "users",
-          sponsorId
-        );
+      const sponsorRef = doc(
+        db,
+        "users",
+        sponsorId
+      );
 
       const sponsorSnap =
         await getDoc(
@@ -128,12 +131,12 @@ export async function distributeLevelCommission(
       const sponsorData =
         sponsorSnap.data();
 
-      /* ======================================================
+      /* =========================
          DUPLICATE CHECK
-      ====================================================== */
+      ========================= */
 
       const commissionLogId =
-        `${data.orderId}_L${config.level}`;
+        `${data.orderId}_LEVEL_${levelConfig.level}`;
 
       const commissionLogRef =
         doc(
@@ -147,86 +150,68 @@ export async function distributeLevelCommission(
           commissionLogRef
         );
 
-      if (
-        existingLog.exists()
-      ) {
-
+      if (existingLog.exists()) {
         sponsorId =
-          sponsorData.sponsorId;
+          sponsorData.sponsorId || "";
 
         continue;
       }
 
-      /* ======================================================
+      /* =========================
          ELIGIBILITY CHECK
-      ====================================================== */
+      ========================= */
 
-      const isEligible =
-        sponsorData.mlmActive &&
-        sponsorData.joinedPackage;
+      const isActivePartner =
+        sponsorData.isActivePartner === true;
 
-      if (isEligible) {
+      if (isActivePartner) {
+        await creditWallet({
+          uid: sponsorId,
+          amount:
+            levelConfig.amount,
+          incomeType:
+            levelConfig.incomeType
+        });
 
-        const commission =
-          Math.floor(
-            (
-              data.amount *
-              config.percent
-            ) / 100
-          );
+        await setDoc(
+          commissionLogRef,
+          {
+            logId:
+              commissionLogId,
 
-        if (
-          commission > 0
-        ) {
+            orderId:
+              data.orderId,
 
-          await creditWallet({
-            uid:
+            fromUserId:
+              data.userId,
+
+            userId:
               sponsorId,
 
+            level:
+              levelConfig.level,
+
             amount:
-              commission,
+              levelConfig.amount,
 
             incomeType:
-              config.incomeType
-          });
+              levelConfig.incomeType,
 
-          await setDoc(
-            commissionLogRef,
-            {
-              logId:
-                commissionLogId,
+            status:
+              "success",
 
-              userId:
-                sponsorId,
-
-              fromUserId:
-                data.userId,
-
-              orderId:
-                data.orderId,
-
-              level:
-                config.level,
-
-              amount:
-                commission,
-
-              incomeType:
-                config.incomeType,
-
-              createdAt:
-                serverTimestamp()
-            }
-          );
-        }
+            createdAt:
+              serverTimestamp()
+          }
+        );
       }
 
-      /* ======================================================
+      /* =========================
          NEXT SPONSOR
-      ====================================================== */
+      ========================= */
 
       sponsorId =
-        sponsorData.sponsorId;
+        sponsorData.sponsorId || "";
     }
 
     return {
@@ -234,9 +219,7 @@ export async function distributeLevelCommission(
       message:
         "Commission Distributed Successfully"
     };
-
   } catch (error) {
-
     console.error(
       "DISTRIBUTE LEVEL COMMISSION ERROR:",
       error
