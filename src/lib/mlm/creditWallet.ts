@@ -3,23 +3,20 @@ import {
   getDoc,
   increment,
   serverTimestamp,
-  setDoc,
-  updateDoc
+  updateDoc,
+  setDoc
 } from "firebase/firestore";
 
 import { db } from "@/firebase/config";
-
 import { createNotification } from "./createNotification";
 
 interface CreditWalletData {
   uid: string;
-
   amount: number;
-
   incomeType:
+    | "cashback"
     | "directIncome"
     | "levelIncome"
-    | "rewardIncome"
     | "rankIncome";
 }
 
@@ -27,7 +24,6 @@ export async function creditWallet(
   data: CreditWalletData
 ) {
   try {
-
     /* =========================
        VALIDATION
     ========================= */
@@ -50,7 +46,7 @@ export async function creditWallet(
     }
 
     /* =========================
-       USER
+       USER CHECK
     ========================= */
 
     const userRef = doc(
@@ -59,14 +55,119 @@ export async function creditWallet(
       data.uid
     );
 
-    const userSnapshot =
+    const userSnap =
       await getDoc(userRef);
 
-    if (!userSnapshot.exists()) {
+    if (!userSnap.exists()) {
       return {
         success: false,
         message: "User Not Found"
       };
+    }
+
+    /* =========================
+       WALLET UPDATE DATA
+    ========================= */
+
+    const updateData: Record<
+      string,
+      any
+    > = {
+      totalIncome:
+        increment(data.amount),
+
+      todayIncome:
+        increment(data.amount),
+
+      updatedAt:
+        serverTimestamp()
+    };
+
+    let walletType =
+      "walletBalance";
+
+    let title =
+      "Income Credited";
+
+    /* =========================
+       CASHBACK
+    ========================= */
+
+    if (
+      data.incomeType ===
+      "cashback"
+    ) {
+      updateData.cashbackWallet =
+        increment(data.amount);
+
+      walletType =
+        "cashbackWallet";
+
+      title =
+        "Cashback Credited";
+    }
+
+    /* =========================
+       DIRECT INCOME
+    ========================= */
+
+    if (
+      data.incomeType ===
+      "directIncome"
+    ) {
+      updateData.commissionWallet =
+        increment(data.amount);
+
+      updateData.walletBalance =
+        increment(data.amount);
+
+      walletType =
+        "commissionWallet";
+
+      title =
+        "Direct Income Credited";
+    }
+
+    /* =========================
+       LEVEL INCOME
+    ========================= */
+
+    if (
+      data.incomeType ===
+      "levelIncome"
+    ) {
+      updateData.commissionWallet =
+        increment(data.amount);
+
+      updateData.walletBalance =
+        increment(data.amount);
+
+      walletType =
+        "commissionWallet";
+
+      title =
+        "Level Income Credited";
+    }
+
+    /* =========================
+       RANK INCOME
+    ========================= */
+
+    if (
+      data.incomeType ===
+      "rankIncome"
+    ) {
+      updateData.rewardWallet =
+        increment(data.amount);
+
+      updateData.walletBalance =
+        increment(data.amount);
+
+      walletType =
+        "rewardWallet";
+
+      title =
+        "Rank Reward Credited";
     }
 
     /* =========================
@@ -75,120 +176,72 @@ export async function creditWallet(
 
     await updateDoc(
       userRef,
-      {
-        walletBalance:
-          increment(data.amount),
-
-        totalIncome:
-          increment(data.amount),
-
-        [data.incomeType]:
-          increment(data.amount),
-
-        updatedAt:
-          serverTimestamp()
-      }
+      updateData
     );
 
     /* =========================
-       UPDATE WALLET
+       WALLET TRANSACTION
     ========================= */
 
-    await setDoc(
-      doc(
-        db,
-        "wallets",
-        data.uid
-      ),
-      {
-        uid:
-          data.uid,
-
-        totalBalance:
-          increment(data.amount),
-
-        withdrawableBalance:
-          increment(data.amount),
-
-        totalEarnings:
-          increment(data.amount),
-
-        updatedAt:
-          serverTimestamp()
-      },
-      {
-        merge: true
-      }
+    const txRef = doc(
+      db,
+      "users",
+      data.uid,
+      "walletTransactions",
+      crypto.randomUUID()
     );
 
-    /* =========================
-       TRANSACTION
-    ========================= */
+    await setDoc(txRef, {
+      transactionId: txRef.id,
 
-    const transactionId =
-      crypto.randomUUID();
+      userId: data.uid,
 
-    await setDoc(
-      doc(
-        db,
-        "transactions",
-        transactionId
-      ),
-      {
-        transactionId,
+      title,
 
-        uid:
-          data.uid,
+      amount: data.amount,
 
-        amount:
-          data.amount,
+      type: data.incomeType,
 
-        type:
-          "credit",
+      status: "success",
 
-        incomeType:
-          data.incomeType,
+      walletType,
 
-        status:
-          "completed",
-
-        createdAt:
-          serverTimestamp()
-      }
-    );
+      createdAt:
+        serverTimestamp()
+    });
 
     /* =========================
        NOTIFICATION
     ========================= */
 
     await createNotification({
-      userId:
-        data.uid,
+      userId: data.uid,
 
-      title:
-        "Income Credited",
+      title,
 
       message:
-        `₹${data.amount} has been credited to your wallet.`,
+        `₹${data.amount} credited successfully.`,
 
       type:
-        "commission"
+        data.incomeType ===
+        "rankIncome"
+          ? "reward"
+          : "commission"
     });
 
     return {
       success: true
     };
-
   } catch (error) {
-
     console.error(
-      "Wallet credit error:",
+      "creditWallet Error:",
       error
     );
 
     return {
       success: false,
-      error
+      message:
+        "Wallet credit failed"
     };
   }
 }
