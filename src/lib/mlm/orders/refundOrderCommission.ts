@@ -1,123 +1,218 @@
 import {
-  doc,
-  getDoc,
-  increment,
-  updateDoc
+doc,
+getDoc,
+updateDoc,
+increment,
+setDoc,
+serverTimestamp,
+collection
 } from "firebase/firestore";
 
-import { db }
-from "@/firebase/config";
+import { db } from "@/firebase/config";
 
 interface RefundOrderCommissionData {
-  orderId: string;
+orderId: string;
 }
 
-export async function
-refundOrderCommission(
-  data:
-  RefundOrderCommissionData
+export async function refundOrderCommission(
+data: RefundOrderCommissionData
 ) {
+try {
+const orderRef = doc(
+db,
+"orders",
+data.orderId
+);
 
-  try {
+const orderSnap =
+  await getDoc(orderRef);
 
-    const orderRef =
-      doc(
-        db,
-        "orders",
-        data.orderId
-      );
+if (!orderSnap.exists()) {
+  return {
+    success: false,
+    message: "Order not found"
+  };
+}
 
-    const orderSnap =
-      await getDoc(
-        orderRef
-      );
+const order =
+  orderSnap.data();
 
-    if (
-      !orderSnap.exists()
-    ) {
+if (
+  order.commissionRefunded === true
+) {
+  return {
+    success: false,
+    message:
+      "Commission already refunded"
+  };
+}
 
-      return {
-        success: false
-      };
-    }
+const buyerId =
+  order.userId;
 
-    const orderData =
-      orderSnap.data();
+const amount =
+  Number(
+    order.totalAmount || 0
+  );
 
-    let currentUserId =
-      orderData.userId;
+/* =========================
+   MLM REVERSE
+========================= */
 
-    const commission =
-      orderData.totalAmount *
-      0.1;
+const levels = [
+  { level: 1, amount: 20 },
+  { level: 2, amount: 10 },
+  { level: 3, amount: 5 },
+  { level: 4, amount: 5 }
+];
 
-    for (
-      let level = 0;
-      level < 10;
-      level++
-    ) {
+let currentUserId =
+  buyerId;
 
-      const userRef =
-        doc(
-          db,
-          "users",
-          currentUserId
-        );
+for (const item of levels) {
 
-      const userSnap =
-        await getDoc(
-          userRef
-        );
+  const userRef = doc(
+    db,
+    "users",
+    currentUserId
+  );
 
-      if (
-        !userSnap.exists()
-      ) {
-        break;
-      }
+  const userSnap =
+    await getDoc(userRef);
 
-      const userData =
-        userSnap.data();
-
-      const sponsorId =
-        userData.sponsorId;
-
-      if (!sponsorId) {
-        break;
-      }
-
-      await updateDoc(
-        doc(
-          db,
-          "users",
-          sponsorId
-        ),
-        {
-          walletBalance:
-            increment(
-              -commission
-            ),
-
-          totalIncome:
-            increment(
-              -commission
-            )
-        }
-      );
-
-      currentUserId =
-        sponsorId;
-    }
-
-    return {
-      success: true
-    };
-
-  } catch (error) {
-
-    console.error(error);
-
-    return {
-      success: false
-    };
+  if (!userSnap.exists()) {
+    break;
   }
+
+  const userData =
+    userSnap.data();
+
+  const sponsorId =
+    userData.sponsorId;
+
+  if (!sponsorId) {
+    break;
+  }
+
+  await updateDoc(
+    doc(
+      db,
+      "users",
+      sponsorId
+    ),
+    {
+      walletBalance:
+        increment(
+          -item.amount
+        ),
+
+      commissionWallet:
+        increment(
+          -item.amount
+        ),
+
+      totalIncome:
+        increment(
+          -item.amount
+        )
+    }
+  );
+
+  const txRef = doc(
+    collection(
+      db,
+      "users",
+      sponsorId,
+      "walletTransactions"
+    )
+  );
+
+  await setDoc(
+    txRef,
+    {
+      transactionId:
+        txRef.id,
+
+      userId:
+        sponsorId,
+
+      orderId:
+        data.orderId,
+
+      amount:
+        item.amount,
+
+      type:
+        "commission_refund",
+
+      status:
+        "success",
+
+      title:
+        `Level ${item.level} Commission Reversed`,
+
+      createdAt:
+        serverTimestamp()
+    }
+  );
+
+  currentUserId =
+    sponsorId;
+}
+
+/* =========================
+   CASHBACK REVERSE
+========================= */
+
+if (amount >= 1000) {
+
+  await updateDoc(
+    doc(
+      db,
+      "users",
+      buyerId
+    ),
+    {
+      cashbackWallet:
+        increment(-50),
+
+      totalIncome:
+        increment(-50)
+    }
+  );
+}
+
+/* =========================
+   ORDER UPDATE
+========================= */
+
+await updateDoc(
+  orderRef,
+  {
+    commissionRefunded:
+      true,
+
+    refundedAt:
+      serverTimestamp()
+  }
+);
+
+return {
+  success: true
+};
+
+} catch (error) {
+
+console.error(
+  "refundOrderCommission Error:",
+  error
+);
+
+return {
+  success: false,
+  message:
+    "Refund failed"
+};
+
+}
 }
