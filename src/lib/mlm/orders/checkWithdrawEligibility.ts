@@ -3,127 +3,193 @@ import {
   getDoc
 } from "firebase/firestore";
 
-import { db }
-from "@/firebase/config";
+import { db } from "@/firebase/config";
 
 interface CheckWithdrawEligibilityData {
   userId: string;
-
   amount: number;
 }
 
-export async function
-checkWithdrawEligibility(
-  data:
-  CheckWithdrawEligibilityData
+export async function checkWithdrawEligibility(
+  data: CheckWithdrawEligibilityData
 ) {
-
   try {
+    /* =========================
+       VALIDATION
+    ========================= */
 
-    const userRef =
-      doc(
-        db,
-        "users",
-        data.userId
-      );
-
-    const userSnap =
-      await getDoc(
-        userRef
-      );
-
-    if (
-      !userSnap.exists()
-    ) {
-
+    if (!data.userId?.trim()) {
       return {
         eligible: false,
+        reason: "User ID Required"
+      };
+    }
 
-        reason:
-          "User not found"
+    if (
+      typeof data.amount !== "number" ||
+      isNaN(data.amount) ||
+      data.amount <= 0
+    ) {
+      return {
+        eligible: false,
+        reason: "Invalid withdrawal amount"
+      };
+    }
+
+    /* =========================
+       USER
+    ========================= */
+
+    const userRef = doc(
+      db,
+      "users",
+      data.userId
+    );
+
+    const userSnap =
+      await getDoc(userRef);
+
+    if (!userSnap.exists()) {
+      return {
+        eligible: false,
+        reason: "User not found"
       };
     }
 
     const userData =
       userSnap.data();
 
+    const walletBalance =
+      typeof userData.walletBalance ===
+      "number"
+        ? userData.walletBalance
+        : 0;
+
+    const pendingWithdrawal =
+      typeof userData.pendingWithdrawal ===
+      "number"
+        ? userData.pendingWithdrawal
+        : 0;
+
+    /* =========================
+       APP CONFIG
+    ========================= */
+
+    let minimumWithdraw =
+      100;
+
+    try {
+      const configRef = doc(
+        db,
+        "settings",
+        "appConfig"
+      );
+
+      const configSnap =
+        await getDoc(configRef);
+
+      if (
+        configSnap.exists()
+      ) {
+        const configData =
+          configSnap.data();
+
+        if (
+          typeof configData.minimumWithdrawAmount ===
+          "number"
+        ) {
+          minimumWithdraw =
+            configData.minimumWithdrawAmount;
+        }
+      }
+    } catch {
+      // fallback to default ₹100
+    }
+
     /* =========================
        BLOCKED USER
     ========================= */
 
     if (
-      userData.isBlocked
+      userData.isBlocked === true
     ) {
-
       return {
         eligible: false,
-
-        reason:
-          "User blocked"
+        reason: "User blocked"
       };
     }
 
     /* =========================
-       KYC CHECK
+       ACTIVE PARTNER
     ========================= */
 
     if (
-      !userData.kycApproved
+      userData.isActivePartner !==
+      true
     ) {
-
       return {
         eligible: false,
-
         reason:
-          "KYC not approved"
+          "Partner account inactive"
       };
     }
 
     /* =========================
-       MINIMUM BALANCE
+       MINIMUM WITHDRAW
     ========================= */
 
     if (
-      userData.walletBalance <
+      data.amount <
+      minimumWithdraw
+    ) {
+      return {
+        eligible: false,
+        reason:
+          `Minimum withdrawal amount is ₹${minimumWithdraw}`
+      };
+    }
+
+    /* =========================
+       AVAILABLE BALANCE
+    ========================= */
+
+    const availableBalance =
+      walletBalance;
+
+    if (
+      availableBalance <
       data.amount
     ) {
-
       return {
         eligible: false,
-
         reason:
           "Insufficient balance"
       };
     }
 
     /* =========================
-       ACCOUNT STATUS
+       SUCCESS
     ========================= */
 
-    if (
-      userData.accountStatus !==
-      "active"
-    ) {
-
-      return {
-        eligible: false,
-
-        reason:
-          "Inactive account"
-      };
-    }
-
     return {
-      eligible: true
+      eligible: true,
+
+      walletBalance,
+
+      availableBalance,
+
+      pendingWithdrawal,
+
+      minimumWithdraw
     };
-
   } catch (error) {
-
-    console.error(error);
+    console.error(
+      "checkWithdrawEligibility Error:",
+      error
+    );
 
     return {
       eligible: false,
-
       reason:
         "Server error"
     };
