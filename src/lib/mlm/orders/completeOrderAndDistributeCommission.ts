@@ -10,7 +10,7 @@ collection
 
 import { db } from "@/firebase/config";
 
-import { createNotification } from "./createNotification";
+import { createNotification } from "../createNotification";
 
 interface CreditWalletData {
 uid: string;
