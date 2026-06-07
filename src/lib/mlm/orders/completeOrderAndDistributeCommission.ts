@@ -1,99 +1,264 @@
 import {
-  doc,
-  getDoc,
-  updateDoc,
-  addDoc,
-  collection,
-  serverTimestamp
+doc,
+getDoc,
+updateDoc,
+increment,
+serverTimestamp,
+setDoc,
+collection
 } from "firebase/firestore";
 
 import { db } from "@/firebase/config";
 
-import { distributeLevelCommission } from "../distributeLevelCommission";
-import { creditWallet } from "../creditWallet";
+import { createNotification } from "./createNotification";
 
-export async function completeOrderAndDistributeCommission(
-  orderId: string
+interface CreditWalletData {
+uid: string;
+
+amount: number;
+
+incomeType:
+| "cashback"
+| "directIncome"
+| "levelIncome"
+| "rankIncome";
+}
+
+export async function creditWallet(
+data: CreditWalletData
 ) {
-  try {
-    const orderRef = doc(db, "orders", orderId);
+try {
+/* =========================
+VALIDATION
+========================= */
 
-    const orderSnap = await getDoc(orderRef);
+if (!data.uid?.trim()) {
+  return {
+    success: false,
+    message: "User ID Required"
+  };
+}
 
-    if (!orderSnap.exists()) {
-      throw new Error("Order not found");
-    }
+if (
+  !data.amount ||
+  data.amount <= 0
+) {
+  return {
+    success: false,
+    message: "Invalid Amount"
+  };
+}
 
-    const order = orderSnap.data();
+/* =========================
+   USER CHECK
+========================= */
 
-    if (order.status === "completed") {
-      return {
-        success: false,
-        message: "Order already completed"
-      };
-    }
+const userRef = doc(
+  db,
+  "users",
+  data.uid
+);
 
-    if (order.commissionDistributed === true) {
-      return {
-        success: false,
-        message: "Commission already distributed"
-      };
-    }
+const userSnap =
+  await getDoc(userRef);
 
-    const userId = order.userId;
-    const amount = Number(order.totalAmount || 0);
+if (!userSnap.exists()) {
+  return {
+    success: false,
+    message: "User Not Found"
+  };
+}
 
-    if (!userId || amount <= 0) {
-      throw new Error("Invalid order data");
-    }
+/* =========================
+   UPDATE DATA
+========================= */
 
-    const cashback = Math.floor(amount * 0.05);
+const updateData: Record<
+  string,
+  any
+> = {
+  totalIncome:
+    increment(data.amount),
 
-    await updateDoc(orderRef, {
-      status: "completed",
-      commissionDistributed: true,
-      completedAt: serverTimestamp()
-    });
+  todayIncome:
+    increment(data.amount),
 
-    await creditWallet({
-      uid: userId,
-      amount: cashback,
-      incomeType: "cashback"
-    });
+  updatedAt:
+    serverTimestamp()
+};
 
-    await distributeLevelCommission({
-      userId,
-      amount,
-      orderId
-    });
+let walletType =
+  "";
 
-    await addDoc(
-      collection(db, "orderIncomeHistory"),
-      {
-        userId,
-        orderId,
-        amount,
-        cashback,
-        createdAt: serverTimestamp()
-      }
-    );
+let title =
+  "";
 
-    return {
-      success: true,
-      cashback,
-      amount
-    };
-  } catch (error: any) {
-    console.error(
-      "completeOrderAndDistributeCommission Error:",
-      error
-    );
+/* =========================
+   CASHBACK
+========================= */
 
-    return {
-      success: false,
-      message:
-        error?.message ||
-        "Failed to complete order"
-    };
+if (
+  data.incomeType ===
+  "cashback"
+) {
+  updateData.cashbackWallet =
+    increment(data.amount);
+
+  walletType =
+    "cashbackWallet";
+
+  title =
+    "Cashback Credited";
+}
+
+/* =========================
+   DIRECT INCOME
+========================= */
+
+if (
+  data.incomeType ===
+  "directIncome"
+) {
+  updateData.commissionWallet =
+    increment(data.amount);
+
+  updateData.walletBalance =
+    increment(data.amount);
+
+  walletType =
+    "commissionWallet";
+
+  title =
+    "Direct Income Credited";
+}
+
+/* =========================
+   LEVEL INCOME
+========================= */
+
+if (
+  data.incomeType ===
+  "levelIncome"
+) {
+  updateData.commissionWallet =
+    increment(data.amount);
+
+  updateData.walletBalance =
+    increment(data.amount);
+
+  walletType =
+    "commissionWallet";
+
+  title =
+    "Level Income Credited";
+}
+
+/* =========================
+   RANK INCOME
+========================= */
+
+if (
+  data.incomeType ===
+  "rankIncome"
+) {
+  updateData.rewardWallet =
+    increment(data.amount);
+
+  updateData.walletBalance =
+    increment(data.amount);
+
+  walletType =
+    "rewardWallet";
+
+  title =
+    "Rank Reward Credited";
+}
+
+/* =========================
+   UPDATE USER
+========================= */
+
+await updateDoc(
+  userRef,
+  updateData
+);
+
+/* =========================
+   WALLET TRANSACTION
+========================= */
+
+const txRef = doc(
+  collection(
+    db,
+    "users",
+    data.uid,
+    "walletTransactions"
+  )
+);
+
+await setDoc(
+  txRef,
+  {
+    transactionId:
+      txRef.id,
+
+    userId:
+      data.uid,
+
+    title,
+
+    amount:
+      data.amount,
+
+    type:
+      data.incomeType,
+
+    status:
+      "success",
+
+    walletType,
+
+    createdAt:
+      serverTimestamp()
   }
+);
+
+/* =========================
+   NOTIFICATION
+========================= */
+
+await createNotification({
+  userId:
+    data.uid,
+
+  title,
+
+  message:
+    `₹${data.amount} credited successfully.`,
+
+  type:
+    data.incomeType ===
+    "rankIncome"
+      ? "reward"
+      : "commission"
+});
+
+return {
+  success: true
+};
+
+} catch (error) {
+
+console.error(
+  "creditWallet Error:",
+  error
+);
+
+return {
+  success: false,
+  message:
+    "Wallet credit failed"
+};
+
+}
 }
