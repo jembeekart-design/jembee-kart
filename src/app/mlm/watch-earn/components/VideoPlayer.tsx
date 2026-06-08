@@ -3,128 +3,72 @@
 import {
   useEffect,
   useRef,
-  useState
+  useState,
 } from "react";
 
-import RewardProgressBar
-from "./RewardProgressBar";
-
-import LiveCoinsAnimation
-from "./LiveCoinsAnimation";
+import RewardProgressBar from "./RewardProgressBar";
+import LiveCoinsAnimation from "./LiveCoinsAnimation";
 
 interface VideoPlayerProps {
-
   videoUrl: string;
-
   rewardCoins: number;
-
   watchSeconds: number;
-
 }
 
-export default function
-VideoPlayer({
+export default function VideoPlayer({
   videoUrl,
   rewardCoins,
-  watchSeconds
+  watchSeconds,
 }: VideoPlayerProps) {
-
   const videoRef =
-    useRef<
-      HTMLVideoElement
-    >(null);
+    useRef<HTMLVideoElement>(null);
 
-  const [
-    progress,
-    setProgress
-  ] = useState(0);
+  const [progress, setProgress] =
+    useState(0);
 
-  const [
-    rewarded,
-    setRewarded
-  ] = useState(false);
+  const [rewarded, setRewarded] =
+    useState(false);
 
-  const [
-    showCoins,
-    setShowCoins
-  ] = useState(false);
+  const [showCoins, setShowCoins] =
+    useState(false);
 
   useEffect(() => {
+    let interval: NodeJS.Timeout;
 
-    let interval:
-      NodeJS.Timeout;
+    if (videoRef.current) {
+      interval = setInterval(() => {
+        const current =
+          videoRef.current?.currentTime || 0;
 
-    if (
-      videoRef.current
-    ) {
+        const percent =
+          (current / watchSeconds) * 100;
 
-      interval =
-        setInterval(() => {
+        setProgress(
+          Math.min(percent, 100)
+        );
 
-          const current =
-            videoRef.current
-              ?.currentTime || 0;
+        if (
+          current >= watchSeconds &&
+          !rewarded
+        ) {
+          setRewarded(true);
+          setShowCoins(true);
 
-          const percent =
-            (
-              current /
-              watchSeconds
-            ) * 100;
-
-          setProgress(
-            Math.min(
-              percent,
-              100
-            )
-          );
-
-          /* =====================
-             REWARD
-          ===================== */
-
-          if (
-            current >=
-              watchSeconds &&
-            !rewarded
-          ) {
-
-            setRewarded(
-              true
-            );
-
-            setShowCoins(
-              true
-            );
-
-            setTimeout(
-              () => {
-
-                setShowCoins(
-                  false
-                );
-
-              },
-              3000
-            );
-          }
-
-        }, 500);
+          setTimeout(() => {
+            setShowCoins(false);
+          }, 3000);
+        }
+      }, 500);
     }
 
     return () => {
-
-      clearInterval(
-        interval
-      );
+      if (interval) {
+        clearInterval(interval);
+      }
     };
-
-  }, [
-    rewarded,
-    watchSeconds
-  ]);
+  }, [rewarded, watchSeconds]);
 
   return (
-
     <div
       className="
         relative
@@ -133,22 +77,15 @@ VideoPlayer({
         overflow-hidden
       "
     >
-
       {/* VIDEO */}
 
       <video
         ref={videoRef}
-
         src={videoUrl}
-
         autoPlay
-
         muted
-
         loop
-
         playsInline
-
         className="
           h-full
           w-full
@@ -169,11 +106,20 @@ VideoPlayer({
         "
       />
 
-      {/* PROGRESS */}
+      {/* REWARD PROGRESS */}
 
       <RewardProgressBar
-        progress={progress}
-        coins={rewardCoins}
+        watchedVideos={Math.floor(progress)}
+        requiredVideos={100}
+        qualifiedSales={0}
+        requiredSales={1}
+        lockedReward={rewardCoins}
+        cycleNumber={1}
+        status={
+          rewarded
+            ? "completed"
+            : "active"
+        }
       />
 
       {/* LIVE COINS */}
@@ -183,10 +129,9 @@ VideoPlayer({
         coins={rewardCoins}
       />
 
-      {/* CLAIMED */}
+      {/* REWARD CLAIMED */}
 
       {rewarded && (
-
         <div
           className="
             absolute
@@ -204,13 +149,9 @@ VideoPlayer({
             shadow-2xl
           "
         >
-
           Reward Claimed 🎉
-
         </div>
-
       )}
-
     </div>
   );
 }
