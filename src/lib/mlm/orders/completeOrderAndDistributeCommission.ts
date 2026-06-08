@@ -18,6 +18,17 @@ export async function completeOrderAndDistributeCommission(
 ) {
   try {
     /* =========================
+       VALIDATION
+    ========================= */
+
+    if (!orderId?.trim()) {
+      return {
+        success: false,
+        message: "Order ID Required",
+      };
+    }
+
+    /* =========================
        ORDER
     ========================= */
 
@@ -31,44 +42,43 @@ export async function completeOrderAndDistributeCommission(
       await getDoc(orderRef);
 
     if (!orderSnap.exists()) {
-      throw new Error(
-        "Order not found"
-      );
+      return {
+        success: false,
+        message: "Order not found",
+      };
     }
 
     const order =
       orderSnap.data();
 
     /* =========================
-       ALREADY COMPLETED
+       DUPLICATE PROTECTION
     ========================= */
 
     if (
-      order.status ===
-      "completed"
+      order.commissionDistributed ===
+      true
     ) {
       return {
         success: false,
         message:
-          "Order already completed",
+          "Commission already distributed",
       };
     }
-
-    /* =========================
-       COMPLETE ORDER
-    ========================= */
-
-    await updateDoc(orderRef, {
-      status: "completed",
-      completedAt:
-        serverTimestamp(),
-    });
 
     const userId =
       order.userId;
 
-    const amount =
-      order.totalAmount || 0;
+    const amount = Number(
+      order.totalAmount || 0
+    );
+
+    if (!userId) {
+      return {
+        success: false,
+        message: "Invalid Order User",
+      };
+    }
 
     /* =========================
        CASHBACK
@@ -80,26 +90,48 @@ export async function completeOrderAndDistributeCommission(
       );
 
     if (cashback > 0) {
-      await creditWallet({
-        uid: userId,
-        amount: cashback,
-        incomeType:
-          "cashback",
-      });
+      const cashbackResult =
+        await creditWallet({
+          uid: userId,
+          amount: cashback,
+          incomeType:
+            "cashback",
+          transactionId:
+            `CASHBACK_${orderId}`,
+        });
+
+      if (
+        !cashbackResult.success
+      ) {
+        throw new Error(
+          cashbackResult.message ||
+            "Cashback failed"
+        );
+      }
     }
 
     /* =========================
        MLM COMMISSION
     ========================= */
 
-    await distributeLevelCommission({
-      userId,
-      amount,
-      orderId,
-    });
+    const mlmResult =
+      await distributeLevelCommission({
+        userId,
+        amount,
+        orderId,
+      });
+
+    if (
+      !mlmResult.success
+    ) {
+      throw new Error(
+        mlmResult.message ||
+          "MLM distribution failed"
+      );
+    }
 
     /* =========================
-       WATCH REWARD
+       WATCH REWARD FLOW
     ========================= */
 
     const userRef = doc(
@@ -111,13 +143,21 @@ export async function completeOrderAndDistributeCommission(
     const userSnap =
       await getDoc(userRef);
 
+    let rewardUnlocked =
+      false;
+
+    let unlockedAmount =
+      0;
+
     if (userSnap.exists()) {
       const user =
         userSnap.data();
 
       const qualifiedSales =
-        (user.qualifiedSalesCount ||
-          0) + 1;
+        Number(
+          user.qualifiedSalesCount ||
+            0
+        ) + 1;
 
       await updateDoc(userRef, {
         qualifiedSalesCount:
@@ -125,45 +165,70 @@ export async function completeOrderAndDistributeCommission(
       });
 
       const lockedReward =
-        user.currentCycleLockedReward ||
-        0;
+        Number(
+          user.currentCycleLockedReward ||
+            0
+        );
+
+      const cycleStatus =
+        user.currentCycleStatus ||
+        "active";
 
       if (
         qualifiedSales >= 5 &&
-        lockedReward > 0
+        lockedReward > 0 &&
+        cycleStatus ===
+          "pending"
       ) {
-        await creditWallet({
-          uid: userId,
-          amount:
-            lockedReward,
-          incomeType:
-            "watchReward",
-        });
+        const rewardResult =
+          await creditWallet({
+            uid: userId,
 
-        await updateDoc(userRef, {
-          lockedWatchReward: 0,
+            amount:
+              lockedReward,
 
-          currentCycleLockedReward:
-            0,
+            incomeType:
+              "watchReward",
 
-          qualifiedSalesCount: 0,
+            transactionId:
+              `WATCH_UNLOCK_${orderId}`,
+          });
 
-          videoWatchCount: 0,
+        if (
+          rewardResult.success
+        ) {
+          rewardUnlocked =
+            true;
 
-          rewardCycleNumber:
-            increment(1),
+          unlockedAmount =
+            lockedReward;
 
-          currentCycleStatus:
-            "active",
+          await updateDoc(
+            userRef,
+            {
+              lockedWatchReward:
+                0,
 
-          totalUnlockedReward:
-            increment(
-              lockedReward
-            ),
+              currentCycleLockedReward:
+                0,
 
-          updatedAt:
-            serverTimestamp(),
-        });
+              qualifiedSalesCount:
+                0,
+
+              videoWatchCount:
+                0,
+
+              rewardCycleNumber:
+                increment(1),
+
+              currentCycleStatus:
+                "active",
+
+              updatedAt:
+                serverTimestamp(),
+            }
+          );
+        }
       }
     }
 
@@ -182,18 +247,43 @@ export async function completeOrderAndDistributeCommission(
         amount,
         cashback,
 
+        rewardUnlocked,
+
+        unlockedAmount,
+
+        commissionDistributed:
+          true,
+
         status:
-          "completed",
+          "success",
 
         createdAt:
           serverTimestamp(),
       }
     );
 
+    /* =========================
+       ORDER UPDATE
+    ========================= */
+
+    await updateDoc(orderRef, {
+      commissionDistributed:
+        true,
+
+      commissionDistributedAt:
+        serverTimestamp(),
+
+      updatedAt:
+        serverTimestamp(),
+    });
+
     return {
       success: true,
+      cashback,
+      rewardUnlocked,
+      unlockedAmount,
       message:
-        "Order completed successfully",
+        "Commission distributed successfully",
     };
   } catch (error) {
     console.error(
@@ -204,7 +294,9 @@ export async function completeOrderAndDistributeCommission(
     return {
       success: false,
       message:
-        "Failed to complete order",
+        error instanceof Error
+          ? error.message
+          : "Failed to complete order",
     };
   }
 }
