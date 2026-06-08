@@ -1,10 +1,14 @@
 import {
   doc,
-  updateDoc
+  getDoc,
+  serverTimestamp,
+  updateDoc,
 } from "firebase/firestore";
 
-import { db }
-from "@/firebase/config";
+import { db } from "@/firebase/config";
+
+import { completeOrderAndDistributeCommission }
+  from "@/lib/mlm/orders/completeOrderAndDistributeCommission";
 
 interface UpdateOrderStatusData {
   orderId: string;
@@ -17,38 +21,99 @@ interface UpdateOrderStatusData {
     | "cancelled";
 }
 
-export async function
-updateOrderStatus(
+export async function updateOrderStatus(
   data: UpdateOrderStatusData
 ) {
-
   try {
+    /* =========================
+       VALIDATION
+    ========================= */
 
-    await updateDoc(
-      doc(
-        db,
-        "orders",
+    if (!data.orderId?.trim()) {
+      return {
+        success: false,
+        message: "Order ID Required",
+      };
+    }
+
+    /* =========================
+       ORDER CHECK
+    ========================= */
+
+    const orderRef = doc(
+      db,
+      "orders",
+      data.orderId
+    );
+
+    const orderSnap =
+      await getDoc(orderRef);
+
+    if (!orderSnap.exists()) {
+      return {
+        success: false,
+        message: "Order Not Found",
+      };
+    }
+
+    const order =
+      orderSnap.data();
+
+    /* =========================
+       PREVENT DUPLICATE
+       DELIVERED PROCESSING
+    ========================= */
+
+    if (
+      order.status === "delivered" &&
+      data.status === "delivered"
+    ) {
+      return {
+        success: true,
+        message:
+          "Order already delivered",
+      };
+    }
+
+    /* =========================
+       UPDATE STATUS
+    ========================= */
+
+    await updateDoc(orderRef, {
+      status: data.status,
+      updatedAt:
+        serverTimestamp(),
+    });
+
+    /* =========================
+       MLM + WATCH REWARD
+       ONLY ON DELIVERED
+    ========================= */
+
+    if (
+      data.status ===
+      "delivered"
+    ) {
+      await completeOrderAndDistributeCommission(
         data.orderId
-      ),
-      {
-        status:
-          data.status,
+      );
+    }
 
-        updatedAt:
-          Date.now()
-      }
+    return {
+      success: true,
+      message:
+        "Order status updated successfully",
+    };
+  } catch (error) {
+    console.error(
+      "UPDATE ORDER STATUS ERROR:",
+      error
     );
 
     return {
-      success: true
-    };
-
-  } catch (error) {
-
-    console.error(error);
-
-    return {
-      success: false
+      success: false,
+      message:
+        "Failed to update order status",
     };
   }
 }
