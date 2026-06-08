@@ -2,77 +2,119 @@ import {
   addDoc,
   collection,
   doc,
+  getDoc,
   increment,
-  updateDoc
+  serverTimestamp,
+  updateDoc,
 } from "firebase/firestore";
 
-import { db }
-from "@/firebase/config";
+import { db } from "@/firebase/config";
 
 interface CreateWatchRewardData {
   userId: string;
-
   videoId: string;
-
   watchSeconds: number;
-
-  rewardCoins: number;
 }
 
-export async function
-createWatchReward(
-  data:
-  CreateWatchRewardData
+export async function createWatchReward(
+  data: CreateWatchRewardData
 ) {
-
   try {
+    /* =========================
+       MINIMUM WATCH TIME
+    ========================= */
+
+    if (data.watchSeconds < 30) {
+      return {
+        success: false,
+        message: "Minimum 30 seconds watch required",
+      };
+    }
+
+    const userRef = doc(
+      db,
+      "users",
+      data.userId
+    );
+
+    const userSnap = await getDoc(userRef);
+
+    if (!userSnap.exists()) {
+      return {
+        success: false,
+        message: "User not found",
+      };
+    }
+
+    const user = userSnap.data();
+
+    const currentVideoCount =
+      user.videoWatchCount || 0;
+
+    const currentLockedReward =
+      user.lockedWatchReward || 0;
+
+    const currentCycleNumber =
+      user.rewardCycleNumber || 1;
+
+    const currentCycleStatus =
+      user.currentCycleStatus || "active";
 
     /* =========================
-       MIN WATCH LIMIT
+       ONLY ONE ACTIVE CYCLE
     ========================= */
 
     if (
-      data.watchSeconds < 15
+      currentCycleStatus ===
+      "pendingUnlock"
     ) {
-
       return {
         success: false,
-
         message:
-          "Watch more time"
+          "Complete current reward cycle first",
       };
+    }
+
+    const updatedVideoCount =
+      currentVideoCount + 1;
+
+    let lockedRewardToAdd = 0;
+    let nextStatus = "active";
+
+    /* =========================
+       100 VIDEOS = ₹50 LOCKED
+    ========================= */
+
+    if (
+      updatedVideoCount >= 100 &&
+      updatedVideoCount % 100 === 0
+    ) {
+      lockedRewardToAdd = 50;
+      nextStatus = "pendingUnlock";
     }
 
     /* =========================
        UPDATE USER
     ========================= */
 
-    await updateDoc(
-      doc(
-        db,
-        "users",
-        data.userId
-      ),
-      {
-        walletCoins:
-          increment(
-            data.rewardCoins
-          ),
+    await updateDoc(userRef, {
+      videoWatchCount: increment(1),
 
-        totalCoins:
-          increment(
-            data.rewardCoins
-          ),
+      lockedWatchReward:
+        increment(lockedRewardToAdd),
 
-        watchEarnCoins:
-          increment(
-            data.rewardCoins
-          )
-      }
-    );
+      currentCycleLockedReward:
+        increment(lockedRewardToAdd),
+
+      currentCycleStatus:
+        nextStatus,
+
+      updatedAt:
+        serverTimestamp(),
+    });
 
     /* =========================
-       SAVE HISTORY
+       WATCH HISTORY
     ========================= */
 
     await addDoc(
@@ -81,33 +123,49 @@ createWatchReward(
         "watchRewardHistory"
       ),
       {
-        userId:
-          data.userId,
-
-        videoId:
-          data.videoId,
-
+        userId: data.userId,
+        videoId: data.videoId,
         watchSeconds:
           data.watchSeconds,
 
-        rewardCoins:
-          data.rewardCoins,
+        rewardLocked:
+          lockedRewardToAdd,
+
+        rewardCycleNumber:
+          currentCycleNumber,
+
+        status:
+          lockedRewardToAdd > 0
+            ? "cycle_completed"
+            : "watch_recorded",
 
         createdAt:
-          Date.now()
+          serverTimestamp(),
       }
     );
 
     return {
-      success: true
+      success: true,
+
+      cycleCompleted:
+        lockedRewardToAdd > 0,
+
+      lockedRewardAdded:
+        lockedRewardToAdd,
+
+      currentWatchCount:
+        updatedVideoCount,
     };
-
   } catch (error) {
-
-    console.error(error);
+    console.error(
+      "createWatchReward error:",
+      error
+    );
 
     return {
-      success: false
+      success: false,
+      message:
+        "Failed to create watch reward",
     };
   }
 }
