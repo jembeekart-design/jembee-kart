@@ -1,128 +1,92 @@
 import {
   doc,
-  increment,
+  getDoc,
+  serverTimestamp,
   setDoc,
-  updateDoc,
-  getDoc
 } from "firebase/firestore";
 
-import { db }
-from "@/firebase/config";
+import { db } from "@/firebase/config";
 
 interface SyncCoinsToFirestoreData {
-
   userId: string;
-
-  coins: number;
-
   videoId: string;
-
 }
 
-export async function
-syncCoinsToFirestore({
+export async function syncCoinsToFirestore({
   userId,
-  coins,
-  videoId
+  videoId,
 }: SyncCoinsToFirestoreData) {
-
   try {
+    if (!userId) {
+      throw new Error(
+        "User ID is required"
+      );
+    }
+
+    if (!videoId) {
+      throw new Error(
+        "Video ID is required"
+      );
+    }
 
     /* =========================
-       USER REF
+       REWARD CLAIM RECORD
     ========================= */
 
-    const userRef =
-      doc(
-        db,
-        "users",
-        userId
-      );
-
-    /* =========================
-       WATCH REWARD REF
-    ========================= */
-
-    const rewardRef =
-      doc(
-        db,
-        "watchRewards",
-        `${videoId}_${userId}`
-      );
+    const rewardRef = doc(
+      db,
+      "watchRewards",
+      `${videoId}_${userId}`
+    );
 
     const rewardSnap =
-      await getDoc(
-        rewardRef
-      );
+      await getDoc(rewardRef);
 
     /* =========================
-       ALREADY CLAIMED
+       ALREADY PROCESSED
     ========================= */
 
-    if (
-      rewardSnap.exists()
-    ) {
-
+    if (rewardSnap.exists()) {
       return {
         success: false,
-
         message:
-          "Reward already claimed"
+          "Reward already processed",
       };
     }
 
     /* =========================
-       UPDATE USER WALLET
+       SAVE CLAIM RECORD
     ========================= */
 
-    await updateDoc(
-      userRef,
-      {
-        walletBalance:
-          increment(coins),
+    await setDoc(rewardRef, {
+      userId,
+      videoId,
 
-        totalCoins:
-          increment(coins),
+      source:
+        "watch-earn",
 
-        updatedAt:
-          Date.now()
-      }
-    );
+      status:
+        "processed",
 
-    /* =========================
-       SAVE REWARD HISTORY
-    ========================= */
-
-    await setDoc(
-      rewardRef,
-      {
-        userId:
-          userId,
-
-        videoId:
-          videoId,
-
-        coins:
-          coins,
-
-        claimedAt:
-          Date.now()
-      }
-    );
+      createdAt:
+        serverTimestamp(),
+    });
 
     return {
-      success: true
+      success: true,
     };
-
   } catch (error) {
-
     console.error(
-      "SYNC COINS ERROR:",
+      "SYNC WATCH REWARD ERROR:",
       error
     );
 
     return {
-      success: false
+      success: false,
+      message:
+        error instanceof Error
+          ? error.message
+          : "Failed to sync reward",
     };
   }
 }
