@@ -1,73 +1,94 @@
 import {
+  addDoc,
   collection,
-  addDoc
+  serverTimestamp,
 } from "firebase/firestore";
 
-import { db }
-from "@/firebase/config";
+import { db } from "@/firebase/config";
 
-interface CreateWatchTransactionData {
-
+export interface CreateWatchTransactionData {
   userId: string;
 
-  videoId: string;
+  videoId?: string;
 
-  coins: number;
+  amount: number;
 
+  cycleNumber: number;
+
+  type:
+    | "reward_locked"
+    | "reward_unlocked";
+
+  status:
+    | "pending"
+    | "completed";
 }
 
-export async function
-createWatchTransaction({
+export async function createWatchTransaction({
   userId,
   videoId,
-  coins
+  amount,
+  cycleNumber,
+  type,
+  status,
 }: CreateWatchTransactionData) {
-
   try {
+    if (!userId) {
+      throw new Error(
+        "User ID is required"
+      );
+    }
 
-    /* =========================
-       CREATE TRANSACTION
-    ========================= */
+    if (amount <= 0) {
+      throw new Error(
+        "Amount must be greater than 0"
+      );
+    }
 
-    await addDoc(
+    const docRef = await addDoc(
       collection(
         db,
         "watchTransactions"
       ),
       {
-        userId:
-          userId,
+        userId,
 
         videoId:
-          videoId,
+          videoId ?? null,
 
-        coins:
-          coins,
+        amount,
 
-        type:
-          "watch-reward",
+        cycleNumber,
 
-        status:
-          "completed",
+        type,
+
+        status,
+
+        source:
+          "watch-earn",
 
         createdAt:
-          Date.now()
+          serverTimestamp(),
       }
     );
 
     return {
-      success: true
+      success: true,
+      transactionId:
+        docRef.id,
     };
-
   } catch (error) {
-
     console.error(
       "WATCH TRANSACTION ERROR:",
       error
     );
 
     return {
-      success: false
+      success: false,
+      message:
+        error instanceof Error
+          ? error.message
+          : "Failed to create watch transaction",
     };
   }
 }
