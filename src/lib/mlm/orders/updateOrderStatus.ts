@@ -21,6 +21,29 @@ interface UpdateOrderStatusData {
     | "cancelled";
 }
 
+const VALID_TRANSITIONS: Record<
+  string,
+  string[]
+> = {
+  placed: [
+    "processing",
+    "cancelled",
+  ],
+
+  processing: [
+    "shipped",
+    "cancelled",
+  ],
+
+  shipped: [
+    "delivered",
+  ],
+
+  delivered: [],
+
+  cancelled: [],
+};
+
 export async function updateOrderStatus(
   data: UpdateOrderStatusData
 ) {
@@ -59,45 +82,96 @@ export async function updateOrderStatus(
     const order =
       orderSnap.data();
 
+    const currentStatus =
+      order.status || "placed";
+
     /* =========================
-       PREVENT DUPLICATE
-       DELIVERED PROCESSING
+       FINAL STATES
     ========================= */
 
     if (
-      order.status === "delivered" &&
-      data.status === "delivered"
+      currentStatus ===
+        "delivered" ||
+      currentStatus ===
+        "cancelled"
     ) {
       return {
-        success: true,
+        success: false,
         message:
-          "Order already delivered",
+          `Order already ${currentStatus}`,
       };
     }
 
     /* =========================
-       UPDATE STATUS
+       VALID TRANSITION
     ========================= */
 
-    await updateDoc(orderRef, {
-      status: data.status,
-      updatedAt:
-        serverTimestamp(),
-    });
+    const allowedStatuses =
+      VALID_TRANSITIONS[
+        currentStatus
+      ] || [];
+
+    if (
+      !allowedStatuses.includes(
+        data.status
+      )
+    ) {
+      return {
+        success: false,
+        message:
+          `Invalid status transition from ${currentStatus} to ${data.status}`,
+      };
+    }
 
     /* =========================
-       MLM + WATCH REWARD
-       ONLY ON DELIVERED
+       DELIVERED FLOW
     ========================= */
 
     if (
       data.status ===
       "delivered"
     ) {
-      await completeOrderAndDistributeCommission(
-        data.orderId
-      );
+      const result =
+        await completeOrderAndDistributeCommission(
+          data.orderId
+        );
+
+      if (!result.success) {
+        return {
+          success: false,
+          message:
+            result.message ||
+            "Failed to complete order",
+        };
+      }
     }
+
+    /* =========================
+       UPDATE ORDER
+    ========================= */
+
+    await updateDoc(orderRef, {
+      status: data.status,
+
+      updatedAt:
+        serverTimestamp(),
+
+      ...(data.status ===
+      "delivered"
+        ? {
+            deliveredAt:
+              serverTimestamp(),
+          }
+        : {}),
+
+      ...(data.status ===
+      "cancelled"
+        ? {
+            cancelledAt:
+              serverTimestamp(),
+          }
+        : {}),
+    });
 
     return {
       success: true,
