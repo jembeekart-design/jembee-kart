@@ -1,143 +1,120 @@
 import {
   doc,
-  increment,
-  updateDoc,
   getDoc,
-  setDoc
+  increment,
+  serverTimestamp,
+  updateDoc,
 } from "firebase/firestore";
 
-import { db }
-from "@/firebase/config";
+import { db } from "@/firebase/config";
 
 interface UpdateWalletBalanceData {
-
   userId: string;
-
-  amount: number;
-
-  type:
-    | "credit"
-    | "debit";
-
 }
 
-export async function
-updateWalletBalance({
+export async function updateWalletBalance({
   userId,
-  amount,
-  type
 }: UpdateWalletBalanceData) {
-
   try {
+    const userRef = doc(
+      db,
+      "users",
+      userId
+    );
+
+    const userSnap =
+      await getDoc(userRef);
+
+    if (!userSnap.exists()) {
+      return {
+        success: false,
+        message: "User not found",
+      };
+    }
+
+    const user =
+      userSnap.data();
+
+    const lockedReward =
+      user.currentCycleLockedReward || 0;
+
+    const qualifiedSales =
+      user.qualifiedSalesCount || 0;
+
+    const rewardCycleNumber =
+      user.rewardCycleNumber || 1;
 
     /* =========================
-       WALLET REF
+       VALIDATIONS
     ========================= */
 
-    const walletRef =
-      doc(
-        db,
-        "wallets",
-        userId
-      );
+    if (lockedReward <= 0) {
+      return {
+        success: false,
+        message:
+          "No locked reward available",
+      };
+    }
 
-    const walletSnap =
-      await getDoc(
-        walletRef
-      );
-
-    /* =========================
-       CREATE WALLET
-    ========================= */
-
-    if (
-      !walletSnap.exists()
-    ) {
-
-      await setDoc(
-        walletRef,
-        {
-          balance: 0,
-
-          totalCredit: 0,
-
-          totalDebit: 0,
-
-          createdAt:
-            Date.now()
-        }
-      );
+    if (qualifiedSales < 5) {
+      return {
+        success: false,
+        message:
+          "Sales target not completed",
+      };
     }
 
     /* =========================
-       CREDIT
+       UNLOCK REWARD
     ========================= */
 
-    if (
-      type ===
-      "credit"
-    ) {
+    await updateDoc(userRef, {
+      rewardWallet:
+        increment(lockedReward),
 
-      await updateDoc(
-        walletRef,
-        {
-          balance:
-            increment(
-              amount
-            ),
+      walletBalance:
+        increment(lockedReward),
 
-          totalCredit:
-            increment(
-              amount
-            ),
+      totalUnlockedReward:
+        increment(lockedReward),
 
-          updatedAt:
-            Date.now()
-        }
-      );
-    }
+      lockedWatchReward:
+        increment(-lockedReward),
 
-    /* =========================
-       DEBIT
-    ========================= */
+      currentCycleLockedReward: 0,
 
-    if (
-      type ===
-      "debit"
-    ) {
+      qualifiedSalesCount: 0,
 
-      await updateDoc(
-        walletRef,
-        {
-          balance:
-            increment(
-              -amount
-            ),
+      videoWatchCount: 0,
 
-          totalDebit:
-            increment(
-              amount
-            ),
+      rewardCycleNumber:
+        rewardCycleNumber + 1,
 
-          updatedAt:
-            Date.now()
-        }
-      );
-    }
+      currentCycleStatus:
+        "active",
+
+      updatedAt:
+        serverTimestamp(),
+    });
 
     return {
-      success: true
+      success: true,
+      unlockedReward:
+        lockedReward,
+
+      nextCycle:
+        rewardCycleNumber + 1,
     };
-
   } catch (error) {
-
     console.error(
-      "UPDATE WALLET ERROR:",
+      "UPDATE WALLET BALANCE ERROR:",
       error
     );
 
     return {
-      success: false
+      success: false,
+      message:
+        "Failed to unlock reward",
     };
   }
 }
