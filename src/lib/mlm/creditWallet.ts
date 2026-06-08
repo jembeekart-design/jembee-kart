@@ -1,10 +1,8 @@
 import {
   doc,
-  getDoc,
   increment,
   serverTimestamp,
-  updateDoc,
-  setDoc
+  runTransaction
 } from "firebase/firestore";
 
 import { db } from "@/firebase/config";
@@ -17,231 +15,139 @@ interface CreditWalletData {
     | "cashback"
     | "directIncome"
     | "levelIncome"
-    | "rankIncome";
+    | "rankIncome"
+    | "watchReward";
+  transactionId?: string; 
 }
 
-export async function creditWallet(
-  data: CreditWalletData
-) {
+export async function creditWallet(data: CreditWalletData) {
   try {
     /* =========================
        VALIDATION
     ========================= */
 
     if (!data.uid?.trim()) {
-      return {
-        success: false,
-        message: "User ID Required"
+      return { success: false, message: "User ID Required" };
+    }
+
+    if (!data.amount || data.amount <= 0) {
+      return { success: false, message: "Invalid Amount" };
+    }
+
+    const userRef = doc(db, "users", data.uid);
+    
+    /* =========================
+       HIGH-CONCURRENCY TRANSACTION ID FALLBACK
+       (Combines UUID pattern with random strings to absolute block collisions)
+    ========================= */
+    let fallbackId: string;
+    try {
+      fallbackId = crypto.randomUUID();
+    } catch {
+      // Robust environments fallback pattern inside the same millisecond spectrum
+      fallbackId = `${data.uid}_${Date.now()}_${Math.random().toString(36).slice(2, 8)}`;
+    }
+
+    const uniqueTxId = data.transactionId?.trim() || fallbackId;
+    const txRef = doc(db, "users", data.uid, "walletTransactions", uniqueTxId);
+
+    /* =========================
+       FIRESTORE TRANSACTION BLOCK
+    ========================= */
+    
+    const transactionResult = await runTransaction(db, async (transaction) => {
+      const userSnap = await transaction.get(userRef);
+      if (!userSnap.exists()) {
+        throw new Error("User Not Found");
+      }
+
+      const txSnap = await transaction.get(txRef);
+      if (txSnap.exists()) {
+        throw new Error("Transaction already processed");
+      }
+
+      const updateData: Record<string, any> = {
+        totalIncome: increment(data.amount),
+        todayIncome: increment(data.amount),
+        updatedAt: serverTimestamp()
       };
-    }
 
-    if (
-      !data.amount ||
-      data.amount <= 0
-    ) {
-      return {
-        success: false,
-        message: "Invalid Amount"
-      };
-    }
+      let walletType = "walletBalance";
+      let title = "Income Credited";
 
-    /* =========================
-       USER CHECK
-    ========================= */
+      if (data.incomeType === "cashback") {
+        updateData.cashbackWallet = increment(data.amount);
+        walletType = "cashbackWallet";
+        title = "Cashback Credited";
+      } else if (data.incomeType === "directIncome") {
+        updateData.commissionWallet = increment(data.amount);
+        updateData.walletBalance = increment(data.amount);
+        walletType = "commissionWallet";
+        title = "Direct Income Credited";
+      } else if (data.incomeType === "levelIncome") {
+        updateData.commissionWallet = increment(data.amount);
+        updateData.walletBalance = increment(data.amount);
+        walletType = "commissionWallet";
+        title = "Level Income Credited";
+      } else if (data.incomeType === "rankIncome") {
+        updateData.rewardWallet = increment(data.amount);
+        updateData.walletBalance = increment(data.amount);
+        walletType = "rewardWallet";
+        title = "Rank Reward Credited";
+      } else if (data.incomeType === "watchReward") {
+        updateData.rewardWallet = increment(data.amount);
+        updateData.walletBalance = increment(data.amount);
+        updateData.totalUnlockedReward = increment(data.amount);
+        walletType = "rewardWallet";
+        title = "Watch Reward Credited";
+      }
 
-    const userRef = doc(
-      db,
-      "users",
-      data.uid
-    );
+      transaction.update(userRef, updateData);
+      
+      transaction.set(txRef, {
+        transactionId: uniqueTxId,
+        userId: data.uid,
+        title,
+        amount: data.amount,
+        type: data.incomeType,
+        status: "success",
+        walletType,
+        createdAt: serverTimestamp()
+      });
 
-    const userSnap =
-      await getDoc(userRef);
-
-    if (!userSnap.exists()) {
-      return {
-        success: false,
-        message: "User Not Found"
-      };
-    }
-
-    /* =========================
-       WALLET UPDATE DATA
-    ========================= */
-
-    const updateData: Record<
-      string,
-      any
-    > = {
-      totalIncome:
-        increment(data.amount),
-
-      todayIncome:
-        increment(data.amount),
-
-      updatedAt:
-        serverTimestamp()
-    };
-
-    let walletType =
-      "walletBalance";
-
-    let title =
-      "Income Credited";
-
-    /* =========================
-       CASHBACK
-    ========================= */
-
-    if (
-      data.incomeType ===
-      "cashback"
-    ) {
-      updateData.cashbackWallet =
-        increment(data.amount);
-
-      walletType =
-        "cashbackWallet";
-
-      title =
-        "Cashback Credited";
-    }
-
-    /* =========================
-       DIRECT INCOME
-    ========================= */
-
-    if (
-      data.incomeType ===
-      "directIncome"
-    ) {
-      updateData.commissionWallet =
-        increment(data.amount);
-
-      updateData.walletBalance =
-        increment(data.amount);
-
-      walletType =
-        "commissionWallet";
-
-      title =
-        "Direct Income Credited";
-    }
-
-    /* =========================
-       LEVEL INCOME
-    ========================= */
-
-    if (
-      data.incomeType ===
-      "levelIncome"
-    ) {
-      updateData.commissionWallet =
-        increment(data.amount);
-
-      updateData.walletBalance =
-        increment(data.amount);
-
-      walletType =
-        "commissionWallet";
-
-      title =
-        "Level Income Credited";
-    }
-
-    /* =========================
-       RANK INCOME
-    ========================= */
-
-    if (
-      data.incomeType ===
-      "rankIncome"
-    ) {
-      updateData.rewardWallet =
-        increment(data.amount);
-
-      updateData.walletBalance =
-        increment(data.amount);
-
-      walletType =
-        "rewardWallet";
-
-      title =
-        "Rank Reward Credited";
-    }
-
-    /* =========================
-       UPDATE USER
-    ========================= */
-
-    await updateDoc(
-      userRef,
-      updateData
-    );
-
-    /* =========================
-       WALLET TRANSACTION
-    ========================= */
-
-    const txRef = doc(
-      db,
-      "users",
-      data.uid,
-      "walletTransactions",
-      crypto.randomUUID()
-    );
-
-    await setDoc(txRef, {
-      transactionId: txRef.id,
-
-      userId: data.uid,
-
-      title,
-
-      amount: data.amount,
-
-      type: data.incomeType,
-
-      status: "success",
-
-      walletType,
-
-      createdAt:
-        serverTimestamp()
+      return { title };
     });
 
     /* =========================
-       NOTIFICATION
+       POST-TRANSACTION ACTIONS (Isolated Notification Engine)
     ========================= */
 
-    await createNotification({
-      userId: data.uid,
+    try {
+      await createNotification({
+        userId: data.uid,
+        title: transactionResult.title,
+        message: `₹${data.amount} credited successfully.`,
+        type:
+          data.incomeType === "directIncome" || data.incomeType === "levelIncome"
+            ? "commission"
+            : "reward"
+      });
+    } catch (notificationError) {
+      console.error("Non-blocking Notification Error:", notificationError);
+    }
 
-      title,
+    return { success: true };
 
-      message:
-        `₹${data.amount} credited successfully.`,
+  } catch (error: any) {
+    console.error("creditWallet Fatal Error:", error);
+    
+    if (
+      error.message === "User Not Found" || 
+      error.message === "Transaction already processed"
+    ) {
+      return { success: false, message: error.message };
+    }
 
-      type:
-        data.incomeType ===
-        "rankIncome"
-          ? "reward"
-          : "commission"
-    });
-
-    return {
-      success: true
-    };
-  } catch (error) {
-    console.error(
-      "creditWallet Error:",
-      error
-    );
-
-    return {
-      success: false,
-      message:
-        "Wallet credit failed"
-    };
+    return { success: false, message: "Wallet credit failed" };
   }
 }
