@@ -1,264 +1,210 @@
 import {
-doc,
-getDoc,
-updateDoc,
-increment,
-serverTimestamp,
-setDoc,
-collection
+  doc,
+  getDoc,
+  updateDoc,
+  addDoc,
+  collection,
+  increment,
+  serverTimestamp,
 } from "firebase/firestore";
 
 import { db } from "@/firebase/config";
 
-import { createNotification } from "../createNotification";
+import { distributeLevelCommission } from "../distributeLevelCommission";
+import { creditWallet } from "../creditWallet";
 
-interface CreditWalletData {
-uid: string;
-
-amount: number;
-
-incomeType:
-| "cashback"
-| "directIncome"
-| "levelIncome"
-| "rankIncome";
-}
-
-export async function creditWallet(
-data: CreditWalletData
+export async function completeOrderAndDistributeCommission(
+  orderId: string
 ) {
-try {
-/* =========================
-VALIDATION
-========================= */
+  try {
+    /* =========================
+       ORDER
+    ========================= */
 
-if (!data.uid?.trim()) {
-  return {
-    success: false,
-    message: "User ID Required"
-  };
-}
+    const orderRef = doc(
+      db,
+      "orders",
+      orderId
+    );
 
-if (
-  !data.amount ||
-  data.amount <= 0
-) {
-  return {
-    success: false,
-    message: "Invalid Amount"
-  };
-}
+    const orderSnap =
+      await getDoc(orderRef);
 
-/* =========================
-   USER CHECK
-========================= */
+    if (!orderSnap.exists()) {
+      throw new Error(
+        "Order not found"
+      );
+    }
 
-const userRef = doc(
-  db,
-  "users",
-  data.uid
-);
+    const order =
+      orderSnap.data();
 
-const userSnap =
-  await getDoc(userRef);
+    /* =========================
+       ALREADY COMPLETED
+    ========================= */
 
-if (!userSnap.exists()) {
-  return {
-    success: false,
-    message: "User Not Found"
-  };
-}
+    if (
+      order.status ===
+      "completed"
+    ) {
+      return {
+        success: false,
+        message:
+          "Order already completed",
+      };
+    }
 
-/* =========================
-   UPDATE DATA
-========================= */
+    /* =========================
+       COMPLETE ORDER
+    ========================= */
 
-const updateData: Record<
-  string,
-  any
-> = {
-  totalIncome:
-    increment(data.amount),
+    await updateDoc(orderRef, {
+      status: "completed",
+      completedAt:
+        serverTimestamp(),
+    });
 
-  todayIncome:
-    increment(data.amount),
+    const userId =
+      order.userId;
 
-  updatedAt:
-    serverTimestamp()
-};
+    const amount =
+      order.totalAmount || 0;
 
-let walletType =
-  "";
+    /* =========================
+       CASHBACK
+    ========================= */
 
-let title =
-  "";
+    const cashback =
+      Math.floor(
+        amount * 0.05
+      );
 
-/* =========================
-   CASHBACK
-========================= */
+    if (cashback > 0) {
+      await creditWallet({
+        uid: userId,
+        amount: cashback,
+        incomeType:
+          "cashback",
+      });
+    }
 
-if (
-  data.incomeType ===
-  "cashback"
-) {
-  updateData.cashbackWallet =
-    increment(data.amount);
+    /* =========================
+       MLM COMMISSION
+    ========================= */
 
-  walletType =
-    "cashbackWallet";
+    await distributeLevelCommission({
+      userId,
+      amount,
+      orderId,
+    });
 
-  title =
-    "Cashback Credited";
-}
+    /* =========================
+       WATCH REWARD
+    ========================= */
 
-/* =========================
-   DIRECT INCOME
-========================= */
+    const userRef = doc(
+      db,
+      "users",
+      userId
+    );
 
-if (
-  data.incomeType ===
-  "directIncome"
-) {
-  updateData.commissionWallet =
-    increment(data.amount);
+    const userSnap =
+      await getDoc(userRef);
 
-  updateData.walletBalance =
-    increment(data.amount);
+    if (userSnap.exists()) {
+      const user =
+        userSnap.data();
 
-  walletType =
-    "commissionWallet";
+      const qualifiedSales =
+        (user.qualifiedSalesCount ||
+          0) + 1;
 
-  title =
-    "Direct Income Credited";
-}
+      await updateDoc(userRef, {
+        qualifiedSalesCount:
+          increment(1),
+      });
 
-/* =========================
-   LEVEL INCOME
-========================= */
+      const lockedReward =
+        user.currentCycleLockedReward ||
+        0;
 
-if (
-  data.incomeType ===
-  "levelIncome"
-) {
-  updateData.commissionWallet =
-    increment(data.amount);
+      if (
+        qualifiedSales >= 5 &&
+        lockedReward > 0
+      ) {
+        await creditWallet({
+          uid: userId,
+          amount:
+            lockedReward,
+          incomeType:
+            "watchReward",
+        });
 
-  updateData.walletBalance =
-    increment(data.amount);
+        await updateDoc(userRef, {
+          lockedWatchReward: 0,
 
-  walletType =
-    "commissionWallet";
+          currentCycleLockedReward:
+            0,
 
-  title =
-    "Level Income Credited";
-}
+          qualifiedSalesCount: 0,
 
-/* =========================
-   RANK INCOME
-========================= */
+          videoWatchCount: 0,
 
-if (
-  data.incomeType ===
-  "rankIncome"
-) {
-  updateData.rewardWallet =
-    increment(data.amount);
+          rewardCycleNumber:
+            increment(1),
 
-  updateData.walletBalance =
-    increment(data.amount);
+          currentCycleStatus:
+            "active",
 
-  walletType =
-    "rewardWallet";
+          totalUnlockedReward:
+            increment(
+              lockedReward
+            ),
 
-  title =
-    "Rank Reward Credited";
-}
+          updatedAt:
+            serverTimestamp(),
+        });
+      }
+    }
 
-/* =========================
-   UPDATE USER
-========================= */
+    /* =========================
+       HISTORY
+    ========================= */
 
-await updateDoc(
-  userRef,
-  updateData
-);
+    await addDoc(
+      collection(
+        db,
+        "orderIncomeHistory"
+      ),
+      {
+        userId,
+        orderId,
+        amount,
+        cashback,
 
-/* =========================
-   WALLET TRANSACTION
-========================= */
+        status:
+          "completed",
 
-const txRef = doc(
-  collection(
-    db,
-    "users",
-    data.uid,
-    "walletTransactions"
-  )
-);
+        createdAt:
+          serverTimestamp(),
+      }
+    );
 
-await setDoc(
-  txRef,
-  {
-    transactionId:
-      txRef.id,
+    return {
+      success: true,
+      message:
+        "Order completed successfully",
+    };
+  } catch (error) {
+    console.error(
+      "COMPLETE ORDER ERROR:",
+      error
+    );
 
-    userId:
-      data.uid,
-
-    title,
-
-    amount:
-      data.amount,
-
-    type:
-      data.incomeType,
-
-    status:
-      "success",
-
-    walletType,
-
-    createdAt:
-      serverTimestamp()
+    return {
+      success: false,
+      message:
+        "Failed to complete order",
+    };
   }
-);
-
-/* =========================
-   NOTIFICATION
-========================= */
-
-await createNotification({
-  userId:
-    data.uid,
-
-  title,
-
-  message:
-    `₹${data.amount} credited successfully.`,
-
-  type:
-    data.incomeType ===
-    "rankIncome"
-      ? "reward"
-      : "commission"
-});
-
-return {
-  success: true
-};
-
-} catch (error) {
-
-console.error(
-  "creditWallet Error:",
-  error
-);
-
-return {
-  success: false,
-  message:
-    "Wallet credit failed"
-};
-
-}
 }
