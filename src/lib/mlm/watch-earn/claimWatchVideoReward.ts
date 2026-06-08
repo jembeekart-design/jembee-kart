@@ -4,96 +4,192 @@ import {
   doc,
   getDoc,
   increment,
-  updateDoc
+  query,
+  serverTimestamp,
+  updateDoc,
+  where,
+  getDocs,
 } from "firebase/firestore";
 
-import { db }
-from "@/firebase/config";
+import { db } from "@/firebase/config";
 
 interface ClaimWatchVideoRewardData {
   userId: string;
-
   videoId: string;
-
   watchedSeconds: number;
 }
 
-export async function
-claimWatchVideoReward(
-  data:
-  ClaimWatchVideoRewardData
+export async function claimWatchVideoReward(
+  data: ClaimWatchVideoRewardData
 ) {
-
   try {
+    /* =========================
+       VIDEO VALIDATION
+    ========================= */
 
-    const videoRef =
-      doc(
-        db,
-        "watchVideos",
-        data.videoId
-      );
+    const videoRef = doc(
+      db,
+      "watchVideos",
+      data.videoId
+    );
 
     const videoSnap =
-      await getDoc(
-        videoRef
-      );
+      await getDoc(videoRef);
 
-    if (
-      !videoSnap.exists()
-    ) {
-
+    if (!videoSnap.exists()) {
       return {
-        success: false
+        success: false,
+        message: "Video not found",
       };
     }
 
     const videoData =
       videoSnap.data();
 
-    /* =========================
-       WATCH CHECK
-    ========================= */
+    const minimumWatchTime =
+      videoData.minimumWatchTime || 30;
 
     if (
       data.watchedSeconds <
-      videoData.minimumWatchTime
+      minimumWatchTime
     ) {
-
       return {
         success: false,
-
         message:
-          "Watch more time"
+          "Minimum watch time not completed",
       };
     }
 
     /* =========================
-       GIVE REWARD
+       DUPLICATE REWARD CHECK
     ========================= */
 
-    await updateDoc(
-      doc(
+    const duplicateQuery = query(
+      collection(
         db,
-        "users",
+        "watchRewardHistory"
+      ),
+      where(
+        "userId",
+        "==",
         data.userId
       ),
-      {
-        walletCoins:
-          increment(
-            videoData.rewardCoins
-          ),
-
-        totalCoins:
-          increment(
-            videoData.rewardCoins
-          ),
-
-        totalWatchReward:
-          increment(
-            videoData.rewardCoins
-          )
-      }
+      where(
+        "videoId",
+        "==",
+        data.videoId
+      )
     );
+
+    const duplicateSnap =
+      await getDocs(
+        duplicateQuery
+      );
+
+    if (!duplicateSnap.empty) {
+      return {
+        success: false,
+        message:
+          "Reward already claimed",
+      };
+    }
+
+    /* =========================
+       USER VALIDATION
+    ========================= */
+
+    const userRef = doc(
+      db,
+      "users",
+      data.userId
+    );
+
+    const userSnap =
+      await getDoc(userRef);
+
+    if (!userSnap.exists()) {
+      return {
+        success: false,
+        message: "User not found",
+      };
+    }
+
+    const user =
+      userSnap.data();
+
+    const currentCycleStatus =
+      user.currentCycleStatus ||
+      "active";
+
+    const currentCycleNumber =
+      user.rewardCycleNumber ||
+      1;
+
+    /* =========================
+       ONLY ONE ACTIVE CYCLE
+    ========================= */
+
+    if (
+      currentCycleStatus ===
+      "pendingUnlock"
+    ) {
+      return {
+        success: false,
+        message:
+          "Current reward cycle pending unlock",
+      };
+    }
+
+    /* =========================
+       VIDEO COUNT
+    ========================= */
+
+    const currentWatchCount =
+      user.videoWatchCount || 0;
+
+    const nextWatchCount =
+      currentWatchCount + 1;
+
+    let lockedReward = 0;
+    let nextStatus = "active";
+
+    /* =========================
+       100 VIDEOS = ₹50 LOCKED
+    ========================= */
+
+    if (
+      nextWatchCount >= 100 &&
+      nextWatchCount % 100 === 0
+    ) {
+      lockedReward = 50;
+      nextStatus =
+        "pendingUnlock";
+    }
+
+    /* =========================
+       UPDATE USER
+    ========================= */
+
+    await updateDoc(userRef, {
+      videoWatchCount:
+        increment(1),
+
+      lockedWatchReward:
+        increment(
+          lockedReward
+        ),
+
+      currentCycleLockedReward:
+        increment(
+          lockedReward
+        ),
+
+      currentCycleStatus:
+        nextStatus,
+
+      updatedAt:
+        serverTimestamp(),
+    });
 
     /* =========================
        SAVE HISTORY
@@ -105,33 +201,52 @@ claimWatchVideoReward(
         "watchRewardHistory"
       ),
       {
-        userId:
-          data.userId,
+        userId: data.userId,
 
-        videoId:
-          data.videoId,
+        videoId: data.videoId,
 
         watchedSeconds:
           data.watchedSeconds,
 
-        rewardCoins:
-          videoData.rewardCoins,
+        rewardLocked:
+          lockedReward,
+
+        cycleNumber:
+          currentCycleNumber,
+
+        status:
+          lockedReward > 0
+            ? "cycle_completed"
+            : "watch_recorded",
 
         createdAt:
-          Date.now()
+          serverTimestamp(),
       }
     );
 
     return {
-      success: true
+      success: true,
+
+      cycleCompleted:
+        lockedReward > 0,
+
+      lockedReward,
+
+      currentWatchCount:
+        nextWatchCount,
+
+      currentCycleNumber,
     };
-
   } catch (error) {
-
-    console.error(error);
+    console.error(
+      "claimWatchVideoReward error",
+      error
+    );
 
     return {
-      success: false
+      success: false,
+      message:
+        "Failed to claim reward",
     };
   }
 }
