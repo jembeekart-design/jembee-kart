@@ -16,7 +16,8 @@ interface CreditWalletData {
     | "directIncome"
     | "levelIncome"
     | "rankIncome"
-    | "watchReward";
+    | "watchReward"
+    | "creatorIncome"; // Future Creator Economy Support
   transactionId?: string; 
 }
 
@@ -38,18 +39,21 @@ export async function creditWallet(data: CreditWalletData) {
     
     /* =========================
        HIGH-CONCURRENCY TRANSACTION ID FALLBACK
-       (Combines UUID pattern with random strings to absolute block collisions)
     ========================= */
     let fallbackId: string;
     try {
       fallbackId = crypto.randomUUID();
     } catch {
-      // Robust environments fallback pattern inside the same millisecond spectrum
       fallbackId = `${data.uid}_${Date.now()}_${Math.random().toString(36).slice(2, 8)}`;
     }
 
     const uniqueTxId = data.transactionId?.trim() || fallbackId;
+    
+    // 1. User Subcollection Reference
     const txRef = doc(db, "users", data.uid, "walletTransactions", uniqueTxId);
+    
+    // 2. Global Collection Reference for Admin Reports
+    const globalIncomeRef = doc(db, "incomeHistory", uniqueTxId);
 
     /* =========================
        FIRESTORE TRANSACTION BLOCK
@@ -61,14 +65,17 @@ export async function creditWallet(data: CreditWalletData) {
         throw new Error("User Not Found");
       }
 
+      // DOUBLE-GUARD DUPLICATE CHECK (Subcollection + Global Collection)
       const txSnap = await transaction.get(txRef);
-      if (txSnap.exists()) {
+      const globalSnap = await transaction.get(globalIncomeRef);
+
+      if (txSnap.exists() || globalSnap.exists()) {
         throw new Error("Transaction already processed");
       }
 
+      // Base aggregation payload (removed untracked todayIncome to keep data pure)
       const updateData: Record<string, any> = {
         totalIncome: increment(data.amount),
-        todayIncome: increment(data.amount),
         updatedAt: serverTimestamp()
       };
 
@@ -77,6 +84,7 @@ export async function creditWallet(data: CreditWalletData) {
 
       if (data.incomeType === "cashback") {
         updateData.cashbackWallet = increment(data.amount);
+        updateData.walletBalance = increment(data.amount); // General ledger update
         walletType = "cashbackWallet";
         title = "Cashback Credited";
       } else if (data.incomeType === "directIncome") {
@@ -92,19 +100,26 @@ export async function creditWallet(data: CreditWalletData) {
       } else if (data.incomeType === "rankIncome") {
         updateData.rewardWallet = increment(data.amount);
         updateData.walletBalance = increment(data.amount);
+        updateData.withdrawableWallet = increment(data.amount); // Master script unlock alignment
         walletType = "rewardWallet";
         title = "Rank Reward Credited";
       } else if (data.incomeType === "watchReward") {
         updateData.rewardWallet = increment(data.amount);
         updateData.walletBalance = increment(data.amount);
         updateData.totalUnlockedReward = increment(data.amount);
+        updateData.withdrawableWallet = increment(data.amount); // Master script unlock alignment
         walletType = "rewardWallet";
         title = "Watch Reward Credited";
+      } else if (data.incomeType === "creatorIncome") {
+        updateData.creatorAdIncome = increment(data.amount); // Master script schema alignment
+        updateData.walletBalance = increment(data.amount);
+        updateData.withdrawableWallet = increment(data.amount); // Future-ready withdrawal setup
+        walletType = "creatorAdIncome";
+        title = "Creator Income Credited";
       }
 
-      transaction.update(userRef, updateData);
-      
-      transaction.set(txRef, {
+      // Payload optimization for history logging
+      const transactionPayload = {
         transactionId: uniqueTxId,
         userId: data.uid,
         title,
@@ -113,7 +128,12 @@ export async function creditWallet(data: CreditWalletData) {
         status: "success",
         walletType,
         createdAt: serverTimestamp()
-      });
+      };
+
+      // Atomic Mutations
+      transaction.update(userRef, updateData);
+      transaction.set(txRef, transactionPayload);
+      transaction.set(globalIncomeRef, transactionPayload); // Global log entry for cross-user admin querying
 
       return { title };
     });
@@ -123,14 +143,22 @@ export async function creditWallet(data: CreditWalletData) {
     ========================= */
 
     try {
+      let notificationType: "commission" | "reward";
+
+      if (
+        data.incomeType === "directIncome" || 
+        data.incomeType === "levelIncome"
+      ) {
+        notificationType = "commission";
+      } else {
+        notificationType = "reward"; 
+      }
+
       await createNotification({
         userId: data.uid,
         title: transactionResult.title,
         message: `₹${data.amount} credited successfully.`,
-        type:
-          data.incomeType === "directIncome" || data.incomeType === "levelIncome"
-            ? "commission"
-            : "reward"
+        type: notificationType
       });
     } catch (notificationError) {
       console.error("Non-blocking Notification Error:", notificationError);
