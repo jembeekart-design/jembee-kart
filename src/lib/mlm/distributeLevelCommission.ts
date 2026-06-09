@@ -6,24 +6,42 @@ import {
 } from "firebase/firestore";
 
 import { db } from "@/firebase/config";
-import { MLM_LEVELS_CONFIG, MLM_SECURITY_GUARDS } from "@/config/mlmConfig";
+import { 
+  MLM_LEVELS_CONFIG, 
+  MLM_SECURITY_GUARDS, 
+  MLM_CONFIG_STATUS 
+} from "@/config/mlmConfig";
 import { creditWallet } from "./creditWallet";
 
 interface DistributeLevelCommissionData {
   userId: string;
-  profitAmount: number; // FIX 2: Renamed to clearly indicate calculation is on Product Profit, not Order Gross Value
+  profitAmount: number; // Evaluated strictly on Net Product Profit Margin, not Order Gross Value
   orderId: string;
-  orderStatus: string;  // FIX 1: Explicit status checking introduced
+  orderStatus: string;  // Explicit order lifecycle checkpoint tracking
 }
 
+/**
+ * Distributes structural multi-level commissions based on net e-commerce profit.
+ * Features a dynamic circuit breaker fallback to prevent platform crashes if config is invalid.
+ */
 export async function distributeLevelCommission(
   data: DistributeLevelCommissionData
 ) {
   try {
-    /* =========================
-       VALIDATION
-    ========================= */
+    /* ========================================================
+       PRODUCTION FIXED SHIELD: SUB-SYSTEM CIRCUIT BREAKER
+       (Bypasses commission distribution smoothly if config is broken)
+       ======================================================== */
+    if (!MLM_CONFIG_STATUS.success) {
+      return {
+        success: false,
+        message: "MLM subsystem temporarily disabled due to setup discrepancy."
+      };
+    }
 
+    /* ========================================================
+       ARGUMENTS INGRESS VALIDATION
+       ======================================================== */
     if (!data.userId) {
       return { success: false, message: "User ID Required" };
     }
@@ -40,10 +58,10 @@ export async function distributeLevelCommission(
       return { success: false, message: "Invalid Profit Amount" };
     }
 
-    /* =========================
-       PRODUCTION FIX 1: DELIVERED ORDER VALIDATION
+    /* ========================================================
+       DELIVERED ORDER VALIDATION
        (Guards cash flow by ensuring lifecycle completion before commission payouts)
-    ========================= */
+       ======================================================== */
     if (data.orderStatus.toLowerCase() !== "delivered") {
       return {
         success: true,
@@ -51,22 +69,22 @@ export async function distributeLevelCommission(
       };
     }
 
-    /* =========================
-       COMMISSION BUDGET PROTECTION
-    ========================= */
+    /* ========================================================
+       COMMISSION BUDGET PROTECTION (REDUNDANT HARD CAP GUARD)
+       ======================================================== */
     const totalPercentage = MLM_LEVELS_CONFIG.reduce(
       (sum, item) => sum + (item?.percentage || 0),
       0
     );
 
     if (totalPercentage > MLM_SECURITY_GUARDS.MAX_ALLOWED_TOTAL_PERCENTAGE) {
-      throw new Error("MLM percentage exceeds allowed limit");
+      throw new Error("MLM percentage exceeds corporate safety limit parameters.");
     }
 
-    /* =========================
+    /* ========================================================
        PRODUCTION OPTIMIZATION: THRESHOLD GUARD
-       (Evaluated against the profitAmount threshold to save internal operations)
-    ========================= */
+       (Evaluated against the profitAmount baseline to skip redundant db writes)
+       ======================================================== */
     if (data.profitAmount < MLM_SECURITY_GUARDS.MIN_PROFIT_AMOUNT_FOR_COMMISSION) {
       return {
         success: true,
@@ -74,10 +92,9 @@ export async function distributeLevelCommission(
       };
     }
 
-    /* =========================
+    /* ========================================================
        BUYER LOGIC & SAFETY CHECKS
-    ========================= */
-
+       ======================================================== */
     const buyerRef = doc(db, "users", data.userId);
     const buyerSnap = await getDoc(buyerRef);
 
@@ -87,50 +104,49 @@ export async function distributeLevelCommission(
 
     const buyerData = buyerSnap.data();
     
-    // Soft-delete restriction
+    // Soft-delete restriction check
     if (buyerData.isDeleted === true) {
       return { success: false, message: "Buyer Account Is Deactivated/Deleted" };
     }
 
-    // Self-Sponsor Loop Protection
+    // Self-Sponsor Loop Protection 
     if (buyerData.sponsorId === data.userId) {
       return { success: false, message: "Invalid Sponsor Chain: Self-Sponsorship Blocked" };
     }
 
     let currentSponsorId = buyerData.sponsorId || "";
 
-    /* =========================
-       INFINITE LOOP PROTECTION (O(1) Set Tracking)
-    ========================= */
+    /* ========================================================
+       INFINITE LOOP PROTECTION (O(1) Memory Footprint)
+       ======================================================== */
     const visitedSponsors = new Set<string>();
 
-    /* =========================
+    /* ========================================================
        DISTRIBUTE WITH SPONSOR CHAIN PASS-THROUGH
-    ========================= */
-
+       ======================================================== */
     for (const levelConfig of MLM_LEVELS_CONFIG) {
       if (!currentSponsorId?.trim()) {
         break; // Chain ends naturally if no upper sponsor ID exists
       }
 
-      /* =========================
+      /* ========================================================
          CONFIG COMPLIANCE VALIDATION
-      ========================= */
+         ======================================================== */
       if (
         !levelConfig ||
         typeof levelConfig.percentage !== "number" ||
         levelConfig.percentage < 0 ||
-        !levelConfig.incomeType ||
-        typeof levelConfig.level !== "number"
+        typeof levelConfig.level !== "number" ||
+        !levelConfig.incomeType
       ) {
         continue;
       }
 
-      /* =========================
-         CIRCULAR CHAIN DETECTION
-      ========================= */
+      /* ========================================================
+         CIRCULAR CHAIN DETECTION (ANTI-EXPLOIT BLOCKER)
+         ======================================================== */
       if (visitedSponsors.has(currentSponsorId)) {
-        console.error("CIRCULAR SPONSOR CHAIN DETECTED FOR USER:", currentSponsorId);
+        console.error("CRITICAL EXPLOIT ALERT: CIRCULAR SPONSOR CHAIN DETECTED FOR USER:", currentSponsorId);
         
         const cyclicLogId = `${data.orderId}_LEVEL_${levelConfig.level}_CYCLIC`;
         const cyclicLogRef = doc(db, "commissionLogs", cyclicLogId);
@@ -157,14 +173,14 @@ export async function distributeLevelCommission(
       const commissionLogId = `${data.orderId}_LEVEL_${levelConfig.level}`;
       const commissionLogRef = doc(db, "commissionLogs", commissionLogId);
 
-      /* =========================
+      /* ========================================================
          DYNAMIC VALUE-BASED COMMISSION CALCULATION (ON NET PROFIT)
-      ========================= */
+         ======================================================== */
       const calculatedCommissionAmount = Math.floor((data.profitAmount * levelConfig.percentage) / 100);
 
-      /* =========================
+      /* ========================================================
          FALLBACK FOR UNEXPECTED HARD DELETION
-      ========================= */
+         ======================================================== */
       if (!sponsorSnap.exists()) {
         await setDoc(commissionLogRef, {
           logId: commissionLogId,
@@ -187,18 +203,18 @@ export async function distributeLevelCommission(
 
       const sponsorData = sponsorSnap.data();
 
-      /* =========================
-         DUPLICATE CHECK (Barrier Safeguard)
-      ========================= */
+      /* ========================================================
+         DUPLICATE TRANSACTION CHECK (Idempotency Guard)
+         ======================================================== */
       const existingLog = await getDoc(commissionLogRef);
       if (existingLog.exists()) {
         currentSponsorId = sponsorData.sponsorId || "";
         continue;
       }
 
-      /* =========================
-         STRUCTURAL IMMUTABLE CORES (UID IMPL)
-      ========================= */
+      /* ========================================================
+         STRUCTURAL IMMUTABLE PAYLOAD SCHEMA
+         ======================================================== */
       const baseLogPayload = {
         logId: commissionLogId,
         orderId: data.orderId,
@@ -214,14 +230,14 @@ export async function distributeLevelCommission(
         createdAt: serverTimestamp()
       };
 
-      /* =========================
+      /* ========================================================
          SOFT DELETE & ELIGIBILITY ROUTER
-      ========================= */
+         ======================================================== */
       const isSoftDeleted = sponsorData.isDeleted === true;
       const isActivePartner = sponsorData.isActivePartner === true && !isSoftDeleted;
 
       if (isActivePartner && calculatedCommissionAmount > 0) {
-        // Atomic transaction mapping via unique commissionLogId inside creditWallet
+        // Atomic wallet tracking increments mapped against idempotent transaction ID
         const walletResult = await creditWallet({
           uid: currentSponsorId,
           amount: calculatedCommissionAmount,
@@ -250,9 +266,9 @@ export async function distributeLevelCommission(
         });
       }
 
-      /* =========================
-         SHIFT TO NEXT UP-LINE PARENT NODE
-      ========================= */
+      /* ========================================================
+         SHIFT TO NEXT PARENT NODE IN THE UPLINE TREE
+         ======================================================== */
       currentSponsorId = sponsorData.sponsorId || "";
     }
 
@@ -265,7 +281,7 @@ export async function distributeLevelCommission(
 
     return {
       success: false,
-      message: error.message || "Something went wrong"
+      message: error.message || "Something went wrong during distribution loop."
     };
   }
 }
