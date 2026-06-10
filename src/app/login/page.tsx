@@ -107,13 +107,20 @@ function LoginCard() {
       const result = await signInWithPopup(auth, provider);
       
       if (result.user) {
+        // 🔍 DEBUG LOGS ADDED HERE
+        console.log("GOOGLE UID:", result.user.uid);
+        console.log("GOOGLE EMAIL:", result.user.email);
+
         const isExistingUser = await verifyAndTelemetrySync(result.user);
+        
+        console.log("USER EXISTS IN FIRESTORE:", isExistingUser);
         
         if (isExistingUser) {
           localStorage.removeItem("jbk_pending_ref");
           // ✅ Redirect updated back to Root path as per requirement
           window.location.href = "/"; 
         } else {
+          // Agar user Firestore me nahi mila, to ye alert chalega aur signup pe bhejega
           alert("No existing profile found. Redirecting to Signup page to apply your referral code.");
           window.location.href = referralCode ? `/signup?ref=${referralCode}` : "/signup";
         }
