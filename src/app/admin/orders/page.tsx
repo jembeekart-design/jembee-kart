@@ -25,7 +25,7 @@ import {
 
 import { db } from "@/firebase/config";
 
-// ✅ 1. Import MLM Level Distribution Engine Pipeline Hook
+// ✅ Import MLM Level Distribution Engine Pipeline Hook
 import { distributeLevelCommission } from "@/lib/mlm/distributeLevelCommission";
 
 interface Order {
@@ -34,6 +34,7 @@ interface Order {
   customerName: string;
   productTitle: string;
   amount: number;
+  profitAmount?: number; // FUTURE SCALABILITY: Aligns strictly to e-commerce net margins (₹50–₹200)
   status: string;
   address: string;
   image: string;
@@ -98,17 +99,16 @@ export default function OrdersPage() {
 
             console.log(`MLM parameters initialized for User ID: ${currentOrder.userId}`);
 
-            // ✅ STEP 2: Trigger Multi-level Commission Engine calculations and Audit Log insertions
+            // ✅ STEP 2: Trigger Multi-level Commission Engine calculations with exact property map keys
+            // Temp fallback mapping currentOrder.amount to profitAmount to keep pipeline continuous until profit computation ingestion is bound.
             await distributeLevelCommission({
               userId: currentOrder.userId,
-              amount: currentOrder.amount,
+              profitAmount: currentOrder.profitAmount || currentOrder.amount,
               orderId: currentOrder.id,
+              orderStatus: "delivered",
             });
 
             console.log(`Up-line level distribution sequence dispatched for order trace context: ${id}`);
-
-            // ⚠️ FUTURE SEED COUPLING LINKS:
-            // Yahan line up honge reward matrix nodes, rank pools, aur Business Volume calculations.
 
             // ✅ STEP 3: Single write transaction lock pipeline settlement
             await updateDoc(orderRef, { 
@@ -143,7 +143,6 @@ export default function OrdersPage() {
     }
   }
 
-  // System load mapping state configuration block
   if (loading) {
     return (
       <div className="flex min-h-screen items-center justify-center bg-black font-black text-sm uppercase tracking-widest text-pink-500">
@@ -209,6 +208,9 @@ export default function OrdersPage() {
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-2 text-sm text-gray-300">
                   <div>
                     <p><span className="text-gray-500 font-medium">Order Value:</span> <span className="text-green-400 font-bold">₹{order.amount?.toLocaleString("en-IN")}</span></p>
+                    {order.profitAmount !== undefined && (
+                      <p className="mt-1"><span className="text-gray-500 font-medium">Net Profit Margin:</span> <span className="text-amber-400 font-bold">₹{order.profitAmount?.toLocaleString("en-IN")}</span></p>
+                    )}
                     <p className="mt-1"><span className="text-gray-500 font-medium">Shipping Address:</span> {order.address || "Digital Delivery Protocol Layer"}</p>
                   </div>
                   <div className="md:text-right flex flex-col justify-end">
