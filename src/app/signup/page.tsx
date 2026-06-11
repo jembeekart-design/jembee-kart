@@ -1,7 +1,7 @@
 "use client";
 
-import { useState, useEffect } from "react"; // Added useEffect to catch URL params
-import { useRouter, useSearchParams } from "next/navigation"; // Added useSearchParams
+import { useState, useEffect, Suspense } from "react"; // Added Suspense
+import { useRouter, useSearchParams } from "next/navigation"; 
 import Link from "next/link";
 
 import {
@@ -29,9 +29,12 @@ import {
 
 import { auth, db } from "@/firebase/config";
 
-export default function SignupPage() {
+/* ======================================================
+INTERNAL FORM COMPONENT (Safely isolates useSearchParams)
+====================================================== */
+function RegistrationForm() {
   const router = useRouter();
-  const searchParams = useSearchParams(); // Catch incoming referral codes from URL
+  const searchParams = useSearchParams(); 
 
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
@@ -41,7 +44,7 @@ export default function SignupPage() {
   const [loading, setLoading] = useState(false);
 
   /* ======================================================
-  ✅ FIX 1: URL REFERRAL INTERACTION CAPTURE
+  ✅ URL REFERRAL INTERACTION CAPTURE
   ====================================================== */
   useEffect(() => {
     const refParam = searchParams.get("ref");
@@ -57,7 +60,6 @@ export default function SignupPage() {
   async function createUserProfile(user: User, displayName?: string) {
     const userRef = doc(db, "users", user.uid);
 
-    // 1. Conditional Sponsor Lineage Processing
     const sponsorCode = localStorage.getItem("jbk_pending_ref") || "";
     let sponsorUid = "";
     let sponsorDocRef: DocumentReference | null = null;
@@ -72,10 +74,8 @@ export default function SignupPage() {
       const sponsorSnap = await getDocs(q);
       if (!sponsorSnap.empty) {
         const sponsorDoc = sponsorSnap.docs[0];
-        // ✅ FIX 2: Dynamic safety fallback to ensure UID is extracted cleanly
         let resolvedSponsorUid = sponsorDoc.id || sponsorDoc.data().uid;
 
-        // Anti Self-Referral Validation Gate
         if (resolvedSponsorUid === user.uid) {
           console.warn("Self-referral attempt detected and blocked automatically.");
           sponsorUid = "";
@@ -89,28 +89,18 @@ export default function SignupPage() {
       }
     }
 
-    /* ======================================================
-    STABLE HIGH-ENTROPY SHORT FORM SHARECODE DESIGN
-    Formula: JBK + UID_PREFIX(8) [e.g. JBKABCDEF12]
-    ====================================================== */
     const marketingShareCode = `JBK${user.uid.slice(0, 8)}`.toUpperCase();
 
-    /* ======================================================
-    LIGHTWEIGHT ACID TRANSACTION WRITE
-    ====================================================== */
     try {
       await runTransaction(db, async (transaction) => {
-        // Double-check profile node isolation safety using deterministic transaction.get()
         const userSnapshot = await transaction.get(userRef);
         if (userSnapshot.exists()) {
           console.log("Profile node already instantiated. Aborting transaction.");
           return;
         }
 
-        // Materialized Lineage Array tightly capped at 10 levels for compliance
         const currentParentChain = sponsorUid ? [sponsorUid, ...sponsorParentChain].slice(0, 10) : [];
 
-        // Write complete structured JembeeKart user layout
         transaction.set(userRef, {
           uid: user.uid,
           name: displayName || user.displayName || "JembeeKart User",
@@ -127,10 +117,8 @@ export default function SignupPage() {
           schemaVersion: 1, 
           lastPlatform: "web", 
 
-          // Network Ancestry Lineage Array
           parentChain: currentParentChain,
 
-          // Package Activation Placeholders
           joinedPackage: false,
           packageAmount: 0,
           activationDate: null,
@@ -139,7 +127,6 @@ export default function SignupPage() {
           packageName: "",
           packageStatus: "inactive",
 
-          // FINANCIAL WALLET ENGINE
           walletBalance: 0,
           commissionWallet: 0,
           rewardWallet: 0,
@@ -148,10 +135,8 @@ export default function SignupPage() {
           totalWithdraw: 0,
           pendingWithdrawal: 0,
           
-          // Structural dashboard metric hook initialization
           rewardCount: 0,
 
-          // BUSINESS & REFERRAL STATUS ENGINE
           directBusiness: 0,
           teamBusiness: 0,
           totalTeamBusiness: 0,
@@ -159,22 +144,18 @@ export default function SignupPage() {
           directActiveReferrals: 0,
           teamActiveReferrals: 0,
 
-          // COMMERCE PIPELINE
           totalProductsPurchased: 0,
 
-          // GENERATION PIPELINE COUNTS
           level1Count: 0,
           level2Count: 0,
           level3Count: 0,
           level4Count: 0,
           level5Count: 0,
 
-          // MLM INCOME BREAKDOWN FIELDS
           referralIncome: 0,
           levelIncome: 0,
           rankIncome: 0,
 
-          // SYSTEM, SECURITY, ORDER & NOTIFICATION COUNTERS
           totalOrders: 0,
           lastOrderAt: null,
           isActive: false,
@@ -185,7 +166,6 @@ export default function SignupPage() {
           mlmActive: false,
           notificationCount: 0,
           unreadNotifications: 0,
-          // ✅ FIX 3: Dynamic Fallback mapping for seamless historical processing 
           sponsorId: sponsorUid || "",
           sponsorReferralCode: sponsorUid ? sponsorCode : "",
           shareCode: marketingShareCode,
@@ -207,7 +187,6 @@ export default function SignupPage() {
           lastSeenAt: serverTimestamp(),
         });
 
-        // Atomic metrics increments on direct sponsor node (Level 1 tracking)
         if (sponsorDocRef) {
           transaction.update(sponsorDocRef, {
             totalReferrals: increment(1),
@@ -232,12 +211,9 @@ export default function SignupPage() {
     console.warn("Rollback Engine Active: Remediating orphan Auth state credentials.");
     try {
       await authUser.delete();
-      console.log("Orphan user credentials successfully scrubbed from Auth cluster.");
     } catch (authDeleteError: any) {
-      console.error("Auth token deletion blocked (requires-recent-login context execution fallback applied).");
       try {
         await signOut(auth);
-        console.log("Fallback session isolated via signout routing parameters.");
       } catch (signOutError) {
         console.error("Critical tracking fallback error logged:", signOutError);
       }
@@ -284,9 +260,7 @@ export default function SignupPage() {
       createdAuthUser = result.user;
 
       await createUserProfile(result.user, cleanName);
-      
       await sendEmailVerification(result.user);
-      console.log("Verification email dispatched to target destination securely.");
       router.push("/verify-email");
     } catch (error: any) {
       console.error("Email Registration Sequence Fault:", error);
@@ -369,7 +343,6 @@ export default function SignupPage() {
             required
             className="w-full rounded-2xl border p-4 outline-none transition focus:border-indigo-500"
           />
-          {/* ✅ FIX 4: Corrected onChange handler binding state */}
           <input
             type="password"
             placeholder="Confirm Password"
@@ -424,5 +397,24 @@ export default function SignupPage() {
         </button>
       </div>
     </main>
+  );
+}
+
+/* ======================================================
+MAIN EXPORT WITH SUSPENSE BOUNDARY (Fixes Vercel Prerender)
+====================================================== */
+export default function SignupPage() {
+  return (
+    <Suspense 
+      fallback={
+        <div className="flex min-h-screen items-center justify-center bg-gray-50">
+          <p className="text-sm font-bold text-gray-400 animate-pulse">
+            Loading JembeeKart Secure Node...
+          </p>
+        </div>
+      }
+    >
+      <RegistrationForm />
+    </Suspense>
   );
 }
