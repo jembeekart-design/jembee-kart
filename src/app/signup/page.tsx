@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect, Suspense } from "react"; // Added Suspense
+import { useState, useEffect, Suspense } from "react"; 
 import { useRouter, useSearchParams } from "next/navigation"; 
 import Link from "next/link";
 
@@ -99,6 +99,7 @@ function RegistrationForm() {
           return;
         }
 
+        // Materialized Lineage Array tightly capped at 10 levels for compliance
         const currentParentChain = sponsorUid ? [sponsorUid, ...sponsorParentChain].slice(0, 10) : [];
 
         transaction.set(userRef, {
@@ -173,7 +174,7 @@ function RegistrationForm() {
           referralLink: "", 
           totalReferrals: 0,
           directReferrals: 0,
-          teamSize: 0,
+          teamSize: 0, // Fresh node starts at 0
           rank: "Member",
           currentRankId: "member",
           rankAchievedAt: null,
@@ -187,13 +188,31 @@ function RegistrationForm() {
           lastSeenAt: serverTimestamp(),
         });
 
+        /* ======================================================
+        ✅ MODIFIED: Immediate Level 1 Sponsor Node Atomic Updates
+        ====================================================== */
         if (sponsorDocRef) {
           transaction.update(sponsorDocRef, {
             totalReferrals: increment(1),
             directReferrals: increment(1),
             level1Count: increment(1),
+            // Note: Immediate sponsor ka teamSize niche loop me update ho jayega 
+            // kyunki sponsorUid currentParentChain ke index 0 par majood hai.
           });
         }
+
+        /* ======================================================
+        ✅ ADDED: Deep Lineage Loop for Global teamSize Increments
+        ====================================================== */
+        for (const uplineId of currentParentChain) {
+          if (uplineId && uplineId.trim() !== "") {
+            const uplineRef = doc(db, "users", uplineId);
+            transaction.update(uplineRef, {
+              teamSize: increment(1),
+            });
+          }
+        }
+
       });
 
       console.log("Profile node committed successfully via transaction context.");
