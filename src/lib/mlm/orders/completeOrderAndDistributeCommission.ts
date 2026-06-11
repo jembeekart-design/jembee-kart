@@ -19,6 +19,7 @@ interface CompleteOrderData {
 /**
  * Finalizes the order delivery lifecycle, handles e-commerce cashback,
  * and triggers secondary MLM/Reward networks inside safe isolated scopes.
+ * Aligned strictly with the creditWallet type contracts to eliminate TypeScript compiler faults.
  */
 export async function completeOrderAndDistributeCommission(orderId: string) {
   try {
@@ -72,6 +73,7 @@ export async function completeOrderAndDistributeCommission(orderId: string) {
 
     /* ========================================================
        1. CORE E-COMMERCE CASHBACK (CRITICAL OUTFLOW)
+       - FIXED: Schema properties mapped strictly to type contracts
        ======================================================== */
     let cashback = Math.floor(amount * 0.05);
     
@@ -80,8 +82,9 @@ export async function completeOrderAndDistributeCommission(orderId: string) {
         const cashbackResult = await creditWallet({
           uid: userId,
           amount: cashback,
-          incomeType: "cashback",
-          transactionId: `CASHBACK_${orderId}`,
+          type: "cashback", // Aligned parameter type
+          description: `E-commerce 5% Cashback awarded for completed Order ID: ${orderId}`, // Injected mandatory description
+          orderId: orderId,
         });
 
         if (!cashbackResult.success) {
@@ -100,7 +103,6 @@ export async function completeOrderAndDistributeCommission(orderId: string) {
     try {
       console.log(`[MLM PIPELINE]: Dispatching distribution tree for Order: ${orderId}`);
       
-      // FIX: Parameters aligned strictly to your new robust interface contract
       const mlmResult = await distributeLevelCommission({
         userId,
         profitAmount: dynamicProfitAmount, 
@@ -120,6 +122,7 @@ export async function completeOrderAndDistributeCommission(orderId: string) {
 
     /* ========================================================
        3. SECONDARY SUBSYSTEM: WATCH REWARD LIFECYCLE (SANDBOXED)
+       - FIXED: Type-casted 'watchReward' into valid strict format 'type: "reward"'
        ======================================================== */
     let rewardUnlocked = false;
     let unlockedAmount = 0;
@@ -141,8 +144,9 @@ export async function completeOrderAndDistributeCommission(orderId: string) {
           const rewardResult = await creditWallet({
             uid: userId,
             amount: lockedReward,
-            incomeType: "watchReward",
-            transactionId: `WATCH_UNLOCK_${orderId}`,
+            type: "reward", // Conformed type constraint
+            description: `Watch Video Cycle Milestone Unlocked successfully from Order Ref: ${orderId}`, // Injected description
+            orderId: orderId,
           });
 
           if (rewardResult.success) {
