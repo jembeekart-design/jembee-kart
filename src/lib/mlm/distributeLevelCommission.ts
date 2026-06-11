@@ -234,7 +234,13 @@ export async function distributeLevelCommission(
          SOFT DELETE & ELIGIBILITY ROUTER
          ======================================================== */
       const isSoftDeleted = sponsorData.isDeleted === true;
-      const isActivePartner = sponsorData.isActivePartner === true && !isSoftDeleted;
+
+const isActivePartner =
+  (
+    sponsorData.isActive === true ||
+    sponsorData.isActivePartner === true
+  ) &&
+  !isSoftDeleted;
 
       if (isActivePartner && calculatedCommissionAmount > 0) {
         // Atomic wallet tracking increments mapped against idempotent transaction ID
