@@ -1,7 +1,7 @@
 "use client";
 
-import { useState } from "react";
-import { useRouter } from "next/navigation";
+import { useState, useEffect } from "react"; // Added useEffect to catch URL params
+import { useRouter, useSearchParams } from "next/navigation"; // Added useSearchParams
 import Link from "next/link";
 
 import {
@@ -31,6 +31,7 @@ import { auth, db } from "@/firebase/config";
 
 export default function SignupPage() {
   const router = useRouter();
+  const searchParams = useSearchParams(); // Catch incoming referral codes from URL
 
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
@@ -40,12 +41,23 @@ export default function SignupPage() {
   const [loading, setLoading] = useState(false);
 
   /* ======================================================
+  ✅ FIX 1: URL REFERRAL INTERACTION CAPTURE
+  ====================================================== */
+  useEffect(() => {
+    const refParam = searchParams.get("ref");
+    if (refParam?.trim()) {
+      localStorage.setItem("jbk_pending_ref", refParam.trim());
+      console.log(`🔗 Referral tracking synchronized inside client state: ${refParam}`);
+    }
+  }, [searchParams]);
+
+  /* ======================================================
   CORE USER PROFILE INITIALIZATION ENGINE (ACID TRANSACTION)
   ====================================================== */
   async function createUserProfile(user: User, displayName?: string) {
     const userRef = doc(db, "users", user.uid);
 
-    // 1. Conditional Sponsor Lineage Processing (Requires Firestore single-field index on 'shareCode')
+    // 1. Conditional Sponsor Lineage Processing
     const sponsorCode = localStorage.getItem("jbk_pending_ref") || "";
     let sponsorUid = "";
     let sponsorDocRef: DocumentReference | null = null;
@@ -60,7 +72,8 @@ export default function SignupPage() {
       const sponsorSnap = await getDocs(q);
       if (!sponsorSnap.empty) {
         const sponsorDoc = sponsorSnap.docs[0];
-        let resolvedSponsorUid = sponsorDoc.data().uid;
+        // ✅ FIX 2: Dynamic safety fallback to ensure UID is extracted cleanly
+        let resolvedSponsorUid = sponsorDoc.id || sponsorDoc.data().uid;
 
         // Anti Self-Referral Validation Gate
         if (resolvedSponsorUid === user.uid) {
@@ -135,7 +148,7 @@ export default function SignupPage() {
           totalWithdraw: 0,
           pendingWithdrawal: 0,
           
-          // ✅ ADDED: Structural dashboard metric hook initialization
+          // Structural dashboard metric hook initialization
           rewardCount: 0,
 
           // BUSINESS & REFERRAL STATUS ENGINE
@@ -172,10 +185,11 @@ export default function SignupPage() {
           mlmActive: false,
           notificationCount: 0,
           unreadNotifications: 0,
-          sponsorId: sponsorUid,
+          // ✅ FIX 3: Dynamic Fallback mapping for seamless historical processing 
+          sponsorId: sponsorUid || "",
           sponsorReferralCode: sponsorUid ? sponsorCode : "",
           shareCode: marketingShareCode,
-          referralCode: marketingShareCode, // Set default value to match reference architecture safely
+          referralCode: marketingShareCode, 
           referralLink: "", 
           totalReferrals: 0,
           directReferrals: 0,
@@ -269,7 +283,6 @@ export default function SignupPage() {
       const result = await createUserWithEmailAndPassword(auth, normalizedEmail, password);
       createdAuthUser = result.user;
 
-      // Commit profile data document model structure first
       await createUserProfile(result.user, cleanName);
       
       await sendEmailVerification(result.user);
@@ -356,11 +369,12 @@ export default function SignupPage() {
             required
             className="w-full rounded-2xl border p-4 outline-none transition focus:border-indigo-500"
           />
+          {/* ✅ FIX 4: Corrected onChange handler binding state */}
           <input
             type="password"
             placeholder="Confirm Password"
             value={confirmPassword}
-            onChange={(e) => setPassword(e.target.value)}
+            onChange={(e) => setConfirmPassword(e.target.value)}
             required
             className="w-full rounded-2xl border p-4 outline-none transition focus:border-indigo-500"
           />
