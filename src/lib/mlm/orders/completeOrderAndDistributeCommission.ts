@@ -132,15 +132,11 @@ export async function completeOrderAndDistributeCommission(orderId: string) {
         const user = userSnap.data();
         const qualifiedSales = Number(user.qualifiedSalesCount || 0) + 1;
 
-        // Increment sales node unconditionally inside runtime environment
-        await updateDoc(userRef, {
-          qualifiedSalesCount: increment(1),
-          updatedAt: serverTimestamp(),
-        });
-
-        const lockedReward = Number(user.currentCycleLockedReward || 0);
+        // Dynamic key alignment fallback for locked rewards schemas
+        const lockedReward = Number(user.currentCycleLockedReward || user.lockedWatchReward || 0);
         const cycleStatus = user.currentCycleStatus || "active";
 
+        // Condition Check for Cycle Phase
         if (qualifiedSales >= 5 && lockedReward > 0 && cycleStatus === "pending") {
           const rewardResult = await creditWallet({
             uid: userId,
@@ -163,7 +159,19 @@ export async function completeOrderAndDistributeCommission(orderId: string) {
               updatedAt: serverTimestamp(),
             });
             console.log(`🎁 [REWARD ENGINE]: Watch Reward Cycle Unlocked for User: ${userId}`);
+          } else {
+            // Fallback: If wallet transaction fails, increment the count safely without resetting cycles
+            await updateDoc(userRef, {
+              qualifiedSalesCount: increment(1),
+              updatedAt: serverTimestamp(),
+            });
           }
+        } else {
+          // Standard Incremental Lifecycle Path
+          await updateDoc(userRef, {
+            qualifiedSalesCount: increment(1),
+            updatedAt: serverTimestamp(),
+          });
         }
       }
     } catch (rewardError: any) {
