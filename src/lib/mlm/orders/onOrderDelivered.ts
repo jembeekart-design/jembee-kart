@@ -1,9 +1,10 @@
 import { processOrderProfit } from "./processOrderProfit";
-// Absolute paths se import kar rahe hain taaki file structure se farak na pade
-import { distributeLevelCommission } from "@/lib/mlm/distributeLevelCommission";
-import { processCashback } from "@/lib/mlm/processCashback";
-import { processDeliveredOrderForRewardCycle } from "@/lib/mlm/watch-earn/processDeliveredOrderForRewardCycle";
-import { checkRankUpgrade } from "@/lib/mlm/orders/checkRankUpgrade";
+
+// Relative paths jo folder depth ke hisaab se align hain
+import { distributeLevelCommission } from "../distributeLevelCommission";
+import { processCashback } from "../processCashback";
+import { processDeliveredOrderForRewardCycle } from "../watch-earn/processDeliveredOrderForRewardCycle";
+import { checkRankUpgrade } from "./checkRankUpgrade";
 
 interface ProfitResult {
   success: boolean;
@@ -23,7 +24,6 @@ export async function onOrderDelivered(orderId: string, userId: string) {
       return { success: true, status: "PROFIT_PROCESSING_SKIPPED", profit: false };
     }
 
-    // Parallel execution for financial logic
     const finResults = await Promise.allSettled([
       processCashback(userId, profitResult.cashbackAmount),
       distributeLevelCommission({
@@ -34,7 +34,6 @@ export async function onOrderDelivered(orderId: string, userId: string) {
       })
     ]);
 
-    // Sequential execution for system state
     const rewardResult = await processDeliveredOrderForRewardCycle(userId);
     const rankResult = await checkRankUpgrade(userId);
 
