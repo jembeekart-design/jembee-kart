@@ -137,12 +137,12 @@ export default function MyOrdersPage() {
                 <span className={`px-3 py-1 rounded-full text-xs font-bold uppercase ${getStatusColor(order.status)}`}>
                   {order.status || "Pending"}
                 </span>
-                <Link 
-                  href={`/orders/${order.id}`} 
-                  className="text-violet-600 text-sm font-bold underline"
-                >
-                  View Details →
-                </Link>
+                <Link
+  href={`/orders/${order.id}`}
+  className="text-violet-600 text-sm font-bold underline"
+>
+  View Details →
+</Link>
               </div>
             </div>
           ))}
