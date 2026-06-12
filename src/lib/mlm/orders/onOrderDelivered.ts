@@ -1,11 +1,10 @@
 import { processOrderProfit } from "./processOrderProfit";
-// Sabhi files 'orders' folder mein hi hain, isliye ./ use karenge
-import { distributeLevelCommission } from "./distributeLevelCommission";
-import { processCashback } from "./processCashback";
-import { processDeliveredOrderForRewardCycle } from "./processDeliveredOrderForRewardCycle";
-import { checkRankUpgrade } from "./checkRankUpgrade";
+// Absolute paths se import kar rahe hain taaki file structure se farak na pade
+import { distributeLevelCommission } from "@/lib/mlm/distributeLevelCommission";
+import { processCashback } from "@/lib/mlm/processCashback";
+import { processDeliveredOrderForRewardCycle } from "@/lib/mlm/watch-earn/processDeliveredOrderForRewardCycle";
+import { checkRankUpgrade } from "@/lib/mlm/orders/checkRankUpgrade";
 
-// Interface for type safety
 interface ProfitResult {
   success: boolean;
   skipped?: boolean;
@@ -16,22 +15,15 @@ interface ProfitResult {
   [key: string]: any;
 }
 
-/**
- * Master Delivery Pipeline - v5.0
- * Direct Folder Reference Implementation
- */
 export async function onOrderDelivered(orderId: string, userId: string) {
   try {
-    console.log(`🚀 Starting Delivery Pipeline: ${orderId}`);
-
-    // 1. Profit Engine
     const profitResult = (await processOrderProfit(orderId)) as ProfitResult;
     
     if (!profitResult.success || profitResult.skipped) {
       return { success: true, status: "PROFIT_PROCESSING_SKIPPED", profit: false };
     }
 
-    // 2. Financial Engines
+    // Parallel execution for financial logic
     const finResults = await Promise.allSettled([
       processCashback(userId, profitResult.cashbackAmount),
       distributeLevelCommission({
@@ -42,11 +34,10 @@ export async function onOrderDelivered(orderId: string, userId: string) {
       })
     ]);
 
-    // 3. Business State Engines
+    // Sequential execution for system state
     const rewardResult = await processDeliveredOrderForRewardCycle(userId);
     const rankResult = await checkRankUpgrade(userId);
 
-    // 4. Final Report
     const report = {
       profit: true,
       cashback: finResults[0].status === 'fulfilled' && (finResults[0].value as any)?.success === true,
@@ -55,7 +46,6 @@ export async function onOrderDelivered(orderId: string, userId: string) {
       rank: rankResult?.success === true
     };
 
-    console.log(`✅ Pipeline Complete: ${orderId}`, report);
     return { success: true, report };
     
   } catch (error: any) {
