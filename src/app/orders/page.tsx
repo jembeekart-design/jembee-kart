@@ -16,7 +16,7 @@ import { Package, Loader2, AlertCircle } from "lucide-react";
 interface Order {
   id: string;
   productTitle?: string;
-  productImage?: string;
+  image?: string; // Firestore field 'image' ke liye
   amount?: number;
   quantity?: number;
   status?: string;
@@ -40,14 +40,12 @@ export default function MyOrdersPage() {
         return;
       }
 
-      console.log("LOGIN UID:", user.uid);
       const ordersRef = collection(db, "orders");
       const q = query(ordersRef, where("userId", "==", user.uid));
 
       unsubscribeOrders = onSnapshot(
         q,
         (snapshot) => {
-          console.log("TOTAL ORDERS:", snapshot.size);
           const data: Order[] = snapshot.docs.map((doc) => ({
             id: doc.id,
             ...(doc.data() as Omit<Order, "id">),
@@ -124,7 +122,11 @@ export default function MyOrdersPage() {
           {orders.map((order) => (
             <div key={order.id} className="bg-white rounded-3xl p-4 shadow-sm border border-slate-100">
               <div className="flex gap-4">
-                <img src={order.productImage || "/placeholder.png"} alt={order.productTitle || "Product"} className="w-20 h-20 rounded-2xl object-cover bg-slate-100" />
+                <img 
+                  src={order.image || "/placeholder.png"} 
+                  alt={order.productTitle || "Product"} 
+                  className="w-20 h-20 rounded-2xl object-cover bg-slate-100" 
+                />
                 <div className="flex-1">
                   <h3 className="font-bold text-slate-800 line-clamp-2">{order.productTitle || "Product"}</h3>
                   <p className="text-xs text-slate-500 mt-1">Order ID: {order.id}</p>
@@ -135,16 +137,13 @@ export default function MyOrdersPage() {
                 <span className={`px-3 py-1 rounded-full text-xs font-bold uppercase ${getStatusColor(order.status)}`}>
                   {order.status || "Pending"}
                 </span>
-                <Link href={`/dashboard/orders/${order.id}`} className="text-violet-600 text-sm font-bold underline">
+                <Link 
+                  href={`/account/orders/${order.id}`} 
+                  className="text-violet-600 text-sm font-bold underline"
+                >
                   View Details →
                 </Link>
               </div>
-              {order.trackingId && (
-                <div className="mt-3 bg-slate-50 rounded-xl p-3 text-xs">
-                  <p className="text-slate-500">Tracking ID</p>
-                  <p className="font-bold text-slate-700">{order.trackingId}</p>
-                </div>
-              )}
             </div>
           ))}
         </div>
