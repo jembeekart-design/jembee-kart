@@ -138,7 +138,7 @@ export default function MyOrdersPage() {
                   {order.status || "Pending"}
                 </span>
                 <Link 
-                  href={`/account/orders/${order.id}`} 
+                  href={`/orders/${order.id}`} 
                   className="text-violet-600 text-sm font-bold underline"
                 >
                   View Details →
