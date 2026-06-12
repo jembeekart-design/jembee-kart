@@ -4,17 +4,24 @@
  * Verification Target: Absolute 10/10 Enterprise Production Standard
  * 
  * FIXES GITHUB ACTIONS CI/CD BUILD #812 TYPE ERRORS (TS2305 & TS2724)
+ * ALSO FIXES VERCEL DESIGNS DEPLOYMENT ERROR FOR DYNAMIC RANK SELECTION ENGINE
  */
 
 /* ========================================================
    TYPE DEFINITIONS & PLATFORM SAFETY LAYER
    ======================================================== */
-export type MLMIncomeType = "directIncome" | "levelIncome";
+export type MLMIncomeType = "directIncome" | "levelIncome" | "rankBonusIncome";
 
 export interface MLMLevelConfig {
   readonly level: number;
   readonly percentage: number;
   readonly incomeType: MLMIncomeType;
+}
+
+export interface RankLevelDefinition {
+  readonly id: string;
+  readonly requiredTeam: number;
+  readonly bonus: number;
 }
 
 export interface ValidationResult {
@@ -42,10 +49,11 @@ export const INCOME_CATEGORY = "directIncome";
 export const INCOME_CATEGORY_WITHDRAWAL = "wallet_withdrawal";
 
 /**
- * 🚀 CI/CD RESOLUTION - BUILD #812 REPAIR BLOCK
- * Exporting missing core telemetry identifiers to fulfill external sub-module bindings.
+ * 🚀 CI/CD RESOLUTION - BUILD #812 & VERCEL FIXED BLOCK
+ * Exporting core telemetry identifiers to fulfill external sub-module bindings.
  */
 export const INCOME_CATEGORY_TEAM_PERFORMANCE = "teamPerformanceIncome"; // Fixes Error TS2305
+export const INCOME_CATEGORY_RANK_BONUS = "rankBonusIncome";         // Fixes Vercel Line #15 Mismatch
 export const ENTRIES_DIRECTION_IN = "credit";                     // Fixes Error TS2724
 
 export const ENTRIES_DIRECTION = "credit";
@@ -75,6 +83,18 @@ export const MLM_SECURITY_GUARDS = Object.freeze({
 export const MLM_LEVELS_CONFIG: readonly MLMLevelConfig[] = Object.freeze([
   { level: 1, percentage: 5.0, incomeType: "directIncome" }, // 5% of net product profit margin split
   { level: 2, percentage: 2.0, incomeType: "levelIncome" }   // 2% of net product profit margin split
+]);
+
+/* ========================================================
+   ADMIN CONTROLLED LEADERSHIP RANK CONFIGURATIONS (RESOLVED)
+   ======================================================== */
+// [RESOLUTION VERCEL ERROR]: This block exports the exact rules scanned by updateRank.ts (File #126)
+export const RANK_LEVELS_CONFIG: readonly RankLevelDefinition[] = Object.freeze([
+  { id: "Bronze", requiredTeam: 0, bonus: 0 },
+  { id: "Silver", requiredTeam: 25, bonus: 500 },
+  { id: "Gold", requiredTeam: 100, bonus: 2000 },
+  { id: "Diamond", requiredTeam: 300, bonus: 10000 },
+  { id: "Crown", requiredTeam: 1000, bonus: 50000 }
 ]);
 
 /* ========================================================
@@ -128,6 +148,11 @@ function validateMLMConfig(): ValidationResult {
     // Enterprise system hard budget ceiling guard lock
     if (calculatedTotal > MLM_SECURITY_GUARDS.MAX_ALLOWED_TOTAL_PERCENTAGE) {
       throw new Error(`Total configuration payout (${calculatedTotal}%) exceeds corporate threshold parameters (${MLM_SECURITY_GUARDS.MAX_ALLOWED_TOTAL_PERCENTAGE}%).`);
+    }
+
+    // Secondary validation block sanity validation for structural Rank setups
+    if (!RANK_LEVELS_CONFIG || RANK_LEVELS_CONFIG.length === 0) {
+      throw new Error("CRITICAL CONFIG ERROR: Leadership ranks array is empty.");
     }
 
     return {
