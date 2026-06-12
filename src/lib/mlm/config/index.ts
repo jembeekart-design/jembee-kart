@@ -7,10 +7,13 @@
 export const ENGINE_VERSION = "4.0.0";
 
 export const MLM_CONFIG = {
-  maxWatchRewardLimit: 20,       // ₹20 cap for margin safety
-  defaultConversionRate: 0.5,    // Admin can override in Firestore
-  defaultRequiredOrders: 5,      // Ecommerce first condition
-  defaultRewardPoints: 50,       // Standard reward
-  maxPendingCycles: 5,           // Prevents system abuse
-  minWatchSeconds: 30            // Baseline for view validation
+  maxWatchRewardLimit: 20,       
+  defaultConversionRate: 0.5,    
+  defaultRequiredOrders: 5,      
+  defaultRewardPoints: 50,       
+  maxPendingCycles: 5,           
+  minWatchSeconds: 30,
+  
+  // Is line ko add karna zaroori hai taaki build error hat jaye
+  maxReferralLevels: 4 
 };
