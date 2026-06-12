@@ -1,6 +1,5 @@
 import { processOrderProfit } from "./processOrderProfit";
-// Ensure this path is correct. If it's in the same folder, this is fine.
-import { distributeLevelCommission } from "./distributeLevelCommission"; 
+import { distributeLevelCommission } from "./distributeLevelCommission";
 import { processCashback } from "./processCashback";
 import { processDeliveredOrderForRewardCycle } from "../watch-earn/processDeliveredOrderForRewardCycle";
 import { checkRankUpgrade } from "../rank/checkRankUpgrade";
@@ -11,17 +10,16 @@ export async function onOrderDelivered(orderId: string, userId: string) {
 
     const profitResult = await processOrderProfit(orderId);
     
-    // FIX: Match properties with what processOrderProfit actually returns
     if (!profitResult.success || profitResult.skipped) {
       return { success: true, status: "PROFIT_PROCESSING_SKIPPED_OR_FAILED", profit: false };
     }
 
-    // FIX: Using profitResult.cashback and profitResult.mlm (if that's what your function returns)
+    // FIX: Using exact property names (cashbackAmount & mlmAmount)
     const finResults = await Promise.allSettled([
-      processCashback(userId, profitResult.cashback), 
+      processCashback(userId, profitResult.cashbackAmount),
       distributeLevelCommission({
         userId: userId,
-        profitAmount: profitResult.mlm, // FIX: Mapped to mlm instead of mlmAmount
+        profitAmount: profitResult.mlmAmount, // FIX: Used mlmAmount
         orderId: orderId,
         orderStatus: "delivered"
       })
@@ -38,8 +36,11 @@ export async function onOrderDelivered(orderId: string, userId: string) {
       rank: rankResult?.success === true
     };
 
+    console.log(`✅ Pipeline Complete: ${orderId}`, report);
     return { success: true, report };
+    
   } catch (error: any) {
+    console.error("PIPELINE_CRITICAL_FAILURE:", error.message);
     return { success: false, error: error.message };
   }
 }
