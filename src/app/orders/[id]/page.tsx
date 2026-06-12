@@ -3,7 +3,7 @@
 import { useEffect, useState } from "react";
 import { useParams, useRouter } from "next/navigation";
 import { doc, getDoc, getFirestore } from "firebase/firestore";
-import { app } from "@/firebase/config";
+import app from "@/firebase/config"; // 'app' ko default import ki tarah laayein
 import {
   ArrowLeft,
   Loader2,
