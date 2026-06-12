@@ -1,9 +1,9 @@
 import { processOrderProfit } from "./processOrderProfit";
-// Using Absolute Paths (@/lib/mlm/...) to bypass TS2307 Module Resolution Errors
-import { distributeLevelCommission } from "@/lib/mlm/distributeLevelCommission";
-import { processCashback } from "@/lib/mlm/processCashback";
-import { processDeliveredOrderForRewardCycle } from "@/lib/mlm/watch-earn/processDeliveredOrderForRewardCycle";
-import { checkRankUpgrade } from "@/lib/mlm/rank/checkRankUpgrade";
+// Sabhi files 'orders' folder mein hi hain, isliye ./ use karenge
+import { distributeLevelCommission } from "./distributeLevelCommission";
+import { processCashback } from "./processCashback";
+import { processDeliveredOrderForRewardCycle } from "./processDeliveredOrderForRewardCycle";
+import { checkRankUpgrade } from "./checkRankUpgrade";
 
 // Interface for type safety
 interface ProfitResult {
@@ -17,22 +17,21 @@ interface ProfitResult {
 }
 
 /**
- * Master Delivery Pipeline - v4.0
- * Absolute Path Imports Implemented
+ * Master Delivery Pipeline - v5.0
+ * Direct Folder Reference Implementation
  */
 export async function onOrderDelivered(orderId: string, userId: string) {
   try {
     console.log(`🚀 Starting Delivery Pipeline: ${orderId}`);
 
-    // Profit Engine Execution
+    // 1. Profit Engine
     const profitResult = (await processOrderProfit(orderId)) as ProfitResult;
     
-    // Check processing success
     if (!profitResult.success || profitResult.skipped) {
-      return { success: true, status: "PROFIT_PROCESSING_SKIPPED_OR_FAILED", profit: false };
+      return { success: true, status: "PROFIT_PROCESSING_SKIPPED", profit: false };
     }
 
-    // Financial Engines: Parallel processing with typed properties
+    // 2. Financial Engines
     const finResults = await Promise.allSettled([
       processCashback(userId, profitResult.cashbackAmount),
       distributeLevelCommission({
@@ -43,11 +42,11 @@ export async function onOrderDelivered(orderId: string, userId: string) {
       })
     ]);
 
-    // Business Logic Engines: Sequential processing
+    // 3. Business State Engines
     const rewardResult = await processDeliveredOrderForRewardCycle(userId);
     const rankResult = await checkRankUpgrade(userId);
 
-    // Final Report Assembly
+    // 4. Final Report
     const report = {
       profit: true,
       cashback: finResults[0].status === 'fulfilled' && (finResults[0].value as any)?.success === true,
