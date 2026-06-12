@@ -2,6 +2,8 @@
  * JembeeKart MLM Core, Financial Infrastructure & Validation Engine Configuration
  * System Version: v10_Stable_Freeze_Platinum
  * Verification Target: Absolute 10/10 Enterprise Production Standard
+ * 
+ * FIXES GITHUB ACTIONS CI/CD BUILD #812 TYPE ERRORS (TS2305 & TS2724)
  */
 
 /* ========================================================
@@ -38,6 +40,14 @@ export const MASTER_WALLET_SLOT = "walletBalance";
 
 export const INCOME_CATEGORY = "directIncome";
 export const INCOME_CATEGORY_WITHDRAWAL = "wallet_withdrawal";
+
+/**
+ * 🚀 CI/CD RESOLUTION - BUILD #812 REPAIR BLOCK
+ * Exporting missing core telemetry identifiers to fulfill external sub-module bindings.
+ */
+export const INCOME_CATEGORY_TEAM_PERFORMANCE = "teamPerformanceIncome"; // Fixes Error TS2305
+export const ENTRIES_DIRECTION_IN = "credit";                     // Fixes Error TS2724
+
 export const ENTRIES_DIRECTION = "credit";
 export const ENTRIES_DIRECTION_OUT = "debit";
 
