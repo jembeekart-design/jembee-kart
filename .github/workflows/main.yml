@@ -1,4 +1,4 @@
-name: Build And Deploy
+Name: Build And Deploy
 
 on:
   push:
@@ -31,6 +31,12 @@ jobs:
         run: |
           echo "Checking imports..."
           grep -R "@/firebase/config" src || true
+
+      - name: Debug File Paths
+        run: |
+          echo "Listing MLM files to find correct path:"
+          find src/lib/mlm -name "processCashback.ts"
+          find src/lib/mlm -name "checkRankUpgrade.ts"
 
       - name: Type Check
         run: npx tsc --noEmit
