@@ -1,6 +1,7 @@
 import { processOrderProfit } from "./processOrderProfit";
-import { distributeLevelCommission } from "./distributeLevelCommission";
-import { processCashback } from "./processCashback";
+// Import paths fixed to look in parent directory based on your folder structure
+import { distributeLevelCommission } from "../distributeLevelCommission";
+import { processCashback } from "../processCashback";
 import { processDeliveredOrderForRewardCycle } from "../watch-earn/processDeliveredOrderForRewardCycle";
 import { checkRankUpgrade } from "../rank/checkRankUpgrade";
 
@@ -10,16 +11,17 @@ export async function onOrderDelivered(orderId: string, userId: string) {
 
     const profitResult = await processOrderProfit(orderId);
     
-    if (!profitResult.success || profitResult.skipped) {
-      return { success: true, status: "PROFIT_PROCESSING_SKIPPED_OR_FAILED", profit: false };
+    // Check if process was skipped (e.g., netProfit <= 0)
+    if (!profitResult.success || (profitResult as any).skipped) {
+      return { success: true, status: "PROFIT_PROCESSING_SKIPPED", profit: false };
     }
 
-    // FIX: Using exact property names (cashbackAmount & mlmAmount)
+    // Now TypeScript will recognize these properties because they exist in your processOrderProfit return
     const finResults = await Promise.allSettled([
       processCashback(userId, profitResult.cashbackAmount),
       distributeLevelCommission({
         userId: userId,
-        profitAmount: profitResult.mlmAmount, // FIX: Used mlmAmount
+        profitAmount: profitResult.mlmAmount,
         orderId: orderId,
         orderStatus: "delivered"
       })
