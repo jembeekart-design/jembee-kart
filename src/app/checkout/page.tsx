@@ -5,8 +5,8 @@ import { useRouter, useSearchParams } from "next/navigation";
 import { auth, db } from "@/firebase/config";
 import { doc, getDoc } from "firebase/firestore";
 import { 
-  ArrowLeft, MapPin, Loader2, CreditCard, 
-  Home, Heart, Info, Smartphone 
+  ArrowLeft, MapPin, Loader2, ShieldCheck, CreditCard, 
+  Home, Truck, Heart, Info, Smartphone, CheckCircle 
 } from "lucide-react";
 
 function CheckoutContent() {
@@ -37,11 +37,13 @@ function CheckoutContent() {
 
   const handlePlaceOrder = async () => {
     setLoading(true);
-    // Yahan order placement logic aayegi
-    setTimeout(() => {
-        setLoading(false);
-        router.push(`/payment-success`);
-    }, 1500);
+    try {
+      router.push(`/payment-success`);
+    } catch (error) {
+      alert("Order Failed");
+    } finally {
+      setLoading(false);
+    }
   };
 
   if (dataLoading) return <div className="flex min-h-screen items-center justify-center"><Loader2 className="animate-spin text-purple-600" /></div>;
@@ -50,20 +52,20 @@ function CheckoutContent() {
     <main className="min-h-screen bg-[#f8f9fe] pb-32 px-4 max-w-lg mx-auto font-sans">
       
       {/* HEADER */}
-      <div className="py-6 flex items-center justify-between sticky top-0 bg-[#f8f9fe]/80 backdrop-blur-md z-10">
+      <div className="py-6 flex items-center justify-between">
         <div className="flex items-center gap-4">
-          <button onClick={() => router.back()} className="p-2 bg-white rounded-full shadow-sm border border-gray-100"><ArrowLeft size={20} /></button>
-          <h1 className="text-xl font-black text-gray-900 tracking-tight">Checkout</h1>
+          <button onClick={() => router.back()} className="p-2 bg-white rounded-full shadow-sm"><ArrowLeft size={20} /></button>
+          <h1 className="text-2xl font-black text-gray-900 tracking-tighter">Checkout</h1>
         </div>
-        <div className="flex gap-4 text-gray-500">
+        <div className="flex gap-4 text-gray-400">
           <Heart size={22} />
           <Info size={22} />
         </div>
       </div>
 
       {/* PRODUCT CARD */}
-      <div className="bg-white p-5 rounded-[2rem] mb-4 shadow-[0_4px_20px_-10px_rgba(0,0,0,0.1)] border border-gray-100 flex gap-5 relative">
-        <img src={product?.image || "/placeholder.jpg"} className="w-24 h-24 rounded-2xl object-cover bg-gray-100" />
+      <div className="bg-white p-5 rounded-[2rem] mb-4 shadow-sm border border-gray-100 flex gap-5 relative">
+        <img src={product?.image} className="w-24 h-24 rounded-2xl object-cover bg-gray-100" />
         <div className="flex-1 flex flex-col justify-center">
           <h3 className="font-bold text-gray-900 text-sm leading-tight">{product?.title || "T Shirt"}</h3>
           <p className="text-[11px] text-gray-400 font-semibold mt-1">Size: M • Color: Black</p>
@@ -76,7 +78,7 @@ function CheckoutContent() {
       </div>
 
       {/* DELIVERY ADDRESS */}
-      <div className="bg-white p-6 rounded-[2rem] mb-4 shadow-[0_4px_20px_-10px_rgba(0,0,0,0.1)] border border-gray-100">
+      <div className="bg-white p-6 rounded-[2rem] mb-4 shadow-sm border border-gray-100">
         <div className="flex justify-between items-center mb-5">
           <h2 className="font-bold text-sm flex items-center gap-2 text-gray-800"><MapPin size={18} className="text-purple-600"/> Delivery Address</h2>
           <button className="text-purple-600 font-bold text-[11px]">Change {">"}</button>
@@ -92,7 +94,7 @@ function CheckoutContent() {
       </div>
 
       {/* PAYMENT METHOD */}
-      <div className="bg-white p-6 rounded-[2rem] mb-4 shadow-[0_4px_20px_-10px_rgba(0,0,0,0.1)] border border-gray-100">
+      <div className="bg-white p-6 rounded-[2rem] mb-4 shadow-sm border border-gray-100">
         <h2 className="font-bold text-sm mb-5 text-gray-800"><CreditCard size={18} className="inline mr-2 text-purple-600"/> Payment Method</h2>
         
         <div className="border-2 border-purple-600 bg-purple-50 p-4 rounded-3xl flex justify-between items-center mb-3">
@@ -100,7 +102,7 @@ function CheckoutContent() {
             <div className="w-5 h-5 border-2 border-purple-600 rounded-full flex items-center justify-center"><div className="w-2.5 h-2.5 bg-purple-600 rounded-full"></div></div>
             <span className="text-sm font-bold">Cash On Delivery (COD)</span>
           </div>
-          <span className="text-[9px] bg-green-100 text-green-700 px-2 py-1 rounded-md font-bold uppercase">Recommended</span>
+          <span className="text-[9px] bg-green-100 text-green-700 px-2 py-1 rounded-md font-bold">Recommended</span>
         </div>
 
         <div className="border border-gray-100 p-4 rounded-3xl flex items-center gap-3 opacity-50">
@@ -111,7 +113,7 @@ function CheckoutContent() {
       </div>
 
       {/* PRICE DETAILS */}
-      <div className="bg-white p-6 rounded-[2rem] border border-gray-100 shadow-[0_4px_20px_-10px_rgba(0,0,0,0.1)] mb-4">
+      <div className="bg-white p-6 rounded-[2rem] border border-gray-100 shadow-sm mb-4">
         <h2 className="font-bold text-sm mb-5">Price Details</h2>
         <div className="space-y-3 text-xs font-semibold">
             <div className="flex justify-between text-gray-500"><span>MRP</span><span>₹1499</span></div>
@@ -124,7 +126,7 @@ function CheckoutContent() {
 
       {/* FIXED BUTTON */}
       <div className="fixed bottom-0 left-0 right-0 p-4 bg-white border-t border-gray-100 rounded-t-[2rem] shadow-[0_-5px_20px_rgba(0,0,0,0.05)]">
-        <button onClick={handlePlaceOrder} className="w-full bg-[#3b2bc4] text-white py-4 rounded-2xl font-black text-lg shadow-lg shadow-purple-600/30 transition-transform active:scale-95">
+        <button onClick={handlePlaceOrder} className="w-full bg-[#3b2bc4] text-white py-4 rounded-2xl font-black text-lg shadow-lg shadow-purple-600/30">
           {loading ? "Processing..." : "Place Order (₹1099)"}
         </button>
       </div>
