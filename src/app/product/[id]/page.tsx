@@ -151,34 +151,15 @@ export default function ProductPage() {
   /* ======================================================
   BUY NOW (UPDATED ROUTING WITH ORDER REFERENCE ENGINE)
   ====================================================== */
-  async function buyNow() {
-    if (!product) return;
+  const router = useRouter();
 
-    try {
-      // 1. Capture order reference from the document snapshot injection
-      const orderRef = await addDoc(collection(db, "orders"), {
-        userId: auth.currentUser?.uid || "",
-        customerName: auth.currentUser?.displayName || "Customer",
+function buyNow() {
+  if (!product) return;
 
-        productId: product.id,
-        productTitle: product.title,
-        amount: product.discountPrice || 0,
-
-        image: product.images?.[0] || "",
-        address: "", // Address field can be filled in checkout profile later
-
-        status: "paid", // Instantly initialized as paid
-        createdAt: Date.now(),
-      });
-
-      // 2. Client-side push state allocation using template literals
-      window.location.href = `/payment-success?orderId=${orderRef.id}`;
-
-    } catch (error) {
-      console.error(error);
-      alert("Order Failed");
-    }
-  }
+  router.push(
+    `/checkout?productId=${product.id}`
+  );
+}
 
   if (loading) {
     return (
