@@ -6,39 +6,48 @@ import { auth, db } from "@/firebase/config";
 import { doc, getDoc, addDoc, collection, serverTimestamp } from "firebase/firestore";
 import { ArrowLeft, MapPin, Loader2, Package } from "lucide-react";
 
-// Sub-component jisme useSearchParams ka use ho raha hai
 function CheckoutContent() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const productId = searchParams.get("productId");
 
   const [loading, setLoading] = useState(false);
+  const [dataLoading, setDataLoading] = useState(true); // New state for initial fetch
   const [address, setAddress] = useState<any>(null);
   const [product, setProduct] = useState<any>(null);
 
   useEffect(() => {
-    async function fetchData() {
-      if (!auth.currentUser || !productId) return;
+    // Auth check - wait for user
+    const unsubscribe = auth.onAuthStateChanged(async (user) => {
+      if (!user || !productId) {
+        setDataLoading(false);
+        return;
+      }
 
-      const addrRef = doc(db, "users", auth.currentUser.uid, "addresses", "default");
-      const addrSnap = await getDoc(addrRef);
-      if (addrSnap.exists()) setAddress(addrSnap.data());
+      try {
+        const addrRef = doc(db, "users", user.uid, "addresses", "default");
+        const addrSnap = await getDoc(addrRef);
+        if (addrSnap.exists()) setAddress(addrSnap.data());
 
-      const prodRef = doc(db, "products", productId);
-      const prodSnap = await getDoc(prodRef);
-      if (prodSnap.exists()) setProduct({ id: prodSnap.id, ...prodSnap.data() });
-    }
-    fetchData();
+        const prodRef = doc(db, "products", productId);
+        const prodSnap = await getDoc(prodRef);
+        if (prodSnap.exists()) setProduct({ id: prodSnap.id, ...prodSnap.data() });
+      } catch (err) {
+        console.error("FETCH_ERROR:", err);
+      } finally {
+        setDataLoading(false);
+      }
+    });
+    return () => unsubscribe();
   }, [productId]);
 
   async function handlePlaceOrder() {
     if (!auth.currentUser || !product || !address) {
-      alert("Missing Order Details");
+      alert("Missing details. Please ensure you are logged in and have an address.");
       return;
     }
 
     setLoading(true);
-
     const mrp = Number(product.price || 0);
     const finalAmount = Number(product.discountPrice || product.price || 0);
     const discount = mrp - finalAmount;
@@ -47,64 +56,55 @@ function CheckoutContent() {
       const orderRef = await addDoc(collection(db, "orders"), {
         orderNumber: "JK-" + Date.now(),
         userId: auth.currentUser.uid,
-        
         productId: product.id,
         productTitle: product.title,
         productImage: product.image || (product.images?.length ? product.images[0] : ""),
         productPrice: mrp,
         productDiscountPrice: finalAmount,
         quantity: 1,
-
         customerName: auth.currentUser.displayName || "Customer",
         customerEmail: auth.currentUser.email || "",
         customerPhone: address.mobile || "",
-
         sellerId: product.seller?.id || "default_seller",
         sellerName: product.seller?.name || "JembeeKart Official",
-
-        status: "placed", 
+        status: "placed",
         paymentMethod: "cod",
-        
         placedAt: serverTimestamp(),
         processingAt: null,
         shippedAt: null,
         deliveredAt: null,
-        
         exchangeEligible: true,
         exchangeRequested: false,
-        
         subtotal: mrp,
         discount,
         finalAmount,
-        
         shippingAddress: address,
-        
         referralEligible: true,
         commissionProcessed: false,
         cashbackProcessed: false,
         rewardProcessed: false,
-        
         createdAt: serverTimestamp(),
       });
 
       router.push(`/payment-success?orderId=${orderRef.id}`);
     } catch (error) {
-      console.error("ORDER_PLACEMENT_ERROR:", error);
-      alert("Order Placement Failed. Please try again.");
+      console.error(error);
+      alert("Order Failed.");
     } finally {
       setLoading(false);
     }
   }
 
-  if (!product) return <div className="p-10 text-center font-bold">Loading Checkout...</div>;
+  if (dataLoading) return <main className="flex min-h-screen items-center justify-center"><Loader2 className="animate-spin text-purple-600" size={32}/></main>;
+  if (!product) return <main className="p-10 text-center font-bold">Product not found. <button onClick={() => router.push("/")} className="text-purple-600">Go Home</button></main>;
 
   return (
     <main className="min-h-screen bg-slate-50 pb-24">
-      <div className="sticky top-0 bg-white border-b px-4 py-4 flex items-center gap-4 z-10">
+       {/* Checkout UI structure remains same as previously approved */}
+       <div className="sticky top-0 bg-white border-b px-4 py-4 flex items-center gap-4 z-10">
         <button onClick={() => router.back()}><ArrowLeft size={20} /></button>
         <h1 className="text-xl font-black text-slate-900">Checkout</h1>
       </div>
-
       <div className="p-4 space-y-4 max-w-lg mx-auto">
         <div className="bg-white p-5 rounded-3xl border border-slate-100 shadow-sm">
           <h2 className="font-bold flex items-center gap-2 text-slate-700">
@@ -120,7 +120,6 @@ function CheckoutContent() {
             <button onClick={() => router.push("/address")} className="mt-2 text-purple-600 font-bold text-sm">Add Address</button>
           )}
         </div>
-
         <div className="bg-white p-5 rounded-3xl border border-slate-100 shadow-sm">
           <h2 className="font-bold mb-3 text-slate-700 flex items-center gap-2">
             <Package size={18} className="text-purple-600"/> Order Summary
@@ -135,7 +134,6 @@ function CheckoutContent() {
             <span>₹{product.discountPrice}</span>
           </div>
         </div>
-
         <button
           onClick={handlePlaceOrder}
           disabled={loading || !address}
@@ -148,10 +146,9 @@ function CheckoutContent() {
   );
 }
 
-// Main export jahan Suspense use kiya gaya hai
 export default function CheckoutPage() {
   return (
-    <Suspense fallback={<div className="p-10 text-center">Loading Checkout...</div>}>
+    <Suspense fallback={<div className="p-10 text-center">Loading...</div>}>
       <CheckoutContent />
     </Suspense>
   );
