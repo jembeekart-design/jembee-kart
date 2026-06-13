@@ -10,16 +10,12 @@ import {
 } from "firebase/firestore";
 
 import {
+  ArrowLeft,
   MapPin,
   Loader2,
-  ArrowLeft,
 } from "lucide-react";
 
-import { useRouter } from "next/navigation";
-
 export default function AddressPage() {
-  const router = useRouter();
-
   const [loading, setLoading] = useState(false);
 
   const [form, setForm] = useState({
@@ -53,12 +49,12 @@ export default function AddressPage() {
       }
 
       if (
-        !form.fullName ||
-        !form.mobile ||
-        !form.address ||
-        !form.city ||
-        !form.state ||
-        !form.pincode
+        !form.fullName.trim() ||
+        !form.mobile.trim() ||
+        !form.address.trim() ||
+        !form.city.trim() ||
+        !form.state.trim() ||
+        !form.pincode.trim()
       ) {
         alert("Please Fill All Required Fields");
         return;
@@ -75,49 +71,68 @@ export default function AddressPage() {
       );
 
       await setDoc(addressRef, {
-        ...form,
+        fullName: form.fullName.trim(),
+        mobile: form.mobile.trim(),
+        address: form.address.trim(),
+        landmark: form.landmark.trim(),
+        city: form.city.trim(),
+        state: form.state.trim(),
+        pincode: form.pincode.trim(),
+
         userId: user.uid,
         isDefault: true,
+
         createdAt: serverTimestamp(),
         updatedAt: serverTimestamp(),
       });
 
       alert("Address Saved Successfully");
 
-      router.push("/checkout");
+      // Form Reset
+      setForm({
+        fullName: "",
+        mobile: "",
+        address: "",
+        landmark: "",
+        city: "",
+        state: "",
+        pincode: "",
+      });
     } catch (error: any) {
       console.error("ADDRESS_SAVE_ERROR:", error);
-
-      alert(error.message);
+      alert(error.message || "Failed To Save Address");
     } finally {
       setLoading(false);
     }
   }
 
   return (
-    <main className="min-h-screen bg-slate-50 pb-20">
-      <div className="sticky top-0 z-20 bg-white border-b px-4 py-4 flex items-center gap-3">
+    <main className="min-h-screen bg-slate-50 pb-24">
+      {/* Header */}
+      <div className="sticky top-0 z-20 bg-white border-b border-slate-200 px-4 py-4 flex items-center gap-3">
         <button
-          onClick={() => router.back()}
-          className="w-10 h-10 rounded-full bg-slate-100 flex items-center justify-center"
+          onClick={() => window.history.back()}
+          className="h-10 w-10 rounded-full bg-slate-100 flex items-center justify-center"
         >
           <ArrowLeft size={18} />
         </button>
 
-        <h1 className="text-xl font-black text-slate-800">
+        <h1 className="text-2xl font-black text-slate-800">
           Save Address
         </h1>
       </div>
 
+      {/* Form */}
       <div className="p-4">
-        <div className="bg-white rounded-3xl p-5 shadow-sm space-y-4">
+        <div className="bg-white rounded-[32px] shadow-sm border border-slate-100 p-5 space-y-4">
+
           <input
             type="text"
             name="fullName"
             placeholder="Full Name"
             value={form.fullName}
             onChange={handleChange}
-            className="w-full border rounded-2xl p-3"
+            className="w-full rounded-3xl border border-slate-300 px-5 py-4 text-lg outline-none"
           />
 
           <input
@@ -126,7 +141,7 @@ export default function AddressPage() {
             placeholder="Mobile Number"
             value={form.mobile}
             onChange={handleChange}
-            className="w-full border rounded-2xl p-3"
+            className="w-full rounded-3xl border border-slate-300 px-5 py-4 text-lg outline-none"
           />
 
           <textarea
@@ -134,7 +149,8 @@ export default function AddressPage() {
             placeholder="Full Address"
             value={form.address}
             onChange={handleChange}
-            className="w-full border rounded-2xl p-3 h-24"
+            rows={4}
+            className="w-full rounded-3xl border border-slate-300 px-5 py-4 text-lg outline-none resize-none"
           />
 
           <input
@@ -143,7 +159,7 @@ export default function AddressPage() {
             placeholder="Landmark"
             value={form.landmark}
             onChange={handleChange}
-            className="w-full border rounded-2xl p-3"
+            className="w-full rounded-3xl border border-slate-300 px-5 py-4 text-lg outline-none"
           />
 
           <input
@@ -152,7 +168,7 @@ export default function AddressPage() {
             placeholder="City"
             value={form.city}
             onChange={handleChange}
-            className="w-full border rounded-2xl p-3"
+            className="w-full rounded-3xl border border-slate-300 px-5 py-4 text-lg outline-none"
           />
 
           <input
@@ -161,7 +177,7 @@ export default function AddressPage() {
             placeholder="State"
             value={form.state}
             onChange={handleChange}
-            className="w-full border rounded-2xl p-3"
+            className="w-full rounded-3xl border border-slate-300 px-5 py-4 text-lg outline-none"
           />
 
           <input
@@ -170,25 +186,25 @@ export default function AddressPage() {
             placeholder="Pincode"
             value={form.pincode}
             onChange={handleChange}
-            className="w-full border rounded-2xl p-3"
+            className="w-full rounded-3xl border border-slate-300 px-5 py-4 text-lg outline-none"
           />
 
           <button
             onClick={handleSaveAddress}
             disabled={loading}
-            className="w-full bg-violet-600 text-white rounded-2xl py-4 font-bold flex items-center justify-center gap-2"
+            className="w-full mt-2 bg-gradient-to-r from-violet-600 to-purple-600 text-white rounded-3xl py-5 font-black text-xl flex items-center justify-center gap-2 disabled:opacity-60"
           >
             {loading ? (
               <>
                 <Loader2
-                  size={18}
+                  size={22}
                   className="animate-spin"
                 />
                 Saving...
               </>
             ) : (
               <>
-                <MapPin size={18} />
+                <MapPin size={22} />
                 Save Address
               </>
             )}
