@@ -188,7 +188,6 @@ function CheckoutContent() {
             Payment Method
           </h2>
 
-          {/* COD Option - Selected */}
           <div className="border-[1.5px] border-purple-600 bg-purple-50/40 p-4 rounded-2xl flex items-center justify-between">
             <div className="flex items-center gap-3">
               <div className="w-5 h-5 rounded-full border-4 border-purple-600 bg-white flex items-center justify-center" />
@@ -203,24 +202,11 @@ function CheckoutContent() {
             </span>
           </div>
 
-          {/* UPI Option - Coming Soon */}
           <div className="opacity-50 p-4 rounded-2xl flex items-center justify-between border border-slate-100">
             <div className="flex items-center gap-3">
               <div className="w-5 h-5 rounded-full border-2 border-slate-300 bg-white" />
               <span className="font-black text-slate-400 italic text-sm tracking-tighter">UPI</span>
               <p className="font-bold text-slate-500 text-sm pl-2">UPI / Google Pay / PhonePe</p>
-            </div>
-            <span className="bg-slate-100 text-slate-500 text-[9px] font-bold px-2 py-0.5 rounded-md">
-              Coming Soon
-            </span>
-          </div>
-
-          {/* Card Option - Coming Soon */}
-          <div className="opacity-50 p-4 rounded-2xl flex items-center justify-between border border-slate-100">
-            <div className="flex items-center gap-3">
-              <div className="w-5 h-5 rounded-full border-2 border-slate-300 bg-white" />
-              <div className="text-slate-400"><CreditCard size={18}/></div>
-              <p className="font-bold text-slate-500 text-sm">Credit / Debit Card / Net Banking</p>
             </div>
             <span className="bg-slate-100 text-slate-500 text-[9px] font-bold px-2 py-0.5 rounded-md">
               Coming Soon
