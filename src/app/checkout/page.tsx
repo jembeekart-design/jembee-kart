@@ -4,7 +4,7 @@ import { useEffect, useState, Suspense } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { auth, db } from "@/firebase/config";
 import { doc, getDoc, addDoc, collection, serverTimestamp } from "firebase/firestore";
-import { ArrowLeft, MapPin, Loader2, ShieldCheck, CreditCard, Home, Lock } from "lucide-react";
+import { ArrowLeft, MapPin, Loader2, ShieldCheck, CreditCard, Home, Lock, Truck, ChevronRight } from "lucide-react";
 
 function CheckoutContent() {
   const router = useRouter();
@@ -32,98 +32,116 @@ function CheckoutContent() {
     return () => unsubscribe();
   }, [productId]);
 
-  // FIX: Proper handlePlaceOrder with redirection
   const handlePlaceOrder = async () => {
-    if (!product) return;
     setLoading(true);
     try {
       const orderRef = await addDoc(collection(db, "orders"), {
         userId: auth.currentUser?.uid,
         productId: product.id,
-        productTitle: product.title,
         amount: product.discountPrice || product.price,
         status: "pending",
         paymentMethod: "COD",
         createdAt: serverTimestamp(),
       });
-      
-      // Success redirection
       router.push(`/payment-success?orderId=${orderRef.id}`);
     } catch (error) {
-      console.error("Order error:", error);
-      alert("Failed to place order. Please try again.");
+      alert("Order Failed");
     } finally {
       setLoading(false);
     }
   };
 
-  if (dataLoading) return <div className="flex min-h-screen items-center justify-center"><Loader2 className="animate-spin text-purple-600" size={32} /></div>;
+  if (dataLoading) return <div className="flex min-h-screen items-center justify-center"><Loader2 className="animate-spin text-purple-600" /></div>;
 
   return (
     <main className="min-h-screen bg-[#f3f4fa] pb-32 px-4 max-w-lg mx-auto font-sans">
       {/* HEADER */}
       <div className="py-6 flex items-center justify-between">
         <div className="flex items-center gap-3">
-          <button onClick={() => router.back()}><ArrowLeft size={24} className="text-gray-900" /></button>
+          <button onClick={() => router.back()}><ArrowLeft size={24} /></button>
           <div>
-            <h1 className="text-xl font-bold">Checkout</h1>
+            <h1 className="text-xl font-black">Checkout</h1>
+            <p className="text-[11px] text-gray-500 font-medium">Review your order and place</p>
           </div>
         </div>
         <div className="flex items-center gap-1 text-purple-700">
           <ShieldCheck size={18} />
-          <span className="text-xs font-bold">100% Secure</span>
+          <span className="text-[10px] font-bold tracking-tight">100% Secure</span>
         </div>
       </div>
 
       {/* PRODUCT CARD */}
-      <div className="bg-white p-4 rounded-2xl mb-4 border flex gap-4 shadow-sm">
-        <img src={product?.image} className="w-20 h-20 rounded-xl object-cover bg-gray-100" />
+      <div className="bg-white p-4 rounded-3xl mb-4 border border-gray-100 flex gap-4 shadow-sm">
+        <img src={product?.image} className="w-20 h-20 rounded-2xl object-cover bg-gray-100" />
         <div className="flex-1">
           <h3 className="font-bold text-gray-900">{product?.title}</h3>
-          <p className="text-xs text-gray-500">Size: M • Color: Black</p>
-          <div className="flex items-baseline gap-2 mt-1">
-            <span className="text-xs line-through text-gray-400">₹{product?.price}</span>
-            <span className="text-lg font-bold">₹{product?.discountPrice || product?.price}</span>
+          <p className="text-xs text-gray-500 font-medium">Size: M • Color: Black</p>
+          <div className="bg-green-50 text-green-700 text-[10px] font-bold px-2 py-0.5 rounded w-fit my-1.5">27% OFF</div>
+          <div className="flex items-baseline gap-2">
+            <span className="text-xs line-through text-gray-400 font-bold">₹{product?.price}</span>
+            <span className="text-lg font-black">₹{product?.discountPrice}</span>
           </div>
         </div>
+        <div className="text-[10px] font-black self-start bg-gray-50 px-2 py-1 rounded-lg">Qty: 1</div>
       </div>
 
       {/* DELIVERY ADDRESS */}
-      <div className="bg-white p-5 rounded-2xl mb-4 border shadow-sm">
-        <h2 className="font-bold text-sm mb-3 flex items-center gap-2"><MapPin size={16} className="text-purple-600"/> Delivery Address</h2>
+      <div className="bg-white p-5 rounded-3xl mb-4 border border-gray-100 shadow-sm">
+        <div className="flex justify-between items-center mb-4">
+          <h2 className="font-black text-sm flex items-center gap-2"><MapPin size={16} className="text-purple-600"/> Delivery Address</h2>
+          <button className="text-purple-600 font-black text-[11px]">Change Address {">"}</button>
+        </div>
         <div className="flex gap-3">
-          <div className="bg-purple-50 p-3 rounded-xl h-fit"><Home size={20} className="text-purple-600"/></div>
+          <div className="bg-purple-50 p-3 rounded-2xl h-fit"><Home size={20} className="text-purple-600"/></div>
           <div className="text-sm">
-            <p className="font-bold">{address?.fullName || "User Name"}</p>
-            <p className="text-xs text-gray-500">{address?.address || "Address not set"}</p>
+            <p className="font-black text-gray-900">{address?.fullName || "Md Alim Ansari"}</p>
+            <p className="text-xs text-gray-500 font-bold">{address?.mobile || "7061369212"}</p>
+            <p className="text-[11px] text-gray-500 leading-tight mt-1">{address?.address || "Purelia road no 12 mango Jamshedpur"}</p>
           </div>
         </div>
       </div>
 
       {/* PAYMENT METHOD */}
-      <div className="bg-white p-5 rounded-2xl mb-4 border shadow-sm">
-        <h2 className="font-bold text-sm mb-4">Payment Method</h2>
-        <div className="border border-purple-600 bg-purple-50 p-3 rounded-xl flex justify-between items-center">
-          <span className="text-sm font-bold">Cash On Delivery (COD)</span>
-          <span className="text-[10px] bg-green-100 text-green-700 px-2 py-1 rounded font-bold">Selected</span>
+      <div className="bg-white p-5 rounded-3xl mb-4 border border-gray-100 shadow-sm">
+        <h2 className="font-black text-sm mb-4"><CreditCard size={16} className="inline mr-2 text-purple-600"/> Payment Method</h2>
+        <div className="border-2 border-purple-600 bg-purple-50 p-4 rounded-2xl flex justify-between items-center mb-3">
+          <div className="flex items-center gap-3">
+            <div className="w-4 h-4 border-2 border-purple-600 rounded-full flex items-center justify-center"><div className="w-2 h-2 bg-purple-600 rounded-full"></div></div>
+            <span className="text-sm font-black">Cash On Delivery (COD)</span>
+          </div>
+          <span className="text-[9px] bg-green-100 text-green-700 px-2 py-1 rounded-md font-black">Recommended</span>
+        </div>
+        <div className="border border-gray-100 p-4 rounded-2xl flex justify-between items-center opacity-60">
+            <span className="text-sm font-black">UPI / PhonePe</span>
+            <span className="text-[9px] bg-gray-100 text-gray-500 px-2 py-1 rounded-md font-black">Coming Soon</span>
         </div>
       </div>
 
       {/* PRICE DETAILS */}
-      <div className="bg-white p-5 rounded-2xl border shadow-sm mb-4">
-        <h2 className="font-bold text-sm mb-3">Price Details</h2>
-        <div className="flex justify-between text-sm py-1"><span>Total Payable</span><span className="font-bold">₹{product?.discountPrice || product?.price}</span></div>
+      <div className="bg-white p-5 rounded-3xl border border-gray-100 shadow-sm mb-4">
+        <h2 className="font-black text-sm mb-3">Price Details</h2>
+        <div className="flex justify-between text-xs font-bold text-gray-500 py-1"><span>MRP</span><span>₹{product?.price}</span></div>
+        <div className="flex justify-between text-xs font-black text-green-600 py-1"><span>Discount</span><span>- ₹{product?.price - product?.discountPrice}</span></div>
+        <div className="flex justify-between text-xs font-bold text-gray-500 py-1"><span>Delivery Charges</span><span className="text-green-600 font-black">FREE</span></div>
+        <hr className="my-3 border-dashed" />
+        <div className="flex justify-between text-base font-black"><span>Total Payable</span><span>₹{product?.discountPrice}</span></div>
+      </div>
+
+      {/* EXPECTED DELIVERY */}
+      <div className="bg-white p-4 rounded-3xl border border-gray-100 shadow-sm mb-28 flex items-center gap-4">
+        <div className="bg-orange-50 p-3 rounded-2xl"><Truck className="text-orange-500" size={20} /></div>
+        <div>
+          <p className="text-[10px] font-black text-gray-400 uppercase">Expected Delivery</p>
+          <p className="text-sm font-black text-gray-900">Between 24 - 26 May 2025</p>
+        </div>
       </div>
 
       {/* FIXED BUTTON */}
-      <div className="fixed bottom-0 left-0 right-0 p-4 bg-white border-t rounded-t-3xl">
-        <button 
-          onClick={handlePlaceOrder} 
-          disabled={loading}
-          className="w-full bg-purple-700 text-white py-4 rounded-xl font-bold text-lg flex items-center justify-center gap-2"
-        >
-          {loading ? <Loader2 className="animate-spin" size={20}/> : <><Lock size={18}/> Place Order (COD)</>}
+      <div className="fixed bottom-0 left-0 right-0 p-4 bg-white border-t border-gray-100 rounded-t-3xl shadow-[0_-5px_20px_rgba(0,0,0,0.05)]">
+        <button onClick={handlePlaceOrder} className="w-full bg-[#3b2bc4] text-white py-4 rounded-2xl font-black text-lg shadow-lg shadow-purple-600/30">
+          {loading ? "Processing..." : "Place Order (COD)"}
         </button>
+        <p className="text-center text-[10px] text-gray-400 mt-3 font-bold">Your information is safe with us</p>
       </div>
     </main>
   );
