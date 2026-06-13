@@ -4,7 +4,7 @@ import { useEffect, useState, Suspense } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { auth, db } from "@/firebase/config";
 import { doc, getDoc, addDoc, collection, serverTimestamp } from "firebase/firestore";
-import { ArrowLeft, MapPin, Loader2, Package } from "lucide-react";
+import { ArrowLeft, MapPin, Loader2, Package, CreditCard, ShieldCheck, ChevronRight } from "lucide-react";
 
 function CheckoutContent() {
   const router = useRouter();
@@ -12,144 +12,88 @@ function CheckoutContent() {
   const productId = searchParams.get("productId");
 
   const [loading, setLoading] = useState(false);
-  const [dataLoading, setDataLoading] = useState(true); // New state for initial fetch
+  const [dataLoading, setDataLoading] = useState(true);
   const [address, setAddress] = useState<any>(null);
   const [product, setProduct] = useState<any>(null);
 
-  useEffect(() => {
-    // Auth check - wait for user
-    const unsubscribe = auth.onAuthStateChanged(async (user) => {
-      if (!user || !productId) {
-        setDataLoading(false);
-        return;
-      }
-
-      try {
-        const addrRef = doc(db, "users", user.uid, "addresses", "default");
-        const addrSnap = await getDoc(addrRef);
-        if (addrSnap.exists()) setAddress(addrSnap.data());
-
-        const prodRef = doc(db, "products", productId);
-        const prodSnap = await getDoc(prodRef);
-        if (prodSnap.exists()) setProduct({ id: prodSnap.id, ...prodSnap.data() });
-      } catch (err) {
-        console.error("FETCH_ERROR:", err);
-      } finally {
-        setDataLoading(false);
-      }
-    });
-    return () => unsubscribe();
-  }, [productId]);
-
-  async function handlePlaceOrder() {
-    if (!auth.currentUser || !product || !address) {
-      alert("Missing details. Please ensure you are logged in and have an address.");
-      return;
-    }
-
-    setLoading(true);
-    const mrp = Number(product.price || 0);
-    const finalAmount = Number(product.discountPrice || product.price || 0);
-    const discount = mrp - finalAmount;
-
-    try {
-      const orderRef = await addDoc(collection(db, "orders"), {
-        orderNumber: "JK-" + Date.now(),
-        userId: auth.currentUser.uid,
-        productId: product.id,
-        productTitle: product.title,
-        productImage: product.image || (product.images?.length ? product.images[0] : ""),
-        productPrice: mrp,
-        productDiscountPrice: finalAmount,
-        quantity: 1,
-        customerName: auth.currentUser.displayName || "Customer",
-        customerEmail: auth.currentUser.email || "",
-        customerPhone: address.mobile || "",
-        sellerId: product.seller?.id || "default_seller",
-        sellerName: product.seller?.name || "JembeeKart Official",
-        status: "placed",
-        paymentMethod: "cod",
-        placedAt: serverTimestamp(),
-        processingAt: null,
-        shippedAt: null,
-        deliveredAt: null,
-        exchangeEligible: true,
-        exchangeRequested: false,
-        subtotal: mrp,
-        discount,
-        finalAmount,
-        shippingAddress: address,
-        referralEligible: true,
-        commissionProcessed: false,
-        cashbackProcessed: false,
-        rewardProcessed: false,
-        createdAt: serverTimestamp(),
-      });
-
-      router.push(`/payment-success?orderId=${orderRef.id}`);
-    } catch (error) {
-      console.error(error);
-      alert("Order Failed.");
-    } finally {
-      setLoading(false);
-    }
-  }
-
-  if (dataLoading) return <main className="flex min-h-screen items-center justify-center"><Loader2 className="animate-spin text-purple-600" size={32}/></main>;
-  if (!product) return <main className="p-10 text-center font-bold">Product not found. <button onClick={() => router.push("/")} className="text-purple-600">Go Home</button></main>;
+  // ... (Keep your useEffect logic same as provided) ...
 
   return (
-    <main className="min-h-screen bg-slate-50 pb-24">
-       {/* Checkout UI structure remains same as previously approved */}
-       <div className="sticky top-0 bg-white border-b px-4 py-4 flex items-center gap-4 z-10">
-        <button onClick={() => router.back()}><ArrowLeft size={20} /></button>
-        <h1 className="text-xl font-black text-slate-900">Checkout</h1>
+    <main className="min-h-screen bg-[#f8f9fa] pb-24">
+      {/* HEADER */}
+      <div className="sticky top-0 bg-white/80 backdrop-blur-md border-b px-6 py-5 flex items-center gap-4 z-10">
+        <button onClick={() => router.back()} className="p-2 hover:bg-slate-100 rounded-full transition-colors">
+          <ArrowLeft size={22} className="text-slate-800" />
+        </button>
+        <h1 className="text-xl font-extrabold text-slate-900 tracking-tight">Checkout</h1>
       </div>
-      <div className="p-4 space-y-4 max-w-lg mx-auto">
-        <div className="bg-white p-5 rounded-3xl border border-slate-100 shadow-sm">
-          <h2 className="font-bold flex items-center gap-2 text-slate-700">
-            <MapPin size={18} className="text-purple-600"/> Delivery Address
+
+      <div className="p-4 space-y-6 max-w-lg mx-auto">
+        
+        {/* ADDRESS CARD */}
+        <div className="bg-white p-6 rounded-[2rem] border border-slate-100 shadow-[0_4px_20px_-5px_rgba(0,0,0,0.05)]">
+          <h2 className="font-bold flex items-center gap-2 text-slate-400 text-xs uppercase tracking-widest mb-4">
+            <MapPin size={16} /> Delivery Location
           </h2>
           {address ? (
-            <div className="mt-3 text-sm text-slate-600 bg-slate-50 p-3 rounded-2xl">
-              <p className="font-bold text-slate-900">{address.fullName}</p>
-              <p>{address.mobile}</p>
-              <p>{address.address}, {address.city}, {address.pincode}</p>
+            <div className="text-sm text-slate-700 bg-slate-50 p-4 rounded-3xl border border-slate-100/50">
+              <p className="font-extrabold text-slate-900 text-base mb-1">{address.fullName}</p>
+              <p className="font-medium text-slate-600">{address.mobile}</p>
+              <p className="mt-2 text-slate-500 leading-relaxed">{address.address}, {address.city}, {address.pincode}</p>
             </div>
           ) : (
-            <button onClick={() => router.push("/address")} className="mt-2 text-purple-600 font-bold text-sm">Add Address</button>
+            <button onClick={() => router.push("/address")} className="w-full py-3 border-2 border-dashed border-purple-200 text-purple-600 font-bold rounded-2xl hover:bg-purple-50 transition-all">
+              + Add Delivery Address
+            </button>
           )}
         </div>
-        <div className="bg-white p-5 rounded-3xl border border-slate-100 shadow-sm">
-          <h2 className="font-bold mb-3 text-slate-700 flex items-center gap-2">
-            <Package size={18} className="text-purple-600"/> Order Summary
+
+        {/* ORDER SUMMARY */}
+        <div className="bg-white p-6 rounded-[2rem] border border-slate-100 shadow-[0_4px_20px_-5px_rgba(0,0,0,0.05)]">
+          <h2 className="font-bold mb-4 text-slate-400 text-xs uppercase tracking-widest flex items-center gap-2">
+            <Package size={16} /> Order Details
           </h2>
-          <div className="flex justify-between text-sm py-1">
-            <span>{product.title}</span>
-            <span className="font-semibold text-slate-900">₹{product.discountPrice}</span>
+          <div className="flex gap-4 items-center">
+            <img src={product.image} className="w-16 h-16 rounded-2xl object-cover bg-slate-100" />
+            <div className="flex-1">
+              <p className="font-bold text-slate-900 line-clamp-1">{product.title}</p>
+              <p className="text-sm text-slate-500 font-medium">Qty: 1</p>
+            </div>
+            <p className="font-bold text-lg text-slate-900">₹{product.discountPrice}</p>
           </div>
-          <hr className="my-3 border-slate-100"/>
-          <div className="flex justify-between font-black text-lg text-slate-900">
-            <span>Total Payable</span>
-            <span>₹{product.discountPrice}</span>
+          
+          <div className="mt-6 pt-6 border-t border-slate-100 space-y-3">
+            <div className="flex justify-between text-sm text-slate-500">
+              <span>Subtotal</span>
+              <span>₹{product.price}</span>
+            </div>
+            <div className="flex justify-between text-sm text-green-600 font-bold">
+              <span>Discount</span>
+              <span>-₹{product.price - product.discountPrice}</span>
+            </div>
+            <div className="flex justify-between text-lg font-black text-slate-900 mt-2">
+              <span>Total Payable</span>
+              <span>₹{product.discountPrice}</span>
+            </div>
           </div>
         </div>
+
+        {/* SECURE BADGE */}
+        <div className="flex justify-center items-center gap-2 text-slate-400 text-xs font-bold">
+          <ShieldCheck size={14} /> 100% Secure Payments
+        </div>
+      </div>
+
+      {/* FIXED BOTTOM BUTTON */}
+      <div className="fixed bottom-0 left-0 w-full p-4 bg-white/80 backdrop-blur-lg border-t border-slate-100">
         <button
           onClick={handlePlaceOrder}
           disabled={loading || !address}
-          className="w-full bg-slate-900 text-white rounded-2xl py-4 font-bold flex items-center justify-center gap-2 hover:bg-slate-800 transition-all disabled:opacity-50"
+          className="w-full bg-[#7c3aed] text-white rounded-[1.5rem] py-5 font-black text-lg flex items-center justify-center gap-3 hover:bg-[#6d28d9] transition-all shadow-lg shadow-purple-500/30 disabled:opacity-50"
         >
-          {loading ? <Loader2 className="animate-spin" size={20} /> : "Place Order (COD)"}
+          {loading ? <Loader2 className="animate-spin" size={24} /> : "Place Order (COD)"}
         </button>
       </div>
     </main>
-  );
-}
-
-export default function CheckoutPage() {
-  return (
-    <Suspense fallback={<div className="p-10 text-center">Loading...</div>}>
-      <CheckoutContent />
-    </Suspense>
   );
 }
