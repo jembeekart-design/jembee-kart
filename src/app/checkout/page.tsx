@@ -1,12 +1,13 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useState, Suspense } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { auth, db } from "@/firebase/config";
 import { doc, getDoc, addDoc, collection, serverTimestamp } from "firebase/firestore";
 import { ArrowLeft, MapPin, Loader2, Package } from "lucide-react";
 
-export default function CheckoutPage() {
+// Sub-component jisme useSearchParams ka use ho raha hai
+function CheckoutContent() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const productId = searchParams.get("productId");
@@ -47,7 +48,6 @@ export default function CheckoutPage() {
         orderNumber: "JK-" + Date.now(),
         userId: auth.currentUser.uid,
         
-        // Snapshots
         productId: product.id,
         productTitle: product.title,
         productImage: product.image || (product.images?.length ? product.images[0] : ""),
@@ -62,11 +62,9 @@ export default function CheckoutPage() {
         sellerId: product.seller?.id || "default_seller",
         sellerName: product.seller?.name || "JembeeKart Official",
 
-        // Order State & Lifecycle
         status: "placed", 
         paymentMethod: "cod",
         
-        // Optimized Flat Timeline & Hooks
         placedAt: serverTimestamp(),
         processingAt: null,
         shippedAt: null,
@@ -75,15 +73,12 @@ export default function CheckoutPage() {
         exchangeEligible: true,
         exchangeRequested: false,
         
-        // Pricing
         subtotal: mrp,
         discount,
         finalAmount,
         
-        // Logistics
         shippingAddress: address,
         
-        // MLM / Processing Engine Hooks
         referralEligible: true,
         commissionProcessed: false,
         cashbackProcessed: false,
@@ -150,5 +145,14 @@ export default function CheckoutPage() {
         </button>
       </div>
     </main>
+  );
+}
+
+// Main export jahan Suspense use kiya gaya hai
+export default function CheckoutPage() {
+  return (
+    <Suspense fallback={<div className="p-10 text-center">Loading Checkout...</div>}>
+      <CheckoutContent />
+    </Suspense>
   );
 }
