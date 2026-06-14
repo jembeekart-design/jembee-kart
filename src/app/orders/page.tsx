@@ -37,7 +37,6 @@ export default function MyOrdersPage() {
 
   const filteredOrders = orders.filter(o => {
     const matchesTab = activeTab === "All Orders" || o.status?.toLowerCase() === activeTab.toLowerCase();
-    // Search logic: dono purane aur naye structure ko handle karega
     const title = o.productTitle || o.items?.[0]?.title || "";
     const matchesSearch = title.toLowerCase().includes(search.toLowerCase()) || 
                           o.id?.toLowerCase().includes(search.toLowerCase());
@@ -109,15 +108,6 @@ export default function MyOrdersPage() {
           </div>
         ))}
       </section>
-
-      <div className="grid grid-cols-4 gap-2 px-4 mt-8 pb-10">
-        {[ {icon: ShieldCheck, label: "Secure"}, {icon: Truck, label: "Fast"}, {icon: RotateCcw, label: "Easy"}, {icon: Headphones, label: "Support"} ].map((item, i) => (
-          <div key={i} className="bg-white p-3 rounded-2xl flex flex-col items-center gap-1 border border-gray-100">
-            <item.icon size={16} className="text-indigo-500" />
-            <span className="text-[8px] font-bold text-gray-600 text-center">{item.label}</span>
-          </div>
-        ))}
-      </div>
 
       <div className="fixed bottom-0 w-full bg-white border-t border-gray-100 px-6 py-4 flex justify-between items-center z-50">
         {[ {icon: Home, l: "Home", p: "/"}, {icon: LayoutGrid, l: "Categories", p: "/categories"}, {icon: ShoppingBag, l: "Cart", p: "/cart"}, {icon: ListOrdered, l: "Orders", p: "/orders"}, {icon: User, l: "Profile", p: "/profile"} ].map((n, i) => (
