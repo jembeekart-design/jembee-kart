@@ -138,7 +138,10 @@ productId = ${productId}
 
       {/* PRODUCT CARD */}
       <div className="bg-white p-4 rounded-3xl mb-4 shadow-sm border border-gray-50 flex gap-4 relative">
-        <img src={product?.image} className="w-20 h-20 rounded-2xl object-cover bg-gray-100" />
+        <img
+  src={product?.images?.[0] || "/placeholder.png"}
+  className="w-20 h-20 rounded-2xl object-cover bg-gray-100"
+/>
         <div className="flex-1">
           <h3 className="font-bold text-gray-900 text-sm">{product?.title || "T Shirt"}</h3>
           <p className="text-[10px] text-gray-400 font-semibold mt-0.5">Size: M • Color: Black</p>
