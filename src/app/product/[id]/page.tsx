@@ -124,22 +124,20 @@ export default function ProductPage() {
     return date.toDateString();
   }, []);
 
-  /* ======================================================
+ /* ======================================================
   ADD TO CART
   ====================================================== */
-  const router = useRouter(); // Ensure `router` is initialized inside ProductPage
-
   async function addToCart() {
     if (!product) return;
 
-    // 1. Guest User Login Check
+    // Guest User Login Check
     if (!auth.currentUser) {
       router.push("/login");
       return;
     }
 
     try {
-      // 2. User-specific path: users/{uid}/cart
+      // User-specific path: users/{uid}/cart
       const cartRef = collection(db, "users", auth.currentUser.uid, "cart");
       
       await addDoc(cartRef, {
@@ -149,21 +147,14 @@ export default function ProductPage() {
         price: product.price,
         discountPrice: product.discountPrice || null,
         quantity: 1,
-        size: selectedSize || "N/A",      // Check variable name in your state
-        color: selectedColor || "N/A"     // Check variable name in your state
+        size: selectedSize || "N/A",
+        color: selectedColor || "N/A"
       });
       
       alert("Added to Cart!");
     } catch (error) {
       console.error("Error adding to cart:", error);
       alert("Failed to add item to cart.");
-    }
-  }
-
-
-      alert("Added To Cart");
-    } catch (error) {
-      console.error(error);
     }
   }
 
