@@ -2,757 +2,163 @@
 
 export const dynamic = "force-dynamic";
 
-import {
-  useEffect,
-  useMemo,
-  useState
-} from "react";
-
+import { useEffect, useMemo, useState } from "react";
 import Link from "next/link";
-
-import {
-  collection,
-  deleteDoc,
-  doc,
-  onSnapshot,
-  updateDoc
-} from "firebase/firestore";
-
-import {
-  ArrowLeft,
-  Minus,
-  Plus,
-  ShoppingBag,
-  Trash2,
-  Zap
-} from "lucide-react";
-
-import { db } from "@/firebase/config";
+import { useRouter } from "next/navigation";
+import { collection, deleteDoc, doc, onSnapshot, updateDoc } from "firebase/firestore";
+import { ArrowLeft, Minus, Plus, ShoppingBag, Trash2, Zap } from "lucide-react";
+import { db, auth } from "@/firebase/config";
 
 interface CartItem {
-
   id: string;
-
   productId: string;
-
   title: string;
-
   image: string;
-
   price: number;
-
+  discountPrice?: number; // Added discountPrice as requested
   quantity: number;
-
   size?: string;
-
   color?: string;
 }
 
 export default function CartPage() {
-
-  /* ======================================================
-  STATES
-  ====================================================== */
-
-  const [
-    cartItems,
-    setCartItems
-  ] = useState<CartItem[]>([]);
-
-  const [
-    loading,
-    setLoading
-  ] = useState(true);
-
-  /* ======================================================
-  GET CART ITEMS
-  ====================================================== */
+  const router = useRouter();
+  const [cartItems, setCartItems] = useState<CartItem[]>([]);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
+    let unsubscribeSnapshot: () => void = () => {};
 
-    const unsubscribe =
-      onSnapshot(
+    const unsubscribeAuth = auth.onAuthStateChanged((user) => {
+      // Unsubscribe previous snapshot if user changes
+      unsubscribeSnapshot(); 
+      
+      if (!user) {
+        setCartItems([]);
+        setLoading(false);
+        return;
+      }
 
-        collection(
-          db,
-          "cart"
-        ),
+      // Path: users/{uid}/cart
+      const cartRef = collection(db, "users", user.uid, "cart");
 
-        (snapshot) => {
+      unsubscribeSnapshot = onSnapshot(cartRef, (snapshot) => {
+        const data = snapshot.docs.map((doc) => ({
+          id: doc.id,
+          ...(doc.data() as Omit<CartItem, "id">),
+        }));
+        setCartItems(data);
+        setLoading(false);
+      });
+    });
 
-          const data =
-            snapshot.docs.map(
-              (document) => ({
-
-                id:
-                  document.id,
-
-                ...(document.data() as Omit<
-                  CartItem,
-                  "id"
-                >)
-
-              })
-            );
-
-          setCartItems(
-            data
-          );
-
-          setLoading(false);
-        }
-      );
-
-    return () =>
-      unsubscribe();
-
+    // Cleanup on unmount
+    return () => {
+      unsubscribeAuth();
+      unsubscribeSnapshot();
+    };
   }, []);
 
-  /* ======================================================
-  TOTAL
-  ====================================================== */
+  const totalPrice = useMemo(() => {
+    return cartItems.reduce((total, item) => {
+      // Use discountPrice if available, else use price
+      const priceToUse = item.discountPrice || item.price;
+      return total + priceToUse * item.quantity;
+    }, 0);
+  }, [cartItems]);
 
-  const totalPrice =
-    useMemo(() => {
-
-      return cartItems.reduce(
-        (
-          total,
-          item
-        ) => {
-
-          return (
-            total +
-            item.price *
-              item.quantity
-          );
-        },
-        0
-      );
-
-    }, [cartItems]);
-
-  /* ======================================================
-  UPDATE QUANTITY
-  ====================================================== */
-
-  async function updateQuantity(
-    id: string,
-    quantity: number
-  ) {
-
-    if (quantity < 1) {
-      return;
-    }
-
+  async function updateQuantity(id: string, quantity: number) {
+    if (quantity < 1 || !auth.currentUser) return;
     try {
-
-      await updateDoc(
-        doc(
-          db,
-          "cart",
-          id
-        ),
-        {
-          quantity
-        }
-      );
-
-    } catch (error) {
-
-      console.error(error);
-    }
+      await updateDoc(doc(db, "users", auth.currentUser.uid, "cart", id), { quantity });
+    } catch (error) { console.error(error); }
   }
 
-  /* ======================================================
-  REMOVE ITEM
-  ====================================================== */
-
-  async function removeItem(
-    id: string
-  ) {
-
+  async function removeItem(id: string) {
+    if (!auth.currentUser) return;
     try {
-
-      await deleteDoc(
-        doc(
-          db,
-          "cart",
-          id
-        )
-      );
-
-    } catch (error) {
-
-      console.error(error);
-    }
+      await deleteDoc(doc(db, "users", auth.currentUser.uid, "cart", id));
+    } catch (error) { console.error(error); }
   }
-
-  /* ======================================================
-  UI
-  ====================================================== */
 
   return (
-
-    <main
-      className="
-        min-h-screen
-        bg-[#f6f6f6]
-        pb-[120px]
-      "
-    >
-
-      {/* ======================================================
-      HEADER
-      ====================================================== */}
-
-      <div
-        className="
-          sticky
-          top-0
-          z-50
-
-          bg-[#f6f6f6]/90
-          px-3
-          pt-3
-          backdrop-blur-md
-        "
-      >
-
-        <div
-          className="
-            flex
-            items-center
-            justify-between
-
-            rounded-[18px]
-            bg-white
-
-            px-3
-            py-3
-
-            shadow-sm
-          "
-        >
-
-          <div
-            className="
-              flex
-              items-center
-              gap-3
-            "
-          >
-
-            <Link
-              href="/"
-              className="
-                flex
-                h-9
-                w-9
-                items-center
-                justify-center
-
-                rounded-full
-
-                bg-gray-100
-              "
-            >
-
-              <ArrowLeft
-                size={18}
-              />
-
+    <main className="min-h-screen bg-[#f6f6f6] pb-[120px]">
+      {/* HEADER */}
+      <div className="sticky top-0 z-50 bg-[#f6f6f6]/90 px-3 pt-3 backdrop-blur-md">
+        <div className="flex items-center justify-between rounded-[18px] bg-white px-3 py-3 shadow-sm">
+          <div className="flex items-center gap-3">
+            <Link href="/" className="flex h-9 w-9 items-center justify-center rounded-full bg-gray-100">
+              <ArrowLeft size={18} />
             </Link>
-
             <div>
-
-              <h1
-                className="
-                  text-[18px]
-                  font-black
-                "
-              >
-
-                My Cart
-
-              </h1>
-
-              <p
-                className="
-                  text-[11px]
-                  text-gray-500
-                "
-              >
-
-                {
-                  cartItems.length
-                }
-                {" "}
-                items
-
-              </p>
-
+              <h1 className="text-[18px] font-black">My Cart</h1>
+              <p className="text-[11px] text-gray-500">{cartItems.length} items</p>
             </div>
-
           </div>
-
-          <div
-            className="
-              flex
-              h-10
-              w-10
-              items-center
-              justify-center
-
-              rounded-full
-
-              bg-purple-100
-            "
-          >
-
-            <ShoppingBag
-              size={18}
-              className="
-                text-purple-600
-              "
-            />
-
+          <div className="flex h-10 w-10 items-center justify-center rounded-full bg-purple-100">
+            <ShoppingBag size={18} className="text-purple-600" />
           </div>
-
         </div>
-
       </div>
 
-      {/* ======================================================
-      CONTENT
-      ====================================================== */}
-
-      <section
-        className="
-          space-y-4
-          px-3
-          pt-4
-        "
-      >
-
+      {/* CONTENT */}
+      <section className="space-y-4 px-3 pt-4">
         {loading ? (
-
-          <div
-            className="
-              py-20
-              text-center
-              text-sm
-              font-bold
-            "
-          >
-
-            Loading Cart...
-
-          </div>
-
+          <div className="py-20 text-center text-sm font-bold">Loading Cart...</div>
         ) : cartItems.length === 0 ? (
-
-          <div
-            className="
-              py-24
-              text-center
-            "
-          >
-
-            <h2
-              className="
-                text-[22px]
-                font-black
-              "
-            >
-
-              Cart is Empty
-
-            </h2>
-
-            <p
-              className="
-                mt-2
-                text-sm
-                text-gray-500
-              "
-            >
-
-              Add products to continue
-
-            </p>
-
+          <div className="py-24 text-center">
+            <h2 className="text-[22px] font-black">Cart is Empty</h2>
+            <p className="mt-2 text-sm text-gray-500">Add products to continue</p>
           </div>
-
         ) : (
-
-          cartItems.map(
-            (item) => (
-
-              <div
-                key={item.id}
-                className="
-                  rounded-[22px]
-                  bg-white
-                  p-3
-                  shadow-sm
-                "
-              >
-
-                <div
-                  className="
-                    flex
-                    gap-3
-                  "
-                >
-
-                  {/* IMAGE */}
-
-                  <div
-                    className="
-                      h-[110px]
-                      w-[110px]
-                      overflow-hidden
-
-                      rounded-[18px]
-                      bg-gray-100
-                    "
-                  >
-
-                    <img
-                      src={
-                        item.image
-                      }
-                      alt=""
-                      className="
-                        h-full
-                        w-full
-                        object-cover
-                      "
-                    />
-
-                  </div>
-
-                  {/* DETAILS */}
-
-                  <div
-                    className="
-                      flex-1
-                    "
-                  >
-
-                    <h2
-                      className="
-                        line-clamp-2
-                        text-[15px]
-                        font-black
-                      "
-                    >
-
-                      {
-                        item.title
-                      }
-
-                    </h2>
-
-                    {/* SIZE */}
-
-                    <div
-                      className="
-                        mt-2
-                        flex
-                        items-center
-                        gap-2
-                      "
-                    >
-
-                      <span
-                        className="
-                          rounded-lg
-                          bg-gray-100
-                          px-2
-                          py-1
-
-                          text-[10px]
-                          font-bold
-                        "
-                      >
-
-                        Size:
-                        {" "}
-                        {
-                          item.size
-                        }
-
-                      </span>
-
-                      <div
-                        style={{
-                          background:
-                            item.color
-                        }}
-                        className="
-                          h-5
-                          w-5
-                          rounded-full
-                          border
-                        "
-                      />
-
-                    </div>
-
-                    {/* PRICE */}
-
-                    <h3
-                      className="
-                        mt-3
-                        text-[22px]
-                        font-black
-                      "
-                    >
-
-                      ₹
-                      {
-                        item.price
-                      }
-
-                    </h3>
-
-                    {/* QUANTITY */}
-
-                    <div
-                      className="
-                        mt-3
-                        flex
-                        items-center
-                        justify-between
-                      "
-                    >
-
-                      <div
-                        className="
-                          flex
-                          items-center
-                          gap-2
-                        "
-                      >
-
-                        <button
-                          onClick={() =>
-                            updateQuantity(
-                              item.id,
-                              item.quantity - 1
-                            )
-                          }
-                          className="
-                            flex
-                            h-8
-                            w-8
-                            items-center
-                            justify-center
-
-                            rounded-full
-
-                            bg-gray-100
-                          "
-                        >
-
-                          <Minus
-                            size={14}
-                          />
-
-                        </button>
-
-                        <span
-                          className="
-                            min-w-[20px]
-                            text-center
-                            text-sm
-                            font-black
-                          "
-                        >
-
-                          {
-                            item.quantity
-                          }
-
-                        </span>
-
-                        <button
-                          onClick={() =>
-                            updateQuantity(
-                              item.id,
-                              item.quantity + 1
-                            )
-                          }
-                          className="
-                            flex
-                            h-8
-                            w-8
-                            items-center
-                            justify-center
-
-                            rounded-full
-
-                            bg-purple-600
-                            text-white
-                          "
-                        >
-
-                          <Plus
-                            size={14}
-                          />
-
-                        </button>
-
-                      </div>
-
-                      {/* REMOVE */}
-
-                      <button
-                        onClick={() =>
-                          removeItem(
-                            item.id
-                          )
-                        }
-                        className="
-                          flex
-                          h-9
-                          w-9
-                          items-center
-                          justify-center
-
-                          rounded-full
-
-                          bg-red-100
-                          text-red-500
-                        "
-                      >
-
-                        <Trash2
-                          size={16}
-                        />
-
-                      </button>
-
-                    </div>
-
-                  </div>
-
+          cartItems.map((item) => (
+            <div key={item.id} className="rounded-[22px] bg-white p-3 shadow-sm">
+              <div className="flex gap-3">
+                <div className="h-[110px] w-[110px] overflow-hidden rounded-[18px] bg-gray-100">
+                  <img src={item.image} alt="" className="h-full w-full object-cover" />
                 </div>
-
+                <div className="flex-1">
+                  <h2 className="line-clamp-2 text-[15px] font-black">{item.title}</h2>
+                  <div className="mt-2 flex items-center gap-2">
+                    <span className="rounded-lg bg-gray-100 px-2 py-1 text-[10px] font-bold">Size: {item.size}</span>
+                    <div style={{ background: item.color }} className="h-5 w-5 rounded-full border" />
+                  </div>
+                  <h3 className="mt-3 text-[22px] font-black">
+                    ₹{item.discountPrice || item.price}
+                  </h3>
+                  <div className="mt-3 flex items-center justify-between">
+                    <div className="flex items-center gap-2">
+                      <button onClick={() => updateQuantity(item.id, item.quantity - 1)} className="flex h-8 w-8 items-center justify-center rounded-full bg-gray-100"><Minus size={14} /></button>
+                      <span className="min-w-[20px] text-center text-sm font-black">{item.quantity}</span>
+                      <button onClick={() => updateQuantity(item.id, item.quantity + 1)} className="flex h-8 w-8 items-center justify-center rounded-full bg-purple-600 text-white"><Plus size={14} /></button>
+                    </div>
+                    <button onClick={() => removeItem(item.id)} className="flex h-9 w-9 items-center justify-center rounded-full bg-red-100 text-red-500"><Trash2 size={16} /></button>
+                  </div>
+                </div>
               </div>
-
-            )
-          )
-
+            </div>
+          ))
         )}
-
       </section>
 
-      {/* ======================================================
-      BOTTOM CHECKOUT
-      ====================================================== */}
-
+      {/* BOTTOM CHECKOUT */}
       {cartItems.length > 0 && (
-
-        <div
-          className="
-            fixed
-            bottom-0
-            left-0
-            z-50
-
-            w-full
-
-            border-t
-            bg-white
-
-            px-3
-            py-3
-          "
-        >
-
-          <div
-            className="
-              flex
-              items-center
-              gap-3
-            "
-          >
-
-            <div
-              className="
-                flex-1
-              "
-            >
-
-              <p
-                className="
-                  text-[11px]
-                  font-bold
-                  text-gray-500
-                "
-              >
-
-                Total Amount
-
-              </p>
-
-              <h2
-                className="
-                  text-[24px]
-                  font-black
-                "
-              >
-
-                ₹
-                {
-                  totalPrice
-                }
-
-              </h2>
-
+        <div className="fixed bottom-0 left-0 z-50 w-full border-t bg-white px-3 py-3">
+          <div className="flex items-center gap-3">
+            <div className="flex-1">
+              <p className="text-[11px] font-bold text-gray-500">Total Amount</p>
+              <h2 className="text-[24px] font-black">₹{totalPrice}</h2>
             </div>
-
             <button
-              className="
-                flex
-                flex-1
-                items-center
-                justify-center
-                gap-2
-
-                rounded-[16px]
-
-                bg-gradient-to-r
-                from-violet-600
-                to-fuchsia-500
-
-                py-4
-
-                text-[14px]
-                font-black
-                text-white
-              "
+              onClick={() => router.push("/checkout?cart=true")}
+              className="flex flex-1 items-center justify-center gap-2 rounded-[16px] bg-gradient-to-r from-violet-600 to-fuchsia-500 py-4 text-[14px] font-black text-white"
             >
-
-              <Zap
-                size={16}
-              />
-
+              <Zap size={16} />
               Checkout
-
             </button>
-
           </div>
-
         </div>
-
       )}
-
     </main>
-
   );
-
 }
