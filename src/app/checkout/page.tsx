@@ -36,9 +36,15 @@ function CheckoutContent() {
   const user = auth.currentUser;
 
   if (!user || !product || !address) {
-    alert("Missing data");
-    return;
-  }
+  alert(`
+USER = ${!!user}
+PRODUCT = ${!!product}
+ADDRESS = ${!!address}
+
+productId = ${productId}
+`);
+  return;
+}
 
   setLoading(true);
 
