@@ -2,171 +2,102 @@
 
 import { useEffect, useState } from "react";
 import { useParams, useRouter } from "next/navigation";
-import { doc, getDoc, getFirestore } from "firebase/firestore";
-import app from "@/firebase/config"; // 'app' ko default import ki tarah laayein
-import {
-  ArrowLeft,
-  Loader2,
-  Package,
-  Truck,
-  CheckCircle,
-  Clock,
-} from "lucide-react";
-
-// Initialize db locally
-const db = getFirestore(app);
-
-interface Order {
-  id: string;
-  productTitle?: string;
-  image?: string;
-  amount?: number;
-  quantity?: number;
-  status?: string;
-  trackingId?: string;
-  customerName?: string;
-  address?: string;
-  mobile?: string;
-  createdAt?: any;
-}
+import { doc, getDoc, updateDoc } from "firebase/firestore";
+import { db } from "@/firebase/config";
+import Link from "next/link"; // FIX 1: Import Link
+import { ArrowLeft, Copy, MapPin, Phone, Truck, FileText, XCircle, RotateCcw } from "lucide-react";
 
 export default function OrderDetailsPage() {
-  const params = useParams();
+  const { id } = useParams();
   const router = useRouter();
-
-  const [order, setOrder] = useState<Order | null>(null);
-  const [loading, setLoading] = useState(true);
+  const [order, setOrder] = useState<any>(null);
 
   useEffect(() => {
-    const id = params?.id;
-    if (!id) {
-      setLoading(false);
-      return;
-    }
+    if (!id) return;
+    getDoc(doc(db, "orders", id as string)).then(snap => {
+      if (snap.exists()) setOrder({ id: snap.id, ...snap.data() });
+    });
+  }, [id]);
 
-    const orderId = Array.isArray(id) ? id[0] : id;
-
-    async function fetchOrder() {
-      try {
-        const orderRef = doc(db, "orders", orderId);
-        const orderSnap = await getDoc(orderRef);
-
-        if (orderSnap.exists()) {
-          setOrder({
-            id: orderSnap.id,
-            ...(orderSnap.data() as any),
-          });
-        }
-      } catch (error) {
-        console.error("ORDER_DETAILS_ERROR:", error);
-      } finally {
-        setLoading(false);
-      }
-    }
-
-    fetchOrder();
-  }, [params]);
-
-  const getStatusColor = (status?: string) => {
-    switch (status?.toLowerCase()) {
-      case "delivered": return "bg-green-100 text-green-700";
-      case "shipped": return "bg-blue-100 text-blue-700";
-      case "processing": return "bg-yellow-100 text-yellow-700";
-      case "cancelled": return "bg-red-100 text-red-700";
-      default: return "bg-slate-100 text-slate-700";
+  const handleCancel = async () => {
+    if (confirm("Are you sure you want to cancel this order?")) {
+      await updateDoc(doc(db, "orders", id as string), { status: "Cancelled" });
+      setOrder({ ...order, status: "Cancelled" }); // FIX 4: Smoother UI update
     }
   };
 
-  const getStatusIcon = (status?: string) => {
-    switch (status?.toLowerCase()) {
-      case "delivered": return <CheckCircle size={18} />;
-      case "shipped": return <Truck size={18} />;
-      default: return <Clock size={18} />;
-    }
-  };
+  if (!order) return <div className="p-10 text-center font-bold">Loading Order Details...</div>;
 
-  if (loading) {
-    return (
-      <div className="min-h-screen flex items-center justify-center">
-        <Loader2 className="animate-spin text-violet-600" size={40} />
-      </div>
-    );
-  }
+  const status = order.status?.toLowerCase() || ""; // FIX 2: Normalized status
+  const steps = ['placed', 'processing', 'shipped', 'delivered'];
+  const currentStepIndex = steps.indexOf(status);
 
-  if (!order) {
-    return (
-      <div className="min-h-screen flex flex-col items-center justify-center p-6 text-center">
-        <Package size={60} className="text-slate-300" />
-        <h2 className="mt-4 text-xl font-bold">Order Not Found</h2>
-        <button
-          onClick={() => router.push("/account/orders")}
-          className="mt-4 px-5 py-3 rounded-xl bg-violet-600 text-white font-bold"
-        >
-          Back To Orders
-        </button>
-      </div>
-    );
-  }
+  const getStatusColor = (s: string) => ({
+    'placed': 'bg-blue-500', 'processing': 'bg-orange-500', 
+    'shipped': 'bg-purple-500', 'delivered': 'bg-green-500', 'cancelled': 'bg-red-500'
+  }[s?.toLowerCase()] || 'bg-gray-500');
 
   return (
-    <main className="min-h-screen bg-slate-50">
-      <div className="sticky top-0 bg-white border-b px-4 py-4 flex items-center gap-3">
-        <button
-          onClick={() => router.back()}
-          className="h-10 w-10 rounded-full bg-slate-100 flex items-center justify-center"
-        >
-          <ArrowLeft size={18} />
-        </button>
-        <h1 className="text-xl font-black">Order Details</h1>
+    <main className="min-h-screen bg-[#f8f9fe] pb-24">
+      <div className="sticky top-0 bg-white p-4 flex items-center gap-4 shadow-sm z-20">
+        <button onClick={() => router.back()} className="p-2 bg-gray-100 rounded-full"><ArrowLeft size={20}/></button>
+        <h1 className="font-black text-lg">Order #{order.orderNumber}</h1>
       </div>
 
       <div className="p-4 space-y-4">
-        <div className="bg-white rounded-3xl overflow-hidden shadow-sm">
-          <img
-            src={order.image || "/placeholder.png"}
-            alt={order.productTitle || "Product"}
-            className="w-full h-72 object-cover"
-          />
-          <div className="p-4">
-            <h2 className="text-xl font-black">{order.productTitle || "Product"}</h2>
-            <p className="text-3xl font-black text-violet-600 mt-2">₹{order.amount || 0}</p>
-            <p className="text-slate-500 mt-2">Quantity: {order.quantity || 1}</p>
+        {/* HERO CARD */}
+        <div className="bg-gradient-to-r from-indigo-600 to-violet-600 p-6 rounded-3xl text-white shadow-lg">
+          <div className="flex justify-between items-start">
+             <div>
+                <p className="opacity-80 text-[10px] font-bold uppercase">Placed: {order?.placedAt?.seconds ? new Date(order.placedAt.seconds * 1000).toLocaleDateString() : 'N/A'}</p>
+                <h2 className="text-3xl font-black mt-1">₹{order.finalAmount}</h2>
+             </div>
+             <button onClick={() => { navigator.clipboard.writeText(order.orderNumber); alert("Order ID Copied!"); }} className="bg-white/20 p-2 rounded-xl"><Copy size={16}/></button>
+          </div>
+          <div className="flex gap-2 mt-4">
+            <span className={`px-3 py-1 ${getStatusColor(status)} rounded-lg text-[10px] font-bold uppercase`}>{order.status || "Placed"}</span>
+            <span className="px-3 py-1 bg-white/20 rounded-lg text-[10px] font-bold uppercase">{order.paymentMethod}</span>
           </div>
         </div>
 
-        <div className="bg-white rounded-3xl p-4 shadow-sm">
-          <h3 className="font-black mb-3">Order Status</h3>
-          <div className={`inline-flex items-center gap-2 px-4 py-2 rounded-full font-bold ${getStatusColor(order.status)}`}>
-            {getStatusIcon(order.status)}
-            {order.status || "Pending"}
+        {/* TIMELINE - FIX 3 */}
+        <div className="bg-white p-5 rounded-3xl border border-gray-100">
+           <h3 className="font-black text-sm mb-4">Tracking Timeline</h3>
+           <div className="space-y-4">
+             {steps.map((step, i) => (
+                <div key={step} className="flex items-center gap-3">
+                   <div className={`w-3 h-3 rounded-full ${i <= currentStepIndex ? 'bg-green-500' : 'bg-gray-200'}`} />
+                   <p className={`text-xs font-bold ${i <= currentStepIndex ? 'text-gray-900' : 'text-gray-400'}`}>{step.charAt(0).toUpperCase() + step.slice(1)}</p>
+                </div>
+             ))}
+           </div>
+        </div>
+
+        {/* PRODUCTS */}
+        {order.items?.map((item: any, i: number) => (
+          <div key={i} className="bg-white p-4 rounded-3xl flex gap-4 border border-gray-100">
+            <img src={item.image || "/placeholder.png"} className="w-20 h-20 rounded-2xl object-cover bg-gray-50" />
+            <div className="flex-1">
+              <h2 className="font-bold text-sm">{item.title}</h2>
+              <p className="text-[10px] font-bold text-gray-500">Qty: {item.quantity} | Price: ₹{item.price}</p>
+              <p className="text-sm font-black text-indigo-600 mt-1">Total: ₹{item.quantity * item.price}</p>
+            </div>
           </div>
+        ))}
+
+        {/* SUMMARY */}
+        <div className="bg-white p-5 rounded-3xl border border-gray-100 text-sm space-y-2">
+            <div className="flex justify-between"><p>Subtotal</p><p className="font-bold">₹{order.subtotal}</p></div>
+            <div className="flex justify-between text-red-500"><p>Discount</p><p className="font-bold">-₹{order.discount}</p></div>
+            <div className="flex justify-between font-black text-lg pt-2 border-t"><p>Total</p><p>₹{order.finalAmount}</p></div>
         </div>
 
-        <div className="bg-white rounded-3xl p-4 shadow-sm">
-          <h3 className="font-black mb-3">Order Information</h3>
-          <p className="text-sm text-slate-500">Order ID</p>
-          <p className="font-semibold break-all">{order.id}</p>
-          
-          {order.trackingId && (
-            <>
-              <p className="text-sm text-slate-500 mt-3">Tracking ID</p>
-              <p className="font-semibold">{order.trackingId}</p>
-            </>
-          )}
-
-          {order.createdAt?.toDate && (
-            <>
-              <p className="text-sm text-slate-500 mt-3">Order Date</p>
-              <p className="font-semibold">{order.createdAt.toDate().toLocaleDateString("en-IN")}</p>
-            </>
-          )}
-        </div>
-
-        <div className="bg-white rounded-3xl p-4 shadow-sm">
-          <h3 className="font-black mb-3">Delivery Details</h3>
-          <p>{order.customerName || "Customer"}</p>
-          <p>{order.mobile || "-"}</p>
-          <p>{order.address || "-"}</p>
+        {/* ACTIONS */}
+        <div className="grid grid-cols-2 gap-3">
+           <Link href={`/track-order/${id}`} className="bg-indigo-600 text-white p-4 rounded-2xl font-bold text-xs flex items-center justify-center gap-2"><Truck size={16}/> Track</Link>
+           <button className="bg-white p-4 rounded-2xl font-bold text-xs flex items-center justify-center gap-2 border"><FileText size={16}/> Invoice</button>
+           {status === "placed" && <button onClick={handleCancel} className="bg-red-50 text-red-600 p-4 rounded-2xl font-bold text-xs flex items-center justify-center gap-2"><XCircle size={16}/> Cancel</button>}
+           {status === "delivered" && order.exchangeEligible && <button className="bg-green-50 text-green-600 p-4 rounded-2xl font-bold text-xs flex items-center justify-center gap-2"><RotateCcw size={16}/> Return</button>}
         </div>
       </div>
     </main>
