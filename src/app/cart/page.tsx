@@ -15,7 +15,7 @@ interface CartItem {
   title: string;
   image: string;
   price: number;
-  discountPrice?: number; // Added discountPrice as requested
+  discountPrice?: number;
   quantity: number;
   size?: string;
   color?: string;
@@ -30,7 +30,6 @@ export default function CartPage() {
     let unsubscribeSnapshot: () => void = () => {};
 
     const unsubscribeAuth = auth.onAuthStateChanged((user) => {
-      // Unsubscribe previous snapshot if user changes
       unsubscribeSnapshot(); 
       
       if (!user) {
@@ -39,7 +38,7 @@ export default function CartPage() {
         return;
       }
 
-      // Path: users/{uid}/cart
+      // User-wise Cart Path Fixed: users/{uid}/cart
       const cartRef = collection(db, "users", user.uid, "cart");
 
       unsubscribeSnapshot = onSnapshot(cartRef, (snapshot) => {
@@ -52,7 +51,6 @@ export default function CartPage() {
       });
     });
 
-    // Cleanup on unmount
     return () => {
       unsubscribeAuth();
       unsubscribeSnapshot();
@@ -61,7 +59,6 @@ export default function CartPage() {
 
   const totalPrice = useMemo(() => {
     return cartItems.reduce((total, item) => {
-      // Use discountPrice if available, else use price
       const priceToUse = item.discountPrice || item.price;
       return total + priceToUse * item.quantity;
     }, 0);
@@ -83,7 +80,6 @@ export default function CartPage() {
 
   return (
     <main className="min-h-screen bg-[#f6f6f6] pb-[120px]">
-      {/* HEADER */}
       <div className="sticky top-0 z-50 bg-[#f6f6f6]/90 px-3 pt-3 backdrop-blur-md">
         <div className="flex items-center justify-between rounded-[18px] bg-white px-3 py-3 shadow-sm">
           <div className="flex items-center gap-3">
@@ -101,7 +97,6 @@ export default function CartPage() {
         </div>
       </div>
 
-      {/* CONTENT */}
       <section className="space-y-4 px-3 pt-4">
         {loading ? (
           <div className="py-20 text-center text-sm font-bold">Loading Cart...</div>
@@ -141,7 +136,6 @@ export default function CartPage() {
         )}
       </section>
 
-      {/* BOTTOM CHECKOUT */}
       {cartItems.length > 0 && (
         <div className="fixed bottom-0 left-0 z-50 w-full border-t bg-white px-3 py-3">
           <div className="flex items-center gap-3">
