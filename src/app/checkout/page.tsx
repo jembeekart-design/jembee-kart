@@ -56,6 +56,11 @@ productId = ${productId}
 
   try {
     const orderNumber = `JK-${Date.now()}`;
+    alert(
+  "product.image = " + product.image +
+  "\nproduct.images = " + JSON.stringify(product.images) +
+  "\nproduct.thumbnail = " + product.thumbnail
+);
 
     await addDoc(collection(db, "orders"), {
       orderNumber,
