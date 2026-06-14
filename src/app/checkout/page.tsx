@@ -33,16 +33,68 @@ function CheckoutContent() {
   }, [productId]);
 
   const handlePlaceOrder = async () => {
-    setLoading(true);
-    try {
-      router.push(`/payment-success`);
-    } catch (error) {
-      alert("Order Failed");
-    } finally {
-      setLoading(false);
-    }
-  };
+  const user = auth.currentUser;
 
+  if (!user || !product || !address) {
+    alert("Missing data");
+    return;
+  }
+
+  setLoading(true);
+
+  try {
+    const orderNumber = `JK-${Date.now()}`;
+
+    await addDoc(collection(db, "orders"), {
+      orderNumber,
+
+      userId: user.uid,
+
+      customerName: address.fullName,
+      customerPhone: address.mobile,
+
+      shippingAddress: address,
+
+      productId: product.id,
+      productTitle: product.title,
+      productImage: product.image,
+
+      productPrice: 1599,
+      productDiscountPrice: 1099,
+
+      quantity: 1,
+
+      subtotal: 1599,
+      discount: 500,
+      finalAmount: 1099,
+
+      paymentMethod: "cod",
+
+      status: "placed",
+
+      referralEligible: true,
+      cashbackProcessed: false,
+      commissionProcessed: false,
+      rewardProcessed: false,
+
+      exchangeEligible: true,
+      exchangeRequested: false,
+
+      placedAt: serverTimestamp(),
+      createdAt: serverTimestamp(),
+
+      sellerId: "default_seller",
+      sellerName: "JembeeKart Official",
+    });
+
+    router.push("/payment-success");
+  } catch (error) {
+    console.error(error);
+    alert("Order Failed");
+  } finally {
+    setLoading(false);
+  }
+};
   if (dataLoading) return <div className="flex min-h-screen items-center justify-center"><Loader2 className="animate-spin text-purple-600" /></div>;
 
   return (
