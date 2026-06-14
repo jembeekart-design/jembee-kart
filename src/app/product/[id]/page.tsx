@@ -127,20 +127,39 @@ export default function ProductPage() {
   /* ======================================================
   ADD TO CART
   ====================================================== */
+  const router = useRouter(); // Ensure `router` is initialized inside ProductPage
+
   async function addToCart() {
     if (!product) return;
 
+    // 1. Guest User Login Check
+    if (!auth.currentUser) {
+      router.push("/login");
+      return;
+    }
+
     try {
-      await addDoc(collection(db, "cart"), {
+      // 2. User-specific path: users/{uid}/cart
+      const cartRef = collection(db, "users", auth.currentUser.uid, "cart");
+      
+      await addDoc(cartRef, {
         productId: product.id,
         title: product.title,
-        image: product.images?.[0],
-        price: product.discountPrice,
-        size: selectedSize,
-        color: selectedColor,
+        image: product.images?.[0] || "/placeholder.png",
+        price: product.price,
+        discountPrice: product.discountPrice || null,
         quantity: 1,
-        createdAt: Date.now()
+        size: selectedSize || "N/A",      // Check variable name in your state
+        color: selectedColor || "N/A"     // Check variable name in your state
       });
+      
+      alert("Added to Cart!");
+    } catch (error) {
+      console.error("Error adding to cart:", error);
+      alert("Failed to add item to cart.");
+    }
+  }
+
 
       alert("Added To Cart");
     } catch (error) {
