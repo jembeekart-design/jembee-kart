@@ -74,7 +74,10 @@ productId = ${productId}
 
       productId: product.id,
       productTitle: product.title,
-      productImage: product.image || "",
+      productImage:
+  product.images?.[0] ||
+  product.image ||
+  "",
 
       productPrice: 1599,
       productDiscountPrice: 1099,
