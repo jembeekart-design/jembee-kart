@@ -88,22 +88,38 @@ export default function MyOrdersPage() {
         ) : filteredOrders.map(order => (
           <div key={order.id} className="bg-white p-5 rounded-3xl shadow-sm border border-gray-100">
             <div className="flex gap-4">
-             <img src={order.image || "/placeholder.png"} className="w-20 h-20 rounded-2xl object-cover bg-gray-50" />
-              <div className="flex-1">
-                <h3 className="font-bold text-gray-900 line-clamp-1">{order.productTitle || "Product"}</h3>
-                <div className="flex items-center gap-2 mt-1 cursor-pointer" onClick={() => { navigator.clipboard.writeText(order.id); showToast("Copied to clipboard!"); }}>
-                    <p className="text-[9px] text-gray-400 font-bold uppercase">ID: {order.id.slice(0, 10)}</p>
-                    <Copy size={10} className="text-indigo-400" />
-                </div>
-                <p className="text-xl font-black text-indigo-600 mt-2">
-  ₹{order.finalAmount || order.amount || 0}
-</p>
-                <div className="flex items-center gap-2 mt-1">
-                    <span className="bg-gray-100 px-2 py-0.5 rounded-lg text-[9px] font-bold text-gray-600">🏷 {order.items?.length || 1} Items</span>
-                    <p className="text-[9px] text-gray-400 font-bold">{order?.placedAt?.seconds ? new Date(order.placedAt.seconds * 1000).toLocaleString() : 'N/A'}</p>
-                </div>
-              </div>
-            </div>
+            <div className="flex gap-4">
+  <img 
+    src={order.productImage || order.image || "/placeholder.png"} 
+    className="w-20 h-20 rounded-2xl object-cover bg-gray-50" 
+    alt={order.productTitle}
+  />
+  <div className="flex-1">
+    <h3 className="font-bold text-gray-900 line-clamp-1">{order.productTitle || "Product"}</h3>
+    
+    {/* Order ID Section */}
+    <div className="flex items-center gap-2 mt-1 cursor-pointer" onClick={() => { navigator.clipboard.writeText(order.orderNumber || order.id); showToast("Copied!"); }}>
+        <p className="text-[9px] text-gray-400 font-bold uppercase">ID: {order.orderNumber?.slice(-10) || order.id.slice(0, 10)}</p>
+        <Copy size={10} className="text-indigo-400" />
+    </div>
+
+    {/* Price Section */}
+    <p className="text-xl font-black text-indigo-600 mt-1">
+      ₹{order.finalAmount || order.productDiscountPrice || order.productPrice || 0}
+    </p>
+
+    {/* Footer Info */}
+    <div className="flex items-center gap-2 mt-1">
+        <span className="bg-gray-100 px-2 py-0.5 rounded-lg text-[9px] font-bold text-gray-600">
+           Qty: {order.quantity || 1}
+        </span>
+        <p className="text-[9px] text-gray-400 font-bold">
+          {order?.placedAt?.seconds ? new Date(order.placedAt.seconds * 1000).toLocaleString() : 'N/A'}
+        </p>
+    </div>
+  </div>
+</div>
+
             <div className="flex justify-between items-center mt-4 pt-4 border-t border-gray-50">
               <span className={`px-3 py-1 rounded-full text-[10px] font-black uppercase border ${getStatusColor(order.status)}`}>{order.status || "Placed"}</span>
               <Link href={`/orders/${order.id}`} className="text-xs font-black text-indigo-600 underline">View Details →</Link>
