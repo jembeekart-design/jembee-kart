@@ -88,11 +88,9 @@ export default function MyOrdersPage() {
         ) : filteredOrders.map(order => (
           <div key={order.id} className="bg-white p-5 rounded-3xl shadow-sm border border-gray-100">
             <div className="flex gap-4">
-             <img src={order.image || "/placeholder.png"} className="w-20 h-20 rounded-2xl object-cover bg-gray-50" /> 
+             <img src={order.image || "/placeholder.png"} className="w-20 h-20 rounded-2xl object-cover bg-gray-50" />
               <div className="flex-1">
-                <h3 className="font-bold text-gray-900 line-clamp-1">
-  {order.productTitle || "Product"}
-</h3>
+                <h3 className="font-bold text-gray-900 line-clamp-1">{order.productTitle || "Product"}</h3>
                 <div className="flex items-center gap-2 mt-1 cursor-pointer" onClick={() => { navigator.clipboard.writeText(order.id); showToast("Copied to clipboard!"); }}>
                     <p className="text-[9px] text-gray-400 font-bold uppercase">ID: {order.id.slice(0, 10)}</p>
                     <Copy size={10} className="text-indigo-400" />
