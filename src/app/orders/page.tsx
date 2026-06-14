@@ -36,11 +36,12 @@ export default function MyOrdersPage() {
   };
 
   const filteredOrders = orders.filter(o => {
-    const statusMatch = activeTab === "All Orders" || (o.status?.toLowerCase() === activeTab.toLowerCase());
-    const searchMatch = (o.productTitle?.toLowerCase().includes(search.toLowerCase())) || 
-                        (o.orderNumber?.toLowerCase().includes(search.toLowerCase())) ||
-                        (o.id?.toLowerCase().includes(search.toLowerCase()));
-    return statusMatch && searchMatch;
+    const matchesTab = activeTab === "All Orders" || o.status?.toLowerCase() === activeTab.toLowerCase();
+    // Search logic: dono purane aur naye structure ko handle karega
+    const title = o.productTitle || o.items?.[0]?.title || "";
+    const matchesSearch = title.toLowerCase().includes(search.toLowerCase()) || 
+                          o.id?.toLowerCase().includes(search.toLowerCase());
+    return matchesTab && matchesSearch;
   });
 
   const getStatusColor = (s: string) => ({
@@ -83,9 +84,13 @@ export default function MyOrdersPage() {
         ) : filteredOrders.map(order => (
           <div key={order.id} className="bg-white p-5 rounded-3xl shadow-sm border border-gray-100">
             <div className="flex gap-4">
-              <img src={order.productImage || order.image || "/placeholder.png"} className="w-20 h-20 rounded-2xl object-cover bg-gray-50" alt={order.productTitle} />
+              <img 
+                src={order.items?.[0]?.image || order.productImage || order.image || "/placeholder.png"} 
+                className="w-20 h-20 rounded-2xl object-cover bg-gray-50" 
+                alt={order.productTitle || "Product"}
+              />
               <div className="flex-1">
-                <h3 className="font-bold text-gray-900 line-clamp-1">{order.productTitle || "Product"}</h3>
+                <h3 className="font-bold text-gray-900 line-clamp-1">{order.productTitle || order.items?.[0]?.title || "Product"}</h3>
                 <div className="flex items-center gap-2 mt-1 cursor-pointer" onClick={() => { navigator.clipboard.writeText(order.orderNumber || order.id); showToast("Copied!"); }}>
                     <p className="text-[9px] text-gray-400 font-bold uppercase">ID: {order.orderNumber?.slice(-10) || order.id.slice(0, 10)}</p>
                     <Copy size={10} className="text-indigo-400" />
@@ -105,7 +110,23 @@ export default function MyOrdersPage() {
         ))}
       </section>
 
-      {/* Footer Navigation bar aur Trust icons wahi rahenge... */}
+      <div className="grid grid-cols-4 gap-2 px-4 mt-8 pb-10">
+        {[ {icon: ShieldCheck, label: "Secure"}, {icon: Truck, label: "Fast"}, {icon: RotateCcw, label: "Easy"}, {icon: Headphones, label: "Support"} ].map((item, i) => (
+          <div key={i} className="bg-white p-3 rounded-2xl flex flex-col items-center gap-1 border border-gray-100">
+            <item.icon size={16} className="text-indigo-500" />
+            <span className="text-[8px] font-bold text-gray-600 text-center">{item.label}</span>
+          </div>
+        ))}
+      </div>
+
+      <div className="fixed bottom-0 w-full bg-white border-t border-gray-100 px-6 py-4 flex justify-between items-center z-50">
+        {[ {icon: Home, l: "Home", p: "/"}, {icon: LayoutGrid, l: "Categories", p: "/categories"}, {icon: ShoppingBag, l: "Cart", p: "/cart"}, {icon: ListOrdered, l: "Orders", p: "/orders"}, {icon: User, l: "Profile", p: "/profile"} ].map((n, i) => (
+          <Link href={n.p} key={i} className="flex flex-col items-center gap-1">
+            <n.icon size={20} className={pathname === n.p ? "text-indigo-600" : "text-gray-400"} />
+            <span className={`text-[9px] font-bold ${pathname === n.p ? "text-indigo-600" : "text-gray-400"}`}>{n.l}</span>
+          </Link>
+        ))}
+      </div>
     </main>
   );
 }
