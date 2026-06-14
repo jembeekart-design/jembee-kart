@@ -69,10 +69,6 @@ productId = ${productId}
 
       productId: product.id,
       productTitle: product.title,
-      alert(
-  "image = " + product.image +
-  "\nimages = " + JSON.stringify(product.images)
-);
       productImage: product.image || "",
 
       productPrice: 1599,
