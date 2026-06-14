@@ -10,6 +10,12 @@ function CheckoutContent() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const productId = searchParams.get("productId");
+  useEffect(() => {
+  alert(
+    "FULL URL = " + window.location.href +
+    "\n\nproductId = " + productId
+  );
+}, [productId]);
 
   const [loading, setLoading] = useState(false);
   const [dataLoading, setDataLoading] = useState(true);
