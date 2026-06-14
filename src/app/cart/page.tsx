@@ -90,110 +90,29 @@ export default function CartPage() {
             )}
 
             {cartItems.map((item) => (
-  <React.Fragment key={item.id}>
-    
-    <div className="bg-red-100 p-2 mb-2 text-xs">
-      <p>ID = {String(item.id)}</p>
-      <p>PRODUCT ID = {String((item as any).productId)}</p>
-      <p>TITLE = {String(item.title)}</p>
-      <p>IMAGE = {String(item.image)}</p>
-    </div>
-
-    <div className="bg-white p-4 rounded-3xl shadow-sm border border-gray-100 flex gap-4">
-      <img
-        src={item.image}
-        className="w-24 h-24 rounded-2xl object-cover bg-gray-100"
-      />
-
-      <div className="flex-1">
-        <h2 className="font-bold text-sm text-gray-900 line-clamp-1">
-          {item.title}
-        </h2>
-
-        <div className="flex items-center gap-2 mt-1">
-          <span className="text-[10px] font-bold bg-gray-100 px-2 py-0.5 rounded-md text-gray-600">
-            Size: {item.size}
-          </span>
-
-          <div
-            style={{ background: item.color }}
-            className="w-4 h-4 rounded-full border border-gray-200"
-          />
-        </div>
-
-        <p className="font-black text-lg mt-2 text-indigo-600">
-          ₹{item.discountPrice || item.price}
-        </p>
-
-        <div className="flex justify-between items-center mt-2">
-          <div className="flex items-center gap-3 bg-gray-50 rounded-full px-2 py-1">
-            <button
-              onClick={() =>
-                updateDoc(
-                  doc(
-                    db,
-                    "users",
-                    auth.currentUser!.uid,
-                    "cart",
-                    item.id
-                  ),
-                  {
-                    quantity: Math.max(1, item.quantity - 1),
-                  }
-                )
-              }
-              className="p-1"
-            >
-              <Minus size={12} />
-            </button>
-
-            <span className="text-xs font-bold w-4 text-center">
-              {item.quantity}
-            </span>
-
-            <button
-              onClick={() =>
-                updateDoc(
-                  doc(
-                    db,
-                    "users",
-                    auth.currentUser!.uid,
-                    "cart",
-                    item.id
-                  ),
-                  {
-                    quantity: item.quantity + 1,
-                  }
-                )
-              }
-              className="p-1"
-            >
-              <Plus size={12} />
-            </button>
-          </div>
-
-          <button
-            onClick={() =>
-              deleteDoc(
-                doc(
-                  db,
-                  "users",
-                  auth.currentUser!.uid,
-                  "cart",
-                  item.id
-                )
-              )
-            }
-            className="text-red-400 p-2"
-          >
-            <Trash2 size={16} />
-          </button>
-        </div>
-      </div>
-    </div>
-
-  </React.Fragment>
-))}
+              <div key={item.id} className="bg-white p-4 rounded-3xl shadow-sm border border-gray-100 flex gap-4">
+                <img src={item.image} className="w-24 h-24 rounded-2xl object-cover bg-gray-100" />
+                <div className="flex-1">
+                  <h2 className="font-bold text-sm text-gray-900 line-clamp-1">{item.title}</h2>
+                  <div className="flex items-center gap-2 mt-1">
+                    <span className="text-[10px] font-bold bg-gray-100 px-2 py-0.5 rounded-md text-gray-600">Size: {item.size}</span>
+                    <div style={{ background: item.color }} className="w-4 h-4 rounded-full border border-gray-200" />
+                  </div>
+                  <p className="font-black text-lg mt-2 text-indigo-600">₹{item.discountPrice || item.price}</p>
+                  
+                  <div className="flex justify-between items-center mt-2">
+                    <div className="flex items-center gap-3 bg-gray-50 rounded-full px-2 py-1">
+                      <button onClick={() => updateDoc(doc(db, "users", auth.currentUser!.uid, "cart", item.id), { quantity: Math.max(1, item.quantity - 1) })} className="p-1"><Minus size={12}/></button>
+                      <span className="text-xs font-bold w-4 text-center">{item.quantity}</span>
+                      <button onClick={() => updateDoc(doc(db, "users", auth.currentUser!.uid, "cart", item.id), { quantity: item.quantity + 1 })} className="p-1"><Plus size={12}/></button>
+                    </div>
+                    <button onClick={() => deleteDoc(doc(db, "users", auth.currentUser!.uid, "cart", item.id))} className="text-red-400 p-2"><Trash2 size={16}/></button>
+                  </div>
+                </div>
+              </div>
+            ))}
+          </>
+        )}
       </section>
 
       {/* FEATURES GRID */}
