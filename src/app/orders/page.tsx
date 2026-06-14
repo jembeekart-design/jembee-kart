@@ -95,7 +95,9 @@ export default function MyOrdersPage() {
                     <p className="text-[9px] text-gray-400 font-bold uppercase">ID: {order.id.slice(0, 10)}</p>
                     <Copy size={10} className="text-indigo-400" />
                 </div>
-                <p className="text-xl font-black text-indigo-600 mt-2">₹{order.finalAmount || 0}</p>
+                <p className="text-xl font-black text-indigo-600 mt-2">
+  ₹{order.finalAmount || order.amount || 0}
+</p>
                 <div className="flex items-center gap-2 mt-1">
                     <span className="bg-gray-100 px-2 py-0.5 rounded-lg text-[9px] font-bold text-gray-600">🏷 {order.items?.length || 1} Items</span>
                     <p className="text-[9px] text-gray-400 font-bold">{order?.placedAt?.seconds ? new Date(order.placedAt.seconds * 1000).toLocaleString() : 'N/A'}</p>
