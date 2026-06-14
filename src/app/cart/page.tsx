@@ -6,7 +6,7 @@ import { useEffect, useMemo, useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { collection, deleteDoc, doc, onSnapshot, updateDoc } from "firebase/firestore";
-import { ArrowLeft, Minus, Plus, ShoppingBag, Trash2, Zap } from "lucide-react";
+import { ArrowLeft, Minus, Plus, ShoppingBag, Trash2, Zap, ShieldCheck, Truck, RotateCcw, CreditCard } from "lucide-react";
 import { db, auth } from "@/firebase/config";
 
 interface CartItem {
@@ -26,131 +26,120 @@ export default function CartPage() {
   const [cartItems, setCartItems] = useState<CartItem[]>([]);
   const [loading, setLoading] = useState(true);
 
+  const FREE_GIFT_THRESHOLD = 3500;
+
   useEffect(() => {
     let unsubscribeSnapshot: () => void = () => {};
-
     const unsubscribeAuth = auth.onAuthStateChanged((user) => {
       unsubscribeSnapshot(); 
-      
-      if (!user) {
-        setCartItems([]);
-        setLoading(false);
-        return;
-      }
-
-      // User-wise Cart Path Fixed: users/{uid}/cart
+      if (!user) { setCartItems([]); setLoading(false); return; }
       const cartRef = collection(db, "users", user.uid, "cart");
-
       unsubscribeSnapshot = onSnapshot(cartRef, (snapshot) => {
-        const data = snapshot.docs.map((doc) => ({
-          id: doc.id,
-          ...(doc.data() as Omit<CartItem, "id">),
-        }));
+        const data = snapshot.docs.map((doc) => ({ id: doc.id, ...(doc.data() as Omit<CartItem, "id">) }));
         setCartItems(data);
         setLoading(false);
       });
     });
-
-    return () => {
-      unsubscribeAuth();
-      unsubscribeSnapshot();
-    };
+    return () => { unsubscribeAuth(); unsubscribeSnapshot(); };
   }, []);
 
   const totalPrice = useMemo(() => {
-    return cartItems.reduce((total, item) => {
-      const priceToUse = item.discountPrice || item.price;
-      return total + priceToUse * item.quantity;
-    }, 0);
+    return cartItems.reduce((total, item) => total + (item.discountPrice || item.price) * item.quantity, 0);
   }, [cartItems]);
 
-  async function updateQuantity(id: string, quantity: number) {
-    if (quantity < 1 || !auth.currentUser) return;
-    try {
-      await updateDoc(doc(db, "users", auth.currentUser.uid, "cart", id), { quantity });
-    } catch (error) { console.error(error); }
-  }
-
-  async function removeItem(id: string) {
-    if (!auth.currentUser) return;
-    try {
-      await deleteDoc(doc(db, "users", auth.currentUser.uid, "cart", id));
-    } catch (error) { console.error(error); }
-  }
+  const progress = Math.min((totalPrice / FREE_GIFT_THRESHOLD) * 100, 100);
+  const remaining = Math.max(FREE_GIFT_THRESHOLD - totalPrice, 0);
 
   return (
-    <main className="min-h-screen bg-[#f6f6f6] pb-[120px]">
-      <div className="sticky top-0 z-50 bg-[#f6f6f6]/90 px-3 pt-3 backdrop-blur-md">
-        <div className="flex items-center justify-between rounded-[18px] bg-white px-3 py-3 shadow-sm">
-          <div className="flex items-center gap-3">
-            <Link href="/" className="flex h-9 w-9 items-center justify-center rounded-full bg-gray-100">
-              <ArrowLeft size={18} />
-            </Link>
-            <div>
-              <h1 className="text-[18px] font-black">My Cart</h1>
-              <p className="text-[11px] text-gray-500">{cartItems.length} items</p>
-            </div>
-          </div>
-          <div className="flex h-10 w-10 items-center justify-center rounded-full bg-purple-100">
-            <ShoppingBag size={18} className="text-purple-600" />
+    <main className="min-h-screen bg-[#f8f9fe] pb-32">
+      {/* HEADER */}
+      <div className="sticky top-0 z-50 bg-[#f8f9fe]/90 backdrop-blur-md px-4 py-4">
+        <div className="flex items-center gap-4">
+          <button onClick={() => router.back()} className="p-2 bg-white rounded-full shadow-sm border border-gray-100">
+            <ArrowLeft size={20} />
+          </button>
+          <div>
+            <h1 className="text-lg font-black text-gray-900">My Cart</h1>
+            <p className="text-xs text-gray-500 font-medium">{cartItems.length} Items</p>
           </div>
         </div>
       </div>
 
-      <section className="space-y-4 px-3 pt-4">
+      <section className="px-4 space-y-4">
         {loading ? (
-          <div className="py-20 text-center text-sm font-bold">Loading Cart...</div>
+          <div className="text-center py-20 font-bold">Loading...</div>
         ) : cartItems.length === 0 ? (
-          <div className="py-24 text-center">
-            <h2 className="text-[22px] font-black">Cart is Empty</h2>
-            <p className="mt-2 text-sm text-gray-500">Add products to continue</p>
-          </div>
+          <div className="text-center py-20 font-bold text-gray-500">Your cart is empty</div>
         ) : (
-          cartItems.map((item) => (
-            <div key={item.id} className="rounded-[22px] bg-white p-3 shadow-sm">
-              <div className="flex gap-3">
-                <div className="h-[110px] w-[110px] overflow-hidden rounded-[18px] bg-gray-100">
-                  <img src={item.image} alt="" className="h-full w-full object-cover" />
+          <>
+            {/* PROGRESS BAR SECTION */}
+            {remaining > 0 ? (
+              <div className="bg-white p-4 rounded-2xl border border-indigo-100 shadow-sm">
+                <div className="flex justify-between text-[11px] font-bold mb-2">
+                  <span className="text-indigo-600 flex items-center gap-1">🎁 Add ₹{remaining} more to get a FREE GIFT</span>
+                  <span>₹{totalPrice} / ₹{FREE_GIFT_THRESHOLD}</span>
                 </div>
+                <div className="w-full h-2 bg-gray-100 rounded-full overflow-hidden">
+                  <div className="h-full bg-indigo-600 rounded-full transition-all duration-500" style={{ width: `${progress}%` }} />
+                </div>
+              </div>
+            ) : (
+              <div className="text-center text-xs font-bold text-green-600 bg-green-50 p-3 rounded-2xl border border-green-100">
+                🎉 You've unlocked a FREE GIFT!
+              </div>
+            )}
+
+            {cartItems.map((item) => (
+              <div key={item.id} className="bg-white p-4 rounded-3xl shadow-sm border border-gray-100 flex gap-4">
+                <img src={item.image} className="w-24 h-24 rounded-2xl object-cover bg-gray-100" />
                 <div className="flex-1">
-                  <h2 className="line-clamp-2 text-[15px] font-black">{item.title}</h2>
-                  <div className="mt-2 flex items-center gap-2">
-                    <span className="rounded-lg bg-gray-100 px-2 py-1 text-[10px] font-bold">Size: {item.size}</span>
-                    <div style={{ background: item.color }} className="h-5 w-5 rounded-full border" />
+                  <h2 className="font-bold text-sm text-gray-900 line-clamp-1">{item.title}</h2>
+                  <div className="flex items-center gap-2 mt-1">
+                    <span className="text-[10px] font-bold bg-gray-100 px-2 py-0.5 rounded-md text-gray-600">Size: {item.size}</span>
+                    <div style={{ background: item.color }} className="w-4 h-4 rounded-full border border-gray-200" />
                   </div>
-                  <h3 className="mt-3 text-[22px] font-black">
-                    ₹{item.discountPrice || item.price}
-                  </h3>
-                  <div className="mt-3 flex items-center justify-between">
-                    <div className="flex items-center gap-2">
-                      <button onClick={() => updateQuantity(item.id, item.quantity - 1)} className="flex h-8 w-8 items-center justify-center rounded-full bg-gray-100"><Minus size={14} /></button>
-                      <span className="min-w-[20px] text-center text-sm font-black">{item.quantity}</span>
-                      <button onClick={() => updateQuantity(item.id, item.quantity + 1)} className="flex h-8 w-8 items-center justify-center rounded-full bg-purple-600 text-white"><Plus size={14} /></button>
+                  <p className="font-black text-lg mt-2 text-indigo-600">₹{item.discountPrice || item.price}</p>
+                  
+                  <div className="flex justify-between items-center mt-2">
+                    <div className="flex items-center gap-3 bg-gray-50 rounded-full px-2 py-1">
+                      <button onClick={() => updateDoc(doc(db, "users", auth.currentUser!.uid, "cart", item.id), { quantity: Math.max(1, item.quantity - 1) })} className="p-1"><Minus size={12}/></button>
+                      <span className="text-xs font-bold w-4 text-center">{item.quantity}</span>
+                      <button onClick={() => updateDoc(doc(db, "users", auth.currentUser!.uid, "cart", item.id), { quantity: item.quantity + 1 })} className="p-1"><Plus size={12}/></button>
                     </div>
-                    <button onClick={() => removeItem(item.id)} className="flex h-9 w-9 items-center justify-center rounded-full bg-red-100 text-red-500"><Trash2 size={16} /></button>
+                    <button onClick={() => deleteDoc(doc(db, "users", auth.currentUser!.uid, "cart", item.id))} className="text-red-400 p-2"><Trash2 size={16}/></button>
                   </div>
                 </div>
               </div>
-            </div>
-          ))
+            ))}
+          </>
         )}
       </section>
 
+      {/* FEATURES GRID */}
       {cartItems.length > 0 && (
-        <div className="fixed bottom-0 left-0 z-50 w-full border-t bg-white px-3 py-3">
-          <div className="flex items-center gap-3">
-            <div className="flex-1">
-              <p className="text-[11px] font-bold text-gray-500">Total Amount</p>
-              <h2 className="text-[24px] font-black">₹{totalPrice}</h2>
+        <div className="grid grid-cols-2 gap-3 px-4 mt-6">
+          {[ {icon: Truck, label: "Free Delivery"}, {icon: ShieldCheck, label: "100% Secure"}, {icon: RotateCcw, label: "Easy Returns"}, {icon: CreditCard, label: "COD Available"} ].map((f, i) => (
+            <div key={i} className="bg-white p-3 rounded-2xl flex items-center gap-2 border border-gray-100">
+              <f.icon size={16} className="text-indigo-500" />
+              <span className="text-[10px] font-bold text-gray-600">{f.label}</span>
             </div>
-            <button
-              onClick={() => router.push("/checkout?cart=true")}
-              className="flex flex-1 items-center justify-center gap-2 rounded-[16px] bg-gradient-to-r from-violet-600 to-fuchsia-500 py-4 text-[14px] font-black text-white"
-            >
-              <Zap size={16} />
-              Checkout
-            </button>
+          ))}
+        </div>
+      )}
+
+      {/* CHECKOUT BAR */}
+      {cartItems.length > 0 && (
+        <div className="fixed bottom-0 left-0 right-0 p-4 bg-white border-t border-gray-100 rounded-t-[2rem] shadow-[0_-10px_40px_-15px_rgba(0,0,0,0.1)]">
+          <div className="flex justify-between items-center mb-4 px-2">
+            <span className="text-gray-500 font-medium text-sm">Total Amount</span>
+            <span className="text-2xl font-black text-indigo-900">₹{totalPrice}</span>
           </div>
+          <button 
+            onClick={() => router.push("/checkout?cart=true")}
+            className="w-full bg-indigo-600 text-white py-4 rounded-2xl font-black flex items-center justify-center gap-2 hover:bg-indigo-700 transition"
+          >
+            <Zap size={18} /> Secure Checkout
+          </button>
         </div>
       )}
     </main>
