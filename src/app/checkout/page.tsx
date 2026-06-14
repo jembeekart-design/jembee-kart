@@ -100,10 +100,12 @@ productId = ${productId}
     });
 
     router.push("/payment-success");
-  } catch (error) {
-    console.error(error);
-    alert("Order Failed");
-  } finally {
+  } catch (error: any) {
+  alert(
+    "CODE = " + error.code +
+    "\n\nMESSAGE = " + error.message
+  );
+} finally {
     setLoading(false);
   }
 };
