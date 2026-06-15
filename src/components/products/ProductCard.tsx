@@ -50,13 +50,6 @@ export default function ProductCard({
 
   /* RANDOM CARD COLOR */
 
-  const colorIndex =
-    id.length %
-    CARD_COLORS.length;
-
-  const gradientColor =
-    CARD_COLORS[colorIndex];
-
   return (
     <div
       className={`
