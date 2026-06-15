@@ -50,6 +50,8 @@ from "@/components/navigation/WhatsAppButton";
 import PromoBanner
 from "@/components/PromoBanner";
 
+import { useTheme } from "@/context/ThemeContext";
+
 /* ======================================================
 TYPES
 ====================================================== */
