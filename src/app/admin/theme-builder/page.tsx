@@ -24,16 +24,19 @@ export default function ThemeBuilderPage() {
   const [backgroundColor, setBackgroundColor] = useState("#050505");
   const [buttonRadius, setButtonRadius] = useState("24");
 
-  // Load theme from Firestore on mount
+  // Load theme from admin_settings/customize
   useEffect(() => {
     async function loadTheme() {
       try {
-        const snap = await getDoc(doc(db, "settings", "global_theme"));
+        const snap = await getDoc(doc(db, "admin_settings", "customize"));
         if (snap.exists()) {
           const data = snap.data();
           if (data.primaryColor) setPrimaryColor(data.primaryColor);
           if (data.secondaryColor) setSecondaryColor(data.secondaryColor);
           if (data.backgroundColor) setBackgroundColor(data.backgroundColor);
+          if (data.borderRadius !== undefined) {
+            setButtonRadius(String(data.borderRadius));
+          }
         }
       } catch (error) {
         console.error("Error loading theme: ", error);
@@ -42,17 +45,21 @@ export default function ThemeBuilderPage() {
     loadTheme();
   }, []);
 
-  // Save theme to Firestore
+  // Save theme to admin_settings/customize
   async function saveTheme() {
     try {
-      await setDoc(doc(db, "settings", "global_theme"), {
-        primaryColor,
-        secondaryColor,
-        backgroundColor,
-        buttonRadius,
-        cardColor: "#FFFFFF",
-        textColor: "#111827",
-      });
+      await setDoc(
+        doc(db, "admin_settings", "customize"),
+        {
+          primaryColor,
+          secondaryColor,
+          backgroundColor,
+          borderRadius: buttonRadius,
+          cardColor: "#FFFFFF",
+          textColor: "#111827",
+        },
+        { merge: true }
+      );
       alert("Theme Saved Successfully!");
     } catch (error) {
       console.error("Error saving theme: ", error);
