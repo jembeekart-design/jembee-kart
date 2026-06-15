@@ -565,8 +565,6 @@ export default function HomePage() {
 
                       <Link
                         href={`/product/${product.id}`}
-                        <Link
-  href={`/product/${product.id}`}
   className="
     group
     relative
