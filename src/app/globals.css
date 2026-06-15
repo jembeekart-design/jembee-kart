@@ -1,5 +1,13 @@
 @import "tailwindcss";
 
+:root {
+  --primary-color: #4F46E5;
+  --secondary-color: #7C3AED;
+  --background-color: #F8F9FE;
+  --card-color: #FFFFFF;
+  --text-color: #111827;
+}
+
 html,
 body {
   margin: 0;
@@ -13,7 +21,8 @@ body {
 }
 
 body {
-  background: #f3f4f6;
+  background: var(--background-color);
+  color: var(--text-color);
   font-family: Arial, Helvetica, sans-serif;
 }
 
@@ -31,4 +40,39 @@ svg,
 canvas {
   max-width: 100%;
   display: block;
+}
+
+/* GLOBAL THEME CLASSES */
+
+.theme-primary-bg {
+  background: var(--primary-color);
+}
+
+.theme-secondary-bg {
+  background: var(--secondary-color);
+}
+
+.theme-primary-text {
+  color: var(--primary-color);
+}
+
+.theme-secondary-text {
+  color: var(--secondary-color);
+}
+
+.theme-card {
+  background: var(--card-color);
+}
+
+.theme-page {
+  background: var(--background-color);
+  color: var(--text-color);
+}
+
+.theme-gradient {
+  background: linear-gradient(
+    135deg,
+    var(--primary-color),
+    var(--secondary-color)
+  );
 }
