@@ -52,17 +52,18 @@ export default function ProductCard({
 
   return (
     <div
-      className={`
-        overflow-hidden
-        rounded-[24px]
-        bg-gradient-to-br
-        ${gradientColor}
-        p-[1.5px]
-        shadow-md
-        transition-all
-        duration-300
-        hover:-translate-y-1
-      `}
+      className="
+  overflow-hidden
+  rounded-[24px]
+  p-[1.5px]
+  shadow-md
+  transition-all
+  duration-300
+  hover:-translate-y-1
+"
+style={{
+  background: "var(--primary-color)"
+}}
     >
 
       <div
