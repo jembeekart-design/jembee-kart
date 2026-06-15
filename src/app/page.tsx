@@ -565,20 +565,21 @@ export default function HomePage() {
 
                       <Link
                         href={`/product/${product.id}`}
-                        className="
-                          group
-                          relative
-                          block
-                          overflow-hidden
-                          rounded-[36px]
-                          bg-gradient-to-br
-                          from-indigo-500
-                          via-purple-500
-                          to-pink-500
-                          p-[2px]
-                          shadow-xl
-                        "
-                      >
+                        <Link
+  href={`/product/${product.id}`}
+  className="
+    group
+    relative
+    block
+    overflow-hidden
+    rounded-[36px]
+    p-[2px]
+    shadow-xl
+  "
+  style={{
+    background: "var(--primary-color)"
+  }}
+>
 
                         <div
                           className="
