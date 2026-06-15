@@ -447,12 +447,15 @@ export default function HomePage() {
         className="
           min-h-screen
           overflow-x-hidden
-          bg-[#f6f7fb]
           pb-32
           pt-[115px]
 
           md:pt-[150px]
         "
+        style={{
+  backgroundColor: theme.backgroundColor,
+  color: theme.textColor,
+}}
       >
 
         {/* ======================================================
