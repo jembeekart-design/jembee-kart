@@ -14,8 +14,26 @@ import {
 
 import { db } from "@/firebase/config";
 
+interface ThemeConfig {
+  primaryColor: string;
+  secondaryColor: string;
+  backgroundColor: string;
+  cardColor: string;
+  textColor: string;
+}
+
+const defaultTheme: ThemeConfig = {
+  primaryColor: "#4F46E5",
+  secondaryColor: "#7C3AED",
+  backgroundColor: "#F8F9FE",
+  cardColor: "#FFFFFF",
+  textColor: "#111827"
+};
+
 const ThemeContext =
-  createContext<any>(null);
+  createContext<ThemeConfig>(
+    defaultTheme
+  );
 
 export function ThemeProvider({
   children
@@ -24,13 +42,9 @@ export function ThemeProvider({
 }) {
 
   const [theme, setTheme] =
-    useState({
-      primaryColor: "#4F46E5",
-      secondaryColor: "#7C3AED",
-      backgroundColor: "#F8F9FE",
-      cardColor: "#FFFFFF",
-      textColor: "#111827"
-    });
+    useState<ThemeConfig>(
+      defaultTheme
+    );
 
   useEffect(() => {
 
@@ -38,17 +52,19 @@ export function ThemeProvider({
 
       try {
 
-        const snap = await getDoc(
-          doc(
-            db,
-            "settings",
-            "global_theme"
-          )
-        );
+        const snap =
+          await getDoc(
+            doc(
+              db,
+              "settings",
+              "global_theme"
+            )
+          );
 
         if (snap.exists()) {
 
-          const data = snap.data();
+          const data =
+            snap.data() as ThemeConfig;
 
           setTheme(data);
 
@@ -76,11 +92,15 @@ export function ThemeProvider({
             "--text-color",
             data.textColor
           );
+
         }
 
       } catch (error) {
 
-        console.log(error);
+        console.log(
+          "Theme load error:",
+          error
+        );
 
       }
     }
@@ -90,13 +110,22 @@ export function ThemeProvider({
   }, []);
 
   return (
+
     <ThemeContext.Provider
       value={theme}
     >
+
       {children}
+
     </ThemeContext.Provider>
+
   );
 }
 
-export const useTheme = () =>
-  useContext(ThemeContext);
+export function useTheme() {
+
+  return useContext(
+    ThemeContext
+  );
+
+}
