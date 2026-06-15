@@ -845,12 +845,9 @@ export default function HomePage() {
                       shadow-lg
 
                       ${
-                        selectedCategory ===
-                        "All"
-
-                          ? "border-indigo-600"
-
-                          : "border-white"
+                        selectedCategory === "All"
+  ? ""
+  : "border-white"
                       }
                     `}
                   >
