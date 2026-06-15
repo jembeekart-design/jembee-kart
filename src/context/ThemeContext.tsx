@@ -1,15 +1,10 @@
 "use client";
 
-import {
-  createContext,
-  useContext,
-  useEffect,
-"use client";
-
 import { createContext, useContext, useEffect, useState } from "react";
 import { doc, getDoc } from "firebase/firestore";
 import { db } from "@/firebase/config";
 
+// 1. Interface Definition
 interface ThemeConfig {
   primaryColor: string;
   secondaryColor: string;
@@ -23,6 +18,7 @@ interface ThemeConfig {
   logoUrl?: string;
 }
 
+// 2. Default Values
 const defaultTheme: ThemeConfig = {
   primaryColor: "#4F46E5",
   secondaryColor: "#7C3AED",
@@ -32,8 +28,10 @@ const defaultTheme: ThemeConfig = {
   textColor: "#111827"
 };
 
+// 3. Context Creation
 const ThemeContext = createContext<ThemeConfig>(defaultTheme);
 
+// 4. Provider Implementation
 export function ThemeProvider({ children }: { children: React.ReactNode }) {
   const [theme, setTheme] = useState<ThemeConfig>(defaultTheme);
 
@@ -45,7 +43,7 @@ export function ThemeProvider({ children }: { children: React.ReactNode }) {
         if (snap.exists()) {
           const data = snap.data();
           
-          // Merge Firestore data with defaultTheme to prevent undefined fields
+          // Merge logic to handle missing fields
           const mergedTheme = {
             ...defaultTheme,
             ...data
@@ -53,7 +51,7 @@ export function ThemeProvider({ children }: { children: React.ReactNode }) {
 
           setTheme(mergedTheme);
 
-          // Update CSS variables globally
+          // CSS Variable Injection
           document.documentElement.style.setProperty("--primary-color", mergedTheme.primaryColor);
           document.documentElement.style.setProperty("--secondary-color", mergedTheme.secondaryColor);
           document.documentElement.style.setProperty("--background-color", mergedTheme.backgroundColor);
@@ -75,6 +73,7 @@ export function ThemeProvider({ children }: { children: React.ReactNode }) {
   );
 }
 
+// 5. Custom Hook
 export function useTheme() {
   return useContext(ThemeContext);
 }
