@@ -1,19 +1,30 @@
 "use client";
 
+import { CartProvider }
+from "@/context/CartContext";
+
 import {
-  CartProvider
-} from "@/context/CartContext";
+  ThemeProvider
+}
+from "@/context/ThemeContext";
 
 export default function Providers({
   children
 }: {
   children: React.ReactNode;
 }) {
+
   return (
-    <CartProvider>
 
-      {children}
+    <ThemeProvider>
 
-    </CartProvider>
+      <CartProvider>
+
+        {children}
+
+      </CartProvider>
+
+    </ThemeProvider>
+
   );
 }
