@@ -907,12 +907,9 @@ export default function HomePage() {
                             shadow-lg
 
                             ${
-                              selectedCategory ===
-                              category.title
-
-                                ? "border-indigo-600"
-
-                                : "border-white"
+                              selectedCategory === category.title
+  ? ""
+  : "border-white"
                             }
                           `}
                         >
