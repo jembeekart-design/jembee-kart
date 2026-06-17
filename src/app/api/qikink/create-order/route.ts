@@ -1,5 +1,13 @@
 import { NextRequest, NextResponse } from "next/server";
 
+export async function GET() {
+  return NextResponse.json({
+    success: true,
+    message: "Qikink Create Order API Working",
+    timestamp: new Date().toISOString(),
+  });
+}
+
 export async function POST(req: NextRequest) {
   try {
     const body = await req.json();
@@ -16,29 +24,43 @@ export async function POST(req: NextRequest) {
       city,
       state,
       pincode,
+      paymentMethod,
     } = body;
 
-    // 1. Get Access Token
-    const tokenRes = await fetch(
+    if (!sku) {
+      return NextResponse.json(
+        {
+          success: false,
+          error: "SKU is required",
+        },
+        { status: 400 }
+      );
+    }
+
+    /* =====================================
+       GET QIKINK TOKEN
+    ===================================== */
+
+    const tokenResponse = await fetch(
       `${process.env.QIKINK_BASE_URL}/api/token`,
       {
         method: "POST",
         headers: {
-          "Content-Type": "application/json",
-          ClientId: process.env.QIKINK_CLIENT_ID!,
-          ClientSecret: process.env.QIKINK_CLIENT_SECRET!,
+          ClientId: process.env.QIKINK_CLIENT_ID || "",
+          ClientSecret:
+            process.env.QIKINK_CLIENT_SECRET || "",
         },
       }
     );
 
-    const tokenData = await tokenRes.json();
+    const tokenData = await tokenResponse.json();
 
     if (!tokenData.Accesstoken) {
       return NextResponse.json(
         {
           success: false,
-          error: "Unable to generate Qikink token",
-          response: tokenData,
+          error: "Unable to generate token",
+          qikinkResponse: tokenData,
         },
         { status: 500 }
       );
@@ -46,60 +68,112 @@ export async function POST(req: NextRequest) {
 
     const accessToken = tokenData.Accesstoken;
 
-    // 2. Create Order
-    const qikinkRes = await fetch(
-      `${process.env.QIKINK_BASE_URL}/api/order/create`,
-      {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          ClientId: process.env.QIKINK_CLIENT_ID!,
-          Accesstoken: accessToken,
+    /* =====================================
+       CREATE QIKINK ORDER
+    ===================================== */
+
+    const qikinkOrderPayload = {
+      order_number:
+        orderNumber ||
+        `JK-${Date.now()}`,
+
+      qikink_shipping: "1",
+
+      gateway:
+        paymentMethod === "cod"
+          ? "COD"
+          : "Prepaid",
+
+      total_order_value: String(
+        amount || 0
+      ),
+
+      line_items: [
+        {
+          search_from_my_products: 1,
+          quantity: String(
+            quantity || 1
+          ),
+          price: String(
+            amount || 0
+          ),
+          sku: sku,
         },
-        body: JSON.stringify({
-          order_number: orderNumber,
+      ],
 
-          qikink_shipping: "1",
+      shipping_address: {
+        first_name:
+          customerName || "",
 
-          gateway: "COD",
+        last_name: "",
 
-          total_order_value: String(amount),
+        address1:
+          address || "",
 
-          line_items: [
-            {
-              search_from_my_products: 1,
-              quantity: String(quantity),
-              price: String(amount),
-              sku: sku,
-            },
-          ],
+        phone:
+          customerPhone || "",
 
-          shipping_address: {
-            first_name: customerName,
-            last_name: "",
-            address1: address,
-            phone: customerPhone,
-            email: email || "",
-            city: city,
-            zip: pincode,
-            province: state,
-            country_code: "IN",
+        email:
+          email || "",
+
+        city:
+          city || "",
+
+        zip:
+          pincode || "",
+
+        province:
+          state || "",
+
+        country_code: "IN",
+      },
+    };
+
+    const createOrderResponse =
+      await fetch(
+        `${process.env.QIKINK_BASE_URL}/api/order/create`,
+        {
+          method: "POST",
+          headers: {
+            "Content-Type":
+              "application/json",
+
+            ClientId:
+              process.env
+                .QIKINK_CLIENT_ID || "",
+
+            Accesstoken:
+              accessToken,
           },
-        }),
-      }
-    );
 
-    const qikinkData = await qikinkRes.json();
+          body: JSON.stringify(
+            qikinkOrderPayload
+          ),
+        }
+      );
+
+    const qikinkResult =
+      await createOrderResponse.json();
 
     return NextResponse.json({
       success: true,
-      qikink: qikinkData,
+      payload:
+        qikinkOrderPayload,
+      qikink:
+        qikinkResult,
     });
   } catch (error: any) {
+    console.error(
+      "QIKINK ORDER ERROR:",
+      error
+    );
+
     return NextResponse.json(
       {
         success: false,
-        error: error.message,
+        error:
+          error.message ||
+          "Unknown Error",
       },
       { status: 500 }
     );
