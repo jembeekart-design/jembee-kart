@@ -1,21 +1,7 @@
 // src/jembee-governance/index.ts
 
-import path from "path";
-
 import { complianceReportGenerator } from "./reports/complianceReportGenerator";
 import { GovernanceDashboardReport } from "./types/governance.types";
-
-/**
- * JEMBEEKART GOVERNANCE ENGINE
- *
- * Usage:
- *
- * npx ts-node src/jembee-governance/index.ts
- *
- * or
- *
- * npm run governance
- */
 
 export class JembeeGovernanceEngine {
   /**
@@ -59,32 +45,21 @@ export class JembeeGovernanceEngine {
   }
 
   /**
-   * CI/CD Validation
-   *
-   * Throws Error if deployment
-   * should be blocked.
+   * Validate Before Build
    */
   public async validateForDeployment(): Promise<void> {
     const report = await this.run();
 
     if (report.deploymentStatus === "BLOCKED") {
-      console.error("");
-      console.error(
-        "❌ DEPLOYMENT BLOCKED BY GOVERNANCE SYSTEM"
+      throw new Error(
+        [
+          "",
+          "❌ DEPLOYMENT BLOCKED BY GOVERNANCE SYSTEM",
+          `Critical Issues: ${report.criticalViolations}`,
+          `Total Violations: ${report.totalViolations}`,
+          "",
+        ].join("\n")
       );
-      console.error("");
-
-      console.error(
-        `Critical Issues: ${report.criticalViolations}`
-      );
-
-      console.error(
-        `Total Violations: ${report.totalViolations}`
-      );
-
-      console.error("");
-
-      process.exit(1);
     }
 
     console.log("");
@@ -99,20 +74,16 @@ export const governanceEngine =
   new JembeeGovernanceEngine();
 
 /**
- * Direct Execution
- *
- * npm run governance
+ * Auto Run
  */
-if (require.main === module) {
-  governanceEngine
-    .validateForDeployment()
-    .catch((error) => {
-      console.error(
-        "Governance Engine Failed:"
-      );
+governanceEngine
+  .validateForDeployment()
+  .catch((error) => {
+    console.error(
+      "Governance Engine Failed:"
+    );
 
-      console.error(error);
+    console.error(error);
 
-      process.exit(1);
-    });
-}
+    throw error;
+  });
