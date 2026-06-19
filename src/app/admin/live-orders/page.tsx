@@ -338,7 +338,7 @@ function StatusBadge({
 
     if (status === "Shipped") {
 
-      return "bg-blue-500";
+      return "theme-primary-bg";
 
     }
 

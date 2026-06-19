@@ -53,7 +53,7 @@ export default function CategoryFilters({
               }}
               className={`whitespace-nowrap rounded-2xl px-5 py-3 text-sm font-bold transition-all duration-300 md:text-base ${
                 active
-                  ? "bg-blue-600 text-white shadow-lg"
+                  ? "theme-primary-bg text-white shadow-lg"
                   : "bg-white text-gray-700 shadow-md hover:bg-gray-100"
               }`}
             >

@@ -50,7 +50,7 @@ export default function PaymentsPage() {
 
         <div className="flex items-center gap-4">
 
-          <div className="flex h-16 w-16 items-center justify-center rounded-[24px] bg-blue-600">
+          <div className="flex h-16 w-16 items-center justify-center rounded-[24px] theme-primary-bg">
 
             <Wallet size={30} />
 
@@ -72,7 +72,7 @@ export default function PaymentsPage() {
 
         <button
           onClick={saveSettings}
-          className="flex items-center gap-2 rounded-2xl bg-blue-600 px-5 py-3 text-sm font-bold text-white"
+          className="flex items-center gap-2 rounded-2xl theme-primary-bg px-5 py-3 text-sm font-bold text-white"
         >
 
           <Save size={18} />

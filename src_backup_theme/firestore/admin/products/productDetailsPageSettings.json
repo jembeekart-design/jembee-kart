@@ -1,0 +1,107 @@
+{
+  "productDetailsPageEnabled": true,
+
+  "productDetailsPageStyle": "flipkart_modern_product_details",
+
+  "adminControlledProductDetailsPage": true,
+
+  "pageBackgroundColor": "#f1f3f6",
+
+  "contentBackgroundColor": "#ffffff",
+
+  "contentBorderRadius": "20px",
+
+  "contentShadow": "soft_shadow",
+
+  "enablePageAnimation": true,
+
+  "enableStickyBuySection": true,
+
+  "enableImageZoom": true,
+
+  "enableProductImageSlider": true,
+
+  "enableThumbnailPreview": true,
+
+  "enable360DegreeView": false,
+
+  "showBreadcrumbNavigation": true,
+
+  "showProductTitle": true,
+
+  "showBrandName": true,
+
+  "showRatings": true,
+
+  "showReviewCount": true,
+
+  "showPriceSection": true,
+
+  "showDiscountPrice": true,
+
+  "showDiscountPercentage": true,
+
+  "showStockStatus": true,
+
+  "showDeliveryInfo": true,
+
+  "showEMIOptions": true,
+
+  "showOffersSection": true,
+
+  "showSellerInformation": true,
+
+  "showProductDescription": true,
+
+  "showSpecifications": true,
+
+  "showProductHighlights": true,
+
+  "showReturnPolicy": true,
+
+  "showAffiliateEarningInfo": true,
+
+  "showResellerProfitInfo": true,
+
+  "showMLMReferralInfo": true,
+
+  "showShareButtons": true,
+
+  "showWishlistButton": true,
+
+  "showAddToCartButton": true,
+
+  "showBuyNowButton": true,
+
+  "showResellerButton": true,
+
+  "showAffiliateButton": true,
+
+  "showChatWithSellerButton": true,
+
+  "showWhatsAppShareButton": true,
+
+  "showAIProductHelper": true,
+
+  "addToCartButtonStyle": "primary_gradient_button",
+
+  "buyNowButtonStyle": "solid_buy_button",
+
+  "resellerButtonStyle": "reseller_highlight_button",
+
+  "affiliateButtonStyle": "affiliate_glow_button",
+
+  "relatedProductsSectionEnabled": true,
+
+  "recommendedProductsSectionEnabled": true,
+
+  "recentlyViewedSectionEnabled": true,
+
+  "customerReviewsSectionEnabled": true,
+
+  "questionAnswerSectionEnabled": true,
+
+  "desktopLayoutStyle": "left_gallery_right_details",
+
+  "mobileLayoutStyle": "stacked_mobile_layout"
+}

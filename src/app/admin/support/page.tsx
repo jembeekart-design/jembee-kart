@@ -75,7 +75,7 @@ export default function SupportPage() {
 
             <Mail
               size={24}
-              className="text-blue-400"
+              className="theme-primary-text"
             />
 
             <h2 className="text-2xl font-black">

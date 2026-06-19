@@ -150,7 +150,7 @@ export default function KYCVerificationPage() {
 
       <div className="mb-8 flex items-center gap-4">
 
-        <div className="flex h-16 w-16 items-center justify-center rounded-[24px] bg-blue-500">
+        <div className="flex h-16 w-16 items-center justify-center rounded-[24px] theme-primary-bg">
 
           <BadgeCheck size={30} />
 
@@ -204,7 +204,7 @@ export default function KYCVerificationPage() {
 
                       <User size={20} />
 
-                      <h2 className="text-2xl font-black text-blue-400">
+                      <h2 className="text-2xl font-black theme-primary-text">
 
                         {request.fullName}
 

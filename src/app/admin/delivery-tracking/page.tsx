@@ -348,7 +348,7 @@ function StatusBadge({
       "Out for Delivery"
     ) {
 
-      return "bg-blue-500";
+      return "theme-primary-bg";
 
     }
 

@@ -33,7 +33,7 @@ export default function OrderDetailsPage() {
   const currentStepIndex = steps.indexOf(status);
 
   const getStatusColor = (s: string) => ({
-    'placed': 'bg-blue-500', 'processing': 'bg-orange-500', 
+    'placed': 'theme-primary-bg', 'processing': 'bg-orange-500', 
     'shipped': 'bg-purple-500', 'delivered': 'bg-green-500', 'cancelled': 'bg-red-500'
   }[s?.toLowerCase()] || 'bg-gray-500');
 

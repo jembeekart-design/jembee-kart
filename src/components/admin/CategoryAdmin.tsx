@@ -660,7 +660,7 @@ export default function CategoryAdmin() {
                               items-center
                               gap-2
                               rounded-2xl
-                              bg-blue-600
+                              theme-primary-bg
                               px-5
                               py-4
                               font-bold

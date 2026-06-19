@@ -66,7 +66,7 @@ export default function FinancePage() {
 
           <CreditCard
             size={28}
-            className="text-blue-400"
+            className="theme-primary-text"
           />
 
           <p className="mt-5 text-sm text-gray-400">

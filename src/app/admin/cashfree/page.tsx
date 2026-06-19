@@ -153,7 +153,7 @@ export default function CashfreePage() {
 
         <div className="flex items-center gap-4">
 
-          <div className="flex h-16 w-16 items-center justify-center rounded-[24px] bg-blue-500">
+          <div className="flex h-16 w-16 items-center justify-center rounded-[24px] theme-primary-bg">
 
             <CreditCard size={30} />
 
@@ -176,7 +176,7 @@ export default function CashfreePage() {
         <button
           onClick={saveSettings}
           disabled={saving}
-          className="flex items-center gap-2 rounded-2xl bg-blue-500 px-5 py-3 font-bold"
+          className="flex items-center gap-2 rounded-2xl theme-primary-bg px-5 py-3 font-bold"
         >
 
           <Save size={18} />

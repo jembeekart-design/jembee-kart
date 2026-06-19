@@ -62,7 +62,7 @@ export default function RewardProgressBar({
     active: {
       label: "Watching",
       className:
-        "bg-blue-500/20 text-blue-300 border border-blue-400/20",
+        "theme-primary-bg/20 text-blue-300 border theme-primary-border/20",
     },
 
     pending: {

@@ -1,0 +1,103 @@
+{
+  "apiManagementSystemEnabled": true,
+
+  "adminControlledAPIManagement": true,
+
+  "apiManagementStyle": "advanced_api_gateway_system",
+
+  "enableRESTAPI": true,
+
+  "enableGraphQLAPI": false,
+
+  "enableRealtimeAPIMonitoring": true,
+
+  "enableAPIAnalytics": true,
+
+  "enableAPIRateLimiting": true,
+
+  "enableAPIKeyManagement": true,
+
+  "enableWebhookManagement": true,
+
+  "enableSecureAPIRequests": true,
+
+  "enableJWTAuthentication": true,
+
+  "enableOAuthAuthentication": true,
+
+  "enableAPIRequestLogs": true,
+
+  "enableAPIErrorTracking": true,
+
+  "enableAIAPIOptimization": true,
+
+  "enableAutomaticAPIBackup": true,
+
+  "enableAPIHealthMonitoring": true,
+
+  "enableThirdPartyIntegrations": true,
+
+  "enableSupplierAPIs": true,
+
+  "enablePaymentGatewayAPIs": true,
+
+  "enableShippingAPIs": true,
+
+  "enableNotificationAPIs": true,
+
+  "enableAnalyticsAPIs": true,
+
+  "enableAdminAPIs": true,
+
+  "enableMobileAppAPIs": true,
+
+  "supportedAPIs": [
+    {
+      "apiId": "qikink_api",
+
+      "apiName": "Qikink API",
+
+      "enabled": true
+    },
+
+    {
+      "apiId": "printrove_api",
+
+      "apiName": "Printrove API",
+
+      "enabled": true
+    },
+
+    {
+      "apiId": "razorpay_api",
+
+      "apiName": "Razorpay API",
+
+      "enabled": true
+    },
+
+    {
+      "apiId": "firebase_api",
+
+      "apiName": "Firebase API",
+
+      "enabled": true
+    }
+  ],
+
+  "apiSecuritySettings": {
+    "enableRequestValidation": true,
+
+    "enableCORSProtection": true,
+
+    "enableXSSProtection": true,
+
+    "enableSQLInjectionProtection": true,
+
+    "enableAPIEncryption": true
+  },
+
+  "desktopLayoutStyle": "advanced_api_management_dashboard",
+
+  "mobileLayoutStyle": "stacked_mobile_api_dashboard"
+}

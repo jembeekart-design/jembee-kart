@@ -1,0 +1,127 @@
+{
+  "analyticsSystemEnabled": true,
+
+  "adminControlledAnalyticsSystem": true,
+
+  "analyticsStyle": "advanced_ai_business_analytics",
+
+  "enableRealtimeAnalytics": true,
+
+  "enableSalesAnalytics": true,
+
+  "enableUserAnalytics": true,
+
+  "enableAffiliateAnalytics": true,
+
+  "enableResellerAnalytics": true,
+
+  "enableMLMAnalytics": true,
+
+  "enableSellerAnalytics": true,
+
+  "enableSupplierAnalytics": true,
+
+  "enableWalletAnalytics": true,
+
+  "enableTrafficAnalytics": true,
+
+  "enableConversionAnalytics": true,
+
+  "enableRevenueAnalytics": true,
+
+  "enableProfitAnalytics": true,
+
+  "enableAITrendPrediction": true,
+
+  "enableAIRevenueForecasting": true,
+
+  "enableAICustomerInsights": true,
+
+  "enableAIProductRecommendations": true,
+
+  "enableRealtimeReports": true,
+
+  "enableCustomReports": true,
+
+  "enableReportExport": true,
+
+  "enablePDFExport": true,
+
+  "enableExcelExport": true,
+
+  "enableGraphAnalytics": true,
+
+  "enableHeatmaps": true,
+
+  "enableLiveVisitorTracking": true,
+
+  "enableBusinessHealthScore": true,
+
+  "analyticsModules": [
+    {
+      "moduleId": "sales",
+
+      "moduleName": "Sales Analytics",
+
+      "enabled": true
+    },
+
+    {
+      "moduleId": "users",
+
+      "moduleName": "User Analytics",
+
+      "enabled": true
+    },
+
+    {
+      "moduleId": "affiliate",
+
+      "moduleName": "Affiliate Analytics",
+
+      "enabled": true
+    },
+
+    {
+      "moduleId": "reseller",
+
+      "moduleName": "Reseller Analytics",
+
+      "enabled": true
+    },
+
+    {
+      "moduleId": "mlm",
+
+      "moduleName": "MLM Analytics",
+
+      "enabled": true
+    },
+
+    {
+      "moduleId": "seller",
+
+      "moduleName": "Seller Analytics",
+
+      "enabled": true
+    },
+
+    {
+      "moduleId": "wallet",
+
+      "moduleName": "Wallet Analytics",
+
+      "enabled": true
+    }
+  ],
+
+  "reportFormats": [
+    "pdf",
+    "excel",
+    "csv"
+  ],
+
+  "desktopLayoutStyle": "advanced_analytics_dashboard",
+
+  "mobileLayoutStyle": "stacked_mobile_analytics_dashboard"
+}

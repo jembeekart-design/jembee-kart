@@ -234,14 +234,14 @@ ShareDrawer({
               items-center
               justify-center
               rounded-full
-              bg-blue-500/20
+              theme-primary-bg/20
             "
           >
 
             <BadgeHelp
               size={28}
               className="
-                text-blue-400
+                theme-primary-text
               "
             />
 

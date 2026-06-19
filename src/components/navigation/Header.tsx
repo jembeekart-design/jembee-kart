@@ -325,7 +325,7 @@ export default function Header({
             <button
               className="
                 rounded-xl
-                bg-blue-600
+                theme-primary-bg
                 px-4
                 py-2
                 text-sm
@@ -412,7 +412,7 @@ export default function Header({
               transition-all
               duration-300
 
-              focus:border-blue-500
+              focus:theme-primary-border
               focus:bg-white
               focus:ring-4
               focus:ring-blue-100

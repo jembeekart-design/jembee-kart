@@ -1,0 +1,91 @@
+{
+  "aiRecommendationEngineEnabled": true,
+
+  "adminControlledAIRecommendations": true,
+
+  "aiRecommendationStyle": "advanced_ai_recommendation_engine",
+
+  "enablePersonalizedRecommendations": true,
+
+  "enableRealtimeRecommendations": true,
+
+  "enableAITrendingProducts": true,
+
+  "enableAIUpselling": true,
+
+  "enableAICrossSelling": true,
+
+  "enableRecentlyViewedRecommendations": true,
+
+  "enableWishlistBasedRecommendations": true,
+
+  "enableCartBasedRecommendations": true,
+
+  "enablePurchaseHistoryRecommendations": true,
+
+  "enableSellerRecommendations": true,
+
+  "enableAffiliateRecommendations": true,
+
+  "enableTrainingRecommendations": true,
+
+  "enableBlogRecommendations": true,
+
+  "enableAIBehaviorAnalysis": true,
+
+  "enableAIUserSegmentation": true,
+
+  "enableAIConversionOptimization": true,
+
+  "enableAIProductRanking": true,
+
+  "enableAIContentRecommendations": true,
+
+  "enableVoiceBasedRecommendations": true,
+
+  "enableLocationBasedRecommendations": true,
+
+  "enableSeasonalRecommendations": true,
+
+  "enableFestivalRecommendations": true,
+
+  "enableRealtimeRecommendationAnalytics": true,
+
+  "recommendationModules": [
+    {
+      "moduleId": "product_recommendations",
+
+      "moduleName": "Product Recommendations",
+
+      "enabled": true
+    },
+
+    {
+      "moduleId": "seller_recommendations",
+
+      "moduleName": "Seller Recommendations",
+
+      "enabled": true
+    },
+
+    {
+      "moduleId": "training_recommendations",
+
+      "moduleName": "Training Recommendations",
+
+      "enabled": true
+    },
+
+    {
+      "moduleId": "blog_recommendations",
+
+      "moduleName": "Blog Recommendations",
+
+      "enabled": true
+    }
+  ],
+
+  "desktopLayoutStyle": "advanced_recommendation_dashboard",
+
+  "mobileLayoutStyle": "stacked_mobile_recommendation_dashboard"
+}

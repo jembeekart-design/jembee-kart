@@ -1,0 +1,574 @@
+src/app/admin/page.tsx:315:              className="text-green-400"
+src/app/admin/page.tsx:400:      <div className="mt-8 rounded-[28px] border border-yellow-500/20 bg-yellow-500/10 p-5">
+src/app/admin/page.tsx:406:            className="text-yellow-400"
+src/app/admin/page.tsx:411:            <h3 className="text-xl font-black text-yellow-400">
+src/app/admin/page.tsx:464:      <div className="h-3 w-3 rounded-full bg-green-500" />
+src/app/admin/page.tsx:490:      <div className="rounded-full bg-green-500/20 px-4 py-2 text-sm font-bold text-green-400">
+src/app/admin/activity-tracker/page.tsx:67:        return "bg-green-500";
+src/app/admin/activity-tracker/page.tsx:70:        return "bg-yellow-500";
+src/app/admin/activity-tracker/page.tsx:72:        return "bg-red-500";
+src/app/admin/activity-tracker/page.tsx:239:                    ? "bg-red-500/20 text-red-400"
+src/app/admin/activity-tracker/page.tsx:241:                    ? "bg-green-500/20 text-green-400"
+src/app/admin/activity-tracker/page.tsx:270:      <div className="mt-6 rounded-[28px] border border-yellow-500/20 bg-yellow-500/10 p-5">
+src/app/admin/activity-tracker/page.tsx:272:          <AlertTriangle size={24} className="text-yellow-400" />
+src/app/admin/activity-tracker/page.tsx:274:            <h3 className="text-xl font-black text-yellow-400">Suspicious Activity Detection</h3>
+src/app/admin/admin-chat/page.tsx:156:                        <div className="absolute bottom-0 right-0 h-3 w-3 rounded-full border-2 border-black bg-green-500" />
+src/app/admin/admin-chat/page.tsx:211:                <p className="text-sm text-green-400">
+src/app/admin/ads-manager/page.tsx:188:                      ? "bg-green-500/20 text-green-400"
+src/app/admin/ads-manager/page.tsx:191:                      ? "bg-yellow-500/20 text-yellow-400"
+src/app/admin/affiliate-control/page.tsx:493:              ? "bg-green-500"
+src/app/admin/affiliate-control/page.tsx:494:              : "bg-red-500"
+src/app/admin/affiliate-settings/page.tsx:479:              ? "bg-green-500"
+src/app/admin/affiliate-settings/page.tsx:480:              : "bg-red-500"
+src/app/admin/affiliate/page.tsx:278:                  className="flex h-10 w-10 items-center justify-center rounded-xl bg-red-500/20 text-red-500"
+src/app/admin/ai-banner/page.tsx:191:              className="flex items-center gap-2 rounded-2xl bg-red-500/20 px-4 py-3 text-red-400"
+src/app/admin/ai-banner/page.tsx:280:          className="flex items-center gap-2 rounded-2xl bg-green-500 px-6 py-4 font-black text-black"
+src/app/admin/ai-chatbot/page.tsx:97:              ? "bg-green-500 text-black"
+src/app/admin/ai-chatbot/page.tsx:98:              : "bg-red-500 text-white"
+src/app/admin/ai-chatbot/page.tsx:299:          className="flex items-center gap-2 rounded-2xl bg-green-500 px-6 py-4 font-black text-black"
+src/app/admin/ai-chatbot/page.tsx:319:          className="flex items-center gap-2 rounded-2xl bg-red-500 px-6 py-4 font-black"
+src/app/admin/ai-chatbot/page.tsx:393:      <div className="h-3 w-3 rounded-full bg-green-500" />
+src/app/admin/ai-tools/page.tsx:477:              ? "bg-green-500"
+src/app/admin/ai-tools/page.tsx:478:              : "bg-red-500"
+src/app/admin/analytics/page.tsx:196:      <div className="h-3 w-3 rounded-full bg-green-500" />
+src/app/admin/announcement/page.tsx:184:        <div className="flex h-16 w-16 items-center justify-center rounded-[24px] bg-red-500">
+src/app/admin/announcement/page.tsx:243:            className="flex items-center gap-2 rounded-2xl bg-red-500 px-5 py-3 font-bold"
+src/app/admin/announcement/page.tsx:290:                      className="text-red-500"
+src/app/admin/announcement/page.tsx:325:                  className="flex items-center gap-2 rounded-2xl bg-red-500 px-4 py-3 font-bold"
+src/app/admin/api/page.tsx:447:              ? "bg-green-500"
+src/app/admin/api/page.tsx:448:              : "bg-red-500"
+src/app/admin/app-config/page.tsx:466:              ? "bg-green-500"
+src/app/admin/app-config/page.tsx:467:              : "bg-red-500"
+src/app/admin/automation/page.tsx:77:          <div className="flex h-16 w-16 items-center justify-center rounded-[30px] bg-yellow-400">
+src/app/admin/automation/page.tsx:110:              ? "bg-green-500 text-black"
+src/app/admin/automation/page.tsx:111:              : "bg-red-500 text-white"
+src/app/admin/automation/page.tsx:159:          <Zap className="text-yellow-400" />
+src/app/admin/automation/page.tsx:189:                    <div className="flex h-14 w-14 items-center justify-center rounded-2xl bg-yellow-400">
+src/app/admin/automation/page.tsx:219:                        ? "bg-green-500 text-black"
+src/app/admin/automation/page.tsx:220:                        : "bg-red-500 text-white"
+src/app/admin/automation/page.tsx:291:          className="flex items-center gap-2 rounded-2xl bg-green-500 px-6 py-4 font-black text-black"
+src/app/admin/automation/page.tsx:311:          className="flex items-center gap-2 rounded-2xl bg-red-500 px-6 py-4 font-black"
+src/app/admin/automation/page.tsx:337:      <div className="flex h-14 w-14 items-center justify-center rounded-2xl bg-yellow-400">
+src/app/admin/backup-manager/page.tsx:54:          <div className="flex h-16 w-16 items-center justify-center rounded-[28px] bg-green-500">
+src/app/admin/backup-manager/page.tsx:77:        <button className="flex items-center gap-2 rounded-2xl bg-green-500 px-5 py-3 font-bold text-black">
+src/app/admin/backup-manager/page.tsx:143:                ? "bg-green-500 text-black"
+src/app/admin/backup-manager/page.tsx:144:                : "bg-red-500"
+src/app/admin/backup-manager/page.tsx:195:                        ? "bg-green-500/20 text-green-400"
+src/app/admin/backup-manager/page.tsx:196:                        : "bg-red-500/20 text-red-400"
+src/app/admin/backup-manager/page.tsx:210:                  <button className="flex h-11 w-11 items-center justify-center rounded-2xl bg-red-500/20 text-red-400">
+src/app/admin/backup-manager/page.tsx:231:        <button className="flex items-center gap-2 rounded-2xl bg-green-500 px-6 py-3 font-bold text-black">
+src/app/admin/backup-manager/page.tsx:274:      <div className="mt-6 rounded-[28px] border border-yellow-500/20 bg-yellow-500/10 p-5">
+src/app/admin/backup-manager/page.tsx:280:            className="text-yellow-400"
+src/app/admin/backup-manager/page.tsx:285:            <h3 className="text-xl font-black text-yellow-400">
+src/app/admin/backup-manager/page.tsx:321:      <div className="flex h-14 w-14 items-center justify-center rounded-2xl bg-green-500 text-black">
+src/app/admin/backup-restore/page.tsx:330:          className="flex items-center justify-center gap-3 rounded-[30px] bg-green-500 p-6 text-xl font-black text-black"
+src/app/admin/backup-restore/page.tsx:491:              ? "bg-green-500"
+src/app/admin/backup-restore/page.tsx:492:              : "bg-red-500"
+src/app/admin/backups/page.tsx:149:            className="text-yellow-400"
+src/app/admin/backups/page.tsx:235:                  <div className="mt-4 inline-flex items-center gap-2 rounded-full bg-green-500 px-4 py-2 text-sm font-bold">
+src/app/admin/backups/page.tsx:251:                  className="flex h-14 w-14 items-center justify-center rounded-2xl bg-red-500"
+src/app/admin/banner-manager/page.tsx:188:                    className="rounded-2xl bg-red-500/20 p-3 text-red-400"
+src/app/admin/banner-manager/page.tsx:317:          className="flex items-center gap-2 rounded-2xl bg-green-500 px-6 py-4 font-black text-black"
+src/app/admin/banner-manager/page.tsx:327:          className="flex items-center gap-2 rounded-2xl bg-yellow-500 px-6 py-4 font-black text-black"
+src/app/admin/blogs/page.tsx:244:                    className="flex h-14 w-14 items-center justify-center rounded-2xl bg-red-500"
+src/app/admin/cache-manager/page.tsx:147:                ? "bg-green-500 text-black"
+src/app/admin/cache-manager/page.tsx:148:                : "bg-red-500"
+src/app/admin/cache-manager/page.tsx:199:                        ? "bg-green-500/20 text-green-400"
+src/app/admin/cache-manager/page.tsx:203:                        : "bg-yellow-500/20 text-yellow-400"
+src/app/admin/cache-manager/page.tsx:217:                  <button className="flex h-11 w-11 items-center justify-center rounded-2xl bg-red-500/20 text-red-400">
+src/app/admin/cache-manager/page.tsx:238:        <button className="flex items-center gap-2 rounded-2xl bg-red-500 px-6 py-3 font-bold">
+src/app/admin/cache-manager/page.tsx:287:      <div className="mt-6 rounded-[28px] border border-green-500/20 bg-green-500/10 p-5">
+src/app/admin/cache-manager/page.tsx:293:            className="text-green-400"
+src/app/admin/cache-manager/page.tsx:298:            <h3 className="text-xl font-black text-green-400">
+src/app/admin/cashfree/page.tsx:464:              ? "bg-green-500"
+src/app/admin/cashfree/page.tsx:465:              : "bg-red-500"
+src/app/admin/commission-engine/page.tsx:444:              ? "bg-green-500 text-black"
+src/app/admin/commission-engine/page.tsx:445:              : "bg-red-500"
+src/app/admin/commissions/page.tsx:124:              className="text-green-400"
+src/app/admin/coupon-manager/page.tsx:213:                        ? "bg-green-500/20 text-green-400"
+src/app/admin/coupon-manager/page.tsx:216:                        ? "bg-yellow-500/20 text-yellow-400"
+src/app/admin/coupon-manager/page.tsx:217:                        : "bg-red-500/20 text-red-400"
+src/app/admin/coupon-manager/page.tsx:346:      <div className="mt-8 rounded-[28px] border border-yellow-500/20 bg-yellow-500/10 p-5">
+src/app/admin/coupon-manager/page.tsx:352:            className="text-yellow-400"
+src/app/admin/coupon-manager/page.tsx:357:            <h3 className="text-xl font-black text-yellow-400">
+src/app/admin/coupon-manager/page.tsx:454:        <p className="font-bold text-green-400">
+src/app/admin/coupon-manager/page.tsx:463:          className="h-full rounded-full bg-green-400"
+src/app/admin/coupons-generator/page.tsx:199:        <div className="flex h-16 w-16 items-center justify-center rounded-[24px] bg-green-500">
+src/app/admin/coupons-generator/page.tsx:256:                className="rounded-2xl bg-green-500 px-5 font-bold text-black"
+src/app/admin/coupons-generator/page.tsx:328:          className="mt-6 flex items-center gap-2 rounded-2xl bg-green-500 px-5 py-4 font-bold text-black"
+src/app/admin/coupons-generator/page.tsx:367:                  <h2 className="text-3xl font-black text-green-400">
+src/app/admin/coupons-generator/page.tsx:397:                  className="flex items-center gap-2 rounded-2xl bg-red-500 px-5 py-3 font-bold"
+src/app/admin/coupons/page.tsx:269:                  className="flex h-10 w-10 items-center justify-center rounded-xl bg-red-500/20 text-red-500"
+src/app/admin/coupons/page.tsx:385:                        ? "bg-green-500"
+src/app/admin/coupons/page.tsx:386:                        : "bg-red-500"
+src/app/admin/customer-support/page.tsx:211:                      ? "bg-green-500/20 text-green-400"
+src/app/admin/customer-support/page.tsx:212:                      : "bg-yellow-500/20 text-yellow-400"
+src/app/admin/customize/page.tsx:328:              className="text-yellow-400"
+src/app/admin/customize/page.tsx:359:              className="text-green-400"
+src/app/admin/customize/page.tsx:411:                ? "bg-green-500"
+src/app/admin/customize/page.tsx:412:                : "bg-red-500"
+src/app/admin/database-manager/page.tsx:262:          color="bg-green-500"
+src/app/admin/database-manager/page.tsx:314:                  className="flex items-center gap-2 rounded-2xl bg-red-500 px-5 py-3 font-bold"
+src/app/admin/database/page.tsx:100:          <div className="flex h-16 w-16 items-center justify-center rounded-[24px] bg-green-500">
+src/app/admin/database/page.tsx:175:            className="text-green-400"
+src/app/admin/database/page.tsx:260:                  <div className="mt-4 inline-flex items-center gap-2 rounded-full bg-green-500 px-4 py-2 text-sm font-bold">
+src/app/admin/database/page.tsx:276:                  className="flex h-14 w-14 items-center justify-center rounded-2xl bg-red-500"
+src/app/admin/delivery-tracking/page.tsx:342:      return "bg-green-500";
+src/app/admin/delivery-tracking/page.tsx:360:      return "bg-yellow-500";
+src/app/admin/delivery/page.tsx:158:          <div className="flex h-16 w-16 items-center justify-center rounded-[24px] bg-yellow-500">
+src/app/admin/delivery/page.tsx:181:          className="flex items-center gap-2 rounded-2xl bg-yellow-500 px-5 py-3 font-bold text-black"
+src/app/admin/delivery/page.tsx:481:              ? "bg-green-500"
+src/app/admin/delivery/page.tsx:482:              : "bg-red-500"
+src/app/admin/domains/page.tsx:447:              ? "bg-green-500"
+src/app/admin/domains/page.tsx:448:              : "bg-red-500"
+src/app/admin/email-marketing/page.tsx:169:                      ? "bg-green-500/20 text-green-400"
+src/app/admin/email-marketing/page.tsx:172:                      ? "bg-yellow-500/20 text-yellow-400"
+src/app/admin/email/page.tsx:473:              ? "bg-green-500"
+src/app/admin/email/page.tsx:474:              : "bg-red-500"
+src/app/admin/faq/page.tsx:199:                  className="flex h-14 w-14 items-center justify-center rounded-2xl bg-red-500"
+src/app/admin/finance/page.tsx:24:        <div className="flex h-16 w-16 items-center justify-center rounded-[24px] bg-green-600">
+src/app/admin/finance/page.tsx:52:            className="text-green-400"
+src/app/admin/finance/page.tsx:96:            className="text-green-400"
+src/app/admin/finance/page.tsx:107:              <div className="flex h-12 w-12 items-center justify-center rounded-full bg-green-500/20">
+src/app/admin/finance/page.tsx:111:                  className="text-green-400"
+src/app/admin/finance/page.tsx:130:            <h3 className="text-lg font-black text-green-400">
+src/app/admin/finance/page.tsx:140:              <div className="flex h-12 w-12 items-center justify-center rounded-full bg-red-500/20">
+src/app/admin/finance/page.tsx:144:                  className="text-red-400"
+src/app/admin/finance/page.tsx:163:            <h3 className="text-lg font-black text-red-400">
+src/app/admin/firestore/page.tsx:185:            className="text-green-400"
+src/app/admin/firestore/page.tsx:272:                  <div className="mt-4 inline-flex items-center gap-2 rounded-full bg-green-500 px-4 py-2 text-sm font-bold">
+src/app/admin/firestore/page.tsx:288:                  className="flex h-14 w-14 items-center justify-center rounded-2xl bg-red-500"
+src/app/admin/flash-sale/page.tsx:413:                  className="flex items-center gap-2 rounded-2xl bg-red-500 px-5 py-3 font-bold"
+src/app/admin/footer-builder/page.tsx:329:            className="flex items-center gap-2 rounded-2xl bg-green-500 px-5 py-3 font-bold text-black"
+src/app/admin/footer-builder/page.tsx:397:                  className="mt-4 flex items-center gap-2 rounded-2xl bg-red-500 px-5 py-3 font-bold"
+src/app/admin/fraud-protection/page.tsx:160:          <div className="flex h-16 w-16 items-center justify-center rounded-[24px] bg-red-500">
+src/app/admin/fraud-protection/page.tsx:183:          className="flex items-center gap-2 rounded-2xl bg-red-500 px-5 py-3 font-bold"
+src/app/admin/fraud-protection/page.tsx:475:              ? "bg-green-500"
+src/app/admin/fraud-protection/page.tsx:476:              : "bg-red-500"
+src/app/admin/homepage-banners/page.tsx:731:                        className="rounded-2xl bg-red-500 p-3"
+src/app/admin/homepage/page.tsx:549:              ? "bg-green-500"
+src/app/admin/homepage/page.tsx:550:              : "bg-red-500"
+src/app/admin/inventory/page.tsx:352:      return "bg-red-500";
+src/app/admin/inventory/page.tsx:358:      return "bg-yellow-500";
+src/app/admin/inventory/page.tsx:362:    return "bg-green-500";
+src/app/admin/kyc-verification/page.tsx:264:                    className="flex items-center gap-2 rounded-2xl bg-green-500 px-5 py-3 font-bold text-black"
+src/app/admin/kyc-verification/page.tsx:280:                    className="flex items-center gap-2 rounded-2xl bg-red-500 px-5 py-3 font-bold"
+src/app/admin/kyc-verification/page.tsx:330:      return "bg-green-500";
+src/app/admin/kyc-verification/page.tsx:336:      return "bg-red-500";
+src/app/admin/kyc-verification/page.tsx:340:    return "bg-yellow-500";
+src/app/admin/kyc/page.tsx:475:              ? "bg-green-500"
+src/app/admin/kyc/page.tsx:476:              : "bg-red-500"
+src/app/admin/live-chat/page.tsx:137:        <div className="flex h-16 w-16 items-center justify-center rounded-[24px] bg-green-500">
+src/app/admin/live-chat/page.tsx:188:                    ? "bg-green-500 text-black"
+src/app/admin/live-chat/page.tsx:253:            className="flex h-14 w-14 items-center justify-center rounded-2xl bg-green-500 text-black"
+src/app/admin/live-orders/page.tsx:335:      return "bg-green-500";
+src/app/admin/live-orders/page.tsx:347:      return "bg-red-500";
+src/app/admin/live-orders/page.tsx:351:    return "bg-yellow-500";
+src/app/admin/live-stream/page.tsx:195:        <div className="flex h-16 w-16 items-center justify-center rounded-[24px] bg-red-500">
+src/app/admin/live-stream/page.tsx:342:          className="mt-6 flex items-center gap-2 rounded-2xl bg-red-500 px-5 py-4 font-bold"
+src/app/admin/live-stream/page.tsx:381:                  <h2 className="text-3xl font-black text-red-400">
+src/app/admin/live-stream/page.tsx:419:                  className="flex items-center gap-2 rounded-2xl bg-red-500 px-5 py-3 font-bold"
+src/app/admin/logs/page.tsx:111:            className="flex items-center gap-2 rounded-2xl bg-red-500 px-5 py-3 text-sm font-bold"
+src/app/admin/logs/page.tsx:132:            className="text-green-400"
+src/app/admin/logs/page.tsx:149:            className="text-yellow-400"
+src/app/admin/logs/page.tsx:166:            className="text-red-400"
+src/app/admin/logs/page.tsx:204:                        className="text-green-400"
+src/app/admin/logs/page.tsx:212:                        className="text-yellow-400"
+src/app/admin/logs/page.tsx:219:                        className="text-red-400"
+src/app/admin/loyalty-program/page.tsx:151:                    className="text-green-400"
+src/app/admin/loyalty-program/page.tsx:230:              className="text-green-400"
+src/app/admin/loyalty-program/page.tsx:371:        <p className="font-bold text-green-400">
+src/app/admin/loyalty-program/page.tsx:380:          className="h-full rounded-full bg-green-400"
+src/app/admin/marketing-center/page.tsx:374:          className="flex items-center gap-2 rounded-2xl bg-yellow-500 px-6 py-4 font-black text-black"
+src/app/admin/marketing/page.tsx:35:      color: "bg-green-500"
+src/app/admin/marketing/page.tsx:63:      color: "bg-yellow-500"
+src/app/admin/marketing/page.tsx:365:      <div className="rounded-full bg-green-500 px-4 py-2 text-sm font-black text-black">
+src/app/admin/media-library/page.tsx:236:                  <button className="flex h-11 w-11 items-center justify-center rounded-2xl bg-red-500/20 text-red-400">
+src/app/admin/membership/page.tsx:473:              ? "bg-green-500"
+src/app/admin/membership/page.tsx:474:              : "bg-red-500"
+src/app/admin/mobile-app/page.tsx:156:          <div className="flex h-16 w-16 items-center justify-center rounded-[24px] bg-green-500">
+src/app/admin/mobile-app/page.tsx:179:          className="flex items-center gap-2 rounded-2xl bg-green-500 px-5 py-3 font-bold"
+src/app/admin/mobile-app/page.tsx:455:              ? "bg-green-500"
+src/app/admin/mobile-app/page.tsx:456:              : "bg-red-500"
+src/app/admin/navigation/page.tsx:388:                          ? "bg-green-500"
+src/app/admin/navigation/page.tsx:389:                          : "bg-red-500"
+src/app/admin/navigation/page.tsx:437:                    className="rounded-xl bg-yellow-500 px-4 py-2 text-sm font-bold"
+src/app/admin/navigation/page.tsx:450:                    className="rounded-xl bg-red-500 px-4 py-2 text-sm font-bold"
+src/app/admin/notifications/page.tsx:332:                    <span className="rounded-full bg-green-500/20 px-4 py-2 text-xs font-bold text-green-500">
+src/app/admin/notifications/page.tsx:340:                    <span className="rounded-full bg-red-500/20 px-4 py-2 text-xs font-bold text-red-500">
+src/app/admin/notifications/page.tsx:447:                        ? "bg-yellow-500/20 text-yellow-500"
+src/app/admin/notifications/page.tsx:448:                        : "bg-green-500/20 text-green-500"
+src/app/admin/notifications/page.tsx:470:                    className="flex items-center justify-center gap-2 rounded-2xl bg-red-500/20 px-4 py-3 text-sm font-bold text-red-500"
+src/app/admin/offer-engine/page.tsx:63:        <div className="flex h-16 w-16 items-center justify-center rounded-[28px] bg-yellow-400">
+src/app/admin/offer-engine/page.tsx:174:                      ? "bg-green-500/20 text-green-400"
+src/app/admin/offer-engine/page.tsx:177:                      ? "bg-yellow-500/20 text-yellow-400"
+src/app/admin/offer-engine/page.tsx:178:                      : "bg-red-500/20 text-red-400"
+src/app/admin/offer-engine/page.tsx:192:                  <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-yellow-400 text-black">
+src/app/admin/offer-engine/page.tsx:216:                <button className="rounded-2xl bg-yellow-400 px-5 py-2 font-bold text-black">
+src/app/admin/offer-engine/page.tsx:279:      <div className="flex h-14 w-14 items-center justify-center rounded-2xl bg-yellow-400 text-black">
+src/app/admin/order-tracking/page.tsx:213:                        ? "bg-green-500/20 text-green-400"
+src/app/admin/order-tracking/page.tsx:219:                        ? "bg-yellow-500/20 text-yellow-400"
+src/app/admin/order-tracking/page.tsx:220:                        : "bg-red-500/20 text-red-400"
+src/app/admin/order-tracking/page.tsx:255:              className="text-green-400"
+src/app/admin/order-tracking/page.tsx:349:      <div className="mt-8 rounded-[28px] border border-yellow-500/20 bg-yellow-500/10 p-5">
+src/app/admin/order-tracking/page.tsx:355:            className="text-yellow-400"
+src/app/admin/order-tracking/page.tsx:360:            <h3 className="text-xl font-black text-yellow-400">
+src/app/admin/order-tracking/page.tsx:457:        <p className="font-bold text-green-400">
+src/app/admin/order-tracking/page.tsx:466:          className="h-full rounded-full bg-green-400"
+src/app/admin/orders/page.tsx:187:                className="flex h-10 w-10 items-center justify-center rounded-xl bg-red-500/10 text-red-400 hover:bg-red-500/20 transition active:scale-90"
+src/app/admin/orders/page.tsx:210:                    <p><span className="text-gray-500 font-medium">Order Value:</span> <span className="text-green-400 font-bold">₹{order.amount?.toLocaleString("en-IN")}</span></p>
+src/app/admin/orders/page.tsx:230:                    className="flex items-center justify-center gap-2 rounded-2xl px-3 py-3 text-sm font-bold transition active:scale-95 disabled:opacity-30 disabled:cursor-not-allowed disabled:hover:bg-[#1e1e1e] bg-[#1e1e1e] hover:bg-[#252525] text-gray-400 data-[active=true]:bg-yellow-500 data-[active=true]:text-black"
+src/app/admin/orders/page.tsx:250:                    className="flex items-center justify-center gap-2 rounded-2xl px-3 py-3 text-sm font-bold transition active:scale-95 disabled:opacity-40 disabled:cursor-not-allowed disabled:bg-[#151a16] disabled:text-green-500/60 bg-[#1e1e1e] hover:bg-[#252525] text-gray-400 data-[active=true]:bg-green-500 data-[active=true]:text-white"
+src/app/admin/page-builder/page.tsx:334:                    className="flex items-center gap-2 rounded-2xl bg-yellow-500 px-5 py-3 font-bold text-black"
+src/app/admin/page-builder/page.tsx:351:                        ? "bg-green-500 text-black"
+src/app/admin/page-builder/page.tsx:352:                        : "bg-red-500"
+src/app/admin/pages/page.tsx:250:                    className="flex h-14 w-14 items-center justify-center rounded-2xl bg-red-500"
+src/app/admin/payment-gateway/page.tsx:204:                        ? "bg-green-500/20 text-green-400"
+src/app/admin/payment-gateway/page.tsx:207:                        ? "bg-yellow-500/20 text-yellow-400"
+src/app/admin/payment-gateway/page.tsx:208:                        : "bg-red-500/20 text-red-400"
+src/app/admin/payment-gateway/page.tsx:274:              className="text-green-400"
+src/app/admin/payment-gateway/page.tsx:337:      <div className="mt-8 rounded-[28px] border border-yellow-500/20 bg-yellow-500/10 p-5">
+src/app/admin/payment-gateway/page.tsx:343:            className="text-yellow-400"
+src/app/admin/payment-gateway/page.tsx:348:            <h3 className="text-xl font-black text-yellow-400">
+src/app/admin/payment-gateway/page.tsx:445:        <p className="font-bold text-green-400">
+src/app/admin/payment-gateway/page.tsx:454:          className="h-full rounded-full bg-green-400"
+src/app/admin/payments/page.tsx:129:              className="text-green-400"
+src/app/admin/payments/page.tsx:178:                  ? "bg-green-500"
+src/app/admin/payments/page.tsx:179:                  : "bg-red-500"
+src/app/admin/payments/page.tsx:219:                  ? "bg-green-500"
+src/app/admin/payments/page.tsx:220:                  : "bg-red-500"
+src/app/admin/payments/page.tsx:260:                  ? "bg-green-500"
+src/app/admin/payments/page.tsx:261:                  : "bg-red-500"
+src/app/admin/payouts/page.tsx:104:            className="text-yellow-400"
+src/app/admin/payouts/page.tsx:121:            className="text-green-400"
+src/app/admin/payouts/page.tsx:183:                  <h3 className="text-2xl font-black text-green-400">
+src/app/admin/payouts/page.tsx:204:                  className="flex items-center gap-2 rounded-2xl bg-green-500 px-5 py-3 text-sm font-bold"
+src/app/admin/payouts/page.tsx:220:                  className="flex items-center gap-2 rounded-2xl bg-red-500 px-5 py-3 text-sm font-bold"
+src/app/admin/performance/page.tsx:192:                          ? "bg-green-500"
+src/app/admin/performance/page.tsx:193:                          : "bg-yellow-500"
+src/app/admin/performance/page.tsx:207:                        ? "bg-green-500/20 text-green-400"
+src/app/admin/performance/page.tsx:208:                        : "bg-yellow-500/20 text-yellow-400"
+src/app/admin/performance/page.tsx:282:      <div className="mt-6 rounded-[28px] border border-green-500/20 bg-green-500/10 p-5">
+src/app/admin/performance/page.tsx:288:            className="text-green-400"
+src/app/admin/performance/page.tsx:293:            <h3 className="text-xl font-black text-green-400">
+src/app/admin/popup-manager/page.tsx:80:          <div className="flex h-16 w-16 items-center justify-center rounded-[30px] bg-yellow-400">
+src/app/admin/popup-manager/page.tsx:108:          className="flex items-center gap-2 rounded-2xl bg-yellow-400 px-6 py-4 font-black text-black"
+src/app/admin/popup-manager/page.tsx:164:                  <div className="flex h-14 w-14 items-center justify-center rounded-2xl bg-yellow-400">
+src/app/admin/popup-manager/page.tsx:197:                  className="rounded-2xl bg-red-500/20 p-3 text-red-400"
+src/app/admin/popup-manager/page.tsx:219:                  className="rounded-2xl bg-green-500 px-5 py-3 font-black text-black"
+src/app/admin/popup-manager/page.tsx:247:        className="mt-6 flex w-full items-center justify-center gap-2 rounded-[30px] bg-yellow-400 px-6 py-5 font-black text-black"
+src/app/admin/popup-manager/page.tsx:328:            <button className="mt-6 w-full rounded-2xl bg-yellow-400 px-5 py-4 font-black">
+src/app/admin/popup-manager/page.tsx:346:          <Sparkles className="text-yellow-400" />
+src/app/admin/popup-manager/page.tsx:382:          className="flex items-center gap-2 rounded-2xl bg-green-500 px-6 py-4 font-black text-black"
+src/app/admin/popup-manager/page.tsx:419:      <div className="flex h-14 w-14 items-center justify-center rounded-2xl bg-yellow-400">
+src/app/admin/products/page.tsx:1322:                            bg-red-500
+src/app/admin/products/page.tsx:1487:                            bg-red-500
+src/app/admin/products/page.tsx:1788:                                    text-green-500
+src/app/admin/products/page.tsx:1929:                            bg-red-50
+src/app/admin/products/page.tsx:1931:                            text-red-600
+src/app/admin/push-notifications/page.tsx:390:                  className="flex items-center gap-2 rounded-2xl bg-red-500 px-5 py-3 font-bold"
+src/app/admin/referral-engine/page.tsx:129:            className="text-yellow-400"
+src/app/admin/referral-engine/page.tsx:253:              className="text-green-400"
+src/app/admin/referral-engine/page.tsx:316:      <div className="mt-8 rounded-[28px] border border-green-500/20 bg-green-500/10 p-5">
+src/app/admin/referral-engine/page.tsx:322:            className="text-green-400"
+src/app/admin/referral-engine/page.tsx:327:            <h3 className="text-xl font-black text-green-400">
+src/app/admin/referral-engine/page.tsx:424:        <p className="font-bold text-green-400">
+src/app/admin/referral-engine/page.tsx:433:          className="h-full rounded-full bg-green-400"
+src/app/admin/referrals/page.tsx:116:            className="text-green-400"
+src/app/admin/referrals/page.tsx:178:                  <h3 className="text-2xl font-black text-green-400">
+src/app/admin/refund-requests/page.tsx:272:                    className="flex items-center gap-2 rounded-2xl bg-green-500 px-5 py-3 font-bold text-black"
+src/app/admin/refund-requests/page.tsx:288:                    className="flex items-center gap-2 rounded-2xl bg-red-500 px-5 py-3 font-bold"
+src/app/admin/refund-requests/page.tsx:338:      return "bg-green-500";
+src/app/admin/refund-requests/page.tsx:344:      return "bg-red-500";
+src/app/admin/refund-requests/page.tsx:348:    return "bg-yellow-500";
+src/app/admin/reviews-ratings/page.tsx:151:        <div className="flex h-16 w-16 items-center justify-center rounded-[24px] bg-yellow-500">
+src/app/admin/reviews-ratings/page.tsx:205:                      <h2 className="text-2xl font-black text-yellow-400">
+src/app/admin/reviews-ratings/page.tsx:246:                            ? "fill-yellow-400 text-yellow-400"
+src/app/admin/reviews-ratings/page.tsx:279:                    className="flex items-center gap-2 rounded-2xl bg-green-500 px-5 py-3 font-bold text-black"
+src/app/admin/reviews-ratings/page.tsx:310:                    className="flex items-center gap-2 rounded-2xl bg-red-500 px-5 py-3 font-bold"
+src/app/admin/reviews-ratings/page.tsx:345:      return "bg-green-500";
+src/app/admin/reviews-ratings/page.tsx:355:    return "bg-yellow-500";
+src/app/admin/reviews/page.tsx:249:                    className="flex h-10 w-10 items-center justify-center rounded-xl bg-red-500/20 text-red-500"
+src/app/admin/reward-wallet/page.tsx:60:          <div className="flex h-16 w-16 items-center justify-center rounded-[28px] bg-yellow-400">
+src/app/admin/reward-wallet/page.tsx:83:        <button className="rounded-2xl bg-yellow-400 px-5 py-3 font-bold text-black">
+src/app/admin/reward-wallet/page.tsx:131:              className="text-yellow-400"
+src/app/admin/reward-wallet/page.tsx:155:                    <div className="flex h-14 w-14 items-center justify-center rounded-2xl bg-yellow-400 text-black">
+src/app/admin/reward-wallet/page.tsx:186:                        ? "text-green-400"
+src/app/admin/reward-wallet/page.tsx:187:                        : "text-red-400"
+src/app/admin/reward-wallet/page.tsx:212:                className="text-yellow-400"
+src/app/admin/reward-wallet/page.tsx:275:            className="text-green-400"
+src/app/admin/reward-wallet/page.tsx:324:      <div className="flex h-14 w-14 items-center justify-center rounded-2xl bg-yellow-400 text-black">
+src/app/admin/reward-wallet/page.tsx:355:        className="text-yellow-400"
+src/app/admin/reward-wallet/page.tsx:385:        <span className="font-black text-green-400">
+src/app/admin/reward-wallet/page.tsx:394:          className="h-full rounded-full bg-green-400"
+src/app/admin/rewards/page.tsx:472:              ? "bg-green-500"
+src/app/admin/rewards/page.tsx:473:              : "bg-red-500"
+src/app/admin/roles/page.tsx:191:                  className="flex h-14 w-14 items-center justify-center rounded-2xl bg-red-500"
+src/app/admin/security/page.tsx:51:          <div className="flex h-16 w-16 items-center justify-center rounded-[24px] bg-red-500">
+src/app/admin/security/page.tsx:73:          className="flex items-center gap-2 rounded-2xl bg-red-500 px-5 py-3 text-sm font-bold text-white"
+src/app/admin/security/page.tsx:126:              className="text-yellow-400"
+src/app/admin/security/page.tsx:200:                  ? "bg-green-500"
+src/app/admin/security/page.tsx:201:                  : "bg-red-500"
+src/app/admin/seo-ai/page.tsx:247:          <p className="mt-2 text-sm text-green-700">
+src/app/admin/seo/page.tsx:159:              className="text-green-400"
+src/app/admin/seo/page.tsx:225:        <p className="mt-2 text-green-200 break-all">
+src/app/admin/server-status/page.tsx:157:                          ? "bg-green-500"
+src/app/admin/server-status/page.tsx:158:                          : "bg-yellow-500"
+src/app/admin/server-status/page.tsx:172:                        ? "bg-green-500/20 text-green-400"
+src/app/admin/server-status/page.tsx:173:                        : "bg-yellow-500/20 text-yellow-400"
+src/app/admin/server-status/page.tsx:242:      <div className="mt-6 rounded-[28px] border border-green-500/20 bg-green-500/10 p-5">
+src/app/admin/server-status/page.tsx:248:            className="text-green-400"
+src/app/admin/server-status/page.tsx:253:            <h3 className="text-xl font-black text-green-400">
+src/app/admin/server-status/page.tsx:272:      <div className="mt-6 rounded-[28px] border border-yellow-500/20 bg-yellow-500/10 p-5">
+src/app/admin/server-status/page.tsx:278:            className="text-yellow-400"
+src/app/admin/server-status/page.tsx:283:            <h3 className="text-xl font-black text-yellow-400">
+src/app/admin/settings/page.tsx:254:              className="text-green-400"
+src/app/admin/shipping/page.tsx:105:              className="text-green-400"
+src/app/admin/shipping/page.tsx:135:                className="text-yellow-400"
+src/app/admin/shipping/page.tsx:160:                  ? "bg-green-500"
+src/app/admin/shipping/page.tsx:161:                  : "bg-red-500"
+src/app/admin/shipping/page.tsx:208:                  ? "bg-green-500"
+src/app/admin/shipping/page.tsx:209:                  : "bg-red-500"
+src/app/admin/sms/page.tsx:458:              ? "bg-green-500 text-black"
+src/app/admin/sms/page.tsx:459:              : "bg-red-500 text-white"
+src/app/admin/spin-wheel/page.tsx:160:          <div className="flex h-16 w-16 items-center justify-center rounded-[24px] bg-yellow-500">
+src/app/admin/spin-wheel/page.tsx:183:          className="flex items-center gap-2 rounded-2xl bg-yellow-500 px-5 py-3 font-bold text-black"
+src/app/admin/spin-wheel/page.tsx:470:              ? "bg-green-500"
+src/app/admin/spin-wheel/page.tsx:471:              : "bg-red-500"
+src/app/admin/storage-manager/page.tsx:471:              ? "bg-green-500"
+src/app/admin/storage-manager/page.tsx:472:              : "bg-red-500"
+src/app/admin/storage/page.tsx:135:            className="text-green-400"
+src/app/admin/storage/page.tsx:152:            className="text-yellow-400"
+src/app/admin/storage/page.tsx:197:                        className="text-yellow-400"
+src/app/admin/storage/page.tsx:226:                  className="flex h-14 w-14 items-center justify-center rounded-2xl bg-red-500"
+src/app/admin/subadmin-manager/page.tsx:198:                        ? "bg-green-500/20 text-green-400"
+src/app/admin/subadmin-manager/page.tsx:201:                        ? "bg-yellow-500/20 text-yellow-400"
+src/app/admin/subadmin-manager/page.tsx:202:                        : "bg-red-500/20 text-red-400"
+src/app/admin/subadmin-manager/page.tsx:218:                  <button className="flex items-center gap-2 rounded-2xl bg-red-500 px-4 py-3 font-bold">
+src/app/admin/subadmin-manager/page.tsx:278:              className="text-green-400"
+src/app/admin/subadmin-manager/page.tsx:341:      <div className="mt-8 rounded-[28px] border border-yellow-500/20 bg-yellow-500/10 p-5">
+src/app/admin/subadmin-manager/page.tsx:347:            className="text-yellow-400"
+src/app/admin/subadmin-manager/page.tsx:352:            <h3 className="text-xl font-black text-yellow-400">
+src/app/admin/subadmin-manager/page.tsx:449:        <p className="font-bold text-green-400">
+src/app/admin/subadmin-manager/page.tsx:458:          className="h-full rounded-full bg-green-400"
+src/app/admin/subadmins/page.tsx:243:                  className="flex h-14 w-14 items-center justify-center rounded-2xl bg-red-500"
+src/app/admin/subscriptions/page.tsx:472:              ? "bg-green-500"
+src/app/admin/subscriptions/page.tsx:473:              : "bg-red-500"
+src/app/admin/support-tickets/page.tsx:273:                    className="rounded-2xl bg-yellow-500 px-5 py-3 font-bold text-black"
+src/app/admin/support-tickets/page.tsx:287:                    className="rounded-2xl bg-green-500 px-5 py-3 font-bold text-black"
+src/app/admin/support-tickets/page.tsx:314:                    className="flex items-center gap-2 rounded-2xl bg-red-500 px-5 py-3 font-bold"
+src/app/admin/support-tickets/page.tsx:349:      return "bg-green-500";
+src/app/admin/support-tickets/page.tsx:359:    return "bg-yellow-500";
+src/app/admin/support/page.tsx:106:              className="text-yellow-400"
+src/app/admin/support/page.tsx:134:              className="text-green-400"
+src/app/admin/system-logs/page.tsx:152:          color="bg-yellow-500"
+src/app/admin/system-logs/page.tsx:161:          color="bg-red-500"
+src/app/admin/system-logs/page.tsx:170:          color="bg-green-500"
+src/app/admin/system-logs/page.tsx:316:    return "bg-green-500";
+src/app/admin/system-logs/page.tsx:322:    return "bg-yellow-500";
+src/app/admin/system-logs/page.tsx:328:    return "bg-red-500";
+src/app/admin/system-monitor/page.tsx:60:          <div className="flex h-16 w-16 items-center justify-center rounded-[30px] bg-green-500">
+src/app/admin/system-monitor/page.tsx:88:          className="flex items-center gap-2 rounded-2xl bg-green-500 px-6 py-4 font-black text-black"
+src/app/admin/system-monitor/page.tsx:135:          <Server className="text-green-400" />
+src/app/admin/system-monitor/page.tsx:181:                        ? "bg-green-500 text-black"
+src/app/admin/system-monitor/page.tsx:182:                        : "bg-yellow-500 text-black"
+src/app/admin/system-monitor/page.tsx:195:                    className="h-full rounded-full bg-green-500"
+src/app/admin/system-monitor/page.tsx:220:            <BarChart3 className="text-green-400" />
+src/app/admin/system-monitor/page.tsx:232:            <div className="h-[120px] w-full rounded-t-2xl bg-green-500/40" />
+src/app/admin/system-monitor/page.tsx:234:            <div className="h-[180px] w-full rounded-t-2xl bg-green-500/60" />
+src/app/admin/system-monitor/page.tsx:236:            <div className="h-[100px] w-full rounded-t-2xl bg-green-500/30" />
+src/app/admin/system-monitor/page.tsx:238:            <div className="h-[230px] w-full rounded-t-2xl bg-green-500" />
+src/app/admin/system-monitor/page.tsx:240:            <div className="h-[160px] w-full rounded-t-2xl bg-green-500/50" />
+src/app/admin/system-monitor/page.tsx:242:            <div className="h-[210px] w-full rounded-t-2xl bg-green-500/80" />
+src/app/admin/system-monitor/page.tsx:252:            <Database className="text-green-400" />
+src/app/admin/system-monitor/page.tsx:339:          className="flex items-center gap-2 rounded-2xl bg-red-500 px-6 py-4 font-black"
+src/app/admin/system-monitor/page.tsx:349:          className="flex items-center gap-2 rounded-2xl bg-yellow-500 px-6 py-4 font-black text-black"
+src/app/admin/system-monitor/page.tsx:375:      <div className="flex h-14 w-14 items-center justify-center rounded-2xl bg-green-500">
+src/app/admin/system-monitor/page.tsx:419:      <div className="rounded-full bg-green-500 px-4 py-2 text-sm font-black text-black">
+src/app/admin/system-security/page.tsx:63:          <div className="flex h-16 w-16 items-center justify-center rounded-[28px] bg-red-500">
+src/app/admin/system-security/page.tsx:86:        <button className="flex items-center gap-2 rounded-2xl bg-red-500 px-5 py-3 font-bold text-black">
+src/app/admin/system-security/page.tsx:136:              className="text-red-400"
+src/app/admin/system-security/page.tsx:167:              className="text-green-400"
+src/app/admin/system-security/page.tsx:243:                  <div className="flex h-14 w-14 items-center justify-center rounded-2xl bg-red-500 text-black">
+src/app/admin/system-security/page.tsx:267:                      ? "bg-green-500/20 text-green-400"
+src/app/admin/system-security/page.tsx:270:                      ? "bg-red-500/20 text-red-400"
+src/app/admin/system-security/page.tsx:271:                      : "bg-yellow-500/20 text-yellow-400"
+src/app/admin/system-security/page.tsx:343:      <div className="mt-8 rounded-[28px] border border-yellow-500/20 bg-yellow-500/10 p-5">
+src/app/admin/system-security/page.tsx:349:            className="text-yellow-400"
+src/app/admin/system-security/page.tsx:354:            <h3 className="text-xl font-black text-yellow-400">
+src/app/admin/system-security/page.tsx:390:      <div className="flex h-14 w-14 items-center justify-center rounded-2xl bg-red-500 text-black">
+src/app/admin/system-security/page.tsx:421:        className="text-red-400"
+src/app/admin/system-security/page.tsx:451:        <p className="font-bold text-green-400">
+src/app/admin/system-security/page.tsx:460:          className="h-full rounded-full bg-green-400"
+src/app/admin/system-security/page.tsx:487:      <div className="flex h-14 w-14 items-center justify-center rounded-2xl bg-red-500 text-black">
+src/app/admin/system/page.tsx:113:              className="text-green-400"
+src/app/admin/system/page.tsx:141:              className="text-green-400"
+src/app/admin/system/page.tsx:169:              className="text-green-400"
+src/app/admin/system/page.tsx:197:              className="text-yellow-400"
+src/app/admin/system/page.tsx:261:                className="text-green-400"
+src/app/admin/system/page.tsx:278:            <span className="rounded-full bg-green-500 px-4 py-2 text-sm font-bold">
+src/app/admin/system/page.tsx:292:                className="text-red-400"
+src/app/admin/system/page.tsx:317:                  ? "bg-red-500"
+src/app/admin/system/page.tsx:318:                  : "bg-green-500"
+src/app/admin/template-builder/page.tsx:205:                        ? "bg-green-500/20 text-green-400"
+src/app/admin/template-builder/page.tsx:206:                        : "bg-yellow-500/20 text-yellow-400"
+src/app/admin/template-builder/page.tsx:240:                    className="flex h-11 w-11 items-center justify-center rounded-2xl bg-red-500/20 text-red-400"
+src/app/admin/theme-builder/page.tsx:43:      color: "bg-yellow-500"
+src/app/admin/theme-builder/page.tsx:53:      color: "bg-green-500"
+src/app/admin/theme-builder/page.tsx:379:          className="flex items-center gap-2 rounded-2xl bg-green-500 px-6 py-4 font-black text-black"
+src/app/admin/theme-store/page.tsx:167:                  <div className="flex items-center gap-1 rounded-full bg-yellow-500/20 px-3 py-1 text-sm font-bold text-yellow-400">
+src/app/admin/tickets/page.tsx:99:            className="text-yellow-400"
+src/app/admin/tickets/page.tsx:116:            className="text-green-400"
+src/app/admin/tickets/page.tsx:189:                    className="flex items-center gap-2 rounded-2xl bg-green-500 px-5 py-3 text-sm font-bold"
+src/app/admin/tickets/page.tsx:205:                    className="flex items-center gap-2 rounded-2xl bg-red-500 px-5 py-3 text-sm font-bold"
+src/app/admin/users/page.tsx:191:        <StatCard title="Blocked Users" value={stats.blocked.toLocaleString("en-IN")} icon={<UserX size={22} />} color="bg-red-500" />
+src/app/admin/users/page.tsx:192:        <StatCard title="Total Referrals" value={stats.referrals.toLocaleString("en-IN")} icon={<Award size={22} />} color="bg-yellow-500" />
+src/app/admin/users/page.tsx:238:                        <span className="text-xs bg-red-500/20 text-red-400 px-2.5 py-0.5 rounded-full font-bold">
+src/app/admin/users/page.tsx:254:                        ? "bg-yellow-500/20 text-yellow-500 hover:bg-yellow-500/30"
+src/app/admin/users/page.tsx:267:                        ? "bg-green-500/20 text-green-400 hover:bg-green-500/30"
+src/app/admin/users/page.tsx:268:                        : "bg-red-500/20 text-red-400 hover:bg-red-500/30"
+src/app/admin/users/page.tsx:370:                    <p className={`text-sm font-black mt-1 ${user.isBlocked ? "text-red-400" : "text-green-400"}`}>
+src/app/admin/users/page.tsx:377:                      <Lock size={12} className="text-yellow-400" /> Wallet Matrix
+src/app/admin/users/page.tsx:379:                    <p className={`text-sm font-black mt-1 ${user.walletLocked ? "text-red-400" : "text-green-400"}`}>
+src/app/admin/users/page.tsx:388:                    <Wallet size={18} className="text-yellow-400" />
+src/app/admin/users/page.tsx:391:                      <p className="text-base font-black text-yellow-400">₹{(user.walletBalance || 0).toLocaleString("en-IN")}</p>
+src/app/admin/users/page.tsx:407:                      <span className={`text-xs font-black px-2 py-0.5 rounded ${user.joinedPackage ? "bg-green-500/20 text-green-400" : "bg-red-500/20 text-red-400"}`}>
+src/app/admin/vendor-manager/page.tsx:210:                        ? "bg-green-500/20 text-green-400"
+src/app/admin/vendor-manager/page.tsx:213:                        ? "bg-yellow-500/20 text-yellow-400"
+src/app/admin/vendor-manager/page.tsx:214:                        : "bg-red-500/20 text-red-400"
+src/app/admin/vendor-manager/page.tsx:230:                  <button className="flex items-center gap-2 rounded-2xl bg-red-500 px-4 py-3 font-bold">
+src/app/admin/vendor-manager/page.tsx:259:              className="text-green-400"
+src/app/admin/vendor-manager/page.tsx:353:      <div className="mt-8 rounded-[28px] border border-yellow-500/20 bg-yellow-500/10 p-5">
+src/app/admin/vendor-manager/page.tsx:359:            className="text-yellow-400"
+src/app/admin/vendor-manager/page.tsx:364:            <h3 className="text-xl font-black text-yellow-400">
+src/app/admin/vendor-manager/page.tsx:461:        <p className="font-bold text-green-400">
+src/app/admin/vendor-manager/page.tsx:470:          className="h-full rounded-full bg-green-400"
+src/app/admin/wallet/page.tsx:161:          <div className="flex h-16 w-16 items-center justify-center rounded-[24px] bg-green-500">
+src/app/admin/wallet/page.tsx:184:          className="flex items-center gap-2 rounded-2xl bg-green-500 px-5 py-3 font-bold"
+src/app/admin/wallet/page.tsx:479:              ? "bg-green-500"
+src/app/admin/wallet/page.tsx:480:              : "bg-red-500"
+src/app/admin/withdrawal-requests/page.tsx:152:        <div className="flex h-16 w-16 items-center justify-center rounded-[24px] bg-green-500">
+src/app/admin/withdrawal-requests/page.tsx:206:                      <h2 className="text-2xl font-black text-green-400">
+src/app/admin/withdrawal-requests/page.tsx:265:                    className="flex items-center gap-2 rounded-2xl bg-green-500 px-5 py-3 font-bold text-black"
+src/app/admin/withdrawal-requests/page.tsx:281:                    className="flex items-center gap-2 rounded-2xl bg-red-500 px-5 py-3 font-bold"
+src/app/admin/withdrawal-requests/page.tsx:331:      return "bg-green-500";
+src/app/admin/withdrawal-requests/page.tsx:337:      return "bg-red-500";
+src/app/admin/withdrawal-requests/page.tsx:341:    return "bg-yellow-500";
+src/app/admin/withdrawals/page.tsx:99:            className="text-yellow-400"
+src/app/admin/withdrawals/page.tsx:116:            className="text-green-400"
+src/app/admin/withdrawals/page.tsx:176:                  <h3 className="text-2xl font-black text-green-400">
+src/app/admin/withdrawals/page.tsx:197:                  className="flex items-center gap-2 rounded-2xl bg-green-500 px-5 py-3 text-sm font-bold"
+src/app/admin/withdrawals/page.tsx:213:                  className="flex items-center gap-2 rounded-2xl bg-red-500 px-5 py-3 text-sm font-bold"
+src/app/admin/mlm/page.tsx:212:              className="text-green-600"
+src/app/admin/mlm/page.tsx:361:                            bg-green-600
+src/app/admin/mlm/page.tsx:377:                            bg-red-500
+src/app/product/[id]/page.tsx:194:        <h1 className="text-sm font-bold text-red-500">Product Not Found</h1>
+src/app/product/[id]/page.tsx:221:                className={wishlist ? "text-red-500" : ""}
+src/app/product/[id]/page.tsx:260:            <div className="absolute left-2 top-2 rounded-lg bg-red-500 px-2.5 py-1 text-[10px] font-bold text-white">
+src/app/product/[id]/page.tsx:271:                className={wishlist ? "text-red-500" : ""}
+src/app/product/[id]/page.tsx:320:            <div className="flex items-center gap-1 text-green-600">
+src/app/product/[id]/page.tsx:334:          <p className="mt-1 text-[13px] font-bold text-green-600">
+src/app/product/[id]/page.tsx:389:            <ShieldCheck size={18} className="text-green-600" />
+src/app/product/[id]/page.tsx:425:              <Truck size={18} className="text-green-600" />
+src/app/product/[id]/page.tsx:428:                <p className="mt-1 text-[18px] font-black text-green-600">{deliveryDate}</p>
+src/app/product/[id]/page.tsx:500:            <p className="text-[10px] font-bold text-green-600">{discount}% OFF</p>
+src/app/mlm/dashboard/page.tsx:112:    { title: "Wallet", href: "/mlm/wallet", icon: Wallet, color: "bg-green-100 text-green-700" },
+src/app/mlm/dashboard/page.tsx:119:    { title: "Today's Income", value: `₹${formattedTodayIncome}`, icon: Sparkles, color: "text-green-600" },
+src/app/mlm/dashboard/page.tsx:120:    { title: "Rank", value: userData?.rank || "Bronze Member", icon: Crown, color: "text-yellow-600" },
+src/app/mlm/dashboard/page.tsx:143:              <div className="absolute right-2 top-2 flex h-4 w-4 items-center justify-center rounded-full bg-red-500 text-[9px] font-black text-white border-2 border-white animate-bounce">
+src/app/mlm/dashboard/page.tsx:248:            <Medal size={24} className="text-yellow-600" />
+src/app/mlm/dashboard/page.tsx:273:            { href: "/mlm/earnings", icon: Sparkles, title: "Earnings", desc: "MLM income details", color: "text-green-600" },
+src/app/mlm/dashboard/page.tsx:274:            { href: "/mlm/leaderboard", icon: Trophy, title: "Leaderboard", desc: "Top MLM performers", color: "text-yellow-600" },
+src/app/mlm/earnings/page.tsx:193:              className="text-green-600"
+src/app/mlm/earnings/page.tsx:421:                      bg-green-100
+src/app/mlm/earnings/page.tsx:426:                      text-green-700
+src/app/mlm/invite/page.tsx:171:            className="rounded-3xl bg-green-500 p-5 text-white shadow-lg active:scale-[0.98] transition-all disabled:opacity-50 text-left"
+src/app/mlm/cashback/page.tsx:310:          <div className={`h-2 w-2 rounded-full shrink-0 ${toast.type === "success" ? "bg-emerald-400" : "bg-red-400"}`} />
+src/app/mlm/cashback/page.tsx:466:                      item.status === "failed" ? "bg-red-50 text-red-600" : item.status === "pending" ? "bg-amber-50 text-amber-600" : "bg-emerald-50 text-emerald-600"
+src/app/mlm/cashback/page.tsx:496:                    <p className={`text-[15px] font-black tracking-tight ${item.status === "failed" ? "text-red-500 line-through opacity-50" : item.status === "pending" ? "text-amber-500" : "text-emerald-600"}`}>
+src/app/mlm/leaderboard/page.tsx:84:              bg-yellow-100
+src/app/mlm/leaderboard/page.tsx:85:              text-yellow-700
+src/app/mlm/leaderboard/page.tsx:95:            <h1 className="text-[24px] font-black text-yellow-700">
+src/app/mlm/leaderboard/page.tsx:375:              className="text-yellow-600"
+src/app/mlm/leaderboard/page.tsx:413:                        bg-yellow-100
+src/app/mlm/leaderboard/page.tsx:414:                        text-yellow-700
+src/app/mlm/leaderboard/page.tsx:453:                      bg-green-100
+src/app/mlm/leaderboard/page.tsx:458:                      text-green-700
+src/app/mlm/network/page.tsx:225:            <UserPlus2 size={28} className="text-green-600" />
+src/app/mlm/notifications/page.tsx:39:        "bg-green-100 text-green-700",
+src/app/mlm/notifications/page.tsx:51:        "bg-yellow-100 text-yellow-700",
+src/app/mlm/page.tsx:178:              <div className="flex h-12 w-12 items-center justify-center rounded-full bg-green-100 text-green-700">
+src/app/mlm/page.tsx:226:            <ShieldCheck size={28} className="text-green-600" />
+src/app/mlm/ranks/page.tsx:106:              bg-yellow-100
+src/app/mlm/ranks/page.tsx:107:              text-yellow-700
+src/app/mlm/ranks/page.tsx:117:            <h1 className="text-[24px] font-black text-yellow-700">
+src/app/mlm/ranks/page.tsx:353:                      className="text-green-600"
+src/app/mlm/ranks/page.tsx:394:              className="text-yellow-600"
+src/app/mlm/ranks/page.tsx:413:                bg-yellow-50
+src/app/mlm/ranks/page.tsx:420:                className="text-yellow-600"
+src/app/mlm/support/page.tsx:188:              className="text-green-600"
+src/app/mlm/orders/page.tsx:310:                          text-green-500
+src/app/mlm/orders/page.tsx:320:                          text-yellow-400
+src/app/mlm/wallet/page.tsx:185:              className="text-green-600"
+src/app/mlm/wallet/page.tsx:426:                          ? "bg-green-100 text-green-700"
+src/app/mlm/wallet/page.tsx:427:                          : "bg-red-100 text-red-700"
+src/app/mlm/withdraw/page.tsx:368:                    bg-green-100
+src/app/mlm/withdraw/page.tsx:369:                    text-green-700
+src/app/mlm/withdraw/page.tsx:398:                  bg-green-100
+src/app/mlm/withdraw/page.tsx:403:                  text-green-700
+src/app/mlm/permissions/page.tsx:332:                    ? "bg-green-500 text-white"
+src/app/mlm/permissions/page.tsx:439:                    ? "bg-green-500 text-white"
+src/app/mlm/permissions/page.tsx:491:                  bg-yellow-500/20
+src/app/mlm/permissions/page.tsx:498:                    text-yellow-300
+src/app/mlm/permissions/page.tsx:546:                    ? "bg-green-500 text-white"
+src/app/mlm/permissions/page.tsx:547:                    : "bg-yellow-500 text-black"
+src/app/mlm/watch-earn/components/CoinsPopup.tsx:62:            bg-yellow-400
+src/app/mlm/watch-earn/components/FloatingRewards.tsx:50:          bg-yellow-400
+src/app/mlm/watch-earn/components/FloatingRewards.tsx:127:                text-yellow-300
+src/app/mlm/watch-earn/components/LiveCoinsAnimation.tsx:66:            bg-yellow-400
+src/app/mlm/watch-earn/components/RewardProgressBar.tsx:72:        "bg-yellow-500/20 text-yellow-300 border border-yellow-400/20",
+src/app/mlm/watch-earn/components/RewardProgressBar.tsx:79:        "bg-green-500/20 text-green-300 border border-green-400/20",
+src/app/mlm/watch-earn/components/RewardProgressBar.tsx:145:              bg-yellow-500/20
+src/app/mlm/watch-earn/components/RewardProgressBar.tsx:150:              text-yellow-300
+src/app/mlm/watch-earn/components/RewardProgressBar.tsx:191:                text-yellow-300
+src/app/mlm/watch-earn/components/RewardProgressBar.tsx:234:                text-yellow-300
+src/app/mlm/watch-earn/components/RewardProgressBar.tsx:296:                text-green-300
+src/app/mlm/watch-earn/components/ShareDrawer.tsx:145:              bg-green-500/20
+src/app/mlm/watch-earn/components/ShareDrawer.tsx:152:                text-green-400
+src/app/mlm/watch-earn/components/ShareDrawer.tsx:284:              bg-yellow-500/20
+src/app/mlm/watch-earn/components/ShareDrawer.tsx:291:                text-yellow-300
+src/app/mlm/watch-earn/components/VideoActions.tsx:244:          bg-yellow-400/20
+src/app/mlm/watch-earn/components/VideoActions.tsx:254:            text-yellow-300
+src/app/mlm/watch-earn/components/VideoCard.tsx:105:            bg-yellow-400
+src/app/mlm/watch-earn/components/VideoPlayer.tsx:143:            bg-green-500
+src/app/mlm/watch-earn/components/WatchEarnHeader.tsx:129:            bg-yellow-400/20
+src/app/mlm/watch-earn/components/WatchEarnHeader.tsx:139:              text-yellow-300
+src/app/mlm/watch-earn/page.tsx:539:              bg-yellow-400/20
+src/app/mlm/watch-earn/page.tsx:549:                text-yellow-300
+src/app/mlm/watch-earn/page.tsx:605:            bg-yellow-400
+src/app/mlm/watch-earn/page.tsx:1048:                      ? "bg-green-500 text-white"
+src/app/mlm/watch-earn/page.tsx:1049:                      : "bg-yellow-400 text-black"
+src/app/mlm/watch-earn/upload/page.tsx:610:            bg-yellow-500/10
+src/app/mlm/watch-earn/upload/page.tsx:619:              text-yellow-300
+src/app/cart/page.tsx:627:                          bg-red-100
+src/app/cart/page.tsx:628:                          text-red-500
+src/app/account/page.tsx:152:      color: "bg-green-100 text-green-600"
+src/app/account/page.tsx:293:            <div className="flex h-16 w-16 items-center justify-center rounded-3xl bg-green-100 text-green-600">
+src/app/account/page.tsx:310:          className="flex w-full items-center justify-center gap-3 rounded-[30px] bg-red-500 py-5 text-sm font-black text-white shadow-xl shadow-red-500/20 transition-all duration-300 hover:scale-[1.02]"
+src/app/account/orders/page.tsx:40:                <span className={`px-2 py-1 rounded-full text-[10px] font-bold uppercase ${order.status === 'delivered' ? 'bg-green-100 text-green-700' : 'bg-orange-100 text-orange-700'}`}>
+src/app/affiliate/page.tsx:224:            <div className="flex h-14 w-14 items-center justify-center rounded-2xl bg-green-100 text-green-600">
+src/app/debug-auth/page.tsx:145:          className="bg-green-600 px-5 py-3 rounded-xl font-bold"
+src/app/debug-auth/page.tsx:152:          className="bg-red-600 px-5 py-3 rounded-xl font-bold"
+src/app/payment-success/page.tsx:108:        <h1 className="text-4xl font-black text-green-600">
+src/app/payment-success/page.tsx:116:        <div className="mt-6 rounded-2xl border border-green-200 bg-green-50 p-4">
+src/app/payment-success/page.tsx:128:        <div className="mt-4 rounded-2xl border border-green-200 bg-green-50 p-4">
+src/app/payment-success/page.tsx:134:          <h2 className="mt-2 text-2xl font-black text-green-600 break-all">
+src/components/navigation/Header.tsx:467:                  ? "bg-red-500 text-white"
+src/components/navigation/WhatsAppButton.tsx:26:        bg-green-500
+src/components/navigation/WhatsAppButton.tsx:36:        hover:bg-green-600
+src/components/admin/AdminNavbar.tsx:76:          <span className="absolute right-2 top-2 h-2.5 w-2.5 rounded-full bg-red-500" />
+src/components/admin/CategoryAdmin.tsx:594:                          bg-red-500
+src/components/admin/CloudinaryUploader.tsx:229:            className="rounded-2xl bg-red-500 px-6 py-4 text-base font-black text-white shadow-xl transition-all duration-300 hover:bg-red-600"
+src/components/products/ProductCard.tsx:237:                text-green-600
+src/components/products/ProductCard.tsx:278:              bg-green-100
+src/components/products/ProductCard.tsx:283:              text-green-700

@@ -242,7 +242,7 @@ export default function DatabaseManagerPage() {
           icon={
             <Table2 size={24} />
           }
-          color="bg-blue-500"
+          color="theme-primary-bg"
         />
 
         <StatsCard
