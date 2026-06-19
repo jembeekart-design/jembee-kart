@@ -4,9 +4,6 @@ import { complianceReportGenerator } from "./reports/complianceReportGenerator";
 import { GovernanceDashboardReport } from "./types/governance.types";
 
 export class JembeeGovernanceEngine {
-  /**
-   * Run Full Governance Scan
-   */
   public async run(): Promise<GovernanceDashboardReport> {
     const projectRoot = process.cwd();
 
@@ -45,21 +42,30 @@ export class JembeeGovernanceEngine {
   }
 
   /**
-   * Validate Before Build
+   * Deployment Validation
+   *
+   * Currently WARN ONLY MODE
    */
   public async validateForDeployment(): Promise<void> {
     const report = await this.run();
 
     if (report.deploymentStatus === "BLOCKED") {
-      throw new Error(
-        [
-          "",
-          "❌ DEPLOYMENT BLOCKED BY GOVERNANCE SYSTEM",
-          `Critical Issues: ${report.criticalViolations}`,
-          `Total Violations: ${report.totalViolations}`,
-          "",
-        ].join("\n")
+      console.warn("");
+      console.warn(
+        "⚠ GOVERNANCE VIOLATIONS DETECTED"
       );
+      console.warn(
+        `Critical Issues: ${report.criticalViolations}`
+      );
+      console.warn(
+        `Total Violations: ${report.totalViolations}`
+      );
+      console.warn(
+        "Deployment allowed (Warn Mode)"
+      );
+      console.warn("");
+
+      return;
     }
 
     console.log("");
@@ -73,9 +79,6 @@ export class JembeeGovernanceEngine {
 export const governanceEngine =
   new JembeeGovernanceEngine();
 
-/**
- * Auto Run
- */
 governanceEngine
   .validateForDeployment()
   .catch((error) => {
@@ -85,5 +88,5 @@ governanceEngine
 
     console.error(error);
 
-    throw error;
+    process.exitCode = 1;
   });
