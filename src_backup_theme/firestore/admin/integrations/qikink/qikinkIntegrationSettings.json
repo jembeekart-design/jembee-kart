@@ -1,0 +1,94 @@
+{
+  "qikinkIntegrationEnabled": true,
+
+  "adminControlledQikinkIntegration": true,
+
+  "supplierName": "Qikink",
+
+  "supplierType": "print_on_demand",
+
+  "integrationMode": "api_based",
+
+  "apiConfiguration": {
+    "apiKey": "",
+
+    "apiSecret": "",
+
+    "storeId": "",
+
+    "webhookSecret": ""
+  },
+
+  "productSyncSettings": {
+    "enableAutomaticProductImport": true,
+
+    "enableRealtimeInventorySync": true,
+
+    "enablePriceSync": true,
+
+    "enableProductVariantSync": true,
+
+    "enableProductImageSync": true
+  },
+
+  "orderManagementSettings": {
+    "enableAutomaticOrderForwarding": true,
+
+    "enableRealtimeOrderTracking": true,
+
+    "enableOrderStatusSync": true,
+
+    "enableCODOrders": true,
+
+    "enablePrepaidOrders": true
+  },
+
+  "shippingSettings": {
+    "enableShippingCalculation": true,
+
+    "defaultShippingPartner": "qikink_shipping",
+
+    "enableRealtimeShippingRates": true,
+
+    "enableEstimatedDeliveryDate": true
+  },
+
+  "profitSettings": {
+    "enableCustomProfitMargin": true,
+
+    "defaultProfitMarginPercentage": 35,
+
+    "allowSellerCustomMargins": true
+  },
+
+  "productCustomizationSettings": {
+    "enableCustomPrintDesigns": true,
+
+    "enableMockupGeneration": true,
+
+    "enableAIDesignSuggestions": true,
+
+    "enableDesignPreview": true
+  },
+
+  "supportedProductCategories": [
+    "tshirts",
+    "hoodies",
+    "mugs",
+    "caps",
+    "posters",
+    "mobile_covers",
+    "bottles",
+    "stickers"
+  ],
+
+  "dashboardSettings": {
+    "enableSupplierAnalytics": true,
+
+    "enableRevenueAnalytics": true,
+
+    "enableTopSellingProducts": true,
+
+    "enableSupplierPerformanceTracking": true
+  }
+}

@@ -1,0 +1,1302 @@
+src/app/page.tsx:506:                    text-black
+src/app/page.tsx:580:                            bg-white
+src/app/page.tsx:647:                                bg-white/90
+src/app/page.tsx:711:                              text-black
+src/app/page.tsx:738:                              text-black
+src/app/page.tsx:838:                      bg-white
+src/app/page.tsx:904:                            bg-white
+src/app/page.tsx:996:                  text-black
+src/app/page.tsx:1020:                    bg-white
+src/app/page.tsx:1072:                    bg-white
+src/app/page.tsx:1133:                            bg-white
+src/app/page.tsx:1200:                                  bg-white/90
+src/app/page.tsx:1264:                              text-black
+src/app/page.tsx:1289:                              text-black
+src/app/admin/page.tsx:107:    <main className="min-h-screen text-white">
+src/app/admin/page.tsx:111:      <div className="rounded-[35px] bg-gradient-to-r from-cyan-500 to-blue-600 p-8 text-black">
+src/app/admin/page.tsx:132:            <button className="mt-6 flex items-center gap-2 rounded-2xl bg-black px-6 py-4 font-bold text-white">
+src/app/admin/page.tsx:144:          <div className="flex h-[180px] w-[180px] items-center justify-center rounded-[40px] bg-black/10 backdrop-blur-xl">
+src/app/admin/page.tsx:170:              <div className="flex h-16 w-16 items-center justify-center rounded-2xl bg-cyan-500 text-black">
+src/app/admin/page.tsx:234:                  <div className="flex h-16 w-16 items-center justify-center rounded-2xl bg-cyan-500 text-black transition-all duration-300 group-hover:rotate-6">
+src/app/admin/page.tsx:368:            <p className="mt-4 max-w-2xl text-sm text-white/90">
+src/app/admin/page.tsx:380:            <button className="rounded-2xl bg-black px-6 py-4 font-bold text-white">
+src/app/admin/page.tsx:386:            <button className="rounded-2xl bg-white px-6 py-4 font-bold text-black">
+src/app/admin/activity-tracker/page.tsx:48:        return <Users size={22} className="text-black" />;
+src/app/admin/activity-tracker/page.tsx:50:        return <ShoppingCart size={22} className="text-black" />;
+src/app/admin/activity-tracker/page.tsx:53:        return <Wallet size={22} className="text-black" />;
+src/app/admin/activity-tracker/page.tsx:55:        return <ShieldCheck size={22} className="text-black" />;
+src/app/admin/activity-tracker/page.tsx:57:        return <Activity size={22} className="text-black" />;
+src/app/admin/activity-tracker/page.tsx:146:    <main className="min-h-screen bg-[#0b0b0b] p-4 text-white">
+src/app/admin/activity-tracker/page.tsx:151:            <Activity size={30} className="text-black" />
+src/app/admin/activity-tracker/page.tsx:264:        <p className="mt-3 max-w-2xl text-sm text-white/90">
+src/app/admin/activity-tracker/page.tsx:296:      <div className="flex h-14 w-14 items-center justify-center rounded-2xl bg-pink-500 text-black">
+src/app/admin/admin-chat/page.tsx:61:    <main className="min-h-screen bg-[#0b0b0b] p-4 text-white">
+src/app/admin/admin-chat/page.tsx:73:              className="text-black"
+src/app/admin/admin-chat/page.tsx:92:        <button className="flex items-center gap-2 rounded-2xl bg-cyan-500 px-5 py-3 font-bold text-black">
+src/app/admin/admin-chat/page.tsx:112:          <div className="flex items-center gap-3 rounded-2xl bg-black/30 px-4 py-3">
+src/app/admin/admin-chat/page.tsx:139:                  className="flex cursor-pointer items-center justify-between rounded-2xl bg-black/20 p-4 transition-all hover:bg-cyan-500/10"
+src/app/admin/admin-chat/page.tsx:146:                      <div className="flex h-12 w-12 items-center justify-center rounded-full bg-cyan-500 text-black font-black">
+src/app/admin/admin-chat/page.tsx:199:              <div className="flex h-12 w-12 items-center justify-center rounded-full bg-cyan-500 text-black font-black">
+src/app/admin/admin-chat/page.tsx:221:              <button className="flex h-11 w-11 items-center justify-center rounded-2xl bg-black/30">
+src/app/admin/admin-chat/page.tsx:227:              <button className="flex h-11 w-11 items-center justify-center rounded-2xl bg-black/30">
+src/app/admin/admin-chat/page.tsx:261:                        ? "bg-cyan-500 text-black"
+src/app/admin/admin-chat/page.tsx:262:                        : "bg-black/30"
+src/app/admin/admin-chat/page.tsx:298:            <div className="flex items-center gap-3 rounded-2xl bg-black/30 p-3">
+src/app/admin/admin-chat/page.tsx:300:              <button className="flex h-11 w-11 items-center justify-center rounded-xl bg-white/5">
+src/app/admin/admin-chat/page.tsx:306:              <button className="flex h-11 w-11 items-center justify-center rounded-xl bg-white/5">
+src/app/admin/admin-chat/page.tsx:324:              <button className="flex h-12 w-12 items-center justify-center rounded-2xl bg-cyan-500 text-black">
+src/app/admin/admin-chat/page.tsx:387:      <div className="flex h-14 w-14 items-center justify-center rounded-2xl bg-cyan-500 text-black">
+src/app/admin/ads-manager/page.tsx:57:    <main className="min-h-screen bg-[#0b0b0b] p-4 text-white">
+src/app/admin/ads-manager/page.tsx:69:              className="text-black"
+src/app/admin/ads-manager/page.tsx:88:        <button className="flex items-center gap-2 rounded-2xl bg-violet-500 px-5 py-3 font-bold text-black">
+src/app/admin/ads-manager/page.tsx:206:                  <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-violet-500 text-black">
+src/app/admin/ads-manager/page.tsx:226:                <button className="rounded-2xl bg-violet-500 px-5 py-2 font-bold text-black">
+src/app/admin/ads-manager/page.tsx:255:        <p className="mt-3 max-w-2xl text-sm text-white/90">
+src/app/admin/ads-manager/page.tsx:262:        <button className="mt-6 flex items-center gap-2 rounded-2xl bg-black px-6 py-3 font-bold text-white">
+src/app/admin/ads-manager/page.tsx:291:      <div className="flex h-14 w-14 items-center justify-center rounded-2xl bg-violet-500 text-black">
+src/app/admin/affiliate-control/page.tsx:145:      <div className="flex min-h-screen items-center justify-center bg-black text-white">
+src/app/admin/affiliate-control/page.tsx:156:    <main className="min-h-screen bg-[#0b0b0b] p-4 text-white">
+src/app/admin/affiliate-control/page.tsx:187:          className="flex items-center gap-2 rounded-2xl bg-emerald-500 px-5 py-3 font-bold text-black"
+src/app/admin/affiliate-control/page.tsx:374:          <h2 className="text-3xl font-black text-black">
+src/app/admin/affiliate-control/page.tsx:439:        className="w-full rounded-2xl bg-black px-4 py-4 outline-none"
+src/app/admin/affiliate-control/page.tsx:469:          <div className="flex h-14 w-14 items-center justify-center rounded-2xl bg-black">
+src/app/admin/affiliate-control/page.tsx:521:    <div className="rounded-2xl bg-white/10 p-4">
+src/app/admin/affiliate-control/page.tsx:523:      <p className="text-sm text-black/70">
+src/app/admin/affiliate-control/page.tsx:527:      <h3 className="mt-2 text-2xl font-black text-black">
+src/app/admin/affiliate-settings/page.tsx:141:      <div className="flex min-h-screen items-center justify-center bg-black text-white">
+src/app/admin/affiliate-settings/page.tsx:152:    <main className="min-h-screen bg-[#0b0b0b] p-4 text-white">
+src/app/admin/affiliate-settings/page.tsx:160:          <div className="flex h-16 w-16 items-center justify-center rounded-[24px] bg-orange-500">
+src/app/admin/affiliate-settings/page.tsx:183:          className="flex items-center gap-2 rounded-2xl bg-orange-500 px-5 py-3 font-bold"
+src/app/admin/affiliate-settings/page.tsx:425:        className="w-full rounded-2xl bg-black px-4 py-4 outline-none"
+src/app/admin/affiliate-settings/page.tsx:455:          <div className="flex h-14 w-14 items-center justify-center rounded-2xl bg-black">
+src/app/admin/affiliate-settings/page.tsx:507:    <div className="rounded-2xl bg-white/10 p-4">
+src/app/admin/affiliate-settings/page.tsx:509:      <p className="text-sm text-white/70">
+src/app/admin/affiliate/page.tsx:176:      <div className="flex min-h-screen items-center justify-center bg-black text-white">
+src/app/admin/affiliate/page.tsx:184:    <main className="min-h-screen bg-[#0b0b0b] p-4 text-white">
+src/app/admin/affiliate/page.tsx:261:                  className="flex h-10 w-10 items-center justify-center rounded-xl bg-white/10"
+src/app/admin/affiliate/page.tsx:355:                  <p className="mt-1 text-sm text-white/80">
+src/app/admin/affiliate/page.tsx:361:                <div className="flex h-14 w-14 items-center justify-center rounded-2xl bg-white/20">
+src/app/admin/affiliate/page.tsx:369:              <div className="mt-5 flex items-center justify-between rounded-2xl bg-white/10 p-4">
+src/app/admin/affiliate/page.tsx:373:                  <p className="text-sm text-white/70">
+src/app/admin/affiliate/page.tsx:385:                  <p className="text-sm text-white/70">
+src/app/admin/affiliate/page.tsx:437:        className="w-full rounded-2xl border border-white/10 bg-[#1e1e1e] px-4 py-3 text-sm text-white outline-none"
+src/app/admin/ai-banner/page.tsx:68:    <main className="min-h-screen bg-[#050505] p-4 text-white">
+src/app/admin/ai-banner/page.tsx:78:            className="text-black"
+src/app/admin/ai-banner/page.tsx:125:          className="mt-5 h-40 w-full rounded-3xl border border-white/10 bg-black/40 p-5 text-white outline-none"
+src/app/admin/ai-banner/page.tsx:133:            className="flex items-center gap-2 rounded-2xl bg-pink-500 px-6 py-4 font-bold text-black transition-all hover:scale-[1.03]"
+src/app/admin/ai-banner/page.tsx:181:              className="flex items-center gap-2 rounded-2xl bg-white/10 px-4 py-3"
+src/app/admin/ai-banner/page.tsx:280:          className="flex items-center gap-2 rounded-2xl bg-green-500 px-6 py-4 font-black text-black"
+src/app/admin/ai-banner/page.tsx:339:    <div className="rounded-[24px] bg-white/10 p-5 backdrop-blur-lg">
+src/app/admin/ai-banner/page.tsx:347:      <p className="mt-2 text-sm text-white/80">
+src/app/admin/ai-chatbot/page.tsx:56:    <main className="min-h-screen bg-[#050505] p-4 text-white">
+src/app/admin/ai-chatbot/page.tsx:68:              className="text-black"
+src/app/admin/ai-chatbot/page.tsx:97:              ? "bg-green-500 text-black"
+src/app/admin/ai-chatbot/page.tsx:98:              : "bg-red-500 text-white"
+src/app/admin/ai-chatbot/page.tsx:172:                      ? "bg-violet-500 text-black"
+src/app/admin/ai-chatbot/page.tsx:173:                      : "bg-black/30"
+src/app/admin/ai-chatbot/page.tsx:209:              className="flex-1 rounded-2xl border border-white/10 bg-black/30 p-4 outline-none"
+src/app/admin/ai-chatbot/page.tsx:218:                className="text-black"
+src/app/admin/ai-chatbot/page.tsx:267:          <div className="rounded-[30px] bg-gradient-to-r from-violet-500 to-fuchsia-500 p-6 text-black">
+src/app/admin/ai-chatbot/page.tsx:299:          className="flex items-center gap-2 rounded-2xl bg-green-500 px-6 py-4 font-black text-black"
+src/app/admin/ai-chatbot/page.tsx:309:          className="flex items-center gap-2 rounded-2xl bg-cyan-500 px-6 py-4 font-black text-black"
+src/app/admin/ai-chatbot/page.tsx:349:          className="text-black"
+src/app/admin/ai-chatbot/page.tsx:379:    <div className="flex items-center justify-between rounded-2xl bg-black/30 p-4">
+src/app/admin/ai-product-generator/page.tsx:106:    <main className="min-h-screen bg-[#0b0b0b] p-4 text-white">
+src/app/admin/ai-product-generator/page.tsx:180:            className="h-32 w-full rounded-2xl bg-black p-4 outline-none"
+src/app/admin/ai-product-generator/page.tsx:190:          className="mt-6 flex items-center gap-2 rounded-2xl bg-violet-500 px-6 py-4 font-bold text-black"
+src/app/admin/ai-product-generator/page.tsx:264:          <h2 className="text-3xl font-black text-black">
+src/app/admin/ai-product-generator/page.tsx:270:        <div className="mt-6 rounded-2xl bg-black/20 p-5">
+src/app/admin/ai-product-generator/page.tsx:279:          <p className="mt-4 text-black/80">
+src/app/admin/ai-product-generator/page.tsx:324:        className="w-full rounded-2xl bg-black px-5 py-4 outline-none"
+src/app/admin/ai-product-generator/page.tsx:352:          className="flex items-center gap-2 rounded-2xl bg-violet-500 px-4 py-2 font-bold text-black"
+src/app/admin/ai-product-generator/page.tsx:363:      <div className="rounded-2xl bg-black/30 p-4">
+src/app/admin/ai-tools/page.tsx:143:      <div className="flex min-h-screen items-center justify-center bg-black text-white">
+src/app/admin/ai-tools/page.tsx:154:    <main className="min-h-screen bg-[#0b0b0b] p-4 text-white">
+src/app/admin/ai-tools/page.tsx:423:        className="w-full rounded-2xl bg-black px-4 py-4 outline-none"
+src/app/admin/ai-tools/page.tsx:453:          <div className="flex h-14 w-14 items-center justify-center rounded-2xl bg-black">
+src/app/admin/ai-tools/page.tsx:505:    <div className="rounded-2xl bg-white/10 p-4">
+src/app/admin/ai-tools/page.tsx:507:      <p className="text-sm text-white/70">
+src/app/admin/all-pages/page.tsx:606:    <main className="min-h-screen bg-[#050505] p-4 text-white">
+src/app/admin/all-pages/page.tsx:614:          <LayoutDashboard size={32} className="text-black" />
+src/app/admin/all-pages/page.tsx:652:              <div className="flex h-16 w-16 items-center justify-center rounded-2xl bg-cyan-500 text-black shadow-lg shadow-cyan-500/20 transition-all duration-300 group-hover:rotate-6">
+src/app/admin/analytics/page.tsx:40:    <main className="min-h-screen bg-[#0b0b0b] p-4 text-white">
+src/app/admin/analytics/page.tsx:111:        <p className="mt-2 text-white/80">
+src/app/admin/analytics/page.tsx:117:          <div className="h-[120px] w-full rounded-t-2xl bg-white/20" />
+src/app/admin/analytics/page.tsx:119:          <div className="h-[180px] w-full rounded-t-2xl bg-white/30" />
+src/app/admin/analytics/page.tsx:121:          <div className="h-[90px] w-full rounded-t-2xl bg-white/20" />
+src/app/admin/analytics/page.tsx:123:          <div className="h-[220px] w-full rounded-t-2xl bg-white/40" />
+src/app/admin/analytics/page.tsx:125:          <div className="h-[150px] w-full rounded-t-2xl bg-white/20" />
+src/app/admin/analytics/page.tsx:127:          <div className="h-[250px] w-full rounded-t-2xl bg-white/50" />
+src/app/admin/analytics/page.tsx:182:    <div className="flex items-center justify-between rounded-2xl bg-black/30 p-4">
+src/app/admin/announcement/page.tsx:167:      <div className="flex min-h-screen items-center justify-center bg-black text-white">
+src/app/admin/announcement/page.tsx:178:    <main className="min-h-screen bg-[#0b0b0b] p-4 text-white">
+src/app/admin/announcement/page.tsx:223:            className="w-full rounded-2xl bg-black px-4 py-4 outline-none"
+src/app/admin/announcement/page.tsx:235:            className="w-full rounded-2xl bg-black px-4 py-4 outline-none"
+src/app/admin/api/page.tsx:135:      <div className="flex min-h-screen items-center justify-center bg-black text-white">
+src/app/admin/api/page.tsx:146:    <main className="min-h-screen bg-[#0b0b0b] p-4 text-white">
+src/app/admin/api/page.tsx:312:          <p className="text-white/90">
+src/app/admin/api/page.tsx:319:          <p className="text-white/90">
+src/app/admin/api/page.tsx:327:          <p className="text-white/90">
+src/app/admin/api/page.tsx:333:          <p className="text-white/90">
+src/app/admin/api/page.tsx:340:          <p className="text-white/90">
+src/app/admin/api/page.tsx:393:        className="w-full rounded-2xl bg-black px-4 py-4 outline-none"
+src/app/admin/api/page.tsx:423:          <div className="flex h-14 w-14 items-center justify-center rounded-2xl bg-black">
+src/app/admin/app-config/page.tsx:140:      <div className="flex min-h-screen items-center justify-center bg-black text-white">
+src/app/admin/app-config/page.tsx:151:    <main className="min-h-screen bg-[#0b0b0b] p-4 text-white">
+src/app/admin/app-config/page.tsx:412:        className="w-full rounded-2xl bg-black px-4 py-4 outline-none"
+src/app/admin/app-config/page.tsx:442:          <div className="flex h-14 w-14 items-center justify-center rounded-2xl bg-black">
+src/app/admin/app-config/page.tsx:494:    <div className="rounded-2xl bg-white/10 p-4">
+src/app/admin/app-config/page.tsx:496:      <p className="text-sm text-white/70">
+src/app/admin/appearance/page.tsx:36:      className="min-h-screen p-4 text-white"
+src/app/admin/appearance/page.tsx:77:          className="flex items-center gap-2 rounded-2xl px-5 py-3 text-sm font-bold text-white"
+src/app/admin/appearance/page.tsx:122:                  : "bg-black"
+src/app/admin/appearance/page.tsx:144:                  : "bg-black"
+src/app/admin/appearance/page.tsx:166:                  : "bg-black"
+src/app/admin/appearance/page.tsx:214:              className="flex-1 rounded-2xl border border-white/10 bg-black px-4 py-4 outline-none"
+src/app/admin/appearance/page.tsx:250:              className="flex-1 rounded-2xl border border-white/10 bg-black px-4 py-4 outline-none"
+src/app/admin/appearance/page.tsx:275:        <p className="mt-2 text-white/80">
+src/app/admin/appearance/page.tsx:280:          className="mt-6 rounded-2xl px-6 py-3 font-bold text-white"
+src/app/admin/automation/page.tsx:69:    <main className="min-h-screen bg-[#050505] p-4 text-white">
+src/app/admin/automation/page.tsx:81:              className="text-black"
+src/app/admin/automation/page.tsx:110:              ? "bg-green-500 text-black"
+src/app/admin/automation/page.tsx:111:              : "bg-red-500 text-white"
+src/app/admin/automation/page.tsx:184:                  className="flex items-center justify-between rounded-[24px] bg-black/30 p-5"
+src/app/admin/automation/page.tsx:193:                        className="text-black"
+src/app/admin/automation/page.tsx:219:                        ? "bg-green-500 text-black"
+src/app/admin/automation/page.tsx:220:                        : "bg-red-500 text-white"
+src/app/admin/automation/page.tsx:243:      <div className="mt-6 rounded-[30px] bg-gradient-to-r from-yellow-400 to-orange-500 p-6 text-black">
+src/app/admin/automation/page.tsx:291:          className="flex items-center gap-2 rounded-2xl bg-green-500 px-6 py-4 font-black text-black"
+src/app/admin/automation/page.tsx:301:          className="flex items-center gap-2 rounded-2xl bg-cyan-500 px-6 py-4 font-black text-black"
+src/app/admin/automation/page.tsx:341:          className="text-black"
+src/app/admin/automation/page.tsx:373:    <div className="rounded-[24px] bg-white/20 p-5 backdrop-blur-lg">
+src/app/admin/backup-manager/page.tsx:46:    <main className="min-h-screen bg-[#0b0b0b] p-4 text-white">
+src/app/admin/backup-manager/page.tsx:58:              className="text-black"
+src/app/admin/backup-manager/page.tsx:77:        <button className="flex items-center gap-2 rounded-2xl bg-green-500 px-5 py-3 font-bold text-black">
+src/app/admin/backup-manager/page.tsx:143:                ? "bg-green-500 text-black"
+src/app/admin/backup-manager/page.tsx:204:                  <button className="flex h-11 w-11 items-center justify-center rounded-2xl bg-white/10">
+src/app/admin/backup-manager/page.tsx:231:        <button className="flex items-center gap-2 rounded-2xl bg-green-500 px-6 py-3 font-bold text-black">
+src/app/admin/backup-manager/page.tsx:239:        <button className="flex items-center gap-2 rounded-2xl bg-cyan-500 px-6 py-3 font-bold text-black">
+src/app/admin/backup-manager/page.tsx:251:      <div className="mt-6 rounded-[30px] bg-gradient-to-r from-green-500 to-emerald-600 p-6 text-black">
+src/app/admin/backup-manager/page.tsx:321:      <div className="flex h-14 w-14 items-center justify-center rounded-2xl bg-green-500 text-black">
+src/app/admin/backup-restore/page.tsx:163:      <div className="flex min-h-screen items-center justify-center bg-black text-white">
+src/app/admin/backup-restore/page.tsx:174:    <main className="min-h-screen bg-[#0b0b0b] p-4 text-white">
+src/app/admin/backup-restore/page.tsx:205:          className="flex items-center gap-2 rounded-2xl bg-sky-500 px-5 py-3 font-bold text-black"
+src/app/admin/backup-restore/page.tsx:330:          className="flex items-center justify-center gap-3 rounded-[30px] bg-green-500 p-6 text-xl font-black text-black"
+src/app/admin/backup-restore/page.tsx:341:          className="flex items-center justify-center gap-3 rounded-[30px] bg-orange-500 p-6 text-xl font-black text-black"
+src/app/admin/backup-restore/page.tsx:360:          <h2 className="text-3xl font-black text-black">
+src/app/admin/backup-restore/page.tsx:437:        className="w-full rounded-2xl bg-black px-4 py-4 outline-none"
+src/app/admin/backup-restore/page.tsx:467:          <div className="flex h-14 w-14 items-center justify-center rounded-2xl bg-black">
+src/app/admin/backup-restore/page.tsx:519:    <div className="rounded-2xl bg-white/10 p-4">
+src/app/admin/backup-restore/page.tsx:521:      <p className="text-sm text-black/70">
+src/app/admin/backup-restore/page.tsx:525:      <h3 className="mt-2 text-2xl font-black text-black">
+src/app/admin/backups/page.tsx:81:    <main className="min-h-screen bg-[#0b0b0b] p-4 text-white">
+src/app/admin/backups/page.tsx:179:          <p className="mt-2 text-white/80">
+src/app/admin/backups/page.tsx:195:          <p className="mt-2 text-white/80">
+src/app/admin/backups/page.tsx:275:        <p className="mt-2 text-white/80">
+src/app/admin/banner-manager/page.tsx:68:    <main className="min-h-screen bg-[#050505] p-4 text-white">
+src/app/admin/banner-manager/page.tsx:80:              className="text-black"
+src/app/admin/banner-manager/page.tsx:104:          className="flex items-center gap-2 rounded-2xl bg-pink-500 px-6 py-4 font-black text-black"
+src/app/admin/banner-manager/page.tsx:210:        className="mt-6 flex w-full items-center justify-center gap-2 rounded-[30px] bg-pink-500 px-6 py-5 font-black text-black"
+src/app/admin/banner-manager/page.tsx:240:              className="flex items-center gap-2 rounded-2xl bg-black/20 px-4 py-3 font-bold"
+src/app/admin/banner-manager/page.tsx:250:              className="flex items-center gap-2 rounded-2xl bg-black px-4 py-3 font-bold text-white"
+src/app/admin/banner-manager/page.tsx:263:        <div className="mt-6 overflow-hidden rounded-[30px] bg-black/20">
+src/app/admin/banner-manager/page.tsx:317:          className="flex items-center gap-2 rounded-2xl bg-green-500 px-6 py-4 font-black text-black"
+src/app/admin/banner-manager/page.tsx:327:          className="flex items-center gap-2 rounded-2xl bg-yellow-500 px-6 py-4 font-black text-black"
+src/app/admin/banner-manager/page.tsx:358:          className="text-black"
+src/app/admin/banner-manager/page.tsx:384:    <div className="rounded-[24px] bg-black/30 p-5">
+src/app/admin/blogs/page.tsx:106:    <main className="min-h-screen bg-[#0b0b0b] p-4 text-white">
+src/app/admin/blogs/page.tsx:112:        <div className="flex h-16 w-16 items-center justify-center rounded-[24px] bg-orange-500">
+src/app/admin/blogs/page.tsx:142:          <div className="flex items-center gap-3 rounded-2xl bg-black px-4 py-4">
+src/app/admin/blogs/page.tsx:171:            className="h-32 w-full rounded-2xl bg-black px-4 py-4 outline-none"
+src/app/admin/blogs/page.tsx:176:            className="flex items-center gap-2 rounded-2xl bg-orange-500 px-5 py-3 font-bold"
+src/app/admin/blogs/page.tsx:213:                  <div className="mt-4 inline-block rounded-full bg-orange-500 px-4 py-2 text-sm font-bold">
+src/app/admin/blogs/page.tsx:270:        <p className="mt-2 text-white/80">
+src/app/admin/cache-manager/page.tsx:50:    <main className="min-h-screen bg-[#0b0b0b] p-4 text-white">
+src/app/admin/cache-manager/page.tsx:58:          <div className="flex h-16 w-16 items-center justify-center rounded-[28px] bg-orange-500">
+src/app/admin/cache-manager/page.tsx:62:              className="text-black"
+src/app/admin/cache-manager/page.tsx:81:        <button className="flex items-center gap-2 rounded-2xl bg-orange-500 px-5 py-3 font-bold text-black">
+src/app/admin/cache-manager/page.tsx:147:                ? "bg-green-500 text-black"
+src/app/admin/cache-manager/page.tsx:211:                  <button className="flex h-11 w-11 items-center justify-center rounded-2xl bg-cyan-500 text-black">
+src/app/admin/cache-manager/page.tsx:246:        <button className="flex items-center gap-2 rounded-2xl bg-cyan-500 px-6 py-3 font-bold text-black">
+src/app/admin/cache-manager/page.tsx:270:        <p className="mt-3 max-w-2xl text-sm text-white/90">
+src/app/admin/cache-manager/page.tsx:277:        <button className="mt-6 rounded-2xl bg-black px-6 py-3 font-bold text-white">
+src/app/admin/cache-manager/page.tsx:364:      <div className="flex h-14 w-14 items-center justify-center rounded-2xl bg-orange-500 text-black">
+src/app/admin/cashfree/page.tsx:137:      <div className="flex min-h-screen items-center justify-center bg-black text-white">
+src/app/admin/cashfree/page.tsx:148:    <main className="min-h-screen bg-[#0b0b0b] p-4 text-white">
+src/app/admin/cashfree/page.tsx:410:        className="w-full rounded-2xl bg-black px-4 py-4 outline-none"
+src/app/admin/cashfree/page.tsx:440:          <div className="flex h-14 w-14 items-center justify-center rounded-2xl bg-black">
+src/app/admin/cashfree/page.tsx:492:    <div className="rounded-2xl bg-white/10 p-4">
+src/app/admin/cashfree/page.tsx:494:      <p className="text-sm text-white/70">
+src/app/admin/commission-engine/page.tsx:139:      <div className="flex min-h-screen items-center justify-center bg-black text-white">
+src/app/admin/commission-engine/page.tsx:150:    <main className="min-h-screen bg-[#0b0b0b] p-4 text-white">
+src/app/admin/commission-engine/page.tsx:181:          className="flex items-center gap-2 rounded-2xl bg-lime-500 px-5 py-3 font-bold text-black"
+src/app/admin/commission-engine/page.tsx:330:          <h2 className="text-3xl font-black text-black">
+src/app/admin/commission-engine/page.tsx:390:        className="w-full rounded-2xl bg-black px-4 py-4 outline-none"
+src/app/admin/commission-engine/page.tsx:420:          <div className="flex h-14 w-14 items-center justify-center rounded-2xl bg-black">
+src/app/admin/commission-engine/page.tsx:444:              ? "bg-green-500 text-black"
+src/app/admin/commission-engine/page.tsx:472:    <div className="rounded-2xl bg-white/10 p-5">
+src/app/admin/commission-engine/page.tsx:474:      <p className="text-sm text-black/70">
+src/app/admin/commission-engine/page.tsx:478:      <h3 className="mt-2 text-3xl font-black text-black">
+src/app/admin/commissions/page.tsx:41:    <main className="min-h-screen bg-[#0b0b0b] p-4 text-white">
+src/app/admin/commissions/page.tsx:71:          className="flex items-center gap-2 rounded-2xl bg-fuchsia-600 px-5 py-3 text-sm font-bold text-white"
+src/app/admin/commissions/page.tsx:111:            className="w-full rounded-2xl border border-white/10 bg-black px-4 py-4 text-white outline-none"
+src/app/admin/commissions/page.tsx:141:            className="w-full rounded-2xl border border-white/10 bg-black px-4 py-4 text-white outline-none"
+src/app/admin/commissions/page.tsx:171:            className="w-full rounded-2xl border border-white/10 bg-black px-4 py-4 text-white outline-none"
+src/app/admin/commissions/page.tsx:186:        <p className="mt-2 text-white/80">
+src/app/admin/commissions/page.tsx:192:          <div className="rounded-2xl bg-white/10 p-4">
+src/app/admin/commissions/page.tsx:204:          <div className="rounded-2xl bg-white/10 p-4">
+src/app/admin/commissions/page.tsx:216:          <div className="rounded-2xl bg-white/10 p-4">
+src/app/admin/coupon-manager/page.tsx:56:    <main className="min-h-screen bg-[#090909] p-4 text-white">
+src/app/admin/coupon-manager/page.tsx:68:              className="text-black"
+src/app/admin/coupon-manager/page.tsx:87:        <button className="flex items-center gap-2 rounded-2xl bg-pink-500 px-5 py-3 font-bold text-black">
+src/app/admin/coupon-manager/page.tsx:175:                  <div className="flex h-16 w-16 items-center justify-center rounded-2xl bg-pink-500 text-black">
+src/app/admin/coupon-manager/page.tsx:225:                  <button className="rounded-2xl bg-pink-500 px-4 py-3 font-bold text-black">
+src/app/admin/coupon-manager/page.tsx:317:      <div className="mt-8 rounded-[32px] bg-gradient-to-r from-pink-500 to-fuchsia-600 p-7 text-black">
+src/app/admin/coupon-manager/page.tsx:336:        <button className="mt-6 rounded-2xl bg-black px-5 py-3 font-bold text-white">
+src/app/admin/coupon-manager/page.tsx:393:      <div className="flex h-14 w-14 items-center justify-center rounded-2xl bg-pink-500 text-black">
+src/app/admin/coupons-generator/page.tsx:182:      <div className="flex min-h-screen items-center justify-center bg-black text-white">
+src/app/admin/coupons-generator/page.tsx:193:    <main className="min-h-screen bg-[#0b0b0b] p-4 text-white">
+src/app/admin/coupons-generator/page.tsx:249:                className="w-full rounded-2xl bg-black px-4 py-4 outline-none"
+src/app/admin/coupons-generator/page.tsx:256:                className="rounded-2xl bg-green-500 px-5 font-bold text-black"
+src/app/admin/coupons-generator/page.tsx:275:            <div className="flex items-center gap-3 rounded-2xl bg-black px-4">
+src/app/admin/coupons-generator/page.tsx:302:            <div className="flex items-center gap-3 rounded-2xl bg-black px-4">
+src/app/admin/coupons-generator/page.tsx:328:          className="mt-6 flex items-center gap-2 rounded-2xl bg-green-500 px-5 py-4 font-bold text-black"
+src/app/admin/coupons/page.tsx:185:      <div className="flex min-h-screen items-center justify-center bg-black text-white">
+src/app/admin/coupons/page.tsx:193:    <main className="min-h-screen bg-[#0b0b0b] p-4 text-white">
+src/app/admin/coupons/page.tsx:214:          className="flex items-center gap-2 rounded-2xl bg-violet-600 px-5 py-3 text-sm font-bold text-white"
+src/app/admin/coupons/page.tsx:410:                      <p className="mt-2 text-sm text-white/80">
+src/app/admin/coupons/page.tsx:416:                      <p className="mt-2 text-xs text-white/60">
+src/app/admin/coupons/page.tsx:425:                    <div className="rounded-full bg-white/20 px-5 py-3 text-lg font-black">
+src/app/admin/customer-support/page.tsx:65:    <main className="min-h-screen bg-[#0b0b0b] p-4 text-white">
+src/app/admin/customer-support/page.tsx:75:            className="text-black"
+src/app/admin/customer-support/page.tsx:248:      <div className="flex h-14 w-14 items-center justify-center rounded-2xl bg-cyan-500 text-black">
+src/app/admin/customize/page.tsx:137:      <div className="flex min-h-screen items-center justify-center bg-black text-white">
+src/app/admin/customize/page.tsx:148:    <main className="min-h-screen bg-[#0b0b0b] p-4 text-white">
+src/app/admin/customize/page.tsx:222:            className="w-full rounded-2xl bg-black px-4 py-4 outline-none"
+src/app/admin/customize/page.tsx:253:            className="w-full rounded-2xl bg-black px-4 py-4 outline-none"
+src/app/admin/customize/page.tsx:346:            className="w-full rounded-2xl bg-black px-4 py-4 outline-none"
+src/app/admin/customize/page.tsx:377:            className="w-full rounded-2xl bg-black px-4 py-4 outline-none"
+src/app/admin/customize/page.tsx:447:        <p className="mt-2 text-white/80">
+src/app/admin/customize/page.tsx:454:            className="px-6 py-3 font-bold text-white"
+src/app/admin/customize/page.tsx:468:            className="px-6 py-3 font-bold text-white"
+src/app/admin/database-manager/page.tsx:174:      <div className="flex min-h-screen items-center justify-center bg-black text-white">
+src/app/admin/database-manager/page.tsx:185:    <main className="min-h-screen bg-[#0b0b0b] p-4 text-white">
+src/app/admin/database-manager/page.tsx:271:          color="bg-orange-500"
+src/app/admin/database/page.tsx:92:    <main className="min-h-screen bg-[#0b0b0b] p-4 text-white">
+src/app/admin/database/page.tsx:205:          <p className="mt-2 text-white/80">
+src/app/admin/database/page.tsx:222:          <p className="mt-2 text-white/80">
+src/app/admin/database/page.tsx:294:      <div className="mt-6 rounded-[30px] bg-gradient-to-r from-yellow-500 to-orange-500 p-6 text-black">
+src/app/admin/delivery-tracking/page.tsx:111:      <div className="flex min-h-screen items-center justify-center bg-black text-white">
+src/app/admin/delivery-tracking/page.tsx:122:    <main className="min-h-screen bg-[#0b0b0b] p-4 text-white">
+src/app/admin/delivery-tracking/page.tsx:128:        <div className="flex h-16 w-16 items-center justify-center rounded-[24px] bg-orange-500">
+src/app/admin/delivery-tracking/page.tsx:204:                <div className="rounded-2xl bg-black/30 p-4">
+src/app/admin/delivery-tracking/page.tsx:320:          ? "bg-orange-500 text-black"
+src/app/admin/delivery-tracking/page.tsx:321:          : "bg-black/30 text-white"
+src/app/admin/delivery-tracking/page.tsx:364:    return "bg-orange-500";
+src/app/admin/delivery/page.tsx:139:      <div className="flex min-h-screen items-center justify-center bg-black text-white">
+src/app/admin/delivery/page.tsx:150:    <main className="min-h-screen bg-[#0b0b0b] p-4 text-white">
+src/app/admin/delivery/page.tsx:181:          className="flex items-center gap-2 rounded-2xl bg-yellow-500 px-5 py-3 font-bold text-black"
+src/app/admin/delivery/page.tsx:346:          <h2 className="text-3xl font-black text-black">
+src/app/admin/delivery/page.tsx:427:        className="w-full rounded-2xl bg-black px-4 py-4 outline-none"
+src/app/admin/delivery/page.tsx:457:          <div className="flex h-14 w-14 items-center justify-center rounded-2xl bg-black">
+src/app/admin/delivery/page.tsx:509:    <div className="rounded-2xl bg-white/10 p-4">
+src/app/admin/delivery/page.tsx:511:      <p className="text-sm text-black/70">
+src/app/admin/delivery/page.tsx:515:      <h3 className="mt-2 text-2xl font-black text-black">
+src/app/admin/domains/page.tsx:132:      <div className="flex min-h-screen items-center justify-center bg-black text-white">
+src/app/admin/domains/page.tsx:143:    <main className="min-h-screen bg-[#0b0b0b] p-4 text-white">
+src/app/admin/domains/page.tsx:291:          <div className="rounded-2xl bg-white/10 p-4">
+src/app/admin/domains/page.tsx:303:                <p className="text-sm text-white/80">
+src/app/admin/domains/page.tsx:314:          <div className="rounded-2xl bg-white/10 p-4">
+src/app/admin/domains/page.tsx:326:                <p className="text-sm text-white/80">
+src/app/admin/domains/page.tsx:337:          <div className="rounded-2xl bg-white/10 p-4">
+src/app/admin/domains/page.tsx:349:                <p className="text-sm text-white/80">
+src/app/admin/domains/page.tsx:405:        className="w-full rounded-2xl bg-black px-4 py-4 outline-none"
+src/app/admin/email-marketing/page.tsx:52:    <main className="min-h-screen bg-[#0b0b0b] p-4 text-white">
+src/app/admin/email-marketing/page.tsx:62:            className="text-black"
+src/app/admin/email-marketing/page.tsx:193:                <button className="rounded-2xl bg-pink-500 px-5 py-2 font-bold text-black">
+src/app/admin/email-marketing/page.tsx:227:      <div className="flex h-14 w-14 items-center justify-center rounded-2xl bg-pink-500 text-black">
+src/app/admin/email/page.tsx:136:      <div className="flex min-h-screen items-center justify-center bg-black text-white">
+src/app/admin/email/page.tsx:147:    <main className="min-h-screen bg-[#0b0b0b] p-4 text-white">
+src/app/admin/email/page.tsx:318:          <div className="rounded-2xl bg-white/10 p-4">
+src/app/admin/email/page.tsx:320:            <p className="text-sm text-white/70">
+src/app/admin/email/page.tsx:333:          <div className="rounded-2xl bg-white/10 p-4">
+src/app/admin/email/page.tsx:335:            <p className="text-sm text-white/70">
+src/app/admin/email/page.tsx:348:          <div className="rounded-2xl bg-white/10 p-4">
+src/app/admin/email/page.tsx:350:            <p className="text-sm text-white/70">
+src/app/admin/email/page.tsx:364:          <div className="rounded-2xl bg-white/10 p-4">
+src/app/admin/email/page.tsx:419:        className="w-full rounded-2xl bg-black px-4 py-4 outline-none"
+src/app/admin/email/page.tsx:449:          <div className="flex h-14 w-14 items-center justify-center rounded-2xl bg-black">
+src/app/admin/faq/page.tsx:84:    <main className="min-h-screen bg-[#0b0b0b] p-4 text-white">
+src/app/admin/faq/page.tsx:129:            className="w-full rounded-2xl bg-black px-4 py-4 outline-none"
+src/app/admin/faq/page.tsx:140:            className="h-32 w-full rounded-2xl bg-black px-4 py-4 outline-none"
+src/app/admin/faq/page.tsx:223:        <p className="mt-2 text-white/80">
+src/app/admin/finance/page.tsx:18:    <main className="min-h-screen bg-[#0b0b0b] p-4 text-white">
+src/app/admin/finance/page.tsx:103:          <div className="flex items-center justify-between rounded-2xl bg-black/30 p-4">
+src/app/admin/finance/page.tsx:136:          <div className="flex items-center justify-between rounded-2xl bg-black/30 p-4">
+src/app/admin/finance/page.tsx:181:        <p className="mt-2 text-white/80">
+src/app/admin/finance/page.tsx:187:          <div className="rounded-2xl bg-white/10 p-4">
+src/app/admin/finance/page.tsx:199:          <div className="rounded-2xl bg-white/10 p-4">
+src/app/admin/firestore/page.tsx:102:    <main className="min-h-screen bg-[#0b0b0b] p-4 text-white">
+src/app/admin/firestore/page.tsx:110:          <div className="flex h-16 w-16 items-center justify-center rounded-[24px] bg-orange-500">
+src/app/admin/firestore/page.tsx:210:          <div className="flex flex-1 items-center gap-3 rounded-2xl bg-black px-4 py-4">
+src/app/admin/firestore/page.tsx:233:            className="flex items-center gap-2 rounded-2xl bg-orange-500 px-5 py-3 font-bold"
+src/app/admin/firestore/page.tsx:312:        <p className="mt-2 text-white/80">
+src/app/admin/flash-sale/page.tsx:178:      <div className="flex min-h-screen items-center justify-center bg-black text-white">
+src/app/admin/flash-sale/page.tsx:189:    <main className="min-h-screen bg-[#0b0b0b] p-4 text-white">
+src/app/admin/flash-sale/page.tsx:195:        <div className="flex h-16 w-16 items-center justify-center rounded-[24px] bg-orange-500">
+src/app/admin/flash-sale/page.tsx:235:            <div className="flex items-center gap-3 rounded-2xl bg-black px-4">
+src/app/admin/flash-sale/page.tsx:262:            <div className="flex items-center gap-3 rounded-2xl bg-black px-4">
+src/app/admin/flash-sale/page.tsx:289:            <div className="flex items-center gap-3 rounded-2xl bg-black px-4">
+src/app/admin/flash-sale/page.tsx:324:              className="w-full rounded-2xl bg-black px-4 py-4 outline-none"
+src/app/admin/flash-sale/page.tsx:336:          className="mt-6 flex items-center gap-2 rounded-2xl bg-orange-500 px-5 py-4 font-bold text-black"
+src/app/admin/footer-builder/page.tsx:200:      <div className="flex min-h-screen items-center justify-center bg-black text-white">
+src/app/admin/footer-builder/page.tsx:211:    <main className="min-h-screen bg-[#0b0b0b] p-4 text-white">
+src/app/admin/footer-builder/page.tsx:242:          className="flex items-center gap-2 rounded-2xl bg-fuchsia-500 px-5 py-3 font-bold text-black"
+src/app/admin/footer-builder/page.tsx:284:              className="w-full rounded-2xl bg-black px-5 py-4 outline-none"
+src/app/admin/footer-builder/page.tsx:308:              className="w-full rounded-2xl bg-black px-5 py-4 outline-none"
+src/app/admin/footer-builder/page.tsx:329:            className="flex items-center gap-2 rounded-2xl bg-green-500 px-5 py-3 font-bold text-black"
+src/app/admin/footer-builder/page.tsx:350:                className="rounded-2xl bg-black/30 p-4"
+src/app/admin/footer-builder/page.tsx:369:                    className="rounded-2xl bg-black px-5 py-4 outline-none"
+src/app/admin/footer-builder/page.tsx:386:                    className="rounded-2xl bg-black px-5 py-4 outline-none"
+src/app/admin/footer-builder/page.tsx:419:        <h2 className="text-3xl font-black text-black">
+src/app/admin/footer-builder/page.tsx:423:        <div className="mt-6 rounded-2xl bg-black/20 p-6">
+src/app/admin/footer-builder/page.tsx:441:                  className="rounded-full bg-white/20 px-4 py-2 text-sm font-bold"
+src/app/admin/footer-builder/page.tsx:453:          <p className="mt-6 text-sm text-black/70">
+src/app/admin/fraud-protection/page.tsx:141:      <div className="flex min-h-screen items-center justify-center bg-black text-white">
+src/app/admin/fraud-protection/page.tsx:152:    <main className="min-h-screen bg-[#0b0b0b] p-4 text-white">
+src/app/admin/fraud-protection/page.tsx:421:        className="w-full rounded-2xl bg-black px-4 py-4 outline-none"
+src/app/admin/fraud-protection/page.tsx:451:          <div className="flex h-14 w-14 items-center justify-center rounded-2xl bg-black">
+src/app/admin/fraud-protection/page.tsx:503:    <div className="rounded-2xl bg-white/10 p-4">
+src/app/admin/fraud-protection/page.tsx:505:      <p className="text-sm text-white/70">
+src/app/admin/homepage-banners/page.tsx:570:        <div className="mb-8 rounded-[35px] bg-gradient-to-r from-blue-700 via-indigo-700 to-purple-700 p-8 text-white shadow-2xl">
+src/app/admin/homepage-banners/page.tsx:590:            className="flex items-center gap-3 rounded-2xl bg-gradient-to-r from-pink-600 to-purple-600 px-6 py-4 font-black text-white"
+src/app/admin/homepage-banners/page.tsx:603:            className="flex items-center gap-3 rounded-2xl bg-black px-6 py-4 font-black text-white"
+src/app/admin/homepage-banners/page.tsx:631:            className="w-full rounded-2xl border border-gray-200 bg-white px-5 py-4 text-lg font-semibold outline-none"
+src/app/admin/homepage-banners/page.tsx:666:                  className="overflow-hidden rounded-[35px] bg-white shadow-2xl"
+src/app/admin/homepage-banners/page.tsx:671:                  <div className="flex flex-wrap items-center justify-between gap-4 bg-gradient-to-r from-pink-600 to-purple-600 p-5 text-white">
+src/app/admin/homepage-banners/page.tsx:675:                      <div className="cursor-grab rounded-2xl bg-white/20 p-3">
+src/app/admin/homepage-banners/page.tsx:685:                        className="flex h-14 w-14 items-center justify-center rounded-2xl bg-white/20"
+src/app/admin/homepage-banners/page.tsx:716:                        className="rounded-2xl bg-white/20 p-3"
+src/app/admin/homepage-banners/page.tsx:742:                        className="rounded-2xl bg-white/20 p-3"
+src/app/admin/homepage-banners/page.tsx:898:                              className="flex items-center gap-2 rounded-2xl bg-blue-600 px-5 py-3 font-black text-white"
+src/app/admin/homepage-banners/page.tsx:911:                              className="flex items-center gap-2 rounded-2xl bg-purple-600 px-5 py-3 font-black text-white"
+src/app/admin/homepage-banners/page.tsx:994:                          className="w-full rounded-2xl bg-gradient-to-r from-pink-600 to-purple-600 px-6 py-5 text-xl font-black text-white"
+src/app/admin/homepage/page.tsx:206:      <div className="flex min-h-screen items-center justify-center bg-black text-white">
+src/app/admin/homepage/page.tsx:217:    <main className="min-h-screen bg-[#0b0b0b] p-4 text-white">
+src/app/admin/homepage/page.tsx:384:                className="flex items-center justify-between rounded-2xl bg-black/30 p-4"
+src/app/admin/homepage/page.tsx:447:        <p className="mt-2 text-white/80">
+src/app/admin/homepage/page.tsx:525:          <div className="flex h-14 w-14 items-center justify-center rounded-2xl bg-black">
+src/app/admin/homepage/page.tsx:583:    <div className="rounded-full bg-white/20 px-5 py-3 text-sm font-bold backdrop-blur-lg">
+src/app/admin/inventory/page.tsx:89:      <div className="flex min-h-screen items-center justify-center bg-black text-white">
+src/app/admin/inventory/page.tsx:100:    <main className="min-h-screen bg-[#0b0b0b] p-4 text-white">
+src/app/admin/inventory/page.tsx:271:                  <div className="rounded-full bg-black px-5 py-2 text-sm font-bold">
+src/app/admin/inventory/page.tsx:329:        <div className="flex h-14 w-14 items-center justify-center rounded-2xl bg-black">
+src/app/admin/kyc-verification/page.tsx:136:      <div className="flex min-h-screen items-center justify-center bg-black text-white">
+src/app/admin/kyc-verification/page.tsx:147:    <main className="min-h-screen bg-[#0b0b0b] p-4 text-white">
+src/app/admin/kyc-verification/page.tsx:264:                    className="flex items-center gap-2 rounded-2xl bg-green-500 px-5 py-3 font-bold text-black"
+src/app/admin/kyc/page.tsx:139:      <div className="flex min-h-screen items-center justify-center bg-black text-white">
+src/app/admin/kyc/page.tsx:150:    <main className="min-h-screen bg-[#0b0b0b] p-4 text-white">
+src/app/admin/kyc/page.tsx:421:        className="w-full rounded-2xl bg-black px-4 py-4 outline-none"
+src/app/admin/kyc/page.tsx:451:          <div className="flex h-14 w-14 items-center justify-center rounded-2xl bg-black">
+src/app/admin/kyc/page.tsx:503:    <div className="rounded-2xl bg-white/10 p-4">
+src/app/admin/kyc/page.tsx:505:      <p className="text-sm text-white/70">
+src/app/admin/live-chat/page.tsx:120:      <div className="flex min-h-screen items-center justify-center bg-black text-white">
+src/app/admin/live-chat/page.tsx:131:    <main className="flex min-h-screen flex-col bg-[#0b0b0b] text-white">
+src/app/admin/live-chat/page.tsx:188:                    ? "bg-green-500 text-black"
+src/app/admin/live-chat/page.tsx:195:                  <div className="flex h-8 w-8 items-center justify-center rounded-full bg-black/20">
+src/app/admin/live-chat/page.tsx:248:            className="h-14 flex-1 rounded-2xl bg-black px-5 outline-none"
+src/app/admin/live-chat/page.tsx:253:            className="flex h-14 w-14 items-center justify-center rounded-2xl bg-green-500 text-black"
+src/app/admin/live-orders/page.tsx:80:      <div className="flex min-h-screen items-center justify-center bg-black text-white">
+src/app/admin/live-orders/page.tsx:91:    <main className="min-h-screen bg-[#0b0b0b] p-4 text-white">
+src/app/admin/live-orders/page.tsx:97:        <div className="flex h-16 w-16 items-center justify-center rounded-[24px] bg-orange-500">
+src/app/admin/live-orders/page.tsx:250:                <div className="flex items-center gap-2 rounded-full bg-black px-4 py-2">
+src/app/admin/live-orders/page.tsx:312:        <div className="flex h-14 w-14 items-center justify-center rounded-2xl bg-black">
+src/app/admin/live-stream/page.tsx:178:      <div className="flex min-h-screen items-center justify-center bg-black text-white">
+src/app/admin/live-stream/page.tsx:189:    <main className="min-h-screen bg-[#0b0b0b] p-4 text-white">
+src/app/admin/live-stream/page.tsx:235:            <div className="flex items-center gap-3 rounded-2xl bg-black px-4">
+src/app/admin/live-stream/page.tsx:262:            <div className="flex items-center gap-3 rounded-2xl bg-black px-4">
+src/app/admin/live-stream/page.tsx:289:            <div className="flex items-center gap-3 rounded-2xl bg-black px-4">
+src/app/admin/live-stream/page.tsx:316:            <div className="flex items-center gap-3 rounded-2xl bg-black px-4">
+src/app/admin/logs/page.tsx:68:    <main className="min-h-screen bg-[#0b0b0b] p-4 text-white">
+src/app/admin/logs/page.tsx:76:          <div className="flex h-16 w-16 items-center justify-center rounded-[24px] bg-orange-500">
+src/app/admin/logs/page.tsx:236:                <span className="rounded-full bg-black/40 px-4 py-2 text-sm text-gray-400">
+src/app/admin/logs/page.tsx:259:        <p className="mt-2 text-white/80">
+src/app/admin/loyalty-program/page.tsx:42:    <main className="min-h-screen bg-[#090909] p-4 text-white">
+src/app/admin/loyalty-program/page.tsx:54:              className="text-black"
+src/app/admin/loyalty-program/page.tsx:73:        <button className="rounded-2xl bg-pink-500 px-5 py-3 font-bold text-black">
+src/app/admin/loyalty-program/page.tsx:143:                  <div className="flex h-14 w-14 items-center justify-center rounded-2xl bg-pink-500 text-black">
+src/app/admin/loyalty-program/page.tsx:264:      <div className="mt-8 rounded-[32px] bg-gradient-to-r from-pink-500 to-purple-500 p-7 text-black">
+src/app/admin/loyalty-program/page.tsx:283:        <button className="mt-6 rounded-2xl bg-black px-5 py-3 font-bold text-white">
+src/app/admin/loyalty-program/page.tsx:310:      <div className="flex h-14 w-14 items-center justify-center rounded-2xl bg-pink-500 text-black">
+src/app/admin/marketing-center/page.tsx:50:    <main className="min-h-screen bg-[#050505] p-4 text-white">
+src/app/admin/marketing-center/page.tsx:62:              className="text-black"
+src/app/admin/marketing-center/page.tsx:86:          className="rounded-2xl bg-pink-500 px-6 py-4 font-black text-black"
+src/app/admin/marketing-center/page.tsx:197:                className="rounded-[24px] bg-black/30 p-5"
+src/app/admin/marketing-center/page.tsx:220:                  <div className="rounded-full bg-pink-500 px-4 py-2 text-sm font-black text-black">
+src/app/admin/marketing-center/page.tsx:317:      <div className="mt-6 rounded-[30px] bg-gradient-to-r from-pink-500 to-fuchsia-600 p-6 text-black">
+src/app/admin/marketing-center/page.tsx:354:          className="flex items-center gap-2 rounded-2xl bg-pink-500 px-6 py-4 font-black text-black"
+src/app/admin/marketing-center/page.tsx:364:          className="flex items-center gap-2 rounded-2xl bg-cyan-500 px-6 py-4 font-black text-black"
+src/app/admin/marketing-center/page.tsx:374:          className="flex items-center gap-2 rounded-2xl bg-yellow-500 px-6 py-4 font-black text-black"
+src/app/admin/marketing-center/page.tsx:404:          className="text-black"
+src/app/admin/marketing-center/page.tsx:439:          className="text-black"
+src/app/admin/marketing-center/page.tsx:465:    <div className="flex items-center justify-between rounded-2xl bg-black/30 p-4">
+src/app/admin/marketing-center/page.tsx:473:      <div className="rounded-full bg-pink-500 px-4 py-2 text-sm font-black text-black">
+src/app/admin/marketing-center/page.tsx:492:    <div className="rounded-2xl bg-white/20 p-4 font-bold">
+src/app/admin/marketing/page.tsx:49:      color: "bg-orange-500"
+src/app/admin/marketing/page.tsx:70:    <main className="min-h-screen bg-[#050505] p-4 text-white">
+src/app/admin/marketing/page.tsx:80:            className="text-black"
+src/app/admin/marketing/page.tsx:153:                  className="text-black"
+src/app/admin/marketing/page.tsx:171:                className="mt-5 rounded-2xl bg-white/10 px-5 py-3 font-bold"
+src/app/admin/marketing/page.tsx:202:        <p className="mt-3 text-white/80">
+src/app/admin/marketing/page.tsx:286:          className="text-black"
+src/app/admin/marketing/page.tsx:318:    <div className="rounded-[24px] bg-white/10 p-5">
+src/app/admin/marketing/page.tsx:326:      <p className="mt-2 text-sm text-white/80">
+src/app/admin/marketing/page.tsx:347:    <div className="flex items-center justify-between rounded-2xl bg-black/30 p-5">
+src/app/admin/marketing/page.tsx:365:      <div className="rounded-full bg-green-500 px-4 py-2 text-sm font-black text-black">
+src/app/admin/media-library/page.tsx:60:    <main className="min-h-screen bg-[#0b0b0b] p-4 text-white">
+src/app/admin/media-library/page.tsx:72:              className="text-black"
+src/app/admin/media-library/page.tsx:91:        <button className="flex items-center gap-2 rounded-2xl bg-fuchsia-500 px-5 py-3 font-bold text-black">
+src/app/admin/media-library/page.tsx:178:                    className="text-black"
+src/app/admin/media-library/page.tsx:186:                    className="text-black"
+src/app/admin/media-library/page.tsx:193:                    className="text-black"
+src/app/admin/media-library/page.tsx:224:                  <button className="flex h-11 w-11 items-center justify-center rounded-2xl bg-white/10">
+src/app/admin/media-library/page.tsx:230:                  <button className="flex h-11 w-11 items-center justify-center rounded-2xl bg-white/10">
+src/app/admin/media-library/page.tsx:267:        <p className="mt-3 max-w-2xl text-sm text-white/90">
+src/app/admin/media-library/page.tsx:274:        <button className="mt-6 rounded-2xl bg-black px-6 py-3 font-bold text-white">
+src/app/admin/media-library/page.tsx:301:      <div className="flex h-14 w-14 items-center justify-center rounded-2xl bg-fuchsia-500 text-black">
+src/app/admin/membership/page.tsx:142:      <div className="flex min-h-screen items-center justify-center bg-black text-white">
+src/app/admin/membership/page.tsx:153:    <main className="min-h-screen bg-[#0b0b0b] p-4 text-white">
+src/app/admin/membership/page.tsx:184:          className="flex items-center gap-2 rounded-2xl bg-amber-500 px-5 py-3 font-bold text-black"
+src/app/admin/membership/page.tsx:354:          <h2 className="text-3xl font-black text-black">
+src/app/admin/membership/page.tsx:419:        className="w-full rounded-2xl bg-black px-4 py-4 outline-none"
+src/app/admin/membership/page.tsx:449:          <div className="flex h-14 w-14 items-center justify-center rounded-2xl bg-black">
+src/app/admin/membership/page.tsx:501:    <div className="rounded-2xl bg-white/10 p-4">
+src/app/admin/membership/page.tsx:503:      <p className="text-sm text-black/70">
+src/app/admin/membership/page.tsx:507:      <h3 className="mt-2 text-2xl font-black text-black">
+src/app/admin/messages/page.tsx:35:    <main className="min-h-screen bg-[#0b0b0b] p-4 text-white">
+src/app/admin/messages/page.tsx:139:        <p className="mt-2 text-white/80">
+src/app/admin/messages/page.tsx:145:          <div className="rounded-2xl bg-white/10 p-4">
+src/app/admin/messages/page.tsx:157:          <div className="rounded-2xl bg-white/10 p-4">
+src/app/admin/mobile-app/page.tsx:137:      <div className="flex min-h-screen items-center justify-center bg-black text-white">
+src/app/admin/mobile-app/page.tsx:148:    <main className="min-h-screen bg-[#0b0b0b] p-4 text-white">
+src/app/admin/mobile-app/page.tsx:307:          <div className="flex h-20 w-20 items-center justify-center rounded-[24px] bg-white/20">
+src/app/admin/mobile-app/page.tsx:319:            <p className="mt-2 text-white/80">
+src/app/admin/mobile-app/page.tsx:357:        <div className="mt-6 flex items-center gap-3 text-sm text-white/80">
+src/app/admin/mobile-app/page.tsx:401:        className="w-full rounded-2xl bg-black px-4 py-4 outline-none"
+src/app/admin/mobile-app/page.tsx:431:          <div className="flex h-14 w-14 items-center justify-center rounded-2xl bg-black">
+src/app/admin/mobile-app/page.tsx:481:    <div className="rounded-full bg-white/20 px-5 py-3 text-sm font-bold backdrop-blur-lg">
+src/app/admin/navigation/page.tsx:243:      <div className="flex min-h-screen items-center justify-center bg-black text-white">
+src/app/admin/navigation/page.tsx:254:    <main className="min-h-screen bg-[#0b0b0b] p-4 text-white">
+src/app/admin/navigation/page.tsx:317:            className="rounded-2xl bg-black px-4 py-4 outline-none"
+src/app/admin/navigation/page.tsx:329:            className="rounded-2xl bg-black px-4 py-4 outline-none"
+src/app/admin/navigation/page.tsx:366:                  <div className="flex h-14 w-14 items-center justify-center rounded-2xl bg-black">
+src/app/admin/notifications/page.tsx:204:      <div className="flex min-h-screen items-center justify-center bg-black text-white">
+src/app/admin/notifications/page.tsx:212:    <main className="min-h-screen bg-[#0b0b0b] p-4 text-white">
+src/app/admin/notifications/page.tsx:403:                    <div className="flex h-14 w-14 items-center justify-center rounded-2xl bg-white/20">
+src/app/admin/notifications/page.tsx:415:                      <p className="mt-2 text-sm text-white/80">
+src/app/admin/notifications/page.tsx:419:                      <button className="mt-4 flex items-center gap-2 rounded-2xl bg-white px-4 py-2 text-sm font-bold text-black">
+src/app/admin/offer-engine/page.tsx:57:    <main className="min-h-screen bg-[#0b0b0b] p-4 text-white">
+src/app/admin/offer-engine/page.tsx:67:            className="text-black"
+src/app/admin/offer-engine/page.tsx:192:                  <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-yellow-400 text-black">
+src/app/admin/offer-engine/page.tsx:216:                <button className="rounded-2xl bg-yellow-400 px-5 py-2 font-bold text-black">
+src/app/admin/offer-engine/page.tsx:233:      <div className="mt-6 rounded-[30px] bg-gradient-to-r from-yellow-400 to-orange-500 p-6 text-black">
+src/app/admin/offer-engine/page.tsx:252:        <button className="mt-6 rounded-2xl bg-black px-6 py-3 font-bold text-white">
+src/app/admin/offer-engine/page.tsx:279:      <div className="flex h-14 w-14 items-center justify-center rounded-2xl bg-yellow-400 text-black">
+src/app/admin/order-tracking/page.tsx:56:    <main className="min-h-screen bg-[#090909] p-4 text-white">
+src/app/admin/order-tracking/page.tsx:64:          <div className="flex h-16 w-16 items-center justify-center rounded-[28px] bg-orange-500">
+src/app/admin/order-tracking/page.tsx:68:              className="text-black"
+src/app/admin/order-tracking/page.tsx:87:        <button className="flex items-center gap-2 rounded-2xl bg-orange-500 px-5 py-3 font-bold text-black">
+src/app/admin/order-tracking/page.tsx:175:                  <div className="flex h-16 w-16 items-center justify-center rounded-2xl bg-orange-500 text-black">
+src/app/admin/order-tracking/page.tsx:228:                  <button className="rounded-2xl bg-orange-500 px-4 py-3 font-bold text-black">
+src/app/admin/order-tracking/page.tsx:320:      <div className="mt-8 rounded-[32px] bg-gradient-to-r from-orange-500 to-yellow-500 p-7 text-black">
+src/app/admin/order-tracking/page.tsx:339:        <button className="mt-6 rounded-2xl bg-black px-5 py-3 font-bold text-white">
+src/app/admin/order-tracking/page.tsx:396:      <div className="flex h-14 w-14 items-center justify-center rounded-2xl bg-orange-500 text-black">
+src/app/admin/orders/page.tsx:148:      <div className="flex min-h-screen items-center justify-center bg-black font-black text-sm uppercase tracking-widest text-pink-500">
+src/app/admin/orders/page.tsx:155:    <main className="min-h-screen bg-[#0b0b0b] p-4 text-white">
+src/app/admin/orders/page.tsx:230:                    className="flex items-center justify-center gap-2 rounded-2xl px-3 py-3 text-sm font-bold transition active:scale-95 disabled:opacity-30 disabled:cursor-not-allowed disabled:hover:bg-[#1e1e1e] bg-[#1e1e1e] hover:bg-[#252525] text-gray-400 data-[active=true]:bg-yellow-500 data-[active=true]:text-black"
+src/app/admin/orders/page.tsx:240:                    className="flex items-center justify-center gap-2 rounded-2xl px-3 py-3 text-sm font-bold transition active:scale-95 disabled:opacity-30 disabled:cursor-not-allowed disabled:hover:bg-[#1e1e1e] bg-[#1e1e1e] hover:bg-[#252525] text-gray-400 data-[active=true]:bg-blue-500 data-[active=true]:text-white"
+src/app/admin/orders/page.tsx:250:                    className="flex items-center justify-center gap-2 rounded-2xl px-3 py-3 text-sm font-bold transition active:scale-95 disabled:opacity-40 disabled:cursor-not-allowed disabled:bg-[#151a16] disabled:text-green-500/60 bg-[#1e1e1e] hover:bg-[#252525] text-gray-400 data-[active=true]:bg-green-500 data-[active=true]:text-white"
+src/app/admin/page-builder/page.tsx:221:      <div className="flex min-h-screen items-center justify-center bg-black text-white">
+src/app/admin/page-builder/page.tsx:232:    <main className="min-h-screen bg-[#0b0b0b] p-4 text-white">
+src/app/admin/page-builder/page.tsx:263:          className="flex items-center gap-2 rounded-2xl bg-pink-500 px-5 py-3 font-bold text-black"
+src/app/admin/page-builder/page.tsx:319:                    className="flex items-center gap-2 rounded-2xl bg-blue-500 px-5 py-3 font-bold text-black"
+src/app/admin/page-builder/page.tsx:334:                    className="flex items-center gap-2 rounded-2xl bg-yellow-500 px-5 py-3 font-bold text-black"
+src/app/admin/page-builder/page.tsx:351:                        ? "bg-green-500 text-black"
+src/app/admin/page-builder/page.tsx:387:        <h2 className="text-3xl font-black text-black">
+src/app/admin/page-builder/page.tsx:406:                  className="rounded-2xl bg-white/20 p-4 font-bold text-black"
+src/app/admin/pages/page.tsx:102:    <main className="min-h-screen bg-[#0b0b0b] p-4 text-white">
+src/app/admin/pages/page.tsx:138:          <div className="flex items-center gap-3 rounded-2xl bg-black px-4 py-4">
+src/app/admin/pages/page.tsx:159:          <div className="flex items-center gap-3 rounded-2xl bg-black px-4 py-4">
+src/app/admin/pages/page.tsx:276:        <p className="mt-2 text-white/80">
+src/app/admin/payment-gateway/page.tsx:52:    <main className="min-h-screen bg-[#090909] p-4 text-white">
+src/app/admin/payment-gateway/page.tsx:64:              className="text-black"
+src/app/admin/payment-gateway/page.tsx:83:        <button className="flex items-center gap-2 rounded-2xl bg-sky-500 px-5 py-3 font-bold text-black">
+src/app/admin/payment-gateway/page.tsx:159:                  <div className="flex h-16 w-16 items-center justify-center rounded-2xl bg-sky-500 text-black">
+src/app/admin/payment-gateway/page.tsx:216:                  <button className="rounded-2xl bg-sky-500 px-4 py-3 font-bold text-black">
+src/app/admin/payment-gateway/page.tsx:308:      <div className="mt-8 rounded-[32px] bg-gradient-to-r from-sky-500 to-cyan-500 p-7 text-black">
+src/app/admin/payment-gateway/page.tsx:327:        <button className="mt-6 rounded-2xl bg-black px-5 py-3 font-bold text-white">
+src/app/admin/payment-gateway/page.tsx:384:      <div className="flex h-14 w-14 items-center justify-center rounded-2xl bg-sky-500 text-black">
+src/app/admin/payments/page.tsx:45:    <main className="min-h-screen bg-[#0b0b0b] p-4 text-white">
+src/app/admin/payments/page.tsx:75:          className="flex items-center gap-2 rounded-2xl bg-blue-600 px-5 py-3 text-sm font-bold text-white"
+src/app/admin/payments/page.tsx:116:            className="w-full rounded-2xl border border-white/10 bg-black px-4 py-4 text-white outline-none"
+src/app/admin/payments/page.tsx:147:            className="w-full rounded-2xl border border-white/10 bg-black px-4 py-4 text-white outline-none"
+src/app/admin/payments/page.tsx:285:        <p className="mt-2 text-white/80">
+src/app/admin/payments/page.tsx:291:          <div className="rounded-2xl bg-white/10 p-4">
+src/app/admin/payments/page.tsx:303:          <div className="rounded-2xl bg-white/10 p-4">
+src/app/admin/payouts/page.tsx:70:    <main className="min-h-screen bg-[#0b0b0b] p-4 text-white">
+src/app/admin/payouts/page.tsx:256:        <p className="mt-2 text-white/80">
+src/app/admin/performance/page.tsx:47:    <main className="min-h-screen bg-[#0b0b0b] p-4 text-white">
+src/app/admin/performance/page.tsx:59:              className="text-black"
+src/app/admin/performance/page.tsx:78:        <button className="flex items-center gap-2 rounded-2xl bg-cyan-500 px-5 py-3 font-bold text-black">
+src/app/admin/performance/page.tsx:186:                  <div className="h-3 w-40 overflow-hidden rounded-full bg-black/30">
+src/app/admin/performance/page.tsx:253:      <div className="mt-6 rounded-[30px] bg-gradient-to-r from-cyan-500 to-blue-600 p-6 text-black">
+src/app/admin/performance/page.tsx:272:        <button className="mt-6 rounded-2xl bg-black px-6 py-3 font-bold text-white">
+src/app/admin/performance/page.tsx:329:      <div className="flex h-14 w-14 items-center justify-center rounded-2xl bg-cyan-500 text-black">
+src/app/admin/performance/page.tsx:362:      <div className="flex h-14 w-14 items-center justify-center rounded-2xl bg-cyan-500 text-black">
+src/app/admin/popup-manager/page.tsx:72:    <main className="min-h-screen bg-[#050505] p-4 text-white">
+src/app/admin/popup-manager/page.tsx:84:              className="text-black"
+src/app/admin/popup-manager/page.tsx:108:          className="flex items-center gap-2 rounded-2xl bg-yellow-400 px-6 py-4 font-black text-black"
+src/app/admin/popup-manager/page.tsx:168:                      className="text-black"
+src/app/admin/popup-manager/page.tsx:206:              <div className="mt-5 rounded-2xl bg-black/30 p-5">
+src/app/admin/popup-manager/page.tsx:219:                  className="rounded-2xl bg-green-500 px-5 py-3 font-black text-black"
+src/app/admin/popup-manager/page.tsx:227:                  className="rounded-2xl bg-white/10 px-5 py-3 font-black"
+src/app/admin/popup-manager/page.tsx:247:        className="mt-6 flex w-full items-center justify-center gap-2 rounded-[30px] bg-yellow-400 px-6 py-5 font-black text-black"
+src/app/admin/popup-manager/page.tsx:258:      <div className="mt-6 rounded-[30px] bg-gradient-to-r from-yellow-400 to-orange-500 p-6 text-black">
+src/app/admin/popup-manager/page.tsx:277:              className="flex items-center gap-2 rounded-2xl bg-black/20 px-4 py-3 font-bold"
+src/app/admin/popup-manager/page.tsx:287:              className="flex items-center gap-2 rounded-2xl bg-black px-4 py-3 font-bold text-white"
+src/app/admin/popup-manager/page.tsx:304:          <div className="w-full max-w-md rounded-[30px] bg-white p-6 text-black shadow-2xl">
+src/app/admin/popup-manager/page.tsx:382:          className="flex items-center gap-2 rounded-2xl bg-green-500 px-6 py-4 font-black text-black"
+src/app/admin/popup-manager/page.tsx:423:          className="text-black"
+src/app/admin/popup-manager/page.tsx:449:    <div className="rounded-[24px] bg-black/30 p-5">
+src/app/admin/products/page.tsx:612:          bg-white/90
+src/app/admin/products/page.tsx:693:              text-white
+src/app/admin/products/page.tsx:753:                  ? "bg-white text-indigo-600 shadow"
+src/app/admin/products/page.tsx:787:                  ? "bg-white text-indigo-600 shadow"
+src/app/admin/products/page.tsx:816:              bg-white
+src/app/admin/products/page.tsx:1229:                              ? "bg-indigo-600 text-white"
+src/app/admin/products/page.tsx:1324:                            text-white
+src/app/admin/products/page.tsx:1489:                            text-white
+src/app/admin/products/page.tsx:1595:                  text-white
+src/app/admin/products/page.tsx:1659:                          ? "border-slate-900 bg-slate-900 text-white"
+src/app/admin/products/page.tsx:1661:                          : "border-slate-200 bg-white text-slate-600"
+src/app/admin/products/page.tsx:1714:                        bg-white
+src/app/admin/products/page.tsx:2020:                              text-white
+src/app/admin/products/page.tsx:2063:          bg-white/90
+src/app/admin/push-notifications/page.tsx:171:      <div className="flex min-h-screen items-center justify-center bg-black text-white">
+src/app/admin/push-notifications/page.tsx:182:    <main className="min-h-screen bg-[#0b0b0b] p-4 text-white">
+src/app/admin/push-notifications/page.tsx:228:            <div className="flex items-center gap-3 rounded-2xl bg-black px-4">
+src/app/admin/push-notifications/page.tsx:255:            <div className="flex items-start gap-3 rounded-2xl bg-black px-4 py-4">
+src/app/admin/push-notifications/page.tsx:282:            <div className="flex items-center gap-3 rounded-2xl bg-black px-4">
+src/app/admin/push-notifications/page.tsx:293:                className="w-full bg-black py-4 outline-none"
+src/app/admin/referral-engine/page.tsx:52:    <main className="min-h-screen bg-[#090909] p-4 text-white">
+src/app/admin/referral-engine/page.tsx:64:              className="text-black"
+src/app/admin/referral-engine/page.tsx:83:        <button className="rounded-2xl bg-cyan-500 px-5 py-3 font-bold text-black">
+src/app/admin/referral-engine/page.tsx:153:                  <div className="flex h-14 w-14 items-center justify-center rounded-2xl bg-cyan-500 text-black font-black">
+src/app/admin/referral-engine/page.tsx:193:                  <button className="flex items-center gap-2 rounded-2xl bg-cyan-500 px-4 py-3 font-bold text-black">
+src/app/admin/referral-engine/page.tsx:287:      <div className="mt-8 rounded-[32px] bg-gradient-to-r from-cyan-500 to-blue-600 p-7 text-black">
+src/app/admin/referral-engine/page.tsx:306:        <button className="mt-6 rounded-2xl bg-black px-5 py-3 font-bold text-white">
+src/app/admin/referral-engine/page.tsx:363:      <div className="flex h-14 w-14 items-center justify-center rounded-2xl bg-cyan-500 text-black">
+src/app/admin/referrals/page.tsx:65:    <main className="min-h-screen bg-[#0b0b0b] p-4 text-white">
+src/app/admin/referrals/page.tsx:190:              <div className="mt-5 flex items-center justify-between rounded-2xl bg-black/30 p-4">
+src/app/admin/referrals/page.tsx:236:        <p className="mt-2 text-white/80">
+src/app/admin/refund-requests/page.tsx:136:      <div className="flex min-h-screen items-center justify-center bg-black text-white">
+src/app/admin/refund-requests/page.tsx:147:    <main className="min-h-screen bg-[#0b0b0b] p-4 text-white">
+src/app/admin/refund-requests/page.tsx:247:                <div className="rounded-2xl bg-black/30 p-4">
+src/app/admin/refund-requests/page.tsx:272:                    className="flex items-center gap-2 rounded-2xl bg-green-500 px-5 py-3 font-bold text-black"
+src/app/admin/reports/page.tsx:132:      <div className="flex min-h-screen items-center justify-center bg-black text-white">
+src/app/admin/reports/page.tsx:143:    <main className="min-h-screen bg-[#0b0b0b] p-4 text-white">
+src/app/admin/reports/page.tsx:311:        <div className="flex h-16 w-16 items-center justify-center rounded-2xl bg-black">
+src/app/admin/reports/page.tsx:334:    <div className="rounded-2xl bg-white/10 p-5">
+src/app/admin/reports/page.tsx:336:      <p className="text-sm text-white/70">
+src/app/admin/reviews-ratings/page.tsx:134:      <div className="flex min-h-screen items-center justify-center bg-black text-white">
+src/app/admin/reviews-ratings/page.tsx:145:    <main className="min-h-screen bg-[#0b0b0b] p-4 text-white">
+src/app/admin/reviews-ratings/page.tsx:258:                <div className="rounded-2xl bg-black/30 p-4">
+src/app/admin/reviews-ratings/page.tsx:279:                    className="flex items-center gap-2 rounded-2xl bg-green-500 px-5 py-3 font-bold text-black"
+src/app/admin/reviews-ratings/page.tsx:295:                    className="flex items-center gap-2 rounded-2xl bg-orange-500 px-5 py-3 font-bold text-black"
+src/app/admin/reviews-ratings/page.tsx:351:      return "bg-orange-500";
+src/app/admin/reviews/page.tsx:148:      <div className="flex min-h-screen items-center justify-center bg-black text-white">
+src/app/admin/reviews/page.tsx:156:    <main className="min-h-screen bg-[#0b0b0b] p-4 text-white">
+src/app/admin/reviews/page.tsx:228:                    className="flex h-10 w-10 items-center justify-center rounded-xl bg-white/10"
+src/app/admin/reviews/page.tsx:389:                      <p className="text-sm text-white/70">
+src/app/admin/reviews/page.tsx:418:                  <p className="mt-4 text-sm leading-7 text-white/90">
+src/app/admin/reward-wallet/page.tsx:52:    <main className="min-h-screen bg-[#090909] p-4 text-white">
+src/app/admin/reward-wallet/page.tsx:64:              className="text-black"
+src/app/admin/reward-wallet/page.tsx:83:        <button className="rounded-2xl bg-yellow-400 px-5 py-3 font-bold text-black">
+src/app/admin/reward-wallet/page.tsx:155:                    <div className="flex h-14 w-14 items-center justify-center rounded-2xl bg-yellow-400 text-black">
+src/app/admin/reward-wallet/page.tsx:237:          <div className="rounded-[30px] bg-gradient-to-r from-yellow-400 to-orange-500 p-6 text-black">
+src/app/admin/reward-wallet/page.tsx:255:            <button className="mt-5 rounded-2xl bg-black px-5 py-3 font-bold text-white">
+src/app/admin/reward-wallet/page.tsx:324:      <div className="flex h-14 w-14 items-center justify-center rounded-2xl bg-yellow-400 text-black">
+src/app/admin/rewards/page.tsx:141:      <div className="flex min-h-screen items-center justify-center bg-black text-white">
+src/app/admin/rewards/page.tsx:152:    <main className="min-h-screen bg-[#0b0b0b] p-4 text-white">
+src/app/admin/rewards/page.tsx:418:        className="w-full rounded-2xl bg-black px-4 py-4 outline-none"
+src/app/admin/rewards/page.tsx:448:          <div className="flex h-14 w-14 items-center justify-center rounded-2xl bg-black">
+src/app/admin/rewards/page.tsx:500:    <div className="rounded-2xl bg-white/10 p-4">
+src/app/admin/rewards/page.tsx:502:      <p className="text-sm text-white/70">
+src/app/admin/roles/page.tsx:79:    <main className="min-h-screen bg-[#0b0b0b] p-4 text-white">
+src/app/admin/roles/page.tsx:115:          <div className="flex flex-1 items-center gap-3 rounded-2xl bg-black px-4 py-4">
+src/app/admin/roles/page.tsx:215:        <p className="mt-2 text-white/80">
+src/app/admin/security/page.tsx:43:    <main className="min-h-screen bg-[#0b0b0b] p-4 text-white">
+src/app/admin/security/page.tsx:73:          className="flex items-center gap-2 rounded-2xl bg-red-500 px-5 py-3 text-sm font-bold text-white"
+src/app/admin/security/page.tsx:113:            className="w-full rounded-2xl border border-white/10 bg-black px-4 py-4 text-white outline-none"
+src/app/admin/security/page.tsx:150:              className="w-full rounded-2xl border border-white/10 bg-black px-4 py-4 pr-14 text-white outline-none"
+src/app/admin/security/page.tsx:225:        <p className="mt-2 text-white/80">
+src/app/admin/security/page.tsx:231:          <div className="rounded-2xl bg-white/10 p-4">
+src/app/admin/security/page.tsx:243:          <div className="rounded-2xl bg-white/10 p-4">
+src/app/admin/seo-ai/page.tsx:102:    <main className="min-h-screen bg-[#0b0b0b] p-4 text-white">
+src/app/admin/seo-ai/page.tsx:163:          className="mt-6 flex items-center gap-2 rounded-2xl bg-emerald-500 px-6 py-4 font-bold text-black"
+src/app/admin/seo-ai/page.tsx:234:        <h2 className="text-3xl font-black text-black">
+src/app/admin/seo-ai/page.tsx:238:        <div className="mt-6 rounded-2xl bg-white p-5 text-black">
+src/app/admin/seo-ai/page.tsx:306:        className="w-full rounded-2xl bg-black px-5 py-4 outline-none"
+src/app/admin/seo-ai/page.tsx:344:          className="flex items-center gap-2 rounded-2xl bg-emerald-500 px-4 py-2 font-bold text-black"
+src/app/admin/seo-ai/page.tsx:355:      <div className="rounded-2xl bg-black/30 p-4">
+src/app/admin/seo/page.tsx:46:    <main className="min-h-screen bg-[#0b0b0b] p-4 text-white">
+src/app/admin/seo/page.tsx:54:          <div className="flex h-16 w-16 items-center justify-center rounded-[24px] bg-orange-500">
+src/app/admin/seo/page.tsx:76:          className="flex items-center gap-2 rounded-2xl bg-orange-500 px-5 py-3 text-sm font-bold text-white"
+src/app/admin/seo/page.tsx:116:            className="w-full rounded-2xl border border-white/10 bg-black px-4 py-4 text-white outline-none"
+src/app/admin/seo/page.tsx:146:            className="w-full rounded-2xl border border-white/10 bg-black px-4 py-4 text-white outline-none"
+src/app/admin/seo/page.tsx:176:            className="w-full rounded-2xl border border-white/10 bg-black px-4 py-4 text-white outline-none"
+src/app/admin/seo/page.tsx:206:            className="w-full rounded-2xl border border-white/10 bg-black px-4 py-4 text-white outline-none"
+src/app/admin/seo/page.tsx:217:        <p className="text-sm text-white/70">
+src/app/admin/seo/page.tsx:229:        <p className="mt-4 text-white/90">
+src/app/admin/server-status/page.tsx:47:    <main className="min-h-screen bg-[#0b0b0b] p-4 text-white">
+src/app/admin/server-status/page.tsx:59:              className="text-black"
+src/app/admin/server-status/page.tsx:78:        <button className="flex items-center gap-2 rounded-2xl bg-lime-500 px-5 py-3 font-bold text-black">
+src/app/admin/server-status/page.tsx:151:                  <div className="h-3 w-40 overflow-hidden rounded-full bg-black/30">
+src/app/admin/server-status/page.tsx:218:      <div className="mt-6 rounded-[30px] bg-gradient-to-r from-lime-500 to-green-600 p-6 text-black">
+src/app/admin/server-status/page.tsx:319:      <div className="flex h-14 w-14 items-center justify-center rounded-2xl bg-lime-500 text-black">
+src/app/admin/server-status/page.tsx:352:      <div className="flex h-14 w-14 items-center justify-center rounded-2xl bg-lime-500 text-black">
+src/app/admin/settings/page.tsx:142:      <div className="flex min-h-screen items-center justify-center bg-black text-white">
+src/app/admin/settings/page.tsx:150:    <main className="min-h-screen bg-[#0b0b0b] p-4 text-white">
+src/app/admin/settings/page.tsx:171:          className="flex items-center gap-2 rounded-2xl bg-violet-600 px-5 py-3 text-sm font-bold text-white"
+src/app/admin/settings/page.tsx:383:          <p className="mt-2 text-white/80">
+src/app/admin/settings/page.tsx:389:            <div className="rounded-2xl bg-white/10 p-4">
+src/app/admin/settings/page.tsx:409:            <div className="rounded-2xl bg-white/10 p-4">
+src/app/admin/settings/page.tsx:429:            <div className="rounded-2xl bg-white/10 p-4">
+src/app/admin/settings/page.tsx:447:            <div className="rounded-2xl bg-white/10 p-4">
+src/app/admin/settings/page.tsx:471:            <div className="flex h-12 w-12 items-center justify-center rounded-full bg-white/20">
+src/app/admin/settings/page.tsx:477:            <div className="flex h-12 w-12 items-center justify-center rounded-full bg-white/20">
+src/app/admin/settings/page.tsx:483:            <div className="flex h-12 w-12 items-center justify-center rounded-full bg-white/20">
+src/app/admin/settings/page.tsx:527:        className="w-full rounded-2xl border border-white/10 bg-[#1e1e1e] px-4 py-3 text-sm text-white outline-none"
+src/app/admin/shipping/page.tsx:31:    <main className="min-h-screen bg-[#0b0b0b] p-4 text-white">
+src/app/admin/shipping/page.tsx:94:            className="w-full rounded-2xl border border-white/10 bg-black px-4 py-4 outline-none"
+src/app/admin/shipping/page.tsx:122:            className="w-full rounded-2xl border border-white/10 bg-black px-4 py-4 outline-none"
+src/app/admin/sms/page.tsx:159:      <div className="flex min-h-screen items-center justify-center bg-black text-white">
+src/app/admin/sms/page.tsx:170:    <main className="min-h-screen bg-[#0b0b0b] p-4 text-white">
+src/app/admin/sms/page.tsx:201:          className="flex items-center gap-2 rounded-2xl bg-sky-500 px-5 py-3 font-bold text-black"
+src/app/admin/sms/page.tsx:350:        <h2 className="text-3xl font-black text-black">
+src/app/admin/sms/page.tsx:354:        <p className="mt-2 text-black/70">
+src/app/admin/sms/page.tsx:360:          className="mt-6 flex items-center gap-2 rounded-2xl bg-black px-5 py-4 font-bold text-white"
+src/app/admin/sms/page.tsx:404:        className="w-full rounded-2xl bg-black px-4 py-4 outline-none"
+src/app/admin/sms/page.tsx:434:          <div className="flex h-14 w-14 items-center justify-center rounded-2xl bg-black">
+src/app/admin/sms/page.tsx:458:              ? "bg-green-500 text-black"
+src/app/admin/sms/page.tsx:459:              : "bg-red-500 text-white"
+src/app/admin/spin-wheel/page.tsx:141:      <div className="flex min-h-screen items-center justify-center bg-black text-white">
+src/app/admin/spin-wheel/page.tsx:152:    <main className="min-h-screen bg-[#0b0b0b] p-4 text-white">
+src/app/admin/spin-wheel/page.tsx:183:          className="flex items-center gap-2 rounded-2xl bg-yellow-500 px-5 py-3 font-bold text-black"
+src/app/admin/spin-wheel/page.tsx:351:          <h2 className="text-3xl font-black text-black">
+src/app/admin/spin-wheel/page.tsx:416:        className="w-full rounded-2xl bg-black px-4 py-4 outline-none"
+src/app/admin/spin-wheel/page.tsx:446:          <div className="flex h-14 w-14 items-center justify-center rounded-2xl bg-black">
+src/app/admin/spin-wheel/page.tsx:498:    <div className="rounded-2xl bg-white/10 p-4">
+src/app/admin/spin-wheel/page.tsx:500:      <p className="text-sm text-black/70">
+src/app/admin/spin-wheel/page.tsx:504:      <h3 className="mt-2 text-2xl font-black text-black">
+src/app/admin/storage-manager/page.tsx:141:      <div className="flex min-h-screen items-center justify-center bg-black text-white">
+src/app/admin/storage-manager/page.tsx:152:    <main className="min-h-screen bg-[#0b0b0b] p-4 text-white">
+src/app/admin/storage-manager/page.tsx:183:          className="flex items-center gap-2 rounded-2xl bg-cyan-500 px-5 py-3 font-bold text-black"
+src/app/admin/storage-manager/page.tsx:344:          <h2 className="text-3xl font-black text-black">
+src/app/admin/storage-manager/page.tsx:417:        className="w-full rounded-2xl bg-black px-4 py-4 outline-none"
+src/app/admin/storage-manager/page.tsx:447:          <div className="flex h-14 w-14 items-center justify-center rounded-2xl bg-black">
+src/app/admin/storage-manager/page.tsx:499:    <div className="rounded-2xl bg-white/10 p-4">
+src/app/admin/storage-manager/page.tsx:501:      <p className="text-sm text-black/70">
+src/app/admin/storage-manager/page.tsx:505:      <h3 className="mt-2 text-2xl font-black text-black">
+src/app/admin/storage/page.tsx:69:    <main className="min-h-screen bg-[#0b0b0b] p-4 text-white">
+src/app/admin/storage/page.tsx:183:                  <div className="flex h-14 w-14 items-center justify-center rounded-2xl bg-black">
+src/app/admin/storage/page.tsx:250:        <p className="mt-2 text-white/80">
+src/app/admin/subadmin-manager/page.tsx:53:    <main className="min-h-screen bg-[#090909] p-4 text-white">
+src/app/admin/subadmin-manager/page.tsx:65:              className="text-black"
+src/app/admin/subadmin-manager/page.tsx:84:        <button className="rounded-2xl bg-violet-500 px-5 py-3 font-bold text-black">
+src/app/admin/subadmin-manager/page.tsx:170:                  <div className="flex h-16 w-16 items-center justify-center rounded-2xl bg-violet-500 text-2xl font-black text-black">
+src/app/admin/subadmin-manager/page.tsx:210:                  <button className="flex items-center gap-2 rounded-2xl bg-violet-500 px-4 py-3 font-bold text-black">
+src/app/admin/subadmin-manager/page.tsx:312:      <div className="mt-8 rounded-[32px] bg-gradient-to-r from-violet-500 to-fuchsia-600 p-7 text-black">
+src/app/admin/subadmin-manager/page.tsx:331:        <button className="mt-6 rounded-2xl bg-black px-5 py-3 font-bold text-white">
+src/app/admin/subadmin-manager/page.tsx:388:      <div className="flex h-14 w-14 items-center justify-center rounded-2xl bg-violet-500 text-black">
+src/app/admin/subadmins/page.tsx:91:    <main className="min-h-screen bg-[#0b0b0b] p-4 text-white">
+src/app/admin/subadmins/page.tsx:127:          <div className="flex items-center gap-3 rounded-2xl bg-black px-4 py-4">
+src/app/admin/subadmins/page.tsx:148:          <div className="flex items-center gap-3 rounded-2xl bg-black px-4 py-4">
+src/app/admin/subadmins/page.tsx:169:          <div className="flex items-center gap-3 rounded-2xl bg-black px-4 py-4">
+src/app/admin/subadmins/page.tsx:267:        <p className="mt-2 text-white/80">
+src/app/admin/subscriptions/page.tsx:141:      <div className="flex min-h-screen items-center justify-center bg-black text-white">
+src/app/admin/subscriptions/page.tsx:152:    <main className="min-h-screen bg-[#0b0b0b] p-4 text-white">
+src/app/admin/subscriptions/page.tsx:183:          className="flex items-center gap-2 rounded-2xl bg-cyan-500 px-5 py-3 font-bold text-black"
+src/app/admin/subscriptions/page.tsx:353:          <h2 className="text-3xl font-black text-black">
+src/app/admin/subscriptions/page.tsx:418:        className="w-full rounded-2xl bg-black px-4 py-4 outline-none"
+src/app/admin/subscriptions/page.tsx:448:          <div className="flex h-14 w-14 items-center justify-center rounded-2xl bg-black">
+src/app/admin/subscriptions/page.tsx:500:    <div className="rounded-2xl bg-white/10 p-4">
+src/app/admin/subscriptions/page.tsx:502:      <p className="text-sm text-black/70">
+src/app/admin/subscriptions/page.tsx:506:      <h3 className="mt-2 text-2xl font-black text-black">
+src/app/admin/support-tickets/page.tsx:135:      <div className="flex min-h-screen items-center justify-center bg-black text-white">
+src/app/admin/support-tickets/page.tsx:146:    <main className="min-h-screen bg-[#0b0b0b] p-4 text-white">
+src/app/admin/support-tickets/page.tsx:240:                <div className="rounded-2xl bg-black p-4">
+src/app/admin/support-tickets/page.tsx:273:                    className="rounded-2xl bg-yellow-500 px-5 py-3 font-bold text-black"
+src/app/admin/support-tickets/page.tsx:287:                    className="rounded-2xl bg-green-500 px-5 py-3 font-bold text-black"
+src/app/admin/support/page.tsx:28:    <main className="min-h-screen bg-[#0b0b0b] p-4 text-white">
+src/app/admin/support/page.tsx:95:            className="w-full rounded-2xl border border-white/10 bg-black px-4 py-4 outline-none"
+src/app/admin/support/page.tsx:123:            className="w-full rounded-2xl border border-white/10 bg-black px-4 py-4 outline-none"
+src/app/admin/support/page.tsx:151:            className="w-full rounded-2xl border border-white/10 bg-black px-4 py-4 outline-none"
+src/app/admin/support/page.tsx:166:        <p className="mt-2 text-white/80">
+src/app/admin/support/page.tsx:172:          <div className="rounded-2xl bg-white/10 p-4">
+src/app/admin/support/page.tsx:184:          <div className="rounded-2xl bg-white/10 p-4">
+src/app/admin/support/page.tsx:196:          <div className="rounded-2xl bg-white/10 p-4">
+src/app/admin/system-logs/page.tsx:96:      <div className="flex min-h-screen items-center justify-center bg-black text-white">
+src/app/admin/system-logs/page.tsx:107:    <main className="min-h-screen bg-[#0b0b0b] p-4 text-white">
+src/app/admin/system-logs/page.tsx:244:              <div className="flex items-center gap-2 rounded-full bg-black px-4 py-2 text-sm text-gray-300">
+src/app/admin/system-monitor/page.tsx:52:    <main className="min-h-screen bg-[#050505] p-4 text-white">
+src/app/admin/system-monitor/page.tsx:64:              className="text-black"
+src/app/admin/system-monitor/page.tsx:88:          className="flex items-center gap-2 rounded-2xl bg-green-500 px-6 py-4 font-black text-black"
+src/app/admin/system-monitor/page.tsx:155:                className="rounded-[24px] bg-black/30 p-5"
+src/app/admin/system-monitor/page.tsx:181:                        ? "bg-green-500 text-black"
+src/app/admin/system-monitor/page.tsx:182:                        : "bg-yellow-500 text-black"
+src/app/admin/system-monitor/page.tsx:192:                <div className="mt-4 h-3 overflow-hidden rounded-full bg-white/10">
+src/app/admin/system-monitor/page.tsx:292:      <div className="mt-6 rounded-[30px] bg-gradient-to-r from-green-500 to-emerald-600 p-6 text-black">
+src/app/admin/system-monitor/page.tsx:329:          className="flex items-center gap-2 rounded-2xl bg-cyan-500 px-6 py-4 font-black text-black"
+src/app/admin/system-monitor/page.tsx:349:          className="flex items-center gap-2 rounded-2xl bg-yellow-500 px-6 py-4 font-black text-black"
+src/app/admin/system-monitor/page.tsx:379:          className="text-black"
+src/app/admin/system-monitor/page.tsx:411:    <div className="flex items-center justify-between rounded-2xl bg-black/30 p-4">
+src/app/admin/system-monitor/page.tsx:419:      <div className="rounded-full bg-green-500 px-4 py-2 text-sm font-black text-black">
+src/app/admin/system-monitor/page.tsx:438:    <div className="rounded-2xl bg-white/20 p-4 font-bold">
+src/app/admin/system-security/page.tsx:55:    <main className="min-h-screen bg-[#090909] p-4 text-white">
+src/app/admin/system-security/page.tsx:67:              className="text-black"
+src/app/admin/system-security/page.tsx:86:        <button className="flex items-center gap-2 rounded-2xl bg-red-500 px-5 py-3 font-bold text-black">
+src/app/admin/system-security/page.tsx:243:                  <div className="flex h-14 w-14 items-center justify-center rounded-2xl bg-red-500 text-black">
+src/app/admin/system-security/page.tsx:314:      <div className="mt-8 rounded-[32px] bg-gradient-to-r from-red-500 to-orange-500 p-7 text-black">
+src/app/admin/system-security/page.tsx:333:        <button className="mt-6 rounded-2xl bg-black px-5 py-3 font-bold text-white">
+src/app/admin/system-security/page.tsx:390:      <div className="flex h-14 w-14 items-center justify-center rounded-2xl bg-red-500 text-black">
+src/app/admin/system-security/page.tsx:487:      <div className="flex h-14 w-14 items-center justify-center rounded-2xl bg-red-500 text-black">
+src/app/admin/system/page.tsx:70:    <main className="min-h-screen bg-[#0b0b0b] p-4 text-white">
+src/app/admin/system/page.tsx:224:          <div className="flex items-center justify-between rounded-2xl bg-black/30 p-4">
+src/app/admin/system/page.tsx:255:          <div className="flex items-center justify-between rounded-2xl bg-black/30 p-4">
+src/app/admin/system/page.tsx:286:          <div className="flex items-center justify-between rounded-2xl bg-black/30 p-4">
+src/app/admin/system/page.tsx:353:          <p className="mt-2 text-white/80">
+src/app/admin/system/page.tsx:376:          <p className="mt-2 text-white/80">
+src/app/admin/system/page.tsx:392:        <p className="mt-2 text-white/80">
+src/app/admin/template-builder/page.tsx:70:    <main className="min-h-screen bg-[#0b0b0b] p-4 text-white">
+src/app/admin/template-builder/page.tsx:82:              className="text-black"
+src/app/admin/template-builder/page.tsx:101:        <button className="flex items-center gap-2 rounded-2xl bg-violet-500 px-5 py-3 font-bold text-black">
+src/app/admin/template-builder/page.tsx:220:                    <button className="flex h-11 w-11 items-center justify-center rounded-2xl bg-white/10">
+src/app/admin/template-builder/page.tsx:226:                    <button className="flex h-11 w-11 items-center justify-center rounded-2xl bg-white/10">
+src/app/admin/template-builder/page.tsx:272:        <p className="mt-3 max-w-2xl text-sm text-white/90">
+src/app/admin/template-builder/page.tsx:279:        <button className="mt-6 rounded-2xl bg-black px-6 py-3 font-bold text-white">
+src/app/admin/template-builder/page.tsx:306:      <div className="flex h-14 w-14 items-center justify-center rounded-2xl bg-violet-500 text-black">
+src/app/admin/theme-builder/page.tsx:61:      className="min-h-screen p-4 text-white"
+src/app/admin/theme-builder/page.tsx:84:              className="text-black"
+src/app/admin/theme-builder/page.tsx:108:          className="flex items-center gap-2 rounded-2xl px-6 py-4 font-black text-black"
+src/app/admin/theme-builder/page.tsx:252:                className="rounded-[24px] border border-white/10 bg-black/30 p-5 transition-all hover:scale-[1.03]"
+src/app/admin/theme-builder/page.tsx:295:        <div className="mt-6 rounded-[30px] bg-black/20 p-6 backdrop-blur-lg">
+src/app/admin/theme-builder/page.tsx:303:          <p className="mt-3 text-white/80">
+src/app/admin/theme-builder/page.tsx:312:              className="px-6 py-4 font-black text-black"
+src/app/admin/theme-builder/page.tsx:326:              className="border border-white/20 bg-white/10 px-6 py-4 font-black"
+src/app/admin/theme-builder/page.tsx:369:          className="flex items-center gap-2 rounded-2xl bg-cyan-500 px-6 py-4 font-black text-black"
+src/app/admin/theme-builder/page.tsx:379:          className="flex items-center gap-2 rounded-2xl bg-green-500 px-6 py-4 font-black text-black"
+src/app/admin/theme-builder/page.tsx:457:      className="flex items-center gap-2 px-6 py-4 font-black text-black"
+src/app/admin/theme-builder/page.tsx:487:        <Sparkles className="text-black" />
+src/app/admin/theme-store/page.tsx:42:    <main className="min-h-screen bg-[#0b0b0b] p-4 text-white">
+src/app/admin/theme-store/page.tsx:54:              className="text-black"
+src/app/admin/theme-store/page.tsx:73:        <button className="flex items-center gap-2 rounded-2xl bg-cyan-500 px-5 py-3 font-bold text-black">
+src/app/admin/theme-store/page.tsx:193:                    <button className="flex h-11 w-11 items-center justify-center rounded-2xl bg-white/10">
+src/app/admin/theme-store/page.tsx:199:                    <button className="rounded-2xl bg-cyan-500 px-4 py-2 font-bold text-black">
+src/app/admin/theme-store/page.tsx:220:      <div className="mt-6 rounded-[30px] bg-gradient-to-r from-cyan-500 to-blue-600 p-6 text-black">
+src/app/admin/theme-store/page.tsx:239:        <button className="mt-6 rounded-2xl bg-black px-6 py-3 font-bold text-white">
+src/app/admin/theme-store/page.tsx:266:      <div className="flex h-14 w-14 items-center justify-center rounded-2xl bg-cyan-500 text-black">
+src/app/admin/theme/page.tsx:149:      <div className="flex min-h-screen items-center justify-center bg-black text-white">
+src/app/admin/theme/page.tsx:157:    <main className="min-h-screen bg-black p-4 text-white">
+src/app/admin/theme/page.tsx:260:                className="rounded-[24px] bg-white/10 p-4 backdrop-blur-lg"
+src/app/admin/tickets/page.tsx:65:    <main className="min-h-screen bg-[#0b0b0b] p-4 text-white">
+src/app/admin/tickets/page.tsx:233:        <p className="mt-2 text-white/80">
+src/app/admin/users/page.tsx:173:      <div className="flex min-h-screen items-center justify-center bg-black font-black text-sm uppercase tracking-widest text-pink-500">
+src/app/admin/users/page.tsx:180:    <main className="min-h-screen bg-[#0b0b0b] p-4 text-white">
+src/app/admin/users/page.tsx:255:                        : "bg-white/5 text-gray-400 hover:bg-white/10"
+src/app/admin/users/page.tsx:288:                      className="w-full rounded-2xl border border-white/5 bg-[#1e1e1e] px-4 py-3 text-sm outline-none disabled:opacity-50 text-white"
+src/app/admin/users/page.tsx:310:                      className="w-full rounded-2xl border border-white/5 bg-[#1e1e1e] px-4 py-3 text-sm outline-none disabled:opacity-50 appearance-none text-white cursor-pointer"
+src/app/admin/users/page.tsx:325:                      className="w-full rounded-2xl border border-white/5 bg-[#1e1e1e] px-4 py-3 text-sm outline-none disabled:opacity-50 text-white"
+src/app/admin/users/page.tsx:335:                      className="flex items-center gap-2 rounded-xl bg-pink-500 px-5 py-2.5 text-sm font-bold text-black transition hover:bg-pink-600 active:scale-95"
+src/app/admin/users/page.tsx:343:                      className="rounded-xl border border-white/10 bg-white/5 px-5 py-2.5 text-sm font-bold transition hover:bg-white/10"
+src/app/admin/users/page.tsx:417:                      <span className={`text-xs font-black px-2 py-0.5 rounded ${user.mlmActive ? "bg-purple-500/20 text-purple-400" : "bg-white/10 text-gray-400"}`}>
+src/app/admin/users/page.tsx:452:      <div className={`flex h-12 w-12 items-center justify-center rounded-2xl ${color} text-black mb-3`}>
+src/app/admin/vendor-manager/page.tsx:57:    <main className="min-h-screen bg-[#090909] p-4 text-white">
+src/app/admin/vendor-manager/page.tsx:69:              className="text-black"
+src/app/admin/vendor-manager/page.tsx:88:        <button className="rounded-2xl bg-emerald-500 px-5 py-3 font-bold text-black">
+src/app/admin/vendor-manager/page.tsx:174:                  <div className="flex h-16 w-16 items-center justify-center rounded-2xl bg-emerald-500 text-2xl font-black text-black">
+src/app/admin/vendor-manager/page.tsx:222:                  <button className="flex items-center gap-2 rounded-2xl bg-emerald-500 px-4 py-3 font-bold text-black">
+src/app/admin/vendor-manager/page.tsx:324:      <div className="mt-8 rounded-[32px] bg-gradient-to-r from-emerald-500 to-green-600 p-7 text-black">
+src/app/admin/vendor-manager/page.tsx:343:        <button className="mt-6 rounded-2xl bg-black px-5 py-3 font-bold text-white">
+src/app/admin/vendor-manager/page.tsx:400:      <div className="flex h-14 w-14 items-center justify-center rounded-2xl bg-emerald-500 text-black">
+src/app/admin/wallet/page.tsx:142:      <div className="flex min-h-screen items-center justify-center bg-black text-white">
+src/app/admin/wallet/page.tsx:153:    <main className="min-h-screen bg-[#0b0b0b] p-4 text-white">
+src/app/admin/wallet/page.tsx:425:        className="w-full rounded-2xl bg-black px-4 py-4 outline-none"
+src/app/admin/wallet/page.tsx:455:          <div className="flex h-14 w-14 items-center justify-center rounded-2xl bg-black">
+src/app/admin/wallet/page.tsx:507:    <div className="rounded-2xl bg-white/10 p-4">
+src/app/admin/wallet/page.tsx:509:      <p className="text-sm text-white/70">
+src/app/admin/withdrawal-requests/page.tsx:135:      <div className="flex min-h-screen items-center justify-center bg-black text-white">
+src/app/admin/withdrawal-requests/page.tsx:146:    <main className="min-h-screen bg-[#0b0b0b] p-4 text-white">
+src/app/admin/withdrawal-requests/page.tsx:265:                    className="flex items-center gap-2 rounded-2xl bg-green-500 px-5 py-3 font-bold text-black"
+src/app/admin/withdrawals/page.tsx:65:    <main className="min-h-screen bg-[#0b0b0b] p-4 text-white">
+src/app/admin/withdrawals/page.tsx:239:        <p className="mt-2 text-white/80">
+src/app/admin/mlm/page.tsx:93:          bg-white
+src/app/admin/mlm/page.tsx:126:            text-white
+src/app/admin/mlm/page.tsx:139:              bg-white/20
+src/app/admin/mlm/page.tsx:155:          <p className="mt-3 text-[13px] leading-6 text-white/90">
+src/app/admin/mlm/page.tsx:176:              bg-white
+src/app/admin/mlm/page.tsx:204:              bg-white
+src/app/admin/mlm/page.tsx:232:              bg-white
+src/app/admin/mlm/page.tsx:260:              bg-white
+src/app/admin/mlm/page.tsx:296:            bg-white
+src/app/admin/mlm/page.tsx:366:                            text-white
+src/app/admin/mlm/page.tsx:382:                            text-white
+src/app/categories/page.tsx:92:                  text-black
+src/app/category/[slug]/page.tsx:130:          <div className="rounded-[30px] bg-white p-10 text-center shadow-xl">
+src/app/product/[id]/page.tsx:205:        <div className="flex items-center justify-between rounded-[18px] bg-white px-3 py-2.5 shadow-sm">
+src/app/product/[id]/page.tsx:233:        <div className="rounded-[20px] bg-white p-2.5 shadow-sm">
+src/app/product/[id]/page.tsx:260:            <div className="absolute left-2 top-2 rounded-lg bg-red-500 px-2.5 py-1 text-[10px] font-bold text-white">
+src/app/product/[id]/page.tsx:266:              className="absolute right-2 top-2 flex h-8 w-8 items-center justify-center rounded-full bg-white shadow-sm"
+src/app/product/[id]/page.tsx:278:                className="absolute left-2 top-1/2 flex h-8 w-8 -translate-y-1/2 items-center justify-center rounded-full bg-white shadow-sm"
+src/app/product/[id]/page.tsx:287:                className="absolute right-2 top-1/2 flex h-8 w-8 -translate-y-1/2 items-center justify-center rounded-full bg-white shadow-sm"
+src/app/product/[id]/page.tsx:293:            <div className="absolute bottom-2 right-2 rounded-full bg-black/70 px-2 py-1 text-[10px] font-bold text-white">
+src/app/product/[id]/page.tsx:317:          <h1 className="mt-1 text-[22px] font-black leading-[26px] text-black">{product.title}</h1>
+src/app/product/[id]/page.tsx:340:        <div className="rounded-[18px] bg-white p-3 shadow-sm">
+src/app/product/[id]/page.tsx:360:                    ? "border-purple-600 bg-purple-600 text-white"
+src/app/product/[id]/page.tsx:361:                    : "bg-white"
+src/app/product/[id]/page.tsx:387:        <div className="grid grid-cols-2 gap-3 rounded-[18px] bg-white p-3 shadow-sm">
+src/app/product/[id]/page.tsx:423:          <div className="rounded-[18px] bg-white p-4 shadow-sm">
+src/app/product/[id]/page.tsx:433:          <div className="rounded-[18px] bg-white p-4 shadow-sm">
+src/app/product/[id]/page.tsx:455:                className="flex items-center justify-between rounded-[16px] border border-dashed border-purple-300 bg-white px-3 py-3 shadow-sm"
+src/app/product/[id]/page.tsx:461:                <button className="rounded-lg bg-gradient-to-r from-violet-600 to-fuchsia-500 px-3 py-1.5 text-[10px] font-bold text-white">
+src/app/product/[id]/page.tsx:470:        <div className="rounded-[18px] bg-white p-4 shadow-sm">
+src/app/product/[id]/page.tsx:489:        <div className="rounded-[18px] bg-white p-4 shadow-sm">
+src/app/product/[id]/page.tsx:496:      <div className="fixed bottom-0 left-0 z-50 w-full border-t bg-white px-3 py-2">
+src/app/product/[id]/page.tsx:505:            className="flex flex-1 items-center justify-center gap-1 rounded-[14px] border bg-white py-2 text-[12px] font-bold"
+src/app/product/[id]/page.tsx:513:            className="flex flex-1 items-center justify-center gap-1 rounded-[14px] bg-gradient-to-r from-violet-600 to-fuchsia-500 py-2 text-[12px] font-bold text-white"
+src/app/product/[id]/page.tsx:523:        <div className="fixed inset-0 z-[999] bg-white/95 backdrop-blur-sm select-none">
+src/app/product/[id]/page.tsx:526:            className="absolute right-4 top-4 z-[1001] rounded-full bg-gray-100 p-2 text-black font-bold shadow-md h-9 w-9 flex items-center justify-center"
+src/app/product/[id]/page.tsx:581:              className="absolute left-3 top-1/2 z-[1001] flex h-10 w-10 -translate-y-1/2 items-center justify-center rounded-full bg-black/50 text-white"
+src/app/product/[id]/page.tsx:590:              className="absolute right-3 top-1/2 z-[1001] flex h-10 w-10 -translate-y-1/2 items-center justify-center rounded-full bg-black/50 text-white"
+src/app/mlm/dashboard/page.tsx:127:      <div className="sticky top-0 z-50 bg-white px-4 py-3 shadow-sm">
+src/app/mlm/dashboard/page.tsx:143:              <div className="absolute right-2 top-2 flex h-4 w-4 items-center justify-center rounded-full bg-red-500 text-[9px] font-black text-white border-2 border-white animate-bounce">
+src/app/mlm/dashboard/page.tsx:155:          className="flex items-center justify-center gap-2 w-full rounded-2xl bg-white border-2 border-dashed border-violet-200 py-3 text-[13px] font-black text-violet-700 hover:bg-violet-50 transition active:scale-[0.99]"
+src/app/mlm/dashboard/page.tsx:164:        <div className="overflow-hidden rounded-[32px] bg-gradient-to-br from-violet-700 via-fuchsia-600 to-orange-500 p-5 text-white shadow-xl">
+src/app/mlm/dashboard/page.tsx:167:              <p className="text-[13px] text-white/80">Total Earnings</p>
+src/app/mlm/dashboard/page.tsx:170:            <div className="flex h-16 w-16 items-center justify-center rounded-full bg-white/20">
+src/app/mlm/dashboard/page.tsx:177:              <p className="text-[11px] text-white/80">Current Rank</p>
+src/app/mlm/dashboard/page.tsx:180:            <Link href="/mlm/ranks" className="rounded-2xl bg-white px-4 py-2 text-[12px] font-black text-violet-700">
+src/app/mlm/dashboard/page.tsx:193:              <Link key={index} href={action.href} className="rounded-3xl bg-white p-4 text-center shadow-sm hover:scale-[1.02] transition">
+src/app/mlm/dashboard/page.tsx:210:              <div key={index} className="rounded-2xl bg-white p-4 shadow-sm">
+src/app/mlm/dashboard/page.tsx:222:        <div className="rounded-[30px] bg-white p-5 shadow-sm">
+src/app/mlm/dashboard/page.tsx:238:          <Link href="/mlm/invite" className="mt-5 flex items-center justify-center rounded-2xl bg-violet-700 py-3 text-[14px] font-black text-white hover:bg-violet-800 transition">
+src/app/mlm/dashboard/page.tsx:246:        <div className="rounded-[30px] bg-white p-5 shadow-sm">
+src/app/mlm/dashboard/page.tsx:279:              <Link key={idx} href={item.href} className="flex items-center justify-between rounded-2xl bg-white p-4 shadow-sm hover:translate-x-1 transition-transform">
+src/app/mlm/earnings/page.tsx:72:          bg-white
+src/app/mlm/earnings/page.tsx:132:            text-white
+src/app/mlm/earnings/page.tsx:145:              bg-white/20
+src/app/mlm/earnings/page.tsx:153:          <p className="mt-5 text-[13px] text-white/80">
+src/app/mlm/earnings/page.tsx:165:          <p className="mt-3 text-[12px] text-white/85">
+src/app/mlm/earnings/page.tsx:185:              bg-white
+src/app/mlm/earnings/page.tsx:213:              bg-white
+src/app/mlm/earnings/page.tsx:241:              bg-white
+src/app/mlm/earnings/page.tsx:269:              bg-white
+src/app/mlm/earnings/page.tsx:305:            bg-white
+src/app/mlm/earnings/page.tsx:373:            bg-white
+src/app/mlm/invite/page.tsx:100:      <div className="sticky top-0 z-50 bg-white px-4 py-3 shadow-sm">
+src/app/mlm/invite/page.tsx:118:        <div className="overflow-hidden rounded-[30px] bg-gradient-to-br from-violet-700 via-fuchsia-600 to-orange-500 p-5 text-white shadow-xl">
+src/app/mlm/invite/page.tsx:119:          <div className="flex h-16 w-16 items-center justify-center rounded-full bg-white/20">
+src/app/mlm/invite/page.tsx:129:          <p className="mt-3 text-[13px] leading-6 text-white/90">
+src/app/mlm/invite/page.tsx:137:        <div className="rounded-[30px] bg-white p-5 shadow-sm">
+src/app/mlm/invite/page.tsx:147:            <div className="mt-4 rounded-xl bg-white p-3 text-[11px] font-semibold text-purple-600 break-all select-all">
+src/app/mlm/invite/page.tsx:156:            className="mt-5 flex w-full items-center justify-center gap-2 rounded-2xl bg-violet-700 py-3 text-[14px] font-black text-white active:scale-[0.99] transition-all disabled:opacity-50"
+src/app/mlm/invite/page.tsx:171:            className="rounded-3xl bg-green-500 p-5 text-white shadow-lg active:scale-[0.98] transition-all disabled:opacity-50 text-left"
+src/app/mlm/invite/page.tsx:175:            <p className="mt-1 text-[11px] text-white/90">Share instantly</p>
+src/app/mlm/invite/page.tsx:182:            className="rounded-3xl bg-sky-500 p-5 text-white shadow-lg active:scale-[0.98] transition-all disabled:opacity-50 text-left"
+src/app/mlm/invite/page.tsx:186:            <p className="mt-1 text-[11px] text-white/90">Invite your network</p>
+src/app/mlm/invite/page.tsx:193:        <div className="rounded-[30px] bg-white p-5 text-center shadow-sm">
+src/app/mlm/cashback/page.tsx:90:    <div className="fixed inset-0 z-[100] flex items-end sm:items-center justify-center bg-black/60 backdrop-blur-sm p-4">
+src/app/mlm/cashback/page.tsx:91:      <div className="w-full max-w-sm rounded-[32px] bg-white p-6 shadow-xl animate-in fade-in slide-in-from-bottom duration-200">
+src/app/mlm/cashback/page.tsx:100:            className="w-full rounded-2xl bg-emerald-600 py-3.5 text-xs font-black text-white active:scale-95 transition-transform shadow-md"
+src/app/mlm/cashback/page.tsx:309:        <div className="fixed top-5 left-1/2 -translate-x-1/2 z-[200] w-[90%] max-w-sm rounded-2xl p-4 flex items-center gap-3 shadow-xl border animate-in fade-in slide-in-from-top-4 duration-300 bg-slate-900 text-white border-slate-800">
+src/app/mlm/cashback/page.tsx:316:      <div className="sticky top-0 z-50 bg-white/90 backdrop-blur-md px-4 py-3 border-b border-slate-100 flex items-center justify-between">
+src/app/mlm/cashback/page.tsx:333:        <section className="bg-white rounded-[32px] p-5 border border-slate-100 space-y-4 shadow-sm">
+src/app/mlm/cashback/page.tsx:360:        <div className="rounded-[32px] bg-gradient-to-br from-slate-900 via-slate-800 to-indigo-950 p-6 text-white shadow-xl relative overflow-hidden">
+src/app/mlm/cashback/page.tsx:371:            <p className="mt-3.5 flex items-center gap-1.5 text-[11px] font-bold text-amber-300/90 bg-white/5 border border-white/10 px-3 py-2 rounded-xl w-fit">
+src/app/mlm/cashback/page.tsx:380:              className="flex items-center justify-center gap-1.5 rounded-2xl bg-emerald-600 hover:bg-emerald-700 disabled:opacity-30 disabled:pointer-events-none py-3.5 text-xs font-black text-white shadow-md transition-all"
+src/app/mlm/cashback/page.tsx:388:              className="flex items-center justify-center gap-1.5 rounded-2xl bg-white/10 border border-white/10 py-3.5 text-xs font-black text-white active:scale-[0.98] transition-all"
+src/app/mlm/cashback/page.tsx:398:          <div className="rounded-2xl bg-white p-4 border border-slate-100 shadow-sm">
+src/app/mlm/cashback/page.tsx:402:          <div className="rounded-2xl bg-white p-4 border border-slate-100 shadow-sm">
+src/app/mlm/cashback/page.tsx:428:              className="w-full bg-white border border-slate-200 rounded-2xl py-3.5 pl-10 pr-4 text-xs font-medium text-slate-800 outline-none focus:border-slate-400 shadow-sm"
+src/app/mlm/cashback/page.tsx:438:                  activeFilter === filterOpt ? "bg-slate-800 text-white border-slate-800 shadow-sm" : "bg-white text-slate-500 border-slate-200"
+src/app/mlm/cashback/page.tsx:454:            <div className="rounded-3xl bg-white p-8 text-center border border-slate-100 shadow-sm">
+src/app/mlm/cashback/page.tsx:463:                <div key={item.id} className="rounded-2xl bg-white p-4 shadow-sm border border-slate-100 flex items-center justify-between">
+src/app/mlm/leaderboard/page.tsx:66:          bg-white
+src/app/mlm/leaderboard/page.tsx:126:            text-white
+src/app/mlm/leaderboard/page.tsx:139:              bg-white/20
+src/app/mlm/leaderboard/page.tsx:155:          <p className="mt-3 text-[13px] leading-6 text-white/90">
+src/app/mlm/leaderboard/page.tsx:178:              bg-white
+src/app/mlm/leaderboard/page.tsx:242:              text-white
+src/app/mlm/leaderboard/page.tsx:256:                bg-white/20
+src/app/mlm/leaderboard/page.tsx:270:            <p className="mt-1 text-[11px] text-white/90">
+src/app/mlm/leaderboard/page.tsx:280:                bg-white
+src/app/mlm/leaderboard/page.tsx:299:              bg-white
+src/app/mlm/leaderboard/page.tsx:365:            bg-white
+src/app/mlm/network/page.tsx:177:      <div className="sticky top-0 z-50 bg-white px-4 py-3 shadow-sm">
+src/app/mlm/network/page.tsx:194:        <div className="overflow-hidden rounded-[30px] bg-gradient-to-br from-violet-700 via-fuchsia-600 to-orange-500 p-5 text-white shadow-xl">
+src/app/mlm/network/page.tsx:195:          <div className="flex h-16 w-16 items-center justify-center rounded-full bg-white/20">
+src/app/mlm/network/page.tsx:205:          <div className="mt-4 flex items-center gap-2 bg-white/10 backdrop-blur-md rounded-2xl p-3 border border-white/20">
+src/app/mlm/network/page.tsx:208:              <p className="text-[10px] font-bold uppercase text-white/70 tracking-wider">Total Team Business</p>
+src/app/mlm/network/page.tsx:218:          <div className="rounded-2xl bg-white p-4 shadow-sm border border-gray-100">
+src/app/mlm/network/page.tsx:224:          <div className="rounded-2xl bg-white p-4 shadow-sm border border-gray-100">
+src/app/mlm/network/page.tsx:250:                        ? "bg-gradient-to-r from-violet-600 to-indigo-600 text-white shadow-md"
+src/app/mlm/network/page.tsx:264:        <div className="rounded-[28px] bg-white p-5 shadow-sm border border-gray-100">
+src/app/mlm/network/page.tsx:313:                      <div className="mt-2 pt-2 border-t border-gray-200/60 grid grid-cols-3 gap-2 bg-white p-2 rounded-xl border border-gray-100">
+src/app/mlm/notifications/page.tsx:94:          bg-white
+src/app/mlm/notifications/page.tsx:154:            text-white
+src/app/mlm/notifications/page.tsx:167:              bg-white/20
+src/app/mlm/notifications/page.tsx:183:          <p className="mt-3 text-[13px] leading-6 text-white/90">
+src/app/mlm/notifications/page.tsx:216:                    bg-white
+src/app/mlm/page.tsx:83:      <div className="sticky top-0 z-50 bg-white/90 backdrop-blur-md px-4 py-3 shadow-sm">
+src/app/mlm/page.tsx:104:        <div className="overflow-hidden rounded-[30px] bg-gradient-to-br from-violet-700 via-fuchsia-600 to-orange-500 p-5 text-white shadow-xl">
+src/app/mlm/page.tsx:105:          <div className="flex h-16 w-16 items-center justify-center rounded-full bg-white/20">
+src/app/mlm/page.tsx:113:          <p className="mt-4 text-[13px] leading-6 text-white/90">
+src/app/mlm/page.tsx:118:          <div className="mt-5 rounded-2xl bg-white/10 p-4 backdrop-blur-md border border-white/10">
+src/app/mlm/page.tsx:121:                <Loader2 className="animate-spin text-white" size={24} />
+src/app/mlm/page.tsx:122:                <p className="text-[12px] text-white/70">Fetching credentials...</p>
+src/app/mlm/page.tsx:126:                <p className="text-[11px] text-white/80 uppercase tracking-wider font-semibold">
+src/app/mlm/page.tsx:134:                <p className="text-[13px] text-white/90 font-medium mt-1">
+src/app/mlm/page.tsx:135:                  Code: <span className="font-mono bg-black/20 px-1.5 py-0.5 rounded text-orange-200">{referralCode}</span>
+src/app/mlm/page.tsx:138:                <div className="mt-4 rounded-xl bg-white/10 p-3 text-[11px] break-all font-mono border border-white/5 select-all">
+src/app/mlm/page.tsx:144:                  className="mt-4 flex w-full items-center justify-center gap-2 rounded-2xl bg-white py-3 text-[14px] font-black text-violet-700 shadow-md active:scale-[0.98] transition-transform"
+src/app/mlm/page.tsx:157:        <h2 className="text-[24px] font-black text-black">
+src/app/mlm/page.tsx:162:          <div className="rounded-2xl bg-white p-4 shadow-sm border border-gray-100">
+src/app/mlm/page.tsx:176:          <div className="rounded-2xl bg-white p-4 shadow-sm border border-gray-100">
+src/app/mlm/page.tsx:190:          <div className="rounded-2xl bg-white p-4 shadow-sm border border-gray-100">
+src/app/mlm/page.tsx:213:          <div className="rounded-2xl bg-white p-4 shadow-sm border border-gray-50">
+src/app/mlm/page.tsx:219:          <div className="rounded-2xl bg-white p-4 shadow-sm border border-gray-50">
+src/app/mlm/page.tsx:225:          <div className="rounded-2xl bg-white p-4 shadow-sm border border-gray-50">
+src/app/mlm/page.tsx:231:          <div className="rounded-2xl bg-white p-4 shadow-sm border border-gray-50">
+src/app/mlm/ranks/page.tsx:88:          bg-white
+src/app/mlm/ranks/page.tsx:148:            text-white
+src/app/mlm/ranks/page.tsx:161:              bg-white/20
+src/app/mlm/ranks/page.tsx:169:          <p className="mt-5 text-[13px] text-white/85">
+src/app/mlm/ranks/page.tsx:181:          <p className="mt-4 text-[13px] leading-6 text-white/90">
+src/app/mlm/ranks/page.tsx:200:            bg-white
+src/app/mlm/ranks/page.tsx:309:                  bg-white
+src/app/mlm/ranks/page.tsx:319:                    text-white
+src/app/mlm/ranks/page.tsx:333:                      <p className="mt-1 text-[12px] text-white/90">
+src/app/mlm/ranks/page.tsx:384:            bg-white
+src/app/mlm/support/page.tsx:70:          bg-white
+src/app/mlm/support/page.tsx:129:            text-white
+src/app/mlm/support/page.tsx:142:              bg-white/20
+src/app/mlm/support/page.tsx:158:          <p className="mt-3 text-[13px] leading-6 text-white/90">
+src/app/mlm/support/page.tsx:179:              bg-white
+src/app/mlm/support/page.tsx:208:              bg-white
+src/app/mlm/support/page.tsx:237:              bg-white
+src/app/mlm/support/page.tsx:266:              bg-white
+src/app/mlm/support/page.tsx:303:            bg-white
+src/app/mlm/support/page.tsx:342:                          ? "bg-violet-700 text-white"
+src/app/mlm/support/page.tsx:343:                          : "bg-gray-100 text-black"
+src/app/mlm/support/page.tsx:372:          bg-white
+src/app/mlm/support/page.tsx:411:              text-white
+src/app/mlm/orders/page.tsx:82:          bg-black/70
+src/app/mlm/orders/page.tsx:114:                bg-white/10
+src/app/mlm/orders/page.tsx:115:                text-white
+src/app/mlm/orders/page.tsx:131:                  text-white
+src/app/mlm/orders/page.tsx:165:              text-white
+src/app/mlm/orders/page.tsx:239:                        text-white
+src/app/mlm/orders/page.tsx:290:                    bg-black/30
+src/app/mlm/orders/page.tsx:341:                          text-white
+src/app/mlm/orders/page.tsx:374:                      text-white
+src/app/mlm/wallet/page.tsx:64:          bg-white
+src/app/mlm/wallet/page.tsx:124:            text-white
+src/app/mlm/wallet/page.tsx:137:              bg-white/20
+src/app/mlm/wallet/page.tsx:145:          <p className="mt-5 text-[13px] text-white/85">
+src/app/mlm/wallet/page.tsx:157:          <p className="mt-3 text-[13px] leading-6 text-white/90">
+src/app/mlm/wallet/page.tsx:177:              bg-white
+src/app/mlm/wallet/page.tsx:205:              bg-white
+src/app/mlm/wallet/page.tsx:251:              text-white
+src/app/mlm/wallet/page.tsx:269:              bg-orange-500
+src/app/mlm/wallet/page.tsx:273:              text-white
+src/app/mlm/wallet/page.tsx:299:            text-white
+src/app/mlm/wallet/page.tsx:326:              <p className="text-[10px] text-white/70">
+src/app/mlm/wallet/page.tsx:342:              <p className="text-[10px] text-white/70">
+src/app/mlm/wallet/page.tsx:369:            bg-white
+src/app/mlm/wallet/history/page.tsx:158:      <div className="sticky top-0 z-50 bg-white px-4 py-4 border-b border-slate-100 flex items-center gap-3 dashboard-nav-blur">
+src/app/mlm/wallet/history/page.tsx:174:          <div className="text-center py-16 bg-white rounded-2xl border border-slate-100 text-slate-400 text-xs font-medium px-6 shadow-sm">
+src/app/mlm/wallet/history/page.tsx:183:              <div key={tx.id} className="bg-white p-4 rounded-2xl border border-slate-100 shadow-sm space-y-3.5 hover:border-slate-200 transition-colors">
+src/app/mlm/withdraw/page.tsx:83:          bg-white
+src/app/mlm/withdraw/page.tsx:143:            text-white
+src/app/mlm/withdraw/page.tsx:150:          <p className="mt-5 text-[13px] text-white/80">
+src/app/mlm/withdraw/page.tsx:162:          <p className="mt-2 text-[12px] text-white/85">
+src/app/mlm/withdraw/page.tsx:180:            bg-white
+src/app/mlm/withdraw/page.tsx:309:              text-white
+src/app/mlm/withdraw/page.tsx:331:            bg-white
+src/app/mlm/permissions/page.tsx:167:        bg-black
+src/app/mlm/permissions/page.tsx:170:        text-white
+src/app/mlm/permissions/page.tsx:248:            bg-white/5
+src/app/mlm/permissions/page.tsx:332:                    ? "bg-green-500 text-white"
+src/app/mlm/permissions/page.tsx:333:                    : "bg-violet-600 text-white"
+src/app/mlm/permissions/page.tsx:355:            bg-white/5
+src/app/mlm/permissions/page.tsx:439:                    ? "bg-green-500 text-white"
+src/app/mlm/permissions/page.tsx:440:                    : "bg-pink-500 text-white"
+src/app/mlm/permissions/page.tsx:462:            bg-white/5
+src/app/mlm/permissions/page.tsx:546:                    ? "bg-green-500 text-white"
+src/app/mlm/permissions/page.tsx:547:                    : "bg-yellow-500 text-black"
+src/app/mlm/permissions/page.tsx:597:                ? "bg-gradient-to-r from-violet-600 to-fuchsia-500 text-white"
+src/app/mlm/permissions/page.tsx:598:                : "bg-white/10 text-gray-500"
+src/app/mlm/team-business/page.tsx:45:          text-white
+src/app/mlm/team-business/page.tsx:69:              bg-white
+src/app/mlm/watch-earn/components/CoinsPopup.tsx:72:              text-black
+src/app/mlm/watch-earn/components/CoinsPopup.tsx:82:                text-black
+src/app/mlm/watch-earn/components/CoinsPopup.tsx:94:                text-black/70
+src/app/mlm/watch-earn/components/CommentDrawer.tsx:140:            text-white
+src/app/mlm/watch-earn/components/CommentDrawer.tsx:152:            text-white
+src/app/mlm/watch-earn/components/CommentDrawer.tsx:198:                      text-white
+src/app/mlm/watch-earn/components/CommentDrawer.tsx:284:            bg-white/5
+src/app/mlm/watch-earn/components/CommentDrawer.tsx:288:            text-white
+src/app/mlm/watch-earn/components/CommentDrawer.tsx:305:            text-white
+src/app/mlm/watch-earn/components/FloatingRewards.tsx:61:            text-black
+src/app/mlm/watch-earn/components/FloatingRewards.tsx:71:              text-black
+src/app/mlm/watch-earn/components/FloatingRewards.tsx:83:              text-black/70
+src/app/mlm/watch-earn/components/LiveCoinsAnimation.tsx:88:                text-black
+src/app/mlm/watch-earn/components/LiveCoinsAnimation.tsx:100:                text-black
+src/app/mlm/watch-earn/components/LiveCoinsAnimation.tsx:112:                text-black/70
+src/app/mlm/watch-earn/components/RewardProgressBar.tsx:102:          bg-black/60
+src/app/mlm/watch-earn/components/RewardProgressBar.tsx:124:                text-white/60
+src/app/mlm/watch-earn/components/RewardProgressBar.tsx:134:                text-white
+src/app/mlm/watch-earn/components/RewardProgressBar.tsx:167:            bg-white/5
+src/app/mlm/watch-earn/components/RewardProgressBar.tsx:181:                text-white/70
+src/app/mlm/watch-earn/components/RewardProgressBar.tsx:202:              text-white/50
+src/app/mlm/watch-earn/components/RewardProgressBar.tsx:225:                text-white
+src/app/mlm/watch-earn/components/RewardProgressBar.tsx:248:              bg-white/10
+src/app/mlm/watch-earn/components/RewardProgressBar.tsx:287:                text-white
+src/app/mlm/watch-earn/components/RewardProgressBar.tsx:310:              bg-white/10
+src/app/mlm/watch-earn/components/RewardProgressBar.tsx:348:              text-white/60
+src/app/mlm/watch-earn/components/RewardProgressBar.tsx:384:                text-white/70
+src/app/mlm/watch-earn/components/RewardProgressBar.tsx:393:                text-white
+src/app/mlm/watch-earn/components/RewardProgressBar.tsx:408:              bg-white/10
+src/app/mlm/watch-earn/components/ShareDrawer.tsx:92:            text-white
+src/app/mlm/watch-earn/components/ShareDrawer.tsx:104:            text-white
+src/app/mlm/watch-earn/components/ShareDrawer.tsx:162:              text-white
+src/app/mlm/watch-earn/components/ShareDrawer.tsx:208:              text-white
+src/app/mlm/watch-earn/components/ShareDrawer.tsx:254:              text-white
+src/app/mlm/watch-earn/components/ShareDrawer.tsx:301:              text-white
+src/app/mlm/watch-earn/components/ShareDrawer.tsx:330:            bg-white/5
+src/app/mlm/watch-earn/components/VerticalVideoFeed.tsx:118:        bg-black
+src/app/mlm/watch-earn/components/VideoActions.tsx:75:            bg-black/40
+src/app/mlm/watch-earn/components/VideoActions.tsx:76:            text-white
+src/app/mlm/watch-earn/components/VideoActions.tsx:89:            text-white
+src/app/mlm/watch-earn/components/VideoActions.tsx:119:            bg-black/40
+src/app/mlm/watch-earn/components/VideoActions.tsx:120:            text-white
+src/app/mlm/watch-earn/components/VideoActions.tsx:135:            text-white
+src/app/mlm/watch-earn/components/VideoActions.tsx:165:            bg-black/40
+src/app/mlm/watch-earn/components/VideoActions.tsx:166:            text-white
+src/app/mlm/watch-earn/components/VideoActions.tsx:179:            text-white
+src/app/mlm/watch-earn/components/VideoActions.tsx:208:            bg-black/40
+src/app/mlm/watch-earn/components/VideoActions.tsx:209:            text-white
+src/app/mlm/watch-earn/components/VideoActions.tsx:224:            text-white
+src/app/mlm/watch-earn/components/VideoActions.tsx:262:            text-white
+src/app/mlm/watch-earn/components/VideoCard.tsx:81:          text-white
+src/app/mlm/watch-earn/components/VideoCard.tsx:109:            text-black
+src/app/mlm/watch-earn/components/VideoCard.tsx:133:          text-white
+src/app/mlm/watch-earn/components/VideoInfo.tsx:40:        text-white
+src/app/mlm/watch-earn/components/VideoInfo.tsx:71:              text-white
+src/app/mlm/watch-earn/components/VideoInfo.tsx:112:                bg-white/10
+src/app/mlm/watch-earn/components/VideoInfo.tsx:139:          bg-black/40
+src/app/mlm/watch-earn/components/VideoInfo.tsx:158:            text-white
+src/app/mlm/watch-earn/components/VideoPlayer.tsx:148:            text-white
+src/app/mlm/watch-earn/components/WatchEarnHeader.tsx:48:            text-white
+src/app/mlm/watch-earn/components/WatchEarnHeader.tsx:91:            bg-orange-500/20
+src/app/mlm/watch-earn/components/WatchEarnHeader.tsx:109:              text-white
+src/app/mlm/watch-earn/components/WatchEarnHeader.tsx:147:              text-white
+src/app/mlm/watch-earn/components/WatchEarnHeader.tsx:169:            bg-black/30
+src/app/mlm/watch-earn/components/WatchEarnHeader.tsx:170:            text-white
+src/app/mlm/watch-earn/page.tsx:414:          bg-black
+src/app/mlm/watch-earn/page.tsx:422:            text-white
+src/app/mlm/watch-earn/page.tsx:442:        bg-black
+src/app/mlm/watch-earn/page.tsx:468:              text-white
+src/app/mlm/watch-earn/page.tsx:505:              bg-orange-500/20
+src/app/mlm/watch-earn/page.tsx:523:                text-white
+src/app/mlm/watch-earn/page.tsx:557:                text-white
+src/app/mlm/watch-earn/page.tsx:575:              bg-black/40
+src/app/mlm/watch-earn/page.tsx:576:              text-white
+src/app/mlm/watch-earn/page.tsx:615:              text-black
+src/app/mlm/watch-earn/page.tsx:625:                text-black
+src/app/mlm/watch-earn/page.tsx:637:                text-black/70
+src/app/mlm/watch-earn/page.tsx:663:            bg-black
+src/app/mlm/watch-earn/page.tsx:664:            text-white
+src/app/mlm/watch-earn/page.tsx:725:              text-white
+src/app/mlm/watch-earn/page.tsx:841:                bg-black/40
+src/app/mlm/watch-earn/page.tsx:853:                    text-white
+src/app/mlm/watch-earn/page.tsx:862:                    text-white
+src/app/mlm/watch-earn/page.tsx:879:                text-white
+src/app/mlm/watch-earn/page.tsx:908:                      text-white
+src/app/mlm/watch-earn/page.tsx:946:                        bg-white/10
+src/app/mlm/watch-earn/page.tsx:972:                  bg-black/40
+src/app/mlm/watch-earn/page.tsx:990:                    text-white
+src/app/mlm/watch-earn/page.tsx:1008:                  bg-white/20
+src/app/mlm/watch-earn/page.tsx:1048:                      ? "bg-green-500 text-white"
+src/app/mlm/watch-earn/page.tsx:1049:                      : "bg-yellow-400 text-black"
+src/app/mlm/watch-earn/page.tsx:1083:                text-white
+src/app/mlm/watch-earn/page.tsx:1104:                    bg-black/40
+src/app/mlm/watch-earn/page.tsx:1144:                    bg-black/40
+src/app/mlm/watch-earn/page.tsx:1184:                    bg-black/40
+src/app/mlm/watch-earn/page.tsx:1224:                    bg-black/40
+src/app/mlm/watch-earn/upload/page.tsx:185:                text-white
+src/app/mlm/watch-earn/upload/page.tsx:246:                text-white
+src/app/mlm/watch-earn/upload/page.tsx:343:              text-white
+src/app/mlm/watch-earn/upload/page.tsx:427:                  text-white
+src/app/mlm/watch-earn/upload/page.tsx:455:            bg-white/5
+src/app/mlm/watch-earn/upload/page.tsx:465:              text-white
+src/app/mlm/watch-earn/upload/page.tsx:489:              text-white
+src/app/mlm/watch-earn/upload/page.tsx:504:            bg-white/5
+src/app/mlm/watch-earn/upload/page.tsx:514:              text-white
+src/app/mlm/watch-earn/upload/page.tsx:536:              text-white
+src/app/mlm/watch-earn/upload/page.tsx:554:            bg-white/5
+src/app/mlm/watch-earn/upload/page.tsx:595:              text-white
+src/app/mlm/watch-earn/upload/page.tsx:650:            text-white
+src/app/cart/page.tsx:229:            bg-white
+src/app/cart/page.tsx:396:                  bg-white
+src/app/cart/page.tsx:598:                            text-white
+src/app/cart/page.tsx:669:            bg-white
+src/app/cart/page.tsx:736:                text-white
+src/app/account/page.tsx:186:            <h1 className="text-3xl font-black text-black">My Account</h1>
+src/app/account/page.tsx:189:          <div className="flex h-14 w-14 items-center justify-center rounded-3xl bg-gradient-to-br from-indigo-600 to-purple-600 text-white shadow-lg">
+src/app/account/page.tsx:199:        <div className="overflow-hidden rounded-[35px] bg-gradient-to-br from-indigo-600 via-purple-600 to-pink-500 p-6 text-white shadow-2xl">
+src/app/account/page.tsx:203:            <div className="flex h-24 w-24 items-center justify-center rounded-full border-4 border-white/30 bg-white/20 overflow-hidden text-3xl font-black backdrop-blur-md">
+src/app/account/page.tsx:214:              <p className="mt-1 truncate text-sm text-white/80">{user?.email}</p>
+src/app/account/page.tsx:216:                <p className="mt-1 text-sm text-white/80">{user.phone}</p>
+src/app/account/page.tsx:222:          <div className="mt-6 rounded-3xl bg-white/15 p-5 backdrop-blur-md">
+src/app/account/page.tsx:225:                <p className="text-sm font-semibold text-white/80">Wallet Balance</p>
+src/app/account/page.tsx:230:              <div className="flex h-16 w-16 items-center justify-center rounded-full bg-white/20">
+src/app/account/page.tsx:237:          <div className="mt-4 rounded-3xl bg-white/15 p-5 backdrop-blur-md">
+src/app/account/page.tsx:238:            <p className="text-sm font-semibold text-white/80">
+src/app/account/page.tsx:247:          <div className="mt-4 rounded-3xl bg-white/15 p-5 backdrop-blur-md">
+src/app/account/page.tsx:248:            <p className="text-sm font-semibold text-white/80">
+src/app/account/page.tsx:270:                className="flex items-center justify-between rounded-[30px] bg-white p-5 shadow-sm transition-all duration-300 hover:scale-[1.01]"
+src/app/account/page.tsx:277:                    <h3 className="text-lg font-black text-black">{item.title}</h3>
+src/app/account/page.tsx:291:        <div className="rounded-[35px] bg-white p-6 shadow-sm">
+src/app/account/page.tsx:297:              <h3 className="text-xl font-black text-black">Account Secure</h3>
+src/app/account/page.tsx:310:          className="flex w-full items-center justify-center gap-3 rounded-[30px] bg-red-500 py-5 text-sm font-black text-white shadow-xl shadow-red-500/20 transition-all duration-300 hover:scale-[1.02]"
+src/app/account/orders/page.tsx:36:            <div key={order.id} className="bg-white p-4 rounded-2xl shadow-sm">
+src/app/affiliate/page.tsx:162:      <section className="relative overflow-hidden bg-gradient-to-br from-violet-700 via-fuchsia-600 to-orange-500 px-4 pb-10 pt-12 text-white">
+src/app/affiliate/page.tsx:165:        <div className="absolute right-[-40px] top-[-40px] h-40 w-40 rounded-full bg-white/10" />
+src/app/affiliate/page.tsx:166:        <div className="absolute bottom-[-60px] left-[-40px] h-44 w-44 rounded-full bg-white/10" />
+src/app/affiliate/page.tsx:172:            <div className="flex h-16 w-16 items-center justify-center rounded-full bg-white/20">
+src/app/affiliate/page.tsx:177:              <p className="text-sm text-white/80">Build Team & Earn Daily</p>
+src/app/affiliate/page.tsx:182:          <div className="mt-8 rounded-[28px] bg-white/10 p-5 backdrop-blur-md">
+src/app/affiliate/page.tsx:183:            <p className="text-xs text-white/70">Referral Name</p>
+src/app/affiliate/page.tsx:191:                <p className="text-xs text-white/70">Team</p>
+src/app/affiliate/page.tsx:198:                <p className="text-xs text-white/70">Income</p>
+src/app/affiliate/page.tsx:205:                <p className="text-xs text-white/70">Rank</p>
+src/app/affiliate/page.tsx:223:          <div className="rounded-[28px] bg-white p-5 shadow-xl">
+src/app/affiliate/page.tsx:234:          <div className="rounded-[28px] bg-white p-5 shadow-xl">
+src/app/affiliate/page.tsx:264:                className="group overflow-hidden rounded-[30px] bg-white p-4 shadow-sm transition-all duration-300 active:scale-[0.98]"
+src/app/affiliate/page.tsx:267:                <div className={`flex h-16 w-16 items-center justify-center rounded-2xl bg-gradient-to-br ${item.color} text-white shadow-lg`}>
+src/app/affiliate/page.tsx:272:                <h3 className="mt-4 text-[16px] font-black text-black">
+src/app/login/page.tsx:137:    <div className="w-full max-w-md bg-white rounded-[32px] shadow-2xl border border-gray-100 p-8 md:p-10 z-10">
+src/app/login/page.tsx:139:        <div className="inline-flex items-center justify-center w-16 h-16 rounded-2xl bg-gradient-to-br from-indigo-500 via-purple-500 to-pink-500 text-white text-3xl shadow-md mb-4">
+src/app/login/page.tsx:157:            className="w-full border-2 border-gray-100 text-sm font-semibold text-gray-900 rounded-2xl px-4 py-3.5 outline-none transition-all focus:border-indigo-500 bg-gray-50/50 focus:bg-white"
+src/app/login/page.tsx:170:            className="w-full border-2 border-gray-100 text-sm font-semibold text-gray-900 rounded-2xl px-4 py-3.5 outline-none transition-all focus:border-indigo-500 bg-gray-50/50 focus:bg-white"
+src/app/login/page.tsx:179:          className="w-full mt-2 bg-gradient-to-r from-indigo-600 to-purple-600 text-white font-black text-sm p-4 rounded-2xl shadow-lg transition-all active:scale-[0.98] disabled:opacity-50"
+src/app/login/page.tsx:207:        className="w-full flex items-center justify-center gap-3 bg-white border-2 border-gray-100 hover:bg-gray-50 transition-all text-gray-700 font-bold p-4 rounded-2xl disabled:opacity-50"
+src/app/login/page.tsx:229:        <div className="w-full max-w-md bg-white rounded-[32px] p-10 shadow-xl text-center text-sm font-semibold text-gray-400">
+src/app/debug-auth/page.tsx:137:    <main className="min-h-screen bg-black text-white p-6">
+src/app/verify-email/page.tsx:167:      <div className="w-full max-w-md rounded-[32px] bg-white p-8 shadow-2xl text-center">
+src/app/verify-email/page.tsx:185:            className="w-full rounded-2xl bg-indigo-600 p-4 font-black text-white transition hover:bg-indigo-700 disabled:opacity-50"
+src/app/verify-email/page.tsx:193:            className="w-full rounded-2xl border border-gray-200 p-4 font-bold bg-white text-gray-700 hover:bg-gray-50 transition disabled:opacity-50 text-sm"
+src/app/payment-success/page.tsx:102:      <div className="w-full max-w-md rounded-[32px] bg-white p-8 shadow-2xl text-center">
+src/app/payment-success/page.tsx:122:          <h2 className="mt-2 text-xl font-black text-black">
+src/app/payment-success/page.tsx:142:          className="mt-6 block w-full rounded-2xl bg-indigo-600 p-4 text-center font-black text-white"
+src/app/signup/page.tsx:334:      <div className="w-full max-w-md rounded-[32px] bg-white p-8 shadow-sm border border-gray-100">
+src/app/signup/page.tsx:398:            className="w-full rounded-2xl bg-indigo-600 p-4 font-black text-white transition hover:bg-indigo-700 disabled:opacity-50"
+src/app/signup/page.tsx:413:          className="w-full rounded-2xl border p-4 font-bold bg-white text-gray-700 hover:bg-gray-50 transition disabled:opacity-50"
+src/components/categories/CategoryBanner.tsx:80:          <button className="mt-6 rounded-2xl bg-white px-6 py-3 text-sm font-black text-blue-700 shadow-xl transition-all duration-300 hover:scale-[1.03] md:mt-8 md:px-10 md:py-5 md:text-lg">
+src/components/categories/CategoryCard.tsx:71:        <div className="absolute inset-0 bg-black/20" />
+src/components/categories/CategoryFilters.tsx:56:                  ? "bg-blue-600 text-white shadow-lg"
+src/components/categories/CategoryFilters.tsx:57:                  : "bg-white text-gray-700 shadow-md hover:bg-gray-100"
+src/components/categories/CategorySkeleton.tsx:5:    <div className="w-full animate-pulse overflow-hidden rounded-[28px] bg-white shadow-xl">
+src/components/homepage/FooterSection.tsx:5:    <footer className="w-full overflow-hidden bg-gray-900 text-white">
+src/components/homepage/FooterSection.tsx:35:            <li className="break-words transition-all duration-300 hover:text-white">
+src/components/homepage/FooterSection.tsx:39:            <li className="break-words transition-all duration-300 hover:text-white">
+src/components/homepage/FooterSection.tsx:43:            <li className="break-words transition-all duration-300 hover:text-white">
+src/components/homepage/FooterSection.tsx:47:            <li className="break-words transition-all duration-300 hover:text-white">
+src/components/homepage/FooterSection.tsx:65:            <li className="break-words transition-all duration-300 hover:text-white">
+src/components/homepage/FooterSection.tsx:69:            <li className="break-words transition-all duration-300 hover:text-white">
+src/components/homepage/FooterSection.tsx:73:            <li className="break-words transition-all duration-300 hover:text-white">
+src/components/homepage/FooterSection.tsx:77:            <li className="break-words transition-all duration-300 hover:text-white">
+src/components/homepage/FooterSection.tsx:95:            <li className="break-words transition-all duration-300 hover:text-white">
+src/components/homepage/FooterSection.tsx:99:            <li className="break-words transition-all duration-300 hover:text-white">
+src/components/homepage/FooterSection.tsx:103:            <li className="break-words transition-all duration-300 hover:text-white">
+src/components/homepage/FooterSection.tsx:107:            <li className="break-words transition-all duration-300 hover:text-white">
+src/components/homepage/HeroSection.tsx:116:              className="w-full rounded-2xl border border-white/30 bg-white/10 px-6 py-3 font-bold text-white backdrop-blur-xl transition-all duration-300 hover:bg-white/20 md:w-auto"
+src/components/homepage/SellerSection.tsx:70:          className="w-full overflow-hidden rounded-[24px] p-5 text-white shadow-2xl transition-all duration-300 hover:scale-[1.01] md:rounded-[50px] md:p-10"
+src/components/homepage/SellerSection.tsx:82:            <p className="mt-4 break-words text-base leading-relaxed text-white/90 md:mt-5 md:text-2xl">
+src/components/homepage/SellerSection.tsx:106:          className="w-full overflow-hidden rounded-[24px] p-5 text-white shadow-2xl transition-all duration-300 hover:scale-[1.01] md:rounded-[50px] md:p-10"
+src/components/homepage/SellerSection.tsx:118:            <p className="mt-4 break-words text-base leading-relaxed text-white/90 md:mt-5 md:text-2xl">
+src/components/homepage/TipsSection.tsx:17:      <div className="w-full overflow-hidden rounded-[24px] bg-white p-4 shadow-xl md:rounded-[40px] md:p-8">
+src/components/homepage/TipsSection.tsx:37:                className="w-full min-w-0 overflow-hidden rounded-[24px] bg-gradient-to-br from-gray-900 to-black p-5 text-white shadow-xl transition-all duration-300 hover:-translate-y-1 hover:shadow-2xl"
+src/components/homepage/HomepageSlider.tsx:396:                    <div className="absolute inset-0 bg-black/20" />
+src/components/homepage/HomepageSlider.tsx:412:                            bg-white/20
+src/components/homepage/HomepageSlider.tsx:419:                            text-white
+src/components/homepage/HomepageSlider.tsx:557:            bg-white/20
+src/components/homepage/HomepageSlider.tsx:558:            text-white
+src/components/homepage/HomepageSlider.tsx:590:            bg-white/20
+src/components/homepage/HomepageSlider.tsx:591:            text-white
+src/components/homepage/HomepageSlider.tsx:639:                      ? "h-2 w-6 bg-white md:h-3 md:w-10"
+src/components/homepage/HomepageSlider.tsx:640:                      : "h-2 w-2 bg-white/50 md:h-3 md:w-3"
+src/components/navigation/BottomNavbar.tsx:54:        bg-white/95
+src/components/navigation/Header.tsx:333:                text-white
+src/components/navigation/Header.tsx:408:              text-black
+src/components/navigation/Header.tsx:416:              focus:bg-white
+src/components/navigation/Header.tsx:467:                  ? "bg-red-500 text-white"
+src/components/navigation/Header.tsx:469:                  : "bg-gradient-to-r from-indigo-600 to-purple-600 text-white"
+src/components/navigation/WhatsAppButton.tsx:27:        text-white
+src/components/admin/AdminNavbar.tsx:21:        <button className="flex h-12 w-12 items-center justify-center rounded-2xl bg-[#151515] text-white lg:hidden">
+src/components/admin/AdminNavbar.tsx:29:          <h1 className="text-2xl font-black text-white">
+src/components/admin/AdminNavbar.tsx:59:            className="w-full bg-transparent text-sm text-white outline-none placeholder:text-gray-500"
+src/components/admin/AdminNavbar.tsx:72:        <button className="relative flex h-12 w-12 items-center justify-center rounded-2xl bg-[#151515] text-white transition-all duration-300 hover:bg-cyan-500 hover:text-black">
+src/components/admin/AdminNavbar.tsx:82:        <button className="flex h-12 w-12 items-center justify-center rounded-2xl bg-[#151515] text-white transition-all duration-300 hover:bg-cyan-500 hover:text-black">
+src/components/admin/AdminNavbar.tsx:92:          <div className="flex h-11 w-11 items-center justify-center rounded-xl bg-cyan-500 text-black">
+src/components/admin/AdminNavbar.tsx:100:            <h2 className="text-sm font-black text-white">
+src/components/admin/AdminSidebar.tsx:217:    <aside className="hidden h-screen w-[280px] overflow-y-auto border-r border-white/10 bg-[#0b0b0b] p-5 text-white lg:block">
+src/components/admin/AdminSidebar.tsx:223:        <div className="flex h-14 w-14 items-center justify-center rounded-2xl bg-cyan-500 text-black">
+src/components/admin/AdminSidebar.tsx:262:                  ? "bg-cyan-500 text-black"
+src/components/admin/AdminSidebar.tsx:263:                  : "bg-[#151515] hover:bg-cyan-500 hover:text-black"
+src/components/admin/CategoryAdmin.tsx:405:              bg-black
+src/components/admin/CategoryAdmin.tsx:409:              text-white
+src/components/admin/CategoryAdmin.tsx:438:                    bg-white
+src/components/admin/CategoryAdmin.tsx:570:                          bg-black
+src/components/admin/CategoryAdmin.tsx:571:                          text-white
+src/components/admin/CategoryAdmin.tsx:595:                          text-white
+src/components/admin/CategoryAdmin.tsx:667:                              text-white
+src/components/admin/CloudinaryUploader.tsx:203:          className="flex flex-1 items-center justify-center gap-3 rounded-2xl bg-gradient-to-r from-blue-600 to-purple-600 px-6 py-4 text-base font-black text-white shadow-xl transition-all duration-300 hover:scale-[1.02]"
+src/components/admin/CloudinaryUploader.tsx:229:            className="rounded-2xl bg-red-500 px-6 py-4 text-base font-black text-white shadow-xl transition-all duration-300 hover:bg-red-600"
+src/components/admin/CloudinaryUploader.tsx:240:        <div className="rounded-2xl border border-gray-200 bg-white p-4">
+src/components/products/FirestoreProductGrid.tsx:259:          bg-white
+src/components/products/FirestoreProductGrid.tsx:407:            text-white
+src/components/products/ProductCard.tsx:92:          bg-white
+src/components/products/ProductCard.tsx:124:              bg-white
+src/components/products/ProductCard.tsx:144:              bg-white
+src/components/products/ProductCard.tsx:149:              text-black
+src/components/products/ProductCard.tsx:173:                bg-black/70
+src/components/products/ProductCard.tsx:178:                text-white
+src/components/products/ProductCard.tsx:200:              text-black
+src/components/products/ProductCard.tsx:261:                text-black
+src/components/products/ProductGrid.tsx:126:          bg-white
+src/components/IntroVideo.tsx:42:        bg-black
+src/components/IntroVideo.tsx:54:          bg-white/20
+src/components/IntroVideo.tsx:58:          text-white
+src/components/PromoBanner.tsx:32:        bg-black/30
+src/components/PromoBanner.tsx:46:          bg-white
+src/components/PromoBanner.tsx:50:          text-black
+src/components/PromoBanner.tsx:77:            text-black
+src/components/PromoBanner.tsx:131:          <h3 className="text-[24px] font-black leading-[30px] text-black">
+src/components/PromoBanner.tsx:192:                <h3 className="text-[15px] font-black text-black">
+src/components/PromoBanner.tsx:248:                <h3 className="text-[15px] font-black text-black">
+src/components/PromoBanner.tsx:304:                <h3 className="text-[15px] font-black text-black">
+src/components/PromoBanner.tsx:337:            text-white
+src/components/guards/DashboardGuard.tsx:48:      <div className="flex min-h-screen flex-col items-center justify-center bg-slate-900 text-white p-6 text-center">
+src/components/guards/DashboardGuard.tsx:64:      <div className="flex min-h-screen flex-col items-center justify-center bg-slate-900 text-white p-6 text-center">

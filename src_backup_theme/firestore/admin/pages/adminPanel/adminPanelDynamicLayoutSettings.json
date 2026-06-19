@@ -1,0 +1,183 @@
+{
+  "adminPanelEnabled": true,
+
+  "adminControlledAdminPanel": true,
+
+  "adminPanelStyle": "modern_super_admin_dashboard",
+
+  "adminPanelLayoutType": "dynamic_drag_drop_layout",
+
+  "enableDynamicSections": true,
+
+  "enableRealtimeAdminUpdates": true,
+
+  "enableDragAndDropSections": true,
+
+  "enableDarkModeSupport": true,
+
+  "enableGlassmorphismEffects": true,
+
+  "enableAnimatedSections": true,
+
+  "enableResponsiveLayouts": true,
+
+  "enableAdvancedAnalytics": true,
+
+  "enableAIAdminAssistant": true,
+
+  "enableRealtimeSystemMonitoring": true,
+
+  "enableBusinessAutomation": true,
+
+  "adminPanelContainerSettings": {
+    "backgroundColor": "#0f172a",
+
+    "maxWidth": "100%",
+
+    "padding": "20px",
+
+    "gapBetweenSections": "20px"
+  },
+
+  "adminPanelSections": [
+    {
+      "sectionId": "system_overview",
+
+      "sectionTitle": "System Overview",
+
+      "sectionType": "analytics_cards",
+
+      "visible": true,
+
+      "position": 1,
+
+      "sectionStyle": "gradient_admin_cards"
+    },
+
+    {
+      "sectionId": "sales_analytics",
+
+      "sectionTitle": "Sales Analytics",
+
+      "sectionType": "analytics_graphs",
+
+      "visible": true,
+
+      "position": 2,
+
+      "sectionStyle": "premium_chart_cards"
+    },
+
+    {
+      "sectionId": "user_management",
+
+      "sectionTitle": "User Management",
+
+      "sectionType": "management_table",
+
+      "visible": true,
+
+      "position": 3,
+
+      "sectionStyle": "modern_management_tables"
+    },
+
+    {
+      "sectionId": "seller_management",
+
+      "sectionTitle": "Seller Management",
+
+      "sectionType": "seller_cards",
+
+      "visible": true,
+
+      "position": 4,
+
+      "sectionStyle": "premium_seller_cards"
+    },
+
+    {
+      "sectionId": "supplier_management",
+
+      "sectionTitle": "Supplier Management",
+
+      "sectionType": "supplier_cards",
+
+      "visible": true,
+
+      "position": 5,
+
+      "sectionStyle": "modern_supplier_cards"
+    },
+
+    {
+      "sectionId": "wallet_management",
+
+      "sectionTitle": "Wallet Management",
+
+      "sectionType": "wallet_tables",
+
+      "visible": true,
+
+      "position": 6,
+
+      "sectionStyle": "premium_wallet_cards"
+    },
+
+    {
+      "sectionId": "notification_center",
+
+      "sectionTitle": "Notification Center",
+
+      "sectionType": "notification_cards",
+
+      "visible": true,
+
+      "position": 7,
+
+      "sectionStyle": "modern_notification_cards"
+    },
+
+    {
+      "sectionId": "theme_customizer",
+
+      "sectionTitle": "Theme Customizer",
+
+      "sectionType": "theme_editor",
+
+      "visible": true,
+
+      "position": 8,
+
+      "sectionStyle": "glassmorphism_theme_cards"
+    },
+
+    {
+      "sectionId": "layout_builder",
+
+      "sectionTitle": "Dynamic Layout Builder",
+
+      "sectionType": "drag_drop_builder",
+
+      "visible": true,
+
+      "position": 9,
+
+      "sectionStyle": "premium_layout_builder"
+    },
+
+    {
+      "sectionId": "ai_admin_assistant",
+
+      "sectionTitle": "AI Admin Assistant",
+
+      "sectionType": "ai_assistant_cards",
+
+      "visible": true,
+
+      "position": 10,
+
+      "sectionStyle": "glassmorphism_ai_cards"
+    }
+  ]
+}

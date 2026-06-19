@@ -105,7 +105,7 @@ export default function PagesManagerPage() {
 
       <div className="mb-8 flex items-center gap-4">
 
-        <div className="flex h-16 w-16 items-center justify-center rounded-[24px] bg-blue-600">
+        <div className="flex h-16 w-16 items-center justify-center rounded-[24px] theme-primary-bg">
 
           <LayoutTemplate size={30} />
 
@@ -179,7 +179,7 @@ export default function PagesManagerPage() {
 
           <button
             onClick={createPage}
-            className="flex items-center gap-2 rounded-2xl bg-blue-600 px-5 py-3 font-bold"
+            className="flex items-center gap-2 rounded-2xl theme-primary-bg px-5 py-3 font-bold"
           >
 
             <Plus size={18} />
@@ -216,7 +216,7 @@ export default function PagesManagerPage() {
                     {item.slug}
                   </p>
 
-                  <div className="mt-4 inline-block rounded-full bg-blue-600 px-4 py-2 text-sm font-bold">
+                  <div className="mt-4 inline-block rounded-full theme-primary-bg px-4 py-2 text-sm font-bold">
 
                     {item.visible
                       ? "Visible"

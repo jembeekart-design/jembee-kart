@@ -10,7 +10,7 @@ export default function FooterSection() {
 
         <div className="min-w-0">
 
-          <h2 className="break-words text-3xl font-black text-blue-400 md:text-4xl">
+          <h2 className="break-words text-3xl font-black theme-primary-text md:text-4xl">
             JembeeKart
           </h2>
 

@@ -237,7 +237,7 @@ export default function OrdersPage() {
                   <button
                     onClick={() => updateStatus(order.id, "shipped")}
                     disabled={order.commissionProcessed || order.status === "delivered"}
-                    className="flex items-center justify-center gap-2 rounded-2xl px-3 py-3 text-sm font-bold transition active:scale-95 disabled:opacity-30 disabled:cursor-not-allowed disabled:hover:bg-[#1e1e1e] bg-[#1e1e1e] hover:bg-[#252525] text-gray-400 data-[active=true]:bg-blue-500 data-[active=true]:text-white"
+                    className="flex items-center justify-center gap-2 rounded-2xl px-3 py-3 text-sm font-bold transition active:scale-95 disabled:opacity-30 disabled:cursor-not-allowed disabled:hover:bg-[#1e1e1e] bg-[#1e1e1e] hover:bg-[#252525] text-gray-400 data-[active=true]:theme-primary-bg data-[active=true]:text-white"
                     data-active={order.status === "shipped"}
                   >
                     <Truck size={16} />

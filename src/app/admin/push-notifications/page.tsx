@@ -185,7 +185,7 @@ export default function PushNotificationsPage() {
 
       <div className="mb-8 flex items-center gap-4">
 
-        <div className="flex h-16 w-16 items-center justify-center rounded-[24px] bg-blue-500">
+        <div className="flex h-16 w-16 items-center justify-center rounded-[24px] theme-primary-bg">
 
           <Bell size={30} />
 
@@ -322,7 +322,7 @@ export default function PushNotificationsPage() {
             sendNotification
           }
           disabled={saving}
-          className="mt-6 flex items-center gap-2 rounded-2xl bg-blue-500 px-5 py-4 font-bold"
+          className="mt-6 flex items-center gap-2 rounded-2xl theme-primary-bg px-5 py-4 font-bold"
         >
 
           <Send size={18} />
@@ -361,7 +361,7 @@ export default function PushNotificationsPage() {
 
                 <div>
 
-                  <h2 className="text-2xl font-black text-blue-400">
+                  <h2 className="text-2xl font-black theme-primary-text">
 
                     {item.title}
 
@@ -373,7 +373,7 @@ export default function PushNotificationsPage() {
 
                   </p>
 
-                  <div className="mt-3 inline-block rounded-full bg-blue-500/20 px-4 py-2 text-sm font-bold text-blue-300">
+                  <div className="mt-3 inline-block rounded-full theme-primary-bg/20 px-4 py-2 text-sm font-bold text-blue-300">
 
                     {item.audience}
 

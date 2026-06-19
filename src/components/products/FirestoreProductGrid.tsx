@@ -399,7 +399,7 @@ export default function FirestoreProductGrid() {
             items-center
             gap-2
             rounded-full
-            bg-blue-600
+            theme-primary-bg
             px-4
             py-2
             text-xs

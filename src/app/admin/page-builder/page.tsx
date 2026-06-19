@@ -316,7 +316,7 @@ export default function PageBuilderPage() {
                         index
                       )
                     }
-                    className="flex items-center gap-2 rounded-2xl bg-blue-500 px-5 py-3 font-bold text-black"
+                    className="flex items-center gap-2 rounded-2xl theme-primary-bg px-5 py-3 font-bold text-black"
                   >
 
                     <ArrowUp size={18} />

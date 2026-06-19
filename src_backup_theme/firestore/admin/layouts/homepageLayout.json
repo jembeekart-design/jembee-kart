@@ -1,0 +1,82 @@
+{
+  "layoutName": "flipkart_dynamic_homepage",
+
+  "layoutType": "dynamic",
+
+  "adminControlled": true,
+
+  "enableDragAndDropSections": true,
+
+  "enableSectionVisibilityControl": true,
+
+  "enableRealtimeLayoutUpdate": true,
+
+  "homepageContainerStyle": {
+    "maxWidth": "100%",
+    "padding": "0px",
+    "backgroundColor": "#f1f3f6"
+  },
+
+  "sections": [
+    {
+      "id": "hero_banner",
+      "visible": true,
+      "position": 1,
+      "style": "animated_fullwidth_slider"
+    },
+    {
+      "id": "top_categories",
+      "visible": true,
+      "position": 2,
+      "style": "rounded_scrollable_categories"
+    },
+    {
+      "id": "flash_sale",
+      "visible": true,
+      "position": 3,
+      "style": "countdown_flash_sale"
+    },
+    {
+      "id": "trending_products",
+      "visible": true,
+      "position": 4,
+      "style": "modern_grid_products"
+    },
+    {
+      "id": "recommended_products",
+      "visible": true,
+      "position": 5,
+      "style": "ai_recommended_products"
+    },
+    {
+      "id": "reseller_products",
+      "visible": true,
+      "position": 6,
+      "style": "reseller_special_products"
+    },
+    {
+      "id": "affiliate_products",
+      "visible": true,
+      "position": 7,
+      "style": "affiliate_products_slider"
+    },
+    {
+      "id": "featured_sellers",
+      "visible": true,
+      "position": 8,
+      "style": "top_sellers_cards"
+    },
+    {
+      "id": "business_tips_banner",
+      "visible": true,
+      "position": 9,
+      "style": "animated_business_banner"
+    },
+    {
+      "id": "footer",
+      "visible": true,
+      "position": 10,
+      "style": "modern_responsive_footer"
+    }
+  ]
+}

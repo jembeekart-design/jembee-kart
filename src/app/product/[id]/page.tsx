@@ -393,7 +393,7 @@ function buyNow() {
           </div>
 
           <div className="flex items-center gap-2">
-            <BadgeCheck size={18} className="text-blue-600" />
+            <BadgeCheck size={18} className="theme-primary-text" />
             <div>
               <h3 className="text-[12px] font-bold">Secure Payment</h3>
               <p className="text-[10px] text-gray-500">Protected</p>

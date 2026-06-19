@@ -140,7 +140,7 @@ export default function SystemLogsPage() {
           icon={
             <Info size={24} />
           }
-          color="bg-blue-500"
+          color="theme-primary-bg"
         />
 
         <StatCard
@@ -329,7 +329,7 @@ function getLogColor(
 
   }
 
-  return "bg-blue-500";
+  return "theme-primary-bg";
 
 }
 

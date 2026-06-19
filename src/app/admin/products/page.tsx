@@ -1908,7 +1908,7 @@ export default function ProductsAdminPage() {
                             rounded-xl
                             bg-blue-50
                             p-2
-                            text-blue-600
+                            theme-primary-text
                           "
                         >
 

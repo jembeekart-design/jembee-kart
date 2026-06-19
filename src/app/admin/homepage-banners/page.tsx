@@ -895,7 +895,7 @@ export default function AdminPage() {
                                   banner.id
                                 ]?.click();
                               }}
-                              className="flex items-center gap-2 rounded-2xl bg-blue-600 px-5 py-3 font-black text-white"
+                              className="flex items-center gap-2 rounded-2xl theme-primary-bg px-5 py-3 font-black text-white"
                             >
                               <ImagePlus />
 

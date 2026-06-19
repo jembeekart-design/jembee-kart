@@ -298,7 +298,7 @@ export default function SupportTicketsPage() {
                         "Closed"
                       )
                     }
-                    className="rounded-2xl bg-blue-500 px-5 py-3 font-bold"
+                    className="rounded-2xl theme-primary-bg px-5 py-3 font-bold"
                   >
 
                     Closed
@@ -352,7 +352,7 @@ function StatusBadge({
 
     if (status === "Closed") {
 
-      return "bg-blue-500";
+      return "theme-primary-bg";
 
     }
 
