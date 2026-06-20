@@ -156,26 +156,83 @@ export class FirestoreScanner {
     collection: string,
     violations: GovernanceViolation[]
   ) {
-    const hardcodedNumbers =
-      content.match(/\b\d{2,5}\b/g) || [];
+    /**
+     * CRITICAL BUSINESS RULES
+     * These should NEVER be hardcoded.
+     */
+    const criticalPatterns = [
+      /commission\s*[:=]\s*\d+/gi,
+      /cashback\s*[:=]\s*\d+/gi,
+      /reward\s*[:=]\s*\d+/gi,
+      /rewardAmount\s*[:=]\s*\d+/gi,
+      /creatorShare\s*[:=]\s*\d+/gi,
+      /creatorRevenue\s*[:=]\s*\d+/gi,
+      /sellerCommission\s*[:=]\s*\d+/gi,
+      /withdrawalLimit\s*[:=]\s*\d+/gi,
+      /minimumWithdrawal\s*[:=]\s*\d+/gi,
+      /level1Commission\s*[:=]\s*\d+/gi,
+      /level2Commission\s*[:=]\s*\d+/gi,
+      /level3Commission\s*[:=]\s*\d+/gi,
+      /level4Commission\s*[:=]\s*\d+/gi,
+    ];
 
-    if (hardcodedNumbers.length > 10) {
+    /**
+     * WARNING PATTERNS
+     * UI/Layout numbers are usually acceptable.
+     */
+    const warningPatterns = [
+      /width\s*[:=]\s*\d+/gi,
+      /height\s*[:=]\s*\d+/gi,
+      /fontSize\s*[:=]\s*\d+/gi,
+      /timeout\s*[:=]\s*\d+/gi,
+      /delay\s*[:=]\s*\d+/gi,
+      /padding\s*[:=]\s*\d+/gi,
+      /margin\s*[:=]\s*\d+/gi,
+    ];
+
+    // CRITICAL CHECKS
+    criticalPatterns.forEach((pattern) => {
+      const matches = content.match(pattern);
+
+      if (!matches) return;
+
       violations.push({
-        id: `FIRESTORE_HARDCODED_${collection}`,
-        title:
-          "Possible Hardcoded Business Logic",
+        id: `FIRESTORE_CRITICAL_${collection}`,
+        title: "Hardcoded Business Rule Found",
         description:
-          "Large amount of fixed numeric values detected.",
+          "Business value is hardcoded instead of coming from Firestore Admin Config.",
         category: "HARDCODED_RULE",
         severity: "CRITICAL",
         filePath,
         moduleName: "firestore",
+        actualValue: matches[0],
         recommendation:
-          "Move business values to admin-controlled config.",
-        detectedAt:
-          new Date().toISOString(),
+          "Move business rule to Firestore admin configuration.",
+        detectedAt: new Date().toISOString(),
       });
-    }
+    });
+
+    // WARNING CHECKS
+    warningPatterns.forEach((pattern) => {
+      const matches = content.match(pattern);
+
+      if (!matches) return;
+
+      violations.push({
+        id: `FIRESTORE_WARNING_${collection}`,
+        title: "Static UI Value Found",
+        description:
+          "Static UI/Layout value detected. Review if dynamic configuration is needed.",
+        category: "HARDCODED_RULE",
+        severity: "WARNING",
+        filePath,
+        moduleName: "firestore",
+        actualValue: matches[0],
+        recommendation:
+          "Optional: move UI settings into theme/config system.",
+        detectedAt: new Date().toISOString(),
+      });
+    });
   }
 
   private getSourceFiles(
