@@ -31,7 +31,11 @@ export type ViolationCategory =
   | "DATABASE"
   | "FIRESTORE"
   | "ANTI_FRAUD"
-  | "PERFORMANCE";
+  | "PERFORMANCE"
+  | "CREATOR_ECONOMY"
+  | "DEPLOYMENT"
+  | "MLM_COMPLIANCE"
+  | "WALLET";
 
 export interface GovernanceViolation {
   id: string;
