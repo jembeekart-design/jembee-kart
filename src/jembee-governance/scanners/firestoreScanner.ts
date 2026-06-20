@@ -260,7 +260,15 @@ export class FirestoreScanner {
               "dist",
               "build",
               ".vercel",
-            ].includes(entry)
+
+              "src_backup",
+  "src_backup_theme",
+  "backup",
+  "backups",
+  ".history",
+  "coverage"
+
+  ].includes(entry)
           ) {
             continue;
           }
