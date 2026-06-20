@@ -5,7 +5,7 @@ import {
   GovernanceViolation,
 } from "../types/governance.types";
 
-// Import Scanners
+// Scanners
 import { securityScanner } from "../scanners/securityScanner";
 import { themeScanner } from "../scanners/themeScanner";
 import { duplicateCodeScanner } from "../scanners/duplicateCodeScanner";
@@ -26,12 +26,10 @@ export interface ComplianceReportOptions {
 }
 
 export class ComplianceReportGenerator {
-  public generate(
-    options: ComplianceReportOptions
-  ): GovernanceDashboardReport {
+  public generate(options: ComplianceReportOptions): GovernanceDashboardReport {
     const { projectRoot } = options;
 
-    // 1. Run All Scanners
+    // 1. Run all project scanners
     const securityResult = securityScanner.scanProject(projectRoot);
     const themeResult = themeScanner.scanProject(projectRoot);
     const duplicateResult = duplicateCodeScanner.scanProject(projectRoot);
@@ -45,6 +43,9 @@ export class ComplianceReportGenerator {
     const antiFraudResult = antiFraudScanner.scanProject(projectRoot);
     const creatorResult = creatorEconomyScanner.scanProject(projectRoot);
 
+    /**
+     * TODO: Future - Connect to actual Firestore Config
+     */
     const profitabilityResult = profitabilityScanner.scan({
       orderProfit: 50,
       cashbackExpense: 5,
@@ -54,6 +55,7 @@ export class ComplianceReportGenerator {
       protectionFundExpense: 5,
     });
 
+    // 2. Deployment Scanner
     const deploymentResult = deploymentScanner.scan({
       profitabilityViolations: profitabilityResult.violations,
       walletViolations: walletResult.violations,
@@ -65,7 +67,7 @@ export class ComplianceReportGenerator {
       adminControlViolations: adminControlResult.violations,
     });
 
-    // 2. Collect Violations
+    // 3. Aggregate all violations
     const violations: GovernanceViolation[] = [
       ...securityResult.violations,
       ...themeResult.violations,
@@ -87,7 +89,7 @@ export class ComplianceReportGenerator {
       (v) => v.severity === "CRITICAL"
     ).length;
 
-    // 3. Scores
+    // 4. Calculate Scores
     const architectureScore = this.calculateArchitectureScore(
       hardcodedResult.violations.length,
       duplicateResult.violations.length
@@ -146,10 +148,7 @@ export class ComplianceReportGenerator {
     return Math.max(0, 100 - issues * 3);
   }
 
-  private calculateArchitectureScore(
-    hardcodedIssues: number,
-    duplicateIssues: number
-  ): number {
+  private calculateArchitectureScore(hardcodedIssues: number, duplicateIssues: number): number {
     return Math.max(0, 100 - hardcodedIssues * 4 - duplicateIssues * 2);
   }
 
