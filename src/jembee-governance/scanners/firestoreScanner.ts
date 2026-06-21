@@ -7,6 +7,10 @@ import {
   GovernanceViolation,
 } from "../types/governance.types";
 
+import {
+  shouldExcludeDirectory,
+} from "../utils/scannerExclusions";
+
 export interface FirestoreScanResult {
   collectionsScanned: number;
   violations: GovernanceViolation[];
