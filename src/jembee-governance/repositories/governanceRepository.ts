@@ -12,7 +12,7 @@ import {
   Timestamp,
 } from "firebase/firestore";
 
-import { db } from "@/shared/firebase/config";
+import { db } from "@/firebase/config";
 
 export class GovernanceRepository {
   private readonly COLLECTION =
