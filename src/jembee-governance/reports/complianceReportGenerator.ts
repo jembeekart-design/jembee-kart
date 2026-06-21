@@ -86,6 +86,7 @@ export class ComplianceReportGenerator {
       ...deploymentResult.violations,
     ];
 
+    const violations = deduplicateViolations(rawViolations);
     const criticalViolations = violations.filter(
       (v) => v.severity === "CRITICAL"
     ).length;
