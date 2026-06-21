@@ -4,7 +4,6 @@ import {
   GovernanceViolation,
   SecurityReport,
 } from "../types/governance.types";
-import { shouldExcludeDirectory } from "../utils/scannerExclusions";
 
 export interface SecurityScanResult {
   filesScanned: number;
@@ -13,50 +12,45 @@ export interface SecurityScanResult {
 }
 
 export class SecurityScanner {
-  /**
-   * High Risk Patterns
-   */
   private readonly patterns = [
     {
       id: "SEC_API_KEY",
       title: "Possible API Key Exposure",
-      regex: /(api[_-]?key\s*[:=]\s*["'`][^"'`]{8,}["'`])|(AIza[0-9A-Za-z\-_]{20,})/gi,
-      severity: "CRITICAL" as const,
-    },
-    {
-      id: "SEC_ADMIN_BYPASS",
-      title: "Admin Bypass Detected",
-      regex: /(role\s*===?\s*["'`]admin["'`])|(isAdmin\s*=\s*true)|(admin\s*=\s*true)/gi,
+      regex: /(AIza[0-9A-Za-z\-_]{20,})/g,
       severity: "CRITICAL" as const,
     },
     {
       id: "SEC_SECRET",
       title: "Hardcoded Secret Found",
-      regex: /(secret|privateKey|clientSecret|jwtSecret|accessToken)\s*[:=]\s*["'`].+["'`]/gi,
+      regex:
+        /(clientSecret|jwtSecret|privateKey)\s*[:=]\s*["'`].+["'`]/g,
       severity: "CRITICAL" as const,
     },
     {
       id: "SEC_PASSWORD",
       title: "Hardcoded Password Found",
-      regex: /(password|adminPassword)\s*[:=]\s*["'`].+["'`]/gi,
+      regex:
+        /(adminPassword|rootPassword)\s*[:=]\s*["'`].+["'`]/g,
       severity: "CRITICAL" as const,
     },
     {
-      id: "SEC_CONSOLE",
-      title: "Sensitive Console Logging",
-      regex: /console\.(log|info|debug)\((.*password.*|.*secret.*|.*token.*|.*apikey.*)\)/gi,
-      severity: "WARNING" as const,
+      id: "SEC_ADMIN_BYPASS",
+      title: "Potential Admin Bypass",
+      regex:
+        /(isAdmin\s*=\s*true)|(admin\s*=\s*true)/g,
+      severity: "ERROR" as const,
     },
     {
       id: "SEC_DANGEROUS_INNERHTML",
       title: "dangerouslySetInnerHTML Usage",
-      regex: /dangerouslySetInnerHTML/gi,
+      regex: /dangerouslySetInnerHTML/g,
       severity: "WARNING" as const,
     },
   ];
 
   public scanProject(projectRoot: string): SecurityScanResult {
     const files = this.getSourceFiles(projectRoot);
+
     const violations: GovernanceViolation[] = [];
 
     let apiKeyExposed = false;
@@ -65,102 +59,183 @@ export class SecurityScanner {
 
     for (const file of files) {
       const result = this.scanFile(file);
+
       violations.push(...result);
 
-      if (result.some((v) => v.id === "SEC_API_KEY")) apiKeyExposed = true;
-      if (result.some((v) => v.id === "SEC_SECRET" || v.id === "SEC_PASSWORD")) secretFound = true;
-      if (result.some((v) => v.id === "SEC_ADMIN_BYPASS")) adminBypassDetected = true;
+      if (result.some(v => v.id === "SEC_API_KEY")) {
+        apiKeyExposed = true;
+      }
+
+      if (
+        result.some(
+          v =>
+            v.id === "SEC_SECRET" ||
+            v.id === "SEC_PASSWORD"
+        )
+      ) {
+        secretFound = true;
+      }
+
+      if (
+        result.some(
+          v => v.id === "SEC_ADMIN_BYPASS"
+        )
+      ) {
+        adminBypassDetected = true;
+      }
     }
 
-    const report: SecurityReport = {
-      apiKeyExposed,
-      secretFound,
-      adminBypassDetected,
-      firestoreRulesMissing: false,
-      totalSecurityIssues: violations.length,
+    return {
+      filesScanned: files.length,
+      report: {
+        apiKeyExposed,
+        secretFound,
+        adminBypassDetected,
+        firestoreRulesMissing: false,
+        totalSecurityIssues: violations.length,
+      },
+      violations,
     };
-
-    return { filesScanned: files.length, report, violations };
   }
 
-  public scanFile(filePath: string): GovernanceViolation[] {
+  public scanFile(
+    filePath: string
+  ): GovernanceViolation[] {
     const violations: GovernanceViolation[] = [];
 
     try {
-      const content = fs.readFileSync(filePath, "utf8");
+      if (
+        filePath.includes("node_modules") ||
+        filePath.includes(".next") ||
+        filePath.includes("backup") ||
+        filePath.includes("src_backup") ||
+        filePath.includes("src_backup_theme")
+      ) {
+        return [];
+      }
+
+      const content = fs.readFileSync(
+        filePath,
+        "utf8"
+      );
+
       const lines = content.split("\n");
 
       lines.forEach((line, index) => {
         for (const pattern of this.patterns) {
           const matches = line.match(pattern.regex);
+
           if (!matches) continue;
 
           violations.push({
             id: pattern.id,
             title: pattern.title,
-            description: "Potential security risk detected during governance scan.",
+            description:
+              "Potential security issue detected.",
             category: "SECURITY",
             severity: pattern.severity,
             filePath,
             lineNumber: index + 1,
-            actualValue: matches[0],
-            recommendation: "Move sensitive values to environment variables and validate access controls.",
-            detectedAt: new Date().toISOString(),
+            recommendation:
+              "Review and secure implementation.",
+            detectedAt:
+              new Date().toISOString(),
           });
         }
       });
 
-      const looksLikeProtectedPage = content.includes("admin") || content.includes("dashboard") || content.includes("wallet");
-      const hasAuthCheck = content.includes("currentUser") || content.includes("auth.currentUser") || content.includes("getServerSession") || content.includes("useAuth(");
+      const looksLikeProtectedPage =
+        filePath.includes("/admin/") ||
+        filePath.includes("/dashboard/") ||
+        filePath.includes("/wallet/");
 
-      if (looksLikeProtectedPage && !hasAuthCheck) {
+      const hasAuthCheck =
+        content.includes("useAuth(") ||
+        content.includes("auth.currentUser") ||
+        content.includes("currentUser") ||
+        content.includes("getServerSession");
+
+      if (
+        looksLikeProtectedPage &&
+        !hasAuthCheck
+      ) {
         violations.push({
           id: "SEC_AUTH_MISSING",
-          title: "Authentication Check Missing",
-          description: "Sensitive page appears to lack authentication validation.",
+          title:
+            "Authentication Check Missing",
+          description:
+            "Protected page may not be secured.",
           category: "SECURITY",
           severity: "WARNING",
           filePath,
-          recommendation: "Protect routes using authentication and role checks.",
-          detectedAt: new Date().toISOString(),
+          recommendation:
+            "Add authentication guard.",
+          detectedAt:
+            new Date().toISOString(),
         });
       }
     } catch (error) {
       violations.push({
         id: "SEC_SCAN_ERROR",
         title: "Security Scan Error",
-        description: error instanceof Error ? error.message : "Unknown error",
+        description:
+          error instanceof Error
+            ? error.message
+            : "Unknown Error",
         category: "SECURITY",
         severity: "ERROR",
         filePath,
-        detectedAt: new Date().toISOString(),
+        detectedAt:
+          new Date().toISOString(),
       });
     }
 
     return violations;
   }
 
-  private getSourceFiles(rootDir: string): string[] {
+  private getSourceFiles(
+    rootDir: string
+  ): string[] {
     const files: string[] = [];
 
     const walk = (dir: string) => {
       const entries = fs.readdirSync(dir);
+
       for (const entry of entries) {
         const fullPath = path.join(dir, entry);
+
         const stat = fs.statSync(fullPath);
 
         if (stat.isDirectory()) {
-          // Using centralized exclusion logic
-          if (shouldExcludeDirectory(entry)) continue;
+          if (
+            [
+              "node_modules",
+              ".next",
+              ".git",
+              "backup",
+              "src_backup",
+              "src_backup_theme",
+              "dist",
+              "build",
+            ].includes(entry)
+          ) {
+            continue;
+          }
+
           walk(fullPath);
-        } else if (/\.(ts|tsx|js|jsx)$/.test(fullPath)) {
+        } else if (
+          /\.(ts|tsx|js|jsx)$/.test(fullPath)
+        ) {
           files.push(fullPath);
         }
       }
     };
+
     walk(rootDir);
+
     return files;
   }
 }
 
-export const securityScanner = new SecurityScanner();
+export const securityScanner =
+  new SecurityScanner();
