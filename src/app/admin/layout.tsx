@@ -1,7 +1,4 @@
-"use client";
-
 import type { ReactNode } from "react";
-import { useAuth } from "@/hooks/useAuth";
 import AdminSidebar from "@/components/admin/AdminSidebar";
 import AdminNavbar from "@/components/admin/AdminNavbar";
 
@@ -10,16 +7,6 @@ export default function AdminLayout({
 }: {
   children: ReactNode;
 }) {
-  const { currentUser, loading } = useAuth();
-
-  if (loading) {
-    return <div>Loading...</div>;
-  }
-
-  if (!currentUser) {
-    return <div>Access Denied</div>;
-  }
-
   return (
     <div className="flex min-h-screen bg-[#090909]">
       <AdminSidebar />
