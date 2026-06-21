@@ -21,6 +21,7 @@ import { antiFraudScanner } from "../scanners/antiFraudScanner";
 import { creatorEconomyScanner } from "../scanners/creatorEconomyScanner";
 import { deploymentScanner } from "../scanners/deploymentScanner";
 import { deduplicateViolations } from "../utils/deduplicateViolations";
+import { calculateScores } from "../utils/calculateScores";
 
 export interface ComplianceReportOptions {
   projectRoot: string;
