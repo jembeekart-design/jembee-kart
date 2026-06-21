@@ -93,35 +93,30 @@ export class ComplianceReportGenerator {
     ).length;
 
     // 4. Calculate Scores
-    const architectureScore = this.calculateArchitectureScore(
-      hardcodedResult.violations.length,
-      duplicateResult.violations.length
-    );
+    const {
+  architectureScore,
+  securityScore,
+  themeScore,
+  adminControlScore,
+  profitabilityScore,
+  overallScore,
+} = calculateScores({
+  architectureViolations:
+    hardcodedResult.violations.length +
+    duplicateResult.violations.length,
 
-    const securityScore = this.calculateSecurityScore(
-      securityResult.violations.length
-    );
+  securityViolations:
+    securityResult.violations.length,
 
-    const themeScore = this.calculateThemeScore(
-      themeResult.violations.length
-    );
+  themeViolations:
+    themeResult.violations.length,
 
-    const adminControlScore = this.calculateAdminControlScore(
-      hardcodedResult.violations.length
-    );
+  adminControlViolations:
+    adminControlResult.violations.length,
 
-    const profitabilityScore =
-      profitabilityResult.violations.length === 0
-        ? 100
-        : Math.max(0, 100 - profitabilityResult.violations.length * 10);
-
-    const overallScore = Math.round(
-      (architectureScore +
-        securityScore +
-        themeScore +
-        adminControlScore +
-        profitabilityScore) / 5
-    );
+  profitabilityViolations:
+    profitabilityResult.violations.length,
+});
 
     const deploymentStatus = deploymentResult.deploymentAllowed ? "PASS" : "BLOCKED";
 
