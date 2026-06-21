@@ -69,7 +69,7 @@ export class ComplianceReportGenerator {
     });
 
     // 3. Aggregate all violations
-    const violations: GovernanceViolation[] = [
+    const rawViolations: GovernanceViolation[] = [
       ...securityResult.violations,
       ...themeResult.violations,
       ...duplicateResult.violations,
