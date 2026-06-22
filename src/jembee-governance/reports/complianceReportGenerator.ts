@@ -1,146 +1,161 @@
-// src/jembee-governance/reports/complianceReportGenerator.ts
+export class ComplianceReportGenerator {
 
-import {
-  GovernanceDashboardReport,
-  GovernanceViolation,
-} from "../types/governance.types";
+public generate(options: ComplianceReportOptions): GovernanceDashboardReport {
+const { projectRoot } = options;
 
-import { securityScanner } from "../scanners/securityScanner";
-import { themeScanner } from "../scanners/themeScanner";
-import { duplicateCodeScanner } from "../scanners/duplicateCodeScanner";
-import { hardcodedRuleScanner } from "../scanners/hardcodedRuleScanner";
-import { pageConnectionScanner } from "../scanners/pageConnectionScanner";
-import { firestoreScanner } from "../scanners/firestoreScanner";
+const securityResult = securityScanner.scanProject(projectRoot);
+const themeResult = themeScanner.scanProject(projectRoot);
+const duplicateResult = duplicateCodeScanner.scanProject(projectRoot);
+const hardcodedResult = hardcodedRuleScanner.scanProject(projectRoot);
+const pageResult = pageConnectionScanner.scanProject(projectRoot);
+const firestoreResult = firestoreScanner.scanProject(projectRoot);
 
-import { deduplicateViolations } from "../utils/deduplicateViolations";
-import { calculateScores } from "../utils/calculateScores";
+const violations = deduplicateViolations([
+  ...securityResult.violations,
+  ...themeResult.violations,
+  ...duplicateResult.violations,
+  ...hardcodedResult.violations,
+  ...pageResult.violations,
+  ...firestoreResult.violations,
+]);
 
-export interface ComplianceReportOptions {
-  projectRoot: string;
+const criticalCount =
+  violations.filter(v => v.severity === "CRITICAL").length;
+
+const errorCount =
+  violations.filter(v => v.severity === "ERROR").length;
+
+const warningCount =
+  violations.filter(v => v.severity === "WARNING").length;
+
+const {
+  architectureScore,
+  securityScore,
+  themeScore,
+  adminControlScore,
+  profitabilityScore,
+  overallScore,
+} = calculateScores({
+  architectureViolations:
+    duplicateResult.violations.length +
+    hardcodedResult.violations.length,
+  securityViolations:
+    securityResult.violations.length,
+  themeViolations:
+    themeResult.violations.length,
+  adminControlViolations:
+    firestoreResult.violations.length,
+  profitabilityViolations: 0,
+});
+
+return {
+  deploymentStatus:
+    criticalCount === 0 ? "PASS" : "BLOCKED",
+
+  generatedAt: new Date().toISOString(),
+  version: "2.0.0",
+
+  filesScanned:
+    securityResult.filesScanned +
+    themeResult.filesScanned +
+    duplicateResult.filesScanned +
+    hardcodedResult.filesScanned,
+
+  pagesScanned: pageResult.pagesScanned,
+  collectionsScanned:
+    firestoreResult.collectionsScanned,
+
+  totalViolations: violations.length,
+
+  criticalViolations: criticalCount,
+  criticalCount,
+  errorCount,
+  warningCount,
+
+  duplicateCodeCount:
+    duplicateResult.violations.length,
+
+  hardcodedRuleCount:
+    hardcodedResult.violations.length,
+
+  architectureScore,
+  profitabilityScore,
+  securityScore,
+  themeScore,
+  adminControlScore,
+
+  duplicateCodeScore: 100,
+  hardcodedRuleScore: 100,
+  pageConnectionScore: 100,
+
+  overallScore,
+
+  history: [],
+
+  mlmGovernance: {
+    healthScore: 100,
+    totalOrdersAudited: 0,
+    totalCommissionPaid: 0,
+    totalCommissionReversed: 0,
+    duplicateCommissionCount: 0,
+    walletMismatchCount: 0,
+    profitLeakageCount: 0,
+  },
+
+  walletGovernance: {
+    integrityScore: 100,
+    totalUsersAudited: 0,
+    mismatchCount: 0,
+  },
+
+  mlmAuditItems: [],
+
+  violations,
+};
+
 }
 
-export class ComplianceReportGenerator {
-  public generate(
-    options: ComplianceReportOptions
-  ): GovernanceDashboardReport {
-    const { projectRoot } = options;
+public printConsoleReport(
+report: GovernanceDashboardReport
+): void {
 
-    const securityResult = securityScanner.scanProject(projectRoot);
-    const themeResult = themeScanner.scanProject(projectRoot);
-    const duplicateResult = duplicateCodeScanner.scanProject(projectRoot);
-    const hardcodedResult = hardcodedRuleScanner.scanProject(projectRoot);
-    const pageResult = pageConnectionScanner.scanProject(projectRoot);
-    const firestoreResult = firestoreScanner.scanProject(projectRoot);
+console.log("");
+console.log("=================================");
+console.log("JEMBEEKART GOVERNANCE REPORT");
+console.log("=================================");
 
-    const violations: GovernanceViolation[] =
-      deduplicateViolations([
-        ...securityResult.violations,
-        ...themeResult.violations,
-        ...duplicateResult.violations,
-        ...hardcodedResult.violations,
-        ...pageResult.violations,
-        ...firestoreResult.violations,
-      ]);
+console.log(
+  `Generated: ${report.generatedAt}`
+);
 
-    const criticalCount = violations.filter(
-      (v) => v.severity === "CRITICAL"
-    ).length;
+console.log(
+  `Status: ${report.deploymentStatus}`
+);
 
-    const {
-      architectureScore,
-      securityScore,
-      themeScore,
-      adminControlScore,
-      profitabilityScore,
-      overallScore,
-    } = calculateScores({
-      architectureViolations:
-        duplicateResult.violations.length +
-        hardcodedResult.violations.length,
-      securityViolations:
-        securityResult.violations.length,
-      themeViolations:
-        themeResult.violations.length,
-      adminControlViolations:
-        firestoreResult.violations.length,
-      profitabilityViolations: 0,
-    });
+console.log(
+  `Overall Score: ${report.overallScore}%`
+);
 
-    return {
-      deploymentStatus:
-        criticalCount === 0 ? "PASS" : "BLOCKED",
+console.log(
+  `Violations: ${report.totalViolations}`
+);
 
-      generatedAt: new Date().toISOString(),
+console.log(
+  `Critical: ${report.criticalCount ?? 0}`
+);
 
-      version: "2.0.0",
+console.log(
+  `Errors: ${report.errorCount ?? 0}`
+);
 
-      filesScanned:
-        securityResult.filesScanned +
-        themeResult.filesScanned +
-        duplicateResult.filesScanned +
-        hardcodedResult.filesScanned,
+console.log(
+  `Warnings: ${report.warningCount ?? 0}`
+);
 
-      pagesScanned:
-        pageResult.pagesScanned,
+console.log("=================================");
 
-      collectionsScanned:
-        firestoreResult.collectionsScanned,
-
-      totalViolations: violations.length,
-
-      criticalViolations: criticalCount,
-      criticalCount,
-
-      errorCount: violations.filter(
-        (v) => v.severity === "ERROR"
-      ).length,
-
-      warningCount: violations.filter(
-        (v) => v.severity === "WARNING"
-      ).length,
-
-      duplicateCodeCount:
-        duplicateResult.violations.length,
-
-      hardcodedRuleCount:
-        hardcodedResult.violations.length,
-
-      architectureScore,
-      profitabilityScore,
-      securityScore,
-      themeScore,
-      adminControlScore,
-
-      duplicateCodeScore: 100,
-      hardcodedRuleScore: 100,
-      pageConnectionScore: 100,
-
-      overallScore,
-
-      history: [],
-
-      mlmGovernance: {
-        healthScore: 100,
-        totalOrdersAudited: 0,
-        totalCommissionPaid: 0,
-        totalCommissionReversed: 0,
-        duplicateCommissionCount: 0,
-        walletMismatchCount: 0,
-        profitLeakageCount: 0,
-      },
-
-      walletGovernance: {
-        integrityScore: 100,
-        totalUsersAudited: 0,
-        mismatchCount: 0,
-      },
-
-      mlmAuditItems: [],
-
-      violations,
-    };
-  }
+}
 }
 
 export const complianceReportGenerator =
-  new ComplianceReportGenerator();
+new ComplianceReportGenerator();
