@@ -8,7 +8,7 @@ import {
   limit
 } from "firebase/firestore";
 
-import { db } from "@/shared/firebase/config";
+import { db } from "@/firebase/config";
 
 export type AuditStatus = "PASS" | "WARNING" | "CRITICAL";
 
