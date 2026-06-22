@@ -101,6 +101,33 @@ export interface GovernanceDashboardReport {
   violations: GovernanceViolation[];
 
   history?: GovernanceHistory[];
+
+  // MLM Governance
+  mlmGovernance?: {
+    healthScore: number;
+    totalOrdersAudited: number;
+    totalCommissionPaid: number;
+    totalCommissionReversed: number;
+    duplicateCommissionCount: number;
+    walletMismatchCount: number;
+    profitLeakageCount: number;
+  };
+
+  // Wallet Governance
+  walletGovernance?: {
+    integrityScore: number;
+    totalUsersAudited: number;
+    mismatchCount: number;
+  };
+
+  // MLM Audit Table
+  mlmAuditItems?: {
+    orderId: string;
+    profit: number;
+    commission: number;
+    status: string;
+    issues?: string;
+  }[];
 }
 
 export interface GovernanceScore {
