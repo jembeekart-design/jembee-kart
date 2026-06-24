@@ -1,3 +1,5 @@
+// src/jembee-governance/reports/complianceReportGenerator.ts
+
 import {
   GovernanceDashboardReport,
 } from "../types/governance.types";
@@ -22,13 +24,9 @@ export class ComplianceReportGenerator {
 
       totalViolations: 0,
 
-      criticalViolations: 0,
       criticalCount: 0,
       errorCount: 0,
       warningCount: 0,
-
-      duplicateCodeCount: 0,
-      hardcodedRuleCount: 0,
 
       architectureScore: 100,
       profitabilityScore: 100,
@@ -36,11 +34,13 @@ export class ComplianceReportGenerator {
       themeScore: 100,
       adminControlScore: 100,
 
-      duplicateCodeScore: 100,
-      hardcodedRuleScore: 100,
-      pageConnectionScore: 100,
-
       overallScore: 100,
+
+      totalRevenueAtRisk: 0,
+      totalAffectedUsers: 0,
+
+      violations: [],
+      enterpriseViolations: [],
 
       history: [],
 
@@ -61,8 +61,6 @@ export class ComplianceReportGenerator {
       },
 
       mlmAuditItems: [],
-
-      violations: [],
     };
   }
 
@@ -76,6 +74,9 @@ export class ComplianceReportGenerator {
     console.log(`Status: ${report.deploymentStatus}`);
     console.log(`Score: ${report.overallScore}%`);
     console.log(`Violations: ${report.totalViolations}`);
+    console.log(`Critical: ${report.criticalCount ?? 0}`);
+    console.log(`Errors: ${report.errorCount ?? 0}`);
+    console.log(`Warnings: ${report.warningCount ?? 0}`);
     console.log("=================================");
   }
 }
