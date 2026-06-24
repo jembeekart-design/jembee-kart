@@ -1,206 +1,179 @@
 // src/jembee-governance/types/governance.types.ts
 
-export type SeverityLevel =
-  | "INFO"
-  | "WARNING"
-  | "ERROR"
-  | "CRITICAL";
-
-export type DeploymentStatus =
-  | "PASS"
-  | "BLOCKED";
+// ======================================================
+// 1. BASE GOVERNANCE TYPES
+// ======================================================
+export type SeverityLevel = "INFO" | "WARNING" | "ERROR" | "CRITICAL";
+export type DeploymentStatus = "PASS" | "BLOCKED";
 
 export type ViolationCategory =
-  | "ARCHITECTURE"
-  | "PROFITABILITY"
-  | "SECURITY"
-  | "THEME"
-  | "ADMIN_CONTROL"
-  | "HARDCODED_RULE"
-  | "PAGE_CONNECTION"
-  | "DUPLICATE_CODE"
-  | "WATCH_EARN"
-  | "REFERRAL"
-  | "MLM"
-  | "CREATOR"
-  | "DATABASE"
-  | "FIRESTORE"
-  | "ANTI_FRAUD"
-  | "PERFORMANCE"
-  | "CREATOR_ECONOMY"
-  | "DEPLOYMENT"
-  | "MLM_COMPLIANCE"
-  | "WALLET";
+  | "ARCHITECTURE" | "PROFITABILITY" | "SECURITY" | "THEME" | "ADMIN_CONTROL"
+  | "HARDCODED_RULE" | "PAGE_CONNECTION" | "DUPLICATE_CODE" | "WATCH_EARN" | "REFERRAL"
+  | "MLM" | "CREATOR" | "DATABASE" | "FIRESTORE" | "ANTI_FRAUD" | "PERFORMANCE"
+  | "CREATOR_ECONOMY" | "DEPLOYMENT" | "MLM_COMPLIANCE" | "WALLET";
 
 export interface GovernanceViolation {
-  id: string;
-  title: string;
-  description: string;
-  category: ViolationCategory;
-  severity: SeverityLevel;
-
-  filePath?: string;
-  pageName?: string;
-  moduleName?: string;
-  lineNumber?: number;
-
-  expectedValue?: string;
-  actualValue?: string;
-  recommendation?: string;
-
-  detectedAt: string;
+  id: string; title: string; description: string; category: ViolationCategory; severity: SeverityLevel;
+  filePath?: string; pageName?: string; moduleName?: string; lineNumber?: number;
+  expectedValue?: string; actualValue?: string; recommendation?: string; detectedAt: string;
 }
 
-export interface GovernanceHistory {
-  scanDate: string;
-  overallScore: number;
+export interface GovernanceHistory { scanDate: string; overallScore: number; }
+
+// ======================================================
+// 2. ENTERPRISE TYPES (JembeeKart Master Model)
+// ======================================================
+export type GovernancePriority = "CRITICAL" | "HIGH" | "MEDIUM" | "LOW";
+export type GovernanceFixStatus = "PENDING" | "IN_PROGRESS" | "FIXED";
+export type GovernanceFinalStatus = "PASS" | "WARNING" | "FAIL" | "CRITICAL";
+export type FeatureCategory = "ECOMMERCE" | "REFERRAL" | "WATCH_EARN" | "CREATOR" | "ADS";
+
+export interface JembeeKartGovernanceReport {
+  // Audit Standard
+  auditId: string; // GOV-2026-0001
+  auditSequence?: number;
+  scannerName: string; scannerVersion: string;
+  problem: string; rootCause?: string;
+  
+  // Location & Routing
+  fileName: string; folderPath: string; routePath?: string;
+  exactLineNumber?: number; pageName: string; moduleName: string;
+  
+  // Connection Analysis
+  currentConnection?: string;
+  requiredConnection?: string;
+  missingConnectionSuggestion?: string;
+  dependencyPages?: string[];
+  dependencyCollections?: string[];
+  dependencyApis?: string[];
+  
+  // Business Model Impact (0-100)
+  ecommerceImpact?: number;
+  referralImpact?: number;
+  watchEarnImpact?: number;
+  creatorEconomyImpact?: number;
+  advertisingImpact?: number;
+  walletImpact?: number;
+  
+  // Fix Information
+  changeRequired?: string;
+  exactFixLocation?: string;
+  suggestedCode?: string;
+  autoFixAvailable?: boolean;
+  autoFixScript?: string;
+  autoFixConfidence?: number;
+  
+  // Testing & Governance Score
+  testingRequired?: boolean;
+  testCases?: string[];
+  expectedGovernanceScoreGain?: number;
+  rescanRequired?: boolean;
+  
+  // Firestore & Security & Admin
+  firestoreCollectionsRequired?: string[];
+  authenticationCheck?: boolean;
+  rolePermissionCheck?: boolean;
+  themeEngineConnected?: boolean;
+  analyticsConnected?: boolean;
+  auditLogAvailable?: boolean;
+  
+  // Enterprise Tracking
+  jiraTicketId?: string; slaDueDate?: string; sprintAssigned?: string;
+  ownerEmail?: string; slackChannel?: string;
+  
+  // Metadata & Status
+  featureCategory: FeatureCategory;
+  priority: GovernancePriority;
+  severityScore: number;
+  revenueImpact?: number;
+  profitLeakageRisk?: number;
+  gdprImpact?: boolean; pciDssImpact?: boolean;
+  adminControlled?: boolean;
+  fixStatus: GovernanceFixStatus;
+  finalStatus: GovernanceFinalStatus;
+  detectedDate: string;
 }
 
+export interface JembeeKartAuditMaster {
+  batchId: string;
+  totalReports: number;
+  criticalIssues: number;
+  scanTimestamp: string;
+  reports: JembeeKartGovernanceReport[];
+  summary: {
+    totalRevenueAtRisk: number;
+    totalAffectedUsers: number;
+    estimatedFixManHours: number;
+  };
+}
+
+// ======================================================
+// 3. MASTER DASHBOARD INTERFACE
+// ======================================================
 export interface GovernanceDashboardReport {
-  // Core
   deploymentStatus: DeploymentStatus;
   generatedAt: string;
-
   version?: string;
-  scanDurationMs?: number;
-  blockedReason?: string;
-
-  // Scanner Metadata
+  
   filesScanned: number;
   pagesScanned: number;
   collectionsScanned: number;
-
-  // Totals
   totalViolations: number;
 
-  // Legacy Support
-  criticalViolations?: number;
+  overallScore: number;
+  architectureScore: number;
+  profitabilityScore: number;
+  securityScore: number;
+  themeScore: number;
+  adminControlScore: number;
 
-  // Dashboard Counters
+  violations: GovernanceViolation[];
+  enterpriseViolations: JembeeKartGovernanceReport[];
+  enterpriseAudit?: JembeeKartAuditMaster;
+
+  totalRevenueAtRisk: number;
+  totalAffectedUsers: number;
   criticalCount?: number;
   errorCount?: number;
   warningCount?: number;
 
-  duplicateCodeCount?: number;
-  hardcodedRuleCount?: number;
-
-  // Scores
-  architectureScore: number;
-  profitabilityScore: number;
-  securityScore: number;
-  themeScore: number;
-  adminControlScore: number;
-
-  duplicateCodeScore?: number;
-  hardcodedRuleScore?: number;
-  pageConnectionScore?: number;
-
-  overallScore: number;
-
-  // Data
-  violations: GovernanceViolation[];
-
   history?: GovernanceHistory[];
-
-  // MLM Governance
   mlmGovernance?: {
-    healthScore: number;
-    totalOrdersAudited: number;
-    totalCommissionPaid: number;
-    totalCommissionReversed: number;
-    duplicateCommissionCount: number;
-    walletMismatchCount: number;
-    profitLeakageCount: number;
+    healthScore: number; totalOrdersAudited: number; totalCommissionPaid: number;
+    totalCommissionReversed: number; duplicateCommissionCount: number; 
+    walletMismatchCount: number; profitLeakageCount: number;
   };
-
-  // Wallet Governance
-  walletGovernance?: {
-    integrityScore: number;
-    totalUsersAudited: number;
-    mismatchCount: number;
-  };
-
-  // MLM Audit Table
-  mlmAuditItems?: {
-    orderId: string;
-    profit: number;
-    commission: number;
-    status: string;
-    issues?: string;
-  }[];
+  walletGovernance?: { integrityScore: number; totalUsersAudited: number; mismatchCount: number; };
+  mlmAuditItems?: { orderId: string; profit: number; commission: number; status: string; issues?: string; }[];
 }
 
-export interface GovernanceScore {
-  architectureScore: number;
-  profitabilityScore: number;
-  securityScore: number;
-  themeScore: number;
-  adminControlScore: number;
-  overallScore: number;
+// ======================================================
+// 4. SCANNER CONTRACTS & UTILITIES
+// ======================================================
+export interface GovernanceScanner {
+  scannerName: string;
+  scan(context: ScannerContext): Promise<JembeeKartGovernanceReport[]>;
 }
 
-export interface ScanResult {
-  totalFilesScanned: number;
-  totalPagesScanned: number;
-  totalCollectionsScanned: number;
-  totalViolations: number;
-  violations: GovernanceViolation[];
+export interface ScannerContext { projectRoot: string; scanTime: string; }
+
+export interface GovernanceScannerConfig {
+  enableDeepScan: boolean;
+  includePaths: string[];
+  excludePaths: string[];
+  maxConcurrency: number;
 }
 
-export interface ProfitabilityReport {
-  orderProfit: number;
-  cashbackExpense: number;
-  referralExpense: number;
-  rewardExpense: number;
-  creatorExpense: number;
-  protectionFundExpense: number;
-  totalExpense: number;
-  netRemainingProfit: number;
-  profitable: boolean;
+export interface GovernanceFixRequest {
+  auditId: string;
+  targetBranch: string;
+  applyAutoFix: boolean;
+  developerNotes?: string;
 }
 
-export interface SecurityReport {
-  apiKeyExposed: boolean;
-  secretFound: boolean;
-  adminBypassDetected: boolean;
-  firestoreRulesMissing: boolean;
-  totalSecurityIssues: number;
-}
-
-export interface ThemeReport {
-  pageName: string;
-  adminThemeConnected: boolean;
-  hardcodedColorsFound: boolean;
-  hardcodedFontsFound: boolean;
-  passed: boolean;
-}
-
-export interface PageConnectionReport {
-  pageName: string;
-  routeExists: boolean;
-  navbarConnected: boolean;
-  footerConnected: boolean;
-  deepLinkConnected: boolean;
-  passed: boolean;
-}
-
-export interface DuplicateCodeReport {
-  moduleName: string;
-  duplicateFiles: string[];
-  similarityPercentage: number;
-  passed: boolean;
-}
-
-export interface FirestoreCollectionReport {
-  collectionName: string;
-  exists: boolean;
-  readRuleExists: boolean;
-  writeRuleExists: boolean;
-  indexesConfigured: boolean;
-  passed: boolean;
-}
-
-export interface ScannerContext {
-  projectRoot: string;
-  scanTime: string;
+export interface GovernanceFixResult {
+  success: boolean;
+  message: string;
+  commitHash?: string;
+  error?: string;
 }
