@@ -177,3 +177,26 @@ export interface GovernanceFixResult {
   commitHash?: string;
   error?: string;
 }
+// ======================================================
+// 6. PAGE CONNECTION TYPES (Added at the end of file)
+// ======================================================
+
+export interface PageConnectionReport {
+  pageName: string;
+  routeExists: boolean;
+  navbarConnected: boolean;
+  footerConnected: boolean;
+  deepLinkConnected: boolean;
+  
+  // Naye Fields (Master Model Integration)
+  requiredParentRoute?: string;
+  actualParentRoute?: string;
+  businessFlow?: string;
+  businessImpact?: string;
+  missingConnectionSuggestion?: string;
+  priority?: "CRITICAL" | "HIGH" | "MEDIUM" | "LOW";
+  expectedGovernanceScoreGain?: number;
+  
+  passed: boolean;
+}
+
