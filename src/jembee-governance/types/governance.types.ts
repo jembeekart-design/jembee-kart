@@ -194,7 +194,7 @@ export interface PageConnectionReport {
   businessFlow?: string;
   businessImpact?: string;
   missingConnectionSuggestion?: string;
-  priority?: "CRITICAL" | "HIGH" | "MEDIUM" | "LOW";
+  priority?: GovernancePriority;
   expectedGovernanceScoreGain?: number;
   
   passed: boolean;
