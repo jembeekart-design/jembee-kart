@@ -1,101 +1,72 @@
 // src/jembee-governance/config/routeRules.ts
 
-import { GovernancePriority } from "../types/governance.types";
+import { 
+  GovernancePriority, 
+  FeatureCategory 
+} from "../types/governance.types";
 
 export interface RouteRule {
-requiredParentRoute?: string;
-businessFlow: string;
-businessImpact: string;
-priority: GovernancePriority;
-expectedGovernanceScoreGain: number;
+  requiredParentRoute: string;
+  businessFlow: string;
+  businessImpact: string;
+  priority: GovernancePriority;
+  expectedGovernanceScoreGain: number;
+  feature?: FeatureCategory;
 }
 
-export const routeRules: Record<string, RouteRule> = {
-// ==================================================
-// ECOMMERCE FLOW
-// ==================================================
+export const routeRules = {
+  // MLM CORE
+  "/mlm/dashboard": {
+    requiredParentRoute: "/",
+    businessFlow: "Home → MLM Dashboard",
+    businessImpact: "Referral Control Center",
+    priority: "CRITICAL",
+    expectedGovernanceScoreGain: 10,
+    feature: "REFERRAL",
+  },
 
-"/cart": {
-requiredParentRoute: "/",
-businessFlow: "Home → Product → Cart",
-businessImpact: "Customer Purchase Journey",
-priority: "CRITICAL",
-expectedGovernanceScoreGain: 8,
-},
+  "/mlm/wallet": {
+    requiredParentRoute: "/mlm/dashboard",
+    businessFlow: "Dashboard → Wallet",
+    businessImpact: "Commission & Reward Management",
+    priority: "CRITICAL",
+    expectedGovernanceScoreGain: 8,
+    feature: "REFERRAL",
+  },
 
-"/checkout": {
-requiredParentRoute: "/cart",
-businessFlow: "Cart → Checkout → Order Success",
-businessImpact: "Revenue Generation",
-priority: "CRITICAL",
-expectedGovernanceScoreGain: 10,
-},
+  "/mlm/orders": {
+    requiredParentRoute: "/mlm/dashboard",
+    businessFlow: "Dashboard → Orders",
+    businessImpact: "Revenue Tracking",
+    priority: "CRITICAL",
+    expectedGovernanceScoreGain: 8,
+    feature: "ECOMMERCE",
+  },
 
-"/order-success": {
-requiredParentRoute: "/checkout",
-businessFlow: "Checkout → Order Success",
-businessImpact: "Order Completion",
-priority: "CRITICAL",
-expectedGovernanceScoreGain: 8,
-},
+  "/mlm/team-business": {
+    requiredParentRoute: "/mlm/dashboard",
+    businessFlow: "Dashboard → Team Business",
+    businessImpact: "Team Growth Monitoring",
+    priority: "HIGH",
+    expectedGovernanceScoreGain: 5,
+    feature: "REFERRAL",
+  },
 
-// ==================================================
-// ACCOUNT FLOW
-// ==================================================
+  "/mlm/support": {
+    requiredParentRoute: "/mlm/dashboard",
+    businessFlow: "Dashboard → Support",
+    businessImpact: "Customer Resolution",
+    priority: "MEDIUM",
+    expectedGovernanceScoreGain: 3,
+    feature: "ECOMMERCE",
+  },
 
-"/account": {
-requiredParentRoute: "/",
-businessFlow: "Home → Account",
-businessImpact: "User Management",
-priority: "HIGH",
-expectedGovernanceScoreGain: 5,
-},
-
-"/account/address": {
-requiredParentRoute: "/account",
-businessFlow: "Account → Address",
-businessImpact: "Shipping Management",
-priority: "HIGH",
-expectedGovernanceScoreGain: 5,
-},
-
-// ==================================================
-// WATCH & EARN FLOW
-// ==================================================
-
-"/mlm/watch-earn": {
-requiredParentRoute: "/mlm/dashboard",
-businessFlow: "Dashboard → Watch Earn",
-businessImpact: "Retention Engine",
-priority: "HIGH",
-expectedGovernanceScoreGain: 6,
-},
-
-"/mlm/watch-earn/upload": {
-requiredParentRoute: "/mlm/watch-earn",
-businessFlow: "Watch Earn → Upload",
-businessImpact: "Creator Growth",
-priority: "HIGH",
-expectedGovernanceScoreGain: 6,
-},
-
-// ==================================================
-// REFERRAL FLOW
-// ==================================================
-
-"/mlm/network": {
-requiredParentRoute: "/mlm/dashboard",
-businessFlow: "Dashboard → Network",
-businessImpact: "Referral Growth",
-priority: "HIGH",
-expectedGovernanceScoreGain: 5,
-},
-
-"/mlm/ranks": {
-requiredParentRoute: "/mlm/dashboard",
-businessFlow: "Dashboard → Rank System",
-businessImpact: "Referral Motivation",
-priority: "MEDIUM",
-expectedGovernanceScoreGain: 4,
-},
-};
+  "/mlm/watch-earn/upload": {
+    requiredParentRoute: "/mlm/watch-earn",
+    businessFlow: "Watch Earn → Upload",
+    businessImpact: "Creator Economy Content Ingestion",
+    priority: "CRITICAL",
+    expectedGovernanceScoreGain: 15,
+    feature: "WATCH_EARN",
+  },
+} satisfies Record<string, RouteRule>;
