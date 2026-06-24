@@ -43,6 +43,46 @@ const governancePages = [
     name: "Orders Audit",
     href: "/admin/governance/pages/orders",
   },
+{
+  id: "009",
+  name: "Account Audit",
+  href: "/admin/governance/pages/account",
+}
+{
+  id: "010",
+  name: "Address Audit",
+  href: "/admin/governance/pages/address",
+}
+{
+  id: "011",
+  name: "Affiliate Audit",
+  href: "/admin/governance/pages/affiliate",
+}
+{
+  id: "012",
+  name: "Ai-banner Audit",
+  href: "/admin/governance/pages/ai-banner",
+}
+{
+  id: "013",
+  name: "Cart Audit",
+  href: "/admin/governance/pages/cart",
+}
+{
+  id: "014",
+  name: "Cashback Audit",
+  href: "/admin/governance/pages/cashback",
+}
+{
+  id: "015",
+  name: "Category Audit",
+  href: "/admin/governance/pages/category",
+}
+{
+  id: "016",
+  name: "Checkout Audit",
+  href: "/admin/governance/pages/checkout",
+}
 ];
 
 export default function GovernanceAllPage() {
