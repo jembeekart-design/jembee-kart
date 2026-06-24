@@ -183,6 +183,7 @@ export interface GovernanceFixResult {
 
 export interface PageConnectionReport {
   pageName: string;
+  route: string;
   routeExists: boolean;
   navbarConnected: boolean;
   footerConnected: boolean;
