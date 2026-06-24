@@ -191,7 +191,7 @@ export interface PageConnectionReport {
   
   // Naye Fields (Master Model Integration)
   requiredParentRoute?: string;
-  actualParentRoute?: string;
+  actualParentRoutes?: string;
   businessFlow?: string;
   businessImpact?: string;
   missingConnectionSuggestion?: string;
