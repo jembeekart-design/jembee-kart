@@ -216,3 +216,20 @@ export interface DuplicateCodeReport {
 
   passed: boolean;
 }
+// ======================================================
+// 8. SECURITY TYPES
+// ======================================================
+
+export interface SecurityReport {
+  moduleName: string;
+  filePath: string;
+
+  apiKeysFound: number;
+  secretsFound: number;
+  hardcodedAdminRolesFound: number;
+
+  priority?: GovernancePriority;
+  recommendation?: string;
+
+  passed: boolean;
+}
