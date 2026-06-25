@@ -311,6 +311,8 @@ export interface GovernanceDashboardReport {
 
   generatedAt: string;
 
+  deploymentStatus: DeploymentStatus;
+  
   configuration: unknown;
 
   health: GovernanceHealth;
