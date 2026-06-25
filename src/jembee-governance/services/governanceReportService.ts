@@ -74,6 +74,9 @@ export class GovernanceReportService {
       deploymentStatus: criticalCount === 0 ? "PASS" : "BLOCKED",
       version: "2.0.0",
 
+      totalRevenueAtRisk: 0,
+  totalAffectedUsers: 0,
+  enterpriseViolations: [],
       // Metadata
       filesScanned: 
         securityResult.filesScanned + 
