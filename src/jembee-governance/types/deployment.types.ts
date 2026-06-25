@@ -1,8 +1,34 @@
+// src/jembee-governance/types/deployment.types.ts
+
+import { GovernanceViolation } from "./governance.types";
+
+// ======================================================
+// DEPLOYMENT SCAN INPUT
+// ======================================================
+
+export interface DeploymentScanInput {
+
+  profitabilityViolations?: GovernanceViolation[];
+
+  walletViolations?: GovernanceViolation[];
+
+  mlmViolations?: GovernanceViolation[];
+
+  watchEarnViolations?: GovernanceViolation[];
+
+  antiFraudViolations?: GovernanceViolation[];
+
+  creatorViolations?: GovernanceViolation[];
+
+  firestoreViolations?: GovernanceViolation[];
+
+  adminControlViolations?: GovernanceViolation[];
+
+}
+
 // ======================================================
 // DEPLOYMENT SCAN RESULT
 // ======================================================
-
-import { GovernanceViolation } from "./governance.types";
 
 export interface DeploymentScanResult {
 
@@ -12,7 +38,7 @@ export interface DeploymentScanResult {
   deploymentAllowed: boolean;
 
   /**
-   * Ready for Production
+   * Ready For Production
    */
   ready: boolean;
 
@@ -30,7 +56,7 @@ export interface DeploymentScanResult {
   infoIssues: number;
 
   /**
-   * Deployment Block Reasons
+   * Block Reasons
    */
   blockedReasons: string[];
 
@@ -40,8 +66,35 @@ export interface DeploymentScanResult {
   violations: GovernanceViolation[];
 
   /**
-   * Report Metadata
+   * Report Time
    */
   generatedAt: string;
 
 }
+
+// ======================================================
+// DEPLOYMENT SUMMARY
+// ======================================================
+
+export interface DeploymentSummary {
+
+  deploymentAllowed: boolean;
+
+  ready: boolean;
+
+  totalIssues: number;
+
+  blockedReasons: string[];
+
+  generatedAt: string;
+
+}
+
+// ======================================================
+// DEPLOYMENT STATUS
+// ======================================================
+
+export type DeploymentStatus =
+  | "READY"
+  | "WARNING"
+  | "BLOCKED";
