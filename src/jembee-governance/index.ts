@@ -42,20 +42,20 @@ export class JembeeGovernanceEngine {
       console.warn("⚠ GOVERNANCE VIOLATIONS DETECTED");
 
       console.warn(
-        `Critical Issues: ${report.statistics.critical}
-      );
+  `Critical Issues: ${report.statistics.critical}`
+);
+
+     console.warn(
+  `Error Issues: ${report.statistics.errors}`
+);
 
       console.warn(
-        `Error Issues: ${report.statistics.errors}
-      );
+  `Warning Issues: ${report.statistics.warnings}`
+);
 
       console.warn(
-        `Warning Issues: ${report.statistics.warnings}
-      );
-
-      console.warn(
-        `Total Violations: ${report.statistics.totalViolations}
-      );
+  `Total Violations: ${report.statistics.totalViolations}`
+);
 
       console.warn(
         "Deployment allowed (Warn Mode)"
