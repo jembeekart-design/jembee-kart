@@ -1,15 +1,20 @@
-// src/firestore/businessRules.ts
-
 import {
   doc,
   getDoc,
-  Firestore,
+  Timestamp,
 } from "firebase/firestore";
 
 import { db } from "./firebase";
 
 // ======================================================
-// TYPES
+// JEMBEEKART BUSINESS RULES ENGINE
+// Production Ready
+// Part 1
+// Imports + Types + Default Configuration
+// ======================================================
+
+// ======================================================
+// PROFITABILITY
 // ======================================================
 
 export interface ProfitabilityRules {
@@ -21,6 +26,10 @@ export interface ProfitabilityRules {
   protectionFundExpense: number;
 }
 
+// ======================================================
+// REFERRAL
+// ======================================================
+
 export interface ReferralRules {
   level1Commission: number;
   level2Commission: number;
@@ -28,11 +37,19 @@ export interface ReferralRules {
   level4Commission: number;
 }
 
+// ======================================================
+// WATCH & EARN
+// ======================================================
+
 export interface WatchEarnRules {
   videosRequired: number;
   rewardAmount: number;
   requiredSales: number;
 }
+
+// ======================================================
+// WALLET
+// ======================================================
 
 export interface WalletRules {
   minimumWithdrawal: number;
@@ -40,10 +57,42 @@ export interface WalletRules {
   kycRequired: boolean;
 }
 
+// ======================================================
+// CREATOR ECONOMY
+// ======================================================
+
 export interface CreatorEconomyRules {
   creatorRevenueShare: number;
   affiliateRevenueShare: number;
 }
+
+// ======================================================
+// FEATURE FLAGS
+// ======================================================
+
+export interface FeatureFlags {
+  ecommerceEnabled: boolean;
+  referralEnabled: boolean;
+  watchEarnEnabled: boolean;
+  creatorEconomyEnabled: boolean;
+  cashbackEnabled: boolean;
+  adsEnabled: boolean;
+  walletEnabled: boolean;
+}
+
+// ======================================================
+// METADATA
+// ======================================================
+
+export interface BusinessRulesMetadata {
+  version: string;
+  updatedAt: Timestamp | null;
+  updatedBy: string;
+}
+
+// ======================================================
+// COMPLETE CONFIG
+// ======================================================
 
 export interface BusinessRulesConfig {
   profitability: ProfitabilityRules;
@@ -51,80 +100,62 @@ export interface BusinessRulesConfig {
   watchEarn: WatchEarnRules;
   wallet: WalletRules;
   creatorEconomy: CreatorEconomyRules;
+  featureFlags: FeatureFlags;
+  metadata: BusinessRulesMetadata;
 }
 
 // ======================================================
-// SERVICE
+// DEFAULT CONFIG
+// Used if Firestore is unavailable
 // ======================================================
 
-class BusinessRulesService {
+export const DEFAULT_BUSINESS_RULES: BusinessRulesConfig = {
+  profitability: {
+    orderProfit: 100,
+    cashbackExpense: 10,
+    referralExpense: 10,
+    rewardExpense: 10,
+    creatorExpense: 5,
+    protectionFundExpense: 5,
+  },
 
-  private readonly collection = "business_rules";
+  referral: {
+    level1Commission: 10,
+    level2Commission: 5,
+    level3Commission: 2,
+    level4Commission: 1,
+  },
 
-  async getProfitabilityRules(): Promise<ProfitabilityRules> {
-    const snapshot = await getDoc(
-      doc(db, this.collection, "profitability")
-    );
+  watchEarn: {
+    videosRequired: 100,
+    rewardAmount: 50,
+    requiredSales: 5,
+  },
 
-    return snapshot.data() as ProfitabilityRules;
-  }
+  wallet: {
+    minimumWithdrawal: 200,
+    withdrawalCharge: 0,
+    kycRequired: true,
+  },
 
-  async getReferralRules(): Promise<ReferralRules> {
-    const snapshot = await getDoc(
-      doc(db, this.collection, "referral")
-    );
+  creatorEconomy: {
+    creatorRevenueShare: 20,
+    affiliateRevenueShare: 10,
+  },
 
-    return snapshot.data() as ReferralRules;
-  }
+  featureFlags: {
+    ecommerceEnabled: true,
+    referralEnabled: true,
+    watchEarnEnabled: true,
+    creatorEconomyEnabled: true,
+    cashbackEnabled: true,
+    adsEnabled: true,
+    walletEnabled: true,
+  },
 
-  async getWatchEarnRules(): Promise<WatchEarnRules> {
-    const snapshot = await getDoc(
-      doc(db, this.collection, "watchEarn")
-    );
-
-    return snapshot.data() as WatchEarnRules;
-  }
-
-  async getWalletRules(): Promise<WalletRules> {
-    const snapshot = await getDoc(
-      doc(db, this.collection, "wallet")
-    );
-
-    return snapshot.data() as WalletRules;
-  }
-
-  async getCreatorEconomyRules(): Promise<CreatorEconomyRules> {
-    const snapshot = await getDoc(
-      doc(db, this.collection, "creatorEconomy")
-    );
-
-    return snapshot.data() as CreatorEconomyRules;
-  }
-
-  async getAllRules(): Promise<BusinessRulesConfig> {
-    const [
-      profitability,
-      referral,
-      watchEarn,
-      wallet,
-      creatorEconomy,
-    ] = await Promise.all([
-      this.getProfitabilityRules(),
-      this.getReferralRules(),
-      this.getWatchEarnRules(),
-      this.getWalletRules(),
-      this.getCreatorEconomyRules(),
-    ]);
-
-    return {
-      profitability,
-      referral,
-      watchEarn,
-      wallet,
-      creatorEconomy,
-    };
-  }
-}
-
-export const businessRules =
-  new BusinessRulesService();
+  metadata: {
+    version: "1.0.0",
+    updatedAt: null,
+    updatedBy: "system",
+  },
+};
