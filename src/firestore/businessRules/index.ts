@@ -11,7 +11,6 @@ export * from "./cache";
 export * from "./loader";
 export * from "./service";
 export * from "./sync";
-export * from "./metrics";
 export * from "./audit";
 export * from "./security";
 export * from "./scheduler";
