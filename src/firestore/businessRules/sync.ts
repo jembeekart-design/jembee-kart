@@ -4,7 +4,7 @@ import {
   Unsubscribe,
 } from "firebase/firestore";
 
-import { db } from "../firebase";
+import { db } from "../../firebase/config";
 
 import {
   BUSINESS_RULES_COLLECTION,
