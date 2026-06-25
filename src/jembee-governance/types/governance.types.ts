@@ -480,6 +480,42 @@ IntegrationTestReport
 E2ETestReport
 RegressionTestReport
 TestCoverageReport
+
+// ======================================================
+// PART 2
+// SCANNER CONTRACTS & ENGINE TYPES
+// ======================================================
+
+export interface GovernanceScanner {
+  scannerName: string;
+  scan(context: ScannerContext): Promise<JembeeKartGovernanceReport[]>;
+}
+
+export interface ScannerContext {
+  projectRoot: string;
+  scanTime: string;
+}
+
+export interface GovernanceScannerConfig {
+  enableDeepScan: boolean;
+  includePaths: string[];
+  excludePaths: string[];
+  maxConcurrency: number;
+}
+
+export interface GovernanceFixRequest {
+  auditId: string;
+  targetBranch: string;
+  applyAutoFix: boolean;
+  developerNotes?: string;
+}
+
+export interface GovernanceFixResult {
+  success: boolean;
+  message: string;
+  commitHash?: string;
+  error?: string;
+}
 // ======================================================
 // PART 3
 // ENTERPRISE SCANNER REPORTS
