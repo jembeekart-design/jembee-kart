@@ -5,7 +5,6 @@ import { Timestamp } from "firebase/firestore";
 // ======================================================
 
 export interface ProfitabilityRules {
-  orderProfit: number;
   cashbackExpense: number;
   referralExpense: number;
   rewardExpense: number;
@@ -113,7 +112,7 @@ export interface CacheEntry<T> {
 export interface BusinessRulesHealth {
   healthy: boolean;
   version: string;
-  environment: string;
+  environment: "development" | "staging" | "production";
   lastUpdated: string | null;
 }
 
