@@ -55,13 +55,23 @@ export class PageConnectionScanner {
       const deepLinkConnected = navbarConnected || footerConnected;
 
       const report: PageConnectionReport = {
-        pageName: route,
-        routeExists: true,
-        navbarConnected,
-        footerConnected,
-        deepLinkConnected,
-        passed: deepLinkConnected,
-      };
+  pageName: route,
+  route: route,
+  routeExists: true,
+  navbarConnected,
+  footerConnected,
+  deepLinkConnected,
+
+  requiredParentRoute: undefined,
+  actualParentRoutes: [],
+  businessFlow: undefined,
+  businessImpact: undefined,
+  missingConnectionSuggestion: undefined,
+  priority: undefined,
+  expectedGovernanceScoreGain: undefined,
+
+  passed: deepLinkConnected,
+};
 
       reports.push(report);
 
