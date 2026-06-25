@@ -143,11 +143,6 @@ export class GovernanceStatusService {
       return this.cache;
     }
 
-    // ============================================
-    // TODO
-    // Replace with Firestore Aggregation
-    // ============================================
-
     const violations: GovernanceViolation[] = [];
 
     const criticalIssues =
