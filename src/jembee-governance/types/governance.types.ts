@@ -178,7 +178,134 @@ export interface JembeeKartGovernanceReport {
   fixStatus: GovernanceFixStatus;
 
   finalStatus: GovernanceFinalStatus;
+  
+// ======================================================
+// PART 1
+// BASE TYPES & CORE INTERFACES
+// ======================================================
 
+export interface JembeeKartGovernanceReport {
+
+  // Identification
+  ...
+
+  // Problem
+  ...
+
+  // Location
+  ...
+
+  // Connection Analysis
+  ...
+
+  // Business Impact
+  ...
+
+  // Fix Information
+  ...
+
+  // Testing
+  ...
+
+  // Firestore & Security
+  ...
+
+  // Enterprise Tracking
+  ...
+
+  // Metadata & Status
+  ...
+
+  // ======================================================
+  // TIMESTAMPS
+  // ======================================================
+
+  createdAt?: string;
+  updatedAt?: string;
+  resolvedAt?: string;
+  closedAt?: string;
+
+  // ======================================================
+  // IDENTIFIERS
+  // ======================================================
+
+  issueId?: string;
+  parentIssueId?: string;
+  correlationId?: string;
+
+  // ======================================================
+  // SOURCE INFORMATION
+  // ======================================================
+
+  sourceScanner?: string;
+  scannerVersionHash?: string;
+  scanMachine?: string;
+
+  // ======================================================
+  // EXECUTION
+  // ======================================================
+
+  executionOrder?: number;
+  retryCount?: number;
+  executionStatus?: "PENDING" | "RUNNING" | "COMPLETED" | "FAILED";
+
+  // ======================================================
+  // SEVERITY DETAILS
+  // ======================================================
+
+  severityLabel?: string;
+  priorityScore?: number;
+  riskScore?: number;
+  confidenceScore?: number;
+
+  // ======================================================
+  // FILE INFORMATION
+  // ======================================================
+
+  fileSize?: number;
+  fileExtension?: string;
+  language?: string;
+  repository?: string;
+
+  // ======================================================
+  // CI/CD
+  // ======================================================
+
+  pipelineId?: string;
+  workflowName?: string;
+  buildUrl?: string;
+  deploymentUrl?: string;
+
+  // ======================================================
+  // NOTIFICATIONS
+  // ======================================================
+
+  notificationSent?: boolean;
+  notificationChannel?: string;
+  notificationRecipients?: string[];
+
+  // ======================================================
+  // APPROVAL
+  // ======================================================
+
+  approvalRequired?: boolean;
+  approved?: boolean;
+  approvalDate?: string;
+
+  // ======================================================
+  // ROOT CAUSE ANALYSIS
+  // ======================================================
+
+  rootCauseCategory?: string;
+  failureReason?: string;
+  impactSummary?: string;
+
+  // ======================================================
+  // METADATA
+  // ======================================================
+
+  metadata?: Record<string, unknown>;
+}
 }
 // ======================================================
 // JEMBEEKART AUDIT MASTER
