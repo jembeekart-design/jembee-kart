@@ -107,7 +107,7 @@ export interface GovernanceViolation {
 
   severity: SeverityLevel;
 
-  priority: GovernancePriority;
+  priority?: GovernancePriority;
 
   filePath?: string;
 
