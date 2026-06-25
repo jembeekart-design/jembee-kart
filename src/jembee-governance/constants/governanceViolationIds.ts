@@ -2,10 +2,20 @@
 
 // ======================================================
 // JEMBEEKART GOVERNANCE ENGINE
-// VIOLATION IDS
+// SHARED GOVERNANCE VIOLATION IDS
 // ======================================================
 
-export const GOVERNANCE_VIOLATION_IDS = {
+export const GOVERNANCE_VIOLATION_IDS = Object.freeze({
+
+  // ====================================================
+  // ARCHITECTURE
+  // ====================================================
+
+  ARCHITECTURE_RULE_FAILED:
+    "ARCHITECTURE_RULE_FAILED",
+
+  ARCHITECTURE_LAYER_VIOLATION:
+    "ARCHITECTURE_LAYER_VIOLATION",
 
   // ====================================================
   // PROFITABILITY
@@ -32,6 +42,9 @@ export const GOVERNANCE_VIOLATION_IDS = {
   CREATOR_EXPENSE_HIGH:
     "CREATOR_EXPENSE_HIGH",
 
+  PROTECTION_FUND_HIGH:
+    "PROTECTION_FUND_HIGH",
+
   // ====================================================
   // WALLET
   // ====================================================
@@ -39,14 +52,14 @@ export const GOVERNANCE_VIOLATION_IDS = {
   WALLET_UNSAFE_UPDATE:
     "WALLET_UNSAFE_UPDATE",
 
-  WITHDRAWAL_KYC_MISSING:
-    "WITHDRAWAL_KYC_MISSING",
+  WALLET_MISMATCH:
+    "WALLET_MISMATCH",
 
   NEGATIVE_WALLET_BALANCE:
     "NEGATIVE_WALLET_BALANCE",
 
-  WALLET_MISMATCH:
-    "WALLET_MISMATCH",
+  WITHDRAWAL_KYC_MISSING:
+    "WITHDRAWAL_KYC_MISSING",
 
   // ====================================================
   // MLM
@@ -64,6 +77,9 @@ export const GOVERNANCE_VIOLATION_IDS = {
   MLM_DUPLICATE_COMMISSION:
     "MLM_DUPLICATE_COMMISSION",
 
+  MLM_PARENT_CHAIN_INVALID:
+    "MLM_PARENT_CHAIN_INVALID",
+
   // ====================================================
   // WATCH & EARN
   // ====================================================
@@ -77,28 +93,24 @@ export const GOVERNANCE_VIOLATION_IDS = {
   WATCH_EARN_UNLOCK_FAILED:
     "WATCH_EARN_UNLOCK_FAILED",
 
+  WATCH_EARN_DUPLICATE_REWARD:
+    "WATCH_EARN_DUPLICATE_REWARD",
+
   // ====================================================
   // FIRESTORE
   // ====================================================
 
-  FIRESTORE_RULE_MISSING:
-    "FIRESTORE_RULE_MISSING",
-
   FIRESTORE_COLLECTION_MISSING:
     "FIRESTORE_COLLECTION_MISSING",
+
+  FIRESTORE_RULE_MISSING:
+    "FIRESTORE_RULE_MISSING",
 
   FIRESTORE_INDEX_MISSING:
     "FIRESTORE_INDEX_MISSING",
 
-  // ====================================================
-  // ADMIN CONTROL
-  // ====================================================
-
-  ADMIN_CONTROL_MISSING:
-    "ADMIN_CONTROL_MISSING",
-
-  FEATURE_FLAG_MISSING:
-    "FEATURE_FLAG_MISSING",
+  FIRESTORE_PERMISSION_MISSING:
+    "FIRESTORE_PERMISSION_MISSING",
 
   // ====================================================
   // SECURITY
@@ -114,6 +126,53 @@ export const GOVERNANCE_VIOLATION_IDS = {
     "ADMIN_BYPASS_DETECTED",
 
   // ====================================================
+  // ADMIN CONTROL
+  // ====================================================
+
+  ADMIN_CONTROL_MISSING:
+    "ADMIN_CONTROL_MISSING",
+
+  FEATURE_FLAG_MISSING:
+    "FEATURE_FLAG_MISSING",
+
+  // ====================================================
+  // THEME
+  // ====================================================
+
+  THEME_NOT_ADMIN_CONTROLLED:
+    "THEME_NOT_ADMIN_CONTROLLED",
+
+  HARDCODED_THEME_COLOR:
+    "HARDCODED_THEME_COLOR",
+
+  // ====================================================
+  // PAGE CONNECTION
+  // ====================================================
+
+  BROKEN_PAGE_CONNECTION:
+    "BROKEN_PAGE_CONNECTION",
+
+  ORPHAN_PAGE:
+    "ORPHAN_PAGE",
+
+  // ====================================================
+  // DUPLICATE CODE
+  // ====================================================
+
+  DUPLICATE_CODE_FOUND:
+    "DUPLICATE_CODE_FOUND",
+
+  // ====================================================
+  // CREATOR ECONOMY
+  // ====================================================
+
+  CREATOR_REVENUE_INVALID:
+    "CREATOR_REVENUE_INVALID",
+
+  CREATOR_PAYOUT_FAILED:
+    "CREATOR_PAYOUT_FAILED",
+
+  // ====================================================
   // ANTI FRAUD
   // ====================================================
 
@@ -127,14 +186,11 @@ export const GOVERNANCE_VIOLATION_IDS = {
     "DUPLICATE_ACCOUNT_DETECTED",
 
   // ====================================================
-  // CREATOR ECONOMY
+  // PERFORMANCE
   // ====================================================
 
-  CREATOR_REVENUE_INVALID:
-    "CREATOR_REVENUE_INVALID",
-
-  CREATOR_PAYOUT_FAILED:
-    "CREATOR_PAYOUT_FAILED",
+  PERFORMANCE_DEGRADED:
+    "PERFORMANCE_DEGRADED",
 
   // ====================================================
   // DEPLOYMENT
@@ -146,13 +202,11 @@ export const GOVERNANCE_VIOLATION_IDS = {
   DEPLOYMENT_CONFIGURATION_INVALID:
     "DEPLOYMENT_CONFIGURATION_INVALID",
 
-} as const;
+} as const);
 
 // ======================================================
-// TYPE
+// TYPES
 // ======================================================
 
 export type GovernanceViolationId =
-  typeof GOVERNANCE_VIOLATION_IDS[
-    keyof typeof GOVERNANCE_VIOLATION_IDS
-  ];
+  (typeof GOVERNANCE_VIOLATION_IDS)[keyof typeof GOVERNANCE_VIOLATION_IDS];
