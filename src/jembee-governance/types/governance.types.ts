@@ -318,6 +318,8 @@ export interface GovernanceDashboardReport {
   errors: number;
 
   warnings: number;
+
+  totalViolations: number;
   
   configuration: unknown;
 
