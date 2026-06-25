@@ -5,11 +5,22 @@ import { Timestamp } from "firebase/firestore";
 // ======================================================
 
 export interface ProfitabilityRules {
+
+  /**
+   * Minimum order profit required
+   */
+  orderProfit: number;
+
   cashbackExpense: number;
+
   referralExpense: number;
+
   rewardExpense: number;
+
   creatorExpense: number;
+
   protectionFundExpense: number;
+
 }
 
 // ======================================================
