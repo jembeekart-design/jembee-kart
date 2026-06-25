@@ -164,3 +164,27 @@ class BusinessRulesSyncService {
 
 export const businessRulesSync =
   new BusinessRulesSyncService();
+
+// ======================================================
+// Compatibility Exports
+// ======================================================
+
+export function startBusinessRulesSync(): void {
+  businessRulesSync.start();
+}
+
+export function stopBusinessRulesSync(): void {
+  businessRulesSync.stop();
+}
+
+export function restartBusinessRulesSync(): void {
+  businessRulesSync.restart();
+}
+
+export function isBusinessRulesSyncRunning(): boolean {
+  return businessRulesSync.isRunning();
+}
+
+export function getBusinessRulesSyncHealth() {
+  return businessRulesSync.getHealthReport();
+}
