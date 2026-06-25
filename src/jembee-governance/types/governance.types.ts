@@ -201,3 +201,18 @@ export interface PageConnectionReport {
   passed: boolean;
 }
 
+// ======================================================
+// 7. DUPLICATE CODE TYPES
+// ======================================================
+
+export interface DuplicateCodeReport {
+  moduleName: string;
+  duplicateFiles: string[];
+  similarityPercentage: number;
+
+  priority?: GovernancePriority;
+  businessImpact?: string;
+  recommendation?: string;
+
+  passed: boolean;
+}
