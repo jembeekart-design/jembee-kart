@@ -4,7 +4,7 @@ import {
   serverTimestamp,
 } from "firebase/firestore";
 
-import { db } from "../firebase";
+import { db } from "../../firebase/config";
 
 // ======================================================
 // Business Rules Audit
