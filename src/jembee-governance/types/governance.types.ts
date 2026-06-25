@@ -2,12 +2,13 @@
 
 // ======================================================
 // JEMBEEKART GOVERNANCE ENGINE
-// TYPES FILE
-// PART 1 - BASE TYPES & CORE INTERFACES
+// TYPES
+// PART 1
+// BASE TYPES
 // ======================================================
 
 // ======================================================
-// BASE ENUMS
+// SEVERITY
 // ======================================================
 
 export type SeverityLevel =
@@ -16,44 +17,57 @@ export type SeverityLevel =
   | "ERROR"
   | "CRITICAL";
 
-export type DeploymentStatus =
-  | "PASS"
-  | "BLOCKED";
+// ======================================================
+// PRIORITY
+// ======================================================
 
 export type GovernancePriority =
-  | "CRITICAL"
-  | "HIGH"
+  | "LOW"
   | "MEDIUM"
-  | "LOW";
+  | "HIGH"
+  | "CRITICAL";
 
-export type GovernanceFixStatus =
-  | "PENDING"
-  | "IN_PROGRESS"
-  | "FIXED";
+// ======================================================
+// STATUS
+// ======================================================
 
-export type GovernanceFinalStatus =
+export type GovernanceStatus =
   | "PASS"
   | "WARNING"
   | "FAIL"
   | "CRITICAL";
+
+// ======================================================
+// DEPLOYMENT STATUS
+// ======================================================
+
+export type DeploymentStatus =
+  | "PASS"
+  | "BLOCKED";
+
+// ======================================================
+// FIX STATUS
+// ======================================================
+
+export type GovernanceFixStatus =
+  | "PENDING"
+  | "IN_PROGRESS"
+  | "FIXED"
+  | "IGNORED";
+
+// ======================================================
+// FEATURE CATEGORY
+// ======================================================
 
 export type FeatureCategory =
   | "ECOMMERCE"
   | "REFERRAL"
   | "WATCH_EARN"
   | "CREATOR"
-  | "ADS";
-
-export type FirestoreStatus =
-  | "CONNECTED"
-  | "PARTIAL"
-  | "DISCONNECTED";
-
-export type ProductionRisk =
-  | "LOW"
-  | "MEDIUM"
-  | "HIGH"
-  | "CRITICAL";
+  | "SELLER"
+  | "WALLET"
+  | "ADS"
+  | "ADMIN";
 
 // ======================================================
 // GOVERNANCE CATEGORY
@@ -61,31 +75,28 @@ export type ProductionRisk =
 
 export type ViolationCategory =
   | "ARCHITECTURE"
-  | "PROFITABILITY"
   | "SECURITY"
   | "THEME"
+  | "FIRESTORE"
   | "ADMIN_CONTROL"
   | "HARDCODED_RULE"
   | "PAGE_CONNECTION"
   | "DUPLICATE_CODE"
-  | "WATCH_EARN"
-  | "REFERRAL"
+  | "PROFITABILITY"
   | "MLM"
-  | "CREATOR"
-  | "DATABASE"
-  | "FIRESTORE"
-  | "ANTI_FRAUD"
-  | "PERFORMANCE"
+  | "WATCH_EARN"
+  | "WALLET"
   | "CREATOR_ECONOMY"
+  | "ANTI_FRAUD"
   | "DEPLOYMENT"
-  | "MLM_COMPLIANCE"
-  | "WALLET";
+  | "PERFORMANCE";
 
 // ======================================================
 // GOVERNANCE VIOLATION
 // ======================================================
 
 export interface GovernanceViolation {
+
   id: string;
 
   title: string;
@@ -95,6 +106,8 @@ export interface GovernanceViolation {
   category: ViolationCategory;
 
   severity: SeverityLevel;
+
+  priority: GovernancePriority;
 
   filePath?: string;
 
@@ -110,7 +123,12 @@ export interface GovernanceViolation {
 
   recommendation?: string;
 
+  autoFixAvailable?: boolean;
+
+  documentationUrl?: string;
+
   detectedAt: string;
+
 }
 
 // ======================================================
@@ -119,201 +137,65 @@ export interface GovernanceViolation {
 
 export interface GovernanceHistory {
 
+  scanId: string;
+
   scanDate: string;
 
   overallScore: number;
 
+  totalViolations: number;
+
 }
 
 // ======================================================
-// MAIN GOVERNANCE REPORT
+// PART 2 STARTS HERE
+// ======================================================
+// ======================================================
+// PART 2
+// DASHBOARD TYPES
 // ======================================================
 
-export interface JembeeKartGovernanceReport {
+// ======================================================
+// GOVERNANCE SCORES
+// ======================================================
 
-  // Identification
+export interface GovernanceScores {
 
-  auditId: string;
+  overall: number;
 
-  auditSequence?: number;
+  architecture: number;
 
-  scannerName: string;
+  security: number;
 
-  scannerVersion: string;
+  profitability: number;
 
-  detectedDate: string;
+  theme: number;
 
-  lastModifiedDate?: string;
+  firestore: number;
 
-  // Problem
+  adminControl: number;
 
-  problem: string;
+  duplicateCode: number;
 
-  rootCause?: string;
+  hardcodedRule: number;
 
-  // Location
+  pageConnection: number;
 
-  fileName: string;
+  deployment: number;
 
-  folderPath: string;
+  performance: number;
 
-  routePath?: string;
+  scalability: number;
 
-  exactLineNumber?: number;
+  compliance: number;
 
-  pageName: string;
-
-  moduleName: string;
-
-  featureCategory: FeatureCategory;
-
-  // Priority
-
-  priority: GovernancePriority;
-
-  severityScore: number;
-
-  // Status
-
-  fixStatus: GovernanceFixStatus;
-
-  finalStatus: GovernanceFinalStatus;
-  
-  
-  // ======================================================
-  // TIMESTAMPS
-  // ======================================================
-
-  createdAt?: string;
-  updatedAt?: string;
-  resolvedAt?: string;
-  closedAt?: string;
-
-  // ======================================================
-  // IDENTIFIERS
-  // ======================================================
-
-  issueId?: string;
-  parentIssueId?: string;
-  correlationId?: string;
-
-  // ======================================================
-  // SOURCE INFORMATION
-  // ======================================================
-
-  sourceScanner?: string;
-  scannerVersionHash?: string;
-  scanMachine?: string;
-
-  // ======================================================
-  // EXECUTION
-  // ======================================================
-
-  executionOrder?: number;
-  retryCount?: number;
-  executionStatus?: "PENDING" | "RUNNING" | "COMPLETED" | "FAILED";
-
-  // ======================================================
-  // SEVERITY DETAILS
-  // ======================================================
-
-  severityLabel?: string;
-  priorityScore?: number;
-  riskScore?: number;
-  confidenceScore?: number;
-
-  // ======================================================
-  // FILE INFORMATION
-  // ======================================================
-
-  fileSize?: number;
-  fileExtension?: string;
-  language?: string;
-  repository?: string;
-
-  // ======================================================
-  // CI/CD
-  // ======================================================
-
-  pipelineId?: string;
-  workflowName?: string;
-  buildUrl?: string;
-  deploymentUrl?: string;
-
-  // ======================================================
-  // NOTIFICATIONS
-  // ======================================================
-
-  notificationSent?: boolean;
-  notificationChannel?: string;
-  notificationRecipients?: string[];
-
-  // ======================================================
-  // APPROVAL
-  // ======================================================
-
-  approvalRequired?: boolean;
-  approved?: boolean;
-  approvalDate?: string;
-
-  // ======================================================
-  // ROOT CAUSE ANALYSIS
-  // ======================================================
-
-  rootCauseCategory?: string;
-  failureReason?: string;
-  impactSummary?: string;
-
-  // ======================================================
-  // METADATA
-  // ======================================================
-
-  metadata?: Record<string, unknown>;
 }
 
 // ======================================================
-// JEMBEEKART AUDIT MASTER
+// GOVERNANCE STATISTICS
 // ======================================================
 
-export interface JembeeKartAuditMaster {
-  batchId: string;
-
-  totalReports: number;
-
-  criticalIssues: number;
-
-  scanTimestamp: string;
-
-  reports: JembeeKartGovernanceReport[];
-
-  summary: {
-    totalRevenueAtRisk: number;
-
-    totalAffectedUsers: number;
-
-    estimatedFixManHours: number;
-
-    estimatedBusinessLoss: number;
-
-    estimatedProfitLeakage: number;
-  };
-}
-
-// ======================================================
-// GOVERNANCE DASHBOARD REPORT
-// ======================================================
-
-export interface GovernanceDashboardReport {
-
-  // Deployment
-
-  deploymentStatus: DeploymentStatus;
-
-  generatedAt: string;
-
-  version?: string;
-
-  // Scan Statistics
+export interface GovernanceStatistics {
 
   filesScanned: number;
 
@@ -323,843 +205,661 @@ export interface GovernanceDashboardReport {
 
   totalViolations: number;
 
-  // Dashboard Counters
+  critical: number;
 
-  criticalCount?: number;
+  errors: number;
 
-  errorCount?: number;
+  warnings: number;
 
-  warningCount?: number;
+  information: number;
 
-  infoCount?: number;
+}
 
-  duplicateCodeCount?: number;
+// ======================================================
+// GOVERNANCE SUMMARY
+// ======================================================
 
-  hardcodedRuleCount?: number;
+export interface GovernanceSummary {
 
-  pageConnectionCount?: number;
+  projectRoot: string;
 
-  securityIssueCount?: number;
+  generatedAt: string;
 
-  firestoreIssueCount?: number;
+  deploymentReady: boolean;
 
-  adminControlIssueCount?: number;
+  overallHealth:
+    | "HEALTHY"
+    | "UNHEALTHY";
 
-  // Scores
+  filesScanned: number;
 
-  overallScore: number;
+}
 
-  architectureScore: number;
+// ======================================================
+// GOVERNANCE HEALTH
+// ======================================================
 
-  profitabilityScore: number;
+export interface GovernanceHealth {
 
-  securityScore: number;
+  healthy: boolean;
 
-  themeScore: number;
+  configurationLoaded: boolean;
 
-  adminControlScore: number;
+  businessRulesHealthy: boolean;
 
-  duplicateCodeScore?: number;
+  timestamp: string;
 
-  hardcodedRuleScore?: number;
+}
 
-  pageConnectionScore?: number;
+// ======================================================
+// PART 3 STARTS HERE
+// ======================================================
+// ======================================================
+// PART 3
+// GOVERNANCE REPORT TYPES
+// ======================================================
 
-  deploymentScore?: number;
+// ======================================================
+// CORE SCANNER RESULTS
+// ======================================================
 
-  performanceScore?: number;
+export interface CoreScannerResults {
 
-  scalabilityScore?: number;
+  firestore: unknown;
 
-  complianceScore?: number;
+  security: unknown;
 
-  // Business
+  theme: unknown;
 
-  totalRevenueAtRisk: number;
+  duplicateCode: unknown;
 
-  totalAffectedUsers: number;
+  pageConnection: unknown;
 
-  totalProfitLeakage?: number;
+  hardcodedRules: unknown;
 
-  totalOrdersAffected?: number;
+}
 
-  totalWalletMismatch?: number;
+// ======================================================
+// ENTERPRISE SCANNER RESULTS
+// ======================================================
 
-  // Data
+export interface EnterpriseScannerResults {
+
+  adminControl: unknown;
+
+  wallet: unknown;
+
+  mlm: unknown;
+
+  watchEarn: unknown;
+
+  creatorEconomy: unknown;
+
+  antiFraud: unknown;
+
+  profitability: unknown;
+
+  deployment: unknown;
+
+}
+
+// ======================================================
+// GOVERNANCE DASHBOARD REPORT
+// ======================================================
+
+export interface GovernanceDashboardReport {
+
+  generatedAt: string;
+
+  configuration: unknown;
+
+  health: GovernanceHealth;
+
+  summary: GovernanceSummary;
+
+  statistics: GovernanceStatistics;
+
+  scores: GovernanceScores;
 
   violations: GovernanceViolation[];
 
-  enterpriseViolations: JembeeKartGovernanceReport[];
+  coreScanners: CoreScannerResults;
 
-  enterpriseAudit?: JembeeKartAuditMaster;
-
-  history?: GovernanceHistory[];
-
-  // MLM Governance
-
-  mlmGovernance?: {
-
-    healthScore: number;
-
-    totalOrdersAudited: number;
-
-    totalCommissionPaid: number;
-
-    totalCommissionReversed: number;
-
-    duplicateCommissionCount: number;
-
-    walletMismatchCount: number;
-
-    profitLeakageCount: number;
-
-  };
-
-  // Wallet Governance
-
-  walletGovernance?: {
-
-    integrityScore: number;
-
-    totalUsersAudited: number;
-
-    mismatchCount: number;
-
-    negativeBalanceCount?: number;
-
-    lockedWalletCount?: number;
-
-  };
-
-  // Audit Table
-
-  mlmAuditItems?: {
-
-    orderId: string;
-
-    userId?: string;
-
-    profit: number;
-
-    commission: number;
-
-    status: string;
-
-    issues?: string;
-
-  }[];
+  enterpriseScanners:
+    EnterpriseScannerResults;
 
 }
 
 // ======================================================
-// PART 2
-// SCANNER CONTRACTS & ENGINE TYPES
+// GOVERNANCE ENGINE REPORT
+// ======================================================
+
+export interface GovernanceEngineReport {
+
+  success: boolean;
+
+  report: GovernanceDashboardReport;
+
+  durationMs: number;
+
+  generatedAt: string;
+
+}
+
+// ======================================================
+// PART 4 STARTS HERE
+// ======================================================
+// ======================================================
+// PART 4
+// GOVERNANCE ENGINE CONTRACTS
+// ======================================================
+
+// ======================================================
+// SCANNER CONTEXT
+// ======================================================
+
+export interface ScannerContext {
+
+  projectRoot: string;
+
+  scanStartedAt: string;
+
+  configuration: unknown;
+
+}
+
+// ======================================================
+// GOVERNANCE SCANNER
 // ======================================================
 
 export interface GovernanceScanner {
-  scannerName: string;
-  scan(context: ScannerContext): Promise<JembeeKartGovernanceReport[]>;
+
+  readonly scannerName: string;
+
+  readonly version: string;
+
+  scan(
+    context: ScannerContext
+  ): Promise<GovernanceViolation[]>;
+
 }
 
-export interface ScannerContext {
-  projectRoot: string;
-  scanTime: string;
-}
+// ======================================================
+// SCANNER CONFIGURATION
+// ======================================================
 
 export interface GovernanceScannerConfig {
+
   enableDeepScan: boolean;
+
   includePaths: string[];
+
   excludePaths: string[];
+
   maxConcurrency: number;
+
+  failFast: boolean;
+
 }
 
-export interface GovernanceFixRequest {
-  auditId: string;
-  targetBranch: string;
-  applyAutoFix: boolean;
-  developerNotes?: string;
-}
-
-export interface GovernanceFixResult {
-  success: boolean;
-  message: string;
-  commitHash?: string;
-  error?: string;
-}
 // ======================================================
-// PART 3
-// ENTERPRISE SCANNER REPORTS
+// GOVERNANCE ENGINE CONFIG
 // ======================================================
 
-export interface ArchitectureReport {
-  passed: boolean;
-  architectureScore: number;
-  totalModules: number;
-  cleanModules: number;
-  violationCount: number;
+export interface GovernanceEngineConfig {
+
+  enableCoreScanners: boolean;
+
+  enableEnterpriseScanners: boolean;
+
+  enableDeploymentValidation: boolean;
+
+  enableScoreCalculation: boolean;
+
+  enableDeduplication: boolean;
+
+  enableHealthCheck: boolean;
+
 }
 
-export interface DuplicateCodeReport {
-  moduleName: string;
-  duplicateFiles: string[];
-  similarityPercentage: number;
+// ======================================================
+// GOVERNANCE EXECUTION REPORT
+// ======================================================
 
-  priority?: GovernancePriority;
-  businessImpact?: string;
-  recommendation?: string;
+export interface GovernanceExecutionReport {
 
-  passed: boolean;
-}
+  scanStartedAt: string;
 
-export interface SecurityReport {
-  apiKeyExposed: boolean;
-  secretFound: boolean;
-  adminBypassDetected: boolean;
-  firestoreRulesMissing: boolean;
-  totalSecurityIssues: number;
-  securityScore?: number;
-}
+  scanCompletedAt: string;
 
-export interface ThemeReport {
-  pageName: string;
-  adminThemeConnected: boolean;
-  hardcodedColorsFound: boolean;
-  hardcodedFontsFound: boolean;
-  hardcodedIconsFound?: boolean;
-  passed: boolean;
-}
+  executionTimeMs: number;
 
-export interface FirestoreReport {
-  collectionName: string;
-  exists: boolean;
-  readRuleExists: boolean;
-  writeRuleExists: boolean;
-  indexesConfigured: boolean;
-  realtimeEnabled?: boolean;
-  passed: boolean;
-}
+  filesScanned: number;
 
-export interface HardcodedRuleReport {
-  filePath: string;
-  ruleName: string;
-  hardcodedValue: string;
-  recommendation: string;
-  severity: SeverityLevel;
-  passed: boolean;
-}
-
-export interface PageConnectionReport {
-  pageName: string;
-  route: string;
-
-  routeExists: boolean;
-
-  navbarConnected: boolean;
-
-  footerConnected: boolean;
-
-  deepLinkConnected: boolean;
-
-  requiredParentRoute?: string;
-
-  actualParentRoutes?: string[];
-
-  businessFlow?: string;
-
-  businessImpact?: string;
-
-  missingConnectionSuggestion?: string;
-
-  priority?: GovernancePriority;
-
-  expectedGovernanceScoreGain?: number;
-
-  passed: boolean;
-}
-
-export interface AdminControlReport {
-  moduleName: string;
-  firestoreControlled: boolean;
-  featureFlagEnabled: boolean;
-  adminPanelConnected: boolean;
-  passed: boolean;
-}
-
-export interface ProfitabilityReport {
-  orderProfit: number;
-  cashbackExpense: number;
-  referralExpense: number;
-  rewardExpense: number;
-  creatorExpense: number;
-  protectionFundExpense: number;
-  totalExpense: number;
-  netRemainingProfit: number;
-  profitable: boolean;
-}
-
-export interface WalletReport {
-  walletIntegrityScore: number;
-  totalWalletsAudited: number;
-  mismatchCount: number;
-  negativeBalanceCount: number;
-  lockedWalletCount: number;
-}
-
-export interface MlmComplianceReport {
-  commissionRulesPassed: boolean;
-  duplicateCommissionFound: boolean;
-  levelValidationPassed: boolean;
-  sponsorTreeValid: boolean;
   totalViolations: number;
+
+  overallScore: number;
+
 }
 
-export interface ReferralReport {
-  totalReferrals: number;
-  activeReferrals: number;
-  invalidReferrals: number;
-  commissionGenerated: number;
-}
-
-export interface WatchEarnReport {
-  totalVideos: number;
-  validVideos: number;
-  invalidVideos: number;
-  rewardCycles: number;
-  lockedRewards: number;
-}
-
-export interface CreatorEconomyReport {
-  creatorsAudited: number;
-  monetizedCreators: number;
-  pendingPayments: number;
-  creatorRevenue: number;
-}
-
-export interface AntiFraudReport {
-  suspiciousUsers: number;
-  fakeOrders: number;
-  fakeReferrals: number;
-  blockedAccounts: number;
-  fraudScore: number;
-}
-
-export interface PerformanceReport {
-  averageResponseTime: number;
-  slowPages: number;
-  memoryUsage: number;
-  cpuUsage: number;
-  performanceScore: number;
-}
-
-export interface DeploymentReport {
-  deploymentId: string;
-  provider: string;
-  status: DeploymentStatus;
-  buildTime: number;
-  deployedAt: string;
-}
 // ======================================================
-// PART 4
-// INFRASTRUCTURE & GOVERNANCE REPORTS
+// GOVERNANCE HEALTH REPORT
 // ======================================================
 
-export interface AnalyticsReport {
-  analyticsConnected: boolean;
-  provider: string;
-  trackingEvents: number;
-  missingEvents: string[];
-  passed: boolean;
+export interface GovernanceHealthReport {
+
+  healthy: boolean;
+
+  configurationLoaded: boolean;
+
+  businessRulesHealthy: boolean;
+
+  deploymentReady: boolean;
+
+  generatedAt: string;
+
 }
 
-export interface NotificationReport {
-  emailEnabled: boolean;
-  pushEnabled: boolean;
-  smsEnabled: boolean;
-  whatsappEnabled: boolean;
-  failedNotifications: number;
-  passed: boolean;
-}
-
-export interface ApiReport {
-  apiName: string;
-  endpoint: string;
-  method: string;
-  authenticated: boolean;
-  responseTime: number;
-  statusCode: number;
-  rateLimited: boolean;
-  passed: boolean;
-}
-
-export interface AuthenticationReport {
-  authenticationEnabled: boolean;
-  jwtEnabled: boolean;
-  sessionProtected: boolean;
-  mfaEnabled: boolean;
-  anonymousAccessDetected: boolean;
-  passed: boolean;
-}
-
-export interface AuthorizationReport {
-  roleBasedAccessEnabled: boolean;
-  permissionValidationEnabled: boolean;
-  unauthorizedRoutes: string[];
-  adminRoutesProtected: boolean;
-  passed: boolean;
-}
-
-export interface RolePermissionReport {
-  roleName: string;
-  totalPermissions: number;
-  missingPermissions: string[];
-  extraPermissions: string[];
-  passed: boolean;
-}
-
-export interface AuditLogReport {
-  auditEnabled: boolean;
-  totalLogs: number;
-  failedLogs: number;
-  lastAuditTime: string;
-  passed: boolean;
-}
-
-export interface FeatureFlagReport {
-  featureName: string;
-  enabled: boolean;
-  firestoreControlled: boolean;
-  defaultValue: boolean;
-  passed: boolean;
-}
-
-export interface RealtimeReport {
-  firestoreRealtimeEnabled: boolean;
-  websocketEnabled: boolean;
-  liveSyncEnabled: boolean;
-  offlineSupport: boolean;
-  passed: boolean;
-}
-
-export interface DatabaseIntegrityReport {
-  totalCollections: number;
-  totalDocuments: number;
-  orphanDocuments: number;
-  duplicateDocuments: number;
-  invalidReferences: number;
-  integrityScore: number;
-  passed: boolean;
-}
-
-export interface DependencyReport {
-  moduleName: string;
-  dependencyCount: number;
-  circularDependencies: string[];
-  unusedDependencies: string[];
-  passed: boolean;
-}
-
-export interface RouteReport {
-  totalRoutes: number;
-  orphanRoutes: string[];
-  protectedRoutes: string[];
-  publicRoutes: string[];
-  duplicateRoutes: string[];
-  passed: boolean;
-}
-
-export interface ConfigReport {
-  configName: string;
-  firestoreControlled: boolean;
-  hardcoded: boolean;
-  version: string;
-  lastUpdated: string;
-  passed: boolean;
-}
-
-export interface ComplianceReport {
-  overallComplianceScore: number;
-  policyViolations: number;
-  passedPolicies: number;
-  failedPolicies: number;
-  passed: boolean;
-}
-
-export interface RiskAssessmentReport {
-  overallRiskScore: number;
-  businessRisk: number;
-  securityRisk: number;
-  financialRisk: number;
-  operationalRisk: number;
-  passed: boolean;
-}
-
-export interface PolicyReport {
-  policyName: string;
-  enabled: boolean;
-  violated: boolean;
-  violationCount: number;
-  passed: boolean;
-}
-
-export interface VersionReport {
-  currentVersion: string;
-  latestVersion: string;
-  updateRequired: boolean;
-  releaseDate: string;
-  passed: boolean;
-}
-
-export interface MigrationReport {
-  migrationName: string;
-  applied: boolean;
-  executionTime: number;
-  rollbackAvailable: boolean;
-  passed: boolean;
-}
-
-export interface ConfigurationDriftReport {
-  configurationName: string;
-  expectedValue: string;
-  actualValue: string;
-  driftDetected: boolean;
-  passed: boolean;
-}
-
-export interface LicenseComplianceReport {
-  totalPackages: number;
-  validLicenses: number;
-  invalidLicenses: number;
-  restrictedLicenses: string[];
-  passed: boolean;
-}
-
-export interface CodeQualityReport {
-  codeQualityScore: number;
-  maintainabilityIndex: number;
-  technicalDebtHours: number;
-  codeSmells: number;
-  passed: boolean;
-}
-
-export interface TechnicalDebtReport {
-  estimatedHours: number;
-  criticalDebt: number;
-  highDebt: number;
-  mediumDebt: number;
-  lowDebt: number;
-  passed: boolean;
-}
-
-export interface DocumentationReport {
-  documentedModules: number;
-  undocumentedModules: number;
-  apiDocumentationComplete: boolean;
-  architectureDocumentationComplete: boolean;
-  passed: boolean;
-}
+// ======================================================
+// PART 5 STARTS HERE
+// ======================================================
 // ======================================================
 // PART 5
-// DEVOPS REPORTS
+// AUDIT & GOVERNANCE MANAGEMENT
 // ======================================================
 
-export interface BuildReport {
-  buildId: string;
-  status: "SUCCESS" | "FAILED";
-  buildTime: number;
-  buildSize: number;
-  errors: number;
-}
+// ======================================================
+// GOVERNANCE AUDIT
+// ======================================================
 
-export interface CICDReport {
-  provider: string;
-  pipelineStatus: string;
-  lastRun: string;
-  deploymentTriggered: boolean;
-}
+export interface GovernanceAudit {
 
-export interface DockerReport {
-  dockerEnabled: boolean;
-  imageSize: number;
-  containerCount: number;
-  vulnerabilities: number;
-}
+  auditId: string;
 
-export interface EnvironmentReport {
-  environment: "LOCAL" | "DEV" | "STAGING" | "PRODUCTION";
-  variablesLoaded: number;
-  missingVariables: string[];
-}
+  projectName: string;
 
-export interface ReleaseReport {
-  releaseVersion: string;
-  releaseDate: string;
-  releasedBy: string;
-  stable: boolean;
-}
+  version: string;
 
-export interface RollbackReport {
-  rollbackAvailable: boolean;
-  rollbackVersion?: string;
-  rollbackReason?: string;
+  scanStartedAt: string;
+
+  scanCompletedAt: string;
+
+  durationMs: number;
+
+  overallScore: number;
+
+  deploymentStatus:
+    DeploymentStatus;
+
+  totalViolations: number;
+
 }
 
 // ======================================================
-// CLOUD REPORTS
+// GOVERNANCE FIX REQUEST
 // ======================================================
 
-export interface FirebaseReport {
-  projectConnected: boolean;
-  authEnabled: boolean;
-  firestoreEnabled: boolean;
-  storageEnabled: boolean;
+export interface GovernanceFixRequest {
+
+  violationId: string;
+
+  requestedBy: string;
+
+  requestedAt: string;
+
+  priority:
+    GovernancePriority;
+
+  autoFix: boolean;
+
+  notes?: string;
+
 }
 
-export interface CloudFunctionReport {
-  totalFunctions: number;
-  deployedFunctions: number;
-  failedFunctions: number;
+// ======================================================
+// GOVERNANCE FIX RESULT
+// ======================================================
+
+export interface GovernanceFixResult {
+
+  success: boolean;
+
+  violationId: string;
+
+  fixedAt: string;
+
+  fixedBy: string;
+
+  message: string;
+
 }
 
-export interface CloudStorageReport {
-  bucketConnected: boolean;
-  totalFiles: number;
-  storageUsedMB: number;
+// ======================================================
+// GOVERNANCE VERSION
+// ======================================================
+
+export interface GovernanceVersion {
+
+  version: string;
+
+  buildNumber: string;
+
+  commitHash?: string;
+
+  generatedAt: string;
+
 }
 
-export interface CDNReport {
+// ======================================================
+// GOVERNANCE METADATA
+// ======================================================
+
+export interface GovernanceMetadata {
+
+  engine: string;
+
+  engineVersion: string;
+
+  project: string;
+
+  generatedBy: string;
+
+  generatedAt: string;
+
+}
+
+// ======================================================
+// GOVERNANCE REPORT PACKAGE
+// ======================================================
+
+export interface GovernanceReportPackage {
+
+  metadata:
+    GovernanceMetadata;
+
+  audit:
+    GovernanceAudit;
+
+  dashboard:
+    GovernanceDashboardReport;
+
+}
+
+// ======================================================
+// PART 6 STARTS HERE
+// ======================================================
+// ======================================================
+// PART 6
+// DASHBOARD UI & REPORT TYPES
+// ======================================================
+
+// ======================================================
+// DASHBOARD CARD
+// ======================================================
+
+export interface GovernanceDashboardCard {
+
+  id: string;
+
+  title: string;
+
+  value: string | number;
+
+  description?: string;
+
+  severity?: SeverityLevel;
+
+  score?: number;
+
+  icon?: string;
+
+}
+
+// ======================================================
+// DASHBOARD SECTION
+// ======================================================
+
+export interface GovernanceDashboardSection {
+
+  id: string;
+
+  title: string;
+
+  description?: string;
+
+  cards: GovernanceDashboardCard[];
+
+}
+
+// ======================================================
+// GOVERNANCE ALERT
+// ======================================================
+
+export interface GovernanceAlert {
+
+  id: string;
+
+  title: string;
+
+  message: string;
+
+  severity: SeverityLevel;
+
+  createdAt: string;
+
+  actionRequired: boolean;
+
+}
+
+// ======================================================
+// GOVERNANCE RECOMMENDATION
+// ======================================================
+
+export interface GovernanceRecommendation {
+
+  id: string;
+
+  title: string;
+
+  description: string;
+
+  priority: GovernancePriority;
+
+  estimatedImpact: string;
+
+  estimatedEffort: string;
+
+}
+
+// ======================================================
+// GOVERNANCE NAVIGATION ITEM
+// ======================================================
+
+export interface GovernanceNavigationItem {
+
+  id: string;
+
+  label: string;
+
+  route: string;
+
+  icon?: string;
+
   enabled: boolean;
-  provider: string;
-  cacheHitRate: number;
-}
 
-export interface HostingReport {
-  provider: string;
-  deploymentStatus: string;
-  customDomainConnected: boolean;
 }
 
 // ======================================================
-// DATABASE REPORTS
+// GOVERNANCE SIDEBAR
 // ======================================================
 
-export interface FirestoreIndexReport {
-  totalIndexes: number;
-  missingIndexes: number;
+export interface GovernanceSidebar {
+
+  title: string;
+
+  items: GovernanceNavigationItem[];
+
 }
 
-export interface FirestoreRulesReport {
-  readRules: boolean;
-  writeRules: boolean;
-  adminRules: boolean;
+// ======================================================
+// GOVERNANCE DASHBOARD CONFIG
+// ======================================================
+
+export interface GovernanceDashboardConfig {
+
+  refreshInterval: number;
+
+  showCharts: boolean;
+
+  showRecommendations: boolean;
+
+  showAlerts: boolean;
+
+  enableRealtime: boolean;
+
 }
 
-export interface TransactionReport {
-  totalTransactions: number;
-  failedTransactions: number;
+// ======================================================
+// PART 7 STARTS HERE
+// ======================================================
+// ======================================================
+// PART 7
+// ANALYTICS, EXPORT & REPORTING
+// ======================================================
+
+// ======================================================
+// GOVERNANCE TREND
+// ======================================================
+
+export interface GovernanceTrend {
+
+  period: string;
+
+  overallScore: number;
+
+  criticalCount: number;
+
+  warningCount: number;
+
+  totalViolations: number;
+
+}
+
+// ======================================================
+// GOVERNANCE ANALYTICS
+// ======================================================
+
+export interface GovernanceAnalytics {
+
+  averageScore: number;
+
+  bestScore: number;
+
+  lowestScore: number;
+
+  totalScans: number;
+
   averageExecutionTime: number;
-}
 
-export interface DataConsistencyReport {
-  duplicateRecords: number;
-  orphanRecords: number;
-  consistencyScore: number;
-}
+  trends: GovernanceTrend[];
 
-export interface MigrationHistoryReport {
-  totalMigrations: number;
-  latestMigration: string;
-  pendingMigrations: number;
 }
 
 // ======================================================
-// COMMERCE REPORTS
+// GOVERNANCE CHART DATA
 // ======================================================
 
-export interface EcommerceReport {
-  totalProducts: number;
-  activeProducts: number;
-  totalOrders: number;
-  revenue: number;
-}
+export interface GovernanceChartData {
 
-export interface SellerReport {
-  totalSellers: number;
-  activeSellers: number;
-  blockedSellers: number;
-}
+  label: string;
 
-export interface ProductReport {
-  totalProducts: number;
-  inactiveProducts: number;
-  outOfStockProducts: number;
-}
+  value: number;
 
-export interface InventoryReport {
-  totalStock: number;
-  lowStockItems: number;
-  outOfStockItems: number;
-}
-
-export interface PricingReport {
-  averageMargin: number;
-  negativeMarginProducts: number;
-}
-
-export interface OrderReport {
-  totalOrders: number;
-  deliveredOrders: number;
-  cancelledOrders: number;
-}
-
-export interface PaymentReport {
-  successfulPayments: number;
-  failedPayments: number;
-  pendingPayments: number;
-}
-
-export interface ShippingReport {
-  shippedOrders: number;
-  delayedOrders: number;
-}
-
-export interface TaxReport {
-  totalTaxCollected: number;
-  taxErrors: number;
-}
-
-export interface InvoiceReport {
-  invoicesGenerated: number;
-  pendingInvoices: number;
-}
-
-export interface RefundReport {
-  refundRequests: number;
-  completedRefunds: number;
-}
-
-export interface ReturnReport {
-  returnedOrders: number;
-  returnRate: number;
 }
 
 // ======================================================
-// FINANCE REPORTS
+// GOVERNANCE EXPORT OPTIONS
 // ======================================================
 
-export interface WalletTransactionReport {
-  totalTransactions: number;
-  failedTransactions: number;
-}
+export interface GovernanceExportOptions {
 
-export interface PayoutReport {
-  pendingPayouts: number;
-  completedPayouts: number;
-}
+  includeViolations: boolean;
 
-export interface SettlementReport {
-  totalSettlements: number;
-  pendingSettlements: number;
-}
+  includeStatistics: boolean;
 
-export interface ProfitLossReport {
-  totalRevenue: number;
-  totalExpense: number;
-  netProfit: number;
-}
+  includeScores: boolean;
 
-export interface RevenueLeakageReport {
-  estimatedLeakage: number;
-  leakageReason: string;
+  includeRecommendations: boolean;
+
+  includeScannerReports: boolean;
+
+  format:
+    | "JSON"
+    | "PDF"
+    | "CSV"
+    | "XLSX";
+
 }
 
 // ======================================================
-// USER REPORTS
+// GOVERNANCE EXPORT RESULT
 // ======================================================
 
-export interface UserReport {
-  totalUsers: number;
-  activeUsers: number;
-  blockedUsers: number;
-}
+export interface GovernanceExportResult {
 
-export interface UserActivityReport {
-  activeToday: number;
-  activeThisWeek: number;
-  activeThisMonth: number;
-}
+  success: boolean;
 
-export interface SessionReport {
-  totalSessions: number;
-  averageSessionTime: number;
-}
+  exportedAt: string;
 
-export interface DeviceReport {
-  androidUsers: number;
-  iosUsers: number;
-  webUsers: number;
-}
+  fileName: string;
 
-export interface KYCReport {
-  verifiedUsers: number;
-  pendingVerification: number;
-  rejectedUsers: number;
+  format: string;
+
 }
 
 // ======================================================
-// AI REPORTS
+// GOVERNANCE SCAN SESSION
 // ======================================================
 
-export interface PromptSecurityReport {
-  promptInjectionDetected: number;
-  blockedPrompts: number;
-}
+export interface GovernanceScanSession {
 
-export interface AIUsageReport {
-  totalRequests: number;
-  successfulRequests: number;
-}
+  sessionId: string;
 
-export interface AIModelReport {
-  modelName: string;
-  modelVersion: string;
-  responseTime: number;
-}
+  projectRoot: string;
 
-export interface AITrainingReport {
-  datasets: number;
-  lastTrainingDate: string;
+  startedAt: string;
+
+  completedAt?: string;
+
+  status:
+    | "RUNNING"
+    | "COMPLETED"
+    | "FAILED";
+
+  report?: GovernanceDashboardReport;
+
 }
 
 // ======================================================
-// TEST REPORTS
+// GOVERNANCE REPORT SUMMARY
 // ======================================================
 
-export interface UnitTestReport {
-  totalTests: number;
-  passedTests: number;
-  failedTests: number;
+export interface GovernanceReportSummary {
+
+  totalFiles: number;
+
+  totalScanners: number;
+
+  passedScanners: number;
+
+  failedScanners: number;
+
+  overallScore: number;
+
+  deploymentReady: boolean;
+
 }
 
-export interface IntegrationTestReport {
-  totalTests: number;
-  passedTests: number;
-  failedTests: number;
-}
-
-export interface E2ETestReport {
-  totalTests: number;
-  passedTests: number;
-  failedTests: number;
-}
-
-export interface RegressionTestReport {
-  regressionsFound: number;
-  regressionsFixed: number;
-}
-
-export interface TestCoverageReport {
-  statements: number;
-  branches: number;
-  functions: number;
-  lines: number;
-}
+// ======================================================
+// END OF GOVERNANCE TYPES
+// ======================================================
