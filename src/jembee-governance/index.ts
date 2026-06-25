@@ -37,24 +37,24 @@ export class JembeeGovernanceEngine {
   public async validateForDeployment(): Promise<void> {
     const report = await this.run();
 
-    if (report.deploymentStatus === "BLOCKED") {
+    if (!report.summary.deploymentReady) {
       console.warn("");
       console.warn("⚠ GOVERNANCE VIOLATIONS DETECTED");
 
       console.warn(
-        `Critical Issues: ${report.criticalCount ?? 0}`
+        `Critical Issues: ${report.statistics.critical}
       );
 
       console.warn(
-        `Error Issues: ${report.errorCount ?? 0}`
+        `Error Issues: ${report.statistics.errors}
       );
 
       console.warn(
-        `Warning Issues: ${report.warningCount ?? 0}`
+        `Warning Issues: ${report.statistics.warnings}
       );
 
       console.warn(
-        `Total Violations: ${report.totalViolations}`
+        `Total Violations: ${report.statistics.totalViolations}
       );
 
       console.warn(
