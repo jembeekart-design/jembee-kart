@@ -178,7 +178,7 @@ export interface JembeeKartGovernanceReport {
   fixStatus: GovernanceFixStatus;
 
   finalStatus: GovernanceFinalStatus;
-   }
+  
   
   // ======================================================
   // TIMESTAMPS
@@ -270,7 +270,7 @@ export interface JembeeKartGovernanceReport {
 
   metadata?: Record<string, unknown>;
 }
-}
+
 // ======================================================
 // JEMBEEKART AUDIT MASTER
 // ======================================================
