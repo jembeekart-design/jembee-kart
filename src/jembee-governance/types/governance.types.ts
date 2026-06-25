@@ -312,6 +312,8 @@ export interface GovernanceDashboardReport {
   generatedAt: string;
 
   deploymentStatus: DeploymentStatus;
+
+  critical: number;
   
   configuration: unknown;
 
