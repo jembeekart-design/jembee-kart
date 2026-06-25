@@ -451,10 +451,10 @@ export interface GovernanceDashboardReport {
 
 }
 // PART 1
-BASE TYPES & CORE INTERFACES
+// BASE TYPES & CORE INTERFACES
 
 // PART 2
-SCANNER CONTRACTS & ENGINE TYPES
+// SCANNER CONTRACTS & ENGINE TYPES
 
 export interface GovernanceScanner {
 ...
@@ -477,7 +477,7 @@ export interface GovernanceFixResult {
 }
 
 // PART 3
-ENTERPRISE SCANNER REPORTS
+// ENTERPRISE SCANNER REPORTS
 ArchitectureReport
 DuplicateCodeReport
 SecurityReport
@@ -497,7 +497,7 @@ PerformanceReport
 DeploymentReport
 
 // PART 4
-INFRASTRUCTURE & GOVERNANCE REPORTS
+// INFRASTRUCTURE & GOVERNANCE REPORTS
 AnalyticsReport
 NotificationReport
 ApiReport
@@ -523,7 +523,7 @@ TechnicalDebtReport
 DocumentationReport
 
 // PART 5
-DEVOPS + CLOUD + DATABASE + COMMERCE + FINANCE + USER + AI + TEST REPORTS
+// DEVOPS + CLOUD + DATABASE + COMMERCE + FINANCE + USER + AI + TEST REPORTS
 BuildReport
 CICDReport
 DockerReport
