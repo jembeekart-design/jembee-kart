@@ -221,15 +221,10 @@ export interface DuplicateCodeReport {
 // ======================================================
 
 export interface SecurityReport {
-  moduleName: string;
-  filePath: string;
-
-  apiKeysFound: number;
-  secretsFound: number;
-  hardcodedAdminRolesFound: number;
-
-  priority?: GovernancePriority;
-  recommendation?: string;
+  apiKeyExposed: boolean;
+  secretFound: boolean;
+  adminBypassDetected: boolean;
+  firestoreRulesMissing: boolean;
 
   passed: boolean;
 }
