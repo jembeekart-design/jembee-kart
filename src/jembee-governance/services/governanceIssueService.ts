@@ -22,7 +22,7 @@ import {
   DocumentData,
 } from "firebase/firestore";
 
-import { db } from "@/lib/firebase";
+import { db } from "../../firebase/config";
 
 import {
   GovernanceViolation,
