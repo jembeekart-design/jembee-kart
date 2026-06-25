@@ -453,29 +453,6 @@ export interface GovernanceDashboardReport {
 // PART 1
 // BASE TYPES & CORE INTERFACES
 
-// PART 2
-// SCANNER CONTRACTS & ENGINE TYPES
-
-export interface GovernanceScanner {
-...
-}
-
-export interface ScannerContext {
-...
-}
-
-export interface GovernanceScannerConfig {
-...
-}
-
-export interface GovernanceFixRequest {
-...
-}
-
-export interface GovernanceFixResult {
-...
-}
-
 // PART 3
 // ENTERPRISE SCANNER REPORTS
 ArchitectureReport
