@@ -316,6 +316,8 @@ export interface GovernanceDashboardReport {
   critical: number;
 
   errors: number;
+
+  warnings: number;
   
   configuration: unknown;
 
