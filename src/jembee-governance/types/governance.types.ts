@@ -184,8 +184,6 @@ export interface JembeeKartGovernanceReport {
 // BASE TYPES & CORE INTERFACES
 // ======================================================
 
-export interface JembeeKartGovernanceReport {
-
   // Identification
   ...
 
