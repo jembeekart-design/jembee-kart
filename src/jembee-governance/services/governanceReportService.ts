@@ -88,7 +88,7 @@ export class GovernanceReportService {
       criticalCount,
       errorCount,
       warningCount,
-      criticalViolations: criticalCount,
+      
       duplicateCodeCount: duplicateResult.violations.length,
       hardcodedRuleCount: hardcodedResult.violations.length,
 
