@@ -1,7 +1,6 @@
 import {
   GovernanceDashboardReport,
   GovernanceViolation,
-  JembeeKartGovernanceReport,
 } from "../types/governance.types";
 
 // ======================================================
@@ -29,6 +28,14 @@ import { creatorEconomyScanner } from "../scanners/creatorEconomyScanner";
 import { deploymentScanner } from "../scanners/deploymentScanner";
 
 // ======================================================
+// Configuration Services
+// ======================================================
+
+import { governanceConfigService } from "./governanceConfigService";
+import { governanceHealthService } from "./governanceHealthService";
+import { profitabilityConfigService } from "./profitabilityConfigService";
+
+// ======================================================
 // Utilities
 // ======================================================
 
@@ -42,26 +49,500 @@ import { calculateScores } from "../utils/calculateScores";
 export class GovernanceReportService {
 
   /**
-   * Latest Governance Reports
+   * Latest Reports
    */
-  public async getLatestReports() {
+  async getLatestReports() {
+
     return [
       {
-        id: "scan-latest",
-        title: "JembeeKart Enterprise Governance Scan",
+        id: "latest-governance-report",
+        title: "JembeeKart Governance Report",
         createdAt: new Date().toISOString(),
-        overallScore: 100,
+        status: "SUCCESS",
       },
     ];
+
   }
 
   /**
-   * Main Governance Engine
+   * Generate Governance Report
    */
-  public generate(
+  async generate(
     projectRoot: string
-  ): GovernanceDashboardReport {
+  ): Promise<GovernanceDashboardReport> {
+
+    // ==================================================
+    // PART 2 STARTS HERE
+    // ==================================================
+      // ======================================================
+    // Load Governance Configuration
+    // ======================================================
+
+    const configuration =
+      await governanceConfigService.getConfiguration();
+
+    const healthReport =
+      await governanceHealthService.check();
 
     // ======================================================
-    // PART-2 STARTS FROM HERE
+    // Execute Core Scanners
     // ======================================================
+
+    const firestoreResult =
+      firestoreScanner.scanProject(
+        projectRoot
+      );
+
+    const securityResult =
+      securityScanner.scanProject(
+        projectRoot
+      );
+
+    const themeResult =
+      themeScanner.scanProject(
+        projectRoot
+      );
+
+    const duplicateResult =
+      duplicateCodeScanner.scanProject(
+        projectRoot
+      );
+
+    const pageConnectionResult =
+      pageConnectionScanner.scanProject(
+        projectRoot
+      );
+
+    const hardcodedResult =
+      hardcodedRuleScanner.scanProject(
+        projectRoot
+      );
+
+    // ======================================================
+    // Core Scan Summary
+    // ======================================================
+
+    const coreResults = {
+
+      firestore:
+        firestoreResult,
+
+      security:
+        securityResult,
+
+      theme:
+        themeResult,
+
+      duplicateCode:
+        duplicateResult,
+
+      pageConnection:
+        pageConnectionResult,
+
+      hardcodedRules:
+        hardcodedResult,
+
+    };
+
+    // ======================================================
+    // PART 3 STARTS HERE
+    // ======================================================
+      // ======================================================
+    // Execute Enterprise Scanners
+    // ======================================================
+
+    const adminControlResult =
+      adminControlScanner.scanProject(
+        projectRoot
+      );
+
+    const walletResult =
+      walletScanner.scanProject(
+        projectRoot
+      );
+
+    const mlmResult =
+      mlmComplianceScanner.scanProject(
+        projectRoot
+      );
+
+    const watchEarnResult =
+      watchEarnScanner.scanProject(
+        projectRoot
+      );
+
+    const creatorResult =
+      creatorEconomyScanner.scanProject(
+        projectRoot
+      );
+
+    const antiFraudResult =
+      antiFraudScanner.scanProject(
+        projectRoot
+      );
+
+    // ======================================================
+    // Profitability Analysis
+    // Runtime orderProfit should come from
+    // Order Engine / Analytics Service
+    // ======================================================
+
+    const profitabilityInput =
+      await profitabilityConfigService.buildScannerInput(
+        configuration.profitability.orderProfit
+      );
+
+    const profitabilityResult =
+      profitabilityScanner.scan(
+        profitabilityInput
+      );
+
+    // ======================================================
+    // Enterprise Scan Summary
+    // ======================================================
+
+    const enterpriseResults = {
+
+      adminControl:
+        adminControlResult,
+
+      wallet:
+        walletResult,
+
+      mlm:
+        mlmResult,
+
+      watchEarn:
+        watchEarnResult,
+
+      creatorEconomy:
+        creatorResult,
+
+      antiFraud:
+        antiFraudResult,
+
+      profitability:
+        profitabilityResult,
+
+    };
+
+    // ======================================================
+    // PART 4 STARTS HERE
+    // ======================================================
+      // ======================================================
+    // Deployment Validation
+    // ======================================================
+
+    const deploymentResult =
+      deploymentScanner.scan({
+
+        profitabilityViolations:
+          profitabilityResult.violations,
+
+        walletViolations:
+          walletResult.violations,
+
+        mlmViolations:
+          mlmResult.violations,
+
+        watchEarnViolations:
+          watchEarnResult.violations,
+
+        antiFraudViolations:
+          antiFraudResult.violations,
+
+        creatorViolations:
+          creatorResult.violations,
+
+        firestoreViolations:
+          firestoreResult.violations,
+
+        adminControlViolations:
+          adminControlResult.violations,
+
+      });
+
+    // ======================================================
+    // Deployment Summary
+    // ======================================================
+
+    const deploymentSummary = {
+
+      deployment:
+        deploymentResult,
+
+      configuration,
+
+      health:
+        healthReport,
+
+    };
+
+    // ======================================================
+    // Merge All Violations
+    // ======================================================
+
+    const allViolations: GovernanceViolation[] = [
+
+      ...firestoreResult.violations,
+
+      ...securityResult.violations,
+
+      ...themeResult.violations,
+
+      ...duplicateResult.violations,
+
+      ...pageConnectionResult.violations,
+
+      ...hardcodedResult.violations,
+
+      ...adminControlResult.violations,
+
+      ...walletResult.violations,
+
+      ...mlmResult.violations,
+
+      ...watchEarnResult.violations,
+
+      ...creatorResult.violations,
+
+      ...antiFraudResult.violations,
+
+      ...profitabilityResult.violations,
+
+      ...deploymentResult.violations,
+
+    ];
+
+    // ======================================================
+    // PART 5 STARTS HERE
+    // ======================================================
+      // ======================================================
+    // Remove Duplicate Violations
+    // ======================================================
+
+    const violations =
+      deduplicateViolations(
+        allViolations
+      );
+
+    // ======================================================
+    // Violation Summary
+    // ======================================================
+
+    const criticalViolations =
+      violations.filter(
+        (v) =>
+          v.severity ===
+          "CRITICAL"
+      );
+
+    const errorViolations =
+      violations.filter(
+        (v) =>
+          v.severity ===
+          "ERROR"
+      );
+
+    const warningViolations =
+      violations.filter(
+        (v) =>
+          v.severity ===
+          "WARNING"
+      );
+
+    const infoViolations =
+      violations.filter(
+        (v) =>
+          v.severity ===
+          "INFO"
+      );
+
+    // ======================================================
+    // Governance Scores
+    // ======================================================
+
+    const scores =
+      calculateScores(
+        violations
+      );
+
+    // ======================================================
+    // Statistics
+    // ======================================================
+
+    const statistics = {
+
+      totalViolations:
+        violations.length,
+
+      critical:
+        criticalViolations.length,
+
+      errors:
+        errorViolations.length,
+
+      warnings:
+        warningViolations.length,
+
+      information:
+        infoViolations.length,
+
+      overallScore:
+        scores.overall,
+
+      architectureScore:
+        scores.architecture,
+
+      securityScore:
+        scores.security,
+
+      profitabilityScore:
+        scores.profitability,
+
+      deploymentScore:
+        scores.deployment,
+
+    };
+
+    // ======================================================
+    // PART 6 STARTS HERE
+    // ======================================================
+      // ======================================================
+    // Build Governance Dashboard Report
+    // ======================================================
+
+    const dashboardReport: GovernanceDashboardReport = {
+
+      generatedAt:
+        new Date().toISOString(),
+
+      configuration,
+
+      health:
+        healthReport,
+
+      statistics,
+
+      scores,
+
+      violations,
+
+      coreScanners: {
+
+        firestore:
+          firestoreResult,
+
+        security:
+          securityResult,
+
+        theme:
+          themeResult,
+
+        duplicateCode:
+          duplicateResult,
+
+        pageConnection:
+          pageConnectionResult,
+
+        hardcodedRules:
+          hardcodedResult,
+
+      },
+
+      enterpriseScanners: {
+
+        adminControl:
+          adminControlResult,
+
+        wallet:
+          walletResult,
+
+        mlm:
+          mlmResult,
+
+        watchEarn:
+          watchEarnResult,
+
+        creatorEconomy:
+          creatorResult,
+
+        antiFraud:
+          antiFraudResult,
+
+        profitability:
+          profitabilityResult,
+
+        deployment:
+          deploymentResult,
+
+      },
+
+    };
+
+    // ======================================================
+    // PART 7 STARTS HERE
+    // ======================================================
+      // ======================================================
+    // Finalize Governance Report
+    // ======================================================
+
+    dashboardReport.summary = {
+
+      projectRoot,
+
+      generatedAt:
+        new Date().toISOString(),
+
+      filesScanned:
+
+        firestoreResult.filesScanned +
+
+        securityResult.filesScanned +
+
+        themeResult.filesScanned +
+
+        duplicateResult.filesScanned +
+
+        pageConnectionResult.pagesScanned +
+
+        hardcodedResult.filesScanned +
+
+        adminControlResult.filesScanned +
+
+        walletResult.filesScanned +
+
+        mlmResult.filesScanned +
+
+        watchEarnResult.filesScanned +
+
+        creatorResult.filesScanned +
+
+        antiFraudResult.filesScanned,
+
+      deploymentReady:
+        deploymentResult.ready,
+
+      overallHealth:
+        healthReport.healthy
+          ? "HEALTHY"
+          : "UNHEALTHY",
+
+    };
+
+    // ======================================================
+    // Return Final Report
+    // ======================================================
+
+    return dashboardReport;
+
+  }
+
+}
+
+// ======================================================
+// Singleton Export
+// ======================================================
+
+export const governanceReportService =
+  new GovernanceReportService();
