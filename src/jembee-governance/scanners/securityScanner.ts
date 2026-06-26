@@ -62,7 +62,6 @@ export class SecurityScanner {
       if (result.some(v => v.id === "SEC_ADMIN_BYPASS")) adminBypassDetected = true;
     }
 
-    return {
       const vulnerabilities = violations.length;
 
 const severityScore =
