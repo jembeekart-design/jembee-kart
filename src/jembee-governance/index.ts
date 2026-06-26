@@ -47,11 +47,11 @@ export class JembeeGovernanceEngine {
 
 
      console.warn(
-  `Error Issues: ${report.errorsCount}`
+  `Error Issues: ${report.errorCount}`
 );
 
       console.warn(
-  `Warning Issues: ${report.warningsCount}`
+  `Warning Issues: ${report.warningCount}`
 );
 
       console.warn(
