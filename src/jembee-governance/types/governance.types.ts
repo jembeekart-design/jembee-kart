@@ -906,6 +906,11 @@ export interface PageConnectionReport {
   orphanStatus: boolean;
   brokenLinks: string[];
   lastScanned: string;
+  // यदि आपको route और अन्य प्रॉपर्टीज की जरूरत है, तो उन्हें यहाँ टाइप के साथ जोड़ें:
+  route?: string;
+  routeExists?: boolean;
+  navbarConnected?: boolean;
+  footerConnected?: boolean;
 }
 
 export interface DuplicateCodeReport {
