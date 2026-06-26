@@ -61,8 +61,24 @@ export class ComplianceReportGenerator {
       },
 
       mlmAuditItems: [],
-    };
-  }
+    
+    deploymentScore: 100,
+
+configuration: {} as any,
+
+health: {} as any,
+
+summary: {} as any,
+
+statistics: {} as any,
+
+scores: {} as any,
+
+coreScanners: {} as any,
+
+enterpriseScanners: {} as any,
+};
+
 
   public printConsoleReport(
     report: GovernanceDashboardReport
