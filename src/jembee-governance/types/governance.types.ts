@@ -909,10 +909,12 @@ export interface PageConnectionReport {
 }
 
 export interface DuplicateCodeReport {
-  files: string[];
-  duplicateLines: number;
-  lastScanned: string;
+  moduleName: string;
+  duplicateFiles: string[];
+  similarityPercentage: number;
+  passed: boolean;
 }
+
 
 export interface SecurityReport {
   vulnerabilities: number;
