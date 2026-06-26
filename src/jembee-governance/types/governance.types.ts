@@ -99,9 +99,9 @@ export interface GovernanceViolation {
 
   id: string;
 
-  title: string;
+  title?: string;
 
-  description: string;
+  description?: string;
 
   category: ViolationCategory;
 
@@ -127,7 +127,7 @@ export interface GovernanceViolation {
 
   documentationUrl?: string;
 
-  detectedAt: string;
+  detectedAt?: string;
 
 }
 
