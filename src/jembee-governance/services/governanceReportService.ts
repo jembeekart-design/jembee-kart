@@ -521,32 +521,7 @@ deploymentScore:
       generatedAt:
         new Date().toISOString(),
 
-      filesScanned:
-
-        firestoreResult.filesScanned +
-
-        securityResult.filesScanned +
-
-        themeResult.filesScanned +
-
-        duplicateResult.filesScanned +
-
-        pageConnectionResult.pagesScanned +
-
-        hardcodedResult.filesScanned +
-
-        adminControlResult.filesScanned +
-
-        walletResult.filesScanned +
-
-        mlmResult.filesScanned +
-
-        watchEarnResult.filesScanned +
-
-        creatorResult.filesScanned +
-
-        antiFraudResult.filesScanned,
-
+      filesScanned: 0,
       deploymentReady:
         deploymentResult.ready,
 
