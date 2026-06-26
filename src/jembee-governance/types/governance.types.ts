@@ -130,7 +130,12 @@ export interface GovernanceViolation {
   detectedAt?: string;
 
 }
-
+export interface DuplicateCodeReport {
+  moduleName: string;
+  duplicateFiles: string[];
+  similarityPercentage: number;
+  passed: boolean;
+}
 // ======================================================
 // GOVERNANCE HISTORY
 // ======================================================
