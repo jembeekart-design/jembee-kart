@@ -84,14 +84,13 @@ export type ViolationCategory =
   | "DUPLICATE_CODE"
   | "PROFITABILITY"
   | "MLM"
-  
+  | "MLM_COMPLIANCE"
   | "WATCH_EARN"
   | "WALLET"
   | "CREATOR_ECONOMY"
   | "ANTI_FRAUD"
   | "DEPLOYMENT"
   | "PERFORMANCE";
-  | "MLM_COMPLIANCE"
 // ======================================================
 // GOVERNANCE VIOLATION
 // ======================================================
