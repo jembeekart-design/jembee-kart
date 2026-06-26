@@ -1,0 +1,54 @@
+name: Build And Diagnose
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+jobs:
+  diagnose:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+
+      - name: Install Dependencies
+        run: npm install
+
+      - name: Show Versions
+        run: |
+          node -v
+          npm -v
+          npx tsc -v
+
+      - name: TypeScript Check
+        continue-on-error: true
+        run: |
+          npx tsc --noEmit --pretty false > typescript-errors.txt 2>&1
+
+      - name: ESLint
+        continue-on-error: true
+        run: |
+          npm run lint > eslint-errors.txt 2>&1
+
+      - name: Build
+        continue-on-error: true
+        run: |
+          npm run build > build-errors.txt 2>&1
+
+      - name: Upload Logs
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: build-logs
+          path: |
+            typescript-errors.txt
+            eslint-errors.txt
+            build-errors.txt
