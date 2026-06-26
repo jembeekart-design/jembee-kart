@@ -320,6 +320,20 @@ export interface GovernanceDashboardReport {
   warnings: number;
 
   totalViolations: number;
+
+  version: string;
+
+filesScanned: number;
+
+pagesScanned: number;
+
+overallScore: number;
+
+criticalCount: number;
+
+errorCount: number;
+
+warningCount: number;
   
   configuration: unknown;
 
