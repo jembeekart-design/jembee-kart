@@ -900,15 +900,18 @@ export interface GovernanceReportSummary {
 // ADDED SCANNER REPORTS
 // ======================================================
 
+// src/jembee-governance/types/governance.types.ts
+
 export interface PageConnectionReport {
+  // अनिवार्य प्रॉपर्टीज (इनके बिना स्कैनर एरर देगा)
   pageName: string;
   connections: string[];
   orphanStatus: boolean;
   brokenLinks: string[];
   lastScanned: string;
-  passed: boolean; // यह आपकी पिछली एरर लाइन 73 के लिए जरूरी है
+  passed: boolean;
 
-  // स्कैनर की सभी प्रॉपर्टीज:
+  // वैकल्पिक प्रॉपर्टीज (Optional properties)
   route?: string;
   routeExists?: boolean;
   navbarConnected?: boolean;
@@ -920,8 +923,9 @@ export interface PageConnectionReport {
   businessImpact?: string;
   missingConnectionSuggestion?: string;
   priority?: string;
-  expectedGovernanceScoreGain?: number; // यह आपकी नई एरर के लिए
+  expectedGovernanceScoreGain?: number;
 }
+
 
 
 
