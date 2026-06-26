@@ -320,6 +320,8 @@ export interface GovernanceDashboardReport {
   filesScanned: number;
   pagesScanned: number;
   collectionsScanned: number;
+  totalRevenueAtRisk: number;
+totalAffectedUsers: number;
   
   // Scores
   overallScore: number;
