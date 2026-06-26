@@ -327,6 +327,8 @@ filesScanned: number;
 
 pagesScanned: number;
 
+  collectionsScanned: number;
+
 overallScore: number;
 
 criticalCount: number;
