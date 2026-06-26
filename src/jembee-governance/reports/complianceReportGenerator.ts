@@ -78,7 +78,7 @@ coreScanners: {} as any,
 
 enterpriseScanners: {} as any,
 };
-
+ }
 
   public printConsoleReport(
     report: GovernanceDashboardReport
