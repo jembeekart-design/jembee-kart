@@ -400,7 +400,17 @@ deploymentViolations:
 
     const statistics = {
    filesScanned:
-  dashboardReport.summary.filesScanned,
+  firestoreResult.filesScanned +
+  securityResult.filesScanned +
+  themeResult.filesScanned +
+  duplicateResult.filesScanned +
+  hardcodedResult.filesScanned +
+  adminControlResult.filesScanned +
+  walletResult.filesScanned +
+  mlmResult.filesScanned +
+  watchEarnResult.filesScanned +
+  creatorResult.filesScanned +
+  antiFraudResult.filesScanned,
 
 pagesScanned:
   pageConnectionResult.pagesScanned,
