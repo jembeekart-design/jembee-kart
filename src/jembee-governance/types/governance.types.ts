@@ -897,5 +897,29 @@ export interface GovernanceReportSummary {
 }
 
 // ======================================================
+// ADDED SCANNER REPORTS
+// ======================================================
+
+export interface PageConnectionReport {
+  pageName: string;
+  connections: string[];
+  orphanStatus: boolean;
+  brokenLinks: string[];
+  lastScanned: string;
+}
+
+export interface DuplicateCodeReport {
+  files: string[];
+  duplicateLines: number;
+  lastScanned: string;
+}
+
+export interface SecurityReport {
+  vulnerabilities: number;
+  severityScore: number;
+  lastScanned: string;
+}
+
+// ======================================================
 // END OF GOVERNANCE TYPES
 // ======================================================
