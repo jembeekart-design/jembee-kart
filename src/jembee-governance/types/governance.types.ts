@@ -353,17 +353,6 @@ history: GovernanceHistory[];
   walletMismatchCount: number;
   profitLeakageCount: number;
 };
-history: GovernanceHistory[];
-
-mlmGovernance: {
-  healthScore: number;
-  totalOrdersAudited: number;
-  totalCommissionPaid: number;
-  totalCommissionReversed: number;
-  duplicateCommissionCount: number;
-  walletMismatchCount: number;
-  profitLeakageCount: number;
-};
 
 walletGovernance: {
   integrityScore: number;
