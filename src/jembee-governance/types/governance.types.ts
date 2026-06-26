@@ -947,9 +947,7 @@ export interface SecurityReport {
   vulnerabilities: number;
   severityScore: number;
   lastScanned: string;
-  vulnerabilities: number;
-  severityScore: number;
-  lastScanned: string;
+  
 }
 
 // ======================================================
