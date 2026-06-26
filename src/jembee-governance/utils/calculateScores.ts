@@ -4,6 +4,7 @@ export interface GovernanceScoreInput {
   themeViolations: number;
   adminControlViolations: number;
   profitabilityViolations: number;
+  deploymentViolations: number;
 }
 
 function calculateCategoryScore(
@@ -51,15 +52,20 @@ export function calculateScores(
       input.profitabilityViolations,
       4
     );
-
+const deploymentScore =
+  calculateCategoryScore(
+    input.deploymentViolations,
+    2
+  );
   const overallScore = Math.round(
     (
-      architectureScore +
-      securityScore +
-      themeScore +
-      adminControlScore +
-      profitabilityScore
-    ) / 5
+  architectureScore +
+  securityScore +
+  themeScore +
+  adminControlScore +
+  profitabilityScore +
+  deploymentScore
+) / 6
   );
 
   return {
@@ -68,6 +74,7 @@ export function calculateScores(
     themeScore,
     adminControlScore,
     profitabilityScore,
+    deploymentScore,
     overallScore,
   };
 }
