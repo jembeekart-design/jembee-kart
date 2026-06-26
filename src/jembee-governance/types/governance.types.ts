@@ -303,57 +303,42 @@ export interface EnterpriseScannerResults {
 
 }
 
-// ======================================================
 // GOVERNANCE DASHBOARD REPORT
 // ======================================================
-
 export interface GovernanceDashboardReport {
-
   generatedAt: string;
-
   deploymentStatus: DeploymentStatus;
-
-  critical: number;
-
-  errors: number;
-
-  warnings: number;
-
-  totalViolations: number;
-
-  version: string;
-
-filesScanned: number;
-
-pagesScanned: number;
-
-  collectionsScanned: number;
-
-overallScore: number;
-
-criticalCount: number;
-
-errorCount: number;
-
-warningCount: number;
   
+  // Counts & Totals
+  criticalCount: number;
+  errorCount: number;
+  warningCount: number;
+  totalViolations: number;
+  
+  // Scan Details
+  version: string;
+  filesScanned: number;
+  pagesScanned: number;
+  collectionsScanned: number;
+  
+  // Scores
+  overallScore: number;
+  architectureScore: number;
+  profitabilityScore: number;
+  securityScore: number;
+  themeScore: number;
+  adminControlScore: number;
+  deploymentScore: number;
+  
+  // Complex Objects
   configuration: unknown;
-
   health: GovernanceHealth;
-
   summary: GovernanceSummary;
-
   statistics: GovernanceStatistics;
-
   scores: GovernanceScores;
-
   violations: GovernanceViolation[];
-
   coreScanners: CoreScannerResults;
-
-  enterpriseScanners:
-    EnterpriseScannerResults;
-
+  enterpriseScanners: EnterpriseScannerResults;
 }
 
 // ======================================================
