@@ -341,6 +341,9 @@ totalAffectedUsers: number;
   violations: GovernanceViolation[];
   coreScanners: CoreScannerResults;
   enterpriseScanners: EnterpriseScannerResults;
+  enterpriseViolations: GovernanceViolation[];
+
+history: GovernanceHistory[];
 }
 
 // ======================================================
