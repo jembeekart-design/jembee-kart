@@ -18,6 +18,7 @@ import { analyzeRootCause } from "./rootCauseAnalyzer";
 import { generateFixSuggestions } from "./fixSuggestionEngine";
 import { generateJsonReport } from "./reportGenerator";
 import { generateMarkdownReport } from "./markdownGenerator";
+import { generateGitHubSummary } from "./githubSummary";
 
 const REPORT_DIR = path.join(process.cwd(), "reports");
 
@@ -126,6 +127,8 @@ async function runErrorAnalysis() {
     generateJsonReport(allErrors);
 
     generateMarkdownReport(allErrors);
+
+    generateGitHubSummary(allErrors);
 
     //-------------------------------------------------------
     // SUMMARY
