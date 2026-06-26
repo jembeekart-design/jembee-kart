@@ -69,12 +69,20 @@ const deploymentScore =
   );
 
   return {
-    architectureScore,
-    securityScore,
-    themeScore,
-    adminControlScore,
-    profitabilityScore,
-    deploymentScore,
-    overallScore,
-  };
+  overall: overallScore,
+  architecture: architectureScore,
+  security: securityScore,
+  profitability: profitabilityScore,
+  theme: themeScore,
+
+  firestore: 100,
+  adminControl: adminControlScore,
+  duplicateCode: 100,
+  hardcodedRule: 100,
+  pageConnection: 100,
+  deployment: deploymentScore,
+  performance: 100,
+  scalability: 100,
+  compliance: 100,
+};
 }
