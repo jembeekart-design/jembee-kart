@@ -906,8 +906,9 @@ export interface PageConnectionReport {
   orphanStatus: boolean;
   brokenLinks: string[];
   lastScanned: string;
-  
-  // स्कैनर की सभी प्रॉपर्टीज यहाँ जोड़ें:
+  passed: boolean; // यह आपकी पिछली एरर लाइन 73 के लिए जरूरी है
+
+  // स्कैनर की सभी प्रॉपर्टीज:
   route?: string;
   routeExists?: boolean;
   navbarConnected?: boolean;
@@ -915,11 +916,13 @@ export interface PageConnectionReport {
   deepLinkConnected?: boolean;
   requiredParentRoute?: string;
   actualParentRoutes?: string[];
-  businessFlow?: string;              // यह जोड़ें
-  businessImpact?: string;            // यह जोड़ें
-  missingConnectionSuggestion?: string; // यह जोड़ें
-  priority?: string;                  // यह जोड़ें
+  businessFlow?: string;
+  businessImpact?: string;
+  missingConnectionSuggestion?: string;
+  priority?: string;
+  expectedGovernanceScoreGain?: number; // यह आपकी नई एरर के लिए
 }
+
 
 
 
