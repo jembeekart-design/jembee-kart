@@ -943,7 +943,7 @@ export interface SecurityReport {
   secretFound: boolean;
   adminBypassDetected: boolean;
   firestoreRulesMissing: boolean;
-
+  totalSecurityIssues: number;
   vulnerabilities: number;
   severityScore: number;
   lastScanned: string;
