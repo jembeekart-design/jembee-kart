@@ -69,7 +69,10 @@ export class PageConnectionScanner {
   missingConnectionSuggestion: undefined,
   priority: undefined,
   expectedGovernanceScoreGain: undefined,
-
+ connections: [],
+orphanStatus: false,
+brokenLinks: [],
+lastScanned: new Date().toISOString(),
   passed: deepLinkConnected,
 };
 
