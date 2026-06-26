@@ -399,7 +399,14 @@ deploymentViolations:
     // ======================================================
 
     const statistics = {
+   filesScanned:
+  dashboardReport.summary.filesScanned,
 
+pagesScanned:
+  pageConnectionResult.pagesScanned,
+
+collectionsScanned:
+  firestoreResult.collectionsScanned,
       totalViolations:
         violations.length,
 
