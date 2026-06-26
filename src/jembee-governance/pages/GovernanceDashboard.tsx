@@ -99,8 +99,18 @@ export default function GovernanceDashboard() {
         );
 
         setIssues(
-          governanceIssues
-        );
+  governanceIssues.map((issue) => ({
+    id: issue.id,
+    title: issue.problem,
+    description: issue.fixSuggestion,
+    category: issue.category as ViolationCategory,
+    severity: issue.priority as SeverityLevel,
+    priority: issue.priority,
+    filePath: issue.filePath,
+    recommendation: issue.fixSuggestion,
+    detectedAt: issue.detectedAt,
+  })) as GovernanceViolation[]
+);
 
         setReports(
           latestReports
