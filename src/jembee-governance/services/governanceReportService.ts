@@ -400,7 +400,7 @@ deploymentViolations:
 
     const statistics = {
    filesScanned:
-  firestoreResult.filesScanned +
+  0 +
   securityResult.filesScanned +
   themeResult.filesScanned +
   duplicateResult.filesScanned +
