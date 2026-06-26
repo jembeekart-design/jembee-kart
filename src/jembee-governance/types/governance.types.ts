@@ -907,15 +907,20 @@ export interface PageConnectionReport {
   brokenLinks: string[];
   lastScanned: string;
   
-  // स्कैनर द्वारा मांगी जा रही नई प्रॉपर्टीज जोड़ें:
+  // स्कैनर की सभी प्रॉपर्टीज यहाँ जोड़ें:
   route?: string;
   routeExists?: boolean;
   navbarConnected?: boolean;
   footerConnected?: boolean;
-  deepLinkConnected?: boolean;      // यह जोड़ें
-  requiredParentRoute?: string;     // यह जोड़ें (undefined हो सकता है)
-  actualParentRoutes?: string[];    // यह जोड़ें
+  deepLinkConnected?: boolean;
+  requiredParentRoute?: string;
+  actualParentRoutes?: string[];
+  businessFlow?: string;              // यह जोड़ें
+  businessImpact?: string;            // यह जोड़ें
+  missingConnectionSuggestion?: string; // यह जोड़ें
+  priority?: string;                  // यह जोड़ें
 }
+
 
 
 export interface DuplicateCodeReport {
