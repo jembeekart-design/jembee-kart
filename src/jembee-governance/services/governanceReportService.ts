@@ -388,7 +388,10 @@ export class GovernanceReportService {
     violations.filter(
       v => v.category === "PROFITABILITY"
     ).length,
-
+deploymentViolations:
+  violations.filter(
+    v => v.category === "DEPLOYMENT"
+  ).length,
 });
 
     // ======================================================
