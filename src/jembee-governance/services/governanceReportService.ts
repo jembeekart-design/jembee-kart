@@ -416,19 +416,19 @@ deploymentViolations:
         infoViolations.length,
 
       overallScore:
-        scores.overall,
+  scores.overallScore,
 
-      architectureScore:
-        scores.architecture,
+architectureScore:
+  scores.architectureScore,
 
-      securityScore:
-        scores.security,
+securityScore:
+  scores.securityScore,
 
-      profitabilityScore:
-        scores.profitability,
+profitabilityScore:
+  scores.profitabilityScore,
 
-      deploymentScore:
-        scores.deployment,
+deploymentScore:
+  scores.deploymentScore,
 
     };
 
