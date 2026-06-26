@@ -42,8 +42,9 @@ export class JembeeGovernanceEngine {
       console.warn("⚠ GOVERNANCE VIOLATIONS DETECTED");
 
       console.warn(
-  `Critical Issues: ${report.critical}`
+  `Critical Issues: ${report.criticalCount}`
 );
+
 
      console.warn(
   `Error Issues: ${report.errors}`
