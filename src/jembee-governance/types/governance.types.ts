@@ -949,7 +949,14 @@ export interface SecurityReport {
   lastScanned: string;
   
 }
-
+export interface ThemeReport {
+  hardcodedColors: number;
+  hardcodedFonts: number;
+  firestoreThemeUsage: boolean;
+  adminThemeControl: boolean;
+  themeViolations: number;
+  lastScanned: string;
+}
 // ======================================================
 // END OF GOVERNANCE TYPES
 // ======================================================
