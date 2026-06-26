@@ -1,0 +1,134 @@
+name: 🔍 AI Error Analysis
+
+on:
+  push:
+    branches:
+      - main
+      - develop
+      - staging
+
+  pull_request:
+    branches:
+      - "*"
+
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  actions: read
+  checks: write
+  pull-requests: write
+
+jobs:
+  error-analysis:
+
+    name: AI Error Analysis
+
+    runs-on: ubuntu-latest
+
+    timeout-minutes: 30
+
+    env:
+      NODE_ENV: production
+
+    steps:
+
+      ########################################################
+      # Checkout
+      ########################################################
+
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
+      ########################################################
+      # Node
+      ########################################################
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+
+      ########################################################
+      # Install
+      ########################################################
+
+      - name: Install Dependencies
+        run: npm ci
+
+      ########################################################
+      # Create Report Folder
+      ########################################################
+
+      - name: Create Report Folder
+        run: mkdir -p reports
+
+      ########################################################
+      # TypeScript
+      ########################################################
+
+      - name: Type Check
+        run: |
+          npm run typecheck > reports/typescript.log 2>&1
+        continue-on-error: true
+
+      ########################################################
+      # ESLint
+      ########################################################
+
+      - name: ESLint
+        run: |
+          npm run lint > reports/eslint.log 2>&1
+        continue-on-error: true
+
+      ########################################################
+      # Build
+      ########################################################
+
+      - name: Build Project
+        run: |
+          npm run build > reports/build.log 2>&1
+        continue-on-error: true
+
+      ########################################################
+      # Run AI Error Analyzer
+      ########################################################
+
+      - name: Analyze Errors
+        run: |
+          npx tsx scripts/error-analysis/index.ts
+
+      ########################################################
+      # Upload Reports
+      ########################################################
+
+      - name: Upload Reports
+        uses: actions/upload-artifact@v4
+        with:
+          name: error-analysis-report
+          path: reports
+
+      ########################################################
+      # Show Summary
+      ########################################################
+
+      - name: Job Summary
+        if: always()
+        run: |
+          echo "# AI Error Analysis Completed" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "Generated Reports:" >> $GITHUB_STEP_SUMMARY
+          echo "- build.log" >> $GITHUB_STEP_SUMMARY
+          echo "- typescript.log" >> $GITHUB_STEP_SUMMARY
+          echo "- eslint.log" >> $GITHUB_STEP_SUMMARY
+          echo "- error-analysis.json" >> $GITHUB_STEP_SUMMARY
+          echo "- error-analysis.md" >> $GITHUB_STEP_SUMMARY
+
+      ########################################################
+      # Always Finish
+      ########################################################
+
+      - name: Workflow Finished
+        if: always()
+        run: echo "AI Error Analysis Finished Successfully."
