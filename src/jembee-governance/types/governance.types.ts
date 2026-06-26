@@ -971,12 +971,11 @@ export interface SecurityReport {
   
 }
 export interface ThemeReport {
-  hardcodedColors: number;
-  hardcodedFonts: number;
-  firestoreThemeUsage: boolean;
-  adminThemeControl: boolean;
-  themeViolations: number;
-  lastScanned: string;
+  pageName: string;
+  adminThemeConnected: boolean;
+  hardcodedColorsFound: boolean;
+  hardcodedFontsFound: boolean;
+  passed: boolean;
 }
 // ======================================================
 // END OF GOVERNANCE TYPES
