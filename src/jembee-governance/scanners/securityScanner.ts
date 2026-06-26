@@ -63,16 +63,32 @@ export class SecurityScanner {
     }
 
     return {
-      filesScanned: files.length,
-      report: {
-        apiKeyExposed,
-        secretFound,
-        adminBypassDetected,
-        firestoreRulesMissing: false,
-        totalSecurityIssues: violations.length,
-      },
-      violations,
-    };
+      const vulnerabilities = violations.length;
+
+const severityScore =
+  violations.filter(
+    v => v.severity === "CRITICAL"
+  ).length;
+
+const lastScanned = new Date().toISOString();
+
+return {
+  filesScanned: files.length,
+
+  report: {
+    apiKeyExposed,
+    secretFound,
+    adminBypassDetected,
+    firestoreRulesMissing: false,
+    totalSecurityIssues: violations.length,
+
+    vulnerabilities,
+    severityScore,
+    lastScanned,
+  },
+
+  violations,
+};
   }
 
   public scanFile(filePath: string): GovernanceViolation[] {
