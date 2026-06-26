@@ -56,6 +56,27 @@ export type GovernanceFixStatus =
   | "IGNORED";
 
 // ======================================================
+// GOVERNANCE FINAL STATUS
+// ======================================================
+
+export type GovernanceFinalStatus =
+  | "OPEN"
+  | "ACKNOWLEDGED"
+  | "FIXED"
+  | "IGNORED";
+
+// ======================================================
+// PRODUCTION RISK
+// ======================================================
+
+export type ProductionRisk =
+  | "NONE"
+  | "LOW"
+  | "MEDIUM"
+  | "HIGH"
+  | "CRITICAL";
+
+// ======================================================
 // FEATURE CATEGORY
 // ======================================================
 
