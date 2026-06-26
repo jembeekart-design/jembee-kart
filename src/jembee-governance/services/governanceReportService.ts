@@ -362,10 +362,34 @@ export class GovernanceReportService {
     // Governance Scores
     // ======================================================
 
-    const scores =
-      calculateScores(
-        violations
-      );
+    const scores = calculateScores({
+
+  architectureViolations:
+    violations.filter(
+      v => v.category === "ARCHITECTURE"
+    ).length,
+
+  securityViolations:
+    violations.filter(
+      v => v.category === "SECURITY"
+    ).length,
+
+  themeViolations:
+    violations.filter(
+      v => v.category === "THEME"
+    ).length,
+
+  adminControlViolations:
+    violations.filter(
+      v => v.category === "ADMIN_CONTROL"
+    ).length,
+
+  profitabilityViolations:
+    violations.filter(
+      v => v.category === "PROFITABILITY"
+    ).length,
+
+});
 
     // ======================================================
     // Statistics
