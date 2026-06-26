@@ -939,6 +939,14 @@ export interface DuplicateCodeReport {
 
 
 export interface SecurityReport {
+  apiKeyExposed: boolean;
+  secretFound: boolean;
+  adminBypassDetected: boolean;
+  firestoreRulesMissing: boolean;
+
+  vulnerabilities: number;
+  severityScore: number;
+  lastScanned: string;
   vulnerabilities: number;
   severityScore: number;
   lastScanned: string;
