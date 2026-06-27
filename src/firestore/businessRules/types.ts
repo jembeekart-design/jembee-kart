@@ -42,6 +42,7 @@ export interface ReferralRules {
 
 export interface WatchEarnRules {
   rewardPerVideo: number; 
+  watchDurationPerReward: number;
   videosRequired: number;
   rewardAmount: number;
   requiredSales: number;
