@@ -70,6 +70,10 @@ export default function WatchEarnCard() {
       </div>
 
       <div className="mt-6 grid gap-3">
+        <div className="flex justify-between">
+  <span>Reward Per Video</span>
+  <span>₹{rules?.rewardPerVideo ?? "--"}</span>
+</div>
 
         <div className="flex justify-between">
           <span>Videos Required</span>
