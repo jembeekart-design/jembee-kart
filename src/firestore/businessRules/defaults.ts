@@ -27,6 +27,8 @@ export const DEFAULT_BUSINESS_RULES: BusinessRulesConfig = {
   },
 
   watchEarn: {
+    rewardPerVideo: 1,
+    watchDurationPerReward: 30,
     videosRequired: 100,
     rewardAmount: 50,
     requiredSales: 5,
