@@ -122,6 +122,7 @@ useEffect(() => {
     rules={rules}
     onClose={() => setOpen(false)}
     onSave={async (updatedRules) => {
+      await businessRules.saveProfitabilityRules(updatedRules)
       setRules(updatedRules);
       setOpen(false);
     }}
