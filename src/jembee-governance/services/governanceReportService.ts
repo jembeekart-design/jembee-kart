@@ -433,19 +433,19 @@ collectionsScanned:
         infoViolations.length,
 
       overallScore:
-  scores.overallScore,
+  scores.overall,
 
 architectureScore:
-  scores.architectureScore,
+  scores.architecture,
 
 securityScore:
-  scores.securityScore,
+  scores.security,
 
 profitabilityScore:
-  scores.profitabilityScore,
+  scores.profitability,
 
 deploymentScore:
-  scores.deploymentScore,
+  scores.deployment,
 
     };
 
