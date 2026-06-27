@@ -517,18 +517,6 @@ deploymentScore:
 
       configuration,
 
-      deploymentStatus:
-  deploymentResult.ready ? "PASS" : "BLOCKED",
-  
-criticalCount:
-  criticalViolations.length,
-
-errorCount:
-  errorViolations.length,
-
-warningCount:
-  warningViolations.length,
-
       health:
         healthReport,
 
