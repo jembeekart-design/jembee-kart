@@ -69,6 +69,14 @@ export function validateProfitabilityRules(
     "orderProfit"
   );
 
+  ensurePercentage(
+  ensureNumber(
+    rules.cashbackPercentage,
+    "cashbackPercentage"
+  ),
+  "cashbackPercentage"
+);
+
   ensurePositive(
     ensureNumber(rules.cashbackExpense, "cashbackExpense"),
     "cashbackExpense"
