@@ -575,7 +575,13 @@ deploymentScore:
           deploymentResult,
 
       },
-
+summary: {
+  projectRoot,
+  generatedAt: new Date().toISOString(),
+  filesScanned: 0,
+  deploymentReady: deploymentResult.ready,
+  overallHealth: healthReport.healthy ? "HEALTHY" : "UNHEALTHY",
+},
 enterpriseViolations: [],
 
 history: [],
