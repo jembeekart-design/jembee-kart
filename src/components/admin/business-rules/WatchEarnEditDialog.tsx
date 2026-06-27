@@ -51,6 +51,22 @@ export default function WatchEarnEditDialog({
 
         <div className="mt-6 grid gap-4">
 
+          <div className="space-y-2">
+  <label>Reward Per Video</label>
+
+  <input
+    type="number"
+    value={form.rewardPerVideo}
+    onChange={(e) =>
+      setForm({
+        ...form,
+        rewardPerVideo: Number(e.target.value),
+      })
+    }
+    className="w-full rounded-lg border border-slate-700 bg-slate-800 p-3"
+  />
+</div>
+
           <div>
             <label className="text-sm">
               Videos Required
