@@ -27,7 +27,10 @@ export async function createWatchReward(
        MINIMUM WATCH TIME
     ========================= */
 
-    if (data.watchSeconds < 30) {
+    if (
+  data.watchSeconds <
+  rules.minimumWatchDuration
+) {
       return {
         success: false,
         message: "Minimum 30 seconds watch required",
