@@ -10,6 +10,8 @@ import {
 
 import { db } from "@/firebase/config";
 
+import { watchEarnConfigService } from "@/jembee-governance/services/watchEarnConfigService";
+
 interface CreateWatchRewardData {
   userId: string;
   videoId: string;
@@ -19,7 +21,8 @@ interface CreateWatchRewardData {
 export async function createWatchReward(
   data: CreateWatchRewardData
 ) {
-  try {
+  try { const rules =
+  await watchEarnConfigService.getRules();
     /* =========================
        MINIMUM WATCH TIME
     ========================= */
