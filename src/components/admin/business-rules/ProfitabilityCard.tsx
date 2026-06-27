@@ -7,12 +7,15 @@ import type {
   ProfitabilityRules,
 } from "@/firestore/businessRules";
 
+import ProfitabilityEditDialog from "./ProfitabilityEditDialog";
+
 export default function ProfitabilityCard() {
   const [rules, setRules] =
   useState<ProfitabilityRules | null>(null);
 
 const [loading, setLoading] =
   useState(true);
+  const [open, setOpen] = useState(false);
 
 useEffect(() => {
 
@@ -67,6 +70,7 @@ useEffect(() => {
         </div>
 
         <button
+          onClick={() => setOpen(true)}
           className="rounded-lg bg-indigo-600 px-4 py-2 text-sm font-medium hover:bg-indigo-700"
         >
           Edit
