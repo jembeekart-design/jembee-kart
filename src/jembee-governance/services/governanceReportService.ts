@@ -461,6 +461,60 @@ deploymentScore:
       generatedAt:
         new Date().toISOString(),
 
+      deploymentStatus:
+  deploymentResult.ready ? "PASS" : "BLOCKED",
+
+criticalCount:
+  criticalViolations.length,
+
+errorCount:
+  errorViolations.length,
+
+warningCount:
+  warningViolations.length,
+
+totalViolations:
+  violations.length,
+
+version:
+  "1.0.0",
+
+filesScanned:
+  statistics.filesScanned,
+
+pagesScanned:
+  statistics.pagesScanned,
+
+collectionsScanned:
+  statistics.collectionsScanned,
+
+totalRevenueAtRisk:
+  0,
+
+totalAffectedUsers:
+  0,
+
+overallScore:
+  statistics.overallScore,
+
+architectureScore:
+  statistics.architectureScore,
+
+profitabilityScore:
+  statistics.profitabilityScore,
+
+securityScore:
+  statistics.securityScore,
+
+themeScore:
+  scores.theme,
+
+adminControlScore:
+  scores.adminControl,
+
+deploymentScore:
+  statistics.deploymentScore,
+
       configuration,
 
       deploymentStatus:
