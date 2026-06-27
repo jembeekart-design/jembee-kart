@@ -64,7 +64,7 @@ export default function ProfitabilityEditDialog({
 
       setSaving(true);
 
-      await onSave(form);
+      await onSave(form!);
 
       onClose();
 
