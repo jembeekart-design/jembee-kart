@@ -116,6 +116,25 @@ class BusinessRulesService {
 
   this.clearCache();
 }
+
+  async saveWatchEarnRules(
+  rules: WatchEarnRules
+): Promise<void> {
+
+  await setDoc(
+    doc(
+      db,
+      BUSINESS_RULES_COLLECTION,
+      BUSINESS_RULE_DOCUMENTS.watchEarn
+    ),
+    rules,
+    {
+      merge: true,
+    }
+  );
+
+  this.clearCache();
+}
   // ====================================================
   // Version
   // ====================================================
