@@ -75,16 +75,3 @@ export class JembeeGovernanceEngine {
 
 export const governanceEngine =
   new JembeeGovernanceEngine();
-
-governanceEngine
-  .validateForDeployment()
-  .catch((error) => {
-    console.error(
-      "Governance Engine Failed:"
-    );
-
-    console.error(error);
-
-    process.exitCode = 1;
-  });
-
