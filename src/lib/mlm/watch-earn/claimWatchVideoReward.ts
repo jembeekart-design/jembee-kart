@@ -49,8 +49,8 @@ export async function claimWatchVideoReward(
     const videoData =
       videoSnap.data();
 
-    const minimumWatchTime =
-      videoData.minimumWatchTime || 30;
+   const minimumWatchTime =
+  videoData.minimumWatchTime || rules.minimumWatchDuration;
 
     if (
       data.watchedSeconds <
