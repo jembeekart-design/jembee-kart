@@ -25,6 +25,7 @@ export async function claimWatchVideoReward(
   data: ClaimWatchVideoRewardData
 ) {
   try {
+    const rules = await watchEarnConfigService.getRules();
     /* =========================
        VIDEO VALIDATION
     ========================= */
@@ -160,13 +161,12 @@ export async function claimWatchVideoReward(
     ========================= */
 
     if (
-      nextWatchCount >= 100 &&
-      nextWatchCount % 100 === 0
-    ) {
-      lockedReward = 50;
-      nextStatus =
-        "pendingUnlock";
-    }
+  nextWatchCount >= rules.videosRequired &&
+  nextWatchCount % rules.videosRequired === 0
+) {
+  lockedReward = rules.rewardAmount;
+  nextStatus = "pendingUnlock";
+}
 
     /* =========================
        UPDATE USER
