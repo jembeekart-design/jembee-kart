@@ -575,7 +575,6 @@ deploymentScore:
           deploymentResult,
 
       },
-   summary: summary,
 
 enterpriseViolations: [],
 
