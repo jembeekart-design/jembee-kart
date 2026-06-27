@@ -99,7 +99,23 @@ class BusinessRulesService {
   async getMetadata(): Promise<BusinessRulesMetadata> {
     return loadMetadata();
   }
+ async saveProfitabilityRules(
+  rules: ProfitabilityRules
+): Promise<void> {
+  await setDoc(
+    doc(
+      db,
+      BUSINESS_RULES_COLLECTION,
+      BUSINESS_RULE_DOCUMENTS.profitability
+    ),
+    rules,
+    {
+      merge: true,
+    }
+  );
 
+  this.clearCache();
+}
   // ====================================================
   // Version
   // ====================================================
