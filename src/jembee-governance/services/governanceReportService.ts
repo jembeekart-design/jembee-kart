@@ -463,6 +463,21 @@ deploymentScore:
 
       configuration,
 
+      deploymentStatus:
+  deploymentResult.ready ? "READY" : "NOT_READY",
+
+criticalCount:
+  criticalViolations.length,
+
+errorCount:
+  errorViolations.length,
+
+warningCount:
+  warningViolations.length,
+
+informationCount:
+  infoViolations.length,
+
       health:
         healthReport,
 
