@@ -13,6 +13,8 @@ import {
 
 import { db } from "@/firebase/config";
 
+import { watchEarnConfigService } from "@/jembee-governance/services/watchEarnConfigService";
+
 interface ClaimWatchVideoRewardData {
   userId: string;
   videoId: string;
