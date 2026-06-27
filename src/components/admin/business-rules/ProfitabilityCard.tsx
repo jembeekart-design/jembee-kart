@@ -1,6 +1,54 @@
 "use client";
+import { useEffect, useState } from "react";
+
+import { businessRules } from "@/firestore/businessRules";
+
+import type {
+  ProfitabilityRules,
+} from "@/firestore/businessRules";
 
 export default function ProfitabilityCard() {
+  const [rules, setRules] =
+  useState<ProfitabilityRules | null>(null);
+
+const [loading, setLoading] =
+  useState(true);
+
+useEffect(() => {
+
+  async function loadRules() {
+
+    try {
+
+      const data =
+        await businessRules.getProfitabilityRules();
+
+      setRules(data);
+
+    } catch (error) {
+
+      console.error(error);
+
+    } finally {
+
+      setLoading(false);
+
+    }
+
+  }
+
+  loadRules();
+
+}, []);
+  if (loading) {
+
+  return (
+    <div className="rounded-xl border border-slate-700 bg-slate-900 p-6">
+      Loading...
+    </div>
+  );
+
+}
   return (
     <div className="rounded-xl border border-slate-700 bg-slate-900 p-6">
 
