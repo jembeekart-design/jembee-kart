@@ -23,7 +23,7 @@ import {
 } from "./loader";
 
 import { doc, setDoc } from "firebase/firestore";
-import { db } from "../config";
+import { db } from "../../firebase/config";
 import {
   BUSINESS_RULES_COLLECTION,
   BUSINESS_RULE_DOCUMENTS,
