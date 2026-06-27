@@ -575,7 +575,29 @@ deploymentScore:
           deploymentResult,
 
       },
+   summary: summary,
 
+enterpriseViolations: [],
+
+history: [],
+
+mlmGovernance: {
+  healthScore: 100,
+  totalOrdersAudited: 0,
+  totalCommissionPaid: 0,
+  totalCommissionReversed: 0,
+  duplicateCommissionCount: 0,
+  walletMismatchCount: 0,
+  profitLeakageCount: 0,
+},
+
+walletGovernance: {
+  integrityScore: 100,
+  totalUsersAudited: 0,
+  mismatchCount: 0,
+},
+
+mlmAuditItems: [],
     };
 
     // ======================================================
