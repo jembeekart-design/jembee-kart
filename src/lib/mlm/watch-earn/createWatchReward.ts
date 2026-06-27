@@ -92,10 +92,14 @@ export async function createWatchReward(
     ========================= */
 
     if (
-      updatedVideoCount >= 100 &&
-      updatedVideoCount % 100 === 0
-    ) {
-      lockedRewardToAdd = 50;
+  updatedVideoCount >=
+    rules.videosRequired &&
+  updatedVideoCount %
+    rules.videosRequired ===
+    0
+) {
+      lockedRewardToAdd =
+  rules.rewardAmount;
       nextStatus = "pendingUnlock";
     }
 
