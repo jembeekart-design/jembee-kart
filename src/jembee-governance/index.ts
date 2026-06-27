@@ -14,9 +14,9 @@ export class JembeeGovernanceEngine {
     console.log("");
 
     const report =
-      complianceReportGenerator.generate({
-        projectRoot,
-      });
+  await complianceReportGenerator.generate({
+    projectRoot,
+  });
 
     complianceReportGenerator.printConsoleReport(
       report
