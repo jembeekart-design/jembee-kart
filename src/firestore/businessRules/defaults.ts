@@ -11,6 +11,7 @@ import {
 export const DEFAULT_BUSINESS_RULES: BusinessRulesConfig = {
   profitability: {
     orderProfit: 100,
+    cashbackPercentage: 5,
     cashbackExpense: 10,
     referralExpense: 10,
     rewardExpense: 10,
