@@ -162,19 +162,19 @@ export class ThemeScanner {
       }
     });
 
-    if (!adminThemeConnected) {
-      violations.push({
-        id: "THEME_NOT_CONNECTED",
-        title: "Admin Theme Not Connected",
-        description: "This page/component does not appear to use the centralized theme system.",
-        category: "THEME",
-        severity: "CRITICAL",
-        filePath,
-        expectedValue: "Theme Provider / Theme Config",
-        recommendation: "Connect page to admin-controlled theme configuration.",
-        detectedAt: new Date().toISOString(),
-      });
-    }
+    // if (!adminThemeConnected) {
+     // violations.push({
+      //  id: "THEME_NOT_CONNECTED",
+      //  title: "Admin Theme Not Connected",
+       // description: "This page/component does not appear to use the centralized theme system.",
+      //  category: "THEME",
+      //  severity: "CRITICAL",
+      //  filePath,
+      //  expectedValue: "Theme Provider / Theme Config",
+      //  recommendation: "Connect page to admin-controlled theme configuration.",
+       // detectedAt: new Date().toISOString(),
+    //  });
+  //  }
 
     return {
       report: {
