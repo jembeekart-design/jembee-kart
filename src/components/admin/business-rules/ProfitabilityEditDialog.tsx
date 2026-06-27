@@ -43,10 +43,18 @@ export default function ProfitabilityEditDialog({
     value: number
   ) {
 
-    setForm({
-      ...form,
-      [field]: value,
-    });
+    setForm((prev) => {
+
+  if (!prev) {
+    return prev;
+  }
+
+  return {
+    ...prev,
+    [field]: value,
+  };
+
+});
 
   }
 
