@@ -78,41 +78,51 @@ useEffect(() => {
 
         <div className="flex justify-between">
           <span>Order Profit</span>
-          <span>--</span>
+          <span>{rules?.orderProfit ?? "--"}</span>
         </div>
 
         <div className="flex justify-between">
           <span>Cashback Percentage</span>
-          <span>--</span>
+          <span>Auto</span>
         </div>
 
         <div className="flex justify-between">
           <span>Cashback Expense</span>
-          <span>--</span>
+          <span>{rules?.cashbackExpense ?? "--"}</span>
         </div>
 
         <div className="flex justify-between">
           <span>Referral Expense</span>
-          <span>--</span>
+          <span>{rules?.referralExpense ?? "--"}</span>
         </div>
 
         <div className="flex justify-between">
           <span>Reward Expense</span>
-          <span>--</span>
+          <span>{rules?.rewardExpense ?? "--"}</span>
         </div>
 
         <div className="flex justify-between">
           <span>Creator Expense</span>
-          <span>--</span>
+          <span>{rules?.creatorExpense ?? "--"}</span>
         </div>
 
         <div className="flex justify-between">
           <span>Protection Fund Expense</span>
-          <span>--</span>
+          <span>{rules?.protectionFundExpense ?? "--"}</span>
         </div>
 
       </div>
-
+   {rules && (
+  <ProfitabilityEditDialog
+    open={open}
+    rules={rules}
+    onClose={() => setOpen(false)}
+    onSave={async (updatedRules) => {
+      setRules(updatedRules);
+      setOpen(false);
+    }}
+  />
+)}
     </div>
   );
 }
