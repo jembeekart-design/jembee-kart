@@ -11,6 +11,8 @@ export interface ProfitabilityRules {
    */
   orderProfit: number;
 
+  cashbackPercentage: number;
+
   cashbackExpense: number;
 
   referralExpense: number;
