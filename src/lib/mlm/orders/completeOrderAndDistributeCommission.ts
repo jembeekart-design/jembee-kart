@@ -11,6 +11,7 @@ import {
 import { db } from "@/firebase/config";
 import { distributeLevelCommission } from "../distributeLevelCommission";
 import { creditWallet } from "../creditWallet";
+import { profitabilityConfigService } from "@/jembee-governance/services/profitabilityConfigService";
 
 interface CompleteOrderData {
   orderId: string;
@@ -23,6 +24,8 @@ interface CompleteOrderData {
  */
 export async function completeOrderAndDistributeCommission(orderId: string) {
   try {
+    const profitabilityRules =
+  await profitabilityConfigService.getRules();
     /* ========================================================
        VALIDATION LAYER
        ======================================================== */
@@ -75,7 +78,10 @@ export async function completeOrderAndDistributeCommission(orderId: string) {
        1. CORE E-COMMERCE CASHBACK (CRITICAL OUTFLOW)
        - FIXED: Schema properties mapped strictly to type contracts
        ======================================================== */
-    let cashback = Math.floor(amount * 0.05);
+    let cashback = Math.floor(
+  amount *
+  (profitabilityRules.cashbackPercentage / 100)
+);
     
     if (cashback > 0) {
       try {
