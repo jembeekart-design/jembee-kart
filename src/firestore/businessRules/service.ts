@@ -22,6 +22,13 @@ import {
   getBusinessRulesCacheStats,
 } from "./loader";
 
+import { doc, setDoc } from "firebase/firestore";
+import { db } from "../config";
+import {
+  BUSINESS_RULES_COLLECTION,
+  BUSINESS_RULE_DOCUMENTS,
+} from "./defaults";
+
 // ======================================================
 // JembeeKart Business Rules Service
 // Production Ready
