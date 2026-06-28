@@ -8,12 +8,12 @@ type Theme = {
   textColor: string;
   borderColor: string;
   buttonRadius: number;
-  cardRadius?: number;
-  inputRadius?: number;
+  cardRadius: number;
+  inputRadius: number;
   fontFamily: string;
-  shadow?: "none" | "sm" | "md" | "lg" | "xl";
-  shadowOpacity?: number;
-  borderWidth?: number;
+  shadow: string;
+  shadowOpacity: number;
+  borderWidth: number;
 };
 
 type Props = {
