@@ -19,7 +19,7 @@ type Theme = {
   bodySize: number;
   fontWeight: string;
 
-  shadow: string;
+  shadow: "none" | "sm" | "md" | "lg" | "xl";
   shadowOpacity: number;
   borderWidth: number;
 
