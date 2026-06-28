@@ -25,15 +25,8 @@ export default function BusinessRulesPage() {
 
           <WatchEarnCard />
 
-          <div className="rounded-xl border border-slate-700 bg-slate-900 p-6">
-            <h2 className="text-xl font-semibold">
-              Referral
-            </h2>
-            <p className="text-slate-400 mt-2">
-              Configuration coming soon...
-            </p>
-          </div>
-
+         <ReferralCard />
+          
           <div className="rounded-xl border border-slate-700 bg-slate-900 p-6">
             <h2 className="text-xl font-semibold">
               Wallet
