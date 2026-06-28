@@ -155,6 +155,26 @@ class BusinessRulesService {
   this.clearCache();
 
 }
+
+  async saveWalletRules(
+  rules: WalletRules
+): Promise<void> {
+
+  await setDoc(
+    doc(
+      db,
+      BUSINESS_RULES_COLLECTION,
+      BUSINESS_RULE_DOCUMENTS.wallet
+    ),
+    rules,
+    {
+      merge: true,
+    }
+  );
+
+  this.clearCache();
+
+}
   
   // ====================================================
   // Version
