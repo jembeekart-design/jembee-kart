@@ -4,6 +4,7 @@ import ProfitabilityCard from "./ProfitabilityCard";
 import WatchEarnCard from "./WatchEarnCard";
 import ReferralCard from "./ReferralCard";
 import WalletCard from "./WalletCard";
+import CreatorEconomyCard from "./CreatorEconomyCard";
 export default function BusinessRulesPage() {
   return (
     <div className="min-h-screen bg-slate-950 text-white p-6">
@@ -27,15 +28,7 @@ export default function BusinessRulesPage() {
           
           <WalletCard />
 
-          <div className="rounded-xl border border-slate-700 bg-slate-900 p-6">
-            <h2 className="text-xl font-semibold">
-              Creator Economy
-            </h2>
-            <p className="text-slate-400 mt-2">
-              Configuration coming soon...
-            </p>
-          </div>
-
+          <CreatorEconomyCard />
           <div className="rounded-xl border border-slate-700 bg-slate-900 p-6">
             <h2 className="text-xl font-semibold">
               Feature Flags
