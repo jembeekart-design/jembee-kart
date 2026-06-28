@@ -17,7 +17,7 @@ type Theme = {
   shadow?: string;
   shadowOpacity?: number;
   borderWidth?: number;
-  buttonStyle?: "filled" | "outline" | "soft" | "gradient";
+  buttonStyle?: string;
 };
 
 type Props = {
