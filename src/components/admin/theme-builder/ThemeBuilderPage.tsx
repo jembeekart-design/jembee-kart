@@ -14,7 +14,7 @@ export default function ThemeBuilderPage() {
 
   const { setTheme } = useTheme();
 
-  const [theme, setLocalTheme] = useState({
+  const [theme, setLocalTheme] = useState<Theme>({
 
     primaryColor: "#4F46E5",
 
