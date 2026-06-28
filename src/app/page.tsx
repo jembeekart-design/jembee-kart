@@ -114,7 +114,7 @@ COMPONENT
 ====================================================== */
 
 export default function HomePage() {
-  const theme = useTheme();
+  const { theme } = useTheme();
 
   /* ======================================================
   STATES
