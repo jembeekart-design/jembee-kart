@@ -4,6 +4,8 @@ import ProfitabilityCard from "./ProfitabilityCard";
 
 import WatchEarnCard from "./WatchEarnCard";
 
+import ReferralCard from "./ReferralCard";
+
 export default function BusinessRulesPage() {
   return (
     <div className="min-h-screen bg-slate-950 text-white p-6">
