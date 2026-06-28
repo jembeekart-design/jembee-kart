@@ -1,15 +1,6 @@
 "use client";
 
-type Theme = {
-  primaryColor: string;
-  secondaryColor: string;
-  textColor: string;
-  buttonRadius: number;
-  buttonStyle?: "filled" | "outline" | "soft" | "gradient";
-  buttonSize?: "sm" | "md" | "lg";
-  buttonIconPosition?: "left" | "right";
-  buttonHoverEffect?: "none" | "scale" | "shadow";
-};
+import type { Theme } from "@/types/theme";
 
 type Props = {
   theme: Theme;
