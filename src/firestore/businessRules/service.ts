@@ -135,6 +135,27 @@ class BusinessRulesService {
 
   this.clearCache();
 }
+
+  async saveReferralRules(
+  rules: ReferralRules
+): Promise<void> {
+
+  await setDoc(
+    doc(
+      db,
+      BUSINESS_RULES_COLLECTION,
+      BUSINESS_RULE_DOCUMENTS.referral
+    ),
+    rules,
+    {
+      merge: true,
+    }
+  );
+
+  this.clearCache();
+
+}
+  
   // ====================================================
   // Version
   // ====================================================
