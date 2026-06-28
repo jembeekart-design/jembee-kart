@@ -1,6 +1,11 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect } from "react";
+
+import {
+  getIntegrationStatus,
+  saveIntegrationStatus,
+} from "@/firestore/integrations";
 
 type ModuleItem = {
   id: string;
@@ -41,24 +46,51 @@ export default function IntegrationPage() {
 
   const [loading, setLoading] =
     useState<Record<string, boolean>>({});
+  useEffect(() => {
+
+  async function loadStatus() {
+
+    const data: Record<string, boolean> = {};
+
+    for (const module of modules) {
+
+      const status =
+        await getIntegrationStatus(
+          module.id
+        );
+
+      data[module.id] =
+        status?.integrated ?? false;
+
+    }
+
+    setIntegrated(data);
+
+  }
+
+  loadStatus();
+
+}, []);
 
   async function integrate(
-    id: string
-  ) {
+  id: string
+) {
 
-    setLoading((prev) => ({
-      ...prev,
-      [id]: true,
-    }));
+  setLoading((prev) => ({
+    ...prev,
+    [id]: true,
+  }));
 
-    await new Promise((resolve) =>
-      setTimeout(resolve, 1000)
-    );
+  try {
+
+    await saveIntegrationStatus(id);
 
     setIntegrated((prev) => ({
       ...prev,
       [id]: true,
     }));
+
+  } finally {
 
     setLoading((prev) => ({
       ...prev,
@@ -66,6 +98,9 @@ export default function IntegrationPage() {
     }));
 
   }
+
+}
+  
 
   return (
 
