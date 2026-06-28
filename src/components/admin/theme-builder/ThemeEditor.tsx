@@ -25,11 +25,11 @@ type Theme = {
   bodySize: number;
   fontWeight: string;
 
-  shadow: string;
+  shadow: "none" | "sm" | "md" | "lg" | "xl";
   shadowOpacity: number;
   borderWidth: number;
 
-  buttonStyle: string;
+  buttonStyle: "filled" | "outline" | "soft" | "gradient";
   buttonSize: string;
   buttonHoverEffect: string;
   buttonIconPosition: string;
