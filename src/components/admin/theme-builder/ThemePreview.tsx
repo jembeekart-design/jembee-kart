@@ -14,7 +14,7 @@ type Theme = {
   headingSize?: number;
   bodySize?: number;
   fontWeight?: string;
-  shadow?: "none" | "sm" | "md" | "lg" | "xl";
+  shadow?: string;
   shadowOpacity?: number;
   borderWidth?: number;
   buttonStyle?: "filled" | "outline" | "soft" | "gradient";
