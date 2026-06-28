@@ -1,5 +1,6 @@
 "use client";
 
+
 type Theme = {
   primaryColor: string;
   secondaryColor: string;
@@ -7,11 +8,26 @@ type Theme = {
   cardColor: string;
   textColor: string;
   borderColor: string;
+
+  borderRadius: string;
+
   buttonRadius: number;
+  cardRadius: number;
+  inputRadius: number;
+
   fontFamily: string;
-  headingSize?: number;
-  bodySize?: number;
-  fontWeight?: string;
+  headingSize: number;
+  bodySize: number;
+  fontWeight: string;
+
+  shadow: string;
+  shadowOpacity: number;
+  borderWidth: number;
+
+  buttonStyle: string;
+  buttonSize: string;
+  buttonHoverEffect: string;
+  buttonIconPosition: string;
 };
 
 type Props = {
