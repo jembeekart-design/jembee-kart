@@ -9,6 +9,23 @@ type Theme = {
   borderColor: string;
   buttonRadius: number;
   fontFamily: string;
+  borderRadius: string;
+
+cardRadius: number;
+inputRadius: number;
+
+headingSize: number;
+bodySize: number;
+fontWeight: string;
+
+shadow: string;
+shadowOpacity: number;
+borderWidth: number;
+
+buttonStyle: string;
+buttonSize: string;
+buttonHoverEffect: string;
+buttonIconPosition: string;
 };
 
 type Props = {
