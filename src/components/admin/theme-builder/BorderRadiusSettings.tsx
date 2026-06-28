@@ -1,30 +1,6 @@
 "use client";
 
-type Theme = {
-  primaryColor: string;
-  secondaryColor: string;
-  backgroundColor: string;
-  cardColor: string;
-  textColor: string;
-  borderColor: string;
-  buttonRadius: number;
-  cardRadius: number;
-  inputRadius: number;
-  fontFamily: string;
-  headingSize: number;
-  bodySize: number;
-  fontWeight: string;
-  borderRadius: string;
-
-shadow: string;
-shadowOpacity: number;
-borderWidth: number;
-
-buttonStyle: string;
-buttonSize: string;
-buttonHoverEffect: string;
-buttonIconPosition: string;
-};
+import type { Theme } from "@/types/theme";
 
 type Props = {
   theme: Theme;
