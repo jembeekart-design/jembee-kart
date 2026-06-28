@@ -9,7 +9,7 @@ import { useTheme } from "@/context/ThemeContext";
 import ThemeEditor from "./ThemeEditor";
 import ThemePreview from "./ThemePreview";
 import ThemeActions from "./ThemeActions";
-
+import type { Theme } from "@/types/theme";
 export default function ThemeBuilderPage() {
 
   const { setTheme } = useTheme();
