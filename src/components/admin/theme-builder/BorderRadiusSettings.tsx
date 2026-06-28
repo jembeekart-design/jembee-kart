@@ -8,12 +8,12 @@ type Theme = {
   textColor: string;
   borderColor: string;
   buttonRadius: number;
-  cardRadius?: number;
-  inputRadius?: number;
+  cardRadius: number;
+  inputRadius: number;
   fontFamily: string;
-  headingSize?: number;
-  bodySize?: number;
-  fontWeight?: string;
+  headingSize: number;
+  bodySize: number;
+  fontWeight: string;
   borderRadius: string;
 
 shadow: string;
