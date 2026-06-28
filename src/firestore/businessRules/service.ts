@@ -195,6 +195,26 @@ class BusinessRulesService {
   this.clearCache();
 
 }
+
+  async saveFeatureFlags(
+  flags: FeatureFlags
+): Promise<void> {
+
+  await setDoc(
+    doc(
+      db,
+      BUSINESS_RULES_COLLECTION,
+      BUSINESS_RULE_DOCUMENTS.featureFlags
+    ),
+    flags,
+    {
+      merge: true,
+    }
+  );
+
+  this.clearCache();
+
+}
   
   // ====================================================
   // Version
