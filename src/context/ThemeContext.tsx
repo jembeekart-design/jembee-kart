@@ -1,11 +1,20 @@
 "use client";
 
-import { createContext, useContext, useEffect, useState } from "react";
-import { doc, getDoc } from "firebase/firestore";
+import {
+  createContext,
+  useContext,
+  useEffect,
+  useState,
+} from "react";
+
+import {
+  doc,
+  getDoc,
+} from "firebase/firestore";
+
 import { db } from "@/firebase/config";
 
-// 1. Interface Definition
-interface ThemeConfig {
+export interface ThemeConfig {
   primaryColor: string;
   secondaryColor: string;
   backgroundColor: string;
@@ -18,75 +27,118 @@ interface ThemeConfig {
   logoUrl?: string;
 }
 
-// 2. Default Values
 const defaultTheme: ThemeConfig = {
   primaryColor: "#4F46E5",
   secondaryColor: "#7C3AED",
   backgroundColor: "#F8F9FE",
   borderRadius: "24",
   cardColor: "#FFFFFF",
-  textColor: "#111827"
+  textColor: "#111827",
 };
 
-// 3. Context Creation
 interface ThemeContextType {
   theme: ThemeConfig;
-  setTheme: React.Dispatch<React.SetStateAction<ThemeConfig>>;
+  setTheme: React.Dispatch<
+    React.SetStateAction<ThemeConfig>
+  >;
 }
 
-const ThemeContext = createContext<ThemeContextType>({
-  theme: defaultTheme,
-  setTheme: () => {},
-});
+const ThemeContext =
+  createContext<ThemeContextType>({
+    theme: defaultTheme,
+    setTheme: () => {},
+  });
 
-// 4. Provider Implementation
-export function ThemeProvider({ children }: { children: React.ReactNode }) {
-  const [theme, setTheme] = useState<ThemeConfig>(defaultTheme);
+export function ThemeProvider({
+  children,
+}: {
+  children: React.ReactNode;
+}) {
+
+  const [theme, setTheme] =
+    useState<ThemeConfig>(defaultTheme);
 
   useEffect(() => {
+
     async function loadTheme() {
+
       try {
-        const snap = await getDoc(doc(db, "admin_settings", "customize"));
 
-        if (snap.exists()) {
-          const data = snap.data();
-          
-          // Merge logic to handle missing fields
-          const mergedTheme = {
-            ...defaultTheme,
-            ...data
-          } as ThemeConfig;
+        const snap = await getDoc(
+          doc(
+            db,
+            "admin_settings",
+            "customize"
+          )
+        );
 
-          setTheme(mergedTheme);
+        if (!snap.exists()) return;
 
-          // CSS Variable Injection
-          document.documentElement.style.setProperty("--primary-color", mergedTheme.primaryColor);
-          document.documentElement.style.setProperty("--secondary-color", mergedTheme.secondaryColor);
-          document.documentElement.style.setProperty("--background-color", mergedTheme.backgroundColor);
-          document.documentElement.style.setProperty("--border-radius", `${mergedTheme.borderRadius}px`);
-          document.documentElement.style.setProperty("--card-color", mergedTheme.cardColor);
-          document.documentElement.style.setProperty("--text-color", mergedTheme.textColor);
-        }
+        const mergedTheme = {
+          ...defaultTheme,
+          ...snap.data(),
+        } as ThemeConfig;
+
+        setTheme(mergedTheme);
+
+        document.documentElement.style.setProperty(
+          "--primary-color",
+          mergedTheme.primaryColor
+        );
+
+        document.documentElement.style.setProperty(
+          "--secondary-color",
+          mergedTheme.secondaryColor
+        );
+
+        document.documentElement.style.setProperty(
+          "--background-color",
+          mergedTheme.backgroundColor
+        );
+
+        document.documentElement.style.setProperty(
+          "--border-radius",
+          `${mergedTheme.borderRadius}px`
+        );
+
+        document.documentElement.style.setProperty(
+          "--card-color",
+          mergedTheme.cardColor
+        );
+
+        document.documentElement.style.setProperty(
+          "--text-color",
+          mergedTheme.textColor
+        );
+
       } catch (error) {
-        console.log("Theme load error:", error);
+
+        console.error(
+          "Theme load error",
+          error
+        );
+
       }
+
     }
+
     loadTheme();
+
   }, []);
 
   return (
     <ThemeContext.Provider
-  value={{
-    theme,
-    setTheme,
-  }}
->
-  {children}
-</ThemeContext.Provider>
+      value={{
+        theme,
+        setTheme,
+      }}
+    >
+      {children}
+    </ThemeContext.Provider>
   );
+
 }
 
-// 5. Custom Hook
 export function useTheme() {
   return useContext(ThemeContext);
 }
