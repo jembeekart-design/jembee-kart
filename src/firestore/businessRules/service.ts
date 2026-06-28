@@ -175,6 +175,26 @@ class BusinessRulesService {
   this.clearCache();
 
 }
+
+  async saveCreatorEconomyRules(
+  rules: CreatorEconomyRules
+): Promise<void> {
+
+  await setDoc(
+    doc(
+      db,
+      BUSINESS_RULES_COLLECTION,
+      BUSINESS_RULE_DOCUMENTS.creatorEconomy
+    ),
+    rules,
+    {
+      merge: true,
+    }
+  );
+
+  this.clearCache();
+
+}
   
   // ====================================================
   // Version
