@@ -14,6 +14,16 @@ type Theme = {
   headingSize?: number;
   bodySize?: number;
   fontWeight?: string;
+  borderRadius: string;
+
+shadow: string;
+shadowOpacity: number;
+borderWidth: number;
+
+buttonStyle: string;
+buttonSize: string;
+buttonHoverEffect: string;
+buttonIconPosition: string;
 };
 
 type Props = {
