@@ -13,10 +13,27 @@ type Theme = {
   cardColor: string;
   textColor: string;
   borderColor: string;
-  buttonRadius: number;
-  fontFamily: string;
-};
 
+  borderRadius: string;
+
+  buttonRadius: number;
+  cardRadius: number;
+  inputRadius: number;
+
+  fontFamily: string;
+  headingSize: number;
+  bodySize: number;
+  fontWeight: string;
+
+  shadow: string;
+  shadowOpacity: number;
+  borderWidth: number;
+
+  buttonStyle: string;
+  buttonSize: string;
+  buttonHoverEffect: string;
+  buttonIconPosition: string;
+};
 type Props = {
   theme: Theme;
   setTheme: React.Dispatch<
