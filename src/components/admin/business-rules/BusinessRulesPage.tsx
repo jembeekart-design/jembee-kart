@@ -1,14 +1,10 @@
 "use client";
 
 import ProfitabilityCard from "./ProfitabilityCard";
-
 import WatchEarnCard from "./WatchEarnCard";
-
 import ReferralCard from "./ReferralCard";
-
+import WalletCard from "./WalletCard";
 export default function BusinessRulesPage() {
-
-  import WalletCard from "./WalletCard";
   return (
     <div className="min-h-screen bg-slate-950 text-white p-6">
       <div className="max-w-7xl mx-auto">
