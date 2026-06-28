@@ -7,6 +7,8 @@ import WatchEarnCard from "./WatchEarnCard";
 import ReferralCard from "./ReferralCard";
 
 export default function BusinessRulesPage() {
+
+  import WalletCard from "./WalletCard";
   return (
     <div className="min-h-screen bg-slate-950 text-white p-6">
       <div className="max-w-7xl mx-auto">
@@ -27,14 +29,7 @@ export default function BusinessRulesPage() {
 
          <ReferralCard />
           
-          <div className="rounded-xl border border-slate-700 bg-slate-900 p-6">
-            <h2 className="text-xl font-semibold">
-              Wallet
-            </h2>
-            <p className="text-slate-400 mt-2">
-              Configuration coming soon...
-            </p>
-          </div>
+          <WalletCard />
 
           <div className="rounded-xl border border-slate-700 bg-slate-900 p-6">
             <h2 className="text-xl font-semibold">
