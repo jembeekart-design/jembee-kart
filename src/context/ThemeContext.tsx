@@ -29,7 +29,15 @@ const defaultTheme: ThemeConfig = {
 };
 
 // 3. Context Creation
-const ThemeContext = createContext<ThemeConfig>(defaultTheme);
+interface ThemeContextType {
+  theme: ThemeConfig;
+  setTheme: React.Dispatch<React.SetStateAction<ThemeConfig>>;
+}
+
+const ThemeContext = createContext<ThemeContextType>({
+  theme: defaultTheme,
+  setTheme: () => {},
+});
 
 // 4. Provider Implementation
 export function ThemeProvider({ children }: { children: React.ReactNode }) {
@@ -67,9 +75,14 @@ export function ThemeProvider({ children }: { children: React.ReactNode }) {
   }, []);
 
   return (
-    <ThemeContext.Provider value={theme}>
-      {children}
-    </ThemeContext.Provider>
+    <ThemeContext.Provider
+  value={{
+    theme,
+    setTheme,
+  }}
+>
+  {children}
+</ThemeContext.Provider>
   );
 }
 
