@@ -46,7 +46,7 @@ export default function AntiFraudSettingsPage() {
 
   return (
 
-    <div className="space-y-6 p-6">
+    <div className="min-h-screen bg-white text-black space-y-6 p-6">
 
       <div>
 
