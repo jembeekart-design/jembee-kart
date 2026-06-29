@@ -219,7 +219,7 @@ export default function AntiFraudSettingsForm({
         </label>
 
       </div>
-            className="rounded-xl border border-gray-300 bg-white text-black p-6 space-y-5"
+            className="rounded-xl border p-6 space-y-5"
 
         <h2 className="text-xl font-semibold">
 
