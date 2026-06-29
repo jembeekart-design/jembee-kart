@@ -219,14 +219,14 @@ export default function AntiFraudSettingsForm({
         </label>
 
       </div>
-            className="rounded-xl border border-gray-300 bg-white text-black p-6 space-y-5"
 
-        <h2 className="text-xl font-semibold">
+<div className="rounded-xl border border-gray-300 bg-white text-black p-6 space-y-5">
 
-          Validation Rules
+  <h2 className="text-xl font-semibold">
+    Validation Rules
+  </h2>
 
-        </h2>
-
+        
         <label className="flex items-center justify-between">
 
           <span>Check Mobile Number</span>
