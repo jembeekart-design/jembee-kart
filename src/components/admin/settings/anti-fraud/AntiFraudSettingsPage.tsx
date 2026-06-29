@@ -1,56 +1,18 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useAntiFraudConfig } from "@/hooks/useAntiFraudConfig";
 
-import {
-  getAntiFraudConfig,
-} from "@/firestore/settings/antiFraudConfig";
-
-import type {
-  AntiFraudConfig,
-} from "@/modules/anti-fraud";
+import AntiFraudSettingsForm from "./AntiFraudSettingsForm";
 
 export default function AntiFraudSettingsPage() {
 
-  const [config, setConfig] =
-    useState<AntiFraudConfig | null>(null);
-
-  const [loading, setLoading] =
-    useState(true);
-
-  const [error, setError] =
-    useState<string | null>(null);
-
-  useEffect(() => {
-
-    async function load() {
-
-      try {
-
-        const data =
-          await getAntiFraudConfig();
-
-        setConfig(data);
-
-      } catch (err) {
-
-        console.error(err);
-
-        setError(
-          "Unable to load Anti Fraud configuration."
-        );
-
-      } finally {
-
-        setLoading(false);
-
-      }
-
-    }
-
-    load();
-
-  }, []);
+  const {
+    config,
+    loading,
+    saving,
+    error,
+    save,
+  } = useAntiFraudConfig();
 
   if (loading) {
 
@@ -72,19 +34,37 @@ export default function AntiFraudSettingsPage() {
 
   }
 
+  if (!config) {
+
+    return (
+      <div className="p-6 text-red-500">
+        Anti Fraud Configuration Not Found
+      </div>
+    );
+
+  }
+
   return (
 
-    <div className="p-6 space-y-6">
+    <div className="space-y-6 p-6">
 
-      <h1 className="text-2xl font-bold">
-        Anti Fraud Settings
-      </h1>
+      <div>
 
-      <pre className="rounded-lg border p-4 overflow-auto text-sm">
+        <h1 className="text-3xl font-bold">
+          Anti Fraud Settings
+        </h1>
 
-        {JSON.stringify(config, null, 2)}
+        <p className="mt-2 text-slate-500">
+          Configure fraud protection rules for JembeeKart.
+        </p>
 
-      </pre>
+      </div>
+
+      <AntiFraudSettingsForm
+        config={config}
+        saving={saving}
+        onSave={save}
+      />
 
     </div>
 
