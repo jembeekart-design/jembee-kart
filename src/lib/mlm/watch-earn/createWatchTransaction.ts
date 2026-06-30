@@ -6,6 +6,7 @@ import {
 
 import { db } from "@/firebase/config";
 
+import { FeatureFlagService } from "@/jembee-governance/services/featureFlagService";
 export interface CreateWatchTransactionData {
   userId: string;
 
@@ -33,6 +34,15 @@ export async function createWatchTransaction({
   status,
 }: CreateWatchTransactionData) {
   try {
+    const featureFlagService = new FeatureFlagService();
+const flags = await featureFlagService.getFlags();
+
+if (!flags.watchEarnEnabled) {
+  return {
+    success: false,
+    message: "Watch & Earn is disabled",
+  };
+}
     if (!userId) {
       throw new Error(
         "User ID is required"
