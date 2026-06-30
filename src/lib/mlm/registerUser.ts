@@ -1,27 +1,9 @@
 import { db } from "@/firebase/config";
 import { doc, runTransaction, serverTimestamp, increment } from "firebase/firestore";
-
-// Strict Input Interface - Reinforcing secure upstream resolution boundaries
-export interface RegisterUserData {
-  uid: string;
-  email: string;
-  name?: string;
-  displayName?: string;
-  photoURL?: string;
-  emailVerified?: boolean;
-  providerId?: string;       // e.g., "google.com", "password"
-  signupSource?: string;     // Channel telemetry capture (?src=whatsapp)
-  
-  // SECURITY FIX: Explicit verification properties calculated strictly on server/trusted controller
-  sponsorUid?: string;       // Server-resolved validated UID of the immediate sponsor
-  sponsorCode?: string;      // The actual marketing code verified in database lookup
-  sponsorParentChain?: string[]; // Server-extracted parentChain directly from Sponsor Document Snapshot
-}
-
-interface RegisterUserResponse {
-  success: boolean;
-  message: string;
-}
+import {
+  RegisterUserData,
+  RegisterUserResponse,
+} from "@/lib/security";
 
 /**
  * 10/10 Enterprise-Grade User Onboarding & Structural MLM Transaction Engine.
