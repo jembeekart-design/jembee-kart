@@ -116,6 +116,15 @@ export default function WatchEarnPage() {
     loadVideos() {
 
       try {
+        const enabled =
+  await FeatureFlagService.watchEarnEnabled();
+
+setWatchEarnEnabled(enabled);
+
+if (!enabled) {
+  setLoadingVideos(false);
+  return;
+}
 
         setLoadingVideos(
           true
