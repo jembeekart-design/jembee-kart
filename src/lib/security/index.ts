@@ -8,8 +8,8 @@
 
 export * from "./types";
 
-export * from "./selfReferralProtection";
+// export * from "./selfReferralProtection";
 
-export * from "./referralValidation";
+// export * from "./referralValidation";
 
-export * from "./fraudProtection";
+// export * from "./fraudProtection";
