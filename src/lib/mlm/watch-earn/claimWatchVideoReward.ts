@@ -14,6 +14,7 @@ import {
 import { db } from "@/firebase/config";
 
 import { watchEarnConfigService } from "@/jembee-governance/services/watchEarnConfigService";
+import { getFeatureFlags } from "@/firestore/businessRules";
 
 interface ClaimWatchVideoRewardData {
   userId: string;
@@ -25,6 +26,11 @@ export async function claimWatchVideoReward(
   data: ClaimWatchVideoRewardData
 ) {
   try {
+    const flags = await getFeatureFlags();
+
+if (!flags.watchEarnEnabled) {
+  throw new Error("Watch & Earn is disabled");
+}
     const rules = await watchEarnConfigService.getRules();
     /* =========================
        VIDEO VALIDATION
