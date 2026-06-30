@@ -12,6 +12,7 @@ import { db } from "@/firebase/config";
 
 import { watchEarnConfigService } from "@/jembee-governance/services/watchEarnConfigService";
 
+import { FeatureFlagService } from "@/jembee-governance/services/featureFlagService";
 interface CreateWatchRewardData {
   userId: string;
   videoId: string;
@@ -21,7 +22,17 @@ interface CreateWatchRewardData {
 export async function createWatchReward(
   data: CreateWatchRewardData
 ) {
-  try { const rules =
+  try { 
+    const featureFlagService = new FeatureFlagService();
+const flags = await featureFlagService.getFlags();
+
+if (!flags.watchEarnEnabled) {
+  return {
+    success: false,
+    message: "Watch & Earn is disabled",
+  };
+}
+    const rules =
   await watchEarnConfigService.getRules();
     /* =========================
        MINIMUM WATCH TIME
