@@ -3,6 +3,7 @@ import { doc, runTransaction, serverTimestamp, increment } from "firebase/firest
 import {
   RegisterUserData,
   RegisterUserResponse,
+  createInitialProfileState,
 } from "@/lib/security";
 
 /**
