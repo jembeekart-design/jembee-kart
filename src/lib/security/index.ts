@@ -8,6 +8,8 @@
 
 export * from "./types";
 
+export * from "./profileFactory";
+
 export * from "./selfReferralProtection";
 
 export * from "./referralValidation";
