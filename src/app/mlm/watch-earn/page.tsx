@@ -24,6 +24,7 @@ import {
   fetchWatchVideos,
   WatchVideo
 } from "@/lib/mlm/watch-earn/fetchWatchVideos";
+import { FeatureFlagService } from "@/jembee-governance/services/featureFlagService";
 
 export default function WatchEarnPage() {
 
@@ -47,7 +48,10 @@ export default function WatchEarnPage() {
     loadingVideos,
     setLoadingVideos
   ] = useState(true);
-
+ const [
+  watchEarnEnabled,
+  setWatchEarnEnabled
+] = useState(true);
   /* =========================
      STATES
   ========================= */
