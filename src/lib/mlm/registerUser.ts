@@ -69,76 +69,16 @@ export async function registerUser(data: RegisterUserData): Promise<RegisterUser
       /* ======================================================
          JEMBEEKART TARGET SCHEMA MATRIX INITIALIZATION
       ====================================================== */
-      const initialProfileState = {
-        uid: targetUid,
-        name: data.name?.trim() || data.displayName?.trim() || "JembeeKart User",
-        email: rawEmail,
-        photo: data.photoURL || "",
-        mobileNumber: "", // Initialized clean for onboarding profiling processes
-
-        // SECURITY, COMPLIANCE & AUTH STATUS FLAGS
-        emailVerified: data.emailVerified || false,
-        authProvider: data.providerId || "password",
-        accountStatus: "active",
-        isActive: false,       // Activated strictly upon the user's first successful e-commerce checkout
-        isBlocked: false,      // Administration account suspension control node
-        kycStatus: "pending",
-
-        // UNIFIED TWO-TIER REFERENCE SYSTEM
-        referralCode: unifiedMarketingCode,
-        shareCode: unifiedMarketingCode,
-        sponsorId: cleanSponsorUid || null,
-        sponsorReferralCode: cleanSponsorCode,
-        sponsorJoinedAt: cleanSponsorUid ? serverTimestamp() : null,
-
-        // ANALYTICS & ACQUISITION CHANNEL TELEMETRY
-        signupSource: cleanSignupSource, // Captures sources (e.g. whatsapp, telegram, direct) for admin view
-
-        // CORE FINANCIAL BALANCES (DECOUPLED LEDGER TARGET SLOTS)
-        walletBalance: 0,
-        commissionWallet: 0,
-        rewardWallet: 0,
-        totalIncome: 0,
-        todayIncome: 0,
-        totalWithdraw: 0,
-        pendingWithdrawal: 0,
-        walletLocked: false,
-
-        // CONTEXTUAL MLM BUSINESS METRICS
-        directBusiness: 0,
-        teamBusiness: 0,
-        totalTeamBusiness: 0,
-        lifetimeBusiness: 0,
-
-        // ANCESTRAL MATRICES NETWORKING COUNTERS
-        parentChain: newUserParentChain,
-        teamSize: 0,
-        totalReferrals: 0,
-        directReferrals: 0,
-        directActiveReferrals: 0,
-        teamActiveReferrals: 0,
-        
-        // GAMIFICATION & PACKAGE LIFECYCLE VARIABLES
-        dailyRewardClaimed: false,
-        lastRewardClaimAt: null,
-        joinedPackage: false,
-        packageAmount: 0,
-        activationDate: null,
-        activatedByOrderId: "",
-
-        // SYSTEM STATUS RANKS IDENTIFIERS
-        rank: "Member",
-        currentRankId: "member",
-        rankAchievedAt: null,
-
-        // FLATTENED USER INTERFACE SETTINGS OBJECT
-        darkMode: false,
-        notificationsEnabled: true,
-
-        // SCHEDULING TELEMETRY STAMPS
-        createdAt: serverTimestamp(),
-        lastLogin: serverTimestamp(),
-      };
+      const initialProfileState = createInitialProfileState({
+  data,
+  targetUid,
+  rawEmail,
+  cleanSponsorUid,
+  cleanSponsorCode,
+  cleanSignupSource,
+  newUserParentChain,
+  unifiedMarketingCode,
+});
 
       /* ======================================================
          WRITE OPERATOR COMMIT: REGISTRATION INITIALIZATION
