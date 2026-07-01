@@ -30,27 +30,13 @@ export async function completeOrderAndDistributeCommission(orderId: string) {
     /* ========================================================
        VALIDATION LAYER
        ======================================================== */
-    if (!orderId?.trim()) {
-      return {
-        success: false,
-        message: "Order ID Required",
-      };
-    }
+    const validation = await validateOrder(orderId);
 
-    /* ========================================================
-       ORDER RETRIEVAL
-       ======================================================== */
-    const orderRef = doc(db, "orders", orderId);
-    const orderSnap = await getDoc(orderRef);
+if (!validation.success) {
+  return validation;
+}
 
-    if (!orderSnap.exists()) {
-      return {
-        success: false,
-        message: "Order not found",
-      };
-    }
-
-    const order = orderSnap.data();
+const { orderRef, order } = validation;
 
     /* ========================================================
        IDEMPOTENCY / DUPLICATE PROTECTION GUARD
