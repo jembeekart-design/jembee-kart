@@ -6,6 +6,8 @@ import {
   createInitialProfileState,
   updateUplineTree,
   updateSponsorCounters,
+  generateMarketingCode,
+buildParentChain,
 } from "@/lib/security";
 
 /**
@@ -50,23 +52,14 @@ export async function registerUser(data: RegisterUserData): Promise<RegisterUser
         };
       }
 
-      /* ======================================================
-         HIGH-ENTROPY UNIQUE IDENTIFIER SCHEMATICS
-         - Unifies referralCode and shareCode.
-         - To mitigate collision risk at scale, the upstream controller should ideally 
-           inject a verified unique hash, or we generate a standard unified sequence.
-      ====================================================== */
-      const firstPart = targetUid.slice(0, 6).toUpperCase();
-      const lastPart = targetUid.slice(-4).toUpperCase();
-      const unifiedMarketingCode = `JBK${firstPart}${lastPart}`;
+      const unifiedMarketingCode =
+  generateMarketingCode(targetUid);
 
-      /* ======================================================
-         10-LEVEL SEAMLESS MATRIX LINEAGE BUILD-OUT
-         - Formed safely by concatenating the verified server-read uplines.
-      ====================================================== */
-      const newUserParentChain = cleanSponsorUid 
-        ? [cleanSponsorUid, ...verifiedSponsorChain].slice(0, 10)
-        : [];
+const newUserParentChain =
+  buildParentChain(
+    cleanSponsorUid,
+    verifiedSponsorChain
+  );
 
       /* ======================================================
          JEMBEEKART TARGET SCHEMA MATRIX INITIALIZATION
