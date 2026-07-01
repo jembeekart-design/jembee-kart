@@ -21,7 +21,17 @@ export function buildReferralData(
 
   const parentChain =
     data.sponsorParentChain || [];
-
+if (sponsorUid && sponsorUid === data.uid.trim()) {
+  return {
+    success: false,
+    message: "Self referral is not allowed.",
+    sponsorUid: "",
+    sponsorCode: "",
+    parentChain: [],
+    referralCode: "",
+    shareCode: "",
+  };
+}
   const firstPart =
     data.uid.slice(0, 6).toUpperCase();
 
