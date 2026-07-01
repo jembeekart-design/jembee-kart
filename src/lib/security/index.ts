@@ -21,5 +21,3 @@ export * from "./updateUplineTree";
 export * from "./sponsorUpdater";
 
 export * from "./userRegistrationHelper";
-
-export * from "./registrationValidation";
