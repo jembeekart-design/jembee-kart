@@ -1,13 +1,13 @@
-import { runAllScanners } from "@/jembee-governance/scanners";
+import { governanceEngine } from "@/jembee-governance";
 
 export async function getControlTowerReport() {
-  const issues = await runAllScanners();
+  const report = await governanceEngine.run();
 
   return {
-    total: issues.length,
-    critical: issues.filter(i => i.severity === "CRITICAL").length,
-    warning: issues.filter(i => i.severity === "WARNING").length,
-    info: issues.filter(i => i.severity === "INFO").length,
-    issues,
+    total: report.totalViolations,
+    critical: report.criticalCount,
+    warning: report.warningCount,
+    info: report.infoCount,
+    issues: report.violations,
   };
 }
