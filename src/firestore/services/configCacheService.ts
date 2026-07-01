@@ -20,7 +20,7 @@ import {
   Unsubscribe,
 } from "firebase/firestore";
 import { db } from "@/firebase/config";
-import { CACHE_KEYS, CACHE_DURATION } from "./baseConfigTypes";
+import { CACHE_DURATION } from "@/firestore/collections/baseConfigTypes";
 
 // ======================================================
 // CACHE STORAGE
@@ -118,7 +118,7 @@ class ConfigCache {
   listen<T>(
     key: string,
     query: Query,
-    onUpdate: (data: T) => void,
+    onUpdate: (data: T[]) => void,
     onError?: (error: Error) => void
   ): Unsubscribe {
     if (this.listeners.has(key)) {
@@ -284,7 +284,7 @@ export async function loadConfigDomain<T>(
 
 export function setupConfigListener<T>(
   path: string,
-  onUpdate: (data: T) => void,
+  onUpdate: (data: T[]) => void,
   onError?: (error: Error) => void
 ): Unsubscribe {
   const docRef = doc(db, path);
