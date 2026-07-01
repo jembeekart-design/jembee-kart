@@ -15,3 +15,5 @@ export * from "./selfReferralProtection";
 export * from "./referralValidation";
 
 export * from "./fraudProtection";
+
+export * from "./updateUplineTree";
