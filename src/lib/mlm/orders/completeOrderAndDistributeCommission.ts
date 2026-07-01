@@ -37,6 +37,12 @@ if (!validation.success) {
 }
 
 const { orderRef, order } = validation;
+    if (!order) {
+  return {
+    success: false,
+    message: "Order data missing",
+  };
+}
 
     /* ========================================================
        IDEMPOTENCY / DUPLICATE PROTECTION GUARD
