@@ -5,6 +5,7 @@ import {
   RegisterUserResponse,
   createInitialProfileState,
   updateUplineTree,
+  updateSponsorCounters,
 } from "@/lib/security";
 
 /**
