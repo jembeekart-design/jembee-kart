@@ -21,6 +21,16 @@ export function buildReferralData(
 
   const parentChain =
     data.sponsorParentChain || [];
+  if (!sponsorUid) {
+  return {
+    success: true,
+    sponsorUid: "",
+    sponsorCode: "",
+    parentChain: [],
+    referralCode: "",
+    shareCode: "",
+  };
+}
 if (sponsorUid && sponsorUid === data.uid.trim()) {
   return {
     success: false,
