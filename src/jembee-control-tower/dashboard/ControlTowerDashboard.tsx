@@ -1,42 +1,55 @@
 "use client";
 
-const cards = [
-  {
-    title: "Architecture",
-    value: "--",
-    status: "Waiting",
-  },
-  {
-    title: "Security",
-    value: "--",
-    status: "Waiting",
-  },
-  {
-    title: "Theme",
-    value: "--",
-    status: "Waiting",
-  },
-  {
-    title: "Business Rules",
-    value: "--",
-    status: "Waiting",
-  },
-  {
-    title: "Firestore",
-    value: "--",
-    status: "Waiting",
-  },
-  {
-    title: "Navigation",
-    value: "--",
-    status: "Waiting",
-  },
-];
+import { useEffect, useState } from "react";
+import { getControlTowerReport } from "../services/controlTowerService";
 
 export default function ControlTowerDashboard() {
+  const [report, setReport] = useState<any>(null);
+
+  useEffect(() => {
+    async function load() {
+      const data = await getControlTowerReport();
+      setReport(data);
+    }
+
+    load();
+  }, []);
+
+  const cards = [
+    {
+      title: "Architecture",
+      value: report ? report.total : "--",
+      status: report ? "Connected" : "Waiting",
+    },
+    {
+      title: "Security",
+      value: report ? report.critical : "--",
+      status: report ? "Connected" : "Waiting",
+    },
+    {
+      title: "Theme",
+      value: report ? report.warning : "--",
+      status: report ? "Connected" : "Waiting",
+    },
+    {
+      title: "Business Rules",
+      value: report ? report.info : "--",
+      status: report ? "Connected" : "Waiting",
+    },
+    {
+      title: "Firestore",
+      value: report ? report.issues.length : "--",
+      status: report ? "Connected" : "Waiting",
+    },
+    {
+      title: "Navigation",
+      value: report ? "OK" : "--",
+      status: report ? "Connected" : "Waiting",
+    },
+  ];
+
   return (
     <main className="min-h-screen p-6 space-y-6">
-
       <div>
         <h1 className="text-3xl font-bold">
           JembeeKart Control Tower
@@ -53,9 +66,7 @@ export default function ControlTowerDashboard() {
             key={card.title}
             className="rounded-xl border p-4 shadow-sm"
           >
-            <h2 className="font-semibold">
-              {card.title}
-            </h2>
+            <h2 className="font-semibold">{card.title}</h2>
 
             <div className="text-3xl font-bold mt-3">
               {card.value}
@@ -73,9 +84,13 @@ export default function ControlTowerDashboard() {
           Scanner Output
         </h2>
 
-        <p className="text-gray-500">
-          No scan executed.
-        </p>
+        {report ? (
+          <pre className="text-xs overflow-auto">
+            {JSON.stringify(report.issues, null, 2)}
+          </pre>
+        ) : (
+          <p>No scan executed.</p>
+        )}
       </div>
 
       <div className="rounded-xl border p-5">
@@ -83,11 +98,12 @@ export default function ControlTowerDashboard() {
           Fix Center
         </h2>
 
-        <p className="text-gray-500">
-          No fixes available.
-        </p>
+        {report ? (
+          <p>{report.total} issues detected.</p>
+        ) : (
+          <p>No fixes available.</p>
+        )}
       </div>
-
     </main>
   );
 }
