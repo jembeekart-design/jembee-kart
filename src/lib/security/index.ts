@@ -17,3 +17,5 @@ export * from "./referralValidation";
 export * from "./fraudProtection";
 
 export * from "./updateUplineTree";
+
+export * from "./sponsorUpdater";
