@@ -4,6 +4,7 @@ import {
   RegisterUserData,
   RegisterUserResponse,
   createInitialProfileState,
+  updateUplineTree,
 } from "@/lib/security";
 
 /**
