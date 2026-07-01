@@ -98,17 +98,10 @@ export async function registerUser(data: RegisterUserData): Promise<RegisterUser
       /* ======================================================
          INCREMENT DIRECT CONTROLLER PARAMETERS ON IMMEDIATE PARENT
       ====================================================== */
-      if (cleanSponsorUid) {
-        const immediateSponsorRef = doc(db, "users", cleanSponsorUid);
-        const sponsorSnap = await transaction.get(immediateSponsorRef);
-        
-        if (sponsorSnap.exists()) {
-          transaction.update(immediateSponsorRef, {
-            totalReferrals: increment(1),
-            directReferrals: increment(1),
-          });
-        }
-      }
+      await updateSponsorCounters(
+  transaction,
+  cleanSponsorUid
+);
 
       return {
         success: true,
