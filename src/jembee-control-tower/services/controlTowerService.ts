@@ -7,7 +7,7 @@ export async function getControlTowerReport() {
     total: report.totalViolations,
     critical: report.criticalCount,
     warning: report.warningCount,
-    info: report.infoCount,
+    info: 0,
     issues: report.violations,
   };
 }
