@@ -1,11 +1,13 @@
-import { mockIssues } from "../mock/issues";
+import { runAllScanners } from "@/jembee-governance/scanners";
 
 export async function getControlTowerReport() {
+  const issues = await runAllScanners();
+
   return {
-    total: mockIssues.length,
-    critical: mockIssues.filter(i => i.severity === "CRITICAL").length,
-    warning: mockIssues.filter(i => i.severity === "WARNING").length,
-    info: mockIssues.filter(i => i.severity === "INFO").length,
-    issues: mockIssues,
+    total: issues.length,
+    critical: issues.filter(i => i.severity === "CRITICAL").length,
+    warning: issues.filter(i => i.severity === "WARNING").length,
+    info: issues.filter(i => i.severity === "INFO").length,
+    issues,
   };
 }
