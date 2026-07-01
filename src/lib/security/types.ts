@@ -58,15 +58,15 @@ export interface ReferralValidationResult {
 
   success: boolean;
 
-  sponsorUid?: string;
+  sponsorUid: string;
 
-  sponsorCode?: string;
+  sponsorCode: string;
 
   parentChain: string[];
 
-  referralCode?: string;
+  referralCode: string;
 
-  shareCode?: string;
+  shareCode: string;
 
   message?: string;
 
