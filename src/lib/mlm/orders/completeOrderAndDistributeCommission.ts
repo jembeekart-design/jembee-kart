@@ -12,6 +12,7 @@ import { db } from "@/firebase/config";
 import { distributeLevelCommission } from "../distributeLevelCommission";
 import { creditWallet } from "../creditWallet";
 import { profitabilityConfigService } from "@/jembee-governance/services/profitabilityConfigService";
+import { validateOrder } from "./orderValidation";
 
 interface CompleteOrderData {
   orderId: string;
