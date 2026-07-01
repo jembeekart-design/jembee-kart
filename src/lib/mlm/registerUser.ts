@@ -90,20 +90,10 @@ export async function registerUser(data: RegisterUserData): Promise<RegisterUser
          SAFE MULTI-TIER ANCESTRAL MATRIX INCREMENT OPERATION
       ====================================================== */
       // Reads snapshot nodes inside the transaction context loop to shield against broken or orphaned entries
-      for (const uplineId of newUserParentChain) {
-        const cleanUplineId = uplineId?.trim();
-        if (cleanUplineId) {
-          const uplineRef = doc(db, "users", cleanUplineId);
-          const uplineSnap = await transaction.get(uplineRef);
-          
-          if (uplineSnap.exists()) {
-            transaction.update(uplineRef, {
-              teamSize: increment(1),
-            });
-          }
-        }
-      }
-
+      await updateUplineTree(
+  transaction,
+  newUserParentChain
+);
       /* ======================================================
          INCREMENT DIRECT CONTROLLER PARAMETERS ON IMMEDIATE PARENT
       ====================================================== */
