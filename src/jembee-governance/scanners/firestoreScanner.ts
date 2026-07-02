@@ -72,8 +72,8 @@ action: "ADD",
         severity: "WARNING",
         filePath,
         recommendation: "Connect business rules to Firestore admin config (adminConfig, settings, config, featureFlags, or themeSettings).",
-        startLine: 1,
-endLine: 1,
+startLine: this.findLine(content, collection),
+endLine: this.findLine(content, collection),
 action: "ADD",
         detectedAt: new Date().toISOString(),
       });
@@ -109,8 +109,8 @@ action: "ADD",
           filePath,
           actualValue: match[0],
           recommendation: "Move this business rule to Firestore admin configuration.",
-          startLine: 1,
-endLine: 1,
+          startLine: this.findLine(content, match[0]),
+endLine: this.findLine(content, match[0]),
 action: "REPLACE",
           detectedAt: new Date().toISOString(),
         });
@@ -137,6 +137,17 @@ action: "REPLACE",
     walk(rootDir);
     return files;
   }
+  private findLine(content: string, search: string): number {
+  const lines = content.split("\n");
+
+  for (let i = 0; i < lines.length; i++) {
+    if (lines[i].includes(search)) {
+      return i + 1;
+    }
+  }
+
+  return 1;
+}
 }
 
 export const firestoreScanner = new FirestoreScanner();
