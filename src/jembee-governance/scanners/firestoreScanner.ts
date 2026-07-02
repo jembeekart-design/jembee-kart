@@ -51,8 +51,8 @@ export class FirestoreScanner {
         severity: "WARNING",
         filePath,
         recommendation: "Add authentication and ownership validation (auth/currentUser/session/user.uid).",
-        startLine: 1,
-endLine: 1,
+        startLine: this.findLine(content, collection),
+endLine: this.findLine(content, collection),
 action: "ADD",
         detectedAt: new Date().toISOString(),
       });
