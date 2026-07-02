@@ -64,9 +64,19 @@ import { getControlTowerReport } from "../services/controlTowerService";
       <div className="grid grid-cols-2 md:grid-cols-3 xl:grid-cols-6 gap-4">
         {cards.map((card) => (
           <div
-            key={card.title}
-            className="rounded-xl border p-4 shadow-sm"
-          >
+  key={card.title}
+  onClick={() => {
+    if (report?.issues) {
+      const issue = report.issues.find(
+        (i: any) =>
+          i.category?.toLowerCase().replace("_", " ") ===
+          card.title.toLowerCase()
+      );
+      if (issue) setSelectedIssue(issue);
+    }
+  }}
+  className="rounded-xl border p-4 shadow-sm cursor-pointer hover:bg-gray-100"
+>
             <h2 className="font-semibold">{card.title}</h2>
 
             <div className="text-3xl font-bold mt-3">
