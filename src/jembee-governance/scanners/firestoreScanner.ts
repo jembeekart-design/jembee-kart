@@ -51,6 +51,9 @@ export class FirestoreScanner {
         severity: "WARNING",
         filePath,
         recommendation: "Add authentication and ownership validation (auth/currentUser/session/user.uid).",
+        startLine: 1,
+endLine: 1,
+action: "ADD",
         detectedAt: new Date().toISOString(),
       });
     }
@@ -69,6 +72,9 @@ export class FirestoreScanner {
         severity: "WARNING",
         filePath,
         recommendation: "Connect business rules to Firestore admin config (adminConfig, settings, config, featureFlags, or themeSettings).",
+        startLine: 1,
+endLine: 1,
+action: "ADD",
         detectedAt: new Date().toISOString(),
       });
     }
@@ -103,6 +109,9 @@ export class FirestoreScanner {
           filePath,
           actualValue: match[0],
           recommendation: "Move this business rule to Firestore admin configuration.",
+          startLine: 1,
+endLine: 1,
+action: "REPLACE",
           detectedAt: new Date().toISOString(),
         });
       }
