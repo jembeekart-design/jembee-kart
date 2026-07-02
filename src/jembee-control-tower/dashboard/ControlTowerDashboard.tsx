@@ -49,7 +49,7 @@ export default function ControlTowerDashboard() {
   ];
 
   return (
-    <main className="min-h-screen p-6 space-y-6">
+    <main className="min-h-screen bg-white text-black p-6 space-y-6">
       <div>
         <h1 className="text-3xl font-bold">
           JembeeKart Control Tower
