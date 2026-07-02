@@ -43,7 +43,7 @@ export default function ControlTowerDashboard() {
       title: "Business Rules",
       value: report?.info ?? "--",
       status: report ? "Connected" : "Waiting",
-      category: "BUSINESS_RULES",
+      category: "HARDCODED_RULE",
     },
     {
       title: "Firestore",
@@ -55,23 +55,32 @@ export default function ControlTowerDashboard() {
       title: "Navigation",
       value: "OK",
       status: report ? "Connected" : "Waiting",
-      category: "NAVIGATION",
+      category: "PAGE_CONNECTION",
     },
   ];
 
   return (
     <main className="min-h-screen bg-white text-black p-6 space-y-6">
+
       <div>
-        <h1 className="text-3xl font-bold">JembeeKart Control Tower</h1>
-        <p className="text-gray-500 mt-1">
+        <h1 className="text-3xl font-bold">
+          JembeeKart Control Tower
+        </h1>
+
+        <p className="text-gray-500">
           Production Readiness Dashboard
         </p>
       </div>
 
+      {/* Summary Cards */}
+
       <div className="grid grid-cols-2 md:grid-cols-3 xl:grid-cols-6 gap-4">
+
         {cards.map((card) => (
+
           <div
             key={card.title}
+            className="rounded-xl border p-4 shadow-sm cursor-pointer hover:bg-gray-100"
             onClick={() => {
               if (!report?.issues) return;
 
@@ -83,9 +92,10 @@ export default function ControlTowerDashboard() {
                 setSelectedIssue(issue);
               }
             }}
-            className="rounded-xl border p-4 shadow-sm cursor-pointer hover:bg-gray-100"
           >
-            <h2 className="font-semibold">{card.title}</h2>
+            <h2 className="font-semibold">
+              {card.title}
+            </h2>
 
             <div className="text-3xl font-bold mt-3">
               {card.value}
@@ -94,74 +104,168 @@ export default function ControlTowerDashboard() {
             <p className="text-sm text-gray-500 mt-2">
               {card.status}
             </p>
+
           </div>
+
         ))}
+
       </div>
 
+      {/* Scanner Output */}
+
       <div className="rounded-xl border p-5">
-        <h2 className="text-xl font-semibold mb-3">
+
+        <h2 className="text-xl font-semibold mb-4">
           Scanner Output
         </h2>
 
-        {report ? (
-          <pre className="text-xs overflow-auto">
-            {JSON.stringify(report.issues, null, 2)}
-          </pre>
-        ) : (
-          <p>No scan executed.</p>
-        )}
+        {!report && <p>No scan executed.</p>}
+
+        {report?.issues?.map((issue: any) => (
+
+          <div
+            key={issue.id}
+            onClick={() => setSelectedIssue(issue)}
+            className="border rounded-lg p-4 mb-4 cursor-pointer hover:bg-gray-50"
+          >
+
+            <div className="flex justify-between">
+
+              <div>
+
+                <h3 className="font-bold">
+                  {issue.title}
+                </h3>
+
+                <p className="text-sm text-gray-500">
+                  {issue.filePath}
+                </p>
+
+              </div>
+
+              <span className="text-xs border rounded px-2 py-1 h-fit">
+                {issue.severity}
+              </span>
+
+            </div>
+
+            <div className="mt-3 text-sm">
+
+              <p>
+                <b>Category:</b> {issue.category}
+              </p>
+
+              <p>
+                <b>Line:</b>{" "}
+                {issue.startLine ?? "-"}
+                {issue.endLine
+                  ? ` - ${issue.endLine}`
+                  : ""}
+              </p>
+
+              <p>
+                <b>Action:</b>{" "}
+                {issue.action ?? "ADD"}
+              </p>
+
+            </div>
+
+          </div>
+
+        ))}
+
       </div>
 
+      {/* Fix Center */}
+
       <div className="rounded-xl border p-5">
+
         <h2 className="text-xl font-semibold mb-3">
           Fix Center
         </h2>
 
         {report ? (
-          <p>{report.total} issues detected.</p>
+          <p>
+            {report.total ?? report.issues?.length ?? 0} Issues Detected
+          </p>
         ) : (
           <p>No fixes available.</p>
         )}
+
       </div>
 
+      {/* Selected Issue */}
+
       {selectedIssue && (
+
         <div className="rounded-xl border p-5 bg-gray-50">
-          <h2 className="text-xl font-bold mb-4">
+
+          <h2 className="text-2xl font-bold mb-4">
             {selectedIssue.title}
           </h2>
 
-          <p>
-            <b>Category:</b> {selectedIssue.category}
-          </p>
+          <div className="space-y-2">
 
-          <p>
-            <b>Severity:</b> {selectedIssue.severity}
-          </p>
+            <p>
+              <b>Category:</b>{" "}
+              {selectedIssue.category}
+            </p>
 
-          <p>
-            <b>File:</b> {selectedIssue.filePath}
-          </p>
+            <p>
+              <b>Severity:</b>{" "}
+              {selectedIssue.severity}
+            </p>
 
-          <p>
-            <b>Line:</b> {selectedIssue.startLine ?? "Unknown"}
-            {selectedIssue.endLine
-              ? ` - ${selectedIssue.endLine}`
-              : ""}
-          </p>
+            <p>
+              <b>File:</b>{" "}
+              {selectedIssue.filePath}
+            </p>
 
-          <p>
-            <b>Action:</b> {selectedIssue.action ?? "Replace"}
-          </p>
+            <p>
+              <b>Start Line:</b>{" "}
+              {selectedIssue.startLine ?? "-"}
+            </p>
 
-          <p className="mt-3 font-semibold">
-            Recommendation
-          </p>
+            <p>
+              <b>End Line:</b>{" "}
+              {selectedIssue.endLine ?? "-"}
+            </p>
 
-          <pre className="bg-white border rounded p-3 overflow-auto text-xs">
-            {selectedIssue.recommendation}
-          </pre>
+            <p>
+              <b>Action:</b>{" "}
+              {selectedIssue.action ?? "ADD"}
+            </p>
+
+          </div>
+
+          <div className="mt-6">
+
+            <h3 className="font-bold mb-2">
+              Description
+            </h3>
+
+            <div className="bg-white border rounded p-3">
+              {selectedIssue.description}
+            </div>
+
+          </div>
+
+          <div className="mt-6">
+
+            <h3 className="font-bold mb-2">
+              Recommendation
+            </h3>
+
+            <pre className="bg-white border rounded p-3 text-xs whitespace-pre-wrap overflow-auto">
+{selectedIssue.recommendation}
+            </pre>
+
+          </div>
+
         </div>
+
       )}
+
     </main>
   );
 }
