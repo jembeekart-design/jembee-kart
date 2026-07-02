@@ -9,8 +9,12 @@ export default function ControlTowerDashboard() {
 
   useEffect(() => {
     async function load() {
-      const data = await getControlTowerReport();
-      setReport(data);
+      try {
+        const data = await getControlTowerReport();
+        setReport(data);
+      } catch (err) {
+        console.error(err);
+      }
     }
 
     load();
@@ -19,43 +23,46 @@ export default function ControlTowerDashboard() {
   const cards = [
     {
       title: "Architecture",
-      value: report ? report.total : "--",
+      value: report?.total ?? "--",
       status: report ? "Connected" : "Waiting",
+      category: "ARCHITECTURE",
     },
     {
       title: "Security",
-      value: report ? report.critical : "--",
+      value: report?.critical ?? "--",
       status: report ? "Connected" : "Waiting",
+      category: "SECURITY",
     },
     {
       title: "Theme",
-      value: report ? report.warning : "--",
+      value: report?.warning ?? "--",
       status: report ? "Connected" : "Waiting",
+      category: "THEME",
     },
     {
       title: "Business Rules",
-      value: report ? report.info : "--",
+      value: report?.info ?? "--",
       status: report ? "Connected" : "Waiting",
+      category: "BUSINESS_RULES",
     },
     {
       title: "Firestore",
-      value: report ? report.issues?.length ?? "--",
+      value: report?.issues?.length ?? "--",
       status: report ? "Connected" : "Waiting",
+      category: "FIRESTORE",
     },
     {
       title: "Navigation",
-      value: report ? "OK" : "--",
+      value: "OK",
       status: report ? "Connected" : "Waiting",
+      category: "NAVIGATION",
     },
   ];
 
   return (
     <main className="min-h-screen bg-white text-black p-6 space-y-6">
       <div>
-        <h1 className="text-3xl font-bold">
-          JembeeKart Control Tower
-        </h1>
-
+        <h1 className="text-3xl font-bold">JembeeKart Control Tower</h1>
         <p className="text-gray-500 mt-1">
           Production Readiness Dashboard
         </p>
@@ -66,16 +73,14 @@ export default function ControlTowerDashboard() {
           <div
             key={card.title}
             onClick={() => {
-              if (report?.issues) {
-                const issue = report.issues.find(
-                  (i: any) =>
-                    i.category?.toLowerCase().replace(/_/g, " ") ===
-                    card.title.toLowerCase()
-                );
+              if (!report?.issues) return;
 
-                if (issue) {
-                  setSelectedIssue(issue);
-                }
+              const issue = report.issues.find(
+                (i: any) => i.category === card.category
+              );
+
+              if (issue) {
+                setSelectedIssue(issue);
               }
             }}
             className="rounded-xl border p-4 shadow-sm cursor-pointer hover:bg-gray-100"
@@ -126,19 +131,26 @@ export default function ControlTowerDashboard() {
           </h2>
 
           <p>
+            <b>Category:</b> {selectedIssue.category}
+          </p>
+
+          <p>
+            <b>Severity:</b> {selectedIssue.severity}
+          </p>
+
+          <p>
             <b>File:</b> {selectedIssue.filePath}
           </p>
 
           <p>
-            <b>Line:</b>{" "}
-            {selectedIssue.startLine || "Unknown"}
-            {selectedIssue.endLine &&
-              ` - ${selectedIssue.endLine}`}
+            <b>Line:</b> {selectedIssue.startLine ?? "Unknown"}
+            {selectedIssue.endLine
+              ? ` - ${selectedIssue.endLine}`
+              : ""}
           </p>
 
           <p>
-            <b>Action:</b>{" "}
-            {selectedIssue.action || "Replace"}
+            <b>Action:</b> {selectedIssue.action ?? "Replace"}
           </p>
 
           <p className="mt-3 font-semibold">
