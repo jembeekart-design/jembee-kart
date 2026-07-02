@@ -3,10 +3,11 @@
 import { useEffect, useState } from "react";
 import { getControlTowerReport } from "../services/controlTowerService";
 
-export default function ControlTowerDashboard() {
-  const [report, setReport] = useState<any>(null);
+  export default function ControlTowerDashboard() {
+    const [report, setReport] = useState<any>(null);
+    const [selectedIssue, setSelectedIssue] = useState<any>(null);
 
-  useEffect(() => {
+   useEffect(() => {
     async function load() {
       const data = await getControlTowerReport();
       setReport(data);
