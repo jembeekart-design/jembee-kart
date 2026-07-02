@@ -3,11 +3,11 @@
 import { useEffect, useState } from "react";
 import { getControlTowerReport } from "../services/controlTowerService";
 
-  export default function ControlTowerDashboard() {
-    const [report, setReport] = useState<any>(null);
-    const [selectedIssue, setSelectedIssue] = useState<any>(null);
+export default function ControlTowerDashboard() {
+  const [report, setReport] = useState<any>(null);
+  const [selectedIssue, setSelectedIssue] = useState<any>(null);
 
-   useEffect(() => {
+  useEffect(() => {
     async function load() {
       const data = await getControlTowerReport();
       setReport(data);
@@ -39,7 +39,7 @@ import { getControlTowerReport } from "../services/controlTowerService";
     },
     {
       title: "Firestore",
-      value: report ? report.issues.length : "--",
+      value: report ? report.issues?.length ?? "--",
       status: report ? "Connected" : "Waiting",
     },
     {
@@ -64,19 +64,22 @@ import { getControlTowerReport } from "../services/controlTowerService";
       <div className="grid grid-cols-2 md:grid-cols-3 xl:grid-cols-6 gap-4">
         {cards.map((card) => (
           <div
-  key={card.title}
-  onClick={() => {
-    if (report?.issues) {
-      const issue = report.issues.find(
-        (i: any) =>
-          i.category?.toLowerCase().replace("_", " ") ===
-          card.title.toLowerCase()
-      );
-      if (issue) setSelectedIssue(issue);
-    }
-  }}
-  className="rounded-xl border p-4 shadow-sm cursor-pointer hover:bg-gray-100"
->
+            key={card.title}
+            onClick={() => {
+              if (report?.issues) {
+                const issue = report.issues.find(
+                  (i: any) =>
+                    i.category?.toLowerCase().replace(/_/g, " ") ===
+                    card.title.toLowerCase()
+                );
+
+                if (issue) {
+                  setSelectedIssue(issue);
+                }
+              }
+            }}
+            className="rounded-xl border p-4 shadow-sm cursor-pointer hover:bg-gray-100"
+          >
             <h2 className="font-semibold">{card.title}</h2>
 
             <div className="text-3xl font-bold mt-3">
@@ -109,33 +112,44 @@ import { getControlTowerReport } from "../services/controlTowerService";
           Fix Center
         </h2>
 
-        112 {report ? (
-113   <p>{report.total} issues detected.</p>
-114 ) : (
-115   <p>No fixes available.</p>
-116 )}
-117 </div>
+        {report ? (
+          <p>{report.total} issues detected.</p>
+        ) : (
+          <p>No fixes available.</p>
+        )}
+      </div>
 
-118 {selectedIssue && (
-119   <div className="mt-6 rounded-xl border p-5 bg-gray-50">
-120     <h2 className="text-xl font-bold">{selectedIssue.title}</h2>
+      {selectedIssue && (
+        <div className="rounded-xl border p-5 bg-gray-50">
+          <h2 className="text-xl font-bold mb-4">
+            {selectedIssue.title}
+          </h2>
 
-121     <p><b>File:</b> {selectedIssue.filePath}</p>
+          <p>
+            <b>File:</b> {selectedIssue.filePath}
+          </p>
 
-122     <p>
-123       <b>Line:</b> {selectedIssue.startLine || "Unknown"}
-124       {selectedIssue.endLine && ` - ${selectedIssue.endLine}`}
-125     </p>
+          <p>
+            <b>Line:</b>{" "}
+            {selectedIssue.startLine || "Unknown"}
+            {selectedIssue.endLine &&
+              ` - ${selectedIssue.endLine}`}
+          </p>
 
-126     <p><b>Action:</b> {selectedIssue.action || "Replace"}</p>
+          <p>
+            <b>Action:</b>{" "}
+            {selectedIssue.action || "Replace"}
+          </p>
 
-127     <p><b>Recommendation:</b></p>
+          <p className="mt-3 font-semibold">
+            Recommendation
+          </p>
 
-128     <pre className="bg-white border p-3 overflow-auto">
-129       {selectedIssue.recommendation}
-130     </pre>
-131   </div>
-132 )}
-
-133 </main>
-134 );
+          <pre className="bg-white border rounded p-3 overflow-auto text-xs">
+            {selectedIssue.recommendation}
+          </pre>
+        </div>
+      )}
+    </main>
+  );
+}
