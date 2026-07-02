@@ -109,12 +109,33 @@ import { getControlTowerReport } from "../services/controlTowerService";
           Fix Center
         </h2>
 
-        {report ? (
-          <p>{report.total} issues detected.</p>
-        ) : (
-          <p>No fixes available.</p>
-        )}
-      </div>
-    </main>
-  );
-}
+        112 {report ? (
+113   <p>{report.total} issues detected.</p>
+114 ) : (
+115   <p>No fixes available.</p>
+116 )}
+117 </div>
+
+118 {selectedIssue && (
+119   <div className="mt-6 rounded-xl border p-5 bg-gray-50">
+120     <h2 className="text-xl font-bold">{selectedIssue.title}</h2>
+
+121     <p><b>File:</b> {selectedIssue.filePath}</p>
+
+122     <p>
+123       <b>Line:</b> {selectedIssue.startLine || "Unknown"}
+124       {selectedIssue.endLine && ` - ${selectedIssue.endLine}`}
+125     </p>
+
+126     <p><b>Action:</b> {selectedIssue.action || "Replace"}</p>
+
+127     <p><b>Recommendation:</b></p>
+
+128     <pre className="bg-white border p-3 overflow-auto">
+129       {selectedIssue.recommendation}
+130     </pre>
+131   </div>
+132 )}
+
+133 </main>
+134 );
