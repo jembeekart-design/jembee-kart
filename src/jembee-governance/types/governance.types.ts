@@ -144,6 +144,18 @@ export interface GovernanceViolation {
 
   recommendation?: string;
 
+  startLine?: number;
+
+endLine?: number;
+
+action?: "ADD" | "REPLACE" | "DELETE";
+
+replacementCode?: string;
+
+oldCode?: string;
+
+newCode?: string;
+  
   autoFixAvailable?: boolean;
 
   documentationUrl?: string;
