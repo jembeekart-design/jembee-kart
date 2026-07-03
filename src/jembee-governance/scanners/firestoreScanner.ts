@@ -77,6 +77,8 @@ insertAfter: "const auth = getAuth();",
 startLine: this.findLine(content, collection),
 endLine: this.findLine(content, collection),
 action: "ADD",
+        insertBefore: "const config = await getAdminConfig();",
+insertAfter: "const settings = config.settings;",
         detectedAt: new Date().toISOString(),
       });
     }
@@ -114,6 +116,8 @@ action: "ADD",
           startLine: this.findLine(content, match[0]),
 endLine: this.findLine(content, match[0]),
 action: "REPLACE",
+          oldCode: match[0],
+newCode: "config.businessRules.<replace_with_firestore_value>",
           detectedAt: new Date().toISOString(),
         });
       }
