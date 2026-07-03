@@ -240,6 +240,20 @@ public async getAllIssues(): Promise<GovernanceIssue[]> {
 
       metadata:
         data.metadata,
+      action:
+  data.action,
+
+insertBefore:
+  data.insertBefore,
+
+insertAfter:
+  data.insertAfter,
+
+oldCode:
+  data.oldCode,
+
+newCode:
+  data.newCode,
 
     };
 
