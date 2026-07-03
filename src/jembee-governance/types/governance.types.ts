@@ -155,6 +155,9 @@ replacementCode?: string;
 oldCode?: string;
 
 newCode?: string;
+
+  insertBefore?: string;
+insertAfter?: string;
   
   autoFixAvailable?: boolean;
 
