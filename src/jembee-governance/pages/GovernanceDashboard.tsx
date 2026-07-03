@@ -440,7 +440,7 @@ newCode: issue.newCode,
     </p>
 
     <p className="mt-1 text-sm whitespace-pre-wrap">
-      {issue.fixSuggestion}
+      {issue.recommendation}
     </p>
   </div>
 )}
