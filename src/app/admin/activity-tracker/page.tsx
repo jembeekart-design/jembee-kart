@@ -17,7 +17,8 @@ import {
 } from "lucide-react";
 
 import { collection, onSnapshot, query, orderBy, limit } from "firebase/firestore";
-import { db } from "@/firebase/config";
+import { auth, db } from "@/firebase/config";
+import { useRouter } from "next/navigation";
 
 // ✅ FIX 1: Removed manual 'time' string and locked data schema on Firestore Timestamp context
 interface ActivityLog {
