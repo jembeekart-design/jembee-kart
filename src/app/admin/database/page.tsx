@@ -3,7 +3,8 @@
 export const dynamic = "force-dynamic";
 
 import { useState } from "react";
-
+import { auth, db } from "@/firebase/config";
+import { useRouter } from "next/navigation";
 import {
   Database,
   Trash2,
@@ -23,7 +24,7 @@ interface CollectionItem {
 }
 
 export default function DatabasePage() {
-
+const router = useRouter();
   const [
     collections,
     setCollections
@@ -86,7 +87,15 @@ export default function DatabasePage() {
       )
     );
   }
+useEffect(() => {
+  const unsubscribe = auth.onAuthStateChanged((user) => {
+    if (!user) {
+      router.replace("/login");
+    }
+  });
 
+  return () => unsubscribe();
+}, [router]);
   return (
 
     <main className="min-h-screen bg-[#0b0b0b] p-4 text-white">
