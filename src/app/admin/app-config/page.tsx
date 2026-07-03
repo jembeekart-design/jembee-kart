@@ -21,7 +21,8 @@ import {
   Sun
 } from "lucide-react";
 
-import { db } from "@/firebase/config";
+import { auth, db } from "@/firebase/config";
+import { useRouter } from "next/navigation";
 
 interface AppConfig {
   appName: string;
@@ -35,6 +36,7 @@ interface AppConfig {
 }
 
 export default function AppConfigPage() {
+  const router = useRouter();
 
   const [settings, setSettings] =
     useState<AppConfig>({
@@ -53,6 +55,15 @@ export default function AppConfigPage() {
 
   const [saving, setSaving] =
     useState(false);
+  useEffect(() => {
+  const unsubscribe = auth.onAuthStateChanged((user) => {
+    if (!user) {
+      router.replace("/login");
+    }
+  });
+
+  return () => unsubscribe();
+}, [router]);
 
   useEffect(() => {
 
