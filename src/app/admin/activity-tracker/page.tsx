@@ -30,6 +30,7 @@ interface ActivityLog {
 }
 
 export default function ActivityTrackerPage() {
+  const router = useRouter();
   const [activities, setActivities] = useState<ActivityLog[]>([]);
   const [search, setSearch] = useState("");
 
@@ -40,6 +41,15 @@ export default function ActivityTrackerPage() {
     finance: 0,
     alerts: 0,
   });
+  useEffect(() => {
+  const unsubscribe = auth.onAuthStateChanged((user) => {
+    if (!user) {
+      router.replace("/login");
+    }
+  });
+
+  return () => unsubscribe();
+}, [router]);
 
   // ✅ FIX 2: Modularized Icon Engine for multi-vector events support
   function getActivityIcon(type?: string) {
