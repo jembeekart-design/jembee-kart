@@ -2,7 +2,7 @@
 
 export const dynamic = "force-dynamic";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { auth, db } from "@/firebase/config";
 import { useRouter } from "next/navigation";
 import {
