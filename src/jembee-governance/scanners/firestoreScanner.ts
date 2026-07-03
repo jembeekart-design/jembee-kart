@@ -54,6 +54,8 @@ export class FirestoreScanner {
         startLine: this.findLine(content, collection),
 endLine: this.findLine(content, collection),
 action: "ADD",
+        insertBefore: "const docRef = doc(db, ...);",
+insertAfter: "const auth = getAuth();",
         detectedAt: new Date().toISOString(),
       });
     }
