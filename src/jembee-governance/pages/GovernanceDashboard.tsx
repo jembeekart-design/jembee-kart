@@ -109,6 +109,11 @@ severity: issue.priority as any,
     filePath: issue.filePath,
     recommendation: issue.fixSuggestion,
     detectedAt: issue.detectedAt,
+    action: issue.action,
+insertBefore: issue.insertBefore,
+insertAfter: issue.insertAfter,
+oldCode: issue.oldCode,
+newCode: issue.newCode,
   })) as GovernanceViolation[]
 );
 
