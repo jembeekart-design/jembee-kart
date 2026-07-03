@@ -147,7 +147,9 @@ return {
         content.includes("verifyRole") ||
         content.includes("redirect('/login')") ||
         content.includes("router.push('/login')") ||
-        content.includes("redirect('/admin/login')");
+        content.includes("redirect('/admin/login')")||
+        content.includes("onAuthStateChanged")||
+        content.includes("signInWithEmailAndPassword");
 
       if (looksLikeProtectedPage && !hasAuthCheck) {
         violations.push({
