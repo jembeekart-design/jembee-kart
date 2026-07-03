@@ -94,7 +94,15 @@ export interface GovernanceIssue {
     string,
     unknown
   >;
+action?: "ADD" | "REPLACE" | "DELETE";
 
+insertBefore?: string;
+
+insertAfter?: string;
+
+oldCode?: string;
+
+newCode?: string;
 }
 
 // ======================================================
