@@ -451,6 +451,20 @@ public async createIssues(
 
           updatedAt:
             serverTimestamp(),
+          action:
+  violation.action,
+
+insertBefore:
+  violation.insertBefore,
+
+insertAfter:
+  violation.insertAfter,
+
+oldCode:
+  violation.oldCode,
+
+newCode:
+  violation.newCode,
 
         }
       );
