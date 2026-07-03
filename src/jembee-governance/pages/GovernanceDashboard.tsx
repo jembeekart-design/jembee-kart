@@ -443,6 +443,39 @@ newCode: issue.newCode,
                 </p>
 
               )}
+              {issue.action && (
+  <p className="mt-2 text-xs">
+    <strong>Action:</strong> {issue.action}
+  </p>
+)}
+
+{issue.insertBefore && (
+  <p className="mt-1 text-xs break-all">
+    <strong>Insert Before:</strong> {issue.insertBefore}
+  </p>
+)}
+
+{issue.insertAfter && (
+  <p className="mt-1 text-xs break-all">
+    <strong>Insert After:</strong> {issue.insertAfter}
+  </p>
+)}
+
+{issue.oldCode && (
+  <pre className="mt-2 rounded bg-gray-100 p-2 text-xs overflow-x-auto">
+    <strong>Old Code:</strong>
+    {"\n"}
+    {issue.oldCode}
+  </pre>
+)}
+
+{issue.newCode && (
+  <pre className="mt-2 rounded bg-green-50 p-2 text-xs overflow-x-auto">
+    <strong>New Code:</strong>
+    {"\n"}
+    {issue.newCode}
+  </pre>
+)}
 
             </div>
 
