@@ -433,7 +433,7 @@ newCode: issue.newCode,
                 {issue.description}
 
               </p>
-              {issue.fixSuggestion && (
+              {issue.recommendation && (
   <div className="mt-3 rounded-md border border-green-300 bg-green-50 p-3">
     <p className="text-xs font-bold text-green-700">
       💡 Fix Suggestion
