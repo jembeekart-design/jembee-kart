@@ -39,6 +39,21 @@ export class PageConnectionScanner {
 
     for (const routeInfo of routes) {
       const route = routeInfo.route;
+      const isAdmin = route.startsWith("/admin");
+const isApi = route.startsWith("/api");
+
+const isAuth =
+  route === "/login" ||
+  route === "/signup" ||
+  route === "/verify-email";
+
+const isPayment =
+  route.includes("payment") ||
+  route.includes("checkout");
+
+if (isApi || isAuth || isPayment) {
+  continue;
+}
 
       const navbarConnected =
         navbarContent.includes(`"${route}"`) ||
