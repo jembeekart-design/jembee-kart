@@ -3,6 +3,9 @@
 export const dynamic = "force-dynamic";
 
 import { useEffect, useState } from "react";
+import { useRouter } from "next/navigation";
+import { onAuthStateChanged } from "firebase/auth";
+import { auth } from "@/firebase/config";
 
 import {
   collection,
@@ -37,6 +40,7 @@ interface KYCRequest {
 }
 
 export default function KYCVerificationPage() {
+  const router = useRouter();
 
   const [requests, setRequests] =
     useState<KYCRequest[]>([]);
@@ -45,6 +49,11 @@ export default function KYCVerificationPage() {
     useState(true);
 
   useEffect(() => {
+    const unsubscribeAuth = onAuthStateChanged(auth, (user) => {
+  if (!user) {
+    router.push("/login");
+  }
+});
 
     const q = query(
       collection(
@@ -80,6 +89,7 @@ export default function KYCVerificationPage() {
 
     return () =>
       unsubscribe();
+    unsubscribeAuth();
 
   }, []);
 
