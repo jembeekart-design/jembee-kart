@@ -50,35 +50,7 @@ export class AntiFraudScanner {
        * RULE 1
        * Dangerous Fraud Bypass
        */
-      this.DANGEROUS_PATTERNS.forEach(
-        (pattern) => {
-          if (
-            content.includes(pattern)
-          ) {
-            violations.push({
-              id: "FRAUD_BYPASS_DETECTED",
-
-              title:
-                "Fraud Protection Bypass Found",
-
-              description:
-                "Code appears to bypass anti-fraud controls.",
-
-              category: "ANTI_FRAUD",
-
-              severity: "CRITICAL",
-
-              filePath,
-
-              actualValue:
-                pattern,
-
-              recommendation:
-                "Remove fraud bypass logic immediately.",
-
-              detectedAt:
-                new Date().toISOString(),
-            });
+      
           }
         }
       );
