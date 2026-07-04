@@ -31,7 +31,8 @@ interface CollectionInfo {
 }
 
 export default function DatabaseManagerPage() {
-
+  
+const router = useRouter();
   const [collections, setCollections] =
     useState<CollectionInfo[]>([]);
 
@@ -40,6 +41,15 @@ export default function DatabaseManagerPage() {
 
   const [refreshing, setRefreshing] =
     useState(false);
+  useEffect(() => {
+  const unsubscribe = onAuthStateChanged(auth, (user) => {
+    if (!user) {
+      router.push("/login");
+    }
+  });
+
+  return () => unsubscribe();
+}, [router]);
 
   useEffect(() => {
 
