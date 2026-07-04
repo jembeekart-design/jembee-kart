@@ -22,6 +22,9 @@ import {
 } from "lucide-react";
 
 import { db } from "@/firebase/config";
+import { useRouter } from "next/navigation";
+import { onAuthStateChanged } from "firebase/auth";
+import { auth } from "@/firebase/config";
 
 interface DeliveryOrder {
   id?: string;
@@ -39,8 +42,14 @@ export default function DeliveryTrackingPage() {
 
   const [loading, setLoading] =
     useState(true);
+  const router = useRouter();
 
   useEffect(() => {
+    const unsubscribeAuth = onAuthStateChanged(auth, (user) => {
+  if (!user) {
+    router.replace("/login");
+  }
+});
 
     const q = query(
       collection(
@@ -74,10 +83,10 @@ export default function DeliveryTrackingPage() {
 
       });
 
-    return () =>
-      unsubscribe();
-
-  }, []);
+    return () => {
+  unsubscribe();
+  unsubscribeAuth();
+}; []);
 
   async function updateStatus(
     id: string,
