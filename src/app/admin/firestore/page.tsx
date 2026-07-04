@@ -25,6 +25,7 @@ interface FirestoreCollection {
 }
 
 export default function FirestorePage() {
+  const router = useRouter();
 
   const [
     collections,
@@ -56,6 +57,17 @@ export default function FirestorePage() {
     collectionName,
     setCollectionName
   ] = useState("");
+  useEffect(() => {
+  const unsubscribeAuth = onAuthStateChanged(auth, (user) => {
+    if (!user) {
+      router.replace("/login");
+    }
+  });
+
+  return () => {
+    unsubscribeAuth();
+  };
+}, [router]);
 
   function createCollection() {
 
