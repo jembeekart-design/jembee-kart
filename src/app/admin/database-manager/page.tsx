@@ -3,6 +3,7 @@
 export const dynamic = "force-dynamic";
 
 import { useEffect, useState } from "react";
+import { useRouter } from "next/navigation";
 
 import {
   collection,
@@ -21,6 +22,8 @@ import {
 } from "lucide-react";
 
 import { db } from "@/firebase/config";
+import { auth } from "@/firebase/config";
+import { onAuthStateChanged } from "firebase/auth";
 
 interface CollectionInfo {
   name: string;
