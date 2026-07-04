@@ -51,9 +51,7 @@ export class AntiFraudScanner {
        * Dangerous Fraud Bypass
        */
       
-          }
-        }
-      );
+
 
       /**
        * RULE 2
