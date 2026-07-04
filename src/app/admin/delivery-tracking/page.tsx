@@ -83,10 +83,11 @@ export default function DeliveryTrackingPage() {
 
       });
 
-    return () => {
+  return () => {
   unsubscribe();
   unsubscribeAuth();
-}; []);
+};
+}, []);
 
   async function updateStatus(
     id: string,
