@@ -3,6 +3,9 @@
 export const dynamic = "force-dynamic";
 
 import { useEffect, useState } from "react";
+import { useRouter } from "next/navigation";
+import { onAuthStateChanged } from "firebase/auth";
+import { auth } from "@/firebase/config";
 
 import {
   collection,
@@ -33,7 +36,7 @@ interface OrderData {
 }
 
 export default function LiveOrdersPage() {
-
+const router = useRouter();
   const [orders, setOrders] =
     useState<OrderData[]>([]);
 
@@ -41,6 +44,11 @@ export default function LiveOrdersPage() {
     useState(true);
 
   useEffect(() => {
+    const unsubscribeAuth = onAuthStateChanged(auth, (user) => {
+  if (!user) {
+    router.push("/login");
+  }
+});
 
     const q = query(
       collection(db, "orders"),
