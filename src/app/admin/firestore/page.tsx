@@ -2,7 +2,10 @@
 
 export const dynamic = "force-dynamic";
 
-import { useState } from "react";
+import { useEffect } from "react";
+import { useRouter } from "next/navigation";
+import { onAuthStateChanged } from "firebase/auth";
+import { auth } from "@/firebase/config";
 
 import {
   Flame,
