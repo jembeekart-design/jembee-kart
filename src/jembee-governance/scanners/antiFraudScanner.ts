@@ -13,29 +13,6 @@ export interface AntiFraudScanResult {
 }
 
 export class AntiFraudScanner {
-  /**
-   * Fraud Protections Required
-   */
-  private readonly REQUIRED_PROTECTIONS = [
-    "deviceId",
-    "deviceFingerprint",
-    "ipAddress",
-    "selfReferral",
-    "duplicateAccount",
-    "fraudCheck",
-    "isFraud",
-  ];
-
-  /**
-   * Dangerous Patterns
-   */
-  private readonly DANGEROUS_PATTERNS = [
-    "allowSelfReferral",
-    "skipFraudCheck",
-    "disableFraudProtection",
-    "unlimitedRewardCycle",
-    "autoApproveWithdrawal",
-  ];
 
   public scanProject(
     projectRoot: string
