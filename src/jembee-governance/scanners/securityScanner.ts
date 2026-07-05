@@ -128,38 +128,37 @@ return {
         );
 
       const hasAuthCheck =
-        content.includes("useAuth(") ||
-        content.includes("auth.currentUser") ||
-        content.includes("currentUser") ||
-        content.includes("getServerSession") ||
-        content.includes("AdminGuard") ||
-        content.includes("RoleGuard") ||
-        content.includes("ProtectedRoute") ||
-        content.includes("withAuth") ||
-        content.includes("middleware") ||
-        content.includes("middleware.ts") ||
-        content.includes("requireAdmin") ||
-        content.includes("requireAuth") ||
-        content.includes("checkAdminAccess") ||
-        content.includes("adminGuard") ||
-        content.includes("adminOnly") ||
-        content.includes("verifyAdmin") ||
-        content.includes("verifyRole") ||
-        content.includes("redirect('/login')") ||
-        content.includes("router.push('/login')") ||
-        content.includes("redirect('/admin/login')")||
-        content.includes("onAuthStateChanged")||
-        content.includes("signInWithEmailAndPassword");
-||
-content.includes("auth.onAuthStateChanged") ||
-content.includes("auth.currentUser?.uid") ||
-content.includes("user?.uid") ||
-content.includes("user.uid") ||
-content.includes("if (!currentUser)") ||
-content.includes("if (!user)") ||
-content.includes("router.replace('/login')") ||
-content.includes('router.push("/login")') ||
-content.includes('redirect("/login")');
+  content.includes("useAuth(") ||
+  content.includes("auth.currentUser") ||
+  content.includes("currentUser") ||
+  content.includes("getServerSession") ||
+  content.includes("AdminGuard") ||
+  content.includes("RoleGuard") ||
+  content.includes("ProtectedRoute") ||
+  content.includes("withAuth") ||
+  content.includes("middleware") ||
+  content.includes("middleware.ts") ||
+  content.includes("requireAdmin") ||
+  content.includes("requireAuth") ||
+  content.includes("checkAdminAccess") ||
+  content.includes("adminGuard") ||
+  content.includes("adminOnly") ||
+  content.includes("verifyAdmin") ||
+  content.includes("verifyRole") ||
+  content.includes("redirect('/login')") ||
+  content.includes("router.push('/login')") ||
+  content.includes("redirect('/admin/login')") ||
+  content.includes("onAuthStateChanged") ||
+  content.includes("signInWithEmailAndPassword") ||
+  content.includes("auth.onAuthStateChanged") ||
+  content.includes("auth.currentUser?.uid") ||
+  content.includes("user?.uid") ||
+  content.includes("user.uid") ||
+  content.includes("if (!currentUser)") ||
+  content.includes("if (!user)") ||
+  content.includes("router.replace('/login')") ||
+  content.includes('router.push("/login")') ||
+  content.includes('redirect("/login")');
       if (looksLikeProtectedPage && !hasAuthCheck) {
         violations.push({
           id: "SEC_AUTH_MISSING",
