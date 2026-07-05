@@ -150,7 +150,16 @@ return {
         content.includes("redirect('/admin/login')")||
         content.includes("onAuthStateChanged")||
         content.includes("signInWithEmailAndPassword");
-
+||
+content.includes("auth.onAuthStateChanged") ||
+content.includes("auth.currentUser?.uid") ||
+content.includes("user?.uid") ||
+content.includes("user.uid") ||
+content.includes("if (!currentUser)") ||
+content.includes("if (!user)") ||
+content.includes("router.replace('/login')") ||
+content.includes('router.push("/login")') ||
+content.includes('redirect("/login")');
       if (looksLikeProtectedPage && !hasAuthCheck) {
         violations.push({
           id: "SEC_AUTH_MISSING",
