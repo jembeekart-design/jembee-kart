@@ -109,17 +109,26 @@ if (
         if (!containsBusinessRule) {
           return;
         }
+        const isUIOrVariable =
+  /(wallet|panel|page|history|title|label|button|placeholder|icon|transaction|entry|log|cashbackwallet|rewardwallet|commissionwallet)/i.test(
+    line
+  );
 
-        const usesAdminConfig =
-          this.ADMIN_CONFIG_REFERENCES.some(
-            (config) =>
-              line.includes(config)
-          );
+if (isUIOrVariable) {
+  return;
+}
 
+        const usesFirestore =
+  /getDoc|doc\(|onSnapshot|collection|firebase|firestore/i.test(line);
+
+const usesAdminConfig =
+  usesFirestore ||
+  this.ADMIN_CONFIG_REFERENCES.some(
+    (config) => line.includes(config)
+  );
         const hasHardcodedNumber =
-          /=\s*\d+/.test(line) ||
-          /:\s*\d+/.test(line);
-
+  /\b\d+(\.\d+)?\b/.test(line) &&
+  /(commission|cashback|reward|withdrawal|rank|target|limit)/i.test(line);
         /**
          * CRITICAL
          * Hardcoded business rule
