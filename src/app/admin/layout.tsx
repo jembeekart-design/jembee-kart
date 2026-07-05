@@ -44,6 +44,12 @@ export default function AdminLayout({
         }
 
         const data = snap.data();
+        console.log("=================================");
+console.log("UID:", user.uid);
+console.log("EMAIL:", user.email);
+console.log("ROLE:", data?.role);
+console.log("FULL DATA:", data);
+console.log("=================================");
 
         console.log("Firestore Data:", data);
 
