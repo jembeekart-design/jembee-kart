@@ -3,7 +3,6 @@
 import type { ReactNode } from "react";
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
-
 import { onAuthStateChanged } from "firebase/auth";
 import {
   doc,
@@ -26,30 +25,21 @@ export default function AdminLayout({
 
   const [loading, setLoading] = useState(true);
   const [authorized, setAuthorized] = useState(false);
+  const [debug, setDebug] = useState("");
 
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, async (user) => {
       try {
-        console.log("========== ADMIN DEBUG ==========");
-
         if (!user) {
-          console.log("❌ User not logged in");
-          router.replace("/admin/login");
+          setDebug("❌ User not logged in");
+          setLoading(false);
           return;
         }
 
-        console.log("✅ Firebase User:", user);
-        console.log("UID:", user.uid);
-        console.log("Email:", user.email);
-
         const userRef = doc(db, "users", user.uid);
-
         let userSnap = await getDoc(userRef);
 
         if (!userSnap.exists()) {
-          console.log("⚠ User document not found");
-          console.log("Creating new document...");
-
           await setDoc(userRef, {
             uid: user.uid,
             email: user.email ?? "",
@@ -61,60 +51,73 @@ export default function AdminLayout({
             updatedAt: serverTimestamp(),
           });
 
-          console.log("✅ Document Created");
-
           userSnap = await getDoc(userRef);
         }
 
         const userData = userSnap.data();
-
-        console.log("Firestore Document:", userData);
-        console.log("Firestore UID:", userData?.uid);
-        console.log("Firestore Email:", userData?.email);
-        console.log("Firestore Role:", userData?.role);
 
         const allowedRoles = [
           "admin",
           "super_admin",
         ];
 
-        console.log("Allowed Roles:", allowedRoles);
+        setDebug(`
+UID:
+${user.uid}
+
+EMAIL:
+${user.email}
+
+DOCUMENT EXISTS:
+${userSnap.exists()}
+
+ROLE:
+${userData?.role}
+
+ALLOWED:
+${allowedRoles.includes(userData?.role)}
+
+FULL DATA:
+
+${JSON.stringify(userData, null, 2)}
+`);
 
         if (!allowedRoles.includes(userData?.role)) {
-          console.log("❌ ACCESS DENIED");
-          console.log("Current Role:", userData?.role);
-
-          router.replace("/403");
+          setLoading(false);
           return;
         }
 
-        console.log("✅ ADMIN ACCESS GRANTED");
-
         setAuthorized(true);
-      } catch (err) {
-        console.error("🔥 Admin Authentication Error");
-        console.error(err);
-
-        router.replace("/admin/login");
+      } catch (e) {
+        setDebug(String(e));
       } finally {
-        console.log("========== END DEBUG ==========");
         setLoading(false);
       }
     });
 
     return () => unsubscribe();
-  }, [router]);
+  }, []);
 
   if (loading) {
     return (
-      <div className="flex h-screen items-center justify-center bg-[#090909] text-white">
-        Checking Authorization...
+      <div className="flex h-screen items-center justify-center bg-black text-white">
+        Loading...
       </div>
     );
   }
 
   if (!authorized) {
-    return null;
+    return (
+      <div className="min-h-screen bg-black text-white p-6">
+        <h1 className="text-3xl font-bold mb-6">
+          ADMIN DEBUG
+        </h1>
+
+        <pre className="whitespace-pre-wrap text-sm">
+          {debug}
+        </pre>
+      </div>
+    );
   }
 
   return (
