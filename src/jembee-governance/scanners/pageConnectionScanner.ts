@@ -50,8 +50,15 @@ const isAuth =
 const isPayment =
   route.includes("payment") ||
   route.includes("checkout");
-
-if (isAdmin || isApi || isAuth || isPayment) {
+const isInternal =
+  route.startsWith("/mlm") ||
+  route.startsWith("/debug") ||
+  route.startsWith("/address") ||
+  route.startsWith("/orders") ||
+  route.startsWith("/profile") ||
+  route.startsWith("/wallet") ||
+  route.startsWith("/settings");
+if (isAdmin || isApi || isAuth || isPayment || isInternal) {
   continue;
 }
 
