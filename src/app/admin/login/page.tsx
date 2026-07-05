@@ -28,7 +28,14 @@ export default function AdminLoginPage() {
         email,
         password
       );
+   const user = auth.currentUser;
 
+alert(
+  `UID: ${user?.uid}\nEMAIL: ${user?.email}`
+);
+
+console.log("LOGIN UID:", user?.uid);
+console.log("LOGIN EMAIL:", user?.email);
       router.replace("/admin");
     } catch (err: any) {
       console.error(err);
