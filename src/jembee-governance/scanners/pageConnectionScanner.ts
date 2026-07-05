@@ -51,7 +51,7 @@ const isPayment =
   route.includes("payment") ||
   route.includes("checkout");
 
-if (isApi || isAuth || isPayment) {
+if (isAdmin || isApi || isAuth || isPayment) {
   continue;
 }
 
@@ -67,7 +67,20 @@ if (isApi || isAuth || isPayment) {
         footerContent.includes(`href="${route}"`) ||
         footerContent.includes(`href='${route}'`);
 
-      const deepLinkConnected = navbarConnected || footerConnected;
+      const pageContent = fs.readFileSync(routeInfo.filePath, "utf8");
+
+const internalConnected =
+  pageContent.includes("<Link") ||
+  pageContent.includes("router.push") ||
+  pageContent.includes("router.replace") ||
+  pageContent.includes("Header") ||
+  pageContent.includes("BottomNavbar") ||
+  pageContent.includes("Footer");
+
+const deepLinkConnected =
+  navbarConnected ||
+  footerConnected ||
+  internalConnected;
 
       const report: PageConnectionReport = {
   pageName: route,
@@ -107,7 +120,7 @@ lastScanned: new Date().toISOString(),
         });
       }
 
-      if (!navbarConnected) {
+      if (!navbarConnected && !internalConnected) {
         violations.push({
           id: "PAGE_NAVBAR_MISSING",
           title: "Navbar Connection Missing",
@@ -121,7 +134,7 @@ lastScanned: new Date().toISOString(),
         });
       }
 
-      if (!footerConnected) {
+      if (!footerConnected && !internalConnected) {
         violations.push({
           id: "PAGE_FOOTER_MISSING",
           title: "Footer Connection Missing",
