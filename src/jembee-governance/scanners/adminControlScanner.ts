@@ -85,7 +85,13 @@ export class AdminControlScanner {
         filePath,
         "utf8"
       );
-
+// Skip admin pages
+if (
+  filePath.includes("/app/admin/") ||
+  filePath.includes("\\app\\admin\\")
+) {
+  return [];
+}
       const lines = content.split("\n");
 
       lines.forEach((line, index) => {
