@@ -24,22 +24,32 @@ export default function AdminLayout({
 }) {
   const router = useRouter();
 
-  const [authorized, setAuthorized] = useState(false);
   const [loading, setLoading] = useState(true);
+  const [authorized, setAuthorized] = useState(false);
 
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, async (user) => {
       try {
+        console.log("========== ADMIN DEBUG ==========");
+
         if (!user) {
+          console.log("❌ User not logged in");
           router.replace("/admin/login");
           return;
         }
 
+        console.log("✅ Firebase User:", user);
+        console.log("UID:", user.uid);
+        console.log("Email:", user.email);
+
         const userRef = doc(db, "users", user.uid);
+
         let userSnap = await getDoc(userRef);
 
-        // Auto create document
         if (!userSnap.exists()) {
+          console.log("⚠ User document not found");
+          console.log("Creating new document...");
+
           await setDoc(userRef, {
             uid: user.uid,
             email: user.email ?? "",
@@ -51,23 +61,43 @@ export default function AdminLayout({
             updatedAt: serverTimestamp(),
           });
 
+          console.log("✅ Document Created");
+
           userSnap = await getDoc(userRef);
         }
 
         const userData = userSnap.data();
 
-        const allowedRoles = ["admin", "super_admin"];
+        console.log("Firestore Document:", userData);
+        console.log("Firestore UID:", userData?.uid);
+        console.log("Firestore Email:", userData?.email);
+        console.log("Firestore Role:", userData?.role);
+
+        const allowedRoles = [
+          "admin",
+          "super_admin",
+        ];
+
+        console.log("Allowed Roles:", allowedRoles);
 
         if (!allowedRoles.includes(userData?.role)) {
+          console.log("❌ ACCESS DENIED");
+          console.log("Current Role:", userData?.role);
+
           router.replace("/403");
           return;
         }
 
+        console.log("✅ ADMIN ACCESS GRANTED");
+
         setAuthorized(true);
-      } catch (error) {
-        console.error(error);
+      } catch (err) {
+        console.error("🔥 Admin Authentication Error");
+        console.error(err);
+
         router.replace("/admin/login");
       } finally {
+        console.log("========== END DEBUG ==========");
         setLoading(false);
       }
     });
@@ -83,7 +113,9 @@ export default function AdminLayout({
     );
   }
 
-  if (!authorized) return null;
+  if (!authorized) {
+    return null;
+  }
 
   return (
     <div className="flex min-h-screen bg-[#090909] text-white">
