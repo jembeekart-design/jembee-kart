@@ -3,6 +3,8 @@
 export const dynamic = "force-dynamic";
 
 import { useEffect, useState } from "react";
+import { useRouter } from "next/navigation";
+import { useAuth } from "@/hooks/useAuth";
 
 import {
   addDoc,
@@ -34,7 +36,9 @@ interface NotificationItem {
 }
 
 export default function NotificationsPage() {
+const router = useRouter();
 
+const { user, loading: authLoading } = useAuth();
   const [notifications, setNotifications] =
     useState<NotificationItem[]>([]);
 
@@ -52,7 +56,13 @@ export default function NotificationsPage() {
 
   const [imageUrl, setImageUrl] =
     useState("");
+useEffect(() => {
+  if (authLoading) return;
 
+  if (!user || user.role !== "admin") {
+    router.replace("/admin/login");
+  }
+}, [user, authLoading, router]);
   useEffect(() => {
 
     fetchNotifications();
