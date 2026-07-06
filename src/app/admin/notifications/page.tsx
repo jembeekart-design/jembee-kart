@@ -34,7 +34,7 @@ interface NotificationItem {
 }
 
 export default function NotificationsPage() {
-const router = useRouter();
+
 
 
   const [notifications, setNotifications] =
