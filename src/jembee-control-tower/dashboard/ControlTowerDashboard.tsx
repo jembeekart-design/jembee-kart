@@ -39,7 +39,7 @@ export default function ControlTowerDashboard() {
       status: report ? "Connected" : "Waiting",
       category: "THEME",
     },
-    {
+    
       {
   title: "Business Rules",
   value:
