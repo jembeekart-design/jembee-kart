@@ -40,11 +40,15 @@ export default function ControlTowerDashboard() {
       category: "THEME",
     },
     {
-      title: "Business Rules",
-      value: report?.info ?? "--",
-      status: report ? "Connected" : "Waiting",
-      category: "HARDCODED_RULE",
-    },
+      {
+  title: "Business Rules",
+  value:
+    report?.issues?.filter(
+      (i: any) => i.category === "ADMIN_CONTROL"
+    ).length ?? "--",
+  status: report ? "Connected" : "Waiting",
+  category: "ADMIN_CONTROL",
+},
     {
       title: "Firestore",
       value: report?.issues?.length ?? "--",
