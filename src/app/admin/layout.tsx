@@ -3,13 +3,13 @@
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { onAuthStateChanged } from "firebase/auth";
-import { collection, query, where, getDocs } from "firebase/firestore";
+import { collection, getDocs } from "firebase/firestore"; // Query ki jagah sab fetch karenge
 import { auth, db } from "@/firebase/config";
 
 export default function AdminLayout({ children }: { children: React.ReactNode }) {
   const router = useRouter();
   const [loading, setLoading] = useState(true);
-  const [debugLog, setDebugLog] = useState<string>("Checking...");
+  const [debugLog, setDebugLog] = useState<string>("Scanning Database...");
 
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, async (user) => {
@@ -19,24 +19,31 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
       }
 
       try {
-        setDebugLog(`Auth UID: ${user.uid}`);
+        // Pura collection fetch karte hain ye dekhne ke liye ki kya data hai
+        const querySnapshot = await getDocs(collection(db, "users"));
+        
+        let foundUser = null;
+        
+        // Manual loop chala kar check karte hain ki kis field mein Auth UID match ho raha hai
+        querySnapshot.forEach((doc) => {
+          const data = doc.data();
+          // Yahan hum sabhi fields check karenge
+          if (data.uid === user.uid || data.userId === user.uid || doc.id === user.uid) {
+            foundUser = data;
+          }
+        });
 
-        // QUERY: 'users' collection mein wo doc dhoondo jahan 'uid' field = Auth UID
-        const q = query(collection(db, "users"), where("uid", "==", user.uid));
-        const snapshot = await getDocs(q);
-
-        if (snapshot.empty) {
-          setDebugLog(`Error: No doc found with uid: ${user.uid}`);
+        if (!foundUser) {
+          setDebugLog(`User not found in DB! Auth UID: ${user.uid}. Please verify if this UID exists in your Firestore 'users' collection.`);
           return;
         }
 
-        const userData = snapshot.docs[0].data();
+        const userData = foundUser as any;
         
         if (userData.role === "admin" || userData.role === "super_admin") {
           setLoading(false);
         } else {
-          setDebugLog(`Access Denied. Current role: ${userData.role}`);
-          setTimeout(() => router.replace("/"), 2000);
+          setDebugLog(`Access Denied. Found role: ${userData.role}`);
         }
       } catch (err) {
         setDebugLog(`Error: ${err instanceof Error ? err.message : "Unknown"}`);
@@ -48,9 +55,8 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
 
   if (loading) {
     return (
-      <div className="flex min-h-screen items-center justify-center p-4 text-center">
-        <div className="bg-black text-green-400 p-4 rounded-lg font-mono text-sm">
-          <p>DEBUG:</p>
+      <div className="flex min-h-screen items-center justify-center p-4">
+        <div className="bg-black text-green-400 p-4 rounded-lg font-mono text-xs w-full max-w-sm">
           {debugLog}
         </div>
       </div>
