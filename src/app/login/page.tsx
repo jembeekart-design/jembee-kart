@@ -60,7 +60,7 @@ function LoginCard() {
 
   return true;
 }
-  }
+  
 
   /* ======================================================
   EMAIL AUTHENTICATION (SECURED WITH VERIFICATION INTERCEPTOR)
