@@ -36,18 +36,23 @@ function LoginCard() {
   VERIFY & TELEMETRY SYNC (STRICT EXISTING USERS ONLY)
   ====================================================== */
   async function verifyAndTelemetrySync(user: User) {
-    const userRef = doc(db, "users", user.uid);
-    const userSnap = await getDoc(userRef);
+  const q = query(
+    collection(db, "users"),
+    where("uid", "==", user.uid)
+  );
 
-    if (userSnap.exists()) {
-      // Server-side synchronized timestamp update
-      await updateDoc(userRef, {
-        lastLogin: serverTimestamp()
-      });
-      return true;
-    } else {
-      return false;
-    }
+  const snapshot = await getDocs(q);
+
+  if (snapshot.empty) {
+    return false;
+  }
+
+  await updateDoc(snapshot.docs[0].ref, {
+    lastLogin: serverTimestamp(),
+  });
+
+  return true;
+}
   }
 
   /* ======================================================
