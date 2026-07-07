@@ -6,57 +6,55 @@ import { onAuthStateChanged } from "firebase/auth";
 import { doc, getDoc } from "firebase/firestore";
 import { auth, db } from "@/firebase/config";
 
-export default function AdminLayout({
-  children,
-}: {
-  children: React.ReactNode;
-}) {
+export default function AdminLayout({ children }: { children: React.ReactNode }) {
   const router = useRouter();
   const [loading, setLoading] = useState(true);
+  const [debugLog, setDebugLog] = useState<string>("Checking Auth...");
 
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, async (user) => {
-      // 1. Check if user is logged in
       if (!user) {
-        router.replace("/login");
+        setDebugLog("Error: No user found. Redirecting to login.");
+        setTimeout(() => router.replace("/login"), 2000);
         return;
       }
 
       try {
-        // 2. Fetch user document from Firestore
+        setDebugLog(`User logged in: ${user.uid.slice(0, 5)}... Fetching data...`);
         const userRef = doc(db, "users", user.uid);
         const snap = await getDoc(userRef);
 
-        // 3. Verify user exists and has admin role
         if (!snap.exists()) {
-          router.replace("/");
+          setDebugLog("Error: User document missing in Firestore!");
           return;
         }
 
-        const userData = snap.data();
-        const isAdmin = userData.role === "admin" || userData.role === "super_admin";
+        const data = snap.data();
+        setDebugLog(`Role found: ${data.role}`);
 
-        if (!isAdmin) {
-          router.replace("/");
-          return;
+        if (data.role === "admin" || data.role === "super_admin") {
+          setLoading(false);
+        } else {
+          setDebugLog(`Access Denied: Role is ${data.role}. Redirecting...`);
+          setTimeout(() => router.replace("/"), 2000);
         }
-
-        // 4. Everything is valid, stop loading
-        setLoading(false);
-      } catch (error) {
-        console.error("Error verifying admin:", error);
-        router.replace("/");
+      } catch (err) {
+        setDebugLog(`Error: ${err instanceof Error ? err.message : "Unknown error"}`);
       }
     });
 
     return () => unsubscribe();
   }, [router]);
 
-  // 5. Show loading state until auth/admin check completes
   if (loading) {
     return (
-      <div className="flex min-h-screen items-center justify-center">
-        <p>Loading Admin Dashboard...</p>
+      <div className="flex min-h-screen flex-col items-center justify-center p-4 text-center">
+        <h2 className="text-xl font-bold mb-4">Loading Admin...</h2>
+        {/* Debug Box */}
+        <div className="bg-black text-green-400 p-4 rounded-lg w-full max-w-sm text-sm font-mono overflow-auto">
+          <p className="text-white mb-2 underline">DEBUG INFO:</p>
+          {debugLog}
+        </div>
       </div>
     );
   }
