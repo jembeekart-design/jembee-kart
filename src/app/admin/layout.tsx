@@ -1,37 +1,56 @@
-import type { ReactNode } from "react";
-import AdminSidebar from "@/components/admin/AdminSidebar";
-import AdminNavbar from "@/components/admin/AdminNavbar";
+"use client";
+
+import { useEffect, useState } from "react";
+import { useRouter } from "next/navigation";
+import { onAuthStateChanged } from "firebase/auth";
+import { doc, getDoc } from "firebase/firestore";
+
+import { auth, db } from "@/firebase/config";
 
 export default function AdminLayout({
   children,
 }: {
-  children: ReactNode;
+  children: React.ReactNode;
 }) {
-  return (
-    <div className="flex min-h-screen bg-[#090909] text-white">
+  const router = useRouter();
 
-      {/* Sidebar */}
-      <aside className="hidden lg:flex">
-        <AdminSidebar />
-      </aside>
+  const [loading, setLoading] = useState(true);
 
-      {/* Main Section */}
-      <div className="flex flex-1 flex-col min-w-0">
+  useEffect(() => {
+    const unsubscribe = onAuthStateChanged(auth, async (user) => {
+      if (!user) {
+        router.replace("/login");
+        return;
+      }
 
-        {/* Navbar */}
-        <header className="sticky top-0 z-40">
-          <AdminNavbar />
-        </header>
+      const userRef = doc(db, "users", user.uid);
+      const snap = await getDoc(userRef);
 
-        {/* Page Content */}
-        <main className="flex-1 overflow-y-auto p-4 md:p-6">
-          <div className="mx-auto w-full max-w-[1800px]">
-            {children}
-          </div>
-        </main>
+      if (!snap.exists()) {
+        router.replace("/");
+        return;
+      }
 
+      const data = snap.data();
+
+      if (data.role !== "admin" && data.role !== "super_admin") {
+        router.replace("/");
+        return;
+      }
+
+      setLoading(false);
+    });
+
+    return () => unsubscribe();
+  }, [router]);
+
+  if (loading) {
+    return (
+      <div className="flex min-h-screen items-center justify-center">
+        Loading...
       </div>
+    );
+  }
 
-    </div>
-  );
+  return <>{children}</>;
 }
