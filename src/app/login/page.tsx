@@ -12,7 +12,14 @@ import {
   signInWithPopup,
   User, // Strict User type implementation
 } from "firebase/auth";
-import { doc, getDoc, updateDoc, serverTimestamp } from "firebase/firestore";
+import {
+  collection,
+  query,
+  where,
+  getDocs,
+  updateDoc,
+  serverTimestamp,
+} from "firebase/firestore";
 import { auth, db } from "@/firebase/config";
 
 function LoginCard() {
