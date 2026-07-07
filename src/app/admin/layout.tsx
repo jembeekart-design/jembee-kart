@@ -32,7 +32,10 @@ console.log("Exists:", snap.exists());
       }
 
       const data = snap.data();
-      console.log("User Data:", snap.data());
+
+console.log("User Data:", data);
+console.log("Role:", data.role);
+
 
       if (data.role !== "admin" && data.role !== "super_admin") {
         router.replace("/");
