@@ -22,16 +22,17 @@ export default function AdminLayout({
         router.replace("/login");
         return;
       }
-
+console.log("Auth UID:", user.uid);
       const userRef = doc(db, "users", user.uid);
       const snap = await getDoc(userRef);
-
+console.log("Exists:", snap.exists());
       if (!snap.exists()) {
         router.replace("/");
         return;
       }
 
       const data = snap.data();
+      console.log("User Data:", snap.data());
 
       if (data.role !== "admin" && data.role !== "super_admin") {
         router.replace("/");
