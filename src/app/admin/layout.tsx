@@ -20,14 +20,16 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
 
       try {
         const querySnapshot = await getDocs(collection(db, "users"));
-        
+        console.log("TOTAL USERS:", querySnapshot.size);
         // --- YE PART IMPORTANT HAI ---
         // Hum console mein nahi, seedha screen par check karenge ki database mein kya hai
         let allUids: string[] = [];
         querySnapshot.forEach((doc) => {
           allUids.push(doc.data().uid || doc.id);
         });
-
+console.log("LOGIN UID:", user.uid);
+console.log("ALL UIDS:", allUids);
+console.log("EXISTS:", exists);
         const exists = allUids.includes(user.uid);
         
         if (!exists) {
@@ -37,6 +39,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
             `Database mein maujood UIDs: ${allUids.join(", ")}\n\n` +
             `Dono match nahi ho rahe hain. Check karein ki aapne sahi Firebase project setup kiya hai ya nahi.`
           );
+          setLoading(false);
         } else {
           setLoading(false);
         }
