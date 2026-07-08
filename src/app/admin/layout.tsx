@@ -45,6 +45,7 @@ console.log("EXISTS:", exists);
         }
       } catch (err: any) {
         setDebugLog(`Firestore Error: ${err.message}`);
+        setLoading(false)
       }
     });
 
