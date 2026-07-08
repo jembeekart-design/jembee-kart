@@ -14,7 +14,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, async (user) => {
       if (!user) {
-        router.replace("/login");
+        router.replace("/admin/login");
         return;
       }
 
