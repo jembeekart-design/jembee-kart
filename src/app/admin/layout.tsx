@@ -27,11 +27,11 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
         querySnapshot.forEach((doc) => {
           allUids.push(doc.data().uid || doc.id);
         });
-console.log("LOGIN UID:", user.uid);
+
+        const exists = allUids.includes(user.uid);
+        console.log("LOGIN UID:", user.uid);
 console.log("ALL UIDS:", allUids);
 console.log("EXISTS:", exists);
-        const exists = allUids.includes(user.uid);
-        
         if (!exists) {
           setDebugLog(
             `CRITICAL ERROR:\n\n` +
