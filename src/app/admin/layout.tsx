@@ -20,6 +20,8 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
 
       try {
         const querySnapshot = await getDocs(collection(db, "users"));
+        setDebugLog("DB Connected");
+setLoading(false);
         console.log("TOTAL USERS:", querySnapshot.size);
         // --- YE PART IMPORTANT HAI ---
         // Hum console mein nahi, seedha screen par check karenge ki database mein kya hai
