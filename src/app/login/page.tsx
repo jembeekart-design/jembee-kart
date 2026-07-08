@@ -124,7 +124,16 @@ function LoginCard() {
         console.log("GOOGLE EMAIL:", result.user.email);
 
         const isExistingUser = await verifyAndTelemetrySync(result.user);
-        
+        const userDoc = await getDoc(doc(db, "users", result.user.uid));
+
+if (userDoc.exists()) {
+  const role = userDoc.data().role;
+
+  if (role === "admin" || role === "super_admin") {
+    window.location.href = "/admin";
+    return;
+  }
+}
         console.log("USER EXISTS IN FIRESTORE:", isExistingUser);
         
         if (isExistingUser) {
