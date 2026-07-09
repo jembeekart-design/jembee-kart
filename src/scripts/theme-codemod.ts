@@ -4,28 +4,50 @@ import path from "path";
 const ROOT = path.join(process.cwd(), "src");
 
 const replacements: Record<string, string> = {
-  "bg-[var(--primary-color)]": "bg-[var(--primary-color)]",
-  "bg-[var(--secondary-color)]": "bg-[var(--secondary-color)]",
+  // Background
+  "bg-white": "bg-[var(--background-color)]",
+  "bg-black": "bg-[var(--card-color)]",
+  "bg-gray-50": "bg-[var(--background-color)]",
+  "bg-gray-100": "bg-[var(--card-color)]",
 
-  "bg-[var(--success-color)]": "bg-[var(--success-color)]",
-  "bg-[var(--danger-color)]": "bg-[var(--danger-color)]",
-  "bg-[var(--warning-color)]": "bg-[var(--warning-color)]",
+  // Text
+  "text-black": "text-[var(--text-color)]",
+  "text-white": "text-[var(--button-text-color)]",
+  "text-gray-400": "text-[var(--muted-text-color)]",
+  "text-gray-500": "text-[var(--muted-text-color)]",
+  "text-gray-600": "text-[var(--muted-text-color)]",
+  "text-gray-700": "text-[var(--text-color)]",
+  "text-gray-800": "text-[var(--text-color)]",
+  "text-gray-900": "text-[var(--text-color)]",
 
-  "text-[var(--button-text-color)]": "text-[var(--button-text-color)]",
-  "text-[var(--text-color)]": "text-[var(--text-color)]",
-  "text-[var(--muted-text-color)]": "text-[var(--muted-text-color)]",
- 
+  // Border
+  "border-gray-100": "border-[var(--border-color)]",
+  "border-gray-200": "border-[var(--border-color)]",
+  "border-gray-300": "border-[var(--border-color)]",
+  "border-black": "border-[var(--border-color)]",
 
-  "bg-[var(--card-color)]": "bg-[var(--card-color)]",
-  "bg-[var(--background-color)]": "bg-[var(--background-color)]",
+  // Primary
+  "bg-blue-500": "bg-[var(--primary-color)]",
+  "bg-blue-600": "bg-[var(--primary-color)]",
+  "text-blue-500": "text-[var(--primary-color)]",
+  "text-blue-600": "text-[var(--primary-color)]",
 
-  "border-[var(--border-color)]": "border-[var(--border-color)]",
+  // Success
+  "bg-green-500": "bg-[var(--success-color)]",
+  "text-green-600": "text-[var(--success-color)]",
+
+  // Danger
+  "bg-red-500": "bg-[var(--danger-color)]",
+  "text-red-500": "text-[var(--danger-color)]",
+  "text-red-600": "text-[var(--danger-color)]",
+
+  // Warning
+  "bg-yellow-500": "bg-[var(--warning-color)]",
+  "text-yellow-600": "text-[var(--warning-color)]",
 };
 
 function walk(dir: string) {
-  const files = fs.readdirSync(dir);
-
-  for (const file of files) {
+  for (const file of fs.readdirSync(dir)) {
     const full = path.join(dir, file);
 
     if (fs.statSync(full).isDirectory()) {
@@ -33,8 +55,9 @@ function walk(dir: string) {
         file === "node_modules" ||
         file === ".next" ||
         file === "dist"
-      )
+      ) {
         continue;
+      }
 
       walk(full);
       continue;
