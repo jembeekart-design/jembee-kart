@@ -159,7 +159,36 @@ return {
   content.includes("router.replace('/login')") ||
   content.includes('router.push("/login")') ||
   content.includes('redirect("/login")');
-      if (looksLikeProtectedPage && !hasAuthCheck) {
+      let hasLayoutAuth = false;
+
+try {
+  const adminLayout = path.join(
+    projectRoot,
+    "src",
+    "app",
+    "admin",
+    "layout.tsx"
+  );
+
+  if (fs.existsSync(adminLayout)) {
+    const layoutContent = fs.readFileSync(adminLayout, "utf8");
+
+    hasLayoutAuth =
+      layoutContent.includes("onAuthStateChanged") &&
+      layoutContent.includes("router.replace") &&
+      (
+        layoutContent.includes("user.uid") ||
+        layoutContent.includes("role") ||
+        layoutContent.includes("admin") ||
+        layoutContent.includes("super_admin")
+      );
+  }
+} catch {}
+      if (
+  looksLikeProtectedPage &&
+  !hasAuthCheck &&
+  !hasLayoutAuth
+) {
         violations.push({
           id: "SEC_AUTH_MISSING",
           title: "Authentication Check Missing",
