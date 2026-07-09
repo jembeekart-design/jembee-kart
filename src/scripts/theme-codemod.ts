@@ -5,7 +5,6 @@ const ROOT = path.join(process.cwd(), "src");
 
 const replacements: Record<string, string> = {
   "bg-[var(--primary-color)]": "bg-[var(--primary-color)]",
-  "bg-[var(--primary-color)]": "bg-[var(--primary-color)]",
   "bg-[var(--secondary-color)]": "bg-[var(--secondary-color)]",
 
   "bg-[var(--success-color)]": "bg-[var(--success-color)]",
@@ -15,13 +14,11 @@ const replacements: Record<string, string> = {
   "text-[var(--button-text-color)]": "text-[var(--button-text-color)]",
   "text-[var(--text-color)]": "text-[var(--text-color)]",
   "text-[var(--muted-text-color)]": "text-[var(--muted-text-color)]",
-  "text-[var(--muted-text-color)]": "text-[var(--muted-text-color)]",
   "text-[var(--text-color)]": "text-[var(--text-color)]",
 
   "bg-[var(--card-color)]": "bg-[var(--card-color)]",
   "bg-[var(--background-color)]": "bg-[var(--background-color)]",
 
-  "border-[var(--border-color)]": "border-[var(--border-color)]",
   "border-[var(--border-color)]": "border-[var(--border-color)]",
 };
 
