@@ -66,3 +66,4 @@ export const storage =
   getStorage(app);
 
 export default app;
+console.log("Firebase Config:", firebaseConfig);
