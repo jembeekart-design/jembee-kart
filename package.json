@@ -3,13 +3,14 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "dev": "next dev",
-    "governance": "tsx src/jembee-governance/index.ts",
-    "governance:check": "tsx src/jembee-governance/index.ts",
-    "build": "npm run governance && next build",
-    "start": "next start",
-    "lint": "eslint"
-  },
+  "dev": "next dev",
+  "governance": "tsx src/jembee-governance/index.ts",
+  "governance:check": "tsx src/jembee-governance/index.ts",
+  "theme:codemod": "tsx src/scripts/theme-codemod.ts",
+  "build": "npm run governance && next build",
+  "start": "next start",
+  "lint": "eslint"
+}
   "dependencies": {
     "clsx": "^2.1.1",
     "firebase": "^12.13.0",
