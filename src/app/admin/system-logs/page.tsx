@@ -93,7 +93,7 @@ export default function SystemLogsPage() {
 
     return (
 
-      <div className="flex min-h-screen items-center justify-center bg-black text-[var(--button-text-color)]">
+      <div className="flex min-h-screen items-center justify-center bg-[var(--card-color)] text-[var(--button-text-color)]">
 
         Loading Logs...
 
@@ -122,7 +122,7 @@ export default function SystemLogsPage() {
             System Logs
           </h1>
 
-          <p className="mt-1 text-sm text-gray-400">
+          <p className="mt-1 text-sm text-[var(--muted-text-color)]">
             Monitor platform activities & errors
           </p>
 
@@ -221,7 +221,7 @@ export default function SystemLogsPage() {
 
                     </h2>
 
-                    <p className="text-sm text-gray-400 capitalize">
+                    <p className="text-sm text-[var(--muted-text-color)] capitalize">
 
                       {log.type}
 
@@ -241,7 +241,7 @@ export default function SystemLogsPage() {
 
               {/* RIGHT */}
 
-              <div className="flex items-center gap-2 rounded-full bg-black px-4 py-2 text-sm text-gray-300">
+              <div className="flex items-center gap-2 rounded-full bg-[var(--card-color)] px-4 py-2 text-sm text-gray-300">
 
                 <Clock3 size={16} />
 
@@ -282,7 +282,7 @@ function StatCard({
 
         <div>
 
-          <p className="text-sm text-gray-400">
+          <p className="text-sm text-[var(--muted-text-color)]">
             {title}
           </p>
 

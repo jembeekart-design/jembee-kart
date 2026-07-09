@@ -133,7 +133,7 @@ export default function RefundRequestsPage() {
 
     return (
 
-      <div className="flex min-h-screen items-center justify-center bg-black text-[var(--button-text-color)]">
+      <div className="flex min-h-screen items-center justify-center bg-[var(--card-color)] text-[var(--button-text-color)]">
 
         Loading Refund Requests...
 
@@ -162,7 +162,7 @@ export default function RefundRequestsPage() {
             Refund Requests
           </h1>
 
-          <p className="mt-1 text-sm text-gray-400">
+          <p className="mt-1 text-sm text-[var(--muted-text-color)]">
             Manage customer refunds
           </p>
 
@@ -244,7 +244,7 @@ export default function RefundRequestsPage() {
 
                 {/* REASON */}
 
-                <div className="rounded-2xl bg-black/30 p-4">
+                <div className="rounded-2xl bg-[var(--card-color)]/30 p-4">
 
                   <h3 className="mb-2 font-bold">
                     Refund Reason

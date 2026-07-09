@@ -55,7 +55,7 @@ export default function AnalyticsPage() {
             Analytics Dashboard
           </h1>
 
-          <p className="mt-1 text-sm text-gray-400">
+          <p className="mt-1 text-sm text-[var(--muted-text-color)]">
             Track sales and performance
           </p>
 
@@ -85,7 +85,7 @@ export default function AnalyticsPage() {
 
               </div>
 
-              <p className="mt-5 text-sm text-gray-400">
+              <p className="mt-5 text-sm text-[var(--muted-text-color)]">
                 {item.title}
               </p>
 
@@ -179,7 +179,7 @@ function ActivityItem({
 
   return (
 
-    <div className="flex items-center justify-between rounded-2xl bg-black/30 p-4">
+    <div className="flex items-center justify-between rounded-2xl bg-[var(--card-color)]/30 p-4">
 
       <div>
 
@@ -187,7 +187,7 @@ function ActivityItem({
           {title}
         </h3>
 
-        <p className="mt-1 text-sm text-gray-400">
+        <p className="mt-1 text-sm text-[var(--muted-text-color)]">
           {subtitle}
         </p>
 

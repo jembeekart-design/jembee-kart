@@ -240,7 +240,7 @@ export default function NavigationPage() {
 
     return (
 
-      <div className="flex min-h-screen items-center justify-center bg-black text-[var(--button-text-color)]">
+      <div className="flex min-h-screen items-center justify-center bg-[var(--card-color)] text-[var(--button-text-color)]">
 
         Loading...
 
@@ -271,7 +271,7 @@ export default function NavigationPage() {
               Navigation Manager
             </h1>
 
-            <p className="mt-1 text-sm text-gray-400">
+            <p className="mt-1 text-sm text-[var(--muted-text-color)]">
               Control navbar & menu links
             </p>
 
@@ -314,7 +314,7 @@ export default function NavigationPage() {
                 e.target.value
               )
             }
-            className="rounded-2xl bg-black px-4 py-4 outline-none"
+            className="rounded-2xl bg-[var(--card-color)] px-4 py-4 outline-none"
           />
 
           <input
@@ -326,7 +326,7 @@ export default function NavigationPage() {
                 e.target.value
               )
             }
-            className="rounded-2xl bg-black px-4 py-4 outline-none"
+            className="rounded-2xl bg-[var(--card-color)] px-4 py-4 outline-none"
           />
 
         </div>
@@ -363,7 +363,7 @@ export default function NavigationPage() {
 
                 <div className="flex items-center gap-4">
 
-                  <div className="flex h-14 w-14 items-center justify-center rounded-2xl bg-black">
+                  <div className="flex h-14 w-14 items-center justify-center rounded-2xl bg-[var(--card-color)]">
 
                     <Link2
                       size={24}
@@ -378,7 +378,7 @@ export default function NavigationPage() {
                       {item.label}
                     </h2>
 
-                    <p className="mt-1 text-sm text-gray-400">
+                    <p className="mt-1 text-sm text-[var(--muted-text-color)]">
                       {item.path}
                     </p>
 

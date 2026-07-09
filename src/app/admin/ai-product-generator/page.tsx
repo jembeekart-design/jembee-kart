@@ -121,7 +121,7 @@ export default function AIProductGeneratorPage() {
             AI Product Generator
           </h1>
 
-          <p className="mt-1 text-sm text-gray-400">
+          <p className="mt-1 text-sm text-[var(--muted-text-color)]">
             Generate product titles & descriptions
           </p>
 
@@ -177,7 +177,7 @@ export default function AIProductGeneratorPage() {
               )
             }
             placeholder="premium, stylish, modern..."
-            className="h-32 w-full rounded-2xl bg-black p-4 outline-none"
+            className="h-32 w-full rounded-2xl bg-[var(--card-color)] p-4 outline-none"
           />
 
         </div>
@@ -267,7 +267,7 @@ export default function AIProductGeneratorPage() {
 
         </div>
 
-        <div className="mt-6 rounded-2xl bg-black/20 p-5">
+        <div className="mt-6 rounded-2xl bg-[var(--card-color)]/20 p-5">
 
           <h3 className="text-2xl font-black">
 
@@ -321,7 +321,7 @@ function InputCard({
           )
         }
         placeholder={placeholder}
-        className="w-full rounded-2xl bg-black px-5 py-4 outline-none"
+        className="w-full rounded-2xl bg-[var(--card-color)] px-5 py-4 outline-none"
       />
 
     </div>
@@ -360,7 +360,7 @@ function OutputCard({
 
       </div>
 
-      <div className="rounded-2xl bg-black/30 p-4">
+      <div className="rounded-2xl bg-[var(--card-color)]/30 p-4">
 
         <p className="whitespace-pre-wrap text-gray-300">
 

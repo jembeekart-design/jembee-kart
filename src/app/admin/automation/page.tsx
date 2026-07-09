@@ -91,7 +91,7 @@ export default function AutomationPage() {
 
             </h1>
 
-            <p className="mt-1 text-sm text-gray-400">
+            <p className="mt-1 text-sm text-[var(--muted-text-color)]">
 
               Smart AI workflow automation system
 
@@ -181,7 +181,7 @@ export default function AutomationPage() {
 
                 <div
                   key={index}
-                  className="flex items-center justify-between rounded-[24px] bg-black/30 p-5"
+                  className="flex items-center justify-between rounded-[24px] bg-[var(--card-color)]/30 p-5"
                 >
 
                   <div className="flex items-center gap-4">
@@ -203,7 +203,7 @@ export default function AutomationPage() {
 
                       </h3>
 
-                      <p className="mt-1 text-sm text-gray-400">
+                      <p className="mt-1 text-sm text-[var(--muted-text-color)]">
 
                         {item.desc}
 
@@ -343,7 +343,7 @@ function StatsCard({
 
       </div>
 
-      <p className="mt-4 text-sm text-gray-400">
+      <p className="mt-4 text-sm text-[var(--muted-text-color)]">
 
         {title}
 

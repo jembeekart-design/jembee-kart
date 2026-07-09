@@ -50,7 +50,7 @@ export default function MessagesPage() {
             Customer Messages
           </h1>
 
-          <p className="mt-1 text-sm text-gray-400">
+          <p className="mt-1 text-sm text-[var(--muted-text-color)]">
             Manage customer chats
           </p>
 
@@ -64,7 +64,7 @@ export default function MessagesPage() {
 
         <Search
           size={20}
-          className="text-gray-400"
+          className="text-[var(--muted-text-color)]"
         />
 
         <input
@@ -103,7 +103,7 @@ export default function MessagesPage() {
                       {item.name}
                     </h2>
 
-                    <p className="mt-1 text-sm text-gray-400">
+                    <p className="mt-1 text-sm text-[var(--muted-text-color)]">
                       {item.message}
                     </p>
 

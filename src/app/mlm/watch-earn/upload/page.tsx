@@ -194,7 +194,7 @@ UploadWatchVideoPage() {
               className="
                 mt-1
                 text-sm
-                text-gray-400
+                text-[var(--muted-text-color)]
               "
             >
 
@@ -352,7 +352,7 @@ UploadWatchVideoPage() {
             className="
               mt-2
               text-sm
-              text-gray-400
+              text-[var(--muted-text-color)]
             "
           >
 

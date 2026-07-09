@@ -105,7 +105,7 @@ export default function PaymentSuccessPage() {
           ✅
         </div>
 
-        <h1 className="text-4xl font-black text-green-600">
+        <h1 className="text-4xl font-black text-[var(--success-color)]">
           Payment Successful
         </h1>
 
@@ -131,7 +131,7 @@ export default function PaymentSuccessPage() {
             YOUR REFERRAL CODE
           </p>
 
-          <h2 className="mt-2 text-2xl font-black text-green-600 break-all">
+          <h2 className="mt-2 text-2xl font-black text-[var(--success-color)] break-all">
             {referralCode}
           </h2>
 

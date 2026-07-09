@@ -76,7 +76,7 @@ export default function OrderTrackingPage() {
               Order Tracking
             </h1>
 
-            <p className="mt-1 text-sm text-gray-400">
+            <p className="mt-1 text-sm text-[var(--muted-text-color)]">
               Realtime order delivery & shipment monitoring
             </p>
 
@@ -132,7 +132,7 @@ export default function OrderTrackingPage() {
 
           <Search
             size={20}
-            className="text-gray-400"
+            className="text-[var(--muted-text-color)]"
           />
 
           <input
@@ -184,7 +184,7 @@ export default function OrderTrackingPage() {
                       {item.id}
                     </h2>
 
-                    <div className="mt-2 flex items-center gap-2 text-sm text-gray-400">
+                    <div className="mt-2 flex items-center gap-2 text-sm text-[var(--muted-text-color)]">
 
                       <User size={15} />
 
@@ -192,7 +192,7 @@ export default function OrderTrackingPage() {
 
                     </div>
 
-                    <div className="mt-1 flex items-center gap-2 text-sm text-gray-400">
+                    <div className="mt-1 flex items-center gap-2 text-sm text-[var(--muted-text-color)]">
 
                       <MapPin size={15} />
 
@@ -336,7 +336,7 @@ export default function OrderTrackingPage() {
 
         </p>
 
-        <button className="mt-6 rounded-2xl bg-black px-5 py-3 font-bold text-[var(--button-text-color)]">
+        <button className="mt-6 rounded-2xl bg-[var(--card-color)] px-5 py-3 font-bold text-[var(--button-text-color)]">
 
           Open Delivery Center
 
@@ -399,7 +399,7 @@ function StatCard({
 
       </div>
 
-      <p className="mt-4 text-sm text-gray-400">
+      <p className="mt-4 text-sm text-[var(--muted-text-color)]">
         {title}
       </p>
 

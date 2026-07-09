@@ -146,7 +146,7 @@ export default function ThemePage() {
 
   if (loading) {
     return (
-      <div className="flex min-h-screen items-center justify-center bg-black text-[var(--button-text-color)]">
+      <div className="flex min-h-screen items-center justify-center bg-[var(--card-color)] text-[var(--button-text-color)]">
         Loading...
       </div>
     );
@@ -154,7 +154,7 @@ export default function ThemePage() {
 
   return (
 
-    <main className="min-h-screen bg-black p-4 text-[var(--button-text-color)]">
+    <main className="min-h-screen bg-[var(--card-color)] p-4 text-[var(--button-text-color)]">
 
       <h1 className="mb-6 text-center text-3xl font-black">
         JembeeKart Live Theme

@@ -330,11 +330,11 @@ function RegistrationForm() {
   }
 
   return (
-    <main className="flex min-h-screen items-center justify-center bg-gray-50 px-4 py-12">
-      <div className="w-full max-w-md rounded-[32px] bg-[var(--card-color)] p-8 shadow-sm border border-gray-100">
+    <main className="flex min-h-screen items-center justify-center bg-[var(--background-color)] px-4 py-12">
+      <div className="w-full max-w-md rounded-[32px] bg-[var(--card-color)] p-8 shadow-sm border border-[var(--border-color)]">
         <div className="text-center mb-8">
           <h1 className="text-[28px] font-black text-indigo-600">Create Account</h1>
-          <p className="text-sm text-gray-400 mt-1">Join JembeeKart Today</p>
+          <p className="text-sm text-[var(--muted-text-color)] mt-1">Join JembeeKart Today</p>
         </div>
 
         <form onSubmit={handleEmailSignup} className="space-y-4">
@@ -403,14 +403,14 @@ function RegistrationForm() {
 
         <div className="my-6 flex items-center">
           <div className="h-px flex-1 bg-gray-200" />
-          <span className="px-4 text-xs font-bold text-gray-400">OR</span>
+          <span className="px-4 text-xs font-bold text-[var(--muted-text-color)]">OR</span>
           <div className="h-px flex-1 bg-gray-200" />
         </div>
 
         <button
           onClick={handleGoogleSignup}
           disabled={loading}
-          className="w-full rounded-2xl border p-4 font-bold bg-[var(--card-color)] text-[var(--text-color)] hover:bg-gray-50 transition disabled:opacity-50"
+          className="w-full rounded-2xl border p-4 font-bold bg-[var(--card-color)] text-[var(--text-color)] hover:bg-[var(--background-color)] transition disabled:opacity-50"
         >
           Continue With Google
         </button>
@@ -426,8 +426,8 @@ export default function SignupPage() {
   return (
     <Suspense 
       fallback={
-        <div className="flex min-h-screen items-center justify-center bg-gray-50">
-          <p className="text-sm font-bold text-gray-400 animate-pulse">
+        <div className="flex min-h-screen items-center justify-center bg-[var(--background-color)]">
+          <p className="text-sm font-bold text-[var(--muted-text-color)] animate-pulse">
             Loading JembeeKart Secure Node...
           </p>
         </div>

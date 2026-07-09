@@ -68,7 +68,7 @@ export default function CategoryCard({
           className="h-full w-full object-cover"
         />
 
-        <div className="absolute inset-0 bg-black/20" />
+        <div className="absolute inset-0 bg-[var(--card-color)]/20" />
 
       </div>
 

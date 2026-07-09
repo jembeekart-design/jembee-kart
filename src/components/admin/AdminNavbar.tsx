@@ -32,7 +32,7 @@ export default function AdminNavbar() {
 
           </h1>
 
-          <p className="text-sm text-gray-400">
+          <p className="text-sm text-[var(--muted-text-color)]">
 
             Welcome back admin
 
@@ -50,7 +50,7 @@ export default function AdminNavbar() {
 
           <Search
             size={20}
-            className="text-gray-400"
+            className="text-[var(--muted-text-color)]"
           />
 
           <input
@@ -103,7 +103,7 @@ export default function AdminNavbar() {
 
             </h2>
 
-            <p className="text-xs text-gray-400">
+            <p className="text-xs text-[var(--muted-text-color)]">
 
               Super Admin
 

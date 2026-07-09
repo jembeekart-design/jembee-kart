@@ -218,7 +218,7 @@ export default function PageBuilderPage() {
 
     return (
 
-      <div className="flex min-h-screen items-center justify-center bg-black text-[var(--button-text-color)]">
+      <div className="flex min-h-screen items-center justify-center bg-[var(--card-color)] text-[var(--button-text-color)]">
 
         Loading Builder...
 
@@ -249,7 +249,7 @@ export default function PageBuilderPage() {
               Homepage Builder
             </h1>
 
-            <p className="mt-1 text-sm text-gray-400">
+            <p className="mt-1 text-sm text-[var(--muted-text-color)]">
               Reorder & manage homepage sections
             </p>
 
@@ -298,7 +298,7 @@ export default function PageBuilderPage() {
 
                   </h2>
 
-                  <p className="mt-1 text-sm text-gray-400">
+                  <p className="mt-1 text-sm text-[var(--muted-text-color)]">
 
                     Position:
                     {" "}

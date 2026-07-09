@@ -66,7 +66,7 @@ export default function BackupManagerPage() {
               Backup Manager
             </h1>
 
-            <p className="mt-1 text-sm text-gray-400">
+            <p className="mt-1 text-sm text-[var(--muted-text-color)]">
               Manage system backups & restore points
             </p>
 
@@ -126,7 +126,7 @@ export default function BackupManagerPage() {
               Automatic Backup
             </h2>
 
-            <p className="mt-1 text-sm text-gray-400">
+            <p className="mt-1 text-sm text-[var(--muted-text-color)]">
               Enable scheduled cloud backups
             </p>
 
@@ -178,7 +178,7 @@ export default function BackupManagerPage() {
                     {item.name}
                   </h2>
 
-                  <p className="mt-2 text-sm text-gray-400">
+                  <p className="mt-2 text-sm text-[var(--muted-text-color)]">
                     File Size:
                     {" "}
                     {item.size}
@@ -324,7 +324,7 @@ function StatCard({
 
       </div>
 
-      <p className="mt-4 text-sm text-gray-400">
+      <p className="mt-4 text-sm text-[var(--muted-text-color)]">
         {title}
       </p>
 

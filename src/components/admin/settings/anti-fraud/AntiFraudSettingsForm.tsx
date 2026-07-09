@@ -102,7 +102,7 @@ export default function AntiFraudSettingsForm({
 
       {error && (
 
-        <div className="rounded-lg border border-red-300 bg-red-50 p-3 text-red-600">
+        <div className="rounded-lg border border-red-300 bg-red-50 p-3 text-[var(--danger-color)]">
 
           {error}
 
@@ -423,7 +423,7 @@ export default function AntiFraudSettingsForm({
           type="button"
           onClick={handleSave}
           disabled={!dirty || saving}
-          className="rounded-lg bg-blue-600 px-5 py-2 text-[var(--button-text-color)] disabled:opacity-50"
+          className="rounded-lg bg-[var(--primary-color)] px-5 py-2 text-[var(--button-text-color)] disabled:opacity-50"
         >
           {saving ? "Saving..." : "Save Settings"}
         </button>

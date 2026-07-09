@@ -109,7 +109,7 @@ export default function CategoryProductsPage() {
 
         <div className="mb-6">
 
-          <h1 className="text-3xl font-black capitalize text-gray-900 md:text-5xl">
+          <h1 className="text-3xl font-black capitalize text-[var(--text-color)] md:text-5xl">
             {slug}
           </h1>
 

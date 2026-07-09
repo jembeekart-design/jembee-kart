@@ -72,7 +72,7 @@ export default function ReferralEnginePage() {
               Referral Engine
             </h1>
 
-            <p className="mt-1 text-sm text-gray-400">
+            <p className="mt-1 text-sm text-[var(--muted-text-color)]">
               Multi-level referral & affiliate reward system
             </p>
 
@@ -162,7 +162,7 @@ export default function ReferralEnginePage() {
                       {item.user}
                     </h3>
 
-                    <p className="mt-1 text-sm text-gray-400">
+                    <p className="mt-1 text-sm text-[var(--muted-text-color)]">
 
                       {item.referrals}
                       {" "}
@@ -178,7 +178,7 @@ export default function ReferralEnginePage() {
 
                   <div className="rounded-2xl bg-cyan-500/10 px-5 py-3">
 
-                    <p className="text-sm text-gray-400">
+                    <p className="text-sm text-[var(--muted-text-color)]">
                       Earnings
                     </p>
 
@@ -303,7 +303,7 @@ export default function ReferralEnginePage() {
 
         </p>
 
-        <button className="mt-6 rounded-2xl bg-black px-5 py-3 font-bold text-[var(--button-text-color)]">
+        <button className="mt-6 rounded-2xl bg-[var(--card-color)] px-5 py-3 font-bold text-[var(--button-text-color)]">
 
           Manage Campaign
 
@@ -366,7 +366,7 @@ function StatCard({
 
       </div>
 
-      <p className="mt-4 text-sm text-gray-400">
+      <p className="mt-4 text-sm text-[var(--muted-text-color)]">
         {title}
       </p>
 

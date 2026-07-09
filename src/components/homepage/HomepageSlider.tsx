@@ -393,7 +393,7 @@ export default function HomepageSlider() {
 
                     {/* OVERLAY */}
 
-                    <div className="absolute inset-0 bg-black/20" />
+                    <div className="absolute inset-0 bg-[var(--card-color)]/20" />
 
                     {/* CONTENT */}
 

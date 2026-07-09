@@ -70,7 +70,7 @@ export default function EmailMarketingPage() {
             Email Marketing
           </h1>
 
-          <p className="mt-1 text-sm text-gray-400">
+          <p className="mt-1 text-sm text-[var(--muted-text-color)]">
             Manage campaigns & newsletters
           </p>
 
@@ -114,7 +114,7 @@ export default function EmailMarketingPage() {
 
         <Search
           size={20}
-          className="text-gray-400"
+          className="text-[var(--muted-text-color)]"
         />
 
         <input
@@ -154,7 +154,7 @@ export default function EmailMarketingPage() {
                     {item.title}
                   </h2>
 
-                  <p className="mt-2 text-sm text-gray-400">
+                  <p className="mt-2 text-sm text-[var(--muted-text-color)]">
                     Audience:
                     {" "}
                     {item.audience}
@@ -170,7 +170,7 @@ export default function EmailMarketingPage() {
                       : item.status ===
                         "Scheduled"
                       ? "bg-[var(--warning-color)]/20 text-yellow-400"
-                      : "bg-gray-500/20 text-gray-300"
+                      : "bg-[var(--background-color)]0/20 text-gray-300"
                   }`}
                 >
 
@@ -182,7 +182,7 @@ export default function EmailMarketingPage() {
 
               <div className="mt-5 flex items-center justify-between">
 
-                <div className="flex items-center gap-2 text-sm text-gray-400">
+                <div className="flex items-center gap-2 text-sm text-[var(--muted-text-color)]">
 
                   <Clock size={16} />
 
@@ -230,7 +230,7 @@ function StatCard({
 
       </div>
 
-      <p className="mt-4 text-sm text-gray-400">
+      <p className="mt-4 text-sm text-[var(--muted-text-color)]">
         {title}
       </p>
 

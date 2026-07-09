@@ -132,7 +132,7 @@ export default function SupportTicketsPage() {
 
     return (
 
-      <div className="flex min-h-screen items-center justify-center bg-black text-[var(--button-text-color)]">
+      <div className="flex min-h-screen items-center justify-center bg-[var(--card-color)] text-[var(--button-text-color)]">
 
         Loading...
 
@@ -161,7 +161,7 @@ export default function SupportTicketsPage() {
             Support Tickets
           </h1>
 
-          <p className="mt-1 text-sm text-gray-400">
+          <p className="mt-1 text-sm text-[var(--muted-text-color)]">
             Manage customer support requests
           </p>
 
@@ -237,7 +237,7 @@ export default function SupportTicketsPage() {
 
                 {/* MESSAGE */}
 
-                <div className="rounded-2xl bg-black p-4">
+                <div className="rounded-2xl bg-[var(--card-color)] p-4">
 
                   <div className="mb-3 flex items-center gap-2">
 

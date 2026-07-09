@@ -96,7 +96,7 @@ export default function BackupsPage() {
             Backups Manager
           </h1>
 
-          <p className="mt-1 text-sm text-gray-400">
+          <p className="mt-1 text-sm text-[var(--muted-text-color)]">
             Create & restore system backups
           </p>
 
@@ -115,7 +115,7 @@ export default function BackupsPage() {
             className="text-cyan-400"
           />
 
-          <p className="mt-4 text-sm text-gray-400">
+          <p className="mt-4 text-sm text-[var(--muted-text-color)]">
             Total Backups
           </p>
 
@@ -132,7 +132,7 @@ export default function BackupsPage() {
             className="text-pink-400"
           />
 
-          <p className="mt-4 text-sm text-gray-400">
+          <p className="mt-4 text-sm text-[var(--muted-text-color)]">
             Storage Used
           </p>
 
@@ -149,7 +149,7 @@ export default function BackupsPage() {
             className="text-yellow-400"
           />
 
-          <p className="mt-4 text-sm text-gray-400">
+          <p className="mt-4 text-sm text-[var(--muted-text-color)]">
             Last Backup
           </p>
 
@@ -220,7 +220,7 @@ export default function BackupsPage() {
                     {item.name}
                   </h2>
 
-                  <div className="mt-3 flex flex-wrap gap-3 text-sm text-gray-400">
+                  <div className="mt-3 flex flex-wrap gap-3 text-sm text-[var(--muted-text-color)]">
 
                     <span>
                       {item.date}

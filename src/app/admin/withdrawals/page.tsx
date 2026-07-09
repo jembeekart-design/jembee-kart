@@ -80,7 +80,7 @@ export default function WithdrawalsPage() {
             Withdrawals
           </h1>
 
-          <p className="mt-1 text-sm text-gray-400">
+          <p className="mt-1 text-sm text-[var(--muted-text-color)]">
             Manage affiliate withdrawals
           </p>
 
@@ -99,7 +99,7 @@ export default function WithdrawalsPage() {
             className="text-yellow-400"
           />
 
-          <p className="mt-4 text-sm text-gray-400">
+          <p className="mt-4 text-sm text-[var(--muted-text-color)]">
             Pending
           </p>
 
@@ -116,7 +116,7 @@ export default function WithdrawalsPage() {
             className="text-green-400"
           />
 
-          <p className="mt-4 text-sm text-gray-400">
+          <p className="mt-4 text-sm text-[var(--muted-text-color)]">
             Approved
           </p>
 
@@ -133,7 +133,7 @@ export default function WithdrawalsPage() {
             className="text-cyan-400"
           />
 
-          <p className="mt-4 text-sm text-gray-400">
+          <p className="mt-4 text-sm text-[var(--muted-text-color)]">
             Total Paid
           </p>
 
@@ -165,7 +165,7 @@ export default function WithdrawalsPage() {
                     {item.user}
                   </h2>
 
-                  <p className="mt-2 text-sm text-gray-400">
+                  <p className="mt-2 text-sm text-[var(--muted-text-color)]">
                     Withdrawal Request
                   </p>
 
@@ -177,7 +177,7 @@ export default function WithdrawalsPage() {
                     {item.amount}
                   </h3>
 
-                  <p className="mt-1 text-sm capitalize text-gray-400">
+                  <p className="mt-1 text-sm capitalize text-[var(--muted-text-color)]">
                     {item.status}
                   </p>
 

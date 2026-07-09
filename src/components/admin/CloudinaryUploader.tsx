@@ -145,7 +145,7 @@ export default function CloudinaryUploader({
         {/* EMPTY */}
 
         {!value ? (
-          <div className="flex h-[260px] flex-col items-center justify-center gap-4 text-gray-400">
+          <div className="flex h-[260px] flex-col items-center justify-center gap-4 text-[var(--muted-text-color)]">
 
             {type ===
             "image" ? (

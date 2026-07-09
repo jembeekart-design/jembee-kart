@@ -46,7 +46,7 @@ export default function ShippingPage() {
               Shipping Settings
             </h1>
 
-            <p className="mt-1 text-sm text-gray-400">
+            <p className="mt-1 text-sm text-[var(--muted-text-color)]">
               Manage delivery & shipping
             </p>
 
@@ -91,7 +91,7 @@ export default function ShippingPage() {
                 e.target.value
               )
             }
-            className="w-full rounded-2xl border border-white/10 bg-black px-4 py-4 outline-none"
+            className="w-full rounded-2xl border border-white/10 bg-[var(--card-color)] px-4 py-4 outline-none"
           />
 
         </div>
@@ -119,7 +119,7 @@ export default function ShippingPage() {
                 e.target.value
               )
             }
-            className="w-full rounded-2xl border border-white/10 bg-black px-4 py-4 outline-none"
+            className="w-full rounded-2xl border border-white/10 bg-[var(--card-color)] px-4 py-4 outline-none"
           />
 
         </div>
@@ -141,7 +141,7 @@ export default function ShippingPage() {
                   Cash On Delivery
                 </h2>
 
-                <p className="text-sm text-gray-400">
+                <p className="text-sm text-[var(--muted-text-color)]">
                   Enable COD payments
                 </p>
 
@@ -189,7 +189,7 @@ export default function ShippingPage() {
                   Tracking System
                 </h2>
 
-                <p className="text-sm text-gray-400">
+                <p className="text-sm text-[var(--muted-text-color)]">
                   Order tracking enabled
                 </p>
 

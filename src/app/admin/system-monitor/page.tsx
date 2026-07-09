@@ -74,7 +74,7 @@ export default function SystemMonitorPage() {
 
             </h1>
 
-            <p className="mt-1 text-sm text-gray-400">
+            <p className="mt-1 text-sm text-[var(--muted-text-color)]">
 
               Live server and system monitoring
 
@@ -152,7 +152,7 @@ export default function SystemMonitorPage() {
 
               <div
                 key={index}
-                className="rounded-[24px] bg-black/30 p-5"
+                className="rounded-[24px] bg-[var(--card-color)]/30 p-5"
               >
 
                 <div className="flex items-center justify-between">
@@ -165,7 +165,7 @@ export default function SystemMonitorPage() {
 
                     </h3>
 
-                    <p className="mt-1 text-sm text-gray-400">
+                    <p className="mt-1 text-sm text-[var(--muted-text-color)]">
 
                       Resource Usage:
                       {" "}
@@ -381,7 +381,7 @@ function StatsCard({
 
       </div>
 
-      <p className="mt-4 text-sm text-gray-400">
+      <p className="mt-4 text-sm text-[var(--muted-text-color)]">
 
         {title}
 
@@ -408,7 +408,7 @@ function HealthItem({
 
   return (
 
-    <div className="flex items-center justify-between rounded-2xl bg-black/30 p-4">
+    <div className="flex items-center justify-between rounded-2xl bg-[var(--card-color)]/30 p-4">
 
       <h3 className="font-bold">
 

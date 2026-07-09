@@ -142,7 +142,7 @@ export default function MLMInvitePage() {
 
           <div className="mt-5 rounded-2xl bg-[var(--background-color)] p-4">
             <p className="text-[11px] text-[var(--muted-text-color)]">Referral Name</p>
-            <h3 className="mt-1 text-[18px] font-black text-gray-900">{referralName}</h3>
+            <h3 className="mt-1 text-[18px] font-black text-[var(--text-color)]">{referralName}</h3>
 
             <div className="mt-4 rounded-xl bg-[var(--card-color)] p-3 text-[11px] font-semibold text-purple-600 break-all select-all">
               {referralLink}

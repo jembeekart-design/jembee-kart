@@ -83,7 +83,7 @@ export default function CustomerSupportPage() {
             Customer Support
           </h1>
 
-          <p className="mt-1 text-sm text-gray-400">
+          <p className="mt-1 text-sm text-[var(--muted-text-color)]">
             Manage customer tickets & support
           </p>
 
@@ -127,7 +127,7 @@ export default function CustomerSupportPage() {
 
         <Search
           size={20}
-          className="text-gray-400"
+          className="text-[var(--muted-text-color)]"
         />
 
         <input
@@ -167,7 +167,7 @@ export default function CustomerSupportPage() {
                     {item.user}
                   </h2>
 
-                  <p className="mt-1 text-sm text-gray-400">
+                  <p className="mt-1 text-sm text-[var(--muted-text-color)]">
                     {item.id}
                   </p>
 
@@ -196,7 +196,7 @@ export default function CustomerSupportPage() {
 
               <div className="mt-5 flex items-center justify-between">
 
-                <div className="flex items-center gap-2 text-sm text-gray-400">
+                <div className="flex items-center gap-2 text-sm text-[var(--muted-text-color)]">
 
                   <Clock size={16} />
 
@@ -251,7 +251,7 @@ function StatCard({
 
       </div>
 
-      <p className="mt-4 text-sm text-gray-400">
+      <p className="mt-4 text-sm text-[var(--muted-text-color)]">
         {title}
       </p>
 

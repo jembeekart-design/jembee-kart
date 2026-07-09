@@ -145,7 +145,7 @@ export default function OrdersPage() {
 
   if (loading) {
     return (
-      <div className="flex min-h-screen items-center justify-center bg-black font-black text-sm uppercase tracking-widest text-pink-500">
+      <div className="flex min-h-screen items-center justify-center bg-[var(--card-color)] font-black text-sm uppercase tracking-widest text-pink-500">
         Syncing Orders Database Stream...
       </div>
     );
@@ -156,7 +156,7 @@ export default function OrdersPage() {
       {/* HEADER MODULE CONTAINER */}
       <div className="mb-6">
         <h1 className="text-3xl font-black">Orders Manager</h1>
-        <p className="mt-1 text-sm text-gray-400">Manage customer orders & MLM structural conversions</p>
+        <p className="mt-1 text-sm text-[var(--muted-text-color)]">Manage customer orders & MLM structural conversions</p>
       </div>
 
       {/* ORDERS FEED LAYOUT LAYER */}
@@ -178,7 +178,7 @@ export default function OrdersPage() {
                 />
                 <div>
                   <h2 className="text-lg font-black">{order.productTitle || "Untitled Product"}</h2>
-                  <p className="text-xs text-gray-400">Buyer: {order.customerName || "Guest User"}</p>
+                  <p className="text-xs text-[var(--muted-text-color)]">Buyer: {order.customerName || "Guest User"}</p>
                 </div>
               </div>
 
@@ -222,12 +222,12 @@ export default function OrdersPage() {
 
               {/* ACTION TOGGLE MODULE (SECURE INTERACTION INTERFACE SHIELD) */}
               <div>
-                <p className="mb-3 text-xs uppercase font-bold tracking-wider text-gray-400">Modify Order Execution State</p>
+                <p className="mb-3 text-xs uppercase font-bold tracking-wider text-[var(--muted-text-color)]">Modify Order Execution State</p>
                 <div className="grid grid-cols-3 gap-3">
                   <button
                     onClick={() => updateStatus(order.id, "pending")}
                     disabled={order.commissionProcessed || order.status === "delivered"}
-                    className="flex items-center justify-center gap-2 rounded-2xl px-3 py-3 text-sm font-bold transition active:scale-95 disabled:opacity-30 disabled:cursor-not-allowed disabled:hover:bg-[#1e1e1e] bg-[#1e1e1e] hover:bg-[#252525] text-gray-400 data-[active=true]:bg-[var(--warning-color)] data-[active=true]:text-[var(--text-color)]"
+                    className="flex items-center justify-center gap-2 rounded-2xl px-3 py-3 text-sm font-bold transition active:scale-95 disabled:opacity-30 disabled:cursor-not-allowed disabled:hover:bg-[#1e1e1e] bg-[#1e1e1e] hover:bg-[#252525] text-[var(--muted-text-color)] data-[active=true]:bg-[var(--warning-color)] data-[active=true]:text-[var(--text-color)]"
                     data-active={order.status === "pending"}
                   >
                     <Clock3 size={16} />
@@ -237,7 +237,7 @@ export default function OrdersPage() {
                   <button
                     onClick={() => updateStatus(order.id, "shipped")}
                     disabled={order.commissionProcessed || order.status === "delivered"}
-                    className="flex items-center justify-center gap-2 rounded-2xl px-3 py-3 text-sm font-bold transition active:scale-95 disabled:opacity-30 disabled:cursor-not-allowed disabled:hover:bg-[#1e1e1e] bg-[#1e1e1e] hover:bg-[#252525] text-gray-400 data-[active=true]:theme-primary-bg data-[active=true]:text-[var(--button-text-color)]"
+                    className="flex items-center justify-center gap-2 rounded-2xl px-3 py-3 text-sm font-bold transition active:scale-95 disabled:opacity-30 disabled:cursor-not-allowed disabled:hover:bg-[#1e1e1e] bg-[#1e1e1e] hover:bg-[#252525] text-[var(--muted-text-color)] data-[active=true]:theme-primary-bg data-[active=true]:text-[var(--button-text-color)]"
                     data-active={order.status === "shipped"}
                   >
                     <Truck size={16} />
@@ -247,7 +247,7 @@ export default function OrdersPage() {
                   <button
                     onClick={() => updateStatus(order.id, "delivered")}
                     disabled={order.commissionProcessed || order.status === "delivered"}
-                    className="flex items-center justify-center gap-2 rounded-2xl px-3 py-3 text-sm font-bold transition active:scale-95 disabled:opacity-40 disabled:cursor-not-allowed disabled:bg-[#151a16] disabled:text-green-500/60 bg-[#1e1e1e] hover:bg-[#252525] text-gray-400 data-[active=true]:bg-[var(--success-color)] data-[active=true]:text-[var(--button-text-color)]"
+                    className="flex items-center justify-center gap-2 rounded-2xl px-3 py-3 text-sm font-bold transition active:scale-95 disabled:opacity-40 disabled:cursor-not-allowed disabled:bg-[#151a16] disabled:text-green-500/60 bg-[#1e1e1e] hover:bg-[#252525] text-[var(--muted-text-color)] data-[active=true]:bg-[var(--success-color)] data-[active=true]:text-[var(--button-text-color)]"
                     data-active={order.status === "delivered"}
                   >
                     <CheckCircle2 size={16} />

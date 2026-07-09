@@ -132,7 +132,7 @@ export default function WithdrawalRequestsPage() {
 
     return (
 
-      <div className="flex min-h-screen items-center justify-center bg-black text-[var(--button-text-color)]">
+      <div className="flex min-h-screen items-center justify-center bg-[var(--card-color)] text-[var(--button-text-color)]">
 
         Loading...
 
@@ -161,7 +161,7 @@ export default function WithdrawalRequestsPage() {
             Withdrawal Requests
           </h1>
 
-          <p className="mt-1 text-sm text-gray-400">
+          <p className="mt-1 text-sm text-[var(--muted-text-color)]">
             Manage user withdrawal requests
           </p>
 

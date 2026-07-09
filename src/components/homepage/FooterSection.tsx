@@ -14,7 +14,7 @@ export default function FooterSection() {
             JembeeKart
           </h2>
 
-          <p className="mt-4 break-words text-sm leading-relaxed text-gray-400 md:text-lg">
+          <p className="mt-4 break-words text-sm leading-relaxed text-[var(--muted-text-color)] md:text-lg">
             AI Powered Ecommerce Ecosystem with
             affiliate marketing, reseller system,
             MLM growth and seller automation.
@@ -30,7 +30,7 @@ export default function FooterSection() {
             Quick Links
           </h3>
 
-          <ul className="mt-5 space-y-3 text-sm text-gray-400 md:text-lg">
+          <ul className="mt-5 space-y-3 text-sm text-[var(--muted-text-color)] md:text-lg">
 
             <li className="break-words transition-all duration-300 hover:text-[var(--button-text-color)]">
               Home
@@ -60,7 +60,7 @@ export default function FooterSection() {
             Support
           </h3>
 
-          <ul className="mt-5 space-y-3 text-sm text-gray-400 md:text-lg">
+          <ul className="mt-5 space-y-3 text-sm text-[var(--muted-text-color)] md:text-lg">
 
             <li className="break-words transition-all duration-300 hover:text-[var(--button-text-color)]">
               Help Center
@@ -90,7 +90,7 @@ export default function FooterSection() {
             Business
           </h3>
 
-          <ul className="mt-5 space-y-3 text-sm text-gray-400 md:text-lg">
+          <ul className="mt-5 space-y-3 text-sm text-[var(--muted-text-color)] md:text-lg">
 
             <li className="break-words transition-all duration-300 hover:text-[var(--button-text-color)]">
               Seller Program

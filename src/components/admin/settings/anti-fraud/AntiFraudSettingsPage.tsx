@@ -27,7 +27,7 @@ export default function AntiFraudSettingsPage() {
   if (error) {
 
     return (
-      <div className="p-6 text-red-500">
+      <div className="p-6 text-[var(--danger-color)]">
         {error}
       </div>
     );
@@ -37,7 +37,7 @@ export default function AntiFraudSettingsPage() {
   if (!config) {
 
     return (
-      <div className="p-6 text-red-500">
+      <div className="p-6 text-[var(--danger-color)]">
         Anti Fraud Configuration Not Found
       </div>
     );

@@ -136,7 +136,7 @@ VideoInfo({
           items-center
           gap-2
           rounded-full
-          bg-black/40
+          bg-[var(--card-color)]/40
           px-4
           py-2
           backdrop-blur-xl

@@ -160,7 +160,7 @@ export default function WishlistPage() {
                   View Product
                 </Link>
 
-                <button className="h-12 w-12 rounded-xl bg-red-50 text-red-600 flex items-center justify-center">
+                <button className="h-12 w-12 rounded-xl bg-red-50 text-[var(--danger-color)] flex items-center justify-center">
                   <Trash2 size={18} />
                 </button>
               </div>

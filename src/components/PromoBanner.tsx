@@ -29,7 +29,7 @@ export default function PromoBanner() {
         flex
         items-end
         justify-center
-        bg-black/30
+        bg-[var(--card-color)]/30
         backdrop-blur-sm
       "
     >

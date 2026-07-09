@@ -221,7 +221,7 @@ export default function AffiliatePage() {
           
           {/* TODAY INCOME */}
           <div className="rounded-[28px] bg-[var(--card-color)] p-5 shadow-xl">
-            <div className="flex h-14 w-14 items-center justify-center rounded-2xl bg-green-100 text-green-600">
+            <div className="flex h-14 w-14 items-center justify-center rounded-2xl bg-green-100 text-[var(--success-color)]">
               <CircleDollarSign size={30} />
             </div>
             <p className="mt-4 text-sm font-semibold text-[var(--muted-text-color)]">Today Income</p>

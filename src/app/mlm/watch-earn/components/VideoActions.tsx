@@ -72,7 +72,7 @@ VideoActions({
             items-center
             justify-center
             rounded-full
-            bg-black/40
+            bg-[var(--card-color)]/40
             text-[var(--button-text-color)]
             backdrop-blur-xl
           "
@@ -116,7 +116,7 @@ VideoActions({
             items-center
             justify-center
             rounded-full
-            bg-black/40
+            bg-[var(--card-color)]/40
             text-[var(--button-text-color)]
             backdrop-blur-xl
           "
@@ -162,7 +162,7 @@ VideoActions({
             items-center
             justify-center
             rounded-full
-            bg-black/40
+            bg-[var(--card-color)]/40
             text-[var(--button-text-color)]
             backdrop-blur-xl
           "
@@ -205,7 +205,7 @@ VideoActions({
             items-center
             justify-center
             rounded-full
-            bg-black/40
+            bg-[var(--card-color)]/40
             text-[var(--button-text-color)]
             backdrop-blur-xl
           "

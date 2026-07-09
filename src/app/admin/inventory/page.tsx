@@ -86,7 +86,7 @@ export default function InventoryPage() {
 
     return (
 
-      <div className="flex min-h-screen items-center justify-center bg-black text-[var(--button-text-color)]">
+      <div className="flex min-h-screen items-center justify-center bg-[var(--card-color)] text-[var(--button-text-color)]">
 
         Loading Inventory...
 
@@ -115,7 +115,7 @@ export default function InventoryPage() {
             Inventory Manager
           </h1>
 
-          <p className="mt-1 text-sm text-gray-400">
+          <p className="mt-1 text-sm text-[var(--muted-text-color)]">
             Manage products & stock
           </p>
 
@@ -239,7 +239,7 @@ export default function InventoryPage() {
 
                     </h2>
 
-                    <p className="mt-2 text-sm text-gray-400">
+                    <p className="mt-2 text-sm text-[var(--muted-text-color)]">
 
                       Category:
                       {" "}
@@ -268,7 +268,7 @@ export default function InventoryPage() {
 
                 <div className="flex flex-col items-start gap-3 md:items-end">
 
-                  <div className="rounded-full bg-black px-5 py-2 text-sm font-bold">
+                  <div className="rounded-full bg-[var(--card-color)] px-5 py-2 text-sm font-bold">
 
                     Stock:
                     {" "}
@@ -316,7 +316,7 @@ function StatCard({
 
         <div>
 
-          <p className="text-sm text-gray-400">
+          <p className="text-sm text-[var(--muted-text-color)]">
             {title}
           </p>
 
@@ -326,7 +326,7 @@ function StatCard({
 
         </div>
 
-        <div className="flex h-14 w-14 items-center justify-center rounded-2xl bg-black">
+        <div className="flex h-14 w-14 items-center justify-center rounded-2xl bg-[var(--card-color)]">
 
           {icon}
 

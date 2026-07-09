@@ -62,7 +62,7 @@ export default function PaymentsPage() {
               Cashfree Settings
             </h1>
 
-            <p className="mt-1 text-sm text-gray-400">
+            <p className="mt-1 text-sm text-[var(--muted-text-color)]">
               Manage Cashfree payment gateway
             </p>
 
@@ -113,7 +113,7 @@ export default function PaymentsPage() {
               )
             }
             placeholder="Enter Cashfree App ID"
-            className="w-full rounded-2xl border border-white/10 bg-black px-4 py-4 text-[var(--button-text-color)] outline-none"
+            className="w-full rounded-2xl border border-white/10 bg-[var(--card-color)] px-4 py-4 text-[var(--button-text-color)] outline-none"
           />
 
         </div>
@@ -144,7 +144,7 @@ export default function PaymentsPage() {
               )
             }
             placeholder="Enter Secret Key"
-            className="w-full rounded-2xl border border-white/10 bg-black px-4 py-4 text-[var(--button-text-color)] outline-none"
+            className="w-full rounded-2xl border border-white/10 bg-[var(--card-color)] px-4 py-4 text-[var(--button-text-color)] outline-none"
           />
 
         </div>
@@ -161,7 +161,7 @@ export default function PaymentsPage() {
                 Cash On Delivery
               </h2>
 
-              <p className="mt-1 text-sm text-gray-400">
+              <p className="mt-1 text-sm text-[var(--muted-text-color)]">
                 Enable COD payments
               </p>
 
@@ -202,7 +202,7 @@ export default function PaymentsPage() {
                 UPI Payments
               </h2>
 
-              <p className="mt-1 text-sm text-gray-400">
+              <p className="mt-1 text-sm text-[var(--muted-text-color)]">
                 Accept UPI payments
               </p>
 
@@ -243,7 +243,7 @@ export default function PaymentsPage() {
                 Wallet Payments
               </h2>
 
-              <p className="mt-1 text-sm text-gray-400">
+              <p className="mt-1 text-sm text-[var(--muted-text-color)]">
                 Accept wallet payments
               </p>
 

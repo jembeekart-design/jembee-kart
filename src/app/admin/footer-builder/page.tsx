@@ -197,7 +197,7 @@ export default function FooterBuilderPage() {
 
     return (
 
-      <div className="flex min-h-screen items-center justify-center bg-black text-[var(--button-text-color)]">
+      <div className="flex min-h-screen items-center justify-center bg-[var(--card-color)] text-[var(--button-text-color)]">
 
         Loading Footer...
 
@@ -228,7 +228,7 @@ export default function FooterBuilderPage() {
               Footer Builder
             </h1>
 
-            <p className="mt-1 text-sm text-gray-400">
+            <p className="mt-1 text-sm text-[var(--muted-text-color)]">
               Customize website footer
             </p>
 
@@ -264,7 +264,7 @@ export default function FooterBuilderPage() {
 
           <div>
 
-            <label className="mb-2 block text-sm text-gray-400">
+            <label className="mb-2 block text-sm text-[var(--muted-text-color)]">
 
               Company Name
 
@@ -281,14 +281,14 @@ export default function FooterBuilderPage() {
                   e.target.value
                 )
               }
-              className="w-full rounded-2xl bg-black px-5 py-4 outline-none"
+              className="w-full rounded-2xl bg-[var(--card-color)] px-5 py-4 outline-none"
             />
 
           </div>
 
           <div>
 
-            <label className="mb-2 block text-sm text-gray-400">
+            <label className="mb-2 block text-sm text-[var(--muted-text-color)]">
 
               Copyright Text
 
@@ -305,7 +305,7 @@ export default function FooterBuilderPage() {
                   e.target.value
                 )
               }
-              className="w-full rounded-2xl bg-black px-5 py-4 outline-none"
+              className="w-full rounded-2xl bg-[var(--card-color)] px-5 py-4 outline-none"
             />
 
           </div>
@@ -347,7 +347,7 @@ export default function FooterBuilderPage() {
 
               <div
                 key={index}
-                className="rounded-2xl bg-black/30 p-4"
+                className="rounded-2xl bg-[var(--card-color)]/30 p-4"
               >
 
                 <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
@@ -366,7 +366,7 @@ export default function FooterBuilderPage() {
                           .value
                       )
                     }
-                    className="rounded-2xl bg-black px-5 py-4 outline-none"
+                    className="rounded-2xl bg-[var(--card-color)] px-5 py-4 outline-none"
                   />
 
                   <input
@@ -383,7 +383,7 @@ export default function FooterBuilderPage() {
                           .value
                       )
                     }
-                    className="rounded-2xl bg-black px-5 py-4 outline-none"
+                    className="rounded-2xl bg-[var(--card-color)] px-5 py-4 outline-none"
                   />
 
                 </div>
@@ -420,7 +420,7 @@ export default function FooterBuilderPage() {
           Live Footer Preview
         </h2>
 
-        <div className="mt-6 rounded-2xl bg-black/20 p-6">
+        <div className="mt-6 rounded-2xl bg-[var(--card-color)]/20 p-6">
 
           <h3 className="text-2xl font-black">
 

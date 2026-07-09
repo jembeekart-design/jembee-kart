@@ -129,7 +129,7 @@ export default function DomainsPage() {
 
     return (
 
-      <div className="flex min-h-screen items-center justify-center bg-black text-[var(--button-text-color)]">
+      <div className="flex min-h-screen items-center justify-center bg-[var(--card-color)] text-[var(--button-text-color)]">
 
         Loading...
 
@@ -160,7 +160,7 @@ export default function DomainsPage() {
               Domain Manager
             </h1>
 
-            <p className="mt-1 text-sm text-gray-400">
+            <p className="mt-1 text-sm text-[var(--muted-text-color)]">
               Manage website domains
             </p>
 
@@ -402,7 +402,7 @@ function InputCard({
             e.target.value
           )
         }
-        className="w-full rounded-2xl bg-black px-4 py-4 outline-none"
+        className="w-full rounded-2xl bg-[var(--card-color)] px-4 py-4 outline-none"
       />
 
     </div>
@@ -434,7 +434,7 @@ function ToggleCard({
             {title}
           </h2>
 
-          <p className="mt-2 text-sm text-gray-400">
+          <p className="mt-2 text-sm text-[var(--muted-text-color)]">
             {description}
           </p>
 

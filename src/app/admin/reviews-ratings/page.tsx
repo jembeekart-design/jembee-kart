@@ -131,7 +131,7 @@ export default function ReviewsRatingsPage() {
 
     return (
 
-      <div className="flex min-h-screen items-center justify-center bg-black text-[var(--button-text-color)]">
+      <div className="flex min-h-screen items-center justify-center bg-[var(--card-color)] text-[var(--button-text-color)]">
 
         Loading Reviews...
 
@@ -160,7 +160,7 @@ export default function ReviewsRatingsPage() {
             Reviews & Ratings
           </h1>
 
-          <p className="mt-1 text-sm text-gray-400">
+          <p className="mt-1 text-sm text-[var(--muted-text-color)]">
             Manage customer reviews
           </p>
 
@@ -255,7 +255,7 @@ export default function ReviewsRatingsPage() {
 
                 {/* REVIEW */}
 
-                <div className="rounded-2xl bg-black/30 p-4">
+                <div className="rounded-2xl bg-[var(--card-color)]/30 p-4">
 
                   <p className="text-gray-300">
 

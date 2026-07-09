@@ -203,7 +203,7 @@ export default function HomepagePage() {
 
     return (
 
-      <div className="flex min-h-screen items-center justify-center bg-black text-[var(--button-text-color)]">
+      <div className="flex min-h-screen items-center justify-center bg-[var(--card-color)] text-[var(--button-text-color)]">
 
         Loading...
 
@@ -234,7 +234,7 @@ export default function HomepagePage() {
               Homepage Control
             </h1>
 
-            <p className="mt-1 text-sm text-gray-400">
+            <p className="mt-1 text-sm text-[var(--muted-text-color)]">
               Manage homepage layout & sections
             </p>
 
@@ -381,14 +381,14 @@ export default function HomepagePage() {
 
               <div
                 key={item}
-                className="flex items-center justify-between rounded-2xl bg-black/30 p-4"
+                className="flex items-center justify-between rounded-2xl bg-[var(--card-color)]/30 p-4"
               >
 
                 <div className="flex items-center gap-3">
 
                   <MoveVertical
                     size={18}
-                    className="text-gray-400"
+                    className="text-[var(--muted-text-color)]"
                   />
 
                   <h3 className="text-lg font-bold">
@@ -522,7 +522,7 @@ function SectionCard({
 
         <div className="flex items-center gap-3">
 
-          <div className="flex h-14 w-14 items-center justify-center rounded-2xl bg-black">
+          <div className="flex h-14 w-14 items-center justify-center rounded-2xl bg-[var(--card-color)]">
 
             {icon}
 
@@ -534,7 +534,7 @@ function SectionCard({
               {title}
             </h2>
 
-            <p className="text-sm text-gray-400">
+            <p className="text-sm text-[var(--muted-text-color)]">
               Homepage section
             </p>
 

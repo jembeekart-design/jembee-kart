@@ -372,7 +372,7 @@ export default function MLMLeaderboardPage() {
 
             <Sparkles
               size={24}
-              className="text-yellow-600"
+              className="text-[var(--warning-color)]"
             />
 
             <h2 className="text-[22px] font-black">
@@ -395,7 +395,7 @@ export default function MLMLeaderboardPage() {
                     items-center
                     justify-between
                     rounded-2xl
-                    bg-gray-50
+                    bg-[var(--background-color)]
                     p-4
                   "
                 >
@@ -432,7 +432,7 @@ export default function MLMLeaderboardPage() {
 
                         <Users
                           size={12}
-                          className="text-gray-400"
+                          className="text-[var(--muted-text-color)]"
                         />
 
                         <p className="text-[11px] text-[var(--muted-text-color)]">

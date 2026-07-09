@@ -50,7 +50,7 @@ console.log("LOGIN EMAIL:", user?.email);
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-black p-5">
+    <div className="min-h-screen flex items-center justify-center bg-[var(--card-color)] p-5">
 
       <form
         onSubmit={login}
@@ -82,7 +82,7 @@ console.log("LOGIN EMAIL:", user?.email);
         />
 
         {error && (
-          <div className="text-red-500 mb-4">
+          <div className="text-[var(--danger-color)] mb-4">
             {error}
           </div>
         )}

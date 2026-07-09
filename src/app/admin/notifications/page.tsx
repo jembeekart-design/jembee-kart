@@ -203,7 +203,7 @@ export default function NotificationsPage() {
   if (loading) {
 
     return (
-      <div className="flex min-h-screen items-center justify-center bg-black text-[var(--button-text-color)]">
+      <div className="flex min-h-screen items-center justify-center bg-[var(--card-color)] text-[var(--button-text-color)]">
         Loading...
       </div>
     );
@@ -223,7 +223,7 @@ export default function NotificationsPage() {
             Notifications
           </h1>
 
-          <p className="mt-2 text-sm text-gray-400">
+          <p className="mt-2 text-sm text-[var(--muted-text-color)]">
             Send app notifications
           </p>
 
@@ -319,7 +319,7 @@ export default function NotificationsPage() {
                       {item.title}
                     </h2>
 
-                    <p className="mt-1 text-sm text-gray-400">
+                    <p className="mt-1 text-sm text-[var(--muted-text-color)]">
                       Notification Alert
                     </p>
 
@@ -339,7 +339,7 @@ export default function NotificationsPage() {
 
                   ) : (
 
-                    <span className="rounded-full bg-[var(--danger-color)]/20 px-4 py-2 text-xs font-bold text-red-500">
+                    <span className="rounded-full bg-[var(--danger-color)]/20 px-4 py-2 text-xs font-bold text-[var(--danger-color)]">
 
                       Hidden
 
@@ -469,7 +469,7 @@ export default function NotificationsPage() {
                         item.id
                       )
                     }
-                    className="flex items-center justify-center gap-2 rounded-2xl bg-[var(--danger-color)]/20 px-4 py-3 text-sm font-bold text-red-500"
+                    className="flex items-center justify-center gap-2 rounded-2xl bg-[var(--danger-color)]/20 px-4 py-3 text-sm font-bold text-[var(--danger-color)]"
                   >
 
                     <Trash2 size={16} />

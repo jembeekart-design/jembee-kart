@@ -85,7 +85,7 @@ export default function SystemPage() {
             System Dashboard
           </h1>
 
-          <p className="mt-1 text-sm text-gray-400">
+          <p className="mt-1 text-sm text-[var(--muted-text-color)]">
             Advanced app & server controls
           </p>
 
@@ -115,7 +115,7 @@ export default function SystemPage() {
 
           </div>
 
-          <p className="mt-5 text-sm text-gray-400">
+          <p className="mt-5 text-sm text-[var(--muted-text-color)]">
             Server Status
           </p>
 
@@ -143,7 +143,7 @@ export default function SystemPage() {
 
           </div>
 
-          <p className="mt-5 text-sm text-gray-400">
+          <p className="mt-5 text-sm text-[var(--muted-text-color)]">
             Firebase
           </p>
 
@@ -171,7 +171,7 @@ export default function SystemPage() {
 
           </div>
 
-          <p className="mt-5 text-sm text-gray-400">
+          <p className="mt-5 text-sm text-[var(--muted-text-color)]">
             Security
           </p>
 
@@ -199,7 +199,7 @@ export default function SystemPage() {
 
           </div>
 
-          <p className="mt-5 text-sm text-gray-400">
+          <p className="mt-5 text-sm text-[var(--muted-text-color)]">
             Storage
           </p>
 
@@ -221,7 +221,7 @@ export default function SystemPage() {
 
         <div className="mt-6 space-y-5">
 
-          <div className="flex items-center justify-between rounded-2xl bg-black/30 p-4">
+          <div className="flex items-center justify-between rounded-2xl bg-[var(--card-color)]/30 p-4">
 
             <div className="flex items-center gap-3">
 
@@ -236,7 +236,7 @@ export default function SystemPage() {
                   App Version
                 </h3>
 
-                <p className="text-sm text-gray-400">
+                <p className="text-sm text-[var(--muted-text-color)]">
                   Current running version
                 </p>
 
@@ -252,7 +252,7 @@ export default function SystemPage() {
 
           </div>
 
-          <div className="flex items-center justify-between rounded-2xl bg-black/30 p-4">
+          <div className="flex items-center justify-between rounded-2xl bg-[var(--card-color)]/30 p-4">
 
             <div className="flex items-center gap-3">
 
@@ -267,7 +267,7 @@ export default function SystemPage() {
                   Deployment Region
                 </h3>
 
-                <p className="text-sm text-gray-400">
+                <p className="text-sm text-[var(--muted-text-color)]">
                   Current active server
                 </p>
 
@@ -283,7 +283,7 @@ export default function SystemPage() {
 
           </div>
 
-          <div className="flex items-center justify-between rounded-2xl bg-black/30 p-4">
+          <div className="flex items-center justify-between rounded-2xl bg-[var(--card-color)]/30 p-4">
 
             <div className="flex items-center gap-3">
 
@@ -298,7 +298,7 @@ export default function SystemPage() {
                   Maintenance Mode
                 </h3>
 
-                <p className="text-sm text-gray-400">
+                <p className="text-sm text-[var(--muted-text-color)]">
                   Disable public access
                 </p>
 

@@ -78,7 +78,7 @@ export default function AIChatbotPage() {
 
             </h1>
 
-            <p className="mt-1 text-sm text-gray-400">
+            <p className="mt-1 text-sm text-[var(--muted-text-color)]">
 
               Smart AI customer support system
 
@@ -170,7 +170,7 @@ export default function AIChatbotPage() {
                   className={`rounded-2xl p-4 ${
                     item.user === "AI Bot"
                       ? "bg-[var(--secondary-color)] text-[var(--text-color)]"
-                      : "bg-black/30"
+                      : "bg-[var(--card-color)]/30"
                   }`}
                 >
 
@@ -206,7 +206,7 @@ export default function AIChatbotPage() {
                 )
               }
               placeholder="Type message..."
-              className="flex-1 rounded-2xl border border-white/10 bg-black/30 p-4 outline-none"
+              className="flex-1 rounded-2xl border border-white/10 bg-[var(--card-color)]/30 p-4 outline-none"
             />
 
             <button
@@ -351,7 +351,7 @@ function StatsCard({
 
       </div>
 
-      <p className="mt-4 text-sm text-gray-400">
+      <p className="mt-4 text-sm text-[var(--muted-text-color)]">
 
         {title}
 
@@ -376,7 +376,7 @@ function FeatureItem({
 
   return (
 
-    <div className="flex items-center justify-between rounded-2xl bg-black/30 p-4">
+    <div className="flex items-center justify-between rounded-2xl bg-[var(--card-color)]/30 p-4">
 
       <div className="flex items-center gap-3">
 

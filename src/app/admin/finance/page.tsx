@@ -33,7 +33,7 @@ export default function FinancePage() {
             Finance Dashboard
           </h1>
 
-          <p className="mt-1 text-sm text-gray-400">
+          <p className="mt-1 text-sm text-[var(--muted-text-color)]">
             Payment & earnings overview
           </p>
 
@@ -52,7 +52,7 @@ export default function FinancePage() {
             className="text-green-400"
           />
 
-          <p className="mt-5 text-sm text-gray-400">
+          <p className="mt-5 text-sm text-[var(--muted-text-color)]">
             Total Earnings
           </p>
 
@@ -69,7 +69,7 @@ export default function FinancePage() {
             className="theme-primary-text"
           />
 
-          <p className="mt-5 text-sm text-gray-400">
+          <p className="mt-5 text-sm text-[var(--muted-text-color)]">
             Pending Payments
           </p>
 
@@ -100,7 +100,7 @@ export default function FinancePage() {
 
         <div className="space-y-4">
 
-          <div className="flex items-center justify-between rounded-2xl bg-black/30 p-4">
+          <div className="flex items-center justify-between rounded-2xl bg-[var(--card-color)]/30 p-4">
 
             <div className="flex items-center gap-3">
 
@@ -119,7 +119,7 @@ export default function FinancePage() {
                   Order Payment
                 </p>
 
-                <p className="text-sm text-gray-400">
+                <p className="text-sm text-[var(--muted-text-color)]">
                   Received from customer
                 </p>
 
@@ -133,7 +133,7 @@ export default function FinancePage() {
 
           </div>
 
-          <div className="flex items-center justify-between rounded-2xl bg-black/30 p-4">
+          <div className="flex items-center justify-between rounded-2xl bg-[var(--card-color)]/30 p-4">
 
             <div className="flex items-center gap-3">
 
@@ -152,7 +152,7 @@ export default function FinancePage() {
                   Affiliate Payout
                 </p>
 
-                <p className="text-sm text-gray-400">
+                <p className="text-sm text-[var(--muted-text-color)]">
                   Sent to affiliate
                 </p>
 

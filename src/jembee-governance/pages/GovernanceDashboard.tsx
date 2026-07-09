@@ -267,7 +267,7 @@ newCode: issue.newCode,
 
           </p>
 
-          <h2 className="text-3xl font-bold text-red-600">
+          <h2 className="text-3xl font-bold text-[var(--danger-color)]">
 
             {stats?.criticalIssues ?? 0}
 
@@ -283,7 +283,7 @@ newCode: issue.newCode,
 
           </p>
 
-          <h2 className="text-3xl font-bold text-yellow-600">
+          <h2 className="text-3xl font-bold text-[var(--warning-color)]">
 
             {stats?.warningIssues ?? 0}
 

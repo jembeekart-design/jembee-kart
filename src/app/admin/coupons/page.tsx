@@ -182,7 +182,7 @@ export default function CouponsPage() {
   if (loading) {
 
     return (
-      <div className="flex min-h-screen items-center justify-center bg-black text-[var(--button-text-color)]">
+      <div className="flex min-h-screen items-center justify-center bg-[var(--card-color)] text-[var(--button-text-color)]">
         Loading...
       </div>
     );
@@ -202,7 +202,7 @@ export default function CouponsPage() {
             Coupons Manager
           </h1>
 
-          <p className="mt-1 text-sm text-gray-400">
+          <p className="mt-1 text-sm text-[var(--muted-text-color)]">
             Manage discount coupons
           </p>
 
@@ -252,7 +252,7 @@ export default function CouponsPage() {
                       {coupon.code}
                     </h2>
 
-                    <p className="text-sm text-gray-400">
+                    <p className="text-sm text-[var(--muted-text-color)]">
                       {coupon.discount}% OFF
                     </p>
 
@@ -266,7 +266,7 @@ export default function CouponsPage() {
                       coupon.id
                     )
                   }
-                  className="flex h-10 w-10 items-center justify-center rounded-xl bg-[var(--danger-color)]/20 text-red-500"
+                  className="flex h-10 w-10 items-center justify-center rounded-xl bg-[var(--danger-color)]/20 text-[var(--danger-color)]"
                 >
 
                   <Trash2 size={18} />
@@ -366,7 +366,7 @@ export default function CouponsPage() {
                       Coupon Active
                     </h2>
 
-                    <p className="text-sm text-gray-400">
+                    <p className="text-sm text-[var(--muted-text-color)]">
                       Enable or disable
                     </p>
 

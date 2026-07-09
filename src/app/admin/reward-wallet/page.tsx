@@ -72,7 +72,7 @@ export default function RewardWalletPage() {
               Reward Wallet
             </h1>
 
-            <p className="mt-1 text-sm text-gray-400">
+            <p className="mt-1 text-sm text-[var(--muted-text-color)]">
               Cashback, reward points & bonus wallet management
             </p>
 
@@ -172,7 +172,7 @@ export default function RewardWalletPage() {
                         {item.type}
                       </h3>
 
-                      <p className="text-sm text-gray-400">
+                      <p className="text-sm text-[var(--muted-text-color)]">
                         {item.user}
                       </p>
 
@@ -252,7 +252,7 @@ export default function RewardWalletPage() {
 
             </p>
 
-            <button className="mt-5 rounded-2xl bg-black px-5 py-3 font-bold text-[var(--button-text-color)]">
+            <button className="mt-5 rounded-2xl bg-[var(--card-color)] px-5 py-3 font-bold text-[var(--button-text-color)]">
 
               Manage Booster
 
@@ -327,7 +327,7 @@ function StatCard({
 
       </div>
 
-      <p className="mt-4 text-sm text-gray-400">
+      <p className="mt-4 text-sm text-[var(--muted-text-color)]">
         {title}
       </p>
 

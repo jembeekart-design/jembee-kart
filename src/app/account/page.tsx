@@ -149,7 +149,7 @@ export default function AccountPage() {
       title: "Payment Methods",
       icon: CreditCard,
       href: "/payments",
-      color: "bg-green-100 text-green-600"
+      color: "bg-green-100 text-[var(--success-color)]"
     },
     {
       title: "Account Settings",
@@ -277,7 +277,7 @@ export default function AccountPage() {
                     <h3 className="text-lg font-black text-[var(--text-color)]">{item.title}</h3>
                   </div>
                 </div>
-                <ChevronRight size={22} className="text-gray-400" />
+                <ChevronRight size={22} className="text-[var(--muted-text-color)]" />
               </Link>
             );
           })}
@@ -290,7 +290,7 @@ export default function AccountPage() {
       <section className="mt-6 px-4">
         <div className="rounded-[35px] bg-[var(--card-color)] p-6 shadow-sm">
           <div className="flex items-center gap-4">
-            <div className="flex h-16 w-16 items-center justify-center rounded-3xl bg-green-100 text-green-600">
+            <div className="flex h-16 w-16 items-center justify-center rounded-3xl bg-green-100 text-[var(--success-color)]">
               <Shield size={30} />
             </div>
             <div>

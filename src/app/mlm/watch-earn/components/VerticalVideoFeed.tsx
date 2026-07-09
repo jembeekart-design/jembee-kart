@@ -115,7 +115,7 @@ VerticalVideoFeed() {
         snap-y
         snap-mandatory
         overflow-y-scroll
-        bg-black
+        bg-[var(--card-color)]
       "
     >
 

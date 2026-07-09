@@ -759,7 +759,7 @@ export default function HomePage() {
                               className="
                                 text-xs
                                 font-bold
-                                text-gray-400
+                                text-[var(--muted-text-color)]
                                 line-through
                               "
                             >
@@ -1303,7 +1303,7 @@ export default function HomePage() {
                               className="
                                 text-xs
                                 font-bold
-                                text-gray-400
+                                text-[var(--muted-text-color)]
                                 line-through
                               "
                             >

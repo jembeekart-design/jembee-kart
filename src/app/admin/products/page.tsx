@@ -1928,7 +1928,7 @@ export default function ProductsAdminPage() {
                             rounded-xl
                             bg-red-50
                             p-2
-                            text-red-600
+                            text-[var(--danger-color)]
                           "
                         >
 

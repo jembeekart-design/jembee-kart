@@ -139,7 +139,7 @@ export default function SettingsPage() {
   if (loading) {
 
     return (
-      <div className="flex min-h-screen items-center justify-center bg-black text-[var(--button-text-color)]">
+      <div className="flex min-h-screen items-center justify-center bg-[var(--card-color)] text-[var(--button-text-color)]">
         Loading...
       </div>
     );
@@ -159,7 +159,7 @@ export default function SettingsPage() {
             App Settings
           </h1>
 
-          <p className="mt-2 text-sm text-gray-400">
+          <p className="mt-2 text-sm text-[var(--muted-text-color)]">
             Manage application settings
           </p>
 

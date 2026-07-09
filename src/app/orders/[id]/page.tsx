@@ -35,7 +35,7 @@ export default function OrderDetailsPage() {
   const getStatusColor = (s: string) => ({
     'placed': 'theme-primary-bg', 'processing': 'bg-orange-500', 
     'shipped': 'bg-purple-500', 'delivered': 'bg-[var(--success-color)]', 'cancelled': 'bg-[var(--danger-color)]'
-  }[s?.toLowerCase()] || 'bg-gray-500');
+  }[s?.toLowerCase()] || 'bg-[var(--background-color)]0');
 
   return (
     <main className="min-h-screen bg-[#f8f9fe] pb-24">
@@ -61,21 +61,21 @@ export default function OrderDetailsPage() {
         </div>
 
         {/* TRACKING TIMELINE - FIX 3 & 9 */}
-        <div className="bg-[var(--card-color)] p-5 rounded-3xl border border-gray-100">
+        <div className="bg-[var(--card-color)] p-5 rounded-3xl border border-[var(--border-color)]">
            <h3 className="font-black text-sm mb-4">Tracking Timeline</h3>
            <div className="space-y-4">
              {steps.map((step, i) => (
                 <div key={step} className="flex items-center gap-3">
                    <div className={`w-3 h-3 rounded-full ${i <= currentStepIndex ? 'bg-[var(--success-color)]' : 'bg-gray-200'}`} />
-                   <p className={`text-xs font-bold ${i <= currentStepIndex ? 'text-gray-900' : 'text-gray-400'}`}>{step.charAt(0).toUpperCase() + step.slice(1)}</p>
+                   <p className={`text-xs font-bold ${i <= currentStepIndex ? 'text-[var(--text-color)]' : 'text-[var(--muted-text-color)]'}`}>{step.charAt(0).toUpperCase() + step.slice(1)}</p>
                 </div>
              ))}
            </div>
         </div>
 
         {/* PRODUCT CARD - SCHEMA FIXED (NO ITEMS ARRAY) */}
-        <div className="bg-[var(--card-color)] p-4 rounded-3xl flex gap-4 border border-gray-100">
-          <img src={order.productImage || "/placeholder.png"} className="w-20 h-20 rounded-2xl object-cover bg-gray-50" />
+        <div className="bg-[var(--card-color)] p-4 rounded-3xl flex gap-4 border border-[var(--border-color)]">
+          <img src={order.productImage || "/placeholder.png"} className="w-20 h-20 rounded-2xl object-cover bg-[var(--background-color)]" />
           <div className="flex-1">
             <h2 className="font-bold text-sm">{order.productTitle}</h2>
             <p className="text-[10px] font-bold text-[var(--muted-text-color)]">Qty: {order.quantity} | Price: ₹{order.productPrice}</p>
@@ -84,14 +84,14 @@ export default function OrderDetailsPage() {
         </div>
 
         {/* SUMMARY - SCHEMA FIXED */}
-        <div className="bg-[var(--card-color)] p-5 rounded-3xl border border-gray-100 text-sm space-y-2">
+        <div className="bg-[var(--card-color)] p-5 rounded-3xl border border-[var(--border-color)] text-sm space-y-2">
             <div className="flex justify-between"><p>Subtotal</p><p className="font-bold">₹{order.quantity * order.productPrice}</p></div>
-            <div className="flex justify-between text-red-500"><p>Discount</p><p className="font-bold">-₹{order.discount || 0}</p></div>
+            <div className="flex justify-between text-[var(--danger-color)]"><p>Discount</p><p className="font-bold">-₹{order.discount || 0}</p></div>
             <div className="flex justify-between font-black text-lg pt-2 border-t"><p>Total</p><p>₹{order.finalAmount}</p></div>
         </div>
 
         {/* DELIVERY ADDRESS - SCHEMA FIXED */}
-        <div className="bg-[var(--card-color)] p-5 rounded-3xl border border-gray-100">
+        <div className="bg-[var(--card-color)] p-5 rounded-3xl border border-[var(--border-color)]">
            <h3 className="font-black text-sm mb-3 flex items-center gap-2 text-indigo-600"><MapPin size={16}/> Delivery Address</h3>
            <p className="font-bold">{order.shippingAddress?.fullName}</p>
            <p className="text-sm text-[var(--muted-text-color)]">{order.shippingAddress?.address}, {order.shippingAddress?.city}, {order.shippingAddress?.state} - {order.shippingAddress?.pincode}</p>
@@ -103,10 +103,10 @@ export default function OrderDetailsPage() {
            <Link href={`/track-order/${id}`} className="bg-indigo-600 text-[var(--button-text-color)] p-4 rounded-2xl font-bold text-xs flex items-center justify-center gap-2"><Truck size={16}/> Track</Link>
            <button className="bg-[var(--card-color)] p-4 rounded-2xl font-bold text-xs flex items-center justify-center gap-2 border"><FileText size={16}/> Invoice</button>
            {["placed", "processing"].includes(status) && (
-             <button onClick={handleCancel} className="bg-red-50 text-red-600 p-4 rounded-2xl font-bold text-xs flex items-center justify-center gap-2"><XCircle size={16}/> Cancel Order</button>
+             <button onClick={handleCancel} className="bg-red-50 text-[var(--danger-color)] p-4 rounded-2xl font-bold text-xs flex items-center justify-center gap-2"><XCircle size={16}/> Cancel Order</button>
            )}
            {status === "delivered" && order.exchangeEligible && (
-             <button className="bg-green-50 text-green-600 p-4 rounded-2xl font-bold text-xs flex items-center justify-center gap-2"><RotateCcw size={16}/> Return</button>
+             <button className="bg-green-50 text-[var(--success-color)] p-4 rounded-2xl font-bold text-xs flex items-center justify-center gap-2"><RotateCcw size={16}/> Return</button>
            )}
         </div>
       </div>

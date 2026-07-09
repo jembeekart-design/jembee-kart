@@ -81,7 +81,7 @@ export default function AdminChatPage() {
               Admin Chat
             </h1>
 
-            <p className="mt-1 text-sm text-gray-400">
+            <p className="mt-1 text-sm text-[var(--muted-text-color)]">
               Realtime admin communication system
             </p>
 
@@ -109,11 +109,11 @@ export default function AdminChatPage() {
 
           {/* SEARCH */}
 
-          <div className="flex items-center gap-3 rounded-2xl bg-black/30 px-4 py-3">
+          <div className="flex items-center gap-3 rounded-2xl bg-[var(--card-color)]/30 px-4 py-3">
 
             <Search
               size={18}
-              className="text-gray-400"
+              className="text-[var(--muted-text-color)]"
             />
 
             <input
@@ -136,7 +136,7 @@ export default function AdminChatPage() {
 
                 <div
                   key={index}
-                  className="flex cursor-pointer items-center justify-between rounded-2xl bg-black/20 p-4 transition-all hover:bg-cyan-500/10"
+                  className="flex cursor-pointer items-center justify-between rounded-2xl bg-[var(--card-color)]/20 p-4 transition-all hover:bg-cyan-500/10"
                 >
 
                   <div className="flex items-center gap-3">
@@ -153,7 +153,7 @@ export default function AdminChatPage() {
 
                       {item.online && (
 
-                        <div className="absolute bottom-0 right-0 h-3 w-3 rounded-full border-2 border-black bg-[var(--success-color)]" />
+                        <div className="absolute bottom-0 right-0 h-3 w-3 rounded-full border-2 border-[var(--border-color)] bg-[var(--success-color)]" />
 
                       )}
 
@@ -167,7 +167,7 @@ export default function AdminChatPage() {
 
                       </h2>
 
-                      <p className="text-sm text-gray-400">
+                      <p className="text-sm text-[var(--muted-text-color)]">
 
                         {item.lastMessage}
 
@@ -218,13 +218,13 @@ export default function AdminChatPage() {
 
             <div className="flex gap-3">
 
-              <button className="flex h-11 w-11 items-center justify-center rounded-2xl bg-black/30">
+              <button className="flex h-11 w-11 items-center justify-center rounded-2xl bg-[var(--card-color)]/30">
 
                 <Phone size={18} />
 
               </button>
 
-              <button className="flex h-11 w-11 items-center justify-center rounded-2xl bg-black/30">
+              <button className="flex h-11 w-11 items-center justify-center rounded-2xl bg-[var(--card-color)]/30">
 
                 <Video size={18} />
 
@@ -259,7 +259,7 @@ export default function AdminChatPage() {
                       item.sender ===
                       "admin"
                         ? "bg-cyan-500 text-[var(--text-color)]"
-                        : "bg-black/30"
+                        : "bg-[var(--card-color)]/30"
                     }`}
                   >
 
@@ -295,7 +295,7 @@ export default function AdminChatPage() {
 
           <div className="border-t border-white/10 p-5">
 
-            <div className="flex items-center gap-3 rounded-2xl bg-black/30 p-3">
+            <div className="flex items-center gap-3 rounded-2xl bg-[var(--card-color)]/30 p-3">
 
               <button className="flex h-11 w-11 items-center justify-center rounded-xl bg-[var(--card-color)]/5">
 
@@ -390,7 +390,7 @@ function StatCard({
 
       </div>
 
-      <p className="mt-4 text-sm text-gray-400">
+      <p className="mt-4 text-sm text-[var(--muted-text-color)]">
         {title}
       </p>
 

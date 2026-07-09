@@ -218,7 +218,7 @@ export default function DebugDashboard() {
 
             disabled={refreshing}
 
-            className="rounded-lg bg-black px-4 py-2 text-[var(--button-text-color)]"
+            className="rounded-lg bg-[var(--card-color)] px-4 py-2 text-[var(--button-text-color)]"
 
           >
 
@@ -271,7 +271,7 @@ export default function DebugDashboard() {
 
             </h3>
 
-            <p className="text-3xl text-red-600 font-bold">
+            <p className="text-3xl text-[var(--danger-color)] font-bold">
 
               {
                 state.build
@@ -380,13 +380,13 @@ export default function DebugDashboard() {
           {scanner.healthy ? (
 
             <CheckCircle2
-              className="text-green-600"
+              className="text-[var(--success-color)]"
             />
 
           ) : (
 
             <Bug
-              className="text-red-600"
+              className="text-[var(--danger-color)]"
             />
 
           )}
@@ -445,7 +445,7 @@ export default function DebugDashboard() {
 
   <div className="flex items-center gap-3">
 
-    <AlertTriangle className="text-red-600" />
+    <AlertTriangle className="text-[var(--danger-color)]" />
 
     <h2 className="text-xl font-bold">
 
@@ -457,7 +457,7 @@ export default function DebugDashboard() {
 
   {filteredIssues.length === 0 ? (
 
-    <p className="mt-4 text-green-600">
+    <p className="mt-4 text-[var(--success-color)]">
 
       No blocking issue found.
 
@@ -594,7 +594,7 @@ export default function DebugDashboard() {
 
             <td
               colSpan={6}
-              className="p-10 text-center text-green-600 font-semibold"
+              className="p-10 text-center text-[var(--success-color)] font-semibold"
             >
 
               🎉 No Errors Found
@@ -609,7 +609,7 @@ export default function DebugDashboard() {
 
             <tr
               key={issue.id}
-              className="border-b hover:bg-gray-50"
+              className="border-b hover:bg-[var(--background-color)]"
             >
 
               <td className="px-4 py-4">
@@ -685,7 +685,7 @@ export default function DebugDashboard() {
                       )
                     }
 
-                    className="rounded-lg bg-black px-3 py-2 text-sm text-[var(--button-text-color)]"
+                    className="rounded-lg bg-[var(--card-color)] px-3 py-2 text-sm text-[var(--button-text-color)]"
 
                   >
 
@@ -745,7 +745,7 @@ export default function DebugDashboard() {
 
     </h3>
 
-    <p className="text-3xl font-bold text-red-600">
+    <p className="text-3xl font-bold text-[var(--danger-color)]">
 
       {
 
@@ -805,7 +805,7 @@ export default function DebugDashboard() {
 
     </h3>
 
-    <p className="text-3xl font-bold text-yellow-600">
+    <p className="text-3xl font-bold text-[var(--warning-color)]">
 
       {
 
@@ -863,8 +863,8 @@ export default function DebugDashboard() {
         <span
           className={`font-bold ${
             state.build.buildReady
-              ? "text-green-600"
-              : "text-red-600"
+              ? "text-[var(--success-color)]"
+              : "text-[var(--danger-color)]"
           }`}
         >
 
@@ -889,8 +889,8 @@ export default function DebugDashboard() {
         <span
           className={`font-bold ${
             state.build.deploymentReady
-              ? "text-green-600"
-              : "text-red-600"
+              ? "text-[var(--success-color)]"
+              : "text-[var(--danger-color)]"
           }`}
         >
 
@@ -944,7 +944,7 @@ export default function DebugDashboard() {
 
       <div className="flex items-center gap-3">
 
-        <CheckCircle2 className="text-green-600" />
+        <CheckCircle2 className="text-[var(--success-color)]" />
 
         <span>
 
@@ -956,7 +956,7 @@ export default function DebugDashboard() {
 
       <div className="flex items-center gap-3">
 
-        <CheckCircle2 className="text-green-600" />
+        <CheckCircle2 className="text-[var(--success-color)]" />
 
         <span>
 
@@ -980,7 +980,7 @@ export default function DebugDashboard() {
 
       <div className="flex items-center gap-3">
 
-        <ServerCrash className="text-red-600" />
+        <ServerCrash className="text-[var(--danger-color)]" />
 
         <span>
 
@@ -1018,7 +1018,7 @@ export default function DebugDashboard() {
 {/* Live Console */}
 {/* ====================================================== */}
 
-<div className="mt-8 rounded-xl bg-black p-6 text-green-400 shadow">
+<div className="mt-8 rounded-xl bg-[var(--card-color)] p-6 text-green-400 shadow">
 
   <div className="mb-4 flex items-center gap-3">
 
@@ -1101,7 +1101,7 @@ export default function DebugDashboard() {
 
   <button
     onClick={loadDashboard}
-    className="rounded-lg bg-black px-5 py-3 text-[var(--button-text-color)]"
+    className="rounded-lg bg-[var(--card-color)] px-5 py-3 text-[var(--button-text-color)]"
   >
 
     Refresh Dashboard
@@ -1125,7 +1125,7 @@ export default function DebugDashboard() {
   </button>
 
   <button
-    className="rounded-lg bg-blue-600 px-5 py-3 text-[var(--button-text-color)]"
+    className="rounded-lg bg-[var(--primary-color)] px-5 py-3 text-[var(--button-text-color)]"
   >
 
     Export Report

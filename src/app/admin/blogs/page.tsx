@@ -121,7 +121,7 @@ export default function BlogsPage() {
             Blogs Manager
           </h1>
 
-          <p className="mt-1 text-sm text-gray-400">
+          <p className="mt-1 text-sm text-[var(--muted-text-color)]">
             Manage website blogs & articles
           </p>
 
@@ -139,11 +139,11 @@ export default function BlogsPage() {
 
         <div className="mt-5 space-y-4">
 
-          <div className="flex items-center gap-3 rounded-2xl bg-black px-4 py-4">
+          <div className="flex items-center gap-3 rounded-2xl bg-[var(--card-color)] px-4 py-4">
 
             <PenSquare
               size={20}
-              className="text-gray-400"
+              className="text-[var(--muted-text-color)]"
             />
 
             <input
@@ -168,7 +168,7 @@ export default function BlogsPage() {
                 e.target.value
               )
             }
-            className="h-32 w-full rounded-2xl bg-black px-4 py-4 outline-none"
+            className="h-32 w-full rounded-2xl bg-[var(--card-color)] px-4 py-4 outline-none"
           />
 
           <button
@@ -206,7 +206,7 @@ export default function BlogsPage() {
                     {item.title}
                   </h2>
 
-                  <p className="mt-3 text-sm text-gray-400">
+                  <p className="mt-3 text-sm text-[var(--muted-text-color)]">
                     {item.description}
                   </p>
 

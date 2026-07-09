@@ -184,7 +184,7 @@ const router = useRouter();
 
     return (
 
-      <div className="flex min-h-screen items-center justify-center bg-black text-[var(--button-text-color)]">
+      <div className="flex min-h-screen items-center justify-center bg-[var(--card-color)] text-[var(--button-text-color)]">
 
         Loading Database...
 
@@ -215,7 +215,7 @@ const router = useRouter();
               Database Manager
             </h1>
 
-            <p className="mt-1 text-sm text-gray-400">
+            <p className="mt-1 text-sm text-[var(--muted-text-color)]">
               Manage Firestore collections
             </p>
 
@@ -308,7 +308,7 @@ const router = useRouter();
 
                   </h2>
 
-                  <p className="mt-2 text-gray-400">
+                  <p className="mt-2 text-[var(--muted-text-color)]">
 
                     Total Documents:
                     {" "}
@@ -367,7 +367,7 @@ function StatsCard({
 
         <div>
 
-          <p className="text-sm text-gray-400">
+          <p className="text-sm text-[var(--muted-text-color)]">
             {title}
           </p>
 

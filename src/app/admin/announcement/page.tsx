@@ -164,7 +164,7 @@ export default function AnnouncementPage() {
 
     return (
 
-      <div className="flex min-h-screen items-center justify-center bg-black text-[var(--button-text-color)]">
+      <div className="flex min-h-screen items-center justify-center bg-[var(--card-color)] text-[var(--button-text-color)]">
 
         Loading Announcements...
 
@@ -193,7 +193,7 @@ export default function AnnouncementPage() {
             Announcement Center
           </h1>
 
-          <p className="mt-1 text-sm text-gray-400">
+          <p className="mt-1 text-sm text-[var(--muted-text-color)]">
             Send announcements to all users
           </p>
 
@@ -220,7 +220,7 @@ export default function AnnouncementPage() {
                 e.target.value
               )
             }
-            className="w-full rounded-2xl bg-black px-4 py-4 outline-none"
+            className="w-full rounded-2xl bg-[var(--card-color)] px-4 py-4 outline-none"
           />
 
           <textarea
@@ -232,7 +232,7 @@ export default function AnnouncementPage() {
               )
             }
             rows={5}
-            className="w-full rounded-2xl bg-black px-4 py-4 outline-none"
+            className="w-full rounded-2xl bg-[var(--card-color)] px-4 py-4 outline-none"
           />
 
           <button
@@ -287,7 +287,7 @@ export default function AnnouncementPage() {
 
                     <Bell
                       size={22}
-                      className="text-red-500"
+                      className="text-[var(--danger-color)]"
                     />
 
                     <h2 className="text-2xl font-black">

@@ -208,7 +208,7 @@ export default function WithdrawPage() {
                 rounded-2xl
                 border
                 border-[var(--border-color)]
-                bg-gray-50
+                bg-[var(--background-color)]
                 px-4
                 py-3
               "
@@ -259,7 +259,7 @@ export default function WithdrawPage() {
                 rounded-2xl
                 border
                 border-[var(--border-color)]
-                bg-gray-50
+                bg-[var(--background-color)]
                 px-4
                 py-3
               "
@@ -350,7 +350,7 @@ export default function WithdrawPage() {
                 items-center
                 justify-between
                 rounded-2xl
-                bg-gray-50
+                bg-[var(--background-color)]
                 p-4
               "
             >
@@ -418,7 +418,7 @@ export default function WithdrawPage() {
                 items-center
                 justify-between
                 rounded-2xl
-                bg-gray-50
+                bg-[var(--background-color)]
                 p-4
               "
             >

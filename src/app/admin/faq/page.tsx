@@ -99,7 +99,7 @@ export default function FAQPage() {
             FAQ Manager
           </h1>
 
-          <p className="mt-1 text-sm text-gray-400">
+          <p className="mt-1 text-sm text-[var(--muted-text-color)]">
             Manage frequently asked questions
           </p>
 
@@ -126,7 +126,7 @@ export default function FAQPage() {
                 e.target.value
               )
             }
-            className="w-full rounded-2xl bg-black px-4 py-4 outline-none"
+            className="w-full rounded-2xl bg-[var(--card-color)] px-4 py-4 outline-none"
           />
 
           <textarea
@@ -137,7 +137,7 @@ export default function FAQPage() {
                 e.target.value
               )
             }
-            className="h-32 w-full rounded-2xl bg-black px-4 py-4 outline-none"
+            className="h-32 w-full rounded-2xl bg-[var(--card-color)] px-4 py-4 outline-none"
           />
 
           <button
@@ -184,7 +184,7 @@ export default function FAQPage() {
 
                   </div>
 
-                  <p className="mt-4 text-sm text-gray-400">
+                  <p className="mt-4 text-sm text-[var(--muted-text-color)]">
                     {item.answer}
                   </p>
 

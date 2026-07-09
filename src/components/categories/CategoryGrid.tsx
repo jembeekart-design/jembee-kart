@@ -130,7 +130,7 @@ export default function CategoryGrid({
 
       <div className="mb-5 flex items-center justify-between">
 
-        <h2 className="text-2xl font-black text-gray-800 md:text-4xl">
+        <h2 className="text-2xl font-black text-[var(--text-color)] md:text-4xl">
           Shop By Category
         </h2>
 

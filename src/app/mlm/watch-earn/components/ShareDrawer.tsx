@@ -336,7 +336,7 @@ ShareDrawer({
           <Link2
             size={18}
             className="
-              text-gray-400
+              text-[var(--muted-text-color)]
             "
           />
 

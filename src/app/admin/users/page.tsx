@@ -170,7 +170,7 @@ export default function UsersPage() {
 
   if (loading) {
     return (
-      <div className="flex min-h-screen items-center justify-center bg-black font-black text-sm uppercase tracking-widest text-pink-500">
+      <div className="flex min-h-screen items-center justify-center bg-[var(--card-color)] font-black text-sm uppercase tracking-widest text-pink-500">
         Syncing User Management Pipeline Engine...
       </div>
     );
@@ -181,7 +181,7 @@ export default function UsersPage() {
       {/* HEADER */}
       <div className="mb-6">
         <h1 className="text-3xl font-black">Users Manager</h1>
-        <p className="mt-1 text-sm text-gray-400">Manage, monitor and block user parameters globally</p>
+        <p className="mt-1 text-sm text-[var(--muted-text-color)]">Manage, monitor and block user parameters globally</p>
       </div>
 
       {/* Operational Telemetry Metric Status Cards Row */}
@@ -194,7 +194,7 @@ export default function UsersPage() {
 
       {/* SEARCH HOOK CONTAINER */}
       <div className="mb-6 flex items-center gap-3 rounded-[24px] border border-white/10 bg-[#151515] px-4 py-3">
-        <Search size={20} className="text-gray-400" />
+        <Search size={20} className="text-[var(--muted-text-color)]" />
         <input
           type="text"
           placeholder="Search users by name, email, role, or referral code..."
@@ -240,7 +240,7 @@ export default function UsersPage() {
                         </span>
                       )}
                     </h2>
-                    <p className="text-sm text-gray-400">{user.email || "No email mapping"}</p>
+                    <p className="text-sm text-[var(--muted-text-color)]">{user.email || "No email mapping"}</p>
                   </div>
                 </div>
 
@@ -252,7 +252,7 @@ export default function UsersPage() {
                     className={`flex h-10 w-10 items-center justify-center rounded-xl transition ${
                       user.walletLocked
                         ? "bg-[var(--warning-color)]/20 text-yellow-500 hover:bg-[var(--warning-color)]/30"
-                        : "bg-[var(--card-color)]/5 text-gray-400 hover:bg-[var(--card-color)]/10"
+                        : "bg-[var(--card-color)]/5 text-[var(--muted-text-color)] hover:bg-[var(--card-color)]/10"
                     }`}
                     title={user.walletLocked ? "Unlock Wallet" : "Lock Wallet"}
                   >
@@ -279,7 +279,7 @@ export default function UsersPage() {
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   {/* NAME LAYER INTERFACE */}
                   <div>
-                    <p className="mb-2 text-xs font-bold uppercase tracking-wider text-gray-400">User Name</p>
+                    <p className="mb-2 text-xs font-bold uppercase tracking-wider text-[var(--muted-text-color)]">User Name</p>
                     <input
                       type="text"
                       disabled={!isUserEditing}
@@ -291,18 +291,18 @@ export default function UsersPage() {
 
                   {/* EMAIL LAYER INTERFACE (READ ONLY MATRIX APPLIED TO DEFEND AUTH PIPELINES) */}
                   <div>
-                    <p className="mb-2 text-xs font-bold uppercase tracking-wider text-gray-400">Email Address (Auth Protected)</p>
+                    <p className="mb-2 text-xs font-bold uppercase tracking-wider text-[var(--muted-text-color)]">Email Address (Auth Protected)</p>
                     <input
                       type="text"
                       disabled={true}
                       value={user.email || ""}
-                      className="w-full rounded-2xl border border-white/5 bg-[#171717] px-4 py-3 text-sm outline-none opacity-40 text-gray-400 cursor-not-allowed"
+                      className="w-full rounded-2xl border border-white/5 bg-[#171717] px-4 py-3 text-sm outline-none opacity-40 text-[var(--muted-text-color)] cursor-not-allowed"
                     />
                   </div>
 
                   {/* ROLE SELECTION INPUT DROPDOWN MAPPED */}
                   <div>
-                    <p className="mb-2 text-xs font-bold uppercase tracking-wider text-gray-400">Role Node Privilege</p>
+                    <p className="mb-2 text-xs font-bold uppercase tracking-wider text-[var(--muted-text-color)]">Role Node Privilege</p>
                     <select
                       disabled={!isUserEditing}
                       value={isUserEditing ? editForm.role : user.role || "user"}
@@ -316,7 +316,7 @@ export default function UsersPage() {
 
                   {/* PHOTO SCHEMA LAYER INTERFACE */}
                   <div>
-                    <p className="mb-2 text-xs font-bold uppercase tracking-wider text-gray-400">Photo Dynamic URI Link</p>
+                    <p className="mb-2 text-xs font-bold uppercase tracking-wider text-[var(--muted-text-color)]">Photo Dynamic URI Link</p>
                     <input
                       type="text"
                       disabled={!isUserEditing}
@@ -387,7 +387,7 @@ export default function UsersPage() {
                   <div className="rounded-2xl border border-white/5 bg-[#1c1c1c] p-4 flex items-center gap-3">
                     <Wallet size={18} className="text-yellow-400" />
                     <div>
-                      <p className="text-[10px] uppercase font-bold text-gray-400 tracking-wider">Wallet Balance</p>
+                      <p className="text-[10px] uppercase font-bold text-[var(--muted-text-color)] tracking-wider">Wallet Balance</p>
                       <p className="text-base font-black text-yellow-400">₹{(user.walletBalance || 0).toLocaleString("en-IN")}</p>
                     </div>
                   </div>
@@ -395,7 +395,7 @@ export default function UsersPage() {
                   <div className="rounded-2xl border border-white/5 bg-[#1c1c1c] p-4 flex items-center gap-3">
                     <Network size={18} className="text-cyan-400" />
                     <div>
-                      <p className="text-[10px] uppercase font-bold text-gray-400 tracking-wider">Total Referrals</p>
+                      <p className="text-[10px] uppercase font-bold text-[var(--muted-text-color)] tracking-wider">Total Referrals</p>
                       <p className="text-base font-black text-cyan-400">{user.totalReferrals || 0} Members</p>
                     </div>
                   </div>
@@ -403,7 +403,7 @@ export default function UsersPage() {
                   <div className="rounded-2xl border border-white/5 bg-[#1c1c1c] p-4 flex items-center gap-3">
                     <Package size={18} className="text-pink-400" />
                     <div>
-                      <p className="text-[10px] uppercase font-bold text-gray-400 tracking-wider">Package Activation</p>
+                      <p className="text-[10px] uppercase font-bold text-[var(--muted-text-color)] tracking-wider">Package Activation</p>
                       <span className={`text-xs font-black px-2 py-0.5 rounded ${user.joinedPackage ? "bg-[var(--success-color)]/20 text-green-400" : "bg-[var(--danger-color)]/20 text-red-400"}`}>
                         {user.joinedPackage ? "ACTIVE" : "INACTIVE"}
                       </span>
@@ -413,8 +413,8 @@ export default function UsersPage() {
                   <div className="rounded-2xl border border-white/5 bg-[#1c1c1c] p-4 flex items-center gap-3">
                     <UserCheck size={18} className="text-purple-400" />
                     <div>
-                      <p className="text-[10px] uppercase font-bold text-gray-400 tracking-wider">MLM Matrix Status</p>
-                      <span className={`text-xs font-black px-2 py-0.5 rounded ${user.mlmActive ? "bg-purple-500/20 text-purple-400" : "bg-[var(--card-color)]/10 text-gray-400"}`}>
+                      <p className="text-[10px] uppercase font-bold text-[var(--muted-text-color)] tracking-wider">MLM Matrix Status</p>
+                      <span className={`text-xs font-black px-2 py-0.5 rounded ${user.mlmActive ? "bg-purple-500/20 text-purple-400" : "bg-[var(--card-color)]/10 text-[var(--muted-text-color)]"}`}>
                         {user.mlmActive ? "MATRIX RUNNING" : "NOT SIGNED"}
                       </span>
                     </div>
@@ -452,7 +452,7 @@ function StatCard({
       <div className={`flex h-12 w-12 items-center justify-center rounded-2xl ${color} text-[var(--text-color)] mb-3`}>
         {icon}
       </div>
-      <p className="text-xs text-gray-400 font-bold uppercase tracking-wide">{title}</p>
+      <p className="text-xs text-[var(--muted-text-color)] font-bold uppercase tracking-wide">{title}</p>
       <h2 className="mt-1 text-2xl font-black">{value}</h2>
     </div>
   );

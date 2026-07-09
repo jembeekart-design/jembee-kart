@@ -175,7 +175,7 @@ export default function LiveStreamPage() {
 
     return (
 
-      <div className="flex min-h-screen items-center justify-center bg-black text-[var(--button-text-color)]">
+      <div className="flex min-h-screen items-center justify-center bg-[var(--card-color)] text-[var(--button-text-color)]">
 
         Loading...
 
@@ -204,7 +204,7 @@ export default function LiveStreamPage() {
             Live Stream Manager
           </h1>
 
-          <p className="mt-1 text-sm text-gray-400">
+          <p className="mt-1 text-sm text-[var(--muted-text-color)]">
             Manage live shopping streams
           </p>
 
@@ -226,13 +226,13 @@ export default function LiveStreamPage() {
 
           <div>
 
-            <label className="mb-2 block text-sm text-gray-400">
+            <label className="mb-2 block text-sm text-[var(--muted-text-color)]">
 
               Stream Title
 
             </label>
 
-            <div className="flex items-center gap-3 rounded-2xl bg-black px-4">
+            <div className="flex items-center gap-3 rounded-2xl bg-[var(--card-color)] px-4">
 
               <Video size={18} />
 
@@ -253,13 +253,13 @@ export default function LiveStreamPage() {
 
           <div>
 
-            <label className="mb-2 block text-sm text-gray-400">
+            <label className="mb-2 block text-sm text-[var(--muted-text-color)]">
 
               Streamer Name
 
             </label>
 
-            <div className="flex items-center gap-3 rounded-2xl bg-black px-4">
+            <div className="flex items-center gap-3 rounded-2xl bg-[var(--card-color)] px-4">
 
               <User2 size={18} />
 
@@ -280,13 +280,13 @@ export default function LiveStreamPage() {
 
           <div>
 
-            <label className="mb-2 block text-sm text-gray-400">
+            <label className="mb-2 block text-sm text-[var(--muted-text-color)]">
 
               Stream URL
 
             </label>
 
-            <div className="flex items-center gap-3 rounded-2xl bg-black px-4">
+            <div className="flex items-center gap-3 rounded-2xl bg-[var(--card-color)] px-4">
 
               <Link2 size={18} />
 
@@ -307,13 +307,13 @@ export default function LiveStreamPage() {
 
           <div>
 
-            <label className="mb-2 block text-sm text-gray-400">
+            <label className="mb-2 block text-sm text-[var(--muted-text-color)]">
 
               Start Time
 
             </label>
 
-            <div className="flex items-center gap-3 rounded-2xl bg-black px-4">
+            <div className="flex items-center gap-3 rounded-2xl bg-[var(--card-color)] px-4">
 
               <Clock3 size={18} />
 
@@ -384,7 +384,7 @@ export default function LiveStreamPage() {
 
                   </h2>
 
-                  <p className="mt-2 text-gray-400">
+                  <p className="mt-2 text-[var(--muted-text-color)]">
 
                     Streamer:
                     {" "}
@@ -392,7 +392,7 @@ export default function LiveStreamPage() {
 
                   </p>
 
-                  <p className="mt-1 text-gray-400 break-all">
+                  <p className="mt-1 text-[var(--muted-text-color)] break-all">
 
                     URL:
                     {" "}
@@ -400,7 +400,7 @@ export default function LiveStreamPage() {
 
                   </p>
 
-                  <p className="mt-1 text-gray-400">
+                  <p className="mt-1 text-[var(--muted-text-color)]">
 
                     Start:
                     {" "}
