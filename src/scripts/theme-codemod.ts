@@ -75,3 +75,67 @@ const replacements: Record<string, string> = {
   "border-red-500": "border-[var(--danger-color)]",
   "border-yellow-500": "border-[var(--warning-color)]",
 };
+function replaceRegex(content: string): string {
+  return content
+
+    // HEX Colors
+    .replace(/bg-\[#([0-9a-fA-F]{3,8})\]/g, "bg-[var(--card-color)]")
+    .replace(/text-\[#([0-9a-fA-F]{3,8})\]/g, "text-[var(--text-color)]")
+    .replace(/border-\[#([0-9a-fA-F]{3,8})\]/g, "border-[var(--border-color)]")
+
+    // Black opacity
+    .replace(/bg-black\/\d+/g, "bg-[var(--card-color)]")
+    .replace(/text-black\/\d+/g, "text-[var(--text-color)]")
+    .replace(/border-black\/\d+/g, "border-[var(--border-color)]")
+
+    // White opacity
+    .replace(/bg-white\/\d+/g, "bg-[var(--background-color)]")
+    .replace(/text-white\/\d+/g, "text-[var(--button-text-color)]")
+    .replace(/border-white\/\d+/g, "border-[var(--border-color)]")
+
+    // Gray
+    .replace(/bg-gray-\d+/g, "bg-[var(--card-color)]")
+    .replace(/text-gray-\d+/g, "text-[var(--muted-text-color)]")
+    .replace(/border-gray-\d+/g, "border-[var(--border-color)]")
+
+    // Blue
+    .replace(/bg-blue-\d+/g, "bg-[var(--primary-color)]")
+    .replace(/text-blue-\d+/g, "text-[var(--primary-color)]")
+    .replace(/border-blue-\d+/g, "border-[var(--primary-color)]")
+
+    // Green
+    .replace(/bg-green-\d+/g, "bg-[var(--success-color)]")
+    .replace(/text-green-\d+/g, "text-[var(--success-color)]")
+    .replace(/border-green-\d+/g, "border-[var(--success-color)]")
+
+    // Red
+    .replace(/bg-red-\d+/g, "bg-[var(--danger-color)]")
+    .replace(/text-red-\d+/g, "text-[var(--danger-color)]")
+    .replace(/border-red-\d+/g, "border-[var(--danger-color)]")
+
+    // Yellow
+    .replace(/bg-yellow-\d+/g, "bg-[var(--warning-color)]")
+    .replace(/text-yellow-\d+/g, "text-[var(--warning-color)]")
+    .replace(/border-yellow-\d+/g, "border-[var(--warning-color)]")
+
+    // Hover
+    .replace(/hover:bg-blue-\d+/g, "hover:bg-[var(--primary-color)]")
+    .replace(/hover:bg-red-\d+/g, "hover:bg-[var(--danger-color)]")
+    .replace(/hover:bg-green-\d+/g, "hover:bg-[var(--success-color)]")
+    .replace(/hover:bg-yellow-\d+/g, "hover:bg-[var(--warning-color)]")
+
+    .replace(/hover:text-blue-\d+/g, "hover:text-[var(--primary-color)]")
+    .replace(/hover:text-red-\d+/g, "hover:text-[var(--danger-color)]")
+    .replace(/hover:text-green-\d+/g, "hover:text-[var(--success-color)]")
+    .replace(/hover:text-yellow-\d+/g, "hover:text-[var(--warning-color)]")
+
+    // Focus
+    .replace(/focus:bg-blue-\d+/g, "focus:bg-[var(--primary-color)]")
+    .replace(/focus:text-blue-\d+/g, "focus:text-[var(--primary-color)]")
+
+    // Ring
+    .replace(/ring-blue-\d+/g, "ring-[var(--primary-color)]")
+    .replace(/ring-red-\d+/g, "ring-[var(--danger-color)]")
+    .replace(/ring-green-\d+/g, "ring-[var(--success-color)]")
+    .replace(/ring-yellow-\d+/g, "ring-[var(--warning-color)]");
+}
