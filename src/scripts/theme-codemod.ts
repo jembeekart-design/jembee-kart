@@ -14,7 +14,7 @@ const replacements: Record<string, string> = {
   "text-[var(--button-text-color)]": "text-[var(--button-text-color)]",
   "text-[var(--text-color)]": "text-[var(--text-color)]",
   "text-[var(--muted-text-color)]": "text-[var(--muted-text-color)]",
-  "text-[var(--text-color)]": "text-[var(--text-color)]",
+ 
 
   "bg-[var(--card-color)]": "bg-[var(--card-color)]",
   "bg-[var(--background-color)]": "bg-[var(--background-color)]",
