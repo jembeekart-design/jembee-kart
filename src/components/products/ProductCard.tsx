@@ -151,7 +151,7 @@ style={{
                 bottom-2
                 right-2
                 rounded-xl
-                bg-black/70
+                bg-[var(--card-color)]/70
                 px-2
                 py-1
                 text-[10px]
@@ -215,7 +215,7 @@ style={{
               className="
                 text-[11px]
                 font-bold
-                text-green-600
+                text-[var(--success-color)]
               "
             >
 
@@ -226,7 +226,7 @@ style={{
             <span
               className="
                 text-[10px]
-                text-gray-400
+                text-[var(--muted-text-color)]
                 line-through
               "
             >

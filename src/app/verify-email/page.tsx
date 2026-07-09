@@ -171,7 +171,7 @@ export default function VerifyEmailPage() {
               <path strokeLinecap="round" strokeLinejoin="round" d="M21.75 6.75v10.5a2.25 2.25 0 0 1-2.25 2.25h-15a2.25 2.25 0 0 1-2.25-2.25V6.75m19.5 0A2.25 2.25 0 0 0 19.5 4.5h-15a2.25 2.25 0 0 0-2.25 2.25m19.5 0v.243a2.25 2.25 0 0 1-1.07 1.916l-7.5 4.615a2.25 2.25 0 0 1-2.36 0L3.32 8.91a2.25 2.25 0 0 1-1.07-1.916V6.75" />
             </svg>
           </div>
-          <h1 className="text-2xl font-black text-gray-800">Verify Your Email</h1>
+          <h1 className="text-2xl font-black text-[var(--text-color)]">Verify Your Email</h1>
           <p className="mt-2 text-sm text-[var(--muted-text-color)]">
             We have dispatched an activation token framework structure onto <br />
             <span className="font-bold text-indigo-600">{userEmail || "your inbox"}</span>
@@ -190,7 +190,7 @@ export default function VerifyEmailPage() {
           <button
             onClick={handleResendEmail}
             disabled={resendLoading || checking || syncedRef.current}
-            className="w-full rounded-2xl border border-[var(--border-color)] p-4 font-bold bg-[var(--card-color)] text-[var(--text-color)] hover:bg-gray-50 transition disabled:opacity-50 text-sm"
+            className="w-full rounded-2xl border border-[var(--border-color)] p-4 font-bold bg-[var(--card-color)] text-[var(--text-color)] hover:bg-[var(--background-color)] transition disabled:opacity-50 text-sm"
           >
             {resendLoading ? "Transmitting Packet..." : "Resend Verification Email"}
           </button>
@@ -198,7 +198,7 @@ export default function VerifyEmailPage() {
 
         <button
           onClick={handleSafeLogout}
-          className="mt-6 text-xs text-gray-400 font-bold hover:text-indigo-600 transition underline"
+          className="mt-6 text-xs text-[var(--muted-text-color)] font-bold hover:text-indigo-600 transition underline"
         >
           Back to Login Interface
         </button>

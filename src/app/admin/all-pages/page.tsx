@@ -623,7 +623,7 @@ export default function AllPagesPage() {
 
           </h1>
 
-          <p className="mt-1 text-sm text-gray-400">
+          <p className="mt-1 text-sm text-[var(--muted-text-color)]">
 
             Complete Admin Control Center
 
@@ -661,7 +661,7 @@ export default function AllPagesPage() {
 
               </h2>
 
-              <p className="mt-2 text-sm text-gray-400">
+              <p className="mt-2 text-sm text-[var(--muted-text-color)]">
 
                 Open Admin Page
 

@@ -85,7 +85,7 @@ const router = useRouter();
 
     return (
 
-      <div className="flex min-h-screen items-center justify-center bg-black text-[var(--button-text-color)]">
+      <div className="flex min-h-screen items-center justify-center bg-[var(--card-color)] text-[var(--button-text-color)]">
 
         Loading Live Orders...
 
@@ -114,7 +114,7 @@ const router = useRouter();
             Live Orders
           </h1>
 
-          <p className="mt-1 text-sm text-gray-400">
+          <p className="mt-1 text-sm text-[var(--muted-text-color)]">
             Realtime customer orders tracking
           </p>
 
@@ -223,7 +223,7 @@ const router = useRouter();
 
                 </h2>
 
-                <p className="mt-2 text-sm text-gray-400">
+                <p className="mt-2 text-sm text-[var(--muted-text-color)]">
 
                   Customer:
                   {" "}
@@ -232,7 +232,7 @@ const router = useRouter();
 
                 </p>
 
-                <p className="mt-1 text-sm text-gray-400">
+                <p className="mt-1 text-sm text-[var(--muted-text-color)]">
 
                   Payment:
                   {" "}
@@ -241,7 +241,7 @@ const router = useRouter();
 
                 </p>
 
-                <p className="mt-1 text-sm text-gray-400">
+                <p className="mt-1 text-sm text-[var(--muted-text-color)]">
 
                   Order ID:
                   {" "}
@@ -255,7 +255,7 @@ const router = useRouter();
 
               <div className="flex flex-col items-start gap-3 md:items-end">
 
-                <div className="flex items-center gap-2 rounded-full bg-black px-4 py-2">
+                <div className="flex items-center gap-2 rounded-full bg-[var(--card-color)] px-4 py-2">
 
                   <IndianRupee size={18} />
 
@@ -307,7 +307,7 @@ function StatCard({
 
         <div>
 
-          <p className="text-sm text-gray-400">
+          <p className="text-sm text-[var(--muted-text-color)]">
             {title}
           </p>
 
@@ -317,7 +317,7 @@ function StatCard({
 
         </div>
 
-        <div className="flex h-14 w-14 items-center justify-center rounded-2xl bg-black">
+        <div className="flex h-14 w-14 items-center justify-center rounded-2xl bg-[var(--card-color)]">
 
           {icon}
 

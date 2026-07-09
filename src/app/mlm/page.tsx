@@ -132,7 +132,7 @@ export default function MLMPage() {
                 </h3>
                 
                 <p className="text-[13px] text-[var(--button-text-color)]/90 font-medium mt-1">
-                  Code: <span className="font-mono bg-black/20 px-1.5 py-0.5 rounded text-orange-200">{referralCode}</span>
+                  Code: <span className="font-mono bg-[var(--card-color)]/20 px-1.5 py-0.5 rounded text-orange-200">{referralCode}</span>
                 </p>
 
                 <div className="mt-4 rounded-xl bg-[var(--card-color)]/10 p-3 text-[11px] break-all font-mono border border-white/5 select-all">
@@ -159,7 +159,7 @@ export default function MLMPage() {
         </h2>
 
         <div className="mt-4 space-y-3">
-          <div className="rounded-2xl bg-[var(--card-color)] p-4 shadow-sm border border-gray-100">
+          <div className="rounded-2xl bg-[var(--card-color)] p-4 shadow-sm border border-[var(--border-color)]">
             <div className="flex items-center gap-3">
               <div className="flex h-12 w-12 items-center justify-center rounded-full bg-violet-100 text-violet-700">
                 <Users size={22} />
@@ -173,7 +173,7 @@ export default function MLMPage() {
             </div>
           </div>
 
-          <div className="rounded-2xl bg-[var(--card-color)] p-4 shadow-sm border border-gray-100">
+          <div className="rounded-2xl bg-[var(--card-color)] p-4 shadow-sm border border-[var(--border-color)]">
             <div className="flex items-center gap-3">
               <div className="flex h-12 w-12 items-center justify-center rounded-full bg-green-100 text-green-700">
                 <Gift size={22} />
@@ -187,7 +187,7 @@ export default function MLMPage() {
             </div>
           </div>
 
-          <div className="rounded-2xl bg-[var(--card-color)] p-4 shadow-sm border border-gray-100">
+          <div className="rounded-2xl bg-[var(--card-color)] p-4 shadow-sm border border-[var(--border-color)]">
             <div className="flex items-center gap-3">
               <div className="flex h-12 w-12 items-center justify-center rounded-full bg-orange-100 text-orange-700">
                 <BadgeIndianRupee size={22} />
@@ -223,7 +223,7 @@ export default function MLMPage() {
           </div>
 
           <div className="rounded-2xl bg-[var(--card-color)] p-4 shadow-sm border border-gray-50">
-            <ShieldCheck size={28} className="text-green-600" />
+            <ShieldCheck size={28} className="text-[var(--success-color)]" />
             <h3 className="mt-3 text-[15px] font-black">Secure System</h3>
             <p className="mt-1 text-[11px] text-[var(--muted-text-color)]">Safe & transparent income.</p>
           </div>

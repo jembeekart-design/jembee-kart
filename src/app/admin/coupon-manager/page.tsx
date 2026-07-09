@@ -76,7 +76,7 @@ export default function CouponManagerPage() {
               Coupon Manager
             </h1>
 
-            <p className="mt-1 text-sm text-gray-400">
+            <p className="mt-1 text-sm text-[var(--muted-text-color)]">
               Create & manage discount coupons and offers
             </p>
 
@@ -132,7 +132,7 @@ export default function CouponManagerPage() {
 
           <Search
             size={20}
-            className="text-gray-400"
+            className="text-[var(--muted-text-color)]"
           />
 
           <input
@@ -184,13 +184,13 @@ export default function CouponManagerPage() {
                       {item.code}
                     </h2>
 
-                    <p className="mt-1 text-sm text-gray-400">
+                    <p className="mt-1 text-sm text-[var(--muted-text-color)]">
                       Discount:
                       {" "}
                       {item.discount}
                     </p>
 
-                    <div className="mt-2 flex items-center gap-2 text-sm text-gray-400">
+                    <div className="mt-2 flex items-center gap-2 text-sm text-[var(--muted-text-color)]">
 
                       <Users size={15} />
 
@@ -333,7 +333,7 @@ export default function CouponManagerPage() {
 
         </p>
 
-        <button className="mt-6 rounded-2xl bg-black px-5 py-3 font-bold text-[var(--button-text-color)]">
+        <button className="mt-6 rounded-2xl bg-[var(--card-color)] px-5 py-3 font-bold text-[var(--button-text-color)]">
 
           Open Coupon Center
 
@@ -396,7 +396,7 @@ function StatCard({
 
       </div>
 
-      <p className="mt-4 text-sm text-gray-400">
+      <p className="mt-4 text-sm text-[var(--muted-text-color)]">
         {title}
       </p>
 

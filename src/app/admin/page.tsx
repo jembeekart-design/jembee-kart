@@ -129,7 +129,7 @@ export default function AdminHomePage() {
 
             </p>
 
-            <button className="mt-6 flex items-center gap-2 rounded-2xl bg-black px-6 py-4 font-bold text-[var(--button-text-color)]">
+            <button className="mt-6 flex items-center gap-2 rounded-2xl bg-[var(--card-color)] px-6 py-4 font-bold text-[var(--button-text-color)]">
 
               Open Analytics
 
@@ -141,7 +141,7 @@ export default function AdminHomePage() {
 
           {/* ICON */}
 
-          <div className="flex h-[180px] w-[180px] items-center justify-center rounded-[40px] bg-black/10 backdrop-blur-xl">
+          <div className="flex h-[180px] w-[180px] items-center justify-center rounded-[40px] bg-[var(--card-color)]/10 backdrop-blur-xl">
 
             <BarChart3 size={90} />
 
@@ -173,7 +173,7 @@ export default function AdminHomePage() {
 
               </div>
 
-              <p className="mt-5 text-sm text-gray-400">
+              <p className="mt-5 text-sm text-[var(--muted-text-color)]">
 
                 {item.title}
 
@@ -243,7 +243,7 @@ export default function AdminHomePage() {
 
                   </h3>
 
-                  <p className="mt-2 text-sm text-gray-400">
+                  <p className="mt-2 text-sm text-[var(--muted-text-color)]">
 
                     Open Module
 
@@ -377,7 +377,7 @@ export default function AdminHomePage() {
 
           <div className="flex gap-4">
 
-            <button className="rounded-2xl bg-black px-6 py-4 font-bold text-[var(--button-text-color)]">
+            <button className="rounded-2xl bg-[var(--card-color)] px-6 py-4 font-bold text-[var(--button-text-color)]">
 
               Open AI Tools
 
@@ -453,7 +453,7 @@ function ActivityItem({
 
         </h3>
 
-        <p className="mt-1 text-sm text-gray-400">
+        <p className="mt-1 text-sm text-[var(--muted-text-color)]">
 
           {subtitle}
 

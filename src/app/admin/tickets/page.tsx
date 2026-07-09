@@ -80,7 +80,7 @@ export default function TicketsPage() {
             Support Tickets
           </h1>
 
-          <p className="mt-1 text-sm text-gray-400">
+          <p className="mt-1 text-sm text-[var(--muted-text-color)]">
             Manage customer support requests
           </p>
 
@@ -99,7 +99,7 @@ export default function TicketsPage() {
             className="text-yellow-400"
           />
 
-          <p className="mt-4 text-sm text-gray-400">
+          <p className="mt-4 text-sm text-[var(--muted-text-color)]">
             Pending
           </p>
 
@@ -116,7 +116,7 @@ export default function TicketsPage() {
             className="text-green-400"
           />
 
-          <p className="mt-4 text-sm text-gray-400">
+          <p className="mt-4 text-sm text-[var(--muted-text-color)]">
             Solved
           </p>
 
@@ -133,7 +133,7 @@ export default function TicketsPage() {
             className="text-cyan-400"
           />
 
-          <p className="mt-4 text-sm text-gray-400">
+          <p className="mt-4 text-sm text-[var(--muted-text-color)]">
             Total Tickets
           </p>
 
@@ -165,7 +165,7 @@ export default function TicketsPage() {
                     {item.user}
                   </h2>
 
-                  <p className="mt-2 text-sm text-gray-400">
+                  <p className="mt-2 text-sm text-[var(--muted-text-color)]">
                     {item.subject}
                   </p>
 

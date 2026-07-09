@@ -175,7 +175,7 @@ export default function FlashSalePage() {
 
     return (
 
-      <div className="flex min-h-screen items-center justify-center bg-black text-[var(--button-text-color)]">
+      <div className="flex min-h-screen items-center justify-center bg-[var(--card-color)] text-[var(--button-text-color)]">
 
         Loading...
 
@@ -204,7 +204,7 @@ export default function FlashSalePage() {
             Flash Sale Manager
           </h1>
 
-          <p className="mt-1 text-sm text-gray-400">
+          <p className="mt-1 text-sm text-[var(--muted-text-color)]">
             Create limited-time product deals
           </p>
 
@@ -226,13 +226,13 @@ export default function FlashSalePage() {
 
           <div>
 
-            <label className="mb-2 block text-sm text-gray-400">
+            <label className="mb-2 block text-sm text-[var(--muted-text-color)]">
 
               Product Name
 
             </label>
 
-            <div className="flex items-center gap-3 rounded-2xl bg-black px-4">
+            <div className="flex items-center gap-3 rounded-2xl bg-[var(--card-color)] px-4">
 
               <Package size={18} />
 
@@ -253,13 +253,13 @@ export default function FlashSalePage() {
 
           <div>
 
-            <label className="mb-2 block text-sm text-gray-400">
+            <label className="mb-2 block text-sm text-[var(--muted-text-color)]">
 
               Discount %
 
             </label>
 
-            <div className="flex items-center gap-3 rounded-2xl bg-black px-4">
+            <div className="flex items-center gap-3 rounded-2xl bg-[var(--card-color)] px-4">
 
               <Percent size={18} />
 
@@ -280,13 +280,13 @@ export default function FlashSalePage() {
 
           <div>
 
-            <label className="mb-2 block text-sm text-gray-400">
+            <label className="mb-2 block text-sm text-[var(--muted-text-color)]">
 
               End Time
 
             </label>
 
-            <div className="flex items-center gap-3 rounded-2xl bg-black px-4">
+            <div className="flex items-center gap-3 rounded-2xl bg-[var(--card-color)] px-4">
 
               <Clock3 size={18} />
 
@@ -307,7 +307,7 @@ export default function FlashSalePage() {
 
           <div>
 
-            <label className="mb-2 block text-sm text-gray-400">
+            <label className="mb-2 block text-sm text-[var(--muted-text-color)]">
 
               Stock Quantity
 
@@ -321,7 +321,7 @@ export default function FlashSalePage() {
                   e.target.value
                 )
               }
-              className="w-full rounded-2xl bg-black px-4 py-4 outline-none"
+              className="w-full rounded-2xl bg-[var(--card-color)] px-4 py-4 outline-none"
             />
 
           </div>
@@ -378,7 +378,7 @@ export default function FlashSalePage() {
 
                   </h2>
 
-                  <p className="mt-2 text-gray-400">
+                  <p className="mt-2 text-[var(--muted-text-color)]">
 
                     Discount:
                     {" "}
@@ -386,7 +386,7 @@ export default function FlashSalePage() {
 
                   </p>
 
-                  <p className="mt-1 text-gray-400">
+                  <p className="mt-1 text-[var(--muted-text-color)]">
 
                     Stock:
                     {" "}
@@ -394,7 +394,7 @@ export default function FlashSalePage() {
 
                   </p>
 
-                  <p className="mt-1 text-gray-400">
+                  <p className="mt-1 text-[var(--muted-text-color)]">
 
                     Ends:
                     {" "}

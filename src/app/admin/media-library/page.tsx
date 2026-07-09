@@ -80,7 +80,7 @@ export default function MediaLibraryPage() {
               Media Library
             </h1>
 
-            <p className="mt-1 text-sm text-gray-400">
+            <p className="mt-1 text-sm text-[var(--muted-text-color)]">
               Manage images, videos & documents
             </p>
 
@@ -104,7 +104,7 @@ export default function MediaLibraryPage() {
 
         <Search
           size={20}
-          className="text-gray-400"
+          className="text-[var(--muted-text-color)]"
         />
 
         <input
@@ -205,7 +205,7 @@ export default function MediaLibraryPage() {
                   {item.name}
                 </h2>
 
-                <div className="mt-2 flex items-center justify-between text-sm text-gray-400">
+                <div className="mt-2 flex items-center justify-between text-sm text-[var(--muted-text-color)]">
 
                   <span>
                     {item.type}
@@ -271,7 +271,7 @@ export default function MediaLibraryPage() {
 
         </p>
 
-        <button className="mt-6 rounded-2xl bg-black px-6 py-3 font-bold text-[var(--button-text-color)]">
+        <button className="mt-6 rounded-2xl bg-[var(--card-color)] px-6 py-3 font-bold text-[var(--button-text-color)]">
 
           Open Media Manager
 
@@ -304,7 +304,7 @@ function StatCard({
 
       </div>
 
-      <p className="mt-4 text-sm text-gray-400">
+      <p className="mt-4 text-sm text-[var(--muted-text-color)]">
         {title}
       </p>
 

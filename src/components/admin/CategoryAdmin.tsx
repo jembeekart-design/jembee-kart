@@ -402,7 +402,7 @@ export default function CategoryAdmin() {
               items-center
               gap-2
               rounded-2xl
-              bg-black
+              bg-[var(--card-color)]
               px-5
               py-3
               font-bold
@@ -567,7 +567,7 @@ export default function CategoryAdmin() {
                           items-center
                           justify-center
                           rounded-2xl
-                          bg-black
+                          bg-[var(--card-color)]
                           text-[var(--button-text-color)]
                         "
                       >

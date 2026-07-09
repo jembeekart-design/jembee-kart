@@ -129,7 +129,7 @@ export default function ReportsPage() {
 
     return (
 
-      <div className="flex min-h-screen items-center justify-center bg-black text-[var(--button-text-color)]">
+      <div className="flex min-h-screen items-center justify-center bg-[var(--card-color)] text-[var(--button-text-color)]">
 
         Loading Reports...
 
@@ -158,7 +158,7 @@ export default function ReportsPage() {
             Reports & Analytics
           </h1>
 
-          <p className="mt-1 text-sm text-gray-400">
+          <p className="mt-1 text-sm text-[var(--muted-text-color)]">
             Platform analytics & business reports
           </p>
 
@@ -298,7 +298,7 @@ function ReportCard({
 
         <div>
 
-          <p className="text-sm text-gray-400">
+          <p className="text-sm text-[var(--muted-text-color)]">
             {title}
           </p>
 
@@ -308,7 +308,7 @@ function ReportCard({
 
         </div>
 
-        <div className="flex h-16 w-16 items-center justify-center rounded-2xl bg-black">
+        <div className="flex h-16 w-16 items-center justify-center rounded-2xl bg-[var(--card-color)]">
 
           {icon}
 

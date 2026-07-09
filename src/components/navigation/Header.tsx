@@ -369,7 +369,7 @@ export default function Header({
               h-5
               w-5
               -translate-y-1/2
-              text-gray-400
+              text-[var(--muted-text-color)]
             "
           />
 

@@ -118,7 +118,7 @@ useEffect(() => {
               Database Manager
             </h1>
 
-            <p className="mt-1 text-sm text-gray-400">
+            <p className="mt-1 text-sm text-[var(--muted-text-color)]">
               Manage Firebase collections & records
             </p>
 
@@ -150,7 +150,7 @@ useEffect(() => {
             className="text-cyan-400"
           />
 
-          <p className="mt-4 text-sm text-gray-400">
+          <p className="mt-4 text-sm text-[var(--muted-text-color)]">
             Collections
           </p>
 
@@ -167,7 +167,7 @@ useEffect(() => {
             className="text-pink-400"
           />
 
-          <p className="mt-4 text-sm text-gray-400">
+          <p className="mt-4 text-sm text-[var(--muted-text-color)]">
             Storage Used
           </p>
 
@@ -184,7 +184,7 @@ useEffect(() => {
             className="text-green-400"
           />
 
-          <p className="mt-4 text-sm text-gray-400">
+          <p className="mt-4 text-sm text-[var(--muted-text-color)]">
             Status
           </p>
 
@@ -256,7 +256,7 @@ useEffect(() => {
                     {item.name}
                   </h2>
 
-                  <div className="mt-3 flex flex-wrap gap-3 text-sm text-gray-400">
+                  <div className="mt-3 flex flex-wrap gap-3 text-sm text-[var(--muted-text-color)]">
 
                     <span>
                       Records:

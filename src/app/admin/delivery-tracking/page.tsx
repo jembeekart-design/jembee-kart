@@ -118,7 +118,7 @@ export default function DeliveryTrackingPage() {
 
     return (
 
-      <div className="flex min-h-screen items-center justify-center bg-black text-[var(--button-text-color)]">
+      <div className="flex min-h-screen items-center justify-center bg-[var(--card-color)] text-[var(--button-text-color)]">
 
         Loading Orders...
 
@@ -147,7 +147,7 @@ export default function DeliveryTrackingPage() {
             Delivery Tracking
           </h1>
 
-          <p className="mt-1 text-sm text-gray-400">
+          <p className="mt-1 text-sm text-[var(--muted-text-color)]">
             Track all deliveries in real-time
           </p>
 
@@ -191,7 +191,7 @@ export default function DeliveryTrackingPage() {
 
                     </h2>
 
-                    <p className="mt-2 text-sm text-gray-400">
+                    <p className="mt-2 text-sm text-[var(--muted-text-color)]">
 
                       Order ID:
                       {" "}
@@ -211,7 +211,7 @@ export default function DeliveryTrackingPage() {
 
                 {/* PRODUCT */}
 
-                <div className="rounded-2xl bg-black/30 p-4">
+                <div className="rounded-2xl bg-[var(--card-color)]/30 p-4">
 
                   <div className="flex items-center gap-2">
 
@@ -328,7 +328,7 @@ function TrackButton({
       className={`rounded-2xl px-4 py-4 text-sm font-bold transition ${
         active
           ? "bg-orange-500 text-[var(--text-color)]"
-          : "bg-black/30 text-[var(--button-text-color)]"
+          : "bg-[var(--card-color)]/30 text-[var(--button-text-color)]"
       }`}
     >
 

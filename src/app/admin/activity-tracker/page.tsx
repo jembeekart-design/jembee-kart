@@ -163,7 +163,7 @@ export default function ActivityTrackerPage() {
           </div>
           <div>
             <h1 className="text-3xl font-black">Activity Tracker</h1>
-            <p className="mt-1 text-sm text-gray-400">
+            <p className="mt-1 text-sm text-[var(--muted-text-color)]">
               Track realtime admin & user activities
             </p>
           </div>
@@ -197,7 +197,7 @@ export default function ActivityTrackerPage() {
       {/* SEARCH BOX MODULE */}
       <div className="mt-6 flex flex-col gap-4 md:flex-row">
         <div className="flex flex-1 items-center gap-3 rounded-[24px] border border-white/10 bg-[#151515] px-4 py-3">
-          <Search size={20} className="text-gray-400" />
+          <Search size={20} className="text-[var(--muted-text-color)]" />
           <input
             type="text"
             placeholder="Search activity..."
@@ -231,7 +231,7 @@ export default function ActivityTrackerPage() {
                   <h2 className="text-2xl font-black">
                     {item.title || "Untitled Activity"}
                   </h2>
-                  <p className="mt-1 text-sm text-gray-400">
+                  <p className="mt-1 text-sm text-[var(--muted-text-color)]">
                     {item.user || "System"}
                   </p>
                   <div className="mt-3 flex items-center gap-2 text-sm text-[var(--muted-text-color)]">
@@ -307,7 +307,7 @@ function StatCard({
       <div className="flex h-14 w-14 items-center justify-center rounded-2xl bg-pink-500 text-[var(--text-color)]">
         {icon}
       </div>
-      <p className="mt-4 text-sm text-gray-400">{title}</p>
+      <p className="mt-4 text-sm text-[var(--muted-text-color)]">{title}</p>
       <h2 className="mt-2 text-3xl font-black">{value}</h2>
     </div>
   );

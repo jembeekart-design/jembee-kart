@@ -173,7 +173,7 @@ export default function AffiliatePage() {
   if (loading) {
 
     return (
-      <div className="flex min-h-screen items-center justify-center bg-black text-[var(--button-text-color)]">
+      <div className="flex min-h-screen items-center justify-center bg-[var(--card-color)] text-[var(--button-text-color)]">
         Loading...
       </div>
     );
@@ -193,7 +193,7 @@ export default function AffiliatePage() {
             Affiliate Manager
           </h1>
 
-          <p className="mt-2 text-sm text-gray-400">
+          <p className="mt-2 text-sm text-[var(--muted-text-color)]">
             Manage affiliates and commissions
           </p>
 
@@ -240,7 +240,7 @@ export default function AffiliatePage() {
                     {affiliate.name}
                   </h2>
 
-                  <p className="text-sm text-gray-400">
+                  <p className="text-sm text-[var(--muted-text-color)]">
                     {affiliate.email}
                   </p>
 
@@ -275,7 +275,7 @@ export default function AffiliatePage() {
                       affiliate.id
                     )
                   }
-                  className="flex h-10 w-10 items-center justify-center rounded-xl bg-[var(--danger-color)]/20 text-red-500"
+                  className="flex h-10 w-10 items-center justify-center rounded-xl bg-[var(--danger-color)]/20 text-[var(--danger-color)]"
                 >
 
                   <Trash2 size={18} />

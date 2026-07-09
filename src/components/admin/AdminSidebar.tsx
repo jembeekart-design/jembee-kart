@@ -232,7 +232,7 @@ export default function AdminSidebar() {
             JembeeKart
           </h1>
 
-          <p className="text-sm text-gray-400">
+          <p className="text-sm text-[var(--muted-text-color)]">
             Admin Panel
           </p>
 

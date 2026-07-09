@@ -85,7 +85,7 @@ export default function PayoutsPage() {
             Payout Manager
           </h1>
 
-          <p className="mt-1 text-sm text-gray-400">
+          <p className="mt-1 text-sm text-[var(--muted-text-color)]">
             Manage affiliate & reseller payouts
           </p>
 
@@ -104,7 +104,7 @@ export default function PayoutsPage() {
             className="text-yellow-400"
           />
 
-          <p className="mt-4 text-sm text-gray-400">
+          <p className="mt-4 text-sm text-[var(--muted-text-color)]">
             Pending
           </p>
 
@@ -121,7 +121,7 @@ export default function PayoutsPage() {
             className="text-green-400"
           />
 
-          <p className="mt-4 text-sm text-gray-400">
+          <p className="mt-4 text-sm text-[var(--muted-text-color)]">
             Approved
           </p>
 
@@ -138,7 +138,7 @@ export default function PayoutsPage() {
             className="text-cyan-400"
           />
 
-          <p className="mt-4 text-sm text-gray-400">
+          <p className="mt-4 text-sm text-[var(--muted-text-color)]">
             Total Paid
           </p>
 
@@ -170,7 +170,7 @@ export default function PayoutsPage() {
                     {item.user}
                   </h2>
 
-                  <p className="mt-2 text-sm text-gray-400">
+                  <p className="mt-2 text-sm text-[var(--muted-text-color)]">
                     Method:
                     {" "}
                     {item.method}
@@ -184,7 +184,7 @@ export default function PayoutsPage() {
                     {item.amount}
                   </h3>
 
-                  <p className="mt-1 text-sm capitalize text-gray-400">
+                  <p className="mt-1 text-sm capitalize text-[var(--muted-text-color)]">
                     {item.status}
                   </p>
 

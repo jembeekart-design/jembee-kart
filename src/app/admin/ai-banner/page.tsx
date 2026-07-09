@@ -88,7 +88,7 @@ export default function AIBannerPage() {
 
           </h1>
 
-          <p className="mt-1 text-sm text-gray-400">
+          <p className="mt-1 text-sm text-[var(--muted-text-color)]">
 
             Create beautiful AI banners instantly
 
@@ -122,7 +122,7 @@ export default function AIBannerPage() {
             )
           }
           placeholder="Example: Create modern ecommerce fashion sale banner with neon effects..."
-          className="mt-5 h-40 w-full rounded-3xl border border-white/10 bg-black/40 p-5 text-[var(--button-text-color)] outline-none"
+          className="mt-5 h-40 w-full rounded-3xl border border-white/10 bg-[var(--card-color)]/40 p-5 text-[var(--button-text-color)] outline-none"
         />
 
         <div className="mt-5 flex flex-wrap gap-4">
@@ -315,7 +315,7 @@ function StyleCard({
 
       </h3>
 
-      <p className="mt-1 text-sm text-gray-400">
+      <p className="mt-1 text-sm text-[var(--muted-text-color)]">
 
         Generate AI banner
 

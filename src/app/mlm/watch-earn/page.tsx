@@ -411,7 +411,7 @@ export default function WatchEarnPage() {
           min-h-screen
           items-center
           justify-center
-          bg-black
+          bg-[var(--card-color)]
         "
       >
 
@@ -439,7 +439,7 @@ export default function WatchEarnPage() {
         overflow-y-scroll
         snap-y
         snap-mandatory
-        bg-black
+        bg-[var(--card-color)]
       "
     >
 
@@ -572,7 +572,7 @@ export default function WatchEarnPage() {
               items-center
               justify-center
               rounded-full
-              bg-black/40
+              bg-[var(--card-color)]/40
               text-[var(--button-text-color)]
               backdrop-blur-xl
             "
@@ -660,7 +660,7 @@ export default function WatchEarnPage() {
             flex-col
             items-center
             justify-center
-            bg-black
+            bg-[var(--card-color)]
             text-[var(--button-text-color)]
           "
         >
@@ -838,7 +838,7 @@ export default function WatchEarnPage() {
                 items-center
                 justify-center
                 rounded-full
-                bg-black/40
+                bg-[var(--card-color)]/40
                 backdrop-blur-xl
               "
             >
@@ -969,7 +969,7 @@ export default function WatchEarnPage() {
                   items-center
                   gap-2
                   rounded-full
-                  bg-black/40
+                  bg-[var(--card-color)]/40
                   px-4
                   py-2
                 "
@@ -1101,7 +1101,7 @@ export default function WatchEarnPage() {
                     items-center
                     justify-center
                     rounded-full
-                    bg-black/40
+                    bg-[var(--card-color)]/40
                   "
                 >
 
@@ -1141,7 +1141,7 @@ export default function WatchEarnPage() {
                     items-center
                     justify-center
                     rounded-full
-                    bg-black/40
+                    bg-[var(--card-color)]/40
                   "
                 >
 
@@ -1181,7 +1181,7 @@ export default function WatchEarnPage() {
                     items-center
                     justify-center
                     rounded-full
-                    bg-black/40
+                    bg-[var(--card-color)]/40
                   "
                 >
 
@@ -1221,7 +1221,7 @@ export default function WatchEarnPage() {
                     items-center
                     justify-center
                     rounded-full
-                    bg-black/40
+                    bg-[var(--card-color)]/40
                   "
                 >
 

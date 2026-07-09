@@ -77,7 +77,7 @@ export default function AdsManagerPage() {
               Ads Manager
             </h1>
 
-            <p className="mt-1 text-sm text-gray-400">
+            <p className="mt-1 text-sm text-[var(--muted-text-color)]">
               Manage ad campaigns & traffic
             </p>
 
@@ -131,7 +131,7 @@ export default function AdsManagerPage() {
 
         <Search
           size={20}
-          className="text-gray-400"
+          className="text-[var(--muted-text-color)]"
         />
 
         <input
@@ -171,7 +171,7 @@ export default function AdsManagerPage() {
                     {item.title}
                   </h2>
 
-                  <div className="mt-2 flex items-center gap-2 text-sm text-gray-400">
+                  <div className="mt-2 flex items-center gap-2 text-sm text-[var(--muted-text-color)]">
 
                     <Globe size={15} />
 
@@ -189,7 +189,7 @@ export default function AdsManagerPage() {
                       : item.status ===
                         "Paused"
                       ? "bg-[var(--warning-color)]/20 text-yellow-400"
-                      : "bg-gray-500/20 text-gray-300"
+                      : "bg-[var(--background-color)]0/20 text-gray-300"
                   }`}
                 >
 
@@ -215,7 +215,7 @@ export default function AdsManagerPage() {
                       {item.budget}
                     </p>
 
-                    <p className="text-sm text-gray-400">
+                    <p className="text-sm text-[var(--muted-text-color)]">
                       Ad Budget
                     </p>
 
@@ -259,7 +259,7 @@ export default function AdsManagerPage() {
 
         </p>
 
-        <button className="mt-6 flex items-center gap-2 rounded-2xl bg-black px-6 py-3 font-bold text-[var(--button-text-color)]">
+        <button className="mt-6 flex items-center gap-2 rounded-2xl bg-[var(--card-color)] px-6 py-3 font-bold text-[var(--button-text-color)]">
 
           <PlayCircle size={18} />
 
@@ -294,7 +294,7 @@ function StatCard({
 
       </div>
 
-      <p className="mt-4 text-sm text-gray-400">
+      <p className="mt-4 text-sm text-[var(--muted-text-color)]">
         {title}
       </p>
 

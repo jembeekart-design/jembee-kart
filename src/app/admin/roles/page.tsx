@@ -94,7 +94,7 @@ export default function RolesPage() {
             Roles Manager
           </h1>
 
-          <p className="mt-1 text-sm text-gray-400">
+          <p className="mt-1 text-sm text-[var(--muted-text-color)]">
             Manage admin roles & permissions
           </p>
 
@@ -112,11 +112,11 @@ export default function RolesPage() {
 
         <div className="mt-5 flex gap-4">
 
-          <div className="flex flex-1 items-center gap-3 rounded-2xl bg-black px-4 py-4">
+          <div className="flex flex-1 items-center gap-3 rounded-2xl bg-[var(--card-color)] px-4 py-4">
 
             <Lock
               size={20}
-              className="text-gray-400"
+              className="text-[var(--muted-text-color)]"
             />
 
             <input
@@ -168,7 +168,7 @@ export default function RolesPage() {
                     {item.role}
                   </h2>
 
-                  <div className="mt-3 flex items-center gap-2 text-gray-400">
+                  <div className="mt-3 flex items-center gap-2 text-[var(--muted-text-color)]">
 
                     <Users size={18} />
 

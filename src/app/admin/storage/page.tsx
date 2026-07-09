@@ -86,7 +86,7 @@ export default function StoragePage() {
               Storage Manager
             </h1>
 
-            <p className="mt-1 text-sm text-gray-400">
+            <p className="mt-1 text-sm text-[var(--muted-text-color)]">
               Manage uploaded files & media
             </p>
 
@@ -118,7 +118,7 @@ export default function StoragePage() {
             className="text-cyan-400"
           />
 
-          <p className="mt-4 text-sm text-gray-400">
+          <p className="mt-4 text-sm text-[var(--muted-text-color)]">
             Total Files
           </p>
 
@@ -135,7 +135,7 @@ export default function StoragePage() {
             className="text-green-400"
           />
 
-          <p className="mt-4 text-sm text-gray-400">
+          <p className="mt-4 text-sm text-[var(--muted-text-color)]">
             Storage Used
           </p>
 
@@ -152,7 +152,7 @@ export default function StoragePage() {
             className="text-yellow-400"
           />
 
-          <p className="mt-4 text-sm text-gray-400">
+          <p className="mt-4 text-sm text-[var(--muted-text-color)]">
             Status
           </p>
 
@@ -180,7 +180,7 @@ export default function StoragePage() {
 
                 <div className="flex items-center gap-4">
 
-                  <div className="flex h-14 w-14 items-center justify-center rounded-2xl bg-black">
+                  <div className="flex h-14 w-14 items-center justify-center rounded-2xl bg-[var(--card-color)]">
 
                     {item.type ===
                     "Image" ? (
@@ -207,7 +207,7 @@ export default function StoragePage() {
                       {item.name}
                     </h2>
 
-                    <p className="mt-1 text-sm text-gray-400">
+                    <p className="mt-1 text-sm text-[var(--muted-text-color)]">
                       {item.type}
                       {" • "}
                       {item.size}

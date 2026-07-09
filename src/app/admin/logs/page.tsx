@@ -85,7 +85,7 @@ export default function LogsPage() {
               System Logs
             </h1>
 
-            <p className="mt-1 text-sm text-gray-400">
+            <p className="mt-1 text-sm text-[var(--muted-text-color)]">
               Monitor server & application activity
             </p>
 
@@ -132,7 +132,7 @@ export default function LogsPage() {
             className="text-green-400"
           />
 
-          <p className="mt-4 text-sm text-gray-400">
+          <p className="mt-4 text-sm text-[var(--muted-text-color)]">
             Successful Events
           </p>
 
@@ -149,7 +149,7 @@ export default function LogsPage() {
             className="text-yellow-400"
           />
 
-          <p className="mt-4 text-sm text-gray-400">
+          <p className="mt-4 text-sm text-[var(--muted-text-color)]">
             Warnings
           </p>
 
@@ -166,7 +166,7 @@ export default function LogsPage() {
             className="text-red-400"
           />
 
-          <p className="mt-4 text-sm text-gray-400">
+          <p className="mt-4 text-sm text-[var(--muted-text-color)]">
             Errors
           </p>
 
@@ -233,7 +233,7 @@ export default function LogsPage() {
 
                 </div>
 
-                <span className="rounded-full bg-black/40 px-4 py-2 text-sm text-gray-400">
+                <span className="rounded-full bg-[var(--card-color)]/40 px-4 py-2 text-sm text-[var(--muted-text-color)]">
 
                   {item.time}
 

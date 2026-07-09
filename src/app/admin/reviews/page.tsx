@@ -145,7 +145,7 @@ export default function ReviewsPage() {
   if (loading) {
 
     return (
-      <div className="flex min-h-screen items-center justify-center bg-black text-[var(--button-text-color)]">
+      <div className="flex min-h-screen items-center justify-center bg-[var(--card-color)] text-[var(--button-text-color)]">
         Loading...
       </div>
     );
@@ -163,7 +163,7 @@ export default function ReviewsPage() {
           Reviews Manager
         </h1>
 
-        <p className="mt-1 text-sm text-gray-400">
+        <p className="mt-1 text-sm text-[var(--muted-text-color)]">
           Manage customer reviews
         </p>
 
@@ -205,7 +205,7 @@ export default function ReviewsPage() {
                       }
                     </h2>
 
-                    <p className="text-sm text-gray-400">
+                    <p className="text-sm text-[var(--muted-text-color)]">
                       {
                         review.productName
                       }
@@ -246,7 +246,7 @@ export default function ReviewsPage() {
                         review.id
                       )
                     }
-                    className="flex h-10 w-10 items-center justify-center rounded-xl bg-[var(--danger-color)]/20 text-red-500"
+                    className="flex h-10 w-10 items-center justify-center rounded-xl bg-[var(--danger-color)]/20 text-[var(--danger-color)]"
                   >
 
                     <Trash2 size={18} />

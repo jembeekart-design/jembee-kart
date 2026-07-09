@@ -99,7 +99,7 @@ export default function RewardProgressBar({
           rounded-3xl
           border
           border-white/10
-          bg-black/60
+          bg-[var(--card-color)]/60
           p-4
           backdrop-blur-xl
           shadow-xl

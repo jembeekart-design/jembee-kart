@@ -94,7 +94,7 @@ export default function PopupManagerPage() {
 
             </h1>
 
-            <p className="mt-1 text-sm text-gray-400">
+            <p className="mt-1 text-sm text-[var(--muted-text-color)]">
 
               Create promotional popups & offers
 
@@ -178,7 +178,7 @@ export default function PopupManagerPage() {
 
                     </h2>
 
-                    <p className="mt-1 text-sm text-gray-400">
+                    <p className="mt-1 text-sm text-[var(--muted-text-color)]">
 
                       Popup Notification
 
@@ -203,7 +203,7 @@ export default function PopupManagerPage() {
 
               </div>
 
-              <div className="mt-5 rounded-2xl bg-black/30 p-5">
+              <div className="mt-5 rounded-2xl bg-[var(--card-color)]/30 p-5">
 
                 <p className="text-gray-300">
 
@@ -274,7 +274,7 @@ export default function PopupManagerPage() {
           <div className="flex gap-3">
 
             <button
-              className="flex items-center gap-2 rounded-2xl bg-black/20 px-4 py-3 font-bold"
+              className="flex items-center gap-2 rounded-2xl bg-[var(--card-color)]/20 px-4 py-3 font-bold"
             >
 
               <Monitor size={18} />
@@ -284,7 +284,7 @@ export default function PopupManagerPage() {
             </button>
 
             <button
-              className="flex items-center gap-2 rounded-2xl bg-black px-4 py-3 font-bold text-[var(--button-text-color)]"
+              className="flex items-center gap-2 rounded-2xl bg-[var(--card-color)] px-4 py-3 font-bold text-[var(--button-text-color)]"
             >
 
               <Smartphone size={18} />
@@ -446,7 +446,7 @@ function FeatureCard({
 
   return (
 
-    <div className="rounded-[24px] bg-black/30 p-5">
+    <div className="rounded-[24px] bg-[var(--card-color)]/30 p-5">
 
       <h3 className="text-2xl font-black">
 
@@ -454,7 +454,7 @@ function FeatureCard({
 
       </h3>
 
-      <p className="mt-2 text-sm text-gray-400">
+      <p className="mt-2 text-sm text-[var(--muted-text-color)]">
 
         {desc}
 

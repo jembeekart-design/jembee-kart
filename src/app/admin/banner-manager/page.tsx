@@ -90,7 +90,7 @@ export default function BannerManagerPage() {
 
             </h1>
 
-            <p className="mt-1 text-sm text-gray-400">
+            <p className="mt-1 text-sm text-[var(--muted-text-color)]">
 
               Manage homepage sliders & banners
 
@@ -171,7 +171,7 @@ export default function BannerManagerPage() {
 
                     </h2>
 
-                    <p className="mt-1 text-sm text-gray-400">
+                    <p className="mt-1 text-sm text-[var(--muted-text-color)]">
 
                       Homepage banner slider
 
@@ -237,7 +237,7 @@ export default function BannerManagerPage() {
           <div className="flex gap-3">
 
             <button
-              className="flex items-center gap-2 rounded-2xl bg-black/20 px-4 py-3 font-bold"
+              className="flex items-center gap-2 rounded-2xl bg-[var(--card-color)]/20 px-4 py-3 font-bold"
             >
 
               <Monitor size={18} />
@@ -247,7 +247,7 @@ export default function BannerManagerPage() {
             </button>
 
             <button
-              className="flex items-center gap-2 rounded-2xl bg-black px-4 py-3 font-bold text-[var(--button-text-color)]"
+              className="flex items-center gap-2 rounded-2xl bg-[var(--card-color)] px-4 py-3 font-bold text-[var(--button-text-color)]"
             >
 
               <Smartphone size={18} />
@@ -260,7 +260,7 @@ export default function BannerManagerPage() {
 
         </div>
 
-        <div className="mt-6 overflow-hidden rounded-[30px] bg-black/20">
+        <div className="mt-6 overflow-hidden rounded-[30px] bg-[var(--card-color)]/20">
 
           <img
             src={banners[0]?.image}
@@ -381,7 +381,7 @@ function FeatureCard({
 
   return (
 
-    <div className="rounded-[24px] bg-black/30 p-5">
+    <div className="rounded-[24px] bg-[var(--card-color)]/30 p-5">
 
       <h3 className="text-2xl font-black">
 
@@ -389,7 +389,7 @@ function FeatureCard({
 
       </h3>
 
-      <p className="mt-2 text-sm text-gray-400">
+      <p className="mt-2 text-sm text-[var(--muted-text-color)]">
 
         {desc}
 

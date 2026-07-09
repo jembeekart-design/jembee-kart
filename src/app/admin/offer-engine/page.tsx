@@ -75,7 +75,7 @@ export default function OfferEnginePage() {
             Offer Engine
           </h1>
 
-          <p className="mt-1 text-sm text-gray-400">
+          <p className="mt-1 text-sm text-[var(--muted-text-color)]">
             Create coupons, flash sales & offers
           </p>
 
@@ -119,7 +119,7 @@ export default function OfferEnginePage() {
 
         <Search
           size={20}
-          className="text-gray-400"
+          className="text-[var(--muted-text-color)]"
         />
 
         <input
@@ -159,7 +159,7 @@ export default function OfferEnginePage() {
                     {item.title}
                   </h2>
 
-                  <p className="mt-2 text-sm text-gray-400">
+                  <p className="mt-2 text-sm text-[var(--muted-text-color)]">
                     Audience:
                     {" "}
                     {item.users}
@@ -201,7 +201,7 @@ export default function OfferEnginePage() {
                       {item.discount}
                     </p>
 
-                    <div className="mt-1 flex items-center gap-2 text-sm text-gray-400">
+                    <div className="mt-1 flex items-center gap-2 text-sm text-[var(--muted-text-color)]">
 
                       <Clock3 size={14} />
 
@@ -249,7 +249,7 @@ export default function OfferEnginePage() {
 
         </p>
 
-        <button className="mt-6 rounded-2xl bg-black px-6 py-3 font-bold text-[var(--button-text-color)]">
+        <button className="mt-6 rounded-2xl bg-[var(--card-color)] px-6 py-3 font-bold text-[var(--button-text-color)]">
 
           Generate AI Offer
 
@@ -282,7 +282,7 @@ function StatCard({
 
       </div>
 
-      <p className="mt-4 text-sm text-gray-400">
+      <p className="mt-4 text-sm text-[var(--muted-text-color)]">
         {title}
       </p>
 

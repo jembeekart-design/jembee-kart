@@ -87,7 +87,7 @@ interface ModalProps {
 function TransferConfirmModal({ isOpen, onClose, onConfirm, amount }: ModalProps) {
   if (!isOpen) return null;
   return (
-    <div className="fixed inset-0 z-[100] flex items-end sm:items-center justify-center bg-black/60 backdrop-blur-sm p-4">
+    <div className="fixed inset-0 z-[100] flex items-end sm:items-center justify-center bg-[var(--card-color)]/60 backdrop-blur-sm p-4">
       <div className="w-full max-w-sm rounded-[32px] bg-[var(--card-color)] p-6 shadow-xl animate-in fade-in slide-in-from-bottom duration-200">
         <div className="mx-auto h-1 w-12 rounded-full bg-slate-200 sm:hidden mb-4" />
         <h3 className="text-lg font-black text-slate-800">Confirm Transfer</h3>
@@ -463,7 +463,7 @@ export default function CashbackPage() {
                 <div key={item.id} className="rounded-2xl bg-[var(--card-color)] p-4 shadow-sm border border-slate-100 flex items-center justify-between">
                   <div className="flex items-center gap-3">
                     <div className={`flex h-11 w-11 shrink-0 items-center justify-center rounded-full ${
-                      item.status === "failed" ? "bg-red-50 text-red-600" : item.status === "pending" ? "bg-amber-50 text-amber-600" : "bg-emerald-50 text-emerald-600"
+                      item.status === "failed" ? "bg-red-50 text-[var(--danger-color)]" : item.status === "pending" ? "bg-amber-50 text-amber-600" : "bg-emerald-50 text-emerald-600"
                     }`}>
                       {item.type === "reward" ? <Trophy size={16} /> : item.type === "bonus" ? <Zap size={16} /> : item.type === "refund" ? <RotateCcw size={16} /> : item.type === "cashback_transfer" ? <ArrowUpRight size={16} /> : <Gift size={16} />}
                     </div>
@@ -493,7 +493,7 @@ export default function CashbackPage() {
                   </div>
 
                   <div className="text-right pl-2 shrink-0">
-                    <p className={`text-[15px] font-black tracking-tight ${item.status === "failed" ? "text-red-500 line-through opacity-50" : item.status === "pending" ? "text-amber-500" : "text-emerald-600"}`}>
+                    <p className={`text-[15px] font-black tracking-tight ${item.status === "failed" ? "text-[var(--danger-color)] line-through opacity-50" : item.status === "pending" ? "text-amber-500" : "text-emerald-600"}`}>
                       {item.status === "failed" ? "" : item.status === "pending" ? "" : item.type === "cashback_transfer" ? "-" : "+"}₹{item.amount}
                     </p>
                     <p className="text-[9px] font-black uppercase tracking-wider text-slate-400">{item.status}</p>

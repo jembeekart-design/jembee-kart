@@ -134,7 +134,7 @@ export default function FirestorePage() {
               Firestore Manager
             </h1>
 
-            <p className="mt-1 text-sm text-gray-400">
+            <p className="mt-1 text-sm text-[var(--muted-text-color)]">
               Manage Firebase Firestore collections
             </p>
 
@@ -166,7 +166,7 @@ export default function FirestorePage() {
             className="text-cyan-400"
           />
 
-          <p className="mt-4 text-sm text-gray-400">
+          <p className="mt-4 text-sm text-[var(--muted-text-color)]">
             Collections
           </p>
 
@@ -183,7 +183,7 @@ export default function FirestorePage() {
             className="text-violet-400"
           />
 
-          <p className="mt-4 text-sm text-gray-400">
+          <p className="mt-4 text-sm text-[var(--muted-text-color)]">
             Total Documents
           </p>
 
@@ -200,7 +200,7 @@ export default function FirestorePage() {
             className="text-green-400"
           />
 
-          <p className="mt-4 text-sm text-gray-400">
+          <p className="mt-4 text-sm text-[var(--muted-text-color)]">
             Firestore Status
           </p>
 
@@ -222,11 +222,11 @@ export default function FirestorePage() {
 
         <div className="mt-5 flex gap-4">
 
-          <div className="flex flex-1 items-center gap-3 rounded-2xl bg-black px-4 py-4">
+          <div className="flex flex-1 items-center gap-3 rounded-2xl bg-[var(--card-color)] px-4 py-4">
 
             <FileJson
               size={20}
-              className="text-gray-400"
+              className="text-[var(--muted-text-color)]"
             />
 
             <input
@@ -278,7 +278,7 @@ export default function FirestorePage() {
                     {item.name}
                   </h2>
 
-                  <p className="mt-2 text-sm text-gray-400">
+                  <p className="mt-2 text-sm text-[var(--muted-text-color)]">
                     Documents:
                     {" "}
                     {item.documents}

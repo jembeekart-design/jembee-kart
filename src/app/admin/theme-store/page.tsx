@@ -62,7 +62,7 @@ export default function ThemeStorePage() {
               Theme Store
             </h1>
 
-            <p className="mt-1 text-sm text-gray-400">
+            <p className="mt-1 text-sm text-[var(--muted-text-color)]">
               Browse & install premium themes
             </p>
 
@@ -86,7 +86,7 @@ export default function ThemeStorePage() {
 
         <Search
           size={20}
-          className="text-gray-400"
+          className="text-[var(--muted-text-color)]"
         />
 
         <input
@@ -158,7 +158,7 @@ export default function ThemeStorePage() {
                       {item.title}
                     </h2>
 
-                    <p className="mt-1 text-sm text-gray-400">
+                    <p className="mt-1 text-sm text-[var(--muted-text-color)]">
                       {item.category}
                     </p>
 
@@ -182,7 +182,7 @@ export default function ThemeStorePage() {
                       {item.downloads}
                     </p>
 
-                    <p className="text-sm text-gray-400">
+                    <p className="text-sm text-[var(--muted-text-color)]">
                       Downloads
                     </p>
 
@@ -236,7 +236,7 @@ export default function ThemeStorePage() {
 
         </p>
 
-        <button className="mt-6 rounded-2xl bg-black px-6 py-3 font-bold text-[var(--button-text-color)]">
+        <button className="mt-6 rounded-2xl bg-[var(--card-color)] px-6 py-3 font-bold text-[var(--button-text-color)]">
 
           Generate AI Theme
 
@@ -269,7 +269,7 @@ function StatCard({
 
       </div>
 
-      <p className="mt-4 text-sm text-gray-400">
+      <p className="mt-4 text-sm text-[var(--muted-text-color)]">
         {title}
       </p>
 

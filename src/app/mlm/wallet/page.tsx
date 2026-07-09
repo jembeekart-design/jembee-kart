@@ -182,7 +182,7 @@ export default function MLMWalletPage() {
 
             <BadgeIndianRupee
               size={28}
-              className="text-green-600"
+              className="text-[var(--success-color)]"
             />
 
             <h3 className="mt-3 text-[24px] font-black">
@@ -393,7 +393,7 @@ export default function MLMWalletPage() {
                     items-center
                     justify-between
                     rounded-2xl
-                    bg-gray-50
+                    bg-[var(--background-color)]
                     p-4
                   "
                 >

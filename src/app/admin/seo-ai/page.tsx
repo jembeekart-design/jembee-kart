@@ -117,7 +117,7 @@ export default function SEOAIPage() {
             AI SEO Generator
           </h1>
 
-          <p className="mt-1 text-sm text-gray-400">
+          <p className="mt-1 text-sm text-[var(--muted-text-color)]">
             Generate SEO title, description & keywords
           </p>
 
@@ -303,7 +303,7 @@ function InputCard({
           )
         }
         placeholder={placeholder}
-        className="w-full rounded-2xl bg-black px-5 py-4 outline-none"
+        className="w-full rounded-2xl bg-[var(--card-color)] px-5 py-4 outline-none"
       />
 
     </div>
@@ -352,7 +352,7 @@ function OutputCard({
 
       </div>
 
-      <div className="rounded-2xl bg-black/30 p-4">
+      <div className="rounded-2xl bg-[var(--card-color)]/30 p-4">
 
         <p className="whitespace-pre-wrap text-gray-300">
 

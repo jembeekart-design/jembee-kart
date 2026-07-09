@@ -79,7 +79,7 @@ OrdersPage() {
           z-50
           border-b
           border-white/10
-          bg-black/70
+          bg-[var(--card-color)]/70
           backdrop-blur-xl
         "
       >
@@ -139,7 +139,7 @@ OrdersPage() {
               <p
                 className="
                   text-xs
-                  text-gray-400
+                  text-[var(--muted-text-color)]
                 "
               >
 
@@ -248,7 +248,7 @@ OrdersPage() {
                       className="
                         mt-1
                         text-xs
-                        text-gray-400
+                        text-[var(--muted-text-color)]
                       "
                     >
 
@@ -287,7 +287,7 @@ OrdersPage() {
                     items-center
                     justify-between
                     rounded-2xl
-                    bg-black/30
+                    bg-[var(--card-color)]/30
                     px-4
                     py-4
                   "
@@ -349,7 +349,7 @@ OrdersPage() {
                       <p
                         className="
                           text-xs
-                          text-gray-400
+                          text-[var(--muted-text-color)]
                         "
                       >
 

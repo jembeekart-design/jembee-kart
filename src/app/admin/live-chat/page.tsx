@@ -117,7 +117,7 @@ export default function LiveChatPage() {
 
     return (
 
-      <div className="flex min-h-screen items-center justify-center bg-black text-[var(--button-text-color)]">
+      <div className="flex min-h-screen items-center justify-center bg-[var(--card-color)] text-[var(--button-text-color)]">
 
         Loading Chat...
 
@@ -146,7 +146,7 @@ export default function LiveChatPage() {
             Live Chat Support
           </h1>
 
-          <p className="mt-1 text-sm text-gray-400">
+          <p className="mt-1 text-sm text-[var(--muted-text-color)]">
             Real-time customer support
           </p>
 
@@ -160,7 +160,7 @@ export default function LiveChatPage() {
 
         {messages.length === 0 && (
 
-          <div className="flex h-full items-center justify-center text-gray-400">
+          <div className="flex h-full items-center justify-center text-[var(--muted-text-color)]">
 
             No Messages Yet
 
@@ -192,7 +192,7 @@ export default function LiveChatPage() {
 
                 <div className="mb-2 flex items-center gap-2">
 
-                  <div className="flex h-8 w-8 items-center justify-center rounded-full bg-black/20">
+                  <div className="flex h-8 w-8 items-center justify-center rounded-full bg-[var(--card-color)]/20">
 
                     {msg.role ===
                     "admin" ? (
@@ -245,7 +245,7 @@ export default function LiveChatPage() {
               )
             }
             placeholder="Type message..."
-            className="h-14 flex-1 rounded-2xl bg-black px-5 outline-none"
+            className="h-14 flex-1 rounded-2xl bg-[var(--card-color)] px-5 outline-none"
           />
 
           <button

@@ -64,7 +64,7 @@ export default function AppearancePage() {
               Appearance Settings
             </h1>
 
-            <p className="mt-1 text-sm text-gray-400">
+            <p className="mt-1 text-sm text-[var(--muted-text-color)]">
               Customize app design & theme
             </p>
 
@@ -119,7 +119,7 @@ export default function AppearancePage() {
               className={`rounded-2xl p-4 ${
                 theme === "light"
                   ? "border-2 border-white"
-                  : "bg-black"
+                  : "bg-[var(--card-color)]"
               }`}
             >
 
@@ -141,7 +141,7 @@ export default function AppearancePage() {
               className={`rounded-2xl p-4 ${
                 theme === "dark"
                   ? "border-2 border-white"
-                  : "bg-black"
+                  : "bg-[var(--card-color)]"
               }`}
             >
 
@@ -163,7 +163,7 @@ export default function AppearancePage() {
               className={`rounded-2xl p-4 ${
                 theme === "system"
                   ? "border-2 border-white"
-                  : "bg-black"
+                  : "bg-[var(--card-color)]"
               }`}
             >
 
@@ -211,7 +211,7 @@ export default function AppearancePage() {
                   e.target.value
                 )
               }
-              className="flex-1 rounded-2xl border border-white/10 bg-black px-4 py-4 outline-none"
+              className="flex-1 rounded-2xl border border-white/10 bg-[var(--card-color)] px-4 py-4 outline-none"
             />
 
           </div>
@@ -247,7 +247,7 @@ export default function AppearancePage() {
                   e.target.value
                 )
               }
-              className="flex-1 rounded-2xl border border-white/10 bg-black px-4 py-4 outline-none"
+              className="flex-1 rounded-2xl border border-white/10 bg-[var(--card-color)] px-4 py-4 outline-none"
             />
 
           </div>

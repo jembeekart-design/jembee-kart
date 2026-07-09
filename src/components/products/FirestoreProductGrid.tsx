@@ -314,7 +314,7 @@ export default function FirestoreProductGrid() {
             bg-[#f8f8f8]
             text-sm
             font-black
-            text-gray-800
+            text-[var(--text-color)]
           "
         >
 
@@ -342,7 +342,7 @@ export default function FirestoreProductGrid() {
             bg-[#f8f8f8]
             text-sm
             font-black
-            text-gray-800
+            text-[var(--text-color)]
           "
         >
 

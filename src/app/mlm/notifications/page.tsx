@@ -247,7 +247,7 @@ export default function MLMNotificationsPage() {
 
                         </h3>
 
-                        <p className="text-[10px] font-bold text-gray-400">
+                        <p className="text-[10px] font-bold text-[var(--muted-text-color)]">
 
                           {notification.time}
 

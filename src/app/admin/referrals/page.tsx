@@ -80,7 +80,7 @@ export default function ReferralsPage() {
             Referral System
           </h1>
 
-          <p className="mt-1 text-sm text-gray-400">
+          <p className="mt-1 text-sm text-[var(--muted-text-color)]">
             Manage referral earnings & codes
           </p>
 
@@ -99,7 +99,7 @@ export default function ReferralsPage() {
             className="text-pink-400"
           />
 
-          <p className="mt-4 text-sm text-gray-400">
+          <p className="mt-4 text-sm text-[var(--muted-text-color)]">
             Total Referrals
           </p>
 
@@ -116,7 +116,7 @@ export default function ReferralsPage() {
             className="text-green-400"
           />
 
-          <p className="mt-4 text-sm text-gray-400">
+          <p className="mt-4 text-sm text-[var(--muted-text-color)]">
             Total Earnings
           </p>
 
@@ -133,7 +133,7 @@ export default function ReferralsPage() {
             className="text-cyan-400"
           />
 
-          <p className="mt-4 text-sm text-gray-400">
+          <p className="mt-4 text-sm text-[var(--muted-text-color)]">
             Active Users
           </p>
 
@@ -165,7 +165,7 @@ export default function ReferralsPage() {
                     {item.user}
                   </h2>
 
-                  <p className="mt-2 text-sm text-gray-400">
+                  <p className="mt-2 text-sm text-[var(--muted-text-color)]">
                     Total Joins:
                     {" "}
                     {item.joins}
@@ -179,7 +179,7 @@ export default function ReferralsPage() {
                     {item.earnings}
                   </h3>
 
-                  <p className="mt-1 text-sm text-gray-400">
+                  <p className="mt-1 text-sm text-[var(--muted-text-color)]">
                     Earnings
                   </p>
 
@@ -187,11 +187,11 @@ export default function ReferralsPage() {
 
               </div>
 
-              <div className="mt-5 flex items-center justify-between rounded-2xl bg-black/30 p-4">
+              <div className="mt-5 flex items-center justify-between rounded-2xl bg-[var(--card-color)]/30 p-4">
 
                 <div>
 
-                  <p className="text-sm text-gray-400">
+                  <p className="text-sm text-[var(--muted-text-color)]">
                     Referral Code
                   </p>
 

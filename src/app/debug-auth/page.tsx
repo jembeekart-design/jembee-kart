@@ -134,7 +134,7 @@ export default function DebugAuthPage() {
   }
 
   return (
-    <main className="min-h-screen bg-black text-[var(--button-text-color)] p-6">
+    <main className="min-h-screen bg-[var(--card-color)] text-[var(--button-text-color)] p-6">
       <h1 className="text-4xl font-black mb-6">
         JembeeKart Auth Debug
       </h1>

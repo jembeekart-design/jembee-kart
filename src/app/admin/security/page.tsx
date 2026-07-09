@@ -60,7 +60,7 @@ export default function SecurityPage() {
               Security Settings
             </h1>
 
-            <p className="mt-1 text-sm text-gray-400">
+            <p className="mt-1 text-sm text-[var(--muted-text-color)]">
               Manage admin security
             </p>
 
@@ -110,7 +110,7 @@ export default function SecurityPage() {
                 e.target.value
               )
             }
-            className="w-full rounded-2xl border border-white/10 bg-black px-4 py-4 text-[var(--button-text-color)] outline-none"
+            className="w-full rounded-2xl border border-white/10 bg-[var(--card-color)] px-4 py-4 text-[var(--button-text-color)] outline-none"
           />
 
         </div>
@@ -147,7 +147,7 @@ export default function SecurityPage() {
                 )
               }
               placeholder="Enter new password"
-              className="w-full rounded-2xl border border-white/10 bg-black px-4 py-4 pr-14 text-[var(--button-text-color)] outline-none"
+              className="w-full rounded-2xl border border-white/10 bg-[var(--card-color)] px-4 py-4 pr-14 text-[var(--button-text-color)] outline-none"
             />
 
             <button
@@ -183,7 +183,7 @@ export default function SecurityPage() {
                 Two Factor Authentication
               </h2>
 
-              <p className="mt-1 text-sm text-gray-400">
+              <p className="mt-1 text-sm text-[var(--muted-text-color)]">
                 Extra login security
               </p>
 

@@ -70,7 +70,7 @@ export default function CacheManagerPage() {
               Cache Manager
             </h1>
 
-            <p className="mt-1 text-sm text-gray-400">
+            <p className="mt-1 text-sm text-[var(--muted-text-color)]">
               Manage app cache & optimization
             </p>
 
@@ -130,7 +130,7 @@ export default function CacheManagerPage() {
               Automatic Cache Cleanup
             </h2>
 
-            <p className="mt-1 text-sm text-gray-400">
+            <p className="mt-1 text-sm text-[var(--muted-text-color)]">
               Automatically clear unused cache files
             </p>
 
@@ -182,7 +182,7 @@ export default function CacheManagerPage() {
                     {item.name}
                   </h2>
 
-                  <p className="mt-2 text-sm text-gray-400">
+                  <p className="mt-2 text-sm text-[var(--muted-text-color)]">
                     Cache Size:
                     {" "}
                     {item.size}
@@ -274,7 +274,7 @@ export default function CacheManagerPage() {
 
         </p>
 
-        <button className="mt-6 rounded-2xl bg-black px-6 py-3 font-bold text-[var(--button-text-color)]">
+        <button className="mt-6 rounded-2xl bg-[var(--card-color)] px-6 py-3 font-bold text-[var(--button-text-color)]">
 
           Run Optimization
 
@@ -367,7 +367,7 @@ function StatCard({
 
       </div>
 
-      <p className="mt-4 text-sm text-gray-400">
+      <p className="mt-4 text-sm text-[var(--muted-text-color)]">
         {title}
       </p>
 

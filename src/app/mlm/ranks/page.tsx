@@ -350,7 +350,7 @@ export default function MLMRanksPage() {
 
                     <BadgeCheck
                       size={22}
-                      className="text-green-600"
+                      className="text-[var(--success-color)]"
                     />
 
                     <p className="text-[14px] font-bold">
@@ -391,7 +391,7 @@ export default function MLMRanksPage() {
 
             <Trophy
               size={26}
-              className="text-yellow-600"
+              className="text-[var(--warning-color)]"
             />
 
             <h2 className="text-[22px] font-black">
@@ -417,7 +417,7 @@ export default function MLMRanksPage() {
 
               <Sparkles
                 size={24}
-                className="text-yellow-600"
+                className="text-[var(--warning-color)]"
               />
 
               <div>

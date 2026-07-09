@@ -600,7 +600,7 @@ export default function AdminPage() {
                 !mobilePreview
               );
             }}
-            className="flex items-center gap-3 rounded-2xl bg-black px-6 py-4 font-black text-[var(--button-text-color)]"
+            className="flex items-center gap-3 rounded-2xl bg-[var(--card-color)] px-6 py-4 font-black text-[var(--button-text-color)]"
           >
             {mobilePreview ? (
               <Smartphone />

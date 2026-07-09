@@ -75,7 +75,7 @@ export default function SystemSecurityPage() {
               System Security
             </h1>
 
-            <p className="mt-1 text-sm text-gray-400">
+            <p className="mt-1 text-sm text-[var(--muted-text-color)]">
               Security protection, firewall & access monitoring
             </p>
 
@@ -252,7 +252,7 @@ export default function SystemSecurityPage() {
                       {item.event}
                     </h3>
 
-                    <p className="mt-1 text-sm text-gray-400">
+                    <p className="mt-1 text-sm text-[var(--muted-text-color)]">
                       {item.user}
                     </p>
 
@@ -330,7 +330,7 @@ export default function SystemSecurityPage() {
 
         </p>
 
-        <button className="mt-6 rounded-2xl bg-black px-5 py-3 font-bold text-[var(--button-text-color)]">
+        <button className="mt-6 rounded-2xl bg-[var(--card-color)] px-5 py-3 font-bold text-[var(--button-text-color)]">
 
           Open Security Center
 
@@ -393,7 +393,7 @@ function StatCard({
 
       </div>
 
-      <p className="mt-4 text-sm text-gray-400">
+      <p className="mt-4 text-sm text-[var(--muted-text-color)]">
         {title}
       </p>
 
@@ -494,7 +494,7 @@ function InfoCard({
         {value}
       </h2>
 
-      <p className="mt-2 text-sm text-gray-400">
+      <p className="mt-2 text-sm text-[var(--muted-text-color)]">
         {title}
       </p>
 

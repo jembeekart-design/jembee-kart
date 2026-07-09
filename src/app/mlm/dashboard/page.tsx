@@ -116,8 +116,8 @@ export default function MLMDashboardPage() {
 
   const stats = [
     { title: "Total Team", value: userData?.teamSize || 0, icon: Users, color: "text-violet-700" },
-    { title: "Today's Income", value: `₹${formattedTodayIncome}`, icon: Sparkles, color: "text-green-600" },
-    { title: "Rank", value: userData?.rank || "Bronze Member", icon: Crown, color: "text-yellow-600" },
+    { title: "Today's Income", value: `₹${formattedTodayIncome}`, icon: Sparkles, color: "text-[var(--success-color)]" },
+    { title: "Rank", value: userData?.rank || "Bronze Member", icon: Crown, color: "text-[var(--warning-color)]" },
     { title: "Rewards", value: userData?.rewardCount || 0, icon: Trophy, color: "text-orange-600" }
   ];
 
@@ -129,7 +129,7 @@ export default function MLMDashboardPage() {
           <div>
             <h1 className="text-[28px] font-black text-violet-700">MLM Dashboard</h1>
             <p className="text-[11px] text-[var(--muted-text-color)]">
-              Welcome Back, <span className="font-bold text-gray-800">{userData?.name || "Partner"}</span> 👋
+              Welcome Back, <span className="font-bold text-[var(--text-color)]">{userData?.name || "Partner"}</span> 👋
             </p>
           </div>
 
@@ -209,7 +209,7 @@ export default function MLMDashboardPage() {
             return (
               <div key={index} className="rounded-2xl bg-[var(--card-color)] p-4 shadow-sm">
                 <Icon size={28} className={stat.color} />
-                <h3 className="mt-3 text-[26px] font-black tracking-tight text-gray-800">{stat.value}</h3>
+                <h3 className="mt-3 text-[26px] font-black tracking-tight text-[var(--text-color)]">{stat.value}</h3>
                 <p className="text-[12px] text-[var(--muted-text-color)]">{stat.title}</p>
               </div>
             );
@@ -245,18 +245,18 @@ export default function MLMDashboardPage() {
       <section className="mt-6 px-4">
         <div className="rounded-[30px] bg-[var(--card-color)] p-5 shadow-sm">
           <div className="flex items-center gap-3">
-            <Medal size={24} className="text-yellow-600" />
+            <Medal size={24} className="text-[var(--warning-color)]" />
             <h2 className="text-[22px] font-black">Performance</h2>
           </div>
 
-          <div className="mt-5 flex h-48 items-end gap-2 px-2 border-b border-gray-100 pb-1">
+          <div className="mt-5 flex h-48 items-end gap-2 px-2 border-b border-[var(--border-color)] pb-1">
             <div style={{ height: `${performanceMetrics[0]}%` }} className="w-full rounded-t-xl bg-violet-200 transition-all duration-500" title="Team Weightage" />
             <div style={{ height: `${performanceMetrics[1]}%` }} className="w-full rounded-t-xl bg-violet-400 transition-all duration-500" title="Rewards Scaler" />
             <div style={{ height: `${performanceMetrics[2]}%` }} className="w-full rounded-t-xl bg-fuchsia-400 transition-all duration-500" title="Today Velocity" />
             <div style={{ height: `${performanceMetrics[3]}%` }} className="w-full rounded-t-xl bg-orange-400 transition-all duration-500" title="Compound Velocity" />
             <div style={{ height: `${performanceMetrics[4]}%` }} className="w-full rounded-t-xl bg-violet-700 transition-all duration-500" title="Earnings Matrix" />
           </div>
-          <div className="flex justify-between text-[9px] font-black uppercase text-gray-400 mt-2 px-1">
+          <div className="flex justify-between text-[9px] font-black uppercase text-[var(--muted-text-color)] mt-2 px-1">
             <span>Team</span>
             <span>Rwd</span>
             <span>Td.Inc</span>
@@ -270,8 +270,8 @@ export default function MLMDashboardPage() {
       <section className="mt-6 px-4">
         <div className="space-y-3">
           {[
-            { href: "/mlm/earnings", icon: Sparkles, title: "Earnings", desc: "MLM income details", color: "text-green-600" },
-            { href: "/mlm/leaderboard", icon: Trophy, title: "Leaderboard", desc: "Top MLM performers", color: "text-yellow-600" },
+            { href: "/mlm/earnings", icon: Sparkles, title: "Earnings", desc: "MLM income details", color: "text-[var(--success-color)]" },
+            { href: "/mlm/leaderboard", icon: Trophy, title: "Leaderboard", desc: "Top MLM performers", color: "text-[var(--warning-color)]" },
             { href: "/mlm/support", icon: ShieldCheck, title: "MLM Support", desc: "Help & live support", color: "text-orange-600" }
           ].map((item, idx) => {
             const ItemIcon = item.icon;
@@ -284,7 +284,7 @@ export default function MLMDashboardPage() {
                     <p className="text-[11px] text-[var(--muted-text-color)]">{item.desc}</p>
                   </div>
                 </div>
-                <Star size={20} className="text-gray-400" />
+                <Star size={20} className="text-[var(--muted-text-color)]" />
               </Link>
             );
           })}

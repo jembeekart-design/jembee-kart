@@ -18,7 +18,7 @@ export default function TipsSection({
 
         <div className="mb-6 w-full min-w-0">
 
-          <h2 className="break-words text-3xl font-black leading-tight text-gray-800 md:text-5xl">
+          <h2 className="break-words text-3xl font-black leading-tight text-[var(--text-color)] md:text-5xl">
             AI Business Tips
           </h2>
 

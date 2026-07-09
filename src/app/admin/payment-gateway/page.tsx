@@ -72,7 +72,7 @@ export default function PaymentGatewayPage() {
               Payment Gateway
             </h1>
 
-            <p className="mt-1 text-sm text-gray-400">
+            <p className="mt-1 text-sm text-[var(--muted-text-color)]">
               Manage payment systems & transaction gateways
             </p>
 
@@ -126,7 +126,7 @@ export default function PaymentGatewayPage() {
 
         <Search
           size={20}
-          className="text-gray-400"
+          className="text-[var(--muted-text-color)]"
         />
 
         <input
@@ -187,7 +187,7 @@ export default function PaymentGatewayPage() {
                       {item.name}
                     </h2>
 
-                    <p className="mt-1 text-sm text-gray-400">
+                    <p className="mt-1 text-sm text-[var(--muted-text-color)]">
                       {item.method}
                     </p>
 
@@ -324,7 +324,7 @@ export default function PaymentGatewayPage() {
 
         </p>
 
-        <button className="mt-6 rounded-2xl bg-black px-5 py-3 font-bold text-[var(--button-text-color)]">
+        <button className="mt-6 rounded-2xl bg-[var(--card-color)] px-5 py-3 font-bold text-[var(--button-text-color)]">
 
           Open Payment Center
 
@@ -387,7 +387,7 @@ function StatCard({
 
       </div>
 
-      <p className="mt-4 text-sm text-gray-400">
+      <p className="mt-4 text-sm text-[var(--muted-text-color)]">
         {title}
       </p>
 

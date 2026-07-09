@@ -71,7 +71,7 @@ export default function FeatureFlagsEditDialog({
 
   return (
 
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 p-4">
+    <div className="fixed inset-0 z-50 flex items-center justify-center bg-[var(--card-color)]/60 p-4">
 
       <div className="w-full max-w-lg rounded-xl bg-slate-900 p-6">
 

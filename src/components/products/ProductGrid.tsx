@@ -143,7 +143,7 @@ export default function ProductGrid({
             border-[var(--border-color)]
             text-sm
             font-bold
-            text-gray-800
+            text-[var(--text-color)]
           "
         >
 
@@ -166,7 +166,7 @@ export default function ProductGrid({
             gap-2
             text-sm
             font-bold
-            text-gray-800
+            text-[var(--text-color)]
           "
         >
 

@@ -164,7 +164,7 @@ PermissionPage() {
         flex
         min-h-screen
         flex-col
-        bg-black
+        bg-[var(--card-color)]
         px-5
         py-8
         text-[var(--button-text-color)]
@@ -218,7 +218,7 @@ PermissionPage() {
             mt-4
             text-sm
             leading-7
-            text-gray-400
+            text-[var(--muted-text-color)]
           "
         >
 
@@ -304,7 +304,7 @@ PermissionPage() {
                   className="
                     mt-1
                     text-xs
-                    text-gray-400
+                    text-[var(--muted-text-color)]
                   "
                 >
 
@@ -411,7 +411,7 @@ PermissionPage() {
                   className="
                     mt-1
                     text-xs
-                    text-gray-400
+                    text-[var(--muted-text-color)]
                   "
                 >
 
@@ -518,7 +518,7 @@ PermissionPage() {
                   className="
                     mt-1
                     text-xs
-                    text-gray-400
+                    text-[var(--muted-text-color)]
                   "
                 >
 

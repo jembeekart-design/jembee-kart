@@ -90,7 +90,7 @@ export default function MarketingPage() {
 
           </h1>
 
-          <p className="mt-1 text-sm text-gray-400">
+          <p className="mt-1 text-sm text-[var(--muted-text-color)]">
 
             Manage all marketing campaigns
 
@@ -161,7 +161,7 @@ export default function MarketingPage() {
 
               </h2>
 
-              <p className="mt-2 text-sm text-gray-400">
+              <p className="mt-2 text-sm text-[var(--muted-text-color)]">
 
                 {item.desc}
 
@@ -288,7 +288,7 @@ function StatsCard({
 
       </div>
 
-      <p className="mt-4 text-sm text-gray-400">
+      <p className="mt-4 text-sm text-[var(--muted-text-color)]">
 
         {title}
 
@@ -344,7 +344,7 @@ function CampaignItem({
 
   return (
 
-    <div className="flex items-center justify-between rounded-2xl bg-black/30 p-5">
+    <div className="flex items-center justify-between rounded-2xl bg-[var(--card-color)]/30 p-5">
 
       <div>
 
@@ -354,7 +354,7 @@ function CampaignItem({
 
         </h3>
 
-        <p className="mt-1 text-sm text-gray-400">
+        <p className="mt-1 text-sm text-[var(--muted-text-color)]">
 
           Marketing campaign is active
 

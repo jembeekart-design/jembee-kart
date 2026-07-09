@@ -106,7 +106,7 @@ export default function SubAdminsPage() {
             Sub Admins
           </h1>
 
-          <p className="mt-1 text-sm text-gray-400">
+          <p className="mt-1 text-sm text-[var(--muted-text-color)]">
             Manage admin access & roles
           </p>
 
@@ -124,11 +124,11 @@ export default function SubAdminsPage() {
 
         <div className="mt-5 space-y-4">
 
-          <div className="flex items-center gap-3 rounded-2xl bg-black px-4 py-4">
+          <div className="flex items-center gap-3 rounded-2xl bg-[var(--card-color)] px-4 py-4">
 
             <User
               size={20}
-              className="text-gray-400"
+              className="text-[var(--muted-text-color)]"
             />
 
             <input
@@ -145,11 +145,11 @@ export default function SubAdminsPage() {
 
           </div>
 
-          <div className="flex items-center gap-3 rounded-2xl bg-black px-4 py-4">
+          <div className="flex items-center gap-3 rounded-2xl bg-[var(--card-color)] px-4 py-4">
 
             <Mail
               size={20}
-              className="text-gray-400"
+              className="text-[var(--muted-text-color)]"
             />
 
             <input
@@ -166,11 +166,11 @@ export default function SubAdminsPage() {
 
           </div>
 
-          <div className="flex items-center gap-3 rounded-2xl bg-black px-4 py-4">
+          <div className="flex items-center gap-3 rounded-2xl bg-[var(--card-color)] px-4 py-4">
 
             <Lock
               size={20}
-              className="text-gray-400"
+              className="text-[var(--muted-text-color)]"
             />
 
             <input
@@ -222,7 +222,7 @@ export default function SubAdminsPage() {
                     {item.name}
                   </h2>
 
-                  <p className="mt-2 text-sm text-gray-400 break-all">
+                  <p className="mt-2 text-sm text-[var(--muted-text-color)] break-all">
                     {item.email}
                   </p>
 

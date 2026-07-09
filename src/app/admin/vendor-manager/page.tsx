@@ -77,7 +77,7 @@ export default function VendorManagerPage() {
               Vendor Manager
             </h1>
 
-            <p className="mt-1 text-sm text-gray-400">
+            <p className="mt-1 text-sm text-[var(--muted-text-color)]">
               Manage sellers, vendors & marketplace stores
             </p>
 
@@ -131,7 +131,7 @@ export default function VendorManagerPage() {
 
           <Search
             size={20}
-            className="text-gray-400"
+            className="text-[var(--muted-text-color)]"
           />
 
           <input
@@ -185,7 +185,7 @@ export default function VendorManagerPage() {
                       {item.name}
                     </h2>
 
-                    <p className="mt-1 text-sm text-gray-400">
+                    <p className="mt-1 text-sm text-[var(--muted-text-color)]">
                       Owner:
                       {" "}
                       {item.owner}
@@ -340,7 +340,7 @@ export default function VendorManagerPage() {
 
         </p>
 
-        <button className="mt-6 rounded-2xl bg-black px-5 py-3 font-bold text-[var(--button-text-color)]">
+        <button className="mt-6 rounded-2xl bg-[var(--card-color)] px-5 py-3 font-bold text-[var(--button-text-color)]">
 
           Manage Marketplace
 
@@ -403,7 +403,7 @@ function StatCard({
 
       </div>
 
-      <p className="mt-4 text-sm text-gray-400">
+      <p className="mt-4 text-sm text-[var(--muted-text-color)]">
         {title}
       </p>
 

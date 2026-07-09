@@ -117,7 +117,7 @@ export default function PagesManagerPage() {
             Pages Manager
           </h1>
 
-          <p className="mt-1 text-sm text-gray-400">
+          <p className="mt-1 text-sm text-[var(--muted-text-color)]">
             Manage custom website pages
           </p>
 
@@ -135,11 +135,11 @@ export default function PagesManagerPage() {
 
         <div className="mt-5 space-y-4">
 
-          <div className="flex items-center gap-3 rounded-2xl bg-black px-4 py-4">
+          <div className="flex items-center gap-3 rounded-2xl bg-[var(--card-color)] px-4 py-4">
 
             <FileText
               size={20}
-              className="text-gray-400"
+              className="text-[var(--muted-text-color)]"
             />
 
             <input
@@ -156,11 +156,11 @@ export default function PagesManagerPage() {
 
           </div>
 
-          <div className="flex items-center gap-3 rounded-2xl bg-black px-4 py-4">
+          <div className="flex items-center gap-3 rounded-2xl bg-[var(--card-color)] px-4 py-4">
 
             <LayoutTemplate
               size={20}
-              className="text-gray-400"
+              className="text-[var(--muted-text-color)]"
             />
 
             <input
@@ -212,7 +212,7 @@ export default function PagesManagerPage() {
                     {item.title}
                   </h2>
 
-                  <p className="mt-2 text-sm text-gray-400">
+                  <p className="mt-2 text-sm text-[var(--muted-text-color)]">
                     {item.slug}
                   </p>
 

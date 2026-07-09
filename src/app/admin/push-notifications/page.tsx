@@ -168,7 +168,7 @@ export default function PushNotificationsPage() {
 
     return (
 
-      <div className="flex min-h-screen items-center justify-center bg-black text-[var(--button-text-color)]">
+      <div className="flex min-h-screen items-center justify-center bg-[var(--card-color)] text-[var(--button-text-color)]">
 
         Loading...
 
@@ -197,7 +197,7 @@ export default function PushNotificationsPage() {
             Push Notifications
           </h1>
 
-          <p className="mt-1 text-sm text-gray-400">
+          <p className="mt-1 text-sm text-[var(--muted-text-color)]">
             Send live app notifications
           </p>
 
@@ -219,13 +219,13 @@ export default function PushNotificationsPage() {
 
           <div>
 
-            <label className="mb-2 block text-sm text-gray-400">
+            <label className="mb-2 block text-sm text-[var(--muted-text-color)]">
 
               Notification Title
 
             </label>
 
-            <div className="flex items-center gap-3 rounded-2xl bg-black px-4">
+            <div className="flex items-center gap-3 rounded-2xl bg-[var(--card-color)] px-4">
 
               <Smartphone size={18} />
 
@@ -246,13 +246,13 @@ export default function PushNotificationsPage() {
 
           <div>
 
-            <label className="mb-2 block text-sm text-gray-400">
+            <label className="mb-2 block text-sm text-[var(--muted-text-color)]">
 
               Notification Message
 
             </label>
 
-            <div className="flex items-start gap-3 rounded-2xl bg-black px-4 py-4">
+            <div className="flex items-start gap-3 rounded-2xl bg-[var(--card-color)] px-4 py-4">
 
               <MessageSquare size={18} />
 
@@ -273,13 +273,13 @@ export default function PushNotificationsPage() {
 
           <div>
 
-            <label className="mb-2 block text-sm text-gray-400">
+            <label className="mb-2 block text-sm text-[var(--muted-text-color)]">
 
               Audience
 
             </label>
 
-            <div className="flex items-center gap-3 rounded-2xl bg-black px-4">
+            <div className="flex items-center gap-3 rounded-2xl bg-[var(--card-color)] px-4">
 
               <Globe size={18} />
 
@@ -290,7 +290,7 @@ export default function PushNotificationsPage() {
                     e.target.value
                   )
                 }
-                className="w-full bg-black py-4 outline-none"
+                className="w-full bg-[var(--card-color)] py-4 outline-none"
               >
 
                 <option>

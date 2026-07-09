@@ -67,7 +67,7 @@ export default function ServerStatusPage() {
               Server Status
             </h1>
 
-            <p className="mt-1 text-sm text-gray-400">
+            <p className="mt-1 text-sm text-[var(--muted-text-color)]">
               Monitor server uptime & infrastructure
             </p>
 
@@ -138,7 +138,7 @@ export default function ServerStatusPage() {
                     {item.name}
                   </h2>
 
-                  <p className="mt-2 text-sm text-gray-400">
+                  <p className="mt-2 text-sm text-[var(--muted-text-color)]">
                     Server Usage:
                     {" "}
                     {item.usage}
@@ -148,7 +148,7 @@ export default function ServerStatusPage() {
 
                 <div className="flex items-center gap-4">
 
-                  <div className="h-3 w-40 overflow-hidden rounded-full bg-black/30">
+                  <div className="h-3 w-40 overflow-hidden rounded-full bg-[var(--card-color)]/30">
 
                     <div
                       className={`h-full rounded-full ${
@@ -322,7 +322,7 @@ function StatCard({
 
       </div>
 
-      <p className="mt-4 text-sm text-gray-400">
+      <p className="mt-4 text-sm text-[var(--muted-text-color)]">
         {title}
       </p>
 
@@ -359,7 +359,7 @@ function InfoCard({
         {value}
       </h2>
 
-      <p className="mt-2 text-sm text-gray-400">
+      <p className="mt-2 text-sm text-[var(--muted-text-color)]">
         {title}
       </p>
 

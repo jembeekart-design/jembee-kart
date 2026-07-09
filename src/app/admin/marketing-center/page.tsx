@@ -72,7 +72,7 @@ export default function MarketingCenterPage() {
 
             </h1>
 
-            <p className="mt-1 text-sm text-gray-400">
+            <p className="mt-1 text-sm text-[var(--muted-text-color)]">
 
               Campaigns, promotions & growth tools
 
@@ -194,7 +194,7 @@ export default function MarketingCenterPage() {
 
               <div
                 key={index}
-                className="rounded-[24px] bg-black/30 p-5"
+                className="rounded-[24px] bg-[var(--card-color)]/30 p-5"
               >
 
                 <div className="flex items-center justify-between">
@@ -207,7 +207,7 @@ export default function MarketingCenterPage() {
 
                     </h3>
 
-                    <p className="mt-1 text-sm text-gray-400">
+                    <p className="mt-1 text-sm text-[var(--muted-text-color)]">
 
                       Reach:
                       {" "}
@@ -406,7 +406,7 @@ function StatsCard({
 
       </div>
 
-      <p className="mt-4 text-sm text-gray-400">
+      <p className="mt-4 text-sm text-[var(--muted-text-color)]">
 
         {title}
 
@@ -462,7 +462,7 @@ function InsightItem({
 
   return (
 
-    <div className="flex items-center justify-between rounded-2xl bg-black/30 p-4">
+    <div className="flex items-center justify-between rounded-2xl bg-[var(--card-color)]/30 p-4">
 
       <h3 className="font-bold">
 

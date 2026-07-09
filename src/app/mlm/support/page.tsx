@@ -185,7 +185,7 @@ export default function MLMSupportPage() {
 
             <Wallet
               size={28}
-              className="text-green-600"
+              className="text-[var(--success-color)]"
             />
 
             <h3 className="mt-3 text-[15px] font-black">

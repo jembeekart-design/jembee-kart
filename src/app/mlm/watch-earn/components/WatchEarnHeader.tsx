@@ -166,7 +166,7 @@ WatchEarnHeader({
             rounded-full
             border
             border-white/10
-            bg-black/30
+            bg-[var(--card-color)]/30
             text-[var(--button-text-color)]
             backdrop-blur-xl
           "

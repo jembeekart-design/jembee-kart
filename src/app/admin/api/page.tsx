@@ -132,7 +132,7 @@ export default function APIPage() {
 
     return (
 
-      <div className="flex min-h-screen items-center justify-center bg-black text-[var(--button-text-color)]">
+      <div className="flex min-h-screen items-center justify-center bg-[var(--card-color)] text-[var(--button-text-color)]">
 
         Loading...
 
@@ -163,7 +163,7 @@ export default function APIPage() {
               API Manager
             </h1>
 
-            <p className="mt-1 text-sm text-gray-400">
+            <p className="mt-1 text-sm text-[var(--muted-text-color)]">
               Manage backend API settings
             </p>
 
@@ -390,7 +390,7 @@ function InputCard({
             e.target.value
           )
         }
-        className="w-full rounded-2xl bg-black px-4 py-4 outline-none"
+        className="w-full rounded-2xl bg-[var(--card-color)] px-4 py-4 outline-none"
       />
 
     </div>
@@ -420,7 +420,7 @@ function ToggleCard({
 
         <div className="flex items-center gap-3">
 
-          <div className="flex h-14 w-14 items-center justify-center rounded-2xl bg-black">
+          <div className="flex h-14 w-14 items-center justify-center rounded-2xl bg-[var(--card-color)]">
 
             {icon}
 
@@ -432,7 +432,7 @@ function ToggleCard({
               {title}
             </h2>
 
-            <p className="text-sm text-gray-400">
+            <p className="text-sm text-[var(--muted-text-color)]">
               {description}
             </p>
 

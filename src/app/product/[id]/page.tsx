@@ -182,7 +182,7 @@ function buyNow() {
   if (!product) {
     return (
       <main className="flex min-h-screen items-center justify-center bg-[#f6f6f6]">
-        <h1 className="text-sm font-bold text-red-500">Product Not Found</h1>
+        <h1 className="text-sm font-bold text-[var(--danger-color)]">Product Not Found</h1>
       </main>
     );
   }
@@ -209,7 +209,7 @@ function buyNow() {
               <Heart
                 size={18}
                 fill={wishlist ? "red" : "transparent"}
-                className={wishlist ? "text-red-500" : ""}
+                className={wishlist ? "text-[var(--danger-color)]" : ""}
               />
             </button>
             <button>
@@ -259,7 +259,7 @@ function buyNow() {
               <Heart
                 size={16}
                 fill={wishlist ? "red" : "transparent"}
-                className={wishlist ? "text-red-500" : ""}
+                className={wishlist ? "text-[var(--danger-color)]" : ""}
               />
             </button>
 
@@ -281,7 +281,7 @@ function buyNow() {
               </button>
             )}
 
-            <div className="absolute bottom-2 right-2 rounded-full bg-black/70 px-2 py-1 text-[10px] font-bold text-[var(--button-text-color)]">
+            <div className="absolute bottom-2 right-2 rounded-full bg-[var(--card-color)]/70 px-2 py-1 text-[10px] font-bold text-[var(--button-text-color)]">
               {currentImage + 1}/{images.length}
             </div>
           </div>
@@ -308,7 +308,7 @@ function buyNow() {
           <h1 className="mt-1 text-[22px] font-black leading-[26px] text-[var(--text-color)]">{product.title}</h1>
 
           <div className="mt-2 flex items-center gap-2 text-[11px]">
-            <div className="flex items-center gap-1 text-green-600">
+            <div className="flex items-center gap-1 text-[var(--success-color)]">
               <Star size={12} fill="green" />
               <span className="font-bold">{product.rating || 4.5}</span>
             </div>
@@ -319,10 +319,10 @@ function buyNow() {
 
           <div className="mt-3 flex items-center gap-2">
             <h2 className="text-[24px] font-black leading-none">₹{product.discountPrice}</h2>
-            <p className="text-[15px] font-bold text-gray-400 line-through">₹{product.price}</p>
+            <p className="text-[15px] font-bold text-[var(--muted-text-color)] line-through">₹{product.price}</p>
           </div>
 
-          <p className="mt-1 text-[13px] font-bold text-green-600">
+          <p className="mt-1 text-[13px] font-bold text-[var(--success-color)]">
             You save ₹{(product.price || 0) - (product.discountPrice || 0)} ({discount}%)
           </p>
         </div>
@@ -377,7 +377,7 @@ function buyNow() {
         {/* SHIELD STATS */}
         <div className="grid grid-cols-2 gap-3 rounded-[18px] bg-[var(--card-color)] p-3 shadow-sm">
           <div className="flex items-center gap-2">
-            <ShieldCheck size={18} className="text-green-600" />
+            <ShieldCheck size={18} className="text-[var(--success-color)]" />
             <div>
               <h3 className="text-[12px] font-bold">Original</h3>
               <p className="text-[10px] text-[var(--muted-text-color)]">Authentic</p>
@@ -413,10 +413,10 @@ function buyNow() {
         <div className="space-y-3">
           <div className="rounded-[18px] bg-[var(--card-color)] p-4 shadow-sm">
             <div className="flex gap-3">
-              <Truck size={18} className="text-green-600" />
+              <Truck size={18} className="text-[var(--success-color)]" />
               <div>
                 <h3 className="text-sm font-bold">Delivery</h3>
-                <p className="mt-1 text-[18px] font-black text-green-600">{deliveryDate}</p>
+                <p className="mt-1 text-[18px] font-black text-[var(--success-color)]">{deliveryDate}</p>
               </div>
             </div>
           </div>
@@ -488,7 +488,7 @@ function buyNow() {
         <div className="flex items-center gap-2">
           <div>
             <h2 className="text-[20px] font-black">₹{product.discountPrice}</h2>
-            <p className="text-[10px] font-bold text-green-600">{discount}% OFF</p>
+            <p className="text-[10px] font-bold text-[var(--success-color)]">{discount}% OFF</p>
           </div>
 
           <button
@@ -569,7 +569,7 @@ function buyNow() {
           {currentImage > 0 && (
             <button
               onClick={() => setCurrentImage(currentImage - 1)}
-              className="absolute left-3 top-1/2 z-[1001] flex h-10 w-10 -translate-y-1/2 items-center justify-center rounded-full bg-black/50 text-[var(--button-text-color)]"
+              className="absolute left-3 top-1/2 z-[1001] flex h-10 w-10 -translate-y-1/2 items-center justify-center rounded-full bg-[var(--card-color)]/50 text-[var(--button-text-color)]"
             >
               <ChevronLeft size={24} />
             </button>
@@ -578,7 +578,7 @@ function buyNow() {
           {currentImage < images.length - 1 && (
             <button
               onClick={() => setCurrentImage(currentImage + 1)}
-              className="absolute right-3 top-1/2 z-[1001] flex h-10 w-10 -translate-y-1/2 items-center justify-center rounded-full bg-black/50 text-[var(--button-text-color)]"
+              className="absolute right-3 top-1/2 z-[1001] flex h-10 w-10 -translate-y-1/2 items-center justify-center rounded-full bg-[var(--card-color)]/50 text-[var(--button-text-color)]"
             >
               <ChevronRight size={24} />
             </button>
