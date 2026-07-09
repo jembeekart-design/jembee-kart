@@ -139,3 +139,44 @@ function replaceRegex(content: string): string {
     .replace(/ring-green-\d+/g, "ring-[var(--success-color)]")
     .replace(/ring-yellow-\d+/g, "ring-[var(--warning-color)]");
 }
+function walk(dir: string) {
+  for (const file of fs.readdirSync(dir)) {
+    const full = path.join(dir, file);
+
+    if (fs.statSync(full).isDirectory()) {
+      if (
+        file === "node_modules" ||
+        file === ".next" ||
+        file === "dist"
+      ) {
+        continue;
+      }
+
+      walk(full);
+      continue;
+    }
+
+    if (!/\.(ts|tsx|js|jsx)$/.test(full)) continue;
+
+    let content = fs.readFileSync(full, "utf8");
+    const originalContent = content;
+
+    // Normal replacements
+    for (const [oldValue, newValue] of Object.entries(replacements)) {
+      content = content.split(oldValue).join(newValue);
+    }
+
+    // Advanced regex replacements
+    content = replaceRegex(content);
+
+    // Save only if changed
+    if (content !== originalContent) {
+      fs.writeFileSync(full, content);
+      console.log("✔ Updated:", full);
+    }
+  }
+}
+
+walk(ROOT);
+
+console.log("✅ Advanced Theme Codemod Completed");
