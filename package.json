@@ -3,14 +3,14 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-  "dev": "next dev",
-  "governance": "tsx src/jembee-governance/index.ts",
-  "governance:check": "tsx src/jembee-governance/index.ts",
-  "theme:codemod": "tsx src/scripts/theme-codemod.ts",
-  "build": "npm run governance && next build",
-  "start": "next start",
-  "lint": "eslint"
-},
+    "dev": "next dev",
+    "governance": "tsx src/jembee-governance/index.ts",
+    "governance:check": "tsx src/jembee-governance/index.ts",
+    "theme:codemod": "tsx src/scripts/theme-codemod.ts",
+    "build": "npm run governance && next build",
+    "start": "next start",
+    "lint": "eslint"
+  },
   "dependencies": {
     "clsx": "^2.1.1",
     "firebase": "^12.13.0",
@@ -33,6 +33,7 @@
     "@types/qrcode": "^1.5.6",
     "@types/react": "^19",
     "@types/react-dom": "^19",
+    "dotenv": "^17.4.2",
     "eslint": "^10",
     "eslint-config-next": "16.2.9",
     "tailwindcss": "^4",
