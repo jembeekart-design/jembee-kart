@@ -3,7 +3,12 @@
 import { useEffect, useState } from "react";
 import { useRouter, usePathname } from "next/navigation";
 import { onAuthStateChanged } from "firebase/auth";
-import { doc, getDoc } from "firebase/firestore";
+import {
+  collection,
+  query,
+  where,
+  getDocs,
+} from "firebase/firestore";
 import { auth, db } from "@/firebase/config";
 
 export default function AdminLayout({
@@ -31,15 +36,21 @@ export default function AdminLayout({
       }
 
       try {
-        // Firestore se user document lao
-        const userDoc = await getDoc(doc(db, "users", user.uid));
+        // Firestore me uid se user search karo
+        const q = query(
+          collection(db, "users"),
+          where("uid", "==", user.uid)
+        );
 
-        if (!userDoc.exists()) {
+        const snapshot = await getDocs(q);
+
+        if (snapshot.empty) {
           router.replace("/");
           return;
         }
 
-        const role = userDoc.data().role;
+        const userData = snapshot.docs[0].data();
+        const role = userData.role;
 
         // Sirf admin aur super_admin allow
         if (role !== "admin" && role !== "super_admin") {
@@ -47,10 +58,9 @@ export default function AdminLayout({
           return;
         }
 
-        // Sab sahi hai
         setLoading(false);
       } catch (error) {
-        console.error(error);
+        console.error("Admin Auth Error:", error);
         router.replace("/");
       }
     });
