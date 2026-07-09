@@ -54,7 +54,7 @@ export class SecurityScanner {
     let adminBypassDetected = false;
 
     for (const file of files) {
-      const result = this.scanFile(file);
+      const result = this.scanFile(file, projectRoot);
       violations.push(...result);
 
       if (result.some(v => v.id === "SEC_API_KEY")) apiKeyExposed = true;
@@ -90,7 +90,7 @@ return {
 };
   }
 
-  public scanFile(filePath: string): GovernanceViolation[] {
+public scanFile(filePath: string, projectRoot: string): GovernanceViolation[] {
     const violations: GovernanceViolation[] = [];
     try {
       const content = fs.readFileSync(filePath, "utf8");
