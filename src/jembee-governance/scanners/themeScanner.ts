@@ -93,6 +93,11 @@ export class ThemeScanner {
     }
 
     const lines = content.split("\n");
+    const allowedThemeTokens = [
+  "bg-[var(--",
+  "text-[var(--",
+  "border-[var(--",
+];
     let hardcodedColorsFound = false;
     let hardcodedFontsFound = false;
 
@@ -122,6 +127,9 @@ export class ThemeScanner {
       }
 
       for (const pattern of this.tailwindColorPatterns) {
+        if (allowedThemeTokens.some(token => line.includes(token))) {
+  return;
+}
         const matches = line.match(pattern);
         if (matches) {
           hardcodedColorsFound = true;
