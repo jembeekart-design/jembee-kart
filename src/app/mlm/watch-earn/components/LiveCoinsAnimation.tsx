@@ -85,7 +85,7 @@ LiveCoinsAnimation({
             <Coins
               size={28}
               className="
-                text-black
+                text-[var(--text-color)]
               "
             />
 
@@ -97,7 +97,7 @@ LiveCoinsAnimation({
               className="
                 text-xl
                 font-black
-                text-black
+                text-[var(--text-color)]
               "
             >
 
@@ -109,7 +109,7 @@ LiveCoinsAnimation({
               className="
                 text-xs
                 font-bold
-                text-black/70
+                text-[var(--text-color)]/70
               "
             >
 

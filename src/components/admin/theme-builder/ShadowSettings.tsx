@@ -189,7 +189,7 @@ export default function ShadowSettings({
           </p>
 
           <button
-            className="mt-5 px-6 py-3 font-bold text-black"
+            className="mt-5 px-6 py-3 font-bold text-[var(--text-color)]"
             style={{
               background:
                 theme.primaryColor,

@@ -124,11 +124,11 @@ export default function MLMDashboardPage() {
   return (
     <main className="min-h-screen bg-[#f6f6f6] pb-28">
       {/* HEADER */}
-      <div className="sticky top-0 z-50 bg-white px-4 py-3 shadow-sm">
+      <div className="sticky top-0 z-50 bg-[var(--card-color)] px-4 py-3 shadow-sm">
         <div className="flex items-center justify-between">
           <div>
             <h1 className="text-[28px] font-black text-violet-700">MLM Dashboard</h1>
-            <p className="text-[11px] text-gray-500">
+            <p className="text-[11px] text-[var(--muted-text-color)]">
               Welcome Back, <span className="font-bold text-gray-800">{userData?.name || "Partner"}</span> 👋
             </p>
           </div>
@@ -140,7 +140,7 @@ export default function MLMDashboardPage() {
             <Bell size={22} />
             {/* ✅ 3. Dynamic Unread Notification Counter sourced straight from root document schema state */}
             {unreadCount > 0 && (
-              <div className="absolute right-2 top-2 flex h-4 w-4 items-center justify-center rounded-full bg-red-500 text-[9px] font-black text-white border-2 border-white animate-bounce">
+              <div className="absolute right-2 top-2 flex h-4 w-4 items-center justify-center rounded-full bg-[var(--danger-color)] text-[9px] font-black text-[var(--button-text-color)] border-2 border-white animate-bounce">
                 {unreadCount}
               </div>
             )}
@@ -152,7 +152,7 @@ export default function MLMDashboardPage() {
       <section className="px-4 pt-4">
         <Link
           href="/"
-          className="flex items-center justify-center gap-2 w-full rounded-2xl bg-white border-2 border-dashed border-violet-200 py-3 text-[13px] font-black text-violet-700 hover:bg-violet-50 transition active:scale-[0.99]"
+          className="flex items-center justify-center gap-2 w-full rounded-2xl bg-[var(--card-color)] border-2 border-dashed border-violet-200 py-3 text-[13px] font-black text-violet-700 hover:bg-violet-50 transition active:scale-[0.99]"
         >
           <ShoppingBag size={18} />
           Continue Shopping
@@ -161,23 +161,23 @@ export default function MLMDashboardPage() {
 
       {/* HERO SECTION (DYNAMIC INCOME VALUES) */}
       <section className="px-4 pt-4">
-        <div className="overflow-hidden rounded-[32px] bg-gradient-to-br from-violet-700 via-fuchsia-600 to-orange-500 p-5 text-white shadow-xl">
+        <div className="overflow-hidden rounded-[32px] bg-gradient-to-br from-violet-700 via-fuchsia-600 to-orange-500 p-5 text-[var(--button-text-color)] shadow-xl">
           <div className="flex items-center justify-between">
             <div>
-              <p className="text-[13px] text-white/80">Total Earnings</p>
+              <p className="text-[13px] text-[var(--button-text-color)]/80">Total Earnings</p>
               <h2 className="mt-2 text-[42px] font-black">₹{formattedTotalIncome}</h2>
             </div>
-            <div className="flex h-16 w-16 items-center justify-center rounded-full bg-white/20">
+            <div className="flex h-16 w-16 items-center justify-center rounded-full bg-[var(--card-color)]/20">
               <Wallet size={34} />
             </div>
           </div>
 
           <div className="mt-6 flex items-center justify-between">
             <div>
-              <p className="text-[11px] text-white/80">Current Rank</p>
+              <p className="text-[11px] text-[var(--button-text-color)]/80">Current Rank</p>
               <h3 className="mt-1 text-[20px] font-black">{userData?.rank || "Bronze Member"} 👑</h3>
             </div>
-            <Link href="/mlm/ranks" className="rounded-2xl bg-white px-4 py-2 text-[12px] font-black text-violet-700">
+            <Link href="/mlm/ranks" className="rounded-2xl bg-[var(--card-color)] px-4 py-2 text-[12px] font-black text-violet-700">
               View Rank
             </Link>
           </div>
@@ -190,7 +190,7 @@ export default function MLMDashboardPage() {
           {quickActions.map((action, index) => {
             const Icon = action.icon;
             return (
-              <Link key={index} href={action.href} className="rounded-3xl bg-white p-4 text-center shadow-sm hover:scale-[1.02] transition">
+              <Link key={index} href={action.href} className="rounded-3xl bg-[var(--card-color)] p-4 text-center shadow-sm hover:scale-[1.02] transition">
                 <div className={`mx-auto flex h-14 w-14 items-center justify-center rounded-full ${action.color}`}>
                   <Icon size={26} />
                 </div>
@@ -207,10 +207,10 @@ export default function MLMDashboardPage() {
           {stats.map((stat, index) => {
             const Icon = stat.icon;
             return (
-              <div key={index} className="rounded-2xl bg-white p-4 shadow-sm">
+              <div key={index} className="rounded-2xl bg-[var(--card-color)] p-4 shadow-sm">
                 <Icon size={28} className={stat.color} />
                 <h3 className="mt-3 text-[26px] font-black tracking-tight text-gray-800">{stat.value}</h3>
-                <p className="text-[12px] text-gray-500">{stat.title}</p>
+                <p className="text-[12px] text-[var(--muted-text-color)]">{stat.title}</p>
               </div>
             );
           })}
@@ -219,11 +219,11 @@ export default function MLMDashboardPage() {
 
       {/* REFERRAL PORTAL HOOK */}
       <section className="mt-6 px-4">
-        <div className="rounded-[30px] bg-white p-5 shadow-sm">
+        <div className="rounded-[30px] bg-[var(--card-color)] p-5 shadow-sm">
           <div className="flex items-center justify-between">
             <div>
               <h2 className="text-[22px] font-black">Referral Code</h2>
-              <p className="mt-1 text-[11px] text-gray-500">Share & Earn</p>
+              <p className="mt-1 text-[11px] text-[var(--muted-text-color)]">Share & Earn</p>
             </div>
             <Users size={28} className="text-violet-700" />
           </div>
@@ -235,7 +235,7 @@ export default function MLMDashboardPage() {
             </h3>
           </div>
 
-          <Link href="/mlm/invite" className="mt-5 flex items-center justify-center rounded-2xl bg-violet-700 py-3 text-[14px] font-black text-white hover:bg-violet-800 transition">
+          <Link href="/mlm/invite" className="mt-5 flex items-center justify-center rounded-2xl bg-violet-700 py-3 text-[14px] font-black text-[var(--button-text-color)] hover:bg-violet-800 transition">
             Invite Friends
           </Link>
         </div>
@@ -243,7 +243,7 @@ export default function MLMDashboardPage() {
 
       {/* PERFORMANCE REAL-TIME RENDER GRAPH */}
       <section className="mt-6 px-4">
-        <div className="rounded-[30px] bg-white p-5 shadow-sm">
+        <div className="rounded-[30px] bg-[var(--card-color)] p-5 shadow-sm">
           <div className="flex items-center gap-3">
             <Medal size={24} className="text-yellow-600" />
             <h2 className="text-[22px] font-black">Performance</h2>
@@ -276,12 +276,12 @@ export default function MLMDashboardPage() {
           ].map((item, idx) => {
             const ItemIcon = item.icon;
             return (
-              <Link key={idx} href={item.href} className="flex items-center justify-between rounded-2xl bg-white p-4 shadow-sm hover:translate-x-1 transition-transform">
+              <Link key={idx} href={item.href} className="flex items-center justify-between rounded-2xl bg-[var(--card-color)] p-4 shadow-sm hover:translate-x-1 transition-transform">
                 <div className="flex items-center gap-3">
                   <ItemIcon size={24} className={item.color} />
                   <div>
                     <h3 className="text-[15px] font-black">{item.title}</h3>
-                    <p className="text-[11px] text-gray-500">{item.desc}</p>
+                    <p className="text-[11px] text-[var(--muted-text-color)]">{item.desc}</p>
                   </div>
                 </div>
                 <Star size={20} className="text-gray-400" />

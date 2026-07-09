@@ -69,14 +69,14 @@ export default function RewardProgressBar({
       label:
         "Waiting For Sales",
       className:
-        "bg-yellow-500/20 text-yellow-300 border border-yellow-400/20",
+        "bg-[var(--warning-color)]/20 text-yellow-300 border border-yellow-400/20",
     },
 
     completed: {
       label:
         "Reward Unlocked",
       className:
-        "bg-green-500/20 text-green-300 border border-green-400/20",
+        "bg-[var(--success-color)]/20 text-green-300 border border-green-400/20",
     },
   };
 
@@ -121,7 +121,7 @@ export default function RewardProgressBar({
                 text-[10px]
                 uppercase
                 tracking-wider
-                text-white/60
+                text-[var(--button-text-color)]/60
               "
             >
               Reward Cycle
@@ -131,7 +131,7 @@ export default function RewardProgressBar({
               className="
                 text-sm
                 font-bold
-                text-white
+                text-[var(--button-text-color)]
               "
             >
               Cycle #
@@ -142,7 +142,7 @@ export default function RewardProgressBar({
           <div
             className="
               rounded-full
-              bg-yellow-500/20
+              bg-[var(--warning-color)]/20
               px-3
               py-1
               text-xs
@@ -164,7 +164,7 @@ export default function RewardProgressBar({
             rounded-2xl
             border
             border-white/10
-            bg-white/5
+            bg-[var(--card-color)]/5
             p-3
           "
         >
@@ -178,7 +178,7 @@ export default function RewardProgressBar({
             <span
               className="
                 text-xs
-                text-white/70
+                text-[var(--button-text-color)]/70
               "
             >
               Reward
@@ -199,7 +199,7 @@ export default function RewardProgressBar({
             className="
               mt-1
               text-[11px]
-              text-white/50
+              text-[var(--button-text-color)]/50
             "
           >
             Unlock after{" "}
@@ -222,7 +222,7 @@ export default function RewardProgressBar({
           >
             <span
               className="
-                text-white
+                text-[var(--button-text-color)]
                 font-medium
               "
             >
@@ -245,7 +245,7 @@ export default function RewardProgressBar({
               h-2.5
               overflow-hidden
               rounded-full
-              bg-white/10
+              bg-[var(--card-color)]/10
             "
           >
             <motion.div
@@ -284,7 +284,7 @@ export default function RewardProgressBar({
           >
             <span
               className="
-                text-white
+                text-[var(--button-text-color)]
                 font-medium
               "
             >
@@ -307,7 +307,7 @@ export default function RewardProgressBar({
               h-2.5
               overflow-hidden
               rounded-full
-              bg-white/10
+              bg-[var(--card-color)]/10
             "
           >
             <motion.div
@@ -345,7 +345,7 @@ export default function RewardProgressBar({
           <span
             className="
               text-xs
-              text-white/60
+              text-[var(--button-text-color)]/60
             "
           >
             Status
@@ -381,7 +381,7 @@ export default function RewardProgressBar({
           >
             <span
               className="
-                text-white/70
+                text-[var(--button-text-color)]/70
               "
             >
               Overall Progress
@@ -390,7 +390,7 @@ export default function RewardProgressBar({
             <span
               className="
                 font-bold
-                text-white
+                text-[var(--button-text-color)]
               "
             >
               {Math.floor(
@@ -405,7 +405,7 @@ export default function RewardProgressBar({
               h-3
               overflow-hidden
               rounded-full
-              bg-white/10
+              bg-[var(--card-color)]/10
             "
           >
             <motion.div

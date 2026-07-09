@@ -49,7 +49,7 @@ export default function RewardWalletPage() {
 
   return (
 
-    <main className="min-h-screen bg-[#090909] p-4 text-white">
+    <main className="min-h-screen bg-[#090909] p-4 text-[var(--button-text-color)]">
 
       {/* HEADER */}
 
@@ -61,7 +61,7 @@ export default function RewardWalletPage() {
 
             <Wallet
               size={30}
-              className="text-black"
+              className="text-[var(--text-color)]"
             />
 
           </div>
@@ -80,7 +80,7 @@ export default function RewardWalletPage() {
 
         </div>
 
-        <button className="rounded-2xl bg-yellow-400 px-5 py-3 font-bold text-black">
+        <button className="rounded-2xl bg-yellow-400 px-5 py-3 font-bold text-[var(--text-color)]">
 
           Add Bonus Reward
 
@@ -152,7 +152,7 @@ export default function RewardWalletPage() {
 
                   <div className="flex items-center gap-4">
 
-                    <div className="flex h-14 w-14 items-center justify-center rounded-2xl bg-yellow-400 text-black">
+                    <div className="flex h-14 w-14 items-center justify-center rounded-2xl bg-yellow-400 text-[var(--text-color)]">
 
                       {item.amount.includes("+") ? (
 
@@ -234,7 +234,7 @@ export default function RewardWalletPage() {
 
           </div>
 
-          <div className="rounded-[30px] bg-gradient-to-r from-yellow-400 to-orange-500 p-6 text-black">
+          <div className="rounded-[30px] bg-gradient-to-r from-yellow-400 to-orange-500 p-6 text-[var(--text-color)]">
 
             <div className="flex items-center gap-3">
 
@@ -252,7 +252,7 @@ export default function RewardWalletPage() {
 
             </p>
 
-            <button className="mt-5 rounded-2xl bg-black px-5 py-3 font-bold text-white">
+            <button className="mt-5 rounded-2xl bg-black px-5 py-3 font-bold text-[var(--button-text-color)]">
 
               Manage Booster
 
@@ -321,7 +321,7 @@ function StatCard({
 
     <div className="rounded-[28px] border border-white/10 bg-[#151515] p-5">
 
-      <div className="flex h-14 w-14 items-center justify-center rounded-2xl bg-yellow-400 text-black">
+      <div className="flex h-14 w-14 items-center justify-center rounded-2xl bg-yellow-400 text-[var(--text-color)]">
 
         {icon}
 

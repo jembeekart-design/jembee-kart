@@ -51,11 +51,11 @@ export default function IntroVideo() {
           top-4
           z-50
           rounded-full
-          bg-white/20
+          bg-[var(--card-color)]/20
           px-4
           py-2
           text-sm
-          text-white
+          text-[var(--button-text-color)]
           backdrop-blur
         "
       >

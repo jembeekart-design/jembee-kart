@@ -53,7 +53,7 @@ export default function OrderTrackingPage() {
 
   return (
 
-    <main className="min-h-screen bg-[#090909] p-4 text-white">
+    <main className="min-h-screen bg-[#090909] p-4 text-[var(--button-text-color)]">
 
       {/* HEADER */}
 
@@ -65,7 +65,7 @@ export default function OrderTrackingPage() {
 
             <Truck
               size={30}
-              className="text-black"
+              className="text-[var(--text-color)]"
             />
 
           </div>
@@ -84,7 +84,7 @@ export default function OrderTrackingPage() {
 
         </div>
 
-        <button className="flex items-center gap-2 rounded-2xl bg-orange-500 px-5 py-3 font-bold text-black">
+        <button className="flex items-center gap-2 rounded-2xl bg-orange-500 px-5 py-3 font-bold text-[var(--text-color)]">
 
           <RefreshCw size={18} />
 
@@ -138,7 +138,7 @@ export default function OrderTrackingPage() {
           <input
             type="text"
             placeholder="Search orders..."
-            className="w-full bg-transparent outline-none placeholder:text-gray-500"
+            className="w-full bg-transparent outline-none placeholder:text-[var(--muted-text-color)]"
           />
 
         </div>
@@ -172,7 +172,7 @@ export default function OrderTrackingPage() {
 
                 <div className="flex items-center gap-4">
 
-                  <div className="flex h-16 w-16 items-center justify-center rounded-2xl bg-orange-500 text-black">
+                  <div className="flex h-16 w-16 items-center justify-center rounded-2xl bg-orange-500 text-[var(--text-color)]">
 
                     <Package size={28} />
 
@@ -210,14 +210,14 @@ export default function OrderTrackingPage() {
                     className={`rounded-full px-4 py-2 text-sm font-bold ${
                       item.status ===
                       "Delivered"
-                        ? "bg-green-500/20 text-green-400"
+                        ? "bg-[var(--success-color)]/20 text-green-400"
                         : item.status ===
                           "Shipped"
                         ? "bg-cyan-500/20 text-cyan-400"
                         : item.status ===
                           "Pending"
-                        ? "bg-yellow-500/20 text-yellow-400"
-                        : "bg-red-500/20 text-red-400"
+                        ? "bg-[var(--warning-color)]/20 text-yellow-400"
+                        : "bg-[var(--danger-color)]/20 text-red-400"
                     }`}
                   >
 
@@ -225,7 +225,7 @@ export default function OrderTrackingPage() {
 
                   </div>
 
-                  <button className="rounded-2xl bg-orange-500 px-4 py-3 font-bold text-black">
+                  <button className="rounded-2xl bg-orange-500 px-4 py-3 font-bold text-[var(--text-color)]">
 
                     Track Order
 
@@ -317,7 +317,7 @@ export default function OrderTrackingPage() {
 
       {/* STATUS */}
 
-      <div className="mt-8 rounded-[32px] bg-gradient-to-r from-orange-500 to-yellow-500 p-7 text-black">
+      <div className="mt-8 rounded-[32px] bg-gradient-to-r from-orange-500 to-yellow-500 p-7 text-[var(--text-color)]">
 
         <div className="flex items-center gap-3">
 
@@ -336,7 +336,7 @@ export default function OrderTrackingPage() {
 
         </p>
 
-        <button className="mt-6 rounded-2xl bg-black px-5 py-3 font-bold text-white">
+        <button className="mt-6 rounded-2xl bg-black px-5 py-3 font-bold text-[var(--button-text-color)]">
 
           Open Delivery Center
 
@@ -346,7 +346,7 @@ export default function OrderTrackingPage() {
 
       {/* ALERT */}
 
-      <div className="mt-8 rounded-[28px] border border-yellow-500/20 bg-yellow-500/10 p-5">
+      <div className="mt-8 rounded-[28px] border border-yellow-500/20 bg-[var(--warning-color)]/10 p-5">
 
         <div className="flex items-start gap-4">
 
@@ -393,7 +393,7 @@ function StatCard({
 
     <div className="rounded-[28px] border border-white/10 bg-[#151515] p-5">
 
-      <div className="flex h-14 w-14 items-center justify-center rounded-2xl bg-orange-500 text-black">
+      <div className="flex h-14 w-14 items-center justify-center rounded-2xl bg-orange-500 text-[var(--text-color)]">
 
         {icon}
 

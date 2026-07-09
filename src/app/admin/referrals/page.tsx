@@ -62,7 +62,7 @@ export default function ReferralsPage() {
 
   return (
 
-    <main className="min-h-screen bg-[#0b0b0b] p-4 text-white">
+    <main className="min-h-screen bg-[#0b0b0b] p-4 text-[var(--button-text-color)]">
 
       {/* HEADER */}
 
@@ -233,7 +233,7 @@ export default function ReferralsPage() {
           Referral Program
         </h2>
 
-        <p className="mt-2 text-white/80">
+        <p className="mt-2 text-[var(--button-text-color)]/80">
           Invite friends & earn commission
         </p>
 

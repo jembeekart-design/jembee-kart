@@ -139,7 +139,7 @@ export default function MembershipPage() {
 
     return (
 
-      <div className="flex min-h-screen items-center justify-center bg-black text-white">
+      <div className="flex min-h-screen items-center justify-center bg-black text-[var(--button-text-color)]">
 
         Loading...
 
@@ -150,7 +150,7 @@ export default function MembershipPage() {
 
   return (
 
-    <main className="min-h-screen bg-[#0b0b0b] p-4 text-white">
+    <main className="min-h-screen bg-[#0b0b0b] p-4 text-[var(--button-text-color)]">
 
       {/* HEADER */}
 
@@ -181,7 +181,7 @@ export default function MembershipPage() {
         <button
           onClick={saveSettings}
           disabled={saving}
-          className="flex items-center gap-2 rounded-2xl bg-amber-500 px-5 py-3 font-bold text-black"
+          className="flex items-center gap-2 rounded-2xl bg-amber-500 px-5 py-3 font-bold text-[var(--text-color)]"
         >
 
           <Save size={18} />
@@ -351,7 +351,7 @@ export default function MembershipPage() {
 
           <Star size={28} />
 
-          <h2 className="text-3xl font-black text-black">
+          <h2 className="text-3xl font-black text-[var(--text-color)]">
             Membership Status
           </h2>
 
@@ -470,8 +470,8 @@ function ToggleCard({
           onClick={onClick}
           className={`rounded-full px-5 py-3 text-sm font-bold ${
             enabled
-              ? "bg-green-500"
-              : "bg-red-500"
+              ? "bg-[var(--success-color)]"
+              : "bg-[var(--danger-color)]"
           }`}
         >
 
@@ -498,13 +498,13 @@ function StatusCard({
 
   return (
 
-    <div className="rounded-2xl bg-white/10 p-4">
+    <div className="rounded-2xl bg-[var(--card-color)]/10 p-4">
 
-      <p className="text-sm text-black/70">
+      <p className="text-sm text-[var(--text-color)]/70">
         {title}
       </p>
 
-      <h3 className="mt-2 text-2xl font-black text-black">
+      <h3 className="mt-2 text-2xl font-black text-[var(--text-color)]">
         {value}
       </h3>
 

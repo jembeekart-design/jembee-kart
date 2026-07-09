@@ -47,7 +47,7 @@ export default function MarketingCenterPage() {
 
   return (
 
-    <main className="min-h-screen bg-[#050505] p-4 text-white">
+    <main className="min-h-screen bg-[#050505] p-4 text-[var(--button-text-color)]">
 
       {/* HEADER */}
 
@@ -59,7 +59,7 @@ export default function MarketingCenterPage() {
 
             <Megaphone
               size={30}
-              className="text-black"
+              className="text-[var(--text-color)]"
             />
 
           </div>
@@ -83,7 +83,7 @@ export default function MarketingCenterPage() {
         </div>
 
         <button
-          className="rounded-2xl bg-pink-500 px-6 py-4 font-black text-black"
+          className="rounded-2xl bg-pink-500 px-6 py-4 font-black text-[var(--text-color)]"
         >
 
           Create Campaign
@@ -217,7 +217,7 @@ export default function MarketingCenterPage() {
 
                   </div>
 
-                  <div className="rounded-full bg-pink-500 px-4 py-2 text-sm font-black text-black">
+                  <div className="rounded-full bg-pink-500 px-4 py-2 text-sm font-black text-[var(--text-color)]">
 
                     {item.status}
 
@@ -314,7 +314,7 @@ export default function MarketingCenterPage() {
 
       {/* SCHEDULE */}
 
-      <div className="mt-6 rounded-[30px] bg-gradient-to-r from-pink-500 to-fuchsia-600 p-6 text-black">
+      <div className="mt-6 rounded-[30px] bg-gradient-to-r from-pink-500 to-fuchsia-600 p-6 text-[var(--text-color)]">
 
         <div className="flex items-center gap-3">
 
@@ -351,7 +351,7 @@ export default function MarketingCenterPage() {
       <div className="mt-6 flex flex-wrap gap-4">
 
         <button
-          className="flex items-center gap-2 rounded-2xl bg-pink-500 px-6 py-4 font-black text-black"
+          className="flex items-center gap-2 rounded-2xl bg-pink-500 px-6 py-4 font-black text-[var(--text-color)]"
         >
 
           <Send size={20} />
@@ -361,7 +361,7 @@ export default function MarketingCenterPage() {
         </button>
 
         <button
-          className="flex items-center gap-2 rounded-2xl bg-cyan-500 px-6 py-4 font-black text-black"
+          className="flex items-center gap-2 rounded-2xl bg-cyan-500 px-6 py-4 font-black text-[var(--text-color)]"
         >
 
           <Bell size={20} />
@@ -371,7 +371,7 @@ export default function MarketingCenterPage() {
         </button>
 
         <button
-          className="flex items-center gap-2 rounded-2xl bg-yellow-500 px-6 py-4 font-black text-black"
+          className="flex items-center gap-2 rounded-2xl bg-[var(--warning-color)] px-6 py-4 font-black text-[var(--text-color)]"
         >
 
           <Gift size={20} />
@@ -401,7 +401,7 @@ function StatsCard({
 
         <Icon
           size={24}
-          className="text-black"
+          className="text-[var(--text-color)]"
         />
 
       </div>
@@ -436,7 +436,7 @@ function ToolCard({
 
         <Icon
           size={24}
-          className="text-black"
+          className="text-[var(--text-color)]"
         />
 
       </div>
@@ -470,7 +470,7 @@ function InsightItem({
 
       </h3>
 
-      <div className="rounded-full bg-pink-500 px-4 py-2 text-sm font-black text-black">
+      <div className="rounded-full bg-pink-500 px-4 py-2 text-sm font-black text-[var(--text-color)]">
 
         {value}
 
@@ -489,7 +489,7 @@ function ScheduleItem({
 
   return (
 
-    <div className="rounded-2xl bg-white/20 p-4 font-bold">
+    <div className="rounded-2xl bg-[var(--card-color)]/20 p-4 font-bold">
 
       {text}
 

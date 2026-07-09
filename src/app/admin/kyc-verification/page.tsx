@@ -143,7 +143,7 @@ export default function KYCVerificationPage() {
 
     return (
 
-      <div className="flex min-h-screen items-center justify-center bg-black text-white">
+      <div className="flex min-h-screen items-center justify-center bg-black text-[var(--button-text-color)]">
 
         Loading...
 
@@ -154,7 +154,7 @@ export default function KYCVerificationPage() {
 
   return (
 
-    <main className="min-h-screen bg-[#0b0b0b] p-4 text-white">
+    <main className="min-h-screen bg-[#0b0b0b] p-4 text-[var(--button-text-color)]">
 
       {/* HEADER */}
 
@@ -271,7 +271,7 @@ export default function KYCVerificationPage() {
                         "Approved"
                       )
                     }
-                    className="flex items-center gap-2 rounded-2xl bg-green-500 px-5 py-3 font-bold text-black"
+                    className="flex items-center gap-2 rounded-2xl bg-[var(--success-color)] px-5 py-3 font-bold text-[var(--text-color)]"
                   >
 
                     <ShieldCheck size={18} />
@@ -287,7 +287,7 @@ export default function KYCVerificationPage() {
                         "Rejected"
                       )
                     }
-                    className="flex items-center gap-2 rounded-2xl bg-red-500 px-5 py-3 font-bold"
+                    className="flex items-center gap-2 rounded-2xl bg-[var(--danger-color)] px-5 py-3 font-bold"
                   >
 
                     <XCircle size={18} />
@@ -337,17 +337,17 @@ function StatusBadge({
 
     if (status === "Approved") {
 
-      return "bg-green-500";
+      return "bg-[var(--success-color)]";
 
     }
 
     if (status === "Rejected") {
 
-      return "bg-red-500";
+      return "bg-[var(--danger-color)]";
 
     }
 
-    return "bg-yellow-500";
+    return "bg-[var(--warning-color)]";
 
   }
 

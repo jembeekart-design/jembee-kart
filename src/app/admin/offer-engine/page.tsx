@@ -54,7 +54,7 @@ export default function OfferEnginePage() {
 
   return (
 
-    <main className="min-h-screen bg-[#0b0b0b] p-4 text-white">
+    <main className="min-h-screen bg-[#0b0b0b] p-4 text-[var(--button-text-color)]">
 
       {/* HEADER */}
 
@@ -64,7 +64,7 @@ export default function OfferEnginePage() {
 
           <Gift
             size={30}
-            className="text-black"
+            className="text-[var(--text-color)]"
           />
 
         </div>
@@ -131,7 +131,7 @@ export default function OfferEnginePage() {
               e.target.value
             )
           }
-          className="w-full bg-transparent outline-none placeholder:text-gray-500"
+          className="w-full bg-transparent outline-none placeholder:text-[var(--muted-text-color)]"
         />
 
       </div>
@@ -171,11 +171,11 @@ export default function OfferEnginePage() {
                   className={`rounded-full px-4 py-1 text-sm font-bold ${
                     item.status ===
                     "Active"
-                      ? "bg-green-500/20 text-green-400"
+                      ? "bg-[var(--success-color)]/20 text-green-400"
                       : item.status ===
                         "Scheduled"
-                      ? "bg-yellow-500/20 text-yellow-400"
-                      : "bg-red-500/20 text-red-400"
+                      ? "bg-[var(--warning-color)]/20 text-yellow-400"
+                      : "bg-[var(--danger-color)]/20 text-red-400"
                   }`}
                 >
 
@@ -189,7 +189,7 @@ export default function OfferEnginePage() {
 
                 <div className="flex items-center gap-3">
 
-                  <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-yellow-400 text-black">
+                  <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-yellow-400 text-[var(--text-color)]">
 
                     <BadgePercent size={20} />
 
@@ -213,7 +213,7 @@ export default function OfferEnginePage() {
 
                 </div>
 
-                <button className="rounded-2xl bg-yellow-400 px-5 py-2 font-bold text-black">
+                <button className="rounded-2xl bg-yellow-400 px-5 py-2 font-bold text-[var(--text-color)]">
 
                   Manage
 
@@ -230,7 +230,7 @@ export default function OfferEnginePage() {
 
       {/* AI SECTION */}
 
-      <div className="mt-6 rounded-[30px] bg-gradient-to-r from-yellow-400 to-orange-500 p-6 text-black">
+      <div className="mt-6 rounded-[30px] bg-gradient-to-r from-yellow-400 to-orange-500 p-6 text-[var(--text-color)]">
 
         <div className="flex items-center gap-3">
 
@@ -249,7 +249,7 @@ export default function OfferEnginePage() {
 
         </p>
 
-        <button className="mt-6 rounded-2xl bg-black px-6 py-3 font-bold text-white">
+        <button className="mt-6 rounded-2xl bg-black px-6 py-3 font-bold text-[var(--button-text-color)]">
 
           Generate AI Offer
 
@@ -276,7 +276,7 @@ function StatCard({
 
     <div className="rounded-[28px] border border-white/10 bg-[#151515] p-5">
 
-      <div className="flex h-14 w-14 items-center justify-center rounded-2xl bg-yellow-400 text-black">
+      <div className="flex h-14 w-14 items-center justify-center rounded-2xl bg-yellow-400 text-[var(--text-color)]">
 
         {icon}
 

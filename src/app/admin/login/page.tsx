@@ -57,14 +57,14 @@ console.log("LOGIN EMAIL:", user?.email);
         className="w-full max-w-md bg-zinc-900 rounded-xl p-6 border border-zinc-700"
       >
 
-        <h1 className="text-3xl font-bold text-white mb-6 text-center">
+        <h1 className="text-3xl font-bold text-[var(--button-text-color)] mb-6 text-center">
           Admin Login
         </h1>
 
         <input
           type="email"
           placeholder="Email"
-          className="w-full mb-4 p-3 rounded bg-zinc-800 text-white outline-none"
+          className="w-full mb-4 p-3 rounded bg-zinc-800 text-[var(--button-text-color)] outline-none"
           value={email}
           onChange={(e) =>
             setEmail(e.target.value)
@@ -74,7 +74,7 @@ console.log("LOGIN EMAIL:", user?.email);
         <input
           type="password"
           placeholder="Password"
-          className="w-full mb-4 p-3 rounded bg-zinc-800 text-white outline-none"
+          className="w-full mb-4 p-3 rounded bg-zinc-800 text-[var(--button-text-color)] outline-none"
           value={password}
           onChange={(e) =>
             setPassword(e.target.value)
@@ -90,7 +90,7 @@ console.log("LOGIN EMAIL:", user?.email);
         <button
           type="submit"
           disabled={loading}
-          className="w-full bg-purple-600 hover:bg-purple-700 rounded-lg py-3 text-white font-bold"
+          className="w-full bg-purple-600 hover:bg-purple-700 rounded-lg py-3 text-[var(--button-text-color)] font-bold"
         >
           {loading
             ? "Signing In..."

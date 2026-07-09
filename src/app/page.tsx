@@ -509,7 +509,7 @@ export default function HomePage() {
                   className="
                     text-2xl
                     font-black
-                    text-black
+                    text-[var(--text-color)]
                   "
                 >
 
@@ -521,7 +521,7 @@ export default function HomePage() {
                   className="
                     mt-1
                     text-sm
-                    text-gray-500
+                    text-[var(--muted-text-color)]
                   "
                 >
 
@@ -582,7 +582,7 @@ export default function HomePage() {
                         <div
                           className="
                             rounded-[34px]
-                            bg-white
+                            bg-[var(--card-color)]
                             p-3
                           "
                         >
@@ -592,7 +592,7 @@ export default function HomePage() {
                               relative
                               overflow-hidden
                               rounded-[30px]
-                              bg-gray-100
+                              bg-[var(--background-color)]
                             "
                           >
 
@@ -649,7 +649,7 @@ export default function HomePage() {
                                 items-center
                                 justify-center
                                 rounded-full
-                                bg-white/90
+                                bg-[var(--card-color)]/90
                                 shadow-lg
                               "
                             >
@@ -664,7 +664,7 @@ export default function HomePage() {
 
                                       ? "fill-pink-500 text-pink-500"
 
-                                      : "text-gray-600"
+                                      : "text-[var(--muted-text-color)]"
                                   }
                                 `}
                               />
@@ -713,7 +713,7 @@ export default function HomePage() {
                               text-sm
                               font-black
                               leading-5
-                              text-black
+                              text-[var(--text-color)]
                             "
                           >
 
@@ -740,7 +740,7 @@ export default function HomePage() {
                             className="
                               text-xl
                               font-black
-                              text-black
+                              text-[var(--text-color)]
                             "
                           >
 
@@ -840,7 +840,7 @@ export default function HomePage() {
                       justify-center
                       rounded-full
                       border-[4px]
-                      bg-white
+                      bg-[var(--card-color)]
                       text-3xl
                       shadow-lg
 
@@ -903,7 +903,7 @@ export default function HomePage() {
                             overflow-hidden
                             rounded-full
                             border-[4px]
-                            bg-white
+                            bg-[var(--card-color)]
                             shadow-lg
 
                             ${
@@ -992,7 +992,7 @@ export default function HomePage() {
                 className="
                   text-2xl
                   font-black
-                  text-black
+                  text-[var(--text-color)]
                 "
               >
 
@@ -1016,7 +1016,7 @@ export default function HomePage() {
                     items-center
                     gap-2
                     rounded-2xl
-                    bg-white
+                    bg-[var(--card-color)]
                     px-3
                     py-2
                     shadow-sm
@@ -1068,7 +1068,7 @@ export default function HomePage() {
                     items-center
                     justify-center
                     rounded-2xl
-                    bg-white
+                    bg-[var(--card-color)]
                     shadow-sm
                   "
                 >
@@ -1128,7 +1128,7 @@ export default function HomePage() {
                         <div
                           className="
                             rounded-[34px]
-                            bg-white
+                            bg-[var(--card-color)]
                             p-3
                           "
                         >
@@ -1138,7 +1138,7 @@ export default function HomePage() {
                                 relative
                                 overflow-hidden
                                 rounded-[30px]
-                                bg-gray-100
+                                bg-[var(--background-color)]
                               "
                             >
 
@@ -1195,7 +1195,7 @@ export default function HomePage() {
                                   items-center
                                   justify-center
                                   rounded-full
-                                  bg-white/90
+                                  bg-[var(--card-color)]/90
                                   shadow-lg
                                 "
                               >
@@ -1210,7 +1210,7 @@ export default function HomePage() {
 
                                         ? "fill-pink-500 text-pink-500"
 
-                                        : "text-gray-600"
+                                        : "text-[var(--muted-text-color)]"
                                     }
                                   `}
                                 />
@@ -1259,7 +1259,7 @@ export default function HomePage() {
                               text-sm
                               font-black
                               leading-5
-                              text-black
+                              text-[var(--text-color)]
                             "
                           >
 
@@ -1284,7 +1284,7 @@ export default function HomePage() {
                             className="
                               text-xl
                               font-black
-                              text-black
+                              text-[var(--text-color)]
                             "
                           >
 

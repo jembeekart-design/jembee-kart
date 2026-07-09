@@ -43,7 +43,7 @@ export default function SEOPage() {
 
   return (
 
-    <main className="min-h-screen bg-[#0b0b0b] p-4 text-white">
+    <main className="min-h-screen bg-[#0b0b0b] p-4 text-[var(--button-text-color)]">
 
       {/* HEADER */}
 
@@ -73,7 +73,7 @@ export default function SEOPage() {
 
         <button
           onClick={saveSEO}
-          className="flex items-center gap-2 rounded-2xl bg-orange-500 px-5 py-3 text-sm font-bold text-white"
+          className="flex items-center gap-2 rounded-2xl bg-orange-500 px-5 py-3 text-sm font-bold text-[var(--button-text-color)]"
         >
 
           <Save size={18} />
@@ -113,7 +113,7 @@ export default function SEOPage() {
                 e.target.value
               )
             }
-            className="w-full rounded-2xl border border-white/10 bg-black px-4 py-4 text-white outline-none"
+            className="w-full rounded-2xl border border-white/10 bg-black px-4 py-4 text-[var(--button-text-color)] outline-none"
           />
 
         </div>
@@ -143,7 +143,7 @@ export default function SEOPage() {
               )
             }
             rows={5}
-            className="w-full rounded-2xl border border-white/10 bg-black px-4 py-4 text-white outline-none"
+            className="w-full rounded-2xl border border-white/10 bg-black px-4 py-4 text-[var(--button-text-color)] outline-none"
           />
 
         </div>
@@ -173,7 +173,7 @@ export default function SEOPage() {
                 e.target.value
               )
             }
-            className="w-full rounded-2xl border border-white/10 bg-black px-4 py-4 text-white outline-none"
+            className="w-full rounded-2xl border border-white/10 bg-black px-4 py-4 text-[var(--button-text-color)] outline-none"
           />
 
         </div>
@@ -203,7 +203,7 @@ export default function SEOPage() {
                 e.target.value
               )
             }
-            className="w-full rounded-2xl border border-white/10 bg-black px-4 py-4 text-white outline-none"
+            className="w-full rounded-2xl border border-white/10 bg-black px-4 py-4 text-[var(--button-text-color)] outline-none"
           />
 
         </div>
@@ -214,7 +214,7 @@ export default function SEOPage() {
 
       <div className="mt-6 rounded-[30px] bg-gradient-to-r from-orange-500 to-red-500 p-6">
 
-        <p className="text-sm text-white/70">
+        <p className="text-sm text-[var(--button-text-color)]/70">
           Google Search Preview
         </p>
 
@@ -226,7 +226,7 @@ export default function SEOPage() {
           {siteUrl}
         </p>
 
-        <p className="mt-4 text-white/90">
+        <p className="mt-4 text-[var(--button-text-color)]/90">
           {metaDescription}
         </p>
 

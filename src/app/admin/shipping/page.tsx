@@ -28,7 +28,7 @@ export default function ShippingPage() {
 
   return (
 
-    <main className="min-h-screen bg-[#0b0b0b] p-4 text-white">
+    <main className="min-h-screen bg-[#0b0b0b] p-4 text-[var(--button-text-color)]">
 
       <div className="mb-8 flex items-center justify-between">
 
@@ -157,8 +157,8 @@ export default function ShippingPage() {
               }
               className={`rounded-2xl px-5 py-3 font-bold ${
                 codEnabled
-                  ? "bg-green-500"
-                  : "bg-red-500"
+                  ? "bg-[var(--success-color)]"
+                  : "bg-[var(--danger-color)]"
               }`}
             >
 
@@ -205,8 +205,8 @@ export default function ShippingPage() {
               }
               className={`rounded-2xl px-5 py-3 font-bold ${
                 trackingEnabled
-                  ? "bg-green-500"
-                  : "bg-red-500"
+                  ? "bg-[var(--success-color)]"
+                  : "bg-[var(--danger-color)]"
               }`}
             >
 

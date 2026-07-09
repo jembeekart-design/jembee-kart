@@ -58,7 +58,7 @@ FloatingRewards({
         <Coins
           size={34}
           className="
-            text-black
+            text-[var(--text-color)]
           "
         />
 
@@ -68,7 +68,7 @@ FloatingRewards({
             className="
               text-3xl
               font-black
-              text-black
+              text-[var(--text-color)]
             "
           >
 
@@ -80,7 +80,7 @@ FloatingRewards({
             className="
               text-xs
               font-bold
-              text-black/70
+              text-[var(--text-color)]/70
             "
           >
 

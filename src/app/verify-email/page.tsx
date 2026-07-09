@@ -164,7 +164,7 @@ export default function VerifyEmailPage() {
 
   return (
     <main className="min-h-screen flex items-center justify-center bg-[#f6f7fb] p-4">
-      <div className="w-full max-w-md rounded-[32px] bg-white p-8 shadow-2xl text-center">
+      <div className="w-full max-w-md rounded-[32px] bg-[var(--card-color)] p-8 shadow-2xl text-center">
         <div className="mb-6">
           <div className="h-16 w-16 bg-indigo-50 text-indigo-600 rounded-full flex items-center justify-center mx-auto mb-4">
             <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor" className="w-8 h-8">
@@ -172,7 +172,7 @@ export default function VerifyEmailPage() {
             </svg>
           </div>
           <h1 className="text-2xl font-black text-gray-800">Verify Your Email</h1>
-          <p className="mt-2 text-sm text-gray-500">
+          <p className="mt-2 text-sm text-[var(--muted-text-color)]">
             We have dispatched an activation token framework structure onto <br />
             <span className="font-bold text-indigo-600">{userEmail || "your inbox"}</span>
           </p>
@@ -182,7 +182,7 @@ export default function VerifyEmailPage() {
           <button
             onClick={checkVerificationStatus}
             disabled={checking || syncedRef.current}
-            className="w-full rounded-2xl bg-indigo-600 p-4 font-black text-white transition hover:bg-indigo-700 disabled:opacity-50"
+            className="w-full rounded-2xl bg-indigo-600 p-4 font-black text-[var(--button-text-color)] transition hover:bg-indigo-700 disabled:opacity-50"
           >
             {checking || syncedRef.current ? "Checking System Records..." : "I Have Verified"}
           </button>
@@ -190,7 +190,7 @@ export default function VerifyEmailPage() {
           <button
             onClick={handleResendEmail}
             disabled={resendLoading || checking || syncedRef.current}
-            className="w-full rounded-2xl border border-gray-200 p-4 font-bold bg-white text-gray-700 hover:bg-gray-50 transition disabled:opacity-50 text-sm"
+            className="w-full rounded-2xl border border-[var(--border-color)] p-4 font-bold bg-[var(--card-color)] text-[var(--text-color)] hover:bg-gray-50 transition disabled:opacity-50 text-sm"
           >
             {resendLoading ? "Transmitting Packet..." : "Resend Verification Email"}
           </button>

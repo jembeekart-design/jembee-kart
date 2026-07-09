@@ -50,7 +50,7 @@ export default function SubadminManagerPage() {
 
   return (
 
-    <main className="min-h-screen bg-[#090909] p-4 text-white">
+    <main className="min-h-screen bg-[#090909] p-4 text-[var(--button-text-color)]">
 
       {/* HEADER */}
 
@@ -58,11 +58,11 @@ export default function SubadminManagerPage() {
 
         <div className="flex items-center gap-4">
 
-          <div className="flex h-16 w-16 items-center justify-center rounded-[28px] bg-violet-500">
+          <div className="flex h-16 w-16 items-center justify-center rounded-[28px] bg-[var(--secondary-color)]">
 
             <UserCog
               size={30}
-              className="text-black"
+              className="text-[var(--text-color)]"
             />
 
           </div>
@@ -81,7 +81,7 @@ export default function SubadminManagerPage() {
 
         </div>
 
-        <button className="rounded-2xl bg-violet-500 px-5 py-3 font-bold text-black">
+        <button className="rounded-2xl bg-[var(--secondary-color)] px-5 py-3 font-bold text-[var(--text-color)]">
 
           Add Subadmin
 
@@ -133,7 +133,7 @@ export default function SubadminManagerPage() {
           <input
             type="text"
             placeholder="Search subadmins..."
-            className="w-full bg-transparent outline-none placeholder:text-gray-500"
+            className="w-full bg-transparent outline-none placeholder:text-[var(--muted-text-color)]"
           />
 
         </div>
@@ -167,7 +167,7 @@ export default function SubadminManagerPage() {
 
                 <div className="flex items-center gap-4">
 
-                  <div className="flex h-16 w-16 items-center justify-center rounded-2xl bg-violet-500 text-2xl font-black text-black">
+                  <div className="flex h-16 w-16 items-center justify-center rounded-2xl bg-[var(--secondary-color)] text-2xl font-black text-[var(--text-color)]">
 
                     {item.name.charAt(
                       0
@@ -195,11 +195,11 @@ export default function SubadminManagerPage() {
                     className={`rounded-full px-4 py-2 text-sm font-bold ${
                       item.status ===
                       "Active"
-                        ? "bg-green-500/20 text-green-400"
+                        ? "bg-[var(--success-color)]/20 text-green-400"
                         : item.status ===
                           "Pending"
-                        ? "bg-yellow-500/20 text-yellow-400"
-                        : "bg-red-500/20 text-red-400"
+                        ? "bg-[var(--warning-color)]/20 text-yellow-400"
+                        : "bg-[var(--danger-color)]/20 text-red-400"
                     }`}
                   >
 
@@ -207,7 +207,7 @@ export default function SubadminManagerPage() {
 
                   </div>
 
-                  <button className="flex items-center gap-2 rounded-2xl bg-violet-500 px-4 py-3 font-bold text-black">
+                  <button className="flex items-center gap-2 rounded-2xl bg-[var(--secondary-color)] px-4 py-3 font-bold text-[var(--text-color)]">
 
                     <Eye size={18} />
 
@@ -215,7 +215,7 @@ export default function SubadminManagerPage() {
 
                   </button>
 
-                  <button className="flex items-center gap-2 rounded-2xl bg-red-500 px-4 py-3 font-bold">
+                  <button className="flex items-center gap-2 rounded-2xl bg-[var(--danger-color)] px-4 py-3 font-bold">
 
                     <Ban size={18} />
 
@@ -309,7 +309,7 @@ export default function SubadminManagerPage() {
 
       {/* STATUS */}
 
-      <div className="mt-8 rounded-[32px] bg-gradient-to-r from-violet-500 to-fuchsia-600 p-7 text-black">
+      <div className="mt-8 rounded-[32px] bg-gradient-to-r from-violet-500 to-fuchsia-600 p-7 text-[var(--text-color)]">
 
         <div className="flex items-center gap-3">
 
@@ -328,7 +328,7 @@ export default function SubadminManagerPage() {
 
         </p>
 
-        <button className="mt-6 rounded-2xl bg-black px-5 py-3 font-bold text-white">
+        <button className="mt-6 rounded-2xl bg-black px-5 py-3 font-bold text-[var(--button-text-color)]">
 
           Manage Permissions
 
@@ -338,7 +338,7 @@ export default function SubadminManagerPage() {
 
       {/* ALERT */}
 
-      <div className="mt-8 rounded-[28px] border border-yellow-500/20 bg-yellow-500/10 p-5">
+      <div className="mt-8 rounded-[28px] border border-yellow-500/20 bg-[var(--warning-color)]/10 p-5">
 
         <div className="flex items-start gap-4">
 
@@ -385,7 +385,7 @@ function StatCard({
 
     <div className="rounded-[28px] border border-white/10 bg-[#151515] p-5">
 
-      <div className="flex h-14 w-14 items-center justify-center rounded-2xl bg-violet-500 text-black">
+      <div className="flex h-14 w-14 items-center justify-center rounded-2xl bg-[var(--secondary-color)] text-[var(--text-color)]">
 
         {icon}
 

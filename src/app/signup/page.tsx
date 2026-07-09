@@ -331,7 +331,7 @@ function RegistrationForm() {
 
   return (
     <main className="flex min-h-screen items-center justify-center bg-gray-50 px-4 py-12">
-      <div className="w-full max-w-md rounded-[32px] bg-white p-8 shadow-sm border border-gray-100">
+      <div className="w-full max-w-md rounded-[32px] bg-[var(--card-color)] p-8 shadow-sm border border-gray-100">
         <div className="text-center mb-8">
           <h1 className="text-[28px] font-black text-indigo-600">Create Account</h1>
           <p className="text-sm text-gray-400 mt-1">Join JembeeKart Today</p>
@@ -377,9 +377,9 @@ function RegistrationForm() {
               id="terms"
               checked={acceptedTerms}
               onChange={(e) => setAcceptedTerms(e.target.checked)}
-              className="mt-1 h-4 w-4 rounded border-gray-300 text-indigo-600 focus:ring-indigo-500"
+              className="mt-1 h-4 w-4 rounded border-[var(--border-color)] text-indigo-600 focus:ring-indigo-500"
             />
-            <label htmlFor="terms" className="text-xs text-gray-500 select-none">
+            <label htmlFor="terms" className="text-xs text-[var(--muted-text-color)] select-none">
               I agree to the{" "}
               <Link href="/terms" className="text-indigo-600 font-bold hover:underline">
                 Terms & Conditions
@@ -395,7 +395,7 @@ function RegistrationForm() {
           <button
             type="submit"
             disabled={loading}
-            className="w-full rounded-2xl bg-indigo-600 p-4 font-black text-white transition hover:bg-indigo-700 disabled:opacity-50"
+            className="w-full rounded-2xl bg-indigo-600 p-4 font-black text-[var(--button-text-color)] transition hover:bg-indigo-700 disabled:opacity-50"
           >
             {loading ? "Creating Account..." : "Create Account"}
           </button>
@@ -410,7 +410,7 @@ function RegistrationForm() {
         <button
           onClick={handleGoogleSignup}
           disabled={loading}
-          className="w-full rounded-2xl border p-4 font-bold bg-white text-gray-700 hover:bg-gray-50 transition disabled:opacity-50"
+          className="w-full rounded-2xl border p-4 font-bold bg-[var(--card-color)] text-[var(--text-color)] hover:bg-gray-50 transition disabled:opacity-50"
         >
           Continue With Google
         </button>

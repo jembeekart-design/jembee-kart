@@ -89,7 +89,7 @@ ShareDrawer({
           className="
             text-lg
             font-black
-            text-white
+            text-[var(--button-text-color)]
           "
         >
 
@@ -101,7 +101,7 @@ ShareDrawer({
           onClick={onClose}
           className="
             text-2xl
-            text-white
+            text-[var(--button-text-color)]
           "
         >
 
@@ -142,7 +142,7 @@ ShareDrawer({
               items-center
               justify-center
               rounded-full
-              bg-green-500/20
+              bg-[var(--success-color)]/20
             "
           >
 
@@ -159,7 +159,7 @@ ShareDrawer({
             className="
               text-xs
               font-bold
-              text-white
+              text-[var(--button-text-color)]
             "
           >
 
@@ -205,7 +205,7 @@ ShareDrawer({
             className="
               text-xs
               font-bold
-              text-white
+              text-[var(--button-text-color)]
             "
           >
 
@@ -251,7 +251,7 @@ ShareDrawer({
             className="
               text-xs
               font-bold
-              text-white
+              text-[var(--button-text-color)]
             "
           >
 
@@ -281,7 +281,7 @@ ShareDrawer({
               items-center
               justify-center
               rounded-full
-              bg-yellow-500/20
+              bg-[var(--warning-color)]/20
             "
           >
 
@@ -298,7 +298,7 @@ ShareDrawer({
             className="
               text-xs
               font-bold
-              text-white
+              text-[var(--button-text-color)]
             "
           >
 
@@ -327,7 +327,7 @@ ShareDrawer({
             rounded-2xl
             border
             border-white/10
-            bg-white/5
+            bg-[var(--card-color)]/5
             px-4
             py-4
           "

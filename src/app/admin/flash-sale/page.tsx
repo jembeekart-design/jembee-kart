@@ -175,7 +175,7 @@ export default function FlashSalePage() {
 
     return (
 
-      <div className="flex min-h-screen items-center justify-center bg-black text-white">
+      <div className="flex min-h-screen items-center justify-center bg-black text-[var(--button-text-color)]">
 
         Loading...
 
@@ -186,7 +186,7 @@ export default function FlashSalePage() {
 
   return (
 
-    <main className="min-h-screen bg-[#0b0b0b] p-4 text-white">
+    <main className="min-h-screen bg-[#0b0b0b] p-4 text-[var(--button-text-color)]">
 
       {/* HEADER */}
 
@@ -333,7 +333,7 @@ export default function FlashSalePage() {
             createFlashSale
           }
           disabled={saving}
-          className="mt-6 flex items-center gap-2 rounded-2xl bg-orange-500 px-5 py-4 font-bold text-black"
+          className="mt-6 flex items-center gap-2 rounded-2xl bg-orange-500 px-5 py-4 font-bold text-[var(--text-color)]"
         >
 
           <Save size={18} />
@@ -410,7 +410,7 @@ export default function FlashSalePage() {
                       item.id!
                     )
                   }
-                  className="flex items-center gap-2 rounded-2xl bg-red-500 px-5 py-3 font-bold"
+                  className="flex items-center gap-2 rounded-2xl bg-[var(--danger-color)] px-5 py-3 font-bold"
                 >
 
                   <Trash2 size={18} />

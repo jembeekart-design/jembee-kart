@@ -116,7 +116,7 @@ export default function CloudinaryUploader({
 
       {/* PREVIEW BOX */}
 
-      <div className="overflow-hidden rounded-[28px] border border-gray-200 bg-gray-100 shadow-lg">
+      <div className="overflow-hidden rounded-[28px] border border-[var(--border-color)] bg-[var(--background-color)] shadow-lg">
 
         {/* IMAGE PREVIEW */}
 
@@ -200,7 +200,7 @@ export default function CloudinaryUploader({
             fileInputRef.current?.click();
           }}
           disabled={loading}
-          className="flex flex-1 items-center justify-center gap-3 rounded-2xl bg-gradient-to-r from-blue-600 to-purple-600 px-6 py-4 text-base font-black text-white shadow-xl transition-all duration-300 hover:scale-[1.02]"
+          className="flex flex-1 items-center justify-center gap-3 rounded-2xl bg-gradient-to-r from-blue-600 to-purple-600 px-6 py-4 text-base font-black text-[var(--button-text-color)] shadow-xl transition-all duration-300 hover:scale-[1.02]"
         >
           {loading ? (
             <>
@@ -226,7 +226,7 @@ export default function CloudinaryUploader({
             onClick={
               removeFile
             }
-            className="rounded-2xl bg-red-500 px-6 py-4 text-base font-black text-white shadow-xl transition-all duration-300 hover:bg-red-600"
+            className="rounded-2xl bg-[var(--danger-color)] px-6 py-4 text-base font-black text-[var(--button-text-color)] shadow-xl transition-all duration-300 hover:bg-red-600"
           >
             Delete
           </button>
@@ -237,9 +237,9 @@ export default function CloudinaryUploader({
       {/* URL */}
 
       {value ? (
-        <div className="rounded-2xl border border-gray-200 bg-white p-4">
+        <div className="rounded-2xl border border-[var(--border-color)] bg-[var(--card-color)] p-4">
 
-          <p className="mb-2 text-sm font-black text-gray-700">
+          <p className="mb-2 text-sm font-black text-[var(--text-color)]">
             Uploaded URL
           </p>
 
@@ -247,7 +247,7 @@ export default function CloudinaryUploader({
             type="text"
             value={value}
             readOnly
-            className="w-full rounded-xl border border-gray-200 bg-gray-100 px-4 py-3 text-sm"
+            className="w-full rounded-xl border border-[var(--border-color)] bg-[var(--background-color)] px-4 py-3 text-sm"
           />
 
         </div>

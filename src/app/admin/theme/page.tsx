@@ -146,7 +146,7 @@ export default function ThemePage() {
 
   if (loading) {
     return (
-      <div className="flex min-h-screen items-center justify-center bg-black text-white">
+      <div className="flex min-h-screen items-center justify-center bg-black text-[var(--button-text-color)]">
         Loading...
       </div>
     );
@@ -154,7 +154,7 @@ export default function ThemePage() {
 
   return (
 
-    <main className="min-h-screen bg-black p-4 text-white">
+    <main className="min-h-screen bg-black p-4 text-[var(--button-text-color)]">
 
       <h1 className="mb-6 text-center text-3xl font-black">
         JembeeKart Live Theme
@@ -257,7 +257,7 @@ function ThemeSection({
 
               <div
                 key={key}
-                className="rounded-[24px] bg-white/10 p-4 backdrop-blur-lg"
+                className="rounded-[24px] bg-[var(--card-color)]/10 p-4 backdrop-blur-lg"
               >
 
                 <div className="mb-3 flex items-center justify-between">

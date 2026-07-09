@@ -56,10 +56,10 @@ export default function AuditCard({
               status === "CRITICAL"
                 ? "bg-pink-500/10 text-pink-300"
                 : status === "FAIL"
-                ? "bg-red-500/10 text-red-300"
+                ? "bg-[var(--danger-color)]/10 text-red-300"
                 : status === "WARNING"
-                ? "bg-yellow-500/10 text-yellow-300"
-                : "bg-green-500/10 text-green-300"
+                ? "bg-[var(--warning-color)]/10 text-yellow-300"
+                : "bg-[var(--success-color)]/10 text-green-300"
             }`}
           >
             {issue}

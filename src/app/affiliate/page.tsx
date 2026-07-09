@@ -159,28 +159,28 @@ export default function AffiliatePage() {
       {/* ======================================================
       HERO SECTION
       ====================================================== */}
-      <section className="relative overflow-hidden bg-gradient-to-br from-violet-700 via-fuchsia-600 to-orange-500 px-4 pb-10 pt-12 text-white">
+      <section className="relative overflow-hidden bg-gradient-to-br from-violet-700 via-fuchsia-600 to-orange-500 px-4 pb-10 pt-12 text-[var(--button-text-color)]">
         
         {/* BG CIRCLES */}
-        <div className="absolute right-[-40px] top-[-40px] h-40 w-40 rounded-full bg-white/10" />
-        <div className="absolute bottom-[-60px] left-[-40px] h-44 w-44 rounded-full bg-white/10" />
+        <div className="absolute right-[-40px] top-[-40px] h-40 w-40 rounded-full bg-[var(--card-color)]/10" />
+        <div className="absolute bottom-[-60px] left-[-40px] h-44 w-44 rounded-full bg-[var(--card-color)]/10" />
 
         <div className="relative z-10">
           
           {/* TOP */}
           <div className="flex items-center gap-3">
-            <div className="flex h-16 w-16 items-center justify-center rounded-full bg-white/20">
+            <div className="flex h-16 w-16 items-center justify-center rounded-full bg-[var(--card-color)]/20">
               <Crown size={34} />
             </div>
             <div>
               <h1 className="text-[30px] font-black">MLM Dashboard</h1>
-              <p className="text-sm text-white/80">Build Team & Earn Daily</p>
+              <p className="text-sm text-[var(--button-text-color)]/80">Build Team & Earn Daily</p>
             </div>
           </div>
 
           {/* USER CARD */}
-          <div className="mt-8 rounded-[28px] bg-white/10 p-5 backdrop-blur-md">
-            <p className="text-xs text-white/70">Referral Name</p>
+          <div className="mt-8 rounded-[28px] bg-[var(--card-color)]/10 p-5 backdrop-blur-md">
+            <p className="text-xs text-[var(--button-text-color)]/70">Referral Name</p>
             <h2 className="mt-1 text-[28px] font-black">
               {userData?.name || "Loading..."}
             </h2>
@@ -188,21 +188,21 @@ export default function AffiliatePage() {
             {/* DYNAMIC TELEMETRY STATS */}
             <div className="mt-5 grid grid-cols-3 gap-3">
               <div>
-                <p className="text-xs text-white/70">Team</p>
+                <p className="text-xs text-[var(--button-text-color)]/70">Team</p>
                 <h3 className="text-xl font-black">
                   {userData?.totalReferrals || 0}
                 </h3>
               </div>
 
               <div>
-                <p className="text-xs text-white/70">Income</p>
+                <p className="text-xs text-[var(--button-text-color)]/70">Income</p>
                 <h3 className="text-xl font-black">
                   ₹{userData?.totalIncome || 0}
                 </h3>
               </div>
 
               <div>
-                <p className="text-xs text-white/70">Rank</p>
+                <p className="text-xs text-[var(--button-text-color)]/70">Rank</p>
                 <h3 className="text-xl font-black">
                   {userData?.rank || "Member"}
                 </h3>
@@ -220,22 +220,22 @@ export default function AffiliatePage() {
         <div className="grid grid-cols-2 gap-4">
           
           {/* TODAY INCOME */}
-          <div className="rounded-[28px] bg-white p-5 shadow-xl">
+          <div className="rounded-[28px] bg-[var(--card-color)] p-5 shadow-xl">
             <div className="flex h-14 w-14 items-center justify-center rounded-2xl bg-green-100 text-green-600">
               <CircleDollarSign size={30} />
             </div>
-            <p className="mt-4 text-sm font-semibold text-gray-500">Today Income</p>
+            <p className="mt-4 text-sm font-semibold text-[var(--muted-text-color)]">Today Income</p>
             <h2 className="mt-1 text-[28px] font-black">
               ₹{userData?.todayIncome || 0}
             </h2>
           </div>
 
           {/* TOTAL WITHDRAW */}
-          <div className="rounded-[28px] bg-white p-5 shadow-xl">
+          <div className="rounded-[28px] bg-[var(--card-color)] p-5 shadow-xl">
             <div className="flex h-14 w-14 items-center justify-center rounded-2xl bg-violet-100 text-violet-600">
               <ShieldCheck size={28} />
             </div>
-            <p className="mt-4 text-sm font-semibold text-gray-500">Total Withdraw</p>
+            <p className="mt-4 text-sm font-semibold text-[var(--muted-text-color)]">Total Withdraw</p>
             <h2 className="mt-1 text-[28px] font-black">
               ₹{userData?.totalWithdraw || 0}
             </h2>
@@ -250,7 +250,7 @@ export default function AffiliatePage() {
       <section className="mt-8 px-4">
         <div className="mb-5">
           <h2 className="text-[28px] font-black">MLM Features</h2>
-          <p className="text-sm text-gray-500">Manage your business</p>
+          <p className="text-sm text-[var(--muted-text-color)]">Manage your business</p>
         </div>
 
         {/* GRID */}
@@ -261,15 +261,15 @@ export default function AffiliatePage() {
               <Link
                 key={item.title}
                 href={item.href}
-                className="group overflow-hidden rounded-[30px] bg-white p-4 shadow-sm transition-all duration-300 active:scale-[0.98]"
+                className="group overflow-hidden rounded-[30px] bg-[var(--card-color)] p-4 shadow-sm transition-all duration-300 active:scale-[0.98]"
               >
                 {/* ICON */}
-                <div className={`flex h-16 w-16 items-center justify-center rounded-2xl bg-gradient-to-br ${item.color} text-white shadow-lg`}>
+                <div className={`flex h-16 w-16 items-center justify-center rounded-2xl bg-gradient-to-br ${item.color} text-[var(--button-text-color)] shadow-lg`}>
                   <Icon size={30} />
                 </div>
 
                 {/* TITLE */}
-                <h3 className="mt-4 text-[16px] font-black text-black">
+                <h3 className="mt-4 text-[16px] font-black text-[var(--text-color)]">
                   {item.title}
                 </h3>
 

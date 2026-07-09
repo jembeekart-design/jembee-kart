@@ -78,7 +78,7 @@ VideoCard({
           bottom-24
           left-4
           z-20
-          text-white
+          text-[var(--button-text-color)]
         "
       >
 
@@ -106,7 +106,7 @@ VideoCard({
             px-5
             py-2
             font-black
-            text-black
+            text-[var(--text-color)]
           "
         >
 
@@ -130,7 +130,7 @@ VideoCard({
           flex-col
           items-center
           gap-5
-          text-white
+          text-[var(--button-text-color)]
         "
       >
 

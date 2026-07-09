@@ -65,7 +65,7 @@ export default function BannerManagerPage() {
 
   return (
 
-    <main className="min-h-screen bg-[#050505] p-4 text-white">
+    <main className="min-h-screen bg-[#050505] p-4 text-[var(--button-text-color)]">
 
       {/* HEADER */}
 
@@ -77,7 +77,7 @@ export default function BannerManagerPage() {
 
             <ImagePlus
               size={30}
-              className="text-black"
+              className="text-[var(--text-color)]"
             />
 
           </div>
@@ -101,7 +101,7 @@ export default function BannerManagerPage() {
         </div>
 
         <button
-          className="flex items-center gap-2 rounded-2xl bg-pink-500 px-6 py-4 font-black text-black"
+          className="flex items-center gap-2 rounded-2xl bg-pink-500 px-6 py-4 font-black text-[var(--text-color)]"
         >
 
           <Save size={20} />
@@ -185,7 +185,7 @@ export default function BannerManagerPage() {
                         index
                       )
                     }
-                    className="rounded-2xl bg-red-500/20 p-3 text-red-400"
+                    className="rounded-2xl bg-[var(--danger-color)]/20 p-3 text-red-400"
                   >
 
                     <Trash2 size={20} />
@@ -207,7 +207,7 @@ export default function BannerManagerPage() {
 
       <button
         onClick={addBanner}
-        className="mt-6 flex w-full items-center justify-center gap-2 rounded-[30px] bg-pink-500 px-6 py-5 font-black text-black"
+        className="mt-6 flex w-full items-center justify-center gap-2 rounded-[30px] bg-pink-500 px-6 py-5 font-black text-[var(--text-color)]"
       >
 
         <Plus size={22} />
@@ -247,7 +247,7 @@ export default function BannerManagerPage() {
             </button>
 
             <button
-              className="flex items-center gap-2 rounded-2xl bg-black px-4 py-3 font-bold text-white"
+              className="flex items-center gap-2 rounded-2xl bg-black px-4 py-3 font-bold text-[var(--button-text-color)]"
             >
 
               <Smartphone size={18} />
@@ -314,7 +314,7 @@ export default function BannerManagerPage() {
       <div className="mt-6 flex flex-wrap gap-4">
 
         <button
-          className="flex items-center gap-2 rounded-2xl bg-green-500 px-6 py-4 font-black text-black"
+          className="flex items-center gap-2 rounded-2xl bg-[var(--success-color)] px-6 py-4 font-black text-[var(--text-color)]"
         >
 
           <Save size={20} />
@@ -324,7 +324,7 @@ export default function BannerManagerPage() {
         </button>
 
         <button
-          className="flex items-center gap-2 rounded-2xl bg-yellow-500 px-6 py-4 font-black text-black"
+          className="flex items-center gap-2 rounded-2xl bg-[var(--warning-color)] px-6 py-4 font-black text-[var(--text-color)]"
         >
 
           <Wand2 size={20} />
@@ -355,7 +355,7 @@ function ActionCard({
 
         <Icon
           size={24}
-          className="text-black"
+          className="text-[var(--text-color)]"
         />
 
       </div>

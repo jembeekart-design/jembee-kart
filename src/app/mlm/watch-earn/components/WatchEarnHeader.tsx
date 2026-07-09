@@ -45,7 +45,7 @@ WatchEarnHeader({
           className="
             text-3xl
             font-black
-            text-white
+            text-[var(--button-text-color)]
           "
         >
 
@@ -106,7 +106,7 @@ WatchEarnHeader({
             className="
               text-sm
               font-black
-              text-white
+              text-[var(--button-text-color)]
             "
           >
 
@@ -144,7 +144,7 @@ WatchEarnHeader({
             className="
               text-sm
               font-black
-              text-white
+              text-[var(--button-text-color)]
             "
           >
 
@@ -167,7 +167,7 @@ WatchEarnHeader({
             border
             border-white/10
             bg-black/30
-            text-white
+            text-[var(--button-text-color)]
             backdrop-blur-xl
           "
         >

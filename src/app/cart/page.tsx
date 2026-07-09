@@ -64,7 +64,7 @@ export default function CartPage() {
     <main className="min-h-screen bg-[#f8f9fe] pb-24">
       {/* HEADER */}
       <div className="p-4 flex items-center gap-4 sticky top-0 bg-[#f8f9fe]/80 backdrop-blur-md z-10">
-        <button onClick={() => router.back()} className="p-2 bg-white rounded-full shadow-sm border border-gray-100">
+        <button onClick={() => router.back()} className="p-2 bg-[var(--card-color)] rounded-full shadow-sm border border-gray-100">
           <ArrowLeft size={20} />
         </button>
         <h1 className="font-black text-lg">My Cart ({cartItems.length} Items)</h1>
@@ -74,17 +74,17 @@ export default function CartPage() {
         {loading ? (
           <div className="text-center py-20 font-bold">Loading...</div>
         ) : cartItems.length === 0 ? (
-          <div className="text-center py-20 font-bold text-gray-500">Your cart is empty</div>
+          <div className="text-center py-20 font-bold text-[var(--muted-text-color)]">Your cart is empty</div>
         ) : (
           <>
             {/* PROGRESS BAR */}
             {remaining > 0 ? (
-              <div className="bg-white p-4 rounded-2xl border border-indigo-100 shadow-sm">
+              <div className="bg-[var(--card-color)] p-4 rounded-2xl border border-indigo-100 shadow-sm">
                 <div className="flex justify-between text-[11px] font-bold mb-2">
                   <span className="text-indigo-600 flex items-center gap-1">🎁 Add ₹{remaining} more for FREE GIFT</span>
                   <span>₹{totalPrice} / ₹{FREE_GIFT_THRESHOLD}</span>
                 </div>
-                <div className="w-full h-2 bg-gray-100 rounded-full overflow-hidden">
+                <div className="w-full h-2 bg-[var(--background-color)] rounded-full overflow-hidden">
                   <div className="h-full bg-indigo-600 rounded-full transition-all duration-500" style={{ width: `${progress}%` }} />
                 </div>
               </div>
@@ -94,13 +94,13 @@ export default function CartPage() {
 
             {/* ITEMS LIST */}
             {cartItems.map((item) => (
-              <div key={item.id} className="bg-white p-4 rounded-3xl shadow-sm border border-gray-100 flex gap-4">
-                <img src={item.image} className="w-24 h-24 rounded-2xl object-cover bg-gray-100" />
+              <div key={item.id} className="bg-[var(--card-color)] p-4 rounded-3xl shadow-sm border border-gray-100 flex gap-4">
+                <img src={item.image} className="w-24 h-24 rounded-2xl object-cover bg-[var(--background-color)]" />
                 <div className="flex-1">
                   <h2 className="font-bold text-sm text-gray-900 line-clamp-1">{item.title}</h2>
                   <div className="flex items-center gap-2 mt-1">
-                    <span className="text-[10px] font-bold bg-gray-100 px-2 py-0.5 rounded-md text-gray-600">Size: {item.size}</span>
-                    <div style={{ background: item.color }} className="w-4 h-4 rounded-full border border-gray-200" />
+                    <span className="text-[10px] font-bold bg-[var(--background-color)] px-2 py-0.5 rounded-md text-[var(--muted-text-color)]">Size: {item.size}</span>
+                    <div style={{ background: item.color }} className="w-4 h-4 rounded-full border border-[var(--border-color)]" />
                   </div>
                   <p className="font-black text-lg mt-2 text-indigo-600">₹{item.discountPrice || item.price}</p>
                   <div className="flex justify-between items-center mt-2">
@@ -120,14 +120,14 @@ export default function CartPage() {
 
       {/* CHECKOUT BAR */}
       {cartItems.length > 0 && (
-        <div className="fixed bottom-0 left-0 right-0 p-4 bg-white border-t border-gray-100 rounded-t-[2rem] shadow-[0_-10px_40px_-15px_rgba(0,0,0,0.1)]">
+        <div className="fixed bottom-0 left-0 right-0 p-4 bg-[var(--card-color)] border-t border-gray-100 rounded-t-[2rem] shadow-[0_-10px_40px_-15px_rgba(0,0,0,0.1)]">
           <div className="flex justify-between items-center mb-4 px-2">
-            <span className="text-gray-500 font-medium text-sm">Total Amount</span>
+            <span className="text-[var(--muted-text-color)] font-medium text-sm">Total Amount</span>
             <span className="text-2xl font-black text-indigo-900">₹{totalPrice}</span>
           </div>
           <button 
             onClick={handleCheckout} 
-            className="w-full bg-indigo-600 text-white py-4 rounded-2xl font-black flex items-center justify-center gap-2 hover:bg-indigo-700 transition"
+            className="w-full bg-indigo-600 text-[var(--button-text-color)] py-4 rounded-2xl font-black flex items-center justify-center gap-2 hover:bg-indigo-700 transition"
           >
             <Zap size={18} /> Secure Checkout
           </button>

@@ -140,12 +140,12 @@ export default function VideoPlayer({
             z-50
             -translate-x-1/2
             rounded-full
-            bg-green-500
+            bg-[var(--success-color)]
             px-6
             py-3
             text-sm
             font-black
-            text-white
+            text-[var(--button-text-color)]
             shadow-2xl
           "
         >

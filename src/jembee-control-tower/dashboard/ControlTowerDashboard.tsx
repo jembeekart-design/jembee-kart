@@ -64,14 +64,14 @@ export default function ControlTowerDashboard() {
   ];
 
   return (
-    <main className="min-h-screen bg-white text-black p-6 space-y-6">
+    <main className="min-h-screen bg-[var(--card-color)] text-[var(--text-color)] p-6 space-y-6">
 
       <div>
         <h1 className="text-3xl font-bold">
           JembeeKart Control Tower
         </h1>
 
-        <p className="text-gray-500">
+        <p className="text-[var(--muted-text-color)]">
           Production Readiness Dashboard
         </p>
       </div>
@@ -84,7 +84,7 @@ export default function ControlTowerDashboard() {
 
           <div
             key={card.title}
-            className="rounded-xl border p-4 shadow-sm cursor-pointer hover:bg-gray-100"
+            className="rounded-xl border p-4 shadow-sm cursor-pointer hover:bg-[var(--background-color)]"
             onClick={() => {
               if (!report?.issues) return;
 
@@ -105,7 +105,7 @@ export default function ControlTowerDashboard() {
               {card.value}
             </div>
 
-            <p className="text-sm text-gray-500 mt-2">
+            <p className="text-sm text-[var(--muted-text-color)] mt-2">
               {card.status}
             </p>
 
@@ -141,7 +141,7 @@ export default function ControlTowerDashboard() {
                   {issue.title}
                 </h3>
 
-                <p className="text-sm text-gray-500">
+                <p className="text-sm text-[var(--muted-text-color)]">
                   {issue.filePath}
                 </p>
 
@@ -248,7 +248,7 @@ export default function ControlTowerDashboard() {
               Description
             </h3>
 
-            <div className="bg-white border rounded p-3">
+            <div className="bg-[var(--card-color)] border rounded p-3">
               {selectedIssue.description}
             </div>
 
@@ -260,7 +260,7 @@ export default function ControlTowerDashboard() {
               Recommendation
             </h3>
 
-            <pre className="bg-white border rounded p-3 text-xs whitespace-pre-wrap overflow-auto">
+            <pre className="bg-[var(--card-color)] border rounded p-3 text-xs whitespace-pre-wrap overflow-auto">
 {selectedIssue.recommendation}
             </pre>
 

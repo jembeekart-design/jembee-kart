@@ -67,7 +67,7 @@ export default function SystemPage() {
 
   return (
 
-    <main className="min-h-screen bg-[#0b0b0b] p-4 text-white">
+    <main className="min-h-screen bg-[#0b0b0b] p-4 text-[var(--button-text-color)]">
 
       {/* HEADER */}
 
@@ -275,7 +275,7 @@ export default function SystemPage() {
 
             </div>
 
-            <span className="rounded-full bg-green-500 px-4 py-2 text-sm font-bold">
+            <span className="rounded-full bg-[var(--success-color)] px-4 py-2 text-sm font-bold">
 
               India
 
@@ -314,8 +314,8 @@ export default function SystemPage() {
               }
               className={`rounded-full px-5 py-2 text-sm font-bold ${
                 maintenanceMode
-                  ? "bg-red-500"
-                  : "bg-green-500"
+                  ? "bg-[var(--danger-color)]"
+                  : "bg-[var(--success-color)]"
               }`}
             >
 
@@ -350,7 +350,7 @@ export default function SystemPage() {
               : "Clear Cache"}
           </h2>
 
-          <p className="mt-2 text-white/80">
+          <p className="mt-2 text-[var(--button-text-color)]/80">
             Remove temporary stored files
           </p>
 
@@ -373,7 +373,7 @@ export default function SystemPage() {
               : "Refresh Deployment"}
           </h2>
 
-          <p className="mt-2 text-white/80">
+          <p className="mt-2 text-[var(--button-text-color)]/80">
             Restart deployment services
           </p>
 
@@ -389,7 +389,7 @@ export default function SystemPage() {
           JembeeKart System
         </h2>
 
-        <p className="mt-2 text-white/80">
+        <p className="mt-2 text-[var(--button-text-color)]/80">
           Advanced monitoring & server management panel
         </p>
 

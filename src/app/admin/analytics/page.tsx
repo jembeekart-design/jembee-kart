@@ -37,7 +37,7 @@ export default function AnalyticsPage() {
 
   return (
 
-    <main className="min-h-screen bg-[#0b0b0b] p-4 text-white">
+    <main className="min-h-screen bg-[#0b0b0b] p-4 text-[var(--button-text-color)]">
 
       {/* HEADER */}
 
@@ -108,23 +108,23 @@ export default function AnalyticsPage() {
           Monthly Revenue
         </h2>
 
-        <p className="mt-2 text-white/80">
+        <p className="mt-2 text-[var(--button-text-color)]/80">
           Your store performance is growing fast 🚀
         </p>
 
         <div className="mt-6 flex items-end gap-3">
 
-          <div className="h-[120px] w-full rounded-t-2xl bg-white/20" />
+          <div className="h-[120px] w-full rounded-t-2xl bg-[var(--card-color)]/20" />
 
-          <div className="h-[180px] w-full rounded-t-2xl bg-white/30" />
+          <div className="h-[180px] w-full rounded-t-2xl bg-[var(--card-color)]/30" />
 
-          <div className="h-[90px] w-full rounded-t-2xl bg-white/20" />
+          <div className="h-[90px] w-full rounded-t-2xl bg-[var(--card-color)]/20" />
 
-          <div className="h-[220px] w-full rounded-t-2xl bg-white/40" />
+          <div className="h-[220px] w-full rounded-t-2xl bg-[var(--card-color)]/40" />
 
-          <div className="h-[150px] w-full rounded-t-2xl bg-white/20" />
+          <div className="h-[150px] w-full rounded-t-2xl bg-[var(--card-color)]/20" />
 
-          <div className="h-[250px] w-full rounded-t-2xl bg-white/50" />
+          <div className="h-[250px] w-full rounded-t-2xl bg-[var(--card-color)]/50" />
 
         </div>
 
@@ -193,7 +193,7 @@ function ActivityItem({
 
       </div>
 
-      <div className="h-3 w-3 rounded-full bg-green-500" />
+      <div className="h-3 w-3 rounded-full bg-[var(--success-color)]" />
 
     </div>
 

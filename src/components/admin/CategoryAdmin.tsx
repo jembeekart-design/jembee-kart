@@ -406,7 +406,7 @@ export default function CategoryAdmin() {
               px-5
               py-3
               font-bold
-              text-white
+              text-[var(--button-text-color)]
             "
           >
             <Plus size={18} />
@@ -435,7 +435,7 @@ export default function CategoryAdmin() {
                   className="
                     overflow-hidden
                     rounded-[28px]
-                    bg-white
+                    bg-[var(--card-color)]
                     shadow-lg
                   "
                 >
@@ -568,7 +568,7 @@ export default function CategoryAdmin() {
                           justify-center
                           rounded-2xl
                           bg-black
-                          text-white
+                          text-[var(--button-text-color)]
                         "
                       >
                         {isExpanded ? (
@@ -591,8 +591,8 @@ export default function CategoryAdmin() {
                           items-center
                           justify-center
                           rounded-2xl
-                          bg-red-500
-                          text-white
+                          bg-[var(--danger-color)]
+                          text-[var(--button-text-color)]
                         "
                       >
                         <Trash2 />
@@ -664,7 +664,7 @@ export default function CategoryAdmin() {
                               px-5
                               py-4
                               font-bold
-                              text-white
+                              text-[var(--button-text-color)]
                             "
                           >
                             <ImagePlus />

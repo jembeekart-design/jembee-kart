@@ -103,13 +103,13 @@ export default function AIProductGeneratorPage() {
 
   return (
 
-    <main className="min-h-screen bg-[#0b0b0b] p-4 text-white">
+    <main className="min-h-screen bg-[#0b0b0b] p-4 text-[var(--button-text-color)]">
 
       {/* HEADER */}
 
       <div className="mb-8 flex items-center gap-4">
 
-        <div className="flex h-16 w-16 items-center justify-center rounded-[24px] bg-violet-500">
+        <div className="flex h-16 w-16 items-center justify-center rounded-[24px] bg-[var(--secondary-color)]">
 
           <Sparkles size={30} />
 
@@ -187,7 +187,7 @@ export default function AIProductGeneratorPage() {
             generateProduct
           }
           disabled={loading}
-          className="mt-6 flex items-center gap-2 rounded-2xl bg-violet-500 px-6 py-4 font-bold text-black"
+          className="mt-6 flex items-center gap-2 rounded-2xl bg-[var(--secondary-color)] px-6 py-4 font-bold text-[var(--text-color)]"
         >
 
           <Wand2 size={20} />
@@ -261,7 +261,7 @@ export default function AIProductGeneratorPage() {
 
           <FileText size={28} />
 
-          <h2 className="text-3xl font-black text-black">
+          <h2 className="text-3xl font-black text-[var(--text-color)]">
             AI Preview
           </h2>
 
@@ -276,7 +276,7 @@ export default function AIProductGeneratorPage() {
 
           </h3>
 
-          <p className="mt-4 text-black/80">
+          <p className="mt-4 text-[var(--text-color)]/80">
 
             {generatedDescription ||
               "Generated description will appear here..."}
@@ -349,7 +349,7 @@ function OutputCard({
 
         <button
           onClick={onCopy}
-          className="flex items-center gap-2 rounded-2xl bg-violet-500 px-4 py-2 font-bold text-black"
+          className="flex items-center gap-2 rounded-2xl bg-[var(--secondary-color)] px-4 py-2 font-bold text-[var(--text-color)]"
         >
 
           <Copy size={18} />

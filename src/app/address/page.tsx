@@ -96,7 +96,7 @@ export default function AddressPage() {
 
   return (
     <main className="min-h-screen bg-slate-50 pb-24">
-      <div className="sticky top-0 z-20 bg-white/80 backdrop-blur-md border-b border-slate-200 px-4 py-6 flex items-center gap-4">
+      <div className="sticky top-0 z-20 bg-[var(--card-color)]/80 backdrop-blur-md border-b border-slate-200 px-4 py-6 flex items-center gap-4">
         <button onClick={() => window.history.back()} className="h-11 w-11 rounded-2xl bg-slate-100 flex items-center justify-center">
           <ArrowLeft size={20} />
         </button>
@@ -116,7 +116,7 @@ export default function AddressPage() {
           </div>
         )}
 
-        <div className="bg-white rounded-[40px] shadow-xl shadow-slate-200/50 border border-slate-100 p-8 space-y-4">
+        <div className="bg-[var(--card-color)] rounded-[40px] shadow-xl shadow-slate-200/50 border border-slate-100 p-8 space-y-4">
           <div className="flex items-center gap-3 mb-6">
             <div className="p-3 bg-violet-100 rounded-2xl text-violet-600"><Home size={24} /></div>
             <h2 className="text-xl font-bold text-slate-800">Shipping Details</h2>
@@ -133,7 +133,7 @@ export default function AddressPage() {
           <button
             onClick={handleSaveAddress}
             disabled={loading}
-            className="w-full mt-6 bg-slate-900 text-white rounded-2xl py-5 font-bold text-lg flex items-center justify-center gap-2 hover:bg-slate-800 transition-all disabled:opacity-50"
+            className="w-full mt-6 bg-slate-900 text-[var(--button-text-color)] rounded-2xl py-5 font-bold text-lg flex items-center justify-center gap-2 hover:bg-slate-800 transition-all disabled:opacity-50"
           >
             {loading ? <Loader2 size={20} className="animate-spin" /> : <MapPin size={20} />}
             {loading ? "Saving..." : "Save Delivery Address"}

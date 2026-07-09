@@ -163,7 +163,7 @@ UploadWatchVideoPage() {
               items-center
               justify-center
               rounded-3xl
-              bg-violet-500/20
+              bg-[var(--secondary-color)]/20
             "
           >
 
@@ -182,7 +182,7 @@ UploadWatchVideoPage() {
               className="
                 text-3xl
                 font-black
-                text-white
+                text-[var(--button-text-color)]
               "
             >
 
@@ -216,7 +216,7 @@ UploadWatchVideoPage() {
           rounded-3xl
           border
           border-violet-500/20
-          bg-violet-500/10
+          bg-[var(--secondary-color)]/10
           p-5
         "
       >
@@ -243,7 +243,7 @@ UploadWatchVideoPage() {
               className="
                 text-lg
                 font-black
-                text-white
+                text-[var(--button-text-color)]
               "
             >
 
@@ -322,7 +322,7 @@ UploadWatchVideoPage() {
               items-center
               justify-center
               rounded-full
-              bg-violet-500/20
+              bg-[var(--secondary-color)]/20
             "
           >
 
@@ -340,7 +340,7 @@ UploadWatchVideoPage() {
               mt-5
               text-2xl
               font-black
-              text-white
+              text-[var(--button-text-color)]
             "
           >
 
@@ -397,7 +397,7 @@ UploadWatchVideoPage() {
               rounded-3xl
               border
               border-violet-500/20
-              bg-violet-500/10
+              bg-[var(--secondary-color)]/10
               px-5
               py-5
             "
@@ -424,7 +424,7 @@ UploadWatchVideoPage() {
                   mt-2
                   text-sm
                   font-black
-                  text-white
+                  text-[var(--button-text-color)]
                 "
               >
 
@@ -452,7 +452,7 @@ UploadWatchVideoPage() {
             rounded-3xl
             border
             border-white/10
-            bg-white/5
+            bg-[var(--card-color)]/5
             p-5
           "
         >
@@ -462,7 +462,7 @@ UploadWatchVideoPage() {
               mb-3
               text-sm
               font-black
-              text-white
+              text-[var(--button-text-color)]
             "
           >
 
@@ -486,9 +486,9 @@ UploadWatchVideoPage() {
               w-full
               resize-none
               bg-transparent
-              text-white
+              text-[var(--button-text-color)]
               outline-none
-              placeholder:text-gray-500
+              placeholder:text-[var(--muted-text-color)]
             "
           />
 
@@ -501,7 +501,7 @@ UploadWatchVideoPage() {
             rounded-3xl
             border
             border-white/10
-            bg-white/5
+            bg-[var(--card-color)]/5
             p-5
           "
         >
@@ -511,7 +511,7 @@ UploadWatchVideoPage() {
               mb-3
               text-sm
               font-black
-              text-white
+              text-[var(--button-text-color)]
             "
           >
 
@@ -533,9 +533,9 @@ UploadWatchVideoPage() {
             className="
               w-full
               bg-transparent
-              text-white
+              text-[var(--button-text-color)]
               outline-none
-              placeholder:text-gray-500
+              placeholder:text-[var(--muted-text-color)]
             "
           />
 
@@ -551,7 +551,7 @@ UploadWatchVideoPage() {
             rounded-3xl
             border
             border-white/10
-            bg-white/5
+            bg-[var(--card-color)]/5
             px-5
             py-5
           "
@@ -592,9 +592,9 @@ UploadWatchVideoPage() {
             className="
               flex-1
               bg-transparent
-              text-white
+              text-[var(--button-text-color)]
               outline-none
-              placeholder:text-gray-500
+              placeholder:text-[var(--muted-text-color)]
             "
           />
 
@@ -607,7 +607,7 @@ UploadWatchVideoPage() {
             rounded-3xl
             border
             border-yellow-500/20
-            bg-yellow-500/10
+            bg-[var(--warning-color)]/10
             p-5
           "
         >
@@ -647,7 +647,7 @@ UploadWatchVideoPage() {
             py-5
             text-lg
             font-black
-            text-white
+            text-[var(--button-text-color)]
             shadow-2xl
             shadow-violet-500/20
           "

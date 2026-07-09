@@ -567,7 +567,7 @@ export default function AdminPage() {
 
         {/* HEADER */}
 
-        <div className="mb-8 rounded-[35px] bg-gradient-to-r from-blue-700 via-indigo-700 to-purple-700 p-8 text-white shadow-2xl">
+        <div className="mb-8 rounded-[35px] bg-gradient-to-r from-blue-700 via-indigo-700 to-purple-700 p-8 text-[var(--button-text-color)] shadow-2xl">
 
           <h1 className="text-4xl font-black md:text-6xl">
             JembeeKart Admin
@@ -587,7 +587,7 @@ export default function AdminPage() {
             onClick={() => {
               createNewBanner();
             }}
-            className="flex items-center gap-3 rounded-2xl bg-gradient-to-r from-pink-600 to-purple-600 px-6 py-4 font-black text-white"
+            className="flex items-center gap-3 rounded-2xl bg-gradient-to-r from-pink-600 to-purple-600 px-6 py-4 font-black text-[var(--button-text-color)]"
           >
             <Plus size={22} />
 
@@ -600,7 +600,7 @@ export default function AdminPage() {
                 !mobilePreview
               );
             }}
-            className="flex items-center gap-3 rounded-2xl bg-black px-6 py-4 font-black text-white"
+            className="flex items-center gap-3 rounded-2xl bg-black px-6 py-4 font-black text-[var(--button-text-color)]"
           >
             {mobilePreview ? (
               <Smartphone />
@@ -628,7 +628,7 @@ export default function AdminPage() {
                 e.target.value
               );
             }}
-            className="w-full rounded-2xl border border-gray-200 bg-white px-5 py-4 text-lg font-semibold outline-none"
+            className="w-full rounded-2xl border border-[var(--border-color)] bg-[var(--card-color)] px-5 py-4 text-lg font-semibold outline-none"
           />
 
         </div>
@@ -663,16 +663,16 @@ export default function AdminPage() {
                       banner.id
                     );
                   }}
-                  className="overflow-hidden rounded-[35px] bg-white shadow-2xl"
+                  className="overflow-hidden rounded-[35px] bg-[var(--card-color)] shadow-2xl"
                 >
 
                   {/* TOP */}
 
-                  <div className="flex flex-wrap items-center justify-between gap-4 bg-gradient-to-r from-pink-600 to-purple-600 p-5 text-white">
+                  <div className="flex flex-wrap items-center justify-between gap-4 bg-gradient-to-r from-pink-600 to-purple-600 p-5 text-[var(--button-text-color)]">
 
                     <div className="flex items-center gap-4">
 
-                      <div className="cursor-grab rounded-2xl bg-white/20 p-3">
+                      <div className="cursor-grab rounded-2xl bg-[var(--card-color)]/20 p-3">
                         <GripVertical />
                       </div>
 
@@ -682,7 +682,7 @@ export default function AdminPage() {
                             banner.id
                           );
                         }}
-                        className="flex h-14 w-14 items-center justify-center rounded-2xl bg-white/20"
+                        className="flex h-14 w-14 items-center justify-center rounded-2xl bg-[var(--card-color)]/20"
                       >
                         <Grid3X3 />
                       </button>
@@ -713,7 +713,7 @@ export default function AdminPage() {
                             !banner.visible
                           );
                         }}
-                        className="rounded-2xl bg-white/20 p-3"
+                        className="rounded-2xl bg-[var(--card-color)]/20 p-3"
                       >
                         {banner.visible ? (
                           <Eye />
@@ -728,7 +728,7 @@ export default function AdminPage() {
                             banner.id
                           );
                         }}
-                        className="rounded-2xl bg-red-500 p-3"
+                        className="rounded-2xl bg-[var(--danger-color)] p-3"
                       >
                         <Trash2 />
                       </button>
@@ -739,7 +739,7 @@ export default function AdminPage() {
                             banner.id
                           );
                         }}
-                        className="rounded-2xl bg-white/20 p-3"
+                        className="rounded-2xl bg-[var(--card-color)]/20 p-3"
                       >
                         {isExpanded ? (
                           <ChevronUp />
@@ -777,7 +777,7 @@ export default function AdminPage() {
                             return (
                               <div
                                 key={key}
-                                className="rounded-2xl border border-gray-200 p-4"
+                                className="rounded-2xl border border-[var(--border-color)] p-4"
                               >
 
                                 <h3 className="mb-3 text-lg font-black capitalize">
@@ -828,7 +828,7 @@ export default function AdminPage() {
                                             .value
                                         );
                                       }}
-                                      className="flex-1 rounded-xl border border-gray-200 px-4 py-3"
+                                      className="flex-1 rounded-xl border border-[var(--border-color)] px-4 py-3"
                                     />
 
                                   </div>
@@ -870,7 +870,7 @@ export default function AdminPage() {
                                             .value
                                         );
                                       }}
-                                    className="w-full rounded-xl border border-gray-200 px-4 py-3"
+                                    className="w-full rounded-xl border border-[var(--border-color)] px-4 py-3"
                                   />
                                 )}
 
@@ -881,7 +881,7 @@ export default function AdminPage() {
 
                         {/* MEDIA */}
 
-                        <div className="rounded-2xl border border-dashed border-gray-300 p-5">
+                        <div className="rounded-2xl border border-dashed border-[var(--border-color)] p-5">
 
                           <h3 className="mb-4 text-lg font-black">
                             Upload Media
@@ -895,7 +895,7 @@ export default function AdminPage() {
                                   banner.id
                                 ]?.click();
                               }}
-                              className="flex items-center gap-2 rounded-2xl theme-primary-bg px-5 py-3 font-black text-white"
+                              className="flex items-center gap-2 rounded-2xl theme-primary-bg px-5 py-3 font-black text-[var(--button-text-color)]"
                             >
                               <ImagePlus />
 
@@ -908,7 +908,7 @@ export default function AdminPage() {
                                   banner.id
                                 ]?.click();
                               }}
-                              className="flex items-center gap-2 rounded-2xl bg-purple-600 px-5 py-3 font-black text-white"
+                              className="flex items-center gap-2 rounded-2xl bg-purple-600 px-5 py-3 font-black text-[var(--button-text-color)]"
                             >
                               <Video />
 
@@ -991,7 +991,7 @@ export default function AdminPage() {
                             savingId ===
                             banner.id
                           }
-                          className="w-full rounded-2xl bg-gradient-to-r from-pink-600 to-purple-600 px-6 py-5 text-xl font-black text-white"
+                          className="w-full rounded-2xl bg-gradient-to-r from-pink-600 to-purple-600 px-6 py-5 text-xl font-black text-[var(--button-text-color)]"
                         >
                           {savingId ===
                           banner.id

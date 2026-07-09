@@ -80,7 +80,7 @@ export default function WithdrawPage() {
           sticky
           top-0
           z-50
-          bg-white
+          bg-[var(--card-color)]
           px-4
           py-3
           shadow-sm
@@ -115,7 +115,7 @@ export default function WithdrawPage() {
 
             </h1>
 
-            <p className="text-[11px] text-gray-500">
+            <p className="text-[11px] text-[var(--muted-text-color)]">
 
               Withdraw MLM Earnings
 
@@ -140,14 +140,14 @@ export default function WithdrawPage() {
             via-fuchsia-600
             to-orange-500
             p-5
-            text-white
+            text-[var(--button-text-color)]
             shadow-xl
           "
         >
 
           <Wallet size={40} />
 
-          <p className="mt-5 text-[13px] text-white/80">
+          <p className="mt-5 text-[13px] text-[var(--button-text-color)]/80">
 
             Available Balance
 
@@ -159,7 +159,7 @@ export default function WithdrawPage() {
 
           </h2>
 
-          <p className="mt-2 text-[12px] text-white/85">
+          <p className="mt-2 text-[12px] text-[var(--button-text-color)]/85">
 
             Withdraw anytime to your
             bank or UPI account.
@@ -177,7 +177,7 @@ export default function WithdrawPage() {
         <div
           className="
             rounded-[28px]
-            bg-white
+            bg-[var(--card-color)]
             p-5
             shadow-sm
           "
@@ -207,7 +207,7 @@ export default function WithdrawPage() {
                 gap-3
                 rounded-2xl
                 border
-                border-gray-200
+                border-[var(--border-color)]
                 bg-gray-50
                 px-4
                 py-3
@@ -258,7 +258,7 @@ export default function WithdrawPage() {
                 gap-3
                 rounded-2xl
                 border
-                border-gray-200
+                border-[var(--border-color)]
                 bg-gray-50
                 px-4
                 py-3
@@ -306,7 +306,7 @@ export default function WithdrawPage() {
               py-3
               text-[15px]
               font-black
-              text-white
+              text-[var(--button-text-color)]
               shadow-lg
             "
           >
@@ -328,7 +328,7 @@ export default function WithdrawPage() {
         <div
           className="
             rounded-[28px]
-            bg-white
+            bg-[var(--card-color)]
             p-5
             shadow-sm
           "
@@ -382,7 +382,7 @@ export default function WithdrawPage() {
 
                   </h3>
 
-                  <p className="text-[11px] text-gray-500">
+                  <p className="text-[11px] text-[var(--muted-text-color)]">
 
                     Success
 
@@ -450,7 +450,7 @@ export default function WithdrawPage() {
 
                   </h3>
 
-                  <p className="text-[11px] text-gray-500">
+                  <p className="text-[11px] text-[var(--muted-text-color)]">
 
                     Pending Approval
 

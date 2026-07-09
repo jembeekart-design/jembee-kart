@@ -182,7 +182,7 @@ export default function CouponsPage() {
   if (loading) {
 
     return (
-      <div className="flex min-h-screen items-center justify-center bg-black text-white">
+      <div className="flex min-h-screen items-center justify-center bg-black text-[var(--button-text-color)]">
         Loading...
       </div>
     );
@@ -190,7 +190,7 @@ export default function CouponsPage() {
 
   return (
 
-    <main className="min-h-screen bg-[#0b0b0b] p-4 text-white">
+    <main className="min-h-screen bg-[#0b0b0b] p-4 text-[var(--button-text-color)]">
 
       {/* HEADER */}
 
@@ -211,7 +211,7 @@ export default function CouponsPage() {
         <button
           onClick={createCoupon}
           disabled={creating}
-          className="flex items-center gap-2 rounded-2xl bg-violet-600 px-5 py-3 text-sm font-bold text-white"
+          className="flex items-center gap-2 rounded-2xl bg-violet-600 px-5 py-3 text-sm font-bold text-[var(--button-text-color)]"
         >
 
           <Plus size={18} />
@@ -266,7 +266,7 @@ export default function CouponsPage() {
                       coupon.id
                     )
                   }
-                  className="flex h-10 w-10 items-center justify-center rounded-xl bg-red-500/20 text-red-500"
+                  className="flex h-10 w-10 items-center justify-center rounded-xl bg-[var(--danger-color)]/20 text-red-500"
                 >
 
                   <Trash2 size={18} />
@@ -382,8 +382,8 @@ export default function CouponsPage() {
                     }
                     className={`rounded-full px-5 py-2 text-sm font-bold ${
                       coupon.active
-                        ? "bg-green-500"
-                        : "bg-red-500"
+                        ? "bg-[var(--success-color)]"
+                        : "bg-[var(--danger-color)]"
                     }`}
                   >
 
@@ -407,13 +407,13 @@ export default function CouponsPage() {
                         {coupon.code}
                       </h2>
 
-                      <p className="mt-2 text-sm text-white/80">
+                      <p className="mt-2 text-sm text-[var(--button-text-color)]/80">
                         Get {
                           coupon.discount
                         }% OFF
                       </p>
 
-                      <p className="mt-2 text-xs text-white/60">
+                      <p className="mt-2 text-xs text-[var(--button-text-color)]/60">
                         Min Order ₹
                         {
                           coupon.minimumAmount
@@ -422,7 +422,7 @@ export default function CouponsPage() {
 
                     </div>
 
-                    <div className="rounded-full bg-white/20 px-5 py-3 text-lg font-black">
+                    <div className="rounded-full bg-[var(--card-color)]/20 px-5 py-3 text-lg font-black">
 
                       {coupon.discount}%
 

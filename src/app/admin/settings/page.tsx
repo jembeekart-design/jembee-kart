@@ -139,7 +139,7 @@ export default function SettingsPage() {
   if (loading) {
 
     return (
-      <div className="flex min-h-screen items-center justify-center bg-black text-white">
+      <div className="flex min-h-screen items-center justify-center bg-black text-[var(--button-text-color)]">
         Loading...
       </div>
     );
@@ -147,7 +147,7 @@ export default function SettingsPage() {
 
   return (
 
-    <main className="min-h-screen bg-[#0b0b0b] p-4 text-white">
+    <main className="min-h-screen bg-[#0b0b0b] p-4 text-[var(--button-text-color)]">
 
       {/* HEADER */}
 
@@ -168,7 +168,7 @@ export default function SettingsPage() {
         <button
           onClick={saveSettings}
           disabled={saving}
-          className="flex items-center gap-2 rounded-2xl bg-violet-600 px-5 py-3 text-sm font-bold text-white"
+          className="flex items-center gap-2 rounded-2xl bg-violet-600 px-5 py-3 text-sm font-bold text-[var(--button-text-color)]"
         >
 
           <Save size={18} />
@@ -380,13 +380,13 @@ export default function SettingsPage() {
             {settings.appName}
           </h2>
 
-          <p className="mt-2 text-white/80">
+          <p className="mt-2 text-[var(--button-text-color)]/80">
             Live Settings Preview
           </p>
 
           <div className="mt-6 grid grid-cols-2 gap-4">
 
-            <div className="rounded-2xl bg-white/10 p-4">
+            <div className="rounded-2xl bg-[var(--card-color)]/10 p-4">
 
               <div className="flex items-center gap-2">
 
@@ -406,7 +406,7 @@ export default function SettingsPage() {
 
             </div>
 
-            <div className="rounded-2xl bg-white/10 p-4">
+            <div className="rounded-2xl bg-[var(--card-color)]/10 p-4">
 
               <div className="flex items-center gap-2">
 
@@ -426,7 +426,7 @@ export default function SettingsPage() {
 
             </div>
 
-            <div className="rounded-2xl bg-white/10 p-4">
+            <div className="rounded-2xl bg-[var(--card-color)]/10 p-4">
 
               <div className="flex items-center gap-2">
 
@@ -444,7 +444,7 @@ export default function SettingsPage() {
 
             </div>
 
-            <div className="rounded-2xl bg-white/10 p-4">
+            <div className="rounded-2xl bg-[var(--card-color)]/10 p-4">
 
               <div className="flex items-center gap-2">
 
@@ -468,19 +468,19 @@ export default function SettingsPage() {
 
           <div className="mt-6 flex items-center gap-4">
 
-            <div className="flex h-12 w-12 items-center justify-center rounded-full bg-white/20">
+            <div className="flex h-12 w-12 items-center justify-center rounded-full bg-[var(--card-color)]/20">
 
               <Circle size={20} />
 
             </div>
 
-            <div className="flex h-12 w-12 items-center justify-center rounded-full bg-white/20">
+            <div className="flex h-12 w-12 items-center justify-center rounded-full bg-[var(--card-color)]/20">
 
               <Circle size={20} />
 
             </div>
 
-            <div className="flex h-12 w-12 items-center justify-center rounded-full bg-white/20">
+            <div className="flex h-12 w-12 items-center justify-center rounded-full bg-[var(--card-color)]/20">
 
               <Circle size={20} />
 
@@ -524,7 +524,7 @@ function InputField({
             e.target.value
           )
         }
-        className="w-full rounded-2xl border border-white/10 bg-[#1e1e1e] px-4 py-3 text-sm text-white outline-none"
+        className="w-full rounded-2xl border border-white/10 bg-[#1e1e1e] px-4 py-3 text-sm text-[var(--button-text-color)] outline-none"
       />
 
     </div>

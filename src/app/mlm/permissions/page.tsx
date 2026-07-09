@@ -167,7 +167,7 @@ PermissionPage() {
         bg-black
         px-5
         py-8
-        text-white
+        text-[var(--button-text-color)]
       "
     >
 
@@ -245,7 +245,7 @@ PermissionPage() {
             rounded-3xl
             border
             border-white/10
-            bg-white/5
+            bg-[var(--card-color)]/5
             p-5
           "
         >
@@ -274,7 +274,7 @@ PermissionPage() {
                   items-center
                   justify-center
                   rounded-full
-                  bg-violet-500/20
+                  bg-[var(--secondary-color)]/20
                 "
               >
 
@@ -329,8 +329,8 @@ PermissionPage() {
 
                 ${
                   cameraAllowed
-                    ? "bg-green-500 text-white"
-                    : "bg-violet-600 text-white"
+                    ? "bg-[var(--success-color)] text-[var(--button-text-color)]"
+                    : "bg-violet-600 text-[var(--button-text-color)]"
                 }
               `}
             >
@@ -352,7 +352,7 @@ PermissionPage() {
             rounded-3xl
             border
             border-white/10
-            bg-white/5
+            bg-[var(--card-color)]/5
             p-5
           "
         >
@@ -436,8 +436,8 @@ PermissionPage() {
 
                 ${
                   micAllowed
-                    ? "bg-green-500 text-white"
-                    : "bg-pink-500 text-white"
+                    ? "bg-[var(--success-color)] text-[var(--button-text-color)]"
+                    : "bg-pink-500 text-[var(--button-text-color)]"
                 }
               `}
             >
@@ -459,7 +459,7 @@ PermissionPage() {
             rounded-3xl
             border
             border-white/10
-            bg-white/5
+            bg-[var(--card-color)]/5
             p-5
           "
         >
@@ -488,7 +488,7 @@ PermissionPage() {
                   items-center
                   justify-center
                   rounded-full
-                  bg-yellow-500/20
+                  bg-[var(--warning-color)]/20
                 "
               >
 
@@ -543,8 +543,8 @@ PermissionPage() {
 
                 ${
                   notificationAllowed
-                    ? "bg-green-500 text-white"
-                    : "bg-yellow-500 text-black"
+                    ? "bg-[var(--success-color)] text-[var(--button-text-color)]"
+                    : "bg-[var(--warning-color)] text-[var(--text-color)]"
                 }
               `}
             >
@@ -594,8 +594,8 @@ PermissionPage() {
 
             ${
               allGranted
-                ? "bg-gradient-to-r from-violet-600 to-fuchsia-500 text-white"
-                : "bg-white/10 text-gray-500"
+                ? "bg-gradient-to-r from-violet-600 to-fuchsia-500 text-[var(--button-text-color)]"
+                : "bg-[var(--card-color)]/10 text-[var(--muted-text-color)]"
             }
           `}
         >

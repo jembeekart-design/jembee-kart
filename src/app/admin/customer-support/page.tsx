@@ -62,7 +62,7 @@ export default function CustomerSupportPage() {
 
   return (
 
-    <main className="min-h-screen bg-[#0b0b0b] p-4 text-white">
+    <main className="min-h-screen bg-[#0b0b0b] p-4 text-[var(--button-text-color)]">
 
       {/* HEADER */}
 
@@ -72,7 +72,7 @@ export default function CustomerSupportPage() {
 
           <Headphones
             size={30}
-            className="text-black"
+            className="text-[var(--text-color)]"
           />
 
         </div>
@@ -139,7 +139,7 @@ export default function CustomerSupportPage() {
               e.target.value
             )
           }
-          className="w-full bg-transparent outline-none placeholder:text-gray-500"
+          className="w-full bg-transparent outline-none placeholder:text-[var(--muted-text-color)]"
         />
 
       </div>
@@ -208,8 +208,8 @@ export default function CustomerSupportPage() {
                   className={`rounded-full px-4 py-1 text-sm font-bold ${
                     item.status ===
                     "Resolved"
-                      ? "bg-green-500/20 text-green-400"
-                      : "bg-yellow-500/20 text-yellow-400"
+                      ? "bg-[var(--success-color)]/20 text-green-400"
+                      : "bg-[var(--warning-color)]/20 text-yellow-400"
                   }`}
                 >
 
@@ -245,7 +245,7 @@ function StatCard({
 
     <div className="rounded-[28px] border border-white/10 bg-[#151515] p-5">
 
-      <div className="flex h-14 w-14 items-center justify-center rounded-2xl bg-cyan-500 text-black">
+      <div className="flex h-14 w-14 items-center justify-center rounded-2xl bg-cyan-500 text-[var(--text-color)]">
 
         {icon}
 

@@ -85,7 +85,7 @@ export default function MLMRanksPage() {
           sticky
           top-0
           z-50
-          bg-white
+          bg-[var(--card-color)]
           px-4
           py-3
           shadow-sm
@@ -120,7 +120,7 @@ export default function MLMRanksPage() {
 
             </h1>
 
-            <p className="text-[11px] text-gray-500">
+            <p className="text-[11px] text-[var(--muted-text-color)]">
 
               Achievements & Rewards
 
@@ -145,7 +145,7 @@ export default function MLMRanksPage() {
             via-orange-500
             to-pink-500
             p-5
-            text-white
+            text-[var(--button-text-color)]
             shadow-xl
           "
         >
@@ -158,7 +158,7 @@ export default function MLMRanksPage() {
               items-center
               justify-center
               rounded-full
-              bg-white/20
+              bg-[var(--card-color)]/20
             "
           >
 
@@ -166,7 +166,7 @@ export default function MLMRanksPage() {
 
           </div>
 
-          <p className="mt-5 text-[13px] text-white/85">
+          <p className="mt-5 text-[13px] text-[var(--button-text-color)]/85">
 
             Current Rank
 
@@ -178,7 +178,7 @@ export default function MLMRanksPage() {
 
           </h2>
 
-          <p className="mt-4 text-[13px] leading-6 text-white/90">
+          <p className="mt-4 text-[13px] leading-6 text-[var(--button-text-color)]/90">
 
             Aapki team aur earnings ke
             basis par aapko rank aur
@@ -197,7 +197,7 @@ export default function MLMRanksPage() {
         <div
           className="
             rounded-[30px]
-            bg-white
+            bg-[var(--card-color)]
             p-5
             shadow-sm
           "
@@ -218,7 +218,7 @@ export default function MLMRanksPage() {
 
               </h2>
 
-              <p className="text-[11px] text-gray-500">
+              <p className="text-[11px] text-[var(--muted-text-color)]">
 
                 Upgrade Progress
 
@@ -273,7 +273,7 @@ export default function MLMRanksPage() {
 
             </div>
 
-            <p className="mt-3 text-[12px] text-gray-600">
+            <p className="mt-3 text-[12px] text-[var(--muted-text-color)]">
 
               Sirf{" "}
               <span className="font-black text-violet-700">
@@ -306,7 +306,7 @@ export default function MLMRanksPage() {
                 className="
                   overflow-hidden
                   rounded-[28px]
-                  bg-white
+                  bg-[var(--card-color)]
                   shadow-sm
                 "
               >
@@ -316,7 +316,7 @@ export default function MLMRanksPage() {
                     bg-gradient-to-r
                     ${rank.color}
                     p-5
-                    text-white
+                    text-[var(--button-text-color)]
                   `}
                 >
 
@@ -330,7 +330,7 @@ export default function MLMRanksPage() {
 
                       </h2>
 
-                      <p className="mt-1 text-[12px] text-white/90">
+                      <p className="mt-1 text-[12px] text-[var(--button-text-color)]/90">
 
                         {rank.members}+ Team Members
 
@@ -381,7 +381,7 @@ export default function MLMRanksPage() {
         <div
           className="
             rounded-[30px]
-            bg-white
+            bg-[var(--card-color)]
             p-5
             shadow-sm
           "
@@ -428,7 +428,7 @@ export default function MLMRanksPage() {
 
                 </h3>
 
-                <p className="text-[11px] text-gray-600">
+                <p className="text-[11px] text-[var(--muted-text-color)]">
 
                   50 referrals completed
 
@@ -462,7 +462,7 @@ export default function MLMRanksPage() {
 
                 </h3>
 
-                <p className="text-[11px] text-gray-600">
+                <p className="text-[11px] text-[var(--muted-text-color)]">
 
                   100 successful joins
 

@@ -214,13 +214,13 @@ export default function AdminSidebar() {
 
   return (
 
-    <aside className="hidden h-screen w-[280px] overflow-y-auto border-r border-white/10 bg-[#0b0b0b] p-5 text-white lg:block">
+    <aside className="hidden h-screen w-[280px] overflow-y-auto border-r border-white/10 bg-[#0b0b0b] p-5 text-[var(--button-text-color)] lg:block">
 
       {/* LOGO */}
 
       <div className="mb-8 flex items-center gap-3">
 
-        <div className="flex h-14 w-14 items-center justify-center rounded-2xl bg-cyan-500 text-black">
+        <div className="flex h-14 w-14 items-center justify-center rounded-2xl bg-cyan-500 text-[var(--text-color)]">
 
           <LayoutDashboard size={28} />
 
@@ -259,8 +259,8 @@ export default function AdminSidebar() {
               href={item.href}
               className={`flex items-center gap-4 rounded-2xl px-4 py-4 transition-all duration-300 ${
                 active
-                  ? "bg-cyan-500 text-black"
-                  : "bg-[#151515] hover:bg-cyan-500 hover:text-black"
+                  ? "bg-cyan-500 text-[var(--text-color)]"
+                  : "bg-[#151515] hover:bg-cyan-500 hover:text-[var(--text-color)]"
               }`}
             >
 

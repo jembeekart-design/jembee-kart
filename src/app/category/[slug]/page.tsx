@@ -95,7 +95,7 @@ export default function CategoryProductsPage() {
   }, [slug]);
 
   return (
-    <main className="min-h-screen w-full overflow-x-hidden bg-gray-100 pt-[115px] md:pt-[150px]">
+    <main className="min-h-screen w-full overflow-x-hidden bg-[var(--background-color)] pt-[115px] md:pt-[150px]">
 
       {/* HEADER */}
 
@@ -113,7 +113,7 @@ export default function CategoryProductsPage() {
             {slug}
           </h1>
 
-          <p className="mt-2 text-gray-500">
+          <p className="mt-2 text-[var(--muted-text-color)]">
             Browse category products
           </p>
 
@@ -122,14 +122,14 @@ export default function CategoryProductsPage() {
         {/* LOADING */}
 
         {loading ? (
-          <div className="text-center text-xl font-bold text-gray-500">
+          <div className="text-center text-xl font-bold text-[var(--muted-text-color)]">
             Loading Products...
           </div>
         ) : products.length ===
           0 ? (
-          <div className="rounded-[30px] bg-white p-10 text-center shadow-xl">
+          <div className="rounded-[30px] bg-[var(--card-color)] p-10 text-center shadow-xl">
 
-            <h2 className="text-2xl font-black text-gray-700">
+            <h2 className="text-2xl font-black text-[var(--text-color)]">
               No Products Found
             </h2>
 

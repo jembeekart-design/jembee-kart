@@ -67,7 +67,7 @@ export default function SellerSection({
         {/* SELLER CARD */}
 
         <div
-          className="w-full overflow-hidden rounded-[24px] p-5 text-white shadow-2xl transition-all duration-300 hover:scale-[1.01] md:rounded-[50px] md:p-10"
+          className="w-full overflow-hidden rounded-[24px] p-5 text-[var(--button-text-color)] shadow-2xl transition-all duration-300 hover:scale-[1.01] md:rounded-[50px] md:p-10"
           style={{
             background: `linear-gradient(135deg, ${sellerBackgroundColor}, ${sellerGradientColor})`
           }}
@@ -79,7 +79,7 @@ export default function SellerSection({
               {sellerTitle}
             </h2>
 
-            <p className="mt-4 break-words text-base leading-relaxed text-white/90 md:mt-5 md:text-2xl">
+            <p className="mt-4 break-words text-base leading-relaxed text-[var(--button-text-color)]/90 md:mt-5 md:text-2xl">
               {sellerDescription}
             </p>
 
@@ -103,7 +103,7 @@ export default function SellerSection({
         {/* RESELLER CARD */}
 
         <div
-          className="w-full overflow-hidden rounded-[24px] p-5 text-white shadow-2xl transition-all duration-300 hover:scale-[1.01] md:rounded-[50px] md:p-10"
+          className="w-full overflow-hidden rounded-[24px] p-5 text-[var(--button-text-color)] shadow-2xl transition-all duration-300 hover:scale-[1.01] md:rounded-[50px] md:p-10"
           style={{
             background: `linear-gradient(135deg, ${resellerBackgroundColor}, ${resellerGradientColor})`
           }}
@@ -115,7 +115,7 @@ export default function SellerSection({
               {resellerTitle}
             </h2>
 
-            <p className="mt-4 break-words text-base leading-relaxed text-white/90 md:mt-5 md:text-2xl">
+            <p className="mt-4 break-words text-base leading-relaxed text-[var(--button-text-color)]/90 md:mt-5 md:text-2xl">
               {resellerDescription}
             </p>
 

@@ -174,7 +174,7 @@ export default function MLMNetworkPage() {
     <main className="min-h-screen bg-[#f6f7fb] pb-20">
       
       {/* HEADER WITH UPDATED BACK ROUTE */}
-      <div className="sticky top-0 z-50 bg-white px-4 py-3 shadow-sm">
+      <div className="sticky top-0 z-50 bg-[var(--card-color)] px-4 py-3 shadow-sm">
         <div className="flex items-center gap-3">
           <Link
             href="/mlm/dashboard"
@@ -184,15 +184,15 @@ export default function MLMNetworkPage() {
           </Link>
           <div>
             <h1 className="text-[24px] font-black text-violet-700">MLM Network</h1>
-            <p className="text-[11px] text-gray-500">3-Tier Generation Snapshot Model</p>
+            <p className="text-[11px] text-[var(--muted-text-color)]">3-Tier Generation Snapshot Model</p>
           </div>
         </div>
       </div>
 
       {/* HERO CONTAINER */}
       <section className="px-4 pt-5">
-        <div className="overflow-hidden rounded-[30px] bg-gradient-to-br from-violet-700 via-fuchsia-600 to-orange-500 p-5 text-white shadow-xl">
-          <div className="flex h-16 w-16 items-center justify-center rounded-full bg-white/20">
+        <div className="overflow-hidden rounded-[30px] bg-gradient-to-br from-violet-700 via-fuchsia-600 to-orange-500 p-5 text-[var(--button-text-color)] shadow-xl">
+          <div className="flex h-16 w-16 items-center justify-center rounded-full bg-[var(--card-color)]/20">
             <Crown size={34} />
           </div>
           <h2 className="mt-5 text-[30px] font-black leading-tight">
@@ -202,10 +202,10 @@ export default function MLMNetworkPage() {
           </h2>
           
           {/* REAL-TIME TOTAL TEAM BUSINESS COUNTER DISPLAY */}
-          <div className="mt-4 flex items-center gap-2 bg-white/10 backdrop-blur-md rounded-2xl p-3 border border-white/20">
+          <div className="mt-4 flex items-center gap-2 bg-[var(--card-color)]/10 backdrop-blur-md rounded-2xl p-3 border border-white/20">
             <Briefcase size={20} className="text-orange-200" />
             <div>
-              <p className="text-[10px] font-bold uppercase text-white/70 tracking-wider">Total Team Business</p>
+              <p className="text-[10px] font-bold uppercase text-[var(--button-text-color)]/70 tracking-wider">Total Team Business</p>
               <p className="text-xl font-black">₹{totalBusiness}</p>
             </div>
           </div>
@@ -215,13 +215,13 @@ export default function MLMNetworkPage() {
       {/* ANALYTICS SNAPSHOTS */}
       <section className="mt-6 px-4">
         <div className="grid grid-cols-2 gap-3">
-          <div className="rounded-2xl bg-white p-4 shadow-sm border border-gray-100">
+          <div className="rounded-2xl bg-[var(--card-color)] p-4 shadow-sm border border-gray-100">
             <Users size={28} className="text-violet-700" />
             <h3 className="mt-3 text-[24px] font-black text-gray-900">{directCount}</h3>
             <p className="text-[12px] font-bold text-gray-400">Direct Referrals (L1)</p>
           </div>
 
-          <div className="rounded-2xl bg-white p-4 shadow-sm border border-gray-100">
+          <div className="rounded-2xl bg-[var(--card-color)] p-4 shadow-sm border border-gray-100">
             <UserPlus2 size={28} className="text-green-600" />
             <h3 className="mt-3 text-[24px] font-black text-gray-900">{totalTeamCount}</h3>
             <p className="text-[12px] font-bold text-gray-400">Total 3-Level Team</p>
@@ -232,7 +232,7 @@ export default function MLMNetworkPage() {
       {/* HIGH-UX FILTERED AUTO-GENERATING LEVEL TABS */}
       <section className="mt-6 px-4">
         {Object.keys(networkLevels).filter((level) => networkLevels[Number(level)]?.length > 0).length === 0 ? (
-          <div className="text-xs font-bold text-gray-400 p-2 text-center bg-gray-100 rounded-xl">
+          <div className="text-xs font-bold text-gray-400 p-2 text-center bg-[var(--background-color)] rounded-xl">
             No active levels to track
           </div>
         ) : (
@@ -247,8 +247,8 @@ export default function MLMNetworkPage() {
                     onClick={() => setActiveLevel(lvl)}
                     className={`flex-1 min-w-[85px] py-3 text-center text-xs font-black rounded-xl transition-all ${
                       activeLevel === lvl
-                        ? "bg-gradient-to-r from-violet-600 to-indigo-600 text-white shadow-md"
-                        : "text-gray-500 hover:text-gray-900"
+                        ? "bg-gradient-to-r from-violet-600 to-indigo-600 text-[var(--button-text-color)] shadow-md"
+                        : "text-[var(--muted-text-color)] hover:text-gray-900"
                     }`}
                   >
                     Lvl {lvl} ({networkLevels[lvl]?.length || 0})
@@ -261,7 +261,7 @@ export default function MLMNetworkPage() {
 
       {/* DOWNLINE NODE PANEL GRID */}
       <section className="mt-4 px-4">
-        <div className="rounded-[28px] bg-white p-5 shadow-sm border border-gray-100">
+        <div className="rounded-[28px] bg-[var(--card-color)] p-5 shadow-sm border border-gray-100">
           <h2 className="text-[22px] font-black text-gray-900 mb-2">
             Downline Matrix - Level {activeLevel}
           </h2>
@@ -298,7 +298,7 @@ export default function MLMNetworkPage() {
                       </div>
 
                       {/* DATA RECEPTACLE INFO */}
-                      <div className="flex flex-col gap-1 text-[11px] font-medium text-gray-500">
+                      <div className="flex flex-col gap-1 text-[11px] font-medium text-[var(--muted-text-color)]">
                         <p className="flex items-center gap-1.5">
                           <Mail size={12} className="text-gray-400" />
                           {member.email || "No email linked"}
@@ -310,7 +310,7 @@ export default function MLMNetworkPage() {
                       </div>
 
                       {/* STRUCTURAL VOLUME TRACKERS */}
-                      <div className="mt-2 pt-2 border-t border-gray-200/60 grid grid-cols-3 gap-2 bg-white p-2 rounded-xl border border-gray-100">
+                      <div className="mt-2 pt-2 border-t border-[var(--border-color)]/60 grid grid-cols-3 gap-2 bg-[var(--card-color)] p-2 rounded-xl border border-gray-100">
                         <div>
                           <p className="text-[9px] font-bold text-gray-400 uppercase">Direct Biz</p>
                           <p className="text-xs font-black text-gray-800">₹{member.directBusiness || 0}</p>

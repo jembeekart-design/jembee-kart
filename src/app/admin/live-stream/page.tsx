@@ -175,7 +175,7 @@ export default function LiveStreamPage() {
 
     return (
 
-      <div className="flex min-h-screen items-center justify-center bg-black text-white">
+      <div className="flex min-h-screen items-center justify-center bg-black text-[var(--button-text-color)]">
 
         Loading...
 
@@ -186,13 +186,13 @@ export default function LiveStreamPage() {
 
   return (
 
-    <main className="min-h-screen bg-[#0b0b0b] p-4 text-white">
+    <main className="min-h-screen bg-[#0b0b0b] p-4 text-[var(--button-text-color)]">
 
       {/* HEADER */}
 
       <div className="mb-8 flex items-center gap-4">
 
-        <div className="flex h-16 w-16 items-center justify-center rounded-[24px] bg-red-500">
+        <div className="flex h-16 w-16 items-center justify-center rounded-[24px] bg-[var(--danger-color)]">
 
           <Radio size={30} />
 
@@ -339,7 +339,7 @@ export default function LiveStreamPage() {
             createStream
           }
           disabled={saving}
-          className="mt-6 flex items-center gap-2 rounded-2xl bg-red-500 px-5 py-4 font-bold"
+          className="mt-6 flex items-center gap-2 rounded-2xl bg-[var(--danger-color)] px-5 py-4 font-bold"
         >
 
           <Save size={18} />
@@ -416,7 +416,7 @@ export default function LiveStreamPage() {
                       stream.id!
                     )
                   }
-                  className="flex items-center gap-2 rounded-2xl bg-red-500 px-5 py-3 font-bold"
+                  className="flex items-center gap-2 rounded-2xl bg-[var(--danger-color)] px-5 py-3 font-bold"
                 >
 
                   <Trash2 size={18} />

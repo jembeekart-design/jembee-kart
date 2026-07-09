@@ -164,7 +164,7 @@ export default function AnnouncementPage() {
 
     return (
 
-      <div className="flex min-h-screen items-center justify-center bg-black text-white">
+      <div className="flex min-h-screen items-center justify-center bg-black text-[var(--button-text-color)]">
 
         Loading Announcements...
 
@@ -175,13 +175,13 @@ export default function AnnouncementPage() {
 
   return (
 
-    <main className="min-h-screen bg-[#0b0b0b] p-4 text-white">
+    <main className="min-h-screen bg-[#0b0b0b] p-4 text-[var(--button-text-color)]">
 
       {/* HEADER */}
 
       <div className="mb-8 flex items-center gap-4">
 
-        <div className="flex h-16 w-16 items-center justify-center rounded-[24px] bg-red-500">
+        <div className="flex h-16 w-16 items-center justify-center rounded-[24px] bg-[var(--danger-color)]">
 
           <Megaphone size={30} />
 
@@ -240,7 +240,7 @@ export default function AnnouncementPage() {
               addAnnouncement
             }
             disabled={adding}
-            className="flex items-center gap-2 rounded-2xl bg-red-500 px-5 py-3 font-bold"
+            className="flex items-center gap-2 rounded-2xl bg-[var(--danger-color)] px-5 py-3 font-bold"
           >
 
             <Plus size={18} />
@@ -304,7 +304,7 @@ export default function AnnouncementPage() {
 
                   </p>
 
-                  <div className="mt-4 flex items-center gap-2 text-sm text-gray-500">
+                  <div className="mt-4 flex items-center gap-2 text-sm text-[var(--muted-text-color)]">
 
                     <Calendar size={16} />
 
@@ -322,7 +322,7 @@ export default function AnnouncementPage() {
                       item.id
                     )
                   }
-                  className="flex items-center gap-2 rounded-2xl bg-red-500 px-4 py-3 font-bold"
+                  className="flex items-center gap-2 rounded-2xl bg-[var(--danger-color)] px-4 py-3 font-bold"
                 >
 
                   <Trash2 size={18} />

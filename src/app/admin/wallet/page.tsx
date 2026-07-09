@@ -139,7 +139,7 @@ export default function WalletPage() {
 
     return (
 
-      <div className="flex min-h-screen items-center justify-center bg-black text-white">
+      <div className="flex min-h-screen items-center justify-center bg-black text-[var(--button-text-color)]">
 
         Loading...
 
@@ -150,7 +150,7 @@ export default function WalletPage() {
 
   return (
 
-    <main className="min-h-screen bg-[#0b0b0b] p-4 text-white">
+    <main className="min-h-screen bg-[#0b0b0b] p-4 text-[var(--button-text-color)]">
 
       {/* HEADER */}
 
@@ -158,7 +158,7 @@ export default function WalletPage() {
 
         <div className="flex items-center gap-4">
 
-          <div className="flex h-16 w-16 items-center justify-center rounded-[24px] bg-green-500">
+          <div className="flex h-16 w-16 items-center justify-center rounded-[24px] bg-[var(--success-color)]">
 
             <Wallet size={30} />
 
@@ -181,7 +181,7 @@ export default function WalletPage() {
         <button
           onClick={saveSettings}
           disabled={saving}
-          className="flex items-center gap-2 rounded-2xl bg-green-500 px-5 py-3 font-bold"
+          className="flex items-center gap-2 rounded-2xl bg-[var(--success-color)] px-5 py-3 font-bold"
         >
 
           <Save size={18} />
@@ -476,8 +476,8 @@ function ToggleCard({
           onClick={onClick}
           className={`rounded-full px-5 py-3 text-sm font-bold ${
             enabled
-              ? "bg-green-500"
-              : "bg-red-500"
+              ? "bg-[var(--success-color)]"
+              : "bg-[var(--danger-color)]"
           }`}
         >
 
@@ -504,9 +504,9 @@ function StatusCard({
 
   return (
 
-    <div className="rounded-2xl bg-white/10 p-4">
+    <div className="rounded-2xl bg-[var(--card-color)]/10 p-4">
 
-      <p className="text-sm text-white/70">
+      <p className="text-sm text-[var(--button-text-color)]/70">
         {title}
       </p>
 

@@ -42,7 +42,7 @@ export default function PaymentsPage() {
 
   return (
 
-    <main className="min-h-screen bg-[#0b0b0b] p-4 text-white">
+    <main className="min-h-screen bg-[#0b0b0b] p-4 text-[var(--button-text-color)]">
 
       {/* HEADER */}
 
@@ -72,7 +72,7 @@ export default function PaymentsPage() {
 
         <button
           onClick={saveSettings}
-          className="flex items-center gap-2 rounded-2xl theme-primary-bg px-5 py-3 text-sm font-bold text-white"
+          className="flex items-center gap-2 rounded-2xl theme-primary-bg px-5 py-3 text-sm font-bold text-[var(--button-text-color)]"
         >
 
           <Save size={18} />
@@ -113,7 +113,7 @@ export default function PaymentsPage() {
               )
             }
             placeholder="Enter Cashfree App ID"
-            className="w-full rounded-2xl border border-white/10 bg-black px-4 py-4 text-white outline-none"
+            className="w-full rounded-2xl border border-white/10 bg-black px-4 py-4 text-[var(--button-text-color)] outline-none"
           />
 
         </div>
@@ -144,7 +144,7 @@ export default function PaymentsPage() {
               )
             }
             placeholder="Enter Secret Key"
-            className="w-full rounded-2xl border border-white/10 bg-black px-4 py-4 text-white outline-none"
+            className="w-full rounded-2xl border border-white/10 bg-black px-4 py-4 text-[var(--button-text-color)] outline-none"
           />
 
         </div>
@@ -175,8 +175,8 @@ export default function PaymentsPage() {
               }
               className={`rounded-2xl px-5 py-3 font-bold ${
                 codEnabled
-                  ? "bg-green-500"
-                  : "bg-red-500"
+                  ? "bg-[var(--success-color)]"
+                  : "bg-[var(--danger-color)]"
               }`}
             >
 
@@ -216,8 +216,8 @@ export default function PaymentsPage() {
               }
               className={`rounded-2xl px-5 py-3 font-bold ${
                 upiEnabled
-                  ? "bg-green-500"
-                  : "bg-red-500"
+                  ? "bg-[var(--success-color)]"
+                  : "bg-[var(--danger-color)]"
               }`}
             >
 
@@ -257,8 +257,8 @@ export default function PaymentsPage() {
               }
               className={`rounded-2xl px-5 py-3 font-bold ${
                 walletEnabled
-                  ? "bg-green-500"
-                  : "bg-red-500"
+                  ? "bg-[var(--success-color)]"
+                  : "bg-[var(--danger-color)]"
               }`}
             >
 
@@ -282,13 +282,13 @@ export default function PaymentsPage() {
           Payment Preview
         </h2>
 
-        <p className="mt-2 text-white/80">
+        <p className="mt-2 text-[var(--button-text-color)]/80">
           Cashfree payment system overview
         </p>
 
         <div className="mt-6 grid grid-cols-2 gap-4">
 
-          <div className="rounded-2xl bg-white/10 p-4">
+          <div className="rounded-2xl bg-[var(--card-color)]/10 p-4">
 
             <p className="text-sm">
               Gateway
@@ -300,7 +300,7 @@ export default function PaymentsPage() {
 
           </div>
 
-          <div className="rounded-2xl bg-white/10 p-4">
+          <div className="rounded-2xl bg-[var(--card-color)]/10 p-4">
 
             <p className="text-sm">
               COD Status

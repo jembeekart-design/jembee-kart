@@ -134,7 +134,7 @@ export default function MobileAppPage() {
 
     return (
 
-      <div className="flex min-h-screen items-center justify-center bg-black text-white">
+      <div className="flex min-h-screen items-center justify-center bg-black text-[var(--button-text-color)]">
 
         Loading...
 
@@ -145,7 +145,7 @@ export default function MobileAppPage() {
 
   return (
 
-    <main className="min-h-screen bg-[#0b0b0b] p-4 text-white">
+    <main className="min-h-screen bg-[#0b0b0b] p-4 text-[var(--button-text-color)]">
 
       {/* HEADER */}
 
@@ -153,7 +153,7 @@ export default function MobileAppPage() {
 
         <div className="flex items-center gap-4">
 
-          <div className="flex h-16 w-16 items-center justify-center rounded-[24px] bg-green-500">
+          <div className="flex h-16 w-16 items-center justify-center rounded-[24px] bg-[var(--success-color)]">
 
             <Smartphone size={30} />
 
@@ -176,7 +176,7 @@ export default function MobileAppPage() {
         <button
           onClick={saveSettings}
           disabled={saving}
-          className="flex items-center gap-2 rounded-2xl bg-green-500 px-5 py-3 font-bold"
+          className="flex items-center gap-2 rounded-2xl bg-[var(--success-color)] px-5 py-3 font-bold"
         >
 
           <Save size={18} />
@@ -304,7 +304,7 @@ export default function MobileAppPage() {
 
         <div className="flex items-center gap-4">
 
-          <div className="flex h-20 w-20 items-center justify-center rounded-[24px] bg-white/20">
+          <div className="flex h-20 w-20 items-center justify-center rounded-[24px] bg-[var(--card-color)]/20">
 
             <Smartphone size={40} />
 
@@ -316,7 +316,7 @@ export default function MobileAppPage() {
               {settings.appName}
             </h2>
 
-            <p className="mt-2 text-white/80">
+            <p className="mt-2 text-[var(--button-text-color)]/80">
               Version:
               {" "}
               {settings.version}
@@ -354,7 +354,7 @@ export default function MobileAppPage() {
 
         </div>
 
-        <div className="mt-6 flex items-center gap-3 text-sm text-white/80">
+        <div className="mt-6 flex items-center gap-3 text-sm text-[var(--button-text-color)]/80">
 
           <Globe size={18} />
 
@@ -452,8 +452,8 @@ function ToggleCard({
           onClick={onClick}
           className={`rounded-full px-5 py-3 text-sm font-bold ${
             enabled
-              ? "bg-green-500"
-              : "bg-red-500"
+              ? "bg-[var(--success-color)]"
+              : "bg-[var(--danger-color)]"
           }`}
         >
 
@@ -478,7 +478,7 @@ function PreviewBadge({
 
   return (
 
-    <div className="rounded-full bg-white/20 px-5 py-3 text-sm font-bold backdrop-blur-lg">
+    <div className="rounded-full bg-[var(--card-color)]/20 px-5 py-3 text-sm font-bold backdrop-blur-lg">
 
       {title}
 

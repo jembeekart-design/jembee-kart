@@ -132,7 +132,7 @@ export default function SupportTicketsPage() {
 
     return (
 
-      <div className="flex min-h-screen items-center justify-center bg-black text-white">
+      <div className="flex min-h-screen items-center justify-center bg-black text-[var(--button-text-color)]">
 
         Loading...
 
@@ -143,7 +143,7 @@ export default function SupportTicketsPage() {
 
   return (
 
-    <main className="min-h-screen bg-[#0b0b0b] p-4 text-white">
+    <main className="min-h-screen bg-[#0b0b0b] p-4 text-[var(--button-text-color)]">
 
       {/* HEADER */}
 
@@ -270,7 +270,7 @@ export default function SupportTicketsPage() {
                         "Pending"
                       )
                     }
-                    className="rounded-2xl bg-yellow-500 px-5 py-3 font-bold text-black"
+                    className="rounded-2xl bg-[var(--warning-color)] px-5 py-3 font-bold text-[var(--text-color)]"
                   >
 
                     Pending
@@ -284,7 +284,7 @@ export default function SupportTicketsPage() {
                         "Resolved"
                       )
                     }
-                    className="rounded-2xl bg-green-500 px-5 py-3 font-bold text-black"
+                    className="rounded-2xl bg-[var(--success-color)] px-5 py-3 font-bold text-[var(--text-color)]"
                   >
 
                     Resolved
@@ -311,7 +311,7 @@ export default function SupportTicketsPage() {
                         ticket.id!
                       )
                     }
-                    className="flex items-center gap-2 rounded-2xl bg-red-500 px-5 py-3 font-bold"
+                    className="flex items-center gap-2 rounded-2xl bg-[var(--danger-color)] px-5 py-3 font-bold"
                   >
 
                     <Trash2 size={18} />
@@ -346,7 +346,7 @@ function StatusBadge({
 
     if (status === "Resolved") {
 
-      return "bg-green-500";
+      return "bg-[var(--success-color)]";
 
     }
 
@@ -356,7 +356,7 @@ function StatusBadge({
 
     }
 
-    return "bg-yellow-500";
+    return "bg-[var(--warning-color)]";
 
   }
 

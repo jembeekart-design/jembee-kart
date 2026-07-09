@@ -49,7 +49,7 @@ export default function SystemMonitorPage() {
 
   return (
 
-    <main className="min-h-screen bg-[#050505] p-4 text-white">
+    <main className="min-h-screen bg-[#050505] p-4 text-[var(--button-text-color)]">
 
       {/* HEADER */}
 
@@ -57,11 +57,11 @@ export default function SystemMonitorPage() {
 
         <div className="flex items-center gap-4">
 
-          <div className="flex h-16 w-16 items-center justify-center rounded-[30px] bg-green-500">
+          <div className="flex h-16 w-16 items-center justify-center rounded-[30px] bg-[var(--success-color)]">
 
             <Activity
               size={30}
-              className="text-black"
+              className="text-[var(--text-color)]"
             />
 
           </div>
@@ -85,7 +85,7 @@ export default function SystemMonitorPage() {
         </div>
 
         <button
-          className="flex items-center gap-2 rounded-2xl bg-green-500 px-6 py-4 font-black text-black"
+          className="flex items-center gap-2 rounded-2xl bg-[var(--success-color)] px-6 py-4 font-black text-[var(--text-color)]"
         >
 
           <RefreshCw size={20} />
@@ -178,8 +178,8 @@ export default function SystemMonitorPage() {
                   <div
                     className={`rounded-full px-4 py-2 text-sm font-black ${
                       item.status === "Online"
-                        ? "bg-green-500 text-black"
-                        : "bg-yellow-500 text-black"
+                        ? "bg-[var(--success-color)] text-[var(--text-color)]"
+                        : "bg-[var(--warning-color)] text-[var(--text-color)]"
                     }`}
                   >
 
@@ -189,10 +189,10 @@ export default function SystemMonitorPage() {
 
                 </div>
 
-                <div className="mt-4 h-3 overflow-hidden rounded-full bg-white/10">
+                <div className="mt-4 h-3 overflow-hidden rounded-full bg-[var(--card-color)]/10">
 
                   <div
-                    className="h-full rounded-full bg-green-500"
+                    className="h-full rounded-full bg-[var(--success-color)]"
                     style={{
                       width: item.usage
                     }}
@@ -229,17 +229,17 @@ export default function SystemMonitorPage() {
 
           <div className="mt-6 flex items-end gap-3">
 
-            <div className="h-[120px] w-full rounded-t-2xl bg-green-500/40" />
+            <div className="h-[120px] w-full rounded-t-2xl bg-[var(--success-color)]/40" />
 
-            <div className="h-[180px] w-full rounded-t-2xl bg-green-500/60" />
+            <div className="h-[180px] w-full rounded-t-2xl bg-[var(--success-color)]/60" />
 
-            <div className="h-[100px] w-full rounded-t-2xl bg-green-500/30" />
+            <div className="h-[100px] w-full rounded-t-2xl bg-[var(--success-color)]/30" />
 
-            <div className="h-[230px] w-full rounded-t-2xl bg-green-500" />
+            <div className="h-[230px] w-full rounded-t-2xl bg-[var(--success-color)]" />
 
-            <div className="h-[160px] w-full rounded-t-2xl bg-green-500/50" />
+            <div className="h-[160px] w-full rounded-t-2xl bg-[var(--success-color)]/50" />
 
-            <div className="h-[210px] w-full rounded-t-2xl bg-green-500/80" />
+            <div className="h-[210px] w-full rounded-t-2xl bg-[var(--success-color)]/80" />
 
           </div>
 
@@ -289,7 +289,7 @@ export default function SystemMonitorPage() {
 
       {/* ALERTS */}
 
-      <div className="mt-6 rounded-[30px] bg-gradient-to-r from-green-500 to-emerald-600 p-6 text-black">
+      <div className="mt-6 rounded-[30px] bg-gradient-to-r from-green-500 to-emerald-600 p-6 text-[var(--text-color)]">
 
         <div className="flex items-center gap-3">
 
@@ -326,7 +326,7 @@ export default function SystemMonitorPage() {
       <div className="mt-6 flex flex-wrap gap-4">
 
         <button
-          className="flex items-center gap-2 rounded-2xl bg-cyan-500 px-6 py-4 font-black text-black"
+          className="flex items-center gap-2 rounded-2xl bg-cyan-500 px-6 py-4 font-black text-[var(--text-color)]"
         >
 
           <RefreshCw size={20} />
@@ -336,7 +336,7 @@ export default function SystemMonitorPage() {
         </button>
 
         <button
-          className="flex items-center gap-2 rounded-2xl bg-red-500 px-6 py-4 font-black"
+          className="flex items-center gap-2 rounded-2xl bg-[var(--danger-color)] px-6 py-4 font-black"
         >
 
           <Power size={20} />
@@ -346,7 +346,7 @@ export default function SystemMonitorPage() {
         </button>
 
         <button
-          className="flex items-center gap-2 rounded-2xl bg-yellow-500 px-6 py-4 font-black text-black"
+          className="flex items-center gap-2 rounded-2xl bg-[var(--warning-color)] px-6 py-4 font-black text-[var(--text-color)]"
         >
 
           <Clock3 size={20} />
@@ -372,11 +372,11 @@ function StatsCard({
 
     <div className="rounded-[30px] border border-white/10 bg-[#111111] p-5">
 
-      <div className="flex h-14 w-14 items-center justify-center rounded-2xl bg-green-500">
+      <div className="flex h-14 w-14 items-center justify-center rounded-2xl bg-[var(--success-color)]">
 
         <Icon
           size={24}
-          className="text-black"
+          className="text-[var(--text-color)]"
         />
 
       </div>
@@ -416,7 +416,7 @@ function HealthItem({
 
       </h3>
 
-      <div className="rounded-full bg-green-500 px-4 py-2 text-sm font-black text-black">
+      <div className="rounded-full bg-[var(--success-color)] px-4 py-2 text-sm font-black text-[var(--text-color)]">
 
         {value}
 
@@ -435,7 +435,7 @@ function AlertItem({
 
   return (
 
-    <div className="rounded-2xl bg-white/20 p-4 font-bold">
+    <div className="rounded-2xl bg-[var(--card-color)]/20 p-4 font-bold">
 
       {text}
 

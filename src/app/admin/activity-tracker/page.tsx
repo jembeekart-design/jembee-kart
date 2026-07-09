@@ -56,16 +56,16 @@ export default function ActivityTrackerPage() {
     switch (type) {
       case "User":
       case "Signup":
-        return <Users size={22} className="text-black" />;
+        return <Users size={22} className="text-[var(--text-color)]" />;
       case "Order":
-        return <ShoppingCart size={22} className="text-black" />;
+        return <ShoppingCart size={22} className="text-[var(--text-color)]" />;
       case "Finance":
       case "Withdrawal":
-        return <Wallet size={22} className="text-black" />;
+        return <Wallet size={22} className="text-[var(--text-color)]" />;
       case "Security":
-        return <ShieldCheck size={22} className="text-black" />;
+        return <ShieldCheck size={22} className="text-[var(--text-color)]" />;
       default:
-        return <Activity size={22} className="text-black" />;
+        return <Activity size={22} className="text-[var(--text-color)]" />;
     }
   }
 
@@ -75,12 +75,12 @@ export default function ActivityTrackerPage() {
       case "Signup":
         return "bg-cyan-500";
       case "Order":
-        return "bg-green-500";
+        return "bg-[var(--success-color)]";
       case "Finance":
       case "Withdrawal":
-        return "bg-yellow-500";
+        return "bg-[var(--warning-color)]";
       case "Security":
-        return "bg-red-500";
+        return "bg-[var(--danger-color)]";
       default:
         return "bg-purple-500";
     }
@@ -154,12 +154,12 @@ export default function ActivityTrackerPage() {
   });
 
   return (
-    <main className="min-h-screen bg-[#0b0b0b] p-4 text-white">
+    <main className="min-h-screen bg-[#0b0b0b] p-4 text-[var(--button-text-color)]">
       {/* HEADER */}
       <div className="mb-8 flex items-center justify-between">
         <div className="flex items-center gap-4">
           <div className="flex h-16 w-16 items-center justify-center rounded-[28px] bg-pink-500">
-            <Activity size={30} className="text-black" />
+            <Activity size={30} className="text-[var(--text-color)]" />
           </div>
           <div>
             <h1 className="text-3xl font-black">Activity Tracker</h1>
@@ -203,7 +203,7 @@ export default function ActivityTrackerPage() {
             placeholder="Search activity..."
             value={search}
             onChange={(e) => setSearch(e.target.value)}
-            className="w-full bg-transparent outline-none placeholder:text-gray-500"
+            className="w-full bg-transparent outline-none placeholder:text-[var(--muted-text-color)]"
           />
         </div>
       </div>
@@ -234,7 +234,7 @@ export default function ActivityTrackerPage() {
                   <p className="mt-1 text-sm text-gray-400">
                     {item.user || "System"}
                   </p>
-                  <div className="mt-3 flex items-center gap-2 text-sm text-gray-500">
+                  <div className="mt-3 flex items-center gap-2 text-sm text-[var(--muted-text-color)]">
                     <Clock3 size={15} />
                     {/* ✅ FIX 1 (Cont...): Formatted Client-side Local Timestamp Rendering with defensive fallback control */}
                     {item.createdAt?.toDate
@@ -247,10 +247,10 @@ export default function ActivityTrackerPage() {
               <div
                 className={`w-max rounded-full px-4 py-2 text-sm font-bold ${
                   item.type === "Security"
-                    ? "bg-red-500/20 text-red-400"
+                    ? "bg-[var(--danger-color)]/20 text-red-400"
                     : item.type === "Order"
-                    ? "bg-green-500/20 text-green-400"
-                    : "bg-indigo-500/20 text-indigo-400"
+                    ? "bg-[var(--success-color)]/20 text-green-400"
+                    : "bg-[var(--primary-color)]/20 text-indigo-400"
                 }`}
               >
                 {item.type || "General"}
@@ -260,7 +260,7 @@ export default function ActivityTrackerPage() {
         ))}
 
         {filteredActivities.length === 0 && (
-          <div className="py-12 text-center text-sm font-medium text-gray-500">
+          <div className="py-12 text-center text-sm font-medium text-[var(--muted-text-color)]">
             No activity logs found.
           </div>
         )}
@@ -272,13 +272,13 @@ export default function ActivityTrackerPage() {
           <CheckCircle2 size={26} />
           <h2 className="text-3xl font-black">Realtime Monitoring</h2>
         </div>
-        <p className="mt-3 max-w-2xl text-sm text-white/90">
+        <p className="mt-3 max-w-2xl text-sm text-[var(--button-text-color)]/90">
           All activities are monitored instantly with realtime tracking, analytics & security logs.
         </p>
       </div>
 
       {/* SUSPICIOUS WARNING CONTROL */}
-      <div className="mt-6 rounded-[28px] border border-yellow-500/20 bg-yellow-500/10 p-5">
+      <div className="mt-6 rounded-[28px] border border-yellow-500/20 bg-[var(--warning-color)]/10 p-5">
         <div className="flex items-start gap-4">
           <AlertTriangle size={24} className="text-yellow-400" />
           <div>
@@ -304,7 +304,7 @@ function StatCard({
 }) {
   return (
     <div className="rounded-[28px] border border-white/10 bg-[#151515] p-5">
-      <div className="flex h-14 w-14 items-center justify-center rounded-2xl bg-pink-500 text-black">
+      <div className="flex h-14 w-14 items-center justify-center rounded-2xl bg-pink-500 text-[var(--text-color)]">
         {icon}
       </div>
       <p className="mt-4 text-sm text-gray-400">{title}</p>

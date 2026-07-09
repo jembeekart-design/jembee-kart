@@ -118,7 +118,7 @@ export default function DeliveryTrackingPage() {
 
     return (
 
-      <div className="flex min-h-screen items-center justify-center bg-black text-white">
+      <div className="flex min-h-screen items-center justify-center bg-black text-[var(--button-text-color)]">
 
         Loading Orders...
 
@@ -129,7 +129,7 @@ export default function DeliveryTrackingPage() {
 
   return (
 
-    <main className="min-h-screen bg-[#0b0b0b] p-4 text-white">
+    <main className="min-h-screen bg-[#0b0b0b] p-4 text-[var(--button-text-color)]">
 
       {/* HEADER */}
 
@@ -327,8 +327,8 @@ function TrackButton({
       onClick={onClick}
       className={`rounded-2xl px-4 py-4 text-sm font-bold transition ${
         active
-          ? "bg-orange-500 text-black"
-          : "bg-black/30 text-white"
+          ? "bg-orange-500 text-[var(--text-color)]"
+          : "bg-black/30 text-[var(--button-text-color)]"
       }`}
     >
 
@@ -349,7 +349,7 @@ function StatusBadge({
 
     if (status === "Delivered") {
 
-      return "bg-green-500";
+      return "bg-[var(--success-color)]";
 
     }
 
@@ -367,7 +367,7 @@ function StatusBadge({
       "Shipped"
     ) {
 
-      return "bg-yellow-500";
+      return "bg-[var(--warning-color)]";
 
     }
 

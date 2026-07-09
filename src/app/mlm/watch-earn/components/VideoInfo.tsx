@@ -37,7 +37,7 @@ VideoInfo({
         left-4
         z-40
         max-w-[75%]
-        text-white
+        text-[var(--button-text-color)]
       "
     >
 
@@ -68,7 +68,7 @@ VideoInfo({
             size={18}
             className="
               fill-blue-500
-              text-white
+              text-[var(--button-text-color)]
             "
           />
 
@@ -109,7 +109,7 @@ VideoInfo({
               key={tag}
               className="
                 rounded-full
-                bg-white/10
+                bg-[var(--card-color)]/10
                 px-3
                 py-1
                 text-xs
@@ -155,7 +155,7 @@ VideoInfo({
             truncate
             text-xs
             font-bold
-            text-white
+            text-[var(--button-text-color)]
           "
         >
 

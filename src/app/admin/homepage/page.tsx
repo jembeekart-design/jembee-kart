@@ -203,7 +203,7 @@ export default function HomepagePage() {
 
     return (
 
-      <div className="flex min-h-screen items-center justify-center bg-black text-white">
+      <div className="flex min-h-screen items-center justify-center bg-black text-[var(--button-text-color)]">
 
         Loading...
 
@@ -214,7 +214,7 @@ export default function HomepagePage() {
 
   return (
 
-    <main className="min-h-screen bg-[#0b0b0b] p-4 text-white">
+    <main className="min-h-screen bg-[#0b0b0b] p-4 text-[var(--button-text-color)]">
 
       {/* HEADER */}
 
@@ -444,7 +444,7 @@ export default function HomepagePage() {
           Live Homepage Preview
         </h2>
 
-        <p className="mt-2 text-white/80">
+        <p className="mt-2 text-[var(--button-text-color)]/80">
           Active homepage sections preview
         </p>
 
@@ -546,8 +546,8 @@ function SectionCard({
           onClick={onToggle}
           className={`flex items-center gap-2 rounded-2xl px-5 py-3 text-sm font-bold ${
             enabled
-              ? "bg-green-500"
-              : "bg-red-500"
+              ? "bg-[var(--success-color)]"
+              : "bg-[var(--danger-color)]"
           }`}
         >
 
@@ -580,7 +580,7 @@ function PreviewBadge({
 
   return (
 
-    <div className="rounded-full bg-white/20 px-5 py-3 text-sm font-bold backdrop-blur-lg">
+    <div className="rounded-full bg-[var(--card-color)]/20 px-5 py-3 text-sm font-bold backdrop-blur-lg">
 
       {title}
 

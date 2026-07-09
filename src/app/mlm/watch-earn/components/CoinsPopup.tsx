@@ -69,7 +69,7 @@ CoinsPopup({
           <Coins
             size={32}
             className="
-              text-black
+              text-[var(--text-color)]
             "
           />
 
@@ -79,7 +79,7 @@ CoinsPopup({
               className="
                 text-2xl
                 font-black
-                text-black
+                text-[var(--text-color)]
               "
             >
 
@@ -91,7 +91,7 @@ CoinsPopup({
               className="
                 text-sm
                 font-bold
-                text-black/70
+                text-[var(--text-color)]/70
               "
             >
 

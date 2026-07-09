@@ -132,7 +132,7 @@ export default function APIPage() {
 
     return (
 
-      <div className="flex min-h-screen items-center justify-center bg-black text-white">
+      <div className="flex min-h-screen items-center justify-center bg-black text-[var(--button-text-color)]">
 
         Loading...
 
@@ -143,7 +143,7 @@ export default function APIPage() {
 
   return (
 
-    <main className="min-h-screen bg-[#0b0b0b] p-4 text-white">
+    <main className="min-h-screen bg-[#0b0b0b] p-4 text-[var(--button-text-color)]">
 
       {/* HEADER */}
 
@@ -309,14 +309,14 @@ export default function APIPage() {
 
         <div className="mt-6 space-y-3">
 
-          <p className="text-white/90">
+          <p className="text-[var(--button-text-color)]/90">
             🌐 URL:
             {" "}
             {settings.apiUrl ||
               "Not Set"}
           </p>
 
-          <p className="text-white/90">
+          <p className="text-[var(--button-text-color)]/90">
             🔑 API Key:
             {" "}
             {settings.apiKey
@@ -324,20 +324,20 @@ export default function APIPage() {
               : "Missing"}
           </p>
 
-          <p className="text-white/90">
+          <p className="text-[var(--button-text-color)]/90">
             ⚡ Version:
             {" "}
             {settings.apiVersion}
           </p>
 
-          <p className="text-white/90">
+          <p className="text-[var(--button-text-color)]/90">
             🔄 Webhook:
             {" "}
             {settings.webhookUrl ||
               "Not Configured"}
           </p>
 
-          <p className="text-white/90">
+          <p className="text-[var(--button-text-color)]/90">
             🛡️ Security:
             {" "}
             {settings.secureAPI
@@ -444,8 +444,8 @@ function ToggleCard({
           onClick={onClick}
           className={`rounded-full px-5 py-3 text-sm font-bold ${
             enabled
-              ? "bg-green-500"
-              : "bg-red-500"
+              ? "bg-[var(--success-color)]"
+              : "bg-[var(--danger-color)]"
           }`}
         >
 

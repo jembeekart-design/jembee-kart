@@ -103,7 +103,7 @@ export default function IntegrationPage() {
 
   return (
 
-    <div className="min-h-screen bg-slate-950 p-6 text-white">
+    <div className="min-h-screen bg-slate-950 p-6 text-[var(--button-text-color)]">
 
       <div className="mx-auto max-w-5xl">
 

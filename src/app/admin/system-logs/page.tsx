@@ -93,7 +93,7 @@ export default function SystemLogsPage() {
 
     return (
 
-      <div className="flex min-h-screen items-center justify-center bg-black text-white">
+      <div className="flex min-h-screen items-center justify-center bg-black text-[var(--button-text-color)]">
 
         Loading Logs...
 
@@ -104,13 +104,13 @@ export default function SystemLogsPage() {
 
   return (
 
-    <main className="min-h-screen bg-[#0b0b0b] p-4 text-white">
+    <main className="min-h-screen bg-[#0b0b0b] p-4 text-[var(--button-text-color)]">
 
       {/* HEADER */}
 
       <div className="mb-8 flex items-center gap-4">
 
-        <div className="flex h-16 w-16 items-center justify-center rounded-[24px] bg-indigo-500">
+        <div className="flex h-16 w-16 items-center justify-center rounded-[24px] bg-[var(--primary-color)]">
 
           <Database size={30} />
 
@@ -149,7 +149,7 @@ export default function SystemLogsPage() {
           icon={
             <AlertTriangle size={24} />
           }
-          color="bg-yellow-500"
+          color="bg-[var(--warning-color)]"
         />
 
         <StatCard
@@ -158,7 +158,7 @@ export default function SystemLogsPage() {
           icon={
             <ShieldAlert size={24} />
           }
-          color="bg-red-500"
+          color="bg-[var(--danger-color)]"
         />
 
         <StatCard
@@ -167,7 +167,7 @@ export default function SystemLogsPage() {
           icon={
             <CheckCircle2 size={24} />
           }
-          color="bg-green-500"
+          color="bg-[var(--success-color)]"
         />
 
       </div>
@@ -313,19 +313,19 @@ function getLogColor(
 
   if (type === "success") {
 
-    return "bg-green-500";
+    return "bg-[var(--success-color)]";
 
   }
 
   if (type === "warning") {
 
-    return "bg-yellow-500";
+    return "bg-[var(--warning-color)]";
 
   }
 
   if (type === "error") {
 
-    return "bg-red-500";
+    return "bg-[var(--danger-color)]";
 
   }
 

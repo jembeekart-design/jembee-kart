@@ -117,7 +117,7 @@ export default function LiveChatPage() {
 
     return (
 
-      <div className="flex min-h-screen items-center justify-center bg-black text-white">
+      <div className="flex min-h-screen items-center justify-center bg-black text-[var(--button-text-color)]">
 
         Loading Chat...
 
@@ -128,13 +128,13 @@ export default function LiveChatPage() {
 
   return (
 
-    <main className="flex min-h-screen flex-col bg-[#0b0b0b] text-white">
+    <main className="flex min-h-screen flex-col bg-[#0b0b0b] text-[var(--button-text-color)]">
 
       {/* HEADER */}
 
       <div className="flex items-center gap-4 border-b border-white/10 bg-[#111111] p-5">
 
-        <div className="flex h-16 w-16 items-center justify-center rounded-[24px] bg-green-500">
+        <div className="flex h-16 w-16 items-center justify-center rounded-[24px] bg-[var(--success-color)]">
 
           <MessageCircle size={30} />
 
@@ -185,7 +185,7 @@ export default function LiveChatPage() {
                 className={`max-w-[85%] rounded-[30px] p-5 ${
                   msg.role ===
                   "admin"
-                    ? "bg-green-500 text-black"
+                    ? "bg-[var(--success-color)] text-[var(--text-color)]"
                     : "bg-[#1b1b1b]"
                 }`}
               >
@@ -250,7 +250,7 @@ export default function LiveChatPage() {
 
           <button
             onClick={sendMessage}
-            className="flex h-14 w-14 items-center justify-center rounded-2xl bg-green-500 text-black"
+            className="flex h-14 w-14 items-center justify-center rounded-2xl bg-[var(--success-color)] text-[var(--text-color)]"
           >
 
             <Send size={22} />

@@ -218,7 +218,7 @@ export default function PageBuilderPage() {
 
     return (
 
-      <div className="flex min-h-screen items-center justify-center bg-black text-white">
+      <div className="flex min-h-screen items-center justify-center bg-black text-[var(--button-text-color)]">
 
         Loading Builder...
 
@@ -229,7 +229,7 @@ export default function PageBuilderPage() {
 
   return (
 
-    <main className="min-h-screen bg-[#0b0b0b] p-4 text-white">
+    <main className="min-h-screen bg-[#0b0b0b] p-4 text-[var(--button-text-color)]">
 
       {/* HEADER */}
 
@@ -260,7 +260,7 @@ export default function PageBuilderPage() {
         <button
           onClick={saveSections}
           disabled={saving}
-          className="flex items-center gap-2 rounded-2xl bg-pink-500 px-5 py-3 font-bold text-black"
+          className="flex items-center gap-2 rounded-2xl bg-pink-500 px-5 py-3 font-bold text-[var(--text-color)]"
         >
 
           <Save size={18} />
@@ -316,7 +316,7 @@ export default function PageBuilderPage() {
                         index
                       )
                     }
-                    className="flex items-center gap-2 rounded-2xl theme-primary-bg px-5 py-3 font-bold text-black"
+                    className="flex items-center gap-2 rounded-2xl theme-primary-bg px-5 py-3 font-bold text-[var(--text-color)]"
                   >
 
                     <ArrowUp size={18} />
@@ -331,7 +331,7 @@ export default function PageBuilderPage() {
                         index
                       )
                     }
-                    className="flex items-center gap-2 rounded-2xl bg-yellow-500 px-5 py-3 font-bold text-black"
+                    className="flex items-center gap-2 rounded-2xl bg-[var(--warning-color)] px-5 py-3 font-bold text-[var(--text-color)]"
                   >
 
                     <ArrowDown size={18} />
@@ -348,8 +348,8 @@ export default function PageBuilderPage() {
                     }
                     className={`flex items-center gap-2 rounded-2xl px-5 py-3 font-bold ${
                       section.enabled
-                        ? "bg-green-500 text-black"
-                        : "bg-red-500"
+                        ? "bg-[var(--success-color)] text-[var(--text-color)]"
+                        : "bg-[var(--danger-color)]"
                     }`}
                   >
 
@@ -384,7 +384,7 @@ export default function PageBuilderPage() {
 
       <div className="mt-6 rounded-[30px] bg-gradient-to-r from-pink-500 to-fuchsia-500 p-6">
 
-        <h2 className="text-3xl font-black text-black">
+        <h2 className="text-3xl font-black text-[var(--text-color)]">
           Live Homepage Structure
         </h2>
 
@@ -403,7 +403,7 @@ export default function PageBuilderPage() {
 
                 <div
                   key={section.id}
-                  className="rounded-2xl bg-white/20 p-4 font-bold text-black"
+                  className="rounded-2xl bg-[var(--card-color)]/20 p-4 font-bold text-[var(--text-color)]"
                 >
 
                   {index + 1}.

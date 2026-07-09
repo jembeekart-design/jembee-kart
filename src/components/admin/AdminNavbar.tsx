@@ -18,7 +18,7 @@ export default function AdminNavbar() {
 
       <div className="flex items-center gap-3">
 
-        <button className="flex h-12 w-12 items-center justify-center rounded-2xl bg-[#151515] text-white lg:hidden">
+        <button className="flex h-12 w-12 items-center justify-center rounded-2xl bg-[#151515] text-[var(--button-text-color)] lg:hidden">
 
           <Menu size={22} />
 
@@ -26,7 +26,7 @@ export default function AdminNavbar() {
 
         <div>
 
-          <h1 className="text-2xl font-black text-white">
+          <h1 className="text-2xl font-black text-[var(--button-text-color)]">
 
             Admin Dashboard
 
@@ -56,7 +56,7 @@ export default function AdminNavbar() {
           <input
             type="text"
             placeholder="Search products, users, orders..."
-            className="w-full bg-transparent text-sm text-white outline-none placeholder:text-gray-500"
+            className="w-full bg-transparent text-sm text-[var(--button-text-color)] outline-none placeholder:text-[var(--muted-text-color)]"
           />
 
         </div>
@@ -69,17 +69,17 @@ export default function AdminNavbar() {
 
         {/* NOTIFICATION */}
 
-        <button className="relative flex h-12 w-12 items-center justify-center rounded-2xl bg-[#151515] text-white transition-all duration-300 hover:bg-cyan-500 hover:text-black">
+        <button className="relative flex h-12 w-12 items-center justify-center rounded-2xl bg-[#151515] text-[var(--button-text-color)] transition-all duration-300 hover:bg-cyan-500 hover:text-[var(--text-color)]">
 
           <Bell size={20} />
 
-          <span className="absolute right-2 top-2 h-2.5 w-2.5 rounded-full bg-red-500" />
+          <span className="absolute right-2 top-2 h-2.5 w-2.5 rounded-full bg-[var(--danger-color)]" />
 
         </button>
 
         {/* SETTINGS */}
 
-        <button className="flex h-12 w-12 items-center justify-center rounded-2xl bg-[#151515] text-white transition-all duration-300 hover:bg-cyan-500 hover:text-black">
+        <button className="flex h-12 w-12 items-center justify-center rounded-2xl bg-[#151515] text-[var(--button-text-color)] transition-all duration-300 hover:bg-cyan-500 hover:text-[var(--text-color)]">
 
           <Settings size={20} />
 
@@ -89,7 +89,7 @@ export default function AdminNavbar() {
 
         <div className="flex items-center gap-3 rounded-2xl bg-[#151515] px-4 py-2">
 
-          <div className="flex h-11 w-11 items-center justify-center rounded-xl bg-cyan-500 text-black">
+          <div className="flex h-11 w-11 items-center justify-center rounded-xl bg-cyan-500 text-[var(--text-color)]">
 
             <User size={20} />
 
@@ -97,7 +97,7 @@ export default function AdminNavbar() {
 
           <div className="hidden md:block">
 
-            <h2 className="text-sm font-black text-white">
+            <h2 className="text-sm font-black text-[var(--button-text-color)]">
 
               Admin
 

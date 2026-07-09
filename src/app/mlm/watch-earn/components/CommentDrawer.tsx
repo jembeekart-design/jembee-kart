@@ -137,7 +137,7 @@ CommentDrawer({
           className="
             text-lg
             font-black
-            text-white
+            text-[var(--button-text-color)]
           "
         >
 
@@ -149,7 +149,7 @@ CommentDrawer({
           onClick={onClose}
           className="
             text-2xl
-            text-white
+            text-[var(--button-text-color)]
           "
         >
 
@@ -195,7 +195,7 @@ CommentDrawer({
                     className="
                       text-sm
                       font-black
-                      text-white
+                      text-[var(--button-text-color)]
                     "
                   >
 
@@ -281,11 +281,11 @@ CommentDrawer({
             rounded-full
             border
             border-white/10
-            bg-white/5
+            bg-[var(--card-color)]/5
             px-5
             py-3
             text-sm
-            text-white
+            text-[var(--button-text-color)]
             outline-none
           "
         />
@@ -302,7 +302,7 @@ CommentDrawer({
             bg-gradient-to-r
             from-violet-600
             to-fuchsia-500
-            text-white
+            text-[var(--button-text-color)]
           "
         >
 

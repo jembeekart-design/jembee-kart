@@ -155,7 +155,7 @@ export default function WalletHistoryPage() {
 
   return (
     <main className="min-h-screen bg-slate-50 pb-12 antialiased">
-      <div className="sticky top-0 z-50 bg-white px-4 py-4 border-b border-slate-100 flex items-center gap-3 dashboard-nav-blur">
+      <div className="sticky top-0 z-50 bg-[var(--card-color)] px-4 py-4 border-b border-slate-100 flex items-center gap-3 dashboard-nav-blur">
         <button 
           onClick={() => router.push("/mlm/wallet")} 
           className="h-9 w-9 bg-slate-100 flex items-center justify-center rounded-full text-slate-700 active:scale-95 transition-transform"
@@ -171,7 +171,7 @@ export default function WalletHistoryPage() {
 
       <div className="p-4 space-y-3">
         {history.length === 0 ? (
-          <div className="text-center py-16 bg-white rounded-2xl border border-slate-100 text-slate-400 text-xs font-medium px-6 shadow-sm">
+          <div className="text-center py-16 bg-[var(--card-color)] rounded-2xl border border-slate-100 text-slate-400 text-xs font-medium px-6 shadow-sm">
             <AlertCircle className="mx-auto text-slate-300 mb-2" size={20} />
             No transaction records or income distributions mapped to this node yet.
           </div>
@@ -180,7 +180,7 @@ export default function WalletHistoryPage() {
             const isDebitFlow = ["withdrawal", "cashback_transfer"].includes(tx.type);
 
             return (
-              <div key={tx.id} className="bg-white p-4 rounded-2xl border border-slate-100 shadow-sm space-y-3.5 hover:border-slate-200 transition-colors">
+              <div key={tx.id} className="bg-[var(--card-color)] p-4 rounded-2xl border border-slate-100 shadow-sm space-y-3.5 hover:border-slate-200 transition-colors">
                 <div className="flex items-center justify-between">
                   <div className="flex items-center gap-3">
                     <div className={`h-9 w-9 rounded-xl flex items-center justify-center shrink-0 ${isDebitFlow ? 'bg-amber-50 text-amber-600' : 'bg-emerald-50 text-emerald-600'}`}>

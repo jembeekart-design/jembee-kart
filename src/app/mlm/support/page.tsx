@@ -67,7 +67,7 @@ export default function MLMSupportPage() {
           sticky
           top-0
           z-50
-          bg-white
+          bg-[var(--card-color)]
           px-4
           py-3
           shadow-sm
@@ -102,7 +102,7 @@ export default function MLMSupportPage() {
 
             </h1>
 
-            <p className="text-[11px] text-gray-500">
+            <p className="text-[11px] text-[var(--muted-text-color)]">
 
               Live Help & Support
 
@@ -126,7 +126,7 @@ export default function MLMSupportPage() {
             via-fuchsia-600
             to-orange-500
             p-5
-            text-white
+            text-[var(--button-text-color)]
             shadow-xl
           "
         >
@@ -139,7 +139,7 @@ export default function MLMSupportPage() {
               items-center
               justify-center
               rounded-full
-              bg-white/20
+              bg-[var(--card-color)]/20
             "
           >
 
@@ -155,7 +155,7 @@ export default function MLMSupportPage() {
 
           </h2>
 
-          <p className="mt-3 text-[13px] leading-6 text-white/90">
+          <p className="mt-3 text-[13px] leading-6 text-[var(--button-text-color)]/90">
 
             Referral, earnings,
             withdraw aur MLM issues ke
@@ -176,7 +176,7 @@ export default function MLMSupportPage() {
           <button
             className="
               rounded-2xl
-              bg-white
+              bg-[var(--card-color)]
               p-4
               text-left
               shadow-sm
@@ -194,7 +194,7 @@ export default function MLMSupportPage() {
 
             </h3>
 
-            <p className="mt-1 text-[11px] text-gray-500">
+            <p className="mt-1 text-[11px] text-[var(--muted-text-color)]">
 
               Payment related help
 
@@ -205,7 +205,7 @@ export default function MLMSupportPage() {
           <button
             className="
               rounded-2xl
-              bg-white
+              bg-[var(--card-color)]
               p-4
               text-left
               shadow-sm
@@ -223,7 +223,7 @@ export default function MLMSupportPage() {
 
             </h3>
 
-            <p className="mt-1 text-[11px] text-gray-500">
+            <p className="mt-1 text-[11px] text-[var(--muted-text-color)]">
 
               Team & referral support
 
@@ -234,7 +234,7 @@ export default function MLMSupportPage() {
           <button
             className="
               rounded-2xl
-              bg-white
+              bg-[var(--card-color)]
               p-4
               text-left
               shadow-sm
@@ -252,7 +252,7 @@ export default function MLMSupportPage() {
 
             </h3>
 
-            <p className="mt-1 text-[11px] text-gray-500">
+            <p className="mt-1 text-[11px] text-[var(--muted-text-color)]">
 
               Secure MLM account
 
@@ -263,7 +263,7 @@ export default function MLMSupportPage() {
           <button
             className="
               rounded-2xl
-              bg-white
+              bg-[var(--card-color)]
               p-4
               text-left
               shadow-sm
@@ -281,7 +281,7 @@ export default function MLMSupportPage() {
 
             </h3>
 
-            <p className="mt-1 text-[11px] text-gray-500">
+            <p className="mt-1 text-[11px] text-[var(--muted-text-color)]">
 
               Talk to support team
 
@@ -300,7 +300,7 @@ export default function MLMSupportPage() {
         <div
           className="
             rounded-[30px]
-            bg-white
+            bg-[var(--card-color)]
             p-4
             shadow-sm
           "
@@ -339,8 +339,8 @@ export default function MLMSupportPage() {
                       leading-6
                       ${
                         item.sender === "user"
-                          ? "bg-violet-700 text-white"
-                          : "bg-gray-100 text-black"
+                          ? "bg-violet-700 text-[var(--button-text-color)]"
+                          : "bg-[var(--background-color)] text-[var(--text-color)]"
                       }
                     `}
                   >
@@ -369,7 +369,7 @@ export default function MLMSupportPage() {
           left-0
           w-full
           border-t
-          bg-white
+          bg-[var(--card-color)]
           p-3
         "
       >
@@ -389,7 +389,7 @@ export default function MLMSupportPage() {
               h-12
               flex-1
               rounded-2xl
-              bg-gray-100
+              bg-[var(--background-color)]
               px-4
               text-[14px]
               outline-none
@@ -408,7 +408,7 @@ export default function MLMSupportPage() {
               bg-gradient-to-r
               from-violet-700
               to-fuchsia-600
-              text-white
+              text-[var(--button-text-color)]
               shadow-lg
             "
           >

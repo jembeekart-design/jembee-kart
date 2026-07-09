@@ -90,7 +90,7 @@ export default function AdminMLMPage() {
           sticky
           top-0
           z-50
-          bg-white
+          bg-[var(--card-color)]
           px-4
           py-4
           shadow-sm
@@ -103,7 +103,7 @@ export default function AdminMLMPage() {
 
         </h1>
 
-        <p className="text-[12px] text-gray-500">
+        <p className="text-[12px] text-[var(--muted-text-color)]">
 
           Manage MLM Members & Earnings
 
@@ -123,7 +123,7 @@ export default function AdminMLMPage() {
             via-fuchsia-600
             to-orange-500
             p-5
-            text-white
+            text-[var(--button-text-color)]
             shadow-xl
           "
         >
@@ -136,7 +136,7 @@ export default function AdminMLMPage() {
               items-center
               justify-center
               rounded-full
-              bg-white/20
+              bg-[var(--card-color)]/20
             "
           >
 
@@ -152,7 +152,7 @@ export default function AdminMLMPage() {
 
           </h2>
 
-          <p className="mt-3 text-[13px] leading-6 text-white/90">
+          <p className="mt-3 text-[13px] leading-6 text-[var(--button-text-color)]/90">
 
             Members, withdrawals,
             earnings aur MLM activity
@@ -173,7 +173,7 @@ export default function AdminMLMPage() {
           <div
             className="
               rounded-2xl
-              bg-white
+              bg-[var(--card-color)]
               p-4
               shadow-sm
             "
@@ -190,7 +190,7 @@ export default function AdminMLMPage() {
 
             </h3>
 
-            <p className="text-[12px] text-gray-500">
+            <p className="text-[12px] text-[var(--muted-text-color)]">
 
               MLM Members
 
@@ -201,7 +201,7 @@ export default function AdminMLMPage() {
           <div
             className="
               rounded-2xl
-              bg-white
+              bg-[var(--card-color)]
               p-4
               shadow-sm
             "
@@ -218,7 +218,7 @@ export default function AdminMLMPage() {
 
             </h3>
 
-            <p className="text-[12px] text-gray-500">
+            <p className="text-[12px] text-[var(--muted-text-color)]">
 
               Total Payout
 
@@ -229,7 +229,7 @@ export default function AdminMLMPage() {
           <div
             className="
               rounded-2xl
-              bg-white
+              bg-[var(--card-color)]
               p-4
               shadow-sm
             "
@@ -246,7 +246,7 @@ export default function AdminMLMPage() {
 
             </h3>
 
-            <p className="text-[12px] text-gray-500">
+            <p className="text-[12px] text-[var(--muted-text-color)]">
 
               Pending Withdraw
 
@@ -257,7 +257,7 @@ export default function AdminMLMPage() {
           <div
             className="
               rounded-2xl
-              bg-white
+              bg-[var(--card-color)]
               p-4
               shadow-sm
             "
@@ -274,7 +274,7 @@ export default function AdminMLMPage() {
 
             </h3>
 
-            <p className="text-[12px] text-gray-500">
+            <p className="text-[12px] text-[var(--muted-text-color)]">
 
               Active Leaders
 
@@ -293,7 +293,7 @@ export default function AdminMLMPage() {
         <div
           className="
             rounded-[30px]
-            bg-white
+            bg-[var(--card-color)]
             p-5
             shadow-sm
           "
@@ -339,7 +339,7 @@ export default function AdminMLMPage() {
 
                         </h3>
 
-                        <p className="mt-1 text-[11px] text-gray-500">
+                        <p className="mt-1 text-[11px] text-[var(--muted-text-color)]">
 
                           {member.phone}
 
@@ -363,7 +363,7 @@ export default function AdminMLMPage() {
                             py-2
                             text-[11px]
                             font-black
-                            text-white
+                            text-[var(--button-text-color)]
                           "
                         >
 
@@ -374,12 +374,12 @@ export default function AdminMLMPage() {
                         <button
                           className="
                             rounded-xl
-                            bg-red-500
+                            bg-[var(--danger-color)]
                             px-3
                             py-2
                             text-[11px]
                             font-black
-                            text-white
+                            text-[var(--button-text-color)]
                           "
                         >
 

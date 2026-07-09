@@ -65,7 +65,7 @@ export default function AIBannerPage() {
 
   return (
 
-    <main className="min-h-screen bg-[#050505] p-4 text-white">
+    <main className="min-h-screen bg-[#050505] p-4 text-[var(--button-text-color)]">
 
       {/* HEADER */}
 
@@ -75,7 +75,7 @@ export default function AIBannerPage() {
 
           <Sparkles
             size={30}
-            className="text-black"
+            className="text-[var(--text-color)]"
           />
 
         </div>
@@ -122,7 +122,7 @@ export default function AIBannerPage() {
             )
           }
           placeholder="Example: Create modern ecommerce fashion sale banner with neon effects..."
-          className="mt-5 h-40 w-full rounded-3xl border border-white/10 bg-black/40 p-5 text-white outline-none"
+          className="mt-5 h-40 w-full rounded-3xl border border-white/10 bg-black/40 p-5 text-[var(--button-text-color)] outline-none"
         />
 
         <div className="mt-5 flex flex-wrap gap-4">
@@ -130,7 +130,7 @@ export default function AIBannerPage() {
           <button
             onClick={generateBanner}
             disabled={loading}
-            className="flex items-center gap-2 rounded-2xl bg-pink-500 px-6 py-4 font-bold text-black transition-all hover:scale-[1.03]"
+            className="flex items-center gap-2 rounded-2xl bg-pink-500 px-6 py-4 font-bold text-[var(--text-color)] transition-all hover:scale-[1.03]"
           >
 
             <Sparkles size={20} />
@@ -178,7 +178,7 @@ export default function AIBannerPage() {
           <div className="flex gap-3">
 
             <button
-              className="flex items-center gap-2 rounded-2xl bg-white/10 px-4 py-3"
+              className="flex items-center gap-2 rounded-2xl bg-[var(--card-color)]/10 px-4 py-3"
             >
 
               <Download size={18} />
@@ -188,7 +188,7 @@ export default function AIBannerPage() {
             </button>
 
             <button
-              className="flex items-center gap-2 rounded-2xl bg-red-500/20 px-4 py-3 text-red-400"
+              className="flex items-center gap-2 rounded-2xl bg-[var(--danger-color)]/20 px-4 py-3 text-red-400"
             >
 
               <Trash2 size={18} />
@@ -277,7 +277,7 @@ export default function AIBannerPage() {
       <div className="mt-6 flex justify-end">
 
         <button
-          className="flex items-center gap-2 rounded-2xl bg-green-500 px-6 py-4 font-black text-black"
+          className="flex items-center gap-2 rounded-2xl bg-[var(--success-color)] px-6 py-4 font-black text-[var(--text-color)]"
         >
 
           <Save size={20} />
@@ -336,7 +336,7 @@ function FeatureCard({
 
   return (
 
-    <div className="rounded-[24px] bg-white/10 p-5 backdrop-blur-lg">
+    <div className="rounded-[24px] bg-[var(--card-color)]/10 p-5 backdrop-blur-lg">
 
       <h3 className="text-xl font-black">
 
@@ -344,7 +344,7 @@ function FeatureCard({
 
       </h3>
 
-      <p className="mt-2 text-sm text-white/80">
+      <p className="mt-2 text-sm text-[var(--button-text-color)]/80">
 
         {desc}
 
