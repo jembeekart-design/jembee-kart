@@ -39,7 +39,7 @@ export default function ThemeStorePage() {
 
   return (
 
-    <main className="min-h-screen bg-[#0b0b0b] p-4 text-white">
+    <main className="min-h-screen bg-[#0b0b0b] p-4 text-[var(--button-text-color)]">
 
       {/* HEADER */}
 
@@ -51,7 +51,7 @@ export default function ThemeStorePage() {
 
             <Palette
               size={30}
-              className="text-black"
+              className="text-[var(--text-color)]"
             />
 
           </div>
@@ -70,7 +70,7 @@ export default function ThemeStorePage() {
 
         </div>
 
-        <button className="flex items-center gap-2 rounded-2xl bg-cyan-500 px-5 py-3 font-bold text-black">
+        <button className="flex items-center gap-2 rounded-2xl bg-cyan-500 px-5 py-3 font-bold text-[var(--text-color)]">
 
           <ShoppingBag size={18} />
 
@@ -92,7 +92,7 @@ export default function ThemeStorePage() {
         <input
           type="text"
           placeholder="Search themes..."
-          className="w-full bg-transparent outline-none placeholder:text-gray-500"
+          className="w-full bg-transparent outline-none placeholder:text-[var(--muted-text-color)]"
         />
 
       </div>
@@ -164,7 +164,7 @@ export default function ThemeStorePage() {
 
                   </div>
 
-                  <div className="flex items-center gap-1 rounded-full bg-yellow-500/20 px-3 py-1 text-sm font-bold text-yellow-400">
+                  <div className="flex items-center gap-1 rounded-full bg-[var(--warning-color)]/20 px-3 py-1 text-sm font-bold text-yellow-400">
 
                     <Star size={14} />
 
@@ -190,13 +190,13 @@ export default function ThemeStorePage() {
 
                   <div className="flex gap-2">
 
-                    <button className="flex h-11 w-11 items-center justify-center rounded-2xl bg-white/10">
+                    <button className="flex h-11 w-11 items-center justify-center rounded-2xl bg-[var(--card-color)]/10">
 
                       <Eye size={18} />
 
                     </button>
 
-                    <button className="rounded-2xl bg-cyan-500 px-4 py-2 font-bold text-black">
+                    <button className="rounded-2xl bg-cyan-500 px-4 py-2 font-bold text-[var(--text-color)]">
 
                       Install
 
@@ -217,7 +217,7 @@ export default function ThemeStorePage() {
 
       {/* AI SECTION */}
 
-      <div className="mt-6 rounded-[30px] bg-gradient-to-r from-cyan-500 to-blue-600 p-6 text-black">
+      <div className="mt-6 rounded-[30px] bg-gradient-to-r from-cyan-500 to-blue-600 p-6 text-[var(--text-color)]">
 
         <div className="flex items-center gap-3">
 
@@ -236,7 +236,7 @@ export default function ThemeStorePage() {
 
         </p>
 
-        <button className="mt-6 rounded-2xl bg-black px-6 py-3 font-bold text-white">
+        <button className="mt-6 rounded-2xl bg-black px-6 py-3 font-bold text-[var(--button-text-color)]">
 
           Generate AI Theme
 
@@ -263,7 +263,7 @@ function StatCard({
 
     <div className="rounded-[28px] border border-white/10 bg-[#151515] p-5">
 
-      <div className="flex h-14 w-14 items-center justify-center rounded-2xl bg-cyan-500 text-black">
+      <div className="flex h-14 w-14 items-center justify-center rounded-2xl bg-cyan-500 text-[var(--text-color)]">
 
         {icon}
 

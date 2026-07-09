@@ -94,7 +94,7 @@ export default function ThemePreview({
 
     <div className="mt-8 rounded-3xl border border-slate-700 p-6">
 
-      <h2 className="mb-6 text-3xl font-bold text-white">
+      <h2 className="mb-6 text-3xl font-bold text-[var(--button-text-color)]">
         Live Theme Preview
       </h2>
 

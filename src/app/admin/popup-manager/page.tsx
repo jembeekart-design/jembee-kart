@@ -69,7 +69,7 @@ export default function PopupManagerPage() {
 
   return (
 
-    <main className="min-h-screen bg-[#050505] p-4 text-white">
+    <main className="min-h-screen bg-[#050505] p-4 text-[var(--button-text-color)]">
 
       {/* HEADER */}
 
@@ -81,7 +81,7 @@ export default function PopupManagerPage() {
 
             <AppWindow
               size={30}
-              className="text-black"
+              className="text-[var(--text-color)]"
             />
 
           </div>
@@ -105,7 +105,7 @@ export default function PopupManagerPage() {
         </div>
 
         <button
-          className="flex items-center gap-2 rounded-2xl bg-yellow-400 px-6 py-4 font-black text-black"
+          className="flex items-center gap-2 rounded-2xl bg-yellow-400 px-6 py-4 font-black text-[var(--text-color)]"
         >
 
           <Save size={20} />
@@ -165,7 +165,7 @@ export default function PopupManagerPage() {
 
                     <Bell
                       size={24}
-                      className="text-black"
+                      className="text-[var(--text-color)]"
                     />
 
                   </div>
@@ -194,7 +194,7 @@ export default function PopupManagerPage() {
                       index
                     )
                   }
-                  className="rounded-2xl bg-red-500/20 p-3 text-red-400"
+                  className="rounded-2xl bg-[var(--danger-color)]/20 p-3 text-red-400"
                 >
 
                   <Trash2 size={20} />
@@ -216,7 +216,7 @@ export default function PopupManagerPage() {
               <div className="mt-5 flex gap-3">
 
                 <button
-                  className="rounded-2xl bg-green-500 px-5 py-3 font-black text-black"
+                  className="rounded-2xl bg-[var(--success-color)] px-5 py-3 font-black text-[var(--text-color)]"
                 >
 
                   Active
@@ -224,7 +224,7 @@ export default function PopupManagerPage() {
                 </button>
 
                 <button
-                  className="rounded-2xl bg-white/10 px-5 py-3 font-black"
+                  className="rounded-2xl bg-[var(--card-color)]/10 px-5 py-3 font-black"
                 >
 
                   Edit
@@ -244,7 +244,7 @@ export default function PopupManagerPage() {
 
       <button
         onClick={addPopup}
-        className="mt-6 flex w-full items-center justify-center gap-2 rounded-[30px] bg-yellow-400 px-6 py-5 font-black text-black"
+        className="mt-6 flex w-full items-center justify-center gap-2 rounded-[30px] bg-yellow-400 px-6 py-5 font-black text-[var(--text-color)]"
       >
 
         <Plus size={22} />
@@ -255,7 +255,7 @@ export default function PopupManagerPage() {
 
       {/* LIVE PREVIEW */}
 
-      <div className="mt-6 rounded-[30px] bg-gradient-to-r from-yellow-400 to-orange-500 p-6 text-black">
+      <div className="mt-6 rounded-[30px] bg-gradient-to-r from-yellow-400 to-orange-500 p-6 text-[var(--text-color)]">
 
         <div className="flex items-center justify-between">
 
@@ -284,7 +284,7 @@ export default function PopupManagerPage() {
             </button>
 
             <button
-              className="flex items-center gap-2 rounded-2xl bg-black px-4 py-3 font-bold text-white"
+              className="flex items-center gap-2 rounded-2xl bg-black px-4 py-3 font-bold text-[var(--button-text-color)]"
             >
 
               <Smartphone size={18} />
@@ -301,7 +301,7 @@ export default function PopupManagerPage() {
 
         <div className="mt-8 flex justify-center">
 
-          <div className="w-full max-w-md rounded-[30px] bg-white p-6 text-black shadow-2xl">
+          <div className="w-full max-w-md rounded-[30px] bg-[var(--card-color)] p-6 text-[var(--text-color)] shadow-2xl">
 
             <div className="flex items-center justify-between">
 
@@ -319,7 +319,7 @@ export default function PopupManagerPage() {
 
             </div>
 
-            <p className="mt-4 text-gray-700">
+            <p className="mt-4 text-[var(--text-color)]">
 
               {popups[0]?.message}
 
@@ -379,7 +379,7 @@ export default function PopupManagerPage() {
       <div className="mt-6 flex flex-wrap gap-4">
 
         <button
-          className="flex items-center gap-2 rounded-2xl bg-green-500 px-6 py-4 font-black text-black"
+          className="flex items-center gap-2 rounded-2xl bg-[var(--success-color)] px-6 py-4 font-black text-[var(--text-color)]"
         >
 
           <Save size={20} />
@@ -420,7 +420,7 @@ function ActionCard({
 
         <Icon
           size={24}
-          className="text-black"
+          className="text-[var(--text-color)]"
         />
 
       </div>

@@ -44,7 +44,7 @@ export default function GovernancePage() {
     return () => clearInterval(timer);
   }, []);
 
-  if (loading) return <div className="flex min-h-screen items-center justify-center bg-[#020617] text-white">Loading...</div>;
+  if (loading) return <div className="flex min-h-screen items-center justify-center bg-[#020617] text-[var(--button-text-color)]">Loading...</div>;
   if (!report) return <div className="flex min-h-screen items-center justify-center bg-[#020617] text-red-400">Report Not Found</div>;
 
   const { summary, statistics, scores, violations, health } = report;
@@ -57,7 +57,7 @@ export default function GovernancePage() {
   );
 
   return (
-    <div className="min-h-screen bg-[#020617] text-white p-6 space-y-6">
+    <div className="min-h-screen bg-[#020617] text-[var(--button-text-color)] p-6 space-y-6">
       <div className="flex items-center justify-between">
         <div>
           <h1 className="text-3xl font-bold">Governance Dashboard</h1>

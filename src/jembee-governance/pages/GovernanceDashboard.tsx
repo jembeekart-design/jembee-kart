@@ -195,7 +195,7 @@ newCode: issue.newCode,
 
           </h1>
 
-          <p className="text-gray-500">
+          <p className="text-[var(--muted-text-color)]">
 
             Enterprise Governance Monitoring
 
@@ -205,7 +205,7 @@ newCode: issue.newCode,
 
         <div className="text-right">
 
-          <div className="text-sm text-gray-500">
+          <div className="text-sm text-[var(--muted-text-color)]">
 
             Generated
 
@@ -229,7 +229,7 @@ newCode: issue.newCode,
 
         <div className="rounded-lg border p-4">
 
-          <p className="text-sm text-gray-500">
+          <p className="text-sm text-[var(--muted-text-color)]">
 
             Governance Score
 
@@ -245,7 +245,7 @@ newCode: issue.newCode,
 
         <div className="rounded-lg border p-4">
 
-          <p className="text-sm text-gray-500">
+          <p className="text-sm text-[var(--muted-text-color)]">
 
             Total Issues
 
@@ -261,7 +261,7 @@ newCode: issue.newCode,
 
         <div className="rounded-lg border p-4">
 
-          <p className="text-sm text-gray-500">
+          <p className="text-sm text-[var(--muted-text-color)]">
 
             Critical Issues
 
@@ -277,7 +277,7 @@ newCode: issue.newCode,
 
         <div className="rounded-lg border p-4">
 
-          <p className="text-sm text-gray-500">
+          <p className="text-sm text-[var(--muted-text-color)]">
 
             Warnings
 
@@ -312,7 +312,7 @@ newCode: issue.newCode,
 
           {reports.length === 0 && (
 
-            <p className="text-gray-500">
+            <p className="text-[var(--muted-text-color)]">
 
               No governance reports available.
 
@@ -337,7 +337,7 @@ newCode: issue.newCode,
 
                   </h3>
 
-                  <p className="text-sm text-gray-500">
+                  <p className="text-sm text-[var(--muted-text-color)]">
 
                     {report.createdAt}
 
@@ -377,7 +377,7 @@ newCode: issue.newCode,
 
           {issues.length === 0 && (
 
-            <p className="text-gray-500">
+            <p className="text-[var(--muted-text-color)]">
 
               No governance issues detected.
 
@@ -402,7 +402,7 @@ newCode: issue.newCode,
 
                   </h3>
 
-                  <p className="text-sm text-gray-500">
+                  <p className="text-sm text-[var(--muted-text-color)]">
 
                     {issue.category}
 
@@ -447,7 +447,7 @@ newCode: issue.newCode,
 
               {issue.filePath && (
 
-                <p className="mt-2 text-xs text-gray-500">
+                <p className="mt-2 text-xs text-[var(--muted-text-color)]">
 
                   {issue.filePath}
 
@@ -473,7 +473,7 @@ newCode: issue.newCode,
 )}
 
 {issue.oldCode && (
-  <pre className="mt-2 rounded bg-gray-100 p-2 text-xs overflow-x-auto">
+  <pre className="mt-2 rounded bg-[var(--background-color)] p-2 text-xs overflow-x-auto">
     <strong>Old Code:</strong>
     {"\n"}
     {issue.oldCode}
@@ -507,7 +507,7 @@ newCode: issue.newCode,
 
         <div className="rounded-lg border p-4">
 
-          <h3 className="text-sm text-gray-500">
+          <h3 className="text-sm text-[var(--muted-text-color)]">
             Architecture
           </h3>
 
@@ -519,7 +519,7 @@ newCode: issue.newCode,
 
         <div className="rounded-lg border p-4">
 
-          <h3 className="text-sm text-gray-500">
+          <h3 className="text-sm text-[var(--muted-text-color)]">
             Security
           </h3>
 
@@ -531,7 +531,7 @@ newCode: issue.newCode,
 
         <div className="rounded-lg border p-4">
 
-          <h3 className="text-sm text-gray-500">
+          <h3 className="text-sm text-[var(--muted-text-color)]">
             Profitability
           </h3>
 
@@ -543,7 +543,7 @@ newCode: issue.newCode,
 
         <div className="rounded-lg border p-4">
 
-          <h3 className="text-sm text-gray-500">
+          <h3 className="text-sm text-[var(--muted-text-color)]">
             Deployment
           </h3>
 
@@ -571,7 +571,7 @@ newCode: issue.newCode,
 
           <div>
 
-            <p className="text-sm text-gray-500">
+            <p className="text-sm text-[var(--muted-text-color)]">
 
               Overall Health
 
@@ -589,7 +589,7 @@ newCode: issue.newCode,
 
           <div>
 
-            <p className="text-sm text-gray-500">
+            <p className="text-sm text-[var(--muted-text-color)]">
 
               Configuration
 
@@ -608,7 +608,7 @@ newCode: issue.newCode,
 
           <div>
 
-            <p className="text-sm text-gray-500">
+            <p className="text-sm text-[var(--muted-text-color)]">
 
               Business Rules
 

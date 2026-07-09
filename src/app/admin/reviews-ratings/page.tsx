@@ -131,7 +131,7 @@ export default function ReviewsRatingsPage() {
 
     return (
 
-      <div className="flex min-h-screen items-center justify-center bg-black text-white">
+      <div className="flex min-h-screen items-center justify-center bg-black text-[var(--button-text-color)]">
 
         Loading Reviews...
 
@@ -142,13 +142,13 @@ export default function ReviewsRatingsPage() {
 
   return (
 
-    <main className="min-h-screen bg-[#0b0b0b] p-4 text-white">
+    <main className="min-h-screen bg-[#0b0b0b] p-4 text-[var(--button-text-color)]">
 
       {/* HEADER */}
 
       <div className="mb-8 flex items-center gap-4">
 
-        <div className="flex h-16 w-16 items-center justify-center rounded-[24px] bg-yellow-500">
+        <div className="flex h-16 w-16 items-center justify-center rounded-[24px] bg-[var(--warning-color)]">
 
           <Star size={30} />
 
@@ -244,7 +244,7 @@ export default function ReviewsRatingsPage() {
                           index <
                           review.rating
                             ? "fill-yellow-400 text-yellow-400"
-                            : "text-gray-500"
+                            : "text-[var(--muted-text-color)]"
                         }
                       />
 
@@ -276,7 +276,7 @@ export default function ReviewsRatingsPage() {
                         "Approved"
                       )
                     }
-                    className="flex items-center gap-2 rounded-2xl bg-green-500 px-5 py-3 font-bold text-black"
+                    className="flex items-center gap-2 rounded-2xl bg-[var(--success-color)] px-5 py-3 font-bold text-[var(--text-color)]"
                   >
 
                     <ShieldCheck size={18} />
@@ -292,7 +292,7 @@ export default function ReviewsRatingsPage() {
                         "Hidden"
                       )
                     }
-                    className="flex items-center gap-2 rounded-2xl bg-orange-500 px-5 py-3 font-bold text-black"
+                    className="flex items-center gap-2 rounded-2xl bg-orange-500 px-5 py-3 font-bold text-[var(--text-color)]"
                   >
 
                     <EyeOff size={18} />
@@ -307,7 +307,7 @@ export default function ReviewsRatingsPage() {
                         review.id!
                       )
                     }
-                    className="flex items-center gap-2 rounded-2xl bg-red-500 px-5 py-3 font-bold"
+                    className="flex items-center gap-2 rounded-2xl bg-[var(--danger-color)] px-5 py-3 font-bold"
                   >
 
                     <Trash2 size={18} />
@@ -342,7 +342,7 @@ function StatusBadge({
 
     if (status === "Approved") {
 
-      return "bg-green-500";
+      return "bg-[var(--success-color)]";
 
     }
 
@@ -352,7 +352,7 @@ function StatusBadge({
 
     }
 
-    return "bg-yellow-500";
+    return "bg-[var(--warning-color)]";
 
   }
 

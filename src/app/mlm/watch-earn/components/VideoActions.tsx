@@ -73,7 +73,7 @@ VideoActions({
             justify-center
             rounded-full
             bg-black/40
-            text-white
+            text-[var(--button-text-color)]
             backdrop-blur-xl
           "
         >
@@ -86,7 +86,7 @@ VideoActions({
           className="
             text-xs
             font-bold
-            text-white
+            text-[var(--button-text-color)]
           "
         >
 
@@ -117,7 +117,7 @@ VideoActions({
             justify-center
             rounded-full
             bg-black/40
-            text-white
+            text-[var(--button-text-color)]
             backdrop-blur-xl
           "
         >
@@ -132,7 +132,7 @@ VideoActions({
           className="
             text-xs
             font-bold
-            text-white
+            text-[var(--button-text-color)]
           "
         >
 
@@ -163,7 +163,7 @@ VideoActions({
             justify-center
             rounded-full
             bg-black/40
-            text-white
+            text-[var(--button-text-color)]
             backdrop-blur-xl
           "
         >
@@ -176,7 +176,7 @@ VideoActions({
           className="
             text-xs
             font-bold
-            text-white
+            text-[var(--button-text-color)]
           "
         >
 
@@ -206,7 +206,7 @@ VideoActions({
             justify-center
             rounded-full
             bg-black/40
-            text-white
+            text-[var(--button-text-color)]
             backdrop-blur-xl
           "
         >
@@ -221,7 +221,7 @@ VideoActions({
           className="
             text-xs
             font-bold
-            text-white
+            text-[var(--button-text-color)]
           "
         >
 
@@ -259,7 +259,7 @@ VideoActions({
           className="
             text-sm
             font-black
-            text-white
+            text-[var(--button-text-color)]
           "
         >
 

@@ -240,7 +240,7 @@ export default function NavigationPage() {
 
     return (
 
-      <div className="flex min-h-screen items-center justify-center bg-black text-white">
+      <div className="flex min-h-screen items-center justify-center bg-black text-[var(--button-text-color)]">
 
         Loading...
 
@@ -251,7 +251,7 @@ export default function NavigationPage() {
 
   return (
 
-    <main className="min-h-screen bg-[#0b0b0b] p-4 text-white">
+    <main className="min-h-screen bg-[#0b0b0b] p-4 text-[var(--button-text-color)]">
 
       {/* HEADER */}
 
@@ -385,8 +385,8 @@ export default function NavigationPage() {
                     <div
                       className={`mt-3 inline-flex rounded-full px-4 py-2 text-sm font-bold ${
                         item.visible
-                          ? "bg-green-500"
-                          : "bg-red-500"
+                          ? "bg-[var(--success-color)]"
+                          : "bg-[var(--danger-color)]"
                       }`}
                     >
 
@@ -434,7 +434,7 @@ export default function NavigationPage() {
                         item.id
                       )
                     }
-                    className="rounded-xl bg-yellow-500 px-4 py-2 text-sm font-bold"
+                    className="rounded-xl bg-[var(--warning-color)] px-4 py-2 text-sm font-bold"
                   >
 
                     Toggle
@@ -447,7 +447,7 @@ export default function NavigationPage() {
                         item.id
                       )
                     }
-                    className="rounded-xl bg-red-500 px-4 py-2 text-sm font-bold"
+                    className="rounded-xl bg-[var(--danger-color)] px-4 py-2 text-sm font-bold"
                   >
 
                     <Trash2

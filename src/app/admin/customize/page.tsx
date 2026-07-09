@@ -134,7 +134,7 @@ export default function CustomizePage() {
 
     return (
 
-      <div className="flex min-h-screen items-center justify-center bg-black text-white">
+      <div className="flex min-h-screen items-center justify-center bg-black text-[var(--button-text-color)]">
 
         Loading...
 
@@ -145,7 +145,7 @@ export default function CustomizePage() {
 
   return (
 
-    <main className="min-h-screen bg-[#0b0b0b] p-4 text-white">
+    <main className="min-h-screen bg-[#0b0b0b] p-4 text-[var(--button-text-color)]">
 
       {/* HEADER */}
 
@@ -408,8 +408,8 @@ export default function CustomizePage() {
             }
             className={`rounded-full px-6 py-3 text-sm font-bold ${
               settings.darkMode
-                ? "bg-green-500"
-                : "bg-red-500"
+                ? "bg-[var(--success-color)]"
+                : "bg-[var(--danger-color)]"
             }`}
           >
 
@@ -444,14 +444,14 @@ export default function CustomizePage() {
 
         </h2>
 
-        <p className="mt-2 text-white/80">
+        <p className="mt-2 text-[var(--button-text-color)]/80">
           Live website customization preview
         </p>
 
         <div className="mt-6 flex gap-4">
 
           <div
-            className="px-6 py-3 font-bold text-white"
+            className="px-6 py-3 font-bold text-[var(--button-text-color)]"
             style={{
               borderRadius:
                 `${settings.borderRadius}px`,
@@ -465,7 +465,7 @@ export default function CustomizePage() {
           </div>
 
           <div
-            className="px-6 py-3 font-bold text-white"
+            className="px-6 py-3 font-bold text-[var(--button-text-color)]"
             style={{
               borderRadius:
                 `${settings.borderRadius}px`,

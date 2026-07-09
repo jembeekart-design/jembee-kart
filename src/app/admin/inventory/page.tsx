@@ -86,7 +86,7 @@ export default function InventoryPage() {
 
     return (
 
-      <div className="flex min-h-screen items-center justify-center bg-black text-white">
+      <div className="flex min-h-screen items-center justify-center bg-black text-[var(--button-text-color)]">
 
         Loading Inventory...
 
@@ -97,13 +97,13 @@ export default function InventoryPage() {
 
   return (
 
-    <main className="min-h-screen bg-[#0b0b0b] p-4 text-white">
+    <main className="min-h-screen bg-[#0b0b0b] p-4 text-[var(--button-text-color)]">
 
       {/* HEADER */}
 
       <div className="mb-8 flex items-center gap-4">
 
-        <div className="flex h-16 w-16 items-center justify-center rounded-[24px] bg-violet-500">
+        <div className="flex h-16 w-16 items-center justify-center rounded-[24px] bg-[var(--secondary-color)]">
 
           <Boxes size={30} />
 
@@ -349,17 +349,17 @@ function StockBadge({
 
     if (stock <= 0) {
 
-      return "bg-red-500";
+      return "bg-[var(--danger-color)]";
 
     }
 
     if (stock < 5) {
 
-      return "bg-yellow-500";
+      return "bg-[var(--warning-color)]";
 
     }
 
-    return "bg-green-500";
+    return "bg-[var(--success-color)]";
 
   }
 

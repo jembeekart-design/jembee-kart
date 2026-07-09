@@ -43,7 +43,7 @@ export default function BackupManagerPage() {
 
   return (
 
-    <main className="min-h-screen bg-[#0b0b0b] p-4 text-white">
+    <main className="min-h-screen bg-[#0b0b0b] p-4 text-[var(--button-text-color)]">
 
       {/* HEADER */}
 
@@ -51,11 +51,11 @@ export default function BackupManagerPage() {
 
         <div className="flex items-center gap-4">
 
-          <div className="flex h-16 w-16 items-center justify-center rounded-[28px] bg-green-500">
+          <div className="flex h-16 w-16 items-center justify-center rounded-[28px] bg-[var(--success-color)]">
 
             <Database
               size={30}
-              className="text-black"
+              className="text-[var(--text-color)]"
             />
 
           </div>
@@ -74,7 +74,7 @@ export default function BackupManagerPage() {
 
         </div>
 
-        <button className="flex items-center gap-2 rounded-2xl bg-green-500 px-5 py-3 font-bold text-black">
+        <button className="flex items-center gap-2 rounded-2xl bg-[var(--success-color)] px-5 py-3 font-bold text-[var(--text-color)]">
 
           <Save size={18} />
 
@@ -140,8 +140,8 @@ export default function BackupManagerPage() {
             }
             className={`rounded-full px-5 py-2 font-bold ${
               autoBackup
-                ? "bg-green-500 text-black"
-                : "bg-red-500"
+                ? "bg-[var(--success-color)] text-[var(--text-color)]"
+                : "bg-[var(--danger-color)]"
             }`}
           >
 
@@ -192,8 +192,8 @@ export default function BackupManagerPage() {
                     className={`rounded-full px-4 py-1 text-sm font-bold ${
                       item.status ===
                       "Completed"
-                        ? "bg-green-500/20 text-green-400"
-                        : "bg-red-500/20 text-red-400"
+                        ? "bg-[var(--success-color)]/20 text-green-400"
+                        : "bg-[var(--danger-color)]/20 text-red-400"
                     }`}
                   >
 
@@ -201,13 +201,13 @@ export default function BackupManagerPage() {
 
                   </div>
 
-                  <button className="flex h-11 w-11 items-center justify-center rounded-2xl bg-white/10">
+                  <button className="flex h-11 w-11 items-center justify-center rounded-2xl bg-[var(--card-color)]/10">
 
                     <Download size={18} />
 
                   </button>
 
-                  <button className="flex h-11 w-11 items-center justify-center rounded-2xl bg-red-500/20 text-red-400">
+                  <button className="flex h-11 w-11 items-center justify-center rounded-2xl bg-[var(--danger-color)]/20 text-red-400">
 
                     <Trash2 size={18} />
 
@@ -228,7 +228,7 @@ export default function BackupManagerPage() {
 
       <div className="mt-6 flex flex-wrap gap-4">
 
-        <button className="flex items-center gap-2 rounded-2xl bg-green-500 px-6 py-3 font-bold text-black">
+        <button className="flex items-center gap-2 rounded-2xl bg-[var(--success-color)] px-6 py-3 font-bold text-[var(--text-color)]">
 
           <Upload size={18} />
 
@@ -236,7 +236,7 @@ export default function BackupManagerPage() {
 
         </button>
 
-        <button className="flex items-center gap-2 rounded-2xl bg-cyan-500 px-6 py-3 font-bold text-black">
+        <button className="flex items-center gap-2 rounded-2xl bg-cyan-500 px-6 py-3 font-bold text-[var(--text-color)]">
 
           <RefreshCw size={18} />
 
@@ -248,7 +248,7 @@ export default function BackupManagerPage() {
 
       {/* SECURITY */}
 
-      <div className="mt-6 rounded-[30px] bg-gradient-to-r from-green-500 to-emerald-600 p-6 text-black">
+      <div className="mt-6 rounded-[30px] bg-gradient-to-r from-green-500 to-emerald-600 p-6 text-[var(--text-color)]">
 
         <div className="flex items-center gap-3">
 
@@ -271,7 +271,7 @@ export default function BackupManagerPage() {
 
       {/* WARNING */}
 
-      <div className="mt-6 rounded-[28px] border border-yellow-500/20 bg-yellow-500/10 p-5">
+      <div className="mt-6 rounded-[28px] border border-yellow-500/20 bg-[var(--warning-color)]/10 p-5">
 
         <div className="flex items-start gap-4">
 
@@ -318,7 +318,7 @@ function StatCard({
 
     <div className="rounded-[28px] border border-white/10 bg-[#151515] p-5">
 
-      <div className="flex h-14 w-14 items-center justify-center rounded-2xl bg-green-500 text-black">
+      <div className="flex h-14 w-14 items-center justify-center rounded-2xl bg-[var(--success-color)] text-[var(--text-color)]">
 
         {icon}
 

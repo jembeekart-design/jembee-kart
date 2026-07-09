@@ -58,7 +58,7 @@ export default function AdminChatPage() {
 
   return (
 
-    <main className="min-h-screen bg-[#0b0b0b] p-4 text-white">
+    <main className="min-h-screen bg-[#0b0b0b] p-4 text-[var(--button-text-color)]">
 
       {/* HEADER */}
 
@@ -70,7 +70,7 @@ export default function AdminChatPage() {
 
             <MessageSquare
               size={30}
-              className="text-black"
+              className="text-[var(--text-color)]"
             />
 
           </div>
@@ -89,7 +89,7 @@ export default function AdminChatPage() {
 
         </div>
 
-        <button className="flex items-center gap-2 rounded-2xl bg-cyan-500 px-5 py-3 font-bold text-black">
+        <button className="flex items-center gap-2 rounded-2xl bg-cyan-500 px-5 py-3 font-bold text-[var(--text-color)]">
 
           <Bell size={18} />
 
@@ -119,7 +119,7 @@ export default function AdminChatPage() {
             <input
               type="text"
               placeholder="Search chats..."
-              className="w-full bg-transparent outline-none placeholder:text-gray-500"
+              className="w-full bg-transparent outline-none placeholder:text-[var(--muted-text-color)]"
             />
 
           </div>
@@ -143,7 +143,7 @@ export default function AdminChatPage() {
 
                     <div className="relative">
 
-                      <div className="flex h-12 w-12 items-center justify-center rounded-full bg-cyan-500 text-black font-black">
+                      <div className="flex h-12 w-12 items-center justify-center rounded-full bg-cyan-500 text-[var(--text-color)] font-black">
 
                         {item.name.charAt(
                           0
@@ -153,7 +153,7 @@ export default function AdminChatPage() {
 
                       {item.online && (
 
-                        <div className="absolute bottom-0 right-0 h-3 w-3 rounded-full border-2 border-black bg-green-500" />
+                        <div className="absolute bottom-0 right-0 h-3 w-3 rounded-full border-2 border-black bg-[var(--success-color)]" />
 
                       )}
 
@@ -196,7 +196,7 @@ export default function AdminChatPage() {
 
             <div className="flex items-center gap-3">
 
-              <div className="flex h-12 w-12 items-center justify-center rounded-full bg-cyan-500 text-black font-black">
+              <div className="flex h-12 w-12 items-center justify-center rounded-full bg-cyan-500 text-[var(--text-color)] font-black">
 
                 R
 
@@ -258,7 +258,7 @@ export default function AdminChatPage() {
                     className={`max-w-[75%] rounded-3xl px-5 py-3 ${
                       item.sender ===
                       "admin"
-                        ? "bg-cyan-500 text-black"
+                        ? "bg-cyan-500 text-[var(--text-color)]"
                         : "bg-black/30"
                     }`}
                   >
@@ -297,13 +297,13 @@ export default function AdminChatPage() {
 
             <div className="flex items-center gap-3 rounded-2xl bg-black/30 p-3">
 
-              <button className="flex h-11 w-11 items-center justify-center rounded-xl bg-white/5">
+              <button className="flex h-11 w-11 items-center justify-center rounded-xl bg-[var(--card-color)]/5">
 
                 <Smile size={18} />
 
               </button>
 
-              <button className="flex h-11 w-11 items-center justify-center rounded-xl bg-white/5">
+              <button className="flex h-11 w-11 items-center justify-center rounded-xl bg-[var(--card-color)]/5">
 
                 <Paperclip size={18} />
 
@@ -318,10 +318,10 @@ export default function AdminChatPage() {
                     e.target.value
                   )
                 }
-                className="w-full bg-transparent outline-none placeholder:text-gray-500"
+                className="w-full bg-transparent outline-none placeholder:text-[var(--muted-text-color)]"
               />
 
-              <button className="flex h-12 w-12 items-center justify-center rounded-2xl bg-cyan-500 text-black">
+              <button className="flex h-12 w-12 items-center justify-center rounded-2xl bg-cyan-500 text-[var(--text-color)]">
 
                 <Send size={20} />
 
@@ -384,7 +384,7 @@ function StatCard({
 
     <div className="rounded-[28px] border border-white/10 bg-[#151515] p-5">
 
-      <div className="flex h-14 w-14 items-center justify-center rounded-2xl bg-cyan-500 text-black">
+      <div className="flex h-14 w-14 items-center justify-center rounded-2xl bg-cyan-500 text-[var(--text-color)]">
 
         {icon}
 

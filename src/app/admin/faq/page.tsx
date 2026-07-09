@@ -81,7 +81,7 @@ export default function FAQPage() {
 
   return (
 
-    <main className="min-h-screen bg-[#0b0b0b] p-4 text-white">
+    <main className="min-h-screen bg-[#0b0b0b] p-4 text-[var(--button-text-color)]">
 
       {/* HEADER */}
 
@@ -196,7 +196,7 @@ export default function FAQPage() {
                       item.id
                     )
                   }
-                  className="flex h-14 w-14 items-center justify-center rounded-2xl bg-red-500"
+                  className="flex h-14 w-14 items-center justify-center rounded-2xl bg-[var(--danger-color)]"
                 >
 
                   <Trash2 size={22} />
@@ -220,7 +220,7 @@ export default function FAQPage() {
           FAQ System
         </h2>
 
-        <p className="mt-2 text-white/80">
+        <p className="mt-2 text-[var(--button-text-color)]/80">
           Help customers with common questions
         </p>
 

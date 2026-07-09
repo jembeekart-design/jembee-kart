@@ -39,11 +39,11 @@ export const themeClasses = {
 
   // Badge
   success:
-    "bg-[var(--success-color)] text-white",
+    "bg-[var(--success-color)] text-[var(--button-text-color)]",
 
   warning:
-    "bg-[var(--warning-color)] text-black",
+    "bg-[var(--warning-color)] text-[var(--text-color)]",
 
   danger:
-    "bg-[var(--danger-color)] text-white",
+    "bg-[var(--danger-color)] text-[var(--button-text-color)]",
 };

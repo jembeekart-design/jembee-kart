@@ -177,7 +177,7 @@ export default function UsersPage() {
   }
 
   return (
-    <main className="min-h-screen bg-[#0b0b0b] p-4 text-white">
+    <main className="min-h-screen bg-[#0b0b0b] p-4 text-[var(--button-text-color)]">
       {/* HEADER */}
       <div className="mb-6">
         <h1 className="text-3xl font-black">Users Manager</h1>
@@ -188,8 +188,8 @@ export default function UsersPage() {
       <div className="grid grid-cols-2 gap-4 mb-6 md:grid-cols-4">
         <StatCard title="Total Users" value={stats.total.toLocaleString("en-IN")} icon={<Users size={22} />} color="bg-pink-500" />
         <StatCard title="Active MLM" value={stats.mlmActive.toLocaleString("en-IN")} icon={<UserCheck size={22} />} color="bg-cyan-500" />
-        <StatCard title="Blocked Users" value={stats.blocked.toLocaleString("en-IN")} icon={<UserX size={22} />} color="bg-red-500" />
-        <StatCard title="Total Referrals" value={stats.referrals.toLocaleString("en-IN")} icon={<Award size={22} />} color="bg-yellow-500" />
+        <StatCard title="Blocked Users" value={stats.blocked.toLocaleString("en-IN")} icon={<UserX size={22} />} color="bg-[var(--danger-color)]" />
+        <StatCard title="Total Referrals" value={stats.referrals.toLocaleString("en-IN")} icon={<Award size={22} />} color="bg-[var(--warning-color)]" />
       </div>
 
       {/* SEARCH HOOK CONTAINER */}
@@ -200,7 +200,7 @@ export default function UsersPage() {
           placeholder="Search users by name, email, role, or referral code..."
           value={search}
           onChange={(e) => setSearch(e.target.value)}
-          className="w-full bg-transparent outline-none placeholder:text-gray-500 text-sm"
+          className="w-full bg-transparent outline-none placeholder:text-[var(--muted-text-color)] text-sm"
         />
       </div>
 
@@ -235,7 +235,7 @@ export default function UsersPage() {
                     <h2 className="text-lg font-black flex items-center gap-2">
                       {user.name || "Untitled User"}
                       {user.isBlocked && (
-                        <span className="text-xs bg-red-500/20 text-red-400 px-2.5 py-0.5 rounded-full font-bold">
+                        <span className="text-xs bg-[var(--danger-color)]/20 text-red-400 px-2.5 py-0.5 rounded-full font-bold">
                           BLOCKED
                         </span>
                       )}
@@ -251,8 +251,8 @@ export default function UsersPage() {
                     onClick={() => toggleWalletLock(user.id, !!user.walletLocked)}
                     className={`flex h-10 w-10 items-center justify-center rounded-xl transition ${
                       user.walletLocked
-                        ? "bg-yellow-500/20 text-yellow-500 hover:bg-yellow-500/30"
-                        : "bg-white/5 text-gray-400 hover:bg-white/10"
+                        ? "bg-[var(--warning-color)]/20 text-yellow-500 hover:bg-[var(--warning-color)]/30"
+                        : "bg-[var(--card-color)]/5 text-gray-400 hover:bg-[var(--card-color)]/10"
                     }`}
                     title={user.walletLocked ? "Unlock Wallet" : "Lock Wallet"}
                   >
@@ -264,8 +264,8 @@ export default function UsersPage() {
                     onClick={() => toggleBlockStatus(user.id, !!user.isBlocked)}
                     className={`flex h-10 w-10 items-center justify-center rounded-xl transition ${
                       user.isBlocked
-                        ? "bg-green-500/20 text-green-400 hover:bg-green-500/30"
-                        : "bg-red-500/20 text-red-400 hover:bg-red-500/30"
+                        ? "bg-[var(--success-color)]/20 text-green-400 hover:bg-[var(--success-color)]/30"
+                        : "bg-[var(--danger-color)]/20 text-red-400 hover:bg-[var(--danger-color)]/30"
                     }`}
                     title={user.isBlocked ? "Unblock User" : "Block User"}
                   >
@@ -285,7 +285,7 @@ export default function UsersPage() {
                       disabled={!isUserEditing}
                       value={isUserEditing ? editForm.name : user.name || ""}
                       onChange={(e) => setEditForm((p) => ({ ...p, name: e.target.value }))}
-                      className="w-full rounded-2xl border border-white/5 bg-[#1e1e1e] px-4 py-3 text-sm outline-none disabled:opacity-50 text-white"
+                      className="w-full rounded-2xl border border-white/5 bg-[#1e1e1e] px-4 py-3 text-sm outline-none disabled:opacity-50 text-[var(--button-text-color)]"
                     />
                   </div>
 
@@ -307,7 +307,7 @@ export default function UsersPage() {
                       disabled={!isUserEditing}
                       value={isUserEditing ? editForm.role : user.role || "user"}
                       onChange={(e) => setEditForm((p) => ({ ...p, role: e.target.value }))}
-                      className="w-full rounded-2xl border border-white/5 bg-[#1e1e1e] px-4 py-3 text-sm outline-none disabled:opacity-50 appearance-none text-white cursor-pointer"
+                      className="w-full rounded-2xl border border-white/5 bg-[#1e1e1e] px-4 py-3 text-sm outline-none disabled:opacity-50 appearance-none text-[var(--button-text-color)] cursor-pointer"
                     >
                       <option value="user" className="bg-[#151515]">User Node</option>
                       <option value="admin" className="bg-[#151515]">Admin Node</option>
@@ -322,7 +322,7 @@ export default function UsersPage() {
                       disabled={!isUserEditing}
                       value={isUserEditing ? editForm.photo : user.photo || ""}
                       onChange={(e) => setEditForm((p) => ({ ...p, photo: e.target.value }))}
-                      className="w-full rounded-2xl border border-white/5 bg-[#1e1e1e] px-4 py-3 text-sm outline-none disabled:opacity-50 text-white"
+                      className="w-full rounded-2xl border border-white/5 bg-[#1e1e1e] px-4 py-3 text-sm outline-none disabled:opacity-50 text-[var(--button-text-color)]"
                     />
                   </div>
                 </div>
@@ -332,7 +332,7 @@ export default function UsersPage() {
                   {isUserEditing ? (
                     <button
                       onClick={() => saveUserChanges(user.id)}
-                      className="flex items-center gap-2 rounded-xl bg-pink-500 px-5 py-2.5 text-sm font-bold text-black transition hover:bg-pink-600 active:scale-95"
+                      className="flex items-center gap-2 rounded-xl bg-pink-500 px-5 py-2.5 text-sm font-bold text-[var(--text-color)] transition hover:bg-pink-600 active:scale-95"
                     >
                       <Save size={16} />
                       Save Changes
@@ -340,7 +340,7 @@ export default function UsersPage() {
                   ) : (
                     <button
                       onClick={() => startEditing(user)}
-                      className="rounded-xl border border-white/10 bg-white/5 px-5 py-2.5 text-sm font-bold transition hover:bg-white/10"
+                      className="rounded-xl border border-white/10 bg-[var(--card-color)]/5 px-5 py-2.5 text-sm font-bold transition hover:bg-[var(--card-color)]/10"
                     >
                       Edit Profile
                     </button>
@@ -350,21 +350,21 @@ export default function UsersPage() {
                 {/* ✅ 3. EXTRA CONFIGURATION INFO BOX Matrix (Rank, ShareCode, Account Status, Wallet Status) */}
                 <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 bg-[#1a1a1a]/40 p-4 rounded-2xl border border-white/5">
                   <div>
-                    <p className="text-[10px] uppercase font-bold text-gray-500 tracking-wider flex items-center gap-1">
+                    <p className="text-[10px] uppercase font-bold text-[var(--muted-text-color)] tracking-wider flex items-center gap-1">
                       <Award size={12} className="text-purple-400" /> Rank Node
                     </p>
                     <p className="text-sm font-black mt-1 text-purple-300">{user.rank || "Member"}</p>
                   </div>
 
                   <div>
-                    <p className="text-[10px] uppercase font-bold text-gray-500 tracking-wider flex items-center gap-1">
+                    <p className="text-[10px] uppercase font-bold text-[var(--muted-text-color)] tracking-wider flex items-center gap-1">
                       <QrCode size={12} className="text-cyan-400" /> Referral Code
                     </p>
                     <p className="text-sm font-mono font-bold mt-1 text-cyan-300">{user.shareCode || "UNASSIGNED"}</p>
                   </div>
 
                   <div>
-                    <p className="text-[10px] uppercase font-bold text-gray-500 tracking-wider flex items-center gap-1">
+                    <p className="text-[10px] uppercase font-bold text-[var(--muted-text-color)] tracking-wider flex items-center gap-1">
                       <Fingerprint size={12} className="text-pink-400" /> Account Status
                     </p>
                     <p className={`text-sm font-black mt-1 ${user.isBlocked ? "text-red-400" : "text-green-400"}`}>
@@ -373,7 +373,7 @@ export default function UsersPage() {
                   </div>
 
                   <div>
-                    <p className="text-[10px] uppercase font-bold text-gray-500 tracking-wider flex items-center gap-1">
+                    <p className="text-[10px] uppercase font-bold text-[var(--muted-text-color)] tracking-wider flex items-center gap-1">
                       <Lock size={12} className="text-yellow-400" /> Wallet Matrix
                     </p>
                     <p className={`text-sm font-black mt-1 ${user.walletLocked ? "text-red-400" : "text-green-400"}`}>
@@ -404,7 +404,7 @@ export default function UsersPage() {
                     <Package size={18} className="text-pink-400" />
                     <div>
                       <p className="text-[10px] uppercase font-bold text-gray-400 tracking-wider">Package Activation</p>
-                      <span className={`text-xs font-black px-2 py-0.5 rounded ${user.joinedPackage ? "bg-green-500/20 text-green-400" : "bg-red-500/20 text-red-400"}`}>
+                      <span className={`text-xs font-black px-2 py-0.5 rounded ${user.joinedPackage ? "bg-[var(--success-color)]/20 text-green-400" : "bg-[var(--danger-color)]/20 text-red-400"}`}>
                         {user.joinedPackage ? "ACTIVE" : "INACTIVE"}
                       </span>
                     </div>
@@ -414,7 +414,7 @@ export default function UsersPage() {
                     <UserCheck size={18} className="text-purple-400" />
                     <div>
                       <p className="text-[10px] uppercase font-bold text-gray-400 tracking-wider">MLM Matrix Status</p>
-                      <span className={`text-xs font-black px-2 py-0.5 rounded ${user.mlmActive ? "bg-purple-500/20 text-purple-400" : "bg-white/10 text-gray-400"}`}>
+                      <span className={`text-xs font-black px-2 py-0.5 rounded ${user.mlmActive ? "bg-purple-500/20 text-purple-400" : "bg-[var(--card-color)]/10 text-gray-400"}`}>
                         {user.mlmActive ? "MATRIX RUNNING" : "NOT SIGNED"}
                       </span>
                     </div>
@@ -426,7 +426,7 @@ export default function UsersPage() {
         })}
 
         {filteredUsers.length === 0 && (
-          <div className="py-12 text-center text-sm font-medium text-gray-500">
+          <div className="py-12 text-center text-sm font-medium text-[var(--muted-text-color)]">
             No matching user documents found in collection array layout.
           </div>
         )}
@@ -449,7 +449,7 @@ function StatCard({
 }) {
   return (
     <div className="rounded-[28px] border border-white/10 bg-[#151515] p-5">
-      <div className={`flex h-12 w-12 items-center justify-center rounded-2xl ${color} text-black mb-3`}>
+      <div className={`flex h-12 w-12 items-center justify-center rounded-2xl ${color} text-[var(--text-color)] mb-3`}>
         {icon}
       </div>
       <p className="text-xs text-gray-400 font-bold uppercase tracking-wide">{title}</p>

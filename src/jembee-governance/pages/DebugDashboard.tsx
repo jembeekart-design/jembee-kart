@@ -190,7 +190,7 @@ export default function DebugDashboard() {
 
   return (
 
-    <div className="min-h-screen bg-gray-100">
+    <div className="min-h-screen bg-[var(--background-color)]">
 
       <div className="mx-auto max-w-7xl p-6">
 
@@ -204,7 +204,7 @@ export default function DebugDashboard() {
 
             </h1>
 
-            <p className="text-gray-600">
+            <p className="text-[var(--muted-text-color)]">
 
               Production Debug Dashboard
 
@@ -218,7 +218,7 @@ export default function DebugDashboard() {
 
             disabled={refreshing}
 
-            className="rounded-lg bg-black px-4 py-2 text-white"
+            className="rounded-lg bg-black px-4 py-2 text-[var(--button-text-color)]"
 
           >
 
@@ -238,7 +238,7 @@ export default function DebugDashboard() {
 
         <div className="grid grid-cols-4 gap-4">
 
-          <div className="rounded-xl bg-white p-5 shadow">
+          <div className="rounded-xl bg-[var(--card-color)] p-5 shadow">
 
             <Activity />
 
@@ -261,7 +261,7 @@ export default function DebugDashboard() {
 
           </div>
 
-          <div className="rounded-xl bg-white p-5 shadow">
+          <div className="rounded-xl bg-[var(--card-color)] p-5 shadow">
 
             <ServerCrash />
 
@@ -282,7 +282,7 @@ export default function DebugDashboard() {
 
           </div>
 
-          <div className="rounded-xl bg-white p-5 shadow">
+          <div className="rounded-xl bg-[var(--card-color)] p-5 shadow">
 
             <AlertTriangle />
 
@@ -303,7 +303,7 @@ export default function DebugDashboard() {
 
           </div>
 
-          <div className="rounded-xl bg-white p-5 shadow">
+          <div className="rounded-xl bg-[var(--card-color)] p-5 shadow">
 
             <CheckCircle2 />
 
@@ -356,7 +356,7 @@ export default function DebugDashboard() {
 
       <div
         key={scanner.name}
-        className="rounded-xl bg-white p-5 shadow"
+        className="rounded-xl bg-[var(--card-color)] p-5 shadow"
       >
 
         <div className="flex items-center justify-between">
@@ -369,7 +369,7 @@ export default function DebugDashboard() {
 
             </h3>
 
-            <p className="text-sm text-gray-500">
+            <p className="text-sm text-[var(--muted-text-color)]">
 
               Issues
 
@@ -411,7 +411,7 @@ export default function DebugDashboard() {
 {/* Search */}
 {/* ====================================================== */}
 
-<div className="mt-8 rounded-xl bg-white p-5 shadow">
+<div className="mt-8 rounded-xl bg-[var(--card-color)] p-5 shadow">
 
   <div className="flex items-center gap-3">
 
@@ -441,7 +441,7 @@ export default function DebugDashboard() {
 {/* Fix Next Error */}
 {/* ====================================================== */}
 
-<div className="mt-8 rounded-xl border-l-4 border-red-600 bg-white p-6 shadow">
+<div className="mt-8 rounded-xl border-l-4 border-red-600 bg-[var(--card-color)] p-6 shadow">
 
   <div className="flex items-center gap-3">
 
@@ -520,7 +520,7 @@ export default function DebugDashboard() {
 {/* Error Table */}
 {/* ====================================================== */}
 
-<div className="mt-8 rounded-xl bg-white shadow">
+<div className="mt-8 rounded-xl bg-[var(--card-color)] shadow">
 
   <div className="border-b p-5">
 
@@ -530,7 +530,7 @@ export default function DebugDashboard() {
 
     </h2>
 
-    <p className="text-gray-500">
+    <p className="text-[var(--muted-text-color)]">
 
       TypeScript • Next.js • Governance • Scanner Errors
 
@@ -542,7 +542,7 @@ export default function DebugDashboard() {
 
     <table className="min-w-full">
 
-      <thead className="bg-gray-100">
+      <thead className="bg-[var(--background-color)]">
 
         <tr>
 
@@ -685,7 +685,7 @@ export default function DebugDashboard() {
                       )
                     }
 
-                    className="rounded-lg bg-black px-3 py-2 text-sm text-white"
+                    className="rounded-lg bg-black px-3 py-2 text-sm text-[var(--button-text-color)]"
 
                   >
 
@@ -717,7 +717,7 @@ export default function DebugDashboard() {
 
 <div className="mt-8 grid grid-cols-2 gap-4 lg:grid-cols-4">
 
-  <div className="rounded-xl bg-white p-5 shadow">
+  <div className="rounded-xl bg-[var(--card-color)] p-5 shadow">
 
     <Database />
 
@@ -735,7 +735,7 @@ export default function DebugDashboard() {
 
   </div>
 
-  <div className="rounded-xl bg-white p-5 shadow">
+  <div className="rounded-xl bg-[var(--card-color)] p-5 shadow">
 
     <Bug />
 
@@ -765,7 +765,7 @@ export default function DebugDashboard() {
 
   </div>
 
-  <div className="rounded-xl bg-white p-5 shadow">
+  <div className="rounded-xl bg-[var(--card-color)] p-5 shadow">
 
     <AlertTriangle />
 
@@ -795,7 +795,7 @@ export default function DebugDashboard() {
 
   </div>
 
-  <div className="rounded-xl bg-white p-5 shadow">
+  <div className="rounded-xl bg-[var(--card-color)] p-5 shadow">
 
     <Settings />
 
@@ -836,7 +836,7 @@ export default function DebugDashboard() {
 
   {/* Build Health */}
 
-  <div className="rounded-xl bg-white p-6 shadow">
+  <div className="rounded-xl bg-[var(--card-color)] p-6 shadow">
 
     <div className="mb-6 flex items-center gap-3">
 
@@ -926,7 +926,7 @@ export default function DebugDashboard() {
 
   {/* Build Timeline */}
 
-  <div className="rounded-xl bg-white p-6 shadow">
+  <div className="rounded-xl bg-[var(--card-color)] p-6 shadow">
 
     <div className="mb-6 flex items-center gap-3">
 
@@ -1101,7 +1101,7 @@ export default function DebugDashboard() {
 
   <button
     onClick={loadDashboard}
-    className="rounded-lg bg-black px-5 py-3 text-white"
+    className="rounded-lg bg-black px-5 py-3 text-[var(--button-text-color)]"
   >
 
     Refresh Dashboard
@@ -1109,7 +1109,7 @@ export default function DebugDashboard() {
   </button>
 
   <button
-    className="rounded-lg bg-green-600 px-5 py-3 text-white"
+    className="rounded-lg bg-green-600 px-5 py-3 text-[var(--button-text-color)]"
   >
 
     Run Governance Scan
@@ -1117,7 +1117,7 @@ export default function DebugDashboard() {
   </button>
 
   <button
-    className="rounded-lg bg-orange-600 px-5 py-3 text-white"
+    className="rounded-lg bg-orange-600 px-5 py-3 text-[var(--button-text-color)]"
   >
 
     Rebuild Project
@@ -1125,7 +1125,7 @@ export default function DebugDashboard() {
   </button>
 
   <button
-    className="rounded-lg bg-blue-600 px-5 py-3 text-white"
+    className="rounded-lg bg-blue-600 px-5 py-3 text-[var(--button-text-color)]"
   >
 
     Export Report

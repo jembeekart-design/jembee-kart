@@ -49,9 +49,9 @@ export default function BottomNavbar() {
         z-50
 
         border-t
-        border-gray-200
+        border-[var(--border-color)]
 
-        bg-white/95
+        bg-[var(--card-color)]/95
 
         shadow-2xl
         backdrop-blur-xl
@@ -107,7 +107,7 @@ export default function BottomNavbar() {
                 className="
                   text-[11px]
                   font-bold
-                  text-gray-700
+                  text-[var(--text-color)]
                 "
               >
 

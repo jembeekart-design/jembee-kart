@@ -99,7 +99,7 @@ export default function SEOAIPage() {
 
   return (
 
-    <main className="min-h-screen bg-[#0b0b0b] p-4 text-white">
+    <main className="min-h-screen bg-[#0b0b0b] p-4 text-[var(--button-text-color)]">
 
       {/* HEADER */}
 
@@ -160,7 +160,7 @@ export default function SEOAIPage() {
         <button
           onClick={generateSEO}
           disabled={loading}
-          className="mt-6 flex items-center gap-2 rounded-2xl bg-emerald-500 px-6 py-4 font-bold text-black"
+          className="mt-6 flex items-center gap-2 rounded-2xl bg-emerald-500 px-6 py-4 font-bold text-[var(--text-color)]"
         >
 
           <Wand2 size={20} />
@@ -231,11 +231,11 @@ export default function SEOAIPage() {
 
       <div className="mt-6 rounded-[30px] bg-gradient-to-r from-emerald-500 to-green-500 p-6">
 
-        <h2 className="text-3xl font-black text-black">
+        <h2 className="text-3xl font-black text-[var(--text-color)]">
           Google Preview
         </h2>
 
-        <div className="mt-6 rounded-2xl bg-white p-5 text-black">
+        <div className="mt-6 rounded-2xl bg-[var(--card-color)] p-5 text-[var(--text-color)]">
 
           <h3 className="text-2xl font-bold text-blue-700">
 
@@ -250,7 +250,7 @@ export default function SEOAIPage() {
 
           </p>
 
-          <p className="mt-4 text-gray-700">
+          <p className="mt-4 text-[var(--text-color)]">
 
             {seoDescription ||
               "SEO description preview will appear here..."}
@@ -341,7 +341,7 @@ function OutputCard({
 
         <button
           onClick={onCopy}
-          className="flex items-center gap-2 rounded-2xl bg-emerald-500 px-4 py-2 font-bold text-black"
+          className="flex items-center gap-2 rounded-2xl bg-emerald-500 px-4 py-2 font-bold text-[var(--text-color)]"
         >
 
           <Copy size={18} />

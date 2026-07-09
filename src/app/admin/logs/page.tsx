@@ -65,7 +65,7 @@ export default function LogsPage() {
 
   return (
 
-    <main className="min-h-screen bg-[#0b0b0b] p-4 text-white">
+    <main className="min-h-screen bg-[#0b0b0b] p-4 text-[var(--button-text-color)]">
 
       {/* HEADER */}
 
@@ -108,7 +108,7 @@ export default function LogsPage() {
 
           <button
             onClick={clearLogs}
-            className="flex items-center gap-2 rounded-2xl bg-red-500 px-5 py-3 text-sm font-bold"
+            className="flex items-center gap-2 rounded-2xl bg-[var(--danger-color)] px-5 py-3 text-sm font-bold"
           >
 
             <Trash2 size={18} />
@@ -256,7 +256,7 @@ export default function LogsPage() {
           Activity Monitoring
         </h2>
 
-        <p className="mt-2 text-white/80">
+        <p className="mt-2 text-[var(--button-text-color)]/80">
           Track every important system event & error
         </p>
 

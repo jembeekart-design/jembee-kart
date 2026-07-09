@@ -38,7 +38,7 @@ export default function CommissionsPage() {
 
   return (
 
-    <main className="min-h-screen bg-[#0b0b0b] p-4 text-white">
+    <main className="min-h-screen bg-[#0b0b0b] p-4 text-[var(--button-text-color)]">
 
       {/* HEADER */}
 
@@ -68,7 +68,7 @@ export default function CommissionsPage() {
 
         <button
           onClick={saveCommission}
-          className="flex items-center gap-2 rounded-2xl bg-fuchsia-600 px-5 py-3 text-sm font-bold text-white"
+          className="flex items-center gap-2 rounded-2xl bg-fuchsia-600 px-5 py-3 text-sm font-bold text-[var(--button-text-color)]"
         >
 
           <Save size={18} />
@@ -108,7 +108,7 @@ export default function CommissionsPage() {
                 e.target.value
               )
             }
-            className="w-full rounded-2xl border border-white/10 bg-black px-4 py-4 text-white outline-none"
+            className="w-full rounded-2xl border border-white/10 bg-black px-4 py-4 text-[var(--button-text-color)] outline-none"
           />
 
         </div>
@@ -138,7 +138,7 @@ export default function CommissionsPage() {
                 e.target.value
               )
             }
-            className="w-full rounded-2xl border border-white/10 bg-black px-4 py-4 text-white outline-none"
+            className="w-full rounded-2xl border border-white/10 bg-black px-4 py-4 text-[var(--button-text-color)] outline-none"
           />
 
         </div>
@@ -168,7 +168,7 @@ export default function CommissionsPage() {
                 e.target.value
               )
             }
-            className="w-full rounded-2xl border border-white/10 bg-black px-4 py-4 text-white outline-none"
+            className="w-full rounded-2xl border border-white/10 bg-black px-4 py-4 text-[var(--button-text-color)] outline-none"
           />
 
         </div>
@@ -183,13 +183,13 @@ export default function CommissionsPage() {
           Commission Overview
         </h2>
 
-        <p className="mt-2 text-white/80">
+        <p className="mt-2 text-[var(--button-text-color)]/80">
           MLM & affiliate earning system
         </p>
 
         <div className="mt-6 grid grid-cols-3 gap-4">
 
-          <div className="rounded-2xl bg-white/10 p-4">
+          <div className="rounded-2xl bg-[var(--card-color)]/10 p-4">
 
             <p className="text-sm">
               Affiliate
@@ -201,7 +201,7 @@ export default function CommissionsPage() {
 
           </div>
 
-          <div className="rounded-2xl bg-white/10 p-4">
+          <div className="rounded-2xl bg-[var(--card-color)]/10 p-4">
 
             <p className="text-sm">
               Reseller
@@ -213,7 +213,7 @@ export default function CommissionsPage() {
 
           </div>
 
-          <div className="rounded-2xl bg-white/10 p-4">
+          <div className="rounded-2xl bg-[var(--card-color)]/10 p-4">
 
             <p className="text-sm">
               Level 2

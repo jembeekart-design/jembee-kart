@@ -113,7 +113,7 @@ export default function HeroSection({
             </button>
 
             <button
-              className="w-full rounded-2xl border border-white/30 bg-white/10 px-6 py-3 font-bold text-white backdrop-blur-xl transition-all duration-300 hover:bg-white/20 md:w-auto"
+              className="w-full rounded-2xl border border-white/30 bg-[var(--card-color)]/10 px-6 py-3 font-bold text-[var(--button-text-color)] backdrop-blur-xl transition-all duration-300 hover:bg-[var(--card-color)]/20 md:w-auto"
               style={{
                 fontSize: buttonSize
               }}

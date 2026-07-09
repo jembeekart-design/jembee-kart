@@ -111,8 +111,8 @@ OrdersPage() {
                 items-center
                 justify-center
                 rounded-full
-                bg-white/10
-                text-white
+                bg-[var(--card-color)]/10
+                text-[var(--button-text-color)]
               "
             >
 
@@ -128,7 +128,7 @@ OrdersPage() {
                 className="
                   text-2xl
                   font-black
-                  text-white
+                  text-[var(--button-text-color)]
                 "
               >
 
@@ -162,7 +162,7 @@ OrdersPage() {
               bg-gradient-to-r
               from-violet-600
               to-fuchsia-500
-              text-white
+              text-[var(--button-text-color)]
             "
           >
 
@@ -236,7 +236,7 @@ OrdersPage() {
                       className="
                         text-xl
                         font-black
-                        text-white
+                        text-[var(--button-text-color)]
                       "
                     >
 
@@ -338,7 +338,7 @@ OrdersPage() {
                         className="
                           text-sm
                           font-black
-                          text-white
+                          text-[var(--button-text-color)]
                         "
                       >
 
@@ -371,7 +371,7 @@ OrdersPage() {
                       py-2
                       text-xs
                       font-black
-                      text-white
+                      text-[var(--button-text-color)]
                     "
                   >
 

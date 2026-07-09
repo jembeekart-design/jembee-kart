@@ -129,7 +129,7 @@ export default function ReportsPage() {
 
     return (
 
-      <div className="flex min-h-screen items-center justify-center bg-black text-white">
+      <div className="flex min-h-screen items-center justify-center bg-black text-[var(--button-text-color)]">
 
         Loading Reports...
 
@@ -140,7 +140,7 @@ export default function ReportsPage() {
 
   return (
 
-    <main className="min-h-screen bg-[#0b0b0b] p-4 text-white">
+    <main className="min-h-screen bg-[#0b0b0b] p-4 text-[var(--button-text-color)]">
 
       {/* HEADER */}
 
@@ -331,9 +331,9 @@ function StatusCard({
 
   return (
 
-    <div className="rounded-2xl bg-white/10 p-5">
+    <div className="rounded-2xl bg-[var(--card-color)]/10 p-5">
 
-      <p className="text-sm text-white/70">
+      <p className="text-sm text-[var(--button-text-color)]/70">
         {title}
       </p>
 

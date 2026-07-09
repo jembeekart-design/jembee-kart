@@ -113,7 +113,7 @@ export default function BorderRadiusSettings({
       <div className="mt-8 grid gap-6 md:grid-cols-3">
 
         <button
-          className="px-6 py-4 font-bold text-black"
+          className="px-6 py-4 font-bold text-[var(--text-color)]"
           style={{
             background: theme.primaryColor,
             borderRadius: `${theme.buttonRadius}px`,

@@ -214,7 +214,7 @@ export default function Header({
         z-50
         w-full
         border-b
-        border-gray-200
+        border-[var(--border-color)]
         backdrop-blur-xl
       "
       style={{
@@ -276,7 +276,7 @@ export default function Header({
               className="
                 mt-1
                 text-xs
-                text-gray-500
+                text-[var(--muted-text-color)]
 
                 md:text-sm
               "
@@ -304,12 +304,12 @@ export default function Header({
             <button
               className="
                 rounded-xl
-                bg-gray-100
+                bg-[var(--background-color)]
                 px-4
                 py-2
                 text-sm
                 font-semibold
-                text-gray-700
+                text-[var(--text-color)]
 
                 transition-all
                 duration-300
@@ -330,7 +330,7 @@ export default function Header({
                 py-2
                 text-sm
                 font-semibold
-                text-white
+                text-[var(--button-text-color)]
 
                 transition-all
                 duration-300
@@ -396,7 +396,7 @@ export default function Header({
               w-full
               rounded-3xl
               border
-              border-gray-200
+              border-[var(--border-color)]
 
               py-4
               pl-12
@@ -405,7 +405,7 @@ export default function Header({
               text-sm
               font-semibold
 
-              text-black
+              text-[var(--text-color)]
 
               outline-none
 
@@ -413,7 +413,7 @@ export default function Header({
               duration-300
 
               focus:theme-primary-border
-              focus:bg-white
+              focus:bg-[var(--card-color)]
               focus:ring-4
               focus:ring-blue-100
 
@@ -464,9 +464,9 @@ export default function Header({
               ${
                 listening
 
-                  ? "bg-red-500 text-white"
+                  ? "bg-[var(--danger-color)] text-[var(--button-text-color)]"
 
-                  : "bg-gradient-to-r from-indigo-600 to-purple-600 text-white"
+                  : "bg-gradient-to-r from-indigo-600 to-purple-600 text-[var(--button-text-color)]"
               }
             `}
           >

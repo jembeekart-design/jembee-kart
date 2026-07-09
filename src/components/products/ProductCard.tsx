@@ -70,7 +70,7 @@ style={{
         className="
           overflow-hidden
           rounded-[22px]
-          bg-white
+          bg-[var(--card-color)]
         "
       >
 
@@ -102,14 +102,14 @@ style={{
               items-center
               justify-center
               rounded-full
-              bg-white
+              bg-[var(--card-color)]
               shadow-lg
             "
           >
 
             <Heart
               size={16}
-              className="text-gray-700"
+              className="text-[var(--text-color)]"
             />
 
           </button>
@@ -122,12 +122,12 @@ style={{
               bottom-2
               left-2
               rounded-xl
-              bg-white
+              bg-[var(--card-color)]
               px-2
               py-1
               text-[10px]
               font-bold
-              text-black
+              text-[var(--text-color)]
               shadow
             "
           >
@@ -156,7 +156,7 @@ style={{
                 py-1
                 text-[10px]
                 font-bold
-                text-white
+                text-[var(--button-text-color)]
                 backdrop-blur-md
               "
             >
@@ -178,7 +178,7 @@ style={{
               truncate
               text-[13px]
               font-bold
-              text-black
+              text-[var(--text-color)]
             "
           >
 
@@ -192,7 +192,7 @@ style={{
             className="
               truncate
               text-[10px]
-              text-gray-500
+              text-[var(--muted-text-color)]
             "
           >
 
@@ -239,7 +239,7 @@ style={{
               className="
                 text-[16px]
                 font-black
-                text-black
+                text-[var(--text-color)]
               "
             >
 

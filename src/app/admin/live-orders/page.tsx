@@ -85,7 +85,7 @@ const router = useRouter();
 
     return (
 
-      <div className="flex min-h-screen items-center justify-center bg-black text-white">
+      <div className="flex min-h-screen items-center justify-center bg-black text-[var(--button-text-color)]">
 
         Loading Live Orders...
 
@@ -96,7 +96,7 @@ const router = useRouter();
 
   return (
 
-    <main className="min-h-screen bg-[#0b0b0b] p-4 text-white">
+    <main className="min-h-screen bg-[#0b0b0b] p-4 text-[var(--button-text-color)]">
 
       {/* HEADER */}
 
@@ -340,7 +340,7 @@ function StatusBadge({
 
     if (status === "Delivered") {
 
-      return "bg-green-500";
+      return "bg-[var(--success-color)]";
 
     }
 
@@ -352,11 +352,11 @@ function StatusBadge({
 
     if (status === "Cancelled") {
 
-      return "bg-red-500";
+      return "bg-[var(--danger-color)]";
 
     }
 
-    return "bg-yellow-500";
+    return "bg-[var(--warning-color)]";
 
   }
 

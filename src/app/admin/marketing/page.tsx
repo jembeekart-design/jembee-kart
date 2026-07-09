@@ -32,7 +32,7 @@ export default function MarketingPage() {
       title: "SMS Campaign",
       desc: "Send bulk SMS promotions",
       icon: Smartphone,
-      color: "bg-green-500"
+      color: "bg-[var(--success-color)]"
     },
 
     {
@@ -53,21 +53,21 @@ export default function MarketingPage() {
       title: "Coupons",
       desc: "Generate discount coupons",
       icon: Gift,
-      color: "bg-violet-500"
+      color: "bg-[var(--secondary-color)]"
     },
 
     {
       title: "Affiliate Campaign",
       desc: "Manage affiliate promotions",
       icon: Users,
-      color: "bg-yellow-500"
+      color: "bg-[var(--warning-color)]"
     }
 
   ];
 
   return (
 
-    <main className="min-h-screen bg-[#050505] p-4 text-white">
+    <main className="min-h-screen bg-[#050505] p-4 text-[var(--button-text-color)]">
 
       {/* HEADER */}
 
@@ -77,7 +77,7 @@ export default function MarketingPage() {
 
           <Megaphone
             size={30}
-            className="text-black"
+            className="text-[var(--text-color)]"
           />
 
         </div>
@@ -150,7 +150,7 @@ export default function MarketingPage() {
 
                 <Icon
                   size={28}
-                  className="text-black"
+                  className="text-[var(--text-color)]"
                 />
 
               </div>
@@ -168,7 +168,7 @@ export default function MarketingPage() {
               </p>
 
               <button
-                className="mt-5 rounded-2xl bg-white/10 px-5 py-3 font-bold"
+                className="mt-5 rounded-2xl bg-[var(--card-color)]/10 px-5 py-3 font-bold"
               >
 
                 Open Tool
@@ -199,7 +199,7 @@ export default function MarketingPage() {
 
         </div>
 
-        <p className="mt-3 text-white/80">
+        <p className="mt-3 text-[var(--button-text-color)]/80">
 
           AI automatically creates promotional campaigns,
           push notifications and trending offers.
@@ -283,7 +283,7 @@ function StatsCard({
 
         <Icon
           size={24}
-          className="text-black"
+          className="text-[var(--text-color)]"
         />
 
       </div>
@@ -315,7 +315,7 @@ function FeatureCard({
 
   return (
 
-    <div className="rounded-[24px] bg-white/10 p-5">
+    <div className="rounded-[24px] bg-[var(--card-color)]/10 p-5">
 
       <h3 className="text-2xl font-black">
 
@@ -323,7 +323,7 @@ function FeatureCard({
 
       </h3>
 
-      <p className="mt-2 text-sm text-white/80">
+      <p className="mt-2 text-sm text-[var(--button-text-color)]/80">
 
         {desc}
 
@@ -362,7 +362,7 @@ function CampaignItem({
 
       </div>
 
-      <div className="rounded-full bg-green-500 px-4 py-2 text-sm font-black text-black">
+      <div className="rounded-full bg-[var(--success-color)] px-4 py-2 text-sm font-black text-[var(--text-color)]">
 
         {status}
 

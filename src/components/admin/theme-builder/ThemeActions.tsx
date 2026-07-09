@@ -36,7 +36,7 @@ export default function ThemeActions({
         <button
           onClick={onSave}
           disabled={saving}
-          className="flex items-center gap-2 rounded-xl bg-cyan-500 px-6 py-3 font-bold text-black transition hover:scale-105 disabled:opacity-60"
+          className="flex items-center gap-2 rounded-xl bg-cyan-500 px-6 py-3 font-bold text-[var(--text-color)] transition hover:scale-105 disabled:opacity-60"
         >
           <Save size={18} />
 
@@ -48,7 +48,7 @@ export default function ThemeActions({
 
         <button
           onClick={onApply}
-          className="flex items-center gap-2 rounded-xl bg-green-500 px-6 py-3 font-bold text-black transition hover:scale-105"
+          className="flex items-center gap-2 rounded-xl bg-[var(--success-color)] px-6 py-3 font-bold text-[var(--text-color)] transition hover:scale-105"
         >
           <CheckCircle2 size={18} />
 
@@ -58,7 +58,7 @@ export default function ThemeActions({
 
         <button
           onClick={onReset}
-          className="flex items-center gap-2 rounded-xl bg-orange-500 px-6 py-3 font-bold text-black transition hover:scale-105"
+          className="flex items-center gap-2 rounded-xl bg-orange-500 px-6 py-3 font-bold text-[var(--text-color)] transition hover:scale-105"
         >
           <RotateCcw size={18} />
 
@@ -68,7 +68,7 @@ export default function ThemeActions({
 
         <button
           onClick={onGenerateAI}
-          className="flex items-center gap-2 rounded-xl bg-violet-600 px-6 py-3 font-bold text-white transition hover:scale-105"
+          className="flex items-center gap-2 rounded-xl bg-violet-600 px-6 py-3 font-bold text-[var(--button-text-color)] transition hover:scale-105"
         >
           <Wand2 size={18} />
 

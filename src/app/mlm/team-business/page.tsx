@@ -42,7 +42,7 @@ export default function TeamBusinessPage() {
           from-violet-600
           to-fuchsia-500
           p-6
-          text-white
+          text-[var(--button-text-color)]
         "
       >
 
@@ -66,7 +66,7 @@ export default function TeamBusinessPage() {
             key={index}
             className="
               rounded-3xl
-              bg-white
+              bg-[var(--card-color)]
               p-5
               shadow-sm
             "

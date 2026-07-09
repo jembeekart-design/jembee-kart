@@ -2,7 +2,7 @@
 
 export default function CategorySkeleton() {
   return (
-    <div className="w-full animate-pulse overflow-hidden rounded-[28px] bg-white shadow-xl">
+    <div className="w-full animate-pulse overflow-hidden rounded-[28px] bg-[var(--card-color)] shadow-xl">
 
       {/* IMAGE SKELETON */}
 

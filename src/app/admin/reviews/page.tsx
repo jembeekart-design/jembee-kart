@@ -145,7 +145,7 @@ export default function ReviewsPage() {
   if (loading) {
 
     return (
-      <div className="flex min-h-screen items-center justify-center bg-black text-white">
+      <div className="flex min-h-screen items-center justify-center bg-black text-[var(--button-text-color)]">
         Loading...
       </div>
     );
@@ -153,7 +153,7 @@ export default function ReviewsPage() {
 
   return (
 
-    <main className="min-h-screen bg-[#0b0b0b] p-4 text-white">
+    <main className="min-h-screen bg-[#0b0b0b] p-4 text-[var(--button-text-color)]">
 
       {/* HEADER */}
 
@@ -225,7 +225,7 @@ export default function ReviewsPage() {
                         !review.visible
                       )
                     }
-                    className="flex h-10 w-10 items-center justify-center rounded-xl bg-white/10"
+                    className="flex h-10 w-10 items-center justify-center rounded-xl bg-[var(--card-color)]/10"
                   >
 
                     {review.visible ? (
@@ -246,7 +246,7 @@ export default function ReviewsPage() {
                         review.id
                       )
                     }
-                    className="flex h-10 w-10 items-center justify-center rounded-xl bg-red-500/20 text-red-500"
+                    className="flex h-10 w-10 items-center justify-center rounded-xl bg-[var(--danger-color)]/20 text-red-500"
                   >
 
                     <Trash2 size={18} />
@@ -386,7 +386,7 @@ export default function ReviewsPage() {
                         }
                       </h2>
 
-                      <p className="text-sm text-white/70">
+                      <p className="text-sm text-[var(--button-text-color)]/70">
                         {
                           review.productName
                         }
@@ -415,7 +415,7 @@ export default function ReviewsPage() {
 
                   </div>
 
-                  <p className="mt-4 text-sm leading-7 text-white/90">
+                  <p className="mt-4 text-sm leading-7 text-[var(--button-text-color)]/90">
 
                     {review.review}
 

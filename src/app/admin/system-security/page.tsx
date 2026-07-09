@@ -52,7 +52,7 @@ export default function SystemSecurityPage() {
 
   return (
 
-    <main className="min-h-screen bg-[#090909] p-4 text-white">
+    <main className="min-h-screen bg-[#090909] p-4 text-[var(--button-text-color)]">
 
       {/* HEADER */}
 
@@ -60,11 +60,11 @@ export default function SystemSecurityPage() {
 
         <div className="flex items-center gap-4">
 
-          <div className="flex h-16 w-16 items-center justify-center rounded-[28px] bg-red-500">
+          <div className="flex h-16 w-16 items-center justify-center rounded-[28px] bg-[var(--danger-color)]">
 
             <Shield
               size={30}
-              className="text-black"
+              className="text-[var(--text-color)]"
             />
 
           </div>
@@ -83,7 +83,7 @@ export default function SystemSecurityPage() {
 
         </div>
 
-        <button className="flex items-center gap-2 rounded-2xl bg-red-500 px-5 py-3 font-bold text-black">
+        <button className="flex items-center gap-2 rounded-2xl bg-[var(--danger-color)] px-5 py-3 font-bold text-[var(--text-color)]">
 
           <RefreshCw size={18} />
 
@@ -240,7 +240,7 @@ export default function SystemSecurityPage() {
 
                 <div className="flex items-center gap-4">
 
-                  <div className="flex h-14 w-14 items-center justify-center rounded-2xl bg-red-500 text-black">
+                  <div className="flex h-14 w-14 items-center justify-center rounded-2xl bg-[var(--danger-color)] text-[var(--text-color)]">
 
                     <Fingerprint size={24} />
 
@@ -264,11 +264,11 @@ export default function SystemSecurityPage() {
                   className={`rounded-full px-4 py-2 text-sm font-bold ${
                     item.status ===
                     "Success"
-                      ? "bg-green-500/20 text-green-400"
+                      ? "bg-[var(--success-color)]/20 text-green-400"
                       : item.status ===
                         "Blocked"
-                      ? "bg-red-500/20 text-red-400"
-                      : "bg-yellow-500/20 text-yellow-400"
+                      ? "bg-[var(--danger-color)]/20 text-red-400"
+                      : "bg-[var(--warning-color)]/20 text-yellow-400"
                   }`}
                 >
 
@@ -311,7 +311,7 @@ export default function SystemSecurityPage() {
 
       {/* STATUS */}
 
-      <div className="mt-8 rounded-[32px] bg-gradient-to-r from-red-500 to-orange-500 p-7 text-black">
+      <div className="mt-8 rounded-[32px] bg-gradient-to-r from-red-500 to-orange-500 p-7 text-[var(--text-color)]">
 
         <div className="flex items-center gap-3">
 
@@ -330,7 +330,7 @@ export default function SystemSecurityPage() {
 
         </p>
 
-        <button className="mt-6 rounded-2xl bg-black px-5 py-3 font-bold text-white">
+        <button className="mt-6 rounded-2xl bg-black px-5 py-3 font-bold text-[var(--button-text-color)]">
 
           Open Security Center
 
@@ -340,7 +340,7 @@ export default function SystemSecurityPage() {
 
       {/* ALERT */}
 
-      <div className="mt-8 rounded-[28px] border border-yellow-500/20 bg-yellow-500/10 p-5">
+      <div className="mt-8 rounded-[28px] border border-yellow-500/20 bg-[var(--warning-color)]/10 p-5">
 
         <div className="flex items-start gap-4">
 
@@ -387,7 +387,7 @@ function StatCard({
 
     <div className="rounded-[28px] border border-white/10 bg-[#151515] p-5">
 
-      <div className="flex h-14 w-14 items-center justify-center rounded-2xl bg-red-500 text-black">
+      <div className="flex h-14 w-14 items-center justify-center rounded-2xl bg-[var(--danger-color)] text-[var(--text-color)]">
 
         {icon}
 
@@ -484,7 +484,7 @@ function InfoCard({
 
     <div className="rounded-[28px] border border-white/10 bg-[#151515] p-5">
 
-      <div className="flex h-14 w-14 items-center justify-center rounded-2xl bg-red-500 text-black">
+      <div className="flex h-14 w-14 items-center justify-center rounded-2xl bg-[var(--danger-color)] text-[var(--text-color)]">
 
         {icon}
 

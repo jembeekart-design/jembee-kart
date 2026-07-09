@@ -123,7 +123,7 @@ export default function ProductGrid({
           items-center
           justify-between
           rounded-2xl
-          bg-white
+          bg-[var(--card-color)]
           px-4
           py-3
           shadow-sm
@@ -140,7 +140,7 @@ export default function ProductGrid({
             justify-center
             gap-2
             border-r
-            border-gray-200
+            border-[var(--border-color)]
             text-sm
             font-bold
             text-gray-800

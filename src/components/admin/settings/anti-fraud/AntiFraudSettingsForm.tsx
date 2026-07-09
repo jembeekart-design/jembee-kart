@@ -220,7 +220,7 @@ export default function AntiFraudSettingsForm({
 
       </div>
 
-<div className="rounded-xl border border-gray-300 bg-white text-black p-6 space-y-5">
+<div className="rounded-xl border border-[var(--border-color)] bg-[var(--card-color)] text-[var(--text-color)] p-6 space-y-5">
 
   <h2 className="text-xl font-semibold">
     Validation Rules
@@ -423,7 +423,7 @@ export default function AntiFraudSettingsForm({
           type="button"
           onClick={handleSave}
           disabled={!dirty || saving}
-          className="rounded-lg bg-blue-600 px-5 py-2 text-white disabled:opacity-50"
+          className="rounded-lg bg-blue-600 px-5 py-2 text-[var(--button-text-color)] disabled:opacity-50"
         >
           {saving ? "Saving..." : "Save Settings"}
         </button>

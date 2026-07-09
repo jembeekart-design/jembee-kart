@@ -133,7 +133,7 @@ export default function EmailPage() {
 
     return (
 
-      <div className="flex min-h-screen items-center justify-center bg-black text-white">
+      <div className="flex min-h-screen items-center justify-center bg-black text-[var(--button-text-color)]">
 
         Loading...
 
@@ -144,7 +144,7 @@ export default function EmailPage() {
 
   return (
 
-    <main className="min-h-screen bg-[#0b0b0b] p-4 text-white">
+    <main className="min-h-screen bg-[#0b0b0b] p-4 text-[var(--button-text-color)]">
 
       {/* HEADER */}
 
@@ -315,9 +315,9 @@ export default function EmailPage() {
 
         <div className="mt-6 space-y-4">
 
-          <div className="rounded-2xl bg-white/10 p-4">
+          <div className="rounded-2xl bg-[var(--card-color)]/10 p-4">
 
-            <p className="text-sm text-white/70">
+            <p className="text-sm text-[var(--button-text-color)]/70">
               SMTP Server
             </p>
 
@@ -330,9 +330,9 @@ export default function EmailPage() {
 
           </div>
 
-          <div className="rounded-2xl bg-white/10 p-4">
+          <div className="rounded-2xl bg-[var(--card-color)]/10 p-4">
 
-            <p className="text-sm text-white/70">
+            <p className="text-sm text-[var(--button-text-color)]/70">
               Sender Email
             </p>
 
@@ -345,9 +345,9 @@ export default function EmailPage() {
 
           </div>
 
-          <div className="rounded-2xl bg-white/10 p-4">
+          <div className="rounded-2xl bg-[var(--card-color)]/10 p-4">
 
-            <p className="text-sm text-white/70">
+            <p className="text-sm text-[var(--button-text-color)]/70">
               Security
             </p>
 
@@ -361,7 +361,7 @@ export default function EmailPage() {
 
           </div>
 
-          <div className="rounded-2xl bg-white/10 p-4">
+          <div className="rounded-2xl bg-[var(--card-color)]/10 p-4">
 
             <div className="flex items-center gap-3">
 
@@ -470,8 +470,8 @@ function ToggleCard({
           onClick={onClick}
           className={`rounded-full px-5 py-3 text-sm font-bold ${
             enabled
-              ? "bg-green-500"
-              : "bg-red-500"
+              ? "bg-[var(--success-color)]"
+              : "bg-[var(--danger-color)]"
           }`}
         >
 

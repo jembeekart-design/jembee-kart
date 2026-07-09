@@ -69,7 +69,7 @@ export default function EarningsPage() {
           sticky
           top-0
           z-50
-          bg-white
+          bg-[var(--card-color)]
           px-4
           py-3
           shadow-sm
@@ -104,7 +104,7 @@ export default function EarningsPage() {
 
             </h1>
 
-            <p className="text-[11px] text-gray-500">
+            <p className="text-[11px] text-[var(--muted-text-color)]">
 
               MLM Income Overview
 
@@ -129,7 +129,7 @@ export default function EarningsPage() {
             via-fuchsia-600
             to-orange-500
             p-5
-            text-white
+            text-[var(--button-text-color)]
             shadow-xl
           "
         >
@@ -142,7 +142,7 @@ export default function EarningsPage() {
               items-center
               justify-center
               rounded-full
-              bg-white/20
+              bg-[var(--card-color)]/20
             "
           >
 
@@ -150,7 +150,7 @@ export default function EarningsPage() {
 
           </div>
 
-          <p className="mt-5 text-[13px] text-white/80">
+          <p className="mt-5 text-[13px] text-[var(--button-text-color)]/80">
 
             Total MLM Earnings
 
@@ -162,7 +162,7 @@ export default function EarningsPage() {
 
           </h2>
 
-          <p className="mt-3 text-[12px] text-white/85">
+          <p className="mt-3 text-[12px] text-[var(--button-text-color)]/85">
 
             Aapki total MLM aur referral
             earnings yahan dikhengi.
@@ -182,7 +182,7 @@ export default function EarningsPage() {
           <div
             className="
               rounded-2xl
-              bg-white
+              bg-[var(--card-color)]
               p-4
               shadow-sm
             "
@@ -199,7 +199,7 @@ export default function EarningsPage() {
 
             </h3>
 
-            <p className="text-[12px] text-gray-500">
+            <p className="text-[12px] text-[var(--muted-text-color)]">
 
               Today's Income
 
@@ -210,7 +210,7 @@ export default function EarningsPage() {
           <div
             className="
               rounded-2xl
-              bg-white
+              bg-[var(--card-color)]
               p-4
               shadow-sm
             "
@@ -227,7 +227,7 @@ export default function EarningsPage() {
 
             </h3>
 
-            <p className="text-[12px] text-gray-500">
+            <p className="text-[12px] text-[var(--muted-text-color)]">
 
               Monthly Earnings
 
@@ -238,7 +238,7 @@ export default function EarningsPage() {
           <div
             className="
               rounded-2xl
-              bg-white
+              bg-[var(--card-color)]
               p-4
               shadow-sm
             "
@@ -255,7 +255,7 @@ export default function EarningsPage() {
 
             </h3>
 
-            <p className="text-[12px] text-gray-500">
+            <p className="text-[12px] text-[var(--muted-text-color)]">
 
               Referral Bonus
 
@@ -266,7 +266,7 @@ export default function EarningsPage() {
           <div
             className="
               rounded-2xl
-              bg-white
+              bg-[var(--card-color)]
               p-4
               shadow-sm
             "
@@ -283,7 +283,7 @@ export default function EarningsPage() {
 
             </h3>
 
-            <p className="text-[12px] text-gray-500">
+            <p className="text-[12px] text-[var(--muted-text-color)]">
 
               Total Team
 
@@ -302,7 +302,7 @@ export default function EarningsPage() {
         <div
           className="
             rounded-[28px]
-            bg-white
+            bg-[var(--card-color)]
             p-5
             shadow-sm
           "
@@ -335,7 +335,7 @@ export default function EarningsPage() {
 
               </h2>
 
-              <p className="text-[11px] text-gray-500">
+              <p className="text-[11px] text-[var(--muted-text-color)]">
 
                 Your MLM performance
 
@@ -370,7 +370,7 @@ export default function EarningsPage() {
         <div
           className="
             rounded-[28px]
-            bg-white
+            bg-[var(--card-color)]
             p-5
             shadow-sm
           "
@@ -407,7 +407,7 @@ export default function EarningsPage() {
 
                     </h3>
 
-                    <p className="mt-1 text-[11px] text-gray-500">
+                    <p className="mt-1 text-[11px] text-[var(--muted-text-color)]">
 
                       {item.date}
 

@@ -39,7 +39,7 @@ export default function LoyaltyProgramPage() {
 
   return (
 
-    <main className="min-h-screen bg-[#090909] p-4 text-white">
+    <main className="min-h-screen bg-[#090909] p-4 text-[var(--button-text-color)]">
 
       {/* HEADER */}
 
@@ -51,7 +51,7 @@ export default function LoyaltyProgramPage() {
 
             <Gift
               size={30}
-              className="text-black"
+              className="text-[var(--text-color)]"
             />
 
           </div>
@@ -70,7 +70,7 @@ export default function LoyaltyProgramPage() {
 
         </div>
 
-        <button className="rounded-2xl bg-pink-500 px-5 py-3 font-bold text-black">
+        <button className="rounded-2xl bg-pink-500 px-5 py-3 font-bold text-[var(--text-color)]">
 
           Add New Reward
 
@@ -140,7 +140,7 @@ export default function LoyaltyProgramPage() {
 
                 <div className="flex items-center justify-between">
 
-                  <div className="flex h-14 w-14 items-center justify-center rounded-2xl bg-pink-500 text-black">
+                  <div className="flex h-14 w-14 items-center justify-center rounded-2xl bg-pink-500 text-[var(--text-color)]">
 
                     <Trophy size={24} />
 
@@ -261,7 +261,7 @@ export default function LoyaltyProgramPage() {
 
       {/* BONUS SECTION */}
 
-      <div className="mt-8 rounded-[32px] bg-gradient-to-r from-pink-500 to-purple-500 p-7 text-black">
+      <div className="mt-8 rounded-[32px] bg-gradient-to-r from-pink-500 to-purple-500 p-7 text-[var(--text-color)]">
 
         <div className="flex items-center gap-3">
 
@@ -280,7 +280,7 @@ export default function LoyaltyProgramPage() {
 
         </p>
 
-        <button className="mt-6 rounded-2xl bg-black px-5 py-3 font-bold text-white">
+        <button className="mt-6 rounded-2xl bg-black px-5 py-3 font-bold text-[var(--button-text-color)]">
 
           Manage Campaign
 
@@ -307,7 +307,7 @@ function StatCard({
 
     <div className="rounded-[28px] border border-white/10 bg-[#151515] p-5">
 
-      <div className="flex h-14 w-14 items-center justify-center rounded-2xl bg-pink-500 text-black">
+      <div className="flex h-14 w-14 items-center justify-center rounded-2xl bg-pink-500 text-[var(--text-color)]">
 
         {icon}
 

@@ -132,7 +132,7 @@ export default function WithdrawalRequestsPage() {
 
     return (
 
-      <div className="flex min-h-screen items-center justify-center bg-black text-white">
+      <div className="flex min-h-screen items-center justify-center bg-black text-[var(--button-text-color)]">
 
         Loading...
 
@@ -143,13 +143,13 @@ export default function WithdrawalRequestsPage() {
 
   return (
 
-    <main className="min-h-screen bg-[#0b0b0b] p-4 text-white">
+    <main className="min-h-screen bg-[#0b0b0b] p-4 text-[var(--button-text-color)]">
 
       {/* HEADER */}
 
       <div className="mb-8 flex items-center gap-4">
 
-        <div className="flex h-16 w-16 items-center justify-center rounded-[24px] bg-green-500">
+        <div className="flex h-16 w-16 items-center justify-center rounded-[24px] bg-[var(--success-color)]">
 
           <Wallet size={30} />
 
@@ -262,7 +262,7 @@ export default function WithdrawalRequestsPage() {
                         "Approved"
                       )
                     }
-                    className="flex items-center gap-2 rounded-2xl bg-green-500 px-5 py-3 font-bold text-black"
+                    className="flex items-center gap-2 rounded-2xl bg-[var(--success-color)] px-5 py-3 font-bold text-[var(--text-color)]"
                   >
 
                     <CheckCircle2 size={18} />
@@ -278,7 +278,7 @@ export default function WithdrawalRequestsPage() {
                         "Rejected"
                       )
                     }
-                    className="flex items-center gap-2 rounded-2xl bg-red-500 px-5 py-3 font-bold"
+                    className="flex items-center gap-2 rounded-2xl bg-[var(--danger-color)] px-5 py-3 font-bold"
                   >
 
                     <XCircle size={18} />
@@ -328,17 +328,17 @@ function StatusBadge({
 
     if (status === "Approved") {
 
-      return "bg-green-500";
+      return "bg-[var(--success-color)]";
 
     }
 
     if (status === "Rejected") {
 
-      return "bg-red-500";
+      return "bg-[var(--danger-color)]";
 
     }
 
-    return "bg-yellow-500";
+    return "bg-[var(--warning-color)]";
 
   }
 

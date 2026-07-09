@@ -66,7 +66,7 @@ export default function AutomationPage() {
 
   return (
 
-    <main className="min-h-screen bg-[#050505] p-4 text-white">
+    <main className="min-h-screen bg-[#050505] p-4 text-[var(--button-text-color)]">
 
       {/* HEADER */}
 
@@ -78,7 +78,7 @@ export default function AutomationPage() {
 
             <Workflow
               size={30}
-              className="text-black"
+              className="text-[var(--text-color)]"
             />
 
           </div>
@@ -107,8 +107,8 @@ export default function AutomationPage() {
           }
           className={`rounded-2xl px-6 py-4 font-black ${
             enabled
-              ? "bg-green-500 text-black"
-              : "bg-red-500 text-white"
+              ? "bg-[var(--success-color)] text-[var(--text-color)]"
+              : "bg-[var(--danger-color)] text-[var(--button-text-color)]"
           }`}
         >
 
@@ -190,7 +190,7 @@ export default function AutomationPage() {
 
                       <Icon
                         size={24}
-                        className="text-black"
+                        className="text-[var(--text-color)]"
                       />
 
                     </div>
@@ -216,8 +216,8 @@ export default function AutomationPage() {
                   <button
                     className={`rounded-2xl px-5 py-3 font-black ${
                       item.active
-                        ? "bg-green-500 text-black"
-                        : "bg-red-500 text-white"
+                        ? "bg-[var(--success-color)] text-[var(--text-color)]"
+                        : "bg-[var(--danger-color)] text-[var(--button-text-color)]"
                     }`}
                   >
 
@@ -240,7 +240,7 @@ export default function AutomationPage() {
 
       {/* AI AUTOMATION */}
 
-      <div className="mt-6 rounded-[30px] bg-gradient-to-r from-yellow-400 to-orange-500 p-6 text-black">
+      <div className="mt-6 rounded-[30px] bg-gradient-to-r from-yellow-400 to-orange-500 p-6 text-[var(--text-color)]">
 
         <div className="flex items-center gap-3">
 
@@ -288,7 +288,7 @@ export default function AutomationPage() {
       <div className="mt-6 flex flex-wrap gap-4">
 
         <button
-          className="flex items-center gap-2 rounded-2xl bg-green-500 px-6 py-4 font-black text-black"
+          className="flex items-center gap-2 rounded-2xl bg-[var(--success-color)] px-6 py-4 font-black text-[var(--text-color)]"
         >
 
           <Save size={20} />
@@ -298,7 +298,7 @@ export default function AutomationPage() {
         </button>
 
         <button
-          className="flex items-center gap-2 rounded-2xl bg-cyan-500 px-6 py-4 font-black text-black"
+          className="flex items-center gap-2 rounded-2xl bg-cyan-500 px-6 py-4 font-black text-[var(--text-color)]"
         >
 
           <PlayCircle size={20} />
@@ -308,7 +308,7 @@ export default function AutomationPage() {
         </button>
 
         <button
-          className="flex items-center gap-2 rounded-2xl bg-red-500 px-6 py-4 font-black"
+          className="flex items-center gap-2 rounded-2xl bg-[var(--danger-color)] px-6 py-4 font-black"
         >
 
           <PauseCircle size={20} />
@@ -338,7 +338,7 @@ function StatsCard({
 
         <Icon
           size={24}
-          className="text-black"
+          className="text-[var(--text-color)]"
         />
 
       </div>
@@ -370,7 +370,7 @@ function FeatureCard({
 
   return (
 
-    <div className="rounded-[24px] bg-white/20 p-5 backdrop-blur-lg">
+    <div className="rounded-[24px] bg-[var(--card-color)]/20 p-5 backdrop-blur-lg">
 
       <h3 className="text-2xl font-black">
 

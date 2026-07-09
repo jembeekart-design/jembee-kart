@@ -155,7 +155,7 @@ export default function AccountPage() {
       title: "Account Settings",
       icon: Settings,
       href: "/settings",
-      color: "bg-gray-100 text-gray-700"
+      color: "bg-[var(--background-color)] text-[var(--text-color)]"
     }
   ];
 
@@ -167,7 +167,7 @@ export default function AccountPage() {
       <div className="min-h-screen flex items-center justify-center bg-[#f6f7fb]">
         <div className="text-center">
           <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-indigo-600 mx-auto"></div>
-          <p className="mt-4 text-sm font-bold text-gray-500">Syncing Profile Details...</p>
+          <p className="mt-4 text-sm font-bold text-[var(--muted-text-color)]">Syncing Profile Details...</p>
         </div>
       </div>
     );
@@ -183,10 +183,10 @@ export default function AccountPage() {
       <section className="px-4 pt-4">
         <div className="flex items-center justify-between">
           <div>
-            <h1 className="text-3xl font-black text-black">My Account</h1>
-            <p className="mt-1 text-sm text-gray-500">Manage your profile & orders</p>
+            <h1 className="text-3xl font-black text-[var(--text-color)]">My Account</h1>
+            <p className="mt-1 text-sm text-[var(--muted-text-color)]">Manage your profile & orders</p>
           </div>
-          <div className="flex h-14 w-14 items-center justify-center rounded-3xl bg-gradient-to-br from-indigo-600 to-purple-600 text-white shadow-lg">
+          <div className="flex h-14 w-14 items-center justify-center rounded-3xl bg-gradient-to-br from-indigo-600 to-purple-600 text-[var(--button-text-color)] shadow-lg">
             <User size={26} />
           </div>
         </div>
@@ -196,11 +196,11 @@ export default function AccountPage() {
       PROFILE CARD
       ====================================================== */}
       <section className="mt-6 px-4">
-        <div className="overflow-hidden rounded-[35px] bg-gradient-to-br from-indigo-600 via-purple-600 to-pink-500 p-6 text-white shadow-2xl">
+        <div className="overflow-hidden rounded-[35px] bg-gradient-to-br from-indigo-600 via-purple-600 to-pink-500 p-6 text-[var(--button-text-color)] shadow-2xl">
           <div className="flex items-center gap-4">
             
             {/* AVATAR / PROFILE PIC */}
-            <div className="flex h-24 w-24 items-center justify-center rounded-full border-4 border-white/30 bg-white/20 overflow-hidden text-3xl font-black backdrop-blur-md">
+            <div className="flex h-24 w-24 items-center justify-center rounded-full border-4 border-white/30 bg-[var(--card-color)]/20 overflow-hidden text-3xl font-black backdrop-blur-md">
               {user?.photo ? (
                 <img src={user.photo} alt="User Avatar" className="w-full h-full object-cover" />
               ) : (
@@ -211,31 +211,31 @@ export default function AccountPage() {
             {/* USER INFO */}
             <div className="min-w-0 flex-1">
               <h2 className="truncate text-2xl font-black">{user?.name}</h2>
-              <p className="mt-1 truncate text-sm text-white/80">{user?.email}</p>
+              <p className="mt-1 truncate text-sm text-[var(--button-text-color)]/80">{user?.email}</p>
               {user?.phone && (
-                <p className="mt-1 text-sm text-white/80">{user.phone}</p>
+                <p className="mt-1 text-sm text-[var(--button-text-color)]/80">{user.phone}</p>
               )}
             </div>
           </div>
 
           {/* WALLET BALANCE */}
-          <div className="mt-6 rounded-3xl bg-white/15 p-5 backdrop-blur-md">
+          <div className="mt-6 rounded-3xl bg-[var(--card-color)]/15 p-5 backdrop-blur-md">
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-sm font-semibold text-white/80">Wallet Balance</p>
+                <p className="text-sm font-semibold text-[var(--button-text-color)]/80">Wallet Balance</p>
                 <h3 className="mt-2 text-4xl font-black">
                   ₹{user?.walletBalance || 0}
                 </h3>
               </div>
-              <div className="flex h-16 w-16 items-center justify-center rounded-full bg-white/20">
+              <div className="flex h-16 w-16 items-center justify-center rounded-full bg-[var(--card-color)]/20">
                 <Wallet size={30} />
               </div>
             </div>
           </div>
 
           {/* MLM STATUS */}
-          <div className="mt-4 rounded-3xl bg-white/15 p-5 backdrop-blur-md">
-            <p className="text-sm font-semibold text-white/80">
+          <div className="mt-4 rounded-3xl bg-[var(--card-color)]/15 p-5 backdrop-blur-md">
+            <p className="text-sm font-semibold text-[var(--button-text-color)]/80">
               MLM Status
             </p>
             <h3 className="mt-2 text-xl font-black">
@@ -244,8 +244,8 @@ export default function AccountPage() {
           </div>
 
           {/* REFERRAL CODE */}
-          <div className="mt-4 rounded-3xl bg-white/15 p-5 backdrop-blur-md">
-            <p className="text-sm font-semibold text-white/80">
+          <div className="mt-4 rounded-3xl bg-[var(--card-color)]/15 p-5 backdrop-blur-md">
+            <p className="text-sm font-semibold text-[var(--button-text-color)]/80">
               Referral Code
             </p>
             <h3 className="mt-2 text-xl font-black">
@@ -267,14 +267,14 @@ export default function AccountPage() {
               <Link
                 key={item.title}
                 href={item.href}
-                className="flex items-center justify-between rounded-[30px] bg-white p-5 shadow-sm transition-all duration-300 hover:scale-[1.01]"
+                className="flex items-center justify-between rounded-[30px] bg-[var(--card-color)] p-5 shadow-sm transition-all duration-300 hover:scale-[1.01]"
               >
                 <div className="flex items-center gap-4">
                   <div className={`flex h-14 w-14 items-center justify-center rounded-2xl ${item.color}`}>
                     <Icon size={26} />
                   </div>
                   <div>
-                    <h3 className="text-lg font-black text-black">{item.title}</h3>
+                    <h3 className="text-lg font-black text-[var(--text-color)]">{item.title}</h3>
                   </div>
                 </div>
                 <ChevronRight size={22} className="text-gray-400" />
@@ -288,14 +288,14 @@ export default function AccountPage() {
       SECURITY CARD
       ====================================================== */}
       <section className="mt-6 px-4">
-        <div className="rounded-[35px] bg-white p-6 shadow-sm">
+        <div className="rounded-[35px] bg-[var(--card-color)] p-6 shadow-sm">
           <div className="flex items-center gap-4">
             <div className="flex h-16 w-16 items-center justify-center rounded-3xl bg-green-100 text-green-600">
               <Shield size={30} />
             </div>
             <div>
-              <h3 className="text-xl font-black text-black">Account Secure</h3>
-              <p className="mt-1 text-sm text-gray-500">Your account is protected via Firebase</p>
+              <h3 className="text-xl font-black text-[var(--text-color)]">Account Secure</h3>
+              <p className="mt-1 text-sm text-[var(--muted-text-color)]">Your account is protected via Firebase</p>
             </div>
           </div>
         </div>
@@ -307,7 +307,7 @@ export default function AccountPage() {
       <section className="mt-6 px-4">
         <button
           onClick={handleLogout}
-          className="flex w-full items-center justify-center gap-3 rounded-[30px] bg-red-500 py-5 text-sm font-black text-white shadow-xl shadow-red-500/20 transition-all duration-300 hover:scale-[1.02]"
+          className="flex w-full items-center justify-center gap-3 rounded-[30px] bg-[var(--danger-color)] py-5 text-sm font-black text-[var(--button-text-color)] shadow-xl shadow-red-500/20 transition-all duration-300 hover:scale-[1.02]"
         >
           <LogOut size={20} />
           Logout

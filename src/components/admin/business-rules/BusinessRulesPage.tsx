@@ -8,7 +8,7 @@ import CreatorEconomyCard from "./CreatorEconomyCard";
 import FeatureFlagsCard from "./FeatureFlagsCard";
 export default function BusinessRulesPage() {
   return (
-    <div className="min-h-screen bg-slate-950 text-white p-6">
+    <div className="min-h-screen bg-slate-950 text-[var(--button-text-color)] p-6">
       <div className="max-w-7xl mx-auto">
 
         <h1 className="text-3xl font-bold">

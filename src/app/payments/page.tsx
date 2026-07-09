@@ -39,7 +39,7 @@ export default function PaymentPage() {
   return (
     <main className="min-h-screen bg-slate-50 pb-24">
       {/* Header */}
-      <div className="sticky top-0 z-20 bg-white border-b border-slate-200 px-4 py-4 flex items-center gap-3">
+      <div className="sticky top-0 z-20 bg-[var(--card-color)] border-b border-slate-200 px-4 py-4 flex items-center gap-3">
         <button
           onClick={() => router.back()}
           className="h-10 w-10 rounded-full bg-slate-100 flex items-center justify-center"
@@ -55,7 +55,7 @@ export default function PaymentPage() {
       <div className="p-4 max-w-lg mx-auto space-y-4">
 
         {/* Order Summary */}
-        <div className="bg-white rounded-3xl p-5 shadow-sm border border-slate-100">
+        <div className="bg-[var(--card-color)] rounded-3xl p-5 shadow-sm border border-slate-100">
           <h2 className="text-lg font-black text-slate-800 mb-3">
             Order Summary
           </h2>
@@ -77,7 +77,7 @@ export default function PaymentPage() {
         </div>
 
         {/* Payment Methods */}
-        <div className="bg-white rounded-3xl p-5 shadow-sm border border-slate-100">
+        <div className="bg-[var(--card-color)] rounded-3xl p-5 shadow-sm border border-slate-100">
           <h2 className="text-lg font-black text-slate-800 mb-4">
             Select Payment Method
           </h2>
@@ -159,7 +159,7 @@ export default function PaymentPage() {
         <button
           onClick={handlePlaceOrder}
           disabled={loading}
-          className="w-full bg-violet-600 text-white py-5 rounded-3xl font-black text-lg disabled:opacity-50"
+          className="w-full bg-violet-600 text-[var(--button-text-color)] py-5 rounded-3xl font-black text-lg disabled:opacity-50"
         >
           {loading ? "Processing..." : "Place Order"}
         </button>

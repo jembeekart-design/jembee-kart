@@ -15,7 +15,7 @@ export default function FinancePage() {
 
   return (
 
-    <main className="min-h-screen bg-[#0b0b0b] p-4 text-white">
+    <main className="min-h-screen bg-[#0b0b0b] p-4 text-[var(--button-text-color)]">
 
       {/* HEADER */}
 
@@ -104,7 +104,7 @@ export default function FinancePage() {
 
             <div className="flex items-center gap-3">
 
-              <div className="flex h-12 w-12 items-center justify-center rounded-full bg-green-500/20">
+              <div className="flex h-12 w-12 items-center justify-center rounded-full bg-[var(--success-color)]/20">
 
                 <ArrowDownCircle
                   size={22}
@@ -137,7 +137,7 @@ export default function FinancePage() {
 
             <div className="flex items-center gap-3">
 
-              <div className="flex h-12 w-12 items-center justify-center rounded-full bg-red-500/20">
+              <div className="flex h-12 w-12 items-center justify-center rounded-full bg-[var(--danger-color)]/20">
 
                 <ArrowUpCircle
                   size={22}
@@ -178,13 +178,13 @@ export default function FinancePage() {
           Finance Summary
         </h2>
 
-        <p className="mt-2 text-white/80">
+        <p className="mt-2 text-[var(--button-text-color)]/80">
           Revenue performance this month
         </p>
 
         <div className="mt-6 grid grid-cols-2 gap-4">
 
-          <div className="rounded-2xl bg-white/10 p-4">
+          <div className="rounded-2xl bg-[var(--card-color)]/10 p-4">
 
             <p className="text-sm">
               Profit
@@ -196,7 +196,7 @@ export default function FinancePage() {
 
           </div>
 
-          <div className="rounded-2xl bg-white/10 p-4">
+          <div className="rounded-2xl bg-[var(--card-color)]/10 p-4">
 
             <p className="text-sm">
               Expenses

@@ -9,7 +9,7 @@ export const mockIssues: ControlTowerIssue[] = [
     file: "src/components/ProductCard.tsx",
     line: 48,
     message: "Direct Tailwind color detected.",
-    fix: "Replace bg-blue-500 with theme.primaryColor",
+    fix: "Replace bg-[var(--primary-color)] with theme.primaryColor",
   },
   {
     id: "SECURITY-001",

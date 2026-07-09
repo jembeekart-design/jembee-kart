@@ -97,7 +97,7 @@ export default function WishlistPage() {
       </div>
 
       {items.length === 0 ? (
-        <div className="bg-white rounded-3xl p-8 text-center shadow-sm">
+        <div className="bg-[var(--card-color)] rounded-3xl p-8 text-center shadow-sm">
           <Heart
             size={60}
             className="mx-auto text-slate-300"
@@ -113,7 +113,7 @@ export default function WishlistPage() {
 
           <Link
             href="/"
-            className="inline-block mt-5 bg-violet-600 text-white px-6 py-3 rounded-xl font-bold"
+            className="inline-block mt-5 bg-violet-600 text-[var(--button-text-color)] px-6 py-3 rounded-xl font-bold"
           >
             Continue Shopping
           </Link>
@@ -123,7 +123,7 @@ export default function WishlistPage() {
           {items.map((item) => (
             <div
               key={item.id}
-              className="bg-white rounded-3xl p-4 shadow-sm border border-slate-100"
+              className="bg-[var(--card-color)] rounded-3xl p-4 shadow-sm border border-slate-100"
             >
               <div className="flex gap-4">
                 <img
@@ -154,7 +154,7 @@ export default function WishlistPage() {
               <div className="mt-4 flex gap-2">
                 <Link
                   href={`/product/${item.productId}`}
-                  className="flex-1 bg-violet-600 text-white py-3 rounded-xl font-bold flex items-center justify-center gap-2"
+                  className="flex-1 bg-violet-600 text-[var(--button-text-color)] py-3 rounded-xl font-bold flex items-center justify-center gap-2"
                 >
                   <ShoppingCart size={16} />
                   View Product

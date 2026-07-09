@@ -419,7 +419,7 @@ export default function WatchEarnPage() {
           className="
             text-lg
             font-black
-            text-white
+            text-[var(--button-text-color)]
           "
         >
 
@@ -465,7 +465,7 @@ export default function WatchEarnPage() {
             className="
               text-3xl
               font-black
-              text-white
+              text-[var(--button-text-color)]
             "
           >
 
@@ -520,7 +520,7 @@ export default function WatchEarnPage() {
               className="
                 text-sm
                 font-black
-                text-white
+                text-[var(--button-text-color)]
               "
             >
 
@@ -554,7 +554,7 @@ export default function WatchEarnPage() {
               className="
                 text-sm
                 font-black
-                text-white
+                text-[var(--button-text-color)]
               "
             >
 
@@ -573,7 +573,7 @@ export default function WatchEarnPage() {
               justify-center
               rounded-full
               bg-black/40
-              text-white
+              text-[var(--button-text-color)]
               backdrop-blur-xl
             "
           >
@@ -612,7 +612,7 @@ export default function WatchEarnPage() {
           <Coins
             size={30}
             className="
-              text-black
+              text-[var(--text-color)]
             "
           />
 
@@ -622,7 +622,7 @@ export default function WatchEarnPage() {
               className="
                 text-2xl
                 font-black
-                text-black
+                text-[var(--text-color)]
               "
             >
 
@@ -634,7 +634,7 @@ export default function WatchEarnPage() {
               className="
                 text-xs
                 font-bold
-                text-black/70
+                text-[var(--text-color)]/70
               "
             >
 
@@ -661,7 +661,7 @@ export default function WatchEarnPage() {
             items-center
             justify-center
             bg-black
-            text-white
+            text-[var(--button-text-color)]
           "
         >
 
@@ -722,7 +722,7 @@ export default function WatchEarnPage() {
             className="
               text-lg
               font-black
-              text-white
+              text-[var(--button-text-color)]
             "
           >
 
@@ -850,7 +850,7 @@ export default function WatchEarnPage() {
                 <Play
                   size={35}
                   className="
-                    text-white
+                    text-[var(--button-text-color)]
                   "
                 />
 
@@ -859,7 +859,7 @@ export default function WatchEarnPage() {
                 <Pause
                   size={35}
                   className="
-                    text-white
+                    text-[var(--button-text-color)]
                   "
                 />
 
@@ -876,7 +876,7 @@ export default function WatchEarnPage() {
                 left-4
                 z-20
                 max-w-[75%]
-                text-white
+                text-[var(--button-text-color)]
               "
             >
 
@@ -905,7 +905,7 @@ export default function WatchEarnPage() {
                     size={18}
                     className="
                       fill-blue-500
-                      text-white
+                      text-[var(--button-text-color)]
                     "
                   />
 
@@ -943,7 +943,7 @@ export default function WatchEarnPage() {
                       key={tag}
                       className="
                         rounded-full
-                        bg-white/10
+                        bg-[var(--card-color)]/10
                         px-3
                         py-1
                         text-xs
@@ -987,7 +987,7 @@ export default function WatchEarnPage() {
                     truncate
                     text-xs
                     font-bold
-                    text-white
+                    text-[var(--button-text-color)]
                   "
                 >
 
@@ -1005,7 +1005,7 @@ export default function WatchEarnPage() {
                   h-3
                   overflow-hidden
                   rounded-full
-                  bg-white/20
+                  bg-[var(--card-color)]/20
                 "
               >
 
@@ -1045,8 +1045,8 @@ export default function WatchEarnPage() {
                     rewardedVideos.includes(
                       video.id
                     )
-                      ? "bg-green-500 text-white"
-                      : "bg-yellow-400 text-black"
+                      ? "bg-[var(--success-color)] text-[var(--button-text-color)]"
+                      : "bg-yellow-400 text-[var(--text-color)]"
                   }
                 `}
               >
@@ -1080,7 +1080,7 @@ export default function WatchEarnPage() {
                 flex-col
                 items-center
                 gap-5
-                text-white
+                text-[var(--button-text-color)]
               "
             >
 

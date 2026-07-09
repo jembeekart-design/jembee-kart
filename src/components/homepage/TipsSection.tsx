@@ -14,7 +14,7 @@ export default function TipsSection({
   return (
     <section className="w-full overflow-hidden px-3 py-5 md:px-6">
 
-      <div className="w-full overflow-hidden rounded-[24px] bg-white p-4 shadow-xl md:rounded-[40px] md:p-8">
+      <div className="w-full overflow-hidden rounded-[24px] bg-[var(--card-color)] p-4 shadow-xl md:rounded-[40px] md:p-8">
 
         <div className="mb-6 w-full min-w-0">
 
@@ -22,7 +22,7 @@ export default function TipsSection({
             AI Business Tips
           </h2>
 
-          <p className="mt-3 break-words text-sm text-gray-500 md:text-lg">
+          <p className="mt-3 break-words text-sm text-[var(--muted-text-color)] md:text-lg">
             Grow faster with AI powered ecommerce strategies.
           </p>
 
@@ -34,7 +34,7 @@ export default function TipsSection({
             return (
               <div
                 key={tip}
-                className="w-full min-w-0 overflow-hidden rounded-[24px] bg-gradient-to-br from-gray-900 to-black p-5 text-white shadow-xl transition-all duration-300 hover:-translate-y-1 hover:shadow-2xl"
+                className="w-full min-w-0 overflow-hidden rounded-[24px] bg-gradient-to-br from-gray-900 to-black p-5 text-[var(--button-text-color)] shadow-xl transition-all duration-300 hover:-translate-y-1 hover:shadow-2xl"
               >
 
                 <div className="mb-4 text-4xl">

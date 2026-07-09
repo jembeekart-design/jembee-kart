@@ -61,7 +61,7 @@ export default function MLMWalletPage() {
           sticky
           top-0
           z-50
-          bg-white
+          bg-[var(--card-color)]
           px-4
           py-3
           shadow-sm
@@ -96,7 +96,7 @@ export default function MLMWalletPage() {
 
             </h1>
 
-            <p className="text-[11px] text-gray-500">
+            <p className="text-[11px] text-[var(--muted-text-color)]">
 
               Wallet & Transactions
 
@@ -121,7 +121,7 @@ export default function MLMWalletPage() {
             via-fuchsia-600
             to-orange-500
             p-5
-            text-white
+            text-[var(--button-text-color)]
             shadow-xl
           "
         >
@@ -134,7 +134,7 @@ export default function MLMWalletPage() {
               items-center
               justify-center
               rounded-full
-              bg-white/20
+              bg-[var(--card-color)]/20
             "
           >
 
@@ -142,7 +142,7 @@ export default function MLMWalletPage() {
 
           </div>
 
-          <p className="mt-5 text-[13px] text-white/85">
+          <p className="mt-5 text-[13px] text-[var(--button-text-color)]/85">
 
             Total Wallet Balance
 
@@ -154,7 +154,7 @@ export default function MLMWalletPage() {
 
           </h2>
 
-          <p className="mt-3 text-[13px] leading-6 text-white/90">
+          <p className="mt-3 text-[13px] leading-6 text-[var(--button-text-color)]/90">
 
             MLM income, cashback aur
             bonus wallet yahan manage hoga.
@@ -174,7 +174,7 @@ export default function MLMWalletPage() {
           <div
             className="
               rounded-2xl
-              bg-white
+              bg-[var(--card-color)]
               p-4
               shadow-sm
             "
@@ -191,7 +191,7 @@ export default function MLMWalletPage() {
 
             </h3>
 
-            <p className="text-[12px] text-gray-500">
+            <p className="text-[12px] text-[var(--muted-text-color)]">
 
               Withdrawable
 
@@ -202,7 +202,7 @@ export default function MLMWalletPage() {
           <div
             className="
               rounded-2xl
-              bg-white
+              bg-[var(--card-color)]
               p-4
               shadow-sm
             "
@@ -219,7 +219,7 @@ export default function MLMWalletPage() {
 
             </h3>
 
-            <p className="text-[12px] text-gray-500">
+            <p className="text-[12px] text-[var(--muted-text-color)]">
 
               Bonus Wallet
 
@@ -248,7 +248,7 @@ export default function MLMWalletPage() {
               py-4
               text-[14px]
               font-black
-              text-white
+              text-[var(--button-text-color)]
               shadow-lg
             "
           >
@@ -270,7 +270,7 @@ export default function MLMWalletPage() {
               py-4
               text-[14px]
               font-black
-              text-white
+              text-[var(--button-text-color)]
               shadow-lg
             "
           >
@@ -296,7 +296,7 @@ export default function MLMWalletPage() {
             from-black
             to-gray-800
             p-5
-            text-white
+            text-[var(--button-text-color)]
             shadow-xl
           "
         >
@@ -323,7 +323,7 @@ export default function MLMWalletPage() {
 
             <div>
 
-              <p className="text-[10px] text-white/70">
+              <p className="text-[10px] text-[var(--button-text-color)]/70">
 
                 Card Holder
 
@@ -339,7 +339,7 @@ export default function MLMWalletPage() {
 
             <div>
 
-              <p className="text-[10px] text-white/70">
+              <p className="text-[10px] text-[var(--button-text-color)]/70">
 
                 Valid
 
@@ -366,7 +366,7 @@ export default function MLMWalletPage() {
         <div
           className="
             rounded-[30px]
-            bg-white
+            bg-[var(--card-color)]
             p-5
             shadow-sm
           "
@@ -406,7 +406,7 @@ export default function MLMWalletPage() {
 
                     </h3>
 
-                    <p className="mt-1 text-[11px] text-gray-500">
+                    <p className="mt-1 text-[11px] text-[var(--muted-text-color)]">
 
                       {transaction.date}
 

@@ -173,7 +173,7 @@ export default function AffiliatePage() {
   if (loading) {
 
     return (
-      <div className="flex min-h-screen items-center justify-center bg-black text-white">
+      <div className="flex min-h-screen items-center justify-center bg-black text-[var(--button-text-color)]">
         Loading...
       </div>
     );
@@ -181,7 +181,7 @@ export default function AffiliatePage() {
 
   return (
 
-    <main className="min-h-screen bg-[#0b0b0b] p-4 text-white">
+    <main className="min-h-screen bg-[#0b0b0b] p-4 text-[var(--button-text-color)]">
 
       {/* HEADER */}
 
@@ -258,7 +258,7 @@ export default function AffiliatePage() {
                       !affiliate.visible
                     )
                   }
-                  className="flex h-10 w-10 items-center justify-center rounded-xl bg-white/10"
+                  className="flex h-10 w-10 items-center justify-center rounded-xl bg-[var(--card-color)]/10"
                 >
 
                   {affiliate.visible ? (
@@ -275,7 +275,7 @@ export default function AffiliatePage() {
                       affiliate.id
                     )
                   }
-                  className="flex h-10 w-10 items-center justify-center rounded-xl bg-red-500/20 text-red-500"
+                  className="flex h-10 w-10 items-center justify-center rounded-xl bg-[var(--danger-color)]/20 text-red-500"
                 >
 
                   <Trash2 size={18} />
@@ -352,13 +352,13 @@ export default function AffiliatePage() {
                     {affiliate.name}
                   </h2>
 
-                  <p className="mt-1 text-sm text-white/80">
+                  <p className="mt-1 text-sm text-[var(--button-text-color)]/80">
                     {affiliate.email}
                   </p>
 
                 </div>
 
-                <div className="flex h-14 w-14 items-center justify-center rounded-2xl bg-white/20">
+                <div className="flex h-14 w-14 items-center justify-center rounded-2xl bg-[var(--card-color)]/20">
 
                   <DollarSign size={24} />
 
@@ -366,11 +366,11 @@ export default function AffiliatePage() {
 
               </div>
 
-              <div className="mt-5 flex items-center justify-between rounded-2xl bg-white/10 p-4">
+              <div className="mt-5 flex items-center justify-between rounded-2xl bg-[var(--card-color)]/10 p-4">
 
                 <div>
 
-                  <p className="text-sm text-white/70">
+                  <p className="text-sm text-[var(--button-text-color)]/70">
                     Commission
                   </p>
 
@@ -382,7 +382,7 @@ export default function AffiliatePage() {
 
                 <div>
 
-                  <p className="text-sm text-white/70">
+                  <p className="text-sm text-[var(--button-text-color)]/70">
                     Earned
                   </p>
 
@@ -434,7 +434,7 @@ function InputField({
             e.target.value
           )
         }
-        className="w-full rounded-2xl border border-white/10 bg-[#1e1e1e] px-4 py-3 text-sm text-white outline-none"
+        className="w-full rounded-2xl border border-white/10 bg-[#1e1e1e] px-4 py-3 text-sm text-[var(--button-text-color)] outline-none"
       />
 
     </div>

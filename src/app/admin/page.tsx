@@ -104,11 +104,11 @@ export default function AdminHomePage() {
 
   return (
 
-    <main className="min-h-screen text-white">
+    <main className="min-h-screen text-[var(--button-text-color)]">
 
       {/* HERO */}
 
-      <div className="rounded-[35px] bg-gradient-to-r from-cyan-500 to-blue-600 p-8 text-black">
+      <div className="rounded-[35px] bg-gradient-to-r from-cyan-500 to-blue-600 p-8 text-[var(--text-color)]">
 
         <div className="flex flex-col gap-8 lg:flex-row lg:items-center lg:justify-between">
 
@@ -129,7 +129,7 @@ export default function AdminHomePage() {
 
             </p>
 
-            <button className="mt-6 flex items-center gap-2 rounded-2xl bg-black px-6 py-4 font-bold text-white">
+            <button className="mt-6 flex items-center gap-2 rounded-2xl bg-black px-6 py-4 font-bold text-[var(--button-text-color)]">
 
               Open Analytics
 
@@ -167,7 +167,7 @@ export default function AdminHomePage() {
               className="rounded-[30px] border border-white/10 bg-[#151515] p-5"
             >
 
-              <div className="flex h-16 w-16 items-center justify-center rounded-2xl bg-cyan-500 text-black">
+              <div className="flex h-16 w-16 items-center justify-center rounded-2xl bg-cyan-500 text-[var(--text-color)]">
 
                 <Icon size={28} />
 
@@ -231,7 +231,7 @@ export default function AdminHomePage() {
                   className="group rounded-[28px] border border-white/10 bg-[#151515] p-5 transition-all duration-300 hover:scale-[1.03] hover:border-cyan-500"
                 >
 
-                  <div className="flex h-16 w-16 items-center justify-center rounded-2xl bg-cyan-500 text-black transition-all duration-300 group-hover:rotate-6">
+                  <div className="flex h-16 w-16 items-center justify-center rounded-2xl bg-cyan-500 text-[var(--text-color)] transition-all duration-300 group-hover:rotate-6">
 
                     <Icon size={28} />
 
@@ -365,7 +365,7 @@ export default function AdminHomePage() {
 
             </h2>
 
-            <p className="mt-4 max-w-2xl text-sm text-white/90">
+            <p className="mt-4 max-w-2xl text-sm text-[var(--button-text-color)]/90">
 
               Your ecommerce admin panel is now powered
               with AI systems, affiliate engine,
@@ -377,13 +377,13 @@ export default function AdminHomePage() {
 
           <div className="flex gap-4">
 
-            <button className="rounded-2xl bg-black px-6 py-4 font-bold text-white">
+            <button className="rounded-2xl bg-black px-6 py-4 font-bold text-[var(--button-text-color)]">
 
               Open AI Tools
 
             </button>
 
-            <button className="rounded-2xl bg-white px-6 py-4 font-bold text-black">
+            <button className="rounded-2xl bg-[var(--card-color)] px-6 py-4 font-bold text-[var(--text-color)]">
 
               Manage Store
 
@@ -397,7 +397,7 @@ export default function AdminHomePage() {
 
       {/* ALERT */}
 
-      <div className="mt-8 rounded-[28px] border border-yellow-500/20 bg-yellow-500/10 p-5">
+      <div className="mt-8 rounded-[28px] border border-yellow-500/20 bg-[var(--warning-color)]/10 p-5">
 
         <div className="flex items-start gap-4">
 
@@ -461,7 +461,7 @@ function ActivityItem({
 
       </div>
 
-      <div className="h-3 w-3 rounded-full bg-green-500" />
+      <div className="h-3 w-3 rounded-full bg-[var(--success-color)]" />
 
     </div>
 
@@ -487,7 +487,7 @@ function StatusItem({
 
       </h3>
 
-      <div className="rounded-full bg-green-500/20 px-4 py-2 text-sm font-bold text-green-400">
+      <div className="rounded-full bg-[var(--success-color)]/20 px-4 py-2 text-sm font-bold text-green-400">
 
         {status}
 

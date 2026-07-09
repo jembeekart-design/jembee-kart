@@ -40,7 +40,7 @@ export default function SecurityPage() {
 
   return (
 
-    <main className="min-h-screen bg-[#0b0b0b] p-4 text-white">
+    <main className="min-h-screen bg-[#0b0b0b] p-4 text-[var(--button-text-color)]">
 
       {/* HEADER */}
 
@@ -48,7 +48,7 @@ export default function SecurityPage() {
 
         <div className="flex items-center gap-4">
 
-          <div className="flex h-16 w-16 items-center justify-center rounded-[24px] bg-red-500">
+          <div className="flex h-16 w-16 items-center justify-center rounded-[24px] bg-[var(--danger-color)]">
 
             <Shield size={30} />
 
@@ -70,7 +70,7 @@ export default function SecurityPage() {
 
         <button
           onClick={saveSecurity}
-          className="flex items-center gap-2 rounded-2xl bg-red-500 px-5 py-3 text-sm font-bold text-white"
+          className="flex items-center gap-2 rounded-2xl bg-[var(--danger-color)] px-5 py-3 text-sm font-bold text-[var(--button-text-color)]"
         >
 
           <Save size={18} />
@@ -110,7 +110,7 @@ export default function SecurityPage() {
                 e.target.value
               )
             }
-            className="w-full rounded-2xl border border-white/10 bg-black px-4 py-4 text-white outline-none"
+            className="w-full rounded-2xl border border-white/10 bg-black px-4 py-4 text-[var(--button-text-color)] outline-none"
           />
 
         </div>
@@ -147,7 +147,7 @@ export default function SecurityPage() {
                 )
               }
               placeholder="Enter new password"
-              className="w-full rounded-2xl border border-white/10 bg-black px-4 py-4 pr-14 text-white outline-none"
+              className="w-full rounded-2xl border border-white/10 bg-black px-4 py-4 pr-14 text-[var(--button-text-color)] outline-none"
             />
 
             <button
@@ -197,8 +197,8 @@ export default function SecurityPage() {
               }
               className={`rounded-2xl px-5 py-3 font-bold ${
                 twoFactorEnabled
-                  ? "bg-green-500"
-                  : "bg-red-500"
+                  ? "bg-[var(--success-color)]"
+                  : "bg-[var(--danger-color)]"
               }`}
             >
 
@@ -222,13 +222,13 @@ export default function SecurityPage() {
           Security Overview
         </h2>
 
-        <p className="mt-2 text-white/80">
+        <p className="mt-2 text-[var(--button-text-color)]/80">
           Current security status
         </p>
 
         <div className="mt-6 grid grid-cols-2 gap-4">
 
-          <div className="rounded-2xl bg-white/10 p-4">
+          <div className="rounded-2xl bg-[var(--card-color)]/10 p-4">
 
             <p className="text-sm">
               Admin Email
@@ -240,7 +240,7 @@ export default function SecurityPage() {
 
           </div>
 
-          <div className="rounded-2xl bg-white/10 p-4">
+          <div className="rounded-2xl bg-[var(--card-color)]/10 p-4">
 
             <p className="text-sm">
               2FA Status

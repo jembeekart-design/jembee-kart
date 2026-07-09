@@ -63,7 +63,7 @@ export default function MLMLeaderboardPage() {
           sticky
           top-0
           z-50
-          bg-white
+          bg-[var(--card-color)]
           px-4
           py-3
           shadow-sm
@@ -98,7 +98,7 @@ export default function MLMLeaderboardPage() {
 
             </h1>
 
-            <p className="text-[11px] text-gray-500">
+            <p className="text-[11px] text-[var(--muted-text-color)]">
 
               Top MLM Earners
 
@@ -123,7 +123,7 @@ export default function MLMLeaderboardPage() {
             via-orange-500
             to-pink-500
             p-5
-            text-white
+            text-[var(--button-text-color)]
             shadow-xl
           "
         >
@@ -136,7 +136,7 @@ export default function MLMLeaderboardPage() {
               items-center
               justify-center
               rounded-full
-              bg-white/20
+              bg-[var(--card-color)]/20
             "
           >
 
@@ -152,7 +152,7 @@ export default function MLMLeaderboardPage() {
 
           </h2>
 
-          <p className="mt-3 text-[13px] leading-6 text-white/90">
+          <p className="mt-3 text-[13px] leading-6 text-[var(--button-text-color)]/90">
 
             Sabse jyada earning aur
             strongest network wale
@@ -175,7 +175,7 @@ export default function MLMLeaderboardPage() {
           <div
             className="
               rounded-3xl
-              bg-white
+              bg-[var(--card-color)]
               p-4
               text-center
               shadow-sm
@@ -192,7 +192,7 @@ export default function MLMLeaderboardPage() {
                 justify-center
                 rounded-full
                 bg-gray-200
-                text-gray-700
+                text-[var(--text-color)]
               "
             >
 
@@ -206,7 +206,7 @@ export default function MLMLeaderboardPage() {
 
             </h3>
 
-            <p className="mt-1 text-[11px] text-gray-500">
+            <p className="mt-1 text-[11px] text-[var(--muted-text-color)]">
 
               ₹32,100
 
@@ -216,7 +216,7 @@ export default function MLMLeaderboardPage() {
               className="
                 mt-3
                 rounded-full
-                bg-gray-100
+                bg-[var(--background-color)]
                 py-1
                 text-[10px]
                 font-black
@@ -239,7 +239,7 @@ export default function MLMLeaderboardPage() {
               to-orange-500
               p-4
               text-center
-              text-white
+              text-[var(--button-text-color)]
               shadow-xl
             "
           >
@@ -253,7 +253,7 @@ export default function MLMLeaderboardPage() {
                 items-center
                 justify-center
                 rounded-full
-                bg-white/20
+                bg-[var(--card-color)]/20
               "
             >
 
@@ -267,7 +267,7 @@ export default function MLMLeaderboardPage() {
 
             </h3>
 
-            <p className="mt-1 text-[11px] text-white/90">
+            <p className="mt-1 text-[11px] text-[var(--button-text-color)]/90">
 
               ₹45,200
 
@@ -277,7 +277,7 @@ export default function MLMLeaderboardPage() {
               className="
                 mt-3
                 rounded-full
-                bg-white
+                bg-[var(--card-color)]
                 py-1
                 text-[10px]
                 font-black
@@ -296,7 +296,7 @@ export default function MLMLeaderboardPage() {
           <div
             className="
               rounded-3xl
-              bg-white
+              bg-[var(--card-color)]
               p-4
               text-center
               shadow-sm
@@ -327,7 +327,7 @@ export default function MLMLeaderboardPage() {
 
             </h3>
 
-            <p className="mt-1 text-[11px] text-gray-500">
+            <p className="mt-1 text-[11px] text-[var(--muted-text-color)]">
 
               ₹28,700
 
@@ -362,7 +362,7 @@ export default function MLMLeaderboardPage() {
         <div
           className="
             rounded-[30px]
-            bg-white
+            bg-[var(--card-color)]
             p-5
             shadow-sm
           "
@@ -435,7 +435,7 @@ export default function MLMLeaderboardPage() {
                           className="text-gray-400"
                         />
 
-                        <p className="text-[11px] text-gray-500">
+                        <p className="text-[11px] text-[var(--muted-text-color)]">
 
                           {leader.team} Team Members
 

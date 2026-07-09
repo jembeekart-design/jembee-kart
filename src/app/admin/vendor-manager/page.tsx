@@ -54,7 +54,7 @@ export default function VendorManagerPage() {
 
   return (
 
-    <main className="min-h-screen bg-[#090909] p-4 text-white">
+    <main className="min-h-screen bg-[#090909] p-4 text-[var(--button-text-color)]">
 
       {/* HEADER */}
 
@@ -66,7 +66,7 @@ export default function VendorManagerPage() {
 
             <Store
               size={30}
-              className="text-black"
+              className="text-[var(--text-color)]"
             />
 
           </div>
@@ -85,7 +85,7 @@ export default function VendorManagerPage() {
 
         </div>
 
-        <button className="rounded-2xl bg-emerald-500 px-5 py-3 font-bold text-black">
+        <button className="rounded-2xl bg-emerald-500 px-5 py-3 font-bold text-[var(--text-color)]">
 
           Add Vendor
 
@@ -137,7 +137,7 @@ export default function VendorManagerPage() {
           <input
             type="text"
             placeholder="Search vendors..."
-            className="w-full bg-transparent outline-none placeholder:text-gray-500"
+            className="w-full bg-transparent outline-none placeholder:text-[var(--muted-text-color)]"
           />
 
         </div>
@@ -171,7 +171,7 @@ export default function VendorManagerPage() {
 
                 <div className="flex items-center gap-4">
 
-                  <div className="flex h-16 w-16 items-center justify-center rounded-2xl bg-emerald-500 text-2xl font-black text-black">
+                  <div className="flex h-16 w-16 items-center justify-center rounded-2xl bg-emerald-500 text-2xl font-black text-[var(--text-color)]">
 
                     {item.name.charAt(
                       0
@@ -207,11 +207,11 @@ export default function VendorManagerPage() {
                     className={`rounded-full px-4 py-2 text-sm font-bold ${
                       item.status ===
                       "Verified"
-                        ? "bg-green-500/20 text-green-400"
+                        ? "bg-[var(--success-color)]/20 text-green-400"
                         : item.status ===
                           "Pending"
-                        ? "bg-yellow-500/20 text-yellow-400"
-                        : "bg-red-500/20 text-red-400"
+                        ? "bg-[var(--warning-color)]/20 text-yellow-400"
+                        : "bg-[var(--danger-color)]/20 text-red-400"
                     }`}
                   >
 
@@ -219,7 +219,7 @@ export default function VendorManagerPage() {
 
                   </div>
 
-                  <button className="flex items-center gap-2 rounded-2xl bg-emerald-500 px-4 py-3 font-bold text-black">
+                  <button className="flex items-center gap-2 rounded-2xl bg-emerald-500 px-4 py-3 font-bold text-[var(--text-color)]">
 
                     <Eye size={18} />
 
@@ -227,7 +227,7 @@ export default function VendorManagerPage() {
 
                   </button>
 
-                  <button className="flex items-center gap-2 rounded-2xl bg-red-500 px-4 py-3 font-bold">
+                  <button className="flex items-center gap-2 rounded-2xl bg-[var(--danger-color)] px-4 py-3 font-bold">
 
                     <Ban size={18} />
 
@@ -321,7 +321,7 @@ export default function VendorManagerPage() {
 
       {/* STATUS */}
 
-      <div className="mt-8 rounded-[32px] bg-gradient-to-r from-emerald-500 to-green-600 p-7 text-black">
+      <div className="mt-8 rounded-[32px] bg-gradient-to-r from-emerald-500 to-green-600 p-7 text-[var(--text-color)]">
 
         <div className="flex items-center gap-3">
 
@@ -340,7 +340,7 @@ export default function VendorManagerPage() {
 
         </p>
 
-        <button className="mt-6 rounded-2xl bg-black px-5 py-3 font-bold text-white">
+        <button className="mt-6 rounded-2xl bg-black px-5 py-3 font-bold text-[var(--button-text-color)]">
 
           Manage Marketplace
 
@@ -350,7 +350,7 @@ export default function VendorManagerPage() {
 
       {/* ALERT */}
 
-      <div className="mt-8 rounded-[28px] border border-yellow-500/20 bg-yellow-500/10 p-5">
+      <div className="mt-8 rounded-[28px] border border-yellow-500/20 bg-[var(--warning-color)]/10 p-5">
 
         <div className="flex items-start gap-4">
 
@@ -397,7 +397,7 @@ function StatCard({
 
     <div className="rounded-[28px] border border-white/10 bg-[#151515] p-5">
 
-      <div className="flex h-14 w-14 items-center justify-center rounded-2xl bg-emerald-500 text-black">
+      <div className="flex h-14 w-14 items-center justify-center rounded-2xl bg-emerald-500 text-[var(--text-color)]">
 
         {icon}
 

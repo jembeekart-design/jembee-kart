@@ -25,7 +25,7 @@ export default function SupportPage() {
 
   return (
 
-    <main className="min-h-screen bg-[#0b0b0b] p-4 text-white">
+    <main className="min-h-screen bg-[#0b0b0b] p-4 text-[var(--button-text-color)]">
 
       {/* HEADER */}
 
@@ -163,13 +163,13 @@ export default function SupportPage() {
           Support Preview
         </h2>
 
-        <p className="mt-2 text-white/80">
+        <p className="mt-2 text-[var(--button-text-color)]/80">
           Customer support information
         </p>
 
         <div className="mt-6 grid grid-cols-1 gap-4">
 
-          <div className="rounded-2xl bg-white/10 p-4">
+          <div className="rounded-2xl bg-[var(--card-color)]/10 p-4">
 
             <p className="text-sm">
               Email
@@ -181,7 +181,7 @@ export default function SupportPage() {
 
           </div>
 
-          <div className="rounded-2xl bg-white/10 p-4">
+          <div className="rounded-2xl bg-[var(--card-color)]/10 p-4">
 
             <p className="text-sm">
               Phone
@@ -193,7 +193,7 @@ export default function SupportPage() {
 
           </div>
 
-          <div className="rounded-2xl bg-white/10 p-4">
+          <div className="rounded-2xl bg-[var(--card-color)]/10 p-4">
 
             <p className="text-sm">
               WhatsApp

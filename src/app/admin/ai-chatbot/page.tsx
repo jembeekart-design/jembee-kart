@@ -53,7 +53,7 @@ export default function AIChatbotPage() {
 
   return (
 
-    <main className="min-h-screen bg-[#050505] p-4 text-white">
+    <main className="min-h-screen bg-[#050505] p-4 text-[var(--button-text-color)]">
 
       {/* HEADER */}
 
@@ -61,11 +61,11 @@ export default function AIChatbotPage() {
 
         <div className="flex items-center gap-4">
 
-          <div className="flex h-16 w-16 items-center justify-center rounded-[30px] bg-violet-500">
+          <div className="flex h-16 w-16 items-center justify-center rounded-[30px] bg-[var(--secondary-color)]">
 
             <Bot
               size={30}
-              className="text-black"
+              className="text-[var(--text-color)]"
             />
 
           </div>
@@ -94,8 +94,8 @@ export default function AIChatbotPage() {
           }
           className={`rounded-2xl px-6 py-4 font-black ${
             enabled
-              ? "bg-green-500 text-black"
-              : "bg-red-500 text-white"
+              ? "bg-[var(--success-color)] text-[var(--text-color)]"
+              : "bg-[var(--danger-color)] text-[var(--button-text-color)]"
           }`}
         >
 
@@ -169,7 +169,7 @@ export default function AIChatbotPage() {
                   key={index}
                   className={`rounded-2xl p-4 ${
                     item.user === "AI Bot"
-                      ? "bg-violet-500 text-black"
+                      ? "bg-[var(--secondary-color)] text-[var(--text-color)]"
                       : "bg-black/30"
                   }`}
                 >
@@ -210,12 +210,12 @@ export default function AIChatbotPage() {
             />
 
             <button
-              className="flex h-14 w-14 items-center justify-center rounded-2xl bg-violet-500"
+              className="flex h-14 w-14 items-center justify-center rounded-2xl bg-[var(--secondary-color)]"
             >
 
               <Send
                 size={20}
-                className="text-black"
+                className="text-[var(--text-color)]"
               />
 
             </button>
@@ -264,7 +264,7 @@ export default function AIChatbotPage() {
 
           </div>
 
-          <div className="rounded-[30px] bg-gradient-to-r from-violet-500 to-fuchsia-500 p-6 text-black">
+          <div className="rounded-[30px] bg-gradient-to-r from-violet-500 to-fuchsia-500 p-6 text-[var(--text-color)]">
 
             <div className="flex items-center gap-3">
 
@@ -296,7 +296,7 @@ export default function AIChatbotPage() {
       <div className="mt-6 flex flex-wrap gap-4">
 
         <button
-          className="flex items-center gap-2 rounded-2xl bg-green-500 px-6 py-4 font-black text-black"
+          className="flex items-center gap-2 rounded-2xl bg-[var(--success-color)] px-6 py-4 font-black text-[var(--text-color)]"
         >
 
           <Save size={20} />
@@ -306,7 +306,7 @@ export default function AIChatbotPage() {
         </button>
 
         <button
-          className="flex items-center gap-2 rounded-2xl bg-cyan-500 px-6 py-4 font-black text-black"
+          className="flex items-center gap-2 rounded-2xl bg-cyan-500 px-6 py-4 font-black text-[var(--text-color)]"
         >
 
           <Mic size={20} />
@@ -316,7 +316,7 @@ export default function AIChatbotPage() {
         </button>
 
         <button
-          className="flex items-center gap-2 rounded-2xl bg-red-500 px-6 py-4 font-black"
+          className="flex items-center gap-2 rounded-2xl bg-[var(--danger-color)] px-6 py-4 font-black"
         >
 
           <Power size={20} />
@@ -342,11 +342,11 @@ function StatsCard({
 
     <div className="rounded-[30px] border border-white/10 bg-[#111111] p-5">
 
-      <div className="flex h-14 w-14 items-center justify-center rounded-2xl bg-violet-500">
+      <div className="flex h-14 w-14 items-center justify-center rounded-2xl bg-[var(--secondary-color)]">
 
         <Icon
           size={24}
-          className="text-black"
+          className="text-[var(--text-color)]"
         />
 
       </div>
@@ -390,7 +390,7 @@ function FeatureItem({
 
       </div>
 
-      <div className="h-3 w-3 rounded-full bg-green-500" />
+      <div className="h-3 w-3 rounded-full bg-[var(--success-color)]" />
 
     </div>
 

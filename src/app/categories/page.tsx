@@ -89,7 +89,7 @@ export default function CategoriesPage() {
                 className="
                   text-3xl
                   font-black
-                  text-black
+                  text-[var(--text-color)]
                 "
               >
 
@@ -101,7 +101,7 @@ export default function CategoriesPage() {
                 className="
                   mt-1
                   text-sm
-                  text-gray-500
+                  text-[var(--muted-text-color)]
                 "
               >
 

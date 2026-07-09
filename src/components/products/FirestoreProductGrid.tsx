@@ -222,9 +222,9 @@ export default function FirestoreProductGrid() {
 
         <div className="flex flex-col items-center gap-3">
 
-          <div className="h-10 w-10 animate-spin rounded-full border-4 border-gray-200 border-t-blue-600" />
+          <div className="h-10 w-10 animate-spin rounded-full border-4 border-[var(--border-color)] border-t-blue-600" />
 
-          <p className="text-sm font-black text-gray-500">
+          <p className="text-sm font-black text-[var(--muted-text-color)]">
 
             Loading Products...
 
@@ -256,7 +256,7 @@ export default function FirestoreProductGrid() {
           justify-between
           gap-3
           rounded-[26px]
-          bg-white
+          bg-[var(--card-color)]
           p-2
           shadow-sm
         "
@@ -380,7 +380,7 @@ export default function FirestoreProductGrid() {
               mt-1
               text-[12px]
               font-semibold
-              text-gray-500
+              text-[var(--muted-text-color)]
             "
           >
 
@@ -404,7 +404,7 @@ export default function FirestoreProductGrid() {
             py-2
             text-xs
             font-black
-            text-white
+            text-[var(--button-text-color)]
             shadow-lg
           "
         >

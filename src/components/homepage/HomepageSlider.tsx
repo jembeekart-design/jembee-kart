@@ -409,14 +409,14 @@ export default function HomepageSlider() {
                             mb-2
                             inline-flex
                             rounded-full
-                            bg-white/20
+                            bg-[var(--card-color)]/20
                             px-3
                             py-1
                             text-[8px]
                             font-black
                             uppercase
                             tracking-widest
-                            text-white
+                            text-[var(--button-text-color)]
                             backdrop-blur-xl
 
                             md:text-xs
@@ -554,8 +554,8 @@ export default function HomepageSlider() {
             items-center
             justify-center
             rounded-full
-            bg-white/20
-            text-white
+            bg-[var(--card-color)]/20
+            text-[var(--button-text-color)]
             backdrop-blur-xl
             transition-all
             duration-300
@@ -587,8 +587,8 @@ export default function HomepageSlider() {
             items-center
             justify-center
             rounded-full
-            bg-white/20
-            text-white
+            bg-[var(--card-color)]/20
+            text-[var(--button-text-color)]
             backdrop-blur-xl
             transition-all
             duration-300
@@ -636,8 +636,8 @@ export default function HomepageSlider() {
                   className={`rounded-full transition-all duration-300 ${
                     current ===
                     index
-                      ? "h-2 w-6 bg-white md:h-3 md:w-10"
-                      : "h-2 w-2 bg-white/50 md:h-3 md:w-3"
+                      ? "h-2 w-6 bg-[var(--card-color)] md:h-3 md:w-10"
+                      : "h-2 w-2 bg-[var(--card-color)]/50 md:h-3 md:w-3"
                   }`}
                 />
 

@@ -77,7 +77,7 @@ export default function CategoryBanner({
             {subtitle}
           </p>
 
-          <button className="mt-6 rounded-2xl bg-white px-6 py-3 text-sm font-black text-blue-700 shadow-xl transition-all duration-300 hover:scale-[1.03] md:mt-8 md:px-10 md:py-5 md:text-lg">
+          <button className="mt-6 rounded-2xl bg-[var(--card-color)] px-6 py-3 text-sm font-black text-blue-700 shadow-xl transition-all duration-300 hover:scale-[1.03] md:mt-8 md:px-10 md:py-5 md:text-lg">
             {buttonText}
           </button>
 

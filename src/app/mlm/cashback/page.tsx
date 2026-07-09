@@ -88,7 +88,7 @@ function TransferConfirmModal({ isOpen, onClose, onConfirm, amount }: ModalProps
   if (!isOpen) return null;
   return (
     <div className="fixed inset-0 z-[100] flex items-end sm:items-center justify-center bg-black/60 backdrop-blur-sm p-4">
-      <div className="w-full max-w-sm rounded-[32px] bg-white p-6 shadow-xl animate-in fade-in slide-in-from-bottom duration-200">
+      <div className="w-full max-w-sm rounded-[32px] bg-[var(--card-color)] p-6 shadow-xl animate-in fade-in slide-in-from-bottom duration-200">
         <div className="mx-auto h-1 w-12 rounded-full bg-slate-200 sm:hidden mb-4" />
         <h3 className="text-lg font-black text-slate-800">Confirm Transfer</h3>
         <p className="mt-2 text-xs leading-relaxed text-slate-500">
@@ -97,7 +97,7 @@ function TransferConfirmModal({ isOpen, onClose, onConfirm, amount }: ModalProps
         <div className="mt-6 flex flex-col gap-2">
           <button
             onClick={onConfirm}
-            className="w-full rounded-2xl bg-emerald-600 py-3.5 text-xs font-black text-white active:scale-95 transition-transform shadow-md"
+            className="w-full rounded-2xl bg-emerald-600 py-3.5 text-xs font-black text-[var(--button-text-color)] active:scale-95 transition-transform shadow-md"
           >
             Confirm Transfer
           </button>
@@ -306,16 +306,16 @@ export default function CashbackPage() {
     <main className="min-h-screen bg-slate-50 pb-28">
       {/* TOAST NOTIFICATION LAYER */}
       {toast.show && (
-        <div className="fixed top-5 left-1/2 -translate-x-1/2 z-[200] w-[90%] max-w-sm rounded-2xl p-4 flex items-center gap-3 shadow-xl border animate-in fade-in slide-in-from-top-4 duration-300 bg-slate-900 text-white border-slate-800">
+        <div className="fixed top-5 left-1/2 -translate-x-1/2 z-[200] w-[90%] max-w-sm rounded-2xl p-4 flex items-center gap-3 shadow-xl border animate-in fade-in slide-in-from-top-4 duration-300 bg-slate-900 text-[var(--button-text-color)] border-slate-800">
           <div className={`h-2 w-2 rounded-full shrink-0 ${toast.type === "success" ? "bg-emerald-400" : "bg-red-400"}`} />
           <p className="text-xs font-bold tracking-tight">{toast.message}</p>
         </div>
       )}
 
       {/* HEADER CONTENT WRAPPER */}
-      <div className="sticky top-0 z-50 bg-white/90 backdrop-blur-md px-4 py-3 border-b border-slate-100 flex items-center justify-between">
+      <div className="sticky top-0 z-50 bg-[var(--card-color)]/90 backdrop-blur-md px-4 py-3 border-b border-slate-100 flex items-center justify-between">
         <div className="flex items-center gap-3">
-          <Link href="/dashboard" className="flex h-10 w-10 items-center justify-center rounded-full bg-slate-100 text-gray-700">
+          <Link href="/dashboard" className="flex h-10 w-10 items-center justify-center rounded-full bg-slate-100 text-[var(--text-color)]">
             <ArrowLeft size={20} />
           </Link>
           <div>
@@ -330,7 +330,7 @@ export default function CashbackPage() {
       <div className="px-4 pt-4 space-y-4">
         
         {/* ACCOUNT CORES MAPPINGS GRID VIEW CONTAINER */}
-        <section className="bg-white rounded-[32px] p-5 border border-slate-100 space-y-4 shadow-sm">
+        <section className="bg-[var(--card-color)] rounded-[32px] p-5 border border-slate-100 space-y-4 shadow-sm">
           <div className="flex items-center gap-2 pb-1 border-b border-slate-100">
             <SlidersHorizontal size={15} className="text-slate-400" />
             <h3 className="text-xs font-black uppercase tracking-wider text-slate-400">JembeeKart Active Master Wallets</h3>
@@ -357,7 +357,7 @@ export default function CashbackPage() {
         </section>
 
         {/* PRIMARY WALLET CTAS CARD MODULE */}
-        <div className="rounded-[32px] bg-gradient-to-br from-slate-900 via-slate-800 to-indigo-950 p-6 text-white shadow-xl relative overflow-hidden">
+        <div className="rounded-[32px] bg-gradient-to-br from-slate-900 via-slate-800 to-indigo-950 p-6 text-[var(--button-text-color)] shadow-xl relative overflow-hidden">
           <div className="flex items-center justify-between">
             <p className="text-xs font-bold uppercase tracking-wider text-slate-300">Withdrawable Pool Allocation</p>
             <Wallet size={18} className="text-emerald-400" />
@@ -368,7 +368,7 @@ export default function CashbackPage() {
           </h2>
 
           {stats.cashbackWallet < minTransferLimit && (
-            <p className="mt-3.5 flex items-center gap-1.5 text-[11px] font-bold text-amber-300/90 bg-white/5 border border-white/10 px-3 py-2 rounded-xl w-fit">
+            <p className="mt-3.5 flex items-center gap-1.5 text-[11px] font-bold text-amber-300/90 bg-[var(--card-color)]/5 border border-white/10 px-3 py-2 rounded-xl w-fit">
               <BadgeAlert size={13} /> Minimum account balance criteria threshold: ₹{minTransferLimit}
             </p>
           )}
@@ -377,7 +377,7 @@ export default function CashbackPage() {
             <button
               onClick={() => setIsModalOpen(true)}
               disabled={isTransferring || stats.cashbackWallet < minTransferLimit}
-              className="flex items-center justify-center gap-1.5 rounded-2xl bg-emerald-600 hover:bg-emerald-700 disabled:opacity-30 disabled:pointer-events-none py-3.5 text-xs font-black text-white shadow-md transition-all"
+              className="flex items-center justify-center gap-1.5 rounded-2xl bg-emerald-600 hover:bg-emerald-700 disabled:opacity-30 disabled:pointer-events-none py-3.5 text-xs font-black text-[var(--button-text-color)] shadow-md transition-all"
             >
               {isTransferring ? <Loader2 size={14} className="animate-spin" /> : <ArrowRightLeft size={14} />}
               Transfer Balance
@@ -385,7 +385,7 @@ export default function CashbackPage() {
 
             <Link
               href="/dashboard/wallet/history"
-              className="flex items-center justify-center gap-1.5 rounded-2xl bg-white/10 border border-white/10 py-3.5 text-xs font-black text-white active:scale-[0.98] transition-all"
+              className="flex items-center justify-center gap-1.5 rounded-2xl bg-[var(--card-color)]/10 border border-white/10 py-3.5 text-xs font-black text-[var(--button-text-color)] active:scale-[0.98] transition-all"
             >
               <HandCoins size={14} />
               Wallet Logs
@@ -395,11 +395,11 @@ export default function CashbackPage() {
 
         {/* METRICS STREAM CONTAINER */}
         <div className="grid grid-cols-2 gap-3">
-          <div className="rounded-2xl bg-white p-4 border border-slate-100 shadow-sm">
+          <div className="rounded-2xl bg-[var(--card-color)] p-4 border border-slate-100 shadow-sm">
             <span className="text-[10px] font-bold tracking-wider text-slate-400 uppercase">Today's Income Stream</span>
             <h4 className="text-base font-black text-slate-800 mt-1">₹{stats.todayIncome.toLocaleString("en-IN")}</h4>
           </div>
-          <div className="rounded-2xl bg-white p-4 border border-slate-100 shadow-sm">
+          <div className="rounded-2xl bg-[var(--card-color)] p-4 border border-slate-100 shadow-sm">
             <span className="text-[10px] font-bold tracking-wider text-slate-400 uppercase">Total Verified Income</span>
             <h4 className="text-base font-black text-slate-800 mt-1">₹{stats.totalIncome.toLocaleString("en-IN")}</h4>
           </div>
@@ -425,7 +425,7 @@ export default function CashbackPage() {
               placeholder="Search historical files records..."
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
-              className="w-full bg-white border border-slate-200 rounded-2xl py-3.5 pl-10 pr-4 text-xs font-medium text-slate-800 outline-none focus:border-slate-400 shadow-sm"
+              className="w-full bg-[var(--card-color)] border border-slate-200 rounded-2xl py-3.5 pl-10 pr-4 text-xs font-medium text-slate-800 outline-none focus:border-slate-400 shadow-sm"
             />
           </div>
 
@@ -435,7 +435,7 @@ export default function CashbackPage() {
                 key={filterOpt}
                 onClick={() => setActiveFilter(filterOpt)}
                 className={`px-4 py-2 rounded-xl text-xs font-bold uppercase tracking-wider transition-all border shrink-0 ${
-                  activeFilter === filterOpt ? "bg-slate-800 text-white border-slate-800 shadow-sm" : "bg-white text-slate-500 border-slate-200"
+                  activeFilter === filterOpt ? "bg-slate-800 text-[var(--button-text-color)] border-slate-800 shadow-sm" : "bg-[var(--card-color)] text-slate-500 border-slate-200"
                 }`}
               >
                 {filterOpt}
@@ -451,7 +451,7 @@ export default function CashbackPage() {
           </div>
 
           {filteredTransactions.length === 0 ? (
-            <div className="rounded-3xl bg-white p-8 text-center border border-slate-100 shadow-sm">
+            <div className="rounded-3xl bg-[var(--card-color)] p-8 text-center border border-slate-100 shadow-sm">
               <div className="w-14 h-14 bg-slate-50 text-slate-300 rounded-full flex items-center justify-center mx-auto">
                 <Gift size={26} />
               </div>
@@ -460,7 +460,7 @@ export default function CashbackPage() {
           ) : (
             <div className="space-y-2.5">
               {filteredTransactions.map((item) => (
-                <div key={item.id} className="rounded-2xl bg-white p-4 shadow-sm border border-slate-100 flex items-center justify-between">
+                <div key={item.id} className="rounded-2xl bg-[var(--card-color)] p-4 shadow-sm border border-slate-100 flex items-center justify-between">
                   <div className="flex items-center gap-3">
                     <div className={`flex h-11 w-11 shrink-0 items-center justify-center rounded-full ${
                       item.status === "failed" ? "bg-red-50 text-red-600" : item.status === "pending" ? "bg-amber-50 text-amber-600" : "bg-emerald-50 text-emerald-600"

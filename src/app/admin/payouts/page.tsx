@@ -67,7 +67,7 @@ export default function PayoutsPage() {
 
   return (
 
-    <main className="min-h-screen bg-[#0b0b0b] p-4 text-white">
+    <main className="min-h-screen bg-[#0b0b0b] p-4 text-[var(--button-text-color)]">
 
       {/* HEADER */}
 
@@ -201,7 +201,7 @@ export default function PayoutsPage() {
                       "approved"
                     )
                   }
-                  className="flex items-center gap-2 rounded-2xl bg-green-500 px-5 py-3 text-sm font-bold"
+                  className="flex items-center gap-2 rounded-2xl bg-[var(--success-color)] px-5 py-3 text-sm font-bold"
                 >
 
                   <CheckCircle size={18} />
@@ -217,7 +217,7 @@ export default function PayoutsPage() {
                       "rejected"
                     )
                   }
-                  className="flex items-center gap-2 rounded-2xl bg-red-500 px-5 py-3 text-sm font-bold"
+                  className="flex items-center gap-2 rounded-2xl bg-[var(--danger-color)] px-5 py-3 text-sm font-bold"
                 >
 
                   <XCircle size={18} />
@@ -253,7 +253,7 @@ export default function PayoutsPage() {
           Payout Overview
         </h2>
 
-        <p className="mt-2 text-white/80">
+        <p className="mt-2 text-[var(--button-text-color)]/80">
           Affiliate payment system preview
         </p>
 

@@ -91,7 +91,7 @@ export default function MLMNotificationsPage() {
           sticky
           top-0
           z-50
-          bg-white
+          bg-[var(--card-color)]
           px-4
           py-3
           shadow-sm
@@ -126,7 +126,7 @@ export default function MLMNotificationsPage() {
 
             </h1>
 
-            <p className="text-[11px] text-gray-500">
+            <p className="text-[11px] text-[var(--muted-text-color)]">
 
               MLM Activity Updates
 
@@ -151,7 +151,7 @@ export default function MLMNotificationsPage() {
             via-fuchsia-600
             to-orange-500
             p-5
-            text-white
+            text-[var(--button-text-color)]
             shadow-xl
           "
         >
@@ -164,7 +164,7 @@ export default function MLMNotificationsPage() {
               items-center
               justify-center
               rounded-full
-              bg-white/20
+              bg-[var(--card-color)]/20
             "
           >
 
@@ -180,7 +180,7 @@ export default function MLMNotificationsPage() {
 
           </h2>
 
-          <p className="mt-3 text-[13px] leading-6 text-white/90">
+          <p className="mt-3 text-[13px] leading-6 text-[var(--button-text-color)]/90">
 
             Referral joins, income,
             bonuses aur rank updates
@@ -213,7 +213,7 @@ export default function MLMNotificationsPage() {
                   key={index}
                   className="
                     rounded-[28px]
-                    bg-white
+                    bg-[var(--card-color)]
                     p-4
                     shadow-sm
                   "
@@ -255,7 +255,7 @@ export default function MLMNotificationsPage() {
 
                       </div>
 
-                      <p className="mt-2 text-[12px] leading-6 text-gray-600">
+                      <p className="mt-2 text-[12px] leading-6 text-[var(--muted-text-color)]">
 
                         {notification.message}
 

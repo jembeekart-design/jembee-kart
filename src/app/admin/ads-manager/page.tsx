@@ -54,7 +54,7 @@ export default function AdsManagerPage() {
 
   return (
 
-    <main className="min-h-screen bg-[#0b0b0b] p-4 text-white">
+    <main className="min-h-screen bg-[#0b0b0b] p-4 text-[var(--button-text-color)]">
 
       {/* HEADER */}
 
@@ -62,11 +62,11 @@ export default function AdsManagerPage() {
 
         <div className="flex items-center gap-4">
 
-          <div className="flex h-16 w-16 items-center justify-center rounded-[28px] bg-violet-500">
+          <div className="flex h-16 w-16 items-center justify-center rounded-[28px] bg-[var(--secondary-color)]">
 
             <Megaphone
               size={30}
-              className="text-black"
+              className="text-[var(--text-color)]"
             />
 
           </div>
@@ -85,7 +85,7 @@ export default function AdsManagerPage() {
 
         </div>
 
-        <button className="flex items-center gap-2 rounded-2xl bg-violet-500 px-5 py-3 font-bold text-black">
+        <button className="flex items-center gap-2 rounded-2xl bg-[var(--secondary-color)] px-5 py-3 font-bold text-[var(--text-color)]">
 
           <Plus size={18} />
 
@@ -143,7 +143,7 @@ export default function AdsManagerPage() {
               e.target.value
             )
           }
-          className="w-full bg-transparent outline-none placeholder:text-gray-500"
+          className="w-full bg-transparent outline-none placeholder:text-[var(--muted-text-color)]"
         />
 
       </div>
@@ -185,10 +185,10 @@ export default function AdsManagerPage() {
                   className={`rounded-full px-4 py-1 text-sm font-bold ${
                     item.status ===
                     "Running"
-                      ? "bg-green-500/20 text-green-400"
+                      ? "bg-[var(--success-color)]/20 text-green-400"
                       : item.status ===
                         "Paused"
-                      ? "bg-yellow-500/20 text-yellow-400"
+                      ? "bg-[var(--warning-color)]/20 text-yellow-400"
                       : "bg-gray-500/20 text-gray-300"
                   }`}
                 >
@@ -203,7 +203,7 @@ export default function AdsManagerPage() {
 
                 <div className="flex items-center gap-3">
 
-                  <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-violet-500 text-black">
+                  <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-[var(--secondary-color)] text-[var(--text-color)]">
 
                     <BadgeDollarSign size={20} />
 
@@ -223,7 +223,7 @@ export default function AdsManagerPage() {
 
                 </div>
 
-                <button className="rounded-2xl bg-violet-500 px-5 py-2 font-bold text-black">
+                <button className="rounded-2xl bg-[var(--secondary-color)] px-5 py-2 font-bold text-[var(--text-color)]">
 
                   Manage
 
@@ -252,14 +252,14 @@ export default function AdsManagerPage() {
 
         </div>
 
-        <p className="mt-3 max-w-2xl text-sm text-white/90">
+        <p className="mt-3 max-w-2xl text-sm text-[var(--button-text-color)]/90">
 
           Generate high converting ad creatives &
           campaigns automatically using AI.
 
         </p>
 
-        <button className="mt-6 flex items-center gap-2 rounded-2xl bg-black px-6 py-3 font-bold text-white">
+        <button className="mt-6 flex items-center gap-2 rounded-2xl bg-black px-6 py-3 font-bold text-[var(--button-text-color)]">
 
           <PlayCircle size={18} />
 
@@ -288,7 +288,7 @@ function StatCard({
 
     <div className="rounded-[28px] border border-white/10 bg-[#151515] p-5">
 
-      <div className="flex h-14 w-14 items-center justify-center rounded-2xl bg-violet-500 text-black">
+      <div className="flex h-14 w-14 items-center justify-center rounded-2xl bg-[var(--secondary-color)] text-[var(--text-color)]">
 
         {icon}
 

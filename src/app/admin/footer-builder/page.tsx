@@ -197,7 +197,7 @@ export default function FooterBuilderPage() {
 
     return (
 
-      <div className="flex min-h-screen items-center justify-center bg-black text-white">
+      <div className="flex min-h-screen items-center justify-center bg-black text-[var(--button-text-color)]">
 
         Loading Footer...
 
@@ -208,7 +208,7 @@ export default function FooterBuilderPage() {
 
   return (
 
-    <main className="min-h-screen bg-[#0b0b0b] p-4 text-white">
+    <main className="min-h-screen bg-[#0b0b0b] p-4 text-[var(--button-text-color)]">
 
       {/* HEADER */}
 
@@ -239,7 +239,7 @@ export default function FooterBuilderPage() {
         <button
           onClick={saveFooter}
           disabled={saving}
-          className="flex items-center gap-2 rounded-2xl bg-fuchsia-500 px-5 py-3 font-bold text-black"
+          className="flex items-center gap-2 rounded-2xl bg-fuchsia-500 px-5 py-3 font-bold text-[var(--text-color)]"
         >
 
           <Save size={18} />
@@ -326,7 +326,7 @@ export default function FooterBuilderPage() {
 
           <button
             onClick={addLink}
-            className="flex items-center gap-2 rounded-2xl bg-green-500 px-5 py-3 font-bold text-black"
+            className="flex items-center gap-2 rounded-2xl bg-[var(--success-color)] px-5 py-3 font-bold text-[var(--text-color)]"
           >
 
             <Plus size={18} />
@@ -394,7 +394,7 @@ export default function FooterBuilderPage() {
                       index
                     )
                   }
-                  className="mt-4 flex items-center gap-2 rounded-2xl bg-red-500 px-5 py-3 font-bold"
+                  className="mt-4 flex items-center gap-2 rounded-2xl bg-[var(--danger-color)] px-5 py-3 font-bold"
                 >
 
                   <Trash2 size={18} />
@@ -416,7 +416,7 @@ export default function FooterBuilderPage() {
 
       <div className="mt-6 rounded-[30px] bg-gradient-to-r from-fuchsia-500 to-pink-500 p-6">
 
-        <h2 className="text-3xl font-black text-black">
+        <h2 className="text-3xl font-black text-[var(--text-color)]">
           Live Footer Preview
         </h2>
 
@@ -438,7 +438,7 @@ export default function FooterBuilderPage() {
 
                 <div
                   key={index}
-                  className="rounded-full bg-white/20 px-4 py-2 text-sm font-bold"
+                  className="rounded-full bg-[var(--card-color)]/20 px-4 py-2 text-sm font-bold"
                 >
 
                   {link.title}
@@ -450,7 +450,7 @@ export default function FooterBuilderPage() {
 
           </div>
 
-          <p className="mt-6 text-sm text-black/70">
+          <p className="mt-6 text-sm text-[var(--text-color)]/70">
 
             {
               settings.copyrightText

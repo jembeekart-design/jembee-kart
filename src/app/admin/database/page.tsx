@@ -98,7 +98,7 @@ useEffect(() => {
 }, [router]);
   return (
 
-    <main className="min-h-screen bg-[#0b0b0b] p-4 text-white">
+    <main className="min-h-screen bg-[#0b0b0b] p-4 text-[var(--button-text-color)]">
 
       {/* HEADER */}
 
@@ -106,7 +106,7 @@ useEffect(() => {
 
         <div className="flex items-center gap-4">
 
-          <div className="flex h-16 w-16 items-center justify-center rounded-[24px] bg-green-500">
+          <div className="flex h-16 w-16 items-center justify-center rounded-[24px] bg-[var(--success-color)]">
 
             <Database size={30} />
 
@@ -211,7 +211,7 @@ useEffect(() => {
             Export Database
           </h2>
 
-          <p className="mt-2 text-white/80">
+          <p className="mt-2 text-[var(--button-text-color)]/80">
             Download complete database backup
           </p>
 
@@ -228,7 +228,7 @@ useEffect(() => {
             Import Database
           </h2>
 
-          <p className="mt-2 text-white/80">
+          <p className="mt-2 text-[var(--button-text-color)]/80">
             Restore database collections
           </p>
 
@@ -266,7 +266,7 @@ useEffect(() => {
 
                   </div>
 
-                  <div className="mt-4 inline-flex items-center gap-2 rounded-full bg-green-500 px-4 py-2 text-sm font-bold">
+                  <div className="mt-4 inline-flex items-center gap-2 rounded-full bg-[var(--success-color)] px-4 py-2 text-sm font-bold">
 
                     <CheckCircle size={16} />
 
@@ -282,7 +282,7 @@ useEffect(() => {
                       item.id
                     )
                   }
-                  className="flex h-14 w-14 items-center justify-center rounded-2xl bg-red-500"
+                  className="flex h-14 w-14 items-center justify-center rounded-2xl bg-[var(--danger-color)]"
                 >
 
                   <Trash2 size={22} />
@@ -300,7 +300,7 @@ useEffect(() => {
 
       {/* WARNING */}
 
-      <div className="mt-6 rounded-[30px] bg-gradient-to-r from-yellow-500 to-orange-500 p-6 text-black">
+      <div className="mt-6 rounded-[30px] bg-gradient-to-r from-yellow-500 to-orange-500 p-6 text-[var(--text-color)]">
 
         <div className="flex items-center gap-3">
 

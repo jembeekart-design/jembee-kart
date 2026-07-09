@@ -33,7 +33,7 @@ export default function AppearancePage() {
   return (
 
     <main
-      className="min-h-screen p-4 text-white"
+      className="min-h-screen p-4 text-[var(--button-text-color)]"
       style={{
         background:
           backgroundColor
@@ -74,7 +74,7 @@ export default function AppearancePage() {
 
         <button
           onClick={saveAppearance}
-          className="flex items-center gap-2 rounded-2xl px-5 py-3 text-sm font-bold text-white"
+          className="flex items-center gap-2 rounded-2xl px-5 py-3 text-sm font-bold text-[var(--button-text-color)]"
           style={{
             background:
               primaryColor
@@ -272,12 +272,12 @@ export default function AppearancePage() {
           Live Preview
         </h2>
 
-        <p className="mt-2 text-white/80">
+        <p className="mt-2 text-[var(--button-text-color)]/80">
           Theme preview section
         </p>
 
         <button
-          className="mt-6 rounded-2xl px-6 py-3 font-bold text-white"
+          className="mt-6 rounded-2xl px-6 py-3 font-bold text-[var(--button-text-color)]"
           style={{
             background:
               primaryColor

@@ -114,7 +114,7 @@ export default function FirestorePage() {
 
   return (
 
-    <main className="min-h-screen bg-[#0b0b0b] p-4 text-white">
+    <main className="min-h-screen bg-[#0b0b0b] p-4 text-[var(--button-text-color)]">
 
       {/* HEADER */}
 
@@ -284,7 +284,7 @@ export default function FirestorePage() {
                     {item.documents}
                   </p>
 
-                  <div className="mt-4 inline-flex items-center gap-2 rounded-full bg-green-500 px-4 py-2 text-sm font-bold">
+                  <div className="mt-4 inline-flex items-center gap-2 rounded-full bg-[var(--success-color)] px-4 py-2 text-sm font-bold">
 
                     <CheckCircle size={16} />
 
@@ -300,7 +300,7 @@ export default function FirestorePage() {
                       item.id
                     )
                   }
-                  className="flex h-14 w-14 items-center justify-center rounded-2xl bg-red-500"
+                  className="flex h-14 w-14 items-center justify-center rounded-2xl bg-[var(--danger-color)]"
                 >
 
                   <Trash2 size={22} />
@@ -324,7 +324,7 @@ export default function FirestorePage() {
           Firebase Firestore
         </h2>
 
-        <p className="mt-2 text-white/80">
+        <p className="mt-2 text-[var(--button-text-color)]/80">
           Real-time database management system
         </p>
 

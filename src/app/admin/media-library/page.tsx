@@ -57,7 +57,7 @@ export default function MediaLibraryPage() {
 
   return (
 
-    <main className="min-h-screen bg-[#0b0b0b] p-4 text-white">
+    <main className="min-h-screen bg-[#0b0b0b] p-4 text-[var(--button-text-color)]">
 
       {/* HEADER */}
 
@@ -69,7 +69,7 @@ export default function MediaLibraryPage() {
 
             <Folder
               size={30}
-              className="text-black"
+              className="text-[var(--text-color)]"
             />
 
           </div>
@@ -88,7 +88,7 @@ export default function MediaLibraryPage() {
 
         </div>
 
-        <button className="flex items-center gap-2 rounded-2xl bg-fuchsia-500 px-5 py-3 font-bold text-black">
+        <button className="flex items-center gap-2 rounded-2xl bg-fuchsia-500 px-5 py-3 font-bold text-[var(--text-color)]">
 
           <Upload size={18} />
 
@@ -116,7 +116,7 @@ export default function MediaLibraryPage() {
               e.target.value
             )
           }
-          className="w-full bg-transparent outline-none placeholder:text-gray-500"
+          className="w-full bg-transparent outline-none placeholder:text-[var(--muted-text-color)]"
         />
 
       </div>
@@ -175,7 +175,7 @@ export default function MediaLibraryPage() {
 
                   <Image
                     size={52}
-                    className="text-black"
+                    className="text-[var(--text-color)]"
                   />
 
                 ) : item.type ===
@@ -183,14 +183,14 @@ export default function MediaLibraryPage() {
 
                   <Video
                     size={52}
-                    className="text-black"
+                    className="text-[var(--text-color)]"
                   />
 
                 ) : (
 
                   <FileText
                     size={52}
-                    className="text-black"
+                    className="text-[var(--text-color)]"
                   />
 
                 )}
@@ -221,19 +221,19 @@ export default function MediaLibraryPage() {
 
                 <div className="mt-5 flex items-center justify-between">
 
-                  <button className="flex h-11 w-11 items-center justify-center rounded-2xl bg-white/10">
+                  <button className="flex h-11 w-11 items-center justify-center rounded-2xl bg-[var(--card-color)]/10">
 
                     <Eye size={18} />
 
                   </button>
 
-                  <button className="flex h-11 w-11 items-center justify-center rounded-2xl bg-white/10">
+                  <button className="flex h-11 w-11 items-center justify-center rounded-2xl bg-[var(--card-color)]/10">
 
                     <Download size={18} />
 
                   </button>
 
-                  <button className="flex h-11 w-11 items-center justify-center rounded-2xl bg-red-500/20 text-red-400">
+                  <button className="flex h-11 w-11 items-center justify-center rounded-2xl bg-[var(--danger-color)]/20 text-red-400">
 
                     <Trash2 size={18} />
 
@@ -264,14 +264,14 @@ export default function MediaLibraryPage() {
 
         </div>
 
-        <p className="mt-3 max-w-2xl text-sm text-white/90">
+        <p className="mt-3 max-w-2xl text-sm text-[var(--button-text-color)]/90">
 
           Organize files with AI powered media tagging,
           cloud sync and realtime optimization.
 
         </p>
 
-        <button className="mt-6 rounded-2xl bg-black px-6 py-3 font-bold text-white">
+        <button className="mt-6 rounded-2xl bg-black px-6 py-3 font-bold text-[var(--button-text-color)]">
 
           Open Media Manager
 
@@ -298,7 +298,7 @@ function StatCard({
 
     <div className="rounded-[28px] border border-white/10 bg-[#151515] p-5">
 
-      <div className="flex h-14 w-14 items-center justify-center rounded-2xl bg-fuchsia-500 text-black">
+      <div className="flex h-14 w-14 items-center justify-center rounded-2xl bg-fuchsia-500 text-[var(--text-color)]">
 
         {icon}
 

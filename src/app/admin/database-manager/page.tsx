@@ -184,7 +184,7 @@ const router = useRouter();
 
     return (
 
-      <div className="flex min-h-screen items-center justify-center bg-black text-white">
+      <div className="flex min-h-screen items-center justify-center bg-black text-[var(--button-text-color)]">
 
         Loading Database...
 
@@ -195,7 +195,7 @@ const router = useRouter();
 
   return (
 
-    <main className="min-h-screen bg-[#0b0b0b] p-4 text-white">
+    <main className="min-h-screen bg-[#0b0b0b] p-4 text-[var(--button-text-color)]">
 
       {/* HEADER */}
 
@@ -272,7 +272,7 @@ const router = useRouter();
           icon={
             <HardDrive size={24} />
           }
-          color="bg-green-500"
+          color="bg-[var(--success-color)]"
         />
 
         <StatsCard
@@ -324,7 +324,7 @@ const router = useRouter();
                       item.name
                     )
                   }
-                  className="flex items-center gap-2 rounded-2xl bg-red-500 px-5 py-3 font-bold"
+                  className="flex items-center gap-2 rounded-2xl bg-[var(--danger-color)] px-5 py-3 font-bold"
                 >
 
                   <Trash2 size={18} />

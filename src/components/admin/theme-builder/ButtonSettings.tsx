@@ -260,7 +260,7 @@ export default function ButtonSettings({
               `${theme.buttonRadius}px`,
             opacity: 0.5,
           }}
-          className="bg-slate-700 text-white"
+          className="bg-slate-700 text-[var(--button-text-color)]"
         >
           Disabled
         </button>
@@ -271,7 +271,7 @@ export default function ButtonSettings({
             borderRadius:
               `${theme.buttonRadius}px`,
           }}
-          className="animate-pulse bg-slate-600 text-white"
+          className="animate-pulse bg-slate-600 text-[var(--button-text-color)]"
         >
           Loading...
         </button>

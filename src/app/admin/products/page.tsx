@@ -609,7 +609,7 @@ export default function ProductsAdminPage() {
           z-50
           border-b
           border-slate-200
-          bg-white/90
+          bg-[var(--card-color)]/90
           backdrop-blur-xl
         "
       >
@@ -690,7 +690,7 @@ export default function ProductsAdminPage() {
               to-purple-500
               text-xs
               font-black
-              text-white
+              text-[var(--button-text-color)]
             "
           >
 
@@ -750,7 +750,7 @@ export default function ProductsAdminPage() {
                 activeTab ===
                 "add"
 
-                  ? "bg-white text-indigo-600 shadow"
+                  ? "bg-[var(--card-color)] text-indigo-600 shadow"
 
                   : "text-slate-500"
               }
@@ -784,7 +784,7 @@ export default function ProductsAdminPage() {
                 activeTab ===
                 "products"
 
-                  ? "bg-white text-indigo-600 shadow"
+                  ? "bg-[var(--card-color)] text-indigo-600 shadow"
 
                   : "text-slate-500"
               }
@@ -813,7 +813,7 @@ export default function ProductsAdminPage() {
               rounded-3xl
               border
               border-slate-200
-              bg-white
+              bg-[var(--card-color)]
               p-5
               shadow-sm
             "
@@ -1226,7 +1226,7 @@ export default function ProductsAdminPage() {
                               size
                             )
 
-                              ? "bg-indigo-600 text-white"
+                              ? "bg-indigo-600 text-[var(--button-text-color)]"
 
                               : "bg-slate-100 text-slate-700"
                           }
@@ -1319,9 +1319,9 @@ export default function ProductsAdminPage() {
                             right-1
                             top-1
                             rounded-full
-                            bg-red-500
+                            bg-[var(--danger-color)]
                             p-1
-                            text-white
+                            text-[var(--button-text-color)]
                           "
                         >
 
@@ -1484,9 +1484,9 @@ export default function ProductsAdminPage() {
                             right-1
                             top-1
                             rounded-full
-                            bg-red-500
+                            bg-[var(--danger-color)]
                             p-1
-                            text-white
+                            text-[var(--button-text-color)]
                           "
                         >
 
@@ -1592,7 +1592,7 @@ export default function ProductsAdminPage() {
                   py-4
                   text-xs
                   font-black
-                  text-white
+                  text-[var(--button-text-color)]
                   shadow-lg
                 "
               >
@@ -1656,9 +1656,9 @@ export default function ProductsAdminPage() {
                         selectedCategory ===
                         cat
 
-                          ? "border-slate-900 bg-slate-900 text-white"
+                          ? "border-slate-900 bg-slate-900 text-[var(--button-text-color)]"
 
-                          : "border-slate-200 bg-white text-slate-600"
+                          : "border-slate-200 bg-[var(--card-color)] text-slate-600"
                       }
                     `}
                   >
@@ -1711,7 +1711,7 @@ export default function ProductsAdminPage() {
                         rounded-3xl
                         border
                         border-slate-200
-                        bg-white
+                        bg-[var(--card-color)]
                         p-4
                         shadow-sm
                       "
@@ -2017,7 +2017,7 @@ export default function ProductsAdminPage() {
                               py-3
                               text-xs
                               font-black
-                              text-white
+                              text-[var(--button-text-color)]
                             "
                           >
 
@@ -2060,7 +2060,7 @@ export default function ProductsAdminPage() {
           justify-around
           border-t
           border-slate-200
-          bg-white/90
+          bg-[var(--card-color)]/90
           backdrop-blur-xl
         "
       >

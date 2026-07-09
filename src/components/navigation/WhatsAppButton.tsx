@@ -23,8 +23,8 @@ export default function WhatsAppButton() {
 
         rounded-full
 
-        bg-green-500
-        text-white
+        bg-[var(--success-color)]
+        text-[var(--button-text-color)]
 
         shadow-2xl
         shadow-green-500/40

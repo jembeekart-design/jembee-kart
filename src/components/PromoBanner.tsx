@@ -43,11 +43,11 @@ export default function PromoBanner() {
           w-full
           overflow-y-auto
           rounded-t-[35px]
-          bg-white
+          bg-[var(--card-color)]
           px-5
           pb-6
           pt-5
-          text-black
+          text-[var(--text-color)]
           shadow-2xl
         "
       >
@@ -68,13 +68,13 @@ export default function PromoBanner() {
             gap-2
             rounded-full
             border
-            border-gray-200
-            bg-gray-100
+            border-[var(--border-color)]
+            bg-[var(--background-color)]
             px-4
             py-2
             text-[13px]
             font-black
-            text-black
+            text-[var(--text-color)]
             shadow-sm
           "
         >
@@ -114,7 +114,7 @@ export default function PromoBanner() {
 
             </h2>
 
-            <p className="mt-1 text-[12px] font-semibold text-gray-500">
+            <p className="mt-1 text-[12px] font-semibold text-[var(--muted-text-color)]">
 
               MLM • Reseller • Affiliate
 
@@ -128,7 +128,7 @@ export default function PromoBanner() {
 
         <div className="mt-5">
 
-          <h3 className="text-[24px] font-black leading-[30px] text-black">
+          <h3 className="text-[24px] font-black leading-[30px] text-[var(--text-color)]">
 
             Start Earning
             <br />
@@ -136,7 +136,7 @@ export default function PromoBanner() {
 
           </h3>
 
-          <p className="mt-3 text-[13px] leading-6 text-gray-600">
+          <p className="mt-3 text-[13px] leading-6 text-[var(--muted-text-color)]">
 
             Invite people, sell products,
             share affiliate links and
@@ -189,13 +189,13 @@ export default function PromoBanner() {
 
               <div>
 
-                <h3 className="text-[15px] font-black text-black">
+                <h3 className="text-[15px] font-black text-[var(--text-color)]">
 
                   MLM Income
 
                 </h3>
 
-                <p className="text-[11px] text-gray-600">
+                <p className="text-[11px] text-[var(--muted-text-color)]">
 
                   Team build karke earning
 
@@ -245,13 +245,13 @@ export default function PromoBanner() {
 
               <div>
 
-                <h3 className="text-[15px] font-black text-black">
+                <h3 className="text-[15px] font-black text-[var(--text-color)]">
 
                   Reseller Program
 
                 </h3>
 
-                <p className="text-[11px] text-gray-600">
+                <p className="text-[11px] text-[var(--muted-text-color)]">
 
                   Without stock selling
 
@@ -301,13 +301,13 @@ export default function PromoBanner() {
 
               <div>
 
-                <h3 className="text-[15px] font-black text-black">
+                <h3 className="text-[15px] font-black text-[var(--text-color)]">
 
                   Affiliate Rewards
 
                 </h3>
 
-                <p className="text-[11px] text-gray-600">
+                <p className="text-[11px] text-[var(--muted-text-color)]">
 
                   Share links & earn commission
 
@@ -334,7 +334,7 @@ export default function PromoBanner() {
             py-3
             text-[15px]
             font-black
-            text-white
+            text-[var(--button-text-color)]
             shadow-lg
           "
         >
