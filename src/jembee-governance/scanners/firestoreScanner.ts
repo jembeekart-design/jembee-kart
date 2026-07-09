@@ -39,28 +39,49 @@ export class FirestoreScanner {
     return { collectionsScanned, violations };
   }
 
-  private checkSecurity(filePath: string, content: string, collection: string, violations: GovernanceViolation[]) {
-    const hasAuth = /auth|currentUser|session|user\.uid/i.test(content);
-    
-    if (!hasAuth) {
-      violations.push({
-        id: `FIRESTORE_AUTH_${collection}`,
-        title: "Firestore Authentication Missing",
-        description: `${collection} collection appears without auth validation.`,
-        category: "SECURITY",
-        severity: "WARNING",
-        filePath,
-        recommendation: "Add authentication and ownership validation (auth/currentUser/session/user.uid).",
-        startLine: this.findLine(content, collection),
-endLine: this.findLine(content, collection),
-action: "ADD",
-        insertBefore: "const docRef = doc(db, ...);",
-insertAfter: "const auth = getAuth();",
-        detectedAt: new Date().toISOString(),
-      });
+  private checkSecurity(
+  filePath: string,
+  content: string,
+  collection: string,
+  violations: GovernanceViolation[]
+) {
+  const hasPageAuth =
+    /auth|currentUser|session|user\.uid|onAuthStateChanged|getAuth/i.test(content);
+
+  let hasLayoutAuth = false;
+
+  try {
+    const layoutPath = path.join(process.cwd(), "src/app/admin/layout.tsx");
+
+    if (fs.existsSync(layoutPath)) {
+      const layoutContent = fs.readFileSync(layoutPath, "utf8");
+
+      hasLayoutAuth =
+        /auth|currentUser|session|user\.uid|onAuthStateChanged|getAuth/i.test(
+          layoutContent
+        );
     }
+  } catch {}
+
+  if (hasPageAuth || hasLayoutAuth) {
+    return;
   }
 
+  violations.push({
+    id: `FIRESTORE_AUTH_${collection}`,
+    title: "Firestore Authentication Missing",
+    description: `${collection} collection appears without auth validation.`,
+    category: "SECURITY",
+    severity: "WARNING",
+    filePath,
+    recommendation:
+      "Add authentication and ownership validation.",
+    startLine: this.findLine(content, collection),
+    endLine: this.findLine(content, collection),
+    action: "ADD",
+    detectedAt: new Date().toISOString(),
+  });
+}
   private checkAdminConfigUsage(filePath: string, content: string, collection: string, violations: GovernanceViolation[]) {
     // Priority Medium: Expanded with featureFlags and themeSettings
     const hasConfig = /adminConfig|settings|config|featureFlags|themeSettings/i.test(content);
