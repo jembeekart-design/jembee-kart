@@ -4,17 +4,6 @@ import { doc, getDoc } from "firebase/firestore";
 import { db } from "@/firebase/config";
 import type { Theme } from "@/types/theme";
 
-// Default theme object (taaki build time par empty na rahe)
-const defaultTheme: Theme = {
-  primaryColor: "#3b82f6",
-  secondaryColor: "#64748b",
-  backgroundColor: "#ffffff",
-  surfaceColor: "#f8fafc",
-  cardColor: "#ffffff",
-  textColor: "#0f172a",
-  // ... baki sabhi required fields default values ke saath
-} as Theme;
-
 interface ThemeContextType {
   theme: Theme;
   setTheme: React.Dispatch<React.SetStateAction<Theme>>;
@@ -23,8 +12,7 @@ interface ThemeContextType {
 export const ThemeContext = createContext<ThemeContextType>({} as ThemeContextType);
 
 export function ThemeProvider({ children }: { children: React.ReactNode }) {
-  // useState ko 'defaultTheme' se initialize karein, 'null' se nahi
-  const [theme, setTheme] = useState<Theme>(defaultTheme);
+  const [theme, setTheme] = useState<Theme>({} as Theme);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
@@ -44,14 +32,15 @@ export function ThemeProvider({ children }: { children: React.ReactNode }) {
   }, []);
 
   useEffect(() => {
+    if (!theme || Object.keys(theme).length === 0) return;
     const root = document.documentElement;
+    // Saare CSS Variables yahan define karein
     root.style.setProperty("--primary-color", theme.primaryColor);
-    root.style.setProperty("--secondary-color", theme.secondaryColor);
-    // ... baki properties
+    root.style.setProperty("--background-color", theme.backgroundColor);
+    root.style.setProperty("--text-color", theme.textColor);
   }, [theme]);
 
-  // Loading state handling
-  if (loading) return null; 
+  if (loading) return null;
 
   return (
     <ThemeContext.Provider value={{ theme, setTheme }}>
