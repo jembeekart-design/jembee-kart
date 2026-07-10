@@ -91,3 +91,10 @@ canvas {
 .theme-primary-soft-text {
   color: var(--primary-color);
 }
+/* Product Card Underline Component */
+.card-accent-border {
+  border-bottom: 4px solid var(--primary-color);
+  padding-bottom: 2px;
+  display: inline-block;
+  margin-bottom: 10px;
+}
