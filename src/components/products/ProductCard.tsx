@@ -51,20 +51,18 @@ export default function ProductCard({
   /* RANDOM CARD COLOR */
 
   return (
-    <div
+        <div
       className="
-  overflow-hidden
-  rounded-[24px]
-  p-[1.5px]
-  shadow-md
-  transition-all
-  duration-300
-  hover:-translate-y-1
-"
-style={{
-  background: "var(--primary-color)"
-}}
+        overflow-hidden
+        rounded-[24px]
+        jembee-border
+        shadow-md
+        transition-all
+        duration-300
+        hover:-translate-y-1
+      "
     >
+
 
       <div
         className="
@@ -173,14 +171,20 @@ style={{
 
           {/* TITLE */}
 
-          <h3
-            className="
-              truncate
-              text-[13px]
-              font-bold
-              text-[var(--text-color)]
-            "
-          >
+                    {/* TITLE */}
+          <div className="card-accent-border">
+            <h3
+              className="
+                truncate
+                text-[13px]
+                font-bold
+                text-[var(--text-color)]
+              "
+            >
+              {title}
+            </h3>
+          </div>
+
 
             {title}
 
