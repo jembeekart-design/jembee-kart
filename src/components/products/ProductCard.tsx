@@ -171,7 +171,6 @@ export default function ProductCard({
 
           {/* TITLE */}
 
-                    {/* TITLE */}
           <div className="card-accent-border">
             <h3
               className="
