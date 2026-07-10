@@ -1,6 +1,6 @@
 "use client";
 import { useState, useEffect } from "react";
-import { doc, getDoc, setDoc } from "firebase/firestore";
+import { doc, setDoc } from "firebase/firestore";
 import { db } from "@/firebase/config";
 import { useTheme } from "@/context/ThemeContext";
 import ThemeEditor from "./ThemeEditor";
@@ -13,27 +13,11 @@ export default function ThemeBuilderPage() {
   const [localTheme, setLocalTheme] = useState<Theme>(theme);
   const [saving, setSaving] = useState(false);
 
-  // 1. LOAD: पेज रिफ्रेश होते ही Firebase से सेव्ड डेटा लाएं
+  // Sync agar context badle
   useEffect(() => {
-    async function fetchSavedTheme() {
-      try {
-        const docRef = doc(db, "admin_settings", "customize");
-        const docSnap = await getDoc(docRef);
-        
-        if (docSnap.exists()) {
-          const savedData = docSnap.data() as Theme;
-          setLocalTheme(savedData); // स्टेट अपडेट करें
-          setTheme(savedData);      // कॉन्टेक्स्ट अपडेट करें
-          console.log("Firebase से थीम लोड हुई:", savedData);
-        }
-      } catch (error) {
-        console.error("थीम लोड करने में एरर:", error);
-      }
-    }
-    fetchSavedTheme();
-  }, [setTheme]);
+    setLocalTheme(theme);
+  }, [theme]);
 
-  // 2. SAVE: फायरबेस में सेव करने का फंक्शन
   async function saveTheme() {
     setSaving(true);
     try {
@@ -61,7 +45,7 @@ export default function ThemeBuilderPage() {
             onReset={() => setLocalTheme(theme)}
             onApply={() => setTheme(localTheme)}
             onGenerateAI={() => alert("Coming Soon!")}
-            onUndo={() => {}} // यहाँ अपनी हिस्ट्री लॉजिक रखें
+            onUndo={() => {}}
          />
        </div>
     </main>
