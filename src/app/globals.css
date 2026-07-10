@@ -6,6 +6,7 @@
   --background-color: #F8F9FE;
   --card-color: #FFFFFF;
   --text-color: #111827;
+  --border-color: #000000; /* Theme Builder ke liye naya variable */
 }
 
 html,
@@ -44,56 +45,34 @@ canvas {
 
 /* GLOBAL THEME CLASSES */
 
-.theme-primary-bg {
-  background: var(--primary-color);
-}
-
-.theme-secondary-bg {
-  background: var(--secondary-color);
-}
-
-.theme-primary-text {
-  color: var(--primary-color);
-}
-
-.theme-secondary-text {
-  color: var(--secondary-color);
-}
-
-.theme-card {
-  background: var(--card-color);
-}
-
-.theme-page {
-  background: var(--background-color);
-  color: var(--text-color);
-}
+.theme-primary-bg { background: var(--primary-color); }
+.theme-secondary-bg { background: var(--secondary-color); }
+.theme-primary-text { color: var(--primary-color); }
+.theme-secondary-text { color: var(--secondary-color); }
+.theme-card { background: var(--card-color); }
+.theme-page { background: var(--background-color); color: var(--text-color); }
 
 .theme-gradient {
-  background: linear-gradient(
-    135deg,
-    var(--primary-color),
-    var(--secondary-color)
-  );
-}
-.theme-primary-border {
-  border-color: var(--primary-color);
+  background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
 }
 
-.theme-secondary-border {
-  border-color: var(--secondary-color);
-}
+.theme-primary-border { border-color: var(--primary-color); }
+.theme-secondary-border { border-color: var(--secondary-color); }
 
 .theme-primary-soft {
   background: color-mix(in srgb, var(--primary-color) 20%, transparent);
 }
+.theme-primary-soft-text { color: var(--primary-color); }
 
-.theme-primary-soft-text {
-  color: var(--primary-color);
+/* Product Card Components - Ab --border-color se control honge */
+
+.jembee-border {
+  border: 2px solid var(--border-color);
+  border-radius: 12px;
 }
-/* Product Card Underline Component */
+
 .card-accent-border {
-  border-bottom: 4px solid var(--secondary-color);
+  border-bottom: 4px solid var(--border-color);
   padding-bottom: 2px;
   display: inline-block;
   margin-bottom: 10px;
