@@ -106,6 +106,24 @@ function walk(dir: string) {
       .replace(/\bfocus:bg-[a-z-]+-\d+\b/g, "focus:bg-[var(--primary-color)]")
       .replace(/\bfocus:text-[a-z-]+-\d+\b/g, "focus:text-[var(--text-color)]")
       .replace(/\bfocus:border-[a-z-]+-\d+\b/g, "focus:border-[var(--border-color)]")
+
+      // Hex Colors
+.replace(/#[0-9A-Fa-f]{3,8}/g, "var(--primary-color)")
+
+// Background
+.replace(/\bbg-(red|blue|green|yellow|purple|pink|orange|indigo|gray|slate|zinc|neutral|stone|emerald|lime|cyan|sky|teal|violet|rose|fuchsia|amber)-\d+(\/\d+)?\b/g, "bg-[var(--primary-color)]")
+
+// Text
+.replace(/\btext-(red|blue|green|yellow|purple|pink|orange|indigo|gray|slate|zinc|neutral|stone|emerald|lime|cyan|sky|teal|violet|rose|fuchsia|amber)-\d+(\/\d+)?\b/g, "text-[var(--primary-color)]")
+
+// Border
+.replace(/\bborder-(red|blue|green|yellow|purple|pink|orange|indigo|gray|slate|zinc|neutral|stone|emerald|lime|cyan|sky|teal|violet|rose|fuchsia|amber)-\d+(\/\d+)?\b/g, "border-[var(--border-color)]")
+
+// Ring
+.replace(/\bring-(red|blue|green|yellow|purple|pink|orange|indigo|gray|slate|zinc|neutral|stone|emerald|lime|cyan|sky|teal|violet|rose|fuchsia|amber)-\d+\b/g, "ring-[var(--primary-color)]")
+
+// Shadow
+.replace(/\bshadow-[a-z-]+-\d+(\/\d+)?\b/g, "shadow")
       
       // Gradient
       .replace(/\bfrom-[a-z-]+-\d+\b/g, "from-[var(--primary-color)]")
