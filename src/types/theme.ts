@@ -48,8 +48,8 @@ export interface Theme {
   // Button Builder Fields
   buttonStyle: "filled" | "outline" | "soft" | "ghost" | "gradient" | "glass" | "3d";
   buttonSize: "sm" | "md" | "lg";
-  buttonHoverEffect: "scale" | "lift" | "none"; | "shadow";
-  buttonIconPosition?: "left" | "right"; // Error Fix: Added this
+  buttonHoverEffect: "scale" | "lift" | "shadow" | "none";
+  buttonIconPosition: "left" | "right";
   
   // Animations & Others
   animationStyle: "fade" | "scale" | "slide" | "rotate" | "bounce";
