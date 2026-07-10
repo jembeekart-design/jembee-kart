@@ -184,11 +184,6 @@ export default function ProductCard({
             </h3>
           </div>
 
-
-            {title}
-
-          </h3>
-
           {/* SUBTITLE */}
 
           <p
