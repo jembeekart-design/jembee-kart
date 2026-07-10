@@ -1,6 +1,7 @@
 // types/theme.ts
+
 export interface Theme {
-  // Colors
+  // --- Colors ---
   primaryColor: string;
   secondaryColor: string;
   backgroundColor: string;
@@ -24,7 +25,7 @@ export interface Theme {
   hoverColor: string;
   activeColor: string;
 
-  // Typography
+  // --- Typography ---
   fontFamily: string;
   headingFont: string;
   bodyFont: string;
@@ -35,7 +36,7 @@ export interface Theme {
   textTransform: "none" | "uppercase" | "capitalize" | "lowercase";
   fontWeight: string;
 
-  // Components & Effects
+  // --- Components & Effects ---
   borderRadius: number;
   buttonRadius: number;
   cardRadius: number;
@@ -43,8 +44,13 @@ export interface Theme {
   borderWidth: number;
   shadow: string;
   shadowOpacity: number;
+  
+  // Button Builder Fields
   buttonStyle: "filled" | "outline" | "ghost" | "gradient" | "glass" | "3d";
   buttonSize: "sm" | "md" | "lg";
   buttonHoverEffect: "scale" | "lift" | "none";
+  buttonIconPosition?: "left" | "right"; // Error Fix: Added this
+  
+  // Animations & Others
   animationStyle: "fade" | "scale" | "slide" | "rotate" | "bounce";
 }
