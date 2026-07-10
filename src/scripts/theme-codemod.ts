@@ -4,35 +4,35 @@ import path from "path";
 const ROOT = path.join(process.cwd(), "src");
 
 const replacements: Record<string, string> = {
-  "bg-white": "bg-[var(--background-color)]",
-  "bg-black": "bg-[var(--card-color)]",
+  "bg-[var(--background-color)]": "bg-[var(--background-color)]",
+  "bg-[var(--card-color)]": "bg-[var(--card-color)]",
 
-  "text-black": "text-[var(--text-color)]",
-  "text-white": "text-[var(--button-text-color)]",
+  "text-[var(--text-color)]": "text-[var(--text-color)]",
+  "text-[var(--button-text-color)]": "text-[var(--button-text-color)]",
 
-  "bg-gray-50": "bg-[var(--background-color)]",
-  "bg-gray-100": "bg-[var(--card-color)]",
-  "bg-gray-200": "bg-[var(--card-color)]",
+  "bg-[var(--background-color)]": "bg-[var(--background-color)]",
+  "bg-[var(--card-color)]": "bg-[var(--card-color)]",
+  "bg-[var(--card-color)]": "bg-[var(--card-color)]",
 
-  "text-gray-400": "text-[var(--muted-text-color)]",
-  "text-gray-500": "text-[var(--muted-text-color)]",
-  "text-gray-600": "text-[var(--muted-text-color)]",
-  "text-gray-700": "text-[var(--text-color)]",
+  "text-[var(--muted-text-color)]": "text-[var(--muted-text-color)]",
+  "text-[var(--muted-text-color)]": "text-[var(--muted-text-color)]",
+  "text-[var(--muted-text-color)]": "text-[var(--muted-text-color)]",
+  "text-[var(--text-color)]": "text-[var(--text-color)]",
 
-  "border-gray-200": "border-[var(--border-color)]",
-  "border-gray-300": "border-[var(--border-color)]",
+  "border-[var(--border-color)]": "border-[var(--border-color)]",
+  "border-[var(--border-color)]": "border-[var(--border-color)]",
 
-  "bg-blue-500": "bg-[var(--primary-color)]",
-  "text-blue-500": "text-[var(--primary-color)]",
+  "bg-[var(--primary-color)]": "bg-[var(--primary-color)]",
+  "text-[var(--primary-color)]": "text-[var(--primary-color)]",
 
-  "bg-green-500": "bg-[var(--success-color)]",
-  "text-green-500": "text-[var(--success-color)]",
+  "bg-[var(--success-color)]": "bg-[var(--success-color)]",
+  "text-[var(--success-color)]": "text-[var(--success-color)]",
 
-  "bg-red-500": "bg-[var(--danger-color)]",
-  "text-red-500": "text-[var(--danger-color)]",
+  "bg-[var(--danger-color)]": "bg-[var(--danger-color)]",
+  "text-[var(--danger-color)]": "text-[var(--danger-color)]",
 
-  "bg-yellow-500": "bg-[var(--warning-color)]",
-  "text-yellow-500": "text-[var(--warning-color)]",
+  "bg-[var(--warning-color)]": "bg-[var(--warning-color)]",
+  "text-[var(--warning-color)]": "text-[var(--warning-color)]",
 };
 
 function walk(dir: string) {

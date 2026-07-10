@@ -402,9 +402,9 @@ function RegistrationForm() {
         </form>
 
         <div className="my-6 flex items-center">
-          <div className="h-px flex-1 bg-gray-200" />
+          <div className="h-px flex-1 bg-[var(--card-color)]" />
           <span className="px-4 text-xs font-bold text-[var(--muted-text-color)]">OR</span>
-          <div className="h-px flex-1 bg-gray-200" />
+          <div className="h-px flex-1 bg-[var(--card-color)]" />
         </div>
 
         <button

@@ -251,7 +251,7 @@ export default function UsersPage() {
                     onClick={() => toggleWalletLock(user.id, !!user.walletLocked)}
                     className={`flex h-10 w-10 items-center justify-center rounded-xl transition ${
                       user.walletLocked
-                        ? "bg-[var(--warning-color)]/20 text-yellow-500 hover:bg-[var(--warning-color)]/30"
+                        ? "bg-[var(--warning-color)]/20 text-[var(--warning-color)] hover:bg-[var(--warning-color)]/30"
                         : "bg-[var(--card-color)]/5 text-[var(--muted-text-color)] hover:bg-[var(--card-color)]/10"
                     }`}
                     title={user.walletLocked ? "Unlock Wallet" : "Lock Wallet"}
