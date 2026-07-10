@@ -37,7 +37,8 @@ export interface Theme {
   fontWeight: string;
 
   // --- Components & Effects ---
-  borderRadius: number;
+  // Fix: string | number allow kiya taaki '24px' ya 24 dono chalein
+  borderRadius: string | number; 
   buttonRadius: number;
   cardRadius: number;
   inputRadius: number;
