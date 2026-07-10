@@ -256,12 +256,12 @@ style={{
               mt-2
               inline-block
               rounded-lg
-              bg-green-100
+              bg-[var(--success-color)]
               px-2
               py-[4px]
               text-[10px]
               font-bold
-              text-green-700
+              text-[var(--success-color)]
             "
           >
 

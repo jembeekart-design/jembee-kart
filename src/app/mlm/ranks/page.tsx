@@ -35,7 +35,7 @@ export default function MLMRanksPage() {
     {
       title: "Bronze Leader",
       color:
-        "from-orange-400 to-orange-600",
+        "from-[var(--primary-color)] to-[var(--primary-color)]",
       reward: "₹1,000 Bonus",
       members: 10
     },
@@ -43,7 +43,7 @@ export default function MLMRanksPage() {
     {
       title: "Silver Leader",
       color:
-        "from-gray-300 to-gray-500",
+        "from-[var(--primary-color)] to-[var(--primary-color)]",
       reward: "₹5,000 Bonus",
       members: 50
     },
@@ -51,7 +51,7 @@ export default function MLMRanksPage() {
     {
       title: "Gold Leader",
       color:
-        "from-yellow-400 to-yellow-600",
+        "from-[var(--primary-color)] to-[var(--primary-color)]",
       reward: "₹15,000 Bonus",
       members: 100
     },
@@ -59,7 +59,7 @@ export default function MLMRanksPage() {
     {
       title: "Diamond Leader",
       color:
-        "from-cyan-400 to-blue-600",
+        "from-[var(--primary-color)] to-[var(--primary-color)]",
       reward: "₹50,000 Bonus",
       members: 200
     },
@@ -67,7 +67,7 @@ export default function MLMRanksPage() {
     {
       title: "Crown Leader",
       color:
-        "from-violet-600 to-fuchsia-600",
+        "from-[var(--primary-color)] to-[var(--primary-color)]",
       reward: "₹1 Lakh Bonus",
       members: 500
     }
@@ -76,7 +76,7 @@ export default function MLMRanksPage() {
 
   return (
 
-    <main className="min-h-screen bg-[#f6f6f6] pb-24">
+    <main className="min-h-screen bg-[var(--primary-color)] pb-24">
 
       {/* HEADER */}
 
@@ -103,8 +103,8 @@ export default function MLMRanksPage() {
               items-center
               justify-center
               rounded-full
-              bg-yellow-100
-              text-yellow-700
+              bg-[var(--warning-color)]
+              text-[var(--warning-color)]
             "
           >
 
@@ -114,7 +114,7 @@ export default function MLMRanksPage() {
 
           <div>
 
-            <h1 className="text-[24px] font-black text-yellow-700">
+            <h1 className="text-[24px] font-black text-[var(--warning-color)]">
 
               MLM Ranks
 
@@ -141,9 +141,9 @@ export default function MLMRanksPage() {
             overflow-hidden
             rounded-[32px]
             bg-gradient-to-br
-            from-yellow-500
-            via-orange-500
-            to-pink-500
+            from-[var(--primary-color)]
+            via-[var(--primary-color)]
+            to-[var(--primary-color)]
             p-5
             text-[var(--button-text-color)]
             shadow-xl
@@ -207,7 +207,7 @@ export default function MLMRanksPage() {
 
             <Gem
               size={26}
-              className="text-cyan-600"
+              className="text-[var(--primary-color)]"
             />
 
             <div>
@@ -238,7 +238,7 @@ export default function MLMRanksPage() {
 
               </h3>
 
-              <p className="text-[12px] font-bold text-violet-700">
+              <p className="text-[12px] font-bold text-[var(--primary-color)]">
 
                 {currentTeam}/{nextTarget}
 
@@ -266,8 +266,8 @@ export default function MLMRanksPage() {
                   h-full
                   rounded-full
                   bg-gradient-to-r
-                  from-violet-600
-                  to-fuchsia-600
+                  from-[var(--primary-color)]
+                  to-[var(--primary-color)]
                 "
               />
 
@@ -276,7 +276,7 @@ export default function MLMRanksPage() {
             <p className="mt-3 text-[12px] text-[var(--muted-text-color)]">
 
               Sirf{" "}
-              <span className="font-black text-violet-700">
+              <span className="font-black text-[var(--primary-color)]">
 
                 {remaining} members
 
@@ -410,7 +410,7 @@ export default function MLMRanksPage() {
                 items-center
                 gap-3
                 rounded-2xl
-                bg-yellow-50
+                bg-[var(--warning-color)]
                 p-4
               "
             >
@@ -444,14 +444,14 @@ export default function MLMRanksPage() {
                 items-center
                 gap-3
                 rounded-2xl
-                bg-violet-50
+                bg-[var(--primary-color)]
                 p-4
               "
             >
 
               <Shield
                 size={24}
-                className="text-violet-700"
+                className="text-[var(--primary-color)]"
               />
 
               <div>

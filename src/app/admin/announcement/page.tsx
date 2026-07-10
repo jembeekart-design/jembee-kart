@@ -175,7 +175,7 @@ export default function AnnouncementPage() {
 
   return (
 
-    <main className="min-h-screen bg-[#0b0b0b] p-4 text-[var(--button-text-color)]">
+    <main className="min-h-screen bg-[var(--primary-color)] p-4 text-[var(--button-text-color)]">
 
       {/* HEADER */}
 
@@ -203,7 +203,7 @@ export default function AnnouncementPage() {
 
       {/* CREATE */}
 
-      <div className="rounded-[30px] bg-[#151515] p-5">
+      <div className="rounded-[30px] bg-[var(--primary-color)] p-5">
 
         <h2 className="mb-5 text-2xl font-black">
           Create Announcement
@@ -261,7 +261,7 @@ export default function AnnouncementPage() {
 
         {announcements.length === 0 && (
 
-          <div className="rounded-[30px] bg-[#151515] p-10 text-center">
+          <div className="rounded-[30px] bg-[var(--primary-color)] p-10 text-center">
 
             No Announcements Found
 
@@ -274,7 +274,7 @@ export default function AnnouncementPage() {
 
             <div
               key={item.id}
-              className="rounded-[30px] bg-[#151515] p-5"
+              className="rounded-[30px] bg-[var(--primary-color)] p-5"
             >
 
               <div className="flex flex-col gap-5 md:flex-row md:items-start md:justify-between">
@@ -298,7 +298,7 @@ export default function AnnouncementPage() {
 
                   </div>
 
-                  <p className="mt-4 text-gray-300">
+                  <p className="mt-4 text-[var(--text-color)]">
 
                     {item.message}
 

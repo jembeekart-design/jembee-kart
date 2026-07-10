@@ -214,13 +214,13 @@ export default function AdminSidebar() {
 
   return (
 
-    <aside className="hidden h-screen w-[280px] overflow-y-auto border-r border-white/10 bg-[#0b0b0b] p-5 text-[var(--button-text-color)] lg:block">
+    <aside className="hidden h-screen w-[280px] overflow-y-auto border-r border-[var(--border-color)]/10 bg-[var(--primary-color)] p-5 text-[var(--button-text-color)] lg:block">
 
       {/* LOGO */}
 
       <div className="mb-8 flex items-center gap-3">
 
-        <div className="flex h-14 w-14 items-center justify-center rounded-2xl bg-cyan-500 text-[var(--text-color)]">
+        <div className="flex h-14 w-14 items-center justify-center rounded-2xl bg-[var(--primary-color)] text-[var(--text-color)]">
 
           <LayoutDashboard size={28} />
 
@@ -259,8 +259,8 @@ export default function AdminSidebar() {
               href={item.href}
               className={`flex items-center gap-4 rounded-2xl px-4 py-4 transition-all duration-300 ${
                 active
-                  ? "bg-cyan-500 text-[var(--text-color)]"
-                  : "bg-[#151515] hover:bg-cyan-500 hover:text-[var(--text-color)]"
+                  ? "bg-[var(--primary-color)] text-[var(--text-color)]"
+                  : "bg-[var(--primary-color)] hover:bg-[var(--primary-color)] hover:text-[var(--text-color)]"
               }`}
             >
 
@@ -282,13 +282,13 @@ export default function AdminSidebar() {
 
       {/* FOOTER */}
 
-      <div className="mt-10 rounded-3xl border border-cyan-500/30 bg-cyan-500/10 p-5">
+      <div className="mt-10 rounded-3xl border border-[var(--primary-color)]/30 bg-[var(--primary-color)]/10 p-5">
 
         <h2 className="text-lg font-black">
           Admin System
         </h2>
 
-        <p className="mt-2 text-sm text-gray-300">
+        <p className="mt-2 text-sm text-[var(--text-color)]">
 
           Manage products, orders, users, AI tools,
           marketing, payments and analytics.

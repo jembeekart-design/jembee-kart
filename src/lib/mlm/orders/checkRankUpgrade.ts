@@ -31,7 +31,7 @@ interface RankUpgradeResponse {
 }
 
 /**
- * File #125: checkRankUpgrade.ts — Absolute Concurrency-Locked Rank Advancement Engine
+ * File var(--primary-color): checkRankUpgrade.ts — Absolute Concurrency-Locked Rank Advancement Engine
  * Status: 10/10 PLATINUM PRODUCTION ENTERPRISE CERTIFIED — BUILD FIXED ✅
  * 
  * RESOLUTIONS RESOLVED (BUILD FIX):
@@ -172,7 +172,7 @@ export async function checkRankUpgrade(userId: string): Promise<RankUpgradeRespo
     const { oldRank, newRank } = transactionResult;
     console.log(`[RANK ENGINE EVOLUTION]: UID ${cleanUserId} elevated from [${oldRank}] to [${newRank}].`);
 
-    // Fire automated distribution script pipeline instantly (Hooks into File #127)
+    // Fire automated distribution script pipeline instantly (Hooks into File var(--primary-color))
     createRankReward({
       userId: cleanUserId,
       achievedRankId: newRank!

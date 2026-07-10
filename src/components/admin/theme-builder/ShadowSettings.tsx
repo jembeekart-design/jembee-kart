@@ -48,7 +48,7 @@ export default function ShadowSettings({
 
   return (
 
-    <div className="rounded-2xl border border-slate-700 bg-slate-950 p-6">
+    <div className="rounded-2xl border border-[var(--border-color)] bg-[var(--card-color)] p-6">
 
       <h2 className="mb-6 text-2xl font-bold">
         Shadow Settings
@@ -71,7 +71,7 @@ export default function ShadowSettings({
                   .value as Theme["shadow"],
               }))
             }
-            className="w-full rounded-lg border border-slate-700 bg-slate-800 px-4 py-3"
+            className="w-full rounded-lg border border-[var(--border-color)] bg-[var(--card-color)] px-4 py-3"
           >
 
             <option value="none">
@@ -121,7 +121,7 @@ export default function ShadowSettings({
             className="w-full"
           />
 
-          <p className="mt-2 text-sm text-slate-400">
+          <p className="mt-2 text-sm text-[var(--text-color)]">
             {opacity}
           </p>
 
@@ -150,7 +150,7 @@ export default function ShadowSettings({
             className="w-full"
           />
 
-          <p className="mt-2 text-sm text-slate-400">
+          <p className="mt-2 text-sm text-[var(--text-color)]">
             {borderWidth}px
           </p>
 

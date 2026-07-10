@@ -80,7 +80,7 @@ export default function ProfitabilityEditDialog({
 
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-[var(--card-color)]/60">
 
-      <div className="w-full max-w-lg rounded-xl bg-slate-900 p-6">
+      <div className="w-full max-w-lg rounded-xl bg-[var(--card-color)] p-6">
 
         <h2 className="text-2xl font-bold">
           Edit Profitability Rules
@@ -102,7 +102,7 @@ export default function ProfitabilityEditDialog({
                   Number(e.target.value)
                 )
               }
-              className="w-full rounded border border-slate-700 bg-slate-800 p-2"
+              className="w-full rounded border border-[var(--border-color)] bg-[var(--card-color)] p-2"
             />
           </div>
 
@@ -120,7 +120,7 @@ export default function ProfitabilityEditDialog({
                   Number(e.target.value)
                 )
               }
-              className="w-full rounded border border-slate-700 bg-slate-800 p-2"
+              className="w-full rounded border border-[var(--border-color)] bg-[var(--card-color)] p-2"
             />
           </div>
 
@@ -138,7 +138,7 @@ export default function ProfitabilityEditDialog({
                   Number(e.target.value)
                 )
               }
-              className="w-full rounded border border-slate-700 bg-slate-800 p-2"
+              className="w-full rounded border border-[var(--border-color)] bg-[var(--card-color)] p-2"
             />
           </div>
 
@@ -156,7 +156,7 @@ export default function ProfitabilityEditDialog({
                   Number(e.target.value)
                 )
               }
-              className="w-full rounded border border-slate-700 bg-slate-800 p-2"
+              className="w-full rounded border border-[var(--border-color)] bg-[var(--card-color)] p-2"
             />
           </div>
 
@@ -174,7 +174,7 @@ export default function ProfitabilityEditDialog({
                   Number(e.target.value)
                 )
               }
-              className="w-full rounded border border-slate-700 bg-slate-800 p-2"
+              className="w-full rounded border border-[var(--border-color)] bg-[var(--card-color)] p-2"
             />
           </div>
 
@@ -192,7 +192,7 @@ export default function ProfitabilityEditDialog({
                   Number(e.target.value)
                 )
               }
-              className="w-full rounded border border-slate-700 bg-slate-800 p-2"
+              className="w-full rounded border border-[var(--border-color)] bg-[var(--card-color)] p-2"
             />
           </div>
 
@@ -202,7 +202,7 @@ export default function ProfitabilityEditDialog({
 
           <button
             onClick={onClose}
-            className="rounded bg-slate-700 px-4 py-2"
+            className="rounded bg-[var(--card-color)] px-4 py-2"
           >
             Cancel
           </button>
@@ -210,7 +210,7 @@ export default function ProfitabilityEditDialog({
           <button
             onClick={handleSave}
             disabled={saving}
-            className="rounded bg-indigo-600 px-4 py-2"
+            className="rounded bg-[var(--primary-color)] px-4 py-2"
           >
             {saving ? "Saving..." : "Save"}
           </button>

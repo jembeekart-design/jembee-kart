@@ -16,17 +16,17 @@ export default function ThemeBuilderPage() {
 
   const [theme, setLocalTheme] = useState<Theme>({
 
-    primaryColor: "#4F46E5",
+    primaryColor: "var(--primary-color)",
 
-    secondaryColor: "#7C3AED",
+    secondaryColor: "var(--primary-color)",
 
-    backgroundColor: "#F8F9FE",
+    backgroundColor: "var(--primary-color)",
 
-    cardColor: "#FFFFFF",
+    cardColor: "var(--primary-color)",
 
-    textColor: "#111827",
+    textColor: "var(--primary-color)",
 
-    borderColor: "#E5E7EB",
+    borderColor: "var(--primary-color)",
 
     borderRadius: "24",
 
@@ -145,17 +145,17 @@ export default function ThemeBuilderPage() {
 
     setLocalTheme({
 
-      primaryColor: "#4F46E5",
+      primaryColor: "var(--primary-color)",
 
-      secondaryColor: "#7C3AED",
+      secondaryColor: "var(--primary-color)",
 
-      backgroundColor: "#F8F9FE",
+      backgroundColor: "var(--primary-color)",
 
-      cardColor: "#FFFFFF",
+      cardColor: "var(--primary-color)",
 
-      textColor: "#111827",
+      textColor: "var(--primary-color)",
 
-      borderColor: "#E5E7EB",
+      borderColor: "var(--primary-color)",
 
       borderRadius: "24",
 

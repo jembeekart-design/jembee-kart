@@ -143,7 +143,7 @@ export default function APIPage() {
 
   return (
 
-    <main className="min-h-screen bg-[#0b0b0b] p-4 text-[var(--button-text-color)]">
+    <main className="min-h-screen bg-[var(--primary-color)] p-4 text-[var(--button-text-color)]">
 
       {/* HEADER */}
 
@@ -151,7 +151,7 @@ export default function APIPage() {
 
         <div className="flex items-center gap-4">
 
-          <div className="flex h-16 w-16 items-center justify-center rounded-[24px] bg-cyan-500">
+          <div className="flex h-16 w-16 items-center justify-center rounded-[24px] bg-[var(--primary-color)]">
 
             <Server size={30} />
 
@@ -174,7 +174,7 @@ export default function APIPage() {
         <button
           onClick={saveAPISettings}
           disabled={saving}
-          className="flex items-center gap-2 rounded-2xl bg-cyan-500 px-5 py-3 font-bold"
+          className="flex items-center gap-2 rounded-2xl bg-[var(--primary-color)] px-5 py-3 font-bold"
         >
 
           <Save size={18} />
@@ -295,7 +295,7 @@ export default function APIPage() {
 
       {/* STATUS */}
 
-      <div className="mt-6 rounded-[30px] bg-gradient-to-r from-cyan-500 to-blue-600 p-6">
+      <div className="mt-6 rounded-[30px] bg-gradient-to-r from-[var(--primary-color)] to-[var(--primary-color)] p-6">
 
         <div className="flex items-center gap-3">
 
@@ -370,7 +370,7 @@ function InputCard({
 
   return (
 
-    <div className="rounded-[30px] bg-[#151515] p-5">
+    <div className="rounded-[30px] bg-[var(--primary-color)] p-5">
 
       <div className="mb-4 flex items-center gap-3">
 
@@ -414,7 +414,7 @@ function ToggleCard({
 
   return (
 
-    <div className="rounded-[30px] bg-[#151515] p-5">
+    <div className="rounded-[30px] bg-[var(--primary-color)] p-5">
 
       <div className="flex items-center justify-between">
 

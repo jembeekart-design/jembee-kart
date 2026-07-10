@@ -102,7 +102,7 @@ export default function AntiFraudSettingsForm({
 
       {error && (
 
-        <div className="rounded-lg border border-red-300 bg-red-50 p-3 text-[var(--danger-color)]">
+        <div className="rounded-lg border border-[var(--danger-color)] bg-[var(--danger-color)] p-3 text-[var(--danger-color)]">
 
           {error}
 
@@ -112,7 +112,7 @@ export default function AntiFraudSettingsForm({
 
       {success && (
 
-        <div className="rounded-lg border border-green-300 bg-green-50 p-3 text-green-700">
+        <div className="rounded-lg border border-[var(--success-color)] bg-[var(--success-color)] p-3 text-[var(--success-color)]">
 
           {success}
 

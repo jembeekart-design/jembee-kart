@@ -13,7 +13,7 @@ interface DailyRewardData {
 }
 
 /**
- * File #106: Master Centralized Daily Rewards Engine (Absolute 10/10 Gold Standard)
+ * File var(--primary-color): Master Centralized Daily Rewards Engine (Absolute 10/10 Gold Standard)
  * Fully synchronized with client dashboard state flags, dual system schemas, and audit logs.
  * Guarantees zero split-state transaction distribution failures.
  */

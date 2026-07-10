@@ -217,7 +217,7 @@ function ThemeSection({
         background:
           data.backgroundColor ||
           data.gradientColor ||
-          "#111111"
+          "var(--primary-color)"
       }}
     >
 
@@ -250,8 +250,8 @@ function ThemeSection({
                 ? value
                 : value.toLowerCase() ===
                   "white"
-                ? "#ffffff"
-                : "#000000";
+                ? "var(--primary-color)"
+                : "var(--primary-color)";
 
             return (
 
@@ -272,7 +272,7 @@ function ThemeSection({
 
                     </h3>
 
-                    <p className="text-sm text-gray-200">
+                    <p className="text-sm text-[var(--text-color)]">
 
                       {currentColor}
 
@@ -281,7 +281,7 @@ function ThemeSection({
                   </div>
 
                   <div
-                    className="h-14 w-14 rounded-full border-4 border-white"
+                    className="h-14 w-14 rounded-full border-4 border-[var(--border-color)]"
                     style={{
                       background:
                         currentColor

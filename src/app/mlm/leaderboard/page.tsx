@@ -54,7 +54,7 @@ export default function MLMLeaderboardPage() {
 
   return (
 
-    <main className="min-h-screen bg-[#f6f6f6] pb-24">
+    <main className="min-h-screen bg-[var(--primary-color)] pb-24">
 
       {/* HEADER */}
 
@@ -81,8 +81,8 @@ export default function MLMLeaderboardPage() {
               items-center
               justify-center
               rounded-full
-              bg-yellow-100
-              text-yellow-700
+              bg-[var(--warning-color)]
+              text-[var(--warning-color)]
             "
           >
 
@@ -92,7 +92,7 @@ export default function MLMLeaderboardPage() {
 
           <div>
 
-            <h1 className="text-[24px] font-black text-yellow-700">
+            <h1 className="text-[24px] font-black text-[var(--warning-color)]">
 
               Leaderboard
 
@@ -119,9 +119,9 @@ export default function MLMLeaderboardPage() {
             overflow-hidden
             rounded-[30px]
             bg-gradient-to-br
-            from-yellow-500
-            via-orange-500
-            to-pink-500
+            from-[var(--primary-color)]
+            via-[var(--primary-color)]
+            to-[var(--primary-color)]
             p-5
             text-[var(--button-text-color)]
             shadow-xl
@@ -235,8 +235,8 @@ export default function MLMLeaderboardPage() {
             className="
               rounded-3xl
               bg-gradient-to-br
-              from-yellow-500
-              to-orange-500
+              from-[var(--primary-color)]
+              to-[var(--primary-color)]
               p-4
               text-center
               text-[var(--button-text-color)]
@@ -281,7 +281,7 @@ export default function MLMLeaderboardPage() {
                 py-1
                 text-[10px]
                 font-black
-                text-orange-600
+                text-[var(--warning-color)]
               "
             >
 
@@ -312,8 +312,8 @@ export default function MLMLeaderboardPage() {
                 items-center
                 justify-center
                 rounded-full
-                bg-orange-200
-                text-orange-700
+                bg-[var(--warning-color)]
+                text-[var(--warning-color)]
               "
             >
 
@@ -337,11 +337,11 @@ export default function MLMLeaderboardPage() {
               className="
                 mt-3
                 rounded-full
-                bg-orange-100
+                bg-[var(--warning-color)]
                 py-1
                 text-[10px]
                 font-black
-                text-orange-700
+                text-[var(--warning-color)]
               "
             >
 
@@ -410,8 +410,8 @@ export default function MLMLeaderboardPage() {
                         items-center
                         justify-center
                         rounded-full
-                        bg-yellow-100
-                        text-yellow-700
+                        bg-[var(--warning-color)]
+                        text-[var(--warning-color)]
                         font-black
                       "
                     >
@@ -450,12 +450,12 @@ export default function MLMLeaderboardPage() {
                   <div
                     className="
                       rounded-full
-                      bg-green-100
+                      bg-[var(--success-color)]
                       px-3
                       py-1
                       text-[12px]
                       font-black
-                      text-green-700
+                      text-[var(--success-color)]
                     "
                   >
 

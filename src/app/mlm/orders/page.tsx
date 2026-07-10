@@ -65,7 +65,7 @@ OrdersPage() {
     <main
       className="
         min-h-screen
-        bg-[#0f0f12]
+        bg-[var(--primary-color)]
         pb-24
       "
     >
@@ -78,7 +78,7 @@ OrdersPage() {
           top-0
           z-50
           border-b
-          border-white/10
+          border-[var(--border-color)]/10
           bg-[var(--card-color)]/70
           backdrop-blur-xl
         "
@@ -160,8 +160,8 @@ OrdersPage() {
               justify-center
               rounded-2xl
               bg-gradient-to-r
-              from-violet-600
-              to-fuchsia-500
+              from-[var(--primary-color)]
+              to-[var(--primary-color)]
               text-[var(--button-text-color)]
             "
           >
@@ -195,8 +195,8 @@ OrdersPage() {
                 overflow-hidden
                 rounded-[28px]
                 border
-                border-white/10
-                bg-[#18181c]
+                border-[var(--border-color)]/10
+                bg-[var(--primary-color)]
                 shadow-xl
               "
             >
@@ -263,12 +263,12 @@ OrdersPage() {
                   <div
                     className="
                       rounded-full
-                      bg-violet-600/20
+                      bg-[var(--primary-color)]/20
                       px-4
                       py-2
                       text-sm
                       font-bold
-                      text-violet-400
+                      text-[var(--primary-color)]
                     "
                   >
 
@@ -317,7 +317,7 @@ OrdersPage() {
                       <Truck
                         size={24}
                         className="
-                          text-yellow-400
+                          text-[var(--warning-color)]
                         "
                       />
 
@@ -326,7 +326,7 @@ OrdersPage() {
                       <Clock3
                         size={24}
                         className="
-                          text-orange-500
+                          text-[var(--warning-color)]
                         "
                       />
 
@@ -365,8 +365,8 @@ OrdersPage() {
                     className="
                       rounded-xl
                       bg-gradient-to-r
-                      from-violet-600
-                      to-fuchsia-500
+                      from-[var(--primary-color)]
+                      to-[var(--primary-color)]
                       px-4
                       py-2
                       text-xs

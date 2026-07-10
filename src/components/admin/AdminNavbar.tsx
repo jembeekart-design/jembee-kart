@@ -12,13 +12,13 @@ export default function AdminNavbar() {
 
   return (
 
-    <header className="sticky top-0 z-50 flex h-[80px] items-center justify-between border-b border-white/10 bg-[#0b0b0b]/95 px-4 backdrop-blur-xl">
+    <header className="sticky top-0 z-50 flex h-[80px] items-center justify-between border-b border-[var(--border-color)]/10 bg-[var(--primary-color)]/95 px-4 backdrop-blur-xl">
 
       {/* LEFT */}
 
       <div className="flex items-center gap-3">
 
-        <button className="flex h-12 w-12 items-center justify-center rounded-2xl bg-[#151515] text-[var(--button-text-color)] lg:hidden">
+        <button className="flex h-12 w-12 items-center justify-center rounded-2xl bg-[var(--primary-color)] text-[var(--button-text-color)] lg:hidden">
 
           <Menu size={22} />
 
@@ -46,7 +46,7 @@ export default function AdminNavbar() {
 
       <div className="hidden w-full max-w-[500px] px-8 md:block">
 
-        <div className="flex h-14 items-center gap-3 rounded-2xl border border-white/10 bg-[#151515] px-4">
+        <div className="flex h-14 items-center gap-3 rounded-2xl border border-[var(--border-color)]/10 bg-[var(--primary-color)] px-4">
 
           <Search
             size={20}
@@ -69,7 +69,7 @@ export default function AdminNavbar() {
 
         {/* NOTIFICATION */}
 
-        <button className="relative flex h-12 w-12 items-center justify-center rounded-2xl bg-[#151515] text-[var(--button-text-color)] transition-all duration-300 hover:bg-cyan-500 hover:text-[var(--text-color)]">
+        <button className="relative flex h-12 w-12 items-center justify-center rounded-2xl bg-[var(--primary-color)] text-[var(--button-text-color)] transition-all duration-300 hover:bg-[var(--primary-color)] hover:text-[var(--text-color)]">
 
           <Bell size={20} />
 
@@ -79,7 +79,7 @@ export default function AdminNavbar() {
 
         {/* SETTINGS */}
 
-        <button className="flex h-12 w-12 items-center justify-center rounded-2xl bg-[#151515] text-[var(--button-text-color)] transition-all duration-300 hover:bg-cyan-500 hover:text-[var(--text-color)]">
+        <button className="flex h-12 w-12 items-center justify-center rounded-2xl bg-[var(--primary-color)] text-[var(--button-text-color)] transition-all duration-300 hover:bg-[var(--primary-color)] hover:text-[var(--text-color)]">
 
           <Settings size={20} />
 
@@ -87,9 +87,9 @@ export default function AdminNavbar() {
 
         {/* PROFILE */}
 
-        <div className="flex items-center gap-3 rounded-2xl bg-[#151515] px-4 py-2">
+        <div className="flex items-center gap-3 rounded-2xl bg-[var(--primary-color)] px-4 py-2">
 
-          <div className="flex h-11 w-11 items-center justify-center rounded-xl bg-cyan-500 text-[var(--text-color)]">
+          <div className="flex h-11 w-11 items-center justify-center rounded-xl bg-[var(--primary-color)] text-[var(--text-color)]">
 
             <User size={20} />
 

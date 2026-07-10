@@ -244,7 +244,7 @@ export default function FirestoreProductGrid() {
 
   return (
 
-    <section className="w-full bg-[#f4f5f7] px-3 py-3">
+    <section className="w-full bg-[var(--primary-color)] px-3 py-3">
 
       {/* SORT FILTER */}
 
@@ -311,7 +311,7 @@ export default function FirestoreProductGrid() {
             justify-center
             gap-2
             rounded-2xl
-            bg-[#f8f8f8]
+            bg-[var(--primary-color)]
             text-sm
             font-black
             text-[var(--text-color)]
@@ -339,7 +339,7 @@ export default function FirestoreProductGrid() {
             justify-center
             gap-2
             rounded-2xl
-            bg-[#f8f8f8]
+            bg-[var(--primary-color)]
             text-sm
             font-black
             text-[var(--text-color)]
@@ -367,7 +367,7 @@ export default function FirestoreProductGrid() {
               text-[28px]
               font-black
               leading-none
-              text-[#111827]
+              text-[var(--primary-color)]
             "
           >
 

@@ -129,13 +129,13 @@ export default function DeliveryTrackingPage() {
 
   return (
 
-    <main className="min-h-screen bg-[#0b0b0b] p-4 text-[var(--button-text-color)]">
+    <main className="min-h-screen bg-[var(--primary-color)] p-4 text-[var(--button-text-color)]">
 
       {/* HEADER */}
 
       <div className="mb-8 flex items-center gap-4">
 
-        <div className="flex h-16 w-16 items-center justify-center rounded-[24px] bg-orange-500">
+        <div className="flex h-16 w-16 items-center justify-center rounded-[24px] bg-[var(--warning-color)]">
 
           <Truck size={30} />
 
@@ -161,7 +161,7 @@ export default function DeliveryTrackingPage() {
 
         {orders.length === 0 && (
 
-          <div className="rounded-[30px] bg-[#151515] p-10 text-center">
+          <div className="rounded-[30px] bg-[var(--primary-color)] p-10 text-center">
 
             No Orders Found
 
@@ -174,7 +174,7 @@ export default function DeliveryTrackingPage() {
 
             <div
               key={order.id}
-              className="rounded-[30px] bg-[#151515] p-5"
+              className="rounded-[30px] bg-[var(--primary-color)] p-5"
             >
 
               <div className="flex flex-col gap-6">
@@ -185,7 +185,7 @@ export default function DeliveryTrackingPage() {
 
                   <div>
 
-                    <h2 className="text-2xl font-black text-orange-400">
+                    <h2 className="text-2xl font-black text-[var(--warning-color)]">
 
                       {order.customerName}
 
@@ -225,7 +225,7 @@ export default function DeliveryTrackingPage() {
 
                   </div>
 
-                  <div className="mt-3 flex items-start gap-2 text-sm text-gray-300">
+                  <div className="mt-3 flex items-start gap-2 text-sm text-[var(--text-color)]">
 
                     <MapPin size={16} />
 
@@ -327,7 +327,7 @@ function TrackButton({
       onClick={onClick}
       className={`rounded-2xl px-4 py-4 text-sm font-bold transition ${
         active
-          ? "bg-orange-500 text-[var(--text-color)]"
+          ? "bg-[var(--warning-color)] text-[var(--text-color)]"
           : "bg-[var(--card-color)]/30 text-[var(--button-text-color)]"
       }`}
     >
@@ -371,7 +371,7 @@ function StatusBadge({
 
     }
 
-    return "bg-orange-500";
+    return "bg-[var(--warning-color)]";
 
   }
 

@@ -147,7 +147,7 @@ export default function SettingsPage() {
 
   return (
 
-    <main className="min-h-screen bg-[#0b0b0b] p-4 text-[var(--button-text-color)]">
+    <main className="min-h-screen bg-[var(--primary-color)] p-4 text-[var(--button-text-color)]">
 
       {/* HEADER */}
 
@@ -168,7 +168,7 @@ export default function SettingsPage() {
         <button
           onClick={saveSettings}
           disabled={saving}
-          className="flex items-center gap-2 rounded-2xl bg-violet-600 px-5 py-3 text-sm font-bold text-[var(--button-text-color)]"
+          className="flex items-center gap-2 rounded-2xl bg-[var(--primary-color)] px-5 py-3 text-sm font-bold text-[var(--button-text-color)]"
         >
 
           <Save size={18} />
@@ -187,13 +187,13 @@ export default function SettingsPage() {
 
         {/* GENERAL */}
 
-        <div className="rounded-[30px] border border-white/10 bg-[#151515] p-5">
+        <div className="rounded-[30px] border border-[var(--border-color)]/10 bg-[var(--primary-color)] p-5">
 
           <div className="mb-5 flex items-center gap-3">
 
             <Settings
               size={22}
-              className="text-violet-400"
+              className="text-[var(--primary-color)]"
             />
 
             <h2 className="text-2xl font-black">
@@ -245,13 +245,13 @@ export default function SettingsPage() {
 
         {/* CONTACT */}
 
-        <div className="rounded-[30px] border border-white/10 bg-[#151515] p-5">
+        <div className="rounded-[30px] border border-[var(--border-color)]/10 bg-[var(--primary-color)] p-5">
 
           <div className="mb-5 flex items-center gap-3">
 
             <Phone
               size={22}
-              className="text-green-400"
+              className="text-[var(--success-color)]"
             />
 
             <h2 className="text-2xl font-black">
@@ -316,13 +316,13 @@ export default function SettingsPage() {
 
         {/* SOCIAL */}
 
-        <div className="rounded-[30px] border border-white/10 bg-[#151515] p-5">
+        <div className="rounded-[30px] border border-[var(--border-color)]/10 bg-[var(--primary-color)] p-5">
 
           <div className="mb-5 flex items-center gap-3">
 
             <Globe
               size={22}
-              className="text-pink-400"
+              className="text-[var(--primary-color)]"
             />
 
             <h2 className="text-2xl font-black">
@@ -374,7 +374,7 @@ export default function SettingsPage() {
 
         {/* LIVE PREVIEW */}
 
-        <div className="overflow-hidden rounded-[30px] bg-gradient-to-r from-violet-600 to-fuchsia-500 p-6">
+        <div className="overflow-hidden rounded-[30px] bg-gradient-to-r from-[var(--primary-color)] to-[var(--primary-color)] p-6">
 
           <h2 className="text-3xl font-black">
             {settings.appName}
@@ -524,7 +524,7 @@ function InputField({
             e.target.value
           )
         }
-        className="w-full rounded-2xl border border-white/10 bg-[#1e1e1e] px-4 py-3 text-sm text-[var(--button-text-color)] outline-none"
+        className="w-full rounded-2xl border border-[var(--border-color)]/10 bg-[var(--primary-color)] px-4 py-3 text-sm text-[var(--button-text-color)] outline-none"
       />
 
     </div>

@@ -102,7 +102,7 @@ VideoCard({
             items-center
             gap-2
             rounded-full
-            bg-yellow-400
+            bg-[var(--warning-color)]
             px-5
             py-2
             font-black

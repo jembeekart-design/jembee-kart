@@ -83,7 +83,7 @@ VideoInfo({
           mt-3
           text-sm
           leading-6
-          text-gray-100
+          text-[var(--text-color)]
         "
       >
 
@@ -114,7 +114,7 @@ VideoInfo({
                 py-1
                 text-xs
                 font-bold
-                text-blue-200
+                text-[var(--primary-color)]
                 backdrop-blur-xl
               "
             >
@@ -146,7 +146,7 @@ VideoInfo({
         <Music2
           size={16}
           className="
-            text-pink-400
+            text-[var(--primary-color)]
           "
         />
 

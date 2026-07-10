@@ -47,7 +47,7 @@ export default function CacheManagerPage() {
 
   return (
 
-    <main className="min-h-screen bg-[#0b0b0b] p-4 text-[var(--button-text-color)]">
+    <main className="min-h-screen bg-[var(--primary-color)] p-4 text-[var(--button-text-color)]">
 
       {/* HEADER */}
 
@@ -55,7 +55,7 @@ export default function CacheManagerPage() {
 
         <div className="flex items-center gap-4">
 
-          <div className="flex h-16 w-16 items-center justify-center rounded-[28px] bg-orange-500">
+          <div className="flex h-16 w-16 items-center justify-center rounded-[28px] bg-[var(--warning-color)]">
 
             <Database
               size={30}
@@ -78,7 +78,7 @@ export default function CacheManagerPage() {
 
         </div>
 
-        <button className="flex items-center gap-2 rounded-2xl bg-orange-500 px-5 py-3 font-bold text-[var(--text-color)]">
+        <button className="flex items-center gap-2 rounded-2xl bg-[var(--warning-color)] px-5 py-3 font-bold text-[var(--text-color)]">
 
           <Save size={18} />
 
@@ -120,7 +120,7 @@ export default function CacheManagerPage() {
 
       {/* AUTO CLEAR */}
 
-      <div className="mt-6 rounded-[28px] border border-white/10 bg-[#151515] p-5">
+      <div className="mt-6 rounded-[28px] border border-[var(--border-color)]/10 bg-[var(--primary-color)] p-5">
 
         <div className="flex items-center justify-between">
 
@@ -171,7 +171,7 @@ export default function CacheManagerPage() {
 
             <div
               key={index}
-              className="rounded-[28px] border border-white/10 bg-[#151515] p-5"
+              className="rounded-[28px] border border-[var(--border-color)]/10 bg-[var(--primary-color)] p-5"
             >
 
               <div className="flex flex-col gap-5 lg:flex-row lg:items-center lg:justify-between">
@@ -196,11 +196,11 @@ export default function CacheManagerPage() {
                     className={`rounded-full px-4 py-1 text-sm font-bold ${
                       item.status ===
                       "Active"
-                        ? "bg-[var(--success-color)]/20 text-green-400"
+                        ? "bg-[var(--success-color)]/20 text-[var(--success-color)]"
                         : item.status ===
                           "Optimized"
-                        ? "bg-cyan-500/20 text-cyan-400"
-                        : "bg-[var(--warning-color)]/20 text-yellow-400"
+                        ? "bg-[var(--primary-color)]/20 text-[var(--primary-color)]"
+                        : "bg-[var(--warning-color)]/20 text-[var(--warning-color)]"
                     }`}
                   >
 
@@ -208,13 +208,13 @@ export default function CacheManagerPage() {
 
                   </div>
 
-                  <button className="flex h-11 w-11 items-center justify-center rounded-2xl bg-cyan-500 text-[var(--text-color)]">
+                  <button className="flex h-11 w-11 items-center justify-center rounded-2xl bg-[var(--primary-color)] text-[var(--text-color)]">
 
                     <RefreshCw size={18} />
 
                   </button>
 
-                  <button className="flex h-11 w-11 items-center justify-center rounded-2xl bg-[var(--danger-color)]/20 text-red-400">
+                  <button className="flex h-11 w-11 items-center justify-center rounded-2xl bg-[var(--danger-color)]/20 text-[var(--danger-color)]">
 
                     <Trash2 size={18} />
 
@@ -243,7 +243,7 @@ export default function CacheManagerPage() {
 
         </button>
 
-        <button className="flex items-center gap-2 rounded-2xl bg-cyan-500 px-6 py-3 font-bold text-[var(--text-color)]">
+        <button className="flex items-center gap-2 rounded-2xl bg-[var(--primary-color)] px-6 py-3 font-bold text-[var(--text-color)]">
 
           <RefreshCw size={18} />
 
@@ -255,7 +255,7 @@ export default function CacheManagerPage() {
 
       {/* PERFORMANCE */}
 
-      <div className="mt-6 rounded-[30px] bg-gradient-to-r from-orange-500 to-red-500 p-6">
+      <div className="mt-6 rounded-[30px] bg-gradient-to-r from-[var(--primary-color)] to-[var(--primary-color)] p-6">
 
         <div className="flex items-center gap-3">
 
@@ -284,22 +284,22 @@ export default function CacheManagerPage() {
 
       {/* SECURITY */}
 
-      <div className="mt-6 rounded-[28px] border border-green-500/20 bg-[var(--success-color)]/10 p-5">
+      <div className="mt-6 rounded-[28px] border border-[var(--success-color)]/20 bg-[var(--success-color)]/10 p-5">
 
         <div className="flex items-start gap-4">
 
           <ShieldCheck
             size={24}
-            className="text-green-400"
+            className="text-[var(--success-color)]"
           />
 
           <div>
 
-            <h3 className="text-xl font-black text-green-400">
+            <h3 className="text-xl font-black text-[var(--success-color)]">
               Cache Healthy
             </h3>
 
-            <p className="mt-2 text-sm text-gray-300">
+            <p className="mt-2 text-sm text-[var(--text-color)]">
 
               Cache system is optimized and running
               efficiently without overload.
@@ -314,22 +314,22 @@ export default function CacheManagerPage() {
 
       {/* STATUS */}
 
-      <div className="mt-6 rounded-[28px] border border-cyan-500/20 bg-cyan-500/10 p-5">
+      <div className="mt-6 rounded-[28px] border border-[var(--primary-color)]/20 bg-[var(--primary-color)]/10 p-5">
 
         <div className="flex items-start gap-4">
 
           <CheckCircle2
             size={24}
-            className="text-cyan-400"
+            className="text-[var(--primary-color)]"
           />
 
           <div>
 
-            <h3 className="text-xl font-black text-cyan-400">
+            <h3 className="text-xl font-black text-[var(--primary-color)]">
               Realtime Sync Active
             </h3>
 
-            <p className="mt-2 text-sm text-gray-300">
+            <p className="mt-2 text-sm text-[var(--text-color)]">
 
               Cache updates are syncing instantly
               across all app modules.
@@ -359,9 +359,9 @@ function StatCard({
 
   return (
 
-    <div className="rounded-[28px] border border-white/10 bg-[#151515] p-5">
+    <div className="rounded-[28px] border border-[var(--border-color)]/10 bg-[var(--primary-color)] p-5">
 
-      <div className="flex h-14 w-14 items-center justify-center rounded-2xl bg-orange-500 text-[var(--text-color)]">
+      <div className="flex h-14 w-14 items-center justify-center rounded-2xl bg-[var(--warning-color)] text-[var(--text-color)]">
 
         {icon}
 

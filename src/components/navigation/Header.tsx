@@ -52,13 +52,13 @@ COMPONENT
 
 export default function Header({
 
-  headerBackgroundColor = "#ffffff",
+  headerBackgroundColor = "var(--primary-color)",
 
-  headerTextColor = "#2563eb",
+  headerTextColor = "var(--primary-color)",
 
-  searchBarColor = "#f3f4f6",
+  searchBarColor = "var(--primary-color)",
 
-  statusBarColor = "#ffffff",
+  statusBarColor = "var(--primary-color)",
 
   search = "",
 
@@ -335,7 +335,7 @@ export default function Header({
                 transition-all
                 duration-300
 
-                hover:bg-blue-700
+                hover:bg-[var(--primary-color)]
               "
             >
 
@@ -415,7 +415,7 @@ export default function Header({
               focus:theme-primary-border
               focus:bg-[var(--card-color)]
               focus:ring-4
-              focus:ring-blue-100
+              focus:ring-[var(--primary-color)]
 
               md:text-base
             "
@@ -466,7 +466,7 @@ export default function Header({
 
                   ? "bg-[var(--danger-color)] text-[var(--button-text-color)]"
 
-                  : "bg-gradient-to-r from-indigo-600 to-purple-600 text-[var(--button-text-color)]"
+                  : "bg-gradient-to-r from-[var(--primary-color)] to-[var(--primary-color)] text-[var(--button-text-color)]"
               }
             `}
           >

@@ -107,7 +107,7 @@ CommentDrawer({
         right-0
         z-[999]
         rounded-t-[35px]
-        bg-[#121212]
+        bg-[var(--primary-color)]
         transition-all
         duration-300
 
@@ -127,7 +127,7 @@ CommentDrawer({
           items-center
           justify-between
           border-b
-          border-white/10
+          border-[var(--border-color)]/10
           px-5
           py-4
         "
@@ -207,7 +207,7 @@ CommentDrawer({
                     className="
                       mt-1
                       text-sm
-                      text-gray-300
+                      text-[var(--text-color)]
                     "
                   >
 
@@ -223,7 +223,7 @@ CommentDrawer({
                     flex-col
                     items-center
                     gap-1
-                    text-gray-300
+                    text-[var(--text-color)]
                   "
                 >
 
@@ -259,7 +259,7 @@ CommentDrawer({
           items-center
           gap-3
           border-t
-          border-white/10
+          border-[var(--border-color)]/10
           px-4
           py-4
         "
@@ -280,7 +280,7 @@ CommentDrawer({
             flex-1
             rounded-full
             border
-            border-white/10
+            border-[var(--border-color)]/10
             bg-[var(--card-color)]/5
             px-5
             py-3
@@ -300,8 +300,8 @@ CommentDrawer({
             justify-center
             rounded-full
             bg-gradient-to-r
-            from-violet-600
-            to-fuchsia-500
+            from-[var(--primary-color)]
+            to-[var(--primary-color)]
             text-[var(--button-text-color)]
           "
         >

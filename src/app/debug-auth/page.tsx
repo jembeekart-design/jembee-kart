@@ -142,20 +142,20 @@ export default function DebugAuthPage() {
       <div className="flex gap-4 mb-6">
         <button
           onClick={testGoogleLogin}
-          className="bg-green-600 px-5 py-3 rounded-xl font-bold"
+          className="bg-[var(--success-color)] px-5 py-3 rounded-xl font-bold"
         >
           Test Google Login
         </button>
 
         <button
           onClick={testLogout}
-          className="bg-red-600 px-5 py-3 rounded-xl font-bold"
+          className="bg-[var(--danger-color)] px-5 py-3 rounded-xl font-bold"
         >
           Logout
         </button>
       </div>
 
-      <div className="bg-zinc-900 rounded-3xl p-5 mb-6">
+      <div className="bg-[var(--card-color)] rounded-3xl p-5 mb-6">
         <h2 className="font-black mb-4">
           Current User
         </h2>
@@ -169,7 +169,7 @@ export default function DebugAuthPage() {
         </pre>
       </div>
 
-      <div className="bg-zinc-900 rounded-3xl p-5">
+      <div className="bg-[var(--card-color)] rounded-3xl p-5">
         <h2 className="font-black mb-4">
           Debug Logs
         </h2>

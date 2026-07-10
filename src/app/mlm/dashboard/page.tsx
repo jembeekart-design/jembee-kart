@@ -96,7 +96,7 @@ export default function MLMDashboardPage() {
 
   if (loading) {
     return (
-      <div className="flex min-h-screen items-center justify-center bg-[#f6f6f6] text-sm font-black text-violet-700 uppercase tracking-widest">
+      <div className="flex min-h-screen items-center justify-center bg-[var(--primary-color)] text-sm font-black text-[var(--primary-color)] uppercase tracking-widest">
         Loading JembeeKart Metrics...
       </div>
     );
@@ -108,26 +108,26 @@ export default function MLMDashboardPage() {
   const unreadCount = userData?.unreadNotifications || 0; // ✅ Mapped directly to document state instead of sub-collection reads
 
   const quickActions = [
-    { title: "Invite", href: "/mlm/invite", icon: Users, color: "bg-violet-100 text-violet-700" },
-    { title: "Wallet", href: "/mlm/wallet", icon: Wallet, color: "bg-green-100 text-green-700" },
-    { title: "Network", href: "/mlm/network", icon: Network, color: "bg-orange-100 text-orange-700" },
-    { title: "Tasks", href: "/mlm/tasks", icon: Gift, color: "bg-pink-100 text-pink-700" }
+    { title: "Invite", href: "/mlm/invite", icon: Users, color: "bg-[var(--primary-color)] text-[var(--primary-color)]" },
+    { title: "Wallet", href: "/mlm/wallet", icon: Wallet, color: "bg-[var(--success-color)] text-[var(--success-color)]" },
+    { title: "Network", href: "/mlm/network", icon: Network, color: "bg-[var(--warning-color)] text-[var(--warning-color)]" },
+    { title: "Tasks", href: "/mlm/tasks", icon: Gift, color: "bg-[var(--primary-color)] text-[var(--primary-color)]" }
   ];
 
   const stats = [
-    { title: "Total Team", value: userData?.teamSize || 0, icon: Users, color: "text-violet-700" },
+    { title: "Total Team", value: userData?.teamSize || 0, icon: Users, color: "text-[var(--primary-color)]" },
     { title: "Today's Income", value: `₹${formattedTodayIncome}`, icon: Sparkles, color: "text-[var(--success-color)]" },
     { title: "Rank", value: userData?.rank || "Bronze Member", icon: Crown, color: "text-[var(--warning-color)]" },
-    { title: "Rewards", value: userData?.rewardCount || 0, icon: Trophy, color: "text-orange-600" }
+    { title: "Rewards", value: userData?.rewardCount || 0, icon: Trophy, color: "text-[var(--warning-color)]" }
   ];
 
   return (
-    <main className="min-h-screen bg-[#f6f6f6] pb-28">
+    <main className="min-h-screen bg-[var(--primary-color)] pb-28">
       {/* HEADER */}
       <div className="sticky top-0 z-50 bg-[var(--card-color)] px-4 py-3 shadow-sm">
         <div className="flex items-center justify-between">
           <div>
-            <h1 className="text-[28px] font-black text-violet-700">MLM Dashboard</h1>
+            <h1 className="text-[28px] font-black text-[var(--primary-color)]">MLM Dashboard</h1>
             <p className="text-[11px] text-[var(--muted-text-color)]">
               Welcome Back, <span className="font-bold text-[var(--text-color)]">{userData?.name || "Partner"}</span> 👋
             </p>
@@ -135,12 +135,12 @@ export default function MLMDashboardPage() {
 
           <Link
             href="/mlm/notifications"
-            className="relative flex h-12 w-12 items-center justify-center rounded-full bg-violet-100 text-violet-700"
+            className="relative flex h-12 w-12 items-center justify-center rounded-full bg-[var(--primary-color)] text-[var(--primary-color)]"
           >
             <Bell size={22} />
             {/* ✅ 3. Dynamic Unread Notification Counter sourced straight from root document schema state */}
             {unreadCount > 0 && (
-              <div className="absolute right-2 top-2 flex h-4 w-4 items-center justify-center rounded-full bg-[var(--danger-color)] text-[9px] font-black text-[var(--button-text-color)] border-2 border-white animate-bounce">
+              <div className="absolute right-2 top-2 flex h-4 w-4 items-center justify-center rounded-full bg-[var(--danger-color)] text-[9px] font-black text-[var(--button-text-color)] border-2 border-[var(--border-color)] animate-bounce">
                 {unreadCount}
               </div>
             )}
@@ -152,7 +152,7 @@ export default function MLMDashboardPage() {
       <section className="px-4 pt-4">
         <Link
           href="/"
-          className="flex items-center justify-center gap-2 w-full rounded-2xl bg-[var(--card-color)] border-2 border-dashed border-violet-200 py-3 text-[13px] font-black text-violet-700 hover:bg-violet-50 transition active:scale-[0.99]"
+          className="flex items-center justify-center gap-2 w-full rounded-2xl bg-[var(--card-color)] border-2 border-dashed border-[var(--primary-color)] py-3 text-[13px] font-black text-[var(--primary-color)] hover:bg-[var(--primary-color)] transition active:scale-[0.99]"
         >
           <ShoppingBag size={18} />
           Continue Shopping
@@ -161,7 +161,7 @@ export default function MLMDashboardPage() {
 
       {/* HERO SECTION (DYNAMIC INCOME VALUES) */}
       <section className="px-4 pt-4">
-        <div className="overflow-hidden rounded-[32px] bg-gradient-to-br from-violet-700 via-fuchsia-600 to-orange-500 p-5 text-[var(--button-text-color)] shadow-xl">
+        <div className="overflow-hidden rounded-[32px] bg-gradient-to-br from-[var(--primary-color)] via-[var(--primary-color)] to-[var(--primary-color)] p-5 text-[var(--button-text-color)] shadow-xl">
           <div className="flex items-center justify-between">
             <div>
               <p className="text-[13px] text-[var(--button-text-color)]/80">Total Earnings</p>
@@ -177,7 +177,7 @@ export default function MLMDashboardPage() {
               <p className="text-[11px] text-[var(--button-text-color)]/80">Current Rank</p>
               <h3 className="mt-1 text-[20px] font-black">{userData?.rank || "Bronze Member"} 👑</h3>
             </div>
-            <Link href="/mlm/ranks" className="rounded-2xl bg-[var(--card-color)] px-4 py-2 text-[12px] font-black text-violet-700">
+            <Link href="/mlm/ranks" className="rounded-2xl bg-[var(--card-color)] px-4 py-2 text-[12px] font-black text-[var(--primary-color)]">
               View Rank
             </Link>
           </div>
@@ -225,17 +225,17 @@ export default function MLMDashboardPage() {
               <h2 className="text-[22px] font-black">Referral Code</h2>
               <p className="mt-1 text-[11px] text-[var(--muted-text-color)]">Share & Earn</p>
             </div>
-            <Users size={28} className="text-violet-700" />
+            <Users size={28} className="text-[var(--primary-color)]" />
           </div>
 
-          <div className="mt-5 rounded-2xl bg-violet-50 p-4 text-center">
+          <div className="mt-5 rounded-2xl bg-[var(--primary-color)] p-4 text-center">
             {/* ✅ 1. Corrected path reading configuration to show correct string data code values */}
-            <h3 className="text-[28px] font-black tracking-widest text-violet-700 uppercase">
+            <h3 className="text-[28px] font-black tracking-widest text-[var(--primary-color)] uppercase">
               {userData?.referralCode || "NO_CODE"}
             </h3>
           </div>
 
-          <Link href="/mlm/invite" className="mt-5 flex items-center justify-center rounded-2xl bg-violet-700 py-3 text-[14px] font-black text-[var(--button-text-color)] hover:bg-violet-800 transition">
+          <Link href="/mlm/invite" className="mt-5 flex items-center justify-center rounded-2xl bg-[var(--primary-color)] py-3 text-[14px] font-black text-[var(--button-text-color)] hover:bg-[var(--primary-color)] transition">
             Invite Friends
           </Link>
         </div>
@@ -250,11 +250,11 @@ export default function MLMDashboardPage() {
           </div>
 
           <div className="mt-5 flex h-48 items-end gap-2 px-2 border-b border-[var(--border-color)] pb-1">
-            <div style={{ height: `${performanceMetrics[0]}%` }} className="w-full rounded-t-xl bg-violet-200 transition-all duration-500" title="Team Weightage" />
-            <div style={{ height: `${performanceMetrics[1]}%` }} className="w-full rounded-t-xl bg-violet-400 transition-all duration-500" title="Rewards Scaler" />
-            <div style={{ height: `${performanceMetrics[2]}%` }} className="w-full rounded-t-xl bg-fuchsia-400 transition-all duration-500" title="Today Velocity" />
-            <div style={{ height: `${performanceMetrics[3]}%` }} className="w-full rounded-t-xl bg-orange-400 transition-all duration-500" title="Compound Velocity" />
-            <div style={{ height: `${performanceMetrics[4]}%` }} className="w-full rounded-t-xl bg-violet-700 transition-all duration-500" title="Earnings Matrix" />
+            <div style={{ height: `${performanceMetrics[0]}%` }} className="w-full rounded-t-xl bg-[var(--primary-color)] transition-all duration-500" title="Team Weightage" />
+            <div style={{ height: `${performanceMetrics[1]}%` }} className="w-full rounded-t-xl bg-[var(--primary-color)] transition-all duration-500" title="Rewards Scaler" />
+            <div style={{ height: `${performanceMetrics[2]}%` }} className="w-full rounded-t-xl bg-[var(--primary-color)] transition-all duration-500" title="Today Velocity" />
+            <div style={{ height: `${performanceMetrics[3]}%` }} className="w-full rounded-t-xl bg-[var(--warning-color)] transition-all duration-500" title="Compound Velocity" />
+            <div style={{ height: `${performanceMetrics[4]}%` }} className="w-full rounded-t-xl bg-[var(--primary-color)] transition-all duration-500" title="Earnings Matrix" />
           </div>
           <div className="flex justify-between text-[9px] font-black uppercase text-[var(--muted-text-color)] mt-2 px-1">
             <span>Team</span>
@@ -272,7 +272,7 @@ export default function MLMDashboardPage() {
           {[
             { href: "/mlm/earnings", icon: Sparkles, title: "Earnings", desc: "MLM income details", color: "text-[var(--success-color)]" },
             { href: "/mlm/leaderboard", icon: Trophy, title: "Leaderboard", desc: "Top MLM performers", color: "text-[var(--warning-color)]" },
-            { href: "/mlm/support", icon: ShieldCheck, title: "MLM Support", desc: "Help & live support", color: "text-orange-600" }
+            { href: "/mlm/support", icon: ShieldCheck, title: "MLM Support", desc: "Help & live support", color: "text-[var(--warning-color)]" }
           ].map((item, idx) => {
             const ItemIcon = item.icon;
             return (

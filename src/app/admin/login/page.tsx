@@ -54,7 +54,7 @@ console.log("LOGIN EMAIL:", user?.email);
 
       <form
         onSubmit={login}
-        className="w-full max-w-md bg-zinc-900 rounded-xl p-6 border border-zinc-700"
+        className="w-full max-w-md bg-[var(--card-color)] rounded-xl p-6 border border-[var(--border-color)]"
       >
 
         <h1 className="text-3xl font-bold text-[var(--button-text-color)] mb-6 text-center">
@@ -64,7 +64,7 @@ console.log("LOGIN EMAIL:", user?.email);
         <input
           type="email"
           placeholder="Email"
-          className="w-full mb-4 p-3 rounded bg-zinc-800 text-[var(--button-text-color)] outline-none"
+          className="w-full mb-4 p-3 rounded bg-[var(--card-color)] text-[var(--button-text-color)] outline-none"
           value={email}
           onChange={(e) =>
             setEmail(e.target.value)
@@ -74,7 +74,7 @@ console.log("LOGIN EMAIL:", user?.email);
         <input
           type="password"
           placeholder="Password"
-          className="w-full mb-4 p-3 rounded bg-zinc-800 text-[var(--button-text-color)] outline-none"
+          className="w-full mb-4 p-3 rounded bg-[var(--card-color)] text-[var(--button-text-color)] outline-none"
           value={password}
           onChange={(e) =>
             setPassword(e.target.value)
@@ -90,7 +90,7 @@ console.log("LOGIN EMAIL:", user?.email);
         <button
           type="submit"
           disabled={loading}
-          className="w-full bg-purple-600 hover:bg-purple-700 rounded-lg py-3 text-[var(--button-text-color)] font-bold"
+          className="w-full bg-[var(--primary-color)] hover:bg-[var(--primary-color)] rounded-lg py-3 text-[var(--button-text-color)] font-bold"
         >
           {loading
             ? "Signing In..."

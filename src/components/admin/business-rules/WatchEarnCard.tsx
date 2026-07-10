@@ -39,14 +39,14 @@ export default function WatchEarnCard() {
 
   if (loading) {
     return (
-      <div className="rounded-xl border border-slate-700 bg-slate-900 p-6">
+      <div className="rounded-xl border border-[var(--border-color)] bg-[var(--card-color)] p-6">
         Loading...
       </div>
     );
   }
 
   return (
-    <div className="rounded-xl border border-slate-700 bg-slate-900 p-6">
+    <div className="rounded-xl border border-[var(--border-color)] bg-[var(--card-color)] p-6">
 
       <div className="flex items-center justify-between">
 
@@ -55,14 +55,14 @@ export default function WatchEarnCard() {
             Watch &amp; Earn Rules
           </h2>
 
-          <p className="mt-1 text-sm text-slate-400">
+          <p className="mt-1 text-sm text-[var(--text-color)]">
             Configure Watch &amp; Earn settings.
           </p>
         </div>
 
         <button
           onClick={() => setOpen(true)}
-          className="rounded-lg bg-indigo-600 px-4 py-2 text-sm font-medium hover:bg-indigo-700"
+          className="rounded-lg bg-[var(--primary-color)] px-4 py-2 text-sm font-medium hover:bg-[var(--primary-color)]"
         >
           Edit
         </button>

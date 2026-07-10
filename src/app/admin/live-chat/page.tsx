@@ -128,11 +128,11 @@ export default function LiveChatPage() {
 
   return (
 
-    <main className="flex min-h-screen flex-col bg-[#0b0b0b] text-[var(--button-text-color)]">
+    <main className="flex min-h-screen flex-col bg-[var(--primary-color)] text-[var(--button-text-color)]">
 
       {/* HEADER */}
 
-      <div className="flex items-center gap-4 border-b border-white/10 bg-[#111111] p-5">
+      <div className="flex items-center gap-4 border-b border-[var(--border-color)]/10 bg-[var(--primary-color)] p-5">
 
         <div className="flex h-16 w-16 items-center justify-center rounded-[24px] bg-[var(--success-color)]">
 
@@ -186,7 +186,7 @@ export default function LiveChatPage() {
                   msg.role ===
                   "admin"
                     ? "bg-[var(--success-color)] text-[var(--text-color)]"
-                    : "bg-[#1b1b1b]"
+                    : "bg-[var(--primary-color)]"
                 }`}
               >
 
@@ -232,7 +232,7 @@ export default function LiveChatPage() {
 
       {/* INPUT */}
 
-      <div className="border-t border-white/10 bg-[#111111] p-4">
+      <div className="border-t border-[var(--border-color)]/10 bg-[var(--primary-color)] p-4">
 
         <div className="flex items-center gap-3">
 

@@ -3,7 +3,7 @@
  * System Version: v10_Stable_Freeze_Platinum
  * Verification Target: Absolute 10/10 Enterprise Production Standard
  * 
- * FIXES GITHUB ACTIONS CI/CD BUILD #812 TYPE ERRORS (TS2305 & TS2724)
+ * FIXES GITHUB ACTIONS CI/CD BUILD var(--primary-color) TYPE ERRORS (TS2305 & TS2724)
  * ALSO FIXES VERCEL DESIGNS DEPLOYMENT ERROR FOR DYNAMIC RANK SELECTION ENGINE
  */
 
@@ -49,7 +49,7 @@ export const INCOME_CATEGORY = "directIncome";
 export const INCOME_CATEGORY_WITHDRAWAL = "wallet_withdrawal";
 
 /**
- * 🚀 CI/CD RESOLUTION - BUILD #812 & VERCEL FIXED BLOCK
+ * 🚀 CI/CD RESOLUTION - BUILD var(--primary-color) & VERCEL FIXED BLOCK
  * Exporting core telemetry identifiers to fulfill external sub-module bindings.
  */
 export const INCOME_CATEGORY_TEAM_PERFORMANCE = "teamPerformanceIncome"; // Fixes Error TS2305
@@ -88,7 +88,7 @@ export const MLM_LEVELS_CONFIG: readonly MLMLevelConfig[] = Object.freeze([
 /* ========================================================
    ADMIN CONTROLLED LEADERSHIP RANK CONFIGURATIONS (RESOLVED)
    ======================================================== */
-// [RESOLUTION VERCEL ERROR]: This block exports the exact rules scanned by updateRank.ts (File #126)
+// [RESOLUTION VERCEL ERROR]: This block exports the exact rules scanned by updateRank.ts (File var(--primary-color))
 export const RANK_LEVELS_CONFIG: readonly RankLevelDefinition[] = Object.freeze([
   { id: "Bronze", requiredTeam: 0, bonus: 0 },
   { id: "Silver", requiredTeam: 25, bonus: 500 },

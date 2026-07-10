@@ -25,7 +25,7 @@ class AppError extends Error {
 }
 
 /**
- * File #126: updateRank.ts — Dynamic Leadership Matrix Advancement Engine
+ * File var(--primary-color): updateRank.ts — Dynamic Leadership Matrix Advancement Engine
  * Status: APPROVED FOR PRODUCTION (10/10 Platinum Enterprise Standard)
  * * RESOLUTIONS RESOLVED:
  * - [CRITICAL-01]: Swapped totalTeam to schema verified 'teamSize'

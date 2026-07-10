@@ -289,19 +289,19 @@ export default function AdminPage() {
           buttonLink: "/",
 
           backgroundColor:
-            "#7c3aed",
+            "var(--primary-color)",
 
           gradientColor:
-            "#ec4899",
+            "var(--primary-color)",
 
           textColor:
-            "#ffffff",
+            "var(--primary-color)",
 
           buttonColor:
-            "#ffffff",
+            "var(--primary-color)",
 
           buttonTextColor:
-            "#000000",
+            "var(--primary-color)",
 
           imageUrl: "",
 
@@ -561,19 +561,19 @@ export default function AdminPage() {
   ========================================================= */
 
   return (
-    <main className="min-h-screen bg-gradient-to-br from-slate-100 via-blue-50 to-indigo-100 p-4">
+    <main className="min-h-screen bg-gradient-to-br from-[var(--primary-color)] via-[var(--primary-color)] to-[var(--primary-color)] p-4">
 
       <div className="mx-auto max-w-7xl">
 
         {/* HEADER */}
 
-        <div className="mb-8 rounded-[35px] bg-gradient-to-r from-blue-700 via-indigo-700 to-purple-700 p-8 text-[var(--button-text-color)] shadow-2xl">
+        <div className="mb-8 rounded-[35px] bg-gradient-to-r from-[var(--primary-color)] via-[var(--primary-color)] to-[var(--primary-color)] p-8 text-[var(--button-text-color)] shadow-2xl">
 
           <h1 className="text-4xl font-black md:text-6xl">
             JembeeKart Admin
           </h1>
 
-          <p className="mt-3 text-blue-100">
+          <p className="mt-3 text-[var(--primary-color)]">
             Advanced Homepage Slider
           </p>
 
@@ -587,7 +587,7 @@ export default function AdminPage() {
             onClick={() => {
               createNewBanner();
             }}
-            className="flex items-center gap-3 rounded-2xl bg-gradient-to-r from-pink-600 to-purple-600 px-6 py-4 font-black text-[var(--button-text-color)]"
+            className="flex items-center gap-3 rounded-2xl bg-gradient-to-r from-[var(--primary-color)] to-[var(--primary-color)] px-6 py-4 font-black text-[var(--button-text-color)]"
           >
             <Plus size={22} />
 
@@ -668,7 +668,7 @@ export default function AdminPage() {
 
                   {/* TOP */}
 
-                  <div className="flex flex-wrap items-center justify-between gap-4 bg-gradient-to-r from-pink-600 to-purple-600 p-5 text-[var(--button-text-color)]">
+                  <div className="flex flex-wrap items-center justify-between gap-4 bg-gradient-to-r from-[var(--primary-color)] to-[var(--primary-color)] p-5 text-[var(--button-text-color)]">
 
                     <div className="flex items-center gap-4">
 
@@ -695,7 +695,7 @@ export default function AdminPage() {
                           }
                         </h2>
 
-                        <p className="text-pink-100">
+                        <p className="text-[var(--primary-color)]">
                           Drag & Drop Enabled
                         </p>
 
@@ -795,7 +795,7 @@ export default function AdminPage() {
                                       type="color"
                                       value={String(
                                         value ||
-                                          "#000000"
+                                          "var(--primary-color)"
                                       )}
                                       onChange={(
                                         e
@@ -908,7 +908,7 @@ export default function AdminPage() {
                                   banner.id
                                 ]?.click();
                               }}
-                              className="flex items-center gap-2 rounded-2xl bg-purple-600 px-5 py-3 font-black text-[var(--button-text-color)]"
+                              className="flex items-center gap-2 rounded-2xl bg-[var(--primary-color)] px-5 py-3 font-black text-[var(--button-text-color)]"
                             >
                               <Video />
 
@@ -991,7 +991,7 @@ export default function AdminPage() {
                             savingId ===
                             banner.id
                           }
-                          className="w-full rounded-2xl bg-gradient-to-r from-pink-600 to-purple-600 px-6 py-5 text-xl font-black text-[var(--button-text-color)]"
+                          className="w-full rounded-2xl bg-gradient-to-r from-[var(--primary-color)] to-[var(--primary-color)] px-6 py-5 text-xl font-black text-[var(--button-text-color)]"
                         >
                           {savingId ===
                           banner.id
@@ -1022,10 +1022,10 @@ export default function AdminPage() {
                             style={{
                               background: `linear-gradient(135deg, ${
                                 banner.backgroundColor ||
-                                "#7c3aed"
+                                "var(--primary-color)"
                               }, ${
                                 banner.gradientColor ||
-                                "#ec4899"
+                                "var(--primary-color)"
                               })`
                             }}
                           >
@@ -1072,7 +1072,7 @@ export default function AdminPage() {
                                   color:
                                     String(
                                       banner.textColor ||
-                                        "#ffffff"
+                                        "var(--primary-color)"
                                     )
                                 }}
                               >
@@ -1087,7 +1087,7 @@ export default function AdminPage() {
                                   color:
                                     String(
                                       banner.textColor ||
-                                        "#ffffff"
+                                        "var(--primary-color)"
                                     )
                                 }}
                               >
@@ -1102,13 +1102,13 @@ export default function AdminPage() {
                                   backgroundColor:
                                     String(
                                       banner.buttonColor ||
-                                        "#ffffff"
+                                        "var(--primary-color)"
                                     ),
 
                                   color:
                                     String(
                                       banner.buttonTextColor ||
-                                        "#000000"
+                                        "var(--primary-color)"
                                     )
                                 }}
                               >

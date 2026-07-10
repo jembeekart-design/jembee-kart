@@ -71,7 +71,7 @@ export default function WithdrawPage() {
 
   return (
 
-    <main className="min-h-screen bg-[#f6f6f6] pb-24">
+    <main className="min-h-screen bg-[var(--primary-color)] pb-24">
 
       {/* HEADER */}
 
@@ -98,8 +98,8 @@ export default function WithdrawPage() {
               items-center
               justify-center
               rounded-full
-              bg-violet-100
-              text-violet-700
+              bg-[var(--primary-color)]
+              text-[var(--primary-color)]
             "
           >
 
@@ -109,7 +109,7 @@ export default function WithdrawPage() {
 
           <div>
 
-            <h1 className="text-[24px] font-black text-violet-700">
+            <h1 className="text-[24px] font-black text-[var(--primary-color)]">
 
               Withdraw
 
@@ -136,9 +136,9 @@ export default function WithdrawPage() {
             overflow-hidden
             rounded-[30px]
             bg-gradient-to-br
-            from-violet-700
-            via-fuchsia-600
-            to-orange-500
+            from-[var(--primary-color)]
+            via-[var(--primary-color)]
+            to-[var(--primary-color)]
             p-5
             text-[var(--button-text-color)]
             shadow-xl
@@ -216,7 +216,7 @@ export default function WithdrawPage() {
 
               <BadgeIndianRupee
                 size={18}
-                className="text-violet-700"
+                className="text-[var(--primary-color)]"
               />
 
               <input
@@ -267,7 +267,7 @@ export default function WithdrawPage() {
 
               <Building2
                 size={18}
-                className="text-violet-700"
+                className="text-[var(--primary-color)]"
               />
 
               <input
@@ -301,8 +301,8 @@ export default function WithdrawPage() {
               w-full
               rounded-2xl
               bg-gradient-to-r
-              from-violet-700
-              to-fuchsia-600
+              from-[var(--primary-color)]
+              to-[var(--primary-color)]
               py-3
               text-[15px]
               font-black
@@ -365,8 +365,8 @@ export default function WithdrawPage() {
                     items-center
                     justify-center
                     rounded-full
-                    bg-green-100
-                    text-green-700
+                    bg-[var(--success-color)]
+                    text-[var(--success-color)]
                   "
                 >
 
@@ -395,12 +395,12 @@ export default function WithdrawPage() {
               <div
                 className="
                   rounded-full
-                  bg-green-100
+                  bg-[var(--success-color)]
                   px-3
                   py-1
                   text-[11px]
                   font-black
-                  text-green-700
+                  text-[var(--success-color)]
                 "
               >
 
@@ -433,8 +433,8 @@ export default function WithdrawPage() {
                     items-center
                     justify-center
                     rounded-full
-                    bg-orange-100
-                    text-orange-700
+                    bg-[var(--warning-color)]
+                    text-[var(--warning-color)]
                   "
                 >
 
@@ -463,12 +463,12 @@ export default function WithdrawPage() {
               <div
                 className="
                   rounded-full
-                  bg-orange-100
+                  bg-[var(--warning-color)]
                   px-3
                   py-1
                   text-[11px]
                   font-black
-                  text-orange-700
+                  text-[var(--warning-color)]
                 "
               >
 

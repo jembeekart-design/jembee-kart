@@ -171,19 +171,19 @@ export default function MLMNetworkPage() {
   const currentLevelMembers = networkLevels[activeLevel] || [];
 
   return (
-    <main className="min-h-screen bg-[#f6f7fb] pb-20">
+    <main className="min-h-screen bg-[var(--primary-color)] pb-20">
       
       {/* HEADER WITH UPDATED BACK ROUTE */}
       <div className="sticky top-0 z-50 bg-[var(--card-color)] px-4 py-3 shadow-sm">
         <div className="flex items-center gap-3">
           <Link
             href="/mlm/dashboard"
-            className="flex h-10 w-10 items-center justify-center rounded-full bg-violet-100 text-violet-700"
+            className="flex h-10 w-10 items-center justify-center rounded-full bg-[var(--primary-color)] text-[var(--primary-color)]"
           >
             <ArrowLeft size={20} />
           </Link>
           <div>
-            <h1 className="text-[24px] font-black text-violet-700">MLM Network</h1>
+            <h1 className="text-[24px] font-black text-[var(--primary-color)]">MLM Network</h1>
             <p className="text-[11px] text-[var(--muted-text-color)]">3-Tier Generation Snapshot Model</p>
           </div>
         </div>
@@ -191,7 +191,7 @@ export default function MLMNetworkPage() {
 
       {/* HERO CONTAINER */}
       <section className="px-4 pt-5">
-        <div className="overflow-hidden rounded-[30px] bg-gradient-to-br from-violet-700 via-fuchsia-600 to-orange-500 p-5 text-[var(--button-text-color)] shadow-xl">
+        <div className="overflow-hidden rounded-[30px] bg-gradient-to-br from-[var(--primary-color)] via-[var(--primary-color)] to-[var(--primary-color)] p-5 text-[var(--button-text-color)] shadow-xl">
           <div className="flex h-16 w-16 items-center justify-center rounded-full bg-[var(--card-color)]/20">
             <Crown size={34} />
           </div>
@@ -202,8 +202,8 @@ export default function MLMNetworkPage() {
           </h2>
           
           {/* REAL-TIME TOTAL TEAM BUSINESS COUNTER DISPLAY */}
-          <div className="mt-4 flex items-center gap-2 bg-[var(--card-color)]/10 backdrop-blur-md rounded-2xl p-3 border border-white/20">
-            <Briefcase size={20} className="text-orange-200" />
+          <div className="mt-4 flex items-center gap-2 bg-[var(--card-color)]/10 backdrop-blur-md rounded-2xl p-3 border border-[var(--border-color)]/20">
+            <Briefcase size={20} className="text-[var(--warning-color)]" />
             <div>
               <p className="text-[10px] font-bold uppercase text-[var(--button-text-color)]/70 tracking-wider">Total Team Business</p>
               <p className="text-xl font-black">₹{totalBusiness}</p>
@@ -216,7 +216,7 @@ export default function MLMNetworkPage() {
       <section className="mt-6 px-4">
         <div className="grid grid-cols-2 gap-3">
           <div className="rounded-2xl bg-[var(--card-color)] p-4 shadow-sm border border-[var(--border-color)]">
-            <Users size={28} className="text-violet-700" />
+            <Users size={28} className="text-[var(--primary-color)]" />
             <h3 className="mt-3 text-[24px] font-black text-[var(--text-color)]">{directCount}</h3>
             <p className="text-[12px] font-bold text-[var(--muted-text-color)]">Direct Referrals (L1)</p>
           </div>
@@ -247,7 +247,7 @@ export default function MLMNetworkPage() {
                     onClick={() => setActiveLevel(lvl)}
                     className={`flex-1 min-w-[85px] py-3 text-center text-xs font-black rounded-xl transition-all ${
                       activeLevel === lvl
-                        ? "bg-gradient-to-r from-violet-600 to-indigo-600 text-[var(--button-text-color)] shadow-md"
+                        ? "bg-gradient-to-r from-[var(--primary-color)] to-[var(--primary-color)] text-[var(--button-text-color)] shadow-md"
                         : "text-[var(--muted-text-color)] hover:text-[var(--text-color)]"
                     }`}
                   >
@@ -283,7 +283,7 @@ export default function MLMNetworkPage() {
               {currentLevelMembers.map((member) => (
                 <div
                   key={member.id}
-                  className="rounded-2xl border border-[var(--border-color)] bg-[var(--background-color)]/50 p-4 hover:border-violet-200 transition-all"
+                  className="rounded-2xl border border-[var(--border-color)] bg-[var(--background-color)]/50 p-4 hover:border-[var(--primary-color)] transition-all"
                 >
                   <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
                     <div className="space-y-1.5 flex-1">
@@ -291,7 +291,7 @@ export default function MLMNetworkPage() {
                         <h3 className="text-[15px] font-black text-[var(--text-color)]">
                           {member.name || "JembeeKart User"}
                         </h3>
-                        <span className="flex items-center gap-1 bg-indigo-50 text-indigo-600 text-[10px] font-black px-2 py-0.5 rounded-full">
+                        <span className="flex items-center gap-1 bg-[var(--primary-color)] text-[var(--primary-color)] text-[10px] font-black px-2 py-0.5 rounded-full">
                           <Shield size={10} />
                           {member.rank || "Member"}
                         </span>
@@ -317,15 +317,15 @@ export default function MLMNetworkPage() {
                         </div>
                         <div>
                           <p className="text-[9px] font-bold text-[var(--muted-text-color)] uppercase">Team Biz</p>
-                          <p className="text-xs font-black text-indigo-600">₹{member.teamBusiness || 0}</p>
+                          <p className="text-xs font-black text-[var(--primary-color)]">₹{member.teamBusiness || 0}</p>
                         </div>
                         <div>
                           <p className="text-[9px] font-bold text-[var(--muted-text-color)] uppercase">Lifetime Biz</p>
-                          <p className="text-xs font-black text-emerald-600">₹{member.lifetimeBusiness || 0}</p>
+                          <p className="text-xs font-black text-[var(--success-color)]">₹{member.lifetimeBusiness || 0}</p>
                         </div>
                       </div>
 
-                      <p className="text-[11px] font-black text-violet-600 tracking-wider pt-1">
+                      <p className="text-[11px] font-black text-[var(--primary-color)] tracking-wider pt-1">
                         Code: {member.referralCode || "N/A"}
                       </p>
                     </div>
@@ -333,7 +333,7 @@ export default function MLMNetworkPage() {
                     {/* REVENUE STATUS CARDS */}
                     <div className="flex items-center justify-between sm:flex-col sm:justify-center sm:items-end border-t sm:border-0 border-[var(--border-color)] pt-2 sm:pt-0 gap-1">
                       <span className="text-[10px] sm:hidden text-[var(--muted-text-color)] font-bold">Total Earnings:</span>
-                      <div className="rounded-full bg-violet-100 px-3 py-1 text-[11px] font-black text-violet-700">
+                      <div className="rounded-full bg-[var(--primary-color)] px-3 py-1 text-[11px] font-black text-[var(--primary-color)]">
                         ₹{member.totalIncome || 0}
                       </div>
                     </div>

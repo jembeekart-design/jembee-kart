@@ -67,13 +67,13 @@ export default function SystemPage() {
 
   return (
 
-    <main className="min-h-screen bg-[#0b0b0b] p-4 text-[var(--button-text-color)]">
+    <main className="min-h-screen bg-[var(--primary-color)] p-4 text-[var(--button-text-color)]">
 
       {/* HEADER */}
 
       <div className="mb-8 flex items-center gap-4">
 
-        <div className="flex h-16 w-16 items-center justify-center rounded-[24px] bg-cyan-500">
+        <div className="flex h-16 w-16 items-center justify-center rounded-[24px] bg-[var(--primary-color)]">
 
           <Server size={30} />
 
@@ -99,18 +99,18 @@ export default function SystemPage() {
 
         {/* SERVER */}
 
-        <div className="rounded-[30px] bg-[#151515] p-5">
+        <div className="rounded-[30px] bg-[var(--primary-color)] p-5">
 
           <div className="flex items-center justify-between">
 
             <Server
               size={28}
-              className="text-cyan-400"
+              className="text-[var(--primary-color)]"
             />
 
             <CheckCircle
               size={22}
-              className="text-green-400"
+              className="text-[var(--success-color)]"
             />
 
           </div>
@@ -127,18 +127,18 @@ export default function SystemPage() {
 
         {/* FIREBASE */}
 
-        <div className="rounded-[30px] bg-[#151515] p-5">
+        <div className="rounded-[30px] bg-[var(--primary-color)] p-5">
 
           <div className="flex items-center justify-between">
 
             <Database
               size={28}
-              className="text-orange-400"
+              className="text-[var(--warning-color)]"
             />
 
             <CheckCircle
               size={22}
-              className="text-green-400"
+              className="text-[var(--success-color)]"
             />
 
           </div>
@@ -155,18 +155,18 @@ export default function SystemPage() {
 
         {/* SECURITY */}
 
-        <div className="rounded-[30px] bg-[#151515] p-5">
+        <div className="rounded-[30px] bg-[var(--primary-color)] p-5">
 
           <div className="flex items-center justify-between">
 
             <ShieldCheck
               size={28}
-              className="text-violet-400"
+              className="text-[var(--primary-color)]"
             />
 
             <CheckCircle
               size={22}
-              className="text-green-400"
+              className="text-[var(--success-color)]"
             />
 
           </div>
@@ -183,18 +183,18 @@ export default function SystemPage() {
 
         {/* STORAGE */}
 
-        <div className="rounded-[30px] bg-[#151515] p-5">
+        <div className="rounded-[30px] bg-[var(--primary-color)] p-5">
 
           <div className="flex items-center justify-between">
 
             <HardDrive
               size={28}
-              className="text-pink-400"
+              className="text-[var(--primary-color)]"
             />
 
             <AlertTriangle
               size={22}
-              className="text-yellow-400"
+              className="text-[var(--warning-color)]"
             />
 
           </div>
@@ -213,7 +213,7 @@ export default function SystemPage() {
 
       {/* SYSTEM INFO */}
 
-      <div className="mt-6 rounded-[30px] bg-[#151515] p-5">
+      <div className="mt-6 rounded-[30px] bg-[var(--primary-color)] p-5">
 
         <h2 className="text-2xl font-black">
           System Information
@@ -227,7 +227,7 @@ export default function SystemPage() {
 
               <Cpu
                 size={22}
-                className="text-cyan-400"
+                className="text-[var(--primary-color)]"
               />
 
               <div>
@@ -244,7 +244,7 @@ export default function SystemPage() {
 
             </div>
 
-            <span className="rounded-full bg-cyan-500 px-4 py-2 text-sm font-bold">
+            <span className="rounded-full bg-[var(--primary-color)] px-4 py-2 text-sm font-bold">
 
               v1.0.0
 
@@ -258,7 +258,7 @@ export default function SystemPage() {
 
               <Globe
                 size={22}
-                className="text-green-400"
+                className="text-[var(--success-color)]"
               />
 
               <div>
@@ -289,7 +289,7 @@ export default function SystemPage() {
 
               <Power
                 size={22}
-                className="text-red-400"
+                className="text-[var(--danger-color)]"
               />
 
               <div>
@@ -339,7 +339,7 @@ export default function SystemPage() {
 
         <button
           onClick={clearCache}
-          className="rounded-[30px] bg-gradient-to-r from-orange-500 to-red-500 p-6 text-left"
+          className="rounded-[30px] bg-gradient-to-r from-[var(--primary-color)] to-[var(--primary-color)] p-6 text-left"
         >
 
           <Trash2 size={32} />
@@ -362,7 +362,7 @@ export default function SystemPage() {
           onClick={
             refreshDeployment
           }
-          className="rounded-[30px] bg-gradient-to-r from-cyan-500 to-blue-600 p-6 text-left"
+          className="rounded-[30px] bg-gradient-to-r from-[var(--primary-color)] to-[var(--primary-color)] p-6 text-left"
         >
 
           <RefreshCcw size={32} />
@@ -383,7 +383,7 @@ export default function SystemPage() {
 
       {/* FOOTER */}
 
-      <div className="mt-6 rounded-[30px] bg-gradient-to-r from-violet-600 to-fuchsia-600 p-6">
+      <div className="mt-6 rounded-[30px] bg-gradient-to-r from-[var(--primary-color)] to-[var(--primary-color)] p-6">
 
         <h2 className="text-3xl font-black">
           JembeeKart System

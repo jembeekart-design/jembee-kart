@@ -292,7 +292,7 @@ export default function DebugDashboard() {
 
             </h3>
 
-            <p className="text-3xl text-orange-600 font-bold">
+            <p className="text-3xl text-[var(--warning-color)] font-bold">
 
               {
                 state.build
@@ -441,7 +441,7 @@ export default function DebugDashboard() {
 {/* Fix Next Error */}
 {/* ====================================================== */}
 
-<div className="mt-8 rounded-xl border-l-4 border-red-600 bg-[var(--card-color)] p-6 shadow">
+<div className="mt-8 rounded-xl border-l-4 border-[var(--danger-color)] bg-[var(--card-color)] p-6 shadow">
 
   <div className="flex items-center gap-3">
 
@@ -620,17 +620,17 @@ export default function DebugDashboard() {
                   ${
                     issue.severity === "CRITICAL"
 
-                      ? "bg-red-100 text-red-700"
+                      ? "bg-[var(--danger-color)] text-[var(--danger-color)]"
 
                       : issue.severity === "ERROR"
 
-                      ? "bg-orange-100 text-orange-700"
+                      ? "bg-[var(--warning-color)] text-[var(--warning-color)]"
 
                       : issue.severity === "WARNING"
 
-                      ? "bg-yellow-100 text-yellow-700"
+                      ? "bg-[var(--warning-color)] text-[var(--warning-color)]"
 
-                      : "bg-green-100 text-green-700"
+                      : "bg-[var(--success-color)] text-[var(--success-color)]"
 
                   }
 
@@ -775,7 +775,7 @@ export default function DebugDashboard() {
 
     </h3>
 
-    <p className="text-3xl font-bold text-orange-600">
+    <p className="text-3xl font-bold text-[var(--warning-color)]">
 
       {
 
@@ -968,7 +968,7 @@ export default function DebugDashboard() {
 
       <div className="flex items-center gap-3">
 
-        <AlertTriangle className="text-orange-600" />
+        <AlertTriangle className="text-[var(--warning-color)]" />
 
         <span>
 
@@ -1018,7 +1018,7 @@ export default function DebugDashboard() {
 {/* Live Console */}
 {/* ====================================================== */}
 
-<div className="mt-8 rounded-xl bg-[var(--card-color)] p-6 text-green-400 shadow">
+<div className="mt-8 rounded-xl bg-[var(--card-color)] p-6 text-[var(--success-color)] shadow">
 
   <div className="mb-4 flex items-center gap-3">
 
@@ -1032,7 +1032,7 @@ export default function DebugDashboard() {
 
   </div>
 
-  <div className="max-h-80 overflow-auto rounded bg-zinc-900 p-4 font-mono text-sm">
+  <div className="max-h-80 overflow-auto rounded bg-[var(--card-color)] p-4 font-mono text-sm">
 
     {filteredIssues.length === 0 ? (
 
@@ -1109,7 +1109,7 @@ export default function DebugDashboard() {
   </button>
 
   <button
-    className="rounded-lg bg-green-600 px-5 py-3 text-[var(--button-text-color)]"
+    className="rounded-lg bg-[var(--success-color)] px-5 py-3 text-[var(--button-text-color)]"
   >
 
     Run Governance Scan
@@ -1117,7 +1117,7 @@ export default function DebugDashboard() {
   </button>
 
   <button
-    className="rounded-lg bg-orange-600 px-5 py-3 text-[var(--button-text-color)]"
+    className="rounded-lg bg-[var(--warning-color)] px-5 py-3 text-[var(--button-text-color)]"
   >
 
     Rebuild Project

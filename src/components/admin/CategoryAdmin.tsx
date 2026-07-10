@@ -128,10 +128,10 @@ export default function CategoryAdmin() {
         image: "",
 
         backgroundColor:
-          "#ffffff",
+          "var(--primary-color)",
 
         textColor:
-          "#000000",
+          "var(--primary-color)",
 
         borderRadius:
           "20px",
@@ -381,7 +381,7 @@ export default function CategoryAdmin() {
   ====================================================== */
 
   return (
-    <main className="min-h-screen bg-slate-100 p-4">
+    <main className="min-h-screen bg-[var(--card-color)] p-4">
 
       <div className="mx-auto max-w-5xl">
 

@@ -37,7 +37,7 @@ const MAX_RANK_REWARD_CAP = 100000;
 const REWARD_WALLET_SLOT = "rewardWallet"; 
 
 /**
- * File #127: createRankReward.ts — Leadership Rank Milestone Distribution Engine
+ * File var(--primary-color): createRankReward.ts — Leadership Rank Milestone Distribution Engine
  * Status: 10/10 Enterprise Platinum Hardened — PRODUCTION VERIFIED
  * 
  * RESOLUTIONS RESOLVED:

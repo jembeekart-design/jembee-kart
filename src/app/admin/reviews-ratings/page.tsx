@@ -142,7 +142,7 @@ export default function ReviewsRatingsPage() {
 
   return (
 
-    <main className="min-h-screen bg-[#0b0b0b] p-4 text-[var(--button-text-color)]">
+    <main className="min-h-screen bg-[var(--primary-color)] p-4 text-[var(--button-text-color)]">
 
       {/* HEADER */}
 
@@ -174,7 +174,7 @@ export default function ReviewsRatingsPage() {
 
         {reviews.length === 0 && (
 
-          <div className="rounded-[30px] bg-[#151515] p-10 text-center">
+          <div className="rounded-[30px] bg-[var(--primary-color)] p-10 text-center">
 
             No Reviews Found
 
@@ -187,7 +187,7 @@ export default function ReviewsRatingsPage() {
 
             <div
               key={review.id}
-              className="rounded-[30px] bg-[#151515] p-5"
+              className="rounded-[30px] bg-[var(--primary-color)] p-5"
             >
 
               <div className="flex flex-col gap-6">
@@ -202,7 +202,7 @@ export default function ReviewsRatingsPage() {
 
                       <User size={20} />
 
-                      <h2 className="text-2xl font-black text-yellow-400">
+                      <h2 className="text-2xl font-black text-[var(--warning-color)]">
 
                         {review.userName}
 
@@ -210,7 +210,7 @@ export default function ReviewsRatingsPage() {
 
                     </div>
 
-                    <div className="mt-3 flex items-center gap-2 text-gray-300">
+                    <div className="mt-3 flex items-center gap-2 text-[var(--text-color)]">
 
                       <Package size={16} />
 
@@ -243,7 +243,7 @@ export default function ReviewsRatingsPage() {
                         className={
                           index <
                           review.rating
-                            ? "fill-yellow-400 text-yellow-400"
+                            ? "fill-yellow-400 text-[var(--warning-color)]"
                             : "text-[var(--muted-text-color)]"
                         }
                       />
@@ -257,7 +257,7 @@ export default function ReviewsRatingsPage() {
 
                 <div className="rounded-2xl bg-[var(--card-color)]/30 p-4">
 
-                  <p className="text-gray-300">
+                  <p className="text-[var(--text-color)]">
 
                     {review.review}
 
@@ -292,7 +292,7 @@ export default function ReviewsRatingsPage() {
                         "Hidden"
                       )
                     }
-                    className="flex items-center gap-2 rounded-2xl bg-orange-500 px-5 py-3 font-bold text-[var(--text-color)]"
+                    className="flex items-center gap-2 rounded-2xl bg-[var(--warning-color)] px-5 py-3 font-bold text-[var(--text-color)]"
                   >
 
                     <EyeOff size={18} />
@@ -348,7 +348,7 @@ function StatusBadge({
 
     if (status === "Hidden") {
 
-      return "bg-orange-500";
+      return "bg-[var(--warning-color)]";
 
     }
 

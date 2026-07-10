@@ -60,7 +60,7 @@ export default function EarningsPage() {
 
   return (
 
-    <main className="min-h-screen bg-[#f6f6f6] pb-24">
+    <main className="min-h-screen bg-[var(--primary-color)] pb-24">
 
       {/* HEADER */}
 
@@ -87,8 +87,8 @@ export default function EarningsPage() {
               items-center
               justify-center
               rounded-full
-              bg-violet-100
-              text-violet-700
+              bg-[var(--primary-color)]
+              text-[var(--primary-color)]
             "
           >
 
@@ -98,7 +98,7 @@ export default function EarningsPage() {
 
           <div>
 
-            <h1 className="text-[24px] font-black text-violet-700">
+            <h1 className="text-[24px] font-black text-[var(--primary-color)]">
 
               Earnings
 
@@ -125,9 +125,9 @@ export default function EarningsPage() {
             overflow-hidden
             rounded-[30px]
             bg-gradient-to-br
-            from-violet-700
-            via-fuchsia-600
-            to-orange-500
+            from-[var(--primary-color)]
+            via-[var(--primary-color)]
+            to-[var(--primary-color)]
             p-5
             text-[var(--button-text-color)]
             shadow-xl
@@ -218,7 +218,7 @@ export default function EarningsPage() {
 
             <CalendarDays
               size={28}
-              className="text-orange-600"
+              className="text-[var(--warning-color)]"
             />
 
             <h3 className="mt-3 text-[24px] font-black">
@@ -246,7 +246,7 @@ export default function EarningsPage() {
 
             <Gift
               size={28}
-              className="text-pink-600"
+              className="text-[var(--primary-color)]"
             />
 
             <h3 className="mt-3 text-[24px] font-black">
@@ -274,7 +274,7 @@ export default function EarningsPage() {
 
             <Users
               size={28}
-              className="text-violet-700"
+              className="text-[var(--primary-color)]"
             />
 
             <h3 className="mt-3 text-[24px] font-black">
@@ -318,8 +318,8 @@ export default function EarningsPage() {
                 items-center
                 justify-center
                 rounded-full
-                bg-violet-100
-                text-violet-700
+                bg-[var(--primary-color)]
+                text-[var(--primary-color)]
               "
             >
 
@@ -347,15 +347,15 @@ export default function EarningsPage() {
 
           <div className="mt-5 flex items-end gap-2">
 
-            <div className="h-16 w-full rounded-t-xl bg-violet-200" />
+            <div className="h-16 w-full rounded-t-xl bg-[var(--primary-color)]" />
 
-            <div className="h-24 w-full rounded-t-xl bg-violet-400" />
+            <div className="h-24 w-full rounded-t-xl bg-[var(--primary-color)]" />
 
-            <div className="h-20 w-full rounded-t-xl bg-fuchsia-400" />
+            <div className="h-20 w-full rounded-t-xl bg-[var(--primary-color)]" />
 
-            <div className="h-32 w-full rounded-t-xl bg-orange-400" />
+            <div className="h-32 w-full rounded-t-xl bg-[var(--warning-color)]" />
 
-            <div className="h-40 w-full rounded-t-xl bg-violet-700" />
+            <div className="h-40 w-full rounded-t-xl bg-[var(--primary-color)]" />
 
           </div>
 
@@ -418,12 +418,12 @@ export default function EarningsPage() {
                   <div
                     className="
                       rounded-full
-                      bg-green-100
+                      bg-[var(--success-color)]
                       px-3
                       py-1
                       text-[12px]
                       font-black
-                      text-green-700
+                      text-[var(--success-color)]
                     "
                   >
 

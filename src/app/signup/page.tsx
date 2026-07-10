@@ -333,7 +333,7 @@ function RegistrationForm() {
     <main className="flex min-h-screen items-center justify-center bg-[var(--background-color)] px-4 py-12">
       <div className="w-full max-w-md rounded-[32px] bg-[var(--card-color)] p-8 shadow-sm border border-[var(--border-color)]">
         <div className="text-center mb-8">
-          <h1 className="text-[28px] font-black text-indigo-600">Create Account</h1>
+          <h1 className="text-[28px] font-black text-[var(--primary-color)]">Create Account</h1>
           <p className="text-sm text-[var(--muted-text-color)] mt-1">Join JembeeKart Today</p>
         </div>
 
@@ -344,7 +344,7 @@ function RegistrationForm() {
             value={name}
             onChange={(e) => setName(e.target.value)}
             required
-            className="w-full rounded-2xl border p-4 outline-none transition focus:border-indigo-500"
+            className="w-full rounded-2xl border p-4 outline-none transition focus:border-[var(--primary-color)]"
           />
           <input
             type="email"
@@ -352,7 +352,7 @@ function RegistrationForm() {
             value={email}
             onChange={(e) => setEmail(e.target.value)}
             required
-            className="w-full rounded-2xl border p-4 outline-none transition focus:border-indigo-500"
+            className="w-full rounded-2xl border p-4 outline-none transition focus:border-[var(--primary-color)]"
           />
           <input
             type="password"
@@ -360,7 +360,7 @@ function RegistrationForm() {
             value={password}
             onChange={(e) => setPassword(e.target.value)}
             required
-            className="w-full rounded-2xl border p-4 outline-none transition focus:border-indigo-500"
+            className="w-full rounded-2xl border p-4 outline-none transition focus:border-[var(--primary-color)]"
           />
           <input
             type="password"
@@ -368,7 +368,7 @@ function RegistrationForm() {
             value={confirmPassword}
             onChange={(e) => setConfirmPassword(e.target.value)}
             required
-            className="w-full rounded-2xl border p-4 outline-none transition focus:border-indigo-500"
+            className="w-full rounded-2xl border p-4 outline-none transition focus:border-[var(--primary-color)]"
           />
           
           <div className="flex items-start gap-3 py-2 px-1">
@@ -377,15 +377,15 @@ function RegistrationForm() {
               id="terms"
               checked={acceptedTerms}
               onChange={(e) => setAcceptedTerms(e.target.checked)}
-              className="mt-1 h-4 w-4 rounded border-[var(--border-color)] text-indigo-600 focus:ring-indigo-500"
+              className="mt-1 h-4 w-4 rounded border-[var(--border-color)] text-[var(--primary-color)] focus:ring-[var(--primary-color)]"
             />
             <label htmlFor="terms" className="text-xs text-[var(--muted-text-color)] select-none">
               I agree to the{" "}
-              <Link href="/terms" className="text-indigo-600 font-bold hover:underline">
+              <Link href="/terms" className="text-[var(--primary-color)] font-bold hover:underline">
                 Terms & Conditions
               </Link>{" "}
               and{" "}
-              <Link href="/privacy" className="text-indigo-600 font-bold hover:underline">
+              <Link href="/privacy" className="text-[var(--primary-color)] font-bold hover:underline">
                 Privacy Policy
               </Link>{" "}
               of JembeeKart.
@@ -395,7 +395,7 @@ function RegistrationForm() {
           <button
             type="submit"
             disabled={loading}
-            className="w-full rounded-2xl bg-indigo-600 p-4 font-black text-[var(--button-text-color)] transition hover:bg-indigo-700 disabled:opacity-50"
+            className="w-full rounded-2xl bg-[var(--primary-color)] p-4 font-black text-[var(--button-text-color)] transition hover:bg-[var(--primary-color)] disabled:opacity-50"
           >
             {loading ? "Creating Account..." : "Create Account"}
           </button>

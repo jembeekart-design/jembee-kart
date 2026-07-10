@@ -62,13 +62,13 @@ export default function ReferralsPage() {
 
   return (
 
-    <main className="min-h-screen bg-[#0b0b0b] p-4 text-[var(--button-text-color)]">
+    <main className="min-h-screen bg-[var(--primary-color)] p-4 text-[var(--button-text-color)]">
 
       {/* HEADER */}
 
       <div className="mb-8 flex items-center gap-4">
 
-        <div className="flex h-16 w-16 items-center justify-center rounded-[24px] bg-violet-600">
+        <div className="flex h-16 w-16 items-center justify-center rounded-[24px] bg-[var(--primary-color)]">
 
           <Users size={30} />
 
@@ -92,11 +92,11 @@ export default function ReferralsPage() {
 
       <div className="mb-6 grid grid-cols-3 gap-4">
 
-        <div className="rounded-[30px] bg-[#151515] p-5">
+        <div className="rounded-[30px] bg-[var(--primary-color)] p-5">
 
           <Gift
             size={28}
-            className="text-pink-400"
+            className="text-[var(--primary-color)]"
           />
 
           <p className="mt-4 text-sm text-[var(--muted-text-color)]">
@@ -109,11 +109,11 @@ export default function ReferralsPage() {
 
         </div>
 
-        <div className="rounded-[30px] bg-[#151515] p-5">
+        <div className="rounded-[30px] bg-[var(--primary-color)] p-5">
 
           <IndianRupee
             size={28}
-            className="text-green-400"
+            className="text-[var(--success-color)]"
           />
 
           <p className="mt-4 text-sm text-[var(--muted-text-color)]">
@@ -126,11 +126,11 @@ export default function ReferralsPage() {
 
         </div>
 
-        <div className="rounded-[30px] bg-[#151515] p-5">
+        <div className="rounded-[30px] bg-[var(--primary-color)] p-5">
 
           <CheckCircle
             size={28}
-            className="text-cyan-400"
+            className="text-[var(--primary-color)]"
           />
 
           <p className="mt-4 text-sm text-[var(--muted-text-color)]">
@@ -154,7 +154,7 @@ export default function ReferralsPage() {
 
             <div
               key={item.id}
-              className="rounded-[30px] bg-[#151515] p-5"
+              className="rounded-[30px] bg-[var(--primary-color)] p-5"
             >
 
               <div className="flex items-center justify-between gap-4">
@@ -175,7 +175,7 @@ export default function ReferralsPage() {
 
                 <div className="text-right">
 
-                  <h3 className="text-2xl font-black text-green-400">
+                  <h3 className="text-2xl font-black text-[var(--success-color)]">
                     {item.earnings}
                   </h3>
 
@@ -207,7 +207,7 @@ export default function ReferralsPage() {
                       item.code
                     )
                   }
-                  className="flex items-center gap-2 rounded-2xl bg-violet-600 px-5 py-3 text-sm font-bold"
+                  className="flex items-center gap-2 rounded-2xl bg-[var(--primary-color)] px-5 py-3 text-sm font-bold"
                 >
 
                   <Copy size={18} />
@@ -227,7 +227,7 @@ export default function ReferralsPage() {
 
       {/* PREVIEW */}
 
-      <div className="mt-6 rounded-[30px] bg-gradient-to-r from-violet-600 to-fuchsia-500 p-6">
+      <div className="mt-6 rounded-[30px] bg-gradient-to-r from-[var(--primary-color)] to-[var(--primary-color)] p-6">
 
         <h2 className="text-3xl font-black">
           Referral Program

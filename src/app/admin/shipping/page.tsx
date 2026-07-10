@@ -28,13 +28,13 @@ export default function ShippingPage() {
 
   return (
 
-    <main className="min-h-screen bg-[#0b0b0b] p-4 text-[var(--button-text-color)]">
+    <main className="min-h-screen bg-[var(--primary-color)] p-4 text-[var(--button-text-color)]">
 
       <div className="mb-8 flex items-center justify-between">
 
         <div className="flex items-center gap-4">
 
-          <div className="flex h-16 w-16 items-center justify-center rounded-[24px] bg-cyan-500">
+          <div className="flex h-16 w-16 items-center justify-center rounded-[24px] bg-[var(--primary-color)]">
 
             <Truck size={30} />
 
@@ -55,7 +55,7 @@ export default function ShippingPage() {
         </div>
 
         <button
-          className="flex items-center gap-2 rounded-2xl bg-cyan-500 px-5 py-3 text-sm font-bold"
+          className="flex items-center gap-2 rounded-2xl bg-[var(--primary-color)] px-5 py-3 text-sm font-bold"
         >
 
           <Save size={18} />
@@ -68,13 +68,13 @@ export default function ShippingPage() {
 
       <div className="space-y-5">
 
-        <div className="rounded-[30px] bg-[#151515] p-5">
+        <div className="rounded-[30px] bg-[var(--primary-color)] p-5">
 
           <div className="mb-5 flex items-center gap-3">
 
             <Package
               size={24}
-              className="text-cyan-400"
+              className="text-[var(--primary-color)]"
             />
 
             <h2 className="text-2xl font-black">
@@ -91,18 +91,18 @@ export default function ShippingPage() {
                 e.target.value
               )
             }
-            className="w-full rounded-2xl border border-white/10 bg-[var(--card-color)] px-4 py-4 outline-none"
+            className="w-full rounded-2xl border border-[var(--border-color)]/10 bg-[var(--card-color)] px-4 py-4 outline-none"
           />
 
         </div>
 
-        <div className="rounded-[30px] bg-[#151515] p-5">
+        <div className="rounded-[30px] bg-[var(--primary-color)] p-5">
 
           <div className="mb-5 flex items-center gap-3">
 
             <Truck
               size={24}
-              className="text-green-400"
+              className="text-[var(--success-color)]"
             />
 
             <h2 className="text-2xl font-black">
@@ -119,12 +119,12 @@ export default function ShippingPage() {
                 e.target.value
               )
             }
-            className="w-full rounded-2xl border border-white/10 bg-[var(--card-color)] px-4 py-4 outline-none"
+            className="w-full rounded-2xl border border-[var(--border-color)]/10 bg-[var(--card-color)] px-4 py-4 outline-none"
           />
 
         </div>
 
-        <div className="rounded-[30px] bg-[#151515] p-5">
+        <div className="rounded-[30px] bg-[var(--primary-color)] p-5">
 
           <div className="flex items-center justify-between">
 
@@ -132,7 +132,7 @@ export default function ShippingPage() {
 
               <MapPin
                 size={24}
-                className="text-yellow-400"
+                className="text-[var(--warning-color)]"
               />
 
               <div>
@@ -172,7 +172,7 @@ export default function ShippingPage() {
 
         </div>
 
-        <div className="rounded-[30px] bg-[#151515] p-5">
+        <div className="rounded-[30px] bg-[var(--primary-color)] p-5">
 
           <div className="flex items-center justify-between">
 
@@ -180,7 +180,7 @@ export default function ShippingPage() {
 
               <CheckCircle
                 size={24}
-                className="text-violet-400"
+                className="text-[var(--primary-color)]"
               />
 
               <div>

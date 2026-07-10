@@ -62,8 +62,8 @@ LiveCoinsAnimation({
             gap-3
             rounded-full
             border
-            border-yellow-300
-            bg-yellow-400
+            border-[var(--warning-color)]
+            bg-[var(--warning-color)]
             px-6
             py-3
             shadow-2xl

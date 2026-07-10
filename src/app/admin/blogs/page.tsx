@@ -103,13 +103,13 @@ export default function BlogsPage() {
 
   return (
 
-    <main className="min-h-screen bg-[#0b0b0b] p-4 text-[var(--button-text-color)]">
+    <main className="min-h-screen bg-[var(--primary-color)] p-4 text-[var(--button-text-color)]">
 
       {/* HEADER */}
 
       <div className="mb-8 flex items-center gap-4">
 
-        <div className="flex h-16 w-16 items-center justify-center rounded-[24px] bg-orange-500">
+        <div className="flex h-16 w-16 items-center justify-center rounded-[24px] bg-[var(--warning-color)]">
 
           <FileText size={30} />
 
@@ -131,7 +131,7 @@ export default function BlogsPage() {
 
       {/* CREATE BLOG */}
 
-      <div className="rounded-[30px] bg-[#151515] p-5">
+      <div className="rounded-[30px] bg-[var(--primary-color)] p-5">
 
         <h2 className="text-2xl font-black">
           Create Blog
@@ -173,7 +173,7 @@ export default function BlogsPage() {
 
           <button
             onClick={addBlog}
-            className="flex items-center gap-2 rounded-2xl bg-orange-500 px-5 py-3 font-bold"
+            className="flex items-center gap-2 rounded-2xl bg-[var(--warning-color)] px-5 py-3 font-bold"
           >
 
             <Plus size={18} />
@@ -195,7 +195,7 @@ export default function BlogsPage() {
 
             <div
               key={item.id}
-              className="rounded-[30px] bg-[#151515] p-5"
+              className="rounded-[30px] bg-[var(--primary-color)] p-5"
             >
 
               <div className="flex items-start justify-between gap-4">
@@ -210,7 +210,7 @@ export default function BlogsPage() {
                     {item.description}
                   </p>
 
-                  <div className="mt-4 inline-block rounded-full bg-orange-500 px-4 py-2 text-sm font-bold">
+                  <div className="mt-4 inline-block rounded-full bg-[var(--warning-color)] px-4 py-2 text-sm font-bold">
 
                     {item.visible
                       ? "Published"
@@ -228,7 +228,7 @@ export default function BlogsPage() {
                         item.id
                       )
                     }
-                    className="flex h-14 w-14 items-center justify-center rounded-2xl bg-cyan-500"
+                    className="flex h-14 w-14 items-center justify-center rounded-2xl bg-[var(--primary-color)]"
                   >
 
                     <Eye size={22} />
@@ -261,7 +261,7 @@ export default function BlogsPage() {
 
       {/* PREVIEW */}
 
-      <div className="mt-6 rounded-[30px] bg-gradient-to-r from-orange-500 to-red-500 p-6">
+      <div className="mt-6 rounded-[30px] bg-gradient-to-r from-[var(--primary-color)] to-[var(--primary-color)] p-6">
 
         <h2 className="text-3xl font-black">
           Blog System

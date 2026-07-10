@@ -23,7 +23,7 @@ export default function MLMNotificationsPage() {
         "Rahul Kumar joined using your referral link.",
       icon: Users,
       color:
-        "bg-violet-100 text-violet-700",
+        "bg-[var(--primary-color)] text-[var(--primary-color)]",
       time:
         "2 min ago"
     },
@@ -36,7 +36,7 @@ export default function MLMNotificationsPage() {
       icon:
         BadgeIndianRupee,
       color:
-        "bg-green-100 text-green-700",
+        "bg-[var(--success-color)] text-[var(--success-color)]",
       time:
         "10 min ago"
     },
@@ -48,7 +48,7 @@ export default function MLMNotificationsPage() {
         "Congratulations! You reached Gold Leader rank.",
       icon: Crown,
       color:
-        "bg-yellow-100 text-yellow-700",
+        "bg-[var(--warning-color)] text-[var(--warning-color)]",
       time:
         "1 hour ago"
     },
@@ -61,7 +61,7 @@ export default function MLMNotificationsPage() {
       icon:
         ShieldCheck,
       color:
-        "bg-blue-100 text-blue-700",
+        "bg-[var(--primary-color)] text-[var(--primary-color)]",
       time:
         "Today"
     },
@@ -73,7 +73,7 @@ export default function MLMNotificationsPage() {
         "You unlocked ₹500 team growth bonus.",
       icon: Gift,
       color:
-        "bg-pink-100 text-pink-700",
+        "bg-[var(--primary-color)] text-[var(--primary-color)]",
       time:
         "Today"
     }
@@ -82,7 +82,7 @@ export default function MLMNotificationsPage() {
 
   return (
 
-    <main className="min-h-screen bg-[#f6f6f6] pb-20">
+    <main className="min-h-screen bg-[var(--primary-color)] pb-20">
 
       {/* HEADER */}
 
@@ -109,8 +109,8 @@ export default function MLMNotificationsPage() {
               items-center
               justify-center
               rounded-full
-              bg-violet-100
-              text-violet-700
+              bg-[var(--primary-color)]
+              text-[var(--primary-color)]
             "
           >
 
@@ -120,7 +120,7 @@ export default function MLMNotificationsPage() {
 
           <div>
 
-            <h1 className="text-[24px] font-black text-violet-700">
+            <h1 className="text-[24px] font-black text-[var(--primary-color)]">
 
               Notifications
 
@@ -147,9 +147,9 @@ export default function MLMNotificationsPage() {
             overflow-hidden
             rounded-[30px]
             bg-gradient-to-br
-            from-violet-700
-            via-fuchsia-600
-            to-orange-500
+            from-[var(--primary-color)]
+            via-[var(--primary-color)]
+            to-[var(--primary-color)]
             p-5
             text-[var(--button-text-color)]
             shadow-xl

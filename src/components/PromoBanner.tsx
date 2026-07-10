@@ -97,8 +97,8 @@ export default function PromoBanner() {
               items-center
               justify-center
               rounded-full
-              bg-violet-100
-              text-violet-700
+              bg-[var(--primary-color)]
+              text-[var(--primary-color)]
             "
           >
 
@@ -108,7 +108,7 @@ export default function PromoBanner() {
 
           <div>
 
-            <h2 className="text-[28px] font-black leading-none text-violet-700">
+            <h2 className="text-[28px] font-black leading-none text-[var(--primary-color)]">
 
               JembeeKart
 
@@ -162,8 +162,8 @@ export default function PromoBanner() {
                 gap-3
                 rounded-2xl
                 border
-                border-violet-100
-                bg-violet-50
+                border-[var(--primary-color)]
+                bg-[var(--primary-color)]
                 p-4
                 active:scale-[0.98]
                 transition
@@ -178,8 +178,8 @@ export default function PromoBanner() {
                   items-center
                   justify-center
                   rounded-full
-                  bg-violet-200
-                  text-violet-700
+                  bg-[var(--primary-color)]
+                  text-[var(--primary-color)]
                 "
               >
 
@@ -218,8 +218,8 @@ export default function PromoBanner() {
                 gap-3
                 rounded-2xl
                 border
-                border-pink-100
-                bg-pink-50
+                border-[var(--primary-color)]
+                bg-[var(--primary-color)]
                 p-4
                 active:scale-[0.98]
                 transition
@@ -234,8 +234,8 @@ export default function PromoBanner() {
                   items-center
                   justify-center
                   rounded-full
-                  bg-pink-200
-                  text-pink-700
+                  bg-[var(--primary-color)]
+                  text-[var(--primary-color)]
                 "
               >
 
@@ -274,8 +274,8 @@ export default function PromoBanner() {
                 gap-3
                 rounded-2xl
                 border
-                border-orange-100
-                bg-orange-50
+                border-[var(--warning-color)]
+                bg-[var(--warning-color)]
                 p-4
                 active:scale-[0.98]
                 transition
@@ -290,8 +290,8 @@ export default function PromoBanner() {
                   items-center
                   justify-center
                   rounded-full
-                  bg-orange-200
-                  text-orange-700
+                  bg-[var(--warning-color)]
+                  text-[var(--warning-color)]
                 "
               >
 
@@ -329,8 +329,8 @@ export default function PromoBanner() {
             w-full
             rounded-2xl
             bg-gradient-to-r
-            from-violet-600
-            to-fuchsia-500
+            from-[var(--primary-color)]
+            to-[var(--primary-color)]
             py-3
             text-[15px]
             font-black

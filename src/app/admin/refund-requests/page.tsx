@@ -144,13 +144,13 @@ export default function RefundRequestsPage() {
 
   return (
 
-    <main className="min-h-screen bg-[#0b0b0b] p-4 text-[var(--button-text-color)]">
+    <main className="min-h-screen bg-[var(--primary-color)] p-4 text-[var(--button-text-color)]">
 
       {/* HEADER */}
 
       <div className="mb-8 flex items-center gap-4">
 
-        <div className="flex h-16 w-16 items-center justify-center rounded-[24px] bg-cyan-500">
+        <div className="flex h-16 w-16 items-center justify-center rounded-[24px] bg-[var(--primary-color)]">
 
           <RefreshCcw size={30} />
 
@@ -176,7 +176,7 @@ export default function RefundRequestsPage() {
 
         {requests.length === 0 && (
 
-          <div className="rounded-[30px] bg-[#151515] p-10 text-center">
+          <div className="rounded-[30px] bg-[var(--primary-color)] p-10 text-center">
 
             No Refund Requests Found
 
@@ -189,7 +189,7 @@ export default function RefundRequestsPage() {
 
             <div
               key={request.id}
-              className="rounded-[30px] bg-[#151515] p-5"
+              className="rounded-[30px] bg-[var(--primary-color)] p-5"
             >
 
               <div className="flex flex-col gap-6">
@@ -204,7 +204,7 @@ export default function RefundRequestsPage() {
 
                       <User size={20} />
 
-                      <h2 className="text-2xl font-black text-cyan-400">
+                      <h2 className="text-2xl font-black text-[var(--primary-color)]">
 
                         {request.userName}
 
@@ -212,7 +212,7 @@ export default function RefundRequestsPage() {
 
                     </div>
 
-                    <div className="mt-4 flex flex-col gap-2 text-gray-300">
+                    <div className="mt-4 flex flex-col gap-2 text-[var(--text-color)]">
 
                       <div className="flex items-center gap-2">
 
@@ -250,7 +250,7 @@ export default function RefundRequestsPage() {
                     Refund Reason
                   </h3>
 
-                  <p className="text-gray-300">
+                  <p className="text-[var(--text-color)]">
 
                     {request.reason}
 
@@ -300,7 +300,7 @@ export default function RefundRequestsPage() {
                         request.id!
                       )
                     }
-                    className="flex items-center gap-2 rounded-2xl bg-zinc-700 px-5 py-3 font-bold"
+                    className="flex items-center gap-2 rounded-2xl bg-[var(--card-color)] px-5 py-3 font-bold"
                   >
 
                     <Trash2 size={18} />

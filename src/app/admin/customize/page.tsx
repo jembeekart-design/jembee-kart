@@ -38,8 +38,8 @@ export default function CustomizePage() {
     useState<CustomizeSettings>({
       siteTitle: "JembeeKart",
       logoUrl: "",
-      primaryColor: "#7c3aed",
-      secondaryColor: "#ec4899",
+      primaryColor: "var(--primary-color)",
+      secondaryColor: "var(--primary-color)",
       fontFamily: "Poppins",
       borderRadius: "24",
       darkMode: true
@@ -145,7 +145,7 @@ export default function CustomizePage() {
 
   return (
 
-    <main className="min-h-screen bg-[#0b0b0b] p-4 text-[var(--button-text-color)]">
+    <main className="min-h-screen bg-[var(--primary-color)] p-4 text-[var(--button-text-color)]">
 
       {/* HEADER */}
 
@@ -153,7 +153,7 @@ export default function CustomizePage() {
 
         <div className="flex items-center gap-4">
 
-          <div className="flex h-16 w-16 items-center justify-center rounded-[24px] bg-fuchsia-600">
+          <div className="flex h-16 w-16 items-center justify-center rounded-[24px] bg-[var(--primary-color)]">
 
             <Wand2 size={30} />
 
@@ -176,7 +176,7 @@ export default function CustomizePage() {
         <button
           onClick={saveCustomize}
           disabled={saving}
-          className="flex items-center gap-2 rounded-2xl bg-fuchsia-600 px-5 py-3 font-bold"
+          className="flex items-center gap-2 rounded-2xl bg-[var(--primary-color)] px-5 py-3 font-bold"
         >
 
           <Save size={18} />
@@ -195,13 +195,13 @@ export default function CustomizePage() {
 
         {/* SITE TITLE */}
 
-        <div className="rounded-[30px] bg-[#151515] p-5">
+        <div className="rounded-[30px] bg-[var(--primary-color)] p-5">
 
           <div className="mb-4 flex items-center gap-3">
 
             <Type
               size={24}
-              className="text-cyan-400"
+              className="text-[var(--primary-color)]"
             />
 
             <h2 className="text-2xl font-black">
@@ -226,13 +226,13 @@ export default function CustomizePage() {
 
         {/* LOGO */}
 
-        <div className="rounded-[30px] bg-[#151515] p-5">
+        <div className="rounded-[30px] bg-[var(--primary-color)] p-5">
 
           <div className="mb-4 flex items-center gap-3">
 
             <Image
               size={24}
-              className="text-pink-400"
+              className="text-[var(--primary-color)]"
             />
 
             <h2 className="text-2xl font-black">
@@ -257,13 +257,13 @@ export default function CustomizePage() {
 
         {/* PRIMARY COLOR */}
 
-        <div className="rounded-[30px] bg-[#151515] p-5">
+        <div className="rounded-[30px] bg-[var(--primary-color)] p-5">
 
           <div className="mb-4 flex items-center gap-3">
 
             <Palette
               size={24}
-              className="text-violet-400"
+              className="text-[var(--primary-color)]"
             />
 
             <h2 className="text-2xl font-black">
@@ -288,13 +288,13 @@ export default function CustomizePage() {
 
         {/* SECONDARY COLOR */}
 
-        <div className="rounded-[30px] bg-[#151515] p-5">
+        <div className="rounded-[30px] bg-[var(--primary-color)] p-5">
 
           <div className="mb-4 flex items-center gap-3">
 
             <Palette
               size={24}
-              className="text-fuchsia-400"
+              className="text-[var(--primary-color)]"
             />
 
             <h2 className="text-2xl font-black">
@@ -319,13 +319,13 @@ export default function CustomizePage() {
 
         {/* FONT */}
 
-        <div className="rounded-[30px] bg-[#151515] p-5">
+        <div className="rounded-[30px] bg-[var(--primary-color)] p-5">
 
           <div className="mb-4 flex items-center gap-3">
 
             <LayoutTemplate
               size={24}
-              className="text-yellow-400"
+              className="text-[var(--warning-color)]"
             />
 
             <h2 className="text-2xl font-black">
@@ -350,13 +350,13 @@ export default function CustomizePage() {
 
         {/* RADIUS */}
 
-        <div className="rounded-[30px] bg-[#151515] p-5">
+        <div className="rounded-[30px] bg-[var(--primary-color)] p-5">
 
           <div className="mb-4 flex items-center gap-3">
 
             <MonitorSmartphone
               size={24}
-              className="text-green-400"
+              className="text-[var(--success-color)]"
             />
 
             <h2 className="text-2xl font-black">
@@ -383,7 +383,7 @@ export default function CustomizePage() {
 
       {/* DARK MODE */}
 
-      <div className="mt-6 rounded-[30px] bg-[#151515] p-5">
+      <div className="mt-6 rounded-[30px] bg-[var(--primary-color)] p-5">
 
         <div className="flex items-center justify-between">
 

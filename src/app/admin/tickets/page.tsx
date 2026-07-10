@@ -62,13 +62,13 @@ export default function TicketsPage() {
 
   return (
 
-    <main className="min-h-screen bg-[#0b0b0b] p-4 text-[var(--button-text-color)]">
+    <main className="min-h-screen bg-[var(--primary-color)] p-4 text-[var(--button-text-color)]">
 
       {/* HEADER */}
 
       <div className="mb-8 flex items-center gap-4">
 
-        <div className="flex h-16 w-16 items-center justify-center rounded-[24px] bg-amber-500">
+        <div className="flex h-16 w-16 items-center justify-center rounded-[24px] bg-[var(--warning-color)]">
 
           <Ticket size={30} />
 
@@ -92,11 +92,11 @@ export default function TicketsPage() {
 
       <div className="mb-6 grid grid-cols-3 gap-4">
 
-        <div className="rounded-[30px] bg-[#151515] p-5">
+        <div className="rounded-[30px] bg-[var(--primary-color)] p-5">
 
           <Clock3
             size={28}
-            className="text-yellow-400"
+            className="text-[var(--warning-color)]"
           />
 
           <p className="mt-4 text-sm text-[var(--muted-text-color)]">
@@ -109,11 +109,11 @@ export default function TicketsPage() {
 
         </div>
 
-        <div className="rounded-[30px] bg-[#151515] p-5">
+        <div className="rounded-[30px] bg-[var(--primary-color)] p-5">
 
           <CheckCircle
             size={28}
-            className="text-green-400"
+            className="text-[var(--success-color)]"
           />
 
           <p className="mt-4 text-sm text-[var(--muted-text-color)]">
@@ -126,11 +126,11 @@ export default function TicketsPage() {
 
         </div>
 
-        <div className="rounded-[30px] bg-[#151515] p-5">
+        <div className="rounded-[30px] bg-[var(--primary-color)] p-5">
 
           <MessageSquare
             size={28}
-            className="text-cyan-400"
+            className="text-[var(--primary-color)]"
           />
 
           <p className="mt-4 text-sm text-[var(--muted-text-color)]">
@@ -154,7 +154,7 @@ export default function TicketsPage() {
 
             <div
               key={item.id}
-              className="rounded-[30px] bg-[#151515] p-5"
+              className="rounded-[30px] bg-[var(--primary-color)] p-5"
             >
 
               <div className="flex items-center justify-between gap-4">
@@ -169,7 +169,7 @@ export default function TicketsPage() {
                     {item.subject}
                   </p>
 
-                  <div className="mt-4 inline-block rounded-full bg-amber-500 px-4 py-2 text-sm font-bold capitalize">
+                  <div className="mt-4 inline-block rounded-full bg-[var(--warning-color)] px-4 py-2 text-sm font-bold capitalize">
 
                     {item.status}
 
@@ -224,7 +224,7 @@ export default function TicketsPage() {
 
       {/* PREVIEW */}
 
-      <div className="mt-6 rounded-[30px] bg-gradient-to-r from-amber-500 to-orange-500 p-6">
+      <div className="mt-6 rounded-[30px] bg-gradient-to-r from-[var(--primary-color)] to-[var(--primary-color)] p-6">
 
         <h2 className="text-3xl font-black">
           Support Center

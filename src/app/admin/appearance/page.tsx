@@ -18,10 +18,10 @@ export default function AppearancePage() {
     useState("dark");
 
   const [primaryColor, setPrimaryColor] =
-    useState("#7c3aed");
+    useState("var(--primary-color)");
 
   const [backgroundColor, setBackgroundColor] =
-    useState("#0b0b0b");
+    useState("var(--primary-color)");
 
   function saveAppearance() {
 
@@ -95,13 +95,13 @@ export default function AppearancePage() {
 
         {/* THEME */}
 
-        <div className="rounded-[30px] bg-[#151515] p-5">
+        <div className="rounded-[30px] bg-[var(--primary-color)] p-5">
 
           <div className="mb-5 flex items-center gap-3">
 
             <Monitor
               size={24}
-              className="text-violet-400"
+              className="text-[var(--primary-color)]"
             />
 
             <h2 className="text-2xl font-black">
@@ -118,7 +118,7 @@ export default function AppearancePage() {
               }
               className={`rounded-2xl p-4 ${
                 theme === "light"
-                  ? "border-2 border-white"
+                  ? "border-2 border-[var(--border-color)]"
                   : "bg-[var(--card-color)]"
               }`}
             >
@@ -140,7 +140,7 @@ export default function AppearancePage() {
               }
               className={`rounded-2xl p-4 ${
                 theme === "dark"
-                  ? "border-2 border-white"
+                  ? "border-2 border-[var(--border-color)]"
                   : "bg-[var(--card-color)]"
               }`}
             >
@@ -162,7 +162,7 @@ export default function AppearancePage() {
               }
               className={`rounded-2xl p-4 ${
                 theme === "system"
-                  ? "border-2 border-white"
+                  ? "border-2 border-[var(--border-color)]"
                   : "bg-[var(--card-color)]"
               }`}
             >
@@ -184,7 +184,7 @@ export default function AppearancePage() {
 
         {/* PRIMARY COLOR */}
 
-        <div className="rounded-[30px] bg-[#151515] p-5">
+        <div className="rounded-[30px] bg-[var(--primary-color)] p-5">
 
           <h2 className="mb-5 text-2xl font-black">
             Primary Color
@@ -211,7 +211,7 @@ export default function AppearancePage() {
                   e.target.value
                 )
               }
-              className="flex-1 rounded-2xl border border-white/10 bg-[var(--card-color)] px-4 py-4 outline-none"
+              className="flex-1 rounded-2xl border border-[var(--border-color)]/10 bg-[var(--card-color)] px-4 py-4 outline-none"
             />
 
           </div>
@@ -220,7 +220,7 @@ export default function AppearancePage() {
 
         {/* BACKGROUND COLOR */}
 
-        <div className="rounded-[30px] bg-[#151515] p-5">
+        <div className="rounded-[30px] bg-[var(--primary-color)] p-5">
 
           <h2 className="mb-5 text-2xl font-black">
             Background Color
@@ -247,7 +247,7 @@ export default function AppearancePage() {
                   e.target.value
                 )
               }
-              className="flex-1 rounded-2xl border border-white/10 bg-[var(--card-color)] px-4 py-4 outline-none"
+              className="flex-1 rounded-2xl border border-[var(--border-color)]/10 bg-[var(--card-color)] px-4 py-4 outline-none"
             />
 
           </div>
@@ -264,7 +264,7 @@ export default function AppearancePage() {
           background:
             `linear-gradient(135deg,
             ${primaryColor},
-            #000000)`
+            var(--primary-color))`
         }}
       >
 

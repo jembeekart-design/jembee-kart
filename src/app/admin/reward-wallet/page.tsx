@@ -49,7 +49,7 @@ export default function RewardWalletPage() {
 
   return (
 
-    <main className="min-h-screen bg-[#090909] p-4 text-[var(--button-text-color)]">
+    <main className="min-h-screen bg-[var(--primary-color)] p-4 text-[var(--button-text-color)]">
 
       {/* HEADER */}
 
@@ -57,7 +57,7 @@ export default function RewardWalletPage() {
 
         <div className="flex items-center gap-4">
 
-          <div className="flex h-16 w-16 items-center justify-center rounded-[28px] bg-yellow-400">
+          <div className="flex h-16 w-16 items-center justify-center rounded-[28px] bg-[var(--warning-color)]">
 
             <Wallet
               size={30}
@@ -80,7 +80,7 @@ export default function RewardWalletPage() {
 
         </div>
 
-        <button className="rounded-2xl bg-yellow-400 px-5 py-3 font-bold text-[var(--text-color)]">
+        <button className="rounded-2xl bg-[var(--warning-color)] px-5 py-3 font-bold text-[var(--text-color)]">
 
           Add Bonus Reward
 
@@ -122,13 +122,13 @@ export default function RewardWalletPage() {
 
       <div className="mt-8 grid gap-5 lg:grid-cols-3">
 
-        <div className="rounded-[30px] border border-white/10 bg-[#151515] p-6 lg:col-span-2">
+        <div className="rounded-[30px] border border-[var(--border-color)]/10 bg-[var(--primary-color)] p-6 lg:col-span-2">
 
           <div className="flex items-center gap-3">
 
             <CreditCard
               size={24}
-              className="text-yellow-400"
+              className="text-[var(--warning-color)]"
             />
 
             <h2 className="text-2xl font-black">
@@ -147,12 +147,12 @@ export default function RewardWalletPage() {
 
                 <div
                   key={index}
-                  className="flex items-center justify-between rounded-2xl bg-[#0f0f0f] p-4"
+                  className="flex items-center justify-between rounded-2xl bg-[var(--primary-color)] p-4"
                 >
 
                   <div className="flex items-center gap-4">
 
-                    <div className="flex h-14 w-14 items-center justify-center rounded-2xl bg-yellow-400 text-[var(--text-color)]">
+                    <div className="flex h-14 w-14 items-center justify-center rounded-2xl bg-[var(--warning-color)] text-[var(--text-color)]">
 
                       {item.amount.includes("+") ? (
 
@@ -183,8 +183,8 @@ export default function RewardWalletPage() {
                   <h4
                     className={`text-2xl font-black ${
                       item.amount.includes("+")
-                        ? "text-green-400"
-                        : "text-red-400"
+                        ? "text-[var(--success-color)]"
+                        : "text-[var(--danger-color)]"
                     }`}
                   >
 
@@ -203,13 +203,13 @@ export default function RewardWalletPage() {
 
         <div className="space-y-5">
 
-          <div className="rounded-[30px] border border-white/10 bg-[#151515] p-6">
+          <div className="rounded-[30px] border border-[var(--border-color)]/10 bg-[var(--primary-color)] p-6">
 
             <div className="flex items-center gap-3">
 
               <Sparkles
                 size={24}
-                className="text-yellow-400"
+                className="text-[var(--warning-color)]"
               />
 
               <h2 className="text-xl font-black">
@@ -234,7 +234,7 @@ export default function RewardWalletPage() {
 
           </div>
 
-          <div className="rounded-[30px] bg-gradient-to-r from-yellow-400 to-orange-500 p-6 text-[var(--text-color)]">
+          <div className="rounded-[30px] bg-gradient-to-r from-[var(--primary-color)] to-[var(--primary-color)] p-6 text-[var(--text-color)]">
 
             <div className="flex items-center gap-3">
 
@@ -266,13 +266,13 @@ export default function RewardWalletPage() {
 
       {/* PERFORMANCE */}
 
-      <div className="mt-8 rounded-[30px] border border-white/10 bg-[#151515] p-6">
+      <div className="mt-8 rounded-[30px] border border-[var(--border-color)]/10 bg-[var(--primary-color)] p-6">
 
         <div className="flex items-center gap-3">
 
           <TrendingUp
             size={24}
-            className="text-green-400"
+            className="text-[var(--success-color)]"
           />
 
           <h2 className="text-2xl font-black">
@@ -319,9 +319,9 @@ function StatCard({
 
   return (
 
-    <div className="rounded-[28px] border border-white/10 bg-[#151515] p-5">
+    <div className="rounded-[28px] border border-[var(--border-color)]/10 bg-[var(--primary-color)] p-5">
 
-      <div className="flex h-14 w-14 items-center justify-center rounded-2xl bg-yellow-400 text-[var(--text-color)]">
+      <div className="flex h-14 w-14 items-center justify-center rounded-2xl bg-[var(--warning-color)] text-[var(--text-color)]">
 
         {icon}
 
@@ -348,11 +348,11 @@ function Feature({
 
   return (
 
-    <div className="flex items-center gap-3 rounded-2xl bg-[#0f0f0f] p-4">
+    <div className="flex items-center gap-3 rounded-2xl bg-[var(--primary-color)] p-4">
 
       <Percent
         size={18}
-        className="text-yellow-400"
+        className="text-[var(--warning-color)]"
       />
 
       <p className="font-medium">
@@ -374,7 +374,7 @@ function ProgressCard({
 
   return (
 
-    <div className="rounded-2xl bg-[#0f0f0f] p-5">
+    <div className="rounded-2xl bg-[var(--primary-color)] p-5">
 
       <div className="mb-3 flex items-center justify-between">
 
@@ -382,16 +382,16 @@ function ProgressCard({
           {title}
         </h3>
 
-        <span className="font-black text-green-400">
+        <span className="font-black text-[var(--success-color)]">
           {value}
         </span>
 
       </div>
 
-      <div className="h-3 overflow-hidden rounded-full bg-[#1f1f1f]">
+      <div className="h-3 overflow-hidden rounded-full bg-[var(--primary-color)]">
 
         <div
-          className="h-full rounded-full bg-green-400"
+          className="h-full rounded-full bg-[var(--success-color)]"
           style={{
             width: value
           }}

@@ -189,14 +189,14 @@ PermissionPage() {
             items-center
             justify-center
             rounded-full
-            bg-violet-600/20
+            bg-[var(--primary-color)]/20
           "
         >
 
           <ShieldCheck
             size={40}
             className="
-              text-violet-400
+              text-[var(--primary-color)]
             "
           />
 
@@ -244,7 +244,7 @@ PermissionPage() {
           className="
             rounded-3xl
             border
-            border-white/10
+            border-[var(--border-color)]/10
             bg-[var(--card-color)]/5
             p-5
           "
@@ -281,7 +281,7 @@ PermissionPage() {
                 <Camera
                   size={24}
                   className="
-                    text-violet-400
+                    text-[var(--primary-color)]
                   "
                 />
 
@@ -330,7 +330,7 @@ PermissionPage() {
                 ${
                   cameraAllowed
                     ? "bg-[var(--success-color)] text-[var(--button-text-color)]"
-                    : "bg-violet-600 text-[var(--button-text-color)]"
+                    : "bg-[var(--primary-color)] text-[var(--button-text-color)]"
                 }
               `}
             >
@@ -351,7 +351,7 @@ PermissionPage() {
           className="
             rounded-3xl
             border
-            border-white/10
+            border-[var(--border-color)]/10
             bg-[var(--card-color)]/5
             p-5
           "
@@ -381,14 +381,14 @@ PermissionPage() {
                   items-center
                   justify-center
                   rounded-full
-                  bg-pink-500/20
+                  bg-[var(--primary-color)]/20
                 "
               >
 
                 <Mic
                   size={24}
                   className="
-                    text-pink-400
+                    text-[var(--primary-color)]
                   "
                 />
 
@@ -437,7 +437,7 @@ PermissionPage() {
                 ${
                   micAllowed
                     ? "bg-[var(--success-color)] text-[var(--button-text-color)]"
-                    : "bg-pink-500 text-[var(--button-text-color)]"
+                    : "bg-[var(--primary-color)] text-[var(--button-text-color)]"
                 }
               `}
             >
@@ -458,7 +458,7 @@ PermissionPage() {
           className="
             rounded-3xl
             border
-            border-white/10
+            border-[var(--border-color)]/10
             bg-[var(--card-color)]/5
             p-5
           "
@@ -495,7 +495,7 @@ PermissionPage() {
                 <Bell
                   size={24}
                   className="
-                    text-yellow-300
+                    text-[var(--warning-color)]
                   "
                 />
 
@@ -594,7 +594,7 @@ PermissionPage() {
 
             ${
               allGranted
-                ? "bg-gradient-to-r from-violet-600 to-fuchsia-500 text-[var(--button-text-color)]"
+                ? "bg-gradient-to-r from-[var(--primary-color)] to-[var(--primary-color)] text-[var(--button-text-color)]"
                 : "bg-[var(--card-color)]/10 text-[var(--muted-text-color)]"
             }
           `}

@@ -38,7 +38,7 @@ export default function CommissionsPage() {
 
   return (
 
-    <main className="min-h-screen bg-[#0b0b0b] p-4 text-[var(--button-text-color)]">
+    <main className="min-h-screen bg-[var(--primary-color)] p-4 text-[var(--button-text-color)]">
 
       {/* HEADER */}
 
@@ -46,7 +46,7 @@ export default function CommissionsPage() {
 
         <div className="flex items-center gap-4">
 
-          <div className="flex h-16 w-16 items-center justify-center rounded-[24px] bg-fuchsia-600">
+          <div className="flex h-16 w-16 items-center justify-center rounded-[24px] bg-[var(--primary-color)]">
 
             <Percent size={30} />
 
@@ -68,7 +68,7 @@ export default function CommissionsPage() {
 
         <button
           onClick={saveCommission}
-          className="flex items-center gap-2 rounded-2xl bg-fuchsia-600 px-5 py-3 text-sm font-bold text-[var(--button-text-color)]"
+          className="flex items-center gap-2 rounded-2xl bg-[var(--primary-color)] px-5 py-3 text-sm font-bold text-[var(--button-text-color)]"
         >
 
           <Save size={18} />
@@ -85,13 +85,13 @@ export default function CommissionsPage() {
 
         {/* AFFILIATE */}
 
-        <div className="rounded-[30px] bg-[#151515] p-5">
+        <div className="rounded-[30px] bg-[var(--primary-color)] p-5">
 
           <div className="mb-5 flex items-center gap-3">
 
             <Users
               size={24}
-              className="text-pink-400"
+              className="text-[var(--primary-color)]"
             />
 
             <h2 className="text-2xl font-black">
@@ -108,20 +108,20 @@ export default function CommissionsPage() {
                 e.target.value
               )
             }
-            className="w-full rounded-2xl border border-white/10 bg-[var(--card-color)] px-4 py-4 text-[var(--button-text-color)] outline-none"
+            className="w-full rounded-2xl border border-[var(--border-color)]/10 bg-[var(--card-color)] px-4 py-4 text-[var(--button-text-color)] outline-none"
           />
 
         </div>
 
         {/* RESELLER */}
 
-        <div className="rounded-[30px] bg-[#151515] p-5">
+        <div className="rounded-[30px] bg-[var(--primary-color)] p-5">
 
           <div className="mb-5 flex items-center gap-3">
 
             <IndianRupee
               size={24}
-              className="text-green-400"
+              className="text-[var(--success-color)]"
             />
 
             <h2 className="text-2xl font-black">
@@ -138,20 +138,20 @@ export default function CommissionsPage() {
                 e.target.value
               )
             }
-            className="w-full rounded-2xl border border-white/10 bg-[var(--card-color)] px-4 py-4 text-[var(--button-text-color)] outline-none"
+            className="w-full rounded-2xl border border-[var(--border-color)]/10 bg-[var(--card-color)] px-4 py-4 text-[var(--button-text-color)] outline-none"
           />
 
         </div>
 
         {/* LEVEL 2 */}
 
-        <div className="rounded-[30px] bg-[#151515] p-5">
+        <div className="rounded-[30px] bg-[var(--primary-color)] p-5">
 
           <div className="mb-5 flex items-center gap-3">
 
             <TrendingUp
               size={24}
-              className="text-cyan-400"
+              className="text-[var(--primary-color)]"
             />
 
             <h2 className="text-2xl font-black">
@@ -168,7 +168,7 @@ export default function CommissionsPage() {
                 e.target.value
               )
             }
-            className="w-full rounded-2xl border border-white/10 bg-[var(--card-color)] px-4 py-4 text-[var(--button-text-color)] outline-none"
+            className="w-full rounded-2xl border border-[var(--border-color)]/10 bg-[var(--card-color)] px-4 py-4 text-[var(--button-text-color)] outline-none"
           />
 
         </div>
@@ -177,7 +177,7 @@ export default function CommissionsPage() {
 
       {/* PREVIEW */}
 
-      <div className="mt-6 rounded-[30px] bg-gradient-to-r from-fuchsia-600 to-pink-500 p-6">
+      <div className="mt-6 rounded-[30px] bg-gradient-to-r from-[var(--primary-color)] to-[var(--primary-color)] p-6">
 
         <h2 className="text-3xl font-black">
           Commission Overview

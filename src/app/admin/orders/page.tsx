@@ -145,14 +145,14 @@ export default function OrdersPage() {
 
   if (loading) {
     return (
-      <div className="flex min-h-screen items-center justify-center bg-[var(--card-color)] font-black text-sm uppercase tracking-widest text-pink-500">
+      <div className="flex min-h-screen items-center justify-center bg-[var(--card-color)] font-black text-sm uppercase tracking-widest text-[var(--primary-color)]">
         Syncing Orders Database Stream...
       </div>
     );
   }
 
   return (
-    <main className="min-h-screen bg-[#0b0b0b] p-4 text-[var(--button-text-color)]">
+    <main className="min-h-screen bg-[var(--primary-color)] p-4 text-[var(--button-text-color)]">
       {/* HEADER MODULE CONTAINER */}
       <div className="mb-6">
         <h1 className="text-3xl font-black">Orders Manager</h1>
@@ -165,11 +165,11 @@ export default function OrdersPage() {
           <div
             key={order.id}
             className={`overflow-hidden rounded-[30px] border transition-all ${
-              order.status === "delivered" ? "border-green-500/20 bg-[#111612]" : "border-white/10 bg-[#151515]"
+              order.status === "delivered" ? "border-[var(--success-color)]/20 bg-[var(--primary-color)]" : "border-[var(--border-color)]/10 bg-[var(--primary-color)]"
             }`}
           >
             {/* TOP INFRA BANNER */}
-            <div className="flex items-center justify-between border-b border-white/10 p-4">
+            <div className="flex items-center justify-between border-b border-[var(--border-color)]/10 p-4">
               <div className="flex items-center gap-3">
                 <img
                   src={order.image || "https://images.unsplash.com/photo-1523275335684-37898b6baf30?w=500"}
@@ -184,7 +184,7 @@ export default function OrdersPage() {
 
               <button
                 onClick={() => deleteOrder(order.id)}
-                className="flex h-10 w-10 items-center justify-center rounded-xl bg-[var(--danger-color)]/10 text-red-400 hover:bg-[var(--danger-color)]/20 transition active:scale-90"
+                className="flex h-10 w-10 items-center justify-center rounded-xl bg-[var(--danger-color)]/10 text-[var(--danger-color)] hover:bg-[var(--danger-color)]/20 transition active:scale-90"
               >
                 <Trash2 size={18} />
               </button>
@@ -192,24 +192,24 @@ export default function OrdersPage() {
 
             {/* DATA LAYOUT PARAMETERS MATRIX */}
             <div className="space-y-4 p-4">
-              <div className="rounded-2xl bg-[#1b1b1b]/60 p-4 border border-white/5">
+              <div className="rounded-2xl bg-[var(--primary-color)]/60 p-4 border border-[var(--border-color)]/5">
                 <div className="mb-3 flex items-center justify-between">
                   <div className="flex items-center gap-2">
-                    <Package size={16} className="text-pink-500" />
+                    <Package size={16} className="text-[var(--primary-color)]" />
                     <p className="text-sm font-bold">Financial Parameters</p>
                   </div>
                   {order.commissionProcessed && (
-                    <span className="flex items-center gap-1 text-[10px] bg-cyan-500/20 text-cyan-400 px-2.5 py-1 rounded-full font-black tracking-wider uppercase">
+                    <span className="flex items-center gap-1 text-[10px] bg-[var(--primary-color)]/20 text-[var(--primary-color)] px-2.5 py-1 rounded-full font-black tracking-wider uppercase">
                       <ShieldCheck size={12} /> Commission Paid
                     </span>
                   )}
                 </div>
 
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-2 text-sm text-gray-300">
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-2 text-sm text-[var(--text-color)]">
                   <div>
-                    <p><span className="text-[var(--muted-text-color)] font-medium">Order Value:</span> <span className="text-green-400 font-bold">₹{order.amount?.toLocaleString("en-IN")}</span></p>
+                    <p><span className="text-[var(--muted-text-color)] font-medium">Order Value:</span> <span className="text-[var(--success-color)] font-bold">₹{order.amount?.toLocaleString("en-IN")}</span></p>
                     {order.profitAmount !== undefined && (
-                      <p className="mt-1"><span className="text-[var(--muted-text-color)] font-medium">Net Profit Margin:</span> <span className="text-amber-400 font-bold">₹{order.profitAmount?.toLocaleString("en-IN")}</span></p>
+                      <p className="mt-1"><span className="text-[var(--muted-text-color)] font-medium">Net Profit Margin:</span> <span className="text-[var(--warning-color)] font-bold">₹{order.profitAmount?.toLocaleString("en-IN")}</span></p>
                     )}
                     <p className="mt-1"><span className="text-[var(--muted-text-color)] font-medium">Shipping Address:</span> {order.address || "Digital Delivery Protocol Layer"}</p>
                   </div>
@@ -227,7 +227,7 @@ export default function OrdersPage() {
                   <button
                     onClick={() => updateStatus(order.id, "pending")}
                     disabled={order.commissionProcessed || order.status === "delivered"}
-                    className="flex items-center justify-center gap-2 rounded-2xl px-3 py-3 text-sm font-bold transition active:scale-95 disabled:opacity-30 disabled:cursor-not-allowed disabled:hover:bg-[#1e1e1e] bg-[#1e1e1e] hover:bg-[#252525] text-[var(--muted-text-color)] data-[active=true]:bg-[var(--warning-color)] data-[active=true]:text-[var(--text-color)]"
+                    className="flex items-center justify-center gap-2 rounded-2xl px-3 py-3 text-sm font-bold transition active:scale-95 disabled:opacity-30 disabled:cursor-not-allowed disabled:hover:bg-[var(--primary-color)] bg-[var(--primary-color)] hover:bg-[var(--primary-color)] text-[var(--muted-text-color)] data-[active=true]:bg-[var(--warning-color)] data-[active=true]:text-[var(--text-color)]"
                     data-active={order.status === "pending"}
                   >
                     <Clock3 size={16} />
@@ -237,7 +237,7 @@ export default function OrdersPage() {
                   <button
                     onClick={() => updateStatus(order.id, "shipped")}
                     disabled={order.commissionProcessed || order.status === "delivered"}
-                    className="flex items-center justify-center gap-2 rounded-2xl px-3 py-3 text-sm font-bold transition active:scale-95 disabled:opacity-30 disabled:cursor-not-allowed disabled:hover:bg-[#1e1e1e] bg-[#1e1e1e] hover:bg-[#252525] text-[var(--muted-text-color)] data-[active=true]:theme-primary-bg data-[active=true]:text-[var(--button-text-color)]"
+                    className="flex items-center justify-center gap-2 rounded-2xl px-3 py-3 text-sm font-bold transition active:scale-95 disabled:opacity-30 disabled:cursor-not-allowed disabled:hover:bg-[var(--primary-color)] bg-[var(--primary-color)] hover:bg-[var(--primary-color)] text-[var(--muted-text-color)] data-[active=true]:theme-primary-bg data-[active=true]:text-[var(--button-text-color)]"
                     data-active={order.status === "shipped"}
                   >
                     <Truck size={16} />
@@ -247,7 +247,7 @@ export default function OrdersPage() {
                   <button
                     onClick={() => updateStatus(order.id, "delivered")}
                     disabled={order.commissionProcessed || order.status === "delivered"}
-                    className="flex items-center justify-center gap-2 rounded-2xl px-3 py-3 text-sm font-bold transition active:scale-95 disabled:opacity-40 disabled:cursor-not-allowed disabled:bg-[#151a16] disabled:text-[var(--success-color)]/60 bg-[#1e1e1e] hover:bg-[#252525] text-[var(--muted-text-color)] data-[active=true]:bg-[var(--success-color)] data-[active=true]:text-[var(--button-text-color)]"
+                    className="flex items-center justify-center gap-2 rounded-2xl px-3 py-3 text-sm font-bold transition active:scale-95 disabled:opacity-40 disabled:cursor-not-allowed disabled:bg-[var(--primary-color)] disabled:text-[var(--success-color)]/60 bg-[var(--primary-color)] hover:bg-[var(--primary-color)] text-[var(--muted-text-color)] data-[active=true]:bg-[var(--success-color)] data-[active=true]:text-[var(--button-text-color)]"
                     data-active={order.status === "delivered"}
                   >
                     <CheckCircle2 size={16} />
@@ -261,7 +261,7 @@ export default function OrdersPage() {
 
         {/* Empty State Handling Layout */}
         {orders.length === 0 && (
-          <div className="py-16 text-center rounded-[30px] border border-dashed border-white/10 p-6 bg-[#111]">
+          <div className="py-16 text-center rounded-[30px] border border-dashed border-[var(--border-color)]/10 p-6 bg-[var(--primary-color)]">
             <AlertCircle size={32} className="mx-auto text-[var(--muted-text-color)] mb-3" />
             <p className="text-sm font-bold text-[var(--muted-text-color)]">No customer orders available inside datastore arrays.</p>
           </div>

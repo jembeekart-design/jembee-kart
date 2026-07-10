@@ -181,7 +181,7 @@ export default function AffiliatePage() {
 
   return (
 
-    <main className="min-h-screen bg-[#0b0b0b] p-4 text-[var(--button-text-color)]">
+    <main className="min-h-screen bg-[var(--primary-color)] p-4 text-[var(--button-text-color)]">
 
       {/* HEADER */}
 
@@ -202,7 +202,7 @@ export default function AffiliatePage() {
         <button
           onClick={createAffiliate}
           disabled={creating}
-          className="flex items-center gap-2 rounded-2xl bg-violet-600 px-5 py-3 text-sm font-bold"
+          className="flex items-center gap-2 rounded-2xl bg-[var(--primary-color)] px-5 py-3 text-sm font-bold"
         >
 
           <Plus size={18} />
@@ -221,14 +221,14 @@ export default function AffiliatePage() {
 
           <div
             key={affiliate.id}
-            className="rounded-[30px] border border-white/10 bg-[#151515] p-5"
+            className="rounded-[30px] border border-[var(--border-color)]/10 bg-[var(--primary-color)] p-5"
           >
 
             <div className="flex items-start justify-between gap-4">
 
               <div className="flex items-center gap-3">
 
-                <div className="flex h-14 w-14 items-center justify-center rounded-2xl bg-violet-600">
+                <div className="flex h-14 w-14 items-center justify-center rounded-2xl bg-[var(--primary-color)]">
 
                   <Users size={24} />
 
@@ -342,7 +342,7 @@ export default function AffiliatePage() {
 
             {/* LIVE CARD */}
 
-            <div className="mt-6 rounded-[26px] bg-gradient-to-r from-violet-600 to-fuchsia-500 p-5">
+            <div className="mt-6 rounded-[26px] bg-gradient-to-r from-[var(--primary-color)] to-[var(--primary-color)] p-5">
 
               <div className="flex items-center justify-between">
 
@@ -434,7 +434,7 @@ function InputField({
             e.target.value
           )
         }
-        className="w-full rounded-2xl border border-white/10 bg-[#1e1e1e] px-4 py-3 text-sm text-[var(--button-text-color)] outline-none"
+        className="w-full rounded-2xl border border-[var(--border-color)]/10 bg-[var(--primary-color)] px-4 py-3 text-sm text-[var(--button-text-color)] outline-none"
       />
 
     </div>

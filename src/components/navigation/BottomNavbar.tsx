@@ -89,7 +89,7 @@ export default function BottomNavbar() {
                 transition-all
                 duration-300
 
-                hover:bg-violet-50
+                hover:bg-[var(--primary-color)]
               "
             >
 

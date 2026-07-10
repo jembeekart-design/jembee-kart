@@ -603,13 +603,13 @@ export default function AllPagesPage() {
 
   return (
 
-    <main className="min-h-screen bg-[#050505] p-4 text-[var(--button-text-color)]">
+    <main className="min-h-screen bg-[var(--primary-color)] p-4 text-[var(--button-text-color)]">
 
       {/* HEADER */}
 
       <div className="mb-8 flex items-center gap-4">
 
-        <div className="flex h-16 w-16 items-center justify-center rounded-[30px] bg-cyan-500 shadow-lg shadow-cyan-500/30">
+        <div className="flex h-16 w-16 items-center justify-center rounded-[30px] bg-[var(--primary-color)] shadow-lg shadow">
 
           <LayoutDashboard size={32} className="text-[var(--text-color)]" />
 
@@ -646,10 +646,10 @@ export default function AllPagesPage() {
             <Link
               key={index}
               href={item.link}
-              className="group rounded-[30px] border border-white/10 bg-[#111111] p-5 transition-all duration-300 hover:-translate-y-1 hover:border-cyan-500 hover:bg-[#181818]"
+              className="group rounded-[30px] border border-[var(--border-color)]/10 bg-[var(--primary-color)] p-5 transition-all duration-300 hover:-translate-y-1 hover:border-[var(--primary-color)] hover:bg-[var(--primary-color)]"
             >
 
-              <div className="flex h-16 w-16 items-center justify-center rounded-2xl bg-cyan-500 text-[var(--text-color)] shadow-lg shadow-cyan-500/20 transition-all duration-300 group-hover:rotate-6">
+              <div className="flex h-16 w-16 items-center justify-center rounded-2xl bg-[var(--primary-color)] text-[var(--text-color)] shadow-lg shadow transition-all duration-300 group-hover:rotate-6">
 
                 <Icon size={30} />
 

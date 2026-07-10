@@ -64,14 +64,14 @@ export default function ButtonSettings({
       case "gradient":
         return {
           background: `linear-gradient(135deg, ${theme.primaryColor}, ${theme.secondaryColor})`,
-          color: "#ffffff",
+          color: "var(--primary-color)",
           border: "none",
         };
 
       default:
         return {
           background: theme.primaryColor,
-          color: "#ffffff",
+          color: "var(--primary-color)",
           border: "none",
         };
 
@@ -81,7 +81,7 @@ export default function ButtonSettings({
 
   return (
 
-    <div className="rounded-2xl border border-slate-700 bg-slate-950 p-6">
+    <div className="rounded-2xl border border-[var(--border-color)] bg-[var(--card-color)] p-6">
 
       <h2 className="mb-6 text-2xl font-bold">
         Button Settings
@@ -104,7 +104,7 @@ export default function ButtonSettings({
                   e.target.value as Theme["buttonStyle"],
               }))
             }
-            className="w-full rounded-lg border border-slate-700 bg-slate-800 p-3"
+            className="w-full rounded-lg border border-[var(--border-color)] bg-[var(--card-color)] p-3"
           >
 
             <option value="filled">
@@ -142,7 +142,7 @@ export default function ButtonSettings({
                   e.target.value as Theme["buttonSize"],
               }))
             }
-            className="w-full rounded-lg border border-slate-700 bg-slate-800 p-3"
+            className="w-full rounded-lg border border-[var(--border-color)] bg-[var(--card-color)] p-3"
           >
 
             <option value="sm">
@@ -176,7 +176,7 @@ export default function ButtonSettings({
                   e.target.value as Theme["buttonIconPosition"],
               }))
             }
-            className="w-full rounded-lg border border-slate-700 bg-slate-800 p-3"
+            className="w-full rounded-lg border border-[var(--border-color)] bg-[var(--card-color)] p-3"
           >
 
             <option value="left">
@@ -206,7 +206,7 @@ export default function ButtonSettings({
                   e.target.value as Theme["buttonHoverEffect"],
               }))
             }
-            className="w-full rounded-lg border border-slate-700 bg-slate-800 p-3"
+            className="w-full rounded-lg border border-[var(--border-color)] bg-[var(--card-color)] p-3"
           >
 
             <option value="none">
@@ -260,7 +260,7 @@ export default function ButtonSettings({
               `${theme.buttonRadius}px`,
             opacity: 0.5,
           }}
-          className="bg-slate-700 text-[var(--button-text-color)]"
+          className="bg-[var(--card-color)] text-[var(--button-text-color)]"
         >
           Disabled
         </button>
@@ -271,7 +271,7 @@ export default function ButtonSettings({
             borderRadius:
               `${theme.buttonRadius}px`,
           }}
-          className="animate-pulse bg-slate-600 text-[var(--button-text-color)]"
+          className="animate-pulse bg-[var(--card-color)] text-[var(--button-text-color)]"
         >
           Loading...
         </button>

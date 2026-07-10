@@ -69,7 +69,7 @@ export default function PopupManagerPage() {
 
   return (
 
-    <main className="min-h-screen bg-[#050505] p-4 text-[var(--button-text-color)]">
+    <main className="min-h-screen bg-[var(--primary-color)] p-4 text-[var(--button-text-color)]">
 
       {/* HEADER */}
 
@@ -77,7 +77,7 @@ export default function PopupManagerPage() {
 
         <div className="flex items-center gap-4">
 
-          <div className="flex h-16 w-16 items-center justify-center rounded-[30px] bg-yellow-400">
+          <div className="flex h-16 w-16 items-center justify-center rounded-[30px] bg-[var(--warning-color)]">
 
             <AppWindow
               size={30}
@@ -105,7 +105,7 @@ export default function PopupManagerPage() {
         </div>
 
         <button
-          className="flex items-center gap-2 rounded-2xl bg-yellow-400 px-6 py-4 font-black text-[var(--text-color)]"
+          className="flex items-center gap-2 rounded-2xl bg-[var(--warning-color)] px-6 py-4 font-black text-[var(--text-color)]"
         >
 
           <Save size={20} />
@@ -154,14 +154,14 @@ export default function PopupManagerPage() {
 
             <div
               key={index}
-              className="rounded-[30px] border border-white/10 bg-[#111111] p-6"
+              className="rounded-[30px] border border-[var(--border-color)]/10 bg-[var(--primary-color)] p-6"
             >
 
               <div className="flex items-center justify-between">
 
                 <div className="flex items-center gap-3">
 
-                  <div className="flex h-14 w-14 items-center justify-center rounded-2xl bg-yellow-400">
+                  <div className="flex h-14 w-14 items-center justify-center rounded-2xl bg-[var(--warning-color)]">
 
                     <Bell
                       size={24}
@@ -194,7 +194,7 @@ export default function PopupManagerPage() {
                       index
                     )
                   }
-                  className="rounded-2xl bg-[var(--danger-color)]/20 p-3 text-red-400"
+                  className="rounded-2xl bg-[var(--danger-color)]/20 p-3 text-[var(--danger-color)]"
                 >
 
                   <Trash2 size={20} />
@@ -205,7 +205,7 @@ export default function PopupManagerPage() {
 
               <div className="mt-5 rounded-2xl bg-[var(--card-color)]/30 p-5">
 
-                <p className="text-gray-300">
+                <p className="text-[var(--text-color)]">
 
                   {item.message}
 
@@ -244,7 +244,7 @@ export default function PopupManagerPage() {
 
       <button
         onClick={addPopup}
-        className="mt-6 flex w-full items-center justify-center gap-2 rounded-[30px] bg-yellow-400 px-6 py-5 font-black text-[var(--text-color)]"
+        className="mt-6 flex w-full items-center justify-center gap-2 rounded-[30px] bg-[var(--warning-color)] px-6 py-5 font-black text-[var(--text-color)]"
       >
 
         <Plus size={22} />
@@ -255,7 +255,7 @@ export default function PopupManagerPage() {
 
       {/* LIVE PREVIEW */}
 
-      <div className="mt-6 rounded-[30px] bg-gradient-to-r from-yellow-400 to-orange-500 p-6 text-[var(--text-color)]">
+      <div className="mt-6 rounded-[30px] bg-gradient-to-r from-[var(--primary-color)] to-[var(--primary-color)] p-6 text-[var(--text-color)]">
 
         <div className="flex items-center justify-between">
 
@@ -325,7 +325,7 @@ export default function PopupManagerPage() {
 
             </p>
 
-            <button className="mt-6 w-full rounded-2xl bg-yellow-400 px-5 py-4 font-black">
+            <button className="mt-6 w-full rounded-2xl bg-[var(--warning-color)] px-5 py-4 font-black">
 
               Claim Offer
 
@@ -339,11 +339,11 @@ export default function PopupManagerPage() {
 
       {/* AI FEATURES */}
 
-      <div className="mt-6 rounded-[30px] border border-white/10 bg-[#111111] p-6">
+      <div className="mt-6 rounded-[30px] border border-[var(--border-color)]/10 bg-[var(--primary-color)] p-6">
 
         <div className="flex items-center gap-3">
 
-          <Sparkles className="text-yellow-400" />
+          <Sparkles className="text-[var(--warning-color)]" />
 
           <h2 className="text-3xl font-black">
 
@@ -389,7 +389,7 @@ export default function PopupManagerPage() {
         </button>
 
         <button
-          className="flex items-center gap-2 rounded-2xl bg-pink-500 px-6 py-4 font-black"
+          className="flex items-center gap-2 rounded-2xl bg-[var(--primary-color)] px-6 py-4 font-black"
         >
 
           <Wand2 size={20} />
@@ -413,10 +413,10 @@ function ActionCard({
   return (
 
     <button
-      className="rounded-[30px] border border-white/10 bg-[#111111] p-5 text-left transition-all hover:scale-[1.03]"
+      className="rounded-[30px] border border-[var(--border-color)]/10 bg-[var(--primary-color)] p-5 text-left transition-all hover:scale-[1.03]"
     >
 
-      <div className="flex h-14 w-14 items-center justify-center rounded-2xl bg-yellow-400">
+      <div className="flex h-14 w-14 items-center justify-center rounded-2xl bg-[var(--warning-color)]">
 
         <Icon
           size={24}

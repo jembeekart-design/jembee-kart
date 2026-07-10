@@ -65,13 +65,13 @@ export default function AIBannerPage() {
 
   return (
 
-    <main className="min-h-screen bg-[#050505] p-4 text-[var(--button-text-color)]">
+    <main className="min-h-screen bg-[var(--primary-color)] p-4 text-[var(--button-text-color)]">
 
       {/* HEADER */}
 
       <div className="mb-8 flex items-center gap-4">
 
-        <div className="flex h-16 w-16 items-center justify-center rounded-[30px] bg-pink-500">
+        <div className="flex h-16 w-16 items-center justify-center rounded-[30px] bg-[var(--primary-color)]">
 
           <Sparkles
             size={30}
@@ -100,11 +100,11 @@ export default function AIBannerPage() {
 
       {/* PROMPT SECTION */}
 
-      <div className="rounded-[30px] border border-white/10 bg-[#111111] p-6">
+      <div className="rounded-[30px] border border-[var(--border-color)]/10 bg-[var(--primary-color)] p-6">
 
         <div className="flex items-center gap-3">
 
-          <Wand2 className="text-pink-400" />
+          <Wand2 className="text-[var(--primary-color)]" />
 
           <h2 className="text-2xl font-black">
 
@@ -122,7 +122,7 @@ export default function AIBannerPage() {
             )
           }
           placeholder="Example: Create modern ecommerce fashion sale banner with neon effects..."
-          className="mt-5 h-40 w-full rounded-3xl border border-white/10 bg-[var(--card-color)]/40 p-5 text-[var(--button-text-color)] outline-none"
+          className="mt-5 h-40 w-full rounded-3xl border border-[var(--border-color)]/10 bg-[var(--card-color)]/40 p-5 text-[var(--button-text-color)] outline-none"
         />
 
         <div className="mt-5 flex flex-wrap gap-4">
@@ -130,7 +130,7 @@ export default function AIBannerPage() {
           <button
             onClick={generateBanner}
             disabled={loading}
-            className="flex items-center gap-2 rounded-2xl bg-pink-500 px-6 py-4 font-bold text-[var(--text-color)] transition-all hover:scale-[1.03]"
+            className="flex items-center gap-2 rounded-2xl bg-[var(--primary-color)] px-6 py-4 font-bold text-[var(--text-color)] transition-all hover:scale-[1.03]"
           >
 
             <Sparkles size={20} />
@@ -142,7 +142,7 @@ export default function AIBannerPage() {
           </button>
 
           <button
-            className="flex items-center gap-2 rounded-2xl border border-white/10 bg-[#1a1a1a] px-6 py-4 font-bold"
+            className="flex items-center gap-2 rounded-2xl border border-[var(--border-color)]/10 bg-[var(--primary-color)] px-6 py-4 font-bold"
           >
 
             <LayoutTemplate
@@ -159,13 +159,13 @@ export default function AIBannerPage() {
 
       {/* GENERATED BANNER */}
 
-      <div className="mt-6 rounded-[30px] border border-white/10 bg-[#111111] p-6">
+      <div className="mt-6 rounded-[30px] border border-[var(--border-color)]/10 bg-[var(--primary-color)] p-6">
 
         <div className="flex items-center justify-between">
 
           <div className="flex items-center gap-3">
 
-            <ImageIcon className="text-pink-400" />
+            <ImageIcon className="text-[var(--primary-color)]" />
 
             <h2 className="text-2xl font-black">
 
@@ -188,7 +188,7 @@ export default function AIBannerPage() {
             </button>
 
             <button
-              className="flex items-center gap-2 rounded-2xl bg-[var(--danger-color)]/20 px-4 py-3 text-red-400"
+              className="flex items-center gap-2 rounded-2xl bg-[var(--danger-color)]/20 px-4 py-3 text-[var(--danger-color)]"
             >
 
               <Trash2 size={18} />
@@ -201,7 +201,7 @@ export default function AIBannerPage() {
 
         </div>
 
-        <div className="mt-6 overflow-hidden rounded-[30px] border border-white/10">
+        <div className="mt-6 overflow-hidden rounded-[30px] border border-[var(--border-color)]/10">
 
           <img
             src={generatedBanner}
@@ -237,7 +237,7 @@ export default function AIBannerPage() {
 
       {/* AI FEATURES */}
 
-      <div className="mt-6 rounded-[30px] border border-white/10 bg-gradient-to-r from-pink-500 to-violet-600 p-6">
+      <div className="mt-6 rounded-[30px] border border-[var(--border-color)]/10 bg-gradient-to-r from-[var(--primary-color)] to-[var(--primary-color)] p-6">
 
         <div className="flex items-center gap-3">
 
@@ -302,11 +302,11 @@ function StyleCard({
   return (
 
     <button
-      className="rounded-[24px] border border-white/10 bg-[#151515] p-6 text-left transition-all hover:border-pink-500"
+      className="rounded-[24px] border border-[var(--border-color)]/10 bg-[var(--primary-color)] p-6 text-left transition-all hover:border-[var(--primary-color)]"
     >
 
       <ImagePlus
-        className="text-pink-400"
+        className="text-[var(--primary-color)]"
       />
 
       <h3 className="mt-4 text-xl font-black">

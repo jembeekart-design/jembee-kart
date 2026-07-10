@@ -149,7 +149,7 @@ export default function FraudProtectionPage() {
 
   return (
 
-    <main className="min-h-screen bg-[#0b0b0b] p-4 text-[var(--button-text-color)]">
+    <main className="min-h-screen bg-[var(--primary-color)] p-4 text-[var(--button-text-color)]">
 
       {/* HEADER */}
 
@@ -335,7 +335,7 @@ export default function FraudProtectionPage() {
 
       {/* STATUS */}
 
-      <div className="mt-6 rounded-[30px] bg-gradient-to-r from-red-500 to-rose-500 p-6">
+      <div className="mt-6 rounded-[30px] bg-gradient-to-r from-[var(--primary-color)] to-[var(--primary-color)] p-6">
 
         <div className="flex items-center gap-3">
 
@@ -404,7 +404,7 @@ function InputCard({
 
   return (
 
-    <div className="rounded-[30px] bg-[#151515] p-5">
+    <div className="rounded-[30px] bg-[var(--primary-color)] p-5">
 
       <h2 className="mb-4 text-2xl font-black">
         {title}
@@ -442,7 +442,7 @@ function ToggleCard({
 
   return (
 
-    <div className="rounded-[30px] bg-[#151515] p-5">
+    <div className="rounded-[30px] bg-[var(--primary-color)] p-5">
 
       <div className="flex items-center justify-between">
 

@@ -133,7 +133,7 @@ UploadWatchVideoPage() {
     <main
       className="
         min-h-screen
-        bg-[#0a0a0f]
+        bg-[var(--primary-color)]
         px-4
         py-6
       "
@@ -170,7 +170,7 @@ UploadWatchVideoPage() {
             <Upload
               size={28}
               className="
-                text-violet-400
+                text-[var(--primary-color)]
               "
             />
 
@@ -215,7 +215,7 @@ UploadWatchVideoPage() {
           mb-6
           rounded-3xl
           border
-          border-violet-500/20
+          border-[var(--primary-color)]/20
           bg-[var(--secondary-color)]/10
           p-5
         "
@@ -233,7 +233,7 @@ UploadWatchVideoPage() {
             size={24}
             className="
               mt-1
-              text-violet-300
+              text-[var(--primary-color)]
             "
           />
 
@@ -256,7 +256,7 @@ UploadWatchVideoPage() {
                 mt-3
                 space-y-2
                 text-sm
-                text-violet-100
+                text-[var(--primary-color)]
               "
             >
 
@@ -304,7 +304,7 @@ UploadWatchVideoPage() {
             rounded-[32px]
             border-2
             border-dashed
-            border-white/10
+            border-[var(--border-color)]/10
             bg-gradient-to-b
             from-white/5
             to-white/[0.02]
@@ -329,7 +329,7 @@ UploadWatchVideoPage() {
             <Upload
               size={42}
               className="
-                text-violet-400
+                text-[var(--primary-color)]
               "
             />
 
@@ -396,7 +396,7 @@ UploadWatchVideoPage() {
               justify-between
               rounded-3xl
               border
-              border-violet-500/20
+              border-[var(--primary-color)]/20
               bg-[var(--secondary-color)]/10
               px-5
               py-5
@@ -411,7 +411,7 @@ UploadWatchVideoPage() {
                   font-bold
                   uppercase
                   tracking-wider
-                  text-violet-300
+                  text-[var(--primary-color)]
                 "
               >
 
@@ -437,7 +437,7 @@ UploadWatchVideoPage() {
             <BadgeCheck
               size={24}
               className="
-                text-violet-300
+                text-[var(--primary-color)]
               "
             />
 
@@ -451,7 +451,7 @@ UploadWatchVideoPage() {
           className="
             rounded-3xl
             border
-            border-white/10
+            border-[var(--border-color)]/10
             bg-[var(--card-color)]/5
             p-5
           "
@@ -500,7 +500,7 @@ UploadWatchVideoPage() {
           className="
             rounded-3xl
             border
-            border-white/10
+            border-[var(--border-color)]/10
             bg-[var(--card-color)]/5
             p-5
           "
@@ -550,7 +550,7 @@ UploadWatchVideoPage() {
             gap-4
             rounded-3xl
             border
-            border-white/10
+            border-[var(--border-color)]/10
             bg-[var(--card-color)]/5
             px-5
             py-5
@@ -565,14 +565,14 @@ UploadWatchVideoPage() {
               items-center
               justify-center
               rounded-full
-              bg-pink-500/20
+              bg-[var(--primary-color)]/20
             "
           >
 
             <Music2
               size={22}
               className="
-                text-pink-400
+                text-[var(--primary-color)]
               "
             />
 
@@ -606,7 +606,7 @@ UploadWatchVideoPage() {
           className="
             rounded-3xl
             border
-            border-yellow-500/20
+            border-[var(--warning-color)]/20
             bg-[var(--warning-color)]/10
             p-5
           "
@@ -616,7 +616,7 @@ UploadWatchVideoPage() {
             className="
               text-sm
               font-black
-              text-yellow-300
+              text-[var(--warning-color)]
             "
           >
 
@@ -641,15 +641,15 @@ UploadWatchVideoPage() {
             gap-3
             rounded-[30px]
             bg-gradient-to-r
-            from-violet-600
-            to-fuchsia-500
+            from-[var(--primary-color)]
+            to-[var(--primary-color)]
             px-5
             py-5
             text-lg
             font-black
             text-[var(--button-text-color)]
             shadow-2xl
-            shadow-violet-500/20
+            shadow
           "
         >
 

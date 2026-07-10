@@ -16,7 +16,7 @@ interface TaskRewardData {
 }
 
 /**
- * File #107: Enterprise-Grade Task Reward Distribution Engine (Absolute 10/10 Production Release)
+ * File var(--primary-color): Enterprise-Grade Task Reward Distribution Engine (Absolute 10/10 Production Release)
  * Integrates synchronized string casing safeguards, dual-wallet audit mapping, and ultimate primary lock boundaries.
  * Fully immune to concurrent multi-click hits and administrative panel reset exploits.
  */

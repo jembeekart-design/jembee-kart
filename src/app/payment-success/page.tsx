@@ -98,7 +98,7 @@ export default function PaymentSuccessPage() {
   }
 
   return (
-    <main className="min-h-screen flex items-center justify-center bg-[#f6f7fb] p-4">
+    <main className="min-h-screen flex items-center justify-center bg-[var(--primary-color)] p-4">
       <div className="w-full max-w-md rounded-[32px] bg-[var(--card-color)] p-8 shadow-2xl text-center">
 
         <div className="text-6xl mb-4">
@@ -113,7 +113,7 @@ export default function PaymentSuccessPage() {
           Your order has been placed successfully.
         </p>
 
-        <div className="mt-6 rounded-2xl border border-green-200 bg-green-50 p-4">
+        <div className="mt-6 rounded-2xl border border-[var(--success-color)] bg-[var(--success-color)] p-4">
 
           <p className="text-xs font-bold text-[var(--muted-text-color)]">
             MEMBER NAME
@@ -125,7 +125,7 @@ export default function PaymentSuccessPage() {
 
         </div>
 
-        <div className="mt-4 rounded-2xl border border-green-200 bg-green-50 p-4">
+        <div className="mt-4 rounded-2xl border border-[var(--success-color)] bg-[var(--success-color)] p-4">
 
           <p className="text-xs font-bold text-[var(--muted-text-color)]">
             YOUR REFERRAL CODE
@@ -139,7 +139,7 @@ export default function PaymentSuccessPage() {
 
         <Link
           href="/"
-          className="mt-6 block w-full rounded-2xl bg-indigo-600 p-4 text-center font-black text-[var(--button-text-color)]"
+          className="mt-6 block w-full rounded-2xl bg-[var(--primary-color)] p-4 text-center font-black text-[var(--button-text-color)]"
         >
           Continue Shopping
         </Link>

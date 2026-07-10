@@ -208,7 +208,7 @@ export default function FooterBuilderPage() {
 
   return (
 
-    <main className="min-h-screen bg-[#0b0b0b] p-4 text-[var(--button-text-color)]">
+    <main className="min-h-screen bg-[var(--primary-color)] p-4 text-[var(--button-text-color)]">
 
       {/* HEADER */}
 
@@ -216,7 +216,7 @@ export default function FooterBuilderPage() {
 
         <div className="flex items-center gap-4">
 
-          <div className="flex h-16 w-16 items-center justify-center rounded-[24px] bg-fuchsia-500">
+          <div className="flex h-16 w-16 items-center justify-center rounded-[24px] bg-[var(--primary-color)]">
 
             <LayoutTemplate size={30} />
 
@@ -239,7 +239,7 @@ export default function FooterBuilderPage() {
         <button
           onClick={saveFooter}
           disabled={saving}
-          className="flex items-center gap-2 rounded-2xl bg-fuchsia-500 px-5 py-3 font-bold text-[var(--text-color)]"
+          className="flex items-center gap-2 rounded-2xl bg-[var(--primary-color)] px-5 py-3 font-bold text-[var(--text-color)]"
         >
 
           <Save size={18} />
@@ -254,7 +254,7 @@ export default function FooterBuilderPage() {
 
       {/* COMPANY */}
 
-      <div className="rounded-[30px] bg-[#151515] p-5">
+      <div className="rounded-[30px] bg-[var(--primary-color)] p-5">
 
         <h2 className="mb-5 text-2xl font-black">
           Footer Settings
@@ -316,7 +316,7 @@ export default function FooterBuilderPage() {
 
       {/* LINKS */}
 
-      <div className="mt-6 rounded-[30px] bg-[#151515] p-5">
+      <div className="mt-6 rounded-[30px] bg-[var(--primary-color)] p-5">
 
         <div className="mb-5 flex items-center justify-between">
 
@@ -414,7 +414,7 @@ export default function FooterBuilderPage() {
 
       {/* PREVIEW */}
 
-      <div className="mt-6 rounded-[30px] bg-gradient-to-r from-fuchsia-500 to-pink-500 p-6">
+      <div className="mt-6 rounded-[30px] bg-gradient-to-r from-[var(--primary-color)] to-[var(--primary-color)] p-6">
 
         <h2 className="text-3xl font-black text-[var(--text-color)]">
           Live Footer Preview

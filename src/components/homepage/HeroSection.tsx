@@ -48,15 +48,15 @@ export default function HeroSection({
 
   buttonSize = "20px",
 
-  backgroundColor = "#2563eb",
+  backgroundColor = "var(--primary-color)",
 
-  gradientColor = "#7c3aed",
+  gradientColor = "var(--primary-color)",
 
-  textColor = "#ffffff",
+  textColor = "var(--primary-color)",
 
-  buttonColor = "#ffffff",
+  buttonColor = "var(--primary-color)",
 
-  buttonTextColor = "#1d4ed8",
+  buttonTextColor = "var(--primary-color)",
 
   sectionPadding = "24px",
 
@@ -113,7 +113,7 @@ export default function HeroSection({
             </button>
 
             <button
-              className="w-full rounded-2xl border border-white/30 bg-[var(--card-color)]/10 px-6 py-3 font-bold text-[var(--button-text-color)] backdrop-blur-xl transition-all duration-300 hover:bg-[var(--card-color)]/20 md:w-auto"
+              className="w-full rounded-2xl border border-[var(--border-color)]/30 bg-[var(--card-color)]/10 px-6 py-3 font-bold text-[var(--button-text-color)] backdrop-blur-xl transition-all duration-300 hover:bg-[var(--card-color)]/20 md:w-auto"
               style={{
                 fontSize: buttonSize
               }}

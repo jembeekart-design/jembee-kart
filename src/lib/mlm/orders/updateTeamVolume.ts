@@ -33,7 +33,7 @@ interface TeamPerformanceBonusRequest {
 const MAX_SINGLE_BONUS_THRESHOLD = 100000.00; // Protection cap ceiling mechanism
 
 /**
- * File #123: updateTeamVolume.ts — Enterprise Sales Matrix & Target Volume Engine
+ * File var(--primary-color): updateTeamVolume.ts — Enterprise Sales Matrix & Target Volume Engine
  * Core Architecture Score: 10/10 Platinum
  * Enforces transaction safety boundaries, strict idempotency locks, and multi-ledger tracking.
  */

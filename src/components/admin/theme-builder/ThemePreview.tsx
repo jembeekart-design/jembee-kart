@@ -71,14 +71,14 @@ function getButtonStyle(theme: Theme) {
     case "gradient":
       return {
         background: `linear-gradient(135deg, ${theme.primaryColor}, ${theme.secondaryColor})`,
-        color: "#ffffff",
+        color: "var(--primary-color)",
         border: "none",
       };
 
     default:
       return {
         background: theme.primaryColor,
-        color: "#ffffff",
+        color: "var(--primary-color)",
         border: "none",
       };
 
@@ -92,7 +92,7 @@ export default function ThemePreview({
 
   return (
 
-    <div className="mt-8 rounded-3xl border border-slate-700 p-6">
+    <div className="mt-8 rounded-3xl border border-[var(--border-color)] p-6">
 
       <h2 className="mb-6 text-3xl font-bold text-[var(--button-text-color)]">
         Live Theme Preview

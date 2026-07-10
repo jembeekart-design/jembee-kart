@@ -34,7 +34,7 @@ export default function TipsSection({
             return (
               <div
                 key={tip}
-                className="w-full min-w-0 overflow-hidden rounded-[24px] bg-gradient-to-br from-gray-900 to-black p-5 text-[var(--button-text-color)] shadow-xl transition-all duration-300 hover:-translate-y-1 hover:shadow-2xl"
+                className="w-full min-w-0 overflow-hidden rounded-[24px] bg-gradient-to-br from-[var(--primary-color)] to-black p-5 text-[var(--button-text-color)] shadow-xl transition-all duration-300 hover:-translate-y-1 hover:shadow-2xl"
               >
 
                 <div className="mb-4 text-4xl">

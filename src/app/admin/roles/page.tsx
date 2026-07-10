@@ -76,13 +76,13 @@ export default function RolesPage() {
 
   return (
 
-    <main className="min-h-screen bg-[#0b0b0b] p-4 text-[var(--button-text-color)]">
+    <main className="min-h-screen bg-[var(--primary-color)] p-4 text-[var(--button-text-color)]">
 
       {/* HEADER */}
 
       <div className="mb-8 flex items-center gap-4">
 
-        <div className="flex h-16 w-16 items-center justify-center rounded-[24px] bg-indigo-600">
+        <div className="flex h-16 w-16 items-center justify-center rounded-[24px] bg-[var(--primary-color)]">
 
           <ShieldCheck size={30} />
 
@@ -104,7 +104,7 @@ export default function RolesPage() {
 
       {/* CREATE ROLE */}
 
-      <div className="rounded-[30px] bg-[#151515] p-5">
+      <div className="rounded-[30px] bg-[var(--primary-color)] p-5">
 
         <h2 className="text-2xl font-black">
           Create Role
@@ -135,7 +135,7 @@ export default function RolesPage() {
 
           <button
             onClick={addRole}
-            className="flex items-center gap-2 rounded-2xl bg-indigo-600 px-5 py-3 font-bold"
+            className="flex items-center gap-2 rounded-2xl bg-[var(--primary-color)] px-5 py-3 font-bold"
           >
 
             <Plus size={18} />
@@ -157,7 +157,7 @@ export default function RolesPage() {
 
             <div
               key={item.id}
-              className="rounded-[30px] bg-[#151515] p-5"
+              className="rounded-[30px] bg-[var(--primary-color)] p-5"
             >
 
               <div className="flex items-center justify-between gap-4">
@@ -206,7 +206,7 @@ export default function RolesPage() {
 
       {/* PREVIEW */}
 
-      <div className="mt-6 rounded-[30px] bg-gradient-to-r from-indigo-600 to-violet-600 p-6">
+      <div className="mt-6 rounded-[30px] bg-gradient-to-r from-[var(--primary-color)] to-[var(--primary-color)] p-6">
 
         <h2 className="text-3xl font-black">
           Permission System

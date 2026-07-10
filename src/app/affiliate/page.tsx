@@ -39,91 +39,91 @@ const dashboardItems = [
     title: "Dashboard",
     icon: LayoutDashboard,
     href: "/mlm/dashboard",
-    color: "from-indigo-500 to-blue-500"
+    color: "from-[var(--primary-color)] to-[var(--primary-color)]"
   },
   {
     title: "Invite",
     icon: Users,
     href: "/mlm/invite",
-    color: "from-violet-500 to-fuchsia-500"
+    color: "from-[var(--primary-color)] to-[var(--primary-color)]"
   },
   {
     title: "Network",
     icon: Network,
     href: "/mlm/network",
-    color: "from-cyan-500 to-sky-500"
+    color: "from-[var(--primary-color)] to-[var(--primary-color)]"
   },
   {
     title: "Earnings",
     icon: BadgeIndianRupee,
     href: "/mlm/earnings",
-    color: "from-green-500 to-emerald-500"
+    color: "from-[var(--primary-color)] to-[var(--primary-color)]"
   },
   {
     title: "Wallet",
     icon: Wallet,
     href: "/mlm/wallet",
-    color: "from-orange-500 to-amber-500"
+    color: "from-[var(--primary-color)] to-[var(--primary-color)]"
   },
   {
     title: "Withdraw",
     icon: WalletCards,
     href: "/mlm/withdraw",
-    color: "from-pink-500 to-rose-500"
+    color: "from-[var(--primary-color)] to-[var(--primary-color)]"
   },
   {
     title: "Leaderboard",
     icon: Trophy,
     href: "/mlm/leaderboard",
-    color: "from-yellow-500 to-orange-500"
+    color: "from-[var(--primary-color)] to-[var(--primary-color)]"
   },
   {
     title: "Ranks",
     icon: Medal,
     href: "/mlm/ranks",
-    color: "from-purple-500 to-indigo-500"
+    color: "from-[var(--primary-color)] to-[var(--primary-color)]"
   },
   {
     title: "Cashback",
     icon: Gift,
     href: "/mlm/cashback",
-    color: "from-teal-500 to-green-500"
+    color: "from-[var(--primary-color)] to-[var(--primary-color)]"
   },
   {
     title: "Watch Earn",
     icon: PlayCircle,
     href: "/mlm/watch-earn",
-    color: "from-red-500 to-pink-500"
+    color: "from-[var(--primary-color)] to-[var(--primary-color)]"
   },
   {
     title: "Team Business",
     icon: BriefcaseBusiness,
     href: "/mlm/team-business",
-    color: "from-sky-500 to-indigo-500"
+    color: "from-[var(--primary-color)] to-[var(--primary-color)]"
   },
   {
     title: "Orders",
     icon: Package,
     href: "/mlm/orders",
-    color: "from-lime-500 to-green-500"
+    color: "from-[var(--primary-color)] to-[var(--primary-color)]"
   },
   {
     title: "Notifications",
     icon: Bell,
     href: "/mlm/notifications",
-    color: "from-fuchsia-500 to-pink-500"
+    color: "from-[var(--primary-color)] to-[var(--primary-color)]"
   },
   {
     title: "Permissions",
     icon: ClipboardCheck,
     href: "/mlm/permissions",
-    color: "from-gray-600 to-gray-800"
+    color: "from-[var(--primary-color)] to-[var(--primary-color)]"
   },
   {
     title: "Support",
     icon: LifeBuoy,
     href: "/mlm/support",
-    color: "from-blue-500 to-cyan-500"
+    color: "from-[var(--primary-color)] to-[var(--primary-color)]"
   }
 ];
 
@@ -154,12 +154,12 @@ export default function AffiliatePage() {
   }, []);
 
   return (
-    <main className="min-h-screen bg-[#f6f7fb] pb-32">
+    <main className="min-h-screen bg-[var(--primary-color)] pb-32">
       
       {/* ======================================================
       HERO SECTION
       ====================================================== */}
-      <section className="relative overflow-hidden bg-gradient-to-br from-violet-700 via-fuchsia-600 to-orange-500 px-4 pb-10 pt-12 text-[var(--button-text-color)]">
+      <section className="relative overflow-hidden bg-gradient-to-br from-[var(--primary-color)] via-[var(--primary-color)] to-[var(--primary-color)] px-4 pb-10 pt-12 text-[var(--button-text-color)]">
         
         {/* BG CIRCLES */}
         <div className="absolute right-[-40px] top-[-40px] h-40 w-40 rounded-full bg-[var(--card-color)]/10" />
@@ -221,7 +221,7 @@ export default function AffiliatePage() {
           
           {/* TODAY INCOME */}
           <div className="rounded-[28px] bg-[var(--card-color)] p-5 shadow-xl">
-            <div className="flex h-14 w-14 items-center justify-center rounded-2xl bg-green-100 text-[var(--success-color)]">
+            <div className="flex h-14 w-14 items-center justify-center rounded-2xl bg-[var(--success-color)] text-[var(--success-color)]">
               <CircleDollarSign size={30} />
             </div>
             <p className="mt-4 text-sm font-semibold text-[var(--muted-text-color)]">Today Income</p>
@@ -232,7 +232,7 @@ export default function AffiliatePage() {
 
           {/* TOTAL WITHDRAW */}
           <div className="rounded-[28px] bg-[var(--card-color)] p-5 shadow-xl">
-            <div className="flex h-14 w-14 items-center justify-center rounded-2xl bg-violet-100 text-violet-600">
+            <div className="flex h-14 w-14 items-center justify-center rounded-2xl bg-[var(--primary-color)] text-[var(--primary-color)]">
               <ShieldCheck size={28} />
             </div>
             <p className="mt-4 text-sm font-semibold text-[var(--muted-text-color)]">Total Withdraw</p>
@@ -274,7 +274,7 @@ export default function AffiliatePage() {
                 </h3>
 
                 {/* BUTTON */}
-                <div className="mt-3 flex items-center gap-1 text-xs font-bold text-violet-600">
+                <div className="mt-3 flex items-center gap-1 text-xs font-bold text-[var(--primary-color)]">
                   Open
                   <ArrowRight size={14} />
                 </div>

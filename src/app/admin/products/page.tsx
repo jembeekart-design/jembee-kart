@@ -593,7 +593,7 @@ export default function ProductsAdminPage() {
     <main
       className="
         min-h-screen
-        bg-[#F8FAFC]
+        bg-[var(--primary-color)]
         pb-24
       "
     >
@@ -608,7 +608,7 @@ export default function ProductsAdminPage() {
           top-0
           z-50
           border-b
-          border-slate-200
+          border-[var(--border-color)]
           bg-[var(--card-color)]/90
           backdrop-blur-xl
         "
@@ -639,7 +639,7 @@ export default function ProductsAdminPage() {
               <Menu
                 size={22}
                 className="
-                  text-slate-700
+                  text-[var(--text-color)]
                 "
               />
 
@@ -651,7 +651,7 @@ export default function ProductsAdminPage() {
                 className="
                   text-sm
                   font-black
-                  text-slate-900
+                  text-[var(--text-color)]
                 "
               >
 
@@ -665,7 +665,7 @@ export default function ProductsAdminPage() {
                   font-bold
                   uppercase
                   tracking-widest
-                  text-indigo-600
+                  text-[var(--primary-color)]
                 "
               >
 
@@ -686,8 +686,8 @@ export default function ProductsAdminPage() {
               justify-center
               rounded-full
               bg-gradient-to-r
-              from-indigo-500
-              to-purple-500
+              from-[var(--primary-color)]
+              to-[var(--primary-color)]
               text-xs
               font-black
               text-[var(--button-text-color)]
@@ -724,7 +724,7 @@ export default function ProductsAdminPage() {
             grid-cols-2
             gap-2
             rounded-2xl
-            bg-slate-100
+            bg-[var(--card-color)]
             p-1
           "
         >
@@ -750,9 +750,9 @@ export default function ProductsAdminPage() {
                 activeTab ===
                 "add"
 
-                  ? "bg-[var(--card-color)] text-indigo-600 shadow"
+                  ? "bg-[var(--card-color)] text-[var(--primary-color)] shadow"
 
-                  : "text-slate-500"
+                  : "text-[var(--text-color)]"
               }
             `}
           >
@@ -784,9 +784,9 @@ export default function ProductsAdminPage() {
                 activeTab ===
                 "products"
 
-                  ? "bg-[var(--card-color)] text-indigo-600 shadow"
+                  ? "bg-[var(--card-color)] text-[var(--primary-color)] shadow"
 
-                  : "text-slate-500"
+                  : "text-[var(--text-color)]"
               }
             `}
           >
@@ -812,7 +812,7 @@ export default function ProductsAdminPage() {
             className="
               rounded-3xl
               border
-              border-slate-200
+              border-[var(--border-color)]
               bg-[var(--card-color)]
               p-5
               shadow-sm
@@ -824,7 +824,7 @@ export default function ProductsAdminPage() {
                 mb-5
                 text-sm
                 font-black
-                text-slate-900
+                text-[var(--text-color)]
               "
             >
 
@@ -844,7 +844,7 @@ export default function ProductsAdminPage() {
                     block
                     text-[11px]
                     font-bold
-                    text-slate-500
+                    text-[var(--text-color)]
                   "
                 >
 
@@ -865,12 +865,12 @@ export default function ProductsAdminPage() {
                     w-full
                     rounded-xl
                     border
-                    border-slate-200
-                    bg-slate-50
+                    border-[var(--border-color)]
+                    bg-[var(--card-color)]
                     p-3
                     text-xs
                     outline-none
-                    focus:border-indigo-500
+                    focus:border-[var(--primary-color)]
                   "
                 />
 
@@ -886,7 +886,7 @@ export default function ProductsAdminPage() {
                     block
                     text-[11px]
                     font-bold
-                    text-slate-500
+                    text-[var(--text-color)]
                   "
                 >
 
@@ -907,12 +907,12 @@ export default function ProductsAdminPage() {
                     w-full
                     rounded-xl
                     border
-                    border-slate-200
-                    bg-slate-50
+                    border-[var(--border-color)]
+                    bg-[var(--card-color)]
                     p-3
                     text-xs
                     outline-none
-                    focus:border-indigo-500
+                    focus:border-[var(--primary-color)]
                   "
                 />
 
@@ -928,7 +928,7 @@ export default function ProductsAdminPage() {
                     block
                     text-[11px]
                     font-bold
-                    text-slate-500
+                    text-[var(--text-color)]
                   "
                 >
 
@@ -951,12 +951,12 @@ export default function ProductsAdminPage() {
                     w-full
                     rounded-xl
                     border
-                    border-slate-200
-                    bg-slate-50
+                    border-[var(--border-color)]
+                    bg-[var(--card-color)]
                     p-3
                     text-xs
                     outline-none
-                    focus:border-indigo-500
+                    focus:border-[var(--primary-color)]
                   "
                 />
 
@@ -980,7 +980,7 @@ export default function ProductsAdminPage() {
                       block
                       text-[11px]
                       font-bold
-                      text-slate-500
+                      text-[var(--text-color)]
                     "
                   >
 
@@ -1001,8 +1001,8 @@ export default function ProductsAdminPage() {
                       w-full
                       rounded-xl
                       border
-                      border-slate-200
-                      bg-slate-50
+                      border-[var(--border-color)]
+                      bg-[var(--card-color)]
                       p-3
                       text-xs
                       outline-none
@@ -1019,7 +1019,7 @@ export default function ProductsAdminPage() {
                       block
                       text-[11px]
                       font-bold
-                      text-slate-500
+                      text-[var(--text-color)]
                     "
                   >
 
@@ -1042,8 +1042,8 @@ export default function ProductsAdminPage() {
                       w-full
                       rounded-xl
                       border
-                      border-slate-200
-                      bg-slate-50
+                      border-[var(--border-color)]
+                      bg-[var(--card-color)]
                       p-3
                       text-xs
                       outline-none
@@ -1064,7 +1064,7 @@ export default function ProductsAdminPage() {
                     block
                     text-[11px]
                     font-bold
-                    text-slate-500
+                    text-[var(--text-color)]
                   "
                 >
 
@@ -1085,8 +1085,8 @@ export default function ProductsAdminPage() {
                     w-full
                     rounded-xl
                     border
-                    border-slate-200
-                    bg-slate-50
+                    border-[var(--border-color)]
+                    bg-[var(--card-color)]
                     p-3
                     text-xs
                     outline-none
@@ -1115,8 +1115,8 @@ export default function ProductsAdminPage() {
                   className="
                     rounded-xl
                     border
-                    border-slate-200
-                    bg-slate-50
+                    border-[var(--border-color)]
+                    bg-[var(--card-color)]
                     p-3
                     text-xs
                     outline-none
@@ -1149,8 +1149,8 @@ export default function ProductsAdminPage() {
                   className="
                     rounded-xl
                     border
-                    border-slate-200
-                    bg-slate-50
+                    border-[var(--border-color)]
+                    bg-[var(--card-color)]
                     p-3
                     text-xs
                     outline-none
@@ -1182,7 +1182,7 @@ export default function ProductsAdminPage() {
                     mb-2
                     text-[11px]
                     font-bold
-                    text-slate-500
+                    text-[var(--text-color)]
                   "
                 >
 
@@ -1226,9 +1226,9 @@ export default function ProductsAdminPage() {
                               size
                             )
 
-                              ? "bg-indigo-600 text-[var(--button-text-color)]"
+                              ? "bg-[var(--primary-color)] text-[var(--button-text-color)]"
 
-                              : "bg-slate-100 text-slate-700"
+                              : "bg-[var(--card-color)] text-[var(--text-color)]"
                           }
                         `}
                       >
@@ -1254,7 +1254,7 @@ export default function ProductsAdminPage() {
                     mb-3
                     text-[11px]
                     font-bold
-                    text-slate-500
+                    text-[var(--text-color)]
                   "
                 >
 
@@ -1351,15 +1351,15 @@ export default function ProductsAdminPage() {
                       rounded-xl
                       border-2
                       border-dashed
-                      border-slate-300
-                      bg-slate-50
+                      border-[var(--border-color)]
+                      bg-[var(--card-color)]
                     "
                   >
 
                     <ImagePlus
                       size={20}
                       className="
-                        text-indigo-500
+                        text-[var(--primary-color)]
                       "
                     />
 
@@ -1368,7 +1368,7 @@ export default function ProductsAdminPage() {
                         mt-1
                         text-[10px]
                         font-bold
-                        text-slate-500
+                        text-[var(--text-color)]
                       "
                     >
 
@@ -1420,7 +1420,7 @@ export default function ProductsAdminPage() {
                     mb-3
                     text-[11px]
                     font-bold
-                    text-slate-500
+                    text-[var(--text-color)]
                   "
                 >
 
@@ -1516,15 +1516,15 @@ export default function ProductsAdminPage() {
                       rounded-xl
                       border-2
                       border-dashed
-                      border-slate-300
-                      bg-slate-50
+                      border-[var(--border-color)]
+                      bg-[var(--card-color)]
                     "
                   >
 
                     <Video
                       size={20}
                       className="
-                        text-purple-500
+                        text-[var(--primary-color)]
                       "
                     />
 
@@ -1533,7 +1533,7 @@ export default function ProductsAdminPage() {
                         mt-1
                         text-[10px]
                         font-bold
-                        text-slate-500
+                        text-[var(--text-color)]
                       "
                     >
 
@@ -1587,8 +1587,8 @@ export default function ProductsAdminPage() {
                   w-full
                   rounded-2xl
                   bg-gradient-to-r
-                  from-indigo-600
-                  to-purple-600
+                  from-[var(--primary-color)]
+                  to-[var(--primary-color)]
                   py-4
                   text-xs
                   font-black
@@ -1656,9 +1656,9 @@ export default function ProductsAdminPage() {
                         selectedCategory ===
                         cat
 
-                          ? "border-slate-900 bg-slate-900 text-[var(--button-text-color)]"
+                          ? "border-[var(--border-color)] bg-[var(--card-color)] text-[var(--button-text-color)]"
 
-                          : "border-slate-200 bg-[var(--card-color)] text-slate-600"
+                          : "border-[var(--border-color)] bg-[var(--card-color)] text-[var(--text-color)]"
                       }
                     `}
                   >
@@ -1681,7 +1681,7 @@ export default function ProductsAdminPage() {
                   text-center
                   text-sm
                   font-bold
-                  text-slate-400
+                  text-[var(--text-color)]
                 "
               >
 
@@ -1710,7 +1710,7 @@ export default function ProductsAdminPage() {
                       className="
                         rounded-3xl
                         border
-                        border-slate-200
+                        border-[var(--border-color)]
                         bg-[var(--card-color)]
                         p-4
                         shadow-sm
@@ -1759,7 +1759,7 @@ export default function ProductsAdminPage() {
                               className="
                                 text-sm
                                 font-black
-                                text-slate-900
+                                text-[var(--text-color)]
                               "
                             >
 
@@ -1794,7 +1794,7 @@ export default function ProductsAdminPage() {
                                 <EyeOff
                                   size={18}
                                   className="
-                                    text-slate-400
+                                    text-[var(--text-color)]
                                   "
                                 />
 
@@ -1809,7 +1809,7 @@ export default function ProductsAdminPage() {
                               mt-1
                               text-[11px]
                               font-bold
-                              text-slate-400
+                              text-[var(--text-color)]
                             "
                           >
 
@@ -1832,7 +1832,7 @@ export default function ProductsAdminPage() {
                               className="
                                 text-lg
                                 font-black
-                                text-slate-900
+                                text-[var(--text-color)]
                               "
                             >
 
@@ -1850,7 +1850,7 @@ export default function ProductsAdminPage() {
                               <p
                                 className="
                                   text-xs
-                                  text-slate-400
+                                  text-[var(--text-color)]
                                   line-through
                                 "
                               >
@@ -1871,7 +1871,7 @@ export default function ProductsAdminPage() {
                               mt-2
                               text-[11px]
                               font-bold
-                              text-slate-500
+                              text-[var(--text-color)]
                             "
                           >
 
@@ -1906,7 +1906,7 @@ export default function ProductsAdminPage() {
                           }
                           className="
                             rounded-xl
-                            bg-blue-50
+                            bg-[var(--primary-color)]
                             p-2
                             theme-primary-text
                           "
@@ -1926,7 +1926,7 @@ export default function ProductsAdminPage() {
                           }
                           className="
                             rounded-xl
-                            bg-red-50
+                            bg-[var(--danger-color)]
                             p-2
                             text-[var(--danger-color)]
                           "
@@ -1973,7 +1973,7 @@ export default function ProductsAdminPage() {
                               w-full
                               rounded-xl
                               border
-                              border-slate-200
+                              border-[var(--border-color)]
                               p-3
                               text-xs
                             "
@@ -1998,7 +1998,7 @@ export default function ProductsAdminPage() {
                               w-full
                               rounded-xl
                               border
-                              border-slate-200
+                              border-[var(--border-color)]
                               p-3
                               text-xs
                             "
@@ -2013,7 +2013,7 @@ export default function ProductsAdminPage() {
                             className="
                               w-full
                               rounded-xl
-                              bg-indigo-600
+                              bg-[var(--primary-color)]
                               py-3
                               text-xs
                               font-black
@@ -2059,7 +2059,7 @@ export default function ProductsAdminPage() {
           items-center
           justify-around
           border-t
-          border-slate-200
+          border-[var(--border-color)]
           bg-[var(--card-color)]/90
           backdrop-blur-xl
         "
@@ -2081,9 +2081,9 @@ export default function ProductsAdminPage() {
               activeTab ===
               "add"
 
-                ? "text-indigo-600"
+                ? "text-[var(--primary-color)]"
 
-                : "text-slate-400"
+                : "text-[var(--text-color)]"
             }
           `}
         >
@@ -2109,7 +2109,7 @@ export default function ProductsAdminPage() {
             flex-col
             items-center
             gap-1
-            text-slate-400
+            text-[var(--text-color)]
           "
         >
 
@@ -2146,9 +2146,9 @@ export default function ProductsAdminPage() {
               activeTab ===
               "products"
 
-                ? "text-indigo-600"
+                ? "text-[var(--primary-color)]"
 
-                : "text-slate-400"
+                : "text-[var(--text-color)]"
             }
           `}
         >
@@ -2174,7 +2174,7 @@ export default function ProductsAdminPage() {
             flex-col
             items-center
             gap-1
-            text-slate-400
+            text-[var(--text-color)]
           "
         >
 

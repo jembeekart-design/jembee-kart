@@ -22,7 +22,7 @@ export default function AuditCard({
   issues,
 }: AuditCardProps) {
   return (
-    <div className="rounded-3xl border border-white/10 bg-[#111111] p-6">
+    <div className="rounded-3xl border border-[var(--border-color)]/10 bg-[var(--primary-color)] p-6">
       <div className="flex items-center justify-between">
 
         <h3 className="text-lg font-bold">
@@ -30,19 +30,19 @@ export default function AuditCard({
         </h3>
 
         {status === "PASS" && (
-          <CheckCircle className="text-green-400" />
+          <CheckCircle className="text-[var(--success-color)]" />
         )}
 
         {status === "WARNING" && (
-          <AlertTriangle className="text-yellow-400" />
+          <AlertTriangle className="text-[var(--warning-color)]" />
         )}
 
         {status === "FAIL" && (
-          <XCircle className="text-red-400" />
+          <XCircle className="text-[var(--danger-color)]" />
         )}
 
         {status === "CRITICAL" && (
-          <XCircle className="text-pink-500" />
+          <XCircle className="text-[var(--primary-color)]" />
         )}
 
       </div>
@@ -54,12 +54,12 @@ export default function AuditCard({
             key={index}
             className={`rounded-xl p-3 text-sm ${
               status === "CRITICAL"
-                ? "bg-pink-500/10 text-pink-300"
+                ? "bg-[var(--primary-color)]/10 text-[var(--primary-color)]"
                 : status === "FAIL"
-                ? "bg-[var(--danger-color)]/10 text-red-300"
+                ? "bg-[var(--danger-color)]/10 text-[var(--danger-color)]"
                 : status === "WARNING"
-                ? "bg-[var(--warning-color)]/10 text-yellow-300"
-                : "bg-[var(--success-color)]/10 text-green-300"
+                ? "bg-[var(--warning-color)]/10 text-[var(--warning-color)]"
+                : "bg-[var(--success-color)]/10 text-[var(--success-color)]"
             }`}
           >
             {issue}

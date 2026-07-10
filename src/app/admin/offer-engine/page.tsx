@@ -54,13 +54,13 @@ export default function OfferEnginePage() {
 
   return (
 
-    <main className="min-h-screen bg-[#0b0b0b] p-4 text-[var(--button-text-color)]">
+    <main className="min-h-screen bg-[var(--primary-color)] p-4 text-[var(--button-text-color)]">
 
       {/* HEADER */}
 
       <div className="mb-8 flex items-center gap-4">
 
-        <div className="flex h-16 w-16 items-center justify-center rounded-[28px] bg-yellow-400">
+        <div className="flex h-16 w-16 items-center justify-center rounded-[28px] bg-[var(--warning-color)]">
 
           <Gift
             size={30}
@@ -115,7 +115,7 @@ export default function OfferEnginePage() {
 
       {/* SEARCH */}
 
-      <div className="mt-6 flex items-center gap-3 rounded-[24px] border border-white/10 bg-[#151515] px-4 py-3">
+      <div className="mt-6 flex items-center gap-3 rounded-[24px] border border-[var(--border-color)]/10 bg-[var(--primary-color)] px-4 py-3">
 
         <Search
           size={20}
@@ -148,7 +148,7 @@ export default function OfferEnginePage() {
 
             <div
               key={index}
-              className="rounded-[28px] border border-white/10 bg-[#151515] p-5"
+              className="rounded-[28px] border border-[var(--border-color)]/10 bg-[var(--primary-color)] p-5"
             >
 
               <div className="flex items-start justify-between">
@@ -171,11 +171,11 @@ export default function OfferEnginePage() {
                   className={`rounded-full px-4 py-1 text-sm font-bold ${
                     item.status ===
                     "Active"
-                      ? "bg-[var(--success-color)]/20 text-green-400"
+                      ? "bg-[var(--success-color)]/20 text-[var(--success-color)]"
                       : item.status ===
                         "Scheduled"
-                      ? "bg-[var(--warning-color)]/20 text-yellow-400"
-                      : "bg-[var(--danger-color)]/20 text-red-400"
+                      ? "bg-[var(--warning-color)]/20 text-[var(--warning-color)]"
+                      : "bg-[var(--danger-color)]/20 text-[var(--danger-color)]"
                   }`}
                 >
 
@@ -189,7 +189,7 @@ export default function OfferEnginePage() {
 
                 <div className="flex items-center gap-3">
 
-                  <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-yellow-400 text-[var(--text-color)]">
+                  <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-[var(--warning-color)] text-[var(--text-color)]">
 
                     <BadgePercent size={20} />
 
@@ -213,7 +213,7 @@ export default function OfferEnginePage() {
 
                 </div>
 
-                <button className="rounded-2xl bg-yellow-400 px-5 py-2 font-bold text-[var(--text-color)]">
+                <button className="rounded-2xl bg-[var(--warning-color)] px-5 py-2 font-bold text-[var(--text-color)]">
 
                   Manage
 
@@ -230,7 +230,7 @@ export default function OfferEnginePage() {
 
       {/* AI SECTION */}
 
-      <div className="mt-6 rounded-[30px] bg-gradient-to-r from-yellow-400 to-orange-500 p-6 text-[var(--text-color)]">
+      <div className="mt-6 rounded-[30px] bg-gradient-to-r from-[var(--primary-color)] to-[var(--primary-color)] p-6 text-[var(--text-color)]">
 
         <div className="flex items-center gap-3">
 
@@ -274,9 +274,9 @@ function StatCard({
 
   return (
 
-    <div className="rounded-[28px] border border-white/10 bg-[#151515] p-5">
+    <div className="rounded-[28px] border border-[var(--border-color)]/10 bg-[var(--primary-color)] p-5">
 
-      <div className="flex h-14 w-14 items-center justify-center rounded-2xl bg-yellow-400 text-[var(--text-color)]">
+      <div className="flex h-14 w-14 items-center justify-center rounded-2xl bg-[var(--warning-color)] text-[var(--text-color)]">
 
         {icon}
 

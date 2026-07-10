@@ -211,7 +211,7 @@ export default function NotificationsPage() {
 
   return (
 
-    <main className="min-h-screen bg-[#0b0b0b] p-4 text-[var(--button-text-color)]">
+    <main className="min-h-screen bg-[var(--primary-color)] p-4 text-[var(--button-text-color)]">
 
       {/* HEADER */}
 
@@ -232,7 +232,7 @@ export default function NotificationsPage() {
         <button
           onClick={createNotification}
           disabled={creating}
-          className="flex items-center gap-2 rounded-2xl bg-violet-600 px-5 py-3 font-bold"
+          className="flex items-center gap-2 rounded-2xl bg-[var(--primary-color)] px-5 py-3 font-bold"
         >
 
           <Plus size={18} />
@@ -245,7 +245,7 @@ export default function NotificationsPage() {
 
       {/* CREATE */}
 
-      <div className="mb-6 rounded-[30px] border border-white/10 bg-[#151515] p-5">
+      <div className="mb-6 rounded-[30px] border border-[var(--border-color)]/10 bg-[var(--primary-color)] p-5">
 
         <div className="space-y-4">
 
@@ -258,7 +258,7 @@ export default function NotificationsPage() {
                 e.target.value
               )
             }
-            className="w-full rounded-2xl border border-white/10 bg-[#1e1e1e] px-4 py-3 outline-none"
+            className="w-full rounded-2xl border border-[var(--border-color)]/10 bg-[var(--primary-color)] px-4 py-3 outline-none"
           />
 
           <textarea
@@ -270,7 +270,7 @@ export default function NotificationsPage() {
               )
             }
             rows={4}
-            className="w-full rounded-2xl border border-white/10 bg-[#1e1e1e] px-4 py-3 outline-none"
+            className="w-full rounded-2xl border border-[var(--border-color)]/10 bg-[var(--primary-color)] px-4 py-3 outline-none"
           />
 
           <input
@@ -282,7 +282,7 @@ export default function NotificationsPage() {
                 e.target.value
               )
             }
-            className="w-full rounded-2xl border border-white/10 bg-[#1e1e1e] px-4 py-3 outline-none"
+            className="w-full rounded-2xl border border-[var(--border-color)]/10 bg-[var(--primary-color)] px-4 py-3 outline-none"
           />
 
         </div>
@@ -298,16 +298,16 @@ export default function NotificationsPage() {
 
             <div
               key={item.id}
-              className="overflow-hidden rounded-[30px] border border-white/10 bg-[#151515]"
+              className="overflow-hidden rounded-[30px] border border-[var(--border-color)]/10 bg-[var(--primary-color)]"
             >
 
               {/* TOP */}
 
-              <div className="flex items-center justify-between border-b border-white/10 p-5">
+              <div className="flex items-center justify-between border-b border-[var(--border-color)]/10 p-5">
 
                 <div className="flex items-center gap-4">
 
-                  <div className="flex h-16 w-16 items-center justify-center rounded-2xl bg-violet-600">
+                  <div className="flex h-16 w-16 items-center justify-center rounded-2xl bg-[var(--primary-color)]">
 
                     <Bell size={28} />
 
@@ -365,7 +365,7 @@ export default function NotificationsPage() {
                       e.target.value
                     )
                   }
-                  className="w-full rounded-2xl border border-white/10 bg-[#1e1e1e] px-4 py-3 outline-none"
+                  className="w-full rounded-2xl border border-[var(--border-color)]/10 bg-[var(--primary-color)] px-4 py-3 outline-none"
                 />
 
                 <textarea
@@ -378,7 +378,7 @@ export default function NotificationsPage() {
                     )
                   }
                   rows={4}
-                  className="w-full rounded-2xl border border-white/10 bg-[#1e1e1e] px-4 py-3 outline-none"
+                  className="w-full rounded-2xl border border-[var(--border-color)]/10 bg-[var(--primary-color)] px-4 py-3 outline-none"
                 />
 
                 <input
@@ -393,12 +393,12 @@ export default function NotificationsPage() {
                       e.target.value
                     )
                   }
-                  className="w-full rounded-2xl border border-white/10 bg-[#1e1e1e] px-4 py-3 outline-none"
+                  className="w-full rounded-2xl border border-[var(--border-color)]/10 bg-[var(--primary-color)] px-4 py-3 outline-none"
                 />
 
                 {/* LIVE PREVIEW */}
 
-                <div className="rounded-[30px] bg-gradient-to-r from-violet-600 to-fuchsia-500 p-5">
+                <div className="rounded-[30px] bg-gradient-to-r from-[var(--primary-color)] to-[var(--primary-color)] p-5">
 
                   <div className="flex gap-4">
 

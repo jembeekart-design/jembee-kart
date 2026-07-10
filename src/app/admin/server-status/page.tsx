@@ -44,7 +44,7 @@ export default function ServerStatusPage() {
 
   return (
 
-    <main className="min-h-screen bg-[#0b0b0b] p-4 text-[var(--button-text-color)]">
+    <main className="min-h-screen bg-[var(--primary-color)] p-4 text-[var(--button-text-color)]">
 
       {/* HEADER */}
 
@@ -52,7 +52,7 @@ export default function ServerStatusPage() {
 
         <div className="flex items-center gap-4">
 
-          <div className="flex h-16 w-16 items-center justify-center rounded-[28px] bg-lime-500">
+          <div className="flex h-16 w-16 items-center justify-center rounded-[28px] bg-[var(--success-color)]">
 
             <Server
               size={30}
@@ -75,7 +75,7 @@ export default function ServerStatusPage() {
 
         </div>
 
-        <button className="flex items-center gap-2 rounded-2xl bg-lime-500 px-5 py-3 font-bold text-[var(--text-color)]">
+        <button className="flex items-center gap-2 rounded-2xl bg-[var(--success-color)] px-5 py-3 font-bold text-[var(--text-color)]">
 
           <RefreshCw size={18} />
 
@@ -127,7 +127,7 @@ export default function ServerStatusPage() {
 
             <div
               key={index}
-              className="rounded-[28px] border border-white/10 bg-[#151515] p-5"
+              className="rounded-[28px] border border-[var(--border-color)]/10 bg-[var(--primary-color)] p-5"
             >
 
               <div className="flex flex-col gap-5 lg:flex-row lg:items-center lg:justify-between">
@@ -169,8 +169,8 @@ export default function ServerStatusPage() {
                     className={`rounded-full px-4 py-1 text-sm font-bold ${
                       item.status ===
                       "Online"
-                        ? "bg-[var(--success-color)]/20 text-green-400"
-                        : "bg-[var(--warning-color)]/20 text-yellow-400"
+                        ? "bg-[var(--success-color)]/20 text-[var(--success-color)]"
+                        : "bg-[var(--warning-color)]/20 text-[var(--warning-color)]"
                     }`}
                   >
 
@@ -215,7 +215,7 @@ export default function ServerStatusPage() {
 
       {/* ALERTS */}
 
-      <div className="mt-6 rounded-[30px] bg-gradient-to-r from-lime-500 to-green-600 p-6 text-[var(--text-color)]">
+      <div className="mt-6 rounded-[30px] bg-gradient-to-r from-[var(--primary-color)] to-[var(--primary-color)] p-6 text-[var(--text-color)]">
 
         <div className="flex items-center gap-3">
 
@@ -239,22 +239,22 @@ export default function ServerStatusPage() {
 
       {/* STATUS */}
 
-      <div className="mt-6 rounded-[28px] border border-green-500/20 bg-[var(--success-color)]/10 p-5">
+      <div className="mt-6 rounded-[28px] border border-[var(--success-color)]/20 bg-[var(--success-color)]/10 p-5">
 
         <div className="flex items-start gap-4">
 
           <CheckCircle2
             size={24}
-            className="text-green-400"
+            className="text-[var(--success-color)]"
           />
 
           <div>
 
-            <h3 className="text-xl font-black text-green-400">
+            <h3 className="text-xl font-black text-[var(--success-color)]">
               Servers Operational
             </h3>
 
-            <p className="mt-2 text-sm text-gray-300">
+            <p className="mt-2 text-sm text-[var(--text-color)]">
 
               All critical infrastructure systems
               are currently online and stable.
@@ -269,22 +269,22 @@ export default function ServerStatusPage() {
 
       {/* WARNING */}
 
-      <div className="mt-6 rounded-[28px] border border-yellow-500/20 bg-[var(--warning-color)]/10 p-5">
+      <div className="mt-6 rounded-[28px] border border-[var(--warning-color)]/20 bg-[var(--warning-color)]/10 p-5">
 
         <div className="flex items-start gap-4">
 
           <AlertTriangle
             size={24}
-            className="text-yellow-400"
+            className="text-[var(--warning-color)]"
           />
 
           <div>
 
-            <h3 className="text-xl font-black text-yellow-400">
+            <h3 className="text-xl font-black text-[var(--warning-color)]">
               Storage Usage Warning
             </h3>
 
-            <p className="mt-2 text-sm text-gray-300">
+            <p className="mt-2 text-sm text-[var(--text-color)]">
 
               Storage Server is approaching high
               usage capacity. Cleanup recommended.
@@ -314,9 +314,9 @@ function StatCard({
 
   return (
 
-    <div className="rounded-[28px] border border-white/10 bg-[#151515] p-5">
+    <div className="rounded-[28px] border border-[var(--border-color)]/10 bg-[var(--primary-color)] p-5">
 
-      <div className="flex h-14 w-14 items-center justify-center rounded-2xl bg-lime-500 text-[var(--text-color)]">
+      <div className="flex h-14 w-14 items-center justify-center rounded-2xl bg-[var(--success-color)] text-[var(--text-color)]">
 
         {icon}
 
@@ -347,9 +347,9 @@ function InfoCard({
 
   return (
 
-    <div className="rounded-[28px] border border-white/10 bg-[#151515] p-5">
+    <div className="rounded-[28px] border border-[var(--border-color)]/10 bg-[var(--primary-color)] p-5">
 
-      <div className="flex h-14 w-14 items-center justify-center rounded-2xl bg-lime-500 text-[var(--text-color)]">
+      <div className="flex h-14 w-14 items-center justify-center rounded-2xl bg-[var(--success-color)] text-[var(--text-color)]">
 
         {icon}
 

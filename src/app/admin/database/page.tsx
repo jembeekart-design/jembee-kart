@@ -98,7 +98,7 @@ useEffect(() => {
 }, [router]);
   return (
 
-    <main className="min-h-screen bg-[#0b0b0b] p-4 text-[var(--button-text-color)]">
+    <main className="min-h-screen bg-[var(--primary-color)] p-4 text-[var(--button-text-color)]">
 
       {/* HEADER */}
 
@@ -128,7 +128,7 @@ useEffect(() => {
 
         <button
           onClick={refreshDatabase}
-          className="flex items-center gap-2 rounded-2xl bg-cyan-500 px-5 py-3 text-sm font-bold"
+          className="flex items-center gap-2 rounded-2xl bg-[var(--primary-color)] px-5 py-3 text-sm font-bold"
         >
 
           <RefreshCcw size={18} />
@@ -143,11 +143,11 @@ useEffect(() => {
 
       <div className="grid grid-cols-3 gap-4">
 
-        <div className="rounded-[30px] bg-[#151515] p-5">
+        <div className="rounded-[30px] bg-[var(--primary-color)] p-5">
 
           <Database
             size={28}
-            className="text-cyan-400"
+            className="text-[var(--primary-color)]"
           />
 
           <p className="mt-4 text-sm text-[var(--muted-text-color)]">
@@ -160,11 +160,11 @@ useEffect(() => {
 
         </div>
 
-        <div className="rounded-[30px] bg-[#151515] p-5">
+        <div className="rounded-[30px] bg-[var(--primary-color)] p-5">
 
           <HardDrive
             size={28}
-            className="text-pink-400"
+            className="text-[var(--primary-color)]"
           />
 
           <p className="mt-4 text-sm text-[var(--muted-text-color)]">
@@ -177,11 +177,11 @@ useEffect(() => {
 
         </div>
 
-        <div className="rounded-[30px] bg-[#151515] p-5">
+        <div className="rounded-[30px] bg-[var(--primary-color)] p-5">
 
           <CheckCircle
             size={28}
-            className="text-green-400"
+            className="text-[var(--success-color)]"
           />
 
           <p className="mt-4 text-sm text-[var(--muted-text-color)]">
@@ -202,7 +202,7 @@ useEffect(() => {
 
         <button
           onClick={exportDatabase}
-          className="rounded-[30px] bg-gradient-to-r from-cyan-500 to-blue-600 p-6 text-left"
+          className="rounded-[30px] bg-gradient-to-r from-[var(--primary-color)] to-[var(--primary-color)] p-6 text-left"
         >
 
           <Download size={32} />
@@ -219,7 +219,7 @@ useEffect(() => {
 
         <button
           onClick={importDatabase}
-          className="rounded-[30px] bg-gradient-to-r from-violet-600 to-fuchsia-600 p-6 text-left"
+          className="rounded-[30px] bg-gradient-to-r from-[var(--primary-color)] to-[var(--primary-color)] p-6 text-left"
         >
 
           <Upload size={32} />
@@ -245,7 +245,7 @@ useEffect(() => {
 
             <div
               key={item.id}
-              className="rounded-[30px] bg-[#151515] p-5"
+              className="rounded-[30px] bg-[var(--primary-color)] p-5"
             >
 
               <div className="flex items-center justify-between gap-4">
@@ -300,7 +300,7 @@ useEffect(() => {
 
       {/* WARNING */}
 
-      <div className="mt-6 rounded-[30px] bg-gradient-to-r from-yellow-500 to-orange-500 p-6 text-[var(--text-color)]">
+      <div className="mt-6 rounded-[30px] bg-gradient-to-r from-[var(--primary-color)] to-[var(--primary-color)] p-6 text-[var(--text-color)]">
 
         <div className="flex items-center gap-3">
 

@@ -33,12 +33,12 @@ export default function OrderDetailsPage() {
   const currentStepIndex = steps.indexOf(status);
 
   const getStatusColor = (s: string) => ({
-    'placed': 'theme-primary-bg', 'processing': 'bg-orange-500', 
-    'shipped': 'bg-purple-500', 'delivered': 'bg-[var(--success-color)]', 'cancelled': 'bg-[var(--danger-color)]'
+    'placed': 'theme-primary-bg', 'processing': 'bg-[var(--warning-color)]', 
+    'shipped': 'bg-[var(--primary-color)]', 'delivered': 'bg-[var(--success-color)]', 'cancelled': 'bg-[var(--danger-color)]'
   }[s?.toLowerCase()] || 'bg-[var(--background-color)]0');
 
   return (
-    <main className="min-h-screen bg-[#f8f9fe] pb-24">
+    <main className="min-h-screen bg-[var(--primary-color)] pb-24">
       <div className="sticky top-0 bg-[var(--card-color)] p-4 flex items-center gap-4 shadow-sm z-20">
         <button onClick={() => router.back()} className="p-2 bg-[var(--background-color)] rounded-full"><ArrowLeft size={20}/></button>
         <h1 className="font-black text-lg">Order #{order.orderNumber}</h1>
@@ -46,7 +46,7 @@ export default function OrderDetailsPage() {
 
       <div className="p-4 space-y-4">
         {/* HERO CARD - SCHEMA FIXED */}
-        <div className="bg-gradient-to-r from-indigo-600 to-violet-600 p-6 rounded-3xl text-[var(--button-text-color)] shadow-lg">
+        <div className="bg-gradient-to-r from-[var(--primary-color)] to-[var(--primary-color)] p-6 rounded-3xl text-[var(--button-text-color)] shadow-lg">
           <div className="flex justify-between items-start">
              <div>
                 <p className="opacity-80 text-[10px] font-bold uppercase">Placed: {order?.placedAt?.seconds ? new Date(order.placedAt.seconds * 1000).toLocaleDateString() : 'N/A'}</p>
@@ -79,7 +79,7 @@ export default function OrderDetailsPage() {
           <div className="flex-1">
             <h2 className="font-bold text-sm">{order.productTitle}</h2>
             <p className="text-[10px] font-bold text-[var(--muted-text-color)]">Qty: {order.quantity} | Price: ₹{order.productPrice}</p>
-            <p className="text-sm font-black text-indigo-600 mt-1">Total: ₹{order.quantity * order.productPrice}</p>
+            <p className="text-sm font-black text-[var(--primary-color)] mt-1">Total: ₹{order.quantity * order.productPrice}</p>
           </div>
         </div>
 
@@ -92,7 +92,7 @@ export default function OrderDetailsPage() {
 
         {/* DELIVERY ADDRESS - SCHEMA FIXED */}
         <div className="bg-[var(--card-color)] p-5 rounded-3xl border border-[var(--border-color)]">
-           <h3 className="font-black text-sm mb-3 flex items-center gap-2 text-indigo-600"><MapPin size={16}/> Delivery Address</h3>
+           <h3 className="font-black text-sm mb-3 flex items-center gap-2 text-[var(--primary-color)]"><MapPin size={16}/> Delivery Address</h3>
            <p className="font-bold">{order.shippingAddress?.fullName}</p>
            <p className="text-sm text-[var(--muted-text-color)]">{order.shippingAddress?.address}, {order.shippingAddress?.city}, {order.shippingAddress?.state} - {order.shippingAddress?.pincode}</p>
            <p className="text-sm font-bold flex items-center gap-2 mt-2"><Phone size={14}/> {order.shippingAddress?.mobile}</p>
@@ -100,13 +100,13 @@ export default function OrderDetailsPage() {
 
         {/* ACTIONS */}
         <div className="grid grid-cols-2 gap-3">
-           <Link href={`/track-order/${id}`} className="bg-indigo-600 text-[var(--button-text-color)] p-4 rounded-2xl font-bold text-xs flex items-center justify-center gap-2"><Truck size={16}/> Track</Link>
+           <Link href={`/track-order/${id}`} className="bg-[var(--primary-color)] text-[var(--button-text-color)] p-4 rounded-2xl font-bold text-xs flex items-center justify-center gap-2"><Truck size={16}/> Track</Link>
            <button className="bg-[var(--card-color)] p-4 rounded-2xl font-bold text-xs flex items-center justify-center gap-2 border"><FileText size={16}/> Invoice</button>
            {["placed", "processing"].includes(status) && (
-             <button onClick={handleCancel} className="bg-red-50 text-[var(--danger-color)] p-4 rounded-2xl font-bold text-xs flex items-center justify-center gap-2"><XCircle size={16}/> Cancel Order</button>
+             <button onClick={handleCancel} className="bg-[var(--danger-color)] text-[var(--danger-color)] p-4 rounded-2xl font-bold text-xs flex items-center justify-center gap-2"><XCircle size={16}/> Cancel Order</button>
            )}
            {status === "delivered" && order.exchangeEligible && (
-             <button className="bg-green-50 text-[var(--success-color)] p-4 rounded-2xl font-bold text-xs flex items-center justify-center gap-2"><RotateCcw size={16}/> Return</button>
+             <button className="bg-[var(--success-color)] text-[var(--success-color)] p-4 rounded-2xl font-bold text-xs flex items-center justify-center gap-2"><RotateCcw size={16}/> Return</button>
            )}
         </div>
       </div>
