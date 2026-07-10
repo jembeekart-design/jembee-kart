@@ -51,6 +51,7 @@ const DEFAULT_THEME: Theme = {
   buttonStyle: "filled",
   buttonSize: "md",
   buttonHoverEffect: "scale",
+  buttonIconPosition: "left",
   animationStyle: "fade",
 };
 
