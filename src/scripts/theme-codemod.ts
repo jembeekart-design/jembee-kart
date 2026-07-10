@@ -4,47 +4,7 @@ import path from "path";
 const ROOT = path.join(process.cwd(), "src");
 
 const replacements: Record<string, string> = {};
-  // Background
-  "bg-[var(--background-color)]": "bg-[var(--background-color)]",
-  "bg-[var(--card-color)]": "bg-[var(--card-color)]",
-  "bg-[var(--background-color)]": "bg-[var(--background-color)]",
-  "bg-[var(--card-color)]": "bg-[var(--card-color)]",
 
-  // Text
-  "text-[var(--text-color)]": "text-[var(--text-color)]",
-  "text-[var(--button-text-color)]": "text-[var(--button-text-color)]",
-  "text-[var(--muted-text-color)]": "text-[var(--muted-text-color)]",
-  "text-[var(--muted-text-color)]": "text-[var(--muted-text-color)]",
-  "text-[var(--muted-text-color)]": "text-[var(--muted-text-color)]",
-  "text-[var(--text-color)]": "text-[var(--text-color)]",
-  "text-[var(--text-color)]": "text-[var(--text-color)]",
-  "text-[var(--text-color)]": "text-[var(--text-color)]",
-
-  // Border
-  "border-[var(--border-color)]": "border-[var(--border-color)]",
-  "border-[var(--border-color)]": "border-[var(--border-color)]",
-  "border-[var(--border-color)]": "border-[var(--border-color)]",
-  "border-[var(--border-color)]": "border-[var(--border-color)]",
-
-  // Primary
-  "bg-[var(--primary-color)]": "bg-[var(--primary-color)]",
-  "bg-[var(--primary-color)]": "bg-[var(--primary-color)]",
-  "text-[var(--primary-color)]": "text-[var(--primary-color)]",
-  "text-[var(--primary-color)]": "text-[var(--primary-color)]",
-
-  // Success
-  "bg-[var(--success-color)]": "bg-[var(--success-color)]",
-  "text-[var(--success-color)]": "text-[var(--success-color)]",
-
-  // Danger
-  "bg-[var(--danger-color)]": "bg-[var(--danger-color)]",
-  "text-[var(--danger-color)]": "text-[var(--danger-color)]",
-  "text-[var(--danger-color)]": "text-[var(--danger-color)]",
-
-  // Warning
-  "bg-[var(--warning-color)]": "bg-[var(--warning-color)]",
-  "text-[var(--warning-color)]": "text-[var(--warning-color)]",
-};
 
 function walk(dir: string) {
   for (const file of fs.readdirSync(dir)) {
