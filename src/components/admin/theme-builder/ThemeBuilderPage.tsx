@@ -15,22 +15,32 @@ export default function ThemeBuilderPage() {
   const [historyIndex, setHistoryIndex] = useState(0);
   const [saving, setSaving] = useState(false);
 
-  // 1. Live Sync
+  // 1. Live Sync Debugging
   useEffect(() => {
+    console.log("Local Theme updated, syncing with Context:", localTheme);
     setTheme(localTheme);
   }, [localTheme, setTheme]);
 
-  // 2. Firebase Save Logic
+  // 2. Firebase Save Logic with Debugging
   async function saveTheme() {
     setSaving(true);
+    console.log("Starting save process...");
+    console.log("Data to be saved:", JSON.stringify(localTheme, null, 2));
+
     try {
-      await setDoc(doc(db, "admin_settings", "customize"), localTheme, { merge: true });
-      alert("Theme Saved!");
+      const themeRef = doc(db, "admin_settings", "customize");
+      console.log("Firestore reference created:", themeRef.path);
+
+      await setDoc(themeRef, localTheme, { merge: true });
+      
+      console.log("Firestore setDoc successful!");
+      alert("Theme Saved Successfully!");
     } catch (e) {
-      console.error(e);
-      alert("Error saving theme");
+      console.error("CRITICAL ERROR during saveTheme:", e);
+      alert("Failed to Save. Check Console for details.");
     } finally {
       setSaving(false);
+      console.log("Save process finished.");
     }
   }
 
@@ -45,13 +55,22 @@ export default function ThemeBuilderPage() {
          <ThemeActions 
             saving={saving} 
             onSave={saveTheme} 
-            onReset={() => setLocalTheme(theme)}
-            onApply={() => setTheme(localTheme)}
+            onReset={() => {
+              console.log("Resetting theme to initial...");
+              setLocalTheme(theme);
+            }}
+            onApply={() => {
+              console.log("Applying live theme...");
+              setTheme(localTheme);
+            }}
             onGenerateAI={() => alert("AI feature coming soon!")}
             onUndo={() => {
               if(historyIndex > 0) {
+                console.log("Undoing, history index:", historyIndex - 1);
                 setHistoryIndex(prev => prev - 1);
                 setLocalTheme(history[historyIndex - 1]);
+              } else {
+                console.warn("No more history to undo!");
               }
             }}
          />
