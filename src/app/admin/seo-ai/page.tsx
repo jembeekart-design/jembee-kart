@@ -99,13 +99,13 @@ export default function SEOAIPage() {
 
   return (
 
-    <main className="min-h-screen bg-[#0b0b0b] p-4 text-[var(--button-text-color)]">
+    <main className="min-h-screen bg-[var(--primary-color)] p-4 text-[var(--button-text-color)]">
 
       {/* HEADER */}
 
       <div className="mb-8 flex items-center gap-4">
 
-        <div className="flex h-16 w-16 items-center justify-center rounded-[24px] bg-emerald-500">
+        <div className="flex h-16 w-16 items-center justify-center rounded-[24px] bg-[var(--success-color)]">
 
           <Search size={30} />
 
@@ -127,7 +127,7 @@ export default function SEOAIPage() {
 
       {/* FORM */}
 
-      <div className="rounded-[30px] bg-[#151515] p-5">
+      <div className="rounded-[30px] bg-[var(--primary-color)] p-5">
 
         <div className="grid grid-cols-1 gap-5 md:grid-cols-2">
 
@@ -160,7 +160,7 @@ export default function SEOAIPage() {
         <button
           onClick={generateSEO}
           disabled={loading}
-          className="mt-6 flex items-center gap-2 rounded-2xl bg-emerald-500 px-6 py-4 font-bold text-[var(--text-color)]"
+          className="mt-6 flex items-center gap-2 rounded-2xl bg-[var(--success-color)] px-6 py-4 font-bold text-[var(--text-color)]"
         >
 
           <Wand2 size={20} />
@@ -229,7 +229,7 @@ export default function SEOAIPage() {
 
       {/* PREVIEW */}
 
-      <div className="mt-6 rounded-[30px] bg-gradient-to-r from-emerald-500 to-green-500 p-6">
+      <div className="mt-6 rounded-[30px] bg-gradient-to-r from-[var(--primary-color)] to-[var(--primary-color)] p-6">
 
         <h2 className="text-3xl font-black text-[var(--text-color)]">
           Google Preview
@@ -237,14 +237,14 @@ export default function SEOAIPage() {
 
         <div className="mt-6 rounded-2xl bg-[var(--card-color)] p-5 text-[var(--text-color)]">
 
-          <h3 className="text-2xl font-bold text-blue-700">
+          <h3 className="text-2xl font-bold text-[var(--primary-color)]">
 
             {seoTitle ||
               "SEO Title Preview"}
 
           </h3>
 
-          <p className="mt-2 text-sm text-green-700">
+          <p className="mt-2 text-sm text-[var(--success-color)]">
 
             www.jembeekart.com
 
@@ -325,7 +325,7 @@ function OutputCard({
 
   return (
 
-    <div className="rounded-[30px] bg-[#151515] p-5">
+    <div className="rounded-[30px] bg-[var(--primary-color)] p-5">
 
       <div className="mb-4 flex items-center justify-between">
 
@@ -341,7 +341,7 @@ function OutputCard({
 
         <button
           onClick={onCopy}
-          className="flex items-center gap-2 rounded-2xl bg-emerald-500 px-4 py-2 font-bold text-[var(--text-color)]"
+          className="flex items-center gap-2 rounded-2xl bg-[var(--success-color)] px-4 py-2 font-bold text-[var(--text-color)]"
         >
 
           <Copy size={18} />
@@ -354,7 +354,7 @@ function OutputCard({
 
       <div className="rounded-2xl bg-[var(--card-color)]/30 p-4">
 
-        <p className="whitespace-pre-wrap text-gray-300">
+        <p className="whitespace-pre-wrap text-[var(--text-color)]">
 
           {value}
 

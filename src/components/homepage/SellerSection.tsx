@@ -43,21 +43,21 @@ export default function SellerSection({
 
   resellerButtonText = "Join Now",
 
-  sellerBackgroundColor = "#4f46e5",
+  sellerBackgroundColor = "var(--primary-color)",
 
-  sellerGradientColor = "#7e22ce",
+  sellerGradientColor = "var(--primary-color)",
 
-  resellerBackgroundColor = "#ec4899",
+  resellerBackgroundColor = "var(--primary-color)",
 
-  resellerGradientColor = "#e11d48",
+  resellerGradientColor = "var(--primary-color)",
 
-  sellerButtonColor = "#ffffff",
+  sellerButtonColor = "var(--primary-color)",
 
-  sellerButtonTextColor = "#4338ca",
+  sellerButtonTextColor = "var(--primary-color)",
 
-  resellerButtonColor = "#ffffff",
+  resellerButtonColor = "var(--primary-color)",
 
-  resellerButtonTextColor = "#e11d48"
+  resellerButtonTextColor = "var(--primary-color)"
 }: SellerSectionProps) {
   return (
     <section className="w-full overflow-hidden px-3 py-5 md:px-6">

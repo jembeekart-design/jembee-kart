@@ -28,7 +28,7 @@ export default function TeamBusinessPage() {
 
   return (
 
-    <main className="min-h-screen bg-slate-100 p-4">
+    <main className="min-h-screen bg-[var(--card-color)] p-4">
 
       <h1 className="mb-5 text-3xl font-black">
         Team Business
@@ -39,8 +39,8 @@ export default function TeamBusinessPage() {
           mb-5
           rounded-3xl
           bg-gradient-to-r
-          from-violet-600
-          to-fuchsia-500
+          from-[var(--primary-color)]
+          to-[var(--primary-color)]
           p-6
           text-[var(--button-text-color)]
         "
@@ -78,7 +78,7 @@ export default function TeamBusinessPage() {
                 {member.name}
               </h2>
 
-              <p className="text-lg font-black text-purple-600">
+              <p className="text-lg font-black text-[var(--primary-color)]">
 
                 ₹{member.business}
 

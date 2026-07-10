@@ -114,7 +114,7 @@ export default function FirestorePage() {
 
   return (
 
-    <main className="min-h-screen bg-[#0b0b0b] p-4 text-[var(--button-text-color)]">
+    <main className="min-h-screen bg-[var(--primary-color)] p-4 text-[var(--button-text-color)]">
 
       {/* HEADER */}
 
@@ -122,7 +122,7 @@ export default function FirestorePage() {
 
         <div className="flex items-center gap-4">
 
-          <div className="flex h-16 w-16 items-center justify-center rounded-[24px] bg-orange-500">
+          <div className="flex h-16 w-16 items-center justify-center rounded-[24px] bg-[var(--warning-color)]">
 
             <Flame size={30} />
 
@@ -144,7 +144,7 @@ export default function FirestorePage() {
 
         <button
           onClick={refreshFirestore}
-          className="flex items-center gap-2 rounded-2xl bg-cyan-500 px-5 py-3 text-sm font-bold"
+          className="flex items-center gap-2 rounded-2xl bg-[var(--primary-color)] px-5 py-3 text-sm font-bold"
         >
 
           <RefreshCcw size={18} />
@@ -159,11 +159,11 @@ export default function FirestorePage() {
 
       <div className="grid grid-cols-3 gap-4">
 
-        <div className="rounded-[30px] bg-[#151515] p-5">
+        <div className="rounded-[30px] bg-[var(--primary-color)] p-5">
 
           <Database
             size={28}
-            className="text-cyan-400"
+            className="text-[var(--primary-color)]"
           />
 
           <p className="mt-4 text-sm text-[var(--muted-text-color)]">
@@ -176,11 +176,11 @@ export default function FirestorePage() {
 
         </div>
 
-        <div className="rounded-[30px] bg-[#151515] p-5">
+        <div className="rounded-[30px] bg-[var(--primary-color)] p-5">
 
           <Layers3
             size={28}
-            className="text-violet-400"
+            className="text-[var(--primary-color)]"
           />
 
           <p className="mt-4 text-sm text-[var(--muted-text-color)]">
@@ -193,11 +193,11 @@ export default function FirestorePage() {
 
         </div>
 
-        <div className="rounded-[30px] bg-[#151515] p-5">
+        <div className="rounded-[30px] bg-[var(--primary-color)] p-5">
 
           <CheckCircle
             size={28}
-            className="text-green-400"
+            className="text-[var(--success-color)]"
           />
 
           <p className="mt-4 text-sm text-[var(--muted-text-color)]">
@@ -214,7 +214,7 @@ export default function FirestorePage() {
 
       {/* CREATE COLLECTION */}
 
-      <div className="mt-6 rounded-[30px] bg-[#151515] p-5">
+      <div className="mt-6 rounded-[30px] bg-[var(--primary-color)] p-5">
 
         <h2 className="text-2xl font-black">
           Create Collection
@@ -245,7 +245,7 @@ export default function FirestorePage() {
 
           <button
             onClick={createCollection}
-            className="flex items-center gap-2 rounded-2xl bg-orange-500 px-5 py-3 font-bold"
+            className="flex items-center gap-2 rounded-2xl bg-[var(--warning-color)] px-5 py-3 font-bold"
           >
 
             <Plus size={18} />
@@ -267,7 +267,7 @@ export default function FirestorePage() {
 
             <div
               key={item.id}
-              className="rounded-[30px] bg-[#151515] p-5"
+              className="rounded-[30px] bg-[var(--primary-color)] p-5"
             >
 
               <div className="flex items-center justify-between gap-4">
@@ -318,7 +318,7 @@ export default function FirestorePage() {
 
       {/* FOOTER */}
 
-      <div className="mt-6 rounded-[30px] bg-gradient-to-r from-orange-500 to-red-500 p-6">
+      <div className="mt-6 rounded-[30px] bg-gradient-to-r from-[var(--primary-color)] to-[var(--primary-color)] p-6">
 
         <h2 className="text-3xl font-black">
           Firebase Firestore

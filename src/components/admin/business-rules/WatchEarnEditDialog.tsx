@@ -43,7 +43,7 @@ export default function WatchEarnEditDialog({
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-[var(--card-color)]/60">
 
-      <div className="w-full max-w-lg rounded-xl bg-slate-900 p-6">
+      <div className="w-full max-w-lg rounded-xl bg-[var(--card-color)] p-6">
 
         <h2 className="text-xl font-bold">
           Edit Watch &amp; Earn Rules
@@ -63,7 +63,7 @@ export default function WatchEarnEditDialog({
         rewardPerVideo: Number(e.target.value),
       })
     }
-    className="w-full rounded-lg border border-slate-700 bg-slate-800 p-3"
+    className="w-full rounded-lg border border-[var(--border-color)] bg-[var(--card-color)] p-3"
   />
 </div>
 
@@ -81,7 +81,7 @@ export default function WatchEarnEditDialog({
                   videosRequired: Number(e.target.value),
                 })
               }
-              className="mt-1 w-full rounded-lg border border-slate-700 bg-slate-800 p-2"
+              className="mt-1 w-full rounded-lg border border-[var(--border-color)] bg-[var(--card-color)] p-2"
             />
           </div>
 
@@ -99,7 +99,7 @@ export default function WatchEarnEditDialog({
                   rewardAmount: Number(e.target.value),
                 })
               }
-              className="mt-1 w-full rounded-lg border border-slate-700 bg-slate-800 p-2"
+              className="mt-1 w-full rounded-lg border border-[var(--border-color)] bg-[var(--card-color)] p-2"
             />
           </div>
 
@@ -117,7 +117,7 @@ export default function WatchEarnEditDialog({
                   requiredSales: Number(e.target.value),
                 })
               }
-              className="mt-1 w-full rounded-lg border border-slate-700 bg-slate-800 p-2"
+              className="mt-1 w-full rounded-lg border border-[var(--border-color)] bg-[var(--card-color)] p-2"
             />
           </div>
 
@@ -135,7 +135,7 @@ export default function WatchEarnEditDialog({
                   maxActiveCycles: Number(e.target.value),
                 })
               }
-              className="mt-1 w-full rounded-lg border border-slate-700 bg-slate-800 p-2"
+              className="mt-1 w-full rounded-lg border border-[var(--border-color)] bg-[var(--card-color)] p-2"
             />
           </div>
 
@@ -153,7 +153,7 @@ export default function WatchEarnEditDialog({
                   minimumWatchDuration: Number(e.target.value),
                 })
               }
-              className="mt-1 w-full rounded-lg border border-slate-700 bg-slate-800 p-2"
+              className="mt-1 w-full rounded-lg border border-[var(--border-color)] bg-[var(--card-color)] p-2"
             />
           </div>
 
@@ -163,7 +163,7 @@ export default function WatchEarnEditDialog({
 
           <button
             onClick={onClose}
-            className="rounded-lg border border-slate-700 px-4 py-2"
+            className="rounded-lg border border-[var(--border-color)] px-4 py-2"
           >
             Cancel
           </button>
@@ -171,7 +171,7 @@ export default function WatchEarnEditDialog({
           <button
             onClick={handleSave}
             disabled={saving}
-            className="rounded-lg bg-indigo-600 px-4 py-2 hover:bg-indigo-700 disabled:opacity-50"
+            className="rounded-lg bg-[var(--primary-color)] px-4 py-2 hover:bg-[var(--primary-color)] disabled:opacity-50"
           >
             {saving ? "Saving..." : "Save"}
           </button>

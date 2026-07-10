@@ -25,7 +25,7 @@ export default function MarketingPage() {
       title: "Push Notifications",
       desc: "Send instant app notifications",
       icon: Bell,
-      color: "bg-cyan-500"
+      color: "bg-[var(--primary-color)]"
     },
 
     {
@@ -39,14 +39,14 @@ export default function MarketingPage() {
       title: "Email Marketing",
       desc: "Send promotional emails",
       icon: Mail,
-      color: "bg-pink-500"
+      color: "bg-[var(--primary-color)]"
     },
 
     {
       title: "Flash Sale",
       desc: "Create limited time sales",
       icon: TrendingUp,
-      color: "bg-orange-500"
+      color: "bg-[var(--warning-color)]"
     },
 
     {
@@ -67,13 +67,13 @@ export default function MarketingPage() {
 
   return (
 
-    <main className="min-h-screen bg-[#050505] p-4 text-[var(--button-text-color)]">
+    <main className="min-h-screen bg-[var(--primary-color)] p-4 text-[var(--button-text-color)]">
 
       {/* HEADER */}
 
       <div className="mb-8 flex items-center gap-4">
 
-        <div className="flex h-16 w-16 items-center justify-center rounded-[30px] bg-pink-500">
+        <div className="flex h-16 w-16 items-center justify-center rounded-[30px] bg-[var(--primary-color)]">
 
           <Megaphone
             size={30}
@@ -143,7 +143,7 @@ export default function MarketingPage() {
 
             <div
               key={index}
-              className="rounded-[30px] border border-white/10 bg-[#111111] p-6"
+              className="rounded-[30px] border border-[var(--border-color)]/10 bg-[var(--primary-color)] p-6"
             >
 
               <div className={`flex h-16 w-16 items-center justify-center rounded-2xl ${item.color}`}>
@@ -185,7 +185,7 @@ export default function MarketingPage() {
 
       {/* AI MARKETING */}
 
-      <div className="mt-6 rounded-[30px] bg-gradient-to-r from-pink-500 to-violet-600 p-6">
+      <div className="mt-6 rounded-[30px] bg-gradient-to-r from-[var(--primary-color)] to-[var(--primary-color)] p-6">
 
         <div className="flex items-center gap-3">
 
@@ -229,11 +229,11 @@ export default function MarketingPage() {
 
       {/* LIVE CAMPAIGNS */}
 
-      <div className="mt-6 rounded-[30px] border border-white/10 bg-[#111111] p-6">
+      <div className="mt-6 rounded-[30px] border border-[var(--border-color)]/10 bg-[var(--primary-color)] p-6">
 
         <div className="flex items-center gap-3">
 
-          <Radio className="text-pink-400" />
+          <Radio className="text-[var(--primary-color)]" />
 
           <h2 className="text-2xl font-black">
 
@@ -277,9 +277,9 @@ function StatsCard({
 
   return (
 
-    <div className="rounded-[30px] border border-white/10 bg-[#111111] p-5">
+    <div className="rounded-[30px] border border-[var(--border-color)]/10 bg-[var(--primary-color)] p-5">
 
-      <div className="flex h-14 w-14 items-center justify-center rounded-2xl bg-pink-500">
+      <div className="flex h-14 w-14 items-center justify-center rounded-2xl bg-[var(--primary-color)]">
 
         <Icon
           size={24}

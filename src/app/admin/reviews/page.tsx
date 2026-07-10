@@ -153,7 +153,7 @@ export default function ReviewsPage() {
 
   return (
 
-    <main className="min-h-screen bg-[#0b0b0b] p-4 text-[var(--button-text-color)]">
+    <main className="min-h-screen bg-[var(--primary-color)] p-4 text-[var(--button-text-color)]">
 
       {/* HEADER */}
 
@@ -178,12 +178,12 @@ export default function ReviewsPage() {
 
             <div
               key={review.id}
-              className="overflow-hidden rounded-[30px] border border-white/10 bg-[#151515]"
+              className="overflow-hidden rounded-[30px] border border-[var(--border-color)]/10 bg-[var(--primary-color)]"
             >
 
               {/* TOP */}
 
-              <div className="flex items-center justify-between border-b border-white/10 p-4">
+              <div className="flex items-center justify-between border-b border-[var(--border-color)]/10 p-4">
 
                 <div className="flex items-center gap-4">
 
@@ -281,7 +281,7 @@ export default function ReviewsPage() {
                         e.target.value
                       )
                     }
-                    className="w-full rounded-2xl border border-white/10 bg-[#1e1e1e] px-4 py-3 outline-none"
+                    className="w-full rounded-2xl border border-[var(--border-color)]/10 bg-[var(--primary-color)] px-4 py-3 outline-none"
                   />
 
                 </div>
@@ -306,7 +306,7 @@ export default function ReviewsPage() {
                         e.target.value
                       )
                     }
-                    className="w-full rounded-2xl border border-white/10 bg-[#1e1e1e] px-4 py-3 outline-none"
+                    className="w-full rounded-2xl border border-[var(--border-color)]/10 bg-[var(--primary-color)] px-4 py-3 outline-none"
                   />
 
                 </div>
@@ -328,7 +328,7 @@ export default function ReviewsPage() {
                         e.target.value
                       )
                     }
-                    className="min-h-[120px] w-full rounded-2xl border border-white/10 bg-[#1e1e1e] px-4 py-3 outline-none"
+                    className="min-h-[120px] w-full rounded-2xl border border-[var(--border-color)]/10 bg-[var(--primary-color)] px-4 py-3 outline-none"
                   />
 
                 </div>
@@ -357,14 +357,14 @@ export default function ReviewsPage() {
                         )
                       )
                     }
-                    className="w-full rounded-2xl border border-white/10 bg-[#1e1e1e] px-4 py-3 outline-none"
+                    className="w-full rounded-2xl border border-[var(--border-color)]/10 bg-[var(--primary-color)] px-4 py-3 outline-none"
                   />
 
                 </div>
 
                 {/* LIVE PREVIEW */}
 
-                <div className="rounded-[28px] bg-gradient-to-br from-violet-600 to-fuchsia-600 p-5">
+                <div className="rounded-[28px] bg-gradient-to-br from-[var(--primary-color)] to-[var(--primary-color)] p-5">
 
                   <div className="flex items-center gap-4">
 

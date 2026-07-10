@@ -41,13 +41,13 @@ export default function CreatorEconomyEditDialog({
 
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-[var(--card-color)]/60 p-4">
 
-      <div className="w-full max-w-lg rounded-xl bg-slate-900 p-6">
+      <div className="w-full max-w-lg rounded-xl bg-[var(--card-color)] p-6">
 
         <h2 className="text-3xl font-bold">
           Edit Creator Economy
         </h2>
 
-        <p className="mt-2 text-slate-400">
+        <p className="mt-2 text-[var(--text-color)]">
           Configure creator revenue sharing.
         </p>
 
@@ -70,7 +70,7 @@ export default function CreatorEconomyEditDialog({
                   ),
                 })
               }
-              className="mt-1 w-full rounded-lg border border-slate-700 bg-slate-800 px-4 py-3"
+              className="mt-1 w-full rounded-lg border border-[var(--border-color)] bg-[var(--card-color)] px-4 py-3"
             />
 
           </div>
@@ -92,7 +92,7 @@ export default function CreatorEconomyEditDialog({
                   ),
                 })
               }
-              className="mt-1 w-full rounded-lg border border-slate-700 bg-slate-800 px-4 py-3"
+              className="mt-1 w-full rounded-lg border border-[var(--border-color)] bg-[var(--card-color)] px-4 py-3"
             />
 
           </div>
@@ -114,7 +114,7 @@ export default function CreatorEconomyEditDialog({
                   ),
                 })
               }
-              className="mt-1 w-full rounded-lg border border-slate-700 bg-slate-800 px-4 py-3"
+              className="mt-1 w-full rounded-lg border border-[var(--border-color)] bg-[var(--card-color)] px-4 py-3"
             />
 
           </div>
@@ -125,14 +125,14 @@ export default function CreatorEconomyEditDialog({
 
           <button
             onClick={onClose}
-            className="rounded-lg border border-slate-700 px-6 py-3"
+            className="rounded-lg border border-[var(--border-color)] px-6 py-3"
           >
             Cancel
           </button>
 
           <button
             onClick={handleSave}
-            className="rounded-lg bg-indigo-600 px-6 py-3 hover:bg-indigo-700"
+            className="rounded-lg bg-[var(--primary-color)] px-6 py-3 hover:bg-[var(--primary-color)]"
           >
             Save
           </button>

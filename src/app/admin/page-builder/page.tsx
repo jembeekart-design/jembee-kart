@@ -229,7 +229,7 @@ export default function PageBuilderPage() {
 
   return (
 
-    <main className="min-h-screen bg-[#0b0b0b] p-4 text-[var(--button-text-color)]">
+    <main className="min-h-screen bg-[var(--primary-color)] p-4 text-[var(--button-text-color)]">
 
       {/* HEADER */}
 
@@ -237,7 +237,7 @@ export default function PageBuilderPage() {
 
         <div className="flex items-center gap-4">
 
-          <div className="flex h-16 w-16 items-center justify-center rounded-[24px] bg-pink-500">
+          <div className="flex h-16 w-16 items-center justify-center rounded-[24px] bg-[var(--primary-color)]">
 
             <LayoutDashboard size={30} />
 
@@ -260,7 +260,7 @@ export default function PageBuilderPage() {
         <button
           onClick={saveSections}
           disabled={saving}
-          className="flex items-center gap-2 rounded-2xl bg-pink-500 px-5 py-3 font-bold text-[var(--text-color)]"
+          className="flex items-center gap-2 rounded-2xl bg-[var(--primary-color)] px-5 py-3 font-bold text-[var(--text-color)]"
         >
 
           <Save size={18} />
@@ -285,7 +285,7 @@ export default function PageBuilderPage() {
 
             <div
               key={section.id}
-              className="rounded-[30px] bg-[#151515] p-5"
+              className="rounded-[30px] bg-[var(--primary-color)] p-5"
             >
 
               <div className="flex flex-col gap-5 md:flex-row md:items-center md:justify-between">
@@ -382,7 +382,7 @@ export default function PageBuilderPage() {
 
       {/* LIVE PREVIEW */}
 
-      <div className="mt-6 rounded-[30px] bg-gradient-to-r from-pink-500 to-fuchsia-500 p-6">
+      <div className="mt-6 rounded-[30px] bg-gradient-to-r from-[var(--primary-color)] to-[var(--primary-color)] p-6">
 
         <h2 className="text-3xl font-black text-[var(--text-color)]">
           Live Homepage Structure

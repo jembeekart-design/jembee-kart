@@ -119,7 +119,7 @@ export default function CategorySection() {
           mb-5
           text-3xl
           font-black
-          text-slate-900
+          text-[var(--text-color)]
         "
       >
         Shop By Category

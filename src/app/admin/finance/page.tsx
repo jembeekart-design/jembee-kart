@@ -15,13 +15,13 @@ export default function FinancePage() {
 
   return (
 
-    <main className="min-h-screen bg-[#0b0b0b] p-4 text-[var(--button-text-color)]">
+    <main className="min-h-screen bg-[var(--primary-color)] p-4 text-[var(--button-text-color)]">
 
       {/* HEADER */}
 
       <div className="mb-8 flex items-center gap-4">
 
-        <div className="flex h-16 w-16 items-center justify-center rounded-[24px] bg-green-600">
+        <div className="flex h-16 w-16 items-center justify-center rounded-[24px] bg-[var(--success-color)]">
 
           <Wallet size={30} />
 
@@ -45,11 +45,11 @@ export default function FinancePage() {
 
       <div className="grid grid-cols-2 gap-4">
 
-        <div className="rounded-[30px] bg-[#151515] p-5">
+        <div className="rounded-[30px] bg-[var(--primary-color)] p-5">
 
           <DollarSign
             size={28}
-            className="text-green-400"
+            className="text-[var(--success-color)]"
           />
 
           <p className="mt-5 text-sm text-[var(--muted-text-color)]">
@@ -62,7 +62,7 @@ export default function FinancePage() {
 
         </div>
 
-        <div className="rounded-[30px] bg-[#151515] p-5">
+        <div className="rounded-[30px] bg-[var(--primary-color)] p-5">
 
           <CreditCard
             size={28}
@@ -83,7 +83,7 @@ export default function FinancePage() {
 
       {/* TRANSACTIONS */}
 
-      <div className="mt-6 rounded-[30px] bg-[#151515] p-5">
+      <div className="mt-6 rounded-[30px] bg-[var(--primary-color)] p-5">
 
         <div className="mb-5 flex items-center justify-between">
 
@@ -93,7 +93,7 @@ export default function FinancePage() {
 
           <TrendingUp
             size={22}
-            className="text-green-400"
+            className="text-[var(--success-color)]"
           />
 
         </div>
@@ -108,7 +108,7 @@ export default function FinancePage() {
 
                 <ArrowDownCircle
                   size={22}
-                  className="text-green-400"
+                  className="text-[var(--success-color)]"
                 />
 
               </div>
@@ -127,7 +127,7 @@ export default function FinancePage() {
 
             </div>
 
-            <h3 className="text-lg font-black text-green-400">
+            <h3 className="text-lg font-black text-[var(--success-color)]">
               +₹2,500
             </h3>
 
@@ -141,7 +141,7 @@ export default function FinancePage() {
 
                 <ArrowUpCircle
                   size={22}
-                  className="text-red-400"
+                  className="text-[var(--danger-color)]"
                 />
 
               </div>
@@ -160,7 +160,7 @@ export default function FinancePage() {
 
             </div>
 
-            <h3 className="text-lg font-black text-red-400">
+            <h3 className="text-lg font-black text-[var(--danger-color)]">
               -₹1,200
             </h3>
 
@@ -172,7 +172,7 @@ export default function FinancePage() {
 
       {/* SUMMARY */}
 
-      <div className="mt-6 rounded-[30px] bg-gradient-to-r from-green-600 to-emerald-500 p-6">
+      <div className="mt-6 rounded-[30px] bg-gradient-to-r from-[var(--primary-color)] to-[var(--primary-color)] p-6">
 
         <h2 className="text-3xl font-black">
           Finance Summary

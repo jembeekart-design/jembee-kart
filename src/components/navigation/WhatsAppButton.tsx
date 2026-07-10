@@ -27,13 +27,13 @@ export default function WhatsAppButton() {
         text-[var(--button-text-color)]
 
         shadow-2xl
-        shadow-green-500/40
+        shadow
 
         transition-all
         duration-300
 
         hover:scale-110
-        hover:bg-green-600
+        hover:bg-[var(--success-color)]
 
         active:scale-95
       "

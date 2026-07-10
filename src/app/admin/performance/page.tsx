@@ -44,7 +44,7 @@ export default function PerformancePage() {
 
   return (
 
-    <main className="min-h-screen bg-[#0b0b0b] p-4 text-[var(--button-text-color)]">
+    <main className="min-h-screen bg-[var(--primary-color)] p-4 text-[var(--button-text-color)]">
 
       {/* HEADER */}
 
@@ -52,7 +52,7 @@ export default function PerformancePage() {
 
         <div className="flex items-center gap-4">
 
-          <div className="flex h-16 w-16 items-center justify-center rounded-[28px] bg-cyan-500">
+          <div className="flex h-16 w-16 items-center justify-center rounded-[28px] bg-[var(--primary-color)]">
 
             <Gauge
               size={30}
@@ -75,7 +75,7 @@ export default function PerformancePage() {
 
         </div>
 
-        <button className="flex items-center gap-2 rounded-2xl bg-cyan-500 px-5 py-3 font-bold text-[var(--text-color)]">
+        <button className="flex items-center gap-2 rounded-2xl bg-[var(--primary-color)] px-5 py-3 font-bold text-[var(--text-color)]">
 
           <RefreshCw size={18} />
 
@@ -117,13 +117,13 @@ export default function PerformancePage() {
 
       {/* PERFORMANCE CHART */}
 
-      <div className="mt-6 rounded-[30px] border border-white/10 bg-[#151515] p-6">
+      <div className="mt-6 rounded-[30px] border border-[var(--border-color)]/10 bg-[var(--primary-color)] p-6">
 
         <div className="flex items-center gap-3">
 
           <BarChart3
             size={24}
-            className="text-cyan-400"
+            className="text-[var(--primary-color)]"
           />
 
           <h2 className="text-2xl font-black">
@@ -134,17 +134,17 @@ export default function PerformancePage() {
 
         <div className="mt-8 flex items-end gap-3">
 
-          <div className="h-[120px] w-full rounded-t-2xl bg-cyan-500/40" />
+          <div className="h-[120px] w-full rounded-t-2xl bg-[var(--primary-color)]/40" />
 
-          <div className="h-[180px] w-full rounded-t-2xl bg-cyan-500/60" />
+          <div className="h-[180px] w-full rounded-t-2xl bg-[var(--primary-color)]/60" />
 
-          <div className="h-[140px] w-full rounded-t-2xl bg-cyan-500/30" />
+          <div className="h-[140px] w-full rounded-t-2xl bg-[var(--primary-color)]/30" />
 
-          <div className="h-[240px] w-full rounded-t-2xl bg-cyan-500" />
+          <div className="h-[240px] w-full rounded-t-2xl bg-[var(--primary-color)]" />
 
-          <div className="h-[190px] w-full rounded-t-2xl bg-cyan-500/70" />
+          <div className="h-[190px] w-full rounded-t-2xl bg-[var(--primary-color)]/70" />
 
-          <div className="h-[220px] w-full rounded-t-2xl bg-cyan-500/50" />
+          <div className="h-[220px] w-full rounded-t-2xl bg-[var(--primary-color)]/50" />
 
         </div>
 
@@ -162,7 +162,7 @@ export default function PerformancePage() {
 
             <div
               key={index}
-              className="rounded-[28px] border border-white/10 bg-[#151515] p-5"
+              className="rounded-[28px] border border-[var(--border-color)]/10 bg-[var(--primary-color)] p-5"
             >
 
               <div className="flex flex-col gap-5 lg:flex-row lg:items-center lg:justify-between">
@@ -204,8 +204,8 @@ export default function PerformancePage() {
                     className={`rounded-full px-4 py-1 text-sm font-bold ${
                       item.status ===
                       "Healthy"
-                        ? "bg-[var(--success-color)]/20 text-green-400"
-                        : "bg-[var(--warning-color)]/20 text-yellow-400"
+                        ? "bg-[var(--success-color)]/20 text-[var(--success-color)]"
+                        : "bg-[var(--warning-color)]/20 text-[var(--warning-color)]"
                     }`}
                   >
 
@@ -250,7 +250,7 @@ export default function PerformancePage() {
 
       {/* AI SECTION */}
 
-      <div className="mt-6 rounded-[30px] bg-gradient-to-r from-cyan-500 to-blue-600 p-6 text-[var(--text-color)]">
+      <div className="mt-6 rounded-[30px] bg-gradient-to-r from-[var(--primary-color)] to-[var(--primary-color)] p-6 text-[var(--text-color)]">
 
         <div className="flex items-center gap-3">
 
@@ -279,22 +279,22 @@ export default function PerformancePage() {
 
       {/* SECURITY */}
 
-      <div className="mt-6 rounded-[28px] border border-green-500/20 bg-[var(--success-color)]/10 p-5">
+      <div className="mt-6 rounded-[28px] border border-[var(--success-color)]/20 bg-[var(--success-color)]/10 p-5">
 
         <div className="flex items-start gap-4">
 
           <ShieldCheck
             size={24}
-            className="text-green-400"
+            className="text-[var(--success-color)]"
           />
 
           <div>
 
-            <h3 className="text-xl font-black text-green-400">
+            <h3 className="text-xl font-black text-[var(--success-color)]">
               System Stable
             </h3>
 
-            <p className="mt-2 text-sm text-gray-300">
+            <p className="mt-2 text-sm text-[var(--text-color)]">
 
               All core services are operational and
               performing within safe limits.
@@ -324,9 +324,9 @@ function StatCard({
 
   return (
 
-    <div className="rounded-[28px] border border-white/10 bg-[#151515] p-5">
+    <div className="rounded-[28px] border border-[var(--border-color)]/10 bg-[var(--primary-color)] p-5">
 
-      <div className="flex h-14 w-14 items-center justify-center rounded-2xl bg-cyan-500 text-[var(--text-color)]">
+      <div className="flex h-14 w-14 items-center justify-center rounded-2xl bg-[var(--primary-color)] text-[var(--text-color)]">
 
         {icon}
 
@@ -357,9 +357,9 @@ function InfoCard({
 
   return (
 
-    <div className="rounded-[28px] border border-white/10 bg-[#151515] p-5">
+    <div className="rounded-[28px] border border-[var(--border-color)]/10 bg-[var(--primary-color)] p-5">
 
-      <div className="flex h-14 w-14 items-center justify-center rounded-2xl bg-cyan-500 text-[var(--text-color)]">
+      <div className="flex h-14 w-14 items-center justify-center rounded-2xl bg-[var(--primary-color)] text-[var(--text-color)]">
 
         {icon}
 

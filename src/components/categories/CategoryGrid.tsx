@@ -38,9 +38,9 @@ export default function CategoryGrid({
       image:
         "https://images.unsplash.com/photo-1445205170230-053b83016050",
 
-      backgroundColor: "#2563eb",
+      backgroundColor: "var(--primary-color)",
 
-      textColor: "#ffffff",
+      textColor: "var(--primary-color)",
 
       borderRadius: "40px",
 
@@ -61,9 +61,9 @@ export default function CategoryGrid({
       image:
         "https://images.unsplash.com/photo-1511707171634-5f897ff02aa9",
 
-      backgroundColor: "#7c3aed",
+      backgroundColor: "var(--primary-color)",
 
-      textColor: "#ffffff",
+      textColor: "var(--primary-color)",
 
       borderRadius: "40px",
 
@@ -84,9 +84,9 @@ export default function CategoryGrid({
       image:
         "https://images.unsplash.com/photo-1542291026-7eec264c27ff",
 
-      backgroundColor: "#db2777",
+      backgroundColor: "var(--primary-color)",
 
-      textColor: "#ffffff",
+      textColor: "var(--primary-color)",
 
       borderRadius: "40px",
 
@@ -107,9 +107,9 @@ export default function CategoryGrid({
       image:
         "https://images.unsplash.com/photo-1522335789203-aabd1fc54bc9",
 
-      backgroundColor: "#ea580c",
+      backgroundColor: "var(--primary-color)",
 
-      textColor: "#ffffff",
+      textColor: "var(--primary-color)",
 
       borderRadius: "40px",
 

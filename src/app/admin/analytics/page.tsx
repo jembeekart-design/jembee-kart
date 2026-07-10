@@ -37,13 +37,13 @@ export default function AnalyticsPage() {
 
   return (
 
-    <main className="min-h-screen bg-[#0b0b0b] p-4 text-[var(--button-text-color)]">
+    <main className="min-h-screen bg-[var(--primary-color)] p-4 text-[var(--button-text-color)]">
 
       {/* HEADER */}
 
       <div className="mb-8 flex items-center gap-3">
 
-        <div className="flex h-16 w-16 items-center justify-center rounded-[24px] bg-violet-600">
+        <div className="flex h-16 w-16 items-center justify-center rounded-[24px] bg-[var(--primary-color)]">
 
           <BarChart3 size={30} />
 
@@ -76,10 +76,10 @@ export default function AnalyticsPage() {
 
             <div
               key={index}
-              className="rounded-[30px] border border-white/10 bg-[#151515] p-5"
+              className="rounded-[30px] border border-[var(--border-color)]/10 bg-[var(--primary-color)] p-5"
             >
 
-              <div className="flex h-14 w-14 items-center justify-center rounded-2xl bg-violet-600">
+              <div className="flex h-14 w-14 items-center justify-center rounded-2xl bg-[var(--primary-color)]">
 
                 <Icon size={24} />
 
@@ -102,7 +102,7 @@ export default function AnalyticsPage() {
 
       {/* SALES CARD */}
 
-      <div className="mt-6 rounded-[30px] bg-gradient-to-r from-violet-600 to-fuchsia-500 p-6">
+      <div className="mt-6 rounded-[30px] bg-gradient-to-r from-[var(--primary-color)] to-[var(--primary-color)] p-6">
 
         <h2 className="text-3xl font-black">
           Monthly Revenue
@@ -132,7 +132,7 @@ export default function AnalyticsPage() {
 
       {/* RECENT ACTIVITY */}
 
-      <div className="mt-6 rounded-[30px] border border-white/10 bg-[#151515] p-6">
+      <div className="mt-6 rounded-[30px] border border-[var(--border-color)]/10 bg-[var(--primary-color)] p-6">
 
         <h2 className="text-2xl font-black">
           Recent Activity
@@ -142,7 +142,7 @@ export default function AnalyticsPage() {
 
           <ActivityItem
             title="New Order Received"
-            subtitle="Order #1024 placed"
+            subtitle="Order var(--primary-color) placed"
           />
 
           <ActivityItem

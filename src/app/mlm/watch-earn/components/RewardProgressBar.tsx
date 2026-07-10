@@ -62,21 +62,21 @@ export default function RewardProgressBar({
     active: {
       label: "Watching",
       className:
-        "theme-primary-bg/20 text-blue-300 border theme-primary-border/20",
+        "theme-primary-bg/20 text-[var(--primary-color)] border theme-primary-border/20",
     },
 
     pending: {
       label:
         "Waiting For Sales",
       className:
-        "bg-[var(--warning-color)]/20 text-yellow-300 border border-yellow-400/20",
+        "bg-[var(--warning-color)]/20 text-[var(--warning-color)] border border-[var(--warning-color)]/20",
     },
 
     completed: {
       label:
         "Reward Unlocked",
       className:
-        "bg-[var(--success-color)]/20 text-green-300 border border-green-400/20",
+        "bg-[var(--success-color)]/20 text-[var(--success-color)] border border-[var(--success-color)]/20",
     },
   };
 
@@ -98,7 +98,7 @@ export default function RewardProgressBar({
           overflow-hidden
           rounded-3xl
           border
-          border-white/10
+          border-[var(--border-color)]/10
           bg-[var(--card-color)]/60
           p-4
           backdrop-blur-xl
@@ -147,9 +147,9 @@ export default function RewardProgressBar({
               py-1
               text-xs
               font-bold
-              text-yellow-300
+              text-[var(--warning-color)]
               border
-              border-yellow-500/20
+              border-[var(--warning-color)]/20
             "
           >
             ₹{lockedReward} Locked
@@ -163,7 +163,7 @@ export default function RewardProgressBar({
             mb-4
             rounded-2xl
             border
-            border-white/10
+            border-[var(--border-color)]/10
             bg-[var(--card-color)]/5
             p-3
           "
@@ -188,7 +188,7 @@ export default function RewardProgressBar({
               className="
                 text-sm
                 font-black
-                text-yellow-300
+                text-[var(--warning-color)]
               "
             >
               ₹{lockedReward}
@@ -231,7 +231,7 @@ export default function RewardProgressBar({
 
             <span
               className="
-                text-yellow-300
+                text-[var(--warning-color)]
                 font-bold
               "
             >
@@ -263,8 +263,8 @@ export default function RewardProgressBar({
                 h-full
                 rounded-full
                 bg-gradient-to-r
-                from-yellow-400
-                to-orange-500
+                from-[var(--primary-color)]
+                to-[var(--primary-color)]
               "
             />
           </div>
@@ -293,7 +293,7 @@ export default function RewardProgressBar({
 
             <span
               className="
-                text-green-300
+                text-[var(--success-color)]
                 font-bold
               "
             >
@@ -325,8 +325,8 @@ export default function RewardProgressBar({
                 h-full
                 rounded-full
                 bg-gradient-to-r
-                from-green-400
-                to-emerald-500
+                from-[var(--primary-color)]
+                to-[var(--primary-color)]
               "
             />
           </div>
@@ -423,9 +423,9 @@ export default function RewardProgressBar({
                 h-full
                 rounded-full
                 bg-gradient-to-r
-                from-yellow-400
-                via-orange-400
-                to-green-500
+                from-[var(--primary-color)]
+                via-[var(--primary-color)]
+                to-[var(--primary-color)]
               "
             />
           </div>

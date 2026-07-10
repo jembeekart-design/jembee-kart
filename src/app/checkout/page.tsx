@@ -117,10 +117,10 @@ productId = ${productId}
     setLoading(false);
   }
 };
-  if (dataLoading) return <div className="flex min-h-screen items-center justify-center"><Loader2 className="animate-spin text-purple-600" /></div>;
+  if (dataLoading) return <div className="flex min-h-screen items-center justify-center"><Loader2 className="animate-spin text-[var(--primary-color)]" /></div>;
 
   return (
-    <main className="min-h-screen bg-[#f8f9fe] pb-32 px-4 max-w-lg mx-auto font-sans">
+    <main className="min-h-screen bg-[var(--primary-color)] pb-32 px-4 max-w-lg mx-auto font-sans">
       {/* HEADER */}
       <div className="py-6 flex items-center justify-between">
         <div className="flex items-center gap-3">
@@ -131,13 +131,13 @@ productId = ${productId}
           </div>
         </div>
         <div className="flex items-center gap-1 bg-[var(--card-color)] px-3 py-1.5 rounded-full shadow-sm border border-[var(--border-color)]">
-          <ShieldCheck size={14} className="text-purple-600" />
+          <ShieldCheck size={14} className="text-[var(--primary-color)]" />
           <span className="text-[9px] font-bold text-[var(--text-color)] uppercase">100% Secure</span>
         </div>
       </div>
 
       {/* PRODUCT CARD */}
-      <div className="bg-[var(--card-color)] p-4 rounded-3xl mb-4 shadow-sm border border-gray-50 flex gap-4 relative">
+      <div className="bg-[var(--card-color)] p-4 rounded-3xl mb-4 shadow-sm border border-[var(--border-color)] flex gap-4 relative">
         <img
   src={product?.images?.[0] || "/placeholder.png"}
   className="w-20 h-20 rounded-2xl object-cover bg-[var(--background-color)]"
@@ -145,26 +145,26 @@ productId = ${productId}
         <div className="flex-1">
           <h3 className="font-bold text-[var(--text-color)] text-sm">{product?.title || "T Shirt"}</h3>
           <p className="text-[10px] text-[var(--muted-text-color)] font-semibold mt-0.5">Size: M • Color: Black</p>
-          <div className="bg-green-50 text-[var(--success-color)] text-[9px] font-bold px-2 py-0.5 rounded-md w-fit my-1.5">27% OFF</div>
+          <div className="bg-[var(--success-color)] text-[var(--success-color)] text-[9px] font-bold px-2 py-0.5 rounded-md w-fit my-1.5">27% OFF</div>
           <div className="flex items-baseline gap-2">
             <span className="text-[10px] line-through text-[var(--muted-text-color)] font-bold">₹1499</span>
             <span className="text-base font-extrabold">₹1099</span>
           </div>
         </div>
         <div className="absolute top-4 right-4 text-[10px] font-bold bg-[var(--background-color)] px-2.5 py-1 rounded-lg">Qty: 1</div>
-        <div className="absolute bottom-4 right-4 flex items-center gap-1 text-[9px] text-purple-600 font-bold">
+        <div className="absolute bottom-4 right-4 flex items-center gap-1 text-[9px] text-[var(--primary-color)] font-bold">
             <CheckCircle2 size={12}/> 7 Days Return
         </div>
       </div>
 
       {/* DELIVERY ADDRESS */}
-      <div className="bg-[var(--card-color)] p-5 rounded-3xl mb-4 shadow-sm border border-gray-50">
+      <div className="bg-[var(--card-color)] p-5 rounded-3xl mb-4 shadow-sm border border-[var(--border-color)]">
         <div className="flex justify-between items-center mb-4">
-          <h2 className="font-bold text-sm flex items-center gap-2 text-[var(--text-color)]"><MapPin size={16} className="text-purple-600"/> Delivery Address</h2>
-          <button className="text-purple-600 font-bold text-[10px]">Change Address {">"}</button>
+          <h2 className="font-bold text-sm flex items-center gap-2 text-[var(--text-color)]"><MapPin size={16} className="text-[var(--primary-color)]"/> Delivery Address</h2>
+          <button className="text-[var(--primary-color)] font-bold text-[10px]">Change Address {">"}</button>
         </div>
         <div className="flex gap-4">
-          <div className="bg-purple-50 p-3 rounded-2xl h-fit"><Home size={20} className="text-purple-600"/></div>
+          <div className="bg-[var(--primary-color)] p-3 rounded-2xl h-fit"><Home size={20} className="text-[var(--primary-color)]"/></div>
           <div className="text-xs text-[var(--muted-text-color)] leading-relaxed">
             <p className="font-bold text-[var(--text-color)] text-sm">{address?.fullName || "Md Alim Ansari"}</p>
             <p className="font-semibold text-[var(--muted-text-color)] mt-0.5">{address?.mobile || "7061369212"}</p>
@@ -174,14 +174,14 @@ productId = ${productId}
       </div>
 
       {/* PAYMENT METHOD */}
-      <div className="bg-[var(--card-color)] p-5 rounded-3xl mb-4 shadow-sm border border-gray-50">
-        <h2 className="font-bold text-sm mb-4 text-[var(--text-color)]"><CreditCard size={16} className="inline mr-2 text-purple-600"/> Payment Method</h2>
-        <div className="border-2 border-purple-600 bg-purple-50 p-4 rounded-2xl flex justify-between items-center mb-3">
+      <div className="bg-[var(--card-color)] p-5 rounded-3xl mb-4 shadow-sm border border-[var(--border-color)]">
+        <h2 className="font-bold text-sm mb-4 text-[var(--text-color)]"><CreditCard size={16} className="inline mr-2 text-[var(--primary-color)]"/> Payment Method</h2>
+        <div className="border-2 border-[var(--primary-color)] bg-[var(--primary-color)] p-4 rounded-2xl flex justify-between items-center mb-3">
           <div className="flex items-center gap-3">
-            <div className="w-5 h-5 border-2 border-purple-600 rounded-full flex items-center justify-center"><div className="w-2.5 h-2.5 bg-purple-600 rounded-full"></div></div>
+            <div className="w-5 h-5 border-2 border-[var(--primary-color)] rounded-full flex items-center justify-center"><div className="w-2.5 h-2.5 bg-[var(--primary-color)] rounded-full"></div></div>
             <span className="text-sm font-bold">Cash On Delivery (COD)</span>
           </div>
-          <span className="text-[9px] bg-green-100 text-green-700 px-2 py-1 rounded-md font-bold">Recommended</span>
+          <span className="text-[9px] bg-[var(--success-color)] text-[var(--success-color)] px-2 py-1 rounded-md font-bold">Recommended</span>
         </div>
         <div className="border border-[var(--border-color)] p-4 rounded-2xl flex justify-between items-center opacity-50">
             <span className="text-sm font-bold">UPI / Google Pay</span>
@@ -190,7 +190,7 @@ productId = ${productId}
       </div>
 
       {/* PRICE DETAILS */}
-      <div className="bg-[var(--card-color)] p-5 rounded-3xl border border-gray-50 shadow-sm mb-4">
+      <div className="bg-[var(--card-color)] p-5 rounded-3xl border border-[var(--border-color)] shadow-sm mb-4">
         <h2 className="font-bold text-sm mb-4 text-[var(--text-color)]">Price Details</h2>
         <div className="space-y-2.5 text-xs">
             <div className="flex justify-between text-[var(--muted-text-color)]"><span>MRP</span><span>₹1499</span></div>
@@ -199,12 +199,12 @@ productId = ${productId}
             <div className="border-t border-dashed my-2"></div>
             <div className="flex justify-between text-base font-extrabold text-[var(--text-color)] pt-1"><span>Total Payable</span><span>₹1099</span></div>
         </div>
-        <div className="mt-4 bg-green-50 text-[var(--success-color)] text-[10px] font-bold p-2.5 rounded-xl text-center">You save ₹400 on this order</div>
+        <div className="mt-4 bg-[var(--success-color)] text-[var(--success-color)] text-[10px] font-bold p-2.5 rounded-xl text-center">You save ₹400 on this order</div>
       </div>
 
       {/* EXPECTED DELIVERY */}
-      <div className="bg-[var(--card-color)] p-4 rounded-3xl border border-gray-50 shadow-sm mb-28 flex items-center gap-4">
-        <div className="bg-orange-50 p-3 rounded-2xl"><Truck className="text-orange-500" size={20} /></div>
+      <div className="bg-[var(--card-color)] p-4 rounded-3xl border border-[var(--border-color)] shadow-sm mb-28 flex items-center gap-4">
+        <div className="bg-[var(--warning-color)] p-3 rounded-2xl"><Truck className="text-[var(--warning-color)]" size={20} /></div>
         <div>
           <p className="text-[9px] font-extrabold text-[var(--muted-text-color)] uppercase tracking-widest">Expected Delivery</p>
           <p className="text-sm font-bold text-[var(--text-color)]">Between 24 - 26 May 2025</p>
@@ -213,7 +213,7 @@ productId = ${productId}
 
       {/* FIXED BUTTON */}
       <div className="fixed bottom-0 left-0 right-0 p-4 bg-[var(--card-color)] border-t border-[var(--border-color)] rounded-t-3xl shadow-[0_-5px_20px_rgba(0,0,0,0.05)]">
-        <button onClick={handlePlaceOrder} className="w-full bg-[#3b2bc4] text-[var(--button-text-color)] py-4 rounded-2xl font-bold text-lg shadow-lg shadow-purple-600/30">
+        <button onClick={handlePlaceOrder} className="w-full bg-[var(--primary-color)] text-[var(--button-text-color)] py-4 rounded-2xl font-bold text-lg shadow-lg shadow">
           {loading ? "Processing..." : "Place Order (COD)"}
         </button>
         <p className="text-center text-[10px] text-[var(--muted-text-color)] mt-3 font-semibold">Your information is safe with us</p>

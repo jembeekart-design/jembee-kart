@@ -40,7 +40,7 @@ export default function SecurityPage() {
 
   return (
 
-    <main className="min-h-screen bg-[#0b0b0b] p-4 text-[var(--button-text-color)]">
+    <main className="min-h-screen bg-[var(--primary-color)] p-4 text-[var(--button-text-color)]">
 
       {/* HEADER */}
 
@@ -87,13 +87,13 @@ export default function SecurityPage() {
 
         {/* ADMIN EMAIL */}
 
-        <div className="rounded-[30px] bg-[#151515] p-5">
+        <div className="rounded-[30px] bg-[var(--primary-color)] p-5">
 
           <div className="mb-5 flex items-center gap-3">
 
             <Lock
               size={24}
-              className="text-cyan-400"
+              className="text-[var(--primary-color)]"
             />
 
             <h2 className="text-2xl font-black">
@@ -110,20 +110,20 @@ export default function SecurityPage() {
                 e.target.value
               )
             }
-            className="w-full rounded-2xl border border-white/10 bg-[var(--card-color)] px-4 py-4 text-[var(--button-text-color)] outline-none"
+            className="w-full rounded-2xl border border-[var(--border-color)]/10 bg-[var(--card-color)] px-4 py-4 text-[var(--button-text-color)] outline-none"
           />
 
         </div>
 
         {/* PASSWORD */}
 
-        <div className="rounded-[30px] bg-[#151515] p-5">
+        <div className="rounded-[30px] bg-[var(--primary-color)] p-5">
 
           <div className="mb-5 flex items-center gap-3">
 
             <KeyRound
               size={24}
-              className="text-yellow-400"
+              className="text-[var(--warning-color)]"
             />
 
             <h2 className="text-2xl font-black">
@@ -147,7 +147,7 @@ export default function SecurityPage() {
                 )
               }
               placeholder="Enter new password"
-              className="w-full rounded-2xl border border-white/10 bg-[var(--card-color)] px-4 py-4 pr-14 text-[var(--button-text-color)] outline-none"
+              className="w-full rounded-2xl border border-[var(--border-color)]/10 bg-[var(--card-color)] px-4 py-4 pr-14 text-[var(--button-text-color)] outline-none"
             />
 
             <button
@@ -173,7 +173,7 @@ export default function SecurityPage() {
 
         {/* 2FA */}
 
-        <div className="rounded-[30px] bg-[#151515] p-5">
+        <div className="rounded-[30px] bg-[var(--primary-color)] p-5">
 
           <div className="flex items-center justify-between">
 
@@ -216,7 +216,7 @@ export default function SecurityPage() {
 
       {/* PREVIEW */}
 
-      <div className="mt-6 rounded-[30px] bg-gradient-to-r from-red-500 to-pink-500 p-6">
+      <div className="mt-6 rounded-[30px] bg-gradient-to-r from-[var(--primary-color)] to-[var(--primary-color)] p-6">
 
         <h2 className="text-3xl font-black">
           Security Overview

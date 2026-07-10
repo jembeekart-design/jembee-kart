@@ -125,31 +125,31 @@ export default function AccountPage() {
       title: "My Orders",
       icon: Package,
       href: "/orders",
-      color: "bg-indigo-100 text-indigo-600"
+      color: "bg-[var(--primary-color)] text-[var(--primary-color)]"
     },
     {
       title: "Wishlist",
       icon: Heart,
       href: "/wishlist",
-      color: "bg-pink-100 text-pink-600"
+      color: "bg-[var(--primary-color)] text-[var(--primary-color)]"
     },
     {
       title: "Saved Address",
       icon: MapPin,
       href: "/address",
-      color: "bg-orange-100 text-orange-600"
+      color: "bg-[var(--warning-color)] text-[var(--warning-color)]"
     },
     {
       title: "Affiliate Dashboard",
       icon: Gift,
       href: "/affiliate",
-      color: "bg-purple-100 text-purple-600"
+      color: "bg-[var(--primary-color)] text-[var(--primary-color)]"
     },
     {
       title: "Payment Methods",
       icon: CreditCard,
       href: "/payments",
-      color: "bg-green-100 text-[var(--success-color)]"
+      color: "bg-[var(--success-color)] text-[var(--success-color)]"
     },
     {
       title: "Account Settings",
@@ -164,9 +164,9 @@ export default function AccountPage() {
   ====================================================== */
   if (loading) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-[#f6f7fb]">
+      <div className="min-h-screen flex items-center justify-center bg-[var(--primary-color)]">
         <div className="text-center">
-          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-indigo-600 mx-auto"></div>
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-[var(--primary-color)] mx-auto"></div>
           <p className="mt-4 text-sm font-bold text-[var(--muted-text-color)]">Syncing Profile Details...</p>
         </div>
       </div>
@@ -174,7 +174,7 @@ export default function AccountPage() {
   }
 
   return (
-    <main className="min-h-screen overflow-x-hidden bg-[#f6f7fb] pb-32 pt-[115px] md:pt-[150px]">
+    <main className="min-h-screen overflow-x-hidden bg-[var(--primary-color)] pb-32 pt-[115px] md:pt-[150px]">
       <Header />
 
       {/* ======================================================
@@ -186,7 +186,7 @@ export default function AccountPage() {
             <h1 className="text-3xl font-black text-[var(--text-color)]">My Account</h1>
             <p className="mt-1 text-sm text-[var(--muted-text-color)]">Manage your profile & orders</p>
           </div>
-          <div className="flex h-14 w-14 items-center justify-center rounded-3xl bg-gradient-to-br from-indigo-600 to-purple-600 text-[var(--button-text-color)] shadow-lg">
+          <div className="flex h-14 w-14 items-center justify-center rounded-3xl bg-gradient-to-br from-[var(--primary-color)] to-[var(--primary-color)] text-[var(--button-text-color)] shadow-lg">
             <User size={26} />
           </div>
         </div>
@@ -196,11 +196,11 @@ export default function AccountPage() {
       PROFILE CARD
       ====================================================== */}
       <section className="mt-6 px-4">
-        <div className="overflow-hidden rounded-[35px] bg-gradient-to-br from-indigo-600 via-purple-600 to-pink-500 p-6 text-[var(--button-text-color)] shadow-2xl">
+        <div className="overflow-hidden rounded-[35px] bg-gradient-to-br from-[var(--primary-color)] via-[var(--primary-color)] to-[var(--primary-color)] p-6 text-[var(--button-text-color)] shadow-2xl">
           <div className="flex items-center gap-4">
             
             {/* AVATAR / PROFILE PIC */}
-            <div className="flex h-24 w-24 items-center justify-center rounded-full border-4 border-white/30 bg-[var(--card-color)]/20 overflow-hidden text-3xl font-black backdrop-blur-md">
+            <div className="flex h-24 w-24 items-center justify-center rounded-full border-4 border-[var(--border-color)]/30 bg-[var(--card-color)]/20 overflow-hidden text-3xl font-black backdrop-blur-md">
               {user?.photo ? (
                 <img src={user.photo} alt="User Avatar" className="w-full h-full object-cover" />
               ) : (
@@ -290,7 +290,7 @@ export default function AccountPage() {
       <section className="mt-6 px-4">
         <div className="rounded-[35px] bg-[var(--card-color)] p-6 shadow-sm">
           <div className="flex items-center gap-4">
-            <div className="flex h-16 w-16 items-center justify-center rounded-3xl bg-green-100 text-[var(--success-color)]">
+            <div className="flex h-16 w-16 items-center justify-center rounded-3xl bg-[var(--success-color)] text-[var(--success-color)]">
               <Shield size={30} />
             </div>
             <div>
@@ -307,7 +307,7 @@ export default function AccountPage() {
       <section className="mt-6 px-4">
         <button
           onClick={handleLogout}
-          className="flex w-full items-center justify-center gap-3 rounded-[30px] bg-[var(--danger-color)] py-5 text-sm font-black text-[var(--button-text-color)] shadow-xl shadow-red-500/20 transition-all duration-300 hover:scale-[1.02]"
+          className="flex w-full items-center justify-center gap-3 rounded-[30px] bg-[var(--danger-color)] py-5 text-sm font-black text-[var(--button-text-color)] shadow-xl shadow transition-all duration-300 hover:scale-[1.02]"
         >
           <LogOut size={20} />
           Logout

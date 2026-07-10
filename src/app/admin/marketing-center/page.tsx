@@ -47,7 +47,7 @@ export default function MarketingCenterPage() {
 
   return (
 
-    <main className="min-h-screen bg-[#050505] p-4 text-[var(--button-text-color)]">
+    <main className="min-h-screen bg-[var(--primary-color)] p-4 text-[var(--button-text-color)]">
 
       {/* HEADER */}
 
@@ -55,7 +55,7 @@ export default function MarketingCenterPage() {
 
         <div className="flex items-center gap-4">
 
-          <div className="flex h-16 w-16 items-center justify-center rounded-[30px] bg-pink-500">
+          <div className="flex h-16 w-16 items-center justify-center rounded-[30px] bg-[var(--primary-color)]">
 
             <Megaphone
               size={30}
@@ -83,7 +83,7 @@ export default function MarketingCenterPage() {
         </div>
 
         <button
-          className="rounded-2xl bg-pink-500 px-6 py-4 font-black text-[var(--text-color)]"
+          className="rounded-2xl bg-[var(--primary-color)] px-6 py-4 font-black text-[var(--text-color)]"
         >
 
           Create Campaign
@@ -170,11 +170,11 @@ export default function MarketingCenterPage() {
 
       {/* CAMPAIGNS */}
 
-      <div className="mt-6 rounded-[30px] border border-white/10 bg-[#111111] p-6">
+      <div className="mt-6 rounded-[30px] border border-[var(--border-color)]/10 bg-[var(--primary-color)] p-6">
 
         <div className="flex items-center gap-3">
 
-          <Sparkles className="text-pink-400" />
+          <Sparkles className="text-[var(--primary-color)]" />
 
           <h2 className="text-3xl font-black">
 
@@ -217,7 +217,7 @@ export default function MarketingCenterPage() {
 
                   </div>
 
-                  <div className="rounded-full bg-pink-500 px-4 py-2 text-sm font-black text-[var(--text-color)]">
+                  <div className="rounded-full bg-[var(--primary-color)] px-4 py-2 text-sm font-black text-[var(--text-color)]">
 
                     {item.status}
 
@@ -238,11 +238,11 @@ export default function MarketingCenterPage() {
 
       <div className="mt-6 grid grid-cols-1 gap-6 lg:grid-cols-2">
 
-        <div className="rounded-[30px] border border-white/10 bg-[#111111] p-6">
+        <div className="rounded-[30px] border border-[var(--border-color)]/10 bg-[var(--primary-color)] p-6">
 
           <div className="flex items-center gap-3">
 
-            <TrendingUp className="text-pink-400" />
+            <TrendingUp className="text-[var(--primary-color)]" />
 
             <h2 className="text-2xl font-black">
 
@@ -254,27 +254,27 @@ export default function MarketingCenterPage() {
 
           <div className="mt-6 flex items-end gap-3">
 
-            <div className="h-[100px] w-full rounded-t-2xl bg-pink-500/30" />
+            <div className="h-[100px] w-full rounded-t-2xl bg-[var(--primary-color)]/30" />
 
-            <div className="h-[180px] w-full rounded-t-2xl bg-pink-500/50" />
+            <div className="h-[180px] w-full rounded-t-2xl bg-[var(--primary-color)]/50" />
 
-            <div className="h-[130px] w-full rounded-t-2xl bg-pink-500/40" />
+            <div className="h-[130px] w-full rounded-t-2xl bg-[var(--primary-color)]/40" />
 
-            <div className="h-[240px] w-full rounded-t-2xl bg-pink-500" />
+            <div className="h-[240px] w-full rounded-t-2xl bg-[var(--primary-color)]" />
 
-            <div className="h-[170px] w-full rounded-t-2xl bg-pink-500/60" />
+            <div className="h-[170px] w-full rounded-t-2xl bg-[var(--primary-color)]/60" />
 
-            <div className="h-[220px] w-full rounded-t-2xl bg-pink-500/80" />
+            <div className="h-[220px] w-full rounded-t-2xl bg-[var(--primary-color)]/80" />
 
           </div>
 
         </div>
 
-        <div className="rounded-[30px] border border-white/10 bg-[#111111] p-6">
+        <div className="rounded-[30px] border border-[var(--border-color)]/10 bg-[var(--primary-color)] p-6">
 
           <div className="flex items-center gap-3">
 
-            <ShoppingBag className="text-pink-400" />
+            <ShoppingBag className="text-[var(--primary-color)]" />
 
             <h2 className="text-2xl font-black">
 
@@ -314,7 +314,7 @@ export default function MarketingCenterPage() {
 
       {/* SCHEDULE */}
 
-      <div className="mt-6 rounded-[30px] bg-gradient-to-r from-pink-500 to-fuchsia-600 p-6 text-[var(--text-color)]">
+      <div className="mt-6 rounded-[30px] bg-gradient-to-r from-[var(--primary-color)] to-[var(--primary-color)] p-6 text-[var(--text-color)]">
 
         <div className="flex items-center gap-3">
 
@@ -351,7 +351,7 @@ export default function MarketingCenterPage() {
       <div className="mt-6 flex flex-wrap gap-4">
 
         <button
-          className="flex items-center gap-2 rounded-2xl bg-pink-500 px-6 py-4 font-black text-[var(--text-color)]"
+          className="flex items-center gap-2 rounded-2xl bg-[var(--primary-color)] px-6 py-4 font-black text-[var(--text-color)]"
         >
 
           <Send size={20} />
@@ -361,7 +361,7 @@ export default function MarketingCenterPage() {
         </button>
 
         <button
-          className="flex items-center gap-2 rounded-2xl bg-cyan-500 px-6 py-4 font-black text-[var(--text-color)]"
+          className="flex items-center gap-2 rounded-2xl bg-[var(--primary-color)] px-6 py-4 font-black text-[var(--text-color)]"
         >
 
           <Bell size={20} />
@@ -395,9 +395,9 @@ function StatsCard({
 
   return (
 
-    <div className="rounded-[30px] border border-white/10 bg-[#111111] p-5">
+    <div className="rounded-[30px] border border-[var(--border-color)]/10 bg-[var(--primary-color)] p-5">
 
-      <div className="flex h-14 w-14 items-center justify-center rounded-2xl bg-pink-500">
+      <div className="flex h-14 w-14 items-center justify-center rounded-2xl bg-[var(--primary-color)]">
 
         <Icon
           size={24}
@@ -430,9 +430,9 @@ function ToolCard({
 
   return (
 
-    <div className="rounded-[26px] border border-white/10 bg-[#111111] p-5 transition-all duration-300 hover:scale-[1.03]">
+    <div className="rounded-[26px] border border-[var(--border-color)]/10 bg-[var(--primary-color)] p-5 transition-all duration-300 hover:scale-[1.03]">
 
-      <div className="flex h-14 w-14 items-center justify-center rounded-2xl bg-pink-500">
+      <div className="flex h-14 w-14 items-center justify-center rounded-2xl bg-[var(--primary-color)]">
 
         <Icon
           size={24}
@@ -470,7 +470,7 @@ function InsightItem({
 
       </h3>
 
-      <div className="rounded-full bg-pink-500 px-4 py-2 text-sm font-black text-[var(--text-color)]">
+      <div className="rounded-full bg-[var(--primary-color)] px-4 py-2 text-sm font-black text-[var(--text-color)]">
 
         {value}
 

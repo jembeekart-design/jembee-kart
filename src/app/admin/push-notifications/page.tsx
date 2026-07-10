@@ -179,7 +179,7 @@ export default function PushNotificationsPage() {
 
   return (
 
-    <main className="min-h-screen bg-[#0b0b0b] p-4 text-[var(--button-text-color)]">
+    <main className="min-h-screen bg-[var(--primary-color)] p-4 text-[var(--button-text-color)]">
 
       {/* HEADER */}
 
@@ -207,7 +207,7 @@ export default function PushNotificationsPage() {
 
       {/* SEND */}
 
-      <div className="rounded-[30px] bg-[#151515] p-5">
+      <div className="rounded-[30px] bg-[var(--primary-color)] p-5">
 
         <h2 className="mb-5 text-2xl font-black">
 
@@ -341,7 +341,7 @@ export default function PushNotificationsPage() {
 
         {notifications.length === 0 && (
 
-          <div className="rounded-[30px] bg-[#151515] p-10 text-center">
+          <div className="rounded-[30px] bg-[var(--primary-color)] p-10 text-center">
 
             No Notifications Found
 
@@ -354,7 +354,7 @@ export default function PushNotificationsPage() {
 
             <div
               key={item.id}
-              className="rounded-[30px] bg-[#151515] p-5"
+              className="rounded-[30px] bg-[var(--primary-color)] p-5"
             >
 
               <div className="flex flex-col gap-5 md:flex-row md:items-center md:justify-between">
@@ -367,13 +367,13 @@ export default function PushNotificationsPage() {
 
                   </h2>
 
-                  <p className="mt-3 text-gray-300">
+                  <p className="mt-3 text-[var(--text-color)]">
 
                     {item.message}
 
                   </p>
 
-                  <div className="mt-3 inline-block rounded-full theme-primary-bg/20 px-4 py-2 text-sm font-bold text-blue-300">
+                  <div className="mt-3 inline-block rounded-full theme-primary-bg/20 px-4 py-2 text-sm font-bold text-[var(--primary-color)]">
 
                     {item.audience}
 

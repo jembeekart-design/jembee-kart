@@ -45,13 +45,13 @@ export default function DashboardGuard({ children }: { children: React.ReactNode
 
   if (isSyncing) {
     return (
-      <div className="flex min-h-screen flex-col items-center justify-center bg-slate-900 text-[var(--button-text-color)] p-6 text-center">
+      <div className="flex min-h-screen flex-col items-center justify-center bg-[var(--card-color)] text-[var(--button-text-color)] p-6 text-center">
         <div className="relative flex items-center justify-center mb-4">
-          <Loader2 className="animate-spin text-indigo-400 absolute" size={54} strokeWidth={1.5} />
-          <div className="h-2 w-2 rounded-full bg-emerald-400 animate-ping" />
+          <Loader2 className="animate-spin text-[var(--primary-color)] absolute" size={54} strokeWidth={1.5} />
+          <div className="h-2 w-2 rounded-full bg-[var(--success-color)] animate-ping" />
         </div>
-        <h3 className="text-sm font-black uppercase tracking-widest text-slate-200">Securing Ledger Space</h3>
-        <p className="text-[11px] font-medium text-slate-400 max-w-xs mt-1.5 leading-relaxed">
+        <h3 className="text-sm font-black uppercase tracking-widest text-[var(--text-color)]">Securing Ledger Space</h3>
+        <p className="text-[11px] font-medium text-[var(--text-color)] max-w-xs mt-1.5 leading-relaxed">
           Initial user profile generation structure state is getting verified by JembeeKart Node Engine. Please wait a moment...
         </p>
       </div>
@@ -61,10 +61,10 @@ export default function DashboardGuard({ children }: { children: React.ReactNode
   // Fallback for extreme unexpected error contexts
   if (user && !docExists) {
     return (
-      <div className="flex min-h-screen flex-col items-center justify-center bg-slate-900 text-[var(--button-text-color)] p-6 text-center">
-        <ShieldAlert className="text-amber-400 mb-2" size={32} />
-        <h3 className="text-xs font-black uppercase tracking-wider text-amber-400">Account Provisioning Interrupted</h3>
-        <p className="text-[11px] text-slate-400 max-w-xs mt-1">
+      <div className="flex min-h-screen flex-col items-center justify-center bg-[var(--card-color)] text-[var(--button-text-color)] p-6 text-center">
+        <ShieldAlert className="text-[var(--warning-color)] mb-2" size={32} />
+        <h3 className="text-xs font-black uppercase tracking-wider text-[var(--warning-color)]">Account Provisioning Interrupted</h3>
+        <p className="text-[11px] text-[var(--text-color)] max-w-xs mt-1">
           Server side background runtime is facing network saturation. Refreshing your dashboard or context connection may clear this state thread.
         </p>
       </div>

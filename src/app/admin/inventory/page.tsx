@@ -97,7 +97,7 @@ export default function InventoryPage() {
 
   return (
 
-    <main className="min-h-screen bg-[#0b0b0b] p-4 text-[var(--button-text-color)]">
+    <main className="min-h-screen bg-[var(--primary-color)] p-4 text-[var(--button-text-color)]">
 
       {/* HEADER */}
 
@@ -175,7 +175,7 @@ export default function InventoryPage() {
 
       {/* SEARCH */}
 
-      <div className="mb-6 flex items-center gap-3 rounded-[30px] bg-[#151515] px-5 py-4">
+      <div className="mb-6 flex items-center gap-3 rounded-[30px] bg-[var(--primary-color)] px-5 py-4">
 
         <Search size={22} />
 
@@ -199,7 +199,7 @@ export default function InventoryPage() {
 
         {filteredProducts.length === 0 && (
 
-          <div className="rounded-[30px] bg-[#151515] p-10 text-center">
+          <div className="rounded-[30px] bg-[var(--primary-color)] p-10 text-center">
 
             No Products Found
 
@@ -212,7 +212,7 @@ export default function InventoryPage() {
 
             <div
               key={product.id}
-              className="rounded-[30px] bg-[#151515] p-5"
+              className="rounded-[30px] bg-[var(--primary-color)] p-5"
             >
 
               <div className="flex flex-col gap-5 md:flex-row md:items-center md:justify-between">
@@ -310,7 +310,7 @@ function StatCard({
 
   return (
 
-    <div className="rounded-[30px] bg-[#151515] p-5">
+    <div className="rounded-[30px] bg-[var(--primary-color)] p-5">
 
       <div className="flex items-center justify-between">
 

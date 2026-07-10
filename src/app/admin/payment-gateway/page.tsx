@@ -49,7 +49,7 @@ export default function PaymentGatewayPage() {
 
   return (
 
-    <main className="min-h-screen bg-[#090909] p-4 text-[var(--button-text-color)]">
+    <main className="min-h-screen bg-[var(--primary-color)] p-4 text-[var(--button-text-color)]">
 
       {/* HEADER */}
 
@@ -57,7 +57,7 @@ export default function PaymentGatewayPage() {
 
         <div className="flex items-center gap-4">
 
-          <div className="flex h-16 w-16 items-center justify-center rounded-[28px] bg-sky-500">
+          <div className="flex h-16 w-16 items-center justify-center rounded-[28px] bg-[var(--primary-color)]">
 
             <CreditCard
               size={30}
@@ -80,7 +80,7 @@ export default function PaymentGatewayPage() {
 
         </div>
 
-        <button className="flex items-center gap-2 rounded-2xl bg-sky-500 px-5 py-3 font-bold text-[var(--text-color)]">
+        <button className="flex items-center gap-2 rounded-2xl bg-[var(--primary-color)] px-5 py-3 font-bold text-[var(--text-color)]">
 
           <RefreshCw size={18} />
 
@@ -122,7 +122,7 @@ export default function PaymentGatewayPage() {
 
       {/* SEARCH */}
 
-      <div className="mt-8 flex items-center gap-3 rounded-[24px] border border-white/10 bg-[#151515] px-4 py-3">
+      <div className="mt-8 flex items-center gap-3 rounded-[24px] border border-[var(--border-color)]/10 bg-[var(--primary-color)] px-4 py-3">
 
         <Search
           size={20}
@@ -149,14 +149,14 @@ export default function PaymentGatewayPage() {
 
             <div
               key={index}
-              className="rounded-[30px] border border-white/10 bg-[#151515] p-6"
+              className="rounded-[30px] border border-[var(--border-color)]/10 bg-[var(--primary-color)] p-6"
             >
 
               <div className="flex flex-col gap-5 lg:flex-row lg:items-center lg:justify-between">
 
                 <div className="flex items-center gap-4">
 
-                  <div className="flex h-16 w-16 items-center justify-center rounded-2xl bg-sky-500 text-[var(--text-color)]">
+                  <div className="flex h-16 w-16 items-center justify-center rounded-2xl bg-[var(--primary-color)] text-[var(--text-color)]">
 
                     {item.name ===
                     "Cashfree" ? (
@@ -201,11 +201,11 @@ export default function PaymentGatewayPage() {
                     className={`rounded-full px-4 py-2 text-sm font-bold ${
                       item.status ===
                       "Active"
-                        ? "bg-[var(--success-color)]/20 text-green-400"
+                        ? "bg-[var(--success-color)]/20 text-[var(--success-color)]"
                         : item.status ===
                           "Pending"
-                        ? "bg-[var(--warning-color)]/20 text-yellow-400"
-                        : "bg-[var(--danger-color)]/20 text-red-400"
+                        ? "bg-[var(--warning-color)]/20 text-[var(--warning-color)]"
+                        : "bg-[var(--danger-color)]/20 text-[var(--danger-color)]"
                     }`}
                   >
 
@@ -213,7 +213,7 @@ export default function PaymentGatewayPage() {
 
                   </div>
 
-                  <button className="rounded-2xl bg-sky-500 px-4 py-3 font-bold text-[var(--text-color)]">
+                  <button className="rounded-2xl bg-[var(--primary-color)] px-4 py-3 font-bold text-[var(--text-color)]">
 
                     Configure
 
@@ -234,13 +234,13 @@ export default function PaymentGatewayPage() {
 
       <div className="mt-8 grid gap-5 md:grid-cols-2">
 
-        <div className="rounded-[30px] border border-white/10 bg-[#151515] p-6">
+        <div className="rounded-[30px] border border-[var(--border-color)]/10 bg-[var(--primary-color)] p-6">
 
           <div className="flex items-center gap-3">
 
             <ShieldCheck
               size={24}
-              className="text-sky-400"
+              className="text-[var(--primary-color)]"
             />
 
             <h2 className="text-2xl font-black">
@@ -265,13 +265,13 @@ export default function PaymentGatewayPage() {
 
         </div>
 
-        <div className="rounded-[30px] border border-white/10 bg-[#151515] p-6">
+        <div className="rounded-[30px] border border-[var(--border-color)]/10 bg-[var(--primary-color)] p-6">
 
           <div className="flex items-center gap-3">
 
             <TrendingUp
               size={24}
-              className="text-green-400"
+              className="text-[var(--success-color)]"
             />
 
             <h2 className="text-2xl font-black">
@@ -305,7 +305,7 @@ export default function PaymentGatewayPage() {
 
       {/* STATUS */}
 
-      <div className="mt-8 rounded-[32px] bg-gradient-to-r from-sky-500 to-cyan-500 p-7 text-[var(--text-color)]">
+      <div className="mt-8 rounded-[32px] bg-gradient-to-r from-[var(--primary-color)] to-[var(--primary-color)] p-7 text-[var(--text-color)]">
 
         <div className="flex items-center gap-3">
 
@@ -334,22 +334,22 @@ export default function PaymentGatewayPage() {
 
       {/* ALERT */}
 
-      <div className="mt-8 rounded-[28px] border border-yellow-500/20 bg-[var(--warning-color)]/10 p-5">
+      <div className="mt-8 rounded-[28px] border border-[var(--warning-color)]/20 bg-[var(--warning-color)]/10 p-5">
 
         <div className="flex items-start gap-4">
 
           <AlertTriangle
             size={24}
-            className="text-yellow-400"
+            className="text-[var(--warning-color)]"
           />
 
           <div>
 
-            <h3 className="text-xl font-black text-yellow-400">
+            <h3 className="text-xl font-black text-[var(--warning-color)]">
               Gateway Verification Pending
             </h3>
 
-            <p className="mt-2 text-sm text-gray-300">
+            <p className="mt-2 text-sm text-[var(--text-color)]">
 
               Stripe international gateway requires
               additional KYC verification.
@@ -379,9 +379,9 @@ function StatCard({
 
   return (
 
-    <div className="rounded-[28px] border border-white/10 bg-[#151515] p-5">
+    <div className="rounded-[28px] border border-[var(--border-color)]/10 bg-[var(--primary-color)] p-5">
 
-      <div className="flex h-14 w-14 items-center justify-center rounded-2xl bg-sky-500 text-[var(--text-color)]">
+      <div className="flex h-14 w-14 items-center justify-center rounded-2xl bg-[var(--primary-color)] text-[var(--text-color)]">
 
         {icon}
 
@@ -408,11 +408,11 @@ function FeatureItem({
 
   return (
 
-    <div className="flex items-center gap-3 rounded-2xl bg-[#0f0f0f] p-4">
+    <div className="flex items-center gap-3 rounded-2xl bg-[var(--primary-color)] p-4">
 
       <ShieldCheck
         size={18}
-        className="text-sky-400"
+        className="text-[var(--primary-color)]"
       />
 
       <p className="font-medium">
@@ -442,16 +442,16 @@ function ProgressItem({
           {title}
         </p>
 
-        <p className="font-bold text-green-400">
+        <p className="font-bold text-[var(--success-color)]">
           {value}
         </p>
 
       </div>
 
-      <div className="h-3 overflow-hidden rounded-full bg-[#0f0f0f]">
+      <div className="h-3 overflow-hidden rounded-full bg-[var(--primary-color)]">
 
         <div
-          className="h-full rounded-full bg-green-400"
+          className="h-full rounded-full bg-[var(--success-color)]"
           style={{
             width: value
           }}

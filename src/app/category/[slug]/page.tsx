@@ -152,11 +152,11 @@ export default function CategoryProductsPage() {
                     }
                     backgroundColor={
                       product.backgroundColor ||
-                      "#2563eb"
+                      "var(--primary-color)"
                     }
                     textColor={
                       product.textColor ||
-                      "#ffffff"
+                      "var(--primary-color)"
                     }
                   />
                 );

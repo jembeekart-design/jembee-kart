@@ -39,7 +39,7 @@ export default function ThemeStorePage() {
 
   return (
 
-    <main className="min-h-screen bg-[#0b0b0b] p-4 text-[var(--button-text-color)]">
+    <main className="min-h-screen bg-[var(--primary-color)] p-4 text-[var(--button-text-color)]">
 
       {/* HEADER */}
 
@@ -47,7 +47,7 @@ export default function ThemeStorePage() {
 
         <div className="flex items-center gap-4">
 
-          <div className="flex h-16 w-16 items-center justify-center rounded-[28px] bg-cyan-500">
+          <div className="flex h-16 w-16 items-center justify-center rounded-[28px] bg-[var(--primary-color)]">
 
             <Palette
               size={30}
@@ -70,7 +70,7 @@ export default function ThemeStorePage() {
 
         </div>
 
-        <button className="flex items-center gap-2 rounded-2xl bg-cyan-500 px-5 py-3 font-bold text-[var(--text-color)]">
+        <button className="flex items-center gap-2 rounded-2xl bg-[var(--primary-color)] px-5 py-3 font-bold text-[var(--text-color)]">
 
           <ShoppingBag size={18} />
 
@@ -82,7 +82,7 @@ export default function ThemeStorePage() {
 
       {/* SEARCH */}
 
-      <div className="flex items-center gap-3 rounded-[24px] border border-white/10 bg-[#151515] px-4 py-3">
+      <div className="flex items-center gap-3 rounded-[24px] border border-[var(--border-color)]/10 bg-[var(--primary-color)] px-4 py-3">
 
         <Search
           size={20}
@@ -139,12 +139,12 @@ export default function ThemeStorePage() {
 
             <div
               key={index}
-              className="overflow-hidden rounded-[28px] border border-white/10 bg-[#151515]"
+              className="overflow-hidden rounded-[28px] border border-[var(--border-color)]/10 bg-[var(--primary-color)]"
             >
 
               {/* PREVIEW */}
 
-              <div className="h-48 bg-gradient-to-br from-cyan-500 via-blue-500 to-violet-500" />
+              <div className="h-48 bg-gradient-to-br from-[var(--primary-color)] via-[var(--primary-color)] to-[var(--primary-color)]" />
 
               {/* CONTENT */}
 
@@ -164,7 +164,7 @@ export default function ThemeStorePage() {
 
                   </div>
 
-                  <div className="flex items-center gap-1 rounded-full bg-[var(--warning-color)]/20 px-3 py-1 text-sm font-bold text-yellow-400">
+                  <div className="flex items-center gap-1 rounded-full bg-[var(--warning-color)]/20 px-3 py-1 text-sm font-bold text-[var(--warning-color)]">
 
                     <Star size={14} />
 
@@ -196,7 +196,7 @@ export default function ThemeStorePage() {
 
                     </button>
 
-                    <button className="rounded-2xl bg-cyan-500 px-4 py-2 font-bold text-[var(--text-color)]">
+                    <button className="rounded-2xl bg-[var(--primary-color)] px-4 py-2 font-bold text-[var(--text-color)]">
 
                       Install
 
@@ -217,7 +217,7 @@ export default function ThemeStorePage() {
 
       {/* AI SECTION */}
 
-      <div className="mt-6 rounded-[30px] bg-gradient-to-r from-cyan-500 to-blue-600 p-6 text-[var(--text-color)]">
+      <div className="mt-6 rounded-[30px] bg-gradient-to-r from-[var(--primary-color)] to-[var(--primary-color)] p-6 text-[var(--text-color)]">
 
         <div className="flex items-center gap-3">
 
@@ -261,9 +261,9 @@ function StatCard({
 
   return (
 
-    <div className="rounded-[28px] border border-white/10 bg-[#151515] p-5">
+    <div className="rounded-[28px] border border-[var(--border-color)]/10 bg-[var(--primary-color)] p-5">
 
-      <div className="flex h-14 w-14 items-center justify-center rounded-2xl bg-cyan-500 text-[var(--text-color)]">
+      <div className="flex h-14 w-14 items-center justify-center rounded-2xl bg-[var(--primary-color)] text-[var(--text-color)]">
 
         {icon}
 

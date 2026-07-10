@@ -17,7 +17,7 @@ export default function TypographySettings({
 
   return (
 
-    <div className="rounded-2xl border border-slate-700 bg-slate-950 p-6">
+    <div className="rounded-2xl border border-[var(--border-color)] bg-[var(--card-color)] p-6">
 
       <h2 className="mb-6 text-2xl font-bold">
         Typography
@@ -39,7 +39,7 @@ export default function TypographySettings({
                 fontFamily: e.target.value,
               }))
             }
-            className="w-full rounded-lg border border-slate-700 bg-slate-800 px-4 py-3"
+            className="w-full rounded-lg border border-[var(--border-color)] bg-[var(--card-color)] px-4 py-3"
           >
             <option value="Inter">
               Inter
@@ -78,7 +78,7 @@ export default function TypographySettings({
                 ),
               }))
             }
-            className="w-full rounded-lg border border-slate-700 bg-slate-800 px-4 py-3"
+            className="w-full rounded-lg border border-[var(--border-color)] bg-[var(--card-color)] px-4 py-3"
           />
 
         </div>
@@ -100,7 +100,7 @@ export default function TypographySettings({
                 ),
               }))
             }
-            className="w-full rounded-lg border border-slate-700 bg-slate-800 px-4 py-3"
+            className="w-full rounded-lg border border-[var(--border-color)] bg-[var(--card-color)] px-4 py-3"
           />
 
         </div>
@@ -123,7 +123,7 @@ export default function TypographySettings({
                   e.target.value,
               }))
             }
-            className="w-full rounded-lg border border-slate-700 bg-slate-800 px-4 py-3"
+            className="w-full rounded-lg border border-[var(--border-color)] bg-[var(--card-color)] px-4 py-3"
           >
 
             <option value="300">
@@ -156,7 +156,7 @@ export default function TypographySettings({
 
       </div>
 
-      <div className="mt-8 rounded-xl border border-slate-700 bg-slate-900 p-5">
+      <div className="mt-8 rounded-xl border border-[var(--border-color)] bg-[var(--card-color)] p-5">
 
         <h1
           style={{

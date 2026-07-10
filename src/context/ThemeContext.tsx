@@ -28,12 +28,12 @@ export interface ThemeConfig {
 }
 
 const defaultTheme: ThemeConfig = {
-  primaryColor: "#4F46E5",
-  secondaryColor: "#7C3AED",
-  backgroundColor: "#F8F9FE",
+  primaryColor: "var(--primary-color)",
+  secondaryColor: "var(--primary-color)",
+  backgroundColor: "var(--primary-color)",
   borderRadius: "24",
-  cardColor: "#FFFFFF",
-  textColor: "#111827",
+  cardColor: "var(--primary-color)",
+  textColor: "var(--primary-color)",
 };
 
 interface ThemeContextType {

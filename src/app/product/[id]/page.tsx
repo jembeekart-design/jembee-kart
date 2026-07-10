@@ -68,7 +68,7 @@ export default function ProductPage() {
   const [loading, setLoading] = useState(true);
   const [currentImage, setCurrentImage] = useState(0);
   const [selectedSize, setSelectedSize] = useState("M");
-  const [selectedColor, setSelectedColor] = useState("#7c3aed");
+  const [selectedColor, setSelectedColor] = useState("var(--primary-color)");
   const [wishlist, setWishlist] = useState(false);
   const [showZoom, setShowZoom] = useState(false);
 
@@ -93,7 +93,7 @@ export default function ProductPage() {
               ? [data.image]
               : [],
             sizes: data.sizes || ["S", "M", "L", "XL", "XXL"],
-            colors: data.colors || ["#ffffff", "#000000", "#93c5fd", "#d6c6a5"],
+            colors: data.colors || ["var(--primary-color)", "var(--primary-color)", "var(--primary-color)", "var(--primary-color)"],
             coupons: data.coupons || ["SAVE50", "FREESHIP", "EXTRA100"],
             seller: data.seller || {
               name: "JembeeKart Official",
@@ -173,7 +173,7 @@ function buyNow() {
 
   if (loading) {
     return (
-      <main className="flex min-h-screen items-center justify-center bg-[#f6f6f6]">
+      <main className="flex min-h-screen items-center justify-center bg-[var(--primary-color)]">
         <h1 className="text-sm font-bold">Loading...</h1>
       </main>
     );
@@ -181,7 +181,7 @@ function buyNow() {
 
   if (!product) {
     return (
-      <main className="flex min-h-screen items-center justify-center bg-[#f6f6f6]">
+      <main className="flex min-h-screen items-center justify-center bg-[var(--primary-color)]">
         <h1 className="text-sm font-bold text-[var(--danger-color)]">Product Not Found</h1>
       </main>
     );
@@ -190,9 +190,9 @@ function buyNow() {
   const images = product.images || [];
 
   return (
-    <main className="min-h-screen bg-[#f6f6f6] pb-[85px]">
+    <main className="min-h-screen bg-[var(--primary-color)] pb-[85px]">
       {/* TOPBAR */}
-      <div className="sticky top-0 z-50 bg-[#f6f6f6]/90 backdrop-blur-md px-3 pt-3">
+      <div className="sticky top-0 z-50 bg-[var(--primary-color)]/90 backdrop-blur-md px-3 pt-3">
         <div className="flex items-center justify-between rounded-[18px] bg-[var(--card-color)] px-3 py-2.5 shadow-sm">
           <div className="flex items-center gap-2">
             <Link
@@ -201,7 +201,7 @@ function buyNow() {
             >
               <ArrowLeft size={16} />
             </Link>
-            <h1 className="text-[18px] font-black text-purple-600">JembeeKart</h1>
+            <h1 className="text-[18px] font-black text-[var(--primary-color)]">JembeeKart</h1>
           </div>
 
           <div className="flex items-center gap-3">
@@ -293,7 +293,7 @@ function buyNow() {
                 key={index}
                 onClick={() => setCurrentImage(index)}
                 className={`overflow-hidden rounded-lg border ${
-                  currentImage === index ? "border-purple-600" : "border-transparent"
+                  currentImage === index ? "border-[var(--primary-color)]" : "border-transparent"
                 }`}
               >
                 <img src={image} alt="thumb" className="h-12 w-12 object-cover" />
@@ -304,7 +304,7 @@ function buyNow() {
 
         {/* METADATA DETAILS */}
         <div>
-          <p className="text-[11px] font-bold text-purple-600">{product.category}</p>
+          <p className="text-[11px] font-bold text-[var(--primary-color)]">{product.category}</p>
           <h1 className="mt-1 text-[22px] font-black leading-[26px] text-[var(--text-color)]">{product.title}</h1>
 
           <div className="mt-2 flex items-center gap-2 text-[11px]">
@@ -313,7 +313,7 @@ function buyNow() {
               <span className="font-bold">{product.rating || 4.5}</span>
             </div>
             <span className="text-[var(--muted-text-color)]">(128 Reviews)</span>
-            <span className="text-gray-300">|</span>
+            <span className="text-[var(--text-color)]">|</span>
             <span className="text-[var(--muted-text-color)]">5k+ sold</span>
           </div>
 
@@ -330,9 +330,9 @@ function buyNow() {
         {/* TRANSPORT & LOGISTICS */}
         <div className="rounded-[18px] bg-[var(--card-color)] p-3 shadow-sm">
           <div className="flex items-center gap-3">
-            <Truck size={18} className="text-purple-600" />
+            <Truck size={18} className="text-[var(--primary-color)]" />
             <div>
-              <h3 className="text-sm font-bold text-purple-600">Free Delivery</h3>
+              <h3 className="text-sm font-bold text-[var(--primary-color)]">Free Delivery</h3>
               <p className="text-[11px] text-[var(--muted-text-color)]">Delivery by {deliveryDate}</p>
             </div>
           </div>
@@ -348,7 +348,7 @@ function buyNow() {
                 onClick={() => setSelectedSize(size)}
                 className={`min-w-[46px] rounded-[12px] border px-3 py-1.5 text-[12px] font-bold ${
                   selectedSize === size
-                    ? "border-purple-600 bg-purple-600 text-[var(--button-text-color)]"
+                    ? "border-[var(--primary-color)] bg-[var(--primary-color)] text-[var(--button-text-color)]"
                     : "bg-[var(--card-color)]"
                 }`}
               >
@@ -367,7 +367,7 @@ function buyNow() {
                 onClick={() => setSelectedColor(color)}
                 style={{ background: color }}
                 className={`h-8 w-8 rounded-full border-2 ${
-                  selectedColor === color ? "border-purple-600" : "border-[var(--border-color)]"
+                  selectedColor === color ? "border-[var(--primary-color)]" : "border-[var(--border-color)]"
                 }`}
               />
             ))}
@@ -385,7 +385,7 @@ function buyNow() {
           </div>
 
           <div className="flex items-center gap-2">
-            <RotateCcw size={18} className="text-violet-600" />
+            <RotateCcw size={18} className="text-[var(--primary-color)]" />
             <div>
               <h3 className="text-[12px] font-bold">7 Day Return</h3>
               <p className="text-[10px] text-[var(--muted-text-color)]">Easy Return</p>
@@ -401,7 +401,7 @@ function buyNow() {
           </div>
 
           <div className="flex items-center gap-2">
-            <Headphones size={18} className="text-orange-500" />
+            <Headphones size={18} className="text-[var(--warning-color)]" />
             <div>
               <h3 className="text-[12px] font-bold">Support</h3>
               <p className="text-[10px] text-[var(--muted-text-color)]">24/7 Help</p>
@@ -423,7 +423,7 @@ function buyNow() {
 
           <div className="rounded-[18px] bg-[var(--card-color)] p-4 shadow-sm">
             <div className="flex gap-3">
-              <Zap size={18} className="text-orange-500" />
+              <Zap size={18} className="text-[var(--warning-color)]" />
               <div>
                 <h3 className="text-sm font-bold">Cash on Delivery</h3>
                 <p className="text-[11px] text-[var(--muted-text-color)]">Pay when you receive</p>
@@ -436,20 +436,20 @@ function buyNow() {
         <div>
           <div className="mb-3 flex items-center justify-between">
             <h2 className="text-[18px] font-black">Offers & Coupons</h2>
-            <button className="text-xs font-bold text-purple-600">View All</button>
+            <button className="text-xs font-bold text-[var(--primary-color)]">View All</button>
           </div>
 
           <div className="space-y-2">
             {product.coupons?.map((coupon) => (
               <div
                 key={coupon}
-                className="flex items-center justify-between rounded-[16px] border border-dashed border-purple-300 bg-[var(--card-color)] px-3 py-3 shadow-sm"
+                className="flex items-center justify-between rounded-[16px] border border-dashed border-[var(--primary-color)] bg-[var(--card-color)] px-3 py-3 shadow-sm"
               >
                 <div>
                   <h3 className="text-[14px] font-black">{coupon}</h3>
                   <p className="mt-1 text-[10px] text-[var(--muted-text-color)]">Extra discount available</p>
                 </div>
-                <button className="rounded-lg bg-gradient-to-r from-violet-600 to-fuchsia-500 px-3 py-1.5 text-[10px] font-bold text-[var(--button-text-color)]">
+                <button className="rounded-lg bg-gradient-to-r from-[var(--primary-color)] to-[var(--primary-color)] px-3 py-1.5 text-[10px] font-bold text-[var(--button-text-color)]">
                   Apply
                 </button>
               </div>
@@ -462,15 +462,15 @@ function buyNow() {
           <h2 className="text-[18px] font-black">Seller Details</h2>
           <div className="mt-3 flex items-center justify-between">
             <div className="flex items-center gap-3">
-              <div className="flex h-10 w-10 items-center justify-center rounded-full bg-purple-100">
-                <Store size={18} className="text-purple-600" />
+              <div className="flex h-10 w-10 items-center justify-center rounded-full bg-[var(--primary-color)]">
+                <Store size={18} className="text-[var(--primary-color)]" />
               </div>
               <div>
                 <h3 className="text-[13px] font-black">{product.seller?.name}</h3>
                 <p className="text-[11px] text-[var(--muted-text-color)]">{product.seller?.rating}★ Seller Rating</p>
               </div>
             </div>
-            <button className="rounded-xl border border-purple-400 px-3 py-2 text-[11px] font-bold text-purple-600">
+            <button className="rounded-xl border border-[var(--primary-color)] px-3 py-2 text-[11px] font-bold text-[var(--primary-color)]">
               View Store
             </button>
           </div>
@@ -501,7 +501,7 @@ function buyNow() {
 
           <button
             onClick={buyNow}
-            className="flex flex-1 items-center justify-center gap-1 rounded-[14px] bg-gradient-to-r from-violet-600 to-fuchsia-500 py-2 text-[12px] font-bold text-[var(--button-text-color)]"
+            className="flex flex-1 items-center justify-center gap-1 rounded-[14px] bg-gradient-to-r from-[var(--primary-color)] to-[var(--primary-color)] py-2 text-[12px] font-bold text-[var(--button-text-color)]"
           >
             <Zap size={14} />
             Buy Now

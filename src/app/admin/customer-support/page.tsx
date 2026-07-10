@@ -62,13 +62,13 @@ export default function CustomerSupportPage() {
 
   return (
 
-    <main className="min-h-screen bg-[#0b0b0b] p-4 text-[var(--button-text-color)]">
+    <main className="min-h-screen bg-[var(--primary-color)] p-4 text-[var(--button-text-color)]">
 
       {/* HEADER */}
 
       <div className="mb-8 flex items-center gap-4">
 
-        <div className="flex h-16 w-16 items-center justify-center rounded-[28px] bg-cyan-500">
+        <div className="flex h-16 w-16 items-center justify-center rounded-[28px] bg-[var(--primary-color)]">
 
           <Headphones
             size={30}
@@ -123,7 +123,7 @@ export default function CustomerSupportPage() {
 
       {/* SEARCH */}
 
-      <div className="mt-6 flex items-center gap-3 rounded-[24px] border border-white/10 bg-[#151515] px-4 py-3">
+      <div className="mt-6 flex items-center gap-3 rounded-[24px] border border-[var(--border-color)]/10 bg-[var(--primary-color)] px-4 py-3">
 
         <Search
           size={20}
@@ -156,7 +156,7 @@ export default function CustomerSupportPage() {
 
             <div
               key={index}
-              className="rounded-[28px] border border-white/10 bg-[#151515] p-5"
+              className="rounded-[28px] border border-[var(--border-color)]/10 bg-[var(--primary-color)] p-5"
             >
 
               <div className="flex items-start justify-between">
@@ -173,7 +173,7 @@ export default function CustomerSupportPage() {
 
                 </div>
 
-                <div className="rounded-full bg-cyan-500/20 px-4 py-1 text-sm font-bold text-cyan-400">
+                <div className="rounded-full bg-[var(--primary-color)]/20 px-4 py-1 text-sm font-bold text-[var(--primary-color)]">
 
                   {item.priority}
 
@@ -185,10 +185,10 @@ export default function CustomerSupportPage() {
 
                 <MessageSquare
                   size={18}
-                  className="text-cyan-400"
+                  className="text-[var(--primary-color)]"
                 />
 
-                <p className="text-gray-300">
+                <p className="text-[var(--text-color)]">
                   {item.issue}
                 </p>
 
@@ -208,8 +208,8 @@ export default function CustomerSupportPage() {
                   className={`rounded-full px-4 py-1 text-sm font-bold ${
                     item.status ===
                     "Resolved"
-                      ? "bg-[var(--success-color)]/20 text-green-400"
-                      : "bg-[var(--warning-color)]/20 text-yellow-400"
+                      ? "bg-[var(--success-color)]/20 text-[var(--success-color)]"
+                      : "bg-[var(--warning-color)]/20 text-[var(--warning-color)]"
                   }`}
                 >
 
@@ -243,9 +243,9 @@ function StatCard({
 
   return (
 
-    <div className="rounded-[28px] border border-white/10 bg-[#151515] p-5">
+    <div className="rounded-[28px] border border-[var(--border-color)]/10 bg-[var(--primary-color)] p-5">
 
-      <div className="flex h-14 w-14 items-center justify-center rounded-2xl bg-cyan-500 text-[var(--text-color)]">
+      <div className="flex h-14 w-14 items-center justify-center rounded-2xl bg-[var(--primary-color)] text-[var(--text-color)]">
 
         {icon}
 

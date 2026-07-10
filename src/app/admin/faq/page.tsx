@@ -81,13 +81,13 @@ export default function FAQPage() {
 
   return (
 
-    <main className="min-h-screen bg-[#0b0b0b] p-4 text-[var(--button-text-color)]">
+    <main className="min-h-screen bg-[var(--primary-color)] p-4 text-[var(--button-text-color)]">
 
       {/* HEADER */}
 
       <div className="mb-8 flex items-center gap-4">
 
-        <div className="flex h-16 w-16 items-center justify-center rounded-[24px] bg-cyan-500">
+        <div className="flex h-16 w-16 items-center justify-center rounded-[24px] bg-[var(--primary-color)]">
 
           <HelpCircle size={30} />
 
@@ -109,7 +109,7 @@ export default function FAQPage() {
 
       {/* CREATE FAQ */}
 
-      <div className="rounded-[30px] bg-[#151515] p-5">
+      <div className="rounded-[30px] bg-[var(--primary-color)] p-5">
 
         <h2 className="text-2xl font-black">
           Add FAQ
@@ -142,7 +142,7 @@ export default function FAQPage() {
 
           <button
             onClick={addFAQ}
-            className="flex items-center gap-2 rounded-2xl bg-cyan-500 px-5 py-3 font-bold"
+            className="flex items-center gap-2 rounded-2xl bg-[var(--primary-color)] px-5 py-3 font-bold"
           >
 
             <Plus size={18} />
@@ -164,7 +164,7 @@ export default function FAQPage() {
 
             <div
               key={item.id}
-              className="rounded-[30px] bg-[#151515] p-5"
+              className="rounded-[30px] bg-[var(--primary-color)] p-5"
             >
 
               <div className="flex items-start justify-between gap-4">
@@ -175,7 +175,7 @@ export default function FAQPage() {
 
                     <ChevronDown
                       size={20}
-                      className="text-cyan-400"
+                      className="text-[var(--primary-color)]"
                     />
 
                     <h2 className="text-xl font-black">
@@ -214,7 +214,7 @@ export default function FAQPage() {
 
       {/* PREVIEW */}
 
-      <div className="mt-6 rounded-[30px] bg-gradient-to-r from-cyan-500 to-blue-500 p-6">
+      <div className="mt-6 rounded-[30px] bg-gradient-to-r from-[var(--primary-color)] to-[var(--primary-color)] p-6">
 
         <h2 className="text-3xl font-black">
           FAQ System

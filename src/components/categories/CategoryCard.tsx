@@ -25,9 +25,9 @@ export default function CategoryCard({
 
   image = "https://images.unsplash.com/photo-1445205170230-053b83016050",
 
-  backgroundColor = "#2563eb",
+  backgroundColor = "var(--primary-color)",
 
-  textColor = "#ffffff",
+  textColor = "var(--primary-color)",
 
   borderRadius = "28px",
 

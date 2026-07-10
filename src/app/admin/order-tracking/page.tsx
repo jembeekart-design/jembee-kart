@@ -53,7 +53,7 @@ export default function OrderTrackingPage() {
 
   return (
 
-    <main className="min-h-screen bg-[#090909] p-4 text-[var(--button-text-color)]">
+    <main className="min-h-screen bg-[var(--primary-color)] p-4 text-[var(--button-text-color)]">
 
       {/* HEADER */}
 
@@ -61,7 +61,7 @@ export default function OrderTrackingPage() {
 
         <div className="flex items-center gap-4">
 
-          <div className="flex h-16 w-16 items-center justify-center rounded-[28px] bg-orange-500">
+          <div className="flex h-16 w-16 items-center justify-center rounded-[28px] bg-[var(--warning-color)]">
 
             <Truck
               size={30}
@@ -84,7 +84,7 @@ export default function OrderTrackingPage() {
 
         </div>
 
-        <button className="flex items-center gap-2 rounded-2xl bg-orange-500 px-5 py-3 font-bold text-[var(--text-color)]">
+        <button className="flex items-center gap-2 rounded-2xl bg-[var(--warning-color)] px-5 py-3 font-bold text-[var(--text-color)]">
 
           <RefreshCw size={18} />
 
@@ -128,7 +128,7 @@ export default function OrderTrackingPage() {
 
       <div className="mt-8 flex flex-col gap-4 md:flex-row">
 
-        <div className="flex flex-1 items-center gap-3 rounded-[24px] border border-white/10 bg-[#151515] px-4 py-3">
+        <div className="flex flex-1 items-center gap-3 rounded-[24px] border border-[var(--border-color)]/10 bg-[var(--primary-color)] px-4 py-3">
 
           <Search
             size={20}
@@ -143,7 +143,7 @@ export default function OrderTrackingPage() {
 
         </div>
 
-        <button className="flex items-center justify-center gap-2 rounded-[24px] bg-[#151515] px-5 py-3 font-bold">
+        <button className="flex items-center justify-center gap-2 rounded-[24px] bg-[var(--primary-color)] px-5 py-3 font-bold">
 
           <Filter size={18} />
 
@@ -165,14 +165,14 @@ export default function OrderTrackingPage() {
 
             <div
               key={index}
-              className="rounded-[30px] border border-white/10 bg-[#151515] p-6"
+              className="rounded-[30px] border border-[var(--border-color)]/10 bg-[var(--primary-color)] p-6"
             >
 
               <div className="flex flex-col gap-5 lg:flex-row lg:items-center lg:justify-between">
 
                 <div className="flex items-center gap-4">
 
-                  <div className="flex h-16 w-16 items-center justify-center rounded-2xl bg-orange-500 text-[var(--text-color)]">
+                  <div className="flex h-16 w-16 items-center justify-center rounded-2xl bg-[var(--warning-color)] text-[var(--text-color)]">
 
                     <Package size={28} />
 
@@ -210,14 +210,14 @@ export default function OrderTrackingPage() {
                     className={`rounded-full px-4 py-2 text-sm font-bold ${
                       item.status ===
                       "Delivered"
-                        ? "bg-[var(--success-color)]/20 text-green-400"
+                        ? "bg-[var(--success-color)]/20 text-[var(--success-color)]"
                         : item.status ===
                           "Shipped"
-                        ? "bg-cyan-500/20 text-cyan-400"
+                        ? "bg-[var(--primary-color)]/20 text-[var(--primary-color)]"
                         : item.status ===
                           "Pending"
-                        ? "bg-[var(--warning-color)]/20 text-yellow-400"
-                        : "bg-[var(--danger-color)]/20 text-red-400"
+                        ? "bg-[var(--warning-color)]/20 text-[var(--warning-color)]"
+                        : "bg-[var(--danger-color)]/20 text-[var(--danger-color)]"
                     }`}
                   >
 
@@ -225,7 +225,7 @@ export default function OrderTrackingPage() {
 
                   </div>
 
-                  <button className="rounded-2xl bg-orange-500 px-4 py-3 font-bold text-[var(--text-color)]">
+                  <button className="rounded-2xl bg-[var(--warning-color)] px-4 py-3 font-bold text-[var(--text-color)]">
 
                     Track Order
 
@@ -246,13 +246,13 @@ export default function OrderTrackingPage() {
 
       <div className="mt-8 grid gap-5 md:grid-cols-2">
 
-        <div className="rounded-[30px] border border-white/10 bg-[#151515] p-6">
+        <div className="rounded-[30px] border border-[var(--border-color)]/10 bg-[var(--primary-color)] p-6">
 
           <div className="flex items-center gap-3">
 
             <Activity
               size={24}
-              className="text-green-400"
+              className="text-[var(--success-color)]"
             />
 
             <h2 className="text-2xl font-black">
@@ -282,13 +282,13 @@ export default function OrderTrackingPage() {
 
         </div>
 
-        <div className="rounded-[30px] border border-white/10 bg-[#151515] p-6">
+        <div className="rounded-[30px] border border-[var(--border-color)]/10 bg-[var(--primary-color)] p-6">
 
           <div className="flex items-center gap-3">
 
             <Truck
               size={24}
-              className="text-orange-400"
+              className="text-[var(--warning-color)]"
             />
 
             <h2 className="text-2xl font-black">
@@ -317,7 +317,7 @@ export default function OrderTrackingPage() {
 
       {/* STATUS */}
 
-      <div className="mt-8 rounded-[32px] bg-gradient-to-r from-orange-500 to-yellow-500 p-7 text-[var(--text-color)]">
+      <div className="mt-8 rounded-[32px] bg-gradient-to-r from-[var(--primary-color)] to-[var(--primary-color)] p-7 text-[var(--text-color)]">
 
         <div className="flex items-center gap-3">
 
@@ -346,22 +346,22 @@ export default function OrderTrackingPage() {
 
       {/* ALERT */}
 
-      <div className="mt-8 rounded-[28px] border border-yellow-500/20 bg-[var(--warning-color)]/10 p-5">
+      <div className="mt-8 rounded-[28px] border border-[var(--warning-color)]/20 bg-[var(--warning-color)]/10 p-5">
 
         <div className="flex items-start gap-4">
 
           <AlertTriangle
             size={24}
-            className="text-yellow-400"
+            className="text-[var(--warning-color)]"
           />
 
           <div>
 
-            <h3 className="text-xl font-black text-yellow-400">
+            <h3 className="text-xl font-black text-[var(--warning-color)]">
               Delivery Delay Warning
             </h3>
 
-            <p className="mt-2 text-sm text-gray-300">
+            <p className="mt-2 text-sm text-[var(--text-color)]">
 
               Some shipments may be delayed due to
               weather & logistics issues.
@@ -391,9 +391,9 @@ function StatCard({
 
   return (
 
-    <div className="rounded-[28px] border border-white/10 bg-[#151515] p-5">
+    <div className="rounded-[28px] border border-[var(--border-color)]/10 bg-[var(--primary-color)] p-5">
 
-      <div className="flex h-14 w-14 items-center justify-center rounded-2xl bg-orange-500 text-[var(--text-color)]">
+      <div className="flex h-14 w-14 items-center justify-center rounded-2xl bg-[var(--warning-color)] text-[var(--text-color)]">
 
         {icon}
 
@@ -420,11 +420,11 @@ function FeatureItem({
 
   return (
 
-    <div className="flex items-center gap-3 rounded-2xl bg-[#0f0f0f] p-4">
+    <div className="flex items-center gap-3 rounded-2xl bg-[var(--primary-color)] p-4">
 
       <Truck
         size={18}
-        className="text-orange-400"
+        className="text-[var(--warning-color)]"
       />
 
       <p className="font-medium">
@@ -454,16 +454,16 @@ function ProgressItem({
           {title}
         </p>
 
-        <p className="font-bold text-green-400">
+        <p className="font-bold text-[var(--success-color)]">
           {value}
         </p>
 
       </div>
 
-      <div className="h-3 overflow-hidden rounded-full bg-[#0f0f0f]">
+      <div className="h-3 overflow-hidden rounded-full bg-[var(--primary-color)]">
 
         <div
-          className="h-full rounded-full bg-green-400"
+          className="h-full rounded-full bg-[var(--success-color)]"
           style={{
             width: value
           }}

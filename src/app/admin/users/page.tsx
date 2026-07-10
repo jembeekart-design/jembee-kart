@@ -170,14 +170,14 @@ export default function UsersPage() {
 
   if (loading) {
     return (
-      <div className="flex min-h-screen items-center justify-center bg-[var(--card-color)] font-black text-sm uppercase tracking-widest text-pink-500">
+      <div className="flex min-h-screen items-center justify-center bg-[var(--card-color)] font-black text-sm uppercase tracking-widest text-[var(--primary-color)]">
         Syncing User Management Pipeline Engine...
       </div>
     );
   }
 
   return (
-    <main className="min-h-screen bg-[#0b0b0b] p-4 text-[var(--button-text-color)]">
+    <main className="min-h-screen bg-[var(--primary-color)] p-4 text-[var(--button-text-color)]">
       {/* HEADER */}
       <div className="mb-6">
         <h1 className="text-3xl font-black">Users Manager</h1>
@@ -186,14 +186,14 @@ export default function UsersPage() {
 
       {/* Operational Telemetry Metric Status Cards Row */}
       <div className="grid grid-cols-2 gap-4 mb-6 md:grid-cols-4">
-        <StatCard title="Total Users" value={stats.total.toLocaleString("en-IN")} icon={<Users size={22} />} color="bg-pink-500" />
-        <StatCard title="Active MLM" value={stats.mlmActive.toLocaleString("en-IN")} icon={<UserCheck size={22} />} color="bg-cyan-500" />
+        <StatCard title="Total Users" value={stats.total.toLocaleString("en-IN")} icon={<Users size={22} />} color="bg-[var(--primary-color)]" />
+        <StatCard title="Active MLM" value={stats.mlmActive.toLocaleString("en-IN")} icon={<UserCheck size={22} />} color="bg-[var(--primary-color)]" />
         <StatCard title="Blocked Users" value={stats.blocked.toLocaleString("en-IN")} icon={<UserX size={22} />} color="bg-[var(--danger-color)]" />
         <StatCard title="Total Referrals" value={stats.referrals.toLocaleString("en-IN")} icon={<Award size={22} />} color="bg-[var(--warning-color)]" />
       </div>
 
       {/* SEARCH HOOK CONTAINER */}
-      <div className="mb-6 flex items-center gap-3 rounded-[24px] border border-white/10 bg-[#151515] px-4 py-3">
+      <div className="mb-6 flex items-center gap-3 rounded-[24px] border border-[var(--border-color)]/10 bg-[var(--primary-color)] px-4 py-3">
         <Search size={20} className="text-[var(--muted-text-color)]" />
         <input
           type="text"
@@ -213,11 +213,11 @@ export default function UsersPage() {
             <div
               key={user.id}
               className={`overflow-hidden rounded-[30px] border transition-all ${
-                user.isBlocked ? "border-red-500/30 bg-[#151010]" : "border-white/10 bg-[#151515]"
+                user.isBlocked ? "border-[var(--danger-color)]/30 bg-[var(--primary-color)]" : "border-[var(--border-color)]/10 bg-[var(--primary-color)]"
               }`}
             >
               {/* TOP PROFILE CONTROL ACTION BAR */}
-              <div className="flex items-center justify-between border-b border-white/10 p-4">
+              <div className="flex items-center justify-between border-b border-[var(--border-color)]/10 p-4">
                 <div className="flex items-center gap-4">
                   {user.photo ? (
                     <img
@@ -226,7 +226,7 @@ export default function UsersPage() {
                       className="h-16 w-16 rounded-full object-cover ring-2 ring-white/10"
                     />
                   ) : (
-                    <div className="flex h-16 w-16 items-center justify-center rounded-full bg-violet-600 font-black">
+                    <div className="flex h-16 w-16 items-center justify-center rounded-full bg-[var(--primary-color)] font-black">
                       <User size={28} />
                     </div>
                   )}
@@ -235,7 +235,7 @@ export default function UsersPage() {
                     <h2 className="text-lg font-black flex items-center gap-2">
                       {user.name || "Untitled User"}
                       {user.isBlocked && (
-                        <span className="text-xs bg-[var(--danger-color)]/20 text-red-400 px-2.5 py-0.5 rounded-full font-bold">
+                        <span className="text-xs bg-[var(--danger-color)]/20 text-[var(--danger-color)] px-2.5 py-0.5 rounded-full font-bold">
                           BLOCKED
                         </span>
                       )}
@@ -264,8 +264,8 @@ export default function UsersPage() {
                     onClick={() => toggleBlockStatus(user.id, !!user.isBlocked)}
                     className={`flex h-10 w-10 items-center justify-center rounded-xl transition ${
                       user.isBlocked
-                        ? "bg-[var(--success-color)]/20 text-green-400 hover:bg-[var(--success-color)]/30"
-                        : "bg-[var(--danger-color)]/20 text-red-400 hover:bg-[var(--danger-color)]/30"
+                        ? "bg-[var(--success-color)]/20 text-[var(--success-color)] hover:bg-[var(--success-color)]/30"
+                        : "bg-[var(--danger-color)]/20 text-[var(--danger-color)] hover:bg-[var(--danger-color)]/30"
                     }`}
                     title={user.isBlocked ? "Unblock User" : "Block User"}
                   >
@@ -285,7 +285,7 @@ export default function UsersPage() {
                       disabled={!isUserEditing}
                       value={isUserEditing ? editForm.name : user.name || ""}
                       onChange={(e) => setEditForm((p) => ({ ...p, name: e.target.value }))}
-                      className="w-full rounded-2xl border border-white/5 bg-[#1e1e1e] px-4 py-3 text-sm outline-none disabled:opacity-50 text-[var(--button-text-color)]"
+                      className="w-full rounded-2xl border border-[var(--border-color)]/5 bg-[var(--primary-color)] px-4 py-3 text-sm outline-none disabled:opacity-50 text-[var(--button-text-color)]"
                     />
                   </div>
 
@@ -296,7 +296,7 @@ export default function UsersPage() {
                       type="text"
                       disabled={true}
                       value={user.email || ""}
-                      className="w-full rounded-2xl border border-white/5 bg-[#171717] px-4 py-3 text-sm outline-none opacity-40 text-[var(--muted-text-color)] cursor-not-allowed"
+                      className="w-full rounded-2xl border border-[var(--border-color)]/5 bg-[var(--primary-color)] px-4 py-3 text-sm outline-none opacity-40 text-[var(--muted-text-color)] cursor-not-allowed"
                     />
                   </div>
 
@@ -307,10 +307,10 @@ export default function UsersPage() {
                       disabled={!isUserEditing}
                       value={isUserEditing ? editForm.role : user.role || "user"}
                       onChange={(e) => setEditForm((p) => ({ ...p, role: e.target.value }))}
-                      className="w-full rounded-2xl border border-white/5 bg-[#1e1e1e] px-4 py-3 text-sm outline-none disabled:opacity-50 appearance-none text-[var(--button-text-color)] cursor-pointer"
+                      className="w-full rounded-2xl border border-[var(--border-color)]/5 bg-[var(--primary-color)] px-4 py-3 text-sm outline-none disabled:opacity-50 appearance-none text-[var(--button-text-color)] cursor-pointer"
                     >
-                      <option value="user" className="bg-[#151515]">User Node</option>
-                      <option value="admin" className="bg-[#151515]">Admin Node</option>
+                      <option value="user" className="bg-[var(--primary-color)]">User Node</option>
+                      <option value="admin" className="bg-[var(--primary-color)]">Admin Node</option>
                     </select>
                   </div>
 
@@ -322,7 +322,7 @@ export default function UsersPage() {
                       disabled={!isUserEditing}
                       value={isUserEditing ? editForm.photo : user.photo || ""}
                       onChange={(e) => setEditForm((p) => ({ ...p, photo: e.target.value }))}
-                      className="w-full rounded-2xl border border-white/5 bg-[#1e1e1e] px-4 py-3 text-sm outline-none disabled:opacity-50 text-[var(--button-text-color)]"
+                      className="w-full rounded-2xl border border-[var(--border-color)]/5 bg-[var(--primary-color)] px-4 py-3 text-sm outline-none disabled:opacity-50 text-[var(--button-text-color)]"
                     />
                   </div>
                 </div>
@@ -332,7 +332,7 @@ export default function UsersPage() {
                   {isUserEditing ? (
                     <button
                       onClick={() => saveUserChanges(user.id)}
-                      className="flex items-center gap-2 rounded-xl bg-pink-500 px-5 py-2.5 text-sm font-bold text-[var(--text-color)] transition hover:bg-pink-600 active:scale-95"
+                      className="flex items-center gap-2 rounded-xl bg-[var(--primary-color)] px-5 py-2.5 text-sm font-bold text-[var(--text-color)] transition hover:bg-[var(--primary-color)] active:scale-95"
                     >
                       <Save size={16} />
                       Save Changes
@@ -340,7 +340,7 @@ export default function UsersPage() {
                   ) : (
                     <button
                       onClick={() => startEditing(user)}
-                      className="rounded-xl border border-white/10 bg-[var(--card-color)]/5 px-5 py-2.5 text-sm font-bold transition hover:bg-[var(--card-color)]/10"
+                      className="rounded-xl border border-[var(--border-color)]/10 bg-[var(--card-color)]/5 px-5 py-2.5 text-sm font-bold transition hover:bg-[var(--card-color)]/10"
                     >
                       Edit Profile
                     </button>
@@ -348,35 +348,35 @@ export default function UsersPage() {
                 </div>
 
                 {/* ✅ 3. EXTRA CONFIGURATION INFO BOX Matrix (Rank, ShareCode, Account Status, Wallet Status) */}
-                <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 bg-[#1a1a1a]/40 p-4 rounded-2xl border border-white/5">
+                <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 bg-[var(--primary-color)]/40 p-4 rounded-2xl border border-[var(--border-color)]/5">
                   <div>
                     <p className="text-[10px] uppercase font-bold text-[var(--muted-text-color)] tracking-wider flex items-center gap-1">
-                      <Award size={12} className="text-purple-400" /> Rank Node
+                      <Award size={12} className="text-[var(--primary-color)]" /> Rank Node
                     </p>
-                    <p className="text-sm font-black mt-1 text-purple-300">{user.rank || "Member"}</p>
+                    <p className="text-sm font-black mt-1 text-[var(--primary-color)]">{user.rank || "Member"}</p>
                   </div>
 
                   <div>
                     <p className="text-[10px] uppercase font-bold text-[var(--muted-text-color)] tracking-wider flex items-center gap-1">
-                      <QrCode size={12} className="text-cyan-400" /> Referral Code
+                      <QrCode size={12} className="text-[var(--primary-color)]" /> Referral Code
                     </p>
-                    <p className="text-sm font-mono font-bold mt-1 text-cyan-300">{user.shareCode || "UNASSIGNED"}</p>
+                    <p className="text-sm font-mono font-bold mt-1 text-[var(--primary-color)]">{user.shareCode || "UNASSIGNED"}</p>
                   </div>
 
                   <div>
                     <p className="text-[10px] uppercase font-bold text-[var(--muted-text-color)] tracking-wider flex items-center gap-1">
-                      <Fingerprint size={12} className="text-pink-400" /> Account Status
+                      <Fingerprint size={12} className="text-[var(--primary-color)]" /> Account Status
                     </p>
-                    <p className={`text-sm font-black mt-1 ${user.isBlocked ? "text-red-400" : "text-green-400"}`}>
+                    <p className={`text-sm font-black mt-1 ${user.isBlocked ? "text-[var(--danger-color)]" : "text-[var(--success-color)]"}`}>
                       {user.accountStatus || (user.isBlocked ? "Suspended" : "Active")}
                     </p>
                   </div>
 
                   <div>
                     <p className="text-[10px] uppercase font-bold text-[var(--muted-text-color)] tracking-wider flex items-center gap-1">
-                      <Lock size={12} className="text-yellow-400" /> Wallet Matrix
+                      <Lock size={12} className="text-[var(--warning-color)]" /> Wallet Matrix
                     </p>
-                    <p className={`text-sm font-black mt-1 ${user.walletLocked ? "text-red-400" : "text-green-400"}`}>
+                    <p className={`text-sm font-black mt-1 ${user.walletLocked ? "text-[var(--danger-color)]" : "text-[var(--success-color)]"}`}>
                       {user.walletLocked ? "Locked" : "Unlocked"}
                     </p>
                   </div>
@@ -384,37 +384,37 @@ export default function UsersPage() {
 
                 {/* LIVE FINANCIAL & SYSTEM SNAPSHOTS PANEL */}
                 <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 pt-2">
-                  <div className="rounded-2xl border border-white/5 bg-[#1c1c1c] p-4 flex items-center gap-3">
-                    <Wallet size={18} className="text-yellow-400" />
+                  <div className="rounded-2xl border border-[var(--border-color)]/5 bg-[var(--primary-color)] p-4 flex items-center gap-3">
+                    <Wallet size={18} className="text-[var(--warning-color)]" />
                     <div>
                       <p className="text-[10px] uppercase font-bold text-[var(--muted-text-color)] tracking-wider">Wallet Balance</p>
-                      <p className="text-base font-black text-yellow-400">₹{(user.walletBalance || 0).toLocaleString("en-IN")}</p>
+                      <p className="text-base font-black text-[var(--warning-color)]">₹{(user.walletBalance || 0).toLocaleString("en-IN")}</p>
                     </div>
                   </div>
 
-                  <div className="rounded-2xl border border-white/5 bg-[#1c1c1c] p-4 flex items-center gap-3">
-                    <Network size={18} className="text-cyan-400" />
+                  <div className="rounded-2xl border border-[var(--border-color)]/5 bg-[var(--primary-color)] p-4 flex items-center gap-3">
+                    <Network size={18} className="text-[var(--primary-color)]" />
                     <div>
                       <p className="text-[10px] uppercase font-bold text-[var(--muted-text-color)] tracking-wider">Total Referrals</p>
-                      <p className="text-base font-black text-cyan-400">{user.totalReferrals || 0} Members</p>
+                      <p className="text-base font-black text-[var(--primary-color)]">{user.totalReferrals || 0} Members</p>
                     </div>
                   </div>
 
-                  <div className="rounded-2xl border border-white/5 bg-[#1c1c1c] p-4 flex items-center gap-3">
-                    <Package size={18} className="text-pink-400" />
+                  <div className="rounded-2xl border border-[var(--border-color)]/5 bg-[var(--primary-color)] p-4 flex items-center gap-3">
+                    <Package size={18} className="text-[var(--primary-color)]" />
                     <div>
                       <p className="text-[10px] uppercase font-bold text-[var(--muted-text-color)] tracking-wider">Package Activation</p>
-                      <span className={`text-xs font-black px-2 py-0.5 rounded ${user.joinedPackage ? "bg-[var(--success-color)]/20 text-green-400" : "bg-[var(--danger-color)]/20 text-red-400"}`}>
+                      <span className={`text-xs font-black px-2 py-0.5 rounded ${user.joinedPackage ? "bg-[var(--success-color)]/20 text-[var(--success-color)]" : "bg-[var(--danger-color)]/20 text-[var(--danger-color)]"}`}>
                         {user.joinedPackage ? "ACTIVE" : "INACTIVE"}
                       </span>
                     </div>
                   </div>
 
-                  <div className="rounded-2xl border border-white/5 bg-[#1c1c1c] p-4 flex items-center gap-3">
-                    <UserCheck size={18} className="text-purple-400" />
+                  <div className="rounded-2xl border border-[var(--border-color)]/5 bg-[var(--primary-color)] p-4 flex items-center gap-3">
+                    <UserCheck size={18} className="text-[var(--primary-color)]" />
                     <div>
                       <p className="text-[10px] uppercase font-bold text-[var(--muted-text-color)] tracking-wider">MLM Matrix Status</p>
-                      <span className={`text-xs font-black px-2 py-0.5 rounded ${user.mlmActive ? "bg-purple-500/20 text-purple-400" : "bg-[var(--card-color)]/10 text-[var(--muted-text-color)]"}`}>
+                      <span className={`text-xs font-black px-2 py-0.5 rounded ${user.mlmActive ? "bg-[var(--primary-color)]/20 text-[var(--primary-color)]" : "bg-[var(--card-color)]/10 text-[var(--muted-text-color)]"}`}>
                         {user.mlmActive ? "MATRIX RUNNING" : "NOT SIGNED"}
                       </span>
                     </div>
@@ -448,7 +448,7 @@ function StatCard({
   color: string;
 }) {
   return (
-    <div className="rounded-[28px] border border-white/10 bg-[#151515] p-5">
+    <div className="rounded-[28px] border border-[var(--border-color)]/10 bg-[var(--primary-color)] p-5">
       <div className={`flex h-12 w-12 items-center justify-center rounded-2xl ${color} text-[var(--text-color)] mb-3`}>
         {icon}
       </div>

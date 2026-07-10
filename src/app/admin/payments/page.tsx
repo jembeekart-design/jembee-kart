@@ -42,7 +42,7 @@ export default function PaymentsPage() {
 
   return (
 
-    <main className="min-h-screen bg-[#0b0b0b] p-4 text-[var(--button-text-color)]">
+    <main className="min-h-screen bg-[var(--primary-color)] p-4 text-[var(--button-text-color)]">
 
       {/* HEADER */}
 
@@ -89,13 +89,13 @@ export default function PaymentsPage() {
 
         {/* CASHFREE APP ID */}
 
-        <div className="rounded-[30px] bg-[#151515] p-5">
+        <div className="rounded-[30px] bg-[var(--primary-color)] p-5">
 
           <div className="mb-5 flex items-center gap-3">
 
             <CreditCard
               size={24}
-              className="text-cyan-400"
+              className="text-[var(--primary-color)]"
             />
 
             <h2 className="text-2xl font-black">
@@ -113,20 +113,20 @@ export default function PaymentsPage() {
               )
             }
             placeholder="Enter Cashfree App ID"
-            className="w-full rounded-2xl border border-white/10 bg-[var(--card-color)] px-4 py-4 text-[var(--button-text-color)] outline-none"
+            className="w-full rounded-2xl border border-[var(--border-color)]/10 bg-[var(--card-color)] px-4 py-4 text-[var(--button-text-color)] outline-none"
           />
 
         </div>
 
         {/* SECRET KEY */}
 
-        <div className="rounded-[30px] bg-[#151515] p-5">
+        <div className="rounded-[30px] bg-[var(--primary-color)] p-5">
 
           <div className="mb-5 flex items-center gap-3">
 
             <ShieldCheck
               size={24}
-              className="text-green-400"
+              className="text-[var(--success-color)]"
             />
 
             <h2 className="text-2xl font-black">
@@ -144,14 +144,14 @@ export default function PaymentsPage() {
               )
             }
             placeholder="Enter Secret Key"
-            className="w-full rounded-2xl border border-white/10 bg-[var(--card-color)] px-4 py-4 text-[var(--button-text-color)] outline-none"
+            className="w-full rounded-2xl border border-[var(--border-color)]/10 bg-[var(--card-color)] px-4 py-4 text-[var(--button-text-color)] outline-none"
           />
 
         </div>
 
         {/* COD */}
 
-        <div className="rounded-[30px] bg-[#151515] p-5">
+        <div className="rounded-[30px] bg-[var(--primary-color)] p-5">
 
           <div className="flex items-center justify-between">
 
@@ -192,7 +192,7 @@ export default function PaymentsPage() {
 
         {/* UPI */}
 
-        <div className="rounded-[30px] bg-[#151515] p-5">
+        <div className="rounded-[30px] bg-[var(--primary-color)] p-5">
 
           <div className="flex items-center justify-between">
 
@@ -233,7 +233,7 @@ export default function PaymentsPage() {
 
         {/* WALLET */}
 
-        <div className="rounded-[30px] bg-[#151515] p-5">
+        <div className="rounded-[30px] bg-[var(--primary-color)] p-5">
 
           <div className="flex items-center justify-between">
 
@@ -276,7 +276,7 @@ export default function PaymentsPage() {
 
       {/* PREVIEW */}
 
-      <div className="mt-6 rounded-[30px] bg-gradient-to-r from-blue-600 to-cyan-500 p-6">
+      <div className="mt-6 rounded-[30px] bg-gradient-to-r from-[var(--primary-color)] to-[var(--primary-color)] p-6">
 
         <h2 className="text-3xl font-black">
           Payment Preview

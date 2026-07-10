@@ -47,7 +47,7 @@ FloatingRewards({
           items-center
           gap-3
           rounded-full
-          bg-yellow-400
+          bg-[var(--warning-color)]
           px-8
           py-4
           shadow-[0_0_50px_rgba(255,215,0,0.8)]
@@ -124,7 +124,7 @@ FloatingRewards({
                 Math.random() * 20
               }
               className="
-                text-yellow-300
+                text-[var(--warning-color)]
               "
             />
 

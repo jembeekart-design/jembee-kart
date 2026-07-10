@@ -478,7 +478,7 @@ export default function WatchEarnPage() {
               mt-1
               text-xs
               font-semibold
-              text-gray-300
+              text-[var(--text-color)]
             "
           >
 
@@ -502,7 +502,7 @@ export default function WatchEarnPage() {
               items-center
               gap-2
               rounded-full
-              bg-orange-500/20
+              bg-[var(--warning-color)]/20
               px-4
               py-2
               backdrop-blur-xl
@@ -512,7 +512,7 @@ export default function WatchEarnPage() {
             <Flame
               size={18}
               className="
-                text-orange-400
+                text-[var(--warning-color)]
               "
             />
 
@@ -536,7 +536,7 @@ export default function WatchEarnPage() {
               items-center
               gap-2
               rounded-full
-              bg-yellow-400/20
+              bg-[var(--warning-color)]/20
               px-4
               py-2
               backdrop-blur-xl
@@ -546,7 +546,7 @@ export default function WatchEarnPage() {
             <Coins
               size={18}
               className="
-                text-yellow-300
+                text-[var(--warning-color)]
               "
             />
 
@@ -602,7 +602,7 @@ export default function WatchEarnPage() {
             items-center
             gap-3
             rounded-full
-            bg-yellow-400
+            bg-[var(--warning-color)]
             px-6
             py-4
             shadow-2xl
@@ -673,8 +673,8 @@ export default function WatchEarnPage() {
               animate-pulse
               rounded-full
               bg-gradient-to-r
-              from-violet-600
-              to-fuchsia-500
+              from-[var(--primary-color)]
+              to-[var(--primary-color)]
             "
           />
 
@@ -693,7 +693,7 @@ export default function WatchEarnPage() {
             className="
               mt-3
               text-sm
-              text-gray-300
+              text-[var(--text-color)]
             "
           >
 
@@ -948,7 +948,7 @@ export default function WatchEarnPage() {
                         py-1
                         text-xs
                         font-bold
-                        text-blue-200
+                        text-[var(--primary-color)]
                       "
                     >
 
@@ -978,7 +978,7 @@ export default function WatchEarnPage() {
                 <Music2
                   size={16}
                   className="
-                    text-pink-400
+                    text-[var(--primary-color)]
                   "
                 />
 
@@ -1014,8 +1014,8 @@ export default function WatchEarnPage() {
                     h-full
                     rounded-full
                     bg-gradient-to-r
-                    from-yellow-300
-                    to-orange-500
+                    from-[var(--primary-color)]
+                    to-[var(--primary-color)]
                     transition-all
                     duration-500
                   "
@@ -1046,7 +1046,7 @@ export default function WatchEarnPage() {
                       video.id
                     )
                       ? "bg-[var(--success-color)] text-[var(--button-text-color)]"
-                      : "bg-yellow-400 text-[var(--text-color)]"
+                      : "bg-[var(--warning-color)] text-[var(--text-color)]"
                   }
                 `}
               >

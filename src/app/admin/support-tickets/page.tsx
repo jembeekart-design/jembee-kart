@@ -143,13 +143,13 @@ export default function SupportTicketsPage() {
 
   return (
 
-    <main className="min-h-screen bg-[#0b0b0b] p-4 text-[var(--button-text-color)]">
+    <main className="min-h-screen bg-[var(--primary-color)] p-4 text-[var(--button-text-color)]">
 
       {/* HEADER */}
 
       <div className="mb-8 flex items-center gap-4">
 
-        <div className="flex h-16 w-16 items-center justify-center rounded-[24px] bg-cyan-500">
+        <div className="flex h-16 w-16 items-center justify-center rounded-[24px] bg-[var(--primary-color)]">
 
           <Headphones size={30} />
 
@@ -175,7 +175,7 @@ export default function SupportTicketsPage() {
 
         {tickets.length === 0 && (
 
-          <div className="rounded-[30px] bg-[#151515] p-10 text-center">
+          <div className="rounded-[30px] bg-[var(--primary-color)] p-10 text-center">
 
             No Support Tickets Found
 
@@ -188,7 +188,7 @@ export default function SupportTicketsPage() {
 
             <div
               key={ticket.id}
-              className="rounded-[30px] bg-[#151515] p-5"
+              className="rounded-[30px] bg-[var(--primary-color)] p-5"
             >
 
               <div className="flex flex-col gap-6">
@@ -199,13 +199,13 @@ export default function SupportTicketsPage() {
 
                   <div>
 
-                    <h2 className="text-2xl font-black text-cyan-400">
+                    <h2 className="text-2xl font-black text-[var(--primary-color)]">
 
                       {ticket.subject}
 
                     </h2>
 
-                    <div className="mt-4 flex flex-col gap-2 text-gray-300">
+                    <div className="mt-4 flex flex-col gap-2 text-[var(--text-color)]">
 
                       <div className="flex items-center gap-2">
 
@@ -251,7 +251,7 @@ export default function SupportTicketsPage() {
 
                   </div>
 
-                  <p className="text-gray-300">
+                  <p className="text-[var(--text-color)]">
 
                     {ticket.message}
 

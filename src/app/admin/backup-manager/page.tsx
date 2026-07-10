@@ -43,7 +43,7 @@ export default function BackupManagerPage() {
 
   return (
 
-    <main className="min-h-screen bg-[#0b0b0b] p-4 text-[var(--button-text-color)]">
+    <main className="min-h-screen bg-[var(--primary-color)] p-4 text-[var(--button-text-color)]">
 
       {/* HEADER */}
 
@@ -116,7 +116,7 @@ export default function BackupManagerPage() {
 
       {/* AUTO BACKUP */}
 
-      <div className="mt-6 rounded-[28px] border border-white/10 bg-[#151515] p-5">
+      <div className="mt-6 rounded-[28px] border border-[var(--border-color)]/10 bg-[var(--primary-color)] p-5">
 
         <div className="flex items-center justify-between">
 
@@ -167,7 +167,7 @@ export default function BackupManagerPage() {
 
             <div
               key={index}
-              className="rounded-[28px] border border-white/10 bg-[#151515] p-5"
+              className="rounded-[28px] border border-[var(--border-color)]/10 bg-[var(--primary-color)] p-5"
             >
 
               <div className="flex flex-col gap-5 lg:flex-row lg:items-center lg:justify-between">
@@ -192,8 +192,8 @@ export default function BackupManagerPage() {
                     className={`rounded-full px-4 py-1 text-sm font-bold ${
                       item.status ===
                       "Completed"
-                        ? "bg-[var(--success-color)]/20 text-green-400"
-                        : "bg-[var(--danger-color)]/20 text-red-400"
+                        ? "bg-[var(--success-color)]/20 text-[var(--success-color)]"
+                        : "bg-[var(--danger-color)]/20 text-[var(--danger-color)]"
                     }`}
                   >
 
@@ -207,7 +207,7 @@ export default function BackupManagerPage() {
 
                   </button>
 
-                  <button className="flex h-11 w-11 items-center justify-center rounded-2xl bg-[var(--danger-color)]/20 text-red-400">
+                  <button className="flex h-11 w-11 items-center justify-center rounded-2xl bg-[var(--danger-color)]/20 text-[var(--danger-color)]">
 
                     <Trash2 size={18} />
 
@@ -236,7 +236,7 @@ export default function BackupManagerPage() {
 
         </button>
 
-        <button className="flex items-center gap-2 rounded-2xl bg-cyan-500 px-6 py-3 font-bold text-[var(--text-color)]">
+        <button className="flex items-center gap-2 rounded-2xl bg-[var(--primary-color)] px-6 py-3 font-bold text-[var(--text-color)]">
 
           <RefreshCw size={18} />
 
@@ -248,7 +248,7 @@ export default function BackupManagerPage() {
 
       {/* SECURITY */}
 
-      <div className="mt-6 rounded-[30px] bg-gradient-to-r from-green-500 to-emerald-600 p-6 text-[var(--text-color)]">
+      <div className="mt-6 rounded-[30px] bg-gradient-to-r from-[var(--primary-color)] to-[var(--primary-color)] p-6 text-[var(--text-color)]">
 
         <div className="flex items-center gap-3">
 
@@ -271,22 +271,22 @@ export default function BackupManagerPage() {
 
       {/* WARNING */}
 
-      <div className="mt-6 rounded-[28px] border border-yellow-500/20 bg-[var(--warning-color)]/10 p-5">
+      <div className="mt-6 rounded-[28px] border border-[var(--warning-color)]/20 bg-[var(--warning-color)]/10 p-5">
 
         <div className="flex items-start gap-4">
 
           <AlertTriangle
             size={24}
-            className="text-yellow-400"
+            className="text-[var(--warning-color)]"
           />
 
           <div>
 
-            <h3 className="text-xl font-black text-yellow-400">
+            <h3 className="text-xl font-black text-[var(--warning-color)]">
               Important
             </h3>
 
-            <p className="mt-2 text-sm text-gray-300">
+            <p className="mt-2 text-sm text-[var(--text-color)]">
 
               Always create backup before major updates
               or database modifications.
@@ -316,7 +316,7 @@ function StatCard({
 
   return (
 
-    <div className="rounded-[28px] border border-white/10 bg-[#151515] p-5">
+    <div className="rounded-[28px] border border-[var(--border-color)]/10 bg-[var(--primary-color)] p-5">
 
       <div className="flex h-14 w-14 items-center justify-center rounded-2xl bg-[var(--success-color)] text-[var(--text-color)]">
 

@@ -345,7 +345,7 @@ newCode: issue.newCode,
 
                 </div>
 
-                <span className="rounded bg-green-100 px-3 py-1 text-xs font-medium">
+                <span className="rounded bg-[var(--success-color)] px-3 py-1 text-xs font-medium">
 
                   {report.status ?? "SUCCESS"}
 
@@ -413,12 +413,12 @@ newCode: issue.newCode,
                 <span
                   className={`rounded px-3 py-1 text-xs font-medium ${
                     issue.severity === "CRITICAL"
-                      ? "bg-red-100 text-red-700"
+                      ? "bg-[var(--danger-color)] text-[var(--danger-color)]"
                       : issue.severity === "ERROR"
-                      ? "bg-orange-100 text-orange-700"
+                      ? "bg-[var(--warning-color)] text-[var(--warning-color)]"
                       : issue.severity === "WARNING"
-                      ? "bg-yellow-100 text-yellow-700"
-                      : "bg-green-100 text-green-700"
+                      ? "bg-[var(--warning-color)] text-[var(--warning-color)]"
+                      : "bg-[var(--success-color)] text-[var(--success-color)]"
                   }`}
                 >
 
@@ -434,8 +434,8 @@ newCode: issue.newCode,
 
               </p>
               {issue.recommendation && (
-  <div className="mt-3 rounded-md border border-green-300 bg-green-50 p-3">
-    <p className="text-xs font-bold text-green-700">
+  <div className="mt-3 rounded-md border border-[var(--success-color)] bg-[var(--success-color)] p-3">
+    <p className="text-xs font-bold text-[var(--success-color)]">
       💡 Fix Suggestion
     </p>
 
@@ -481,7 +481,7 @@ newCode: issue.newCode,
 )}
 
 {issue.newCode && (
-  <pre className="mt-2 rounded bg-green-50 p-2 text-xs overflow-x-auto">
+  <pre className="mt-2 rounded bg-[var(--success-color)] p-2 text-xs overflow-x-auto">
     <strong>New Code:</strong>
     {"\n"}
     {issue.newCode}
@@ -653,8 +653,8 @@ newCode: issue.newCode,
             className={`rounded px-4 py-2 text-sm font-semibold ${
               dashboardReport?.summary
                 .deploymentReady
-                ? "bg-green-100 text-green-700"
-                : "bg-red-100 text-red-700"
+                ? "bg-[var(--success-color)] text-[var(--success-color)]"
+                : "bg-[var(--danger-color)] text-[var(--danger-color)]"
             }`}
           >
 

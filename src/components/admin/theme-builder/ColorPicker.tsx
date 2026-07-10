@@ -31,7 +31,7 @@ function ColorInput({
   >;
 }) {
   return (
-    <div className="rounded-xl border border-slate-700 bg-slate-900 p-4">
+    <div className="rounded-xl border border-[var(--border-color)] bg-[var(--card-color)] p-4">
 
       <label className="mb-3 block font-medium">
         {label}
@@ -48,7 +48,7 @@ function ColorInput({
               [field]: e.target.value,
             }))
           }
-          className="h-14 w-14 cursor-pointer rounded-lg border border-slate-600"
+          className="h-14 w-14 cursor-pointer rounded-lg border border-[var(--border-color)]"
         />
 
         <input
@@ -60,7 +60,7 @@ function ColorInput({
               [field]: e.target.value,
             }))
           }
-          className="flex-1 rounded-lg border border-slate-700 bg-slate-800 px-4 py-3"
+          className="flex-1 rounded-lg border border-[var(--border-color)] bg-[var(--card-color)] px-4 py-3"
         />
 
       </div>
@@ -76,7 +76,7 @@ export default function ColorPicker({
 
   return (
 
-    <div className="rounded-2xl border border-slate-700 bg-slate-950 p-6">
+    <div className="rounded-2xl border border-[var(--border-color)] bg-[var(--card-color)] p-6">
 
       <h2 className="mb-6 text-2xl font-bold">
         Theme Colors

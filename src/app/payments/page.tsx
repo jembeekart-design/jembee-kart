@@ -37,17 +37,17 @@ export default function PaymentPage() {
   }
 
   return (
-    <main className="min-h-screen bg-slate-50 pb-24">
+    <main className="min-h-screen bg-[var(--card-color)] pb-24">
       {/* Header */}
-      <div className="sticky top-0 z-20 bg-[var(--card-color)] border-b border-slate-200 px-4 py-4 flex items-center gap-3">
+      <div className="sticky top-0 z-20 bg-[var(--card-color)] border-b border-[var(--border-color)] px-4 py-4 flex items-center gap-3">
         <button
           onClick={() => router.back()}
-          className="h-10 w-10 rounded-full bg-slate-100 flex items-center justify-center"
+          className="h-10 w-10 rounded-full bg-[var(--card-color)] flex items-center justify-center"
         >
           <ArrowLeft size={18} />
         </button>
 
-        <h1 className="text-xl font-black text-slate-800">
+        <h1 className="text-xl font-black text-[var(--text-color)]">
           Payment Method
         </h1>
       </div>
@@ -55,8 +55,8 @@ export default function PaymentPage() {
       <div className="p-4 max-w-lg mx-auto space-y-4">
 
         {/* Order Summary */}
-        <div className="bg-[var(--card-color)] rounded-3xl p-5 shadow-sm border border-slate-100">
-          <h2 className="text-lg font-black text-slate-800 mb-3">
+        <div className="bg-[var(--card-color)] rounded-3xl p-5 shadow-sm border border-[var(--border-color)]">
+          <h2 className="text-lg font-black text-[var(--text-color)] mb-3">
             Order Summary
           </h2>
 
@@ -72,13 +72,13 @@ export default function PaymentPage() {
 
           <div className="border-t mt-3 pt-3 flex justify-between font-black text-lg">
             <span>Total</span>
-            <span className="text-violet-600">₹999</span>
+            <span className="text-[var(--primary-color)]">₹999</span>
           </div>
         </div>
 
         {/* Payment Methods */}
-        <div className="bg-[var(--card-color)] rounded-3xl p-5 shadow-sm border border-slate-100">
-          <h2 className="text-lg font-black text-slate-800 mb-4">
+        <div className="bg-[var(--card-color)] rounded-3xl p-5 shadow-sm border border-[var(--border-color)]">
+          <h2 className="text-lg font-black text-[var(--text-color)] mb-4">
             Select Payment Method
           </h2>
 
@@ -87,22 +87,22 @@ export default function PaymentPage() {
             onClick={() => setSelectedMethod("cod")}
             className={`w-full flex items-center justify-between p-4 rounded-2xl border mb-3 ${
               selectedMethod === "cod"
-                ? "border-violet-600 bg-violet-50"
-                : "border-slate-200"
+                ? "border-[var(--primary-color)] bg-[var(--primary-color)]"
+                : "border-[var(--border-color)]"
             }`}
           >
             <div className="flex items-center gap-3">
               <Wallet size={22} />
               <div className="text-left">
                 <p className="font-bold">Cash On Delivery</p>
-                <p className="text-xs text-slate-500">
+                <p className="text-xs text-[var(--text-color)]">
                   Pay after delivery
                 </p>
               </div>
             </div>
 
             {selectedMethod === "cod" && (
-              <CheckCircle2 className="text-violet-600" />
+              <CheckCircle2 className="text-[var(--primary-color)]" />
             )}
           </button>
 
@@ -111,22 +111,22 @@ export default function PaymentPage() {
             onClick={() => setSelectedMethod("upi")}
             className={`w-full flex items-center justify-between p-4 rounded-2xl border mb-3 ${
               selectedMethod === "upi"
-                ? "border-violet-600 bg-violet-50"
-                : "border-slate-200"
+                ? "border-[var(--primary-color)] bg-[var(--primary-color)]"
+                : "border-[var(--border-color)]"
             }`}
           >
             <div className="flex items-center gap-3">
               <CreditCard size={22} />
               <div className="text-left">
                 <p className="font-bold">UPI Payment</p>
-                <p className="text-xs text-slate-500">
+                <p className="text-xs text-[var(--text-color)]">
                   Google Pay, PhonePe, Paytm
                 </p>
               </div>
             </div>
 
             {selectedMethod === "upi" && (
-              <CheckCircle2 className="text-violet-600" />
+              <CheckCircle2 className="text-[var(--primary-color)]" />
             )}
           </button>
 
@@ -135,22 +135,22 @@ export default function PaymentPage() {
             onClick={() => setSelectedMethod("bank")}
             className={`w-full flex items-center justify-between p-4 rounded-2xl border ${
               selectedMethod === "bank"
-                ? "border-violet-600 bg-violet-50"
-                : "border-slate-200"
+                ? "border-[var(--primary-color)] bg-[var(--primary-color)]"
+                : "border-[var(--border-color)]"
             }`}
           >
             <div className="flex items-center gap-3">
               <Landmark size={22} />
               <div className="text-left">
                 <p className="font-bold">Net Banking</p>
-                <p className="text-xs text-slate-500">
+                <p className="text-xs text-[var(--text-color)]">
                   Direct Bank Transfer
                 </p>
               </div>
             </div>
 
             {selectedMethod === "bank" && (
-              <CheckCircle2 className="text-violet-600" />
+              <CheckCircle2 className="text-[var(--primary-color)]" />
             )}
           </button>
         </div>
@@ -159,7 +159,7 @@ export default function PaymentPage() {
         <button
           onClick={handlePlaceOrder}
           disabled={loading}
-          className="w-full bg-violet-600 text-[var(--button-text-color)] py-5 rounded-3xl font-black text-lg disabled:opacity-50"
+          className="w-full bg-[var(--primary-color)] text-[var(--button-text-color)] py-5 rounded-3xl font-black text-lg disabled:opacity-50"
         >
           {loading ? "Processing..." : "Place Order"}
         </button>

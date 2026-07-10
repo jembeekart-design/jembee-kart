@@ -200,7 +200,7 @@ export default function CloudinaryUploader({
             fileInputRef.current?.click();
           }}
           disabled={loading}
-          className="flex flex-1 items-center justify-center gap-3 rounded-2xl bg-gradient-to-r from-blue-600 to-purple-600 px-6 py-4 text-base font-black text-[var(--button-text-color)] shadow-xl transition-all duration-300 hover:scale-[1.02]"
+          className="flex flex-1 items-center justify-center gap-3 rounded-2xl bg-gradient-to-r from-[var(--primary-color)] to-[var(--primary-color)] px-6 py-4 text-base font-black text-[var(--button-text-color)] shadow-xl transition-all duration-300 hover:scale-[1.02]"
         >
           {loading ? (
             <>
@@ -226,7 +226,7 @@ export default function CloudinaryUploader({
             onClick={
               removeFile
             }
-            className="rounded-2xl bg-[var(--danger-color)] px-6 py-4 text-base font-black text-[var(--button-text-color)] shadow-xl transition-all duration-300 hover:bg-red-600"
+            className="rounded-2xl bg-[var(--danger-color)] px-6 py-4 text-base font-black text-[var(--button-text-color)] shadow-xl transition-all duration-300 hover:bg-[var(--danger-color)]"
           >
             Delete
           </button>

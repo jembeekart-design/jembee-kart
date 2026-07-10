@@ -39,7 +39,7 @@ export default function LoyaltyProgramPage() {
 
   return (
 
-    <main className="min-h-screen bg-[#090909] p-4 text-[var(--button-text-color)]">
+    <main className="min-h-screen bg-[var(--primary-color)] p-4 text-[var(--button-text-color)]">
 
       {/* HEADER */}
 
@@ -47,7 +47,7 @@ export default function LoyaltyProgramPage() {
 
         <div className="flex items-center gap-4">
 
-          <div className="flex h-16 w-16 items-center justify-center rounded-[28px] bg-pink-500">
+          <div className="flex h-16 w-16 items-center justify-center rounded-[28px] bg-[var(--primary-color)]">
 
             <Gift
               size={30}
@@ -70,7 +70,7 @@ export default function LoyaltyProgramPage() {
 
         </div>
 
-        <button className="rounded-2xl bg-pink-500 px-5 py-3 font-bold text-[var(--text-color)]">
+        <button className="rounded-2xl bg-[var(--primary-color)] px-5 py-3 font-bold text-[var(--text-color)]">
 
           Add New Reward
 
@@ -116,7 +116,7 @@ export default function LoyaltyProgramPage() {
 
           <Crown
             size={24}
-            className="text-pink-400"
+            className="text-[var(--primary-color)]"
           />
 
           <h2 className="text-2xl font-black">
@@ -135,12 +135,12 @@ export default function LoyaltyProgramPage() {
 
               <div
                 key={index}
-                className="rounded-[30px] border border-white/10 bg-[#151515] p-6"
+                className="rounded-[30px] border border-[var(--border-color)]/10 bg-[var(--primary-color)] p-6"
               >
 
                 <div className="flex items-center justify-between">
 
-                  <div className="flex h-14 w-14 items-center justify-center rounded-2xl bg-pink-500 text-[var(--text-color)]">
+                  <div className="flex h-14 w-14 items-center justify-center rounded-2xl bg-[var(--primary-color)] text-[var(--text-color)]">
 
                     <Trophy size={24} />
 
@@ -148,7 +148,7 @@ export default function LoyaltyProgramPage() {
 
                   <BadgeCheck
                     size={24}
-                    className="text-green-400"
+                    className="text-[var(--success-color)]"
                   />
 
                 </div>
@@ -161,13 +161,13 @@ export default function LoyaltyProgramPage() {
                   Required Points
                 </p>
 
-                <h4 className="mt-1 text-3xl font-black text-pink-400">
+                <h4 className="mt-1 text-3xl font-black text-[var(--primary-color)]">
                   {item.points}
                 </h4>
 
-                <div className="mt-5 rounded-2xl bg-pink-500/10 p-4">
+                <div className="mt-5 rounded-2xl bg-[var(--primary-color)]/10 p-4">
 
-                  <p className="text-sm text-gray-300">
+                  <p className="text-sm text-[var(--text-color)]">
                     Benefit
                   </p>
 
@@ -190,13 +190,13 @@ export default function LoyaltyProgramPage() {
 
       <div className="mt-8 grid gap-5 md:grid-cols-2">
 
-        <div className="rounded-[30px] border border-white/10 bg-[#151515] p-6">
+        <div className="rounded-[30px] border border-[var(--border-color)]/10 bg-[var(--primary-color)] p-6">
 
           <div className="flex items-center gap-3">
 
             <Sparkles
               size={24}
-              className="text-pink-400"
+              className="text-[var(--primary-color)]"
             />
 
             <h2 className="text-2xl font-black">
@@ -221,13 +221,13 @@ export default function LoyaltyProgramPage() {
 
         </div>
 
-        <div className="rounded-[30px] border border-white/10 bg-[#151515] p-6">
+        <div className="rounded-[30px] border border-[var(--border-color)]/10 bg-[var(--primary-color)] p-6">
 
           <div className="flex items-center gap-3">
 
             <TrendingUp
               size={24}
-              className="text-green-400"
+              className="text-[var(--success-color)]"
             />
 
             <h2 className="text-2xl font-black">
@@ -261,7 +261,7 @@ export default function LoyaltyProgramPage() {
 
       {/* BONUS SECTION */}
 
-      <div className="mt-8 rounded-[32px] bg-gradient-to-r from-pink-500 to-purple-500 p-7 text-[var(--text-color)]">
+      <div className="mt-8 rounded-[32px] bg-gradient-to-r from-[var(--primary-color)] to-[var(--primary-color)] p-7 text-[var(--text-color)]">
 
         <div className="flex items-center gap-3">
 
@@ -305,9 +305,9 @@ function StatCard({
 
   return (
 
-    <div className="rounded-[28px] border border-white/10 bg-[#151515] p-5">
+    <div className="rounded-[28px] border border-[var(--border-color)]/10 bg-[var(--primary-color)] p-5">
 
-      <div className="flex h-14 w-14 items-center justify-center rounded-2xl bg-pink-500 text-[var(--text-color)]">
+      <div className="flex h-14 w-14 items-center justify-center rounded-2xl bg-[var(--primary-color)] text-[var(--text-color)]">
 
         {icon}
 
@@ -334,11 +334,11 @@ function FeatureItem({
 
   return (
 
-    <div className="flex items-center gap-3 rounded-2xl bg-[#0f0f0f] p-4">
+    <div className="flex items-center gap-3 rounded-2xl bg-[var(--primary-color)] p-4">
 
       <Star
         size={18}
-        className="text-pink-400"
+        className="text-[var(--primary-color)]"
       />
 
       <p className="font-medium">
@@ -368,16 +368,16 @@ function ProgressItem({
           {title}
         </p>
 
-        <p className="font-bold text-green-400">
+        <p className="font-bold text-[var(--success-color)]">
           {value}
         </p>
 
       </div>
 
-      <div className="h-3 overflow-hidden rounded-full bg-[#0f0f0f]">
+      <div className="h-3 overflow-hidden rounded-full bg-[var(--primary-color)]">
 
         <div
-          className="h-full rounded-full bg-green-400"
+          className="h-full rounded-full bg-[var(--success-color)]"
           style={{
             width: value
           }}

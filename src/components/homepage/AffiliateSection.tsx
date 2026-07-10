@@ -29,15 +29,15 @@ export default function AffiliateSection({
 
   buttonText = "Join Affiliate Program",
 
-  backgroundColor = "#000000",
+  backgroundColor = "var(--primary-color)",
 
-  gradientColor = "#001a4d",
+  gradientColor = "var(--primary-color)",
 
-  buttonColor = "#2563eb",
+  buttonColor = "var(--primary-color)",
 
-  buttonTextColor = "#ffffff",
+  buttonTextColor = "var(--primary-color)",
 
-  textColor = "#ffffff",
+  textColor = "var(--primary-color)",
 
   borderRadius = "24px",
 

@@ -70,7 +70,7 @@ export default function AdminLayout({
 
   if (loading) {
     return (
-      <div className="flex min-h-screen items-center justify-center bg-gray-900 text-green-400">
+      <div className="flex min-h-screen items-center justify-center bg-[var(--card-color)] text-[var(--success-color)]">
         Loading...
       </div>
     );

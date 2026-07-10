@@ -195,7 +195,7 @@ const router = useRouter();
 
   return (
 
-    <main className="min-h-screen bg-[#0b0b0b] p-4 text-[var(--button-text-color)]">
+    <main className="min-h-screen bg-[var(--primary-color)] p-4 text-[var(--button-text-color)]">
 
       {/* HEADER */}
 
@@ -203,7 +203,7 @@ const router = useRouter();
 
         <div className="flex items-center gap-4">
 
-          <div className="flex h-16 w-16 items-center justify-center rounded-[24px] bg-purple-500">
+          <div className="flex h-16 w-16 items-center justify-center rounded-[24px] bg-[var(--primary-color)]">
 
             <Database size={30} />
 
@@ -230,7 +230,7 @@ const router = useRouter();
           disabled={
             refreshing
           }
-          className="flex items-center gap-2 rounded-2xl bg-purple-500 px-5 py-3 font-bold"
+          className="flex items-center gap-2 rounded-2xl bg-[var(--primary-color)] px-5 py-3 font-bold"
         >
 
           <RefreshCcw size={18} />
@@ -281,7 +281,7 @@ const router = useRouter();
           icon={
             <ShieldAlert size={24} />
           }
-          color="bg-orange-500"
+          color="bg-[var(--warning-color)]"
         />
 
       </div>
@@ -295,14 +295,14 @@ const router = useRouter();
 
             <div
               key={item.name}
-              className="rounded-[30px] bg-[#151515] p-5"
+              className="rounded-[30px] bg-[var(--primary-color)] p-5"
             >
 
               <div className="flex flex-col gap-5 md:flex-row md:items-center md:justify-between">
 
                 <div>
 
-                  <h2 className="text-2xl font-black text-purple-400">
+                  <h2 className="text-2xl font-black text-[var(--primary-color)]">
 
                     {item.name}
 
@@ -361,7 +361,7 @@ function StatsCard({
 
   return (
 
-    <div className="rounded-[30px] bg-[#151515] p-5">
+    <div className="rounded-[30px] bg-[var(--primary-color)] p-5">
 
       <div className="flex items-center justify-between">
 

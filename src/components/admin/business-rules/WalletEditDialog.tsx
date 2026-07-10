@@ -54,13 +54,13 @@ export default function WalletEditDialog({
 
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-[var(--card-color)]/60">
 
-      <div className="w-full max-w-lg rounded-xl bg-slate-900 p-6">
+      <div className="w-full max-w-lg rounded-xl bg-[var(--card-color)] p-6">
 
         <h2 className="text-xl font-bold">
           Edit Wallet Rules
         </h2>
 
-        <p className="mt-2 text-sm text-slate-400">
+        <p className="mt-2 text-sm text-[var(--text-color)]">
           Configure wallet and withdrawal settings.
         </p>
 
@@ -80,7 +80,7 @@ export default function WalletEditDialog({
                   minimumWithdrawal: Number(e.target.value),
                 })
               }
-              className="mt-1 w-full rounded-lg border border-slate-700 bg-slate-800 p-3"
+              className="mt-1 w-full rounded-lg border border-[var(--border-color)] bg-[var(--card-color)] p-3"
             />
           </div>
 
@@ -98,7 +98,7 @@ export default function WalletEditDialog({
                   withdrawalCharge: Number(e.target.value),
                 })
               }
-              className="mt-1 w-full rounded-lg border border-slate-700 bg-slate-800 p-3"
+              className="mt-1 w-full rounded-lg border border-[var(--border-color)] bg-[var(--card-color)] p-3"
             />
           </div>
 
@@ -118,7 +118,7 @@ export default function WalletEditDialog({
                       | "PERCENTAGE",
                 })
               }
-              className="mt-1 w-full rounded-lg border border-slate-700 bg-slate-800 p-3"
+              className="mt-1 w-full rounded-lg border border-[var(--border-color)] bg-[var(--card-color)] p-3"
             >
               <option value="FIXED">
                 Fixed
@@ -164,7 +164,7 @@ export default function WalletEditDialog({
                   maxDailyWithdrawal: Number(e.target.value),
                 })
               }
-              className="mt-1 w-full rounded-lg border border-slate-700 bg-slate-800 p-3"
+              className="mt-1 w-full rounded-lg border border-[var(--border-color)] bg-[var(--card-color)] p-3"
             />
           </div>
 
@@ -174,7 +174,7 @@ export default function WalletEditDialog({
 
           <button
             onClick={onClose}
-            className="rounded-lg border border-slate-700 px-4 py-2"
+            className="rounded-lg border border-[var(--border-color)] px-4 py-2"
           >
             Cancel
           </button>
@@ -182,7 +182,7 @@ export default function WalletEditDialog({
           <button
             onClick={handleSave}
             disabled={saving}
-            className="rounded-lg bg-indigo-600 px-4 py-2 hover:bg-indigo-700 disabled:opacity-50"
+            className="rounded-lg bg-[var(--primary-color)] px-4 py-2 hover:bg-[var(--primary-color)] disabled:opacity-50"
           >
             {saving ? "Saving..." : "Save"}
           </button>

@@ -95,45 +95,45 @@ export default function AddressPage() {
   }
 
   return (
-    <main className="min-h-screen bg-slate-50 pb-24">
-      <div className="sticky top-0 z-20 bg-[var(--card-color)]/80 backdrop-blur-md border-b border-slate-200 px-4 py-6 flex items-center gap-4">
-        <button onClick={() => window.history.back()} className="h-11 w-11 rounded-2xl bg-slate-100 flex items-center justify-center">
+    <main className="min-h-screen bg-[var(--card-color)] pb-24">
+      <div className="sticky top-0 z-20 bg-[var(--card-color)]/80 backdrop-blur-md border-b border-[var(--border-color)] px-4 py-6 flex items-center gap-4">
+        <button onClick={() => window.history.back()} className="h-11 w-11 rounded-2xl bg-[var(--card-color)] flex items-center justify-center">
           <ArrowLeft size={20} />
         </button>
-        <h1 className="text-2xl font-extrabold text-slate-900 tracking-tight">Delivery Address</h1>
+        <h1 className="text-2xl font-extrabold text-[var(--text-color)] tracking-tight">Delivery Address</h1>
       </div>
 
       <div className="p-4 max-w-lg mx-auto">
         {form.address && (
-          <div className="bg-green-50 border border-green-200 rounded-3xl p-5 mb-6">
-            <h3 className="font-bold text-green-700 flex items-center gap-2">
+          <div className="bg-[var(--success-color)] border border-[var(--success-color)] rounded-3xl p-5 mb-6">
+            <h3 className="font-bold text-[var(--success-color)] flex items-center gap-2">
               <CheckCircle2 size={18} /> Saved Address
             </h3>
-            <p className="mt-2 text-sm font-semibold text-slate-800">{form.fullName}</p>
-            <p className="text-sm text-slate-700">{form.mobile}</p>
-            <p className="text-sm text-slate-700">{form.address}</p>
-            <p className="text-sm text-slate-700">{form.city}, {form.state} - {form.pincode}</p>
+            <p className="mt-2 text-sm font-semibold text-[var(--text-color)]">{form.fullName}</p>
+            <p className="text-sm text-[var(--text-color)]">{form.mobile}</p>
+            <p className="text-sm text-[var(--text-color)]">{form.address}</p>
+            <p className="text-sm text-[var(--text-color)]">{form.city}, {form.state} - {form.pincode}</p>
           </div>
         )}
 
-        <div className="bg-[var(--card-color)] rounded-[40px] shadow-xl shadow-slate-200/50 border border-slate-100 p-8 space-y-4">
+        <div className="bg-[var(--card-color)] rounded-[40px] shadow-xl shadow border border-[var(--border-color)] p-8 space-y-4">
           <div className="flex items-center gap-3 mb-6">
-            <div className="p-3 bg-violet-100 rounded-2xl text-violet-600"><Home size={24} /></div>
-            <h2 className="text-xl font-bold text-slate-800">Shipping Details</h2>
+            <div className="p-3 bg-[var(--primary-color)] rounded-2xl text-[var(--primary-color)]"><Home size={24} /></div>
+            <h2 className="text-xl font-bold text-[var(--text-color)]">Shipping Details</h2>
           </div>
 
-          <input type="text" name="fullName" placeholder="Full Name" value={form.fullName} onChange={handleChange} className="w-full bg-slate-50 rounded-2xl border border-slate-200 px-6 py-4 outline-none focus:border-violet-400" />
-          <input type="tel" name="mobile" placeholder="Mobile Number" value={form.mobile} onChange={handleChange} className="w-full bg-slate-50 rounded-2xl border border-slate-200 px-6 py-4 outline-none focus:border-violet-400" />
-          <textarea name="address" placeholder="Full Address" value={form.address} onChange={handleChange} rows={3} className="w-full bg-slate-50 rounded-2xl border border-slate-200 px-6 py-4 outline-none focus:border-violet-400" />
-          <input type="text" name="landmark" placeholder="Landmark (Optional)" value={form.landmark} onChange={handleChange} className="w-full bg-slate-50 rounded-2xl border border-slate-200 px-6 py-4 outline-none focus:border-violet-400" />
-          <input type="text" name="city" placeholder="City" value={form.city} onChange={handleChange} className="w-full bg-slate-50 rounded-2xl border border-slate-200 px-6 py-4 outline-none focus:border-violet-400" />
-          <input type="text" name="state" placeholder="State" value={form.state} onChange={handleChange} className="w-full bg-slate-50 rounded-2xl border border-slate-200 px-6 py-4 outline-none focus:border-violet-400" />
-          <input type="text" name="pincode" placeholder="Pincode" value={form.pincode} onChange={handleChange} className="w-full bg-slate-50 rounded-2xl border border-slate-200 px-6 py-4 outline-none focus:border-violet-400" />
+          <input type="text" name="fullName" placeholder="Full Name" value={form.fullName} onChange={handleChange} className="w-full bg-[var(--card-color)] rounded-2xl border border-[var(--border-color)] px-6 py-4 outline-none focus:border-[var(--primary-color)]" />
+          <input type="tel" name="mobile" placeholder="Mobile Number" value={form.mobile} onChange={handleChange} className="w-full bg-[var(--card-color)] rounded-2xl border border-[var(--border-color)] px-6 py-4 outline-none focus:border-[var(--primary-color)]" />
+          <textarea name="address" placeholder="Full Address" value={form.address} onChange={handleChange} rows={3} className="w-full bg-[var(--card-color)] rounded-2xl border border-[var(--border-color)] px-6 py-4 outline-none focus:border-[var(--primary-color)]" />
+          <input type="text" name="landmark" placeholder="Landmark (Optional)" value={form.landmark} onChange={handleChange} className="w-full bg-[var(--card-color)] rounded-2xl border border-[var(--border-color)] px-6 py-4 outline-none focus:border-[var(--primary-color)]" />
+          <input type="text" name="city" placeholder="City" value={form.city} onChange={handleChange} className="w-full bg-[var(--card-color)] rounded-2xl border border-[var(--border-color)] px-6 py-4 outline-none focus:border-[var(--primary-color)]" />
+          <input type="text" name="state" placeholder="State" value={form.state} onChange={handleChange} className="w-full bg-[var(--card-color)] rounded-2xl border border-[var(--border-color)] px-6 py-4 outline-none focus:border-[var(--primary-color)]" />
+          <input type="text" name="pincode" placeholder="Pincode" value={form.pincode} onChange={handleChange} className="w-full bg-[var(--card-color)] rounded-2xl border border-[var(--border-color)] px-6 py-4 outline-none focus:border-[var(--primary-color)]" />
           
           <button
             onClick={handleSaveAddress}
             disabled={loading}
-            className="w-full mt-6 bg-slate-900 text-[var(--button-text-color)] rounded-2xl py-5 font-bold text-lg flex items-center justify-center gap-2 hover:bg-slate-800 transition-all disabled:opacity-50"
+            className="w-full mt-6 bg-[var(--card-color)] text-[var(--button-text-color)] rounded-2xl py-5 font-bold text-lg flex items-center justify-center gap-2 hover:bg-[var(--card-color)] transition-all disabled:opacity-50"
           >
             {loading ? <Loader2 size={20} className="animate-spin" /> : <MapPin size={20} />}
             {loading ? "Saving..." : "Save Delivery Address"}

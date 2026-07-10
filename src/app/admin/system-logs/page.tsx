@@ -104,7 +104,7 @@ export default function SystemLogsPage() {
 
   return (
 
-    <main className="min-h-screen bg-[#0b0b0b] p-4 text-[var(--button-text-color)]">
+    <main className="min-h-screen bg-[var(--primary-color)] p-4 text-[var(--button-text-color)]">
 
       {/* HEADER */}
 
@@ -178,7 +178,7 @@ export default function SystemLogsPage() {
 
         {logs.length === 0 && (
 
-          <div className="rounded-[30px] bg-[#151515] p-10 text-center">
+          <div className="rounded-[30px] bg-[var(--primary-color)] p-10 text-center">
 
             No Logs Found
 
@@ -190,7 +190,7 @@ export default function SystemLogsPage() {
 
           <div
             key={log.id}
-            className="rounded-[30px] bg-[#151515] p-5"
+            className="rounded-[30px] bg-[var(--primary-color)] p-5"
           >
 
             <div className="flex flex-col gap-5 md:flex-row md:items-start md:justify-between">
@@ -231,7 +231,7 @@ export default function SystemLogsPage() {
 
                 </div>
 
-                <p className="mt-5 text-gray-300">
+                <p className="mt-5 text-[var(--text-color)]">
 
                   {log.message}
 
@@ -241,7 +241,7 @@ export default function SystemLogsPage() {
 
               {/* RIGHT */}
 
-              <div className="flex items-center gap-2 rounded-full bg-[var(--card-color)] px-4 py-2 text-sm text-gray-300">
+              <div className="flex items-center gap-2 rounded-full bg-[var(--card-color)] px-4 py-2 text-sm text-[var(--text-color)]">
 
                 <Clock3 size={16} />
 
@@ -276,7 +276,7 @@ function StatCard({
 
   return (
 
-    <div className="rounded-[30px] bg-[#151515] p-5">
+    <div className="rounded-[30px] bg-[var(--primary-color)] p-5">
 
       <div className="flex items-center justify-between">
 

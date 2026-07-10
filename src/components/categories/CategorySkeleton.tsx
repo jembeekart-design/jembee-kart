@@ -6,13 +6,13 @@ export default function CategorySkeleton() {
 
       {/* IMAGE SKELETON */}
 
-      <div className="h-[170px] w-full bg-gray-300" />
+      <div className="h-[170px] w-full bg-[var(--card-color)]" />
 
       {/* CONTENT */}
 
       <div className="p-4">
 
-        <div className="h-6 w-2/3 rounded-xl bg-gray-300" />
+        <div className="h-6 w-2/3 rounded-xl bg-[var(--card-color)]" />
 
       </div>
 

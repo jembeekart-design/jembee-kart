@@ -16,7 +16,7 @@ export default function BorderRadiusSettings({
 
   return (
 
-    <div className="rounded-2xl border border-slate-700 bg-slate-950 p-6">
+    <div className="rounded-2xl border border-[var(--border-color)] bg-[var(--card-color)] p-6">
 
       <h2 className="mb-6 text-2xl font-bold">
         Border Radius
@@ -46,7 +46,7 @@ export default function BorderRadiusSettings({
             className="w-full"
           />
 
-          <p className="mt-2 text-sm text-slate-400">
+          <p className="mt-2 text-sm text-[var(--text-color)]">
             {theme.buttonRadius}px
           </p>
 
@@ -74,7 +74,7 @@ export default function BorderRadiusSettings({
             className="w-full"
           />
 
-          <p className="mt-2 text-sm text-slate-400">
+          <p className="mt-2 text-sm text-[var(--text-color)]">
             {theme.cardRadius ?? 24}px
           </p>
 
@@ -102,7 +102,7 @@ export default function BorderRadiusSettings({
             className="w-full"
           />
 
-          <p className="mt-2 text-sm text-slate-400">
+          <p className="mt-2 text-sm text-[var(--text-color)]">
             {theme.inputRadius ?? 12}px
           </p>
 

@@ -53,7 +53,7 @@ export default function AIChatbotPage() {
 
   return (
 
-    <main className="min-h-screen bg-[#050505] p-4 text-[var(--button-text-color)]">
+    <main className="min-h-screen bg-[var(--primary-color)] p-4 text-[var(--button-text-color)]">
 
       {/* HEADER */}
 
@@ -143,11 +143,11 @@ export default function AIChatbotPage() {
 
         {/* CHAT */}
 
-        <div className="rounded-[30px] border border-white/10 bg-[#111111] p-6 lg:col-span-2">
+        <div className="rounded-[30px] border border-[var(--border-color)]/10 bg-[var(--primary-color)] p-6 lg:col-span-2">
 
           <div className="flex items-center gap-3">
 
-            <MessageSquare className="text-violet-400" />
+            <MessageSquare className="text-[var(--primary-color)]" />
 
             <h2 className="text-2xl font-black">
 
@@ -206,7 +206,7 @@ export default function AIChatbotPage() {
                 )
               }
               placeholder="Type message..."
-              className="flex-1 rounded-2xl border border-white/10 bg-[var(--card-color)]/30 p-4 outline-none"
+              className="flex-1 rounded-2xl border border-[var(--border-color)]/10 bg-[var(--card-color)]/30 p-4 outline-none"
             />
 
             <button
@@ -228,11 +228,11 @@ export default function AIChatbotPage() {
 
         <div className="space-y-6">
 
-          <div className="rounded-[30px] border border-white/10 bg-[#111111] p-6">
+          <div className="rounded-[30px] border border-[var(--border-color)]/10 bg-[var(--primary-color)] p-6">
 
             <div className="flex items-center gap-3">
 
-              <Sparkles className="text-violet-400" />
+              <Sparkles className="text-[var(--primary-color)]" />
 
               <h2 className="text-2xl font-black">
 
@@ -264,7 +264,7 @@ export default function AIChatbotPage() {
 
           </div>
 
-          <div className="rounded-[30px] bg-gradient-to-r from-violet-500 to-fuchsia-500 p-6 text-[var(--text-color)]">
+          <div className="rounded-[30px] bg-gradient-to-r from-[var(--primary-color)] to-[var(--primary-color)] p-6 text-[var(--text-color)]">
 
             <div className="flex items-center gap-3">
 
@@ -306,7 +306,7 @@ export default function AIChatbotPage() {
         </button>
 
         <button
-          className="flex items-center gap-2 rounded-2xl bg-cyan-500 px-6 py-4 font-black text-[var(--text-color)]"
+          className="flex items-center gap-2 rounded-2xl bg-[var(--primary-color)] px-6 py-4 font-black text-[var(--text-color)]"
         >
 
           <Mic size={20} />
@@ -340,7 +340,7 @@ function StatsCard({
 
   return (
 
-    <div className="rounded-[30px] border border-white/10 bg-[#111111] p-5">
+    <div className="rounded-[30px] border border-[var(--border-color)]/10 bg-[var(--primary-color)] p-5">
 
       <div className="flex h-14 w-14 items-center justify-center rounded-2xl bg-[var(--secondary-color)]">
 
@@ -380,7 +380,7 @@ function FeatureItem({
 
       <div className="flex items-center gap-3">
 
-        <Shield className="text-violet-400" />
+        <Shield className="text-[var(--primary-color)]" />
 
         <h3 className="font-bold">
 

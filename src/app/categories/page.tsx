@@ -37,7 +37,7 @@ export default function CategoriesPage() {
         min-h-screen
         w-full
         overflow-x-hidden
-        bg-[#f6f7fb]
+        bg-[var(--primary-color)]
 
         pb-32
 

@@ -108,7 +108,7 @@ export default function AdminHomePage() {
 
       {/* HERO */}
 
-      <div className="rounded-[35px] bg-gradient-to-r from-cyan-500 to-blue-600 p-8 text-[var(--text-color)]">
+      <div className="rounded-[35px] bg-gradient-to-r from-[var(--primary-color)] to-[var(--primary-color)] p-8 text-[var(--text-color)]">
 
         <div className="flex flex-col gap-8 lg:flex-row lg:items-center lg:justify-between">
 
@@ -164,10 +164,10 @@ export default function AdminHomePage() {
 
             <div
               key={index}
-              className="rounded-[30px] border border-white/10 bg-[#151515] p-5"
+              className="rounded-[30px] border border-[var(--border-color)]/10 bg-[var(--primary-color)] p-5"
             >
 
-              <div className="flex h-16 w-16 items-center justify-center rounded-2xl bg-cyan-500 text-[var(--text-color)]">
+              <div className="flex h-16 w-16 items-center justify-center rounded-2xl bg-[var(--primary-color)] text-[var(--text-color)]">
 
                 <Icon size={28} />
 
@@ -201,7 +201,7 @@ export default function AdminHomePage() {
 
           <TrendingUp
             size={24}
-            className="text-cyan-400"
+            className="text-[var(--primary-color)]"
           />
 
           <h2 className="text-2xl font-black">
@@ -228,10 +228,10 @@ export default function AdminHomePage() {
                 <Link
                   key={index}
                   href={item.link}
-                  className="group rounded-[28px] border border-white/10 bg-[#151515] p-5 transition-all duration-300 hover:scale-[1.03] hover:border-cyan-500"
+                  className="group rounded-[28px] border border-[var(--border-color)]/10 bg-[var(--primary-color)] p-5 transition-all duration-300 hover:scale-[1.03] hover:border-[var(--primary-color)]"
                 >
 
-                  <div className="flex h-16 w-16 items-center justify-center rounded-2xl bg-cyan-500 text-[var(--text-color)] transition-all duration-300 group-hover:rotate-6">
+                  <div className="flex h-16 w-16 items-center justify-center rounded-2xl bg-[var(--primary-color)] text-[var(--text-color)] transition-all duration-300 group-hover:rotate-6">
 
                     <Icon size={28} />
 
@@ -266,13 +266,13 @@ export default function AdminHomePage() {
 
         {/* RECENT ORDERS */}
 
-        <div className="rounded-[30px] border border-white/10 bg-[#151515] p-6">
+        <div className="rounded-[30px] border border-[var(--border-color)]/10 bg-[var(--primary-color)] p-6">
 
           <div className="flex items-center gap-3">
 
             <ShoppingCart
               size={24}
-              className="text-cyan-400"
+              className="text-[var(--primary-color)]"
             />
 
             <h2 className="text-2xl font-black">
@@ -287,17 +287,17 @@ export default function AdminHomePage() {
 
             <ActivityItem
               title="New iPhone Order"
-              subtitle="Order #1024 placed"
+              subtitle="Order var(--primary-color) placed"
             />
 
             <ActivityItem
               title="Fashion Product"
-              subtitle="Order #1025 shipped"
+              subtitle="Order var(--primary-color) shipped"
             />
 
             <ActivityItem
               title="Gaming Laptop"
-              subtitle="Order #1026 delivered"
+              subtitle="Order var(--primary-color) delivered"
             />
 
           </div>
@@ -306,13 +306,13 @@ export default function AdminHomePage() {
 
         {/* SYSTEM STATUS */}
 
-        <div className="rounded-[30px] border border-white/10 bg-[#151515] p-6">
+        <div className="rounded-[30px] border border-[var(--border-color)]/10 bg-[var(--primary-color)] p-6">
 
           <div className="flex items-center gap-3">
 
             <Shield
               size={24}
-              className="text-green-400"
+              className="text-[var(--success-color)]"
             />
 
             <h2 className="text-2xl font-black">
@@ -353,7 +353,7 @@ export default function AdminHomePage() {
 
       {/* BOTTOM SECTION */}
 
-      <div className="mt-10 rounded-[35px] bg-gradient-to-r from-fuchsia-500 to-violet-600 p-8">
+      <div className="mt-10 rounded-[35px] bg-gradient-to-r from-[var(--primary-color)] to-[var(--primary-color)] p-8">
 
         <div className="flex flex-col gap-6 lg:flex-row lg:items-center lg:justify-between">
 
@@ -397,24 +397,24 @@ export default function AdminHomePage() {
 
       {/* ALERT */}
 
-      <div className="mt-8 rounded-[28px] border border-yellow-500/20 bg-[var(--warning-color)]/10 p-5">
+      <div className="mt-8 rounded-[28px] border border-[var(--warning-color)]/20 bg-[var(--warning-color)]/10 p-5">
 
         <div className="flex items-start gap-4">
 
           <Bell
             size={24}
-            className="text-yellow-400"
+            className="text-[var(--warning-color)]"
           />
 
           <div>
 
-            <h3 className="text-xl font-black text-yellow-400">
+            <h3 className="text-xl font-black text-[var(--warning-color)]">
 
               System Notification
 
             </h3>
 
-            <p className="mt-2 text-sm text-gray-300">
+            <p className="mt-2 text-sm text-[var(--text-color)]">
 
               Admin dashboard successfully connected
               with sidebar layout and navigation system.
@@ -443,7 +443,7 @@ function ActivityItem({
 
   return (
 
-    <div className="flex items-center justify-between rounded-2xl bg-[#0f0f0f] p-4">
+    <div className="flex items-center justify-between rounded-2xl bg-[var(--primary-color)] p-4">
 
       <div>
 
@@ -479,7 +479,7 @@ function StatusItem({
 
   return (
 
-    <div className="flex items-center justify-between rounded-2xl bg-[#0f0f0f] p-4">
+    <div className="flex items-center justify-between rounded-2xl bg-[var(--primary-color)] p-4">
 
       <h3 className="font-bold">
 
@@ -487,7 +487,7 @@ function StatusItem({
 
       </h3>
 
-      <div className="rounded-full bg-[var(--success-color)]/20 px-4 py-2 text-sm font-bold text-green-400">
+      <div className="rounded-full bg-[var(--success-color)]/20 px-4 py-2 text-sm font-bold text-[var(--success-color)]">
 
         {status}
 

@@ -52,7 +52,7 @@ export default function MLMWalletPage() {
 
   return (
 
-    <main className="min-h-screen bg-[#f6f6f6] pb-24">
+    <main className="min-h-screen bg-[var(--primary-color)] pb-24">
 
       {/* HEADER */}
 
@@ -79,8 +79,8 @@ export default function MLMWalletPage() {
               items-center
               justify-center
               rounded-full
-              bg-violet-100
-              text-violet-700
+              bg-[var(--primary-color)]
+              text-[var(--primary-color)]
             "
           >
 
@@ -90,7 +90,7 @@ export default function MLMWalletPage() {
 
           <div>
 
-            <h1 className="text-[24px] font-black text-violet-700">
+            <h1 className="text-[24px] font-black text-[var(--primary-color)]">
 
               MLM Wallet
 
@@ -117,9 +117,9 @@ export default function MLMWalletPage() {
             overflow-hidden
             rounded-[32px]
             bg-gradient-to-br
-            from-violet-700
-            via-fuchsia-600
-            to-orange-500
+            from-[var(--primary-color)]
+            via-[var(--primary-color)]
+            to-[var(--primary-color)]
             p-5
             text-[var(--button-text-color)]
             shadow-xl
@@ -210,7 +210,7 @@ export default function MLMWalletPage() {
 
             <Gift
               size={28}
-              className="text-pink-600"
+              className="text-[var(--primary-color)]"
             />
 
             <h3 className="mt-3 text-[24px] font-black">
@@ -244,7 +244,7 @@ export default function MLMWalletPage() {
               justify-center
               gap-2
               rounded-2xl
-              bg-violet-700
+              bg-[var(--primary-color)]
               py-4
               text-[14px]
               font-black
@@ -266,7 +266,7 @@ export default function MLMWalletPage() {
               justify-center
               gap-2
               rounded-2xl
-              bg-orange-500
+              bg-[var(--warning-color)]
               py-4
               text-[14px]
               font-black
@@ -294,7 +294,7 @@ export default function MLMWalletPage() {
             rounded-[30px]
             bg-gradient-to-r
             from-black
-            to-gray-800
+            to-[var(--primary-color)]
             p-5
             text-[var(--button-text-color)]
             shadow-xl
@@ -423,8 +423,8 @@ export default function MLMWalletPage() {
                       font-black
                       ${
                         transaction.type === "credit"
-                          ? "bg-green-100 text-green-700"
-                          : "bg-red-100 text-red-700"
+                          ? "bg-[var(--success-color)] text-[var(--success-color)]"
+                          : "bg-[var(--danger-color)] text-[var(--danger-color)]"
                       }
                     `}
                   >

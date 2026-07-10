@@ -27,11 +27,11 @@ export default function CategoryBanner({
   image =
     "https://images.unsplash.com/photo-1445205170230-053b83016050",
 
-  backgroundColor = "#2563eb",
+  backgroundColor = "var(--primary-color)",
 
-  gradientColor = "#7c3aed",
+  gradientColor = "var(--primary-color)",
 
-  textColor = "#ffffff"
+  textColor = "var(--primary-color)"
 }: CategoryBannerProps) {
   return (
     <section className="w-full overflow-hidden px-3 py-5 md:px-6">
@@ -77,7 +77,7 @@ export default function CategoryBanner({
             {subtitle}
           </p>
 
-          <button className="mt-6 rounded-2xl bg-[var(--card-color)] px-6 py-3 text-sm font-black text-blue-700 shadow-xl transition-all duration-300 hover:scale-[1.03] md:mt-8 md:px-10 md:py-5 md:text-lg">
+          <button className="mt-6 rounded-2xl bg-[var(--card-color)] px-6 py-3 text-sm font-black text-[var(--primary-color)] shadow-xl transition-all duration-300 hover:scale-[1.03] md:mt-8 md:px-10 md:py-5 md:text-lg">
             {buttonText}
           </button>
 

@@ -43,7 +43,7 @@ export default function SEOPage() {
 
   return (
 
-    <main className="min-h-screen bg-[#0b0b0b] p-4 text-[var(--button-text-color)]">
+    <main className="min-h-screen bg-[var(--primary-color)] p-4 text-[var(--button-text-color)]">
 
       {/* HEADER */}
 
@@ -51,7 +51,7 @@ export default function SEOPage() {
 
         <div className="flex items-center gap-4">
 
-          <div className="flex h-16 w-16 items-center justify-center rounded-[24px] bg-orange-500">
+          <div className="flex h-16 w-16 items-center justify-center rounded-[24px] bg-[var(--warning-color)]">
 
             <Search size={30} />
 
@@ -73,7 +73,7 @@ export default function SEOPage() {
 
         <button
           onClick={saveSEO}
-          className="flex items-center gap-2 rounded-2xl bg-orange-500 px-5 py-3 text-sm font-bold text-[var(--button-text-color)]"
+          className="flex items-center gap-2 rounded-2xl bg-[var(--warning-color)] px-5 py-3 text-sm font-bold text-[var(--button-text-color)]"
         >
 
           <Save size={18} />
@@ -90,13 +90,13 @@ export default function SEOPage() {
 
         {/* META TITLE */}
 
-        <div className="rounded-[30px] bg-[#151515] p-5">
+        <div className="rounded-[30px] bg-[var(--primary-color)] p-5">
 
           <div className="mb-5 flex items-center gap-3">
 
             <FileText
               size={24}
-              className="text-orange-400"
+              className="text-[var(--warning-color)]"
             />
 
             <h2 className="text-2xl font-black">
@@ -113,20 +113,20 @@ export default function SEOPage() {
                 e.target.value
               )
             }
-            className="w-full rounded-2xl border border-white/10 bg-[var(--card-color)] px-4 py-4 text-[var(--button-text-color)] outline-none"
+            className="w-full rounded-2xl border border-[var(--border-color)]/10 bg-[var(--card-color)] px-4 py-4 text-[var(--button-text-color)] outline-none"
           />
 
         </div>
 
         {/* META DESCRIPTION */}
 
-        <div className="rounded-[30px] bg-[#151515] p-5">
+        <div className="rounded-[30px] bg-[var(--primary-color)] p-5">
 
           <div className="mb-5 flex items-center gap-3">
 
             <Globe
               size={24}
-              className="text-cyan-400"
+              className="text-[var(--primary-color)]"
             />
 
             <h2 className="text-2xl font-black">
@@ -143,20 +143,20 @@ export default function SEOPage() {
               )
             }
             rows={5}
-            className="w-full rounded-2xl border border-white/10 bg-[var(--card-color)] px-4 py-4 text-[var(--button-text-color)] outline-none"
+            className="w-full rounded-2xl border border-[var(--border-color)]/10 bg-[var(--card-color)] px-4 py-4 text-[var(--button-text-color)] outline-none"
           />
 
         </div>
 
         {/* KEYWORDS */}
 
-        <div className="rounded-[30px] bg-[#151515] p-5">
+        <div className="rounded-[30px] bg-[var(--primary-color)] p-5">
 
           <div className="mb-5 flex items-center gap-3">
 
             <Search
               size={24}
-              className="text-green-400"
+              className="text-[var(--success-color)]"
             />
 
             <h2 className="text-2xl font-black">
@@ -173,20 +173,20 @@ export default function SEOPage() {
                 e.target.value
               )
             }
-            className="w-full rounded-2xl border border-white/10 bg-[var(--card-color)] px-4 py-4 text-[var(--button-text-color)] outline-none"
+            className="w-full rounded-2xl border border-[var(--border-color)]/10 bg-[var(--card-color)] px-4 py-4 text-[var(--button-text-color)] outline-none"
           />
 
         </div>
 
         {/* SITE URL */}
 
-        <div className="rounded-[30px] bg-[#151515] p-5">
+        <div className="rounded-[30px] bg-[var(--primary-color)] p-5">
 
           <div className="mb-5 flex items-center gap-3">
 
             <Link
               size={24}
-              className="text-pink-400"
+              className="text-[var(--primary-color)]"
             />
 
             <h2 className="text-2xl font-black">
@@ -203,7 +203,7 @@ export default function SEOPage() {
                 e.target.value
               )
             }
-            className="w-full rounded-2xl border border-white/10 bg-[var(--card-color)] px-4 py-4 text-[var(--button-text-color)] outline-none"
+            className="w-full rounded-2xl border border-[var(--border-color)]/10 bg-[var(--card-color)] px-4 py-4 text-[var(--button-text-color)] outline-none"
           />
 
         </div>
@@ -212,7 +212,7 @@ export default function SEOPage() {
 
       {/* PREVIEW */}
 
-      <div className="mt-6 rounded-[30px] bg-gradient-to-r from-orange-500 to-red-500 p-6">
+      <div className="mt-6 rounded-[30px] bg-gradient-to-r from-[var(--primary-color)] to-[var(--primary-color)] p-6">
 
         <p className="text-sm text-[var(--button-text-color)]/70">
           Google Search Preview
@@ -222,7 +222,7 @@ export default function SEOPage() {
           {metaTitle}
         </h2>
 
-        <p className="mt-2 text-green-200 break-all">
+        <p className="mt-2 text-[var(--success-color)] break-all">
           {siteUrl}
         </p>
 

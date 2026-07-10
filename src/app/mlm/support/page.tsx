@@ -58,7 +58,7 @@ export default function MLMSupportPage() {
 
   return (
 
-    <main className="flex min-h-screen flex-col bg-[#f6f6f6]">
+    <main className="flex min-h-screen flex-col bg-[var(--primary-color)]">
 
       {/* HEADER */}
 
@@ -85,8 +85,8 @@ export default function MLMSupportPage() {
               items-center
               justify-center
               rounded-full
-              bg-violet-100
-              text-violet-700
+              bg-[var(--primary-color)]
+              text-[var(--primary-color)]
             "
           >
 
@@ -96,7 +96,7 @@ export default function MLMSupportPage() {
 
           <div>
 
-            <h1 className="text-[24px] font-black text-violet-700">
+            <h1 className="text-[24px] font-black text-[var(--primary-color)]">
 
               MLM Support
 
@@ -122,9 +122,9 @@ export default function MLMSupportPage() {
           className="
             rounded-[30px]
             bg-gradient-to-br
-            from-violet-700
-            via-fuchsia-600
-            to-orange-500
+            from-[var(--primary-color)]
+            via-[var(--primary-color)]
+            to-[var(--primary-color)]
             p-5
             text-[var(--button-text-color)]
             shadow-xl
@@ -214,7 +214,7 @@ export default function MLMSupportPage() {
 
             <Users
               size={28}
-              className="text-violet-700"
+              className="text-[var(--primary-color)]"
             />
 
             <h3 className="mt-3 text-[15px] font-black">
@@ -243,7 +243,7 @@ export default function MLMSupportPage() {
 
             <ShieldCheck
               size={28}
-              className="text-orange-600"
+              className="text-[var(--warning-color)]"
             />
 
             <h3 className="mt-3 text-[15px] font-black">
@@ -272,7 +272,7 @@ export default function MLMSupportPage() {
 
             <Headphones
               size={28}
-              className="text-pink-600"
+              className="text-[var(--primary-color)]"
             />
 
             <h3 className="mt-3 text-[15px] font-black">
@@ -339,7 +339,7 @@ export default function MLMSupportPage() {
                       leading-6
                       ${
                         item.sender === "user"
-                          ? "bg-violet-700 text-[var(--button-text-color)]"
+                          ? "bg-[var(--primary-color)] text-[var(--button-text-color)]"
                           : "bg-[var(--background-color)] text-[var(--text-color)]"
                       }
                     `}
@@ -406,8 +406,8 @@ export default function MLMSupportPage() {
               justify-center
               rounded-2xl
               bg-gradient-to-r
-              from-violet-700
-              to-fuchsia-600
+              from-[var(--primary-color)]
+              to-[var(--primary-color)]
               text-[var(--button-text-color)]
               shadow-lg
             "

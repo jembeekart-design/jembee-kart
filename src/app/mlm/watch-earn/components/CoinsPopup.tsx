@@ -59,7 +59,7 @@ CoinsPopup({
             items-center
             gap-3
             rounded-3xl
-            bg-yellow-400
+            bg-[var(--warning-color)]
             px-6
             py-4
             shadow-2xl

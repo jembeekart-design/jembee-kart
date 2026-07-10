@@ -54,7 +54,7 @@ export default function AntiFraudSettingsPage() {
           Anti Fraud Settings
         </h1>
 
-        <p className="mt-2 text-slate-500">
+        <p className="mt-2 text-[var(--text-color)]">
           Configure fraud protection rules for JembeeKart.
         </p>
 

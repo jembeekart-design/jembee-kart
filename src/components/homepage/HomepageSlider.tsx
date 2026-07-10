@@ -324,11 +324,11 @@ export default function HomepageSlider() {
                         135deg,
                         ${
                           slide.backgroundColor ||
-                          "#2563eb"
+                          "var(--primary-color)"
                         },
                         ${
                           slide.gradientColor ||
-                          "#7c3aed"
+                          "var(--primary-color)"
                         }
                       )`
 
@@ -441,7 +441,7 @@ export default function HomepageSlider() {
                           style={{
                             color:
                               slide.textColor ||
-                              "#ffffff"
+                              "var(--primary-color)"
                           }}
                         >
 
@@ -465,7 +465,7 @@ export default function HomepageSlider() {
                           style={{
                             color:
                               slide.textColor ||
-                              "#ffffff"
+                              "var(--primary-color)"
                           }}
                         >
 
@@ -504,11 +504,11 @@ export default function HomepageSlider() {
 
                                 backgroundColor:
                                   slide.buttonColor ||
-                                  "#ffffff",
+                                  "var(--primary-color)",
 
                                 color:
                                   slide.buttonTextColor ||
-                                  "#000000"
+                                  "var(--primary-color)"
 
                               }}
                             >

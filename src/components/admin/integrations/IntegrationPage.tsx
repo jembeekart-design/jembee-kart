@@ -103,7 +103,7 @@ export default function IntegrationPage() {
 
   return (
 
-    <div className="min-h-screen bg-slate-950 p-6 text-[var(--button-text-color)]">
+    <div className="min-h-screen bg-[var(--card-color)] p-6 text-[var(--button-text-color)]">
 
       <div className="mx-auto max-w-5xl">
 
@@ -111,7 +111,7 @@ export default function IntegrationPage() {
           Integration Center
         </h1>
 
-        <p className="mt-2 text-slate-400">
+        <p className="mt-2 text-[var(--text-color)]">
           Connect Business Rules with JembeeKart modules.
         </p>
 
@@ -121,7 +121,7 @@ export default function IntegrationPage() {
 
             <div
               key={module.id}
-              className="flex items-center justify-between rounded-xl border border-slate-700 bg-slate-900 p-6"
+              className="flex items-center justify-between rounded-xl border border-[var(--border-color)] bg-[var(--card-color)] p-6"
             >
 
               <div>
@@ -130,7 +130,7 @@ export default function IntegrationPage() {
                   {module.name}
                 </h2>
 
-                <p className="mt-2 text-sm text-slate-400">
+                <p className="mt-2 text-sm text-[var(--text-color)]">
 
                   {integrated[module.id]
                     ? `${module.name} Integration Successful`
@@ -148,7 +148,7 @@ export default function IntegrationPage() {
                 onClick={() =>
                   integrate(module.id)
                 }
-                className="rounded-lg bg-indigo-600 px-5 py-2 font-medium hover:bg-indigo-700 disabled:cursor-not-allowed disabled:bg-green-600"
+                className="rounded-lg bg-[var(--primary-color)] px-5 py-2 font-medium hover:bg-[var(--primary-color)] disabled:cursor-not-allowed disabled:bg-[var(--success-color)]"
               >
 
                 {loading[module.id]

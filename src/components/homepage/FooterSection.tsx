@@ -2,7 +2,7 @@
 
 export default function FooterSection() {
   return (
-    <footer className="w-full overflow-hidden bg-gray-900 text-[var(--button-text-color)]">
+    <footer className="w-full overflow-hidden bg-[var(--card-color)] text-[var(--button-text-color)]">
 
       <div className="grid w-full gap-10 px-4 py-12 md:grid-cols-2 md:px-6 lg:grid-cols-4">
 
@@ -116,7 +116,7 @@ export default function FooterSection() {
 
       {/* COPYRIGHT */}
 
-      <div className="border-t border-gray-800 px-4 py-5 text-center text-sm text-[var(--muted-text-color)] md:text-base">
+      <div className="border-t border-[var(--border-color)] px-4 py-5 text-center text-sm text-[var(--muted-text-color)] md:text-base">
 
         © 2026 JembeeKart. All rights reserved.
 

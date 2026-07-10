@@ -59,7 +59,7 @@ ShareDrawer({
         right-0
         z-[999]
         rounded-t-[35px]
-        bg-[#121212]
+        bg-[var(--primary-color)]
         transition-all
         duration-300
 
@@ -79,7 +79,7 @@ ShareDrawer({
           items-center
           justify-between
           border-b
-          border-white/10
+          border-[var(--border-color)]/10
           px-5
           py-4
         "
@@ -149,7 +149,7 @@ ShareDrawer({
             <MessageCircle
               size={28}
               className="
-                text-green-400
+                text-[var(--success-color)]
               "
             />
 
@@ -188,14 +188,14 @@ ShareDrawer({
               items-center
               justify-center
               rounded-full
-              bg-sky-500/20
+              bg-[var(--primary-color)]/20
             "
           >
 
             <Send
               size={28}
               className="
-                text-sky-400
+                text-[var(--primary-color)]
               "
             />
 
@@ -288,7 +288,7 @@ ShareDrawer({
             <Copy
               size={28}
               className="
-                text-yellow-300
+                text-[var(--warning-color)]
               "
             />
 
@@ -326,7 +326,7 @@ ShareDrawer({
             gap-3
             rounded-2xl
             border
-            border-white/10
+            border-[var(--border-color)]/10
             bg-[var(--card-color)]/5
             px-4
             py-4
@@ -345,7 +345,7 @@ ShareDrawer({
               flex-1
               truncate
               text-sm
-              text-gray-300
+              text-[var(--text-color)]
             "
           >
 

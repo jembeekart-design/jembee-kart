@@ -66,7 +66,7 @@ export default function AutomationPage() {
 
   return (
 
-    <main className="min-h-screen bg-[#050505] p-4 text-[var(--button-text-color)]">
+    <main className="min-h-screen bg-[var(--primary-color)] p-4 text-[var(--button-text-color)]">
 
       {/* HEADER */}
 
@@ -74,7 +74,7 @@ export default function AutomationPage() {
 
         <div className="flex items-center gap-4">
 
-          <div className="flex h-16 w-16 items-center justify-center rounded-[30px] bg-yellow-400">
+          <div className="flex h-16 w-16 items-center justify-center rounded-[30px] bg-[var(--warning-color)]">
 
             <Workflow
               size={30}
@@ -152,11 +152,11 @@ export default function AutomationPage() {
 
       {/* AUTOMATIONS */}
 
-      <div className="mt-6 rounded-[30px] border border-white/10 bg-[#111111] p-6">
+      <div className="mt-6 rounded-[30px] border border-[var(--border-color)]/10 bg-[var(--primary-color)] p-6">
 
         <div className="flex items-center gap-3">
 
-          <Zap className="text-yellow-400" />
+          <Zap className="text-[var(--warning-color)]" />
 
           <h2 className="text-3xl font-black">
 
@@ -186,7 +186,7 @@ export default function AutomationPage() {
 
                   <div className="flex items-center gap-4">
 
-                    <div className="flex h-14 w-14 items-center justify-center rounded-2xl bg-yellow-400">
+                    <div className="flex h-14 w-14 items-center justify-center rounded-2xl bg-[var(--warning-color)]">
 
                       <Icon
                         size={24}
@@ -240,7 +240,7 @@ export default function AutomationPage() {
 
       {/* AI AUTOMATION */}
 
-      <div className="mt-6 rounded-[30px] bg-gradient-to-r from-yellow-400 to-orange-500 p-6 text-[var(--text-color)]">
+      <div className="mt-6 rounded-[30px] bg-gradient-to-r from-[var(--primary-color)] to-[var(--primary-color)] p-6 text-[var(--text-color)]">
 
         <div className="flex items-center gap-3">
 
@@ -298,7 +298,7 @@ export default function AutomationPage() {
         </button>
 
         <button
-          className="flex items-center gap-2 rounded-2xl bg-cyan-500 px-6 py-4 font-black text-[var(--text-color)]"
+          className="flex items-center gap-2 rounded-2xl bg-[var(--primary-color)] px-6 py-4 font-black text-[var(--text-color)]"
         >
 
           <PlayCircle size={20} />
@@ -332,9 +332,9 @@ function StatsCard({
 
   return (
 
-    <div className="rounded-[30px] border border-white/10 bg-[#111111] p-5">
+    <div className="rounded-[30px] border border-[var(--border-color)]/10 bg-[var(--primary-color)] p-5">
 
-      <div className="flex h-14 w-14 items-center justify-center rounded-2xl bg-yellow-400">
+      <div className="flex h-14 w-14 items-center justify-center rounded-2xl bg-[var(--warning-color)]">
 
         <Icon
           size={24}

@@ -54,13 +54,13 @@ export default function ReferralEditDialog({
 
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-[var(--card-color)]/60">
 
-      <div className="w-full max-w-lg rounded-xl bg-slate-900 p-6">
+      <div className="w-full max-w-lg rounded-xl bg-[var(--card-color)] p-6">
 
         <h2 className="text-xl font-bold">
           Edit Referral Rules
         </h2>
 
-        <p className="mt-2 text-sm text-slate-400">
+        <p className="mt-2 text-sm text-[var(--text-color)]">
           Configure referral commission percentages.
         </p>
 
@@ -80,7 +80,7 @@ export default function ReferralEditDialog({
                   level1Commission: Number(e.target.value),
                 })
               }
-              className="mt-1 w-full rounded-lg border border-slate-700 bg-slate-800 p-3"
+              className="mt-1 w-full rounded-lg border border-[var(--border-color)] bg-[var(--card-color)] p-3"
             />
           </div>
 
@@ -98,7 +98,7 @@ export default function ReferralEditDialog({
                   level2Commission: Number(e.target.value),
                 })
               }
-              className="mt-1 w-full rounded-lg border border-slate-700 bg-slate-800 p-3"
+              className="mt-1 w-full rounded-lg border border-[var(--border-color)] bg-[var(--card-color)] p-3"
             />
           </div>
 
@@ -116,7 +116,7 @@ export default function ReferralEditDialog({
                   level3Commission: Number(e.target.value),
                 })
               }
-              className="mt-1 w-full rounded-lg border border-slate-700 bg-slate-800 p-3"
+              className="mt-1 w-full rounded-lg border border-[var(--border-color)] bg-[var(--card-color)] p-3"
             />
           </div>
 
@@ -134,7 +134,7 @@ export default function ReferralEditDialog({
                   level4Commission: Number(e.target.value),
                 })
               }
-              className="mt-1 w-full rounded-lg border border-slate-700 bg-slate-800 p-3"
+              className="mt-1 w-full rounded-lg border border-[var(--border-color)] bg-[var(--card-color)] p-3"
             />
           </div>
 
@@ -144,7 +144,7 @@ export default function ReferralEditDialog({
 
           <button
             onClick={onClose}
-            className="rounded-lg border border-slate-700 px-4 py-2"
+            className="rounded-lg border border-[var(--border-color)] px-4 py-2"
           >
             Cancel
           </button>
@@ -152,7 +152,7 @@ export default function ReferralEditDialog({
           <button
             onClick={handleSave}
             disabled={saving}
-            className="rounded-lg bg-indigo-600 px-4 py-2 hover:bg-indigo-700 disabled:opacity-50"
+            className="rounded-lg bg-[var(--primary-color)] px-4 py-2 hover:bg-[var(--primary-color)] disabled:opacity-50"
           >
             {saving ? "Saving..." : "Save"}
           </button>

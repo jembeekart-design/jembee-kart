@@ -240,8 +240,8 @@ VideoActions({
           gap-2
           rounded-full
           border
-          border-yellow-300/40
-          bg-yellow-400/20
+          border-[var(--warning-color)]/40
+          bg-[var(--warning-color)]/20
           px-4
           py-2
           backdrop-blur-xl
@@ -251,7 +251,7 @@ VideoActions({
         <Coins
           size={18}
           className="
-            text-yellow-300
+            text-[var(--warning-color)]
           "
         />
 

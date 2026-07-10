@@ -99,7 +99,7 @@ export default function PagesManagerPage() {
 
   return (
 
-    <main className="min-h-screen bg-[#0b0b0b] p-4 text-[var(--button-text-color)]">
+    <main className="min-h-screen bg-[var(--primary-color)] p-4 text-[var(--button-text-color)]">
 
       {/* HEADER */}
 
@@ -127,7 +127,7 @@ export default function PagesManagerPage() {
 
       {/* CREATE PAGE */}
 
-      <div className="rounded-[30px] bg-[#151515] p-5">
+      <div className="rounded-[30px] bg-[var(--primary-color)] p-5">
 
         <h2 className="text-2xl font-black">
           Create New Page
@@ -201,7 +201,7 @@ export default function PagesManagerPage() {
 
             <div
               key={item.id}
-              className="rounded-[30px] bg-[#151515] p-5"
+              className="rounded-[30px] bg-[var(--primary-color)] p-5"
             >
 
               <div className="flex items-center justify-between gap-4">
@@ -234,7 +234,7 @@ export default function PagesManagerPage() {
                         item.id
                       )
                     }
-                    className="flex h-14 w-14 items-center justify-center rounded-2xl bg-cyan-500"
+                    className="flex h-14 w-14 items-center justify-center rounded-2xl bg-[var(--primary-color)]"
                   >
 
                     <Eye size={22} />
@@ -267,7 +267,7 @@ export default function PagesManagerPage() {
 
       {/* PREVIEW */}
 
-      <div className="mt-6 rounded-[30px] bg-gradient-to-r from-blue-600 to-cyan-500 p-6">
+      <div className="mt-6 rounded-[30px] bg-gradient-to-r from-[var(--primary-color)] to-[var(--primary-color)] p-6">
 
         <h2 className="text-3xl font-black">
           Dynamic Pages System

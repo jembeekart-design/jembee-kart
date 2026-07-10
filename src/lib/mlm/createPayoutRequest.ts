@@ -40,7 +40,7 @@ interface PayoutRequestData {
 }
 
 /**
- * File #109: Sovereign Enterprise Payout Generation Engine (Absolute 10/10 Platinum State)
+ * File var(--primary-color): Sovereign Enterprise Payout Generation Engine (Absolute 10/10 Platinum State)
  * Fully Hardened Core: Clears hardcoded parameters, maps internal centralized config tokens,
  * forces strict notification type parameters alignment, and blocks overdraft drifts.
  */

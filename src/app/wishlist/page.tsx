@@ -75,23 +75,23 @@ export default function WishlistPage() {
 
   if (loading) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-slate-50">
+      <div className="min-h-screen flex items-center justify-center bg-[var(--card-color)]">
         <Loader2
           size={40}
-          className="animate-spin text-violet-600"
+          className="animate-spin text-[var(--primary-color)]"
         />
       </div>
     );
   }
 
   return (
-    <main className="min-h-screen bg-slate-50 p-4 pb-24">
+    <main className="min-h-screen bg-[var(--card-color)] p-4 pb-24">
       <div className="mb-6">
-        <h1 className="text-3xl font-black text-slate-800">
+        <h1 className="text-3xl font-black text-[var(--text-color)]">
           My Wishlist
         </h1>
 
-        <p className="text-slate-500 mt-1">
+        <p className="text-[var(--text-color)] mt-1">
           Total Items: {items.length}
         </p>
       </div>
@@ -100,20 +100,20 @@ export default function WishlistPage() {
         <div className="bg-[var(--card-color)] rounded-3xl p-8 text-center shadow-sm">
           <Heart
             size={60}
-            className="mx-auto text-slate-300"
+            className="mx-auto text-[var(--text-color)]"
           />
 
-          <h3 className="mt-4 text-xl font-bold text-slate-700">
+          <h3 className="mt-4 text-xl font-bold text-[var(--text-color)]">
             Wishlist Empty
           </h3>
 
-          <p className="text-slate-500 mt-2">
+          <p className="text-[var(--text-color)] mt-2">
             Save products you love here.
           </p>
 
           <Link
             href="/"
-            className="inline-block mt-5 bg-violet-600 text-[var(--button-text-color)] px-6 py-3 rounded-xl font-bold"
+            className="inline-block mt-5 bg-[var(--primary-color)] text-[var(--button-text-color)] px-6 py-3 rounded-xl font-bold"
           >
             Continue Shopping
           </Link>
@@ -123,27 +123,27 @@ export default function WishlistPage() {
           {items.map((item) => (
             <div
               key={item.id}
-              className="bg-[var(--card-color)] rounded-3xl p-4 shadow-sm border border-slate-100"
+              className="bg-[var(--card-color)] rounded-3xl p-4 shadow-sm border border-[var(--border-color)]"
             >
               <div className="flex gap-4">
                 <img
                   src={item.image}
                   alt={item.productTitle}
-                  className="w-24 h-24 rounded-2xl object-cover bg-slate-100"
+                  className="w-24 h-24 rounded-2xl object-cover bg-[var(--card-color)]"
                 />
 
                 <div className="flex-1">
-                  <h3 className="font-bold text-slate-800 line-clamp-2">
+                  <h3 className="font-bold text-[var(--text-color)] line-clamp-2">
                     {item.productTitle}
                   </h3>
 
                   <div className="mt-2 flex items-center gap-2">
-                    <span className="text-xl font-black text-violet-700">
+                    <span className="text-xl font-black text-[var(--primary-color)]">
                       ₹{item.price}
                     </span>
 
                     {item.mrp && (
-                      <span className="text-sm text-slate-400 line-through">
+                      <span className="text-sm text-[var(--text-color)] line-through">
                         ₹{item.mrp}
                       </span>
                     )}
@@ -154,13 +154,13 @@ export default function WishlistPage() {
               <div className="mt-4 flex gap-2">
                 <Link
                   href={`/product/${item.productId}`}
-                  className="flex-1 bg-violet-600 text-[var(--button-text-color)] py-3 rounded-xl font-bold flex items-center justify-center gap-2"
+                  className="flex-1 bg-[var(--primary-color)] text-[var(--button-text-color)] py-3 rounded-xl font-bold flex items-center justify-center gap-2"
                 >
                   <ShoppingCart size={16} />
                   View Product
                 </Link>
 
-                <button className="h-12 w-12 rounded-xl bg-red-50 text-[var(--danger-color)] flex items-center justify-center">
+                <button className="h-12 w-12 rounded-xl bg-[var(--danger-color)] text-[var(--danger-color)] flex items-center justify-center">
                   <Trash2 size={18} />
                 </button>
               </div>

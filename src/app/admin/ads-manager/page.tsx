@@ -54,7 +54,7 @@ export default function AdsManagerPage() {
 
   return (
 
-    <main className="min-h-screen bg-[#0b0b0b] p-4 text-[var(--button-text-color)]">
+    <main className="min-h-screen bg-[var(--primary-color)] p-4 text-[var(--button-text-color)]">
 
       {/* HEADER */}
 
@@ -127,7 +127,7 @@ export default function AdsManagerPage() {
 
       {/* SEARCH */}
 
-      <div className="mt-6 flex items-center gap-3 rounded-[24px] border border-white/10 bg-[#151515] px-4 py-3">
+      <div className="mt-6 flex items-center gap-3 rounded-[24px] border border-[var(--border-color)]/10 bg-[var(--primary-color)] px-4 py-3">
 
         <Search
           size={20}
@@ -160,7 +160,7 @@ export default function AdsManagerPage() {
 
             <div
               key={index}
-              className="rounded-[28px] border border-white/10 bg-[#151515] p-5"
+              className="rounded-[28px] border border-[var(--border-color)]/10 bg-[var(--primary-color)] p-5"
             >
 
               <div className="flex items-start justify-between">
@@ -185,11 +185,11 @@ export default function AdsManagerPage() {
                   className={`rounded-full px-4 py-1 text-sm font-bold ${
                     item.status ===
                     "Running"
-                      ? "bg-[var(--success-color)]/20 text-green-400"
+                      ? "bg-[var(--success-color)]/20 text-[var(--success-color)]"
                       : item.status ===
                         "Paused"
-                      ? "bg-[var(--warning-color)]/20 text-yellow-400"
-                      : "bg-[var(--background-color)]0/20 text-gray-300"
+                      ? "bg-[var(--warning-color)]/20 text-[var(--warning-color)]"
+                      : "bg-[var(--background-color)]0/20 text-[var(--text-color)]"
                   }`}
                 >
 
@@ -240,7 +240,7 @@ export default function AdsManagerPage() {
 
       {/* AI ADS */}
 
-      <div className="mt-6 rounded-[30px] bg-gradient-to-r from-violet-500 to-fuchsia-500 p-6">
+      <div className="mt-6 rounded-[30px] bg-gradient-to-r from-[var(--primary-color)] to-[var(--primary-color)] p-6">
 
         <div className="flex items-center gap-3">
 
@@ -286,7 +286,7 @@ function StatCard({
 
   return (
 
-    <div className="rounded-[28px] border border-white/10 bg-[#151515] p-5">
+    <div className="rounded-[28px] border border-[var(--border-color)]/10 bg-[var(--primary-color)] p-5">
 
       <div className="flex h-14 w-14 items-center justify-center rounded-2xl bg-[var(--secondary-color)] text-[var(--text-color)]">
 

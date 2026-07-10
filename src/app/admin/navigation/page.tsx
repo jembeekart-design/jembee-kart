@@ -251,7 +251,7 @@ export default function NavigationPage() {
 
   return (
 
-    <main className="min-h-screen bg-[#0b0b0b] p-4 text-[var(--button-text-color)]">
+    <main className="min-h-screen bg-[var(--primary-color)] p-4 text-[var(--button-text-color)]">
 
       {/* HEADER */}
 
@@ -259,7 +259,7 @@ export default function NavigationPage() {
 
         <div className="flex items-center gap-4">
 
-          <div className="flex h-16 w-16 items-center justify-center rounded-[24px] bg-cyan-500">
+          <div className="flex h-16 w-16 items-center justify-center rounded-[24px] bg-[var(--primary-color)]">
 
             <Menu size={30} />
 
@@ -282,7 +282,7 @@ export default function NavigationPage() {
         <button
           onClick={saveNavigation}
           disabled={saving}
-          className="flex items-center gap-2 rounded-2xl bg-cyan-500 px-5 py-3 font-bold"
+          className="flex items-center gap-2 rounded-2xl bg-[var(--primary-color)] px-5 py-3 font-bold"
         >
 
           <Save size={18} />
@@ -297,7 +297,7 @@ export default function NavigationPage() {
 
       {/* ADD ITEM */}
 
-      <div className="rounded-[30px] bg-[#151515] p-5">
+      <div className="rounded-[30px] bg-[var(--primary-color)] p-5">
 
         <h2 className="text-2xl font-black">
           Add Navigation Link
@@ -333,7 +333,7 @@ export default function NavigationPage() {
 
         <button
           onClick={addItem}
-          className="mt-5 flex items-center gap-2 rounded-2xl bg-violet-600 px-5 py-3 font-bold"
+          className="mt-5 flex items-center gap-2 rounded-2xl bg-[var(--primary-color)] px-5 py-3 font-bold"
         >
 
           <Plus size={18} />
@@ -356,7 +356,7 @@ export default function NavigationPage() {
 
             <div
               key={item.id}
-              className="rounded-[30px] bg-[#151515] p-5"
+              className="rounded-[30px] bg-[var(--primary-color)] p-5"
             >
 
               <div className="flex items-center justify-between gap-4">
@@ -367,7 +367,7 @@ export default function NavigationPage() {
 
                     <Link2
                       size={24}
-                      className="text-cyan-400"
+                      className="text-[var(--primary-color)]"
                     />
 
                   </div>
@@ -408,7 +408,7 @@ export default function NavigationPage() {
                         index
                       )
                     }
-                    className="rounded-xl bg-cyan-500 px-4 py-2 text-sm font-bold"
+                    className="rounded-xl bg-[var(--primary-color)] px-4 py-2 text-sm font-bold"
                   >
 
                     Up
@@ -421,7 +421,7 @@ export default function NavigationPage() {
                         index
                       )
                     }
-                    className="rounded-xl bg-violet-600 px-4 py-2 text-sm font-bold"
+                    className="rounded-xl bg-[var(--primary-color)] px-4 py-2 text-sm font-bold"
                   >
 
                     Down

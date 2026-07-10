@@ -58,7 +58,7 @@ export default function AdminChatPage() {
 
   return (
 
-    <main className="min-h-screen bg-[#0b0b0b] p-4 text-[var(--button-text-color)]">
+    <main className="min-h-screen bg-[var(--primary-color)] p-4 text-[var(--button-text-color)]">
 
       {/* HEADER */}
 
@@ -66,7 +66,7 @@ export default function AdminChatPage() {
 
         <div className="flex items-center gap-4">
 
-          <div className="flex h-16 w-16 items-center justify-center rounded-[28px] bg-cyan-500">
+          <div className="flex h-16 w-16 items-center justify-center rounded-[28px] bg-[var(--primary-color)]">
 
             <MessageSquare
               size={30}
@@ -89,7 +89,7 @@ export default function AdminChatPage() {
 
         </div>
 
-        <button className="flex items-center gap-2 rounded-2xl bg-cyan-500 px-5 py-3 font-bold text-[var(--text-color)]">
+        <button className="flex items-center gap-2 rounded-2xl bg-[var(--primary-color)] px-5 py-3 font-bold text-[var(--text-color)]">
 
           <Bell size={18} />
 
@@ -105,7 +105,7 @@ export default function AdminChatPage() {
 
         {/* SIDEBAR */}
 
-        <div className="rounded-[30px] border border-white/10 bg-[#151515] p-5">
+        <div className="rounded-[30px] border border-[var(--border-color)]/10 bg-[var(--primary-color)] p-5">
 
           {/* SEARCH */}
 
@@ -136,14 +136,14 @@ export default function AdminChatPage() {
 
                 <div
                   key={index}
-                  className="flex cursor-pointer items-center justify-between rounded-2xl bg-[var(--card-color)]/20 p-4 transition-all hover:bg-cyan-500/10"
+                  className="flex cursor-pointer items-center justify-between rounded-2xl bg-[var(--card-color)]/20 p-4 transition-all hover:bg-[var(--primary-color)]/10"
                 >
 
                   <div className="flex items-center gap-3">
 
                     <div className="relative">
 
-                      <div className="flex h-12 w-12 items-center justify-center rounded-full bg-cyan-500 text-[var(--text-color)] font-black">
+                      <div className="flex h-12 w-12 items-center justify-center rounded-full bg-[var(--primary-color)] text-[var(--text-color)] font-black">
 
                         {item.name.charAt(
                           0
@@ -188,15 +188,15 @@ export default function AdminChatPage() {
 
         {/* CHAT AREA */}
 
-        <div className="rounded-[30px] border border-white/10 bg-[#151515] lg:col-span-2">
+        <div className="rounded-[30px] border border-[var(--border-color)]/10 bg-[var(--primary-color)] lg:col-span-2">
 
           {/* TOP */}
 
-          <div className="flex items-center justify-between border-b border-white/10 p-5">
+          <div className="flex items-center justify-between border-b border-[var(--border-color)]/10 p-5">
 
             <div className="flex items-center gap-3">
 
-              <div className="flex h-12 w-12 items-center justify-center rounded-full bg-cyan-500 text-[var(--text-color)] font-black">
+              <div className="flex h-12 w-12 items-center justify-center rounded-full bg-[var(--primary-color)] text-[var(--text-color)] font-black">
 
                 R
 
@@ -208,7 +208,7 @@ export default function AdminChatPage() {
                   Rahul Sharma
                 </h2>
 
-                <p className="text-sm text-green-400">
+                <p className="text-sm text-[var(--success-color)]">
                   Online
                 </p>
 
@@ -258,7 +258,7 @@ export default function AdminChatPage() {
                     className={`max-w-[75%] rounded-3xl px-5 py-3 ${
                       item.sender ===
                       "admin"
-                        ? "bg-cyan-500 text-[var(--text-color)]"
+                        ? "bg-[var(--primary-color)] text-[var(--text-color)]"
                         : "bg-[var(--card-color)]/30"
                     }`}
                   >
@@ -293,7 +293,7 @@ export default function AdminChatPage() {
 
           {/* INPUT */}
 
-          <div className="border-t border-white/10 p-5">
+          <div className="border-t border-[var(--border-color)]/10 p-5">
 
             <div className="flex items-center gap-3 rounded-2xl bg-[var(--card-color)]/30 p-3">
 
@@ -321,7 +321,7 @@ export default function AdminChatPage() {
                 className="w-full bg-transparent outline-none placeholder:text-[var(--muted-text-color)]"
               />
 
-              <button className="flex h-12 w-12 items-center justify-center rounded-2xl bg-cyan-500 text-[var(--text-color)]">
+              <button className="flex h-12 w-12 items-center justify-center rounded-2xl bg-[var(--primary-color)] text-[var(--text-color)]">
 
                 <Send size={20} />
 
@@ -382,9 +382,9 @@ function StatCard({
 
   return (
 
-    <div className="rounded-[28px] border border-white/10 bg-[#151515] p-5">
+    <div className="rounded-[28px] border border-[var(--border-color)]/10 bg-[var(--primary-color)] p-5">
 
-      <div className="flex h-14 w-14 items-center justify-center rounded-2xl bg-cyan-500 text-[var(--text-color)]">
+      <div className="flex h-14 w-14 items-center justify-center rounded-2xl bg-[var(--primary-color)] text-[var(--text-color)]">
 
         {icon}
 

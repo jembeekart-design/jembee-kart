@@ -73,7 +73,7 @@ export default function ActivityTrackerPage() {
     switch (type) {
       case "User":
       case "Signup":
-        return "bg-cyan-500";
+        return "bg-[var(--primary-color)]";
       case "Order":
         return "bg-[var(--success-color)]";
       case "Finance":
@@ -82,7 +82,7 @@ export default function ActivityTrackerPage() {
       case "Security":
         return "bg-[var(--danger-color)]";
       default:
-        return "bg-purple-500";
+        return "bg-[var(--primary-color)]";
     }
   }
 
@@ -154,11 +154,11 @@ export default function ActivityTrackerPage() {
   });
 
   return (
-    <main className="min-h-screen bg-[#0b0b0b] p-4 text-[var(--button-text-color)]">
+    <main className="min-h-screen bg-[var(--primary-color)] p-4 text-[var(--button-text-color)]">
       {/* HEADER */}
       <div className="mb-8 flex items-center justify-between">
         <div className="flex items-center gap-4">
-          <div className="flex h-16 w-16 items-center justify-center rounded-[28px] bg-pink-500">
+          <div className="flex h-16 w-16 items-center justify-center rounded-[28px] bg-[var(--primary-color)]">
             <Activity size={30} className="text-[var(--text-color)]" />
           </div>
           <div>
@@ -196,7 +196,7 @@ export default function ActivityTrackerPage() {
 
       {/* SEARCH BOX MODULE */}
       <div className="mt-6 flex flex-col gap-4 md:flex-row">
-        <div className="flex flex-1 items-center gap-3 rounded-[24px] border border-white/10 bg-[#151515] px-4 py-3">
+        <div className="flex flex-1 items-center gap-3 rounded-[24px] border border-[var(--border-color)]/10 bg-[var(--primary-color)] px-4 py-3">
           <Search size={20} className="text-[var(--muted-text-color)]" />
           <input
             type="text"
@@ -213,7 +213,7 @@ export default function ActivityTrackerPage() {
         {filteredActivities.map((item, index) => (
           <div
             key={item.id || index}
-            className="rounded-[28px] border border-white/10 bg-[#151515] p-5 animate-fadeIn"
+            className="rounded-[28px] border border-[var(--border-color)]/10 bg-[var(--primary-color)] p-5 animate-fadeIn"
           >
             <div className="flex flex-col gap-5 lg:flex-row lg:items-center lg:justify-between">
               <div className="flex items-start gap-4">
@@ -247,10 +247,10 @@ export default function ActivityTrackerPage() {
               <div
                 className={`w-max rounded-full px-4 py-2 text-sm font-bold ${
                   item.type === "Security"
-                    ? "bg-[var(--danger-color)]/20 text-red-400"
+                    ? "bg-[var(--danger-color)]/20 text-[var(--danger-color)]"
                     : item.type === "Order"
-                    ? "bg-[var(--success-color)]/20 text-green-400"
-                    : "bg-[var(--primary-color)]/20 text-indigo-400"
+                    ? "bg-[var(--success-color)]/20 text-[var(--success-color)]"
+                    : "bg-[var(--primary-color)]/20 text-[var(--primary-color)]"
                 }`}
               >
                 {item.type || "General"}
@@ -267,7 +267,7 @@ export default function ActivityTrackerPage() {
       </div>
 
       {/* MONITORING PLACARD */}
-      <div className="mt-6 rounded-[30px] bg-gradient-to-r from-pink-500 to-fuchsia-600 p-6">
+      <div className="mt-6 rounded-[30px] bg-gradient-to-r from-[var(--primary-color)] to-[var(--primary-color)] p-6">
         <div className="flex items-center gap-3">
           <CheckCircle2 size={26} />
           <h2 className="text-3xl font-black">Realtime Monitoring</h2>
@@ -278,12 +278,12 @@ export default function ActivityTrackerPage() {
       </div>
 
       {/* SUSPICIOUS WARNING CONTROL */}
-      <div className="mt-6 rounded-[28px] border border-yellow-500/20 bg-[var(--warning-color)]/10 p-5">
+      <div className="mt-6 rounded-[28px] border border-[var(--warning-color)]/20 bg-[var(--warning-color)]/10 p-5">
         <div className="flex items-start gap-4">
-          <AlertTriangle size={24} className="text-yellow-400" />
+          <AlertTriangle size={24} className="text-[var(--warning-color)]" />
           <div>
-            <h3 className="text-xl font-black text-yellow-400">Suspicious Activity Detection</h3>
-            <p className="mt-2 text-sm text-gray-300">
+            <h3 className="text-xl font-black text-[var(--warning-color)]">Suspicious Activity Detection</h3>
+            <p className="mt-2 text-sm text-[var(--text-color)]">
               AI automatically detects unusual login, payment or admin activity for protection.
             </p>
           </div>
@@ -303,8 +303,8 @@ function StatCard({
   icon: React.ReactNode;
 }) {
   return (
-    <div className="rounded-[28px] border border-white/10 bg-[#151515] p-5">
-      <div className="flex h-14 w-14 items-center justify-center rounded-2xl bg-pink-500 text-[var(--text-color)]">
+    <div className="rounded-[28px] border border-[var(--border-color)]/10 bg-[var(--primary-color)] p-5">
+      <div className="flex h-14 w-14 items-center justify-center rounded-2xl bg-[var(--primary-color)] text-[var(--text-color)]">
         {icon}
       </div>
       <p className="mt-4 text-sm text-[var(--muted-text-color)]">{title}</p>

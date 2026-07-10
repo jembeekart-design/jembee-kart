@@ -37,7 +37,7 @@ interface ReferralBonusRequest {
 }
 
 /**
- * File #108: Sovereign Enterprise Referral Bonus Engine (Absolute 10/10 Platinum Status)
+ * File var(--primary-color): Sovereign Enterprise Referral Bonus Engine (Absolute 10/10 Platinum Status)
  * Fully Hardened Core: Implements Fix #1 Type Assertions to safely bridge string variables
  * with deep-frozen literal config states without sacrificing compile-time security.
  */

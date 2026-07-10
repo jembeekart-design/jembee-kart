@@ -112,7 +112,7 @@ export default function ProductGrid({
   ]
 }: ProductGridProps) {
   return (
-    <section className="w-full bg-[#f1f3f6] px-2 py-3">
+    <section className="w-full bg-[var(--primary-color)] px-2 py-3">
 
       {/* TOP FILTER BAR */}
 

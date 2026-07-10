@@ -147,7 +147,7 @@ export default function CommissionEnginePage() {
 
   return (
 
-    <main className="min-h-screen bg-[#0b0b0b] p-4 text-[var(--button-text-color)]">
+    <main className="min-h-screen bg-[var(--primary-color)] p-4 text-[var(--button-text-color)]">
 
       {/* HEADER */}
 
@@ -155,7 +155,7 @@ export default function CommissionEnginePage() {
 
         <div className="flex items-center gap-4">
 
-          <div className="flex h-16 w-16 items-center justify-center rounded-[24px] bg-lime-500">
+          <div className="flex h-16 w-16 items-center justify-center rounded-[24px] bg-[var(--success-color)]">
 
             <Percent size={30} />
 
@@ -178,7 +178,7 @@ export default function CommissionEnginePage() {
         <button
           onClick={saveSettings}
           disabled={saving}
-          className="flex items-center gap-2 rounded-2xl bg-lime-500 px-5 py-3 font-bold text-[var(--text-color)]"
+          className="flex items-center gap-2 rounded-2xl bg-[var(--success-color)] px-5 py-3 font-bold text-[var(--text-color)]"
         >
 
           <Save size={18} />
@@ -321,7 +321,7 @@ export default function CommissionEnginePage() {
 
       {/* STATUS */}
 
-      <div className="mt-6 rounded-[30px] bg-gradient-to-r from-lime-500 to-green-500 p-6">
+      <div className="mt-6 rounded-[30px] bg-gradient-to-r from-[var(--primary-color)] to-[var(--primary-color)] p-6">
 
         <div className="flex items-center gap-3">
 
@@ -373,7 +373,7 @@ function InputCard({
 
   return (
 
-    <div className="rounded-[30px] bg-[#151515] p-5">
+    <div className="rounded-[30px] bg-[var(--primary-color)] p-5">
 
       <h2 className="mb-4 text-2xl font-black">
         {title}
@@ -411,7 +411,7 @@ function ToggleCard({
 
   return (
 
-    <div className="rounded-[30px] bg-[#151515] p-5">
+    <div className="rounded-[30px] bg-[var(--primary-color)] p-5">
 
       <div className="flex items-center justify-between">
 

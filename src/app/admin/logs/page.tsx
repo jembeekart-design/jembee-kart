@@ -65,7 +65,7 @@ export default function LogsPage() {
 
   return (
 
-    <main className="min-h-screen bg-[#0b0b0b] p-4 text-[var(--button-text-color)]">
+    <main className="min-h-screen bg-[var(--primary-color)] p-4 text-[var(--button-text-color)]">
 
       {/* HEADER */}
 
@@ -73,7 +73,7 @@ export default function LogsPage() {
 
         <div className="flex items-center gap-4">
 
-          <div className="flex h-16 w-16 items-center justify-center rounded-[24px] bg-orange-500">
+          <div className="flex h-16 w-16 items-center justify-center rounded-[24px] bg-[var(--warning-color)]">
 
             <FileClock size={30} />
 
@@ -97,7 +97,7 @@ export default function LogsPage() {
 
           <button
             onClick={refreshLogs}
-            className="flex items-center gap-2 rounded-2xl bg-cyan-500 px-5 py-3 text-sm font-bold"
+            className="flex items-center gap-2 rounded-2xl bg-[var(--primary-color)] px-5 py-3 text-sm font-bold"
           >
 
             <RefreshCcw size={18} />
@@ -125,11 +125,11 @@ export default function LogsPage() {
 
       <div className="grid grid-cols-3 gap-4">
 
-        <div className="rounded-[30px] bg-[#151515] p-5">
+        <div className="rounded-[30px] bg-[var(--primary-color)] p-5">
 
           <CheckCircle
             size={28}
-            className="text-green-400"
+            className="text-[var(--success-color)]"
           />
 
           <p className="mt-4 text-sm text-[var(--muted-text-color)]">
@@ -142,11 +142,11 @@ export default function LogsPage() {
 
         </div>
 
-        <div className="rounded-[30px] bg-[#151515] p-5">
+        <div className="rounded-[30px] bg-[var(--primary-color)] p-5">
 
           <AlertTriangle
             size={28}
-            className="text-yellow-400"
+            className="text-[var(--warning-color)]"
           />
 
           <p className="mt-4 text-sm text-[var(--muted-text-color)]">
@@ -159,11 +159,11 @@ export default function LogsPage() {
 
         </div>
 
-        <div className="rounded-[30px] bg-[#151515] p-5">
+        <div className="rounded-[30px] bg-[var(--primary-color)] p-5">
 
           <ShieldAlert
             size={28}
-            className="text-red-400"
+            className="text-[var(--danger-color)]"
           />
 
           <p className="mt-4 text-sm text-[var(--muted-text-color)]">
@@ -187,7 +187,7 @@ export default function LogsPage() {
 
             <div
               key={item.id}
-              className="rounded-[30px] bg-[#151515] p-5"
+              className="rounded-[30px] bg-[var(--primary-color)] p-5"
             >
 
               <div className="flex items-start justify-between gap-4">
@@ -201,7 +201,7 @@ export default function LogsPage() {
 
                       <CheckCircle
                         size={22}
-                        className="text-green-400"
+                        className="text-[var(--success-color)]"
                       />
 
                     ) : item.type ===
@@ -209,14 +209,14 @@ export default function LogsPage() {
 
                       <AlertTriangle
                         size={22}
-                        className="text-yellow-400"
+                        className="text-[var(--warning-color)]"
                       />
 
                     ) : (
 
                       <ShieldAlert
                         size={22}
-                        className="text-red-400"
+                        className="text-[var(--danger-color)]"
                       />
 
                     )}
@@ -227,7 +227,7 @@ export default function LogsPage() {
 
                   </div>
 
-                  <p className="mt-4 text-sm text-gray-300">
+                  <p className="mt-4 text-sm text-[var(--text-color)]">
                     {item.message}
                   </p>
 
@@ -250,7 +250,7 @@ export default function LogsPage() {
 
       {/* FOOTER */}
 
-      <div className="mt-6 rounded-[30px] bg-gradient-to-r from-orange-500 to-red-500 p-6">
+      <div className="mt-6 rounded-[30px] bg-gradient-to-r from-[var(--primary-color)] to-[var(--primary-color)] p-6">
 
         <h2 className="text-3xl font-black">
           Activity Monitoring

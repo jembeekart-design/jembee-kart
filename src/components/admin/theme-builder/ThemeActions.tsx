@@ -25,7 +25,7 @@ export default function ThemeActions({
 
   return (
 
-    <div className="mt-8 rounded-2xl border border-slate-700 bg-slate-950 p-6">
+    <div className="mt-8 rounded-2xl border border-[var(--border-color)] bg-[var(--card-color)] p-6">
 
       <h2 className="mb-6 text-2xl font-bold">
         Theme Actions
@@ -36,7 +36,7 @@ export default function ThemeActions({
         <button
           onClick={onSave}
           disabled={saving}
-          className="flex items-center gap-2 rounded-xl bg-cyan-500 px-6 py-3 font-bold text-[var(--text-color)] transition hover:scale-105 disabled:opacity-60"
+          className="flex items-center gap-2 rounded-xl bg-[var(--primary-color)] px-6 py-3 font-bold text-[var(--text-color)] transition hover:scale-105 disabled:opacity-60"
         >
           <Save size={18} />
 
@@ -58,7 +58,7 @@ export default function ThemeActions({
 
         <button
           onClick={onReset}
-          className="flex items-center gap-2 rounded-xl bg-orange-500 px-6 py-3 font-bold text-[var(--text-color)] transition hover:scale-105"
+          className="flex items-center gap-2 rounded-xl bg-[var(--warning-color)] px-6 py-3 font-bold text-[var(--text-color)] transition hover:scale-105"
         >
           <RotateCcw size={18} />
 
@@ -68,7 +68,7 @@ export default function ThemeActions({
 
         <button
           onClick={onGenerateAI}
-          className="flex items-center gap-2 rounded-xl bg-violet-600 px-6 py-3 font-bold text-[var(--button-text-color)] transition hover:scale-105"
+          className="flex items-center gap-2 rounded-xl bg-[var(--primary-color)] px-6 py-3 font-bold text-[var(--button-text-color)] transition hover:scale-105"
         >
           <Wand2 size={18} />
 
@@ -78,13 +78,13 @@ export default function ThemeActions({
 
       </div>
 
-      <div className="mt-6 rounded-xl border border-cyan-500/20 bg-cyan-500/10 p-4">
+      <div className="mt-6 rounded-xl border border-[var(--primary-color)]/20 bg-[var(--primary-color)]/10 p-4">
 
-        <h3 className="font-bold text-cyan-400">
+        <h3 className="font-bold text-[var(--primary-color)]">
           Theme Builder Status
         </h3>
 
-        <p className="mt-2 text-sm text-slate-300">
+        <p className="mt-2 text-sm text-[var(--text-color)]">
           All theme settings are managed from the
           Admin Panel and stored in Firestore.
           After saving, every page of JembeeKart

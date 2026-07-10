@@ -662,7 +662,7 @@ export default function HomePage() {
                                   ${
                                     isLiked
 
-                                      ? "fill-pink-500 text-pink-500"
+                                      ? "fill-pink-500 text-[var(--primary-color)]"
 
                                       : "text-[var(--muted-text-color)]"
                                   }
@@ -692,7 +692,7 @@ export default function HomePage() {
                             font-black
                             uppercase
                             tracking-[1px]
-                            text-indigo-600
+                            text-[var(--primary-color)]
                           "
                         >
 
@@ -847,7 +847,7 @@ export default function HomePage() {
                       ${
                         selectedCategory === "All"
   ? ""
-  : "border-white"
+  : "border-[var(--border-color)]"
                       }
                     `}
                   >
@@ -909,7 +909,7 @@ export default function HomePage() {
                             ${
                               selectedCategory === category.title
   ? ""
-  : "border-white"
+  : "border-[var(--border-color)]"
                             }
                           `}
                         >
@@ -1208,7 +1208,7 @@ export default function HomePage() {
                                     ${
                                       isLiked
 
-                                        ? "fill-pink-500 text-pink-500"
+                                        ? "fill-pink-500 text-[var(--primary-color)]"
 
                                         : "text-[var(--muted-text-color)]"
                                     }
@@ -1238,7 +1238,7 @@ export default function HomePage() {
                             font-black
                             uppercase
                             tracking-[1px]
-                            text-indigo-600
+                            text-[var(--primary-color)]
                           "
                         >
 

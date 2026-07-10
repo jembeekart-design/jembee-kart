@@ -54,7 +54,7 @@ export default function FeatureFlagsEditDialog({
     field: keyof FeatureFlags;
   }) {
     return (
-      <label className="flex items-center justify-between rounded-lg border border-slate-700 bg-slate-800 px-4 py-3">
+      <label className="flex items-center justify-between rounded-lg border border-[var(--border-color)] bg-[var(--card-color)] px-4 py-3">
 
         <span>{label}</span>
 
@@ -73,13 +73,13 @@ export default function FeatureFlagsEditDialog({
 
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-[var(--card-color)]/60 p-4">
 
-      <div className="w-full max-w-lg rounded-xl bg-slate-900 p-6">
+      <div className="w-full max-w-lg rounded-xl bg-[var(--card-color)] p-6">
 
         <h2 className="text-3xl font-bold">
           Edit Feature Flags
         </h2>
 
-        <p className="mt-2 text-slate-400">
+        <p className="mt-2 text-[var(--text-color)]">
           Enable or disable platform features.
         </p>
 
@@ -131,14 +131,14 @@ export default function FeatureFlagsEditDialog({
 
           <button
             onClick={onClose}
-            className="rounded-lg border border-slate-700 px-6 py-3"
+            className="rounded-lg border border-[var(--border-color)] px-6 py-3"
           >
             Cancel
           </button>
 
           <button
             onClick={handleSave}
-            className="rounded-lg bg-indigo-600 px-6 py-3 hover:bg-indigo-700"
+            className="rounded-lg bg-[var(--primary-color)] px-6 py-3 hover:bg-[var(--primary-color)]"
           >
             Save
           </button>

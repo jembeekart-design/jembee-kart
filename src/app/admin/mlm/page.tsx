@@ -81,7 +81,7 @@ export default function AdminMLMPage() {
 
   return (
 
-    <main className="min-h-screen bg-[#f6f6f6] pb-24">
+    <main className="min-h-screen bg-[var(--primary-color)] pb-24">
 
       {/* HEADER */}
 
@@ -97,7 +97,7 @@ export default function AdminMLMPage() {
         "
       >
 
-        <h1 className="text-[28px] font-black text-violet-700">
+        <h1 className="text-[28px] font-black text-[var(--primary-color)]">
 
           MLM Admin Panel
 
@@ -119,9 +119,9 @@ export default function AdminMLMPage() {
           className="
             rounded-[32px]
             bg-gradient-to-br
-            from-violet-700
-            via-fuchsia-600
-            to-orange-500
+            from-[var(--primary-color)]
+            via-[var(--primary-color)]
+            to-[var(--primary-color)]
             p-5
             text-[var(--button-text-color)]
             shadow-xl
@@ -181,7 +181,7 @@ export default function AdminMLMPage() {
 
             <Users
               size={28}
-              className="text-violet-700"
+              className="text-[var(--primary-color)]"
             />
 
             <h3 className="mt-3 text-[26px] font-black">
@@ -237,7 +237,7 @@ export default function AdminMLMPage() {
 
             <BadgeIndianRupee
               size={28}
-              className="text-orange-600"
+              className="text-[var(--warning-color)]"
             />
 
             <h3 className="mt-3 text-[26px] font-black">
@@ -265,7 +265,7 @@ export default function AdminMLMPage() {
 
             <ShieldCheck
               size={28}
-              className="text-pink-600"
+              className="text-[var(--primary-color)]"
             />
 
             <h3 className="mt-3 text-[26px] font-black">
@@ -345,7 +345,7 @@ export default function AdminMLMPage() {
 
                         </p>
 
-                        <p className="mt-1 text-[10px] text-violet-700 font-bold">
+                        <p className="mt-1 text-[10px] text-[var(--primary-color)] font-bold">
 
                           {member.referralCode}
 
@@ -358,7 +358,7 @@ export default function AdminMLMPage() {
                         <button
                           className="
                             rounded-xl
-                            bg-green-600
+                            bg-[var(--success-color)]
                             px-3
                             py-2
                             text-[11px]

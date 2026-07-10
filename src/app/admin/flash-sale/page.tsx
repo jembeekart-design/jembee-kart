@@ -186,13 +186,13 @@ export default function FlashSalePage() {
 
   return (
 
-    <main className="min-h-screen bg-[#0b0b0b] p-4 text-[var(--button-text-color)]">
+    <main className="min-h-screen bg-[var(--primary-color)] p-4 text-[var(--button-text-color)]">
 
       {/* HEADER */}
 
       <div className="mb-8 flex items-center gap-4">
 
-        <div className="flex h-16 w-16 items-center justify-center rounded-[24px] bg-orange-500">
+        <div className="flex h-16 w-16 items-center justify-center rounded-[24px] bg-[var(--warning-color)]">
 
           <Flame size={30} />
 
@@ -214,7 +214,7 @@ export default function FlashSalePage() {
 
       {/* CREATE */}
 
-      <div className="rounded-[30px] bg-[#151515] p-5">
+      <div className="rounded-[30px] bg-[var(--primary-color)] p-5">
 
         <h2 className="mb-5 text-2xl font-black">
 
@@ -333,7 +333,7 @@ export default function FlashSalePage() {
             createFlashSale
           }
           disabled={saving}
-          className="mt-6 flex items-center gap-2 rounded-2xl bg-orange-500 px-5 py-4 font-bold text-[var(--text-color)]"
+          className="mt-6 flex items-center gap-2 rounded-2xl bg-[var(--warning-color)] px-5 py-4 font-bold text-[var(--text-color)]"
         >
 
           <Save size={18} />
@@ -352,7 +352,7 @@ export default function FlashSalePage() {
 
         {flashSales.length === 0 && (
 
-          <div className="rounded-[30px] bg-[#151515] p-10 text-center">
+          <div className="rounded-[30px] bg-[var(--primary-color)] p-10 text-center">
 
             No Flash Sales Found
 
@@ -365,14 +365,14 @@ export default function FlashSalePage() {
 
             <div
               key={item.id}
-              className="rounded-[30px] bg-[#151515] p-5"
+              className="rounded-[30px] bg-[var(--primary-color)] p-5"
             >
 
               <div className="flex flex-col gap-5 md:flex-row md:items-center md:justify-between">
 
                 <div>
 
-                  <h2 className="text-3xl font-black text-orange-400">
+                  <h2 className="text-3xl font-black text-[var(--warning-color)]">
 
                     {item.productName}
 

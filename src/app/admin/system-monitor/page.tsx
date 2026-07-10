@@ -49,7 +49,7 @@ export default function SystemMonitorPage() {
 
   return (
 
-    <main className="min-h-screen bg-[#050505] p-4 text-[var(--button-text-color)]">
+    <main className="min-h-screen bg-[var(--primary-color)] p-4 text-[var(--button-text-color)]">
 
       {/* HEADER */}
 
@@ -128,11 +128,11 @@ export default function SystemMonitorPage() {
 
       {/* SERVERS */}
 
-      <div className="mt-6 rounded-[30px] border border-white/10 bg-[#111111] p-6">
+      <div className="mt-6 rounded-[30px] border border-[var(--border-color)]/10 bg-[var(--primary-color)] p-6">
 
         <div className="flex items-center gap-3">
 
-          <Server className="text-green-400" />
+          <Server className="text-[var(--success-color)]" />
 
           <h2 className="text-3xl font-black">
 
@@ -213,11 +213,11 @@ export default function SystemMonitorPage() {
 
       <div className="mt-6 grid grid-cols-1 gap-6 lg:grid-cols-2">
 
-        <div className="rounded-[30px] border border-white/10 bg-[#111111] p-6">
+        <div className="rounded-[30px] border border-[var(--border-color)]/10 bg-[var(--primary-color)] p-6">
 
           <div className="flex items-center gap-3">
 
-            <BarChart3 className="text-green-400" />
+            <BarChart3 className="text-[var(--success-color)]" />
 
             <h2 className="text-2xl font-black">
 
@@ -245,11 +245,11 @@ export default function SystemMonitorPage() {
 
         </div>
 
-        <div className="rounded-[30px] border border-white/10 bg-[#111111] p-6">
+        <div className="rounded-[30px] border border-[var(--border-color)]/10 bg-[var(--primary-color)] p-6">
 
           <div className="flex items-center gap-3">
 
-            <Database className="text-green-400" />
+            <Database className="text-[var(--success-color)]" />
 
             <h2 className="text-2xl font-black">
 
@@ -289,7 +289,7 @@ export default function SystemMonitorPage() {
 
       {/* ALERTS */}
 
-      <div className="mt-6 rounded-[30px] bg-gradient-to-r from-green-500 to-emerald-600 p-6 text-[var(--text-color)]">
+      <div className="mt-6 rounded-[30px] bg-gradient-to-r from-[var(--primary-color)] to-[var(--primary-color)] p-6 text-[var(--text-color)]">
 
         <div className="flex items-center gap-3">
 
@@ -326,7 +326,7 @@ export default function SystemMonitorPage() {
       <div className="mt-6 flex flex-wrap gap-4">
 
         <button
-          className="flex items-center gap-2 rounded-2xl bg-cyan-500 px-6 py-4 font-black text-[var(--text-color)]"
+          className="flex items-center gap-2 rounded-2xl bg-[var(--primary-color)] px-6 py-4 font-black text-[var(--text-color)]"
         >
 
           <RefreshCw size={20} />
@@ -370,7 +370,7 @@ function StatsCard({
 
   return (
 
-    <div className="rounded-[30px] border border-white/10 bg-[#111111] p-5">
+    <div className="rounded-[30px] border border-[var(--border-color)]/10 bg-[var(--primary-color)] p-5">
 
       <div className="flex h-14 w-14 items-center justify-center rounded-2xl bg-[var(--success-color)]">
 

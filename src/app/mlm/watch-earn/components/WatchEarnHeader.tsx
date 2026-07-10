@@ -58,7 +58,7 @@ WatchEarnHeader({
             mt-1
             text-xs
             font-semibold
-            text-gray-300
+            text-[var(--text-color)]
           "
         >
 
@@ -87,8 +87,8 @@ WatchEarnHeader({
             gap-2
             rounded-full
             border
-            border-orange-400/40
-            bg-orange-500/20
+            border-[var(--warning-color)]/40
+            bg-[var(--warning-color)]/20
             px-4
             py-2
             backdrop-blur-xl
@@ -98,7 +98,7 @@ WatchEarnHeader({
           <Flame
             size={18}
             className="
-              text-orange-400
+              text-[var(--warning-color)]
             "
           />
 
@@ -125,8 +125,8 @@ WatchEarnHeader({
             gap-2
             rounded-full
             border
-            border-yellow-300/40
-            bg-yellow-400/20
+            border-[var(--warning-color)]/40
+            bg-[var(--warning-color)]/20
             px-4
             py-2
             backdrop-blur-xl
@@ -136,7 +136,7 @@ WatchEarnHeader({
           <Coins
             size={18}
             className="
-              text-yellow-300
+              text-[var(--warning-color)]
             "
           />
 
@@ -165,7 +165,7 @@ WatchEarnHeader({
             justify-center
             rounded-full
             border
-            border-white/10
+            border-[var(--border-color)]/10
             bg-[var(--card-color)]/30
             text-[var(--button-text-color)]
             backdrop-blur-xl
