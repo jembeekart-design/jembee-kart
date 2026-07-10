@@ -46,7 +46,7 @@ export interface Theme {
   shadowOpacity: number;
   
   // Button Builder Fields
-  buttonStyle: "filled" | "outline" | "ghost" | "gradient" | "glass" | "3d";
+  buttonStyle: "filled" | "outline" | "soft" | "ghost" | "gradient" | "glass" | "3d";
   buttonSize: "sm" | "md" | "lg";
   buttonHoverEffect: "scale" | "lift" | "none";
   buttonIconPosition?: "left" | "right"; // Error Fix: Added this
