@@ -35,9 +35,6 @@ const replacements: Record<string, string> = {
   "bg-[var(--warning-color)]": "bg-[var(--warning-color)]",
   "text-[var(--warning-color)]": "text-[var(--warning-color)]",
 };
-=======
-let totalFilesUpdated = 0;
->>>>>>> 644631157890e482723c7786bc11ac85c3a93afb
 
 function walk(dir: string) {
   const files = fs.readdirSync(dir);
