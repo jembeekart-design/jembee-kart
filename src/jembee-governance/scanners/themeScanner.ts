@@ -126,7 +126,7 @@ export class ThemeScanner {
 
       for (const pattern of this.tailwindColorPatterns) {
         if (allowedThemeTokens.some(token => line.includes(token))) {
-  return;
+    continue;
 }
         const matches = line.match(pattern);
         if (matches) {
