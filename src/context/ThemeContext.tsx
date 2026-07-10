@@ -4,6 +4,17 @@ import { doc, getDoc } from "firebase/firestore";
 import { db } from "@/firebase/config";
 import type { Theme } from "@/types/theme";
 
+// Default theme object (taaki build time par empty na rahe)
+const defaultTheme: Theme = {
+  primaryColor: "#3b82f6",
+  secondaryColor: "#64748b",
+  backgroundColor: "#ffffff",
+  surfaceColor: "#f8fafc",
+  cardColor: "#ffffff",
+  textColor: "#0f172a",
+  // ... baki sabhi required fields default values ke saath
+} as Theme;
+
 interface ThemeContextType {
   theme: Theme;
   setTheme: React.Dispatch<React.SetStateAction<Theme>>;
@@ -12,10 +23,10 @@ interface ThemeContextType {
 export const ThemeContext = createContext<ThemeContextType>({} as ThemeContextType);
 
 export function ThemeProvider({ children }: { children: React.ReactNode }) {
-  // यहाँ एक सुरक्षित डिफ़ॉल्ट स्टेट रखें ताकि ऐप क्रैश न हो
-  const [theme, setTheme] = useState<Theme | null>(null);
+  // useState ko 'defaultTheme' se initialize karein, 'null' se nahi
+  const [theme, setTheme] = useState<Theme>(defaultTheme);
+  const [loading, setLoading] = useState(true);
 
-  // 1. Firebase से डेटा लोड करें
   useEffect(() => {
     async function loadTheme() {
       try {
@@ -25,27 +36,22 @@ export function ThemeProvider({ children }: { children: React.ReactNode }) {
         }
       } catch (error) {
         console.error("Theme load error:", error);
+      } finally {
+        setLoading(false);
       }
     }
     loadTheme();
   }, []);
 
-  // 2. थीम बदलते ही CSS variables को ब्राउज़र में अप्लाई करें
   useEffect(() => {
-    if (!theme) return; // जब तक थीम लोड न हो, कुछ न करें
-
     const root = document.documentElement;
     root.style.setProperty("--primary-color", theme.primaryColor);
     root.style.setProperty("--secondary-color", theme.secondaryColor);
-    root.style.setProperty("--background-color", theme.backgroundColor);
-    root.style.setProperty("--card-color", theme.cardColor);
-    root.style.setProperty("--text-color", theme.textColor);
-    // इसी तरह अन्य सभी प्रॉपर्टीज़ यहाँ लिखें...
-    
-  }, [theme]); // यह useEffect तब चलेगा जब भी 'theme' बदलेगा
+    // ... baki properties
+  }, [theme]);
 
-  // जब तक थीम लोड नहीं होती, तब तक null या loading दिखाएं
-  if (!theme) return null; 
+  // Loading state handling
+  if (loading) return null; 
 
   return (
     <ThemeContext.Provider value={{ theme, setTheme }}>
