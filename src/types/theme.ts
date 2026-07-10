@@ -1,7 +1,4 @@
-// types/theme.ts
-
 export interface Theme {
-  // --- Colors ---
   primaryColor: string;
   secondaryColor: string;
   backgroundColor: string;
@@ -24,8 +21,6 @@ export interface Theme {
   linkColor: string;
   hoverColor: string;
   activeColor: string;
-
-  // --- Typography ---
   fontFamily: string;
   headingFont: string;
   bodyFont: string;
@@ -35,23 +30,16 @@ export interface Theme {
   lineHeight: number;
   textTransform: "none" | "uppercase" | "capitalize" | "lowercase";
   fontWeight: string;
-
-  // --- Components & Effects ---
-  // Fix: string | number allow kiya taaki '24px' ya 24 dono chalein
-  borderRadius: string | number; 
+  borderRadius: string | number;
   buttonRadius: number;
   cardRadius: number;
   inputRadius: number;
   borderWidth: number;
   shadow: string;
   shadowOpacity: number;
-  
-  // Button Builder Fields
   buttonStyle: "filled" | "outline" | "soft" | "ghost" | "gradient" | "glass" | "3d";
   buttonSize: "sm" | "md" | "lg";
   buttonHoverEffect: "scale" | "lift" | "shadow" | "none";
   buttonIconPosition: "left" | "right";
-  
-  // Animations & Others
   animationStyle: "fade" | "scale" | "slide" | "rotate" | "bounce";
 }
