@@ -10,16 +10,9 @@ const replacements: Record<string, string> = {
   "text-[var(--text-color)]": "text-[var(--text-color)]",
   "text-[var(--button-text-color)]": "text-[var(--button-text-color)]",
 
-  "bg-[var(--background-color)]": "bg-[var(--background-color)]",
-  "bg-[var(--card-color)]": "bg-[var(--card-color)]",
-  "bg-[var(--card-color)]": "bg-[var(--card-color)]",
 
   "text-[var(--muted-text-color)]": "text-[var(--muted-text-color)]",
-  "text-[var(--muted-text-color)]": "text-[var(--muted-text-color)]",
-  "text-[var(--muted-text-color)]": "text-[var(--muted-text-color)]",
-  "text-[var(--text-color)]": "text-[var(--text-color)]",
 
-  "border-[var(--border-color)]": "border-[var(--border-color)]",
   "border-[var(--border-color)]": "border-[var(--border-color)]",
 
   "bg-[var(--primary-color)]": "bg-[var(--primary-color)]",
