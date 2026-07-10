@@ -2,6 +2,7 @@ import fs from "fs";
 import path from "path";
 
 const ROOT = path.join(process.cwd(), "src");
+let totalFilesUpdated = 0;
 
 const replacements: Record<string, string> = {
   "bg-[var(--background-color)]": "bg-[var(--background-color)]",
