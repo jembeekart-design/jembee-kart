@@ -3,7 +3,7 @@ import path from "path";
 
 const ROOT = path.join(process.cwd(), "src");
 
-const replacements: Record<string, string> = {
+const replacements: Record<string, string> = {};
   // Background
   "bg-[var(--background-color)]": "bg-[var(--background-color)]",
   "bg-[var(--card-color)]": "bg-[var(--card-color)]",
