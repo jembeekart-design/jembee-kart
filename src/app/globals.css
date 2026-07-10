@@ -6,8 +6,6 @@
   --background-color: #F8F9FE;
   --card-color: #FFFFFF;
   --text-color: #111827;
-  /* यहाँ नया वेरिएबल जोड़ें */
-  --border-color: #000000; 
 }
 
 html,
@@ -20,8 +18,6 @@ body {
 
 * {
   box-sizing: border-box;
-  /* ट्रांजिशन जोड़ें ताकि बॉर्डर कलर स्मूद बदले */
-  transition: border-color 0.3s ease;
 }
 
 body {
@@ -48,49 +44,57 @@ canvas {
 
 /* GLOBAL THEME CLASSES */
 
-.theme-primary-bg { background: var(--primary-color); }
-.theme-secondary-bg { background: var(--secondary-color); }
-.theme-primary-text { color: var(--primary-color); }
-.theme-secondary-text { color: var(--secondary-color); }
-.theme-card { background: var(--card-color); }
-.theme-page { background: var(--background-color); color: var(--text-color); }
-
-.theme-gradient {
-  background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+.theme-primary-bg {
+  background: var(--primary-color);
 }
 
-.theme-primary-border { border-color: var(--primary-color); }
-.theme-secondary-border { border-color: var(--secondary-color); }
+.theme-secondary-bg {
+  background: var(--secondary-color);
+}
+
+.theme-primary-text {
+  color: var(--primary-color);
+}
+
+.theme-secondary-text {
+  color: var(--secondary-color);
+}
+
+.theme-card {
+  background: var(--card-color);
+}
+
+.theme-page {
+  background: var(--background-color);
+  color: var(--text-color);
+}
+
+.theme-gradient {
+  background: linear-gradient(
+    135deg,
+    var(--primary-color),
+    var(--secondary-color)
+  );
+}
+.theme-primary-border {
+  border-color: var(--primary-color);
+}
+
+.theme-secondary-border {
+  border-color: var(--secondary-color);
+}
 
 .theme-primary-soft {
   background: color-mix(in srgb, var(--primary-color) 20%, transparent);
 }
-.theme-primary-soft-text { color: var(--primary-color); }
 
-/* PRODUCT CARD COMPONENTS - ये अब --border-color से कंट्रोल होंगे */
-
-.jembee-border {
-  border: 2px solid var(--border-color);
-  border-radius: 12px;
+.theme-primary-soft-text {
+  color: var(--primary-color);
 }
-
+/* Product Card Underline Component */
 .card-accent-border {
-  border-bottom: 4px solid var(--border-color);
+  border-bottom: 4px solid var(--secondary-color);
   padding-bottom: 2px;
   display: inline-block;
   margin-bottom: 10px;
 }
-/* Product Card Underline & Border Component */
-
-.jembee-border {
-  border: 2px solid var(--primary-color) !important; /* अगर बॉर्डर गायब है तो !important इसे वापस लाएगा */
-  border-radius: 12px;
-}
-
-.card-accent-border {
-  border-bottom: 4px solid var(--primary-color) !important;
-  padding-bottom: 2px;
-  display: inline-block;
-  margin-bottom: 10px;
-}
-
