@@ -13,9 +13,6 @@ export interface ThemeScanResult {
 }
 
 export class ThemeScanner {
-  /**
-   * Hardcoded color patterns
-   */
   private readonly colorPatterns: RegExp[] = [
     /#[0-9A-Fa-f]{3,8}/g,
     /rgb\(/gi,
@@ -25,9 +22,7 @@ export class ThemeScanner {
   ];
 
   private readonly tailwindColorPatterns: RegExp[] = [
-    /bg-(red|blue|green|yellow|purple|pink|orange|indigo|gray|slate)-\d+/gi,
-    /text-(red|blue|green|yellow|purple|pink|orange|indigo|gray|slate)-\d+/gi,
-    /border-(red|blue|green|yellow|purple|pink|orange|indigo|gray|slate)-\d+/gi,
+    /\b(bg|text|border|ring|divide|outline|from|to|via)-(red|blue|green|yellow|purple|pink|orange|indigo|gray|slate|zinc|neutral|stone|emerald|lime|cyan|sky|teal|violet|rose|fuchsia|amber|black|white)(-\d+(\/\d+)?)?\b/gi,
   ];
 
   private readonly fontPatterns: RegExp[] = [
@@ -35,9 +30,6 @@ export class ThemeScanner {
     /fontFamily\s*:/gi,
   ];
 
-  /**
-   * Allowed theme references (Expanded)
-   */
   private readonly themeReferences = [
     "theme.",
     "currentTheme.",
@@ -77,35 +69,40 @@ export class ThemeScanner {
     try {
       content = fs.readFileSync(filePath, "utf8");
     } catch {
-      violations.push({
-        id: "THEME_FILE_READ_ERROR",
-        title: "Theme Scan Failed",
-        description: "Unable to read source file.",
-        category: "THEME",
-        severity: "ERROR",
-        filePath,
-        detectedAt: new Date().toISOString(),
-      });
       return { 
         report: { pageName: path.basename(filePath), adminThemeConnected: false, hardcodedColorsFound: false, hardcodedFontsFound: false, passed: false }, 
-        violations 
+        violations: [{
+          id: "THEME_FILE_READ_ERROR",
+          title: "Theme Scan Failed",
+          description: "Unable to read source file.",
+          category: "THEME",
+          severity: "ERROR",
+          filePath,
+          detectedAt: new Date().toISOString(),
+        }]
       };
     }
 
     const lines = content.split("\n");
+    // 1. Updated Allowed Tokens
     const allowedThemeTokens = [
-  "bg-[var(--",
-  "text-[var(--",
-  "border-[var(--",
-];
+      "[var(--",
+      "var(--",
+      "theme.",
+      "currentTheme.",
+      "themeConfig.",
+      "themeSettings",
+      "useTheme(",
+      "ThemeProvider",
+    ];
+
     let hardcodedColorsFound = false;
     let hardcodedFontsFound = false;
 
-    const adminThemeConnected = this.themeReferences.some((ref) =>
-      content.includes(ref)
-    );
+    const adminThemeConnected = this.themeReferences.some((ref) => content.includes(ref));
 
     lines.forEach((line, index) => {
+      // Check for hardcoded CSS colors
       for (const pattern of this.colorPatterns) {
         const matches = line.match(pattern);
         if (matches) {
@@ -113,23 +110,25 @@ export class ThemeScanner {
           violations.push({
             id: "THEME_HARDCODED_COLOR",
             title: "Hardcoded Color Found",
-            description: "Color is hardcoded instead of using admin-controlled theme settings.",
+            description: "Color is hardcoded instead of using theme settings.",
             category: "THEME",
             severity: "WARNING",
             filePath,
             lineNumber: index + 1,
             actualValue: matches.join(", "),
-            expectedValue: "theme.primaryColor / theme.secondaryColor",
-            recommendation: "Replace hardcoded color with dynamic theme configuration.",
+            expectedValue: "CSS Variable or Theme Token",
+            recommendation: "Replace with dynamic theme variable.",
             detectedAt: new Date().toISOString(),
           });
         }
       }
 
+      // 2. Updated Tailwind Logic with continue and joined matches
       for (const pattern of this.tailwindColorPatterns) {
         if (allowedThemeTokens.some(token => line.includes(token))) {
-  return;
-}
+          continue; 
+        }
+
         const matches = line.match(pattern);
         if (matches) {
           hardcodedColorsFound = true;
@@ -141,14 +140,15 @@ export class ThemeScanner {
             severity: "WARNING",
             filePath,
             lineNumber: index + 1,
-            actualValue: matches.join(", "),
+            actualValue: matches.join(", "), // 3. Updated to join all matches
             expectedValue: "Dynamic theme token",
-            recommendation: "Use theme variables instead of direct Tailwind color classes.",
+            recommendation: "Use theme variables ([var(--...)]).",
             detectedAt: new Date().toISOString(),
           });
         }
       }
 
+      // Font checks
       for (const pattern of this.fontPatterns) {
         const matches = line.match(pattern);
         if (matches) {
@@ -156,33 +156,19 @@ export class ThemeScanner {
           violations.push({
             id: "THEME_HARDCODED_FONT",
             title: "Hardcoded Font Found",
-            description: "Font is hardcoded instead of being controlled by admin theme.",
+            description: "Font is hardcoded.",
             category: "THEME",
             severity: "WARNING",
             filePath,
             lineNumber: index + 1,
             actualValue: matches.join(", "),
             expectedValue: "theme.typography",
-            recommendation: "Move typography settings into theme configuration.",
+            recommendation: "Move typography to theme config.",
             detectedAt: new Date().toISOString(),
           });
         }
       }
     });
-
-    // if (!adminThemeConnected) {
-     // violations.push({
-      //  id: "THEME_NOT_CONNECTED",
-      //  title: "Admin Theme Not Connected",
-       // description: "This page/component does not appear to use the centralized theme system.",
-      //  category: "THEME",
-      //  severity: "CRITICAL",
-      //  filePath,
-      //  expectedValue: "Theme Provider / Theme Config",
-      //  recommendation: "Connect page to admin-controlled theme configuration.",
-       // detectedAt: new Date().toISOString(),
-    //  });
-  //  }
 
     return {
       report: {
