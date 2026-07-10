@@ -80,3 +80,17 @@ canvas {
   display: inline-block;
   margin-bottom: 10px;
 }
+/* Product Card Underline & Border Component */
+
+.jembee-border {
+  border: 2px solid var(--primary-color) !important; /* अगर बॉर्डर गायब है तो !important इसे वापस लाएगा */
+  border-radius: 12px;
+}
+
+.card-accent-border {
+  border-bottom: 4px solid var(--primary-color) !important;
+  padding-bottom: 2px;
+  display: inline-block;
+  margin-bottom: 10px;
+}
+
