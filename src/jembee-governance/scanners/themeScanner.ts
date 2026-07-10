@@ -25,10 +25,8 @@ export class ThemeScanner {
   ];
 
   private readonly tailwindColorPatterns: RegExp[] = [
-    /bg-(red|blue|green|yellow|purple|pink|orange|indigo|gray|slate)-\d+/gi,
-    /text-(red|blue|green|yellow|purple|pink|orange|indigo|gray|slate)-\d+/gi,
-    /border-(red|blue|green|yellow|purple|pink|orange|indigo|gray|slate)-\d+/gi,
-  ];
+  /\b(bg|text|border|ring|divide|outline|from|to|via)-(red|blue|green|yellow|purple|pink|orange|indigo|gray|slate|zinc|neutral|stone|emerald|lime|cyan|sky|teal|violet|rose|fuchsia|amber|black|white)(-\d+(\/\d+)?)?\b/gi,
+];
 
   private readonly fontPatterns: RegExp[] = [
     /font-family\s*:/gi,
