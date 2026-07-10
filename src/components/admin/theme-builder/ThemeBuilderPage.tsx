@@ -11,36 +11,39 @@ import type { Theme } from "@/types/theme";
 export default function ThemeBuilderPage() {
   const { theme, setTheme } = useTheme();
   const [localTheme, setLocalTheme] = useState<Theme>(theme);
-  const [history, setHistory] = useState<Theme[]>([theme]);
-  const [historyIndex, setHistoryIndex] = useState(0);
   const [saving, setSaving] = useState(false);
 
-  // 1. Live Sync Debugging
+  // 1. LOAD: पेज रिफ्रेश होते ही Firebase से सेव्ड डेटा लाएं
   useEffect(() => {
-    console.log("Local Theme updated, syncing with Context:", localTheme);
-    setTheme(localTheme);
-  }, [localTheme, setTheme]);
+    async function fetchSavedTheme() {
+      try {
+        const docRef = doc(db, "admin_settings", "customize");
+        const docSnap = await getDoc(docRef);
+        
+        if (docSnap.exists()) {
+          const savedData = docSnap.data() as Theme;
+          setLocalTheme(savedData); // स्टेट अपडेट करें
+          setTheme(savedData);      // कॉन्टेक्स्ट अपडेट करें
+          console.log("Firebase से थीम लोड हुई:", savedData);
+        }
+      } catch (error) {
+        console.error("थीम लोड करने में एरर:", error);
+      }
+    }
+    fetchSavedTheme();
+  }, [setTheme]);
 
-  // 2. Firebase Save Logic with Debugging
+  // 2. SAVE: फायरबेस में सेव करने का फंक्शन
   async function saveTheme() {
     setSaving(true);
-    console.log("Starting save process...");
-    console.log("Data to be saved:", JSON.stringify(localTheme, null, 2));
-
     try {
-      const themeRef = doc(db, "admin_settings", "customize");
-      console.log("Firestore reference created:", themeRef.path);
-
-      await setDoc(themeRef, localTheme, { merge: true });
-      
-      console.log("Firestore setDoc successful!");
+      await setDoc(doc(db, "admin_settings", "customize"), localTheme, { merge: true });
       alert("Theme Saved Successfully!");
     } catch (e) {
-      console.error("CRITICAL ERROR during saveTheme:", e);
-      alert("Failed to Save. Check Console for details.");
+      console.error("Save Error:", e);
+      alert("Failed to Save");
     } finally {
       setSaving(false);
-      console.log("Save process finished.");
     }
   }
 
@@ -55,24 +58,10 @@ export default function ThemeBuilderPage() {
          <ThemeActions 
             saving={saving} 
             onSave={saveTheme} 
-            onReset={() => {
-              console.log("Resetting theme to initial...");
-              setLocalTheme(theme);
-            }}
-            onApply={() => {
-              console.log("Applying live theme...");
-              setTheme(localTheme);
-            }}
-            onGenerateAI={() => alert("AI feature coming soon!")}
-            onUndo={() => {
-              if(historyIndex > 0) {
-                console.log("Undoing, history index:", historyIndex - 1);
-                setHistoryIndex(prev => prev - 1);
-                setLocalTheme(history[historyIndex - 1]);
-              } else {
-                console.warn("No more history to undo!");
-              }
-            }}
+            onReset={() => setLocalTheme(theme)}
+            onApply={() => setTheme(localTheme)}
+            onGenerateAI={() => alert("Coming Soon!")}
+            onUndo={() => {}} // यहाँ अपनी हिस्ट्री लॉजिक रखें
          />
        </div>
     </main>
