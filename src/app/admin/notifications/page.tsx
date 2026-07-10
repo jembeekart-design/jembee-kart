@@ -331,7 +331,7 @@ export default function NotificationsPage() {
 
                   {item.visible ? (
 
-                    <span className="rounded-full bg-[var(--success-color)]/20 px-4 py-2 text-xs font-bold text-green-500">
+                    <span className="rounded-full bg-[var(--success-color)]/20 px-4 py-2 text-xs font-bold text-[var(--success-color)]">
 
                       Active
 
@@ -446,8 +446,8 @@ export default function NotificationsPage() {
                     }
                     className={`flex items-center justify-center gap-2 rounded-2xl px-4 py-3 text-sm font-bold ${
                       item.visible
-                        ? "bg-[var(--warning-color)]/20 text-yellow-500"
-                        : "bg-[var(--success-color)]/20 text-green-500"
+                        ? "bg-[var(--warning-color)]/20 text-[var(--warning-color)]"
+                        : "bg-[var(--success-color)]/20 text-[var(--success-color)]"
                     }`}
                   >
 

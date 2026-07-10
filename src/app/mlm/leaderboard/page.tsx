@@ -191,7 +191,7 @@ export default function MLMLeaderboardPage() {
                 items-center
                 justify-center
                 rounded-full
-                bg-gray-200
+                bg-[var(--card-color)]
                 text-[var(--text-color)]
               "
             >

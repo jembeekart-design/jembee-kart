@@ -1785,7 +1785,7 @@ export default function ProductsAdminPage() {
                                 <Eye
                                   size={18}
                                   className="
-                                    text-green-500
+                                    text-[var(--success-color)]
                                   "
                                 />
 

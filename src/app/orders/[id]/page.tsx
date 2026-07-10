@@ -66,7 +66,7 @@ export default function OrderDetailsPage() {
            <div className="space-y-4">
              {steps.map((step, i) => (
                 <div key={step} className="flex items-center gap-3">
-                   <div className={`w-3 h-3 rounded-full ${i <= currentStepIndex ? 'bg-[var(--success-color)]' : 'bg-gray-200'}`} />
+                   <div className={`w-3 h-3 rounded-full ${i <= currentStepIndex ? 'bg-[var(--success-color)]' : 'bg-[var(--card-color)]'}`} />
                    <p className={`text-xs font-bold ${i <= currentStepIndex ? 'text-[var(--text-color)]' : 'text-[var(--muted-text-color)]'}`}>{step.charAt(0).toUpperCase() + step.slice(1)}</p>
                 </div>
              ))}

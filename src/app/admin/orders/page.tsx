@@ -247,7 +247,7 @@ export default function OrdersPage() {
                   <button
                     onClick={() => updateStatus(order.id, "delivered")}
                     disabled={order.commissionProcessed || order.status === "delivered"}
-                    className="flex items-center justify-center gap-2 rounded-2xl px-3 py-3 text-sm font-bold transition active:scale-95 disabled:opacity-40 disabled:cursor-not-allowed disabled:bg-[#151a16] disabled:text-green-500/60 bg-[#1e1e1e] hover:bg-[#252525] text-[var(--muted-text-color)] data-[active=true]:bg-[var(--success-color)] data-[active=true]:text-[var(--button-text-color)]"
+                    className="flex items-center justify-center gap-2 rounded-2xl px-3 py-3 text-sm font-bold transition active:scale-95 disabled:opacity-40 disabled:cursor-not-allowed disabled:bg-[#151a16] disabled:text-[var(--success-color)]/60 bg-[#1e1e1e] hover:bg-[#252525] text-[var(--muted-text-color)] data-[active=true]:bg-[var(--success-color)] data-[active=true]:text-[var(--button-text-color)]"
                     data-active={order.status === "delivered"}
                   >
                     <CheckCircle2 size={16} />

@@ -46,7 +46,7 @@ export default function MyOrdersPage() {
     'pending': 'text-orange-500 bg-orange-50 border-orange-100', 
     'placed': 'text-[var(--primary-color)] bg-blue-50 theme-primary-border',
     'shipped': 'text-purple-500 bg-purple-50 border-purple-100', 
-    'delivered': 'text-green-500 bg-green-50 border-green-100',
+    'delivered': 'text-[var(--success-color)] bg-green-50 border-green-100',
     'cancelled': 'text-[var(--danger-color)] bg-red-50 border-red-100'
   }[s?.toLowerCase()] || 'text-[var(--muted-text-color)] bg-[var(--background-color)] border-[var(--border-color)]');
 

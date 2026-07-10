@@ -254,7 +254,7 @@ export default function MLMRanksPage() {
                 h-4
                 overflow-hidden
                 rounded-full
-                bg-gray-200
+                bg-[var(--card-color)]
               "
             >
 

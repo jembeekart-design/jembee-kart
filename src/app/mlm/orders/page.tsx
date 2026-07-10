@@ -307,7 +307,7 @@ OrdersPage() {
                       <CheckCircle2
                         size={24}
                         className="
-                          text-green-500
+                          text-[var(--success-color)]
                         "
                       />
 

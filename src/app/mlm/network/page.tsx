@@ -236,7 +236,7 @@ export default function MLMNetworkPage() {
             No active levels to track
           </div>
         ) : (
-          <div className="flex bg-gray-200/60 p-1.5 rounded-2xl gap-1 overflow-x-auto scrollbar-none">
+          <div className="flex bg-[var(--card-color)]/60 p-1.5 rounded-2xl gap-1 overflow-x-auto scrollbar-none">
             {Object.keys(networkLevels)
               .filter((level) => networkLevels[Number(level)]?.length > 0)
               .map((levelStr) => {

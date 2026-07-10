@@ -314,7 +314,7 @@ export default function Header({
                 transition-all
                 duration-300
 
-                hover:bg-gray-200
+                hover:bg-[var(--card-color)]
               "
             >
 
