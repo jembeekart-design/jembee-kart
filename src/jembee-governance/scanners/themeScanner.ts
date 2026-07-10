@@ -92,9 +92,14 @@ export class ThemeScanner {
 
     const lines = content.split("\n");
     const allowedThemeTokens = [
-  "bg-[var(--",
-  "text-[var(--",
-  "border-[var(--",
+  "[var(--",
+  "var(--",
+  "theme.",
+  "currentTheme.",
+  "themeConfig.",
+  "themeSettings",
+  "useTheme(",
+  "ThemeProvider",
 ];
     let hardcodedColorsFound = false;
     let hardcodedFontsFound = false;
