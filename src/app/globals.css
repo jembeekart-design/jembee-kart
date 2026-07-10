@@ -93,7 +93,7 @@ canvas {
 }
 /* Product Card Underline Component */
 .card-accent-border {
-  border-bottom: 4px solid var(--primary-color);
+  border-bottom: 4px solid var(--secondary-color);
   padding-bottom: 2px;
   display: inline-block;
   margin-bottom: 10px;
