@@ -2,152 +2,285 @@ import fs from "fs";
 import path from "path";
 
 const ROOT = path.join(process.cwd(), "src");
-let totalFilesUpdated = 0;
+const BACKUP_ROOT = path.join(process.cwd(), ".theme-backup");
 
-const replacements: Record<string, string> = {
-  "bg-[var(--background-color)]": "bg-[var(--background-color)]",
-  "bg-[var(--card-color)]": "bg-[var(--card-color)]",
+const VALID_EXTENSIONS = [".ts", ".tsx", ".js", ".jsx"];
 
-  "text-[var(--text-color)]": "text-[var(--text-color)]",
-  "text-[var(--button-text-color)]": "text-[var(--button-text-color)]",
+interface ScanResult {
+  file: string;
+  hardcodedColors: number;
+  cssVariables: number;
+  inlineStyles: number;
+  tailwindColors: number;
+}
 
+const results: ScanResult[] = [];
 
-  "text-[var(--muted-text-color)]": "text-[var(--muted-text-color)]",
-
-  "border-[var(--border-color)]": "border-[var(--border-color)]",
-
-  "bg-[var(--primary-color)]": "bg-[var(--primary-color)]",
-  "text-[var(--primary-color)]": "text-[var(--primary-color)]",
-
-  "bg-[var(--success-color)]": "bg-[var(--success-color)]",
-  "text-[var(--success-color)]": "text-[var(--success-color)]",
-
-  "bg-[var(--danger-color)]": "bg-[var(--danger-color)]",
-  "text-[var(--danger-color)]": "text-[var(--danger-color)]",
-
-  "bg-[var(--warning-color)]": "bg-[var(--warning-color)]",
-  "text-[var(--warning-color)]": "text-[var(--warning-color)]",
-};
-
-function walk(dir: string) {
-  const files = fs.readdirSync(dir);
-
-  for (const file of files) {
-    const fullPath = path.join(dir, file);
-    const stats = fs.statSync(fullPath);
-
-    // 1. Skip Directories and self-directory (scripts)
-    if (stats.isDirectory()) {
-      if (["node_modules", ".next", "dist", ".git", "coverage"].includes(file)) continue;
-      if (fullPath.includes("src/scripts")) continue;
-      
-      walk(fullPath);
-      continue;
-    }
-
-    // Sirf valid source files process karein
-    if (!/\.(ts|tsx|js|jsx)$/.test(file)) continue;
-
-    let content = fs.readFileSync(fullPath, "utf8");
-    const originalContent = content;
-
-    // Mass Replacement Logic
-    content = content
-      // Gray / Slate / Zinc / Neutral / Stone
-      .replace(/\bbg-(gray|slate|zinc|neutral|stone)-\d+\b/g, "bg-[var(--card-color)]")
-      .replace(/\btext-(gray|slate|zinc|neutral|stone)-\d+\b/g, "text-[var(--text-color)]")
-      .replace(/\bborder-(gray|slate|zinc|neutral|stone)-\d+\b/g, "border-[var(--border-color)]")
-      
-      // Blue
-      .replace(/\bbg-blue-\d+\b/g, "bg-[var(--primary-color)]")
-      .replace(/\btext-blue-\d+\b/g, "text-[var(--primary-color)]")
-      .replace(/\bborder-blue-\d+\b/g, "border-[var(--primary-color)]")
-      
-      // Green / Lime / Emerald
-      .replace(/\bbg-(green|lime|emerald)-\d+\b/g, "bg-[var(--success-color)]")
-      .replace(/\btext-(green|lime|emerald)-\d+\b/g, "text-[var(--success-color)]")
-      .replace(/\bborder-(green|lime|emerald)-\d+\b/g, "border-[var(--success-color)]")
-      
-      // Red
-      .replace(/\bbg-red-\d+\b/g, "bg-[var(--danger-color)]")
-      .replace(/\btext-red-\d+\b/g, "text-[var(--danger-color)]")
-      .replace(/\bborder-red-\d+\b/g, "border-[var(--danger-color)]")
-      
-      // Yellow / Amber / Orange
-      .replace(/\bbg-(yellow|amber|orange)-\d+\b/g, "bg-[var(--warning-color)]")
-      .replace(/\btext-(yellow|amber|orange)-\d+\b/g, "text-[var(--warning-color)]")
-      .replace(/\bborder-(yellow|amber|orange)-\d+\b/g, "border-[var(--warning-color)]")
-      
-      // Purple / Indigo / Violet / Pink / Rose / Fuchsia / Cyan / Sky / Teal
-      .replace(/\bbg-(purple|indigo|violet|pink|rose|fuchsia|cyan|sky|teal)-\d+\b/g, "bg-[var(--primary-color)]")
-      .replace(/\btext-(purple|indigo|violet|pink|rose|fuchsia|cyan|sky|teal)-\d+\b/g, "text-[var(--primary-color)]")
-      .replace(/\bborder-(purple|indigo|violet|pink|rose|fuchsia|cyan|sky|teal)-\d+\b/g, "border-[var(--primary-color)]")
-      
-      // Black / White
-      .replace(/\bbg-black\b/g, "bg-[var(--background-color)]")
-      .replace(/\bbg-white\b/g, "bg-[var(--card-color)]")
-      .replace(/\btext-black\b/g, "text-[var(--text-color)]")
-      .replace(/\btext-white\b/g, "text-[var(--button-text-color)]")
-      .replace(/\bborder-black\b/g, "border-[var(--border-color)]")
-      .replace(/\bborder-white\b/g, "border-[var(--border-color)]")
-      
-      // Opacity / Ring / Divide / Outline
-      .replace(/\bbg-[a-z]+-\d+\/\d+\b/g, "bg-[var(--card-color)]")
-      .replace(/\btext-[a-z]+-\d+\/\d+\b/g, "text-[var(--text-color)]")
-      .replace(/\bborder-[a-z]+-\d+\/\d+\b/g, "border-[var(--border-color)]")
-      .replace(/\bring-[a-z]+-\d+\b/g, "ring-[var(--primary-color)]")
-      .replace(/\bdivide-[a-z]+-\d+\b/g, "divide-[var(--border-color)]")
-      .replace(/\boutline-[a-z]+-\d+\b/g, "outline-[var(--border-color)]")
-      
-      // Hover / Focus
-      .replace(/\bhover:bg-[a-z-]+-\d+\b/g, "hover:bg-[var(--primary-color)]")
-      .replace(/\bhover:text-[a-z-]+-\d+\b/g, "hover:text-[var(--text-color)]")
-      .replace(/\bhover:border-[a-z-]+-\d+\b/g, "hover:border-[var(--border-color)]")
-      .replace(/\bfocus:bg-[a-z-]+-\d+\b/g, "focus:bg-[var(--primary-color)]")
-      .replace(/\bfocus:text-[a-z-]+-\d+\b/g, "focus:text-[var(--text-color)]")
-      .replace(/\bfocus:border-[a-z-]+-\d+\b/g, "focus:border-[var(--border-color)]")
-
-      // Hex Colors
-.replace(/#[0-9A-Fa-f]{3,8}/g, "var(--primary-color)")
-
-// Background
-.replace(/\bbg-(red|blue|green|yellow|purple|pink|orange|indigo|gray|slate|zinc|neutral|stone|emerald|lime|cyan|sky|teal|violet|rose|fuchsia|amber)-\d+(\/\d+)?\b/g, "bg-[var(--primary-color)]")
-
-// Text
-.replace(/\btext-(red|blue|green|yellow|purple|pink|orange|indigo|gray|slate|zinc|neutral|stone|emerald|lime|cyan|sky|teal|violet|rose|fuchsia|amber)-\d+(\/\d+)?\b/g, "text-[var(--primary-color)]")
-
-// Border
-.replace(/\bborder-(red|blue|green|yellow|purple|pink|orange|indigo|gray|slate|zinc|neutral|stone|emerald|lime|cyan|sky|teal|violet|rose|fuchsia|amber)-\d+(\/\d+)?\b/g, "border-[var(--border-color)]")
-
-// Ring
-.replace(/\bring-(red|blue|green|yellow|purple|pink|orange|indigo|gray|slate|zinc|neutral|stone|emerald|lime|cyan|sky|teal|violet|rose|fuchsia|amber)-\d+\b/g, "ring-[var(--primary-color)]")
-
-// Shadow
-.replace(/\bshadow-[a-z-]+-\d+(\/\d+)?\b/g, "shadow")
-      
-      // Gradient
-      .replace(/\bfrom-[a-z-]+-\d+\b/g, "from-[var(--primary-color)]")
-      .replace(/\bvia-[a-z-]+-\d+\b/g, "via-[var(--primary-color)]")
-      .replace(/\bto-[a-z-]+-\d+\b/g, "to-[var(--primary-color)]")
-      
-      // Dark Mode
-      .replace(/\bdark:bg-[a-z-]+-\d+\b/g, "dark:bg-[var(--background-color)]")
-      .replace(/\bdark:text-[a-z-]+-\d+\b/g, "dark:text-[var(--text-color)]")
-      .replace(/\bdark:border-[a-z-]+-\d+\b/g, "dark:border-[var(--border-color)]");
-
-    if (content !== originalContent) {
-      fs.writeFileSync(fullPath, content);
-      console.log(`✅ Updated: ${fullPath}`);
-      totalFilesUpdated++;
-    }
+function ensureBackupDir() {
+  if (!fs.existsSync(BACKUP_ROOT)) {
+    fs.mkdirSync(BACKUP_ROOT, { recursive: true });
   }
 }
 
-console.log("🚀 Starting Ultimate Theme Migration...");
-try {
-  walk(ROOT);
-  console.log(`✨ Theme Codemod Completed Successfully!`);
-  console.log(`📄 Files Updated: ${totalFilesUpdated}`);
-} catch (error) {
-  console.error("❌ Error during migration:", error);
+function backupFile(filePath: string) {
+  const relative = path.relative(ROOT, filePath);
+  const backup = path.join(BACKUP_ROOT, relative);
+
+  fs.mkdirSync(path.dirname(backup), { recursive: true });
+
+  if (!fs.existsSync(backup)) {
+    fs.copyFileSync(filePath, backup);
+  }
 }
+
+function isSourceFile(file: string) {
+  return VALID_EXTENSIONS.some(ext => file.endsWith(ext));
+}
+
+function scanContent(content: string): ScanResult {
+
+  const hardcodedHex =
+    (content.match(/#[0-9a-fA-F]{3,8}/g) || []).length;
+
+  const cssVariables =
+    (content.match(/var\(--.*?\)/g) || []).length;
+
+  const inlineStyles =
+    (content.match(/style=\{\{/g) || []).length;
+
+  const tailwindColors =
+    (content.match(
+      /\b(bg|text|border|ring|from|via|to)-(red|blue|green|yellow|purple|pink|orange|gray|slate|zinc|neutral|stone|emerald|lime|cyan|sky|teal|violet|rose|fuchsia|amber)-\d+/g
+    ) || []).length;
+
+  return {
+    file: "",
+    hardcodedColors: hardcodedHex,
+    cssVariables,
+    inlineStyles,
+    tailwindColors,
+  };
+}
+
+function walk(dir: string) {
+
+  const files = fs.readdirSync(dir);
+
+  for (const file of files) {
+
+    const full = path.join(dir, file);
+
+    const stat = fs.statSync(full);
+
+    if (stat.isDirectory()) {
+
+      if (
+        [
+          ".git",
+          ".next",
+          "dist",
+          "node_modules",
+          "coverage",
+          ".theme-backup",
+        ].includes(file)
+      ) {
+        continue;
+      }
+
+      walk(full);
+
+      continue;
+    }
+
+    if (!isSourceFile(file)) continue;
+
+    const code = fs.readFileSync(full, "utf8");
+
+    backupFile(full);
+
+    const report = scanContent(code);
+
+    report.file = path.relative(ROOT, full);
+
+    results.push(report);
+  }
+}
+
+function printReport() {
+
+  console.log("\n==========================");
+  console.log("THEME SCAN REPORT");
+  console.log("==========================\n");
+
+  let hardcoded = 0;
+  let variables = 0;
+  let inline = 0;
+  let tailwind = 0;
+
+  for (const item of results) {
+
+    hardcoded += item.hardcodedColors;
+    variables += item.cssVariables;
+    inline += item.inlineStyles;
+    tailwind += item.tailwindColors;
+
+    console.log(
+      `${item.file}
+  Tailwind Colors : ${item.tailwindColors}
+  CSS Variables   : ${item.cssVariables}
+  Hex Colors      : ${item.hardcodedColors}
+  Inline Styles   : ${item.inlineStyles}
+`
+    );
+  }
+
+  console.log("========== SUMMARY ==========");
+
+  console.log("Files :", results.length);
+  console.log("Tailwind Colors :", tailwind);
+  console.log("CSS Variables :", variables);
+  console.log("Hex Colors :", hardcoded);
+  console.log("Inline Styles :", inline);
+
+  console.log("=============================");
+}
+
+console.log("🚀 Theme Recovery Scanner");
+
+ensureBackupDir();
+
+walk(ROOT);
+
+printReport();
+
+console.log("✅ Scan Complete");
+/* =====================================================
+   PART 2A
+   SEMANTIC THEME MAPPER
+===================================================== */
+
+interface ThemeRule {
+  name: string;
+  regex: RegExp;
+  replacement: string;
+}
+
+const THEME_RULES: ThemeRule[] = [
+
+  /* =========================
+     HEADER
+  ========================= */
+
+  {
+    name: "Header Background",
+    regex: /\bbg-(cyan|sky|teal)-\d+\b/g,
+    replacement: "bg-[var(--header-background)]",
+  },
+
+  {
+    name: "Header Text",
+    regex: /\btext-(cyan|sky|teal)-\d+\b/g,
+    replacement: "text-[var(--header-text-color)]",
+  },
+
+  /* =========================
+     SEARCH BAR
+  ========================= */
+
+  {
+    name: "Search Background",
+    regex: /\bbg-gray-(50|100|200)\b/g,
+    replacement: "bg-[var(--searchbar-color)]",
+  },
+
+  {
+    name: "Search Border",
+    regex: /\bborder-gray-(200|300|400)\b/g,
+    replacement: "border-[var(--searchbar-border-color)]",
+  },
+
+  /* =========================
+     BUTTON
+  ========================= */
+
+  {
+    name: "Button Background",
+    regex: /\bbg-blue-\d+\b/g,
+    replacement: "bg-[var(--button-color)]",
+  },
+
+  {
+    name: "Button Text",
+    regex: /\btext-white\b/g,
+    replacement: "text-[var(--button-text-color)]",
+  },
+
+  {
+    name: "Button Hover",
+    regex: /\bhover:bg-blue-\d+\b/g,
+    replacement: "hover:bg-[var(--button-hover-color)]",
+  },
+
+  /* =========================
+     CARD
+  ========================= */
+
+  {
+    name: "Card Background",
+    regex: /\bbg-white\b/g,
+    replacement: "bg-[var(--card-color)]",
+  },
+
+  {
+    name: "Card Border",
+    regex: /\bborder-(gray|slate|zinc)-\d+\b/g,
+    replacement: "border-[var(--card-border-color)]",
+  },
+
+  /* =========================
+     PAGE
+  ========================= */
+
+  {
+    name: "Page Background",
+    regex: /\bbg-black\b/g,
+    replacement: "bg-[var(--background-color)]",
+  },
+
+  {
+    name: "Page Text",
+    regex: /\btext-black\b/g,
+    replacement: "text-[var(--text-color)]",
+  },
+
+  /* =========================
+     SUCCESS
+  ========================= */
+
+  {
+    name: "Success",
+    regex: /\b(bg|text)-(green|emerald|lime)-\d+\b/g,
+    replacement: "var(--success-color)",
+  },
+
+  /* =========================
+     WARNING
+  ========================= */
+
+  {
+    name: "Warning",
+    regex: /\b(bg|text)-(yellow|amber|orange)-\d+\b/g,
+    replacement: "var(--warning-color)",
+  },
+
+  /* =========================
+     DANGER
+  ========================= */
+
+  {
+    name: "Danger",
+    regex: /\b(bg|text)-red-\d+\b/g,
+    replacement: "var(--danger-color)",
+  },
+
+];
