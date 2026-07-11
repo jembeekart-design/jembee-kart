@@ -42,4 +42,43 @@ export interface Theme {
   buttonHoverEffect: "scale" | "lift" | "shadow" | "none";
   buttonIconPosition: "left" | "right";
   animationStyle: "fade" | "scale" | "slide" | "rotate" | "bounce";
+  // Header
+headerBackground: string;
+headerTextColor: string;
+headerIconColor: string;
+
+// Search Bar
+searchBarColor: string;
+searchBarTextColor: string;
+searchBarPlaceholderColor: string;
+searchBarBorderColor: string;
+
+// Buttons
+buttonColor: string;
+buttonHoverColor: string;
+
+// Cards
+cardBorderColor: string;
+cardShadowColor: string;
+
+// Navigation
+navbarColor: string;
+bottomNavColor: string;
+bottomNavActiveColor: string;
+
+// Banner
+bannerBackground: string;
+
+// Category
+categoryBackground: string;
+categoryTextColor: string;
+
+// Product
+productCardColor: string;
+priceColor: string;
+offerColor: string;
+
+// Footer
+footerBackground: string;
+footerTextColor: string;
 }
