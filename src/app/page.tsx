@@ -463,22 +463,14 @@ export default function HomePage() {
         ====================================================== */}
 
         <Header
-          headerBackgroundColor={
-            headerSection?.headerBackgroundColor
-          }
-          headerTextColor={
-            headerSection?.headerTextColor
-          }
-          searchBarColor={
-            headerSection?.searchBarColor
-          }
-          statusBarColor={
-            headerSection?.statusBarColor
-          }
+  headerBackgroundColor={theme.headerBackground}
+  headerTextColor={theme.headerTextColor}
+  searchBarColor={theme.searchBarColor}
+  statusBarColor={theme.headerBackground}
 
-          search={search}
-          setSearch={setSearch}
-        />
+  search={search}
+  setSearch={setSearch}
+/>
 
         {/* ======================================================
         SEARCH PRODUCTS
