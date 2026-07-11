@@ -284,3 +284,97 @@ const THEME_RULES: ThemeRule[] = [
   },
 
 ];
+/* =====================================================
+   PART 2B
+   SAFE REPLACEMENT ENGINE
+===================================================== */
+
+interface ReplaceReport {
+  file: string;
+  rulesApplied: number;
+}
+
+const replaceReports: ReplaceReport[] = [];
+
+function applyThemeRules(
+  filePath: string,
+  content: string
+): string {
+
+  let updated = content;
+  let applied = 0;
+
+  for (const rule of THEME_RULES) {
+
+    const before = updated;
+
+    updated = updated.replace(
+      rule.regex,
+      (match) => {
+
+        // Success
+        if (
+          match.startsWith("bg-green") ||
+          match.startsWith("bg-emerald") ||
+          match.startsWith("bg-lime")
+        ) {
+          return "bg-[var(--success-color)]";
+        }
+
+        if (
+          match.startsWith("text-green") ||
+          match.startsWith("text-emerald") ||
+          match.startsWith("text-lime")
+        ) {
+          return "text-[var(--success-color)]";
+        }
+
+        // Warning
+        if (
+          match.startsWith("bg-yellow") ||
+          match.startsWith("bg-amber") ||
+          match.startsWith("bg-orange")
+        ) {
+          return "bg-[var(--warning-color)]";
+        }
+
+        if (
+          match.startsWith("text-yellow") ||
+          match.startsWith("text-amber") ||
+          match.startsWith("text-orange")
+        ) {
+          return "text-[var(--warning-color)]";
+        }
+
+        // Danger
+        if (match.startsWith("bg-red")) {
+          return "bg-[var(--danger-color)]";
+        }
+
+        if (match.startsWith("text-red")) {
+          return "text-[var(--danger-color)]";
+        }
+
+        return rule.replacement;
+
+      }
+    );
+
+    if (before !== updated) {
+      applied++;
+    }
+
+  }
+
+  if (applied > 0) {
+
+    replaceReports.push({
+      file: path.relative(ROOT, filePath),
+      rulesApplied: applied,
+    });
+
+  }
+
+  return updated;
+
+}
