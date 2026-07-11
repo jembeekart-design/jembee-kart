@@ -8,69 +8,107 @@ const DEFAULT_THEME = {
   headerBackground: "#ffffff",
   searchBarColor: "#f3f4f6",
   buttonColor: "#4f46e5",
-  cardBorderColor: "#e5e7eb"
+  cardBorderColor: "#e5e7eb",
+};
+
+const cssMap: Record<string, string> = {
+  headerBackground: "--header-color",
+  searchBarColor: "--search-bar-color",
+  buttonColor: "--primary-color",
+  cardBorderColor: "--border-color",
 };
 
 export default function ThemePage() {
-  const [headerTheme, setHeaderTheme] = useState<any>({});
-  const [sectionTheme, setSectionTheme] = useState<any>({});
+  const [theme, setTheme] = useState(DEFAULT_THEME);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    async function initTheme() {
-      const collections = [
-        { col: "homepage_sections", id: "header_section", setter: setHeaderTheme },
-        { col: "homepage_sections", id: "section_style", setter: setSectionTheme }
-      ];
-
-      for (const item of collections) {
-        const ref = doc(db, item.col, item.id);
-        const snap = await getDoc(ref);
-        if (snap.exists()) {
-          item.setter(snap.data());
-        } else {
-          await setDoc(ref, DEFAULT_THEME);
-          item.setter(DEFAULT_THEME);
-        }
-      }
-      setLoading(false);
-    }
-    initTheme();
+    loadTheme();
   }, []);
 
-  async function updateTheme(collectionName: string, documentId: string, field: string, value: string) {
-    const ref = doc(db, collectionName, documentId);
-    await updateDoc(ref, { [field]: value });
-    document.documentElement.style.setProperty(`--${field}`, value);
+  async function loadTheme() {
+    const ref = doc(db, "admin_settings", "customize");
+    const snap = await getDoc(ref);
+
+    if (snap.exists()) {
+      const data = {
+        ...DEFAULT_THEME,
+        ...snap.data(),
+      };
+
+      setTheme(data);
+
+      Object.entries(cssMap).forEach(([field, css]) => {
+        document.documentElement.style.setProperty(
+          css,
+          (data as any)[field]
+        );
+      });
+    } else {
+      await setDoc(ref, DEFAULT_THEME);
+      setTheme(DEFAULT_THEME);
+    }
+
+    setLoading(false);
   }
 
-  if (loading) return <div className="p-10 text-center">Loading...</div>;
+  async function changeColor(field: string, value: string) {
+    setTheme((prev) => ({
+      ...prev,
+      [field]: value,
+    }));
+
+    document.documentElement.style.setProperty(
+      cssMap[field],
+      value
+    );
+
+    await updateDoc(
+      doc(db, "admin_settings", "customize"),
+      {
+        [field]: value,
+      }
+    );
+  }
+
+  if (loading)
+    return (
+      <div className="p-10 text-center">
+        Loading...
+      </div>
+    );
 
   return (
-    <main className="min-h-screen bg-gray-100 p-4">
-      <h1 className="mb-8 text-center text-3xl font-black">JembeeKart Theme Builder</h1>
-      <ThemeSection title="Header Settings" data={headerTheme} setData={setHeaderTheme} collectionName="homepage_sections" documentId="header_section" updateTheme={updateTheme} />
-      <ThemeSection title="Section Styles" data={sectionTheme} setData={setSectionTheme} collectionName="homepage_sections" documentId="section_style" updateTheme={updateTheme} />
-    </main>
-  );
-}
+    <main className="min-h-screen p-6 bg-gray-100">
+      <div className="max-w-4xl mx-auto rounded-3xl bg-white shadow-xl p-8">
 
-function ThemeSection({ title, data, setData, collectionName, documentId, updateTheme }: any) {
-  return (
-    <div className="mb-8 rounded-[30px] p-6 shadow-xl bg-white border border-gray-200">
-      <h2 className="mb-6 text-2xl font-black text-gray-800">{title}</h2>
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-        {Object.entries(data).map(([key, value]: any) => (
-          <div key={key} className="rounded-[24px] bg-gray-50 p-4 border border-gray-100">
-            <label className="block mb-2 font-bold text-sm uppercase text-gray-500">{key}</label>
-            <input type="color" value={value} onChange={async (e) => {
-              const newColor = e.target.value;
-              setData((prev: any) => ({ ...prev, [key]: newColor }));
-              await updateTheme(collectionName, documentId, key, newColor);
-            }} className="h-12 w-full cursor-pointer rounded-lg border-none bg-transparent" />
+        <h1 className="text-3xl font-black mb-8">
+          Theme Builder
+        </h1>
+
+        {Object.entries(theme).map(([key, value]) => (
+          <div
+            key={key}
+            className="mb-6"
+          >
+            <label className="block mb-2 font-bold">
+              {key}
+            </label>
+
+            <input
+              type="color"
+              value={value}
+              onChange={(e) =>
+                changeColor(
+                  key,
+                  e.target.value
+                )
+              }
+              className="h-14 w-full"
+            />
           </div>
         ))}
       </div>
-    </div>
+    </main>
   );
 }
