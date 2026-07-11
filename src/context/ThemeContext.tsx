@@ -60,6 +60,62 @@ export function ThemeProvider({ children }: { children: React.ReactNode }) {
     root.style.setProperty("--font-family", theme.fontFamily);
     root.style.setProperty("--heading-size", `${theme.headingSize}px`);
     root.style.setProperty("--body-size", `${theme.bodySize}px`);
+    // ==============================
+// Extra Theme Variables
+// ==============================
+
+// Header
+root.style.setProperty("--header-background", theme.headerBackground || "");
+root.style.setProperty("--header-text-color", theme.headerTextColor || "");
+root.style.setProperty("--header-icon-color", theme.headerIconColor || "");
+
+// Search Bar
+root.style.setProperty("--searchbar-color", theme.searchBarColor || "");
+root.style.setProperty("--searchbar-text-color", theme.searchBarTextColor || "");
+root.style.setProperty("--searchbar-placeholder-color", theme.searchBarPlaceholderColor || "");
+root.style.setProperty("--searchbar-border-color", theme.searchBarBorderColor || "");
+
+// Buttons
+root.style.setProperty("--button-color", theme.buttonColor || "");
+root.style.setProperty("--button-hover-color", theme.buttonHoverColor || "");
+root.style.setProperty("--button-text-color", theme.buttonTextColor || "");
+
+// Cards
+root.style.setProperty("--card-color", theme.cardColor || "");
+root.style.setProperty("--card-border-color", theme.cardBorderColor || "");
+root.style.setProperty("--card-shadow-color", theme.cardShadowColor || "");
+
+// Borders
+root.style.setProperty("--border-color", theme.borderColor || "");
+
+// Navigation
+root.style.setProperty("--navbar-color", theme.navbarColor || "");
+root.style.setProperty("--bottom-nav-color", theme.bottomNavColor || "");
+root.style.setProperty("--bottom-nav-active-color", theme.bottomNavActiveColor || "");
+
+// Text
+root.style.setProperty("--primary-text-color", theme.textColor || "");
+root.style.setProperty("--secondary-text-color", theme.mutedTextColor || "");
+
+// Background
+root.style.setProperty("--background-color", theme.backgroundColor || "");
+root.style.setProperty("--surface-color", theme.surfaceColor || "");
+
+// Banner
+root.style.setProperty("--banner-background", theme.bannerBackground || "");
+
+// Category
+root.style.setProperty("--category-background", theme.categoryBackground || "");
+root.style.setProperty("--category-text-color", theme.categoryTextColor || "");
+
+// Product
+root.style.setProperty("--product-card-color", theme.productCardColor || "");
+root.style.setProperty("--price-color", theme.priceColor || "");
+root.style.setProperty("--offer-color", theme.offerColor || "");
+
+// Footer
+root.style.setProperty("--footer-background", theme.footerBackground || "");
+root.style.setProperty("--footer-text-color", theme.footerTextColor || "");
 
   }, [theme]);
 
