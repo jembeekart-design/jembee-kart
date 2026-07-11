@@ -26,11 +26,9 @@ export default function ThemePage() {
       for (const item of collections) {
         const ref = doc(db, item.col, item.id);
         const snap = await getDoc(ref);
-
         if (snap.exists()) {
           item.setter(snap.data());
         } else {
-          // Document nahi mila, toh default data ke saath bana do
           await setDoc(ref, DEFAULT_THEME);
           item.setter(DEFAULT_THEME);
         }
@@ -46,4 +44,33 @@ export default function ThemePage() {
     document.documentElement.style.setProperty(`--${field}`, value);
   }
 
-  // ... (Baaki ThemeSection aur return logic pehle jaisa hi rahega)
+  if (loading) return <div className="p-10 text-center">Loading...</div>;
+
+  return (
+    <main className="min-h-screen bg-gray-100 p-4">
+      <h1 className="mb-8 text-center text-3xl font-black">JembeeKart Theme Builder</h1>
+      <ThemeSection title="Header Settings" data={headerTheme} setData={setHeaderTheme} collectionName="homepage_sections" documentId="header_section" updateTheme={updateTheme} />
+      <ThemeSection title="Section Styles" data={sectionTheme} setData={setSectionTheme} collectionName="homepage_sections" documentId="section_style" updateTheme={updateTheme} />
+    </main>
+  );
+}
+
+function ThemeSection({ title, data, setData, collectionName, documentId, updateTheme }: any) {
+  return (
+    <div className="mb-8 rounded-[30px] p-6 shadow-xl bg-white border border-gray-200">
+      <h2 className="mb-6 text-2xl font-black text-gray-800">{title}</h2>
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+        {Object.entries(data).map(([key, value]: any) => (
+          <div key={key} className="rounded-[24px] bg-gray-50 p-4 border border-gray-100">
+            <label className="block mb-2 font-bold text-sm uppercase text-gray-500">{key}</label>
+            <input type="color" value={value} onChange={async (e) => {
+              const newColor = e.target.value;
+              setData((prev: any) => ({ ...prev, [key]: newColor }));
+              await updateTheme(collectionName, documentId, key, newColor);
+            }} className="h-12 w-full cursor-pointer rounded-lg border-none bg-transparent" />
+          </div>
+        ))}
+      </div>
+    </div>
+  );
+}
