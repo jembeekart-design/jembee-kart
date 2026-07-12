@@ -58,7 +58,12 @@ export interface MLMConfig {
 
   maxLevels: number;
 }
+export interface ReferralConfig {
+  enabled: boolean;
 
+  referralBonus: number;
+  maxReferralLevels: number;
+}
 export interface SignupConfig {
   enabled: boolean;
 
