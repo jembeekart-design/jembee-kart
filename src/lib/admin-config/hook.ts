@@ -16,10 +16,10 @@ export function useWalletConfig() {
   return config.wallet;
 }
 
-export function useCheckoutConfig() {
+export function usePaymentConfig() {
   const config = useAdminConfig();
 
-  return config.checkout;
+  return config.payment;
 }
 
 export function useWatchEarnConfig() {
