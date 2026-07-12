@@ -29,6 +29,7 @@ import {
   Wallet,
   WalletCards
 } from "lucide-react";
+import { useAdminPage } from "@/lib/admin-config/useAdminPage";
 
 /* ======================================================
 MENU ITEMS
@@ -132,6 +133,7 @@ COMPONENT
 ====================================================== */
 
 export default function AffiliatePage() {
+  const { config } = useAdminPage();
   const [userData, setUserData] = useState<any>(null);
 
   /* ======================================================
