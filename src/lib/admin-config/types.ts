@@ -58,12 +58,14 @@ export interface MLMConfig {
 
   maxLevels: number;
 }
+
 export interface ReferralConfig {
   enabled: boolean;
 
   referralBonus: number;
   maxReferralLevels: number;
 }
+
 export interface SignupConfig {
   enabled: boolean;
 
@@ -103,6 +105,8 @@ export interface AdminConfig {
   watchEarn: WatchEarnConfig;
   cashback: CashbackConfig;
   mlm: MLMConfig;
+
+  referral: ReferralConfig;
 
   signup: SignupConfig;
 
