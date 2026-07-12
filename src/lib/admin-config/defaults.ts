@@ -60,7 +60,12 @@ export const DEFAULT_ADMIN_CONFIG: AdminConfig = {
 
     maxLevels: 3,
   },
+  referral: {
+    enabled: true,
 
+    referralBonus: 100,
+    maxReferralLevels: 3,
+  },
   signup: {
     enabled: true,
 
