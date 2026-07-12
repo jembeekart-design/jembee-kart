@@ -154,7 +154,9 @@ export default function AffiliatePage() {
 
     return () => unsub();
   }, []);
-
+if (!config.featureFlags.referral) {
+  return null;
+}
   return (
     <main className="min-h-screen bg-[var(--primary-color)] pb-32">
       
