@@ -24,7 +24,7 @@ import {
 import Header from "@/components/navigation/Header";
 import BottomNavbar from "@/components/navigation/BottomNavbar";
 import WhatsAppButton from "@/components/navigation/WhatsAppButton";
-
+import { useAdminPage } from "@/lib/admin-config/useAdminPage";
 /* ======================================================
 TYPES
 ====================================================== */
@@ -45,6 +45,7 @@ interface UserProfile {
 COMPONENT
 ====================================================== */
 export default function AccountPage() {
+  const { config } = useAdminPage();
   const router = useRouter();
   const [user, setUser] = useState<UserProfile | null>(null);
   const [loading, setLoading] = useState(true);
