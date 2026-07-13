@@ -154,7 +154,6 @@ const cashbackEnabled = config.featureFlags.cashback;
   return true;
 });
 
-142  const [userData, setUserData] = useState<any>(null);
   const [userData, setUserData] = useState<any>(null);
 
   /* ======================================================
