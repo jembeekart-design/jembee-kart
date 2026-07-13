@@ -259,32 +259,33 @@ if (!config.featureFlags.referral) {
 
         {/* GRID */}
         <div className="grid grid-cols-2 gap-4">
-          {dashboardItems.map((item) => {
-            const Icon = item.icon;
-            return (
-              <Link
-                key={item.title}
-                href={item.href}
-                className="group overflow-hidden rounded-[30px] bg-[var(--card-color)] p-4 shadow-sm transition-all duration-300 active:scale-[0.98]"
-              >
-                {/* ICON */}
-                <div className={`flex h-16 w-16 items-center justify-center rounded-2xl bg-gradient-to-br ${item.color} text-[var(--button-text-color)] shadow-lg`}>
-                  <Icon size={30} />
-                </div>
+          {menuItems.map((item) => {
+  const Icon = item.icon;
 
-                {/* TITLE */}
-                <h3 className="mt-4 text-[16px] font-black text-[var(--text-color)]">
-                  {item.title}
-                </h3>
+  return (
+    <Link
+      key={item.title}
+      href={item.href}
+      className="group overflow-hidden rounded-[30px] bg-[var(--card-color)] p-4 shadow-sm transition-all duration-300 active:scale-[0.98]"
+    >
+      {/* ICON */}
+      <div className={`flex h-16 w-16 items-center justify-center rounded-2xl bg-gradient-to-br ${item.color}`}>
+        <Icon size={30} />
+      </div>
 
-                {/* BUTTON */}
-                <div className="mt-3 flex items-center gap-1 text-xs font-bold text-[var(--primary-color)]">
-                  Open
-                  <ArrowRight size={14} />
-                </div>
-              </Link>
-            );
-          })}
+      {/* TITLE */}
+      <h3 className="mt-4 text-[16px] font-black text-[var(--text-color)]">
+        {item.title}
+      </h3>
+
+      {/* BUTTON */}
+      <div className="mt-3 flex items-center gap-1 text-xs font-bold text-[var(--primary-color)]">
+        Open
+        <ArrowRight size={14} />
+      </div>
+    </Link>
+  );
+})}
         </div>
       </section>
 
