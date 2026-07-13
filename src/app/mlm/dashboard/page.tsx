@@ -269,11 +269,7 @@ export default function MLMDashboardPage() {
       {/* NAVIGATION PANEL LIST HIERARCHY */}
       <section className="mt-6 px-4">
         <div className="space-y-3">
-          {[
-            { href: "/mlm/earnings", icon: Sparkles, title: "Earnings", desc: "MLM income details", color: "text-[var(--success-color)]" },
-            { href: "/mlm/leaderboard", icon: Trophy, title: "Leaderboard", desc: "Top MLM performers", color: "text-[var(--warning-color)]" },
-            { href: "/mlm/support", icon: ShieldCheck, title: "MLM Support", desc: "Help & live support", color: "text-[var(--warning-color)]" }
-          ].map((item, idx) => {
+          {config.mlmPage.navigation.map((item, idx) => {
             const ItemIcon = item.icon;
             return (
               <Link key={idx} href={item.href} className="flex items-center justify-between rounded-2xl bg-[var(--card-color)] p-4 shadow-sm hover:translate-x-1 transition-transform">
