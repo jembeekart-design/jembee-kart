@@ -35,6 +35,7 @@ interface UserData {
 
 export default function MLMDashboardPage() {
   const router = useRouter();
+  const config = useAdminConfig();
   const [loading, setLoading] = useState(true);
   const [userData, setUserData] = useState<UserData | null>(null);
   
