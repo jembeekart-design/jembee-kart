@@ -95,6 +95,41 @@ export const DEFAULT_ADMIN_CONFIG: AdminConfig = {
     mlm: true,
     creatorEconomy: false,
   },
+    mlmPage: {
+    enabled: true,
+
+    pageTitle: "MLM Dashboard",
+    pageSubtitle: "Build Team & Earn Daily",
+
+    minimumTransfer: 100,
+
+    transferFunction: "processWalletTransfer",
+
+    searchPlaceholder: "Search historical files records...",
+
+    filters: [
+      "all",
+      "success",
+      "pending",
+      "failed"
+    ],
+
+    transactionTypes: [
+      "cashback",
+      "reward",
+      "refund",
+      "bonus",
+      "cashback_transfer",
+      "withdrawal",
+      "commission"
+    ],
+
+    statusTypes: [
+      "success",
+      "pending",
+      "failed"
+    ]
+  },
 };
 
 export default DEFAULT_ADMIN_CONFIG;
