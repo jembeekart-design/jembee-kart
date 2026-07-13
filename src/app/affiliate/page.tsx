@@ -134,6 +134,10 @@ COMPONENT
 
 export default function AffiliatePage() {
   const { config } = useAdminPage();
+  const referralEnabled = config.featureFlags.referral;
+const mlmEnabled = config.featureFlags.mlm;
+const watchEarnEnabled = config.featureFlags.watchEarn;
+const cashbackEnabled = config.featureFlags.cashback;
   const [userData, setUserData] = useState<any>(null);
 
   /* ======================================================
@@ -154,7 +158,7 @@ export default function AffiliatePage() {
 
     return () => unsub();
   }, []);
-if (!config.featureFlags.referral) {
+if (!referralEnabled || !mlmEnabled) {
   return null;
 }
   return (
