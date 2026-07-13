@@ -138,6 +138,23 @@ export default function AffiliatePage() {
 const mlmEnabled = config.featureFlags.mlm;
 const watchEarnEnabled = config.featureFlags.watchEarn;
 const cashbackEnabled = config.featureFlags.cashback;
+  const menuItems = dashboardItems.filter((item) => {
+  if (item.href.includes("/cashback")) {
+    return cashbackEnabled;
+  }
+
+  if (item.href.includes("/watch-earn")) {
+    return watchEarnEnabled;
+  }
+
+  if (item.href.includes("/mlm")) {
+    return mlmEnabled;
+  }
+
+  return true;
+});
+
+142  const [userData, setUserData] = useState<any>(null);
   const [userData, setUserData] = useState<any>(null);
 
   /* ======================================================
