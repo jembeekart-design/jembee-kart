@@ -6,6 +6,7 @@ import Link from "next/link";
 import { onAuthStateChanged } from "firebase/auth";
 import { doc, onSnapshot } from "firebase/firestore";
 import { auth, db } from "@/firebase/config";
+import { useAdminConfig } from "@/lib/admin-config/provider";
 import {
   Bell,
   Crown,
