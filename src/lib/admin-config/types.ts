@@ -95,7 +95,24 @@ export interface FeatureFlags {
   mlm: boolean;
   creatorEconomy: boolean;
 }
+export interface MLMPageConfig {
+  enabled: boolean;
 
+  pageTitle: string;
+  pageSubtitle: string;
+
+  minimumTransfer: number;
+
+  transferFunction: string;
+
+  searchPlaceholder: string;
+
+  filters: string[];
+
+  transactionTypes: string[];
+
+  statusTypes: string[];
+}
 export interface AdminConfig {
   theme: ThemeConfig;
 
@@ -112,6 +129,6 @@ export interface AdminConfig {
 
   wallet: WalletConfig;
   seller: SellerConfig;
-
+mlmPage: MLMPageConfig;
   featureFlags: FeatureFlags;
 }
