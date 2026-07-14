@@ -24,7 +24,7 @@ import {
 import Header from "@/components/navigation/Header";
 import BottomNavbar from "@/components/navigation/BottomNavbar";
 import WhatsAppButton from "@/components/navigation/WhatsAppButton";
-import { useAdminPage } from "@/lib/admin-config/useAdminPage";
+import { useAdminConfig } from "@/lib/admin-config/provider";
 /* ======================================================
 TYPES
 ====================================================== */
