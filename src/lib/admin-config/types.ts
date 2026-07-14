@@ -13,6 +13,7 @@ export interface ThemeConfig {
   cardBorderColor: string;
   buttonColor: string;
   buttonTextColor: string;
+  buttonHoverColor: string;
   headerBackground: string;
   searchBarColor: string;
   successColor: string;
