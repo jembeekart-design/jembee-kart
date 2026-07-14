@@ -1,6 +1,16 @@
 @import "tailwindcss";
 
+@theme {
+  /* Dynamic CSS Variables mapping for Tailwind v4 */
+  --color-primary: var(--primary-color);
+  --color-secondary: var(--secondary-color);
+  --color-background: var(--background-color);
+  --color-card: var(--card-color);
+  --color-text: var(--text-color);
+}
+
 :root {
+  /* Default Fallback Colors */
   --primary-color: #4F46E5;
   --secondary-color: #7C3AED;
   --background-color: #F8F9FE;
@@ -42,7 +52,7 @@ canvas {
   display: block;
 }
 
-/* GLOBAL THEME CLASSES */
+/* GLOBAL THEME CLASSES (Kept for legacy support) */
 
 .theme-primary-bg {
   background: var(--primary-color);
@@ -91,6 +101,7 @@ canvas {
 .theme-primary-soft-text {
   color: var(--primary-color);
 }
+
 /* Product Card Underline Component */
 .card-accent-border {
   border-bottom: 4px solid var(--secondary-color);
