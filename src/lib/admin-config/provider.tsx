@@ -5,57 +5,103 @@ import {
   useContext,
   useEffect,
   useState,
+  useMemo, // Added for optimization
   ReactNode,
 } from "react";
-
-import { loadAdminConfig } from "./firestore";
+import { doc, onSnapshot } from "firebase/firestore";
+import { db } from "@/firebase/config";
 import { DEFAULT_ADMIN_CONFIG } from "./defaults";
+import { validateConfig } from "./validator";
 import type { AdminConfig } from "./types";
 
-const AdminConfigContext = createContext<AdminConfig>(
-  DEFAULT_ADMIN_CONFIG
-);
+type ConfigStatus = "loading" | "ready";
+type ConfigSource = "firestore" | "defaults";
 
-export function AdminConfigProvider({
-  children,
-}: {
-  children: ReactNode;
-}) {
-  const [config, setConfig] = useState<AdminConfig>(
-  DEFAULT_ADMIN_CONFIG
-);
+interface AdminConfigContextType {
+  config: AdminConfig;
+  status: ConfigStatus;
+  source: ConfigSource;
+  error: Error | null;
+  lastUpdated: Date | null;
+}
 
-  const [loading, setLoading] = useState(true);
+const AdminConfigContext = createContext<AdminConfigContextType | undefined>(undefined);
+
+export function AdminConfigProvider({ children }: { children: ReactNode }) {
+  const [config, setConfig] = useState<AdminConfig>(DEFAULT_ADMIN_CONFIG);
+  const [status, setStatus] = useState<ConfigStatus>("loading");
+  const [source, setSource] = useState<ConfigSource>("defaults");
+  const [error, setError] = useState<Error | null>(null);
+  const [lastUpdated, setLastUpdated] = useState<Date | null>(null);
 
   useEffect(() => {
-    async function load() {
-      try {
-        const data = await loadAdminConfig();
-        setConfig({
-  ...DEFAULT_ADMIN_CONFIG,
-  ...data,
-});
-      } catch (e) {
-        console.error("Admin Config Load Error", e);
-      } finally {
-        setLoading(false);
-      }
-    }
+    const configRef = doc(db, "settings", "global_config");
 
-    load();
+    const unsubscribe = onSnapshot(
+      configRef,
+      (docSnap) => {
+        const data = docSnap.exists() ? docSnap.data() : null;
+
+        if (!data) {
+          console.warn("Global config document not found. Using defaults.");
+          setConfig(DEFAULT_ADMIN_CONFIG);
+          setSource("defaults");
+        } else {
+          setConfig(validateConfig(data));
+          setSource("firestore");
+        }
+        
+        const updatedAt =
+          data?.updatedAt && typeof data.updatedAt.toDate === "function"
+            ? data.updatedAt.toDate()
+            : new Date();
+            
+        setLastUpdated(updatedAt);
+        setStatus("ready");
+        setError(null);
+      },
+      (err) => {
+        console.error("Firestore Config Sync Error:", err);
+        setConfig(DEFAULT_ADMIN_CONFIG);
+        setSource("defaults");
+        setLastUpdated(new Date());
+        setError(err as Error);
+        setStatus("ready");
+      }
+    );
+
+    return () => unsubscribe();
   }, []);
 
-  if (loading) {
-    return null;
+  // Performance Optimization: Prevent unnecessary re-renders
+  const contextValue = useMemo(
+    () => ({ config, status, source, error, lastUpdated }),
+    [config, status, source, error, lastUpdated]
+  );
+
+  if (status === "loading") {
+    return (
+      <div className="flex min-h-screen items-center justify-center bg-[var(--background)]">
+        <div className="text-[14px] font-black uppercase tracking-widest text-[var(--primary)] animate-pulse">
+          Loading JembeeKart...
+        </div>
+      </div>
+    );
   }
 
   return (
-    <AdminConfigContext.Provider value={config}>
+    <AdminConfigContext.Provider value={contextValue}>
       {children}
     </AdminConfigContext.Provider>
   );
 }
 
 export function useAdminConfig() {
-  return useContext(AdminConfigContext);
+  const context = useContext(AdminConfigContext);
+  
+  if (!context) {
+    throw new Error("useAdminConfig must be used within an AdminConfigProvider");
+  }
+  
+  return context;
 }
