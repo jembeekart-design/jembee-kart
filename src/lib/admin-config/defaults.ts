@@ -17,6 +17,7 @@ export const DEFAULT_ADMIN_CONFIG: AdminConfig = {
     cardBorderColor: "#e5e7eb",
     buttonColor: "#6d28d9",
     buttonTextColor: "#ffffff",
+    buttonHoverColor: "#5521b5",
     headerBackground: "#6d28d9",
     searchBarColor: "#ffffff",
     successColor: "#16a34a",
