@@ -45,7 +45,7 @@ interface UserProfile {
 COMPONENT
 ====================================================== */
 export default function AccountPage() {
-  const { config } = useAdminPage();
+  const { config } = useAdminConfig();
   const router = useRouter();
   const [user, setUser] = useState<UserProfile | null>(null);
   const [loading, setLoading] = useState(true);
