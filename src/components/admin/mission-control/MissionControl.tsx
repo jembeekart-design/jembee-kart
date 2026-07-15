@@ -1,14 +1,13 @@
 "use client";
 
 import { useAdminConfig } from "@/lib/admin-config/provider";
-import { useRouter } from "next/navigation";
 import SystemHealth from "./SystemHealth";
-import BuildDiagnostics from "./BuildDiagnostics"; // Modular Import
+import BuildDiagnostics from "./BuildDiagnostics";
+import GovernanceActions from "./GovernanceActions";
 import { AlertCircle } from "lucide-react";
 
 export default function MissionControl() {
   const { status, error, lastUpdated } = useAdminConfig();
-  const router = useRouter();
 
   return (
     <div className="p-8 max-w-6xl mx-auto space-y-8 font-sans">
@@ -31,37 +30,10 @@ export default function MissionControl() {
         </div>
       )}
 
-      {/* Modular Status Section */}
+      {/* Modular Components */}
       <SystemHealth />
-
-      {/* Modular Diagnostics Section */}
       <BuildDiagnostics />
-
-      {/* Governance Actions */}
-      <section className="border-t pt-8">
-        <h2 className="text-xs font-bold text-gray-400 uppercase tracking-wider mb-4">Governance Actions</h2>
-        <div className="flex flex-wrap gap-3">
-          <ActionButton onClick={() => router.refresh()} label="Reload Config" />
-          <ActionButton onClick={() => {}} label="Run Full Audit" variant="secondary" />
-          <ActionButton onClick={() => {}} label="Clear Cache" variant="danger" />
-        </div>
-      </section>
+      <GovernanceActions />
     </div>
-  );
-}
-
-function ActionButton({ onClick, label, variant = "primary" }: any) {
-  const styles = {
-    primary: "bg-gray-900 text-white hover:bg-black",
-    secondary: "bg-white border border-gray-200 hover:bg-gray-50",
-    danger: "bg-red-50 text-red-600 border border-red-100 hover:bg-red-100"
-  };
-  return (
-    <button 
-      onClick={onClick} 
-      className={`px-4 py-2 rounded-lg font-bold text-[11px] transition-all ${styles[variant as keyof typeof styles]}`}
-    >
-      {label}
-    </button>
   );
 }
