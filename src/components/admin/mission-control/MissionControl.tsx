@@ -4,6 +4,7 @@ import { useAdminConfig } from "@/lib/admin-config/provider";
 import SystemHealth from "./SystemHealth";
 import BuildDiagnostics from "./BuildDiagnostics";
 import GovernanceActions from "./GovernanceActions";
+import QuickLinks from "./QuickLinks";
 import { AlertCircle } from "lucide-react";
 
 export default function MissionControl() {
@@ -34,6 +35,7 @@ export default function MissionControl() {
       <SystemHealth />
       <BuildDiagnostics />
       <GovernanceActions />
+      <QuickLinks />
     </div>
   );
 }
