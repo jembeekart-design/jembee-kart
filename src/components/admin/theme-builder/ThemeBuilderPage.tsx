@@ -21,7 +21,14 @@ export default function ThemeBuilderPage() {
   async function saveTheme() {
     setSaving(true);
     try {
-      await setDoc(doc(db, "admin_settings", "customize"), localTheme, { merge: true });
+      await setDoc(
+  doc(db, "settings", "global_config"),
+  {
+    theme: localTheme,
+    updatedAt: new Date(),
+  },
+  { merge: true }
+);
       alert("Theme Saved Successfully!");
     } catch (e) {
       console.error("Save Error:", e);
