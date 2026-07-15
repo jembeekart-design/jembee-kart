@@ -4,6 +4,10 @@ import { useAdminConfig } from "@/lib/admin-config/provider";
 import SystemHealth from "./SystemHealth";
 import BuildDiagnostics from "./BuildDiagnostics";
 import GovernanceActions from "./GovernanceActions";
+import SystemOverview from "./SystemOverview";
+import GovernanceDashboard from "./GovernanceDashboard";
+import FeatureFlagsPanel from "./FeatureFlagsPanel";
+import ScannerResults from "./ScannerResults";
 import QuickLinks from "./QuickLinks";
 import { AlertCircle } from "lucide-react";
 
@@ -35,6 +39,10 @@ export default function MissionControl() {
       <SystemHealth />
       <BuildDiagnostics />
       <GovernanceActions />
+      <SystemOverview />
+      <GovernanceDashboard />
+      <FeatureFlagsPanel />
+      <ScannerResults />
       <QuickLinks />
     </div>
   );
