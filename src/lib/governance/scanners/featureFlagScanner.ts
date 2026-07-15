@@ -1,42 +1,90 @@
+import { doc, getDoc } from "firebase/firestore";
+import { db } from "@/firebase/config";
 import type { ScanResult } from "../runSystemScan";
-import { DEFAULT_ADMIN_CONFIG } from "@/lib/admin-config/defaults";
 
 export async function featureFlagScanner(): Promise<ScanResult[]> {
-  try {
-    const flags = DEFAULT_ADMIN_CONFIG.featureFlags;
+  const results: ScanResult[] = [];
 
-    if (!flags) {
+  try {
+    const snapshot = await getDoc(doc(db, "settings", "global_config"));
+
+    if (!snapshot.exists()) {
       return [
         {
           id: "feature-flags",
           name: "Feature Flags",
           status: "FAIL",
-          message: "Feature flags configuration not found.",
+          message: "Global configuration document not found.",
           severity: "HIGH",
         },
       ];
     }
 
-    const requiredFlags = [
-      "ecommerce",
-      "referral",
-      "wallet",
-      "cashback",
-      "loyalty",
-      "creatorEconomy",
-    ] as const;
+    const data = snapshot.data();
+    const flags = data.featureFlags ?? {};
 
-    const results: ScanResult[] = [];
+    const features = [
+      {
+        key: "ecommerce",
+        label: "Ecommerce",
+      },
+      {
+        key: "referral",
+        label: "Referral System",
+      },
+      {
+        key: "mlm",
+        label: "MLM Engine",
+      },
+      {
+        key: "wallet",
+        label: "Wallet System",
+      },
+      {
+        key: "watchEarn",
+        label: "Watch & Earn",
+      },
+      {
+        key: "creatorEconomy",
+        label: "Creator Economy",
+      },
+      {
+        key: "cashback",
+        label: "Cashback",
+      },
+      {
+        key: "coinSystem",
+        label: "Coin System",
+      },
+      {
+        key: "loyaltyProgram",
+        label: "Loyalty Program",
+      },
+      {
+        key: "sellerModule",
+        label: "Seller Module",
+      },
+      {
+        key: "advertisement",
+        label: "Advertisement",
+      },
+      {
+        key: "affiliate",
+        label: "Affiliate",
+      },
+    ];
 
-    for (const flag of requiredFlags) {
+    for (const feature of features) {
+      const enabled = Boolean(flags[feature.key]);
+
       results.push({
-        id: `feature-${flag}`,
-        name: `${flag} Module`,
-        status: flags[flag] ? "PASS" : "WARNING",
-        message: flags[flag]
-          ? "Module is enabled."
-          : "Module is disabled.",
-        severity: flags[flag] ? "LOW" : "MEDIUM",
+        id: feature.key,
+        name: feature.label,
+        status: enabled ? "PASS" : "WARNING",
+        message: enabled
+          ? `${feature.label} is enabled.`
+          : `${feature.label} is disabled.`,
+        severity: enabled ? "LOW" : "MEDIUM",
       });
     }
 
@@ -47,9 +95,9 @@ export async function featureFlagScanner(): Promise<ScanResult[]> {
     return [
       {
         id: "feature-flags",
-        name: "Feature Flags",
+        name: "Feature Flag Scanner",
         status: "FAIL",
-        message: "Unable to validate feature flags.",
+        message: "Unable to verify feature flags.",
         severity: "HIGH",
       },
     ];
