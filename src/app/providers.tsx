@@ -1,8 +1,8 @@
 "use client";
 
 import { CartProvider } from "@/context/CartContext";
+import { ThemeProvider } from "@/context/ThemeContext";
 import { AdminConfigProvider } from "@/lib/admin-config/provider";
-import { ThemeManager } from "@/components/theme-manager";
 
 interface ProvidersProps {
   children: React.ReactNode;
@@ -13,11 +13,11 @@ export default function Providers({
 }: ProvidersProps) {
   return (
     <AdminConfigProvider>
-      <ThemeManager>
+      <ThemeProvider>
         <CartProvider>
           {children}
         </CartProvider>
-      </ThemeManager>
+      </ThemeProvider>
     </AdminConfigProvider>
   );
 }
