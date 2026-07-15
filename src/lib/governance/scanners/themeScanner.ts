@@ -1,9 +1,27 @@
+import { doc, getDoc } from "firebase/firestore";
+import { db } from "@/firebase/config";
 import type { ScanResult } from "../runSystemScan";
-import { DEFAULT_ADMIN_CONFIG } from "@/lib/admin-config/defaults";
 
 export async function themeScanner(): Promise<ScanResult[]> {
   try {
-    const theme = DEFAULT_ADMIN_CONFIG.theme;
+    const snapshot = await getDoc(
+      doc(db, "settings", "global_config")
+    );
+
+    if (!snapshot.exists()) {
+      return [
+        {
+          id: "theme-config",
+          name: "Theme Configuration",
+          status: "FAIL",
+          message: "Global configuration document not found.",
+          severity: "HIGH",
+        },
+      ];
+    }
+
+    const data = snapshot.data();
+    const theme = data.theme;
 
     if (!theme) {
       return [
@@ -11,7 +29,7 @@ export async function themeScanner(): Promise<ScanResult[]> {
           id: "theme-config",
           name: "Theme Configuration",
           status: "FAIL",
-          message: "Theme configuration not found.",
+          message: "Theme configuration is missing.",
           severity: "HIGH",
         },
       ];
@@ -23,6 +41,9 @@ export async function themeScanner(): Promise<ScanResult[]> {
       "backgroundColor",
       "cardColor",
       "textColor",
+      "borderColor",
+      "buttonColor",
+      "buttonTextColor",
     ] as const;
 
     const missingFields = requiredFields.filter(
@@ -35,7 +56,7 @@ export async function themeScanner(): Promise<ScanResult[]> {
           id: "theme-config",
           name: "Theme Configuration",
           status: "WARNING",
-          message: `Missing theme fields: ${missingFields.join(", ")}`,
+          message: `Missing fields: ${missingFields.join(", ")}`,
           severity: "MEDIUM",
         },
       ];
@@ -46,7 +67,7 @@ export async function themeScanner(): Promise<ScanResult[]> {
         id: "theme-config",
         name: "Theme Configuration",
         status: "PASS",
-        message: "Theme configuration loaded successfully.",
+        message: "Theme configuration is valid.",
         severity: "LOW",
       },
     ];
