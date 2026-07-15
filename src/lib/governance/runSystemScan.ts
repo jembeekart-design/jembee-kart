@@ -4,6 +4,7 @@ import { featureFlagScanner } from "./scanners/featureFlagScanner";
 import { securityScanner } from "./scanners/securityScanner";
 import { walletScanner } from "./scanners/walletScanner";
 import { deploymentScanner } from "./scanners/deploymentScanner";
+import { adminControlScanner } from "./scanners/adminControlScanner";
 
 export type ScanStatus = "PASS" | "WARNING" | "FAIL";
 
@@ -48,6 +49,11 @@ export async function runSystemScan(): Promise<ScanResult[]> {
       id: "deployment",
       name: "Deployment Scanner",
       run: deploymentScanner,
+    },
+    {
+      id: "admin-control",
+      name: "Admin Control Scanner",
+      run: adminControlScanner,
     },
   ];
 
