@@ -6,78 +6,99 @@ export async function walletScanner(): Promise<ScanResult[]> {
   const results: ScanResult[] = [];
 
   try {
-    // Wallet Configuration
     const walletDoc = await getDoc(doc(db, "settings", "wallet"));
 
     if (!walletDoc.exists()) {
-      results.push({
-        id: "wallet-config",
-        name: "Wallet Configuration",
-        status: "FAIL",
-        message: "Wallet configuration document not found.",
-        severity: "HIGH",
-      });
-
-      return results;
+      return [
+        {
+          id: "wallet-config",
+          name: "Wallet Configuration",
+          status: "FAIL",
+          message: "Wallet configuration document not found.",
+          severity: "HIGH",
+          file: "/src/lib/governance/scanners/walletScanner.ts",
+        },
+      ];
     }
 
     const wallet = walletDoc.data();
+
+    const commissionWalletEnabled =
+      wallet.commissionWalletEnabled ?? false;
+
+    const cashbackWalletEnabled =
+      wallet.cashbackWalletEnabled ?? false;
+
+    const rewardWalletEnabled =
+      wallet.rewardWalletEnabled ?? false;
+
+    const withdrawEnabled =
+      wallet.withdrawEnabled ?? false;
+
+    const minimumWithdrawal =
+      wallet.minimumWithdrawal ??
+      wallet.minWithdraw ??
+      0;
 
     // Commission Wallet
     results.push({
       id: "commission-wallet",
       name: "Commission Wallet",
-      status: wallet.commissionWalletEnabled ? "PASS" : "WARNING",
-      message: wallet.commissionWalletEnabled
+      status: commissionWalletEnabled ? "PASS" : "WARNING",
+      message: commissionWalletEnabled
         ? "Commission wallet is enabled."
         : "Commission wallet is disabled.",
-      severity: wallet.commissionWalletEnabled ? "LOW" : "MEDIUM",
+      severity: commissionWalletEnabled ? "LOW" : "MEDIUM",
+      file: "/src/lib/governance/scanners/walletScanner.ts",
     });
 
     // Cashback Wallet
     results.push({
       id: "cashback-wallet",
       name: "Cashback Wallet",
-      status: wallet.cashbackWalletEnabled ? "PASS" : "WARNING",
-      message: wallet.cashbackWalletEnabled
+      status: cashbackWalletEnabled ? "PASS" : "WARNING",
+      message: cashbackWalletEnabled
         ? "Cashback wallet is enabled."
         : "Cashback wallet is disabled.",
-      severity: wallet.cashbackWalletEnabled ? "LOW" : "MEDIUM",
+      severity: cashbackWalletEnabled ? "LOW" : "MEDIUM",
+      file: "/src/lib/governance/scanners/walletScanner.ts",
     });
 
     // Reward Wallet
     results.push({
       id: "reward-wallet",
       name: "Reward Wallet",
-      status: wallet.rewardWalletEnabled ? "PASS" : "WARNING",
-      message: wallet.rewardWalletEnabled
+      status: rewardWalletEnabled ? "PASS" : "WARNING",
+      message: rewardWalletEnabled
         ? "Reward wallet is enabled."
         : "Reward wallet is disabled.",
-      severity: wallet.rewardWalletEnabled ? "LOW" : "MEDIUM",
+      severity: rewardWalletEnabled ? "LOW" : "MEDIUM",
+      file: "/src/lib/governance/scanners/walletScanner.ts",
     });
 
-    // Withdrawals
+    // Withdrawal Module
     results.push({
       id: "withdraw-module",
       name: "Withdrawal Module",
-      status: wallet.withdrawEnabled ? "PASS" : "WARNING",
-      message: wallet.withdrawEnabled
+      status: withdrawEnabled ? "PASS" : "WARNING",
+      message: withdrawEnabled
         ? "Withdrawal module is active."
         : "Withdrawal module is disabled.",
-      severity: wallet.withdrawEnabled ? "LOW" : "MEDIUM",
+      severity: withdrawEnabled ? "LOW" : "MEDIUM",
+      file: "/src/lib/governance/scanners/walletScanner.ts",
     });
 
     // Minimum Withdrawal
     results.push({
       id: "min-withdraw",
       name: "Minimum Withdrawal",
-      status: wallet.minimumWithdrawal > 0 ? "PASS" : "FAIL",
+      status: minimumWithdrawal > 0 ? "PASS" : "FAIL",
       message:
-        wallet.minimumWithdrawal > 0
-          ? `Minimum withdrawal ₹${wallet.minimumWithdrawal}`
+        minimumWithdrawal > 0
+          ? `Minimum withdrawal ₹${minimumWithdrawal}`
           : "Minimum withdrawal amount is invalid.",
-      severity:
-        wallet.minimumWithdrawal > 0 ? "LOW" : "HIGH",
+      severity: minimumWithdrawal > 0 ? "LOW" : "HIGH",
+      file: "/src/lib/governance/scanners/walletScanner.ts",
     });
 
     return results;
@@ -91,6 +112,7 @@ export async function walletScanner(): Promise<ScanResult[]> {
         status: "FAIL",
         message: "Unable to verify wallet configuration.",
         severity: "HIGH",
+        file: "/src/lib/governance/scanners/walletScanner.ts",
       },
     ];
   }
