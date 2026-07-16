@@ -1,5 +1,7 @@
 import type { ScanResult } from "../runSystemScan";
 
+import { doc, getDoc } from "firebase/firestore";
+import { db } from "@/firebase/config";
 export async function deploymentScanner(): Promise<ScanResult[]> {
   const results: ScanResult[] = [];
 
@@ -31,10 +33,13 @@ export async function deploymentScanner(): Promise<ScanResult[]> {
     });
 
     // Build Version
-    const version =
-      process.env.NEXT_PUBLIC_APP_VERSION ||
-      process.env.npm_package_version ||
-      "Unknown";
+    const versionSnap = await getDoc(
+  doc(db, "settings", "version")
+);
+
+const version = versionSnap.exists()
+  ? versionSnap.data().appVersion || "Unknown"
+  : "Unknown";
 
     results.push({
       id: "deployment-version",
