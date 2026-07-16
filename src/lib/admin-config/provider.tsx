@@ -76,6 +76,25 @@ const notificationSnap = await getDoc(notificationRef);
   featureFlags: featureFlagsSnap.exists()
     ? featureFlagsSnap.data()
     : DEFAULT_ADMIN_CONFIG.featureFlags,
+    wallet: walletSnap.exists()
+  ? walletSnap.data()
+  : DEFAULT_ADMIN_CONFIG.wallet,
+
+homepage: homepageSnap.exists()
+  ? homepageSnap.data()
+  : DEFAULT_ADMIN_CONFIG.homepage,
+
+payment: paymentSnap.exists()
+  ? paymentSnap.data()
+  : DEFAULT_ADMIN_CONFIG.payment,
+
+shipping: shippingSnap.exists()
+  ? shippingSnap.data()
+  : DEFAULT_ADMIN_CONFIG.shipping,
+
+notification: notificationSnap.exists()
+  ? notificationSnap.data()
+  : DEFAULT_ADMIN_CONFIG.notification,
 };
 
   setConfig(validateConfig(mergedConfig));
