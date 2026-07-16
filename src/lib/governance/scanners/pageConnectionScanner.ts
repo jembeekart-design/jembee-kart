@@ -76,6 +76,9 @@ export async function pageConnectionScanner(): Promise<ScanResult[]> {
           status: "PASS",
           severity: "LOW",
           message: "Configuration connected successfully.",
+
+          file: "/src/lib/governance/scanners/pageConnectionScanner.ts",
+          line: 1,
         });
       } else {
         results.push({
@@ -84,6 +87,23 @@ export async function pageConnectionScanner(): Promise<ScanResult[]> {
           status: "WARNING",
           severity: "MEDIUM",
           message: "Configuration document not found.",
+
+          file: "/src/lib/governance/scanners/pageConnectionScanner.ts",
+          line: 1,
+
+          autoFix: true,
+          patchId: `${page.id}-connection-fix`,
+
+          currentCode: `Connection to ${page.collection}/${page.document} is missing.`,
+
+          fixedCode: `Create Firestore document:
+Collection: ${page.collection}
+Document: ${page.document}
+
+Initialize required configuration fields.`,
+
+          suggestion:
+            "Create the missing Firestore configuration document from the Admin Panel.",
         });
       }
     } catch (error) {
@@ -95,6 +115,21 @@ export async function pageConnectionScanner(): Promise<ScanResult[]> {
         status: "FAIL",
         severity: "HIGH",
         message: "Unable to verify page connection.",
+
+        file: "/src/lib/governance/scanners/pageConnectionScanner.ts",
+        line: 1,
+
+        autoFix: true,
+        patchId: `${page.id}-error-fix`,
+
+        currentCode: "// Connection check failed",
+
+        fixedCode: `// Verify Firebase configuration
+// Verify Firestore permissions
+// Verify ${page.collection}/${page.document}`,
+
+        suggestion:
+          "Verify Firebase configuration and reconnect this module automatically.",
       });
     }
   }
