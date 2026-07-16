@@ -48,10 +48,34 @@ export async function adminControlScanner(): Promise<ScanResult[]> {
         results.push({
           id: item.id,
           name: item.name,
+
           status: "FAIL",
           severity: "HIGH",
+
           message: "Admin configuration document not found.",
+
+          file: "/src/lib/governance/scanners/adminControlScanner.ts",
+          line: 40,
+
+          autoFix: true,
+
+          patchId: `${item.id}-create`,
+
+          suggestion:
+            "Create the missing Admin configuration document.",
+
+          currentCode:
+            "// Admin configuration document does not exist.",
+
+          fixedCode: `Collection: ${item.collection}
+Document: ${item.document}
+
+{
+  "enabled": true,
+  "updatedAt": "SERVER_TIMESTAMP"
+}`,
         });
+
         continue;
       }
 
@@ -61,19 +85,45 @@ export async function adminControlScanner(): Promise<ScanResult[]> {
         results.push({
           id: item.id,
           name: item.name,
+
           status: "WARNING",
           severity: "MEDIUM",
+
           message: "Configuration document is empty.",
+
+          file: "/src/lib/governance/scanners/adminControlScanner.ts",
+          line: 70,
+
+          autoFix: true,
+
+          patchId: `${item.id}-repair`,
+
+          suggestion:
+            "Generate the default Admin configuration.",
+
+          currentCode:
+            JSON.stringify(data, null, 2),
+
+          fixedCode: `{
+  "enabled": true,
+  "updatedAt": "SERVER_TIMESTAMP"
+}`,
         });
+
         continue;
       }
 
       results.push({
         id: item.id,
         name: item.name,
+
         status: "PASS",
         severity: "LOW",
+
         message: "Configuration is managed from Admin Panel.",
+
+        file: "/src/lib/governance/scanners/adminControlScanner.ts",
+        line: 95,
       });
 
     } catch (error) {
@@ -82,9 +132,31 @@ export async function adminControlScanner(): Promise<ScanResult[]> {
       results.push({
         id: item.id,
         name: item.name,
+
         status: "FAIL",
         severity: "HIGH",
+
         message: "Unable to verify admin configuration.",
+
+        file: "/src/lib/governance/scanners/adminControlScanner.ts",
+        line: 110,
+
+        autoFix: true,
+
+        patchId: `${item.id}-connection-fix`,
+
+        suggestion:
+          "Verify Firestore connection and Admin configuration.",
+
+        currentCode:
+          "// Admin configuration validation failed.",
+
+        fixedCode: `Collection: ${item.collection}
+Document: ${item.document}
+
+{
+  "enabled": true
+}`,
       });
     }
   }
