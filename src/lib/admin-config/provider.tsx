@@ -60,6 +60,11 @@ const notificationRef = doc(db, "settings", "notification");
           const loadConfig = async () => {
   const themeSnap = await getDoc(themeRef);
 const featureFlagsSnap = await getDoc(featureFlagsRef);
+const walletSnap = await getDoc(walletRef);
+const homepageSnap = await getDoc(homepageRef);
+const paymentSnap = await getDoc(paymentRef);
+const shippingSnap = await getDoc(shippingRef);
+const notificationSnap = await getDoc(notificationRef);
   const mergedConfig = {
   ...DEFAULT_ADMIN_CONFIG,
   ...data,
