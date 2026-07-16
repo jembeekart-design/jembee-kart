@@ -56,11 +56,17 @@ const themeRef = doc(db, "settings", "theme");
   const themeSnap = await getDoc(themeRef);
 const featureFlagsSnap = await getDoc(featureFlagsRef);
   const mergedConfig = {
-    ...data,
-    theme: themeSnap.exists()
-      ? themeSnap.data()
-      : DEFAULT_ADMIN_CONFIG.theme,
-  };
+  ...DEFAULT_ADMIN_CONFIG,
+  ...data,
+
+  theme: themeSnap.exists()
+    ? themeSnap.data()
+    : DEFAULT_ADMIN_CONFIG.theme,
+
+  featureFlags: featureFlagsSnap.exists()
+    ? featureFlagsSnap.data()
+    : DEFAULT_ADMIN_CONFIG.featureFlags,
+};
 
   setConfig(validateConfig(mergedConfig));
   setSource("firestore");
