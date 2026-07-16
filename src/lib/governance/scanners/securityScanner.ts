@@ -20,6 +20,32 @@ export async function securityScanner(): Promise<ScanResult[]> {
       status: "WARNING",
       message: "Firestore security rules cannot be verified from client.",
       severity: "MEDIUM",
+
+      file: "/firestore.rules",
+      line: 1,
+
+      autoFix: true,
+
+      patchId: "firestore-rules-fix",
+
+      suggestion:
+        "Review Firestore Security Rules and apply the recommended secure rules.",
+
+      currentCode:
+        "// Firestore Rules could not be verified from client.",
+
+      fixedCode: `rules_version = '2';
+
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    match /{document=**} {
+      allow read, write: if request.auth != null;
+    }
+
+  }
+}
+`,
     });
 
     // Environment Variables
