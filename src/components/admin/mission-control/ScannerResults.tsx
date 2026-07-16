@@ -172,10 +172,21 @@ export default function ScannerResults() {
                 </button>
               )}
               {item.fixedCode && (
-                <button className="border px-3 py-1 rounded text-[10px] font-bold uppercase flex items-center gap-1">
-                  <Eye size={10} /> Preview
-                </button>
-              )}
+  <button
+    onClick={() =>
+      setSelectedPreview({
+        file: item.file ?? "",
+        lineStart: item.line ?? 1,
+        description: item.message,
+        code: item.fixedCode,
+      })
+    }
+    className="border px-3 py-1 rounded text-[10px] font-bold uppercase flex items-center gap-1"
+  >
+    <Eye size={10} />
+    Preview
+  </button>
+)}
               <button 
                 disabled={!GITHUB_REPO} 
                 onClick={() => openGitHubFile(item)} 
