@@ -8,7 +8,11 @@ import {
   useMemo, // Added for optimization
   ReactNode,
 } from "react";
-import { doc, onSnapshot } from "firebase/firestore";
+import {
+  doc,
+  onSnapshot,
+  getDoc,
+} from "firebase/firestore";
 import { db } from "@/firebase/config";
 import { DEFAULT_ADMIN_CONFIG } from "./defaults";
 import { validateConfig } from "./validator";
