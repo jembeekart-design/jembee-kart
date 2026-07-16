@@ -28,6 +28,7 @@ export async function generatePreview(
     lineEnd: suggestion.patch.lineEnd,
 
     oldCode: suggestion.patch.oldCode,
+
     newCode: suggestion.patch.newCode,
 
     autoApplicable: suggestion.patch.autoApplicable,
