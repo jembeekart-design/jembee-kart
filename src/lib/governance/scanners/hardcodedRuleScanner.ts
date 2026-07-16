@@ -65,6 +65,9 @@ export async function hardcodedRuleScanner(): Promise<ScanResult[]> {
           status: "PASS",
           severity: "LOW",
           message: "Business rule is configurable from Admin Panel.",
+
+          file: "/src/lib/governance/scanners/hardcodedRuleScanner.ts",
+          line: 1,
         });
       } else {
         results.push({
@@ -73,6 +76,24 @@ export async function hardcodedRuleScanner(): Promise<ScanResult[]> {
           status: "WARNING",
           severity: "MEDIUM",
           message: "Potential hardcoded configuration detected.",
+
+          file: "/src/lib/governance/scanners/hardcodedRuleScanner.ts",
+          line: 1,
+
+          autoFix: true,
+          patchId: `${rule.id}-fix`,
+
+          currentCode: `const ${rule.id} = {
+  configurable: false
+};`,
+
+          fixedCode: `const ${rule.id} = {
+  configurable: true,
+  source: "Firestore Admin Panel"
+};`,
+
+          suggestion:
+            "Move this business rule to Firestore and manage it from the Admin Panel.",
         });
       }
     } catch (error) {
@@ -84,6 +105,20 @@ export async function hardcodedRuleScanner(): Promise<ScanResult[]> {
         status: "FAIL",
         severity: "HIGH",
         message: "Unable to validate business rule configuration.",
+
+        file: "/src/lib/governance/scanners/hardcodedRuleScanner.ts",
+        line: 1,
+
+        autoFix: true,
+        patchId: `${rule.id}-error-fix`,
+
+        currentCode: "// Scanner failed",
+
+        fixedCode:
+          "// Verify Firestore connection and migrate business rules to Admin Panel.",
+
+        suggestion:
+          "Check scanner configuration and reconnect the Admin Panel settings.",
       });
     }
   }
