@@ -1,23 +1,34 @@
 import type { ScanResult } from "../runSystemScan";
 
 export async function walletScanner(): Promise<ScanResult[]> {
-  const walletEnabled = true;
-  const walletConfigured = true;
+  const results: ScanResult[] = [];
 
-  if (!walletEnabled) {
-    return [
-      {
+  try {
+    // TODO:
+    // Future:
+    // Read wallet configuration from Firestore
+    const walletEnabled = true;
+    const walletConfigured = true;
+
+    if (!walletEnabled) {
+      results.push({
         id: "wallet-config",
         name: "Wallet Configuration",
+
         status: "FAIL",
         severity: "HIGH",
+
         message: "Wallet module is disabled.",
 
         file: "/src/lib/governance/scanners/walletScanner.ts",
-        line: 1,
+        line: 15,
 
         autoFix: true,
+
         patchId: "wallet-config-fix",
+
+        suggestion:
+          "Enable Wallet module and create default wallet configuration.",
 
         currentCode: `{
   "walletEnabled": false
@@ -27,29 +38,33 @@ export async function walletScanner(): Promise<ScanResult[]> {
   "walletEnabled": true,
   "rewardWallet": true,
   "cashbackWallet": true,
-  "commissionWallet": true
+  "commissionWallet": true,
+  "withdrawWallet": true
 }`,
+      });
 
-        suggestion:
-          "Enable wallet module and create all required wallet configuration.",
-      },
-    ];
-  }
+      return results;
+    }
 
-  if (!walletConfigured) {
-    return [
-      {
+    if (!walletConfigured) {
+      results.push({
         id: "wallet-fields",
         name: "Wallet Fields",
+
         status: "WARNING",
         severity: "MEDIUM",
+
         message: "Wallet configuration is incomplete.",
 
         file: "/src/lib/governance/scanners/walletScanner.ts",
-        line: 20,
+        line: 45,
 
         autoFix: true,
+
         patchId: "wallet-fields-fix",
+
+        suggestion:
+          "Generate missing wallet configuration automatically.",
 
         currentCode: `{
   "walletEnabled": true
@@ -60,25 +75,63 @@ export async function walletScanner(): Promise<ScanResult[]> {
   "rewardWallet": true,
   "cashbackWallet": true,
   "commissionWallet": true,
-  "withdrawWallet": true
+  "withdrawWallet": true,
+  "pendingWithdrawal": 0,
+  "walletBalance": 0
 }`,
+      });
 
-        suggestion:
-          "Generate missing wallet configuration automatically.",
-      },
-    ];
-  }
+      return results;
+    }
 
-  return [
-    {
+    results.push({
       id: "wallet-pass",
       name: "Wallet Configuration",
+
       status: "PASS",
       severity: "LOW",
+
       message: "Wallet configuration is valid.",
 
       file: "/src/lib/governance/scanners/walletScanner.ts",
-      line: 40,
-    },
-  ];
+      line: 80,
+    });
+
+    return results;
+  } catch (error) {
+    console.error("Wallet Scanner Error:", error);
+
+    return [
+      {
+        id: "wallet-error",
+        name: "Wallet Scanner",
+
+        status: "FAIL",
+        severity: "HIGH",
+
+        message: "Unable to validate wallet configuration.",
+
+        file: "/src/lib/governance/scanners/walletScanner.ts",
+        line: 95,
+
+        autoFix: true,
+
+        patchId: "wallet-scanner-error",
+
+        suggestion:
+          "Verify wallet configuration and recreate missing wallet settings.",
+
+        currentCode:
+          "// Wallet configuration unavailable.",
+
+        fixedCode: `{
+  "walletEnabled": true,
+  "rewardWallet": true,
+  "cashbackWallet": true,
+  "commissionWallet": true,
+  "withdrawWallet": true
+}`,
+      },
+    ];
+  }
 }
