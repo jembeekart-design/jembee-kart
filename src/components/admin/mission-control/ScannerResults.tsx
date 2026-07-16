@@ -22,6 +22,8 @@ export default function ScannerResults() {
   const [countdown, setCountdown] = useState(60);
   const [liveMode, setLiveMode] = useState(true);
   const [copiedFile, setCopiedFile] = useState<string | null>(null);
+  const [selectedPreview, setSelectedPreview] =
+  useState<PreviewResult | null>(null);
   
   const scanRunning = useRef(false);
   const mounted = useRef(true);
