@@ -121,6 +121,12 @@ const DEFAULT_SETTINGS = {
     rewardAmount: 50,
   },
 
+  referral: {
+  enabled: true,
+  referralBonus: 50,
+  maxReferralLevels: 10,
+},
+  
   security: {
     twoFactor: false,
     loginAttempts: 5,
