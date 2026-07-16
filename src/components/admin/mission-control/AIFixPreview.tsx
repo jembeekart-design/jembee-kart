@@ -15,7 +15,8 @@ export default function AIFixPreview({
 
   return (
     <div className="fixed inset-0 z-50 bg-black/40 flex items-center justify-center p-4">
-      <div className="w-full max-w-4xl rounded-xl bg-white shadow-2xl overflow-hidden">
+      <div className="w-full max-w-5xl rounded-xl bg-white shadow-2xl overflow-hidden">
+
         <div className="flex items-center justify-between border-b px-5 py-3">
           <div>
             <h2 className="text-lg font-bold">AI Fix Preview</h2>
@@ -32,7 +33,15 @@ export default function AIFixPreview({
           </button>
         </div>
 
-        <div className="p-5 space-y-4">
+        <div className="p-5 space-y-6">
+
+          <div>
+            <p className="text-sm font-semibold">Title</p>
+            <p className="text-sm text-gray-700">
+              {preview.title}
+            </p>
+          </div>
+
           <div>
             <p className="text-sm font-semibold">Description</p>
             <p className="text-sm text-gray-600">
@@ -40,15 +49,44 @@ export default function AIFixPreview({
             </p>
           </div>
 
+          {preview.oldCode && (
+            <div>
+              <p className="mb-2 text-sm font-semibold">
+                Current Code
+              </p>
+
+              <pre className="overflow-auto rounded-lg bg-gray-900 p-4 text-sm text-red-300">
+                <code>{preview.oldCode}</code>
+              </pre>
+            </div>
+          )}
+
           <div>
             <p className="mb-2 text-sm font-semibold">
               Suggested Code
             </p>
 
             <pre className="overflow-auto rounded-lg bg-gray-900 p-4 text-sm text-green-300">
-              <code>{preview.code}</code>
+              <code>{preview.newCode}</code>
             </pre>
           </div>
+
+          <div className="flex items-center justify-between border-t pt-4">
+
+            <span className="text-xs text-gray-500">
+              Auto Applicable:{" "}
+              {preview.autoApplicable ? "Yes" : "No"}
+            </span>
+
+            <button
+              onClick={onClose}
+              className="rounded bg-blue-600 px-4 py-2 text-white hover:bg-blue-700"
+            >
+              Close
+            </button>
+
+          </div>
+
         </div>
       </div>
     </div>
