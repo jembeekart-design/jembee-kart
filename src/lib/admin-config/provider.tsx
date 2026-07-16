@@ -36,7 +36,7 @@ export function AdminConfigProvider({ children }: { children: ReactNode }) {
 
   useEffect(() => {
     const configRef = doc(db, "settings", "global_config");
-
+const themeRef = doc(db, "settings", "theme");
     const unsubscribe = onSnapshot(
       configRef,
       (docSnap) => {
