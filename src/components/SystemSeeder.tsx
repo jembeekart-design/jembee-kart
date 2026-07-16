@@ -5,7 +5,16 @@ import { seedSystemSettings } from "@/lib/seed/seedSystemSettings";
 
 export default function SystemSeeder() {
   useEffect(() => {
-    seedSystemSettings().catch(console.error);
+    const init = async () => {
+      try {
+        await seedSystemSettings();
+        console.log("✅ System settings initialized.");
+      } catch (error) {
+        console.error("❌ Failed to initialize system settings:", error);
+      }
+    };
+
+    init();
   }, []);
 
   return null;
