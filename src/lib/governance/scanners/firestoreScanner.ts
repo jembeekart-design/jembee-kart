@@ -12,10 +12,10 @@ export async function firestoreScanner(): Promise<ScanResult[]> {
       ref: doc(db, "settings", "global_config"),
     },
     {
-      id: "theme-config",
-      name: "Theme Settings",
-      ref: doc(db, "admin_settings", "customize"),
-    },
+  id: "theme-config",
+  name: "Theme Settings",
+  ref: doc(db, "settings", "theme"),
+},
   ];
 
   for (const item of requiredDocuments) {
