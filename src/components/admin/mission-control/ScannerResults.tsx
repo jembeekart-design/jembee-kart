@@ -175,11 +175,19 @@ export default function ScannerResults() {
   <button
     onClick={() =>
       setSelectedPreview({
-        file: item.file ?? "",
-        lineStart: item.line ?? 1,
-        description: item.message,
-        code: item.fixedCode,
-      })
+  title: item.name,
+  description: item.message,
+
+  file: item.file ?? "",
+
+  lineStart: item.line ?? 1,
+
+  oldCode: "",
+
+  newCode: item.fixedCode ?? "",
+
+  autoApplicable: false,
+})
     }
     className="border px-3 py-1 rounded text-[10px] font-bold uppercase flex items-center gap-1"
   >
