@@ -100,10 +100,15 @@ const DEFAULT_SETTINGS = {
 },
 
   wallet: {
-    minWithdraw: 200,
-    maxWithdraw: 50000,
-    autoApprove: false,
-  },
+  commissionWalletEnabled: true,
+  cashbackWalletEnabled: true,
+  rewardWalletEnabled: true,
+  withdrawEnabled: true,
+
+  minWithdraw: 200,
+  maxWithdraw: 50000,
+  autoApprove: false,
+},
 
   mlm: {
     enabled: true,
