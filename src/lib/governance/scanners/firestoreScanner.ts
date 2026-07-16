@@ -31,24 +31,42 @@ export async function firestoreScanner(): Promise<ScanResult[]> {
           status: "PASS",
           message: "Document found.",
           severity: "LOW",
+
           file: item.file,
+          line: 1,
         });
       } else {
         results.push({
           id: item.id,
           name: item.name,
+
           status: "FAIL",
-          message: "Required Firestore document is missing.",
           severity: "HIGH",
+
+          message: "Required Firestore document is missing.",
 
           file: item.file,
           line: 1,
 
           autoFix: true,
 
+          patchId: `${item.id}-firestore-fix`,
+
+          suggestion:
+            "Create the missing Firestore document automatically.",
+
+          currentCode:
+            "// Firestore document does not exist.",
+
           fixedCode: `// Create Firestore document
+
 Collection: settings
 Document: ${item.id}
+
+{
+  "createdAt": "SERVER_TIMESTAMP",
+  "updatedAt": "SERVER_TIMESTAMP"
+}
 `,
         });
       }
@@ -58,16 +76,32 @@ Document: ${item.id}
       results.push({
         id: item.id,
         name: item.name,
+
         status: "FAIL",
-        message: "Unable to access Firestore document.",
         severity: "HIGH",
+
+        message: "Unable to access Firestore document.",
 
         file: item.file,
         line: 1,
 
         autoFix: true,
 
-        fixedCode: `// Check Firebase configuration and Firestore rules`,
+        patchId: `${item.id}-connection-fix`,
+
+        suggestion:
+          "Verify Firebase configuration and Firestore Security Rules.",
+
+        currentCode:
+          "// Firestore connection failed.",
+
+        fixedCode: `// Verify Firebase configuration
+
+1. Check firebase config
+2. Check Firestore Rules
+3. Check Internet Connection
+4. Verify settings/${item.id} document
+`,
       });
     }
   }
