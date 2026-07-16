@@ -150,16 +150,17 @@ export async function seedSystemSettings() {
       const reference = doc(db, SETTINGS_COLLECTION, documentId);
 
       const snapshot = await getDoc(reference);
+if (snapshot.exists()) {
+  await setDoc(reference, documentData, {
+    merge: true,
+  });
 
-      if (snapshot.exists()) {
-        console.log(`✔ settings/${documentId} already exists`);
-        continue;
-      }
+  console.log(`🔄 Updated settings/${documentId}`);
+} else {
+  await setDoc(reference, documentData);
 
-      await setDoc(reference, documentData);
-
-      console.log(`✅ Created settings/${documentId}`);
-    } catch (error) {
+  console.log(`✅ Created settings/${documentId}`);
+} catch (error) {
       console.error(
         `❌ Failed to create settings/${documentId}`,
         error
