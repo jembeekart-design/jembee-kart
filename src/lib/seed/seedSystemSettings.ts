@@ -97,7 +97,7 @@ const DEFAULT_SETTINGS = {
   // Modes
   darkMode: false,
   rtl: false,
-}
+},
 
   wallet: {
     minWithdraw: 200,
