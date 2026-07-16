@@ -51,8 +51,21 @@ const themeRef = doc(db, "settings", "theme");
           setConfig(DEFAULT_ADMIN_CONFIG);
           setSource("defaults");
         } else {
-          setConfig(validateConfig(data));
-          setSource("firestore");
+          const loadConfig = async () => {
+  const themeSnap = await getDoc(themeRef);
+
+  const mergedConfig = {
+    ...data,
+    theme: themeSnap.exists()
+      ? themeSnap.data()
+      : DEFAULT_ADMIN_CONFIG.theme,
+  };
+
+  setConfig(validateConfig(mergedConfig));
+  setSource("firestore");
+};
+
+loadConfig();
         }
         
         const updatedAt =
