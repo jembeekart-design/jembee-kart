@@ -41,6 +41,7 @@ export function AdminConfigProvider({ children }: { children: ReactNode }) {
   useEffect(() => {
     const configRef = doc(db, "settings", "global_config");
 const themeRef = doc(db, "settings", "theme");
+    const featureFlagsRef = doc(db, "settings", "feature_flags");
     const unsubscribe = onSnapshot(
       configRef,
       (docSnap) => {
@@ -53,7 +54,7 @@ const themeRef = doc(db, "settings", "theme");
         } else {
           const loadConfig = async () => {
   const themeSnap = await getDoc(themeRef);
-
+const featureFlagsSnap = await getDoc(featureFlagsRef);
   const mergedConfig = {
     ...data,
     theme: themeSnap.exists()
