@@ -2,139 +2,168 @@
 
 import { useEffect, useState, useCallback, useRef, useMemo } from "react";
 import { runSystemScan, type ScanResult } from "@/lib/governance/runSystemScan";
-import { RefreshCw, AlertTriangle, ShieldCheck, ShieldAlert, Shield, Loader2 } from "lucide-react";
+import { 
+  RefreshCw, Loader2, ExternalLink, Copy, Wrench, 
+  AlertTriangle, CheckCircle2, XCircle, Eye, GitPullRequest 
+} from "lucide-react";
 
-const STATUS_ORDER: Record<ScanResult["status"], number> = {
-  FAIL: 0,
-  WARNING: 1,
-  PASS: 2,
-};
-
-const DEFAULT_HEALTH_WEIGHTS: Record<ScanResult["status"], number> = {
-  PASS: 100,
-  WARNING: 60,
-  FAIL: 0,
-};
+const STATUS_ORDER: Record<ScanResult["status"], number> = { FAIL: 0, WARNING: 1, PASS: 2 };
+const DEFAULT_HEALTH_WEIGHTS: Record<ScanResult["status"], number> = { PASS: 100, WARNING: 60, FAIL: 0 };
+const GITHUB_REPO = process.env.NEXT_PUBLIC_GITHUB_REPO ?? "";
 
 export default function ScannerResults() {
   const [results, setResults] = useState<ScanResult[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [lastScan, setLastScan] = useState<Date | null>(null);
+  const [scanTime, setScanTime] = useState(0);
   const [countdown, setCountdown] = useState(60);
+  const [liveMode, setLiveMode] = useState(true);
+  const [copiedFile, setCopiedFile] = useState<string | null>(null);
   
   const scanRunning = useRef(false);
   const mounted = useRef(true);
+  const copyTimeout = useRef<NodeJS.Timeout | null>(null);
 
   useEffect(() => {
     mounted.current = true;
-    return () => { mounted.current = false; };
+    return () => { 
+      mounted.current = false; 
+      if (copyTimeout.current) clearTimeout(copyTimeout.current);
+    };
   }, []);
+
+  // --- Autonomous Auto-Fix Logic ---
+  const handleAutoFix = async (item: ScanResult) => {
+    if (!item.autoFix) return;
+    console.log("Initiating Auto-Fix for:", item.patchId);
+    // Future: API Call to /api/governance/apply-fix
+    // Then: re-scan automatically
+  };
+
+  const openGitHubFile = (item: ScanResult) => {
+    if (!item.file) return;
+    if (!GITHUB_REPO) { setError("GitHub repository is not configured."); return; }
+    if (!GITHUB_REPO.startsWith("https://github.com/")) { setError("Invalid GitHub repository URL."); return; }
+    
+    const line = item.line ? `#L${item.line}` : "";
+    window.open(`${GITHUB_REPO}${item.file}${line}`, "_blank", "noopener,noreferrer");
+  };
+
+  const copyFilePath = async (text: string, id: string) => {
+    try {
+      await navigator.clipboard.writeText(text);
+      setCopiedFile(id);
+      if (copyTimeout.current) clearTimeout(copyTimeout.current);
+      copyTimeout.current = setTimeout(() => {
+        if (mounted.current) setCopiedFile(null);
+      }, 1500);
+    } catch (err) { console.error("Clipboard error", err); }
+  };
 
   const performScan = useCallback(async () => {
     if (scanRunning.current) return;
-
     scanRunning.current = true;
     setLoading(true);
     setError(null);
-
+    const started = performance.now();
     try {
       const data = await runSystemScan();
-      const sortedResults = [...data].sort((a, b) => STATUS_ORDER[a.status] - STATUS_ORDER[b.status]);
-      
+      const sortedResults = [...data].sort((a, b) => {
+        const diff = STATUS_ORDER[a.status] - STATUS_ORDER[b.status];
+        return diff !== 0 ? diff : a.name.localeCompare(b.name);
+      });
       if (mounted.current) {
         setResults(sortedResults);
         setLastScan(new Date());
+        setScanTime(Math.round(performance.now() - started));
         setCountdown(60);
       }
-    } catch (err) {
-      if (mounted.current) setError("Governance scan service is currently unreachable.");
-    } finally {
-      scanRunning.current = false;
-      if (mounted.current) setLoading(false);
+    } catch (err) { 
+      console.error("Governance scan failed:", err);
+      if (mounted.current) setError("Service unreachable."); 
     }
+    finally { scanRunning.current = false; if (mounted.current) setLoading(false); }
   }, []);
 
-  // Immediate scan on mount
-  useEffect(() => {
-    performScan();
-  }, [performScan]);
-
-  // Auto-scan cycle
-  useEffect(() => {
-    if (countdown === 0) {
-      performScan();
-      setCountdown(60);
-    }
-  }, [countdown, performScan]);
+  useEffect(() => { performScan(); }, [performScan]);
 
   useEffect(() => {
     const timer = setInterval(() => {
-      setCountdown((c) => Math.max(c - 1, 0));
+      if (!liveMode || document.hidden || scanRunning.current) return;
+      setCountdown((c) => { if (c <= 1) { performScan(); return 60; } return c - 1; });
     }, 1000);
     return () => clearInterval(timer);
-  }, []);
+  }, [liveMode, performScan]);
 
-  const { healthScore, healthLabel, HealthIcon, iconColor } = useMemo(() => {
-    const score = results.length === 0 ? 0 : Math.round(
-      results.reduce((acc, r) => acc + (DEFAULT_HEALTH_WEIGHTS[r.status] || 0), 0) / results.length
-    );
+  const summary = useMemo(() => {
+    let pass = 0, warning = 0, fail = 0;
+    for (const r of results) {
+      if (r.status === "PASS") pass++;
+      else if (r.status === "WARNING") warning++;
+      else fail++;
+    }
+    return { total: results.length, pass, warning, fail };
+  }, [results]);
 
-    const label = score >= 95 ? "Excellent" : score >= 80 ? "Stable" : score >= 60 ? "Needs Attention" : "Critical";
-    const Icon = score >= 95 ? ShieldCheck : score >= 80 ? Shield : score >= 60 ? AlertTriangle : ShieldAlert;
+  const { healthScore, healthColor, healthLabel } = useMemo(() => {
+    const score = results.length === 0 ? 0 : Math.round(results.reduce((acc, r) => acc + (DEFAULT_HEALTH_WEIGHTS[r.status] || 0), 0) / results.length);
     const color = score >= 95 ? "text-green-600" : score >= 80 ? "text-blue-600" : score >= 60 ? "text-yellow-600" : "text-red-600";
-
-    return { healthScore: score, healthLabel: label, HealthIcon: Icon, iconColor: color };
+    const label = score >= 95 ? "Excellent" : score >= 80 ? "Stable" : score >= 60 ? "Needs Attention" : "Critical";
+    return { healthScore: score, healthColor: color, healthLabel: label };
   }, [results]);
 
   return (
-    <section className="rounded-2xl border bg-white shadow-xl shadow-gray-100 overflow-hidden">
-      <div className="p-6 border-b flex justify-between items-start bg-gray-50/30">
+    <section className="rounded-2xl border bg-white shadow-xl overflow-hidden">
+      <div className="p-6 border-b bg-gray-50/30 flex justify-between">
         <div>
-          <h2 className="text-xs font-black uppercase tracking-widest text-gray-400">System Integrity</h2>
-          <div className="flex items-baseline gap-2 mt-1">
-            <span className="text-3xl font-black text-gray-900">{healthScore}%</span>
-            <span className={`text-sm font-bold ${iconColor}`}>{healthLabel}</span>
+          <h2 className="text-xs font-black uppercase text-gray-400">Overall Health</h2>
+          <div className="flex items-baseline gap-2">
+            <span className={`text-3xl font-black ${healthColor}`}>{healthScore}%</span>
+            <p className={`text-xs font-bold ${healthColor}`}>{healthLabel}</p>
           </div>
-          <p className="text-[10px] text-gray-400 mt-2">Last Scan: {lastScan?.toLocaleTimeString() || "Pending"}</p>
+          <div className="grid grid-cols-4 gap-3 mt-4">
+            <div className="rounded-lg bg-gray-100 p-3 text-center"><p className="text-[10px] uppercase font-bold text-gray-500">Total</p><p className="text-xl font-black">{summary.total}</p></div>
+            <div className="rounded-lg bg-green-50 p-3 text-center"><p className="text-[10px] uppercase font-bold text-green-700">PASS</p><p className="text-xl font-black text-green-700">{summary.pass}</p></div>
+            <div className="rounded-lg bg-yellow-50 p-3 text-center"><p className="text-[10px] uppercase font-bold text-yellow-700">WARNING</p><p className="text-xl font-black text-yellow-700">{summary.warning}</p></div>
+            <div className="rounded-lg bg-red-50 p-3 text-center"><p className="text-[10px] uppercase font-bold text-red-700">FAIL</p><p className="text-xl font-black text-red-700">{summary.fail}</p></div>
+          </div>
+          <p className="mt-4 text-[10px] text-gray-400">Last Scan: {lastScan?.toLocaleTimeString() ?? "Pending"} | Scan Time: {scanTime}ms</p>
         </div>
-        <HealthIcon size={32} className={iconColor} />
+        <button onClick={() => setLiveMode(!liveMode)} className={`px-2 py-1 h-6 rounded border text-[9px] font-bold uppercase ${liveMode ? "bg-green-100 text-green-700" : "bg-gray-100"}`}>Live : {liveMode ? "ON" : "OFF"}</button>
       </div>
 
-      {error ? (
-        <div className="p-8 text-center">
-          <ShieldAlert className="mx-auto text-red-500 mb-2" size={32} />
-          <p className="text-sm text-red-600 font-bold mb-4">{error}</p>
-          <button onClick={performScan} disabled={loading} className="text-[10px] px-4 py-2 bg-red-600 text-white rounded-lg font-bold uppercase">Retry Scan</button>
-        </div>
-      ) : loading && results.length === 0 ? (
-        <div className="p-12 flex flex-col items-center text-gray-400 text-xs font-bold uppercase tracking-widest">
-            <Loader2 className="animate-spin mb-2" /> Scanning Governance Engine...
-        </div>
-      ) : results.length === 0 ? (
-        <div className="p-8 text-center text-sm text-gray-500">No governance scan results available.</div>
-      ) : (
-        <div className="divide-y">
-          {results.map((item) => (
-            <div key={item.id} className="p-4 flex items-center justify-between hover:bg-gray-50 transition-colors">
+      <div className="divide-y">
+        {results.map((item) => (
+          <div key={item.id} className="p-4 hover:bg-gray-50 transition-colors">
+            <div className="flex justify-between items-start">
               <div>
-                <p className="text-sm font-bold text-gray-800">{item.name}</p>
-                <p className="text-[10px] text-gray-500">{item.message}</p>
-                {item.severity && <p className="text-[9px] font-bold text-gray-400 uppercase mt-1">Severity: {item.severity}</p>}
+                <p className="text-sm font-bold">{item.name}</p>
+                <p className="text-[11px] text-gray-500">{item.message}</p>
               </div>
-              <span className={`px-2 py-1 rounded border text-[9px] font-bold uppercase ${item.status === "PASS" ? "bg-green-50 text-green-700 border-green-200" : item.status === "WARNING" ? "bg-yellow-50 text-yellow-700 border-yellow-200" : "bg-red-50 text-red-700 border-red-200"}`}>
-                {item.status}
+              <span className={`px-2 py-1 rounded text-[9px] font-bold uppercase flex items-center gap-1 ${item.status === "PASS" ? "bg-green-100 text-green-700" : item.status === "WARNING" ? "bg-yellow-100 text-yellow-700" : "bg-red-100 text-red-700"}`}>
+                {item.status === "PASS" ? <CheckCircle2 size={10}/> : item.status === "WARNING" ? <AlertTriangle size={10}/> : <XCircle size={10}/>} {item.status}
               </span>
             </div>
-          ))}
-        </div>
-      )}
 
-      <div className="p-4 bg-gray-50 border-t flex justify-between items-center text-[10px] font-bold uppercase text-gray-400">
-        <span>Auto-sync in {countdown}s</span>
-        <button onClick={performScan} disabled={loading} className="flex items-center gap-1 hover:text-gray-900 transition-colors disabled:opacity-50">
-          <RefreshCw size={10} /> {loading ? "Scanning..." : "Force Re-Validation"}
-        </button>
+            {/* Action Bar */}
+            <div className="mt-4 flex gap-2">
+              {item.autoFix && (
+                <button onClick={() => handleAutoFix(item)} className="bg-emerald-600 text-white px-3 py-1 rounded text-[10px] font-bold uppercase flex items-center gap-1">
+                  <Wrench size={10} /> Auto-Fix
+                </button>
+              )}
+              {item.fixedCode && (
+                <button className="border px-3 py-1 rounded text-[10px] font-bold uppercase flex items-center gap-1">
+                  <Eye size={10} /> Preview
+                </button>
+              )}
+              <button disabled={!item.file || !GITHUB_REPO} onClick={() => openGitHubFile(item)} className="border px-3 py-1 rounded text-[10px] font-bold uppercase flex items-center gap-1">
+                <ExternalLink size={10} /> GitHub
+              </button>
+            </div>
+          </div>
+        ))}
       </div>
     </section>
   );
