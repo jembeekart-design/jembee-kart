@@ -5,6 +5,8 @@ import { securityScanner } from "./scanners/securityScanner";
 import { walletScanner } from "./scanners/walletScanner";
 import { deploymentScanner } from "./scanners/deploymentScanner";
 import { adminControlScanner } from "./scanners/adminControlScanner";
+import { hardcodedRuleScanner } from "./scanners/hardcodedRuleScanner";
+import { pageConnectionScanner } from "./scanners/pageConnectionScanner";
 
 export type ScanStatus = "PASS" | "WARNING" | "FAIL";
 
@@ -54,6 +56,16 @@ export async function runSystemScan(): Promise<ScanResult[]> {
       id: "admin-control",
       name: "Admin Control Scanner",
       run: adminControlScanner,
+    },
+    {
+      id: "hardcoded-rules",
+      name: "Hardcoded Rule Scanner",
+      run: hardcodedRuleScanner,
+    },
+    {
+      id: "page-connection",
+      name: "Page Connection Scanner",
+      run: pageConnectionScanner,
     },
   ];
 
