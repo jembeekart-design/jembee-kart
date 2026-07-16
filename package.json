@@ -9,7 +9,8 @@
     "theme:codemod": "tsx src/scripts/theme-codemod.ts",
     "build": "npm run governance && next build",
     "start": "next start",
-    "lint": "eslint"
+    "lint": "eslint",
+    "scan:hardcoded": "tsx src/scripts/hardcodedScanner.ts"
   },
   "dependencies": {
     "clsx": "^2.1.1",
