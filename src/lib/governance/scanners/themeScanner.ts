@@ -16,6 +16,8 @@ export async function themeScanner(): Promise<ScanResult[]> {
           status: "FAIL",
           message: "Global configuration document not found.",
           severity: "HIGH",
+          file: "/src/lib/governance/scanners/themeScanner.ts",
+          line: 10,
         },
       ];
     }
@@ -31,6 +33,8 @@ export async function themeScanner(): Promise<ScanResult[]> {
           status: "FAIL",
           message: "Theme configuration is missing.",
           severity: "HIGH",
+          file: "/src/lib/governance/scanners/themeScanner.ts",
+          line: 28,
         },
       ];
     }
@@ -58,6 +62,8 @@ export async function themeScanner(): Promise<ScanResult[]> {
           status: "WARNING",
           message: `Missing fields: ${missingFields.join(", ")}`,
           severity: "MEDIUM",
+          file: "/src/lib/governance/scanners/themeScanner.ts",
+          line: 53,
         },
       ];
     }
@@ -69,6 +75,8 @@ export async function themeScanner(): Promise<ScanResult[]> {
         status: "PASS",
         message: "Theme configuration is valid.",
         severity: "LOW",
+        file: "/src/lib/governance/scanners/themeScanner.ts",
+        line: 66,
       },
     ];
   } catch (error) {
@@ -81,6 +89,8 @@ export async function themeScanner(): Promise<ScanResult[]> {
         status: "FAIL",
         message: "Unable to validate theme configuration.",
         severity: "HIGH",
+        file: "/src/lib/governance/scanners/themeScanner.ts",
+        line: 76,
       },
     ];
   }
