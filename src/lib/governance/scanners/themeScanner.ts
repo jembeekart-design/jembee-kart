@@ -5,7 +5,7 @@ import type { ScanResult } from "../runSystemScan";
 export async function themeScanner(): Promise<ScanResult[]> {
   try {
     const snapshot = await getDoc(
-      doc(db, "settings", "global_config")
+      doc(db, "settings", "theme")
     );
 
     if (!snapshot.exists()) {
@@ -14,7 +14,7 @@ export async function themeScanner(): Promise<ScanResult[]> {
           id: "theme-config",
           name: "Theme Configuration",
           status: "FAIL",
-          message: "Global configuration document not found.",
+          message: "Theme document not found.",
           severity: "HIGH",
           file: "/src/lib/governance/scanners/themeScanner.ts",
           line: 10,
@@ -22,22 +22,7 @@ export async function themeScanner(): Promise<ScanResult[]> {
       ];
     }
 
-    const data = snapshot.data();
-    const theme = data.theme;
-
-    if (!theme) {
-      return [
-        {
-          id: "theme-config",
-          name: "Theme Configuration",
-          status: "FAIL",
-          message: "Theme configuration is missing.",
-          severity: "HIGH",
-          file: "/src/lib/governance/scanners/themeScanner.ts",
-          line: 28,
-        },
-      ];
-    }
+    const theme = snapshot.data();
 
     const requiredFields = [
       "primaryColor",
@@ -63,7 +48,7 @@ export async function themeScanner(): Promise<ScanResult[]> {
           message: `Missing fields: ${missingFields.join(", ")}`,
           severity: "MEDIUM",
           file: "/src/lib/governance/scanners/themeScanner.ts",
-          line: 53,
+          line: 35,
         },
       ];
     }
@@ -76,7 +61,7 @@ export async function themeScanner(): Promise<ScanResult[]> {
         message: "Theme configuration is valid.",
         severity: "LOW",
         file: "/src/lib/governance/scanners/themeScanner.ts",
-        line: 66,
+        line: 50,
       },
     ];
   } catch (error) {
@@ -90,7 +75,7 @@ export async function themeScanner(): Promise<ScanResult[]> {
         message: "Unable to validate theme configuration.",
         severity: "HIGH",
         file: "/src/lib/governance/scanners/themeScanner.ts",
-        line: 76,
+        line: 60,
       },
     ];
   }
