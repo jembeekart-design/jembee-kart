@@ -10,12 +10,14 @@ export async function firestoreScanner(): Promise<ScanResult[]> {
       id: "global-config",
       name: "Global Configuration",
       ref: doc(db, "settings", "global_config"),
+      file: "firestore/settings/global_config",
     },
     {
-  id: "theme-config",
-  name: "Theme Settings",
-  ref: doc(db, "settings", "theme"),
-},
+      id: "theme-config",
+      name: "Theme Settings",
+      ref: doc(db, "settings", "theme"),
+      file: "firestore/settings/theme",
+    },
   ];
 
   for (const item of requiredDocuments) {
@@ -29,6 +31,7 @@ export async function firestoreScanner(): Promise<ScanResult[]> {
           status: "PASS",
           message: "Document found.",
           severity: "LOW",
+          file: item.file,
         });
       } else {
         results.push({
@@ -37,6 +40,16 @@ export async function firestoreScanner(): Promise<ScanResult[]> {
           status: "FAIL",
           message: "Required Firestore document is missing.",
           severity: "HIGH",
+
+          file: item.file,
+          line: 1,
+
+          autoFix: true,
+
+          fixedCode: `// Create Firestore document
+Collection: settings
+Document: ${item.id}
+`,
         });
       }
     } catch (error) {
@@ -48,6 +61,13 @@ export async function firestoreScanner(): Promise<ScanResult[]> {
         status: "FAIL",
         message: "Unable to access Firestore document.",
         severity: "HIGH",
+
+        file: item.file,
+        line: 1,
+
+        autoFix: true,
+
+        fixedCode: `// Check Firebase configuration and Firestore rules`,
       });
     }
   }
