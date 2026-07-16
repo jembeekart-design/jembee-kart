@@ -6,7 +6,9 @@ import {
   RefreshCw, Loader2, ExternalLink, Copy, Wrench, 
   AlertTriangle, CheckCircle2, XCircle, Eye 
 } from "lucide-react";
-
+import { getFixSuggestion } from "@/lib/governance/ai-fix/engine";
+import { generatePreview } from "@/lib/governance/ai-fix/preview";
+import type { PreviewResult } from "@/lib/governance/ai-fix/preview";
 const STATUS_ORDER: Record<ScanResult["status"], number> = { FAIL: 0, WARNING: 1, PASS: 2 };
 const DEFAULT_HEALTH_WEIGHTS: Record<ScanResult["status"], number> = { PASS: 100, WARNING: 60, FAIL: 0 };
 const GITHUB_REPO = process.env.NEXT_PUBLIC_GITHUB_REPO ?? "";
