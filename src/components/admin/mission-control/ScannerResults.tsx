@@ -38,9 +38,17 @@ export default function ScannerResults() {
   }, []);
 
   const handleAutoFix = async (item: ScanResult) => {
-    if (!item.autoFix) return;
-    console.log("Initiating Auto-Fix for:", item.patchId);
-  };
+  const suggestion = await getFixSuggestion(item);
+
+  if (!suggestion) {
+    alert("No AI Fix available.");
+    return;
+  }
+
+  const preview = await generatePreview(suggestion);
+
+  setSelectedPreview(preview);
+};
 
   // DEBUGGING: Temporary version of openGitHubFile
   const openGitHubFile = (item: ScanResult) => {
