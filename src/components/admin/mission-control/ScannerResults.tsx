@@ -4,7 +4,7 @@ import { useEffect, useState, useCallback, useRef, useMemo } from "react";
 import { runSystemScan, type ScanResult } from "@/lib/governance/runSystemScan";
 import { 
   RefreshCw, Loader2, ExternalLink, Copy, Wrench, 
-  AlertTriangle, CheckCircle2, XCircle, Eye, GitPullRequest 
+  AlertTriangle, CheckCircle2, XCircle, Eye 
 } from "lucide-react";
 
 const STATUS_ORDER: Record<ScanResult["status"], number> = { FAIL: 0, WARNING: 1, PASS: 2 };
@@ -33,21 +33,27 @@ export default function ScannerResults() {
     };
   }, []);
 
-  // --- Autonomous Auto-Fix Logic ---
   const handleAutoFix = async (item: ScanResult) => {
     if (!item.autoFix) return;
     console.log("Initiating Auto-Fix for:", item.patchId);
-    // Future: API Call to /api/governance/apply-fix
-    // Then: re-scan automatically
   };
 
+  // DEBUGGING: Temporary version of openGitHubFile
   const openGitHubFile = (item: ScanResult) => {
-    if (!item.file) return;
-    if (!GITHUB_REPO) { setError("GitHub repository is not configured."); return; }
-    if (!GITHUB_REPO.startsWith("https://github.com/")) { setError("Invalid GitHub repository URL."); return; }
-    
+    console.log("GITHUB_REPO:", GITHUB_REPO);
+    console.log("ITEM:", item);
+
+    if (!item.file) {
+      alert("item.file is missing");
+      return;
+    }
+
     const line = item.line ? `#L${item.line}` : "";
-    window.open(`${GITHUB_REPO}${item.file}${line}`, "_blank", "noopener,noreferrer");
+    const url = `${GITHUB_REPO}${item.file}${line}`;
+
+    console.log("Opening:", url);
+
+    window.open(url, "_blank", "noopener,noreferrer");
   };
 
   const copyFilePath = async (text: string, id: string) => {
@@ -146,7 +152,6 @@ export default function ScannerResults() {
               </span>
             </div>
 
-            {/* Action Bar */}
             <div className="mt-4 flex gap-2">
               {item.autoFix && (
                 <button onClick={() => handleAutoFix(item)} className="bg-emerald-600 text-white px-3 py-1 rounded text-[10px] font-bold uppercase flex items-center gap-1">
@@ -158,7 +163,11 @@ export default function ScannerResults() {
                   <Eye size={10} /> Preview
                 </button>
               )}
-              <button disabled={!item.file || !GITHUB_REPO} onClick={() => openGitHubFile(item)} className="border px-3 py-1 rounded text-[10px] font-bold uppercase flex items-center gap-1">
+              <button 
+                disabled={!GITHUB_REPO} 
+                onClick={() => openGitHubFile(item)} 
+                className="border px-3 py-1 rounded text-[10px] font-bold uppercase flex items-center gap-1 disabled:opacity-50"
+              >
                 <ExternalLink size={10} /> GitHub
               </button>
             </div>
