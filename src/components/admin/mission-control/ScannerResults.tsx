@@ -10,6 +10,7 @@ import { getFixSuggestion } from "@/lib/governance/ai-fix/engine";
 import { generatePreview } from "@/lib/governance/ai-fix/preview";
 import type { PreviewResult } from "@/lib/governance/ai-fix/preview";
 import AIFixPreview from "./AIFixPreview";
+
 const STATUS_ORDER: Record<ScanResult["status"], number> = { FAIL: 0, WARNING: 1, PASS: 2 };
 const DEFAULT_HEALTH_WEIGHTS: Record<ScanResult["status"], number> = { PASS: 100, WARNING: 60, FAIL: 0 };
 const GITHUB_REPO = process.env.NEXT_PUBLIC_GITHUB_REPO ?? "";
@@ -23,8 +24,7 @@ export default function ScannerResults() {
   const [countdown, setCountdown] = useState(60);
   const [liveMode, setLiveMode] = useState(true);
   const [copiedFile, setCopiedFile] = useState<string | null>(null);
-  const [selectedPreview, setSelectedPreview] =
-  useState<PreviewResult | null>(null);
+  const [selectedPreview, setSelectedPreview] = useState<PreviewResult | null>(null);
   
   const scanRunning = useRef(false);
   const mounted = useRef(true);
@@ -39,45 +39,23 @@ export default function ScannerResults() {
   }, []);
 
   const handleAutoFix = async (item: ScanResult) => {
-  const suggestion = await getFixSuggestion(item);
+    const suggestion = await getFixSuggestion(item);
+    if (!suggestion) {
+      alert("No AI Fix available.");
+      return;
+    }
+    const preview = await generatePreview(suggestion);
+    setSelectedPreview(preview);
+  };
 
-  if (!suggestion) {
-    alert("No AI Fix available.");
-    return;
-  }
-
-  const preview = await generatePreview(suggestion);
-
-  setSelectedPreview(preview);
-};
-
-  // DEBUGGING: Temporary version of openGitHubFile
   const openGitHubFile = (item: ScanResult) => {
-    console.log("GITHUB_REPO:", GITHUB_REPO);
-    console.log("ITEM:", item);
-
     if (!item.file) {
       alert("item.file is missing");
       return;
     }
-
     const line = item.line ? `#L${item.line}` : "";
     const url = `${GITHUB_REPO}${item.file}${line}`;
-
-    console.log("Opening:", url);
-
     window.open(url, "_blank", "noopener,noreferrer");
-  };
-
-  const copyFilePath = async (text: string, id: string) => {
-    try {
-      await navigator.clipboard.writeText(text);
-      setCopiedFile(id);
-      if (copyTimeout.current) clearTimeout(copyTimeout.current);
-      copyTimeout.current = setTimeout(() => {
-        if (mounted.current) setCopiedFile(null);
-      }, 1500);
-    } catch (err) { console.error("Clipboard error", err); }
   };
 
   const performScan = useCallback(async () => {
@@ -153,6 +131,28 @@ export default function ScannerResults() {
       </div>
 
       <div className="divide-y">
+        <div className="border-b bg-slate-50 p-5">
+          <h3 className="text-sm font-bold">🤖 JembeeKart Governance AI</h3>
+          <div className="mt-4 grid grid-cols-2 md:grid-cols-4 gap-3">
+            <div className="rounded-lg border bg-white p-3">
+              <p className="text-[10px] uppercase text-gray-500">AI Status</p>
+              <p className="font-bold text-green-600">Ready</p>
+            </div>
+            <div className="rounded-lg border bg-white p-3">
+              <p className="text-[10px] uppercase text-gray-500">GitHub</p>
+              <p className="font-bold">{GITHUB_REPO ? "Connected" : "Not Connected"}</p>
+            </div>
+            <div className="rounded-lg border bg-white p-3">
+              <p className="text-[10px] uppercase text-gray-500">Auto Fix</p>
+              <p className="font-bold">{results.filter(r => r.autoFix).length}</p>
+            </div>
+            <div className="rounded-lg border bg-white p-3">
+              <p className="text-[10px] uppercase text-gray-500">Preview</p>
+              <p className="font-bold">{results.filter(r => r.fixedCode).length}</p>
+            </div>
+          </div>
+        </div>
+
         {results.map((item) => (
           <div key={item.id} className="p-4 hover:bg-gray-50 transition-colors">
             <div className="flex justify-between items-start">
@@ -164,7 +164,6 @@ export default function ScannerResults() {
                 {item.status === "PASS" ? <CheckCircle2 size={10}/> : item.status === "WARNING" ? <AlertTriangle size={10}/> : <XCircle size={10}/>} {item.status}
               </span>
             </div>
-
             <div className="mt-4 flex gap-2">
               {item.autoFix && (
                 <button onClick={() => handleAutoFix(item)} className="bg-emerald-600 text-white px-3 py-1 rounded text-[10px] font-bold uppercase flex items-center gap-1">
@@ -172,29 +171,13 @@ export default function ScannerResults() {
                 </button>
               )}
               {item.fixedCode && (
-  <button
-    onClick={() =>
-      setSelectedPreview({
-  title: item.name,
-  description: item.message,
-
-  file: item.file ?? "",
-
-  lineStart: item.line ?? 1,
-
-  oldCode: "",
-
-  newCode: item.fixedCode ?? "",
-
-  autoApplicable: false,
-})
-    }
-    className="border px-3 py-1 rounded text-[10px] font-bold uppercase flex items-center gap-1"
-  >
-    <Eye size={10} />
-    Preview
-  </button>
-)}
+                <button
+                  onClick={() => setSelectedPreview({ title: item.name, description: item.message, file: item.file ?? "", lineStart: item.line ?? 1, oldCode: "", newCode: item.fixedCode ?? "", autoApplicable: false })}
+                  className="border px-3 py-1 rounded text-[10px] font-bold uppercase flex items-center gap-1"
+                >
+                  <Eye size={10} /> Preview
+                </button>
+              )}
               <button 
                 disabled={!GITHUB_REPO} 
                 onClick={() => openGitHubFile(item)} 
@@ -206,6 +189,11 @@ export default function ScannerResults() {
           </div>
         ))}
       </div>
+
+      <AIFixPreview
+        preview={selectedPreview}
+        onClose={() => setSelectedPreview(null)}
+      />
     </section>
   );
 }
