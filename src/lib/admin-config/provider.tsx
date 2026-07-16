@@ -42,6 +42,11 @@ export function AdminConfigProvider({ children }: { children: ReactNode }) {
     const configRef = doc(db, "settings", "global_config");
 const themeRef = doc(db, "settings", "theme");
     const featureFlagsRef = doc(db, "settings", "feature_flags");
+    const walletRef = doc(db, "settings", "wallet");
+const homepageRef = doc(db, "settings", "homepage");
+const paymentRef = doc(db, "settings", "payment");
+const shippingRef = doc(db, "settings", "shipping");
+const notificationRef = doc(db, "settings", "notification");
     const unsubscribe = onSnapshot(
       configRef,
       (docSnap) => {
