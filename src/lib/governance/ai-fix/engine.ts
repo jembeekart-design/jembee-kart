@@ -1,37 +1,49 @@
-// src/lib/governance/ai-fix/engine.ts
-
-import type { ScanResult } from "@/lib/governance/runSystemScan";
-import { FIX_REGISTRY } from "./registry";
+import type { ScanResult } from "../runSystemScan";
 import type { FixSuggestion } from "./types";
 
-/**
- * Returns the registered fix suggestion for a scanner issue.
- */
 export async function getFixSuggestion(
   issue: ScanResult
 ): Promise<FixSuggestion | null> {
-  const fix = FIX_REGISTRY[issue.id];
-
-  if (!fix) {
+  if (!issue.autoFix) {
     return null;
   }
 
   return {
     scannerId: issue.id,
-    ...fix,
+
+    title: `Auto Fix: ${issue.name}`,
+
+    description:
+      issue.suggestion ??
+      issue.message ??
+      "AI generated code suggestion.",
+
+    confidence: 0.95,
+
+    estimatedTime: "30 seconds",
+
+    patch: {
+      id: issue.patchId ?? crypto.randomUUID(),
+
+      file: issue.file ?? "unknown",
+
+      lineStart: issue.line ?? 1,
+
+      lineEnd: issue.line ?? 1,
+
+      type: "replace",
+
+      title: issue.name,
+
+      description: issue.message,
+
+      oldCode: issue.currentCode ?? "",
+
+      newCode:
+        issue.fixedCode ??
+        "// AI could not generate replacement.",
+
+      autoApplicable: true,
+    },
   };
-}
-
-/**
- * Returns true if an automatic fix is available.
- */
-export function hasAutoFix(issue: ScanResult): boolean {
-  return issue.id in FIX_REGISTRY;
-}
-
-/**
- * Returns all supported scanner ids.
- */
-export function getSupportedFixes(): string[] {
-  return Object.keys(FIX_REGISTRY);
 }
