@@ -160,7 +160,8 @@ if (snapshot.exists()) {
   await setDoc(reference, documentData);
 
   console.log(`✅ Created settings/${documentId}`);
-} catch (error) {
+} 
+    catch (error) {
       console.error(
         `❌ Failed to create settings/${documentId}`,
         error
