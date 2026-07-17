@@ -34,7 +34,7 @@ export async function hardcodedRuleScanner(): Promise<ScanResult[]> {
       ];
     }
 
-    if (!data.results || data.results.length === 0) {
+    if (!Array.isArray(data.results) || data.results.length === 0) {
       return [
         {
           id: "hardcoded-clean",
@@ -46,7 +46,29 @@ export async function hardcodedRuleScanner(): Promise<ScanResult[]> {
       ];
     }
 
-    return data.results as ScanResult[];
+    return data.results.map((item: any): ScanResult => ({
+      id: item.id,
+      name: item.name,
+      status: item.status,
+      severity: item.severity,
+      message: item.message,
+
+      category: item.category,
+
+      file: item.file,
+      line: item.line,
+      column: item.column,
+
+      currentCode: item.currentCode,
+      fixedCode: item.fixedCode,
+      matchedValue: item.matchedValue,
+
+      suggestion: item.suggestion,
+      recommendation: item.recommendation,
+
+      autoFix: item.autoFix,
+      patchId: item.patchId,
+    }));
   } catch (error) {
     console.error("Hardcoded Rule Scanner Error:", error);
 
