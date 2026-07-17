@@ -6,7 +6,7 @@ export async function GET() {
   try {
     const reportPath = path.join(
       process.cwd(),
-      "hardcoded-report.json"
+      "hardcoded-governance-report.json"
     );
 
     if (!fs.existsSync(reportPath)) {
@@ -14,7 +14,7 @@ export async function GET() {
         {
           success: false,
           message:
-            "hardcoded-report.json not found. Run: npm run scan:hardcoded",
+            "hardcoded-governance-report.json not found. Run: npm run scan:hardcoded",
           results: [],
         },
         { status: 404 }
