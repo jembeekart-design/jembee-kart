@@ -17,33 +17,72 @@ export type ScanResult = {
   status: ScanStatus;
   message: string;
   severity?: ScanSeverity;
-  
-  // Optional metadata for advanced diagnostics
+
+  // Diagnostics
   category?: string;
   file?: string;
   line?: number;
   column?: number;
+
   currentCode?: string;
   fixedCode?: string;
+  matchedValue?: string;
+
   suggestion?: string;
   recommendation?: string[];
-  
-  // Auto-Fix capabilities
+
+  // Auto Fix
   autoFix?: boolean;
   patchId?: string;
 };
 
 export async function runSystemScan(): Promise<ScanResult[]> {
   const scannerJobs = [
-    { id: "theme", name: "Theme Scanner", run: themeScanner },
-    { id: "firestore", name: "Firestore Scanner", run: firestoreScanner },
-    { id: "feature-flags", name: "Feature Flag Scanner", run: featureFlagScanner },
-    { id: "security", name: "Security Scanner", run: securityScanner },
-    { id: "wallet", name: "Wallet Scanner", run: walletScanner },
-    { id: "deployment", name: "Deployment Scanner", run: deploymentScanner },
-    { id: "admin-control", name: "Admin Control Scanner", run: adminControlScanner },
-    { id: "hardcoded-rules", name: "Hardcoded Rule Scanner", run: hardcodedRuleScanner },
-    { id: "page-connection", name: "Page Connection Scanner", run: pageConnectionScanner },
+    {
+      id: "theme",
+      name: "Theme Scanner",
+      run: themeScanner,
+    },
+    {
+      id: "firestore",
+      name: "Firestore Scanner",
+      run: firestoreScanner,
+    },
+    {
+      id: "feature-flags",
+      name: "Feature Flag Scanner",
+      run: featureFlagScanner,
+    },
+    {
+      id: "security",
+      name: "Security Scanner",
+      run: securityScanner,
+    },
+    {
+      id: "wallet",
+      name: "Wallet Scanner",
+      run: walletScanner,
+    },
+    {
+      id: "deployment",
+      name: "Deployment Scanner",
+      run: deploymentScanner,
+    },
+    {
+      id: "admin-control",
+      name: "Admin Control Scanner",
+      run: adminControlScanner,
+    },
+    {
+      id: "hardcoded-rules",
+      name: "Hardcoded Rule Scanner",
+      run: hardcodedRuleScanner,
+    },
+    {
+      id: "page-connection",
+      name: "Page Connection Scanner",
+      run: pageConnectionScanner,
+    },
   ];
 
   const settled = await Promise.allSettled(
@@ -56,18 +95,18 @@ export async function runSystemScan(): Promise<ScanResult[]> {
     const scanner = scannerJobs[index];
 
     if (result.status === "fulfilled") {
-      // Agar scanner array return karta hai, to sabko push karo
       results.push(...result.value);
     } else {
       console.error(`${scanner.name} failed`, result.reason);
 
-      // Default error state agar scanner crash ho jaye
       results.push({
         id: scanner.id,
         name: scanner.name,
         status: "FAIL",
         severity: "HIGH",
         message: "Scanner execution failed.",
+
+        category: "System",
         autoFix: false,
       });
     }
