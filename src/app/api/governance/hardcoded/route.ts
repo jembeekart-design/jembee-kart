@@ -31,7 +31,7 @@ export async function GET() {
     const results = issues.map((item: any, index: number) => ({
       id: item.id ?? `hardcoded-${index + 1}`,
 
-      name: item.issue ?? "Unknown Issue",
+      name: item.ruleName ?? item.issue ?? "Unknown Issue",
 
       severity: (
   item.severity?.toUpperCase?.() ?? "LOW"
@@ -46,7 +46,7 @@ status:
 
       category: item.governanceCategory ?? "Hardcoded Rules",
 
-      message: `${item.issue ?? "Hardcoded value"} detected.`,
+      message: `${item.ruleName ?? item.issue ?? "Hardcoded value"} detected.`,
 
       file: item.file ?? "unknown-file",
 
@@ -62,12 +62,13 @@ status:
       matchedValue: item.matchedValue ?? "",
 
       fixedCode:
-        item.fixedCode ??
-        "Move this configuration to Firestore Admin Panel.",
-
+  item.remediation?.fixedCode ??
+  item.fixedCode ??
+  "Move this configuration to Firestore Admin Panel.",
       suggestion:
-        item.suggestion ??
-        "Replace hardcoded values with Firestore Admin configuration.",
+  item.remediation?.suggestion ??
+  item.suggestion ??
+  "Replace hardcoded values with Firestore Admin configuration.",
 
       recommendation: [
         "Move configuration to Firestore.",
@@ -75,7 +76,10 @@ status:
         "Avoid hardcoded values.",
       ],
 
-      autoFix: item.autoFix ?? false,
+      autoFix:
+  item.remediation?.isAutoFixable ??
+  item.autoFix ??
+  false,
 
       patchId:
         item.patchId ?? `hardcoded-${index + 1}`,
