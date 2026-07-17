@@ -1,0 +1,30 @@
+[
+  {
+    "file": "src/app/admin/page.tsx",
+    "issue": "Hardcoded Boolean",
+    "matches": [
+      ": true"
+    ]
+  },
+  {
+    "file": "src/app/mlm/dashboard/page.tsx",
+    "issue": "Hardcoded Number",
+    "matches": [
+      "= 100"
+    ]
+  },
+  {
+    "file": "src/components/navigation/Header.tsx",
+    "issue": "Hardcoded Percentage",
+    "matches": [
+      "10%"
+    ]
+  },
+  {
+    "file": "src/components/products/ProductCard.tsx",
+    "issue": "Hardcoded Currency",
+    "matches": [
+      "₹50"
+    ]
+  }
+]
