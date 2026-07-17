@@ -3,6 +3,20 @@ import path from "path";
 
 const ROOT = path.join(process.cwd(), "src");
 
+type HardcodedIssue = {
+  id: string;
+  file: string;
+  issue: string;
+  line: number;
+  column: number;
+  currentCode: string;
+  matchedValue: string;
+  fixedCode: string;
+  suggestion: string;
+  autoFix: boolean;
+  patchId: string;
+};
+
 const PATTERNS = [
   {
     name: "Hardcoded Percentage",
@@ -22,7 +36,7 @@ const PATTERNS = [
   },
 ];
 
-const results: any[] = [];
+const results: HardcodedIssue[] = [];
 
 function scan(dir: string) {
   const files = fs.readdirSync(dir);
@@ -30,59 +44,73 @@ function scan(dir: string) {
   for (const file of files) {
     const full = path.join(dir, file);
 
-    if (fs.statSync(full).isDirectory()) {
-      scan(full);
-      continue;
-    }
+    try {
+      if (fs.statSync(full).isDirectory()) {
+        scan(full);
+        continue;
+      }
 
-    if (!full.endsWith(".ts") && !full.endsWith(".tsx")) {
-      continue;
-    }
+      if (!full.endsWith(".ts") && !full.endsWith(".tsx")) {
+        continue;
+      }
 
-    const content = fs.readFileSync(full, "utf8");
-    const lines = content.split("\n");
+      const content = fs.readFileSync(full, "utf8");
+      const lines = content.split("\n");
 
-    for (let i = 0; i < lines.length; i++) {
-      const line = lines[i];
+      for (let i = 0; i < lines.length; i++) {
+        const line = lines[i];
 
-      for (const pattern of PATTERNS) {
-        const matches = [...line.matchAll(pattern.regex)];
+        for (const pattern of PATTERNS) {
+          const matches = [...line.matchAll(pattern.regex)];
 
-        if (matches.length === 0) continue;
+          if (matches.length === 0) continue;
 
-        for (const match of matches) {
-          results.push({
-            id: `${pattern.name}-${results.length + 1}`,
-            file: full.replace(process.cwd(), ""),
-            issue: pattern.name,
+          for (const match of matches) {
+            const issueId = `${pattern.name}-${results.length + 1}`;
 
-            line: i + 1,
-            column: (match.index ?? 0) + 1,
+            results.push({
+              id: issueId,
 
-            currentCode: line.trim(),
+              file: full.replace(process.cwd(), ""),
 
-            matchedValue: match[0],
+              issue: pattern.name,
 
-            fixedCode:
-              "Move this configuration to Firestore Admin Panel.",
+              line: i + 1,
 
-            suggestion:
-              "Replace hardcoded configuration with Firestore Admin Settings.",
+              column: (match.index ?? 0) + 1,
 
-            autoFix: true,
+              currentCode: line.trim(),
 
-            patchId: `${pattern.name}-${results.length + 1}`,
-          });
+              matchedValue: match[0],
+
+              fixedCode:
+                "Move this configuration to Firestore Admin Panel.",
+
+              suggestion:
+                "Replace hardcoded configuration with Firestore Admin Settings.",
+
+              autoFix: true,
+
+              patchId: issueId,
+            });
+          }
         }
       }
+    } catch (error) {
+      console.error(`Failed to scan: ${full}`, error);
     }
   }
 }
 
 scan(ROOT);
 
+const reportPath = path.join(
+  process.cwd(),
+  "hardcoded-report.json"
+);
+
 fs.writeFileSync(
-  path.join(process.cwd(), "hardcoded-report.json"),
+  reportPath,
   JSON.stringify(results, null, 2),
   "utf8"
 );
@@ -91,6 +119,5 @@ console.log("=======================================");
 console.log(" Hardcoded Scan Complete");
 console.log("=======================================");
 console.log(`${results.length} issues found.`);
-console.log("Report:");
-console.log(path.join(process.cwd(), "hardcoded-report.json"));
+console.log(`Report: ${reportPath}`);
 console.log("=======================================");
