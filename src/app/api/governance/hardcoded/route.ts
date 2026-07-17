@@ -24,36 +24,51 @@ export async function GET() {
     const file = fs.readFileSync(reportPath, "utf8");
     const report = JSON.parse(file);
 
-    const results = report.map(
-      (
-        item: {
-          file: string;
-          issue: string;
-          matches?: string[];
-        },
-        index: number
-      ) => ({
-        id: `hardcoded-${index + 1}`,
-        name: item.issue,
-        status: "WARNING",
-        severity: "MEDIUM",
-        message: `${item.matches?.length ?? 0} hardcoded value(s) detected.`,
-        file: item.file,
-        line: 1,
+    const results = report.map((item: any, index: number) => ({
+      id: item.id ?? `hardcoded-${index + 1}`,
 
-        autoFix: true,
-        patchId: `hardcoded-${index + 1}`,
+      name: item.issue,
 
-        currentCode:
-          item.matches?.join(", ") ?? "Hardcoded value detected",
+      status: "WARNING",
 
-        fixedCode:
-          "Move this configuration to Firestore Admin Panel.",
+      severity: "MEDIUM",
 
-        suggestion:
-          "Remove hardcoded values and load them dynamically from Firestore."
-      })
-    );
+      category: "Hardcoded Rules",
+
+      message: `${item.issue} detected.`,
+
+      file: item.file,
+
+      line: item.line ?? 1,
+
+      column: item.column ?? 1,
+
+      currentCode:
+        item.currentCode ??
+        item.matchedValue ??
+        "Hardcoded value detected.",
+
+      matchedValue: item.matchedValue,
+
+      fixedCode:
+        item.fixedCode ??
+        "Move this configuration to Firestore Admin Panel.",
+
+      suggestion:
+        item.suggestion ??
+        "Replace hardcoded values with Firestore Admin configuration.",
+
+      recommendation: [
+        "Move configuration to Firestore.",
+        "Control business rules from Admin Panel.",
+        "Avoid hardcoded values.",
+      ],
+
+      autoFix: item.autoFix ?? true,
+
+      patchId:
+        item.patchId ?? `hardcoded-${index + 1}`,
+    }));
 
     return NextResponse.json({
       success: true,
