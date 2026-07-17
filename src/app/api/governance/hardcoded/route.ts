@@ -24,20 +24,25 @@ export async function GET() {
     const file = fs.readFileSync(reportPath, "utf8");
     const report = JSON.parse(file);
 
-    const results = report.map((item: any, index: number) => ({
+    // Dynamic support for both array and object structures
+    const issues = Array.isArray(report)
+      ? report
+      : (report.issues ?? []);
+
+    const results = issues.map((item: any, index: number) => ({
       id: item.id ?? `hardcoded-${index + 1}`,
 
-      name: item.issue,
+      name: item.issue ?? "Unknown Issue",
 
       status: "WARNING",
 
-      severity: "MEDIUM",
+      severity: item.severity ?? "MEDIUM",
 
-      category: "Hardcoded Rules",
+      category: item.governanceCategory ?? "Hardcoded Rules",
 
-      message: `${item.issue} detected.`,
+      message: `${item.issue ?? "Hardcoded value"} detected.`,
 
-      file: item.file,
+      file: item.file ?? "unknown-file",
 
       line: item.line ?? 1,
 
@@ -48,7 +53,7 @@ export async function GET() {
         item.matchedValue ??
         "Hardcoded value detected.",
 
-      matchedValue: item.matchedValue,
+      matchedValue: item.matchedValue ?? "",
 
       fixedCode:
         item.fixedCode ??
@@ -64,7 +69,7 @@ export async function GET() {
         "Avoid hardcoded values.",
       ],
 
-      autoFix: item.autoFix ?? true,
+      autoFix: item.autoFix ?? false,
 
       patchId:
         item.patchId ?? `hardcoded-${index + 1}`,
