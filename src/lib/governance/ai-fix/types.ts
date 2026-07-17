@@ -17,6 +17,8 @@ export interface CodePatch {
 
   lineEnd?: number;
 
+  column?: number;
+
   type: FixType;
 
   title: string;
@@ -27,7 +29,13 @@ export interface CodePatch {
 
   newCode: string;
 
+  suggestion?: string;
+
+  matchedValue?: string;
+
   autoApplicable: boolean;
+
+  patchId?: string;
 }
 
 export interface FixSuggestion {
