@@ -1,30 +1,3655 @@
 [
   {
-    "file": "src/app/admin/page.tsx",
+    "file": "/src/app/account/page.tsx",
     "issue": "Hardcoded Boolean",
     "matches": [
+      ": false"
+    ]
+  },
+  {
+    "file": "/src/app/address/page.tsx",
+    "issue": "Hardcoded Boolean",
+    "matches": [
+      ": true",
       ": true"
     ]
   },
   {
-    "file": "src/app/mlm/dashboard/page.tsx",
+    "file": "/src/app/address/page.tsx",
     "issue": "Hardcoded Number",
     "matches": [
-      "= 100"
+      "= 10",
+      "= 6"
     ]
   },
   {
-    "file": "src/components/navigation/Header.tsx",
+    "file": "/src/app/admin/activity-tracker/page.tsx",
+    "issue": "Hardcoded Number",
+    "matches": [
+      "= 0"
+    ]
+  },
+  {
+    "file": "/src/app/admin/admin-chat/page.tsx",
+    "issue": "Hardcoded Percentage",
+    "matches": [
+      "75%"
+    ]
+  },
+  {
+    "file": "/src/app/admin/admin-chat/page.tsx",
+    "issue": "Hardcoded Boolean",
+    "matches": [
+      ": true",
+      ": false",
+      ": true"
+    ]
+  },
+  {
+    "file": "/src/app/admin/ads-manager/page.tsx",
+    "issue": "Hardcoded Currency",
+    "matches": [
+      "₹12",
+      "₹8",
+      "₹15",
+      "₹4"
+    ]
+  },
+  {
+    "file": "/src/app/admin/affiliate/page.tsx",
     "issue": "Hardcoded Percentage",
     "matches": [
       "10%"
     ]
   },
   {
-    "file": "src/components/products/ProductCard.tsx",
+    "file": "/src/app/admin/affiliate/page.tsx",
+    "issue": "Hardcoded Boolean",
+    "matches": [
+      ": true"
+    ]
+  },
+  {
+    "file": "/src/app/admin/affiliate-control/page.tsx",
+    "issue": "Hardcoded Boolean",
+    "matches": [
+      ": true",
+      ": true",
+      ": true",
+      ": true",
+      ": true",
+      ": true"
+    ]
+  },
+  {
+    "file": "/src/app/admin/affiliate-settings/page.tsx",
+    "issue": "Hardcoded Boolean",
+    "matches": [
+      ": true",
+      ": true",
+      ": true",
+      ": false"
+    ]
+  },
+  {
+    "file": "/src/app/admin/ai-banner/page.tsx",
+    "issue": "Hardcoded Number",
+    "matches": [
+      "=80",
+      "=1200",
+      "=80",
+      "=1200"
+    ]
+  },
+  {
+    "file": "/src/app/admin/ai-tools/page.tsx",
+    "issue": "Hardcoded Boolean",
+    "matches": [
+      ": true",
+      ": true",
+      ": true",
+      ": false",
+      ": true",
+      ": false",
+      ": true"
+    ]
+  },
+  {
+    "file": "/src/app/admin/analytics/page.tsx",
+    "issue": "Hardcoded Currency",
+    "matches": [
+      "₹1",
+      "₹450"
+    ]
+  },
+  {
+    "file": "/src/app/admin/announcement/page.tsx",
+    "issue": "Hardcoded Number",
+    "matches": [
+      "= 0"
+    ]
+  },
+  {
+    "file": "/src/app/admin/api/page.tsx",
+    "issue": "Hardcoded Boolean",
+    "matches": [
+      ": false",
+      ": true"
+    ]
+  },
+  {
+    "file": "/src/app/admin/app-config/page.tsx",
+    "issue": "Hardcoded Boolean",
+    "matches": [
+      ": true",
+      ": true",
+      ": false"
+    ]
+  },
+  {
+    "file": "/src/app/admin/automation/page.tsx",
+    "issue": "Hardcoded Boolean",
+    "matches": [
+      ": true",
+      ": true",
+      ": false",
+      ": true",
+      ": true"
+    ]
+  },
+  {
+    "file": "/src/app/admin/backup-manager/page.tsx",
+    "issue": "Hardcoded Percentage",
+    "matches": [
+      "98%"
+    ]
+  },
+  {
+    "file": "/src/app/admin/backup-restore/page.tsx",
+    "issue": "Hardcoded Boolean",
+    "matches": [
+      ": true",
+      ": true",
+      ": true",
+      ": true"
+    ]
+  },
+  {
+    "file": "/src/app/admin/banner-manager/page.tsx",
+    "issue": "Hardcoded Number",
+    "matches": [
+      "=80",
+      "=1200",
+      "=80",
+      "=1200",
+      "=80",
+      "=1200"
+    ]
+  },
+  {
+    "file": "/src/app/admin/blogs/page.tsx",
+    "issue": "Hardcoded Boolean",
+    "matches": [
+      ": true",
+      ": true",
+      ": true"
+    ]
+  },
+  {
+    "file": "/src/app/admin/cache-manager/page.tsx",
+    "issue": "Hardcoded Percentage",
+    "matches": [
+      "48%"
+    ]
+  },
+  {
+    "file": "/src/app/admin/cashfree/page.tsx",
+    "issue": "Hardcoded Boolean",
+    "matches": [
+      ": true",
+      ": true",
+      ": true"
+    ]
+  },
+  {
+    "file": "/src/app/admin/commission-engine/page.tsx",
+    "issue": "Hardcoded Boolean",
+    "matches": [
+      ": true",
+      ": true",
+      ": true"
+    ]
+  },
+  {
+    "file": "/src/app/admin/coupon-manager/page.tsx",
+    "issue": "Hardcoded Percentage",
+    "matches": [
+      "50%",
+      "20%",
+      "84%",
+      "84%",
+      "91%",
+      "88%"
+    ]
+  },
+  {
+    "file": "/src/app/admin/coupon-manager/page.tsx",
+    "issue": "Hardcoded Currency",
+    "matches": [
+      "₹100",
+      "₹500",
+      "₹18"
+    ]
+  },
+  {
+    "file": "/src/app/admin/coupons/page.tsx",
+    "issue": "Hardcoded Boolean",
+    "matches": [
+      ": true"
+    ]
+  },
+  {
+    "file": "/src/app/admin/coupons-generator/page.tsx",
+    "issue": "Hardcoded Number",
+    "matches": [
+      "= 0"
+    ]
+  },
+  {
+    "file": "/src/app/admin/delivery/page.tsx",
+    "issue": "Hardcoded Boolean",
+    "matches": [
+      ": true",
+      ": true",
+      ": false",
+      ": false"
+    ]
+  },
+  {
+    "file": "/src/app/admin/delivery-tracking/page.tsx",
+    "issue": "Hardcoded Number",
+    "matches": [
+      "= 0"
+    ]
+  },
+  {
+    "file": "/src/app/admin/domains/page.tsx",
+    "issue": "Hardcoded Boolean",
+    "matches": [
+      ": true",
+      ": false"
+    ]
+  },
+  {
+    "file": "/src/app/admin/email/page.tsx",
+    "issue": "Hardcoded Boolean",
+    "matches": [
+      ": true",
+      ": true"
+    ]
+  },
+  {
+    "file": "/src/app/admin/email-marketing/page.tsx",
+    "issue": "Hardcoded Percentage",
+    "matches": [
+      "68%"
+    ]
+  },
+  {
+    "file": "/src/app/admin/finance/page.tsx",
+    "issue": "Hardcoded Currency",
+    "matches": [
+      "₹4",
+      "₹32",
+      "₹2",
+      "₹1",
+      "₹1",
+      "₹48"
+    ]
+  },
+  {
+    "file": "/src/app/admin/flash-sale/page.tsx",
+    "issue": "Hardcoded Number",
+    "matches": [
+      "= 0"
+    ]
+  },
+  {
+    "file": "/src/app/admin/fraud-protection/page.tsx",
+    "issue": "Hardcoded Boolean",
+    "matches": [
+      ": true",
+      ": true",
+      ": true",
+      ": true",
+      ": true",
+      ": false"
+    ]
+  },
+  {
+    "file": "/src/app/admin/homepage/page.tsx",
+    "issue": "Hardcoded Boolean",
+    "matches": [
+      ": true",
+      ": true",
+      ": true",
+      ": true",
+      ": true",
+      ": true",
+      ": true",
+      ": true"
+    ]
+  },
+  {
+    "file": "/src/app/admin/homepage/page.tsx",
+    "issue": "Hardcoded Number",
+    "matches": [
+      "= 0"
+    ]
+  },
+  {
+    "file": "/src/app/admin/homepage-banners/page.tsx",
+    "issue": "Hardcoded Boolean",
+    "matches": [
+      ": true",
+      ": true"
+    ]
+  },
+  {
+    "file": "/src/app/admin/inventory/page.tsx",
+    "issue": "Hardcoded Number",
+    "matches": [
+      "= 0",
+      "= 0",
+      "= 0"
+    ]
+  },
+  {
+    "file": "/src/app/admin/kyc/page.tsx",
+    "issue": "Hardcoded Boolean",
+    "matches": [
+      ": true",
+      ": true",
+      ": true",
+      ": false",
+      ": true",
+      ": true",
+      ": true"
+    ]
+  },
+  {
+    "file": "/src/app/admin/kyc-verification/page.tsx",
+    "issue": "Hardcoded Number",
+    "matches": [
+      "= 0"
+    ]
+  },
+  {
+    "file": "/src/app/admin/live-chat/page.tsx",
+    "issue": "Hardcoded Percentage",
+    "matches": [
+      "85%"
+    ]
+  },
+  {
+    "file": "/src/app/admin/live-chat/page.tsx",
+    "issue": "Hardcoded Number",
+    "matches": [
+      "= 0"
+    ]
+  },
+  {
+    "file": "/src/app/admin/live-orders/page.tsx",
+    "issue": "Hardcoded Number",
+    "matches": [
+      "= 0"
+    ]
+  },
+  {
+    "file": "/src/app/admin/live-stream/page.tsx",
+    "issue": "Hardcoded Number",
+    "matches": [
+      "= 0"
+    ]
+  },
+  {
+    "file": "/src/app/admin/loyalty-program/page.tsx",
+    "issue": "Hardcoded Percentage",
+    "matches": [
+      "5%",
+      "10%",
+      "20%",
+      "88%",
+      "73%",
+      "91%"
+    ]
+  },
+  {
+    "file": "/src/app/admin/loyalty-program/page.tsx",
+    "issue": "Hardcoded Currency",
+    "matches": [
+      "₹4"
+    ]
+  },
+  {
+    "file": "/src/app/admin/marketing/page.tsx",
+    "issue": "Hardcoded Percentage",
+    "matches": [
+      "8%"
+    ]
+  },
+  {
+    "file": "/src/app/admin/marketing-center/page.tsx",
+    "issue": "Hardcoded Percentage",
+    "matches": [
+      "18%"
+    ]
+  },
+  {
+    "file": "/src/app/admin/marketing-center/page.tsx",
+    "issue": "Hardcoded Currency",
+    "matches": [
+      "₹8"
+    ]
+  },
+  {
+    "file": "/src/app/admin/membership/page.tsx",
+    "issue": "Hardcoded Boolean",
+    "matches": [
+      ": true",
+      ": true",
+      ": true",
+      ": true",
+      ": true"
+    ]
+  },
+  {
+    "file": "/src/app/admin/mlm/page.tsx",
+    "issue": "Hardcoded Currency",
+    "matches": [
+      "₹2",
+      "₹48"
+    ]
+  },
+  {
+    "file": "/src/app/admin/mobile-app/page.tsx",
+    "issue": "Hardcoded Boolean",
+    "matches": [
+      ": false",
+      ": false",
+      ": true"
+    ]
+  },
+  {
+    "file": "/src/app/admin/navigation/page.tsx",
+    "issue": "Hardcoded Boolean",
+    "matches": [
+      ": true",
+      ": true",
+      ": true"
+    ]
+  },
+  {
+    "file": "/src/app/admin/navigation/page.tsx",
+    "issue": "Hardcoded Number",
+    "matches": [
+      "= 0"
+    ]
+  },
+  {
+    "file": "/src/app/admin/notifications/page.tsx",
+    "issue": "Hardcoded Boolean",
+    "matches": [
+      ": true"
+    ]
+  },
+  {
+    "file": "/src/app/admin/offer-engine/page.tsx",
+    "issue": "Hardcoded Percentage",
+    "matches": [
+      "50%",
+      "30%"
+    ]
+  },
+  {
+    "file": "/src/app/admin/offer-engine/page.tsx",
+    "issue": "Hardcoded Currency",
+    "matches": [
+      "₹200"
+    ]
+  },
+  {
+    "file": "/src/app/admin/order-tracking/page.tsx",
+    "issue": "Hardcoded Percentage",
+    "matches": [
+      "94%",
+      "97%",
+      "91%"
+    ]
+  },
+  {
+    "file": "/src/app/admin/orders/page.tsx",
+    "issue": "Hardcoded Currency",
+    "matches": [
+      "₹50",
+      "₹200"
+    ]
+  },
+  {
+    "file": "/src/app/admin/orders/page.tsx",
+    "issue": "Hardcoded Boolean",
+    "matches": [
+      ": true",
+      ": true",
+      ": true"
+    ]
+  },
+  {
+    "file": "/src/app/admin/orders/page.tsx",
+    "issue": "Hardcoded Number",
+    "matches": [
+      "=500",
+      "= 0"
+    ]
+  },
+  {
+    "file": "/src/app/admin/page-builder/page.tsx",
+    "issue": "Hardcoded Boolean",
+    "matches": [
+      ": true",
+      ": true",
+      ": true",
+      ": true",
+      ": true",
+      ": true",
+      ": true"
+    ]
+  },
+  {
+    "file": "/src/app/admin/page-builder/page.tsx",
+    "issue": "Hardcoded Number",
+    "matches": [
+      "= 0"
+    ]
+  },
+  {
+    "file": "/src/app/admin/page.tsx",
+    "issue": "Hardcoded Currency",
+    "matches": [
+      "₹18"
+    ]
+  },
+  {
+    "file": "/src/app/admin/pages/page.tsx",
+    "issue": "Hardcoded Boolean",
+    "matches": [
+      ": true",
+      ": true",
+      ": true"
+    ]
+  },
+  {
+    "file": "/src/app/admin/payment-gateway/page.tsx",
+    "issue": "Hardcoded Percentage",
+    "matches": [
+      "98%",
+      "98%",
+      "91%",
+      "95%"
+    ]
+  },
+  {
+    "file": "/src/app/admin/payment-gateway/page.tsx",
+    "issue": "Hardcoded Currency",
+    "matches": [
+      "₹1"
+    ]
+  },
+  {
+    "file": "/src/app/admin/payouts/page.tsx",
+    "issue": "Hardcoded Currency",
+    "matches": [
+      "₹3",
+      "₹1",
+      "₹5",
+      "₹3"
+    ]
+  },
+  {
+    "file": "/src/app/admin/performance/page.tsx",
+    "issue": "Hardcoded Percentage",
+    "matches": [
+      "68%",
+      "52%",
+      "81%",
+      "44%",
+      "68%",
+      "74%",
+      "92%"
+    ]
+  },
+  {
+    "file": "/src/app/admin/popup-manager/page.tsx",
+    "issue": "Hardcoded Percentage",
+    "matches": [
+      "20%"
+    ]
+  },
+  {
+    "file": "/src/app/admin/products/page.tsx",
+    "issue": "Hardcoded Boolean",
+    "matches": [
+      ": true"
+    ]
+  },
+  {
+    "file": "/src/app/admin/products/page.tsx",
+    "issue": "Hardcoded Number",
+    "matches": [
+      "= 0",
+      "= 0"
+    ]
+  },
+  {
+    "file": "/src/app/admin/push-notifications/page.tsx",
+    "issue": "Hardcoded Number",
+    "matches": [
+      "= 0"
+    ]
+  },
+  {
+    "file": "/src/app/admin/referral-engine/page.tsx",
+    "issue": "Hardcoded Percentage",
+    "matches": [
+      "15%",
+      "82%",
+      "91%",
+      "76%"
+    ]
+  },
+  {
+    "file": "/src/app/admin/referral-engine/page.tsx",
+    "issue": "Hardcoded Currency",
+    "matches": [
+      "₹4",
+      "₹2",
+      "₹8",
+      "₹1",
+      "₹18"
+    ]
+  },
+  {
+    "file": "/src/app/admin/referrals/page.tsx",
+    "issue": "Hardcoded Currency",
+    "matches": [
+      "₹4",
+      "₹2",
+      "₹7",
+      "₹2"
+    ]
+  },
+  {
+    "file": "/src/app/admin/refund-requests/page.tsx",
+    "issue": "Hardcoded Number",
+    "matches": [
+      "= 0"
+    ]
+  },
+  {
+    "file": "/src/app/admin/reports/page.tsx",
+    "issue": "Hardcoded Number",
+    "matches": [
+      "= 0",
+      "= 0"
+    ]
+  },
+  {
+    "file": "/src/app/admin/reviews-ratings/page.tsx",
+    "issue": "Hardcoded Number",
+    "matches": [
+      "= 0"
+    ]
+  },
+  {
+    "file": "/src/app/admin/reward-wallet/page.tsx",
+    "issue": "Hardcoded Percentage",
+    "matches": [
+      "87%",
+      "76%",
+      "92%"
+    ]
+  },
+  {
+    "file": "/src/app/admin/reward-wallet/page.tsx",
+    "issue": "Hardcoded Currency",
+    "matches": [
+      "₹8",
+      "₹4",
+      "₹2"
+    ]
+  },
+  {
+    "file": "/src/app/admin/rewards/page.tsx",
+    "issue": "Hardcoded Boolean",
+    "matches": [
+      ": true",
+      ": true",
+      ": true",
+      ": true",
+      ": false"
+    ]
+  },
+  {
+    "file": "/src/app/admin/server-status/page.tsx",
+    "issue": "Hardcoded Percentage",
+    "matches": [
+      "72%",
+      "54%",
+      "88%",
+      "46%",
+      "72%",
+      "68%",
+      "99%",
+      "9%"
+    ]
+  },
+  {
+    "file": "/src/app/admin/sms/page.tsx",
+    "issue": "Hardcoded Boolean",
+    "matches": [
+      ": true",
+      ": true",
+      ": true",
+      ": false"
+    ]
+  },
+  {
+    "file": "/src/app/admin/spin-wheel/page.tsx",
+    "issue": "Hardcoded Boolean",
+    "matches": [
+      ": true",
+      ": true",
+      ": true",
+      ": true",
+      ": false"
+    ]
+  },
+  {
+    "file": "/src/app/admin/storage-manager/page.tsx",
+    "issue": "Hardcoded Boolean",
+    "matches": [
+      ": true",
+      ": true",
+      ": true",
+      ": true",
+      ": false",
+      ": true"
+    ]
+  },
+  {
+    "file": "/src/app/admin/subadmin-manager/page.tsx",
+    "issue": "Hardcoded Percentage",
+    "matches": [
+      "88%",
+      "94%",
+      "97%"
+    ]
+  },
+  {
+    "file": "/src/app/admin/subscriptions/page.tsx",
+    "issue": "Hardcoded Boolean",
+    "matches": [
+      ": true",
+      ": true",
+      ": true",
+      ": true",
+      ": true"
+    ]
+  },
+  {
+    "file": "/src/app/admin/support-tickets/page.tsx",
+    "issue": "Hardcoded Number",
+    "matches": [
+      "= 0"
+    ]
+  },
+  {
+    "file": "/src/app/admin/system/page.tsx",
+    "issue": "Hardcoded Percentage",
+    "matches": [
+      "72%"
+    ]
+  },
+  {
+    "file": "/src/app/admin/system-logs/page.tsx",
+    "issue": "Hardcoded Number",
+    "matches": [
+      "= 0"
+    ]
+  },
+  {
+    "file": "/src/app/admin/system-monitor/page.tsx",
+    "issue": "Hardcoded Percentage",
+    "matches": [
+      "68%",
+      "54%",
+      "73%",
+      "91%",
+      "68%",
+      "74%"
+    ]
+  },
+  {
+    "file": "/src/app/admin/system-security/page.tsx",
+    "issue": "Hardcoded Percentage",
+    "matches": [
+      "96%",
+      "92%",
+      "98%"
+    ]
+  },
+  {
+    "file": "/src/app/admin/users/page.tsx",
+    "issue": "Hardcoded Number",
+    "matches": [
+      "= 0",
+      "= 0",
+      "= 0",
+      "= 0"
+    ]
+  },
+  {
+    "file": "/src/app/admin/vendor-manager/page.tsx",
+    "issue": "Hardcoded Percentage",
+    "matches": [
+      "78%",
+      "92%",
+      "84%"
+    ]
+  },
+  {
+    "file": "/src/app/admin/vendor-manager/page.tsx",
+    "issue": "Hardcoded Currency",
+    "matches": [
+      "₹4",
+      "₹8",
+      "₹2",
+      "₹6",
+      "₹48"
+    ]
+  },
+  {
+    "file": "/src/app/admin/wallet/page.tsx",
+    "issue": "Hardcoded Boolean",
+    "matches": [
+      ": true",
+      ": true",
+      ": true",
+      ": true",
+      ": true"
+    ]
+  },
+  {
+    "file": "/src/app/admin/withdrawal-requests/page.tsx",
+    "issue": "Hardcoded Number",
+    "matches": [
+      "= 0"
+    ]
+  },
+  {
+    "file": "/src/app/admin/withdrawals/page.tsx",
+    "issue": "Hardcoded Currency",
+    "matches": [
+      "₹2",
+      "₹1",
+      "₹4",
+      "₹1"
+    ]
+  },
+  {
+    "file": "/src/app/api/governance/report/route.ts",
+    "issue": "Hardcoded Boolean",
+    "matches": [
+      ": true",
+      ": false"
+    ]
+  },
+  {
+    "file": "/src/app/api/governance/route.ts",
+    "issue": "Hardcoded Boolean",
+    "matches": [
+      ": true",
+      ": false"
+    ]
+  },
+  {
+    "file": "/src/app/api/qikink/create-order/route.ts",
+    "issue": "Hardcoded Boolean",
+    "matches": [
+      ": true",
+      ": false",
+      ": false",
+      ": true",
+      ": false"
+    ]
+  },
+  {
+    "file": "/src/app/api/qikink/token/route.ts",
+    "issue": "Hardcoded Boolean",
+    "matches": [
+      ": false"
+    ]
+  },
+  {
+    "file": "/src/app/cart/page.tsx",
+    "issue": "Hardcoded Number",
+    "matches": [
+      "= 3500",
+      "= 0"
+    ]
+  },
+  {
+    "file": "/src/app/category/[slug]/page.tsx",
+    "issue": "Hardcoded Number",
+    "matches": [
+      "=\n          0"
+    ]
+  },
+  {
+    "file": "/src/app/checkout/page.tsx",
+    "issue": "Hardcoded Percentage",
+    "matches": [
+      "100%",
+      "27%"
+    ]
+  },
+  {
+    "file": "/src/app/checkout/page.tsx",
+    "issue": "Hardcoded Currency",
+    "matches": [
+      "₹1499",
+      "₹1099",
+      "₹1499",
+      "₹400",
+      "₹1099",
+      "₹400"
+    ]
+  },
+  {
+    "file": "/src/app/checkout/page.tsx",
+    "issue": "Hardcoded Boolean",
+    "matches": [
+      ": true",
+      ": false",
+      ": false",
+      ": false",
+      ": true",
+      ": false"
+    ]
+  },
+  {
+    "file": "/src/app/mlm/cashback/page.tsx",
+    "issue": "Hardcoded Percentage",
+    "matches": [
+      "90%"
+    ]
+  },
+  {
+    "file": "/src/app/mlm/cashback/page.tsx",
+    "issue": "Hardcoded Boolean",
+    "matches": [
+      ": false",
+      ": true",
+      ": false"
+    ]
+  },
+  {
+    "file": "/src/app/mlm/cashback/page.tsx",
+    "issue": "Hardcoded Number",
+    "matches": [
+      "= 0"
+    ]
+  },
+  {
+    "file": "/src/app/mlm/dashboard/page.tsx",
+    "issue": "Hardcoded Number",
+    "matches": [
+      "= 3"
+    ]
+  },
+  {
+    "file": "/src/app/mlm/earnings/page.tsx",
+    "issue": "Hardcoded Number",
+    "matches": [
+      "=\n    12450",
+      "=\n    820",
+      "=\n    6540",
+      "=\n    2100"
+    ]
+  },
+  {
+    "file": "/src/app/mlm/leaderboard/page.tsx",
+    "issue": "Hardcoded Currency",
+    "matches": [
+      "₹32",
+      "₹45",
+      "₹28"
+    ]
+  },
+  {
+    "file": "/src/app/mlm/network/page.tsx",
+    "issue": "Hardcoded Number",
+    "matches": [
+      "= 3",
+      "= 1",
+      "= 0",
+      "= 10",
+      "= 0",
+      "= 10",
+      "= 0",
+      "= 1",
+      "= 0"
+    ]
+  },
+  {
+    "file": "/src/app/mlm/notifications/page.tsx",
+    "issue": "Hardcoded Currency",
+    "matches": [
+      "₹450",
+      "₹1500",
+      "₹500"
+    ]
+  },
+  {
+    "file": "/src/app/mlm/permissions/page.tsx",
+    "issue": "Hardcoded Boolean",
+    "matches": [
+      ": true",
+      ": true"
+    ]
+  },
+  {
+    "file": "/src/app/mlm/ranks/page.tsx",
+    "issue": "Hardcoded Currency",
+    "matches": [
+      "₹1",
+      "₹5",
+      "₹15",
+      "₹50",
+      "₹1"
+    ]
+  },
+  {
+    "file": "/src/app/mlm/ranks/page.tsx",
+    "issue": "Hardcoded Number",
+    "matches": [
+      "=\n    125",
+      "=\n    200"
+    ]
+  },
+  {
+    "file": "/src/app/mlm/support/page.tsx",
+    "issue": "Hardcoded Percentage",
+    "matches": [
+      "80%"
+    ]
+  },
+  {
+    "file": "/src/app/mlm/wallet/history/page.tsx",
+    "issue": "Hardcoded Number",
+    "matches": [
+      "= 0"
+    ]
+  },
+  {
+    "file": "/src/app/mlm/wallet/page.tsx",
+    "issue": "Hardcoded Currency",
+    "matches": [
+      "₹450",
+      "₹1000",
+      "₹800",
+      "₹120",
+      "₹12",
+      "₹8",
+      "₹3"
+    ]
+  },
+  {
+    "file": "/src/app/mlm/watch-earn/components/VerticalVideoFeed.tsx",
+    "issue": "Hardcoded Boolean",
+    "matches": [
+      ": true",
+      ": false"
+    ]
+  },
+  {
+    "file": "/src/app/mlm/watch-earn/components/VideoInfo.tsx",
+    "issue": "Hardcoded Percentage",
+    "matches": [
+      "75%"
+    ]
+  },
+  {
+    "file": "/src/app/mlm/watch-earn/hooks/useActiveVideo.ts",
+    "issue": "Hardcoded Number",
+    "matches": [
+      "= 0"
+    ]
+  },
+  {
+    "file": "/src/app/mlm/watch-earn/page.tsx",
+    "issue": "Hardcoded Percentage",
+    "matches": [
+      "75%"
+    ]
+  },
+  {
+    "file": "/src/app/mlm/watch-earn/page.tsx",
+    "issue": "Hardcoded Number",
+    "matches": [
+      "= 0",
+      "= 100",
+      "= 0"
+    ]
+  },
+  {
+    "file": "/src/app/mlm/withdraw/page.tsx",
+    "issue": "Hardcoded Currency",
+    "matches": [
+      "₹100",
+      "₹1500",
+      "₹800"
+    ]
+  },
+  {
+    "file": "/src/app/mlm/withdraw/page.tsx",
+    "issue": "Hardcoded Number",
+    "matches": [
+      "=\n    4520"
+    ]
+  },
+  {
+    "file": "/src/app/orders/page.tsx",
+    "issue": "Hardcoded Number",
+    "matches": [
+      "= 0"
+    ]
+  },
+  {
+    "file": "/src/app/payment-success/page.tsx",
+    "issue": "Hardcoded Boolean",
+    "matches": [
+      ": true",
+      ": true"
+    ]
+  },
+  {
+    "file": "/src/app/payments/page.tsx",
+    "issue": "Hardcoded Currency",
+    "matches": [
+      "₹999",
+      "₹0",
+      "₹999"
+    ]
+  },
+  {
+    "file": "/src/app/product/[id]/page.tsx",
+    "issue": "Hardcoded Percentage",
+    "matches": [
+      "100%",
+      "100%"
+    ]
+  },
+  {
+    "file": "/src/app/product/[id]/page.tsx",
+    "issue": "Hardcoded Number",
+    "matches": [
+      "= 1"
+    ]
+  },
+  {
+    "file": "/src/app/signup/page.tsx",
+    "issue": "Hardcoded Boolean",
+    "matches": [
+      ": false",
+      ": false",
+      ": false",
+      ": false",
+      ": false",
+      ": false",
+      ": false",
+      ": false",
+      ": true"
+    ]
+  },
+  {
+    "file": "/src/app/verify-email/page.tsx",
+    "issue": "Hardcoded Boolean",
+    "matches": [
+      ": true"
+    ]
+  },
+  {
+    "file": "/src/app/wishlist/page.tsx",
+    "issue": "Hardcoded Number",
+    "matches": [
+      "= 0"
+    ]
+  },
+  {
+    "file": "/src/components/admin/CategoryAdmin.tsx",
+    "issue": "Hardcoded Boolean",
+    "matches": [
+      ": true"
+    ]
+  },
+  {
+    "file": "/src/components/admin/CategoryAdmin.tsx",
+    "issue": "Hardcoded Number",
+    "matches": [
+      "=\n            700"
+    ]
+  },
+  {
+    "file": "/src/components/admin/integrations/IntegrationPage.tsx",
+    "issue": "Hardcoded Boolean",
+    "matches": [
+      ": true",
+      ": true",
+      ": false"
+    ]
+  },
+  {
+    "file": "/src/components/admin/mission-control/ScannerResults.tsx",
+    "issue": "Hardcoded Boolean",
+    "matches": [
+      ": false"
+    ]
+  },
+  {
+    "file": "/src/components/admin/mission-control/ScannerResults.tsx",
+    "issue": "Hardcoded Number",
+    "matches": [
+      "= 0",
+      "= 1",
+      "= 0",
+      "= 0",
+      "= 0",
+      "= 0",
+      "= 95",
+      "= 80",
+      "= 60",
+      "= 95",
+      "= 80",
+      "= 60"
+    ]
+  },
+  {
+    "file": "/src/components/admin/theme-builder/ThemeBuilderPage.tsx",
+    "issue": "Hardcoded Boolean",
+    "matches": [
+      ": true"
+    ]
+  },
+  {
+    "file": "/src/components/admin/theme-builder/ThemePreview.tsx",
+    "issue": "Hardcoded Currency",
+    "matches": [
+      "₹999"
+    ]
+  },
+  {
+    "file": "/src/components/admin/theme-builder/ThemePreview.tsx",
+    "issue": "Hardcoded Number",
+    "matches": [
+      "= 0"
+    ]
+  },
+  {
+    "file": "/src/components/categories/CategoryCard.tsx",
+    "issue": "Hardcoded Percentage",
+    "matches": [
+      "100%"
+    ]
+  },
+  {
+    "file": "/src/components/categories/CategoryGrid.tsx",
+    "issue": "Hardcoded Percentage",
+    "matches": [
+      "100%",
+      "100%",
+      "100%",
+      "100%"
+    ]
+  },
+  {
+    "file": "/src/components/homepage/HomepageSlider.tsx",
+    "issue": "Hardcoded Percentage",
+    "matches": [
+      "58%"
+    ]
+  },
+  {
+    "file": "/src/components/homepage/HomepageSlider.tsx",
+    "issue": "Hardcoded Boolean",
+    "matches": [
+      ": true"
+    ]
+  },
+  {
+    "file": "/src/components/homepage/HomepageSlider.tsx",
+    "issue": "Hardcoded Number",
+    "matches": [
+      "= 1",
+      "= 0",
+      "= 0"
+    ]
+  },
+  {
+    "file": "/src/components/navigation/Header.tsx",
+    "issue": "Hardcoded Number",
+    "matches": [
+      "=\n      1"
+    ]
+  },
+  {
+    "file": "/src/components/products/ProductCard.tsx",
+    "issue": "Hardcoded Number",
+    "matches": [
+      "= 1099",
+      "= 539",
+      "= 4",
+      "= 5000",
+      "= 1000"
+    ]
+  },
+  {
+    "file": "/src/config/mlmConfig.ts",
+    "issue": "Hardcoded Percentage",
+    "matches": [
+      "5%",
+      "5%",
+      "2%"
+    ]
+  },
+  {
+    "file": "/src/config/mlmConfig.ts",
+    "issue": "Hardcoded Currency",
+    "matches": [
+      "₹500",
+      "₹50",
+      "₹200"
+    ]
+  },
+  {
+    "file": "/src/config/mlmConfig.ts",
+    "issue": "Hardcoded Boolean",
+    "matches": [
+      ": true",
+      ": false"
+    ]
+  },
+  {
+    "file": "/src/config/mlmConfig.ts",
+    "issue": "Hardcoded Number",
+    "matches": [
+      "= 30",
+      "= 500",
+      "= 0",
+      "= 0",
+      "= 1",
+      "= 0",
+      "= 0"
+    ]
+  },
+  {
+    "file": "/src/context/ThemeContext.tsx",
+    "issue": "Hardcoded Number",
+    "matches": [
+      "= 0"
+    ]
+  },
+  {
+    "file": "/src/firestore/businessRules/bootstrap.ts",
+    "issue": "Hardcoded Boolean",
+    "matches": [
+      ": true",
+      ": true",
+      ": false",
+      ": false"
+    ]
+  },
+  {
+    "file": "/src/firestore/businessRules/defaults.ts",
+    "issue": "Hardcoded Boolean",
+    "matches": [
+      ": true",
+      ": true",
+      ": true",
+      ": true",
+      ": true",
+      ": true",
+      ": true",
+      ": true",
+      ": true"
+    ]
+  },
+  {
+    "file": "/src/firestore/businessRules/defaults.ts",
+    "issue": "Hardcoded Number",
+    "matches": [
+      "=\n  5"
+    ]
+  },
+  {
+    "file": "/src/firestore/businessRules/scheduler.ts",
+    "issue": "Hardcoded Boolean",
+    "matches": [
+      ": false"
+    ]
+  },
+  {
+    "file": "/src/firestore/businessRules/scheduler.ts",
+    "issue": "Hardcoded Number",
+    "matches": [
+      "=\n    5"
+    ]
+  },
+  {
+    "file": "/src/firestore/businessRules/security.ts",
+    "issue": "Hardcoded Boolean",
+    "matches": [
+      ": false"
+    ]
+  },
+  {
+    "file": "/src/firestore/businessRules/service.ts",
+    "issue": "Hardcoded Boolean",
+    "matches": [
+      ": true",
+      ": true",
+      ": true",
+      ": true",
+      ": true",
+      ": true"
+    ]
+  },
+  {
+    "file": "/src/firestore/integrations/index.ts",
+    "issue": "Hardcoded Boolean",
+    "matches": [
+      ": true",
+      ": true"
+    ]
+  },
+  {
+    "file": "/src/firestore/services/configCacheService.ts",
+    "issue": "Hardcoded Boolean",
+    "matches": [
+      ": true",
+      ": false",
+      ": true",
+      ": false"
+    ]
+  },
+  {
+    "file": "/src/firestore/settings/antiFraudConfig.ts",
+    "issue": "Hardcoded Boolean",
+    "matches": [
+      ": true",
+      ": true",
+      ": true",
+      ": true",
+      ": true",
+      ": true",
+      ": true",
+      ": true",
+      ": true",
+      ": true",
+      ": true",
+      ": true",
+      ": true",
+      ": false",
+      ": true"
+    ]
+  },
+  {
+    "file": "/src/jembee-governance/config/governanceRules.ts",
+    "issue": "Hardcoded Boolean",
+    "matches": [
+      ": true",
+      ": false",
+      ": true",
+      ": true",
+      ": true",
+      ": true",
+      ": true",
+      ": true",
+      ": false",
+      ": true",
+      ": true",
+      ": true",
+      ": true",
+      ": true",
+      ": true",
+      ": true",
+      ": true",
+      ": true",
+      ": true",
+      ": true",
+      ": true",
+      ": true",
+      ": true",
+      ": true",
+      ": true",
+      ": true",
+      ": false",
+      ": false",
+      ": true",
+      ": true",
+      ": true",
+      ": true",
+      ": true",
+      ": true",
+      ": true",
+      ": true",
+      ": true",
+      ": true",
+      ": true",
+      ": true",
+      ": true",
+      ": true",
+      ": true",
+      ": true",
+      ": true",
+      ": true"
+    ]
+  },
+  {
+    "file": "/src/jembee-governance/pages/DebugDashboard.tsx",
+    "issue": "Hardcoded Boolean",
+    "matches": [
+      ": true",
+      ": false",
+      ": false"
+    ]
+  },
+  {
+    "file": "/src/jembee-governance/pages/DebugDashboard.tsx",
+    "issue": "Hardcoded Number",
+    "matches": [
+      "= 0",
+      "= 0",
+      "= 0"
+    ]
+  },
+  {
+    "file": "/src/jembee-governance/pages/GovernanceDashboard.tsx",
+    "issue": "Hardcoded Number",
+    "matches": [
+      "= 0",
+      "= 0"
+    ]
+  },
+  {
+    "file": "/src/jembee-governance/repositories/governanceRepository.ts",
+    "issue": "Hardcoded Boolean",
+    "matches": [
+      ": true"
+    ]
+  },
+  {
+    "file": "/src/jembee-governance/scanners/deploymentScanner.ts",
+    "issue": "Hardcoded Number",
+    "matches": [
+      "= 0",
+      "= 0",
+      "= 0"
+    ]
+  },
+  {
+    "file": "/src/jembee-governance/scanners/duplicateCodeScanner.ts",
+    "issue": "Hardcoded Percentage",
+    "matches": [
+      "85%"
+    ]
+  },
+  {
+    "file": "/src/jembee-governance/scanners/duplicateCodeScanner.ts",
+    "issue": "Hardcoded Boolean",
+    "matches": [
+      ": false"
+    ]
+  },
+  {
+    "file": "/src/jembee-governance/scanners/duplicateCodeScanner.ts",
+    "issue": "Hardcoded Number",
+    "matches": [
+      "= 0",
+      "= 0",
+      "= 95",
+      "= 0"
+    ]
+  },
+  {
+    "file": "/src/jembee-governance/scanners/firestoreScanner.ts",
+    "issue": "Hardcoded Number",
+    "matches": [
+      "= 0",
+      "= 0"
+    ]
+  },
+  {
+    "file": "/src/jembee-governance/scanners/pageConnectionScanner.ts",
+    "issue": "Hardcoded Boolean",
+    "matches": [
+      ": true",
+      ": false"
+    ]
+  },
+  {
+    "file": "/src/jembee-governance/scanners/profitabilityScanner.ts",
+    "issue": "Hardcoded Percentage",
+    "matches": [
+      "50%",
+      "50%",
+      "50%",
+      "50%"
+    ]
+  },
+  {
+    "file": "/src/jembee-governance/scanners/profitabilityScanner.ts",
+    "issue": "Hardcoded Number",
+    "matches": [
+      "= 50",
+      "= 0",
+      "= 0"
+    ]
+  },
+  {
+    "file": "/src/jembee-governance/scanners/securityScanner.ts",
+    "issue": "Hardcoded Boolean",
+    "matches": [
+      ": false"
+    ]
+  },
+  {
+    "file": "/src/jembee-governance/scanners/themeScanner.ts",
+    "issue": "Hardcoded Boolean",
+    "matches": [
+      ": false",
+      ": false",
+      ": false",
+      ": false"
+    ]
+  },
+  {
+    "file": "/src/jembee-governance/services/creatorEconomyConfigService.ts",
+    "issue": "Hardcoded Number",
+    "matches": [
+      "= 0",
+      "= 0",
+      "= 0"
+    ]
+  },
+  {
+    "file": "/src/jembee-governance/services/governanceIssueService.ts",
+    "issue": "Hardcoded Number",
+    "matches": [
+      "= 0"
+    ]
+  },
+  {
+    "file": "/src/jembee-governance/services/governanceStatusService.ts",
+    "issue": "Hardcoded Boolean",
+    "matches": [
+      ": true"
+    ]
+  },
+  {
+    "file": "/src/jembee-governance/services/governanceStatusService.ts",
+    "issue": "Hardcoded Number",
+    "matches": [
+      "= 0",
+      "=\n    60",
+      "= 0",
+      "= 0",
+      "= 0"
+    ]
+  },
+  {
+    "file": "/src/jembee-governance/services/mlmConfigService.ts",
+    "issue": "Hardcoded Number",
+    "matches": [
+      "= 0"
+    ]
+  },
+  {
+    "file": "/src/jembee-governance/services/profitabilityConfigService.ts",
+    "issue": "Hardcoded Number",
+    "matches": [
+      "= 0"
+    ]
+  },
+  {
+    "file": "/src/jembee-governance/services/walletConfigService.ts",
+    "issue": "Hardcoded Number",
+    "matches": [
+      "= 0",
+      "= 0",
+      "= 0"
+    ]
+  },
+  {
+    "file": "/src/jembee-governance/services/watchEarnConfigService.ts",
+    "issue": "Hardcoded Number",
+    "matches": [
+      "= 0",
+      "= 0"
+    ]
+  },
+  {
+    "file": "/src/lib/admin-config/defaults.ts",
+    "issue": "Hardcoded Boolean",
+    "matches": [
+      ": false",
+      ": false",
+      ": false",
+      ": false",
+      ": false",
+      ": false",
+      ": false",
+      ": false",
+      ": true",
+      ": false",
+      ": false",
+      ": false",
+      ": false",
+      ": false",
+      ": false",
+      ": false",
+      ": false",
+      ": false",
+      ": false",
+      ": false",
+      ": false",
+      ": false",
+      ": false",
+      ": false",
+      ": false",
+      ": false",
+      ": false",
+      ": false",
+      ": false",
+      ": false",
+      ": false",
+      ": false",
+      ": false"
+    ]
+  },
+  {
+    "file": "/src/lib/admin-config/mlmDefaults.ts",
+    "issue": "Hardcoded Boolean",
+    "matches": [
+      ": true",
+      ": true",
+      ": true",
+      ": true",
+      ": true",
+      ": true",
+      ": true",
+      ": true"
+    ]
+  },
+  {
+    "file": "/src/lib/cloudinary.ts",
+    "issue": "Hardcoded Number",
+    "matches": [
+      "= 1600"
+    ]
+  },
+  {
+    "file": "/src/lib/firestore/getFirestoreDocument.ts",
+    "issue": "Hardcoded Boolean",
+    "matches": [
+      ": true",
+      ": false",
+      ": false"
+    ]
+  },
+  {
+    "file": "/src/lib/governance/ai/provider.ts",
+    "issue": "Hardcoded Boolean",
+    "matches": [
+      ": true"
+    ]
+  },
+  {
+    "file": "/src/lib/governance/ai/validator.ts",
+    "issue": "Hardcoded Number",
+    "matches": [
+      "= 0"
+    ]
+  },
+  {
+    "file": "/src/lib/governance/ai-fix/apply.ts",
+    "issue": "Hardcoded Boolean",
+    "matches": [
+      ": false",
+      ": true"
+    ]
+  },
+  {
+    "file": "/src/lib/governance/ai-fix/engine.ts",
+    "issue": "Hardcoded Boolean",
+    "matches": [
+      ": true"
+    ]
+  },
+  {
+    "file": "/src/lib/governance/ai-fix/registry.ts",
+    "issue": "Hardcoded Boolean",
+    "matches": [
+      ": true",
+      ": true",
+      ": true",
+      ": true"
+    ]
+  },
+  {
+    "file": "/src/lib/governance/github/commit.ts",
+    "issue": "Hardcoded Boolean",
+    "matches": [
+      ": true"
+    ]
+  },
+  {
+    "file": "/src/lib/governance/github/deploy.ts",
+    "issue": "Hardcoded Boolean",
+    "matches": [
+      ": true"
+    ]
+  },
+  {
+    "file": "/src/lib/governance/github/provider.ts",
+    "issue": "Hardcoded Boolean",
+    "matches": [
+      ": false"
+    ]
+  },
+  {
+    "file": "/src/lib/governance/patch-engine/generatePatch.ts",
+    "issue": "Hardcoded Boolean",
+    "matches": [
+      ": true"
+    ]
+  },
+  {
+    "file": "/src/lib/governance/runSystemScan.ts",
+    "issue": "Hardcoded Boolean",
+    "matches": [
+      ": false"
+    ]
+  },
+  {
+    "file": "/src/lib/governance/scanners/adminControlScanner.ts",
+    "issue": "Hardcoded Boolean",
+    "matches": [
+      ": true",
+      ": true",
+      ": true",
+      ": true",
+      ": true",
+      ": true"
+    ]
+  },
+  {
+    "file": "/src/lib/governance/scanners/adminControlScanner.ts",
+    "issue": "Hardcoded Number",
+    "matches": [
+      "= 0"
+    ]
+  },
+  {
+    "file": "/src/lib/governance/scanners/deploymentScanner.ts",
+    "issue": "Hardcoded Boolean",
+    "matches": [
+      ": true",
+      ": true",
+      ": true",
+      ": true",
+      ": true"
+    ]
+  },
+  {
+    "file": "/src/lib/governance/scanners/featureFlagScanner.ts",
+    "issue": "Hardcoded Boolean",
+    "matches": [
+      ": true",
+      ": true",
+      ": true",
+      ": true",
+      ": true",
+      ": true",
+      ": true",
+      ": true",
+      ": true",
+      ": true",
+      ": true",
+      ": true",
+      ": true",
+      ": true",
+      ": false",
+      ": true",
+      ": true",
+      ": true",
+      ": true",
+      ": true",
+      ": true",
+      ": true",
+      ": true",
+      ": true",
+      ": true",
+      ": true",
+      ": true",
+      ": true",
+      ": true"
+    ]
+  },
+  {
+    "file": "/src/lib/governance/scanners/firestoreScanner.ts",
+    "issue": "Hardcoded Boolean",
+    "matches": [
+      ": true",
+      ": true"
+    ]
+  },
+  {
+    "file": "/src/lib/governance/scanners/hardcodedRuleScanner.ts",
+    "issue": "Hardcoded Boolean",
+    "matches": [
+      ": true",
+      ": true",
+      ": true",
+      ": true",
+      ": true",
+      ": true",
+      ": true",
+      ": true",
+      ": true",
+      ": true",
+      ": true",
+      ": false",
+      ": true",
+      ": true"
+    ]
+  },
+  {
+    "file": "/src/lib/governance/scanners/pageConnectionScanner.ts",
+    "issue": "Hardcoded Boolean",
+    "matches": [
+      ": true",
+      ": true"
+    ]
+  },
+  {
+    "file": "/src/lib/governance/scanners/securityScanner.ts",
+    "issue": "Hardcoded Boolean",
+    "matches": [
+      ": true",
+      ": true"
+    ]
+  },
+  {
+    "file": "/src/lib/governance/scanners/themeScanner.ts",
+    "issue": "Hardcoded Boolean",
+    "matches": [
+      ": true",
+      ": true",
+      ": true"
+    ]
+  },
+  {
+    "file": "/src/lib/governance/scanners/walletScanner.ts",
+    "issue": "Hardcoded Boolean",
+    "matches": [
+      ": true",
+      ": false",
+      ": true",
+      ": true",
+      ": true",
+      ": true",
+      ": true",
+      ": true",
+      ": true",
+      ": true",
+      ": true",
+      ": true",
+      ": true",
+      ": true",
+      ": true",
+      ": true",
+      ": true",
+      ": true",
+      ": true",
+      ": true"
+    ]
+  },
+  {
+    "file": "/src/lib/mlm/approveKYC.ts",
+    "issue": "Hardcoded Boolean",
+    "matches": [
+      ": false",
+      ": false",
+      ": false",
+      ":\n          true",
+      ": true",
+      ": false"
+    ]
+  },
+  {
+    "file": "/src/lib/mlm/blockUser.ts",
+    "issue": "Hardcoded Boolean",
+    "matches": [
+      ": false",
+      ": false",
+      ": false",
+      ": false",
+      ": false",
+      ": true",
+      ": true",
+      ": false"
+    ]
+  },
+  {
+    "file": "/src/lib/mlm/claimDailyReward.ts",
+    "issue": "Hardcoded Boolean",
+    "matches": [
+      ": false",
+      ": true",
+      ": false",
+      ": true",
+      ": false"
+    ]
+  },
+  {
+    "file": "/src/lib/mlm/claimDailyReward.ts",
+    "issue": "Hardcoded Number",
+    "matches": [
+      "=\n       1",
+      "=\n       2",
+      "=\n       3",
+      "=\n       4",
+      "=\n         5",
+      "=\n       6"
+    ]
+  },
+  {
+    "file": "/src/lib/mlm/createBroadcastNotification.ts",
+    "issue": "Hardcoded Boolean",
+    "matches": [
+      ": false",
+      ": false",
+      ":\n            true",
+      ": true",
+      ": false"
+    ]
+  },
+  {
+    "file": "/src/lib/mlm/createKYCRequest.ts",
+    "issue": "Hardcoded Boolean",
+    "matches": [
+      ": false",
+      ": false",
+      ": false",
+      ": false",
+      ": false",
+      ": false",
+      ": false",
+      ": false",
+      ": false",
+      ": false",
+      ": false",
+      ": false",
+      ": false",
+      ": true",
+      ": false"
+    ]
+  },
+  {
+    "file": "/src/lib/mlm/createLeaderboardEntry.ts",
+    "issue": "Hardcoded Boolean",
+    "matches": [
+      ": false",
+      ": false",
+      ": false",
+      ": true",
+      ": true",
+      ": true",
+      ": false"
+    ]
+  },
+  {
+    "file": "/src/lib/mlm/createNotification.ts",
+    "issue": "Hardcoded Boolean",
+    "matches": [
+      ": false",
+      ": false",
+      ": false",
+      ":\n            false",
+      ":\n            false",
+      ": true",
+      ": false"
+    ]
+  },
+  {
+    "file": "/src/lib/mlm/createPayoutRequest.ts",
+    "issue": "Hardcoded Boolean",
+    "matches": [
+      ": true",
+      ": false"
+    ]
+  },
+  {
+    "file": "/src/lib/mlm/createPayoutRequest.ts",
+    "issue": "Hardcoded Number",
+    "matches": [
+      "=\n       1",
+      "=\n       2",
+      "=\n       3",
+      "=\n         4",
+      "=\n       5"
+    ]
+  },
+  {
+    "file": "/src/lib/mlm/createReferralBonus.ts",
+    "issue": "Hardcoded Boolean",
+    "matches": [
+      ": false",
+      ": true",
+      ": true",
+      ": false",
+      ": true",
+      ": false"
+    ]
+  },
+  {
+    "file": "/src/lib/mlm/createReferralBonus.ts",
+    "issue": "Hardcoded Number",
+    "matches": [
+      "=\n       1",
+      "=\n       2",
+      "=\n       3",
+      "= 0",
+      "=\n         4",
+      "= 0",
+      "=\n         5",
+      "=\n       6"
+    ]
+  },
+  {
+    "file": "/src/lib/mlm/createReferralLink.ts",
+    "issue": "Hardcoded Boolean",
+    "matches": [
+      ": false",
+      ": false",
+      ": false",
+      ": true",
+      ": false"
+    ]
+  },
+  {
+    "file": "/src/lib/mlm/createReferralLink.ts",
+    "issue": "Hardcoded Number",
+    "matches": [
+      "= 3"
+    ]
+  },
+  {
+    "file": "/src/lib/mlm/createSupportTicket.ts",
+    "issue": "Hardcoded Boolean",
+    "matches": [
+      ": false",
+      ": false",
+      ": false",
+      ": false",
+      ": false",
+      ": false",
+      ": false",
+      ":\n            false",
+      ": true",
+      ": false"
+    ]
+  },
+  {
+    "file": "/src/lib/mlm/createTaskReward.ts",
+    "issue": "Hardcoded Boolean",
+    "matches": [
+      ": false",
+      ": false",
+      ": false",
+      ": false",
+      ": true",
+      ": false",
+      ": true",
+      ": false"
+    ]
+  },
+  {
+    "file": "/src/lib/mlm/createTaskReward.ts",
+    "issue": "Hardcoded Number",
+    "matches": [
+      "=\n       1",
+      "= 0",
+      "=\n       2",
+      "=\n       3",
+      "=\n         4",
+      "=\n       5"
+    ]
+  },
+  {
+    "file": "/src/lib/mlm/creditWallet.ts",
+    "issue": "Hardcoded Boolean",
+    "matches": [
+      ": false",
+      ": false",
+      ": false",
+      ": false",
+      ": true",
+      ": true",
+      ": false"
+    ]
+  },
+  {
+    "file": "/src/lib/mlm/creditWallet.ts",
+    "issue": "Hardcoded Number",
+    "matches": [
+      "= 5",
+      "= 0"
+    ]
+  },
+  {
+    "file": "/src/lib/mlm/distributeLevelCommission.ts",
+    "issue": "Hardcoded Boolean",
+    "matches": [
+      ": false",
+      ": false",
+      ": false",
+      ": true",
+      ": true",
+      ": false",
+      ": false",
+      ": true",
+      ": true",
+      ": false"
+    ]
+  },
+  {
+    "file": "/src/lib/mlm/distributeLevelCommission.ts",
+    "issue": "Hardcoded Number",
+    "matches": [
+      "= 0",
+      "= 0",
+      "= 0",
+      "= 0"
+    ]
+  },
+  {
+    "file": "/src/lib/mlm/financial/processCashback.ts",
+    "issue": "Hardcoded Percentage",
+    "matches": [
+      "100%"
+    ]
+  },
+  {
+    "file": "/src/lib/mlm/financial/processCashback.ts",
+    "issue": "Hardcoded Boolean",
+    "matches": [
+      ": true",
+      ": true",
+      ": false"
+    ]
+  },
+  {
+    "file": "/src/lib/mlm/financial/processCashback.ts",
+    "issue": "Hardcoded Number",
+    "matches": [
+      "= 0"
+    ]
+  },
+  {
+    "file": "/src/lib/mlm/generateReferralQRCode.ts",
+    "issue": "Hardcoded Boolean",
+    "matches": [
+      ": false",
+      ": false",
+      ": false",
+      ": false",
+      ": true",
+      ": false"
+    ]
+  },
+  {
+    "file": "/src/lib/mlm/giveCommission.ts",
+    "issue": "Hardcoded Boolean",
+    "matches": [
+      ": false",
+      ": false",
+      ": false",
+      ": false",
+      ": false",
+      ": true",
+      ": false"
+    ]
+  },
+  {
+    "file": "/src/lib/mlm/giveCommission.ts",
+    "issue": "Hardcoded Number",
+    "matches": [
+      "= 0"
+    ]
+  },
+  {
+    "file": "/src/lib/mlm/orders/approveWithdrawTransaction.ts",
+    "issue": "Hardcoded Boolean",
+    "matches": [
+      ": false",
+      ": false",
+      ": false",
+      ": false",
+      ": false",
+      ": false",
+      ": false",
+      ": true",
+      ": false"
+    ]
+  },
+  {
+    "file": "/src/lib/mlm/orders/approveWithdrawTransaction.ts",
+    "issue": "Hardcoded Number",
+    "matches": [
+      "= 0"
+    ]
+  },
+  {
+    "file": "/src/lib/mlm/orders/autoJoinMLMOnPurchase.ts",
+    "issue": "Hardcoded Boolean",
+    "matches": [
+      ": true",
+      ": true",
+      ": true",
+      ": true",
+      ": true",
+      ": false"
+    ]
+  },
+  {
+    "file": "/src/lib/mlm/orders/cancelOrder.ts",
+    "issue": "Hardcoded Boolean",
+    "matches": [
+      ": false",
+      ": false",
+      ": true",
+      ": false"
+    ]
+  },
+  {
+    "file": "/src/lib/mlm/orders/checkCommissionEligibility.ts",
+    "issue": "Hardcoded Boolean",
+    "matches": [
+      ": false",
+      ": false",
+      ": false",
+      ": false",
+      ": true",
+      ": false"
+    ]
+  },
+  {
+    "file": "/src/lib/mlm/orders/checkRankUpgrade.ts",
+    "issue": "Hardcoded Boolean",
+    "matches": [
+      ": false",
+      ": false",
+      ": false",
+      ": false",
+      ": false",
+      ": true",
+      ": true",
+      ": false",
+      ": true",
+      ": true",
+      ": false",
+      ": false"
+    ]
+  },
+  {
+    "file": "/src/lib/mlm/orders/checkRankUpgrade.ts",
+    "issue": "Hardcoded Number",
+    "matches": [
+      "= 0",
+      "=\n       1",
+      "=\n         2",
+      "= 0",
+      "=\n         3",
+      "=\n       4"
+    ]
+  },
+  {
+    "file": "/src/lib/mlm/orders/checkWithdrawEligibility.ts",
+    "issue": "Hardcoded Currency",
+    "matches": [
+      "₹100"
+    ]
+  },
+  {
+    "file": "/src/lib/mlm/orders/checkWithdrawEligibility.ts",
+    "issue": "Hardcoded Boolean",
+    "matches": [
+      ": false",
+      ": false",
+      ": false",
+      ": false",
+      ": false",
+      ": false",
+      ": false",
+      ": true",
+      ": false"
+    ]
+  },
+  {
+    "file": "/src/lib/mlm/orders/checkWithdrawEligibility.ts",
+    "issue": "Hardcoded Number",
+    "matches": [
+      "= 0",
+      "=\n      100"
+    ]
+  },
+  {
+    "file": "/src/lib/mlm/orders/completeOrderAndDistributeCommission.ts",
+    "issue": "Hardcoded Percentage",
+    "matches": [
+      "5%"
+    ]
+  },
+  {
+    "file": "/src/lib/mlm/orders/completeOrderAndDistributeCommission.ts",
+    "issue": "Hardcoded Boolean",
+    "matches": [
+      ": false",
+      ": true",
+      ": false",
+      ": true",
+      ": true",
+      ": true",
+      ": false"
+    ]
+  },
+  {
+    "file": "/src/lib/mlm/orders/completeOrderAndDistributeCommission.ts",
+    "issue": "Hardcoded Number",
+    "matches": [
+      "=\n       1",
+      "= 0",
+      "= 0",
+      "=\n       2",
+      "=\n       3",
+      "= 0",
+      "= 5",
+      "=\n       4",
+      "=\n       5"
+    ]
+  },
+  {
+    "file": "/src/lib/mlm/orders/createCashbackReward.ts",
+    "issue": "Hardcoded Boolean",
+    "matches": [
+      ": true",
+      ": false"
+    ]
+  },
+  {
+    "file": "/src/lib/mlm/orders/createDailyPassiveIncome.ts",
+    "issue": "Hardcoded Boolean",
+    "matches": [
+      ": true",
+      ": false"
+    ]
+  },
+  {
+    "file": "/src/lib/mlm/orders/createLuckySpinReward.ts",
+    "issue": "Hardcoded Boolean",
+    "matches": [
+      ": true",
+      ": false"
+    ]
+  },
+  {
+    "file": "/src/lib/mlm/orders/createOrderHistory.ts",
+    "issue": "Hardcoded Boolean",
+    "matches": [
+      ": true",
+      ": false"
+    ]
+  },
+  {
+    "file": "/src/lib/mlm/orders/createOrderIncome.ts",
+    "issue": "Hardcoded Boolean",
+    "matches": [
+      ": true",
+      ": false"
+    ]
+  },
+  {
+    "file": "/src/lib/mlm/orders/createOrderNotification.ts",
+    "issue": "Hardcoded Boolean",
+    "matches": [
+      ": false",
+      ": true",
+      ": false"
+    ]
+  },
+  {
+    "file": "/src/lib/mlm/orders/createOrderTransaction.ts",
+    "issue": "Hardcoded Boolean",
+    "matches": [
+      ": true",
+      ": false"
+    ]
+  },
+  {
+    "file": "/src/lib/mlm/orders/createPendingCommission.ts",
+    "issue": "Hardcoded Boolean",
+    "matches": [
+      ": false",
+      ": true",
+      ": false"
+    ]
+  },
+  {
+    "file": "/src/lib/mlm/orders/createPendingCommission.ts",
+    "issue": "Hardcoded Number",
+    "matches": [
+      "= 0"
+    ]
+  },
+  {
+    "file": "/src/lib/mlm/orders/createProductReviewReward.ts",
+    "issue": "Hardcoded Boolean",
+    "matches": [
+      ": true",
+      ": false"
+    ]
+  },
+  {
+    "file": "/src/lib/mlm/orders/createRankReward.ts",
+    "issue": "Hardcoded Currency",
+    "matches": [
+      "₹100"
+    ]
+  },
+  {
+    "file": "/src/lib/mlm/orders/createRankReward.ts",
+    "issue": "Hardcoded Boolean",
+    "matches": [
+      ": true",
+      ": true",
+      ": true",
+      ": false"
+    ]
+  },
+  {
+    "file": "/src/lib/mlm/orders/createRankReward.ts",
+    "issue": "Hardcoded Number",
+    "matches": [
+      "= 100000",
+      "=\n       1",
+      "= 0",
+      "=\n       2",
+      "=\n         3",
+      "=\n       4"
+    ]
+  },
+  {
+    "file": "/src/lib/mlm/orders/createReferralVisitReward.ts",
+    "issue": "Hardcoded Boolean",
+    "matches": [
+      ": true",
+      ": false"
+    ]
+  },
+  {
+    "file": "/src/lib/mlm/orders/createScratchCardReward.ts",
+    "issue": "Hardcoded Boolean",
+    "matches": [
+      ": true",
+      ": false"
+    ]
+  },
+  {
+    "file": "/src/lib/mlm/orders/createSocialShareReward.ts",
+    "issue": "Hardcoded Boolean",
+    "matches": [
+      ": true",
+      ": false"
+    ]
+  },
+  {
+    "file": "/src/lib/mlm/orders/createTeamBusiness.ts",
+    "issue": "Hardcoded Boolean",
+    "matches": [
+      ": true",
+      ": false"
+    ]
+  },
+  {
+    "file": "/src/lib/mlm/orders/createTeamBusiness.ts",
+    "issue": "Hardcoded Number",
+    "matches": [
+      "= 0"
+    ]
+  },
+  {
+    "file": "/src/lib/mlm/orders/createWithdrawTransaction.ts",
+    "issue": "Hardcoded Boolean",
+    "matches": [
+      ": true",
+      ": false"
+    ]
+  },
+  {
+    "file": "/src/lib/mlm/orders/createWithdrawTransaction.ts",
+    "issue": "Hardcoded Number",
+    "matches": [
+      "= 0"
+    ]
+  },
+  {
+    "file": "/src/lib/mlm/orders/holdWithdrawAmount.ts",
+    "issue": "Hardcoded Boolean",
+    "matches": [
+      ": true",
+      ": false"
+    ]
+  },
+  {
+    "file": "/src/lib/mlm/orders/holdWithdrawAmount.ts",
+    "issue": "Hardcoded Number",
+    "matches": [
+      "= 0"
+    ]
+  },
+  {
+    "file": "/src/lib/mlm/orders/onOrderDelivered.ts",
+    "issue": "Hardcoded Boolean",
+    "matches": [
+      ": true",
+      ": false",
+      ": true",
+      ": true",
+      ": false"
+    ]
+  },
+  {
+    "file": "/src/lib/mlm/orders/orderValidation.ts",
+    "issue": "Hardcoded Boolean",
+    "matches": [
+      ": false",
+      ": false",
+      ": true"
+    ]
+  },
+  {
+    "file": "/src/lib/mlm/orders/processOrderProfit.ts",
+    "issue": "Hardcoded Boolean",
+    "matches": [
+      ": true",
+      ": true",
+      ": true",
+      ": true",
+      ": true"
+    ]
+  },
+  {
+    "file": "/src/lib/mlm/orders/processOrderProfit.ts",
+    "issue": "Hardcoded Number",
+    "matches": [
+      "= 0"
+    ]
+  },
+  {
+    "file": "/src/lib/mlm/orders/rejectWithdrawTransaction.ts",
+    "issue": "Hardcoded Boolean",
+    "matches": [
+      ": false",
+      ": false",
+      ": false",
+      ": false",
+      ": false",
+      ": false",
+      ": false",
+      ": true",
+      ": false"
+    ]
+  },
+  {
+    "file": "/src/lib/mlm/orders/rejectWithdrawTransaction.ts",
+    "issue": "Hardcoded Number",
+    "matches": [
+      "= 0"
+    ]
+  },
+  {
+    "file": "/src/lib/mlm/orders/releaseHoldAmount.ts",
+    "issue": "Hardcoded Boolean",
+    "matches": [
+      ": true",
+      ": false"
+    ]
+  },
+  {
+    "file": "/src/lib/mlm/orders/releasePendingCommission.ts",
+    "issue": "Hardcoded Boolean",
+    "matches": [
+      ": false",
+      ": true",
+      ": false"
+    ]
+  },
+  {
+    "file": "/src/lib/mlm/orders/releasePendingCommission.ts",
+    "issue": "Hardcoded Number",
+    "matches": [
+      "= 0"
+    ]
+  },
+  {
+    "file": "/src/lib/mlm/orders/reverseLevelCommission.ts",
+    "issue": "Hardcoded Boolean",
+    "matches": [
+      ": true",
+      ": false"
+    ]
+  },
+  {
+    "file": "/src/lib/mlm/orders/reverseLevelCommission.ts",
+    "issue": "Hardcoded Number",
+    "matches": [
+      "= 0"
+    ]
+  },
+  {
+    "file": "/src/lib/mlm/orders/reverseTeamBusiness.ts",
+    "issue": "Hardcoded Boolean",
+    "matches": [
+      ": true",
+      ": false"
+    ]
+  },
+  {
+    "file": "/src/lib/mlm/orders/reverseTeamBusiness.ts",
+    "issue": "Hardcoded Number",
+    "matches": [
+      "= 0"
+    ]
+  },
+  {
+    "file": "/src/lib/mlm/orders/updateDirectReferrals.ts",
+    "issue": "Hardcoded Boolean",
+    "matches": [
+      ": true",
+      ": false"
+    ]
+  },
+  {
+    "file": "/src/lib/mlm/orders/updateOrderStatus.ts",
+    "issue": "Hardcoded Boolean",
+    "matches": [
+      ": false",
+      ": false",
+      ": false",
+      ": false",
+      ": false",
+      ": true",
+      ": false"
+    ]
+  },
+  {
+    "file": "/src/lib/mlm/orders/updateTeamVolume.ts",
+    "issue": "Hardcoded Boolean",
+    "matches": [
+      ": false",
+      ": false",
+      ": true",
+      ": false"
+    ]
+  },
+  {
+    "file": "/src/lib/mlm/orders/updateTeamVolume.ts",
+    "issue": "Hardcoded Number",
+    "matches": [
+      "= 100000",
+      "=\n       1",
+      "= 0",
+      "= 0",
+      "=\n       2",
+      "=\n         3",
+      "=\n       4"
+    ]
+  },
+  {
+    "file": "/src/lib/mlm/registerUser.ts",
+    "issue": "Hardcoded Boolean",
+    "matches": [
+      ": false",
+      ": true",
+      ": true",
+      ": false"
+    ]
+  },
+  {
+    "file": "/src/lib/mlm/rejectKYC.ts",
+    "issue": "Hardcoded Boolean",
+    "matches": [
+      ": false",
+      ": false",
+      ": false",
+      ": false",
+      ": false",
+      ": false",
+      ":\n          false",
+      ": true",
+      ": false"
+    ]
+  },
+  {
+    "file": "/src/lib/mlm/rejectPayoutRequest.ts",
+    "issue": "Hardcoded Boolean",
+    "matches": [
+      ": false",
+      ": false",
+      ": false",
+      ": false",
+      ": false",
+      ": true",
+      ": false"
+    ]
+  },
+  {
+    "file": "/src/lib/mlm/replySupportTicket.ts",
+    "issue": "Hardcoded Boolean",
+    "matches": [
+      ": false",
+      ": false",
+      ": false",
+      ": false",
+      ": false",
+      ": true",
+      ": false"
+    ]
+  },
+  {
+    "file": "/src/lib/mlm/unblockUser.ts",
+    "issue": "Hardcoded Boolean",
+    "matches": [
+      ": false",
+      ": false",
+      ": false",
+      ": false",
+      ": false",
+      ": true",
+      ": false"
+    ]
+  },
+  {
+    "file": "/src/lib/mlm/updateRank.ts",
+    "issue": "Hardcoded Boolean",
+    "matches": [
+      ": true",
+      ": true",
+      ": false"
+    ]
+  },
+  {
+    "file": "/src/lib/mlm/updateRank.ts",
+    "issue": "Hardcoded Number",
+    "matches": [
+      "=\n       1",
+      "= 0",
+      "=\n       2",
+      "= 0",
+      "= 0",
+      "=\n         3",
+      "=\n       4"
+    ]
+  },
+  {
+    "file": "/src/lib/mlm/updateReferralTree.ts",
+    "issue": "Hardcoded Boolean",
+    "matches": [
+      ": true"
+    ]
+  },
+  {
+    "file": "/src/lib/mlm/updateReferralTree.ts",
+    "issue": "Hardcoded Number",
+    "matches": [
+      "= 1",
+      "= 1"
+    ]
+  },
+  {
+    "file": "/src/lib/mlm/watch-earn/blockSponsoredVideo.ts",
+    "issue": "Hardcoded Boolean",
+    "matches": [
+      ": true",
+      ": false",
+      ": true",
+      ": false"
+    ]
+  },
+  {
+    "file": "/src/lib/mlm/watch-earn/checkDuplicateWatchReward.ts",
+    "issue": "Hardcoded Boolean",
+    "matches": [
+      ": true",
+      ": false",
+      ": false"
+    ]
+  },
+  {
+    "file": "/src/lib/mlm/watch-earn/checkSponsorBudget.ts",
+    "issue": "Hardcoded Boolean",
+    "matches": [
+      ": false",
+      ": false",
+      ": true",
+      ": false"
+    ]
+  },
+  {
+    "file": "/src/lib/mlm/watch-earn/claimWatchVideoReward.ts",
     "issue": "Hardcoded Currency",
     "matches": [
       "₹50"
+    ]
+  },
+  {
+    "file": "/src/lib/mlm/watch-earn/claimWatchVideoReward.ts",
+    "issue": "Hardcoded Boolean",
+    "matches": [
+      ": false",
+      ": false",
+      ": false",
+      ": false",
+      ": false",
+      ": false",
+      ": true",
+      ": false"
+    ]
+  },
+  {
+    "file": "/src/lib/mlm/watch-earn/claimWatchVideoReward.ts",
+    "issue": "Hardcoded Number",
+    "matches": [
+      "= 0",
+      "=\n       100",
+      "= 0"
+    ]
+  },
+  {
+    "file": "/src/lib/mlm/watch-earn/createCreatorRevenueShare.ts",
+    "issue": "Hardcoded Boolean",
+    "matches": [
+      ": true",
+      ": false"
+    ]
+  },
+  {
+    "file": "/src/lib/mlm/watch-earn/createSponsoredVideo.ts",
+    "issue": "Hardcoded Boolean",
+    "matches": [
+      ": true",
+      ": true",
+      ": true",
+      ": false"
+    ]
+  },
+  {
+    "file": "/src/lib/mlm/watch-earn/createVideoAdRevenue.ts",
+    "issue": "Hardcoded Boolean",
+    "matches": [
+      ": true",
+      ": false"
+    ]
+  },
+  {
+    "file": "/src/lib/mlm/watch-earn/createVideoComment.ts",
+    "issue": "Hardcoded Boolean",
+    "matches": [
+      ": true",
+      ": false"
+    ]
+  },
+  {
+    "file": "/src/lib/mlm/watch-earn/createWatchReward.ts",
+    "issue": "Hardcoded Currency",
+    "matches": [
+      "₹50"
+    ]
+  },
+  {
+    "file": "/src/lib/mlm/watch-earn/createWatchReward.ts",
+    "issue": "Hardcoded Boolean",
+    "matches": [
+      ": false",
+      ": false",
+      ": false",
+      ": false",
+      ": true",
+      ": false"
+    ]
+  },
+  {
+    "file": "/src/lib/mlm/watch-earn/createWatchReward.ts",
+    "issue": "Hardcoded Number",
+    "matches": [
+      "= 0",
+      "=\n       100",
+      "=\n    0"
+    ]
+  },
+  {
+    "file": "/src/lib/mlm/watch-earn/createWatchTransaction.ts",
+    "issue": "Hardcoded Boolean",
+    "matches": [
+      ": false",
+      ": true",
+      ": false"
+    ]
+  },
+  {
+    "file": "/src/lib/mlm/watch-earn/createWatchTransaction.ts",
+    "issue": "Hardcoded Number",
+    "matches": [
+      "= 0"
+    ]
+  },
+  {
+    "file": "/src/lib/mlm/watch-earn/createWatchVideo.ts",
+    "issue": "Hardcoded Boolean",
+    "matches": [
+      ": true",
+      ": true",
+      ": false"
+    ]
+  },
+  {
+    "file": "/src/lib/mlm/watch-earn/deductSponsorVideoBudget.ts",
+    "issue": "Hardcoded Boolean",
+    "matches": [
+      ": true",
+      ": false"
+    ]
+  },
+  {
+    "file": "/src/lib/mlm/watch-earn/deleteSponsoredVideo.ts",
+    "issue": "Hardcoded Boolean",
+    "matches": [
+      ": true",
+      ": false"
+    ]
+  },
+  {
+    "file": "/src/lib/mlm/watch-earn/deleteVideoComment.ts",
+    "issue": "Hardcoded Boolean",
+    "matches": [
+      ": true",
+      ": false"
+    ]
+  },
+  {
+    "file": "/src/lib/mlm/watch-earn/deleteVideoReply.ts",
+    "issue": "Hardcoded Boolean",
+    "matches": [
+      ": true",
+      ": false"
+    ]
+  },
+  {
+    "file": "/src/lib/mlm/watch-earn/detectAutoScrollBot.ts",
+    "issue": "Hardcoded Boolean",
+    "matches": [
+      ": false",
+      ": true",
+      ": false",
+      ": true",
+      ": false",
+      ": true",
+      ": false",
+      ": true",
+      ": true",
+      ": false",
+      ": false",
+      ": true"
+    ]
+  },
+  {
+    "file": "/src/lib/mlm/watch-earn/detectAutoScrollBot.ts",
+    "issue": "Hardcoded Number",
+    "matches": [
+      "= 0"
+    ]
+  },
+  {
+    "file": "/src/lib/mlm/watch-earn/detectBackgroundWatch.ts",
+    "issue": "Hardcoded Boolean",
+    "matches": [
+      ": false",
+      ": true",
+      ": false",
+      ": true",
+      ": false",
+      ": true",
+      ": true",
+      ": false",
+      ": false",
+      ": true"
+    ]
+  },
+  {
+    "file": "/src/lib/mlm/watch-earn/detectFakeWatch.ts",
+    "issue": "Hardcoded Boolean",
+    "matches": [
+      ": false",
+      ": true",
+      ": false",
+      ": true",
+      ": false",
+      ": true",
+      ": false",
+      ": true",
+      ": true",
+      ": false",
+      ": false",
+      ": true"
+    ]
+  },
+  {
+    "file": "/src/lib/mlm/watch-earn/detectMutedVideo.ts",
+    "issue": "Hardcoded Boolean",
+    "matches": [
+      ": false",
+      ": false",
+      ": false",
+      ": false",
+      ": false",
+      ": false",
+      ": true",
+      ": true",
+      ": false",
+      ": false"
+    ]
+  },
+  {
+    "file": "/src/lib/mlm/watch-earn/detectMutedVideo.ts",
+    "issue": "Hardcoded Number",
+    "matches": [
+      "= 0"
+    ]
+  },
+  {
+    "file": "/src/lib/mlm/watch-earn/fetchWatchVideos.ts",
+    "issue": "Hardcoded Boolean",
+    "matches": [
+      ": true",
+      ": false"
+    ]
+  },
+  {
+    "file": "/src/lib/mlm/watch-earn/likeVideo.ts",
+    "issue": "Hardcoded Boolean",
+    "matches": [
+      ": false",
+      ": true",
+      ": false"
+    ]
+  },
+  {
+    "file": "/src/lib/mlm/watch-earn/likeVideoComment.ts",
+    "issue": "Hardcoded Boolean",
+    "matches": [
+      ": true",
+      ": false"
+    ]
+  },
+  {
+    "file": "/src/lib/mlm/watch-earn/likeVideoReply.ts",
+    "issue": "Hardcoded Boolean",
+    "matches": [
+      ": true",
+      ": false"
+    ]
+  },
+  {
+    "file": "/src/lib/mlm/watch-earn/pauseSponsoredVideo.ts",
+    "issue": "Hardcoded Boolean",
+    "matches": [
+      ": false",
+      ": true",
+      ": false"
+    ]
+  },
+  {
+    "file": "/src/lib/mlm/watch-earn/processDeliveredOrderForRewardCycle.ts",
+    "issue": "Hardcoded Boolean",
+    "matches": [
+      ": true",
+      ": true"
+    ]
+  },
+  {
+    "file": "/src/lib/mlm/watch-earn/processRewardUnlock.ts",
+    "issue": "Hardcoded Boolean",
+    "matches": [
+      ": false",
+      ": true",
+      ": true",
+      ": false"
+    ]
+  },
+  {
+    "file": "/src/lib/mlm/watch-earn/processRewardUnlock.ts",
+    "issue": "Hardcoded Number",
+    "matches": [
+      "= 0",
+      "= 0"
+    ]
+  },
+  {
+    "file": "/src/lib/mlm/watch-earn/processWatchReward.ts",
+    "issue": "Hardcoded Boolean",
+    "matches": [
+      ": true",
+      ": false"
+    ]
+  },
+  {
+    "file": "/src/lib/mlm/watch-earn/processWatchReward.ts",
+    "issue": "Hardcoded Number",
+    "matches": [
+      "= 0"
+    ]
+  },
+  {
+    "file": "/src/lib/mlm/watch-earn/replyVideoComment.ts",
+    "issue": "Hardcoded Boolean",
+    "matches": [
+      ": true",
+      ": false"
+    ]
+  },
+  {
+    "file": "/src/lib/mlm/watch-earn/reportSponsoredVideo.ts",
+    "issue": "Hardcoded Boolean",
+    "matches": [
+      ": true",
+      ": false"
+    ]
+  },
+  {
+    "file": "/src/lib/mlm/watch-earn/reportVideoComment.ts",
+    "issue": "Hardcoded Boolean",
+    "matches": [
+      ": true",
+      ": false"
+    ]
+  },
+  {
+    "file": "/src/lib/mlm/watch-earn/resumeSponsoredVideo.ts",
+    "issue": "Hardcoded Boolean",
+    "matches": [
+      ": true",
+      ": true",
+      ": false"
+    ]
+  },
+  {
+    "file": "/src/lib/mlm/watch-earn/saveVideo.ts",
+    "issue": "Hardcoded Boolean",
+    "matches": [
+      ": true",
+      ": false",
+      ": true",
+      ": true",
+      ": false",
+      ": false"
+    ]
+  },
+  {
+    "file": "/src/lib/mlm/watch-earn/shareVideo.ts",
+    "issue": "Hardcoded Boolean",
+    "matches": [
+      ": false",
+      ": true",
+      ": false"
+    ]
+  },
+  {
+    "file": "/src/lib/mlm/watch-earn/startRewardCycle.ts",
+    "issue": "Hardcoded Boolean",
+    "matches": [
+      ": false",
+      ": false",
+      ": false",
+      ": false",
+      ": true",
+      ": false"
+    ]
+  },
+  {
+    "file": "/src/lib/mlm/watch-earn/startRewardCycle.ts",
+    "issue": "Hardcoded Number",
+    "matches": [
+      "=\n       100",
+      "= 50"
+    ]
+  },
+  {
+    "file": "/src/lib/mlm/watch-earn/trackVideoWatch.ts",
+    "issue": "Hardcoded Boolean",
+    "matches": [
+      ": false",
+      ": false",
+      ": false",
+      ": true",
+      ": false"
+    ]
+  },
+  {
+    "file": "/src/lib/mlm/watch-earn/trackVideoWatch.ts",
+    "issue": "Hardcoded Number",
+    "matches": [
+      "=\n      100"
+    ]
+  },
+  {
+    "file": "/src/lib/mlm/watch-earn/unblockSponsoredVideo.ts",
+    "issue": "Hardcoded Boolean",
+    "matches": [
+      ": false",
+      ": true",
+      ": true",
+      ": false"
+    ]
+  },
+  {
+    "file": "/src/lib/mlm/watch-earn/updateVideoViews.ts",
+    "issue": "Hardcoded Boolean",
+    "matches": [
+      ": true",
+      ": false"
+    ]
+  },
+  {
+    "file": "/src/lib/mlm/watch-earn/updateWalletBalance.ts",
+    "issue": "Hardcoded Boolean",
+    "matches": [
+      ": false",
+      ": false",
+      ": false",
+      ": true",
+      ": false"
+    ]
+  },
+  {
+    "file": "/src/lib/mlm/watch-earn/updateWalletBalance.ts",
+    "issue": "Hardcoded Number",
+    "matches": [
+      "= 0"
+    ]
+  },
+  {
+    "file": "/src/lib/mlm/watch-earn/uploadWatchVideo.ts",
+    "issue": "Hardcoded Boolean",
+    "matches": [
+      ": false",
+      ": false",
+      ": false",
+      ": false",
+      ": false",
+      ":\n            false",
+      ":\n            true",
+      ":\n            false",
+      ": true",
+      ": false"
+    ]
+  },
+  {
+    "file": "/src/lib/mlm/watch-earn/uploadWatchVideo.ts",
+    "issue": "Hardcoded Number",
+    "matches": [
+      "=\n      100"
+    ]
+  },
+  {
+    "file": "/src/lib/mlm/withdrawals/approveWithdrawal.ts",
+    "issue": "Hardcoded Boolean",
+    "matches": [
+      ": true",
+      ": false"
+    ]
+  },
+  {
+    "file": "/src/lib/mlm/withdrawals/getWithdrawalHistory.ts",
+    "issue": "Hardcoded Boolean",
+    "matches": [
+      ": true",
+      ": false"
+    ]
+  },
+  {
+    "file": "/src/lib/mlm/withdrawals/getWithdrawalHistory.ts",
+    "issue": "Hardcoded Number",
+    "matches": [
+      "= 20"
+    ]
+  },
+  {
+    "file": "/src/lib/mlm/withdrawals/rejectWithdrawal.ts",
+    "issue": "Hardcoded Boolean",
+    "matches": [
+      ": true",
+      ": false"
+    ]
+  },
+  {
+    "file": "/src/lib/mlm/withdrawals/requestWithdraw.ts",
+    "issue": "Hardcoded Boolean",
+    "matches": [
+      ": true",
+      ": false"
+    ]
+  },
+  {
+    "file": "/src/lib/mlm/withdrawals/withdrawalSettings.ts",
+    "issue": "Hardcoded Boolean",
+    "matches": [
+      ": true",
+      ":true",
+      ": true",
+      ": true",
+      ": false"
+    ]
+  },
+  {
+    "file": "/src/lib/security/fraudProtection.ts",
+    "issue": "Hardcoded Boolean",
+    "matches": [
+      ": false",
+      ": false",
+      ": true"
+    ]
+  },
+  {
+    "file": "/src/lib/security/profileFactory.ts",
+    "issue": "Hardcoded Boolean",
+    "matches": [
+      ": false",
+      ": false",
+      ": false",
+      ": false",
+      ": false",
+      ": false",
+      ": true"
+    ]
+  },
+  {
+    "file": "/src/lib/security/referralValidation.ts",
+    "issue": "Hardcoded Boolean",
+    "matches": [
+      ": true",
+      ": false",
+      ": true"
+    ]
+  },
+  {
+    "file": "/src/lib/security/registrationValidation.ts",
+    "issue": "Hardcoded Boolean",
+    "matches": [
+      ": false"
+    ]
+  },
+  {
+    "file": "/src/lib/security/selfReferralProtection.ts",
+    "issue": "Hardcoded Boolean",
+    "matches": [
+      ": false",
+      ": true"
+    ]
+  },
+  {
+    "file": "/src/lib/seed/seedSystemSettings.ts",
+    "issue": "Hardcoded Boolean",
+    "matches": [
+      ": false",
+      ": true",
+      ": true",
+      ": true",
+      ": true",
+      ": true",
+      ": true",
+      ": true",
+      ": true",
+      ": true",
+      ": true",
+      ": true",
+      ": true",
+      ": false",
+      ": false",
+      ": true",
+      ": true",
+      ": true",
+      ": true",
+      ": false",
+      ": true",
+      ": true",
+      ": true",
+      ": false",
+      ": true",
+      ": true",
+      ": true"
+    ]
+  },
+  {
+    "file": "/src/modules/anti-fraud/services/antiFraudService.ts",
+    "issue": "Hardcoded Boolean",
+    "matches": [
+      ": true",
+      ": false",
+      ": true",
+      ": false"
+    ]
+  },
+  {
+    "file": "/src/modules/anti-fraud/validators/deviceValidator.ts",
+    "issue": "Hardcoded Boolean",
+    "matches": [
+      ": true",
+      ": false",
+      ": true",
+      ": false"
+    ]
+  },
+  {
+    "file": "/src/modules/anti-fraud/validators/ipValidator.ts",
+    "issue": "Hardcoded Boolean",
+    "matches": [
+      ": true",
+      ": false",
+      ": true",
+      ": false"
+    ]
+  },
+  {
+    "file": "/src/modules/anti-fraud/validators/kycValidator.ts",
+    "issue": "Hardcoded Boolean",
+    "matches": [
+      ": true",
+      ": false",
+      ": true",
+      ": false"
+    ]
+  },
+  {
+    "file": "/src/modules/anti-fraud/validators/selfReferralValidator.ts",
+    "issue": "Hardcoded Boolean",
+    "matches": [
+      ": true",
+      ": false",
+      ": true",
+      ": false"
+    ]
+  },
+  {
+    "file": "/src/modules/anti-fraud/validators/watchValidator.ts",
+    "issue": "Hardcoded Boolean",
+    "matches": [
+      ": true",
+      ": false",
+      ": true",
+      ": false"
+    ]
+  },
+  {
+    "file": "/src/scripts/theme-codemod.ts",
+    "issue": "Hardcoded Percentage",
+    "matches": [
+      "100%"
+    ]
+  },
+  {
+    "file": "/src/scripts/theme-codemod.ts",
+    "issue": "Hardcoded Boolean",
+    "matches": [
+      ": true",
+      ": true"
+    ]
+  },
+  {
+    "file": "/src/scripts/theme-codemod.ts",
+    "issue": "Hardcoded Number",
+    "matches": [
+      "= 95",
+      "= 80",
+      "= 60"
+    ]
+  },
+  {
+    "file": "/src/shared/governance/auditCommission.ts",
+    "issue": "Hardcoded Number",
+    "matches": [
+      "= 0"
     ]
   }
 ]
