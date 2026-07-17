@@ -34,9 +34,16 @@ export async function GET() {
 
       name: item.issue ?? "Unknown Issue",
 
-      status: "WARNING",
+      severity: (
+  item.severity?.toUpperCase?.() ?? "LOW"
+) as "LOW" | "MEDIUM" | "HIGH",
 
-      severity: item.severity ?? "MEDIUM",
+status:
+  item.severity === "Critical"
+    ? "FAIL"
+    : item.severity === "High"
+    ? "WARNING"
+    : "PASS",
 
       category: item.governanceCategory ?? "Hardcoded Rules",
 
