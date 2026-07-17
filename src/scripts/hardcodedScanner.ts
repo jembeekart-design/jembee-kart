@@ -33,13 +33,16 @@ const PATTERNS = [
   { name: "Hardcoded Percentage", regex: /\b\d+\s*%/g },
   { name: "Hardcoded Currency", regex: /₹\s*\d+(?:\.\d+)?(?:\s*(?:L|K|Cr|Crore|Lakh))?/gi },
   { name: "Hardcoded Boolean", regex: /(?:=|:)\s*(true|false)\b/g },
-  { name: "Hardcoded Number", regex: /(?:>=|<=|=|:|>|<)\s*-?\d+(?:\.\d+)?/g },
+  { 
+    name: "Hardcoded Number", 
+    // 1: Improved regex order (multi-character first)
+    regex: /(?:>=|<=|=|:|>|<)\s*-?\d+(?:\.\d+)?/g 
+  },
 ];
 
 const results: HardcodedIssue[] = [];
-const needsBusinessContext = ["Hardcoded Number", "Hardcoded Currency"];
 
-// Config
+// Configuration
 const BUSINESS_KEYWORDS = ["commission", "cashback", "reward", "wallet", "withdraw", "withdrawal", "bonus", "earning", "income", "profit", "referral", "level", "rank", "seller", "delivery", "shipping", "gst", "tax", "coin", "points", "watch", "video", "premium", "subscription", "membership", "businessrules", "featureflags", "rewardamount", "minimumwithdrawal", "cashbackpercent", "commissionpercent"];
 const IGNORE_KEYWORDS = ["width", "height", "maxWidth", "minWidth", "maxHeight", "minHeight", "padding", "margin", "gap", "spacing", "fontSize", "lineHeight", "borderRadius", "opacity", "zIndex", "duration", "delay", "timeout", "transition", "animate", "animation", "rotate", "translate", "scale", "flex", "grid", "className", "style=", "style{{"];
 const IGNORE_STRING_PATTERNS = [/withdraw request/i, /lakh/i, /crore/i, /offer/i, /sale/i, /discount/i, /placeholder/i, /example/i, /sample/i, /demo/i, /welcome/i, /congratulations/i];
@@ -64,6 +67,7 @@ function isDisplayString(line: string): boolean {
   return IGNORE_STRING_PATTERNS.some((pattern) => pattern.test(line));
 }
 
+// 2: Robust Clean function
 function cleanMatchedValue(val: string): string {
   return val.replace(/^(?:>=|<=|=|:|>|<)\s*/, "");
 }
@@ -158,8 +162,7 @@ function scan(dir: string) {
         pattern.regex.lastIndex = 0;
         const matches = [...currentLine.matchAll(pattern.regex)];
         for (const match of matches) {
-          // Context-aware filtering
-          if (needsBusinessContext.includes(pattern.name) && !isBusinessRule(currentLine)) continue;
+          if (pattern.name === "Hardcoded Number" && !isBusinessRule(currentLine)) continue;
           
           const id = createId("HC");
           const fix = getFix(pattern.name);
@@ -179,7 +182,6 @@ function scan(dir: string) {
   }
 }
 
-// Execution
 scan(ROOT);
 
 const uniqueResults = Array.from(new Map(results.map(i => [`${i.file}:${i.line}:${i.column}:${i.issue}:${i.matchedValue}`, i])).values());
@@ -199,7 +201,7 @@ const governanceSummary = { businessRules: uniqueResults.filter(x => x.governanc
 const report = {
   generatedAt: new Date().toISOString(),
   scanner: "Jembee Governance Hardcoded Scanner",
-  version: "3.9.2",
+  version: "3.9.1",
   root: ROOT,
   summary: { ...statistics, severity: severitySummary, governance: governanceSummary },
   issues: uniqueResults
@@ -207,9 +209,8 @@ const report = {
 
 fs.writeFileSync(path.join(process.cwd(), "hardcoded-report.json"), JSON.stringify(report, null, 2), "utf8");
 
-// Output
 console.log("==================================");
-console.log("AI Governance Scan Finished (v3.9.2)");
+console.log("AI Governance Scan Finished (v3.9.1)");
 console.log("==================================");
 console.log(`Total Issues   : ${statistics.totalIssues}`);
 console.log(`Auto Fixable   : ${statistics.autoFixable}`);
