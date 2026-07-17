@@ -20,8 +20,10 @@ export default function AIFixPreview({
         <div className="flex items-center justify-between border-b px-5 py-3">
           <div>
             <h2 className="text-lg font-bold">AI Fix Preview</h2>
+
             <p className="text-xs text-gray-500">
               {preview.file}:{preview.lineStart}
+              {preview.column ? `:${preview.column}` : ""}
             </p>
           </div>
 
@@ -49,6 +51,18 @@ export default function AIFixPreview({
             </p>
           </div>
 
+          {preview.matchedValue && (
+            <div>
+              <p className="text-sm font-semibold">
+                Matched Value
+              </p>
+
+              <pre className="overflow-auto rounded-lg bg-yellow-50 border p-4 text-sm">
+                <code>{preview.matchedValue}</code>
+              </pre>
+            </div>
+          )}
+
           {preview.oldCode && (
             <div>
               <p className="mb-2 text-sm font-semibold">
@@ -71,12 +85,32 @@ export default function AIFixPreview({
             </pre>
           </div>
 
+          {preview.suggestion && (
+            <div>
+              <p className="text-sm font-semibold">
+                AI Suggestion
+              </p>
+
+              <p className="text-sm text-gray-700">
+                {preview.suggestion}
+              </p>
+            </div>
+          )}
+
           <div className="flex items-center justify-between border-t pt-4">
 
-            <span className="text-xs text-gray-500">
-              Auto Applicable:{" "}
-              {preview.autoApplicable ? "Yes" : "No"}
-            </span>
+            <div className="space-y-1 text-xs text-gray-500">
+              <div>
+                Auto Applicable:{" "}
+                {preview.autoApplicable ? "Yes" : "No"}
+              </div>
+
+              {preview.patchId && (
+                <div>
+                  Patch ID: {preview.patchId}
+                </div>
+              )}
+            </div>
 
             <button
               onClick={onClose}
