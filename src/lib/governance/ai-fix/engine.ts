@@ -29,7 +29,9 @@ export async function getFixSuggestion(
 
       lineStart: issue.line ?? 1,
 
-      lineEnd: issue.line ?? 1,
+      lineEnd: issue.line ?? issue.line ?? 1,
+
+      column: issue.column ?? 1,
 
       type: "replace",
 
@@ -43,7 +45,13 @@ export async function getFixSuggestion(
         issue.fixedCode ??
         "// AI could not generate replacement.",
 
-      autoApplicable: true,
+      suggestion: issue.suggestion,
+
+      matchedValue: issue.currentCode,
+
+      autoApplicable: issue.autoFix ?? false,
+
+      patchId: issue.patchId,
     },
   };
 }
