@@ -26,9 +26,8 @@ export async function GET() {
 
     // Dynamic support for both array and object structures
     const issues = Array.isArray(report)
-      ? report
-      : (report.issues ?? []);
-
+  ? report
+  : (report.findings ?? report.issues ?? []);
     const results = issues.map((item: any, index: number) => ({
       id: item.id ?? `hardcoded-${index + 1}`,
 
