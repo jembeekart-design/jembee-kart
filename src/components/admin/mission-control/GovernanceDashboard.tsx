@@ -7,37 +7,44 @@ import {
   Bug,
   Wallet,
   Cpu,
+  AlertTriangle,
 } from "lucide-react";
 
 const scanners = [
   {
     title: "Security Scanner",
     status: "Ready",
+    color: "text-green-600",
     icon: ShieldCheck,
   },
   {
     title: "Firestore Scanner",
     status: "Ready",
+    color: "text-green-600",
     icon: Database,
   },
   {
     title: "Theme Scanner",
     status: "Ready",
+    color: "text-green-600",
     icon: Palette,
   },
   {
     title: "Wallet Scanner",
     status: "Ready",
+    color: "text-green-600",
     icon: Wallet,
   },
   {
     title: "Hardcoded Rule Scanner",
-    status: "Coming Soon",
+    status: "380 Warnings Detected",
+    color: "text-yellow-600",
     icon: Bug,
   },
   {
     title: "Performance Scanner",
     status: "Coming Soon",
+    color: "text-gray-500",
     icon: Cpu,
   },
 ];
@@ -56,19 +63,30 @@ export default function GovernanceDashboard() {
           return (
             <div
               key={scanner.title}
-              className="rounded-lg border p-4 hover:shadow-sm transition"
+              className="rounded-lg border p-4 transition hover:shadow-sm"
             >
               <div className="flex items-center gap-3">
-                <Icon className="h-5 w-5 text-blue-600" />
+                <Icon
+                  className={`h-5 w-5 ${
+                    scanner.title === "Hardcoded Rule Scanner"
+                      ? "text-yellow-600"
+                      : "text-blue-600"
+                  }`}
+                />
 
-                <div>
-                  <p className="font-semibold">
-                    {scanner.title}
-                  </p>
+                <div className="flex-1">
+                  <p className="font-semibold">{scanner.title}</p>
 
-                  <p className="text-xs text-gray-500">
+                  <p className={`text-xs ${scanner.color}`}>
                     {scanner.status}
                   </p>
+
+                  {scanner.title === "Hardcoded Rule Scanner" && (
+                    <div className="mt-2 flex items-center gap-1 text-xs text-yellow-600">
+                      <AlertTriangle className="h-3 w-3" />
+                      <span>Requires Review</span>
+                    </div>
+                  )}
                 </div>
               </div>
             </div>
