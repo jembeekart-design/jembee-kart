@@ -8,6 +8,9 @@ export async function getFixSuggestion(
     return null;
   }
 
+  const line = issue.line ?? 1;
+  const column = issue.column ?? 1;
+
   return {
     scannerId: issue.id,
 
@@ -25,33 +28,44 @@ export async function getFixSuggestion(
     patch: {
       id: issue.patchId ?? crypto.randomUUID(),
 
+      patchId: issue.patchId ?? crypto.randomUUID(),
+
       file: issue.file ?? "unknown",
 
-      lineStart: issue.line ?? 1,
+      lineStart: line,
 
-      lineEnd: issue.line ?? issue.line ?? 1,
+      lineEnd: line,
 
-      column: issue.column ?? 1,
+      column,
 
       type: "replace",
 
       title: issue.name,
 
-      description: issue.message,
+      description:
+        issue.message ??
+        "Hardcoded business rule detected.",
 
-      oldCode: issue.currentCode ?? "",
+      oldCode:
+        issue.currentCode ??
+        issue.matchedValue ??
+        "",
 
       newCode:
         issue.fixedCode ??
-        "// AI could not generate replacement.",
+        "// Move this value to Firestore Admin Config",
 
-      suggestion: issue.suggestion,
+      matchedValue:
+        issue.matchedValue ??
+        issue.currentCode ??
+        "",
 
-      matchedValue: issue.currentCode,
+      suggestion:
+        issue.suggestion ??
+        "Replace hardcoded business logic with Firestore configuration.",
 
-      autoApplicable: issue.autoFix ?? false,
-
-      patchId: issue.patchId,
+      autoApplicable:
+        issue.autoFix ?? false,
     },
   };
 }
