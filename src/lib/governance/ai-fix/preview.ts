@@ -9,10 +9,18 @@ export interface PreviewResult {
   lineStart: number;
   lineEnd?: number;
 
+  column?: number;
+
   oldCode?: string;
   newCode: string;
 
+  suggestion?: string;
+
+  matchedValue?: string;
+
   autoApplicable: boolean;
+
+  patchId?: string;
 }
 
 export async function generatePreview(
@@ -27,10 +35,18 @@ export async function generatePreview(
     lineStart: suggestion.patch.lineStart,
     lineEnd: suggestion.patch.lineEnd,
 
+    column: suggestion.patch.column,
+
     oldCode: suggestion.patch.oldCode,
 
     newCode: suggestion.patch.newCode,
 
+    suggestion: suggestion.patch.suggestion,
+
+    matchedValue: suggestion.patch.matchedValue,
+
     autoApplicable: suggestion.patch.autoApplicable,
+
+    patchId: suggestion.patch.patchId,
   };
 }
