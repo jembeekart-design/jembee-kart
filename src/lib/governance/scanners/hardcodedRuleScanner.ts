@@ -1,127 +1,64 @@
 import type { ScanResult } from "../runSystemScan";
 
 export async function hardcodedRuleScanner(): Promise<ScanResult[]> {
-  const results: ScanResult[] = [];
+  try {
+    const response = await fetch("/api/governance/hardcoded", {
+      cache: "no-store",
+    });
 
-  const rules = [
-    {
-      id: "cashback-rule",
-      name: "Cashback Rules",
-      configured: true,
-    },
-    {
-      id: "commission-rule",
-      name: "Commission Rules",
-      configured: true,
-    },
-    {
-      id: "wallet-rule",
-      name: "Wallet Configuration",
-      configured: true,
-    },
-    {
-      id: "withdraw-rule",
-      name: "Withdrawal Rules",
-      configured: true,
-    },
-    {
-      id: "reward-rule",
-      name: "Reward Rules",
-      configured: true,
-    },
-    {
-      id: "watch-rule",
-      name: "Watch & Earn Rules",
-      configured: true,
-    },
-    {
-      id: "shipping-rule",
-      name: "Shipping Rules",
-      configured: true,
-    },
-    {
-      id: "gst-rule",
-      name: "GST Rules",
-      configured: true,
-    },
-    {
-      id: "feature-rule",
-      name: "Feature Flags",
-      configured: true,
-    },
-    {
-      id: "theme-rule",
-      name: "Theme Configuration",
-      configured: true,
-    },
-  ];
+    if (!response.ok) {
+      return [
+        {
+          id: "hardcoded-api-error",
+          name: "Hardcoded Rule Scanner",
+          status: "FAIL",
+          severity: "HIGH",
+          message: "Unable to load hardcoded scanner report.",
+          autoFix: false,
+        },
+      ];
+    }
 
-  for (const rule of rules) {
-    try {
-      if (rule.configured) {
-        results.push({
-          id: rule.id,
-          name: rule.name,
+    const data = await response.json();
+
+    if (!data.success) {
+      return [
+        {
+          id: "hardcoded-report-error",
+          name: "Hardcoded Rule Scanner",
+          status: "FAIL",
+          severity: "HIGH",
+          message: data.message ?? "Hardcoded scanner failed.",
+          autoFix: false,
+        },
+      ];
+    }
+
+    if (!data.results || data.results.length === 0) {
+      return [
+        {
+          id: "hardcoded-clean",
+          name: "Hardcoded Rule Scanner",
           status: "PASS",
           severity: "LOW",
-          message: "Business rule is configurable from Admin Panel.",
+          message: "No hardcoded business rules detected.",
+        },
+      ];
+    }
 
-          file: "/src/lib/governance/scanners/hardcodedRuleScanner.ts",
-          line: 1,
-        });
-      } else {
-        results.push({
-          id: rule.id,
-          name: rule.name,
-          status: "WARNING",
-          severity: "MEDIUM",
-          message: "Potential hardcoded configuration detected.",
+    return data.results as ScanResult[];
+  } catch (error) {
+    console.error("Hardcoded Rule Scanner Error:", error);
 
-          file: "/src/lib/governance/scanners/hardcodedRuleScanner.ts",
-          line: 1,
-
-          autoFix: true,
-          patchId: `${rule.id}-fix`,
-
-          currentCode: `const ${rule.id} = {
-  configurable: false
-};`,
-
-          fixedCode: `const ${rule.id} = {
-  configurable: true,
-  source: "Firestore Admin Panel"
-};`,
-
-          suggestion:
-            "Move this business rule to Firestore and manage it from the Admin Panel.",
-        });
-      }
-    } catch (error) {
-      console.error(`${rule.name} Scanner Error`, error);
-
-      results.push({
-        id: rule.id,
-        name: rule.name,
+    return [
+      {
+        id: "hardcoded-exception",
+        name: "Hardcoded Rule Scanner",
         status: "FAIL",
         severity: "HIGH",
-        message: "Unable to validate business rule configuration.",
-
-        file: "/src/lib/governance/scanners/hardcodedRuleScanner.ts",
-        line: 1,
-
-        autoFix: true,
-        patchId: `${rule.id}-error-fix`,
-
-        currentCode: "// Scanner failed",
-
-        fixedCode:
-          "// Verify Firestore connection and migrate business rules to Admin Panel.",
-
-        suggestion:
-          "Check scanner configuration and reconnect the Admin Panel settings.",
-      });
-    }
+        message: "Scanner crashed while loading report.",
+        autoFix: false,
+      },
+    ];
   }
-
-  return results;
 }
