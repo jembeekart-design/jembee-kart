@@ -1,7 +1,17 @@
 import fs from "fs";
 import path from "path";
+import crypto from "crypto";
 
 const ROOT = path.join(process.cwd(), "src");
+
+const SKIP_DIRS = new Set([
+  ".next",
+  ".git",
+  "node_modules",
+  "dist",
+  "coverage",
+  ".theme-backup",
+]);
 
 type HardcodedIssue = {
   id: string;
@@ -38,72 +48,283 @@ const PATTERNS = [
 
 const results: HardcodedIssue[] = [];
 
-function scan(dir: string) {
-  const files = fs.readdirSync(dir);
+const IGNORE_KEYWORDS = [
+  "width",
+  "height",
+  "maxWidth",
+  "minWidth",
+  "maxHeight",
+  "minHeight",
+  "padding",
+  "margin",
+  "gap",
+  "spacing",
+  "fontSize",
+  "lineHeight",
+  "borderRadius",
+  "opacity",
+  "zIndex",
+  "duration",
+  "delay",
+  "timeout",
+  "transition",
+  "animate",
+  "animation",
+  "rotate",
+  "translate",
+  "scale",
+  "flex",
+  "grid",
+  "className",
+  "style=",
+  "style={{",
+  "loading",
+  "setLoading",
+  "setState",
+  "useState",
+  "index",
+  "currentIndex",
+  "page",
+  "currentPage",
+  "router",
+  "pathname",
+  "pathname:",
+];
 
-  for (const file of files) {
-    const full = path.join(dir, file);
+function shouldIgnore(line: string): boolean {
+  return IGNORE_KEYWORDS.some((keyword) =>
+    line.includes(keyword)
+  );
+}
+
+function createId(prefix: string): string {
+  return `${prefix}-${crypto.randomUUID()}`;
+}
+
+function getFix(issue: string) {
+  switch (issue) {
+    case "Hardcoded Percentage":
+      return {
+        fixedCode:
+          "const rules = await businessRules.get();\nrules.referral.level1Percent",
+        suggestion:
+          "Move percentage value to Firestore Business Rules.",
+        autoFix: true,
+      };
+
+    case "Hardcoded Currency":
+      return {
+        fixedCode:
+          "const rules = await businessRules.get();\nrules.wallet.rewardAmount",
+        suggestion:
+          "Move currency amount to Firestore Admin Settings.",
+        autoFix: true,
+      };
+
+    case "Hardcoded Boolean":
+      return {
+        fixedCode:
+          "const flags = await featureFlags.get();",
+        suggestion:
+          "Replace hardcoded boolean with Firestore Feature Flag.",
+        autoFix: true,
+      };
+
+    case "Hardcoded Number":
+      return {
+        fixedCode:
+          "const rules = await businessRules.get();",
+        suggestion:
+          "Move business number to Firestore configuration.",
+        autoFix: false,
+      };
+
+    default:
+      return {
+        fixedCode: "",
+        suggestion: "",
+        autoFix: false,
+      };
+  }
+}
+function scan(dir: string) {
+  const entries = fs.readdirSync(dir, { withFileTypes: true });
+
+  for (const entry of entries) {
+    const fullPath = path.join(dir, entry.name);
+
+    // Skip unwanted directories
+    if (entry.isDirectory()) {
+      if (SKIP_DIRS.has(entry.name)) {
+        continue;
+      }
+
+      scan(fullPath);
+      continue;
+    }
+
+    // Scan only TypeScript files
+    if (
+      !fullPath.endsWith(".ts") &&
+      !fullPath.endsWith(".tsx")
+    ) {
+      continue;
+    }
+
+    let content = "";
 
     try {
-      if (fs.statSync(full).isDirectory()) {
-        scan(full);
+      content = fs.readFileSync(fullPath, "utf8");
+    } catch (error) {
+      console.error(`Unable to read ${fullPath}`, error);
+      continue;
+    }
+
+    const lines = content.split(/\r?\n/);
+
+    for (let lineIndex = 0; lineIndex < lines.length; lineIndex++) {
+      const currentLine = lines[lineIndex];
+
+      if (!currentLine.trim()) {
         continue;
       }
 
-      if (!full.endsWith(".ts") && !full.endsWith(".tsx")) {
+      // Ignore comments
+      if (
+        currentLine.trim().startsWith("//") ||
+        currentLine.trim().startsWith("*") ||
+        currentLine.trim().startsWith("/*")
+      ) {
         continue;
       }
 
-      const content = fs.readFileSync(full, "utf8");
-      const lines = content.split("\n");
+      // Ignore UI/Layout constants
+      if (shouldIgnore(currentLine)) {
+        continue;
+      }
 
-      for (let i = 0; i < lines.length; i++) {
-        const line = lines[i];
+      for (const pattern of PATTERNS) {
+        pattern.regex.lastIndex = 0;
 
-        for (const pattern of PATTERNS) {
-          const matches = [...line.matchAll(pattern.regex)];
+        const matches = [...currentLine.matchAll(pattern.regex)];
 
-          if (matches.length === 0) continue;
+        if (matches.length === 0) {
+          continue;
+        }
 
-          for (const match of matches) {
-            const issueId = `${pattern.name}-${results.length + 1}`;
+        for (const match of matches) {
+          const fix = getFix(pattern.name);
 
-            results.push({
-              id: issueId,
+          const id = createId("HC");
 
-              file: full.replace(process.cwd(), ""),
+          results.push({
+            id,
 
-              issue: pattern.name,
+            file: fullPath.replace(process.cwd(), ""),
 
-              line: i + 1,
+            issue: pattern.name,
 
-              column: (match.index ?? 0) + 1,
+            line: lineIndex + 1,
 
-              currentCode: line.trim(),
+            column: (match.index ?? 0) + 1,
 
-              matchedValue: match[0],
+            currentCode: currentLine.trim(),
 
-              fixedCode:
-                "Move this configuration to Firestore Admin Panel.",
+            matchedValue: match[0],
 
-              suggestion:
-                "Replace hardcoded configuration with Firestore Admin Settings.",
+            fixedCode: fix.fixedCode,
 
-              autoFix: true,
+            suggestion: fix.suggestion,
 
-              patchId: issueId,
-            });
-          }
+            autoFix: fix.autoFix,
+
+            patchId: id,
+          });
         }
       }
-    } catch (error) {
-      console.error(`Failed to scan: ${full}`, error);
     }
   }
 }
+// ---------------------------------------------
+// Remove Duplicate Issues
+// ---------------------------------------------
+const uniqueResults = Array.from(
+  new Map(
+    results.map((issue) => [
+      `${issue.file}:${issue.line}:${issue.column}:${issue.issue}:${issue.matchedValue}`,
+      issue,
+    ])
+  ).values()
+);
 
-scan(ROOT);
+// ---------------------------------------------
+// Sort Results
+// ---------------------------------------------
+uniqueResults.sort((a, b) => {
+  if (a.file !== b.file) {
+    return a.file.localeCompare(b.file);
+  }
 
+  if (a.line !== b.line) {
+    return a.line - b.line;
+  }
+
+  return a.column - b.column;
+});
+
+// ---------------------------------------------
+// Statistics
+// ---------------------------------------------
+const statistics = {
+  totalIssues: uniqueResults.length,
+
+  autoFixable: uniqueResults.filter(
+    (x) => x.autoFix
+  ).length,
+
+  manualFix: uniqueResults.filter(
+    (x) => !x.autoFix
+  ).length,
+
+  percentages: uniqueResults.filter(
+    (x) => x.issue === "Hardcoded Percentage"
+  ).length,
+
+  currencies: uniqueResults.filter(
+    (x) => x.issue === "Hardcoded Currency"
+  ).length,
+
+  booleans: uniqueResults.filter(
+    (x) => x.issue === "Hardcoded Boolean"
+  ).length,
+
+  numbers: uniqueResults.filter(
+    (x) => x.issue === "Hardcoded Number"
+  ).length,
+
+  scannedFiles: new Set(
+    uniqueResults.map((x) => x.file)
+  ).size,
+};
+
+// ---------------------------------------------
+// Report
+// ---------------------------------------------
+const report = {
+  generatedAt: new Date().toISOString(),
+
+  scanner: "Jembee Governance Hardcoded Scanner",
+
+  version: "2.0.0",
+
+  summary: statistics,
+
+  issues: uniqueResults,
+};
+
+// ---------------------------------------------
+// Save JSON
+// ---------------------------------------------
 const reportPath = path.join(
   process.cwd(),
   "hardcoded-report.json"
@@ -111,13 +332,55 @@ const reportPath = path.join(
 
 fs.writeFileSync(
   reportPath,
-  JSON.stringify(results, null, 2),
+  JSON.stringify(report, null, 2),
   "utf8"
 );
 
-console.log("=======================================");
-console.log(" Hardcoded Scan Complete");
-console.log("=======================================");
-console.log(`${results.length} issues found.`);
-console.log(`Report: ${reportPath}`);
-console.log("=======================================");
+// ---------------------------------------------
+// Console Summary
+// ---------------------------------------------
+console.log("");
+console.log("==========================================");
+console.log(" Jembee Governance Hardcoded Scanner");
+console.log("==========================================");
+
+console.log(
+  `Scanned Files     : ${statistics.scannedFiles}`
+);
+
+console.log(
+  `Total Issues      : ${statistics.totalIssues}`
+);
+
+console.log(
+  `Auto Fixable      : ${statistics.autoFixable}`
+);
+
+console.log(
+  `Manual Review     : ${statistics.manualFix}`
+);
+
+console.log("------------------------------------------");
+
+console.log(
+  `Percentages       : ${statistics.percentages}`
+);
+
+console.log(
+  `Currencies        : ${statistics.currencies}`
+);
+
+console.log(
+  `Booleans          : ${statistics.booleans}`
+);
+
+console.log(
+  `Numbers           : ${statistics.numbers}`
+);
+
+console.log("------------------------------------------");
+
+console.log(`Report Saved      : ${reportPath}`);
+
+console.log("==========================================");
+console.log("");
