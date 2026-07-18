@@ -6,22 +6,21 @@ export default function SystemTestPage() {
   const [results, setResults] = useState<any[]>([]);
   const [loading, setLoading] = useState(false);
 
+  // 'async' कीवर्ड यहाँ होना अनिवार्य है
   const runDiagnostics = async () => {
     setLoading(true);
-    const startTime = performance.now();
     
-    // Define all tasks
+    // सभी कार्यों (tasks) को यहाँ परिभाषित करें
     const tasks = [
-      { name: "Auth Check", fn: () => Diagnostics.checkAuth() },
+      { name: "Auth Check", fn: async () => await Diagnostics.checkAuth() },
       { name: "Admin Permission", fn: async () => {
           const authData = await Diagnostics.checkAuth();
-          return Diagnostics.checkAdmin(authData.uid);
+          return await Diagnostics.checkAdmin(authData.uid);
       }},
-      // Add more tasks here...
     ];
 
-    // Run parallel
-    const settledResults = await Promise.allSettled(tasks.map(t => t.fn()));
+    // 'async' का उपयोग करके कार्यों को समांतर (parallel) तरीके से चलाएं
+    const settledResults = await Promise.allSettled(tasks.map(async (t) => await t.fn()));
     
     const finalResults = settledResults.map((res, i) => ({
       name: tasks[i].name,
@@ -46,17 +45,25 @@ export default function SystemTestPage() {
         </button>
       </div>
       
-      {/* Table Rendering */}
       <table className="w-full border rounded-lg">
-        {results.map((r, i) => (
-          <tr key={i} className="border-b">
-            <td className="p-3 font-semibold">{r.name}</td>
-            <td className={`p-3 ${r.status === "PASS" ? "text-green-600" : "text-red-600"}`}>
-              {r.status}
-            </td>
-            <td className="p-3 text-sm text-gray-500">{r.message}</td>
+        <thead>
+          <tr className="bg-gray-100">
+            <th className="p-3 text-left">Test Name</th>
+            <th className="p-3 text-left">Status</th>
+            <th className="p-3 text-left">Message</th>
           </tr>
-        ))}
+        </thead>
+        <tbody>
+          {results.map((r, i) => (
+            <tr key={i} className="border-b">
+              <td className="p-3 font-semibold">{r.name}</td>
+              <td className={`p-3 font-bold ${r.status === "PASS" ? "text-green-600" : "text-red-600"}`}>
+                {r.status}
+              </td>
+              <td className="p-3 text-sm text-gray-500">{r.message}</td>
+            </tr>
+          ))}
+        </tbody>
       </table>
     </div>
   );
