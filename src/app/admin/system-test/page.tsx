@@ -1,203 +1,251 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { auth, db } from "@/firebase/config";
-import { collection, getDocs, limit, query } from "firebase/firestore";
+import {
+  collection,
+  getDocs,
+  addDoc,
+  deleteDoc,
+  doc,
+  query,
+  limit,
+} from "firebase/firestore";
 
 type TestResult = {
   name: string;
-  status: "PASS" | "FAIL" | "RUNNING";
+  status: "PASS" | "FAIL";
   message: string;
 };
 
 export default function SystemTestPage() {
-  const [tests, setTests] = useState<TestResult[]>([]);
   const [loading, setLoading] = useState(false);
   const [responseTime, setResponseTime] = useState(0);
+  const [healthScore, setHealthScore] = useState(100);
+  const [results, setResults] = useState<TestResult[]>([]);
 
+  const passCount = results.filter(
+    (item) => item.status === "PASS"
+  ).length;
+
+  const failCount = results.filter(
+    (item) => item.status === "FAIL"
+  ).length;
+
+  // 👉 Part 2 में runDiagnostics() आएगा
   async function runDiagnostics() {
-    setLoading(true);
+  setLoading(true);
 
-    const results: TestResult[] = [];
+  const start = performance.now();
 
-    // Firebase Auth
-    try {
-      if (auth) {
-        results.push({
-          name: "Firebase Auth",
-          status: "PASS",
-          message: "Initialized",
-        });
-      } else {
-        throw new Error();
-      }
-    } catch {
-      results.push({
-        name: "Firebase Auth",
-        status: "FAIL",
-        message: "Initialization Failed",
-      });
-    }
+  const testResults: TestResult[] = [];
 
-    // Firestore Read
-    try {
-      const start = performance.now();
-
-      await getDocs(query(collection(db, "settings"), limit(1)));
-
-      const end = performance.now();
-
-      setResponseTime(Math.round(end - start));
-
-      results.push({
-        name: "Firestore Read",
+  try {
+    // ==========================
+    // Internet Test
+    // ==========================
+    if (navigator.onLine) {
+      testResults.push({
+        name: "Internet Connection",
         status: "PASS",
         message: "Connected",
       });
-    } catch (e: any) {
-      results.push({
-        name: "Firestore Read",
+    } else {
+      testResults.push({
+        name: "Internet Connection",
         status: "FAIL",
-        message: e.message,
+        message: "Offline",
       });
     }
 
-    // Environment
-    results.push({
-      name: "Environment",
-      status:
-        process.env.NODE_ENV === "production" ? "PASS" : "FAIL",
-      message: process.env.NODE_ENV,
-    });
+    // ==========================
+    // Firebase Authentication
+    // ==========================
+    const user = auth.currentUser;
 
-    // Browser
-    results.push({
-      name: "Browser",
+    if (user) {
+      testResults.push({
+        name: "Firebase Auth",
+        status: "PASS",
+        message: "Logged In",
+      });
+
+      testResults.push({
+        name: "Current User UID",
+        status: "PASS",
+        message: user.uid,
+      });
+
+      testResults.push({
+        name: "Current User Email",
+        status: "PASS",
+        message: user.email ?? "No Email",
+      });
+    } else {
+      testResults.push({
+        name: "Firebase Auth",
+        status: "FAIL",
+        message: "User Not Logged In",
+      });
+    }
+
+    // ==========================
+    // Firestore Read Test
+    // ==========================
+    const q = query(
+      collection(db, "system_test"),
+      limit(1)
+    );
+
+    await getDocs(q);
+
+    testResults.push({
+      name: "Firestore Read",
       status: "PASS",
-      message: navigator.userAgent,
+      message: "Read Successful",
     });
 
-    // Online
-    results.push({
-      name: "Internet",
-      status: navigator.onLine ? "PASS" : "FAIL",
-      message: navigator.onLine ? "Online" : "Offline",
+    // ==========================
+    // Firestore Write Test
+    // ==========================
+    const docRef = await addDoc(
+      collection(db, "system_test"),
+      {
+        createdAt: Date.now(),
+        source: "System Diagnostics",
+        status: "test",
+      }
+    );
+
+    testResults.push({
+      name: "Firestore Write",
+      status: "PASS",
+      message: docRef.id,
     });
 
-    setTests(results);
-    setLoading(false);
+    // ==========================
+    // Firestore Delete Test
+    // ==========================
+    await deleteDoc(
+      doc(db, "system_test", docRef.id)
+    );
+
+    testResults.push({
+      name: "Firestore Delete",
+      status: "PASS",
+      message: "Deleted Successfully",
+    });
+
+  } catch (error: any) {
+    testResults.push({
+      name: "Diagnostics",
+      status: "FAIL",
+      message: error.message,
+    });
   }
 
-  useEffect(() => {
-    runDiagnostics();
-  }, []);
+  const end = performance.now();
 
-  const pass = tests.filter((x) => x.status === "PASS").length;
-  const fail = tests.filter((x) => x.status === "FAIL").length;
+  const time = Math.round(end - start);
 
-  return (
-    <div className="p-6 space-y-6">
+  setResponseTime(time);
 
-      <h1 className="text-3xl font-bold">
-        🔍 System Live Diagnostics
-      </h1>
+  const pass = testResults.filter(
+    (x) => x.status === "PASS"
+  ).length;
 
-      <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+  const total = testResults.length;
 
-        <div className="border rounded-xl p-4">
-          <div className="text-sm text-gray-500">PASS</div>
-          <div className="text-3xl font-bold text-green-600">
-            {pass}
-          </div>
-        </div>
+  const score =
+    total === 0
+      ? 0
+      : Math.round((pass / total) * 100);
 
-        <div className="border rounded-xl p-4">
-          <div className="text-sm text-gray-500">FAIL</div>
-          <div className="text-3xl font-bold text-red-600">
-            {fail}
-          </div>
-        </div>
+  setHealthScore(score);
 
-        <div className="border rounded-xl p-4">
-          <div className="text-sm text-gray-500">
-            Response Time
-          </div>
-          <div className="text-3xl font-bold">
-            {responseTime} ms
-          </div>
-        </div>
+  setResults(testResults);
 
-        <div className="border rounded-xl p-4">
-          <div className="text-sm text-gray-500">
-            Environment
-          </div>
-          <div className="text-xl font-bold">
-            {process.env.NODE_ENV}
-          </div>
-        </div>
+  setLoading(false);
+}
+  // ==========================
+// Admin Permission Test
+// ==========================
+try {
+  const userRef = doc(db, "users", user.uid);
+  const userSnap = await getDoc(userRef);
 
-      </div>
+  if (userSnap.exists()) {
+    const data = userSnap.data();
 
-      <button
-        onClick={runDiagnostics}
-        disabled={loading}
-        className="px-5 py-3 rounded-lg bg-blue-600 text-white"
-      >
-        {loading ? "Running..." : "Run Live Diagnostics"}
-      </button>
+    const role = String(data.role ?? "").toLowerCase();
 
-      <div className="border rounded-xl overflow-hidden">
+    if (role === "admin" || role === "superadmin") {
+      testResults.push({
+        name: "Admin Permission",
+        status: "PASS",
+        message: `Authorized (${role})`,
+      });
+    } else {
+      testResults.push({
+        name: "Admin Permission",
+        status: "FAIL",
+        message: `Access Denied (${role || "No Role"})`,
+      });
+    }
+  } else {
+    testResults.push({
+      name: "Admin Permission",
+      status: "FAIL",
+      message: "User document not found",
+    });
+  }
+} catch (e: any) {
+  testResults.push({
+    name: "Admin Permission",
+    status: "FAIL",
+    message: e.message,
+  });
+}
+  // ==========================
+// Firebase Storage Upload Test
+// ==========================
+try {
+  const fileName = `system-test/${Date.now()}.txt`;
 
-        <table className="w-full">
+  const storageRef = ref(storage, fileName);
 
-          <thead className="bg-gray-100">
-
-            <tr>
-
-              <th className="text-left p-3">Test</th>
-              <th className="text-left p-3">Status</th>
-              <th className="text-left p-3">Message</th>
-
-            </tr>
-
-          </thead>
-
-          <tbody>
-
-            {tests.map((item, index) => (
-
-              <tr key={index} className="border-t">
-
-                <td className="p-3">{item.name}</td>
-
-                <td className="p-3">
-
-                  <span
-                    className={`px-3 py-1 rounded text-white ${
-                      item.status === "PASS"
-                        ? "bg-green-600"
-                        : "bg-red-600"
-                    }`}
-                  >
-                    {item.status}
-                  </span>
-
-                </td>
-
-                <td className="p-3">
-                  {item.message}
-                </td>
-
-              </tr>
-
-            ))}
-
-          </tbody>
-
-        </table>
-
-      </div>
-
-    </div>
+  const file = new Blob(
+    [
+      `JembeeKart System Test
+Time: ${new Date().toISOString()}
+`,
+    ],
+    {
+      type: "text/plain",
+    }
   );
+
+  await uploadBytes(storageRef, file);
+
+  testResults.push({
+    name: "Storage Upload",
+    status: "PASS",
+    message: "Upload Successful",
+  });
+
+  // Delete uploaded file
+  await deleteObject(storageRef);
+
+  testResults.push({
+    name: "Storage Delete",
+    status: "PASS",
+    message: "Delete Successful",
+  });
+
+} catch (e: any) {
+  testResults.push({
+    name: "Storage Upload/Delete",
+    status: "FAIL",
+    message: e.message,
+  });
 }
