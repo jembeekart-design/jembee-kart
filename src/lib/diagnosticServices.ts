@@ -38,6 +38,10 @@ export async function storageTest() {
   return "Storage Upload/Delete Successful";
 }
 
+export async function internetCheck() {
+  return typeof navigator !== 'undefined' && navigator.onLine ? "Online" : "Offline";
+}
+
 export async function apiHealth() {
   return "API Health OK";
 }
