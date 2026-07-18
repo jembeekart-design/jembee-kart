@@ -13,14 +13,11 @@ export class JembeeGovernanceEngine {
     console.log("══════════════════════════════════════════════════════");
     console.log("");
 
-    const report =
-  await complianceReportGenerator.generate({
-    projectRoot,
-  });
+    const report = await complianceReportGenerator.generate({
+      projectRoot,
+    });
 
-    complianceReportGenerator.printConsoleReport(
-      report
-    );
+    complianceReportGenerator.printConsoleReport(report);
 
     console.log("");
     console.log("══════════════════════════════════════════════════════");
@@ -41,27 +38,12 @@ export class JembeeGovernanceEngine {
       console.warn("");
       console.warn("⚠ GOVERNANCE VIOLATIONS DETECTED");
 
-      console.warn(
-  `Critical Issues: ${report.criticalCount}`
-);
+      console.warn(`Critical Issues: ${report.criticalCount}`);
+      console.warn(`Error Issues: ${report.errorCount}`);
+      console.warn(`Warning Issues: ${report.warningCount}`);
+      console.warn(`Total Violations: ${report.totalViolations}`);
 
-
-     console.warn(
-  `Error Issues: ${report.errorCount}`
-);
-
-      console.warn(
-  `Warning Issues: ${report.warningCount}`
-);
-
-      console.warn(
-  `Total Violations: ${report.totalViolations}`
-);
-
-      console.warn(
-        "Deployment allowed (Warn Mode)"
-      );
-
+      console.warn("Deployment allowed (Warn Mode)");
       console.warn("");
 
       return;
@@ -73,5 +55,19 @@ export class JembeeGovernanceEngine {
   }
 }
 
-export const governanceEngine =
-  new JembeeGovernanceEngine();
+export const governanceEngine = new JembeeGovernanceEngine();
+
+/**
+ * Run automatically only when this file
+ * is executed directly using:
+ * npm run governance
+ */
+if (require.main === module) {
+  governanceEngine
+    .run()
+    .then(() => process.exit(0))
+    .catch((error) => {
+      console.error(error);
+      process.exit(1);
+    });
+}
