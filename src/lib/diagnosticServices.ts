@@ -2,25 +2,76 @@ import { auth, db, storage } from "@/firebase/config";
 import { collection, query, where, limit, getDocs, addDoc, deleteDoc, doc, getDoc, serverTimestamp } from "firebase/firestore";
 import { ref, uploadBytes, deleteObject } from "firebase/storage";
 
-// --- EXISTING SERVICES ---
-export async function checkAuth() {
+// --- TYPES ---
+export type AuthResult = {
+  uid: string;
+  email: string;
+  emailVerified: boolean;
+  displayName: string;
+};
+
+// --- AUTH & ADMIN SERVICES ---
+
+export async function checkAuth(): Promise<AuthResult> {
   const user = auth.currentUser;
-  if (!user) throw new Error("No authenticated user found.");
-  return `UID: ${user.uid} (${user.email ?? "Anonymous"})`;
+
+  if (!user) {
+    throw new Error("No authenticated user found.");
+  }
+
+  return {
+    uid: user.uid,
+    email: user.email ?? "Anonymous",
+    emailVerified: user.emailVerified,
+    displayName: user.displayName ?? "Anonymous",
+  };
 }
 
-export async function checkAdmin(uid: string) {
+export async function checkAdmin(uid: string): Promise<string> {
+  let userData: any = null;
+
+  // पहले document ID से खोजें
   const directDoc = await getDoc(doc(db, "users", uid));
-  const userData = directDoc.exists() ? directDoc.data() : null;
-  
-  if (!userData) throw new Error("User document not found.");
-  
+
+  if (directDoc.exists()) {
+    userData = directDoc.data();
+  } else {
+    // अगर document ID UID नहीं है तो uid field से खोजें
+    const q = query(
+      collection(db, "users"),
+      where("uid", "==", uid),
+      limit(1)
+    );
+
+    const snap = await getDocs(q);
+
+    if (!snap.empty) {
+      userData = snap.docs[0].data();
+    }
+  }
+
+  if (!userData) {
+    throw new Error("User document not found.");
+  }
+
   const role = String(userData.role ?? "").trim().toLowerCase();
-  const ADMIN_ROLES = ["admin", "superadmin", "super_admin", "owner", "developer"];
-  
-  if (!ADMIN_ROLES.includes(role)) throw new Error(`Access Denied (${role || "Unknown"})`);
+
+  const ADMIN_ROLES = [
+    "admin",
+    "superadmin",
+    "super_admin",
+    "owner",
+    "developer",
+  ];
+
+  if (!ADMIN_ROLES.includes(role)) {
+    throw new Error(`Access Denied (${role || "Unknown"})`);
+  }
+
   return `Authorized as ${role}`;
 }
+
+// --- FIRESTORE & STORAGE SERVICES ---
 
 export async function firestoreRead() {
   await getDocs(query(collection(db, "users"), limit(1)));
@@ -40,10 +91,10 @@ export async function storageTest() {
   return "Storage Upload/Delete Successful";
 }
 
-// --- NEW PRODUCTION-READY DIAGNOSTICS ---
+// --- PRODUCTION-READY DIAGNOSTICS ---
 
 export async function internetCheck() {
-  if (!navigator.onLine) throw new Error("No Internet Connection");
+  if (typeof navigator !== 'undefined' && !navigator.onLine) throw new Error("No Internet Connection");
   return "Internet Connected";
 }
 
@@ -72,6 +123,7 @@ export async function apiHealth(url = "/api/system-test") {
 }
 
 export async function browserInfo() {
+  if (typeof navigator === 'undefined') return "Server-side environment";
   return `${navigator.platform} | ${navigator.language}`;
 }
 
