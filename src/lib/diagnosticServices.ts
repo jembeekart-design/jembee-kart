@@ -1,136 +1,112 @@
-import { auth, db, storage } from "@/firebase/config";
-import { collection, query, where, limit, getDocs, addDoc, deleteDoc, doc, getDoc, serverTimestamp } from "firebase/firestore";
-import { ref, uploadBytes, deleteObject } from "firebase/storage";
+"use client";
 
-// --- TYPES ---
-export type AuthResult = {
-  uid: string;
-  email: string;
-  emailVerified: boolean;
-  displayName: string;
+import { useState } from "react";
+import * as Diagnostics from "@/lib/diagnosticServices";
+
+type Result = {
+  name: string;
+  status: "PASS" | "FAIL";
+  message: string;
 };
 
-// --- AUTH & ADMIN SERVICES ---
+export default function SystemTestPage() {
+  const [results, setResults] = useState<Result[]>([]);
+  const [loading, setLoading] = useState(false);
+  const [responseTime, setResponseTime] = useState(0);
+  const [healthScore, setHealthScore] = useState(0);
 
-export async function checkAuth(): Promise<AuthResult> {
-  const user = auth.currentUser;
+  const runDiagnostics = async () => {
+    setLoading(true);
+    const start = performance.now();
+    const tempResults: Result[] = [];
 
-  if (!user) {
-    throw new Error("No authenticated user found.");
-  }
+    const tasks = [
+      { name: "Authentication", fn: () => Diagnostics.checkAuth() },
+      { name: "Admin Permission", fn: async () => {
+          const authData = await Diagnostics.checkAuth();
+          return await Diagnostics.checkAdmin(authData.uid);
+      }},
+      { name: "Firestore Read", fn: () => Diagnostics.firestoreRead() },
+      { name: "Firestore Write", fn: () => Diagnostics.firestoreWriteDelete() }, // Write & Delete
+      { name: "Storage Test", fn: () => Diagnostics.storageTest() },
+      { name: "API Health", fn: () => Diagnostics.apiHealth() },
+      { name: "Database Latency", fn: () => Diagnostics.databaseLatency() },
+      { name: "Realtime Listener", fn: () => Diagnostics.realtimeListenerTest() },
+      { name: "Browser Info", fn: () => Diagnostics.browserInfo() },
+      { name: "Environment", fn: () => Diagnostics.environment() },
+    ];
 
-  return {
-    uid: user.uid,
-    email: user.email ?? "Anonymous",
-    emailVerified: user.emailVerified,
-    displayName: user.displayName ?? "Anonymous",
-  };
-}
-
-export async function checkAdmin(uid: string): Promise<string> {
-  let userData: any = null;
-
-  // पहले document ID से खोजें
-  const directDoc = await getDoc(doc(db, "users", uid));
-
-  if (directDoc.exists()) {
-    userData = directDoc.data();
-  } else {
-    // अगर document ID UID नहीं है तो uid field से खोजें
-    const q = query(
-      collection(db, "users"),
-      where("uid", "==", uid),
-      limit(1)
-    );
-
-    const snap = await getDocs(q);
-
-    if (!snap.empty) {
-      userData = snap.docs[0].data();
+    for (const task of tasks) {
+      try {
+        const value = await task.fn();
+        tempResults.push({ name: task.name, status: "PASS", message: String(value) });
+      } catch (e: any) {
+        tempResults.push({ name: task.name, status: "FAIL", message: e.message });
+      }
     }
-  }
 
-  if (!userData) {
-    throw new Error("User document not found.");
-  }
+    setResults(tempResults);
+    setResponseTime(Math.round(performance.now() - start));
+    const pass = tempResults.filter((r) => r.status === "PASS").length;
+    setHealthScore(Math.round((pass / tempResults.length) * 100));
+    setLoading(false);
+  };
 
-  const role = String(userData.role ?? "").trim().toLowerCase();
+  return (
+    <div className="min-h-screen bg-gray-50 p-6">
+      <div className="mx-auto max-w-5xl">
+        <header className="mb-8">
+          <h1 className="text-3xl font-bold text-gray-900">System Health Monitor</h1>
+          <p className="text-gray-500">JembeeKart Enterprise Diagnostics - {new Date().toLocaleString()}</p>
+        </header>
 
-  const ADMIN_ROLES = [
-    "admin",
-    "superadmin",
-    "super_admin",
-    "owner",
-    "developer",
-  ];
+        {/* Dashboard Stats */}
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8">
+          <StatCard title="Overall Health" value={`${healthScore}%`} color="text-blue-600" />
+          <StatCard title="Tests Passed" value={results.filter(r => r.status === "PASS").length.toString()} color="text-green-600" />
+          <StatCard title="Tests Failed" value={results.filter(r => r.status === "FAIL").length.toString()} color="text-red-600" />
+          <StatCard title="Response Time" value={`${responseTime}ms`} color="text-purple-600" />
+        </div>
 
-  if (!ADMIN_ROLES.includes(role)) {
-    throw new Error(`Access Denied (${role || "Unknown"})`);
-  }
+        <button
+          onClick={runDiagnostics}
+          disabled={loading}
+          className="w-full mb-8 bg-black text-white py-4 rounded-xl font-bold hover:bg-gray-800 disabled:opacity-50 transition"
+        >
+          {loading ? "Running Diagnostics..." : "Run System Health Check"}
+        </button>
 
-  return `Authorized as ${role}`;
+        {/* Results Table */}
+        <div className="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden">
+          <table className="w-full text-left">
+            <thead className="bg-gray-50">
+              <tr>
+                <th className="p-4 font-semibold text-gray-600">Test Name</th>
+                <th className="p-4 font-semibold text-gray-600">Status</th>
+                <th className="p-4 font-semibold text-gray-600">Details</th>
+              </tr>
+            </thead>
+            <tbody>
+              {results.map((r, i) => (
+                <tr key={i} className="border-t border-gray-100">
+                  <td className="p-4 font-medium text-gray-900">{r.name}</td>
+                  <td className={`p-4 font-bold ${r.status === "PASS" ? "text-green-600" : "text-red-600"}`}>{r.status}</td>
+                  <td className="p-4 text-gray-500 text-sm break-all">{r.message}</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  );
 }
 
-// --- FIRESTORE & STORAGE SERVICES ---
-
-export async function firestoreRead() {
-  await getDocs(query(collection(db, "users"), limit(1)));
-  return "Firestore Read Successful";
-}
-
-export async function firestoreWriteDelete() {
-  const docRef = await addDoc(collection(db, "system_test"), { createdAt: serverTimestamp(), status: "test" });
-  await deleteDoc(doc(db, "system_test", docRef.id));
-  return "Write/Delete Successful";
-}
-
-export async function storageTest() {
-  const storageRef = ref(storage, `system-test/${Date.now()}.txt`);
-  await uploadBytes(storageRef, new Blob(["Test"], { type: "text/plain" }));
-  await deleteObject(storageRef);
-  return "Storage Upload/Delete Successful";
-}
-
-// --- PRODUCTION-READY DIAGNOSTICS ---
-
-export async function internetCheck() {
-  if (typeof navigator !== 'undefined' && !navigator.onLine) throw new Error("No Internet Connection");
-  return "Internet Connected";
-}
-
-export async function databaseLatency() {
-  const start = performance.now();
-  await getDocs(query(collection(db, "users"), limit(1)));
-  return `${Math.round(performance.now() - start)} ms`;
-}
-
-export async function realtimeListenerTest() {
-  const snap = await getDocs(query(collection(db, "users"), limit(1)));
-  if (snap.empty) throw new Error("No data available");
-  return "Realtime Read Successful";
-}
-
-export async function firestoreSecurityTest() {
-  await getDocs(query(collection(db, "users"), limit(1)));
-  return "Firestore Rules Allow Read";
-}
-
-export async function apiHealth(url = "/api/system-test") {
-  const start = performance.now();
-  const response = await fetch(url, { cache: "no-store" });
-  if (!response.ok) throw new Error(`HTTP ${response.status}`);
-  return `${response.status} (${Math.round(performance.now() - start)} ms)`;
-}
-
-export async function browserInfo() {
-  if (typeof navigator === 'undefined') return "Server-side environment";
-  return `${navigator.platform} | ${navigator.language}`;
-}
-
-export async function currentTime() {
-  return new Date().toLocaleTimeString();
-}
-
-export async function environment() {
-  return process.env.NODE_ENV ?? "unknown";
+function StatCard({ title, value, color }: { title: string; value: string; color: string }) {
+  return (
+    <div className="bg-white p-5 rounded-2xl border border-gray-100 shadow-sm">
+      <p className="text-xs text-gray-400 uppercase tracking-wider">{title}</p>
+      <p className={`text-2xl font-black ${color}`}>{value}</p>
+    </div>
+  );
 }
