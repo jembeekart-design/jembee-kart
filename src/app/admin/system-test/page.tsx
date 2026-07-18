@@ -23,8 +23,8 @@ export default function SystemTestPage() {
       const tasks = [
         { name: "Authentication", fn: () => Diagnostics.checkAuth() },
         { name: "Admin Permission", fn: async () => {
-            const auth = await Diagnostics.checkAuth();
-            return Diagnostics.checkAdmin(auth.uid);
+            const authData = await Diagnostics.checkAuth();
+            return Diagnostics.checkAdmin(authData.uid);
         }},
         { name: "Firestore Read", fn: () => Diagnostics.firestoreRead() },
         { name: "Firestore Write/Delete", fn: () => Diagnostics.firestoreWriteDelete() },
@@ -39,6 +39,7 @@ export default function SystemTestPage() {
         { name: "Current Time", fn: () => Diagnostics.currentTime() },
       ];
 
+      // Parallel execution for fast performance
       const settled = await Promise.allSettled(tasks.map((t) => t.fn()));
 
       const data: Result[] = settled.map((res, index) => ({
