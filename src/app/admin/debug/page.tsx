@@ -416,7 +416,6 @@ return (
 
     </div>
   </div>
-);
       {/* Logs */}
 <div className="rounded-xl bg-white shadow border p-5 md:col-span-2 xl:col-span-3">
   <h2 className="text-xl font-bold mb-4">
