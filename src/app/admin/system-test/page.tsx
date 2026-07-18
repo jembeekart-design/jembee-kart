@@ -18,7 +18,8 @@ export default function SystemTestPage() {
       { name: "Firestore Read", fn: () => Diagnostics.firestoreRead() },
       { name: "Firestore Write", fn: () => Diagnostics.firestoreWriteDelete() },
       { name: "Storage", fn: () => Diagnostics.storageTest() },
-      { name: "API", fn: () => Diagnostics.apiHealth() }
+      { name: "Internet", fn: () => Diagnostics.internetCheck() },
+      { name: "API Health", fn: () => Diagnostics.apiHealth() }
     ];
 
     for (const task of tasks) {
@@ -34,14 +35,14 @@ export default function SystemTestPage() {
   };
 
   return (
-    <div className="p-6">
+    <div className="p-6 bg-gray-50 min-h-screen">
       <h1 className="text-2xl font-bold mb-4">System Health Monitor</h1>
       <button onClick={runDiagnostics} className="bg-blue-600 text-white px-4 py-2 rounded" disabled={loading}>
         {loading ? "Running..." : "Run Diagnostics"}
       </button>
       <div className="mt-6 space-y-2">
         {results.map((r, i) => (
-          <div key={i} className={`p-3 border rounded ${r.status === "PASS" ? "border-green-500" : "border-red-500"}`}>
+          <div key={i} className={`p-3 border rounded ${r.status === "PASS" ? "border-green-500 bg-green-50" : "border-red-500 bg-red-50"}`}>
             <strong>{r.name}:</strong> {r.message}
           </div>
         ))}
