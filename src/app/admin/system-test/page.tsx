@@ -3,117 +3,49 @@
 import { useState } from "react";
 import * as Diagnostics from "@/lib/diagnosticServices";
 
-type Result = {
-  name: string;
-  status: "PASS" | "FAIL";
-  message: string;
-};
+type Result = { name: string; status: "PASS" | "FAIL"; message: string };
 
 export default function SystemTestPage() {
   const [results, setResults] = useState<Result[]>([]);
   const [loading, setLoading] = useState(false);
-  const [responseTime, setResponseTime] = useState(0);
-  const [healthScore, setHealthScore] = useState(0);
 
   const runDiagnostics = async () => {
-    console.log("1. Started");
     setLoading(true);
-    const start = performance.now();
+    const tempResults: Result[] = [];
+    const tasks = [
+      { name: "Auth", fn: () => Diagnostics.checkAuth() },
+      { name: "Admin", fn: async () => { const a = await Diagnostics.checkAuth(); return await Diagnostics.checkAdmin(a.uid); }},
+      { name: "Firestore Read", fn: () => Diagnostics.firestoreRead() },
+      { name: "Firestore Write", fn: () => Diagnostics.firestoreWriteDelete() },
+      { name: "Storage", fn: () => Diagnostics.storageTest() },
+      { name: "API", fn: () => Diagnostics.apiHealth() }
+    ];
 
-    try {
-      console.log("2. Running Auth and Admin check...");
-
-      const auth = await Diagnostics.checkAuth();
-      const admin = await Diagnostics.checkAdmin(auth.uid);
-
-      setResults([
-        {
-          name: "Auth",
-          status: "PASS",
-          message: JSON.stringify(auth),
-        },
-        {
-          name: "Admin",
-          status: "PASS",
-          message: admin,
-        },
-      ]);
-
-      setHealthScore(100);
-      console.log("4. Results Updated");
-    } catch (e) {
-      console.error("ERROR:", e);
-      setResults([
-        {
-          name: "Diagnostics Failed",
-          status: "FAIL",
-          message: e instanceof Error ? e.message : String(e),
-        },
-      ]);
-      setHealthScore(0);
-    } finally {
-      console.log("5. Finished");
-      setResponseTime(Math.round(performance.now() - start));
-      setLoading(false);
+    for (const task of tasks) {
+      try {
+        const val = await task.fn();
+        tempResults.push({ name: task.name, status: "PASS", message: typeof val === "object" ? JSON.stringify(val) : String(val) });
+      } catch (e: any) {
+        tempResults.push({ name: task.name, status: "FAIL", message: e.message });
+      }
     }
+    setResults(tempResults);
+    setLoading(false);
   };
 
   return (
-    <div className="min-h-screen bg-gray-100 p-6">
-      <div className="mx-auto max-w-7xl">
-        <div className="mb-8 flex items-center justify-between">
-          <div>
-            <h1 className="text-3xl font-bold">🚀 System Debugger</h1>
-            <p className="text-gray-500">Checking Auth and Admin Permissions</p>
+    <div className="p-6">
+      <h1 className="text-2xl font-bold mb-4">System Health Monitor</h1>
+      <button onClick={runDiagnostics} className="bg-blue-600 text-white px-4 py-2 rounded" disabled={loading}>
+        {loading ? "Running..." : "Run Diagnostics"}
+      </button>
+      <div className="mt-6 space-y-2">
+        {results.map((r, i) => (
+          <div key={i} className={`p-3 border rounded ${r.status === "PASS" ? "border-green-500" : "border-red-500"}`}>
+            <strong>{r.name}:</strong> {r.message}
           </div>
-          <button
-            onClick={runDiagnostics}
-            disabled={loading}
-            className="rounded-lg bg-blue-600 px-6 py-3 font-semibold text-white hover:bg-blue-700 disabled:opacity-50"
-          >
-            {loading ? "Testing..." : "Run Diagnostics"}
-          </button>
-        </div>
-
-        {/* Stats Section */}
-        <div className="mb-8 grid grid-cols-2 gap-4 md:grid-cols-4">
-          <StatCard label="Health Score" value={`${healthScore}%`} color="text-green-600" />
-          <StatCard label="Time" value={`${responseTime} ms`} color="text-blue-600" />
-        </div>
-
-        {/* Results Table */}
-        <div className="overflow-hidden rounded-lg bg-white shadow">
-          <table className="w-full">
-            <thead className="bg-gray-50">
-              <tr>
-                <th className="p-4 text-left">Test Name</th>
-                <th className="p-4 text-left">Status</th>
-                <th className="p-4 text-left">Message</th>
-              </tr>
-            </thead>
-            <tbody>
-              {results.map((item, index) => (
-                <tr key={index} className="border-t">
-                  <td className="p-4 font-medium">{item.name}</td>
-                  <td className={`p-4 font-bold ${item.status === "PASS" ? "text-green-600" : "text-red-600"}`}>
-                    {item.status}
-                  </td>
-                  <td className="p-4 text-gray-600 break-all">{item.message}</td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
-        </div>
+        ))}
       </div>
-    </div>
-  );
-}
-
-function StatCard({ label, value, color }: { label: string; value: string; color: string }) {
-  return (
-    <div className="rounded-lg bg-white p-5 shadow">
-      <div className="text-sm text-gray-500">{label}</div>
-      <div className={`text-3xl font-bold ${color}`}>{value}</div>
     </div>
   );
 }
