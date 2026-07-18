@@ -1,0 +1,32 @@
+{
+  "auditSuiteMetadata": {
+    "engineSignature": "Jembee Autonomous Compliance Engine Engine Platform V10",
+    "compiledAt": "2026-07-18T12:24:41.234Z",
+    "configurationSnapshot": {
+      "scanRoot": "/data/data/com.termux/files/home/jembeekart/src",
+      "reportOutput": "hardcoded-governance-report.json",
+      "cacheSnapshot": ".governance-cache.json",
+      "exclusions": {},
+      "supportedExtensions": {},
+      "chunkSize": 15
+    }
+  },
+  "performanceProfilingMetrics": {
+    "totalFilesScanned": 500,
+    "cacheHits": 500,
+    "executionTimeMs": 281,
+    "engineThroughputFilesPerSec": 1779
+  },
+  "auditReportSummary": {
+    "totalViolationsIdentified": 0,
+    "autoFixableCount": 0,
+    "manualReviewRequiredCount": 0,
+    "severityDistribution": {
+      "Critical": 0,
+      "High": 0,
+      "Medium": 0,
+      "Low": 0
+    }
+  },
+  "findings": []
+}
