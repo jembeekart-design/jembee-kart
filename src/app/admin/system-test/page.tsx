@@ -18,52 +18,49 @@ export default function SystemTestPage() {
   const runDiagnostics = async () => {
     setLoading(true);
     const start = performance.now();
+    const tempResults: Result[] = [];
 
-    try {
-      const tasks = [
-        { name: "Authentication", fn: () => Diagnostics.checkAuth() },
-        { name: "Admin Permission", fn: async () => {
-            const authData = await Diagnostics.checkAuth();
-            return Diagnostics.checkAdmin(authData.uid);
-        }},
-        { name: "Firestore Read", fn: () => Diagnostics.firestoreRead() },
-        { name: "Firestore Write/Delete", fn: () => Diagnostics.firestoreWriteDelete() },
-        { name: "Storage Upload/Delete", fn: () => Diagnostics.storageTest() },
-        { name: "Internet", fn: () => Diagnostics.internetCheck() },
-        { name: "Database Latency", fn: () => Diagnostics.databaseLatency() },
-        { name: "Realtime Listener", fn: () => Diagnostics.realtimeListenerTest() },
-        { name: "Firestore Security", fn: () => Diagnostics.firestoreSecurityTest() },
-        { name: "API Health", fn: () => Diagnostics.apiHealth() },
-        { name: "Browser", fn: () => Diagnostics.browserInfo() },
-        { name: "Environment", fn: () => Diagnostics.environment() },
-        { name: "Current Time", fn: () => Diagnostics.currentTime() },
-      ];
+    // Tasks (एक-एक करके uncomment करें और टेस्ट करें)
+    const tasks = [
+      { name: "Auth Check", fn: () => Diagnostics.checkAuth() },
+      { name: "Admin Permission", fn: async () => { 
+          const authData = await Diagnostics.checkAuth(); 
+          return await Diagnostics.checkAdmin(authData.uid); 
+      }},
+      { name: "Firestore Read", fn: () => Diagnostics.firestoreRead() },
+      { name: "Firestore Write/Delete", fn: () => Diagnostics.firestoreWriteDelete() },
+      { name: "Storage Test", fn: () => Diagnostics.storageTest() },
+      { name: "API Health", fn: () => Diagnostics.apiHealth() },
+    ];
 
-      // Parallel execution for fast performance
-      const settled = await Promise.allSettled(tasks.map((t) => t.fn()));
-
-      const data: Result[] = settled.map((res, index) => ({
-        name: tasks[index].name,
-        status: res.status === "fulfilled" ? "PASS" : "FAIL",
-        message:
-          res.status === "fulfilled"
-            ? typeof res.value === "object"
-              ? JSON.stringify(res.value)
-              : String(res.value)
-            : res.reason instanceof Error
-            ? res.reason.message
-            : String(res.reason),
-      }));
-
-      setResults(data);
-
-      const pass = data.filter((x) => x.status === "PASS").length;
-      setHealthScore(data.length > 0 ? Math.round((pass / data.length) * 100) : 0);
-
-    } finally {
-      setResponseTime(Math.round(performance.now() - start));
-      setLoading(false);
+    // Sequential loop (Debugging के लिए बेहतरीन)
+    for (const task of tasks) {
+      try {
+        console.log("Running:", task.name);
+        const value = await task.fn();
+        
+        tempResults.push({
+          name: task.name,
+          status: "PASS",
+          message: typeof value === "object" ? JSON.stringify(value) : String(value),
+        });
+      } catch (e: any) {
+        console.error("Failed:", task.name, e);
+        tempResults.push({
+          name: task.name,
+          status: "FAIL",
+          message: e.message || "Unknown Error",
+        });
+      }
     }
+
+    setResults(tempResults);
+    setResponseTime(Math.round(performance.now() - start));
+    
+    const pass = tempResults.filter((x) => x.status === "PASS").length;
+    setHealthScore(tempResults.length > 0 ? Math.round((pass / tempResults.length) * 100) : 0);
+    
+    setLoading(false);
   };
 
   const passCount = results.filter((r) => r.status === "PASS").length;
@@ -74,28 +71,30 @@ export default function SystemTestPage() {
       <div className="mx-auto max-w-7xl">
         <div className="mb-8 flex items-center justify-between">
           <div>
-            <h1 className="text-3xl font-bold">🚀 System Health Monitor</h1>
-            <p className="text-gray-500">JembeeKart Enterprise Diagnostics</p>
+            <h1 className="text-3xl font-bold">🚀 System Debugger</h1>
+            <p className="text-gray-500">Sequential Execution Mode</p>
           </div>
           <button
             onClick={runDiagnostics}
             disabled={loading}
             className="rounded-lg bg-blue-600 px-6 py-3 font-semibold text-white hover:bg-blue-700 disabled:opacity-50"
           >
-            {loading ? "Running Diagnostics..." : "Run Diagnostics"}
+            {loading ? "Testing..." : "Run Diagnostics"}
           </button>
         </div>
 
+        {/* Stats Section */}
         <div className="mb-8 grid grid-cols-2 gap-4 md:grid-cols-4">
           <StatCard label="Health Score" value={`${healthScore}%`} color="text-green-600" />
           <StatCard label="PASS" value={passCount.toString()} color="text-green-600" />
           <StatCard label="FAIL" value={failCount.toString()} color="text-red-600" />
-          <StatCard label="Response Time" value={`${responseTime} ms`} color="text-blue-600" />
+          <StatCard label="Time" value={`${responseTime} ms`} color="text-blue-600" />
         </div>
 
+        {/* Results Table */}
         <div className="overflow-hidden rounded-lg bg-white shadow">
           <table className="w-full">
-            <thead className="bg-gray-100">
+            <thead className="bg-gray-50">
               <tr>
                 <th className="p-4 text-left">Test Name</th>
                 <th className="p-4 text-left">Status</th>
