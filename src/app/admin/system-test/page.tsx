@@ -249,3 +249,74 @@ Time: ${new Date().toISOString()}
     message: e.message,
   });
 }
+
+// ==========================
+// Firebase Storage Upload Test
+// ==========================
+try {
+  const fileName = `system-test/${Date.now()}.txt`;
+
+  const storageRef = ref(storage, fileName);
+
+  const file = new Blob(
+    [
+      `JembeeKart System Test
+Time: ${new Date().toISOString()}
+`,
+    ],
+    {
+      type: "text/plain",
+    }
+  );
+
+  await uploadBytes(storageRef, file);
+
+  testResults.push({
+    name: "Storage Upload",
+    status: "PASS",
+    message: "Upload Successful",
+  });
+
+  // Delete uploaded file
+  await deleteObject(storageRef);
+
+  testResults.push({
+    name: "Storage Delete",
+    status: "PASS",
+    message: "Delete Successful",
+  });
+
+} catch (e: any) {
+  testResults.push({
+    name: "Storage Upload/Delete",
+    status: "FAIL",
+    message: e.message,
+  });
+}
+  for (const route of apiRoutes) {
+  try {
+    const apiStart = performance.now();
+
+    const response = await fetch(route, {
+      cache: "no-store",
+    });
+
+    const apiEnd = performance.now();
+
+    const apiTime = Math.round(apiEnd - apiStart);
+
+    testResults.push({
+      name: `API ${route}`,
+      status: response.ok ? "PASS" : "FAIL",
+      message: `${response.status} (${apiTime} ms)`,
+    });
+
+  } catch (e: any) {
+    testResults.push({
+      name: `API ${route}`,
+      status: "FAIL",
+      message: e.message,
+    });
+  }
+}
+  
