@@ -21,43 +21,36 @@ export default function SystemTestPage() {
     const start = performance.now();
 
     try {
-      console.log("2. Bypassing checkAuth with Test Data");
+      console.log("2. Running Auth and Admin check...");
 
-      // Debug: checkAuth() को अस्थायी रूप से हटाकर हार्डकोडेड डेटा का उपयोग
       const auth = await Diagnostics.checkAuth();
+      const admin = await Diagnostics.checkAdmin(auth.uid);
 
-const admin = await Diagnostics.checkAdmin(auth.uid);
+      setResults([
+        {
+          name: "Auth",
+          status: "PASS",
+          message: JSON.stringify(auth),
+        },
+        {
+          name: "Admin",
+          status: "PASS",
+          message: admin,
+        },
+      ]);
 
-setResults([
-  {
-    name: "Auth",
-    status: "PASS",
-    message: JSON.stringify(auth),
-  },
-  {
-    name: "Admin",
-    status: "PASS",
-    message: admin,
-  },
-]);
-
-setHealthScore(100);
-
-      setResults([testResult]);
-      
-      // Health Score Calculation
       setHealthScore(100);
-
       console.log("4. Results Updated");
     } catch (e) {
       console.error("ERROR:", e);
       setResults([
         {
-          name: "Auth",
+          name: "Diagnostics Failed",
           status: "FAIL",
           message: e instanceof Error ? e.message : String(e),
         },
       ]);
+      setHealthScore(0);
     } finally {
       console.log("5. Finished");
       setResponseTime(Math.round(performance.now() - start));
@@ -71,7 +64,7 @@ setHealthScore(100);
         <div className="mb-8 flex items-center justify-between">
           <div>
             <h1 className="text-3xl font-bold">🚀 System Debugger</h1>
-            <p className="text-gray-500">Bypassing Auth to find the hang</p>
+            <p className="text-gray-500">Checking Auth and Admin Permissions</p>
           </div>
           <button
             onClick={runDiagnostics}
