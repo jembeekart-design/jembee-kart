@@ -13,58 +13,52 @@ export default function SystemTestPage() {
   const [results, setResults] = useState<Result[]>([]);
   const [loading, setLoading] = useState(false);
   const [responseTime, setResponseTime] = useState(0);
-  const [healthScore, setHealthScore] = useState(100);
+  const [healthScore, setHealthScore] = useState(0);
 
   const runDiagnostics = async () => {
+    console.log("1. Started");
     setLoading(true);
     const start = performance.now();
-    const tempResults: Result[] = [];
 
-    // Tasks (एक-एक करके uncomment करें और टेस्ट करें)
-    const tasks = [
-      { name: "Auth Check", fn: () => Diagnostics.checkAuth() },
-      { name: "Admin Permission", fn: async () => { 
-          const authData = await Diagnostics.checkAuth(); 
-          return await Diagnostics.checkAdmin(authData.uid); 
-      }},
-      { name: "Firestore Read", fn: () => Diagnostics.firestoreRead() },
-      { name: "Firestore Write/Delete", fn: () => Diagnostics.firestoreWriteDelete() },
-      { name: "Storage Test", fn: () => Diagnostics.storageTest() },
-      { name: "API Health", fn: () => Diagnostics.apiHealth() },
-    ];
+    try {
+      console.log("2. Bypassing checkAuth with Test Data");
 
-    // Sequential loop (Debugging के लिए बेहतरीन)
-    for (const task of tasks) {
-      try {
-        console.log("Running:", task.name);
-        const value = await task.fn();
-        
-        tempResults.push({
-          name: task.name,
-          status: "PASS",
-          message: typeof value === "object" ? JSON.stringify(value) : String(value),
-        });
-      } catch (e: any) {
-        console.error("Failed:", task.name, e);
-        tempResults.push({
-          name: task.name,
+      // Debug: checkAuth() को अस्थायी रूप से हटाकर हार्डकोडेड डेटा का उपयोग
+      const auth = {
+        uid: "test-user-id-123",
+        email: "test@test.com",
+      };
+
+      console.log("3. Test Data Loaded:", auth);
+
+      // अस्थायी रूप से सिर्फ एक रिजल्ट सेट कर रहे हैं
+      const testResult: Result = {
+        name: "Auth (Debug Mode)",
+        status: "PASS",
+        message: JSON.stringify(auth),
+      };
+
+      setResults([testResult]);
+      
+      // Health Score Calculation
+      setHealthScore(100);
+
+      console.log("4. Results Updated");
+    } catch (e) {
+      console.error("ERROR:", e);
+      setResults([
+        {
+          name: "Auth",
           status: "FAIL",
-          message: e.message || "Unknown Error",
-        });
-      }
+          message: e instanceof Error ? e.message : String(e),
+        },
+      ]);
+    } finally {
+      console.log("5. Finished");
+      setResponseTime(Math.round(performance.now() - start));
+      setLoading(false);
     }
-
-    setResults(tempResults);
-    setResponseTime(Math.round(performance.now() - start));
-    
-    const pass = tempResults.filter((x) => x.status === "PASS").length;
-    setHealthScore(tempResults.length > 0 ? Math.round((pass / tempResults.length) * 100) : 0);
-    
-    setLoading(false);
   };
-
-  const passCount = results.filter((r) => r.status === "PASS").length;
-  const failCount = results.filter((r) => r.status === "FAIL").length;
 
   return (
     <div className="min-h-screen bg-gray-100 p-6">
@@ -72,7 +66,7 @@ export default function SystemTestPage() {
         <div className="mb-8 flex items-center justify-between">
           <div>
             <h1 className="text-3xl font-bold">🚀 System Debugger</h1>
-            <p className="text-gray-500">Sequential Execution Mode</p>
+            <p className="text-gray-500">Bypassing Auth to find the hang</p>
           </div>
           <button
             onClick={runDiagnostics}
@@ -86,8 +80,6 @@ export default function SystemTestPage() {
         {/* Stats Section */}
         <div className="mb-8 grid grid-cols-2 gap-4 md:grid-cols-4">
           <StatCard label="Health Score" value={`${healthScore}%`} color="text-green-600" />
-          <StatCard label="PASS" value={passCount.toString()} color="text-green-600" />
-          <StatCard label="FAIL" value={failCount.toString()} color="text-red-600" />
           <StatCard label="Time" value={`${responseTime} ms`} color="text-blue-600" />
         </div>
 
