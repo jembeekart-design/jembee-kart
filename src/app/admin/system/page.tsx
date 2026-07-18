@@ -1,400 +1,63 @@
 "use client";
-
-export const dynamic = "force-dynamic";
-
 import { useState } from "react";
+import * as Diagnostics from "@/lib/diagnosticServices";
 
-import {
-  Server,
-  Database,
-  ShieldCheck,
-  HardDrive,
-  RefreshCcw,
-  Trash2,
-  Power,
-  Cpu,
-  Globe,
-  CheckCircle,
-  AlertTriangle
-} from "lucide-react";
+export default function SystemTestPage() {
+  const [results, setResults] = useState<any[]>([]);
+  const [loading, setLoading] = useState(false);
 
-export default function SystemPage() {
+  const runDiagnostics = async () => {
+    setLoading(true);
+    const startTime = performance.now();
+    
+    // Define all tasks
+    const tasks = [
+      { name: "Auth Check", fn: () => Diagnostics.checkAuth() },
+      { name: "Admin Permission", fn: async () => {
+          const authData = await Diagnostics.checkAuth();
+          return Diagnostics.checkAdmin(authData.uid);
+      }},
+      // Add more tasks here...
+    ];
 
-  const [
-    maintenanceMode,
-    setMaintenanceMode
-  ] = useState(false);
+    // Run parallel
+    const settledResults = await Promise.allSettled(tasks.map(t => t.fn()));
+    
+    const finalResults = settledResults.map((res, i) => ({
+      name: tasks[i].name,
+      status: res.status === "fulfilled" ? "PASS" : "FAIL",
+      message: res.status === "fulfilled" ? String(res.value) : (res as any).reason.message
+    }));
 
-  const [
-    cacheClearing,
-    setCacheClearing
-  ] = useState(false);
-
-  const [
-    deploymentRefreshing,
-    setDeploymentRefreshing
-  ] = useState(false);
-
-  function clearCache() {
-
-    setCacheClearing(true);
-
-    setTimeout(() => {
-
-      setCacheClearing(false);
-
-      alert(
-        "Cache Cleared Successfully"
-      );
-
-    }, 2000);
-  }
-
-  function refreshDeployment() {
-
-    setDeploymentRefreshing(true);
-
-    setTimeout(() => {
-
-      setDeploymentRefreshing(false);
-
-      alert(
-        "Deployment Refreshed"
-      );
-
-    }, 2000);
-  }
+    setResults(finalResults);
+    setLoading(false);
+  };
 
   return (
-
-    <main className="min-h-screen bg-[var(--primary-color)] p-4 text-[var(--button-text-color)]">
-
-      {/* HEADER */}
-
-      <div className="mb-8 flex items-center gap-4">
-
-        <div className="flex h-16 w-16 items-center justify-center rounded-[24px] bg-[var(--primary-color)]">
-
-          <Server size={30} />
-
-        </div>
-
-        <div>
-
-          <h1 className="text-3xl font-black">
-            System Dashboard
-          </h1>
-
-          <p className="mt-1 text-sm text-[var(--muted-text-color)]">
-            Advanced app & server controls
-          </p>
-
-        </div>
-
-      </div>
-
-      {/* STATUS GRID */}
-
-      <div className="grid grid-cols-2 gap-4 md:grid-cols-4">
-
-        {/* SERVER */}
-
-        <div className="rounded-[30px] bg-[var(--primary-color)] p-5">
-
-          <div className="flex items-center justify-between">
-
-            <Server
-              size={28}
-              className="text-[var(--primary-color)]"
-            />
-
-            <CheckCircle
-              size={22}
-              className="text-[var(--success-color)]"
-            />
-
-          </div>
-
-          <p className="mt-5 text-sm text-[var(--muted-text-color)]">
-            Server Status
-          </p>
-
-          <h2 className="mt-2 text-2xl font-black">
-            Online
-          </h2>
-
-        </div>
-
-        {/* FIREBASE */}
-
-        <div className="rounded-[30px] bg-[var(--primary-color)] p-5">
-
-          <div className="flex items-center justify-between">
-
-            <Database
-              size={28}
-              className="text-[var(--warning-color)]"
-            />
-
-            <CheckCircle
-              size={22}
-              className="text-[var(--success-color)]"
-            />
-
-          </div>
-
-          <p className="mt-5 text-sm text-[var(--muted-text-color)]">
-            Firebase
-          </p>
-
-          <h2 className="mt-2 text-2xl font-black">
-            Connected
-          </h2>
-
-        </div>
-
-        {/* SECURITY */}
-
-        <div className="rounded-[30px] bg-[var(--primary-color)] p-5">
-
-          <div className="flex items-center justify-between">
-
-            <ShieldCheck
-              size={28}
-              className="text-[var(--primary-color)]"
-            />
-
-            <CheckCircle
-              size={22}
-              className="text-[var(--success-color)]"
-            />
-
-          </div>
-
-          <p className="mt-5 text-sm text-[var(--muted-text-color)]">
-            Security
-          </p>
-
-          <h2 className="mt-2 text-2xl font-black">
-            Protected
-          </h2>
-
-        </div>
-
-        {/* STORAGE */}
-
-        <div className="rounded-[30px] bg-[var(--primary-color)] p-5">
-
-          <div className="flex items-center justify-between">
-
-            <HardDrive
-              size={28}
-              className="text-[var(--primary-color)]"
-            />
-
-            <AlertTriangle
-              size={22}
-              className="text-[var(--warning-color)]"
-            />
-
-          </div>
-
-          <p className="mt-5 text-sm text-[var(--muted-text-color)]">
-            Storage
-          </p>
-
-          <h2 className="mt-2 text-2xl font-black">
-            72%
-          </h2>
-
-        </div>
-
-      </div>
-
-      {/* SYSTEM INFO */}
-
-      <div className="mt-6 rounded-[30px] bg-[var(--primary-color)] p-5">
-
-        <h2 className="text-2xl font-black">
-          System Information
-        </h2>
-
-        <div className="mt-6 space-y-5">
-
-          <div className="flex items-center justify-between rounded-2xl bg-[var(--card-color)]/30 p-4">
-
-            <div className="flex items-center gap-3">
-
-              <Cpu
-                size={22}
-                className="text-[var(--primary-color)]"
-              />
-
-              <div>
-
-                <h3 className="font-bold">
-                  App Version
-                </h3>
-
-                <p className="text-sm text-[var(--muted-text-color)]">
-                  Current running version
-                </p>
-
-              </div>
-
-            </div>
-
-            <span className="rounded-full bg-[var(--primary-color)] px-4 py-2 text-sm font-bold">
-
-              v1.0.0
-
-            </span>
-
-          </div>
-
-          <div className="flex items-center justify-between rounded-2xl bg-[var(--card-color)]/30 p-4">
-
-            <div className="flex items-center gap-3">
-
-              <Globe
-                size={22}
-                className="text-[var(--success-color)]"
-              />
-
-              <div>
-
-                <h3 className="font-bold">
-                  Deployment Region
-                </h3>
-
-                <p className="text-sm text-[var(--muted-text-color)]">
-                  Current active server
-                </p>
-
-              </div>
-
-            </div>
-
-            <span className="rounded-full bg-[var(--success-color)] px-4 py-2 text-sm font-bold">
-
-              India
-
-            </span>
-
-          </div>
-
-          <div className="flex items-center justify-between rounded-2xl bg-[var(--card-color)]/30 p-4">
-
-            <div className="flex items-center gap-3">
-
-              <Power
-                size={22}
-                className="text-[var(--danger-color)]"
-              />
-
-              <div>
-
-                <h3 className="font-bold">
-                  Maintenance Mode
-                </h3>
-
-                <p className="text-sm text-[var(--muted-text-color)]">
-                  Disable public access
-                </p>
-
-              </div>
-
-            </div>
-
-            <button
-              onClick={() =>
-                setMaintenanceMode(
-                  !maintenanceMode
-                )
-              }
-              className={`rounded-full px-5 py-2 text-sm font-bold ${
-                maintenanceMode
-                  ? "bg-[var(--danger-color)]"
-                  : "bg-[var(--success-color)]"
-              }`}
-            >
-
-              {maintenanceMode
-                ? "Enabled"
-                : "Disabled"}
-
-            </button>
-
-          </div>
-
-        </div>
-
-      </div>
-
-      {/* ACTION BUTTONS */}
-
-      <div className="mt-6 grid grid-cols-1 gap-4 md:grid-cols-2">
-
-        {/* CLEAR CACHE */}
-
-        <button
-          onClick={clearCache}
-          className="rounded-[30px] bg-gradient-to-r from-[var(--primary-color)] to-[var(--primary-color)] p-6 text-left"
+    <div className="p-6">
+      <div className="flex justify-between mb-6">
+        <h1 className="text-2xl font-bold">System Health Monitor</h1>
+        <button 
+          onClick={runDiagnostics} 
+          disabled={loading}
+          className="bg-blue-600 text-white px-4 py-2 rounded"
         >
-
-          <Trash2 size={32} />
-
-          <h2 className="mt-5 text-2xl font-black">
-            {cacheClearing
-              ? "Clearing..."
-              : "Clear Cache"}
-          </h2>
-
-          <p className="mt-2 text-[var(--button-text-color)]/80">
-            Remove temporary stored files
-          </p>
-
+          {loading ? "Running Tests..." : "Run Diagnostics"}
         </button>
-
-        {/* REFRESH DEPLOYMENT */}
-
-        <button
-          onClick={
-            refreshDeployment
-          }
-          className="rounded-[30px] bg-gradient-to-r from-[var(--primary-color)] to-[var(--primary-color)] p-6 text-left"
-        >
-
-          <RefreshCcw size={32} />
-
-          <h2 className="mt-5 text-2xl font-black">
-            {deploymentRefreshing
-              ? "Refreshing..."
-              : "Refresh Deployment"}
-          </h2>
-
-          <p className="mt-2 text-[var(--button-text-color)]/80">
-            Restart deployment services
-          </p>
-
-        </button>
-
       </div>
-
-      {/* FOOTER */}
-
-      <div className="mt-6 rounded-[30px] bg-gradient-to-r from-[var(--primary-color)] to-[var(--primary-color)] p-6">
-
-        <h2 className="text-3xl font-black">
-          JembeeKart System
-        </h2>
-
-        <p className="mt-2 text-[var(--button-text-color)]/80">
-          Advanced monitoring & server management panel
-        </p>
-
-      </div>
-
-    </main>
+      
+      {/* Table Rendering */}
+      <table className="w-full border rounded-lg">
+        {results.map((r, i) => (
+          <tr key={i} className="border-b">
+            <td className="p-3 font-semibold">{r.name}</td>
+            <td className={`p-3 ${r.status === "PASS" ? "text-green-600" : "text-red-600"}`}>
+              {r.status}
+            </td>
+            <td className="p-3 text-sm text-gray-500">{r.message}</td>
+          </tr>
+        ))}
+      </table>
+    </div>
   );
 }
