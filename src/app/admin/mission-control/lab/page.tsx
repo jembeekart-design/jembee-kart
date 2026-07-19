@@ -9,6 +9,7 @@ import LiveActivityLog from "@/components/admin/mission-control/LiveActivityLog"
 import SystemHealthMonitor from "@/components/admin/mission-control/SystemHealthMonitor";
 import BuildDeploymentStatus from "@/components/admin/mission-control/BuildDeploymentStatus";
 import ScannerControlPanel from "@/components/admin/mission-control/ScannerControlPanel";
+import GovernanceCenter from "@/components/admin/mission-control/GovernanceCenter";
 
 export const metadata = {
   title: "Mission Control Lab",
@@ -31,6 +32,8 @@ export default function MissionControlLabPage() {
       <BuildDeploymentStatus />
       
       <ScannerControlPanel />
+      
+      <GovernanceCenter />
       
       {/* Project Statistics */}
       <ProjectStatistics />
