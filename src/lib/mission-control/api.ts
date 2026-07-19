@@ -88,6 +88,12 @@ export async function getNotifications() {
     `${BASE_URL}/notifications`
   );
 }
+
+export async function getAuditLogs() {
+  return request<ActivityLog[]>(
+    `${BASE_URL}/audit-logs`
+  );
+}
 /* -------------------------------------------------------------------------- */
 /*                              ACTION / POST APIs                            */
 /* -------------------------------------------------------------------------- */
