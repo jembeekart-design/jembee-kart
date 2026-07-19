@@ -4,6 +4,7 @@ import {
   ErrorLog,
   GovernanceReport,
   MissionSummary,
+  PerformanceMetrics,
   ReportItem,
   ScannerResult,
   SystemHealth,
@@ -72,6 +73,12 @@ export async function getReports() {
 export async function getErrorLogs() {
   return request<ErrorLog[]>(
     `${BASE_URL}/error-logs`
+  );
+}
+
+export async function getPerformanceMetrics() {
+  return request<PerformanceMetrics>(
+    `${BASE_URL}/performance`
   );
 }
 
