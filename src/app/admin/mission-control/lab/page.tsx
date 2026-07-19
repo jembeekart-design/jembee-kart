@@ -1,34 +1,21 @@
-import LabSidebar from "@/components/admin/mission-control/LabSidebar";
+import ProjectStatistics from "@/components/admin/mission-control/ProjectStatistics";
 import EnterpriseScannerDashboard from "@/components/admin/mission-control/EnterpriseScannerDashboard";
+import CodeQualityDashboard from "@/components/admin/mission-control/CodeQualityDashboard";
 import AutoFixCenter from "@/components/admin/mission-control/AutoFixCenter";
 import AISystemAdvisor from "@/components/admin/mission-control/AISystemAdvisor";
-import CodeQualityDashboard from "@/components/admin/mission-control/CodeQualityDashboard";
-import ProjectStatistics from "@/components/admin/mission-control/ProjectStatistics";
+
+export const metadata = {
+  title: "Mission Control Lab",
+};
 
 export default function MissionControlLabPage() {
   return (
-    <main className="min-h-screen bg-gray-50">
-
-      <div className="mx-auto flex max-w-7xl gap-6 p-8">
-
-        <LabSidebar />
-
-        <div className="flex-1 space-y-8">
-
-          <ProjectStatistics />
-
-          <EnterpriseScannerDashboard />
-
-          <CodeQualityDashboard />
-
-          <AutoFixCenter />
-
-          <AISystemAdvisor />
-
-        </div>
-
-      </div>
-
-    </main>
+    <div className="space-y-8">
+      <ProjectStatistics />
+      <EnterpriseScannerDashboard />
+      <CodeQualityDashboard />
+      <AutoFixCenter />
+      <AISystemAdvisor />
+    </div>
   );
 }
