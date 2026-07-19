@@ -6,28 +6,60 @@ import ProjectStatistics from "@/components/admin/mission-control/ProjectStatist
 
 export const metadata = {
   title: "Mission Control Lab | JembeeKart",
+  description: "Experimental AI & Governance Dashboard",
 };
 
 export default function MissionControlLabPage() {
   return (
-    <div className="mx-auto max-w-7xl space-y-8 p-8">
-      <h1 className="text-3xl font-bold">
-        🚀 Mission Control Lab
-      </h1>
+    <main className="min-h-screen bg-gray-50">
+      <div className="mx-auto max-w-7xl space-y-8 p-8">
 
-      <p className="text-gray-500">
-        Experimental dashboard for new scanners, AI features and Auto Fix tools.
-      </p>
+        {/* Header */}
+        <div className="rounded-2xl border bg-white p-8 shadow-sm">
 
-      <ProjectStatistics />
+          <div className="flex items-center justify-between">
 
-      <EnterpriseScannerDashboard />
+            <div>
 
-      <CodeQualityDashboard />
+              <h1 className="text-4xl font-bold">
+                🚀 Mission Control Lab
+              </h1>
 
-      <AutoFixCenter />
+              <p className="mt-2 text-gray-500">
+                Experimental Dashboard for AI, Governance,
+                Enterprise Scanner and Auto Fix Engine.
+              </p>
 
-      <AISystemAdvisor />
-    </div>
+            </div>
+
+            <div className="rounded-xl bg-green-100 px-4 py-2">
+
+              <span className="font-semibold text-green-700">
+                LAB MODE
+              </span>
+
+            </div>
+
+          </div>
+
+        </div>
+
+        {/* Statistics */}
+        <ProjectStatistics />
+
+        {/* Enterprise Scanner */}
+        <EnterpriseScannerDashboard />
+
+        {/* Code Quality */}
+        <CodeQualityDashboard />
+
+        {/* Auto Fix */}
+        <AutoFixCenter />
+
+        {/* AI */}
+        <AISystemAdvisor />
+
+      </div>
+    </main>
   );
 }
