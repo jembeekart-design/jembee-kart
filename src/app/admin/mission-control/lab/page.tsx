@@ -5,6 +5,7 @@ import EnterpriseScannerDashboard from "@/components/admin/mission-control/Enter
 import CodeQualityDashboard from "@/components/admin/mission-control/CodeQualityDashboard";
 import AutoFixCenter from "@/components/admin/mission-control/AutoFixCenter";
 import AISystemAdvisor from "@/components/admin/mission-control/AISystemAdvisor";
+import LiveActivityLog from "@/components/admin/mission-control/LiveActivityLog";
 
 export const metadata = {
   title: "Mission Control Lab",
@@ -20,6 +21,8 @@ export default function MissionControlLabPage() {
       {/* Recent Scan Results */}
       <RecentScanResults />
 
+      <LiveActivityLog />
+      
       {/* Project Statistics */}
       <ProjectStatistics />
 
