@@ -1,45 +1,76 @@
 import fs from "fs";
 import path from "path";
 
-export type AutoFixResult = {
+export interface AutoFixResult {
   file: string;
-  fixed: number;
-};
+  replacements: number;
+  modified: boolean;
+}
 
-const REPLACEMENTS: Record<string, string> = {
-  "bg-blue-500": "bg-[var(--primary-color)]",
-  "bg-blue-600": "bg-[var(--primary-color)]",
-  "bg-indigo-600": "bg-[var(--primary-color)]",
+const SKIP_DIRS = [
+  ".git",
+  ".next",
+  "node_modules",
+  "dist",
+  "coverage",
+  ".theme-backup",
+];
 
-  "text-blue-500": "text-[var(--primary-color)]",
-  "text-blue-600": "text-[var(--primary-color)]",
+const EXTENSIONS = [
+  ".ts",
+  ".tsx",
+  ".js",
+  ".jsx",
+];
 
-  "border-blue-500": "border-[var(--primary-color)]",
+const RULES = [
+  {
+    find: /\bbg-blue-(400|500|600|700)\b/g,
+    replace: "bg-[var(--primary-color)]",
+  },
+  {
+    find: /\btext-blue-(400|500|600|700)\b/g,
+    replace: "text-[var(--primary-color)]",
+  },
+  {
+    find: /\bborder-blue-(400|500|600|700)\b/g,
+    replace: "border-[var(--primary-color)]",
+  },
+  {
+    find: /\bbg-red-(400|500|600|700)\b/g,
+    replace: "bg-[var(--danger-color)]",
+  },
+  {
+    find: /\btext-red-(400|500|600|700)\b/g,
+    replace: "text-[var(--danger-color)]",
+  },
+  {
+    find: /\bbg-green-(400|500|600|700)\b/g,
+    replace: "bg-[var(--success-color)]",
+  },
+  {
+    find: /\btext-green-(400|500|600|700)\b/g,
+    replace: "text-[var(--success-color)]",
+  },
+];
 
-  "bg-red-500": "bg-[var(--danger-color)]",
-  "text-red-500": "text-[var(--danger-color)]",
-
-  "bg-green-500": "bg-[var(--success-color)]",
-  "text-green-500": "text-[var(--success-color)]",
-};
-
-function walk(dir: string): string[] {
-  let files: string[] = [];
+function scan(dir: string): string[] {
+  const files: string[] = [];
 
   for (const item of fs.readdirSync(dir)) {
+    if (SKIP_DIRS.includes(item)) continue;
+
     const full = path.join(dir, item);
 
-    if (fs.statSync(full).isDirectory()) {
-      files.push(...walk(full));
-    } else {
-      if (
-        full.endsWith(".tsx") ||
-        full.endsWith(".ts") ||
-        full.endsWith(".jsx") ||
-        full.endsWith(".js")
-      ) {
-        files.push(full);
-      }
+    const stat = fs.statSync(full);
+
+    if (stat.isDirectory()) {
+      files.push(...scan(full));
+      continue;
+    }
+
+    if (EXTENSIONS.some(ext => full.endsWith(ext))) {
+      files.push(full);
     }
   }
 
@@ -47,35 +78,45 @@ function walk(dir: string): string[] {
 }
 
 export async function fixHardcodedTheme() {
-  const root = path.join(process.cwd(), "src");
-
-  const files = walk(root);
+  const src = path.join(process.cwd(), "src");
 
   const report: AutoFixResult[] = [];
+
+  const files = scan(src);
 
   for (const file of files) {
     let code = fs.readFileSync(file, "utf8");
 
-    let count = 0;
+    let total = 0;
 
-    for (const oldValue in REPLACEMENTS) {
-      const newValue = REPLACEMENTS[oldValue];
+    for (const rule of RULES) {
+      const matches = code.match(rule.find);
 
-      while (code.includes(oldValue)) {
-        code = code.replace(oldValue, newValue);
-        count++;
-      }
+      if (!matches) continue;
+
+      total += matches.length;
+
+      code = code.replace(rule.find, rule.replace);
     }
 
-    if (count > 0) {
+    if (total > 0) {
       fs.writeFileSync(file, code);
 
       report.push({
         file,
-        fixed: count,
+        replacements: total,
+        modified: true,
       });
     }
   }
 
-  return report;
+  return {
+    scannedFiles: files.length,
+    modifiedFiles: report.length,
+    totalReplacements: report.reduce(
+      (sum, item) => sum + item.replacements,
+      0
+    ),
+    report,
+  };
 }
