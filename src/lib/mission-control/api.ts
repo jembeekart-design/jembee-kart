@@ -1,14 +1,15 @@
 import {
   ActivityLog,
+  BackupInfo,
   BuildInfo,
   ErrorLog,
   GovernanceReport,
   MissionSummary,
+  NotificationItem,
   PerformanceMetrics,
   ReportItem,
   ScannerResult,
   SystemHealth,
-  NotificationItem,
 } from "@/types/mission-control";
 
 const BASE_URL = "/api/mission-control";
@@ -119,5 +120,19 @@ export async function rollbackProject() {
 export async function createBackup() {
   return request<{ success: boolean; message?: string }>(
     `${BASE_URL}/backup`
+  );
+}
+
+export async function getBackups() {
+  return request<BackupInfo[]>(
+    `${BASE_URL}/backups`
+  );
+}
+
+export async function restoreBackup(
+  backupId: string
+) {
+  return request<{ success: boolean }>(
+    `${BASE_URL}/backup/${backupId}/restore`
   );
 }
