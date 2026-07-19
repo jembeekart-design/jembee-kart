@@ -1,12 +1,15 @@
 import { fixHardcodedTheme } from "./autofix/themeAutoFix";
+import { findHardcodedBusinessRules } from "./autofix/hardcodedRuleAutoFix";
 
 export interface FixModuleResult {
   module: string;
   success: boolean;
   message: string;
+  duration: number;
   fixedFiles?: number;
   fixedItems?: number;
-  duration: number;
+  scannedFiles?: number;
+  issues?: number;
 }
 
 export interface EnterpriseAutoFixReport {
@@ -14,6 +17,9 @@ export interface EnterpriseAutoFixReport {
   startedAt: string;
   finishedAt: string;
   totalDuration: number;
+  totalModules: number;
+  successModules: number;
+  failedModules: number;
   modules: FixModuleResult[];
 }
 
@@ -25,96 +31,80 @@ export class EnterpriseAutoFix {
 
     const modules: FixModuleResult[] = [];
 
-    /* =========================
+    /* ===============================
        Theme Auto Fix
-    ========================== */
+    ================================ */
 
-    {
+    try {
+
       const t = Date.now();
 
-      try {
-
-        const result = await fixHardcodedTheme();
-
-        modules.push({
-          module: "Theme Auto Fix",
-          success: true,
-          message: "Completed",
-          fixedFiles: result.modifiedFiles,
-          fixedItems: result.totalReplacements,
-          duration: Date.now() - t,
-        });
-
-      } catch (error: any) {
-
-        modules.push({
-          module: "Theme Auto Fix",
-          success: false,
-          message: error?.message ?? "Unknown Error",
-          duration: Date.now() - t,
-        });
-
-      }
-    }
-
-    /* =========================
-       Hardcoded Rule Scanner
-    ========================== */
-
-    {
-      const t = Date.now();
+      const result = await fixHardcodedTheme();
 
       modules.push({
-        module: "Business Rule Auto Fix",
+        module: "Theme Auto Fix",
         success: true,
-        message: "Module Ready",
+        message: "Completed",
+        fixedFiles: result.modifiedFiles,
+        fixedItems: result.totalReplacements,
         duration: Date.now() - t,
       });
-    }
 
-    /* =========================
-       Firestore Auto Fix
-    ========================== */
-
-    {
-      const t = Date.now();
+    } catch (e: any) {
 
       modules.push({
-        module: "Firestore Auto Fix",
-        success: true,
-        message: "Module Ready",
-        duration: Date.now() - t,
+        module: "Theme Auto Fix",
+        success: false,
+        message: e?.message ?? "Unknown Error",
+        duration: 0,
       });
+
     }
 
-    /* =========================
-       Duplicate Code
-    ========================== */
+    /* ===============================
+       Business Rule Scan
+    ================================ */
 
-    {
+    try {
+
       const t = Date.now();
 
-      modules.push({
-        module: "Duplicate Code Auto Fix",
-        success: true,
-        message: "Module Ready",
-        duration: Date.now() - t,
-      });
-    }
-
-    /* =========================
-       Admin Control
-    ========================== */
-
-    {
-      const t = Date.now();
+      const result =
+        await findHardcodedBusinessRules();
 
       modules.push({
-        module: "Admin Control Auto Fix",
+
+        module: "Business Rule Scanner",
+
         success: true,
-        message: "Module Ready",
+
+        message:
+          result.issueCount === 0
+            ? "No Hardcoded Rules Found"
+            : "Issues Found",
+
+        scannedFiles: result.scannedFiles,
+
+        issues: result.issueCount,
+
         duration: Date.now() - t,
+
       });
+
+    } catch (e: any) {
+
+      modules.push({
+
+        module: "Business Rule Scanner",
+
+        success: false,
+
+        message: e?.message ?? "Unknown Error",
+
+        duration: 0,
+
+      });
+
     }
 
     const finished = Date.now();
@@ -128,6 +118,16 @@ export class EnterpriseAutoFix {
       finishedAt: new Date(finished).toISOString(),
 
       totalDuration: finished - started,
+
+      totalModules: modules.length,
+
+      successModules: modules.filter(
+        m => m.success
+      ).length,
+
+      failedModules: modules.filter(
+        m => !m.success
+      ).length,
 
       modules,
 
