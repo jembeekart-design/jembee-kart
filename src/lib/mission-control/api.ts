@@ -8,6 +8,7 @@ import {
   ReportItem,
   ScannerResult,
   SystemHealth,
+  NotificationItem,
 } from "@/types/mission-control";
 
 const BASE_URL = "/api/mission-control";
@@ -82,6 +83,11 @@ export async function getPerformanceMetrics() {
   );
 }
 
+export async function getNotifications() {
+  return request<NotificationItem[]>(
+    `${BASE_URL}/notifications`
+  );
+}
 /* -------------------------------------------------------------------------- */
 /*                              ACTION / POST APIs                            */
 /* -------------------------------------------------------------------------- */
