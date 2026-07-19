@@ -1,6 +1,7 @@
 import {
   ActivityLog,
   BuildInfo,
+  ErrorLog,
   GovernanceReport,
   MissionSummary,
   ReportItem,
@@ -21,6 +22,10 @@ async function request<T>(url: string): Promise<T> {
 
   return response.json();
 }
+
+/* -------------------------------------------------------------------------- */
+/*                                  GET APIs                                  */
+/* -------------------------------------------------------------------------- */
 
 export async function getMissionSummary() {
   return request<MissionSummary>(
@@ -64,18 +69,36 @@ export async function getReports() {
   );
 }
 
+export async function getErrorLogs() {
+  return request<ErrorLog[]>(
+    `${BASE_URL}/error-logs`
+  );
+}
+
+/* -------------------------------------------------------------------------- */
+/*                              ACTION / POST APIs                            */
+/* -------------------------------------------------------------------------- */
+
 export async function runAllScanners() {
-  return request(`${BASE_URL}/run`);
+  return request<{ success: boolean; message?: string }>(
+    `${BASE_URL}/run`
+  );
 }
 
 export async function runAutoFix() {
-  return request(`${BASE_URL}/autofix`);
+  return request<{ success: boolean; message?: string }>(
+    `${BASE_URL}/autofix`
+  );
 }
 
 export async function rollbackProject() {
-  return request(`${BASE_URL}/rollback`);
+  return request<{ success: boolean; message?: string }>(
+    `${BASE_URL}/rollback`
+  );
 }
 
 export async function createBackup() {
-  return request(`${BASE_URL}/backup`);
+  return request<{ success: boolean; message?: string }>(
+    `${BASE_URL}/backup`
+  );
 }
