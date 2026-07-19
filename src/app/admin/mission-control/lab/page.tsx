@@ -1,3 +1,4 @@
+import MissionControlSummary from "@/components/admin/mission-control/MissionControlSummary";
 import ProjectStatistics from "@/components/admin/mission-control/ProjectStatistics";
 import EnterpriseScannerDashboard from "@/components/admin/mission-control/EnterpriseScannerDashboard";
 import CodeQualityDashboard from "@/components/admin/mission-control/CodeQualityDashboard";
@@ -6,15 +7,28 @@ import AISystemAdvisor from "@/components/admin/mission-control/AISystemAdvisor"
 
 export const metadata = {
   title: "Mission Control Lab",
+  description: "Enterprise Mission Control Dashboard for JembeeKart",
 };
 
 export default function MissionControlLabPage() {
   return (
     <div className="space-y-8">
+      {/* Live Summary */}
+      <MissionControlSummary />
+
+      {/* Project Statistics */}
       <ProjectStatistics />
+
+      {/* Enterprise Scanner */}
       <EnterpriseScannerDashboard />
+
+      {/* Code Quality */}
       <CodeQualityDashboard />
+
+      {/* Auto Fix Center */}
       <AutoFixCenter />
+
+      {/* AI Advisor */}
       <AISystemAdvisor />
     </div>
   );
