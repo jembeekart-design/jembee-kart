@@ -1,5 +1,6 @@
 import {
   ActivityLog,
+  FeatureFlag,
   BackupInfo,
   BuildInfo,
   ErrorLog,
@@ -134,5 +135,20 @@ export async function restoreBackup(
 ) {
   return request<{ success: boolean }>(
     `${BASE_URL}/backup/${backupId}/restore`
+  );
+}
+
+export async function getFeatureFlags() {
+  return request<FeatureFlag[]>(
+    `${BASE_URL}/feature-flags`
+  );
+}
+
+export async function updateFeatureFlag(
+  id: string,
+  enabled: boolean
+) {
+  return request<{ success: boolean }>(
+    `${BASE_URL}/feature-flags/${id}?enabled=${enabled}`
   );
 }
