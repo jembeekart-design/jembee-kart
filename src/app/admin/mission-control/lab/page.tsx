@@ -1,4 +1,5 @@
 import MissionControlSummary from "@/components/admin/mission-control/MissionControlSummary";
+import RecentScanResults from "@/components/admin/mission-control/RecentScanResults";
 import ProjectStatistics from "@/components/admin/mission-control/ProjectStatistics";
 import EnterpriseScannerDashboard from "@/components/admin/mission-control/EnterpriseScannerDashboard";
 import CodeQualityDashboard from "@/components/admin/mission-control/CodeQualityDashboard";
@@ -15,6 +16,9 @@ export default function MissionControlLabPage() {
     <div className="space-y-8">
       {/* Live Summary */}
       <MissionControlSummary />
+
+      {/* Recent Scan Results */}
+      <RecentScanResults />
 
       {/* Project Statistics */}
       <ProjectStatistics />
