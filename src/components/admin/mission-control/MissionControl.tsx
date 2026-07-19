@@ -6,6 +6,11 @@ import BuildDiagnostics from "./BuildDiagnostics";
 import GovernanceActions from "./GovernanceActions";
 import SystemOverview from "./SystemOverview";
 import GovernanceDashboard from "./GovernanceDashboard";
+import EnterpriseScannerDashboard from "./EnterpriseScannerDashboard";
+import AutoFixCenter from "./AutoFixCenter";
+import AISystemAdvisor from "./AISystemAdvisor";
+import CodeQualityDashboard from "./CodeQualityDashboard";
+import ProjectStatistics from "./ProjectStatistics";
 import FeatureFlagsPanel from "./FeatureFlagsPanel";
 import ScannerResults from "./ScannerResults";
 import QuickLinks from "./QuickLinks";
@@ -41,6 +46,15 @@ export default function MissionControl() {
       <GovernanceActions />
       <SystemOverview />
       <GovernanceDashboard />
+
+      {/* New Enterprise & Analysis Suite */}
+      <EnterpriseScannerDashboard />
+      <AutoFixCenter />
+      <AISystemAdvisor />
+      <CodeQualityDashboard />
+      <ProjectStatistics />
+
+      {/* Auxiliary Panels */}
       <FeatureFlagsPanel />
       <ScannerResults />
       <QuickLinks />
