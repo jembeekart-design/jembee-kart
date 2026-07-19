@@ -120,3 +120,107 @@ export async function fixHardcodedTheme() {
     report,
   };
 }
+/* ============================================================
+   BACKUP + PREVIEW + ROLLBACK
+============================================================ */
+
+const BACKUP_ROOT = path.join(process.cwd(), ".theme-backup");
+
+function ensureDirectory(dir: string) {
+  if (!fs.existsSync(dir)) {
+    fs.mkdirSync(dir, { recursive: true });
+  }
+}
+
+function backupFile(file: string) {
+  const relative = path.relative(process.cwd(), file);
+
+  const backup = path.join(
+    BACKUP_ROOT,
+    relative
+  );
+
+  ensureDirectory(path.dirname(backup));
+
+  fs.copyFileSync(file, backup);
+}
+
+export function rollbackThemeFix() {
+  if (!fs.existsSync(BACKUP_ROOT)) {
+    return {
+      success: false,
+      message: "Backup folder not found.",
+    };
+  }
+
+  const files = scan(BACKUP_ROOT);
+
+  let restored = 0;
+
+  for (const backupFilePath of files) {
+    const relative = path.relative(
+      BACKUP_ROOT,
+      backupFilePath
+    );
+
+    const original = path.join(
+      process.cwd(),
+      relative
+    );
+
+    ensureDirectory(path.dirname(original));
+
+    fs.copyFileSync(
+      backupFilePath,
+      original
+    );
+
+    restored++;
+  }
+
+  return {
+    success: true,
+    restoredFiles: restored,
+  };
+}
+
+export function previewThemeFix() {
+  const src = path.join(
+    process.cwd(),
+    "src"
+  );
+
+  const files = scan(src);
+
+  const preview = [];
+
+  for (const file of files) {
+    const code = fs.readFileSync(
+      file,
+      "utf8"
+    );
+
+    let replacements = 0;
+
+    for (const rule of RULES) {
+      const matches = code.match(rule.find);
+
+      if (matches) {
+        replacements += matches.length;
+      }
+    }
+
+    if (replacements > 0) {
+      preview.push({
+        file,
+        replacements,
+      });
+    }
+  }
+
+  return {
+    scannedFiles: files.length,
+    filesToModify: preview.length,
+    preview,
+  };
+}
