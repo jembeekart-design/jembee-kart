@@ -11,6 +11,7 @@ import BuildDeploymentStatus from "@/components/admin/mission-control/BuildDeplo
 import ScannerControlPanel from "@/components/admin/mission-control/ScannerControlPanel";
 import GovernanceCenter from "@/components/admin/mission-control/GovernanceCenter";
 import AutomationCenter from "@/components/admin/mission-control/AutomationCenter";
+import ReportsCenter from "@/components/admin/mission-control/ReportsCenter";
 
 export const metadata = {
   title: "Mission Control Lab",
@@ -37,6 +38,8 @@ export default function MissionControlLabPage() {
       <GovernanceCenter />
       
       <AutomationCenter />
+      
+      <ReportsCenter />
       
       {/* Project Statistics */}
       <ProjectStatistics />
