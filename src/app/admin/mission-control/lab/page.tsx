@@ -7,6 +7,7 @@ import AutoFixCenter from "@/components/admin/mission-control/AutoFixCenter";
 import AISystemAdvisor from "@/components/admin/mission-control/AISystemAdvisor";
 import LiveActivityLog from "@/components/admin/mission-control/LiveActivityLog";
 import SystemHealthMonitor from "@/components/admin/mission-control/SystemHealthMonitor";
+import BuildDeploymentStatus from "@/components/admin/mission-control/BuildDeploymentStatus";
 export const metadata = {
   title: "Mission Control Lab",
   description: "Enterprise Mission Control Dashboard for JembeeKart",
@@ -24,6 +25,8 @@ export default function MissionControlLabPage() {
       <LiveActivityLog />
 
       <SystemHealthMonitor />
+      
+      <BuildDeploymentStatus />
       
       {/* Project Statistics */}
       <ProjectStatistics />
