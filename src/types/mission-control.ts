@@ -84,3 +84,105 @@ export interface ErrorLog {
   createdAt: string;
   resolved: boolean;
 }
+
+/* -------------------------------------------------------------------------- */
+/*                             Performance Metrics                            */
+/* -------------------------------------------------------------------------- */
+
+export interface PerformanceMetrics {
+  cpuUsage: number;
+  memoryUsage: number;
+  diskUsage: number;
+  responseTime: number;
+  requestsPerMinute: number;
+  cacheHitRate: number;
+  databaseLatency: number;
+}
+
+/* -------------------------------------------------------------------------- */
+/*                               Notifications                                */
+/* -------------------------------------------------------------------------- */
+
+export interface NotificationItem {
+  id: string;
+  title: string;
+  message: string;
+  type: "info" | "success" | "warning" | "error";
+  createdAt: string;
+  read: boolean;
+}
+
+/* -------------------------------------------------------------------------- */
+/*                                  Storage                                   */
+/* -------------------------------------------------------------------------- */
+
+export interface StorageInfo {
+  total: number;
+  used: number;
+  free: number;
+  usagePercentage: number;
+}
+
+/* -------------------------------------------------------------------------- */
+/*                                  Security                                  */
+/* -------------------------------------------------------------------------- */
+
+export interface SecurityEvent {
+  id: string;
+  title: string;
+  severity: "low" | "medium" | "high" | "critical";
+  description: string;
+  createdAt: string;
+}
+
+/* -------------------------------------------------------------------------- */
+/*                               Admin Sessions                               */
+/* -------------------------------------------------------------------------- */
+
+export interface AdminSession {
+  id: string;
+  userId: string;
+  name: string;
+  email: string;
+  loginAt: string;
+  lastActive: string;
+  ipAddress: string;
+  status: "online" | "offline";
+}
+
+/* -------------------------------------------------------------------------- */
+/*                              Feature Flags                                 */
+/* -------------------------------------------------------------------------- */
+
+export interface FeatureFlag {
+  id: string;
+  name: string;
+  enabled: boolean;
+  description: string;
+}
+
+/* -------------------------------------------------------------------------- */
+/*                                Backup Info                                 */
+/* -------------------------------------------------------------------------- */
+
+export interface BackupInfo {
+  id: string;
+  filename: string;
+  size: number;
+  createdAt: string;
+  status: "success" | "failed" | "running";
+}
+
+/* -------------------------------------------------------------------------- */
+/*                               Deployment Info                              */
+/* -------------------------------------------------------------------------- */
+
+export interface DeploymentInfo {
+  id: string;
+  version: string;
+  branch: string;
+  commit: string;
+  environment: "development" | "staging" | "production";
+  status: "success" | "failed" | "running";
+  deployedAt: string;
+}
