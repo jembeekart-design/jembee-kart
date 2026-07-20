@@ -196,3 +196,13 @@ export interface ApiEndpoint {
   responseTime: number;
   lastChecked: string;
 }
+
+export interface SchedulerJob {
+  id: string;
+  name: string;
+  description: string;
+  enabled: boolean;
+  status: "idle" | "running" | "failed" | "completed";
+  lastRun?: string;
+  nextRun?: string;
+}
