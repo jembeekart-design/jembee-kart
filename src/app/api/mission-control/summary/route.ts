@@ -19,7 +19,6 @@ export async function GET() {
 
     return NextResponse.json({
       success: true,
-
       users: users.data().count,
       products: products.data().count,
       orders: orders.data().count,
@@ -32,16 +31,18 @@ export async function GET() {
       },
 
       buildStatus: "passing",
-
       generatedAt: new Date().toISOString(),
     });
   } catch (error) {
-    console.error(error);
+    console.error("Mission Summary Error:", error);
 
     return NextResponse.json(
       {
         success: false,
-        message: "Unable to load Mission Summary",
+        message:
+          error instanceof Error
+            ? error.message
+            : "Unknown error",
       },
       {
         status: 500,
