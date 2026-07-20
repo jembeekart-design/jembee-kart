@@ -4,11 +4,21 @@ import { collection, getDocs } from "firebase/firestore";
 
 export async function GET() {
   try {
-    const snapshot = await getDocs(collection(db, "users"));
+    const collections = ["users", "products", "orders", "notifications"];
+    const result: Record<string, number> = {};
+
+    for (const name of collections) {
+      try {
+        const snap = await getDocs(collection(db, name));
+        result[name] = snap.size;
+      } catch {
+        result[name] = -1; // Collection read failed
+      }
+    }
 
     return NextResponse.json({
       success: true,
-      count: snapshot.size,
+      result,
     });
   } catch (e: any) {
     return NextResponse.json(
