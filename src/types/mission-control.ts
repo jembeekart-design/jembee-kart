@@ -186,3 +186,13 @@ export interface DeploymentInfo {
   status: "success" | "failed" | "running";
   deployedAt: string;
 }
+
+export interface ApiEndpoint {
+  id: string;
+  name: string;
+  endpoint: string;
+  method: "GET" | "POST" | "PUT" | "PATCH" | "DELETE";
+  status: HealthStatus;
+  responseTime: number;
+  lastChecked: string;
+}
