@@ -242,3 +242,8 @@ export async function terminateAdminSession(
     `${BASE_URL}/users/${sessionId}/terminate`
   );
 }
+export async function getRealtimeStatus() {
+  return request<SystemHealth>(
+    `${BASE_URL}/realtime`
+  );
+}
