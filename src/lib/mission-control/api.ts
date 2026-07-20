@@ -1,5 +1,6 @@
 import {
   ActivityLog,
+  SecurityEvent,
   StorageInfo,
   ApiEndpoint,
   DeploymentInfo,
@@ -210,5 +211,19 @@ export async function retryApiEndpoint(
 export async function getStorageInfo() {
   return request<StorageInfo>(
     `${BASE_URL}/storage`
+  );
+}
+
+export async function getSecurityEvents() {
+  return request<SecurityEvent[]>(
+    `${BASE_URL}/security`
+  );
+}
+
+export async function resolveSecurityEvent(
+  eventId: string
+) {
+  return request<{ success: boolean }>(
+    `${BASE_URL}/security/${eventId}/resolve`
   );
 }
