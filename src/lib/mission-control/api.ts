@@ -1,6 +1,7 @@
 import {
   ActivityLog,
   FeatureFlag,
+  SchedulerJob,
   BackupInfo,
   BuildInfo,
   ErrorLog,
@@ -150,5 +151,27 @@ export async function updateFeatureFlag(
 ) {
   return request<{ success: boolean }>(
     `${BASE_URL}/feature-flags/${id}?enabled=${enabled}`
+  );
+}
+export async function getSchedulerJobs() {
+  return request<SchedulerJob[]>(
+    `${BASE_URL}/scheduler`
+  );
+}
+
+export async function runSchedulerJob(
+  jobId: string
+) {
+  return request<{ success: boolean }>(
+    `${BASE_URL}/scheduler/${jobId}/run`
+  );
+}
+
+export async function toggleSchedulerJob(
+  jobId: string,
+  enabled: boolean
+) {
+  return request<{ success: boolean }>(
+    `${BASE_URL}/scheduler/${jobId}?enabled=${enabled}`
   );
 }
