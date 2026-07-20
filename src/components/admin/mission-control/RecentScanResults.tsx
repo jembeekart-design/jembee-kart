@@ -1,5 +1,6 @@
 "use client";
 
+import { useEffect, useState } from "react";
 import {
   CheckCircle2,
   AlertTriangle,
@@ -7,34 +8,45 @@ import {
   Shield,
 } from "lucide-react";
 
-const scans = [
-  {
-    name: "Firestore Scanner",
-    status: "Passed",
-    icon: CheckCircle2,
-    time: "2 min ago",
-  },
-  {
-    name: "Theme Scanner",
-    status: "Passed",
-    icon: CheckCircle2,
-    time: "2 min ago",
-  },
-  {
-    name: "Business Rule Scanner",
-    status: "380 Warnings",
-    icon: AlertTriangle,
-    time: "3 min ago",
-  },
-  {
-    name: "Security Scanner",
-    status: "Passed",
-    icon: Shield,
-    time: "5 min ago",
-  },
-];
+interface ScanResult {
+  id: string;
+  name: string;
+  status: "passed" | "warning" | "failed";
+  message: string;
+  scannedAt: string;
+}
 
 export default function RecentScanResults() {
+  const [scans, setScans] = useState<ScanResult[]>([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    async function loadScans() {
+      try {
+        const res = await fetch("/api/mission-control/scanner-results");
+        const json = await res.json();
+
+        if (json.success) {
+          setScans(json.scanners);
+        }
+      } catch (err) {
+        console.error("Failed to load scanner results:", err);
+      } finally {
+        setLoading(false);
+      }
+    }
+
+    loadScans();
+  }, []);
+
+  if (loading) {
+    return (
+      <section className="rounded-xl border bg-white p-6 shadow-sm">
+        Loading scanner results...
+      </section>
+    );
+  }
+
   return (
     <section className="rounded-xl border bg-white p-6 shadow-sm">
       <div className="mb-6">
@@ -49,15 +61,27 @@ export default function RecentScanResults() {
 
       <div className="space-y-4">
         {scans.map((scan) => {
-          const Icon = scan.icon;
+          const Icon =
+            scan.status === "passed"
+              ? CheckCircle2
+              : scan.status === "warning"
+              ? AlertTriangle
+              : Shield;
+
+          const iconColor =
+            scan.status === "passed"
+              ? "text-blue-600"
+              : scan.status === "warning"
+              ? "text-yellow-600"
+              : "text-red-600";
 
           return (
             <div
-              key={scan.name}
+              key={scan.id}
               className="flex items-center justify-between rounded-lg border p-4"
             >
               <div className="flex items-center gap-3">
-                <Icon className="h-5 w-5 text-blue-600" />
+                <Icon className={`h-5 w-5 ${iconColor}`} />
 
                 <div>
                   <h3 className="font-medium">
@@ -65,14 +89,15 @@ export default function RecentScanResults() {
                   </h3>
 
                   <p className="text-sm text-gray-500">
-                    {scan.status}
+                    {scan.message}
                   </p>
                 </div>
               </div>
 
               <div className="flex items-center gap-2 text-sm text-gray-500">
                 <Clock className="h-4 w-4" />
-                {scan.time}
+
+                {new Date(scan.scannedAt).toLocaleTimeString()}
               </div>
             </div>
           );
