@@ -1,5 +1,6 @@
 import {
   ActivityLog,
+  ApiEndpoint,
   DeploymentInfo,
   FeatureFlag,
   SchedulerJob,
@@ -188,5 +189,19 @@ export async function redeployProject(
 ) {
   return request<{ success: boolean }>(
     `${BASE_URL}/deployments/${deploymentId}/redeploy`
+  );
+}
+
+export async function getApiMonitor() {
+  return request<ApiEndpoint[]>(
+    `${BASE_URL}/api-monitor`
+  );
+}
+
+export async function retryApiEndpoint(
+  endpointId: string
+) {
+  return request<{ success: boolean }>(
+    `${BASE_URL}/api-monitor/${endpointId}/retry`
   );
 }
