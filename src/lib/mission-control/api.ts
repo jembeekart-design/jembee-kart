@@ -1,5 +1,6 @@
 import {
   ActivityLog,
+  DeploymentInfo,
   FeatureFlag,
   SchedulerJob,
   BackupInfo,
@@ -173,5 +174,19 @@ export async function toggleSchedulerJob(
 ) {
   return request<{ success: boolean }>(
     `${BASE_URL}/scheduler/${jobId}?enabled=${enabled}`
+  );
+}
+
+export async function getDeployments() {
+  return request<DeploymentInfo[]>(
+    `${BASE_URL}/deployments`
+  );
+}
+
+export async function redeployProject(
+  deploymentId: string
+) {
+  return request<{ success: boolean }>(
+    `${BASE_URL}/deployments/${deploymentId}/redeploy`
   );
 }
