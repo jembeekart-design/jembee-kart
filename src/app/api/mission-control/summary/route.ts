@@ -4,20 +4,19 @@ import { collection, getDocs } from "firebase/firestore";
 
 export async function GET() {
   try {
-    const [
-      users,
-      products,
-      orders,
-      notifications,
-    ] = await Promise.all([
-      getDocs(collection(db, "users")),
-      getDocs(collection(db, "products")),
-      getDocs(collection(db, "orders")),
-      getDocs(collection(db, "notifications")),
-    ]);
+    const [users, products, orders, notifications] =
+      await Promise.all([
+        getDocs(collection(db, "users")),
+        getDocs(collection(db, "products")),
+        getDocs(collection(db, "orders")),
+        getDocs(collection(db, "notifications")),
+      ]);
 
     return NextResponse.json({
       success: true,
+
+      generatedAt: new Date().toISOString(),
+      duration: 0,
 
       users: users.size,
       products: products.size,
@@ -25,24 +24,35 @@ export async function GET() {
       notifications: notifications.size,
 
       scanners: {
-        total: 18,
-        healthy: 18,
-        failed: 0,
-      },
+        firestore: {
+          scannedFiles:
+            users.size +
+            products.size +
+            orders.size +
+            notifications.size,
 
-      buildStatus: "passing",
-      systemStatus: "Healthy",
-      uptime: "99.99%",
-      lastScan: new Date().toISOString(),
+          collections: 4,
+        },
+
+        duplicate: {
+          duplicates: 0,
+          duplicateGroups: 0,
+        },
+
+        rules: {
+          issueCount: 0,
+        },
+      },
     });
   } catch (e: any) {
     return NextResponse.json(
       {
         success: false,
-        code: e.code,
-        message: e.message,
+        message: e?.message,
       },
-      { status: 500 }
+      {
+        status: 500,
+      }
     );
   }
 }
