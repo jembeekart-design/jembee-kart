@@ -1,5 +1,6 @@
 import {
   ActivityLog,
+  StorageInfo,
   ApiEndpoint,
   DeploymentInfo,
   FeatureFlag,
@@ -203,5 +204,11 @@ export async function retryApiEndpoint(
 ) {
   return request<{ success: boolean }>(
     `${BASE_URL}/api-monitor/${endpointId}/retry`
+  );
+}
+
+export async function getStorageInfo() {
+  return request<StorageInfo>(
+    `${BASE_URL}/storage`
   );
 }
