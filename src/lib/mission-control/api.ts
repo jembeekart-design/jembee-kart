@@ -1,5 +1,6 @@
 import {
   ActivityLog,
+  AdminSession,
   SecurityEvent,
   StorageInfo,
   ApiEndpoint,
@@ -225,5 +226,19 @@ export async function resolveSecurityEvent(
 ) {
   return request<{ success: boolean }>(
     `${BASE_URL}/security/${eventId}/resolve`
+  );
+}
+
+export async function getAdminSessions() {
+  return request<AdminSession[]>(
+    `${BASE_URL}/users`
+  );
+}
+
+export async function terminateAdminSession(
+  sessionId: string
+) {
+  return request<{ success: boolean }>(
+    `${BASE_URL}/users/${sessionId}/terminate`
   );
 }
