@@ -326,8 +326,6 @@ async function runDuplicateScanner(
 
     name: "Duplicate Code Scanner",
 
-    success: true,
-
     duration,
 
     scannedFiles: files.length,
