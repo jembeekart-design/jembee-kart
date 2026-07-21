@@ -49,6 +49,24 @@ const actions = [
 ];
 
 export default function AutomationCenter() {
+
+  const runScanners = async () => {
+    try {
+      const res = await fetch("/api/mission-control/run", {
+        method: "POST",
+      });
+
+      const data = await res.json();
+
+      console.log(data);
+
+      alert("Scanners completed successfully!");
+    } catch (err) {
+      console.error(err);
+      alert("Failed to run scanners.");
+    }
+  };
+
   return (
     <section className="rounded-xl border bg-white p-6 shadow-sm">
       <div className="mb-6">
@@ -80,9 +98,17 @@ export default function AutomationCenter() {
                 {action.description}
               </p>
 
-              <button className="mt-5 w-full rounded-lg bg-blue-600 px-4 py-2 text-white transition hover:bg-blue-700">
+              <button
+                onClick={() => {
+                  if (action.title === "Run All Scanners") {
+                    runScanners();
+                  }
+                }}
+                className="mt-5 w-full rounded-lg bg-blue-600 px-4 py-2 text-white transition hover:bg-blue-700"
+              >
                 {action.button}
               </button>
+
             </div>
           );
         })}
