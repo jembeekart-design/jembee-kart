@@ -38,9 +38,9 @@ export async function POST() {
       },
 
       duplicate: {
-        scannedFiles: duplicate.scannedFiles,
-        issues: duplicate.issueCount,
-      },
+  scannedFiles: duplicate.scannedItems,
+  issues: duplicate.issues.length,
+},
 
       rules: {
         scannedFiles: businessRules.scannedFiles,
