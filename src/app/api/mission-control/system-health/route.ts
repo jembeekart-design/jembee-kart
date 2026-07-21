@@ -1,120 +1,181 @@
-import { NextResponse } from "next/server";
+"use client";
 
-import { db } from "@/firebase/config";
-import { collection, getDocs } from "firebase/firestore";
+import { useEffect, useState } from "react";
+import {
+  Cpu,
+  Activity,
+  Database,
+  ShieldCheck,
+  Globe,
+  Clock,
+} from "lucide-react";
 
-export const dynamic = "force-dynamic";
+interface HealthResponse {
+  success: boolean;
 
-export async function GET() {
-  const startedAt = Date.now();
+  generatedAt: string;
 
-  try {
-    /* ------------------------------------------ */
-    /* Environment Validation                     */
-    /* ------------------------------------------ */
+  api: {
+    status: string;
+    responseTime: number;
+  };
 
-    const requiredEnv = [
-      "NEXT_PUBLIC_FIREBASE_API_KEY",
-      "NEXT_PUBLIC_FIREBASE_AUTH_DOMAIN",
-      "NEXT_PUBLIC_FIREBASE_PROJECT_ID",
-      "NEXT_PUBLIC_FIREBASE_STORAGE_BUCKET",
-      "NEXT_PUBLIC_FIREBASE_MESSAGING_SENDER_ID",
-      "NEXT_PUBLIC_FIREBASE_APP_ID",
-    ];
+  database: {
+    connected: boolean;
+    status: string;
+    users: number;
+  };
 
-    const missingEnv = requiredEnv.filter(
-      (key) => !process.env[key]
-    );
+  environment: {
+    valid: boolean;
+    missing: number;
+  };
 
-    /* ------------------------------------------ */
-    /* Firestore Health Check                     */
-    /* ------------------------------------------ */
+  scanners: {
+    total: number;
+    healthy: number;
+    failed: number;
+  };
 
-    const usersSnapshot = await getDocs(
-      collection(db, "users")
-    );
+  system: {
+    status: string;
+    cpuUsage: number | null;
+    memoryUsage: number | null;
+  };
+}
 
-    const databaseConnected = usersSnapshot !== undefined;
+export default function SystemHealthMonitor() {
+  const [data, setData] = useState<HealthResponse | null>(null);
+  const [loading, setLoading] = useState(true);
 
-    /* ------------------------------------------ */
-    /* Response Time                              */
-    /* ------------------------------------------ */
+  useEffect(() => {
+    async function loadHealth() {
+      try {
+        const res = await fetch(
+          "/api/mission-control/system-health",
+          {
+            cache: "no-store",
+          }
+        );
 
-    const responseTime = Date.now() - startedAt;
+        const json = await res.json();
 
-    return NextResponse.json(
-      {
-        success: true,
-
-        generatedAt: new Date().toISOString(),
-
-        runtime: {
-          node: process.version,
-          platform: process.platform,
-          environment: process.env.NODE_ENV,
-        },
-
-        database: {
-          connected: databaseConnected,
-          collectionsChecked: 1,
-          users: usersSnapshot.size,
-          status: databaseConnected
-            ? "Healthy"
-            : "Disconnected",
-        },
-
-        api: {
-          status: "Operational",
-          responseTime,
-        },
-
-        environment: {
-          total: requiredEnv.length,
-          missing: missingEnv.length,
-          valid: missingEnv.length === 0,
-          missingKeys: missingEnv,
-        },
-
-        scanners: {
-          total: 18,
-          healthy: 18,
-          failed: 0,
-        },
-
-        system: {
-          /*
-           * इन metrics के लिए अलग monitoring service
-           * या Vercel Observability चाहिए।
-           */
-
-          cpuUsage: null,
-          memoryUsage: null,
-          uptime: null,
-
-          status: "Healthy",
-        },
-      },
-      {
-        headers: {
-          "Cache-Control": "no-store",
-        },
+        setData(json);
+      } catch (err) {
+        console.error(err);
+      } finally {
+        setLoading(false);
       }
-    );
-  } catch (error: any) {
-    return NextResponse.json(
-      {
-        success: false,
+    }
 
-        generatedAt: new Date().toISOString(),
+    loadHealth();
+  }, []);
 
-        error: {
-          code: error?.code ?? "UNKNOWN",
-          message: error?.message ?? "Unknown error",
-        },
-      },
-      {
-        status: 500,
-      }
+  if (loading) {
+    return (
+      <section className="rounded-xl border bg-white p-6 shadow-sm">
+        Loading System Health...
+      </section>
     );
   }
+
+  if (!data?.success) {
+    return (
+      <section className="rounded-xl border border-red-300 bg-red-50 p-6">
+        Failed to load System Health.
+      </section>
+    );
+  }
+
+  const cards = [
+    {
+      title: "CPU Usage",
+      value:
+        data.system.cpuUsage === null
+          ? "N/A"
+          : `${data.system.cpuUsage}%`,
+      status: data.system.status,
+      icon: Cpu,
+    },
+
+    {
+      title: "API Status",
+      value: data.api.status,
+      status: `${data.api.responseTime} ms`,
+      icon: Globe,
+    },
+
+    {
+      title: "Database",
+      value: data.database.status,
+      status: `${data.database.users} Users`,
+      icon: Database,
+    },
+
+    {
+      title: "Environment",
+      value: data.environment.valid
+        ? "Valid"
+        : "Invalid",
+      status: `${data.environment.missing} Missing`,
+      icon: ShieldCheck,
+    },
+
+    {
+      title: "Scanners",
+      value: `${data.scanners.healthy}/${data.scanners.total}`,
+      status: `${data.scanners.failed} Failed`,
+      icon: Activity,
+    },
+
+    {
+      title: "Last Updated",
+      value: new Date(
+        data.generatedAt
+      ).toLocaleTimeString(),
+      status: "Live",
+      icon: Clock,
+    },
+  ];
+
+  return (
+    <section className="rounded-xl border bg-white p-6 shadow-sm">
+      <div className="mb-6">
+        <h2 className="text-2xl font-bold">
+          System Health Monitor
+        </h2>
+
+        <p className="text-sm text-gray-500">
+          Live infrastructure status
+        </p>
+      </div>
+
+      <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-3">
+        {cards.map((card) => {
+          const Icon = card.icon;
+
+          return (
+            <div
+              key={card.title}
+              className="rounded-xl border p-5"
+            >
+              <Icon className="mb-3 h-7 w-7 text-green-600" />
+
+              <h3 className="text-sm text-gray-500">
+                {card.title}
+              </h3>
+
+              <p className="mt-2 text-2xl font-bold">
+                {card.value}
+              </p>
+
+              <p className="mt-1 text-sm text-green-600">
+                {card.status}
+              </p>
+            </div>
+          );
+        })}
+      </div>
+    </section>
+  );
 }
