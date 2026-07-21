@@ -324,8 +324,6 @@ async function runDuplicateScanner(
 
     id: crypto.randomUUID(),
 
-    scanner: "duplicate-code",
-
     name: "Duplicate Code Scanner",
 
     success: true,
