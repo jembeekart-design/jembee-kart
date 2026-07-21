@@ -1,22 +1,15 @@
 import {
-  EnterpriseScanner,
   EnterpriseScannerResult,
   ScannerContext,
   ScannerResult,
 } from "./types";
 
-import { firestoreScanner } from "./firestoreScanner";
-import { duplicateCodeScanner } from "./duplicateCodeScanner";
+import { scanFirestore } from "./firestoreScanner";
 
 export interface RunScannerOptions {
   executionId: string;
   scanners?: "all" | string[];
 }
-
-const availableScanners: EnterpriseScanner[] = [
-  firestoreScanner,
-  duplicateCodeScanner,
-];
 
 export async function runEnterpriseScanners(
   options: RunScannerOptions
@@ -33,75 +26,40 @@ export async function runEnterpriseScanners(
     timestamp: new Date().toISOString(),
   };
 
-  const selected =
-    options.scanners === "all" || !options.scanners
-      ? availableScanners
-      : availableScanners.filter(scanner =>
-          options.scanners!.includes(scanner.id)
-        );
+  const scan = await scanFirestore();
 
-  const results: ScannerResult[] = [];
-
-  for (const scanner of selected) {
-    try {
-      const result = await scanner.run(context);
-      results.push(result);
-    } catch (error: any) {
-      const now = new Date().toISOString();
-
-      results.push({
-        id: scanner.id,
-        name: scanner.name,
-        status: "failed",
-        startedAt: now,
-        finishedAt: now,
-        duration: 0,
-        scannedItems: 0,
-        passed: 0,
-        warnings: 0,
-        failed: 1,
-        issues: [
-          {
-            id: crypto.randomUUID(),
-            title: "Scanner Execution Failed",
-            description:
-              error?.message ??
-              "Unexpected scanner error",
-            severity: "critical",
-          },
-        ],
-      });
-    }
-  }
-
-  const summary = results.reduce(
-    (acc, scanner) => {
-      acc.total++;
-
-      if (scanner.status === "passed") acc.passed++;
-      if (scanner.status === "warning") acc.warnings++;
-      if (scanner.status === "failed") acc.failed++;
-
-      return acc;
-    },
-    {
-      total: 0,
-      passed: 0,
-      warnings: 0,
-      failed: 0,
-    }
-  );
+  const result: ScannerResult = {
+    id: "firestore",
+    name: "Firestore Scanner",
+    status: scan.issueCount > 0 ? "warning" : "passed",
+    startedAt: new Date(started).toISOString(),
+    finishedAt: new Date().toISOString(),
+    duration: Date.now() - started,
+    scannedItems: scan.scannedFiles,
+    passed: scan.issueCount === 0 ? scan.scannedFiles : 0,
+    warnings: scan.issueCount,
+    failed: 0,
+    issues: scan.issues.map((issue) => ({
+      id: crypto.randomUUID(),
+      title: issue.type,
+      description: issue.value,
+      severity: "medium",
+      file: issue.file,
+      line: issue.line,
+      recommendation: "Review Firestore usage.",
+    })),
+  };
 
   return {
     executionId: options.executionId,
     startedAt: new Date(started).toISOString(),
     finishedAt: new Date().toISOString(),
     duration: Date.now() - started,
-    success: summary.failed === 0,
-    total: summary.total,
-    passed: summary.passed,
-    warnings: summary.warnings,
-    failed: summary.failed,
-    scanners: results,
+    success: true,
+    total: 1,
+    passed: result.status === "passed" ? 1 : 0,
+    warnings: result.status === "warning" ? 1 : 0,
+    failed: 0,
+    scanners: [result],
   };
 }
