@@ -284,16 +284,9 @@ function buildIssues(
         `${group.blocks.length} duplicate blocks detected.`,
       file: group.blocks[0].file,
       line: group.blocks[0].startLine,
-      scanner: "duplicate-code",
       recommendation:
         "Extract shared logic into a reusable utility or component.",
-      metadata: {
-        hash: group.hash,
-        occurrences: group.blocks.length,
-        files: group.blocks.map(
-          block => block.file
-        ),
-      },
+      
     });
 
   }
