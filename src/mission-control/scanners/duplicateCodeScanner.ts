@@ -321,49 +321,42 @@ async function runDuplicateScanner(
     );
 
   return {
+  id: crypto.randomUUID(),
 
-    id: crypto.randomUUID(),
+  name: "Duplicate Code Scanner",
 
-    name: "Duplicate Code Scanner",
+  status: issues.length === 0 ? "passed" : "warning",
 
-    duration,
+  startedAt: new Date(started).toISOString(),
 
-    scannedItems: files.length,
+  finishedAt: new Date().toISOString(),
 
-passed: issues.length === 0 ? files.length : 0,
+  duration,
 
-warnings: issues.length,
+  scannedItems: files.length,
 
-failed: 0,
+  passed: issues.length === 0 ? files.length : 0,
 
-    issues,
+  warnings: issues.length,
 
-    metadata: {
+  failed: 0,
 
-      scannedBlocks: blocks.length,
+  issues,
 
-      duplicateGroups:
-        duplicateGroups.length,
-
-      qualityScore,
-
-    },
-
-  };
+  metadata: {
+    scannedBlocks: blocks.length,
+    duplicateGroups: duplicateGroups.length,
+    qualityScore,
+  },
+};
 
 }
+
 export const duplicateCodeScanner: EnterpriseScanner = {
 
   id: "duplicate-code",
 
   name: "Duplicate Code Scanner",
-
-  description:
-    "Scans the project for duplicate functions, components and reusable code blocks.",
-
-  version: "1.0.0",
-
-  category: "code-quality",
 
   async run(
     context: ScannerContext
@@ -381,38 +374,35 @@ export const duplicateCodeScanner: EnterpriseScanner = {
 
         id: crypto.randomUUID(),
 
-        scanner: "duplicate-code",
-
         name: "Duplicate Code Scanner",
 
-        success: false,
+        status: "failed",
+
+        startedAt: new Date().toISOString(),
+
+        finishedAt: new Date().toISOString(),
 
         duration: 0,
 
-        scannedFiles: 0,
+        scannedItems: 0,
 
-        issueCount: 1,
+        passed: 0,
+
+        warnings: 0,
+
+        failed: 1,
 
         issues: [
           {
             id: crypto.randomUUID(),
-            severity: "critical",
             title: "Scanner Failed",
             description:
               error instanceof Error
                 ? error.message
                 : "Unknown scanner error",
-
-            file: "",
-
-            line: 0,
-
-            scanner: "duplicate-code",
-
+            severity: "critical",
             recommendation:
               "Check scanner logs and project configuration.",
-
-            metadata: {},
           },
         ],
 
