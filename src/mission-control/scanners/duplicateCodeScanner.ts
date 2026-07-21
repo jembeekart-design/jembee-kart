@@ -328,9 +328,13 @@ async function runDuplicateScanner(
 
     duration,
 
-    scannedFiles: files.length,
+    scannedItems: files.length,
 
-    issueCount: issues.length,
+passed: issues.length === 0 ? files.length : 0,
+
+warnings: issues.length,
+
+failed: 0,
 
     issues,
 
