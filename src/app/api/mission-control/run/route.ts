@@ -1,7 +1,7 @@
 import { NextResponse } from "next/server";
 
 import { scanFirestore } from "@/mission-control/scanners/firestoreScanner";
-import { scanDuplicateCode } from "@/mission-control/scanners/duplicateCodeScanner";
+import { duplicateCodeScanner } from "@/mission-control/scanners/duplicateCodeScanner";
 import { findHardcodedBusinessRules } from "@/mission-control/autofix/hardcodedRuleAutoFix";
 import { previewThemeFix } from "@/mission-control/autofix/themeAutoFix";
 
@@ -16,7 +16,7 @@ export async function POST() {
       theme,
     ] = await Promise.all([
       scanFirestore(),
-      scanDuplicateCode(),
+      duplicateCodeScanner.run({} as any),
       findHardcodedBusinessRules(),
       previewThemeFix(),
     ]);
@@ -25,7 +25,6 @@ export async function POST() {
 
     return NextResponse.json({
       success: true,
-
       duration: finished - started,
 
       theme: {
@@ -40,7 +39,7 @@ export async function POST() {
 
       duplicate: {
         scannedFiles: duplicate.scannedFiles,
-        issues: duplicate.duplicateGroups,
+        issues: duplicate.issueCount,
       },
 
       rules: {
@@ -50,7 +49,6 @@ export async function POST() {
     });
 
   } catch (error: any) {
-
     return NextResponse.json(
       {
         success: false,
@@ -60,6 +58,5 @@ export async function POST() {
         status: 500,
       }
     );
-
   }
 }
