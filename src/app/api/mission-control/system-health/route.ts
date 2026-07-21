@@ -2,17 +2,39 @@ import { NextResponse } from "next/server";
 
 export async function GET() {
   return NextResponse.json({
-    status: "healthy",
+    success: true,
 
-    cpu: 12,
+    health: {
+      cpu: {
+        usage: 18,
+        status: "Healthy",
+      },
 
-    memory: 43,
+      memory: {
+        usage: 42,
+        status: "Healthy",
+      },
 
-    storage: 28,
+      api: {
+        status: "Online",
+        health: "Operational",
+      },
 
-    network: "online",
+      database: {
+        status: "Connected",
+        health: "Healthy",
+      },
 
-    uptime: "99.99%",
+      server: {
+        status: "Running",
+        health: "Healthy",
+      },
+
+      security: {
+        status: "Protected",
+        health: "Secure",
+      },
+    },
 
     updatedAt: new Date().toISOString(),
   });
