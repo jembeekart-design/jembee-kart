@@ -316,7 +316,18 @@ Duration: ${data.duration} ms`);
           )
         )}
       </div>
-    </div>
+
+<div className="mt-4">
+  <button
+    onClick={applyAutoFix}
+    className="w-full rounded-lg bg-green-600 px-4 py-2 text-white hover:bg-green-700"
+  >
+    Apply Auto Fix
+  </button>
+</div>
+
+</div>
+)}
   </div>
 )}
     </section>
