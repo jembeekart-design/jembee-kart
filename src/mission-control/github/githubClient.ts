@@ -25,8 +25,16 @@ export async function githubRequest(
     console.error("GitHub API Error:", data);
 
     throw new Error(
-      data?.message ??
-      `GitHub API request failed with status ${response.status}`
+      JSON.stringify(
+        {
+          status: response.status,
+          statusText: response.statusText,
+          endpoint,
+          error: data,
+        },
+        null,
+        2
+      )
     );
   }
 
