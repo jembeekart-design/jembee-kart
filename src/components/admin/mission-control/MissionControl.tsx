@@ -34,7 +34,7 @@ export default function MissionControl() {
 
       {/* Error Handling */}
       {error && (
-        <div className="flex items-center gap-3 rounded-lg border border-red-200 bg-red-50 p-4 text-red-700">
+        <div className="flex items-center gap-3 rounded-lg border border-red-200 bg-red-50 p-4 text-[var(--danger-color)]">
           <AlertCircle size={18} />
           <span className="text-sm font-medium">{error.message || "An unknown system error occurred"}</span>
         </div>
