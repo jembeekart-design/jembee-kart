@@ -102,7 +102,7 @@ alert(`✅ Auto Fix Completed
 Files To Modify: ${data.theme.filesToModify}
 Preview Files: ${data.theme.preview.length}
 Hardcoded Rules Found: ${data.rules.issueCount}
-Duration: ${data.duration} ms
+Duration: ${data.duration} ms`);
   } catch (err) {
     console.error(err);
     alert("Auto Fix failed.");
