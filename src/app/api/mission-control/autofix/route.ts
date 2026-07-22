@@ -1,7 +1,7 @@
 import { NextResponse } from "next/server";
 
 import {
-  fixHardcodedTheme,
+  previewThemeFix,
 } from "@/mission-control/autofix/themeAutoFix";
 
 import {
@@ -13,7 +13,7 @@ export async function POST() {
     const started = Date.now();
 
     const [theme, rules] = await Promise.all([
-      fixHardcodedTheme(),
+      Promise.resolve(previewThemeFix()),
       findHardcodedBusinessRules(),
     ]);
 
@@ -21,22 +21,22 @@ export async function POST() {
 
     return NextResponse.json({
       success: true,
-      message: "Auto Fix completed.",
+      message: "Auto Fix Preview completed.",
 
       theme: {
         scannedFiles: theme.scannedFiles,
-        modifiedFiles: theme.modifiedFiles,
-        replacements: theme.totalReplacements,
+        filesToModify: theme.filesToModify,
+        preview: theme.preview,
       },
 
       rules: {
         scannedFiles: rules.scannedFiles,
         issueCount: rules.issueCount,
+        issues: rules.issues,
       },
 
       duration,
     });
-
   } catch (error) {
     return NextResponse.json(
       {
