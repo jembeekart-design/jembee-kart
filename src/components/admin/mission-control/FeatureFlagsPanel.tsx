@@ -26,8 +26,8 @@ export default function FeatureFlagsPanel() {
             <span
               className={
                 enabled
-                  ? "font-bold text-green-600"
-                  : "font-bold text-red-500"
+                  ? "font-bold text-[var(--success-color)]"
+                  : "font-bold text-[var(--danger-color)]"
               }
             >
               {enabled ? "Enabled" : "Disabled"}
