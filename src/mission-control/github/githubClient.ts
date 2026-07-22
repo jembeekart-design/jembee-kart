@@ -14,13 +14,21 @@ export async function githubRequest(
       Authorization: `Bearer ${GITHUB_TOKEN}`,
       Accept: "application/vnd.github+json",
       "Content-Type": "application/json",
+      "X-GitHub-Api-Version": "2022-11-28",
       ...(init?.headers ?? {}),
     },
   });
 
+  const data = await response.json().catch(() => null);
+
   if (!response.ok) {
-    throw new Error(await response.text());
+    console.error("GitHub API Error:", data);
+
+    throw new Error(
+      data?.message ??
+      `GitHub API request failed with status ${response.status}`
+    );
   }
 
-  return response.json();
+  return data;
 }
