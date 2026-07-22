@@ -82,6 +82,22 @@ export default function AutomationCenter() {
 
     }
   };
+  const runAutoFix = async () => {
+  try {
+    const res = await fetch("/api/mission-control/autofix", {
+      method: "POST",
+    });
+
+    const data = await res.json();
+
+    console.log(data);
+
+    alert("Auto Fix completed successfully!");
+  } catch (err) {
+    console.error(err);
+    alert("Auto Fix failed.");
+  }
+};
 
   return (
     <section className="rounded-xl border bg-white p-6 shadow-sm">
@@ -120,8 +136,10 @@ export default function AutomationCenter() {
               <button
                 onClick={() => {
                   if (action.title === "Run All Scanners") {
-                    runScanners();
-                  }
+  runScanners();
+} else if (action.title === "Run Auto Fix") {
+  runAutoFix();
+}
                 }}
                 disabled={
                   loading &&
