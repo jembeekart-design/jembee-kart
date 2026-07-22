@@ -1,17 +1,42 @@
 import { NextResponse } from "next/server";
 
+import {
+  fixHardcodedTheme,
+} from "@/mission-control/autofix/themeAutoFix";
+
+import {
+  findHardcodedBusinessRules,
+} from "@/mission-control/autofix/hardcodedRuleAutoFix";
+
 export async function POST() {
   try {
+    const started = Date.now();
+
+    const [theme, rules] = await Promise.all([
+      fixHardcodedTheme(),
+      findHardcodedBusinessRules(),
+    ]);
+
+    const duration = Date.now() - started;
+
     return NextResponse.json({
       success: true,
-      message: "Auto Fix completed successfully.",
-      fixed: {
-        theme: 0,
-        hardcodedRules: 0,
-        duplicateCode: 0,
+      message: "Auto Fix completed.",
+
+      theme: {
+        scannedFiles: theme.scannedFiles,
+        modifiedFiles: theme.modifiedFiles,
+        replacements: theme.totalReplacements,
       },
-      duration: 0,
+
+      rules: {
+        scannedFiles: rules.scannedFiles,
+        issueCount: rules.issueCount,
+      },
+
+      duration,
     });
+
   } catch (error) {
     return NextResponse.json(
       {
