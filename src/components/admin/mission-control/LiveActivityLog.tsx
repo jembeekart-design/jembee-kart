@@ -53,7 +53,7 @@ export default function LiveActivityLog() {
   return (
     <section className="rounded-xl border bg-white p-6 shadow-sm">
       <div className="mb-6 flex items-center gap-2">
-        <Activity className="h-6 w-6 text-blue-600" />
+        <Activity className="h-6 w-6 text-[var(--primary-color)]" />
 
         <h2 className="text-2xl font-bold">
           Live Activity Log
@@ -63,12 +63,12 @@ export default function LiveActivityLog() {
       <div className="space-y-4">
         {activities.map((item) => {
           let Icon = Activity;
-          let color = "text-blue-600";
+          let color = "text-[var(--primary-color)]";
 
           switch (item.type) {
             case "success":
               Icon = CheckCircle2;
-              color = "text-green-600";
+              color = "text-[var(--success-color)]";
               break;
 
             case "info":
@@ -78,7 +78,7 @@ export default function LiveActivityLog() {
 
             case "database":
               Icon = Database;
-              color = "text-blue-600";
+              color = "text-[var(--primary-color)]";
               break;
 
             case "security":

@@ -159,7 +159,7 @@ export default function SystemHealthMonitor() {
               key={card.title}
               className="rounded-xl border p-5"
             >
-              <Icon className="mb-3 h-7 w-7 text-green-600" />
+              <Icon className="mb-3 h-7 w-7 text-[var(--success-color)]" />
 
               <h3 className="text-sm text-gray-500">
                 {card.title}
@@ -169,7 +169,7 @@ export default function SystemHealthMonitor() {
                 {card.value}
               </p>
 
-              <p className="mt-1 text-sm text-green-600">
+              <p className="mt-1 text-sm text-[var(--success-color)]">
                 {card.status}
               </p>
             </div>
