@@ -54,7 +54,7 @@ export default function AutomationCenter() {
 
   const [scanResult, setScanResult] = useState<any>(null);
   const [loading, setLoading] = useState(false);
-
+  const [autoFixResult, setAutoFixResult] = useState<any>(null);
   const runScanners = async () => {
     try {
 
