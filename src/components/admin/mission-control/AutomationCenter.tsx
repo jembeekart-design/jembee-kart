@@ -109,6 +109,31 @@ Duration: ${data.duration} ms`);
   }
 };
 
+  const applyAutoFix = async () => {
+        try {
+          const res = await fetch(
+            "/api/mission-control/apply-fix",
+            {
+              method: "POST",
+            }
+          );
+
+          const data = await res.json();
+
+          if (!data.success) {
+            alert(data.message);
+            return;
+          }
+
+          alert(
+            "✅ Apply Auto Fix started.\n\nNext Step: GitHub Pull Request"
+          );
+        } catch (error) {
+          console.error(error);
+
+          alert("Failed to start Apply Auto Fix.");
+        }
+      };
   return (
     <section className="rounded-xl border bg-white p-6 shadow-sm">
 
