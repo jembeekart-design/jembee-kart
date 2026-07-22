@@ -224,7 +224,76 @@ Duration: ${data.duration} ms`);
         </div>
 
       )}
+     {autoFixResult && (
+  <div className="mt-6 rounded-xl border bg-gray-50 p-4">
+    <h3 className="mb-3 text-lg font-bold">
+      Auto Fix Preview
+    </h3>
 
+    <div className="grid gap-3 md:grid-cols-2">
+      <div className="rounded-lg border bg-white p-3">
+        <p className="text-sm text-gray-500">
+          Files To Modify
+        </p>
+        <p className="text-lg font-semibold">
+          {autoFixResult.theme.filesToModify}
+        </p>
+      </div>
+
+      <div className="rounded-lg border bg-white p-3">
+        <p className="text-sm text-gray-500">
+          Preview Files
+        </p>
+        <p className="text-lg font-semibold">
+          {autoFixResult.theme.preview.length}
+        </p>
+      </div>
+
+      <div className="rounded-lg border bg-white p-3">
+        <p className="text-sm text-gray-500">
+          Hardcoded Rules
+        </p>
+        <p className="text-lg font-semibold">
+          {autoFixResult.rules.issueCount}
+        </p>
+      </div>
+
+      <div className="rounded-lg border bg-white p-3">
+        <p className="text-sm text-gray-500">
+          Duration
+        </p>
+        <p className="text-lg font-semibold">
+          {autoFixResult.duration} ms
+        </p>
+      </div>
+    </div>
+
+    <div className="mt-5">
+      <h4 className="mb-2 font-semibold">
+        Preview Files
+      </h4>
+
+      <div className="max-h-64 overflow-y-auto rounded-lg border bg-white">
+        {autoFixResult.theme.preview.map(
+          (item: any, index: number) => (
+            <div
+              key={index}
+              className="border-b p-3"
+            >
+              <div className="font-medium break-all">
+                {item.file}
+              </div>
+
+              <div className="text-sm text-gray-500">
+                Replacements: {item.replacements}
+              </div>
+            </div>
+          )
+        )}
+      </div>
+    </div>
+  </div>
+)}
     </section>
   );
 }
