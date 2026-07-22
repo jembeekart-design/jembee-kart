@@ -112,7 +112,7 @@ export default function MissionControlSummary() {
               key={card.title}
               className="rounded-xl border p-5"
             >
-              <Icon className="mb-3 h-7 w-7 text-blue-600" />
+              <Icon className="mb-3 h-7 w-7 text-[var(--primary-color)]" />
 
               <h3 className="text-sm text-gray-500">
                 {card.title}
@@ -128,7 +128,7 @@ export default function MissionControlSummary() {
 
       <div className="mt-8 grid gap-4 md:grid-cols-2">
         <div className="flex items-center gap-3 rounded-lg border p-4">
-          <Clock className="text-green-600" />
+          <Clock className="text-[var(--success-color)]" />
 
           <div>
             <p className="text-sm text-gray-500">
