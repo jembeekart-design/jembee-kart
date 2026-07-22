@@ -14,25 +14,25 @@ const scanners = [
   {
     title: "Security Scanner",
     status: "Ready",
-    color: "text-green-600",
+    color: "text-[var(--success-color)]",
     icon: ShieldCheck,
   },
   {
     title: "Firestore Scanner",
     status: "Ready",
-    color: "text-green-600",
+    color: "text-[var(--success-color)]",
     icon: Database,
   },
   {
     title: "Theme Scanner",
     status: "Ready",
-    color: "text-green-600",
+    color: "text-[var(--success-color)]",
     icon: Palette,
   },
   {
     title: "Wallet Scanner",
     status: "Ready",
-    color: "text-green-600",
+    color: "text-[var(--success-color)]",
     icon: Wallet,
   },
   {
@@ -70,7 +70,7 @@ export default function GovernanceDashboard() {
                   className={`h-5 w-5 ${
                     scanner.title === "Hardcoded Rule Scanner"
                       ? "text-yellow-600"
-                      : "text-blue-600"
+                      : "text-[var(--primary-color)]"
                   }`}
                 />
 
