@@ -14,14 +14,14 @@ const stats = [
     title: "Project Files",
     value: "--",
     icon: FileCode2,
-    color: "text-blue-600",
+    color: "text-[var(--primary-color)]",
     bg: "bg-blue-50",
   },
   {
     title: "Firestore Collections",
     value: "--",
     icon: Database,
-    color: "text-green-600",
+    color: "text-[var(--success-color)]",
     bg: "bg-green-50",
   },
   {
