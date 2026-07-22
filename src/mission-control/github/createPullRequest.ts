@@ -7,9 +7,9 @@ export interface PullRequestResult {
 }
 
 export async function createPullRequest(): Promise<PullRequestResult> {
-  try {
-    const branch = `autofix-${Date.now()}`;
+  const branch = `autofix-${Date.now()}`;
 
+  try {
     // Get latest commit of main
     const main = await githubRequest("/git/ref/heads/main");
 
@@ -49,12 +49,9 @@ Generated automatically by Mission Control.
       pullRequestUrl: pr.html_url,
     };
   } catch (error) {
-    console.error(error);
+    console.error("GitHub Pull Request Error:", error);
 
-    return {
-      success: false,
-      branch: "",
-      pullRequestUrl: "",
-    };
+    // Error को route तक भेजें
+    throw error;
   }
 }
