@@ -328,8 +328,6 @@ Duration: ${data.duration} ms`);
 
 </div>
 )}
-  </div>
-)}
     </section>
   );
 }
