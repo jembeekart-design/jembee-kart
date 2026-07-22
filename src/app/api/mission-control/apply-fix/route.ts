@@ -1,21 +1,29 @@
 import { NextResponse } from "next/server";
 import { createPullRequest } from "@/mission-control/github/createPullRequest";
 
-export async function POST() {
+async function handleRequest() {
   try {
     const result = await createPullRequest();
 
     return NextResponse.json({
-      success: result.success,
+      success: true,
       branch: result.branch,
       pullRequest: result.pullRequestUrl,
     });
   } catch (error) {
+    console.error("Apply Fix Error:", error);
+
     return NextResponse.json(
       {
         success: false,
-        message:
-          error instanceof Error ? error.message : "Unknown error",
+        error:
+          error instanceof Error
+            ? {
+                name: error.name,
+                message: error.message,
+                stack: error.stack,
+              }
+            : error,
       },
       {
         status: 500,
@@ -25,24 +33,9 @@ export async function POST() {
 }
 
 export async function GET() {
-  try {
-    const result = await createPullRequest();
+  return handleRequest();
+}
 
-    return NextResponse.json({
-      success: result.success,
-      branch: result.branch,
-      pullRequest: result.pullRequestUrl,
-    });
-  } catch (error) {
-    return NextResponse.json(
-      {
-        success: false,
-        message:
-          error instanceof Error ? error.message : "Unknown error",
-      },
-      {
-        status: 500,
-      }
-    );
-  }
+export async function POST() {
+  return handleRequest();
 }
