@@ -90,9 +90,19 @@ export default function AutomationCenter() {
 
     const data = await res.json();
 
-    console.log(data);
+console.log(data);
 
-    alert("Auto Fix completed successfully!");
+if (!data.success) {
+  alert(data.message);
+  return;
+}
+
+alert(`✅ Auto Fix Completed
+
+Modified Files: ${data.theme.modifiedFiles}
+Theme Replacements: ${data.theme.replacements}
+Hardcoded Rules Found: ${data.rules.issueCount}
+Duration: ${data.duration} ms`);
   } catch (err) {
     console.error(err);
     alert("Auto Fix failed.");
