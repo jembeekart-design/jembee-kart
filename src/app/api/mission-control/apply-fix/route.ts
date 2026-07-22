@@ -1,20 +1,17 @@
 import { NextResponse } from "next/server";
-
-// TODO: GitHub Auto Fix Engine
-// 1. Create Branch
-// 2. Apply File Changes
-// 3. Commit Changes
-// 4. Create Pull Request
+import { createPullRequest } from "@/mission-control/github/createPullRequest";
 
 export async function POST() {
   try {
-    // TODO:
-    // const result = await createGitHubPullRequest();
+    const result = await createPullRequest();
 
     return NextResponse.json({
-      success: true,
+      success: result.success,
       status: "pending",
       message: "GitHub Auto Fix started.",
+      branch: result.branch,
+      pullRequest: result.pullRequestUrl,
+
       nextStep: {
         provider: "GitHub",
         action: "Create Pull Request",
