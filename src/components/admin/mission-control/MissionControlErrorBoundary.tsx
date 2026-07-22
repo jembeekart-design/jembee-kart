@@ -48,9 +48,9 @@ export default class MissionControlErrorBoundary extends Component<
     if (this.state.hasError) {
       return (
         <div className="rounded-xl border border-red-300 bg-red-50 p-10 text-center">
-          <AlertTriangle className="mx-auto mb-5 h-14 w-14 text-red-600" />
+          <AlertTriangle className="mx-auto mb-5 h-14 w-14 text-[var(--danger-color)]" />
 
-          <h2 className="text-2xl font-bold text-red-700">
+          <h2 className="text-2xl font-bold text-[var(--danger-color)]">
             Mission Control Failed
           </h2>
 
@@ -61,7 +61,7 @@ export default class MissionControlErrorBoundary extends Component<
 
           <button
             onClick={this.retry}
-            className="mt-6 inline-flex items-center gap-2 rounded-lg bg-red-600 px-5 py-3 text-white transition hover:bg-red-700"
+            className="mt-6 inline-flex items-center gap-2 rounded-lg bg-[var(--danger-color)] px-5 py-3 text-white transition hover:bg-[var(--danger-color)]"
           >
             <RefreshCw className="h-4 w-4" />
             Retry
