@@ -13,14 +13,14 @@ const metrics = [
     title: "Files Scanned",
     value: "0",
     icon: FileCode2,
-    color: "text-blue-600",
+    color: "text-[var(--primary-color)]",
     bg: "bg-blue-50",
   },
   {
     title: "Passed Checks",
     value: "0",
     icon: CheckCircle2,
-    color: "text-green-600",
+    color: "text-[var(--success-color)]",
     bg: "bg-green-50",
   },
   {
@@ -34,7 +34,7 @@ const metrics = [
     title: "Critical Issues",
     value: "0",
     icon: XCircle,
-    color: "text-red-600",
+    color: "text-[var(--danger-color)]",
     bg: "bg-red-50",
   },
 ];
@@ -111,7 +111,7 @@ export default function CodeQualityDashboard() {
         <div className="mt-4 h-3 overflow-hidden rounded-full bg-gray-200">
 
           <div
-            className="h-full rounded-full bg-green-500"
+            className="h-full rounded-full bg-[var(--success-color)]"
             style={{ width: "0%" }}
           />
 
