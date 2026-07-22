@@ -14,8 +14,8 @@ export default function ThemeActions({ saving, onSave, onReset, onApply, onGener
     <div className="flex flex-col gap-2 p-4 bg-white rounded-lg shadow-sm">
       <button onClick={onUndo} className="bg-gray-200 p-2 rounded">Undo</button>
       <button onClick={onReset} className="bg-yellow-500 text-white p-2 rounded">Reset</button>
-      <button onClick={onApply} className="bg-green-600 text-white p-2 rounded">Apply Live</button>
-      <button onClick={onSave} className="bg-blue-600 text-white p-2 rounded" disabled={saving}>
+      <button onClick={onApply} className="bg-[var(--success-color)] text-white p-2 rounded">Apply Live</button>
+      <button onClick={onSave} className="bg-[var(--primary-color)] text-white p-2 rounded" disabled={saving}>
         {saving ? "Saving..." : "Save to Firestore"}
       </button>
       <button onClick={onGenerateAI} className="bg-purple-600 text-white p-2 rounded">AI Generate</button>

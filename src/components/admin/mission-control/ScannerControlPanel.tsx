@@ -56,7 +56,7 @@ export default function ScannerControlPanel() {
               className="flex flex-col gap-4 rounded-xl border p-5 lg:flex-row lg:items-center lg:justify-between"
             >
               <div className="flex items-start gap-4">
-                <Icon className="mt-1 h-7 w-7 text-blue-600" />
+                <Icon className="mt-1 h-7 w-7 text-[var(--primary-color)]" />
 
                 <div>
                   <h3 className="font-semibold">
@@ -70,7 +70,7 @@ export default function ScannerControlPanel() {
               </div>
 
               <div className="flex gap-3">
-                <button className="flex items-center gap-2 rounded-lg bg-blue-600 px-4 py-2 text-white hover:bg-blue-700">
+                <button className="flex items-center gap-2 rounded-lg bg-[var(--primary-color)] px-4 py-2 text-white hover:bg-[var(--primary-color)]">
                   <Play size={16} />
                   Run
                 </button>

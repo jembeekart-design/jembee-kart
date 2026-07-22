@@ -141,7 +141,7 @@ Duration: ${data.duration} ms`);
 
           return (
             <div key={action.title} className="rounded-xl border p-5">
-              <Icon className="mb-3 h-8 w-8 text-blue-600" />
+              <Icon className="mb-3 h-8 w-8 text-[var(--primary-color)]" />
 
               <h3 className="font-semibold">{action.title}</h3>
 
@@ -156,7 +156,7 @@ Duration: ${data.duration} ms`);
                   }
                 }}
                 disabled={loading && action.title === "Run All Scanners"}
-                className="mt-5 w-full rounded-lg bg-blue-600 px-4 py-2 text-white transition hover:bg-blue-700 disabled:cursor-not-allowed disabled:opacity-60"
+                className="mt-5 w-full rounded-lg bg-[var(--primary-color)] px-4 py-2 text-white transition hover:bg-[var(--primary-color)] disabled:cursor-not-allowed disabled:opacity-60"
               >
                 {loading && action.title === "Run All Scanners"
                   ? "Running..."
@@ -259,7 +259,7 @@ Duration: ${data.duration} ms`);
             <div className="mt-4">
               <button
                 onClick={applyAutoFix}
-                className="w-full rounded-lg bg-green-600 px-4 py-2 text-white hover:bg-green-700"
+                className="w-full rounded-lg bg-[var(--success-color)] px-4 py-2 text-white hover:bg-[var(--success-color)]"
               >
                 Apply Auto Fix
               </button>

@@ -14,14 +14,14 @@ const scanners = [
     title: "Theme Scanner",
     icon: Palette,
     status: "Ready",
-    color: "text-blue-600",
+    color: "text-[var(--primary-color)]",
     bg: "bg-blue-50",
   },
   {
     title: "Firestore Scanner",
     icon: Database,
     status: "Ready",
-    color: "text-green-600",
+    color: "text-[var(--success-color)]",
     bg: "bg-green-50",
   },
   {
@@ -49,7 +49,7 @@ const scanners = [
     title: "Security Scanner",
     icon: CheckCircle2,
     status: "Coming Soon",
-    color: "text-red-600",
+    color: "text-[var(--danger-color)]",
     bg: "bg-red-50",
   },
 ];
