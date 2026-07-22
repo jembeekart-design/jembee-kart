@@ -89,7 +89,7 @@ export default function AutomationCenter() {
     });
 
     const data = await res.json();
-
+setAutoFixResult(data);
 console.log(data);
 
 if (!data.success) {
