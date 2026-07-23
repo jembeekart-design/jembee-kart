@@ -1,5 +1,6 @@
 "use client";
 
+import { useState } from "react";
 import {
   FileText,
   ShieldCheck,
@@ -43,6 +44,35 @@ const reports = [
 ];
 
 export default function ReportsCenter() {
+  const [loading, setLoading] = useState(false);
+  const [reportResult, setReportResult] = useState<any>(null);
+
+  async function generateReport(type: string) {
+    try {
+      setLoading(true);
+
+      const response = await fetch("/api/mission-control/run", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ report: type }),
+      });
+
+      const data = await response.json();
+
+      if (!response.ok) {
+        throw new Error(data.message || "Report generation failed");
+      }
+
+      setReportResult(data);
+    } catch (error) {
+      console.error(error);
+    } finally {
+      setLoading(false);
+    }
+  }
+
   return (
     <section className="rounded-xl border bg-white p-6 shadow-sm">
       <div className="mb-6">
@@ -74,13 +104,27 @@ export default function ReportsCenter() {
                 {report.description}
               </p>
 
-              <button className="mt-5 w-full rounded-lg bg-indigo-600 px-4 py-2 text-white transition hover:bg-indigo-700">
-                Generate Report
+              <button
+                onClick={() => generateReport(report.title)}
+                disabled={loading}
+                className="mt-5 w-full rounded-lg bg-indigo-600 px-4 py-2 text-white transition hover:bg-indigo-700 disabled:opacity-50"
+              >
+                {loading ? "Generating..." : "Generate Report"}
               </button>
             </div>
           );
         })}
       </div>
+
+      {reportResult && (
+        <div className="mt-6 rounded-lg border bg-gray-50 p-4">
+          <h3 className="font-semibold">Latest Report</h3>
+
+          <pre className="mt-3 overflow-auto rounded bg-black p-3 text-xs text-green-400">
+            {JSON.stringify(reportResult, null, 2)}
+          </pre>
+        </div>
+      )}
     </section>
   );
 }
