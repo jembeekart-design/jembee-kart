@@ -6,9 +6,8 @@ import {
 
 import { scanFirestore } from "./firestoreScanner";
 import { duplicateCodeScanner } from "./duplicateCodeScanner";
-import { findHardcodedBusinessRules } from "./hardcodedRuleAutoFix";
-import { previewThemeFix } from "./themeScanner"; // Adjust path if needed based on your project structure
-
+import { findHardcodedBusinessRules } from "../autofix/hardcodedRuleAutoFix";
+import { previewThemeFix } from "../autofix/themeAutoFix";
 export interface RunScannerOptions {
   executionId: string;
   scanners?: "all" | string[];
