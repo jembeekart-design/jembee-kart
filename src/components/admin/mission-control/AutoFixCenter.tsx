@@ -11,27 +11,69 @@ import {
 
 export default function AutoFixCenter() {
   const [loading, setLoading] = useState(false);
+  const [statusText, setStatusText] = useState("System Ready");
+  const [resultData, setResultData] = useState<any>(null);
 
   const [astStatus] = useState({
     supported: false,
     message: "AST Auto Fix is not implemented yet.",
   });
 
-  async function run(action: string) {
+  async function handleAction(action: string) {
     try {
       setLoading(true);
+      setStatusText(`Processing ${action}...`);
+      setResultData(null);
 
       console.log("Mission Control Action:", action);
 
-      // TODO:
-      // API integration
-      // POST /api/mission-control/autofix
-      // POST /api/mission-control/apply-fix
-      // POST /api/mission-control/rollback
+      let endpoint = "";
 
-      await new Promise((resolve) =>
-        setTimeout(resolve, 1000)
-      );
+      switch (action) {
+        case "scan":
+        case "preview":
+          endpoint = "/api/mission-control/autofix";
+          break;
+
+        case "autofix":
+          endpoint = "/api/mission-control/apply-fix";
+          break;
+
+        case "rollback":
+          endpoint = "/api/mission-control/rollback";
+          break;
+
+        default:
+          return;
+      }
+
+      const response = await fetch(endpoint, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+      });
+
+      const data = await response.json();
+
+      console.log("Mission Control:", data);
+
+      if (!response.ok) {
+        throw new Error(data.message || "Request failed");
+      }
+
+      setResultData(data);
+      setStatusText(`${action.toUpperCase()} completed successfully.`);
+      
+      if (data.message) {
+        alert(data.message);
+      }
+    } catch (error) {
+      console.error(error);
+      const errorMessage =
+        error instanceof Error ? error.message : "Unknown error";
+      setStatusText(`Error: ${errorMessage}`);
+      alert(errorMessage);
     } finally {
       setLoading(false);
     }
@@ -60,7 +102,7 @@ export default function AutoFixCenter() {
 
       <div className="mt-6 grid gap-4 md:grid-cols-4">
         <button
-          onClick={() => run("scan")}
+          onClick={() => handleAction("scan")}
           disabled={loading}
           className="rounded-lg bg-blue-600 px-4 py-3 text-white hover:bg-blue-700 disabled:opacity-50"
         >
@@ -79,7 +121,7 @@ export default function AutoFixCenter() {
         </button>
 
         <button
-          onClick={() => run("preview")}
+          onClick={() => handleAction("preview")}
           disabled={loading}
           className="rounded-lg bg-orange-500 px-4 py-3 text-white hover:bg-orange-600 disabled:opacity-50"
         >
@@ -90,7 +132,7 @@ export default function AutoFixCenter() {
         </button>
 
         <button
-          onClick={() => run("autofix")}
+          onClick={() => handleAction("autofix")}
           disabled={loading}
           className="rounded-lg bg-green-600 px-4 py-3 text-white hover:bg-green-700 disabled:opacity-50"
         >
@@ -101,7 +143,7 @@ export default function AutoFixCenter() {
         </button>
 
         <button
-          onClick={() => run("rollback")}
+          onClick={() => handleAction("rollback")}
           disabled={loading}
           className="rounded-lg bg-red-600 px-4 py-3 text-white hover:bg-red-700 disabled:opacity-50"
         >
@@ -120,8 +162,19 @@ export default function AutoFixCenter() {
         <p className="mt-2 text-sm text-gray-600">
           {loading
             ? "Mission Control is processing..."
-            : "System Ready"}
+            : statusText}
         </p>
+
+        {resultData && (
+          <div className="mt-4 rounded-lg border bg-white p-4">
+            <h4 className="font-semibold text-sm text-gray-700 mb-2">
+              Execution Result Output:
+            </h4>
+            <pre className="max-h-60 overflow-auto rounded bg-gray-900 p-3 text-xs text-green-400">
+              {JSON.stringify(resultData, null, 2)}
+            </pre>
+          </div>
+        )}
 
         <div className="mt-4 rounded-lg border bg-white p-4">
           <div className="flex items-center justify-between">
