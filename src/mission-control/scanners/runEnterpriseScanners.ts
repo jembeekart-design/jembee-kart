@@ -5,6 +5,9 @@ import {
 } from "./types";
 
 import { scanFirestore } from "./firestoreScanner";
+import { duplicateCodeScanner } from "./duplicateCodeScanner";
+import { findHardcodedBusinessRules } from "./hardcodedRuleAutoFix";
+import { previewThemeFix } from "./themeScanner"; // Adjust path if needed based on your project structure
 
 export interface RunScannerOptions {
   executionId: string;
@@ -26,20 +29,25 @@ export async function runEnterpriseScanners(
     timestamp: new Date().toISOString(),
   };
 
-  const scan = await scanFirestore();
+  const [firestore, duplicate, businessRules, theme] = await Promise.all([
+    scanFirestore(),
+    duplicateCodeScanner.run({} as any),
+    findHardcodedBusinessRules(),
+    previewThemeFix(),
+  ]);
 
-  const result: ScannerResult = {
+  const firestoreResult: ScannerResult = {
     id: "firestore",
     name: "Firestore Scanner",
-    status: scan.issueCount > 0 ? "warning" : "passed",
+    status: firestore.issueCount > 0 ? "warning" : "passed",
     startedAt: new Date(started).toISOString(),
     finishedAt: new Date().toISOString(),
     duration: Date.now() - started,
-    scannedItems: scan.scannedFiles,
-    passed: scan.issueCount === 0 ? scan.scannedFiles : 0,
-    warnings: scan.issueCount,
+    scannedItems: firestore.scannedFiles,
+    passed: firestore.issueCount === 0 ? firestore.scannedFiles : 0,
+    warnings: firestore.issueCount,
     failed: 0,
-    issues: scan.issues.map((issue) => ({
+    issues: firestore.issues.map((issue) => ({
       id: crypto.randomUUID(),
       title: issue.type,
       description: issue.value,
@@ -50,16 +58,79 @@ export async function runEnterpriseScanners(
     })),
   };
 
-  return {
-    executionId: options.executionId,
+  const duplicateResult: ScannerResult = {
+    id: "duplicate-code",
+    name: "Duplicate Code Scanner",
+    status: (duplicate.issueCount || duplicate.duplicates?.length || 0) > 0 ? "warning" : "passed",
     startedAt: new Date(started).toISOString(),
     finishedAt: new Date().toISOString(),
     duration: Date.now() - started,
-    success: true,
-    total: 1,
-    passed: result.status === "passed" ? 1 : 0,
-    warnings: result.status === "warning" ? 1 : 0,
+    scannedItems: duplicate.scannedFiles || 0,
+    passed: 0,
+    warnings: duplicate.issueCount || duplicate.duplicates?.length || 0,
     failed: 0,
-    scanners: [result],
+    issues: [],
+  };
+
+  const businessRulesResult: ScannerResult = {
+    id: "business-rules",
+    name: "Business Rule Scanner",
+    status: businessRules.issueCount > 0 ? "warning" : "passed",
+    startedAt: new Date(started).toISOString(),
+    finishedAt: new Date().toISOString(),
+    duration: Date.now() - started,
+    scannedItems: businessRules.scannedFiles,
+    passed: businessRules.issueCount === 0 ? businessRules.scannedFiles : 0,
+    warnings: businessRules.issueCount,
+    failed: 0,
+    issues: businessRules.issues.map((issue) => ({
+      id: crypto.randomUUID(),
+      title: issue.reason,
+      description: issue.value,
+      severity: "medium",
+      file: issue.file,
+      line: issue.line,
+      recommendation: "Move hardcoded business rules to Firestore Admin Settings.",
+    })),
+  };
+
+  const themeResult: ScannerResult = {
+    id: "theme",
+    name: "Theme Scanner",
+    status: theme.filesToModify > 0 ? "warning" : "passed",
+    startedAt: new Date(started).toISOString(),
+    finishedAt: new Date().toISOString(),
+    duration: Date.now() - started,
+    scannedItems: theme.scannedFiles,
+    passed: theme.filesToModify === 0 ? theme.scannedFiles : 0,
+    warnings: theme.filesToModify,
+    failed: 0,
+    issues: [],
+  };
+
+  const allScanners = [
+    firestoreResult,
+    duplicateResult,
+    businessRulesResult,
+    themeResult,
+  ];
+
+  const totalWarnings = allScanners.reduce((acc, s) => acc + s.warnings, 0);
+  const totalPassed = allScanners.filter((s) => s.status === "passed").length;
+
+  const finishedAt = new Date().toISOString();
+  const duration = Date.now() - started;
+
+  return {
+    executionId: options.executionId,
+    startedAt: new Date(started).toISOString(),
+    finishedAt,
+    duration,
+    success: true,
+    total: allScanners.length,
+    passed: totalPassed,
+    warnings: totalWarnings,
+    failed: 0,
+    scanners: allScanners,
   };
 }
