@@ -66,7 +66,7 @@ status: duplicate.issues.length > 0
     startedAt: new Date(started).toISOString(),
     finishedAt: new Date().toISOString(),
     duration: Date.now() - started,
-    scannedItems: duplicate.scannedFiles || 0,
+    scannedItems: duplicate.scannedItems,
     passed: 0,
     warnings: duplicate.issues.length,
     failed: 0,
