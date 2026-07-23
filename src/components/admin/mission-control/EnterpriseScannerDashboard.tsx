@@ -1,5 +1,6 @@
 "use client";
 
+import { useState } from "react";
 import {
   Shield,
   Database,
@@ -55,16 +56,51 @@ const scanners = [
 ];
 
 export default function EnterpriseScannerDashboard() {
+  const [loading, setLoading] = useState(false);
+  const [scanResult, setScanResult] = useState<any>(null);
+
+  async function runEnterpriseScan() {
+    try {
+      setLoading(true);
+
+      const response = await fetch("/api/mission-control/run", {
+        method: "POST",
+      });
+
+      const data = await response.json();
+
+      if (!response.ok) {
+        throw new Error(data.message || "Scan failed");
+      }
+
+      setScanResult(data);
+    } catch (error) {
+      console.error(error);
+    } finally {
+      setLoading(false);
+    }
+  }
+
   return (
     <section className="rounded-xl border bg-white p-6 shadow-sm">
-      <div className="mb-5">
-        <h2 className="text-xl font-bold">
-          Enterprise Scanner Dashboard
-        </h2>
+      <div className="mb-5 flex flex-col justify-between gap-4 md:flex-row md:items-center">
+        <div>
+          <h2 className="text-xl font-bold">
+            Enterprise Scanner Dashboard
+          </h2>
 
-        <p className="mt-1 text-sm text-gray-500">
-          Monitor all governance scanners from one place.
-        </p>
+          <p className="mt-1 text-sm text-gray-500">
+            Monitor all governance scanners from one place.
+          </p>
+        </div>
+
+        <button
+          onClick={runEnterpriseScan}
+          disabled={loading}
+          className="rounded-lg bg-blue-600 px-4 py-2 text-white hover:bg-blue-700 disabled:opacity-50"
+        >
+          {loading ? "Scanning..." : "Run Enterprise Scan"}
+        </button>
       </div>
 
       <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-3">
@@ -102,6 +138,16 @@ export default function EnterpriseScannerDashboard() {
           );
         })}
       </div>
+
+      {scanResult && (
+        <div className="mt-6 rounded-lg border bg-gray-50 p-4">
+          <h3 className="font-semibold">Latest Scan Result</h3>
+
+          <pre className="mt-3 overflow-auto rounded bg-black p-3 text-xs text-green-400">
+            {JSON.stringify(scanResult, null, 2)}
+          </pre>
+        </div>
+      )}
     </section>
   );
 }
