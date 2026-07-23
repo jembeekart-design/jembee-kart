@@ -1,14 +1,46 @@
 import { NextResponse } from "next/server";
-import { createPullRequest } from "@/mission-control/github/createPullRequest";
+
+import {
+  fixHardcodedBusinessRules,
+} from "@/mission-control/autofix/hardcodedRuleAutoFix";
+
+import {
+  applyAstFix,
+} from "@/mission-control/autofix/astAutoFix";
+
+import {
+  createPullRequest,
+} from "@/mission-control/github/createPullRequest";
 
 async function handleRequest() {
   try {
-    const result = await createPullRequest();
+    const started = Date.now();
+
+    // Step 1: Run Rule Fix
+    const ruleResult = fixHardcodedBusinessRules();
+
+    // Step 2: Run AST Fix
+    const astResult = await applyAstFix();
+
+    // Step 3: Create GitHub PR
+    const pr = await createPullRequest();
+
+    const duration = Date.now() - started;
 
     return NextResponse.json({
       success: true,
-      branch: result.branch,
-      pullRequest: result.pullRequestUrl,
+      message: "Mission Control Auto Fix completed.",
+
+      rules: ruleResult,
+
+      ast: astResult,
+
+      github: {
+        branch: pr.branch,
+        pullRequest: pr.pullRequestUrl,
+      },
+
+      duration,
     });
   } catch (error) {
     console.error("Apply Fix Error:", error);
@@ -16,14 +48,10 @@ async function handleRequest() {
     return NextResponse.json(
       {
         success: false,
-        error:
+        message:
           error instanceof Error
-            ? {
-                name: error.name,
-                message: error.message,
-                stack: error.stack,
-              }
-            : error,
+            ? error.message
+            : "Unknown error",
       },
       {
         status: 500,
