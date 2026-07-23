@@ -60,13 +60,15 @@ export async function runEnterpriseScanners(
   const duplicateResult: ScannerResult = {
     id: "duplicate-code",
     name: "Duplicate Code Scanner",
-    status: (duplicate.issueCount || duplicate.duplicates?.length || 0) > 0 ? "warning" : "passed",
+status: duplicate.issues.length > 0
+  ? "warning"
+  : "passed",
     startedAt: new Date(started).toISOString(),
     finishedAt: new Date().toISOString(),
     duration: Date.now() - started,
     scannedItems: duplicate.scannedFiles || 0,
     passed: 0,
-    warnings: duplicate.issueCount || duplicate.duplicates?.length || 0,
+    warnings: duplicate.issues.length,
     failed: 0,
     issues: [],
   };
