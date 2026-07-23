@@ -93,3 +93,83 @@ export async function findHardcodedBusinessRules() {
     issues,
   };
 }
+
+export interface RuleFixPreview {
+  file: string;
+  replacements: number;
+  modifiedContent: string;
+}
+
+const FIX_RULES = [
+  {
+    regex: /\bcommission\b\s*[:=]\s*\d+/gi,
+    replace: "commission: config.commission",
+  },
+  {
+    regex: /\bcashback\b\s*[:=]\s*\d+/gi,
+    replace: "cashback: config.cashback",
+  },
+  {
+    regex: /\b(minWithdrawal|withdrawal|minWithdraw)\b\s*[:=]\s*\d+/gi,
+    replace: "minWithdrawal: config.minWithdrawal",
+  },
+  {
+    regex: /\bmin[A-Za-z]*\b\s*[:=]\s*\d+/gi,
+    replace: "minAmount: config.minAmount",
+  },
+  {
+    regex: /\bmax[A-Za-z]*\b\s*[:=]\s*\d+/gi,
+    replace: "maxAmount: config.maxAmount",
+  },
+];
+
+export function previewHardcodedRuleFix() {
+  const root = path.join(process.cwd(), "src");
+
+  const files = scan(root);
+
+  const preview: RuleFixPreview[] = [];
+
+  for (const file of files) {
+    const original = fs.readFileSync(file, "utf8");
+
+    let modified = original;
+    let replacements = 0;
+
+    for (const rule of FIX_RULES) {
+      const matches = modified.match(rule.regex);
+
+      if (!matches) continue;
+
+      replacements += matches.length;
+      modified = modified.replace(rule.regex, rule.replace);
+    }
+
+    if (replacements > 0) {
+      preview.push({
+        file,
+        replacements,
+        modifiedContent: modified,
+      });
+    }
+  }
+
+  return {
+    scannedFiles: files.length,
+    filesToModify: preview.length,
+    preview,
+  };
+}
+
+export function fixHardcodedBusinessRules() {
+  const result = previewHardcodedRuleFix();
+
+  for (const file of result.preview) {
+    fs.writeFileSync(file.file, file.modifiedContent);
+  }
+
+  return {
+    success: true,
+    modifiedFiles: result.filesToModify,
+  };
+}
