@@ -1,46 +1,40 @@
 import { NextResponse } from "next/server";
-import { db } from "@/firebase/config";
-import { collection, getDocs } from "firebase/firestore";
+import { runEnterpriseScanners } from "@/mission-control/scanners/runEnterpriseScanners";
 
 export async function GET() {
   try {
-    const [users, products, orders, notifications] =
-      await Promise.all([
-        getDocs(collection(db, "users")),
-        getDocs(collection(db, "products")),
-        getDocs(collection(db, "orders")),
-        getDocs(collection(db, "notifications")),
-      ]);
+    const result = await runEnterpriseScanners({
+      executionId: crypto.randomUUID(),
+    });
+
+    const firestore =
+      result.scanners.find((s) => s.id === "firestore");
+
+    const duplicate =
+      result.scanners.find((s) => s.id === "duplicate-code");
+
+    const rules =
+      result.scanners.find((s) => s.id === "business-rules");
 
     return NextResponse.json({
       success: true,
 
-      generatedAt: new Date().toISOString(),
-      duration: 0,
-
-      users: users.size,
-      products: products.size,
-      orders: orders.size,
-      notifications: notifications.size,
+      generatedAt: result.finishedAt,
+      duration: result.duration,
 
       scanners: {
         firestore: {
-          scannedFiles:
-            users.size +
-            products.size +
-            orders.size +
-            notifications.size,
-
-          collections: 4,
+          scannedFiles: firestore?.scannedItems ?? 0,
+          collections: firestore?.scannedItems ?? 0,
         },
 
         duplicate: {
-          duplicates: 0,
-          duplicateGroups: 0,
+          duplicates: duplicate?.warnings ?? 0,
+          duplicateGroups: duplicate?.warnings ?? 0,
         },
 
         rules: {
-          issueCount: 0,
+          issueCount: rules?.warnings ?? 0,
         },
       },
     });
@@ -48,7 +42,7 @@ export async function GET() {
     return NextResponse.json(
       {
         success: false,
-        message: e?.message,
+        message: e?.message ?? "Unknown error",
       },
       {
         status: 500,
