@@ -8,13 +8,18 @@ import {
   findHardcodedBusinessRules,
 } from "@/mission-control/autofix/hardcodedRuleAutoFix";
 
+import {
+  previewAstFix,
+} from "@/mission-control/autofix/astAutoFix";
+
 export async function POST() {
   try {
     const started = Date.now();
 
-    const [theme, rules] = await Promise.all([
+    const [theme, rules, ast] = await Promise.all([
       Promise.resolve(previewThemeFix()),
       findHardcodedBusinessRules(),
+      previewAstFix(),
     ]);
 
     const duration = Date.now() - started;
@@ -33,6 +38,12 @@ export async function POST() {
         scannedFiles: rules.scannedFiles,
         issueCount: rules.issueCount,
         issues: rules.issues,
+      },
+
+      ast: {
+        success: ast.success,
+        modifiedFiles: ast.modifiedFiles,
+        message: ast.message,
       },
 
       duration,
