@@ -103,7 +103,40 @@ Duration: ${data.duration} ms`);
       alert("Auto Fix failed.");
     }
   };
+const createBackup = async () => {
+  try {
+    setLoading(true);
 
+    const res = await fetch("/api/mission-control/backup", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        action: "create",
+      }),
+    });
+
+    const data = await res.json();
+
+    if (!data.success) {
+      alert(data.message);
+      return;
+    }
+
+    alert(
+      `✅ Backup Created Successfully
+
+Files Copied: ${data.filesCopied}
+Location: ${data.backupPath}`
+    );
+  } catch (error) {
+    console.error(error);
+    alert("Backup failed.");
+  } finally {
+    setLoading(false);
+  }
+};
   const applyAutoFix = async () => {
     try {
       const res = await fetch("/api/mission-control/apply-fix", {
