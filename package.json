@@ -10,7 +10,8 @@
     "build": "npm run governance && next build",
     "start": "next start",
     "lint": "eslint",
-    "scan:hardcoded": "tsx src/scripts/hardcodedScanner.ts"
+    "scan:hardcoded": "tsx src/scripts/hardcodedScanner.ts",
+    "autofix": "dotenv -e .env.local -- tsx src/scripts/autofix.ts"
   },
   "dependencies": {
     "clsx": "^2.1.1",

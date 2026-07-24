@@ -1,0 +1,50 @@
+name: Business Rule AutoFix
+
+on:
+  push:
+    branches:
+      - main
+      - develop
+
+  pull_request:
+    branches:
+      - main
+
+jobs:
+  business-rule-check:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+
+      - name: Install Dependencies
+        run: npm install
+
+      - name: TypeScript Check
+        run: npx tsc --noEmit
+
+      - name: Hardcoded Rule Scan
+        run: npm run scan:hardcoded
+
+      - name: Governance Engine
+        run: npm run governance
+
+      - name: Auto Fix
+        run: npm run autofix
+
+      - name: Build Project
+        run: npm run build
+
+      - name: Upload Governance Report
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: governance-report
+          path: |
+            hardcoded-governance-report.json
