@@ -2,6 +2,7 @@ import { Project, Node, SourceFile } from "ts-morph";
 import path from "path";
 import { previewHardcodedRuleFix } from "./hardcodedRuleAutoFix";
 import { VERIFIED_RULES } from "./ruleMappings";
+import { createBackup } from "../backup/backupEngine";
 
 export interface AstFixResult {
   success: boolean;
@@ -63,6 +64,18 @@ function rewriteSourceFile(
 
 export async function previewAstFix(): Promise<AstFixResult> {
   const preview = previewHardcodedRuleFix();
+
+  const backup = createBackup();
+
+  if (!backup.success) {
+    return {
+      success: false,
+      modifiedFiles: 0,
+      message: `Backup failed: `,
+    };
+  }
+
+  console.log("[Mission Control] Backup:", backup.backupPath);
 
   return {
     success: true,
