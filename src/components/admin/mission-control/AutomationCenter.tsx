@@ -181,13 +181,15 @@ Location: ${data.backupPath}`
               <p className="mt-2 text-sm text-gray-500">{action.description}</p>
 
               <button
-                onClick={() => {
-                  if (action.title === "Run All Scanners") {
-                    runScanners();
-                  } else if (action.title === "Run Auto Fix") {
-                    runAutoFix();
-                  }
-                }}
+  onClick={() => {
+    if (action.title === "Run All Scanners") {
+      runScanners();
+    } else if (action.title === "Run Auto Fix") {
+      runAutoFix();
+    } else if (action.title === "Create Backup") {
+      createBackup();
+    }
+  }}
                 disabled={loading && action.title === "Run All Scanners"}
                 className="mt-5 w-full rounded-lg bg-blue-600 px-4 py-2 text-white transition hover:bg-blue-700 disabled:cursor-not-allowed disabled:opacity-60"
               >
