@@ -1,5 +1,6 @@
 import { Project, Node, SourceFile } from "ts-morph";
 import path from "path";
+
 import { previewHardcodedRuleFix } from "./hardcodedRuleAutoFix";
 import { VERIFIED_RULES } from "./ruleMappings";
 import { createBackup } from "../backup/backupEngine";
@@ -10,7 +11,7 @@ export interface AstFixResult {
   message: string;
 }
 
-interface PreviewResult {
+interface RewriteResult {
   matched: boolean;
   replacements: number;
 }
@@ -25,15 +26,11 @@ function createProject() {
 function rewriteSourceFile(
   sourceFile: SourceFile,
   configPaths: string[]
-): PreviewResult {
+): RewriteResult {
   let replacements = 0;
 
-  const descendants = sourceFile.getDescendants();
-
-  for (const node of descendants) {
-    if (!Node.isIdentifier(node)) {
-      continue;
-    }
+  for (const node of sourceFile.getDescendants()) {
+    if (!Node.isIdentifier(node)) continue;
 
     const text = node.getText();
 
@@ -44,17 +41,18 @@ function rewriteSourceFile(
 
       if (!mapping.pattern.test(text)) continue;
 
-      console.log(
-        `[AST Preview] File=${sourceFile.getFilePath()} | Rule=${mapping.name} | Identifier=${text} | Config=${mapping.configPath}`
+      node.replaceWithText(
+        `getConfig("${mapping.configPath}")`
       );
 
       replacements++;
-
       break;
     }
   }
 
-  // No source modification in preview mode
+  if (replacements > 0) {
+    sourceFile.saveSync();
+  }
 
   return {
     matched: replacements > 0,
@@ -71,11 +69,9 @@ export async function previewAstFix(): Promise<AstFixResult> {
     return {
       success: false,
       modifiedFiles: 0,
-      message: `Backup failed: `,
+      message: "Backup failed.",
     };
   }
-
-  console.log("[Mission Control] Backup:", backup.backupPath);
 
   return {
     success: true,
@@ -115,7 +111,7 @@ export async function applyAstFix(): Promise<AstFixResult> {
     modifiedFiles,
     message:
       modifiedFiles > 0
-        ? `Preview completed. ${modifiedFiles} file(s) analyzed, ${totalReplacements} potential replacement(s) detected. No source code was modified.`
-        : "Preview completed. No verified files found.",
+        ? `AST Auto Fix completed. ${modifiedFiles} file(s) modified, ${totalReplacements} replacement(s) applied.`
+        : "AST Auto Fix completed. No verified files found.",
   };
 }
