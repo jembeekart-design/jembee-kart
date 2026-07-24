@@ -25,7 +25,7 @@
     "react-hot-toast": "^2.6.0",
     "react-swipeable": "^7.0.2",
     "react-zoom-pan-pinch": "^4.0.3",
-    "swiper": "^12.1.4",
+    "swiper": "^14.0.6",
     "tailwind-merge": "^3.6.0",
     "ts-morph": "^28.0.0",
     "zustand": "^5.0.14"
