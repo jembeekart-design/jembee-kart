@@ -15,6 +15,7 @@ import FeatureFlagsPanel from "./FeatureFlagsPanel";
 import ScannerResults from "./ScannerResults";
 import QuickLinks from "./QuickLinks";
 import { AlertCircle } from "lucide-react";
+import BackupCenter from "./BackupCenter";
 
 export default function MissionControl() {
   const { status, error, lastUpdated } = useAdminConfig();
@@ -53,6 +54,7 @@ export default function MissionControl() {
       <AISystemAdvisor />
       <CodeQualityDashboard />
       <ProjectStatistics />
+      <BackupCenter />
 
       {/* Auxiliary Panels */}
       <FeatureFlagsPanel />
