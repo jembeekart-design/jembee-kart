@@ -119,6 +119,13 @@ const createBackup = async () => {
 
     const data = await res.json();
 
+console.log(data);
+
+if (!res.ok) {
+  alert(data.message || "Backup operation failed.");
+  return;
+}
+
     if (!data.success) {
       alert(data.message);
       return;
