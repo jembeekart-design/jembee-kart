@@ -4,43 +4,47 @@ import { useState } from "react";
 
 export default function AutoFixCard() {
   const [loading, setLoading] = useState(false);
-  const [result, setResult] = useState<any>(null);
 
-  async function runAutoFix() {
+  async function runHardAutoFix() {
     setLoading(true);
 
     try {
-      const res = await fetch("/api/mission-control/autofix", {
+      const review = await fetch("/api/mission-control/review");
+      const report = await review.json();
+
+      const res = await fetch("/api/mission-control/autofix/hard", {
         method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          items: report.items ?? [],
+        }),
       });
 
       const data = await res.json();
-      setResult(data);
-    } catch (e) {
-      console.error(e);
-    }
 
-    setLoading(false);
+      alert(
+        `Fixed: ${data.fixed}\nSkipped: ${data.skipped}`
+      );
+    } finally {
+      setLoading(false);
+    }
   }
 
   return (
     <div className="rounded-xl border p-4 space-y-3">
       <h2 className="text-xl font-bold">
-        Auto Fix Engine
+        Hard Auto Fix
       </h2>
 
       <button
-        onClick={runAutoFix}
-        className="rounded bg-green-600 px-4 py-2 text-white"
+        onClick={runHardAutoFix}
+        disabled={loading}
+        className="rounded bg-red-600 px-4 py-2 text-white disabled:opacity-50"
       >
-        {loading ? "Running..." : "Run Auto Fix"}
+        {loading ? "Running..." : "Run Hard Auto Fix"}
       </button>
-
-      {result && (
-        <pre className="text-xs overflow-auto">
-          {JSON.stringify(result, null, 2)}
-        </pre>
-      )}
     </div>
   );
 }
