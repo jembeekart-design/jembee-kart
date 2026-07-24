@@ -6,7 +6,12 @@ export default function ReviewReport() {
 const [report, setReport] = useState<any>(null);
 
 useEffect(() => {
-loadReport();
+setReport((prev: any) => ({
+  ...prev,
+  items: prev.items.map((i: any) =>
+    i.id === data.item.id ? data.item : i
+  ),
+}));
 }, []);
 
 async function loadReport() {
