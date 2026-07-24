@@ -63,9 +63,10 @@ jobs:
           git checkout -b governance-working-${{ github.sha }} || git checkout governance-working-${{ github.sha }}
           git status
 
-      - name: "Create Externalized Governance Rule Mapping Config"
+      - name: "Create Externalized Governance Rule Mapping Config & Script Modules"
         run: |
           mkdir -p src/governance
+
           cat << 'EOF' > src/governance/rules.json
           {
             "keywords": ["cashback", "commission", "mlm", "gst", "tax", "wallet", "withdrawal", "reward", "fee", "margin", "discount", "rate", "value"],
@@ -87,269 +88,259 @@ jobs:
           }
           EOF
 
-      - name: "Run Enterprise Deep AST Governance Scanner with Full Path Tracking"
-        id: scanner
-        run: |
-          echo "=========================================="
-          echo "Starting Deep AST Governance Scanner"
-          echo "=========================================="
-          
-          mkdir -p .governance-reports
-          
-          node -e '
-            const fs = require("fs");
-            const path = require("path");
-            const ts = require("typescript");
+          cat << 'EOF' > src/governance/scanner.js
+          const fs = require("fs");
+          const path = require("path");
+          const ts = require("typescript");
 
-            const rules = JSON.parse(fs.readFileSync("src/governance/rules.json", "utf8"));
-            const violations = [];
-            const scannedFiles = [];
+          const rules = JSON.parse(fs.readFileSync("src/governance/rules.json", "utf8"));
+          const violations = [];
+          const scannedFiles = [];
 
-            function getPropertyAccessPath(node) {
-              let parts = [];
-              let current = node;
-              while (current) {
-                if (ts.isIdentifier(current)) {
-                  parts.unshift(current.text.toLowerCase());
-                  break;
-                } else if (ts.isPropertyAccessExpression(current)) {
-                  parts.unshift(current.name.text.toLowerCase());
-                  current = current.expression;
-                } else if (ts.isElementAccessExpression(current) && ts.isStringLiteral(current.argumentExpression)) {
-                  parts.unshift(current.argumentExpression.text.toLowerCase());
-                  current = current.expression;
-                } else {
-                  break;
-                }
+          function getPropertyAccessPath(node) {
+            let parts = [];
+            let current = node;
+            while (current) {
+              if (ts.isIdentifier(current)) {
+                parts.unshift(current.text.toLowerCase());
+                break;
+              } else if (ts.isPropertyAccessExpression(current)) {
+                parts.unshift(current.name.text.toLowerCase());
+                current = current.expression;
+              } else if (ts.isElementAccessExpression(current) && ts.isStringLiteral(current.argumentExpression)) {
+                parts.unshift(current.argumentExpression.text.toLowerCase());
+                current = current.expression;
+              } else {
+                break;
               }
-              return parts.join(".");
             }
+            return parts.join(".");
+          }
 
-            function walkDir(dir) {
-              const files = fs.readdirSync(dir);
-              for (const file of files) {
-                const fullPath = path.join(dir, file);
-                if (fs.statSync(fullPath).isDirectory()) {
-                  if (!["node_modules", ".next", ".git", ".github", "dist", "build"].includes(file)) {
-                    walkDir(fullPath);
-                  }
-                } else if (/\.(ts|tsx|js|jsx)$/.test(file) && !fullPath.includes("src/governance")) {
-                  scannedFiles.push(fullPath);
-                  const content = fs.readFileSync(fullPath, "utf8");
-                  
-                  const sourceFile = ts.createSourceFile(
-                    fullPath,
-                    content,
-                    ts.ScriptTarget.Latest,
-                    true
-                  );
+          function walkDir(dir) {
+            const files = fs.readdirSync(dir);
+            for (const file of files) {
+              const fullPath = path.join(dir, file);
+              if (fs.statSync(fullPath).isDirectory()) {
+                if (!["node_modules", ".next", ".git", ".github", "dist", "build"].includes(file)) {
+                  walkDir(fullPath);
+                }
+              } else if (/\.(ts|tsx|js|jsx)$/.test(file) && !fullPath.includes("src/governance")) {
+                scannedFiles.push(fullPath);
+                const content = fs.readFileSync(fullPath, "utf8");
+                
+                const sourceFile = ts.createSourceFile(
+                  fullPath,
+                  content,
+                  ts.ScriptTarget.Latest,
+                  true
+                );
 
-                  function visit(node) {
-                    if (ts.isNumericLiteral(node)) {
-                      const val = Number(node.text);
-                      const parent = node.parent;
-                      let resolvedContext = "";
+                function visit(node) {
+                  if (ts.isNumericLiteral(node)) {
+                    const val = Number(node.text);
+                    const parent = node.parent;
+                    let resolvedContext = "";
 
-                      if (parent && ts.isVariableDeclaration(parent) && ts.isIdentifier(parent.name)) {
-                        resolvedContext = parent.name.text.toLowerCase();
-                      } else if (parent && ts.isPropertyAssignment(parent)) {
-                        resolvedContext = getPropertyAccessPath(parent.name);
-                      } else if (parent && ts.isBinaryExpression(parent)) {
-                        resolvedContext = getPropertyAccessPath(parent.left);
-                      } else if (parent && ts.isObjectLiteralExpression(parent)) {
-                        resolvedContext = "object.literal.value";
-                      }
+                    if (parent && ts.isVariableDeclaration(parent) && ts.isIdentifier(parent.name)) {
+                      resolvedContext = parent.name.text.toLowerCase();
+                    } else if (parent && ts.isPropertyAssignment(parent)) {
+                      resolvedContext = getPropertyAccessPath(parent.name);
+                    } else if (parent && ts.isBinaryExpression(parent)) {
+                      resolvedContext = getPropertyAccessPath(parent.left);
+                    } else if (parent && ts.isObjectLiteralExpression(parent)) {
+                      resolvedContext = "object.literal.value";
+                    }
 
-                      const matchesBusinessContext = rules.keywords.some(keyword => resolvedContext.includes(keyword));
+                    const matchesBusinessContext = rules.keywords.some(keyword => resolvedContext.includes(keyword));
 
-                      if (matchesBusinessContext && val > 1) {
-                        const isConfigCall = parent && ts.isCallExpression(parent) && parent.expression.getText().includes("getConfig");
-                        
-                        if (!isConfigCall) {
-                          violations.push({
-                            file: fullPath,
-                            line: sourceFile.getLineAndCharacterOfPosition(node.getStart()).line + 1,
-                            category: "Hardcoded Business Logic Value",
-                            contextKey: resolvedContext,
-                            value: val,
-                            text: node.getText()
-                          });
-                        }
+                    if (matchesBusinessContext && val > 1) {
+                      const isConfigCall = parent && ts.isCallExpression(parent) && parent.expression.getText().includes("getConfig");
+                      
+                      if (!isConfigCall) {
+                        violations.push({
+                          file: fullPath,
+                          line: sourceFile.getLineAndCharacterOfPosition(node.getStart()).line + 1,
+                          category: "Hardcoded Business Logic Value",
+                          contextKey: resolvedContext,
+                          value: val,
+                          text: node.getText()
+                        });
                       }
                     }
-                    ts.forEachChild(node, visit);
                   }
-                  visit(sourceFile);
+                  ts.forEachChild(node, visit);
                 }
+                visit(sourceFile);
               }
             }
+          }
 
-            walkDir(".");
-            
-            fs.writeFileSync(".governance-reports/violations.json", JSON.stringify({ totalScanned: scannedFiles.length, violations }, null, 2));
-            console.log(`Scanned ${scannedFiles.length} files.`);
-            console.log(`Detected ${violations.length} deep AST business logic violations.`);
-          '
+          fs.mkdirSync(".governance-reports", { recursive: true });
+          walkDir(".");
+          fs.writeFileSync(".governance-reports/violations.json", JSON.stringify({ totalScanned: scannedFiles.length, violations }, null, 2));
+          console.log(`Scanned ${scannedFiles.length} files.`);
+          console.log(`Detected ${violations.length} deep AST business logic violations.`);
+          EOF
 
-      - name: "Execute AST-Driven Safe Import & Transformation Engine"
-        id: autofix
-        run: |
-          echo "=========================================="
-          echo "Executing AST-Driven AutoFix Engine..."
-          echo "=========================================="
+          cat << 'EOF' > src/governance/autofix.js
+          const fs = require("fs");
+          const path = require("path");
+          const ts = require("typescript");
 
-          node -e '
-            const fs = require("fs");
-            const path = require("path");
-            const ts = require("typescript");
+          const rules = JSON.parse(fs.readFileSync("src/governance/rules.json", "utf8"));
+          const reportPath = ".governance-reports/violations.json";
+          if (!fs.existsSync(reportPath)) process.exit(0);
 
-            const rules = JSON.parse(fs.readFileSync("src/governance/rules.json", "utf8"));
-            const reportPath = ".governance-reports/violations.json";
-            if (!fs.existsSync(reportPath)) process.exit(0);
+          const report = JSON.parse(fs.readFileSync(reportPath, "utf8"));
+          const violations = report.violations;
 
-            const report = JSON.parse(fs.readFileSync(reportPath, "utf8"));
-            const violations = report.violations;
+          const fileGroups = {};
+          violations.forEach(v => {
+            if (!fileGroups[v.file]) fileGroups[v.file] = [];
+            fileGroups[v.file].push(v);
+          });
 
-            const fileGroups = {};
-            violations.forEach(v => {
-              if (!fileGroups[v.file]) fileGroups[v.file] = [];
-              fileGroups[v.file].push(v);
-            });
-
-            function getPropertyAccessPath(node) {
-              let parts = [];
-              let current = node;
-              while (current) {
-                if (ts.isIdentifier(current)) {
-                  parts.unshift(current.text.toLowerCase());
-                  break;
-                } else if (ts.isPropertyAccessExpression(current)) {
-                  parts.unshift(current.name.text.toLowerCase());
-                  current = current.expression;
-                } else {
-                  break;
-                }
+          function getPropertyAccessPath(node) {
+            let parts = [];
+            let current = node;
+            while (current) {
+              if (ts.isIdentifier(current)) {
+                parts.unshift(current.text.toLowerCase());
+                break;
+              } else if (ts.isPropertyAccessExpression(current)) {
+                parts.unshift(current.name.text.toLowerCase());
+                current = current.expression;
+              } else {
+                break;
               }
-              return parts.join(".");
+            }
+            return parts.join(".");
+          }
+
+          for (const [filePath, fileViolations] of Object.entries(fileGroups)) {
+            let content = fs.readFileSync(filePath, "utf8");
+            const sourceFile = ts.createSourceFile(
+              filePath,
+              content,
+              ts.ScriptTarget.Latest,
+              true
+            );
+
+            let hasImportConfig = false;
+            let modified = false;
+
+            function transformer(context) {
+              return function(rootNode) {
+                function visitor(node) {
+                  if (ts.isImportDeclaration(node)) {
+                    const moduleSpecifier = node.moduleSpecifier.getText(sourceFile);
+                    if (moduleSpecifier.includes("@/lib/config") || moduleSpecifier.includes("lib/config")) {
+                      hasImportConfig = true;
+                    }
+                  }
+
+                  if (ts.isNumericLiteral(node)) {
+                    const parent = node.parent;
+                    let resolvedContext = "";
+
+                    if (parent && ts.isVariableDeclaration(parent) && ts.isIdentifier(parent.name)) {
+                      resolvedContext = parent.name.text.toLowerCase();
+                    } else if (parent && ts.isPropertyAssignment(parent)) {
+                      resolvedContext = getPropertyAccessPath(parent.name);
+                    } else if (parent && ts.isBinaryExpression(parent)) {
+                      resolvedContext = getPropertyAccessPath(parent.left);
+                    }
+
+                    if (resolvedContext && Number(node.text) > 1) {
+                      const isConfigCall = parent && ts.isCallExpression(parent) && parent.expression.getText().includes("getConfig");
+                      
+                      if (!isConfigCall) {
+                        let configKey = rules.mappings.value;
+                        for (const [key, mappedVal] of Object.entries(rules.mappings)) {
+                          if (resolvedContext.includes(key)) {
+                            configKey = mappedVal;
+                            break;
+                          }
+                        }
+
+                        modified = true;
+                        return ts.factory.createCallExpression(
+                          ts.factory.createIdentifier("getConfig"),
+                          undefined,
+                          [ts.factory.createStringLiteral(configKey)]
+                        );
+                      }
+                    }
+                  }
+
+                  return ts.visitEachChild(node, visitor, context);
+                }
+                return ts.visitNode(rootNode, visitor);
+              };
             }
 
-            for (const [filePath, fileViolations] of Object.entries(fileGroups)) {
-              let content = fs.readFileSync(filePath, "utf8");
-              const sourceFile = ts.createSourceFile(
-                filePath,
-                content,
-                ts.ScriptTarget.Latest,
-                true
+            const result = ts.transform(sourceFile, [transformer]);
+            let transformedSourceFile = result.transformed[0];
+
+            if (modified && !hasImportConfig) {
+              const importDecl = ts.factory.createImportDeclaration(
+                undefined,
+                ts.factory.createImportClause(
+                  false,
+                  undefined,
+                  ts.factory.createNamedImports([
+                    ts.factory.createImportSpecifier(false, undefined, ts.factory.createIdentifier("getConfig"))
+                  ])
+                ),
+                ts.factory.createStringLiteral("@/lib/config"),
+                undefined
               );
 
-              let hasImportConfig = false;
-              let modified = false;
+              let clientDirectiveIndex = -1;
+              const statements = Array.from(transformedSourceFile.statements);
 
-              function transformer(context) {
-                return function(rootNode) {
-                  function visitor(node) {
-                    if (ts.isImportDeclaration(node)) {
-                      const moduleSpecifier = node.moduleSpecifier.getText(sourceFile);
-                      if (moduleSpecifier.includes("@/lib/config") || moduleSpecifier.includes("lib/config")) {
-                        hasImportConfig = true;
-                      }
-                    }
-
-                    if (ts.isNumericLiteral(node)) {
-                      const parent = node.parent;
-                      let resolvedContext = "";
-
-                      if (parent && ts.isVariableDeclaration(parent) && ts.isIdentifier(parent.name)) {
-                        resolvedContext = parent.name.text.toLowerCase();
-                      } else if (parent && ts.isPropertyAssignment(parent)) {
-                        resolvedContext = getPropertyAccessPath(parent.name);
-                      } else if (parent && ts.isBinaryExpression(parent)) {
-                        resolvedContext = getPropertyAccessPath(parent.left);
-                      }
-
-                      if (resolvedContext && Number(node.text) > 1) {
-                        const isConfigCall = parent && ts.isCallExpression(parent) && parent.expression.getText().includes("getConfig");
-                        
-                        if (!isConfigCall) {
-                          let configKey = rules.mappings.value;
-                          for (const [key, mappedVal] of Object.entries(rules.mappings)) {
-                            if (resolvedContext.includes(key)) {
-                              configKey = mappedVal;
-                              break;
-                            }
-                          }
-
-                          modified = true;
-                          // Non-generic safe getConfig call without unsafe type assertions
-                          return ts.factory.createCallExpression(
-                            ts.factory.createIdentifier("getConfig"),
-                            undefined,
-                            [ts.factory.createStringLiteral(configKey)]
-                          );
-                        }
-                      }
-                    }
-
-                    return ts.visitEachChild(node, visitor, context);
-                  }
-                  return ts.visitNode(rootNode, visitor);
-                };
-              }
-
-              const result = ts.transform(sourceFile, [transformer]);
-              let transformedSourceFile = result.transformed[0];
-
-              if (modified && !hasImportConfig) {
-                const importDecl = ts.factory.createImportDeclaration(
-                  undefined,
-                  ts.factory.createImportClause(
-                    false,
-                    undefined,
-                    ts.factory.createNamedImports([
-                      ts.factory.createImportSpecifier(false, undefined, ts.factory.createIdentifier("getConfig"))
-                    ])
-                  ),
-                  ts.factory.createStringLiteral("@/lib/config"),
-                  undefined
-                );
-
-                let clientDirectiveIndex = -1;
-                const statements = Array.from(transformedSourceFile.statements);
-
-                for (let i = 0; i < statements.length; i++) {
-                  const stmt = statements[i];
-                  if (
-                    ts.isExpressionStatement(stmt) &&
-                    (
-                      stmt.expression.getText() === "\"use client\"" ||
-                      stmt.expression.getText() === "'use client'"
-                    )
-                  ) {
-                    clientDirectiveIndex = i;
-                    break;
-                  }
+              for (let i = 0; i < statements.length; i++) {
+                const stmt = statements[i];
+                if (
+                  ts.isExpressionStatement(stmt) &&
+                  ts.isStringLiteral(stmt.expression) &&
+                  (
+                    stmt.expression.text === "use client" ||
+                    stmt.expression.text === "use server"
+                  )
+                ) {
+                  clientDirectiveIndex = i;
+                  break;
                 }
-
-                if (clientDirectiveIndex >= 0) {
-                  statements.splice(clientDirectiveIndex + 1, 0, importDecl);
-                } else {
-                  statements.unshift(importDecl);
-                }
-
-                transformedSourceFile = ts.factory.updateSourceFile(
-                  transformedSourceFile,
-                  statements
-                );
               }
 
-              if (modified) {
-                const printer = ts.createPrinter({ removeComments: false });
-                const newContent = printer.printFile(transformedSourceFile);
-                fs.writeFileSync(filePath, newContent, "utf8");
-                console.log(`Successfully transformed via AST: ${filePath}`);
+              if (clientDirectiveIndex >= 0) {
+                statements.splice(clientDirectiveIndex + 1, 0, importDecl);
+              } else {
+                statements.unshift(importDecl);
               }
+
+              transformedSourceFile = ts.factory.updateSourceFile(
+                transformedSourceFile,
+                statements
+              );
             }
-          '
+
+            if (modified) {
+              const printer = ts.createPrinter({ removeComments: false });
+              const newContent = printer.printFile(transformedSourceFile);
+              fs.writeFileSync(filePath, newContent, "utf8");
+              console.log(`Successfully transformed via AST: ${filePath}`);
+            }
+          }
+          EOF
+
+      - name: "Run Enterprise Deep AST Governance Scanner"
+        run: node src/governance/scanner.js
+
+      - name: "Execute AST-Driven Safe Import & Transformation Engine"
+        run: node src/governance/autofix.js
 
       - name: "Run TypeScript Compilation Check"
         id: tsc-check
@@ -387,14 +378,14 @@ jobs:
         if: success() && github.event_name != 'pull_request'
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
-          commit-message: "refactor(governance): enterprise AST dynamic configuration enforcement via external rules"
+          commit-message: "refactor(governance): enterprise AST dynamic configuration enforcement via external scripts"
           branch: "governance/ast-autofix-${{ github.run_number }}"
           title: "🤖 Enterprise Governance AST AutoFix: Dynamic Configuration Enforced"
           body: |
-            This automated pull request uses an advanced AST-based transformation engine driven by external rule configurations (`src/governance/rules.json`), with precise AST import statement insertion and full path tracking.
+            This automated pull request uses modular JavaScript execution files (`src/governance/scanner.js` and `src/governance/autofix.js`) to completely eliminate inline multiline `node -e` syntax parsing issues.
 
             ### Validation Status:
-            - **AST Deep Path & Object Tracking:** Success
+            - **Modular AST Execution Engine:** Success
             - **Externalized Rule Mapping:** Verified
             - **TypeScript Compilation:** Passed
             - **ESLint Validation:** Passed
