@@ -1,10 +1,9 @@
 import { hardAutoFix } from "../autofix/hardAutoFix";
+import { saveReview } from "./reviewStore";
 import type { ReviewItem } from "./types";
 
 export async function applySelected(items: ReviewItem[]) {
-  const approved = items.filter(
-    (item) => item.status === "approved"
-  );
+  const approved = items.filter(item => item.status === "approved");
 
   if (approved.length === 0) {
     return {
@@ -16,6 +15,15 @@ export async function applySelected(items: ReviewItem[]) {
   }
 
   const result = await hardAutoFix(approved);
+
+  if (result.success) {
+    approved.forEach(item => {
+      saveReview({
+        ...item,
+        status: "applied",
+      });
+    });
+  }
 
   return {
     success: result.success,
