@@ -1,4 +1,5 @@
 import { generateReviewReport } from "./reviewEngine";
+import { saveReview } from "./reviewStore";
 import type { ReviewItem, ReviewReport } from "./types";
 
 export class ReviewManager {
@@ -7,17 +8,23 @@ export class ReviewManager {
   }
 
   approve(item: ReviewItem): ReviewItem {
-    return {
+    const updated: ReviewItem = {
       ...item,
       status: "approved",
     };
+
+    saveReview(updated);
+    return updated;
   }
 
   reject(item: ReviewItem): ReviewItem {
-    return {
+    const updated: ReviewItem = {
       ...item,
       status: "rejected",
     };
+
+    saveReview(updated);
+    return updated;
   }
 }
 
