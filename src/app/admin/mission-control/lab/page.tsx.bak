@@ -19,7 +19,6 @@ import SuggestionReport from "./components/SuggestionReport";
 import BackupCard from "./components/BackupCard";
 import RollbackCard from "./components/RollbackCard";
 import AutoFixCard from "./components/AutoFixCard";
-import ReviewReport from "./components/ReviewReport";
 
 export const metadata = {
   title: "Mission Control Lab",
@@ -73,8 +72,6 @@ export default function MissionControlLabPage() {
         <AISystemAdvisor />
         <section className="space-y-6">
     <SuggestionReport />
-
-  <ReviewReport />
 
     <div className="grid gap-6 md:grid-cols-2">
       <BackupCard />
