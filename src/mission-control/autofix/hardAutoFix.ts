@@ -1,4 +1,4 @@
-import { previewAstFix } from "./astAutoFix";
+import { applyAstFix } from "./astAutoFix";
 import type { ReviewItem } from "../review/types";
 
 export interface HardAutoFixResult {
@@ -24,7 +24,7 @@ export async function hardAutoFix(
     };
   }
 
-  await previewAstFix();
+  await applyAstFix();
 
   return {
     success: true,
