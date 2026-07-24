@@ -1,0 +1,767 @@
+src/firestore/settings/antiFraudConfig.ts:122:    configVersion: 1,
+src/firestore/businessRules/defaults.ts:13:    orderProfit: 100,
+src/firestore/businessRules/defaults.ts:14:    cashbackPercentage: 5,
+src/firestore/businessRules/defaults.ts:15:    cashbackExpense: 10,
+src/firestore/businessRules/defaults.ts:16:    referralExpense: 10,
+src/firestore/businessRules/defaults.ts:17:    rewardExpense: 10,
+src/firestore/businessRules/defaults.ts:18:    creatorExpense: 5,
+src/firestore/businessRules/defaults.ts:19:    protectionFundExpense: 5,
+src/firestore/businessRules/defaults.ts:23:    level1Commission: 10,
+src/firestore/businessRules/defaults.ts:24:    level2Commission: 5,
+src/firestore/businessRules/defaults.ts:25:    level3Commission: 2,
+src/firestore/businessRules/defaults.ts:26:    level4Commission: 1,
+src/firestore/businessRules/defaults.ts:30:    rewardPerVideo: 1,
+src/firestore/businessRules/defaults.ts:31:    watchDurationPerReward: 30,
+src/firestore/businessRules/defaults.ts:32:    videosRequired: 100,
+src/firestore/businessRules/defaults.ts:33:    rewardAmount: 50,
+src/firestore/businessRules/defaults.ts:34:    requiredSales: 5,
+src/firestore/businessRules/defaults.ts:35:    maxActiveCycles: 1,
+src/firestore/businessRules/defaults.ts:36:    minimumWatchDuration: 30,
+src/firestore/businessRules/defaults.ts:40:    minimumWithdrawal: 200,
+src/firestore/businessRules/defaults.ts:41:    withdrawalCharge: 0,
+src/firestore/businessRules/defaults.ts:44:    maxDailyWithdrawal: 3,
+src/firestore/businessRules/defaults.ts:48:    creatorRevenueShare: 20,
+src/firestore/businessRules/defaults.ts:49:    affiliateRevenueShare: 10,
+src/firestore/businessRules/defaults.ts:50:    minimumPayout: 500,
+src/firestore/businessRules/metrics.ts:36:    totalReads: 0,
+src/firestore/businessRules/metrics.ts:38:    cacheHits: 0,
+src/firestore/businessRules/metrics.ts:40:    cacheMisses: 0,
+src/firestore/businessRules/metrics.ts:42:    firestoreReads: 0,
+src/firestore/businessRules/metrics.ts:44:    fallbackReads: 0,
+src/firestore/businessRules/metrics.ts:46:    validationFailures: 0,
+src/firestore/businessRules/metrics.ts:48:    refreshCount: 0,
+src/firestore/businessRules/metrics.ts:113:      totalReads: 0,
+src/firestore/businessRules/metrics.ts:115:      cacheHits: 0,
+src/firestore/businessRules/metrics.ts:117:      cacheMisses: 0,
+src/firestore/businessRules/metrics.ts:119:      firestoreReads: 0,
+src/firestore/businessRules/metrics.ts:121:      fallbackReads: 0,
+src/firestore/businessRules/metrics.ts:123:      validationFailures: 0,
+src/firestore/businessRules/metrics.ts:125:      refreshCount: 0,
+src/firestore/businessRules/scheduler.ts:31:    refreshCount: 0,
+src/firestore/businessRules/scheduler.ts:32:    errorCount: 0,
+src/firestore/collections/baseConfigTypes.ts:292:  SHORT: 5 * 60 * 1000, // 5 minutes
+src/firestore/collections/baseConfigTypes.ts:293:  MEDIUM: 15 * 60 * 1000, // 15 minutes
+src/firestore/collections/baseConfigTypes.ts:294:  LONG: 60 * 60 * 1000, // 1 hour
+src/app/admin/activity-tracker/page.tsx:39:    users: 0,
+src/app/admin/activity-tracker/page.tsx:40:    orders: 0,
+src/app/admin/activity-tracker/page.tsx:41:    finance: 0,
+src/app/admin/activity-tracker/page.tsx:42:    alerts: 0,
+src/app/admin/activity-tracker/page.tsx:262:        {filteredActivities.length === 0 && (
+src/app/admin/admin-chat/page.tsx:272:                      10:24 PM
+src/app/admin/ai-banner/page.tsx:28:      "https://images.unsplash.com/photo-1523275335684-37898b6baf30?q=80&w=1200"
+src/app/admin/ai-banner/page.tsx:50:          "https://images.unsplash.com/photo-1505740420928-5e560c06d30e?q=80&w=1200"
+src/app/admin/announcement/page.tsx:262:        {announcements.length === 0 && (
+src/app/admin/backups/page.tsx:30:        id: 1,
+src/app/admin/backups/page.tsx:37:        id: 2,
+src/app/admin/banner-manager/page.tsx:27:          "https://images.unsplash.com/photo-1441986300917-64674bd600d8?q=80&w=1200"
+src/app/admin/banner-manager/page.tsx:33:          "https://images.unsplash.com/photo-1511707171634-5f897ff02aa9?q=80&w=1200"
+src/app/admin/banner-manager/page.tsx:46:          "https://images.unsplash.com/photo-1523275335684-37898b6baf30?q=80&w=1200"
+src/app/admin/blogs/page.tsx:27:        id: 1,
+src/app/admin/blogs/page.tsx:34:        id: 2,
+src/app/admin/coupons-generator/page.tsx:345:        {coupons.length === 0 && (
+src/app/admin/coupons/page.tsx:91:        discount: 50,
+src/app/admin/coupons/page.tsx:94:        minimumAmount: 999
+src/app/admin/database/page.tsx:33:      id: 1,
+src/app/admin/database/page.tsx:35:      records: 1240,
+src/app/admin/database/page.tsx:39:      id: 2,
+src/app/admin/database/page.tsx:41:      records: 532,
+src/app/admin/database/page.tsx:45:      id: 3,
+src/app/admin/database/page.tsx:47:      records: 220,
+src/app/admin/database/page.tsx:51:      id: 4,
+src/app/admin/database/page.tsx:53:      records: 89,
+src/app/admin/delivery-tracking/page.tsx:162:        {orders.length === 0 && (
+src/app/admin/faq/page.tsx:25:        id: 1,
+src/app/admin/faq/page.tsx:32:        id: 2,
+src/app/admin/firestore/page.tsx:35:      id: 1,
+src/app/admin/firestore/page.tsx:37:      documents: 1240
+src/app/admin/firestore/page.tsx:40:      id: 2,
+src/app/admin/firestore/page.tsx:42:      documents: 532
+src/app/admin/firestore/page.tsx:45:      id: 3,
+src/app/admin/firestore/page.tsx:47:      documents: 881
+src/app/admin/firestore/page.tsx:50:      id: 4,
+src/app/admin/firestore/page.tsx:52:      documents: 93
+src/app/admin/firestore/page.tsx:81:      documents: 0
+src/app/admin/flash-sale/page.tsx:353:        {flashSales.length === 0 && (
+src/app/admin/homepage/page.tsx:153:    if (index === 0) return;
+src/app/admin/inventory/page.tsx:200:        {filteredProducts.length === 0 && (
+src/app/admin/inventory/page.tsx:350:    if (stock <= 0) {
+src/app/admin/inventory/page.tsx:368:    if (stock <= 0) {
+src/app/admin/kyc-verification/page.tsx:187:        {requests.length === 0 && (
+src/app/admin/live-chat/page.tsx:161:        {messages.length === 0 && (
+src/app/admin/live-orders/page.tsx:196:        {orders.length === 0 && (
+src/app/admin/live-stream/page.tsx:359:        {streams.length === 0 && (
+src/app/admin/logs/page.tsx:28:        id: 1,
+src/app/admin/logs/page.tsx:35:        id: 2,
+src/app/admin/logs/page.tsx:42:        id: 3,
+src/app/admin/navigation/page.tsx:78:            id: 1,
+src/app/admin/navigation/page.tsx:84:            id: 2,
+src/app/admin/navigation/page.tsx:194:    if (index === 0) {
+src/app/admin/orders/page.tsx:175:                  src={order.image || "https://images.unsplash.com/photo-1523275335684-37898b6baf30?w=500"}
+src/app/admin/orders/page.tsx:263:        {orders.length === 0 && (
+src/app/admin/page-builder/page.tsx:168:    if (index === 0) {
+src/app/admin/pages/page.tsx:27:        id: 1,
+src/app/admin/pages/page.tsx:33:        id: 2,
+src/app/admin/payouts/page.tsx:29:        id: 1,
+src/app/admin/payouts/page.tsx:36:        id: 2,
+src/app/admin/payouts/page.tsx:43:        id: 3,
+src/app/admin/products/page.tsx:299:        let i = 0;
+src/app/admin/products/page.tsx:380:        let i = 0;
+src/app/admin/push-notifications/page.tsx:342:        {notifications.length === 0 && (
+src/app/admin/referral-engine/page.tsx:24:    referrals: 24,
+src/app/admin/referral-engine/page.tsx:30:    referrals: 18,
+src/app/admin/referral-engine/page.tsx:36:    referrals: 42,
+src/app/admin/referral-engine/page.tsx:42:    referrals: 15,
+src/app/admin/referrals/page.tsx:28:        id: 1,
+src/app/admin/referrals/page.tsx:32:        joins: 24
+src/app/admin/referrals/page.tsx:35:        id: 2,
+src/app/admin/referrals/page.tsx:39:        joins: 14
+src/app/admin/referrals/page.tsx:42:        id: 3,
+src/app/admin/referrals/page.tsx:46:        joins: 42
+src/app/admin/refund-requests/page.tsx:177:        {requests.length === 0 && (
+src/app/admin/reports/page.tsx:38:      totalSales: 0,
+src/app/admin/reports/page.tsx:39:      totalOrders: 0,
+src/app/admin/reports/page.tsx:40:      totalUsers: 0,
+src/app/admin/reports/page.tsx:41:      totalSellers: 0,
+src/app/admin/reports/page.tsx:42:      totalProducts: 0,
+src/app/admin/reports/page.tsx:43:      totalWalletAmount: 0
+src/app/admin/reports/page.tsx:79:      let sales = 0;
+src/app/admin/reports/page.tsx:81:      let walletAmount = 0;
+src/app/admin/reports/page.tsx:255:                : 0
+src/app/admin/reviews-ratings/page.tsx:175:        {reviews.length === 0 && (
+src/app/admin/reviews-ratings/page.tsx:236:                    length: 5
+src/app/admin/roles/page.tsx:26:        id: 1,
+src/app/admin/roles/page.tsx:28:        users: 1
+src/app/admin/roles/page.tsx:31:        id: 2,
+src/app/admin/roles/page.tsx:33:        users: 4
+src/app/admin/roles/page.tsx:36:        id: 3,
+src/app/admin/roles/page.tsx:38:        users: 2
+src/app/admin/roles/page.tsx:54:      users: 0
+src/app/admin/storage/page.tsx:29:        id: 1,
+src/app/admin/storage/page.tsx:35:        id: 2,
+src/app/admin/storage/page.tsx:41:        id: 3,
+src/app/admin/subadmins/page.tsx:28:        id: 1,
+src/app/admin/subadmins/page.tsx:34:        id: 2,
+src/app/admin/support-tickets/page.tsx:176:        {tickets.length === 0 && (
+src/app/admin/system-logs/page.tsx:179:        {logs.length === 0 && (
+src/app/admin/tickets/page.tsx:27:        id: 1,
+src/app/admin/tickets/page.tsx:33:        id: 2,
+src/app/admin/tickets/page.tsx:39:        id: 3,
+src/app/admin/users/page.tsx:63:    total: 0,
+src/app/admin/users/page.tsx:64:    mlmActive: 0,
+src/app/admin/users/page.tsx:65:    blocked: 0,
+src/app/admin/users/page.tsx:66:    referrals: 0,
+src/app/admin/users/page.tsx:82:        let mlmCount = 0;
+src/app/admin/users/page.tsx:83:        let blockedCount = 0;
+src/app/admin/users/page.tsx:84:        let referralSum = 0;
+src/app/admin/users/page.tsx:428:        {filteredUsers.length === 0 && (
+src/app/admin/withdrawal-requests/page.tsx:176:        {requests.length === 0 && (
+src/app/admin/withdrawals/page.tsx:27:        id: 1,
+src/app/admin/withdrawals/page.tsx:33:        id: 2,
+src/app/admin/withdrawals/page.tsx:39:        id: 3,
+src/app/product/[id]/page.tsx:100:              rating: 4.6
+src/app/product/[id]/page.tsx:149:        quantity: 1,
+src/app/product/[id]/page.tsx:531:                  {state.scale === 1 && (
+src/app/mlm/dashboard/page.tsx:220:              <div key={i} style={{ height: `${val}%` }} className={`w-full rounded-t-xl transition-all duration-500 ${i === 3 ? "bg-[var(--warning-color)]" : "bg-[var(--primary-color)]"}`} />
+src/app/mlm/earnings/page.tsx:34:      amount: 450,
+src/app/mlm/earnings/page.tsx:41:      amount: 120,
+src/app/mlm/earnings/page.tsx:48:      amount: 250,
+src/app/mlm/earnings/page.tsx:55:      amount: 700,
+src/app/mlm/cashback/page.tsx:118:    walletBalance: 0,
+src/app/mlm/cashback/page.tsx:119:    commissionWallet: 0,
+src/app/mlm/cashback/page.tsx:120:    rewardWallet: 0,
+src/app/mlm/cashback/page.tsx:121:    cashbackWallet: 0,
+src/app/mlm/cashback/page.tsx:122:    pendingWithdrawal: 0,
+src/app/mlm/cashback/page.tsx:123:    todayIncome: 0,
+src/app/mlm/cashback/page.tsx:124:    totalIncome: 0,
+src/app/mlm/cashback/page.tsx:199:          walletBalance: typeof data.walletBalance === "number" ? data.walletBalance : 0,
+src/app/mlm/cashback/page.tsx:200:          commissionWallet: typeof data.commissionWallet === "number" ? data.commissionWallet : 0,
+src/app/mlm/cashback/page.tsx:201:          rewardWallet: typeof data.rewardWallet === "number" ? data.rewardWallet : 0,
+src/app/mlm/cashback/page.tsx:202:          cashbackWallet: typeof data.cashbackWallet === "number" ? data.cashbackWallet : 0,
+src/app/mlm/cashback/page.tsx:203:          pendingWithdrawal: typeof data.pendingWithdrawal === "number" ? data.pendingWithdrawal : 0,
+src/app/mlm/cashback/page.tsx:204:          todayIncome: typeof data.todayIncome === "number" ? data.todayIncome : 0,
+src/app/mlm/cashback/page.tsx:205:          totalIncome: typeof data.totalIncome === "number" ? data.totalIncome : 0,
+src/app/mlm/cashback/page.tsx:236:            amount: typeof d.amount === "number" ? d.amount : 0,
+src/app/mlm/cashback/page.tsx:240:            beforeBalance: typeof d.beforeBalance === "number" ? d.beforeBalance : 0,
+src/app/mlm/cashback/page.tsx:241:            afterBalance: typeof d.afterBalance === "number" ? d.afterBalance : 0,
+src/app/mlm/cashback/page.tsx:453:          {filteredTransactions.length === 0 ? (
+src/app/mlm/leaderboard/page.tsx:20:      earnings: 45200,
+src/app/mlm/leaderboard/page.tsx:21:      team: 320,
+src/app/mlm/leaderboard/page.tsx:22:      rank: 1
+src/app/mlm/leaderboard/page.tsx:27:      earnings: 32100,
+src/app/mlm/leaderboard/page.tsx:28:      team: 250,
+src/app/mlm/leaderboard/page.tsx:29:      rank: 2
+src/app/mlm/leaderboard/page.tsx:34:      earnings: 28700,
+src/app/mlm/leaderboard/page.tsx:35:      team: 210,
+src/app/mlm/leaderboard/page.tsx:36:      rank: 3
+src/app/mlm/leaderboard/page.tsx:41:      earnings: 19500,
+src/app/mlm/leaderboard/page.tsx:42:      team: 160,
+src/app/mlm/leaderboard/page.tsx:43:      rank: 4
+src/app/mlm/leaderboard/page.tsx:48:      earnings: 14200,
+src/app/mlm/leaderboard/page.tsx:49:      team: 120,
+src/app/mlm/leaderboard/page.tsx:50:      rank: 5
+src/app/mlm/network/page.tsx:55:        const MAX_LEVEL = 3;
+src/app/mlm/network/page.tsx:58:        for (let i = 1; i <= MAX_LEVEL; i++) {
+src/app/mlm/network/page.tsx:87:          for (let i = 0; i < l1Uids.length; i += 10) {
+src/app/mlm/network/page.tsx:112:            for (let i = 0; i < l2Uids.length; i += 10) {
+src/app/mlm/network/page.tsx:234:        {Object.keys(networkLevels).filter((level) => networkLevels[Number(level)]?.length > 0).length === 0 ? (
+src/app/mlm/network/page.tsx:269:            {activeLevel === 1 && "Directly sponsored structural network accounts."}
+src/app/mlm/network/page.tsx:277:          ) : currentLevelMembers.length === 0 ? (
+src/app/mlm/ranks/page.tsx:40:      members: 10
+src/app/mlm/ranks/page.tsx:48:      members: 50
+src/app/mlm/ranks/page.tsx:56:      members: 100
+src/app/mlm/ranks/page.tsx:64:      members: 200
+src/app/mlm/ranks/page.tsx:72:      members: 500
+src/app/mlm/orders/page.tsx:23:    price: 2499,
+src/app/mlm/orders/page.tsx:38:    price: 3999,
+src/app/mlm/orders/page.tsx:53:    price: 1799,
+src/app/mlm/wallet/history/page.tsx:87:              amount: typeof d.amount === "number" ? d.amount : 0,
+src/app/mlm/wallet/history/page.tsx:173:        {history.length === 0 ? (
+src/app/mlm/team-business/page.tsx:8:      business: 12000
+src/app/mlm/team-business/page.tsx:13:      business: 8500
+src/app/mlm/team-business/page.tsx:18:      business: 15400
+src/app/mlm/watch-earn/components/CoinsPopup.tsx:30:            opacity: 0,
+src/app/mlm/watch-earn/components/CoinsPopup.tsx:31:            scale: 0.5,
+src/app/mlm/watch-earn/components/CoinsPopup.tsx:32:            y: 50
+src/app/mlm/watch-earn/components/CoinsPopup.tsx:36:            opacity: 1,
+src/app/mlm/watch-earn/components/CoinsPopup.tsx:37:            scale: 1,
+src/app/mlm/watch-earn/components/CoinsPopup.tsx:38:            y: 0
+src/app/mlm/watch-earn/components/CoinsPopup.tsx:42:            opacity: 0,
+src/app/mlm/watch-earn/components/CoinsPopup.tsx:43:            scale: 0.5,
+src/app/mlm/watch-earn/components/CoinsPopup.tsx:48:            duration: 0.4
+src/app/mlm/watch-earn/components/CommentDrawer.tsx:58:      likes: 22
+src/app/mlm/watch-earn/components/CommentDrawer.tsx:70:      likes: 14
+src/app/mlm/watch-earn/components/CommentDrawer.tsx:91:        likes: 0
+src/app/mlm/watch-earn/components/LiveCoinsAnimation.tsx:33:            opacity: 0,
+src/app/mlm/watch-earn/components/LiveCoinsAnimation.tsx:34:            y: 100,
+src/app/mlm/watch-earn/components/LiveCoinsAnimation.tsx:35:            scale: 0.5
+src/app/mlm/watch-earn/components/LiveCoinsAnimation.tsx:39:            opacity: 1,
+src/app/mlm/watch-earn/components/LiveCoinsAnimation.tsx:40:            y: 0,
+src/app/mlm/watch-earn/components/LiveCoinsAnimation.tsx:41:            scale: 1
+src/app/mlm/watch-earn/components/LiveCoinsAnimation.tsx:45:            opacity: 0,
+src/app/mlm/watch-earn/components/LiveCoinsAnimation.tsx:47:            scale: 0.5
+src/app/mlm/watch-earn/components/LiveCoinsAnimation.tsx:51:            duration: 0.6
+src/app/mlm/watch-earn/components/LiveCoinsAnimation.tsx:75:              rotate: 360
+src/app/mlm/watch-earn/components/LiveCoinsAnimation.tsx:80:              duration: 2,
+src/app/mlm/watch-earn/components/RewardProgressBar.tsx:43:      : 0;
+src/app/mlm/watch-earn/components/RewardProgressBar.tsx:53:      : 0;
+src/app/mlm/watch-earn/components/RewardProgressBar.tsx:253:                width: 0,
+src/app/mlm/watch-earn/components/RewardProgressBar.tsx:260:                duration: 0.5,
+src/app/mlm/watch-earn/components/RewardProgressBar.tsx:315:                width: 0,
+src/app/mlm/watch-earn/components/RewardProgressBar.tsx:322:                duration: 0.5,
+src/app/mlm/watch-earn/components/RewardProgressBar.tsx:413:                width: 0,
+src/app/mlm/watch-earn/components/RewardProgressBar.tsx:420:                duration: 0.5,
+src/app/mlm/watch-earn/components/VerticalVideoFeed.tsx:46:    rewardCoins: 10,
+src/app/mlm/watch-earn/components/VerticalVideoFeed.tsx:48:    watchSeconds: 10,
+src/app/mlm/watch-earn/components/VerticalVideoFeed.tsx:50:    likes: 1200,
+src/app/mlm/watch-earn/components/VerticalVideoFeed.tsx:52:    comments: 250,
+src/app/mlm/watch-earn/components/VerticalVideoFeed.tsx:54:    shares: 90
+src/app/mlm/watch-earn/components/VerticalVideoFeed.tsx:80:    rewardCoins: 15,
+src/app/mlm/watch-earn/components/VerticalVideoFeed.tsx:82:    watchSeconds: 12,
+src/app/mlm/watch-earn/components/VerticalVideoFeed.tsx:84:    likes: 4300,
+src/app/mlm/watch-earn/components/VerticalVideoFeed.tsx:86:    comments: 780,
+src/app/mlm/watch-earn/components/VerticalVideoFeed.tsx:88:    shares: 320
+src/app/mlm/watch-earn/hooks/useActiveVideo.ts:25:      let current = 0;
+src/app/mlm/watch-earn/page.tsx:289:      videos.length === 0
+src/app/mlm/watch-earn/page.tsx:343:              updated >= 100 &&
+src/app/mlm/watch-earn/page.tsx:710:      {videos.length === 0 && (
+src/app/cart/page.tsx:29:  const FREE_GIFT_THRESHOLD = 3500;
+src/app/cart/page.tsx:76:        ) : cartItems.length === 0 ? (
+src/app/account/page.tsx:90:            walletBalance: 0,
+src/app/account/page.tsx:91:            totalIncome: 0,
+src/app/address/page.tsx:57:    if (form.mobile.trim().length !== 10 || isNaN(Number(form.mobile))) {
+src/app/address/page.tsx:63:    if (form.pincode.trim().length !== 6 || isNaN(Number(form.pincode))) {
+src/app/signup/page.tsx:118:          schemaVersion: 1, 
+src/app/signup/page.tsx:124:          packageAmount: 0,
+src/app/signup/page.tsx:131:          walletBalance: 0,
+src/app/signup/page.tsx:132:          commissionWallet: 0,
+src/app/signup/page.tsx:133:          rewardWallet: 0,
+src/app/signup/page.tsx:134:          totalIncome: 0,
+src/app/signup/page.tsx:135:          todayIncome: 0,
+src/app/signup/page.tsx:136:          totalWithdraw: 0,
+src/app/signup/page.tsx:137:          pendingWithdrawal: 0,
+src/app/signup/page.tsx:139:          rewardCount: 0,
+src/app/signup/page.tsx:141:          directBusiness: 0,
+src/app/signup/page.tsx:142:          teamBusiness: 0,
+src/app/signup/page.tsx:143:          totalTeamBusiness: 0,
+src/app/signup/page.tsx:144:          lifetimeBusiness: 0,
+src/app/signup/page.tsx:145:          directActiveReferrals: 0,
+src/app/signup/page.tsx:146:          teamActiveReferrals: 0,
+src/app/signup/page.tsx:148:          totalProductsPurchased: 0,
+src/app/signup/page.tsx:150:          level1Count: 0,
+src/app/signup/page.tsx:151:          level2Count: 0,
+src/app/signup/page.tsx:152:          level3Count: 0,
+src/app/signup/page.tsx:153:          level4Count: 0,
+src/app/signup/page.tsx:154:          level5Count: 0,
+src/app/signup/page.tsx:156:          referralIncome: 0,
+src/app/signup/page.tsx:157:          levelIncome: 0,
+src/app/signup/page.tsx:158:          rankIncome: 0,
+src/app/signup/page.tsx:160:          totalOrders: 0,
+src/app/signup/page.tsx:168:          notificationCount: 0,
+src/app/signup/page.tsx:169:          unreadNotifications: 0,
+src/app/signup/page.tsx:175:          totalReferrals: 0,
+src/app/signup/page.tsx:176:          directReferrals: 0,
+src/app/signup/page.tsx:177:          teamSize: 0, // Fresh node starts at 0
+src/app/signup/page.tsx:185:          loginCount: 1,
+src/app/api/qikink/create-order/route.ts:36:        { status: 400 }
+src/app/api/qikink/create-order/route.ts:65:        { status: 500 }
+src/app/api/qikink/create-order/route.ts:93:          search_from_my_products: 1,
+src/app/api/qikink/create-order/route.ts:178:      { status: 500 }
+src/app/api/qikink/token/route.ts:31:      { status: 500 }
+src/app/api/governance/route.ts:19:      { status: 500 }
+src/app/api/governance/report/route.ts:20:        info: 0,
+src/app/api/governance/report/route.ts:34:      { status: 500 }
+src/app/api/governance/hardcoded/route.ts:24:        { status: 404 }
+src/app/api/governance/hardcoded/route.ts:88:      { status: 500 }
+src/app/api/mission-control/api-monitor/route.ts:11:      responseTime: 82,
+src/app/api/mission-control/api-monitor/route.ts:20:      responseTime: 65,
+src/app/api/mission-control/performance/route.ts:5:    cpuUsage: 18,
+src/app/api/mission-control/performance/route.ts:6:    memoryUsage: 46,
+src/app/api/mission-control/performance/route.ts:7:    diskUsage: 32,
+src/app/api/mission-control/performance/route.ts:8:    networkLatency: 24,
+src/app/api/mission-control/performance/route.ts:9:    averageResponseTime: 182,
+src/app/api/mission-control/realtime/route.ts:8:    activeUsers: 1,
+src/app/api/mission-control/run/route.ts:58:        status: 500,
+src/app/api/mission-control/storage/route.ts:8:    usagePercent: 28,
+src/app/api/mission-control/summary/route.ts:48:        status: 500,
+src/app/api/mission-control/system-health/route.ts:59:          collectionsChecked: 1,
+src/app/api/mission-control/system-health/route.ts:74:          valid: missingEnv.length === 0,
+src/app/api/mission-control/system-health/route.ts:79:          total: 18,
+src/app/api/mission-control/system-health/route.ts:80:          healthy: 18,
+src/app/api/mission-control/system-health/route.ts:81:          failed: 0,
+src/app/api/mission-control/system-health/route.ts:116:        status: 500,
+src/app/api/mission-control/apply-fix/route.ts:57:        status: 500,
+src/app/api/mission-control/autofix/route.ts:61:        status: 500,
+src/app/api/mission-control/github-test/route.ts:34:      { status: 500 }
+src/app/api/mission-control/rollback/route.ts:18:      restoredFiles: 0,
+src/app/api/mission-control/rollback/route.ts:33:        status: 500,
+src/app/api/mission-control/backup/route.ts:19:      { status: 500 }
+src/app/api/mission-control/backup/route.ts:42:            { status: 400 }
+src/app/api/mission-control/backup/route.ts:57:          { status: 400 }
+src/app/api/mission-control/backup/route.ts:67:      { status: 500 }
+src/app/api/test-admin/route.ts:18:      { status: 500 }
+src/app/checkout/page.tsx:82:      productPrice: 1599,
+src/app/checkout/page.tsx:83:      productDiscountPrice: 1099,
+src/app/checkout/page.tsx:85:      quantity: 1,
+src/app/checkout/page.tsx:87:      subtotal: 1599,
+src/app/checkout/page.tsx:88:      discount: 500,
+src/app/checkout/page.tsx:89:      finalAmount: 1099,
+src/app/checkout/page.tsx:154:        <div className="absolute top-4 right-4 text-[10px] font-bold bg-[var(--background-color)] px-2.5 py-1 rounded-lg">Qty: 1</div>
+src/app/orders/page.tsx:80:        {filteredOrders.length === 0 ? (
+src/app/wishlist/page.tsx:99:      {items.length === 0 ? (
+src/lib/cloudinary.ts:59:        const MAX_WIDTH = 1600;
+src/lib/mlm/config/index.ts:4:  maxWatchRewardLimit: 20,
+src/lib/mlm/config/index.ts:5:  defaultConversionRate: 0.5,
+src/lib/mlm/config/index.ts:6:  defaultRequiredOrders: 5,
+src/lib/mlm/config/index.ts:7:  defaultRewardPoints: 50,
+src/lib/mlm/config/index.ts:8:  maxPendingCycles: 5,
+src/lib/mlm/config/index.ts:9:  minWatchSeconds: 30,
+src/lib/mlm/config/index.ts:10:  maxReferralLevels: 4,
+src/lib/mlm/config/index.ts:13:  cashbackPercent: 0.05,
+src/lib/mlm/config/index.ts:14:  mlmPercent: 0.10,
+src/lib/mlm/config/index.ts:15:  rewardPoolPercent: 0.05,
+src/lib/mlm/creditWallet.ts:27:const MIN_DESCRIPTION_LENGTH = 5;
+src/lib/mlm/creditWallet.ts:42:  if (!targetUid || isNaN(creditAmount) || creditAmount <= 0) {
+src/lib/mlm/creditWallet.ts:114:        todayIncome: increment(creditAmount)         // Real-time index for daily dashboards (Requires 00:00 UTC Reset Job)
+src/lib/mlm/financial/processCashback.ts:10:    if (amount <= 0) {
+src/lib/mlm/orders/approveWithdrawTransaction.ts:62:      withdrawData.amount <= 0
+src/lib/mlm/orders/approveWithdrawTransaction.ts:124:        : 0;
+src/lib/mlm/orders/autoJoinMLMOnPurchase.ts:27:        totalIncome: 0,
+src/lib/mlm/orders/autoJoinMLMOnPurchase.ts:28:        todayIncome: 0,
+src/lib/mlm/orders/autoJoinMLMOnPurchase.ts:29:        walletBalance: 0,
+src/lib/mlm/orders/autoJoinMLMOnPurchase.ts:30:        pendingWithdrawal: 0,
+src/lib/mlm/orders/autoJoinMLMOnPurchase.ts:31:        commissionWallet: 0,
+src/lib/mlm/orders/autoJoinMLMOnPurchase.ts:32:        rewardWallet: 0,
+src/lib/mlm/orders/autoJoinMLMOnPurchase.ts:33:        cashbackWallet: 0,
+src/lib/mlm/orders/autoJoinMLMOnPurchase.ts:36:        totalReferrals: 0,
+src/lib/mlm/orders/autoJoinMLMOnPurchase.ts:37:        directReferrals: 0,
+src/lib/mlm/orders/autoJoinMLMOnPurchase.ts:38:        teamSize: 0,
+src/lib/mlm/orders/autoJoinMLMOnPurchase.ts:39:        teamBusiness: 0,
+src/lib/mlm/orders/autoJoinMLMOnPurchase.ts:40:        level1Count: 0,
+src/lib/mlm/orders/autoJoinMLMOnPurchase.ts:41:        level2Count: 0,
+src/lib/mlm/orders/autoJoinMLMOnPurchase.ts:42:        level3Count: 0,
+src/lib/mlm/orders/autoJoinMLMOnPurchase.ts:43:        level4Count: 0,
+src/lib/mlm/orders/checkRankUpgrade.ts:35: * Status: 10/10 PLATINUM PRODUCTION ENTERPRISE CERTIFIED — BUILD FIXED ✅
+src/lib/mlm/orders/checkRankUpgrade.ts:46:  if (!Array.isArray(RANK_LEVELS_CONFIG) || RANK_LEVELS_CONFIG.length === 0) {
+src/lib/mlm/orders/checkRankUpgrade.ts:91:      let targetEligibleRankIndex = currentRankIndex !== -1 ? currentRankIndex : 0;
+src/lib/mlm/orders/checkRankUpgrade.ts:97:      for (let i = 0; i < RANK_LEVELS_CONFIG.length; i++) {
+src/lib/mlm/orders/checkWithdrawEligibility.ts:31:      data.amount <= 0
+src/lib/mlm/orders/checkWithdrawEligibility.ts:66:        : 0;
+src/lib/mlm/orders/checkWithdrawEligibility.ts:72:        : 0;
+src/lib/mlm/orders/completeOrderAndDistributeCommission.ts:91:          cashback = 0; // Reset trace count if wallet ledger declined mutation
+src/lib/mlm/orders/completeOrderAndDistributeCommission.ts:95:        cashback = 0;
+src/lib/mlm/orders/completeOrderAndDistributeCommission.ts:127:    let unlockedAmount = 0;
+src/lib/mlm/orders/completeOrderAndDistributeCommission.ts:142:        if (qualifiedSales >= 5 && lockedReward > 0 && cycleStatus === "pending") {
+src/lib/mlm/orders/completeOrderAndDistributeCommission.ts:156:              lockedWatchReward: 0,
+src/lib/mlm/orders/completeOrderAndDistributeCommission.ts:157:              currentCycleLockedReward: 0,
+src/lib/mlm/orders/completeOrderAndDistributeCommission.ts:158:              qualifiedSalesCount: 0,
+src/lib/mlm/orders/completeOrderAndDistributeCommission.ts:159:              videoWatchCount: 0,
+src/lib/mlm/orders/createPendingCommission.ts:51:      let level = 0;
+src/lib/mlm/orders/createRankReward.ts:34:const MAX_RANK_REWARD_CAP = 100000; 
+src/lib/mlm/orders/createRankReward.ts:41: * Status: 10/10 Enterprise Platinum Hardened — PRODUCTION VERIFIED
+src/lib/mlm/orders/createRankReward.ts:80:    if (calculatedRewardAmount <= 0) {
+src/lib/mlm/orders/createTeamBusiness.ts:23:      let level = 0;
+src/lib/mlm/orders/createWithdrawTransaction.ts:64:            : 0;
+src/lib/mlm/orders/createWithdrawTransaction.ts:70:            : 0;
+src/lib/mlm/orders/createWithdrawTransaction.ts:73:          data.amount <= 0
+src/lib/mlm/orders/holdWithdrawAmount.ts:55:            : 0;
+src/lib/mlm/orders/holdWithdrawAmount.ts:61:            : 0;
+src/lib/mlm/orders/holdWithdrawAmount.ts:64:          data.amount <= 0
+src/lib/mlm/orders/rejectWithdrawTransaction.ts:59:      withdrawData.amount <= 0
+src/lib/mlm/orders/rejectWithdrawTransaction.ts:121:        : 0;
+src/lib/mlm/orders/rejectWithdrawTransaction.ts:127:        : 0;
+src/lib/mlm/orders/releasePendingCommission.ts:51:      let level = 0;
+src/lib/mlm/orders/reverseLevelCommission.ts:37:      let level = 0;
+src/lib/mlm/orders/reverseTeamBusiness.ts:29:      let level = 0;
+src/lib/mlm/orders/updateTeamVolume.ts:33:const MAX_SINGLE_BONUS_THRESHOLD = 100000.00; // Protection cap ceiling mechanism
+src/lib/mlm/orders/updateTeamVolume.ts:37: * Core Architecture Score: 10/10 Platinum
+src/lib/mlm/orders/updateTeamVolume.ts:59:    if (rawBonusRate <= 0 || rawVolumeValue <= 0) {
+src/lib/mlm/orders/processOrderProfit.ts:30:      if (netProfit <= 0) {
+src/lib/mlm/createReferralBonus.ts:159:      if (baseCalculationPrice <= 0) {
+src/lib/mlm/createReferralBonus.ts:221:      if (calculatedBonusAmount <= 0) {
+src/lib/mlm/createReferralLink.ts:23:const MIN_REFERRAL_CODE_LENGTH = 3;
+src/lib/mlm/createTaskReward.ts:44:    if (isNaN(activeRewardValue) || activeRewardValue <= 0) {
+src/lib/mlm/distributeLevelCommission.ts:46:    if (isNaN(netProfitPool) || netProfitPool <= 0) {
+src/lib/mlm/distributeLevelCommission.ts:100:    if (ancestralParentChain.length === 0) {
+src/lib/mlm/distributeLevelCommission.ts:121:      if (!levelConfig || typeof levelConfig.percentage !== "number" || levelConfig.percentage <= 0) {
+src/lib/mlm/distributeLevelCommission.ts:147:      if (targetedPayoutCut <= 0) {
+src/lib/mlm/generateReferralQRCode.ts:103:          width: 500,
+src/lib/mlm/generateReferralQRCode.ts:104:          margin: 2,
+src/lib/mlm/giveCommission.ts:41:      data.amount <= 0
+src/lib/mlm/updateRank.ts:52:    if (!RANK_LEVELS_CONFIG || !Array.isArray(RANK_LEVELS_CONFIG) || RANK_LEVELS_CONFIG.length === 0) {
+src/lib/mlm/updateRank.ts:90:      let rankBonus = 0;
+src/lib/mlm/updateRank.ts:95:      for (let i = 0; i < RANK_LEVELS_CONFIG.length; i++) {
+src/lib/mlm/updateReferralTree.ts:21:      let level = 1;
+src/lib/mlm/updateReferralTree.ts:34:          ...(level === 1 ? { directReferrals: increment(1) } : {}),
+src/lib/mlm/withdrawals/approveWithdrawal.ts:18: * Final Version: 10/10 Production Ready
+src/lib/mlm/withdrawals/getWithdrawalHistory.ts:10:  limitCount: number = 20,
+src/lib/mlm/withdrawals/rejectWithdrawal.ts:18: * Final Version: 10/10 Production Ready
+src/lib/mlm/withdrawals/requestWithdraw.ts:16: * Final Version: 10/10 Production Ready
+src/lib/mlm/withdrawals/withdrawalSettings.ts:25:        minAmount: 200,
+src/lib/mlm/withdrawals/withdrawalSettings.ts:26:        serviceFeePercent: 0, // JembeeKart Recommended (Profit Model Alignment)
+src/lib/mlm/watch-earn/claimWatchVideoReward.ts:166:    let lockedReward = 0;
+src/lib/mlm/watch-earn/claimWatchVideoReward.ts:175:  nextWatchCount % rules.videosRequired === 0
+src/lib/mlm/watch-earn/createSponsoredVideo.ts:67:        totalViews: 0,
+src/lib/mlm/watch-earn/createSponsoredVideo.ts:69:        adRevenue: 0,
+src/lib/mlm/watch-earn/createVideoComment.ts:40:        likes: 0,
+src/lib/mlm/watch-earn/createWatchReward.ts:98:    let lockedRewardToAdd = 0;
+src/lib/mlm/watch-earn/createWatchTransaction.ts:52:    if (amount <= 0) {
+src/lib/mlm/watch-earn/createWatchVideo.ts:55:        totalViews: 0,
+src/lib/mlm/watch-earn/detectAutoScrollBot.ts:82:      interactionCount <= 0
+src/lib/mlm/watch-earn/detectMutedVideo.ts:41:      volume <= 0
+src/lib/mlm/watch-earn/replyVideoComment.ts:40:        likes: 0,
+src/lib/mlm/watch-earn/processRewardUnlock.ts:41:      if (pointsToUnlock <= 0) throw new Error("INVALID_REWARD_POINTS");
+src/lib/mlm/watch-earn/processRewardUnlock.ts:88:      if (nextRewardPoints <= 0) throw new Error("INVALID_CONFIG_REWARD_POINTS");
+src/lib/mlm/watch-earn/updateWalletBalance.ts:51:    if (lockedReward <= 0) {
+src/lib/mlm/watch-earn/updateWalletBalance.ts:84:      currentCycleLockedReward: 0,
+src/lib/mlm/watch-earn/updateWalletBalance.ts:86:      qualifiedSalesCount: 0,
+src/lib/mlm/watch-earn/updateWalletBalance.ts:88:      videoWatchCount: 0,
+src/lib/mlm/watch-earn/uploadWatchVideo.ts:125:        : 5;
+src/lib/mlm/watch-earn/processWatchReward.ts:58:      const isMilestone = (currentCount + 1) % config.videosRequired === 0;
+src/lib/mlm/watch-earn/startRewardCycle.ts:80:    const rewardAmount = 50;
+src/lib/mlm/watch-earn/startRewardCycle.ts:93:      qualifiedSalesCount: 0,
+src/lib/security/index.ts:5: * Version : 1.0.0
+src/lib/security/profileFactory.ts:47:    walletBalance: 0,
+src/lib/security/profileFactory.ts:48:    commissionWallet: 0,
+src/lib/security/profileFactory.ts:49:    rewardWallet: 0,
+src/lib/security/profileFactory.ts:50:    totalIncome: 0,
+src/lib/security/profileFactory.ts:51:    todayIncome: 0,
+src/lib/security/profileFactory.ts:52:    totalWithdraw: 0,
+src/lib/security/profileFactory.ts:53:    pendingWithdrawal: 0,
+src/lib/security/profileFactory.ts:56:    directBusiness: 0,
+src/lib/security/profileFactory.ts:57:    teamBusiness: 0,
+src/lib/security/profileFactory.ts:58:    totalTeamBusiness: 0,
+src/lib/security/profileFactory.ts:59:    lifetimeBusiness: 0,
+src/lib/security/profileFactory.ts:62:    teamSize: 0,
+src/lib/security/profileFactory.ts:63:    totalReferrals: 0,
+src/lib/security/profileFactory.ts:64:    directReferrals: 0,
+src/lib/security/profileFactory.ts:65:    directActiveReferrals: 0,
+src/lib/security/profileFactory.ts:66:    teamActiveReferrals: 0,
+src/lib/security/profileFactory.ts:71:    packageAmount: 0,
+src/lib/security/types.ts:5: * Version : 1.0.0
+src/lib/admin-config/defaults.ts:6:  version: 1,
+src/lib/admin-config/defaults.ts:38:    shippingCharge: 0,
+src/lib/admin-config/defaults.ts:39:    deliveryDays: 0,
+src/lib/admin-config/defaults.ts:44:    requiredVideos: 0,
+src/lib/admin-config/defaults.ts:45:    rewardAmount: 0,
+src/lib/admin-config/defaults.ts:46:    requiredSales: 0,
+src/lib/admin-config/defaults.ts:51:    cashbackPercent: 0,
+src/lib/admin-config/defaults.ts:56:    level1: 0,
+src/lib/admin-config/defaults.ts:57:    level2: 0,
+src/lib/admin-config/defaults.ts:58:    level3: 0,
+src/lib/admin-config/defaults.ts:59:    maxLevels: 0,
+src/lib/admin-config/defaults.ts:64:    referralBonus: 0,
+src/lib/admin-config/defaults.ts:65:    maxReferralLevels: 0,
+src/lib/admin-config/defaults.ts:70:    joiningBonus: 0,
+src/lib/admin-config/defaults.ts:71:    referralBonus: 0,
+src/lib/admin-config/defaults.ts:91:    minimumTransfer: 0,
+src/lib/admin-config/mlmDefaults.ts:49:    minimumTransfer: 100,
+src/lib/governance/ai-fix/engine.ts:24:    confidence: 0.95,
+src/lib/governance/ai-fix/registry.ts:12:    confidence: 99,
+src/lib/governance/ai-fix/registry.ts:18:      lineStart: 1,
+src/lib/governance/ai-fix/registry.ts:19:      lineEnd: 1,
+src/lib/governance/ai-fix/registry.ts:32:    confidence: 98,
+src/lib/governance/ai-fix/registry.ts:38:      lineStart: 1,
+src/lib/governance/ai-fix/registry.ts:39:      lineEnd: 1,
+src/lib/governance/ai-fix/registry.ts:52:    confidence: 99,
+src/lib/governance/ai-fix/registry.ts:58:      lineStart: 1,
+src/lib/governance/ai-fix/registry.ts:59:      lineEnd: 1,
+src/lib/governance/ai-fix/registry.ts:72:    confidence: 99,
+src/lib/governance/ai-fix/registry.ts:78:      lineStart: 1,
+src/lib/governance/ai-fix/registry.ts:79:      lineEnd: 1,
+src/lib/governance/ai/provider.ts:21:      confidence: 0.5,
+src/lib/governance/ai/validator.ts:9:    response.confidence >= 0.5
+src/lib/governance/scanners/adminControlScanner.ts:58:          line: 40,
+src/lib/governance/scanners/adminControlScanner.ts:84:      if (!data || Object.keys(data).length === 0) {
+src/lib/governance/scanners/adminControlScanner.ts:95:          line: 70,
+src/lib/governance/scanners/adminControlScanner.ts:126:        line: 95,
+src/lib/governance/scanners/adminControlScanner.ts:142:        line: 110,
+src/lib/governance/scanners/deploymentScanner.ts:26:      line: 15,
+src/lib/governance/scanners/deploymentScanner.ts:62:      line: 45,
+src/lib/governance/scanners/deploymentScanner.ts:102:      line: 85,
+src/lib/governance/scanners/deploymentScanner.ts:142:      line: 120,
+src/lib/governance/scanners/deploymentScanner.ts:178:        line: 150,
+src/lib/governance/scanners/featureFlagScanner.ts:23:          line: 10,
+src/lib/governance/scanners/featureFlagScanner.ts:88:        line: 60,
+src/lib/governance/scanners/featureFlagScanner.ts:121:        line: 100,
+src/lib/governance/scanners/firestoreScanner.ts:36:          line: 1,
+src/lib/governance/scanners/firestoreScanner.ts:49:          line: 1,
+src/lib/governance/scanners/firestoreScanner.ts:86:        line: 1,
+src/lib/governance/scanners/hardcodedRuleScanner.ts:37:    if (!Array.isArray(data.results) || data.results.length === 0) {
+src/lib/governance/scanners/pageConnectionScanner.ts:81:          line: 1,
+src/lib/governance/scanners/pageConnectionScanner.ts:92:          line: 1,
+src/lib/governance/scanners/pageConnectionScanner.ts:120:        line: 1,
+src/lib/governance/scanners/securityScanner.ts:25:      line: 1,
+src/lib/governance/scanners/themeScanner.ts:23:          line: 10,
+src/lib/governance/scanners/themeScanner.ts:78:          line: 45,
+src/lib/governance/scanners/themeScanner.ts:114:        line: 75,
+src/lib/governance/scanners/themeScanner.ts:131:        line: 90,
+src/lib/governance/scanners/walletScanner.ts:24:        line: 15,
+src/lib/governance/scanners/walletScanner.ts:60:        line: 45,
+src/lib/governance/scanners/walletScanner.ts:79:  "pendingWithdrawal": 0,
+src/lib/governance/scanners/walletScanner.ts:80:  "walletBalance": 0
+src/lib/governance/scanners/walletScanner.ts:97:      line: 80,
+src/lib/governance/scanners/walletScanner.ts:115:        line: 95,
+src/lib/seed/seedSystemSettings.ts:90:  fontSize: 16,
+src/lib/seed/seedSystemSettings.ts:91:  borderRadius: 12,
+src/lib/seed/seedSystemSettings.ts:108:  minWithdraw: 200,
+src/lib/seed/seedSystemSettings.ts:109:  maxWithdraw: 50000,
+src/lib/seed/seedSystemSettings.ts:115:    maxLevels: 10,
+src/lib/seed/seedSystemSettings.ts:120:    videosRequired: 100,
+src/lib/seed/seedSystemSettings.ts:121:    rewardAmount: 50,
+src/lib/seed/seedSystemSettings.ts:126:  referralBonus: 50,
+src/lib/seed/seedSystemSettings.ts:127:  maxReferralLevels: 10,
+src/lib/seed/seedSystemSettings.ts:132:    loginAttempts: 5,
+src/lib/seed/seedSystemSettings.ts:133:    sessionTimeout: 60,
+src/lib/seed/seedSystemSettings.ts:144:    build: 1,
+src/components/categories/DynamicCategorySection.tsx:63:          length: 4
+src/components/homepage/HomepageSlider.tsx:159:      slides.length <= 1 ||
+src/components/homepage/HomepageSlider.tsx:212:        return previous === 0
+src/components/homepage/HomepageSlider.tsx:259:    slides.length === 0
+src/components/admin/theme-builder/ButtonSettings.tsx:261:            opacity: 0.5,
+src/components/admin/theme-builder/ThemePreview.tsx:29:  opacity = 0.25
+src/components/admin/mission-control/ScannerResults.tsx:14:const STATUS_ORDER: Record<ScanResult["status"], number> = { FAIL: 0, WARNING: 1, PASS: 2 };
+src/components/admin/mission-control/ScannerResults.tsx:15:const DEFAULT_HEALTH_WEIGHTS: Record<ScanResult["status"], number> = { PASS: 100, WARNING: 60, FAIL: 0 };
+src/components/admin/mission-control/ScannerResults.tsx:71:        return diff !== 0 ? diff : a.name.localeCompare(b.name);
+src/components/admin/mission-control/ScannerResults.tsx:91:      setCountdown((c) => { if (c <= 1) { performScan(); return 60; } return c - 1; });
+src/components/admin/mission-control/ScannerResults.tsx:97:    let pass = 0, warning = 0, fail = 0;
+src/components/admin/mission-control/ScannerResults.tsx:107:    const score = results.length === 0 ? 0 : Math.round(results.reduce((acc, r) => acc + (DEFAULT_HEALTH_WEIGHTS[r.status] || 0), 0) / results.length);
+src/components/admin/mission-control/ScannerResults.tsx:108:    const color = score >= 95 ? "text-green-600" : score >= 80 ? "text-blue-600" : score >= 60 ? "text-yellow-600" : "text-red-600";
+src/components/admin/mission-control/ScannerResults.tsx:109:    const label = score >= 95 ? "Excellent" : score >= 80 ? "Stable" : score >= 60 ? "Needs Attention" : "Critical";
+src/components/products/ProductCard.tsx:29:  price = 1099,
+src/components/products/ProductCard.tsx:31:  discountPrice = 539,
+src/components/products/ProductCard.tsx:33:  rating = 4.2,
+src/components/products/ProductCard.tsx:35:  reviews = 5000
+src/components/products/ProductCard.tsx:134:            {reviews >= 1000
+src/components/products/ProductGrid.tsx:47:      price: 1099,
+src/components/products/ProductGrid.tsx:49:      discountPrice: 539,
+src/components/products/ProductGrid.tsx:51:      rating: 4.2,
+src/components/products/ProductGrid.tsx:53:      reviews: 5000
+src/components/products/ProductGrid.tsx:66:      price: 1499,
+src/components/products/ProductGrid.tsx:68:      discountPrice: 699,
+src/components/products/ProductGrid.tsx:70:      rating: 4.3,
+src/components/products/ProductGrid.tsx:72:      reviews: 829
+src/components/products/ProductGrid.tsx:85:      price: 1999,
+src/components/products/ProductGrid.tsx:87:      discountPrice: 999,
+src/components/products/ProductGrid.tsx:89:      rating: 4.1,
+src/components/products/ProductGrid.tsx:91:      reviews: 1000
+src/components/products/ProductGrid.tsx:104:      price: 1299,
+src/components/products/ProductGrid.tsx:106:      discountPrice: 599,
+src/components/products/ProductGrid.tsx:108:      rating: 4.4,
+src/components/products/ProductGrid.tsx:110:      reviews: 2200
+src/context/CartContext.tsx:125:          quantity: 1
+src/context/ThemeContext.tsx:36:    if (!theme || Object.keys(theme).length === 0) return;
+src/config/mlmConfig.ts:63:export const ALERT_RETENTION_DAYS = 30;
+src/config/mlmConfig.ts:66:export const MIN_PAYOUT_LIMIT = 500; // Enforced corporate threshold check (>= ₹500)
+src/config/mlmConfig.ts:75:  MAX_ALLOWED_TOTAL_PERCENTAGE: 10,     // HARD CAP: Corporate safety ceiling for total payout tree budget
+src/config/mlmConfig.ts:76:  MAX_SINGLE_LEVEL_PERCENTAGE: 5,       // INDIVIDUAL CAP: No single level node can eat up more than 5% margin
+src/config/mlmConfig.ts:77:  MIN_PROFIT_AMOUNT_FOR_COMMISSION: 50  // OPERATIONAL BASELINE: Activates payout engine for core profit brackets (₹50-₹200)
+src/config/mlmConfig.ts:84:  { level: 1, percentage: 5.0, incomeType: "directIncome" }, // 5% of net product profit margin split
+src/config/mlmConfig.ts:85:  { level: 2, percentage: 2.0, incomeType: "levelIncome" }   // 2% of net product profit margin split
+src/config/mlmConfig.ts:93:  { id: "Bronze", requiredTeam: 0, bonus: 0 },
+src/config/mlmConfig.ts:94:  { id: "Silver", requiredTeam: 25, bonus: 500 },
+src/config/mlmConfig.ts:95:  { id: "Gold", requiredTeam: 100, bonus: 2000 },
+src/config/mlmConfig.ts:96:  { id: "Diamond", requiredTeam: 300, bonus: 10000 },
+src/config/mlmConfig.ts:97:  { id: "Crown", requiredTeam: 1000, bonus: 50000 }
+src/config/mlmConfig.ts:105:    if (!MLM_LEVELS_CONFIG || MLM_LEVELS_CONFIG.length === 0) {
+src/config/mlmConfig.ts:109:    let calculatedTotal = 0;
+src/config/mlmConfig.ts:110:    let expectedLevel = 1;
+src/config/mlmConfig.ts:117:        config.percentage <= 0 ||
+src/config/mlmConfig.ts:154:    if (!RANK_LEVELS_CONFIG || RANK_LEVELS_CONFIG.length === 0) {
+src/config/mlmConfig.ts:167:      totalPercentage: 0,
+src/jembee-governance/config/governanceRules.ts:5:    minimumNetProfitPerOrder: 50,
+src/jembee-governance/config/governanceRules.ts:12:    ecommercePriority: 1,
+src/jembee-governance/config/governanceRules.ts:13:    referralPriority: 2,
+src/jembee-governance/config/governanceRules.ts:14:    watchEarnPriority: 3,
+src/jembee-governance/config/governanceRules.ts:15:    creatorPriority: 4,
+src/jembee-governance/config/governanceRules.ts:16:    adsPriority: 5,
+src/jembee-governance/config/governanceRules.ts:24:    minimumWatchSeconds: 30,
+src/jembee-governance/config/routeRules.ts:24:    expectedGovernanceScoreGain: 10,
+src/jembee-governance/config/routeRules.ts:33:    expectedGovernanceScoreGain: 8,
+src/jembee-governance/config/routeRules.ts:42:    expectedGovernanceScoreGain: 8,
+src/jembee-governance/config/routeRules.ts:51:    expectedGovernanceScoreGain: 5,
+src/jembee-governance/config/routeRules.ts:60:    expectedGovernanceScoreGain: 3,
+src/jembee-governance/config/routeRules.ts:69:    expectedGovernanceScoreGain: 15,
+src/jembee-governance/scanners/deploymentScanner.ts:189:      blockedReasons.length === 0;
+src/jembee-governance/scanners/deploymentScanner.ts:193:      criticalIssues === 0 &&
+src/jembee-governance/scanners/deploymentScanner.ts:194:      errorIssues === 0;
+src/jembee-governance/scanners/duplicateCodeScanner.ts:22:  private readonly similarityThreshold = 0.85; // 85%
+src/jembee-governance/scanners/duplicateCodeScanner.ts:32:    for (let i = 0; i < fingerprints.length; i++) {
+src/jembee-governance/scanners/duplicateCodeScanner.ts:62:          severity: similarityPercentage >= 95 ? "CRITICAL" : "WARNING",
+src/jembee-governance/scanners/duplicateCodeScanner.ts:111:    let matches = 0;
+src/jembee-governance/scanners/firestoreScanner.ts:21:    let collectionsScanned = 0;
+src/jembee-governance/scanners/firestoreScanner.ts:170:  for (let i = 0; i < lines.length; i++) {
+src/jembee-governance/scanners/profitabilityScanner.ts:41:  private readonly MINIMUM_NET_PROFIT = 50;
+src/jembee-governance/scanners/profitabilityScanner.ts:74:      netProfit >= 0;
+src/jembee-governance/scanners/profitabilityScanner.ts:163:          "Net Profit >= 0",
+src/jembee-governance/pages/DebugDashboard.tsx:83:    overallScore: 0,
+src/jembee-governance/pages/DebugDashboard.tsx:85:    critical: 0,
+src/jembee-governance/pages/DebugDashboard.tsx:87:    errors: 0,
+src/jembee-governance/pages/DebugDashboard.tsx:89:    warnings: 0,
+src/jembee-governance/pages/DebugDashboard.tsx:458:  {filteredIssues.length === 0 ? (
+src/jembee-governance/pages/DebugDashboard.tsx:591:        {filteredIssues.length === 0 ? (
+src/jembee-governance/pages/DebugDashboard.tsx:1037:    {filteredIssues.length === 0 ? (
+src/jembee-governance/pages/GovernanceDashboard.tsx:313:          {reports.length === 0 && (
+src/jembee-governance/pages/GovernanceDashboard.tsx:378:          {issues.length === 0 && (
+src/jembee-governance/services/creatorEconomyConfigService.ts:60:      rules.creatorRevenueShare >= 0 &&
+src/jembee-governance/services/creatorEconomyConfigService.ts:65:      rules.affiliateRevenueShare >= 0 &&
+src/jembee-governance/services/creatorEconomyConfigService.ts:70:      rules.minimumPayout >= 0
+src/jembee-governance/services/governanceIssueService.ts:402:    violations.length === 0
+src/jembee-governance/services/governanceReportService.ts:581:  filesScanned: 0,
+src/jembee-governance/services/governanceReportService.ts:590:  healthScore: 100,
+src/jembee-governance/services/governanceReportService.ts:591:  totalOrdersAudited: 0,
+src/jembee-governance/services/governanceReportService.ts:592:  totalCommissionPaid: 0,
+src/jembee-governance/services/governanceReportService.ts:593:  totalCommissionReversed: 0,
+src/jembee-governance/services/governanceReportService.ts:594:  duplicateCommissionCount: 0,
+src/jembee-governance/services/governanceReportService.ts:595:  walletMismatchCount: 0,
+src/jembee-governance/services/governanceReportService.ts:596:  profitLeakageCount: 0,
+src/jembee-governance/services/governanceReportService.ts:600:  integrityScore: 100,
+src/jembee-governance/services/governanceReportService.ts:601:  totalUsersAudited: 0,
+src/jembee-governance/services/governanceReportService.ts:602:  mismatchCount: 0,
+src/jembee-governance/services/governanceReportService.ts:622:      filesScanned: 0,
+src/jembee-governance/services/governanceStatusService.ts:113:  private lastRefresh = 0;
+src/jembee-governance/services/governanceStatusService.ts:396:    if (statuses.length === 0) {
+src/jembee-governance/services/governanceStatusService.ts:432:    this.lastRefresh = 0;
+src/jembee-governance/services/governanceStatusService.ts:472:    if (this.lastRefresh === 0) {
+src/jembee-governance/services/mlmConfigService.ts:67:        value >= 0
+src/jembee-governance/services/profitabilityConfigService.ts:78:        value >= 0
+src/jembee-governance/services/walletConfigService.ts:62:      rules.minimumWithdrawal >= 0 &&
+src/jembee-governance/services/walletConfigService.ts:67:      rules.withdrawalCharge >= 0 &&
+src/jembee-governance/services/walletConfigService.ts:72:      rules.maxDailyWithdrawal >= 0 &&
+src/jembee-governance/services/watchEarnConfigService.ts:37:      rules.rewardAmount >= 0 &&
+src/jembee-governance/services/watchEarnConfigService.ts:40:      rules.requiredSales >= 0 &&
+src/jembee-governance/utils/calculateScores.ts:78:  firestore: 100,
+src/jembee-governance/utils/calculateScores.ts:80:  duplicateCode: 100,
+src/jembee-governance/utils/calculateScores.ts:81:  hardcodedRule: 100,
+src/jembee-governance/utils/calculateScores.ts:82:  pageConnection: 100,
+src/jembee-governance/utils/calculateScores.ts:84:  performance: 100,
+src/jembee-governance/utils/calculateScores.ts:85:  scalability: 100,
+src/jembee-governance/utils/calculateScores.ts:86:  compliance: 100,
+src/hooks/mission-control/useRealtime.ts:20:const DEFAULT_INTERVAL = 10000;
+src/jembee-control-tower/mock/issues.ts:10:    line: 48,
+src/jembee-control-tower/mock/issues.ts:20:    line: 12,
+src/jembee-control-tower/mock/issues.ts:30:    line: 35,
+src/jembee-control-tower/services/controlTowerService.ts:45:      total: 0,
+src/jembee-control-tower/services/controlTowerService.ts:46:      critical: 0,
+src/jembee-control-tower/services/controlTowerService.ts:47:      warning: 0,
+src/jembee-control-tower/services/controlTowerService.ts:48:      info: 0,
+src/modules/anti-fraud/index.ts:6: * Version : 1.0.0
+src/modules/anti-fraud/services/antiFraudService.ts:12: * Version : 1.0.0
+src/modules/anti-fraud/types/antiFraud.types.ts:5: * Version : 1.0.0
+src/modules/anti-fraud/validators/deviceValidator.ts:12: * Version : 1.0.0
+src/modules/anti-fraud/validators/ipValidator.ts:12: * Version : 1.0.0
+src/modules/anti-fraud/validators/kycValidator.ts:12: * Version : 1.0.0
+src/modules/anti-fraud/validators/selfReferralValidator.ts:12: * Version : 1.0.0
+src/modules/anti-fraud/validators/watchValidator.ts:13: * Version : 1.0.0
+src/scripts/theme-codemod.ts:179:  filesScanned: 0,
+src/scripts/theme-codemod.ts:181:  matchesFound: 0,
+src/scripts/theme-codemod.ts:1065:  score: 100,
+src/scripts/theme-codemod.ts:1069:  filesScanned: 0,
+src/scripts/theme-codemod.ts:1071:  totalViolations: 0,
+src/scripts/theme-codemod.ts:1073:  hardcodedHex: 0,
+src/scripts/theme-codemod.ts:1075:  hardcodedTailwind: 0,
+src/scripts/theme-codemod.ts:1077:  inlineStyles: 0,
+src/scripts/theme-codemod.ts:1079:  unknownVariables: 0
+src/scripts/theme-codemod.ts:1146:  if (health.score >= 95)
+src/scripts/theme-codemod.ts:1149:  else if (health.score >= 80)
+src/scripts/theme-codemod.ts:1152:  else if (health.score >= 60)
+src/scripts/theme-codemod.ts:1272:  themeCoverage: 0,
+src/scripts/theme-codemod.ts:1506:padding:40px;
+src/scripts/theme-codemod.ts:1516:width:100%;
+src/scripts/theme-codemod.ts:1522:padding:10px;
+src/scripts/theme-codemod.ts:1524:border:1px solid #ddd;
+src/scripts/hardcodedScanner.ts:14:  chunkSize: 15 // Stream pipeline threshold for large directory handling
+src/scripts/hardcodedScanner.ts:68:  private cacheHitsCounter = 0;
+src/scripts/hardcodedScanner.ts:149:      for (let i = 0; i < lines.length; i++) {
+src/scripts/hardcodedScanner.ts:160:          rule.regex.lastIndex = 0;
+src/shared/governance/auditCommission.ts:42:  let totalCommissionPaid = 0;
+src/mission-control/autofix/hardcodedRuleAutoFix.ts:88:        pattern.globalRegex.lastIndex = 0;
+src/mission-control/autofix/hardcodedRuleAutoFix.ts:128:    let replacements = 0;
+src/mission-control/autofix/hardcodedRuleAutoFix.ts:130:      pattern.globalRegex.lastIndex = 0;
+src/mission-control/autofix/hardcodedRuleAutoFix.ts:139:        rule.pattern.lastIndex = 0; // Prevent lastIndex state issues with 'g' flag
+src/mission-control/autofix/hardcodedRuleAutoFix.ts:166:  let modifiedFiles = 0;
+src/mission-control/autofix/themeAutoFix.ts:90:    let total = 0;
+src/mission-control/autofix/themeAutoFix.ts:158:  let restored = 0;
+src/mission-control/autofix/themeAutoFix.ts:203:    let replacements = 0;
+src/mission-control/autofix/astAutoFix.ts:28:  let replacements = 0;
+src/mission-control/autofix/astAutoFix.ts:79:  let modifiedFiles = 0;
+src/mission-control/autofix/astAutoFix.ts:80:  let totalReplacements = 0;
+src/mission-control/autofix/generateModifiedFiles.ts:89:    let replacements = 0;
+src/mission-control/autofix/generateRuleFixes.ts:82:    let replacements = 0;
+src/mission-control/enterpriseAutoFix.ts:59:        duration: 0,
+src/mission-control/enterpriseAutoFix.ts:82:          result.issueCount === 0
+src/mission-control/enterpriseAutoFix.ts:104:        duration: 0,
+src/mission-control/scanners/duplicateCodeScanner.ts:114:  let i = 0;
+src/mission-control/scanners/duplicateCodeScanner.ts:133:    let brace = 0;
+src/mission-control/scanners/duplicateCodeScanner.ts:155:      if (started && brace === 0) {
+src/mission-control/scanners/duplicateCodeScanner.ts:243:  if (count >= 20) return "critical";
+src/mission-control/scanners/duplicateCodeScanner.ts:244:  if (count >= 10) return "high";
+src/mission-control/scanners/duplicateCodeScanner.ts:245:  if (count >= 5) return "medium";
+src/mission-control/scanners/duplicateCodeScanner.ts:255:  if (scannedFiles === 0) return 100;
+src/mission-control/scanners/duplicateCodeScanner.ts:328:  status: issues.length === 0 ? "passed" : "warning",
+src/mission-control/scanners/duplicateCodeScanner.ts:338:  passed: issues.length === 0 ? files.length : 0,
+src/mission-control/scanners/duplicateCodeScanner.ts:342:  failed: 0,
+src/mission-control/scanners/duplicateCodeScanner.ts:385:        duration: 0,
+src/mission-control/scanners/duplicateCodeScanner.ts:387:        scannedItems: 0,
+src/mission-control/scanners/duplicateCodeScanner.ts:389:        passed: 0,
+src/mission-control/scanners/duplicateCodeScanner.ts:391:        warnings: 0,
+src/mission-control/scanners/duplicateCodeScanner.ts:393:        failed: 1,
+src/mission-control/scanners/duplicateCodeScanner.ts:410:          scannedBlocks: 0,
+src/mission-control/scanners/duplicateCodeScanner.ts:411:          duplicateGroups: 0,
+src/mission-control/scanners/duplicateCodeScanner.ts:412:          qualityScore: 0,
+src/mission-control/scanners/firestoreScanner.ts:70:        pattern.regex.lastIndex = 0;
+src/mission-control/scanners/runEnterpriseScanners.ts:46:    passed: firestore.issueCount === 0 ? firestore.scannedFiles : 0,
+src/mission-control/scanners/runEnterpriseScanners.ts:48:    failed: 0,
+src/mission-control/scanners/runEnterpriseScanners.ts:70:    passed: 0,
+src/mission-control/scanners/runEnterpriseScanners.ts:72:    failed: 0,
+src/mission-control/scanners/runEnterpriseScanners.ts:84:    passed: businessRules.issueCount === 0 ? businessRules.scannedFiles : 0,
+src/mission-control/scanners/runEnterpriseScanners.ts:86:    failed: 0,
+src/mission-control/scanners/runEnterpriseScanners.ts:106:    passed: theme.filesToModify === 0 ? theme.scannedFiles : 0,
+src/mission-control/scanners/runEnterpriseScanners.ts:108:    failed: 0,
+src/mission-control/scanners/runEnterpriseScanners.ts:134:    failed: 0,
+src/mission-control/github/createPullRequest.ts:37:  if (totalFiles === 0) {
+src/mission-control/github/uploadModifiedFiles.ts:32:  let uploadedFiles = 0;
+src/mission-control/backup/backupEngine.ts:27:  let files = 0;
+src/mission-control/backup/backupEngine.ts:56:      filesCopied: 0,
+src/mission-control/backup/backupEngine.ts:99:      filesCopied: 0,
+src/mission-control/backup/restoreBackup.ts:11:  let files = 0;
+src/mission-control/backup/restoreBackup.ts:49:      restoredFiles: 0,
