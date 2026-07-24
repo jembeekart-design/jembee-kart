@@ -1,6 +1,7 @@
 import { Project, Node, SourceFile } from "ts-morph";
 import path from "path";
 import { previewHardcodedRuleFix } from "./hardcodedRuleAutoFix";
+import { VERIFIED_RULES } from "./ruleMappings";
 
 export interface AstFixResult {
   success: boolean;
@@ -8,8 +9,8 @@ export interface AstFixResult {
   message: string;
 }
 
-interface RewriteResult {
-  modified: boolean;
+interface PreviewResult {
+  matched: boolean;
   replacements: number;
 }
 
@@ -23,44 +24,44 @@ function createProject() {
 function rewriteSourceFile(
   sourceFile: SourceFile,
   configPaths: string[]
-): RewriteResult {
+): PreviewResult {
   let replacements = 0;
 
   const descendants = sourceFile.getDescendants();
 
   for (const node of descendants) {
-    if (
-      Node.isNumericLiteral(node) ||
-      Node.isStringLiteral(node)
-    ) {
-      const text = node.getText();
+    if (!Node.isIdentifier(node)) {
+      continue;
+    }
 
-      // Phase 2:
-      // Only mark nodes for future replacement.
-      // Real mapping will be added in the next phase.
+    const text = node.getText();
 
-      if (configPaths.length > 0) {
-        replacements++;
-      }
+    for (const mapping of VERIFIED_RULES) {
+      if (!mapping.safe) continue;
+
+      if (!configPaths.includes(mapping.configPath)) continue;
+
+      if (!mapping.pattern.test(text)) continue;
+
+      console.log(
+        `[AST Preview] File=${sourceFile.getFilePath()} | Rule=${mapping.name} | Identifier=${text} | Config=${mapping.configPath}`
+      );
+
+      replacements++;
+
+      break;
     }
   }
 
-  if (replacements > 0) {
-    sourceFile.formatText();
-  }
+  // No source modification in preview mode
 
   return {
-    modified: replacements > 0,
+    matched: replacements > 0,
     replacements,
   };
 }
 
 export async function previewAstFix(): Promise<AstFixResult> {
-  const project = createProject();
-
-  // Load all source files
-  project.getSourceFiles();
-
   const preview = previewHardcodedRuleFix();
 
   return {
@@ -73,12 +74,10 @@ export async function previewAstFix(): Promise<AstFixResult> {
 export async function applyAstFix(): Promise<AstFixResult> {
   const project = createProject();
 
-  // Load source files into the project
-  project.getSourceFiles();
-
   const preview = previewHardcodedRuleFix();
 
   let modifiedFiles = 0;
+  let totalReplacements = 0;
 
   for (const item of preview.preview) {
     if (!item.safe) continue;
@@ -92,19 +91,18 @@ export async function applyAstFix(): Promise<AstFixResult> {
       item.configPaths
     );
 
-    if (result.modified) {
+    if (result.matched) {
       modifiedFiles++;
+      totalReplacements += result.replacements;
     }
   }
 
-  await project.save();
-
   return {
-    success: modifiedFiles > 0,
+    success: true,
     modifiedFiles,
     message:
       modifiedFiles > 0
-        ? `${modifiedFiles} verified file(s) prepared for AST replacement.`
-        : "No verified files found.",
+        ? `Preview completed. ${modifiedFiles} file(s) analyzed, ${totalReplacements} potential replacement(s) detected. No source code was modified.`
+        : "Preview completed. No verified files found.",
   };
 }
