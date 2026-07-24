@@ -8,7 +8,10 @@ export interface BackupResult {
   message: string;
 }
 
-const BACKUP_ROOT = path.join(process.cwd(), ".mission-control-backup");
+const BACKUP_ROOT = path.join(
+  process.cwd(),
+  ".mission-control-backup"
+);
 
 function ensureDirectory(dir: string) {
   if (!fs.existsSync(dir)) {
@@ -17,9 +20,7 @@ function ensureDirectory(dir: string) {
 }
 
 function timestampFolder() {
-  return new Date()
-    .toISOString()
-    .replace(/[:.]/g, "-");
+  return new Date().toISOString().replace(/[:.]/g, "-");
 }
 
 function copyRecursive(source: string, destination: string): number {
@@ -47,36 +48,59 @@ function copyRecursive(source: string, destination: string): number {
 }
 
 export function createBackup(): BackupResult {
-  ensureDirectory(BACKUP_ROOT);
+  // Vercel Serverless Environment
+  if (process.env.VERCEL) {
+    return {
+      success: false,
+      backupPath: "",
+      filesCopied: 0,
+      message:
+        "Filesystem backup is not supported on Vercel. Use GitHub or Cloud Storage for production backups.",
+    };
+  }
 
-  const backupFolder = path.join(
-    BACKUP_ROOT,
-    timestampFolder()
-  );
+  try {
+    ensureDirectory(BACKUP_ROOT);
 
-  const sourceRoot = path.join(process.cwd(), "src");
+    const backupFolder = path.join(
+      BACKUP_ROOT,
+      timestampFolder()
+    );
 
-  const filesCopied = copyRecursive(
-    sourceRoot,
-    path.join(backupFolder, "src")
-  );
+    const sourceRoot = path.join(process.cwd(), "src");
 
-  const metadata = {
-    createdAt: new Date().toISOString(),
-    filesCopied,
-    version: "1.1",
-    scanner: "Mission Control Backup Engine",
-  };
+    const filesCopied = copyRecursive(
+      sourceRoot,
+      path.join(backupFolder, "src")
+    );
 
-  fs.writeFileSync(
-    path.join(backupFolder, "backup.json"),
-    JSON.stringify(metadata, null, 2)
-  );
+    const metadata = {
+      createdAt: new Date().toISOString(),
+      filesCopied,
+      version: "1.1",
+      scanner: "Mission Control Backup Engine",
+    };
 
-  return {
-    success: true,
-    backupPath: backupFolder,
-    filesCopied,
-    message: `Backup created successfully. ${filesCopied} file(s) copied.`,
-  };
+    fs.writeFileSync(
+      path.join(backupFolder, "backup.json"),
+      JSON.stringify(metadata, null, 2)
+    );
+
+    return {
+      success: true,
+      backupPath: backupFolder,
+      filesCopied,
+      message: `Backup created successfully. ${filesCopied} file(s) copied.`,
+    };
+  } catch (error) {
+    return {
+      success: false,
+      backupPath: "",
+      filesCopied: 0,
+      message:
+        error instanceof Error
+          ? error.message
+          : "Backup operation failed.",
+    };
+  }
 }
