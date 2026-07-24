@@ -41,8 +41,9 @@ function rewriteSourceFile(
 
       if (!mapping.pattern.test(text)) continue;
 
-      // TODO: Safe AST replacement will be implemented here
-      continue;
+      node.replaceWithText(
+        `getConfig("${mapping.configPath}")`
+      );
 
       replacements++;
       break;
