@@ -15,6 +15,10 @@ import EnterpriseScannerDashboard from "@/components/admin/mission-control/Enter
 import CodeQualityDashboard from "@/components/admin/mission-control/CodeQualityDashboard";
 import AutoFixCenter from "@/components/admin/mission-control/AutoFixCenter";
 import AISystemAdvisor from "@/components/admin/mission-control/AISystemAdvisor";
+import SuggestionReport from "./components/SuggestionReport";
+import BackupCard from "./components/BackupCard";
+import RollbackCard from "./components/RollbackCard";
+import AutoFixCard from "./components/AutoFixCard";
 
 export const metadata = {
   title: "Mission Control Lab",
@@ -66,7 +70,17 @@ export default function MissionControlLabPage() {
 
         {/* AI Advisor */}
         <AISystemAdvisor />
-      </main>
+        <section className="space-y-6">
+    <SuggestionReport />
+
+    <div className="grid gap-6 md:grid-cols-2">
+      <BackupCard />
+      <RollbackCard />
+    </div>
+
+    <AutoFixCard />
+  </section>
+</main>
     </MissionControlErrorBoundary>
   );
 }
