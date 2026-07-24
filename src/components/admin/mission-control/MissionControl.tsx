@@ -16,6 +16,7 @@ import ScannerResults from "./ScannerResults";
 import QuickLinks from "./QuickLinks";
 import { AlertCircle } from "lucide-react";
 import BackupCenter from "./BackupCenter";
+import RollbackCenter from "./RollbackCenter";
 
 export default function MissionControl() {
   const { status, error, lastUpdated } = useAdminConfig();
@@ -54,6 +55,7 @@ export default function MissionControl() {
       <AISystemAdvisor />
       <CodeQualityDashboard />
       <ProjectStatistics />
+      <RollbackCenter />
       <BackupCenter />
 
       {/* Auxiliary Panels */}
