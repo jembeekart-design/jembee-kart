@@ -1,7 +1,8 @@
 export type ReviewStatus =
   | "pending"
   | "approved"
-  | "rejected";
+  | "rejected"
+  | "applied";
 
 export interface ReviewItem {
   id: string;
