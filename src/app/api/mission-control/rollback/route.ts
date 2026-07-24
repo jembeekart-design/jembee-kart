@@ -1,45 +1,22 @@
-import { NextResponse } from "next/server";
+import { NextRequest, NextResponse } from "next/server";
+import { RollbackManager } from "@/mission-control/rollback/rollbackManager";
 
-async function handleRequest() {
+export async function POST(req: NextRequest) {
   try {
-    const started = Date.now();
+    const body = await req.json();
 
-    // TODO:
-    // Restore backup
-    // Restore Git branch
-    // Restore snapshot
-    // Restore files
+    const result = RollbackManager.restore(body.backupPath);
 
-    const duration = Date.now() - started;
-
-    return NextResponse.json({
-      success: true,
-      message: "Rollback feature is not implemented yet.",
-      restoredFiles: 0,
-      duration,
-    });
+    return NextResponse.json(result);
   } catch (error) {
-    console.error("Rollback Error:", error);
+    console.error(error);
 
     return NextResponse.json(
       {
         success: false,
-        message:
-          error instanceof Error
-            ? error.message
-            : "Unknown error",
+        message: "Rollback failed.",
       },
-      {
-        status: 500,
-      }
+      { status: 500 }
     );
   }
-}
-
-export async function GET() {
-  return handleRequest();
-}
-
-export async function POST() {
-  return handleRequest();
 }

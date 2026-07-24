@@ -1,65 +1,20 @@
 import { NextResponse } from "next/server";
-
-import {
-  previewThemeFix,
-} from "@/mission-control/autofix/themeAutoFix";
-
-import {
-  findHardcodedBusinessRules,
-} from "@/mission-control/autofix/hardcodedRuleAutoFix";
-
-import {
-  previewAstFix,
-} from "@/mission-control/autofix/astAutoFix";
+import { previewAstFix } from "@/mission-control/autofix/astAutoFix";
 
 export async function POST() {
   try {
-    const started = Date.now();
+    const result = await previewAstFix();
 
-    const [theme, rules, ast] = await Promise.all([
-      Promise.resolve(previewThemeFix()),
-      findHardcodedBusinessRules(),
-      previewAstFix(),
-    ]);
-
-    const duration = Date.now() - started;
-
-    return NextResponse.json({
-      success: true,
-      message: "Auto Fix Preview completed.",
-
-      theme: {
-        scannedFiles: theme.scannedFiles,
-        filesToModify: theme.filesToModify,
-        preview: theme.preview,
-      },
-
-      rules: {
-        scannedFiles: rules.scannedFiles,
-        issueCount: rules.issueCount,
-        issues: rules.issues,
-      },
-
-      ast: {
-        success: ast.success,
-        modifiedFiles: ast.modifiedFiles,
-        message: ast.message,
-      },
-
-      duration,
-    });
+    return NextResponse.json(result);
   } catch (error) {
+    console.error(error);
+
     return NextResponse.json(
       {
         success: false,
-        message:
-          error instanceof Error
-            ? error.message
-            : "Unknown error",
+        message: "Auto Fix failed.",
       },
-      {
-        status: 500,
-      }
+      { status: 500 }
     );
   }
 }
