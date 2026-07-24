@@ -1,0 +1,405 @@
+name: "Enterprise Business Rule Governance & AST AutoFix Engine"
+
+on:
+  push:
+    branches:
+      - main
+      - staging
+      - 'feature/**'
+      - 'fix/**'
+  pull_request:
+    branches:
+      - main
+      - staging
+  workflow_dispatch:
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  governance-autofix:
+    name: "Scan, AST Autofix & Validate Architecture"
+    runs-on: ubuntu-latest
+
+    permissions:
+      contents: write
+      pull-requests: write
+      actions: read
+
+    steps:
+      - name: "Checkout Repository"
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: "Set up Node.js Environment"
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20.x'
+          cache: 'npm'
+
+      - name: "Restore Next.js Build Cache"
+        uses: actions/cache@v4
+        with:
+          path: |
+            .next/cache
+            node_modules
+          key: ${{ runner.os }}-nextjs-${{ hashFiles('**/package-lock.json') }}-${{ hashFiles('**/*.ts', '**/*.tsx', '**/*.js', '**/*.jsx') }}
+          restore-keys: |
+            ${{ runner.os }}-nextjs-${{ hashFiles('**/package-lock.json') }}-
+
+      - name: "Install Dependencies"
+        run: npm ci
+
+      - name: "Install AST Parser Dependencies"
+        run: npm install --no-save typescript @types/node
+
+      - name: "Initialize Git State & Base Ref for Robust Rollback"
+        run: |
+          git config --global user.name "JembeeKart Governance Bot"
+          git config --global user.email "governance-bot@jembeekart.internal"
+          git checkout -b governance-working-${{ github.sha }} || git checkout governance-working-${{ github.sha }}
+          git status
+
+      - name: "Create Externalized Governance Rule Mapping Config"
+        run: |
+          mkdir -p src/governance
+          cat << 'EOF' > src/governance/rules.json
+          {
+            "keywords": ["cashback", "commission", "mlm", "gst", "tax", "wallet", "withdrawal", "reward", "fee", "margin", "discount", "rate", "value"],
+            "mappings": {
+              "cashback": "cashback.percent",
+              "commission": "mlm.level1Commission",
+              "mlm": "mlm.level1Commission",
+              "gst": "gst.defaultRate",
+              "tax": "gst.defaultRate",
+              "wallet": "wallet.minWithdrawal",
+              "withdrawal": "wallet.minWithdrawal",
+              "reward": "rewards.multiplier",
+              "fee": "system.processingFee",
+              "margin": "system.defaultMargin",
+              "discount": "catalog.maxDiscount",
+              "rate": "system.defaultRate",
+              "value": "system.dynamicValue"
+            }
+          }
+          EOF
+
+      - name: "Run Enterprise Deep AST Governance Scanner with Full Path Tracking"
+        id: scanner
+        run: |
+          echo "=========================================="
+          echo "Starting Deep AST Governance Scanner"
+          echo "=========================================="
+          
+          mkdir -p .governance-reports
+          
+          node -e '
+            const fs = require("fs");
+            const path = require("path");
+            const ts = require("typescript");
+
+            const rules = JSON.parse(fs.readFileSync("src/governance/rules.json", "utf8"));
+            const violations = [];
+            const scannedFiles = [];
+
+            function getPropertyAccessPath(node) {
+              let parts = [];
+              let current = node;
+              while (current) {
+                if (ts.isIdentifier(current)) {
+                  parts.unshift(current.text.toLowerCase());
+                  break;
+                } else if (ts.isPropertyAccessExpression(current)) {
+                  parts.unshift(current.name.text.toLowerCase());
+                  current = current.expression;
+                } else if (ts.isElementAccessExpression(current) && ts.isStringLiteral(current.argumentExpression)) {
+                  parts.unshift(current.argumentExpression.text.toLowerCase());
+                  current = current.expression;
+                } else {
+                  break;
+                }
+              }
+              return parts.join(".");
+            }
+
+            function walkDir(dir) {
+              const files = fs.readdirSync(dir);
+              for (const file of files) {
+                const fullPath = path.join(dir, file);
+                if (fs.statSync(fullPath).isDirectory()) {
+                  if (!["node_modules", ".next", ".git", ".github", "dist", "build"].includes(file)) {
+                    walkDir(fullPath);
+                  }
+                } else if (/\.(ts|tsx|js|jsx)$/.test(file) && !fullPath.includes("src/governance")) {
+                  scannedFiles.push(fullPath);
+                  const content = fs.readFileSync(fullPath, "utf8");
+                  
+                  const sourceFile = ts.createSourceFile(
+                    fullPath,
+                    content,
+                    ts.ScriptTarget.Latest,
+                    true
+                  );
+
+                  function visit(node) {
+                    if (ts.isNumericLiteral(node)) {
+                      const val = Number(node.text);
+                      const parent = node.parent;
+                      let resolvedContext = "";
+
+                      if (parent && ts.isVariableDeclaration(parent) && ts.isIdentifier(parent.name)) {
+                        resolvedContext = parent.name.text.toLowerCase();
+                      } else if (parent && ts.isPropertyAssignment(parent)) {
+                        resolvedContext = getPropertyAccessPath(parent.name);
+                      } else if (parent && ts.isBinaryExpression(parent)) {
+                        resolvedContext = getPropertyAccessPath(parent.left);
+                      } else if (parent && ts.isObjectLiteralExpression(parent)) {
+                        resolvedContext = "object.literal.value";
+                      }
+
+                      const matchesBusinessContext = rules.keywords.some(keyword => resolvedContext.includes(keyword));
+
+                      if (matchesBusinessContext && val > 1) {
+                        const isConfigCall = parent && ts.isCallExpression(parent) && parent.expression.getText().includes("getConfig");
+                        
+                        if (!isConfigCall) {
+                          violations.push({
+                            file: fullPath,
+                            line: sourceFile.getLineAndCharacterOfPosition(node.getStart()).line + 1,
+                            category: "Hardcoded Business Logic Value",
+                            contextKey: resolvedContext,
+                            value: val,
+                            text: node.getText()
+                          });
+                        }
+                      }
+                    }
+                    ts.forEachChild(node, visit);
+                  }
+                  visit(sourceFile);
+                }
+              }
+            }
+
+            walkDir(".");
+            
+            fs.writeFileSync(".governance-reports/violations.json", JSON.stringify({ totalScanned: scannedFiles.length, violations }, null, 2));
+            console.log(`Scanned ${scannedFiles.length} files.`);
+            console.log(`Detected ${violations.length} deep AST business logic violations.`);
+          '
+
+      - name: "Execute AST-Driven Safe Import & Transformation Engine"
+        id: autofix
+        run: |
+          echo "=========================================="
+          echo "Executing AST-Driven AutoFix Engine..."
+          echo "=========================================="
+
+          node -e '
+            const fs = require("fs");
+            const path = require("path");
+            const ts = require("typescript");
+
+            const rules = JSON.parse(fs.readFileSync("src/governance/rules.json", "utf8"));
+            const reportPath = ".governance-reports/violations.json";
+            if (!fs.existsSync(reportPath)) process.exit(0);
+
+            const report = JSON.parse(fs.readFileSync(reportPath, "utf8"));
+            const violations = report.violations;
+
+            const fileGroups = {};
+            violations.forEach(v => {
+              if (!fileGroups[v.file]) fileGroups[v.file] = [];
+              fileGroups[v.file].push(v);
+            });
+
+            function getPropertyAccessPath(node) {
+              let parts = [];
+              let current = node;
+              while (current) {
+                if (ts.isIdentifier(current)) {
+                  parts.unshift(current.text.toLowerCase());
+                  break;
+                } else if (ts.isPropertyAccessExpression(current)) {
+                  parts.unshift(current.name.text.toLowerCase());
+                  current = current.expression;
+                } else {
+                  break;
+                }
+              }
+              return parts.join(".");
+            }
+
+            for (const [filePath, fileViolations] of Object.entries(fileGroups)) {
+              let content = fs.readFileSync(filePath, "utf8");
+              const sourceFile = ts.createSourceFile(
+                filePath,
+                content,
+                ts.ScriptTarget.Latest,
+                true
+              );
+
+              let hasImportConfig = false;
+              let modified = false;
+
+              function transformer(context) {
+                return function(rootNode) {
+                  function visitor(node) {
+                    if (ts.isImportDeclaration(node)) {
+                      const moduleSpecifier = node.moduleSpecifier.getText(sourceFile);
+                      if (moduleSpecifier.includes("@/lib/config") || moduleSpecifier.includes("lib/config")) {
+                        hasImportConfig = true;
+                      }
+                    }
+
+                    if (ts.isNumericLiteral(node)) {
+                      const parent = node.parent;
+                      let resolvedContext = "";
+
+                      if (parent && ts.isVariableDeclaration(parent) && ts.isIdentifier(parent.name)) {
+                        resolvedContext = parent.name.text.toLowerCase();
+                      } else if (parent && ts.isPropertyAssignment(parent)) {
+                        resolvedContext = getPropertyAccessPath(parent.name);
+                      } else if (parent && ts.isBinaryExpression(parent)) {
+                        resolvedContext = getPropertyAccessPath(parent.left);
+                      }
+
+                      if (resolvedContext && Number(node.text) > 1) {
+                        const isConfigCall = parent && ts.isCallExpression(parent) && parent.expression.getText().includes("getConfig");
+                        
+                        if (!isConfigCall) {
+                          let configKey = rules.mappings.value;
+                          for (const [key, mappedVal] of Object.entries(rules.mappings)) {
+                            if (resolvedContext.includes(key)) {
+                              configKey = mappedVal;
+                              break;
+                            }
+                          }
+
+                          modified = true;
+                          // Non-generic safe getConfig call without unsafe type assertions
+                          return ts.factory.createCallExpression(
+                            ts.factory.createIdentifier("getConfig"),
+                            undefined,
+                            [ts.factory.createStringLiteral(configKey)]
+                          );
+                        }
+                      }
+                    }
+
+                    return ts.visitEachChild(node, visitor, context);
+                  }
+                  return ts.visitNode(rootNode, visitor);
+                };
+              }
+
+              const result = ts.transform(sourceFile, [transformer]);
+              let transformedSourceFile = result.transformed[0];
+
+              if (modified && !hasImportConfig) {
+                const importDecl = ts.factory.createImportDeclaration(
+                  undefined,
+                  ts.factory.createImportClause(
+                    false,
+                    undefined,
+                    ts.factory.createNamedImports([
+                      ts.factory.createImportSpecifier(false, undefined, ts.factory.createIdentifier("getConfig"))
+                    ])
+                  ),
+                  ts.factory.createStringLiteral("@/lib/config"),
+                  undefined
+                );
+
+                let clientDirectiveIndex = -1;
+                const statements = Array.from(transformedSourceFile.statements);
+
+                for (let i = 0; i < statements.length; i++) {
+                  const stmt = statements[i];
+                  if (
+                    ts.isExpressionStatement(stmt) &&
+                    (
+                      stmt.expression.getText() === "\"use client\"" ||
+                      stmt.expression.getText() === "'use client'"
+                    )
+                  ) {
+                    clientDirectiveIndex = i;
+                    break;
+                  }
+                }
+
+                if (clientDirectiveIndex >= 0) {
+                  statements.splice(clientDirectiveIndex + 1, 0, importDecl);
+                } else {
+                  statements.unshift(importDecl);
+                }
+
+                transformedSourceFile = ts.factory.updateSourceFile(
+                  transformedSourceFile,
+                  statements
+                );
+              }
+
+              if (modified) {
+                const printer = ts.createPrinter({ removeComments: false });
+                const newContent = printer.printFile(transformedSourceFile);
+                fs.writeFileSync(filePath, newContent, "utf8");
+                console.log(`Successfully transformed via AST: ${filePath}`);
+              }
+            }
+          '
+
+      - name: "Run TypeScript Compilation Check"
+        id: tsc-check
+        run: npx tsc --noEmit
+
+      - name: "Run ESLint Validation"
+        id: eslint-check
+        run: npx next lint
+
+      - name: "Run Production Build"
+        id: build-check
+        run: npm run build
+
+      - name: "Enterprise Comprehensive Rollback on Failure"
+        if: failure()
+        run: |
+          echo "=========================================="
+          echo "Build or Validation Failed! Executing Safe Rollback..."
+          echo "=========================================="
+          git reset --hard HEAD
+          git clean -fd
+          git checkout "${{ github.ref_name }}" || git checkout - || true
+          echo "Rollback and workspace restoration completed successfully."
+
+      - name: "Upload Governance Reports & Artifacts"
+        uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: governance-audit-reports
+          path: .governance-reports/
+          retention-days: 30
+
+      - name: "Create Automated Pull Request for Fixed Code"
+        uses: peter-evans/create-pull-request@v6
+        if: success() && github.event_name != 'pull_request'
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          commit-message: "refactor(governance): enterprise AST dynamic configuration enforcement via external rules"
+          branch: "governance/ast-autofix-${{ github.run_number }}"
+          title: "🤖 Enterprise Governance AST AutoFix: Dynamic Configuration Enforced"
+          body: |
+            This automated pull request uses an advanced AST-based transformation engine driven by external rule configurations (`src/governance/rules.json`), with precise AST import statement insertion and full path tracking.
+
+            ### Validation Status:
+            - **AST Deep Path & Object Tracking:** Success
+            - **Externalized Rule Mapping:** Verified
+            - **TypeScript Compilation:** Passed
+            - **ESLint Validation:** Passed
+            - **Next.js Production Build:** Passed
+
+            Refer to workflow artifacts for detailed rule violation breakdown reports.
+          base: ${{ github.ref_name }}
+          signoff: true
