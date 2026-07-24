@@ -46,11 +46,11 @@ export default function ReviewReport() {
 
     const data = await res.json();
 
-    alert(
-      `Applied: ${data.applied}\nSkipped: ${data.skipped}`
-    );
+alert(
+  `${data.message}\n\nModified Files: ${data.modifiedFiles}`
+);
 
-    loadReport();
+loadReport();
   }
 
   if (!report) {
