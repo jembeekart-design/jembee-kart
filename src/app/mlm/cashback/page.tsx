@@ -315,7 +315,7 @@ export default function CashbackPage() {
       {/* HEADER CONTENT WRAPPER */}
       <div className="sticky top-0 z-50 bg-[var(--card-color)]/90 backdrop-blur-md px-4 py-3 border-b border-[var(--border-color)] flex items-center justify-between">
         <div className="flex items-center gap-3">
-          <Link href="/dashboard" className="flex h-10 w-10 items-center justify-center rounded-full bg-[var(--card-color)] text-[var(--text-color)]">
+          <Link href="/mlm/dashboard" className="flex h-10 w-10 items-center justify-center rounded-full bg-[var(--card-color)] text-[var(--text-color)]">
             <ArrowLeft size={20} />
           </Link>
           <div>
@@ -384,7 +384,7 @@ export default function CashbackPage() {
             </button>
 
             <Link
-              href="/dashboard/wallet/history"
+              href="/mlm/dashboard/wallet/history"
               className="flex items-center justify-center gap-1.5 rounded-2xl bg-[var(--card-color)]/10 border border-[var(--border-color)]/10 py-3.5 text-xs font-black text-[var(--button-text-color)] active:scale-[0.98] transition-all"
             >
               <HandCoins size={14} />
