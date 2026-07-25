@@ -480,7 +480,7 @@
   "/src/lib/mlm/orders/checkCommissionEligibility.ts": "8df9bde7babbdc7e9cbd68c365191d3f",
   "/src/lib/mlm/orders/checkRankUpgrade.ts": "e911e9cb5b48a7a4222eaaf670d78fe7",
   "/src/lib/mlm/orders/checkWithdrawEligibility.ts": "7408b09c4eafa94fba644eac91676364",
-  "/src/lib/mlm/orders/completeOrderAndDistributeCommission.ts": "9f476ec35b000bd3d9bd3322baa144a5",
+  "/src/lib/mlm/orders/completeOrderAndDistributeCommission.ts": "9ba7740e3d3de1dc17be78296a098097",
   "/src/lib/mlm/orders/createCashbackReward.ts": "de534e07150ee00ed711d1241728c0a1",
   "/src/lib/mlm/orders/createDailyPassiveIncome.ts": "4b120464530cf01c43088be431fa9a1f",
   "/src/lib/mlm/orders/createLuckySpinReward.ts": "99508c9d561acf50fb38647dc61dd78e",
@@ -557,7 +557,7 @@
   "/src/lib/mlm/withdrawals/approveWithdrawal.ts": "e2a06c4523a8f31b584d00d4193faf24",
   "/src/lib/mlm/withdrawals/getWithdrawalHistory.ts": "140f7cacc2c7959ccfdca05e4496a363",
   "/src/lib/mlm/withdrawals/rejectWithdrawal.ts": "1ee60a39a1e4af01e89e9ca42fb2a55e",
-  "/src/lib/mlm/withdrawals/requestWithdraw.ts": "f71a650dff410ece32a9c1e80324369d",
+  "/src/lib/mlm/withdrawals/requestWithdraw.ts": "94c3a38dc6877003c6d9e48bbe468060",
   "/src/lib/mlm/withdrawals/withdrawalSettings.ts": "190d05aa7db74d1e5bba95ee5de4925a",
   "/src/lib/security/fraudProtection.ts": "ad5b29125d074b5a34075ce058c8ce9e",
   "/src/lib/security/index.ts": "78da6b03cfcbd6b4276922498dd817a6",
@@ -623,5 +623,6 @@
   "/src/scripts/theme-codemod.ts": "e19629b42c7c7d6c2a92b70e2d285e8d",
   "/src/shared/governance/auditCommission.ts": "40963b5a49749c00c8d02ba2c62b07b2",
   "/src/types/mission-control.ts": "01eaeceea54e8b0032ba64dffaec5c99",
-  "/src/types/theme.ts": "12aacb62c7603b60a434cb859f166de1"
+  "/src/types/theme.ts": "12aacb62c7603b60a434cb859f166de1",
+  "/src/scripts/autofix.ts": "ec87a5faded89f428fcf6c5e03a6cc7f"
 }

@@ -13,6 +13,7 @@ export const DEFAULT_BUSINESS_RULES: BusinessRulesConfig = {
     orderProfit: 100,
     cashbackPercentage: 5,
     cashbackExpense: 10,
+    cashbackThreshold: 0,
     referralExpense: 10,
     rewardExpense: 10,
     creatorExpense: 5,
@@ -59,6 +60,8 @@ export const DEFAULT_BUSINESS_RULES: BusinessRulesConfig = {
     adsEnabled: true,
     walletEnabled: true,
     loyaltyEnabled: true,
+    commissionDistributedEnabled: true,
+    rewardEnabled: true,
   },
 
   metadata: {
