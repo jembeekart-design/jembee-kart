@@ -97,10 +97,8 @@ export default function WatchEarnPage() {
     []
   );
 
-  const [
-    adPlaying,
-    setAdPlaying
-  ] = useState(false);
+  const [adPlaying, setAdPlaying] = useState(false);
+  const [isMuted, setIsMuted] = useState(true);
 
   /* =========================
      FETCH VIDEOS
@@ -766,7 +764,7 @@ export default function WatchEarnPage() {
               src={video.video}
 
               loop
-              muted
+              muted={isMuted}
               autoPlay
               playsInline
 
@@ -779,29 +777,20 @@ export default function WatchEarnPage() {
                 w-full
                 object-cover
               "
-
-              onCanPlay={(e) => {
-
-                if (
-                  index ===
-                    currentIndex &&
-                  !adPlaying
-                ) {
-
-                  e.currentTarget
-                    .play()
-                    .catch(() => {});
-                }
-              }}
-
+              
               onClick={() => {
-
-                toggleVideo(
-                  video.id,
-                  index
-                );
+                toggleVideo(video.id, index);
               }}
             />
+
+            {/* MUTE TOGGLE */}
+            <button
+              onClick={() => setIsMuted(!isMuted)}
+              className="absolute right-4 bottom-20 z-40 rounded-full bg-black/50 p-2 text-white"
+            >
+              {isMuted ? "🔇" : "🔊"}
+            </button>
+
 
             {/* OVERLAY */}
 
