@@ -19,6 +19,8 @@ from "./CommentDrawer";
 import ShareDrawer
 from "./ShareDrawer";
 
+import Toast from "./Toast";
+
 const videos = [
   {
     id: "1",
@@ -101,11 +103,33 @@ VerticalVideoFeed() {
     shareOpen,
     setShareOpen
   ] = useState(false);
+  
+  const [toastMessage, setToastMessage] = useState<string | null>(null);
 
   const [
     selectedVideo,
     setSelectedVideo
   ] = useState("");
+
+  const handleShare = async (video: typeof videos[0]) => {
+    const shareData = {
+      title: 'Check out this video on JembeeKart',
+      text: video.caption,
+      url: window.location.origin + '/mlm/watch-earn?v=' + video.id,
+    };
+
+    try {
+      if (navigator.share) {
+        await navigator.share(shareData);
+        setToastMessage("Shared successfully.");
+      } else {
+        await navigator.clipboard.writeText(shareData.url);
+        setToastMessage("Link copied.");
+      }
+    } catch (err) {
+      console.error('Share failed', err);
+    }
+  };
 
   return (
 
@@ -205,14 +229,7 @@ VerticalVideoFeed() {
               }}
 
               onShare={() => {
-
-                setSelectedVideo(
-                  video.id
-                );
-
-                setShareOpen(
-                  true
-                );
+                handleShare(video);
               }}
             />
 
@@ -230,6 +247,9 @@ VerticalVideoFeed() {
             false
           )
         }
+        onCommentAdded={() => {
+            console.log("Comment added! (TODO: Update comment count in state)");
+        }}
       />
 
       {/* SHARE DRAWER */}
@@ -247,6 +267,9 @@ VerticalVideoFeed() {
           selectedVideo
         }
       />
+      
+      {/* Toast */}
+      <Toast message={toastMessage} onClose={() => setToastMessage(null)} />
 
     </main>
   );
