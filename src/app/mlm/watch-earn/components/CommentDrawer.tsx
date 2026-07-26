@@ -3,6 +3,7 @@
 import {
   useState
 } from "react";
+import { ModerationService } from "@/lib/moderation/moderationService";
 
 import {
   Send,
@@ -26,18 +27,25 @@ interface CommentDrawerProps {
   open: boolean;
 
   onClose: () => void;
+  onCommentAdded: () => void;
 
 }
 
 export default function
 CommentDrawer({
   open,
-  onClose
+  onClose,
+  onCommentAdded
 }: CommentDrawerProps) {
 
   const [
     comment,
     setComment
+  ] = useState("");
+
+  const [
+    error,
+    setError
   ] = useState("");
 
   const [
@@ -77,6 +85,13 @@ CommentDrawer({
       return;
     }
 
+    const { safe, reason } = ModerationService.isSafe(comment);
+    if (!safe) {
+      setError("Your comment violates our Community Guidelines.");
+      return;
+    }
+    setError("");
+
     setComments([
       {
         id:
@@ -95,6 +110,7 @@ CommentDrawer({
     ]);
 
     setComment("");
+    onCommentAdded();
   }
 
   return (
@@ -311,6 +327,7 @@ CommentDrawer({
         </button>
 
       </div>
+      {error && <p className="text-red-500 text-xs px-5 pb-3">{error}</p>}
 
     </div>
   );
