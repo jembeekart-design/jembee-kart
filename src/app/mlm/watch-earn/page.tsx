@@ -13,6 +13,8 @@ import { Flame, Coins, Bell } from "lucide-react";
 import CoinsPopup from "./components/CoinsPopup";
 import CommentDrawer from "./components/CommentDrawer";
 import Toast from "./components/Toast";
+import PromotionBar from "./components/PromotionBar";
+import SponsoredCard from "./components/SponsoredCard";
 
 export default function WatchEarnPage() {
   const [loadingConfig, setLoadingConfig] = useState(true);
@@ -29,6 +31,15 @@ export default function WatchEarnPage() {
   const [rewardCoinsValue, setRewardCoinsValue] = useState(0);
   const [commentOpen, setCommentOpen] = useState(false);
   const [toastMessage, setToastMessage] = useState<string | null>(null);
+
+  // Create an array that includes sponsored cards every 5 items
+  const feedItems: Array<{ type: 'video', data: WatchVideo } | { type: 'sponsored', id: string }> = [];
+  videos.forEach((video, index) => {
+      feedItems.push({ type: 'video', data: video });
+      if ((index + 1) % 5 === 0) {
+          feedItems.push({ type: 'sponsored', id: `promo-${index}` });
+      }
+  });
 
   useEffect(() => {
     async function init() {
@@ -129,41 +140,48 @@ export default function WatchEarnPage() {
         className="h-full w-full"
         onSlideChange={(swiper) => setCurrentIndex(swiper.activeIndex)}
       >
-        {videos.map((video, index) => (
-          <SwiperSlide key={video.id}>
-            <VideoCard
-              video={video}
-              isMuted={isMuted}
-              toggleMute={() => setIsMuted(!isMuted)}
-              watchProgress={watchProgress[video.id] || 0}
-              active={index === currentIndex}
-              onClaim={() => {}}
-              onComment={() => setCommentOpen(true)}
-              onShare={() => {
-                const shareData = {
-                  title: 'Check out this video on JembeeKart',
-                  text: video.caption,
-                  url: window.location.origin + '/mlm/watch-earn?v=' + video.id,
-                };
-                
-                const fallbackToClipboard = () => {
-                    navigator.clipboard.writeText(shareData.url).then(() => {
-                        setToastMessage("Link copied.");
-                    });
-                };
+        {feedItems.map((item, index) => (
+          <SwiperSlide key={item.type === 'video' ? item.data.id : item.id}>
+            {item.type === 'video' ? (
+                <>
+                    <VideoCard
+                      video={item.data}
+                      isMuted={isMuted}
+                      toggleMute={() => setIsMuted(!isMuted)}
+                      watchProgress={watchProgress[item.data.id] || 0}
+                      active={index === currentIndex}
+                      onClaim={() => {}}
+                      onComment={() => setCommentOpen(true)}
+                      onShare={() => {
+                        const shareData = {
+                          title: 'Check out this video on JembeeKart',
+                          text: item.data.caption,
+                          url: window.location.origin + '/mlm/watch-earn?v=' + item.data.id,
+                        };
+                        
+                        const fallbackToClipboard = () => {
+                            navigator.clipboard.writeText(shareData.url).then(() => {
+                                setToastMessage("Link copied.");
+                            });
+                        };
 
-                if (navigator.share) {
-                    navigator.share(shareData).catch(err => {
-                        if (err.name === 'AbortError') {
-                            return;
+                        if (navigator.share) {
+                            navigator.share(shareData).catch(err => {
+                                if (err.name === 'AbortError') {
+                                    return;
+                                }
+                                fallbackToClipboard();
+                            });
+                        } else {
+                            fallbackToClipboard();
                         }
-                        fallbackToClipboard();
-                    });
-                } else {
-                    fallbackToClipboard();
-                }
-              }}
-            />
+                      }}
+                    />
+                    <PromotionBar />
+                </>
+            ) : (
+                <SponsoredCard />
+            )}
           </SwiperSlide>
         ))}
       </Swiper>
