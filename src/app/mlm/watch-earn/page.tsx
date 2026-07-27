@@ -32,11 +32,16 @@ export default function WatchEarnPage() {
   const [commentOpen, setCommentOpen] = useState(false);
   const [toastMessage, setToastMessage] = useState<string | null>(null);
 
-  // Create an array that includes sponsored cards every 5 items
+  // Create an array that includes sponsored cards: first, then every 7 user videos
   const feedItems: Array<{ type: 'video', data: WatchVideo } | { type: 'sponsored', id: string }> = [];
+  
+  // Add first sponsored card
+  feedItems.push({ type: 'sponsored', id: 'promo-start' });
+  
   videos.forEach((video, index) => {
       feedItems.push({ type: 'video', data: video });
-      if ((index + 1) % 5 === 0) {
+      // After every 7 videos, add a sponsored card
+      if ((index + 1) % 7 === 0) {
           feedItems.push({ type: 'sponsored', id: `promo-${index}` });
       }
   });

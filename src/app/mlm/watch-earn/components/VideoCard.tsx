@@ -131,7 +131,7 @@ export default function VideoCard({ video, isMuted, toggleMute, watchProgress, a
       {/* Mute toggle */}
       <button 
         onClick={toggleMute} 
-        className="absolute right-4 bottom-32 z-20 rounded-full bg-black/50 p-2.5 text-white backdrop-blur-md border border-white/10"
+        className="absolute right-4 top-20 z-20 rounded-full bg-black/50 p-2.5 text-white backdrop-blur-md border border-white/10"
       >
         {isMuted ? "🔇" : "🔊"}
       </button>
