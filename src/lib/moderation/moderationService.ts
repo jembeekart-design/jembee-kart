@@ -1,26 +1,28 @@
 export const MODERATION_RULES = {
-  profanity: ['badword1', 'badword2', 'offensiveword'], // Expanded by admin-settings later
-  hateSpeech: ['racistword', 'religiousslur'],
-  spam: ['http://', 'https://', 'www.', '.com'],
+  // Add a comprehensive list of abusive words
+  prohibitedWords: [
+    'fuck', 'shit', 'bitch', 'asshole', 'pussy', 'dick', 'cock', 'cunt', // English
+    'madarchod', 'bhenchod', 'chutiya', 'randi', 'gandu', 'bsdk', 'chod' // Hindi
+  ],
+  hateSpeech: ['racist', 'kill', 'hate', 'inferior'],
 };
 
 export const ModerationService = {
   isSafe: (text: string): { safe: boolean; reason?: string } => {
-    const lowerText = text.toLowerCase();
-    
-    // Profanity Check
-    if (MODERATION_RULES.profanity.some(word => lowerText.includes(word))) {
-      return { safe: false, reason: "Your comment violates our Community Guidelines regarding profanity." };
+    // Normalize: remove symbols, spaces, and convert to lowercase
+    const normalized = text.toLowerCase().replace(/[^a-z]/g, '');
+
+    // Check against prohibited words
+    for (const word of MODERATION_RULES.prohibitedWords) {
+      // Check if word or variation (with symbols removed) exists
+      if (normalized.includes(word.replace(/[^a-z]/g, ''))) {
+        return { safe: false, reason: "Your comment violates our Community Guidelines." };
+      }
     }
 
-    // Hate Speech Check
-    if (MODERATION_RULES.hateSpeech.some(word => lowerText.includes(word))) {
-      return { safe: false, reason: "Your comment violates our Community Guidelines regarding hate speech." };
-    }
-
-    // Spam Check
-    if (MODERATION_RULES.spam.some(word => lowerText.includes(word))) {
-      return { safe: false, reason: "Your comment violates our Community Guidelines regarding spam." };
+    // Additional checks (hate speech, etc.)
+    if (MODERATION_RULES.hateSpeech.some(word => normalized.includes(word))) {
+      return { safe: false, reason: "Your comment violates our Community Guidelines." };
     }
 
     return { safe: true };
