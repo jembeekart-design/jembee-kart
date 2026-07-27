@@ -114,7 +114,7 @@ CommentDrawer({
   }
 
   return (
-
+    // ... rest of the component
     <div
       className={`
         fixed
@@ -284,11 +284,10 @@ CommentDrawer({
         <input
           value={comment}
 
-          onChange={(e) =>
-            setComment(
-              e.target.value
-            )
-          }
+          onChange={(e) => {
+            setComment(e.target.value);
+            if (error) setError(""); // Clear error when user starts typing again
+          }}
 
           placeholder="Write comment..."
 
