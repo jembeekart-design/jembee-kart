@@ -1,0 +1,1143 @@
+[
+  {
+    "route": "account",
+    "file": "src/app/account/page.tsx",
+    "status": "Needs Major Improvements",
+    "score": 40,
+    "critique": "Awaiting manual audit per page."
+  },
+  {
+    "route": "address",
+    "file": "src/app/address/page.tsx",
+    "status": "Needs Major Improvements",
+    "score": 40,
+    "critique": "Awaiting manual audit per page."
+  },
+  {
+    "route": "admin/activity-tracker",
+    "file": "src/app/admin/activity-tracker/page.tsx",
+    "status": "Needs Major Improvements",
+    "score": 40,
+    "critique": "Awaiting manual audit per page."
+  },
+  {
+    "route": "admin/admin-chat",
+    "file": "src/app/admin/admin-chat/page.tsx",
+    "status": "Needs Major Improvements",
+    "score": 40,
+    "critique": "Awaiting manual audit per page."
+  },
+  {
+    "route": "admin/ads-manager",
+    "file": "src/app/admin/ads-manager/page.tsx",
+    "status": "Needs Major Improvements",
+    "score": 40,
+    "critique": "Awaiting manual audit per page."
+  },
+  {
+    "route": "admin/affiliate",
+    "file": "src/app/admin/affiliate/page.tsx",
+    "status": "Needs Major Improvements",
+    "score": 40,
+    "critique": "Awaiting manual audit per page."
+  },
+  {
+    "route": "admin/affiliate-control",
+    "file": "src/app/admin/affiliate-control/page.tsx",
+    "status": "Needs Major Improvements",
+    "score": 40,
+    "critique": "Awaiting manual audit per page."
+  },
+  {
+    "route": "admin/affiliate-settings",
+    "file": "src/app/admin/affiliate-settings/page.tsx",
+    "status": "Needs Major Improvements",
+    "score": 40,
+    "critique": "Awaiting manual audit per page."
+  },
+  {
+    "route": "admin/ai-banner",
+    "file": "src/app/admin/ai-banner/page.tsx",
+    "status": "Needs Major Improvements",
+    "score": 40,
+    "critique": "Awaiting manual audit per page."
+  },
+  {
+    "route": "admin/ai-chatbot",
+    "file": "src/app/admin/ai-chatbot/page.tsx",
+    "status": "Needs Major Improvements",
+    "score": 40,
+    "critique": "Awaiting manual audit per page."
+  },
+  {
+    "route": "admin/ai-product-generator",
+    "file": "src/app/admin/ai-product-generator/page.tsx",
+    "status": "Needs Major Improvements",
+    "score": 40,
+    "critique": "Awaiting manual audit per page."
+  },
+  {
+    "route": "admin/ai-tools",
+    "file": "src/app/admin/ai-tools/page.tsx",
+    "status": "Needs Major Improvements",
+    "score": 40,
+    "critique": "Awaiting manual audit per page."
+  },
+  {
+    "route": "admin/all-pages",
+    "file": "src/app/admin/all-pages/page.tsx",
+    "status": "Needs Major Improvements",
+    "score": 40,
+    "critique": "Awaiting manual audit per page."
+  },
+  {
+    "route": "admin/analytics",
+    "file": "src/app/admin/analytics/page.tsx",
+    "status": "Needs Major Improvements",
+    "score": 40,
+    "critique": "Awaiting manual audit per page."
+  },
+  {
+    "route": "admin/announcement",
+    "file": "src/app/admin/announcement/page.tsx",
+    "status": "Needs Major Improvements",
+    "score": 40,
+    "critique": "Awaiting manual audit per page."
+  },
+  {
+    "route": "admin/app-config",
+    "file": "src/app/admin/app-config/page.tsx",
+    "status": "Needs Major Improvements",
+    "score": 40,
+    "critique": "Awaiting manual audit per page."
+  },
+  {
+    "route": "admin/appearance",
+    "file": "src/app/admin/appearance/page.tsx",
+    "status": "Needs Major Improvements",
+    "score": 40,
+    "critique": "Awaiting manual audit per page."
+  },
+  {
+    "route": "admin/automation",
+    "file": "src/app/admin/automation/page.tsx",
+    "status": "Needs Major Improvements",
+    "score": 40,
+    "critique": "Awaiting manual audit per page."
+  },
+  {
+    "route": "admin/backup-manager",
+    "file": "src/app/admin/backup-manager/page.tsx",
+    "status": "Needs Major Improvements",
+    "score": 40,
+    "critique": "Awaiting manual audit per page."
+  },
+  {
+    "route": "admin/backup-restore",
+    "file": "src/app/admin/backup-restore/page.tsx",
+    "status": "Needs Major Improvements",
+    "score": 40,
+    "critique": "Awaiting manual audit per page."
+  },
+  {
+    "route": "admin/backups",
+    "file": "src/app/admin/backups/page.tsx",
+    "status": "Needs Major Improvements",
+    "score": 40,
+    "critique": "Awaiting manual audit per page."
+  },
+  {
+    "route": "admin/banner-manager",
+    "file": "src/app/admin/banner-manager/page.tsx",
+    "status": "Needs Major Improvements",
+    "score": 40,
+    "critique": "Awaiting manual audit per page."
+  },
+  {
+    "route": "admin/blogs",
+    "file": "src/app/admin/blogs/page.tsx",
+    "status": "Needs Major Improvements",
+    "score": 40,
+    "critique": "Awaiting manual audit per page."
+  },
+  {
+    "route": "admin/business-rules",
+    "file": "src/app/admin/business-rules/page.tsx",
+    "status": "Needs Major Improvements",
+    "score": 40,
+    "critique": "Awaiting manual audit per page."
+  },
+  {
+    "route": "admin/cache-manager",
+    "file": "src/app/admin/cache-manager/page.tsx",
+    "status": "Needs Major Improvements",
+    "score": 40,
+    "critique": "Awaiting manual audit per page."
+  },
+  {
+    "route": "admin/cashfree",
+    "file": "src/app/admin/cashfree/page.tsx",
+    "status": "Needs Major Improvements",
+    "score": 40,
+    "critique": "Awaiting manual audit per page."
+  },
+  {
+    "route": "admin/categories",
+    "file": "src/app/admin/categories/page.tsx",
+    "status": "Needs Major Improvements",
+    "score": 40,
+    "critique": "Awaiting manual audit per page."
+  },
+  {
+    "route": "admin/commission-engine",
+    "file": "src/app/admin/commission-engine/page.tsx",
+    "status": "Needs Major Improvements",
+    "score": 40,
+    "critique": "Awaiting manual audit per page."
+  },
+  {
+    "route": "admin/commissions",
+    "file": "src/app/admin/commissions/page.tsx",
+    "status": "Needs Major Improvements",
+    "score": 40,
+    "critique": "Awaiting manual audit per page."
+  },
+  {
+    "route": "admin/control-tower",
+    "file": "src/app/admin/control-tower/page.tsx",
+    "status": "Needs Major Improvements",
+    "score": 40,
+    "critique": "Awaiting manual audit per page."
+  },
+  {
+    "route": "admin/coupon-manager",
+    "file": "src/app/admin/coupon-manager/page.tsx",
+    "status": "Needs Major Improvements",
+    "score": 40,
+    "critique": "Awaiting manual audit per page."
+  },
+  {
+    "route": "admin/coupons",
+    "file": "src/app/admin/coupons/page.tsx",
+    "status": "Needs Major Improvements",
+    "score": 40,
+    "critique": "Awaiting manual audit per page."
+  },
+  {
+    "route": "admin/coupons-generator",
+    "file": "src/app/admin/coupons-generator/page.tsx",
+    "status": "Needs Major Improvements",
+    "score": 40,
+    "critique": "Awaiting manual audit per page."
+  },
+  {
+    "route": "admin/customer-support",
+    "file": "src/app/admin/customer-support/page.tsx",
+    "status": "Needs Major Improvements",
+    "score": 40,
+    "critique": "Awaiting manual audit per page."
+  },
+  {
+    "route": "admin/customize",
+    "file": "src/app/admin/customize/page.tsx",
+    "status": "Needs Major Improvements",
+    "score": 40,
+    "critique": "Awaiting manual audit per page."
+  },
+  {
+    "route": "admin/database",
+    "file": "src/app/admin/database/page.tsx",
+    "status": "Needs Major Improvements",
+    "score": 40,
+    "critique": "Awaiting manual audit per page."
+  },
+  {
+    "route": "admin/database-manager",
+    "file": "src/app/admin/database-manager/page.tsx",
+    "status": "Needs Major Improvements",
+    "score": 40,
+    "critique": "Awaiting manual audit per page."
+  },
+  {
+    "route": "admin/delivery",
+    "file": "src/app/admin/delivery/page.tsx",
+    "status": "Needs Major Improvements",
+    "score": 40,
+    "critique": "Awaiting manual audit per page."
+  },
+  {
+    "route": "admin/delivery-tracking",
+    "file": "src/app/admin/delivery-tracking/page.tsx",
+    "status": "Needs Major Improvements",
+    "score": 40,
+    "critique": "Awaiting manual audit per page."
+  },
+  {
+    "route": "admin/domains",
+    "file": "src/app/admin/domains/page.tsx",
+    "status": "Needs Major Improvements",
+    "score": 40,
+    "critique": "Awaiting manual audit per page."
+  },
+  {
+    "route": "admin/email",
+    "file": "src/app/admin/email/page.tsx",
+    "status": "Needs Major Improvements",
+    "score": 40,
+    "critique": "Awaiting manual audit per page."
+  },
+  {
+    "route": "admin/email-marketing",
+    "file": "src/app/admin/email-marketing/page.tsx",
+    "status": "Needs Major Improvements",
+    "score": 40,
+    "critique": "Awaiting manual audit per page."
+  },
+  {
+    "route": "admin/faq",
+    "file": "src/app/admin/faq/page.tsx",
+    "status": "Needs Major Improvements",
+    "score": 40,
+    "critique": "Awaiting manual audit per page."
+  },
+  {
+    "route": "admin/finance",
+    "file": "src/app/admin/finance/page.tsx",
+    "status": "Needs Major Improvements",
+    "score": 40,
+    "critique": "Awaiting manual audit per page."
+  },
+  {
+    "route": "admin/firestore",
+    "file": "src/app/admin/firestore/page.tsx",
+    "status": "Needs Major Improvements",
+    "score": 40,
+    "critique": "Awaiting manual audit per page."
+  },
+  {
+    "route": "admin/flash-sale",
+    "file": "src/app/admin/flash-sale/page.tsx",
+    "status": "Needs Major Improvements",
+    "score": 40,
+    "critique": "Awaiting manual audit per page."
+  },
+  {
+    "route": "admin/footer-builder",
+    "file": "src/app/admin/footer-builder/page.tsx",
+    "status": "Needs Major Improvements",
+    "score": 40,
+    "critique": "Awaiting manual audit per page."
+  },
+  {
+    "route": "admin/fraud-protection",
+    "file": "src/app/admin/fraud-protection/page.tsx",
+    "status": "Needs Major Improvements",
+    "score": 40,
+    "critique": "Awaiting manual audit per page."
+  },
+  {
+    "route": "admin/governance",
+    "file": "src/app/admin/governance/page.tsx",
+    "status": "Needs Major Improvements",
+    "score": 40,
+    "critique": "Awaiting manual audit per page."
+  },
+  {
+    "route": "admin/homepage",
+    "file": "src/app/admin/homepage/page.tsx",
+    "status": "Needs Major Improvements",
+    "score": 40,
+    "critique": "Awaiting manual audit per page."
+  },
+  {
+    "route": "admin/homepage-banners",
+    "file": "src/app/admin/homepage-banners/page.tsx",
+    "status": "Needs Major Improvements",
+    "score": 40,
+    "critique": "Awaiting manual audit per page."
+  },
+  {
+    "route": "admin/integrations",
+    "file": "src/app/admin/integrations/page.tsx",
+    "status": "Needs Major Improvements",
+    "score": 40,
+    "critique": "Awaiting manual audit per page."
+  },
+  {
+    "route": "admin/inventory",
+    "file": "src/app/admin/inventory/page.tsx",
+    "status": "Needs Major Improvements",
+    "score": 40,
+    "critique": "Awaiting manual audit per page."
+  },
+  {
+    "route": "admin/kyc",
+    "file": "src/app/admin/kyc/page.tsx",
+    "status": "Needs Major Improvements",
+    "score": 40,
+    "critique": "Awaiting manual audit per page."
+  },
+  {
+    "route": "admin/kyc-verification",
+    "file": "src/app/admin/kyc-verification/page.tsx",
+    "status": "Needs Major Improvements",
+    "score": 40,
+    "critique": "Awaiting manual audit per page."
+  },
+  {
+    "route": "admin/live-chat",
+    "file": "src/app/admin/live-chat/page.tsx",
+    "status": "Needs Major Improvements",
+    "score": 40,
+    "critique": "Awaiting manual audit per page."
+  },
+  {
+    "route": "admin/live-orders",
+    "file": "src/app/admin/live-orders/page.tsx",
+    "status": "Needs Major Improvements",
+    "score": 40,
+    "critique": "Awaiting manual audit per page."
+  },
+  {
+    "route": "admin/live-stream",
+    "file": "src/app/admin/live-stream/page.tsx",
+    "status": "Needs Major Improvements",
+    "score": 40,
+    "critique": "Awaiting manual audit per page."
+  },
+  {
+    "route": "admin/login",
+    "file": "src/app/admin/login/page.tsx",
+    "status": "Needs Major Improvements",
+    "score": 40,
+    "critique": "Awaiting manual audit per page."
+  },
+  {
+    "route": "admin/logs",
+    "file": "src/app/admin/logs/page.tsx",
+    "status": "Needs Major Improvements",
+    "score": 40,
+    "critique": "Awaiting manual audit per page."
+  },
+  {
+    "route": "admin/loyalty-program",
+    "file": "src/app/admin/loyalty-program/page.tsx",
+    "status": "Needs Major Improvements",
+    "score": 40,
+    "critique": "Awaiting manual audit per page."
+  },
+  {
+    "route": "admin/marketing",
+    "file": "src/app/admin/marketing/page.tsx",
+    "status": "Needs Major Improvements",
+    "score": 40,
+    "critique": "Awaiting manual audit per page."
+  },
+  {
+    "route": "admin/marketing-center",
+    "file": "src/app/admin/marketing-center/page.tsx",
+    "status": "Needs Major Improvements",
+    "score": 40,
+    "critique": "Awaiting manual audit per page."
+  },
+  {
+    "route": "admin/media-library",
+    "file": "src/app/admin/media-library/page.tsx",
+    "status": "Needs Major Improvements",
+    "score": 40,
+    "critique": "Awaiting manual audit per page."
+  },
+  {
+    "route": "admin/membership",
+    "file": "src/app/admin/membership/page.tsx",
+    "status": "Needs Major Improvements",
+    "score": 40,
+    "critique": "Awaiting manual audit per page."
+  },
+  {
+    "route": "admin/messages",
+    "file": "src/app/admin/messages/page.tsx",
+    "status": "Needs Major Improvements",
+    "score": 40,
+    "critique": "Awaiting manual audit per page."
+  },
+  {
+    "route": "admin/mission-control/lab/ai",
+    "file": "src/app/admin/mission-control/lab/ai/page.tsx",
+    "status": "Needs Major Improvements",
+    "score": 40,
+    "critique": "Awaiting manual audit per page."
+  },
+  {
+    "route": "admin/mission-control/lab/autofix",
+    "file": "src/app/admin/mission-control/lab/autofix/page.tsx",
+    "status": "Needs Major Improvements",
+    "score": 40,
+    "critique": "Awaiting manual audit per page."
+  },
+  {
+    "route": "admin/mission-control/lab",
+    "file": "src/app/admin/mission-control/lab/page.tsx",
+    "status": "Needs Major Improvements",
+    "score": 40,
+    "critique": "Awaiting manual audit per page."
+  },
+  {
+    "route": "admin/mission-control/lab/quality",
+    "file": "src/app/admin/mission-control/lab/quality/page.tsx",
+    "status": "Needs Major Improvements",
+    "score": 40,
+    "critique": "Awaiting manual audit per page."
+  },
+  {
+    "route": "admin/mission-control/lab/scanner",
+    "file": "src/app/admin/mission-control/lab/scanner/page.tsx",
+    "status": "Needs Major Improvements",
+    "score": 40,
+    "critique": "Awaiting manual audit per page."
+  },
+  {
+    "route": "admin/mission-control/lab/settings",
+    "file": "src/app/admin/mission-control/lab/settings/page.tsx",
+    "status": "Needs Major Improvements",
+    "score": 40,
+    "critique": "Awaiting manual audit per page."
+  },
+  {
+    "route": "admin/mission-control/lab/statistics",
+    "file": "src/app/admin/mission-control/lab/statistics/page.tsx",
+    "status": "Needs Major Improvements",
+    "score": 40,
+    "critique": "Awaiting manual audit per page."
+  },
+  {
+    "route": "admin/mission-control",
+    "file": "src/app/admin/mission-control/page.tsx",
+    "status": "Needs Major Improvements",
+    "score": 40,
+    "critique": "Awaiting manual audit per page."
+  },
+  {
+    "route": "admin/mlm",
+    "file": "src/app/admin/mlm/page.tsx",
+    "status": "Needs Major Improvements",
+    "score": 40,
+    "critique": "Awaiting manual audit per page."
+  },
+  {
+    "route": "admin/mobile-app",
+    "file": "src/app/admin/mobile-app/page.tsx",
+    "status": "Needs Major Improvements",
+    "score": 40,
+    "critique": "Awaiting manual audit per page."
+  },
+  {
+    "route": "admin/navigation",
+    "file": "src/app/admin/navigation/page.tsx",
+    "status": "Needs Major Improvements",
+    "score": 40,
+    "critique": "Awaiting manual audit per page."
+  },
+  {
+    "route": "admin/notifications",
+    "file": "src/app/admin/notifications/page.tsx",
+    "status": "Needs Major Improvements",
+    "score": 40,
+    "critique": "Awaiting manual audit per page."
+  },
+  {
+    "route": "admin/offer-engine",
+    "file": "src/app/admin/offer-engine/page.tsx",
+    "status": "Needs Major Improvements",
+    "score": 40,
+    "critique": "Awaiting manual audit per page."
+  },
+  {
+    "route": "admin/order-tracking",
+    "file": "src/app/admin/order-tracking/page.tsx",
+    "status": "Needs Major Improvements",
+    "score": 40,
+    "critique": "Awaiting manual audit per page."
+  },
+  {
+    "route": "admin/orders",
+    "file": "src/app/admin/orders/page.tsx",
+    "status": "Needs Major Improvements",
+    "score": 40,
+    "critique": "Awaiting manual audit per page."
+  },
+  {
+    "route": "admin/page-builder",
+    "file": "src/app/admin/page-builder/page.tsx",
+    "status": "Needs Major Improvements",
+    "score": 40,
+    "critique": "Awaiting manual audit per page."
+  },
+  {
+    "route": "admin",
+    "file": "src/app/admin/page.tsx",
+    "status": "Needs Major Improvements",
+    "score": 40,
+    "critique": "Awaiting manual audit per page."
+  },
+  {
+    "route": "admin/pages",
+    "file": "src/app/admin/pages/page.tsx",
+    "status": "Needs Major Improvements",
+    "score": 40,
+    "critique": "Awaiting manual audit per page."
+  },
+  {
+    "route": "admin/payment-gateway",
+    "file": "src/app/admin/payment-gateway/page.tsx",
+    "status": "Needs Major Improvements",
+    "score": 40,
+    "critique": "Awaiting manual audit per page."
+  },
+  {
+    "route": "admin/payments",
+    "file": "src/app/admin/payments/page.tsx",
+    "status": "Needs Major Improvements",
+    "score": 40,
+    "critique": "Awaiting manual audit per page."
+  },
+  {
+    "route": "admin/payouts",
+    "file": "src/app/admin/payouts/page.tsx",
+    "status": "Needs Major Improvements",
+    "score": 40,
+    "critique": "Awaiting manual audit per page."
+  },
+  {
+    "route": "admin/performance",
+    "file": "src/app/admin/performance/page.tsx",
+    "status": "Needs Major Improvements",
+    "score": 40,
+    "critique": "Awaiting manual audit per page."
+  },
+  {
+    "route": "admin/popup-manager",
+    "file": "src/app/admin/popup-manager/page.tsx",
+    "status": "Needs Major Improvements",
+    "score": 40,
+    "critique": "Awaiting manual audit per page."
+  },
+  {
+    "route": "admin/products",
+    "file": "src/app/admin/products/page.tsx",
+    "status": "Needs Major Improvements",
+    "score": 40,
+    "critique": "Awaiting manual audit per page."
+  },
+  {
+    "route": "admin/push-notifications",
+    "file": "src/app/admin/push-notifications/page.tsx",
+    "status": "Needs Major Improvements",
+    "score": 40,
+    "critique": "Awaiting manual audit per page."
+  },
+  {
+    "route": "admin/referral-engine",
+    "file": "src/app/admin/referral-engine/page.tsx",
+    "status": "Needs Major Improvements",
+    "score": 40,
+    "critique": "Awaiting manual audit per page."
+  },
+  {
+    "route": "admin/referrals",
+    "file": "src/app/admin/referrals/page.tsx",
+    "status": "Needs Major Improvements",
+    "score": 40,
+    "critique": "Awaiting manual audit per page."
+  },
+  {
+    "route": "admin/refund-requests",
+    "file": "src/app/admin/refund-requests/page.tsx",
+    "status": "Needs Major Improvements",
+    "score": 40,
+    "critique": "Awaiting manual audit per page."
+  },
+  {
+    "route": "admin/reports",
+    "file": "src/app/admin/reports/page.tsx",
+    "status": "Needs Major Improvements",
+    "score": 40,
+    "critique": "Awaiting manual audit per page."
+  },
+  {
+    "route": "admin/reviews",
+    "file": "src/app/admin/reviews/page.tsx",
+    "status": "Needs Major Improvements",
+    "score": 40,
+    "critique": "Awaiting manual audit per page."
+  },
+  {
+    "route": "admin/reviews-ratings",
+    "file": "src/app/admin/reviews-ratings/page.tsx",
+    "status": "Needs Major Improvements",
+    "score": 40,
+    "critique": "Awaiting manual audit per page."
+  },
+  {
+    "route": "admin/reward-wallet",
+    "file": "src/app/admin/reward-wallet/page.tsx",
+    "status": "Needs Major Improvements",
+    "score": 40,
+    "critique": "Awaiting manual audit per page."
+  },
+  {
+    "route": "admin/rewards",
+    "file": "src/app/admin/rewards/page.tsx",
+    "status": "Needs Major Improvements",
+    "score": 40,
+    "critique": "Awaiting manual audit per page."
+  },
+  {
+    "route": "admin/roles",
+    "file": "src/app/admin/roles/page.tsx",
+    "status": "Needs Major Improvements",
+    "score": 40,
+    "critique": "Awaiting manual audit per page."
+  },
+  {
+    "route": "admin/security",
+    "file": "src/app/admin/security/page.tsx",
+    "status": "Needs Major Improvements",
+    "score": 40,
+    "critique": "Awaiting manual audit per page."
+  },
+  {
+    "route": "admin/seo",
+    "file": "src/app/admin/seo/page.tsx",
+    "status": "Needs Major Improvements",
+    "score": 40,
+    "critique": "Awaiting manual audit per page."
+  },
+  {
+    "route": "admin/seo-ai",
+    "file": "src/app/admin/seo-ai/page.tsx",
+    "status": "Needs Major Improvements",
+    "score": 40,
+    "critique": "Awaiting manual audit per page."
+  },
+  {
+    "route": "admin/server-status",
+    "file": "src/app/admin/server-status/page.tsx",
+    "status": "Needs Major Improvements",
+    "score": 40,
+    "critique": "Awaiting manual audit per page."
+  },
+  {
+    "route": "admin/settings/anti-fraud",
+    "file": "src/app/admin/settings/anti-fraud/page.tsx",
+    "status": "Needs Major Improvements",
+    "score": 40,
+    "critique": "Awaiting manual audit per page."
+  },
+  {
+    "route": "admin/settings",
+    "file": "src/app/admin/settings/page.tsx",
+    "status": "Needs Major Improvements",
+    "score": 40,
+    "critique": "Awaiting manual audit per page."
+  },
+  {
+    "route": "admin/shipping",
+    "file": "src/app/admin/shipping/page.tsx",
+    "status": "Needs Major Improvements",
+    "score": 40,
+    "critique": "Awaiting manual audit per page."
+  },
+  {
+    "route": "admin/sms",
+    "file": "src/app/admin/sms/page.tsx",
+    "status": "Needs Major Improvements",
+    "score": 40,
+    "critique": "Awaiting manual audit per page."
+  },
+  {
+    "route": "admin/spin-wheel",
+    "file": "src/app/admin/spin-wheel/page.tsx",
+    "status": "Needs Major Improvements",
+    "score": 40,
+    "critique": "Awaiting manual audit per page."
+  },
+  {
+    "route": "admin/storage",
+    "file": "src/app/admin/storage/page.tsx",
+    "status": "Needs Major Improvements",
+    "score": 40,
+    "critique": "Awaiting manual audit per page."
+  },
+  {
+    "route": "admin/storage-manager",
+    "file": "src/app/admin/storage-manager/page.tsx",
+    "status": "Needs Major Improvements",
+    "score": 40,
+    "critique": "Awaiting manual audit per page."
+  },
+  {
+    "route": "admin/subadmin-manager",
+    "file": "src/app/admin/subadmin-manager/page.tsx",
+    "status": "Needs Major Improvements",
+    "score": 40,
+    "critique": "Awaiting manual audit per page."
+  },
+  {
+    "route": "admin/subadmins",
+    "file": "src/app/admin/subadmins/page.tsx",
+    "status": "Needs Major Improvements",
+    "score": 40,
+    "critique": "Awaiting manual audit per page."
+  },
+  {
+    "route": "admin/subscriptions",
+    "file": "src/app/admin/subscriptions/page.tsx",
+    "status": "Needs Major Improvements",
+    "score": 40,
+    "critique": "Awaiting manual audit per page."
+  },
+  {
+    "route": "admin/support",
+    "file": "src/app/admin/support/page.tsx",
+    "status": "Needs Major Improvements",
+    "score": 40,
+    "critique": "Awaiting manual audit per page."
+  },
+  {
+    "route": "admin/support-tickets",
+    "file": "src/app/admin/support-tickets/page.tsx",
+    "status": "Needs Major Improvements",
+    "score": 40,
+    "critique": "Awaiting manual audit per page."
+  },
+  {
+    "route": "admin/system-logs",
+    "file": "src/app/admin/system-logs/page.tsx",
+    "status": "Needs Major Improvements",
+    "score": 40,
+    "critique": "Awaiting manual audit per page."
+  },
+  {
+    "route": "admin/system-monitor",
+    "file": "src/app/admin/system-monitor/page.tsx",
+    "status": "Needs Major Improvements",
+    "score": 40,
+    "critique": "Awaiting manual audit per page."
+  },
+  {
+    "route": "admin/system-security",
+    "file": "src/app/admin/system-security/page.tsx",
+    "status": "Needs Major Improvements",
+    "score": 40,
+    "critique": "Awaiting manual audit per page."
+  },
+  {
+    "route": "admin/template-builder",
+    "file": "src/app/admin/template-builder/page.tsx",
+    "status": "Needs Major Improvements",
+    "score": 40,
+    "critique": "Awaiting manual audit per page."
+  },
+  {
+    "route": "admin/theme",
+    "file": "src/app/admin/theme/page.tsx",
+    "status": "Needs Major Improvements",
+    "score": 40,
+    "critique": "Awaiting manual audit per page."
+  },
+  {
+    "route": "admin/theme-builder",
+    "file": "src/app/admin/theme-builder/page.tsx",
+    "status": "Needs Major Improvements",
+    "score": 40,
+    "critique": "Awaiting manual audit per page."
+  },
+  {
+    "route": "admin/theme-store",
+    "file": "src/app/admin/theme-store/page.tsx",
+    "status": "Needs Major Improvements",
+    "score": 40,
+    "critique": "Awaiting manual audit per page."
+  },
+  {
+    "route": "admin/tickets",
+    "file": "src/app/admin/tickets/page.tsx",
+    "status": "Needs Major Improvements",
+    "score": 40,
+    "critique": "Awaiting manual audit per page."
+  },
+  {
+    "route": "admin/users",
+    "file": "src/app/admin/users/page.tsx",
+    "status": "Needs Major Improvements",
+    "score": 40,
+    "critique": "Awaiting manual audit per page."
+  },
+  {
+    "route": "admin/vendor-manager",
+    "file": "src/app/admin/vendor-manager/page.tsx",
+    "status": "Needs Major Improvements",
+    "score": 40,
+    "critique": "Awaiting manual audit per page."
+  },
+  {
+    "route": "admin/wallet",
+    "file": "src/app/admin/wallet/page.tsx",
+    "status": "Needs Major Improvements",
+    "score": 40,
+    "critique": "Awaiting manual audit per page."
+  },
+  {
+    "route": "admin/withdrawal-requests",
+    "file": "src/app/admin/withdrawal-requests/page.tsx",
+    "status": "Needs Major Improvements",
+    "score": 40,
+    "critique": "Awaiting manual audit per page."
+  },
+  {
+    "route": "admin/withdrawals",
+    "file": "src/app/admin/withdrawals/page.tsx",
+    "status": "Needs Major Improvements",
+    "score": 40,
+    "critique": "Awaiting manual audit per page."
+  },
+  {
+    "route": "affiliate",
+    "file": "src/app/affiliate/page.tsx",
+    "status": "Needs Major Improvements",
+    "score": 40,
+    "critique": "Awaiting manual audit per page."
+  },
+  {
+    "route": "cart",
+    "file": "src/app/cart/page.tsx",
+    "status": "Needs Major Improvements",
+    "score": 40,
+    "critique": "Awaiting manual audit per page."
+  },
+  {
+    "route": "categories",
+    "file": "src/app/categories/page.tsx",
+    "status": "Needs Major Improvements",
+    "score": 40,
+    "critique": "Awaiting manual audit per page."
+  },
+  {
+    "route": "category/[slug]",
+    "file": "src/app/category/[slug]/page.tsx",
+    "status": "Needs Major Improvements",
+    "score": 40,
+    "critique": "Awaiting manual audit per page."
+  },
+  {
+    "route": "checkout",
+    "file": "src/app/checkout/page.tsx",
+    "status": "Needs Major Improvements",
+    "score": 40,
+    "critique": "Awaiting manual audit per page."
+  },
+  {
+    "route": "debug-auth",
+    "file": "src/app/debug-auth/page.tsx",
+    "status": "Needs Major Improvements",
+    "score": 40,
+    "critique": "Awaiting manual audit per page."
+  },
+  {
+    "route": "login",
+    "file": "src/app/login/page.tsx",
+    "status": "Needs Major Improvements",
+    "score": 40,
+    "critique": "Awaiting manual audit per page."
+  },
+  {
+    "route": "mlm/cashback",
+    "file": "src/app/mlm/cashback/page.tsx",
+    "status": "Needs Major Improvements",
+    "score": 40,
+    "critique": "Awaiting manual audit per page."
+  },
+  {
+    "route": "mlm/dashboard",
+    "file": "src/app/mlm/dashboard/page.tsx",
+    "status": "Needs Major Improvements",
+    "score": 40,
+    "critique": "Awaiting manual audit per page."
+  },
+  {
+    "route": "mlm/earnings",
+    "file": "src/app/mlm/earnings/page.tsx",
+    "status": "Needs Major Improvements",
+    "score": 40,
+    "critique": "Awaiting manual audit per page."
+  },
+  {
+    "route": "mlm/invite",
+    "file": "src/app/mlm/invite/page.tsx",
+    "status": "Needs Major Improvements",
+    "score": 40,
+    "critique": "Awaiting manual audit per page."
+  },
+  {
+    "route": "mlm/leaderboard",
+    "file": "src/app/mlm/leaderboard/page.tsx",
+    "status": "Needs Major Improvements",
+    "score": 40,
+    "critique": "Awaiting manual audit per page."
+  },
+  {
+    "route": "mlm/network",
+    "file": "src/app/mlm/network/page.tsx",
+    "status": "Needs Major Improvements",
+    "score": 40,
+    "critique": "Awaiting manual audit per page."
+  },
+  {
+    "route": "mlm/notifications",
+    "file": "src/app/mlm/notifications/page.tsx",
+    "status": "Needs Major Improvements",
+    "score": 40,
+    "critique": "Awaiting manual audit per page."
+  },
+  {
+    "route": "mlm/orders",
+    "file": "src/app/mlm/orders/page.tsx",
+    "status": "Needs Major Improvements",
+    "score": 40,
+    "critique": "Awaiting manual audit per page."
+  },
+  {
+    "route": "mlm",
+    "file": "src/app/mlm/page.tsx",
+    "status": "Needs Major Improvements",
+    "score": 40,
+    "critique": "Awaiting manual audit per page."
+  },
+  {
+    "route": "mlm/permissions",
+    "file": "src/app/mlm/permissions/page.tsx",
+    "status": "Needs Major Improvements",
+    "score": 40,
+    "critique": "Awaiting manual audit per page."
+  },
+  {
+    "route": "mlm/ranks",
+    "file": "src/app/mlm/ranks/page.tsx",
+    "status": "Needs Major Improvements",
+    "score": 40,
+    "critique": "Awaiting manual audit per page."
+  },
+  {
+    "route": "mlm/support",
+    "file": "src/app/mlm/support/page.tsx",
+    "status": "Needs Major Improvements",
+    "score": 40,
+    "critique": "Awaiting manual audit per page."
+  },
+  {
+    "route": "mlm/team-business",
+    "file": "src/app/mlm/team-business/page.tsx",
+    "status": "Needs Major Improvements",
+    "score": 40,
+    "critique": "Awaiting manual audit per page."
+  },
+  {
+    "route": "mlm/wallet/history",
+    "file": "src/app/mlm/wallet/history/page.tsx",
+    "status": "Needs Major Improvements",
+    "score": 40,
+    "critique": "Awaiting manual audit per page."
+  },
+  {
+    "route": "mlm/wallet",
+    "file": "src/app/mlm/wallet/page.tsx",
+    "status": "Needs Major Improvements",
+    "score": 40,
+    "critique": "Awaiting manual audit per page."
+  },
+  {
+    "route": "mlm/watch-earn",
+    "file": "src/app/mlm/watch-earn/page.tsx",
+    "status": "Needs Major Improvements",
+    "score": 40,
+    "critique": "Awaiting manual audit per page."
+  },
+  {
+    "route": "mlm/watch-earn/upload",
+    "file": "src/app/mlm/watch-earn/upload/page.tsx",
+    "status": "Needs Major Improvements",
+    "score": 40,
+    "critique": "Awaiting manual audit per page."
+  },
+  {
+    "route": "mlm/withdraw",
+    "file": "src/app/mlm/withdraw/page.tsx",
+    "status": "Needs Major Improvements",
+    "score": 40,
+    "critique": "Awaiting manual audit per page."
+  },
+  {
+    "route": "orders/[id]",
+    "file": "src/app/orders/[id]/page.tsx",
+    "status": "Needs Major Improvements",
+    "score": 40,
+    "critique": "Awaiting manual audit per page."
+  },
+  {
+    "route": "orders",
+    "file": "src/app/orders/page.tsx",
+    "status": "Needs Major Improvements",
+    "score": 40,
+    "critique": "Awaiting manual audit per page."
+  },
+  {
+    "route": "page.tsx",
+    "file": "src/app/page.tsx",
+    "status": "Needs Major Improvements",
+    "score": 40,
+    "critique": "Awaiting manual audit per page."
+  },
+  {
+    "route": "payment-success",
+    "file": "src/app/payment-success/page.tsx",
+    "status": "Needs Major Improvements",
+    "score": 40,
+    "critique": "Awaiting manual audit per page."
+  },
+  {
+    "route": "payments",
+    "file": "src/app/payments/page.tsx",
+    "status": "Needs Major Improvements",
+    "score": 40,
+    "critique": "Awaiting manual audit per page."
+  },
+  {
+    "route": "product/[id]",
+    "file": "src/app/product/[id]/page.tsx",
+    "status": "Needs Major Improvements",
+    "score": 40,
+    "critique": "Awaiting manual audit per page."
+  },
+  {
+    "route": "signup",
+    "file": "src/app/signup/page.tsx",
+    "status": "Needs Major Improvements",
+    "score": 40,
+    "critique": "Awaiting manual audit per page."
+  },
+  {
+    "route": "verify-email",
+    "file": "src/app/verify-email/page.tsx",
+    "status": "Needs Major Improvements",
+    "score": 40,
+    "critique": "Awaiting manual audit per page."
+  },
+  {
+    "route": "wishlist",
+    "file": "src/app/wishlist/page.tsx",
+    "status": "Needs Major Improvements",
+    "score": 40,
+    "critique": "Awaiting manual audit per page."
+  }
+]

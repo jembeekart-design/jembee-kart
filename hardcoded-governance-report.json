@@ -1,7 +1,7 @@
 {
   "auditSuiteMetadata": {
     "engineSignature": "Jembee Autonomous Compliance Engine Engine Platform V10",
-    "compiledAt": "2026-07-18T12:24:41.234Z",
+    "compiledAt": "2026-07-25T12:06:17.903Z",
     "configurationSnapshot": {
       "scanRoot": "/data/data/com.termux/files/home/jembeekart/src",
       "reportOutput": "hardcoded-governance-report.json",
@@ -12,21 +12,269 @@
     }
   },
   "performanceProfilingMetrics": {
-    "totalFilesScanned": 500,
-    "cacheHits": 500,
-    "executionTimeMs": 281,
-    "engineThroughputFilesPerSec": 1779
+    "totalFilesScanned": 626,
+    "cacheHits": 623,
+    "executionTimeMs": 388,
+    "engineThroughputFilesPerSec": 1613
   },
   "auditReportSummary": {
-    "totalViolationsIdentified": 0,
-    "autoFixableCount": 0,
-    "manualReviewRequiredCount": 0,
+    "totalViolationsIdentified": 13,
+    "autoFixableCount": 5,
+    "manualReviewRequiredCount": 8,
     "severityDistribution": {
       "Critical": 0,
       "High": 0,
-      "Medium": 0,
-      "Low": 0
+      "Medium": 5,
+      "Low": 8
     }
   },
-  "findings": []
+  "findings": [
+    {
+      "id": "GOV-e5caf597112b448f",
+      "file": "/src/lib/mlm/orders/completeOrderAndDistributeCommission.ts",
+      "ruleName": "Hardcoded Boolean",
+      "line": 51,
+      "column": 35,
+      "matchedValue": "= true",
+      "extractedValue": "= true",
+      "severity": "Medium",
+      "governanceCategory": "Feature Flags",
+      "firestoreCollection": "featureFlags",
+      "adminSection": "Dynamic Feature Flags Toggle Panel",
+      "remediation": {
+        "fixedCode": "const flags = await featureFlags.get();",
+        "suggestion": "Abstract state flags into hot-swappable enterprise feature flagging collections.",
+        "isAutoFixable": true
+      },
+      "contextTrace": "if (order.commissionDistributed === true || order.status === \"delivered\") {"
+    },
+    {
+      "id": "GOV-cee4950927dc871a",
+      "file": "/src/lib/mlm/orders/completeOrderAndDistributeCommission.ts",
+      "ruleName": "Hardcoded Number",
+      "line": 80,
+      "column": 14,
+      "matchedValue": "> 0",
+      "extractedValue": "0",
+      "severity": "Low",
+      "governanceCategory": "Business Configuration",
+      "firestoreCollection": "systemSettings",
+      "adminSection": "Global Administration Settings",
+      "remediation": {
+        "fixedCode": "const platformConfig = await systemSettings.get();",
+        "suggestion": "Map static platform parameters to centralized dynamic variable engine config handlers.",
+        "isAutoFixable": false
+      },
+      "contextTrace": "if (cashback > 0) {"
+    },
+    {
+      "id": "GOV-0f615fb5e7b39586",
+      "file": "/src/lib/mlm/orders/completeOrderAndDistributeCommission.ts",
+      "ruleName": "Hardcoded Number",
+      "line": 92,
+      "column": 10,
+      "matchedValue": "= 0",
+      "extractedValue": "0",
+      "severity": "Low",
+      "governanceCategory": "Business Configuration",
+      "firestoreCollection": "systemSettings",
+      "adminSection": "Global Administration Settings",
+      "remediation": {
+        "fixedCode": "const platformConfig = await systemSettings.get();",
+        "suggestion": "Map static platform parameters to centralized dynamic variable engine config handlers.",
+        "isAutoFixable": false
+      },
+      "contextTrace": "cashback = 0; // Reset trace count if wallet ledger declined mutation"
+    },
+    {
+      "id": "GOV-af6b48a3118e4ce8",
+      "file": "/src/lib/mlm/orders/completeOrderAndDistributeCommission.ts",
+      "ruleName": "Hardcoded Number",
+      "line": 96,
+      "column": 10,
+      "matchedValue": "= 0",
+      "extractedValue": "0",
+      "severity": "Low",
+      "governanceCategory": "Business Configuration",
+      "firestoreCollection": "systemSettings",
+      "adminSection": "Global Administration Settings",
+      "remediation": {
+        "fixedCode": "const platformConfig = await systemSettings.get();",
+        "suggestion": "Map static platform parameters to centralized dynamic variable engine config handlers.",
+        "isAutoFixable": false
+      },
+      "contextTrace": "cashback = 0;"
+    },
+    {
+      "id": "GOV-8301b8fdfab95d4b",
+      "file": "/src/lib/mlm/orders/completeOrderAndDistributeCommission.ts",
+      "ruleName": "Hardcoded Boolean",
+      "line": 127,
+      "column": 20,
+      "matchedValue": "= false",
+      "extractedValue": "= false",
+      "severity": "Medium",
+      "governanceCategory": "Feature Flags",
+      "firestoreCollection": "featureFlags",
+      "adminSection": "Dynamic Feature Flags Toggle Panel",
+      "remediation": {
+        "fixedCode": "const flags = await featureFlags.get();",
+        "suggestion": "Abstract state flags into hot-swappable enterprise feature flagging collections.",
+        "isAutoFixable": true
+      },
+      "contextTrace": "let rewardUnlocked = false;"
+    },
+    {
+      "id": "GOV-c25a38d5bbee4411",
+      "file": "/src/lib/mlm/orders/completeOrderAndDistributeCommission.ts",
+      "ruleName": "Hardcoded Number",
+      "line": 145,
+      "column": 68,
+      "matchedValue": "> 0",
+      "extractedValue": "0",
+      "severity": "Low",
+      "governanceCategory": "Business Configuration",
+      "firestoreCollection": "systemSettings",
+      "adminSection": "Global Administration Settings",
+      "remediation": {
+        "fixedCode": "const platformConfig = await systemSettings.get();",
+        "suggestion": "Map static platform parameters to centralized dynamic variable engine config handlers.",
+        "isAutoFixable": false
+      },
+      "contextTrace": "if (qualifiedSales >= watchEarnRules.requiredSales && lockedReward > 0 && cycleStatus === \"pending\") {"
+    },
+    {
+      "id": "GOV-a4b6e2a3e63d1bbf",
+      "file": "/src/lib/mlm/orders/completeOrderAndDistributeCommission.ts",
+      "ruleName": "Hardcoded Boolean",
+      "line": 155,
+      "column": 16,
+      "matchedValue": "= true",
+      "extractedValue": "= true",
+      "severity": "Medium",
+      "governanceCategory": "Feature Flags",
+      "firestoreCollection": "featureFlags",
+      "adminSection": "Dynamic Feature Flags Toggle Panel",
+      "remediation": {
+        "fixedCode": "const flags = await featureFlags.get();",
+        "suggestion": "Abstract state flags into hot-swappable enterprise feature flagging collections.",
+        "isAutoFixable": true
+      },
+      "contextTrace": "rewardUnlocked = true;"
+    },
+    {
+      "id": "GOV-deef13d2ebdd1fb9",
+      "file": "/src/lib/mlm/orders/completeOrderAndDistributeCommission.ts",
+      "ruleName": "Hardcoded Number",
+      "line": 159,
+      "column": 18,
+      "matchedValue": ": 0",
+      "extractedValue": "0",
+      "severity": "Low",
+      "governanceCategory": "Business Configuration",
+      "firestoreCollection": "systemSettings",
+      "adminSection": "Global Administration Settings",
+      "remediation": {
+        "fixedCode": "const platformConfig = await systemSettings.get();",
+        "suggestion": "Map static platform parameters to centralized dynamic variable engine config handlers.",
+        "isAutoFixable": false
+      },
+      "contextTrace": "lockedWatchReward: 0,"
+    },
+    {
+      "id": "GOV-35d23e3265c3f620",
+      "file": "/src/lib/mlm/orders/completeOrderAndDistributeCommission.ts",
+      "ruleName": "Hardcoded Number",
+      "line": 160,
+      "column": 25,
+      "matchedValue": ": 0",
+      "extractedValue": "0",
+      "severity": "Low",
+      "governanceCategory": "Business Configuration",
+      "firestoreCollection": "systemSettings",
+      "adminSection": "Global Administration Settings",
+      "remediation": {
+        "fixedCode": "const platformConfig = await systemSettings.get();",
+        "suggestion": "Map static platform parameters to centralized dynamic variable engine config handlers.",
+        "isAutoFixable": false
+      },
+      "contextTrace": "currentCycleLockedReward: 0,"
+    },
+    {
+      "id": "GOV-849e443700851aa9",
+      "file": "/src/lib/mlm/orders/completeOrderAndDistributeCommission.ts",
+      "ruleName": "Hardcoded Number",
+      "line": 162,
+      "column": 16,
+      "matchedValue": ": 0",
+      "extractedValue": "0",
+      "severity": "Low",
+      "governanceCategory": "Business Configuration",
+      "firestoreCollection": "systemSettings",
+      "adminSection": "Global Administration Settings",
+      "remediation": {
+        "fixedCode": "const platformConfig = await systemSettings.get();",
+        "suggestion": "Map static platform parameters to centralized dynamic variable engine config handlers.",
+        "isAutoFixable": false
+      },
+      "contextTrace": "videoWatchCount: 0,"
+    },
+    {
+      "id": "GOV-51c8a3794557db9f",
+      "file": "/src/lib/mlm/orders/completeOrderAndDistributeCommission.ts",
+      "ruleName": "Hardcoded Boolean",
+      "line": 197,
+      "column": 22,
+      "matchedValue": ": true",
+      "extractedValue": ": true",
+      "severity": "Medium",
+      "governanceCategory": "Feature Flags",
+      "firestoreCollection": "featureFlags",
+      "adminSection": "Dynamic Feature Flags Toggle Panel",
+      "remediation": {
+        "fixedCode": "const flags = await featureFlags.get();",
+        "suggestion": "Abstract state flags into hot-swappable enterprise feature flagging collections.",
+        "isAutoFixable": true
+      },
+      "contextTrace": "commissionDistributed: true,"
+    },
+    {
+      "id": "GOV-cb8d22cda4335abe",
+      "file": "/src/lib/mlm/orders/completeOrderAndDistributeCommission.ts",
+      "ruleName": "Hardcoded Boolean",
+      "line": 207,
+      "column": 22,
+      "matchedValue": ": true",
+      "extractedValue": ": true",
+      "severity": "Medium",
+      "governanceCategory": "Feature Flags",
+      "firestoreCollection": "featureFlags",
+      "adminSection": "Dynamic Feature Flags Toggle Panel",
+      "remediation": {
+        "fixedCode": "const flags = await featureFlags.get();",
+        "suggestion": "Abstract state flags into hot-swappable enterprise feature flagging collections.",
+        "isAutoFixable": true
+      },
+      "contextTrace": "commissionDistributed: true,"
+    },
+    {
+      "id": "GOV-4fe6b04d29b193db",
+      "file": "/src/lib/mlm/withdrawals/requestWithdraw.ts",
+      "ruleName": "Hardcoded Number",
+      "line": 46,
+      "column": 39,
+      "matchedValue": "> 0",
+      "extractedValue": "0",
+      "severity": "Low",
+      "governanceCategory": "Business Configuration",
+      "firestoreCollection": "systemSettings",
+      "adminSection": "Global Administration Settings",
+      "remediation": {
+        "fixedCode": "const platformConfig = await systemSettings.get();",
+        "suggestion": "Map static platform parameters to centralized dynamic variable engine config handlers.",
+        "isAutoFixable": false
+      },
+      "contextTrace": "if ((userData.pendingWithdrawal || 0) > 0) {"
+    }
+  ]
 }

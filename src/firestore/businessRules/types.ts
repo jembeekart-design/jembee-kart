@@ -15,6 +15,8 @@ export interface ProfitabilityRules {
 
   cashbackExpense: number;
 
+  cashbackThreshold: number;
+
   referralExpense: number;
 
   rewardExpense: number;
@@ -85,6 +87,8 @@ export interface FeatureFlags {
   adsEnabled: boolean;
   walletEnabled: boolean;
   loyaltyEnabled: boolean;
+  commissionDistributedEnabled: boolean;
+  rewardEnabled: boolean;
 }
 
 // ======================================================

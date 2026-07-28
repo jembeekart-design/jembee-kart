@@ -2,6 +2,7 @@ import { db } from "@/firebase/config";
 import { doc, collection, runTransaction, serverTimestamp, increment } from "firebase/firestore";
 import { createNotification } from "../createNotification";
 import { ENGINE_VERSION } from "@/lib/mlm/config";
+import { businessRules } from "@/firestore/businessRules/service";
 
 interface WithdrawData {
   userId: string;
@@ -19,8 +20,12 @@ export async function requestWithdraw(data: WithdrawData) {
   try {
     const upi = data.upi.trim();
     
+    const walletRules = await businessRules.getWalletRules();
+    
     // Validation
-    if (data.amount < 200) throw new Error("MIN_WITHDRAWAL_200");
+    if (data.amount < walletRules.minimumWithdrawal) {
+      throw new Error(`Minimum withdrawal amount is ₹${walletRules.minimumWithdrawal}`);
+    }
     if (!UPI_REGEX.test(upi)) throw new Error("INVALID_UPI_FORMAT");
 
     const userRef = doc(db, "users", data.userId);
