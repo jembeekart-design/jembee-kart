@@ -13,6 +13,7 @@ import { distributeLevelCommission } from "../distributeLevelCommission";
 import { creditWallet } from "../creditWallet";
 import { profitabilityConfigService } from "@/jembee-governance/services/profitabilityConfigService";
 import { validateOrder } from "./orderValidation";
+import { businessRules } from "@/firestore/businessRules/service";
 
 interface CompleteOrderData {
   orderId: string;
@@ -27,6 +28,7 @@ export async function completeOrderAndDistributeCommission(orderId: string) {
   try {
     const profitabilityRules =
   await profitabilityConfigService.getRules();
+    const flags = await businessRules.getFeatureFlags();
     /* ========================================================
        VALIDATION LAYER
        ======================================================== */
@@ -47,7 +49,7 @@ const { orderRef, order } = validation;
     /* ========================================================
        IDEMPOTENCY / DUPLICATE PROTECTION GUARD
        ======================================================== */
-    if (order.commissionDistributed === true || order.status === "delivered") {
+    if (order.commissionDistributed === flags.commissionDistributedEnabled || order.status === "delivered") {
       return {
         success: true, // Returning true because the end-state is already achieved
         message: "Commission already distributed and order finalized.",
@@ -76,23 +78,23 @@ const { orderRef, order } = validation;
   (profitabilityRules.cashbackPercentage / 100)
 );
     
-    if (cashback > 0) {
+    if (cashback > profitabilityRules.cashbackThreshold) {
       try {
         const cashbackResult = await creditWallet({
           uid: userId,
           amount: cashback,
           type: "cashback", // Aligned parameter type
-          description: `E-commerce 5% Cashback awarded for completed Order ID: ${orderId}`, // Injected mandatory description
+          description: `E-commerce ${profitabilityRules.cashbackPercentage}% Cashback awarded for completed Order ID: ${orderId}`, // Injected mandatory description
           orderId: orderId,
         });
 
         if (!cashbackResult.success) {
           console.warn(`⚠️ Cashback distribution failed for user ${userId}: ${cashbackResult.message}`);
-          cashback = 0; // Reset trace count if wallet ledger declined mutation
+          cashback = profitabilityRules.cashbackThreshold; // Reset trace count if wallet ledger declined mutation
         }
       } catch (cashbackErr: any) {
         console.error("❌ Isolated Cashback Failure:", cashbackErr.message);
-        cashback = 0;
+        cashback = profitabilityRules.cashbackThreshold;
       }
     }
 
@@ -126,59 +128,65 @@ const { orderRef, order } = validation;
     let rewardUnlocked = false;
     let unlockedAmount = 0;
 
-    try {
-      const userRef = doc(db, "users", userId);
-      const userSnap = await getDoc(userRef);
+    const watchEarnRules = await businessRules.getWatchEarnRules();
 
-      if (userSnap.exists()) {
-        const user = userSnap.data();
-        const qualifiedSales = Number(user.qualifiedSalesCount || 0) + 1;
+    if (!flags.rewardEnabled) {
+      console.log("ℹ️ [REWARD ENGINE]: Reward feature is currently disabled.");
+    } else {
+      try {
+        const userRef = doc(db, "users", userId);
+        const userSnap = await getDoc(userRef);
 
-        // Dynamic key alignment fallback for locked rewards schemas
-        const lockedReward = Number(user.currentCycleLockedReward || user.lockedWatchReward || 0);
-        const cycleStatus = user.currentCycleStatus || "active";
+        if (userSnap.exists()) {
+          const user = userSnap.data();
+          const qualifiedSales = Number(user.qualifiedSalesCount || 0) + 1;
 
-        // Condition Check for Cycle Phase
-        if (qualifiedSales >= 5 && lockedReward > 0 && cycleStatus === "pending") {
-          const rewardResult = await creditWallet({
-            uid: userId,
-            amount: lockedReward,
-            type: "reward", // Conformed type constraint
-            description: `Watch Video Cycle Milestone Unlocked successfully from Order Ref: ${orderId}`, // Injected description
-            orderId: orderId,
-          });
+          // Dynamic key alignment fallback for locked rewards schemas
+          const lockedReward = Number(user.currentCycleLockedReward || user.lockedWatchReward || 0);
+          const cycleStatus = user.currentCycleStatus || "active";
 
-          if (rewardResult.success) {
-            rewardUnlocked = true;
-            unlockedAmount = lockedReward;
-
-            await updateDoc(userRef, {
-              lockedWatchReward: 0,
-              currentCycleLockedReward: 0,
-              qualifiedSalesCount: 0,
-              videoWatchCount: 0,
-              rewardCycleNumber: increment(1),
-              currentCycleStatus: "active",
-              updatedAt: serverTimestamp(),
+          // Condition Check for Cycle Phase
+          if (qualifiedSales >= watchEarnRules.requiredSales && lockedReward > 0 && cycleStatus === "pending") {
+            const rewardResult = await creditWallet({
+              uid: userId,
+              amount: lockedReward,
+              type: "reward", // Conformed type constraint
+              description: `Watch Video Cycle Milestone Unlocked successfully from Order Ref: ${orderId}`, // Injected description
+              orderId: orderId,
             });
-            console.log(`🎁 [REWARD ENGINE]: Watch Reward Cycle Unlocked for User: ${userId}`);
+
+            if (rewardResult.success) {
+              rewardUnlocked = true;
+              unlockedAmount = lockedReward;
+
+              await updateDoc(userRef, {
+                lockedWatchReward: 0,
+                currentCycleLockedReward: 0,
+                qualifiedSalesCount: 0,
+                videoWatchCount: 0,
+                rewardCycleNumber: increment(1),
+                currentCycleStatus: "active",
+                updatedAt: serverTimestamp(),
+              });
+              console.log(`🎁 [REWARD ENGINE]: Watch Reward Cycle Unlocked for User: ${userId}`);
+            } else {
+              // Fallback: If wallet transaction fails, increment the count safely without resetting cycles
+              await updateDoc(userRef, {
+                qualifiedSalesCount: increment(1),
+                updatedAt: serverTimestamp(),
+              });
+            }
           } else {
-            // Fallback: If wallet transaction fails, increment the count safely without resetting cycles
+            // Standard Incremental Lifecycle Path
             await updateDoc(userRef, {
               qualifiedSalesCount: increment(1),
               updatedAt: serverTimestamp(),
             });
           }
-        } else {
-          // Standard Incremental Lifecycle Path
-          await updateDoc(userRef, {
-            qualifiedSalesCount: increment(1),
-            updatedAt: serverTimestamp(),
-          });
         }
+      } catch (rewardError: any) {
+        console.error("⚠️ [REWARD ENGINE EXCEPTION]: Safely isolated fallback handler:", rewardError.message);
       }
-    } catch (rewardError: any) {
-      console.error("⚠️ [REWARD ENGINE EXCEPTION]: Safely isolated fallback handler:", rewardError.message);
     }
 
     /* ========================================================

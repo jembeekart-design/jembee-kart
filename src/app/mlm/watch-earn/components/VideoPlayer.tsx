@@ -31,6 +31,8 @@ export default function VideoPlayer({
 
   const [showCoins, setShowCoins] =
     useState(false);
+    
+  const [isMuted, setIsMuted] = useState(true);
 
   useEffect(() => {
     let interval: NodeJS.Timeout;
@@ -83,7 +85,7 @@ export default function VideoPlayer({
         ref={videoRef}
         src={videoUrl}
         autoPlay
-        muted
+        muted={isMuted}
         loop
         playsInline
         className="
@@ -92,6 +94,14 @@ export default function VideoPlayer({
           object-cover
         "
       />
+      
+      {/* MUTE TOGGLE */}
+      <button
+        onClick={() => setIsMuted(!isMuted)}
+        className="absolute right-4 bottom-4 z-40 rounded-full bg-black/50 p-2 text-white"
+      >
+        {isMuted ? "🔇" : "🔊"}
+      </button>
 
       {/* OVERLAY */}
 
