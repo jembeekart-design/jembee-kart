@@ -85,10 +85,11 @@ export default function AdminChatPage() {
   }, [selectedChatId]);
 
   async function handleSendMessage() {
-    if (!message.trim() || !selectedChatId) return;
+    const uid = auth.currentUser?.uid;
+    if (!message.trim() || !selectedChatId || !uid) return;
     const msgText = message;
     setMessage("");
-    await sendMessage(selectedChatId, "admin", msgText);
+    await sendMessage(selectedChatId, uid, "Admin", msgText);
   }
 
   function handleInputChange(e: React.ChangeEvent<HTMLInputElement>) {
