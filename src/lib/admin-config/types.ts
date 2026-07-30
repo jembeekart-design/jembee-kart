@@ -203,6 +203,53 @@ export interface AnnouncementConfig {
   defaultMessage: string;
 }
 
+export interface WatchEarnConfig {
+  videoWatchSeconds: number;
+  rewardProgressSeconds: number;
+  minimumWatchPercent: number;
+  allowSkip: boolean;
+  rewardDelay: number;
+  enableUploadButton: boolean;
+  uploadButtonText: string;
+  uploadButtonIcon: string;
+  uploadButtonPosition: "top-left" | "top-right" | "bottom-left" | "bottom-right";
+  allowVideoUpload: boolean;
+  allowedUserRoles: string[];
+  requireAdminApproval: boolean;
+  autoPublish: boolean;
+  maxVideoDuration: number;
+  maxFileSize: number;
+  allowedVideoFormats: string[];
+}
+
+export interface FloatingAdConfig {
+  enabled: boolean;
+  title: string;
+  imageUrl: string;
+  icon: string;
+  description: string;
+  actionUrl: string;
+  skipAfterSeconds: number;
+  autoHide: boolean;
+  position: "left" | "right" | "center";
+  priority: number;
+  activeFrom: string;
+  activeTo: string;
+}
+
+export interface CommentModerationConfig {
+  blockedWords: string[];
+  regexPatterns: string[];
+  autoReject: boolean;
+  caseSensitive: boolean;
+  maxLength: number;
+}
+
+export interface WatchEarnStatsConfig {
+  totalCoins: number;
+  videosWatched: number;
+}
+
 export interface AdminConfig {
   version: number;
   theme: ThemeConfig;
@@ -211,11 +258,10 @@ export interface AdminConfig {
   adsManager: AdsManagerConfig;
   analytics: AnalyticsConfig;
   announcement: AnnouncementConfig;
-  payment: PaymentConfig;
-  shipping: ShippingConfig;
   watchEarn: WatchEarnConfig;
-  cashback: CashbackConfig;
-  mlm: MLMConfig;
+  watchEarnStats: WatchEarnStatsConfig;
+  commentModeration: CommentModerationConfig;
+  payment: PaymentConfig;
   referral: ReferralConfig;
   signup: SignupConfig;
   wallet: WalletConfig;

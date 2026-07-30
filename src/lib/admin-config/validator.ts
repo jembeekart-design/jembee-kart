@@ -28,10 +28,11 @@ export function validateConfig(data: any): AdminConfig {
       adsManager: { ...DEFAULT_ADMIN_CONFIG.adsManager, ...(data.adsManager || {}) },
       analytics: { ...DEFAULT_ADMIN_CONFIG.analytics, ...(data.analytics || {}) },
       announcement: { ...DEFAULT_ADMIN_CONFIG.announcement, ...(data.announcement || {}) },
+      watchEarn: { ...DEFAULT_ADMIN_CONFIG.watchEarn, ...(data.watchEarn || {}) },
+      commentModeration: { ...DEFAULT_ADMIN_CONFIG.commentModeration, ...(data.commentModeration || {}) },
       
       payment: { ...DEFAULT_ADMIN_CONFIG.payment, ...(data.payment || {}) },
       shipping: { ...DEFAULT_ADMIN_CONFIG.shipping, ...(data.shipping || {}) },
-      watchEarn: { ...DEFAULT_ADMIN_CONFIG.watchEarn, ...(data.watchEarn || {}) },
       cashback: { ...DEFAULT_ADMIN_CONFIG.cashback, ...(data.cashback || {}) },
       mlm: { ...DEFAULT_ADMIN_CONFIG.mlm, ...(data.mlm || {}) },
       referral: { ...DEFAULT_ADMIN_CONFIG.referral, ...(data.referral || {}) },
