@@ -14,6 +14,7 @@ import {
 import { auth, db } from "@/firebase/config";
 import { sendMessage, updatePresence, setTyping } from "@/firestore/services/chatService";
 import { createCall } from "@/firestore/services/callService";
+import { initializeAdminChat } from "@/firestore/services/adminChatInitializer";
 import { FIRESTORE_PATHS } from "@/firestore/collections/firestorePaths";
 
 import {
