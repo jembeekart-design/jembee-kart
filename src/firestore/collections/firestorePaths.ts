@@ -130,11 +130,16 @@ export const FIRESTORE_PATHS = {
   // ADMIN CHAT COLLECTIONS
   // ==========================================
   ADMIN_CHAT: {
-    CHATS: "admin_chats",
-    MESSAGES: "messages",
+    CHATS: "chats",
+    MESSAGES: "messages", // subcollection
+    CHAT_PARTICIPANTS: "chatParticipants",
     CALL_SESSIONS: "callSessions",
-    NOTIFICATIONS: "notifications",
-    PRESENCE: "user_presence",
+    CALL_INVITATIONS: "callInvitations",
+    USER_PRESENCE: "userPresence",
+    TYPING_STATUS: "typingStatus",
+    UNREAD_COUNTS: "unreadCounts",
+    CHAT_SETTINGS: "chatSettings",
+    ADMIN_SETTINGS: "admin_settings/chat"
   },
 
   // ==========================================
