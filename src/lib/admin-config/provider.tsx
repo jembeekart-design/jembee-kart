@@ -46,6 +46,8 @@ export function AdminConfigProvider({ children }: { children: ReactNode }) {
     const adsManagerRef = doc(db, "settings", "adsManager");
     const analyticsRef = doc(db, "settings", "analytics");
     const announcementRef = doc(db, "settings", "announcement");
+    const watchEarnRef = doc(db, "settings", "watchEarn");
+    const commentModerationRef = doc(db, "settings", "commentModeration");
     const featureFlagsRef = doc(db, "settings", "feature_flags");
     const walletRef = doc(db, "settings", "wallet");
     const homepageRef = doc(db, "settings", "homepage");

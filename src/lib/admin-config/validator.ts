@@ -29,6 +29,7 @@ export function validateConfig(data: any): AdminConfig {
       analytics: { ...DEFAULT_ADMIN_CONFIG.analytics, ...(data.analytics || {}) },
       announcement: { ...DEFAULT_ADMIN_CONFIG.announcement, ...(data.announcement || {}) },
       watchEarn: { ...DEFAULT_ADMIN_CONFIG.watchEarn, ...(data.watchEarn || {}) },
+      watchEarnStats: { ...DEFAULT_ADMIN_CONFIG.watchEarnStats, ...(data.watchEarnStats || {}) },
       commentModeration: { ...DEFAULT_ADMIN_CONFIG.commentModeration, ...(data.commentModeration || {}) },
       
       payment: { ...DEFAULT_ADMIN_CONFIG.payment, ...(data.payment || {}) },

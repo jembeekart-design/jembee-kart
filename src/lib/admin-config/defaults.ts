@@ -59,10 +59,14 @@ export const DEFAULT_ADMIN_CONFIG: AdminConfig = {
   },
 
   watchEarn: {
+    enabled: true,
     videoWatchSeconds: 30,
     rewardProgressSeconds: 5,
     minimumWatchPercent: 80,
     allowSkip: true,
+    rewardAmount: 5,
+    requiredVideos: 100,
+    requiredSales: 10,
     rewardDelay: 3,
     enableUploadButton: true,
     uploadButtonText: "Upload Video",
@@ -102,18 +106,11 @@ export const DEFAULT_ADMIN_CONFIG: AdminConfig = {
     deliveryDays: 0,
   },
 
-  watchEarn: {
-    enabled: false,
-    requiredVideos: 0,
-    rewardAmount: 0,
-    requiredSales: 0,
-  },
-
   cashback: {
     enabled: false,
     cashbackPercent: 0,
   },
-
+  
   mlm: {
     enabled: false,
     level1: 0,
@@ -149,11 +146,11 @@ export const DEFAULT_ADMIN_CONFIG: AdminConfig = {
 
   mlmPage: {
     enabled: false,
-    pageTitle: "MLM Dashboard",
-    pageSubtitle: "Build Team & Earn Daily",
+    pageTitle: "",
+    pageSubtitle: "",
     minimumTransfer: 0,
     transferFunction: "",
-    searchPlaceholder: "Search records...",
+    searchPlaceholder: "",
     filters: [],
     transactionTypes: [],
     statusTypes: [],

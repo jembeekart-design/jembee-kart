@@ -238,19 +238,13 @@ VerticalVideoFeed() {
       )}
 
       {/* COMMENT DRAWER */}
-
-      <CommentDrawer
-        open={commentOpen}
-
-        onClose={() =>
-          setCommentOpen(
-            false
-          )
-        }
-        onCommentAdded={() => {
-            console.log("Comment added! (TODO: Update comment count in state)");
-        }}
-      />
+      {selectedVideo && (
+        <CommentDrawer
+            open={commentOpen}
+            onClose={() => { setCommentOpen(false); setSelectedVideo(""); }}
+            videoId={selectedVideo}
+        />
+      )}
 
       {/* SHARE DRAWER */}
 

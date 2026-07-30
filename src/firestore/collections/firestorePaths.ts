@@ -127,6 +127,22 @@ export const FIRESTORE_PATHS = {
   SEO: "config/seo",
 
   // ==========================================
+  // ADMIN CHAT COLLECTIONS
+  // ==========================================
+  ADMIN_CHAT: {
+    CHATS: "chats",
+    MESSAGES: "messages", // subcollection
+    CHAT_PARTICIPANTS: "chatParticipants",
+    CALL_SESSIONS: "callSessions",
+    CALL_INVITATIONS: "callInvitations",
+    USER_PRESENCE: "userPresence",
+    TYPING_STATUS: "typingStatus",
+    UNREAD_COUNTS: "unreadCounts",
+    CHAT_SETTINGS: "chatSettings",
+    ADMIN_SETTINGS: "admin_settings/chat"
+  },
+
+  // ==========================================
   // WATCH & EARN MODULE
   // ==========================================
   WATCH_EARN: {
