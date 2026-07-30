@@ -101,6 +101,12 @@ export default function AdminChatPage() {
     await sendMessage(selectedChatId, uid, "Admin", msgText);
   }
 
+  async function handleCall(type: "voice" | "video") {
+    const uid = auth.currentUser?.uid;
+    if (!selectedChatId || !uid) return;
+    await createCall(uid, selectedChatId, type);
+  }
+
   function handleInputChange(e: React.ChangeEvent<HTMLInputElement>) {
     setMessage(e.target.value);
     if (selectedChatId && auth.currentUser?.uid) {
