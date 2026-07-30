@@ -12,8 +12,9 @@ import {
   doc
 } from "firebase/firestore";
 import { auth, db } from "@/firebase/config";
-import { sendMessage, updatePresence, setTyping, ChatMessage } from "@/firestore/services/chatService";
+import { sendMessage, updatePresence, setTyping } from "@/firestore/services/chatService";
 import { createCall } from "@/firestore/services/callService";
+import { FIRESTORE_PATHS } from "@/firestore/collections/firestorePaths";
 
 import {
   MessageSquare,
@@ -64,7 +65,7 @@ export default function AdminChatPage() {
 
   // Load Chats
   useEffect(() => {
-    const q = query(collection(db, "admin_chats"), orderBy("lastMessageAt", "desc"));
+    const q = query(collection(db, FIRESTORE_PATHS.ADMIN_CHAT.CHATS), orderBy("lastMessageAt", "desc"));
     const unsubscribe = onSnapshot(q, (snapshot) => {
       const data = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() })) as Chat[];
       setChats(data);
@@ -76,7 +77,7 @@ export default function AdminChatPage() {
   // Load Messages
   useEffect(() => {
     if (!selectedChatId) return;
-    const q = query(collection(db, "admin_chats", selectedChatId, "messages"), orderBy("createdAt", "asc"));
+    const q = query(collection(db, FIRESTORE_PATHS.ADMIN_CHAT.CHATS, selectedChatId, FIRESTORE_PATHS.ADMIN_CHAT.MESSAGES), orderBy("createdAt", "asc"));
     const unsubscribe = onSnapshot(q, (snapshot) => {
       const data = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() })) as Message[];
       setMessages(data);
