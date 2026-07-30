@@ -10,12 +10,6 @@ function CheckoutContent() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const productId = searchParams.get("productId");
-  useEffect(() => {
-  alert(
-    "FULL URL = " + window.location.href +
-    "\n\nproductId = " + productId
-  );
-}, [productId]);
 
   const [loading, setLoading] = useState(false);
   const [dataLoading, setDataLoading] = useState(true);
@@ -39,84 +33,58 @@ function CheckoutContent() {
   }, [productId]);
 
   const handlePlaceOrder = async () => {
-  const user = auth.currentUser;
+    const user = auth.currentUser;
 
-  if (!user || !product || !address) {
-  alert(`
-USER = ${!!user}
-PRODUCT = ${!!product}
-ADDRESS = ${!!address}
+    if (!user || !product || !address) {
+      console.error("Missing order data");
+      return;
+    }
 
-productId = ${productId}
-`);
-  return;
-}
+    setLoading(true);
 
-  setLoading(true);
+    try {
+      const orderNumber = `JK-${Date.now()}`;
+      
+      const price = product.price || 0;
+      const discountPrice = product.discountPrice || price;
+      const discount = price - discountPrice;
 
-  try {
-    const orderNumber = `JK-${Date.now()}`;
-    alert(
-  "product.image = " + product.image +
-  "\nproduct.images = " + JSON.stringify(product.images) +
-  "\nproduct.thumbnail = " + product.thumbnail
-);
+      await addDoc(collection(db, "orders"), {
+        orderNumber,
+        userId: user.uid,
+        customerName: address.fullName,
+        customerPhone: address.mobile,
+        shippingAddress: address,
+        productId: product.id,
+        productTitle: product.title,
+        productImage: product.images?.[0] || product.image || "",
+        productPrice: price,
+        productDiscountPrice: discountPrice,
+        quantity: 1,
+        subtotal: price,
+        discount: discount,
+        finalAmount: discountPrice,
+        paymentMethod: "cod",
+        status: "placed",
+        referralEligible: true,
+        cashbackProcessed: false,
+        commissionProcessed: false,
+        rewardProcessed: false,
+        exchangeEligible: true,
+        exchangeRequested: false,
+        placedAt: serverTimestamp(),
+        createdAt: serverTimestamp(),
+        sellerId: product.sellerId || "default_seller",
+        sellerName: product.sellerName || "JembeeKart Official",
+      });
 
-    await addDoc(collection(db, "orders"), {
-      orderNumber,
-
-      userId: user.uid,
-
-      customerName: address.fullName,
-      customerPhone: address.mobile,
-
-      shippingAddress: address,
-
-      productId: product.id,
-      productTitle: product.title,
-      productImage:
-  product.images?.[0] ||
-  product.image ||
-  "",
-
-      productPrice: 1599,
-      productDiscountPrice: 1099,
-
-      quantity: 1,
-
-      subtotal: 1599,
-      discount: 500,
-      finalAmount: 1099,
-
-      paymentMethod: "cod",
-
-      status: "placed",
-
-      referralEligible: true,
-      cashbackProcessed: false,
-      commissionProcessed: false,
-      rewardProcessed: false,
-
-      exchangeEligible: true,
-      exchangeRequested: false,
-
-      placedAt: serverTimestamp(),
-      createdAt: serverTimestamp(),
-
-      sellerId: "default_seller",
-      sellerName: "JembeeKart Official",
-    });
-
-    router.push("/payment-success");
-  } catch (error: any) {
-  alert(
-    "CODE = " + error.code +
-    "\n\nMESSAGE = " + error.message
-  );
-} finally {
-    setLoading(false);
-  }
-};
+      router.push("/payment-success");
+    } catch (error: any) {
+      console.error("Order placement failed:", error);
+    } finally {
+      setLoading(false);
+    }
+  };
   if (dataLoading) return <div className="flex min-h-screen items-center justify-center"><Loader2 className="animate-spin text-[var(--primary-color)]" /></div>;
 
   return (
@@ -193,13 +161,13 @@ productId = ${productId}
       <div className="bg-[var(--card-color)] p-5 rounded-3xl border border-[var(--border-color)] shadow-sm mb-4">
         <h2 className="font-bold text-sm mb-4 text-[var(--text-color)]">Price Details</h2>
         <div className="space-y-2.5 text-xs">
-            <div className="flex justify-between text-[var(--muted-text-color)]"><span>MRP</span><span>₹1499</span></div>
-            <div className="flex justify-between text-[var(--success-color)] font-bold"><span>Discount</span><span>- ₹400</span></div>
+            <div className="flex justify-between text-[var(--muted-text-color)]"><span>MRP</span><span>₹{product?.price || 0}</span></div>
+            <div className="flex justify-between text-[var(--success-color)] font-bold"><span>Discount</span><span>- ₹{(product?.price || 0) - (product?.discountPrice || 0)}</span></div>
             <div className="flex justify-between text-[var(--muted-text-color)]"><span>Delivery Charges</span><span className="text-[var(--success-color)] font-bold">FREE</span></div>
             <div className="border-t border-dashed my-2"></div>
-            <div className="flex justify-between text-base font-extrabold text-[var(--text-color)] pt-1"><span>Total Payable</span><span>₹1099</span></div>
+            <div className="flex justify-between text-base font-extrabold text-[var(--text-color)] pt-1"><span>Total Payable</span><span>₹{product?.discountPrice || 0}</span></div>
         </div>
-        <div className="mt-4 bg-[var(--success-color)] text-[var(--success-color)] text-[10px] font-bold p-2.5 rounded-xl text-center">You save ₹400 on this order</div>
+        <div className="mt-4 bg-[var(--success-color)] text-[var(--success-color)] text-[10px] font-bold p-2.5 rounded-xl text-center">You save ₹{(product?.price || 0) - (product?.discountPrice || 0)} on this order</div>
       </div>
 
       {/* EXPECTED DELIVERY */}
