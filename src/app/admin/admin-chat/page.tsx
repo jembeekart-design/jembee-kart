@@ -9,11 +9,10 @@ import {
   onSnapshot,
   query,
   orderBy,
-  addDoc,
-  serverTimestamp,
   doc
 } from "firebase/firestore";
-import { db } from "@/firebase/config";
+import { auth, db } from "@/firebase/config";
+import { sendMessage, updatePresence, setTyping } from "@/firestore/services/chatService";
 
 import {
   MessageSquare,
@@ -51,21 +50,30 @@ export default function AdminChatPage() {
   const [messages, setMessages] = useState<Message[]>([]);
   const [selectedChatId, setSelectedChatId] = useState<string | null>(null);
 
+  // Presence
+  useEffect(() => {
+    const uid = auth.currentUser?.uid;
+    if (uid) {
+      updatePresence(uid, true);
+      return () => updatePresence(uid, false);
+    }
+  }, []);
+
   // Load Chats
   useEffect(() => {
-    const q = query(collection(db, "chats"), orderBy("lastMessageAt", "desc"));
+    const q = query(collection(db, "admin_chats"), orderBy("lastMessageAt", "desc"));
     const unsubscribe = onSnapshot(q, (snapshot) => {
       const data = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() })) as Chat[];
       setChats(data);
       if (!selectedChatId && data.length > 0) setSelectedChatId(data[0].id);
     });
     return () => unsubscribe();
-  }, []);
+  }, [selectedChatId]);
 
   // Load Messages
   useEffect(() => {
     if (!selectedChatId) return;
-    const q = query(collection(db, "chats", selectedChatId, "messages"), orderBy("createdAt", "asc"));
+    const q = query(collection(db, "admin_chats", selectedChatId, "messages"), orderBy("createdAt", "asc"));
     const unsubscribe = onSnapshot(q, (snapshot) => {
       const data = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() })) as Message[];
       setMessages(data);
@@ -73,22 +81,23 @@ export default function AdminChatPage() {
     return () => unsubscribe();
   }, [selectedChatId]);
 
-  async function sendMessage() {
+  async function handleSendMessage() {
     if (!message.trim() || !selectedChatId) return;
     const msgText = message;
     setMessage("");
-    await addDoc(collection(db, "chats", selectedChatId, "messages"), {
-      sender: "admin",
-      text: msgText,
-      createdAt: serverTimestamp(),
-    });
+    await sendMessage(selectedChatId, "admin", msgText);
+  }
+
+  function handleInputChange(e: React.ChangeEvent<HTMLInputElement>) {
+    setMessage(e.target.value);
+    if (selectedChatId && auth.currentUser?.uid) {
+      setTyping(selectedChatId, auth.currentUser.uid, true);
+    }
   }
 
   function handleKeyPress(e: React.KeyboardEvent) {
-    if (e.key === "Enter") sendMessage();
+    if (e.key === "Enter") handleSendMessage();
   }
-
-  // ... (existing effects)
 
   return (
     <main className="min-h-screen bg-[var(--primary-color)] p-4 text-[var(--button-text-color)]">
@@ -141,7 +150,7 @@ export default function AdminChatPage() {
 
         {/* CHAT AREA */}
         <div className="rounded-[30px] border border-[var(--border-color)]/10 bg-[var(--primary-color)] lg:col-span-2">
-          {/* ... (rest of messages rendering) */}
+          {/* MESSAGES */}
           <div className="h-[500px] space-y-4 overflow-y-auto p-5">
             {messages.map((msg) => (
               <div key={msg.id} className={`flex ${msg.sender === "admin" ? "justify-end" : "justify-start"}`}>
@@ -151,8 +160,50 @@ export default function AdminChatPage() {
               </div>
             ))}
           </div>
-          {/* ... (input) */}
+          {/* INPUT */}
+          <div className="border-t border-[var(--border-color)]/10 p-5">
+            <div className="flex items-center gap-3 rounded-2xl bg-[var(--card-color)]/30 p-3">
+              <input
+                type="text"
+                placeholder="Type message..."
+                value={message}
+                onChange={handleInputChange}
+                onKeyDown={handleKeyPress}
+                className="w-full bg-transparent outline-none placeholder:text-[var(--muted-text-color)]"
+              />
+              <button 
+                onClick={handleSendMessage}
+                className="flex h-12 w-12 items-center justify-center rounded-2xl bg-[var(--primary-color)] text-[var(--text-color)]"
+              >
+                <Send size={20} />
+              </button>
+            </div>
+          </div>
         </div>
+      </div>
+
+      {/* STATS */}
+      <div className="mt-6 grid grid-cols-2 gap-4 md:grid-cols-4">
+        <StatCard
+          title="Online Users"
+          value="124"
+          icon={<Users size={22} />}
+        />
+        <StatCard
+          title="Messages"
+          value="12K"
+          icon={<MessageSquare size={22} />}
+        />
+        <StatCard
+          title="Support Staff"
+          value="18"
+          icon={<Shield size={22} />}
+        />
+        <StatCard
+          title="Realtime"
+          value="Active"
+          icon={<Bell size={22} />}
+        />
       </div>
     </main>
   );
