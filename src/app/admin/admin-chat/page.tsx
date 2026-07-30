@@ -65,14 +65,21 @@ export default function AdminChatPage() {
 
   // Load Chats
   useEffect(() => {
-    const q = query(collection(db, FIRESTORE_PATHS.ADMIN_CHAT.CHATS), orderBy("lastMessageAt", "desc"));
-    const unsubscribe = onSnapshot(q, (snapshot) => {
-      const data = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() })) as Chat[];
-      setChats(data);
-      if (!selectedChatId && data.length > 0) setSelectedChatId(data[0].id);
-    });
-    return () => unsubscribe();
-  }, [selectedChatId]);
+    async function initAndLoad() {
+      await initializeAdminChat();
+      const q = query(collection(db, FIRESTORE_PATHS.ADMIN_CHAT.CHATS), orderBy("lastMessageAt", "desc"));
+      return onSnapshot(q, (snapshot) => {
+        const data = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() })) as Chat[];
+        setChats(data);
+        if (!selectedChatId && data.length > 0) setSelectedChatId(data[0].id);
+      });
+    }
+
+    const unsubPromise = initAndLoad();
+    return () => {
+      unsubPromise.then(unsub => unsub && unsub());
+    };
+  }, []);
 
   // Load Messages
   useEffect(() => {
@@ -118,6 +125,14 @@ export default function AdminChatPage() {
               Realtime admin communication system
             </p>
           </div>
+        </div>
+        <div className="flex gap-3">
+          <button className="flex h-11 w-11 items-center justify-center rounded-2xl bg-[var(--card-color)]/30" onClick={() => handleCall("voice")}>
+            <Phone size={18} />
+          </button>
+          <button className="flex h-11 w-11 items-center justify-center rounded-2xl bg-[var(--card-color)]/30" onClick={() => handleCall("video")}>
+            <Video size={18} />
+          </button>
         </div>
       </div>
 
