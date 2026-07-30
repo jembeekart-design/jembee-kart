@@ -69,6 +69,8 @@ export function AdminConfigProvider({ children }: { children: ReactNode }) {
             const adsManagerSnap = await getDoc(adsManagerRef);
             const analyticsSnap = await getDoc(analyticsRef);
             const announcementSnap = await getDoc(announcementRef);
+            const watchEarnSnap = await getDoc(watchEarnRef);
+            const commentModerationSnap = await getDoc(commentModerationRef);
             const featureFlagsSnap = await getDoc(featureFlagsRef);
             const walletSnap = await getDoc(walletRef);
             const homepageSnap = await getDoc(homepageRef);
@@ -97,6 +99,12 @@ export function AdminConfigProvider({ children }: { children: ReactNode }) {
               announcement: announcementSnap.exists()
                 ? announcementSnap.data()
                 : DEFAULT_ADMIN_CONFIG.announcement,
+              watchEarn: watchEarnSnap.exists()
+                ? watchEarnSnap.data()
+                : DEFAULT_ADMIN_CONFIG.watchEarn,
+              commentModeration: commentModerationSnap.exists()
+                ? commentModerationSnap.data()
+                : DEFAULT_ADMIN_CONFIG.commentModeration,
               featureFlags: featureFlagsSnap.exists()
                 ? featureFlagsSnap.data()
                 : DEFAULT_ADMIN_CONFIG.featureFlags,

@@ -58,6 +58,38 @@ export const DEFAULT_ADMIN_CONFIG: AdminConfig = {
     defaultMessage: "Welcome to JembeeKart!",
   },
 
+  watchEarn: {
+    videoWatchSeconds: 30,
+    rewardProgressSeconds: 5,
+    minimumWatchPercent: 80,
+    allowSkip: true,
+    rewardDelay: 3,
+    enableUploadButton: true,
+    uploadButtonText: "Upload Video",
+    uploadButtonIcon: "upload",
+    uploadButtonPosition: "bottom-right",
+    allowVideoUpload: true,
+    allowedUserRoles: ["admin", "creator"],
+    requireAdminApproval: true,
+    autoPublish: false,
+    maxVideoDuration: 60,
+    maxFileSize: 50,
+    allowedVideoFormats: ["mp4", "mov"],
+  },
+
+  commentModeration: {
+    blockedWords: ["abusive", "hate", "spam"],
+    regexPatterns: [],
+    autoReject: true,
+    caseSensitive: false,
+    maxLength: 500,
+  },
+
+  watchEarnStats: {
+    totalCoins: 0,
+    videosWatched: 0,
+  },
+  
   payment: {
     codEnabled: false,
     onlinePaymentEnabled: false,
