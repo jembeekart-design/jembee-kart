@@ -55,7 +55,9 @@ export default function AdminChatPage() {
     const uid = auth.currentUser?.uid;
     if (uid) {
       updatePresence(uid, true);
-      return () => updatePresence(uid, false);
+      return () => {
+        updatePresence(uid, false);
+      };
     }
   }, []);
 
