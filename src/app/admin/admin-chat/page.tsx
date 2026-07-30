@@ -37,7 +37,7 @@ const chats = [
   }
 ];
 
-const messages = [
+const initialMessages = [
   {
     sender: "admin",
     text: "Hello 👋 How can I help you?"
@@ -57,6 +57,19 @@ export default function AdminChatPage() {
   const { adminChat } = config;
   const [message, setMessage] =
     useState("");
+  const [messages, setMessages] = useState(initialMessages);
+
+  function sendMessage() {
+    if (!message.trim()) return;
+    setMessages([...messages, { sender: "admin", text: message }]);
+    setMessage("");
+  }
+
+  function handleKeyPress(e: React.KeyboardEvent) {
+    if (e.key === "Enter") {
+      sendMessage();
+    }
+  }
 
   return (
 
@@ -312,20 +325,24 @@ export default function AdminChatPage() {
               </button>
 
               <input
-                type="text"
-                placeholder="Type message..."
-                value={message}
-                onChange={(e) =>
-                  setMessage(
-                    e.target.value
-                  )
-                }
-                className="w-full bg-transparent outline-none placeholder:text-[var(--muted-text-color)]"
+              type="text"
+              placeholder="Type message..."
+              value={message}
+              onChange={(e) =>
+                setMessage(
+                  e.target.value
+                )
+              }
+              onKeyDown={handleKeyPress}
+              className="w-full bg-transparent outline-none placeholder:text-[var(--muted-text-color)]"
               />
 
-              <button className="flex h-12 w-12 items-center justify-center rounded-2xl bg-[var(--primary-color)] text-[var(--text-color)]">
+              <button 
+              onClick={sendMessage}
+              className="flex h-12 w-12 items-center justify-center rounded-2xl bg-[var(--primary-color)] text-[var(--text-color)]"
+              >
 
-                <Send size={20} />
+              <Send size={20} />
 
               </button>
 
