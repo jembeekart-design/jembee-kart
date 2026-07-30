@@ -1,0 +1,344 @@
+src/firestore/businessRules/service.ts:276:      case "test":
+src/app/page.tsx:155:  ] = useState("latest");
+src/app/page.tsx:1039:                    <option value="latest">
+src/app/page.tsx:1040:                      Latest
+src/app/admin/ai-banner/page.tsx:124:          placeholder="Example: Create modern ecommerce fashion sale banner with neon effects..."
+src/app/admin/ai-product-generator/page.tsx:58:      /* FREE AI MOCK GENERATOR */
+src/app/admin/ai-product-generator/page.tsx:256:      {/* PREVIEW */}
+src/app/admin/ai-product-generator/page.tsx:265:            AI Preview
+src/app/admin/appearance/page.tsx:259:      {/* LIVE PREVIEW */}
+src/app/admin/appearance/page.tsx:272:          Live Preview
+src/app/admin/appearance/page.tsx:276:          Theme preview section
+src/app/admin/backups/page.tsx:52:        new Date().toLocaleDateString(),
+src/app/admin/backups/page.tsx:180:            Generate latest database backup
+src/app/admin/banner-manager/page.tsx:135:          title="Preview"
+src/app/admin/banner-manager/page.tsx:219:      {/* LIVE PREVIEW */}
+src/app/admin/banner-manager/page.tsx:231:              Live Preview
+src/app/admin/banner-manager/page.tsx:267:            alt="Preview"
+src/app/admin/blogs/page.tsx:262:      {/* PREVIEW */}
+src/app/admin/cashfree/page.tsx:27:  sandboxMode: boolean;
+src/app/admin/cashfree/page.tsx:40:      sandboxMode: true,
+src/app/admin/cashfree/page.tsx:214:          title="Sandbox Mode"
+src/app/admin/cashfree/page.tsx:215:          description="Enable testing environment"
+src/app/admin/cashfree/page.tsx:220:            settings.sandboxMode
+src/app/admin/cashfree/page.tsx:224:              "sandboxMode",
+src/app/admin/cashfree/page.tsx:225:              !settings.sandboxMode
+src/app/admin/cashfree/page.tsx:343:              settings.sandboxMode
+src/app/admin/cashfree/page.tsx:344:                ? "Sandbox"
+src/app/admin/commissions/page.tsx:178:      {/* PREVIEW */}
+src/app/admin/coupons/page.tsx:398:                {/* LIVE PREVIEW */}
+src/app/admin/delivery-tracking/page.tsx:92:  async function updateStatus(
+src/app/admin/delivery-tracking/page.tsx:249:                      updateStatus(
+src/app/admin/delivery-tracking/page.tsx:263:                      updateStatus(
+src/app/admin/delivery-tracking/page.tsx:277:                      updateStatus(
+src/app/admin/delivery-tracking/page.tsx:291:                      updateStatus(
+src/app/admin/faq/page.tsx:215:      {/* PREVIEW */}
+src/app/admin/footer-builder/page.tsx:415:      {/* PREVIEW */}
+src/app/admin/footer-builder/page.tsx:420:          Live Footer Preview
+src/app/admin/homepage-banners/page.tsx:124:    mobilePreview,
+src/app/admin/homepage-banners/page.tsx:125:    setMobilePreview
+src/app/admin/homepage-banners/page.tsx:599:              setMobilePreview(
+src/app/admin/homepage-banners/page.tsx:600:                !mobilePreview
+src/app/admin/homepage-banners/page.tsx:605:            {mobilePreview ? (
+src/app/admin/homepage-banners/page.tsx:611:            {mobilePreview
+src/app/admin/homepage-banners/page.tsx:612:              ? "Mobile Preview"
+src/app/admin/homepage-banners/page.tsx:613:              : "Desktop Preview"}
+src/app/admin/homepage-banners/page.tsx:1004:                      {/* LIVE PREVIEW */}
+src/app/admin/homepage-banners/page.tsx:1009:                          Live Preview
+src/app/admin/homepage-banners/page.tsx:1014:                            mobilePreview
+src/app/admin/homepage/page.tsx:439:      {/* LIVE PREVIEW */}
+src/app/admin/homepage/page.tsx:444:          Live Homepage Preview
+src/app/admin/homepage/page.tsx:448:          Active homepage sections preview
+src/app/admin/homepage/page.tsx:454:            <PreviewBadge
+src/app/admin/homepage/page.tsx:460:            <PreviewBadge
+src/app/admin/homepage/page.tsx:466:            <PreviewBadge
+src/app/admin/homepage/page.tsx:472:            <PreviewBadge
+src/app/admin/homepage/page.tsx:478:            <PreviewBadge
+src/app/admin/homepage/page.tsx:484:            <PreviewBadge
+src/app/admin/homepage/page.tsx:490:            <PreviewBadge
+src/app/admin/homepage/page.tsx:496:            <PreviewBadge
+src/app/admin/homepage/page.tsx:575:function PreviewBadge({
+src/app/admin/kyc-verification/page.tsx:96:  async function updateStatus(
+src/app/admin/kyc-verification/page.tsx:269:                      updateStatus(
+src/app/admin/kyc-verification/page.tsx:285:                      updateStatus(
+src/app/admin/live-stream/page.tsx:94:  async function createStream() {
+src/app/admin/live-stream/page.tsx:153:  async function deleteStream(
+src/app/admin/live-stream/page.tsx:339:            createStream
+src/app/admin/live-stream/page.tsx:415:                    deleteStream(
+src/app/admin/media-library/page.tsx:169:              {/* PREVIEW */}
+src/app/admin/mobile-app/page.tsx:301:      {/* LIVE PREVIEW */}
+src/app/admin/mobile-app/page.tsx:331:          <PreviewBadge
+src/app/admin/mobile-app/page.tsx:339:          <PreviewBadge
+src/app/admin/mobile-app/page.tsx:347:          <PreviewBadge
+src/app/admin/mobile-app/page.tsx:473:function PreviewBadge({
+src/app/admin/notifications/page.tsx:399:                {/* LIVE PREVIEW */}
+src/app/admin/orders/page.tsx:73:  async function updateStatus(id: string, status: string) {
+src/app/admin/orders/page.tsx:131:      console.error("Pipeline breakdown exception caught inside updateStatus stream:", error);
+src/app/admin/orders/page.tsx:228:                    onClick={() => updateStatus(order.id, "pending")}
+src/app/admin/orders/page.tsx:238:                    onClick={() => updateStatus(order.id, "shipped")}
+src/app/admin/orders/page.tsx:248:                    onClick={() => updateStatus(order.id, "delivered")}
+src/app/admin/page-builder/page.tsx:383:      {/* LIVE PREVIEW */}
+src/app/admin/pages/page.tsx:268:      {/* PREVIEW */}
+src/app/admin/payments/page.tsx:277:      {/* PREVIEW */}
+src/app/admin/payments/page.tsx:282:          Payment Preview
+src/app/admin/payouts/page.tsx:51:  function updateStatus(
+src/app/admin/payouts/page.tsx:199:                    updateStatus(
+src/app/admin/payouts/page.tsx:215:                    updateStatus(
+src/app/admin/payouts/page.tsx:248:      {/* PREVIEW */}
+src/app/admin/payouts/page.tsx:257:          Affiliate payment system preview
+src/app/admin/popup-manager/page.tsx:256:      {/* LIVE PREVIEW */}
+src/app/admin/popup-manager/page.tsx:268:              Popup Preview
+src/app/admin/referrals/page.tsx:228:      {/* PREVIEW */}
+src/app/admin/refund-requests/page.tsx:86:  async function updateStatus(
+src/app/admin/refund-requests/page.tsx:267:                      updateStatus(
+src/app/admin/refund-requests/page.tsx:283:                      updateStatus(
+src/app/admin/reviews-ratings/page.tsx:84:  async function updateStatus(
+src/app/admin/reviews-ratings/page.tsx:274:                      updateStatus(
+src/app/admin/reviews-ratings/page.tsx:290:                      updateStatus(
+src/app/admin/reviews/page.tsx:365:                {/* LIVE PREVIEW */}
+src/app/admin/roles/page.tsx:207:      {/* PREVIEW */}
+src/app/admin/security/page.tsx:217:      {/* PREVIEW */}
+src/app/admin/seo-ai/page.tsx:230:      {/* PREVIEW */}
+src/app/admin/seo-ai/page.tsx:235:          Google Preview
+src/app/admin/seo-ai/page.tsx:243:              "SEO Title Preview"}
+src/app/admin/seo-ai/page.tsx:256:              "SEO description preview will appear here..."}
+src/app/admin/seo/page.tsx:213:      {/* PREVIEW */}
+src/app/admin/seo/page.tsx:218:          Google Search Preview
+src/app/admin/settings/page.tsx:375:        {/* LIVE PREVIEW */}
+src/app/admin/settings/page.tsx:384:            Live Settings Preview
+src/app/admin/sms/page.tsx:32:  testPhone: string;
+src/app/admin/sms/page.tsx:46:      testPhone: ""
+src/app/admin/sms/page.tsx:135:  function sendTestSMS() {
+src/app/admin/sms/page.tsx:138:      !settings.testPhone
+src/app/admin/sms/page.tsx:142:        "Enter test phone number"
+src/app/admin/sms/page.tsx:150:      `Test SMS sent to ${settings.testPhone}`
+src/app/admin/sms/page.tsx:258:          title="Test Phone"
+src/app/admin/sms/page.tsx:260:            settings.testPhone
+src/app/admin/sms/page.tsx:264:              "testPhone",
+src/app/admin/sms/page.tsx:346:      {/* TEST SECTION */}
+src/app/admin/sms/page.tsx:351:          Test SMS
+src/app/admin/sms/page.tsx:355:          Send a test message to verify SMS setup
+src/app/admin/sms/page.tsx:359:          onClick={sendTestSMS}
+src/app/admin/sms/page.tsx:365:          Send Test SMS
+src/app/admin/subadmins/page.tsx:259:      {/* PREVIEW */}
+src/app/admin/support-tickets/page.tsx:85:  async function updateStatus(
+src/app/admin/support-tickets/page.tsx:268:                      updateStatus(
+src/app/admin/support-tickets/page.tsx:282:                      updateStatus(
+src/app/admin/support-tickets/page.tsx:296:                      updateStatus(
+src/app/admin/support/page.tsx:158:      {/* PREVIEW */}
+src/app/admin/support/page.tsx:163:          Support Preview
+src/app/admin/template-builder/page.tsx:179:              {/* PREVIEW */}
+src/app/admin/theme-store/page.tsx:145:              {/* PREVIEW */}
+src/app/admin/tickets/page.tsx:46:  function updateStatus(
+src/app/admin/tickets/page.tsx:184:                      updateStatus(
+src/app/admin/tickets/page.tsx:200:                      updateStatus(
+src/app/admin/tickets/page.tsx:225:      {/* PREVIEW */}
+src/app/admin/withdrawal-requests/page.tsx:85:  async function updateStatus(
+src/app/admin/withdrawal-requests/page.tsx:260:                      updateStatus(
+src/app/admin/withdrawal-requests/page.tsx:276:                      updateStatus(
+src/app/admin/withdrawals/page.tsx:46:  function updateStatus(
+src/app/admin/withdrawals/page.tsx:192:                    updateStatus(
+src/app/admin/withdrawals/page.tsx:208:                    updateStatus(
+src/app/admin/withdrawals/page.tsx:231:      {/* PREVIEW */}
+src/app/admin/withdrawals/page.tsx:240:          Affiliate payout system preview
+src/app/product/[id]/page.tsx:124:    return date.toDateString();
+src/app/mlm/network/page.tsx:308:                          Joined: {member.createdAt ? new Date(member.createdAt).toLocaleDateString() : "N/A"}
+src/app/mlm/orders/page.tsx:356:                        Latest order update
+src/app/mlm/wallet/history/page.tsx:136:    return timestamp.toDate().toLocaleDateString("en-IN", {
+src/app/mlm/withdraw/page.tsx:275:                placeholder="example@upi"
+src/app/mlm/watch-earn/upload/page.tsx:70:            "demo-user-id",
+src/app/debug-auth/page.tsx:77:  async function testGoogleLogin() {
+src/app/debug-auth/page.tsx:120:  async function testLogout() {
+src/app/debug-auth/page.tsx:144:          onClick={testGoogleLogin}
+src/app/debug-auth/page.tsx:147:          Test Google Login
+src/app/debug-auth/page.tsx:151:          onClick={testLogout}
+src/app/api/mission-control/deployments/route.ts:9:      commit: "latest",
+src/app/api/mission-control/run/route.ts:6:import { previewThemeFix } from "@/mission-control/autofix/themeAutoFix";
+src/app/api/mission-control/run/route.ts:21:      previewThemeFix(),
+src/app/api/mission-control/autofix/route.ts:2:import { previewAstFix } from "@/mission-control/autofix/astAutoFix";
+src/app/api/mission-control/autofix/route.ts:6:    const result = await previewAstFix();
+src/app/orders/[id]/page.tsx:52:                <p className="opacity-80 text-[10px] font-bold uppercase">Placed: {order?.placedAt?.seconds ? new Date(order.placedAt.seconds * 1000).toLocaleDateString() : 'N/A'}</p>
+src/app/orders/page.tsx:99:                    <p className="text-[9px] text-[var(--muted-text-color)] font-bold">{order?.placedAt?.seconds ? new Date(order.placedAt.seconds * 1000).toLocaleDateString() : 'N/A'}</p>
+src/lib/mlm/createKYCRequest.ts:52:    if (!/^\d{12}$/.test(data.aadhaarNumber)) {
+src/lib/mlm/createKYCRequest.ts:60:      !/^[A-Z]{5}[0-9]{4}[A-Z]{1}$/i.test(
+src/lib/mlm/orders/checkRankUpgrade.ts:20:    Object.setPrototypeOf(this, AppError.prototype);
+src/lib/mlm/orders/completeOrderAndDistributeCommission.ts:102:       2. SECONDARY SUBSYSTEM: MLM LEVEL COMMISSION (SANDBOXED)
+src/lib/mlm/orders/completeOrderAndDistributeCommission.ts:125:       3. SECONDARY SUBSYSTEM: WATCH REWARD LIFECYCLE (SANDBOXED)
+src/lib/mlm/orders/createRankReward.ts:24:    Object.setPrototypeOf(this, AppError.prototype);
+src/lib/mlm/orders/updateTeamVolume.ts:22:    Object.setPrototypeOf(this, AppError.prototype);
+src/lib/mlm/createPayoutRequest.ts:27:    Object.setPrototypeOf(this, AppError.prototype);
+src/lib/mlm/createReferralBonus.ts:28:    Object.setPrototypeOf(this, AppError.prototype);
+src/lib/mlm/updateRank.ts:23:    Object.setPrototypeOf(this, AppError.prototype);
+src/lib/mlm/withdrawals/requestWithdraw.ts:29:    if (!UPI_REGEX.test(upi)) throw new Error("INVALID_UPI_FORMAT");
+src/lib/admin-config/firestore.ts:71: * Example:
+src/lib/admin-config/mlmDefaults.ts:42:      subtitle: "Latest Updates",
+src/lib/governance/ai-fix/apply.ts:3:import type { PreviewResult } from "./preview";
+src/lib/governance/ai-fix/apply.ts:20:  preview: PreviewResult
+src/lib/governance/ai-fix/apply.ts:22:  if (!preview.autoApplicable) {
+src/lib/governance/ai-fix/apply.ts:27:      file: preview.file,
+src/lib/governance/ai-fix/apply.ts:29:      lineStart: preview.lineStart,
+src/lib/governance/ai-fix/apply.ts:30:      lineEnd: preview.lineEnd,
+src/lib/governance/ai-fix/apply.ts:39:    `--- ${preview.file}`,
+src/lib/governance/ai-fix/apply.ts:40:    `+++ ${preview.file}`,
+src/lib/governance/ai-fix/apply.ts:41:    `@@ Line ${preview.lineStart} @@`,
+src/lib/governance/ai-fix/apply.ts:42:    preview.oldCode ?? "",
+src/lib/governance/ai-fix/apply.ts:44:    preview.newCode,
+src/lib/governance/ai-fix/apply.ts:52:    file: preview.file,
+src/lib/governance/ai-fix/apply.ts:54:    lineStart: preview.lineStart,
+src/lib/governance/ai-fix/apply.ts:55:    lineEnd: preview.lineEnd,
+src/lib/governance/ai-fix/preview.ts:3:export interface PreviewResult {
+src/lib/governance/ai-fix/preview.ts:26:export async function generatePreview(
+src/lib/governance/ai-fix/preview.ts:28:): Promise<PreviewResult> {
+src/components/admin/CloudinaryUploader.tsx:117:      {/* PREVIEW BOX */}
+src/components/admin/CloudinaryUploader.tsx:121:        {/* IMAGE PREVIEW */}
+src/components/admin/CloudinaryUploader.tsx:133:        {/* VIDEO PREVIEW */}
+src/components/admin/theme-builder/BorderRadiusSettings.tsx:122:          Button Preview
+src/components/admin/theme-builder/BorderRadiusSettings.tsx:136:          Card Preview
+src/components/admin/theme-builder/BorderRadiusSettings.tsx:141:          placeholder="Input Preview"
+src/components/admin/theme-builder/ButtonSettings.tsx:250:          Preview Button
+src/components/admin/theme-builder/ShadowSettings.tsx:183:            Shadow Preview
+src/components/admin/theme-builder/ShadowSettings.tsx:187:            Live preview of the
+src/components/admin/theme-builder/ShadowSettings.tsx:200:            Preview Button
+src/components/admin/theme-builder/ThemeBuilderPage.tsx:7:import ThemePreview from "./ThemePreview";
+src/components/admin/theme-builder/ThemeBuilderPage.tsx:41:         <ThemePreview theme={localTheme} />
+src/components/admin/theme-builder/ThemePreview.tsx:89:export default function ThemePreview({
+src/components/admin/theme-builder/ThemePreview.tsx:98:        Live Theme Preview
+src/components/admin/theme-builder/ThemePreview.tsx:156:            Dynamic Theme Preview
+src/components/admin/theme-builder/TypographySettings.tsx:172:          JembeeKart Theme Preview
+src/components/admin/theme-builder/TypographySettings.tsx:184:          This is a live typography preview.
+src/components/admin/mission-control/AIFixPreview.tsx:3:import type { PreviewResult } from "@/lib/governance/ai-fix/preview";
+src/components/admin/mission-control/AIFixPreview.tsx:6:  preview: PreviewResult | null;
+src/components/admin/mission-control/AIFixPreview.tsx:10:export default function AIFixPreview({
+src/components/admin/mission-control/AIFixPreview.tsx:11:  preview,
+src/components/admin/mission-control/AIFixPreview.tsx:14:  if (!preview) return null;
+src/components/admin/mission-control/AIFixPreview.tsx:22:            <h2 className="text-lg font-bold">AI Fix Preview</h2>
+src/components/admin/mission-control/AIFixPreview.tsx:25:              {preview.file}:{preview.lineStart}
+src/components/admin/mission-control/AIFixPreview.tsx:26:              {preview.column ? `:${preview.column}` : ""}
+src/components/admin/mission-control/AIFixPreview.tsx:43:              {preview.title}
+src/components/admin/mission-control/AIFixPreview.tsx:50:              {preview.description}
+src/components/admin/mission-control/AIFixPreview.tsx:54:          {preview.matchedValue && (
+src/components/admin/mission-control/AIFixPreview.tsx:61:                <code>{preview.matchedValue}</code>
+src/components/admin/mission-control/AIFixPreview.tsx:66:          {preview.oldCode && (
+src/components/admin/mission-control/AIFixPreview.tsx:73:                <code>{preview.oldCode}</code>
+src/components/admin/mission-control/AIFixPreview.tsx:84:              <code>{preview.newCode}</code>
+src/components/admin/mission-control/AIFixPreview.tsx:88:          {preview.suggestion && (
+src/components/admin/mission-control/AIFixPreview.tsx:95:                {preview.suggestion}
+src/components/admin/mission-control/AIFixPreview.tsx:105:                {preview.autoApplicable ? "Yes" : "No"}
+src/components/admin/mission-control/AIFixPreview.tsx:108:              {preview.patchId && (
+src/components/admin/mission-control/AIFixPreview.tsx:110:                  Patch ID: {preview.patchId}
+src/components/admin/mission-control/ScannerResults.tsx:10:import { generatePreview } from "@/lib/governance/ai-fix/preview";
+src/components/admin/mission-control/ScannerResults.tsx:11:import type { PreviewResult } from "@/lib/governance/ai-fix/preview";
+src/components/admin/mission-control/ScannerResults.tsx:12:import AIFixPreview from "./AIFixPreview";
+src/components/admin/mission-control/ScannerResults.tsx:27:  const [selectedPreview, setSelectedPreview] = useState<PreviewResult | null>(null);
+src/components/admin/mission-control/ScannerResults.tsx:47:    const preview = await generatePreview(suggestion);
+src/components/admin/mission-control/ScannerResults.tsx:48:    setSelectedPreview(preview);
+src/components/admin/mission-control/ScannerResults.tsx:150:              <p className="text-[10px] uppercase text-gray-500">Preview</p>
+src/components/admin/mission-control/ScannerResults.tsx:175:                  onClick={() => setSelectedPreview({ title: item.name, description: item.message, file: item.file ?? "", lineStart: item.line ?? 1, oldCode: "", newCode: item.fixedCode ?? "", autoApplicable: false })}
+src/components/admin/mission-control/ScannerResults.tsx:178:                  <Eye size={10} /> Preview
+src/components/admin/mission-control/ScannerResults.tsx:193:      <AIFixPreview
+src/components/admin/mission-control/ScannerResults.tsx:194:        preview={selectedPreview}
+src/components/admin/mission-control/ScannerResults.tsx:195:        onClose={() => setSelectedPreview(null)}
+src/components/admin/mission-control/AutoFixCenter.tsx:34:        case "preview":
+src/components/admin/mission-control/AutoFixCenter.tsx:98:            Preview, Auto Fix and Rollback your project.
+src/components/admin/mission-control/AutoFixCenter.tsx:124:          onClick={() => handleAction("preview")}
+src/components/admin/mission-control/AutoFixCenter.tsx:130:            Preview
+src/components/admin/mission-control/AutomationCenter.tsx:98:Preview Files: ${data.theme.preview.length}
+src/components/admin/mission-control/AutomationCenter.tsx:214:          <h3 className="mb-3 text-lg font-bold">Latest Scan Result</h3>
+src/components/admin/mission-control/AutomationCenter.tsx:252:          <h3 className="mb-3 text-lg font-bold">Auto Fix Preview</h3>
+src/components/admin/mission-control/AutomationCenter.tsx:263:              <p className="text-sm text-gray-500">Preview Files</p>
+src/components/admin/mission-control/AutomationCenter.tsx:265:                {autoFixResult.theme.preview.length}
+src/components/admin/mission-control/AutomationCenter.tsx:285:            <h4 className="mb-2 font-semibold">Preview Files</h4>
+src/components/admin/mission-control/AutomationCenter.tsx:288:              {autoFixResult.theme.preview.map(
+src/components/admin/mission-control/BuildDeploymentStatus.tsx:20:    title: "Latest Build",
+src/components/admin/mission-control/EnterpriseScannerDashboard.tsx:144:          <h3 className="font-semibold">Latest Scan Result</h3>
+src/components/admin/mission-control/RecentScanResults.tsx:58:          Latest governance scan history
+src/components/admin/mission-control/ReportsCenter.tsx:121:          <h3 className="font-semibold">Latest Report</h3>
+src/components/admin/mission-control/ScannerControlPanel.tsx:80:                  Preview
+src/jembee-governance/scanners/adminControlScanner.ts:113:  /(wallet|panel|page|history|title|label|button|placeholder|icon|transaction|entry|log|cashbackwallet|rewardwallet|commissionwallet)/i.test(
+src/jembee-governance/scanners/adminControlScanner.ts:122:  /getDoc|doc\(|onSnapshot|collection|firebase|firestore/i.test(line);
+src/jembee-governance/scanners/adminControlScanner.ts:130:  /\b\d+(\.\d+)?\b/.test(line) &&
+src/jembee-governance/scanners/adminControlScanner.ts:131:  /(commission|cashback|reward|withdrawal|rank|target|limit)/i.test(line);
+src/jembee-governance/scanners/duplicateCodeScanner.ts:140:        } else if (/\.(ts|tsx|js|jsx)$/.test(fullPath)) {
+src/jembee-governance/scanners/firestoreScanner.ts:49:    /auth|currentUser|session|user\.uid|onAuthStateChanged|getAuth/i.test(content);
+src/jembee-governance/scanners/firestoreScanner.ts:60:        /auth|currentUser|session|user\.uid|onAuthStateChanged|getAuth/i.test(
+src/jembee-governance/scanners/firestoreScanner.ts:87:    const hasConfig = /adminConfig|settings|config|featureFlags|themeSettings/i.test(content);
+src/jembee-governance/scanners/hardcodedRuleScanner.ts:132:        } else if (/\.(ts|tsx|js|jsx)$/.test(fullPath)) {
+src/jembee-governance/scanners/pageConnectionScanner.ts:186:        const isPage = /page\.(tsx|ts|jsx|js)$/.test(entry);
+src/jembee-governance/scanners/securityScanner.ts:241:          } else if (/\.(ts|tsx|js|jsx)$/.test(fullPath)) {
+src/jembee-governance/scanners/themeScanner.ts:219:        } else if (/\.(ts|tsx|js|jsx)$/.test(fullPath)) {
+src/jembee-governance/scanners/walletScanner.ts:157:        negativePattern.test(content)
+src/jembee-governance/scanners/walletScanner.ts:266:        /rewardWallet\s*[:=]\s*\d+/gi.test(
+src/jembee-governance/scanners/watchEarnScanner.ts:292:        /rewardAmount\s*[:=]\s*\d+/gi.test(
+src/jembee-governance/types/scanner.types.ts:47:  includeNodeModules: boolean;
+src/jembee-governance/types/scanner.types.ts:49:  includeTests: boolean;
+src/jembee-governance/pages/GovernanceDashboard.tsx:38:interface LatestReport {
+src/jembee-governance/pages/GovernanceDashboard.tsx:62:    useState<LatestReport[]>([]);
+src/jembee-governance/pages/GovernanceDashboard.tsx:81:          latestReports,
+src/jembee-governance/pages/GovernanceDashboard.tsx:89:          governanceReportService.getLatestReports(),
+src/jembee-governance/pages/GovernanceDashboard.tsx:121:          latestReports
+src/jembee-governance/pages/GovernanceDashboard.tsx:300:      {/* LATEST REPORTS */}
+src/jembee-governance/pages/GovernanceDashboard.tsx:307:          Latest Governance Reports
+src/jembee-governance/repositories/governanceRepository.ts:110:  async updateStatus(
+src/jembee-governance/repositories/governanceRepository.ts:134:    return this.updateStatus(
+src/jembee-governance/repositories/governanceRepository.ts:143:    return this.updateStatus(
+src/jembee-governance/repositories/governanceRepository.ts:152:    return this.updateStatus(
+src/jembee-governance/services/governanceIssueService.ts:524:public async updateStatus(
+src/jembee-governance/services/governanceReportService.ts:52:   * Latest Reports
+src/jembee-governance/services/governanceReportService.ts:54:  async getLatestReports() {
+src/jembee-governance/services/governanceReportService.ts:58:        id: "latest-governance-report",
+src/jembee-governance/services/governanceStatusService.ts:266:  public updateStatus(
+src/jembee-control-tower/mock/issues.ts:3:export const mockIssues: ControlTowerIssue[] = [
+src/modules/anti-fraud/validators/selfReferralValidator.ts:37:   * Example:
+src/scripts/theme-codemod.ts:5:   JEMBEEKART THEME CODEMOD v2.0
+src/scripts/theme-codemod.ts:15:  | "preview"
+src/scripts/theme-codemod.ts:43:const PREVIEW_REPORT_FILE = path.join(
+src/scripts/theme-codemod.ts:45:  "theme-preview.json"
+src/scripts/theme-codemod.ts:190:   PREVIEW CHANGES
+src/scripts/theme-codemod.ts:193:const previewData: MatchReport[] = [];
+src/scripts/theme-codemod.ts:797:     PREVIEW / APPLY
+src/scripts/theme-codemod.ts:827:          previewData.push({
+src/scripts/theme-codemod.ts:919:    case "preview":
+src/scripts/theme-codemod.ts:924:        PREVIEW_REPORT_FILE,
+src/scripts/theme-codemod.ts:925:        JSON.stringify(previewData, null, 2)
+src/scripts/theme-codemod.ts:929:        `📄 Preview report saved`
+src/scripts/theme-codemod.ts:951:    " JembeeKart Theme Codemod "
+src/scripts/theme-codemod.ts:1001:    "🚀 JembeeKart Theme Codemod"
+src/scripts/hardcodedScanner.ts:37:  contextTrace: string;    // Captured context string for UI reporting previews
+src/scripts/hardcodedScanner.ts:114:    return UI_ENGINE_PATTERNS.some(pat => pat.test(line)) || PROGRAMMING_INFRA_PATTERNS.some(pat => pat.test(line));
+src/scripts/hardcodedScanner.ts:196:      console.error(`❌ [IO Core Sandbox Panic] Exception captured during stream reading on target: ${filePath}`);
+src/mission-control/autofix/hardcodedRuleAutoFix.ts:110:export interface RuleFixPreview {
+src/mission-control/autofix/hardcodedRuleAutoFix.ts:118:export function previewHardcodedRuleFix() {
+src/mission-control/autofix/hardcodedRuleAutoFix.ts:123:  const preview: RuleFixPreview[] = [];
+src/mission-control/autofix/hardcodedRuleAutoFix.ts:140:        return rule.pattern.test(original);
+src/mission-control/autofix/hardcodedRuleAutoFix.ts:143:      preview.push({
+src/mission-control/autofix/hardcodedRuleAutoFix.ts:158:    filesToModify: preview.length,
+src/mission-control/autofix/hardcodedRuleAutoFix.ts:159:    preview,
+src/mission-control/autofix/hardcodedRuleAutoFix.ts:164:  const result = previewHardcodedRuleFix();
+src/mission-control/autofix/hardcodedRuleAutoFix.ts:169:  for (const file of result.preview) {
+src/mission-control/autofix/themeAutoFix.ts:124:   BACKUP + PREVIEW + ROLLBACK
+src/mission-control/autofix/themeAutoFix.ts:187:export function previewThemeFix() {
+src/mission-control/autofix/themeAutoFix.ts:195:  const preview = [];
+src/mission-control/autofix/themeAutoFix.ts:214:      preview.push({
+src/mission-control/autofix/themeAutoFix.ts:223:    filesToModify: preview.length,
+src/mission-control/autofix/themeAutoFix.ts:224:    preview,
+src/mission-control/autofix/astAutoFix.ts:11:import { previewHardcodedRuleFix } from "./hardcodedRuleAutoFix";
+src/mission-control/autofix/astAutoFix.ts:108:      if (!mapping.pattern.test(expressionText)) {
+src/mission-control/autofix/astAutoFix.ts:141:export async function previewAstFix(): Promise<AstFixResult> {
+src/mission-control/autofix/astAutoFix.ts:142:  const preview = previewHardcodedRuleFix();
+src/mission-control/autofix/astAutoFix.ts:146:    modifiedFiles: preview.filesToModify,
+src/mission-control/autofix/astAutoFix.ts:147:    message: `${preview.filesToModify} verified file(s) ready for AST PropertyAccessExpression fix.`,
+src/mission-control/autofix/astAutoFix.ts:153:  const preview = previewHardcodedRuleFix();
+src/mission-control/autofix/astAutoFix.ts:159:  for (const item of preview.preview) {
+src/mission-control/missionControl.ts:3:  previewThemeFix,
+src/mission-control/missionControl.ts:32:  static async preview() {
+src/mission-control/missionControl.ts:33:    return previewThemeFix();
+src/mission-control/missionControl.ts:40:    const preview = previewThemeFix();
+src/mission-control/missionControl.ts:58:        scannedFiles: preview.scannedFiles,
+src/mission-control/missionControl.ts:60:        filesToModify: preview.filesToModify,
+src/mission-control/scanners/duplicateCodeScanner.ts:26:  ".test.",
+src/mission-control/scanners/runEnterpriseScanners.ts:10:import { previewThemeFix } from "../autofix/themeAutoFix";
+src/mission-control/scanners/runEnterpriseScanners.ts:35:    previewThemeFix(),
+src/mission-control/github/createPullRequest.ts:17:  // Get latest commit of main
+src/mission-control/suggestions/suggestionEngine.ts:1:import { previewHardcodedRuleFix } from "../autofix/hardcodedRuleAutoFix";
+src/mission-control/suggestions/suggestionEngine.ts:8:  const preview = previewHardcodedRuleFix();
+src/mission-control/suggestions/suggestionEngine.ts:10:  const suggestions: Suggestion[] = preview.preview.map((item, index) => ({
