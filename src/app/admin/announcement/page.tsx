@@ -24,6 +24,7 @@ import {
 } from "lucide-react";
 
 import { db } from "@/firebase/config";
+import { useAdminConfig } from "@/lib/admin-config/provider";
 
 interface Announcement {
   id: string;
@@ -33,6 +34,8 @@ interface Announcement {
 }
 
 export default function AnnouncementPage() {
+  const { config } = useAdminConfig();
+  const { announcement } = config;
 
   const [announcements, setAnnouncements] =
     useState<Announcement[]>([]);
@@ -41,7 +44,7 @@ export default function AnnouncementPage() {
     useState("");
 
   const [message, setMessage] =
-    useState("");
+    useState(announcement.defaultMessage);
 
   const [loading, setLoading] =
     useState(true);
@@ -190,7 +193,7 @@ export default function AnnouncementPage() {
         <div>
 
           <h1 className="text-3xl font-black">
-            Announcement Center
+            {announcement.pageTitle}
           </h1>
 
           <p className="mt-1 text-sm text-[var(--muted-text-color)]">

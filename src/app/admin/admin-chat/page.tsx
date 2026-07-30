@@ -3,6 +3,7 @@
 export const dynamic = "force-dynamic";
 
 import { useState } from "react";
+import { useAdminConfig } from "@/lib/admin-config/provider";
 
 import {
   MessageSquare,
@@ -52,7 +53,8 @@ const messages = [
 ];
 
 export default function AdminChatPage() {
-
+  const { config } = useAdminConfig();
+  const { adminChat } = config;
   const [message, setMessage] =
     useState("");
 
@@ -78,7 +80,7 @@ export default function AdminChatPage() {
           <div>
 
             <h1 className="text-3xl font-black">
-              Admin Chat
+              {adminChat.pageTitle}
             </h1>
 
             <p className="mt-1 text-sm text-[var(--muted-text-color)]">

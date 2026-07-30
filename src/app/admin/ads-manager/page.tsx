@@ -3,6 +3,7 @@
 export const dynamic = "force-dynamic";
 
 import { useState } from "react";
+import { useAdminConfig } from "@/lib/admin-config/provider";
 
 import {
   Megaphone,
@@ -39,7 +40,8 @@ const ads = [
 ];
 
 export default function AdsManagerPage() {
-
+  const { config } = useAdminConfig();
+  const { adsManager } = config;
   const [search, setSearch] =
     useState("");
 
@@ -74,7 +76,7 @@ export default function AdsManagerPage() {
           <div>
 
             <h1 className="text-3xl font-black">
-              Ads Manager
+              {adsManager.pageTitle}
             </h1>
 
             <p className="mt-1 text-sm text-[var(--muted-text-color)]">

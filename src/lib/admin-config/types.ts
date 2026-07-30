@@ -172,10 +172,45 @@ export interface MLMPageConfig {
 }
 
 // --- ROOT CONFIGURATION ---
+export interface ActivityTrackerConfig {
+  pageTitle: string;
+  pageDescription: string;
+  searchPlaceholder: string;
+  noLogsFound: string;
+  monitoringTitle: string;
+  monitoringDescription: string;
+  suspiciousTitle: string;
+  suspiciousDescription: string;
+}
+
+export interface AdminChatConfig {
+  pageTitle: string;
+  enabled: boolean;
+}
+
+export interface AdsManagerConfig {
+  pageTitle: string;
+  defaultAdRate: number;
+}
+
+export interface AnalyticsConfig {
+  pageTitle: string;
+  refreshInterval: number;
+}
+
+export interface AnnouncementConfig {
+  pageTitle: string;
+  defaultMessage: string;
+}
+
 export interface AdminConfig {
   version: number;
-
   theme: ThemeConfig;
+  activityTracker: ActivityTrackerConfig;
+  adminChat: AdminChatConfig;
+  adsManager: AdsManagerConfig;
+  analytics: AnalyticsConfig;
+  announcement: AnnouncementConfig;
   payment: PaymentConfig;
   shipping: ShippingConfig;
   watchEarn: WatchEarnConfig;
