@@ -7,9 +7,11 @@ import "swiper/css";
 import { motion } from "framer-motion";
 import { fetchWatchVideos, WatchVideo } from "@/lib/mlm/watch-earn/fetchWatchVideos";
 import VideoCard from "./components/VideoCard";
-import { businessRules } from "@/firestore/businessRules/service";
-import { WatchEarnRules } from "@/firestore/businessRules/types";
+import { useAdminConfig } from "@/lib/admin-config/provider";
+import { getWatchStats, getFloatingAds, initializeFloatingAds } from "@/firestore/services/watchEarnService";
+import { auth } from "@/firebase/config";
 import { Flame, Coins, Bell } from "lucide-react";
+import FloatingAdComponent, { FloatingAd } from "./components/FloatingAd";
 import CoinsPopup from "./components/CoinsPopup";
 import CommentDrawer from "./components/CommentDrawer";
 import Toast from "./components/Toast";
@@ -17,13 +19,15 @@ import PromotionBar from "./components/PromotionBar";
 import SponsoredCard from "./components/SponsoredCard";
 
 export default function WatchEarnPage() {
+  const { config } = useAdminConfig();
+  const { watchEarn } = config;
   const [loadingConfig, setLoadingConfig] = useState(true);
-  const [watchEarnRules, setWatchEarnRules] = useState<WatchEarnRules | null>(null);
   const [videos, setVideos] = useState<WatchVideo[]>([]);
   const [loadingVideos, setLoadingVideos] = useState(true);
   const [isMuted, setIsMuted] = useState(true);
   const [watchProgress, setWatchProgress] = useState<{ [key: string]: number }>({});
-  const [earnedCoins, setEarnedCoins] = useState(1250);
+  const [earnedCoins, setEarnedCoins] = useState(0);
+  const [floatingAds, setFloatingAds] = useState<FloatingAd[]>([]);
   const [rewardedVideos, setRewardedVideos] = useState<string[]>([]);
   const [adPlaying, setAdPlaying] = useState(false);
   const [currentIndex, setCurrentIndex] = useState(0);
@@ -49,11 +53,18 @@ export default function WatchEarnPage() {
   useEffect(() => {
     async function init() {
       try {
-        const [rules, videoResult] = await Promise.all([
-          businessRules.getWatchEarnRules(),
-          fetchWatchVideos()
-        ]);
-        setWatchEarnRules(rules);
+        const uid = auth.currentUser?.uid;
+        await initializeFloatingAds();
+        getFloatingAds((ads) => setFloatingAds(ads));
+        
+        const videoResult = await fetchWatchVideos();
+        
+        if (uid) {
+          getWatchStats(uid, (stats) => {
+            setEarnedCoins(stats.totalCoins || 0);
+          });
+        }
+        
         if (videoResult.success) {
           setVideos(videoResult.videos);
         }
@@ -69,7 +80,7 @@ export default function WatchEarnPage() {
 
   // Reward Progress Tracking
   useEffect(() => {
-    if (videos.length === 0 || adPlaying || !watchEarnRules) return;
+    if (videos.length === 0 || adPlaying || !watchEarn) return;
     
     const interval = setInterval(() => {
       const currentVideo = videos[currentIndex];
@@ -79,8 +90,8 @@ export default function WatchEarnPage() {
         const currentProgress = prev[currentVideo.id] || 0;
         
         // Use values from Firestore/Admin Panel
-        const duration = watchEarnRules.watchDurationPerReward || 10;
-        const reward = watchEarnRules.rewardPerVideo || 5;
+        const duration = watchEarn.videoWatchSeconds || 30;
+        const reward = watchEarn.rewardAmount;
         
         const increment = 100 / duration;
         const updated = Math.min(currentProgress + increment, 100);
@@ -88,7 +99,6 @@ export default function WatchEarnPage() {
         if (updated >= 100) {
             setAdPlaying(true);
             
-            // Simulated Ad Delay as per original production logic
             setTimeout(() => {
                 setAdPlaying(false);
                 setEarnedCoins(p => p + reward);
@@ -96,7 +106,6 @@ export default function WatchEarnPage() {
                 setShowReward(true);
                 setRewardedVideos(r => [...r, currentVideo.id]);
                 
-                // Hide reward popup after 3 seconds
                 setTimeout(() => setShowReward(false), 3000);
             }, 3000);
         }
@@ -105,7 +114,7 @@ export default function WatchEarnPage() {
     }, 1000);
 
     return () => clearInterval(interval);
-  }, [videos, rewardedVideos, adPlaying, watchEarnRules, currentIndex]);
+  }, [videos, rewardedVideos, adPlaying, watchEarn, currentIndex]);
 
   if (loadingVideos || loadingConfig) {
     return (
@@ -120,6 +129,7 @@ export default function WatchEarnPage() {
 
   return (
     <main className="h-screen w-full bg-black overflow-hidden select-none">
+      {floatingAds.map(ad => <FloatingAdComponent key={ad.id} ad={ad} />)}
       {/* Header - Glassmorphism UI */}
       <div className="fixed top-0 z-50 flex w-full items-center justify-between p-4 text-white bg-gradient-to-b from-black/80 to-transparent">
         <div>
@@ -195,10 +205,10 @@ export default function WatchEarnPage() {
       <CoinsPopup show={showReward} coins={rewardCoinsValue} />
       
       {/* Comment Drawer */}
-      <CommentDrawer 
-          open={commentOpen} 
+      <CommentDrawer
+          open={commentOpen}
           onClose={() => setCommentOpen(false)}
-          onCommentAdded={() => console.log("Comment added!")}
+          videoId={feedItems[currentIndex].type === 'video' ? feedItems[currentIndex].data.id : ''}
       />
       
       {/* Toast */}

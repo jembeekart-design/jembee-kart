@@ -15,6 +15,15 @@ import { FIRESTORE_PATHS } from "@/firestore/collections/firestorePaths";
 
 const COMMENTS_COLLECTION = FIRESTORE_PATHS.WATCH_EARN.COMMENTS;
 
+export interface ChatComment {
+  id: string;
+  contentId: string;
+  userId: string;
+  userName: string;
+  text: string;
+  createdAt: any;
+}
+
 export async function getComments(contentId: string, callback: (comments: any[]) => void) {
   const q = query(collection(db, COMMENTS_COLLECTION), where("contentId", "==", contentId), orderBy("createdAt", "asc"));
   return onSnapshot(q, (snapshot) => {
