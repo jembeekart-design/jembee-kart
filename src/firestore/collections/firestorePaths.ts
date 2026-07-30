@@ -127,6 +127,17 @@ export const FIRESTORE_PATHS = {
   SEO: "config/seo",
 
   // ==========================================
+  // ADMIN CHAT COLLECTIONS
+  // ==========================================
+  ADMIN_CHAT: {
+    CHATS: "admin_chats",
+    MESSAGES: "messages",
+    CALL_SESSIONS: "callSessions",
+    NOTIFICATIONS: "notifications",
+    PRESENCE: "user_presence",
+  },
+
+  // ==========================================
   // ADMIN COLLECTIONS
   // ==========================================
   ADMIN: {
