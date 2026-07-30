@@ -36,12 +36,7 @@ export interface ShippingConfig {
   deliveryDays: number;
 }
 
-export interface WatchEarnConfig {
-  enabled: boolean;
-  requiredVideos: number;
-  rewardAmount: number;
-  requiredSales: number;
-}
+/* Old WatchEarnConfig removed */
 
 export interface CashbackConfig {
   enabled: boolean;
@@ -202,12 +197,15 @@ export interface AnnouncementConfig {
   pageTitle: string;
   defaultMessage: string;
 }
-
 export interface WatchEarnConfig {
+  enabled: boolean;
   videoWatchSeconds: number;
   rewardProgressSeconds: number;
   minimumWatchPercent: number;
   allowSkip: boolean;
+  rewardAmount: number;
+  requiredVideos: number;
+  requiredSales: number;
   rewardDelay: number;
   enableUploadButton: boolean;
   uploadButtonText: string;
@@ -221,7 +219,6 @@ export interface WatchEarnConfig {
   maxFileSize: number;
   allowedVideoFormats: string[];
 }
-
 export interface FloatingAdConfig {
   enabled: boolean;
   title: string;
@@ -262,6 +259,9 @@ export interface AdminConfig {
   watchEarnStats: WatchEarnStatsConfig;
   commentModeration: CommentModerationConfig;
   payment: PaymentConfig;
+  shipping: ShippingConfig;
+  cashback: CashbackConfig;
+  mlm: MLMConfig;
   referral: ReferralConfig;
   signup: SignupConfig;
   wallet: WalletConfig;

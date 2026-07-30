@@ -24,7 +24,13 @@ export default function CommentDrawer({ open, onClose, videoId }: CommentDrawerP
 
   useEffect(() => {
     if (!open) return;
-    return getComments(videoId, (data) => setComments(data as ChatComment[]));
+    
+    let unsub: any;
+    async function loadComments() {
+      unsub = await getComments(videoId, (data) => setComments(data as ChatComment[]));
+    }
+    loadComments();
+    return () => unsub && unsub();
   }, [open, videoId]);
 
   async function handleAddComment() {
@@ -46,10 +52,6 @@ export default function CommentDrawer({ open, onClose, videoId }: CommentDrawerP
   }
 
   return (
-    // ... existing UI
-
-  return (
-    // ... rest of the component
     <div
       className={`
         fixed
