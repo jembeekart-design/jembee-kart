@@ -40,13 +40,18 @@ export function AdminConfigProvider({ children }: { children: ReactNode }) {
 
   useEffect(() => {
     const configRef = doc(db, "settings", "global_config");
-const themeRef = doc(db, "settings", "theme");
+    const themeRef = doc(db, "settings", "theme");
+    const activityTrackerRef = doc(db, "settings", "activityTracker");
+    const adminChatRef = doc(db, "settings", "adminChat");
+    const adsManagerRef = doc(db, "settings", "adsManager");
+    const analyticsRef = doc(db, "settings", "analytics");
+    const announcementRef = doc(db, "settings", "announcement");
     const featureFlagsRef = doc(db, "settings", "feature_flags");
     const walletRef = doc(db, "settings", "wallet");
-const homepageRef = doc(db, "settings", "homepage");
-const paymentRef = doc(db, "settings", "payment");
-const shippingRef = doc(db, "settings", "shipping");
-const notificationRef = doc(db, "settings", "notification");
+    const homepageRef = doc(db, "settings", "homepage");
+    const paymentRef = doc(db, "settings", "payment");
+    const shippingRef = doc(db, "settings", "shipping");
+    const notificationRef = doc(db, "settings", "notification");
     const unsubscribe = onSnapshot(
       configRef,
       (docSnap) => {
@@ -58,50 +63,69 @@ const notificationRef = doc(db, "settings", "notification");
           setSource("defaults");
         } else {
           const loadConfig = async () => {
-  const themeSnap = await getDoc(themeRef);
-const featureFlagsSnap = await getDoc(featureFlagsRef);
-const walletSnap = await getDoc(walletRef);
-const homepageSnap = await getDoc(homepageRef);
-const paymentSnap = await getDoc(paymentRef);
-const shippingSnap = await getDoc(shippingRef);
-const notificationSnap = await getDoc(notificationRef);
-  const mergedConfig = {
-  ...DEFAULT_ADMIN_CONFIG,
-  ...data,
+            const themeSnap = await getDoc(themeRef);
+            const activityTrackerSnap = await getDoc(activityTrackerRef);
+            const adminChatSnap = await getDoc(adminChatRef);
+            const adsManagerSnap = await getDoc(adsManagerRef);
+            const analyticsSnap = await getDoc(analyticsRef);
+            const announcementSnap = await getDoc(announcementRef);
+            const featureFlagsSnap = await getDoc(featureFlagsRef);
+            const walletSnap = await getDoc(walletRef);
+            const homepageSnap = await getDoc(homepageRef);
+            const paymentSnap = await getDoc(paymentRef);
+            const shippingSnap = await getDoc(shippingRef);
+            const notificationSnap = await getDoc(notificationRef);
+            const mergedConfig = {
+              ...DEFAULT_ADMIN_CONFIG,
+              ...data,
 
-  theme: themeSnap.exists()
-    ? themeSnap.data()
-    : DEFAULT_ADMIN_CONFIG.theme,
+              theme: themeSnap.exists()
+                ? themeSnap.data()
+                : DEFAULT_ADMIN_CONFIG.theme,
+              activityTracker: activityTrackerSnap.exists()
+                ? activityTrackerSnap.data()
+                : DEFAULT_ADMIN_CONFIG.activityTracker,
+              adminChat: adminChatSnap.exists()
+                ? adminChatSnap.data()
+                : DEFAULT_ADMIN_CONFIG.adminChat,
+              adsManager: adsManagerSnap.exists()
+                ? adsManagerSnap.data()
+                : DEFAULT_ADMIN_CONFIG.adsManager,
+              analytics: analyticsSnap.exists()
+                ? analyticsSnap.data()
+                : DEFAULT_ADMIN_CONFIG.analytics,
+              announcement: announcementSnap.exists()
+                ? announcementSnap.data()
+                : DEFAULT_ADMIN_CONFIG.announcement,
+              featureFlags: featureFlagsSnap.exists()
+                ? featureFlagsSnap.data()
+                : DEFAULT_ADMIN_CONFIG.featureFlags,
+              wallet: walletSnap.exists()
+                ? walletSnap.data()
+                : DEFAULT_ADMIN_CONFIG.wallet,
 
-  featureFlags: featureFlagsSnap.exists()
-    ? featureFlagsSnap.data()
-    : DEFAULT_ADMIN_CONFIG.featureFlags,
-    wallet: walletSnap.exists()
-  ? walletSnap.data()
-  : DEFAULT_ADMIN_CONFIG.wallet,
+              homepage: homepageSnap.exists()
+                ? homepageSnap.data()
+                : DEFAULT_ADMIN_CONFIG.homepage,
 
-homepage: homepageSnap.exists()
-  ? homepageSnap.data()
-  : DEFAULT_ADMIN_CONFIG.homepage,
+              payment: paymentSnap.exists()
+                ? paymentSnap.data()
+                : DEFAULT_ADMIN_CONFIG.payment,
 
-payment: paymentSnap.exists()
-  ? paymentSnap.data()
-  : DEFAULT_ADMIN_CONFIG.payment,
+              shipping: shippingSnap.exists()
+                ? shippingSnap.data()
+                : DEFAULT_ADMIN_CONFIG.shipping,
 
-shipping: shippingSnap.exists()
-  ? shippingSnap.data()
-  : DEFAULT_ADMIN_CONFIG.shipping,
+              notification: notificationSnap.exists()
+                ? notificationSnap.data()
+                : DEFAULT_ADMIN_CONFIG.notification,
+            };
 
-notification: notificationSnap.exists()
-  ? notificationSnap.data()
-  : DEFAULT_ADMIN_CONFIG.notification,
-};
+            setConfig(validateConfig(mergedConfig as any));
+            setSource("firestore");
+          };
 
-  setConfig(validateConfig(mergedConfig));
-  setSource("firestore");
-};
-
-loadConfig();
+          loadConfig();
         }
         
         const updatedAt =

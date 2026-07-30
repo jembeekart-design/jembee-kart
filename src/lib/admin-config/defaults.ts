@@ -27,6 +27,37 @@ export const DEFAULT_ADMIN_CONFIG: AdminConfig = {
     borderRadius: "12px",
   },
 
+  activityTracker: {
+    pageTitle: "Activity Tracker",
+    pageDescription: "Track realtime admin & user activities",
+    searchPlaceholder: "Search activity...",
+    noLogsFound: "No activity logs found.",
+    monitoringTitle: "Realtime Monitoring",
+    monitoringDescription: "All activities are monitored instantly with realtime tracking, analytics & security logs.",
+    suspiciousTitle: "Suspicious Activity Detection",
+    suspiciousDescription: "AI automatically detects unusual login, payment or admin activity for protection.",
+  },
+
+  adminChat: {
+    pageTitle: "Admin Chat",
+    enabled: true,
+  },
+
+  adsManager: {
+    pageTitle: "Ads Manager",
+    defaultAdRate: 10,
+  },
+
+  analytics: {
+    pageTitle: "Analytics",
+    refreshInterval: 60,
+  },
+
+  announcement: {
+    pageTitle: "Announcement",
+    defaultMessage: "Welcome to JembeeKart!",
+  },
+
   payment: {
     codEnabled: false,
     onlinePaymentEnabled: false,
