@@ -1,117 +1,52 @@
 "use client";
 
-import {
-  useState
-} from "react";
-import { ModerationService } from "@/lib/moderation/moderationService";
-
+import { useState, useEffect } from "react";
+import { useAdminConfig } from "@/lib/admin-config/provider";
+import { getComments, addComment, ChatComment } from "@/firestore/services/socialService";
+import { auth } from "@/firebase/config";
 import {
   Send,
   Heart
 } from "lucide-react";
 
-interface CommentItem {
-
-  id: string;
-
-  username: string;
-
-  comment: string;
-
-  likes: number;
-
-}
-
 interface CommentDrawerProps {
-
   open: boolean;
-
   onClose: () => void;
-  onCommentAdded: () => void;
-
+  videoId: string;
 }
 
-export default function
-CommentDrawer({
-  open,
-  onClose,
-  onCommentAdded
-}: CommentDrawerProps) {
+export default function CommentDrawer({ open, onClose, videoId }: CommentDrawerProps) {
+  const { config } = useAdminConfig();
+  const { commentModeration } = config;
+  const [commentText, setCommentText] = useState("");
+  const [error, setError] = useState("");
+  const [comments, setComments] = useState<ChatComment[]>([]);
 
-  const [
-    comment,
-    setComment
-  ] = useState("");
+  useEffect(() => {
+    if (!open) return;
+    return getComments(videoId, (data) => setComments(data as ChatComment[]));
+  }, [open, videoId]);
 
-  const [
-    error,
-    setError
-  ] = useState("");
-
-  const [
-    comments,
-    setComments
-  ] = useState<
-    CommentItem[]
-  >([
-    {
-      id: "1",
-
-      username:
-        "Rahul",
-
-      comment:
-        "Amazing video 🔥",
-
-      likes: 22
-    },
-
-    {
-      id: "2",
-
-      username:
-        "Aman",
-
-      comment:
-        "Watch & earn is awesome",
-
-      likes: 14
+  async function handleAddComment() {
+    if (!commentText.trim() || !auth.currentUser) return;
+    
+    try {
+      await addComment(
+        videoId, 
+        auth.currentUser.uid, 
+        auth.currentUser.displayName || "User", 
+        commentText, 
+        commentModeration
+      );
+      setCommentText("");
+      setError("");
+    } catch (err: any) {
+      setError(err.message || "Failed to add comment.");
     }
-  ]);
-
-  function addComment() {
-
-    if (!comment.trim()) {
-      return;
-    }
-
-    const { safe, reason } = ModerationService.isSafe(comment);
-    if (!safe) {
-      setError("Your comment violates our Community Guidelines.");
-      return;
-    }
-    setError("");
-
-    setComments([
-      {
-        id:
-          crypto.randomUUID(),
-
-        username:
-          "You",
-
-        comment:
-          comment,
-
-        likes: 0
-      },
-
-      ...comments
-    ]);
-
-    setComment("");
-    onCommentAdded();
   }
+
+  return (
+    // ... existing UI
 
   return (
     // ... rest of the component
@@ -215,7 +150,7 @@ CommentDrawer({
                     "
                   >
 
-                    @{item.username}
+                    @{item.userName}
 
                   </h3>
 
@@ -227,7 +162,7 @@ CommentDrawer({
                     "
                   >
 
-                    {item.comment}
+                    {item.text}
 
                   </p>
 
@@ -253,8 +188,7 @@ CommentDrawer({
                     "
                   >
 
-                    {item.likes}
-
+                    0
                   </span>
 
                 </button>
@@ -282,10 +216,10 @@ CommentDrawer({
       >
 
         <input
-          value={comment}
+          value={commentText}
 
           onChange={(e) => {
-            setComment(e.target.value);
+            setCommentText(e.target.value);
             if (error) setError(""); // Clear error when user starts typing again
           }}
 
@@ -306,7 +240,7 @@ CommentDrawer({
         />
 
         <button
-          onClick={addComment}
+          onClick={handleAddComment}
           className="
             flex
             h-12
