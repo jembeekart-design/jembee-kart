@@ -67,6 +67,9 @@ export async function updateTypingStatus(chatId: string, userId: string, isTypin
   await setDoc(typingRef, { [userId]: isTyping }, { merge: true });
 }
 
+export const setTyping = updateTypingStatus;
+
+
 export async function updatePresence(uid: string, online: boolean) {
   const presenceRef = doc(db, FIRESTORE_PATHS.ADMIN_CHAT.USER_PRESENCE, uid);
   await setDoc(presenceRef, {
