@@ -164,7 +164,7 @@ export default function WatchEarnPage() {
           <SwiperSlide key={item.type === 'video' ? item.data.id : item.id}>
             {item.type === 'video' ? (
                 <>
-                    <PromotionBar />
+                    
                     <VideoCard
                       video={item.data}
                       isMuted={isMuted}
