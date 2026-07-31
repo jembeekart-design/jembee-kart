@@ -38,12 +38,10 @@ export default function WatchEarnPage() {
   const [commentOpen, setCommentOpen] = useState(false);
   const [toastMessage, setToastMessage] = useState<string | null>(null);
 
-  // Create an array that includes sponsored cards: every 7 user videos
   const feedItems: Array<{ type: 'video', data: WatchVideo } | { type: 'sponsored', id: string }> = [];
   
   videos.forEach((video, index) => {
       feedItems.push({ type: 'video', data: video });
-      // After every 7 videos, add a sponsored card
       if ((index + 1) % 7 === 0) {
           feedItems.push({ type: 'sponsored', id: `promo-${index}` });
       }
@@ -77,7 +75,6 @@ export default function WatchEarnPage() {
     init();
   }, []);
 
-  // Reward Progress Tracking
   useEffect(() => {
     if (videos.length === 0 || adPlaying || !watchEarn) return;
     
@@ -87,8 +84,6 @@ export default function WatchEarnPage() {
 
       setWatchProgress((prev) => {
         const currentProgress = prev[currentVideo.id] || 0;
-        
-        // Use values from Firestore/Admin Panel
         const duration = watchEarn.videoWatchSeconds || 30;
         const reward = watchEarn.rewardAmount;
         
@@ -138,7 +133,6 @@ export default function WatchEarnPage() {
   return (
     <main className="h-screen w-full bg-black overflow-hidden select-none">
       {floatingAds.map(ad => <FloatingAdComponent key={ad.id} ad={ad} />)}
-      {/* Header - Glassmorphism UI */}
       <div className="fixed top-0 z-50 flex w-full items-center justify-between p-4 text-white bg-gradient-to-b from-black/80 to-transparent">
         <div>
           <h1 className="text-xl font-black flex items-center gap-2">
@@ -169,42 +163,37 @@ export default function WatchEarnPage() {
         {feedItems.map((item, index) => (
           <SwiperSlide key={item.type === 'video' ? item.data.id : item.id}>
             {item.type === 'video' ? (
-                <>
+                <VideoCard
+                  video={item.data}
+                  isMuted={isMuted}
+                  toggleMute={() => setIsMuted(!isMuted)}
+                  watchProgress={watchProgress[item.data.id] || 0}
+                  active={index === currentIndex}
+                  onClaim={() => {}}
+                  onComment={() => setCommentOpen(true)}
+                  onShare={() => {
+                    const shareData = {
+                      title: 'Check out this video on JembeeKart',
+                      text: item.data.caption,
+                      url: window.location.origin + '/mlm/watch-earn?v=' + item.data.id,
+                    };
                     
-                    <VideoCard
-                      video={item.data}
-                      isMuted={isMuted}
-                      toggleMute={() => setIsMuted(!isMuted)}
-                      watchProgress={watchProgress[item.data.id] || 0}
-                      active={index === currentIndex}
-                      onClaim={() => {}}
-                      onComment={() => setCommentOpen(true)}
-                      onShare={() => {
-                        const shareData = {
-                          title: 'Check out this video on JembeeKart',
-                          text: item.data.caption,
-                          url: window.location.origin + '/mlm/watch-earn?v=' + item.data.id,
-                        };
-                        
-                        const fallbackToClipboard = () => {
-                            navigator.clipboard.writeText(shareData.url).then(() => {
-                                setToastMessage("Link copied.");
-                            });
-                        };
+                    const fallbackToClipboard = () => {
+                        navigator.clipboard.writeText(shareData.url).then(() => {
+                            setToastMessage("Link copied.");
+                        });
+                    };
 
-                        if (navigator.share) {
-                            navigator.share(shareData).catch(err => {
-                                if (err.name === 'AbortError') {
-                                    return;
-                                }
-                                fallbackToClipboard();
-                            });
-                        } else {
+                    if (navigator.share) {
+                        navigator.share(shareData).catch(err => {
+                            if (err.name === 'AbortError') return;
                             fallbackToClipboard();
-                        }
-                      }}
-                    />
-                </>
+                        });
+                    } else {
+                        fallbackToClipboard();
+                    }
+                  }}
+                />
             ) : (
                 <SponsoredCard />
             )}
@@ -212,20 +201,14 @@ export default function WatchEarnPage() {
         ))}
       </Swiper>
       <PromotionBar />
-      {/* Reward Popup */}
       <CoinsPopup show={showReward} coins={rewardCoinsValue} />
-      
-      {/* Comment Drawer */}
       <CommentDrawer
           open={commentOpen}
           onClose={() => setCommentOpen(false)}
           videoId={feedItems[currentIndex].type === 'video' ? feedItems[currentIndex].data.id : ''}
       />
-      
-      {/* Toast */}
       <Toast message={toastMessage} onClose={() => setToastMessage(null)} />
 
-      {/* Sponsored Ad Overlay - Production Ready */}
       {adPlaying && (
         <div className="fixed inset-0 z-[100] flex flex-col items-center justify-center bg-black/95 text-white backdrop-blur-sm">
           <motion.div 
