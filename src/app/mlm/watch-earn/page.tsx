@@ -38,10 +38,15 @@ export default function WatchEarnPage() {
   const [commentOpen, setCommentOpen] = useState(false);
   const [toastMessage, setToastMessage] = useState<string | null>(null);
 
+  // Create an array that includes sponsored cards: first, then every 7 user videos
   const feedItems: Array<{ type: 'video', data: WatchVideo } | { type: 'sponsored', id: string }> = [];
+  
+  // Add first sponsored card
+  feedItems.push({ type: 'sponsored', id: 'promo-start' });
   
   videos.forEach((video, index) => {
       feedItems.push({ type: 'video', data: video });
+      // After every 7 videos, add a sponsored card
       if ((index + 1) % 7 === 0) {
           feedItems.push({ type: 'sponsored', id: `promo-${index}` });
       }
@@ -77,17 +82,16 @@ export default function WatchEarnPage() {
 
   // Reward Progress Tracking
   useEffect(() => {
-    if (feedItems.length === 0 || adPlaying || !watchEarn) return;
+    if (videos.length === 0 || adPlaying || !watchEarn) return;
     
     const interval = setInterval(() => {
-      const currentItem = feedItems[currentIndex];
-      if (!currentItem || currentItem.type !== 'video') return;
-      
-      const currentVideo = currentItem.data;
+      const currentVideo = videos[currentIndex];
       if (!currentVideo || rewardedVideos.includes(currentVideo.id)) return;
 
       setWatchProgress((prev) => {
         const currentProgress = prev[currentVideo.id] || 0;
+        
+        // Use values from Firestore/Admin Panel
         const duration = watchEarn.videoWatchSeconds || 30;
         const reward = watchEarn.rewardAmount;
         
@@ -95,33 +99,24 @@ export default function WatchEarnPage() {
         const updated = Math.min(currentProgress + increment, 100);
         
         if (updated >= 100) {
-            const isFirstVideo = rewardedVideos.length === 0;
-
-            const processReward = () => {
+            setAdPlaying(true);
+            
+            setTimeout(() => {
+                setAdPlaying(false);
                 setEarnedCoins(p => p + reward);
                 setRewardCoinsValue(reward);
                 setShowReward(true);
                 setRewardedVideos(r => [...r, currentVideo.id]);
                 
                 setTimeout(() => setShowReward(false), 3000);
-            };
-
-            if (isFirstVideo) {
-                setAdPlaying(true);
-                setTimeout(() => {
-                    setAdPlaying(false);
-                    processReward();
-                }, 3000);
-            } else {
-                processReward();
-            }
+            }, 3000);
         }
         return { ...prev, [currentVideo.id]: updated };
       });
     }, 1000);
 
     return () => clearInterval(interval);
-  }, [feedItems, rewardedVideos, adPlaying, watchEarn, currentIndex]);
+  }, [videos, rewardedVideos, adPlaying, watchEarn, currentIndex]);
 
   if (loadingVideos || loadingConfig) {
     return (
@@ -134,15 +129,11 @@ export default function WatchEarnPage() {
     );
   }
 
-  const currentFeedItem = feedItems[currentIndex];
-  const activeVideoId = currentFeedItem && currentFeedItem.type === 'video' ? currentFeedItem.data.id : '';
-
   return (
-    <main className="h-screen w-full bg-black overflow-hidden select-none relative">
+    <main className="h-screen w-full bg-black overflow-hidden select-none">
       {floatingAds.map(ad => <FloatingAdComponent key={ad.id} ad={ad} />)}
-      
-      {/* Header - Glassmorphism UI with safe z-index */}
-      <div className="absolute top-0 left-0 right-0 z-40 flex w-full items-center justify-between p-4 text-white bg-gradient-to-b from-black/80 to-transparent pointer-events-auto">
+      {/* Header - Glassmorphism UI */}
+      <div className="fixed top-0 z-50 flex w-full items-center justify-between p-4 text-white bg-gradient-to-b from-black/80 to-transparent">
         <div>
           <h1 className="text-xl font-black flex items-center gap-2">
             Watch & Earn <Flame size={20} className="text-orange-500 fill-orange-500" />
@@ -155,14 +146,13 @@ export default function WatchEarnPage() {
           </div>
           <button 
             onClick={() => router.push("/mlm/notifications")}
-            className="p-2 bg-white/10 backdrop-blur-xl rounded-full border border-white/20 active:scale-95 transition-transform"
+            className="p-2 bg-white/10 backdrop-blur-xl rounded-full border border-white/20"
           >
             <Bell size={20} />
           </button>
         </div>
       </div>
       
-      {/* Main Feed Container */}
       <Swiper 
         direction="vertical" 
         modules={[Mousewheel]} 
@@ -173,61 +163,63 @@ export default function WatchEarnPage() {
         {feedItems.map((item, index) => (
           <SwiperSlide key={item.type === 'video' ? item.data.id : item.id}>
             {item.type === 'video' ? (
-                <VideoCard
-                  video={item.data}
-                  isMuted={isMuted}
-                  toggleMute={() => setIsMuted(!isMuted)}
-                  watchProgress={watchProgress[item.data.id] || 0}
-                  active={index === currentIndex}
-                  onClaim={() => {}}
-                  onComment={() => setCommentOpen(true)}
-                  onShare={() => {
-                    const shareData = {
-                      title: 'Check out this video on JembeeKart',
-                      text: item.data.caption,
-                      url: window.location.origin + '/mlm/watch-earn?v=' + item.data.id,
-                    };
+                <>
                     
-                    const fallbackToClipboard = () => {
-                        navigator.clipboard.writeText(shareData.url).then(() => {
-                            setToastMessage("Link copied.");
-                        });
-                    };
+                    <VideoCard
+                      video={item.data}
+                      isMuted={isMuted}
+                      toggleMute={() => setIsMuted(!isMuted)}
+                      watchProgress={watchProgress[item.data.id] || 0}
+                      active={index === currentIndex}
+                      onClaim={() => {}}
+                      onComment={() => setCommentOpen(true)}
+                      onShare={() => {
+                        const shareData = {
+                          title: 'Check out this video on JembeeKart',
+                          text: item.data.caption,
+                          url: window.location.origin + '/mlm/watch-earn?v=' + item.data.id,
+                        };
+                        
+                        const fallbackToClipboard = () => {
+                            navigator.clipboard.writeText(shareData.url).then(() => {
+                                setToastMessage("Link copied.");
+                            });
+                        };
 
-                    if (navigator.share) {
-                        navigator.share(shareData).catch(err => {
-                            if (err.name === 'AbortError') return;
+                        if (navigator.share) {
+                            navigator.share(shareData).catch(err => {
+                                if (err.name === 'AbortError') {
+                                    return;
+                                }
+                                fallbackToClipboard();
+                            });
+                        } else {
                             fallbackToClipboard();
-                        });
-                    } else {
-                        fallbackToClipboard();
-                    }
-                  }}
-                />
+                        }
+                      }}
+                    />
+                </>
             ) : (
                 <SponsoredCard />
             )}
           </SwiperSlide>
         ))}
       </Swiper>
-
-      {/* Promotion Bar placed safely above bottom controls */}
-      <div className="absolute bottom-16 left-0 right-0 z-30 pointer-events-none px-4">
-        <div className="pointer-events-auto">
-          <PromotionBar />
-        </div>
-      </div>
-
+      <PromotionBar />
+      {/* Reward Popup */}
       <CoinsPopup show={showReward} coins={rewardCoinsValue} />
       
+      {/* Comment Drawer */}
       <CommentDrawer
           open={commentOpen}
           onClose={() => setCommentOpen(false)}
-          videoId={activeVideoId}
+          videoId={feedItems[currentIndex].type === 'video' ? feedItems[currentIndex].data.id : ''}
       />
       
+      {/* Toast */}
       <Toast message={toastMessage} onClose={() => setToastMessage(null)} />
 
+      {/* Sponsored Ad Overlay - Production Ready */}
       {adPlaying && (
         <div className="fixed inset-0 z-[100] flex flex-col items-center justify-center bg-black/95 text-white backdrop-blur-sm">
           <motion.div 
