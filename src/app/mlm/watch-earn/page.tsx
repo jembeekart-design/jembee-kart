@@ -10,6 +10,7 @@ import VideoCard from "./components/VideoCard";
 import { useAdminConfig } from "@/lib/admin-config/provider";
 import { getWatchStats, getFloatingAds, initializeFloatingAds } from "@/firestore/services/watchEarnService";
 import { auth } from "@/firebase/config";
+import { useRouter } from "next/navigation";
 import { Flame, Coins, Bell } from "lucide-react";
 import FloatingAdComponent, { FloatingAd } from "./components/FloatingAd";
 import CoinsPopup from "./components/CoinsPopup";
@@ -20,6 +21,7 @@ import SponsoredCard from "./components/SponsoredCard";
 
 export default function WatchEarnPage() {
   const { config } = useAdminConfig();
+  const router = useRouter();
   const { watchEarn } = config;
   const [loadingConfig, setLoadingConfig] = useState(true);
   const [videos, setVideos] = useState<WatchVideo[]>([]);
@@ -142,7 +144,10 @@ export default function WatchEarnPage() {
             <Coins size={18} className="text-yellow-500" />
             <span className="font-bold text-sm tracking-tighter">{earnedCoins.toLocaleString()}</span>
           </div>
-          <button className="p-2 bg-white/10 backdrop-blur-xl rounded-full border border-white/20">
+          <button 
+            onClick={() => router.push("/mlm/notifications")}
+            className="p-2 bg-white/10 backdrop-blur-xl rounded-full border border-white/20"
+          >
             <Bell size={20} />
           </button>
         </div>
@@ -159,6 +164,7 @@ export default function WatchEarnPage() {
           <SwiperSlide key={item.type === 'video' ? item.data.id : item.id}>
             {item.type === 'video' ? (
                 <>
+                    <PromotionBar />
                     <VideoCard
                       video={item.data}
                       isMuted={isMuted}
@@ -192,7 +198,6 @@ export default function WatchEarnPage() {
                         }
                       }}
                     />
-                    <PromotionBar />
                 </>
             ) : (
                 <SponsoredCard />
