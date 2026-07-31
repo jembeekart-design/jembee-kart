@@ -38,11 +38,8 @@ export default function WatchEarnPage() {
   const [commentOpen, setCommentOpen] = useState(false);
   const [toastMessage, setToastMessage] = useState<string | null>(null);
 
-  // Create an array that includes sponsored cards: first, then every 7 user videos
+  // Create an array that includes sponsored cards: every 7 user videos
   const feedItems: Array<{ type: 'video', data: WatchVideo } | { type: 'sponsored', id: string }> = [];
-  
-  // Add first sponsored card
-  feedItems.push({ type: 'sponsored', id: 'promo-start' });
   
   videos.forEach((video, index) => {
       feedItems.push({ type: 'video', data: video });
@@ -99,17 +96,26 @@ export default function WatchEarnPage() {
         const updated = Math.min(currentProgress + increment, 100);
         
         if (updated >= 100) {
-            setAdPlaying(true);
-            
-            setTimeout(() => {
-                setAdPlaying(false);
+            const isFirstVideo = rewardedVideos.length === 0;
+
+            const processReward = () => {
                 setEarnedCoins(p => p + reward);
                 setRewardCoinsValue(reward);
                 setShowReward(true);
                 setRewardedVideos(r => [...r, currentVideo.id]);
                 
                 setTimeout(() => setShowReward(false), 3000);
-            }, 3000);
+            };
+
+            if (isFirstVideo) {
+                setAdPlaying(true);
+                setTimeout(() => {
+                    setAdPlaying(false);
+                    processReward();
+                }, 3000);
+            } else {
+                processReward();
+            }
         }
         return { ...prev, [currentVideo.id]: updated };
       });
