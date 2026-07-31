@@ -75,11 +75,15 @@ export default function WatchEarnPage() {
     init();
   }, []);
 
+  // Reward Progress Tracking
   useEffect(() => {
-    if (videos.length === 0 || adPlaying || !watchEarn) return;
+    if (feedItems.length === 0 || adPlaying || !watchEarn) return;
     
     const interval = setInterval(() => {
-      const currentVideo = videos[currentIndex];
+      const currentItem = feedItems[currentIndex];
+      if (!currentItem || currentItem.type !== 'video') return;
+      
+      const currentVideo = currentItem.data;
       if (!currentVideo || rewardedVideos.includes(currentVideo.id)) return;
 
       setWatchProgress((prev) => {
@@ -117,7 +121,7 @@ export default function WatchEarnPage() {
     }, 1000);
 
     return () => clearInterval(interval);
-  }, [videos, rewardedVideos, adPlaying, watchEarn, currentIndex]);
+  }, [feedItems, rewardedVideos, adPlaying, watchEarn, currentIndex]);
 
   if (loadingVideos || loadingConfig) {
     return (
@@ -130,10 +134,15 @@ export default function WatchEarnPage() {
     );
   }
 
+  const currentFeedItem = feedItems[currentIndex];
+  const activeVideoId = currentFeedItem && currentFeedItem.type === 'video' ? currentFeedItem.data.id : '';
+
   return (
-    <main className="h-screen w-full bg-black overflow-hidden select-none">
+    <main className="h-screen w-full bg-black overflow-hidden select-none relative">
       {floatingAds.map(ad => <FloatingAdComponent key={ad.id} ad={ad} />)}
-      <div className="fixed top-0 z-50 flex w-full items-center justify-between p-4 text-white bg-gradient-to-b from-black/80 to-transparent">
+      
+      {/* Header - Glassmorphism UI with safe z-index */}
+      <div className="absolute top-0 left-0 right-0 z-40 flex w-full items-center justify-between p-4 text-white bg-gradient-to-b from-black/80 to-transparent pointer-events-auto">
         <div>
           <h1 className="text-xl font-black flex items-center gap-2">
             Watch & Earn <Flame size={20} className="text-orange-500 fill-orange-500" />
@@ -146,13 +155,14 @@ export default function WatchEarnPage() {
           </div>
           <button 
             onClick={() => router.push("/mlm/notifications")}
-            className="p-2 bg-white/10 backdrop-blur-xl rounded-full border border-white/20"
+            className="p-2 bg-white/10 backdrop-blur-xl rounded-full border border-white/20 active:scale-95 transition-transform"
           >
             <Bell size={20} />
           </button>
         </div>
       </div>
       
+      {/* Main Feed Container */}
       <Swiper 
         direction="vertical" 
         modules={[Mousewheel]} 
@@ -200,13 +210,22 @@ export default function WatchEarnPage() {
           </SwiperSlide>
         ))}
       </Swiper>
-      <PromotionBar />
+
+      {/* Promotion Bar placed safely above bottom controls */}
+      <div className="absolute bottom-16 left-0 right-0 z-30 pointer-events-none px-4">
+        <div className="pointer-events-auto">
+          <PromotionBar />
+        </div>
+      </div>
+
       <CoinsPopup show={showReward} coins={rewardCoinsValue} />
+      
       <CommentDrawer
           open={commentOpen}
           onClose={() => setCommentOpen(false)}
-          videoId={feedItems[currentIndex].type === 'video' ? feedItems[currentIndex].data.id : ''}
+          videoId={activeVideoId}
       />
+      
       <Toast message={toastMessage} onClose={() => setToastMessage(null)} />
 
       {adPlaying && (
