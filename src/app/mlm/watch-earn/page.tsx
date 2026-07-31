@@ -205,7 +205,7 @@ export default function WatchEarnPage() {
           </SwiperSlide>
         ))}
       </Swiper>
-
+      <PromotionBar />
       {/* Reward Popup */}
       <CoinsPopup show={showReward} coins={rewardCoinsValue} />
       
