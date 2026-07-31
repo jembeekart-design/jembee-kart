@@ -169,6 +169,11 @@ export default function ProductsAdminPage() {
     setProductVideos
   ] = useState<string[]>([]);
 
+  const [
+    allCategories,
+    setAllCategories
+  ] = useState<{ id: string; title: string }[]>([]);
+
   const imageInputRef =
     useRef<HTMLInputElement | null>(
       null
@@ -180,12 +185,12 @@ export default function ProductsAdminPage() {
     );
 
   /* ======================================================
-  GET PRODUCTS
+  GET PRODUCTS & CATEGORIES
   ====================================================== */
 
   useEffect(() => {
 
-    const unsubscribe =
+    const unsubscribeProducts =
       onSnapshot(
 
         collection(
@@ -218,8 +223,22 @@ export default function ProductsAdminPage() {
         }
       );
 
-    return () =>
-      unsubscribe();
+    const unsubscribeCategories =
+      onSnapshot(
+        collection(db, "categories"),
+        (snapshot) => {
+          const data = snapshot.docs.map((doc) => ({
+            id: doc.id,
+            title: doc.data().title as string,
+          }));
+          setAllCategories(data);
+        }
+      );
+
+    return () => {
+      unsubscribeProducts();
+      unsubscribeCategories();
+    };
 
   }, []);
 
@@ -232,9 +251,9 @@ export default function ProductsAdminPage() {
     "All",
 
     ...new Set(
-      products.map(
-        (p) =>
-          p.category
+      allCategories.map(
+        (c) =>
+          c.title
       )
     )
   ];
@@ -1122,19 +1141,12 @@ export default function ProductsAdminPage() {
                     outline-none
                   "
                 >
-
-                  <option>
-                    Men's T-Shirts
-                  </option>
-
-                  <option>
-                    Hoodies
-                  </option>
-
-                  <option>
-                    Women's Wear
-                  </option>
-
+                  <option value="">Select Category</option>
+                  {allCategories.map((cat) => (
+                    <option key={cat.id} value={cat.title}>
+                      {cat.title}
+                    </option>
+                  ))}
                 </select>
 
                 <select
