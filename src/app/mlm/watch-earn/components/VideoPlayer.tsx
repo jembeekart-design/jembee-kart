@@ -14,6 +14,7 @@ interface VideoPlayerProps {
   rewardCoins: number;
   watchSeconds: number;
   isMuted?: boolean;
+  active?: boolean;
 }
 
 export default function VideoPlayer({
@@ -21,6 +22,7 @@ export default function VideoPlayer({
   rewardCoins,
   watchSeconds,
   isMuted = true,
+  active = false,
 }: VideoPlayerProps) {
   const videoRef =
     useRef<HTMLVideoElement>(null);
@@ -35,12 +37,32 @@ export default function VideoPlayer({
     useState(false);
 
   const [showRewardToast, setShowRewardToast] = useState(false);
-  
+  const [isPlaying, setIsPlaying] = useState(false);
 
   useEffect(() => {
-    let interval: NodeJS.Timeout;
+    const video = videoRef.current;
+    if (!video) return;
 
-    if (videoRef.current) {
+    setProgress(0);
+    setRewarded(false);
+    setShowCoins(false);
+    setShowRewardToast(false);
+
+    if (active) {
+      video.play().catch(() => {
+        // Silent failure if play is prevented
+      });
+    } else {
+      video.pause();
+    }
+  }, [active, videoUrl]);
+
+  useEffect(() => {
+    let interval: ReturnType<typeof setInterval>;
+    let rewardToastTimeout: ReturnType<typeof setTimeout>;
+    let coinsTimeout: ReturnType<typeof setTimeout>;
+
+    if (videoRef.current && active && isPlaying) {
       interval = setInterval(() => {
         const current =
           videoRef.current?.currentTime || 0;
@@ -58,13 +80,13 @@ export default function VideoPlayer({
         ) {
           setRewarded(true);
           setShowCoins(true);
-
           setShowRewardToast(true);
-          setTimeout(() => {
+
+          coinsTimeout = setTimeout(() => {
             setShowCoins(false);
           }, 3000);
 
-          setTimeout(() => {
+          rewardToastTimeout = setTimeout(() => {
             setShowRewardToast(false);
           }, 2000);
         }
@@ -75,8 +97,27 @@ export default function VideoPlayer({
       if (interval) {
         clearInterval(interval);
       }
+      if (coinsTimeout) {
+        clearTimeout(coinsTimeout);
+      }
+      if (rewardToastTimeout) {
+        clearTimeout(rewardToastTimeout);
+      }
     };
-  }, [rewarded, watchSeconds]);
+  }, [rewarded, watchSeconds, active, isPlaying]);
+
+  const togglePlayPause = () => {
+    const video = videoRef.current;
+    if (!video) return;
+
+    if (isPlaying) {
+      video.pause();
+    } else {
+      video.play().catch(() => {
+        // Silent failure if play is prevented
+      });
+    }
+  };
 
   return (
     <div
@@ -88,13 +129,27 @@ export default function VideoPlayer({
       <video
         ref={videoRef}
         src={videoUrl}
-        autoPlay
         muted={isMuted}
         loop
         playsInline
-        className="h-full w-full object-cover"
+        onClick={togglePlayPause}
+        onPlay={() => setIsPlaying(true)}
+        onPause={() => setIsPlaying(false)}
+        className="h-full w-full object-cover cursor-pointer"
       />
       
+      {/* PLAY/PAUSE OVERLAY ICON */}
+      {!isPlaying && (
+        <div 
+          onClick={togglePlayPause}
+          className="absolute inset-0 flex items-center justify-center z-30 cursor-pointer bg-black/20"
+        >
+          <div className="rounded-full bg-black/60 p-4 text-white text-3xl">
+            ▶
+          </div>
+        </div>
+      )}
+
       {/* OVERLAY */}
 
       <div
