@@ -31,7 +31,9 @@ export default function VideoPlayer({
 
   const [showCoins, setShowCoins] =
     useState(false);
-    
+
+  const [showRewardToast, setShowRewardToast] = useState(false);
+  
   const [isMuted, setIsMuted] = useState(true);
 
   useEffect(() => {
@@ -56,9 +58,14 @@ export default function VideoPlayer({
           setRewarded(true);
           setShowCoins(true);
 
+          setShowRewardToast(true);
           setTimeout(() => {
             setShowCoins(false);
           }, 3000);
+
+          setTimeout(() => {
+            setShowRewardToast(false);
+          }, 2000);
         }
       }, 500);
     }
@@ -72,12 +79,8 @@ export default function VideoPlayer({
 
   return (
     <div
-      className="
-        relative
-        h-screen
-        w-full
-        overflow-hidden
-      "
+      className="relative h-screen w-full overflow-hidden"
+      style={{ paddingBottom: 'env(safe-area-inset-bottom)' }}
     >
       {/* VIDEO */}
 
@@ -88,17 +91,14 @@ export default function VideoPlayer({
         muted={isMuted}
         loop
         playsInline
-        className="
-          h-full
-          w-full
-          object-cover
-        "
+        className="h-full w-full object-cover"
       />
       
       {/* MUTE TOGGLE */}
       <button
         onClick={() => setIsMuted(!isMuted)}
-        className="absolute right-4 bottom-4 z-40 rounded-full bg-black/50 p-2 text-white"
+        className="absolute right-4 bottom-20 z-40 rounded-full bg-black/40 p-2 text-white"
+        aria-label={isMuted ? "Unmute video" : "Mute video"}
       >
         {isMuted ? "🔇" : "🔊"}
       </button>
@@ -106,17 +106,10 @@ export default function VideoPlayer({
       {/* OVERLAY */}
 
       <div
-        className="
-          absolute
-          inset-0
-          bg-gradient-to-t
-          from-black/80
-          via-transparent
-          to-black/30
-        "
+        className="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-black/30 pointer-events-none"
       />
 
-      {/* REWARD PROGRESS */}
+      {/* REWARD PROGRESS (compact chip + bottom bars) */}
 
       <RewardProgressBar
         watchedVideos={Math.floor(progress)}
@@ -139,26 +132,9 @@ export default function VideoPlayer({
         coins={rewardCoins}
       />
 
-      {/* REWARD CLAIMED */}
-
-      {rewarded && (
-        <div
-          className="
-            absolute
-            bottom-40
-            left-1/2
-            z-50
-            -translate-x-1/2
-            rounded-full
-            bg-[var(--success-color)]
-            px-6
-            py-3
-            text-sm
-            font-black
-            text-[var(--button-text-color)]
-            shadow-2xl
-          "
-        >
+      {/* REWARD CLAIMED TOAST (temporary) */}
+      {showRewardToast && (
+        <div className="fixed left-1/2 bottom-32 z-50 -translate-x-1/2 rounded-full bg-[var(--success-color)] px-5 py-2 text-sm font-black text-[var(--button-text-color)] shadow-2xl">
           Reward Claimed 🎉
         </div>
       )}
