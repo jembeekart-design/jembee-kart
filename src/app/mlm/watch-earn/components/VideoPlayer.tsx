@@ -13,12 +13,14 @@ interface VideoPlayerProps {
   videoUrl: string;
   rewardCoins: number;
   watchSeconds: number;
+  isMuted?: boolean;
 }
 
 export default function VideoPlayer({
   videoUrl,
   rewardCoins,
   watchSeconds,
+  isMuted = true,
 }: VideoPlayerProps) {
   const videoRef =
     useRef<HTMLVideoElement>(null);
@@ -34,7 +36,6 @@ export default function VideoPlayer({
 
   const [showRewardToast, setShowRewardToast] = useState(false);
   
-  const [isMuted, setIsMuted] = useState(true);
 
   useEffect(() => {
     let interval: NodeJS.Timeout;
@@ -94,15 +95,6 @@ export default function VideoPlayer({
         className="h-full w-full object-cover"
       />
       
-      {/* MUTE TOGGLE */}
-      <button
-        onClick={() => setIsMuted(!isMuted)}
-        className="absolute right-4 bottom-20 z-40 rounded-full bg-black/40 p-2 text-white"
-        aria-label={isMuted ? "Unmute video" : "Mute video"}
-      >
-        {isMuted ? "🔇" : "🔊"}
-      </button>
-
       {/* OVERLAY */}
 
       <div
