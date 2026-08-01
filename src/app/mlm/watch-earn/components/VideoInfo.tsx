@@ -31,139 +31,47 @@ VideoInfo({
   return (
 
     <div
-      className="
-        absolute
-        bottom-24
-        left-4
-        z-40
-        max-w-[75%]
-        text-[var(--button-text-color)]
-      "
+      className="absolute bottom-6 left-4 z-40 max-w-[72%] text-[var(--button-text-color)] pointer-events-none"
+      aria-hidden={false}
     >
 
-      {/* USER */}
+      {/* Compact user row */}
 
-      <div
-        className="
-          flex
-          items-center
-          gap-2
-        "
-      >
+      <div className="flex items-center gap-3">
+        <div className="h-10 w-10 rounded-full bg-gradient-to-br from-pink-500 to-yellow-400 p-0.5">
+          <div className="h-full w-full rounded-full bg-[var(--card-color)]" aria-hidden />
+        </div>
 
-        <h2
-          className="
-            text-xl
-            font-black
-          "
-        >
+        <div className="flex flex-col leading-tight">
+          <div className="flex items-center gap-2">
+            <span className="text-sm font-extrabold">@{username}</span>
+            {verified && (
+              <BadgeCheck size={14} className="text-blue-400" aria-label="Verified account" />
+            )}
+          </div>
 
-          @{username}
-
-        </h2>
-
-        {verified && (
-
-          <BadgeCheck
-            size={18}
-            className="
-              fill-blue-500
-              text-[var(--button-text-color)]
-            "
-          />
-
-        )}
-
+          <span className="text-xs text-[var(--text-color)]/80 truncate max-w-[40vw]">{music}</span>
+        </div>
       </div>
 
-      {/* CAPTION */}
-
-      <p
-        className="
-          mt-3
-          text-sm
-          leading-6
-          text-[var(--text-color)]
-        "
-      >
-
-        {caption}
-
-      </p>
-
-      {/* HASHTAGS */}
-
-      <div
-        className="
-          mt-3
-          flex
-          flex-wrap
-          gap-2
-        "
-      >
-
-        {hashtags.map(
-          (tag) => (
-
-            <span
-              key={tag}
-              className="
-                rounded-full
-                bg-[var(--card-color)]/10
-                px-3
-                py-1
-                text-xs
-                font-bold
-                text-[var(--primary-color)]
-                backdrop-blur-xl
-              "
-            >
-
-              #{tag}
-
-            </span>
-          )
-        )}
-
-      </div>
-
-      {/* MUSIC */}
-
-      <div
-        className="
-          mt-4
-          flex
-          items-center
-          gap-2
-          rounded-full
-          bg-[var(--card-color)]/40
-          px-4
-          py-2
-          backdrop-blur-xl
-        "
-      >
-
-        <Music2
-          size={16}
-          className="
-            text-[var(--primary-color)]
-          "
-        />
-
-        <p
-          className="
-            truncate
-            text-xs
-            font-bold
-            text-[var(--button-text-color)]
-          "
-        >
-
-          {music}
-
+      {/* Caption (compact) */}
+      {caption && (
+        <p className="mt-2 text-sm leading-5 max-w-[72%] text-[var(--button-text-color)]/90 pointer-events-auto">
+          {caption}
         </p>
+      )}
 
-      </div>
+      {/* Hashtags (compact single-line overflow) */}
+      {hashtags && hashtags.length > 0 && (
+        <div className="mt-2 flex items-center gap-2 overflow-hidden">
+          {hashtags.slice(0, 3).map((tag) => (
+            <span key={tag} className="text-xs font-semibold text-[var(--primary-color)]">#{tag}</span>
+          ))}
+          {hashtags.length > 3 && (
+            <span className="text-xs text-[var(--text-color)]/70">+{hashtags.length - 3}</span>
+          )}
+        </div>
+      )}
 
     </div>
   );
