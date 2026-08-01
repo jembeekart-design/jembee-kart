@@ -111,6 +111,10 @@ VerticalVideoFeed() {
     setSelectedVideo
   ] = useState("");
 
+  const [isMuted, setIsMuted] = useState(true);
+  const [likedVideos, setLikedVideos] = useState<Record<string, boolean>>({});
+  const [savedVideos, setSavedVideos] = useState<Record<string, boolean>>({});
+
   const handleShare = async (video: typeof videos[0]) => {
     const shareData = {
       title: 'Check out this video on JembeeKart',
@@ -169,6 +173,7 @@ VerticalVideoFeed() {
               watchSeconds={
                 video.watchSeconds
               }
+              isMuted={isMuted}
             />
 
             {/* INFO */}
@@ -199,7 +204,7 @@ VerticalVideoFeed() {
 
             <VideoActions
               likes={
-                video.likes
+                video.likes + (likedVideos[video.id] ? 1 : 0)
               }
 
               comments={
@@ -214,15 +219,14 @@ VerticalVideoFeed() {
                 video.rewardCoins
               }
 
-              onLike={() => {
+              isMuted={isMuted}
 
-                console.log(
-                  "Liked"
-                );
+              onLike={() => {
+                setLikedVideos(prev => ({ ...prev, [video.id]: !prev[video.id] }));
               }}
 
               onComment={() => {
-
+                setSelectedVideo(video.id);
                 setCommentOpen(
                   true
                 );
@@ -231,6 +235,16 @@ VerticalVideoFeed() {
               onShare={() => {
                 handleShare(video);
               }}
+
+              onSave={() => {
+                setSavedVideos(prev => ({ ...prev, [video.id]: !prev[video.id] }));
+              }}
+
+              toggleMute={() => setIsMuted(!isMuted)}
+
+              isLiked={!!likedVideos[video.id]}
+
+              isSaved={!!savedVideos[video.id]}
             />
 
           </section>
