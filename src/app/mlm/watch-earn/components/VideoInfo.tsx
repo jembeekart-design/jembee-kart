@@ -31,7 +31,7 @@ VideoInfo({
   return (
 
     <div
-      className="absolute bottom-6 left-4 z-40 max-w-[72%] text-[var(--button-text-color)] pointer-events-none"
+      className="absolute bottom-[calc(10rem+env(safe-area-inset-bottom))] left-4 z-40 max-w-[72%] text-[var(--button-text-color)] pointer-events-none"
       aria-hidden={false}
     >
 
