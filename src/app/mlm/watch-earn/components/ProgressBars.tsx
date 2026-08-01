@@ -1,7 +1,6 @@
 "use client";
 
 import React from "react";
-import RewardProgressBar from "./RewardProgressBar";
 import { motion } from "framer-motion";
 
 export default function ProgressBars() {
@@ -18,10 +17,7 @@ export default function ProgressBars() {
           <div className="h-1 w-full rounded-full bg-white/10" />
         </motion.div>
 
-        {/* Reward progress (UI only wrapper) */}
-        <div>
-          <RewardProgressBar />
-        </div>
+        {/* Reward progress is rendered per-video inside VideoPlayer via RewardProgressBar. */}
       </div>
     </div>
   );
