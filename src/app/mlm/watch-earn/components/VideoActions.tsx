@@ -42,7 +42,7 @@ export default function VideoActions({
   ];
 
   return (
-    <aside className="absolute right-4 bottom-32 z-40 flex flex-col items-center gap-4">
+    <aside className="absolute right-4 bottom-[calc(10rem+env(safe-area-inset-bottom))] z-40 flex flex-col items-center gap-4">
       {actions.map((a) => (
         <div key={a.key} className="flex flex-col items-center gap-1">
           <motion.button

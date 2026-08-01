@@ -52,7 +52,7 @@ export default function RewardProgressBar({
   return (
     <>
       {/* Compact bottom overlay (reels style) */}
-      <div className="pointer-events-auto fixed left-4 right-4 bottom-4 z-50 flex items-end justify-center">
+      <div className="pointer-events-auto absolute left-4 right-4 bottom-[calc(5rem+env(safe-area-inset-bottom))] z-50 flex items-end justify-center">
         <div className="w-full max-w-3xl">
           <div className="flex items-center justify-between gap-3">
             <button
