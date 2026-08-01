@@ -1,7 +1,8 @@
 "use client";
 
 import {
-  useState
+  useState,
+  useEffect
 } from "react";
 
 import VideoPlayer
@@ -20,79 +21,22 @@ import ShareDrawer
 from "./ShareDrawer";
 
 import Toast from "./Toast";
-
-const videos = [
-  {
-    id: "1",
-
-    username:
-      "JembeeKart",
-
-    caption:
-      "Earn coins by watching videos 🔥",
-
-    hashtags: [
-      "earnmoney",
-      "shopping",
-      "rewards"
-    ],
-
-    music:
-      "Trending Audio",
-
-    verified: true,
-
-    videoUrl:
-      "https://www.w3schools.com/html/mov_bbb.mp4",
-
-    rewardCoins: 10,
-
-    watchSeconds: 10,
-
-    likes: 1200,
-
-    comments: 250,
-
-    shares: 90
-  },
-
-  {
-    id: "2",
-
-    username:
-      "FashionHub",
-
-    caption:
-      "New fashion drops available now ✨",
-
-    hashtags: [
-      "fashion",
-      "style",
-      "shopping"
-    ],
-
-    music:
-      "Fashion Beat",
-
-    verified: false,
-
-    videoUrl:
-      "https://www.w3schools.com/html/movie.mp4",
-
-    rewardCoins: 15,
-
-    watchSeconds: 12,
-
-    likes: 4300,
-
-    comments: 780,
-
-    shares: 320
-  }
-];
+import { getWatchVideos } from "../services/watchVideos.service";
+import { DEFAULT_BUSINESS_RULES } from "@/firestore/businessRules/defaults";
 
 export default function
 VerticalVideoFeed() {
+  const [videos, setVideos] = useState<any[]>([]);
+
+  useEffect(() => {
+    async function loadVideos() {
+      const result = await getWatchVideos();
+      if (result.success) {
+        setVideos(result.videos);
+      }
+    }
+    loadVideos();
+  }, []);
 
   const [
     commentOpen,
@@ -115,7 +59,7 @@ VerticalVideoFeed() {
   const [likedVideos, setLikedVideos] = useState<Record<string, boolean>>({});
   const [savedVideos, setSavedVideos] = useState<Record<string, boolean>>({});
 
-  const handleShare = async (video: typeof videos[0]) => {
+  const handleShare = async (video: any) => {
     const shareData = {
       title: 'Check out this video on JembeeKart',
       text: video.caption,
@@ -163,15 +107,15 @@ VerticalVideoFeed() {
 
             <VideoPlayer
               videoUrl={
-                video.videoUrl
+                video.video
               }
 
               rewardCoins={
-                video.rewardCoins
+                video.coins
               }
 
               watchSeconds={
-                video.watchSeconds
+                DEFAULT_BUSINESS_RULES.watchEarn.minimumWatchDuration
               }
               isMuted={isMuted}
             />
@@ -216,7 +160,7 @@ VerticalVideoFeed() {
               }
 
               coins={
-                video.rewardCoins
+                video.coins
               }
 
               isMuted={isMuted}
