@@ -13,9 +13,10 @@ interface CommentDrawerProps {
   open: boolean;
   onClose: () => void;
   videoId: string;
+  onCommentAdded?: () => void; // NEW optional callback
 }
 
-export default function CommentDrawer({ open, onClose, videoId }: CommentDrawerProps) {
+export default function CommentDrawer({ open, onClose, videoId, onCommentAdded }: CommentDrawerProps) {
   const { config } = useAdminConfig();
   const { commentModeration } = config;
   const [commentText, setCommentText] = useState("");
@@ -34,7 +35,6 @@ export default function CommentDrawer({ open, onClose, videoId }: CommentDrawerP
   }, [open, videoId]);
 
   async function handleAddComment() {
-    console.log("DEBUG: handleAddComment called", { commentText, uid: auth.currentUser?.uid, videoId });
     if (!commentText.trim() || !auth.currentUser) return;
     
     try {
@@ -45,11 +45,13 @@ export default function CommentDrawer({ open, onClose, videoId }: CommentDrawerP
         commentText, 
         commentModeration
       );
-      console.log("DEBUG: addComment success");
+
+      // Notify parent to update its local aggregated comment count
+      onCommentAdded?.();
+
       setCommentText("");
       setError("");
     } catch (err: any) {
-      console.error("DEBUG: addComment error", err);
       setError(err.message || "Failed to add comment.");
     }
   }
@@ -245,7 +247,7 @@ export default function CommentDrawer({ open, onClose, videoId }: CommentDrawerP
         />
 
         <button
-          onClick={() => { console.log("BUTTON CLICKED"); handleAddComment(); }}
+          onClick={handleAddComment}
           className="
             flex
             h-12
