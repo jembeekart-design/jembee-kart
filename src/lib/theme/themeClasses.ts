@@ -3,47 +3,47 @@
 export const themeClasses = {
   // Buttons
   primaryButton:
-    "bg-[var(--primary-color)] text-[var(--button-text-color)] hover:opacity-90 rounded-[var(--button-radius)]",
+    "bg-[var(--color-primary-button)] text-[var(--button-text-color)] hover:opacity-90 rounded-[var(--button-radius)]",
 
   secondaryButton:
-    "bg-[var(--secondary-color)] text-[var(--button-text-color)] hover:opacity-90 rounded-[var(--button-radius)]",
+    "bg-[var(--color-secondary-button)] text-[var(--button-text-color)] hover:opacity-90 rounded-[var(--button-radius)]",
 
   outlineButton:
-    "border border-[var(--border-color)] text-[var(--text-color)] bg-transparent rounded-[var(--button-radius)]",
+    "border border-[var(--color-border)] text-[var(--text-primary)] bg-transparent rounded-[var(--button-radius)]",
 
   // Cards
   card:
-    "bg-[var(--card-color)] border border-[var(--border-color)] rounded-[var(--card-radius)] shadow",
+    "bg-[var(--color-card-background)] border border-[var(--color-border)] rounded-[var(--card-radius)] shadow",
 
   // Inputs
   input:
-    "bg-[var(--card-color)] border border-[var(--border-color)] text-[var(--text-color)] rounded-[var(--input-radius)]",
+    "bg-[var(--color-input-background)] border border-[var(--color-border)] text-[var(--text-primary)] rounded-[var(--input-radius)]",
 
   // Text
   heading:
-    "text-[var(--text-color)] font-bold",
+    "text-[var(--text-primary)] font-bold",
 
   body:
-    "text-[var(--text-color)]",
+    "text-[var(--text-primary)]",
 
   muted:
-    "text-[var(--muted-text-color)]",
+    "text-[var(--text-muted)]",
 
   // Background
   page:
-    "bg-[var(--background-color)] text-[var(--text-color)]",
+    "bg-[var(--color-page-background)] text-[var(--text-primary)]",
 
   // Border
   border:
-    "border border-[var(--border-color)]",
+    "border border-[var(--color-border)]",
 
   // Badge
   success:
-    "bg-[var(--success-color)] text-[var(--button-text-color)]",
+    "bg-[var(--color-success)] text-[var(--button-text-color)]",
 
   warning:
-    "bg-[var(--warning-color)] text-[var(--text-color)]",
+    "bg-[var(--color-warning)] text-[var(--text-primary)]",
 
   danger:
-    "bg-[var(--danger-color)] text-[var(--button-text-color)]",
+    "bg-[var(--color-danger)] text-[var(--button-text-color)]",
 };
