@@ -1,8 +1,8 @@
 import { 
-  doc, getDoc, setDoc, updateDoc, collection, getDocs, addCollection, 
+  doc, getDoc, setDoc, updateDoc, collection, getDocs, addDoc, 
   onSnapshot, serverTimestamp, query, where, Timestamp 
 } from 'firebase/firestore';
-import { db } from '@/lib/firebase'; // Assuming standard project firebase instance
+import { db } from '@/firebase/config';
 import { ModerationSettings, RegexRule, CommentViolation, CommentAuditLog } from '@/types/moderation';
 
 let settingsCache: ModerationSettings | null = null;
@@ -59,7 +59,7 @@ export const getModerationSettings = async (forceRefresh = false): Promise<Moder
 
   try {
     const docRef = doc(db, 'commentModeration', 'settings');
-    const snap = await docRef.get ? await docRef.get() : await getDoc(docRef); // Compatible wrapper
+    const snap = await getDoc(docRef);
     if (snap.exists()) {
       settingsCache = { ...DEFAULT_SETTINGS, ...(snap.data() as ModerationSettings) };
       cacheTimestamp = now;
@@ -101,7 +101,7 @@ export const updateModerationSettings = async (
 
   // Write audit log
   const changedFields = Object.keys(newSettings).filter(
-    key => JSON.stringify((oldValue as any)[key]) !== JSON.stringify((newSettings as any)[key])
+    key => JSON.stringify((oldValue as Record<string, any>)[key]) !== JSON.stringify((newSettings as Record<string, any>)[key])
   );
 
   const auditLog: CommentAuditLog = {
@@ -118,7 +118,7 @@ export const updateModerationSettings = async (
 
 export const getRegexRules = async (): Promise<RegexRule[]> => {
   const snapshot = await getDocs(collection(db, 'commentRegexRules'));
-  return snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() } as RegexRule));
+  return snapshot.docs.map(docSnap => ({ id: docSnap.id, ...docSnap.data() } as RegexRule));
 };
 
 export const getUserViolation = async (userId: string): Promise<CommentViolation | null> => {
