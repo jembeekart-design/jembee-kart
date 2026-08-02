@@ -2,7 +2,8 @@
 
 import {
   useState,
-  useEffect
+  useEffect,
+  useRef
 } from "react";
 
 import VideoPlayer
@@ -17,35 +18,50 @@ from "./VideoActions";
 import CommentDrawer
 from "./CommentDrawer";
 
-import ShareDrawer
-from "./ShareDrawer";
-
 import Toast from "./Toast";
-import { getWatchVideos } from "../services/watchVideos.service";
+import { getWatchVideos, WatchVideo } from "../services/watchVideos.service";
 import { DEFAULT_BUSINESS_RULES } from "@/firestore/businessRules/defaults";
 
 export default function
 VerticalVideoFeed() {
-  const [videos, setVideos] = useState<any[]>([]);
+  const [videos, setVideos] = useState<WatchVideo[]>([]);
+  const [loading, setLoading] = useState<boolean>(true);
+  const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
+    let isMounted = true;
+
     async function loadVideos() {
-      const result = await getWatchVideos();
-      if (result.success) {
-        setVideos(result.videos);
+      try {
+        setLoading(true);
+        const result = await getWatchVideos();
+        if (!isMounted) return;
+
+        if (result && result.success && Array.isArray(result.videos)) {
+          setVideos(result.videos);
+        } else {
+          setVideos([]);
+        }
+      } catch {
+        if (!isMounted) return;
+        setError("Failed to load videos");
+      } finally {
+        if (isMounted) {
+          setLoading(false);
+        }
       }
     }
+
     loadVideos();
+
+    return () => {
+      isMounted = false;
+    };
   }, []);
 
   const [
     commentOpen,
     setCommentOpen
-  ] = useState(false);
-
-  const [
-    shareOpen,
-    setShareOpen
   ] = useState(false);
   
   const [toastMessage, setToastMessage] = useState<string | null>(null);
@@ -59,7 +75,45 @@ VerticalVideoFeed() {
   const [likedVideos, setLikedVideos] = useState<Record<string, boolean>>({});
   const [savedVideos, setSavedVideos] = useState<Record<string, boolean>>({});
 
-  const handleShare = async (video: any) => {
+  const [activeVideoId, setActiveVideoId] = useState<string>("");
+  const containerRef = useRef<HTMLElement>(null);
+
+  useEffect(() => {
+    if (videos.length > 0 && !activeVideoId) {
+      setActiveVideoId(videos[0].id);
+    }
+  }, [videos, activeVideoId]);
+
+  useEffect(() => {
+    const container = containerRef.current;
+    if (!container) return;
+
+    const sections = container.querySelectorAll("section[data-video-id]");
+    const observer = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting) {
+            const videoId = entry.target.getAttribute("data-video-id");
+            if (videoId) {
+              setActiveVideoId(videoId);
+            }
+          }
+        });
+      },
+      {
+        root: container,
+        threshold: 0.6,
+      }
+    );
+
+    sections.forEach((section) => observer.observe(section));
+
+    return () => {
+      observer.disconnect();
+    };
+  }, [videos]);
+
+  const handleShare = async (video: WatchVideo) => {
     const shareData = {
       title: 'Check out this video on JembeeKart',
       text: video.caption,
@@ -74,14 +128,39 @@ VerticalVideoFeed() {
         await navigator.clipboard.writeText(shareData.url);
         setToastMessage("Link copied.");
       }
-    } catch (err) {
-      console.error('Share failed', err);
+    } catch {
+      // Fail silently without console logging
     }
   };
+
+  if (loading) {
+    return (
+      <main className="h-screen flex items-center justify-center bg-[var(--card-color)] text-white">
+        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-white"></div>
+      </main>
+    );
+  }
+
+  if (error) {
+    return (
+      <main className="h-screen flex items-center justify-center bg-[var(--card-color)] text-white">
+        <p>{error}</p>
+      </main>
+    );
+  }
+
+  if (videos.length === 0) {
+    return (
+      <main className="h-screen flex items-center justify-center bg-[var(--card-color)] text-white">
+        <p>No videos available.</p>
+      </main>
+    );
+  }
 
   return (
 
     <main
+      ref={containerRef}
       className="
         h-screen
         snap-y
@@ -96,6 +175,7 @@ VerticalVideoFeed() {
 
           <section
             key={video.id}
+            data-video-id={video.id}
             className="
               relative
               h-screen
@@ -118,6 +198,7 @@ VerticalVideoFeed() {
                 DEFAULT_BUSINESS_RULES.watchEarn.minimumWatchDuration
               }
               isMuted={isMuted}
+              active={activeVideoId === video.id}
             />
 
             {/* INFO */}
@@ -203,22 +284,6 @@ VerticalVideoFeed() {
             videoId={selectedVideo}
         />
       )}
-
-      {/* SHARE DRAWER */}
-
-      <ShareDrawer
-        open={shareOpen}
-
-        onClose={() =>
-          setShareOpen(
-            false
-          )
-        }
-
-        videoId={
-          selectedVideo
-        }
-      />
       
       {/* Toast */}
       <Toast message={toastMessage} onClose={() => setToastMessage(null)} />
