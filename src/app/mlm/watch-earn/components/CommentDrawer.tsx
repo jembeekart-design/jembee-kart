@@ -34,6 +34,7 @@ export default function CommentDrawer({ open, onClose, videoId }: CommentDrawerP
   }, [open, videoId]);
 
   async function handleAddComment() {
+    console.log("DEBUG: handleAddComment called", { commentText, uid: auth.currentUser?.uid, videoId });
     if (!commentText.trim() || !auth.currentUser) return;
     
     try {
@@ -44,9 +45,11 @@ export default function CommentDrawer({ open, onClose, videoId }: CommentDrawerP
         commentText, 
         commentModeration
       );
+      console.log("DEBUG: addComment success");
       setCommentText("");
       setError("");
     } catch (err: any) {
+      console.error("DEBUG: addComment error", err);
       setError(err.message || "Failed to add comment.");
     }
   }
@@ -242,7 +245,7 @@ export default function CommentDrawer({ open, onClose, videoId }: CommentDrawerP
         />
 
         <button
-          onClick={handleAddComment}
+          onClick={() => { console.log("BUTTON CLICKED"); handleAddComment(); }}
           className="
             flex
             h-12
