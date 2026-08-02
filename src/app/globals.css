@@ -1,21 +1,38 @@
 @import "tailwindcss";
 
 @theme {
-  /* Dynamic CSS Variables mapping for Tailwind v4 */
-  --color-primary: var(--primary-color);
-  --color-secondary: var(--secondary-color);
-  --color-background: var(--background-color);
-  --color-card: var(--card-color);
-  --color-text: var(--text-color);
+  /* Map Tailwind theme tokens to semantic CSS variables */
+  --color-primary: var(--color-primary-button);
+  --color-secondary: var(--color-secondary-button);
+  --color-background: var(--color-page-background);
+  --color-card: var(--color-card-background);
+  --color-text: var(--text-primary);
 }
 
 :root {
-  /* Default Fallback Colors */
+  /* Legacy fallbacks */
   --primary-color: #4F46E5;
   --secondary-color: #7C3AED;
   --background-color: #F8F9FE;
   --card-color: #FFFFFF;
   --text-color: #111827;
+
+  /* Semantic defaults */
+  --color-page-background: var(--background-color);
+  --color-surface: var(--card-color);
+  --color-card-background: var(--card-color);
+  --color-section-background: #F1F5F9;
+  --color-header: var(--primary-color);
+  --color-input-background: var(--card-color);
+  --color-border: #E5E7EB;
+  --color-primary-button: var(--primary-color);
+  --color-secondary-button: var(--secondary-color);
+  --text-primary: var(--text-color);
+  --text-secondary: #6B7280;
+  --text-muted: #9CA3AF;
+  --color-success: #10B981;
+  --color-warning: #F59E0B;
+  --color-danger: #EF4444;
 }
 
 html,
@@ -31,8 +48,8 @@ body {
 }
 
 body {
-  background: var(--background-color);
-  color: var(--text-color);
+  background: var(--color-page-background);
+  color: var(--text-primary);
   font-family: Arial, Helvetica, sans-serif;
 }
 
@@ -52,59 +69,59 @@ canvas {
   display: block;
 }
 
-/* GLOBAL THEME CLASSES (Kept for legacy support) */
+/* LEGACY THEME CLASSES: Converted to semantic names where appropriate */
 
 .theme-primary-bg {
-  background: var(--primary-color);
+  background: var(--color-primary-button);
 }
 
 .theme-secondary-bg {
-  background: var(--secondary-color);
+  background: var(--color-secondary-button);
 }
 
 .theme-primary-text {
-  color: var(--primary-color);
+  color: var(--color-primary-button);
 }
 
 .theme-secondary-text {
-  color: var(--secondary-color);
+  color: var(--color-secondary-button);
 }
 
 .theme-card {
-  background: var(--card-color);
+  background: var(--color-card-background);
 }
 
 .theme-page {
-  background: var(--background-color);
-  color: var(--text-color);
+  background: var(--color-page-background);
+  color: var(--text-primary);
 }
 
 .theme-gradient {
   background: linear-gradient(
     135deg,
-    var(--primary-color),
-    var(--secondary-color)
+    var(--color-primary-button),
+    var(--color-secondary-button)
   );
 }
 .theme-primary-border {
-  border-color: var(--primary-color);
+  border-color: var(--color-primary-button);
 }
 
 .theme-secondary-border {
-  border-color: var(--secondary-color);
+  border-color: var(--color-secondary-button);
 }
 
 .theme-primary-soft {
-  background: color-mix(in srgb, var(--primary-color) 20%, transparent);
+  background: color-mix(in srgb, var(--color-primary-button) 20%, transparent);
 }
 
 .theme-primary-soft-text {
-  color: var(--primary-color);
+  color: var(--color-primary-button);
 }
 
 /* Product Card Underline Component */
 .card-accent-border {
-  border-bottom: 4px solid var(--secondary-color);
+  border-bottom: 4px solid var(--color-secondary-button);
   padding-bottom: 2px;
   display: inline-block;
   margin-bottom: 10px;
