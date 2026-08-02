@@ -36,269 +36,196 @@ import {
 } from "lucide-react";
 
 const menuItems = [
-
   {
     title: "Dashboard",
     icon: LayoutDashboard,
     href: "/admin"
   },
-
   {
     title: "Analytics",
     icon: BarChart3,
     href: "/admin/analytics"
   },
-
   {
     title: "Orders",
     icon: ShoppingCart,
     href: "/admin/orders"
   },
-
   {
     title: "Products",
     icon: Package,
     href: "/admin/products"
   },
-
   {
     title: "Inventory",
     icon: Boxes,
     href: "/admin/inventory"
   },
-
   {
     title: "Users",
     icon: Users,
     href: "/admin/users"
   },
-
   {
     title: "Wallet",
     icon: Wallet,
     href: "/admin/wallet"
   },
-
   {
     title: "Payments",
     icon: CreditCard,
     href: "/admin/payments"
   },
-
   {
     title: "Affiliate",
     icon: Store,
     href: "/admin/affiliate"
   },
-
   {
     title: "Commission",
     icon: Percent,
     href: "/admin/commission-engine"
   },
-
   {
     title: "Delivery",
     icon: Truck,
     href: "/admin/delivery"
   },
-
   {
     title: "Live Stream",
     icon: Radio,
     href: "/admin/live-stream"
   },
-
   {
     title: "Notifications",
     icon: Bell,
     href: "/admin/notifications"
   },
-
   {
     title: "Announcement",
     icon: Megaphone,
     href: "/admin/announcement"
   },
-
   {
     title: "Messages",
     icon: MessageSquare,
     href: "/admin/messages"
   },
-
   {
     title: "Support",
     icon: Headphones,
     href: "/admin/support"
   },
-
   {
     title: "Tickets",
     icon: Ticket,
     href: "/admin/support-tickets"
   },
-
   {
     title: "SEO",
     icon: Search,
     href: "/admin/seo"
   },
-
   {
     title: "AI Tools",
     icon: Sparkles,
     href: "/admin/ai-tools"
   },
-
   {
     title: "Pages",
     icon: AppWindow,
     href: "/admin/all-pages"
   },
-
   {
     title: "Storage",
     icon: Folder,
     href: "/admin/storage"
   },
-
   {
     title: "Database",
     icon: Database,
     href: "/admin/database"
   },
-
   {
     title: "Theme",
     icon: Palette,
     href: "/admin/theme"
   },
-
   {
     title: "System",
     icon: Cpu,
     href: "/admin/system"
   },
-
   {
     title: "Logs",
     icon: ClipboardList,
     href: "/admin/system-logs"
   },
-
   {
     title: "Reports",
     icon: FileText,
     href: "/admin/reports"
   },
-
   {
     title: "Security",
     icon: Shield,
     href: "/admin/security"
   },
-
   {
     title: "Settings",
     icon: Settings,
     href: "/admin/settings"
   }
-
 ];
 
 export default function AdminSidebar() {
-
-  const pathname =
-    usePathname();
+  const pathname = usePathname();
 
   return (
-
-    <aside className="hidden h-screen w-[280px] overflow-y-auto border-r border-[var(--border-color)]/10 bg-[var(--primary-color)] p-5 text-[var(--button-text-color)] lg:block">
-
+    <aside className="hidden h-screen w-[280px] overflow-y-auto border-r border-[var(--color-border)]/10 bg-[var(--color-header)] p-5 text-[var(--text-primary)] lg:block">
       {/* LOGO */}
-
       <div className="mb-8 flex items-center gap-3">
-
-        <div className="flex h-14 w-14 items-center justify-center rounded-2xl bg-[var(--primary-color)] text-[var(--text-color)]">
-
+        <div className="flex h-14 w-14 items-center justify-center rounded-2xl bg-[var(--color-primary-button)] text-[var(--text-color)]">
           <LayoutDashboard size={28} />
-
         </div>
 
         <div>
-
-          <h1 className="text-2xl font-black">
-            JembeeKart
-          </h1>
-
-          <p className="text-sm text-[var(--muted-text-color)]">
-            Admin Panel
-          </p>
-
+          <h1 className="text-2xl font-black">JembeeKart</h1>
+          <p className="text-sm text-[var(--text-muted)]">Admin Panel</p>
         </div>
-
       </div>
 
       {/* MENU */}
-
       <div className="space-y-2">
-
         {menuItems.map((item, index) => {
-
-          const Icon =
-            item.icon;
-
-          const active =
-            pathname === item.href;
+          const Icon = item.icon;
+          const active = pathname === item.href;
 
           return (
-
             <Link
               key={index}
               href={item.href}
               className={`flex items-center gap-4 rounded-2xl px-4 py-4 transition-all duration-300 ${
                 active
-                  ? "bg-[var(--primary-color)] text-[var(--text-color)]"
-                  : "bg-[var(--primary-color)] hover:bg-[var(--primary-color)] hover:text-[var(--text-color)]"
+                  ? "bg-[var(--color-section-background)] text-[var(--text-primary)]"
+                  : "bg-transparent hover:bg-[var(--color-section-background)] hover:text-[var(--text-primary)]"
               }`}
             >
-
               <Icon size={22} />
-
-              <span className="text-sm font-bold">
-
-                {item.title}
-
-              </span>
-
+              <span className="text-sm font-bold">{item.title}</span>
             </Link>
-
           );
-
         })}
-
       </div>
 
       {/* FOOTER */}
-
-      <div className="mt-10 rounded-3xl border border-[var(--primary-color)]/30 bg-[var(--primary-color)]/10 p-5">
-
-        <h2 className="text-lg font-black">
-          Admin System
-        </h2>
-
-        <p className="mt-2 text-sm text-[var(--text-color)]">
-
+      <div className="mt-10 rounded-3xl border border-[var(--color-border)]/30 bg-[var(--color-section-background)]/10 p-5">
+        <h2 className="text-lg font-black">Admin System</h2>
+        <p className="mt-2 text-sm text-[var(--text-primary)]">
           Manage products, orders, users, AI tools,
           marketing, payments and analytics.
-
         </p>
-
       </div>
-
     </aside>
-
   );
-
 }
