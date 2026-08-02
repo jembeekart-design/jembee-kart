@@ -4,6 +4,8 @@ import {
   useState
 } from "react";
 
+import { auth } from "@/firebase/config";
+
 import {
   Upload,
   Loader2,
@@ -67,10 +69,10 @@ UploadWatchVideoPage() {
           file,
 
           userId:
-            "demo-user-id",
+            auth.currentUser?.uid || "",
 
           username:
-            "JembeeKart",
+            auth.currentUser?.displayName || "JembeeKart User",
 
           caption,
 
