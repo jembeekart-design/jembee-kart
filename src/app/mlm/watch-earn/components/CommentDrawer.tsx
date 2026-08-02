@@ -13,9 +13,10 @@ interface CommentDrawerProps {
   open: boolean;
   onClose: () => void;
   videoId: string;
+  onCommentAdded?: () => void; // NEW optional callback
 }
 
-export default function CommentDrawer({ open, onClose, videoId }: CommentDrawerProps) {
+export default function CommentDrawer({ open, onClose, videoId, onCommentAdded }: CommentDrawerProps) {
   const { config } = useAdminConfig();
   const { commentModeration } = config;
   const [commentText, setCommentText] = useState("");
@@ -44,6 +45,10 @@ export default function CommentDrawer({ open, onClose, videoId }: CommentDrawerP
         commentText, 
         commentModeration
       );
+
+      // Notify parent to update its local aggregated comment count
+      onCommentAdded?.();
+
       setCommentText("");
       setError("");
     } catch (err: any) {
