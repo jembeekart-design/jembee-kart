@@ -22,6 +22,11 @@ import Toast from "./Toast";
 import { getWatchVideos, WatchVideo } from "../services/watchVideos.service";
 import { DEFAULT_BUSINESS_RULES } from "@/firestore/businessRules/defaults";
 
+// New imports for persistence and auth
+import { auth } from "@/firebase/config";
+import { likeVideo } from "@/lib/mlm/watch-earn/likeVideo";
+import { shareVideo } from "@/lib/mlm/watch-earn/shareVideo";
+
 export default function
 VerticalVideoFeed() {
   const [videos, setVideos] = useState<WatchVideo[]>([]);
@@ -128,6 +133,26 @@ VerticalVideoFeed() {
         await navigator.clipboard.writeText(shareData.url);
         setToastMessage("Link copied.");
       }
+
+      // Persist share via existing service (if user is authenticated)
+      try {
+        const uid = auth.currentUser?.uid;
+        if (uid) {
+          const res = await shareVideo({ videoId: video.id, userId: uid });
+          if (res && res.success) {
+            // Update local state to reflect increment
+            setVideos(prev =>
+              prev.map(v =>
+                v.id === video.id ? { ...v, shares: v.shares + 1 } : v
+              )
+            );
+          }
+        }
+      } catch (err) {
+        // Log and continue; UI already shows toast
+        console.error("shareVideo error:", err);
+      }
+
     } catch {
       // Fail silently without console logging
     }
@@ -246,8 +271,32 @@ VerticalVideoFeed() {
 
               isMuted={isMuted}
 
-              onLike={() => {
-                setLikedVideos(prev => ({ ...prev, [video.id]: !prev[video.id] }));
+              onLike={async () => {
+                const uid = auth.currentUser?.uid;
+                if (!uid) {
+                  setToastMessage("Please log in to like videos.");
+                  return;
+                }
+
+                // If already liked locally, treat as unlike locally (no server unlike available)
+                if (likedVideos[video.id]) {
+                  setLikedVideos(prev => ({ ...prev, [video.id]: false }));
+                  setVideos(prev => prev.map(v => v.id === video.id ? { ...v, likes: Math.max(0, v.likes - 1) } : v));
+                  return;
+                }
+
+                try {
+                  const res = await likeVideo({ videoId: video.id, userId: uid });
+                  if (res && res.success) {
+                    setLikedVideos(prev => ({ ...prev, [video.id]: true }));
+                    setVideos(prev => prev.map(v => v.id === video.id ? { ...v, likes: v.likes + 1 } : v));
+                  } else {
+                    setToastMessage("Failed to like the video.");
+                  }
+                } catch (err) {
+                  console.error("likeVideo error:", err);
+                  setToastMessage("Failed to like the video.");
+                }
               }}
 
               onComment={() => {
@@ -282,6 +331,10 @@ VerticalVideoFeed() {
             open={commentOpen}
             onClose={() => { setCommentOpen(false); setSelectedVideo(""); }}
             videoId={selectedVideo}
+            onCommentAdded={() => {
+              // Optimistically increment local video's comments count
+              setVideos(prev => prev.map(v => v.id === selectedVideo ? { ...v, comments: v.comments + 1 } : v));
+            }}
         />
       )}
       
