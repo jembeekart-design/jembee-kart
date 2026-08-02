@@ -65,37 +65,41 @@ export default function AccountPage() {
 
       const docRef = doc(db, "users", currentUser.uid);
 
-      unsubscribeFirestore = onSnapshot(docRef, (docSnap) => {
-        if (docSnap.exists()) {
-          const data = docSnap.data();
-          setUser({
-            uid: data.uid || currentUser.uid,
-            email: data.email || "",
-            name: data.name || "",
-            photo: data.photo || "",
-            phone: data.phone || "",
-            walletBalance: data.walletBalance || 0,
-            totalIncome: data.totalIncome || 0,
-            mlmActive: data.mlmActive || false,
-            referralCode: data.referralCode || "",
-            sponsorId: data.sponsorId || ""
-          });
-        } else {
-          setUser({
-            uid: currentUser.uid,
-            email: currentUser.email || "",
-            name: currentUser.displayName || "JembeeKart User",
-            photo: currentUser.photoURL || "",
-            phone: currentUser.phoneNumber || "",
-            walletBalance: 0,
-            totalIncome: 0,
-            mlmActive: false,
-            referralCode: "",
-            sponsorId: ""
-          });
-        }
-        setLoading(false);
-      });
+      unsubscribeFirestore = onSnapshot(
+        docRef,
+        (docSnap) => {
+          if (docSnap.exists()) {
+            const data = docSnap.data();
+            setUser({
+              uid: data.uid || currentUser.uid,
+              email: data.email || "",
+              name: data.name || "",
+              photo: data.photo || "",
+              phone: data.phone || "",
+              walletBalance: data.walletBalance || 0,
+              totalIncome: data.totalIncome || 0,
+              mlmActive: data.mlmActive || false,
+              referralCode: data.referralCode || "",
+              sponsorId: data.sponsorId || ""
+            });
+          } else {
+            setUser({
+              uid: currentUser.uid,
+              email: currentUser.email || "",
+              name: currentUser.displayName || "JembeeKart User",
+              photo: currentUser.photoURL || "",
+              phone: currentUser.phoneNumber || "",
+              walletBalance: 0,
+              totalIncome: 0,
+              mlmActive: false,
+              referralCode: "",
+              sponsorId: ""
+            });
+          }
+          setLoading(false);
+        },
+        (error) => console.error("Firestore onSnapshot error:", error)
+      );
     });
 
     return () => {

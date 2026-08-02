@@ -2,7 +2,8 @@
 
 import { useState, useRef, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { Heart, MessageCircle, Share2, Bookmark, Coins, BadgeCheck, Music2, Pause, Play } from "lucide-react";
+import { BadgeCheck, Music2, Pause, Play } from "lucide-react";
+import VideoActions from "./VideoActions";
 
 interface VideoCardProps {
   video: {
@@ -22,12 +23,21 @@ interface VideoCardProps {
   toggleMute: () => void;
   watchProgress: number;
   active: boolean;
-  onClaim: () => void;
   onComment: () => void;
   onShare: () => void;
+  coins: number;
 }
 
-export default function VideoCard({ video, isMuted, toggleMute, watchProgress, active, onClaim, onComment, onShare }: VideoCardProps) {
+export default function VideoCard({ 
+    video, 
+    isMuted, 
+    toggleMute, 
+    watchProgress, 
+    active, 
+    onComment, 
+    onShare,
+    coins 
+}: VideoCardProps) {
   const [isLiked, setIsLiked] = useState(false);
   const [isSaved, setIsSaved] = useState(false);
   const [isPlaying, setIsPlaying] = useState(false);
@@ -86,9 +96,9 @@ export default function VideoCard({ video, isMuted, toggleMute, watchProgress, a
           >
             <div className="bg-black/40 p-6 rounded-full backdrop-blur-sm">
                 {isPlaying ? (
-                    <Play size={48} className="text-white fill-white" />
-                ) : (
                     <Pause size={48} className="text-white fill-white" />
+                ) : (
+                    <Play size={48} className="text-white fill-white" />
                 )}
             </div>
           </motion.div>
@@ -128,44 +138,21 @@ export default function VideoCard({ video, isMuted, toggleMute, watchProgress, a
         </div>
       </div>
 
-      {/* Mute toggle */}
-      <button 
-        onClick={toggleMute} 
-        className="absolute right-4 top-20 z-20 rounded-full bg-black/50 p-2.5 text-white backdrop-blur-md border border-white/10"
-      >
-        {isMuted ? "🔇" : "🔊"}
-      </button>
-
-      {/* Social Actions */}
-      <div className="absolute right-3 bottom-36 z-20 flex flex-col gap-6 text-white pointer-events-auto">
-        <motion.button whileTap={{ scale: 0.9 }} onClick={() => setIsLiked(!isLiked)} className="flex flex-col items-center">
-          <div className="p-3 bg-black/20 rounded-full backdrop-blur-md mb-1">
-            <Heart size={28} className={isLiked ? "fill-red-500 text-red-500" : ""} />
-          </div>
-          <span className="text-xs font-bold">{isLiked ? (video.likes + 1).toLocaleString() : video.likes.toLocaleString()}</span>
-        </motion.button>
-        
-        <button onClick={onComment} className="flex flex-col items-center">
-            <div className="p-3 bg-black/20 rounded-full backdrop-blur-md mb-1">
-                <MessageCircle size={28} />
-            </div>
-            <span className="text-xs font-bold">{video.comments.toLocaleString()}</span>
-        </button>
-        
-        <motion.button whileTap={{ scale: 0.9 }} onClick={() => setIsSaved(!isSaved)} className="flex flex-col items-center">
-          <div className="p-3 bg-black/20 rounded-full backdrop-blur-md mb-1">
-            <Bookmark size={28} className={isSaved ? "fill-white" : ""} />
-          </div>
-          <span className="text-xs font-bold">Save</span>
-        </motion.button>
-        
-        <button onClick={onShare} className="flex flex-col items-center">
-            <div className="p-3 bg-black/20 rounded-full backdrop-blur-md mb-1">
-                <Share2 size={28} />
-            </div>
-            <span className="text-xs font-bold">Share</span>
-        </button>
-      </div>
+      {/* Consolidated Social Actions */}
+      <VideoActions
+        likes={video.likes}
+        comments={video.comments}
+        shares={video.shares}
+        coins={coins}
+        isMuted={isMuted}
+        toggleMute={toggleMute}
+        onLike={() => setIsLiked(!isLiked)}
+        onComment={onComment}
+        onShare={onShare}
+        onSave={() => setIsSaved(!isSaved)}
+        isLiked={isLiked}
+        isSaved={isSaved}
+      />
     </div>
   );
 }

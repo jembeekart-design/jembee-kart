@@ -36,12 +36,7 @@ export interface ShippingConfig {
   deliveryDays: number;
 }
 
-export interface WatchEarnConfig {
-  enabled: boolean;
-  requiredVideos: number;
-  rewardAmount: number;
-  requiredSales: number;
-}
+/* Old WatchEarnConfig removed */
 
 export interface CashbackConfig {
   enabled: boolean;
@@ -172,13 +167,99 @@ export interface MLMPageConfig {
 }
 
 // --- ROOT CONFIGURATION ---
+export interface ActivityTrackerConfig {
+  pageTitle: string;
+  pageDescription: string;
+  searchPlaceholder: string;
+  noLogsFound: string;
+  monitoringTitle: string;
+  monitoringDescription: string;
+  suspiciousTitle: string;
+  suspiciousDescription: string;
+}
+
+export interface AdminChatConfig {
+  pageTitle: string;
+  enabled: boolean;
+}
+
+export interface AdsManagerConfig {
+  pageTitle: string;
+  defaultAdRate: number;
+}
+
+export interface AnalyticsConfig {
+  pageTitle: string;
+  refreshInterval: number;
+}
+
+export interface AnnouncementConfig {
+  pageTitle: string;
+  defaultMessage: string;
+}
+export interface WatchEarnConfig {
+  enabled: boolean;
+  videoWatchSeconds: number;
+  rewardProgressSeconds: number;
+  minimumWatchPercent: number;
+  allowSkip: boolean;
+  rewardAmount: number;
+  requiredVideos: number;
+  requiredSales: number;
+  rewardDelay: number;
+  enableUploadButton: boolean;
+  uploadButtonText: string;
+  uploadButtonIcon: string;
+  uploadButtonPosition: "top-left" | "top-right" | "bottom-left" | "bottom-right";
+  allowVideoUpload: boolean;
+  allowedUserRoles: string[];
+  requireAdminApproval: boolean;
+  autoPublish: boolean;
+  maxVideoDuration: number;
+  maxFileSize: number;
+  allowedVideoFormats: string[];
+}
+export interface FloatingAdConfig {
+  enabled: boolean;
+  title: string;
+  imageUrl: string;
+  icon: string;
+  description: string;
+  actionUrl: string;
+  skipAfterSeconds: number;
+  autoHide: boolean;
+  position: "left" | "right" | "center";
+  priority: number;
+  activeFrom: string;
+  activeTo: string;
+}
+
+export interface CommentModerationConfig {
+  blockedWords: string[];
+  regexPatterns: string[];
+  autoReject: boolean;
+  caseSensitive: boolean;
+  maxLength: number;
+}
+
+export interface WatchEarnStatsConfig {
+  totalCoins: number;
+  videosWatched: number;
+}
+
 export interface AdminConfig {
   version: number;
-
   theme: ThemeConfig;
+  activityTracker: ActivityTrackerConfig;
+  adminChat: AdminChatConfig;
+  adsManager: AdsManagerConfig;
+  analytics: AnalyticsConfig;
+  announcement: AnnouncementConfig;
+  watchEarn: WatchEarnConfig;
+  watchEarnStats: WatchEarnStatsConfig;
+  commentModeration: CommentModerationConfig;
   payment: PaymentConfig;
   shipping: ShippingConfig;
-  watchEarn: WatchEarnConfig;
   cashback: CashbackConfig;
   mlm: MLMConfig;
   referral: ReferralConfig;

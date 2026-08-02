@@ -1,274 +1,69 @@
 "use client";
 
-import {
-  Heart,
-  MessageCircle,
-  Share2,
-  Bookmark,
-  Coins
-} from "lucide-react";
+import React from "react";
+import { motion } from "framer-motion";
+import { Heart, MessageCircle, Share2, Bookmark, Coins, Volume2, VolumeX } from "lucide-react";
 
-interface VideoActionsProps {
-
+export interface VideoActionsProps {
   likes: number;
-
   comments: number;
-
   shares: number;
-
   coins: number;
-
+  isMuted: boolean;
   onLike: () => void;
-
   onComment: () => void;
-
   onShare: () => void;
-
+  onSave: () => void;
+  toggleMute: () => void;
+  isLiked: boolean;
+  isSaved: boolean;
 }
 
-export default function
-VideoActions({
+export default function VideoActions({
   likes,
   comments,
   shares,
   coins,
+  isMuted,
   onLike,
   onComment,
-  onShare
+  onShare,
+  onSave,
+  toggleMute,
+  isLiked,
+  isSaved,
 }: VideoActionsProps) {
+  const actions = [
+    { key: "like", icon: <Heart size={22} className={isLiked ? "fill-red-500 text-red-500" : ""} />, label: "Like", value: likes, onClick: onLike },
+    { key: "comment", icon: <MessageCircle size={22} />, label: "Comment", value: comments, onClick: onComment },
+    { key: "share", icon: <Share2 size={22} />, label: "Share", value: shares, onClick: onShare },
+    { key: "save", icon: <Bookmark size={22} className={isSaved ? "fill-white" : ""} />, label: "Save", value: null, onClick: onSave },
+    { key: "mute", icon: isMuted ? <VolumeX size={22} /> : <Volume2 size={22} />, label: "Toggle Mute", value: null, onClick: toggleMute },
+  ];
 
   return (
+    <aside className="absolute right-4 bottom-[calc(10rem+env(safe-area-inset-bottom))] z-40 flex flex-col items-center gap-4">
+      {actions.map((a) => (
+        <div key={a.key} className="flex flex-col items-center gap-1">
+          <motion.button
+            whileTap={{ scale: 0.95 }}
+            aria-label={a.label}
+            onClick={a.onClick}
+            className="h-12 w-12 flex items-center justify-center rounded-full bg-white/10 backdrop-blur-md shadow-lg border border-white/10"
+          >
+            {a.icon}
+          </motion.button>
 
-    <div
-      className="
-        absolute
-        bottom-24
-        right-3
-        z-40
-        flex
-        flex-col
-        items-center
-        gap-5
-      "
-    >
-
-      {/* LIKE */}
-
-      <button
-        onClick={onLike}
-        className="
-          flex
-          flex-col
-          items-center
-          gap-1
-        "
-      >
-
-        <div
-          className="
-            flex
-            h-14
-            w-14
-            items-center
-            justify-center
-            rounded-full
-            bg-[var(--card-color)]/40
-            text-[var(--button-text-color)]
-            backdrop-blur-xl
-          "
-        >
-
-          <Heart size={28} />
-
+          {a.value != null && (
+            <span className="text-xs font-medium text-white drop-shadow-md">{a.value}</span>
+          )}
         </div>
+      ))}
 
-        <span
-          className="
-            text-xs
-            font-bold
-            text-[var(--button-text-color)]
-          "
-        >
-
-          {likes}
-
-        </span>
-
-      </button>
-
-      {/* COMMENT */}
-
-      <button
-        onClick={onComment}
-        className="
-          flex
-          flex-col
-          items-center
-          gap-1
-        "
-      >
-
-        <div
-          className="
-            flex
-            h-14
-            w-14
-            items-center
-            justify-center
-            rounded-full
-            bg-[var(--card-color)]/40
-            text-[var(--button-text-color)]
-            backdrop-blur-xl
-          "
-        >
-
-          <MessageCircle
-            size={28}
-          />
-
-        </div>
-
-        <span
-          className="
-            text-xs
-            font-bold
-            text-[var(--button-text-color)]
-          "
-        >
-
-          {comments}
-
-        </span>
-
-      </button>
-
-      {/* SHARE */}
-
-      <button
-        onClick={onShare}
-        className="
-          flex
-          flex-col
-          items-center
-          gap-1
-        "
-      >
-
-        <div
-          className="
-            flex
-            h-14
-            w-14
-            items-center
-            justify-center
-            rounded-full
-            bg-[var(--card-color)]/40
-            text-[var(--button-text-color)]
-            backdrop-blur-xl
-          "
-        >
-
-          <Share2 size={28} />
-
-        </div>
-
-        <span
-          className="
-            text-xs
-            font-bold
-            text-[var(--button-text-color)]
-          "
-        >
-
-          {shares}
-
-        </span>
-
-      </button>
-
-      {/* SAVE */}
-
-      <button
-        className="
-          flex
-          flex-col
-          items-center
-          gap-1
-        "
-      >
-
-        <div
-          className="
-            flex
-            h-14
-            w-14
-            items-center
-            justify-center
-            rounded-full
-            bg-[var(--card-color)]/40
-            text-[var(--button-text-color)]
-            backdrop-blur-xl
-          "
-        >
-
-          <Bookmark
-            size={26}
-          />
-
-        </div>
-
-        <span
-          className="
-            text-xs
-            font-bold
-            text-[var(--button-text-color)]
-          "
-        >
-
-          Save
-
-        </span>
-
-      </button>
-
-      {/* COINS */}
-
-      <div
-        className="
-          flex
-          items-center
-          gap-2
-          rounded-full
-          border
-          border-[var(--warning-color)]/40
-          bg-[var(--warning-color)]/20
-          px-4
-          py-2
-          backdrop-blur-xl
-        "
-      >
-
-        <Coins
-          size={18}
-          className="
-            text-[var(--warning-color)]
-          "
-        />
-
-        <span
-          className="
-            text-sm
-            font-black
-            text-[var(--button-text-color)]
-          "
-        >
-
-          +{coins}
-
-        </span>
-
+      <div className="flex items-center gap-1.5 rounded-full border border-yellow-500/20 bg-black/20 backdrop-blur-md px-3 py-1.5 text-xs font-bold text-yellow-400">
+        <Coins size={14} />
+        <span>+{coins}</span>
       </div>
-
-    </div>
+    </aside>
   );
 }

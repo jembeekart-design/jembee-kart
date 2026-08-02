@@ -9,8 +9,11 @@ import {
   IndianRupee,
   Package
 } from "lucide-react";
+import { useAdminConfig } from "@/lib/admin-config/provider";
 
 export default function AnalyticsPage() {
+  const { config } = useAdminConfig();
+  const { analytics } = config;
 
   const stats = [
     {
@@ -52,7 +55,7 @@ export default function AnalyticsPage() {
         <div>
 
           <h1 className="text-3xl font-black">
-            Analytics Dashboard
+            {analytics.pageTitle}
           </h1>
 
           <p className="mt-1 text-sm text-[var(--muted-text-color)]">

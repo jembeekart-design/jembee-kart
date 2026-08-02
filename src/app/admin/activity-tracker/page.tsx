@@ -19,6 +19,7 @@ import {
 import { collection, onSnapshot, query, orderBy, limit } from "firebase/firestore";
 import { auth, db } from "@/firebase/config";
 import { useRouter } from "next/navigation";
+import { useAdminConfig } from "@/lib/admin-config/provider";
 
 // ✅ FIX 1: Removed manual 'time' string and locked data schema on Firestore Timestamp context
 interface ActivityLog {
@@ -30,6 +31,8 @@ interface ActivityLog {
 }
 
 export default function ActivityTrackerPage() {
+  const { config } = useAdminConfig();
+  const { activityTracker } = config;
   const router = useRouter();
   const [activities, setActivities] = useState<ActivityLog[]>([]);
   const [search, setSearch] = useState("");
@@ -162,9 +165,9 @@ export default function ActivityTrackerPage() {
             <Activity size={30} className="text-[var(--text-color)]" />
           </div>
           <div>
-            <h1 className="text-3xl font-black">Activity Tracker</h1>
+            <h1 className="text-3xl font-black">{activityTracker.pageTitle}</h1>
             <p className="mt-1 text-sm text-[var(--muted-text-color)]">
-              Track realtime admin & user activities
+              {activityTracker.pageDescription}
             </p>
           </div>
         </div>
@@ -200,7 +203,7 @@ export default function ActivityTrackerPage() {
           <Search size={20} className="text-[var(--muted-text-color)]" />
           <input
             type="text"
-            placeholder="Search activity..."
+            placeholder={activityTracker.searchPlaceholder}
             value={search}
             onChange={(e) => setSearch(e.target.value)}
             className="w-full bg-transparent outline-none placeholder:text-[var(--muted-text-color)]"
@@ -261,7 +264,7 @@ export default function ActivityTrackerPage() {
 
         {filteredActivities.length === 0 && (
           <div className="py-12 text-center text-sm font-medium text-[var(--muted-text-color)]">
-            No activity logs found.
+            {activityTracker.noLogsFound}
           </div>
         )}
       </div>
@@ -270,10 +273,10 @@ export default function ActivityTrackerPage() {
       <div className="mt-6 rounded-[30px] bg-gradient-to-r from-[var(--primary-color)] to-[var(--primary-color)] p-6">
         <div className="flex items-center gap-3">
           <CheckCircle2 size={26} />
-          <h2 className="text-3xl font-black">Realtime Monitoring</h2>
+          <h2 className="text-3xl font-black">{activityTracker.monitoringTitle}</h2>
         </div>
         <p className="mt-3 max-w-2xl text-sm text-[var(--button-text-color)]/90">
-          All activities are monitored instantly with realtime tracking, analytics & security logs.
+          {activityTracker.monitoringDescription}
         </p>
       </div>
 
@@ -282,9 +285,9 @@ export default function ActivityTrackerPage() {
         <div className="flex items-start gap-4">
           <AlertTriangle size={24} className="text-[var(--warning-color)]" />
           <div>
-            <h3 className="text-xl font-black text-[var(--warning-color)]">Suspicious Activity Detection</h3>
+            <h3 className="text-xl font-black text-[var(--warning-color)]">{activityTracker.suspiciousTitle}</h3>
             <p className="mt-2 text-sm text-[var(--text-color)]">
-              AI automatically detects unusual login, payment or admin activity for protection.
+              {activityTracker.suspiciousDescription}
             </p>
           </div>
         </div>

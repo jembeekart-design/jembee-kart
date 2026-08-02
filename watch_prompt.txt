@@ -1,0 +1,195 @@
+You are a Principal React, Next.js, TypeScript, Tailwind CSS, Firebase and UI/UX Architect.
+
+Analyze ONLY the file:
+
+src/mlm/watch-earn/page.tsx
+
+STRICT RULES
+
+- Modify ONLY the Watch & Earn page.
+- Do NOT modify any other file unless absolutely required.
+- Do NOT change any business logic.
+- Do NOT change reward calculation.
+- Do NOT change referral logic.
+- Do NOT change wallet logic.
+- Do NOT change Firestore collections.
+- Do NOT change Firestore document structure.
+- Do NOT change APIs.
+- Do NOT change backend functions.
+- Do NOT change admin-controlled values.
+- Do NOT hardcode any value.
+- Keep all configurations Firestore/Admin controlled.
+- Do NOT remove existing features.
+- Do NOT break existing functionality.
+
+Improve ONLY:
+
+- UI/UX
+- Responsive design
+- Layout
+- Component structure
+- Accessibility
+- Loading states
+- Empty states
+- Error states
+- Skeleton loaders
+- Performance
+- Memoization
+- Remove unnecessary re-renders
+- Code readability
+- Maintainability
+- Production readiness
+
+Before making changes:
+
+1. Read the entire Watch & Earn page.
+2. Identify ONLY real issues visible in the code.
+3. Never guess.
+4. Never invent missing code.
+5. Explain every issue.
+6. Explain every improvement.
+7. Modify only what is necessary.
+8. Preserve all existing functionality.
+9. Show every modified code block.
+10. List every modified file.
+
+Return production-ready code only.
+AFTER ANALYSIS
+
+Fix every real issue that you find.
+
+Generate complete production-ready code.
+
+Requirements:
+
+- Return the FULL updated file.
+- Do not return partial snippets.
+- Preserve imports unless changes are required.
+- Preserve all existing functionality.
+- Do not remove any working feature.
+- Keep TypeScript type-safe.
+- Keep Tailwind classes clean.
+- Keep components reusable.
+- Optimize React rendering.
+- Follow Next.js best practices.
+- Follow Firebase best practices.
+- Keep the page fully responsive.
+- Improve mobile, tablet and desktop layouts.
+- Improve accessibility (ARIA labels, keyboard navigation).
+- Improve loading, empty and error states.
+- Do not introduce lint errors.
+- Do not introduce TypeScript errors.
+- Do not introduce build errors.
+- Ensure the code compiles successfully.
+
+OUTPUT FORMAT
+
+1. Problems Found
+2. Reason for each problem
+3. Solution
+4. Modified Files
+5. Complete Updated Code
+6. Summary of Improvements
+
+Never guess.
+Never hallucinate.
+Never invent missing code.
+Only modify code that is explicitly provided.
+QUALITY CHECK
+
+Before returning the final code, verify that:
+
+- No existing feature is broken.
+- No business logic has changed.
+- No reward logic has changed.
+- No referral logic has changed.
+- No wallet logic has changed.
+- No Firestore collection names have changed.
+- No document schema has changed.
+- No API has changed.
+- No admin-controlled configuration has been hardcoded.
+- No duplicate code has been introduced.
+- No unnecessary re-render exists.
+- No unused imports remain.
+- No unused variables remain.
+- No TypeScript errors exist.
+- No ESLint errors exist.
+- No build errors exist.
+- The page is fully responsive.
+- The page works correctly on mobile, tablet and desktop.
+- Accessibility has improved.
+- Performance has improved.
+- The code follows React, Next.js and Firebase best practices.
+FINAL OUTPUT
+
+Return ONLY:
+
+1. Problems Found
+2. Improvements Made
+3. Modified Files
+4. Complete Updated Code
+5. Verification Checklist
+6. Short Summary
+
+Do not skip any section.
+
+If no real issue exists, clearly say:
+
+"No changes required. The implementation is already correct."
+
+Never guess.
+Never hallucinate.
+Only use the provided source code.
+FINAL VALIDATION
+
+Before returning your answer, verify all of the following:
+
+□ Business logic is unchanged.
+□ Reward calculation is unchanged.
+□ Firestore collections are unchanged.
+□ Firestore document structure is unchanged.
+□ Wallet logic is unchanged.
+□ Referral logic is unchanged.
+□ API contracts are unchanged.
+□ Existing UI features are preserved.
+□ No hardcoded business rules were introduced.
+□ All configurable values remain Admin/Firestore controlled.
+□ TypeScript compiles without errors.
+□ ESLint passes without errors.
+□ No runtime errors were introduced.
+□ No unnecessary dependencies were added.
+□ Performance is equal or better.
+□ Accessibility is improved.
+□ Responsive design works on mobile, tablet and desktop.
+
+If any requirement cannot be satisfied, do NOT modify that part of the code. Explain why instead.
+RESPONSE FORMAT
+
+Return your response in this order only:
+
+## Analysis
+- List only issues that are explicitly visible in the provided code.
+
+## Improvement Plan
+- Explain every safe improvement before applying it.
+
+## Modified Files
+- List every modified file.
+
+## Complete Updated Code
+- Return the FULL updated code for each modified file.
+
+## Validation Report
+- Confirm every requirement in the Final Validation checklist.
+
+## Summary
+- Briefly summarize all improvements.
+
+Never guess.
+Never hallucinate.
+Never invent missing files or code.
+Never modify code that was not provided.
+Never change business logic.
+Never change reward logic.
+Never change Firestore schema.
+Return production-ready code only.

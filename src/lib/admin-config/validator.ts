@@ -23,9 +23,17 @@ export function validateConfig(data: any): AdminConfig {
       version: data.version ?? DEFAULT_ADMIN_CONFIG.version,
       
       theme: { ...DEFAULT_ADMIN_CONFIG.theme, ...(data.theme || {}) },
+      activityTracker: { ...DEFAULT_ADMIN_CONFIG.activityTracker, ...(data.activityTracker || {}) },
+      adminChat: { ...DEFAULT_ADMIN_CONFIG.adminChat, ...(data.adminChat || {}) },
+      adsManager: { ...DEFAULT_ADMIN_CONFIG.adsManager, ...(data.adsManager || {}) },
+      analytics: { ...DEFAULT_ADMIN_CONFIG.analytics, ...(data.analytics || {}) },
+      announcement: { ...DEFAULT_ADMIN_CONFIG.announcement, ...(data.announcement || {}) },
+      watchEarn: { ...DEFAULT_ADMIN_CONFIG.watchEarn, ...(data.watchEarn || {}) },
+      watchEarnStats: { ...DEFAULT_ADMIN_CONFIG.watchEarnStats, ...(data.watchEarnStats || {}) },
+      commentModeration: { ...DEFAULT_ADMIN_CONFIG.commentModeration, ...(data.commentModeration || {}) },
+      
       payment: { ...DEFAULT_ADMIN_CONFIG.payment, ...(data.payment || {}) },
       shipping: { ...DEFAULT_ADMIN_CONFIG.shipping, ...(data.shipping || {}) },
-      watchEarn: { ...DEFAULT_ADMIN_CONFIG.watchEarn, ...(data.watchEarn || {}) },
       cashback: { ...DEFAULT_ADMIN_CONFIG.cashback, ...(data.cashback || {}) },
       mlm: { ...DEFAULT_ADMIN_CONFIG.mlm, ...(data.mlm || {}) },
       referral: { ...DEFAULT_ADMIN_CONFIG.referral, ...(data.referral || {}) },

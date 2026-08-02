@@ -1,0 +1,2 @@
+src/components/admin/theme-builder/ThemePreview.tsx
+src/components/admin/mission-control/AIFixPreview.tsx

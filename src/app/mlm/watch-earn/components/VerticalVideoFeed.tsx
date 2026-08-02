@@ -1,7 +1,9 @@
 "use client";
 
 import {
-  useState
+  useState,
+  useEffect,
+  useRef
 } from "react";
 
 import VideoPlayer
@@ -16,92 +18,50 @@ from "./VideoActions";
 import CommentDrawer
 from "./CommentDrawer";
 
-import ShareDrawer
-from "./ShareDrawer";
-
 import Toast from "./Toast";
-
-const videos = [
-  {
-    id: "1",
-
-    username:
-      "JembeeKart",
-
-    caption:
-      "Earn coins by watching videos 🔥",
-
-    hashtags: [
-      "earnmoney",
-      "shopping",
-      "rewards"
-    ],
-
-    music:
-      "Trending Audio",
-
-    verified: true,
-
-    videoUrl:
-      "https://www.w3schools.com/html/mov_bbb.mp4",
-
-    rewardCoins: 10,
-
-    watchSeconds: 10,
-
-    likes: 1200,
-
-    comments: 250,
-
-    shares: 90
-  },
-
-  {
-    id: "2",
-
-    username:
-      "FashionHub",
-
-    caption:
-      "New fashion drops available now ✨",
-
-    hashtags: [
-      "fashion",
-      "style",
-      "shopping"
-    ],
-
-    music:
-      "Fashion Beat",
-
-    verified: false,
-
-    videoUrl:
-      "https://www.w3schools.com/html/movie.mp4",
-
-    rewardCoins: 15,
-
-    watchSeconds: 12,
-
-    likes: 4300,
-
-    comments: 780,
-
-    shares: 320
-  }
-];
+import { getWatchVideos, WatchVideo } from "../services/watchVideos.service";
+import { DEFAULT_BUSINESS_RULES } from "@/firestore/businessRules/defaults";
 
 export default function
 VerticalVideoFeed() {
+  const [videos, setVideos] = useState<WatchVideo[]>([]);
+  const [loading, setLoading] = useState<boolean>(true);
+  const [error, setError] = useState<string | null>(null);
+
+  useEffect(() => {
+    let isMounted = true;
+
+    async function loadVideos() {
+      try {
+        setLoading(true);
+        const result = await getWatchVideos();
+        if (!isMounted) return;
+
+        if (result && result.success && Array.isArray(result.videos)) {
+          setVideos(result.videos);
+        } else {
+          setVideos([]);
+        }
+      } catch {
+        if (!isMounted) return;
+        setError("Failed to load videos");
+      } finally {
+        if (isMounted) {
+          setLoading(false);
+        }
+      }
+    }
+
+    loadVideos();
+
+    return () => {
+      isMounted = false;
+    };
+  }, []);
 
   const [
     commentOpen,
     setCommentOpen
-  ] = useState(false);
-
-  const [
-    shareOpen,
-    setShareOpen
   ] = useState(false);
   
   const [toastMessage, setToastMessage] = useState<string | null>(null);
@@ -111,7 +71,49 @@ VerticalVideoFeed() {
     setSelectedVideo
   ] = useState("");
 
-  const handleShare = async (video: typeof videos[0]) => {
+  const [isMuted, setIsMuted] = useState(true);
+  const [likedVideos, setLikedVideos] = useState<Record<string, boolean>>({});
+  const [savedVideos, setSavedVideos] = useState<Record<string, boolean>>({});
+
+  const [activeVideoId, setActiveVideoId] = useState<string>("");
+  const containerRef = useRef<HTMLElement>(null);
+
+  useEffect(() => {
+    if (videos.length > 0 && !activeVideoId) {
+      setActiveVideoId(videos[0].id);
+    }
+  }, [videos, activeVideoId]);
+
+  useEffect(() => {
+    const container = containerRef.current;
+    if (!container) return;
+
+    const sections = container.querySelectorAll("section[data-video-id]");
+    const observer = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting) {
+            const videoId = entry.target.getAttribute("data-video-id");
+            if (videoId) {
+              setActiveVideoId(videoId);
+            }
+          }
+        });
+      },
+      {
+        root: container,
+        threshold: 0.6,
+      }
+    );
+
+    sections.forEach((section) => observer.observe(section));
+
+    return () => {
+      observer.disconnect();
+    };
+  }, [videos]);
+
+  const handleShare = async (video: WatchVideo) => {
     const shareData = {
       title: 'Check out this video on JembeeKart',
       text: video.caption,
@@ -126,14 +128,39 @@ VerticalVideoFeed() {
         await navigator.clipboard.writeText(shareData.url);
         setToastMessage("Link copied.");
       }
-    } catch (err) {
-      console.error('Share failed', err);
+    } catch {
+      // Fail silently without console logging
     }
   };
+
+  if (loading) {
+    return (
+      <main className="h-screen flex items-center justify-center bg-[var(--card-color)] text-white">
+        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-white"></div>
+      </main>
+    );
+  }
+
+  if (error) {
+    return (
+      <main className="h-screen flex items-center justify-center bg-[var(--card-color)] text-white">
+        <p>{error}</p>
+      </main>
+    );
+  }
+
+  if (videos.length === 0) {
+    return (
+      <main className="h-screen flex items-center justify-center bg-[var(--card-color)] text-white">
+        <p>No videos available.</p>
+      </main>
+    );
+  }
 
   return (
 
     <main
+      ref={containerRef}
       className="
         h-screen
         snap-y
@@ -148,6 +175,7 @@ VerticalVideoFeed() {
 
           <section
             key={video.id}
+            data-video-id={video.id}
             className="
               relative
               h-screen
@@ -159,16 +187,18 @@ VerticalVideoFeed() {
 
             <VideoPlayer
               videoUrl={
-                video.videoUrl
+                video.video
               }
 
               rewardCoins={
-                video.rewardCoins
+                video.coins
               }
 
               watchSeconds={
-                video.watchSeconds
+                DEFAULT_BUSINESS_RULES.watchEarn.minimumWatchDuration
               }
+              isMuted={isMuted}
+              active={activeVideoId === video.id}
             />
 
             {/* INFO */}
@@ -199,7 +229,7 @@ VerticalVideoFeed() {
 
             <VideoActions
               likes={
-                video.likes
+                video.likes + (likedVideos[video.id] ? 1 : 0)
               }
 
               comments={
@@ -211,18 +241,17 @@ VerticalVideoFeed() {
               }
 
               coins={
-                video.rewardCoins
+                video.coins
               }
 
-              onLike={() => {
+              isMuted={isMuted}
 
-                console.log(
-                  "Liked"
-                );
+              onLike={() => {
+                setLikedVideos(prev => ({ ...prev, [video.id]: !prev[video.id] }));
               }}
 
               onComment={() => {
-
+                setSelectedVideo(video.id);
                 setCommentOpen(
                   true
                 );
@@ -231,6 +260,16 @@ VerticalVideoFeed() {
               onShare={() => {
                 handleShare(video);
               }}
+
+              onSave={() => {
+                setSavedVideos(prev => ({ ...prev, [video.id]: !prev[video.id] }));
+              }}
+
+              toggleMute={() => setIsMuted(!isMuted)}
+
+              isLiked={!!likedVideos[video.id]}
+
+              isSaved={!!savedVideos[video.id]}
             />
 
           </section>
@@ -238,35 +277,13 @@ VerticalVideoFeed() {
       )}
 
       {/* COMMENT DRAWER */}
-
-      <CommentDrawer
-        open={commentOpen}
-
-        onClose={() =>
-          setCommentOpen(
-            false
-          )
-        }
-        onCommentAdded={() => {
-            console.log("Comment added! (TODO: Update comment count in state)");
-        }}
-      />
-
-      {/* SHARE DRAWER */}
-
-      <ShareDrawer
-        open={shareOpen}
-
-        onClose={() =>
-          setShareOpen(
-            false
-          )
-        }
-
-        videoId={
-          selectedVideo
-        }
-      />
+      {selectedVideo && (
+        <CommentDrawer
+            open={commentOpen}
+            onClose={() => { setCommentOpen(false); setSelectedVideo(""); }}
+            videoId={selectedVideo}
+        />
+      )}
       
       {/* Toast */}
       <Toast message={toastMessage} onClose={() => setToastMessage(null)} />

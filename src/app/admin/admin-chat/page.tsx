@@ -2,7 +2,20 @@
 
 export const dynamic = "force-dynamic";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import { useAdminConfig } from "@/lib/admin-config/provider";
+import {
+  collection,
+  onSnapshot,
+  query,
+  orderBy,
+  doc
+} from "firebase/firestore";
+import { auth, db } from "@/firebase/config";
+import { sendMessage, updatePresence, setTyping } from "@/firestore/services/chatService";
+import { createCall } from "@/firestore/services/callService";
+import { initializeAdminChat } from "@/firestore/services/adminChatInitializer";
+import { FIRESTORE_PATHS } from "@/firestore/collections/firestorePaths";
 
 import {
   MessageSquare,
@@ -18,355 +31,208 @@ import {
   CheckCheck
 } from "lucide-react";
 
-const chats = [
-  {
-    name: "Rahul Sharma",
-    lastMessage: "Order issue solved 👍",
-    online: true
-  },
-  {
-    name: "Sneha Singh",
-    lastMessage: "Need payment help",
-    online: false
-  },
-  {
-    name: "Aman Khan",
-    lastMessage: "When will refund arrive?",
-    online: true
-  }
-];
+interface Chat {
+  id: string;
+  name: string;
+  lastMessage: string;
+  online: boolean;
+}
 
-const messages = [
-  {
-    sender: "admin",
-    text: "Hello 👋 How can I help you?"
-  },
-  {
-    sender: "user",
-    text: "My order is delayed."
-  },
-  {
-    sender: "admin",
-    text: "Please share order ID."
-  }
-];
+interface Message {
+  id: string;
+  sender: "admin" | "user";
+  text: string;
+  createdAt: any;
+}
 
 export default function AdminChatPage() {
+  const { config } = useAdminConfig();
+  const { adminChat } = config;
+  const [message, setMessage] = useState("");
+  const [chats, setChats] = useState<Chat[]>([]);
+  const [messages, setMessages] = useState<Message[]>([]);
+  const [selectedChatId, setSelectedChatId] = useState<string | null>(null);
 
-  const [message, setMessage] =
-    useState("");
+  // Presence
+  useEffect(() => {
+    const uid = auth.currentUser?.uid;
+    if (uid) {
+      updatePresence(uid, true);
+      return () => {
+        updatePresence(uid, false);
+      };
+    }
+  }, []);
+
+  // Load Chats
+  useEffect(() => {
+    async function initAndLoad() {
+      await initializeAdminChat();
+      const q = query(collection(db, FIRESTORE_PATHS.ADMIN_CHAT.CHATS), orderBy("lastMessageAt", "desc"));
+      return onSnapshot(q, (snapshot) => {
+        const data = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() })) as Chat[];
+        setChats(data);
+        if (!selectedChatId && data.length > 0) setSelectedChatId(data[0].id);
+      });
+    }
+
+    const unsubPromise = initAndLoad();
+    return () => {
+      unsubPromise.then(unsub => unsub && unsub());
+    };
+  }, []);
+
+  // Load Messages
+  useEffect(() => {
+    if (!selectedChatId) return;
+    const q = query(collection(db, FIRESTORE_PATHS.ADMIN_CHAT.CHATS, selectedChatId, FIRESTORE_PATHS.ADMIN_CHAT.MESSAGES), orderBy("createdAt", "asc"));
+    const unsubscribe = onSnapshot(q, (snapshot) => {
+      const data = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() })) as Message[];
+      setMessages(data);
+    });
+    return () => unsubscribe();
+  }, [selectedChatId]);
+
+  async function handleSendMessage() {
+    const uid = auth.currentUser?.uid;
+    if (!message.trim() || !selectedChatId || !uid) return;
+    const msgText = message;
+    setMessage("");
+    await sendMessage(selectedChatId, uid, "Admin", msgText);
+  }
+
+  async function handleCall(type: "voice" | "video") {
+    const uid = auth.currentUser?.uid;
+    if (!selectedChatId || !uid) return;
+    await createCall(uid, selectedChatId, type);
+  }
+
+  function handleInputChange(e: React.ChangeEvent<HTMLInputElement>) {
+    setMessage(e.target.value);
+    if (selectedChatId && auth.currentUser?.uid) {
+      setTyping(selectedChatId, auth.currentUser.uid, true);
+    }
+  }
+
+  function handleKeyPress(e: React.KeyboardEvent) {
+    if (e.key === "Enter") handleSendMessage();
+  }
 
   return (
-
     <main className="min-h-screen bg-[var(--primary-color)] p-4 text-[var(--button-text-color)]">
-
       {/* HEADER */}
-
       <div className="mb-6 flex items-center justify-between">
-
         <div className="flex items-center gap-4">
-
           <div className="flex h-16 w-16 items-center justify-center rounded-[28px] bg-[var(--primary-color)]">
-
-            <MessageSquare
-              size={30}
-              className="text-[var(--text-color)]"
-            />
-
+            <MessageSquare size={30} className="text-[var(--text-color)]" />
           </div>
-
           <div>
-
-            <h1 className="text-3xl font-black">
-              Admin Chat
-            </h1>
-
+            <h1 className="text-3xl font-black">{adminChat.pageTitle}</h1>
             <p className="mt-1 text-sm text-[var(--muted-text-color)]">
               Realtime admin communication system
             </p>
-
           </div>
-
         </div>
-
-        <button className="flex items-center gap-2 rounded-2xl bg-[var(--primary-color)] px-5 py-3 font-bold text-[var(--text-color)]">
-
-          <Bell size={18} />
-
-          Notifications
-
-        </button>
-
+        <div className="flex gap-3">
+          <button className="flex h-11 w-11 items-center justify-center rounded-2xl bg-[var(--card-color)]/30" onClick={() => handleCall("voice")}>
+            <Phone size={18} />
+          </button>
+          <button className="flex h-11 w-11 items-center justify-center rounded-2xl bg-[var(--card-color)]/30" onClick={() => handleCall("video")}>
+            <Video size={18} />
+          </button>
+        </div>
       </div>
 
       {/* MAIN */}
-
       <div className="grid grid-cols-1 gap-5 lg:grid-cols-3">
-
         {/* SIDEBAR */}
-
         <div className="rounded-[30px] border border-[var(--border-color)]/10 bg-[var(--primary-color)] p-5">
-
-          {/* SEARCH */}
-
-          <div className="flex items-center gap-3 rounded-2xl bg-[var(--card-color)]/30 px-4 py-3">
-
-            <Search
-              size={18}
-              className="text-[var(--muted-text-color)]"
-            />
-
-            <input
-              type="text"
-              placeholder="Search chats..."
-              className="w-full bg-transparent outline-none placeholder:text-[var(--muted-text-color)]"
-            />
-
-          </div>
-
-          {/* CHAT LIST */}
-
           <div className="mt-5 space-y-4">
-
-            {chats.map(
-              (
-                item,
-                index
-              ) => (
-
-                <div
-                  key={index}
-                  className="flex cursor-pointer items-center justify-between rounded-2xl bg-[var(--card-color)]/20 p-4 transition-all hover:bg-[var(--primary-color)]/10"
-                >
-
-                  <div className="flex items-center gap-3">
-
-                    <div className="relative">
-
-                      <div className="flex h-12 w-12 items-center justify-center rounded-full bg-[var(--primary-color)] text-[var(--text-color)] font-black">
-
-                        {item.name.charAt(
-                          0
-                        )}
-
-                      </div>
-
-                      {item.online && (
-
-                        <div className="absolute bottom-0 right-0 h-3 w-3 rounded-full border-2 border-[var(--border-color)] bg-[var(--success-color)]" />
-
-                      )}
-
+            {chats.map((chat) => (
+              <div
+                key={chat.id}
+                onClick={() => setSelectedChatId(chat.id)}
+                className={`flex cursor-pointer items-center justify-between rounded-2xl p-4 transition-all ${
+                  selectedChatId === chat.id ? "bg-[var(--primary-color)]/20" : "bg-[var(--card-color)]/20"
+                }`}
+              >
+                <div className="flex items-center gap-3">
+                  <div className="relative">
+                    <div className="flex h-12 w-12 items-center justify-center rounded-full bg-[var(--primary-color)] text-[var(--text-color)] font-black">
+                      {chat.name.charAt(0)}
                     </div>
-
-                    <div>
-
-                      <h2 className="font-black">
-
-                        {item.name}
-
-                      </h2>
-
-                      <p className="text-sm text-[var(--muted-text-color)]">
-
-                        {item.lastMessage}
-
-                      </p>
-
-                    </div>
-
+                    {chat.online && (
+                      <div className="absolute bottom-0 right-0 h-3 w-3 rounded-full border-2 border-[var(--border-color)] bg-[var(--success-color)]" />
+                    )}
                   </div>
-
+                  <div>
+                    <h2 className="font-black">{chat.name}</h2>
+                    <p className="text-sm text-[var(--muted-text-color)]">{chat.lastMessage}</p>
+                  </div>
                 </div>
-
-              )
-            )}
-
+              </div>
+            ))}
           </div>
-
         </div>
 
         {/* CHAT AREA */}
-
         <div className="rounded-[30px] border border-[var(--border-color)]/10 bg-[var(--primary-color)] lg:col-span-2">
-
-          {/* TOP */}
-
-          <div className="flex items-center justify-between border-b border-[var(--border-color)]/10 p-5">
-
-            <div className="flex items-center gap-3">
-
-              <div className="flex h-12 w-12 items-center justify-center rounded-full bg-[var(--primary-color)] text-[var(--text-color)] font-black">
-
-                R
-
-              </div>
-
-              <div>
-
-                <h2 className="text-xl font-black">
-                  Rahul Sharma
-                </h2>
-
-                <p className="text-sm text-[var(--success-color)]">
-                  Online
-                </p>
-
-              </div>
-
-            </div>
-
-            <div className="flex gap-3">
-
-              <button className="flex h-11 w-11 items-center justify-center rounded-2xl bg-[var(--card-color)]/30">
-
-                <Phone size={18} />
-
-              </button>
-
-              <button className="flex h-11 w-11 items-center justify-center rounded-2xl bg-[var(--card-color)]/30">
-
-                <Video size={18} />
-
-              </button>
-
-            </div>
-
-          </div>
-
           {/* MESSAGES */}
-
           <div className="h-[500px] space-y-4 overflow-y-auto p-5">
-
-            {messages.map(
-              (
-                item,
-                index
-              ) => (
-
-                <div
-                  key={index}
-                  className={`flex ${
-                    item.sender ===
-                    "admin"
-                      ? "justify-end"
-                      : "justify-start"
-                  }`}
-                >
-
-                  <div
-                    className={`max-w-[75%] rounded-3xl px-5 py-3 ${
-                      item.sender ===
-                      "admin"
-                        ? "bg-[var(--primary-color)] text-[var(--text-color)]"
-                        : "bg-[var(--card-color)]/30"
-                    }`}
-                  >
-
-                    <p className="font-medium">
-                      {item.text}
-                    </p>
-
-                    <div className="mt-2 flex items-center justify-end gap-1 text-xs">
-
-                      10:24 PM
-
-                      {item.sender ===
-                        "admin" && (
-
-                        <CheckCheck
-                          size={14}
-                        />
-
-                      )}
-
-                    </div>
-
-                  </div>
-
+            {messages.map((msg) => (
+              <div key={msg.id} className={`flex ${msg.sender === "admin" ? "justify-end" : "justify-start"}`}>
+                <div className={`max-w-[75%] rounded-3xl px-5 py-3 ${msg.sender === "admin" ? "bg-[var(--primary-color)] text-[var(--text-color)]" : "bg-[var(--card-color)]/30"}`}>
+                  <p className="font-medium">{msg.text}</p>
                 </div>
-
-              )
-            )}
-
+              </div>
+            ))}
           </div>
-
           {/* INPUT */}
-
           <div className="border-t border-[var(--border-color)]/10 p-5">
-
             <div className="flex items-center gap-3 rounded-2xl bg-[var(--card-color)]/30 p-3">
-
-              <button className="flex h-11 w-11 items-center justify-center rounded-xl bg-[var(--card-color)]/5">
-
-                <Smile size={18} />
-
-              </button>
-
-              <button className="flex h-11 w-11 items-center justify-center rounded-xl bg-[var(--card-color)]/5">
-
-                <Paperclip size={18} />
-
-              </button>
-
               <input
                 type="text"
                 placeholder="Type message..."
                 value={message}
-                onChange={(e) =>
-                  setMessage(
-                    e.target.value
-                  )
-                }
+                onChange={handleInputChange}
+                onKeyDown={handleKeyPress}
                 className="w-full bg-transparent outline-none placeholder:text-[var(--muted-text-color)]"
               />
-
-              <button className="flex h-12 w-12 items-center justify-center rounded-2xl bg-[var(--primary-color)] text-[var(--text-color)]">
-
+              <button 
+                onClick={handleSendMessage}
+                className="flex h-12 w-12 items-center justify-center rounded-2xl bg-[var(--primary-color)] text-[var(--text-color)]"
+              >
                 <Send size={20} />
-
               </button>
-
             </div>
-
           </div>
-
         </div>
-
       </div>
 
       {/* STATS */}
-
       <div className="mt-6 grid grid-cols-2 gap-4 md:grid-cols-4">
-
         <StatCard
           title="Online Users"
           value="124"
           icon={<Users size={22} />}
         />
-
         <StatCard
           title="Messages"
           value="12K"
           icon={<MessageSquare size={22} />}
         />
-
         <StatCard
           title="Support Staff"
           value="18"
           icon={<Shield size={22} />}
         />
-
         <StatCard
           title="Realtime"
           value="Active"
           icon={<Bell size={22} />}
         />
-
       </div>
-
     </main>
-
   );
 }
 
