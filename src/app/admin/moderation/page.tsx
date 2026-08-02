@@ -4,7 +4,7 @@ import React, { useState, useEffect } from 'react';
 import { ModerationSettings, RegexRule, CommentAuditLog } from '@/types/moderation';
 import { getModerationSettings, updateModerationSettings, getRegexRules } from '@/services/moderationService';
 import { collection, getDocs, query, orderBy, limit } from 'firebase/firestore';
-import { db } from '@/lib/firebase';
+import { db } from '@/firebase/config';
 
 export default function AdminModerationDashboard() {
   const [settings, setSettings] = useState<ModerationSettings | null>(null);
