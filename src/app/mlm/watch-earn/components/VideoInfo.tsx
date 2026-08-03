@@ -39,7 +39,7 @@ VideoInfo({
 
       <div className="flex items-center gap-3">
         <div className="h-10 w-10 rounded-full bg-gradient-to-br from-pink-500 to-yellow-400 p-0.5">
-          <div className="h-full w-full rounded-full bg-[var(--card-color)]" aria-hidden />
+          <div className="h-full w-full rounded-full bg-[var(--color-card-background)]" aria-hidden />
         </div>
 
         <div className="flex flex-col leading-tight">
@@ -50,7 +50,7 @@ VideoInfo({
             )}
           </div>
 
-          <span className="text-xs text-[var(--text-color)]/80 truncate max-w-[40vw]">{music}</span>
+          <span className="text-xs text-[var(--text-primary)]/80 truncate max-w-[40vw]">{music}</span>
         </div>
       </div>
 
@@ -65,10 +65,10 @@ VideoInfo({
       {hashtags && hashtags.length > 0 && (
         <div className="mt-2 flex items-center gap-2 overflow-hidden">
           {hashtags.slice(0, 3).map((tag) => (
-            <span key={tag} className="text-xs font-semibold text-[var(--primary-color)]">#{tag}</span>
+            <span key={tag} className="text-xs font-semibold text-[var(--color-primary-button)]">#{tag}</span>
           ))}
           {hashtags.length > 3 && (
-            <span className="text-xs text-[var(--text-color)]/70">+{hashtags.length - 3}</span>
+            <span className="text-xs text-[var(--text-primary)]/70">+{hashtags.length - 3}</span>
           )}
         </div>
       )}

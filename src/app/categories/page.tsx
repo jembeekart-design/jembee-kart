@@ -37,7 +37,7 @@ export default function CategoriesPage() {
         min-h-screen
         w-full
         overflow-x-hidden
-        bg-[var(--primary-color)]
+        bg-[var(--color-primary-button)]
 
         pb-32
 
@@ -89,7 +89,7 @@ export default function CategoriesPage() {
                 className="
                   text-3xl
                   font-black
-                  text-[var(--text-color)]
+                  text-[var(--text-primary)]
                 "
               >
 
@@ -101,7 +101,7 @@ export default function CategoriesPage() {
                 className="
                   mt-1
                   text-sm
-                  text-[var(--muted-text-color)]
+                  text-[var(--text-secondary)]
                 "
               >
 

@@ -79,7 +79,7 @@ export default function MLMDashboardPage() {
 
   if (loading) {
     return (
-      <div className="flex min-h-screen items-center justify-center bg-[var(--primary-color)] text-sm font-black text-[var(--primary-color)] uppercase tracking-widest">
+      <div className="flex min-h-screen items-center justify-center bg-[var(--color-primary-button)] text-sm font-black text-[var(--color-primary-button)] uppercase tracking-widest">
         Loading...
       </div>
     );
@@ -90,40 +90,40 @@ export default function MLMDashboardPage() {
   const unreadCount = userData?.unreadNotifications || 0;
 
   const quickActions = [
-    { title: "Invite", href: "/mlm/invite", icon: Users, color: "bg-[var(--primary-color)] text-[var(--primary-color)]" },
-    { title: "Wallet", href: "/mlm/wallet", icon: Wallet, color: "bg-[var(--success-color)] text-[var(--success-color)]" },
-    { title: "Network", href: "/mlm/network", icon: Network, color: "bg-[var(--warning-color)] text-[var(--warning-color)]" },
-    { title: "Tasks", href: "/mlm/tasks", icon: Gift, color: "bg-[var(--primary-color)] text-[var(--primary-color)]" }
+    { title: "Invite", href: "/mlm/invite", icon: Users, color: "bg-[var(--color-primary-button)] text-[var(--color-primary-button)]" },
+    { title: "Wallet", href: "/mlm/wallet", icon: Wallet, color: "bg-[var(--color-success)] text-[var(--color-success)]" },
+    { title: "Network", href: "/mlm/network", icon: Network, color: "bg-[var(--color-warning)] text-[var(--color-warning)]" },
+    { title: "Tasks", href: "/mlm/tasks", icon: Gift, color: "bg-[var(--color-primary-button)] text-[var(--color-primary-button)]" }
   ];
 
   const stats = [
-    { title: "Total Team", value: userData?.teamSize || 0, icon: Users, color: "text-[var(--primary-color)]" },
-    { title: "Today's Income", value: `₹${formattedTodayIncome}`, icon: Sparkles, color: "text-[var(--success-color)]" },
-    { title: "Rank", value: userData?.rank || "Bronze Member", icon: Crown, color: "text-[var(--warning-color)]" },
-    { title: "Rewards", value: userData?.rewardCount || 0, icon: Trophy, color: "text-[var(--warning-color)]" }
+    { title: "Total Team", value: userData?.teamSize || 0, icon: Users, color: "text-[var(--color-primary-button)]" },
+    { title: "Today's Income", value: `₹${formattedTodayIncome}`, icon: Sparkles, color: "text-[var(--color-success)]" },
+    { title: "Rank", value: userData?.rank || "Bronze Member", icon: Crown, color: "text-[var(--color-warning)]" },
+    { title: "Rewards", value: userData?.rewardCount || 0, icon: Trophy, color: "text-[var(--color-warning)]" }
   ];
 
   // Navigation Data Fix
   const navigation = [
-    { href: "/mlm/earnings", title: "Earnings", desc: "View earnings", icon: Sparkles, color: "text-[var(--primary-color)]" },
-    { href: "/mlm/leaderboard", title: "Leaderboard", desc: "Top performers", icon: Trophy, color: "text-[var(--warning-color)]" },
-    { href: "/mlm/support", title: "Support", desc: "Get help", icon: ShieldCheck, color: "text-[var(--success-color)]" },
+    { href: "/mlm/earnings", title: "Earnings", desc: "View earnings", icon: Sparkles, color: "text-[var(--color-primary-button)]" },
+    { href: "/mlm/leaderboard", title: "Leaderboard", desc: "Top performers", icon: Trophy, color: "text-[var(--color-warning)]" },
+    { href: "/mlm/support", title: "Support", desc: "Get help", icon: ShieldCheck, color: "text-[var(--color-success)]" },
   ];
 
   return (
-    <main className="min-h-screen bg-[var(--primary-color)] pb-28">
-      <div className="sticky top-0 z-50 bg-[var(--card-color)] px-4 py-3 shadow-sm">
+    <main className="min-h-screen bg-[var(--color-primary-button)] pb-28">
+      <div className="sticky top-0 z-50 bg-[var(--color-card-background)] px-4 py-3 shadow-sm">
         <div className="flex items-center justify-between">
           <div>
-            <h1 className="text-[28px] font-black text-[var(--primary-color)]">MLM Dashboard</h1>
-            <p className="text-[11px] text-[var(--muted-text-color)]">
-              Welcome Back, <span className="font-bold text-[var(--text-color)]">{userData?.name || "Partner"}</span> 👋
+            <h1 className="text-[28px] font-black text-[var(--color-primary-button)]">MLM Dashboard</h1>
+            <p className="text-[11px] text-[var(--text-secondary)]">
+              Welcome Back, <span className="font-bold text-[var(--text-primary)]">{userData?.name || "Partner"}</span> 👋
             </p>
           </div>
-          <Link href="/mlm/notifications" className="relative flex h-12 w-12 items-center justify-center rounded-full bg-[var(--primary-color)] text-[var(--primary-color)]">
+          <Link href="/mlm/notifications" className="relative flex h-12 w-12 items-center justify-center rounded-full bg-[var(--color-primary-button)] text-[var(--color-primary-button)]">
             <Bell size={22} />
             {unreadCount > 0 && (
-              <div className="absolute right-2 top-2 flex h-4 w-4 items-center justify-center rounded-full bg-[var(--danger-color)] text-[9px] font-black text-[var(--button-text-color)] border-2 border-[var(--border-color)] animate-bounce">
+              <div className="absolute right-2 top-2 flex h-4 w-4 items-center justify-center rounded-full bg-[var(--color-danger)] text-[9px] font-black text-[var(--button-text-color)] border-2 border-[var(--color-border)] animate-bounce">
                 {unreadCount}
               </div>
             )}
@@ -132,19 +132,19 @@ export default function MLMDashboardPage() {
       </div>
 
       <section className="px-4 pt-4">
-        <Link href="/" className="flex items-center justify-center gap-2 w-full rounded-2xl bg-[var(--card-color)] border-2 border-dashed border-[var(--primary-color)] py-3 text-[13px] font-black text-[var(--primary-color)] hover:bg-[var(--primary-color)] transition active:scale-[0.99]">
+        <Link href="/" className="flex items-center justify-center gap-2 w-full rounded-2xl bg-[var(--color-card-background)] border-2 border-dashed border-[var(--color-primary-button)] py-3 text-[13px] font-black text-[var(--color-primary-button)] hover:bg-[var(--color-primary-button)] transition active:scale-[0.99]">
           <ShoppingBag size={18} /> Continue Shopping
         </Link>
       </section>
 
       <section className="px-4 pt-4">
-        <div className="overflow-hidden rounded-[32px] bg-gradient-to-br from-[var(--primary-color)] via-[var(--primary-color)] to-[var(--primary-color)] p-5 text-[var(--button-text-color)] shadow-xl">
+        <div className="overflow-hidden rounded-[32px] bg-gradient-to-br from-[var(--color-primary-button)] via-[var(--color-primary-button)] to-[var(--color-primary-button)] p-5 text-[var(--button-text-color)] shadow-xl">
           <div className="flex items-center justify-between">
             <div>
               <p className="text-[13px] text-[var(--button-text-color)]/80">Total Earnings</p>
               <h2 className="mt-2 text-[42px] font-black">₹{formattedTotalIncome}</h2>
             </div>
-            <div className="flex h-16 w-16 items-center justify-center rounded-full bg-[var(--card-color)]/20">
+            <div className="flex h-16 w-16 items-center justify-center rounded-full bg-[var(--color-card-background)]/20">
               <Wallet size={34} />
             </div>
           </div>
@@ -153,7 +153,7 @@ export default function MLMDashboardPage() {
               <p className="text-[11px] text-[var(--button-text-color)]/80">Current Rank</p>
               <h3 className="mt-1 text-[20px] font-black">{userData?.rank || "Bronze Member"} 👑</h3>
             </div>
-            <Link href="/mlm/ranks" className="rounded-2xl bg-[var(--card-color)] px-4 py-2 text-[12px] font-black text-[var(--primary-color)]">View Rank</Link>
+            <Link href="/mlm/ranks" className="rounded-2xl bg-[var(--color-card-background)] px-4 py-2 text-[12px] font-black text-[var(--color-primary-button)]">View Rank</Link>
           </div>
         </div>
       </section>
@@ -163,7 +163,7 @@ export default function MLMDashboardPage() {
           {quickActions.map((action, index) => {
             const Icon = action.icon;
             return (
-              <Link key={index} href={action.href} className="rounded-3xl bg-[var(--card-color)] p-4 text-center shadow-sm hover:scale-[1.02] transition">
+              <Link key={index} href={action.href} className="rounded-3xl bg-[var(--color-card-background)] p-4 text-center shadow-sm hover:scale-[1.02] transition">
                 <div className={`mx-auto flex h-14 w-14 items-center justify-center rounded-full ${action.color}`}>
                   <Icon size={26} />
                 </div>
@@ -179,10 +179,10 @@ export default function MLMDashboardPage() {
           {stats.map((stat, index) => {
             const Icon = stat.icon;
             return (
-              <div key={index} className="rounded-2xl bg-[var(--card-color)] p-4 shadow-sm">
+              <div key={index} className="rounded-2xl bg-[var(--color-card-background)] p-4 shadow-sm">
                 <Icon size={28} className={stat.color} />
-                <h3 className="mt-3 text-[26px] font-black tracking-tight text-[var(--text-color)]">{stat.value}</h3>
-                <p className="text-[12px] text-[var(--muted-text-color)]">{stat.title}</p>
+                <h3 className="mt-3 text-[26px] font-black tracking-tight text-[var(--text-primary)]">{stat.value}</h3>
+                <p className="text-[12px] text-[var(--text-secondary)]">{stat.title}</p>
               </div>
             );
           })}
@@ -190,34 +190,34 @@ export default function MLMDashboardPage() {
       </section>
 
       <section className="mt-6 px-4">
-        <div className="rounded-[30px] bg-[var(--card-color)] p-5 shadow-sm">
+        <div className="rounded-[30px] bg-[var(--color-card-background)] p-5 shadow-sm">
           <div className="flex items-center justify-between">
             <div>
               <h2 className="text-[22px] font-black">Referral Code</h2>
-              <p className="mt-1 text-[11px] text-[var(--muted-text-color)]">Share & Earn</p>
+              <p className="mt-1 text-[11px] text-[var(--text-secondary)]">Share & Earn</p>
             </div>
-            <Users size={28} className="text-[var(--primary-color)]" />
+            <Users size={28} className="text-[var(--color-primary-button)]" />
           </div>
-          <div className="mt-5 rounded-2xl bg-[var(--primary-color)] p-4 text-center">
-            <h3 className="text-[28px] font-black tracking-widest text-[var(--primary-color)] uppercase">
+          <div className="mt-5 rounded-2xl bg-[var(--color-primary-button)] p-4 text-center">
+            <h3 className="text-[28px] font-black tracking-widest text-[var(--color-primary-button)] uppercase">
               {userData?.referralCode || "NO_CODE"}
             </h3>
           </div>
-          <Link href="/mlm/invite" className="mt-5 flex items-center justify-center rounded-2xl bg-[var(--primary-color)] py-3 text-[14px] font-black text-[var(--button-text-color)] hover:bg-[var(--primary-color)] transition">
+          <Link href="/mlm/invite" className="mt-5 flex items-center justify-center rounded-2xl bg-[var(--color-primary-button)] py-3 text-[14px] font-black text-[var(--button-text-color)] hover:bg-[var(--color-primary-button)] transition">
             Invite Friends
           </Link>
         </div>
       </section>
 
       <section className="mt-6 px-4">
-        <div className="rounded-[30px] bg-[var(--card-color)] p-5 shadow-sm">
+        <div className="rounded-[30px] bg-[var(--color-card-background)] p-5 shadow-sm">
           <div className="flex items-center gap-3">
-            <Medal size={24} className="text-[var(--warning-color)]" />
+            <Medal size={24} className="text-[var(--color-warning)]" />
             <h2 className="text-[22px] font-black">Performance</h2>
           </div>
-          <div className="mt-5 flex h-48 items-end gap-2 px-2 border-b border-[var(--border-color)] pb-1">
+          <div className="mt-5 flex h-48 items-end gap-2 px-2 border-b border-[var(--color-border)] pb-1">
             {performanceMetrics.map((val, i) => (
-              <div key={i} style={{ height: `${val}%` }} className={`w-full rounded-t-xl transition-all duration-500 ${i === 3 ? "bg-[var(--warning-color)]" : "bg-[var(--primary-color)]"}`} />
+              <div key={i} style={{ height: `${val}%` }} className={`w-full rounded-t-xl transition-all duration-500 ${i === 3 ? "bg-[var(--color-warning)]" : "bg-[var(--color-primary-button)]"}`} />
             ))}
           </div>
         </div>
@@ -229,15 +229,15 @@ export default function MLMDashboardPage() {
           {navigation.map((item, idx) => {
             const ItemIcon = item.icon;
             return (
-              <Link key={idx} href={item.href} className="flex items-center justify-between rounded-2xl bg-[var(--card-color)] p-4 shadow-sm hover:translate-x-1 transition-transform">
+              <Link key={idx} href={item.href} className="flex items-center justify-between rounded-2xl bg-[var(--color-card-background)] p-4 shadow-sm hover:translate-x-1 transition-transform">
                 <div className="flex items-center gap-3">
                   <ItemIcon size={24} className={item.color} />
                   <div>
                     <h3 className="text-[15px] font-black">{item.title}</h3>
-                    <p className="text-[11px] text-[var(--muted-text-color)]">{item.desc}</p>
+                    <p className="text-[11px] text-[var(--text-secondary)]">{item.desc}</p>
                   </div>
                 </div>
-                <Star size={20} className="text-[var(--muted-text-color)]" />
+                <Star size={20} className="text-[var(--text-secondary)]" />
               </Link>
             );
           })}

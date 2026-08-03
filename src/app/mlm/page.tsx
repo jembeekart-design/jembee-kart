@@ -78,21 +78,21 @@ export default function MLMPage() {
   }
 
   return (
-    <main className="min-h-screen bg-[var(--primary-color)] pb-24">
+    <main className="min-h-screen bg-[var(--color-primary-button)] pb-24">
       {/* HEADER */}
-      <div className="sticky top-0 z-50 bg-[var(--card-color)]/90 backdrop-blur-md px-4 py-3 shadow-sm">
+      <div className="sticky top-0 z-50 bg-[var(--color-card-background)]/90 backdrop-blur-md px-4 py-3 shadow-sm">
         <div className="flex items-center gap-3">
           <Link
             href="/"
-            className="flex h-10 w-10 items-center justify-center rounded-full bg-[var(--primary-color)] text-[var(--primary-color)] hover:bg-[var(--primary-color)] transition-colors"
+            className="flex h-10 w-10 items-center justify-center rounded-full bg-[var(--color-primary-button)] text-[var(--color-primary-button)] hover:bg-[var(--color-primary-button)] transition-colors"
           >
             <ArrowLeft size={20} />
           </Link>
           <div>
-            <h1 className="text-[22px] font-black text-[var(--primary-color)]">
+            <h1 className="text-[22px] font-black text-[var(--color-primary-button)]">
               MLM Income
             </h1>
-            <p className="text-[11px] text-[var(--muted-text-color)]">
+            <p className="text-[11px] text-[var(--text-secondary)]">
               Build Team & Earn Money
             </p>
           </div>
@@ -101,8 +101,8 @@ export default function MLMPage() {
 
       {/* HERO SECTION */}
       <section className="px-4 pt-5">
-        <div className="overflow-hidden rounded-[30px] bg-gradient-to-br from-[var(--primary-color)] via-[var(--primary-color)] to-[var(--primary-color)] p-5 text-[var(--button-text-color)] shadow-xl">
-          <div className="flex h-16 w-16 items-center justify-center rounded-full bg-[var(--card-color)]/20">
+        <div className="overflow-hidden rounded-[30px] bg-gradient-to-br from-[var(--color-primary-button)] via-[var(--color-primary-button)] to-[var(--color-primary-button)] p-5 text-[var(--button-text-color)] shadow-xl">
+          <div className="flex h-16 w-16 items-center justify-center rounded-full bg-[var(--color-card-background)]/20">
             <Crown size={34} />
           </div>
 
@@ -115,7 +115,7 @@ export default function MLMPage() {
           </p>
 
           {/* REFERRAL CARD (With Glassmorphism Styling) */}
-          <div className="mt-5 rounded-2xl bg-[var(--card-color)]/10 p-4 backdrop-blur-md border border-[var(--border-color)]/10">
+          <div className="mt-5 rounded-2xl bg-[var(--color-card-background)]/10 p-4 backdrop-blur-md border border-[var(--color-border)]/10">
             {loading ? (
               <div className="flex flex-col items-center justify-center py-6 gap-2">
                 <Loader2 className="animate-spin text-[var(--button-text-color)]" size={24} />
@@ -132,16 +132,16 @@ export default function MLMPage() {
                 </h3>
                 
                 <p className="text-[13px] text-[var(--button-text-color)]/90 font-medium mt-1">
-                  Code: <span className="font-mono bg-[var(--card-color)]/20 px-1.5 py-0.5 rounded text-[var(--warning-color)]">{referralCode}</span>
+                  Code: <span className="font-mono bg-[var(--color-card-background)]/20 px-1.5 py-0.5 rounded text-[var(--color-warning)]">{referralCode}</span>
                 </p>
 
-                <div className="mt-4 rounded-xl bg-[var(--card-color)]/10 p-3 text-[11px] break-all font-mono border border-[var(--border-color)]/5 select-all">
+                <div className="mt-4 rounded-xl bg-[var(--color-card-background)]/10 p-3 text-[11px] break-all font-mono border border-[var(--color-border)]/5 select-all">
                   {referralLink}
                 </div>
 
                 <button
                   onClick={copyReferral}
-                  className="mt-4 flex w-full items-center justify-center gap-2 rounded-2xl bg-[var(--card-color)] py-3 text-[14px] font-black text-[var(--primary-color)] shadow-md active:scale-[0.98] transition-transform"
+                  className="mt-4 flex w-full items-center justify-center gap-2 rounded-2xl bg-[var(--color-card-background)] py-3 text-[14px] font-black text-[var(--color-primary-button)] shadow-md active:scale-[0.98] transition-transform"
                 >
                   <Copy size={18} />
                   {isCopied ? "Copied to Clipboard!" : "Copy Details & Link"}
@@ -154,47 +154,47 @@ export default function MLMPage() {
 
       {/* HOW IT WORKS */}
       <section className="mt-6 px-4">
-        <h2 className="text-[24px] font-black text-[var(--text-color)]">
+        <h2 className="text-[24px] font-black text-[var(--text-primary)]">
           Kaise Kaam Karta Hai?
         </h2>
 
         <div className="mt-4 space-y-3">
-          <div className="rounded-2xl bg-[var(--card-color)] p-4 shadow-sm border border-[var(--border-color)]">
+          <div className="rounded-2xl bg-[var(--color-card-background)] p-4 shadow-sm border border-[var(--color-border)]">
             <div className="flex items-center gap-3">
-              <div className="flex h-12 w-12 items-center justify-center rounded-full bg-[var(--primary-color)] text-[var(--primary-color)]">
+              <div className="flex h-12 w-12 items-center justify-center rounded-full bg-[var(--color-primary-button)] text-[var(--color-primary-button)]">
                 <Users size={22} />
               </div>
               <div>
                 <h3 className="text-[16px] font-black">1. People Join</h3>
-                <p className="text-[12px] text-[var(--muted-text-color)]">
+                <p className="text-[12px] text-[var(--text-secondary)]">
                   Aap apne referral link se logon ko join karte ho.
                 </p>
               </div>
             </div>
           </div>
 
-          <div className="rounded-2xl bg-[var(--card-color)] p-4 shadow-sm border border-[var(--border-color)]">
+          <div className="rounded-2xl bg-[var(--color-card-background)] p-4 shadow-sm border border-[var(--color-border)]">
             <div className="flex items-center gap-3">
-              <div className="flex h-12 w-12 items-center justify-center rounded-full bg-[var(--success-color)] text-[var(--success-color)]">
+              <div className="flex h-12 w-12 items-center justify-center rounded-full bg-[var(--color-success)] text-[var(--color-success)]">
                 <Gift size={22} />
               </div>
               <div>
                 <h3 className="text-[16px] font-black">2. Team Grows</h3>
-                <p className="text-[12px] text-[var(--muted-text-color)]">
+                <p className="text-[12px] text-[var(--text-secondary)]">
                   Jab wo dusre logon ko join karte hain tab aapki team grow hoti hai.
                 </p>
               </div>
             </div>
           </div>
 
-          <div className="rounded-2xl bg-[var(--card-color)] p-4 shadow-sm border border-[var(--border-color)]">
+          <div className="rounded-2xl bg-[var(--color-card-background)] p-4 shadow-sm border border-[var(--color-border)]">
             <div className="flex items-center gap-3">
-              <div className="flex h-12 w-12 items-center justify-center rounded-full bg-[var(--warning-color)] text-[var(--warning-color)]">
+              <div className="flex h-12 w-12 items-center justify-center rounded-full bg-[var(--color-warning)] text-[var(--color-warning)]">
                 <BadgeIndianRupee size={22} />
               </div>
               <div>
                 <h3 className="text-[16px] font-black">3. Earn Commission</h3>
-                <p className="text-[12px] text-[var(--muted-text-color)]">
+                <p className="text-[12px] text-[var(--text-secondary)]">
                   Har order aur referral se aapko commission milta hai.
                 </p>
               </div>
@@ -210,28 +210,28 @@ export default function MLMPage() {
         </h2>
 
         <div className="mt-4 grid grid-cols-2 gap-3">
-          <div className="rounded-2xl bg-[var(--card-color)] p-4 shadow-sm border border-[var(--border-color)]">
-            <CheckCircle2 size={28} className="text-[var(--primary-color)]" />
+          <div className="rounded-2xl bg-[var(--color-card-background)] p-4 shadow-sm border border-[var(--color-border)]">
+            <CheckCircle2 size={28} className="text-[var(--color-primary-button)]" />
             <h3 className="mt-3 text-[15px] font-black">Passive Income</h3>
-            <p className="mt-1 text-[11px] text-[var(--muted-text-color)]">Team se automatic earning.</p>
+            <p className="mt-1 text-[11px] text-[var(--text-secondary)]">Team se automatic earning.</p>
           </div>
 
-          <div className="rounded-2xl bg-[var(--card-color)] p-4 shadow-sm border border-[var(--border-color)]">
-            <Users size={28} className="text-[var(--primary-color)]" />
+          <div className="rounded-2xl bg-[var(--color-card-background)] p-4 shadow-sm border border-[var(--color-border)]">
+            <Users size={28} className="text-[var(--color-primary-button)]" />
             <h3 className="mt-3 text-[15px] font-black">Unlimited Team</h3>
-            <p className="mt-1 text-[11px] text-[var(--muted-text-color)]">Jitni badi team utni earning.</p>
+            <p className="mt-1 text-[11px] text-[var(--text-secondary)]">Jitni badi team utni earning.</p>
           </div>
 
-          <div className="rounded-2xl bg-[var(--card-color)] p-4 shadow-sm border border-[var(--border-color)]">
-            <ShieldCheck size={28} className="text-[var(--success-color)]" />
+          <div className="rounded-2xl bg-[var(--color-card-background)] p-4 shadow-sm border border-[var(--color-border)]">
+            <ShieldCheck size={28} className="text-[var(--color-success)]" />
             <h3 className="mt-3 text-[15px] font-black">Secure System</h3>
-            <p className="mt-1 text-[11px] text-[var(--muted-text-color)]">Safe & transparent income.</p>
+            <p className="mt-1 text-[11px] text-[var(--text-secondary)]">Safe & transparent income.</p>
           </div>
 
-          <div className="rounded-2xl bg-[var(--card-color)] p-4 shadow-sm border border-[var(--border-color)]">
-            <BadgeIndianRupee size={28} className="text-[var(--warning-color)]" />
+          <div className="rounded-2xl bg-[var(--color-card-background)] p-4 shadow-sm border border-[var(--color-border)]">
+            <BadgeIndianRupee size={28} className="text-[var(--color-warning)]" />
             <h3 className="mt-3 text-[15px] font-black">Daily Earnings</h3>
-            <p className="mt-1 text-[11px] text-[var(--muted-text-color)]">Roz commission earn karo.</p>
+            <p className="mt-1 text-[11px] text-[var(--text-secondary)]">Roz commission earn karo.</p>
           </div>
         </div>
       </section>

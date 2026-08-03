@@ -71,7 +71,7 @@ export default function WithdrawPage() {
 
   return (
 
-    <main className="min-h-screen bg-[var(--primary-color)] pb-24">
+    <main className="min-h-screen bg-[var(--color-primary-button)] pb-24">
 
       {/* HEADER */}
 
@@ -80,7 +80,7 @@ export default function WithdrawPage() {
           sticky
           top-0
           z-50
-          bg-[var(--card-color)]
+          bg-[var(--color-card-background)]
           px-4
           py-3
           shadow-sm
@@ -98,8 +98,8 @@ export default function WithdrawPage() {
               items-center
               justify-center
               rounded-full
-              bg-[var(--primary-color)]
-              text-[var(--primary-color)]
+              bg-[var(--color-primary-button)]
+              text-[var(--color-primary-button)]
             "
           >
 
@@ -109,13 +109,13 @@ export default function WithdrawPage() {
 
           <div>
 
-            <h1 className="text-[24px] font-black text-[var(--primary-color)]">
+            <h1 className="text-[24px] font-black text-[var(--color-primary-button)]">
 
               Withdraw
 
             </h1>
 
-            <p className="text-[11px] text-[var(--muted-text-color)]">
+            <p className="text-[11px] text-[var(--text-secondary)]">
 
               Withdraw MLM Earnings
 
@@ -136,9 +136,9 @@ export default function WithdrawPage() {
             overflow-hidden
             rounded-[30px]
             bg-gradient-to-br
-            from-[var(--primary-color)]
-            via-[var(--primary-color)]
-            to-[var(--primary-color)]
+            from-[var(--color-primary-button)]
+            via-[var(--color-primary-button)]
+            to-[var(--color-primary-button)]
             p-5
             text-[var(--button-text-color)]
             shadow-xl
@@ -177,7 +177,7 @@ export default function WithdrawPage() {
         <div
           className="
             rounded-[28px]
-            bg-[var(--card-color)]
+            bg-[var(--color-card-background)]
             p-5
             shadow-sm
           "
@@ -207,8 +207,8 @@ export default function WithdrawPage() {
                 gap-3
                 rounded-2xl
                 border
-                border-[var(--border-color)]
-                bg-[var(--background-color)]
+                border-[var(--color-border)]
+                bg-[var(--color-page-background)]
                 px-4
                 py-3
               "
@@ -216,7 +216,7 @@ export default function WithdrawPage() {
 
               <BadgeIndianRupee
                 size={18}
-                className="text-[var(--primary-color)]"
+                className="text-[var(--color-primary-button)]"
               />
 
               <input
@@ -258,8 +258,8 @@ export default function WithdrawPage() {
                 gap-3
                 rounded-2xl
                 border
-                border-[var(--border-color)]
-                bg-[var(--background-color)]
+                border-[var(--color-border)]
+                bg-[var(--color-page-background)]
                 px-4
                 py-3
               "
@@ -267,7 +267,7 @@ export default function WithdrawPage() {
 
               <Building2
                 size={18}
-                className="text-[var(--primary-color)]"
+                className="text-[var(--color-primary-button)]"
               />
 
               <input
@@ -301,8 +301,8 @@ export default function WithdrawPage() {
               w-full
               rounded-2xl
               bg-gradient-to-r
-              from-[var(--primary-color)]
-              to-[var(--primary-color)]
+              from-[var(--color-primary-button)]
+              to-[var(--color-primary-button)]
               py-3
               text-[15px]
               font-black
@@ -328,7 +328,7 @@ export default function WithdrawPage() {
         <div
           className="
             rounded-[28px]
-            bg-[var(--card-color)]
+            bg-[var(--color-card-background)]
             p-5
             shadow-sm
           "
@@ -350,7 +350,7 @@ export default function WithdrawPage() {
                 items-center
                 justify-between
                 rounded-2xl
-                bg-[var(--background-color)]
+                bg-[var(--color-page-background)]
                 p-4
               "
             >
@@ -365,8 +365,8 @@ export default function WithdrawPage() {
                     items-center
                     justify-center
                     rounded-full
-                    bg-[var(--success-color)]
-                    text-[var(--success-color)]
+                    bg-[var(--color-success)]
+                    text-[var(--color-success)]
                   "
                 >
 
@@ -382,7 +382,7 @@ export default function WithdrawPage() {
 
                   </h3>
 
-                  <p className="text-[11px] text-[var(--muted-text-color)]">
+                  <p className="text-[11px] text-[var(--text-secondary)]">
 
                     Success
 
@@ -395,12 +395,12 @@ export default function WithdrawPage() {
               <div
                 className="
                   rounded-full
-                  bg-[var(--success-color)]
+                  bg-[var(--color-success)]
                   px-3
                   py-1
                   text-[11px]
                   font-black
-                  text-[var(--success-color)]
+                  text-[var(--color-success)]
                 "
               >
 
@@ -418,7 +418,7 @@ export default function WithdrawPage() {
                 items-center
                 justify-between
                 rounded-2xl
-                bg-[var(--background-color)]
+                bg-[var(--color-page-background)]
                 p-4
               "
             >
@@ -433,8 +433,8 @@ export default function WithdrawPage() {
                     items-center
                     justify-center
                     rounded-full
-                    bg-[var(--warning-color)]
-                    text-[var(--warning-color)]
+                    bg-[var(--color-warning)]
+                    text-[var(--color-warning)]
                   "
                 >
 
@@ -450,7 +450,7 @@ export default function WithdrawPage() {
 
                   </h3>
 
-                  <p className="text-[11px] text-[var(--muted-text-color)]">
+                  <p className="text-[11px] text-[var(--text-secondary)]">
 
                     Pending Approval
 
@@ -463,12 +463,12 @@ export default function WithdrawPage() {
               <div
                 className="
                   rounded-full
-                  bg-[var(--warning-color)]
+                  bg-[var(--color-warning)]
                   px-3
                   py-1
                   text-[11px]
                   font-black
-                  text-[var(--warning-color)]
+                  text-[var(--color-warning)]
                 "
               >
 

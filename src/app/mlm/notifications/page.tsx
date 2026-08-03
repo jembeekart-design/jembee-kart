@@ -23,7 +23,7 @@ export default function MLMNotificationsPage() {
         "Rahul Kumar joined using your referral link.",
       icon: Users,
       color:
-        "bg-[var(--primary-color)] text-[var(--primary-color)]",
+        "bg-[var(--color-primary-button)] text-[var(--color-primary-button)]",
       time:
         "2 min ago"
     },
@@ -36,7 +36,7 @@ export default function MLMNotificationsPage() {
       icon:
         BadgeIndianRupee,
       color:
-        "bg-[var(--success-color)] text-[var(--success-color)]",
+        "bg-[var(--color-success)] text-[var(--color-success)]",
       time:
         "10 min ago"
     },
@@ -48,7 +48,7 @@ export default function MLMNotificationsPage() {
         "Congratulations! You reached Gold Leader rank.",
       icon: Crown,
       color:
-        "bg-[var(--warning-color)] text-[var(--warning-color)]",
+        "bg-[var(--color-warning)] text-[var(--color-warning)]",
       time:
         "1 hour ago"
     },
@@ -61,7 +61,7 @@ export default function MLMNotificationsPage() {
       icon:
         ShieldCheck,
       color:
-        "bg-[var(--primary-color)] text-[var(--primary-color)]",
+        "bg-[var(--color-primary-button)] text-[var(--color-primary-button)]",
       time:
         "Today"
     },
@@ -73,7 +73,7 @@ export default function MLMNotificationsPage() {
         "You unlocked ₹500 team growth bonus.",
       icon: Gift,
       color:
-        "bg-[var(--primary-color)] text-[var(--primary-color)]",
+        "bg-[var(--color-primary-button)] text-[var(--color-primary-button)]",
       time:
         "Today"
     }
@@ -82,7 +82,7 @@ export default function MLMNotificationsPage() {
 
   return (
 
-    <main className="min-h-screen bg-[var(--primary-color)] pb-20">
+    <main className="min-h-screen bg-[var(--color-primary-button)] pb-20">
 
       {/* HEADER */}
 
@@ -91,7 +91,7 @@ export default function MLMNotificationsPage() {
           sticky
           top-0
           z-50
-          bg-[var(--card-color)]
+          bg-[var(--color-card-background)]
           px-4
           py-3
           shadow-sm
@@ -109,8 +109,8 @@ export default function MLMNotificationsPage() {
               items-center
               justify-center
               rounded-full
-              bg-[var(--primary-color)]
-              text-[var(--primary-color)]
+              bg-[var(--color-primary-button)]
+              text-[var(--color-primary-button)]
             "
           >
 
@@ -120,13 +120,13 @@ export default function MLMNotificationsPage() {
 
           <div>
 
-            <h1 className="text-[24px] font-black text-[var(--primary-color)]">
+            <h1 className="text-[24px] font-black text-[var(--color-primary-button)]">
 
               Notifications
 
             </h1>
 
-            <p className="text-[11px] text-[var(--muted-text-color)]">
+            <p className="text-[11px] text-[var(--text-secondary)]">
 
               MLM Activity Updates
 
@@ -147,9 +147,9 @@ export default function MLMNotificationsPage() {
             overflow-hidden
             rounded-[30px]
             bg-gradient-to-br
-            from-[var(--primary-color)]
-            via-[var(--primary-color)]
-            to-[var(--primary-color)]
+            from-[var(--color-primary-button)]
+            via-[var(--color-primary-button)]
+            to-[var(--color-primary-button)]
             p-5
             text-[var(--button-text-color)]
             shadow-xl
@@ -164,7 +164,7 @@ export default function MLMNotificationsPage() {
               items-center
               justify-center
               rounded-full
-              bg-[var(--card-color)]/20
+              bg-[var(--color-card-background)]/20
             "
           >
 
@@ -213,7 +213,7 @@ export default function MLMNotificationsPage() {
                   key={index}
                   className="
                     rounded-[28px]
-                    bg-[var(--card-color)]
+                    bg-[var(--color-card-background)]
                     p-4
                     shadow-sm
                   "
@@ -247,7 +247,7 @@ export default function MLMNotificationsPage() {
 
                         </h3>
 
-                        <p className="text-[10px] font-bold text-[var(--muted-text-color)]">
+                        <p className="text-[10px] font-bold text-[var(--text-secondary)]">
 
                           {notification.time}
 
@@ -255,7 +255,7 @@ export default function MLMNotificationsPage() {
 
                       </div>
 
-                      <p className="mt-2 text-[12px] leading-6 text-[var(--muted-text-color)]">
+                      <p className="mt-2 text-[12px] leading-6 text-[var(--text-secondary)]">
 
                         {notification.message}
 

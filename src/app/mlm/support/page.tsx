@@ -58,7 +58,7 @@ export default function MLMSupportPage() {
 
   return (
 
-    <main className="flex min-h-screen flex-col bg-[var(--primary-color)]">
+    <main className="flex min-h-screen flex-col bg-[var(--color-primary-button)]">
 
       {/* HEADER */}
 
@@ -67,7 +67,7 @@ export default function MLMSupportPage() {
           sticky
           top-0
           z-50
-          bg-[var(--card-color)]
+          bg-[var(--color-card-background)]
           px-4
           py-3
           shadow-sm
@@ -85,8 +85,8 @@ export default function MLMSupportPage() {
               items-center
               justify-center
               rounded-full
-              bg-[var(--primary-color)]
-              text-[var(--primary-color)]
+              bg-[var(--color-primary-button)]
+              text-[var(--color-primary-button)]
             "
           >
 
@@ -96,13 +96,13 @@ export default function MLMSupportPage() {
 
           <div>
 
-            <h1 className="text-[24px] font-black text-[var(--primary-color)]">
+            <h1 className="text-[24px] font-black text-[var(--color-primary-button)]">
 
               MLM Support
 
             </h1>
 
-            <p className="text-[11px] text-[var(--muted-text-color)]">
+            <p className="text-[11px] text-[var(--text-secondary)]">
 
               Live Help & Support
 
@@ -122,9 +122,9 @@ export default function MLMSupportPage() {
           className="
             rounded-[30px]
             bg-gradient-to-br
-            from-[var(--primary-color)]
-            via-[var(--primary-color)]
-            to-[var(--primary-color)]
+            from-[var(--color-primary-button)]
+            via-[var(--color-primary-button)]
+            to-[var(--color-primary-button)]
             p-5
             text-[var(--button-text-color)]
             shadow-xl
@@ -139,7 +139,7 @@ export default function MLMSupportPage() {
               items-center
               justify-center
               rounded-full
-              bg-[var(--card-color)]/20
+              bg-[var(--color-card-background)]/20
             "
           >
 
@@ -176,7 +176,7 @@ export default function MLMSupportPage() {
           <button
             className="
               rounded-2xl
-              bg-[var(--card-color)]
+              bg-[var(--color-card-background)]
               p-4
               text-left
               shadow-sm
@@ -185,7 +185,7 @@ export default function MLMSupportPage() {
 
             <Wallet
               size={28}
-              className="text-[var(--success-color)]"
+              className="text-[var(--color-success)]"
             />
 
             <h3 className="mt-3 text-[15px] font-black">
@@ -194,7 +194,7 @@ export default function MLMSupportPage() {
 
             </h3>
 
-            <p className="mt-1 text-[11px] text-[var(--muted-text-color)]">
+            <p className="mt-1 text-[11px] text-[var(--text-secondary)]">
 
               Payment related help
 
@@ -205,7 +205,7 @@ export default function MLMSupportPage() {
           <button
             className="
               rounded-2xl
-              bg-[var(--card-color)]
+              bg-[var(--color-card-background)]
               p-4
               text-left
               shadow-sm
@@ -214,7 +214,7 @@ export default function MLMSupportPage() {
 
             <Users
               size={28}
-              className="text-[var(--primary-color)]"
+              className="text-[var(--color-primary-button)]"
             />
 
             <h3 className="mt-3 text-[15px] font-black">
@@ -223,7 +223,7 @@ export default function MLMSupportPage() {
 
             </h3>
 
-            <p className="mt-1 text-[11px] text-[var(--muted-text-color)]">
+            <p className="mt-1 text-[11px] text-[var(--text-secondary)]">
 
               Team & referral support
 
@@ -234,7 +234,7 @@ export default function MLMSupportPage() {
           <button
             className="
               rounded-2xl
-              bg-[var(--card-color)]
+              bg-[var(--color-card-background)]
               p-4
               text-left
               shadow-sm
@@ -243,7 +243,7 @@ export default function MLMSupportPage() {
 
             <ShieldCheck
               size={28}
-              className="text-[var(--warning-color)]"
+              className="text-[var(--color-warning)]"
             />
 
             <h3 className="mt-3 text-[15px] font-black">
@@ -252,7 +252,7 @@ export default function MLMSupportPage() {
 
             </h3>
 
-            <p className="mt-1 text-[11px] text-[var(--muted-text-color)]">
+            <p className="mt-1 text-[11px] text-[var(--text-secondary)]">
 
               Secure MLM account
 
@@ -263,7 +263,7 @@ export default function MLMSupportPage() {
           <button
             className="
               rounded-2xl
-              bg-[var(--card-color)]
+              bg-[var(--color-card-background)]
               p-4
               text-left
               shadow-sm
@@ -272,7 +272,7 @@ export default function MLMSupportPage() {
 
             <Headphones
               size={28}
-              className="text-[var(--primary-color)]"
+              className="text-[var(--color-primary-button)]"
             />
 
             <h3 className="mt-3 text-[15px] font-black">
@@ -281,7 +281,7 @@ export default function MLMSupportPage() {
 
             </h3>
 
-            <p className="mt-1 text-[11px] text-[var(--muted-text-color)]">
+            <p className="mt-1 text-[11px] text-[var(--text-secondary)]">
 
               Talk to support team
 
@@ -300,7 +300,7 @@ export default function MLMSupportPage() {
         <div
           className="
             rounded-[30px]
-            bg-[var(--card-color)]
+            bg-[var(--color-card-background)]
             p-4
             shadow-sm
           "
@@ -339,8 +339,8 @@ export default function MLMSupportPage() {
                       leading-6
                       ${
                         item.sender === "user"
-                          ? "bg-[var(--primary-color)] text-[var(--button-text-color)]"
-                          : "bg-[var(--background-color)] text-[var(--text-color)]"
+                          ? "bg-[var(--color-primary-button)] text-[var(--button-text-color)]"
+                          : "bg-[var(--color-page-background)] text-[var(--text-primary)]"
                       }
                     `}
                   >
@@ -369,7 +369,7 @@ export default function MLMSupportPage() {
           left-0
           w-full
           border-t
-          bg-[var(--card-color)]
+          bg-[var(--color-card-background)]
           p-3
         "
       >
@@ -389,7 +389,7 @@ export default function MLMSupportPage() {
               h-12
               flex-1
               rounded-2xl
-              bg-[var(--background-color)]
+              bg-[var(--color-page-background)]
               px-4
               text-[14px]
               outline-none
@@ -406,8 +406,8 @@ export default function MLMSupportPage() {
               justify-center
               rounded-2xl
               bg-gradient-to-r
-              from-[var(--primary-color)]
-              to-[var(--primary-color)]
+              from-[var(--color-primary-button)]
+              to-[var(--color-primary-button)]
               text-[var(--button-text-color)]
               shadow-lg
             "

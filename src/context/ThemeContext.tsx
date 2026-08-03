@@ -32,90 +32,53 @@ export function ThemeProvider({ children }: { children: React.ReactNode }) {
   }, []);
 
   useEffect(() => {
-    // Agar theme empty hai toh ruk jayein
     if (!theme || Object.keys(theme).length === 0) return;
 
     const root = document.documentElement;
 
-    // 1. Colors
-    root.style.setProperty("--primary-color", theme.primaryColor);
-    root.style.setProperty("--secondary-color", theme.secondaryColor);
-    root.style.setProperty("--background-color", theme.backgroundColor);
-    root.style.setProperty("--surface-color", theme.surfaceColor);
-    root.style.setProperty("--card-color", theme.cardColor);
-    root.style.setProperty("--text-color", theme.textColor);
-    root.style.setProperty("--muted-text-color", theme.mutedTextColor);
-    root.style.setProperty("--border-color", theme.borderColor);
+    // 1. Legacy & Direct Colors
+    if (theme.primaryColor) root.style.setProperty("--primary-color", theme.primaryColor);
+    if (theme.secondaryColor) root.style.setProperty("--secondary-color", theme.secondaryColor);
+    if (theme.backgroundColor) root.style.setProperty("--background-color", theme.backgroundColor);
+    if (theme.surfaceColor) root.style.setProperty("--surface-color", theme.surfaceColor);
+    if (theme.cardColor) root.style.setProperty("--card-color", theme.cardColor);
+    if (theme.textColor) root.style.setProperty("--text-color", theme.textColor);
+    if (theme.mutedTextColor) root.style.setProperty("--muted-text-color", theme.mutedTextColor);
+    if (theme.borderColor) root.style.setProperty("--border-color", theme.borderColor);
+
+    // 2. Modern Semantic Theme Tokens Mapping (Fixes background & surface color bugs)
+    root.style.setProperty("--color-page-background", theme.pageBackground || theme.backgroundColor || "#0f172a");
+    root.style.setProperty("--color-card-background", theme.cardBackground || theme.cardColor || "#1e293b");
+    root.style.setProperty("--color-surface", theme.surfaceColor || "#334155");
+    root.style.setProperty("--color-primary-button", theme.primaryButtonColor || theme.buttonColor || theme.primaryColor || "#3b82f6");
+    root.style.setProperty("--color-secondary-button", theme.secondaryButtonColor || theme.secondaryColor || "#64748b");
+    root.style.setProperty("--text-primary", theme.textColor || theme.primaryColor || "#f8fafc");
+    root.style.setProperty("--text-secondary", theme.textSecondary || theme.mutedTextColor || "#cbd5e1");
+    root.style.setProperty("--color-border", theme.borderColor || "#334155");
+    root.style.setProperty("--color-header", theme.headerBackground || theme.cardColor || "#1e293b");
+    root.style.setProperty("--color-input-background", theme.inputBackground || theme.cardColor || "#1e293b");
+
+    // 3. Buttons & Interaction
+    if (theme.buttonTextColor) root.style.setProperty("--button-text-color", theme.buttonTextColor);
+    if (theme.hoverColor) root.style.setProperty("--hover-color", theme.hoverColor);
+    if (theme.buttonColor) root.style.setProperty("--button-color", theme.buttonColor);
+    if (theme.buttonHoverColor) root.style.setProperty("--button-hover-color", theme.buttonHoverColor);
+
+    // 4. Spacing & Shapes
+    if (theme.borderRadius !== undefined) {
+      root.style.setProperty("--border-radius", typeof theme.borderRadius === 'number' ? `${theme.borderRadius}px` : theme.borderRadius);
+    }
+    if (theme.buttonRadius !== undefined) {
+      root.style.setProperty("--button-radius", `${theme.buttonRadius}px`);
+    }
+    if (theme.cardRadius !== undefined) {
+      root.style.setProperty("--card-radius", `${theme.cardRadius}px`);
+    }
     
-    // 2. Buttons & Interaction
-    root.style.setProperty("--button-text-color", theme.buttonTextColor);
-    root.style.setProperty("--hover-color", theme.hoverColor);
-    
-    // 3. Spacing & Shapes
-    root.style.setProperty("--border-radius", typeof theme.borderRadius === 'number' ? `${theme.borderRadius}px` : theme.borderRadius);
-    root.style.setProperty("--button-radius", `${theme.buttonRadius}px`);
-    root.style.setProperty("--card-radius", `${theme.cardRadius}px`);
-    
-    // 4. Typography
-    root.style.setProperty("--font-family", theme.fontFamily);
-    root.style.setProperty("--heading-size", `${theme.headingSize}px`);
-    root.style.setProperty("--body-size", `${theme.bodySize}px`);
-    // ==============================
-// Extra Theme Variables
-// ==============================
-
-// Header
-root.style.setProperty("--header-background", theme.headerBackground || "");
-root.style.setProperty("--header-text-color", theme.headerTextColor || "");
-root.style.setProperty("--header-icon-color", theme.headerIconColor || "");
-
-// Search Bar
-root.style.setProperty("--searchbar-color", theme.searchBarColor || "");
-root.style.setProperty("--searchbar-text-color", theme.searchBarTextColor || "");
-root.style.setProperty("--searchbar-placeholder-color", theme.searchBarPlaceholderColor || "");
-root.style.setProperty("--searchbar-border-color", theme.searchBarBorderColor || "");
-
-// Buttons
-root.style.setProperty("--button-color", theme.buttonColor || "");
-root.style.setProperty("--button-hover-color", theme.buttonHoverColor || "");
-root.style.setProperty("--button-text-color", theme.buttonTextColor || "");
-
-// Cards
-root.style.setProperty("--card-color", theme.cardColor || "");
-root.style.setProperty("--card-border-color", theme.cardBorderColor || "");
-root.style.setProperty("--card-shadow-color", theme.cardShadowColor || "");
-
-// Borders
-root.style.setProperty("--border-color", theme.borderColor || "");
-
-// Navigation
-root.style.setProperty("--navbar-color", theme.navbarColor || "");
-root.style.setProperty("--bottom-nav-color", theme.bottomNavColor || "");
-root.style.setProperty("--bottom-nav-active-color", theme.bottomNavActiveColor || "");
-
-// Text
-root.style.setProperty("--primary-text-color", theme.textColor || "");
-root.style.setProperty("--secondary-text-color", theme.mutedTextColor || "");
-
-// Background
-root.style.setProperty("--background-color", theme.backgroundColor || "");
-root.style.setProperty("--surface-color", theme.surfaceColor || "");
-
-// Banner
-root.style.setProperty("--banner-background", theme.bannerBackground || "");
-
-// Category
-root.style.setProperty("--category-background", theme.categoryBackground || "");
-root.style.setProperty("--category-text-color", theme.categoryTextColor || "");
-
-// Product
-root.style.setProperty("--product-card-color", theme.productCardColor || "");
-root.style.setProperty("--price-color", theme.priceColor || "");
-root.style.setProperty("--offer-color", theme.offerColor || "");
-
-// Footer
-root.style.setProperty("--footer-background", theme.footerBackground || "");
-root.style.setProperty("--footer-text-color", theme.footerTextColor || "");
+    // 5. Typography
+    if (theme.fontFamily) root.style.setProperty("--font-family", theme.fontFamily);
+    if (theme.headingSize) root.style.setProperty("--heading-size", `${theme.headingSize}px`);
+    if (theme.bodySize) root.style.setProperty("--body-size", `${theme.bodySize}px`);
 
   }, [theme]);
 

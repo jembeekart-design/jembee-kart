@@ -144,35 +144,35 @@ export default function WalletHistoryPage() {
 
   if (loading) {
     return (
-      <div className="flex min-h-screen items-center justify-center bg-[var(--card-color)]">
+      <div className="flex min-h-screen items-center justify-center bg-[var(--color-card-background)]">
         <div className="flex flex-col items-center gap-2">
-          <Loader2 className="animate-spin text-[var(--text-color)]" size={24} />
-          <p className="text-[10px] font-black text-[var(--text-color)] uppercase tracking-widest">Compiling MLM Ledger State...</p>
+          <Loader2 className="animate-spin text-[var(--text-primary)]" size={24} />
+          <p className="text-[10px] font-black text-[var(--text-primary)] uppercase tracking-widest">Compiling MLM Ledger State...</p>
         </div>
       </div>
     );
   }
 
   return (
-    <main className="min-h-screen bg-[var(--card-color)] pb-12 antialiased">
-      <div className="sticky top-0 z-50 bg-[var(--card-color)] px-4 py-4 border-b border-[var(--border-color)] flex items-center gap-3 dashboard-nav-blur">
+    <main className="min-h-screen bg-[var(--color-card-background)] pb-12 antialiased">
+      <div className="sticky top-0 z-50 bg-[var(--color-card-background)] px-4 py-4 border-b border-[var(--color-border)] flex items-center gap-3 dashboard-nav-blur">
         <button 
           onClick={() => router.push("/mlm/wallet")} 
-          className="h-9 w-9 bg-[var(--card-color)] flex items-center justify-center rounded-full text-[var(--text-color)] active:scale-95 transition-transform"
+          className="h-9 w-9 bg-[var(--color-card-background)] flex items-center justify-center rounded-full text-[var(--text-primary)] active:scale-95 transition-transform"
           aria-label="Back to account dashboard"
         >
           <ArrowLeft size={16} />
         </button>
         <div>
-          <h1 className="text-base font-black text-[var(--text-color)] tracking-tight">Ledger Statement</h1>
-          <p className="text-[9px] uppercase font-bold text-[var(--text-color)] tracking-wider">Internal Accounting Node</p>
+          <h1 className="text-base font-black text-[var(--text-primary)] tracking-tight">Ledger Statement</h1>
+          <p className="text-[9px] uppercase font-bold text-[var(--text-primary)] tracking-wider">Internal Accounting Node</p>
         </div>
       </div>
 
       <div className="p-4 space-y-3">
         {history.length === 0 ? (
-          <div className="text-center py-16 bg-[var(--card-color)] rounded-2xl border border-[var(--border-color)] text-[var(--text-color)] text-xs font-medium px-6 shadow-sm">
-            <AlertCircle className="mx-auto text-[var(--text-color)] mb-2" size={20} />
+          <div className="text-center py-16 bg-[var(--color-card-background)] rounded-2xl border border-[var(--color-border)] text-[var(--text-primary)] text-xs font-medium px-6 shadow-sm">
+            <AlertCircle className="mx-auto text-[var(--text-primary)] mb-2" size={20} />
             No transaction records or income distributions mapped to this node yet.
           </div>
         ) : (
@@ -180,49 +180,49 @@ export default function WalletHistoryPage() {
             const isDebitFlow = ["withdrawal", "cashback_transfer"].includes(tx.type);
 
             return (
-              <div key={tx.id} className="bg-[var(--card-color)] p-4 rounded-2xl border border-[var(--border-color)] shadow-sm space-y-3.5 hover:border-[var(--border-color)] transition-colors">
+              <div key={tx.id} className="bg-[var(--color-card-background)] p-4 rounded-2xl border border-[var(--color-border)] shadow-sm space-y-3.5 hover:border-[var(--color-border)] transition-colors">
                 <div className="flex items-center justify-between">
                   <div className="flex items-center gap-3">
-                    <div className={`h-9 w-9 rounded-xl flex items-center justify-center shrink-0 ${isDebitFlow ? 'bg-[var(--warning-color)] text-[var(--warning-color)]' : 'bg-[var(--success-color)] text-[var(--success-color)]'}`}>
+                    <div className={`h-9 w-9 rounded-xl flex items-center justify-center shrink-0 ${isDebitFlow ? 'bg-[var(--color-warning)] text-[var(--color-warning)]' : 'bg-[var(--color-success)] text-[var(--color-success)]'}`}>
                       {isDebitFlow ? <ArrowUpRight size={16} /> : <ArrowDownLeft size={16} />}
                     </div>
                     <div>
-                      <h4 className="text-xs font-black text-[var(--text-color)] leading-tight">
+                      <h4 className="text-xs font-black text-[var(--text-primary)] leading-tight">
                         {tx.title !== "Wallet Log Operational Entry" ? tx.title : formatTxTypeLabel(tx.type)}
                       </h4>
-                      <p className="text-[9px] font-mono text-[var(--text-color)] mt-0.5 tracking-tight">
+                      <p className="text-[9px] font-mono text-[var(--text-primary)] mt-0.5 tracking-tight">
                         {/* Fix 2: Explicit TXID fallback mapping injection */}
                         TXID: {(tx.transactionId || tx.id).slice(0, 10).toUpperCase()} | {formatTxDate(tx.createdAt)}
                       </p>
                     </div>
                   </div>
                   <div className="text-right shrink-0">
-                    <p className={`text-sm font-black tracking-tight ${isDebitFlow ? 'text-[var(--text-color)]' : 'text-[var(--success-color)]'}`}>
+                    <p className={`text-sm font-black tracking-tight ${isDebitFlow ? 'text-[var(--text-primary)]' : 'text-[var(--color-success)]'}`}>
                       {isDebitFlow ? "-" : "+"}₹{tx.amount.toLocaleString('en-IN')}
                     </p>
                     <span className={`text-[8px] px-1.5 py-0.5 rounded font-black tracking-wider uppercase ${
-                      tx.status === "success" ? "bg-[var(--success-color)] text-[var(--success-color)]" :
-                      tx.status === "pending" ? "bg-[var(--warning-color)] text-[var(--warning-color)]" : "bg-[var(--primary-color)] text-[var(--primary-color)]"
+                      tx.status === "success" ? "bg-[var(--color-success)] text-[var(--color-success)]" :
+                      tx.status === "pending" ? "bg-[var(--color-warning)] text-[var(--color-warning)]" : "bg-[var(--color-primary-button)] text-[var(--color-primary-button)]"
                     }`}>
                       {tx.status}
                     </span>
                   </div>
                 </div>
                 
-                <div className="pt-3 border-t border-[var(--border-color)] grid grid-cols-2 gap-4 text-[10px] text-[var(--text-color)] font-semibold">
+                <div className="pt-3 border-t border-[var(--color-border)] grid grid-cols-2 gap-4 text-[10px] text-[var(--text-primary)] font-semibold">
                   <div>
-                    <p className="text-[8px] uppercase tracking-wider text-[var(--text-color)] font-bold">Allocation Channel</p>
-                    <p className="text-[var(--text-color)] font-black mt-0.5 truncate">
+                    <p className="text-[8px] uppercase tracking-wider text-[var(--text-primary)] font-bold">Allocation Channel</p>
+                    <p className="text-[var(--text-primary)] font-black mt-0.5 truncate">
                       {tx.walletType} {tx.destinationWallet ? `➔ ${tx.destinationWallet}` : ""}
                     </p>
                   </div>
                   <div className="text-right">
-                    <p className="text-[8px] uppercase tracking-wider text-[var(--text-color)] font-bold">Audit Balance Drift</p>
-                    <p className="font-mono text-[var(--text-color)] font-black mt-0.5">
+                    <p className="text-[8px] uppercase tracking-wider text-[var(--text-primary)] font-bold">Audit Balance Drift</p>
+                    <p className="font-mono text-[var(--text-primary)] font-black mt-0.5">
                       {typeof tx.beforeWalletBalance === "number" && typeof tx.afterWalletBalance === "number" ? (
                         `₹${tx.beforeWalletBalance} ➔ ₹${tx.afterWalletBalance}`
                       ) : (
-                        <span className="text-[var(--text-color)] font-normal italic">N/A (Historical Sync)</span>
+                        <span className="text-[var(--text-primary)] font-normal italic">N/A (Historical Sync)</span>
                       )}
                     </p>
                   </div>
