@@ -181,7 +181,7 @@ export default function VideoPlayer({
 
       {/* REWARD CLAIMED TOAST (temporary) */}
       {showRewardToast && (
-        <div className="fixed left-1/2 bottom-32 z-50 -translate-x-1/2 rounded-full bg-[var(--success-color)] px-5 py-2 text-sm font-black text-[var(--button-text-color)] shadow-2xl">
+        <div className="fixed left-1/2 bottom-32 z-50 -translate-x-1/2 rounded-full bg-[var(--color-success)] px-5 py-2 text-sm font-black text-[var(--button-text-color)] shadow-2xl">
           Reward Claimed 🎉
         </div>
       )}

@@ -160,7 +160,7 @@ VerticalVideoFeed() {
 
   if (loading) {
     return (
-      <main className="h-screen flex items-center justify-center bg-[var(--card-color)] text-white">
+      <main className="h-screen flex items-center justify-center bg-[var(--color-card-background)] text-white">
         <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-white"></div>
       </main>
     );
@@ -168,7 +168,7 @@ VerticalVideoFeed() {
 
   if (error) {
     return (
-      <main className="h-screen flex items-center justify-center bg-[var(--card-color)] text-white">
+      <main className="h-screen flex items-center justify-center bg-[var(--color-card-background)] text-white">
         <p>{error}</p>
       </main>
     );
@@ -176,7 +176,7 @@ VerticalVideoFeed() {
 
   if (videos.length === 0) {
     return (
-      <main className="h-screen flex items-center justify-center bg-[var(--card-color)] text-white">
+      <main className="h-screen flex items-center justify-center bg-[var(--color-card-background)] text-white">
         <p>No videos available.</p>
       </main>
     );
@@ -191,7 +191,7 @@ VerticalVideoFeed() {
         snap-y
         snap-mandatory
         overflow-y-scroll
-        bg-[var(--card-color)]
+        bg-[var(--color-card-background)]
       "
     >
 

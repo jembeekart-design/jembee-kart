@@ -61,10 +61,10 @@ export default function CartPage() {
   };
 
   return (
-    <main className="min-h-screen bg-[var(--primary-color)] pb-24">
+    <main className="min-h-screen bg-[var(--color-page-background)] pb-24">
       {/* HEADER */}
-      <div className="p-4 flex items-center gap-4 sticky top-0 bg-[var(--primary-color)]/80 backdrop-blur-md z-10">
-        <button onClick={() => router.back()} className="p-2 bg-[var(--card-color)] rounded-full shadow-sm border border-[var(--border-color)]">
+      <div className="p-4 flex items-center gap-4 sticky top-0 bg-[var(--color-primary-button)]/80 backdrop-blur-md z-10">
+        <button onClick={() => router.back()} className="p-2 bg-[var(--color-card-background)] rounded-full shadow-sm border border-[var(--color-border)]">
           <ArrowLeft size={20} />
         </button>
         <h1 className="font-black text-lg">My Cart ({cartItems.length} Items)</h1>
@@ -74,42 +74,42 @@ export default function CartPage() {
         {loading ? (
           <div className="text-center py-20 font-bold">Loading...</div>
         ) : cartItems.length === 0 ? (
-          <div className="text-center py-20 font-bold text-[var(--muted-text-color)]">Your cart is empty</div>
+          <div className="text-center py-20 font-bold text-[var(--text-secondary)]">Your cart is empty</div>
         ) : (
           <>
             {/* PROGRESS BAR */}
             {remaining > 0 ? (
-              <div className="bg-[var(--card-color)] p-4 rounded-2xl border border-[var(--primary-color)] shadow-sm">
+              <div className="bg-[var(--color-card-background)] p-4 rounded-2xl border border-[var(--color-primary-button)] shadow-sm">
                 <div className="flex justify-between text-[11px] font-bold mb-2">
-                  <span className="text-[var(--primary-color)] flex items-center gap-1">🎁 Add ₹{remaining} more for FREE GIFT</span>
+                  <span className="text-[var(--color-primary-button)] flex items-center gap-1">🎁 Add ₹{remaining} more for FREE GIFT</span>
                   <span>₹{totalPrice} / ₹{FREE_GIFT_THRESHOLD}</span>
                 </div>
-                <div className="w-full h-2 bg-[var(--background-color)] rounded-full overflow-hidden">
-                  <div className="h-full bg-[var(--primary-color)] rounded-full transition-all duration-500" style={{ width: `${progress}%` }} />
+                <div className="w-full h-2 bg-[var(--color-page-background)] rounded-full overflow-hidden">
+                  <div className="h-full bg-[var(--color-primary-button)] rounded-full transition-all duration-500" style={{ width: `${progress}%` }} />
                 </div>
               </div>
             ) : (
-              <div className="text-center text-xs font-bold text-[var(--success-color)] bg-[var(--success-color)] p-3 rounded-2xl border border-[var(--success-color)]"> 🎉 You've unlocked a FREE GIFT! </div>
+              <div className="text-center text-xs font-bold text-[var(--color-success)] bg-[var(--color-success)] p-3 rounded-2xl border border-[var(--color-success)]"> 🎉 You've unlocked a FREE GIFT! </div>
             )}
 
             {/* ITEMS LIST */}
             {cartItems.map((item) => (
-              <div key={item.id} className="bg-[var(--card-color)] p-4 rounded-3xl shadow-sm border border-[var(--border-color)] flex gap-4">
-                <img src={item.image} className="w-24 h-24 rounded-2xl object-cover bg-[var(--background-color)]" />
+              <div key={item.id} className="bg-[var(--color-card-background)] p-4 rounded-3xl shadow-sm border border-[var(--color-border)] flex gap-4">
+                <img src={item.image} className="w-24 h-24 rounded-2xl object-cover bg-[var(--color-page-background)]" />
                 <div className="flex-1">
-                  <h2 className="font-bold text-sm text-[var(--text-color)] line-clamp-1">{item.title}</h2>
+                  <h2 className="font-bold text-sm text-[var(--text-primary)] line-clamp-1">{item.title}</h2>
                   <div className="flex items-center gap-2 mt-1">
-                    <span className="text-[10px] font-bold bg-[var(--background-color)] px-2 py-0.5 rounded-md text-[var(--muted-text-color)]">Size: {item.size}</span>
-                    <div style={{ background: item.color }} className="w-4 h-4 rounded-full border border-[var(--border-color)]" />
+                    <span className="text-[10px] font-bold bg-[var(--color-page-background)] px-2 py-0.5 rounded-md text-[var(--text-secondary)]">Size: {item.size}</span>
+                    <div style={{ background: item.color }} className="w-4 h-4 rounded-full border border-[var(--color-border)]" />
                   </div>
-                  <p className="font-black text-lg mt-2 text-[var(--primary-color)]">₹{item.discountPrice || item.price}</p>
+                  <p className="font-black text-lg mt-2 text-[var(--color-primary-button)]">₹{item.discountPrice || item.price}</p>
                   <div className="flex justify-between items-center mt-2">
-                    <div className="flex items-center gap-3 bg-[var(--background-color)] rounded-full px-2 py-1">
+                    <div className="flex items-center gap-3 bg-[var(--color-page-background)] rounded-full px-2 py-1">
                       <button onClick={() => updateDoc(doc(db, "users", auth.currentUser!.uid, "cart", item.id), { quantity: Math.max(1, item.quantity - 1) })} className="p-1"><Minus size={12}/></button>
                       <span className="text-xs font-bold w-4 text-center">{item.quantity}</span>
                       <button onClick={() => updateDoc(doc(db, "users", auth.currentUser!.uid, "cart", item.id), { quantity: item.quantity + 1 })} className="p-1"><Plus size={12}/></button>
                     </div>
-                    <button onClick={() => deleteDoc(doc(db, "users", auth.currentUser!.uid, "cart", item.id))} className="text-[var(--danger-color)] p-2"><Trash2 size={16}/></button>
+                    <button onClick={() => deleteDoc(doc(db, "users", auth.currentUser!.uid, "cart", item.id))} className="text-[var(--color-danger)] p-2"><Trash2 size={16}/></button>
                   </div>
                 </div>
               </div>
@@ -120,14 +120,14 @@ export default function CartPage() {
 
       {/* CHECKOUT BAR */}
       {cartItems.length > 0 && (
-        <div className="fixed bottom-0 left-0 right-0 p-4 bg-[var(--card-color)] border-t border-[var(--border-color)] rounded-t-[2rem] shadow-[0_-10px_40px_-15px_rgba(0,0,0,0.1)]">
+        <div className="fixed bottom-0 left-0 right-0 p-4 bg-[var(--color-card-background)] border-t border-[var(--color-border)] rounded-t-[2rem] shadow-[0_-10px_40px_-15px_rgba(0,0,0,0.1)]">
           <div className="flex justify-between items-center mb-4 px-2">
-            <span className="text-[var(--muted-text-color)] font-medium text-sm">Total Amount</span>
-            <span className="text-2xl font-black text-[var(--primary-color)]">₹{totalPrice}</span>
+            <span className="text-[var(--text-secondary)] font-medium text-sm">Total Amount</span>
+            <span className="text-2xl font-black text-[var(--color-primary-button)]">₹{totalPrice}</span>
           </div>
           <button 
             onClick={handleCheckout} 
-            className="w-full bg-[var(--primary-color)] text-[var(--button-text-color)] py-4 rounded-2xl font-black flex items-center justify-center gap-2 hover:bg-[var(--primary-color)] transition"
+            className="w-full bg-[var(--color-primary-button)] text-[var(--button-text-color)] py-4 rounded-2xl font-black flex items-center justify-center gap-2 hover:bg-[var(--color-primary-button)] transition"
           >
             <Zap size={18} /> Secure Checkout
           </button>

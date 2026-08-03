@@ -1,5 +1,3 @@
-// src/lib/admin-config/types.ts
-
 // --- Theme Config ---
 export interface ThemeConfig {
   mode: "light" | "dark" | "system";
@@ -21,6 +19,17 @@ export interface ThemeConfig {
   dangerColor: string;
   fontFamily: string;
   borderRadius: string;
+  
+  // Optional semantic theme properties referenced in codebase
+  pageBackground?: string;
+  sectionBackground?: string;
+  surfaceColor?: string;
+  cardBackground?: string;
+  inputBackground?: string;
+  primaryButtonColor?: string;
+  secondaryButtonColor?: string;
+  textSecondary?: string;
+  textMuted?: string;
 }
 
 // --- Module Configs ---
@@ -35,8 +44,6 @@ export interface ShippingConfig {
   shippingCharge: number;
   deliveryDays: number;
 }
-
-/* Old WatchEarnConfig removed */
 
 export interface CashbackConfig {
   enabled: boolean;
@@ -197,6 +204,7 @@ export interface AnnouncementConfig {
   pageTitle: string;
   defaultMessage: string;
 }
+
 export interface WatchEarnConfig {
   enabled: boolean;
   videoWatchSeconds: number;
@@ -219,6 +227,7 @@ export interface WatchEarnConfig {
   maxFileSize: number;
   allowedVideoFormats: string[];
 }
+
 export interface FloatingAdConfig {
   enabled: boolean;
   title: string;
