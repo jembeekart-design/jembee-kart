@@ -185,7 +185,7 @@ export default function AdminSidebar() {
     <aside className="hidden h-screen w-[280px] overflow-y-auto border-r border-[var(--color-border)]/10 bg-[var(--color-header)] p-5 text-[var(--text-primary)] lg:block">
       {/* LOGO */}
       <div className="mb-8 flex items-center gap-3">
-        <div className="flex h-14 w-14 items-center justify-center rounded-2xl bg-[var(--color-primary-button)] text-[var(--text-color)]">
+        <div className="flex h-14 w-14 items-center justify-center rounded-2xl bg-[var(--color-primary-button)] text-[var(--button-text-color)]">
           <LayoutDashboard size={28} />
         </div>
 
