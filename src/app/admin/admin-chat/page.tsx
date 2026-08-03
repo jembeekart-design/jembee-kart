@@ -119,25 +119,25 @@ export default function AdminChatPage() {
   }
 
   return (
-    <main className="min-h-screen bg-[var(--primary-color)] p-4 text-[var(--button-text-color)]">
+    <main className="min-h-screen bg-[var(--color-primary-button)] p-4 text-[var(--button-text-color)]">
       {/* HEADER */}
       <div className="mb-6 flex items-center justify-between">
         <div className="flex items-center gap-4">
-          <div className="flex h-16 w-16 items-center justify-center rounded-[28px] bg-[var(--primary-color)]">
-            <MessageSquare size={30} className="text-[var(--text-color)]" />
+          <div className="flex h-16 w-16 items-center justify-center rounded-[28px] bg-[var(--color-primary-button)]">
+            <MessageSquare size={30} className="text-[var(--text-primary)]" />
           </div>
           <div>
             <h1 className="text-3xl font-black">{adminChat.pageTitle}</h1>
-            <p className="mt-1 text-sm text-[var(--muted-text-color)]">
+            <p className="mt-1 text-sm text-[var(--text-muted)]">
               Realtime admin communication system
             </p>
           </div>
         </div>
         <div className="flex gap-3">
-          <button className="flex h-11 w-11 items-center justify-center rounded-2xl bg-[var(--card-color)]/30" onClick={() => handleCall("voice")}>
+          <button className="flex h-11 w-11 items-center justify-center rounded-2xl bg-[var(--color-card-background)]/30" onClick={() => handleCall("voice")}>
             <Phone size={18} />
           </button>
-          <button className="flex h-11 w-11 items-center justify-center rounded-2xl bg-[var(--card-color)]/30" onClick={() => handleCall("video")}>
+          <button className="flex h-11 w-11 items-center justify-center rounded-2xl bg-[var(--color-card-background)]/30" onClick={() => handleCall("video")}>
             <Video size={18} />
           </button>
         </div>
@@ -146,28 +146,28 @@ export default function AdminChatPage() {
       {/* MAIN */}
       <div className="grid grid-cols-1 gap-5 lg:grid-cols-3">
         {/* SIDEBAR */}
-        <div className="rounded-[30px] border border-[var(--border-color)]/10 bg-[var(--primary-color)] p-5">
+        <div className="rounded-[30px] border border-[var(--color-border)]/10 bg-[var(--color-primary-button)] p-5">
           <div className="mt-5 space-y-4">
             {chats.map((chat) => (
               <div
                 key={chat.id}
                 onClick={() => setSelectedChatId(chat.id)}
                 className={`flex cursor-pointer items-center justify-between rounded-2xl p-4 transition-all ${
-                  selectedChatId === chat.id ? "bg-[var(--primary-color)]/20" : "bg-[var(--card-color)]/20"
+                  selectedChatId === chat.id ? "bg-[var(--color-primary-button)]/20" : "bg-[var(--color-card-background)]/20"
                 }`}
               >
                 <div className="flex items-center gap-3">
                   <div className="relative">
-                    <div className="flex h-12 w-12 items-center justify-center rounded-full bg-[var(--primary-color)] text-[var(--text-color)] font-black">
+                    <div className="flex h-12 w-12 items-center justify-center rounded-full bg-[var(--color-primary-button)] text-[var(--text-primary)] font-black">
                       {chat.name.charAt(0)}
                     </div>
                     {chat.online && (
-                      <div className="absolute bottom-0 right-0 h-3 w-3 rounded-full border-2 border-[var(--border-color)] bg-[var(--success-color)]" />
+                      <div className="absolute bottom-0 right-0 h-3 w-3 rounded-full border-2 border-[var(--color-border)] bg-[var(--color-success)]" />
                     )}
                   </div>
                   <div>
                     <h2 className="font-black">{chat.name}</h2>
-                    <p className="text-sm text-[var(--muted-text-color)]">{chat.lastMessage}</p>
+                    <p className="text-sm text-[var(--text-muted)]">{chat.lastMessage}</p>
                   </div>
                 </div>
               </div>
@@ -176,31 +176,31 @@ export default function AdminChatPage() {
         </div>
 
         {/* CHAT AREA */}
-        <div className="rounded-[30px] border border-[var(--border-color)]/10 bg-[var(--primary-color)] lg:col-span-2">
+        <div className="rounded-[30px] border border-[var(--color-border)]/10 bg-[var(--color-primary-button)] lg:col-span-2">
           {/* MESSAGES */}
           <div className="h-[500px] space-y-4 overflow-y-auto p-5">
             {messages.map((msg) => (
               <div key={msg.id} className={`flex ${msg.sender === "admin" ? "justify-end" : "justify-start"}`}>
-                <div className={`max-w-[75%] rounded-3xl px-5 py-3 ${msg.sender === "admin" ? "bg-[var(--primary-color)] text-[var(--text-color)]" : "bg-[var(--card-color)]/30"}`}>
+                <div className={`max-w-[75%] rounded-3xl px-5 py-3 ${msg.sender === "admin" ? "bg-[var(--color-primary-button)] text-[var(--text-primary)]" : "bg-[var(--color-card-background)]/30"}`}>
                   <p className="font-medium">{msg.text}</p>
                 </div>
               </div>
             ))}
           </div>
           {/* INPUT */}
-          <div className="border-t border-[var(--border-color)]/10 p-5">
-            <div className="flex items-center gap-3 rounded-2xl bg-[var(--card-color)]/30 p-3">
+          <div className="border-t border-[var(--color-border)]/10 p-5">
+            <div className="flex items-center gap-3 rounded-2xl bg-[var(--color-card-background)]/30 p-3">
               <input
                 type="text"
                 placeholder="Type message..."
                 value={message}
                 onChange={handleInputChange}
                 onKeyDown={handleKeyPress}
-                className="w-full bg-transparent outline-none placeholder:text-[var(--muted-text-color)]"
+                className="w-full bg-transparent outline-none placeholder:text-[var(--text-muted)]"
               />
               <button 
                 onClick={handleSendMessage}
-                className="flex h-12 w-12 items-center justify-center rounded-2xl bg-[var(--primary-color)] text-[var(--text-color)]"
+                className="flex h-12 w-12 items-center justify-center rounded-2xl bg-[var(--color-primary-button)] text-[var(--text-primary)]"
               >
                 <Send size={20} />
               </button>
@@ -248,15 +248,15 @@ function StatCard({
 
   return (
 
-    <div className="rounded-[28px] border border-[var(--border-color)]/10 bg-[var(--primary-color)] p-5">
+    <div className="rounded-[28px] border border-[var(--color-border)]/10 bg-[var(--color-primary-button)] p-5">
 
-      <div className="flex h-14 w-14 items-center justify-center rounded-2xl bg-[var(--primary-color)] text-[var(--text-color)]">
+      <div className="flex h-14 w-14 items-center justify-center rounded-2xl bg-[var(--color-primary-button)] text-[var(--text-primary)]">
 
         {icon}
 
       </div>
 
-      <p className="mt-4 text-sm text-[var(--muted-text-color)]">
+      <p className="mt-4 text-sm text-[var(--text-muted)]">
         {title}
       </p>
 
@@ -267,4 +267,5 @@ function StatCard({
     </div>
 
   );
+
 }
