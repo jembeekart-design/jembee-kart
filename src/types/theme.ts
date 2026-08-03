@@ -86,7 +86,6 @@ footerTextColor: string;
 // Optional semantic tokens (new)
 pageBackground?: string;
 sectionBackground?: string;
-surfaceColor?: string;
 cardBackground?: string;
 inputBackground?: string;
 primaryButtonColor?: string;

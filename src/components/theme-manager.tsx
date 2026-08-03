@@ -25,7 +25,7 @@ export function ThemeManager({ children }: { children: React.ReactNode }) {
     const primaryBtn = theme.primaryButtonColor || theme.buttonColor || theme.primaryColor || "#4F46E5";
     const secondaryBtn = theme.secondaryButtonColor || theme.secondaryColor || "#7C3AED";
     const textPrimary = theme.textColor || "#111827";
-    const textSecondary = theme.secondaryTextColor || theme.mutedTextColor || "#6B7280";
+    const textSecondary = theme.textSecondary || theme.mutedTextColor || "#6B7280";
     const textMuted = theme.mutedTextColor || "#9CA3AF";
     const success = theme.successColor || "#10B981";
     const warning = theme.warningColor || "#F59E0B";
