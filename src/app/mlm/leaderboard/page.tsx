@@ -54,7 +54,7 @@ export default function MLMLeaderboardPage() {
 
   return (
 
-    <main className="min-h-screen bg-[var(--primary-color)] pb-24">
+    <main className="min-h-screen bg-[var(--color-primary-button)] pb-24">
 
       {/* HEADER */}
 
@@ -63,7 +63,7 @@ export default function MLMLeaderboardPage() {
           sticky
           top-0
           z-50
-          bg-[var(--card-color)]
+          bg-[var(--color-card-background)]
           px-4
           py-3
           shadow-sm
@@ -81,8 +81,8 @@ export default function MLMLeaderboardPage() {
               items-center
               justify-center
               rounded-full
-              bg-[var(--warning-color)]
-              text-[var(--warning-color)]
+              bg-[var(--color-warning)]
+              text-[var(--color-warning)]
             "
           >
 
@@ -92,13 +92,13 @@ export default function MLMLeaderboardPage() {
 
           <div>
 
-            <h1 className="text-[24px] font-black text-[var(--warning-color)]">
+            <h1 className="text-[24px] font-black text-[var(--color-warning)]">
 
               Leaderboard
 
             </h1>
 
-            <p className="text-[11px] text-[var(--muted-text-color)]">
+            <p className="text-[11px] text-[var(--text-secondary)]">
 
               Top MLM Earners
 
@@ -119,9 +119,9 @@ export default function MLMLeaderboardPage() {
             overflow-hidden
             rounded-[30px]
             bg-gradient-to-br
-            from-[var(--primary-color)]
-            via-[var(--primary-color)]
-            to-[var(--primary-color)]
+            from-[var(--color-primary-button)]
+            via-[var(--color-primary-button)]
+            to-[var(--color-primary-button)]
             p-5
             text-[var(--button-text-color)]
             shadow-xl
@@ -136,7 +136,7 @@ export default function MLMLeaderboardPage() {
               items-center
               justify-center
               rounded-full
-              bg-[var(--card-color)]/20
+              bg-[var(--color-card-background)]/20
             "
           >
 
@@ -175,7 +175,7 @@ export default function MLMLeaderboardPage() {
           <div
             className="
               rounded-3xl
-              bg-[var(--card-color)]
+              bg-[var(--color-card-background)]
               p-4
               text-center
               shadow-sm
@@ -191,8 +191,8 @@ export default function MLMLeaderboardPage() {
                 items-center
                 justify-center
                 rounded-full
-                bg-[var(--card-color)]
-                text-[var(--text-color)]
+                bg-[var(--color-card-background)]
+                text-[var(--text-primary)]
               "
             >
 
@@ -206,7 +206,7 @@ export default function MLMLeaderboardPage() {
 
             </h3>
 
-            <p className="mt-1 text-[11px] text-[var(--muted-text-color)]">
+            <p className="mt-1 text-[11px] text-[var(--text-secondary)]">
 
               ₹32,100
 
@@ -216,7 +216,7 @@ export default function MLMLeaderboardPage() {
               className="
                 mt-3
                 rounded-full
-                bg-[var(--background-color)]
+                bg-[var(--color-page-background)]
                 py-1
                 text-[10px]
                 font-black
@@ -235,8 +235,8 @@ export default function MLMLeaderboardPage() {
             className="
               rounded-3xl
               bg-gradient-to-br
-              from-[var(--primary-color)]
-              to-[var(--primary-color)]
+              from-[var(--color-primary-button)]
+              to-[var(--color-primary-button)]
               p-4
               text-center
               text-[var(--button-text-color)]
@@ -253,7 +253,7 @@ export default function MLMLeaderboardPage() {
                 items-center
                 justify-center
                 rounded-full
-                bg-[var(--card-color)]/20
+                bg-[var(--color-card-background)]/20
               "
             >
 
@@ -277,11 +277,11 @@ export default function MLMLeaderboardPage() {
               className="
                 mt-3
                 rounded-full
-                bg-[var(--card-color)]
+                bg-[var(--color-card-background)]
                 py-1
                 text-[10px]
                 font-black
-                text-[var(--warning-color)]
+                text-[var(--color-warning)]
               "
             >
 
@@ -296,7 +296,7 @@ export default function MLMLeaderboardPage() {
           <div
             className="
               rounded-3xl
-              bg-[var(--card-color)]
+              bg-[var(--color-card-background)]
               p-4
               text-center
               shadow-sm
@@ -312,8 +312,8 @@ export default function MLMLeaderboardPage() {
                 items-center
                 justify-center
                 rounded-full
-                bg-[var(--warning-color)]
-                text-[var(--warning-color)]
+                bg-[var(--color-warning)]
+                text-[var(--color-warning)]
               "
             >
 
@@ -327,7 +327,7 @@ export default function MLMLeaderboardPage() {
 
             </h3>
 
-            <p className="mt-1 text-[11px] text-[var(--muted-text-color)]">
+            <p className="mt-1 text-[11px] text-[var(--text-secondary)]">
 
               ₹28,700
 
@@ -337,11 +337,11 @@ export default function MLMLeaderboardPage() {
               className="
                 mt-3
                 rounded-full
-                bg-[var(--warning-color)]
+                bg-[var(--color-warning)]
                 py-1
                 text-[10px]
                 font-black
-                text-[var(--warning-color)]
+                text-[var(--color-warning)]
               "
             >
 
@@ -362,7 +362,7 @@ export default function MLMLeaderboardPage() {
         <div
           className="
             rounded-[30px]
-            bg-[var(--card-color)]
+            bg-[var(--color-card-background)]
             p-5
             shadow-sm
           "
@@ -372,7 +372,7 @@ export default function MLMLeaderboardPage() {
 
             <Sparkles
               size={24}
-              className="text-[var(--warning-color)]"
+              className="text-[var(--color-warning)]"
             />
 
             <h2 className="text-[22px] font-black">
@@ -395,7 +395,7 @@ export default function MLMLeaderboardPage() {
                     items-center
                     justify-between
                     rounded-2xl
-                    bg-[var(--background-color)]
+                    bg-[var(--color-page-background)]
                     p-4
                   "
                 >
@@ -410,8 +410,8 @@ export default function MLMLeaderboardPage() {
                         items-center
                         justify-center
                         rounded-full
-                        bg-[var(--warning-color)]
-                        text-[var(--warning-color)]
+                        bg-[var(--color-warning)]
+                        text-[var(--color-warning)]
                         font-black
                       "
                     >
@@ -432,10 +432,10 @@ export default function MLMLeaderboardPage() {
 
                         <Users
                           size={12}
-                          className="text-[var(--muted-text-color)]"
+                          className="text-[var(--text-secondary)]"
                         />
 
-                        <p className="text-[11px] text-[var(--muted-text-color)]">
+                        <p className="text-[11px] text-[var(--text-secondary)]">
 
                           {leader.team} Team Members
 
@@ -450,12 +450,12 @@ export default function MLMLeaderboardPage() {
                   <div
                     className="
                       rounded-full
-                      bg-[var(--success-color)]
+                      bg-[var(--color-success)]
                       px-3
                       py-1
                       text-[12px]
                       font-black
-                      text-[var(--success-color)]
+                      text-[var(--color-success)]
                     "
                   >
 

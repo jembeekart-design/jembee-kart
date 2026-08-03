@@ -35,21 +35,21 @@ import { useAdminConfig } from "@/lib/admin-config/provider";
 MENU ITEMS
 ====================================================== */
 const dashboardItems = [
-  { title: "Dashboard", icon: LayoutDashboard, href: "/mlm/dashboard", color: "from-[var(--primary-color)] to-[var(--primary-color)]" },
-  { title: "Invite", icon: Users, href: "/mlm/invite", color: "from-[var(--primary-color)] to-[var(--primary-color)]" },
-  { title: "Network", icon: Network, href: "/mlm/network", color: "from-[var(--primary-color)] to-[var(--primary-color)]" },
-  { title: "Earnings", icon: BadgeIndianRupee, href: "/mlm/earnings", color: "from-[var(--primary-color)] to-[var(--primary-color)]" },
-  { title: "Wallet", icon: Wallet, href: "/mlm/wallet", color: "from-[var(--primary-color)] to-[var(--primary-color)]" },
-  { title: "Withdraw", icon: WalletCards, href: "/mlm/withdraw", color: "from-[var(--primary-color)] to-[var(--primary-color)]" },
-  { title: "Leaderboard", icon: Trophy, href: "/mlm/leaderboard", color: "from-[var(--primary-color)] to-[var(--primary-color)]" },
-  { title: "Ranks", icon: Medal, href: "/mlm/ranks", color: "from-[var(--primary-color)] to-[var(--primary-color)]" },
-  { title: "Cashback", icon: Gift, href: "/mlm/cashback", color: "from-[var(--primary-color)] to-[var(--primary-color)]" },
-  { title: "Watch Earn", icon: PlayCircle, href: "/mlm/watch-earn", color: "from-[var(--primary-color)] to-[var(--primary-color)]" },
-  { title: "Team Business", icon: BriefcaseBusiness, href: "/mlm/team-business", color: "from-[var(--primary-color)] to-[var(--primary-color)]" },
-  { title: "Orders", icon: Package, href: "/mlm/orders", color: "from-[var(--primary-color)] to-[var(--primary-color)]" },
-  { title: "Notifications", icon: Bell, href: "/mlm/notifications", color: "from-[var(--primary-color)] to-[var(--primary-color)]" },
-  { title: "Permissions", icon: ClipboardCheck, href: "/mlm/permissions", color: "from-[var(--primary-color)] to-[var(--primary-color)]" },
-  { title: "Support", icon: LifeBuoy, href: "/mlm/support", color: "from-[var(--primary-color)] to-[var(--primary-color)]" }
+  { title: "Dashboard", icon: LayoutDashboard, href: "/mlm/dashboard", color: "from-[var(--color-primary-button)] to-[var(--color-primary-button)]" },
+  { title: "Invite", icon: Users, href: "/mlm/invite", color: "from-[var(--color-primary-button)] to-[var(--color-primary-button)]" },
+  { title: "Network", icon: Network, href: "/mlm/network", color: "from-[var(--color-primary-button)] to-[var(--color-primary-button)]" },
+  { title: "Earnings", icon: BadgeIndianRupee, href: "/mlm/earnings", color: "from-[var(--color-primary-button)] to-[var(--color-primary-button)]" },
+  { title: "Wallet", icon: Wallet, href: "/mlm/wallet", color: "from-[var(--color-primary-button)] to-[var(--color-primary-button)]" },
+  { title: "Withdraw", icon: WalletCards, href: "/mlm/withdraw", color: "from-[var(--color-primary-button)] to-[var(--color-primary-button)]" },
+  { title: "Leaderboard", icon: Trophy, href: "/mlm/leaderboard", color: "from-[var(--color-primary-button)] to-[var(--color-primary-button)]" },
+  { title: "Ranks", icon: Medal, href: "/mlm/ranks", color: "from-[var(--color-primary-button)] to-[var(--color-primary-button)]" },
+  { title: "Cashback", icon: Gift, href: "/mlm/cashback", color: "from-[var(--color-primary-button)] to-[var(--color-primary-button)]" },
+  { title: "Watch Earn", icon: PlayCircle, href: "/mlm/watch-earn", color: "from-[var(--color-primary-button)] to-[var(--color-primary-button)]" },
+  { title: "Team Business", icon: BriefcaseBusiness, href: "/mlm/team-business", color: "from-[var(--color-primary-button)] to-[var(--color-primary-button)]" },
+  { title: "Orders", icon: Package, href: "/mlm/orders", color: "from-[var(--color-primary-button)] to-[var(--color-primary-button)]" },
+  { title: "Notifications", icon: Bell, href: "/mlm/notifications", color: "from-[var(--color-primary-button)] to-[var(--color-primary-button)]" },
+  { title: "Permissions", icon: ClipboardCheck, href: "/mlm/permissions", color: "from-[var(--color-primary-button)] to-[var(--color-primary-button)]" },
+  { title: "Support", icon: LifeBuoy, href: "/mlm/support", color: "from-[var(--color-primary-button)] to-[var(--color-primary-button)]" }
 ];
 
 /* ======================================================
@@ -83,15 +83,15 @@ export default function AffiliatePage() {
   if (!referral || !mlm) return null;
 
   return (
-    <main className="min-h-screen bg-[var(--background-color)] pb-32">
+    <main className="min-h-screen bg-[var(--color-page-background)] pb-32">
       {/* HERO SECTION */}
-      <section className="relative overflow-hidden bg-gradient-to-br from-[var(--primary-color)] via-[var(--primary-color)] to-[var(--primary-color)] px-4 pb-10 pt-12 text-[var(--button-text-color)]">
-        <div className="absolute right-[-40px] top-[-40px] h-40 w-40 rounded-full bg-[var(--card-color)]/10" />
-        <div className="absolute bottom-[-60px] left-[-40px] h-44 w-44 rounded-full bg-[var(--card-color)]/10" />
+      <section className="relative overflow-hidden bg-gradient-to-br from-[var(--color-primary-button)] via-[var(--color-primary-button)] to-[var(--color-primary-button)] px-4 pb-10 pt-12 text-[var(--button-text-color)]">
+        <div className="absolute right-[-40px] top-[-40px] h-40 w-40 rounded-full bg-[var(--color-card-background)]/10" />
+        <div className="absolute bottom-[-60px] left-[-40px] h-44 w-44 rounded-full bg-[var(--color-card-background)]/10" />
 
         <div className="relative z-10">
           <div className="flex items-center gap-3">
-            <div className="flex h-16 w-16 items-center justify-center rounded-full bg-[var(--card-color)]/20">
+            <div className="flex h-16 w-16 items-center justify-center rounded-full bg-[var(--color-card-background)]/20">
               <Crown size={34} />
             </div>
             <div>
@@ -100,7 +100,7 @@ export default function AffiliatePage() {
             </div>
           </div>
 
-          <div className="mt-8 rounded-[28px] bg-[var(--card-color)]/10 p-5 backdrop-blur-md">
+          <div className="mt-8 rounded-[28px] bg-[var(--color-card-background)]/10 p-5 backdrop-blur-md">
             <p className="text-xs text-[var(--button-text-color)]/70">Referral Name</p>
             <h2 className="mt-1 text-[28px] font-black">{userData?.name || "Loading..."}</h2>
             <div className="mt-5 grid grid-cols-3 gap-3">
@@ -115,14 +115,14 @@ export default function AffiliatePage() {
       {/* STATS */}
       <section className="-mt-8 px-4">
         <div className="grid grid-cols-2 gap-4">
-          <div className="rounded-[28px] bg-[var(--card-color)] p-5 shadow-xl">
-            <div className="flex h-14 w-14 items-center justify-center rounded-2xl bg-[var(--success-color)] text-[var(--success-color)]"><CircleDollarSign size={30} /></div>
-            <p className="mt-4 text-sm font-semibold text-[var(--muted-text-color)]">Today Income</p>
+          <div className="rounded-[28px] bg-[var(--color-card-background)] p-5 shadow-xl">
+            <div className="flex h-14 w-14 items-center justify-center rounded-2xl bg-[var(--color-success)] text-[var(--color-success)]"><CircleDollarSign size={30} /></div>
+            <p className="mt-4 text-sm font-semibold text-[var(--text-secondary)]">Today Income</p>
             <h2 className="mt-1 text-[28px] font-black">₹{userData?.todayIncome || 0}</h2>
           </div>
-          <div className="rounded-[28px] bg-[var(--card-color)] p-5 shadow-xl">
-            <div className="flex h-14 w-14 items-center justify-center rounded-2xl bg-[var(--primary-color)] text-[var(--primary-color)]"><ShieldCheck size={28} /></div>
-            <p className="mt-4 text-sm font-semibold text-[var(--muted-text-color)]">Total Withdraw</p>
+          <div className="rounded-[28px] bg-[var(--color-card-background)] p-5 shadow-xl">
+            <div className="flex h-14 w-14 items-center justify-center rounded-2xl bg-[var(--color-primary-button)] text-[var(--color-primary-button)]"><ShieldCheck size={28} /></div>
+            <p className="mt-4 text-sm font-semibold text-[var(--text-secondary)]">Total Withdraw</p>
             <h2 className="mt-1 text-[28px] font-black">₹{userData?.totalWithdraw || 0}</h2>
           </div>
         </div>
@@ -132,16 +132,16 @@ export default function AffiliatePage() {
       <section className="mt-8 px-4">
         <div className="mb-5">
           <h2 className="text-[28px] font-black">MLM Features</h2>
-          <p className="text-sm text-[var(--muted-text-color)]">Manage your business</p>
+          <p className="text-sm text-[var(--text-secondary)]">Manage your business</p>
         </div>
         <div className="grid grid-cols-2 gap-4">
           {menuItems.map((item) => {
             const Icon = item.icon;
             return (
-              <Link key={item.title} href={item.href} className="group overflow-hidden rounded-[30px] bg-[var(--card-color)] p-4 shadow-sm transition-all duration-300 active:scale-[0.98]">
+              <Link key={item.title} href={item.href} className="group overflow-hidden rounded-[30px] bg-[var(--color-card-background)] p-4 shadow-sm transition-all duration-300 active:scale-[0.98]">
                 <div className={`flex h-16 w-16 items-center justify-center rounded-2xl bg-gradient-to-br ${item.color}`}><Icon size={30} /></div>
-                <h3 className="mt-4 text-[16px] font-black text-[var(--text-color)]">{item.title}</h3>
-                <div className="mt-3 flex items-center gap-1 text-xs font-bold text-[var(--primary-color)]">Open <ArrowRight size={14} /></div>
+                <h3 className="mt-4 text-[16px] font-black text-[var(--text-primary)]">{item.title}</h3>
+                <div className="mt-3 flex items-center gap-1 text-xs font-bold text-[var(--color-primary-button)]">Open <ArrowRight size={14} /></div>
               </Link>
             );
           })}

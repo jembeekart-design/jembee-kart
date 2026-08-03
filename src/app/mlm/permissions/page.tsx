@@ -164,7 +164,7 @@ PermissionPage() {
         flex
         min-h-screen
         flex-col
-        bg-[var(--card-color)]
+        bg-[var(--color-card-background)]
         px-5
         py-8
         text-[var(--button-text-color)]
@@ -189,14 +189,14 @@ PermissionPage() {
             items-center
             justify-center
             rounded-full
-            bg-[var(--primary-color)]/20
+            bg-[var(--color-primary-button)]/20
           "
         >
 
           <ShieldCheck
             size={40}
             className="
-              text-[var(--primary-color)]
+              text-[var(--color-primary-button)]
             "
           />
 
@@ -218,7 +218,7 @@ PermissionPage() {
             mt-4
             text-sm
             leading-7
-            text-[var(--muted-text-color)]
+            text-[var(--text-secondary)]
           "
         >
 
@@ -244,8 +244,8 @@ PermissionPage() {
           className="
             rounded-3xl
             border
-            border-[var(--border-color)]/10
-            bg-[var(--card-color)]/5
+            border-[var(--color-border)]/10
+            bg-[var(--color-card-background)]/5
             p-5
           "
         >
@@ -274,14 +274,14 @@ PermissionPage() {
                   items-center
                   justify-center
                   rounded-full
-                  bg-[var(--secondary-color)]/20
+                  bg-[var(--color-secondary-button)]/20
                 "
               >
 
                 <Camera
                   size={24}
                   className="
-                    text-[var(--primary-color)]
+                    text-[var(--color-primary-button)]
                   "
                 />
 
@@ -304,7 +304,7 @@ PermissionPage() {
                   className="
                     mt-1
                     text-xs
-                    text-[var(--muted-text-color)]
+                    text-[var(--text-secondary)]
                   "
                 >
 
@@ -329,8 +329,8 @@ PermissionPage() {
 
                 ${
                   cameraAllowed
-                    ? "bg-[var(--success-color)] text-[var(--button-text-color)]"
-                    : "bg-[var(--primary-color)] text-[var(--button-text-color)]"
+                    ? "bg-[var(--color-success)] text-[var(--button-text-color)]"
+                    : "bg-[var(--color-primary-button)] text-[var(--button-text-color)]"
                 }
               `}
             >
@@ -351,8 +351,8 @@ PermissionPage() {
           className="
             rounded-3xl
             border
-            border-[var(--border-color)]/10
-            bg-[var(--card-color)]/5
+            border-[var(--color-border)]/10
+            bg-[var(--color-card-background)]/5
             p-5
           "
         >
@@ -381,14 +381,14 @@ PermissionPage() {
                   items-center
                   justify-center
                   rounded-full
-                  bg-[var(--primary-color)]/20
+                  bg-[var(--color-primary-button)]/20
                 "
               >
 
                 <Mic
                   size={24}
                   className="
-                    text-[var(--primary-color)]
+                    text-[var(--color-primary-button)]
                   "
                 />
 
@@ -411,7 +411,7 @@ PermissionPage() {
                   className="
                     mt-1
                     text-xs
-                    text-[var(--muted-text-color)]
+                    text-[var(--text-secondary)]
                   "
                 >
 
@@ -436,8 +436,8 @@ PermissionPage() {
 
                 ${
                   micAllowed
-                    ? "bg-[var(--success-color)] text-[var(--button-text-color)]"
-                    : "bg-[var(--primary-color)] text-[var(--button-text-color)]"
+                    ? "bg-[var(--color-success)] text-[var(--button-text-color)]"
+                    : "bg-[var(--color-primary-button)] text-[var(--button-text-color)]"
                 }
               `}
             >
@@ -458,8 +458,8 @@ PermissionPage() {
           className="
             rounded-3xl
             border
-            border-[var(--border-color)]/10
-            bg-[var(--card-color)]/5
+            border-[var(--color-border)]/10
+            bg-[var(--color-card-background)]/5
             p-5
           "
         >
@@ -488,14 +488,14 @@ PermissionPage() {
                   items-center
                   justify-center
                   rounded-full
-                  bg-[var(--warning-color)]/20
+                  bg-[var(--color-warning)]/20
                 "
               >
 
                 <Bell
                   size={24}
                   className="
-                    text-[var(--warning-color)]
+                    text-[var(--color-warning)]
                   "
                 />
 
@@ -518,7 +518,7 @@ PermissionPage() {
                   className="
                     mt-1
                     text-xs
-                    text-[var(--muted-text-color)]
+                    text-[var(--text-secondary)]
                   "
                 >
 
@@ -543,8 +543,8 @@ PermissionPage() {
 
                 ${
                   notificationAllowed
-                    ? "bg-[var(--success-color)] text-[var(--button-text-color)]"
-                    : "bg-[var(--warning-color)] text-[var(--text-color)]"
+                    ? "bg-[var(--color-success)] text-[var(--button-text-color)]"
+                    : "bg-[var(--color-warning)] text-[var(--text-primary)]"
                 }
               `}
             >
@@ -594,8 +594,8 @@ PermissionPage() {
 
             ${
               allGranted
-                ? "bg-gradient-to-r from-[var(--primary-color)] to-[var(--primary-color)] text-[var(--button-text-color)]"
-                : "bg-[var(--card-color)]/10 text-[var(--muted-text-color)]"
+                ? "bg-gradient-to-r from-[var(--color-primary-button)] to-[var(--color-primary-button)] text-[var(--button-text-color)]"
+                : "bg-[var(--color-card-background)]/10 text-[var(--text-secondary)]"
             }
           `}
         >

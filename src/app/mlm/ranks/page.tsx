@@ -35,7 +35,7 @@ export default function MLMRanksPage() {
     {
       title: "Bronze Leader",
       color:
-        "from-[var(--primary-color)] to-[var(--primary-color)]",
+        "from-[var(--color-primary-button)] to-[var(--color-primary-button)]",
       reward: "₹1,000 Bonus",
       members: 10
     },
@@ -43,7 +43,7 @@ export default function MLMRanksPage() {
     {
       title: "Silver Leader",
       color:
-        "from-[var(--primary-color)] to-[var(--primary-color)]",
+        "from-[var(--color-primary-button)] to-[var(--color-primary-button)]",
       reward: "₹5,000 Bonus",
       members: 50
     },
@@ -51,7 +51,7 @@ export default function MLMRanksPage() {
     {
       title: "Gold Leader",
       color:
-        "from-[var(--primary-color)] to-[var(--primary-color)]",
+        "from-[var(--color-primary-button)] to-[var(--color-primary-button)]",
       reward: "₹15,000 Bonus",
       members: 100
     },
@@ -59,7 +59,7 @@ export default function MLMRanksPage() {
     {
       title: "Diamond Leader",
       color:
-        "from-[var(--primary-color)] to-[var(--primary-color)]",
+        "from-[var(--color-primary-button)] to-[var(--color-primary-button)]",
       reward: "₹50,000 Bonus",
       members: 200
     },
@@ -67,7 +67,7 @@ export default function MLMRanksPage() {
     {
       title: "Crown Leader",
       color:
-        "from-[var(--primary-color)] to-[var(--primary-color)]",
+        "from-[var(--color-primary-button)] to-[var(--color-primary-button)]",
       reward: "₹1 Lakh Bonus",
       members: 500
     }
@@ -76,7 +76,7 @@ export default function MLMRanksPage() {
 
   return (
 
-    <main className="min-h-screen bg-[var(--primary-color)] pb-24">
+    <main className="min-h-screen bg-[var(--color-primary-button)] pb-24">
 
       {/* HEADER */}
 
@@ -85,7 +85,7 @@ export default function MLMRanksPage() {
           sticky
           top-0
           z-50
-          bg-[var(--card-color)]
+          bg-[var(--color-card-background)]
           px-4
           py-3
           shadow-sm
@@ -103,8 +103,8 @@ export default function MLMRanksPage() {
               items-center
               justify-center
               rounded-full
-              bg-[var(--warning-color)]
-              text-[var(--warning-color)]
+              bg-[var(--color-warning)]
+              text-[var(--color-warning)]
             "
           >
 
@@ -114,13 +114,13 @@ export default function MLMRanksPage() {
 
           <div>
 
-            <h1 className="text-[24px] font-black text-[var(--warning-color)]">
+            <h1 className="text-[24px] font-black text-[var(--color-warning)]">
 
               MLM Ranks
 
             </h1>
 
-            <p className="text-[11px] text-[var(--muted-text-color)]">
+            <p className="text-[11px] text-[var(--text-secondary)]">
 
               Achievements & Rewards
 
@@ -141,9 +141,9 @@ export default function MLMRanksPage() {
             overflow-hidden
             rounded-[32px]
             bg-gradient-to-br
-            from-[var(--primary-color)]
-            via-[var(--primary-color)]
-            to-[var(--primary-color)]
+            from-[var(--color-primary-button)]
+            via-[var(--color-primary-button)]
+            to-[var(--color-primary-button)]
             p-5
             text-[var(--button-text-color)]
             shadow-xl
@@ -158,7 +158,7 @@ export default function MLMRanksPage() {
               items-center
               justify-center
               rounded-full
-              bg-[var(--card-color)]/20
+              bg-[var(--color-card-background)]/20
             "
           >
 
@@ -197,7 +197,7 @@ export default function MLMRanksPage() {
         <div
           className="
             rounded-[30px]
-            bg-[var(--card-color)]
+            bg-[var(--color-card-background)]
             p-5
             shadow-sm
           "
@@ -207,7 +207,7 @@ export default function MLMRanksPage() {
 
             <Gem
               size={26}
-              className="text-[var(--primary-color)]"
+              className="text-[var(--color-primary-button)]"
             />
 
             <div>
@@ -218,7 +218,7 @@ export default function MLMRanksPage() {
 
               </h2>
 
-              <p className="text-[11px] text-[var(--muted-text-color)]">
+              <p className="text-[11px] text-[var(--text-secondary)]">
 
                 Upgrade Progress
 
@@ -238,7 +238,7 @@ export default function MLMRanksPage() {
 
               </h3>
 
-              <p className="text-[12px] font-bold text-[var(--primary-color)]">
+              <p className="text-[12px] font-bold text-[var(--color-primary-button)]">
 
                 {currentTeam}/{nextTarget}
 
@@ -254,7 +254,7 @@ export default function MLMRanksPage() {
                 h-4
                 overflow-hidden
                 rounded-full
-                bg-[var(--card-color)]
+                bg-[var(--color-card-background)]
               "
             >
 
@@ -266,17 +266,17 @@ export default function MLMRanksPage() {
                   h-full
                   rounded-full
                   bg-gradient-to-r
-                  from-[var(--primary-color)]
-                  to-[var(--primary-color)]
+                  from-[var(--color-primary-button)]
+                  to-[var(--color-primary-button)]
                 "
               />
 
             </div>
 
-            <p className="mt-3 text-[12px] text-[var(--muted-text-color)]">
+            <p className="mt-3 text-[12px] text-[var(--text-secondary)]">
 
               Sirf{" "}
-              <span className="font-black text-[var(--primary-color)]">
+              <span className="font-black text-[var(--color-primary-button)]">
 
                 {remaining} members
 
@@ -306,7 +306,7 @@ export default function MLMRanksPage() {
                 className="
                   overflow-hidden
                   rounded-[28px]
-                  bg-[var(--card-color)]
+                  bg-[var(--color-card-background)]
                   shadow-sm
                 "
               >
@@ -350,7 +350,7 @@ export default function MLMRanksPage() {
 
                     <BadgeCheck
                       size={22}
-                      className="text-[var(--success-color)]"
+                      className="text-[var(--color-success)]"
                     />
 
                     <p className="text-[14px] font-bold">
@@ -381,7 +381,7 @@ export default function MLMRanksPage() {
         <div
           className="
             rounded-[30px]
-            bg-[var(--card-color)]
+            bg-[var(--color-card-background)]
             p-5
             shadow-sm
           "
@@ -391,7 +391,7 @@ export default function MLMRanksPage() {
 
             <Trophy
               size={26}
-              className="text-[var(--warning-color)]"
+              className="text-[var(--color-warning)]"
             />
 
             <h2 className="text-[22px] font-black">
@@ -410,14 +410,14 @@ export default function MLMRanksPage() {
                 items-center
                 gap-3
                 rounded-2xl
-                bg-[var(--warning-color)]
+                bg-[var(--color-warning)]
                 p-4
               "
             >
 
               <Sparkles
                 size={24}
-                className="text-[var(--warning-color)]"
+                className="text-[var(--color-warning)]"
               />
 
               <div>
@@ -428,7 +428,7 @@ export default function MLMRanksPage() {
 
                 </h3>
 
-                <p className="text-[11px] text-[var(--muted-text-color)]">
+                <p className="text-[11px] text-[var(--text-secondary)]">
 
                   50 referrals completed
 
@@ -444,14 +444,14 @@ export default function MLMRanksPage() {
                 items-center
                 gap-3
                 rounded-2xl
-                bg-[var(--primary-color)]
+                bg-[var(--color-primary-button)]
                 p-4
               "
             >
 
               <Shield
                 size={24}
-                className="text-[var(--primary-color)]"
+                className="text-[var(--color-primary-button)]"
               />
 
               <div>
@@ -462,7 +462,7 @@ export default function MLMRanksPage() {
 
                 </h3>
 
-                <p className="text-[11px] text-[var(--muted-text-color)]">
+                <p className="text-[11px] text-[var(--text-secondary)]">
 
                   100 successful joins
 

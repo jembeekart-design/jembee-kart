@@ -62,8 +62,8 @@ LiveCoinsAnimation({
             gap-3
             rounded-full
             border
-            border-[var(--warning-color)]
-            bg-[var(--warning-color)]
+            border-[var(--color-warning)]
+            bg-[var(--color-warning)]
             px-6
             py-3
             shadow-2xl
@@ -85,7 +85,7 @@ LiveCoinsAnimation({
             <Coins
               size={28}
               className="
-                text-[var(--text-color)]
+                text-[var(--text-primary)]
               "
             />
 
@@ -97,7 +97,7 @@ LiveCoinsAnimation({
               className="
                 text-xl
                 font-black
-                text-[var(--text-color)]
+                text-[var(--text-primary)]
               "
             >
 
@@ -109,7 +109,7 @@ LiveCoinsAnimation({
               className="
                 text-xs
                 font-bold
-                text-[var(--text-color)]/70
+                text-[var(--text-primary)]/70
               "
             >
 

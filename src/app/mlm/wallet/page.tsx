@@ -52,7 +52,7 @@ export default function MLMWalletPage() {
 
   return (
 
-    <main className="min-h-screen bg-[var(--primary-color)] pb-24">
+    <main className="min-h-screen bg-[var(--color-primary-button)] pb-24">
 
       {/* HEADER */}
 
@@ -61,7 +61,7 @@ export default function MLMWalletPage() {
           sticky
           top-0
           z-50
-          bg-[var(--card-color)]
+          bg-[var(--color-card-background)]
           px-4
           py-3
           shadow-sm
@@ -79,8 +79,8 @@ export default function MLMWalletPage() {
               items-center
               justify-center
               rounded-full
-              bg-[var(--primary-color)]
-              text-[var(--primary-color)]
+              bg-[var(--color-primary-button)]
+              text-[var(--color-primary-button)]
             "
           >
 
@@ -90,13 +90,13 @@ export default function MLMWalletPage() {
 
           <div>
 
-            <h1 className="text-[24px] font-black text-[var(--primary-color)]">
+            <h1 className="text-[24px] font-black text-[var(--color-primary-button)]">
 
               MLM Wallet
 
             </h1>
 
-            <p className="text-[11px] text-[var(--muted-text-color)]">
+            <p className="text-[11px] text-[var(--text-secondary)]">
 
               Wallet & Transactions
 
@@ -117,9 +117,9 @@ export default function MLMWalletPage() {
             overflow-hidden
             rounded-[32px]
             bg-gradient-to-br
-            from-[var(--primary-color)]
-            via-[var(--primary-color)]
-            to-[var(--primary-color)]
+            from-[var(--color-primary-button)]
+            via-[var(--color-primary-button)]
+            to-[var(--color-primary-button)]
             p-5
             text-[var(--button-text-color)]
             shadow-xl
@@ -134,7 +134,7 @@ export default function MLMWalletPage() {
               items-center
               justify-center
               rounded-full
-              bg-[var(--card-color)]/20
+              bg-[var(--color-card-background)]/20
             "
           >
 
@@ -174,7 +174,7 @@ export default function MLMWalletPage() {
           <div
             className="
               rounded-2xl
-              bg-[var(--card-color)]
+              bg-[var(--color-card-background)]
               p-4
               shadow-sm
             "
@@ -182,7 +182,7 @@ export default function MLMWalletPage() {
 
             <BadgeIndianRupee
               size={28}
-              className="text-[var(--success-color)]"
+              className="text-[var(--color-success)]"
             />
 
             <h3 className="mt-3 text-[24px] font-black">
@@ -191,7 +191,7 @@ export default function MLMWalletPage() {
 
             </h3>
 
-            <p className="text-[12px] text-[var(--muted-text-color)]">
+            <p className="text-[12px] text-[var(--text-secondary)]">
 
               Withdrawable
 
@@ -202,7 +202,7 @@ export default function MLMWalletPage() {
           <div
             className="
               rounded-2xl
-              bg-[var(--card-color)]
+              bg-[var(--color-card-background)]
               p-4
               shadow-sm
             "
@@ -210,7 +210,7 @@ export default function MLMWalletPage() {
 
             <Gift
               size={28}
-              className="text-[var(--primary-color)]"
+              className="text-[var(--color-primary-button)]"
             />
 
             <h3 className="mt-3 text-[24px] font-black">
@@ -219,7 +219,7 @@ export default function MLMWalletPage() {
 
             </h3>
 
-            <p className="text-[12px] text-[var(--muted-text-color)]">
+            <p className="text-[12px] text-[var(--text-secondary)]">
 
               Bonus Wallet
 
@@ -244,7 +244,7 @@ export default function MLMWalletPage() {
               justify-center
               gap-2
               rounded-2xl
-              bg-[var(--primary-color)]
+              bg-[var(--color-primary-button)]
               py-4
               text-[14px]
               font-black
@@ -266,7 +266,7 @@ export default function MLMWalletPage() {
               justify-center
               gap-2
               rounded-2xl
-              bg-[var(--warning-color)]
+              bg-[var(--color-warning)]
               py-4
               text-[14px]
               font-black
@@ -294,7 +294,7 @@ export default function MLMWalletPage() {
             rounded-[30px]
             bg-gradient-to-r
             from-black
-            to-[var(--primary-color)]
+            to-[var(--color-primary-button)]
             p-5
             text-[var(--button-text-color)]
             shadow-xl
@@ -366,7 +366,7 @@ export default function MLMWalletPage() {
         <div
           className="
             rounded-[30px]
-            bg-[var(--card-color)]
+            bg-[var(--color-card-background)]
             p-5
             shadow-sm
           "
@@ -393,7 +393,7 @@ export default function MLMWalletPage() {
                     items-center
                     justify-between
                     rounded-2xl
-                    bg-[var(--background-color)]
+                    bg-[var(--color-page-background)]
                     p-4
                   "
                 >
@@ -406,7 +406,7 @@ export default function MLMWalletPage() {
 
                     </h3>
 
-                    <p className="mt-1 text-[11px] text-[var(--muted-text-color)]">
+                    <p className="mt-1 text-[11px] text-[var(--text-secondary)]">
 
                       {transaction.date}
 
@@ -423,8 +423,8 @@ export default function MLMWalletPage() {
                       font-black
                       ${
                         transaction.type === "credit"
-                          ? "bg-[var(--success-color)] text-[var(--success-color)]"
-                          : "bg-[var(--danger-color)] text-[var(--danger-color)]"
+                          ? "bg-[var(--color-success)] text-[var(--color-success)]"
+                          : "bg-[var(--color-danger)] text-[var(--color-danger)]"
                       }
                     `}
                   >
