@@ -65,7 +65,7 @@ OrdersPage() {
     <main
       className="
         min-h-screen
-        bg-[var(--primary-color)]
+        bg-[var(--color-primary-button)]
         pb-24
       "
     >
@@ -78,8 +78,8 @@ OrdersPage() {
           top-0
           z-50
           border-b
-          border-[var(--border-color)]/10
-          bg-[var(--card-color)]/70
+          border-[var(--color-border)]/10
+          bg-[var(--color-card-background)]/70
           backdrop-blur-xl
         "
       >
@@ -111,7 +111,7 @@ OrdersPage() {
                 items-center
                 justify-center
                 rounded-full
-                bg-[var(--card-color)]/10
+                bg-[var(--color-card-background)]/10
                 text-[var(--button-text-color)]
               "
             >
@@ -139,7 +139,7 @@ OrdersPage() {
               <p
                 className="
                   text-xs
-                  text-[var(--muted-text-color)]
+                  text-[var(--text-secondary)]
                 "
               >
 
@@ -160,8 +160,8 @@ OrdersPage() {
               justify-center
               rounded-2xl
               bg-gradient-to-r
-              from-[var(--primary-color)]
-              to-[var(--primary-color)]
+              from-[var(--color-primary-button)]
+              to-[var(--color-primary-button)]
               text-[var(--button-text-color)]
             "
           >
@@ -195,8 +195,8 @@ OrdersPage() {
                 overflow-hidden
                 rounded-[28px]
                 border
-                border-[var(--border-color)]/10
-                bg-[var(--primary-color)]
+                border-[var(--color-border)]/10
+                bg-[var(--color-primary-button)]
                 shadow-xl
               "
             >
@@ -248,7 +248,7 @@ OrdersPage() {
                       className="
                         mt-1
                         text-xs
-                        text-[var(--muted-text-color)]
+                        text-[var(--text-secondary)]
                       "
                     >
 
@@ -263,12 +263,12 @@ OrdersPage() {
                   <div
                     className="
                       rounded-full
-                      bg-[var(--primary-color)]/20
+                      bg-[var(--color-primary-button)]/20
                       px-4
                       py-2
                       text-sm
                       font-bold
-                      text-[var(--primary-color)]
+                      text-[var(--color-primary-button)]
                     "
                   >
 
@@ -287,7 +287,7 @@ OrdersPage() {
                     items-center
                     justify-between
                     rounded-2xl
-                    bg-[var(--card-color)]/30
+                    bg-[var(--color-card-background)]/30
                     px-4
                     py-4
                   "
@@ -307,7 +307,7 @@ OrdersPage() {
                       <CheckCircle2
                         size={24}
                         className="
-                          text-[var(--success-color)]
+                          text-[var(--color-success)]
                         "
                       />
 
@@ -317,7 +317,7 @@ OrdersPage() {
                       <Truck
                         size={24}
                         className="
-                          text-[var(--warning-color)]
+                          text-[var(--color-warning)]
                         "
                       />
 
@@ -326,7 +326,7 @@ OrdersPage() {
                       <Clock3
                         size={24}
                         className="
-                          text-[var(--warning-color)]
+                          text-[var(--color-warning)]
                         "
                       />
 
@@ -349,7 +349,7 @@ OrdersPage() {
                       <p
                         className="
                           text-xs
-                          text-[var(--muted-text-color)]
+                          text-[var(--text-secondary)]
                         "
                       >
 
@@ -365,8 +365,8 @@ OrdersPage() {
                     className="
                       rounded-xl
                       bg-gradient-to-r
-                      from-[var(--primary-color)]
-                      to-[var(--primary-color)]
+                      from-[var(--color-primary-button)]
+                      to-[var(--color-primary-button)]
                       px-4
                       py-2
                       text-xs

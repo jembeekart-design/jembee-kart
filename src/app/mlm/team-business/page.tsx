@@ -28,7 +28,7 @@ export default function TeamBusinessPage() {
 
   return (
 
-    <main className="min-h-screen bg-[var(--card-color)] p-4">
+    <main className="min-h-screen bg-[var(--color-card-background)] p-4">
 
       <h1 className="mb-5 text-3xl font-black">
         Team Business
@@ -39,8 +39,8 @@ export default function TeamBusinessPage() {
           mb-5
           rounded-3xl
           bg-gradient-to-r
-          from-[var(--primary-color)]
-          to-[var(--primary-color)]
+          from-[var(--color-primary-button)]
+          to-[var(--color-primary-button)]
           p-6
           text-[var(--button-text-color)]
         "
@@ -66,7 +66,7 @@ export default function TeamBusinessPage() {
             key={index}
             className="
               rounded-3xl
-              bg-[var(--card-color)]
+              bg-[var(--color-card-background)]
               p-5
               shadow-sm
             "
@@ -78,7 +78,7 @@ export default function TeamBusinessPage() {
                 {member.name}
               </h2>
 
-              <p className="text-lg font-black text-[var(--primary-color)]">
+              <p className="text-lg font-black text-[var(--color-primary-button)]">
 
                 ₹{member.business}
 

@@ -330,11 +330,11 @@ function RegistrationForm() {
   }
 
   return (
-    <main className="flex min-h-screen items-center justify-center bg-[var(--background-color)] px-4 py-12">
-      <div className="w-full max-w-md rounded-[32px] bg-[var(--card-color)] p-8 shadow-sm border border-[var(--border-color)]">
+    <main className="flex min-h-screen items-center justify-center bg-[var(--color-page-background)] px-4 py-12">
+      <div className="w-full max-w-md rounded-[32px] bg-[var(--color-card-background)] p-8 shadow-sm border border-[var(--color-border)]">
         <div className="text-center mb-8">
-          <h1 className="text-[28px] font-black text-[var(--primary-color)]">Create Account</h1>
-          <p className="text-sm text-[var(--muted-text-color)] mt-1">Join JembeeKart Today</p>
+          <h1 className="text-[28px] font-black text-[var(--color-primary-button)]">Create Account</h1>
+          <p className="text-sm text-[var(--text-secondary)] mt-1">Join JembeeKart Today</p>
         </div>
 
         <form onSubmit={handleEmailSignup} className="space-y-4">
@@ -344,7 +344,7 @@ function RegistrationForm() {
             value={name}
             onChange={(e) => setName(e.target.value)}
             required
-            className="w-full rounded-2xl border p-4 outline-none transition focus:border-[var(--primary-color)]"
+            className="w-full rounded-2xl border p-4 outline-none transition focus:border-[var(--color-primary-button)]"
           />
           <input
             type="email"
@@ -352,7 +352,7 @@ function RegistrationForm() {
             value={email}
             onChange={(e) => setEmail(e.target.value)}
             required
-            className="w-full rounded-2xl border p-4 outline-none transition focus:border-[var(--primary-color)]"
+            className="w-full rounded-2xl border p-4 outline-none transition focus:border-[var(--color-primary-button)]"
           />
           <input
             type="password"
@@ -360,7 +360,7 @@ function RegistrationForm() {
             value={password}
             onChange={(e) => setPassword(e.target.value)}
             required
-            className="w-full rounded-2xl border p-4 outline-none transition focus:border-[var(--primary-color)]"
+            className="w-full rounded-2xl border p-4 outline-none transition focus:border-[var(--color-primary-button)]"
           />
           <input
             type="password"
@@ -368,7 +368,7 @@ function RegistrationForm() {
             value={confirmPassword}
             onChange={(e) => setConfirmPassword(e.target.value)}
             required
-            className="w-full rounded-2xl border p-4 outline-none transition focus:border-[var(--primary-color)]"
+            className="w-full rounded-2xl border p-4 outline-none transition focus:border-[var(--color-primary-button)]"
           />
           
           <div className="flex items-start gap-3 py-2 px-1">
@@ -377,15 +377,15 @@ function RegistrationForm() {
               id="terms"
               checked={acceptedTerms}
               onChange={(e) => setAcceptedTerms(e.target.checked)}
-              className="mt-1 h-4 w-4 rounded border-[var(--border-color)] text-[var(--primary-color)] focus:ring-[var(--primary-color)]"
+              className="mt-1 h-4 w-4 rounded border-[var(--color-border)] text-[var(--color-primary-button)] focus:ring-[var(--color-primary-button)]"
             />
-            <label htmlFor="terms" className="text-xs text-[var(--muted-text-color)] select-none">
+            <label htmlFor="terms" className="text-xs text-[var(--text-secondary)] select-none">
               I agree to the{" "}
-              <Link href="/terms" className="text-[var(--primary-color)] font-bold hover:underline">
+              <Link href="/terms" className="text-[var(--color-primary-button)] font-bold hover:underline">
                 Terms & Conditions
               </Link>{" "}
               and{" "}
-              <Link href="/privacy" className="text-[var(--primary-color)] font-bold hover:underline">
+              <Link href="/privacy" className="text-[var(--color-primary-button)] font-bold hover:underline">
                 Privacy Policy
               </Link>{" "}
               of JembeeKart.
@@ -395,22 +395,22 @@ function RegistrationForm() {
           <button
             type="submit"
             disabled={loading}
-            className="w-full rounded-2xl bg-[var(--primary-color)] p-4 font-black text-[var(--button-text-color)] transition hover:bg-[var(--primary-color)] disabled:opacity-50"
+            className="w-full rounded-2xl bg-[var(--color-primary-button)] p-4 font-black text-[var(--button-text-color)] transition hover:bg-[var(--color-primary-button)] disabled:opacity-50"
           >
             {loading ? "Creating Account..." : "Create Account"}
           </button>
         </form>
 
         <div className="my-6 flex items-center">
-          <div className="h-px flex-1 bg-[var(--card-color)]" />
-          <span className="px-4 text-xs font-bold text-[var(--muted-text-color)]">OR</span>
-          <div className="h-px flex-1 bg-[var(--card-color)]" />
+          <div className="h-px flex-1 bg-[var(--color-card-background)]" />
+          <span className="px-4 text-xs font-bold text-[var(--text-secondary)]">OR</span>
+          <div className="h-px flex-1 bg-[var(--color-card-background)]" />
         </div>
 
         <button
           onClick={handleGoogleSignup}
           disabled={loading}
-          className="w-full rounded-2xl border p-4 font-bold bg-[var(--card-color)] text-[var(--text-color)] hover:bg-[var(--background-color)] transition disabled:opacity-50"
+          className="w-full rounded-2xl border p-4 font-bold bg-[var(--color-card-background)] text-[var(--text-primary)] hover:bg-[var(--color-page-background)] transition disabled:opacity-50"
         >
           Continue With Google
         </button>
@@ -426,8 +426,8 @@ export default function SignupPage() {
   return (
     <Suspense 
       fallback={
-        <div className="flex min-h-screen items-center justify-center bg-[var(--background-color)]">
-          <p className="text-sm font-bold text-[var(--muted-text-color)] animate-pulse">
+        <div className="flex min-h-screen items-center justify-center bg-[var(--color-page-background)]">
+          <p className="text-sm font-bold text-[var(--text-secondary)] animate-pulse">
             Loading JembeeKart Secure Node...
           </p>
         </div>

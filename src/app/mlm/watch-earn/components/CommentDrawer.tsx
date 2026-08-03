@@ -65,7 +65,7 @@ export default function CommentDrawer({ open, onClose, videoId, onCommentAdded }
         right-0
         z-[999]
         rounded-t-[35px]
-        bg-[var(--primary-color)]
+        bg-[var(--color-primary-button)]
         transition-all
         duration-300
 
@@ -85,7 +85,7 @@ export default function CommentDrawer({ open, onClose, videoId, onCommentAdded }
           items-center
           justify-between
           border-b
-          border-[var(--border-color)]/10
+          border-[var(--color-border)]/10
           px-5
           py-4
         "
@@ -165,7 +165,7 @@ export default function CommentDrawer({ open, onClose, videoId, onCommentAdded }
                     className="
                       mt-1
                       text-sm
-                      text-[var(--text-color)]
+                      text-[var(--text-primary)]
                     "
                   >
 
@@ -181,7 +181,7 @@ export default function CommentDrawer({ open, onClose, videoId, onCommentAdded }
                     flex-col
                     items-center
                     gap-1
-                    text-[var(--text-color)]
+                    text-[var(--text-primary)]
                   "
                 >
 
@@ -216,7 +216,7 @@ export default function CommentDrawer({ open, onClose, videoId, onCommentAdded }
           items-center
           gap-3
           border-t
-          border-[var(--border-color)]/10
+          border-[var(--color-border)]/10
           px-4
           py-4
         "
@@ -236,8 +236,8 @@ export default function CommentDrawer({ open, onClose, videoId, onCommentAdded }
             flex-1
             rounded-full
             border
-            border-[var(--border-color)]/10
-            bg-[var(--card-color)]/5
+            border-[var(--color-border)]/10
+            bg-[var(--color-card-background)]/5
             px-5
             py-3
             text-sm
@@ -256,8 +256,8 @@ export default function CommentDrawer({ open, onClose, videoId, onCommentAdded }
             justify-center
             rounded-full
             bg-gradient-to-r
-            from-[var(--primary-color)]
-            to-[var(--primary-color)]
+            from-[var(--color-primary-button)]
+            to-[var(--color-primary-button)]
             text-[var(--button-text-color)]
           "
         >

@@ -59,7 +59,7 @@ CoinsPopup({
             items-center
             gap-3
             rounded-3xl
-            bg-[var(--warning-color)]
+            bg-[var(--color-warning)]
             px-6
             py-4
             shadow-2xl
@@ -69,7 +69,7 @@ CoinsPopup({
           <Coins
             size={32}
             className="
-              text-[var(--text-color)]
+              text-[var(--text-primary)]
             "
           />
 
@@ -79,7 +79,7 @@ CoinsPopup({
               className="
                 text-2xl
                 font-black
-                text-[var(--text-color)]
+                text-[var(--text-primary)]
               "
             >
 
@@ -91,7 +91,7 @@ CoinsPopup({
               className="
                 text-sm
                 font-bold
-                text-[var(--text-color)]/70
+                text-[var(--text-primary)]/70
               "
             >
 

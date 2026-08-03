@@ -59,7 +59,7 @@ ShareDrawer({
         right-0
         z-[999]
         rounded-t-[35px]
-        bg-[var(--primary-color)]
+        bg-[var(--color-primary-button)]
         transition-all
         duration-300
 
@@ -79,7 +79,7 @@ ShareDrawer({
           items-center
           justify-between
           border-b
-          border-[var(--border-color)]/10
+          border-[var(--color-border)]/10
           px-5
           py-4
         "
@@ -142,14 +142,14 @@ ShareDrawer({
               items-center
               justify-center
               rounded-full
-              bg-[var(--success-color)]/20
+              bg-[var(--color-success)]/20
             "
           >
 
             <MessageCircle
               size={28}
               className="
-                text-[var(--success-color)]
+                text-[var(--color-success)]
               "
             />
 
@@ -188,14 +188,14 @@ ShareDrawer({
               items-center
               justify-center
               rounded-full
-              bg-[var(--primary-color)]/20
+              bg-[var(--color-primary-button)]/20
             "
           >
 
             <Send
               size={28}
               className="
-                text-[var(--primary-color)]
+                text-[var(--color-primary-button)]
               "
             />
 
@@ -281,14 +281,14 @@ ShareDrawer({
               items-center
               justify-center
               rounded-full
-              bg-[var(--warning-color)]/20
+              bg-[var(--color-warning)]/20
             "
           >
 
             <Copy
               size={28}
               className="
-                text-[var(--warning-color)]
+                text-[var(--color-warning)]
               "
             />
 
@@ -326,8 +326,8 @@ ShareDrawer({
             gap-3
             rounded-2xl
             border
-            border-[var(--border-color)]/10
-            bg-[var(--card-color)]/5
+            border-[var(--color-border)]/10
+            bg-[var(--color-card-background)]/5
             px-4
             py-4
           "
@@ -336,7 +336,7 @@ ShareDrawer({
           <Link2
             size={18}
             className="
-              text-[var(--muted-text-color)]
+              text-[var(--text-secondary)]
             "
           />
 
@@ -345,7 +345,7 @@ ShareDrawer({
               flex-1
               truncate
               text-sm
-              text-[var(--text-color)]
+              text-[var(--text-primary)]
             "
           >
 

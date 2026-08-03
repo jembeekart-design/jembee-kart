@@ -42,9 +42,9 @@ export default function RewardProgressBar({
   const totalProgress = (videoProgress + salesProgress) / 2;
 
   const statusConfig = {
-    active: { label: "Watching", className: "text-[var(--primary-color)] bg-[var(--primary-color)]/10" },
-    pending: { label: "Waiting", className: "text-[var(--warning-color)] bg-[var(--warning-color)]/10" },
-    completed: { label: "Unlocked", className: "text-[var(--success-color)] bg-[var(--success-color)]/10" },
+    active: { label: "Watching", className: "text-[var(--color-primary-button)] bg-[var(--color-primary-button)]/10" },
+    pending: { label: "Waiting", className: "text-[var(--color-warning)] bg-[var(--color-warning)]/10" },
+    completed: { label: "Unlocked", className: "text-[var(--color-success)] bg-[var(--color-success)]/10" },
   } as const;
 
   const currentStatus = statusConfig[status];
@@ -93,7 +93,7 @@ export default function RewardProgressBar({
               initial={{ width: 0 }}
               animate={{ width: `${totalProgress}%` }}
               transition={{ duration: 0.35 }}
-              className="h-full rounded-full bg-gradient-to-r from-[var(--primary-color)] to-[var(--primary-color)]"
+              className="h-full rounded-full bg-gradient-to-r from-[var(--color-primary-button)] to-[var(--color-primary-button)]"
             />
           </div>
 
@@ -120,12 +120,12 @@ export default function RewardProgressBar({
               animate={{ y: 0 }}
               exit={{ y: 300 }}
               transition={{ type: "spring", stiffness: 300, damping: 30 }}
-              className="relative w-full max-w-3xl rounded-t-3xl bg-[var(--card-color)] p-4 pt-6 backdrop-blur-md"
+              className="relative w-full max-w-3xl rounded-t-3xl bg-[var(--color-card-background)] p-4 pt-6 backdrop-blur-md"
             >
               <div className="flex items-center justify-between">
                 <div>
                   <h3 className="text-sm font-bold text-[var(--button-text-color)]">Reward Cycle #{cycleNumber}</h3>
-                  <p className="text-xs text-[var(--text-color)]">Unlock ₹{lockedReward} by completing the requirements.</p>
+                  <p className="text-xs text-[var(--text-primary)]">Unlock ₹{lockedReward} by completing the requirements.</p>
                 </div>
 
                 <button aria-label="Close" onClick={() => setOpen(false)} className="p-2 rounded-full bg-white/4">
@@ -140,7 +140,7 @@ export default function RewardProgressBar({
                     <span className="font-semibold text-[var(--button-text-color)]">{watchedVideos}/{requiredVideos}</span>
                   </div>
                   <div className="mt-2 h-2 w-full rounded-full bg-white/6 overflow-hidden">
-                    <motion.div initial={{ width: 0 }} animate={{ width: `${videoProgress}%` }} transition={{ duration: 0.35 }} className="h-full rounded-full bg-gradient-to-r from-[var(--primary-color)] to-[var(--primary-color)]" />
+                    <motion.div initial={{ width: 0 }} animate={{ width: `${videoProgress}%` }} transition={{ duration: 0.35 }} className="h-full rounded-full bg-gradient-to-r from-[var(--color-primary-button)] to-[var(--color-primary-button)]" />
                   </div>
                 </div>
 
@@ -150,12 +150,12 @@ export default function RewardProgressBar({
                     <span className="font-semibold text-[var(--button-text-color)]">{qualifiedSales}/{requiredSales}</span>
                   </div>
                   <div className="mt-2 h-2 w-full rounded-full bg-white/6 overflow-hidden">
-                    <motion.div initial={{ width: 0 }} animate={{ width: `${salesProgress}%` }} transition={{ duration: 0.35 }} className="h-full rounded-full bg-gradient-to-r from-[var(--primary-color)] to-[var(--primary-color)]" />
+                    <motion.div initial={{ width: 0 }} animate={{ width: `${salesProgress}%` }} transition={{ duration: 0.35 }} className="h-full rounded-full bg-gradient-to-r from-[var(--color-primary-button)] to-[var(--color-primary-button)]" />
                   </div>
                 </div>
 
                 <div className="pt-2 border-t border-white/6">
-                  <button className="w-full rounded-full bg-[var(--primary-color)] px-4 py-2 text-sm font-bold text-black">Claim / View Reward</button>
+                  <button className="w-full rounded-full bg-[var(--color-primary-button)] px-4 py-2 text-sm font-bold text-black">Claim / View Reward</button>
                 </div>
               </div>
             </motion.div>

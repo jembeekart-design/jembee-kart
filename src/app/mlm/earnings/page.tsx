@@ -60,7 +60,7 @@ export default function EarningsPage() {
 
   return (
 
-    <main className="min-h-screen bg-[var(--primary-color)] pb-24">
+    <main className="min-h-screen bg-[var(--color-primary-button)] pb-24">
 
       {/* HEADER */}
 
@@ -69,7 +69,7 @@ export default function EarningsPage() {
           sticky
           top-0
           z-50
-          bg-[var(--card-color)]
+          bg-[var(--color-card-background)]
           px-4
           py-3
           shadow-sm
@@ -87,8 +87,8 @@ export default function EarningsPage() {
               items-center
               justify-center
               rounded-full
-              bg-[var(--primary-color)]
-              text-[var(--primary-color)]
+              bg-[var(--color-primary-button)]
+              text-[var(--color-primary-button)]
             "
           >
 
@@ -98,13 +98,13 @@ export default function EarningsPage() {
 
           <div>
 
-            <h1 className="text-[24px] font-black text-[var(--primary-color)]">
+            <h1 className="text-[24px] font-black text-[var(--color-primary-button)]">
 
               Earnings
 
             </h1>
 
-            <p className="text-[11px] text-[var(--muted-text-color)]">
+            <p className="text-[11px] text-[var(--text-secondary)]">
 
               MLM Income Overview
 
@@ -125,9 +125,9 @@ export default function EarningsPage() {
             overflow-hidden
             rounded-[30px]
             bg-gradient-to-br
-            from-[var(--primary-color)]
-            via-[var(--primary-color)]
-            to-[var(--primary-color)]
+            from-[var(--color-primary-button)]
+            via-[var(--color-primary-button)]
+            to-[var(--color-primary-button)]
             p-5
             text-[var(--button-text-color)]
             shadow-xl
@@ -142,7 +142,7 @@ export default function EarningsPage() {
               items-center
               justify-center
               rounded-full
-              bg-[var(--card-color)]/20
+              bg-[var(--color-card-background)]/20
             "
           >
 
@@ -182,7 +182,7 @@ export default function EarningsPage() {
           <div
             className="
               rounded-2xl
-              bg-[var(--card-color)]
+              bg-[var(--color-card-background)]
               p-4
               shadow-sm
             "
@@ -190,7 +190,7 @@ export default function EarningsPage() {
 
             <BadgeIndianRupee
               size={28}
-              className="text-[var(--success-color)]"
+              className="text-[var(--color-success)]"
             />
 
             <h3 className="mt-3 text-[24px] font-black">
@@ -199,7 +199,7 @@ export default function EarningsPage() {
 
             </h3>
 
-            <p className="text-[12px] text-[var(--muted-text-color)]">
+            <p className="text-[12px] text-[var(--text-secondary)]">
 
               Today's Income
 
@@ -210,7 +210,7 @@ export default function EarningsPage() {
           <div
             className="
               rounded-2xl
-              bg-[var(--card-color)]
+              bg-[var(--color-card-background)]
               p-4
               shadow-sm
             "
@@ -218,7 +218,7 @@ export default function EarningsPage() {
 
             <CalendarDays
               size={28}
-              className="text-[var(--warning-color)]"
+              className="text-[var(--color-warning)]"
             />
 
             <h3 className="mt-3 text-[24px] font-black">
@@ -227,7 +227,7 @@ export default function EarningsPage() {
 
             </h3>
 
-            <p className="text-[12px] text-[var(--muted-text-color)]">
+            <p className="text-[12px] text-[var(--text-secondary)]">
 
               Monthly Earnings
 
@@ -238,7 +238,7 @@ export default function EarningsPage() {
           <div
             className="
               rounded-2xl
-              bg-[var(--card-color)]
+              bg-[var(--color-card-background)]
               p-4
               shadow-sm
             "
@@ -246,7 +246,7 @@ export default function EarningsPage() {
 
             <Gift
               size={28}
-              className="text-[var(--primary-color)]"
+              className="text-[var(--color-primary-button)]"
             />
 
             <h3 className="mt-3 text-[24px] font-black">
@@ -255,7 +255,7 @@ export default function EarningsPage() {
 
             </h3>
 
-            <p className="text-[12px] text-[var(--muted-text-color)]">
+            <p className="text-[12px] text-[var(--text-secondary)]">
 
               Referral Bonus
 
@@ -266,7 +266,7 @@ export default function EarningsPage() {
           <div
             className="
               rounded-2xl
-              bg-[var(--card-color)]
+              bg-[var(--color-card-background)]
               p-4
               shadow-sm
             "
@@ -274,7 +274,7 @@ export default function EarningsPage() {
 
             <Users
               size={28}
-              className="text-[var(--primary-color)]"
+              className="text-[var(--color-primary-button)]"
             />
 
             <h3 className="mt-3 text-[24px] font-black">
@@ -283,7 +283,7 @@ export default function EarningsPage() {
 
             </h3>
 
-            <p className="text-[12px] text-[var(--muted-text-color)]">
+            <p className="text-[12px] text-[var(--text-secondary)]">
 
               Total Team
 
@@ -302,7 +302,7 @@ export default function EarningsPage() {
         <div
           className="
             rounded-[28px]
-            bg-[var(--card-color)]
+            bg-[var(--color-card-background)]
             p-5
             shadow-sm
           "
@@ -318,8 +318,8 @@ export default function EarningsPage() {
                 items-center
                 justify-center
                 rounded-full
-                bg-[var(--primary-color)]
-                text-[var(--primary-color)]
+                bg-[var(--color-primary-button)]
+                text-[var(--color-primary-button)]
               "
             >
 
@@ -335,7 +335,7 @@ export default function EarningsPage() {
 
               </h2>
 
-              <p className="text-[11px] text-[var(--muted-text-color)]">
+              <p className="text-[11px] text-[var(--text-secondary)]">
 
                 Your MLM performance
 
@@ -347,15 +347,15 @@ export default function EarningsPage() {
 
           <div className="mt-5 flex items-end gap-2">
 
-            <div className="h-16 w-full rounded-t-xl bg-[var(--primary-color)]" />
+            <div className="h-16 w-full rounded-t-xl bg-[var(--color-primary-button)]" />
 
-            <div className="h-24 w-full rounded-t-xl bg-[var(--primary-color)]" />
+            <div className="h-24 w-full rounded-t-xl bg-[var(--color-primary-button)]" />
 
-            <div className="h-20 w-full rounded-t-xl bg-[var(--primary-color)]" />
+            <div className="h-20 w-full rounded-t-xl bg-[var(--color-primary-button)]" />
 
-            <div className="h-32 w-full rounded-t-xl bg-[var(--warning-color)]" />
+            <div className="h-32 w-full rounded-t-xl bg-[var(--color-warning)]" />
 
-            <div className="h-40 w-full rounded-t-xl bg-[var(--primary-color)]" />
+            <div className="h-40 w-full rounded-t-xl bg-[var(--color-primary-button)]" />
 
           </div>
 
@@ -370,7 +370,7 @@ export default function EarningsPage() {
         <div
           className="
             rounded-[28px]
-            bg-[var(--card-color)]
+            bg-[var(--color-card-background)]
             p-5
             shadow-sm
           "
@@ -394,7 +394,7 @@ export default function EarningsPage() {
                     items-center
                     justify-between
                     rounded-2xl
-                    bg-[var(--background-color)]
+                    bg-[var(--color-page-background)]
                     p-4
                   "
                 >
@@ -407,7 +407,7 @@ export default function EarningsPage() {
 
                     </h3>
 
-                    <p className="mt-1 text-[11px] text-[var(--muted-text-color)]">
+                    <p className="mt-1 text-[11px] text-[var(--text-secondary)]">
 
                       {item.date}
 
@@ -418,12 +418,12 @@ export default function EarningsPage() {
                   <div
                     className="
                       rounded-full
-                      bg-[var(--success-color)]
+                      bg-[var(--color-success)]
                       px-3
                       py-1
                       text-[12px]
                       font-black
-                      text-[var(--success-color)]
+                      text-[var(--color-success)]
                     "
                   >
 

@@ -95,28 +95,28 @@ export default function MLMInvitePage() {
   }
 
   return (
-    <main className="min-h-screen bg-[var(--primary-color)] pb-24">
+    <main className="min-h-screen bg-[var(--color-primary-button)] pb-24">
       {/* HEADER */}
-      <div className="sticky top-0 z-50 bg-[var(--card-color)] px-4 py-3 shadow-sm">
+      <div className="sticky top-0 z-50 bg-[var(--color-card-background)] px-4 py-3 shadow-sm">
         <div className="flex items-center gap-3">
           <Link
             href="/mlm/dashboard"
-            className="flex h-10 w-10 items-center justify-center rounded-full bg-[var(--primary-color)] text-[var(--primary-color)]"
+            className="flex h-10 w-10 items-center justify-center rounded-full bg-[var(--color-primary-button)] text-[var(--color-primary-button)]"
           >
             <ArrowLeft size={20} />
           </Link>
 
           <div>
-            <h1 className="text-[24px] font-black text-[var(--primary-color)]">Invite & Earn</h1>
-            <p className="text-[11px] text-[var(--muted-text-color)]">Share Referral Link</p>
+            <h1 className="text-[24px] font-black text-[var(--color-primary-button)]">Invite & Earn</h1>
+            <p className="text-[11px] text-[var(--text-secondary)]">Share Referral Link</p>
           </div>
         </div>
       </div>
 
       {/* HERO SECTION */}
       <section className="px-4 pt-5">
-        <div className="overflow-hidden rounded-[30px] bg-gradient-to-br from-[var(--primary-color)] via-[var(--primary-color)] to-[var(--primary-color)] p-5 text-[var(--button-text-color)] shadow-xl">
-          <div className="flex h-16 w-16 items-center justify-center rounded-full bg-[var(--card-color)]/20">
+        <div className="overflow-hidden rounded-[30px] bg-gradient-to-br from-[var(--color-primary-button)] via-[var(--color-primary-button)] to-[var(--color-primary-button)] p-5 text-[var(--button-text-color)] shadow-xl">
+          <div className="flex h-16 w-16 items-center justify-center rounded-full bg-[var(--color-card-background)]/20">
             <Gift size={34} />
           </div>
 
@@ -134,17 +134,17 @@ export default function MLMInvitePage() {
 
       {/* REFERRAL INFORMATION CARD */}
       <section className="mt-6 px-4">
-        <div className="rounded-[30px] bg-[var(--card-color)] p-5 shadow-sm">
+        <div className="rounded-[30px] bg-[var(--color-card-background)] p-5 shadow-sm">
           <div className="flex items-center gap-3">
-            <Users size={24} className="text-[var(--primary-color)]" />
+            <Users size={24} className="text-[var(--color-primary-button)]" />
             <h2 className="text-[22px] font-black">Your Referral</h2>
           </div>
 
-          <div className="mt-5 rounded-2xl bg-[var(--background-color)] p-4">
-            <p className="text-[11px] text-[var(--muted-text-color)]">Referral Name</p>
-            <h3 className="mt-1 text-[18px] font-black text-[var(--text-color)]">{referralName}</h3>
+          <div className="mt-5 rounded-2xl bg-[var(--color-page-background)] p-4">
+            <p className="text-[11px] text-[var(--text-secondary)]">Referral Name</p>
+            <h3 className="mt-1 text-[18px] font-black text-[var(--text-primary)]">{referralName}</h3>
 
-            <div className="mt-4 rounded-xl bg-[var(--card-color)] p-3 text-[11px] font-semibold text-[var(--primary-color)] break-all select-all">
+            <div className="mt-4 rounded-xl bg-[var(--color-card-background)] p-3 text-[11px] font-semibold text-[var(--color-primary-button)] break-all select-all">
               {referralLink}
             </div>
           </div>
@@ -153,7 +153,7 @@ export default function MLMInvitePage() {
           <button
             onClick={copyReferral}
             disabled={!referralCode}
-            className="mt-5 flex w-full items-center justify-center gap-2 rounded-2xl bg-[var(--primary-color)] py-3 text-[14px] font-black text-[var(--button-text-color)] active:scale-[0.99] transition-all disabled:opacity-50"
+            className="mt-5 flex w-full items-center justify-center gap-2 rounded-2xl bg-[var(--color-primary-button)] py-3 text-[14px] font-black text-[var(--button-text-color)] active:scale-[0.99] transition-all disabled:opacity-50"
           >
             <Copy size={18} />
             {copied ? "Copied" : "Copy Referral"}
@@ -168,7 +168,7 @@ export default function MLMInvitePage() {
           <button
             onClick={shareWhatsApp}
             disabled={!referralCode}
-            className="rounded-3xl bg-[var(--success-color)] p-5 text-[var(--button-text-color)] shadow-lg active:scale-[0.98] transition-all disabled:opacity-50 text-left"
+            className="rounded-3xl bg-[var(--color-success)] p-5 text-[var(--button-text-color)] shadow-lg active:scale-[0.98] transition-all disabled:opacity-50 text-left"
           >
             <Share2 size={32} />
             <h3 className="mt-4 text-[18px] font-black">WhatsApp</h3>
@@ -179,7 +179,7 @@ export default function MLMInvitePage() {
           <button
             onClick={shareTelegram}
             disabled={!referralCode}
-            className="rounded-3xl bg-[var(--primary-color)] p-5 text-[var(--button-text-color)] shadow-lg active:scale-[0.98] transition-all disabled:opacity-50 text-left"
+            className="rounded-3xl bg-[var(--color-primary-button)] p-5 text-[var(--button-text-color)] shadow-lg active:scale-[0.98] transition-all disabled:opacity-50 text-left"
           >
             <Send size={32} />
             <h3 className="mt-4 text-[18px] font-black">Telegram</h3>
@@ -190,18 +190,18 @@ export default function MLMInvitePage() {
 
       {/* DYNAMIC QR DISPLAY METRICS */}
       <section className="mt-6 px-4">
-        <div className="rounded-[30px] bg-[var(--card-color)] p-5 text-center shadow-sm">
-          <div className="mx-auto flex h-20 w-20 items-center justify-center rounded-full bg-[var(--primary-color)] text-[var(--primary-color)]">
+        <div className="rounded-[30px] bg-[var(--color-card-background)] p-5 text-center shadow-sm">
+          <div className="mx-auto flex h-20 w-20 items-center justify-center rounded-full bg-[var(--color-primary-button)] text-[var(--color-primary-button)]">
             <QrCode size={40} />
           </div>
 
           <h2 className="mt-5 text-[22px] font-black">Referral QR Code</h2>
-          <p className="mt-2 text-[12px] leading-6 text-[var(--muted-text-color)]">
+          <p className="mt-2 text-[12px] leading-6 text-[var(--text-secondary)]">
             QR scan karke direct referral joining karao.
           </p>
 
-          <div className="mt-5 mx-auto flex h-52 w-52 items-center justify-center rounded-3xl border-4 border-dashed border-[var(--primary-color)] bg-[var(--primary-color)]">
-            <QrCode size={120} className="text-[var(--primary-color)]" />
+          <div className="mt-5 mx-auto flex h-52 w-52 items-center justify-center rounded-3xl border-4 border-dashed border-[var(--color-primary-button)] bg-[var(--color-primary-button)]">
+            <QrCode size={120} className="text-[var(--color-primary-button)]" />
           </div>
         </div>
       </section>

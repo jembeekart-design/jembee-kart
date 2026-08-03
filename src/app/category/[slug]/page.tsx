@@ -95,7 +95,7 @@ export default function CategoryProductsPage() {
   }, [slug]);
 
   return (
-    <main className="min-h-screen w-full overflow-x-hidden bg-[var(--background-color)] pt-[115px] md:pt-[150px]">
+    <main className="min-h-screen w-full overflow-x-hidden bg-[var(--color-page-background)] pt-[115px] md:pt-[150px]">
 
       {/* HEADER */}
 
@@ -109,11 +109,11 @@ export default function CategoryProductsPage() {
 
         <div className="mb-6">
 
-          <h1 className="text-3xl font-black capitalize text-[var(--text-color)] md:text-5xl">
+          <h1 className="text-3xl font-black capitalize text-[var(--text-primary)] md:text-5xl">
             {slug}
           </h1>
 
-          <p className="mt-2 text-[var(--muted-text-color)]">
+          <p className="mt-2 text-[var(--text-secondary)]">
             Browse category products
           </p>
 
@@ -122,14 +122,14 @@ export default function CategoryProductsPage() {
         {/* LOADING */}
 
         {loading ? (
-          <div className="text-center text-xl font-bold text-[var(--muted-text-color)]">
+          <div className="text-center text-xl font-bold text-[var(--text-secondary)]">
             Loading Products...
           </div>
         ) : products.length ===
           0 ? (
-          <div className="rounded-[30px] bg-[var(--card-color)] p-10 text-center shadow-xl">
+          <div className="rounded-[30px] bg-[var(--color-card-background)] p-10 text-center shadow-xl">
 
-            <h2 className="text-2xl font-black text-[var(--text-color)]">
+            <h2 className="text-2xl font-black text-[var(--text-primary)]">
               No Products Found
             </h2>
 
@@ -152,11 +152,11 @@ export default function CategoryProductsPage() {
                     }
                     backgroundColor={
                       product.backgroundColor ||
-                      "var(--primary-color)"
+                      "var(--color-primary-button)"
                     }
                     textColor={
                       product.textColor ||
-                      "var(--primary-color)"
+                      "var(--color-primary-button)"
                     }
                   />
                 );

@@ -47,7 +47,7 @@ FloatingRewards({
           items-center
           gap-3
           rounded-full
-          bg-[var(--warning-color)]
+          bg-[var(--color-warning)]
           px-8
           py-4
           shadow-[0_0_50px_rgba(255,215,0,0.8)]
@@ -58,7 +58,7 @@ FloatingRewards({
         <Coins
           size={34}
           className="
-            text-[var(--text-color)]
+            text-[var(--text-primary)]
           "
         />
 
@@ -68,7 +68,7 @@ FloatingRewards({
             className="
               text-3xl
               font-black
-              text-[var(--text-color)]
+              text-[var(--text-primary)]
             "
           >
 
@@ -80,7 +80,7 @@ FloatingRewards({
             className="
               text-xs
               font-bold
-              text-[var(--text-color)]/70
+              text-[var(--text-primary)]/70
             "
           >
 
@@ -124,7 +124,7 @@ FloatingRewards({
                 Math.random() * 20
               }
               className="
-                text-[var(--warning-color)]
+                text-[var(--color-warning)]
               "
             />
 
