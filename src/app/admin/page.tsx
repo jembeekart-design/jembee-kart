@@ -108,7 +108,7 @@ export default function AdminHomePage() {
 
       {/* HERO */}
 
-      <div className="rounded-[35px] bg-gradient-to-r from-[var(--primary-color)] to-[var(--primary-color)] p-8 text-[var(--text-color)]">
+      <div className="rounded-[35px] bg-gradient-to-r from-[var(--color-primary-button)] to-[var(--color-primary-button)] p-8 text-[var(--text-primary)]">
 
         <div className="flex flex-col gap-8 lg:flex-row lg:items-center lg:justify-between">
 
@@ -129,7 +129,7 @@ export default function AdminHomePage() {
 
             </p>
 
-            <button className="mt-6 flex items-center gap-2 rounded-2xl bg-[var(--card-color)] px-6 py-4 font-bold text-[var(--button-text-color)]">
+            <button className="mt-6 flex items-center gap-2 rounded-2xl bg-[var(--color-card-background)] px-6 py-4 font-bold text-[var(--button-text-color)]">
 
               Open Analytics
 
@@ -141,7 +141,7 @@ export default function AdminHomePage() {
 
           {/* ICON */}
 
-          <div className="flex h-[180px] w-[180px] items-center justify-center rounded-[40px] bg-[var(--card-color)]/10 backdrop-blur-xl">
+          <div className="flex h-[180px] w-[180px] items-center justify-center rounded-[40px] bg-[var(--color-card-background)]/10 backdrop-blur-xl">
 
             <BarChart3 size={90} />
 
@@ -164,16 +164,16 @@ export default function AdminHomePage() {
 
             <div
               key={index}
-              className="rounded-[30px] border border-[var(--border-color)]/10 bg-[var(--primary-color)] p-5"
+              className="rounded-[30px] border border-[var(--color-border)]/10 bg-[var(--color-primary-button)] p-5"
             >
 
-              <div className="flex h-16 w-16 items-center justify-center rounded-2xl bg-[var(--primary-color)] text-[var(--text-color)]">
+              <div className="flex h-16 w-16 items-center justify-center rounded-2xl bg-[var(--color-primary-button)] text-[var(--text-primary)]">
 
                 <Icon size={28} />
 
               </div>
 
-              <p className="mt-5 text-sm text-[var(--muted-text-color)]">
+              <p className="mt-5 text-sm text-[var(--text-muted)]">
 
                 {item.title}
 
@@ -201,7 +201,7 @@ export default function AdminHomePage() {
 
           <TrendingUp
             size={24}
-            className="text-[var(--primary-color)]"
+            className="text-[var(--color-primary-button)]"
           />
 
           <h2 className="text-2xl font-black">
@@ -228,10 +228,10 @@ export default function AdminHomePage() {
                 <Link
                   key={index}
                   href={item.link}
-                  className="group rounded-[28px] border border-[var(--border-color)]/10 bg-[var(--primary-color)] p-5 transition-all duration-300 hover:scale-[1.03] hover:border-[var(--primary-color)]"
+                  className="group rounded-[28px] border border-[var(--color-border)]/10 bg-[var(--color-primary-button)] p-5 transition-all duration-300 hover:scale-[1.03] hover:border-[var(--color-primary-button)]"
                 >
 
-                  <div className="flex h-16 w-16 items-center justify-center rounded-2xl bg-[var(--primary-color)] text-[var(--text-color)] transition-all duration-300 group-hover:rotate-6">
+                  <div className="flex h-16 w-16 items-center justify-center rounded-2xl bg-[var(--color-primary-button)] text-[var(--text-primary)] transition-all duration-300 group-hover:rotate-6">
 
                     <Icon size={28} />
 
@@ -243,7 +243,7 @@ export default function AdminHomePage() {
 
                   </h3>
 
-                  <p className="mt-2 text-sm text-[var(--muted-text-color)]">
+                  <p className="mt-2 text-sm text-[var(--text-muted)]">
 
                     Open Module
 
@@ -266,13 +266,13 @@ export default function AdminHomePage() {
 
         {/* RECENT ORDERS */}
 
-        <div className="rounded-[30px] border border-[var(--border-color)]/10 bg-[var(--primary-color)] p-6">
+        <div className="rounded-[30px] border border-[var(--color-border)]/10 bg-[var(--color-primary-button)] p-6">
 
           <div className="flex items-center gap-3">
 
             <ShoppingCart
               size={24}
-              className="text-[var(--primary-color)]"
+              className="text-[var(--color-primary-button)]"
             />
 
             <h2 className="text-2xl font-black">
@@ -287,17 +287,17 @@ export default function AdminHomePage() {
 
             <ActivityItem
               title="New iPhone Order"
-              subtitle="Order var(--primary-color) placed"
+              subtitle="Order var(--color-primary-button) placed"
             />
 
             <ActivityItem
               title="Fashion Product"
-              subtitle="Order var(--primary-color) shipped"
+              subtitle="Order var(--color-primary-button) shipped"
             />
 
             <ActivityItem
               title="Gaming Laptop"
-              subtitle="Order var(--primary-color) delivered"
+              subtitle="Order var(--color-primary-button) delivered"
             />
 
           </div>
@@ -306,13 +306,13 @@ export default function AdminHomePage() {
 
         {/* SYSTEM STATUS */}
 
-        <div className="rounded-[30px] border border-[var(--border-color)]/10 bg-[var(--primary-color)] p-6">
+        <div className="rounded-[30px] border border-[var(--color-border)]/10 bg-[var(--color-primary-button)] p-6">
 
           <div className="flex items-center gap-3">
 
             <Shield
               size={24}
-              className="text-[var(--success-color)]"
+              className="text-[var(--color-success)]"
             />
 
             <h2 className="text-2xl font-black">
@@ -353,7 +353,7 @@ export default function AdminHomePage() {
 
       {/* BOTTOM SECTION */}
 
-      <div className="mt-10 rounded-[35px] bg-gradient-to-r from-[var(--primary-color)] to-[var(--primary-color)] p-8">
+      <div className="mt-10 rounded-[35px] bg-gradient-to-r from-[var(--color-primary-button)] to-[var(--color-primary-button)] p-8">
 
         <div className="flex flex-col gap-6 lg:flex-row lg:items-center lg:justify-between">
 
@@ -377,13 +377,13 @@ export default function AdminHomePage() {
 
           <div className="flex gap-4">
 
-            <button className="rounded-2xl bg-[var(--card-color)] px-6 py-4 font-bold text-[var(--button-text-color)]">
+            <button className="rounded-2xl bg-[var(--color-card-background)] px-6 py-4 font-bold text-[var(--button-text-color)]">
 
               Open AI Tools
 
             </button>
 
-            <button className="rounded-2xl bg-[var(--card-color)] px-6 py-4 font-bold text-[var(--text-color)]">
+            <button className="rounded-2xl bg-[var(--color-card-background)] px-6 py-4 font-bold text-[var(--text-primary)]">
 
               Manage Store
 
@@ -397,24 +397,24 @@ export default function AdminHomePage() {
 
       {/* ALERT */}
 
-      <div className="mt-8 rounded-[28px] border border-[var(--warning-color)]/20 bg-[var(--warning-color)]/10 p-5">
+      <div className="mt-8 rounded-[28px] border border-[var(--color-warning)]/20 bg-[var(--color-warning)]/10 p-5">
 
         <div className="flex items-start gap-4">
 
           <Bell
             size={24}
-            className="text-[var(--warning-color)]"
+            className="text-[var(--color-warning)]"
           />
 
           <div>
 
-            <h3 className="text-xl font-black text-[var(--warning-color)]">
+            <h3 className="text-xl font-black text-[var(--color-warning)]">
 
               System Notification
 
             </h3>
 
-            <p className="mt-2 text-sm text-[var(--text-color)]">
+            <p className="mt-2 text-sm text-[var(--text-primary)]">
 
               Admin dashboard successfully connected
               with sidebar layout and navigation system.
@@ -443,7 +443,7 @@ function ActivityItem({
 
   return (
 
-    <div className="flex items-center justify-between rounded-2xl bg-[var(--primary-color)] p-4">
+    <div className="flex items-center justify-between rounded-2xl bg-[var(--color-primary-button)] p-4">
 
       <div>
 
@@ -453,7 +453,7 @@ function ActivityItem({
 
         </h3>
 
-        <p className="mt-1 text-sm text-[var(--muted-text-color)]">
+        <p className="mt-1 text-sm text-[var(--text-muted)]">
 
           {subtitle}
 
@@ -461,7 +461,7 @@ function ActivityItem({
 
       </div>
 
-      <div className="h-3 w-3 rounded-full bg-[var(--success-color)]" />
+      <div className="h-3 w-3 rounded-full bg-[var(--color-success)]" />
 
     </div>
 
@@ -479,7 +479,7 @@ function StatusItem({
 
   return (
 
-    <div className="flex items-center justify-between rounded-2xl bg-[var(--primary-color)] p-4">
+    <div className="flex items-center justify-between rounded-2xl bg-[var(--color-primary-button)] p-4">
 
       <h3 className="font-bold">
 
@@ -487,7 +487,7 @@ function StatusItem({
 
       </h3>
 
-      <div className="rounded-full bg-[var(--success-color)]/20 px-4 py-2 text-sm font-bold text-[var(--success-color)]">
+      <div className="rounded-full bg-[var(--color-success)]/20 px-4 py-2 text-sm font-bold text-[var(--color-success)]">
 
         {status}
 

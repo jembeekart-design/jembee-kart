@@ -142,7 +142,7 @@ export default function AffiliateControlPage() {
 
     return (
 
-      <div className="flex min-h-screen items-center justify-center bg-[var(--card-color)] text-[var(--button-text-color)]">
+      <div className="flex min-h-screen items-center justify-center bg-[var(--color-card-background)] text-[var(--button-text-color)]">
 
         Loading...
 
@@ -153,7 +153,7 @@ export default function AffiliateControlPage() {
 
   return (
 
-    <main className="min-h-screen bg-[var(--primary-color)] p-4 text-[var(--button-text-color)]">
+    <main className="min-h-screen bg-[var(--color-primary-button)] p-4 text-[var(--button-text-color)]">
 
       {/* HEADER */}
 
@@ -161,7 +161,7 @@ export default function AffiliateControlPage() {
 
         <div className="flex items-center gap-4">
 
-          <div className="flex h-16 w-16 items-center justify-center rounded-[24px] bg-[var(--success-color)]">
+          <div className="flex h-16 w-16 items-center justify-center rounded-[24px] bg-[var(--color-success)]">
 
             <Users size={30} />
 
@@ -173,7 +173,7 @@ export default function AffiliateControlPage() {
               Affiliate Control
             </h1>
 
-            <p className="mt-1 text-sm text-[var(--muted-text-color)]">
+            <p className="mt-1 text-sm text-[var(--text-muted)]">
               Manage MLM & affiliate commissions
             </p>
 
@@ -184,7 +184,7 @@ export default function AffiliateControlPage() {
         <button
           onClick={saveSettings}
           disabled={saving}
-          className="flex items-center gap-2 rounded-2xl bg-[var(--success-color)] px-5 py-3 font-bold text-[var(--text-color)]"
+          className="flex items-center gap-2 rounded-2xl bg-[var(--color-success)] px-5 py-3 font-bold text-[var(--text-primary)]"
         >
 
           <Save size={18} />
@@ -365,13 +365,13 @@ export default function AffiliateControlPage() {
 
       {/* STATUS */}
 
-      <div className="mt-6 rounded-[30px] bg-gradient-to-r from-[var(--primary-color)] to-[var(--primary-color)] p-6">
+      <div className="mt-6 rounded-[30px] bg-gradient-to-r from-[var(--color-primary-button)] to-[var(--color-primary-button)] p-6">
 
         <div className="flex items-center gap-3">
 
           <Percent size={28} />
 
-          <h2 className="text-3xl font-black text-[var(--text-color)]">
+          <h2 className="text-3xl font-black text-[var(--text-primary)]">
             Affiliate Status
           </h2>
 
@@ -422,7 +422,7 @@ function InputCard({
 
   return (
 
-    <div className="rounded-[30px] bg-[var(--primary-color)] p-5">
+    <div className="rounded-[30px] bg-[var(--color-primary-button)] p-5">
 
       <h2 className="mb-4 text-2xl font-black">
         {title}
@@ -436,7 +436,7 @@ function InputCard({
             e.target.value
           )
         }
-        className="w-full rounded-2xl bg-[var(--card-color)] px-4 py-4 outline-none"
+        className="w-full rounded-2xl bg-[var(--color-card-background)] px-4 py-4 outline-none"
       />
 
     </div>
@@ -460,13 +460,13 @@ function ToggleCard({
 
   return (
 
-    <div className="rounded-[30px] bg-[var(--primary-color)] p-5">
+    <div className="rounded-[30px] bg-[var(--color-primary-button)] p-5">
 
       <div className="flex items-center justify-between">
 
         <div className="flex items-center gap-3">
 
-          <div className="flex h-14 w-14 items-center justify-center rounded-2xl bg-[var(--card-color)]">
+          <div className="flex h-14 w-14 items-center justify-center rounded-2xl bg-[var(--color-card-background)]">
 
             {icon}
 
@@ -478,7 +478,7 @@ function ToggleCard({
               {title}
             </h2>
 
-            <p className="text-sm text-[var(--muted-text-color)]">
+            <p className="text-sm text-[var(--text-muted)]">
               {description}
             </p>
 
@@ -490,8 +490,8 @@ function ToggleCard({
           onClick={onClick}
           className={`rounded-full px-5 py-3 text-sm font-bold ${
             enabled
-              ? "bg-[var(--success-color)]"
-              : "bg-[var(--danger-color)]"
+              ? "bg-[var(--color-success)]"
+              : "bg-[var(--color-danger)]"
           }`}
         >
 
@@ -518,13 +518,13 @@ function StatusCard({
 
   return (
 
-    <div className="rounded-2xl bg-[var(--card-color)]/10 p-4">
+    <div className="rounded-2xl bg-[var(--color-card-background)]/10 p-4">
 
-      <p className="text-sm text-[var(--text-color)]/70">
+      <p className="text-sm text-[var(--text-primary)]/70">
         {title}
       </p>
 
-      <h3 className="mt-2 text-2xl font-black text-[var(--text-color)]">
+      <h3 className="mt-2 text-2xl font-black text-[var(--text-primary)]">
         {value}
       </h3>
 

@@ -65,17 +65,17 @@ export default function AIBannerPage() {
 
   return (
 
-    <main className="min-h-screen bg-[var(--primary-color)] p-4 text-[var(--button-text-color)]">
+    <main className="min-h-screen bg-[var(--color-primary-button)] p-4 text-[var(--button-text-color)]">
 
       {/* HEADER */}
 
       <div className="mb-8 flex items-center gap-4">
 
-        <div className="flex h-16 w-16 items-center justify-center rounded-[30px] bg-[var(--primary-color)]">
+        <div className="flex h-16 w-16 items-center justify-center rounded-[30px] bg-[var(--color-primary-button)]">
 
           <Sparkles
             size={30}
-            className="text-[var(--text-color)]"
+            className="text-[var(--text-primary)]"
           />
 
         </div>
@@ -88,7 +88,7 @@ export default function AIBannerPage() {
 
           </h1>
 
-          <p className="mt-1 text-sm text-[var(--muted-text-color)]">
+          <p className="mt-1 text-sm text-[var(--text-muted)]">
 
             Create beautiful AI banners instantly
 
@@ -100,11 +100,11 @@ export default function AIBannerPage() {
 
       {/* PROMPT SECTION */}
 
-      <div className="rounded-[30px] border border-[var(--border-color)]/10 bg-[var(--primary-color)] p-6">
+      <div className="rounded-[30px] border border-[var(--color-border)]/10 bg-[var(--color-primary-button)] p-6">
 
         <div className="flex items-center gap-3">
 
-          <Wand2 className="text-[var(--primary-color)]" />
+          <Wand2 className="text-[var(--color-primary-button)]" />
 
           <h2 className="text-2xl font-black">
 
@@ -122,7 +122,7 @@ export default function AIBannerPage() {
             )
           }
           placeholder="Example: Create modern ecommerce fashion sale banner with neon effects..."
-          className="mt-5 h-40 w-full rounded-3xl border border-[var(--border-color)]/10 bg-[var(--card-color)]/40 p-5 text-[var(--button-text-color)] outline-none"
+          className="mt-5 h-40 w-full rounded-3xl border border-[var(--color-border)]/10 bg-[var(--color-card-background)]/40 p-5 text-[var(--button-text-color)] outline-none"
         />
 
         <div className="mt-5 flex flex-wrap gap-4">
@@ -130,7 +130,7 @@ export default function AIBannerPage() {
           <button
             onClick={generateBanner}
             disabled={loading}
-            className="flex items-center gap-2 rounded-2xl bg-[var(--primary-color)] px-6 py-4 font-bold text-[var(--text-color)] transition-all hover:scale-[1.03]"
+            className="flex items-center gap-2 rounded-2xl bg-[var(--color-primary-button)] px-6 py-4 font-bold text-[var(--text-primary)] transition-all hover:scale-[1.03]"
           >
 
             <Sparkles size={20} />
@@ -142,7 +142,7 @@ export default function AIBannerPage() {
           </button>
 
           <button
-            className="flex items-center gap-2 rounded-2xl border border-[var(--border-color)]/10 bg-[var(--primary-color)] px-6 py-4 font-bold"
+            className="flex items-center gap-2 rounded-2xl border border-[var(--color-border)]/10 bg-[var(--color-primary-button)] px-6 py-4 font-bold"
           >
 
             <LayoutTemplate
@@ -159,13 +159,13 @@ export default function AIBannerPage() {
 
       {/* GENERATED BANNER */}
 
-      <div className="mt-6 rounded-[30px] border border-[var(--border-color)]/10 bg-[var(--primary-color)] p-6">
+      <div className="mt-6 rounded-[30px] border border-[var(--color-border)]/10 bg-[var(--color-primary-button)] p-6">
 
         <div className="flex items-center justify-between">
 
           <div className="flex items-center gap-3">
 
-            <ImageIcon className="text-[var(--primary-color)]" />
+            <ImageIcon className="text-[var(--color-primary-button)]" />
 
             <h2 className="text-2xl font-black">
 
@@ -178,7 +178,7 @@ export default function AIBannerPage() {
           <div className="flex gap-3">
 
             <button
-              className="flex items-center gap-2 rounded-2xl bg-[var(--card-color)]/10 px-4 py-3"
+              className="flex items-center gap-2 rounded-2xl bg-[var(--color-card-background)]/10 px-4 py-3"
             >
 
               <Download size={18} />
@@ -188,7 +188,7 @@ export default function AIBannerPage() {
             </button>
 
             <button
-              className="flex items-center gap-2 rounded-2xl bg-[var(--danger-color)]/20 px-4 py-3 text-[var(--danger-color)]"
+              className="flex items-center gap-2 rounded-2xl bg-[var(--color-danger)]/20 px-4 py-3 text-[var(--color-danger)]"
             >
 
               <Trash2 size={18} />
@@ -201,7 +201,7 @@ export default function AIBannerPage() {
 
         </div>
 
-        <div className="mt-6 overflow-hidden rounded-[30px] border border-[var(--border-color)]/10">
+        <div className="mt-6 overflow-hidden rounded-[30px] border border-[var(--color-border)]/10">
 
           <img
             src={generatedBanner}
@@ -237,7 +237,7 @@ export default function AIBannerPage() {
 
       {/* AI FEATURES */}
 
-      <div className="mt-6 rounded-[30px] border border-[var(--border-color)]/10 bg-gradient-to-r from-[var(--primary-color)] to-[var(--primary-color)] p-6">
+      <div className="mt-6 rounded-[30px] border border-[var(--color-border)]/10 bg-gradient-to-r from-[var(--color-primary-button)] to-[var(--color-primary-button)] p-6">
 
         <div className="flex items-center gap-3">
 
@@ -277,7 +277,7 @@ export default function AIBannerPage() {
       <div className="mt-6 flex justify-end">
 
         <button
-          className="flex items-center gap-2 rounded-2xl bg-[var(--success-color)] px-6 py-4 font-black text-[var(--text-color)]"
+          className="flex items-center gap-2 rounded-2xl bg-[var(--color-success)] px-6 py-4 font-black text-[var(--text-primary)]"
         >
 
           <Save size={20} />
@@ -302,11 +302,11 @@ function StyleCard({
   return (
 
     <button
-      className="rounded-[24px] border border-[var(--border-color)]/10 bg-[var(--primary-color)] p-6 text-left transition-all hover:border-[var(--primary-color)]"
+      className="rounded-[24px] border border-[var(--color-border)]/10 bg-[var(--color-primary-button)] p-6 text-left transition-all hover:border-[var(--color-primary-button)]"
     >
 
       <ImagePlus
-        className="text-[var(--primary-color)]"
+        className="text-[var(--color-primary-button)]"
       />
 
       <h3 className="mt-4 text-xl font-black">
@@ -315,7 +315,7 @@ function StyleCard({
 
       </h3>
 
-      <p className="mt-1 text-sm text-[var(--muted-text-color)]">
+      <p className="mt-1 text-sm text-[var(--text-muted)]">
 
         Generate AI banner
 
@@ -336,7 +336,7 @@ function FeatureCard({
 
   return (
 
-    <div className="rounded-[24px] bg-[var(--card-color)]/10 p-5 backdrop-blur-lg">
+    <div className="rounded-[24px] bg-[var(--color-card-background)]/10 p-5 backdrop-blur-lg">
 
       <h3 className="text-xl font-black">
 
