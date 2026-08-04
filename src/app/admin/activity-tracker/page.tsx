@@ -157,15 +157,15 @@ export default function ActivityTrackerPage() {
   });
 
   return (
-    <main className="min-h-screen bg-[var(--color-primary-button)] p-4 text-[var(--button-text-color)]">
+    <main className="min-h-screen bg-[var(--color-page-background)] p-4 text-[var(--text-primary)]">
       {/* HEADER */}
       <div className="mb-8 flex items-center justify-between">
         <div className="flex items-center gap-4">
-          <div className="flex h-16 w-16 items-center justify-center rounded-[28px] bg-[var(--color-primary-button)]">
-            <Activity size={30} className="text-[var(--text-primary)]" />
+          <div className="flex h-16 w-16 items-center justify-center rounded-[28px] bg-[var(--color-card-background)] border border-[var(--color-border)]">
+            <Activity size={30} className="text-[var(--color-primary-button)]" />
           </div>
           <div>
-            <h1 className="text-3xl font-black">{activityTracker.pageTitle}</h1>
+            <h1 className="text-3xl font-black text-[var(--text-primary)]">{activityTracker.pageTitle}</h1>
             <p className="mt-1 text-sm text-[var(--text-muted)]">
               {activityTracker.pageDescription}
             </p>
@@ -199,7 +199,7 @@ export default function ActivityTrackerPage() {
 
       {/* SEARCH BOX MODULE */}
       <div className="mt-6 flex flex-col gap-4 md:flex-row">
-        <div className="flex flex-1 items-center gap-3 rounded-[24px] border border-[var(--color-border)]/10 bg-[var(--color-primary-button)] px-4 py-3">
+        <div className="flex flex-1 items-center gap-3 rounded-[24px] border border-[var(--color-border)]/10 bg-[var(--color-card-background)] px-4 py-3">
           <Search size={20} className="text-[var(--text-muted)]" />
           <input
             type="text"
@@ -216,7 +216,7 @@ export default function ActivityTrackerPage() {
         {filteredActivities.map((item, index) => (
           <div
             key={item.id || index}
-            className="rounded-[28px] border border-[var(--color-border)]/10 bg-[var(--color-primary-button)] p-5 animate-fadeIn"
+            className="rounded-[28px] border border-[var(--color-border)]/10 bg-[var(--color-card-background)] p-5 animate-fadeIn"
           >
             <div className="flex flex-col gap-5 lg:flex-row lg:items-center lg:justify-between">
               <div className="flex items-start gap-4">
@@ -306,8 +306,8 @@ function StatCard({
   icon: React.ReactNode;
 }) {
   return (
-    <div className="rounded-[28px] border border-[var(--color-border)]/10 bg-[var(--color-primary-button)] p-5">
-      <div className="flex h-14 w-14 items-center justify-center rounded-2xl bg-[var(--color-primary-button)] text-[var(--text-primary)]">
+    <div className="rounded-[28px] border border-[var(--color-border)]/10 bg-[var(--color-card-background)] p-5">
+      <div className="flex h-14 w-14 items-center justify-center rounded-2xl bg-[var(--color-primary-button)] text-[var(--button-text-color)]">
         {icon}
       </div>
       <p className="mt-4 text-sm text-[var(--text-muted)]">{title}</p>
