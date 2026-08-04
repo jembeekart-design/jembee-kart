@@ -177,7 +177,7 @@ export default function UsersPage() {
   }
 
   return (
-    <main className="min-h-screen bg-[var(--primary-color)] p-4 text-[var(--button-text-color)]">
+    <main className="min-h-screen bg-[var(--color-page-background)] p-4 text-[var(--button-text-color)]">
       {/* HEADER */}
       <div className="mb-6">
         <h1 className="text-3xl font-black">Users Manager</h1>
@@ -186,14 +186,14 @@ export default function UsersPage() {
 
       {/* Operational Telemetry Metric Status Cards Row */}
       <div className="grid grid-cols-2 gap-4 mb-6 md:grid-cols-4">
-        <StatCard title="Total Users" value={stats.total.toLocaleString("en-IN")} icon={<Users size={22} />} color="bg-[var(--primary-color)]" />
-        <StatCard title="Active MLM" value={stats.mlmActive.toLocaleString("en-IN")} icon={<UserCheck size={22} />} color="bg-[var(--primary-color)]" />
-        <StatCard title="Blocked Users" value={stats.blocked.toLocaleString("en-IN")} icon={<UserX size={22} />} color="bg-[var(--danger-color)]" />
+        <StatCard title="Total Users" value={stats.total.toLocaleString("en-IN")} icon={<Users size={22} />} color="bg-[var(--color-page-background)]" />
+        <StatCard title="Active MLM" value={stats.mlmActive.toLocaleString("en-IN")} icon={<UserCheck size={22} />} color="bg-[var(--color-page-background)]" />
+        <StatCard title="Blocked Users" value={stats.blocked.toLocaleString("en-IN")} icon={<UserX size={22} />} color="bg-[var(--color-danger)]" />
         <StatCard title="Total Referrals" value={stats.referrals.toLocaleString("en-IN")} icon={<Award size={22} />} color="bg-[var(--warning-color)]" />
       </div>
 
       {/* SEARCH HOOK CONTAINER */}
-      <div className="mb-6 flex items-center gap-3 rounded-[24px] border border-[var(--border-color)]/10 bg-[var(--primary-color)] px-4 py-3">
+      <div className="mb-6 flex items-center gap-3 rounded-[24px] border border-[var(--border-color)]/10 bg-[var(--color-page-background)] px-4 py-3">
         <Search size={20} className="text-[var(--muted-text-color)]" />
         <input
           type="text"
@@ -213,7 +213,7 @@ export default function UsersPage() {
             <div
               key={user.id}
               className={`overflow-hidden rounded-[30px] border transition-all ${
-                user.isBlocked ? "border-[var(--danger-color)]/30 bg-[var(--primary-color)]" : "border-[var(--border-color)]/10 bg-[var(--primary-color)]"
+                user.isBlocked ? "border-[var(--danger-color)]/30 bg-[var(--color-page-background)]" : "border-[var(--border-color)]/10 bg-[var(--color-page-background)]"
               }`}
             >
               {/* TOP PROFILE CONTROL ACTION BAR */}
@@ -226,7 +226,7 @@ export default function UsersPage() {
                       className="h-16 w-16 rounded-full object-cover ring-2 ring-white/10"
                     />
                   ) : (
-                    <div className="flex h-16 w-16 items-center justify-center rounded-full bg-[var(--primary-color)] font-black">
+                    <div className="flex h-16 w-16 items-center justify-center rounded-full bg-[var(--color-page-background)] font-black">
                       <User size={28} />
                     </div>
                   )}
@@ -235,7 +235,7 @@ export default function UsersPage() {
                     <h2 className="text-lg font-black flex items-center gap-2">
                       {user.name || "Untitled User"}
                       {user.isBlocked && (
-                        <span className="text-xs bg-[var(--danger-color)]/20 text-[var(--danger-color)] px-2.5 py-0.5 rounded-full font-bold">
+                        <span className="text-xs bg-[var(--color-danger)]/20 text-[var(--danger-color)] px-2.5 py-0.5 rounded-full font-bold">
                           BLOCKED
                         </span>
                       )}
@@ -264,8 +264,8 @@ export default function UsersPage() {
                     onClick={() => toggleBlockStatus(user.id, !!user.isBlocked)}
                     className={`flex h-10 w-10 items-center justify-center rounded-xl transition ${
                       user.isBlocked
-                        ? "bg-[var(--success-color)]/20 text-[var(--success-color)] hover:bg-[var(--success-color)]/30"
-                        : "bg-[var(--danger-color)]/20 text-[var(--danger-color)] hover:bg-[var(--danger-color)]/30"
+                        ? "bg-[var(--color-success)]/20 text-[var(--success-color)] hover:bg-[var(--color-success)]/30"
+                        : "bg-[var(--color-danger)]/20 text-[var(--danger-color)] hover:bg-[var(--color-danger)]/30"
                     }`}
                     title={user.isBlocked ? "Unblock User" : "Block User"}
                   >
@@ -285,7 +285,7 @@ export default function UsersPage() {
                       disabled={!isUserEditing}
                       value={isUserEditing ? editForm.name : user.name || ""}
                       onChange={(e) => setEditForm((p) => ({ ...p, name: e.target.value }))}
-                      className="w-full rounded-2xl border border-[var(--border-color)]/5 bg-[var(--primary-color)] px-4 py-3 text-sm outline-none disabled:opacity-50 text-[var(--button-text-color)]"
+                      className="w-full rounded-2xl border border-[var(--border-color)]/5 bg-[var(--color-page-background)] px-4 py-3 text-sm outline-none disabled:opacity-50 text-[var(--button-text-color)]"
                     />
                   </div>
 
@@ -296,7 +296,7 @@ export default function UsersPage() {
                       type="text"
                       disabled={true}
                       value={user.email || ""}
-                      className="w-full rounded-2xl border border-[var(--border-color)]/5 bg-[var(--primary-color)] px-4 py-3 text-sm outline-none opacity-40 text-[var(--muted-text-color)] cursor-not-allowed"
+                      className="w-full rounded-2xl border border-[var(--border-color)]/5 bg-[var(--color-page-background)] px-4 py-3 text-sm outline-none opacity-40 text-[var(--muted-text-color)] cursor-not-allowed"
                     />
                   </div>
 
@@ -307,10 +307,10 @@ export default function UsersPage() {
                       disabled={!isUserEditing}
                       value={isUserEditing ? editForm.role : user.role || "user"}
                       onChange={(e) => setEditForm((p) => ({ ...p, role: e.target.value }))}
-                      className="w-full rounded-2xl border border-[var(--border-color)]/5 bg-[var(--primary-color)] px-4 py-3 text-sm outline-none disabled:opacity-50 appearance-none text-[var(--button-text-color)] cursor-pointer"
+                      className="w-full rounded-2xl border border-[var(--border-color)]/5 bg-[var(--color-page-background)] px-4 py-3 text-sm outline-none disabled:opacity-50 appearance-none text-[var(--button-text-color)] cursor-pointer"
                     >
-                      <option value="user" className="bg-[var(--primary-color)]">User Node</option>
-                      <option value="admin" className="bg-[var(--primary-color)]">Admin Node</option>
+                      <option value="user" className="bg-[var(--color-page-background)]">User Node</option>
+                      <option value="admin" className="bg-[var(--color-page-background)]">Admin Node</option>
                     </select>
                   </div>
 
@@ -322,7 +322,7 @@ export default function UsersPage() {
                       disabled={!isUserEditing}
                       value={isUserEditing ? editForm.photo : user.photo || ""}
                       onChange={(e) => setEditForm((p) => ({ ...p, photo: e.target.value }))}
-                      className="w-full rounded-2xl border border-[var(--border-color)]/5 bg-[var(--primary-color)] px-4 py-3 text-sm outline-none disabled:opacity-50 text-[var(--button-text-color)]"
+                      className="w-full rounded-2xl border border-[var(--border-color)]/5 bg-[var(--color-page-background)] px-4 py-3 text-sm outline-none disabled:opacity-50 text-[var(--button-text-color)]"
                     />
                   </div>
                 </div>
@@ -332,7 +332,7 @@ export default function UsersPage() {
                   {isUserEditing ? (
                     <button
                       onClick={() => saveUserChanges(user.id)}
-                      className="flex items-center gap-2 rounded-xl bg-[var(--primary-color)] px-5 py-2.5 text-sm font-bold text-[var(--text-color)] transition hover:bg-[var(--primary-color)] active:scale-95"
+                      className="flex items-center gap-2 rounded-xl bg-[var(--color-page-background)] px-5 py-2.5 text-sm font-bold text-[var(--text-primary)] transition hover:bg-[var(--color-page-background)] active:scale-95"
                     >
                       <Save size={16} />
                       Save Changes
@@ -348,7 +348,7 @@ export default function UsersPage() {
                 </div>
 
                 {/* ✅ 3. EXTRA CONFIGURATION INFO BOX Matrix (Rank, ShareCode, Account Status, Wallet Status) */}
-                <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 bg-[var(--primary-color)]/40 p-4 rounded-2xl border border-[var(--border-color)]/5">
+                <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 bg-[var(--color-page-background)]/40 p-4 rounded-2xl border border-[var(--border-color)]/5">
                   <div>
                     <p className="text-[10px] uppercase font-bold text-[var(--muted-text-color)] tracking-wider flex items-center gap-1">
                       <Award size={12} className="text-[var(--primary-color)]" /> Rank Node
@@ -384,7 +384,7 @@ export default function UsersPage() {
 
                 {/* LIVE FINANCIAL & SYSTEM SNAPSHOTS PANEL */}
                 <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 pt-2">
-                  <div className="rounded-2xl border border-[var(--border-color)]/5 bg-[var(--primary-color)] p-4 flex items-center gap-3">
+                  <div className="rounded-2xl border border-[var(--border-color)]/5 bg-[var(--color-page-background)] p-4 flex items-center gap-3">
                     <Wallet size={18} className="text-[var(--warning-color)]" />
                     <div>
                       <p className="text-[10px] uppercase font-bold text-[var(--muted-text-color)] tracking-wider">Wallet Balance</p>
@@ -392,7 +392,7 @@ export default function UsersPage() {
                     </div>
                   </div>
 
-                  <div className="rounded-2xl border border-[var(--border-color)]/5 bg-[var(--primary-color)] p-4 flex items-center gap-3">
+                  <div className="rounded-2xl border border-[var(--border-color)]/5 bg-[var(--color-page-background)] p-4 flex items-center gap-3">
                     <Network size={18} className="text-[var(--primary-color)]" />
                     <div>
                       <p className="text-[10px] uppercase font-bold text-[var(--muted-text-color)] tracking-wider">Total Referrals</p>
@@ -400,21 +400,21 @@ export default function UsersPage() {
                     </div>
                   </div>
 
-                  <div className="rounded-2xl border border-[var(--border-color)]/5 bg-[var(--primary-color)] p-4 flex items-center gap-3">
+                  <div className="rounded-2xl border border-[var(--border-color)]/5 bg-[var(--color-page-background)] p-4 flex items-center gap-3">
                     <Package size={18} className="text-[var(--primary-color)]" />
                     <div>
                       <p className="text-[10px] uppercase font-bold text-[var(--muted-text-color)] tracking-wider">Package Activation</p>
-                      <span className={`text-xs font-black px-2 py-0.5 rounded ${user.joinedPackage ? "bg-[var(--success-color)]/20 text-[var(--success-color)]" : "bg-[var(--danger-color)]/20 text-[var(--danger-color)]"}`}>
+                      <span className={`text-xs font-black px-2 py-0.5 rounded ${user.joinedPackage ? "bg-[var(--color-success)]/20 text-[var(--success-color)]" : "bg-[var(--color-danger)]/20 text-[var(--danger-color)]"}`}>
                         {user.joinedPackage ? "ACTIVE" : "INACTIVE"}
                       </span>
                     </div>
                   </div>
 
-                  <div className="rounded-2xl border border-[var(--border-color)]/5 bg-[var(--primary-color)] p-4 flex items-center gap-3">
+                  <div className="rounded-2xl border border-[var(--border-color)]/5 bg-[var(--color-page-background)] p-4 flex items-center gap-3">
                     <UserCheck size={18} className="text-[var(--primary-color)]" />
                     <div>
                       <p className="text-[10px] uppercase font-bold text-[var(--muted-text-color)] tracking-wider">MLM Matrix Status</p>
-                      <span className={`text-xs font-black px-2 py-0.5 rounded ${user.mlmActive ? "bg-[var(--primary-color)]/20 text-[var(--primary-color)]" : "bg-[var(--card-color)]/10 text-[var(--muted-text-color)]"}`}>
+                      <span className={`text-xs font-black px-2 py-0.5 rounded ${user.mlmActive ? "bg-[var(--color-page-background)]/20 text-[var(--primary-color)]" : "bg-[var(--card-color)]/10 text-[var(--muted-text-color)]"}`}>
                         {user.mlmActive ? "MATRIX RUNNING" : "NOT SIGNED"}
                       </span>
                     </div>
@@ -448,8 +448,8 @@ function StatCard({
   color: string;
 }) {
   return (
-    <div className="rounded-[28px] border border-[var(--border-color)]/10 bg-[var(--primary-color)] p-5">
-      <div className={`flex h-12 w-12 items-center justify-center rounded-2xl ${color} text-[var(--text-color)] mb-3`}>
+    <div className="rounded-[28px] border border-[var(--border-color)]/10 bg-[var(--color-page-background)] p-5">
+      <div className={`flex h-12 w-12 items-center justify-center rounded-2xl ${color} text-[var(--text-primary)] mb-3`}>
         {icon}
       </div>
       <p className="text-xs text-[var(--muted-text-color)] font-bold uppercase tracking-wide">{title}</p>
