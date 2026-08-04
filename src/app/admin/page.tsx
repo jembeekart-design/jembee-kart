@@ -129,7 +129,7 @@ export default function AdminHomePage() {
 
             </p>
 
-            <button className="mt-6 flex items-center gap-2 rounded-2xl bg-[var(--card-color)] px-6 py-4 font-bold text-[var(--button-text-color)]">
+            <button className="mt-6 flex items-center gap-2 rounded-2xl bg-[var(--color-card-background)] px-6 py-4 font-bold text-[var(--button-text-color)]">
 
               Open Analytics
 
@@ -141,7 +141,7 @@ export default function AdminHomePage() {
 
           {/* ICON */}
 
-          <div className="flex h-[180px] w-[180px] items-center justify-center rounded-[40px] bg-[var(--card-color)]/10 backdrop-blur-xl">
+          <div className="flex h-[180px] w-[180px] items-center justify-center rounded-[40px] bg-[var(--color-card-background)]/10 backdrop-blur-xl">
 
             <BarChart3 size={90} />
 
@@ -377,13 +377,13 @@ export default function AdminHomePage() {
 
           <div className="flex gap-4">
 
-            <button className="rounded-2xl bg-[var(--card-color)] px-6 py-4 font-bold text-[var(--button-text-color)]">
+            <button className="rounded-2xl bg-[var(--color-card-background)] px-6 py-4 font-bold text-[var(--button-text-color)]">
 
               Open AI Tools
 
             </button>
 
-            <button className="rounded-2xl bg-[var(--card-color)] px-6 py-4 font-bold text-[var(--text-primary)]">
+            <button className="rounded-2xl bg-[var(--color-card-background)] px-6 py-4 font-bold text-[var(--text-primary)]">
 
               Manage Store
 
