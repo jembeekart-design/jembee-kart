@@ -103,13 +103,13 @@ export default function AIProductGeneratorPage() {
 
   return (
 
-    <main className="min-h-screen bg-[var(--primary-color)] p-4 text-[var(--button-text-color)]">
+    <main className="min-h-screen bg-[var(--color-primary-button)] p-4 text-[var(--button-text-color)]">
 
       {/* HEADER */}
 
       <div className="mb-8 flex items-center gap-4">
 
-        <div className="flex h-16 w-16 items-center justify-center rounded-[24px] bg-[var(--secondary-color)]">
+        <div className="flex h-16 w-16 items-center justify-center rounded-[24px] bg-[var(--color-secondary-button)]">
 
           <Sparkles size={30} />
 
@@ -121,7 +121,7 @@ export default function AIProductGeneratorPage() {
             AI Product Generator
           </h1>
 
-          <p className="mt-1 text-sm text-[var(--muted-text-color)]">
+          <p className="mt-1 text-sm text-[var(--text-muted)]">
             Generate product titles & descriptions
           </p>
 
@@ -131,7 +131,7 @@ export default function AIProductGeneratorPage() {
 
       {/* FORM */}
 
-      <div className="rounded-[30px] bg-[var(--primary-color)] p-5">
+      <div className="rounded-[30px] bg-[var(--color-primary-button)] p-5">
 
         <div className="grid grid-cols-1 gap-5 md:grid-cols-2">
 
@@ -177,7 +177,7 @@ export default function AIProductGeneratorPage() {
               )
             }
             placeholder="premium, stylish, modern..."
-            className="h-32 w-full rounded-2xl bg-[var(--card-color)] p-4 outline-none"
+            className="h-32 w-full rounded-2xl bg-[var(--color-card-background)] p-4 outline-none"
           />
 
         </div>
@@ -187,7 +187,7 @@ export default function AIProductGeneratorPage() {
             generateProduct
           }
           disabled={loading}
-          className="mt-6 flex items-center gap-2 rounded-2xl bg-[var(--secondary-color)] px-6 py-4 font-bold text-[var(--text-color)]"
+          className="mt-6 flex items-center gap-2 rounded-2xl bg-[var(--color-secondary-button)] px-6 py-4 font-bold text-[var(--text-primary)]"
         >
 
           <Wand2 size={20} />
@@ -261,13 +261,13 @@ export default function AIProductGeneratorPage() {
 
           <FileText size={28} />
 
-          <h2 className="text-3xl font-black text-[var(--text-color)]">
+          <h2 className="text-3xl font-black text-[var(--text-primary)]">
             AI Preview
           </h2>
 
         </div>
 
-        <div className="mt-6 rounded-2xl bg-[var(--card-color)]/20 p-5">
+        <div className="mt-6 rounded-2xl bg-[var(--color-card-background)]/20 p-5">
 
           <h3 className="text-2xl font-black">
 
@@ -276,7 +276,7 @@ export default function AIProductGeneratorPage() {
 
           </h3>
 
-          <p className="mt-4 text-[var(--text-color)]/80">
+          <p className="mt-4 text-[var(--text-primary)]/80">
 
             {generatedDescription ||
               "Generated description will appear here..."}
@@ -321,7 +321,7 @@ function InputCard({
           )
         }
         placeholder={placeholder}
-        className="w-full rounded-2xl bg-[var(--card-color)] px-5 py-4 outline-none"
+        className="w-full rounded-2xl bg-[var(--color-card-background)] px-5 py-4 outline-none"
       />
 
     </div>
@@ -337,7 +337,7 @@ function OutputCard({
 
   return (
 
-    <div className="rounded-[30px] bg-[var(--primary-color)] p-5">
+    <div className="rounded-[30px] bg-[var(--color-primary-button)] p-5">
 
       <div className="mb-4 flex items-center justify-between">
 
@@ -349,7 +349,7 @@ function OutputCard({
 
         <button
           onClick={onCopy}
-          className="flex items-center gap-2 rounded-2xl bg-[var(--secondary-color)] px-4 py-2 font-bold text-[var(--text-color)]"
+          className="flex items-center gap-2 rounded-2xl bg-[var(--color-secondary-button)] px-4 py-2 font-bold text-[var(--text-primary)]"
         >
 
           <Copy size={18} />
@@ -360,9 +360,9 @@ function OutputCard({
 
       </div>
 
-      <div className="rounded-2xl bg-[var(--card-color)]/30 p-4">
+      <div className="rounded-2xl bg-[var(--color-card-background)]/30 p-4">
 
-        <p className="whitespace-pre-wrap text-[var(--text-color)]">
+        <p className="whitespace-pre-wrap text-[var(--text-primary)]">
 
           {value}
 

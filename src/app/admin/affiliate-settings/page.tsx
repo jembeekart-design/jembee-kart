@@ -138,7 +138,7 @@ export default function AffiliateSettingsPage() {
 
     return (
 
-      <div className="flex min-h-screen items-center justify-center bg-[var(--card-color)] text-[var(--button-text-color)]">
+      <div className="flex min-h-screen items-center justify-center bg-[var(--color-card-background)] text-[var(--button-text-color)]">
 
         Loading...
 
@@ -149,7 +149,7 @@ export default function AffiliateSettingsPage() {
 
   return (
 
-    <main className="min-h-screen bg-[var(--primary-color)] p-4 text-[var(--button-text-color)]">
+    <main className="min-h-screen bg-[var(--color-primary-button)] p-4 text-[var(--button-text-color)]">
 
       {/* HEADER */}
 
@@ -157,7 +157,7 @@ export default function AffiliateSettingsPage() {
 
         <div className="flex items-center gap-4">
 
-          <div className="flex h-16 w-16 items-center justify-center rounded-[24px] bg-[var(--warning-color)]">
+          <div className="flex h-16 w-16 items-center justify-center rounded-[24px] bg-[var(--color-warning)]">
 
             <Users size={30} />
 
@@ -169,7 +169,7 @@ export default function AffiliateSettingsPage() {
               Affiliate Settings
             </h1>
 
-            <p className="mt-1 text-sm text-[var(--muted-text-color)]">
+            <p className="mt-1 text-sm text-[var(--text-muted)]">
               MLM + Referral + Affiliate Control
             </p>
 
@@ -180,7 +180,7 @@ export default function AffiliateSettingsPage() {
         <button
           onClick={saveSettings}
           disabled={saving}
-          className="flex items-center gap-2 rounded-2xl bg-[var(--warning-color)] px-5 py-3 font-bold"
+          className="flex items-center gap-2 rounded-2xl bg-[var(--color-warning)] px-5 py-3 font-bold"
         >
 
           <Save size={18} />
@@ -402,7 +402,7 @@ function InputCard({
 
   return (
 
-    <div className="rounded-[30px] bg-[var(--primary-color)] p-5">
+    <div className="rounded-[30px] bg-[var(--color-primary-button)] p-5">
 
       <div className="mb-4 flex items-center gap-3">
 
@@ -422,7 +422,7 @@ function InputCard({
             e.target.value
           )
         }
-        className="w-full rounded-2xl bg-[var(--card-color)] px-4 py-4 outline-none"
+        className="w-full rounded-2xl bg-[var(--color-card-background)] px-4 py-4 outline-none"
       />
 
     </div>
@@ -446,13 +446,13 @@ function ToggleCard({
 
   return (
 
-    <div className="rounded-[30px] bg-[var(--primary-color)] p-5">
+    <div className="rounded-[30px] bg-[var(--color-primary-button)] p-5">
 
       <div className="flex items-center justify-between">
 
         <div className="flex items-center gap-3">
 
-          <div className="flex h-14 w-14 items-center justify-center rounded-2xl bg-[var(--card-color)]">
+          <div className="flex h-14 w-14 items-center justify-center rounded-2xl bg-[var(--color-card-background)]">
 
             {icon}
 
@@ -464,7 +464,7 @@ function ToggleCard({
               {title}
             </h2>
 
-            <p className="text-sm text-[var(--muted-text-color)]">
+            <p className="text-sm text-[var(--text-muted)]">
               {description}
             </p>
 
@@ -476,8 +476,8 @@ function ToggleCard({
           onClick={onClick}
           className={`rounded-full px-5 py-3 text-sm font-bold ${
             enabled
-              ? "bg-[var(--success-color)]"
-              : "bg-[var(--danger-color)]"
+              ? "bg-[var(--color-success)]"
+              : "bg-[var(--color-danger)]"
           }`}
         >
 
@@ -504,7 +504,7 @@ function StatusCard({
 
   return (
 
-    <div className="rounded-2xl bg-[var(--card-color)]/10 p-4">
+    <div className="rounded-2xl bg-[var(--color-card-background)]/10 p-4">
 
       <p className="text-sm text-[var(--button-text-color)]/70">
         {title}

@@ -53,7 +53,7 @@ export default function AIChatbotPage() {
 
   return (
 
-    <main className="min-h-screen bg-[var(--primary-color)] p-4 text-[var(--button-text-color)]">
+    <main className="min-h-screen bg-[var(--color-primary-button)] p-4 text-[var(--button-text-color)]">
 
       {/* HEADER */}
 
@@ -61,11 +61,11 @@ export default function AIChatbotPage() {
 
         <div className="flex items-center gap-4">
 
-          <div className="flex h-16 w-16 items-center justify-center rounded-[30px] bg-[var(--secondary-color)]">
+          <div className="flex h-16 w-16 items-center justify-center rounded-[30px] bg-[var(--color-secondary-button)]">
 
             <Bot
               size={30}
-              className="text-[var(--text-color)]"
+              className="text-[var(--text-primary)]"
             />
 
           </div>
@@ -94,7 +94,7 @@ export default function AIChatbotPage() {
           }
           className={`rounded-2xl px-6 py-4 font-black ${
             enabled
-              ? "bg-[var(--success-color)] text-[var(--text-color)]"
+              ? "bg-[var(--success-color)] text-[var(--text-primary)]"
               : "bg-[var(--danger-color)] text-[var(--button-text-color)]"
           }`}
         >
@@ -143,7 +143,7 @@ export default function AIChatbotPage() {
 
         {/* CHAT */}
 
-        <div className="rounded-[30px] border border-[var(--border-color)]/10 bg-[var(--primary-color)] p-6 lg:col-span-2">
+        <div className="rounded-[30px] border border-[var(--border-color)]/10 bg-[var(--color-primary-button)] p-6 lg:col-span-2">
 
           <div className="flex items-center gap-3">
 
@@ -169,7 +169,7 @@ export default function AIChatbotPage() {
                   key={index}
                   className={`rounded-2xl p-4 ${
                     item.user === "AI Bot"
-                      ? "bg-[var(--secondary-color)] text-[var(--text-color)]"
+                      ? "bg-[var(--color-secondary-button)] text-[var(--text-primary)]"
                       : "bg-[var(--card-color)]/30"
                   }`}
                 >
@@ -210,12 +210,12 @@ export default function AIChatbotPage() {
             />
 
             <button
-              className="flex h-14 w-14 items-center justify-center rounded-2xl bg-[var(--secondary-color)]"
+              className="flex h-14 w-14 items-center justify-center rounded-2xl bg-[var(--color-secondary-button)]"
             >
 
               <Send
                 size={20}
-                className="text-[var(--text-color)]"
+                className="text-[var(--text-primary)]"
               />
 
             </button>
@@ -228,7 +228,7 @@ export default function AIChatbotPage() {
 
         <div className="space-y-6">
 
-          <div className="rounded-[30px] border border-[var(--border-color)]/10 bg-[var(--primary-color)] p-6">
+          <div className="rounded-[30px] border border-[var(--border-color)]/10 bg-[var(--color-primary-button)] p-6">
 
             <div className="flex items-center gap-3">
 
@@ -264,7 +264,7 @@ export default function AIChatbotPage() {
 
           </div>
 
-          <div className="rounded-[30px] bg-gradient-to-r from-[var(--primary-color)] to-[var(--primary-color)] p-6 text-[var(--text-color)]">
+          <div className="rounded-[30px] bg-gradient-to-r from-[var(--primary-color)] to-[var(--primary-color)] p-6 text-[var(--text-primary)]">
 
             <div className="flex items-center gap-3">
 
@@ -296,7 +296,7 @@ export default function AIChatbotPage() {
       <div className="mt-6 flex flex-wrap gap-4">
 
         <button
-          className="flex items-center gap-2 rounded-2xl bg-[var(--success-color)] px-6 py-4 font-black text-[var(--text-color)]"
+          className="flex items-center gap-2 rounded-2xl bg-[var(--success-color)] px-6 py-4 font-black text-[var(--text-primary)]"
         >
 
           <Save size={20} />
@@ -306,7 +306,7 @@ export default function AIChatbotPage() {
         </button>
 
         <button
-          className="flex items-center gap-2 rounded-2xl bg-[var(--primary-color)] px-6 py-4 font-black text-[var(--text-color)]"
+          className="flex items-center gap-2 rounded-2xl bg-[var(--color-primary-button)] px-6 py-4 font-black text-[var(--text-primary)]"
         >
 
           <Mic size={20} />
@@ -340,13 +340,13 @@ function StatsCard({
 
   return (
 
-    <div className="rounded-[30px] border border-[var(--border-color)]/10 bg-[var(--primary-color)] p-5">
+    <div className="rounded-[30px] border border-[var(--border-color)]/10 bg-[var(--color-primary-button)] p-5">
 
-      <div className="flex h-14 w-14 items-center justify-center rounded-2xl bg-[var(--secondary-color)]">
+      <div className="flex h-14 w-14 items-center justify-center rounded-2xl bg-[var(--color-secondary-button)]">
 
         <Icon
           size={24}
-          className="text-[var(--text-color)]"
+          className="text-[var(--text-primary)]"
         />
 
       </div>

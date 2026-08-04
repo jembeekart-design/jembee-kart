@@ -145,18 +145,18 @@ export default function OrdersPage() {
 
   if (loading) {
     return (
-      <div className="flex min-h-screen items-center justify-center bg-[var(--card-color)] font-black text-sm uppercase tracking-widest text-[var(--primary-color)]">
+      <div className="flex min-h-screen items-center justify-center bg-[var(--color-card-background)] font-black text-sm uppercase tracking-widest text-[var(--color-primary-button)]">
         Syncing Orders Database Stream...
       </div>
     );
   }
 
   return (
-    <main className="min-h-screen bg-[var(--primary-color)] p-4 text-[var(--button-text-color)]">
+    <main className="min-h-screen bg-[var(--color-page-background)] p-4 text-[var(--button-text-color)]">
       {/* HEADER MODULE CONTAINER */}
       <div className="mb-6">
         <h1 className="text-3xl font-black">Orders Manager</h1>
-        <p className="mt-1 text-sm text-[var(--muted-text-color)]">Manage customer orders & MLM structural conversions</p>
+        <p className="mt-1 text-sm text-[var(--text-muted)]">Manage customer orders & MLM structural conversions</p>
       </div>
 
       {/* ORDERS FEED LAYOUT LAYER */}
@@ -165,11 +165,11 @@ export default function OrdersPage() {
           <div
             key={order.id}
             className={`overflow-hidden rounded-[30px] border transition-all ${
-              order.status === "delivered" ? "border-[var(--success-color)]/20 bg-[var(--primary-color)]" : "border-[var(--border-color)]/10 bg-[var(--primary-color)]"
+              order.status === "delivered" ? "border-[var(--color-success)]/20 bg-[var(--color-card-background)]" : "border-[var(--color-border)]/10 bg-[var(--color-card-background)]"
             }`}
           >
             {/* TOP INFRA BANNER */}
-            <div className="flex items-center justify-between border-b border-[var(--border-color)]/10 p-4">
+            <div className="flex items-center justify-between border-b border-[var(--color-border)]/10 p-4">
               <div className="flex items-center gap-3">
                 <img
                   src={order.image || "https://images.unsplash.com/photo-1523275335684-37898b6baf30?w=500"}
@@ -184,7 +184,7 @@ export default function OrdersPage() {
 
               <button
                 onClick={() => deleteOrder(order.id)}
-                className="flex h-10 w-10 items-center justify-center rounded-xl bg-[var(--danger-color)]/10 text-[var(--danger-color)] hover:bg-[var(--danger-color)]/20 transition active:scale-90"
+                className="flex h-10 w-10 items-center justify-center rounded-xl bg-[var(--color-danger)]/10 text-[var(--color-danger)] hover:bg-[var(--color-danger)]/20 transition active:scale-90"
               >
                 <Trash2 size={18} />
               </button>
@@ -192,42 +192,42 @@ export default function OrdersPage() {
 
             {/* DATA LAYOUT PARAMETERS MATRIX */}
             <div className="space-y-4 p-4">
-              <div className="rounded-2xl bg-[var(--primary-color)]/60 p-4 border border-[var(--border-color)]/5">
+              <div className="rounded-2xl bg-[var(--color-page-background)]/60 p-4 border border-[var(--color-border)]/5">
                 <div className="mb-3 flex items-center justify-between">
                   <div className="flex items-center gap-2">
-                    <Package size={16} className="text-[var(--primary-color)]" />
+                    <Package size={16} className="text-[var(--color-primary-button)]" />
                     <p className="text-sm font-bold">Financial Parameters</p>
                   </div>
                   {order.commissionProcessed && (
-                    <span className="flex items-center gap-1 text-[10px] bg-[var(--primary-color)]/20 text-[var(--primary-color)] px-2.5 py-1 rounded-full font-black tracking-wider uppercase">
+                    <span className="flex items-center gap-1 text-[10px] bg-[var(--color-primary-button)]/20 text-[var(--color-primary-button)] px-2.5 py-1 rounded-full font-black tracking-wider uppercase">
                       <ShieldCheck size={12} /> Commission Paid
                     </span>
                   )}
                 </div>
 
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-2 text-sm text-[var(--text-color)]">
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-2 text-sm text-[var(--text-primary)]">
                   <div>
-                    <p><span className="text-[var(--muted-text-color)] font-medium">Order Value:</span> <span className="text-[var(--success-color)] font-bold">₹{order.amount?.toLocaleString("en-IN")}</span></p>
+                    <p><span className="text-[var(--text-muted)] font-medium">Order Value:</span> <span className="text-[var(--color-success)] font-bold">₹{order.amount?.toLocaleString("en-IN")}</span></p>
                     {order.profitAmount !== undefined && (
-                      <p className="mt-1"><span className="text-[var(--muted-text-color)] font-medium">Net Profit Margin:</span> <span className="text-[var(--warning-color)] font-bold">₹{order.profitAmount?.toLocaleString("en-IN")}</span></p>
+                      <p className="mt-1"><span className="text-[var(--text-muted)] font-medium">Net Profit Margin:</span> <span className="text-[var(--color-warning)] font-bold">₹{order.profitAmount?.toLocaleString("en-IN")}</span></p>
                     )}
-                    <p className="mt-1"><span className="text-[var(--muted-text-color)] font-medium">Shipping Address:</span> {order.address || "Digital Delivery Protocol Layer"}</p>
+                    <p className="mt-1"><span className="text-[var(--text-muted)] font-medium">Shipping Address:</span> {order.address || "Digital Delivery Protocol Layer"}</p>
                   </div>
                   <div className="md:text-right flex flex-col justify-end">
-                    <p className="text-xs font-mono text-[var(--muted-text-color)]">Trace ID: {order.userId || "Missing Reference Link"}</p>
-                    <p className="text-xs font-mono text-[var(--muted-text-color)] mt-0.5">Order ID: {order.id}</p>
+                    <p className="text-xs font-mono text-[var(--text-muted)]">Trace ID: {order.userId || "Missing Reference Link"}</p>
+                    <p className="text-xs font-mono text-[var(--text-muted)] mt-0.5">Order ID: {order.id}</p>
                   </div>
                 </div>
               </div>
 
               {/* ACTION TOGGLE MODULE (SECURE INTERACTION INTERFACE SHIELD) */}
               <div>
-                <p className="mb-3 text-xs uppercase font-bold tracking-wider text-[var(--muted-text-color)]">Modify Order Execution State</p>
+                <p className="mb-3 text-xs uppercase font-bold tracking-wider text-[var(--text-muted)]">Modify Order Execution State</p>
                 <div className="grid grid-cols-3 gap-3">
                   <button
                     onClick={() => updateStatus(order.id, "pending")}
                     disabled={order.commissionProcessed || order.status === "delivered"}
-                    className="flex items-center justify-center gap-2 rounded-2xl px-3 py-3 text-sm font-bold transition active:scale-95 disabled:opacity-30 disabled:cursor-not-allowed disabled:hover:bg-[var(--primary-color)] bg-[var(--primary-color)] hover:bg-[var(--primary-color)] text-[var(--muted-text-color)] data-[active=true]:bg-[var(--warning-color)] data-[active=true]:text-[var(--text-color)]"
+                    className="flex items-center justify-center gap-2 rounded-2xl px-3 py-3 text-sm font-bold transition active:scale-95 disabled:opacity-30 disabled:cursor-not-allowed disabled:hover:bg-[var(--color-card-background)] bg-[var(--color-card-background)] hover:bg-[var(--color-card-background)] text-[var(--text-muted)] data-[active=true]:bg-[var(--color-warning)] data-[active=true]:text-[var(--text-primary)]"
                     data-active={order.status === "pending"}
                   >
                     <Clock3 size={16} />
@@ -237,7 +237,7 @@ export default function OrdersPage() {
                   <button
                     onClick={() => updateStatus(order.id, "shipped")}
                     disabled={order.commissionProcessed || order.status === "delivered"}
-                    className="flex items-center justify-center gap-2 rounded-2xl px-3 py-3 text-sm font-bold transition active:scale-95 disabled:opacity-30 disabled:cursor-not-allowed disabled:hover:bg-[var(--primary-color)] bg-[var(--primary-color)] hover:bg-[var(--primary-color)] text-[var(--muted-text-color)] data-[active=true]:theme-primary-bg data-[active=true]:text-[var(--button-text-color)]"
+                    className="flex items-center justify-center gap-2 rounded-2xl px-3 py-3 text-sm font-bold transition active:scale-95 disabled:opacity-30 disabled:cursor-not-allowed disabled:hover:bg-[var(--color-card-background)] bg-[var(--color-card-background)] hover:bg-[var(--color-card-background)] text-[var(--text-muted)] data-[active=true]:theme-primary-bg data-[active=true]:text-[var(--button-text-color)]"
                     data-active={order.status === "shipped"}
                   >
                     <Truck size={16} />
@@ -247,7 +247,7 @@ export default function OrdersPage() {
                   <button
                     onClick={() => updateStatus(order.id, "delivered")}
                     disabled={order.commissionProcessed || order.status === "delivered"}
-                    className="flex items-center justify-center gap-2 rounded-2xl px-3 py-3 text-sm font-bold transition active:scale-95 disabled:opacity-40 disabled:cursor-not-allowed disabled:bg-[var(--primary-color)] disabled:text-[var(--success-color)]/60 bg-[var(--primary-color)] hover:bg-[var(--primary-color)] text-[var(--muted-text-color)] data-[active=true]:bg-[var(--success-color)] data-[active=true]:text-[var(--button-text-color)]"
+                    className="flex items-center justify-center gap-2 rounded-2xl px-3 py-3 text-sm font-bold transition active:scale-95 disabled:opacity-40 disabled:cursor-not-allowed disabled:bg-[var(--color-card-background)] disabled:text-[var(--color-success)]/60 bg-[var(--color-card-background)] hover:bg-[var(--color-card-background)] text-[var(--text-muted)] data-[active=true]:bg-[var(--color-success)] data-[active=true]:text-[var(--button-text-color)]"
                     data-active={order.status === "delivered"}
                   >
                     <CheckCircle2 size={16} />
@@ -261,9 +261,9 @@ export default function OrdersPage() {
 
         {/* Empty State Handling Layout */}
         {orders.length === 0 && (
-          <div className="py-16 text-center rounded-[30px] border border-dashed border-[var(--border-color)]/10 p-6 bg-[var(--primary-color)]">
-            <AlertCircle size={32} className="mx-auto text-[var(--muted-text-color)] mb-3" />
-            <p className="text-sm font-bold text-[var(--muted-text-color)]">No customer orders available inside datastore arrays.</p>
+          <div className="py-16 text-center rounded-[30px] border border-dashed border-[var(--color-border)]/10 p-6 bg-[var(--color-card-background)]">
+            <AlertCircle size={32} className="mx-auto text-[var(--text-muted)] mb-3" />
+            <p className="text-sm font-bold text-[var(--text-muted)]">No customer orders available inside datastore arrays.</p>
           </div>
         )}
       </div>

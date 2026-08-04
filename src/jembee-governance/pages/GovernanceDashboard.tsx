@@ -195,7 +195,7 @@ newCode: issue.newCode,
 
           </h1>
 
-          <p className="text-[var(--muted-text-color)]">
+          <p className="text-[var(--text-muted)]">
 
             Enterprise Governance Monitoring
 
@@ -205,7 +205,7 @@ newCode: issue.newCode,
 
         <div className="text-right">
 
-          <div className="text-sm text-[var(--muted-text-color)]">
+          <div className="text-sm text-[var(--text-muted)]">
 
             Generated
 
