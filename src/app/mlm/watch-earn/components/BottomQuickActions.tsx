@@ -1,10 +1,11 @@
 "use client";
 
 import React from "react";
-import { UploadCloud, Gift, Music } from "lucide-react";
+import { UploadCloud, Gift, Music, Package } from "lucide-react";
 import { useRouter } from "next/navigation";
+import { WatchVideo } from "../services/watchVideos.service";
 
-export default function BottomQuickActions() {
+export default function BottomQuickActions({ video }: { video?: WatchVideo }) {
   const router = useRouter();
 
   return (
@@ -20,14 +21,31 @@ export default function BottomQuickActions() {
         </button>
 
         <button
+          onClick={() => router.push("/mlm/watch-earn/reward-center")}
           className="flex items-center gap-2 rounded-full bg-white/6 px-3 py-2 text-sm font-semibold backdrop-blur-sm"
-          aria-label="Earn more"
+          aria-label="Reward Center"
         >
           <Gift size={14} />
-          <span className="hidden sm:inline">Earn</span>
+          <span className="hidden sm:inline">Rewards</span>
+        </button>
+        
+        <button
+          onClick={() => {
+            if (video?.productId) {
+              router.push(`/product/${video.productId}`);
+            } else {
+              router.push("/");
+            }
+          }}
+          className="flex items-center gap-2 rounded-full bg-white/6 px-3 py-2 text-sm font-semibold backdrop-blur-sm"
+          aria-label="View Product"
+        >
+          <Package size={14} />
+          <span className="hidden sm:inline">Product</span>
         </button>
 
         <button
+          onClick={() => video && router.push(`/mlm/watch-earn/audio/${encodeURIComponent(video.music)}`)}
           className="flex items-center gap-2 rounded-full bg-white/6 px-3 py-2 text-sm font-semibold backdrop-blur-sm"
           aria-label="Use audio"
         >

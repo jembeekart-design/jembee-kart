@@ -27,6 +27,8 @@ video: string;
 
 thumbnail?: string;
 
+productId?: string;
+
 coins: number;
 
 likes: number;
@@ -103,6 +105,9 @@ snapshot.forEach(
 
       thumbnail:  
         data.thumbnail || "",  
+
+      productId:
+        data.productId || "",
 
       coins:  
         data.coins || 0,  

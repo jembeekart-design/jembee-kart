@@ -19,6 +19,7 @@ import CommentDrawer
 from "./CommentDrawer";
 
 import Toast from "./Toast";
+import BottomQuickActions from "./BottomQuickActions";
 import { getWatchVideos, WatchVideo } from "../services/watchVideos.service";
 import { DEFAULT_BUSINESS_RULES } from "@/firestore/businessRules/defaults";
 
@@ -340,6 +341,8 @@ VerticalVideoFeed() {
       
       {/* Toast */}
       <Toast message={toastMessage} onClose={() => setToastMessage(null)} />
+      
+      <BottomQuickActions video={videos.find(v => v.id === activeVideoId)} />
 
     </main>
   );
