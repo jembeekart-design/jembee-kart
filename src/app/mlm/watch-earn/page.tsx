@@ -11,7 +11,6 @@ export default function WatchEarnPage() {
     <main className="relative h-screen w-full overflow-hidden bg-black text-white">
       <ProductionHeader />
       <FullscreenVideoFeed />
-      <BottomQuickActions />
     </main>
   );
 }
