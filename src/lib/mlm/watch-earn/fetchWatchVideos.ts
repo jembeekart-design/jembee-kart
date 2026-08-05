@@ -37,6 +37,8 @@ comments: number;
 
 shares: number;
 
+views: number;
+
 sponsor?: boolean;
 
 createdAt?: number;
@@ -120,6 +122,9 @@ snapshot.forEach(
 
       shares:  
         data.shares || 0,  
+
+      views:  
+        data.views || 0,
 
       sponsor:  
         data.sponsor || false,  
