@@ -18,6 +18,7 @@ interface VideoCardProps {
     shares: number;
     music: string;
     hashtags?: string[];
+    originalVideoId?: string;
   };
   isMuted: boolean;
   toggleMute: () => void;
@@ -120,6 +121,17 @@ export default function VideoCard({
         <div className="mt-3 flex items-center gap-2 bg-black/20 backdrop-blur-md px-3 py-1 rounded-full w-fit">
           <Music2 size={12} />
           <span className="text-xs">{video.music}</span>
+        </div>
+        
+        {video.originalVideoId && (
+          <a href={`/mlm/watch-earn/original/${video.originalVideoId}`} className="text-xs font-bold text-pink-500 pointer-events-auto">
+            Created from Original
+          </a>
+        )}
+        
+        {/* Product Strip */}
+        <div className="mt-3 w-full bg-white/10 p-2 rounded-lg pointer-events-auto">
+           <p className="text-xs">Product Strip (Slideable)</p>
         </div>
 
         {/* Reward Progress Countdown */}

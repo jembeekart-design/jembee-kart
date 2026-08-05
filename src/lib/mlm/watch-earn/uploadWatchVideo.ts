@@ -22,6 +22,10 @@ interface UploadWatchVideoData {
   music: string;
 
   sponsor?: boolean;
+
+  originalVideoId?: string;
+
+  originalAudioId?: string;
 }
 
 export async function
@@ -39,7 +43,11 @@ uploadWatchVideo({
 
   music,
 
-  sponsor
+  sponsor,
+
+  originalVideoId,
+
+  originalAudioId
 
 }: UploadWatchVideoData) {
 
@@ -250,6 +258,10 @@ uploadWatchVideo({
 
           music:
             musicId,
+
+          originalVideoId: originalVideoId || null,
+
+          originalAudioId: originalAudioId || null,
 
           verified:
             false,
