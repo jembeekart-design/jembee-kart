@@ -45,9 +45,16 @@ export default function BottomQuickActions({ video }: { video?: WatchVideo }) {
         </button>
 
         <button
-          onClick={() => video && router.push(`/mlm/watch-earn/audio/${encodeURIComponent(video.music)}`)}
-          className="flex items-center gap-2 rounded-full bg-white/6 px-3 py-2 text-sm font-semibold backdrop-blur-sm"
-          aria-label="Use audio"
+          onClick={() => {
+            if (video?.music) {
+              router.push(`/mlm/watch-earn/audio/${encodeURIComponent(video.music)}`);
+            }
+          }}
+          className={`flex items-center gap-2 rounded-full bg-white/6 px-3 py-2 text-sm font-semibold backdrop-blur-sm ${
+            !video?.music ? "opacity-50 cursor-not-allowed" : ""
+          }`}
+          aria-label={video?.music ? "Use audio" : "No audio available"}
+          disabled={!video?.music}
         >
           <Music size={14} />
           <span className="hidden sm:inline">Audio</span>
