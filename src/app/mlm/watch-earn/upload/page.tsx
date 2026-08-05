@@ -1,11 +1,11 @@
 "use client";
 
 import {
-  useState
+  useState,
+  useEffect
 } from "react";
-
+import { useSearchParams } from "next/navigation";
 import { auth } from "@/firebase/config";
-
 import {
   Upload,
   Loader2,
@@ -13,40 +13,22 @@ import {
   BadgeCheck,
   ShieldCheck
 } from "lucide-react";
-
 import {
   uploadWatchVideo
 } from "@/lib/mlm/watch-earn/uploadWatchVideo";
 
 export default function
 UploadWatchVideoPage() {
-
-  const [
-    file,
-    setFile
-  ] = useState<File | null>(
-    null
-  );
-
-  const [
-    loading,
-    setLoading
-  ] = useState(false);
-
-  const [
-    caption,
-    setCaption
-  ] = useState("");
-
-  const [
-    hashtags,
-    setHashtags
-  ] = useState("");
-
-  const [
-    music,
-    setMusic
-  ] = useState("");
+  const searchParams = useSearchParams();
+  const initialMusic = searchParams.get('audio') || "";
+  
+  const [file, setFile] = useState<File | null>(null);
+  const [loading, setLoading] = useState(false);
+  const [caption, setCaption] = useState("");
+  const [hashtags, setHashtags] = useState("");
+  const [music, setMusic] = useState(initialMusic);
+  
+  // ... (rest of component)
 
   async function
   handleUpload() {
