@@ -39,6 +39,10 @@ shares: number;
 
 views: number;
 
+originalVideoId?: string;
+
+originalAudioId?: string;
+
 sponsor?: boolean;
 
 createdAt?: number;
@@ -125,6 +129,12 @@ snapshot.forEach(
 
       views:  
         data.views || 0,
+
+      originalVideoId:
+        data.originalVideoId || undefined,
+
+      originalAudioId:
+        data.originalAudioId || undefined,
 
       sponsor:  
         data.sponsor || false,  
