@@ -45,7 +45,7 @@ export default function AudioPage() {
       <div className="flex items-center gap-4 p-4 bg-white/10 rounded-xl mb-4">
         {firstVideo?.thumbnail && <img src={firstVideo.thumbnail} alt={audioId} className="w-16 h-16 rounded-lg object-cover" />}
         <div>
-          <h1 className="text-xl font-bold">{audioId}</h1>
+          <h1 className="text-xl font-bold">{audioId.startsWith('original-') ? 'Original Audio' : audioId}</h1>
           <p className="text-sm text-gray-400">Popular Creator: {firstVideo?.username || "Unknown"}</p>
         </div>
       </div>
