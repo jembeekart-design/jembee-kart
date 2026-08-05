@@ -209,6 +209,8 @@ uploadWatchVideo({
     const videoUrl =
       cloudinaryData.secure_url;
 
+    const musicId = music || `original-${cloudinaryData.public_id}`;
+
     const thumbnailUrl =
       cloudinaryData.secure_url
 
@@ -247,7 +249,7 @@ uploadWatchVideo({
             hashtags || [],
 
           music:
-            music || "",
+            musicId,
 
           verified:
             false,

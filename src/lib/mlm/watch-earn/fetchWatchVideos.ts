@@ -27,6 +27,8 @@ video: string;
 
 thumbnail?: string;
 
+productId?: string;
+
 coins: number;
 
 likes: number;
@@ -34,6 +36,8 @@ likes: number;
 comments: number;
 
 shares: number;
+
+views: number;
 
 sponsor?: boolean;
 
@@ -104,6 +108,9 @@ snapshot.forEach(
       thumbnail:  
         data.thumbnail || "",  
 
+      productId:
+        data.productId || "",
+
       coins:  
         data.coins || 0,  
 
@@ -115,6 +122,9 @@ snapshot.forEach(
 
       shares:  
         data.shares || 0,  
+
+      views:  
+        data.views || 0,
 
       sponsor:  
         data.sponsor || false,  
