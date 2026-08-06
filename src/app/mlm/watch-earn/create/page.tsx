@@ -30,6 +30,8 @@ export default function CreateStudioPage() {
   const recordedChunksRef = useRef<Blob[]>([]);
   const streamRef = useRef<MediaStream | null>(null);
   const audioContextRef = useRef<AudioContext | null>(null);
+  const sourceRef = useRef<MediaElementAudioSourceNode | null>(null);
+  const destinationRef = useRef<MediaStreamAudioDestinationNode | null>(null);
   
   const [isPlaying, setIsPlaying] = useState(false);
   const [isRecording, setIsRecording] = useState(false);
@@ -64,7 +66,11 @@ export default function CreateStudioPage() {
     const unsubscribe = onSnapshot(collection(db, "products"), (snapshot) => {
       setProducts(snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() } as Product)));
     });
-    return () => unsubscribe();
+    return () => {
+      unsubscribe();
+      // Cleanup audio nodes on unmount
+      audioContextRef.current?.close();
+    };
   }, []);
 
   const startRecording = useCallback(async () => {
@@ -72,37 +78,44 @@ export default function CreateStudioPage() {
     
     recordedChunksRef.current = [];
     
-    // Ensure original video is unmuted so it's captured and audible
-    videoRef.current.muted = false;
-    videoRef.current.volume = 1;
-    
-    // Setup AudioContext
-    const audioContext = new (window.AudioContext || (window as any).webkitAudioContext)();
-    audioContextRef.current = audioContext;
-    
-    let audioTrack: MediaStreamTrack | undefined;
-    
-    try {
-      // Create MediaElementSource(videoRef.current)
-      const videoSource = audioContext.createMediaElementSource(videoRef.current);
-      const destination = audioContext.createMediaStreamDestination();
+    // Initialize AudioContext nodes if not already created
+    if (!audioContextRef.current) {
+      audioContextRef.current = new (window.AudioContext || (window as any).webkitAudioContext)();
+      sourceRef.current = audioContextRef.current.createMediaElementSource(videoRef.current);
+      destinationRef.current = audioContextRef.current.createMediaStreamDestination();
       
       // Connect to BOTH: speaker (destination) and recorder (destination)
-      videoSource.connect(audioContext.destination);
-      videoSource.connect(destination);
-      
-      audioTrack = destination.stream.getAudioTracks()[0];
-    } catch (e) {
-      console.warn("Could not capture original video audio (likely CORS restriction):", e);
+      sourceRef.current.connect(audioContextRef.current.destination);
+      sourceRef.current.connect(destinationRef.current);
     }
+    
+    await audioContextRef.current.resume();
+    
+    // Ensure original video is unmuted and playing
+    videoRef.current.muted = false;
+    videoRef.current.volume = 1;
+    await videoRef.current.play();
+    
+    // Verify state after attempting to start
+    if (audioContextRef.current.state !== 'running' || videoRef.current.muted || videoRef.current.paused) {
+      console.warn("Audio/Video state needs restoration");
+      if (audioContextRef.current.state !== 'running') await audioContextRef.current.resume();
+      videoRef.current.muted = false;
+      videoRef.current.volume = 1;
+      await videoRef.current.play();
+    }
+    
+    // Debug Logs
+    console.debug("AudioContext state:", audioContextRef.current.state);
+    console.debug("video.muted:", videoRef.current.muted);
+    console.debug("video.paused:", videoRef.current.paused);
+    console.debug("destination audio tracks:", destinationRef.current?.stream.getAudioTracks());
     
     const videoTrack = streamRef.current.getVideoTracks()[0];
+    const audioTrack = destinationRef.current!.stream.getAudioTracks()[0];
     
-    // Create MediaRecorder stream using camera video track + original video audio track (if available)
-    const tracks = [videoTrack];
-    if (audioTrack) {
-      tracks.push(audioTrack);
-    }
+    // Create MediaRecorder stream using camera video track + original video audio track
+    const tracks = [videoTrack, audioTrack];
     
     const mixedStream = new MediaStream(tracks);
     
@@ -117,12 +130,9 @@ export default function CreateStudioPage() {
       setRecordedBlob(blob);
       setPreviewUrl(URL.createObjectURL(blob));
       recordedChunksRef.current = [];
-      
-      // Cleanup
-      audioContextRef.current?.close();
-      audioContextRef.current = null;
     };
     
+    console.debug("MediaRecorder started");
     mediaRecorderRef.current = mediaRecorder;
     mediaRecorderRef.current.start();
     setIsRecording(true);
