@@ -28,6 +28,8 @@ export default function CreateStudioPage() {
   const cameraRef = useRef<HTMLVideoElement>(null);
   const mediaRecorderRef = useRef<MediaRecorder | null>(null);
   const recordedChunksRef = useRef<Blob[]>([]);
+  const streamRef = useRef<MediaStream | null>(null);
+  const audioContextRef = useRef<AudioContext | null>(null);
   
   const [isPlaying, setIsPlaying] = useState(false);
   const [isRecording, setIsRecording] = useState(false);
@@ -51,21 +53,7 @@ export default function CreateStudioPage() {
       try {
         const stream = await navigator.mediaDevices.getUserMedia({ video: true, audio: true });
         if (cameraRef.current) cameraRef.current.srcObject = stream;
-        
-        // Initialize MediaRecorder
-        const mediaRecorder = new MediaRecorder(stream, { mimeType: 'video/webm' });
-        mediaRecorder.ondataavailable = (event) => {
-          if (event.data.size > 0) {
-            recordedChunksRef.current.push(event.data);
-          }
-        };
-        mediaRecorder.onstop = () => {
-          const blob = new Blob(recordedChunksRef.current, { type: 'video/webm' });
-          setRecordedBlob(blob);
-          setPreviewUrl(URL.createObjectURL(blob));
-          recordedChunksRef.current = [];
-        };
-        mediaRecorderRef.current = mediaRecorder;
+        streamRef.current = stream;
       } catch (err) {
         console.error("Camera access failed", err);
       }
@@ -78,9 +66,47 @@ export default function CreateStudioPage() {
     return () => unsubscribe();
   }, []);
 
-  const startRecording = useCallback(() => {
+  const startRecording = useCallback(async () => {
+    if (!streamRef.current || !videoRef.current) return;
+    
     recordedChunksRef.current = [];
-    mediaRecorderRef.current?.start();
+    
+    // Setup AudioContext for mixing
+    const audioContext = new (window.AudioContext || (window as any).webkitAudioContext)();
+    audioContextRef.current = audioContext;
+    
+    const micSource = audioContext.createMediaStreamSource(streamRef.current);
+    const videoSource = audioContext.createMediaElementSource(videoRef.current);
+    
+    const destination = audioContext.createMediaStreamDestination();
+    
+    micSource.connect(destination);
+    videoSource.connect(destination);
+    
+    const videoTrack = streamRef.current.getVideoTracks()[0];
+    const audioTrack = destination.stream.getAudioTracks()[0];
+    
+    const mixedStream = new MediaStream([videoTrack, audioTrack]);
+    
+    const mediaRecorder = new MediaRecorder(mixedStream, { mimeType: 'video/webm' });
+    mediaRecorder.ondataavailable = (event) => {
+      if (event.data.size > 0) {
+        recordedChunksRef.current.push(event.data);
+      }
+    };
+    mediaRecorder.onstop = () => {
+      const blob = new Blob(recordedChunksRef.current, { type: 'video/webm' });
+      setRecordedBlob(blob);
+      setPreviewUrl(URL.createObjectURL(blob));
+      recordedChunksRef.current = [];
+      
+      // Cleanup
+      audioContextRef.current?.close();
+      audioContextRef.current = null;
+    };
+    
+    mediaRecorderRef.current = mediaRecorder;
+    mediaRecorderRef.current.start();
     setIsRecording(true);
     setTimer(0);
     setRecordedBlob(null);
