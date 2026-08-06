@@ -2,6 +2,7 @@ import { NextResponse } from 'next/server';
 import { spawn } from 'child_process';
 import fs from 'fs/promises';
 import path from 'path';
+import os from 'os';
 import { uploadToCloudinary } from '@/lib/cloudinary';
 import { adminDb } from '@/firebase/admin';
 
@@ -17,7 +18,7 @@ const runFFmpeg = (args: string[]): Promise<void> => {
 };
 
 export async function POST(req: Request) {
-  const tempDir = await fs.mkdtemp(path.join('/tmp', 'merge-'));
+  const tempDir = await fs.mkdtemp(path.join(os.tmpdir(), 'merge-'));
   
   try {
     const formData = await req.formData();
@@ -45,6 +46,7 @@ export async function POST(req: Request) {
           '-i', recordedPath,
           '-i', originalPath,
           '-map', '0:v:0',
+          '-map', '0:a:0',
           '-map', '1:a:0',
           '-c:v', 'copy',
           '-c:a', 'aac',
@@ -76,6 +78,9 @@ export async function POST(req: Request) {
   } catch (error) {
     console.error('Merge API Error:', error);
     await fs.rm(tempDir, { recursive: true, force: true });
-    return NextResponse.json({ success: false, message: 'Merge failed' }, { status: 500 });
+    return NextResponse.json(
+      { success: false, error: (error as Error).message },
+      { status: 500 }
+    );
   }
 }
