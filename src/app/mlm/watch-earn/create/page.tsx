@@ -131,8 +131,6 @@ export default function CreateStudioPage() {
     mediaRecorderRef.current.start();
     setIsRecording(true);
     setTimer(0);
-    setRecordedBlob(null);
-    setPreviewUrl(null);
   }, [videoUrl]);
 
   const stopRecording = useCallback(() => {
