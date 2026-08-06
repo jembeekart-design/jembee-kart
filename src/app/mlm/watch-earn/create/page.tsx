@@ -135,8 +135,16 @@ export default function CreateStudioPage() {
         <button onClick={() => router.back()}><X /></button>
         <div className="font-bold">Create with Original</div>
         <button 
-          disabled={!recordedBlob}
-          className={`px-4 py-2 rounded-full font-bold text-sm ${recordedBlob ? 'bg-pink-600' : 'bg-gray-600'}`}
+          onClick={() => {
+            if (previewUrl) {
+              console.log("Next clicked, navigating to upload", previewUrl);
+              router.push(`/mlm/watch-earn/upload?url=${encodeURIComponent(previewUrl)}`);
+            } else {
+              console.warn("Next clicked but no preview URL");
+            }
+          }}
+          disabled={!previewUrl}
+          className={`px-4 py-2 rounded-full font-bold text-sm ${previewUrl ? 'bg-pink-600' : 'bg-gray-600'}`}
         >
           Next
         </button>
