@@ -42,8 +42,7 @@ export default function CommentDrawer({ open, onClose, videoId, onCommentAdded }
         videoId, 
         auth.currentUser.uid, 
         auth.currentUser.displayName || "User", 
-        commentText, 
-        commentModeration
+        commentText
       );
 
       // Notify parent to update its local aggregated comment count

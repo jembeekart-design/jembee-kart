@@ -10,6 +10,10 @@ interface ReportVideoCommentData {
   userId: string;
 
   commentId: string;
+  
+  videoId: string;
+  
+  commentText: string;
 
   reason: string;
 }
@@ -33,6 +37,12 @@ reportVideoComment(
 
         commentId:
           data.commentId,
+          
+        videoId:
+          data.videoId,
+          
+        commentText:
+          data.commentText,
 
         reason:
           data.reason,

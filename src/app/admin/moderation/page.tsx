@@ -1,15 +1,16 @@
 'use client';
 
 import React, { useState, useEffect } from 'react';
-import { ModerationSettings, RegexRule, CommentAuditLog } from '@/types/moderation';
+import { ModerationSettings, RegexRule, CommentAuditLog, ReviewQueueItem } from '@/types/moderation';
 import { getModerationSettings, updateModerationSettings, getRegexRules } from '@/services/moderationService';
-import { collection, getDocs, query, orderBy, limit } from 'firebase/firestore';
+import { collection, getDocs, query, orderBy, limit, where, updateDoc, doc } from 'firebase/firestore';
 import { db } from '@/firebase/config';
 
 export default function AdminModerationDashboard() {
   const [settings, setSettings] = useState<ModerationSettings | null>(null);
   const [regexRules, setRegexRules] = useState<RegexRule[]>([]);
   const [auditLogs, setAuditLogs] = useState<CommentAuditLog[]>([]);
+  const [pendingReports, setPendingReports] = useState<ReviewQueueItem[]>([]);
   const [newBlockedWord, setNewBlockedWord] = useState('');
   const [newAllowedWord, setNewAllowedWord] = useState('');
   const [adminId] = useState('admin_system_user'); // Authenticated admin placeholder
@@ -22,7 +23,22 @@ export default function AdminModerationDashboard() {
     
     getDocs(query(collection(db, 'commentAuditLogs'), orderBy('timestamp', 'desc'), limit(15)))
       .then(snap => setAuditLogs(snap.docs.map(d => ({ id: d.id, ...d.data() } as CommentAuditLog))));
+    
+    getDocs(query(collection(db, 'videoCommentReports'), where('status', '==', 'pending')))
+      .then(snap => setPendingReports(snap.docs.map(d => ({ id: d.id, ...d.data() } as ReviewQueueItem))));
   }, []);
+
+  const handleReviewAction = async (reportId: string, action: 'approved' | 'rejected') => {
+    try {
+      await updateDoc(doc(db, 'videoCommentReports', reportId), { status: action });
+      setPendingReports(prev => prev.filter(p => p.id !== reportId));
+      setMessage(`Report ${action} successfully!`);
+      setTimeout(() => setMessage(''), 3000);
+    } catch (err) {
+      console.error(err);
+      setMessage('Failed to update report.');
+    }
+  };
 
   if (!settings) return <div className="p-8 text-white">Loading Enterprise Moderation Panel...</div>;
 
@@ -52,6 +68,45 @@ export default function AdminModerationDashboard() {
         {message && <span className="text-green-400 font-medium animate-pulse">{message}</span>}
         {saving && <span className="text-blue-400">Saving changes...</span>}
       </div>
+
+      {/* Pending Reports Queue */}
+      <div className="bg-gray-800 p-6 rounded-lg space-y-4">
+        <h2 className="text-lg font-semibold text-yellow-400">Pending Review Queue ({pendingReports.length})</h2>
+        <div className="overflow-x-auto">
+          <table className="w-full text-left text-sm text-gray-300">
+            <thead className="bg-gray-700 uppercase text-xs text-gray-400">
+              <tr>
+                <th className="p-3">Comment Text</th>
+                <th className="p-3">Reason</th>
+                <th className="p-3">Actions</th>
+              </tr>
+            </thead>
+            <tbody>
+              {pendingReports.map((report) => (
+                <tr key={report.id} className="border-b border-gray-700">
+                  <td className="p-3 italic">{report.commentText}</td>
+                  <td className="p-3">{report.reason}</td>
+                  <td className="p-3 flex gap-2">
+                    <button 
+                      onClick={() => handleReviewAction(report.id, 'approved')}
+                      className="bg-green-600 hover:bg-green-700 px-3 py-1 rounded text-white"
+                    >
+                      Approve
+                    </button>
+                    <button 
+                      onClick={() => handleReviewAction(report.id, 'rejected')}
+                      className="bg-red-600 hover:bg-red-700 px-3 py-1 rounded text-white"
+                    >
+                      Reject
+                    </button>
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+      </div>
+
 
       {/* Global Toggles */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6 bg-gray-800 p-6 rounded-lg">
