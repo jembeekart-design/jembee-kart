@@ -29,38 +29,43 @@ export async function POST(req: Request) {
       return NextResponse.json({ success: false, message: 'Invalid input' }, { status: 400 });
     }
 
-    const recordedPath = path.join(tempDir, 'recorded.mp4');
-    const originalPath = path.join(tempDir, 'original.mp4');
-    const outputPath = path.join(tempDir, 'output.mp4');
+    let uploadFile = file;
 
-    // 1. Save recorded camera video
-    await fs.writeFile(recordedPath, Buffer.from(await file.arrayBuffer()));
+    // Try merging with FFmpeg if available
+    try {
+        const recordedPath = path.join(tempDir, 'recorded.mp4');
+        const originalPath = path.join(tempDir, 'original.mp4');
+        const outputPath = path.join(tempDir, 'output.mp4');
 
-    // 2. Download original video (simplified - assume it's publicly accessible)
-    const resp = await fetch(originalVideoUrl);
-    await fs.writeFile(originalPath, Buffer.from(await resp.arrayBuffer()));
+        await fs.writeFile(recordedPath, Buffer.from(await file.arrayBuffer()));
+        const resp = await fetch(originalVideoUrl);
+        await fs.writeFile(originalPath, Buffer.from(await resp.arrayBuffer()));
 
-    // 3. Merge with FFmpeg
-    await runFFmpeg([
-      '-i', recordedPath,
-      '-i', originalPath,
-      '-map', '0:v:0',
-      '-map', '1:a:0',
-      '-c:v', 'copy',
-      '-c:a', 'aac',
-      '-shortest',
-      outputPath
-    ]);
+        await runFFmpeg([
+          '-i', recordedPath,
+          '-i', originalPath,
+          '-map', '0:v:0',
+          '-map', '1:a:0',
+          '-c:v', 'copy',
+          '-c:a', 'aac',
+          '-shortest',
+          outputPath
+        ]);
+        
+        const mergedBuffer = await fs.readFile(outputPath);
+        uploadFile = new File([mergedBuffer], 'merged.mp4', { type: 'video/mp4' });
+    } catch (ffmpegError) {
+        console.error('FFmpeg merge failed (falling back to raw upload):', ffmpegError);
+        // Fallback: use raw camera recording
+    }
 
-    // 4. Upload merged video
-    const mergedBuffer = await fs.readFile(outputPath);
-    const mergedFile = new File([mergedBuffer], 'merged.mp4', { type: 'video/mp4' });
-    const cloudinaryResponse = await uploadToCloudinary(mergedFile, 'video');
+    // Upload to Cloudinary
+    const cloudinaryResponse = await uploadToCloudinary(uploadFile, 'video');
 
-    // 5. Cleanup
+    // Cleanup
     await fs.rm(tempDir, { recursive: true, force: true });
 
-    // 6. Save to Firestore (using Admin SDK syntax)
+    // Save to Firestore
     await adminDb.collection('watchEarnVideos').add({
       userId,
       video: cloudinaryResponse.secure_url,
