@@ -93,22 +93,34 @@ export default function CreateStudioPage() {
       }
     };
     mediaRecorder.onstop = async () => {
+      console.log("DEBUG: mediaRecorder.onstop triggered");
       const blob = new Blob(recordedChunksRef.current, { type: 'video/webm' });
+      console.log("DEBUG: Blob created, size:", blob.size);
       const file = new File([blob], 'recording.webm', { type: 'video/webm' });
       
       // Submit to Backend Merge API
       const formData = new FormData();
       formData.append('file', file);
-      formData.append('userId', 'user-id-placeholder'); // Should be dynamic
+      formData.append('userId', 'user-id-placeholder');
       formData.append('originalVideoUrl', videoUrl || "");
       
-      const response = await fetch('/api/mlm/merge', { method: 'POST', body: formData });
-      const result = await response.json();
-      
-      if (result.success) {
-        setPreviewUrl(result.videoUrl);
-      } else {
-        alert("Merge failed");
+      console.log("DEBUG: Sending request to /api/mlm/merge");
+      try {
+        const response = await fetch('/api/mlm/merge', { method: 'POST', body: formData });
+        console.log("DEBUG: Response status:", response.status);
+        const result = await response.json();
+        console.log("DEBUG: Response result:", result);
+        
+        if (result.success) {
+          console.log("DEBUG: Setting previewUrl:", result.videoUrl);
+          setPreviewUrl(result.videoUrl);
+        } else {
+          console.error("DEBUG: Merge failed:", result);
+          alert("Merge failed: " + JSON.stringify(result));
+        }
+      } catch (error) {
+        console.error("DEBUG: Exception in onstop:", error);
+        alert("Exception in onstop: " + error);
       }
       
       recordedChunksRef.current = [];
@@ -136,11 +148,12 @@ export default function CreateStudioPage() {
         <div className="font-bold">Create with Original</div>
         <button 
           onClick={() => {
+            console.log("DEBUG: Next button clicked");
             if (previewUrl) {
-              console.log("Next clicked, navigating to upload", previewUrl);
+              console.log("DEBUG: Navigating to:", `/mlm/watch-earn/upload?url=${encodeURIComponent(previewUrl)}`);
               router.push(`/mlm/watch-earn/upload?url=${encodeURIComponent(previewUrl)}`);
             } else {
-              console.warn("Next clicked but no preview URL");
+              console.warn("DEBUG: Next button clicked but previewUrl is null. State:", { previewUrl, recordedBlob });
             }
           }}
           disabled={!previewUrl}
