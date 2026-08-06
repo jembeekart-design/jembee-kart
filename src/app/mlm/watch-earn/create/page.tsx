@@ -74,72 +74,64 @@ export default function CreateStudioPage() {
   }, []);
 
   const startRecording = useCallback(async () => {
-    if (!streamRef.current || !videoRef.current) return;
+    if (!streamRef.current) return;
     
     recordedChunksRef.current = [];
     
-    // Initialize AudioContext nodes if not already created
-    if (!audioContextRef.current) {
-      audioContextRef.current = new (window.AudioContext || (window as any).webkitAudioContext)();
-      sourceRef.current = audioContextRef.current.createMediaElementSource(videoRef.current);
-      destinationRef.current = audioContextRef.current.createMediaStreamDestination();
-      
-      // Connect to BOTH: speaker (destination) and recorder (destination)
-      sourceRef.current.connect(audioContextRef.current.destination);
-      sourceRef.current.connect(destinationRef.current);
+    // Ensure original video is playing for the creator to hear, but NOT capturing its audio
+    if (videoRef.current) {
+        videoRef.current.muted = false;
+        videoRef.current.volume = 1;
+        await videoRef.current.play();
     }
     
-    await audioContextRef.current.resume();
-    
-    // Ensure original video is unmuted and playing
-    videoRef.current.muted = false;
-    videoRef.current.volume = 1;
-    await videoRef.current.play();
-    
-    // Verify state after attempting to start
-    if (audioContextRef.current.state !== 'running' || videoRef.current.muted || videoRef.current.paused) {
-      console.warn("Audio/Video state needs restoration");
-      if (audioContextRef.current.state !== 'running') await audioContextRef.current.resume();
-      videoRef.current.muted = false;
-      videoRef.current.volume = 1;
-      await videoRef.current.play();
-    }
-    
-    // Debug Logs
-    console.debug("AudioContext state:", audioContextRef.current.state);
-    console.debug("video.muted:", videoRef.current.muted);
-    console.debug("video.paused:", videoRef.current.paused);
-    console.debug("destination audio tracks:", destinationRef.current?.stream.getAudioTracks());
-    
-    const videoTrack = streamRef.current.getVideoTracks()[0];
-    const audioTrack = destinationRef.current!.stream.getAudioTracks()[0];
-    
-    // Create MediaRecorder stream using camera video track + original video audio track
-    const tracks = [videoTrack, audioTrack];
-    
-    const mixedStream = new MediaStream(tracks);
-    
-    const mediaRecorder = new MediaRecorder(mixedStream, { mimeType: 'video/webm' });
+    // Create MediaRecorder stream using ONLY camera video track
+    const mediaRecorder = new MediaRecorder(streamRef.current, { mimeType: 'video/webm' });
     mediaRecorder.ondataavailable = (event) => {
       if (event.data.size > 0) {
         recordedChunksRef.current.push(event.data);
       }
     };
-    mediaRecorder.onstop = () => {
+    mediaRecorder.onstop = async () => {
+      console.log("DEBUG: mediaRecorder.onstop triggered");
       const blob = new Blob(recordedChunksRef.current, { type: 'video/webm' });
-      setRecordedBlob(blob);
-      setPreviewUrl(URL.createObjectURL(blob));
+      console.log("DEBUG: Blob created, size:", blob.size);
+      const file = new File([blob], 'recording.webm', { type: 'video/webm' });
+      
+      // Submit to Backend Merge API
+      const formData = new FormData();
+      formData.append('file', file);
+      formData.append('userId', 'user-id-placeholder');
+      formData.append('originalVideoUrl', videoUrl || "");
+      
+      console.log("DEBUG: Sending request to /api/mlm/merge");
+      try {
+        const response = await fetch('/api/mlm/merge', { method: 'POST', body: formData });
+        console.log("DEBUG: Response status:", response.status);
+        const result = await response.json();
+        console.log("DEBUG: Response result:", result);
+        
+        if (result.success) {
+          console.log("DEBUG: Setting previewUrl:", result.videoUrl);
+          setPreviewUrl(result.videoUrl);
+        } else {
+          console.error("DEBUG: Merge failed:", result);
+          alert("Merge failed: " + JSON.stringify(result));
+        }
+      } catch (error) {
+        console.error("DEBUG: Exception in onstop:", error);
+        alert("Exception in onstop: " + error);
+      }
+      
       recordedChunksRef.current = [];
     };
     
-    console.debug("MediaRecorder started");
+    console.debug("MediaRecorder started (camera only)");
     mediaRecorderRef.current = mediaRecorder;
     mediaRecorderRef.current.start();
     setIsRecording(true);
     setTimer(0);
-    setRecordedBlob(null);
-    setPreviewUrl(null);
-  }, []);
+  }, [videoUrl]);
 
   const stopRecording = useCallback(() => {
     mediaRecorderRef.current?.stop();
@@ -153,8 +145,17 @@ export default function CreateStudioPage() {
         <button onClick={() => router.back()}><X /></button>
         <div className="font-bold">Create with Original</div>
         <button 
-          disabled={!recordedBlob}
-          className={`px-4 py-2 rounded-full font-bold text-sm ${recordedBlob ? 'bg-pink-600' : 'bg-gray-600'}`}
+          onClick={() => {
+            console.log("DEBUG: Next button clicked");
+            if (previewUrl) {
+              console.log("DEBUG: Navigating to:", `/mlm/watch-earn/upload?url=${encodeURIComponent(previewUrl)}`);
+              router.push(`/mlm/watch-earn/upload?url=${encodeURIComponent(previewUrl)}`);
+            } else {
+              console.warn("DEBUG: Next button clicked but previewUrl is null. State:", { previewUrl, recordedBlob });
+            }
+          }}
+          disabled={!previewUrl}
+          className={`px-4 py-2 rounded-full font-bold text-sm ${previewUrl ? 'bg-pink-600' : 'bg-gray-600'}`}
         >
           Next
         </button>
