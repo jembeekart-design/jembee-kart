@@ -17,6 +17,8 @@ interface VideoInfoProps {
 
   verified?: boolean;
 
+  originalVideoId?: string;
+
 }
 
 export default function
@@ -25,7 +27,8 @@ VideoInfo({
   caption,
   hashtags,
   music,
-  verified
+  verified,
+  originalVideoId
 }: VideoInfoProps) {
 
   return (
@@ -51,6 +54,11 @@ VideoInfo({
           </div>
 
           <span className="text-xs text-[var(--text-primary)]/80 truncate max-w-[40vw]">{music}</span>
+          {originalVideoId && (
+            <a href={`/mlm/watch-earn/original/${originalVideoId}`} className="text-xs font-bold text-pink-500 pointer-events-auto">
+              Created from Original
+            </a>
+          )}
         </div>
       </div>
 

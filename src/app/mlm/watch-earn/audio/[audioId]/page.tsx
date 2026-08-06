@@ -58,7 +58,7 @@ export default function AudioPage() {
       </div>
 
       <button 
-        onClick={() => router.push(`/mlm/watch-earn/upload?audio=${encodeURIComponent(audioId)}`)}
+        onClick={() => router.push(`/mlm/watch-earn/create?audio=${encodeURIComponent(audioId)}&url=${encodeURIComponent(firstVideo?.video || "")}`)}
         className="w-full py-3 bg-pink-600 rounded-lg font-bold mb-6"
       >
         Use this Audio
