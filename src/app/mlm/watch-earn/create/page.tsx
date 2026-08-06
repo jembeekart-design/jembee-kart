@@ -53,8 +53,8 @@ export default function CreateStudioPage() {
   useEffect(() => {
     async function startCamera() {
       try {
-        // Request camera only
-        const stream = await navigator.mediaDevices.getUserMedia({ video: true, audio: false });
+        // Request camera and microphone
+        const stream = await navigator.mediaDevices.getUserMedia({ video: true, audio: true });
         if (cameraRef.current) cameraRef.current.srcObject = stream;
         streamRef.current = stream;
       } catch (err) {
@@ -85,7 +85,7 @@ export default function CreateStudioPage() {
         await videoRef.current.play();
     }
     
-    // Create MediaRecorder stream using ONLY camera video track
+    // Create MediaRecorder stream using camera and microphone
     const mediaRecorder = new MediaRecorder(streamRef.current, { mimeType: 'video/webm' });
     mediaRecorder.ondataavailable = (event) => {
       if (event.data.size > 0) {
@@ -95,6 +95,7 @@ export default function CreateStudioPage() {
     mediaRecorder.onstop = async () => {
       console.log("DEBUG: mediaRecorder.onstop triggered");
       const blob = new Blob(recordedChunksRef.current, { type: 'video/webm' });
+      setPreviewUrl(URL.createObjectURL(blob));
       console.log("DEBUG: Blob created, size:", blob.size);
       const file = new File([blob], 'recording.webm', { type: 'video/webm' });
       
