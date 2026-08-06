@@ -51,7 +51,8 @@ export default function CreateStudioPage() {
   useEffect(() => {
     async function startCamera() {
       try {
-        const stream = await navigator.mediaDevices.getUserMedia({ video: true, audio: true });
+        // Request camera only
+        const stream = await navigator.mediaDevices.getUserMedia({ video: true, audio: false });
         if (cameraRef.current) cameraRef.current.srcObject = stream;
         streamRef.current = stream;
       } catch (err) {
@@ -71,22 +72,39 @@ export default function CreateStudioPage() {
     
     recordedChunksRef.current = [];
     
-    // Setup AudioContext for mixing
+    // Ensure original video is unmuted so it's captured and audible
+    videoRef.current.muted = false;
+    videoRef.current.volume = 1;
+    
+    // Setup AudioContext
     const audioContext = new (window.AudioContext || (window as any).webkitAudioContext)();
     audioContextRef.current = audioContext;
     
-    const micSource = audioContext.createMediaStreamSource(streamRef.current);
-    const videoSource = audioContext.createMediaElementSource(videoRef.current);
+    let audioTrack: MediaStreamTrack | undefined;
     
-    const destination = audioContext.createMediaStreamDestination();
-    
-    micSource.connect(destination);
-    videoSource.connect(destination);
+    try {
+      // Create MediaElementSource(videoRef.current)
+      const videoSource = audioContext.createMediaElementSource(videoRef.current);
+      const destination = audioContext.createMediaStreamDestination();
+      
+      // Connect to BOTH: speaker (destination) and recorder (destination)
+      videoSource.connect(audioContext.destination);
+      videoSource.connect(destination);
+      
+      audioTrack = destination.stream.getAudioTracks()[0];
+    } catch (e) {
+      console.warn("Could not capture original video audio (likely CORS restriction):", e);
+    }
     
     const videoTrack = streamRef.current.getVideoTracks()[0];
-    const audioTrack = destination.stream.getAudioTracks()[0];
     
-    const mixedStream = new MediaStream([videoTrack, audioTrack]);
+    // Create MediaRecorder stream using camera video track + original video audio track (if available)
+    const tracks = [videoTrack];
+    if (audioTrack) {
+      tracks.push(audioTrack);
+    }
+    
+    const mixedStream = new MediaStream(tracks);
     
     const mediaRecorder = new MediaRecorder(mixedStream, { mimeType: 'video/webm' });
     mediaRecorder.ondataavailable = (event) => {
