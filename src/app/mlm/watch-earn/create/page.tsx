@@ -27,7 +27,6 @@ export default function CreateStudioPage() {
   const videoRef = useRef<HTMLVideoElement>(null);
   const cameraRef = useRef<HTMLVideoElement>(null);
   const mediaRecorderRef = useRef<MediaRecorder | null>(null);
-  const audioContextRef = useRef<AudioContext | null>(null);
   const recordedChunksRef = useRef<Blob[]>([]);
   const streamRef = useRef<MediaStream | null>(null);
   
@@ -58,23 +57,15 @@ export default function CreateStudioPage() {
   useEffect(() => {
     async function startCamera() {
       try {
-        // Request camera and audio
+        // Request camera only
         const stream = await navigator.mediaDevices.getUserMedia({ 
           video: true, 
-          audio: {
-            echoCancellation: true,
-            noiseSuppression: true,
-            autoGainControl: true
-          }
+          audio: false
         });
         if (cameraRef.current) cameraRef.current.srcObject = stream;
         streamRef.current = stream;
         console.log("DIAGNOSTIC: Audio tracks:", stream.getAudioTracks().length);
         console.log("DIAGNOSTIC: Video tracks:", stream.getVideoTracks().length);
-        stream.getAudioTracks().forEach(track => {
-            console.log("DIAGNOSTIC: Audio track enabled:", track.enabled);
-            console.log("DIAGNOSTIC: Audio track readyState:", track.readyState);
-        });
       } catch (err) {
         console.error("Camera access failed", err);
       }
@@ -94,28 +85,6 @@ export default function CreateStudioPage() {
   const startRecording = useCallback(async () => {
     if (!streamRef.current || !videoRef.current) return;
 
-    // --- Audio Mixing with Web Audio API ---
-    const AudioContext = (window.AudioContext || (window as any).webkitAudioContext);
-    const audioContext = new AudioContext();
-    audioContextRef.current = audioContext;
-
-    // Original video audio source
-    const videoSource = audioContext.createMediaElementSource(videoRef.current);
-    
-    // Microphone stream source
-    const micSource = audioContext.createMediaStreamSource(streamRef.current);
-    
-    // Destination for mixed audio
-    const destination = audioContext.createMediaStreamDestination();
-    
-    videoSource.connect(destination);
-    micSource.connect(destination);
-    
-    const videoTracks = streamRef.current.getVideoTracks();
-    const combinedStream = new MediaStream([ ...videoTracks, ...destination.stream.getAudioTracks() ]);
-    
-    // --- End of Audio Mixing ---
-
     recordedChunksRef.current = [];
 
     // Ensure original video is playing for the creator to hear
@@ -129,11 +98,10 @@ export default function CreateStudioPage() {
       }
     }
 
-    // Create MediaRecorder stream
+    // Create MediaRecorder stream with video only
     try {
-      const mediaRecorder = new MediaRecorder(combinedStream, { mimeType: 'video/webm' });
+      const mediaRecorder = new MediaRecorder(streamRef.current, { mimeType: 'video/webm' });
       
-      console.log("DIAGNOSTIC: recorder.stream.getAudioTracks().length:", mediaRecorder.stream.getAudioTracks().length);
       console.log("DIAGNOSTIC: MediaRecorder mimeType:", mediaRecorder.mimeType);
 
       mediaRecorder.ondataavailable = (event) => {
@@ -165,12 +133,6 @@ export default function CreateStudioPage() {
   const stopRecording = useCallback(() => {
     mediaRecorderRef.current?.stop();
     setIsRecording(false);
-    
-    // Close AudioContext
-    if (audioContextRef.current) {
-      audioContextRef.current.close();
-      audioContextRef.current = null;
-    }
   }, []);
 
   return (
