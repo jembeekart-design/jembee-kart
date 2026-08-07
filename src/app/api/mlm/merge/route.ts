@@ -9,11 +9,26 @@ import { adminDb } from '@/firebase/admin';
 // Helper to execute ffmpeg
 const runFFmpeg = (args: string[]): Promise<void> => {
   return new Promise((resolve, reject) => {
+    console.log("Executing FFmpeg with args:", args);
     const process = spawn('ffmpeg', args);
+    let stderr = '';
+    process.stderr.on('data', (data) => stderr += data);
     process.on('close', (code) => {
+      console.log("FFmpeg finished with code:", code);
+      console.log("FFmpeg stderr:", stderr);
       if (code === 0) resolve();
       else reject(new Error(`FFmpeg failed with code ${code}`));
     });
+  });
+};
+
+// Helper for diagnostics
+const getStreamInfo = async (filePath: string): Promise<string> => {
+  return new Promise((resolve) => {
+    const proc = spawn('ffmpeg', ['-i', filePath]);
+    let output = '';
+    proc.stderr.on('data', (data) => output += data);
+    proc.on('close', () => resolve(output));
   });
 };
 
@@ -41,18 +56,38 @@ export async function POST(req: Request) {
         await fs.writeFile(recordedPath, Buffer.from(await file.arrayBuffer()));
         const resp = await fetch(originalVideoUrl);
         await fs.writeFile(originalPath, Buffer.from(await resp.arrayBuffer()));
+        
+        const recordedInfo = await getStreamInfo(recordedPath);
+        const originalInfo = await getStreamInfo(originalPath);
+        
+        const audioRegex = /Stream\s+#\d+:\d+(?:\(.*\))?:\s+Audio:/;
+        const hasRecordedAudio = audioRegex.test(recordedInfo);
+        const hasOriginalAudio = audioRegex.test(originalInfo);
 
-        await runFFmpeg([
-          '-i', recordedPath,
-          '-i', originalPath,
-          '-map', '0:v:0',
-          '-map', '0:a:0',
-          '-map', '1:a:0',
-          '-c:v', 'copy',
+        const ffmpegArgs = ['-i', recordedPath, '-i', originalPath];
+
+        if (hasRecordedAudio && hasOriginalAudio) {
+          ffmpegArgs.push(
+            '-filter_complex', '[0:a][1:a]amix=inputs=2:duration=first[aout]',
+            '-map', '0:v:0',
+            '-map', '[aout]'
+          );
+        } else if (hasOriginalAudio) {
+          ffmpegArgs.push('-map', '0:v:0', '-map', '1:a:0');
+        } else if (hasRecordedAudio) {
+          ffmpegArgs.push('-map', '0:v:0', '-map', '0:a:0');
+        } else {
+          ffmpegArgs.push('-map', '0:v:0');
+        }
+
+        ffmpegArgs.push(
+          '-c:v', 'libx264',
           '-c:a', 'aac',
           '-shortest',
           outputPath
-        ]);
+        );
+
+        await runFFmpeg(ffmpegArgs);
         
         const mergedBuffer = await fs.readFile(outputPath);
         uploadFile = new File([mergedBuffer], 'merged.mp4', { type: 'video/mp4' });
