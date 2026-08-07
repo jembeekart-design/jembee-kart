@@ -104,7 +104,6 @@ export default function CreateStudioPage() {
       const formData = new FormData();
       formData.append('file', file);
       formData.append('userId', 'user-id-placeholder');
-      formData.append('originalVideoUrl', videoUrl || "");
       
       try {
         const response = await fetch('/api/mlm/merge', { method: 'POST', body: formData });
