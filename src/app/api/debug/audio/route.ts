@@ -3,13 +3,10 @@ import { spawn, ChildProcessWithoutNullStreams } from 'child_process';
 import fs from 'fs/promises';
 import path from 'path';
 import os from 'os';
-import ffmpegPath from "ffmpeg-static";
-import ffprobe from "ffprobe-static";
+import { getFFmpegPath, getFFprobePath } from '@/lib/ffmpeg-utils';
 
-if (!ffmpegPath) {
-    throw new Error("ffmpegPath is null");
-}
-const ffprobePath = ffprobe.path;
+const ffmpegPath = getFFmpegPath();
+const ffprobePath = getFFprobePath();
 
 const runFFmpeg = (args: string[]): Promise<{stderr: string, code: number | null}> => {
     return new Promise((resolve, reject) => {

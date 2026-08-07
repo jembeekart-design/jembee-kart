@@ -5,13 +5,10 @@ import path from 'path';
 import os from 'os';
 import { uploadToCloudinary } from '@/lib/cloudinary';
 import { adminDb } from '@/firebase/admin';
-import ffmpegPath from "ffmpeg-static";
-import ffprobe from "ffprobe-static";
+import { getFFmpegPath, getFFprobePath } from '@/lib/ffmpeg-utils';
 
-if (!ffmpegPath) {
-    throw new Error("ffmpegPath is null");
-}
-const ffprobePath = ffprobe.path;
+const ffmpegPath = getFFmpegPath();
+const ffprobePath = getFFprobePath();
 
 const withInstrumentedTimeout = async <T>(promise: Promise<T>, stepName: string, ms = 30000): Promise<T> => {
     const start = Date.now();
