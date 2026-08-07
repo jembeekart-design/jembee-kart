@@ -32,6 +32,7 @@ export default function CreateStudioPage() {
   
   const [isPlaying, setIsPlaying] = useState(false);
   const [isRecording, setIsRecording] = useState(false);
+  const [isMuted, setIsMuted] = useState(true);
   const [products, setProducts] = useState<Product[]>([]);
   const [timer, setTimer] = useState(0);
   const [recordedBlob, setRecordedBlob] = useState<Blob | null>(null);
@@ -48,10 +49,16 @@ export default function CreateStudioPage() {
   }, [isRecording]);
 
   useEffect(() => {
+    if (videoRef.current) {
+        videoRef.current.muted = isMuted;
+    }
+  }, [isMuted]);
+
+  useEffect(() => {
     async function startCamera() {
       try {
-        // Request camera only, no audio
-        const stream = await navigator.mediaDevices.getUserMedia({ video: true, audio: false });
+        // Request camera and audio
+        const stream = await navigator.mediaDevices.getUserMedia({ video: true, audio: true });
         if (cameraRef.current) cameraRef.current.srcObject = stream;
         streamRef.current = stream;
       } catch (err) {
@@ -77,12 +84,12 @@ export default function CreateStudioPage() {
     
     // Ensure original video is playing for the creator to hear
     if (videoRef.current) {
-        videoRef.current.muted = false;
+        videoRef.current.muted = isMuted;
         videoRef.current.volume = 1;
         await videoRef.current.play();
     }
     
-    // Create MediaRecorder stream using camera only
+    // Create MediaRecorder stream
     const mediaRecorder = new MediaRecorder(streamRef.current, { mimeType: 'video/webm' });
     mediaRecorder.ondataavailable = (event) => {
       if (event.data.size > 0) {
@@ -91,37 +98,10 @@ export default function CreateStudioPage() {
     };
     mediaRecorder.onstop = async () => {
       console.log("DIAGNOSTIC: MediaRecorder stopped.");
-      console.log("DIAGNOSTIC: MediaRecorder mimeType:", mediaRecorder.mimeType);
-      console.log("DIAGNOSTIC: MediaRecorder state:", mediaRecorder.state);
       
       const blob = new Blob(recordedChunksRef.current, { type: 'video/webm' });
-      console.log("DIAGNOSTIC: Blob size:", blob.size);
-      
+      setRecordedBlob(blob);
       setPreviewUrl(URL.createObjectURL(blob));
-      const file = new File([blob], 'recording.webm', { type: 'video/webm' });
-      
-      // Submit to Backend Merge API
-      const formData = new FormData();
-      formData.append('file', file);
-      formData.append('userId', 'user-id-placeholder');
-      
-      try {
-        const response = await fetch('/api/mlm/merge', { method: 'POST', body: formData });
-        if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
-        
-        const result = await response.json();
-        
-        if (result.success) {
-          console.log("DIAGNOSTIC: Cloudinary upload URL:", result.videoUrl);
-          setPreviewUrl(result.videoUrl);
-        } else {
-          console.error("Merge failed:", result);
-          alert("Merge failed: " + result.error);
-        }
-      } catch (error) {
-        console.error("Exception in onstop:", error);
-        alert("Exception in onstop: " + error);
-      }
       
       recordedChunksRef.current = [];
     };
@@ -130,7 +110,7 @@ export default function CreateStudioPage() {
     mediaRecorderRef.current.start();
     setIsRecording(true);
     setTimer(0);
-  }, [videoUrl]);
+  }, [videoUrl, isMuted]);
 
   const stopRecording = useCallback(() => {
     mediaRecorderRef.current?.stop();
@@ -145,12 +125,8 @@ export default function CreateStudioPage() {
         <div className="font-bold">Create with Original</div>
         <button 
           onClick={() => {
-            console.log("DEBUG: Next button clicked");
             if (previewUrl) {
-              console.log("DEBUG: Navigating to:", `/mlm/watch-earn/upload?url=${encodeURIComponent(previewUrl)}`);
               router.push(`/mlm/watch-earn/upload?url=${encodeURIComponent(previewUrl)}`);
-            } else {
-              console.warn("DEBUG: Next button clicked but previewUrl is null. State:", { previewUrl, recordedBlob });
             }
           }}
           disabled={!previewUrl}
@@ -170,6 +146,9 @@ export default function CreateStudioPage() {
           )}
           {!previewUrl && (
             <div className="absolute bottom-2 left-2 flex gap-1">
+               <button onClick={() => setIsMuted(!isMuted)} className="bg-black/50 p-2 rounded-full">
+                 {isMuted ? <MicOff size={16} /> : <Mic size={16} />}
+               </button>
                <button onClick={() => videoRef.current?.play()} className="bg-black/50 p-1 rounded-full"><Play size={16} /></button>
                <button onClick={() => videoRef.current?.pause()} className="bg-black/50 p-1 rounded-full"><Pause size={16} /></button>
             </div>
