@@ -16,7 +16,7 @@ const nextConfig: NextConfig = {
   ],
 
   outputFileTracingIncludes: {
-    "/*": [
+    "/api/mlm/merge": [
       "./node_modules/ffmpeg-static/**",
       "./node_modules/ffprobe-static/**",
     ],
