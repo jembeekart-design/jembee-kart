@@ -14,6 +14,15 @@ export default function AudioPage() {
   const [videos, setVideos] = useState<WatchVideo[]>([]);
   const [loading, setLoading] = useState(true);
 
+  // TEMPORARILY DISABLED
+  // Future Feature: Use This Audio
+  const [showToast, setShowToast] = useState(false);
+
+  const handleDisabledClick = () => {
+    setShowToast(true);
+    setTimeout(() => setShowToast(false), 3000);
+  };
+
   useEffect(() => {
     async function fetchVideosByAudio() {
       const q = query(collection(db, "watchEarnVideos"), where("music", "==", audioId));
@@ -57,12 +66,18 @@ export default function AudioPage() {
         <div className="text-center text-sm"><Heart className="mx-auto mb-1" size={20}/> {totalLikes} Likes</div>
       </div>
 
-      <button 
-        onClick={() => router.push(`/mlm/watch-earn/create?audio=${encodeURIComponent(audioId)}&url=${encodeURIComponent(firstVideo?.video || "")}`)}
-        className="w-full py-3 bg-pink-600 rounded-lg font-bold mb-6"
+      <button
+        onClick={handleDisabledClick}
+        className="w-full py-3 bg-gray-600 opacity-70 cursor-not-allowed rounded-lg font-bold mb-6"
       >
-        Use this Audio
+        Use This Audio (Coming Soon)
       </button>
+
+      {showToast && (
+        <div className="fixed bottom-10 left-4 right-4 bg-white text-black p-4 rounded-lg text-center font-bold z-50">
+          This feature is coming soon.
+        </div>
+      )}
 
       {/* Videos List */}
       <h2 className="text-lg font-bold mb-4">Videos using this audio</h2>
