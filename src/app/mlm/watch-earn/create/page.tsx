@@ -58,9 +58,22 @@ export default function CreateStudioPage() {
     async function startCamera() {
       try {
         // Request camera and audio
-        const stream = await navigator.mediaDevices.getUserMedia({ video: true, audio: true });
+        const stream = await navigator.mediaDevices.getUserMedia({ 
+          video: true, 
+          audio: {
+            echoCancellation: true,
+            noiseSuppression: true,
+            autoGainControl: true
+          }
+        });
         if (cameraRef.current) cameraRef.current.srcObject = stream;
         streamRef.current = stream;
+        console.log("DIAGNOSTIC: Audio tracks:", stream.getAudioTracks().length);
+        console.log("DIAGNOSTIC: Video tracks:", stream.getVideoTracks().length);
+        stream.getAudioTracks().forEach(track => {
+            console.log("DIAGNOSTIC: Audio track enabled:", track.enabled);
+            console.log("DIAGNOSTIC: Audio track readyState:", track.readyState);
+        });
       } catch (err) {
         console.error("Camera access failed", err);
       }
@@ -80,6 +93,15 @@ export default function CreateStudioPage() {
   const startRecording = useCallback(async () => {
     if (!streamRef.current) return;
     
+    console.log("DIAGNOSTIC: Starting recording. Audio tracks:", streamRef.current.getAudioTracks().length);
+    streamRef.current.getAudioTracks().forEach(track => {
+        console.log("DIAGNOSTIC: Audio track enabled:", track.enabled);
+    });
+
+    const videoTracks = streamRef.current.getVideoTracks();
+    const audioTracks = streamRef.current.getAudioTracks();
+    const combinedStream = new MediaStream([...videoTracks, ...audioTracks]);
+
     recordedChunksRef.current = [];
     
     // Ensure original video is playing for the creator to hear
@@ -90,7 +112,7 @@ export default function CreateStudioPage() {
     }
     
     // Create MediaRecorder stream
-    const mediaRecorder = new MediaRecorder(streamRef.current, { mimeType: 'video/webm' });
+    const mediaRecorder = new MediaRecorder(combinedStream, { mimeType: 'video/webm' });
     mediaRecorder.ondataavailable = (event) => {
       if (event.data.size > 0) {
         recordedChunksRef.current.push(event.data);
