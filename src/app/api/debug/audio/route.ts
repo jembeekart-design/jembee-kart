@@ -5,12 +5,41 @@ import path from 'path';
 import os from 'os';
 
 const runFFmpeg = (args: string[]): Promise<{stderr: string, code: number | null}> => {
-    return new Promise((resolve) => {
+    return new Promise((resolve, reject) => {
+        const timeout = setTimeout(() => {
+            reject(new Error('FFmpeg process timed out after 60 seconds'));
+        }, 60000);
+
         const process = spawn('ffmpeg', args);
         let stderr = '';
         process.stderr.on('data', (data) => stderr += data);
-        process.on('close', (code) => resolve({stderr, code}));
+        process.on('close', (code) => {
+            clearTimeout(timeout);
+            resolve({stderr, code});
+        });
+        process.on('error', (err) => {
+            clearTimeout(timeout);
+            reject(err);
+        });
     });
+};
+
+const withTimeout = async <T>(promise: Promise<T>, stepName: string, ms = 30000): Promise<T> => {
+    let timeoutHandle: NodeJS.Timeout;
+    const timeoutPromise = new Promise<never>((_, reject) => {
+        timeoutHandle = setTimeout(() => {
+            reject(new Error(`Step "${stepName}" timed out after ${ms}ms`));
+        }, ms);
+    });
+
+    console.log(`[${new Date().toISOString()}] Starting step: ${stepName}`);
+    try {
+        const result = await Promise.race([promise, timeoutPromise]);
+        console.log(`[${new Date().toISOString()}] Finished step: ${stepName}`);
+        return result;
+    } finally {
+        clearTimeout(timeoutHandle!);
+    }
 };
 
 const getStreamInfo = async (filePath: string): Promise<string> => {
@@ -39,10 +68,10 @@ export async function POST(req: Request) {
         const originalPath = path.join(tempDir, 'original.mp4');
         const outputPath = path.join(tempDir, 'output.mp4');
 
-        await fs.writeFile(recordedPath, Buffer.from(await recordedFile.arrayBuffer()));
+        await withTimeout(fs.writeFile(recordedPath, Buffer.from(await recordedFile.arrayBuffer())), 'fs.writeFile(recorded)');
         
-        const resp = await fetch(originalUrl);
-        await fs.writeFile(originalPath, Buffer.from(await resp.arrayBuffer()));
+        const resp = await withTimeout(fetch(originalUrl), 'fetch(originalVideoUrl)');
+        await withTimeout(fs.writeFile(originalPath, Buffer.from(await resp.arrayBuffer())), 'fs.writeFile(original)');
         
         const hasRecordedAudio = await hasAudio(recordedPath);
         const hasOriginalAudio = await hasAudio(originalPath);
@@ -59,17 +88,17 @@ export async function POST(req: Request) {
         }
         ffmpegArgs.push('-c:v', 'libx264', '-c:a', 'aac', '-shortest', outputPath);
 
-        const {code, stderr} = await runFFmpeg(ffmpegArgs);
+        const {code, stderr} = await withTimeout(runFFmpeg(ffmpegArgs), 'runFFmpeg', 60000);
         
         const outputHasAudio = await hasAudio(outputPath);
-        const outputInfo = await getStreamInfo(outputPath);
+        const outputInfo = await withTimeout(getStreamInfo(outputPath), 'getStreamInfo(output)');
 
         return NextResponse.json({
             command: 'ffmpeg ' + ffmpegArgs.join(' '),
             stderr,
             exitCode: code,
-            infoRecorded: await getStreamInfo(recordedPath),
-            infoOriginal: await getStreamInfo(originalPath),
+            infoRecorded: await withTimeout(getStreamInfo(recordedPath), 'getStreamInfo(recorded)'),
+            infoOriginal: await withTimeout(getStreamInfo(originalPath), 'getStreamInfo(original)'),
             infoOutput: outputInfo,
             hasRecordedAudio,
             hasOriginalAudio,
