@@ -100,7 +100,16 @@ export default function CreateStudioPage() {
 
     const videoTracks = streamRef.current.getVideoTracks();
     const audioTracks = streamRef.current.getAudioTracks();
-    const combinedStream = new MediaStream([...videoTracks, ...audioTracks]);
+    
+    // Capture audio from original video
+    let videoAudioTracks: MediaStreamTrack[] = [];
+    if (videoRef.current) {
+        // We use captureStream() to get the stream from the video element
+        const videoStream = (videoRef.current as any).captureStream();
+        videoAudioTracks = videoStream.getAudioTracks();
+    }
+    
+    const combinedStream = new MediaStream([...videoTracks, ...audioTracks, ...videoAudioTracks]);
 
     recordedChunksRef.current = [];
     
