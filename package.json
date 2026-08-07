@@ -7,7 +7,7 @@
     "governance": "dotenv -e .env.local -- tsx src/jembee-governance/index.ts",
     "governance:check": "dotenv -e .env.local -- tsx src/jembee-governance/index.ts",
     "theme:codemod": "tsx src/scripts/theme-codemod.ts",
-    "build": "npm run governance && next build",
+    "build": "npm run governance && next build --webpack",
     "start": "next start",
     "lint": "eslint",
     "scan:hardcoded": "tsx src/scripts/hardcodedScanner.ts",
@@ -15,6 +15,8 @@
   },
   "dependencies": {
     "clsx": "^2.1.1",
+    "ffmpeg-static": "^5.3.0",
+    "ffprobe-static": "^3.1.0",
     "firebase": "^12.13.0",
     "firebase-admin": "^13.4.0",
     "framer-motion": "^12.40.0",
@@ -29,9 +31,7 @@
     "swiper": "^12.1.4",
     "tailwind-merge": "^3.6.0",
     "ts-morph": "^28.0.0",
-    "zustand": "^5.0.14",
-    "ffmpeg-static": "^5.2.0",
-    "ffprobe-static": "^3.1.0"
+    "zustand": "^5.0.14"
   },
   "devDependencies": {
     "@tailwindcss/postcss": "^4",
