@@ -5,6 +5,13 @@ import path from 'path';
 import os from 'os';
 import { uploadToCloudinary } from '@/lib/cloudinary';
 import { adminDb } from '@/firebase/admin';
+import ffmpegPath from "ffmpeg-static";
+import ffprobe from "ffprobe-static";
+
+if (!ffmpegPath) {
+    throw new Error("ffmpegPath is null");
+}
+const ffprobePath = ffprobe.path;
 
 const withInstrumentedTimeout = async <T>(promise: Promise<T>, stepName: string, ms = 30000): Promise<T> => {
     const start = Date.now();
@@ -33,7 +40,7 @@ const withInstrumentedTimeout = async <T>(promise: Promise<T>, stepName: string,
 // Helper to get stream info
 const getStreamInfo = async (filePath: string): Promise<string> => {
     return new Promise((resolve) => {
-        const proc = spawn('ffmpeg', ['-i', filePath]);
+        const proc = spawn(ffmpegPath, ['-i', filePath]);
         let output = '';
         proc.stderr.on('data', (data) => output += data);
         proc.on('close', () => resolve(output));
@@ -43,7 +50,7 @@ const getStreamInfo = async (filePath: string): Promise<string> => {
 // Helper to execute ffmpeg
 const runFFmpeg = (args: string[]): Promise<{stderr: string, code: number | null}> => {
   return new Promise((resolve, reject) => {
-    const process = spawn('ffmpeg', args);
+    const process = spawn(ffmpegPath, args);
     let stderr = '';
     process.stderr.on('data', (data) => stderr += data);
     process.on('close', (code) => {

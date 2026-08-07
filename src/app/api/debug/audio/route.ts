@@ -3,10 +3,17 @@ import { spawn } from 'child_process';
 import fs from 'fs/promises';
 import path from 'path';
 import os from 'os';
+import ffmpegPath from "ffmpeg-static";
+import ffprobe from "ffprobe-static";
+
+if (!ffmpegPath) {
+    throw new Error("ffmpegPath is null");
+}
+const ffprobePath = ffprobe.path;
 
 const runFFmpeg = (args: string[]): Promise<{stderr: string, code: number | null}> => {
     return new Promise((resolve, reject) => {
-        const process = spawn('ffmpeg', args);
+        const process = spawn(ffmpegPath, args);
         let stderr = '';
         process.stderr.on('data', (data) => stderr += data);
         process.on('close', (code) => {
@@ -44,7 +51,7 @@ const withInstrumentedTimeout = async <T>(promise: Promise<T>, stepName: string,
 
 const getStreamInfo = async (filePath: string): Promise<string> => {
     return new Promise((resolve) => {
-        const proc = spawn('ffmpeg', ['-i', filePath]);
+        const proc = spawn(ffmpegPath, ['-i', filePath]);
         let output = '';
         proc.stderr.on('data', (data) => output += data);
         proc.on('close', () => resolve(output));
