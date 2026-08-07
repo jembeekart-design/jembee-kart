@@ -1,5 +1,5 @@
 import { NextResponse } from 'next/server';
-import { spawn } from 'child_process';
+import { spawn, ChildProcessWithoutNullStreams } from 'child_process';
 import fs from 'fs/promises';
 import path from 'path';
 import os from 'os';
@@ -13,13 +13,13 @@ const ffprobePath = ffprobe.path;
 
 const runFFmpeg = (args: string[]): Promise<{stderr: string, code: number | null}> => {
     return new Promise((resolve, reject) => {
-        const process = spawn(ffmpegPath, args);
+        const process: ChildProcessWithoutNullStreams = spawn(ffmpegPath!, args);
         let stderr = '';
-        process.stderr.on('data', (data) => stderr += data);
-        process.on('close', (code) => {
+        process.stderr.on('data', (data: Buffer) => stderr += data.toString());
+        process.on('close', (code: number) => {
             resolve({stderr, code});
         });
-        process.on('error', (err) => {
+        process.on('error', (err: Error) => {
             reject(err);
         });
     });
@@ -51,9 +51,9 @@ const withInstrumentedTimeout = async <T>(promise: Promise<T>, stepName: string,
 
 const getStreamInfo = async (filePath: string): Promise<string> => {
     return new Promise((resolve) => {
-        const proc = spawn(ffmpegPath, ['-i', filePath]);
+        const proc: ChildProcessWithoutNullStreams = spawn(ffmpegPath!, ['-i', filePath]);
         let output = '';
-        proc.stderr.on('data', (data) => output += data);
+        proc.stderr.on('data', (data: Buffer) => output += data.toString());
         proc.on('close', () => resolve(output));
     });
 };
