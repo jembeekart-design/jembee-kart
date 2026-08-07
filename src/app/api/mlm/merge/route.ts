@@ -6,29 +6,28 @@ import os from 'os';
 import { uploadToCloudinary } from '@/lib/cloudinary';
 import { adminDb } from '@/firebase/admin';
 
+// Helper to get stream info
+const getStreamInfo = async (filePath: string): Promise<string> => {
+    return new Promise((resolve) => {
+        const proc = spawn('ffmpeg', ['-i', filePath]);
+        let output = '';
+        proc.stderr.on('data', (data) => output += data);
+        proc.on('close', () => resolve(output));
+    });
+};
+
 // Helper to execute ffmpeg
-const runFFmpeg = (args: string[]): Promise<void> => {
+const runFFmpeg = (args: string[]): Promise<{stderr: string, code: number | null}> => {
   return new Promise((resolve, reject) => {
-    console.log("Executing FFmpeg with args:", args);
+    console.log("DIAGNOSTIC: Executing FFmpeg command:", 'ffmpeg ' + args.join(' '));
     const process = spawn('ffmpeg', args);
     let stderr = '';
     process.stderr.on('data', (data) => stderr += data);
     process.on('close', (code) => {
-      console.log("FFmpeg finished with code:", code);
-      console.log("FFmpeg stderr:", stderr);
-      if (code === 0) resolve();
-      else reject(new Error(`FFmpeg failed with code ${code}`));
+      console.log("DIAGNOSTIC: FFmpeg finished with code:", code);
+      console.log("DIAGNOSTIC: FFmpeg stderr:", stderr);
+      resolve({stderr, code});
     });
-  });
-};
-
-// Helper for diagnostics
-const getStreamInfo = async (filePath: string): Promise<string> => {
-  return new Promise((resolve) => {
-    const proc = spawn('ffmpeg', ['-i', filePath]);
-    let output = '';
-    proc.stderr.on('data', (data) => output += data);
-    proc.on('close', () => resolve(output));
   });
 };
 
@@ -42,62 +41,66 @@ export async function POST(req: Request) {
     const originalVideoUrl = formData.get('originalVideoUrl') as string;
 
     if (!file || !originalVideoUrl) {
-      return NextResponse.json({ success: false, message: 'Invalid input' }, { status: 400 });
+      return NextResponse.json({ success: false, error: 'Invalid input' }, { status: 400 });
     }
 
-    let uploadFile = file;
+    const recordedPath = path.join(tempDir, 'recorded.mp4');
+    const originalPath = path.join(tempDir, 'original.mp4');
+    const outputPath = path.join(tempDir, 'output.mp4');
 
-    // Try merging with FFmpeg if available
-    try {
-        const recordedPath = path.join(tempDir, 'recorded.mp4');
-        const originalPath = path.join(tempDir, 'original.mp4');
-        const outputPath = path.join(tempDir, 'output.mp4');
+    await fs.writeFile(recordedPath, Buffer.from(await file.arrayBuffer()));
+    
+    // Download original video
+    const resp = await fetch(originalVideoUrl);
+    if (!resp.ok) throw new Error('Failed to fetch original video');
+    await fs.writeFile(originalPath, Buffer.from(await resp.arrayBuffer()));
+    
+    console.log("DIAGNOSTIC: Stream info for recorded file:");
+    console.log(await getStreamInfo(recordedPath));
+    console.log("DIAGNOSTIC: Stream info for original file:");
+    console.log(await getStreamInfo(originalPath));
 
-        await fs.writeFile(recordedPath, Buffer.from(await file.arrayBuffer()));
-        const resp = await fetch(originalVideoUrl);
-        await fs.writeFile(originalPath, Buffer.from(await resp.arrayBuffer()));
-        
-        const recordedInfo = await getStreamInfo(recordedPath);
-        const originalInfo = await getStreamInfo(originalPath);
-        
-        const audioRegex = /Stream\s+#\d+:\d+(?:\(.*\))?:\s+Audio:/;
-        const hasRecordedAudio = audioRegex.test(recordedInfo);
-        const hasOriginalAudio = audioRegex.test(originalInfo);
+    // Try merging with FFmpeg
+    const ffmpegArgs = ['-i', recordedPath, '-i', originalPath];
 
-        const ffmpegArgs = ['-i', recordedPath, '-i', originalPath];
+    // ... (logic remains same as before)
+    const audioRegex = /Stream\s+#\d+:\d+(?:\(.*\))?:\s+Audio:/;
+    const hasRecordedAudio = audioRegex.test(await getStreamInfo(recordedPath));
+    const hasOriginalAudio = audioRegex.test(await getStreamInfo(originalPath));
 
-        if (hasRecordedAudio && hasOriginalAudio) {
-          ffmpegArgs.push(
-            '-filter_complex', '[0:a][1:a]amix=inputs=2:duration=first[aout]',
-            '-map', '0:v:0',
-            '-map', '[aout]'
-          );
-        } else if (hasOriginalAudio) {
-          ffmpegArgs.push('-map', '0:v:0', '-map', '1:a:0');
-        } else if (hasRecordedAudio) {
-          ffmpegArgs.push('-map', '0:v:0', '-map', '0:a:0');
-        } else {
-          ffmpegArgs.push('-map', '0:v:0');
-        }
-
-        ffmpegArgs.push(
-          '-c:v', 'libx264',
-          '-c:a', 'aac',
-          '-shortest',
-          outputPath
-        );
-
-        await runFFmpeg(ffmpegArgs);
-        
-        const mergedBuffer = await fs.readFile(outputPath);
-        uploadFile = new File([mergedBuffer], 'merged.mp4', { type: 'video/mp4' });
-    } catch (ffmpegError) {
-        console.error('FFmpeg merge failed (falling back to raw upload):', ffmpegError);
-        // Fallback: use raw camera recording
+    if (hasRecordedAudio && hasOriginalAudio) {
+      ffmpegArgs.push(
+        '-filter_complex', '[0:a][1:a]amix=inputs=2:duration=first[aout]',
+        '-map', '0:v:0',
+        '-map', '[aout]'
+      );
+    } else if (hasOriginalAudio) {
+      ffmpegArgs.push('-map', '0:v:0', '-map', '1:a:0');
+    } else if (hasRecordedAudio) {
+      ffmpegArgs.push('-map', '0:v:0', '-map', '0:a:0');
+    } else {
+      ffmpegArgs.push('-map', '0:v:0');
     }
+
+    ffmpegArgs.push(
+      '-c:v', 'libx264',
+      '-c:a', 'aac',
+      '-shortest',
+      outputPath
+    );
+
+    const {code, stderr} = await runFFmpeg(ffmpegArgs);
+    if (code !== 0) throw new Error(`FFmpeg failed with code ${code}: ${stderr}`);
+    
+    console.log("DIAGNOSTIC: Stream info for output file:");
+    console.log(await getStreamInfo(outputPath));
+
+    const mergedBuffer = await fs.readFile(outputPath);
+    const uploadFile = new File([mergedBuffer], 'merged.mp4', { type: 'video/mp4' });
 
     // Upload to Cloudinary
     const cloudinaryResponse = await uploadToCloudinary(uploadFile, 'video');
+    console.log("DIAGNOSTIC: Cloudinary upload URL:", cloudinaryResponse.secure_url);
 
     // Cleanup
     await fs.rm(tempDir, { recursive: true, force: true });

@@ -29,9 +29,6 @@ export default function CreateStudioPage() {
   const mediaRecorderRef = useRef<MediaRecorder | null>(null);
   const recordedChunksRef = useRef<Blob[]>([]);
   const streamRef = useRef<MediaStream | null>(null);
-  const audioContextRef = useRef<AudioContext | null>(null);
-  const sourceRef = useRef<MediaElementAudioSourceNode | null>(null);
-  const destinationRef = useRef<MediaStreamAudioDestinationNode | null>(null);
   
   const [isPlaying, setIsPlaying] = useState(false);
   const [isRecording, setIsRecording] = useState(false);
@@ -53,8 +50,8 @@ export default function CreateStudioPage() {
   useEffect(() => {
     async function startCamera() {
       try {
-        // Request camera and microphone
-        const stream = await navigator.mediaDevices.getUserMedia({ video: true, audio: true });
+        // Request camera only, no audio
+        const stream = await navigator.mediaDevices.getUserMedia({ video: true, audio: false });
         if (cameraRef.current) cameraRef.current.srcObject = stream;
         streamRef.current = stream;
       } catch (err) {
@@ -68,8 +65,8 @@ export default function CreateStudioPage() {
     });
     return () => {
       unsubscribe();
-      // Cleanup audio nodes on unmount
-      audioContextRef.current?.close();
+      // Cleanup camera stream
+      streamRef.current?.getTracks().forEach(track => track.stop());
     };
   }, []);
 
@@ -78,14 +75,14 @@ export default function CreateStudioPage() {
     
     recordedChunksRef.current = [];
     
-    // Ensure original video is playing for the creator to hear, but NOT capturing its audio
+    // Ensure original video is playing for the creator to hear
     if (videoRef.current) {
         videoRef.current.muted = false;
         videoRef.current.volume = 1;
         await videoRef.current.play();
     }
     
-    // Create MediaRecorder stream using camera and microphone
+    // Create MediaRecorder stream using camera only
     const mediaRecorder = new MediaRecorder(streamRef.current, { mimeType: 'video/webm' });
     mediaRecorder.ondataavailable = (event) => {
       if (event.data.size > 0) {
@@ -93,10 +90,14 @@ export default function CreateStudioPage() {
       }
     };
     mediaRecorder.onstop = async () => {
-      console.log("DEBUG: mediaRecorder.onstop triggered");
+      console.log("DIAGNOSTIC: MediaRecorder stopped.");
+      console.log("DIAGNOSTIC: MediaRecorder mimeType:", mediaRecorder.mimeType);
+      console.log("DIAGNOSTIC: MediaRecorder state:", mediaRecorder.state);
+      
       const blob = new Blob(recordedChunksRef.current, { type: 'video/webm' });
+      console.log("DIAGNOSTIC: Blob size:", blob.size);
+      
       setPreviewUrl(URL.createObjectURL(blob));
-      console.log("DEBUG: Blob created, size:", blob.size);
       const file = new File([blob], 'recording.webm', { type: 'video/webm' });
       
       // Submit to Backend Merge API
@@ -105,29 +106,27 @@ export default function CreateStudioPage() {
       formData.append('userId', 'user-id-placeholder');
       formData.append('originalVideoUrl', videoUrl || "");
       
-      console.log("DEBUG: Sending request to /api/mlm/merge");
       try {
         const response = await fetch('/api/mlm/merge', { method: 'POST', body: formData });
-        console.log("DEBUG: Response status:", response.status);
+        if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
+        
         const result = await response.json();
-        console.log("DEBUG: Response result:", result);
         
         if (result.success) {
-          console.log("DEBUG: Setting previewUrl:", result.videoUrl);
+          console.log("DIAGNOSTIC: Cloudinary upload URL:", result.videoUrl);
           setPreviewUrl(result.videoUrl);
         } else {
-          console.error("DEBUG: Merge failed:", result);
-          alert("Merge failed: " + JSON.stringify(result));
+          console.error("Merge failed:", result);
+          alert("Merge failed: " + result.error);
         }
       } catch (error) {
-        console.error("DEBUG: Exception in onstop:", error);
+        console.error("Exception in onstop:", error);
         alert("Exception in onstop: " + error);
       }
       
       recordedChunksRef.current = [];
     };
     
-    console.debug("MediaRecorder started (camera only)");
     mediaRecorderRef.current = mediaRecorder;
     mediaRecorderRef.current.start();
     setIsRecording(true);
