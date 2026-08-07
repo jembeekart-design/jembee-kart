@@ -92,55 +92,64 @@ export default function CreateStudioPage() {
 
   const startRecording = useCallback(async () => {
     if (!streamRef.current) return;
-    
-    console.log("DIAGNOSTIC: Starting recording. Audio tracks:", streamRef.current.getAudioTracks().length);
-    streamRef.current.getAudioTracks().forEach(track => {
-        console.log("DIAGNOSTIC: Audio track enabled:", track.enabled);
-    });
 
     const videoTracks = streamRef.current.getVideoTracks();
     const audioTracks = streamRef.current.getAudioTracks();
-    
-    // Capture audio from original video
+
+    // Capture audio from original video safely
     let videoAudioTracks: MediaStreamTrack[] = [];
-    if (videoRef.current) {
-        // We use captureStream() to get the stream from the video element
-        const videoStream = (videoRef.current as any).captureStream();
-        videoAudioTracks = videoStream.getAudioTracks();
+    if (videoRef.current && videoRef.current.readyState >= 2) {
+      try {
+        if (typeof (videoRef.current as any).captureStream === 'function') {
+          const videoStream = (videoRef.current as any).captureStream();
+          videoAudioTracks = videoStream.getAudioTracks();
+          console.log("DIAGNOSTIC: Captured audio tracks from original video:", videoAudioTracks.length);
+        }
+      } catch (e) {
+        console.warn("DIAGNOSTIC: Failed to capture audio from video:", e);
+      }
     }
-    
+
     const combinedStream = new MediaStream([...videoTracks, ...audioTracks, ...videoAudioTracks]);
 
     recordedChunksRef.current = [];
-    
+
     // Ensure original video is playing for the creator to hear
     if (videoRef.current) {
-        videoRef.current.muted = isMuted;
-        videoRef.current.volume = 1;
+      videoRef.current.muted = isMuted;
+      videoRef.current.volume = 1;
+      try {
         await videoRef.current.play();
-    }
-    
-    // Create MediaRecorder stream
-    const mediaRecorder = new MediaRecorder(combinedStream, { mimeType: 'video/webm' });
-    mediaRecorder.ondataavailable = (event) => {
-      if (event.data.size > 0) {
-        recordedChunksRef.current.push(event.data);
+      } catch (e) {
+        console.warn("DIAGNOSTIC: Failed to play video:", e);
       }
-    };
-    mediaRecorder.onstop = async () => {
-      console.log("DIAGNOSTIC: MediaRecorder stopped.");
-      
-      const blob = new Blob(recordedChunksRef.current, { type: 'video/webm' });
-      setRecordedBlob(blob);
-      setPreviewUrl(URL.createObjectURL(blob));
-      
-      recordedChunksRef.current = [];
-    };
-    
-    mediaRecorderRef.current = mediaRecorder;
-    mediaRecorderRef.current.start();
-    setIsRecording(true);
-    setTimer(0);
+    }
+
+    // Create MediaRecorder stream
+    try {
+      const mediaRecorder = new MediaRecorder(combinedStream, { mimeType: 'video/webm' });
+      mediaRecorder.ondataavailable = (event) => {
+        if (event.data.size > 0) {
+          recordedChunksRef.current.push(event.data);
+        }
+      };
+      mediaRecorder.onstop = async () => {
+        console.log("DIAGNOSTIC: MediaRecorder stopped.");
+
+        const blob = new Blob(recordedChunksRef.current, { type: 'video/webm' });
+        setRecordedBlob(blob);
+        setPreviewUrl(URL.createObjectURL(blob));
+
+        recordedChunksRef.current = [];
+      };
+
+      mediaRecorderRef.current = mediaRecorder;
+      mediaRecorderRef.current.start();
+      setIsRecording(true);
+      setTimer(0);
+    } catch (e) {
+      console.error("DIAGNOSTIC: Failed to initialize MediaRecorder:", e);
+    }
   }, [videoUrl, isMuted]);
 
   const stopRecording = useCallback(() => {
