@@ -14,6 +14,7 @@
     "autofix": "dotenv -e .env.local -- tsx src/scripts/autofix.ts"
   },
   "dependencies": {
+    "cloudinary": "^2.10.0",
     "clsx": "^2.1.1",
     "firebase": "^12.13.0",
     "firebase-admin": "^13.4.0",
