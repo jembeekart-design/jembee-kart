@@ -2,7 +2,11 @@
 
 export const dynamic = "force-dynamic";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import { collection, getDocs, query, orderBy } from "firebase/firestore";
+import { getAuth } from "firebase/auth";
+import { db } from "@/firebase/config";
+import toast, { Toaster } from "react-hot-toast";
 
 import {
   Image,
@@ -15,49 +19,74 @@ import {
   Folder,
   HardDrive,
   Eye,
-  Grid3X3
+  Grid3X3,
+  Loader2
 } from "lucide-react";
 
-const files = [
-  {
-    name: "banner-image.png",
-    type: "Image",
-    size: "2.4 MB"
-  },
-  {
-    name: "promo-video.mp4",
-    type: "Video",
-    size: "18 MB"
-  },
-  {
-    name: "invoice.pdf",
-    type: "Document",
-    size: "1.1 MB"
-  },
-  {
-    name: "product-photo.jpg",
-    type: "Image",
-    size: "3.2 MB"
-  }
-];
-
 export default function MediaLibraryPage() {
+  const [search, setSearch] = useState("");
+  const [files, setFiles] = useState<any[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [deletingId, setDeletingId] = useState<string | null>(null);
 
-  const [search, setSearch] =
-    useState("");
+  const fetchVideos = async () => {
+    try {
+      const q = query(collection(db, "watchEarnVideos"), orderBy("createdAt", "desc"));
+      const snapshot = await getDocs(q);
+      const data = snapshot.docs.map((doc) => ({
+        id: doc.id,
+        name: doc.data().title || "Untitled Video",
+        type: "Video",
+        size: "N/A",
+        publicId: doc.data().publicId,
+      }));
+      setFiles(data);
+    } catch (error) {
+      console.error("Error fetching videos:", error);
+    } finally {
+      setLoading(false);
+    }
+  };
 
-  const filteredFiles =
-    files.filter((item) =>
-      item.name
-        .toLowerCase()
-        .includes(
-          search.toLowerCase()
-        )
-    );
+  useEffect(() => {
+    fetchVideos();
+  }, []);
+
+  const handleDelete = async (file: any) => {
+    if (!confirm("Are you sure you want to permanently delete this video?")) return;
+
+    setDeletingId(file.id);
+    try {
+      const auth = getAuth();
+      const token = await auth.currentUser?.getIdToken();
+
+      const response = await fetch("/api/admin/delete-video", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ videoId: file.id, publicId: file.publicId, token }),
+      });
+
+      const result = await response.json();
+      if (result.success) {
+        toast.success("Video deleted successfully.");
+        setFiles((prev) => prev.filter((f) => f.id !== file.id));
+      } else {
+        throw new Error(result.message || "Failed to delete video");
+      }
+    } catch (error: any) {
+      toast.error(error.message);
+    } finally {
+      setDeletingId(null);
+    }
+  };
+
+  const filteredFiles = files.filter((item) =>
+    item.name.toLowerCase().includes(search.toLowerCase())
+  );
 
   return (
-
     <main className="min-h-screen bg-[var(--primary-color)] p-4 text-[var(--button-text-color)]">
+      <Toaster />
 
       {/* HEADER */}
 
@@ -155,14 +184,16 @@ export default function MediaLibraryPage() {
 
       <div className="mt-6 grid grid-cols-1 gap-5 md:grid-cols-2 lg:grid-cols-4">
 
-        {filteredFiles.map(
+        {loading ? (
+          <p className="p-5">Loading...</p>
+        ) : filteredFiles.map(
           (
             item,
             index
           ) => (
 
             <div
-              key={index}
+              key={item.id}
               className="overflow-hidden rounded-[28px] border border-[var(--border-color)]/10 bg-[var(--primary-color)]"
             >
 
@@ -170,30 +201,10 @@ export default function MediaLibraryPage() {
 
               <div className="flex h-40 items-center justify-center bg-gradient-to-br from-[var(--primary-color)] to-[var(--primary-color)]">
 
-                {item.type ===
-                "Image" ? (
-
-                  <Image
-                    size={52}
-                    className="text-[var(--text-color)]"
-                  />
-
-                ) : item.type ===
-                  "Video" ? (
-
-                  <Video
-                    size={52}
-                    className="text-[var(--text-color)]"
-                  />
-
-                ) : (
-
-                  <FileText
-                    size={52}
-                    className="text-[var(--text-color)]"
-                  />
-
-                )}
+                <Video
+                  size={52}
+                  className="text-[var(--text-color)]"
+                />
 
               </div>
 
@@ -233,9 +244,12 @@ export default function MediaLibraryPage() {
 
                   </button>
 
-                  <button className="flex h-11 w-11 items-center justify-center rounded-2xl bg-[var(--danger-color)]/20 text-[var(--danger-color)]">
+                  <button 
+                    onClick={() => handleDelete(item)}
+                    disabled={deletingId === item.id}
+                    className="flex h-11 w-11 items-center justify-center rounded-2xl bg-[var(--danger-color)]/20 text-[var(--danger-color)] disabled:opacity-50">
 
-                    <Trash2 size={18} />
+                    {deletingId === item.id ? <Loader2 size={18} className="animate-spin" /> : <Trash2 size={18} />}
 
                   </button>
 
