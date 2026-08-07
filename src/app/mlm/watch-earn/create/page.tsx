@@ -27,6 +27,7 @@ export default function CreateStudioPage() {
   const videoRef = useRef<HTMLVideoElement>(null);
   const cameraRef = useRef<HTMLVideoElement>(null);
   const mediaRecorderRef = useRef<MediaRecorder | null>(null);
+  const audioContextRef = useRef<AudioContext | null>(null);
   const recordedChunksRef = useRef<Blob[]>([]);
   const streamRef = useRef<MediaStream | null>(null);
   
@@ -91,26 +92,29 @@ export default function CreateStudioPage() {
   }, []);
 
   const startRecording = useCallback(async () => {
-    if (!streamRef.current) return;
+    if (!streamRef.current || !videoRef.current) return;
 
+    // --- Audio Mixing with Web Audio API ---
+    const AudioContext = (window.AudioContext || (window as any).webkitAudioContext);
+    const audioContext = new AudioContext();
+    audioContextRef.current = audioContext;
+
+    // Original video audio source
+    const videoSource = audioContext.createMediaElementSource(videoRef.current);
+    
+    // Microphone stream source
+    const micSource = audioContext.createMediaStreamSource(streamRef.current);
+    
+    // Destination for mixed audio
+    const destination = audioContext.createMediaStreamDestination();
+    
+    videoSource.connect(destination);
+    micSource.connect(destination);
+    
     const videoTracks = streamRef.current.getVideoTracks();
-    const audioTracks = streamRef.current.getAudioTracks();
-
-    // Capture audio from original video safely
-    let videoAudioTracks: MediaStreamTrack[] = [];
-    if (videoRef.current && videoRef.current.readyState >= 2) {
-      try {
-        if (typeof (videoRef.current as any).captureStream === 'function') {
-          const videoStream = (videoRef.current as any).captureStream();
-          videoAudioTracks = videoStream.getAudioTracks();
-          console.log("DIAGNOSTIC: Captured audio tracks from original video:", videoAudioTracks.length);
-        }
-      } catch (e) {
-        console.warn("DIAGNOSTIC: Failed to capture audio from video:", e);
-      }
-    }
-
-    const combinedStream = new MediaStream([...videoTracks, ...audioTracks, ...videoAudioTracks]);
+    const combinedStream = new MediaStream([ ...videoTracks, ...destination.stream.getAudioTracks() ]);
+    
+    // --- End of Audio Mixing ---
 
     recordedChunksRef.current = [];
 
@@ -128,6 +132,10 @@ export default function CreateStudioPage() {
     // Create MediaRecorder stream
     try {
       const mediaRecorder = new MediaRecorder(combinedStream, { mimeType: 'video/webm' });
+      
+      console.log("DIAGNOSTIC: recorder.stream.getAudioTracks().length:", mediaRecorder.stream.getAudioTracks().length);
+      console.log("DIAGNOSTIC: MediaRecorder mimeType:", mediaRecorder.mimeType);
+
       mediaRecorder.ondataavailable = (event) => {
         if (event.data.size > 0) {
           recordedChunksRef.current.push(event.data);
@@ -137,6 +145,8 @@ export default function CreateStudioPage() {
         console.log("DIAGNOSTIC: MediaRecorder stopped.");
 
         const blob = new Blob(recordedChunksRef.current, { type: 'video/webm' });
+        console.log("DIAGNOSTIC: Blob size:", blob.size);
+
         setRecordedBlob(blob);
         setPreviewUrl(URL.createObjectURL(blob));
 
@@ -155,6 +165,12 @@ export default function CreateStudioPage() {
   const stopRecording = useCallback(() => {
     mediaRecorderRef.current?.stop();
     setIsRecording(false);
+    
+    // Close AudioContext
+    if (audioContextRef.current) {
+      audioContextRef.current.close();
+      audioContextRef.current = null;
+    }
   }, []);
 
   return (
