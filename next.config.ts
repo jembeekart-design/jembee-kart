@@ -9,18 +9,6 @@ const nextConfig: NextConfig = {
       },
     ],
   },
-
-  serverExternalPackages: [
-    "ffmpeg-static",
-    "ffprobe-static",
-  ],
-
-  outputFileTracingIncludes: {
-    "/api/mlm/merge": [
-      "./node_modules/ffmpeg-static/**",
-      "./node_modules/ffprobe-static/**",
-    ],
-  },
 };
 
 export default nextConfig;
