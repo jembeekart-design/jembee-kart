@@ -10,6 +10,10 @@ import { getFFmpegPath, getFFprobePath } from '@/lib/ffmpeg-utils';
 const ffmpegPath = getFFmpegPath();
 const ffprobePath = getFFprobePath();
 
+console.log("FFMPEG PATH =", ffmpegPath);
+console.log("FFPROBE PATH =", ffprobePath);
+
+
 const withInstrumentedTimeout = async <T>(promise: Promise<T>, stepName: string, ms = 30000): Promise<T> => {
     const start = Date.now();
     let timeoutHandle: NodeJS.Timeout;
