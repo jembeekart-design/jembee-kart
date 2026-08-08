@@ -46,32 +46,45 @@ export async function fetchWatchVideos() {
     
     const videos: WatchVideo[] = [];
     const creatorCache: Record<string, { displayName?: string, photoURL?: string }> = {};
+for (const docItem of snapshot.docs) {
+  const data = docItem.data();
+  const creatorId = data.creatorId || "";
 
-    for (const docItem of snapshot.docs) {
-      const data = docItem.data();
-      const creatorId = data.creatorId || "";
+  console.log("DEBUG: Processing video", docItem.id, "creatorId:", creatorId);
 
-      if (creatorId && !creatorCache[creatorId]) {
-        const userRef = doc(db, "users", creatorId);
-        const userSnap = await getDoc(userRef);
-        if (userSnap.exists()) {
-          const userData = userSnap.data();
-          creatorCache[creatorId] = {
-            displayName: userData.displayName || userData.name || userData.firstName + ' ' + userData.lastName,
-            photoURL: userData.photoURL
-          };
-        } else {
-          creatorCache[creatorId] = { displayName: undefined, photoURL: undefined };
-        }
-      }
+  let displayName = data.displayName;
+  let photoURL = data.photoURL;
 
-      videos.push({
-        id: docItem.id,
-        creatorId: creatorId,
-        username: data.username || "",
-        displayName: creatorCache[creatorId]?.displayName,
-        photoURL: creatorCache[creatorId]?.photoURL,
-        caption: data.caption || "",
+  if (creatorId && (!displayName || !photoURL) && !creatorCache[creatorId]) {
+    const userRef = doc(db, "users", creatorId);
+    const userSnap = await getDoc(userRef);
+    console.log("DEBUG: Fetched user document for", creatorId, ":", userSnap.exists() ? userSnap.data() : "not found");
+
+    if (userSnap.exists()) {
+      const userData = userSnap.data();
+      creatorCache[creatorId] = {
+        displayName: userData.displayName || userData.name || (userData.firstName ? userData.firstName + ' ' + userData.lastName : undefined),
+        photoURL: userData.photoURL
+      };
+    } else {
+      creatorCache[creatorId] = { displayName: undefined, photoURL: undefined };
+    }
+  }
+
+  const finalDisplayName = displayName || creatorCache[creatorId]?.displayName;
+  const finalPhotoURL = photoURL || creatorCache[creatorId]?.photoURL;
+
+  console.log("DEBUG: Final displayName:", finalDisplayName, "finalPhotoURL:", finalPhotoURL);
+
+  videos.push({
+    id: docItem.id,
+    creatorId: creatorId,
+    username: data.username || "",
+    displayName: finalDisplayName,
+    photoURL: finalPhotoURL,
+    caption: data.caption || "",
+//...
+
         hashtags: data.hashtags || [],
         music: data.music || "",
         verified: data.verified || false,

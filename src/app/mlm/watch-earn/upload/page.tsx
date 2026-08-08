@@ -64,31 +64,36 @@ UploadWatchVideoPage() {
       setLoading(true);
 
       const result =
-        await uploadWatchVideo({
-          file,
+      await uploadWatchVideo({
+        file,
 
-          userId:
-            auth.currentUser?.uid || "",
+        creatorId:
+          auth.currentUser?.uid || "",
 
-          username:
-            auth.currentUser?.displayName || "JembeeKart User",
+        displayName:
+          auth.currentUser?.displayName || undefined,
 
-          caption,
+        photoURL:
+          auth.currentUser?.photoURL || undefined,
 
-          hashtags:
-            hashtags
-              .split(",")
+        username:
+          auth.currentUser?.displayName || auth.currentUser?.email || "Unknown User",
 
-              .map(
-                (tag) =>
-                  tag.trim()
-              )
+        caption,
 
-              .filter(Boolean),
+        hashtags:
+          hashtags
+            .split(",")
 
-          music
-        });
+            .map(
+              (tag) =>
+                tag.trim()
+            )
 
+            .filter(Boolean),
+
+        music
+      });
       if (
         result.success
       ) {

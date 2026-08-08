@@ -8,47 +8,32 @@ import {
 } from "@/firebase/config";
 
 interface UploadWatchVideoData {
-
   file: File;
-
-  userId: string;
-
+  creatorId: string;
+  displayName?: string;
+  photoURL?: string;
   username: string;
-
   caption: string;
-
   hashtags: string[];
-
   music: string;
-
   sponsor?: boolean;
-
   originalVideoId?: string;
-
   originalAudioId?: string;
 }
 
 export async function
 uploadWatchVideo({
-
   file,
-
-  userId,
-
+  creatorId,
+  displayName,
+  photoURL,
   username,
-
   caption,
-
   hashtags,
-
   music,
-
   sponsor,
-
   originalVideoId,
-
   originalAudioId
-
 }: UploadWatchVideoData) {
 
   try {
@@ -57,7 +42,7 @@ uploadWatchVideo({
        USER CHECK
     ========================= */
 
-    if (!userId) {
+    if (!creatorId) {
 
       return {
 
@@ -246,7 +231,11 @@ uploadWatchVideo({
 
         {
 
-          userId,
+          creatorId,
+
+          displayName,
+
+          photoURL,
 
           username,
 
