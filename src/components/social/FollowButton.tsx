@@ -17,6 +17,15 @@ export default function FollowButton({ targetUid }: FollowButtonProps) {
 
   useEffect(() => {
     const checkStatus = async () => {
+      // 1. Handle pending action if returned from login
+      const pendingAction = localStorage.getItem('jbk_pending_action_type');
+      const pendingData = localStorage.getItem('jbk_pending_action_data');
+      if (pendingAction === 'follow' && pendingData === targetUid && auth.currentUser) {
+        localStorage.removeItem('jbk_pending_action_type');
+        localStorage.removeItem('jbk_pending_action_data');
+        await handleToggleFollow();
+      }
+
       if (auth.currentUser && auth.currentUser.uid !== targetUid) {
         const status = await isFollowing(auth.currentUser.uid, targetUid);
         setFollowing(status);
@@ -54,7 +63,7 @@ export default function FollowButton({ targetUid }: FollowButtonProps) {
 
   return (
     <button 
-      onClick={() => requireAuth(handleToggleFollow)}
+      onClick={() => requireAuth(() => handleToggleFollow(), 'follow', targetUid)}
       className={`px-4 py-2 rounded-full font-black text-sm ${following ? 'bg-gray-200 text-black' : 'bg-[var(--color-primary-button)] text-[var(--button-text-color)]'}`}
     >
       {following ? 'Following' : 'Follow'}
