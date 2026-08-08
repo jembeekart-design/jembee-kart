@@ -269,6 +269,9 @@ uploadWatchVideo({
           sponsor:
             sponsor || false,
 
+          publicId:
+            cloudinaryData.public_id,
+
           video:
             videoUrl,
 
