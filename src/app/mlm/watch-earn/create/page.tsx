@@ -29,12 +29,10 @@ export default function CreateStudioPage() {
   const mediaRecorderRef = useRef<MediaRecorder | null>(null);
   const recordedChunksRef = useRef<Blob[]>([]);
   const streamRef = useRef<MediaStream | null>(null);
-  const audioContextRef = useRef<AudioContext | null>(null);
-  const sourceRef = useRef<MediaElementAudioSourceNode | null>(null);
-  const destinationRef = useRef<MediaStreamAudioDestinationNode | null>(null);
   
   const [isPlaying, setIsPlaying] = useState(false);
   const [isRecording, setIsRecording] = useState(false);
+  const [isMuted, setIsMuted] = useState(true);
   const [products, setProducts] = useState<Product[]>([]);
   const [timer, setTimer] = useState(0);
   const [recordedBlob, setRecordedBlob] = useState<Blob | null>(null);
@@ -51,12 +49,23 @@ export default function CreateStudioPage() {
   }, [isRecording]);
 
   useEffect(() => {
+    if (videoRef.current) {
+        videoRef.current.muted = isMuted;
+    }
+  }, [isMuted]);
+
+  useEffect(() => {
     async function startCamera() {
       try {
         // Request camera only
-        const stream = await navigator.mediaDevices.getUserMedia({ video: true, audio: false });
+        const stream = await navigator.mediaDevices.getUserMedia({ 
+          video: true, 
+          audio: false
+        });
         if (cameraRef.current) cameraRef.current.srcObject = stream;
         streamRef.current = stream;
+        console.log("DIAGNOSTIC: Audio tracks:", stream.getAudioTracks().length);
+        console.log("DIAGNOSTIC: Video tracks:", stream.getVideoTracks().length);
       } catch (err) {
         console.error("Camera access failed", err);
       }
@@ -68,70 +77,58 @@ export default function CreateStudioPage() {
     });
     return () => {
       unsubscribe();
-      // Cleanup audio nodes on unmount
-      audioContextRef.current?.close();
+      // Cleanup camera stream
+      streamRef.current?.getTracks().forEach(track => track.stop());
     };
   }, []);
 
   const startRecording = useCallback(async () => {
-    if (!streamRef.current) return;
-    
+    if (!streamRef.current || !videoRef.current) return;
+
     recordedChunksRef.current = [];
-    
-    // Ensure original video is playing for the creator to hear, but NOT capturing its audio
+
+    // Ensure original video is playing for the creator to hear
     if (videoRef.current) {
-        videoRef.current.muted = false;
-        videoRef.current.volume = 1;
-        await videoRef.current.play();
-    }
-    
-    // Create MediaRecorder stream using ONLY camera video track
-    const mediaRecorder = new MediaRecorder(streamRef.current, { mimeType: 'video/webm' });
-    mediaRecorder.ondataavailable = (event) => {
-      if (event.data.size > 0) {
-        recordedChunksRef.current.push(event.data);
-      }
-    };
-    mediaRecorder.onstop = async () => {
-      console.log("DEBUG: mediaRecorder.onstop triggered");
-      const blob = new Blob(recordedChunksRef.current, { type: 'video/webm' });
-      console.log("DEBUG: Blob created, size:", blob.size);
-      const file = new File([blob], 'recording.webm', { type: 'video/webm' });
-      
-      // Submit to Backend Merge API
-      const formData = new FormData();
-      formData.append('file', file);
-      formData.append('userId', 'user-id-placeholder');
-      formData.append('originalVideoUrl', videoUrl || "");
-      
-      console.log("DEBUG: Sending request to /api/mlm/merge");
+      videoRef.current.muted = isMuted;
+      videoRef.current.volume = 1;
       try {
-        const response = await fetch('/api/mlm/merge', { method: 'POST', body: formData });
-        console.log("DEBUG: Response status:", response.status);
-        const result = await response.json();
-        console.log("DEBUG: Response result:", result);
-        
-        if (result.success) {
-          console.log("DEBUG: Setting previewUrl:", result.videoUrl);
-          setPreviewUrl(result.videoUrl);
-        } else {
-          console.error("DEBUG: Merge failed:", result);
-          alert("Merge failed: " + JSON.stringify(result));
-        }
-      } catch (error) {
-        console.error("DEBUG: Exception in onstop:", error);
-        alert("Exception in onstop: " + error);
+        await videoRef.current.play();
+      } catch (e) {
+        console.warn("DIAGNOSTIC: Failed to play video:", e);
       }
+    }
+
+    // Create MediaRecorder stream with video only
+    try {
+      const mediaRecorder = new MediaRecorder(streamRef.current, { mimeType: 'video/webm' });
       
-      recordedChunksRef.current = [];
-    };
-    
-    console.debug("MediaRecorder started (camera only)");
-    mediaRecorderRef.current = mediaRecorder;
-    mediaRecorderRef.current.start();
-    setIsRecording(true);
-    setTimer(0);
-  }, [videoUrl]);
+      console.log("DIAGNOSTIC: MediaRecorder mimeType:", mediaRecorder.mimeType);
+
+      mediaRecorder.ondataavailable = (event) => {
+        if (event.data.size > 0) {
+          recordedChunksRef.current.push(event.data);
+        }
+      };
+      mediaRecorder.onstop = async () => {
+        console.log("DIAGNOSTIC: MediaRecorder stopped.");
+
+        const blob = new Blob(recordedChunksRef.current, { type: 'video/webm' });
+        console.log("DIAGNOSTIC: Blob size:", blob.size);
+
+        setRecordedBlob(blob);
+        setPreviewUrl(URL.createObjectURL(blob));
+
+        recordedChunksRef.current = [];
+      };
+
+      mediaRecorderRef.current = mediaRecorder;
+      mediaRecorderRef.current.start();
+      setIsRecording(true);
+      setTimer(0);
+    } catch (e) {
+      console.error("DIAGNOSTIC: Failed to initialize MediaRecorder:", e);
+    }
+  }, [videoUrl, isMuted]);
 
   const stopRecording = useCallback(() => {
     mediaRecorderRef.current?.stop();
@@ -146,12 +143,8 @@ export default function CreateStudioPage() {
         <div className="font-bold">Create with Original</div>
         <button 
           onClick={() => {
-            console.log("DEBUG: Next button clicked");
             if (previewUrl) {
-              console.log("DEBUG: Navigating to:", `/mlm/watch-earn/upload?url=${encodeURIComponent(previewUrl)}`);
               router.push(`/mlm/watch-earn/upload?url=${encodeURIComponent(previewUrl)}`);
-            } else {
-              console.warn("DEBUG: Next button clicked but previewUrl is null. State:", { previewUrl, recordedBlob });
             }
           }}
           disabled={!previewUrl}
@@ -171,6 +164,9 @@ export default function CreateStudioPage() {
           )}
           {!previewUrl && (
             <div className="absolute bottom-2 left-2 flex gap-1">
+               <button onClick={() => setIsMuted(!isMuted)} className="bg-black/50 p-2 rounded-full">
+                 {isMuted ? <MicOff size={16} /> : <Mic size={16} />}
+               </button>
                <button onClick={() => videoRef.current?.play()} className="bg-black/50 p-1 rounded-full"><Play size={16} /></button>
                <button onClick={() => videoRef.current?.pause()} className="bg-black/50 p-1 rounded-full"><Pause size={16} /></button>
             </div>

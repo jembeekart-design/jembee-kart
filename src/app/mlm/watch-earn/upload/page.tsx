@@ -21,12 +21,29 @@ export default function
 UploadWatchVideoPage() {
   const searchParams = useSearchParams();
   const initialMusic = searchParams.get('audio') || "";
+  const videoUrlFromParams = searchParams.get('url');
   
   const [file, setFile] = useState<File | null>(null);
   const [loading, setLoading] = useState(false);
   const [caption, setCaption] = useState("");
   const [hashtags, setHashtags] = useState("");
   const [music, setMusic] = useState(initialMusic);
+  
+  useEffect(() => {
+    async function loadBlob() {
+        if (videoUrlFromParams && videoUrlFromParams.startsWith('blob:')) {
+            try {
+                const response = await fetch(videoUrlFromParams);
+                const blob = await response.blob();
+                const file = new File([blob], 'recording.webm', { type: 'video/webm' });
+                setFile(file);
+            } catch (err) {
+                console.error("Failed to load blob", err);
+            }
+        }
+    }
+    loadBlob();
+  }, [videoUrlFromParams]);
   
   // ... (rest of component)
 
