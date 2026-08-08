@@ -13,6 +13,8 @@ export interface WatchVideo {
 
 id: string;
 
+creatorId: string;
+
 username: string;
 
 caption: string;
@@ -90,6 +92,9 @@ snapshot.forEach(
 
       id:  
         docItem.id,  
+
+      creatorId:
+        data.creatorId || "",
 
       username:  
         data.username || "",  

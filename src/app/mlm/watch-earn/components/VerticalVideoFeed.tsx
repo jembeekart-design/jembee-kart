@@ -3,7 +3,8 @@
 import {
   useState,
   useEffect,
-  useRef
+  useRef,
+  useMemo
 } from "react";
 
 import VideoPlayer
@@ -24,15 +25,38 @@ import { getWatchVideos, WatchVideo } from "../services/watchVideos.service";
 import { DEFAULT_BUSINESS_RULES } from "@/firestore/businessRules/defaults";
 
 // New imports for persistence and auth
-import { auth } from "@/firebase/config";
+import { auth, db } from "@/firebase/config";
 import { likeVideo } from "@/lib/mlm/watch-earn/likeVideo";
 import { shareVideo } from "@/lib/mlm/watch-earn/shareVideo";
+import { useRequireAuth } from "@/hooks/useRequireAuth";
+import { collection, getDocs } from "firebase/firestore";
 
 export default function
 VerticalVideoFeed() {
+  const { requireAuth, isAuthenticated } = useRequireAuth();
+  const [activeTab, setActiveTab] = useState<'foryou' | 'following'>('foryou');
+  const [followingList, setFollowingList] = useState<string[]>([]);
   const [videos, setVideos] = useState<WatchVideo[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
+
+  useEffect(() => {
+    if (isAuthenticated && auth.currentUser) {
+      const fetchFollowing = async () => {
+        const followingRef = collection(db, 'users', auth.currentUser!.uid, 'following');
+        const snapshot = await getDocs(followingRef);
+        setFollowingList(snapshot.docs.map(doc => doc.id));
+      };
+      fetchFollowing();
+    }
+  }, [isAuthenticated]);
+
+  const filteredVideos = useMemo(() => {
+    if (activeTab === 'following') {
+      return videos.filter(v => followingList.includes(v.creatorId));
+    }
+    return videos;
+  }, [activeTab, videos, followingList]);
 
   useEffect(() => {
     let isMounted = true;
@@ -195,134 +219,157 @@ VerticalVideoFeed() {
         bg-[var(--color-card-background)]
       "
     >
+      {/* Tabs */}
+      <div className="fixed top-4 left-0 w-full flex justify-center z-50 gap-4">
+        <button 
+          onClick={() => setActiveTab('foryou')}
+          className={`font-black ${activeTab === 'foryou' ? 'text-white' : 'text-gray-400'}`}
+        >
+          For You
+        </button>
+        <button 
+          onClick={() => requireAuth(() => setActiveTab('following'))}
+          className={`font-black ${activeTab === 'following' ? 'text-white' : 'text-gray-400'}`}
+        >
+          Following
+        </button>
+      </div>
 
-      {videos.map(
-        (video) => (
+      {filteredVideos.length === 0 ? (
+        <div className="h-screen flex items-center justify-center text-gray-400">
+          {activeTab === 'following' 
+            ? "You aren't following anyone yet." 
+            : "No videos found."
+          }
+        </div>
+      ) : (
+        filteredVideos.map(
+          (video) => (
 
-          <section
-            key={video.id}
-            data-video-id={video.id}
-            className="
-              relative
-              h-screen
-              snap-start
-            "
-          >
+            <section
+              key={video.id}
+              data-video-id={video.id}
+              className="
+                relative
+                h-screen
+                snap-start
+              "
+            >
+              {/* VIDEO */}
 
-            {/* VIDEO */}
-
-            <VideoPlayer
-              videoUrl={
-                video.video
-              }
-
-              rewardCoins={
-                video.coins
-              }
-
-              watchSeconds={
-                DEFAULT_BUSINESS_RULES.watchEarn.minimumWatchDuration
-              }
-              isMuted={isMuted}
-              active={activeVideoId === video.id}
-            />
-
-            {/* INFO */}
-
-            <VideoInfo
-              username={
-                video.username
-              }
-
-              caption={
-                video.caption
-              }
-
-              hashtags={
-                video.hashtags
-              }
-
-              music={
-                video.music
-              }
-
-              verified={
-                video.verified
-              }
-            />
-
-            {/* ACTIONS */}
-
-            <VideoActions
-              likes={
-                video.likes + (likedVideos[video.id] ? 1 : 0)
-              }
-
-              comments={
-                video.comments
-              }
-
-              shares={
-                video.shares
-              }
-
-              coins={
-                video.coins
-              }
-
-              isMuted={isMuted}
-
-              onLike={async () => {
-                const uid = auth.currentUser?.uid;
-                if (!uid) {
-                  setToastMessage("Please log in to like videos.");
-                  return;
+              <VideoPlayer
+                videoUrl={
+                  video.video
                 }
 
-                // If already liked locally, treat as unlike locally (no server unlike available)
-                if (likedVideos[video.id]) {
-                  setLikedVideos(prev => ({ ...prev, [video.id]: false }));
-                  setVideos(prev => prev.map(v => v.id === video.id ? { ...v, likes: Math.max(0, v.likes - 1) } : v));
-                  return;
+                rewardCoins={
+                  video.coins
                 }
 
-                try {
-                  const res = await likeVideo({ videoId: video.id, userId: uid });
-                  if (res && res.success) {
-                    setLikedVideos(prev => ({ ...prev, [video.id]: true }));
-                    setVideos(prev => prev.map(v => v.id === video.id ? { ...v, likes: v.likes + 1 } : v));
-                  } else {
+                watchSeconds={
+                  DEFAULT_BUSINESS_RULES.watchEarn.minimumWatchDuration
+                }
+                isMuted={isMuted}
+                active={activeVideoId === video.id}
+              />
+
+              {/* INFO */}
+
+              <VideoInfo
+                username={
+                  video.username
+                }
+
+                caption={
+                  video.caption
+                }
+
+                hashtags={
+                  video.hashtags
+                }
+
+                music={
+                  video.music
+                }
+
+                verified={
+                  video.verified
+                }
+              />
+
+              {/* ACTIONS */}
+
+              <VideoActions
+                likes={
+                  video.likes + (likedVideos[video.id] ? 1 : 0)
+                }
+
+                comments={
+                  video.comments
+                }
+
+                shares={
+                  video.shares
+                }
+
+                coins={
+                  video.coins
+                }
+
+                isMuted={isMuted}
+
+                onLike={async () => {
+                  const uid = auth.currentUser?.uid;
+                  if (!uid) {
+                    setToastMessage("Please log in to like videos.");
+                    return;
+                  }
+
+                  // If already liked locally, treat as unlike locally (no server unlike available)
+                  if (likedVideos[video.id]) {
+                    setLikedVideos(prev => ({ ...prev, [video.id]: false }));
+                    setVideos(prev => prev.map(v => v.id === video.id ? { ...v, likes: Math.max(0, v.likes - 1) } : v));
+                    return;
+                  }
+
+                  try {
+                    const res = await likeVideo({ videoId: video.id, userId: uid });
+                    if (res && res.success) {
+                      setLikedVideos(prev => ({ ...prev, [video.id]: true }));
+                      setVideos(prev => prev.map(v => v.id === video.id ? { ...v, likes: v.likes + 1 } : v));
+                    } else {
+                      setToastMessage("Failed to like the video.");
+                    }
+                  } catch (err) {
+                    console.error("likeVideo error:", err);
                     setToastMessage("Failed to like the video.");
                   }
-                } catch (err) {
-                  console.error("likeVideo error:", err);
-                  setToastMessage("Failed to like the video.");
-                }
-              }}
+                }}
 
-              onComment={() => {
-                setSelectedVideo(video.id);
-                setCommentOpen(
-                  true
-                );
-              }}
+                onComment={() => {
+                  setSelectedVideo(video.id);
+                  setCommentOpen(
+                    true
+                  );
+                }}
 
-              onShare={() => {
-                handleShare(video);
-              }}
+                onShare={() => {
+                  handleShare(video);
+                }}
 
-              onSave={() => {
-                setSavedVideos(prev => ({ ...prev, [video.id]: !prev[video.id] }));
-              }}
+                onSave={() => {
+                  setSavedVideos(prev => ({ ...prev, [video.id]: !prev[video.id] }));
+                }}
 
-              toggleMute={() => setIsMuted(!isMuted)}
+                toggleMute={() => setIsMuted(!isMuted)}
 
-              isLiked={!!likedVideos[video.id]}
+                isLiked={!!likedVideos[video.id]}
 
-              isSaved={!!savedVideos[video.id]}
-            />
+                isSaved={!!savedVideos[video.id]}
+              />
 
-          </section>
+            </section>
+          )
         )
       )}
 
