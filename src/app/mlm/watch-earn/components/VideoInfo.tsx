@@ -1,11 +1,12 @@
 "use client";
-
 import {
   Music2,
   BadgeCheck
 } from "lucide-react";
+import FollowButton from "@/components/social/FollowButton";
 
 interface VideoInfoProps {
+  creatorId: string;
   displayName?: string;
   username: string;
   photoURL?: string;
@@ -17,6 +18,7 @@ interface VideoInfoProps {
 }
 
 export default function VideoInfo({
+  creatorId,
   displayName,
   username,
   photoURL,
@@ -49,6 +51,9 @@ export default function VideoInfo({
             {verified && (
               <BadgeCheck size={14} className="text-blue-400" aria-label="Verified account" />
             )}
+            <div className="pointer-events-auto">
+              <FollowButton targetUid={creatorId} />
+            </div>
           </div>
 
           <span className="text-xs text-[var(--text-primary)]/80 truncate max-w-[40vw]">{music}</span>

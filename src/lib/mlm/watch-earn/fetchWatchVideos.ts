@@ -57,7 +57,7 @@ export async function fetchWatchVideos() {
         if (userSnap.exists()) {
           const userData = userSnap.data();
           creatorCache[creatorId] = {
-            displayName: userData.displayName || userData.name,
+            displayName: userData.displayName || userData.name || userData.firstName + ' ' + userData.lastName,
             photoURL: userData.photoURL
           };
         } else {
