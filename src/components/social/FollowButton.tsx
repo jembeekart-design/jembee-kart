@@ -1,9 +1,10 @@
 "use client";
 
 import { useState, useEffect } from 'react';
+import { doc, getDoc } from 'firebase/firestore';
 import { useRequireAuth } from '@/hooks/useRequireAuth';
 import { followUser, unfollowUser, isFollowing } from '@/lib/social/followService';
-import { auth } from '@/firebase/config';
+import { auth, db } from '@/firebase/config';
 
 interface FollowButtonProps {
   targetUid: string;
@@ -24,26 +25,24 @@ export default function FollowButton({ targetUid }: FollowButtonProps) {
     };
     checkStatus();
   }, [targetUid]);
-const handleToggleFollow = async () => {
-  if (!auth.currentUser) return;
 
-  setLoading(true);
-  try {
-    if (following) {
-      await unfollowUser(auth.currentUser.uid, targetUid);
-      setFollowing(false);
-    } else {
-      // Fetch follower's name before following
-      const userDoc = await getDoc(doc(db, 'users', auth.currentUser.uid));
-      const followerName = userDoc.data()?.name || "Someone";
+  const handleToggleFollow = async () => {
+    if (!auth.currentUser) return;
 
-      await followUser(auth.currentUser.uid, targetUid, followerName);
-      setFollowing(true);
-    }
-  } catch (error) {
-...
-import { doc, getDoc } from 'firebase/firestore'; // Added this import
+    setLoading(true);
+    try {
+      if (following) {
+        await unfollowUser(auth.currentUser.uid, targetUid);
+        setFollowing(false);
+      } else {
+        // Fetch follower's name before following
+        const userDoc = await getDoc(doc(db, 'users', auth.currentUser.uid));
+        const followerName = userDoc.data()?.name || "Someone";
 
+        await followUser(auth.currentUser.uid, targetUid, followerName);
+        setFollowing(true);
+      }
+    } catch (error) {
       console.error("Follow error:", error);
     } finally {
       setLoading(false);

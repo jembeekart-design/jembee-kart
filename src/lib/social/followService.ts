@@ -30,8 +30,6 @@ export const followUser = async (followerUid: string, targetUid: string, followe
 
   await sendFollowNotification(followerUid, targetUid, followerName);
 };
-...
-
 export const unfollowUser = async (followerUid: string, targetUid: string) => {
   const followerRef = doc(db, 'users', followerUid);
   const targetRef = doc(db, 'users', targetUid);
