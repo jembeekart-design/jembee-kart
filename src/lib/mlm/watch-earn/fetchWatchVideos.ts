@@ -55,12 +55,13 @@ for (const docItem of snapshot.docs) {
   let displayName = data.displayName;
   let photoURL = data.photoURL;
 
-  // Force fetch user data if not in cache, even if displayName/photoURL exist, to ensure we get the latest data
+  const persistedDisplayName = data.displayName;
+  const isPlaceholder = persistedDisplayName === "JembeeKart User";
+
+  // Force fetch user data if not in cache, to ensure we get the latest data
   if (creatorId && !creatorCache[creatorId]) {
     const userRef = doc(db, "users", creatorId);
     const userSnap = await getDoc(userRef);
-    console.log("DEBUG: Fetched user document for", creatorId, ":", userSnap.exists() ? userSnap.data() : "not found");
-
     if (userSnap.exists()) {
       const userData = userSnap.data();
       creatorCache[creatorId] = {
@@ -72,9 +73,10 @@ for (const docItem of snapshot.docs) {
     }
   }
 
-  // Priority: Creator document (from cache) > Video document
-  const finalDisplayName = creatorCache[creatorId]?.displayName || displayName;
-  const finalPhotoURL = creatorCache[creatorId]?.photoURL || photoURL;
+  // Priority: Dynamically fetched Creator document (from cache) > Valid persisted name
+  const finalDisplayName = creatorCache[creatorId]?.displayName || 
+                           (!isPlaceholder ? persistedDisplayName : undefined);
+  const finalPhotoURL = creatorCache[creatorId]?.photoURL || data.photoURL;
 
   console.log("DEBUG: Final displayName:", finalDisplayName, "finalPhotoURL:", finalPhotoURL);
 
