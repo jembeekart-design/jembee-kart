@@ -31,6 +31,7 @@ function LoginCard() {
 
   const searchParams = useSearchParams();
   const referralCode = searchParams.get("ref") || "";
+  const redirect = searchParams.get("redirect") || "/";
 
   /* ======================================================
   STEP 1: ONLY PASSIVE CAPTURE (Safe Transfer to Signup Engine)
@@ -93,8 +94,8 @@ function LoginCard() {
       if (isExistingUser) {
         // Clear cached reference tracking payloads safely
         localStorage.removeItem("jbk_pending_ref");
-        // ✅ Redirect updated back to Root path as per requirement
-        window.location.href = "/"; 
+        // ✅ Redirect updated to target path
+        window.location.href = redirect; 
       } else {
         alert("Account records not found in JembeeKart database. Please Signup first.");
         await auth.signOut();
@@ -140,8 +141,8 @@ if (userDoc.exists()) {
         
         if (isExistingUser) {
           localStorage.removeItem("jbk_pending_ref");
-          // ✅ Redirect updated back to Root path as per requirement
-          window.location.href = "/"; 
+          // ✅ Redirect updated to target path
+          window.location.href = redirect; 
         } else {
           // Agar user Firestore me nahi mila, to ye alert chalega aur signup pe bhejega
           alert("No existing profile found. Redirecting to Signup page to apply your referral code.");
