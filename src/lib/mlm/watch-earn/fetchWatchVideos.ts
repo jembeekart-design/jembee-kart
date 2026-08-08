@@ -55,7 +55,8 @@ for (const docItem of snapshot.docs) {
   let displayName = data.displayName;
   let photoURL = data.photoURL;
 
-  if (creatorId && (!displayName || !photoURL) && !creatorCache[creatorId]) {
+  // Force fetch user data if not in cache, even if displayName/photoURL exist, to ensure we get the latest data
+  if (creatorId && !creatorCache[creatorId]) {
     const userRef = doc(db, "users", creatorId);
     const userSnap = await getDoc(userRef);
     console.log("DEBUG: Fetched user document for", creatorId, ":", userSnap.exists() ? userSnap.data() : "not found");
@@ -71,8 +72,9 @@ for (const docItem of snapshot.docs) {
     }
   }
 
-  const finalDisplayName = displayName || creatorCache[creatorId]?.displayName;
-  const finalPhotoURL = photoURL || creatorCache[creatorId]?.photoURL;
+  // Priority: Creator document (from cache) > Video document
+  const finalDisplayName = creatorCache[creatorId]?.displayName || displayName;
+  const finalPhotoURL = creatorCache[creatorId]?.photoURL || photoURL;
 
   console.log("DEBUG: Final displayName:", finalDisplayName, "finalPhotoURL:", finalPhotoURL);
 

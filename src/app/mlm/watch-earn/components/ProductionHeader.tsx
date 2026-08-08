@@ -2,13 +2,14 @@
 
 import React, { useState } from "react";
 import { useRouter } from "next/navigation";
-import { ArrowLeft, Search, Users, Coins, Bell, Flame, X } from "lucide-react";
-import GlassCard from "./GlassCard";
-import { motion, AnimatePresence } from "framer-motion";
+import { ArrowLeft, Search, Users, Coins, Bell, Flame } from "lucide-react";
+import { motion } from "framer-motion";
+import { useWallet } from "@/hooks/useWallet";
 
 export default function ProductionHeader({ activeTab, setActiveTab }: { activeTab: 'foryou' | 'following', setActiveTab: (tab: 'foryou' | 'following') => void }) {
   const router = useRouter();
   const [showSearch, setShowSearch] = useState(false);
+  const { wallet, loading } = useWallet();
 
   return (
     <>
@@ -47,7 +48,7 @@ export default function ProductionHeader({ activeTab, setActiveTab }: { activeTa
 
             <button onClick={() => router.push('/mlm/wallet')} aria-label="Coins" className="flex items-center gap-2 rounded-full bg-white/5 px-2 py-1">
               <Coins size={14} className="text-yellow-300" />
-              <span className="font-semibold text-sm">0</span>
+              <span className="font-semibold text-sm">{loading ? '...' : wallet?.walletBalance || 0}</span>
             </button>
 
             <button onClick={() => router.push('/mlm/notifications')} aria-label="Notifications" className="p-2 rounded-full bg-white/5 backdrop-blur-sm">
@@ -72,9 +73,6 @@ export default function ProductionHeader({ activeTab, setActiveTab }: { activeTa
           </button>
         </div>
       </header>
-
-      {/* Search Modal */}
-      {/* ... */}
     </>
   );
 }
