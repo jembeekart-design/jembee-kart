@@ -1,4 +1,4 @@
-import { useRouter, usePathname } from 'next/navigation';
+import { useRouter, usePathname, useSearchParams } from 'next/navigation';
 import { auth } from '@/firebase/config';
 import { onAuthStateChanged } from 'firebase/auth';
 import { useEffect, useState } from 'react';
@@ -15,11 +15,16 @@ export const useRequireAuth = () => {
     return () => unsubscribe();
   }, []);
 
-  const requireAuth = (callback: () => void) => {
+  const requireAuth = (callback: () => void, actionType?: string, actionData?: string) => {
     if (auth.currentUser) {
       callback();
     } else {
-      // Redirect to login with the current path as a return parameter
+      if (actionType) {
+        localStorage.setItem('jbk_pending_action_type', actionType);
+        if (actionData) {
+          localStorage.setItem('jbk_pending_action_data', actionData);
+        }
+      }
       router.push(`/login?redirect=${encodeURIComponent(pathname)}`);
     }
   };
