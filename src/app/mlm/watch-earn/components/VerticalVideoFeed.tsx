@@ -258,6 +258,7 @@ export default function VerticalVideoFeed({ activeTab }: { activeTab: 'foryou' |
               {/* INFO */}
 
               <VideoInfo
+                creatorId={video.creatorId}
                 displayName={video.displayName}
                 username={video.username}
                 photoURL={video.photoURL}
