@@ -31,10 +31,8 @@ import { shareVideo } from "@/lib/mlm/watch-earn/shareVideo";
 import { useRequireAuth } from "@/hooks/useRequireAuth";
 import { collection, getDocs } from "firebase/firestore";
 
-export default function
-VerticalVideoFeed() {
+export default function VerticalVideoFeed({ activeTab }: { activeTab: 'foryou' | 'following' }) {
   const { requireAuth, isAuthenticated } = useRequireAuth();
-  const [activeTab, setActiveTab] = useState<'foryou' | 'following'>('foryou');
   const [followingList, setFollowingList] = useState<string[]>([]);
   const [videos, setVideos] = useState<WatchVideo[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
@@ -219,22 +217,6 @@ VerticalVideoFeed() {
         bg-[var(--color-card-background)]
       "
     >
-      {/* Tabs */}
-      <div className="fixed top-4 left-0 w-full flex justify-center z-50 gap-4">
-        <button 
-          onClick={() => setActiveTab('foryou')}
-          className={`font-black ${activeTab === 'foryou' ? 'text-white' : 'text-gray-400'}`}
-        >
-          For You
-        </button>
-        <button 
-          onClick={() => requireAuth(() => setActiveTab('following'))}
-          className={`font-black ${activeTab === 'following' ? 'text-white' : 'text-gray-400'}`}
-        >
-          Following
-        </button>
-      </div>
-
       {filteredVideos.length === 0 ? (
         <div className="h-screen flex items-center justify-center text-gray-400">
           {activeTab === 'following' 
@@ -276,25 +258,14 @@ VerticalVideoFeed() {
               {/* INFO */}
 
               <VideoInfo
-                username={
-                  video.username
-                }
-
-                caption={
-                  video.caption
-                }
-
-                hashtags={
-                  video.hashtags
-                }
-
-                music={
-                  video.music
-                }
-
-                verified={
-                  video.verified
-                }
+                displayName={video.displayName}
+                username={video.username}
+                photoURL={video.photoURL}
+                caption={video.caption}
+                hashtags={video.hashtags}
+                music={video.music}
+                verified={video.verified}
+                originalVideoId={video.originalVideoId}
               />
 
               {/* ACTIONS */}

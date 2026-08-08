@@ -6,48 +6,46 @@ import {
 } from "lucide-react";
 
 interface VideoInfoProps {
-
+  displayName?: string;
   username: string;
-
+  photoURL?: string;
   caption: string;
-
   hashtags: string[];
-
   music: string;
-
   verified?: boolean;
-
   originalVideoId?: string;
-
 }
 
-export default function
-VideoInfo({
+export default function VideoInfo({
+  displayName,
   username,
+  photoURL,
   caption,
   hashtags,
   music,
   verified,
   originalVideoId
 }: VideoInfoProps) {
+  const displayLabel = displayName || username || "Unknown User";
 
   return (
-
     <div
       className="absolute bottom-[calc(10rem+env(safe-area-inset-bottom))] left-4 z-40 max-w-[72%] text-[var(--button-text-color)] pointer-events-none"
       aria-hidden={false}
     >
-
       {/* Compact user row */}
-
       <div className="flex items-center gap-3">
         <div className="h-10 w-10 rounded-full bg-gradient-to-br from-pink-500 to-yellow-400 p-0.5">
-          <div className="h-full w-full rounded-full bg-[var(--color-card-background)]" aria-hidden />
+          {photoURL ? (
+            <img src={photoURL} alt={displayLabel} className="h-full w-full rounded-full object-cover" />
+          ) : (
+            <div className="h-full w-full rounded-full bg-[var(--color-card-background)]" aria-hidden />
+          )}
         </div>
 
         <div className="flex flex-col leading-tight">
           <div className="flex items-center gap-2">
-            <span className="text-sm font-extrabold">@{username}</span>
+            <span className="text-sm font-extrabold">{displayLabel}</span>
             {verified && (
               <BadgeCheck size={14} className="text-blue-400" aria-label="Verified account" />
             )}
@@ -80,7 +78,6 @@ VideoInfo({
           )}
         </div>
       )}
-
     </div>
   );
 }
