@@ -42,6 +42,70 @@ type CreatorInfo = {
   photoURL?: string;
 };
 
+/**
+ * Returns a real user name.
+ *
+ * "JembeeKart User" is only a placeholder,
+ * so it must never be used as the creator's name.
+ */
+function getRealDisplayName(userData: Record<string, unknown>) {
+  const displayName =
+    typeof userData.displayName === "string"
+      ? userData.displayName.trim()
+      : "";
+
+  const name =
+    typeof userData.name === "string"
+      ? userData.name.trim()
+      : "";
+
+  const firstName =
+    typeof userData.firstName === "string"
+      ? userData.firstName.trim()
+      : "";
+
+  const lastName =
+    typeof userData.lastName === "string"
+      ? userData.lastName.trim()
+      : "";
+
+  const username =
+    typeof userData.username === "string"
+      ? userData.username.trim()
+      : "";
+
+  const fullName =
+    `${firstName} ${lastName}`.trim();
+
+  // Never return the placeholder.
+  if (
+    displayName &&
+    displayName !== "JembeeKart User"
+  ) {
+    return displayName;
+  }
+
+  if (
+    name &&
+    name !== "JembeeKart User"
+  ) {
+    return name;
+  }
+
+  if (fullName) {
+    return fullName;
+  }
+
+  if (
+    username &&
+    username !== "JembeeKart User"
+  ) {
+    return username;
+  }
+
+  return undefined;
+}
+
 export async function fetchWatchVideos() {
   try {
     const videosRef = collection(
@@ -78,10 +142,8 @@ export async function fetchWatchVideos() {
        * --------------------------------------------------
        * 1. GET CREATOR UID
        * --------------------------------------------------
-       *
-       * Some old documents may use creatorId.
-       * Current watchEarnVideos documents use userId.
        */
+
       const creatorUid =
         typeof data.creatorId === "string" &&
         data.creatorId.trim()
@@ -104,7 +166,7 @@ export async function fetchWatchVideos() {
 
       /**
        * --------------------------------------------------
-       * 2. VIDEO-LEVEL USER DATA
+       * 2. VIDEO-LEVEL DATA
        * --------------------------------------------------
        */
 
@@ -128,6 +190,9 @@ export async function fetchWatchVideos() {
           ? data.photo.trim()
           : "";
 
+      /**
+       * "JembeeKart User" is NOT a real creator name.
+       */
       const isPlaceholder =
         persistedDisplayName ===
         "JembeeKart User";
@@ -137,22 +202,10 @@ export async function fetchWatchVideos() {
        * 3. FIND USER DOCUMENT
        * --------------------------------------------------
        *
-       * Important:
-       *
-       * creatorUid may NOT be the users document ID.
-       *
-       * Example:
-       *
-       * users
-       *   └── ABCXYZ123       <-- document ID
-       *        uid: "firebaseAuthUid"
-       *
-       * Therefore we first try:
-       *
+       * First:
        * users/{creatorUid}
        *
-       * and if that doesn't exist:
-       *
+       * If not found:
        * users where uid == creatorUid
        */
 
@@ -165,7 +218,7 @@ export async function fetchWatchVideos() {
         try {
           /**
            * ----------------------------------------------
-           * FIRST: Try document ID
+           * FIRST: Try users/{creatorUid}
            * ----------------------------------------------
            */
 
@@ -182,44 +235,46 @@ export async function fetchWatchVideos() {
             const userData =
               directUserSnap.data();
 
+            const realDisplayName =
+              getRealDisplayName(
+                userData
+              );
+
             creator = {
               documentId:
                 directUserSnap.id,
 
               displayName:
-                typeof userData.displayName ===
-                "string"
-                  ? userData.displayName
-                  : typeof userData.name ===
-                      "string"
-                    ? userData.name
-                    : undefined,
+                realDisplayName,
 
               username:
                 typeof userData.username ===
                 "string"
-                  ? userData.username
+                  ? userData.username.trim()
                   : undefined,
 
               photoURL:
                 typeof userData.photoURL ===
                 "string"
-                  ? userData.photoURL
+                  ? userData.photoURL.trim()
                   : typeof userData.photo ===
                       "string"
-                    ? userData.photo
+                    ? userData.photo.trim()
                     : undefined,
             };
 
             console.log(
               "USER FOUND BY DOCUMENT ID:",
-              creator
+              {
+                creator,
+                realDisplayName,
+              }
             );
           }
 
           /**
            * ----------------------------------------------
-           * SECOND: Search by uid field
+           * SECOND: Search users by uid field
            * ----------------------------------------------
            */
 
@@ -251,43 +306,38 @@ export async function fetchWatchVideos() {
               const userData =
                 userDoc.data();
 
+              const realDisplayName =
+                getRealDisplayName(
+                  userData
+                );
+
               creator = {
                 /**
-                 * VERY IMPORTANT:
+                 * IMPORTANT:
                  *
-                 * Return the actual users
-                 * document ID.
+                 * Actual users document ID.
                  *
-                 * FollowButton needs this
-                 * because followService uses:
-                 *
-                 * users/{targetUid}
+                 * FollowButton uses this ID.
                  */
                 documentId:
                   userDoc.id,
 
                 displayName:
-                  typeof userData.displayName ===
-                  "string"
-                    ? userData.displayName
-                    : typeof userData.name ===
-                        "string"
-                      ? userData.name
-                      : undefined,
+                  realDisplayName,
 
                 username:
                   typeof userData.username ===
                   "string"
-                    ? userData.username
+                    ? userData.username.trim()
                     : undefined,
 
                 photoURL:
                   typeof userData.photoURL ===
                   "string"
-                    ? userData.photoURL
+                    ? userData.photoURL.trim()
                     : typeof userData.photo ===
                         "string"
-                      ? userData.photo
+                      ? userData.photo.trim()
                       : undefined,
               };
 
@@ -296,6 +346,7 @@ export async function fetchWatchVideos() {
                 {
                   creatorUid,
                   creator,
+                  realDisplayName,
                 }
               );
             }
@@ -334,41 +385,73 @@ export async function fetchWatchVideos() {
           : null;
 
       /**
-       * If the user document exists,
-       * use its ACTUAL document ID.
+       * Use actual users document ID.
        *
-       * Otherwise fall back to creatorUid.
+       * This is important for FollowButton.
        */
       const finalCreatorId =
         creator?.documentId ||
         creatorUid;
 
       /**
-       * Name priority:
+       * --------------------------------------------------
+       * 5. FINAL DISPLAY NAME
+       * --------------------------------------------------
        *
-       * users.displayName
-       * users.name
-       * video.displayName
-       * video.username
-       * fallback
+       * Priority:
+       *
+       * 1. users.displayName
+       * 2. users.name
+       * 3. users.firstName + lastName
+       * 4. users.username
+       * 5. video username
+       * 6. Unknown User
+       *
+       * "JembeeKart User" is NEVER accepted.
        */
-      const finalDisplayName =
-        creator?.displayName ||
-        (!isPlaceholder
-          ? persistedDisplayName
-          : "") ||
-        creator?.username ||
-        persistedUsername ||
-        "Unknown User";
+
+      let finalDisplayName =
+        creator?.displayName?.trim() || "";
+
+      if (
+        !finalDisplayName ||
+        finalDisplayName ===
+          "JembeeKart User"
+      ) {
+        finalDisplayName =
+          creator?.username?.trim() || "";
+      }
+
+      if (
+        !finalDisplayName &&
+        persistedDisplayName &&
+        !isPlaceholder
+      ) {
+        finalDisplayName =
+          persistedDisplayName;
+      }
+
+      if (
+        !finalDisplayName &&
+        persistedUsername &&
+        persistedUsername !==
+          "JembeeKart User"
+      ) {
+        finalDisplayName =
+          persistedUsername;
+      }
+
+      if (!finalDisplayName) {
+        finalDisplayName =
+          "Unknown User";
+      }
 
       /**
-       * Photo priority:
-       *
-       * users.photoURL
-       * users.photo
-       * video.photoURL
-       * video.photo
+       * --------------------------------------------------
+       * 6. FINAL PHOTO
+       * --------------------------------------------------
        */
+
       const finalPhotoURL =
         creator?.photoURL ||
         persistedPhotoURL ||
@@ -376,8 +459,11 @@ export async function fetchWatchVideos() {
         undefined;
 
       /**
-       * Username
+       * --------------------------------------------------
+       * 7. FINAL USERNAME
+       * --------------------------------------------------
        */
+
       const finalUsername =
         creator?.username ||
         persistedUsername ||
@@ -386,15 +472,22 @@ export async function fetchWatchVideos() {
       console.log(
         "FINAL VIDEO CREATOR:",
         {
-          videoId: videoDoc.id,
+          videoId:
+            videoDoc.id,
+
           creatorUid,
+
           creatorDocumentId:
             creator?.documentId,
+
           finalCreatorId,
+
           displayName:
             finalDisplayName,
+
           username:
             finalUsername,
+
           photoURL:
             finalPhotoURL,
         }
@@ -402,20 +495,18 @@ export async function fetchWatchVideos() {
 
       /**
        * --------------------------------------------------
-       * 5. BUILD VIDEO OBJECT
+       * 8. BUILD VIDEO OBJECT
        * --------------------------------------------------
        */
 
       videos.push({
-        id: videoDoc.id,
+        id:
+          videoDoc.id,
 
         /**
-         * IMPORTANT:
+         * Actual users document ID.
          *
-         * This is now the actual users
-         * document ID whenever available.
-         *
-         * FollowButton will receive this.
+         * FollowButton receives this.
          */
         creatorId:
           finalCreatorId,
@@ -437,8 +528,11 @@ export async function fetchWatchVideos() {
         hashtags:
           Array.isArray(data.hashtags)
             ? data.hashtags.filter(
-                (tag): tag is string =>
-                  typeof tag === "string"
+                (
+                  tag
+                ): tag is string =>
+                  typeof tag ===
+                  "string"
               )
             : [],
 
