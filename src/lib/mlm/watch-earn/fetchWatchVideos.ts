@@ -5,7 +5,7 @@ import {
   doc,
   limit,
   orderBy,
-  query
+  query,
 } from "firebase/firestore";
 
 import { db } from "@/firebase/config";
@@ -37,85 +37,286 @@ export interface WatchVideo {
 export async function fetchWatchVideos() {
   try {
     const videosRef = collection(db, "watchEarnVideos");
+
     const videosQuery = query(
       videosRef,
       orderBy("createdAt", "desc"),
       limit(50)
     );
+
     const snapshot = await getDocs(videosQuery);
-    
+
     const videos: WatchVideo[] = [];
-    const creatorCache: Record<string, { displayName?: string, photoURL?: string }> = {};
-for (const docItem of snapshot.docs) {
-  const data = docItem.data();
-  const creatorId = data.creatorId || "";
 
-  console.log("DEBUG: Processing video", docItem.id, "creatorId:", creatorId);
+    // Cache user data so the same creator is not fetched repeatedly
+    const creatorCache: Record<
+      string,
+      {
+        displayName?: string;
+        photoURL?: string;
+      }
+    > = {};
 
-  let displayName = data.displayName;
-  let photoURL = data.photoURL;
+    for (const docItem of snapshot.docs) {
+      const data = docItem.data();
 
-  const persistedDisplayName = data.displayName;
-  const isPlaceholder = persistedDisplayName === "JembeeKart User";
+      // IMPORTANT:
+      // Firestore watchEarnVideos uses userId,
+      // while frontend expects creatorId.
+      const creatorId =
+        data.creatorId ||
+        data.userId ||
+        "";
 
-  // Force fetch user data if not in cache, to ensure we get the latest data
-  if (creatorId && !creatorCache[creatorId]) {
-    const userRef = doc(db, "users", creatorId);
-    const userSnap = await getDoc(userRef);
-    if (userSnap.exists()) {
-      const userData = userSnap.data();
-      creatorCache[creatorId] = {
-        displayName: userData.displayName || userData.name || (userData.firstName ? userData.firstName + ' ' + userData.lastName : undefined),
-        photoURL: userData.photoURL
-      };
-    } else {
-      creatorCache[creatorId] = { displayName: undefined, photoURL: undefined };
-    }
-  }
+      console.log(
+        "DEBUG: Processing video:",
+        docItem.id,
+        "creatorId:",
+        creatorId,
+        "userId:",
+        data.userId
+      );
 
-  // Priority: Dynamically fetched Creator document (from cache) > Valid persisted name
-  const finalDisplayName = creatorCache[creatorId]?.displayName || 
-                           (!isPlaceholder ? persistedDisplayName : undefined);
-  const finalPhotoURL = creatorCache[creatorId]?.photoURL || data.photoURL;
+      // --------------------------------------------------
+      // VIDEO DOCUMENT DATA
+      // --------------------------------------------------
 
-  console.log("DEBUG: Final displayName:", finalDisplayName, "finalPhotoURL:", finalPhotoURL);
+      const persistedDisplayName =
+        typeof data.displayName === "string"
+          ? data.displayName
+          : undefined;
 
-  videos.push({
-    id: docItem.id,
-    creatorId: creatorId,
-    username: data.username || "",
-    displayName: finalDisplayName,
-    photoURL: finalPhotoURL,
-    caption: data.caption || "",
-//...
+      const persistedPhotoURL =
+        typeof data.photoURL === "string"
+          ? data.photoURL
+          : undefined;
 
-        hashtags: data.hashtags || [],
-        music: data.music || "",
-        verified: data.verified || false,
-        video: data.video || "",
-        thumbnail: data.thumbnail || "",
-        productId: data.productId || "",
-        coins: data.coins || 0,
-        likes: data.likes || 0,
-        comments: data.comments || 0,
-        shares: data.shares || 0,
-        views: data.views || 0,
-        originalVideoId: data.originalVideoId || undefined,
-        originalAudioId: data.originalAudioId || undefined,
-        sponsor: data.sponsor || false,
-        createdAt: data.createdAt || 0
+      const persistedPhoto =
+        typeof data.photo === "string"
+          ? data.photo
+          : undefined;
+
+      const persistedUsername =
+        typeof data.username === "string"
+          ? data.username
+          : "";
+
+      // "JembeeKart User" is treated as placeholder
+      const isPlaceholder =
+        persistedDisplayName === "JembeeKart User";
+
+      // --------------------------------------------------
+      // FETCH CREATOR FROM users/{creatorId}
+      // --------------------------------------------------
+
+      if (
+        creatorId &&
+        !creatorCache[creatorId]
+      ) {
+        try {
+          const userRef = doc(
+            db,
+            "users",
+            creatorId
+          );
+
+          const userSnap =
+            await getDoc(userRef);
+
+          if (userSnap.exists()) {
+            const userData =
+              userSnap.data();
+
+            const firstName =
+              typeof userData.firstName === "string"
+                ? userData.firstName
+                : "";
+
+            const lastName =
+              typeof userData.lastName === "string"
+                ? userData.lastName
+                : "";
+
+            const combinedName =
+              `${firstName} ${lastName}`.trim();
+
+            creatorCache[creatorId] = {
+              displayName:
+                userData.displayName ||
+                userData.name ||
+                combinedName ||
+                undefined,
+
+              // Support both possible field names
+              photoURL:
+                userData.photoURL ||
+                userData.photo ||
+                undefined,
+            };
+
+            console.log(
+              "DEBUG: User found:",
+              creatorId,
+              creatorCache[creatorId]
+            );
+          } else {
+            console.warn(
+              "DEBUG: User document not found:",
+              creatorId
+            );
+
+            creatorCache[creatorId] = {};
+          }
+        } catch (userError) {
+          console.error(
+            "DEBUG: Failed to fetch creator:",
+            creatorId,
+            userError
+          );
+
+          creatorCache[creatorId] = {};
+        }
+      }
+
+      // --------------------------------------------------
+      // FINAL CREATOR INFORMATION
+      // --------------------------------------------------
+
+      const cachedCreator =
+        creatorCache[creatorId];
+
+      const finalDisplayName =
+        cachedCreator?.displayName ||
+        (!isPlaceholder
+          ? persistedDisplayName
+          : undefined) ||
+        persistedUsername ||
+        "Unknown User";
+
+      const finalPhotoURL =
+        cachedCreator?.photoURL ||
+        persistedPhotoURL ||
+        persistedPhoto ||
+        undefined;
+
+      console.log(
+        "DEBUG: Final creator:",
+        {
+          creatorId,
+          displayName: finalDisplayName,
+          photoURL: finalPhotoURL,
+        }
+      );
+
+      // --------------------------------------------------
+      // CREATE WATCH VIDEO OBJECT
+      // --------------------------------------------------
+
+      videos.push({
+        id: docItem.id,
+
+        creatorId,
+
+        username:
+          persistedUsername,
+
+        displayName:
+          finalDisplayName,
+
+        photoURL:
+          finalPhotoURL,
+
+        caption:
+          typeof data.caption === "string"
+            ? data.caption
+            : "",
+
+        hashtags:
+          Array.isArray(data.hashtags)
+            ? data.hashtags
+            : [],
+
+        music:
+          typeof data.music === "string"
+            ? data.music
+            : "",
+
+        verified:
+          data.verified === true,
+
+        video:
+          typeof data.video === "string"
+            ? data.video
+            : "",
+
+        thumbnail:
+          typeof data.thumbnail === "string"
+            ? data.thumbnail
+            : "",
+
+        productId:
+          typeof data.productId === "string"
+            ? data.productId
+            : "",
+
+        coins:
+          typeof data.coins === "number"
+            ? data.coins
+            : 0,
+
+        likes:
+          typeof data.likes === "number"
+            ? data.likes
+            : 0,
+
+        comments:
+          typeof data.comments === "number"
+            ? data.comments
+            : 0,
+
+        shares:
+          typeof data.shares === "number"
+            ? data.shares
+            : 0,
+
+        views:
+          typeof data.views === "number"
+            ? data.views
+            : 0,
+
+        originalVideoId:
+          typeof data.originalVideoId === "string"
+            ? data.originalVideoId
+            : undefined,
+
+        originalAudioId:
+          typeof data.originalAudioId === "string"
+            ? data.originalAudioId
+            : undefined,
+
+        sponsor:
+          data.sponsor === true,
+
+        createdAt:
+          typeof data.createdAt === "number"
+            ? data.createdAt
+            : 0,
       });
     }
 
     return {
       success: true,
-      videos
+      videos,
     };
   } catch (error) {
-    console.error("FETCH WATCH VIDEOS ERROR:", error);
+    console.error(
+      "FETCH WATCH VIDEOS ERROR:",
+      error
+    );
+
     return {
       success: false,
-      videos: []
+      videos: [],
     };
   }
 }
