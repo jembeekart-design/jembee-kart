@@ -25,7 +25,12 @@ export default function AudioPage() {
 
   useEffect(() => {
     async function fetchVideosByAudio() {
-      const q = query(collection(db, "watchEarnVideos"), where("music", "==", audioId));
+      const q = query(
+        collection(db, "watchEarnVideos"),
+        where("music", "==", audioId),
+        where("status", "==", "approved"),
+        where("moderation", "==", "safe")
+      );
       const snapshot = await getDocs(q);
       const fetchedVideos: WatchVideo[] = snapshot.docs.map(doc => ({
         id: doc.id,
