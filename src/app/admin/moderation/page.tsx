@@ -49,9 +49,33 @@ export default function AdminModerationDashboard() {
   }, []);
 
   const fetchVideoQueue = async () => {
-    const q = query(collection(db, 'watchEarnVideos'), where('status', 'in', ['pending', 'rejected']), orderBy('createdAt', 'desc'));
-    const snap = await getDocs(q);
-    setVideoQueue(snap.docs.map(d => ({ id: d.id, ...d.data() } as VideoModerationItem)));
+    try {
+      console.log('MODERATION: querying watchEarnVideos...');
+
+      const q = query(
+        collection(db, 'watchEarnVideos'),
+        where('status', 'in', ['pending', 'rejected']),
+        orderBy('createdAt', 'desc')
+      );
+
+      const snap = await getDocs(q);
+
+      console.log('MODERATION: documents found =', snap.size);
+
+      setVideoQueue(
+        snap.docs.map(d => ({
+          id: d.id,
+          ...d.data()
+        }) as VideoModerationItem)
+      );
+
+      setMessage(`DEBUG: ${snap.size} moderation videos found`);
+    } catch (error) {
+      console.error('MODERATION QUERY ERROR:', error);
+      setMessage(
+        `DEBUG ERROR: ${error instanceof Error ? error.message : String(error)}`
+      );
+    }
   };
 
   const handleVideoAction = async (videoId: string, action: 'approved' | 'rejected') => {
