@@ -314,6 +314,9 @@ export async function uploadWatchVideo({
       // ================================================
 
       coins:
+        0,
+
+      pendingCoins:
         rewardCoins,
 
       // ================================================
@@ -349,10 +352,10 @@ export async function uploadWatchVideo({
         false,
 
       status:
-        "approved",
+        "pending",
 
       moderation:
-        "safe",
+        "pending",
 
       // ================================================
       // CREATED TIME
