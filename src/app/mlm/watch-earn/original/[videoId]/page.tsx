@@ -21,11 +21,19 @@ export default function OriginalPage() {
       // Fetch original video
       const origDoc = await getDoc(doc(db, "watchEarnVideos", originalVideoId));
       if (origDoc.exists()) {
-        setOriginalVideo({ id: origDoc.id, ...origDoc.data() } as WatchVideo);
+        const data = origDoc.data();
+        if (data.status === "approved" && data.moderation === "safe") {
+          setOriginalVideo({ id: origDoc.id, ...data } as WatchVideo);
+        }
       }
 
       // Fetch derived videos
-      const q = query(collection(db, "watchEarnVideos"), where("originalVideoId", "==", originalVideoId));
+      const q = query(
+        collection(db, "watchEarnVideos"),
+        where("originalVideoId", "==", originalVideoId),
+        where("status", "==", "approved"),
+        where("moderation", "==", "safe")
+      );
       const snapshot = await getDocs(q);
       setDerivedVideos(snapshot.docs.map(d => ({ id: d.id, ...d.data() } as WatchVideo)));
       setLoading(false);
