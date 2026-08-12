@@ -152,6 +152,11 @@ const DEFAULT_SETTINGS = {
     maxLength: 500,
   },
   
+  adsManager: {
+    pageTitle: "Ads Manager",
+    defaultAdRate: 10,
+  },
+
   security: {
     twoFactor: false,
     loginAttempts: 5,
