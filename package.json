@@ -7,13 +7,14 @@
     "governance": "dotenv -e .env.local -- tsx src/jembee-governance/index.ts",
     "governance:check": "dotenv -e .env.local -- tsx src/jembee-governance/index.ts",
     "theme:codemod": "tsx src/scripts/theme-codemod.ts",
-    "build": "npm run governance && next build",
+    "build": "npm run governance && next build --webpack",
     "start": "next start",
     "lint": "eslint",
     "scan:hardcoded": "tsx src/scripts/hardcodedScanner.ts",
     "autofix": "dotenv -e .env.local -- tsx src/scripts/autofix.ts"
   },
   "dependencies": {
+    "cloudinary": "^2.10.0",
     "clsx": "^2.1.1",
     "firebase": "^12.13.0",
     "firebase-admin": "^13.4.0",

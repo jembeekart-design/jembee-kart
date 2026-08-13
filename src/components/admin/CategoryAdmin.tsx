@@ -128,10 +128,10 @@ export default function CategoryAdmin() {
         image: "",
 
         backgroundColor:
-          "var(--primary-color)",
+          "var(--color-primary-button)",
 
         textColor:
-          "var(--primary-color)",
+          "var(--color-primary-button)",
 
         borderRadius:
           "20px",
@@ -591,7 +591,7 @@ export default function CategoryAdmin() {
                           items-center
                           justify-center
                           rounded-2xl
-                          bg-[var(--danger-color)]
+                          bg-[var(--color-danger)]
                           text-[var(--button-text-color)]
                         "
                       >

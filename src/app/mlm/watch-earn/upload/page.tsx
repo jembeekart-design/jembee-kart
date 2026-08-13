@@ -1,11 +1,11 @@
 "use client";
 
 import {
-  useState
+  useState,
+  useEffect
 } from "react";
-
+import { useSearchParams } from "next/navigation";
 import { auth } from "@/firebase/config";
-
 import {
   Upload,
   Loader2,
@@ -13,40 +13,39 @@ import {
   BadgeCheck,
   ShieldCheck
 } from "lucide-react";
-
 import {
   uploadWatchVideo
 } from "@/lib/mlm/watch-earn/uploadWatchVideo";
 
 export default function
 UploadWatchVideoPage() {
-
-  const [
-    file,
-    setFile
-  ] = useState<File | null>(
-    null
-  );
-
-  const [
-    loading,
-    setLoading
-  ] = useState(false);
-
-  const [
-    caption,
-    setCaption
-  ] = useState("");
-
-  const [
-    hashtags,
-    setHashtags
-  ] = useState("");
-
-  const [
-    music,
-    setMusic
-  ] = useState("");
+  const searchParams = useSearchParams();
+  const initialMusic = searchParams.get('audio') || "";
+  const videoUrlFromParams = searchParams.get('url');
+  
+  const [file, setFile] = useState<File | null>(null);
+  const [loading, setLoading] = useState(false);
+  const [caption, setCaption] = useState("");
+  const [hashtags, setHashtags] = useState("");
+  const [music, setMusic] = useState(initialMusic);
+  
+  useEffect(() => {
+    async function loadBlob() {
+        if (videoUrlFromParams && videoUrlFromParams.startsWith('blob:')) {
+            try {
+                const response = await fetch(videoUrlFromParams);
+                const blob = await response.blob();
+                const file = new File([blob], 'recording.webm', { type: 'video/webm' });
+                setFile(file);
+            } catch (err) {
+                console.error("Failed to load blob", err);
+            }
+        }
+    }
+    loadBlob();
+  }, [videoUrlFromParams]);
+  
+  // ... (rest of component)
 
   async function
   handleUpload() {
@@ -65,31 +64,36 @@ UploadWatchVideoPage() {
       setLoading(true);
 
       const result =
-        await uploadWatchVideo({
-          file,
+      await uploadWatchVideo({
+        file,
 
-          userId:
-            auth.currentUser?.uid || "",
+        creatorId:
+          auth.currentUser?.uid || "",
 
-          username:
-            auth.currentUser?.displayName || "JembeeKart User",
+        displayName:
+          auth.currentUser?.displayName || undefined,
 
-          caption,
+        photoURL:
+          auth.currentUser?.photoURL || undefined,
 
-          hashtags:
-            hashtags
-              .split(",")
+        username:
+          auth.currentUser?.displayName || auth.currentUser?.email || "Unknown User",
 
-              .map(
-                (tag) =>
-                  tag.trim()
-              )
+        caption,
 
-              .filter(Boolean),
+        hashtags:
+          hashtags
+            .split(",")
 
-          music
-        });
+            .map(
+              (tag) =>
+                tag.trim()
+            )
 
+            .filter(Boolean),
+
+        music
+      });
       if (
         result.success
       ) {
