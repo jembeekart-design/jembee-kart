@@ -8,14 +8,14 @@ import CreatorEconomyCard from "./CreatorEconomyCard";
 import FeatureFlagsCard from "./FeatureFlagsCard";
 export default function BusinessRulesPage() {
   return (
-    <div className="min-h-screen bg-[var(--card-color)] text-[var(--button-text-color)] p-6">
+    <div className="min-h-screen bg-[var(--color-page-background)] text-[var(--text-primary)] p-6">
       <div className="max-w-7xl mx-auto">
 
-        <h1 className="text-3xl font-bold">
+        <h1 className="text-3xl font-bold text-[var(--text-primary)]">
           Business Rules
         </h1>
 
-        <p className="mt-2 text-[var(--text-color)]">
+        <p className="mt-2 text-[var(--text-muted)]">
           Manage all JembeeKart business rules from one place.
         </p>
 

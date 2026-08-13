@@ -12,13 +12,13 @@ export default function AdminNavbar() {
 
   return (
 
-    <header className="sticky top-0 z-50 flex h-[80px] items-center justify-between border-b border-[var(--border-color)]/10 bg-[var(--primary-color)]/95 px-4 backdrop-blur-xl">
+    <header className="sticky top-0 z-50 flex h-[80px] items-center justify-between border-b border-[var(--color-border)]/10 bg-[var(--color-primary-button)]/95 px-4 backdrop-blur-xl">
 
       {/* LEFT */}
 
       <div className="flex items-center gap-3">
 
-        <button className="flex h-12 w-12 items-center justify-center rounded-2xl bg-[var(--primary-color)] text-[var(--button-text-color)] lg:hidden">
+        <button className="flex h-12 w-12 items-center justify-center rounded-2xl bg-[var(--color-primary-button)] text-[var(--button-text-color)] lg:hidden">
 
           <Menu size={22} />
 
@@ -32,7 +32,7 @@ export default function AdminNavbar() {
 
           </h1>
 
-          <p className="text-sm text-[var(--muted-text-color)]">
+          <p className="text-sm text-[var(--text-muted)]">
 
             Welcome back admin
 
@@ -46,17 +46,17 @@ export default function AdminNavbar() {
 
       <div className="hidden w-full max-w-[500px] px-8 md:block">
 
-        <div className="flex h-14 items-center gap-3 rounded-2xl border border-[var(--border-color)]/10 bg-[var(--primary-color)] px-4">
+        <div className="flex h-14 items-center gap-3 rounded-2xl border border-[var(--color-border)]/10 bg-[var(--color-primary-button)] px-4">
 
           <Search
             size={20}
-            className="text-[var(--muted-text-color)]"
+            className="text-[var(--text-muted)]"
           />
 
           <input
             type="text"
             placeholder="Search products, users, orders..."
-            className="w-full bg-transparent text-sm text-[var(--button-text-color)] outline-none placeholder:text-[var(--muted-text-color)]"
+            className="w-full bg-transparent text-sm text-[var(--button-text-color)] outline-none placeholder:text-[var(--text-muted)]"
           />
 
         </div>
@@ -69,17 +69,17 @@ export default function AdminNavbar() {
 
         {/* NOTIFICATION */}
 
-        <button className="relative flex h-12 w-12 items-center justify-center rounded-2xl bg-[var(--primary-color)] text-[var(--button-text-color)] transition-all duration-300 hover:bg-[var(--primary-color)] hover:text-[var(--text-color)]">
+        <button className="relative flex h-12 w-12 items-center justify-center rounded-2xl bg-[var(--color-primary-button)] text-[var(--button-text-color)] transition-all duration-300 hover:bg-[var(--color-primary-button)] hover:text-[var(--text-primary)]">
 
           <Bell size={20} />
 
-          <span className="absolute right-2 top-2 h-2.5 w-2.5 rounded-full bg-[var(--danger-color)]" />
+          <span className="absolute right-2 top-2 h-2.5 w-2.5 rounded-full bg-[var(--color-danger)]" />
 
         </button>
 
         {/* SETTINGS */}
 
-        <button className="flex h-12 w-12 items-center justify-center rounded-2xl bg-[var(--primary-color)] text-[var(--button-text-color)] transition-all duration-300 hover:bg-[var(--primary-color)] hover:text-[var(--text-color)]">
+        <button className="flex h-12 w-12 items-center justify-center rounded-2xl bg-[var(--color-primary-button)] text-[var(--button-text-color)] transition-all duration-300 hover:bg-[var(--color-primary-button)] hover:text-[var(--text-primary)]">
 
           <Settings size={20} />
 
@@ -87,9 +87,9 @@ export default function AdminNavbar() {
 
         {/* PROFILE */}
 
-        <div className="flex items-center gap-3 rounded-2xl bg-[var(--primary-color)] px-4 py-2">
+        <div className="flex items-center gap-3 rounded-2xl bg-[var(--color-primary-button)] px-4 py-2">
 
-          <div className="flex h-11 w-11 items-center justify-center rounded-xl bg-[var(--primary-color)] text-[var(--text-color)]">
+          <div className="flex h-11 w-11 items-center justify-center rounded-xl bg-[var(--color-primary-button)] text-[var(--text-primary)]">
 
             <User size={20} />
 

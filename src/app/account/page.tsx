@@ -39,6 +39,10 @@ interface UserProfile {
   mlmActive: boolean;
   referralCode: string;
   sponsorId: string;
+  bio?: string;
+  followersCount: number;
+  followingCount: number;
+  uploadedVideosCount: number;
 }
 
 /* ======================================================
@@ -66,40 +70,49 @@ export default function AccountPage() {
       const docRef = doc(db, "users", currentUser.uid);
 
       unsubscribeFirestore = onSnapshot(
-        docRef,
-        (docSnap) => {
-          if (docSnap.exists()) {
-            const data = docSnap.data();
-            setUser({
-              uid: data.uid || currentUser.uid,
-              email: data.email || "",
-              name: data.name || "",
-              photo: data.photo || "",
-              phone: data.phone || "",
-              walletBalance: data.walletBalance || 0,
-              totalIncome: data.totalIncome || 0,
-              mlmActive: data.mlmActive || false,
-              referralCode: data.referralCode || "",
-              sponsorId: data.sponsorId || ""
-            });
-          } else {
-            setUser({
-              uid: currentUser.uid,
-              email: currentUser.email || "",
-              name: currentUser.displayName || "JembeeKart User",
-              photo: currentUser.photoURL || "",
-              phone: currentUser.phoneNumber || "",
-              walletBalance: 0,
-              totalIncome: 0,
-              mlmActive: false,
-              referralCode: "",
-              sponsorId: ""
-            });
-          }
-          setLoading(false);
-        },
-        (error) => console.error("Firestore onSnapshot error:", error)
+      docRef,
+      (docSnap) => {
+      if (docSnap.exists()) {
+        const data = docSnap.data();
+        setUser({
+          uid: data.uid || currentUser.uid,
+          email: data.email || "",
+          name: data.displayName || data.name || currentUser.displayName || "JembeeKart User",
+          photo: data.photoURL || data.photo || currentUser.photoURL || "",
+          phone: data.phone || "",
+          walletBalance: data.walletBalance || 0,
+          totalIncome: data.totalIncome || 0,
+          mlmActive: data.mlmActive || false,
+          referralCode: data.referralCode || "",
+          sponsorId: data.sponsorId || "",
+          bio: data.bio || "",
+          followersCount: data.followersCount || 0,
+          followingCount: data.followingCount || 0,
+          uploadedVideosCount: data.uploadedVideosCount || 0
+        });
+      } else {
+        setUser({
+          uid: currentUser.uid,
+          email: currentUser.email || "",
+          name: currentUser.displayName || "JembeeKart User",
+          photo: currentUser.photoURL || "",
+          phone: currentUser.phoneNumber || "",
+          walletBalance: 0,
+          totalIncome: 0,
+          mlmActive: false,
+          referralCode: "",
+          sponsorId: "",
+          bio: "",
+          followersCount: 0,
+          followingCount: 0,
+          uploadedVideosCount: 0
+        });
+      }
+      setLoading(false);
+      },
+      (error) => console.error("Firestore onSnapshot error:", error)
       );
+
     });
 
     return () => {
@@ -216,10 +229,19 @@ export default function AccountPage() {
             {/* USER INFO */}
             <div className="min-w-0 flex-1">
               <h2 className="truncate text-2xl font-black">{user?.name}</h2>
-              <p className="mt-1 truncate text-sm text-[var(--button-text-color)]/80">{user?.email}</p>
-              {user?.phone && (
-                <p className="mt-1 text-sm text-[var(--button-text-color)]/80">{user.phone}</p>
-              )}
+              <p className="mt-1 text-sm text-[var(--button-text-color)]/80">{user?.bio || "No bio yet."}</p>
+              
+              <div className="flex gap-4 mt-2">
+                <p className="text-sm">
+                  <span className="font-black">{user?.followersCount}</span> Followers
+                </p>
+                <p className="text-sm">
+                  <span className="font-black">{user?.followingCount}</span> Following
+                </p>
+                <p className="text-sm">
+                  <span className="font-black">{user?.uploadedVideosCount}</span> Videos
+                </p>
+              </div>
             </div>
           </div>
 

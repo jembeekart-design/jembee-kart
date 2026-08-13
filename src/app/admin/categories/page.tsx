@@ -5,7 +5,7 @@ export const dynamic =
 
 export default function Page() {
   return (
-    <main className="min-h-screen bg-[var(--card-color)]">
+    <main className="min-h-screen bg-[var(--color-card-background)]">
 
       <CategoryAdmin />
 

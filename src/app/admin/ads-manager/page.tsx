@@ -56,7 +56,7 @@ export default function AdsManagerPage() {
 
   return (
 
-    <main className="min-h-screen bg-[var(--primary-color)] p-4 text-[var(--button-text-color)]">
+    <main className="min-h-screen bg-[var(--color-primary-button)] p-4 text-[var(--button-text-color)]">
 
       {/* HEADER */}
 
@@ -64,11 +64,11 @@ export default function AdsManagerPage() {
 
         <div className="flex items-center gap-4">
 
-          <div className="flex h-16 w-16 items-center justify-center rounded-[28px] bg-[var(--secondary-color)]">
+          <div className="flex h-16 w-16 items-center justify-center rounded-[28px] bg-[var(--color-secondary-button)]">
 
             <Megaphone
               size={30}
-              className="text-[var(--text-color)]"
+              className="text-[var(--text-primary)]"
             />
 
           </div>
@@ -79,7 +79,7 @@ export default function AdsManagerPage() {
               {adsManager.pageTitle}
             </h1>
 
-            <p className="mt-1 text-sm text-[var(--muted-text-color)]">
+            <p className="mt-1 text-sm text-[var(--text-muted)]">
               Manage ad campaigns & traffic
             </p>
 
@@ -87,7 +87,7 @@ export default function AdsManagerPage() {
 
         </div>
 
-        <button className="flex items-center gap-2 rounded-2xl bg-[var(--secondary-color)] px-5 py-3 font-bold text-[var(--text-color)]">
+        <button className="flex items-center gap-2 rounded-2xl bg-[var(--color-secondary-button)] px-5 py-3 font-bold text-[var(--text-primary)]">
 
           <Plus size={18} />
 
@@ -129,11 +129,11 @@ export default function AdsManagerPage() {
 
       {/* SEARCH */}
 
-      <div className="mt-6 flex items-center gap-3 rounded-[24px] border border-[var(--border-color)]/10 bg-[var(--primary-color)] px-4 py-3">
+      <div className="mt-6 flex items-center gap-3 rounded-[24px] border border-[var(--color-border)]/10 bg-[var(--color-primary-button)] px-4 py-3">
 
         <Search
           size={20}
-          className="text-[var(--muted-text-color)]"
+          className="text-[var(--text-muted)]"
         />
 
         <input
@@ -145,7 +145,7 @@ export default function AdsManagerPage() {
               e.target.value
             )
           }
-          className="w-full bg-transparent outline-none placeholder:text-[var(--muted-text-color)]"
+          className="w-full bg-transparent outline-none placeholder:text-[var(--text-muted)]"
         />
 
       </div>
@@ -162,7 +162,7 @@ export default function AdsManagerPage() {
 
             <div
               key={index}
-              className="rounded-[28px] border border-[var(--border-color)]/10 bg-[var(--primary-color)] p-5"
+              className="rounded-[28px] border border-[var(--color-border)]/10 bg-[var(--color-primary-button)] p-5"
             >
 
               <div className="flex items-start justify-between">
@@ -173,7 +173,7 @@ export default function AdsManagerPage() {
                     {item.title}
                   </h2>
 
-                  <div className="mt-2 flex items-center gap-2 text-sm text-[var(--muted-text-color)]">
+                  <div className="mt-2 flex items-center gap-2 text-sm text-[var(--text-muted)]">
 
                     <Globe size={15} />
 
@@ -187,11 +187,11 @@ export default function AdsManagerPage() {
                   className={`rounded-full px-4 py-1 text-sm font-bold ${
                     item.status ===
                     "Running"
-                      ? "bg-[var(--success-color)]/20 text-[var(--success-color)]"
+                      ? "bg-[var(--color-success)]/20 text-[var(--color-success)]"
                       : item.status ===
                         "Paused"
-                      ? "bg-[var(--warning-color)]/20 text-[var(--warning-color)]"
-                      : "bg-[var(--background-color)]0/20 text-[var(--text-color)]"
+                      ? "bg-[var(--color-warning)]/20 text-[var(--color-warning)]"
+                      : "bg-[var(--color-card-background)]0/20 text-[var(--text-primary)]"
                   }`}
                 >
 
@@ -205,7 +205,7 @@ export default function AdsManagerPage() {
 
                 <div className="flex items-center gap-3">
 
-                  <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-[var(--secondary-color)] text-[var(--text-color)]">
+                  <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-[var(--color-secondary-button)] text-[var(--text-primary)]">
 
                     <BadgeDollarSign size={20} />
 
@@ -217,7 +217,7 @@ export default function AdsManagerPage() {
                       {item.budget}
                     </p>
 
-                    <p className="text-sm text-[var(--muted-text-color)]">
+                    <p className="text-sm text-[var(--text-muted)]">
                       Ad Budget
                     </p>
 
@@ -225,7 +225,7 @@ export default function AdsManagerPage() {
 
                 </div>
 
-                <button className="rounded-2xl bg-[var(--secondary-color)] px-5 py-2 font-bold text-[var(--text-color)]">
+                <button className="rounded-2xl bg-[var(--color-secondary-button)] px-5 py-2 font-bold text-[var(--text-primary)]">
 
                   Manage
 
@@ -242,7 +242,7 @@ export default function AdsManagerPage() {
 
       {/* AI ADS */}
 
-      <div className="mt-6 rounded-[30px] bg-gradient-to-r from-[var(--primary-color)] to-[var(--primary-color)] p-6">
+      <div className="mt-6 rounded-[30px] bg-gradient-to-r from-[var(--color-primary-button)] to-[var(--color-primary-button)] p-6">
 
         <div className="flex items-center gap-3">
 
@@ -261,7 +261,7 @@ export default function AdsManagerPage() {
 
         </p>
 
-        <button className="mt-6 flex items-center gap-2 rounded-2xl bg-[var(--card-color)] px-6 py-3 font-bold text-[var(--button-text-color)]">
+        <button className="mt-6 flex items-center gap-2 rounded-2xl bg-[var(--color-card-background)] px-6 py-3 font-bold text-[var(--button-text-color)]">
 
           <PlayCircle size={18} />
 
@@ -288,15 +288,15 @@ function StatCard({
 
   return (
 
-    <div className="rounded-[28px] border border-[var(--border-color)]/10 bg-[var(--primary-color)] p-5">
+    <div className="rounded-[28px] border border-[var(--color-border)]/10 bg-[var(--color-primary-button)] p-5">
 
-      <div className="flex h-14 w-14 items-center justify-center rounded-2xl bg-[var(--secondary-color)] text-[var(--text-color)]">
+      <div className="flex h-14 w-14 items-center justify-center rounded-2xl bg-[var(--color-secondary-button)] text-[var(--text-primary)]">
 
         {icon}
 
       </div>
 
-      <p className="mt-4 text-sm text-[var(--muted-text-color)]">
+      <p className="mt-4 text-sm text-[var(--text-muted)]">
         {title}
       </p>
 

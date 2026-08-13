@@ -361,9 +361,9 @@ function buyNow() {
         <div>
           <h2 className="mb-2 text-sm font-bold">Select Color</h2>
           <div className="flex gap-3">
-            {product.colors?.map((color) => (
+            {product.colors?.map((color, index) => (
               <button
-                key={color}
+                key={`${color}-${index}`}
                 onClick={() => setSelectedColor(color)}
                 style={{ background: color }}
                 className={`h-8 w-8 rounded-full border-2 ${

@@ -115,11 +115,6 @@ const DEFAULT_SETTINGS = {
     maxLevels: 10,
   },
 
-  watch_earn: {
-    enabled: true,
-    videosRequired: 100,
-    rewardAmount: 50,
-  },
 
   referral: {
   enabled: true,
@@ -128,6 +123,9 @@ const DEFAULT_SETTINGS = {
 },
 
   watchEarn: {
+    enabled: true,
+    videosRequired: 100,
+    rewardAmount: 50,
     videoWatchSeconds: 30,
     rewardProgressSeconds: 5,
     minimumWatchPercent: 80,
@@ -154,6 +152,11 @@ const DEFAULT_SETTINGS = {
     maxLength: 500,
   },
   
+  adsManager: {
+    pageTitle: "Ads Manager",
+    defaultAdRate: 10,
+  },
+
   security: {
     twoFactor: false,
     loginAttempts: 5,
