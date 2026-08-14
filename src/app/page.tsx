@@ -49,6 +49,7 @@ from "@/components/navigation/WhatsAppButton";
 
 import PromoBanner
 from "@/components/PromoBanner";
+import AdSlot from "@/components/ads/AdSlot";
 
 import { useTheme } from "@/context/ThemeContext";
 
@@ -448,9 +449,9 @@ export default function HomePage() {
           min-h-screen
           overflow-x-hidden
           pb-32
-          pt-[115px]
+          pt-[130px]
 
-          md:pt-[150px]
+          md:pt-[130px]
         "
         style={{
   backgroundColor: theme.backgroundColor,
@@ -471,6 +472,8 @@ export default function HomePage() {
   search={search}
   setSearch={setSearch}
 />
+
+        <AdSlot />
 
         {/* ======================================================
         SEARCH PRODUCTS
