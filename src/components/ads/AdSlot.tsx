@@ -5,7 +5,6 @@ import {
   collection,
   doc,
   getDocs,
-  increment,
   limit,
   query,
   runTransaction,
@@ -73,77 +72,70 @@ export default function AdSlot() {
 
         setAd(currentAd);
 
-        /*
-         * IMPRESSION BILLING
-         *
-         * CPM:
-         * rate = cost per 1,000 impressions
-         *
-         * CPC:
-         * impression count only; no money deducted.
-         */
-        try {
-          await runTransaction(db, async (transaction) => {
-            const ref = doc(db, "ads", adDoc.id);
-            const fresh = await transaction.get(ref);
-
-            if (!fresh.exists()) return;
-
-            const current = fresh.data();
-
-            const status = String(current.status ?? "Running");
-
-            if (status !== "Running") return;
-
-            const currentBudget = Number(
-              current.remainingBudget ??
-                current.budget ??
-                0
-            );
-
-            const currentImpressions = Number(
-              current.impressions ?? 0
-            );
-
-            const pricingModel =
-              current.pricingModel === "CPM"
-                ? "CPM"
-                : "CPC";
-
-            const rate = Number(current.rate ?? 0);
-
-            const nextImpressions =
-              currentImpressions + 1;
-
-            let charge = 0;
-
-            if (pricingModel === "CPM") {
-              charge = rate / 1000;
-            }
-
-            const nextBudget = Math.max(
-              0,
-              currentBudget - charge
-            );
-
-            transaction.update(ref, {
-              impressions: increment(1),
-              remainingBudget: nextBudget,
-              status:
-                nextBudget <= 0
-                  ? "Completed"
-                  : "Running",
-            });
-          });
-        } catch (billingError) {
-          console.error(
-            "Ad impression billing failed:",
-            billingError
-          );
-        }
+        // Impression billing
+        await recordImpression(adDoc.id);
       } catch (error) {
         console.error("AdSlot error:", error);
         setAd(null);
+      }
+    }
+
+    async function recordImpression(adId: string) {
+      try {
+        await runTransaction(db, async (transaction) => {
+          const adRef = doc(db, "ads", adId);
+          const snap = await transaction.get(adRef);
+
+          if (!snap.exists()) return;
+
+          const data = snap.data();
+
+          if (data.status !== "Running") return;
+
+          const pricingModel =
+            data.pricingModel === "CPM" ? "CPM" : "CPC";
+
+          const remainingBudget = Number(
+            data.remainingBudget ?? data.budget ?? 0
+          );
+
+          if (remainingBudget <= 0) {
+            transaction.update(adRef, {
+              status: "Completed",
+              remainingBudget: 0,
+            });
+            return;
+          }
+
+          const impressions =
+            Number(data.impressions ?? 0) + 1;
+
+          let charge = 0;
+
+          // CPM = rate per 1,000 impressions
+          if (pricingModel === "CPM") {
+            charge = Number(data.rate ?? 0) / 1000;
+            charge = Math.min(charge, remainingBudget);
+          }
+
+          const newRemainingBudget =
+            Math.max(0, remainingBudget - charge);
+
+          const newRevenue =
+            Number(data.revenue ?? 0) + charge;
+
+          transaction.update(adRef, {
+            impressions,
+            revenue: newRevenue,
+            remainingBudget: newRemainingBudget,
+            updatedAt: new Date(),
+            ...(newRemainingBudget <= 0
+              ? { status: "Completed" }
+              : {}),
+          });
+        });
+      } catch (error) {
+        console.error("Ad impression billing failed:", error);
       }
     }
 
@@ -157,111 +149,94 @@ export default function AdSlot() {
   async function handleView() {
     if (!ad) return;
 
-    /*
-     * CPC BILLING
-     *
-     * Click hone par:
-     * remainingBudget se CPC rate minus hoga.
-     */
     try {
-      let shouldOpen = true;
-
       await runTransaction(db, async (transaction) => {
-        const ref = doc(db, "ads", ad.id);
-        const fresh = await transaction.get(ref);
+        const adRef = doc(db, "ads", ad.id);
+        const snap = await transaction.get(adRef);
 
-        if (!fresh.exists()) {
-          shouldOpen = false;
-          return;
-        }
+        if (!snap.exists()) return;
 
-        const current = fresh.data();
+        const data = snap.data();
 
-        if (String(current.status) !== "Running") {
-          shouldOpen = false;
-          return;
-        }
+        if (data.status !== "Running") return;
 
         const pricingModel =
-          current.pricingModel === "CPM"
-            ? "CPM"
-            : "CPC";
+          data.pricingModel === "CPM" ? "CPM" : "CPC";
 
-        const rate = Number(current.rate ?? 0);
-
-        const currentBudget = Number(
-          current.remainingBudget ??
-            current.budget ??
-            0
+        const remainingBudget = Number(
+          data.remainingBudget ?? data.budget ?? 0
         );
 
-        /*
-         * CPC:
-         * one click = one rate charge
-         *
-         * CPM:
-         * click does NOT charge.
-         */
-        const charge =
-          pricingModel === "CPC"
-            ? rate
-            : 0;
-
-        if (
-          pricingModel === "CPC" &&
-          currentBudget < charge
-        ) {
-          shouldOpen = false;
-
-          transaction.update(ref, {
+        if (remainingBudget <= 0) {
+          transaction.update(adRef, {
             status: "Completed",
             remainingBudget: 0,
           });
-
           return;
         }
 
-        const nextBudget = Math.max(
-          0,
-          currentBudget - charge
-        );
+        const clicks = Number(data.clicks ?? 0) + 1;
 
-        transaction.update(ref, {
-          clicks: increment(1),
-          remainingBudget: nextBudget,
-          status:
-            nextBudget <= 0
-              ? "Completed"
-              : "Running",
+        let charge = 0;
+
+        // CPC = rate per click
+        if (pricingModel === "CPC") {
+          charge = Number(data.rate ?? 0);
+          charge = Math.min(charge, remainingBudget);
+        }
+
+        const newRemainingBudget =
+          Math.max(0, remainingBudget - charge);
+
+        const newRevenue =
+          Number(data.revenue ?? 0) + charge;
+
+        transaction.update(adRef, {
+          clicks,
+          revenue: newRevenue,
+          remainingBudget: newRemainingBudget,
+          updatedAt: new Date(),
+          ...(newRemainingBudget <= 0
+            ? { status: "Completed" }
+            : {}),
         });
-
-        setAd((currentAd) =>
-          currentAd
-            ? {
-                ...currentAd,
-                clicks: currentAd.clicks + 1,
-                remainingBudget: nextBudget,
-                status:
-                  nextBudget <= 0
-                    ? "Completed"
-                    : "Running",
-              }
-            : currentAd
-        );
       });
 
-      if (shouldOpen && ad.url) {
+      // Destination URL open karo
+      if (ad.url) {
         window.open(
           ad.url,
           "_blank",
           "noopener,noreferrer"
         );
       }
-    } catch (error) {
-      console.error(
-        "Ad click billing failed:",
-        error
+
+      setAd((current) =>
+        current
+          ? {
+              ...current,
+              clicks: current.clicks + 1,
+              revenue:
+                current.pricingModel === "CPC"
+                  ? current.revenue +
+                    Math.min(current.rate, current.remainingBudget)
+                  : current.revenue,
+              remainingBudget:
+                current.pricingModel === "CPC"
+                  ? Math.max(
+                      0,
+                      current.remainingBudget -
+                        Math.min(
+                          current.rate,
+                          current.remainingBudget
+                        )
+                    )
+                  : current.remainingBudget,
+            }
+          : current
       );
+    } catch (error) {
+      console.error("Ad click billing failed:", error);
     }
   }
 
