@@ -24,6 +24,7 @@ function getAllPages(dir: string, baseDir: string = ''): { title: string, link: 
       const title = item === 'page.tsx' && baseDir === '' ? 'Home' : path.basename(path.dirname(fullPath))
         .split('-').map(word => word.charAt(0).toUpperCase() + word.slice(1)).join(' ');
 
+    if (route.split("/").some(segment => segment.startsWith("[") && segment.endsWith("]"))) continue;
       pages.push({ title, link: route });
     }
   }
