@@ -190,7 +190,7 @@ function buyNow() {
   const images = product.images || [];
 
   return (
-    <main className="min-h-screen bg-[var(--color-primary-button)] pb-[85px]">
+    <main className="min-h-screen bg-[var(--color-page-background)] pb-[85px]">
       {/* TOPBAR */}
       <div className="sticky top-0 z-50 bg-[var(--color-primary-button)]/90 backdrop-blur-md px-3 pt-3">
         <div className="flex items-center justify-between rounded-[18px] bg-[var(--color-card-background)] px-3 py-2.5 shadow-sm">

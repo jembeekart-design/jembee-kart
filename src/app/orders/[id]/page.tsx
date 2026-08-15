@@ -38,7 +38,7 @@ export default function OrderDetailsPage() {
   }[s?.toLowerCase()] || 'bg-[var(--color-page-background)]0');
 
   return (
-    <main className="min-h-screen bg-[var(--color-primary-button)] pb-24">
+    <main className="min-h-screen bg-[var(--color-page-background)] pb-24">
       <div className="sticky top-0 bg-[var(--color-card-background)] p-4 flex items-center gap-4 shadow-sm z-20">
         <button onClick={() => router.back()} className="p-2 bg-[var(--color-page-background)] rounded-full"><ArrowLeft size={20}/></button>
         <h1 className="font-black text-lg">Order #{order.orderNumber}</h1>
