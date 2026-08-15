@@ -182,7 +182,7 @@ export default function CouponsPage() {
   if (loading) {
 
     return (
-      <div className="flex min-h-screen items-center justify-center bg-[var(--card-color)] text-[var(--button-text-color)]">
+      <div className="flex min-h-screen items-center justify-center bg-[var(--primary-color)] text-[var(--button-text-color)]">
         Loading...
       </div>
     );
@@ -211,7 +211,7 @@ export default function CouponsPage() {
         <button
           onClick={createCoupon}
           disabled={creating}
-          className="flex items-center gap-2 rounded-2xl bg-[var(--primary-color)] px-5 py-3 text-sm font-bold text-[var(--button-text-color)]"
+          className="flex items-center gap-2 rounded-2xl bg-[var(--color-primary-button)] px-5 py-3 text-sm font-bold text-[var(--button-text-color)]"
         >
 
           <Plus size={18} />
@@ -231,7 +231,7 @@ export default function CouponsPage() {
 
             <div
               key={coupon.id}
-              className="overflow-hidden rounded-[30px] border border-[var(--border-color)]/10 bg-[var(--primary-color)]"
+              className="overflow-hidden rounded-[30px] border border-[var(--border-color)]/10 bg-[var(--card-color)]"
             >
 
               {/* TOP */}
@@ -240,7 +240,7 @@ export default function CouponsPage() {
 
                 <div className="flex items-center gap-4">
 
-                  <div className="flex h-16 w-16 items-center justify-center rounded-2xl bg-[var(--primary-color)]">
+                  <div className="flex h-16 w-16 items-center justify-center rounded-2xl bg-[var(--color-secondary-button)]">
 
                     <TicketPercent size={28} />
 
@@ -297,7 +297,7 @@ export default function CouponsPage() {
                         e.target.value
                       )
                     }
-                    className="w-full rounded-2xl border border-[var(--border-color)]/10 bg-[var(--primary-color)] px-4 py-3 outline-none"
+                    className="w-full rounded-2xl border border-[var(--border-color)]/10 bg-[var(--color-input-background)] px-4 py-3 outline-none"
                   />
 
                 </div>
@@ -324,7 +324,7 @@ export default function CouponsPage() {
                         )
                       )
                     }
-                    className="w-full rounded-2xl border border-[var(--border-color)]/10 bg-[var(--primary-color)] px-4 py-3 outline-none"
+                    className="w-full rounded-2xl border border-[var(--border-color)]/10 bg-[var(--color-input-background)] px-4 py-3 outline-none"
                   />
 
                 </div>
@@ -351,14 +351,14 @@ export default function CouponsPage() {
                         )
                       )
                     }
-                    className="w-full rounded-2xl border border-[var(--border-color)]/10 bg-[var(--primary-color)] px-4 py-3 outline-none"
+                    className="w-full rounded-2xl border border-[var(--border-color)]/10 bg-[var(--color-input-background)] px-4 py-3 outline-none"
                   />
 
                 </div>
 
                 {/* STATUS */}
 
-                <div className="flex items-center justify-between rounded-2xl bg-[var(--primary-color)] p-4">
+                <div className="flex items-center justify-between rounded-2xl bg-[var(--color-surface)] p-4">
 
                   <div>
 
