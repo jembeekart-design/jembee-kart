@@ -464,6 +464,11 @@ export default function AdsManagerPage() {
                     value={money(item.budget)}
                   />
 
+          <MiniMetric
+            label="Remaining Budget"
+            value={money(item.remainingBudget)}
+          />
+
                   <MiniMetric
                     label="Impressions"
                     value={number(item.impressions)}
