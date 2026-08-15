@@ -3,15 +3,13 @@
 import { useEffect, useState } from "react";
 import {
   collection,
-  doc,
   getDocs,
   limit,
   query,
-  runTransaction,
   where,
 } from "firebase/firestore";
 import { Megaphone, ExternalLink } from "lucide-react";
-import { db } from "@/firebase/config";
+import { db, auth } from "@/firebase/config";
 
 interface Ad {
   id: string;
@@ -27,6 +25,8 @@ interface Ad {
   rate: number;
   remainingBudget: number;
 }
+
+type AdEventType = "impression" | "click";
 
 export default function AdSlot() {
   const [ad, setAd] = useState<Ad | null>(null);
@@ -72,11 +72,14 @@ export default function AdSlot() {
 
         setAd(currentAd);
 
-        // Every ad view = one impression.
-        await recordImpression(adDoc.id);
+        if (!cancelled) {
+          await sendAdEvent(adDoc.id, "impression");
+        }
       } catch (error) {
         console.error("AdSlot error:", error);
-        setAd(null);
+        if (!cancelled) {
+          setAd(null);
+        }
       }
     }
 
@@ -87,194 +90,109 @@ export default function AdSlot() {
     };
   }, []);
 
-  async function recordImpression(adId: string) {
+  async function sendAdEvent(
+    adId: string,
+    eventType: AdEventType
+  ) {
     try {
-      await runTransaction(db, async (transaction) => {
-        const ref = doc(db, "ads", adId);
-        const snap = await transaction.get(ref);
+      const currentUser = auth.currentUser;
 
-        if (!snap.exists()) return;
-
-        const data = snap.data();
-
-        if (data.status !== "Running") return;
-
-        const pricingModel =
-          data.pricingModel === "CPM" ? "CPM" : "CPC";
-
-        const rate = Number(data.rate ?? 0);
-        const currentRemaining = Number(
-          data.remainingBudget ?? data.budget ?? 0
+      if (!currentUser) {
+        console.warn(
+          "Ad event skipped: user is not authenticated."
         );
+        return null;
+      }
 
-        if (currentRemaining <= 0) {
-          transaction.update(ref, {
-            status: "Completed",
-            remainingBudget: 0,
-          });
-          return;
-        }
+      const token = await currentUser.getIdToken();
 
-        let charge = 0;
+      const eventId =
+        typeof crypto !== "undefined" &&
+        typeof crypto.randomUUID === "function"
+          ? crypto.randomUUID()
+          : `${adId}-${eventType}-${Date.now()}-${Math.random()
+              .toString(36)
+              .slice(2)}`;
 
-        if (pricingModel === "CPM") {
-          // CPM = cost per 1,000 impressions.
-          charge = rate / 1000;
-
-          if (charge > currentRemaining) {
-            charge = currentRemaining;
-          }
-        }
-
-        const newRemaining = Math.max(
-          0,
-          currentRemaining - charge
-        );
-
-        transaction.update(ref, {
-          impressions: Number(data.impressions ?? 0) + 1,
-          revenue: Number(data.revenue ?? 0) + charge,
-          remainingBudget: newRemaining,
-          ...(newRemaining <= 0
-            ? { status: "Completed" }
-            : {}),
-        });
+      const response = await fetch("/api/ads/event", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify({
+          adId,
+          eventType,
+          eventId,
+        }),
       });
 
-      setAd((current) => {
-        if (!current) return current;
+      const result = await response.json();
 
-        const charge =
-          current.pricingModel === "CPM"
-            ? Math.min(
-                current.rate / 1000,
-                current.remainingBudget
-              )
-            : 0;
-
-        const remainingBudget = Math.max(
-          0,
-          current.remainingBudget - charge
+      if (!response.ok || !result.success) {
+        console.error(
+          "Ad event API failed:",
+          result?.message || "Unknown error"
         );
+        return null;
+      }
 
-        return {
-          ...current,
-          impressions: current.impressions + 1,
-          revenue: current.revenue + charge,
-          remainingBudget,
-          status:
-            remainingBudget <= 0
-              ? "Completed"
-              : current.status,
-        };
-      });
+      return result;
     } catch (error) {
-      console.error("Ad impression billing failed:", error);
+      console.error("Ad event request failed:", error);
+      return null;
     }
   }
 
   async function handleView() {
     if (!ad) return;
 
-    try {
-      const result = await runTransaction(db, async (transaction) => {
-        const ref = doc(db, "ads", ad.id);
-        const snap = await transaction.get(ref);
+    const result = await sendAdEvent(ad.id, "click");
 
-        if (!snap.exists()) {
-          return { allowed: false };
-        }
+    if (!result) {
+      return;
+    }
 
-        const data = snap.data();
-
-        if (data.status !== "Running") {
-          return { allowed: false };
-        }
-
-        const pricingModel =
-          data.pricingModel === "CPM" ? "CPM" : "CPC";
-
-        const rate = Number(data.rate ?? 0);
-        const currentRemaining = Number(
-          data.remainingBudget ?? data.budget ?? 0
-        );
-
-        // CPC charges on every valid click.
-        if (pricingModel === "CPC") {
-          if (rate <= 0 || currentRemaining < rate) {
-            transaction.update(ref, {
-              status: "Completed",
-              remainingBudget: Math.max(0, currentRemaining),
-            });
-
-            return { allowed: false };
-          }
-
-          const newRemaining = currentRemaining - rate;
-
-          transaction.update(ref, {
-            clicks: Number(data.clicks ?? 0) + 1,
-            revenue: Number(data.revenue ?? 0) + rate,
-            remainingBudget: newRemaining,
-            ...(newRemaining <= 0
-              ? { status: "Completed" }
-              : {}),
-          });
-
-          return {
-            allowed: true,
-            charge: rate,
-            remainingBudget: newRemaining,
-            clicks: Number(data.clicks ?? 0) + 1,
-          };
-        }
-
-        // CPM does not charge on click.
-        transaction.update(ref, {
-          clicks: Number(data.clicks ?? 0) + 1,
-        });
-
-        return {
-          allowed: true,
-          charge: 0,
-          remainingBudget: currentRemaining,
-          clicks: Number(data.clicks ?? 0) + 1,
-        };
-      });
-
-      if (!result.allowed) {
-        setAd((current) =>
-          current
-            ? { ...current, status: "Completed" }
-            : current
-        );
-        return;
-      }
-
+    if (!result.allowed) {
       setAd((current) =>
         current
           ? {
               ...current,
-              clicks: result.clicks ?? current.clicks + 1,
-              revenue:
-                current.revenue + Number(result.charge ?? 0),
-              remainingBudget:
-                result.remainingBudget ??
-                current.remainingBudget,
               status:
-                Number(result.remainingBudget ?? 0) <= 0
+                result.reason === "Ad is not running" ||
+                result.reason === "Budget exhausted" ||
+                result.reason === "Insufficient budget"
                   ? "Completed"
                   : current.status,
             }
           : current
       );
+      return;
+    }
 
-      // Advertiser destination open karo.
-      if (ad.url) {
-        window.open(ad.url, "_blank", "noopener,noreferrer");
-      }
-    } catch (error) {
-      console.error("Ad click billing failed:", error);
+    setAd((current) => {
+      if (!current) return current;
+
+      const charge = Number(result.charge ?? 0);
+      const remainingBudget =
+        Number(
+          result.remainingBudget ?? current.remainingBudget
+        );
+
+      return {
+        ...current,
+        clicks: current.clicks + 1,
+        revenue: current.revenue + charge,
+        remainingBudget,
+        status:
+          remainingBudget <= 0
+            ? "Completed"
+            : current.status,
+      };
+    });
+
+    if (ad.url) {
+      window.open(ad.url, "_blank", "noopener,noreferrer");
     }
   }
 
