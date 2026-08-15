@@ -40,7 +40,7 @@ export function AdminConfigProvider({ children }: { children: ReactNode }) {
 
   useEffect(() => {
     const configRef = doc(db, "settings", "global_config");
-    const themeRef = doc(db, "settings", "theme");
+    const themeRef = doc(db, "admin_settings", "customize");
     const activityTrackerRef = doc(db, "settings", "activityTracker");
     const adminChatRef = doc(db, "settings", "adminChat");
     const adsManagerRef = doc(db, "settings", "adsManager");
@@ -65,20 +65,40 @@ export function AdminConfigProvider({ children }: { children: ReactNode }) {
           setSource("defaults");
         } else {
           const loadConfig = async () => {
-            const themeSnap = await getDoc(themeRef);
-            const activityTrackerSnap = await getDoc(activityTrackerRef);
-            const adminChatSnap = await getDoc(adminChatRef);
-            const adsManagerSnap = await getDoc(adsManagerRef);
-            const analyticsSnap = await getDoc(analyticsRef);
-            const announcementSnap = await getDoc(announcementRef);
-            const watchEarnSnap = await getDoc(watchEarnRef);
-            const commentModerationSnap = await getDoc(commentModerationRef);
-            const featureFlagsSnap = await getDoc(featureFlagsRef);
-            const walletSnap = await getDoc(walletRef);
-            const homepageSnap = await getDoc(homepageRef);
-            const paymentSnap = await getDoc(paymentRef);
-            const shippingSnap = await getDoc(shippingRef);
-            const notificationSnap = await getDoc(notificationRef);
+            const refs = [
+              themeRef,
+              activityTrackerRef,
+              adminChatRef,
+              adsManagerRef,
+              analyticsRef,
+              announcementRef,
+              watchEarnRef,
+              commentModerationRef,
+              featureFlagsRef,
+              walletRef,
+              homepageRef,
+              paymentRef,
+              shippingRef,
+              notificationRef,
+            ];
+
+            const [
+              themeSnap,
+              activityTrackerSnap,
+              adminChatSnap,
+              adsManagerSnap,
+              analyticsSnap,
+              announcementSnap,
+              watchEarnSnap,
+              commentModerationSnap,
+              featureFlagsSnap,
+              walletSnap,
+              homepageSnap,
+              paymentSnap,
+              shippingSnap,
+              notificationSnap,
+            ] = await Promise.all(refs.map((ref) => getDoc(ref)));
+
             const mergedConfig = {
               ...DEFAULT_ADMIN_CONFIG,
               ...data,
