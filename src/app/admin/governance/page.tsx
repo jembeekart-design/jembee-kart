@@ -44,8 +44,8 @@ export default function GovernancePage() {
     return () => clearInterval(timer);
   }, []);
 
-  if (loading) return <div className="flex min-h-screen items-center justify-center bg-[var(--primary-color)] text-[var(--button-text-color)]">Loading...</div>;
-  if (!report) return <div className="flex min-h-screen items-center justify-center bg-[var(--primary-color)] text-[var(--danger-color)]">Report Not Found</div>;
+  if (loading) return <div className="flex min-h-screen items-center justify-center bg-[var(--color-page-background)] text-[var(--button-text-color)]">Loading...</div>;
+  if (!report) return <div className="flex min-h-screen items-center justify-center bg-[var(--color-page-background)] text-[var(--danger-color)]">Report Not Found</div>;
 
   const { summary, statistics, scores, violations, health } = report;
   const criticalViolations = violations.filter((v) => v.severity === "CRITICAL");
@@ -57,7 +57,7 @@ export default function GovernancePage() {
   );
 
   return (
-    <div className="min-h-screen bg-[var(--primary-color)] text-[var(--button-text-color)] p-6 space-y-6">
+    <div className="min-h-screen bg-[var(--color-page-background)] text-[var(--button-text-color)] p-6 space-y-6">
       <div className="flex items-center justify-between">
         <div>
           <h1 className="text-3xl font-bold">Governance Dashboard</h1>

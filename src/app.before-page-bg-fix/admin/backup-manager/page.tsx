@@ -1,0 +1,338 @@
+"use client";
+
+export const dynamic = "force-dynamic";
+
+import { useState } from "react";
+
+import {
+  Database,
+  Download,
+  Upload,
+  Clock3,
+  ShieldCheck,
+  HardDrive,
+  RefreshCw,
+  Save,
+  Trash2,
+  CheckCircle2,
+  AlertTriangle
+} from "lucide-react";
+
+const backups = [
+  {
+    name: "backup-12-june.zip",
+    size: "2.4 GB",
+    status: "Completed"
+  },
+  {
+    name: "backup-10-june.zip",
+    size: "2.1 GB",
+    status: "Completed"
+  },
+  {
+    name: "backup-08-june.zip",
+    size: "1.9 GB",
+    status: "Failed"
+  }
+];
+
+export default function BackupManagerPage() {
+
+  const [autoBackup, setAutoBackup] =
+    useState(true);
+
+  return (
+
+    <main className="min-h-screen bg-[var(--primary-color)] p-4 text-[var(--button-text-color)]">
+
+      {/* HEADER */}
+
+      <div className="mb-8 flex items-center justify-between">
+
+        <div className="flex items-center gap-4">
+
+          <div className="flex h-16 w-16 items-center justify-center rounded-[28px] bg-[var(--success-color)]">
+
+            <Database
+              size={30}
+              className="text-[var(--text-color)]"
+            />
+
+          </div>
+
+          <div>
+
+            <h1 className="text-3xl font-black">
+              Backup Manager
+            </h1>
+
+            <p className="mt-1 text-sm text-[var(--muted-text-color)]">
+              Manage system backups & restore points
+            </p>
+
+          </div>
+
+        </div>
+
+        <button className="flex items-center gap-2 rounded-2xl bg-[var(--success-color)] px-5 py-3 font-bold text-[var(--text-color)]">
+
+          <Save size={18} />
+
+          Save Settings
+
+        </button>
+
+      </div>
+
+      {/* STATS */}
+
+      <div className="grid grid-cols-2 gap-4 md:grid-cols-4">
+
+        <StatCard
+          title="Backups"
+          value="28"
+          icon={<HardDrive size={22} />}
+        />
+
+        <StatCard
+          title="Storage"
+          value="42GB"
+          icon={<Database size={22} />}
+        />
+
+        <StatCard
+          title="Success Rate"
+          value="98%"
+          icon={<ShieldCheck size={22} />}
+        />
+
+        <StatCard
+          title="Last Backup"
+          value="2h Ago"
+          icon={<Clock3 size={22} />}
+        />
+
+      </div>
+
+      {/* AUTO BACKUP */}
+
+      <div className="mt-6 rounded-[28px] border border-[var(--border-color)]/10 bg-[var(--primary-color)] p-5">
+
+        <div className="flex items-center justify-between">
+
+          <div>
+
+            <h2 className="text-2xl font-black">
+              Automatic Backup
+            </h2>
+
+            <p className="mt-1 text-sm text-[var(--muted-text-color)]">
+              Enable scheduled cloud backups
+            </p>
+
+          </div>
+
+          <button
+            onClick={() =>
+              setAutoBackup(
+                !autoBackup
+              )
+            }
+            className={`rounded-full px-5 py-2 font-bold ${
+              autoBackup
+                ? "bg-[var(--success-color)] text-[var(--text-color)]"
+                : "bg-[var(--danger-color)]"
+            }`}
+          >
+
+            {autoBackup
+              ? "Enabled"
+              : "Disabled"}
+
+          </button>
+
+        </div>
+
+      </div>
+
+      {/* BACKUP LIST */}
+
+      <div className="mt-6 space-y-4">
+
+        {backups.map(
+          (
+            item,
+            index
+          ) => (
+
+            <div
+              key={index}
+              className="rounded-[28px] border border-[var(--border-color)]/10 bg-[var(--primary-color)] p-5"
+            >
+
+              <div className="flex flex-col gap-5 lg:flex-row lg:items-center lg:justify-between">
+
+                <div>
+
+                  <h2 className="text-2xl font-black">
+                    {item.name}
+                  </h2>
+
+                  <p className="mt-2 text-sm text-[var(--muted-text-color)]">
+                    File Size:
+                    {" "}
+                    {item.size}
+                  </p>
+
+                </div>
+
+                <div className="flex items-center gap-3">
+
+                  <div
+                    className={`rounded-full px-4 py-1 text-sm font-bold ${
+                      item.status ===
+                      "Completed"
+                        ? "bg-[var(--success-color)]/20 text-[var(--success-color)]"
+                        : "bg-[var(--danger-color)]/20 text-[var(--danger-color)]"
+                    }`}
+                  >
+
+                    {item.status}
+
+                  </div>
+
+                  <button className="flex h-11 w-11 items-center justify-center rounded-2xl bg-[var(--card-color)]/10">
+
+                    <Download size={18} />
+
+                  </button>
+
+                  <button className="flex h-11 w-11 items-center justify-center rounded-2xl bg-[var(--danger-color)]/20 text-[var(--danger-color)]">
+
+                    <Trash2 size={18} />
+
+                  </button>
+
+                </div>
+
+              </div>
+
+            </div>
+
+          )
+        )}
+
+      </div>
+
+      {/* ACTIONS */}
+
+      <div className="mt-6 flex flex-wrap gap-4">
+
+        <button className="flex items-center gap-2 rounded-2xl bg-[var(--success-color)] px-6 py-3 font-bold text-[var(--text-color)]">
+
+          <Upload size={18} />
+
+          Create Backup
+
+        </button>
+
+        <button className="flex items-center gap-2 rounded-2xl bg-[var(--primary-color)] px-6 py-3 font-bold text-[var(--text-color)]">
+
+          <RefreshCw size={18} />
+
+          Restore Backup
+
+        </button>
+
+      </div>
+
+      {/* SECURITY */}
+
+      <div className="mt-6 rounded-[30px] bg-gradient-to-r from-[var(--primary-color)] to-[var(--primary-color)] p-6 text-[var(--text-color)]">
+
+        <div className="flex items-center gap-3">
+
+          <CheckCircle2 size={26} />
+
+          <h2 className="text-3xl font-black">
+            Secure Cloud Backup
+          </h2>
+
+        </div>
+
+        <p className="mt-3 max-w-2xl text-sm font-medium">
+
+          All backups are encrypted and securely stored
+          in cloud storage with realtime sync protection.
+
+        </p>
+
+      </div>
+
+      {/* WARNING */}
+
+      <div className="mt-6 rounded-[28px] border border-[var(--warning-color)]/20 bg-[var(--warning-color)]/10 p-5">
+
+        <div className="flex items-start gap-4">
+
+          <AlertTriangle
+            size={24}
+            className="text-[var(--warning-color)]"
+          />
+
+          <div>
+
+            <h3 className="text-xl font-black text-[var(--warning-color)]">
+              Important
+            </h3>
+
+            <p className="mt-2 text-sm text-[var(--text-color)]">
+
+              Always create backup before major updates
+              or database modifications.
+
+            </p>
+
+          </div>
+
+        </div>
+
+      </div>
+
+    </main>
+
+  );
+}
+
+function StatCard({
+  title,
+  value,
+  icon
+}: {
+  title: string;
+  value: string;
+  icon: React.ReactNode;
+}) {
+
+  return (
+
+    <div className="rounded-[28px] border border-[var(--border-color)]/10 bg-[var(--primary-color)] p-5">
+
+      <div className="flex h-14 w-14 items-center justify-center rounded-2xl bg-[var(--success-color)] text-[var(--text-color)]">
+
+        {icon}
+
+      </div>
+
+      <p className="mt-4 text-sm text-[var(--muted-text-color)]">
+        {title}
+      </p>
+
+      <h2 className="mt-2 text-3xl font-black">
+        {value}
+      </h2>
+
+    </div>
+
+  );
+}
