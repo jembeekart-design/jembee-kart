@@ -1,7 +1,6 @@
 "use client";
 import { createContext, useContext, useState, useEffect } from "react";
-import { doc, getDoc } from "firebase/firestore";
-import { db } from "@/firebase/config";
+import { useAdminConfig } from "@/lib/admin-config/provider";
 import type { Theme } from "@/types/theme";
 
 interface ThemeContextType {
@@ -12,67 +11,14 @@ interface ThemeContextType {
 export const ThemeContext = createContext<ThemeContextType>({} as ThemeContextType);
 
 export function ThemeProvider({ children }: { children: React.ReactNode }) {
-  const [theme, setTheme] = useState<Theme>({} as Theme);
-  const [loading, setLoading] = useState(true);
+  const { config } = useAdminConfig();
+  const [theme, setTheme] = useState<Theme>(config.theme as Theme);
 
   useEffect(() => {
-    async function loadTheme() {
-      try {
-        const docSnap = await getDoc(doc(db, "admin_settings", "customize"));
-        if (docSnap.exists()) {
-          setTheme(docSnap.data() as Theme);
-        }
-      } catch (error) {
-        console.error("Theme load error:", error);
-      } finally {
-        setLoading(false);
-      }
+    if (config.theme) {
+        setTheme(config.theme as Theme);
     }
-    loadTheme();
-  }, []);
-
-  useEffect(() => {
-    if (!theme || Object.keys(theme).length === 0) return;
-
-    const root = document.documentElement;
-
-    // 1. Legacy & Direct Colors
-    if (theme.primaryColor) root.style.setProperty("--primary-color", theme.primaryColor);
-    if (theme.secondaryColor) root.style.setProperty("--secondary-color", theme.secondaryColor);
-    if (theme.backgroundColor) root.style.setProperty("--background-color", theme.backgroundColor);
-    if (theme.surfaceColor) root.style.setProperty("--surface-color", theme.surfaceColor);
-    if (theme.cardColor) root.style.setProperty("--card-color", theme.cardColor);
-    if (theme.textColor) root.style.setProperty("--text-color", theme.textColor);
-    if (theme.mutedTextColor) root.style.setProperty("--muted-text-color", theme.mutedTextColor);
-    if (theme.borderColor) root.style.setProperty("--border-color", theme.borderColor);
-
-    // 2. Modern Semantic Theme Tokens Mapping (Fixes background & surface color bugs)
-
-    // 3. Buttons & Interaction
-    if (theme.buttonTextColor) root.style.setProperty("--button-text-color", theme.buttonTextColor);
-    if (theme.hoverColor) root.style.setProperty("--hover-color", theme.hoverColor);
-    if (theme.buttonColor) root.style.setProperty("--button-color", theme.buttonColor);
-    if (theme.buttonHoverColor) root.style.setProperty("--button-hover-color", theme.buttonHoverColor);
-
-    // 4. Spacing & Shapes
-    if (theme.borderRadius !== undefined) {
-      root.style.setProperty("--border-radius", typeof theme.borderRadius === 'number' ? `${theme.borderRadius}px` : theme.borderRadius);
-    }
-    if (theme.buttonRadius !== undefined) {
-      root.style.setProperty("--button-radius", `${theme.buttonRadius}px`);
-    }
-    if (theme.cardRadius !== undefined) {
-      root.style.setProperty("--card-radius", `${theme.cardRadius}px`);
-    }
-    
-    // 5. Typography
-    if (theme.fontFamily) root.style.setProperty("--font-family", theme.fontFamily);
-    if (theme.headingSize) root.style.setProperty("--heading-size", `${theme.headingSize}px`);
-    if (theme.bodySize) root.style.setProperty("--body-size", `${theme.bodySize}px`);
-
-  }, [theme]);
-
-  if (loading) return null;
+  }, [config.theme]);
 
   return (
     <ThemeContext.Provider value={{ theme, setTheme }}>
