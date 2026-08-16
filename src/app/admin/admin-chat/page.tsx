@@ -119,7 +119,7 @@ export default function AdminChatPage() {
   }
 
   return (
-    <main className="min-h-screen bg-[var(--color-primary-button)] p-4 text-[var(--button-text-color)]">
+    <main className="min-h-screen bg-[var(--color-page-background)] p-4 text-[var(--button-text-color)]">
       {/* HEADER */}
       <div className="mb-6 flex items-center justify-between">
         <div className="flex items-center gap-4">
@@ -146,7 +146,7 @@ export default function AdminChatPage() {
       {/* MAIN */}
       <div className="grid grid-cols-1 gap-5 lg:grid-cols-3">
         {/* SIDEBAR */}
-        <div className="rounded-[30px] border border-[var(--color-border)]/10 bg-[var(--color-primary-button)] p-5">
+        <div className="rounded-[30px] border border-[var(--color-border)]/10 bg-[var(--color-card-background)] p-5">
           <div className="mt-5 space-y-4">
             {chats.map((chat) => (
               <div
