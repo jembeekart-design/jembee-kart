@@ -4,7 +4,6 @@ import "./globals.css";
 import Providers from "./providers";
 import { ThemeManager } from "@/components/theme-manager";
 import SystemSeeder from "@/components/SystemSeeder";
-import AppShell from "@/components/mobile/AppShell";
 
 export const metadata: Metadata = {
   title: "JembeeKart",
@@ -27,11 +26,9 @@ export default function RootLayout({
           <SystemSeeder />
 
           <ThemeManager>
-            <AppShell>
-              <div className="min-h-screen w-full overflow-x-hidden bg-[var(--background)] text-[var(--text)] transition-colors duration-300">
-                {children}
-              </div>
-            </AppShell>
+            <div className="min-h-screen w-full overflow-x-hidden bg-[var(--background)] text-[var(--text)] transition-colors duration-300">
+              {children}
+            </div>
           </ThemeManager>
 
         </Providers>
