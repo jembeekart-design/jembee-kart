@@ -46,13 +46,6 @@ jobs:
           mkdir -p android/app/src/main/assets
           node node_modules/@capacitor/cli/bin/capacitor sync android
 
-      - name: Verify Generated Files
-        run: |
-          ls -l android/capacitor.settings.gradle
-          ls -l android/capacitor.build.gradle
-          ls -l android/app/capacitor.build.gradle
-          ls -l android/app/src/main/assets/capacitor.config.json
-
       - name: Assemble Debug APK
         working-directory: android
         run: |
