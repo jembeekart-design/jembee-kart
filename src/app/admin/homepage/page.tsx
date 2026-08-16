@@ -3,13 +3,6 @@
 export const dynamic = "force-dynamic";
 
 import { useEffect, useState } from "react";
-
-import {
-  doc,
-  getDoc,
-  setDoc
-} from "firebase/firestore";
-
 import {
   Home,
   Eye,
@@ -23,117 +16,62 @@ import {
   Star
 } from "lucide-react";
 
-import { db } from "@/firebase/config";
+import { HomepageService } from "@/firestore/services/HomepageService";
+import { HomepageSettings } from "@/types/adminModels";
 
-interface HomepageSettings {
-  heroSection: boolean;
-  bannerSection: boolean;
-  affiliateSection: boolean;
-  sellerSection: boolean;
-  featuredProducts: boolean;
-  trendingProducts: boolean;
-  categoriesSection: boolean;
-  reviewsSection: boolean;
-  sectionOrder: string[];
-}
+const homepageService = new HomepageService();
 
 export default function HomepagePage() {
+  const [settings, setSettings] = useState<HomepageSettings>({
+    heroSection: true,
+    bannerSection: true,
+    affiliateSection: true,
+    sellerSection: true,
+    featuredProducts: true,
+    trendingProducts: true,
+    categoriesSection: true,
+    reviewsSection: true,
+    sectionOrder: [
+      "Hero",
+      "Banner",
+      "Categories",
+      "Featured",
+      "Trending",
+      "Affiliate",
+      "Seller",
+      "Reviews"
+    ]
+  });
 
-  const [settings, setSettings] =
-    useState<HomepageSettings>({
-      heroSection: true,
-      bannerSection: true,
-      affiliateSection: true,
-      sellerSection: true,
-      featuredProducts: true,
-      trendingProducts: true,
-      categoriesSection: true,
-      reviewsSection: true,
-      sectionOrder: [
-        "Hero",
-        "Banner",
-        "Categories",
-        "Featured",
-        "Trending",
-        "Affiliate",
-        "Seller",
-        "Reviews"
-      ]
-    });
-
-  const [loading, setLoading] =
-    useState(true);
-
-  const [saving, setSaving] =
-    useState(false);
+  const [loading, setLoading] = useState(true);
+  const [saving, setSaving] = useState(false);
 
   useEffect(() => {
-
+    async function fetchHomepage() {
+      try {
+        const data = await homepageService.getSettings();
+        if (data) setSettings(data);
+      } catch (error) {
+        console.error(error);
+      } finally {
+        setLoading(false);
+      }
+    }
     fetchHomepage();
-
   }, []);
 
-  async function fetchHomepage() {
-
-    try {
-
-      const ref = doc(
-        db,
-        "admin_settings",
-        "homepage"
-      );
-
-      const snapshot =
-        await getDoc(ref);
-
-      if (snapshot.exists()) {
-
-        setSettings(
-          snapshot.data() as HomepageSettings
-        );
-
-      }
-
-    } catch (error) {
-
-      console.log(error);
-
-    } finally {
-
-      setLoading(false);
-
-    }
-  }
-
   async function saveHomepage() {
-
     try {
-
       setSaving(true);
-
-      await setDoc(
-        doc(
-          db,
-          "admin_settings",
-          "homepage"
-        ),
-        settings
-      );
-
-      alert(
-        "Homepage Updated"
-      );
-
+      await homepageService.saveSettings(settings);
+      alert("Homepage Updated");
     } catch (error) {
-
-      console.log(error);
-
+      console.error(error);
     } finally {
-
       setSaving(false);
-
     }
   }
+
 
   function toggleSection(
     field: keyof HomepageSettings

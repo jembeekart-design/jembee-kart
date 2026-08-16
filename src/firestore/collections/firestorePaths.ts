@@ -162,6 +162,10 @@ export const FIRESTORE_PATHS = {
     DRAFTS: "admin/config-drafts",
     HISTORY: "admin/config-history",
     AUDIT_LOG: "admin/audit-log",
+    ORDERS: "orders",
+    KYC_REQUESTS: "kyc_requests",
+    COUPONS: "coupons",
+    HOMEPAGE: "admin_settings/homepage",
   },
 } as const;
 

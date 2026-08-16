@@ -3,184 +3,75 @@
 export const dynamic = "force-dynamic";
 
 import { useEffect, useState } from "react";
+import { Plus, Trash2, TicketPercent } from "lucide-react";
+import { CouponService } from "@/firestore/services/CouponService";
+import { Coupon } from "@/types/adminModels";
 
-import {
-  addDoc,
-  collection,
-  deleteDoc,
-  doc,
-  getDocs,
-  updateDoc
-} from "firebase/firestore";
-
-import {
-  Plus,
-  Trash2,
-  TicketPercent
-} from "lucide-react";
-
-import { db } from "@/firebase/config";
-
-interface Coupon {
-  id: string;
-  code: string;
-  discount: number;
-  type: string;
-  active: boolean;
-  minimumAmount: number;
-}
+const couponService = new CouponService();
 
 export default function CouponsPage() {
-
-  const [coupons, setCoupons] =
-    useState<Coupon[]>([]);
-
-  const [loading, setLoading] =
-    useState(true);
-
-  const [creating, setCreating] =
-    useState(false);
+  const [coupons, setCoupons] = useState<Coupon[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [creating, setCreating] = useState(false);
 
   useEffect(() => {
-
     fetchCoupons();
-
   }, []);
 
   async function fetchCoupons() {
-
     try {
-
-      const snapshot =
-        await getDocs(
-          collection(
-            db,
-            "coupons"
-          )
-        );
-
-      const data =
-        snapshot.docs.map(
-          (doc) => ({
-            id: doc.id,
-            ...doc.data()
-          })
-        ) as Coupon[];
-
+      const data = await couponService.query([]);
       setCoupons(data);
-
     } catch (error) {
-
-      console.log(error);
-
+      console.error(error);
     } finally {
-
       setLoading(false);
-
     }
   }
 
   async function createCoupon() {
-
     try {
-
       setCreating(true);
-
-      const newCoupon = {
+      const newCoupon: Coupon = {
+        id: Date.now().toString(),
         code: "NEW50",
         discount: 50,
         type: "percentage",
         active: true,
         minimumAmount: 999
       };
-
-      await addDoc(
-        collection(
-          db,
-          "coupons"
-        ),
-        newCoupon
-      );
-
+      await couponService.create(newCoupon.id, newCoupon);
       fetchCoupons();
-
     } catch (error) {
-
-      console.log(error);
-
+      console.error(error);
     } finally {
-
       setCreating(false);
-
     }
   }
 
-  async function updateCoupon(
-    id: string,
-    field: string,
-    value: any
-  ) {
-
+  async function updateCoupon(id: string, field: string, value: any) {
     try {
-
-      const ref = doc(
-        db,
-        "coupons",
-        id
-      );
-
-      await updateDoc(ref, {
-        [field]: value
-      });
-
+      await couponService.update(id, { [field]: value });
       setCoupons((prev) =>
         prev.map((item) =>
-          item.id === id
-            ? {
-                ...item,
-                [field]: value
-              }
-            : item
+          item.id === id ? { ...item, [field]: value } : item
         )
       );
-
     } catch (error) {
-
-      console.log(error);
-
+      console.error(error);
     }
   }
 
-  async function deleteCoupon(
-    id: string
-  ) {
-
+  async function deleteCoupon(id: string) {
     try {
-
-      await deleteDoc(
-        doc(
-          db,
-          "coupons",
-          id
-        )
-      );
-
-      setCoupons((prev) =>
-        prev.filter(
-          (item) =>
-            item.id !== id
-        )
-      );
-
+      await couponService.delete(id);
+      setCoupons((prev) => prev.filter((item) => item.id !== id));
     } catch (error) {
-
-      console.log(error);
-
+      console.error(error);
     }
   }
 
   if (loading) {
-
     return (
       <div className="flex min-h-screen items-center justify-center bg-[var(--card-color)] text-[var(--button-text-color)]">
         Loading...

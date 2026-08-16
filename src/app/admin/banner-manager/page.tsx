@@ -2,66 +2,41 @@
 
 export const dynamic = "force-dynamic";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import { ImagePlus, Save, Trash2, Eye, Plus, Sparkles, LayoutTemplate, Monitor, Smartphone, Wand2 } from "lucide-react";
+import { BannerService } from "@/firestore/services/BannerService";
+import { Banner } from "@/types/adminModels";
 
-import {
-  ImagePlus,
-  Save,
-  Trash2,
-  Eye,
-  Plus,
-  Sparkles,
-  LayoutTemplate,
-  Monitor,
-  Smartphone,
-  Wand2
-} from "lucide-react";
+const bannerService = new BannerService();
 
 export default function BannerManagerPage() {
+  const [banners, setBanners] = useState<(Banner & { id: string })[]>([]);
+  const [loading, setLoading] = useState(true);
 
-  const [banners, setBanners] =
-    useState([
-      {
-        title: "Mega Fashion Sale",
-        image:
-          "https://images.unsplash.com/photo-1441986300917-64674bd600d8?q=80&w=1200"
-      },
+  useEffect(() => {
+    async function fetchBanners() {
+      const data = await bannerService.query([]);
+      setBanners(data);
+      setLoading(false);
+    }
+    fetchBanners();
+  }, []);
 
-      {
-        title: "Electronics Offer",
-        image:
-          "https://images.unsplash.com/photo-1511707171634-5f897ff02aa9?q=80&w=1200"
-      }
-
-    ]);
-
-  function addBanner() {
-
-    setBanners([
-      ...banners,
-
-      {
-        title: `New Banner ${banners.length + 1}`,
-        image:
-          "https://images.unsplash.com/photo-1523275335684-37898b6baf30?q=80&w=1200"
-      }
-
-    ]);
-
+  async function addBanner() {
+    const newBanner: Banner = {
+      title: `New Banner ${banners.length + 1}`,
+      image: "https://images.unsplash.com/photo-1523275335684-37898b6baf30?q=80&w=1200"
+    };
+    const id = Date.now().toString();
+    await bannerService.create(id, newBanner);
+    setBanners([...banners, { id, ...newBanner }]);
   }
 
-  function removeBanner(
-    index: number
-  ) {
-
-    const updated =
-      [...banners];
-
-    updated.splice(index, 1);
-
-    setBanners(updated);
-
+  async function removeBanner(id: string) {
+    await bannerService.delete(id);
+    setBanners(banners.filter(b => b.id !== id));
   }
+
 
   return (
 
@@ -182,7 +157,7 @@ export default function BannerManagerPage() {
                   <button
                     onClick={() =>
                       removeBanner(
-                        index
+                        item.id
                       )
                     }
                     className="rounded-2xl bg-[var(--danger-color)]/20 p-3 text-[var(--danger-color)]"
