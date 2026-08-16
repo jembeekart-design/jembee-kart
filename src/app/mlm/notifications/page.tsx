@@ -82,7 +82,7 @@ export default function MLMNotificationsPage() {
 
   return (
 
-    <main className="min-h-screen bg-[var(--color-primary-button)] pb-20">
+    <main className="min-h-screen bg-[var(--color-page-background)] pb-20">
 
       {/* HEADER */}
 

@@ -97,14 +97,10 @@ const PATHS = {
   header:
     "src/components/navigation/Header.tsx",
 
-  button:
-    "src/components/ui/Button.tsx",
 
-  search:
-    "src/components/navigation/SearchBar.tsx",
 
   productCard:
-    "src/components/product/ProductCard.tsx",
+    "src/components/products/ProductCard.tsx",
 
 } as const;
 
@@ -268,45 +264,6 @@ const RULES: readonly Rule[] = [
 
   },
 
-  {
-
-    name: "Button",
-
-    include: [
-
-      PATHS.button
-
-    ],
-
-    regex:
-
-      /(bg-blue-\d+|hover:bg-blue-\d+)/g,
-
-    replacement:
-
-      "bg-[var(--button-color)]"
-
-  },
-
-  {
-
-    name: "Search",
-
-    include: [
-
-      PATHS.search
-
-    ],
-
-    regex:
-
-      /bg-gray-(50|100|200)/g,
-
-    replacement:
-
-      "bg-[var(--searchbar-color)]"
-
-  },
 
   {
 
@@ -327,50 +284,8 @@ const RULES: readonly Rule[] = [
       "border-[var(--card-border-color)]"
 
   },
-
-  {
-
-    name: "Status",
-
-    include: [],
-
-    regex:
-
-      /(bg|text|border|ring|hover:bg|focus:ring)-(green|red|yellow)-\d+/g,
-
-    replacement: (match) => {
-
-      const parts =
-
-        match.split("-");
-
-      const color =
-
-        parts.includes("green")
-
-          ? "success"
-
-          : parts.includes("red")
-
-          ? "danger"
-
-          : "warning";
-
-      const prefix =
-
-        parts
-
-          .slice(0, -2)
-
-          .join("-");
-
-      return `${prefix}-[var(--${color}-color)]`;
-
-    }
-
-  }
-
 ] as const;
+
 /* ============================================================
    PART 2
    UTILITIES

@@ -95,7 +95,7 @@ export default function MLMInvitePage() {
   }
 
   return (
-    <main className="min-h-screen bg-[var(--color-primary-button)] pb-24">
+    <main className="min-h-screen bg-[var(--color-page-background)] pb-24">
       {/* HEADER */}
       <div className="sticky top-0 z-50 bg-[var(--color-card-background)] px-4 py-3 shadow-sm">
         <div className="flex items-center gap-3">

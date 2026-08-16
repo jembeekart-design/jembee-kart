@@ -1,0 +1,388 @@
+"use client";
+
+export const dynamic = "force-dynamic";
+
+import { useEffect, useState } from "react";
+
+import {
+  collection,
+  deleteDoc,
+  doc,
+  onSnapshot,
+  orderBy,
+  query,
+  updateDoc
+} from "firebase/firestore";
+
+import {
+  Headphones,
+  Trash2,
+  MessageCircle,
+  User,
+  Mail,
+  ShieldCheck,
+  Clock3
+} from "lucide-react";
+
+import { db } from "@/firebase/config";
+
+interface TicketData {
+  id?: string;
+  name: string;
+  email: string;
+  subject: string;
+  message: string;
+  status: string;
+}
+
+export default function SupportTicketsPage() {
+
+  const [tickets, setTickets] =
+    useState<TicketData[]>([]);
+
+  const [loading, setLoading] =
+    useState(true);
+
+  useEffect(() => {
+
+    const q = query(
+      collection(
+        db,
+        "support_tickets"
+      ),
+      orderBy(
+        "status",
+        "asc"
+      )
+    );
+
+    const unsubscribe =
+      onSnapshot(q, (snapshot) => {
+
+        const data:
+          TicketData[] = [];
+
+        snapshot.forEach((doc) => {
+
+          data.push({
+            id: doc.id,
+            ...doc.data()
+          } as TicketData);
+
+        });
+
+        setTickets(data);
+
+        setLoading(false);
+
+      });
+
+    return () =>
+      unsubscribe();
+
+  }, []);
+
+  async function updateStatus(
+    id: string,
+    status: string
+  ) {
+
+    try {
+
+      await updateDoc(
+        doc(
+          db,
+          "support_tickets",
+          id
+        ),
+        {
+          status
+        }
+      );
+
+    } catch (error) {
+
+      console.log(error);
+
+    }
+  }
+
+  async function deleteTicket(
+    id: string
+  ) {
+
+    try {
+
+      await deleteDoc(
+        doc(
+          db,
+          "support_tickets",
+          id
+        )
+      );
+
+    } catch (error) {
+
+      console.log(error);
+
+    }
+  }
+
+  if (loading) {
+
+    return (
+
+      <div className="flex min-h-screen items-center justify-center bg-[var(--card-color)] text-[var(--button-text-color)]">
+
+        Loading...
+
+      </div>
+
+    );
+  }
+
+  return (
+
+    <main className="min-h-screen bg-[var(--primary-color)] p-4 text-[var(--button-text-color)]">
+
+      {/* HEADER */}
+
+      <div className="mb-8 flex items-center gap-4">
+
+        <div className="flex h-16 w-16 items-center justify-center rounded-[24px] bg-[var(--primary-color)]">
+
+          <Headphones size={30} />
+
+        </div>
+
+        <div>
+
+          <h1 className="text-3xl font-black">
+            Support Tickets
+          </h1>
+
+          <p className="mt-1 text-sm text-[var(--muted-text-color)]">
+            Manage customer support requests
+          </p>
+
+        </div>
+
+      </div>
+
+      {/* TICKETS */}
+
+      <div className="space-y-5">
+
+        {tickets.length === 0 && (
+
+          <div className="rounded-[30px] bg-[var(--primary-color)] p-10 text-center">
+
+            No Support Tickets Found
+
+          </div>
+
+        )}
+
+        {tickets.map(
+          (ticket) => (
+
+            <div
+              key={ticket.id}
+              className="rounded-[30px] bg-[var(--primary-color)] p-5"
+            >
+
+              <div className="flex flex-col gap-6">
+
+                {/* TOP */}
+
+                <div className="flex flex-col gap-5 md:flex-row md:items-center md:justify-between">
+
+                  <div>
+
+                    <h2 className="text-2xl font-black text-[var(--primary-color)]">
+
+                      {ticket.subject}
+
+                    </h2>
+
+                    <div className="mt-4 flex flex-col gap-2 text-[var(--text-color)]">
+
+                      <div className="flex items-center gap-2">
+
+                        <User size={16} />
+
+                        {ticket.name}
+
+                      </div>
+
+                      <div className="flex items-center gap-2">
+
+                        <Mail size={16} />
+
+                        {ticket.email}
+
+                      </div>
+
+                    </div>
+
+                  </div>
+
+                  <StatusBadge
+                    status={
+                      ticket.status
+                    }
+                  />
+
+                </div>
+
+                {/* MESSAGE */}
+
+                <div className="rounded-2xl bg-[var(--card-color)] p-4">
+
+                  <div className="mb-3 flex items-center gap-2">
+
+                    <MessageCircle size={18} />
+
+                    <h3 className="font-bold">
+
+                      Customer Message
+
+                    </h3>
+
+                  </div>
+
+                  <p className="text-[var(--text-color)]">
+
+                    {ticket.message}
+
+                  </p>
+
+                </div>
+
+                {/* ACTIONS */}
+
+                <div className="flex flex-wrap gap-3">
+
+                  <button
+                    onClick={() =>
+                      updateStatus(
+                        ticket.id!,
+                        "Pending"
+                      )
+                    }
+                    className="rounded-2xl bg-[var(--warning-color)] px-5 py-3 font-bold text-[var(--text-color)]"
+                  >
+
+                    Pending
+
+                  </button>
+
+                  <button
+                    onClick={() =>
+                      updateStatus(
+                        ticket.id!,
+                        "Resolved"
+                      )
+                    }
+                    className="rounded-2xl bg-[var(--success-color)] px-5 py-3 font-bold text-[var(--text-color)]"
+                  >
+
+                    Resolved
+
+                  </button>
+
+                  <button
+                    onClick={() =>
+                      updateStatus(
+                        ticket.id!,
+                        "Closed"
+                      )
+                    }
+                    className="rounded-2xl theme-primary-bg px-5 py-3 font-bold"
+                  >
+
+                    Closed
+
+                  </button>
+
+                  <button
+                    onClick={() =>
+                      deleteTicket(
+                        ticket.id!
+                      )
+                    }
+                    className="flex items-center gap-2 rounded-2xl bg-[var(--danger-color)] px-5 py-3 font-bold"
+                  >
+
+                    <Trash2 size={18} />
+
+                    Delete
+
+                  </button>
+
+                </div>
+
+              </div>
+
+            </div>
+
+          )
+        )}
+
+      </div>
+
+    </main>
+
+  );
+}
+
+function StatusBadge({
+  status
+}: {
+  status: string;
+}) {
+
+  function getColor() {
+
+    if (status === "Resolved") {
+
+      return "bg-[var(--success-color)]";
+
+    }
+
+    if (status === "Closed") {
+
+      return "theme-primary-bg";
+
+    }
+
+    return "bg-[var(--warning-color)]";
+
+  }
+
+  function getIcon() {
+
+    if (status === "Resolved") {
+
+      return <ShieldCheck size={16} />;
+
+    }
+
+    return <Clock3 size={16} />;
+
+  }
+
+  return (
+
+    <div
+      className={`flex items-center gap-2 rounded-full px-5 py-3 text-sm font-bold ${getColor()}`}
+    >
+
+      {getIcon()}
+
+      {status}
+
+    </div>
+
+  );
+}

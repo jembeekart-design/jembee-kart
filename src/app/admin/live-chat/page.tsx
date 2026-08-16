@@ -128,7 +128,7 @@ export default function LiveChatPage() {
 
   return (
 
-    <main className="flex min-h-screen flex-col bg-[var(--primary-color)] text-[var(--button-text-color)]">
+    <main className="flex min-h-screen flex-col bg-[var(--color-page-background)] text-[var(--button-text-color)]">
 
       {/* HEADER */}
 
