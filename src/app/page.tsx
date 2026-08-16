@@ -14,6 +14,8 @@ import {
 } from "react";
 
 import Link from "next/link";
+import { useRouter } from "next/navigation";
+import { BUILD_TARGET } from "@/lib/build-target";
 
 import {
   collection,
@@ -115,7 +117,14 @@ COMPONENT
 ====================================================== */
 
 export default function HomePage() {
+  const router = useRouter();
   const { theme } = useTheme();
+
+  useEffect(() => {
+    if (BUILD_TARGET === 'video') {
+      router.replace('/mlm/watch-earn');
+    }
+  }, [router]);
 
   /* ======================================================
   STATES

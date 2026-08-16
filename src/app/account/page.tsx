@@ -24,6 +24,7 @@ import {
 import Header from "@/components/navigation/Header";
 import BottomNavbar from "@/components/navigation/BottomNavbar";
 import WhatsAppButton from "@/components/navigation/WhatsAppButton";
+import { BUILD_TARGET } from "@/lib/build-target";
 import { useAdminConfig } from "@/lib/admin-config/provider";
 /* ======================================================
 TYPES
@@ -138,7 +139,7 @@ export default function AccountPage() {
   /* ======================================================
   MENU ITEMS
   ====================================================== */
-  const menuItems = [
+  const menuItems = ([
     {
       title: "My Orders",
       icon: Package,
@@ -175,7 +176,8 @@ export default function AccountPage() {
       href: "/settings",
       color: "bg-[var(--color-page-background)] text-[var(--text-primary)]"
     }
-  ];
+  ] as const).filter(item => BUILD_TARGET !== 'video' || item.title === 'Account Settings');
+
 
   /* ======================================================
   LOADING STATE UI

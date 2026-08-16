@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import { BUILD_TARGET } from "@/lib/build-target";
 
 export default function BottomNavbar() {
 
@@ -36,7 +37,13 @@ export default function BottomNavbar() {
       icon: "👤"
     }
 
-  ];
+  ].filter(item => {
+    if (BUILD_TARGET === 'video') {
+      return ['Watch Earn', 'Account'].includes(item.title);
+    }
+    return true;
+  });
+
 
   return (
 

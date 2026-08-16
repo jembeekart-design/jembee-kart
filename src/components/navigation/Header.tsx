@@ -24,6 +24,7 @@ import {
   MicOff,
   Search
 } from "lucide-react";
+import { BUILD_TARGET } from "@/lib/build-target";
 
 /* ======================================================
 PROPS
@@ -322,26 +323,28 @@ export default function Header({
 
             </button>
 
-            <button
-              className="
-                rounded-xl
-                theme-primary-bg
-                px-4
-                py-2
-                text-sm
-                font-semibold
-                text-[var(--button-text-color)]
+            {BUILD_TARGET !== 'video' && (
+              <button
+                className="
+                  rounded-xl
+                  theme-primary-bg
+                  px-4
+                  py-2
+                  text-sm
+                  font-semibold
+                  text-[var(--button-text-color)]
 
-                transition-all
-                duration-300
+                  transition-all
+                  duration-300
 
-                hover:bg-[var(--primary-color)]
-              "
-            >
+                  hover:bg-[var(--primary-color)]
+                "
+              >
 
-              Seller
+                Seller
 
-            </button>
+              </button>
+            )}
 
           </div>
 

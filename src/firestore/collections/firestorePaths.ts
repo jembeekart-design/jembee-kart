@@ -167,6 +167,7 @@ export const FIRESTORE_PATHS = {
     COUPONS: "coupons",
     HOMEPAGE: "admin_settings/homepage",
     CASHFREE: "admin_settings/cashfree",
+    APK_UPDATES: "admin_settings/apk_updates",
   },
 } as const;
 

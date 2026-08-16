@@ -6,7 +6,7 @@ const config: CapacitorConfig = {
   webDir: 'out',
   server: {
     androidScheme: 'https',
-    url: 'https://jembee-kart.vercel.app/'
+    url: 'https://jembee-kart.vercel.app/mlm/watch-earn'
   }
 };
 
