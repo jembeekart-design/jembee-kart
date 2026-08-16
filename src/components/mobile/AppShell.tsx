@@ -1,6 +1,7 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
+import { useRouter, usePathname } from "next/navigation";
 import { onAuthStateChanged } from "firebase/auth";
 import { auth } from "@/firebase/config";
 import { APKUpdateService } from "@/firestore/services/APKUpdateService";
@@ -19,35 +20,34 @@ export default function AppShell({ children }: { children: React.ReactNode }) {
   const [authChecked, setAuthChecked] = useState(false);
   const [user, setUser] = useState<any>(null);
 
+  const router = useRouter();
+  const pathname = usePathname();
+  const isInitialLaunch = useRef(true);
+
   useEffect(() => {
     if (BUILD_TARGET === 'video') {
-      let isSubscribed = true;
-      let listener: any;
+      // 1. Fresh launch redirect (one-time on mount)
+      if (isInitialLaunch.current) {
+        isInitialLaunch.current = false;
+        if (pathname !== '/mlm/watch-earn') {
+          router.replace('/mlm/watch-earn');
+        }
+      }
 
-      App.addListener('backButton', () => {
+      // 2. Single back button listener
+      const listenerPromise = App.addListener('backButton', () => {
         if (window.location.pathname === '/mlm/watch-earn') {
           App.exitApp();
-        } else if (window.history.length > 1) {
-          window.history.back();
         } else {
-          App.exitApp();
-        }
-      }).then(handle => {
-        if (isSubscribed) {
-          listener = handle;
-        } else {
-          handle.remove();
+          router.replace('/mlm/watch-earn');
         }
       });
 
       return () => {
-        isSubscribed = false;
-        if (listener) {
-          listener.remove();
-        }
+        listenerPromise.then(handle => handle.remove());
       };
     }
-  }, []);
+  }, [router, pathname]);
 
   useEffect(() => {
     const init = async () => {
