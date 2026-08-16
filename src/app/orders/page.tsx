@@ -51,7 +51,7 @@ export default function MyOrdersPage() {
   }[s?.toLowerCase()] || 'text-[var(--text-secondary)] bg-[var(--color-page-background)] border-[var(--color-border)]');
 
   return (
-    <main className="min-h-screen bg-[var(--color-primary-button)] pb-24">
+    <main className="min-h-screen bg-[var(--color-page-background)] pb-24">
       {toast && <div className="fixed top-5 left-1/2 -translate-x-1/2 z-[100] bg-[var(--color-card-background)] text-[var(--button-text-color)] px-6 py-3 rounded-full flex items-center gap-2 text-xs font-bold shadow-xl"><Check size={14}/> {toast}</div>}
 
       <div className="bg-gradient-to-br from-[var(--color-primary-button)] to-[var(--color-primary-button)] text-[var(--button-text-color)] p-6 pb-28 rounded-b-[2.5rem] shadow-xl">

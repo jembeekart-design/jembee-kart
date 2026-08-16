@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import "./globals.css";
 
 import Providers from "./providers";
-import { ThemeLoader } from "@/components/ThemeLoader";
+import { ThemeManager } from "@/components/theme-manager";
 import SystemSeeder from "@/components/SystemSeeder";
 
 export const metadata: Metadata = {
@@ -25,11 +25,11 @@ export default function RootLayout({
           {/* Auto create missing Firestore settings */}
           <SystemSeeder />
 
-          <ThemeLoader>
+          <ThemeManager>
             <div className="min-h-screen w-full overflow-x-hidden bg-[var(--background)] text-[var(--text)] transition-colors duration-300">
               {children}
             </div>
-          </ThemeLoader>
+          </ThemeManager>
 
         </Providers>
       </body>

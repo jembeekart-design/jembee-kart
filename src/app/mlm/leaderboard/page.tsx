@@ -54,7 +54,7 @@ export default function MLMLeaderboardPage() {
 
   return (
 
-    <main className="min-h-screen bg-[var(--color-primary-button)] pb-24">
+    <main className="min-h-screen bg-[var(--color-page-background)] pb-24">
 
       {/* HEADER */}
 

@@ -88,7 +88,7 @@ function CheckoutContent() {
   if (dataLoading) return <div className="flex min-h-screen items-center justify-center"><Loader2 className="animate-spin text-[var(--color-primary-button)]" /></div>;
 
   return (
-    <main className="min-h-screen bg-[var(--color-primary-button)] pb-32 px-4 max-w-lg mx-auto font-sans">
+    <main className="min-h-screen bg-[var(--color-page-background)] pb-32 px-4 max-w-lg mx-auto font-sans">
       {/* HEADER */}
       <div className="py-6 flex items-center justify-between">
         <div className="flex items-center gap-3">

@@ -171,7 +171,7 @@ export default function MLMNetworkPage() {
   const currentLevelMembers = networkLevels[activeLevel] || [];
 
   return (
-    <main className="min-h-screen bg-[var(--color-primary-button)] pb-20">
+    <main className="min-h-screen bg-[var(--color-page-background)] pb-20">
       
       {/* HEADER WITH UPDATED BACK ROUTE */}
       <div className="sticky top-0 z-50 bg-[var(--color-card-background)] px-4 py-3 shadow-sm">

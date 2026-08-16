@@ -612,7 +612,7 @@ export default function ProductsAdminPage() {
     <main
       className="
         min-h-screen
-        bg-[var(--primary-color)]
+        bg-[var(--color-page-background)]
         pb-24
       "
     >
