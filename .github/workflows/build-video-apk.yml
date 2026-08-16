@@ -39,8 +39,8 @@ jobs:
       - name: Clean and Re-initialize Android Platform
         run: |
           rm -rf android
-          npx cap add android
-          npx cap sync android
+          ./node_modules/.bin/cap add android
+          ./node_modules/.bin/cap sync android
 
       - name: Verify Generated Files
         run: |
