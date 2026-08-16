@@ -39,8 +39,8 @@ jobs:
       - name: Clean and Re-initialize Android Platform
         run: |
           rm -rf android
-          npx --no-install cap add android
-          npx --no-install cap sync android
+          node node_modules/@capacitor/cli/bin/capacitor add android
+          node node_modules/@capacitor/cli/bin/capacitor sync android
 
       - name: Verify Generated Files
         run: |
