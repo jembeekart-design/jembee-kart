@@ -22,10 +22,10 @@ export default function MLMWalletPage() {
     { title: "Cashback Reward", amount: "+ ₹120", type: "credit", date: "3 days ago" }
   ];
 
-  if (loading) return <main className="min-h-screen bg-[var(--color-primary-button)] flex items-center justify-center text-white">Loading...</main>;
+  if (loading) return <main className="min-h-screen bg-[var(--color-page-background)] flex items-center justify-center text-white">Loading...</main>;
 
   return (
-    <main className="min-h-screen bg-[var(--color-primary-button)] pb-24">
+    <main className="min-h-screen bg-[var(--color-page-background)] pb-24">
       {/* HEADER */}
       <div className="sticky top-0 z-50 bg-[var(--color-card-background)] px-4 py-3 shadow-sm">
         <div className="flex items-center gap-3">

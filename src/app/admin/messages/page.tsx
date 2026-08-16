@@ -32,7 +32,7 @@ export default function MessagesPage() {
 
   return (
 
-    <main className="min-h-screen bg-[var(--primary-color)] p-4 text-[var(--button-text-color)]">
+    <main className="min-h-screen bg-[var(--color-page-background)] p-4 text-[var(--button-text-color)]">
 
       {/* HEADER */}
 
