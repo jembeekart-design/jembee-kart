@@ -1,0 +1,129 @@
+@import "tailwindcss";
+
+@theme {
+  /* Map Tailwind theme tokens to semantic CSS variables */
+  --color-primary: var(--color-primary-button);
+  --color-secondary: var(--color-secondary-button);
+  --color-background: var(--color-page-background);
+  --color-card: var(--color-card-background);
+  --color-text: var(--text-primary);
+}
+
+:root {
+  /* Legacy fallbacks */
+  --primary-color: #4F46E5;
+  --secondary-color: #7C3AED;
+  --background-color: #F8F9FE;
+  --card-color: #FFFFFF;
+  --text-color: #111827;
+
+  /* Semantic defaults */
+  --color-page-background: var(--background-color);
+  --color-surface: var(--card-color);
+  --color-card-background: var(--card-color);
+  --color-section-background: #F1F5F9;
+  --color-header: var(--primary-color);
+  --color-input-background: var(--card-color);
+  --color-border: #E5E7EB;
+  --color-primary-button: var(--primary-color);
+  --color-secondary-button: var(--secondary-color);
+  --text-primary: var(--text-color);
+  --text-secondary: #6B7280;
+  --text-muted: #9CA3AF;
+  --color-success: #10B981;
+  --color-warning: #F59E0B;
+  --color-danger: #EF4444;
+  --button-text-color: #FFFFFF;
+}
+
+html,
+body {
+  margin: 0;
+  padding: 0;
+  width: 100%;
+  overflow-x: hidden;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  background: var(--color-page-background);
+  color: var(--text-primary);
+  font-family: Arial, Helvetica, sans-serif;
+}
+
+div,
+section,
+main,
+header,
+footer {
+  max-width: 100%;
+}
+
+img,
+video,
+svg,
+canvas {
+  max-width: 100%;
+  display: block;
+}
+
+/* LEGACY THEME CLASSES: Converted to semantic names where appropriate */
+
+.theme-primary-bg {
+  background: var(--color-primary-button);
+}
+
+.theme-secondary-bg {
+  background: var(--color-secondary-button);
+}
+
+.theme-primary-text {
+  color: var(--color-primary-button);
+}
+
+.theme-secondary-text {
+  color: var(--color-secondary-button);
+}
+
+.theme-card {
+  background: var(--color-card-background);
+}
+
+.theme-page {
+  background: var(--color-page-background);
+  color: var(--text-primary);
+}
+
+.theme-gradient {
+  background: linear-gradient(
+    135deg,
+    var(--color-primary-button),
+    var(--color-secondary-button)
+  );
+}
+.theme-primary-border {
+  border-color: var(--color-primary-button);
+}
+
+.theme-secondary-border {
+  border-color: var(--color-secondary-button);
+}
+
+.theme-primary-soft {
+  background: color-mix(in srgb, var(--color-primary-button) 20%, transparent);
+}
+
+.theme-primary-soft-text {
+  color: var(--color-primary-button);
+}
+
+/* Product Card Underline Component */
+.card-accent-border {
+  border-bottom: 4px solid var(--color-secondary-button);
+  padding-bottom: 2px;
+  display: inline-block;
+  margin-bottom: 10px;
+}
