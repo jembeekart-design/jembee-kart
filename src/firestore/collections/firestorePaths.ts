@@ -166,6 +166,7 @@ export const FIRESTORE_PATHS = {
     KYC_REQUESTS: "kyc_requests",
     COUPONS: "coupons",
     HOMEPAGE: "admin_settings/homepage",
+    CASHFREE: "admin_settings/cashfree",
   },
 } as const;
 

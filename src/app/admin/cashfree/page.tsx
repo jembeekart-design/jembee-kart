@@ -3,12 +3,9 @@
 export const dynamic = "force-dynamic";
 
 import { useEffect, useState } from "react";
-
-import {
-  doc,
-  getDoc,
-  setDoc
-} from "firebase/firestore";
+import { useRouter } from "next/navigation";
+import { onAuthStateChanged } from "firebase/auth";
+import { auth } from "@/firebase/config";
 
 import {
   CreditCard,
@@ -20,104 +17,59 @@ import {
   CheckCircle
 } from "lucide-react";
 
-import { db } from "@/firebase/config";
+import { CashfreeService } from "@/firestore/services/CashfreeService";
+import { CashfreeSettings } from "@/types/cashfreeModels";
 
-interface CashfreeSettings {
-  enabled: boolean;
-  sandboxMode: boolean;
-  appId: string;
-  secretKey: string;
-  webhookSecret: string;
-  paymentGatewayName: string;
-  autoSettlement: boolean;
-}
+const cashfreeService = new CashfreeService();
 
 export default function CashfreePage() {
+  const router = useRouter();
 
-  const [settings, setSettings] =
-    useState<CashfreeSettings>({
-      enabled: true,
-      sandboxMode: true,
-      appId: "",
-      secretKey: "",
-      webhookSecret: "",
-      paymentGatewayName: "Cashfree",
-      autoSettlement: true
-    });
+  const [settings, setSettings] = useState<CashfreeSettings>({
+    enabled: true,
+    sandboxMode: true,
+    appId: "",
+    secretKey: "",
+    webhookSecret: "",
+    paymentGatewayName: "Cashfree",
+    autoSettlement: true
+  });
 
-  const [loading, setLoading] =
-    useState(true);
-
-  const [saving, setSaving] =
-    useState(false);
+  const [loading, setLoading] = useState(true);
+  const [saving, setSaving] = useState(false);
 
   useEffect(() => {
+    const unsubscribeAuth = onAuthStateChanged(auth, (user) => {
+      if (!user) router.push("/login");
+    });
 
-    fetchSettings();
-
-  }, []);
-
-  async function fetchSettings() {
-
-    try {
-
-      const ref = doc(
-        db,
-        "admin_settings",
-        "cashfree"
-      );
-
-      const snap =
-        await getDoc(ref);
-
-      if (snap.exists()) {
-
-        setSettings(
-          snap.data() as CashfreeSettings
-        );
-
+    async function fetchSettings() {
+      try {
+        const data = await cashfreeService.getSettings();
+        if (data) setSettings(data);
+      } catch (error) {
+        console.error(error);
+      } finally {
+        setLoading(false);
       }
-
-    } catch (error) {
-
-      console.log(error);
-
-    } finally {
-
-      setLoading(false);
-
     }
-  }
+    fetchSettings();
+    return () => unsubscribeAuth();
+  }, [router]);
 
   async function saveSettings() {
-
     try {
-
       setSaving(true);
-
-      await setDoc(
-        doc(
-          db,
-          "admin_settings",
-          "cashfree"
-        ),
-        settings
-      );
-
-      alert(
-        "Cashfree Settings Saved"
-      );
-
+      await cashfreeService.saveSettings(settings);
+      alert("Cashfree Settings Saved");
     } catch (error) {
-
-      console.log(error);
-
+      console.error(error);
+      alert("Failed to save settings");
     } finally {
-
       setSaving(false);
-
     }
   }
+
 
   function updateField(
     field: keyof CashfreeSettings,
