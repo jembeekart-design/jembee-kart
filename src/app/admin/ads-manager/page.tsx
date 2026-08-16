@@ -285,7 +285,7 @@ export default function AdsManagerPage() {
   }
 
   return (
-    <main className="min-h-screen bg-[var(--color-primary-button)] p-4 text-[var(--button-text-color)]">
+    <main className="min-h-screen bg-[var(--color-page-background)] p-4 text-[var(--button-text-color)]">
       <div className="mx-auto max-w-7xl">
 
         {/* HEADER */}

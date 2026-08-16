@@ -151,7 +151,7 @@ export default function AIToolsPage() {
 
   return (
 
-    <main className="min-h-screen bg-[var(--color-primary-button)] p-4 text-[var(--button-text-color)]">
+    <main className="min-h-screen bg-[var(--color-page-background)] p-4 text-[var(--button-text-color)]">
 
       {/* HEADER */}
 

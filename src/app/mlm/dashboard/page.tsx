@@ -79,7 +79,7 @@ export default function MLMDashboardPage() {
 
   if (loading) {
     return (
-      <div className="flex min-h-screen items-center justify-center bg-[var(--color-primary-button)] text-sm font-black text-[var(--color-primary-button)] uppercase tracking-widest">
+      <div className="flex min-h-screen items-center justify-center bg-[var(--color-page-background)] text-sm font-black text-[var(--color-primary-button)] uppercase tracking-widest">
         Loading...
       </div>
     );
@@ -111,7 +111,7 @@ export default function MLMDashboardPage() {
   ];
 
   return (
-    <main className="min-h-screen bg-[var(--color-primary-button)] pb-28">
+    <main className="min-h-screen bg-[var(--color-page-background)] pb-28">
       <div className="sticky top-0 z-50 bg-[var(--color-card-background)] px-4 py-3 shadow-sm">
         <div className="flex items-center justify-between">
           <div>
