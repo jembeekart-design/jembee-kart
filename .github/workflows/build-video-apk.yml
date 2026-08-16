@@ -15,6 +15,14 @@ jobs:
       - name: Checkout Repository
         uses: actions/checkout@v4
 
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Install Dependencies
+        run: npm ci
+
       - name: Setup Java 21
         uses: actions/setup-java@v4
         with:
@@ -28,12 +36,24 @@ jobs:
         run: |
           sdkmanager "platforms;android-36" "build-tools;36.0.0"
 
-      - name: Grant Gradle Execute Permission
-        run: chmod +x android/gradlew
+      - name: Clean and Re-initialize Android Platform
+        run: |
+          rm -rf android
+          npx cap add android
+          npx cap sync android
+
+      - name: Verify Generated Files
+        run: |
+          ls -l android/capacitor.settings.gradle
+          ls -l android/capacitor.build.gradle
+          ls -l android/app/capacitor.build.gradle
+          ls -l android/app/src/main/assets/capacitor.config.json
 
       - name: Assemble Debug APK
         working-directory: android
-        run: ./gradlew :app:assembleDebug
+        run: |
+          chmod +x gradlew
+          ./gradlew :app:assembleDebug
 
       - name: Upload Debug APK
         uses: actions/upload-artifact@v4
