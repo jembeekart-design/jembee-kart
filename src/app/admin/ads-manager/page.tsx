@@ -11,7 +11,9 @@ import {
   onSnapshot,
   serverTimestamp,
   updateDoc,
+  getDoc,
 } from "firebase/firestore";
+import { businessRules } from "@/firestore/businessRules/service";
 
 import {
   Megaphone,
@@ -94,6 +96,7 @@ export default function AdsManagerPage() {
   const [impressions, setImpressions] = useState("0");
   const [clicks, setClicks] = useState("0");
   const [revenue, setRevenue] = useState("0");
+  const [creatorId, setCreatorId] = useState("");
   const [saving, setSaving] = useState(false);
 
   /*
@@ -206,8 +209,21 @@ export default function AdsManagerPage() {
     }
 
     setSaving(true);
+    let creatorSharePercent = 0;
 
     try {
+      if (creatorId.trim()) {
+        const userRef = doc(db, "users", creatorId.trim());
+        const userSnap = await getDoc(userRef);
+        if (!userSnap.exists()) {
+          alert("Creator ID not found.");
+          setSaving(false);
+          return;
+        }
+        const rules = await businessRules.getCreatorEconomyRules();
+        creatorSharePercent = rules.creatorRevenueShare || 0;
+      }
+
       await addDoc(adsCollection, {
         title: title.trim(),
         url: url.trim(),
@@ -220,12 +236,15 @@ export default function AdsManagerPage() {
         pricingModel,
         rate: Number(rate) || 0,
         remainingBudget: Number(budget) || 0,
+        creatorId: creatorId.trim() || null,
+        creatorSharePercent: creatorSharePercent,
         createdAt: serverTimestamp(),
         updatedAt: serverTimestamp(),
       });
 
       setTitle("");
       setUrl("");
+      setCreatorId("");
       setPricingModel("CPC");
       setRate("");
       setBudget("");
@@ -592,6 +611,12 @@ export default function AdsManagerPage() {
                 value={title}
                 onChange={setTitle}
                 placeholder="Example: Homepage Banner"
+              />
+              <Input
+                label="Creator User ID (Optional)"
+                value={creatorId}
+                onChange={setCreatorId}
+                placeholder="Enter UID"
               />
 
               <Input
