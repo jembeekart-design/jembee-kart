@@ -7,7 +7,8 @@ export type IncomeType =
   | "levelIncome" 
   | "rankIncome" 
   | "cashback" 
-  | "reward";
+  | "reward"
+  | "adRevenue";
 
 export interface CreditWalletPayload {
   uid: string;                 // Target user account node receiving the assets

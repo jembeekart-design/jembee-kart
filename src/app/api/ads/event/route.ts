@@ -1,6 +1,8 @@
 import { NextResponse } from "next/server";
 import { FieldValue } from "firebase-admin/firestore";
 import { adminAuth, adminDb } from "@/firebase/admin";
+import { businessRules } from "@/firestore/businessRules/service";
+import { adminCreditWallet } from "@/lib/mlm/adminCreditWallet";
 
 type EventType = "impression" | "click";
 
@@ -45,6 +47,11 @@ export async function POST(req: Request) {
         { status: 400 }
       );
     }
+
+    // Get revenue share configuration
+    const creatorEconomyRules = await businessRules.getCreatorEconomyRules();
+    const creatorSharePercent = creatorEconomyRules.creatorRevenueShare || 0;
+    const platformSharePercent = 100 - creatorSharePercent;
 
     const adRef = adminDb.collection("ads").doc(adId);
 
@@ -131,6 +138,9 @@ export async function POST(req: Request) {
         charge = rate;
       }
 
+      const platformShare = (charge * platformSharePercent) / 100;
+      const creatorShare = (charge * creatorSharePercent) / 100;
+
       const newRemainingBudget = Math.max(
         0,
         currentBudget - charge
@@ -139,6 +149,10 @@ export async function POST(req: Request) {
       const updateData: Record<string, unknown> = {
         revenue:
           Number(data?.revenue ?? 0) + charge,
+        platformRevenue:
+          Number(data?.platformRevenue ?? 0) + platformShare,
+        creatorRevenue:
+          Number(data?.creatorRevenue ?? 0) + creatorShare,
 
         remainingBudget: newRemainingBudget,
 
@@ -161,12 +175,28 @@ export async function POST(req: Request) {
 
       transaction.update(adRef, updateData);
 
+      // Creator wallet credit if creatorId exists
+      if (data?.creatorId && creatorShare > 0) {
+        await adminCreditWallet({
+          uid: data.creatorId,
+          amount: creatorShare,
+          type: "adRevenue",
+          description: `Ad Revenue Share - Ad: ${data.title} - ${eventType}`,
+          triggeredByUid: decodedToken.uid,
+          transaction: transaction,
+          eventId: eventId,
+        });
+      }
+
       transaction.set(eventRef, {
         adId,
         uid: decodedToken.uid,
+        creatorId: data?.creatorId ?? null,
         eventType,
         pricingModel,
         charge,
+        platformShare,
+        creatorShare,
         remainingBudget: newRemainingBudget,
         createdAt: FieldValue.serverTimestamp(),
       });
@@ -175,6 +205,7 @@ export async function POST(req: Request) {
         allowed: true,
         duplicate: false,
         charge,
+        creatorShare,
         remainingBudget: newRemainingBudget,
       };
     });
