@@ -155,3 +155,4 @@ export interface BusinessRulesMetrics {
   validationFailures: number;
   lastRefresh: string | null;
 }
+
