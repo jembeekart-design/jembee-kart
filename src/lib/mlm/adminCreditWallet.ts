@@ -21,7 +21,7 @@ interface AdminCreditWalletPayload {
  */
 export async function adminCreditWallet(
   payload: AdminCreditWalletPayload
-): Promise<void> {
+): Promise<string> {
   const { uid, amount, type, description, orderId, triggeredByUid, transaction, eventId } = payload;
   const userRef = adminDb.collection("users").doc(uid);
   const ledgerLogRef = adminDb.collection(`users/${uid}/transactions`).doc(eventId); // Idempotent ledger ID
@@ -52,4 +52,6 @@ export async function adminCreditWallet(
     narrativeDescription: description,
     timestamp: FieldValue.serverTimestamp(),
   });
+
+  return eventId;
 }

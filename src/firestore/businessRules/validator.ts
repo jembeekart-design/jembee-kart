@@ -274,6 +274,64 @@ export function validateCreatorEconomyRules(
     "minimumPayout"
   );
 
+  // Validate Payout Tiers
+  if (!Array.isArray(rules.payoutTiers) || rules.payoutTiers.length === 0) {
+    throw new Error("payoutTiers must be a non-empty array.");
+  }
+
+  // Sort copies of tiers by minAmount to verify logical order and overlaps
+  const sortedTiers = [...rules.payoutTiers].sort((a, b) => a.minAmount - b.minAmount);
+
+  sortedTiers.forEach((tier, index) => {
+    ensurePositive(
+      ensureNumber(tier.minAmount, `payoutTiers[${index}].minAmount`),
+      `payoutTiers[${index}].minAmount`
+    );
+
+    ensurePositive(
+      ensureNumber(tier.delayDays, `payoutTiers[${index}].delayDays`),
+      `payoutTiers[${index}].delayDays`
+    );
+
+    if (tier.maxAmount !== null) {
+      ensurePositive(
+        ensureNumber(tier.maxAmount, `payoutTiers[${index}].maxAmount`),
+        `payoutTiers[${index}].maxAmount`
+      );
+
+      if (tier.maxAmount < tier.minAmount) {
+        throw new Error(
+          `payoutTiers[${index}].maxAmount (${tier.maxAmount}) cannot be less than minAmount (${tier.minAmount}).`
+        );
+      }
+    }
+
+    // Check for logical flow and overlaps
+    const nextTier = sortedTiers[index + 1];
+    if (nextTier) {
+      // Only the very last tier can be unlimited
+      if (tier.maxAmount === null) {
+        throw new Error(
+          `Only the last payout tier can have an unlimited maxAmount (null). Found null at index ${index}.`
+        );
+      }
+
+      // Ensure no gap or overlap (Tiers must be contiguous or at least non-overlapping)
+      if (nextTier.minAmount < tier.maxAmount) {
+        throw new Error(
+          `Payout tiers overlap: Tier ${index} ends at ${tier.maxAmount}, but Tier ${index + 1} starts at ${nextTier.minAmount}.`
+        );
+      }
+    } else {
+      // The final tier MUST be unlimited to ensure all possible amounts are covered
+      if (tier.maxAmount !== null) {
+        throw new Error(
+          "The final payout tier must have maxAmount set to null (unlimited) to cover all high-value earnings."
+        );
+      }
+    }
+  });
+
   return rules;
 }
 

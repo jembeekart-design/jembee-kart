@@ -1,5 +1,5 @@
 import { NextResponse } from "next/server";
-import { FieldValue } from "firebase-admin/firestore";
+import { FieldValue, Timestamp } from "firebase-admin/firestore";
 import { adminAuth, adminDb } from "@/firebase/admin";
 import { businessRules } from "@/firestore/businessRules/service";
 import { adminCreditWallet } from "@/lib/mlm/adminCreditWallet";
@@ -175,16 +175,33 @@ export async function POST(req: Request) {
 
       transaction.update(adRef, updateData);
 
-      // Creator wallet credit if creatorId exists
+      // Creator pending earning if creatorId exists
       if (data?.creatorId && creatorShare > 0) {
-        await adminCreditWallet({
-          uid: data.creatorId,
-          amount: creatorShare,
-          type: "adRevenue",
-          description: `Ad Revenue Share - Ad: ${data.title} - ${eventType}`,
-          triggeredByUid: decodedToken.uid,
-          transaction: transaction,
-          eventId: eventId,
+        // Find matching payout tier for delayDays
+        const tiers = creatorEconomyRules.payoutTiers || [];
+        const matchingTier = tiers.find(t =>
+          creatorShare >= t.minAmount && (t.maxAmount === null || creatorShare < t.maxAmount)
+        );
+
+        const delayDays = matchingTier ? matchingTier.delayDays : 30; // Default to 30 if no match
+        const payoutDueAt = new Date();
+        payoutDueAt.setDate(payoutDueAt.getDate() + delayDays);
+
+        const earningRef = adminDb.collection("creatorAdEarnings").doc(eventId);
+
+        transaction.set(earningRef, {
+          earningId: eventId,
+          adId,
+          adTitle: data.title || "Untitled Ad",
+          creatorId: data.creatorId,
+          eventId,
+          eventType,
+          grossAdCharge: charge,
+          creatorSharePercent,
+          creatorAmount: creatorShare,
+          status: "PENDING",
+          createdAt: FieldValue.serverTimestamp(),
+          payoutDueAt: Timestamp.fromDate(payoutDueAt),
         });
       }
 

@@ -68,10 +68,17 @@ export interface WalletRules {
 // Creator Economy
 // ======================================================
 
+export interface PayoutTier {
+  minAmount: number;
+  maxAmount: number | null; // null means unlimited
+  delayDays: number;
+}
+
 export interface CreatorEconomyRules {
   creatorRevenueShare: number;
   affiliateRevenueShare: number;
   minimumPayout: number;
+  payoutTiers: PayoutTier[];
 }
 
 // ======================================================
