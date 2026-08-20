@@ -7,8 +7,25 @@ export async function POST(req: Request) {
   try {
     // 1. Authenticate request using CRON_SECRET for security
     const authHeader = req.headers.get("authorization");
-    if (authHeader !== `Bearer ${process.env.CRON_SECRET}`) {
-      return NextResponse.json({ success: false, message: "Unauthorized" }, { status: 401 });
+    const expectedSecret = process.env.CRON_SECRET ?? "";
+    const providedSecret = authHeader?.startsWith("Bearer ")
+      ? authHeader.slice(7)
+      : "";
+
+    if (providedSecret !== expectedSecret) {
+      return NextResponse.json(
+        {
+          success: false,
+          message: "Unauthorized",
+          debug: {
+            serverSecretPresent: Boolean(expectedSecret),
+            serverSecretLength: expectedSecret.length,
+            providedSecretLength: providedSecret.length,
+            hasBearer: authHeader?.startsWith("Bearer ") ?? false,
+          },
+        },
+        { status: 401 }
+      );
     }
 
     // 2. Find due earnings: status == PENDING AND payoutDueAt <= now
