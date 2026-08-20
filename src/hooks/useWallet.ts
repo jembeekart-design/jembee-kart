@@ -7,6 +7,8 @@ export interface WalletData {
   commissionWallet: number;
   rewardWallet: number;
   cashbackWallet: number;
+  totalIncome: number;
+  todayIncome: number;
 }
 
 export const useWallet = () => {
@@ -28,6 +30,8 @@ export const useWallet = () => {
           commissionWallet: data.commissionWallet || 0,
           rewardWallet: data.rewardWallet || 0,
           cashbackWallet: data.cashbackWallet || 0,
+          totalIncome: data.totalIncome || 0,
+          todayIncome: data.todayIncome || 0,
         });
       }
       setLoading(false);

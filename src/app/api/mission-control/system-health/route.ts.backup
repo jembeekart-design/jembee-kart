@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 
-import { adminDb } from "@/firebase/admin";
+import { db } from "@/firebase/config";
+import { collection, getDocs } from "firebase/firestore";
 
 export const dynamic = "force-dynamic";
 
@@ -29,7 +30,10 @@ export async function GET() {
     /* Firestore Health Check                     */
     /* ------------------------------------------ */
 
-    const usersSnapshot = await adminDb.collection("users").get();
+    const usersSnapshot = await getDocs(
+      collection(db, "users")
+    );
+
     const databaseConnected = usersSnapshot !== undefined;
 
     /* ------------------------------------------ */
