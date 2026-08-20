@@ -64,7 +64,7 @@ export async function POST(req: Request) {
 
           // 4. Call corrected adminCreditWallet (Atomic & Idempotent)
           // adminCreditWallet now returns the ledger doc ID (which is the deterministic ID passed)
-          const actualWalletTxId = await adminCreditWallet({
+          await adminCreditWallet({
             uid: data.creatorId,
             amount: data.creatorAmount,
             type: "adRevenue",
@@ -77,7 +77,7 @@ export async function POST(req: Request) {
           transaction.update(doc.ref, {
             status: "AVAILABLE",
             releasedAt: FieldValue.serverTimestamp(),
-            walletTransactionId: actualWalletTxId, // This is 'payout_...'
+            walletTransactionId: walletTxDeterministicId, // This is 'payout_...'
           });
         });
         results.processed++;
