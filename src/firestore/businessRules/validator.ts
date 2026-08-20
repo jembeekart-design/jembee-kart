@@ -274,6 +274,14 @@ export function validateCreatorEconomyRules(
     "minimumPayout"
   );
 
+  ensurePositive(
+    ensureNumber(
+      rules.payoutDelayHours,
+      "payoutDelayHours"
+    ),
+    "payoutDelayHours"
+  );
+
   return rules;
 }
 

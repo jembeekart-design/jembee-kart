@@ -72,6 +72,7 @@ export interface CreatorEconomyRules {
   creatorRevenueShare: number;
   affiliateRevenueShare: number;
   minimumPayout: number;
+  payoutDelayHours: number;
 }
 
 // ======================================================
