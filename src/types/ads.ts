@@ -1,9 +1,9 @@
-export type AdNetworkProviderType = "GAM" | "AdSense";
+export type AdNetworkMode = "GAM" | "AdSense_Auto" | "AdSense_Manual";
 
 export interface AdNetwork {
   id: string;
   name: string;
-  provider: AdNetworkProviderType;
+  mode: AdNetworkMode;
   enabled: boolean;
   environment: "test" | "production";
   priority: number;
