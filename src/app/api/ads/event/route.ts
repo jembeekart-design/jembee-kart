@@ -1,8 +1,7 @@
 import { NextResponse } from "next/server";
-import { FieldValue } from "firebase-admin/firestore";
+import { FieldValue, Timestamp } from "firebase-admin/firestore";
 import { adminAuth, adminDb } from "@/firebase/admin";
 import { businessRules } from "@/firestore/businessRules/service";
-import { adminCreditWallet } from "@/lib/mlm/adminCreditWallet";
 
 type EventType = "impression" | "click";
 
@@ -175,20 +174,40 @@ export async function POST(req: Request) {
 
       transaction.update(adRef, updateData);
 
-      // Creator wallet credit if creatorId exists
-      if (data?.creatorId && creatorShare > 0) {
-        await adminCreditWallet({
-          uid: data.creatorId,
-          amount: creatorShare,
-          type: "adRevenue",
-          description: `Ad Revenue Share - Ad: ${data.title} - ${eventType}`,
-          triggeredByUid: decodedToken.uid,
-          transaction: transaction,
-          eventId: eventId,
-        });
-      }
+      // Hold creator earnings as PENDING.
+    // Wallet credit happens later through the release cron.
+    if (data?.creatorId && creatorShare > 0) {
+      const payoutDelayHours = Math.max(
+        0,
+        Number(creatorEconomyRules.payoutDelayHours ?? 0)
+      );
 
-      transaction.set(eventRef, {
+      const payoutDueAt = Timestamp.fromMillis(
+        Date.now() + payoutDelayHours * 60 * 60 * 1000
+      );
+
+      const creatorEarningRef = adminDb
+        .collection("creatorAdEarnings")
+        .doc(eventId);
+
+      transaction.set(creatorEarningRef, {
+        eventId,
+        adId,
+        creatorId: data.creatorId,
+        adTitle: data.title ?? "Ad",
+        eventType,
+        pricingModel,
+        charge,
+        creatorRevenueSharePercent: creatorSharePercent,
+        creatorAmount: creatorShare,
+        status: "PENDING",
+        payoutDueAt,
+        createdAt: FieldValue.serverTimestamp(),
+        updatedAt: FieldValue.serverTimestamp(),
+      });
+    }
+
+    transaction.set(eventRef, {
         adId,
         uid: decodedToken.uid,
         creatorId: data?.creatorId ?? null,

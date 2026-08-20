@@ -100,6 +100,10 @@ export default function CreatorEconomyCard() {
           <span>Minimum Payout</span>
           <span>₹{rules?.minimumPayout ?? "--"}</span>
         </div>
+            <div className="flex justify-between">
+              <span>Ad Earnings Payout Delay</span>
+              <span>{rules?.payoutDelayHours ?? "--"} hours</span>
+            </div>
 
       </div>
 

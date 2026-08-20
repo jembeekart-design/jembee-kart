@@ -49,6 +49,7 @@ export const DEFAULT_BUSINESS_RULES: BusinessRulesConfig = {
     creatorRevenueShare: 20,
     affiliateRevenueShare: 10,
     minimumPayout: 500,
+    payoutDelayHours: 24,
   },
 
   featureFlags: {

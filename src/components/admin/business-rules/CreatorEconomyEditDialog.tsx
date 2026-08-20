@@ -121,7 +121,28 @@ export default function CreatorEconomyEditDialog({
 
         </div>
 
-        <div className="mt-8 flex justify-end gap-4">
+        <div>
+        <label className="text-sm">
+          Ad Earnings Payout Delay (Hours)
+        </label>
+        <input
+          type="number"
+          min="0"
+          value={form.payoutDelayHours}
+          onChange={(e) =>
+            setForm({
+              ...form,
+              payoutDelayHours: Number(e.target.value),
+            })
+          }
+          className="mt-1 w-full rounded-lg border border-[var(--border-color)] bg-[var(--card-color)] px-4 py-3"
+        />
+        <p className="mt-1 text-xs text-[var(--text-muted)]">
+          0 = immediate payout
+        </p>
+      </div>
+
+      <div className="mt-8 flex justify-end gap-4">
 
           <button
             onClick={onClose}
