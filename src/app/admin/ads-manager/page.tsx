@@ -77,11 +77,14 @@ function number(value: number) {
   return value.toLocaleString("en-IN");
 }
 
+import { AdNetworkManager } from "@/components/admin/AdNetworkManager";
+
 export default function AdsManagerPage() {
   const [ads, setAds] = useState<Ad[]>([]);
   const [search, setSearch] = useState("");
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
+  const [activeTab, setActiveTab] = useState<"internal" | "network">("internal");
 
   const [showCreate, setShowCreate] = useState(false);
 
@@ -337,229 +340,252 @@ export default function AdsManagerPage() {
           </div>
         )}
 
-        {/* STATS */}
-
-        <div className="grid grid-cols-2 gap-4 md:grid-cols-4">
-
-          <StatCard
-            title="Active Ads"
-            value={number(activeAds)}
-            icon={<Megaphone size={22} />}
-          />
-
-          <StatCard
-            title="Impressions"
-            value={number(totalImpressions)}
-            icon={<Eye size={22} />}
-          />
-
-          <StatCard
-            title="Clicks"
-            value={number(totalClicks)}
-            icon={<MousePointerClick size={22} />}
-          />
-
-          <StatCard
-            title="Revenue"
-            value={money(totalRevenue)}
-            icon={<TrendingUp size={22} />}
-          />
-
+                {/* TABS */}
+        <div className="mb-6 flex gap-4">
+          <button
+            onClick={() => setActiveTab("internal")}
+            className={`rounded-2xl px-5 py-3 font-bold ${activeTab === "internal" ? "bg-[var(--color-secondary-button)]" : "bg-[var(--color-card-background)]"}`}
+          >
+            Internal Campaigns
+          </button>
+          <button
+            onClick={() => setActiveTab("network")}
+            className={`rounded-2xl px-5 py-3 font-bold ${activeTab === "network" ? "bg-[var(--color-secondary-button)]" : "bg-[var(--color-card-background)]"}`}
+          >
+            Ad Network Manager
+          </button>
         </div>
 
-        {/* SEARCH */}
+        {activeTab === "internal" ? (
+          <>
+            {/* STATS */}
 
-        <div className="mt-6 flex items-center gap-3 rounded-[24px] border border-[var(--color-border)]/10 bg-[var(--color-primary-button)] px-4 py-3">
+            <div className="grid grid-cols-2 gap-4 md:grid-cols-4">
 
-          <Search
-            size={20}
-            className="text-[var(--text-muted)]"
-          />
-
-          <input
-            type="text"
-            placeholder="Search ads..."
-            value={search}
-            onChange={(e) => setSearch(e.target.value)}
-            className="w-full bg-transparent outline-none placeholder:text-[var(--text-muted)]"
-          />
-
-        </div>
-
-        {/* ADS */}
-
-        <div className="mt-6 space-y-4">
-
-          {loading ? (
-            <div className="rounded-[28px] border border-[var(--color-border)]/10 bg-[var(--color-primary-button)] p-8 text-center">
-              Loading real ads from Firestore...
-            </div>
-          ) : filteredAds.length === 0 ? (
-            <div className="rounded-[28px] border border-[var(--color-border)]/10 bg-[var(--color-primary-button)] p-8 text-center">
-
-              <Megaphone
-                size={40}
-                className="mx-auto opacity-50"
+              <StatCard
+                title="Active Ads"
+                value={number(activeAds)}
+                icon={<Megaphone size={22} />}
               />
 
-              <h2 className="mt-4 text-xl font-bold">
-                No Ads Found
-              </h2>
+              <StatCard
+                title="Impressions"
+                value={number(totalImpressions)}
+                icon={<Eye size={22} />}
+              />
 
-              <p className="mt-2 text-sm text-[var(--text-muted)]">
-                Abhi Firestore ki ads collection me koi ad nahi hai.
-              </p>
+              <StatCard
+                title="Clicks"
+                value={number(totalClicks)}
+                icon={<MousePointerClick size={22} />}
+              />
 
-              <button
-                onClick={() => setShowCreate(true)}
-                className="mt-5 rounded-2xl bg-[var(--color-secondary-button)] px-5 py-3 font-bold text-[var(--text-primary)]"
-              >
-                Create First Ad
-              </button>
+              <StatCard
+                title="Revenue"
+                value={money(totalRevenue)}
+                icon={<TrendingUp size={22} />}
+              />
 
             </div>
-          ) : (
-            filteredAds.map((item) => (
 
-              <div
-                key={item.id}
-                className="rounded-[28px] border border-[var(--color-border)]/10 bg-[var(--color-primary-button)] p-5"
-              >
+            {/* SEARCH */}
 
-                <div className="flex flex-col gap-4 md:flex-row md:items-start md:justify-between">
+            <div className="mt-6 flex items-center gap-3 rounded-[24px] border border-[var(--color-border)]/10 bg-[var(--color-primary-button)] px-4 py-3">
 
-                  <div>
+              <Search
+                size={20}
+                className="text-[var(--text-muted)]"
+              />
 
-                    <h2 className="text-2xl font-black">
-                      {item.title}
-                    </h2>
+              <input
+                type="text"
+                placeholder="Search ads..."
+                value={search}
+                onChange={(e) => setSearch(e.target.value)}
+                className="w-full bg-transparent outline-none placeholder:text-[var(--text-muted)]"
+              />
 
-                    <div className="mt-2 flex items-center gap-2 text-sm text-[var(--text-muted)]">
-                      <Globe size={15} />
-                      {item.platform}
+            </div>
+
+            {/* ADS */}
+
+            <div className="mt-6 space-y-4">
+
+              {loading ? (
+                <div className="rounded-[28px] border border-[var(--color-border)]/10 bg-[var(--color-primary-button)] p-8 text-center">
+                  Loading real ads from Firestore...
+                </div>
+              ) : filteredAds.length === 0 ? (
+                <div className="rounded-[28px] border border-[var(--color-border)]/10 bg-[var(--color-primary-button)] p-8 text-center">
+
+                  <Megaphone
+                    size={40}
+                    className="mx-auto opacity-50"
+                  />
+
+                  <h2 className="mt-4 text-xl font-bold">
+                    No Ads Found
+                  </h2>
+
+                  <p className="mt-2 text-sm text-[var(--text-muted)]">
+                    Abhi Firestore ki ads collection me koi ad nahi hai.
+                  </p>
+
+                  <button
+                    onClick={() => setShowCreate(true)}
+                    className="mt-5 rounded-2xl bg-[var(--color-secondary-button)] px-5 py-3 font-bold text-[var(--text-primary)]"
+                  >
+                    Create First Ad
+                  </button>
+
+                </div>
+              ) : (
+                filteredAds.map((item) => (
+
+                  <div
+                    key={item.id}
+                    className="rounded-[28px] border border-[var(--color-border)]/10 bg-[var(--color-primary-button)] p-5"
+                  >
+
+                    <div className="flex flex-col gap-4 md:flex-row md:items-start md:justify-between">
+
+                      <div>
+
+                        <h2 className="text-2xl font-black">
+                          {item.title}
+                        </h2>
+
+                        <div className="mt-2 flex items-center gap-2 text-sm text-[var(--text-muted)]">
+                          <Globe size={15} />
+                          {item.platform}
+                        </div>
+
+                      </div>
+
+                      <div
+                        className={`w-fit rounded-full px-4 py-1 text-sm font-bold ${
+                          item.status === "Running"
+                            ? "bg-[var(--color-success)]/20 text-[var(--color-success)]"
+                            : item.status === "Paused"
+                            ? "bg-[var(--color-warning)]/20 text-[var(--color-warning)]"
+                            : "bg-[var(--color-card-background)]/20 text-[var(--text-primary)]"
+                        }`}
+                      >
+                        {item.status}
+                      </div>
+
+                    </div>
+
+                    {/* METRICS */}
+
+                    <div className="mt-5 grid grid-cols-2 gap-3 md:grid-cols-4">
+
+                      <MiniMetric
+                        label="Budget"
+                        value={money(item.budget)}
+                      />
+
+                      <MiniMetric
+                        label="Remaining Budget"
+                        value={money(item.remainingBudget)}
+                      />
+
+                      <MiniMetric
+                        label="Impressions"
+                        value={number(item.impressions)}
+                      />
+
+                      <MiniMetric
+                        label="Clicks"
+                        value={number(item.clicks)}
+                      />
+
+                      <MiniMetric
+                        label="Revenue"
+                        value={money(item.revenue)}
+                      />
+
+                    </div>
+
+                    {/* ACTIONS */}
+
+                    <div className="mt-5 flex flex-wrap gap-2">
+
+                      <button
+                        onClick={() => toggleStatus(item)}
+                        className="flex items-center gap-2 rounded-2xl bg-[var(--color-secondary-button)] px-4 py-2 font-bold text-[var(--text-primary)]"
+                      >
+                        {item.status === "Running" ? (
+                          <>
+                            <Pause size={16} />
+                            Pause
+                          </>
+                        ) : (
+                          <>
+                            <Play size={16} />
+                            Start
+                          </>
+                        )}
+                      </button>
+
+                      {item.status !== "Completed" && (
+                        <button
+                          onClick={() => completeAd(item)}
+                          className="rounded-2xl bg-[var(--color-success)]/20 px-4 py-2 font-bold text-[var(--color-success)]"
+                        >
+                          Complete
+                        </button>
+                      )}
+
+                      <button
+                        onClick={() => deleteAd(item)}
+                        className="flex items-center gap-2 rounded-2xl bg-[var(--color-danger)]/20 px-4 py-2 font-bold text-[var(--color-danger)]"
+                      >
+                        <Trash2 size={16} />
+                        Delete
+                      </button>
+
                     </div>
 
                   </div>
 
-                  <div
-                    className={`w-fit rounded-full px-4 py-1 text-sm font-bold ${
-                      item.status === "Running"
-                        ? "bg-[var(--color-success)]/20 text-[var(--color-success)]"
-                        : item.status === "Paused"
-                        ? "bg-[var(--color-warning)]/20 text-[var(--color-warning)]"
-                        : "bg-[var(--color-card-background)]/20 text-[var(--text-primary)]"
-                    }`}
-                  >
-                    {item.status}
-                  </div>
+                ))
+              )}
 
-                </div>
+            </div>
 
-                {/* METRICS */}
+            {/* AI ADS */}
 
-                <div className="mt-5 grid grid-cols-2 gap-3 md:grid-cols-4">
+            <div className="mt-6 rounded-[30px] bg-gradient-to-r from-[var(--color-primary-button)] to-[var(--color-primary-button)] p-6">
 
-                  <MiniMetric
-                    label="Budget"
-                    value={money(item.budget)}
-                  />
+              <div className="flex items-center gap-3">
+                <Sparkles size={26} />
 
-          <MiniMetric
-            label="Remaining Budget"
-            value={money(item.remainingBudget)}
-          />
-
-                  <MiniMetric
-                    label="Impressions"
-                    value={number(item.impressions)}
-                  />
-
-                  <MiniMetric
-                    label="Clicks"
-                    value={number(item.clicks)}
-                  />
-
-                  <MiniMetric
-                    label="Revenue"
-                    value={money(item.revenue)}
-                  />
-
-                </div>
-
-                {/* ACTIONS */}
-
-                <div className="mt-5 flex flex-wrap gap-2">
-
-                  <button
-                    onClick={() => toggleStatus(item)}
-                    className="flex items-center gap-2 rounded-2xl bg-[var(--color-secondary-button)] px-4 py-2 font-bold text-[var(--text-primary)]"
-                  >
-                    {item.status === "Running" ? (
-                      <>
-                        <Pause size={16} />
-                        Pause
-                      </>
-                    ) : (
-                      <>
-                        <Play size={16} />
-                        Start
-                      </>
-                    )}
-                  </button>
-
-                  {item.status !== "Completed" && (
-                    <button
-                      onClick={() => completeAd(item)}
-                      className="rounded-2xl bg-[var(--color-success)]/20 px-4 py-2 font-bold text-[var(--color-success)]"
-                    >
-                      Complete
-                    </button>
-                  )}
-
-                  <button
-                    onClick={() => deleteAd(item)}
-                    className="flex items-center gap-2 rounded-2xl bg-[var(--color-danger)]/20 px-4 py-2 font-bold text-[var(--color-danger)]"
-                  >
-                    <Trash2 size={16} />
-                    Delete
-                  </button>
-
-                </div>
-
+                <h2 className="text-3xl font-black">
+                  AI Ads Generator
+                </h2>
               </div>
 
-            ))
-          )}
+              <p className="mt-3 max-w-2xl text-sm text-[var(--button-text-color)]/90">
+                AI creative generation ko baad me real AI service se connect
+                kiya ja sakta hai.
+              </p>
 
-        </div>
+              <button
+                type="button"
+                disabled
+                className="mt-6 flex cursor-not-allowed items-center gap-2 rounded-2xl bg-[var(--color-card-background)] px-6 py-3 font-bold text-[var(--button-text-color)] opacity-60"
+              >
+                <PlayCircle size={18} />
+                AI Generator — Not Connected
+              </button>
 
-        {/* AI ADS */}
+            </div>
+          </>
+        ) : (
+          <AdNetworkManager />
+        )}
 
-        <div className="mt-6 rounded-[30px] bg-gradient-to-r from-[var(--color-primary-button)] to-[var(--color-primary-button)] p-6">
-
-          <div className="flex items-center gap-3">
-            <Sparkles size={26} />
-
-            <h2 className="text-3xl font-black">
-              AI Ads Generator
-            </h2>
-          </div>
-
-          <p className="mt-3 max-w-2xl text-sm text-[var(--button-text-color)]/90">
-            AI creative generation ko baad me real AI service se connect
-            kiya ja sakta hai.
-          </p>
-
-          <button
-            type="button"
-            disabled
-            className="mt-6 flex cursor-not-allowed items-center gap-2 rounded-2xl bg-[var(--color-card-background)] px-6 py-3 font-bold text-[var(--button-text-color)] opacity-60"
-          >
-            <PlayCircle size={18} />
-            AI Generator — Not Connected
-          </button>
-
-        </div>
 
       </div>
 

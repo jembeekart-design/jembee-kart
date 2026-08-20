@@ -127,6 +127,14 @@ export const FIRESTORE_PATHS = {
   SEO: "config/seo",
 
   // ==========================================
+  // AD MANAGEMENT
+  // ==========================================
+  AD_MANAGEMENT: {
+    NETWORKS: "adNetworks",
+    SLOTS: "adSlots",
+  },
+
+  // ==========================================
   // ADMIN CHAT COLLECTIONS
   // ==========================================
   ADMIN_CHAT: {
