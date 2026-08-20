@@ -4,7 +4,7 @@ import { useEffect, useState } from "react";
 import { collection, onSnapshot, query } from "firebase/firestore";
 import { db } from "@/firebase/config";
 import { FIRESTORE_PATHS } from "@/firestore/collections/firestorePaths";
-import { AdNetwork } from "@/types/ads";
+import { AdNetwork, AdNetworkMode } from "@/types/ads";
 import { Plus, X } from "lucide-react";
 import { addAdNetwork } from "@/firestore/services/adManagement";
 import { AdSlotManager } from "./AdSlotManager";
@@ -17,7 +17,7 @@ export function AdNetworkManager() {
   
   // Create form state
   const [name, setName] = useState("");
-  const [provider, setProvider] = useState<"GAM" | "AdSense">("GAM");
+  const [mode, setMode] = useState<AdNetworkMode>("GAM");
   const [saving, setSaving] = useState(false);
 
   useEffect(() => {
@@ -36,7 +36,7 @@ export function AdNetworkManager() {
     try {
         await addAdNetwork({
             name,
-            provider,
+            mode,
             enabled: false,
             environment: "test",
             priority: 0,
@@ -81,7 +81,7 @@ export function AdNetworkManager() {
                 {networks.map((network) => (
                     <div key={network.id} className="rounded-[28px] border border-[var(--color-border)]/10 bg-[var(--color-primary-button)] p-5">
                     <h3 className="text-lg font-bold">{network.name}</h3>
-                    <p className="text-sm text-[var(--text-muted)]">Provider: {network.provider} | Status: {network.enabled ? "Enabled" : "Disabled"}</p>
+                    <p className="text-sm text-[var(--text-muted)]">Mode: {network.mode} | Status: {network.enabled ? "Enabled" : "Disabled"}</p>
                     </div>
                 ))}
                 </div>
@@ -95,9 +95,10 @@ export function AdNetworkManager() {
                         <button onClick={() => setShowCreate(false)}><X size={20}/></button>
                     </div>
                     <input className="w-full p-3 rounded-2xl mb-4 border border-[var(--color-border)] bg-[var(--color-input-background)]" placeholder="Network Name" value={name} onChange={e => setName(e.target.value)} />
-                    <select className="w-full p-3 rounded-2xl mb-4 border border-[var(--color-border)] bg-[var(--color-input-background)]" value={provider} onChange={e => setProvider(e.target.value as "GAM" | "AdSense")}>
+                    <select className="w-full p-3 rounded-2xl mb-4 border border-[var(--color-border)] bg-[var(--color-input-background)]" value={mode} onChange={e => setMode(e.target.value as AdNetworkMode)}>
                         <option value="GAM">Google Ad Manager</option>
-                        <option value="AdSense">Google AdSense</option>
+                        <option value="AdSense_Auto">AdSense Auto Ads</option>
+                        <option value="AdSense_Manual">AdSense Manual Ad Units</option>
                     </select>
                     <button disabled={saving} onClick={handleCreate} className="w-full bg-[var(--color-primary-button)] p-3 rounded-2xl font-bold">{saving ? "Saving..." : "Create"}</button>
                 </div>

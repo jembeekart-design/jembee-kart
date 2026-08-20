@@ -2,33 +2,35 @@ import { AdNetwork } from "@/types/ads";
 
 export interface AdProvider {
   /**
-   * Safely loads network-specific scripts (e.g., GPT, AdSense).
-   * ONLY called in production and only if configuration is valid.
+   * Safely loads network-specific scripts and configures the environment.
+   * Only called in production, and only if network config is valid.
    */
   initializeScripts: (network: AdNetwork) => void;
 }
 
 const GAMProvider: AdProvider = {
   initializeScripts: (network) => {
-    // In production, initialize GPT scripts here.
-    // For now, this is a placeholder/test-mode no-op.
+    // Logic: Load GPT scripts, define slots (to be implemented in Phase C).
   },
 };
 
-const AdSenseProvider: AdProvider = {
+const AdSenseAutoProvider: AdProvider = {
   initializeScripts: (network) => {
-    // In production, initialize AdSense scripts here.
-    // For now, this is a placeholder/test-mode no-op.
+    // Logic: Inject Auto Ads script into header (to be implemented in Phase C).
   },
 };
 
-export const getProvider = (providerType: string): AdProvider | null => {
-  switch (providerType) {
-    case "GAM":
-      return GAMProvider;
-    case "AdSense":
-      return AdSenseProvider;
-    default:
-      return null;
+const AdSenseManualProvider: AdProvider = {
+  initializeScripts: (network) => {
+    // Logic: Inject AdSense script, define individual ad units (to be implemented in Phase C).
+  },
+};
+
+export const getProvider = (mode: string): AdProvider | null => {
+  switch (mode) {
+    case "GAM": return GAMProvider;
+    case "AdSense_Auto": return AdSenseAutoProvider;
+    case "AdSense_Manual": return AdSenseManualProvider;
+    default: return null;
   }
 };

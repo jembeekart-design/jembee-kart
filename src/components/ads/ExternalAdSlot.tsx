@@ -52,7 +52,7 @@ export function ExternalAdSlot({ slotId }: { slotId: string }) {
   if (loading || !config) return null;
 
   const { slot, network } = config;
-  const provider = getProvider(network.provider);
+  const provider = getProvider(network.mode);
 
   if (!provider) return null;
 
