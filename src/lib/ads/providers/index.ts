@@ -1,28 +1,51 @@
 import { AdNetwork } from "@/types/ads";
+import { injectScript } from "../scriptLoader";
+import { ALLOW_LIVE_SERVING } from "../constants";
 
 export interface AdProvider {
   /**
-   * Safely loads network-specific scripts and configures the environment.
-   * Only called in production, and only if network config is valid.
+   * Safely loads network-specific scripts.
+   * Double-gate check: ALLOW_LIVE_SERVING must be true AND config must be valid.
    */
   initializeScripts: (network: AdNetwork) => void;
 }
 
 const GAMProvider: AdProvider = {
   initializeScripts: (network) => {
-    // Logic: Load GPT scripts, define slots (to be implemented in Phase C).
+    // 1. Double-Gate Check
+    if (!ALLOW_LIVE_SERVING) return;
+    
+    // 2. Config Validation
+    if (!network.config.gamNetworkCode) return;
+    
+    // 3. Inject
+    injectScript("https://securepubads.g.doubleclick.net/tag/js/gpt.js", "gpt-script");
   },
 };
 
 const AdSenseAutoProvider: AdProvider = {
   initializeScripts: (network) => {
-    // Logic: Inject Auto Ads script into header (to be implemented in Phase C).
+    // 1. Double-Gate Check
+    if (!ALLOW_LIVE_SERVING) return;
+    
+    // 2. Config Validation
+    if (!network.config.adsenseClientId) return;
+    
+    // 3. Inject
+    injectScript(`https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=${network.config.adsenseClientId}`, "adsense-auto-script");
   },
 };
 
 const AdSenseManualProvider: AdProvider = {
   initializeScripts: (network) => {
-    // Logic: Inject AdSense script, define individual ad units (to be implemented in Phase C).
+    // 1. Double-Gate Check
+    if (!ALLOW_LIVE_SERVING) return;
+    
+    // 2. Config Validation
+    if (!network.config.adsenseClientId) return;
+    
+    // 3. Inject
+    injectScript(`https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=${network.config.adsenseClientId}`, "adsense-manual-script");
   },
 };
 
