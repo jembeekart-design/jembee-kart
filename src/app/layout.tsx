@@ -19,6 +19,14 @@ export default function RootLayout({
 }: Readonly<RootLayoutProps>) {
   return (
     <html lang="en" suppressHydrationWarning>
+      <head>
+        <script
+          async
+          src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-7471322988540402"
+          crossOrigin="anonymous"
+        />
+      </head>
+
       <body className="min-h-screen antialiased">
         <Providers>
 
