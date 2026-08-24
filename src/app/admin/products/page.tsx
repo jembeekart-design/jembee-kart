@@ -54,6 +54,7 @@ interface Product {
   price: number;
 
   discountPrice: number;
+  costPrice: number;
 
   stock: number;
 
@@ -66,6 +67,7 @@ interface Product {
   visible: boolean;
 
   productType?: string;
+  sizes?: string[];
 }
 
 /* ======================================================
@@ -138,6 +140,8 @@ export default function ProductsAdminPage() {
     price,
     setPrice
   ] = useState("");
+
+  const [costPrice, setCostPrice] = useState("");
 
   const [
     discountPrice,
@@ -306,77 +310,78 @@ export default function ProductsAdminPage() {
   async function uploadImages(
     files: FileList
   ) {
-
     try {
-
       setUploading(true);
 
-      const uploaded:
-        string[] = [];
+      const uploaded: string[] = [];
 
-      for (
-        let i = 0;
-        i < files.length;
-        i++
-      ) {
+      for (let i = 0; i < files.length; i++) {
+        const formData = new FormData();
 
-        const formData =
-          new FormData();
+        formData.append("file", files[i]);
 
-        formData.append(
-          "file",
-          files[i]
-        );
+        const preset =
+          process.env.NEXT_PUBLIC_CLOUDINARY_UPLOAD_PRESET;
+
+        const cloudName =
+          process.env.NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME;
+
+        if (!preset || !cloudName) {
+          throw new Error(
+            "Cloudinary configuration missing"
+          );
+        }
 
         formData.append(
           "upload_preset",
-
-          process.env
-            .NEXT_PUBLIC_CLOUDINARY_UPLOAD_PRESET ||
-            ""
+          preset
         );
 
-        const response =
-          await fetch(
+        const response = await fetch(
+          `https://api.cloudinary.com/v1_1/${cloudName}/image/upload`,
+          {
+            method: "POST",
+            body: formData
+          }
+        );
 
-            `https://api.cloudinary.com/v1_1/${
-              process.env
-                .NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME
-            }/image/upload`,
+        const data = await response.json();
 
-            {
-              method:
-                "POST",
-
-              body:
-                formData
-            }
+        if (!response.ok || !data.secure_url) {
+          console.error(
+            "Cloudinary upload response:",
+            data
           );
 
-        const data =
-          await response.json();
+          throw new Error(
+            data?.error?.message ||
+            "Cloudinary image upload failed"
+          );
+        }
 
-        uploaded.push(
-          data.secure_url
-        );
+        uploaded.push(data.secure_url);
       }
 
-      setProductImages(
-        (prev) => [
-          ...prev,
-          ...uploaded
-        ]
-      );
+      setProductImages((prev) => [
+        ...prev,
+        ...uploaded
+      ]);
 
       setUploading(false);
 
     } catch (error) {
-
       console.error(
+        "Image upload failed:",
         error
       );
 
       setUploading(false);
+
+      alert(
+        error instanceof Error
+          ? error.message
+          : "Image upload failed"
+      );
     }
   }
 
@@ -489,13 +494,13 @@ export default function ProductsAdminPage() {
 
       {
 
-        title,
+        title: title ?? "",
 
-        category,
+        category: category ?? "Men's T-Shirts",
 
-        productType,
+        productType: productType ?? "Oversized Tee",
 
-        description,
+        description: description ?? "",
 
         price:
           Number(price),
@@ -505,17 +510,22 @@ export default function ProductsAdminPage() {
             discountPrice
           ) || 0,
 
+        costPrice:
+          Number(costPrice) || 0,
+
         stock:
           Number(stock) || 0,
 
-        sku,
+        sku: sku ?? "",
 
         images:
-          productImages,
+          (productImages ?? []).filter((v): v is string => typeof v === "string" && v.length > 0),
 
         videos:
-          productVideos,
+          (productVideos ?? []).filter((v): v is string => typeof v === "string" && v.length > 0),
 
+      sizes:
+        (selectedSizes ?? []).filter((v): v is string => typeof v === "string" && v.length > 0),
         visible: true
       }
     );
@@ -533,6 +543,8 @@ export default function ProductsAdminPage() {
     setPrice("");
 
     setDiscountPrice("");
+
+    setCostPrice("");
 
     setStock("");
 
@@ -1073,7 +1085,27 @@ export default function ProductsAdminPage() {
 
               </div>
 
-              {/* STOCK */}
+              
+      <div className="mt-4">
+        <label className="mb-1 block text-sm font-bold">
+          Product Cost Price
+        </label>
+
+        <input
+          type="number"
+          min="0"
+          value={costPrice}
+          onChange={(e) => setCostPrice(e.target.value)}
+          placeholder="Enter product cost"
+          className="w-full rounded-2xl border border-[var(--color-border)] bg-[var(--color-card-background)] p-3 text-sm outline-none"
+        />
+
+        <p className="mt-1 text-xs text-[var(--text-secondary)]">
+          Actual purchase/supplier cost used for MLM profit calculation.
+        </p>
+      </div>
+
+{/* STOCK */}
 
               <div>
 
@@ -1894,6 +1926,22 @@ export default function ProductsAdminPage() {
                             }
 
                           </p>
+                          
+                          {(product.sizes?.length ?? 0) > 0 && (
+                            <p
+                              className="
+                                mt-2
+                                text-[11px]
+                                font-bold
+                                text-[var(--text-color)]
+                              "
+                            >
+                              Available Sizes:
+                              {" "}
+                              {(product.sizes ?? []).join(", ")}
+                            </p>
+                          )}
+
 
                         </div>
 
@@ -2016,7 +2064,177 @@ export default function ProductsAdminPage() {
                             "
                           />
 
-                          <button
+                          
+                          <input
+                            type="text"
+                            defaultValue={product.sku ?? ""}
+                            onBlur={(e) =>
+                              updateProduct(
+                                product.id,
+                                "sku",
+                                e.target.value
+                              )
+                            }
+                            placeholder="SKU"
+                            className="
+                              mb-3
+                              w-full
+                              rounded-xl
+                              border
+                              border-[var(--border-color)]
+                              p-3
+                              text-xs
+                            "
+                            aria-label="Edit SKU"
+                          />
+
+                          <input
+                            type="number"
+                            min="0"
+                            defaultValue={product.price ?? 0}
+                            onBlur={(e) =>
+                              updateProduct(
+                                product.id,
+                                "price",
+                                Number(e.target.value) || 0
+                              )
+                            }
+                            placeholder="Price"
+                            className="
+                              mb-3
+                              w-full
+                              rounded-xl
+                              border
+                              border-[var(--border-color)]
+                              p-3
+                              text-xs
+                            "
+                            aria-label="Edit Price"
+                          />
+
+                          <input
+                            type="number"
+                            min="0"
+                            defaultValue={product.discountPrice ?? 0}
+                            onBlur={(e) =>
+                              updateProduct(
+                                product.id,
+                                "discountPrice",
+                                Number(e.target.value) || 0
+                              )
+                            }
+                            placeholder="Discount Price"
+                            className="
+                              mb-3
+                              w-full
+                              rounded-xl
+                              border
+                              border-[var(--border-color)]
+                              p-3
+                              text-xs
+                            "
+                            aria-label="Edit Discount Price"
+                          />
+
+                          <input
+                            type="number"
+                            min="0"
+                            defaultValue={product.stock ?? 0}
+                            onBlur={(e) =>
+                              updateProduct(
+                                product.id,
+                                "stock",
+                                Number(e.target.value) || 0
+                              )
+                            }
+                            placeholder="Stock"
+                            className="
+                              mb-3
+                              w-full
+                              rounded-xl
+                              border
+                              border-[var(--border-color)]
+                              p-3
+                              text-xs
+                            "
+                            aria-label="Edit Stock"
+                          />
+                          
+                          <div className="mb-3">
+                            <p className="mb-2 text-[11px] font-bold text-[var(--text-color)]">
+                              Sizes
+                            </p>
+
+                            <div className="flex gap-2">
+                              {["S", "M", "L", "XL"].map((size) => {
+                                const currentSizes = product.sizes ?? [];
+
+                                return (
+                                  <button
+                                    key={size}
+                                    type="button"
+                                    onClick={() => {
+                                      const nextSizes = currentSizes.includes(size)
+                                        ? currentSizes.filter((s) => s !== size)
+                                        : [...currentSizes, size];
+
+                                      updateProduct(
+                                        product.id,
+                                        "sizes",
+                                        nextSizes
+                                      );
+                                    }}
+                                    className={`
+                                      rounded-lg
+                                      px-4
+                                      py-2
+                                      text-[11px]
+                                      font-black
+                                      ${
+                                        currentSizes.includes(size)
+                                          ? "bg-[var(--primary-color)] text-[var(--button-text-color)]"
+                                          : "bg-[var(--card-color)] text-[var(--text-color)]"
+                                      }
+                                    `}
+                                    aria-label={`Edit Size ${size}`}
+                                  >
+                                    {size}
+                                  </button>
+                                );
+                              })}
+                            </div>
+                          </div>
+
+
+                          <input
+                            type="number"
+                            min="0"
+                            defaultValue={product.costPrice ?? 0}
+                            onBlur={(e) =>
+                              updateProduct(
+                                product.id,
+                                "costPrice",
+                                Number(e.target.value) || 0
+                              )
+                            }
+                            placeholder="Product Cost Price"
+                            className="
+                              mb-3
+                              w-full
+                              rounded-xl
+                              border
+                              border-[var(--border-color)]
+                              p-3
+                              text-xs
+                            "
+                            aria-label="Edit Product Cost Price"
+                          />
+
+                          <p className="mb-3 text-[10px] text-[var(--text-color)]">
+                            Edit Product Cost Price
+                          </p>
+
+<button
                             onClick={() =>
                               setEditingProductId(
                                 ""
