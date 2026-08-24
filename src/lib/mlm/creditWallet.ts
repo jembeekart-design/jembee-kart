@@ -1,5 +1,5 @@
 import { db } from "@/firebase/config";
-import { doc, runTransaction, serverTimestamp, increment } from "firebase/firestore";
+import { doc, runTransaction, serverTimestamp, increment, collection } from "firebase/firestore";
 
 // Enforced Strict Structural Ingestion Contracts
 export type IncomeType = 
@@ -56,8 +56,9 @@ export async function creditWallet(payload: CreditWalletPayload): Promise<Credit
 
   const userRef = doc(db, "users", targetUid);
   
-  // Decoupled sub-collection strategy to prevent 1MB document bloating over time
-  const ledgerLogRef = doc(db, `users/${targetUid}/transactions`);
+  // Use deterministic ID for cashback/order transactions to enforce idempotency
+  const transactionDocId = payload.orderId || doc(collection(db, `users/${targetUid}/transactions`)).id;
+  const ledgerLogRef = doc(db, `users/${targetUid}/transactions`, transactionDocId);
 
   try {
     const transactionResult = await runTransaction(db, async (transaction) => {
@@ -71,6 +72,12 @@ export async function creditWallet(payload: CreditWalletPayload): Promise<Credit
           success: false,
           message: `Target user balance account [${targetUid}] does not exist in registry.`,
         };
+      }
+
+      // Idempotency check for orderId
+      const idempotencySnap = await transaction.get(ledgerLogRef);
+      if (idempotencySnap.exists()) {
+        return { success: true, message: "Transaction already processed." };
       }
 
       const userData = userSnap.data();
