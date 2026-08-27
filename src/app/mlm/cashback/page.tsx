@@ -384,7 +384,7 @@ export default function CashbackPage() {
             </button>
 
             <Link
-              href="/mlm/dashboard/wallet/history"
+              href="/mlm/wallet/history"
               className="flex items-center justify-center gap-1.5 rounded-2xl bg-[var(--color-card-background)]/10 border border-[var(--color-border)]/10 py-3.5 text-xs font-black text-[var(--button-text-color)] active:scale-[0.98] transition-all"
             >
               <HandCoins size={14} />
@@ -484,7 +484,7 @@ export default function CashbackPage() {
                         <p className="text-[10px] font-mono tracking-tight opacity-75">Audit State Trail: ₹{item.beforeBalance} ➔ ₹{item.afterBalance}</p>
 
                         {item.orderId && (
-                          <Link href={`/dashboard/orders/${item.orderId}`} className="text-[10px] font-bold text-[var(--color-primary-button)] hover:underline bg-[var(--color-primary-button)] px-1.5 py-0.5 rounded w-fit mt-0.5">
+                          <Link href={`/orders/${item.orderId}`} className="text-[10px] font-bold text-[var(--color-primary-button)] hover:underline bg-[var(--color-primary-button)] px-1.5 py-0.5 rounded w-fit mt-0.5">
                             Order Token Ref: #{item.orderId}
                           </Link>
                         )}

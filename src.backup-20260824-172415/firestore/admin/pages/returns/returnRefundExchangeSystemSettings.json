@@ -1,0 +1,73 @@
+{
+  "returnRefundExchangeSystemEnabled": true,
+
+  "adminControlledReturnRefundExchange": true,
+
+  "returnRefundExchangeStyle": "advanced_ai_return_management_system",
+
+  "enableProductReturns": true,
+
+  "enableRefundRequests": true,
+
+  "enableProductExchanges": true,
+
+  "enablePartialRefunds": true,
+
+  "enableWalletRefunds": true,
+
+  "enableBankRefunds": true,
+
+  "enableInstantRefunds": false,
+
+  "enableReturnPickupScheduling": true,
+
+  "enableRealtimeReturnTracking": true,
+
+  "enableReturnStatusNotifications": true,
+
+  "enableAIRefundFraudDetection": true,
+
+  "enableAIRefundRecommendations": true,
+
+  "enableReturnAnalytics": true,
+
+  "enableSellerReturnManagement": true,
+
+  "enableSupplierReturnManagement": true,
+
+  "enableReturnApprovalWorkflow": true,
+
+  "enableAutomaticRefundProcessing": false,
+
+  "enableReturnReasonAnalytics": true,
+
+  "enablePhotoProofUploads": true,
+
+  "enableVideoProofUploads": false,
+
+  "enableCustomerSupportIntegration": true,
+
+  "enableReturnPolicyManagement": true,
+
+  "enableReturnWindowLimits": true,
+
+  "returnPolicies": {
+    "defaultReturnWindowDays": 7,
+
+    "exchangeWindowDays": 7,
+
+    "refundProcessingDays": 5
+  },
+
+  "supportedReturnReasons": [
+    "damaged_product",
+    "wrong_product",
+    "size_issue",
+    "quality_issue",
+    "missing_item"
+  ],
+
+  "desktopLayoutStyle": "advanced_return_dashboard",
+
+  "mobileLayoutStyle": "stacked_mobile_return_dashboard"
+}

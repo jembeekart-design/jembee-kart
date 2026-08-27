@@ -1,0 +1,113 @@
+{
+  "databaseManagementSystemEnabled": true,
+
+  "adminControlledDatabaseManagement": true,
+
+  "databaseManagementStyle": "advanced_realtime_database_management_system",
+
+  "databaseProvider": "firebase_firestore",
+
+  "enableRealtimeSync": true,
+
+  "enableAutomaticBackups": true,
+
+  "enableScheduledBackups": true,
+
+  "enableBackupRestore": true,
+
+  "enableDatabaseVersioning": true,
+
+  "enableCollectionMonitoring": true,
+
+  "enableRealtimeLogs": true,
+
+  "enableAIDataOptimization": true,
+
+  "enableAIQueryOptimization": true,
+
+  "enableDataAnalytics": true,
+
+  "enableSecurityRulesManagement": true,
+
+  "enableIndexManagement": true,
+
+  "enableBulkDataImport": true,
+
+  "enableBulkDataExport": true,
+
+  "enableCSVExport": true,
+
+  "enableJSONExport": true,
+
+  "enableRealtimeDatabaseMonitoring": true,
+
+  "enableDatabasePerformanceTracking": true,
+
+  "enableStorageMonitoring": true,
+
+  "enableAutomaticCleanup": true,
+
+  "enableSoftDeleteSystem": true,
+
+  "enableRecoverySystem": true,
+
+  "enableAdminDatabaseAccessLogs": true,
+
+  "enableEncryptedDataStorage": true,
+
+  "enableRoleBasedDatabaseAccess": true,
+
+  "managedCollections": [
+    {
+      "collectionId": "users",
+
+      "collectionName": "Users",
+
+      "enabled": true
+    },
+
+    {
+      "collectionId": "products",
+
+      "collectionName": "Products",
+
+      "enabled": true
+    },
+
+    {
+      "collectionId": "orders",
+
+      "collectionName": "Orders",
+
+      "enabled": true
+    },
+
+    {
+      "collectionId": "wallets",
+
+      "collectionName": "Wallets",
+
+      "enabled": true
+    },
+
+    {
+      "collectionId": "notifications",
+
+      "collectionName": "Notifications",
+
+      "enabled": true
+    },
+
+    {
+      "collectionId": "settings",
+
+      "collectionName": "Settings",
+
+      "enabled": true
+    }
+  ],
+
+  "desktopLayoutStyle": "advanced_database_dashboard",
+
+  "mobileLayoutStyle": "stacked_mobile_database_dashboard"
+}

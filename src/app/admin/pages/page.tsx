@@ -2,7 +2,16 @@
 
 export const dynamic = "force-dynamic";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import {
+  collection,
+  doc,
+  getDocs,
+  setDoc,
+  deleteDoc,
+  serverTimestamp,
+} from "firebase/firestore";
+import { db } from "@/firebase/config";
 
 import {
   LayoutTemplate,
@@ -13,7 +22,7 @@ import {
 } from "lucide-react";
 
 interface PageItem {
-  id: number;
+  id: string;
   title: string;
   slug: string;
   visible: boolean;
@@ -21,81 +30,65 @@ interface PageItem {
 
 export default function PagesManagerPage() {
 
-  const [pages, setPages] =
-    useState<PageItem[]>([
-      {
-        id: 1,
-        title: "About Us",
-        slug: "/about",
-        visible: true
-      },
-      {
-        id: 2,
-        title: "Privacy Policy",
-        slug: "/privacy-policy",
-        visible: true
-      }
-    ]);
+  const [pages, setPages] = useState<PageItem[]>([]);
+  const [loading, setLoading] = useState(true);
 
-  const [title, setTitle] =
-    useState("");
+  const [title, setTitle] = useState("");
+  const [slug, setSlug] = useState("");
 
-  const [slug, setSlug] =
-    useState("");
+  useEffect(() => {
+    fetchPages();
+  }, []);
 
-  function createPage() {
+  async function fetchPages() {
+    try {
+      const querySnapshot = await getDocs(collection(db, "dynamic_pages"));
+      const fetchedPages: PageItem[] = [];
+      querySnapshot.forEach((doc) => {
+        fetchedPages.push({ id: doc.id, ...doc.data() } as PageItem);
+      });
+      setPages(fetchedPages);
+    } catch (error) {
+      console.error("Error fetching pages:", error);
+    } finally {
+      setLoading(false);
+    }
+  }
 
-    if (
-      !title ||
-      !slug
-    ) {
-      return;
+  async function createPage() {
+    if (!title || !slug) return;
+    
+    // Check for duplicate slug
+    if (pages.some((p) => p.slug === slug)) {
+        alert("Page with this slug already exists.");
+        return;
     }
 
     const newPage = {
-      id: Date.now(),
       title,
       slug,
-      visible: true
+      visible: true,
+      createdAt: serverTimestamp(),
     };
 
-    setPages((prev) => [
-      newPage,
-      ...prev
-    ]);
-
+    await setDoc(doc(db, "dynamic_pages", slug), newPage);
+    setPages((prev) => [...prev, { id: slug, ...newPage } as PageItem]);
     setTitle("");
     setSlug("");
   }
 
-  function deletePage(
-    id: number
-  ) {
-
-    setPages((prev) =>
-      prev.filter(
-        (item) =>
-          item.id !== id
-      )
-    );
+  async function deletePage(id: string) {
+    await deleteDoc(doc(db, "dynamic_pages", id));
+    setPages((prev) => prev.filter((item) => item.id !== id));
   }
 
-  function togglePage(
-    id: number
-  ) {
-
-    setPages((prev) =>
-      prev.map((item) =>
-        item.id === id
-          ? {
-              ...item,
-              visible:
-                !item.visible
-            }
-          : item
-      )
-    );
+  async function togglePage(page: PageItem) {
+    const updatedPage = { ...page, visible: !page.visible };
+    await setDoc(doc(db, "dynamic_pages", page.id), updatedPage);
+    setPages((prev) => prev.map((p) => (p.id === page.id ? updatedPage : p)));
   }
+
+  if (loading) return <div className="p-4">Loading Pages...</div>;
 
   return (
 
@@ -165,7 +158,7 @@ export default function PagesManagerPage() {
 
             <input
               type="text"
-              placeholder="/page-slug"
+              placeholder="page-slug (e.g., privacy)"
               value={slug}
               onChange={(e) =>
                 setSlug(
@@ -231,7 +224,7 @@ export default function PagesManagerPage() {
                   <button
                     onClick={() =>
                       togglePage(
-                        item.id
+                        item
                       )
                     }
                     className="flex h-14 w-14 items-center justify-center rounded-2xl bg-[var(--primary-color)]"

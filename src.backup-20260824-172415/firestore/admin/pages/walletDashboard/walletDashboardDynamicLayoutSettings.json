@@ -1,0 +1,149 @@
+{
+  "walletDashboardEnabled": true,
+
+  "adminControlledWalletDashboard": true,
+
+  "walletDashboardStyle": "modern_fintech_wallet_dashboard",
+
+  "walletDashboardLayoutType": "dynamic_drag_drop_layout",
+
+  "enableDynamicSections": true,
+
+  "enableRealtimeDashboardUpdates": true,
+
+  "enableDragAndDropSections": true,
+
+  "enableDarkModeSupport": true,
+
+  "enableGlassmorphismEffects": true,
+
+  "enableAIRecommendations": true,
+
+  "enableAnimatedSections": true,
+
+  "enableResponsiveLayouts": true,
+
+  "walletDashboardContainerSettings": {
+    "backgroundColor": "#f1f3f6",
+
+    "maxWidth": "100%",
+
+    "padding": "20px",
+
+    "gapBetweenSections": "20px"
+  },
+
+  "walletDashboardSections": [
+    {
+      "sectionId": "wallet_balance",
+
+      "sectionTitle": "Wallet Balance",
+
+      "sectionType": "balance_card",
+
+      "visible": true,
+
+      "position": 1,
+
+      "sectionStyle": "gradient_balance_cards"
+    },
+
+    {
+      "sectionId": "recent_transactions",
+
+      "sectionTitle": "Recent Transactions",
+
+      "sectionType": "transaction_table",
+
+      "visible": true,
+
+      "position": 2,
+
+      "sectionStyle": "modern_transaction_table"
+    },
+
+    {
+      "sectionId": "income_analytics",
+
+      "sectionTitle": "Income Analytics",
+
+      "sectionType": "analytics_graphs",
+
+      "visible": true,
+
+      "position": 3,
+
+      "sectionStyle": "gradient_chart_cards"
+    },
+
+    {
+      "sectionId": "withdrawal_management",
+
+      "sectionTitle": "Withdrawal Management",
+
+      "sectionType": "withdrawal_cards",
+
+      "visible": true,
+
+      "position": 4,
+
+      "sectionStyle": "premium_wallet_cards"
+    },
+
+    {
+      "sectionId": "reward_points",
+
+      "sectionTitle": "Reward Points",
+
+      "sectionType": "reward_cards",
+
+      "visible": true,
+
+      "position": 5,
+
+      "sectionStyle": "reward_gradient_cards"
+    },
+
+    {
+      "sectionId": "cashback_history",
+
+      "sectionTitle": "Cashback History",
+
+      "sectionType": "cashback_table",
+
+      "visible": true,
+
+      "position": 6,
+
+      "sectionStyle": "premium_cashback_tables"
+    },
+
+    {
+      "sectionId": "ai_wallet_assistant",
+
+      "sectionTitle": "AI Wallet Assistant",
+
+      "sectionType": "ai_assistant_cards",
+
+      "visible": true,
+
+      "position": 7,
+
+      "sectionStyle": "glassmorphism_ai_cards"
+    },
+
+    {
+      "sectionId": "notifications",
+
+      "sectionTitle": "Wallet Notifications",
+
+      "sectionType": "notification_center",
+
+      "visible": true,
+
+      "position": 8,
+
+      "sectionStyle": "modern_notification_cards"
+    }
+  ]
+}

@@ -1,0 +1,95 @@
+{
+  "bannerSliderEnabled": true,
+
+  "bannerSliderStyle": "animated_modern_slider",
+
+  "adminControlledBannerSlider": true,
+
+  "sliderHeightDesktop": "420px",
+
+  "sliderHeightMobile": "220px",
+
+  "sliderBorderRadius": "20px",
+
+  "sliderShadow": "soft_shadow",
+
+  "enableAutoSlide": true,
+
+  "autoSlideDuration": 4000,
+
+  "enableSliderAnimation": true,
+
+  "enableNavigationArrows": true,
+
+  "enablePaginationDots": true,
+
+  "enableInfiniteLoop": true,
+
+  "bannerItems": [
+    {
+      "id": "banner_1",
+
+      "title": "Big Fashion Sale",
+
+      "subtitle": "Up to 80% OFF on trending fashion",
+
+      "buttonText": "Shop Now",
+
+      "buttonRoute": "/fashion",
+
+      "backgroundImage": "https://yourcdn.com/banner1.jpg",
+
+      "mobileImage": "https://yourcdn.com/banner1-mobile.jpg",
+
+      "textColor": "#ffffff",
+
+      "overlayColor": "rgba(0,0,0,0.3)",
+
+      "visible": true
+    },
+
+    {
+      "id": "banner_2",
+
+      "title": "Start Your Reseller Business",
+
+      "subtitle": "Sell products online without stock",
+
+      "buttonText": "Become Reseller",
+
+      "buttonRoute": "/reseller",
+
+      "backgroundImage": "https://yourcdn.com/banner2.jpg",
+
+      "mobileImage": "https://yourcdn.com/banner2-mobile.jpg",
+
+      "textColor": "#ffffff",
+
+      "overlayColor": "rgba(0,0,0,0.4)",
+
+      "visible": true
+    },
+
+    {
+      "id": "banner_3",
+
+      "title": "Affiliate Earning Program",
+
+      "subtitle": "Earn commission from every sale",
+
+      "buttonText": "Join Affiliate",
+
+      "buttonRoute": "/affiliate",
+
+      "backgroundImage": "https://yourcdn.com/banner3.jpg",
+
+      "mobileImage": "https://yourcdn.com/banner3-mobile.jpg",
+
+      "textColor": "#ffffff",
+
+      "overlayColor": "rgba(0,0,0,0.4)",
+
+      "visible": true
+    }
+  ]
+}

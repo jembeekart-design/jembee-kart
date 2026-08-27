@@ -50,6 +50,7 @@ export function AdminConfigProvider({ children }: { children: ReactNode }) {
     const commentModerationRef = doc(db, "settings", "commentModeration");
     const featureFlagsRef = doc(db, "settings", "feature_flags");
     const walletRef = doc(db, "settings", "wallet");
+    const mlmRef = doc(db, "settings", "mlm"); // Add MLM ref
     const homepageRef = doc(db, "settings", "homepage");
     const paymentRef = doc(db, "settings", "payment");
     const shippingRef = doc(db, "settings", "shipping");
@@ -76,6 +77,7 @@ export function AdminConfigProvider({ children }: { children: ReactNode }) {
               commentModerationRef,
               featureFlagsRef,
               walletRef,
+              mlmRef, // Add MLM ref
               homepageRef,
               paymentRef,
               shippingRef,
@@ -93,6 +95,7 @@ export function AdminConfigProvider({ children }: { children: ReactNode }) {
               commentModerationSnap,
               featureFlagsSnap,
               walletSnap,
+              mlmSnap, // Add MLM snap
               homepageSnap,
               paymentSnap,
               shippingSnap,
@@ -133,6 +136,9 @@ export function AdminConfigProvider({ children }: { children: ReactNode }) {
               wallet: walletSnap.exists()
                 ? walletSnap.data()
                 : DEFAULT_ADMIN_CONFIG.wallet,
+              mlm: mlmSnap.exists() // Add MLM merge
+                ? mlmSnap.data()
+                : DEFAULT_ADMIN_CONFIG.mlm,
 
               homepage: homepageSnap.exists()
                 ? homepageSnap.data()

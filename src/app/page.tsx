@@ -570,7 +570,8 @@ export default function HomePage() {
     shadow-xl
   "
   style={{
-    background: "var(--primary-color)"
+    background:
+      "linear-gradient(135deg, var(--color-primary), var(--color-secondary), var(--color-primary-button))"
   }}
 >
 
@@ -578,7 +579,7 @@ export default function HomePage() {
                           className="
                             rounded-[34px]
                             bg-[var(--card-color)]
-                            p-3
+                            p-0
                           "
                         >
 
@@ -1112,19 +1113,16 @@ export default function HomePage() {
     block
     overflow-hidden
     rounded-[36px]
-    p-[2px]
+    p-[4px]
     shadow-xl
   "
-  style={{
-    background: "var(--primary-color)"
-  }}
 >
 
                         <div
                           className="
                             rounded-[34px]
-                            bg-[var(--card-color)]
-                            p-3
+                            bg-transparent
+                            p-0
                           "
                         >
 
@@ -1132,9 +1130,13 @@ export default function HomePage() {
                               className="
                                 relative
                                 overflow-hidden
-                                rounded-[30px]
-                                bg-[var(--background-color)]
+                                rounded-[34px]
+                                p-[2px]
                               "
+                              style={{
+                                background:
+                                  "linear-gradient(135deg, var(--color-primary), var(--color-secondary), var(--color-primary-button))"
+                              }}
                             >
 
                               <div

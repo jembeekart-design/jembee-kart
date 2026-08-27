@@ -1,0 +1,99 @@
+{
+  "seoOptimizationSystemEnabled": true,
+
+  "adminControlledSEOOptimization": true,
+
+  "seoOptimizationStyle": "advanced_ai_seo_management_system",
+
+  "enableDynamicMetaTags": true,
+
+  "enableDynamicPageTitles": true,
+
+  "enableDynamicDescriptions": true,
+
+  "enableDynamicKeywords": true,
+
+  "enableCanonicalURLs": true,
+
+  "enableStructuredData": true,
+
+  "enableSchemaMarkup": true,
+
+  "enableOpenGraphTags": true,
+
+  "enableTwitterCards": true,
+
+  "enableXMLSitemapGeneration": true,
+
+  "enableRobotsTXTManagement": true,
+
+  "enableAutomaticSEOAudits": true,
+
+  "enableAISEORecommendations": true,
+
+  "enableAIKeywordSuggestions": true,
+
+  "enableAIContentOptimization": true,
+
+  "enableImageSEOOptimization": true,
+
+  "enableLazyLoadingOptimization": true,
+
+  "enablePerformanceSEOTracking": true,
+
+  "enableCoreWebVitalsTracking": true,
+
+  "enableBrokenLinkDetection": true,
+
+  "enable404Monitoring": true,
+
+  "enableRedirectManagement": true,
+
+  "enableMultilanguageSEO": true,
+
+  "enableLocalSEO": true,
+
+  "enableProductSEO": true,
+
+  "enableBlogSEO": true,
+
+  "enableRealtimeSEOAnalytics": true,
+
+  "seoModules": [
+    {
+      "moduleId": "homepage_seo",
+
+      "moduleName": "Homepage SEO",
+
+      "enabled": true
+    },
+
+    {
+      "moduleId": "product_seo",
+
+      "moduleName": "Product SEO",
+
+      "enabled": true
+    },
+
+    {
+      "moduleId": "seller_store_seo",
+
+      "moduleName": "Seller Store SEO",
+
+      "enabled": true
+    },
+
+    {
+      "moduleId": "blog_seo",
+
+      "moduleName": "Blog SEO",
+
+      "enabled": true
+    }
+  ],
+
+  "desktopLayoutStyle": "advanced_seo_dashboard",
+
+  "mobileLayoutStyle": "stacked_mobile_seo_dashboard"
+}

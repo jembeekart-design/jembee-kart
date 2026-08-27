@@ -1,0 +1,141 @@
+{
+  "categorySectionEnabled": true,
+
+  "categorySectionStyle": "flipkart_scrollable_categories",
+
+  "adminControlledCategorySection": true,
+
+  "sectionTitle": "Top Categories",
+
+  "sectionSubtitle": "Explore trending categories",
+
+  "showSectionTitle": true,
+
+  "showSectionSubtitle": true,
+
+  "enableCategoryAnimation": true,
+
+  "enableCategoryHoverEffect": true,
+
+  "enableCategorySlider": true,
+
+  "enableMobileHorizontalScroll": true,
+
+  "desktopGridColumns": 8,
+
+  "tabletGridColumns": 4,
+
+  "mobileGridColumns": 3,
+
+  "categoryCardStyle": "rounded_modern_category_card",
+
+  "categoryCardBackgroundColor": "#ffffff",
+
+  "categoryCardTextColor": "#111827",
+
+  "categoryCardBorderRadius": "20px",
+
+  "categoryCardShadow": "soft_shadow",
+
+  "categoryImageStyle": "circle_icon",
+
+  "categorySpacing": "20px",
+
+  "categories": [
+    {
+      "id": "fashion",
+
+      "name": "Fashion",
+
+      "slug": "fashion",
+
+      "iconImage": "https://yourcdn.com/fashion.png",
+
+      "bannerImage": "https://yourcdn.com/fashion-banner.jpg",
+
+      "visible": true,
+
+      "position": 1
+    },
+
+    {
+      "id": "electronics",
+
+      "name": "Electronics",
+
+      "slug": "electronics",
+
+      "iconImage": "https://yourcdn.com/electronics.png",
+
+      "bannerImage": "https://yourcdn.com/electronics-banner.jpg",
+
+      "visible": true,
+
+      "position": 2
+    },
+
+    {
+      "id": "beauty",
+
+      "name": "Beauty",
+
+      "slug": "beauty",
+
+      "iconImage": "https://yourcdn.com/beauty.png",
+
+      "bannerImage": "https://yourcdn.com/beauty-banner.jpg",
+
+      "visible": true,
+
+      "position": 3
+    },
+
+    {
+      "id": "grocery",
+
+      "name": "Grocery",
+
+      "slug": "grocery",
+
+      "iconImage": "https://yourcdn.com/grocery.png",
+
+      "bannerImage": "https://yourcdn.com/grocery-banner.jpg",
+
+      "visible": true,
+
+      "position": 4
+    },
+
+    {
+      "id": "pod_products",
+
+      "name": "Print On Demand",
+
+      "slug": "pod-products",
+
+      "iconImage": "https://yourcdn.com/pod.png",
+
+      "bannerImage": "https://yourcdn.com/pod-banner.jpg",
+
+      "visible": true,
+
+      "position": 5
+    },
+
+    {
+      "id": "reseller_products",
+
+      "name": "Reseller Products",
+
+      "slug": "reseller-products",
+
+      "iconImage": "https://yourcdn.com/reseller.png",
+
+      "bannerImage": "https://yourcdn.com/reseller-banner.jpg",
+
+      "visible": true,
+
+      "position": 6
+    }
+  ]
+}

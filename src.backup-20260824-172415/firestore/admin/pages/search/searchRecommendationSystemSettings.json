@@ -1,0 +1,95 @@
+{
+  "searchRecommendationSystemEnabled": true,
+
+  "adminControlledSearchRecommendations": true,
+
+  "searchRecommendationStyle": "advanced_ai_search_recommendation_system",
+
+  "enableRealtimeSearch": true,
+
+  "enableVoiceSearch": true,
+
+  "enableImageSearch": false,
+
+  "enableBarcodeSearch": true,
+
+  "enableAISearchSuggestions": true,
+
+  "enableAITrendingSearches": true,
+
+  "enableAIAutocomplete": true,
+
+  "enableSpellingCorrection": true,
+
+  "enableSynonymMatching": true,
+
+  "enableCategoryWiseSearch": true,
+
+  "enableSellerWiseSearch": true,
+
+  "enableProductTagSearch": true,
+
+  "enablePriceRangeSearch": true,
+
+  "enableRatingFilter": true,
+
+  "enableAvailabilityFilter": true,
+
+  "enableDiscountFilter": true,
+
+  "enableRealtimeProductIndexing": true,
+
+  "enablePersonalizedRecommendations": true,
+
+  "enableRecentlySearched": true,
+
+  "enablePopularSearches": true,
+
+  "enableAIShoppingRecommendations": true,
+
+  "enableSearchAnalytics": true,
+
+  "enableZeroResultAnalysis": true,
+
+  "enableSearchClickTracking": true,
+
+  "enableSearchConversionTracking": true,
+
+  "searchModules": [
+    {
+      "moduleId": "product_search",
+
+      "moduleName": "Product Search",
+
+      "enabled": true
+    },
+
+    {
+      "moduleId": "seller_search",
+
+      "moduleName": "Seller Search",
+
+      "enabled": true
+    },
+
+    {
+      "moduleId": "blog_search",
+
+      "moduleName": "Blog Search",
+
+      "enabled": true
+    },
+
+    {
+      "moduleId": "training_search",
+
+      "moduleName": "Training Search",
+
+      "enabled": true
+    }
+  ],
+
+  "desktopLayoutStyle": "advanced_search_dashboard",
+
+  "mobileLayoutStyle": "stacked_mobile_search_dashboard"
+}
