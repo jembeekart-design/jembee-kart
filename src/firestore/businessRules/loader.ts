@@ -14,6 +14,7 @@ import {
   WalletRules,
   CreatorEconomyRules,
   FeatureFlags,
+  SignupRules,
   BusinessRulesMetadata,
 } from "./types";
 
@@ -157,6 +158,13 @@ export const loadFeatureFlags =
     validateFeatureFlags
   );
 
+export const loadSignupRules =
+() =>
+  loadRule<SignupRules>(
+    "signup",
+    DEFAULT_BUSINESS_RULES.signup
+  );
+
 export const loadMetadata =
 () =>
   loadRule<BusinessRulesMetadata>(
@@ -186,6 +194,8 @@ Promise<BusinessRulesConfig> {
 
     featureFlags,
 
+    signup,
+
     metadata,
 
   ] = await Promise.all([
@@ -201,6 +211,8 @@ Promise<BusinessRulesConfig> {
     loadCreatorEconomyRules(),
 
     loadFeatureFlags(),
+
+    loadSignupRules(),
 
     loadMetadata(),
 
@@ -219,6 +231,8 @@ Promise<BusinessRulesConfig> {
     creatorEconomy,
 
     featureFlags,
+
+    signup,
 
     metadata,
 

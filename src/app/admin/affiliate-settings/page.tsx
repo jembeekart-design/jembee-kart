@@ -6,8 +6,7 @@ import { useEffect, useState } from "react";
 
 import {
   doc,
-  getDoc,
-  setDoc
+  writeBatch
 } from "firebase/firestore";
 
 import {
@@ -21,6 +20,7 @@ import {
 } from "lucide-react";
 
 import { db } from "@/firebase/config";
+import { getBusinessRulesConfig } from "@/lib/mlm/config/fetchConfigHelper";
 
 interface AffiliateSettings {
   affiliateEnabled: boolean;
@@ -30,6 +30,7 @@ interface AffiliateSettings {
   level1Commission: string;
   level2Commission: string;
   level3Commission: string;
+  level4Commission: string;
   joiningBonus: string;
   minimumPayout: string;
 }
@@ -45,6 +46,7 @@ export default function AffiliateSettingsPage() {
       level1Commission: "10",
       level2Commission: "5",
       level3Commission: "2",
+      level4Commission: "1",
       joiningBonus: "50",
       minimumPayout: "100"
     });
@@ -64,23 +66,19 @@ export default function AffiliateSettingsPage() {
   async function fetchSettings() {
 
     try {
-
-      const ref = doc(
-        db,
-        "admin_settings",
-        "affiliate_settings"
-      );
-
-      const snap =
-        await getDoc(ref);
-
-      if (snap.exists()) {
-
-        setSettings(
-          snap.data() as AffiliateSettings
-        );
-
-      }
+      const config = await getBusinessRulesConfig();
+      setSettings({
+        affiliateEnabled: config.featureFlags.affiliateEnabled,
+        mlmEnabled: config.featureFlags.mlmEnabled,
+        referralEnabled: config.featureFlags.referralEnabled,
+        autoApprove: config.featureFlags.autoApprove,
+        level1Commission: config.referral.level1Commission.toString(),
+        level2Commission: config.referral.level2Commission.toString(),
+        level3Commission: config.referral.level3Commission.toString(),
+        level4Commission: config.referral.level4Commission.toString(),
+        joiningBonus: config.signup.joiningBonus.toString(),
+        minimumPayout: config.creatorEconomy.minimumPayout.toString(),
+      });
 
     } catch (error) {
 
@@ -99,14 +97,22 @@ export default function AffiliateSettingsPage() {
 
       setSaving(true);
 
-      await setDoc(
-        doc(
-          db,
-          "admin_settings",
-          "affiliate_settings"
-        ),
-        settings
-      );
+      const batch = writeBatch(db);
+      batch.set(doc(db, "business_rules", "featureFlags"), {
+        affiliateEnabled: settings.affiliateEnabled,
+        mlmEnabled: settings.mlmEnabled,
+        referralEnabled: settings.referralEnabled,
+        autoApprove: settings.autoApprove,
+      }, { merge: true });
+      batch.set(doc(db, "business_rules", "referral"), {
+        level1Commission: Number(settings.level1Commission),
+        level2Commission: Number(settings.level2Commission),
+        level3Commission: Number(settings.level3Commission),
+        level4Commission: Number(settings.level4Commission),
+      }, { merge: true });
+      batch.set(doc(db, "business_rules", "signup"), { joiningBonus: Number(settings.joiningBonus) }, { merge: true });
+      batch.set(doc(db, "business_rules", "creatorEconomy"), { minimumPayout: Number(settings.minimumPayout) }, { merge: true });
+      await batch.commit();
 
       alert(
         "Affiliate Settings Saved"
