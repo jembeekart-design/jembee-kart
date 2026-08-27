@@ -1,8 +1,10 @@
 import { NextResponse } from "next/server";
-import { adminAuth, adminDb } from "@/firebase/admin";
+import { getAdminAuth, getAdminDb } from "@/firebase/admin";
 
 export async function withAdminAuth(handler: Function, req?: Request) {
   try {
+    const adminAuth = getAdminAuth();
+    const adminDb = getAdminDb();
     const authHeader = req ? req.headers.get("authorization") : null;
     if (!authHeader?.startsWith("Bearer ")) {
       return NextResponse.json({ success: false, message: "Unauthorized" }, { status: 401 });

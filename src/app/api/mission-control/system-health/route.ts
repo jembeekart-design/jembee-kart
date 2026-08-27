@@ -1,11 +1,12 @@
 import { NextResponse } from "next/server";
 
-import { adminDb } from "@/firebase/admin";
+import { getAdminDb } from "@/firebase/admin";
 import { withAdminAuth } from "@/lib/api/adminAuth";
 
 export const dynamic = "force-dynamic";
 
 export async function GET(req: Request) {
+  const adminDb = getAdminDb();
   return withAdminAuth(async () => {
     const startedAt = Date.now();
 
