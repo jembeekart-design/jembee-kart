@@ -1,9 +1,10 @@
 import { NextResponse } from "next/server";
-import { adminDb } from "@/firebase/admin";
+import { getAdminDb } from "@/firebase/admin";
 import { FieldValue } from "firebase-admin/firestore";
 
 export async function POST(request: Request) {
   try {
+    const adminDb = getAdminDb();
     const body = await request.json();
     console.log("CLOUDINARY MODERATION WEBHOOK RECEIVED:", JSON.stringify(body));
 
