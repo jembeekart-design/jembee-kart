@@ -1,7 +1,7 @@
 import { db } from "@/firebase/config";
 import { doc, getDoc, setDoc, serverTimestamp } from "firebase/firestore";
+import { getBusinessRulesConfig } from "./config/fetchConfigHelper";
 import { 
-  MLM_LEVELS_CONFIG, 
   MLM_SECURITY_GUARDS, 
   MLM_CONFIG_STATUS 
 } from "@/config/mlmConfig";
@@ -57,10 +57,20 @@ export async function distributeLevelCommission(data: DistributeLevelCommissionD
       };
     }
 
+    // Get dynamic config
+    const config = await getBusinessRulesConfig();
+    const referralRules = config.referral;
+    const levels = [
+      { level: 1, percentage: referralRules.level1Commission },
+      { level: 2, percentage: referralRules.level2Commission },
+      { level: 3, percentage: referralRules.level3Commission },
+      { level: 4, percentage: referralRules.level4Commission },
+    ];
+
     /* ========================================================
        REGULATORY PARAMETERS LIMIT BOUNDARY PARSING
        ======================================================== */
-    const corporateTotalCapPercentage = MLM_LEVELS_CONFIG.reduce(
+    const corporateTotalCapPercentage = levels.reduce(
       (sum, item) => sum + (item?.percentage || 0),
       0
     );
@@ -107,7 +117,7 @@ export async function distributeLevelCommission(data: DistributeLevelCommissionD
     /* ========================================================
        ITERATIVE ALLOCATION PRODUCER VIA PRE-COMPILED GRAPH LINES
        ======================================================== */
-    for (const levelConfig of MLM_LEVELS_CONFIG) {
+    for (const levelConfig of levels) {
       const targetGenerationLevel = levelConfig?.level;
       
       // Safety Cap mapping check configuration constraints array boundaries
