@@ -153,8 +153,8 @@ export default function ScannerResults() {
           </div>
         </div>
 
-        {results.map((item) => (
-          <div key={item.id} className="p-4 hover:bg-gray-50 transition-colors">
+        {results.map((item, index) => (
+          <div key={`${item.id}-${index}`} className="p-4 hover:bg-gray-50 transition-colors">
             <div className="flex justify-between items-start">
               <div>
                 <p className="text-sm font-bold">{item.name}</p>

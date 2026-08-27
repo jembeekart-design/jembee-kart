@@ -1,0 +1,231 @@
+{
+  "walletSystemEnabled": true,
+
+  "walletSystemStyle": "modern_fintech_wallet_system",
+
+  "adminControlledWalletSystem": true,
+
+  "enableUserWallet": true,
+
+  "enableSellerWallet": true,
+
+  "enableAffiliateWallet": true,
+
+  "enableResellerWallet": true,
+
+  "enableMLMWallet": true,
+
+  "enableRewardWallet": true,
+
+  "enableCashbackWallet": true,
+
+  "enableRealtimeWalletUpdates": true,
+
+  "enableAutomaticCommissionCredit": true,
+
+  "enableAutomaticRefundCredit": true,
+
+  "enableWalletRecharge": true,
+
+  "enableWalletTransfer": true,
+
+  "enableWalletWithdrawals": true,
+
+  "enableWalletTransactionsHistory": true,
+
+  "enableWalletAnalytics": true,
+
+  "enableWalletNotifications": true,
+
+  "enableWalletSecurityVerification": true,
+
+  "enableAIWalletInsights": true,
+
+  "walletDashboardStyle": "modern_wallet_dashboard",
+
+  "walletCardStyle": "gradient_balance_cards",
+
+  "walletButtonStyle": "rounded_gradient_buttons",
+
+  "minimumWalletRechargeAmount": 10,
+
+  "maximumWalletRechargeAmount": 100000,
+
+  "minimumWithdrawalAmount": 100,
+
+  "maximumWithdrawalAmount": 500000,
+
+  "withdrawalProcessingTime": "24_hours",
+
+  "walletCurrency": "INR",
+
+  "walletDecimalPrecision": 2,
+
+  "supportedRechargeMethods": [
+    {
+      "id": "upi",
+
+      "name": "UPI",
+
+      "enabled": true
+    },
+
+    {
+      "id": "razorpay",
+
+      "name": "Razorpay",
+
+      "enabled": true
+    },
+
+    {
+      "id": "stripe",
+
+      "name": "Stripe",
+
+      "enabled": true
+    }
+  ],
+
+  "supportedWithdrawalMethods": [
+    {
+      "id": "upi",
+
+      "name": "UPI",
+
+      "enabled": true
+    },
+
+    {
+      "id": "bank_transfer",
+
+      "name": "Bank Transfer",
+
+      "enabled": true
+    },
+
+    {
+      "id": "paypal",
+
+      "name": "PayPal",
+
+      "enabled": true
+    }
+  ],
+
+  "walletIncomeSources": [
+    {
+      "id": "shopping_cashback",
+
+      "title": "Shopping Cashback",
+
+      "enabled": true
+    },
+
+    {
+      "id": "affiliate_commission",
+
+      "title": "Affiliate Commission",
+
+      "enabled": true
+    },
+
+    {
+      "id": "reseller_profit",
+
+      "title": "Reseller Profit",
+
+      "enabled": true
+    },
+
+    {
+      "id": "mlm_income",
+
+      "title": "MLM Income",
+
+      "enabled": true
+    },
+
+    {
+      "id": "seller_earnings",
+
+      "title": "Seller Earnings",
+
+      "enabled": true
+    },
+
+    {
+      "id": "reward_bonus",
+
+      "title": "Reward Bonus",
+
+      "enabled": true
+    }
+  ],
+
+  "walletDashboardSections": [
+    {
+      "id": "wallet_balance",
+
+      "title": "Wallet Balance",
+
+      "visible": true,
+
+      "position": 1
+    },
+
+    {
+      "id": "recent_transactions",
+
+      "title": "Recent Transactions",
+
+      "visible": true,
+
+      "position": 2
+    },
+
+    {
+      "id": "withdrawal_history",
+
+      "title": "Withdrawal History",
+
+      "visible": true,
+
+      "position": 3
+    },
+
+    {
+      "id": "income_analytics",
+
+      "title": "Income Analytics",
+
+      "visible": true,
+
+      "position": 4
+    },
+
+    {
+      "id": "reward_points",
+
+      "title": "Reward Points",
+
+      "visible": true,
+
+      "position": 5
+    },
+
+    {
+      "id": "ai_wallet_tips",
+
+      "title": "AI Wallet Insights",
+
+      "visible": true,
+
+      "position": 6
+    }
+  ],
+
+  "desktopLayoutStyle": "modern_wallet_dashboard_layout",
+
+  "mobileLayoutStyle": "stacked_mobile_wallet_layout"
+}

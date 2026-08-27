@@ -1,0 +1,111 @@
+{
+  "firestoreSecurityRulesEnabled": true,
+
+  "adminControlledFirestoreRules": true,
+
+  "firestoreRulesStyle": "advanced_security_rules_management",
+
+  "enableRealtimeRuleUpdates": true,
+
+  "enableRuleVersionHistory": true,
+
+  "enableRuleBackupRestore": true,
+
+  "enableAIRuleSuggestions": true,
+
+  "enableAISecurityAnalysis": true,
+
+  "enableRealtimeThreatMonitoring": true,
+
+  "enableAccessLogs": true,
+
+  "enableRoleBasedRuleManagement": true,
+
+  "enableCollectionWisePermissions": true,
+
+  "enableDocumentLevelPermissions": true,
+
+  "enableReadWriteValidation": true,
+
+  "enableRealtimePermissionSync": true,
+
+  "enableAutomaticSecurityAudits": true,
+
+  "enableIPRestrictions": false,
+
+  "enableGeoRestrictions": false,
+
+  "enableAdminOverride": true,
+
+  "enableEmergencyLockdown": true,
+
+  "securityRoles": [
+    {
+      "roleId": "super_admin",
+
+      "permissions": [
+        "full_database_access",
+        "manage_rules",
+        "manage_users"
+      ]
+    },
+
+    {
+      "roleId": "admin",
+
+      "permissions": [
+        "manage_products",
+        "manage_orders",
+        "manage_users"
+      ]
+    },
+
+    {
+      "roleId": "seller",
+
+      "permissions": [
+        "manage_own_products",
+        "manage_own_orders"
+      ]
+    },
+
+    {
+      "roleId": "affiliate",
+
+      "permissions": [
+        "view_affiliate_dashboard"
+      ]
+    },
+
+    {
+      "roleId": "reseller",
+
+      "permissions": [
+        "view_reseller_dashboard"
+      ]
+    },
+
+    {
+      "roleId": "customer",
+
+      "permissions": [
+        "shop_products",
+        "manage_profile",
+        "manage_orders"
+      ]
+    }
+  ],
+
+  "protectedCollections": [
+    "users",
+    "orders",
+    "wallets",
+    "payments",
+    "admin_settings",
+    "notifications"
+  ],
+
+  "desktopLayoutStyle": "advanced_firestore_rules_dashboard",
+
+  "mobileLayoutStyle": "stacked_mobile_firestore_dashboard"
+}

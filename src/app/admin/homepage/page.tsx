@@ -3,12 +3,13 @@
 export const dynamic = "force-dynamic";
 
 import { useEffect, useState } from "react";
-
 import {
+  collection,
   doc,
-  getDoc,
-  setDoc
+  getDocs,
+  updateDoc,
 } from "firebase/firestore";
+import { db } from "@/firebase/config";
 
 import {
   Home,
@@ -23,127 +24,83 @@ import {
   Star
 } from "lucide-react";
 
-import { db } from "@/firebase/config";
+interface HomepageSection {
+  id: string;
+  sectionType: string;
+  visible: boolean;
+}
 
 interface HomepageSettings {
-  heroSection: boolean;
-  bannerSection: boolean;
-  affiliateSection: boolean;
-  sellerSection: boolean;
-  featuredProducts: boolean;
-  trendingProducts: boolean;
-  categoriesSection: boolean;
-  reviewsSection: boolean;
+  heroSection: boolean; bannerSection: boolean; affiliateSection: boolean;
+  sellerSection: boolean; featuredProducts: boolean; trendingProducts: boolean;
+  categoriesSection: boolean; reviewsSection: boolean;
   sectionOrder: string[];
 }
 
 export default function HomepagePage() {
+  const [sections, setSections] = useState<HomepageSection[]>([]);
+  const [settings, setSettings] = useState<HomepageSettings>({
+      heroSection: true, bannerSection: true, affiliateSection: true,
+      sellerSection: true, featuredProducts: true, trendingProducts: true,
+      categoriesSection: true, reviewsSection: true,
+      sectionOrder: ["Hero", "Banner", "Categories", "Featured", "Trending", "Affiliate", "Seller", "Reviews"]
+  });
+  const [loading, setLoading] = useState(true);
+  const [saving, setSaving] = useState(false);
 
-  const [settings, setSettings] =
-    useState<HomepageSettings>({
-      heroSection: true,
-      bannerSection: true,
-      affiliateSection: true,
-      sellerSection: true,
-      featuredProducts: true,
-      trendingProducts: true,
-      categoriesSection: true,
-      reviewsSection: true,
-      sectionOrder: [
-        "Hero",
-        "Banner",
-        "Categories",
-        "Featured",
-        "Trending",
-        "Affiliate",
-        "Seller",
-        "Reviews"
-      ]
-    });
-
-  const [loading, setLoading] =
-    useState(true);
-
-  const [saving, setSaving] =
-    useState(false);
+  const sectionMap: Record<string, keyof HomepageSettings> = {
+    hero: "heroSection", banner: "bannerSection", affiliate: "affiliateSection",
+    seller: "sellerSection", featured: "featuredProducts", trending: "trendingProducts",
+    categories: "categoriesSection", reviews: "reviewsSection"
+  };
 
   useEffect(() => {
-
-    fetchHomepage();
-
+    fetchSections();
   }, []);
 
-  async function fetchHomepage() {
-
+  async function fetchSections() {
     try {
-
-      const ref = doc(
-        db,
-        "admin_settings",
-        "homepage"
-      );
-
-      const snapshot =
-        await getDoc(ref);
-
-      if (snapshot.exists()) {
-
-        setSettings(
-          snapshot.data() as HomepageSettings
-        );
-
-      }
-
+      const snapshot = await getDocs(collection(db, "homepage_sections"));
+      const data = snapshot.docs.map((doc) => ({
+        id: doc.id,
+        ...(doc.data() as Omit<HomepageSection, "id">),
+      }));
+      setSections(data);
+      const newSettings = { ...settings };
+      data.forEach(s => { const field = sectionMap[s.sectionType]; if(field && field !== "sectionOrder") newSettings[field] = s.visible; });
+      setSettings(newSettings);
     } catch (error) {
-
-      console.log(error);
-
+      console.error(error);
     } finally {
-
       setLoading(false);
-
     }
   }
 
   async function saveHomepage() {
-
+    setSaving(true);
     try {
-
-      setSaving(true);
-
-      await setDoc(
-        doc(
-          db,
-          "admin_settings",
-          "homepage"
-        ),
-        settings
-      );
-
-      alert(
-        "Homepage Updated"
-      );
-
+      for (const section of sections) {
+        const field = sectionMap[section.sectionType];
+        if (field) {
+          await updateDoc(doc(db, "homepage_sections", section.id), {
+            visible: settings[field as keyof HomepageSettings],
+          });
+        }
+      }
+      alert("Homepage sections updated successfully.");
     } catch (error) {
-
-      console.log(error);
-
+      console.error(error);
+      alert("Error updating sections.");
     } finally {
-
       setSaving(false);
-
     }
   }
 
-  function toggleSection(
-    field: keyof HomepageSettings
-  ) {
-
-    setSettings((prev) => ({
-      ...prev,
-      [field]:
-        !prev[field]
-    }));
+  function toggleSection(field: keyof HomepageSettings) {
+    setSettings(prev => ({ ...prev, [field]: !prev[field] }));
+    setSections((prev) =>
+      prev.map((s) => (sectionMap[s.sectionType] === field ? { ...s, visible: !s.visible } : s))
+    );
   }
 
   function moveUp(

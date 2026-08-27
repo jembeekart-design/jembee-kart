@@ -1,0 +1,676 @@
+"use client";
+
+import { useCallback, useEffect, useState } from "react";
+
+import {
+  GovernanceDashboardReport,
+  GovernanceViolation,
+} from "../types/governance.types";
+
+import {
+  governanceStatusService,
+} from "../services/governanceStatusService";
+
+import {
+  governanceIssueService,
+} from "../services/governanceIssueService";
+
+import {
+  governanceReportService,
+} from "../services/governanceReportService";
+
+interface GovernanceStats {
+
+  totalIssues: number;
+
+  criticalIssues: number;
+
+  warningIssues: number;
+
+  passedModules: number;
+
+  failedModules: number;
+
+  governanceScore: number;
+
+}
+
+interface LatestReport {
+
+  id: string;
+
+  title: string;
+
+  createdAt: string;
+
+  status?: string;
+
+}
+
+export default function GovernanceDashboard() {
+
+  const [loading, setLoading] =
+    useState(true);
+
+  const [stats, setStats] =
+    useState<GovernanceStats | null>(null);
+
+  const [issues, setIssues] =
+    useState<GovernanceViolation[]>([]);
+
+  const [reports, setReports] =
+    useState<LatestReport[]>([]);
+
+  const [dashboardReport, setDashboardReport] =
+    useState<GovernanceDashboardReport | null>(null);
+
+  // =====================================================
+  // PART 2 STARTS HERE
+  // =====================================================
+
+  const loadDashboard = useCallback(
+    async () => {
+
+      try {
+
+        setLoading(true);
+
+        const [
+          dashboardStats,
+          governanceIssues,
+          latestReports,
+          report,
+        ] = await Promise.all([
+
+          governanceStatusService.getDashboardStats(),
+
+          governanceIssueService.getAllIssues(),
+
+          governanceReportService.getLatestReports(),
+
+          governanceReportService.generate(
+            process.cwd()
+          ),
+
+        ]);
+
+        setStats(
+          dashboardStats
+        );
+
+        setIssues(
+  governanceIssues.map((issue) => ({
+    id: issue.id,
+    title: issue.problem,
+    description: issue.fixSuggestion,
+    category: issue.category as any,
+severity: issue.priority as any,
+    priority: issue.priority,
+    filePath: issue.filePath,
+    recommendation: issue.fixSuggestion,
+    detectedAt: issue.detectedAt,
+    action: issue.action,
+insertBefore: issue.insertBefore,
+insertAfter: issue.insertAfter,
+oldCode: issue.oldCode,
+newCode: issue.newCode,
+  })) as GovernanceViolation[]
+);
+
+        setReports(
+          latestReports
+        );
+
+        setDashboardReport(
+          report
+        );
+
+      } catch (error) {
+
+        console.error(
+          "[GovernanceDashboard]",
+          error
+        );
+
+      } finally {
+
+        setLoading(false);
+
+      }
+
+    },
+    []
+  );
+
+  useEffect(() => {
+
+    loadDashboard();
+
+  }, [loadDashboard]);
+
+  // =====================================================
+  // PART 3 STARTS HERE
+  // =====================================================
+  // =====================================================
+  // Loading
+  // =====================================================
+
+  if (loading) {
+
+    return (
+
+      <div className="flex items-center justify-center min-h-screen">
+
+        <div className="text-lg font-semibold">
+
+          Loading Governance Dashboard...
+
+        </div>
+
+      </div>
+
+    );
+
+  }
+
+  // =====================================================
+  // Dashboard
+  // =====================================================
+
+  return (
+
+    <div className="p-6 space-y-6">
+
+      {/* ================================================= */}
+      {/* HEADER */}
+      {/* ================================================= */}
+
+      <div className="flex items-center justify-between">
+
+        <div>
+
+          <h1 className="text-3xl font-bold">
+
+            JembeeKart Governance Dashboard
+
+          </h1>
+
+          <p className="text-[var(--text-muted)]">
+
+            Enterprise Governance Monitoring
+
+          </p>
+
+        </div>
+
+        <div className="text-right">
+
+          <div className="text-sm text-[var(--text-muted)]">
+
+            Generated
+
+          </div>
+
+          <div className="font-medium">
+
+            {dashboardReport?.generatedAt ?? "-"}
+
+          </div>
+
+        </div>
+
+      </div>
+
+      {/* ================================================= */}
+      {/* SUMMARY CARDS */}
+      {/* ================================================= */}
+
+      <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-4">
+
+        <div className="rounded-lg border p-4">
+
+          <p className="text-sm text-[var(--muted-text-color)]">
+
+            Governance Score
+
+          </p>
+
+          <h2 className="text-3xl font-bold">
+
+            {stats?.governanceScore ?? 0}%
+
+          </h2>
+
+        </div>
+
+        <div className="rounded-lg border p-4">
+
+          <p className="text-sm text-[var(--muted-text-color)]">
+
+            Total Issues
+
+          </p>
+
+          <h2 className="text-3xl font-bold">
+
+            {stats?.totalIssues ?? 0}
+
+          </h2>
+
+        </div>
+
+        <div className="rounded-lg border p-4">
+
+          <p className="text-sm text-[var(--muted-text-color)]">
+
+            Critical Issues
+
+          </p>
+
+          <h2 className="text-3xl font-bold text-[var(--danger-color)]">
+
+            {stats?.criticalIssues ?? 0}
+
+          </h2>
+
+        </div>
+
+        <div className="rounded-lg border p-4">
+
+          <p className="text-sm text-[var(--muted-text-color)]">
+
+            Warnings
+
+          </p>
+
+          <h2 className="text-3xl font-bold text-[var(--warning-color)]">
+
+            {stats?.warningIssues ?? 0}
+
+          </h2>
+
+        </div>
+
+      </div>
+
+      {/* ================================================= */}
+      {/* PART 4 STARTS HERE */}
+      {/* ================================================= */}
+            {/* ================================================= */}
+      {/* LATEST REPORTS */}
+      {/* ================================================= */}
+
+      <div className="rounded-lg border p-6">
+
+        <h2 className="text-xl font-semibold mb-4">
+
+          Latest Governance Reports
+
+        </h2>
+
+        <div className="space-y-3">
+
+          {reports.length === 0 && (
+
+            <p className="text-[var(--muted-text-color)]">
+
+              No governance reports available.
+
+            </p>
+
+          )}
+
+          {reports.map((report) => (
+
+            <div
+              key={report.id}
+              className="rounded-lg border p-4"
+            >
+
+              <div className="flex items-center justify-between">
+
+                <div>
+
+                  <h3 className="font-semibold">
+
+                    {report.title}
+
+                  </h3>
+
+                  <p className="text-sm text-[var(--muted-text-color)]">
+
+                    {report.createdAt}
+
+                  </p>
+
+                </div>
+
+                <span className="rounded bg-[var(--success-color)] px-3 py-1 text-xs font-medium">
+
+                  {report.status ?? "SUCCESS"}
+
+                </span>
+
+              </div>
+
+            </div>
+
+          ))}
+
+        </div>
+
+      </div>
+
+      {/* ================================================= */}
+      {/* GOVERNANCE ISSUES */}
+      {/* ================================================= */}
+
+      <div className="rounded-lg border p-6">
+
+        <h2 className="text-xl font-semibold mb-4">
+
+          Governance Issues
+
+        </h2>
+
+        <div className="space-y-3">
+
+          {issues.length === 0 && (
+
+            <p className="text-[var(--muted-text-color)]">
+
+              No governance issues detected.
+
+            </p>
+
+          )}
+
+          {issues.map((issue) => (
+
+            <div
+              key={issue.id}
+              className="rounded-lg border p-4"
+            >
+
+              <div className="flex items-start justify-between gap-4">
+
+                <div>
+
+                  <h3 className="font-semibold">
+
+                    {issue.title}
+
+                  </h3>
+
+                  <p className="text-sm text-[var(--muted-text-color)]">
+
+                    {issue.category}
+
+                  </p>
+
+                </div>
+
+                <span
+                  className={`rounded px-3 py-1 text-xs font-medium ${
+                    issue.severity === "CRITICAL"
+                      ? "bg-[var(--danger-color)] text-[var(--danger-color)]"
+                      : issue.severity === "ERROR"
+                      ? "bg-[var(--warning-color)] text-[var(--warning-color)]"
+                      : issue.severity === "WARNING"
+                      ? "bg-[var(--warning-color)] text-[var(--warning-color)]"
+                      : "bg-[var(--success-color)] text-[var(--success-color)]"
+                  }`}
+                >
+
+                  {issue.severity}
+
+                </span>
+
+              </div>
+
+              <p className="mt-3 text-sm">
+
+                {issue.description}
+
+              </p>
+              {issue.recommendation && (
+  <div className="mt-3 rounded-md border border-[var(--success-color)] bg-[var(--success-color)] p-3">
+    <p className="text-xs font-bold text-[var(--success-color)]">
+      💡 Fix Suggestion
+    </p>
+
+    <p className="mt-1 text-sm whitespace-pre-wrap">
+      {issue.recommendation}
+    </p>
+  </div>
+)}
+
+              {issue.filePath && (
+
+                <p className="mt-2 text-xs text-[var(--muted-text-color)]">
+
+                  {issue.filePath}
+
+                </p>
+
+              )}
+              {issue.action && (
+  <p className="mt-2 text-xs">
+    <strong>Action:</strong> {issue.action}
+  </p>
+)}
+
+{issue.insertBefore && (
+  <p className="mt-1 text-xs break-all">
+    <strong>Insert Before:</strong> {issue.insertBefore}
+  </p>
+)}
+
+{issue.insertAfter && (
+  <p className="mt-1 text-xs break-all">
+    <strong>Insert After:</strong> {issue.insertAfter}
+  </p>
+)}
+
+{issue.oldCode && (
+  <pre className="mt-2 rounded bg-[var(--background-color)] p-2 text-xs overflow-x-auto">
+    <strong>Old Code:</strong>
+    {"\n"}
+    {issue.oldCode}
+  </pre>
+)}
+
+{issue.newCode && (
+  <pre className="mt-2 rounded bg-[var(--success-color)] p-2 text-xs overflow-x-auto">
+    <strong>New Code:</strong>
+    {"\n"}
+    {issue.newCode}
+  </pre>
+)}
+
+            </div>
+
+          ))}
+
+        </div>
+
+      </div>
+
+      {/* ================================================= */}
+      {/* PART 5 STARTS HERE */}
+      {/* ================================================= */}
+            {/* ================================================= */}
+      {/* GOVERNANCE SCORES */}
+      {/* ================================================= */}
+
+      <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-4">
+
+        <div className="rounded-lg border p-4">
+
+          <h3 className="text-sm text-[var(--muted-text-color)]">
+            Architecture
+          </h3>
+
+          <p className="text-3xl font-bold">
+            {dashboardReport?.scores.architecture ?? 0}%
+          </p>
+
+        </div>
+
+        <div className="rounded-lg border p-4">
+
+          <h3 className="text-sm text-[var(--muted-text-color)]">
+            Security
+          </h3>
+
+          <p className="text-3xl font-bold">
+            {dashboardReport?.scores.security ?? 0}%
+          </p>
+
+        </div>
+
+        <div className="rounded-lg border p-4">
+
+          <h3 className="text-sm text-[var(--muted-text-color)]">
+            Profitability
+          </h3>
+
+          <p className="text-3xl font-bold">
+            {dashboardReport?.scores.profitability ?? 0}%
+          </p>
+
+        </div>
+
+        <div className="rounded-lg border p-4">
+
+          <h3 className="text-sm text-[var(--muted-text-color)]">
+            Deployment
+          </h3>
+
+          <p className="text-3xl font-bold">
+            {dashboardReport?.scores.deployment ?? 0}%
+          </p>
+
+        </div>
+
+      </div>
+
+      {/* ================================================= */}
+      {/* SYSTEM HEALTH */}
+      {/* ================================================= */}
+
+      <div className="rounded-lg border p-6">
+
+        <h2 className="text-xl font-semibold mb-4">
+
+          Governance Health
+
+        </h2>
+
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+
+          <div>
+
+            <p className="text-sm text-[var(--muted-text-color)]">
+
+              Overall Health
+
+            </p>
+
+            <p className="font-semibold">
+
+              {dashboardReport?.health.healthy
+                ? "Healthy"
+                : "Unhealthy"}
+
+            </p>
+
+          </div>
+
+          <div>
+
+            <p className="text-sm text-[var(--muted-text-color)]">
+
+              Configuration
+
+            </p>
+
+            <p className="font-semibold">
+
+              {dashboardReport?.health
+                .configurationLoaded
+                ? "Loaded"
+                : "Failed"}
+
+            </p>
+
+          </div>
+
+          <div>
+
+            <p className="text-sm text-[var(--muted-text-color)]">
+
+              Business Rules
+
+            </p>
+
+            <p className="font-semibold">
+
+              {dashboardReport?.health
+                .businessRulesHealthy
+                ? "Healthy"
+                : "Failed"}
+
+            </p>
+
+          </div>
+
+        </div>
+
+      </div>
+
+      {/* ================================================= */}
+      {/* DEPLOYMENT STATUS */}
+      {/* ================================================= */}
+
+      <div className="rounded-lg border p-6">
+
+        <h2 className="text-xl font-semibold mb-4">
+
+          Deployment Status
+
+        </h2>
+
+        <div className="flex items-center justify-between">
+
+          <span>
+
+            Ready For Production
+
+          </span>
+
+          <span
+            className={`rounded px-4 py-2 text-sm font-semibold ${
+              dashboardReport?.summary
+                .deploymentReady
+                ? "bg-[var(--success-color)] text-[var(--success-color)]"
+                : "bg-[var(--danger-color)] text-[var(--danger-color)]"
+            }`}
+          >
+
+            {dashboardReport?.summary
+              .deploymentReady
+              ? "READY"
+              : "BLOCKED"}
+
+          </span>
+
+        </div>
+
+      </div>
+
+    </div>
+
+  );
+
+}

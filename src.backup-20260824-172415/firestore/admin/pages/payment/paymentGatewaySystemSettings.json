@@ -1,0 +1,98 @@
+{
+  "paymentGatewaySystemEnabled": true,
+
+  "adminControlledPaymentGateway": true,
+
+  "paymentGatewayStyle": "advanced_secure_payment_system",
+
+  "enableUPIPayments": true,
+
+  "enableCardPayments": true,
+
+  "enableNetBanking": true,
+
+  "enableWalletPayments": true,
+
+  "enableCashOnDelivery": true,
+
+  "enableEMIPayments": true,
+
+  "enableInternationalPayments": false,
+
+  "enableSubscriptionPayments": true,
+
+  "enablePartialPayments": false,
+
+  "enableAutomaticRefunds": true,
+
+  "enableRealtimePaymentVerification": true,
+
+  "enableFraudDetection": true,
+
+  "enableAITransactionMonitoring": true,
+
+  "enablePaymentAnalytics": true,
+
+  "enableRevenueTracking": true,
+
+  "enableCommissionDistribution": true,
+
+  "enableAffiliateCommissionPayments": true,
+
+  "enableResellerProfitDistribution": true,
+
+  "enableMLMIncomeDistribution": true,
+
+  "enableSellerPayouts": true,
+
+  "enableWalletRechargePayments": true,
+
+  "enableWalletWithdrawals": true,
+
+  "enablePaymentNotifications": true,
+
+  "enableInvoiceGeneration": true,
+
+  "enableGSTInvoiceSupport": true,
+
+  "enableMultiCurrencySupport": false,
+
+  "supportedGateways": [
+    {
+      "gatewayId": "razorpay",
+
+      "gatewayName": "Razorpay",
+
+      "enabled": true
+    },
+
+    {
+      "gatewayId": "stripe",
+
+      "gatewayName": "Stripe",
+
+      "enabled": true
+    },
+
+    {
+      "gatewayId": "paypal",
+
+      "gatewayName": "PayPal",
+
+      "enabled": true
+    }
+  ],
+
+  "supportedPaymentMethods": [
+    "upi",
+    "credit_card",
+    "debit_card",
+    "net_banking",
+    "wallet",
+    "cash_on_delivery"
+  ],
+
+  "desktopLayoutStyle": "advanced_payment_dashboard",
+
+  "mobileLayoutStyle": "stacked_mobile_payment_dashboard"
+}

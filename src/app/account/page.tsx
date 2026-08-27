@@ -164,12 +164,6 @@ export default function AccountPage() {
       color: "bg-[var(--color-primary-button)] text-[var(--color-primary-button)]"
     },
     {
-      title: "Payment Methods",
-      icon: CreditCard,
-      href: "/payments",
-      color: "bg-[var(--color-success)] text-[var(--color-success)]"
-    },
-    {
       title: "Account Settings",
       icon: Settings,
       href: "/settings",

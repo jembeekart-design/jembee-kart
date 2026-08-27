@@ -1,39 +1,31 @@
 "use client";
 
 import { Heart } from "lucide-react";
+import { useWishlist } from "@/hooks/useWishlist";
 
 interface ProductCardProps {
   id?: string;
-
   title?: string;
-
   images?: string[];
-
   price?: number;
-
   discountPrice?: number;
-
   rating?: number;
-
   reviews?: number;
 }
 
-
 export default function ProductCard({
   id = "",
-
   title = "PETER ENGLAND Polo",
-
   images = [],
-
   price = 1099,
-
   discountPrice = 539,
-
   rating = 4.2,
-
   reviews = 5000
 }: ProductCardProps) {
+  const { wishlistItems, toggleWishlist } = useWishlist();
+  const isLiked = wishlistItems.includes(id);
+  const product = { id, title, images, price, discountPrice };
+
   const discount =
     Math.round(
       ((price -
@@ -90,6 +82,7 @@ export default function ProductCard({
           {/* WISHLIST */}
 
           <button
+            onClick={() => toggleWishlist(product)}
             className="
               absolute
               right-2
@@ -107,7 +100,8 @@ export default function ProductCard({
 
             <Heart
               size={16}
-              className="text-[var(--text-color)]"
+              fill={isLiked ? "red" : "transparent"}
+              className={isLiked ? "text-[var(--color-danger)]" : "text-[var(--text-color)]"}
             />
 
           </button>

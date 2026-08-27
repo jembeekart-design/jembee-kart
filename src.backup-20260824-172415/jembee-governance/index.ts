@@ -1,0 +1,73 @@
+// src/jembee-governance/index.ts
+
+import { complianceReportGenerator } from "./reports/complianceReportGenerator";
+import { GovernanceDashboardReport } from "./types/governance.types";
+
+export class JembeeGovernanceEngine {
+  public async run(): Promise<GovernanceDashboardReport> {
+    const projectRoot = process.cwd();
+
+    console.log("");
+    console.log("══════════════════════════════════════════════════════");
+    console.log("      JEMBEEKART GOVERNANCE ENGINE STARTED");
+    console.log("══════════════════════════════════════════════════════");
+    console.log("");
+
+    const report = await complianceReportGenerator.generate({
+      projectRoot,
+    });
+
+    complianceReportGenerator.printConsoleReport(report);
+
+    console.log("");
+    console.log("══════════════════════════════════════════════════════");
+    console.log("SCAN COMPLETED");
+    console.log("══════════════════════════════════════════════════════");
+    console.log("");
+
+    return report;
+  }
+
+  /**
+   * Deployment Validation
+   */
+  public async validateForDeployment(): Promise<void> {
+    const report = await this.run();
+
+    if (report.deploymentStatus !== "PASS") {
+      console.warn("");
+      console.warn("⚠ GOVERNANCE VIOLATIONS DETECTED");
+
+      console.warn(`Critical Issues: ${report.criticalCount}`);
+      console.warn(`Error Issues: ${report.errorCount}`);
+      console.warn(`Warning Issues: ${report.warningCount}`);
+      console.warn(`Total Violations: ${report.totalViolations}`);
+
+      console.warn("Deployment allowed (Warn Mode)");
+      console.warn("");
+
+      return;
+    }
+
+    console.log("");
+    console.log("✅ GOVERNANCE VALIDATION PASSED");
+    console.log("");
+  }
+}
+
+export const governanceEngine = new JembeeGovernanceEngine();
+
+/**
+ * Run automatically only when this file
+ * is executed directly using:
+ * npm run governance
+ */
+if (require.main === module) {
+  governanceEngine
+    .run()
+    .then(() => process.exit(0))
+    .catch((error) => {
+      console.error(error);
+      process.exit(1);
+    });
+}

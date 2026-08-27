@@ -1,0 +1,153 @@
+{
+  "userDashboardEnabled": true,
+
+  "dashboardStyle": "modern_ai_business_dashboard",
+
+  "adminControlledDashboard": true,
+
+  "pageBackgroundColor": "#f1f3f6",
+
+  "dashboardContainerBackgroundColor": "#ffffff",
+
+  "dashboardContainerBorderRadius": "24px",
+
+  "dashboardContainerShadow": "soft_shadow",
+
+  "enableDashboardAnimations": true,
+
+  "enableRealtimeUpdates": true,
+
+  "enableGlassmorphismCards": false,
+
+  "enableDarkModeSupport": true,
+
+  "showWelcomeBanner": true,
+
+  "welcomeBannerStyle": "gradient_business_banner",
+
+  "showUserProfileCard": true,
+
+  "showWalletCard": true,
+
+  "showOrderStatistics": true,
+
+  "showRecentOrders": true,
+
+  "showWishlistSection": true,
+
+  "showNotificationsSection": true,
+
+  "showBusinessTipsSection": true,
+
+  "showAIHelperWidget": true,
+
+  "showReferralStatistics": true,
+
+  "showAffiliateStatistics": true,
+
+  "showResellerStatistics": true,
+
+  "showMLMStatistics": true,
+
+  "showPODStatistics": true,
+
+  "showQuickActions": true,
+
+  "showTrendingProducts": true,
+
+  "showRecommendedProducts": true,
+
+  "showSellerTools": true,
+
+  "showGrowthAnalytics": true,
+
+  "showWithdrawalSection": true,
+
+  "showRewardPointsSection": true,
+
+  "showSupportSection": true,
+
+  "showTrainingAcademySection": true,
+
+  "dashboardCardsStyle": "modern_gradient_cards",
+
+  "dashboardChartsStyle": "animated_business_charts",
+
+  "quickActionButtonStyle": "rounded_gradient_buttons",
+
+  "dashboardSections": [
+    {
+      "id": "wallet_overview",
+
+      "title": "Wallet Overview",
+
+      "visible": true,
+
+      "position": 1
+    },
+
+    {
+      "id": "recent_orders",
+
+      "title": "Recent Orders",
+
+      "visible": true,
+
+      "position": 2
+    },
+
+    {
+      "id": "affiliate_earnings",
+
+      "title": "Affiliate Earnings",
+
+      "visible": true,
+
+      "position": 3
+    },
+
+    {
+      "id": "reseller_earnings",
+
+      "title": "Reseller Earnings",
+
+      "visible": true,
+
+      "position": 4
+    },
+
+    {
+      "id": "mlm_team_income",
+
+      "title": "MLM Team Income",
+
+      "visible": true,
+
+      "position": 5
+    },
+
+    {
+      "id": "pod_business",
+
+      "title": "Print On Demand Business",
+
+      "visible": true,
+
+      "position": 6
+    },
+
+    {
+      "id": "business_growth_tips",
+
+      "title": "AI Business Growth Tips",
+
+      "visible": true,
+
+      "position": 7
+    }
+  ],
+
+  "desktopLayoutStyle": "sidebar_dashboard_layout",
+
+  "mobileLayoutStyle": "stacked_mobile_dashboard"
+}

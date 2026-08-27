@@ -26,7 +26,7 @@ export default function PaymentPage() {
       // Firestore Order Create Logic Here
 
       setTimeout(() => {
-        router.push("/order-success");
+        router.push("/payment-success");
       }, 1500);
     } catch (error) {
       console.error(error);

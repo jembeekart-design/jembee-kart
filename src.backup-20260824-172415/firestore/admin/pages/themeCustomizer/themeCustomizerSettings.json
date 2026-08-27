@@ -1,0 +1,143 @@
+{
+  "themeCustomizerEnabled": true,
+
+  "adminControlledThemeCustomizer": true,
+
+  "themeCustomizerStyle": "advanced_live_theme_builder",
+
+  "enableRealtimeThemePreview": true,
+
+  "enableGlobalThemeControl": true,
+
+  "enablePageWiseThemeControl": true,
+
+  "enableSectionWiseThemeControl": true,
+
+  "enableComponentWiseThemeControl": true,
+
+  "enableDarkModeEditor": true,
+
+  "enableLightModeEditor": true,
+
+  "enableGlassmorphismControls": true,
+
+  "enableGradientControls": true,
+
+  "enableAnimationControls": true,
+
+  "enableResponsiveThemeEditor": true,
+
+  "enableAIThemeSuggestions": true,
+
+  "enableThemeHistory": true,
+
+  "enableThemeBackupRestore": true,
+
+  "enableThemeImportExport": true,
+
+  "enableCustomCSSSupport": true,
+
+  "enableCustomFontUpload": true,
+
+  "enableLiveColorPicker": true,
+
+  "enableBorderRadiusControl": true,
+
+  "enableShadowControl": true,
+
+  "enableSpacingControl": true,
+
+  "enableLayoutWidthControl": true,
+
+  "globalThemeSettings": {
+    "primaryColor": "#2874f0",
+
+    "secondaryColor": "#7c3aed",
+
+    "backgroundColor": "#f1f3f6",
+
+    "textColor": "#111827",
+
+    "cardBackgroundColor": "#ffffff",
+
+    "borderRadius": "20px",
+
+    "shadowStyle": "soft_shadow",
+
+    "fontFamily": "Inter",
+
+    "buttonStyle": "gradient_buttons",
+
+    "inputStyle": "rounded_glass_inputs"
+  },
+
+  "editablePages": [
+    {
+      "pageId": "homepage",
+
+      "pageName": "Homepage",
+
+      "editable": true
+    },
+
+    {
+      "pageId": "product_page",
+
+      "pageName": "Product Page",
+
+      "editable": true
+    },
+
+    {
+      "pageId": "dashboard",
+
+      "pageName": "User Dashboard",
+
+      "editable": true
+    },
+
+    {
+      "pageId": "seller_dashboard",
+
+      "pageName": "Seller Dashboard",
+
+      "editable": true
+    },
+
+    {
+      "pageId": "affiliate_dashboard",
+
+      "pageName": "Affiliate Dashboard",
+
+      "editable": true
+    },
+
+    {
+      "pageId": "reseller_dashboard",
+
+      "pageName": "Reseller Dashboard",
+
+      "editable": true
+    },
+
+    {
+      "pageId": "mlm_dashboard",
+
+      "pageName": "MLM Dashboard",
+
+      "editable": true
+    },
+
+    {
+      "pageId": "wallet_dashboard",
+
+      "pageName": "Wallet Dashboard",
+
+      "editable": true
+    }
+  ],
+
+  "desktopLayoutStyle": "advanced_theme_editor_layout",
+
+  "mobileLayoutStyle": "stacked_mobile_theme_editor"
+}
