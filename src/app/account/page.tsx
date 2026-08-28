@@ -115,7 +115,10 @@ export default function AccountPage() {
       }
       setLoading(false);
       },
-      (error) => console.error("Firestore onSnapshot error:", error)
+      (error) => {
+        console.error("Firestore onSnapshot error:", error);
+        setLoading(false);
+      }
       );
 
     });
