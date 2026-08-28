@@ -90,6 +90,9 @@ export interface FeatureFlags {
   loyaltyEnabled: boolean;
   commissionDistributedEnabled: boolean;
   rewardEnabled: boolean;
+  affiliateEnabled: boolean;
+  mlmEnabled: boolean;
+  autoApprove: boolean;
 }
 
 // ======================================================
@@ -102,8 +105,15 @@ export interface BusinessRulesMetadata {
   updatedBy: string;
 }
 
+export interface SignupRules {
+  enabled: boolean;
+  joiningBonus: number;
+  referralBonus: number;
+  requireReferral: boolean;
+}
+
 // ======================================================
-// Complete Config
+// Metadata
 // ======================================================
 
 export interface BusinessRulesConfig {
@@ -113,6 +123,7 @@ export interface BusinessRulesConfig {
   wallet: WalletRules;
   creatorEconomy: CreatorEconomyRules;
   featureFlags: FeatureFlags;
+  signup: SignupRules;
   metadata: BusinessRulesMetadata;
 }
 

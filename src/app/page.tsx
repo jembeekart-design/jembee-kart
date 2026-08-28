@@ -1,7 +1,3 @@
-/* ======================================================
-FILE:
-src/app/page.tsx
-====================================================== */
 
 "use client";
 
@@ -35,8 +31,6 @@ from "@/components/navigation/Header";
 import HomepageSlider
 from "@/components/homepage/HomepageSlider";
 
-import TipsSection
-from "@/components/homepage/TipsSection";
 
 import FooterSection
 from "@/components/homepage/FooterSection";
@@ -47,15 +41,11 @@ from "@/components/navigation/BottomNavbar";
 import WhatsAppButton
 from "@/components/navigation/WhatsAppButton";
 
-import PromoBanner
-from "@/components/PromoBanner";
 import AdSlot from "@/components/ads/AdSlot";
 
 import { useTheme } from "@/context/ThemeContext";
+import { useWishlist } from "@/hooks/useWishlist";
 
-/* ======================================================
-TYPES
-====================================================== */
 
 interface HomepageSection {
 
@@ -110,16 +100,11 @@ interface Product {
   sold?: number;
 }
 
-/* ======================================================
-COMPONENT
-====================================================== */
 
 export default function HomePage() {
   const { theme } = useTheme();
+  const { wishlistItems, toggleWishlist } = useWishlist();
 
-  /* ======================================================
-  STATES
-  ====================================================== */
 
   const [
     sections,
@@ -155,19 +140,13 @@ export default function HomePage() {
     setSortBy
   ] = useState("latest");
 
-  const [
-    wishlist,
-    setWishlist
-  ] = useState<string[]>([]);
+    const [showFilter, setShowFilter] = useState(false);
 
   const [
     search,
     setSearch
   ] = useState("");
 
-  /* ======================================================
-  HOMEPAGE SECTIONS
-  ====================================================== */
 
   useEffect(() => {
 
@@ -210,6 +189,9 @@ export default function HomePage() {
           setHeaderSection(
             hero
           );
+        },
+        (error) => {
+          console.error("Error fetching homepage sections:", error);
         }
       );
 
@@ -218,9 +200,6 @@ export default function HomePage() {
 
   }, []);
 
-  /* ======================================================
-  CATEGORIES
-  ====================================================== */
 
   useEffect(() => {
 
@@ -252,6 +231,9 @@ export default function HomePage() {
           setCategories(
             data
           );
+        },
+        (error) => {
+          console.error("Error fetching categories:", error);
         }
       );
 
@@ -260,9 +242,6 @@ export default function HomePage() {
 
   }, []);
 
-  /* ======================================================
-  PRODUCTS
-  ====================================================== */
 
   useEffect(() => {
 
@@ -294,6 +273,9 @@ export default function HomePage() {
           setProducts(
             data
           );
+        },
+        (error) => {
+          console.error("Error fetching products:", error);
         }
       );
 
@@ -302,9 +284,6 @@ export default function HomePage() {
 
   }, []);
 
-  /* ======================================================
-  FILTER PRODUCTS
-  ====================================================== */
 
   const filteredProducts =
     useMemo(() => {
@@ -315,7 +294,6 @@ export default function HomePage() {
             product.visible
         );
 
-      /* CATEGORY FILTER */
 
       if (
         selectedCategory !==
@@ -330,7 +308,6 @@ export default function HomePage() {
           );
       }
 
-      /* SEARCH FILTER */
 
       if (
         search.trim()
@@ -354,7 +331,6 @@ export default function HomePage() {
           );
       }
 
-      /* SORT */
 
       switch (
         sortBy
@@ -406,43 +382,12 @@ export default function HomePage() {
       search
     ]);
 
-  /* ======================================================
-  WISHLIST
-  ====================================================== */
 
-  function toggleWishlist(
-    id: string
-  ) {
-
-    if (
-      wishlist.includes(id)
-    ) {
-
-      setWishlist(
-        wishlist.filter(
-          (item) =>
-            item !== id
-        )
-      );
-
-    } else {
-
-      setWishlist([
-        ...wishlist,
-        id
-      ]);
-    }
-  }
-
-  /* ======================================================
-  UI
-  ====================================================== */
 
   return (
 
     <>
 
-      <PromoBanner />
 
       <main
         className="
@@ -459,9 +404,6 @@ export default function HomePage() {
 }}
       >
 
-        {/* ======================================================
-        HEADER
-        ====================================================== */}
 
         <Header
   headerBackgroundColor={theme.headerBackground}
@@ -475,10 +417,6 @@ export default function HomePage() {
 
         <AdSlot />
 
-        {/* ======================================================
-        SEARCH PRODUCTS
-        HEADER KE NICHE
-        ====================================================== */}
 
         {search.trim() ? (
 
@@ -532,7 +470,6 @@ export default function HomePage() {
 
             </div>
 
-            {/* PRODUCTS GRID */}
 
             <div
               className="
@@ -546,7 +483,7 @@ export default function HomePage() {
                 (product) => {
 
                   const isLiked =
-                    wishlist.includes(
+                    wishlistItems.includes(
                       product.id
                     );
 
@@ -570,15 +507,16 @@ export default function HomePage() {
     shadow-xl
   "
   style={{
-    background: "var(--primary-color)"
+    background:
+      "linear-gradient(135deg, var(--color-primary), var(--color-secondary), var(--color-primary-button))"
   }}
 >
 
                         <div
                           className="
                             rounded-[34px]
-                            bg-[var(--card-color)]
-                            p-3
+                            bg-[var(--color-card-background)]
+                            p-0
                           "
                         >
 
@@ -587,7 +525,7 @@ export default function HomePage() {
                               relative
                               overflow-hidden
                               rounded-[30px]
-                              bg-[var(--background-color)]
+                              bg-[var(--color-page-background)]
                             "
                           >
 
@@ -619,7 +557,6 @@ export default function HomePage() {
 
                             </div>
 
-                            {/* WISHLIST */}
 
                             <button
 
@@ -629,9 +566,7 @@ export default function HomePage() {
 
                                 event.preventDefault();
 
-                                toggleWishlist(
-                                  product.id
-                                );
+                                toggleWishlist(product);
                               }}
 
                               className="
@@ -644,7 +579,7 @@ export default function HomePage() {
                                 items-center
                                 justify-center
                                 rounded-full
-                                bg-[var(--card-color)]/90
+                                bg-[var(--color-card-background)]/90
                                 shadow-lg
                               "
                             >
@@ -657,9 +592,9 @@ export default function HomePage() {
                                   ${
                                     isLiked
 
-                                      ? "fill-pink-500 text-[var(--primary-color)]"
+                                      ? "fill-pink-500 text-[var(--color-danger)]"
 
-                                      : "text-[var(--muted-text-color)]"
+                                      : "text-[var(--text-secondary)]"
                                   }
                                 `}
                               />
@@ -672,7 +607,6 @@ export default function HomePage() {
 
                       </Link>
 
-                      {/* DETAILS */}
 
                       <div
                         className="
@@ -720,7 +654,6 @@ export default function HomePage() {
 
                         </Link>
 
-                        {/* PRICE */}
 
                         <div
                           className="
@@ -787,11 +720,9 @@ export default function HomePage() {
 
           <>
 
-            {/* HERO */}
 
             <HomepageSlider />
 
-            {/* CATEGORY SECTION */}
 
             <section
               className="
@@ -810,7 +741,6 @@ export default function HomePage() {
                 "
               >
 
-                {/* ALL */}
 
                 <button
                   onClick={() =>
@@ -865,7 +795,6 @@ export default function HomePage() {
 
                 </button>
 
-                {/* CATEGORIES */}
 
                 {categories.map(
                   (category) => {
@@ -959,9 +888,6 @@ export default function HomePage() {
 
         )}
 
-        {/* ======================================================
-        PRODUCTS SECTION
-        ====================================================== */}
 
         {!search.trim() && (
 
@@ -972,7 +898,6 @@ export default function HomePage() {
             "
           >
 
-            {/* TOP */}
 
             <div
               className="
@@ -995,7 +920,6 @@ export default function HomePage() {
 
               </h2>
 
-              {/* SORT */}
 
               <div
                 className="
@@ -1055,30 +979,46 @@ export default function HomePage() {
 
                 </div>
 
-                <button
-                  className="
-                    flex
-                    h-11
-                    w-11
-                    items-center
-                    justify-center
-                    rounded-2xl
-                    bg-[var(--card-color)]
-                    shadow-sm
-                  "
-                >
-
-                  <SlidersHorizontal
-                    size={18}
-                  />
-
-                </button>
 
               </div>
 
+        {showFilter && (
+          <div className="mb-5 w-full max-w-full box-border overflow-hidden rounded-2xl bg-[var(--card-color)] p-4 shadow-md">
+            <div className="flex items-center justify-between mb-3">
+              <h3 className="text-base font-bold text-[var(--text-primary)]">Filter Products</h3>
+              <button
+                type="button"
+                onClick={() => setShowFilter(false)}
+                className="rounded-xl px-3 py-1 text-sm font-semibold bg-[var(--background-color)] text-[var(--text-primary)]"
+              >
+                Close
+              </button>
+            </div>
+            <p className="mb-2 text-sm font-semibold text-[var(--text-secondary)]">Category</p>
+            <div className="flex flex-wrap gap-2">
+              <button
+                type="button"
+                onClick={() => setSelectedCategory("All")}
+                className="rounded-xl px-3 py-2 text-sm font-semibold bg-[var(--primary-color)] text-[var(--button-text-color)]"
+              >
+                All Categories
+              </button>
+              {categories.map((category) => (
+                <button
+                  key={category.id}
+                  type="button"
+                  onClick={() => setSelectedCategory(category.title || category.id)}
+                  className="rounded-xl px-3 py-2 text-sm font-semibold bg-[var(--background-color)] text-[var(--text-primary)]"
+                >
+                  {category.title}
+                </button>
+              ))}
+            </div>
+          </div>
+        )}
+
             </div>
 
-            {/* PRODUCT GRID */}
 
             <div
               className="
@@ -1092,7 +1032,7 @@ export default function HomePage() {
                 (product) => {
 
                   const isLiked =
-                    wishlist.includes(
+                    wishlistItems.includes(
                       product.id
                     );
 
@@ -1112,19 +1052,16 @@ export default function HomePage() {
     block
     overflow-hidden
     rounded-[36px]
-    p-[2px]
+    p-[4px]
     shadow-xl
   "
-  style={{
-    background: "var(--primary-color)"
-  }}
 >
 
                         <div
                           className="
                             rounded-[34px]
-                            bg-[var(--card-color)]
-                            p-3
+                            bg-transparent
+                            p-0
                           "
                         >
 
@@ -1132,9 +1069,13 @@ export default function HomePage() {
                               className="
                                 relative
                                 overflow-hidden
-                                rounded-[30px]
-                                bg-[var(--background-color)]
+                                rounded-[34px]
+                                p-[2px]
                               "
+                              style={{
+                                background:
+                                  "linear-gradient(135deg, var(--color-primary), var(--color-secondary), var(--color-primary-button))"
+                              }}
                             >
 
                               <div
@@ -1165,7 +1106,6 @@ export default function HomePage() {
 
                               </div>
 
-                              {/* WISHLIST */}
 
                               <button
 
@@ -1175,9 +1115,7 @@ export default function HomePage() {
 
                                   event.preventDefault();
 
-                                  toggleWishlist(
-                                    product.id
-                                  );
+                                  toggleWishlist(product);
                                 }}
 
                                 className="
@@ -1190,7 +1128,7 @@ export default function HomePage() {
                                   items-center
                                   justify-center
                                   rounded-full
-                                  bg-[var(--card-color)]/90
+                                  bg-[var(--color-card-background)]/90
                                   shadow-lg
                                 "
                               >
@@ -1203,9 +1141,9 @@ export default function HomePage() {
                                     ${
                                       isLiked
 
-                                        ? "fill-pink-500 text-[var(--primary-color)]"
+                                        ? "fill-pink-500 text-[var(--color-danger)]"
 
-                                        : "text-[var(--muted-text-color)]"
+                                        : "text-[var(--text-secondary)]"
                                     }
                                   `}
                                 />
@@ -1218,7 +1156,6 @@ export default function HomePage() {
 
                       </Link>
 
-                      {/* DETAILS */}
 
                       <div
                         className="
@@ -1329,7 +1266,6 @@ export default function HomePage() {
 
         )}
 
-        {/* OTHER SECTIONS */}
 
         {sections.map(
           (section) => {
@@ -1349,16 +1285,6 @@ export default function HomePage() {
               section.sectionType
             ) {
 
-              case "tips":
-
-                return (
-                  <TipsSection
-                    key={
-                      section.id
-                    }
-                  />
-                );
-
               case "footer":
 
                 return (
@@ -1377,7 +1303,6 @@ export default function HomePage() {
           }
         )}
 
-        {/* FLOATING */}
 
         <WhatsAppButton />
 

@@ -1,0 +1,85 @@
+{
+  "liveCommerceSystemEnabled": true,
+
+  "adminControlledLiveCommerce": true,
+
+  "liveCommerceStyle": "advanced_ai_live_commerce_system",
+
+  "enableLiveStreaming": true,
+
+  "enableRealtimeProductShowcase": true,
+
+  "enableLiveChat": true,
+
+  "enableLiveProductPurchases": true,
+
+  "enableRealtimeViewerCount": true,
+
+  "enableAIRecommendedProducts": true,
+
+  "enableLiveCoupons": true,
+
+  "enableFlashSaleDuringLive": true,
+
+  "enableAffiliateLiveSelling": true,
+
+  "enableResellerLiveSelling": true,
+
+  "enableSellerLiveStreaming": true,
+
+  "enableMultihostStreaming": false,
+
+  "enableLiveReplay": true,
+
+  "enableLiveNotifications": true,
+
+  "enableRealtimeReactions": true,
+
+  "enableLivePolls": true,
+
+  "enableLiveGiveaways": true,
+
+  "enableLiveModeration": true,
+
+  "enableAICommentModeration": true,
+
+  "enableRealtimeAnalytics": true,
+
+  "enableViewerEngagementTracking": true,
+
+  "enableRevenueTracking": true,
+
+  "enableCrossPlatformStreaming": false,
+
+  "enableLiveTrainingSessions": true,
+
+  "liveModules": [
+    {
+      "moduleId": "seller_live",
+
+      "moduleName": "Seller Live Streaming",
+
+      "enabled": true
+    },
+
+    {
+      "moduleId": "affiliate_live",
+
+      "moduleName": "Affiliate Live Selling",
+
+      "enabled": true
+    },
+
+    {
+      "moduleId": "training_live",
+
+      "moduleName": "Live Training Sessions",
+
+      "enabled": true
+    }
+  ],
+
+  "desktopLayoutStyle": "advanced_live_dashboard",
+
+  "mobileLayoutStyle": "stacked_mobile_live_dashboard"
+}

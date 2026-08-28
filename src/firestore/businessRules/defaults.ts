@@ -63,6 +63,16 @@ export const DEFAULT_BUSINESS_RULES: BusinessRulesConfig = {
     loyaltyEnabled: true,
     commissionDistributedEnabled: true,
     rewardEnabled: true,
+    affiliateEnabled: true,
+    mlmEnabled: true,
+    autoApprove: false,
+  },
+
+  signup: {
+    enabled: false,
+    joiningBonus: 0,
+    referralBonus: 0,
+    requireReferral: true,
   },
 
   metadata: {

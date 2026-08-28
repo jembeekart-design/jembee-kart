@@ -1,0 +1,112 @@
+{
+  "signupPageEnabled": true,
+
+  "signupPageStyle": "modern_flipkart_signup",
+
+  "adminControlledSignupPage": true,
+
+  "pageBackgroundType": "gradient_background",
+
+  "pageBackgroundColor": "#f1f3f6",
+
+  "pageGradientColors": [
+    "#2874f0",
+    "#7c3aed"
+  ],
+
+  "signupContainerBackgroundColor": "#ffffff",
+
+  "signupContainerBorderRadius": "24px",
+
+  "signupContainerShadow": "soft_shadow",
+
+  "enableGlassmorphismSignup": false,
+
+  "enableSignupAnimations": true,
+
+  "enableFloatingShapes": true,
+
+  "enableAIBackgroundEffects": true,
+
+  "showLogo": true,
+
+  "showWelcomeText": true,
+
+  "welcomeTitle": "Create Your JembeeKart Account",
+
+  "welcomeSubtitle": "Start shopping, earning and growing online",
+
+  "showNameField": true,
+
+  "showEmailField": true,
+
+  "showPhoneField": true,
+
+  "showPasswordField": true,
+
+  "showConfirmPasswordField": true,
+
+  "showReferralCodeField": true,
+
+  "showGoogleSignup": true,
+
+  "showFacebookSignup": false,
+
+  "showAppleSignup": false,
+
+  "showTermsAndConditions": true,
+
+  "showPrivacyPolicy": true,
+
+  "showAIHelperSection": true,
+
+  "showBusinessBenefitsSection": true,
+
+  "enableOTPVerification": true,
+
+  "enableEmailVerification": true,
+
+  "enableAutoLoginAfterSignup": true,
+
+  "signupInputStyle": "rounded_glass_input",
+
+  "signupButtonStyle": "primary_gradient_button",
+
+  "socialSignupButtonStyle": "modern_social_buttons",
+
+  "businessBenefits": [
+    {
+      "id": "shopping",
+      "title": "Premium Shopping",
+      "description": "Discover trending products with best deals"
+    },
+
+    {
+      "id": "reselling",
+      "title": "Start Reselling",
+      "description": "Sell products online without stock investment"
+    },
+
+    {
+      "id": "affiliate",
+      "title": "Affiliate Income",
+      "description": "Earn commissions by sharing products"
+    },
+
+    {
+      "id": "mlm",
+      "title": "Referral Team Earnings",
+      "description": "Build network and generate passive income"
+    },
+
+    {
+      "id": "pod",
+      "title": "Print On Demand",
+      "description": "Launch your own custom product brand"
+    }
+  ],
+
+  "desktopLayoutStyle": "left_banner_right_signup",
+
+  "mobileLayoutStyle": "stacked_mobile_signup"
+}

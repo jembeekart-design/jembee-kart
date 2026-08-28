@@ -1,0 +1,165 @@
+{
+  "notificationSystemEnabled": true,
+
+  "notificationSystemStyle": "modern_realtime_notification_system",
+
+  "adminControlledNotificationSystem": true,
+
+  "enablePushNotifications": true,
+
+  "enableInAppNotifications": true,
+
+  "enableEmailNotifications": true,
+
+  "enableSMSNotifications": false,
+
+  "enableWhatsAppNotifications": true,
+
+  "enableTelegramNotifications": false,
+
+  "enableRealtimeNotifications": true,
+
+  "enableNotificationSound": true,
+
+  "enableNotificationVibration": true,
+
+  "enableNotificationBadges": true,
+
+  "enableAIRecommendedNotifications": true,
+
+  "enablePersonalizedNotifications": true,
+
+  "enableBusinessGrowthNotifications": true,
+
+  "enableAffiliateNotifications": true,
+
+  "enableResellerNotifications": true,
+
+  "enableMLMNotifications": true,
+
+  "enableSellerNotifications": true,
+
+  "enableWalletNotifications": true,
+
+  "enableOrderNotifications": true,
+
+  "enableOfferNotifications": true,
+
+  "enableFlashSaleNotifications": true,
+
+  "enableAbandonedCartNotifications": true,
+
+  "enableReferralNotifications": true,
+
+  "enableTrainingNotifications": true,
+
+  "notificationCardStyle": "modern_notification_cards",
+
+  "notificationPopupStyle": "glassmorphism_notification_popup",
+
+  "notificationBellStyle": "animated_notification_bell",
+
+  "notificationTypes": [
+    {
+      "id": "order_updates",
+
+      "title": "Order Updates",
+
+      "enabled": true
+    },
+
+    {
+      "id": "wallet_updates",
+
+      "title": "Wallet Updates",
+
+      "enabled": true
+    },
+
+    {
+      "id": "affiliate_earnings",
+
+      "title": "Affiliate Earnings",
+
+      "enabled": true
+    },
+
+    {
+      "id": "reseller_profit",
+
+      "title": "Reseller Profit",
+
+      "enabled": true
+    },
+
+    {
+      "id": "mlm_income",
+
+      "title": "MLM Income",
+
+      "enabled": true
+    },
+
+    {
+      "id": "seller_orders",
+
+      "title": "Seller Orders",
+
+      "enabled": true
+    },
+
+    {
+      "id": "flash_sales",
+
+      "title": "Flash Sales",
+
+      "enabled": true
+    },
+
+    {
+      "id": "business_growth_tips",
+
+      "title": "Business Growth Tips",
+
+      "enabled": true
+    },
+
+    {
+      "id": "training_updates",
+
+      "title": "Training Updates",
+
+      "enabled": true
+    }
+  ],
+
+  "notificationPriorityLevels": [
+    {
+      "id": "low",
+
+      "title": "Low Priority",
+
+      "color": "#94a3b8"
+    },
+
+    {
+      "id": "medium",
+
+      "title": "Medium Priority",
+
+      "color": "#3b82f6"
+    },
+
+    {
+      "id": "high",
+
+      "title": "High Priority",
+
+      "color": "#ef4444"
+    }
+  ],
+
+  "desktopLayoutStyle": "top_right_notification_layout",
+
+  "mobileLayoutStyle": "bottom_popup_notification_layout"
+}

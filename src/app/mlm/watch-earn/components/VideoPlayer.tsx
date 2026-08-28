@@ -6,12 +6,8 @@ import {
   useState,
 } from "react";
 
-import RewardProgressBar from "./RewardProgressBar";
-import LiveCoinsAnimation from "./LiveCoinsAnimation";
-
 interface VideoPlayerProps {
   videoUrl: string;
-  rewardCoins: number;
   watchSeconds: number;
   isMuted?: boolean;
   active?: boolean;
@@ -19,7 +15,6 @@ interface VideoPlayerProps {
 
 export default function VideoPlayer({
   videoUrl,
-  rewardCoins,
   watchSeconds,
   isMuted = true,
   active = false,
@@ -30,13 +25,6 @@ export default function VideoPlayer({
   const [progress, setProgress] =
     useState(0);
 
-  const [rewarded, setRewarded] =
-    useState(false);
-
-  const [showCoins, setShowCoins] =
-    useState(false);
-
-  const [showRewardToast, setShowRewardToast] = useState(false);
   const [isPlaying, setIsPlaying] = useState(false);
 
   useEffect(() => {
@@ -44,9 +32,6 @@ export default function VideoPlayer({
     if (!video) return;
 
     setProgress(0);
-    setRewarded(false);
-    setShowCoins(false);
-    setShowRewardToast(false);
 
     if (active) {
       video.play().catch(() => {
@@ -59,8 +44,6 @@ export default function VideoPlayer({
 
   useEffect(() => {
     let interval: ReturnType<typeof setInterval>;
-    let rewardToastTimeout: ReturnType<typeof setTimeout>;
-    let coinsTimeout: ReturnType<typeof setTimeout>;
 
     if (videoRef.current && active && isPlaying) {
       interval = setInterval(() => {
@@ -73,23 +56,6 @@ export default function VideoPlayer({
         setProgress(
           Math.min(percent, 100)
         );
-
-        if (
-          current >= watchSeconds &&
-          !rewarded
-        ) {
-          setRewarded(true);
-          setShowCoins(true);
-          setShowRewardToast(true);
-
-          coinsTimeout = setTimeout(() => {
-            setShowCoins(false);
-          }, 3000);
-
-          rewardToastTimeout = setTimeout(() => {
-            setShowRewardToast(false);
-          }, 2000);
-        }
       }, 500);
     }
 
@@ -97,14 +63,8 @@ export default function VideoPlayer({
       if (interval) {
         clearInterval(interval);
       }
-      if (coinsTimeout) {
-        clearTimeout(coinsTimeout);
-      }
-      if (rewardToastTimeout) {
-        clearTimeout(rewardToastTimeout);
-      }
     };
-  }, [rewarded, watchSeconds, active, isPlaying]);
+  }, [watchSeconds, active, isPlaying]);
 
   const togglePlayPause = () => {
     const video = videoRef.current;
@@ -157,34 +117,6 @@ export default function VideoPlayer({
       />
 
       {/* REWARD PROGRESS (compact chip + bottom bars) */}
-
-      <RewardProgressBar
-        watchedVideos={Math.floor(progress)}
-        requiredVideos={100}
-        qualifiedSales={0}
-        requiredSales={1}
-        lockedReward={rewardCoins}
-        cycleNumber={1}
-        status={
-          rewarded
-            ? "completed"
-            : "active"
-        }
-      />
-
-      {/* LIVE COINS */}
-
-      <LiveCoinsAnimation
-        show={showCoins}
-        coins={rewardCoins}
-      />
-
-      {/* REWARD CLAIMED TOAST (temporary) */}
-      {showRewardToast && (
-        <div className="fixed left-1/2 bottom-32 z-50 -translate-x-1/2 rounded-full bg-[var(--color-success)] px-5 py-2 text-sm font-black text-[var(--button-text-color)] shadow-2xl">
-          Reward Claimed 🎉
-        </div>
-      )}
     </div>
   );
 }

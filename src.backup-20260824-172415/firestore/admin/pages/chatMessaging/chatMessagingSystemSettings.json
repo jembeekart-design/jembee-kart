@@ -1,0 +1,93 @@
+{
+  "chatMessagingSystemEnabled": true,
+
+  "adminControlledChatMessaging": true,
+
+  "chatMessagingStyle": "advanced_realtime_chat_system",
+
+  "enableRealtimeMessaging": true,
+
+  "enableUserToSellerChat": true,
+
+  "enableAffiliateSupportChat": true,
+
+  "enableResellerSupportChat": true,
+
+  "enableAdminBroadcastMessages": true,
+
+  "enableGroupChats": true,
+
+  "enableChannelMessaging": true,
+
+  "enableVoiceMessages": true,
+
+  "enableImageMessages": true,
+
+  "enableVideoMessages": false,
+
+  "enableDocumentSharing": true,
+
+  "enableEmojiSupport": true,
+
+  "enableTypingIndicators": true,
+
+  "enableReadReceipts": true,
+
+  "enableOnlineStatusTracking": true,
+
+  "enablePushChatNotifications": true,
+
+  "enableAIReplySuggestions": true,
+
+  "enableAIChatModeration": true,
+
+  "enableSpamProtection": true,
+
+  "enableBlockedUsers": true,
+
+  "enableChatSearch": true,
+
+  "enableChatBackup": true,
+
+  "enableEncryptedMessaging": true,
+
+  "enableMessageAnalytics": true,
+
+  "chatModules": [
+    {
+      "moduleId": "customer_seller_chat",
+
+      "moduleName": "Customer Seller Chat",
+
+      "enabled": true
+    },
+
+    {
+      "moduleId": "affiliate_support_chat",
+
+      "moduleName": "Affiliate Support Chat",
+
+      "enabled": true
+    },
+
+    {
+      "moduleId": "reseller_support_chat",
+
+      "moduleName": "Reseller Support Chat",
+
+      "enabled": true
+    },
+
+    {
+      "moduleId": "admin_announcements",
+
+      "moduleName": "Admin Announcements",
+
+      "enabled": true
+    }
+  ],
+
+  "desktopLayoutStyle": "advanced_chat_dashboard",
+
+  "mobileLayoutStyle": "stacked_mobile_chat_dashboard"
+}

@@ -1,0 +1,105 @@
+{
+  "legalPolicySystemEnabled": true,
+
+  "adminControlledLegalPolicies": true,
+
+  "legalPolicyStyle": "advanced_dynamic_policy_management",
+
+  "enableDynamicPolicyEditing": true,
+
+  "enableRealtimePolicyUpdates": true,
+
+  "enablePolicyVersionControl": true,
+
+  "enablePolicyApprovalWorkflow": true,
+
+  "enableAIPolicySuggestions": true,
+
+  "enablePolicyTranslation": true,
+
+  "enableMultilanguagePolicies": true,
+
+  "enableUserPolicyAcceptanceTracking": true,
+
+  "enableDigitalSignatureSupport": false,
+
+  "enableAutomaticPolicyNotifications": true,
+
+  "enablePrivacyPolicyManagement": true,
+
+  "enableTermsConditionsManagement": true,
+
+  "enableReturnRefundPolicyManagement": true,
+
+  "enableShippingPolicyManagement": true,
+
+  "enableSellerPolicyManagement": true,
+
+  "enableAffiliatePolicyManagement": true,
+
+  "enableResellerPolicyManagement": true,
+
+  "enableMLMPolicyManagement": true,
+
+  "enableCookiePolicyManagement": true,
+
+  "enableGDPRCompliance": false,
+
+  "enableIndianComplianceRules": true,
+
+  "enablePolicyAnalytics": true,
+
+  "supportedLanguages": [
+    "english",
+    "hindi",
+    "urdu",
+    "bengali",
+    "tamil"
+  ],
+
+  "legalDocuments": [
+    {
+      "documentId": "privacy_policy",
+
+      "documentName": "Privacy Policy",
+
+      "enabled": true
+    },
+
+    {
+      "documentId": "terms_conditions",
+
+      "documentName": "Terms & Conditions",
+
+      "enabled": true
+    },
+
+    {
+      "documentId": "return_refund_policy",
+
+      "documentName": "Return & Refund Policy",
+
+      "enabled": true
+    },
+
+    {
+      "documentId": "shipping_policy",
+
+      "documentName": "Shipping Policy",
+
+      "enabled": true
+    },
+
+    {
+      "documentId": "seller_policy",
+
+      "documentName": "Seller Policy",
+
+      "enabled": true
+    }
+  ],
+
+  "desktopLayoutStyle": "advanced_legal_dashboard",
+
+  "mobileLayoutStyle": "stacked_mobile_legal_dashboard"
+}

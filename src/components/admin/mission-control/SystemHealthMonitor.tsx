@@ -1,5 +1,6 @@
 "use client";
 
+import { auth } from "@/firebase/config";
 import { useEffect, useState } from "react";
 import {
   Cpu,
@@ -51,10 +52,17 @@ export default function SystemHealthMonitor() {
   useEffect(() => {
     async function loadHealth() {
       try {
+        const user = auth.currentUser;
+        if (!user) throw new Error("No user logged in");
+        const token = await user.getIdToken();
+
         const res = await fetch(
           "/api/mission-control/system-health",
           {
             cache: "no-store",
+            headers: {
+              "Authorization": `Bearer ${token}`
+            }
           }
         );
 

@@ -8,8 +8,6 @@ import {
 
 import { db } from "@/firebase/config";
 
-import { startRewardCycle } from "./startRewardCycle";
-
 interface TrackVideoWatchData {
   userId: string;
   videoId: string;
@@ -154,20 +152,6 @@ export async function trackVideoWatch(
           };
         }
       );
-
-    /* =========================
-       START REWARD CYCLE
-    ========================= */
-
-    if (
-      result.nextWatchCount >=
-      100
-    ) {
-      await startRewardCycle({
-        userId:
-          data.userId,
-      });
-    }
 
     return {
       success: true,

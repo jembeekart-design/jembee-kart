@@ -1,0 +1,175 @@
+{
+  "resellerSystemEnabled": true,
+
+  "resellerSystemStyle": "glowroad_meesho_reseller_model",
+
+  "adminControlledResellerSystem": true,
+
+  "enableResellerRegistration": true,
+
+  "enableAutomaticResellerApproval": true,
+
+  "enableResellerDashboard": true,
+
+  "enableResellerTraining": true,
+
+  "enableResellerProductSharing": true,
+
+  "enableWhatsAppSharing": true,
+
+  "enableTelegramSharing": true,
+
+  "enableInstagramSharing": true,
+
+  "enableFacebookSharing": true,
+
+  "enableCustomProfitMargin": true,
+
+  "enableAutoProfitCalculation": true,
+
+  "enableResellerWallet": true,
+
+  "enableResellerWithdrawals": true,
+
+  "enableResellerCommissionTracking": true,
+
+  "enableRealtimeResellerAnalytics": true,
+
+  "enableResellerLeaderboard": true,
+
+  "enableResellerBadges": true,
+
+  "enableResellerRewards": true,
+
+  "enableAIResellerAssistant": true,
+
+  "resellerDashboardStyle": "modern_business_dashboard",
+
+  "resellerCardStyle": "gradient_earning_cards",
+
+  "resellerButtonStyle": "rounded_gradient_buttons",
+
+  "defaultProfitMarginPercentage": 20,
+
+  "minimumProfitMarginPercentage": 5,
+
+  "maximumProfitMarginPercentage": 200,
+
+  "minimumWithdrawalAmount": 100,
+
+  "withdrawalProcessingTime": "24_hours",
+
+  "supportedWithdrawalMethods": [
+    "upi",
+    "bank_transfer",
+    "paypal"
+  ],
+
+  "resellerTrainingSections": [
+    {
+      "id": "reseller_intro",
+
+      "title": "Introduction To Reselling",
+
+      "visible": true,
+
+      "position": 1
+    },
+
+    {
+      "id": "product_sharing",
+
+      "title": "How To Share Products",
+
+      "visible": true,
+
+      "position": 2
+    },
+
+    {
+      "id": "profit_margin",
+
+      "title": "Profit Margin Strategy",
+
+      "visible": true,
+
+      "position": 3
+    },
+
+    {
+      "id": "social_media_marketing",
+
+      "title": "Social Media Marketing",
+
+      "visible": true,
+
+      "position": 4
+    },
+
+    {
+      "id": "customer_handling",
+
+      "title": "Customer Handling",
+
+      "visible": true,
+
+      "position": 5
+    }
+  ],
+
+  "resellerDashboardSections": [
+    {
+      "id": "total_earnings",
+
+      "title": "Total Earnings",
+
+      "visible": true,
+
+      "position": 1
+    },
+
+    {
+      "id": "today_sales",
+
+      "title": "Today's Sales",
+
+      "visible": true,
+
+      "position": 2
+    },
+
+    {
+      "id": "withdrawal_history",
+
+      "title": "Withdrawal History",
+
+      "visible": true,
+
+      "position": 3
+    },
+
+    {
+      "id": "top_products",
+
+      "title": "Top Selling Products",
+
+      "visible": true,
+
+      "position": 4
+    },
+
+    {
+      "id": "ai_growth_tips",
+
+      "title": "AI Growth Tips",
+
+      "visible": true,
+
+      "position": 5
+    }
+  ],
+
+  "desktopLayoutStyle": "sidebar_reseller_dashboard",
+
+  "mobileLayoutStyle": "stacked_mobile_reseller_dashboard"
+}
