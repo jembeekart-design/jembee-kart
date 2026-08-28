@@ -133,21 +133,6 @@ export default function VideoCard({
         <div className="mt-3 w-full bg-white/10 p-2 rounded-lg pointer-events-auto">
            <p className="text-xs">Product Strip (Slideable)</p>
         </div>
-
-        {/* Reward Progress Countdown */}
-        <div className="mt-4 w-full">
-            <div className="flex justify-between items-end mb-1">
-                <span className="text-[10px] font-black uppercase tracking-wider text-yellow-500">Reward Progress</span>
-                <span className="text-[10px] font-bold text-white/60">{Math.round(watchProgress)}%</span>
-            </div>
-            <div className="h-1.5 w-full bg-white/20 rounded-full overflow-hidden">
-                <motion.div 
-                    className="h-full bg-yellow-500"
-                    animate={{ width: `${watchProgress}%` }}
-                    transition={{ type: "spring", bounce: 0, duration: 0.5 }}
-                />
-            </div>
-        </div>
       </div>
 
       {/* Consolidated Social Actions */}

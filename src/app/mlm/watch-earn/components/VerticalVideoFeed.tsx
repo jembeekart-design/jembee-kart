@@ -322,10 +322,6 @@ export default function VerticalVideoFeed({
                   video.video
                 }
 
-                rewardCoins={
-                  video.coins
-                }
-
                 watchSeconds={
                   DEFAULT_BUSINESS_RULES
                     .watchEarn
