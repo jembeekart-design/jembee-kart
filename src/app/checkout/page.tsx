@@ -111,12 +111,12 @@ function CheckoutContent() {
   className="w-20 h-20 rounded-2xl object-cover bg-[var(--color-page-background)]"
 />
         <div className="flex-1">
-          <h3 className="font-bold text-[var(--text-primary)] text-sm">{product?.title || "T Shirt"}</h3>
+          <h3 className="font-bold text-[var(--text-primary)] text-sm">{product?.title || "Product"}</h3>
           <p className="text-[10px] text-[var(--text-secondary)] font-semibold mt-0.5">Size: M • Color: Black</p>
           <div className="bg-[var(--color-success)] text-[var(--color-success)] text-[9px] font-bold px-2 py-0.5 rounded-md w-fit my-1.5">27% OFF</div>
           <div className="flex items-baseline gap-2">
-            <span className="text-[10px] line-through text-[var(--text-secondary)] font-bold">₹1499</span>
-            <span className="text-base font-extrabold">₹1099</span>
+            <span className="text-[10px] line-through text-[var(--text-secondary)] font-bold">₹{product?.price || 0}</span>
+            <span className="text-base font-extrabold">₹{product?.discountPrice || product?.price || 0}</span>
           </div>
         </div>
         <div className="absolute top-4 right-4 text-[10px] font-bold bg-[var(--color-page-background)] px-2.5 py-1 rounded-lg">Qty: 1</div>
