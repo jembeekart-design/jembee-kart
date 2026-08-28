@@ -19,10 +19,13 @@ import {
   useState
 } from "react";
 
+import Link from "next/link";
+
 import {
   Mic,
   MicOff,
-  Search
+  Search,
+  Users
 } from "lucide-react";
 
 /* ======================================================
@@ -300,7 +303,26 @@ export default function Header({
               gap-2
             "
           >
-
+            <Link
+              href="/followers"
+              className="
+                flex
+                h-11
+                w-11
+                items-center
+                justify-center
+                rounded-full
+                bg-[var(--card-color)]
+                text-[var(--text-color)]
+                shadow-lg
+                transition-all
+                duration-300
+                hover:scale-110
+                active:scale-95
+              "
+            >
+              <Users className="h-5 w-5" />
+            </Link>
           </div>
 
         </div>
