@@ -6,11 +6,8 @@ import {
   useState,
 } from "react";
 
-import RewardProgressBar from "./RewardProgressBar";
-
 interface VideoPlayerProps {
   videoUrl: string;
-  rewardCoins: number;
   watchSeconds: number;
   isMuted?: boolean;
   active?: boolean;
@@ -18,7 +15,6 @@ interface VideoPlayerProps {
 
 export default function VideoPlayer({
   videoUrl,
-  rewardCoins,
   watchSeconds,
   isMuted = true,
   active = false,
@@ -121,16 +117,6 @@ export default function VideoPlayer({
       />
 
       {/* REWARD PROGRESS (compact chip + bottom bars) */}
-
-      <RewardProgressBar
-        watchedVideos={Math.floor(progress)}
-        requiredVideos={100}
-        qualifiedSales={0}
-        requiredSales={1}
-        lockedReward={rewardCoins}
-        cycleNumber={1}
-        status={"active"}
-      />
     </div>
   );
 }

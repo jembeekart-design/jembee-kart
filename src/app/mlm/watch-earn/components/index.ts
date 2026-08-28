@@ -1,7 +1,6 @@
 export { default as WatchEarnHeader } from './WatchEarnHeader';
 export { default as VideoFeed } from './VerticalVideoFeed';
 export { default as VideoCard } from './VideoCard';
-export { default as RewardProgress } from './RewardProgressBar';
 export { default as CoinsPopup } from './CoinsPopup';
 export { default as PromotionBar } from './PromotionBar';
 export { default as SponsoredCard } from './SponsoredCard';
