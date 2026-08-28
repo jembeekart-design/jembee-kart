@@ -301,48 +301,6 @@ export default function Header({
             "
           >
 
-            <button
-              className="
-                rounded-xl
-                bg-[var(--background-color)]
-                px-4
-                py-2
-                text-sm
-                font-semibold
-                text-[var(--text-color)]
-
-                transition-all
-                duration-300
-
-                hover:bg-[var(--card-color)]
-              "
-            >
-
-              Login
-
-            </button>
-
-            <button
-              className="
-                rounded-xl
-                theme-primary-bg
-                px-4
-                py-2
-                text-sm
-                font-semibold
-                text-[var(--button-text-color)]
-
-                transition-all
-                duration-300
-
-                hover:bg-[var(--primary-color)]
-              "
-            >
-
-              Seller
-
-            </button>
-
           </div>
 
         </div>
