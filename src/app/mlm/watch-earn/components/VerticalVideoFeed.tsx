@@ -29,7 +29,7 @@ import { auth, db } from "@/firebase/config";
 import { likeVideo } from "@/lib/mlm/watch-earn/likeVideo";
 import { shareVideo } from "@/lib/mlm/watch-earn/shareVideo";
 import { useRequireAuth } from "@/hooks/useRequireAuth";
-import { collection, getDocs } from "firebase/firestore";
+import { collection, onSnapshot } from "firebase/firestore";
 
 export default function VerticalVideoFeed({
   activeTab
@@ -44,24 +44,39 @@ export default function VerticalVideoFeed({
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
-    if (isAuthenticated && auth.currentUser) {
-      const fetchFollowing = async () => {
-        const followingRef = collection(
-          db,
-          'users',
-          auth.currentUser!.uid,
-          'following'
-        );
-
-        const snapshot = await getDocs(followingRef);
-
-        setFollowingList(
-          snapshot.docs.map(doc => doc.id)
-        );
-      };
-
-      fetchFollowing();
+    if (!isAuthenticated || !auth.currentUser) {
+      setFollowingList([]);
+      return;
     }
+
+    const uid = auth.currentUser.uid;
+
+    const followingRef = collection(
+      db,
+      "users",
+      uid,
+      "following"
+    );
+
+    const unsubscribe = onSnapshot(
+      followingRef,
+      (snapshot) => {
+        const ids = snapshot.docs.map((doc) => doc.id);
+
+        console.log("FOLLOWING LIST UPDATED:", ids);
+
+        setFollowingList(ids);
+      },
+      (error) => {
+        console.error(
+          "FOLLOWING LIST ERROR:",
+          error
+        );
+        setFollowingList([]);
+      }
+    );
+
+    return () => unsubscribe();
   }, [isAuthenticated]);
 
   const filteredVideos = useMemo(() => {

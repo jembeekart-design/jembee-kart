@@ -11,6 +11,8 @@ function CheckoutContent() {
   const searchParams = useSearchParams();
   const productId = searchParams.get("productId");
 
+  console.log("CHECKOUT PRODUCT ID:", productId);
+
   const [loading, setLoading] = useState(false);
   const [dataLoading, setDataLoading] = useState(true);
   const [address, setAddress] = useState<any>(null);
