@@ -34,16 +34,23 @@ export default function FollowersPage() {
     // Listen to following list
     const followingRef = collection(db, "users", auth.currentUser.uid, "following");
     const followingUnsub = onSnapshot(followingRef, async (snapshot) => {
-      const followingData = await Promise.all(snapshot.docs.map(async (docSnap) => {
+      const results = await Promise.all(snapshot.docs.map(async (docSnap) => {
         const followedUserRef = doc(db, "users", docSnap.id);
         const followedUserSnap = await getDoc(followedUserRef);
+        if (!followedUserSnap.exists()) {
+          return null;
+        }
+
+        const data = followedUserSnap.data();
         return {
           id: docSnap.id,
-          ...followedUserSnap.data(),
+          name: data.name || "Anonymous",
+          username: data.username || "unknown",
+          photoUrl: data.photoUrl || "/default-avatar.png",
           followedAt: docSnap.data().timestamp
         } as FollowedUser;
       }));
-      setFollowing(followingData);
+      setFollowing(results.filter((user): user is FollowedUser => user !== null));
     });
 
     return () => {
