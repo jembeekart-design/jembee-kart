@@ -1,4 +1,4 @@
-import { db } from "/data/data/com.termux/files/home/jembeekart/src/firebase/config";
+import { db } from "@/firebase/config";
 import { doc, setDoc, getDoc } from "firebase/firestore";
 
 async function updateAndVerify() {
