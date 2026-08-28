@@ -140,6 +140,8 @@ export default function HomePage() {
     setSortBy
   ] = useState("latest");
 
+    const [showFilter, setShowFilter] = useState(false);
+
   const [
     search,
     setSearch
@@ -978,6 +980,8 @@ export default function HomePage() {
                 </div>
 
                 <button
+                    type="button"
+          onClick={() => setShowFilter(true)}
                   className="
                     flex
                     h-11
@@ -997,6 +1001,41 @@ export default function HomePage() {
                 </button>
 
               </div>
+
+        {showFilter && (
+          <div className="mb-5 rounded-2xl bg-[var(--card-color)] p-4 shadow-md">
+            <div className="flex items-center justify-between mb-3">
+              <h3 className="text-base font-bold text-[var(--text-primary)]">Filter Products</h3>
+              <button
+                type="button"
+                onClick={() => setShowFilter(false)}
+                className="rounded-xl px-3 py-1 text-sm font-semibold bg-[var(--background-color)] text-[var(--text-primary)]"
+              >
+                Close
+              </button>
+            </div>
+            <p className="mb-2 text-sm font-semibold text-[var(--text-secondary)]">Category</p>
+            <div className="flex flex-wrap gap-2">
+              <button
+                type="button"
+                onClick={() => setSelectedCategory("All")}
+                className="rounded-xl px-3 py-2 text-sm font-semibold bg-[var(--primary-color)] text-[var(--button-text-color)]"
+              >
+                All Categories
+              </button>
+              {categories.map((category) => (
+                <button
+                  key={category.id}
+                  type="button"
+                  onClick={() => setSelectedCategory(category.title || category.id)}
+                  className="rounded-xl px-3 py-2 text-sm font-semibold bg-[var(--background-color)] text-[var(--text-primary)]"
+                >
+                  {category.title}
+                </button>
+              ))}
+            </div>
+          </div>
+        )}
 
             </div>
 
