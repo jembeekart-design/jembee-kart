@@ -5,8 +5,8 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { onAuthStateChanged, signOut } from "firebase/auth";
 import { doc, onSnapshot, updateDoc } from "firebase/firestore";
-import { ref, uploadBytes, getDownloadURL } from "firebase/storage";
-import { auth, db, storage } from "@/firebase/config";
+import { auth, db } from "@/firebase/config";
+import { uploadToCloudinary } from "@/lib/cloudinary";
 
 import {
   ChevronRight,
@@ -141,9 +141,8 @@ export default function AccountPage() {
     setUploading(true);
     
     try {
-      const storageRef = ref(storage, `users/${user.uid}/profile.jpg`);
-      await uploadBytes(storageRef, file);
-      const photoURL = await getDownloadURL(storageRef);
+      const cloudinaryResponse = await uploadToCloudinary(file, "image");
+      const photoURL = cloudinaryResponse.secure_url;
       
       const docRef = doc(db, "users", user.uid);
       await updateDoc(docRef, { photoURL });
