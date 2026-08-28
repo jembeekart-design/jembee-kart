@@ -979,26 +979,6 @@ export default function HomePage() {
 
                 </div>
 
-                <button
-                    type="button"
-          onClick={() => setShowFilter(true)}
-                  className="
-                    flex
-                    h-11
-                    w-11
-                    items-center
-                    justify-center
-                    rounded-2xl
-                    bg-[var(--card-color)]
-                    shadow-sm
-                  "
-                >
-
-                  <SlidersHorizontal
-                    size={18}
-                  />
-
-                </button>
 
               </div>
 
