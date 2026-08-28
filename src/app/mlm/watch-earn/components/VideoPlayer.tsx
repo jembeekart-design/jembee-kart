@@ -95,16 +95,16 @@ export default function VideoPlayer({
         onClick={togglePlayPause}
         onPlay={() => setIsPlaying(true)}
         onPause={() => setIsPlaying(false)}
-        className="h-full w-full object-cover cursor-pointer"
+        className="h-full w-full object-contain cursor-pointer bg-transparent"
       />
       
       {/* PLAY/PAUSE OVERLAY ICON */}
       {!isPlaying && (
         <div 
           onClick={togglePlayPause}
-          className="absolute inset-0 flex items-center justify-center z-30 cursor-pointer bg-black/20"
+          className="absolute inset-0 flex items-center justify-center z-30 cursor-pointer"
         >
-          <div className="rounded-full bg-black/60 p-4 text-white text-3xl">
+          <div className="rounded-full bg-black/60 p-3 text-white text-2xl">
             ▶
           </div>
         </div>
