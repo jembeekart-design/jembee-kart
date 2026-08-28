@@ -42,10 +42,15 @@ export default function FollowersPage() {
         }
 
         const data = followedUserSnap.data();
+
+        // Robust fallback for name and username to avoid 'Anonymous' or '@unknown'
+        const displayName = data.name || "User";
+        const displayUsername = data.username || (data.name ? data.name.replace(/\s+/g, '').toLowerCase() : `user_${docSnap.id.slice(0, 4)}`);
+
         return {
           id: docSnap.id,
-          name: data.name || "Anonymous",
-          username: data.username || "unknown",
+          name: displayName,
+          username: displayUsername,
           photoUrl: data.photoUrl || "/default-avatar.png",
           followedAt: docSnap.data().timestamp
         } as FollowedUser;
