@@ -49,32 +49,16 @@ export default function VerticalVideoFeed({
       return;
     }
 
-    const uid = auth.currentUser.uid;
-
     const followingRef = collection(
       db,
-      "users",
-      uid,
-      "following"
+      'users',
+      auth.currentUser.uid,
+      'following'
     );
 
-    const unsubscribe = onSnapshot(
-      followingRef,
-      (snapshot) => {
-        const ids = snapshot.docs.map((doc) => doc.id);
-
-        console.log("FOLLOWING LIST UPDATED:", ids);
-
-        setFollowingList(ids);
-      },
-      (error) => {
-        console.error(
-          "FOLLOWING LIST ERROR:",
-          error
-        );
-        setFollowingList([]);
-      }
-    );
+    const unsubscribe = onSnapshot(followingRef, (snapshot) => {
+      setFollowingList(snapshot.docs.map(doc => doc.id));
+    });
 
     return () => unsubscribe();
   }, [isAuthenticated]);
@@ -311,9 +295,11 @@ export default function VerticalVideoFeed({
       "
     >
       {filteredVideos.length === 0 ? (
-        <div className="h-screen flex items-center justify-center text-gray-400">
+        <div className="h-screen flex items-center justify-center text-gray-400 p-4 text-center">
           {activeTab === 'following'
-            ? "You aren't following anyone yet."
+            ? followingList.length > 0
+                ? "No videos from creators you follow."
+                : "You aren't following anyone yet."
             : "No videos found."
           }
         </div>
