@@ -104,10 +104,10 @@ export default function UserProfilePage() {
               
               <div className="flex gap-4 mt-3">
                 <p className="text-sm font-semibold">
-                  <span className="font-black">{user?.followersCount}</span> Followers
+                  <span className="font-black">{user?.followersCount || 0}</span> Followers
                 </p>
                 <p className="text-sm font-semibold">
-                  <span className="font-black">{user?.followingCount}</span> Following
+                  <span className="font-black">{user?.followingCount || 0}</span> Following
                 </p>
               </div>
             </div>
@@ -118,6 +118,14 @@ export default function UserProfilePage() {
           {user?.bio && (
             <p className="mt-6 text-[var(--text-secondary)]">{user.bio}</p>
           )}
+        </div>
+      </section>
+
+      {/* Public user content placeholder */}
+      <section className="mt-6 px-4">
+        <h3 className="text-xl font-black text-[var(--text-primary)] mb-4">Content</h3>
+        <div className="rounded-[35px] bg-[var(--color-card-background)] p-6 shadow-sm text-center">
+            <p className="text-[var(--text-secondary)]">No public content available yet.</p>
         </div>
       </section>
 
