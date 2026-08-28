@@ -1,11 +1,12 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { onAuthStateChanged, signOut } from "firebase/auth";
-import { doc, onSnapshot } from "firebase/firestore";
-import { auth, db } from "@/firebase/config";
+import { doc, onSnapshot, updateDoc } from "firebase/firestore";
+import { ref, uploadBytes, getDownloadURL } from "firebase/storage";
+import { auth, db, storage } from "@/firebase/config";
 
 import {
   ChevronRight,
@@ -18,12 +19,14 @@ import {
   Settings,
   Shield,
   User,
-  Wallet
+  Wallet,
+  Camera
 } from "lucide-react";
 
 import Header from "@/components/navigation/Header";
 import BottomNavbar from "@/components/navigation/BottomNavbar";
 import WhatsAppButton from "@/components/navigation/WhatsAppButton";
+import Avatar from "@/components/user/Avatar";
 import { useAdminConfig } from "@/lib/admin-config/provider";
 /* ======================================================
 TYPES
@@ -53,6 +56,8 @@ export default function AccountPage() {
   const router = useRouter();
   const [user, setUser] = useState<UserProfile | null>(null);
   const [loading, setLoading] = useState(true);
+  const [uploading, setUploading] = useState(false);
+  const fileInputRef = useRef<HTMLInputElement>(null);
 
   /* ======================================================
   AUTH STATE & FIRESTORE REALTIME SYNC (FIXED CLEANUP)
@@ -122,6 +127,32 @@ export default function AccountPage() {
       }
     };
   }, [router]);
+
+  /* ======================================================
+  PHOTO UPLOAD
+  ====================================================== */
+  async function handlePhotoChange(e: React.ChangeEvent<HTMLInputElement>) {
+    if (!e.target.files || e.target.files.length === 0 || !user) return;
+    
+    const file = e.target.files[0];
+    setUploading(true);
+    
+    try {
+      const storageRef = ref(storage, `users/${user.uid}/profile.jpg`);
+      await uploadBytes(storageRef, file);
+      const photoURL = await getDownloadURL(storageRef);
+      
+      const docRef = doc(db, "users", user.uid);
+      await updateDoc(docRef, { photoURL });
+      
+      // UI update is handled automatically by onSnapshot
+    } catch (error) {
+      console.error("Upload error:", error);
+      alert("Failed to upload profile photo.");
+    } finally {
+      setUploading(false);
+    }
+  }
 
   /* ======================================================
   LOGOUT FUNCTION
@@ -212,12 +243,23 @@ export default function AccountPage() {
           <div className="flex items-center gap-4">
             
             {/* AVATAR / PROFILE PIC */}
-            <div className="flex h-24 w-24 items-center justify-center rounded-full border-4 border-[var(--color-border)]/30 bg-[var(--color-card-background)]/20 overflow-hidden text-3xl font-black backdrop-blur-md">
-              {user?.photo ? (
-                <img src={user.photo} alt="User Avatar" className="w-full h-full object-cover" />
-              ) : (
-                user?.name?.charAt(0).toUpperCase() || "U"
-              )}
+            <div className="relative">
+              <Avatar name={user?.name || ""} photoUrl={user?.photo} />
+              
+              <button 
+                onClick={() => fileInputRef.current?.click()}
+                className="absolute bottom-0 right-0 p-2 bg-[var(--color-card-background)] rounded-full text-[var(--button-text-color)] shadow-lg"
+                disabled={uploading}
+              >
+                {uploading ? <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white"></div> : <Camera size={16} />}
+              </button>
+              <input 
+                type="file" 
+                ref={fileInputRef} 
+                onChange={handlePhotoChange} 
+                className="hidden"
+                accept="image/*"
+              />
             </div>
 
             {/* USER INFO */}

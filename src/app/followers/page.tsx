@@ -8,6 +8,7 @@ import BottomNavbar from "@/components/navigation/BottomNavbar";
 import { useTheme } from "@/context/ThemeContext";
 import { unfollowUser } from "@/lib/social/followService";
 import Link from "next/link";
+import Avatar from "@/components/user/Avatar";
 
 interface FollowedUser {
   id: string;
@@ -99,7 +100,7 @@ export default function FollowersPage() {
           {following.map((user) => (
             <div key={user.id} className="flex items-center justify-between bg-[var(--card-color)] p-4 rounded-xl">
               <div className="flex items-center gap-3">
-                <img src={user.photoUrl || "/default-avatar.png"} alt={user.name} className="w-12 h-12 rounded-full object-cover" />
+                <Avatar name={user.name} photoUrl={user.photoUrl} size="w-12 h-12" />
                 <div>
                   <div className="font-bold">{user.name}</div>
                   <div className="text-xs text-[var(--muted-text-color)]">@{user.username}</div>
