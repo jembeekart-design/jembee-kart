@@ -13,7 +13,7 @@ import { db } from "@/firebase/config";
 
 export interface WatchVideo {
   id: string;
-  creatorId: string;
+  creatorId: string; // Will be empty string if creator not found
   username: string;
   displayName?: string;
   photoURL?: string;
@@ -668,8 +668,7 @@ export async function fetchWatchVideos() {
       =============================================== */
 
       const finalCreatorId =
-        creator?.documentId ||
-        creatorUid;
+        creator?.documentId || "";
 
       /* ===============================================
          DISPLAY NAME

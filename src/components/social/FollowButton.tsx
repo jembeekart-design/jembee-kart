@@ -306,9 +306,10 @@ export default function FollowButton({
   }, [targetUid]);
 
   /**
-   * Don't show Follow button for own profile.
+   * Don't show Follow button for own profile or invalid IDs.
    */
   if (
+    !targetUid ||
     auth.currentUser?.uid === targetUid
   ) {
     return null;
