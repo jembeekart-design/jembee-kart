@@ -126,7 +126,7 @@ export default function VerticalVideoFeed({
     setSelectedVideo
   ] = useState("");
 
-  const [isMuted, setIsMuted] = useState(true);
+  const [isMuted, setIsMuted] = useState(false);
 
   const [
     likedVideos,
