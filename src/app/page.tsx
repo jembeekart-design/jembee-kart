@@ -1,5 +1,3 @@
-/* ======================================================
-FILE:
 src/app/page.tsx
 ====================================================== */
 
@@ -52,9 +50,8 @@ from "@/components/PromoBanner";
 import AdSlot from "@/components/ads/AdSlot";
 
 import { useTheme } from "@/context/ThemeContext";
+import { useWishlist } from "@/hooks/useWishlist";
 
-/* ======================================================
-TYPES
 ====================================================== */
 
 interface HomepageSection {
@@ -110,15 +107,12 @@ interface Product {
   sold?: number;
 }
 
-/* ======================================================
-COMPONENT
 ====================================================== */
 
 export default function HomePage() {
   const { theme } = useTheme();
+  const { wishlistItems, toggleWishlist } = useWishlist();
 
-  /* ======================================================
-  STATES
   ====================================================== */
 
   const [
@@ -156,17 +150,10 @@ export default function HomePage() {
   ] = useState("latest");
 
   const [
-    wishlist,
-    setWishlist
-  ] = useState<string[]>([]);
-
-  const [
     search,
     setSearch
   ] = useState("");
 
-  /* ======================================================
-  HOMEPAGE SECTIONS
   ====================================================== */
 
   useEffect(() => {
@@ -210,6 +197,9 @@ export default function HomePage() {
           setHeaderSection(
             hero
           );
+        },
+        (error) => {
+          console.error("Error fetching homepage sections:", error);
         }
       );
 
@@ -218,8 +208,6 @@ export default function HomePage() {
 
   }, []);
 
-  /* ======================================================
-  CATEGORIES
   ====================================================== */
 
   useEffect(() => {
@@ -252,6 +240,9 @@ export default function HomePage() {
           setCategories(
             data
           );
+        },
+        (error) => {
+          console.error("Error fetching categories:", error);
         }
       );
 
@@ -260,8 +251,6 @@ export default function HomePage() {
 
   }, []);
 
-  /* ======================================================
-  PRODUCTS
   ====================================================== */
 
   useEffect(() => {
@@ -294,6 +283,9 @@ export default function HomePage() {
           setProducts(
             data
           );
+        },
+        (error) => {
+          console.error("Error fetching products:", error);
         }
       );
 
@@ -302,8 +294,6 @@ export default function HomePage() {
 
   }, []);
 
-  /* ======================================================
-  FILTER PRODUCTS
   ====================================================== */
 
   const filteredProducts =
@@ -406,36 +396,8 @@ export default function HomePage() {
       search
     ]);
 
-  /* ======================================================
-  WISHLIST
   ====================================================== */
 
-  function toggleWishlist(
-    id: string
-  ) {
-
-    if (
-      wishlist.includes(id)
-    ) {
-
-      setWishlist(
-        wishlist.filter(
-          (item) =>
-            item !== id
-        )
-      );
-
-    } else {
-
-      setWishlist([
-        ...wishlist,
-        id
-      ]);
-    }
-  }
-
-  /* ======================================================
-  UI
   ====================================================== */
 
   return (
@@ -459,8 +421,6 @@ export default function HomePage() {
 }}
       >
 
-        {/* ======================================================
-        HEADER
         ====================================================== */}
 
         <Header
@@ -475,8 +435,6 @@ export default function HomePage() {
 
         <AdSlot />
 
-        {/* ======================================================
-        SEARCH PRODUCTS
         HEADER KE NICHE
         ====================================================== */}
 
@@ -546,7 +504,7 @@ export default function HomePage() {
                 (product) => {
 
                   const isLiked =
-                    wishlist.includes(
+                    wishlistItems.includes(
                       product.id
                     );
 
@@ -578,7 +536,7 @@ export default function HomePage() {
                         <div
                           className="
                             rounded-[34px]
-                            bg-[var(--card-color)]
+                            bg-[var(--color-card-background)]
                             p-0
                           "
                         >
@@ -588,7 +546,7 @@ export default function HomePage() {
                               relative
                               overflow-hidden
                               rounded-[30px]
-                              bg-[var(--background-color)]
+                              bg-[var(--color-page-background)]
                             "
                           >
 
@@ -630,9 +588,7 @@ export default function HomePage() {
 
                                 event.preventDefault();
 
-                                toggleWishlist(
-                                  product.id
-                                );
+                                toggleWishlist(product);
                               }}
 
                               className="
@@ -645,7 +601,7 @@ export default function HomePage() {
                                 items-center
                                 justify-center
                                 rounded-full
-                                bg-[var(--card-color)]/90
+                                bg-[var(--color-card-background)]/90
                                 shadow-lg
                               "
                             >
@@ -658,9 +614,9 @@ export default function HomePage() {
                                   ${
                                     isLiked
 
-                                      ? "fill-pink-500 text-[var(--primary-color)]"
+                                      ? "fill-pink-500 text-[var(--color-danger)]"
 
-                                      : "text-[var(--muted-text-color)]"
+                                      : "text-[var(--text-secondary)]"
                                   }
                                 `}
                               />
@@ -960,8 +916,6 @@ export default function HomePage() {
 
         )}
 
-        {/* ======================================================
-        PRODUCTS SECTION
         ====================================================== */}
 
         {!search.trim() && (
@@ -1093,7 +1047,7 @@ export default function HomePage() {
                 (product) => {
 
                   const isLiked =
-                    wishlist.includes(
+                    wishlistItems.includes(
                       product.id
                     );
 
@@ -1177,9 +1131,7 @@ export default function HomePage() {
 
                                   event.preventDefault();
 
-                                  toggleWishlist(
-                                    product.id
-                                  );
+                                  toggleWishlist(product);
                                 }}
 
                                 className="
@@ -1192,7 +1144,7 @@ export default function HomePage() {
                                   items-center
                                   justify-center
                                   rounded-full
-                                  bg-[var(--card-color)]/90
+                                  bg-[var(--color-card-background)]/90
                                   shadow-lg
                                 "
                               >
@@ -1205,9 +1157,9 @@ export default function HomePage() {
                                     ${
                                       isLiked
 
-                                        ? "fill-pink-500 text-[var(--primary-color)]"
+                                        ? "fill-pink-500 text-[var(--color-danger)]"
 
-                                        : "text-[var(--muted-text-color)]"
+                                        : "text-[var(--text-secondary)]"
                                     }
                                   `}
                                 />
