@@ -1,5 +1,3 @@
-src/app/page.tsx
-====================================================== */
 
 "use client";
 
@@ -52,7 +50,6 @@ import AdSlot from "@/components/ads/AdSlot";
 import { useTheme } from "@/context/ThemeContext";
 import { useWishlist } from "@/hooks/useWishlist";
 
-====================================================== */
 
 interface HomepageSection {
 
@@ -107,13 +104,11 @@ interface Product {
   sold?: number;
 }
 
-====================================================== */
 
 export default function HomePage() {
   const { theme } = useTheme();
   const { wishlistItems, toggleWishlist } = useWishlist();
 
-  ====================================================== */
 
   const [
     sections,
@@ -154,7 +149,6 @@ export default function HomePage() {
     setSearch
   ] = useState("");
 
-  ====================================================== */
 
   useEffect(() => {
 
@@ -208,7 +202,6 @@ export default function HomePage() {
 
   }, []);
 
-  ====================================================== */
 
   useEffect(() => {
 
@@ -251,7 +244,6 @@ export default function HomePage() {
 
   }, []);
 
-  ====================================================== */
 
   useEffect(() => {
 
@@ -294,7 +286,6 @@ export default function HomePage() {
 
   }, []);
 
-  ====================================================== */
 
   const filteredProducts =
     useMemo(() => {
@@ -305,7 +296,6 @@ export default function HomePage() {
             product.visible
         );
 
-      /* CATEGORY FILTER */
 
       if (
         selectedCategory !==
@@ -320,7 +310,6 @@ export default function HomePage() {
           );
       }
 
-      /* SEARCH FILTER */
 
       if (
         search.trim()
@@ -344,7 +333,6 @@ export default function HomePage() {
           );
       }
 
-      /* SORT */
 
       switch (
         sortBy
@@ -396,9 +384,7 @@ export default function HomePage() {
       search
     ]);
 
-  ====================================================== */
 
-  ====================================================== */
 
   return (
 
@@ -421,7 +407,6 @@ export default function HomePage() {
 }}
       >
 
-        ====================================================== */}
 
         <Header
   headerBackgroundColor={theme.headerBackground}
@@ -435,8 +420,6 @@ export default function HomePage() {
 
         <AdSlot />
 
-        HEADER KE NICHE
-        ====================================================== */}
 
         {search.trim() ? (
 
@@ -490,7 +473,6 @@ export default function HomePage() {
 
             </div>
 
-            {/* PRODUCTS GRID */}
 
             <div
               className="
@@ -578,7 +560,6 @@ export default function HomePage() {
 
                             </div>
 
-                            {/* WISHLIST */}
 
                             <button
 
@@ -629,7 +610,6 @@ export default function HomePage() {
 
                       </Link>
 
-                      {/* DETAILS */}
 
                       <div
                         className="
@@ -677,7 +657,6 @@ export default function HomePage() {
 
                         </Link>
 
-                        {/* PRICE */}
 
                         <div
                           className="
@@ -744,11 +723,9 @@ export default function HomePage() {
 
           <>
 
-            {/* HERO */}
 
             <HomepageSlider />
 
-            {/* CATEGORY SECTION */}
 
             <section
               className="
@@ -767,7 +744,6 @@ export default function HomePage() {
                 "
               >
 
-                {/* ALL */}
 
                 <button
                   onClick={() =>
@@ -822,7 +798,6 @@ export default function HomePage() {
 
                 </button>
 
-                {/* CATEGORIES */}
 
                 {categories.map(
                   (category) => {
@@ -916,7 +891,6 @@ export default function HomePage() {
 
         )}
 
-        ====================================================== */}
 
         {!search.trim() && (
 
@@ -927,7 +901,6 @@ export default function HomePage() {
             "
           >
 
-            {/* TOP */}
 
             <div
               className="
@@ -950,7 +923,6 @@ export default function HomePage() {
 
               </h2>
 
-              {/* SORT */}
 
               <div
                 className="
@@ -1033,7 +1005,6 @@ export default function HomePage() {
 
             </div>
 
-            {/* PRODUCT GRID */}
 
             <div
               className="
@@ -1121,7 +1092,6 @@ export default function HomePage() {
 
                               </div>
 
-                              {/* WISHLIST */}
 
                               <button
 
@@ -1172,7 +1142,6 @@ export default function HomePage() {
 
                       </Link>
 
-                      {/* DETAILS */}
 
                       <div
                         className="
@@ -1283,7 +1252,6 @@ export default function HomePage() {
 
         )}
 
-        {/* OTHER SECTIONS */}
 
         {sections.map(
           (section) => {
@@ -1331,7 +1299,6 @@ export default function HomePage() {
           }
         )}
 
-        {/* FLOATING */}
 
         <WhatsAppButton />
 
