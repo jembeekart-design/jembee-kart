@@ -31,8 +31,6 @@ from "@/components/navigation/Header";
 import HomepageSlider
 from "@/components/homepage/HomepageSlider";
 
-import TipsSection
-from "@/components/homepage/TipsSection";
 
 import FooterSection
 from "@/components/homepage/FooterSection";
@@ -1267,16 +1265,6 @@ export default function HomePage() {
             switch (
               section.sectionType
             ) {
-
-              case "tips":
-
-                return (
-                  <TipsSection
-                    key={
-                      section.id
-                    }
-                  />
-                );
 
               case "footer":
 
