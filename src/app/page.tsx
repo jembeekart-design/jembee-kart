@@ -43,8 +43,6 @@ from "@/components/navigation/BottomNavbar";
 import WhatsAppButton
 from "@/components/navigation/WhatsAppButton";
 
-import PromoBanner
-from "@/components/PromoBanner";
 import AdSlot from "@/components/ads/AdSlot";
 
 import { useTheme } from "@/context/ThemeContext";
@@ -390,7 +388,6 @@ export default function HomePage() {
 
     <>
 
-      <PromoBanner />
 
       <main
         className="
