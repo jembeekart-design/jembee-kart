@@ -1003,7 +1003,7 @@ export default function HomePage() {
               </div>
 
         {showFilter && (
-          <div className="mb-5 rounded-2xl bg-[var(--card-color)] p-4 shadow-md">
+          <div className="mb-5 w-full max-w-full box-border overflow-hidden rounded-2xl bg-[var(--card-color)] p-4 shadow-md">
             <div className="flex items-center justify-between mb-3">
               <h3 className="text-base font-bold text-[var(--text-primary)]">Filter Products</h3>
               <button
