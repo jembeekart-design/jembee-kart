@@ -1,10 +1,11 @@
 import { NextResponse } from "next/server";
-import { adminDb } from "@/firebase/admin";
+import { getAdminDb } from "@/firebase/admin";
 import { FieldValue, Timestamp } from "firebase-admin/firestore";
 import { adminCreditWallet } from "@/lib/mlm/adminCreditWallet";
 
 export async function GET(req: Request) {
   try {
+    const adminDb = getAdminDb();
     // 1. Authenticate request using CRON_SECRET for security
     const authHeader = req.headers.get("authorization");
     const expectedSecret = process.env.CRON_SECRET ?? "";

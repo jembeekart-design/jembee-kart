@@ -42,7 +42,7 @@ export default function ProductionHeader({ activeTab, setActiveTab }: { activeTa
               <Search size={16} />
             </button>
 
-            <button onClick={() => router.push('/mlm/team-business')} aria-label="Friends" className="p-2 rounded-full bg-white/5 backdrop-blur-sm">
+            <button onClick={() => router.push('/followers')} aria-label="Friends" className="p-2 rounded-full bg-white/5 backdrop-blur-sm">
               <Users size={16} />
             </button>
 

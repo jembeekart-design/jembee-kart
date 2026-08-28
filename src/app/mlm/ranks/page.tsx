@@ -1,6 +1,10 @@
 "use client";
 
 import Link from "next/link";
+import { useEffect, useState } from "react";
+import { doc, onSnapshot } from "firebase/firestore";
+import { db } from "@/firebase/config";
+import { FIRESTORE_PATHS } from "@/firestore/collections/firestorePaths";
 
 import {
   ArrowLeft,
@@ -14,21 +18,30 @@ import {
 } from "lucide-react";
 
 export default function MLMRanksPage() {
+  const [rankData, setRankData] = useState({
+    currentRank: "Gold Leader",
+    nextRank: "Diamond Leader",
+    currentTeam: 125,
+    nextTarget: 200,
+  });
 
-  const currentRank =
-    "Gold Leader";
+  useEffect(() => {
+    const unsubscribe = onSnapshot(doc(db, FIRESTORE_PATHS.BUSINESS_RULES.MLM), (doc) => {
+      if (doc.exists()) {
+        const data = doc.data();
+        setRankData({
+          currentRank: data.currentRank ?? "Gold Leader",
+          nextRank: data.nextRank ?? "Diamond Leader",
+          currentTeam: data.currentTeam ?? 125,
+          nextTarget: data.nextTarget ?? 200,
+        });
+      }
+    });
+    return () => unsubscribe();
+  }, []);
 
-  const nextRank =
-    "Diamond Leader";
-
-  const currentTeam =
-    125;
-
-  const nextTarget =
-    200;
-
-  const remaining =
-    nextTarget - currentTeam;
+  const { currentRank, nextRank, currentTeam, nextTarget } = rankData;
+  const remaining = Math.max(0, nextTarget - currentTeam);
 
   const ranks = [
 

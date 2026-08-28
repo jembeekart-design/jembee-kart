@@ -29,7 +29,7 @@ import { auth, db } from "@/firebase/config";
 import { likeVideo } from "@/lib/mlm/watch-earn/likeVideo";
 import { shareVideo } from "@/lib/mlm/watch-earn/shareVideo";
 import { useRequireAuth } from "@/hooks/useRequireAuth";
-import { collection, getDocs } from "firebase/firestore";
+import { collection, onSnapshot } from "firebase/firestore";
 
 export default function VerticalVideoFeed({
   activeTab
@@ -44,24 +44,23 @@ export default function VerticalVideoFeed({
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
-    if (isAuthenticated && auth.currentUser) {
-      const fetchFollowing = async () => {
-        const followingRef = collection(
-          db,
-          'users',
-          auth.currentUser!.uid,
-          'following'
-        );
-
-        const snapshot = await getDocs(followingRef);
-
-        setFollowingList(
-          snapshot.docs.map(doc => doc.id)
-        );
-      };
-
-      fetchFollowing();
+    if (!isAuthenticated || !auth.currentUser) {
+      setFollowingList([]);
+      return;
     }
+
+    const followingRef = collection(
+      db,
+      'users',
+      auth.currentUser.uid,
+      'following'
+    );
+
+    const unsubscribe = onSnapshot(followingRef, (snapshot) => {
+      setFollowingList(snapshot.docs.map(doc => doc.id));
+    });
+
+    return () => unsubscribe();
   }, [isAuthenticated]);
 
   const filteredVideos = useMemo(() => {
@@ -127,7 +126,7 @@ export default function VerticalVideoFeed({
     setSelectedVideo
   ] = useState("");
 
-  const [isMuted, setIsMuted] = useState(true);
+  const [isMuted, setIsMuted] = useState(false);
 
   const [
     likedVideos,
@@ -296,9 +295,11 @@ export default function VerticalVideoFeed({
       "
     >
       {filteredVideos.length === 0 ? (
-        <div className="h-screen flex items-center justify-center text-gray-400">
+        <div className="h-screen flex items-center justify-center text-gray-400 p-4 text-center">
           {activeTab === 'following'
-            ? "You aren't following anyone yet."
+            ? followingList.length > 0
+                ? "No videos from creators you follow."
+                : "You aren't following anyone yet."
             : "No videos found."
           }
         </div>
@@ -319,10 +320,6 @@ export default function VerticalVideoFeed({
               <VideoPlayer
                 videoUrl={
                   video.video
-                }
-
-                rewardCoins={
-                  video.coins
                 }
 
                 watchSeconds={

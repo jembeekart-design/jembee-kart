@@ -1,5 +1,5 @@
 import { NextResponse } from "next/server";
-import { adminDb, adminAuth } from "@/firebase/admin";
+import { getAdminDb, getAdminAuth } from "@/firebase/admin";
 import { v2 as cloudinary } from "cloudinary";
 
 // Configure Cloudinary
@@ -11,6 +11,8 @@ cloudinary.config({
 
 export async function POST(req: Request) {
   try {
+    const adminDb = getAdminDb();
+    const adminAuth = getAdminAuth();
     const { videoId, publicId, token } = await req.json();
     // 1. Verify Admin Role
     const decodedToken = await adminAuth.verifyIdToken(token);

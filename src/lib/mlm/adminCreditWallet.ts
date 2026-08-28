@@ -1,4 +1,4 @@
-import { adminDb } from "@/firebase/admin";
+import { getAdminDb } from "@/firebase/admin";
 import { FieldValue } from "firebase-admin/firestore";
 import { IncomeType } from "./creditWallet";
 
@@ -22,6 +22,7 @@ interface AdminCreditWalletPayload {
 export async function adminCreditWallet(
   payload: AdminCreditWalletPayload
 ): Promise<void> {
+  const adminDb = getAdminDb();
   const { uid, amount, type, description, orderId, triggeredByUid, transaction, eventId } = payload;
   const userRef = adminDb.collection("users").doc(uid);
   const ledgerLogRef = adminDb.collection(`users/${uid}/transactions`).doc(eventId); // Idempotent ledger ID

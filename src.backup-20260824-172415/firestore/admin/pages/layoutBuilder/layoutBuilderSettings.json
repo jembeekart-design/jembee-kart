@@ -1,0 +1,156 @@
+{
+  "layoutBuilderEnabled": true,
+
+  "adminControlledLayoutBuilder": true,
+
+  "layoutBuilderStyle": "advanced_drag_drop_page_builder",
+
+  "enableRealtimeLayoutPreview": true,
+
+  "enableDragAndDropEditing": true,
+
+  "enableSectionResize": true,
+
+  "enableSectionReorder": true,
+
+  "enableSectionVisibilityToggle": true,
+
+  "enablePageWiseLayoutEditing": true,
+
+  "enableResponsiveLayoutEditing": true,
+
+  "enableMobileLayoutCustomization": true,
+
+  "enableTabletLayoutCustomization": true,
+
+  "enableDesktopLayoutCustomization": true,
+
+  "enableGridSystemBuilder": true,
+
+  "enableCustomSectionCreation": true,
+
+  "enableReusableSections": true,
+
+  "enableTemplateImportExport": true,
+
+  "enableLayoutVersionHistory": true,
+
+  "enableAIRecommendedLayouts": true,
+
+  "enableAnimationBuilder": true,
+
+  "enableCustomSpacingControls": true,
+
+  "enableCustomWidthControls": true,
+
+  "enableCustomHeightControls": true,
+
+  "enableStickySectionControls": true,
+
+  "enableFloatingSectionControls": true,
+
+  "availablePages": [
+    {
+      "pageId": "homepage",
+
+      "pageName": "Homepage",
+
+      "editable": true
+    },
+
+    {
+      "pageId": "product_page",
+
+      "pageName": "Product Page",
+
+      "editable": true
+    },
+
+    {
+      "pageId": "dashboard",
+
+      "pageName": "User Dashboard",
+
+      "editable": true
+    },
+
+    {
+      "pageId": "seller_dashboard",
+
+      "pageName": "Seller Dashboard",
+
+      "editable": true
+    },
+
+    {
+      "pageId": "affiliate_dashboard",
+
+      "pageName": "Affiliate Dashboard",
+
+      "editable": true
+    },
+
+    {
+      "pageId": "reseller_dashboard",
+
+      "pageName": "Reseller Dashboard",
+
+      "editable": true
+    },
+
+    {
+      "pageId": "mlm_dashboard",
+
+      "pageName": "MLM Dashboard",
+
+      "editable": true
+    },
+
+    {
+      "pageId": "wallet_dashboard",
+
+      "pageName": "Wallet Dashboard",
+
+      "editable": true
+    },
+
+    {
+      "pageId": "admin_panel",
+
+      "pageName": "Admin Panel",
+
+      "editable": true
+    }
+  ],
+
+  "availableSectionTypes": [
+    "banner_slider",
+    "product_grid",
+    "category_grid",
+    "analytics_cards",
+    "wallet_cards",
+    "notification_center",
+    "training_courses",
+    "ai_assistant_cards",
+    "seller_cards",
+    "supplier_cards",
+    "chart_cards",
+    "reviews_section",
+    "faq_section",
+    "custom_html_section"
+  ],
+
+  "defaultGridSettings": {
+    "desktopColumns": 12,
+
+    "tabletColumns": 8,
+
+    "mobileColumns": 4,
+
+    "defaultGap": "20px"
+  },
+
+  "desktopLayoutStyle": "advanced_builder_dashboard",
+
+  "mobileLayoutStyle": "stacked_mobile_builder"
+}

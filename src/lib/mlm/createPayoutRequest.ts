@@ -5,9 +5,9 @@ import {
 } from "firebase/firestore";
 
 import { db } from "@/firebase/config";
+import { getBusinessRulesConfig } from "./config/fetchConfigHelper";
 import { 
   ENGINE_VERSION,
-  MIN_PAYOUT_LIMIT,
   PAYOUT_STATUS_PENDING,
   PRIMARY_WALLET_SLOT,         // commissionWallet
   MASTER_WALLET_SLOT,          // walletBalance
@@ -46,6 +46,9 @@ interface PayoutRequestData {
  */
 export async function createPayoutRequest(data: PayoutRequestData) {
   const startTimeMs = Date.now(); // Performance analytics latency tracking
+
+  const config = await getBusinessRulesConfig();
+  const MIN_PAYOUT_LIMIT = config.creatorEconomy.minimumPayout;
 
   const cleanUserId = data.userId?.trim();
   const rawAmount = Number(data.requestedAmount);

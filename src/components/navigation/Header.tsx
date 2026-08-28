@@ -19,10 +19,13 @@ import {
   useState
 } from "react";
 
+import Link from "next/link";
+
 import {
   Mic,
   MicOff,
-  Search
+  Search,
+  Users
 } from "lucide-react";
 
 /* ======================================================
@@ -300,49 +303,26 @@ export default function Header({
               gap-2
             "
           >
-
-            <button
+            <Link
+              href="/followers"
               className="
-                rounded-xl
-                bg-[var(--background-color)]
-                px-4
-                py-2
-                text-sm
-                font-semibold
+                flex
+                h-11
+                w-11
+                items-center
+                justify-center
+                rounded-full
+                bg-[var(--card-color)]
                 text-[var(--text-color)]
-
+                shadow-lg
                 transition-all
                 duration-300
-
-                hover:bg-[var(--card-color)]
+                hover:scale-110
+                active:scale-95
               "
             >
-
-              Login
-
-            </button>
-
-            <button
-              className="
-                rounded-xl
-                theme-primary-bg
-                px-4
-                py-2
-                text-sm
-                font-semibold
-                text-[var(--button-text-color)]
-
-                transition-all
-                duration-300
-
-                hover:bg-[var(--primary-color)]
-              "
-            >
-
-              Seller
-
-            </button>
-
+              <Users className="h-5 w-5" />
+            </Link>
           </div>
 
         </div>

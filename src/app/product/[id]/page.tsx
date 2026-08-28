@@ -10,7 +10,10 @@ import {
   addDoc,
   collection,
   doc,
-  getDoc
+  getDoc,
+  query,
+  where,
+  onSnapshot
 } from "firebase/firestore";
 
 import {
@@ -29,6 +32,8 @@ import {
   Truck,
   Zap
 } from "lucide-react";
+
+import { useWishlist } from "@/hooks/useWishlist";
 
 import {
   TransformWrapper,
@@ -69,11 +74,14 @@ export default function ProductPage() {
   const [currentImage, setCurrentImage] = useState(0);
   const [selectedSize, setSelectedSize] = useState("M");
   const [selectedColor, setSelectedColor] = useState("var(--color-primary-button)");
-  const [wishlist, setWishlist] = useState(false);
+  const { wishlistItems, toggleWishlist } = useWishlist();
   const [showZoom, setShowZoom] = useState(false);
+  const [reviews, setReviews] = useState<any[]>([]);
 
   const touchStartX = useRef(0);
   const touchEndX = useRef(0);
+
+  const isLiked = product ? wishlistItems.includes(product.id) : false;
 
   useEffect(() => {
     async function fetchProduct() {
@@ -111,12 +119,31 @@ export default function ProductPage() {
     fetchProduct();
   }, [productId]);
 
+  useEffect(() => {
+    if (!productId) return;
+    const q = query(
+      collection(db, "reviews"),
+      where("productId", "==", productId),
+      where("visible", "==", true)
+    );
+    const unsubscribe = onSnapshot(q, (snapshot) => {
+      setReviews(snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() })));
+    });
+    return () => unsubscribe();
+  }, [productId]);
+
   const discount = useMemo(() => {
     if (!product) return 0;
     return Math.round(
       (((product.price || 0) - (product.discountPrice || 0)) / (product.price || 1)) * 100
     );
   }, [product]);
+
+  const { avgRating, reviewCount } = useMemo(() => {
+    if (reviews.length === 0) return { avgRating: product?.rating || 4.5, reviewCount: 0 };
+    const sum = reviews.reduce((acc, r) => acc + (r.rating || 0), 0);
+    return { avgRating: (sum / reviews.length).toFixed(1), reviewCount: reviews.length };
+  }, [reviews, product]);
 
   const deliveryDate = useMemo(() => {
     const date = new Date();
@@ -205,11 +232,11 @@ function buyNow() {
           </div>
 
           <div className="flex items-center gap-3">
-            <button onClick={() => setWishlist(!wishlist)}>
+            <button onClick={() => toggleWishlist(product)}>
               <Heart
                 size={18}
-                fill={wishlist ? "red" : "transparent"}
-                className={wishlist ? "text-[var(--color-danger)]" : ""}
+                fill={isLiked ? "red" : "transparent"}
+                className={isLiked ? "text-[var(--color-danger)]" : ""}
               />
             </button>
             <button>
@@ -253,13 +280,13 @@ function buyNow() {
             </div>
 
             <button
-              onClick={() => setWishlist(!wishlist)}
+              onClick={() => toggleWishlist(product)}
               className="absolute right-2 top-2 flex h-8 w-8 items-center justify-center rounded-full bg-[var(--color-card-background)] shadow-sm"
             >
               <Heart
                 size={16}
-                fill={wishlist ? "red" : "transparent"}
-                className={wishlist ? "text-[var(--color-danger)]" : ""}
+                fill={isLiked ? "red" : "transparent"}
+                className={isLiked ? "text-[var(--color-danger)]" : ""}
               />
             </button>
 
@@ -310,9 +337,9 @@ function buyNow() {
           <div className="mt-2 flex items-center gap-2 text-[11px]">
             <div className="flex items-center gap-1 text-[var(--color-success)]">
               <Star size={12} fill="green" />
-              <span className="font-bold">{product.rating || 4.5}</span>
+              <span className="font-bold">{avgRating}</span>
             </div>
-            <span className="text-[var(--text-secondary)]">(128 Reviews)</span>
+            <span className="text-[var(--text-secondary)]">({reviewCount} Reviews)</span>
             <span className="text-[var(--text-primary)]">|</span>
             <span className="text-[var(--text-secondary)]">5k+ sold</span>
           </div>

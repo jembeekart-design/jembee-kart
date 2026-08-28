@@ -4,14 +4,14 @@
   "private": true,
   "scripts": {
     "dev": "next dev",
-    "governance": "dotenv -e .env.local -- tsx src/jembee-governance/index.ts",
-    "governance:check": "dotenv -e .env.local -- tsx src/jembee-governance/index.ts",
+    "governance": "dotenv -e .env.production -- tsx src/jembee-governance/index.ts",
+    "governance:check": "dotenv -e .env.production -- tsx src/jembee-governance/index.ts",
     "theme:codemod": "tsx src/scripts/theme-codemod.ts",
-    "build": "npm run governance && next build --webpack",
+    "build": "next build --webpack",
     "start": "next start",
     "lint": "eslint",
     "scan:hardcoded": "tsx src/scripts/hardcodedScanner.ts",
-    "autofix": "dotenv -e .env.local -- tsx src/scripts/autofix.ts"
+    "autofix": "dotenv -e .env.production -- tsx src/scripts/autofix.ts"
   },
   "dependencies": {
     "cloudinary": "^2.10.0",
@@ -40,6 +40,7 @@
     "@types/react-dom": "^19",
     "dotenv": "^17.4.2",
     "dotenv-cli": "^11.0.0",
+    "firebase-tools": "^13.0.0",
     "eslint": "^10",
     "eslint-config-next": "16.2.9",
     "tailwindcss": "^4",

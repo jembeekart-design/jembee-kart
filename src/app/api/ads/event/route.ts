@@ -1,12 +1,14 @@
 import { NextResponse } from "next/server";
 import { FieldValue, Timestamp } from "firebase-admin/firestore";
-import { adminAuth, adminDb } from "@/firebase/admin";
+import { getAdminAuth, getAdminDb } from "@/firebase/admin";
 import { businessRules } from "@/firestore/businessRules/service";
 
 type EventType = "impression" | "click";
 
 export async function POST(req: Request) {
   try {
+    const adminAuth = getAdminAuth();
+    const adminDb = getAdminDb();
     const authHeader = req.headers.get("authorization");
 
     if (!authHeader?.startsWith("Bearer ")) {

@@ -1,0 +1,109 @@
+{
+  "systemMonitoringEnabled": true,
+
+  "adminControlledSystemMonitoring": true,
+
+  "systemMonitoringStyle": "advanced_ai_system_monitoring_dashboard",
+
+  "enableRealtimeMonitoring": true,
+
+  "enableServerHealthTracking": true,
+
+  "enableAPIHealthMonitoring": true,
+
+  "enableDatabasePerformanceTracking": true,
+
+  "enableStorageUsageTracking": true,
+
+  "enableNetworkMonitoring": true,
+
+  "enableRealtimeErrorTracking": true,
+
+  "enableCrashReporting": true,
+
+  "enableAIAnomalyDetection": true,
+
+  "enableAIResourceOptimization": true,
+
+  "enableAutomaticIssueDetection": true,
+
+  "enableAutomaticAlerts": true,
+
+  "enableEmailAlerts": true,
+
+  "enableWhatsAppAlerts": true,
+
+  "enablePushAlerts": true,
+
+  "enableRealtimeLogs": true,
+
+  "enableUserActivityTracking": true,
+
+  "enableTrafficMonitoring": true,
+
+  "enableLiveVisitorTracking": true,
+
+  "enableOrderSystemMonitoring": true,
+
+  "enablePaymentSystemMonitoring": true,
+
+  "enableSupplierMonitoring": true,
+
+  "enableNotificationSystemMonitoring": true,
+
+  "enableSecurityMonitoring": true,
+
+  "enableBackupMonitoring": true,
+
+  "enablePerformanceReports": true,
+
+  "enableDowntimeDetection": true,
+
+  "enableAutoRecoveryActions": false,
+
+  "monitoringModules": [
+    {
+      "moduleId": "server_health",
+
+      "moduleName": "Server Health",
+
+      "enabled": true
+    },
+
+    {
+      "moduleId": "database",
+
+      "moduleName": "Database Monitoring",
+
+      "enabled": true
+    },
+
+    {
+      "moduleId": "payments",
+
+      "moduleName": "Payment Monitoring",
+
+      "enabled": true
+    },
+
+    {
+      "moduleId": "orders",
+
+      "moduleName": "Order Monitoring",
+
+      "enabled": true
+    },
+
+    {
+      "moduleId": "security",
+
+      "moduleName": "Security Monitoring",
+
+      "enabled": true
+    }
+  ],
+
+  "desktopLayoutStyle": "advanced_monitoring_dashboard",
+
+  "mobileLayoutStyle": "stacked_mobile_monitoring_dashboard"
+}
