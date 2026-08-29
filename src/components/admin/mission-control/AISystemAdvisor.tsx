@@ -104,11 +104,11 @@ export default function AISystemAdvisor() {
 
       <div className="mt-6 rounded-lg bg-blue-50 border border-blue-200 p-4">
 
-        <p className="font-semibold text-blue-700">
+        <p className="font-semibold text-[var(--primary-color)]">
           AI Status
         </p>
 
-        <p className="text-sm text-blue-600 mt-1">
+        <p className="text-sm text-[var(--primary-color)] mt-1">
           AI analysis is not connected yet. Once connected,
           recommendations from Mission Control will appear here.
         </p>
