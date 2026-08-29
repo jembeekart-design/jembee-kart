@@ -45,7 +45,7 @@ function ActionButton({
   const styles = {
     primary: "bg-gray-900 text-white hover:bg-black",
     secondary: "bg-white border border-gray-200 hover:bg-gray-50",
-    danger: "bg-red-50 text-red-600 border border-red-100 hover:bg-red-100",
+    danger: "bg-red-50 text-[var(--danger-color)] border border-red-100 hover:bg-red-100",
   };
 
   return (

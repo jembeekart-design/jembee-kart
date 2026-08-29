@@ -47,8 +47,8 @@ export default function SystemHealth() {
               <Icon
                 className={
                   item.status
-                    ? "text-green-600"
-                    : "text-red-600"
+                    ? "text-[var(--success-color)]"
+                    : "text-[var(--danger-color)]"
                 }
               />
 
@@ -59,8 +59,8 @@ export default function SystemHealth() {
               <p
                 className={
                   item.status
-                    ? "text-green-600"
-                    : "text-red-600"
+                    ? "text-[var(--success-color)]"
+                    : "text-[var(--danger-color)]"
                 }
               >
                 {item.status

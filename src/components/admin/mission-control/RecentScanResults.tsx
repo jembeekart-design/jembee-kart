@@ -70,10 +70,10 @@ export default function RecentScanResults() {
 
           const iconColor =
             scan.status === "passed"
-              ? "text-blue-600"
+              ? "text-[var(--primary-color)]"
               : scan.status === "warning"
               ? "text-yellow-600"
-              : "text-red-600";
+              : "text-[var(--danger-color)]";
 
           return (
             <div

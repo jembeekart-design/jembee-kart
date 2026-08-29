@@ -85,7 +85,7 @@ export default function AutoFixCenter() {
         <div className="rounded-lg bg-blue-100 p-3">
           <Wrench
             size={22}
-            className="text-blue-600"
+            className="text-[var(--primary-color)]"
           />
         </div>
 
@@ -104,7 +104,7 @@ export default function AutoFixCenter() {
         <button
           onClick={() => handleAction("scan")}
           disabled={loading}
-          className="rounded-lg bg-blue-600 px-4 py-3 text-white hover:bg-blue-700 disabled:opacity-50"
+          className="rounded-lg bg-[var(--primary-color)] px-4 py-3 text-white hover:bg-[var(--primary-color)] disabled:opacity-50"
         >
           <div className="flex items-center justify-center gap-2">
             {loading ? (
@@ -134,7 +134,7 @@ export default function AutoFixCenter() {
         <button
           onClick={() => handleAction("autofix")}
           disabled={loading}
-          className="rounded-lg bg-green-600 px-4 py-3 text-white hover:bg-green-700 disabled:opacity-50"
+          className="rounded-lg bg-[var(--success-color)] px-4 py-3 text-white hover:bg-[var(--success-color)] disabled:opacity-50"
         >
           <div className="flex items-center justify-center gap-2">
             <Wrench size={18} />
@@ -145,7 +145,7 @@ export default function AutoFixCenter() {
         <button
           onClick={() => handleAction("rollback")}
           disabled={loading}
-          className="rounded-lg bg-red-600 px-4 py-3 text-white hover:bg-red-700 disabled:opacity-50"
+          className="rounded-lg bg-[var(--danger-color)] px-4 py-3 text-white hover:bg-[var(--danger-color)] disabled:opacity-50"
         >
           <div className="flex items-center justify-center gap-2">
             <RotateCcw size={18} />
