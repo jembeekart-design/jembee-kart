@@ -144,10 +144,6 @@ export default function VideoActions({
         </div>
       ))}
 
-              +{coins}
-            </span>
-          </div>
-        </div>
       )}
     </aside>
   );
