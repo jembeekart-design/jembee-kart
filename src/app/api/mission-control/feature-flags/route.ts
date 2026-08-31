@@ -6,7 +6,7 @@ export async function GET(req: Request) {
     return NextResponse.json([
       {
         id: "watchEarn",
-        name: "Watch & Earn",
+        name: "Jembee Shorts",
         enabled: true,
       },
       {

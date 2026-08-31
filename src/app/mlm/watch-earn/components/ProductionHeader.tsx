@@ -25,7 +25,7 @@ export default function ProductionHeader({ activeTab, setActiveTab }: { activeTa
             </button>
 
             <h2 className="text-base font-extrabold tracking-tight flex items-center gap-2">
-              Watch & Earn
+              Jembee Shorts
               <motion.span
                 initial={{ scale: 0.95 }}
                 animate={{ scale: [1, 1.02, 1] }}

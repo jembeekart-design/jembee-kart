@@ -13,7 +13,7 @@ export default function WatchEarnHeader({ earnedCoins }: WatchEarnHeaderProps) {
     <div className="fixed top-0 z-50 flex w-full items-center justify-between p-4 text-white bg-gradient-to-b from-black/80 to-transparent">
         <div>
           <h1 className="text-xl font-black flex items-center gap-2">
-            Watch & Earn <Flame size={20} className="text-orange-500 fill-orange-500" />
+            Jembee Shorts <Flame size={20} className="text-orange-500 fill-orange-500" />
           </h1>
         </div>
         <div className="flex items-center gap-3">
