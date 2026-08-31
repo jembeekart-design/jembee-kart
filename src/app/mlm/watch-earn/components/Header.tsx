@@ -1,12 +1,8 @@
 import React from 'react';
-import { Flame, Coins, Bell } from 'lucide-react';
+import { Flame, Bell } from 'lucide-react';
 import { useRouter } from 'next/navigation';
 
-interface WatchEarnHeaderProps {
-  earnedCoins: number;
-}
-
-export default function WatchEarnHeader({ earnedCoins }: WatchEarnHeaderProps) {
+export default function WatchEarnHeader() {
   const router = useRouter();
   
   return (
@@ -17,10 +13,6 @@ export default function WatchEarnHeader({ earnedCoins }: WatchEarnHeaderProps) {
           </h1>
         </div>
         <div className="flex items-center gap-3">
-          <div className="flex items-center gap-2 bg-white/10 backdrop-blur-xl px-4 py-1.5 rounded-full border border-white/20 shadow-xl">
-            <Coins size={18} className="text-yellow-500" />
-            <span className="font-bold text-sm tracking-tighter">{earnedCoins.toLocaleString()}</span>
-          </div>
           <button 
             onClick={() => router.push("/mlm/notifications")}
             className="p-2 bg-white/10 backdrop-blur-xl rounded-full border border-white/20"
