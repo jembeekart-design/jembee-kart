@@ -8,7 +8,6 @@ import {
 
 interface WatchEarnHeaderProps {
 
-  totalCoins: number;
 
   streak: number;
 
@@ -16,7 +15,6 @@ interface WatchEarnHeaderProps {
 
 export default function
 WatchEarnHeader({
-  totalCoins,
   streak
 }: WatchEarnHeaderProps) {
 
@@ -116,43 +114,7 @@ WatchEarnHeader({
 
         </div>
 
-        {/* COINS */}
-
-        <div
-          className="
-            flex
-            items-center
-            gap-2
-            rounded-full
-            border
-            border-[var(--color-warning)]/40
-            bg-[var(--color-warning)]/20
-            px-4
-            py-2
-            backdrop-blur-xl
-          "
-        >
-
-          <Coins
-            size={18}
-            className="
-              text-[var(--color-warning)]
-            "
-          />
-
-          <span
-            className="
-              text-sm
-              font-black
-              text-[var(--button-text-color)]
-            "
-          >
-
-            {totalCoins}
-
-          </span>
-
-        </div>
+          {/* NOTIFICATION */}
 
         {/* NOTIFICATION */}
 
