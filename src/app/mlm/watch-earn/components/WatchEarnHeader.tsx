@@ -49,7 +49,7 @@ WatchEarnHeader({
           "
         >
 
-          Watch & Earn
+          Jembee Shorts
 
         </h1>
 

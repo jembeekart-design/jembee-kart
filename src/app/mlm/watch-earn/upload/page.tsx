@@ -204,7 +204,7 @@ UploadWatchVideoPage() {
               "
             >
 
-              Upload videos for Watch & Earn
+              Upload videos for Jembee Shorts
 
             </p>
 

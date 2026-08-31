@@ -119,7 +119,7 @@ export default function WalletHistoryPage() {
       directIncome: "Direct Referral Income",
       levelIncome: "Level Generation Income",
       rankIncome: "Rank Royalty Income",
-      watchReward: "Watch & Earn Reward",
+      watchReward: "Jembee Shorts Reward",
       creatorIncome: "Creator Pool Income",
       withdrawal: "Wallet Withdrawal",
       cashback_transfer: "Internal Node Transfer"
