@@ -2,7 +2,8 @@
 
 import {
   useState,
-  useEffect
+  useEffect,
+  useMemo
 } from "react";
 import { useSearchParams } from "next/navigation";
 import { auth } from "@/firebase/config";
@@ -25,6 +26,7 @@ UploadWatchVideoPage() {
   
   const [file, setFile] = useState<File | null>(null);
   const [loading, setLoading] = useState(false);
+  const [isEnhanced, setIsEnhanced] = useState(false);
   const [caption, setCaption] = useState("");
   const [hashtags, setHashtags] = useState("");
   const [music, setMusic] = useState(initialMusic);
@@ -45,6 +47,20 @@ UploadWatchVideoPage() {
     loadBlob();
   }, [videoUrlFromParams]);
   
+  const previewUrl = useMemo(() => {
+    return file
+      ? URL.createObjectURL(file)
+      : null;
+  }, [file]);
+
+  useEffect(() => {
+    return () => {
+      if (previewUrl) {
+        URL.revokeObjectURL(previewUrl);
+      }
+    };
+  }, [previewUrl]);
+
   // ... (rest of component)
 
   async function
@@ -92,7 +108,8 @@ UploadWatchVideoPage() {
 
             .filter(Boolean),
 
-        music
+        music,
+        isEnhanced
       });
       if (
         result.success
@@ -409,7 +426,35 @@ UploadWatchVideoPage() {
             "
           >
 
-            <div>
+                            {previewUrl && (
+                  <div className="mb-4 flex gap-4">
+                    <div className="min-w-0 flex-1 overflow-hidden rounded-xl bg-black">
+                      <p className="p-1 text-[8px] text-white">
+                        Original Preview
+                      </p>
+                      <video
+                        src={previewUrl}
+                        className="aspect-[9/16] h-auto w-full object-cover"
+                        muted
+                        controls
+                      />
+                    </div>
+
+                    <div className="min-w-0 flex-1 overflow-hidden rounded-xl bg-black">
+                      <p className="p-1 text-[8px] text-white">
+                        Enhanced Preview (CSS only)
+                      </p>
+                      <video
+                        src={previewUrl}
+                        className="aspect-[9/16] h-auto w-full object-cover contrast-[1.1] brightness-[1.05] saturate-[1.1]"
+                        muted
+                        controls
+                      />
+                    </div>
+                  </div>
+                )}
+
+<div>
 
               <p
                 className="
@@ -437,6 +482,17 @@ UploadWatchVideoPage() {
                 {file.name}
 
               </p>
+
+              <label className="mt-3 flex cursor-pointer items-center gap-2 text-sm text-[var(--button-text-color)]">
+                <input
+                  type="checkbox"
+                  checked={isEnhanced}
+                  onChange={(e) =>
+                    setIsEnhanced(e.target.checked)
+                  }
+                />
+                Use Enhanced Delivery (Cloudinary)
+              </label>
 
             </div>
 

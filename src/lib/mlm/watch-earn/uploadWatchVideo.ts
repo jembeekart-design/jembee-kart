@@ -32,6 +32,123 @@ interface UploadWatchVideoData {
   sponsor?: boolean;
   originalVideoId?: string;
   originalAudioId?: string;
+  isEnhanced?: boolean;
+}
+
+
+interface CloudinaryResponse {
+  secure_url?: unknown;
+  public_id?: unknown;
+  eager?: unknown;
+}
+
+function isValidHttpsUrl(value: unknown): value is string {
+  if (typeof value !== "string" || value.trim() === "") {
+    return false;
+  }
+
+  try {
+    return new URL(value).protocol === "https:";
+  } catch {
+    return false;
+  }
+}
+
+function isValidCloudinaryResponse(
+  value: unknown
+): value is CloudinaryResponse {
+  if (!value || typeof value !== "object") {
+    return false;
+  }
+
+  const data = value as Record<string, unknown>;
+
+  return (
+    isValidHttpsUrl(data.secure_url) &&
+    typeof data.public_id === "string" &&
+    data.public_id.trim() !== ""
+  );
+}
+
+function getEnhancedUrl(
+  data: CloudinaryResponse
+): string | null {
+  if (!Array.isArray(data.eager)) {
+    return null;
+  }
+
+  const first = data.eager[0];
+
+  if (!first || typeof first !== "object") {
+    return null;
+  }
+
+  const eagerData = first as Record<string, unknown>;
+  const enhancedUrl: unknown = eagerData.secure_url;
+
+  if (!isValidHttpsUrl(enhancedUrl)) {
+    return null;
+  }
+
+  return enhancedUrl;
+}
+
+function getOriginalUrl(
+  data: CloudinaryResponse
+): string | null {
+  const url: unknown = data.secure_url;
+
+  return isValidHttpsUrl(url) ? url : null;
+}
+
+async function uploadToCloudinary(
+  file: File,
+  preset: string
+): Promise<CloudinaryResponse> {
+  const formData = new FormData();
+
+  formData.append("file", file);
+  formData.append("upload_preset", preset);
+
+  const response = await fetch(
+    "https://api.cloudinary.com/v1_1/db4bgno7i/video/upload",
+    {
+      method: "POST",
+      body: formData,
+    }
+  );
+
+  console.log("UPLOAD STATUS:", response.status);
+
+  const responseData: unknown =
+    await response.json();
+
+  if (!response.ok) {
+    if (
+      responseData &&
+      typeof responseData === "object" &&
+      "error" in responseData
+    ) {
+      const error = responseData.error;
+
+      if (
+        error &&
+        typeof error === "object" &&
+        "message" in error &&
+        typeof error.message === "string"
+      ) {
+        throw new Error(error.message);
+      }
+    }
+
+    throw new Error("Cloudinary upload failed");
+  }
+
+  if (!isValidCloudinaryResponse(responseData)) {
+    throw new Error("Invalid Cloudinary response");
+  }
+
+  return responseData;
 }
 
 export async function uploadWatchVideo({
@@ -46,6 +163,7 @@ export async function uploadWatchVideo({
   sponsor,
   originalVideoId,
   originalAudioId,
+  isEnhanced,
 }: UploadWatchVideoData) {
   try {
     // ==================================================
@@ -144,42 +262,53 @@ export async function uploadWatchVideo({
       sponsor ? 25 : 5;
 
     // ==================================================
-    // FORM DATA
+    // CLOUDINARY UPLOAD ATTEMPT
     // ==================================================
 
-    const formData =
-      new FormData();
+    let cloudinaryData: CloudinaryResponse | null = null;
+    let finalIsEnhanced = false;
 
-    formData.append(
-      "file",
-      file
-    );
+    if (isEnhanced === true) {
+      try {
+        const enhancedData =
+          await uploadToCloudinary(
+            file,
+            "jembeekart_enhanced"
+          );
 
-    formData.append(
-      "upload_preset",
-      "jembeekart"
-    );
+        const enhancedUrl =
+          getEnhancedUrl(enhancedData);
 
-    // ==================================================
-    // CLOUDINARY UPLOAD
-    // ==================================================
-
-    const response =
-      await fetch(
-        "https://api.cloudinary.com/v1_1/db4bgno7i/video/upload",
-        {
-          method: "POST",
-          body: formData,
+        if (!enhancedUrl) {
+          throw new Error(
+            "Enhanced eager URL missing or invalid"
+          );
         }
-      );
+
+        cloudinaryData = enhancedData;
+        finalIsEnhanced = true;
+      } catch (error) {
+        console.warn(
+          "Enhanced upload failed, falling back to original:",
+          error
+        );
+      }
+    }
+
+    if (!cloudinaryData) {
+      cloudinaryData =
+        await uploadToCloudinary(
+          file,
+          "jembeekart"
+        );
+
+      finalIsEnhanced = false;
+    }
 
     console.log(
-      "UPLOAD STATUS:",
-      response.status
+      "CLOUDINARY RESPONSE:",
+      cloudinaryData
     );
-
-    const cloudinaryData =
-      await response.json();
 
     console.log(
       "CLOUDINARY RESPONSE:",
@@ -209,23 +338,31 @@ export async function uploadWatchVideo({
     // URLS
     // ==================================================
 
-    const videoUrl =
-      cloudinaryData.secure_url;
+    const videoUrl: string | null =
+      finalIsEnhanced
+        ? getEnhancedUrl(cloudinaryData)
+        : getOriginalUrl(cloudinaryData);
+
+    if (!videoUrl) {
+      return {
+        success: false,
+        message: "Final video URL is invalid",
+      };
+    }
 
     const musicId =
       music ||
       `original-${cloudinaryData.public_id}`;
 
-    const thumbnailUrl =
-      cloudinaryData.secure_url
-        .replace(
-          "/video/upload/",
-          "/video/upload/so_1/"
-        )
-        .replace(
-          ".mp4",
-          ".jpg"
-        );
+    const thumbnailUrl = videoUrl
+      .replace(
+        "/video/upload/",
+        "/video/upload/so_1/"
+      )
+      .replace(
+        ".mp4",
+        ".jpg"
+      );
 
     // ==================================================
     // FIRESTORE SAVE
@@ -296,6 +433,9 @@ export async function uploadWatchVideo({
 
       verified:
         false,
+
+      isEnhanced:
+        finalIsEnhanced,
 
       sponsor:
         sponsor === true,
