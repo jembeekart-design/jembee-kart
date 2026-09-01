@@ -3,7 +3,8 @@
 import {
   useState,
   useEffect,
-  useMemo
+  useMemo,
+  useRef
 } from "react";
 import { useSearchParams } from "next/navigation";
 import { auth } from "@/firebase/config";
@@ -15,7 +16,10 @@ import {
   ShieldCheck
 } from "lucide-react";
 import {
-  uploadWatchVideo
+  uploadWatchVideo,
+  uploadToCloudinary,
+  getEnhancedUrl,
+  CloudinaryResponse
 } from "@/lib/mlm/watch-earn/uploadWatchVideo";
 
 export default function
@@ -29,6 +33,18 @@ UploadWatchVideoPage() {
   const [isEnhanced, setIsEnhanced] = useState(false);
   const [caption, setCaption] = useState("");
   const [hashtags, setHashtags] = useState("");
+  const [enhancedPreviewData, setEnhancedPreviewData] =
+    useState<CloudinaryResponse | null>(null);
+  const [enhancedPreviewUrl, setEnhancedPreviewUrl] =
+    useState<string | null>(null);
+  const [processingEnhanced, setProcessingEnhanced] =
+    useState(false);
+  const uploadSessionIdRef = useRef(0);
+  const enhancedRequestRef = useRef<{
+    key: string;
+    controller: AbortController;
+    promise: Promise<CloudinaryResponse>;
+  } | null>(null);
   const [music, setMusic] = useState(initialMusic);
   
   useEffect(() => {
@@ -61,7 +77,102 @@ UploadWatchVideoPage() {
     };
   }, [previewUrl]);
 
-  // ... (rest of component)
+  useEffect(() => {
+    const currentUploadId = ++uploadSessionIdRef.current;
+
+    setEnhancedPreviewData(null);
+    setEnhancedPreviewUrl(null);
+
+    if (!isEnhanced || !file) {
+      if (enhancedRequestRef.current) {
+        enhancedRequestRef.current.controller.abort();
+        enhancedRequestRef.current = null;
+      }
+
+      setProcessingEnhanced(false);
+      return;
+    }
+
+    const fileKey =
+      `${file.name}:${file.size}:${file.lastModified}:${file.type}`;
+
+    let request = enhancedRequestRef.current;
+
+    if (!request || request.key !== fileKey) {
+      if (request) {
+        request.controller.abort();
+      }
+
+      const controller = new AbortController();
+
+      const promise =
+        uploadToCloudinary(
+          file,
+          "jembeekart_enhanced",
+          controller.signal
+        );
+
+      request = {
+        key: fileKey,
+        controller,
+        promise,
+      };
+
+      enhancedRequestRef.current = request;
+    }
+
+    setProcessingEnhanced(true);
+
+    request.promise
+      .then((data) => {
+        const url = getEnhancedUrl(data);
+
+        if (
+          currentUploadId !== uploadSessionIdRef.current ||
+          !isEnhanced
+        ) {
+          return;
+        }
+
+        if (url) {
+          setEnhancedPreviewData(data);
+          setEnhancedPreviewUrl(url);
+        } else {
+          setEnhancedPreviewData(null);
+          setEnhancedPreviewUrl(null);
+          setIsEnhanced(false);
+        }
+      })
+      .catch((err) => {
+        if (currentUploadId !== uploadSessionIdRef.current) {
+          return;
+        }
+
+        if (err instanceof DOMException && err.name === "AbortError") {
+          return;
+        }
+
+        console.error(
+          "Enhanced preview failed",
+          err
+        );
+
+        setEnhancedPreviewData(null);
+        setEnhancedPreviewUrl(null);
+        setIsEnhanced(false);
+      })
+      .finally(() => {
+        if (currentUploadId === uploadSessionIdRef.current) {
+          setProcessingEnhanced(false);
+        }
+      });
+  }, [isEnhanced, file]);
+
+  useEffect(() => {
+    return () => {
+      uploadSessionIdRef.current += 1;
+    };
+  }, []);
 
   async function
   handleUpload() {
@@ -109,7 +220,8 @@ UploadWatchVideoPage() {
             .filter(Boolean),
 
         music,
-        isEnhanced
+        isEnhanced,
+        preUploadedEnhancedData: enhancedPreviewData
       });
       if (
         result.success
@@ -442,11 +554,13 @@ UploadWatchVideoPage() {
 
                     <div className="min-w-0 flex-1 overflow-hidden rounded-xl bg-black">
                       <p className="p-1 text-[8px] text-white">
-                        Enhanced Preview (CSS only)
+                        {processingEnhanced
+                          ? "Processing enhanced video..."
+                          : "Enhanced Preview"}
                       </p>
                       <video
-                        src={previewUrl}
-                        className="aspect-[9/16] h-auto w-full object-cover contrast-[1.1] brightness-[1.05] saturate-[1.1]"
+                        src={enhancedPreviewUrl || previewUrl}
+                        className="aspect-[9/16] h-auto w-full object-cover"
                         muted
                         controls
                       />
@@ -693,7 +807,7 @@ UploadWatchVideoPage() {
         <button
           onClick={handleUpload}
 
-          disabled={loading}
+          disabled={loading || processingEnhanced}
 
           className="
             flex
