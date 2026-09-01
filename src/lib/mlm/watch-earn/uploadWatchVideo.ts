@@ -33,16 +33,17 @@ interface UploadWatchVideoData {
   originalVideoId?: string;
   originalAudioId?: string;
   isEnhanced?: boolean;
+  preUploadedEnhancedData?: CloudinaryResponse | null;
 }
 
 
-interface CloudinaryResponse {
+export interface CloudinaryResponse {
   secure_url?: unknown;
   public_id?: unknown;
   eager?: unknown;
 }
 
-function isValidHttpsUrl(value: unknown): value is string {
+export function isValidHttpsUrl(value: unknown): value is string {
   if (typeof value !== "string" || value.trim() === "") {
     return false;
   }
@@ -70,7 +71,7 @@ function isValidCloudinaryResponse(
   );
 }
 
-function getEnhancedUrl(
+export function getEnhancedUrl(
   data: CloudinaryResponse
 ): string | null {
   if (!Array.isArray(data.eager)) {
@@ -93,7 +94,7 @@ function getEnhancedUrl(
   return enhancedUrl;
 }
 
-function getOriginalUrl(
+export function getOriginalUrl(
   data: CloudinaryResponse
 ): string | null {
   const url: unknown = data.secure_url;
@@ -101,9 +102,10 @@ function getOriginalUrl(
   return isValidHttpsUrl(url) ? url : null;
 }
 
-async function uploadToCloudinary(
+export async function uploadToCloudinary(
   file: File,
-  preset: string
+  preset: string,
+  signal?: AbortSignal
 ): Promise<CloudinaryResponse> {
   const formData = new FormData();
 
@@ -115,6 +117,7 @@ async function uploadToCloudinary(
     {
       method: "POST",
       body: formData,
+      signal,
     }
   );
 
@@ -164,6 +167,7 @@ export async function uploadWatchVideo({
   originalVideoId,
   originalAudioId,
   isEnhanced,
+  preUploadedEnhancedData,
 }: UploadWatchVideoData) {
   try {
     // ==================================================
@@ -269,29 +273,47 @@ export async function uploadWatchVideo({
     let finalIsEnhanced = false;
 
     if (isEnhanced === true) {
-      try {
-        const enhancedData =
-          await uploadToCloudinary(
-            file,
-            "jembeekart_enhanced"
+      if (preUploadedEnhancedData !== undefined) {
+        if (
+          preUploadedEnhancedData !== null &&
+          isValidCloudinaryResponse(preUploadedEnhancedData) &&
+          getEnhancedUrl(preUploadedEnhancedData)
+        ) {
+          cloudinaryData = preUploadedEnhancedData;
+          finalIsEnhanced = true;
+          console.log(
+            "Using accepted pre-uploaded enhanced Cloudinary response"
           );
-
-        const enhancedUrl =
-          getEnhancedUrl(enhancedData);
-
-        if (!enhancedUrl) {
-          throw new Error(
-            "Enhanced eager URL missing or invalid"
+        } else {
+          console.warn(
+            "Pre-uploaded enhanced Cloudinary response is invalid. Falling back to original upload without another enhanced upload."
           );
         }
+      } else {
+        try {
+          const enhancedData =
+            await uploadToCloudinary(
+              file,
+              "jembeekart_enhanced"
+            );
 
-        cloudinaryData = enhancedData;
-        finalIsEnhanced = true;
-      } catch (error) {
-        console.warn(
-          "Enhanced upload failed, falling back to original:",
-          error
-        );
+          const enhancedUrl =
+            getEnhancedUrl(enhancedData);
+
+          if (!enhancedUrl) {
+            throw new Error(
+              "Enhanced eager URL missing or invalid"
+            );
+          }
+
+          cloudinaryData = enhancedData;
+          finalIsEnhanced = true;
+        } catch (error) {
+          console.warn(
+            "Enhanced upload failed, falling back to original:",
+            error
+          );
+        }
       }
     }
 
