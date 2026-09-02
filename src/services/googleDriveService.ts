@@ -45,7 +45,8 @@ function getDriveClient() {
 }
 
 function getFolderId(): string {
-  const folderId = process.env.GOOGLE_DRIVE_FOLDER_ID?.trim();
+  const folderId =
+    process.env.GOOGLE_DRIVE_FOLDER_ID?.trim();
 
   if (!folderId) {
     throw new Error(
@@ -65,8 +66,12 @@ export async function uploadVideoToDrive(
     throw new Error("Drive filename is required");
   }
 
-  if (!mimeType.toLowerCase().startsWith("video/")) {
-    throw new Error("Only video MIME types are allowed");
+  if (
+    !mimeType.toLowerCase().startsWith("video/")
+  ) {
+    throw new Error(
+      "Only video MIME types are allowed"
+    );
   }
 
   const drive = getDriveClient();
@@ -92,6 +97,66 @@ export async function uploadVideoToDrive(
   }
 
   return fileId;
+}
+
+export async function downloadDriveFile(
+  fileId: string
+): Promise<{
+  stream: Readable;
+  mimeType: string;
+  filename: string;
+}> {
+  const trimmedFileId = fileId.trim();
+
+  if (!trimmedFileId) {
+    throw new Error("Drive file ID is required");
+  }
+
+  const drive = getDriveClient();
+
+  const metadataResponse =
+    await drive.files.get({
+      fileId: trimmedFileId,
+      fields: "name,mimeType,size",
+    });
+
+  const metadata = metadataResponse.data;
+
+  if (
+    !metadata.mimeType ||
+    !metadata.mimeType
+      .toLowerCase()
+      .startsWith("video/")
+  ) {
+    throw new Error(
+      "Drive file is not a video"
+    );
+  }
+
+  const response =
+    await drive.files.get(
+      {
+        fileId: trimmedFileId,
+        alt: "media",
+      },
+      {
+        responseType: "stream",
+      }
+    );
+
+  if (!response.data) {
+    throw new Error(
+      "Google Drive returned an empty video stream"
+    );
+  }
+
+  return {
+    stream: response.data as Readable,
+    mimeType: metadata.mimeType,
+    filename:
+      metadata.name?.trim() ||
+      `moderation_${trimmedFileId}`,
+  };
 }
 
 export async function deleteDriveFile(

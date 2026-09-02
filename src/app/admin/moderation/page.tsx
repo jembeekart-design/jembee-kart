@@ -1,128 +1,96 @@
 'use client';
 
-import React, { useState, useEffect } from 'react';
-import { ModerationSettings, RegexRule, CommentAuditLog, ReviewQueueItem } from '@/types/moderation';
-import { getModerationSettings, updateModerationSettings, getRegexRules } from '@/services/moderationService';
-import { collection, getDocs, query, orderBy, limit, where, updateDoc, doc, serverTimestamp, runTransaction } from 'firebase/firestore';
-import { db } from '@/firebase/config';
+import React, { useState, useEffect, useCallback } from 'react';
+import { ModerationSettings, CommentAuditLog } from '@/types/moderation';
+import { getModerationSettings, updateModerationSettings } from '@/services/moderationService';
+import { collection, getDocs, query, orderBy, limit } from 'firebase/firestore';
+import { db, auth } from '@/firebase/config';
 import { Play } from 'lucide-react';
 
-interface VideoModerationItem {
+interface ModerationSubmission {
   id: string;
+  submissionId: string;
+  driveFileId: string;
   creatorId: string;
-  username: string;
   displayName: string;
-  video: string;
-  thumbnail: string;
+  photoURL: string;
+  username: string;
   caption: string;
   hashtags: string[];
+  music: string;
+  sponsor: boolean;
+  isEnhanced: boolean;
   status: string;
-  moderation: string;
-  coins: number;
-  pendingCoins: number;
-  createdAt: any;
+  createdAt: { toDate: () => Date } | null;
 }
 
 export default function AdminModerationDashboard() {
   const [settings, setSettings] = useState<ModerationSettings | null>(null);
-  const [regexRules, setRegexRules] = useState<RegexRule[]>([]);
   const [auditLogs, setAuditLogs] = useState<CommentAuditLog[]>([]);
-  const [pendingReports, setPendingReports] = useState<ReviewQueueItem[]>([]);
-  const [videoQueue, setVideoQueue] = useState<VideoModerationItem[]>([]);
+  const [submissions, setSubmissions] = useState<ModerationSubmission[]>([]);
   const [newBlockedWord, setNewBlockedWord] = useState('');
   const [newAllowedWord, setNewAllowedWord] = useState('');
-  const [adminId] = useState('admin_system_user'); // Authenticated admin placeholder
   const [saving, setSaving] = useState(false);
   const [message, setMessage] = useState('');
 
+  const fetchSubmissions = useCallback(async () => {
+    try {
+      setMessage('Loading submissions...');
+      const user = auth.currentUser;
+      if (!user) throw new Error('Not authenticated');
+      const token = await user.getIdToken();
+
+      const response = await fetch('/api/admin/moderation-submissions', {
+        headers: {
+          'Authorization': `Bearer ${token}`
+        }
+      });
+      const data = await response.json();
+      if (!data.success) throw new Error(data.message || 'Failed to load');
+
+      setSubmissions(data.submissions);
+      setMessage('');
+    } catch (error) {
+      console.error('Error fetching submissions:', error);
+      setMessage(`Error: ${error instanceof Error ? error.message : String(error)}`);
+    }
+  }, []);
+
   useEffect(() => {
     getModerationSettings(true).then(setSettings);
-    getRegexRules().then(setRegexRules);
 
     getDocs(query(collection(db, 'commentAuditLogs'), orderBy('timestamp', 'desc'), limit(15)))
       .then(snap => setAuditLogs(snap.docs.map(d => ({ id: d.id, ...d.data() } as CommentAuditLog))));
 
-    getDocs(query(collection(db, 'videoCommentReports'), where('status', '==', 'pending')))
-      .then(snap => setPendingReports(snap.docs.map(d => ({ id: d.id, ...d.data() } as ReviewQueueItem))));
+    setTimeout(() => fetchSubmissions(), 0);
+  }, [fetchSubmissions]);
 
-    fetchVideoQueue();
-  }, []);
-
-  const fetchVideoQueue = async () => {
-    try {
-      console.log('MODERATION: querying watchEarnVideos...');
-
-      const q = query(
-        collection(db, 'watchEarnVideos'),
-        where('status', 'in', ['pending', 'rejected']),
-        orderBy('createdAt', 'desc')
-      );
-
-      const snap = await getDocs(q);
-
-      console.log('MODERATION: documents found =', snap.size);
-
-      setVideoQueue(
-        snap.docs.map(d => ({
-          id: d.id,
-          ...d.data()
-        }) as VideoModerationItem)
-      );
-
-      setMessage(`DEBUG: ${snap.size} moderation videos found`);
-    } catch (error) {
-      console.error('MODERATION QUERY ERROR:', error);
-      setMessage(
-        `DEBUG ERROR: ${error instanceof Error ? error.message : String(error)}`
-      );
-    }
-  };
-
-  const handleVideoAction = async (videoId: string, action: 'approved' | 'rejected') => {
+  const handleModerationAction = async (submissionId: string, action: 'approve' | 'reject') => {
     setSaving(true);
     try {
-      const videoRef = doc(db, 'watchEarnVideos', videoId);
-      await runTransaction(db, async (transaction) => {
-        const videoDoc = await transaction.get(videoRef);
-        if (!videoDoc.exists()) throw "Video not found";
-        const data = videoDoc.data();
+      const user = auth.currentUser;
+      if (!user) throw new Error('Not authenticated');
+      const token = await user.getIdToken();
 
-        const updatePayload = action === 'approved' ? {
-          status: 'approved',
-          moderation: 'safe',
-          coins: data.pendingCoins || 0,
-          pendingCoins: 0,
-          moderationCheckedAt: serverTimestamp()
-        } : {
-          status: 'rejected',
-          moderation: 'rejected',
-          coins: 0,
-          pendingCoins: 0,
-          moderationCheckedAt: serverTimestamp()
-        };
-
-        transaction.update(videoRef, updatePayload);
+      const response = await fetch('/api/admin/moderate-video', {
+        method: 'POST',
+        headers: {
+          'Authorization': `Bearer ${token}`,
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({ submissionId, action })
       });
-      setMessage(`Video ${action} successfully!`);
-      fetchVideoQueue();
+      const data = await response.json();
+      if (!data.success) throw new Error(data.message || 'Failed to process');
+
+      setMessage(`Submission ${action}d successfully!`);
+      fetchSubmissions();
       setTimeout(() => setMessage(''), 3000);
     } catch (err) {
       console.error(err);
-      setMessage('Failed to update video status.');
+      setMessage(`Failed to process: ${err instanceof Error ? err.message : String(err)}`);
     } finally {
       setSaving(false);
-    }
-  };
-
-  const handleReviewAction = async (reportId: string, action: 'approved' | 'rejected') => {
-    try {
-      await updateDoc(doc(db, 'videoCommentReports', reportId), { status: action });
-      setPendingReports(prev => prev.filter(p => p.id !== reportId));
-      setMessage(`Report ${action} successfully!`);
-      setTimeout(() => setMessage(''), 3000);
-    } catch (err) {
-      console.error(err);
-      setMessage('Failed to update report.');
     }
   };
 
@@ -131,6 +99,7 @@ export default function AdminModerationDashboard() {
   const handleSave = async (updatedFields: Partial<ModerationSettings>, reason: string) => {
     setSaving(true);
     try {
+      const adminId = auth.currentUser?.uid || 'admin_system_user';
       const merged = { ...settings, ...updatedFields };
       await updateModerationSettings(merged, adminId, reason);
       setSettings(merged);
@@ -157,27 +126,25 @@ export default function AdminModerationDashboard() {
 
       {/* Video Moderation Queue */}
       <div className="bg-gray-800 p-6 rounded-lg space-y-4">
-        <h2 className="text-lg font-semibold text-purple-400">Video Moderation Queue ({videoQueue.length})</h2>
+        <h2 className="text-lg font-semibold text-purple-400">Video Moderation Queue ({submissions.length})</h2>
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-          {videoQueue.map((video) => (
-            <div key={video.id} className="bg-gray-700 p-4 rounded-lg space-y-2">
-              <div className="aspect-[9/16] bg-black rounded overflow-hidden relative">
-                <img src={video.thumbnail} className="w-full h-full object-cover" />
+          {submissions.map((sub) => (
+            <div key={sub.id} className="bg-gray-700 p-4 rounded-lg space-y-2">
+              <div className="aspect-[9/16] bg-black rounded overflow-hidden relative flex items-center justify-center">
+                <span className="text-xs text-gray-500">Private Drive Video</span>
                 <Play className="absolute inset-0 m-auto text-white/50" size={48} />
               </div>
-              <p className="font-bold truncate">{video.username}</p>
-              <p className="text-xs text-gray-400">{video.caption}</p>
-              <p className="text-xs">Status: <span className={video.status === 'pending' ? 'text-yellow-400' : 'text-red-400'}>{video.status}</span></p>
+              <p className="font-bold truncate">{sub.username}</p>
+              <p className="text-xs text-gray-400">{sub.caption}</p>
+              <p className="text-xs text-gray-400">Status: <span className='text-yellow-400'>{sub.status}</span></p>
               <div className="flex gap-2 pt-2">
-                <button onClick={() => handleVideoAction(video.id, 'approved')} className="bg-green-600 hover:bg-green-700 px-3 py-1 rounded text-white flex-1">Approve</button>
-                <button onClick={() => handleVideoAction(video.id, 'rejected')} className="bg-red-600 hover:bg-red-700 px-3 py-1 rounded text-white flex-1">Reject</button>
+                <button onClick={() => handleModerationAction(sub.submissionId, 'approve')} className="bg-green-600 hover:bg-green-700 px-3 py-1 rounded text-white flex-1" disabled={saving}>Approve</button>
+                <button onClick={() => handleModerationAction(sub.submissionId, 'reject')} className="bg-red-600 hover:bg-red-700 px-3 py-1 rounded text-white flex-1" disabled={saving}>Reject</button>
               </div>
             </div>
           ))}
         </div>
       </div>
-
-
 
       {/* Global Toggles */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6 bg-gray-800 p-6 rounded-lg">
@@ -210,10 +177,9 @@ export default function AdminModerationDashboard() {
         </label>
       </div>
 
-      {/* Whitelist Words Section (Overrides Blocked Words) */}
+      {/* Whitelist Words Section */}
       <div className="bg-gray-800 p-6 rounded-lg space-y-4">
         <h2 className="text-lg font-semibold text-emerald-400">Whitelist Words (Absolute Priority Override)</h2>
-        <p className="text-xs text-gray-400">Words specified here will bypass blocklist filters and profanity rules.</p>
         <div className="flex gap-2">
           <input
             type="text"
@@ -290,37 +256,6 @@ export default function AdminModerationDashboard() {
               </button>
             </span>
           ))}
-        </div>
-      </div>
-
-      {/* Rate Limits & Constraints */}
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-6 bg-gray-800 p-6 rounded-lg">
-        <div>
-          <label className="block text-sm font-medium mb-1">Max Comment Length</label>
-          <input
-            type="number"
-            value={settings.maxCommentLength}
-            onChange={(e) => handleSave({ maxCommentLength: parseInt(e.target.value) || 500 }, "Updated max length")}
-            className="bg-gray-700 w-full px-3 py-2 rounded border border-gray-600"
-          />
-        </div>
-        <div>
-          <label className="block text-sm font-medium mb-1">Max Comments Per Minute (Flood Limit)</label>
-          <input
-            type="number"
-            value={settings.maxCommentsPerMinute}
-            onChange={(e) => handleSave({ maxCommentsPerMinute: parseInt(e.target.value) || 5 }, "Updated flood per minute")}
-            className="bg-gray-700 w-full px-3 py-2 rounded border border-gray-600"
-          />
-        </div>
-        <div>
-          <label className="block text-sm font-medium mb-1">Duplicate Window (Seconds)</label>
-          <input
-            type="number"
-            value={settings.duplicateCommentWindowSeconds}
-            onChange={(e) => handleSave({ duplicateCommentWindowSeconds: parseInt(e.target.value) || 60 }, "Updated duplicate window")}
-            className="bg-gray-700 w-full px-3 py-2 rounded border border-gray-600"
-          />
         </div>
       </div>
 

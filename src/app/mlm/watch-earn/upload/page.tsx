@@ -1,31 +1,14 @@
 "use client";
 
-import {
-  useState,
-  useEffect,
-  useMemo,
-  useRef
-} from "react";
+import Link from "next/link";
+import { useState, useEffect, useMemo } from "react";
 import { useSearchParams } from "next/navigation";
 import { auth } from "@/firebase/config";
-import {
-  Upload,
-  Loader2,
-  Music2,
-  BadgeCheck,
-  ShieldCheck
-} from "lucide-react";
-import {
-  uploadWatchVideo,
-  uploadToCloudinary,
-  getEnhancedUrl,
-  CloudinaryResponse
-} from "@/lib/mlm/watch-earn/uploadWatchVideo";
+import { Upload, Loader2, Music2, BadgeCheck, ShieldCheck } from "lucide-react";
+import { uploadWatchVideo } from "@/lib/mlm/watch-earn/uploadWatchVideo";
 
-export default function
-UploadWatchVideoPage() {
+export default function UploadWatchVideoPage() {
   const searchParams = useSearchParams();
-  const initialMusic = searchParams.get('audio') || "";
   const videoUrlFromParams = searchParams.get('url');
   
   const [file, setFile] = useState<File | null>(null);
@@ -33,19 +16,7 @@ UploadWatchVideoPage() {
   const [isEnhanced, setIsEnhanced] = useState(false);
   const [caption, setCaption] = useState("");
   const [hashtags, setHashtags] = useState("");
-  const [enhancedPreviewData, setEnhancedPreviewData] =
-    useState<CloudinaryResponse | null>(null);
-  const [enhancedPreviewUrl, setEnhancedPreviewUrl] =
-    useState<string | null>(null);
-  const [processingEnhanced, setProcessingEnhanced] =
-    useState(false);
-  const uploadSessionIdRef = useRef(0);
-  const enhancedRequestRef = useRef<{
-    key: string;
-    controller: AbortController;
-    promise: Promise<CloudinaryResponse>;
-  } | null>(null);
-  const [music, setMusic] = useState(initialMusic);
+  const [music, setMusic] = useState("");
   
   useEffect(() => {
     async function loadBlob() {
@@ -64,9 +35,7 @@ UploadWatchVideoPage() {
   }, [videoUrlFromParams]);
   
   const previewUrl = useMemo(() => {
-    return file
-      ? URL.createObjectURL(file)
-      : null;
+    return file ? URL.createObjectURL(file) : null;
   }, [file]);
 
   useEffect(() => {
@@ -77,774 +46,175 @@ UploadWatchVideoPage() {
     };
   }, [previewUrl]);
 
-  useEffect(() => {
-    const currentUploadId = ++uploadSessionIdRef.current;
-
-    setEnhancedPreviewData(null);
-    setEnhancedPreviewUrl(null);
-
-    if (!isEnhanced || !file) {
-      if (enhancedRequestRef.current) {
-        enhancedRequestRef.current.controller.abort();
-        enhancedRequestRef.current = null;
-      }
-
-      setProcessingEnhanced(false);
-      return;
-    }
-
-    const fileKey =
-      `${file.name}:${file.size}:${file.lastModified}:${file.type}`;
-
-    let request = enhancedRequestRef.current;
-
-    if (!request || request.key !== fileKey) {
-      if (request) {
-        request.controller.abort();
-      }
-
-      const controller = new AbortController();
-
-      const promise =
-        uploadToCloudinary(
-          file,
-          "jembeekart_enhanced",
-          controller.signal
-        );
-
-      request = {
-        key: fileKey,
-        controller,
-        promise,
-      };
-
-      enhancedRequestRef.current = request;
-    }
-
-    setProcessingEnhanced(true);
-
-    request.promise
-      .then((data) => {
-        const url = getEnhancedUrl(data);
-
-        if (
-          currentUploadId !== uploadSessionIdRef.current ||
-          !isEnhanced
-        ) {
-          return;
-        }
-
-        if (url) {
-          setEnhancedPreviewData(data);
-          setEnhancedPreviewUrl(url);
-        } else {
-          setEnhancedPreviewData(null);
-          setEnhancedPreviewUrl(null);
-          setIsEnhanced(false);
-        }
-      })
-      .catch((err) => {
-        if (currentUploadId !== uploadSessionIdRef.current) {
-          return;
-        }
-
-        if (err instanceof DOMException && err.name === "AbortError") {
-          return;
-        }
-
-        console.error(
-          "Enhanced preview failed",
-          err
-        );
-
-        setEnhancedPreviewData(null);
-        setEnhancedPreviewUrl(null);
-        setIsEnhanced(false);
-      })
-      .finally(() => {
-        if (currentUploadId === uploadSessionIdRef.current) {
-          setProcessingEnhanced(false);
-        }
-      });
-  }, [isEnhanced, file]);
-
-  useEffect(() => {
-    return () => {
-      uploadSessionIdRef.current += 1;
-    };
-  }, []);
-
-  async function
-  handleUpload() {
-
+  async function handleUpload() {
     try {
-
       if (!file) {
-
-        alert(
-          "Select video first"
-        );
-
+        alert("Select video first");
         return;
       }
 
       setLoading(true);
 
-      const result =
-      await uploadWatchVideo({
+      const result = await uploadWatchVideo({
         file,
-
-        creatorId:
-          auth.currentUser?.uid || "",
-
-        displayName:
-          auth.currentUser?.displayName || undefined,
-
-        photoURL:
-          auth.currentUser?.photoURL || undefined,
-
-        username:
-          auth.currentUser?.displayName || auth.currentUser?.email || "Unknown User",
-
+        creatorId: auth.currentUser?.uid || "",
+        displayName: auth.currentUser?.displayName || undefined,
+        photoURL: auth.currentUser?.photoURL || undefined,
+        username: auth.currentUser?.displayName || auth.currentUser?.email || "Unknown User",
         caption,
-
-        hashtags:
-          hashtags
-            .split(",")
-
-            .map(
-              (tag) =>
-                tag.trim()
-            )
-
-            .filter(Boolean),
-
+        hashtags: hashtags.split(",").map((tag) => tag.trim()).filter(Boolean),
         music,
         isEnhanced,
-        preUploadedEnhancedData: enhancedPreviewData
       });
-      if (
-        result.success
-      ) {
-
-        alert(
-          "Video uploaded successfully"
-        );
-
+      if (result.success) {
+        alert("Video submitted for moderation. It will be published after approval.");
         setCaption("");
-
         setHashtags("");
-
         setMusic("");
-
         setFile(null);
-
       } else {
-
-        alert(
-          result.message ||
-          "Upload failed"
-        );
+        alert(result.message || "Upload failed");
       }
-
     } catch (error) {
-
-      console.error(
-        error
-      );
-
-      alert(
-        "Something went wrong"
-      );
-
+      console.error(error);
+      alert("Something went wrong");
     } finally {
-
       setLoading(false);
     }
   }
 
   return (
-
-    <main
-      className="
-        min-h-screen
-        bg-[var(--color-page-background)]
-        px-4
-        py-6
-      "
-    >
-
-      {/* HEADER */}
-
-      <div
-        className="
-          mb-8
-        "
-      >
-
-        <div
-          className="
-            flex
-            items-center
-            gap-3
-          "
-        >
-
-          <div
-            className="
-              flex
-              h-14
-              w-14
-              items-center
-              justify-center
-              rounded-3xl
-              bg-[var(--color-secondary-button)]/20
-            "
-          >
-
-            <Upload
-              size={28}
-              className="
-                text-[var(--color-primary-button)]
-              "
-            />
-
+    <main className="min-h-screen bg-[var(--color-page-background)] px-4 py-6">
+      <div className="mb-8">
+        <div className="flex items-center gap-3">
+          <div className="flex h-14 w-14 items-center justify-center rounded-3xl bg-[var(--color-secondary-button)]/20">
+            <Upload size={28} className="text-[var(--color-primary-button)]" />
           </div>
-
           <div>
-
-            <h1
-              className="
-                text-3xl
-                font-black
-                text-[var(--button-text-color)]
-              "
-            >
-
-              Upload Video
-
-            </h1>
-
-            <p
-              className="
-                mt-1
-                text-sm
-                text-[var(--text-secondary)]
-              "
-            >
-
-              Upload videos for Jembee Shorts
-
-            </p>
-
+            <h1 className="text-3xl font-black text-[var(--button-text-color)]">Upload Video</h1>
+            <p className="mt-1 text-sm text-[var(--text-secondary)]">Upload videos for Jembee Shorts</p>
           </div>
-
         </div>
-
       </div>
 
-      {/* INFO BOX */}
-
-      <div
-        className="
-          mb-6
-          rounded-3xl
-          border
-          border-[var(--color-primary-button)]/20
-          bg-[var(--color-secondary-button)]/10
-          p-5
-        "
-      >
-
-        <div
-          className="
-            flex
-            items-start
-            gap-4
-          "
-        >
-
-          <ShieldCheck
-            size={24}
-            className="
-              mt-1
-              text-[var(--color-primary-button)]
-            "
-          />
-
+      <div className="mb-6 rounded-3xl border border-[var(--color-primary-button)]/20 bg-[var(--color-secondary-button)]/10 p-5">
+        <div className="flex items-start gap-4">
+          <ShieldCheck size={24} className="mt-1 text-[var(--color-primary-button)]" />
           <div>
-
-            <h2
-              className="
-                text-lg
-                font-black
-                text-[var(--button-text-color)]
-              "
-            >
-
-              Video Rules
-
-            </h2>
-
-            <ul
-              className="
-                mt-3
-                space-y-2
-                text-sm
-                text-[var(--color-primary-button)]
-              "
-            >
-
-              <li>
-                • Only original videos allowed
-              </li>
-
-              <li>
-                • Spam & copied videos rejected
-              </li>
-
-              <li>
-                • Admin automatically sets rewards
-              </li>
-
-              <li>
-                • Viral videos may get featured
-              </li>
-
+            <h2 className="text-lg font-black text-[var(--button-text-color)]">Video Rules</h2>
+            <ul className="mt-3 space-y-2 text-sm text-[var(--color-primary-button)]">
+              <li>• Only original videos allowed</li>
+              <li>• Spam & copied videos rejected</li>
+              <li>• Admin automatically sets rewards</li>
+              <li>• Viral videos may get featured</li>
             </ul>
-
           </div>
-
         </div>
-
       </div>
 
-      {/* FORM */}
-
-      <div
-        className="
-          space-y-5
-        "
-      >
-        <a href="/mlm/watch-earn/history" className="block text-center text-sm font-bold text-[var(--color-primary-button)] mb-4">
+      <div className="space-y-5">
+        <Link href="/mlm/watch-earn/history" className="block text-center text-sm font-bold text-[var(--color-primary-button)] mb-4">
           My Upload History
-        </a>
+        </Link>
 
-        {/* FILE */}
-
-        <label
-          className="
-            flex
-            cursor-pointer
-            flex-col
-            items-center
-            justify-center
-            rounded-[32px]
-            border-2
-            border-dashed
-            border-[var(--color-border)]/10
-            bg-gradient-to-b
-            from-white/5
-            to-white/[0.02]
-            px-5
-            py-14
-            text-center
-          "
-        >
-
-          <div
-            className="
-              flex
-              h-20
-              w-20
-              items-center
-              justify-center
-              rounded-full
-              bg-[var(--color-secondary-button)]/20
-            "
-          >
-
-            <Upload
-              size={42}
-              className="
-                text-[var(--color-primary-button)]
-              "
-            />
-
+        <label className="flex cursor-pointer flex-col items-center justify-center rounded-[32px] border-2 border-dashed border-[var(--color-border)]/10 bg-gradient-to-b from-white/5 to-white/[0.02] px-5 py-14 text-center">
+          <div className="flex h-20 w-20 items-center justify-center rounded-full bg-[var(--color-secondary-button)]/20">
+            <Upload size={42} className="text-[var(--color-primary-button)]" />
           </div>
-
-          <p
-            className="
-              mt-5
-              text-2xl
-              font-black
-              text-[var(--button-text-color)]
-            "
-          >
-
-            Upload Video
-
-          </p>
-
-          <p
-            className="
-              mt-2
-              text-sm
-              text-[var(--text-secondary)]
-            "
-          >
-
-            MP4, MOV supported
-
-          </p>
-
+          <p className="mt-5 text-2xl font-black text-[var(--button-text-color)]">Upload Video</p>
+          <p className="mt-2 text-sm text-[var(--text-secondary)]">MP4, MOV supported</p>
           <input
             type="file"
-
             accept="video/*"
-
             hidden
-
             onChange={(e) => {
-
-              const selected =
-                e.target.files?.[0];
-
-              if (
-                selected
-              ) {
-
-                setFile(
-                  selected
-                );
+              const selected = e.target.files?.[0] || null;
+              if (!selected) return;
+              if (!selected.type.startsWith("video/")) {
+                alert("Only video files are allowed");
+                e.target.value = "";
+                return;
               }
+              if (selected.size > 100 * 1024 * 1024) {
+                alert("Video exceeds the 100MB limit");
+                e.target.value = "";
+                return;
+              }
+              setFile(selected);
             }}
           />
-
         </label>
 
-        {/* FILE NAME */}
-
         {file && (
-
-          <div
-            className="
-              flex
-              items-center
-              justify-between
-              rounded-3xl
-              border
-              border-[var(--color-primary-button)]/20
-              bg-[var(--color-secondary-button)]/10
-              px-5
-              py-5
-            "
-          >
-
-                            {previewUrl && (
-                  <div className="mb-4 flex gap-4">
-                    <div className="min-w-0 flex-1 overflow-hidden rounded-xl bg-black">
-                      <p className="p-1 text-[8px] text-white">
-                        Original Preview
-                      </p>
-                      <video
-                        src={previewUrl}
-                        className="aspect-[9/16] h-auto w-full object-cover"
-                        muted
-                        controls
-                      />
-                    </div>
-
-                    <div className="min-w-0 flex-1 overflow-hidden rounded-xl bg-black">
-                      <p className="p-1 text-[8px] text-white">
-                        {processingEnhanced
-                          ? "Processing enhanced video..."
-                          : "Enhanced Preview"}
-                      </p>
-                      <video
-                        src={enhancedPreviewUrl || previewUrl}
-                        className="aspect-[9/16] h-auto w-full object-cover"
-                        muted
-                        controls
-                      />
-                    </div>
-                  </div>
-                )}
-
-<div>
-
-              <p
-                className="
-                  text-xs
-                  font-bold
-                  uppercase
-                  tracking-wider
-                  text-[var(--color-primary-button)]
-                "
-              >
-
-                Selected Video
-
-              </p>
-
-              <p
-                className="
-                  mt-2
-                  text-sm
-                  font-black
-                  text-[var(--button-text-color)]
-                "
-              >
-
-                {file.name}
-
-              </p>
-
-              <label className="mt-3 flex cursor-pointer items-center gap-2 text-sm text-[var(--button-text-color)]">
-                <input
-                  type="checkbox"
-                  checked={isEnhanced}
-                  onChange={(e) =>
-                    setIsEnhanced(e.target.checked)
-                  }
-                />
-                Use Enhanced Delivery (Cloudinary)
-              </label>
-
+          <div className="rounded-3xl border border-[var(--color-primary-button)]/20 bg-[var(--color-secondary-button)]/10 px-5 py-5">
+            {previewUrl && (
+              <div className="mb-4">
+                  <video src={previewUrl} controls className="w-full rounded-2xl" />
+              </div>
+            )}
+            <div className="flex items-center justify-between">
+              <div>
+                <p className="text-xs font-bold uppercase tracking-wider text-[var(--color-primary-button)]">Selected Video</p>
+                <p className="mt-2 text-sm font-black text-[var(--button-text-color)]">{file.name}</p>
+                <label className="mt-3 flex cursor-pointer items-center gap-2 text-sm text-[var(--button-text-color)]">
+                  <input
+                    type="checkbox"
+                    checked={isEnhanced}
+                    onChange={(e) => setIsEnhanced(e.target.checked)}
+                  />
+                  Use Enhanced Delivery (Cloudinary)
+                </label>
+              </div>
+              <BadgeCheck size={24} className="text-[var(--color-primary-button)]" />
             </div>
-
-            <BadgeCheck
-              size={24}
-              className="
-                text-[var(--color-primary-button)]
-              "
-            />
-
           </div>
-
         )}
 
-        {/* CAPTION */}
-
-        <div
-          className="
-            rounded-3xl
-            border
-            border-[var(--color-border)]/10
-            bg-[var(--color-card-background)]/5
-            p-5
-          "
-        >
-
-          <p
-            className="
-              mb-3
-              text-sm
-              font-black
-              text-[var(--button-text-color)]
-            "
-          >
-
-            Caption
-
-          </p>
-
+        <div className="rounded-3xl border border-[var(--color-border)]/10 bg-[var(--color-card-background)]/5 p-5">
+          <p className="mb-3 text-sm font-black text-[var(--button-text-color)]">Caption</p>
           <textarea
             value={caption}
-
-            onChange={(e) =>
-              setCaption(
-                e.target.value
-              )
-            }
-
+            onChange={(e) => setCaption(e.target.value)}
             placeholder="Write your video caption..."
-
-            className="
-              h-32
-              w-full
-              resize-none
-              bg-transparent
-              text-[var(--button-text-color)]
-              outline-none
-              placeholder:text-[var(--text-secondary)]
-            "
+            className="h-32 w-full resize-none bg-transparent text-[var(--button-text-color)] outline-none placeholder:text-[var(--text-secondary)]"
           />
-
         </div>
 
-        {/* HASHTAGS */}
-
-        <div
-          className="
-            rounded-3xl
-            border
-            border-[var(--color-border)]/10
-            bg-[var(--color-card-background)]/5
-            p-5
-          "
-        >
-
-          <p
-            className="
-              mb-3
-              text-sm
-              font-black
-              text-[var(--button-text-color)]
-            "
-          >
-
-            Hashtags
-
-          </p>
-
+        <div className="rounded-3xl border border-[var(--color-border)]/10 bg-[var(--color-card-background)]/5 p-5">
+          <p className="mb-3 text-sm font-black text-[var(--button-text-color)]">Hashtags</p>
           <input
             value={hashtags}
-
-            onChange={(e) =>
-              setHashtags(
-                e.target.value
-              )
-            }
-
+            onChange={(e) => setHashtags(e.target.value)}
             placeholder="fashion,viral,trending"
-
-            className="
-              w-full
-              bg-transparent
-              text-[var(--button-text-color)]
-              outline-none
-              placeholder:text-[var(--text-secondary)]
-            "
+            className="w-full bg-transparent text-[var(--button-text-color)] outline-none placeholder:text-[var(--text-secondary)]"
           />
-
         </div>
 
-        {/* MUSIC */}
-
-        <div
-          className="
-            flex
-            items-center
-            gap-4
-            rounded-3xl
-            border
-            border-[var(--color-border)]/10
-            bg-[var(--color-card-background)]/5
-            px-5
-            py-5
-          "
-        >
-
-          <div
-            className="
-              flex
-              h-12
-              w-12
-              items-center
-              justify-center
-              rounded-full
-              bg-[var(--color-primary-button)]/20
-            "
-          >
-
-            <Music2
-              size={22}
-              className="
-                text-[var(--color-primary-button)]
-              "
-            />
-
+        <div className="flex items-center gap-4 rounded-3xl border border-[var(--color-border)]/10 bg-[var(--color-card-background)]/5 px-5 py-5">
+          <div className="flex h-12 w-12 items-center justify-center rounded-full bg-[var(--color-primary-button)]/20">
+            <Music2 size={22} className="text-[var(--color-primary-button)]" />
           </div>
-
           <input
             value={music}
-
-            onChange={(e) =>
-              setMusic(
-                e.target.value
-              )
-            }
-
+            onChange={(e) => setMusic(e.target.value)}
             placeholder="Music name"
-
-            className="
-              flex-1
-              bg-transparent
-              text-[var(--button-text-color)]
-              outline-none
-              placeholder:text-[var(--text-secondary)]
-            "
+            className="flex-1 bg-transparent text-[var(--button-text-color)] outline-none placeholder:text-[var(--text-secondary)]"
           />
-
         </div>
-
-        {/* AUTO REWARD */}
-
-        <div
-          className="
-            rounded-3xl
-            border
-            border-[var(--color-warning)]/20
-            bg-[var(--color-warning)]/10
-            p-5
-          "
-        >
-
-        </div>
-
-        {/* BUTTON */}
 
         <button
           onClick={handleUpload}
-
-          disabled={loading || processingEnhanced}
-
-          className="
-            flex
-            w-full
-            items-center
-            justify-center
-            gap-3
-            rounded-[30px]
-            bg-gradient-to-r
-            from-[var(--color-primary-button)]
-            to-[var(--color-primary-button)]
-            px-5
-            py-5
-            text-lg
-            font-black
-            text-[var(--button-text-color)]
-            shadow-2xl
-            shadow
-          "
+          disabled={loading}
+          className="flex w-full items-center justify-center gap-3 rounded-[30px] bg-gradient-to-r from-[var(--color-primary-button)] to-[var(--color-primary-button)] px-5 py-5 text-lg font-black text-[var(--button-text-color)] shadow-2xl"
         >
-
           {loading ? (
-
-            <Loader2
-              size={24}
-              className="
-                animate-spin
-              "
-            />
-
+            <Loader2 size={24} className="animate-spin" />
           ) : (
-
-            <Upload
-              size={24}
-            />
-
+            <Upload size={24} />
           )}
-
-          {loading
-            ? "Uploading..."
-            : "Upload Video"}
-
+          {loading ? "Uploading..." : "Upload Video"}
         </button>
-
       </div>
-
     </main>
   );
 }

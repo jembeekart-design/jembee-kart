@@ -67,6 +67,7 @@ export async function POST(req: Request) {
 
   let uploadedDriveFileId: string | null = null;
   let requestAborted = false;
+  const fields: Record<string, string> = {};
 
   try {
     const result = await new Promise<{ driveFileId: string }>(
@@ -87,6 +88,14 @@ export async function POST(req: Request) {
         let sizeExceeded = false;
         let uploadPromise: Promise<string> | null = null;
         let fileStream: Readable | null = null;
+
+        const fields: Record<string, string> = {};
+
+        busboy.on("field", (fieldname, value) => {
+          if (fieldname !== "file") {
+            fields[fieldname] = value;
+          }
+        });
 
         const settleFailure = async (error: unknown) => {
           if (settled) {
@@ -279,6 +288,27 @@ export async function POST(req: Request) {
     const adminDb = getAdminDb();
 
     try {
+      let hashtags: string[] = [];
+
+      if (fields.hashtags) {
+        try {
+          const parsedHashtags: unknown =
+            JSON.parse(fields.hashtags);
+
+          if (Array.isArray(parsedHashtags)) {
+            hashtags = parsedHashtags.filter(
+              (item): item is string =>
+                typeof item === "string"
+            );
+          }
+        } catch {
+          hashtags = [];
+        }
+      }
+
+      const sponsor = fields.sponsor === "true";
+      const isEnhanced = fields.isEnhanced === "true";
+
       await adminDb
         .collection("videoModerationSubmissions")
         .doc(submissionId)
@@ -286,6 +316,19 @@ export async function POST(req: Request) {
           submissionId,
           driveFileId: result.driveFileId,
           creatorId,
+
+          displayName: fields.displayName || "",
+          photoURL: fields.photoURL || "",
+          username: fields.username || "",
+          caption: fields.caption || "",
+          hashtags,
+          music: fields.music || "",
+
+          sponsor,
+          originalVideoId: fields.originalVideoId || "",
+          originalAudioId: fields.originalAudioId || "",
+          isEnhanced,
+
           status: "pending",
           createdAt: new Date(),
         });
