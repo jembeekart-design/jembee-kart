@@ -14,6 +14,7 @@ interface UploadWatchVideoData {
   originalVideoId?: string;
   originalAudioId?: string;
   isEnhanced?: boolean;
+  onProgress?: (uploadedBytes: number, totalBytes: number) => void;
 }
 
 export interface ModerationSubmissionMetadata {
@@ -41,6 +42,7 @@ export async function uploadWatchVideo({
   originalVideoId,
   originalAudioId,
   isEnhanced,
+  onProgress,
 }: UploadWatchVideoData) {
   try {
     // ==================================================
@@ -119,7 +121,8 @@ export async function uploadWatchVideo({
 
     const result = await submitVideoForModeration(
       file,
-      metadata
+      metadata,
+      onProgress
     );
 
     if (!result.success) {

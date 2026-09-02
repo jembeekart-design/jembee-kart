@@ -1,4 +1,6 @@
 import { auth } from "@/firebase/config";
+import { uploadVideoToDrive } from "./uploadVideoToDrive";
+
 export interface ModerationSubmissionMetadata {
   displayName?: string;
   photoURL?: string;
@@ -12,16 +14,17 @@ export interface ModerationSubmissionMetadata {
   isEnhanced: boolean;
 }
 
-
 export interface ModerationSubmissionResult {
   success: boolean;
   submissionId?: string;
+  driveFileId?: string;
   message?: string;
 }
 
 export async function submitVideoForModeration(
   file: File,
-  metadata: ModerationSubmissionMetadata
+  metadata: ModerationSubmissionMetadata,
+  onProgress?: (uploadedBytes: number, totalBytes: number) => void
 ): Promise<ModerationSubmissionResult> {
   const currentUser = auth.currentUser;
 
@@ -55,118 +58,77 @@ export async function submitVideoForModeration(
 
   const token = await currentUser.getIdToken();
 
-  const formData = new FormData();
+  // 1. Initialize Drive Upload
+  const startResponse = await fetch("/api/creator/start-drive-upload", {
+    method: "POST",
+    headers: {
+      Authorization: `Bearer ${token}`,
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({
+      filename: file.name,
+      mimeType: file.type,
+      fileSize: file.size,
+      ...metadata,
+    }),
+  });
 
-  formData.append(
-    "file",
-    file,
-    file.name
-  );
+  const startData = await startResponse.json();
+  if (!startResponse.ok || !startData.success || !startData.submissionId || !startData.uploadUrl) {
+    return {
+      success: false,
+      message: startData.message || "Failed to initialize upload",
+    };
+  }
 
-  formData.append(
-    "username",
-    metadata.username || ""
-  );
+  const { submissionId, uploadUrl } = startData;
 
-  formData.append(
-    "displayName",
-    metadata.displayName || ""
-  );
+  // 2. Direct-to-Drive Upload
+  try {
+    const driveFileId = await uploadVideoToDrive(file, uploadUrl, onProgress);
 
-  formData.append(
-    "photoURL",
-    metadata.photoURL || ""
-  );
-
-  formData.append(
-    "caption",
-    metadata.caption || ""
-  );
-
-  formData.append(
-    "hashtags",
-    JSON.stringify(metadata.hashtags || [])
-  );
-
-  formData.append(
-    "music",
-    metadata.music || ""
-  );
-
-  formData.append(
-    "sponsor",
-    metadata.sponsor ? "true" : "false"
-  );
-
-  formData.append(
-    "originalVideoId",
-    metadata.originalVideoId || ""
-  );
-
-  formData.append(
-    "originalAudioId",
-    metadata.originalAudioId || ""
-  );
-
-  formData.append(
-    "isEnhanced",
-    metadata.isEnhanced ? "true" : "false"
-  );
-
-  const response = await fetch(
-    "/api/creator/submit-video",
-    {
+    // 3. Complete Submission
+    const completeResponse = await fetch("/api/creator/complete-drive-upload", {
       method: "POST",
       headers: {
         Authorization: `Bearer ${token}`,
+        "Content-Type": "application/json",
       },
-      body: formData,
-    }
-  );
+      body: JSON.stringify({
+        submissionId,
+        driveFileId,
+      }),
+    });
 
-  let data: unknown = null;
+    const completeData = await completeResponse.json().catch(() => null);
 
-  try {
-    data = await response.json();
-  } catch {
-    data = null;
-  }
-
-  if (!response.ok) {
-    if (
-      data &&
-      typeof data === "object" &&
-      "message" in data &&
-      typeof (data as { message: unknown }).message === "string"
-    ) {
-      return {
-        success: false,
-        message: (data as { message: string }).message,
-      };
+    if (!completeResponse.ok || !completeData || completeData.success !== true) {
+      throw new Error(
+        typeof completeData?.message === "string"
+          ? completeData.message
+          : "Failed to complete submission"
+      );
     }
 
     return {
-      success: false,
-      message: "Video moderation submission failed",
+      success: true,
+      submissionId,
+      driveFileId,
     };
-  }
+  } catch (error) {
+    // Cleanup on failure
+    await fetch("/api/creator/cancel-video-moderation", {
+      method: "POST",
+      headers: {
+        Authorization: `Bearer ${token}`,
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ submissionId }),
+    });
 
-  if (
-    !data ||
-    typeof data !== "object" ||
-    !("success" in data) ||
-    (data as { success: unknown }).success !== true ||
-    !("submissionId" in data) ||
-    typeof (data as { submissionId: unknown }).submissionId !== "string"
-  ) {
     return {
       success: false,
-      message: "Invalid moderation response",
+      message: error instanceof Error ? error.message : "Video submission failed",
     };
   }
-
-  return {
-    success: true,
-    submissionId: (data as { submissionId: string }).submissionId,
-  };
 }
