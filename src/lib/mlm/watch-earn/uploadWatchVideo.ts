@@ -332,11 +332,6 @@ export async function uploadWatchVideo({
       cloudinaryData
     );
 
-    console.log(
-      "CLOUDINARY RESPONSE:",
-      cloudinaryData
-    );
-
     // ==================================================
     // CLOUDINARY FAILED
     // ==================================================
