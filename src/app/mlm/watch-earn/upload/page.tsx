@@ -788,18 +788,6 @@ UploadWatchVideoPage() {
           "
         >
 
-          <p
-            className="
-              text-sm
-              font-black
-              text-[var(--color-warning)]
-            "
-          >
-
-            Rewards are automatically managed by JembeeKart Admin.
-
-          </p>
-
         </div>
 
         {/* BUTTON */}
