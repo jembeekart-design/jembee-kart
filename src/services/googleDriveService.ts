@@ -7,7 +7,7 @@ type ServiceAccountCredentials = {
   project_id?: string;
 };
 
-function getDriveClient() {
+function getAuthClient() {
   const rawCredentials =
     process.env.GOOGLE_SERVICE_ACCOUNT_CREDENTIALS;
 
@@ -33,11 +33,14 @@ function getDriveClient() {
     );
   }
 
-  const auth = new google.auth.GoogleAuth({
+  return new google.auth.GoogleAuth({
     credentials,
     scopes: ["https://www.googleapis.com/auth/drive.file"],
   });
+}
 
+function getDriveClient() {
+  const auth = getAuthClient();
   return google.drive({
     version: "v3",
     auth,
@@ -55,6 +58,45 @@ function getFolderId(): string {
   }
 
   return folderId;
+}
+
+export async function createResumableUploadSession(
+  filename: string,
+  mimeType: string,
+  fileSize: number
+): Promise<string> {
+  if (!mimeType.toLowerCase().startsWith("video/")) {
+    throw new Error("Only video MIME types are allowed");
+  }
+
+  if (fileSize > 100 * 1024 * 1024) {
+    throw new Error("File size exceeds 100MB");
+  }
+
+  const auth = getAuthClient();
+  const client = await auth.getClient();
+
+  const response = await client.request<{ location?: string }>({
+    url: "https://www.googleapis.com/upload/drive/v3/files?uploadType=resumable",
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json; charset=UTF-8",
+      "X-Upload-Content-Type": mimeType,
+      "X-Upload-Content-Length": fileSize.toString(),
+    },
+    data: {
+      name: filename,
+      parents: [getFolderId()],
+    },
+  });
+
+  const uploadUrl = response.headers["location"];
+
+  if (!uploadUrl) {
+    throw new Error("Failed to obtain resumable upload URL");
+  }
+
+  return uploadUrl;
 }
 
 export async function uploadVideoToDrive(
@@ -99,9 +141,38 @@ export async function uploadVideoToDrive(
   return fileId;
 }
 
-export async function downloadDriveFile(
+export async function getDriveFileMetadata(fileId: string): Promise<{
+  mimeType: string;
+  size: number;
+  name: string;
+  parents: string[];
+}> {
+  const drive = getDriveClient();
+  const response = await drive.files.get({
+    fileId,
+    fields: "mimeType,size,name,parents",
+  });
+
+  if (
+    !response.data.mimeType ||
+    !response.data.size ||
+    !response.data.name
+  ) {
+    throw new Error("Could not fetch valid file metadata");
+  }
+
+  return {
+    mimeType: response.data.mimeType,
+    size: parseInt(response.data.size, 10),
+    name: response.data.name,
+    parents: response.data.parents || [],
+  };
+}
+
+  export async function downloadDriveFile(
   fileId: string
-): Promise<{
+  ): Promise<{
+
   stream: Readable;
   mimeType: string;
   filename: string;

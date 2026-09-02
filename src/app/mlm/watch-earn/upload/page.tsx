@@ -13,6 +13,7 @@ export default function UploadWatchVideoPage() {
   
   const [file, setFile] = useState<File | null>(null);
   const [loading, setLoading] = useState(false);
+  const [uploadProgress, setUploadProgress] = useState(0);
   const [isEnhanced, setIsEnhanced] = useState(false);
   const [caption, setCaption] = useState("");
   const [hashtags, setHashtags] = useState("");
@@ -54,6 +55,7 @@ export default function UploadWatchVideoPage() {
       }
 
       setLoading(true);
+      setUploadProgress(0);
 
       const result = await uploadWatchVideo({
         file,
@@ -65,6 +67,13 @@ export default function UploadWatchVideoPage() {
         hashtags: hashtags.split(",").map((tag) => tag.trim()).filter(Boolean),
         music,
         isEnhanced,
+        onProgress: (uploadedBytes, totalBytes) => {
+          setUploadProgress(
+            totalBytes > 0
+              ? Math.round((uploadedBytes / totalBytes) * 100)
+              : 0
+          );
+        },
       });
       if (result.success) {
         alert("Video submitted for moderation. It will be published after approval.");
@@ -80,6 +89,7 @@ export default function UploadWatchVideoPage() {
       alert("Something went wrong");
     } finally {
       setLoading(false);
+      setUploadProgress(0);
     }
   }
 
@@ -212,7 +222,7 @@ export default function UploadWatchVideoPage() {
           ) : (
             <Upload size={24} />
           )}
-          {loading ? "Uploading..." : "Upload Video"}
+          {loading ? `Uploading ${uploadProgress}%...` : "Upload Video"}
         </button>
       </div>
     </main>
