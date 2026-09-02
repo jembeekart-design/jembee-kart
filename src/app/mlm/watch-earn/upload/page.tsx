@@ -426,6 +426,9 @@ UploadWatchVideoPage() {
           space-y-5
         "
       >
+        <a href="/mlm/watch-earn/history" className="block text-center text-sm font-bold text-[var(--color-primary-button)] mb-4">
+          My Upload History
+        </a>
 
         {/* FILE */}
 
