@@ -62,6 +62,8 @@ export interface ModerationSettings {
   approvalMode: CommentApprovalMode;
   moderationAction: ModerationAction;
   customMessage: string;
+  enableVideoModeration: boolean;
+  videoToxicThreshold: number;
 }
 
 export interface RegexRule {

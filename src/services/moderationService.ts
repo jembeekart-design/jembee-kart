@@ -48,7 +48,9 @@ export const DEFAULT_SETTINGS: ModerationSettings = {
   autoApproveComments: true,
   approvalMode: 'instant',
   moderationAction: 'reject',
-  customMessage: "Your comment contains restricted content or violates community guidelines."
+  customMessage: "Your comment contains restricted content or violates community guidelines.",
+  enableVideoModeration: true,
+  videoToxicThreshold: 50
 };
 
 export const getModerationSettings = async (forceRefresh = false): Promise<ModerationSettings> => {
