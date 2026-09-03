@@ -298,7 +298,7 @@ export async function GET(req: Request) {
       headers.set("Pragma", "no-cache");
       headers.set("Expires", "0");
 
-      return new NextResponse(stream as Readable, {
+      return new NextResponse(Readable.toWeb(stream) as unknown as BodyInit, {
         status: 200,
         headers,
       });
@@ -333,7 +333,7 @@ export async function GET(req: Request) {
     headers.set("Pragma", "no-cache");
     headers.set("Expires", "0");
 
-    return new NextResponse(stream as Readable, {
+    return new NextResponse(Readable.toWeb(stream) as unknown as BodyInit, {
       status: 206,
       headers,
     });

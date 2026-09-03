@@ -61,11 +61,15 @@ export async function POST(req: Request) {
     );
   }
 
-  const { filename, mimeType, fileSize, displayName, photoURL, username, caption, hashtags, music, sponsor, originalVideoId, originalAudioId, isEnhanced } = body;
+  const filename = typeof body.filename === "string" ? body.filename.trim() : "";
+  const mimeType = typeof body.mimeType === "string" ? body.mimeType.trim() : "";
+  const fileSize = typeof body.fileSize === "number" ? body.fileSize : 0;
 
-  if (!filename || !mimeType || !fileSize) {
+  const { displayName, photoURL, username, caption, hashtags, music, sponsor, originalVideoId, originalAudioId, isEnhanced } = body;
+
+  if (!filename || !mimeType || !Number.isFinite(fileSize) || fileSize <= 0) {
     return NextResponse.json(
-      { success: false, message: "Missing required fields" },
+      { success: false, message: "Missing or invalid required fields" },
       { status: 400 }
     );
   }
