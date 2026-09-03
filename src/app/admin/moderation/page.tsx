@@ -1,12 +1,59 @@
 'use client';
 
 import React, { useState, useEffect, useCallback } from 'react';
+// ... existing imports
 import { ModerationSettings, CommentAuditLog } from '@/types/moderation';
 import { getModerationSettings, updateModerationSettings } from '@/services/moderationService';
 import { collection, getDocs, query, orderBy, limit } from 'firebase/firestore';
 import { db, auth } from '@/firebase/config';
-import { Play } from 'lucide-react';
 
+// New component for secure video streaming
+function VideoPreview({ driveFileId }: { driveFileId: string }) {
+// ... existing component
+
+  const [videoUrl, setVideoUrl] = useState<string | null>(null);
+
+  useEffect(() => {
+    let objectUrl: string | null = null;
+    const loadVideo = async () => {
+      const user = auth.currentUser;
+      if (!user) return;
+      const token = await user.getIdToken();
+
+      const response = await fetch(`/api/admin/moderation-video?id=${driveFileId}`, {
+        headers: { Authorization: `Bearer ${token}` },
+      });
+      if (response.ok) {
+        const blob = await response.blob();
+        objectUrl = URL.createObjectURL(blob);
+        setVideoUrl(objectUrl);
+      }
+    };
+    loadVideo();
+    return () => {
+      if (objectUrl) URL.revokeObjectURL(objectUrl);
+    };
+  }, [driveFileId]);
+
+  if (!videoUrl) {
+    return (
+      <div className="aspect-[9/16] bg-black rounded overflow-hidden relative flex items-center justify-center">
+        <span className="text-xs text-gray-500">Loading Video...</span>
+      </div>
+    );
+  }
+
+  return (
+    <video
+      ref={videoRef}
+      src={videoUrl}
+      controls
+      className="aspect-[9/16] w-full bg-black rounded"
+    />
+  );
+}
+
+// ... existing interface
 interface ModerationSubmission {
   id: string;
   submissionId: string;
@@ -24,7 +71,9 @@ interface ModerationSubmission {
   createdAt: { toDate: () => Date } | null;
 }
 
+// ... existing component function
 export default function AdminModerationDashboard() {
+  // ... existing hooks
   const [settings, setSettings] = useState<ModerationSettings | null>(null);
   const [auditLogs, setAuditLogs] = useState<CommentAuditLog[]>([]);
   const [submissions, setSubmissions] = useState<ModerationSubmission[]>([]);
@@ -130,10 +179,7 @@ export default function AdminModerationDashboard() {
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
           {submissions.map((sub) => (
             <div key={sub.id} className="bg-gray-700 p-4 rounded-lg space-y-2">
-              <div className="aspect-[9/16] bg-black rounded overflow-hidden relative flex items-center justify-center">
-                <span className="text-xs text-gray-500">Private Drive Video</span>
-                <Play className="absolute inset-0 m-auto text-white/50" size={48} />
-              </div>
+              <VideoPreview driveFileId={sub.driveFileId} />
               <p className="font-bold truncate">{sub.username}</p>
               <p className="text-xs text-gray-400">{sub.caption}</p>
               <p className="text-xs text-gray-400">Status: <span className='text-yellow-400'>{sub.status}</span></p>
@@ -145,7 +191,6 @@ export default function AdminModerationDashboard() {
           ))}
         </div>
       </div>
-
       {/* Global Toggles */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6 bg-gray-800 p-6 rounded-lg">
         <label className="flex items-center space-x-3 cursor-pointer">

@@ -169,64 +169,42 @@ export async function getDriveFileMetadata(fileId: string): Promise<{
   };
 }
 
-  export async function downloadDriveFile(
-  fileId: string
-  ): Promise<{
-
+export async function getDriveFileStream(
+  fileId: string,
+  range?: string
+): Promise<{
   stream: Readable;
   mimeType: string;
-  filename: string;
+  size: number;
 }> {
   const trimmedFileId = fileId.trim();
-
   if (!trimmedFileId) {
     throw new Error("Drive file ID is required");
   }
 
   const drive = getDriveClient();
 
-  const metadataResponse =
-    await drive.files.get({
+  const metadata = await getDriveFileMetadata(trimmedFileId);
+
+  const response = await drive.files.get(
+    {
       fileId: trimmedFileId,
-      fields: "name,mimeType,size",
-    });
-
-  const metadata = metadataResponse.data;
-
-  if (
-    !metadata.mimeType ||
-    !metadata.mimeType
-      .toLowerCase()
-      .startsWith("video/")
-  ) {
-    throw new Error(
-      "Drive file is not a video"
-    );
-  }
-
-  const response =
-    await drive.files.get(
-      {
-        fileId: trimmedFileId,
-        alt: "media",
-      },
-      {
-        responseType: "stream",
-      }
-    );
+      alt: "media",
+    },
+    {
+      responseType: "stream",
+      headers: range ? { Range: range } : {},
+    }
+  );
 
   if (!response.data) {
-    throw new Error(
-      "Google Drive returned an empty video stream"
-    );
+    throw new Error("Google Drive returned an empty video stream");
   }
 
   return {
     stream: response.data as Readable,
     mimeType: metadata.mimeType,
-    filename:
-      metadata.name?.trim() ||
-      `moderation_${trimmedFileId}`,
+    size: metadata.size,
   };
 }
 
