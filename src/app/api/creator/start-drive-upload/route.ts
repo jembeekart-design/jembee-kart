@@ -30,7 +30,21 @@ export async function POST(req: Request) {
     );
   }
 
-  let body: any;
+  let body: {
+    filename?: unknown;
+    mimeType?: unknown;
+    fileSize?: unknown;
+    displayName?: unknown;
+    photoURL?: unknown;
+    username?: unknown;
+    caption?: unknown;
+    hashtags?: unknown;
+    music?: unknown;
+    sponsor?: unknown;
+    originalVideoId?: unknown;
+    originalAudioId?: unknown;
+    isEnhanced?: unknown;
+  };
   try {
     body = await req.json();
   } catch {

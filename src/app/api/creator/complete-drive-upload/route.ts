@@ -29,7 +29,10 @@ export async function POST(req: Request) {
     return NextResponse.json({ success: false, message: "Unauthorized" }, { status: 401 });
   }
 
-  let body: any;
+  let body: {
+    submissionId?: unknown;
+    driveFileId?: unknown;
+  };
   try {
     body = await req.json();
   } catch {
