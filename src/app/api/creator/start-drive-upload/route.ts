@@ -10,6 +10,11 @@ const MAX_VIDEO_SIZE = 100 * 1024 * 1024;
 export async function POST(req: Request) {
   const authHeader = req.headers.get("authorization");
 
+  console.log("[AuthDiagnostic] Start Upload - Auth Header:", authHeader ? "Present" : "Missing");
+  if (authHeader) {
+      console.log("[AuthDiagnostic] Start Upload - Bearer Prefix:", authHeader.startsWith("Bearer ") ? "Present" : "Missing");
+  }
+
   if (!authHeader?.startsWith("Bearer ")) {
     return NextResponse.json(
       { success: false, message: "Unauthorized" },
@@ -23,7 +28,9 @@ export async function POST(req: Request) {
   try {
     const decodedToken = await getAdminAuth().verifyIdToken(token);
     creatorId = decodedToken.uid;
-  } catch {
+    console.log("[AuthDiagnostic] Start Upload - Token Verified. UID:", creatorId);
+  } catch (err) {
+    console.error("[AuthDiagnostic] Start Upload - Token Verification Failed:", err);
     return NextResponse.json(
       { success: false, message: "Unauthorized" },
       { status: 401 }

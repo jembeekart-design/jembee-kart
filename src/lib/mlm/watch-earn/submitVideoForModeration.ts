@@ -56,7 +56,7 @@ export async function submitVideoForModeration(
     };
   }
 
-  const token = await currentUser.getIdToken();
+  const token = await currentUser.getIdToken(true);
 
   // 1. Initialize Drive Upload
   const startResponse = await fetch("/api/creator/start-drive-upload", {
