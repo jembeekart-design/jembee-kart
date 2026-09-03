@@ -68,8 +68,8 @@ export async function createResumableUploadSession(
     throw new Error("File size exceeds 100MB");
   }
 
-  const auth = getOAuthClient();
-  const client = await auth.getClient();
+  const client = getOAuthClient();
+  
 
   const response = await client.request<{ location?: string }>({
     url:
