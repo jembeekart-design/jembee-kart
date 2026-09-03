@@ -16,6 +16,12 @@ export async function POST(req: Request) {
   }
 
   const authHeader = req.headers.get("authorization");
+  
+  console.log("[AuthDiagnostic] Complete Upload - Auth Header:", authHeader ? "Present" : "Missing");
+  if (authHeader) {
+      console.log("[AuthDiagnostic] Complete Upload - Bearer Prefix:", authHeader.startsWith("Bearer ") ? "Present" : "Missing");
+  }
+
   if (!authHeader?.startsWith("Bearer ")) {
     return NextResponse.json({ success: false, message: "Unauthorized" }, { status: 401 });
   }
@@ -25,7 +31,9 @@ export async function POST(req: Request) {
   try {
     const decodedToken = await getAdminAuth().verifyIdToken(token);
     creatorId = decodedToken.uid;
-  } catch {
+    console.log("[AuthDiagnostic] Complete Upload - Token Verified. UID:", creatorId);
+  } catch (err) {
+    console.error("[AuthDiagnostic] Complete Upload - Token Verification Failed:", err);
     return NextResponse.json({ success: false, message: "Unauthorized" }, { status: 401 });
   }
 
