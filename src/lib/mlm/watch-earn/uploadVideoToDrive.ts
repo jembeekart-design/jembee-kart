@@ -48,7 +48,7 @@ export async function uploadVideoToDrive(
         // For other errors (5xx), query status to resume from last known safe point
         uploadedBytes = await queryUploadStatus(uploadUrl, file.size);
       }
-    } catch (error) {
+    } catch {
       // On network failure, query status to resume from last known safe point
       uploadedBytes = await queryUploadStatus(uploadUrl, file.size);
     }
