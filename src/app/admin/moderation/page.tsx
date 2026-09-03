@@ -1,128 +1,191 @@
 'use client';
 
-import React, { useState, useEffect } from 'react';
-import { ModerationSettings, RegexRule, CommentAuditLog, ReviewQueueItem } from '@/types/moderation';
-import { getModerationSettings, updateModerationSettings, getRegexRules } from '@/services/moderationService';
-import { collection, getDocs, query, orderBy, limit, where, updateDoc, doc, serverTimestamp, runTransaction } from 'firebase/firestore';
-import { db } from '@/firebase/config';
-import { Play } from 'lucide-react';
+import React, { useState, useEffect, useCallback, useRef } from 'react';
+// ... existing imports
+import { ModerationSettings, CommentAuditLog } from '@/types/moderation';
+import { getModerationSettings, updateModerationSettings } from '@/services/moderationService';
+import { collection, getDocs, query, orderBy, limit } from 'firebase/firestore';
+import { db, auth } from '@/firebase/config';
 
-interface VideoModerationItem {
-  id: string;
-  creatorId: string;
-  username: string;
-  displayName: string;
-  video: string;
-  thumbnail: string;
-  caption: string;
-  hashtags: string[];
-  status: string;
-  moderation: string;
-  coins: number;
-  pendingCoins: number;
-  createdAt: any;
+// New component for secure video streaming
+function VideoPreview({ driveFileId }: { driveFileId: string }) {
+  const videoRef = useRef<HTMLVideoElement>(null);
+  const [videoUrl, setVideoUrl] = useState<string | null>(null);
+  const [error, setError] = useState<string | null>(null);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const generateToken = async () => {
+      try {
+        setLoading(true);
+        setError(null);
+
+        const user = auth.currentUser;
+        if (!user) {
+          setError('Not authenticated');
+          return;
+        }
+
+        const idToken = await user.getIdToken();
+
+        // Request a preview token from the server
+        const tokenResponse = await fetch('/api/admin/moderation-video', {
+          method: 'POST',
+          headers: {
+            'Authorization': `Bearer ${idToken}`,
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({ driveFileId }),
+        });
+
+        if (!tokenResponse.ok) {
+          const errorData = await tokenResponse.json().catch(() => ({}));
+          throw new Error(
+            errorData.error || `Token request failed with status ${tokenResponse.status}`
+          );
+        }
+
+        const { token } = await tokenResponse.json();
+
+        // Construct the preview URL with the token
+        const previewUrl = `/api/admin/moderation-video?token=${encodeURIComponent(token)}`;
+        setVideoUrl(previewUrl);
+      } catch (err) {
+        const message = err instanceof Error ? err.message : 'Failed to load video';
+        console.error('Error generating preview token:', err);
+        setError(message);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    generateToken();
+  }, [driveFileId]);
+
+  if (loading) {
+    return (
+      <div className="aspect-[9/16] bg-black rounded overflow-hidden relative flex items-center justify-center">
+        <span className="text-xs text-gray-500">Loading Video...</span>
+      </div>
+    );
+  }
+
+  if (error) {
+    return (
+      <div className="aspect-[9/16] bg-black rounded overflow-hidden relative flex items-center justify-center">
+        <span className="text-xs text-red-400">Error: {error}</span>
+      </div>
+    );
+  }
+
+  if (!videoUrl) {
+    return (
+      <div className="aspect-[9/16] bg-black rounded overflow-hidden relative flex items-center justify-center">
+        <span className="text-xs text-gray-500">Unable to load video</span>
+      </div>
+    );
+  }
+
+  return (
+    <video
+      ref={videoRef}
+      src={videoUrl}
+      controls
+      className="aspect-[9/16] w-full bg-black rounded"
+    />
+  );
 }
 
+// ... existing interface
+interface ModerationSubmission {
+  id: string;
+  submissionId: string;
+  driveFileId: string;
+  creatorId: string;
+  displayName: string;
+  photoURL: string;
+  username: string;
+  caption: string;
+  hashtags: string[];
+  music: string;
+  sponsor: boolean;
+  isEnhanced: boolean;
+  status: string;
+  createdAt: { toDate: () => Date } | null;
+}
+
+// ... existing component function
 export default function AdminModerationDashboard() {
+  // ... existing hooks
   const [settings, setSettings] = useState<ModerationSettings | null>(null);
-  const [regexRules, setRegexRules] = useState<RegexRule[]>([]);
+  const [connectingGoogleDrive, setConnectingGoogleDrive] = useState(false);
   const [auditLogs, setAuditLogs] = useState<CommentAuditLog[]>([]);
-  const [pendingReports, setPendingReports] = useState<ReviewQueueItem[]>([]);
-  const [videoQueue, setVideoQueue] = useState<VideoModerationItem[]>([]);
+  const [submissions, setSubmissions] = useState<ModerationSubmission[]>([]);
   const [newBlockedWord, setNewBlockedWord] = useState('');
   const [newAllowedWord, setNewAllowedWord] = useState('');
-  const [adminId] = useState('admin_system_user'); // Authenticated admin placeholder
   const [saving, setSaving] = useState(false);
   const [message, setMessage] = useState('');
 
-  useEffect(() => {
-    getModerationSettings(true).then(setSettings);
-    getRegexRules().then(setRegexRules);
+  const fetchSubmissions = useCallback(async () => {
+    try {
+      setMessage('Loading submissions...');
+      const user = auth.currentUser;
+      if (!user) throw new Error('Not authenticated');
+      const token = await user.getIdToken();
 
-    getDocs(query(collection(db, 'commentAuditLogs'), orderBy('timestamp', 'desc'), limit(15)))
-      .then(snap => setAuditLogs(snap.docs.map(d => ({ id: d.id, ...d.data() } as CommentAuditLog))));
+      const response = await fetch('/api/admin/moderation-submissions', {
+        headers: {
+          'Authorization': `Bearer ${token}`,
+        },
+      });
+      const data = await response.json();
+      if (!data.success) throw new Error(data.message || 'Failed to load');
 
-    getDocs(query(collection(db, 'videoCommentReports'), where('status', '==', 'pending')))
-      .then(snap => setPendingReports(snap.docs.map(d => ({ id: d.id, ...d.data() } as ReviewQueueItem))));
-
-    fetchVideoQueue();
+      setSubmissions(data.submissions);
+      setMessage('');
+    } catch (error) {
+      console.error('Error fetching submissions:', error);
+      setMessage(`Error: ${error instanceof Error ? error.message : String(error)}`);
+    }
   }, []);
 
-  const fetchVideoQueue = async () => {
-    try {
-      console.log('MODERATION: querying watchEarnVideos...');
+  useEffect(() => {
+    getModerationSettings(true).then(setSettings);
 
-      const q = query(
-        collection(db, 'watchEarnVideos'),
-        where('status', 'in', ['pending', 'rejected']),
-        orderBy('createdAt', 'desc')
+    getDocs(query(collection(db, 'commentAuditLogs'), orderBy('timestamp', 'desc'), limit(15)))
+      .then((snap) =>
+        setAuditLogs(snap.docs.map((d) => ({ id: d.id, ...d.data() } as CommentAuditLog)))
       );
 
-      const snap = await getDocs(q);
+    setTimeout(() => fetchSubmissions(), 0);
+  }, [fetchSubmissions]);
 
-      console.log('MODERATION: documents found =', snap.size);
-
-      setVideoQueue(
-        snap.docs.map(d => ({
-          id: d.id,
-          ...d.data()
-        }) as VideoModerationItem)
-      );
-
-      setMessage(`DEBUG: ${snap.size} moderation videos found`);
-    } catch (error) {
-      console.error('MODERATION QUERY ERROR:', error);
-      setMessage(
-        `DEBUG ERROR: ${error instanceof Error ? error.message : String(error)}`
-      );
-    }
-  };
-
-  const handleVideoAction = async (videoId: string, action: 'approved' | 'rejected') => {
+  const handleModerationAction = async (submissionId: string, action: 'approve' | 'reject') => {
     setSaving(true);
     try {
-      const videoRef = doc(db, 'watchEarnVideos', videoId);
-      await runTransaction(db, async (transaction) => {
-        const videoDoc = await transaction.get(videoRef);
-        if (!videoDoc.exists()) throw "Video not found";
-        const data = videoDoc.data();
+      const user = auth.currentUser;
+      if (!user) throw new Error('Not authenticated');
+      const token = await user.getIdToken();
 
-        const updatePayload = action === 'approved' ? {
-          status: 'approved',
-          moderation: 'safe',
-          coins: data.pendingCoins || 0,
-          pendingCoins: 0,
-          moderationCheckedAt: serverTimestamp()
-        } : {
-          status: 'rejected',
-          moderation: 'rejected',
-          coins: 0,
-          pendingCoins: 0,
-          moderationCheckedAt: serverTimestamp()
-        };
-
-        transaction.update(videoRef, updatePayload);
+      const response = await fetch('/api/admin/moderate-video', {
+        method: 'POST',
+        headers: {
+          'Authorization': `Bearer ${token}`,
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ submissionId, action }),
       });
-      setMessage(`Video ${action} successfully!`);
-      fetchVideoQueue();
+      const data = await response.json();
+      if (!data.success) throw new Error(data.message || 'Failed to process');
+
+      setMessage(`Submission ${action}d successfully!`);
+      fetchSubmissions();
       setTimeout(() => setMessage(''), 3000);
     } catch (err) {
       console.error(err);
-      setMessage('Failed to update video status.');
+      setMessage(`Failed to process: ${err instanceof Error ? err.message : String(err)}`);
     } finally {
       setSaving(false);
-    }
-  };
-
-  const handleReviewAction = async (reportId: string, action: 'approved' | 'rejected') => {
-    try {
-      await updateDoc(doc(db, 'videoCommentReports', reportId), { status: action });
-      setPendingReports(prev => prev.filter(p => p.id !== reportId));
-      setMessage(`Report ${action} successfully!`);
-      setTimeout(() => setMessage(''), 3000);
-    } catch (err) {
-      console.error(err);
-      setMessage('Failed to update report.');
     }
   };
 
@@ -131,6 +194,7 @@ export default function AdminModerationDashboard() {
   const handleSave = async (updatedFields: Partial<ModerationSettings>, reason: string) => {
     setSaving(true);
     try {
+      const adminId = auth.currentUser?.uid || 'admin_system_user';
       const merged = { ...settings, ...updatedFields };
       await updateModerationSettings(merged, adminId, reason);
       setSettings(merged);
@@ -144,6 +208,46 @@ export default function AdminModerationDashboard() {
     }
   };
 
+  const handleConnectGoogleDrive = async () => {
+    try {
+      setConnectingGoogleDrive(true);
+      setMessage('');
+
+      const user = auth.currentUser;
+
+      if (!user) {
+        throw new Error('Not authenticated');
+      }
+
+      const idToken = await user.getIdToken();
+
+      const response = await fetch('/api/admin/google-drive/auth', {
+        method: 'POST',
+        headers: {
+          Authorization: `Bearer ${idToken}`,
+        },
+      });
+
+      const data = await response.json().catch(() => ({}));
+
+      if (!response.ok || !data.authorizationUrl) {
+        throw new Error(
+          data.message || 'Failed to start Google Drive authorization'
+        );
+      }
+
+      window.location.href = data.authorizationUrl;
+    } catch (err) {
+      console.error('Google Drive connection error:', err);
+      setMessage(
+        err instanceof Error
+          ? err.message
+          : 'Failed to connect Google Drive.'
+      );
+      setConnectingGoogleDrive(false);
+    }
+  };
+
   return (
     <div className="p-6 max-w-7xl mx-auto space-y-8 bg-gray-900 text-gray-100 rounded-lg shadow-xl">
       <div className="flex justify-between items-center border-b border-gray-800 pb-4">
@@ -151,41 +255,67 @@ export default function AdminModerationDashboard() {
           <h1 className="text-2xl font-bold">JembeeKart Enterprise Moderation</h1>
           <p className="text-sm text-gray-400">Manage Comments and Video Content Moderation.</p>
         </div>
-        {message && <span className="text-green-400 font-medium animate-pulse">{message}</span>}
-        {saving && <span className="text-blue-400">Processing...</span>}
+        <div className="flex items-center gap-3">
+          {message && (
+            <span className="text-green-400 font-medium animate-pulse">
+              {message}
+            </span>
+          )}
+          {saving && <span className="text-blue-400">Processing...</span>}
+          <button
+            type="button"
+            onClick={handleConnectGoogleDrive}
+            disabled={connectingGoogleDrive}
+            className="bg-blue-600 hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed px-4 py-2 rounded text-white font-medium"
+          >
+            {connectingGoogleDrive
+              ? 'Connecting...'
+              : 'Connect Google Drive'}
+          </button>
+        </div>
       </div>
 
       {/* Video Moderation Queue */}
       <div className="bg-gray-800 p-6 rounded-lg space-y-4">
-        <h2 className="text-lg font-semibold text-purple-400">Video Moderation Queue ({videoQueue.length})</h2>
+        <h2 className="text-lg font-semibold text-purple-400">
+          Video Moderation Queue ({submissions.length})
+        </h2>
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-          {videoQueue.map((video) => (
-            <div key={video.id} className="bg-gray-700 p-4 rounded-lg space-y-2">
-              <div className="aspect-[9/16] bg-black rounded overflow-hidden relative">
-                <img src={video.thumbnail} className="w-full h-full object-cover" />
-                <Play className="absolute inset-0 m-auto text-white/50" size={48} />
-              </div>
-              <p className="font-bold truncate">{video.username}</p>
-              <p className="text-xs text-gray-400">{video.caption}</p>
-              <p className="text-xs">Status: <span className={video.status === 'pending' ? 'text-yellow-400' : 'text-red-400'}>{video.status}</span></p>
+          {submissions.map((sub) => (
+            <div key={sub.id} className="bg-gray-700 p-4 rounded-lg space-y-2">
+              <VideoPreview driveFileId={sub.driveFileId} />
+              <p className="font-bold truncate">{sub.username}</p>
+              <p className="text-xs text-gray-400">{sub.caption}</p>
+              <p className="text-xs text-gray-400">
+                Status: <span className="text-yellow-400">{sub.status}</span>
+              </p>
               <div className="flex gap-2 pt-2">
-                <button onClick={() => handleVideoAction(video.id, 'approved')} className="bg-green-600 hover:bg-green-700 px-3 py-1 rounded text-white flex-1">Approve</button>
-                <button onClick={() => handleVideoAction(video.id, 'rejected')} className="bg-red-600 hover:bg-red-700 px-3 py-1 rounded text-white flex-1">Reject</button>
+                <button
+                  onClick={() => handleModerationAction(sub.submissionId, 'approve')}
+                  className="bg-green-600 hover:bg-green-700 px-3 py-1 rounded text-white flex-1"
+                  disabled={saving}
+                >
+                  Approve
+                </button>
+                <button
+                  onClick={() => handleModerationAction(sub.submissionId, 'reject')}
+                  className="bg-red-600 hover:bg-red-700 px-3 py-1 rounded text-white flex-1"
+                  disabled={saving}
+                >
+                  Reject
+                </button>
               </div>
             </div>
           ))}
         </div>
       </div>
-
-
-
       {/* Global Toggles */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6 bg-gray-800 p-6 rounded-lg">
         <label className="flex items-center space-x-3 cursor-pointer">
           <input
             type="checkbox"
             checked={settings.enabled}
-            onChange={(e) => handleSave({ enabled: e.target.checked }, "Toggled Global Moderation")}
+            onChange={(e) => handleSave({ enabled: e.target.checked }, 'Toggled Global Moderation')}
             className="form-checkbox h-5 w-5 text-blue-600 rounded"
           />
           <span className="font-medium">Enable Moderation Engine</span>
@@ -194,7 +324,9 @@ export default function AdminModerationDashboard() {
           <input
             type="checkbox"
             checked={settings.commentsEnabled}
-            onChange={(e) => handleSave({ commentsEnabled: e.target.checked }, "Toggled Comments Globally")}
+            onChange={(e) =>
+              handleSave({ commentsEnabled: e.target.checked }, 'Toggled Comments Globally')
+            }
             className="form-checkbox h-5 w-5 text-blue-600 rounded"
           />
           <span className="font-medium">Allow Comments Globally</span>
@@ -203,17 +335,20 @@ export default function AdminModerationDashboard() {
           <input
             type="checkbox"
             checked={settings.autoApproveComments}
-            onChange={(e) => handleSave({ autoApproveComments: e.target.checked }, "Toggled Auto Approve")}
+            onChange={(e) =>
+              handleSave({ autoApproveComments: e.target.checked }, 'Toggled Auto Approve')
+            }
             className="form-checkbox h-5 w-5 text-blue-600 rounded"
           />
           <span className="font-medium">Auto Approve Comments</span>
         </label>
       </div>
 
-      {/* Whitelist Words Section (Overrides Blocked Words) */}
+      {/* Whitelist Words Section */}
       <div className="bg-gray-800 p-6 rounded-lg space-y-4">
-        <h2 className="text-lg font-semibold text-emerald-400">Whitelist Words (Absolute Priority Override)</h2>
-        <p className="text-xs text-gray-400">Words specified here will bypass blocklist filters and profanity rules.</p>
+        <h2 className="text-lg font-semibold text-emerald-400">
+          Whitelist Words (Absolute Priority Override)
+        </h2>
         <div className="flex gap-2">
           <input
             type="text"
@@ -236,7 +371,10 @@ export default function AdminModerationDashboard() {
         </div>
         <div className="flex flex-wrap gap-2 pt-2">
           {settings.allowedWords?.map((word, idx) => (
-            <span key={idx} className="bg-emerald-900 text-emerald-200 px-3 py-1 rounded-full text-sm flex items-center gap-2">
+            <span
+              key={idx}
+              className="bg-emerald-900 text-emerald-200 px-3 py-1 rounded-full text-sm flex items-center gap-2"
+            >
               {word}
               <button
                 onClick={() => {
@@ -277,7 +415,10 @@ export default function AdminModerationDashboard() {
         </div>
         <div className="flex flex-wrap gap-2 pt-2">
           {settings.blockedWords?.map((word, idx) => (
-            <span key={idx} className="bg-red-900 text-red-200 px-3 py-1 rounded-full text-sm flex items-center gap-2">
+            <span
+              key={idx}
+              className="bg-red-900 text-red-200 px-3 py-1 rounded-full text-sm flex items-center gap-2"
+            >
               {word}
               <button
                 onClick={() => {
@@ -290,37 +431,6 @@ export default function AdminModerationDashboard() {
               </button>
             </span>
           ))}
-        </div>
-      </div>
-
-      {/* Rate Limits & Constraints */}
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-6 bg-gray-800 p-6 rounded-lg">
-        <div>
-          <label className="block text-sm font-medium mb-1">Max Comment Length</label>
-          <input
-            type="number"
-            value={settings.maxCommentLength}
-            onChange={(e) => handleSave({ maxCommentLength: parseInt(e.target.value) || 500 }, "Updated max length")}
-            className="bg-gray-700 w-full px-3 py-2 rounded border border-gray-600"
-          />
-        </div>
-        <div>
-          <label className="block text-sm font-medium mb-1">Max Comments Per Minute (Flood Limit)</label>
-          <input
-            type="number"
-            value={settings.maxCommentsPerMinute}
-            onChange={(e) => handleSave({ maxCommentsPerMinute: parseInt(e.target.value) || 5 }, "Updated flood per minute")}
-            className="bg-gray-700 w-full px-3 py-2 rounded border border-gray-600"
-          />
-        </div>
-        <div>
-          <label className="block text-sm font-medium mb-1">Duplicate Window (Seconds)</label>
-          <input
-            type="number"
-            value={settings.duplicateCommentWindowSeconds}
-            onChange={(e) => handleSave({ duplicateCommentWindowSeconds: parseInt(e.target.value) || 60 }, "Updated duplicate window")}
-            className="bg-gray-700 w-full px-3 py-2 rounded border border-gray-600"
-          />
         </div>
       </div>
 
@@ -340,7 +450,9 @@ export default function AdminModerationDashboard() {
             <tbody>
               {auditLogs.map((log) => (
                 <tr key={log.id} className="border-b border-gray-700">
-                  <td className="p-3">{log.timestamp?.toDate ? log.timestamp.toDate().toLocaleString() : 'Just now'}</td>
+                  <td className="p-3">
+                    {log.timestamp?.toDate ? log.timestamp.toDate().toLocaleString() : 'Just now'}
+                  </td>
                   <td className="p-3">{log.adminId}</td>
                   <td className="p-3 text-yellow-400">{log.changedFields?.join(', ')}</td>
                   <td className="p-3">{log.reason}</td>

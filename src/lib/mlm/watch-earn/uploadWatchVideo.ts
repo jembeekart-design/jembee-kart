@@ -1,28 +1,9 @@
-import {
-  addDoc,
-  collection,
-} from "firebase/firestore";
-
-import {
-  getAuth,
-} from "firebase/auth";
-
-import {
-  db,
-} from "@/firebase/config";
+import { auth } from "@/firebase/config";
+import { submitVideoForModeration } from "./submitVideoForModeration";
 
 interface UploadWatchVideoData {
   file: File;
-
-  /**
-   * Kept for backward compatibility.
-   *
-   * IMPORTANT:
-   * We will NOT trust this value for ownership.
-   * Firebase Authentication UID will be used instead.
-   */
   creatorId?: string;
-
   displayName?: string;
   photoURL?: string;
   username: string;
@@ -32,11 +13,25 @@ interface UploadWatchVideoData {
   sponsor?: boolean;
   originalVideoId?: string;
   originalAudioId?: string;
+  isEnhanced?: boolean;
+  onProgress?: (uploadedBytes: number, totalBytes: number) => void;
+}
+
+export interface ModerationSubmissionMetadata {
+  displayName?: string;
+  photoURL?: string;
+  username: string;
+  caption: string;
+  hashtags: string[];
+  music: string;
+  sponsor: boolean;
+  originalVideoId?: string;
+  originalAudioId?: string;
+  isEnhanced: boolean;
 }
 
 export async function uploadWatchVideo({
   file,
-  creatorId,
   displayName,
   photoURL,
   username,
@@ -46,48 +41,24 @@ export async function uploadWatchVideo({
   sponsor,
   originalVideoId,
   originalAudioId,
+  isEnhanced,
+  onProgress,
 }: UploadWatchVideoData) {
   try {
     // ==================================================
     // AUTHENTICATION
     // ==================================================
 
-    const auth = getAuth();
-
     const currentUser = auth.currentUser;
 
-    console.log(
-      "WATCH VIDEO AUTH USER:",
-      currentUser
-        ? {
-            uid: currentUser.uid,
-            email: currentUser.email,
-            displayName: currentUser.displayName,
-          }
-        : null
-    );
-
-    /**
-     * NEVER trust creatorId coming from the UI.
-     *
-     * Firebase Auth UID is the source of truth.
-     */
     if (!currentUser) {
-      console.error(
-        "WATCH VIDEO UPLOAD: USER NOT LOGGED IN"
-      );
-
       return {
         success: false,
         message: "Please login first",
       };
     }
 
-    /**
-     * Actual Firebase Authentication UID.
-     */
-    const authenticatedUserId =
-      currentUser.uid;
+    const authenticatedUserId = currentUser.uid;
 
     if (!authenticatedUserId) {
       return {
@@ -107,335 +78,85 @@ export async function uploadWatchVideo({
       };
     }
 
-    // ==================================================
-    // VIDEO TYPE CHECK
-    // ==================================================
-
-    if (
-      !file.type.startsWith("video/")
-    ) {
+    if (!file.type.startsWith("video/")) {
       return {
         success: false,
-        message:
-          "Only video upload allowed",
+        message: "Only video upload allowed",
       };
     }
 
-    // ==================================================
-    // FILE SIZE CHECK
-    // MAX 100MB
-    // ==================================================
-
-    const maxSize =
-      100 * 1024 * 1024;
+    const maxSize = 100 * 1024 * 1024;
 
     if (file.size > maxSize) {
       return {
         success: false,
-        message: "Video too large",
+        message: "Video too large. Maximum size is 100MB",
       };
     }
 
     // ==================================================
-    // AUTO REWARD
+    // DRIVE-FIRST MODERATION
+    // ==================================================
+    //
+    // IMPORTANT:
+    // DO NOT upload to Cloudinary here.
+    //
+    // The video goes to Google Drive moderation first.
+    // Cloudinary upload will happen ONLY after admin approval.
     // ==================================================
 
-    const rewardCoins =
-      sponsor ? 25 : 5;
+    const metadata: ModerationSubmissionMetadata = {
+      displayName,
+      photoURL,
+      username,
+      caption,
+      hashtags,
+      music,
+      sponsor: sponsor === true,
+      originalVideoId,
+      originalAudioId,
+      isEnhanced: isEnhanced === true,
+    };
 
-    // ==================================================
-    // FORM DATA
-    // ==================================================
-
-    const formData =
-      new FormData();
-
-    formData.append(
-      "file",
-      file
+    const result = await submitVideoForModeration(
+      file,
+      metadata,
+      onProgress
     );
 
-    formData.append(
-      "upload_preset",
-      "jembeekart"
-    );
-
-    // ==================================================
-    // CLOUDINARY UPLOAD
-    // ==================================================
-
-    const response =
-      await fetch(
-        "https://api.cloudinary.com/v1_1/db4bgno7i/video/upload",
-        {
-          method: "POST",
-          body: formData,
-        }
-      );
-
-    console.log(
-      "UPLOAD STATUS:",
-      response.status
-    );
-
-    const cloudinaryData =
-      await response.json();
-
-    console.log(
-      "CLOUDINARY RESPONSE:",
-      cloudinaryData
-    );
-
-    // ==================================================
-    // CLOUDINARY FAILED
-    // ==================================================
-
-    if (
-      !cloudinaryData.secure_url
-    ) {
-      console.error(
-        "CLOUDINARY FAILED:",
-        cloudinaryData
-      );
-
+    if (!result.success) {
       return {
         success: false,
         message:
-          "Cloudinary upload failed",
+          result.message ||
+          "Video moderation submission failed",
       };
     }
 
-    // ==================================================
-    // URLS
-    // ==================================================
-
-    const videoUrl =
-      cloudinaryData.secure_url;
-
-    const musicId =
-      music ||
-      `original-${cloudinaryData.public_id}`;
-
-    const thumbnailUrl =
-      cloudinaryData.secure_url
-        .replace(
-          "/video/upload/",
-          "/video/upload/so_1/"
-        )
-        .replace(
-          ".mp4",
-          ".jpg"
-        );
-
-    // ==================================================
-    // FIRESTORE SAVE
-    // ==================================================
-
-    /**
-     * IMPORTANT
-     *
-     * We save the authenticated Firebase UID.
-     *
-     * userId:
-     *   Used by existing Watch & Earn data/code.
-     *
-     * creatorId:
-     *   Used by newer code.
-     *
-     * Both point to the SAME authenticated user.
-     */
-
-    const videoData = {
-      // ================================================
-      // REAL AUTH USER
-      // ================================================
-
-      userId:
-        authenticatedUserId,
-
-      creatorId:
-        authenticatedUserId,
-
-      // ================================================
-      // CREATOR INFORMATION
-      // ================================================
-
-      displayName:
-        displayName || "",
-
-      photoURL:
-        photoURL || "",
-
-      username:
-        username || "",
-
-      // ================================================
-      // VIDEO CONTENT
-      // ================================================
-
-      caption:
-        caption || "",
-
-      hashtags:
-        Array.isArray(hashtags)
-          ? hashtags
-          : [],
-
-      music:
-        musicId,
-
-      originalVideoId:
-        originalVideoId || null,
-
-      originalAudioId:
-        originalAudioId || null,
-
-      // ================================================
-      // VIDEO STATUS
-      // ================================================
-
-      verified:
-        false,
-
-      sponsor:
-        sponsor === true,
-
-      publicId:
-        cloudinaryData.public_id,
-
-      video:
-        videoUrl,
-
-      thumbnail:
-        thumbnailUrl,
-
-      // ================================================
-      // REWARD
-      // ================================================
-
-      coins:
-        0,
-
-      pendingCoins:
-        rewardCoins,
-
-      // ================================================
-      // SOCIAL COUNTERS
-      // ================================================
-
-      likes:
-        0,
-
-      comments:
-        0,
-
-      shares:
-        0,
-
-      saves:
-        0,
-
-      views:
-        0,
-
-      watchTime:
-        0,
-
-      // ================================================
-      // MODERATION / STATUS
-      // ================================================
-
-      active:
-        true,
-
-      featured:
-        false,
-
-      status:
-        "pending",
-
-      moderation:
-        "pending",
-
-      // ================================================
-      // CREATED TIME
-      // ================================================
-
-      createdAt:
-        Date.now(),
-    };
-
     console.log(
-      "SAVING WATCH VIDEO:",
-      {
-        authenticatedUserId,
-        oldCreatorIdPassedFromCaller:
-          creatorId,
-        userId:
-          videoData.userId,
-        creatorId:
-          videoData.creatorId,
-      }
-    );
-
-    const docRef =
-      await addDoc(
-        collection(
-          db,
-          "watchEarnVideos"
-        ),
-        videoData
-      );
-
-    // ==================================================
-    // SUCCESS
-    // ==================================================
-
-    console.log(
-      "WATCH VIDEO CREATED:",
-      {
-        videoId: docRef.id,
-        userId:
-          authenticatedUserId,
-        creatorId:
-          authenticatedUserId,
-      }
+      "VIDEO SENT TO DRIVE MODERATION:",
+      result.submissionId
     );
 
     return {
       success: true,
-
-      videoId:
-        docRef.id,
-
-      videoUrl,
-
-      thumbnail:
-        thumbnailUrl,
-
-      coins:
-        rewardCoins,
-
-      userId:
-        authenticatedUserId,
-
-      creatorId:
-        authenticatedUserId,
+      moderationPending: true,
+      submissionId: result.submissionId,
+      message:
+        "Video submitted for moderation. It will be published after approval.",
     };
   } catch (error) {
-    // ==================================================
-    // ERROR
-    // ==================================================
-
     console.error(
-      "UPLOAD WATCH VIDEO ERROR:",
+      "WATCH VIDEO MODERATION SUBMISSION ERROR:",
       error
     );
 
     return {
       success: false,
       message:
-        "Upload failed",
+        error instanceof Error
+          ? error.message
+          : "Video submission failed",
     };
   }
 }
