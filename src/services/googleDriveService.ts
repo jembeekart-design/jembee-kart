@@ -168,14 +168,16 @@ export async function getDriveFileMetadata(
   };
 }
 
-export async function getDriveFileStream(
-  fileId: string,
-  range?: string
-): Promise<{
+export interface DriveFileStreamResponse {
   stream: Readable;
   mimeType: string;
   size: number;
-}> {
+}
+
+export async function getDriveFileStream(
+  fileId: string,
+  range?: string
+): Promise<DriveFileStreamResponse> {
   const trimmedFileId = fileId.trim();
 
   if (!trimmedFileId) {
