@@ -1,4 +1,4 @@
-import { getAuth } from "firebase/auth";
+import { auth } from "@/firebase/config";
 import { submitVideoForModeration } from "./submitVideoForModeration";
 
 interface UploadWatchVideoData {
@@ -49,7 +49,6 @@ export async function uploadWatchVideo({
     // AUTHENTICATION
     // ==================================================
 
-    const auth = getAuth();
     const currentUser = auth.currentUser;
 
     if (!currentUser) {
