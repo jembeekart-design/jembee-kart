@@ -1,55 +1,46 @@
 import { google } from "googleapis";
 import { Readable } from "node:stream";
 
-type ServiceAccountCredentials = {
-  client_email: string;
-  private_key: string;
-  project_id?: string;
-};
+function getOAuthClient() {
+  const clientId = process.env.GOOGLE_OAUTH_CLIENT_ID?.trim();
+  const clientSecret = process.env.GOOGLE_OAUTH_CLIENT_SECRET?.trim();
+  const redirectUri = process.env.GOOGLE_OAUTH_REDIRECT_URI?.trim();
+  const refreshToken = process.env.GOOGLE_OAUTH_REFRESH_TOKEN?.trim();
 
-function getAuthClient() {
-  const rawCredentials =
-    process.env.GOOGLE_SERVICE_ACCOUNT_CREDENTIALS;
-
-  if (!rawCredentials) {
+  if (!clientId || !clientSecret || !redirectUri) {
     throw new Error(
-      "GOOGLE_SERVICE_ACCOUNT_CREDENTIALS not configured"
+      "Google OAuth client credentials are not configured"
     );
   }
 
-  let credentials: ServiceAccountCredentials;
-
-  try {
-    credentials = JSON.parse(rawCredentials);
-  } catch {
+  if (!refreshToken) {
     throw new Error(
-      "GOOGLE_SERVICE_ACCOUNT_CREDENTIALS contains invalid JSON"
+      "GOOGLE_OAUTH_REFRESH_TOKEN is not configured"
     );
   }
 
-  if (!credentials.client_email || !credentials.private_key) {
-    throw new Error(
-      "GOOGLE_SERVICE_ACCOUNT_CREDENTIALS is missing required fields"
-    );
-  }
+  const oauth2Client = new google.auth.OAuth2(
+    clientId,
+    clientSecret,
+    redirectUri
+  );
 
-  return new google.auth.GoogleAuth({
-    credentials,
-    scopes: ["https://www.googleapis.com/auth/drive.file"],
+  oauth2Client.setCredentials({
+    refresh_token: refreshToken,
   });
+
+  return oauth2Client;
 }
 
 function getDriveClient() {
-  const auth = getAuthClient();
   return google.drive({
     version: "v3",
-    auth,
+    auth: getOAuthClient(),
   });
 }
 
 function getFolderId(): string {
-  const folderId =
-    process.env.GOOGLE_DRIVE_FOLDER_ID?.trim();
+  const folderId = process.env.GOOGLE_DRIVE_FOLDER_ID?.trim();
 
   if (!folderId) {
     throw new Error(
@@ -69,15 +60,20 @@ export async function createResumableUploadSession(
     throw new Error("Only video MIME types are allowed");
   }
 
+  if (fileSize <= 0) {
+    throw new Error("File size must be greater than zero");
+  }
+
   if (fileSize > 100 * 1024 * 1024) {
     throw new Error("File size exceeds 100MB");
   }
 
-  const auth = getAuthClient();
+  const auth = getOAuthClient();
   const client = await auth.getClient();
 
   const response = await client.request<{ location?: string }>({
-    url: "https://www.googleapis.com/upload/drive/v3/files?uploadType=resumable",
+    url:
+      "https://www.googleapis.com/upload/drive/v3/files?uploadType=resumable",
     method: "POST",
     headers: {
       "Content-Type": "application/json; charset=UTF-8",
@@ -93,7 +89,9 @@ export async function createResumableUploadSession(
   const uploadUrl = response.headers["location"];
 
   if (!uploadUrl) {
-    throw new Error("Failed to obtain resumable upload URL");
+    throw new Error(
+      "Failed to obtain resumable upload URL"
+    );
   }
 
   return uploadUrl;
@@ -108,12 +106,8 @@ export async function uploadVideoToDrive(
     throw new Error("Drive filename is required");
   }
 
-  if (
-    !mimeType.toLowerCase().startsWith("video/")
-  ) {
-    throw new Error(
-      "Only video MIME types are allowed"
-    );
+  if (!mimeType.toLowerCase().startsWith("video/")) {
+    throw new Error("Only video MIME types are allowed");
   }
 
   const drive = getDriveClient();
@@ -141,15 +135,18 @@ export async function uploadVideoToDrive(
   return fileId;
 }
 
-export async function getDriveFileMetadata(fileId: string): Promise<{
+export async function getDriveFileMetadata(
+  fileId: string
+): Promise<{
   mimeType: string;
   size: number;
   name: string;
   parents: string[];
 }> {
   const drive = getDriveClient();
+
   const response = await drive.files.get({
-    fileId,
+    fileId: fileId.trim(),
     fields: "mimeType,size,name,parents",
   });
 
@@ -158,7 +155,9 @@ export async function getDriveFileMetadata(fileId: string): Promise<{
     !response.data.size ||
     !response.data.name
   ) {
-    throw new Error("Could not fetch valid file metadata");
+    throw new Error(
+      "Could not fetch valid file metadata"
+    );
   }
 
   return {
@@ -178,13 +177,14 @@ export async function getDriveFileStream(
   size: number;
 }> {
   const trimmedFileId = fileId.trim();
+
   if (!trimmedFileId) {
     throw new Error("Drive file ID is required");
   }
 
   const drive = getDriveClient();
-
-  const metadata = await getDriveFileMetadata(trimmedFileId);
+  const metadata =
+    await getDriveFileMetadata(trimmedFileId);
 
   const response = await drive.files.get(
     {
@@ -198,7 +198,9 @@ export async function getDriveFileStream(
   );
 
   if (!response.data) {
-    throw new Error("Google Drive returned an empty video stream");
+    throw new Error(
+      "Google Drive returned an empty video stream"
+    );
   }
 
   return {
@@ -206,6 +208,30 @@ export async function getDriveFileStream(
     mimeType: metadata.mimeType,
     size: metadata.size,
   };
+}
+
+export async function downloadDriveFile(
+  fileId: string
+): Promise<Readable> {
+  const drive = getDriveClient();
+
+  const response = await drive.files.get(
+    {
+      fileId: fileId.trim(),
+      alt: "media",
+    },
+    {
+      responseType: "stream",
+    }
+  );
+
+  if (!response.data) {
+    throw new Error(
+      "Google Drive returned an empty file stream"
+    );
+  }
+
+  return response.data as Readable;
 }
 
 export async function deleteDriveFile(
