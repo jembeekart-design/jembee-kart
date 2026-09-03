@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState, useEffect, useCallback } from 'react';
+import React, { useState, useEffect, useCallback, useRef } from 'react';
 // ... existing imports
 import { ModerationSettings, CommentAuditLog } from '@/types/moderation';
 import { getModerationSettings, updateModerationSettings } from '@/services/moderationService';
@@ -9,36 +9,79 @@ import { db, auth } from '@/firebase/config';
 
 // New component for secure video streaming
 function VideoPreview({ driveFileId }: { driveFileId: string }) {
-// ... existing component
-
+  const videoRef = useRef<HTMLVideoElement>(null);
   const [videoUrl, setVideoUrl] = useState<string | null>(null);
+  const [error, setError] = useState<string | null>(null);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    let objectUrl: string | null = null;
-    const loadVideo = async () => {
-      const user = auth.currentUser;
-      if (!user) return;
-      const token = await user.getIdToken();
+    const generateToken = async () => {
+      try {
+        setLoading(true);
+        setError(null);
 
-      const response = await fetch(`/api/admin/moderation-video?id=${driveFileId}`, {
-        headers: { Authorization: `Bearer ${token}` },
-      });
-      if (response.ok) {
-        const blob = await response.blob();
-        objectUrl = URL.createObjectURL(blob);
-        setVideoUrl(objectUrl);
+        const user = auth.currentUser;
+        if (!user) {
+          setError('Not authenticated');
+          return;
+        }
+
+        const idToken = await user.getIdToken();
+
+        // Request a preview token from the server
+        const tokenResponse = await fetch('/api/admin/moderation-video', {
+          method: 'POST',
+          headers: {
+            'Authorization': `Bearer ${idToken}`,
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({ driveFileId }),
+        });
+
+        if (!tokenResponse.ok) {
+          const errorData = await tokenResponse.json().catch(() => ({}));
+          throw new Error(
+            errorData.error || `Token request failed with status ${tokenResponse.status}`
+          );
+        }
+
+        const { token } = await tokenResponse.json();
+
+        // Construct the preview URL with the token
+        const previewUrl = `/api/admin/moderation-video?token=${encodeURIComponent(token)}`;
+        setVideoUrl(previewUrl);
+      } catch (err) {
+        const message = err instanceof Error ? err.message : 'Failed to load video';
+        console.error('Error generating preview token:', err);
+        setError(message);
+      } finally {
+        setLoading(false);
       }
     };
-    loadVideo();
-    return () => {
-      if (objectUrl) URL.revokeObjectURL(objectUrl);
-    };
+
+    generateToken();
   }, [driveFileId]);
+
+  if (loading) {
+    return (
+      <div className="aspect-[9/16] bg-black rounded overflow-hidden relative flex items-center justify-center">
+        <span className="text-xs text-gray-500">Loading Video...</span>
+      </div>
+    );
+  }
+
+  if (error) {
+    return (
+      <div className="aspect-[9/16] bg-black rounded overflow-hidden relative flex items-center justify-center">
+        <span className="text-xs text-red-400">Error: {error}</span>
+      </div>
+    );
+  }
 
   if (!videoUrl) {
     return (
       <div className="aspect-[9/16] bg-black rounded overflow-hidden relative flex items-center justify-center">
-        <span className="text-xs text-gray-500">Loading Video...</span>
+        <span className="text-xs text-gray-500">Unable to load video</span>
       </div>
     );
   }
@@ -91,8 +134,8 @@ export default function AdminModerationDashboard() {
 
       const response = await fetch('/api/admin/moderation-submissions', {
         headers: {
-          'Authorization': `Bearer ${token}`
-        }
+          'Authorization': `Bearer ${token}`,
+        },
       });
       const data = await response.json();
       if (!data.success) throw new Error(data.message || 'Failed to load');
@@ -109,7 +152,9 @@ export default function AdminModerationDashboard() {
     getModerationSettings(true).then(setSettings);
 
     getDocs(query(collection(db, 'commentAuditLogs'), orderBy('timestamp', 'desc'), limit(15)))
-      .then(snap => setAuditLogs(snap.docs.map(d => ({ id: d.id, ...d.data() } as CommentAuditLog))));
+      .then((snap) =>
+        setAuditLogs(snap.docs.map((d) => ({ id: d.id, ...d.data() } as CommentAuditLog)))
+      );
 
     setTimeout(() => fetchSubmissions(), 0);
   }, [fetchSubmissions]);
@@ -125,9 +170,9 @@ export default function AdminModerationDashboard() {
         method: 'POST',
         headers: {
           'Authorization': `Bearer ${token}`,
-          'Content-Type': 'application/json'
+          'Content-Type': 'application/json',
         },
-        body: JSON.stringify({ submissionId, action })
+        body: JSON.stringify({ submissionId, action }),
       });
       const data = await response.json();
       if (!data.success) throw new Error(data.message || 'Failed to process');
@@ -175,17 +220,33 @@ export default function AdminModerationDashboard() {
 
       {/* Video Moderation Queue */}
       <div className="bg-gray-800 p-6 rounded-lg space-y-4">
-        <h2 className="text-lg font-semibold text-purple-400">Video Moderation Queue ({submissions.length})</h2>
+        <h2 className="text-lg font-semibold text-purple-400">
+          Video Moderation Queue ({submissions.length})
+        </h2>
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
           {submissions.map((sub) => (
             <div key={sub.id} className="bg-gray-700 p-4 rounded-lg space-y-2">
               <VideoPreview driveFileId={sub.driveFileId} />
               <p className="font-bold truncate">{sub.username}</p>
               <p className="text-xs text-gray-400">{sub.caption}</p>
-              <p className="text-xs text-gray-400">Status: <span className='text-yellow-400'>{sub.status}</span></p>
+              <p className="text-xs text-gray-400">
+                Status: <span className="text-yellow-400">{sub.status}</span>
+              </p>
               <div className="flex gap-2 pt-2">
-                <button onClick={() => handleModerationAction(sub.submissionId, 'approve')} className="bg-green-600 hover:bg-green-700 px-3 py-1 rounded text-white flex-1" disabled={saving}>Approve</button>
-                <button onClick={() => handleModerationAction(sub.submissionId, 'reject')} className="bg-red-600 hover:bg-red-700 px-3 py-1 rounded text-white flex-1" disabled={saving}>Reject</button>
+                <button
+                  onClick={() => handleModerationAction(sub.submissionId, 'approve')}
+                  className="bg-green-600 hover:bg-green-700 px-3 py-1 rounded text-white flex-1"
+                  disabled={saving}
+                >
+                  Approve
+                </button>
+                <button
+                  onClick={() => handleModerationAction(sub.submissionId, 'reject')}
+                  className="bg-red-600 hover:bg-red-700 px-3 py-1 rounded text-white flex-1"
+                  disabled={saving}
+                >
+                  Reject
+                </button>
               </div>
             </div>
           ))}
@@ -197,7 +258,7 @@ export default function AdminModerationDashboard() {
           <input
             type="checkbox"
             checked={settings.enabled}
-            onChange={(e) => handleSave({ enabled: e.target.checked }, "Toggled Global Moderation")}
+            onChange={(e) => handleSave({ enabled: e.target.checked }, 'Toggled Global Moderation')}
             className="form-checkbox h-5 w-5 text-blue-600 rounded"
           />
           <span className="font-medium">Enable Moderation Engine</span>
@@ -206,7 +267,9 @@ export default function AdminModerationDashboard() {
           <input
             type="checkbox"
             checked={settings.commentsEnabled}
-            onChange={(e) => handleSave({ commentsEnabled: e.target.checked }, "Toggled Comments Globally")}
+            onChange={(e) =>
+              handleSave({ commentsEnabled: e.target.checked }, 'Toggled Comments Globally')
+            }
             className="form-checkbox h-5 w-5 text-blue-600 rounded"
           />
           <span className="font-medium">Allow Comments Globally</span>
@@ -215,7 +278,9 @@ export default function AdminModerationDashboard() {
           <input
             type="checkbox"
             checked={settings.autoApproveComments}
-            onChange={(e) => handleSave({ autoApproveComments: e.target.checked }, "Toggled Auto Approve")}
+            onChange={(e) =>
+              handleSave({ autoApproveComments: e.target.checked }, 'Toggled Auto Approve')
+            }
             className="form-checkbox h-5 w-5 text-blue-600 rounded"
           />
           <span className="font-medium">Auto Approve Comments</span>
@@ -224,7 +289,9 @@ export default function AdminModerationDashboard() {
 
       {/* Whitelist Words Section */}
       <div className="bg-gray-800 p-6 rounded-lg space-y-4">
-        <h2 className="text-lg font-semibold text-emerald-400">Whitelist Words (Absolute Priority Override)</h2>
+        <h2 className="text-lg font-semibold text-emerald-400">
+          Whitelist Words (Absolute Priority Override)
+        </h2>
         <div className="flex gap-2">
           <input
             type="text"
@@ -247,7 +314,10 @@ export default function AdminModerationDashboard() {
         </div>
         <div className="flex flex-wrap gap-2 pt-2">
           {settings.allowedWords?.map((word, idx) => (
-            <span key={idx} className="bg-emerald-900 text-emerald-200 px-3 py-1 rounded-full text-sm flex items-center gap-2">
+            <span
+              key={idx}
+              className="bg-emerald-900 text-emerald-200 px-3 py-1 rounded-full text-sm flex items-center gap-2"
+            >
               {word}
               <button
                 onClick={() => {
@@ -288,7 +358,10 @@ export default function AdminModerationDashboard() {
         </div>
         <div className="flex flex-wrap gap-2 pt-2">
           {settings.blockedWords?.map((word, idx) => (
-            <span key={idx} className="bg-red-900 text-red-200 px-3 py-1 rounded-full text-sm flex items-center gap-2">
+            <span
+              key={idx}
+              className="bg-red-900 text-red-200 px-3 py-1 rounded-full text-sm flex items-center gap-2"
+            >
               {word}
               <button
                 onClick={() => {
@@ -320,7 +393,9 @@ export default function AdminModerationDashboard() {
             <tbody>
               {auditLogs.map((log) => (
                 <tr key={log.id} className="border-b border-gray-700">
-                  <td className="p-3">{log.timestamp?.toDate ? log.timestamp.toDate().toLocaleString() : 'Just now'}</td>
+                  <td className="p-3">
+                    {log.timestamp?.toDate ? log.timestamp.toDate().toLocaleString() : 'Just now'}
+                  </td>
                   <td className="p-3">{log.adminId}</td>
                   <td className="p-3 text-yellow-400">{log.changedFields?.join(', ')}</td>
                   <td className="p-3">{log.reason}</td>
