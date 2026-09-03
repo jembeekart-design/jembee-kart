@@ -118,6 +118,7 @@ interface ModerationSubmission {
 export default function AdminModerationDashboard() {
   // ... existing hooks
   const [settings, setSettings] = useState<ModerationSettings | null>(null);
+  const [connectingGoogleDrive, setConnectingGoogleDrive] = useState(false);
   const [auditLogs, setAuditLogs] = useState<CommentAuditLog[]>([]);
   const [submissions, setSubmissions] = useState<ModerationSubmission[]>([]);
   const [newBlockedWord, setNewBlockedWord] = useState('');
@@ -207,6 +208,46 @@ export default function AdminModerationDashboard() {
     }
   };
 
+  const handleConnectGoogleDrive = async () => {
+    try {
+      setConnectingGoogleDrive(true);
+      setMessage('');
+
+      const user = auth.currentUser;
+
+      if (!user) {
+        throw new Error('Not authenticated');
+      }
+
+      const idToken = await user.getIdToken();
+
+      const response = await fetch('/api/admin/google-drive/auth', {
+        method: 'POST',
+        headers: {
+          Authorization: `Bearer ${idToken}`,
+        },
+      });
+
+      const data = await response.json().catch(() => ({}));
+
+      if (!response.ok || !data.authorizationUrl) {
+        throw new Error(
+          data.message || 'Failed to start Google Drive authorization'
+        );
+      }
+
+      window.location.href = data.authorizationUrl;
+    } catch (err) {
+      console.error('Google Drive connection error:', err);
+      setMessage(
+        err instanceof Error
+          ? err.message
+          : 'Failed to connect Google Drive.'
+      );
+      setConnectingGoogleDrive(false);
+    }
+  };
+
   return (
     <div className="p-6 max-w-7xl mx-auto space-y-8 bg-gray-900 text-gray-100 rounded-lg shadow-xl">
       <div className="flex justify-between items-center border-b border-gray-800 pb-4">
@@ -214,8 +255,24 @@ export default function AdminModerationDashboard() {
           <h1 className="text-2xl font-bold">JembeeKart Enterprise Moderation</h1>
           <p className="text-sm text-gray-400">Manage Comments and Video Content Moderation.</p>
         </div>
-        {message && <span className="text-green-400 font-medium animate-pulse">{message}</span>}
-        {saving && <span className="text-blue-400">Processing...</span>}
+        <div className="flex items-center gap-3">
+          {message && (
+            <span className="text-green-400 font-medium animate-pulse">
+              {message}
+            </span>
+          )}
+          {saving && <span className="text-blue-400">Processing...</span>}
+          <button
+            type="button"
+            onClick={handleConnectGoogleDrive}
+            disabled={connectingGoogleDrive}
+            className="bg-blue-600 hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed px-4 py-2 rounded text-white font-medium"
+          >
+            {connectingGoogleDrive
+              ? 'Connecting...'
+              : 'Connect Google Drive'}
+          </button>
+        </div>
       </div>
 
       {/* Video Moderation Queue */}
