@@ -47,9 +47,16 @@ export async function POST(req: Request) {
     return NextResponse.json({ success: false, message: "Invalid JSON" }, { status: 400 });
   }
 
-  const { submissionId, driveFileId } = body;
+  const submissionId =
+    typeof body.submissionId === "string" ? body.submissionId.trim() : "";
+  const driveFileId =
+    typeof body.driveFileId === "string" ? body.driveFileId.trim() : "";
+
   if (!submissionId || !driveFileId) {
-    return NextResponse.json({ success: false, message: "Missing required fields" }, { status: 400 });
+    return NextResponse.json(
+      { success: false, message: "Missing required fields" },
+      { status: 400 }
+    );
   }
 
   try {

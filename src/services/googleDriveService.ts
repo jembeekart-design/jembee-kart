@@ -86,7 +86,7 @@ export async function createResumableUploadSession(
     },
   });
 
-  const uploadUrl = response.headers["location"];
+  const uploadUrl = response.headers.get("location");
 
   if (!uploadUrl) {
     throw new Error(
