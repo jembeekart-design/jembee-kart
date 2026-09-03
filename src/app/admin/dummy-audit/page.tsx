@@ -244,7 +244,7 @@ function scanDirectory(
       lower.includes("video") ||
       lower.includes("watch")
     ) {
-      connect.push("Check video / Watch & Earn Firestore logic");
+      connect.push("Check video / Jembee Shorts Firestore logic");
     }
 
     if (!connect.length) {

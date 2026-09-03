@@ -14,11 +14,13 @@
     "autofix": "dotenv -e .env.production -- tsx src/scripts/autofix.ts"
   },
   "dependencies": {
+    "busboy": "^1.6.0",
     "cloudinary": "^2.10.0",
     "clsx": "^2.1.1",
     "firebase": "^12.13.0",
     "firebase-admin": "^13.4.0",
     "framer-motion": "^12.40.0",
+    "googleapis": "^178.0.0",
     "lucide-react": "^1.18.0",
     "next": "16.2.9",
     "qrcode": "^1.5.4",
@@ -34,15 +36,16 @@
   },
   "devDependencies": {
     "@tailwindcss/postcss": "^4",
+    "@types/busboy": "^1.5.4",
     "@types/node": "^20",
     "@types/qrcode": "^1.5.6",
     "@types/react": "^19",
     "@types/react-dom": "^19",
     "dotenv": "^17.4.2",
     "dotenv-cli": "^11.0.0",
-    "firebase-tools": "^13.0.0",
-    "eslint": "^10",
+    "eslint": "^9.39.4",
     "eslint-config-next": "16.2.9",
+    "firebase-tools": "^13.0.0",
     "tailwindcss": "^4",
     "tsx": "^4.22.4",
     "typescript": "^6"
