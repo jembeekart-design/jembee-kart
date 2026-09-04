@@ -60,6 +60,12 @@ export async function POST(req: Request) {
   }
 
   try {
+    console.log("[UPLOAD_DEBUG_SERVER] COMPLETE_BEGIN", {
+      creatorId,
+      submissionId,
+      driveFileId,
+    });
+
     const adminDb = getAdminDb();
     const submissionRef = adminDb.collection("videoModerationSubmissions").doc(submissionId);
     const submissionDoc = await submissionRef.get();
@@ -77,8 +83,20 @@ export async function POST(req: Request) {
       return NextResponse.json({ success: false, message: "Invalid status" }, { status: 400 });
     }
 
+    console.log("[UPLOAD_DEBUG_SERVER] SUBMISSION_VERIFIED", {
+      submissionId,
+      creatorId,
+      status: submission.status,
+    });
+
+    console.log("[UPLOAD_DEBUG_SERVER] DRIVE_METADATA_BEGIN", {
+      driveFileId,
+    });
+
     // Verify Drive File
     const metadata = await getDriveFileMetadata(driveFileId);
+
+    console.log("[UPLOAD_DEBUG_SERVER] DRIVE_METADATA_RESULT", metadata);
 
     if (!metadata.mimeType.startsWith("video/")) {
       return NextResponse.json({ success: false, message: "Invalid file type" }, { status: 400 });
@@ -100,6 +118,14 @@ export async function POST(req: Request) {
 
     return NextResponse.json({ success: true, submissionId, status: "pending" });
   } catch (error) {
+    console.error("[UPLOAD_DEBUG_SERVER] COMPLETE_ERROR", {
+      name: error instanceof Error ? error.name : typeof error,
+      message: error instanceof Error ? error.message : String(error),
+      stack: error instanceof Error ? error.stack : undefined,
+      submissionId,
+      driveFileId,
+    });
+
     console.error("Failed to complete drive upload:", error);
     return NextResponse.json({ success: false, message: "Failed to finalize upload" }, { status: 500 });
   }

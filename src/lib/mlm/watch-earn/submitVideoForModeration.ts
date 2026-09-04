@@ -58,6 +58,13 @@ export async function submitVideoForModeration(
 
   const token = await currentUser.getIdToken(true);
 
+  console.log("[UPLOAD_DEBUG] SUBMIT_START", {
+    fileName: file.name,
+    fileSize: file.size,
+    fileType: file.type,
+    creatorId: currentUser.uid,
+  });
+
   // 1. Initialize Drive Upload
   const startResponse = await fetch("/api/creator/start-drive-upload", {
     method: "POST",
@@ -74,6 +81,16 @@ export async function submitVideoForModeration(
   });
 
   const startData = await startResponse.json();
+
+  console.log("[UPLOAD_DEBUG] START_RESPONSE", {
+    status: startResponse.status,
+    ok: startResponse.ok,
+    success: startData?.success,
+    submissionId: startData?.submissionId,
+    uploadUrlPresent: !!startData?.uploadUrl,
+    message: startData?.message,
+  });
+
   if (!startResponse.ok || !startData.success || !startData.submissionId || !startData.uploadUrl) {
     return {
       success: false,
@@ -83,11 +100,26 @@ export async function submitVideoForModeration(
 
   const { submissionId, uploadUrl } = startData;
 
+  console.log("[UPLOAD_DEBUG] DRIVE_UPLOAD_START", {
+    submissionId,
+    uploadUrlPresent: !!uploadUrl,
+  });
+
   // 2. Direct-to-Drive Upload
   try {
     const driveFileId = await uploadVideoToDrive(file, uploadUrl, onProgress);
 
+    console.log("[UPLOAD_DEBUG] DRIVE_UPLOAD_RETURNED", {
+      submissionId,
+      driveFileId,
+    });
+
     // 3. Complete Submission
+    console.log("[UPLOAD_DEBUG] COMPLETE_REQUEST_START", {
+      submissionId,
+      driveFileId,
+    });
+
     const completeResponse = await fetch("/api/creator/complete-drive-upload", {
       method: "POST",
       headers: {
@@ -101,6 +133,12 @@ export async function submitVideoForModeration(
     });
 
     const completeData = await completeResponse.json().catch(() => null);
+
+    console.log("[UPLOAD_DEBUG] COMPLETE_RESPONSE", {
+      status: completeResponse.status,
+      ok: completeResponse.ok,
+      data: completeData,
+    });
 
     if (!completeResponse.ok || !completeData || completeData.success !== true) {
       throw new Error(
@@ -116,6 +154,13 @@ export async function submitVideoForModeration(
       driveFileId,
     };
   } catch (error) {
+    console.error("[UPLOAD_DEBUG] SUBMIT_ERROR", {
+      name: error instanceof Error ? error.name : typeof error,
+      message: error instanceof Error ? error.message : String(error),
+      stack: error instanceof Error ? error.stack : undefined,
+      submissionId,
+    });
+
     // Cleanup on failure
     await fetch("/api/creator/cancel-video-moderation", {
       method: "POST",
