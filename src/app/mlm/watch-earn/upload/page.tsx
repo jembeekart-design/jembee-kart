@@ -14,6 +14,7 @@ export default function UploadWatchVideoPage() {
   const [file, setFile] = useState<File | null>(null);
   const [loading, setLoading] = useState(false);
   const [uploadProgress, setUploadProgress] = useState(0);
+  const [uploadError, setUploadError] = useState<string | null>(null);
   const [isEnhanced, setIsEnhanced] = useState(false);
   const [caption, setCaption] = useState("");
   const [hashtags, setHashtags] = useState("");
@@ -60,6 +61,7 @@ export default function UploadWatchVideoPage() {
         fileType: file.type,
       });
 
+      setUploadError(null);
       setLoading(true);
       setUploadProgress(0);
 
@@ -98,15 +100,33 @@ export default function UploadWatchVideoPage() {
         setMusic("");
         setFile(null);
       } else {
-        alert(result.message || "Upload failed");
+        const message = result.message || "Upload failed";
+
+        console.error("[UPLOAD_DEBUG] PAGE_UPLOAD_FAILURE", {
+          message,
+          progress: uploadProgress,
+          fileName: file.name,
+          fileSize: file.size,
+          fileType: file.type,
+        });
+
+        setUploadError(message);
       }
     } catch (error) {
+      const message =
+        error instanceof Error ? error.message : String(error);
+
       console.error("[UPLOAD_DEBUG] PAGE_ERROR", {
         name: error instanceof Error ? error.name : typeof error,
-        message: error instanceof Error ? error.message : String(error),
+        message,
         stack: error instanceof Error ? error.stack : undefined,
+        progress: uploadProgress,
+        fileName: file.name,
+        fileSize: file.size,
+        fileType: file.type,
       });
-      alert("Something went wrong");
+
+      setUploadError(message);
     } finally {
       setLoading(false);
       setUploadProgress(0);
@@ -231,6 +251,22 @@ export default function UploadWatchVideoPage() {
             className="flex-1 bg-transparent text-[var(--button-text-color)] outline-none placeholder:text-[var(--text-secondary)]"
           />
         </div>
+
+        {uploadError && (
+          <div className="rounded-2xl border-2 border-red-500 bg-red-50 p-4 text-red-700">
+            <div className="font-black text-base">
+              ❌ VIDEO UPLOAD ERROR
+            </div>
+
+            <div className="mt-2 break-words text-sm font-semibold">
+              {uploadError}
+            </div>
+
+            <div className="mt-2 text-xs font-bold">
+              Upload stopped at: {uploadProgress}%
+            </div>
+          </div>
+        )}
 
         <button
           onClick={handleUpload}
