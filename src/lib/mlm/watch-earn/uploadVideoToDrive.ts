@@ -16,13 +16,52 @@ export async function uploadVideoToDrive(
     fileType: file.type,
     chunkSize: CHUNK_SIZE,
     uploadUrlPresent: !!uploadUrl,
+  });\1console.log("[DRIVE_DEBUG] INITIAL_STATUS_BEGIN", {
+    fileName: file.name,
+    fileSize: file.size,
+    fileType: file.type,
+    uploadUrlPresent: !!uploadUrl,
+    uploadUrlHost: (() => {
+      try {
+        return new URL(uploadUrl).host;
+      } catch {
+        return "INVALID_URL";
+      }
+    })(),
   });
 
-  // 1. Initial Status Check: resume if previous session partially finished
-  console.log("[DRIVE_DEBUG] INITIAL_STATUS_REQUEST");
+  try {
+    uploadedBytes = await queryUploadStatus(uploadUrl, file.size);
 
-  uploadedBytes = await queryUploadStatus(uploadUrl, file.size);
+    console.log("[DRIVE_DEBUG] INITIAL_STATUS_SUCCESS", {
+      uploadedBytes,
+      fileSize: file.size,
+      percent: Math.round((uploadedBytes / file.size) * 100),
+    });
+  } catch (error) {
+    console.error("[DRIVE_DEBUG] INITIAL_STATUS_ERROR", {
+      name: error instanceof Error ? error.name : typeof error,
+      message: error instanceof Error ? error.message : String(error),
+      stack: error instanceof Error ? error.stack : undefined,
+      fileName: file.name,
+      fileSize: file.size,
+      fileType: file.type,
+      uploadUrlPresent: !!uploadUrl,
+      uploadUrlHost: (() => {
+        try {
+          return new URL(uploadUrl).host;
+        } catch {
+          return "INVALID_URL";
+        }
+      })(),
+    });
 
+    throw new Error(
+      `Drive initial status check failed: ${
+        error instanceof Error ? error.message : String(error)
+      }`
+    );
+  }
   console.log("[DRIVE_DEBUG] INITIAL_STATUS_RESULT", {
     uploadedBytes,
     fileSize: file.size,
