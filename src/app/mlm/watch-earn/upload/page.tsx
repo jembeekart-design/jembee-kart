@@ -54,6 +54,12 @@ export default function UploadWatchVideoPage() {
         return;
       }
 
+      console.log("[UPLOAD_DEBUG] PAGE_UPLOAD_START", {
+        fileName: file.name,
+        fileSize: file.size,
+        fileType: file.type,
+      });
+
       setLoading(true);
       setUploadProgress(0);
 
@@ -68,6 +74,14 @@ export default function UploadWatchVideoPage() {
         music,
         isEnhanced,
         onProgress: (uploadedBytes, totalBytes) => {
+          console.log("[UPLOAD_DEBUG] PAGE_PROGRESS", {
+            uploadedBytes,
+            totalBytes,
+            percent: totalBytes > 0
+              ? Math.round((uploadedBytes / totalBytes) * 100)
+              : 0,
+          });
+
           setUploadProgress(
             totalBytes > 0
               ? Math.round((uploadedBytes / totalBytes) * 100)
@@ -75,6 +89,8 @@ export default function UploadWatchVideoPage() {
           );
         },
       });
+      console.log("[UPLOAD_DEBUG] PAGE_RESULT", result);
+
       if (result.success) {
         alert("Video submitted for moderation. It will be published after approval.");
         setCaption("");
@@ -85,7 +101,11 @@ export default function UploadWatchVideoPage() {
         alert(result.message || "Upload failed");
       }
     } catch (error) {
-      console.error(error);
+      console.error("[UPLOAD_DEBUG] PAGE_ERROR", {
+        name: error instanceof Error ? error.name : typeof error,
+        message: error instanceof Error ? error.message : String(error),
+        stack: error instanceof Error ? error.stack : undefined,
+      });
       alert("Something went wrong");
     } finally {
       setLoading(false);

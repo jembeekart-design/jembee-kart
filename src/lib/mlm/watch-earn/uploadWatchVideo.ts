@@ -118,11 +118,20 @@ export async function uploadWatchVideo({
       isEnhanced: isEnhanced === true,
     };
 
+    console.log("[UPLOAD_DEBUG] WATCH_BEFORE_SUBMIT", {
+      fileName: file.name,
+      fileSize: file.size,
+      fileType: file.type,
+      creatorId: authenticatedUserId,
+    });
+
     const result = await submitVideoForModeration(
       file,
       metadata,
       onProgress
     );
+
+    console.log("[UPLOAD_DEBUG] WATCH_AFTER_SUBMIT", result);
 
     if (!result.success) {
       return {
@@ -146,10 +155,11 @@ export async function uploadWatchVideo({
         "Video submitted for moderation. It will be published after approval.",
     };
   } catch (error) {
-    console.error(
-      "WATCH VIDEO MODERATION SUBMISSION ERROR:",
-      error
-    );
+    console.error("[UPLOAD_DEBUG] WATCH_ERROR", {
+      name: error instanceof Error ? error.name : typeof error,
+      message: error instanceof Error ? error.message : String(error),
+      stack: error instanceof Error ? error.stack : undefined,
+    });
 
     return {
       success: false,
