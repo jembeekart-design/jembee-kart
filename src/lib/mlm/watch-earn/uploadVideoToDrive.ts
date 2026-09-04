@@ -16,7 +16,7 @@ export async function uploadVideoToDrive(
     fileType: file.type,
     chunkSize: CHUNK_SIZE,
     uploadUrlPresent: !!uploadUrl,
-  });\1console.log("[DRIVE_DEBUG] INITIAL_STATUS_BEGIN", {
+    console.log("[DRIVE_DEBUG] INITIAL_STATUS_BEGIN", {
     fileName: file.name,
     fileSize: file.size,
     fileType: file.type,
