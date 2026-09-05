@@ -85,14 +85,55 @@ export async function uploadVideoToDrive(
     });
 
     try {
-      const response = await fetch(uploadUrl, {
-        method: "PUT",
-        headers: {
-          "Content-Range": `bytes ${uploadedBytes}-${end - 1}/${file.size}`,
-          "Content-Type": file.type,
-        },
-        body: chunk,
-      });
+      let response: Response | null = null;
+      let lastFetchError: unknown = null;
+
+      for (let attempt = 1; attempt <= 5; attempt++) {
+        try {
+          response = await fetch(uploadUrl, {
+            method: "PUT",
+            headers: {
+              "Content-Range": `bytes ${uploadedBytes}-${end - 1}/${file.size}`,
+              "Content-Type": file.type,
+            },
+            body: chunk,
+          });
+
+          console.log("[DRIVE_DEBUG] CHUNK_ATTEMPT_RESPONSE", {
+            attempt,
+            status: response.status,
+            uploadedBytes,
+            end,
+            fileSize: file.size,
+            isFinalChunk: end === file.size,
+          });
+
+          break;
+        } catch (error) {
+          lastFetchError = error;
+
+          console.error("[DRIVE_DEBUG] CHUNK_ATTEMPT_ERROR", {
+            attempt,
+            maxRetries: 5,
+            name: error instanceof Error ? error.name : typeof error,
+            message: error instanceof Error ? error.message : String(error),
+            uploadedBytes,
+            end,
+            fileSize: file.size,
+            isFinalChunk: end === file.size,
+          });
+
+          if (attempt < 5) {
+            await new Promise((resolve) => setTimeout(resolve, 1000 * attempt));
+          }
+        }
+      }
+
+      if (!response) {
+        throw lastFetchError instanceof Error
+          ? lastFetchError
+          : new Error("Drive chunk upload failed after retries");
+      }
 
       console.log("[DRIVE_DEBUG] CHUNK_RESPONSE", {
         status: response.status,
@@ -168,42 +209,65 @@ async function queryUploadStatus(uploadUrl: string, fileSize: number): Promise<n
     contentRange: `bytes */${fileSize}`,
   });
 
-  try {
-    const response = await fetch(uploadUrl, {
-      method: "PUT",
-      headers: {
-        "Content-Range": `bytes */${fileSize}`,
-      },
-    });
+  const MAX_RETRIES = 5;
 
-    console.log("[DRIVE_DEBUG] STATUS_RESPONSE", {
-      status: response.status,
-      ok: response.ok,
-      range: response.headers.get("Range"),
-    });
+  for (let attempt = 1; attempt <= MAX_RETRIES; attempt++) {
+    try {
+      const response = await fetch(uploadUrl, {
+        method: "PUT",
+        headers: {
+          "Content-Range": `bytes */${fileSize}`,
+        },
+      });
 
-  if (response.status === 200 || response.status === 201) {
-    return fileSize; // Already complete
-  } else if (response.status === 308) {
-    const range = response.headers.get("Range");
-    if (range) {
-      const match = range.match(/bytes=0-(\d+)/);
-      if (match) {
-        return parseInt(match[1], 10) + 1;
+      console.log("[DRIVE_DEBUG] STATUS_RESPONSE", {
+        status: response.status,
+        ok: response.ok,
+        range: response.headers.get("Range"),
+        attempt,
+      });
+
+      if (response.status === 200 || response.status === 201) {
+        return fileSize;
+      }
+
+      if (response.status === 308) {
+        const range = response.headers.get("Range");
+        if (range) {
+          const match = range.match(/bytes=0-(\d+)/);
+          if (match) {
+            return parseInt(match[1], 10) + 1;
+          }
+        }
+        return 0;
+      }
+
+      if (response.status === 404) {
+        throw new Error(
+          "Google Drive resumable upload session expired. Please create a new upload session."
+        );
+      }
+
+      console.warn("[DRIVE_DEBUG] STATUS_RETRY", {
+        attempt,
+        status: response.status,
+      });
+    } catch (error) {
+      console.error("[DRIVE_DEBUG] STATUS_FETCH_ERROR", {
+        attempt,
+        maxRetries: MAX_RETRIES,
+        name: error instanceof Error ? error.name : typeof error,
+        message: error instanceof Error ? error.message : String(error),
+        fileSize,
+      });
+
+      if (attempt === MAX_RETRIES) {
+        throw error;
       }
     }
-  } else if (response.status === 404) {
-    throw new Error("Google Drive resumable upload session expired. Please create a new upload session.");
+
+    await new Promise((resolve) => setTimeout(resolve, 1000 * attempt));
   }
-  
-    return 0; // Fallback to beginning
-  } catch (error) {
-    console.error("[DRIVE_DEBUG] STATUS_FETCH_ERROR", {
-      name: error instanceof Error ? error.name : typeof error,
-      message: error instanceof Error ? error.message : String(error),
-      stack: error instanceof Error ? error.stack : undefined,
-      fileSize,
-    });
-    throw error;
-  }
+
+  throw new Error("Google Drive upload status check failed after retries");
 }
