@@ -186,14 +186,48 @@ export async function uploadVideoToDrive(
         contentRange: `bytes ${uploadedBytes}-${end - 1}/${file.size}`,
       });
 
-      // On network failure, query status to resume from last known safe point
-      uploadedBytes = await queryUploadStatus(uploadUrl, file.size);
+      // On network failure, query status to resume from last known safe point.
+      // Preserve both errors so the UI shows the real failure instead of a generic
+      // "Failed to fetch".
+      try {
+        uploadedBytes = await queryUploadStatus(uploadUrl, file.size);
 
-      console.log("[DRIVE_DEBUG] STATUS_AFTER_ERROR", {
-        uploadedBytes,
-        fileSize: file.size,
-        percent: Math.round((uploadedBytes / file.size) * 100),
-      });
+        console.log("[DRIVE_DEBUG] STATUS_AFTER_ERROR", {
+          uploadedBytes,
+          fileSize: file.size,
+          percent: Math.round((uploadedBytes / file.size) * 100),
+        });
+
+        // If Google Drive confirms that the entire file is already uploaded,
+        // do not incorrectly fall through to "Upload failed to complete".
+        if (uploadedBytes >= file.size) {
+          throw new Error(
+            "Drive upload reached 100%, but Google Drive did not return the completed file ID. The resumable session completed without a file response."
+          );
+        }
+      } catch (statusError) {
+        const originalMessage =
+          error instanceof Error ? error.message : String(error);
+        const statusMessage =
+          statusError instanceof Error
+            ? statusError.message
+            : String(statusError);
+
+        console.error("[DRIVE_DEBUG] STATUS_AFTER_ERROR_FAILED", {
+          originalError: originalMessage,
+          statusError: statusMessage,
+          uploadedBytes,
+          end,
+          fileSize: file.size,
+          percent: Math.round((uploadedBytes / file.size) * 100),
+        });
+
+        throw new Error(
+          `Drive upload failed at ${Math.round(
+            (uploadedBytes / file.size) * 100
+          )}%: ${originalMessage}; status check failed: ${statusMessage}`
+        );
+      }
     }
   }
 
