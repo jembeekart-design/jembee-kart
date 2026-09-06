@@ -85,6 +85,12 @@ export async function uploadVideoToDrive(
           end,
           fileSize: file.size,
           isFinalChunk: end === file.size,
+          online: typeof navigator !== "undefined" ? navigator.onLine : "unknown",
+          visibility: typeof document !== "undefined" ? document.visibilityState : "unknown",
+          userAgent: typeof navigator !== "undefined" ? navigator.userAgent : "unknown",
+          connection: typeof navigator !== "undefined" && "connection" in navigator ? String((navigator as Navigator & { connection?: { effectiveType?: string } }).connection?.effectiveType ?? "unknown") : "unknown",
+          cause: error instanceof Error && error.cause ? String(error.cause) : "none",
+          uploadHost: (() => { try { return new URL(uploadUrl).host; } catch { return "invalid-url"; } })(),
         });
 
         break;
