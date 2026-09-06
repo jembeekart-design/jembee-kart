@@ -1,13 +1,23 @@
 /**
  * Uploads a file directly to Google Drive using the resumable upload protocol.
- * This implementation handles chunking, 308 resumes, status queries, and session expiry.
+ * Handles mobile-network interruptions, retries, 308 resume responses,
+ * completed-session recovery, and resumable session expiry.
  */
+
+type UploadStatusResult = {
+  uploadedBytes: number;
+  driveFileId?: string;
+};
+
 export async function uploadVideoToDrive(
   file: File,
   uploadUrl: string,
   onProgress?: (uploadedBytes: number, totalBytes: number) => void
 ): Promise<string> {
-  const CHUNK_SIZE = 8 * 1024 * 1024; // 8MB, multiple of 256KB
+  // 4MB keeps individual mobile requests smaller while remaining
+  // a multiple of Google's required 256KB chunk size.
+  const CHUNK_SIZE = 4 * 1024 * 1024;
+
   let uploadedBytes = 0;
 
   console.log("[DRIVE_DEBUG] UPLOAD_START", {
@@ -17,227 +27,250 @@ export async function uploadVideoToDrive(
     chunkSize: CHUNK_SIZE,
     uploadUrlPresent: !!uploadUrl,
   });
-  console.log("[DRIVE_DEBUG] INITIAL_STATUS_BEGIN", {
-    fileName: file.name,
-    fileSize: file.size,
-    fileType: file.type,
-    uploadUrlPresent: !!uploadUrl,
-    uploadUrlHost: (() => {
-      try {
-        return new URL(uploadUrl).host;
-      } catch {
-        return "INVALID_URL";
-      }
-    })(),
-  });
 
-  try {
-    uploadedBytes = await queryUploadStatus(uploadUrl, file.size);
+  const initialStatus = await queryUploadStatus(uploadUrl, file.size);
 
-    console.log("[DRIVE_DEBUG] INITIAL_STATUS_SUCCESS", {
-      uploadedBytes,
+  if (initialStatus.driveFileId) {
+    console.log("[DRIVE_DEBUG] ALREADY_COMPLETE", {
+      driveFileId: initialStatus.driveFileId,
       fileSize: file.size,
-      percent: Math.round((uploadedBytes / file.size) * 100),
     });
-  } catch (error) {
-    console.error("[DRIVE_DEBUG] INITIAL_STATUS_ERROR", {
-      name: error instanceof Error ? error.name : typeof error,
-      message: error instanceof Error ? error.message : String(error),
-      stack: error instanceof Error ? error.stack : undefined,
-      fileName: file.name,
-      fileSize: file.size,
-      fileType: file.type,
-      uploadUrlPresent: !!uploadUrl,
-      uploadUrlHost: (() => {
-        try {
-          return new URL(uploadUrl).host;
-        } catch {
-          return "INVALID_URL";
-        }
-      })(),
-    });
-
-    throw new Error(
-      `Drive initial status check failed: ${
-        error instanceof Error ? error.message : String(error)
-      }`
-    );
+    onProgress?.(file.size, file.size);
+    return initialStatus.driveFileId;
   }
+
+  uploadedBytes = initialStatus.uploadedBytes;
+
   console.log("[DRIVE_DEBUG] INITIAL_STATUS_RESULT", {
     uploadedBytes,
     fileSize: file.size,
     percent: Math.round((uploadedBytes / file.size) * 100),
   });
 
-  // 2. Chunked Upload Loop
+  onProgress?.(uploadedBytes, file.size);
+
   while (uploadedBytes < file.size) {
-    const end = Math.min(uploadedBytes + CHUNK_SIZE, file.size);
-    const chunk = file.slice(uploadedBytes, end);
+    const start = uploadedBytes;
+    const end = Math.min(start + CHUNK_SIZE, file.size);
+    const chunk = file.slice(start, end);
 
     console.log("[DRIVE_DEBUG] CHUNK_REQUEST", {
-      uploadedBytes,
+      uploadedBytes: start,
       end,
       chunkSize: chunk.size,
       fileSize: file.size,
-      percent: Math.round((uploadedBytes / file.size) * 100),
+      percent: Math.round((start / file.size) * 100),
       isFinalChunk: end === file.size,
-      contentRange: `bytes ${uploadedBytes}-${end - 1}/${file.size}`,
+      contentRange: `bytes ${start}-${end - 1}/${file.size}`,
     });
 
-    try {
-      let response: Response | null = null;
-      let lastFetchError: unknown = null;
+    let response: Response | null = null;
+    let lastFetchError: unknown = null;
 
-      for (let attempt = 1; attempt <= 5; attempt++) {
-        try {
-          response = await fetch(uploadUrl, {
-            method: "PUT",
-            headers: {
-              "Content-Range": `bytes ${uploadedBytes}-${end - 1}/${file.size}`,
-              "Content-Type": file.type,
-            },
-            body: chunk,
-          });
-
-          console.log("[DRIVE_DEBUG] CHUNK_ATTEMPT_RESPONSE", {
-            attempt,
-            status: response.status,
-            uploadedBytes,
-            end,
-            fileSize: file.size,
-            isFinalChunk: end === file.size,
-          });
-
-          break;
-        } catch (error) {
-          lastFetchError = error;
-
-          console.error("[DRIVE_DEBUG] CHUNK_ATTEMPT_ERROR", {
-            attempt,
-            maxRetries: 5,
-            name: error instanceof Error ? error.name : typeof error,
-            message: error instanceof Error ? error.message : String(error),
-            uploadedBytes,
-            end,
-            fileSize: file.size,
-            isFinalChunk: end === file.size,
-          });
-
-          if (attempt < 5) {
-            await new Promise((resolve) => setTimeout(resolve, 1000 * attempt));
-          }
-        }
-      }
-
-      if (!response) {
-        throw lastFetchError instanceof Error
-          ? lastFetchError
-          : new Error("Drive chunk upload failed after retries");
-      }
-
-      console.log("[DRIVE_DEBUG] CHUNK_RESPONSE", {
-        status: response.status,
-        ok: response.ok,
-        statusText: response.statusText,
-        range: response.headers.get("Range"),
-        uploadedBytes,
-        end,
-        fileSize: file.size,
-        isFinalChunk: end === file.size,
-      });
-
-      if (response.status === 200 || response.status === 201) {
-        // Upload complete, extract file ID
-        const data = await response.json();
-
-        console.log("[DRIVE_DEBUG] DRIVE_COMPLETE", {
-          driveFileId: data?.id,
-          fileSize: file.size,
-        });
-
-        return data.id;
-      } else if (response.status === 308) {
-        // Resume incomplete, update offset
-        const range = response.headers.get("Range");
-        if (range) {
-          const match = range.match(/bytes=0-(\d+)/);
-          if (match) {
-            uploadedBytes = parseInt(match[1], 10) + 1;
-          }
-        }
-        if (onProgress) onProgress(uploadedBytes, file.size);
-      } else if (response.status === 404) {
-        throw new Error("Google Drive resumable upload session expired. Please create a new upload session.");
-      } else {
-        // For other errors (5xx), query status to resume from last known safe point
-        uploadedBytes = await queryUploadStatus(uploadUrl, file.size);
-      }
-    } catch (error) {
-      console.error("[DRIVE_DEBUG] FETCH_ERROR", {
-        name: error instanceof Error ? error.name : typeof error,
-        message: error instanceof Error ? error.message : String(error),
-        stack: error instanceof Error ? error.stack : undefined,
-        uploadedBytes,
-        end,
-        chunkSize: chunk.size,
-        fileSize: file.size,
-        percent: Math.round((uploadedBytes / file.size) * 100),
-        isFinalChunk: end === file.size,
-        contentRange: `bytes ${uploadedBytes}-${end - 1}/${file.size}`,
-      });
-
-      // On network failure, query status to resume from last known safe point.
-      // Preserve both errors so the UI shows the real failure instead of a generic
-      // "Failed to fetch".
+    for (let attempt = 1; attempt <= 5; attempt++) {
       try {
-        uploadedBytes = await queryUploadStatus(uploadUrl, file.size);
-
-        console.log("[DRIVE_DEBUG] STATUS_AFTER_ERROR", {
-          uploadedBytes,
-          fileSize: file.size,
-          percent: Math.round((uploadedBytes / file.size) * 100),
+        response = await fetch(uploadUrl, {
+          method: "PUT",
+          headers: {
+            "Content-Range": `bytes ${start}-${end - 1}/${file.size}`,
+            "Content-Type": file.type,
+          },
+          body: chunk,
         });
 
-        // If Google Drive confirms that the entire file is already uploaded,
-        // do not incorrectly fall through to "Upload failed to complete".
-        if (uploadedBytes >= file.size) {
-          throw new Error(
-            "Drive upload reached 100%, but Google Drive did not return the completed file ID. The resumable session completed without a file response."
-          );
-        }
-      } catch (statusError) {
-        const originalMessage =
-          error instanceof Error ? error.message : String(error);
-        const statusMessage =
-          statusError instanceof Error
-            ? statusError.message
-            : String(statusError);
-
-        console.error("[DRIVE_DEBUG] STATUS_AFTER_ERROR_FAILED", {
-          originalError: originalMessage,
-          statusError: statusMessage,
-          uploadedBytes,
+        console.log("[DRIVE_DEBUG] CHUNK_ATTEMPT_RESPONSE", {
+          attempt,
+          status: response.status,
+          uploadedBytes: start,
           end,
           fileSize: file.size,
-          percent: Math.round((uploadedBytes / file.size) * 100),
+          isFinalChunk: end === file.size,
         });
 
-        throw new Error(
-          `Drive upload failed at ${Math.round(
-            (uploadedBytes / file.size) * 100
-          )}%: ${originalMessage}; status check failed: ${statusMessage}`
-        );
+        break;
+      } catch (error) {
+        lastFetchError = error;
+
+        console.error("[DRIVE_DEBUG] CHUNK_ATTEMPT_ERROR", {
+          attempt,
+          maxRetries: 5,
+          name: error instanceof Error ? error.name : typeof error,
+          message: error instanceof Error ? error.message : String(error),
+          uploadedBytes: start,
+          end,
+          fileSize: file.size,
+          isFinalChunk: end === file.size,
+        });
+
+        if (attempt < 5) {
+          await new Promise((resolve) =>
+            setTimeout(resolve, Math.min(2000 * attempt, 8000))
+          );
+        }
       }
     }
+
+    if (!response) {
+      console.warn("[DRIVE_DEBUG] CHUNK_FETCH_FAILED_STATUS_RECOVERY", {
+        uploadedBytes: start,
+        end,
+        fileSize: file.size,
+      });
+
+      try {
+        const recovered = await queryUploadStatus(uploadUrl, file.size);
+
+        if (recovered.driveFileId) {
+          console.log("[DRIVE_DEBUG] RECOVERED_COMPLETED_UPLOAD", {
+            driveFileId: recovered.driveFileId,
+          });
+          onProgress?.(file.size, file.size);
+          return recovered.driveFileId;
+        }
+
+        if (recovered.uploadedBytes > start) {
+          uploadedBytes = recovered.uploadedBytes;
+          onProgress?.(uploadedBytes, file.size);
+          continue;
+        }
+      } catch (statusError) {
+        console.error("[DRIVE_DEBUG] STATUS_AFTER_CHUNK_FAILURE_FAILED", {
+          originalError:
+            lastFetchError instanceof Error
+              ? lastFetchError.message
+              : String(lastFetchError),
+          statusError:
+            statusError instanceof Error
+              ? statusError.message
+              : String(statusError),
+          uploadedBytes: start,
+          end,
+          fileSize: file.size,
+        });
+      }
+
+      throw lastFetchError instanceof Error
+        ? new Error(
+            `Drive chunk upload failed after retries: ${lastFetchError.message}`
+          )
+        : new Error("Drive chunk upload failed after retries");
+    }
+
+    console.log("[DRIVE_DEBUG] CHUNK_RESPONSE", {
+      status: response.status,
+      ok: response.ok,
+      statusText: response.statusText,
+      range: response.headers.get("Range"),
+      uploadedBytes: start,
+      end,
+      fileSize: file.size,
+      isFinalChunk: end === file.size,
+    });
+
+    if (response.status === 200 || response.status === 201) {
+      let data: { id?: string } | null = null;
+
+      try {
+        data = await response.json();
+      } catch (error) {
+        console.error("[DRIVE_DEBUG] COMPLETE_RESPONSE_JSON_ERROR", {
+          message: error instanceof Error ? error.message : String(error),
+        });
+      }
+
+      if (data?.id) {
+        console.log("[DRIVE_DEBUG] DRIVE_COMPLETE", {
+          driveFileId: data.id,
+          fileSize: file.size,
+        });
+
+        onProgress?.(file.size, file.size);
+        return data.id;
+      }
+
+      // Completed response without a readable body:
+      // query the resumable session to recover the completed metadata.
+      const recovered = await queryUploadStatus(uploadUrl, file.size);
+
+      if (recovered.driveFileId) {
+        console.log("[DRIVE_DEBUG] DRIVE_COMPLETE_RECOVERED", {
+          driveFileId: recovered.driveFileId,
+        });
+
+        onProgress?.(file.size, file.size);
+        return recovered.driveFileId;
+      }
+
+      throw new Error(
+        "Google Drive completed the upload but did not return a file ID."
+      );
+    }
+
+    if (response.status === 308) {
+      const range = response.headers.get("Range");
+
+      if (range) {
+        const match = range.match(/bytes=0-(\d+)/);
+
+        if (match) {
+          const nextOffset = parseInt(match[1], 10) + 1;
+
+          if (nextOffset > uploadedBytes) {
+            uploadedBytes = Math.min(nextOffset, file.size);
+          }
+        }
+      }
+
+      // Never assume the whole chunk arrived.
+      // If Drive did not provide a Range, query the session.
+      if (uploadedBytes === start) {
+        const recovered = await queryUploadStatus(uploadUrl, file.size);
+
+        if (recovered.driveFileId) {
+          onProgress?.(file.size, file.size);
+          return recovered.driveFileId;
+        }
+
+        uploadedBytes = recovered.uploadedBytes;
+      }
+
+      onProgress?.(uploadedBytes, file.size);
+      continue;
+    }
+
+    if (response.status === 404) {
+      throw new Error(
+        "Google Drive resumable upload session expired. Please create a new upload session."
+      );
+    }
+
+    // For 5xx and other unexpected responses, ask Drive for the
+    // authoritative upload position before retrying.
+    const recovered = await queryUploadStatus(uploadUrl, file.size);
+
+    if (recovered.driveFileId) {
+      onProgress?.(file.size, file.size);
+      return recovered.driveFileId;
+    }
+
+    uploadedBytes = recovered.uploadedBytes;
+    onProgress?.(uploadedBytes, file.size);
   }
 
-  throw new Error("Upload failed to complete");
+  const finalStatus = await queryUploadStatus(uploadUrl, file.size);
+
+  if (finalStatus.driveFileId) {
+    onProgress?.(file.size, file.size);
+    return finalStatus.driveFileId;
+  }
+
+  throw new Error("Upload reached the end without a Drive file ID.");
 }
 
-/**
- * Queries the current status of the resumable upload to resume after failure.
- */
-async function queryUploadStatus(uploadUrl: string, fileSize: number): Promise<number> {
+async function queryUploadStatus(
+  uploadUrl: string,
+  fileSize: number
+): Promise<UploadStatusResult> {
   console.log("[DRIVE_DEBUG] STATUS_REQUEST", {
     fileSize,
     contentRange: `bytes */${fileSize}`,
@@ -254,26 +287,53 @@ async function queryUploadStatus(uploadUrl: string, fileSize: number): Promise<n
         },
       });
 
+      const range = response.headers.get("Range");
+
       console.log("[DRIVE_DEBUG] STATUS_RESPONSE", {
         status: response.status,
         ok: response.ok,
-        range: response.headers.get("Range"),
+        range,
         attempt,
       });
 
       if (response.status === 200 || response.status === 201) {
-        return fileSize;
+        let data: { id?: string } | null = null;
+
+        try {
+          data = await response.json();
+        } catch (error) {
+          console.error("[DRIVE_DEBUG] STATUS_COMPLETE_JSON_ERROR", {
+            message: error instanceof Error ? error.message : String(error),
+          });
+        }
+
+        if (data?.id) {
+          return {
+            uploadedBytes: fileSize,
+            driveFileId: data.id,
+          };
+        }
+
+        throw new Error(
+          "Drive reports the upload as complete but did not return a file ID."
+        );
       }
 
       if (response.status === 308) {
-        const range = response.headers.get("Range");
         if (range) {
           const match = range.match(/bytes=0-(\d+)/);
+
           if (match) {
-            return parseInt(match[1], 10) + 1;
+            return {
+              uploadedBytes: Math.min(
+                parseInt(match[1], 10) + 1,
+                fileSize
+              ),
+            };
           }
         }
-        return 0;
+
+        return { uploadedBytes: 0 };
       }
 
       if (response.status === 404) {
@@ -300,7 +360,9 @@ async function queryUploadStatus(uploadUrl: string, fileSize: number): Promise<n
       }
     }
 
-    await new Promise((resolve) => setTimeout(resolve, 1000 * attempt));
+    await new Promise((resolve) =>
+      setTimeout(resolve, Math.min(2000 * attempt, 8000))
+    );
   }
 
   throw new Error("Google Drive upload status check failed after retries");
