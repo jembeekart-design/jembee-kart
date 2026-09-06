@@ -97,6 +97,83 @@ export async function createResumableUploadSession(
   return uploadUrl;
 }
 
+export async function getResumableUploadStatus(
+  uploadUrl: string,
+  fileSize: number
+): Promise<{
+  uploadedBytes: number;
+  driveFileId?: string;
+}> {
+  const trimmedUploadUrl = uploadUrl.trim();
+
+  if (!trimmedUploadUrl) {
+    throw new Error("Drive upload URL is required");
+  }
+
+  if (!Number.isFinite(fileSize) || fileSize <= 0) {
+    throw new Error("Valid Drive upload file size is required");
+  }
+
+  const response = await fetch(trimmedUploadUrl, {
+    method: "PUT",
+    headers: {
+      "Content-Range": `bytes */${fileSize}`,
+    },
+  });
+
+  const range = response.headers.get("Range");
+
+  if (response.status === 200 || response.status === 201) {
+    let data: { id?: string } | null = null;
+
+    try {
+      data = await response.json();
+    } catch {
+      // Drive may have completed the upload even if the response body is unreadable.
+    }
+
+    if (data?.id) {
+      return {
+        uploadedBytes: fileSize,
+        driveFileId: data.id,
+      };
+    }
+
+    throw new Error(
+      "Drive reports the upload as complete but did not return a file ID"
+    );
+  }
+
+  if (response.status === 308) {
+    if (range) {
+      const match = range.match(/bytes=0-(\d+)/);
+
+      if (match) {
+        return {
+          uploadedBytes: Math.min(
+            parseInt(match[1], 10) + 1,
+            fileSize
+          ),
+        };
+      }
+    }
+
+    return {
+      uploadedBytes: 0,
+    };
+  }
+
+  if (response.status === 404) {
+    throw new Error(
+      "Google Drive resumable upload session expired"
+    );
+  }
+
+  throw new Error(
+    `Google Drive session status check failed with HTTP ${response.status}`
+  );
+}
+
 export async function uploadVideoToDrive(
   filename: string,
   stream: Readable,
