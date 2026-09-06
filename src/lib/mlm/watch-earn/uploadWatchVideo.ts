@@ -1,4 +1,5 @@
 import { auth } from "@/firebase/config";
+import { onAuthStateChanged, type User } from "firebase/auth";
 import { submitVideoForModeration } from "./submitVideoForModeration";
 
 interface UploadWatchVideoData {
@@ -49,7 +50,28 @@ export async function uploadWatchVideo({
     // AUTHENTICATION
     // ==================================================
 
-    const currentUser = auth.currentUser;
+    const currentUser = await new Promise<User | null>((resolve) => {
+      if (auth.currentUser) {
+        resolve(auth.currentUser);
+        return;
+      }
+
+      let settled = false;
+
+      const unsubscribe = onAuthStateChanged(auth, (user) => {
+        if (settled) return;
+        settled = true;
+        unsubscribe();
+        resolve(user);
+      });
+
+      setTimeout(() => {
+        if (settled) return;
+        settled = true;
+        unsubscribe();
+        resolve(auth.currentUser);
+      }, 10000);
+    });
 
     if (!currentUser) {
       return {
