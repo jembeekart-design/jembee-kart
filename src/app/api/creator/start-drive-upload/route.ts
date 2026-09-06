@@ -118,6 +118,8 @@ export async function POST(req: Request) {
         submissionId,
         creatorId,
         driveFileId: "",
+        uploadUrl,
+        fileSize,
         status: "uploading",
         displayName: displayName || "",
         photoURL: photoURL || "",
