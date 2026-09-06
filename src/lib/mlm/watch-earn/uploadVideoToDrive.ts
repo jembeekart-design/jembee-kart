@@ -155,11 +155,45 @@ export async function uploadVideoToDrive(
         });
       }
 
-      throw lastFetchError instanceof Error
-        ? new Error(
-            `Drive chunk upload failed after retries: ${lastFetchError.message}`
-          )
-        : new Error("Drive chunk upload failed after retries");
+      const errorName =
+        lastFetchError instanceof Error
+          ? lastFetchError.name
+          : typeof lastFetchError;
+
+      const errorMessage =
+        lastFetchError instanceof Error
+          ? lastFetchError.message
+          : String(lastFetchError);
+
+      const errorCause =
+        lastFetchError instanceof Error && lastFetchError.cause
+          ? String(lastFetchError.cause)
+          : "none";
+
+      const networkState =
+        typeof navigator !== "undefined"
+          ? `online=${navigator.onLine}`
+          : "online=unknown";
+
+      const visibilityState =
+        typeof document !== "undefined"
+          ? `visibility=${document.visibilityState}`
+          : "visibility=unknown";
+
+      const connectionType =
+        typeof navigator !== "undefined" && "connection" in navigator
+          ? String(
+              (
+                navigator as Navigator & {
+                  connection?: { effectiveType?: string };
+                }
+              ).connection?.effectiveType ?? "unknown"
+            )
+          : "unknown";
+
+      throw new Error(
+        `Drive chunk upload failed after retries: ${errorMessage} | name=${errorName} | cause=${errorCause} | ${networkState} | ${visibilityState} | connection=${connectionType} | chunk=${start}-${end - 1}/${file.size}`
+      );
     }
 
     console.log("[DRIVE_DEBUG] CHUNK_RESPONSE", {
