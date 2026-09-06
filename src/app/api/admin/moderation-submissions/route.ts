@@ -47,7 +47,6 @@ export async function GET(req: Request) {
     const snapshot = await getAdminDb()
       .collection("videoModerationSubmissions")
       .where("status", "==", "pending")
-      .orderBy("createdAt", "desc")
       .limit(100)
       .get();
 
