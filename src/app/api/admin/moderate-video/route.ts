@@ -225,7 +225,7 @@ export async function POST(req: Request) {
 
       cloudinaryResult =
         await uploadVideoStreamToCloudinary(
-          driveVideo.stream,
+          driveVideo,
           {
             folder:
               "jembeekart/watch-earn",
