@@ -94,7 +94,7 @@ export default function VideoActions({
       className="
         absolute
         right-4
-        bottom-[calc(10rem+env(safe-area-inset-bottom))]
+        bottom-[calc(7rem+env(safe-area-inset-bottom))]
         z-30
         flex
         flex-col

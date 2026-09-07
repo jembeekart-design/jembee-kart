@@ -18,7 +18,7 @@ export default function ProductionHeader({
   return (
     <>
       <header
-        className="pointer-events-auto fixed inset-x-0 top-0 z-50 flex flex-col pt-safe"
+        className="pointer-events-auto fixed inset-x-0 top-0 z-50 flex flex-col pt-safe bg-transparent"
         style={{ paddingTop: "env(safe-area-inset-top)" }}
       >
         <div className="flex items-center justify-between px-4 h-[56px]">
@@ -71,7 +71,7 @@ export default function ProductionHeader({
           </nav>
         </div>
 
-        <div className="flex justify-center gap-4 py-2 bg-black/20 backdrop-blur-sm">
+        <div className="flex justify-center gap-4 py-2 bg-transparent">
           <button
             onClick={() => setActiveTab("foryou")}
             className={`font-black ${

@@ -82,7 +82,6 @@ export default function VideoPlayer({
   return (
     <div
       className="relative h-screen w-full overflow-hidden"
-      style={{ paddingBottom: 'env(safe-area-inset-bottom)' }}
     >
       {/* VIDEO */}
 
