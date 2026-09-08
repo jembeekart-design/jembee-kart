@@ -18,7 +18,7 @@ export default function ProductionHeader({
   return (
     <>
       <header
-        className="pointer-events-auto fixed inset-x-0 top-0 z-50 flex flex-col pt-safe bg-transparent"
+        className="pointer-events-auto fixed inset-x-0 top-0 z-50 flex flex-col pt-safe bg-transparent translate-y-4"
         style={{ paddingTop: "env(safe-area-inset-top)" }}
       >
         <div className="flex items-center justify-between px-4 h-[56px]">

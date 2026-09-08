@@ -261,7 +261,7 @@ export default function VerticalVideoFeed({
 
   if (loading) {
     return (
-      <main className="h-screen flex items-center justify-center bg-[var(--color-card-background)] text-white">
+      <main className="h-screen flex items-center justify-center bg-black text-white">
         <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-white"></div>
       </main>
     );
@@ -269,7 +269,7 @@ export default function VerticalVideoFeed({
 
   if (error) {
     return (
-      <main className="h-screen flex items-center justify-center bg-[var(--color-card-background)] text-white">
+      <main className="h-screen flex items-center justify-center bg-black text-white">
         <p>{error}</p>
       </main>
     );
@@ -277,7 +277,7 @@ export default function VerticalVideoFeed({
 
   if (videos.length === 0) {
     return (
-      <main className="h-screen flex items-center justify-center bg-[var(--color-card-background)] text-white">
+      <main className="h-screen flex items-center justify-center bg-black text-white">
         <p>No videos available.</p>
       </main>
     );
@@ -291,7 +291,7 @@ export default function VerticalVideoFeed({
         snap-y
         snap-mandatory
         overflow-y-scroll
-        bg-[var(--color-card-background)]
+        bg-black
       "
     >
       {filteredVideos.length === 0 ? (
