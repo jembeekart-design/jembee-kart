@@ -94,7 +94,7 @@ export default function VideoPlayer({
         onClick={togglePlayPause}
         onPlay={() => setIsPlaying(true)}
         onPause={() => setIsPlaying(false)}
-        className="h-full w-full object-contain cursor-pointer bg-transparent"
+        className="absolute inset-0 h-full w-full object-cover cursor-pointer bg-black"
       />
       
       {/* PLAY/PAUSE OVERLAY ICON */}
