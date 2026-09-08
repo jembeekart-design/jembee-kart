@@ -322,6 +322,10 @@ export default function VerticalVideoFeed({
                   video.video
                 }
 
+                thumbnailUrl={
+                  video.thumbnail
+                }
+
                 watchSeconds={
                   DEFAULT_BUSINESS_RULES
                     .watchEarn
