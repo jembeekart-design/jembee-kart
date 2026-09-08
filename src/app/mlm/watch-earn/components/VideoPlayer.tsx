@@ -88,8 +88,6 @@ export default function VideoPlayer({
       <video
         ref={videoRef}
         src={videoUrl}
-        poster={thumbnailUrl || undefined}
-        preload="auto"
         muted={isMuted}
         loop
         playsInline
