@@ -6,6 +6,7 @@ import { useSearchParams } from "next/navigation";
 import { auth } from "@/firebase/config";
 import { Upload, Loader2, Music2, BadgeCheck, ShieldCheck } from "lucide-react";
 import { uploadWatchVideo } from "@/lib/mlm/watch-earn/uploadWatchVideo";
+import AIVideoCreator from "@/app/mlm/watch-earn/components/ai-video/AIVideoCreator";
 
 export default function UploadWatchVideoPage() {
   const searchParams = useSearchParams();
@@ -217,6 +218,18 @@ export default function UploadWatchVideoPage() {
               </div>
               <BadgeCheck size={24} className="text-[var(--color-primary-button)]" />
             </div>
+          </div>
+        )}
+
+        {file && (
+          <div className="rounded-3xl border border-[var(--color-primary-button)]/20 bg-[var(--color-secondary-button)]/10 p-3">
+            <AIVideoCreator
+              file={file}
+              onProcessed={(processedFile) => {
+                setFile(processedFile);
+                setUploadError(null);
+              }}
+            />
           </div>
         )}
 
