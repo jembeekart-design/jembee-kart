@@ -176,6 +176,7 @@ export default function AIVideoCreator({ file, onProcessed }: AIVideoCreatorProp
 
     ctx.save();
     ctx.textAlign = "center";
+    ctx.textBaseline = "middle";
     if (id === "glasses" || id === "sunglasses") {
       const l1 = landmarks[33];
       const l2 = landmarks[133];
