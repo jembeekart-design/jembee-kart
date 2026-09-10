@@ -105,6 +105,7 @@ export default function AIVideoCreator({ file, onProcessed }: AIVideoCreatorProp
     const url = URL.createObjectURL(file);
     video.src = url;
 
+    let lastFaceLandmarks: any[] | null = null;
     const draw = () => {
       const ctx = canvas.getContext("2d");
       const landmarker = landmarkerRef.current;
@@ -124,8 +125,10 @@ export default function AIVideoCreator({ file, onProcessed }: AIVideoCreatorProp
         try {
           const result = landmarker.detectForVideo(video, performance.now());
 
-          for (const face of result.faceLandmarks || []) {
-            drawEffect(ctx, face, effect, canvas.width, canvas.height);
+          const detectedFaces = result.faceLandmarks || [];
+          if (detectedFaces.length > 0) lastFaceLandmarks = detectedFaces[0];
+          if (lastFaceLandmarks) {
+            drawEffect(ctx, lastFaceLandmarks, effect, canvas.width, canvas.height);
           }
         } catch (err) {
           console.warn("Face tracking:", err);
