@@ -198,6 +198,24 @@ export default function AIVideoCreator({ file, onProcessed }: AIVideoCreatorProp
     ctx.restore();
   }
 
+  function chooseVideo(e: React.ChangeEvent<HTMLInputElement>) {
+    const selected = e.target.files?.[0] || null;
+    if (!selected) return;
+    if (!selected.type.startsWith("video/")) {
+      setError("Sirf video file select karein.");
+      e.target.value = "";
+      return;
+    }
+    if (selected.size > 100 * 1024 * 1024) {
+      setError("Video 100MB se zyada nahi hona chahiye.");
+      e.target.value = "";
+      return;
+    }
+    setError("");
+    setEffect("none");
+    onProcessed?.(selected);
+  }
+
   async function exportProcessedVideo() {
     if (!file || !canvasRef.current || !videoRef.current) return;
 
