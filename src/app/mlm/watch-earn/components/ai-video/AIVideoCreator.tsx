@@ -164,7 +164,7 @@ export default function AIVideoCreator({ file, onProcessed }: AIVideoCreatorProp
     const right = landmarks[454];
     const top = landmarks[10];
 
-    if (!nose || !left || !right || !top) return;
+    if (id !== "glasses" && id !== "sunglasses" && (!nose || !left || !right || !top)) return;
 
     const cx = nose.x * width;
     const cy = nose.y * height;
@@ -176,11 +176,22 @@ export default function AIVideoCreator({ file, onProcessed }: AIVideoCreatorProp
 
     ctx.save();
     ctx.textAlign = "center";
-    ctx.textBaseline = "middle";
-
     if (id === "glasses" || id === "sunglasses") {
-      ctx.font = `${size * 0.72}px sans-serif`;
-      ctx.fillText("🕶️", cx, cy - size * 0.08);
+      const l1 = landmarks[33];
+      const l2 = landmarks[133];
+      const r1 = landmarks[362];
+      const r2 = landmarks[263];
+      if (l1 && l2 && r1 && r2) {
+        const lx = ((l1.x + l2.x) / 2) * width;
+        const ly = ((l1.y + l2.y) / 2) * height;
+        const rx = ((r1.x + r2.x) / 2) * width;
+        const ry = ((r1.y + r2.y) / 2) * height;
+        const gx = (lx + rx) / 2;
+        const gy = (ly + ry) / 2;
+        const eyeDistance = Math.hypot(rx - lx, ry - ly);
+        ctx.font = `${Math.max(40, eyeDistance * 1.45)}px sans-serif`;
+        ctx.fillText("🕶️", gx, gy);
+      }
     } else if (id === "crown") {
       ctx.font = `${size * 0.65}px sans-serif`;
       ctx.fillText("👑", cx, top.y * height - size * 0.25);
