@@ -141,8 +141,8 @@ export default function AIVideoCreator({ file, onProcessed }: AIVideoCreatorProp
         return;
       }
 
-      canvas.width = video.videoWidth || 720;
-      canvas.height = video.videoHeight || 1280;
+      if (canvas.width !== (video.videoWidth || 720)) canvas.width = video.videoWidth || 720;
+      if (canvas.height !== (video.videoHeight || 1280)) canvas.height = video.videoHeight || 1280;
 
       ctx.clearRect(0, 0, canvas.width, canvas.height);
       ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
