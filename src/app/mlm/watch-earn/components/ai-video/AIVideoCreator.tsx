@@ -24,6 +24,11 @@ const EFFECTS: Effect[] = [
   { id: "dog", name: "Dog", emoji: "🐶" },
   { id: "bear", name: "Bear", emoji: "🐻" },
   { id: "hair", name: "Hair", emoji: "💇" },
+  { id: "hair2", name: "Side Hair", emoji: "💇‍♂️" },
+  { id: "curlyhair", name: "Curly Hair", emoji: "👨‍🦱" },
+  { id: "spikyhair", name: "Spiky Hair", emoji: "🧑‍🎤" },
+  { id: "longhair", name: "Long Hair", emoji: "💇‍♀️" },
+  { id: "afrohair", name: "Afro Hair", emoji: "👩🏿‍🦱" },
   { id: "bald", name: "Bald", emoji: "🧑‍🦲" },
   { id: "rabbit", name: "Rabbit", emoji: "🐰" },
   { id: "devil", name: "Devil", emoji: "😈" },
@@ -68,15 +73,26 @@ export default function AIVideoCreator({ file, onProcessed }: AIVideoCreatorProp
   const [glassesSize, setGlassesSize] = useState(100);
   const [glassesX, setGlassesX] = useState(0);
   const [glassesY, setGlassesY] = useState(-10);
+  const [effectSize, setEffectSize] = useState(100);
+  const [effectX, setEffectX] = useState(0);
+  const [effectY, setEffectY] = useState(0);
   const glassesStyleRef = useRef(glassesStyle);
   const glassesSizeRef = useRef(glassesSize);
   const glassesXRef = useRef(glassesX);
-  const glassesYRef = useRef(glassesY); const effectRef = useRef(effect);
+  const glassesYRef = useRef(glassesY);
+  const effectSizeRef = useRef(effectSize);
+  const effectXRef = useRef(effectX);
+  const effectYRef = useRef(effectY);
+  const effectRef = useRef(effect);
 
   useEffect(() => { glassesStyleRef.current = glassesStyle; }, [glassesStyle]);
   useEffect(() => { glassesSizeRef.current = glassesSize; }, [glassesSize]);
   useEffect(() => { glassesXRef.current = glassesX; }, [glassesX]);
-  useEffect(() => { glassesYRef.current = glassesY; }, [glassesY]); useEffect(() => { effectRef.current = effect; }, [effect]);
+  useEffect(() => { glassesYRef.current = glassesY; }, [glassesY]);
+  useEffect(() => { effectSizeRef.current = effectSize; }, [effectSize]);
+  useEffect(() => { effectXRef.current = effectX; }, [effectX]);
+  useEffect(() => { effectYRef.current = effectY; }, [effectY]);
+  useEffect(() => { effectRef.current = effect; }, [effect]);
 
   useEffect(() => {
     let cancelled = false;
@@ -299,7 +315,27 @@ export default function AIVideoCreator({ file, onProcessed }: AIVideoCreatorProp
         ctx.fillRect(-w * 0.46, -h * 0.08, w * 0.92, h * 0.16);
       }
     } else {
-      const size = baseSize;
+      const scale = effectSizeRef.current / 100;
+      const size = baseSize * scale;
+      const ex = cx + effectXRef.current;
+      const ey = cy + effectYRef.current;
+      const headY = top.y * height + effectYRef.current;
+
+      if (id === "bear") {
+        const f=size*0.78,e=size*0.30;
+        ctx.fillStyle="#6b4423";ctx.beginPath();ctx.arc(ex-f*.48,ey-f*.38,e,0,Math.PI*2);ctx.arc(ex+f*.48,ey-f*.38,e,0,Math.PI*2);ctx.fill();
+        ctx.fillStyle="#8b5a2b";ctx.beginPath();ctx.ellipse(ex,ey+f*.02,f*.58,f*.62,0,0,Math.PI*2);ctx.fill();
+        ctx.fillStyle="#d9a066";ctx.beginPath();ctx.ellipse(ex,ey+f*.24,f*.30,f*.22,0,0,Math.PI*2);ctx.fill();
+        ctx.fillStyle="#111";ctx.beginPath();ctx.arc(ex-f*.20,ey-f*.03,Math.max(3,size*.045),0,Math.PI*2);ctx.arc(ex+f*.20,ey-f*.03,Math.max(3,size*.045),0,Math.PI*2);ctx.fill();
+      } else if (["hair","hair2","curlyhair","spikyhair","longhair","afrohair"].includes(id)) {
+        const hw=faceWidth*.64*scale,hh=size*.48,hy=headY-size*.22;ctx.fillStyle="#1b120e";ctx.beginPath();
+        if(id==="spikyhair"){ctx.moveTo(ex-hw,hy+hh*.6);for(let i=0;i<=10;i++)ctx.lineTo(ex-hw+(hw*2*i)/10,hy-hh*(i%2===0?.72:.18));ctx.lineTo(ex+hw,hy+hh*.7);ctx.lineTo(ex-hw,hy+hh*.7);}
+        else if(id==="longhair"){ctx.ellipse(ex,hy+hh*.3,hw,hh*1.25,0,0,Math.PI*2);}
+        else if(id==="curlyhair"||id==="afrohair"){const r=size*(id==="afrohair"?.13:.10);for(let x=ex-hw;x<=ex+hw;x+=r*1.3){ctx.beginPath();ctx.arc(x,hy,r,0,Math.PI*2);ctx.fill();}}
+        else {ctx.moveTo(ex-hw,hy+hh*.65);ctx.quadraticCurveTo(ex-hw,hy-hh*.5,ex,hy-hh*.6);ctx.quadraticCurveTo(ex+hw,hy-hh*.5,ex+hw,hy+hh*.65);ctx.closePath();}ctx.fill();
+      } else if (id === "bald") {
+        const bw=faceWidth*.62*scale,bh=size*.42,by=headY+size*.02;ctx.fillStyle="rgba(220,175,135,.97)";ctx.beginPath();ctx.ellipse(ex,by,bw,bh,0,Math.PI,Math.PI*2);ctx.fill();ctx.fillStyle="rgba(255,255,255,.5)";ctx.beginPath();ctx.ellipse(ex-bw*.24,by-bh*.34,bw*.2,bh*.1,-.25,0,Math.PI*2);ctx.fill();
+      } else if (id === "crown") {
 
       if (id === "bear") {
         const ear = size * 0.30;
@@ -633,7 +669,7 @@ export default function AIVideoCreator({ file, onProcessed }: AIVideoCreatorProp
               disabled={processing}
               className="mt-4 w-full rounded-2xl bg-white px-4 py-4 text-sm font-black text-black disabled:opacity-50"
             >
-              {processing ? "AI Video Create ho raha hai..." : "✨ Apply Effect & Create Video"}
+              {processing ? "AI Video Create ho raha hai..." : "<div className="mt-4 rounded-2xl bg-white/10 p-4"><div className="mb-3 text-sm font-semibold">Effect Position & Size</div><label className="block text-xs">Size: {effectSize}<input type="range" min="50" max="160" value={effectSize} onChange={e=>setEffectSize(Number(e.target.value))} className="mt-2 w-full"/></label><label className="mt-3 block text-xs">Left / Right: {effectX}<input type="range" min="-100" max="100" value={effectX} onChange={e=>setEffectX(Number(e.target.value))} className="mt-2 w-full"/></label><label className="mt-3 block text-xs">Up / Down: {effectY}<input type="range" min="-100" max="100" value={effectY} onChange={e=>setEffectY(Number(e.target.value))} className="mt-2 w-full"/></label></div>✨ Apply Effect & Create Video"}
             </button>
           )}
 
