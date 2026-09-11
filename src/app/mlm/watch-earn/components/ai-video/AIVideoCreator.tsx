@@ -489,6 +489,70 @@ export default function AIVideoCreator({ file, onProcessed }: AIVideoCreatorProp
             ))}
           </div>
 
+          {(effect === "glasses" || effect === "sunglasses") && (
+            <div className="mt-4 rounded-2xl bg-white/10 p-4">
+              <div className="mb-3 text-sm font-bold text-white">
+                🕶️ Glasses Settings
+              </div>
+
+              <div className="mb-4">
+                <div className="mb-1 flex justify-between text-xs text-white/80">
+                  <span>Style</span>
+                  <span>{glassesStyle}</span>
+                </div>
+                <div className="grid grid-cols-5 gap-2">
+                  {GLASSES_STYLES.map((style) => (
+                    <button
+                      key={style.id}
+                      type="button"
+                      onClick={() => setGlassesStyle(style.id)}
+                      className={`rounded-xl bg-white/10 px-2 py-2 text-center text-xs ${glassesStyle === style.id ? "bg-white text-black" : "text-white"}`}
+                    >
+                      <div className="text-lg">{style.emoji}</div>
+                      <div>{style.name}</div>
+                    </button>
+                  ))}
+                </div>
+              </div>
+
+              <label className="mb-3 block text-xs text-white">
+                Size: {glassesSize}%
+                <input
+                  type="range"
+                  min="50"
+                  max="160"
+                  value={glassesSize}
+                  onChange={(e) => setGlassesSize(Number(e.target.value))}
+                  className="mt-2 w-full"
+                />
+              </label>
+
+              <label className="mb-3 block text-xs text-white">
+                Left / Right: {glassesX}
+                <input
+                  type="range"
+                  min="-100"
+                  max="100"
+                  value={glassesX}
+                  onChange={(e) => setGlassesX(Number(e.target.value))}
+                  className="mt-2 w-full"
+                />
+              </label>
+
+              <label className="block text-xs text-white">
+                Up / Down: {glassesY}
+                <input
+                  type="range"
+                  min="-100"
+                  max="100"
+                  value={glassesY}
+                  onChange={(e) => setGlassesY(Number(e.target.value))}
+                  className="mt-2 w-full"
+                />
+              </label>
+            </div>
+          )}
+
           {file && ready && (
             <button
               type="button"
