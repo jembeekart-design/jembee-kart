@@ -56,9 +56,15 @@ const GLASSES_STYLES = [
   { id: "square", name: "Square", emoji: "⬛" },
 ];
 
-type AIVideoCreatorProps = { file: File | null; onProcessed?: (file: File) => void; };
+type AIVideoCreatorProps = {
+  file: File | null;
+  onProcessed?: (file: File) => void;
+};
 
-export default function AIVideoCreator({ file, onProcessed }: AIVideoCreatorProps) {
+export default function AIVideoCreator({
+  file,
+  onProcessed,
+}: AIVideoCreatorProps) {
   const videoRef = useRef<HTMLVideoElement | null>(null);
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
   const landmarkerRef = useRef<FaceLandmarker | null>(null);
@@ -85,14 +91,30 @@ export default function AIVideoCreator({ file, onProcessed }: AIVideoCreatorProp
   const effectYRef = useRef(effectY);
   const effectRef = useRef(effect);
 
-  useEffect(() => { glassesStyleRef.current = glassesStyle; }, [glassesStyle]);
-  useEffect(() => { glassesSizeRef.current = glassesSize; }, [glassesSize]);
-  useEffect(() => { glassesXRef.current = glassesX; }, [glassesX]);
-  useEffect(() => { glassesYRef.current = glassesY; }, [glassesY]);
-  useEffect(() => { effectSizeRef.current = effectSize; }, [effectSize]);
-  useEffect(() => { effectXRef.current = effectX; }, [effectX]);
-  useEffect(() => { effectYRef.current = effectY; }, [effectY]);
-  useEffect(() => { effectRef.current = effect; }, [effect]);
+  useEffect(() => {
+    glassesStyleRef.current = glassesStyle;
+  }, [glassesStyle]);
+  useEffect(() => {
+    glassesSizeRef.current = glassesSize;
+  }, [glassesSize]);
+  useEffect(() => {
+    glassesXRef.current = glassesX;
+  }, [glassesX]);
+  useEffect(() => {
+    glassesYRef.current = glassesY;
+  }, [glassesY]);
+  useEffect(() => {
+    effectSizeRef.current = effectSize;
+  }, [effectSize]);
+  useEffect(() => {
+    effectXRef.current = effectX;
+  }, [effectX]);
+  useEffect(() => {
+    effectYRef.current = effectY;
+  }, [effectY]);
+  useEffect(() => {
+    effectRef.current = effect;
+  }, [effect]);
 
   useEffect(() => {
     let cancelled = false;
@@ -103,7 +125,7 @@ export default function AIVideoCreator({ file, onProcessed }: AIVideoCreatorProp
         setError("");
 
         const vision = await FilesetResolver.forVisionTasks(
-          "https://cdn.jsdelivr.net/npm/@mediapipe/tasks-vision@1.0.1/wasm"
+          "https://cdn.jsdelivr.net/npm/@mediapipe/tasks-vision@1.0.1/wasm",
         );
 
         const landmarker = await FaceLandmarker.createFromOptions(vision, {
@@ -159,8 +181,10 @@ export default function AIVideoCreator({ file, onProcessed }: AIVideoCreatorProp
         return;
       }
 
-      if (canvas.width !== (video.videoWidth || 720)) canvas.width = video.videoWidth || 720;
-      if (canvas.height !== (video.videoHeight || 1280)) canvas.height = video.videoHeight || 1280;
+      if (canvas.width !== (video.videoWidth || 720))
+        canvas.width = video.videoWidth || 720;
+      if (canvas.height !== (video.videoHeight || 1280))
+        canvas.height = video.videoHeight || 1280;
 
       ctx.clearRect(0, 0, canvas.width, canvas.height);
       ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
@@ -172,7 +196,13 @@ export default function AIVideoCreator({ file, onProcessed }: AIVideoCreatorProp
           const detectedFaces = result.faceLandmarks || [];
           if (detectedFaces.length > 0) lastFaceLandmarks = detectedFaces[0];
           if (lastFaceLandmarks) {
-            drawEffect(ctx, lastFaceLandmarks, effectRef.current, canvas.width, canvas.height);
+            drawEffect(
+              ctx,
+              lastFaceLandmarks,
+              effectRef.current,
+              canvas.width,
+              canvas.height,
+            );
           }
         } catch (err) {
           console.warn("Face tracking:", err);
@@ -187,7 +217,8 @@ export default function AIVideoCreator({ file, onProcessed }: AIVideoCreatorProp
       draw();
     };
 
-    video.addEventListener("loadeddata", start); video.addEventListener("play", start);
+    video.addEventListener("loadeddata", start);
+    video.addEventListener("play", start);
 
     return () => {
       video.removeEventListener("loadeddata", start);
@@ -201,7 +232,7 @@ export default function AIVideoCreator({ file, onProcessed }: AIVideoCreatorProp
     landmarks: any[],
     id: string,
     width: number,
-    height: number
+    height: number,
   ) {
     const nose = landmarks[1];
     const leftFace = landmarks[234];
@@ -247,7 +278,7 @@ export default function AIVideoCreator({ file, onProcessed }: AIVideoCreatorProp
       ctx.translate(gx, gy);
       ctx.rotate(angle);
 
-      const drawLens = (x:number, y:number, lensW:number, lensH:number) => {
+      const drawLens = (x: number, y: number, lensW: number, lensH: number) => {
         ctx.beginPath();
         ctx.roundRect(x - lensW / 2, y - lensH / 2, lensW, lensH, lensH * 0.25);
 
@@ -267,32 +298,54 @@ export default function AIVideoCreator({ file, onProcessed }: AIVideoCreatorProp
           ctx.ellipse(x, y, lensW * 0.5, lensH * 0.5, 0, 0, Math.PI * 2);
         } else {
           ctx.beginPath();
-          ctx.roundRect(x - lensW / 2, y - lensH / 2, lensW, lensH, glassesStyleRef.current === "square" ? 4 : lensH * 0.22);
+          ctx.roundRect(
+            x - lensW / 2,
+            y - lensH / 2,
+            lensW,
+            lensH,
+            glassesStyleRef.current === "square" ? 4 : lensH * 0.22,
+          );
         }
 
         ctx.fillStyle =
-          glassesStyleRef.current === "transparent" ? "rgba(220,240,255,0.22)" :
-          glassesStyleRef.current === "colorful" ? "rgba(80,160,255,0.72)" :
-          glassesStyleRef.current === "sports" ? "rgba(30,80,180,0.78)" :
-          glassesStyleRef.current === "small" ? "rgba(10,10,10,0.9)" :
-          "rgba(5,5,5,0.9)";
+          glassesStyleRef.current === "transparent"
+            ? "rgba(220,240,255,0.22)"
+            : glassesStyleRef.current === "colorful"
+              ? "rgba(80,160,255,0.72)"
+              : glassesStyleRef.current === "sports"
+                ? "rgba(30,80,180,0.78)"
+                : glassesStyleRef.current === "small"
+                  ? "rgba(10,10,10,0.9)"
+                  : "rgba(5,5,5,0.9)";
         ctx.fill();
 
         ctx.lineWidth = Math.max(2, w * 0.025);
         ctx.strokeStyle =
-          glassesStyleRef.current === "retro" ? "#7a3f20" :
-          glassesStyleRef.current === "colorful" ? "#ff3ea5" :
-          glassesStyleRef.current === "transparent" ? "rgba(255,255,255,0.8)" :
-          glassesStyleRef.current === "aviator" ? "#c9a227" :
-          "#222";
+          glassesStyleRef.current === "retro"
+            ? "#7a3f20"
+            : glassesStyleRef.current === "colorful"
+              ? "#ff3ea5"
+              : glassesStyleRef.current === "transparent"
+                ? "rgba(255,255,255,0.8)"
+                : glassesStyleRef.current === "aviator"
+                  ? "#c9a227"
+                  : "#222";
         ctx.stroke();
       };
 
       const lensGap = w * 0.06;
-      const lensW = glassesStyleRef.current === "big" ? w * 0.44 :
-        glassesStyleRef.current === "small" ? w * 0.32 : w * 0.40;
-      const lensH = glassesStyleRef.current === "big" ? h * 1.12 :
-        glassesStyleRef.current === "small" ? h * 0.78 : h;
+      const lensW =
+        glassesStyleRef.current === "big"
+          ? w * 0.44
+          : glassesStyleRef.current === "small"
+            ? w * 0.32
+            : w * 0.4;
+      const lensH =
+        glassesStyleRef.current === "big"
+          ? h * 1.12
+          : glassesStyleRef.current === "small"
+            ? h * 0.78
+            : h;
 
       drawLens(-lensGap - lensW / 2, 0, lensW, lensH);
       drawLens(lensGap + lensW / 2, 0, lensW, lensH);
@@ -322,23 +375,7 @@ export default function AIVideoCreator({ file, onProcessed }: AIVideoCreatorProp
       const headY = top.y * height + effectYRef.current;
 
       if (id === "bear") {
-        const f=size*0.78,e=size*0.30;
-        ctx.fillStyle="#6b4423";ctx.beginPath();ctx.arc(ex-f*.48,ey-f*.38,e,0,Math.PI*2);ctx.arc(ex+f*.48,ey-f*.38,e,0,Math.PI*2);ctx.fill();
-        ctx.fillStyle="#8b5a2b";ctx.beginPath();ctx.ellipse(ex,ey+f*.02,f*.58,f*.62,0,0,Math.PI*2);ctx.fill();
-        ctx.fillStyle="#d9a066";ctx.beginPath();ctx.ellipse(ex,ey+f*.24,f*.30,f*.22,0,0,Math.PI*2);ctx.fill();
-        ctx.fillStyle="#111";ctx.beginPath();ctx.arc(ex-f*.20,ey-f*.03,Math.max(3,size*.045),0,Math.PI*2);ctx.arc(ex+f*.20,ey-f*.03,Math.max(3,size*.045),0,Math.PI*2);ctx.fill();
-      } else if (["hair","hair2","curlyhair","spikyhair","longhair","afrohair"].includes(id)) {
-        const hw=faceWidth*.64*scale,hh=size*.48,hy=headY-size*.22;ctx.fillStyle="#1b120e";ctx.beginPath();
-        if(id==="spikyhair"){ctx.moveTo(ex-hw,hy+hh*.6);for(let i=0;i<=10;i++)ctx.lineTo(ex-hw+(hw*2*i)/10,hy-hh*(i%2===0?.72:.18));ctx.lineTo(ex+hw,hy+hh*.7);ctx.lineTo(ex-hw,hy+hh*.7);}
-        else if(id==="longhair"){ctx.ellipse(ex,hy+hh*.3,hw,hh*1.25,0,0,Math.PI*2);}
-        else if(id==="curlyhair"||id==="afrohair"){const r=size*(id==="afrohair"?.13:.10);for(let x=ex-hw;x<=ex+hw;x+=r*1.3){ctx.beginPath();ctx.arc(x,hy,r,0,Math.PI*2);ctx.fill();}}
-        else {ctx.moveTo(ex-hw,hy+hh*.65);ctx.quadraticCurveTo(ex-hw,hy-hh*.5,ex,hy-hh*.6);ctx.quadraticCurveTo(ex+hw,hy-hh*.5,ex+hw,hy+hh*.65);ctx.closePath();}ctx.fill();
-      } else if (id === "bald") {
-        const bw=faceWidth*.62*scale,bh=size*.42,by=headY+size*.02;ctx.fillStyle="rgba(220,175,135,.97)";ctx.beginPath();ctx.ellipse(ex,by,bw,bh,0,Math.PI,Math.PI*2);ctx.fill();ctx.fillStyle="rgba(255,255,255,.5)";ctx.beginPath();ctx.ellipse(ex-bw*.24,by-bh*.34,bw*.2,bh*.1,-.25,0,Math.PI*2);ctx.fill();
-      } else if (id === "crown") {
-
-      if (id === "bear") {
-        const ear = size * 0.30;
+        const ear = size * 0.3;
         const face = size * 0.78;
 
         ctx.fillStyle = "#6b4423";
@@ -349,18 +386,46 @@ export default function AIVideoCreator({ file, onProcessed }: AIVideoCreatorProp
 
         ctx.fillStyle = "#8b5a2b";
         ctx.beginPath();
-        ctx.ellipse(cx, cy + face * 0.02, face * 0.58, face * 0.62, 0, 0, Math.PI * 2);
+        ctx.ellipse(
+          cx,
+          cy + face * 0.02,
+          face * 0.58,
+          face * 0.62,
+          0,
+          0,
+          Math.PI * 2,
+        );
         ctx.fill();
 
         ctx.fillStyle = "#d9a066";
         ctx.beginPath();
-        ctx.ellipse(cx, cy + face * 0.24, face * 0.30, face * 0.22, 0, 0, Math.PI * 2);
+        ctx.ellipse(
+          cx,
+          cy + face * 0.24,
+          face * 0.3,
+          face * 0.22,
+          0,
+          0,
+          Math.PI * 2,
+        );
         ctx.fill();
 
         ctx.fillStyle = "#111";
         ctx.beginPath();
-        ctx.arc(cx - face * 0.20, cy - face * 0.03, Math.max(3, size * 0.045), 0, Math.PI * 2);
-        ctx.arc(cx + face * 0.20, cy - face * 0.03, Math.max(3, size * 0.045), 0, Math.PI * 2);
+        ctx.arc(
+          cx - face * 0.2,
+          cy - face * 0.03,
+          Math.max(3, size * 0.045),
+          0,
+          Math.PI * 2,
+        );
+        ctx.arc(
+          cx + face * 0.2,
+          cy - face * 0.03,
+          Math.max(3, size * 0.045),
+          0,
+          Math.PI * 2,
+        );
         ctx.fill();
 
         ctx.beginPath();
@@ -374,11 +439,36 @@ export default function AIVideoCreator({ file, onProcessed }: AIVideoCreatorProp
         ctx.fillStyle = "#1f120c";
         ctx.beginPath();
         ctx.moveTo(cx - hairW, hairTop + hairH * 0.62);
-        ctx.quadraticCurveTo(cx - hairW * 0.95, hairTop - hairH * 0.35, cx, hairTop - hairH * 0.55);
-        ctx.quadraticCurveTo(cx + hairW * 0.95, hairTop - hairH * 0.35, cx + hairW, hairTop + hairH * 0.62);
-        ctx.quadraticCurveTo(cx + hairW * 0.72, hairTop + hairH * 0.30, cx + hairW * 0.45, hairTop + hairH * 0.70);
-        ctx.quadraticCurveTo(cx, hairTop + hairH * 0.42, cx - hairW * 0.45, hairTop + hairH * 0.70);
-        ctx.quadraticCurveTo(cx - hairW * 0.72, hairTop + hairH * 0.30, cx - hairW, hairTop + hairH * 0.62);
+        ctx.quadraticCurveTo(
+          cx - hairW * 0.95,
+          hairTop - hairH * 0.35,
+          cx,
+          hairTop - hairH * 0.55,
+        );
+        ctx.quadraticCurveTo(
+          cx + hairW * 0.95,
+          hairTop - hairH * 0.35,
+          cx + hairW,
+          hairTop + hairH * 0.62,
+        );
+        ctx.quadraticCurveTo(
+          cx + hairW * 0.72,
+          hairTop + hairH * 0.3,
+          cx + hairW * 0.45,
+          hairTop + hairH * 0.7,
+        );
+        ctx.quadraticCurveTo(
+          cx,
+          hairTop + hairH * 0.42,
+          cx - hairW * 0.45,
+          hairTop + hairH * 0.7,
+        );
+        ctx.quadraticCurveTo(
+          cx - hairW * 0.72,
+          hairTop + hairH * 0.3,
+          cx - hairW,
+          hairTop + hairH * 0.62,
+        );
         ctx.closePath();
         ctx.fill();
 
@@ -397,7 +487,15 @@ export default function AIVideoCreator({ file, onProcessed }: AIVideoCreatorProp
 
         ctx.fillStyle = "rgba(255,255,255,0.55)";
         ctx.beginPath();
-        ctx.ellipse(cx - baldW * 0.22, baldY - baldH * 0.30, baldW * 0.20, baldH * 0.10, -0.25, 0, Math.PI * 2);
+        ctx.ellipse(
+          cx - baldW * 0.22,
+          baldY - baldH * 0.3,
+          baldW * 0.2,
+          baldH * 0.1,
+          -0.25,
+          0,
+          Math.PI * 2,
+        );
         ctx.fill();
       } else if (id === "crown") {
         ctx.font = `${size * 0.65}px sans-serif`;
@@ -461,65 +559,77 @@ export default function AIVideoCreator({ file, onProcessed }: AIVideoCreatorProp
       const mimeTypes = [
         "video/webm;codecs=vp9",
         "video/webm;codecs=vp8",
-        "video/webm"
+        "video/webm",
       ];
       const mimeType = mimeTypes.find((type) =>
-        MediaRecorder.isTypeSupported(type)
+        MediaRecorder.isTypeSupported(type),
       );
 
       if (!mimeType) {
-        throw new Error("Is device/browser par video recording supported nahi hai.");
+        throw new Error(
+          "Is device/browser par video recording supported nahi hai.",
+        );
       }
 
       const stream = canvas.captureStream(30);
-      const videoWithCapture = video as HTMLVideoElement & { captureStream?: () => MediaStream };
-      const source = typeof videoWithCapture.captureStream === "function"
-        ? videoWithCapture.captureStream()
-        : null;
+      const videoWithCapture = video as HTMLVideoElement & {
+        captureStream?: () => MediaStream;
+      };
+      const source =
+        typeof videoWithCapture.captureStream === "function"
+          ? videoWithCapture.captureStream()
+          : null;
 
       if (source) {
-        source.getAudioTracks().forEach((track: MediaStreamTrack) => stream.addTrack(track));
+        source
+          .getAudioTracks()
+          .forEach((track: MediaStreamTrack) => stream.addTrack(track));
       }
 
       const recorder = new MediaRecorder(stream, { mimeType });
       const chunks: Blob[] = [];
-      recorder.ondataavailable=(e)=>{
-        if(e.data.size>0) chunks.push(e.data);
+      recorder.ondataavailable = (e) => {
+        if (e.data.size > 0) chunks.push(e.data);
       };
 
-      const finished=new Promise<void>((resolve,reject)=>{
-        recorder.onstop=()=>resolve(undefined);
-        recorder.onerror=()=>reject(new Error("Processed video recording failed."));
+      const finished = new Promise<void>((resolve, reject) => {
+        recorder.onstop = () => resolve(undefined);
+        recorder.onerror = () =>
+          reject(new Error("Processed video recording failed."));
       });
 
-      video.currentTime=0;
+      video.currentTime = 0;
       await video.play();
       recorder.start(250);
 
-      await new Promise((resolve)=>{
-        const done=()=>{
-          video.removeEventListener("ended",done);
+      await new Promise((resolve) => {
+        const done = () => {
+          video.removeEventListener("ended", done);
           resolve(undefined);
         };
-        video.addEventListener("ended",done);
+        video.addEventListener("ended", done);
       });
 
       recorder.stop();
       await finished;
 
-      stream.getTracks().forEach((track)=>track.stop());
+      stream.getTracks().forEach((track) => track.stop());
 
-      const blob=new Blob(chunks,{type:mimeType});
-      const processedFile=new File(
+      const blob = new Blob(chunks, { type: mimeType });
+      const processedFile = new File(
         [blob],
-        file.name.replace(/\.[^.]+$/,"")+"-ai-effects.webm",
-        {type:"video/webm"}
+        file.name.replace(/\.[^.]+$/, "") + "-ai-effects.webm",
+        { type: "video/webm" },
       );
 
       onProcessed?.(processedFile);
-    } catch(err) {
-      console.error("AI video export:",err);
-      setError(err instanceof Error ? err.message : "Processed video create nahi ho saka.");
+    } catch (err) {
+      console.error("AI video export:", err);
+      setError(
+        err instanceof Error
+          ? err.message
+          : "Processed video create nahi ho saka.",
+      );
     } finally {
       setProcessing(false);
     }
@@ -576,9 +686,7 @@ export default function AIVideoCreator({ file, onProcessed }: AIVideoCreatorProp
 
       {file && (
         <div className="mt-4">
-          <div className="mb-2 text-sm font-semibold">
-            Face Effects
-          </div>
+          <div className="mb-2 text-sm font-semibold">Face Effects</div>
 
           <div className="grid grid-cols-4 gap-2">
             {EFFECTS.map((item) => (
@@ -663,14 +771,56 @@ export default function AIVideoCreator({ file, onProcessed }: AIVideoCreatorProp
           )}
 
           {file && ready && (
-            <button
-              type="button"
-              onClick={exportProcessedVideo}
-              disabled={processing}
-              className="mt-4 w-full rounded-2xl bg-white px-4 py-4 text-sm font-black text-black disabled:opacity-50"
-            >
-              {processing ? "AI Video Create ho raha hai..." : "<div className="mt-4 rounded-2xl bg-white/10 p-4"><div className="mb-3 text-sm font-semibold">Effect Position & Size</div><label className="block text-xs">Size: {effectSize}<input type="range" min="50" max="160" value={effectSize} onChange={e=>setEffectSize(Number(e.target.value))} className="mt-2 w-full"/></label><label className="mt-3 block text-xs">Left / Right: {effectX}<input type="range" min="-100" max="100" value={effectX} onChange={e=>setEffectX(Number(e.target.value))} className="mt-2 w-full"/></label><label className="mt-3 block text-xs">Up / Down: {effectY}<input type="range" min="-100" max="100" value={effectY} onChange={e=>setEffectY(Number(e.target.value))} className="mt-2 w-full"/></label></div>✨ Apply Effect & Create Video"}
-            </button>
+            <>
+              <div className="mt-4 rounded-2xl bg-white/10 p-4">
+                <div className="mb-3 text-sm font-semibold">
+                  Effect Position & Size
+                </div>
+                <label className="block text-xs">
+                  Size: {effectSize}
+                  <input
+                    type="range"
+                    min="50"
+                    max="160"
+                    value={effectSize}
+                    onChange={(e) => setEffectSize(Number(e.target.value))}
+                    className="mt-2 w-full"
+                  />
+                </label>
+                <label className="mt-3 block text-xs">
+                  Left / Right: {effectX}
+                  <input
+                    type="range"
+                    min="-100"
+                    max="100"
+                    value={effectX}
+                    onChange={(e) => setEffectX(Number(e.target.value))}
+                    className="mt-2 w-full"
+                  />
+                </label>
+                <label className="mt-3 block text-xs">
+                  Up / Down: {effectY}
+                  <input
+                    type="range"
+                    min="-100"
+                    max="100"
+                    value={effectY}
+                    onChange={(e) => setEffectY(Number(e.target.value))}
+                    className="mt-2 w-full"
+                  />
+                </label>
+              </div>
+              <button
+                type="button"
+                onClick={exportProcessedVideo}
+                disabled={processing}
+                className="mt-4 w-full rounded-2xl bg-white px-4 py-4 text-sm font-black text-black disabled:opacity-50"
+              >
+                {processing
+                  ? "AI Video Create ho raha hai..."
+                  : "✨ Apply Effect & Create Video"}
+              </button>
+            </>
           )}
 
           {!ready && (
