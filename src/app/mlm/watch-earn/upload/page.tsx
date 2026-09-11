@@ -57,9 +57,9 @@ export default function UploadWatchVideoPage() {
       }
 
       console.log("[UPLOAD_DEBUG] PAGE_UPLOAD_START", {
-        fileName: file.name,
-        fileSize: file.size,
-        fileType: file.type,
+        fileName: file?.name ?? "unknown",
+        fileSize: file?.size ?? 0,
+        fileType: file?.type ?? "unknown",
       });
 
       setUploadError(null);
@@ -106,9 +106,9 @@ export default function UploadWatchVideoPage() {
         console.error("[UPLOAD_DEBUG] PAGE_UPLOAD_FAILURE", {
           message,
           progress: uploadProgress,
-          fileName: file.name,
-          fileSize: file.size,
-          fileType: file.type,
+          fileName: file!.name,
+          fileSize: file!.size,
+          fileType: file!.type,
         });
 
         setUploadError(message);
@@ -122,9 +122,9 @@ export default function UploadWatchVideoPage() {
         message,
         stack: error instanceof Error ? error.stack : undefined,
         progress: uploadProgress,
-        fileName: file.name,
-        fileSize: file.size,
-        fileType: file.type,
+        fileName: file!.name,
+        fileSize: file!.size,
+        fileType: file!.type,
       });
 
       setUploadError(message);
