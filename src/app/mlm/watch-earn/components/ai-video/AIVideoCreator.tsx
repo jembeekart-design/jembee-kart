@@ -36,6 +36,19 @@ const EFFECTS: Effect[] = [
   { id: "sunglasses", name: "Sun Glasses", emoji: "😎" },
 ];
 
+const GLASSES_STYLES = [
+  { id: "classic", name: "Classic", emoji: "🕶️" },
+  { id: "round", name: "Round", emoji: "👓" },
+  { id: "aviator", name: "Aviator", emoji: "🕶️" },
+  { id: "sports", name: "Sports", emoji: "🥽" },
+  { id: "big", name: "Big", emoji: "😎" },
+  { id: "small", name: "Small", emoji: "👓" },
+  { id: "colorful", name: "Colorful", emoji: "🌈" },
+  { id: "transparent", name: "Transparent", emoji: "🤓" },
+  { id: "retro", name: "Retro", emoji: "🕶️" },
+  { id: "square", name: "Square", emoji: "⬛" },
+];
+
 type AIVideoCreatorProps = { file: File | null; onProcessed?: (file: File) => void; };
 
 export default function AIVideoCreator({ file, onProcessed }: AIVideoCreatorProps) {
@@ -49,6 +62,10 @@ export default function AIVideoCreator({ file, onProcessed }: AIVideoCreatorProp
   const [ready, setReady] = useState(false);
   const [error, setError] = useState("");
   const [processing, setProcessing] = useState(false);
+  const [glassesStyle, setGlassesStyle] = useState("classic");
+  const [glassesSize, setGlassesSize] = useState(100);
+  const [glassesX, setGlassesX] = useState(0);
+  const [glassesY, setGlassesY] = useState(-10);
 
   useEffect(() => {
     let cancelled = false;
@@ -160,53 +177,134 @@ export default function AIVideoCreator({ file, onProcessed }: AIVideoCreatorProp
     height: number
   ) {
     const nose = landmarks[1];
-    const left = landmarks[234];
-    const right = landmarks[454];
+    const leftFace = landmarks[234];
+    const rightFace = landmarks[454];
     const top = landmarks[10];
 
-    if (id !== "glasses" && id !== "sunglasses" && (!nose || !left || !right || !top)) return;
+    if (!nose || !leftFace || !rightFace || !top) return;
 
     const cx = nose.x * width;
     const cy = nose.y * height;
 
-    const faceWidth =
-      Math.abs(right.x - left.x) * width;
-
-    const size = Math.max(40, faceWidth * 0.8);
+    const faceWidth = Math.abs(rightFace.x - leftFace.x) * width;
+    const baseSize = Math.max(40, faceWidth * 0.8);
 
     ctx.save();
     ctx.textAlign = "center";
     ctx.textBaseline = "middle";
+
     if (id === "glasses" || id === "sunglasses") {
       const l1 = landmarks[33];
       const l2 = landmarks[133];
       const r1 = landmarks[362];
       const r2 = landmarks[263];
-      if (l1 && l2 && r1 && r2) {
-        const lx = ((l1.x + l2.x) / 2) * width;
-        const ly = ((l1.y + l2.y) / 2) * height;
-        const rx = ((r1.x + r2.x) / 2) * width;
-        const ry = ((r1.y + r2.y) / 2) * height;
-        const gx = (lx + rx) / 2;
-        const gy = (ly + ry) / 2;
-        const eyeDistance = Math.hypot(rx - lx, ry - ly);
-        ctx.font = `${Math.max(40, eyeDistance * 1.45)}px sans-serif`;
-        ctx.fillText("🕶️", gx, gy);
+
+      if (!l1 || !l2 || !r1 || !r2) {
+        ctx.restore();
+        return;
       }
-    } else if (id === "crown") {
-      ctx.font = `${size * 0.65}px sans-serif`;
-      ctx.fillText("👑", cx, top.y * height - size * 0.25);
-    } else if (id === "cap") {
-      ctx.font = `${size * 0.7}px sans-serif`;
-      ctx.fillText("🧢", cx, top.y * height - size * 0.15);
-    } else if (id === "mask") {
-      ctx.font = `${size * 0.65}px sans-serif`;
-      ctx.fillText("🎭", cx, cy);
+
+      const lx = ((l1.x + l2.x) / 2) * width;
+      const ly = ((l1.y + l2.y) / 2) * height;
+      const rx = ((r1.x + r2.x) / 2) * width;
+      const ry = ((r1.y + r2.y) / 2) * height;
+
+      const gx = (lx + rx) / 2 + glassesX;
+      const gy = (ly + ry) / 2 + glassesY;
+      const eyeDistance = Math.hypot(rx - lx, ry - ly);
+      const angle = Math.atan2(ry - ly, rx - lx);
+      const scale = glassesSize / 100;
+      const w = Math.max(70, eyeDistance * 2.35) * scale;
+      const h = Math.max(34, eyeDistance * 0.82) * scale;
+
+      ctx.translate(gx, gy);
+      ctx.rotate(angle);
+
+      const drawLens = (x:number, y:number, lensW:number, lensH:number) => {
+        ctx.beginPath();
+        ctx.roundRect(x - lensW / 2, y - lensH / 2, lensW, lensH, lensH * 0.25);
+
+        if (glassesStyle === "round") {
+          ctx.beginPath();
+          ctx.arc(x, y, Math.min(lensW, lensH) * 0.48, 0, Math.PI * 2);
+        } else if (glassesStyle === "aviator") {
+          ctx.beginPath();
+          ctx.moveTo(x - lensW * 0.48, y - lensH * 0.35);
+          ctx.lineTo(x + lensW * 0.48, y - lensH * 0.35);
+          ctx.lineTo(x + lensW * 0.38, y + lensH * 0.42);
+          ctx.lineTo(x, y + lensH * 0.5);
+          ctx.lineTo(x - lensW * 0.38, y + lensH * 0.42);
+          ctx.closePath();
+        } else if (glassesStyle === "sports") {
+          ctx.beginPath();
+          ctx.ellipse(x, y, lensW * 0.5, lensH * 0.5, 0, 0, Math.PI * 2);
+        } else {
+          ctx.beginPath();
+          ctx.roundRect(x - lensW / 2, y - lensH / 2, lensW, lensH, glassesStyle === "square" ? 4 : lensH * 0.22);
+        }
+
+        ctx.fillStyle =
+          glassesStyle === "transparent" ? "rgba(220,240,255,0.22)" :
+          glassesStyle === "colorful" ? "rgba(80,160,255,0.72)" :
+          glassesStyle === "sports" ? "rgba(30,80,180,0.78)" :
+          glassesStyle === "small" ? "rgba(10,10,10,0.9)" :
+          "rgba(5,5,5,0.9)";
+        ctx.fill();
+
+        ctx.lineWidth = Math.max(2, w * 0.025);
+        ctx.strokeStyle =
+          glassesStyle === "retro" ? "#7a3f20" :
+          glassesStyle === "colorful" ? "#ff3ea5" :
+          glassesStyle === "transparent" ? "rgba(255,255,255,0.8)" :
+          glassesStyle === "aviator" ? "#c9a227" :
+          "#222";
+        ctx.stroke();
+      };
+
+      const lensGap = w * 0.06;
+      const lensW = glassesStyle === "big" ? w * 0.44 :
+        glassesStyle === "small" ? w * 0.32 : w * 0.40;
+      const lensH = glassesStyle === "big" ? h * 1.12 :
+        glassesStyle === "small" ? h * 0.78 : h;
+
+      drawLens(-lensGap - lensW / 2, 0, lensW, lensH);
+      drawLens(lensGap + lensW / 2, 0, lensW, lensH);
+
+      ctx.beginPath();
+      ctx.moveTo(-lensGap, 0);
+      ctx.lineTo(lensGap, 0);
+      ctx.lineWidth = Math.max(3, w * 0.035);
+      ctx.stroke();
+
+      ctx.beginPath();
+      ctx.moveTo(-w * 0.49, -h * 0.08);
+      ctx.lineTo(-w * 0.62, -h * 0.02);
+      ctx.moveTo(w * 0.49, -h * 0.08);
+      ctx.lineTo(w * 0.62, -h * 0.02);
+      ctx.stroke();
+
+      if (id === "sunglasses") {
+        ctx.fillStyle = "rgba(0,0,0,0.25)";
+        ctx.fillRect(-w * 0.46, -h * 0.08, w * 0.92, h * 0.16);
+      }
     } else {
-      const item = EFFECTS.find((x) => x.id === id);
-      if (item?.emoji) {
-        ctx.font = `${size * 0.62}px sans-serif`;
-        ctx.fillText(item.emoji, cx, top.y * height - size * 0.1);
+      const size = baseSize;
+
+      if (id === "crown") {
+        ctx.font = `${size * 0.65}px sans-serif`;
+        ctx.fillText("👑", cx, top.y * height - size * 0.25);
+      } else if (id === "cap") {
+        ctx.font = `${size * 0.7}px sans-serif`;
+        ctx.fillText("🧢", cx, top.y * height - size * 0.15);
+      } else if (id === "mask") {
+        ctx.font = `${size * 0.65}px sans-serif`;
+        ctx.fillText("🎭", cx, cy);
+      } else {
+        const item = EFFECTS.find((x) => x.id === id);
+        if (item?.emoji) {
+          ctx.font = `${size * 0.62}px sans-serif`;
+          ctx.fillText(item.emoji, cx, top.y * height - size * 0.1);
+        }
       }
     }
 
@@ -265,22 +363,23 @@ export default function AIVideoCreator({ file, onProcessed }: AIVideoCreatorProp
       }
 
       const stream = canvas.captureStream(30);
-      const source = typeof video.captureStream === "function"
-        ? video.captureStream()
+      const videoWithCapture = video as HTMLVideoElement & { captureStream?: () => MediaStream };
+      const source = typeof videoWithCapture.captureStream === "function"
+        ? videoWithCapture.captureStream()
         : null;
 
       if (source) {
-        source.getAudioTracks().forEach((track) => stream.addTrack(track));
+        source.getAudioTracks().forEach((track: MediaStreamTrack) => stream.addTrack(track));
       }
 
       const recorder = new MediaRecorder(stream, { mimeType });
-      const chunks=[];
+      const chunks: Blob[] = [];
       recorder.ondataavailable=(e)=>{
         if(e.data.size>0) chunks.push(e.data);
       };
 
-      const finished=new Promise((resolve,reject)=>{
-        recorder.onstop=resolve;
+      const finished=new Promise<void>((resolve,reject)=>{
+        recorder.onstop=()=>resolve(undefined);
         recorder.onerror=()=>reject(new Error("Processed video recording failed."));
       });
 
@@ -291,7 +390,7 @@ export default function AIVideoCreator({ file, onProcessed }: AIVideoCreatorProp
       await new Promise((resolve)=>{
         const done=()=>{
           video.removeEventListener("ended",done);
-          resolve();
+          resolve(undefined);
         };
         video.addEventListener("ended",done);
       });
