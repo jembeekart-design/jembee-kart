@@ -169,7 +169,7 @@ export default function AIVideoCreator({ file, onProcessed }: AIVideoCreatorProp
       draw();
     };
 
-    video.addEventListener("loadeddata", start);
+    video.addEventListener("loadeddata", start); video.addEventListener("play", start);
 
     return () => {
       video.removeEventListener("loadeddata", start);
@@ -465,12 +465,12 @@ export default function AIVideoCreator({ file, onProcessed }: AIVideoCreatorProp
           muted
           playsInline
           controls
-          className={file ? "hidden" : "h-full w-full object-cover"}
+          className={file && effect !== "none" ? "hidden" : "h-full w-full object-cover"}
         />
 
         <canvas
           ref={canvasRef}
-          className={file ? "h-full w-full object-contain" : "hidden"}
+          className={file && effect !== "none" ? "h-full w-full object-contain" : "hidden"}
         />
       </div>
 
