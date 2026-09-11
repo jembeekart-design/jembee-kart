@@ -69,12 +69,12 @@ export default function AIVideoCreator({ file, onProcessed }: AIVideoCreatorProp
   const glassesStyleRef = useRef(glassesStyle);
   const glassesSizeRef = useRef(glassesSize);
   const glassesXRef = useRef(glassesX);
-  const glassesYRef = useRef(glassesY);
+  const glassesYRef = useRef(glassesY); const effectRef = useRef(effect);
 
   useEffect(() => { glassesStyleRef.current = glassesStyle; }, [glassesStyle]);
   useEffect(() => { glassesSizeRef.current = glassesSize; }, [glassesSize]);
-  useEffect(() => { glassesXRef.current = glassesXRef.current; }, [glassesX]);
-  useEffect(() => { glassesYRef.current = glassesYRef.current; }, [glassesY]);
+  useEffect(() => { glassesXRef.current = glassesX; }, [glassesX]);
+  useEffect(() => { glassesYRef.current = glassesY; }, [glassesY]); useEffect(() => { effectRef.current = effect; }, [effect]);
 
   useEffect(() => {
     let cancelled = false;
@@ -147,14 +147,14 @@ export default function AIVideoCreator({ file, onProcessed }: AIVideoCreatorProp
       ctx.clearRect(0, 0, canvas.width, canvas.height);
       ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
 
-      if (effect !== "none") {
+      if (effectRef.current !== "none") {
         try {
           const result = landmarker.detectForVideo(video, performance.now());
 
           const detectedFaces = result.faceLandmarks || [];
           if (detectedFaces.length > 0) lastFaceLandmarks = detectedFaces[0];
           if (lastFaceLandmarks) {
-            drawEffect(ctx, lastFaceLandmarks, effect, canvas.width, canvas.height);
+            drawEffect(ctx, lastFaceLandmarks, effectRef.current, canvas.width, canvas.height);
           }
         } catch (err) {
           console.warn("Face tracking:", err);
@@ -176,7 +176,7 @@ export default function AIVideoCreator({ file, onProcessed }: AIVideoCreatorProp
       if (animationRef.current) cancelAnimationFrame(animationRef.current);
       URL.revokeObjectURL(url);
     };
-  }, [file, effect, ready]);
+  }, [file, ready]);
 
   function drawEffect(
     ctx: CanvasRenderingContext2D,
