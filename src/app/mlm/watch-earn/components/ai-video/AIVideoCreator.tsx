@@ -236,7 +236,7 @@ export default function AIVideoCreator({ file, onProcessed }: AIVideoCreatorProp
         if (glassesStyleRef.current === "round") {
           ctx.beginPath();
           ctx.arc(x, y, Math.min(lensW, lensH) * 0.48, 0, Math.PI * 2);
-        } else if (glassesStyle === "aviator") {
+        } else if (glassesStyleRef.current === "aviator") {
           ctx.beginPath();
           ctx.moveTo(x - lensW * 0.48, y - lensH * 0.35);
           ctx.lineTo(x + lensW * 0.48, y - lensH * 0.35);
@@ -244,37 +244,37 @@ export default function AIVideoCreator({ file, onProcessed }: AIVideoCreatorProp
           ctx.lineTo(x, y + lensH * 0.5);
           ctx.lineTo(x - lensW * 0.38, y + lensH * 0.42);
           ctx.closePath();
-        } else if (glassesStyle === "sports") {
+        } else if (glassesStyleRef.current === "sports") {
           ctx.beginPath();
           ctx.ellipse(x, y, lensW * 0.5, lensH * 0.5, 0, 0, Math.PI * 2);
         } else {
           ctx.beginPath();
-          ctx.roundRect(x - lensW / 2, y - lensH / 2, lensW, lensH, glassesStyle === "square" ? 4 : lensH * 0.22);
+          ctx.roundRect(x - lensW / 2, y - lensH / 2, lensW, lensH, glassesStyleRef.current === "square" ? 4 : lensH * 0.22);
         }
 
         ctx.fillStyle =
-          glassesStyle === "transparent" ? "rgba(220,240,255,0.22)" :
-          glassesStyle === "colorful" ? "rgba(80,160,255,0.72)" :
-          glassesStyle === "sports" ? "rgba(30,80,180,0.78)" :
-          glassesStyle === "small" ? "rgba(10,10,10,0.9)" :
+          glassesStyleRef.current === "transparent" ? "rgba(220,240,255,0.22)" :
+          glassesStyleRef.current === "colorful" ? "rgba(80,160,255,0.72)" :
+          glassesStyleRef.current === "sports" ? "rgba(30,80,180,0.78)" :
+          glassesStyleRef.current === "small" ? "rgba(10,10,10,0.9)" :
           "rgba(5,5,5,0.9)";
         ctx.fill();
 
         ctx.lineWidth = Math.max(2, w * 0.025);
         ctx.strokeStyle =
-          glassesStyle === "retro" ? "#7a3f20" :
-          glassesStyle === "colorful" ? "#ff3ea5" :
-          glassesStyle === "transparent" ? "rgba(255,255,255,0.8)" :
-          glassesStyle === "aviator" ? "#c9a227" :
+          glassesStyleRef.current === "retro" ? "#7a3f20" :
+          glassesStyleRef.current === "colorful" ? "#ff3ea5" :
+          glassesStyleRef.current === "transparent" ? "rgba(255,255,255,0.8)" :
+          glassesStyleRef.current === "aviator" ? "#c9a227" :
           "#222";
         ctx.stroke();
       };
 
       const lensGap = w * 0.06;
-      const lensW = glassesStyle === "big" ? w * 0.44 :
-        glassesStyle === "small" ? w * 0.32 : w * 0.40;
-      const lensH = glassesStyle === "big" ? h * 1.12 :
-        glassesStyle === "small" ? h * 0.78 : h;
+      const lensW = glassesStyleRef.current === "big" ? w * 0.44 :
+        glassesStyleRef.current === "small" ? w * 0.32 : w * 0.40;
+      const lensH = glassesStyleRef.current === "big" ? h * 1.12 :
+        glassesStyleRef.current === "small" ? h * 0.78 : h;
 
       drawLens(-lensGap - lensW / 2, 0, lensW, lensH);
       drawLens(lensGap + lensW / 2, 0, lensW, lensH);
