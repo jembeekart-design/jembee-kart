@@ -218,8 +218,8 @@ export default function AIVideoCreator({ file, onProcessed }: AIVideoCreatorProp
       const rx = ((r1.x + r2.x) / 2) * width;
       const ry = ((r1.y + r2.y) / 2) * height;
 
-      const gx = (lx + rx) / 2 + glassesX;
-      const gy = (ly + ry) / 2 + glassesY;
+      const gx = (lx + rx) / 2 + glassesXRef.current;
+      const gy = (ly + ry) / 2 + glassesYRef.current;
       const eyeDistance = Math.hypot(rx - lx, ry - ly);
       const angle = Math.atan2(ry - ly, rx - lx);
       const scale = glassesSizeRef.current / 100;
