@@ -66,6 +66,15 @@ export default function AIVideoCreator({ file, onProcessed }: AIVideoCreatorProp
   const [glassesSize, setGlassesSize] = useState(100);
   const [glassesX, setGlassesX] = useState(0);
   const [glassesY, setGlassesY] = useState(-10);
+  const glassesStyleRef = useRef(glassesStyle);
+  const glassesSizeRef = useRef(glassesSize);
+  const glassesXRef = useRef(glassesX);
+  const glassesYRef = useRef(glassesY);
+
+  useEffect(() => { glassesStyleRef.current = glassesStyle; }, [glassesStyle]);
+  useEffect(() => { glassesSizeRef.current = glassesSize; }, [glassesSize]);
+  useEffect(() => { glassesXRef.current = glassesXRef.current; }, [glassesX]);
+  useEffect(() => { glassesYRef.current = glassesYRef.current; }, [glassesY]);
 
   useEffect(() => {
     let cancelled = false;
@@ -213,7 +222,7 @@ export default function AIVideoCreator({ file, onProcessed }: AIVideoCreatorProp
       const gy = (ly + ry) / 2 + glassesY;
       const eyeDistance = Math.hypot(rx - lx, ry - ly);
       const angle = Math.atan2(ry - ly, rx - lx);
-      const scale = glassesSize / 100;
+      const scale = glassesSizeRef.current / 100;
       const w = Math.max(70, eyeDistance * 2.35) * scale;
       const h = Math.max(34, eyeDistance * 0.82) * scale;
 
@@ -224,7 +233,7 @@ export default function AIVideoCreator({ file, onProcessed }: AIVideoCreatorProp
         ctx.beginPath();
         ctx.roundRect(x - lensW / 2, y - lensH / 2, lensW, lensH, lensH * 0.25);
 
-        if (glassesStyle === "round") {
+        if (glassesStyleRef.current === "round") {
           ctx.beginPath();
           ctx.arc(x, y, Math.min(lensW, lensH) * 0.48, 0, Math.PI * 2);
         } else if (glassesStyle === "aviator") {
