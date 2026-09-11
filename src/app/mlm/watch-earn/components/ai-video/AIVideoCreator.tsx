@@ -465,12 +465,12 @@ export default function AIVideoCreator({ file, onProcessed }: AIVideoCreatorProp
           muted
           playsInline
           controls
-          className={file && effect !== "none" ? "hidden" : "h-full w-full object-cover"}
+          className="h-full w-full object-cover"
         />
 
         <canvas
           ref={canvasRef}
-          className={file && effect !== "none" ? "h-full w-full object-contain" : "hidden"}
+          className="absolute inset-0 h-full w-full object-contain"
         />
       </div>
 
