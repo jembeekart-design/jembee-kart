@@ -23,6 +23,8 @@ const EFFECTS: Effect[] = [
   { id: "cat", name: "Cat", emoji: "🐱" },
   { id: "dog", name: "Dog", emoji: "🐶" },
   { id: "bear", name: "Bear", emoji: "🐻" },
+  { id: "hair", name: "Hair", emoji: "💇" },
+  { id: "bald", name: "Bald", emoji: "🧑‍🦲" },
   { id: "rabbit", name: "Rabbit", emoji: "🐰" },
   { id: "devil", name: "Devil", emoji: "😈" },
   { id: "angel", name: "Angel", emoji: "😇" },
@@ -299,7 +301,69 @@ export default function AIVideoCreator({ file, onProcessed }: AIVideoCreatorProp
     } else {
       const size = baseSize;
 
-      if (id === "crown") {
+      if (id === "bear") {
+        const ear = size * 0.30;
+        const face = size * 0.78;
+
+        ctx.fillStyle = "#6b4423";
+        ctx.beginPath();
+        ctx.arc(cx - face * 0.48, cy - face * 0.38, ear, 0, Math.PI * 2);
+        ctx.arc(cx + face * 0.48, cy - face * 0.38, ear, 0, Math.PI * 2);
+        ctx.fill();
+
+        ctx.fillStyle = "#8b5a2b";
+        ctx.beginPath();
+        ctx.ellipse(cx, cy + face * 0.02, face * 0.58, face * 0.62, 0, 0, Math.PI * 2);
+        ctx.fill();
+
+        ctx.fillStyle = "#d9a066";
+        ctx.beginPath();
+        ctx.ellipse(cx, cy + face * 0.24, face * 0.30, face * 0.22, 0, 0, Math.PI * 2);
+        ctx.fill();
+
+        ctx.fillStyle = "#111";
+        ctx.beginPath();
+        ctx.arc(cx - face * 0.20, cy - face * 0.03, Math.max(3, size * 0.045), 0, Math.PI * 2);
+        ctx.arc(cx + face * 0.20, cy - face * 0.03, Math.max(3, size * 0.045), 0, Math.PI * 2);
+        ctx.fill();
+
+        ctx.beginPath();
+        ctx.arc(cx, cy + face * 0.23, Math.max(4, size * 0.06), 0, Math.PI * 2);
+        ctx.fill();
+      } else if (id === "hair") {
+        const hairW = faceWidth * 0.62;
+        const hairH = faceWidth * 0.42;
+        const hairTop = top.y * height - size * 0.18;
+
+        ctx.fillStyle = "#1f120c";
+        ctx.beginPath();
+        ctx.moveTo(cx - hairW, hairTop + hairH * 0.62);
+        ctx.quadraticCurveTo(cx - hairW * 0.95, hairTop - hairH * 0.35, cx, hairTop - hairH * 0.55);
+        ctx.quadraticCurveTo(cx + hairW * 0.95, hairTop - hairH * 0.35, cx + hairW, hairTop + hairH * 0.62);
+        ctx.quadraticCurveTo(cx + hairW * 0.72, hairTop + hairH * 0.30, cx + hairW * 0.45, hairTop + hairH * 0.70);
+        ctx.quadraticCurveTo(cx, hairTop + hairH * 0.42, cx - hairW * 0.45, hairTop + hairH * 0.70);
+        ctx.quadraticCurveTo(cx - hairW * 0.72, hairTop + hairH * 0.30, cx - hairW, hairTop + hairH * 0.62);
+        ctx.closePath();
+        ctx.fill();
+
+        ctx.strokeStyle = "#090604";
+        ctx.lineWidth = Math.max(2, size * 0.025);
+        ctx.stroke();
+      } else if (id === "bald") {
+        const baldW = faceWidth * 0.58;
+        const baldH = faceWidth * 0.38;
+        const baldY = top.y * height - size * 0.04;
+
+        ctx.fillStyle = "rgba(220,175,135,0.96)";
+        ctx.beginPath();
+        ctx.ellipse(cx, baldY, baldW, baldH, 0, Math.PI, Math.PI * 2);
+        ctx.fill();
+
+        ctx.fillStyle = "rgba(255,255,255,0.55)";
+        ctx.beginPath();
+        ctx.ellipse(cx - baldW * 0.22, baldY - baldH * 0.30, baldW * 0.20, baldH * 0.10, -0.25, 0, Math.PI * 2);
+        ctx.fill();
+      } else if (id === "crown") {
         ctx.font = `${size * 0.65}px sans-serif`;
         ctx.fillText("👑", cx, top.y * height - size * 0.25);
       } else if (id === "cap") {
