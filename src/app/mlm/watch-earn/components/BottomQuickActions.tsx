@@ -71,7 +71,7 @@ export default function BottomQuickActions({
           "
         >
           <Home
-            size={27}
+            size={22}
             strokeWidth={2.3}
             className="
               fill-cyan-300
@@ -80,7 +80,7 @@ export default function BottomQuickActions({
             "
           />
 
-          <span className="text-[13px] font-semibold">
+          <span className="text-[11px] font-semibold">
             Home
           </span>
         </button>
@@ -99,11 +99,11 @@ export default function BottomQuickActions({
           "
         >
           <Compass
-            size={27}
+            size={22}
             strokeWidth={2.1}
           />
 
-          <span className="text-[13px] font-semibold">
+          <span className="text-[11px] font-semibold">
             Explore
           </span>
         </button>
@@ -131,8 +131,8 @@ export default function BottomQuickActions({
           <span
             className="
               flex
-              h-[62px]
-              w-[62px]
+              h-[52px]
+              w-[52px]
               items-center
               justify-center
               rounded-full
@@ -147,12 +147,12 @@ export default function BottomQuickActions({
             "
           >
             <Plus
-              size={45}
+              size={35}
               strokeWidth={1.7}
             />
           </span>
 
-          <span className="text-[13px] font-bold">
+          <span className="text-[11px] font-bold">
             Upload
           </span>
         </button>
@@ -172,7 +172,7 @@ export default function BottomQuickActions({
           "
         >
           <WalletCards
-            size={27}
+            size={22}
             strokeWidth={2.1}
           />
 
@@ -181,15 +181,15 @@ export default function BottomQuickActions({
               absolute
               right-[22%]
               top-[-2px]
-              h-[10px]
-              w-[10px]
+              h-[8px]
+              w-[8px]
               rounded-full
               bg-pink-500
               shadow-[0_0_8px_rgba(236,72,153,0.9)]
             "
           />
 
-          <span className="text-[13px] font-semibold">
+          <span className="text-[11px] font-semibold">
             Earn
           </span>
         </button>
@@ -208,11 +208,11 @@ export default function BottomQuickActions({
           "
         >
           <User
-            size={27}
+            size={22}
             strokeWidth={2.1}
           />
 
-          <span className="text-[13px] font-semibold">
+          <span className="text-[11px] font-semibold">
             Profile
           </span>
         </button>
