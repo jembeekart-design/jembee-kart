@@ -6,7 +6,6 @@ import { useSearchParams } from "next/navigation";
 import { auth } from "@/firebase/config";
 import { Upload, Loader2, Music2, BadgeCheck, ShieldCheck } from "lucide-react";
 import { uploadWatchVideo } from "@/lib/mlm/watch-earn/uploadWatchVideo";
-import AIVideoCreator from "@/app/mlm/watch-earn/components/ai-video/AIVideoCreator";
 
 export default function UploadWatchVideoPage() {
   const searchParams = useSearchParams();
@@ -221,17 +220,6 @@ export default function UploadWatchVideoPage() {
           </div>
         )}
 
-        {file && (
-          <div className="rounded-3xl border border-[var(--color-primary-button)]/20 bg-[var(--color-secondary-button)]/10 p-3">
-            <AIVideoCreator
-              file={file}
-              onProcessed={(processedFile) => {
-                setFile(processedFile);
-                setUploadError(null);
-              }}
-            />
-          </div>
-        )}
 
         <div className="rounded-3xl border border-[var(--color-border)]/10 bg-[var(--color-card-background)]/5 p-5">
           <p className="mb-3 text-sm font-black text-[var(--button-text-color)]">Caption</p>
