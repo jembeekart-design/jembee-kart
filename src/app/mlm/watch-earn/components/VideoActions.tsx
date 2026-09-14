@@ -44,7 +44,7 @@ export default function VideoActions({
       key: "like",
       icon: (
         <Heart
-          size={31}
+          size={30}
           strokeWidth={2}
           className={
             isLiked
@@ -61,7 +61,7 @@ export default function VideoActions({
       key: "comment",
       icon: (
         <MessageCircle
-          size={30}
+          size={29}
           strokeWidth={2}
           className="text-white"
         />
@@ -74,7 +74,7 @@ export default function VideoActions({
       key: "share",
       icon: (
         <Share2
-          size={30}
+          size={29}
           strokeWidth={2}
           className="text-white"
         />
@@ -87,7 +87,7 @@ export default function VideoActions({
       key: "save",
       icon: (
         <Bookmark
-          size={30}
+          size={29}
           strokeWidth={2}
           className={
             isSaved
@@ -106,13 +106,13 @@ export default function VideoActions({
       className="
         pointer-events-auto
         absolute
-        right-5
-        bottom-[calc(8rem+env(safe-area-inset-bottom))]
+        right-4
+        bottom-[calc(9.6rem+env(safe-area-inset-bottom))]
         z-40
         flex
         flex-col
         items-center
-        gap-5
+        gap-4
       "
     >
       {actions.map((action) => (
@@ -122,7 +122,7 @@ export default function VideoActions({
         >
           <motion.button
             type="button"
-            whileTap={{ scale: 0.86 }}
+            whileTap={{ scale: 0.88 }}
             aria-label={action.label}
             title={action.label}
             onClick={(event) => {
@@ -132,13 +132,19 @@ export default function VideoActions({
             }}
             className="
               flex
-              h-11
-              w-11
+              h-[52px]
+              w-[52px]
               items-center
               justify-center
-              bg-transparent
+              rounded-full
+              border
+              border-white/35
+              bg-black/20
               text-white
-              drop-shadow-[0_2px_5px_rgba(0,0,0,0.8)]
+              backdrop-blur-[2px]
+              shadow-[0_2px_8px_rgba(0,0,0,0.45)]
+              transition-transform
+              active:bg-white/10
             "
           >
             {action.icon}
@@ -147,12 +153,14 @@ export default function VideoActions({
           {action.value !== undefined && (
             <span
               className="
-                -mt-1
+                mt-1
+                min-w-[18px]
+                text-center
                 text-[13px]
                 font-medium
                 leading-none
                 text-white
-                drop-shadow-[0_2px_4px_rgba(0,0,0,0.9)]
+                drop-shadow-[0_2px_5px_rgba(0,0,0,0.9)]
               "
             >
               {action.value}
@@ -161,10 +169,42 @@ export default function VideoActions({
         </div>
       ))}
 
-      {/* SOUND — REFERENCE STYLE */}
+      {/* MORE */}
       <motion.button
         type="button"
-        whileTap={{ scale: 0.86 }}
+        whileTap={{ scale: 0.88 }}
+        aria-label="More options"
+        title="More options"
+        onClick={(event) => {
+          event.preventDefault();
+          event.stopPropagation();
+        }}
+        className="
+          flex
+          h-[52px]
+          w-[52px]
+          items-center
+          justify-center
+          rounded-full
+          border
+          border-white/35
+          bg-black/20
+          text-white
+          backdrop-blur-[2px]
+          shadow-[0_2px_8px_rgba(0,0,0,0.45)]
+        "
+      >
+        <span className="flex flex-col items-center gap-[3px]">
+          <span className="h-[4px] w-[4px] rounded-full bg-white" />
+          <span className="h-[4px] w-[4px] rounded-full bg-white" />
+          <span className="h-[4px] w-[4px] rounded-full bg-white" />
+        </span>
+      </motion.button>
+
+      {/* SOUND */}
+      <motion.button
+        type="button"
+        whileTap={{ scale: 0.88 }}
         aria-label={isMuted ? "Unmute" : "Mute"}
         title={isMuted ? "Unmute" : "Mute"}
         onClick={(event) => {
@@ -175,8 +215,8 @@ export default function VideoActions({
         className="
           mt-1
           flex
-          h-12
-          w-12
+          h-[56px]
+          w-[56px]
           items-center
           justify-center
           rounded-full
@@ -184,14 +224,14 @@ export default function VideoActions({
           border-cyan-400
           bg-black/20
           text-white
-          shadow-[0_0_12px_rgba(34,211,238,0.35)]
-          backdrop-blur-sm
+          backdrop-blur-[2px]
+          shadow-[0_0_14px_rgba(34,211,238,0.5)]
         "
       >
         {isMuted ? (
-          <VolumeX size={29} strokeWidth={2} />
+          <VolumeX size={30} strokeWidth={2} />
         ) : (
-          <Volume2 size={29} strokeWidth={2} />
+          <Volume2 size={30} strokeWidth={2} />
         )}
       </motion.button>
     </aside>
