@@ -16,6 +16,12 @@ import {
   Users,
   Ban,
   HelpCircle,
+  Home,
+  Wallet,
+  User,
+  ClipboardList,
+  Pencil,
+  CloudUpload,
 } from "lucide-react";
 import { auth } from "@/firebase/config";
 import { uploadWatchVideo } from "@/lib/mlm/watch-earn/uploadWatchVideo";
@@ -32,18 +38,24 @@ export default function UploadWatchVideoPage() {
 
   useEffect(() => {
     async function loadBlob() {
-      if (!videoUrlFromParams?.startsWith("blob:")) return;
+      if (
+        videoUrlFromParams &&
+        videoUrlFromParams.startsWith("blob:")
+      ) {
+        try {
+          const response = await fetch(videoUrlFromParams);
+          const blob = await response.blob();
 
-      try {
-        const response = await fetch(videoUrlFromParams);
-        const blob = await response.blob();
-        setFile(
-          new File([blob], "recording.webm", {
-            type: blob.type || "video/webm",
-          })
-        );
-      } catch (error) {
-        console.error("Failed to load blob", error);
+          const recordedFile = new File(
+            [blob],
+            "recording.webm",
+            { type: "video/webm" }
+          );
+
+          setFile(recordedFile);
+        } catch (error) {
+          console.error("Failed to load blob", error);
+        }
       }
     }
 
@@ -56,29 +68,37 @@ export default function UploadWatchVideoPage() {
 
   useEffect(() => {
     return () => {
-      if (previewUrl) URL.revokeObjectURL(previewUrl);
+      if (previewUrl) {
+        URL.revokeObjectURL(previewUrl);
+      }
     };
   }, [previewUrl]);
 
-  function selectVideo(selected: File | null) {
+  function handleFileChange(
+    event: React.ChangeEvent<HTMLInputElement>
+  ) {
+    const selected = event.target.files?.[0];
+
     if (!selected) return;
 
+    setUploadError(null);
+
     if (!selected.type.startsWith("video/")) {
-      alert("कृपया केवल वीडियो चुनें");
+      alert("सिर्फ वीडियो फाइल चुनें");
+      event.target.value = "";
       return;
     }
 
     if (selected.size > 100 * 1024 * 1024) {
       alert("वीडियो 100 MB से ज्यादा नहीं होना चाहिए");
+      event.target.value = "";
       return;
     }
 
-    setUploadError(null);
     setFile(selected);
   }
 
-  function removeVideo() {
-    if (loading) return;
+  function removeFile() {
     setFile(null);
     setUploadError(null);
     setUploadProgress(0);
@@ -87,14 +107,14 @@ export default function UploadWatchVideoPage() {
   async function handleUpload() {
     try {
       if (!file) {
-        alert("पहले अपना वीडियो चुनें");
+        alert("पहले वीडियो चुनें");
         return;
       }
 
       const currentUser = auth.currentUser;
 
-      if (!currentUser?.uid) {
-        alert("कृपया पहले लॉगिन करें");
+      if (!currentUser) {
+        setUploadError("कृपया पहले लॉगिन करें");
         return;
       }
 
@@ -118,7 +138,9 @@ export default function UploadWatchVideoPage() {
         onProgress: (uploadedBytes, totalBytes) => {
           const percent =
             totalBytes > 0
-              ? Math.round((uploadedBytes / totalBytes) * 100)
+              ? Math.round(
+                  (uploadedBytes / totalBytes) * 100
+                )
               : 0;
 
           setUploadProgress(percent);
@@ -127,20 +149,24 @@ export default function UploadWatchVideoPage() {
 
       if (result.success) {
         alert(
-          "वीडियो सफलतापूर्वक भेज दिया गया है। मंजूरी के बाद यह प्रकाशित होगा।"
+          "वीडियो सफलतापूर्वक भेज दिया गया है। Approval के बाद वीडियो प्रकाशित होगा।"
         );
 
         setCaption("");
         setFile(null);
         setUploadProgress(0);
       } else {
-        setUploadError(result.message || "वीडियो अपलोड नहीं हो पाया");
+        setUploadError(
+          result.message || "वीडियो अपलोड नहीं हो पाया"
+        );
       }
     } catch (error) {
       const message =
-        error instanceof Error ? error.message : String(error);
+        error instanceof Error
+          ? error.message
+          : String(error);
 
-      console.error("[UPLOAD_DEBUG] PAGE_ERROR", error);
+      console.error("VIDEO UPLOAD ERROR", error);
       setUploadError(message);
     } finally {
       setLoading(false);
@@ -148,311 +174,428 @@ export default function UploadWatchVideoPage() {
   }
 
   return (
-    <main className="min-h-screen bg-gradient-to-b from-slate-50 via-white to-blue-50 text-slate-900">
-      {/* Header */}
-      <header className="sticky top-0 z-20 border-b border-slate-200 bg-white/95 px-4 py-3 backdrop-blur">
-        <div className="mx-auto flex max-w-2xl items-center justify-between">
+    <main className="min-h-screen bg-white text-slate-900 pb-28">
+
+      {/* HEADER */}
+      <header className="sticky top-0 z-30 border-b border-slate-200 bg-white">
+        <div className="relative flex h-[82px] items-center justify-center px-4">
+
           <Link
             href="/mlm/watch-earn"
-            className="flex h-11 w-11 items-center justify-center rounded-full"
+            className="absolute left-4 top-4 flex h-12 w-12 items-center justify-center rounded-full"
           >
-            <ArrowLeft size={30} />
+            <ArrowLeft size={38} strokeWidth={2.2} />
           </Link>
 
           <div className="text-center">
-            <h1 className="text-xl font-black">
-              Watch & <span className="text-blue-600">Earn</span>
+            <h1 className="text-[29px] font-black leading-none">
+              Watch &{" "}
+              <span className="text-blue-600">
+                Earn
+              </span>
             </h1>
-            <p className="text-sm font-bold">👑 वीडियो डालें</p>
+
+            <div className="mt-2 flex items-center justify-center gap-1 text-[19px] font-black">
+              <span>👑</span>
+              <span>वीडियो डालें</span>
+            </div>
           </div>
 
-          <button
-            type="button"
-            onClick={() =>
-              alert(
-                "वीडियो चुनें → जानकारी लिखें → वीडियो अपलोड करें"
-              )
-            }
-            className="flex h-11 w-11 items-center justify-center rounded-full text-blue-600"
-            aria-label="सहायता"
-          >
-            <HelpCircle size={30} />
-          </button>
+          <div className="absolute right-4 top-3 flex flex-col items-center">
+            <HelpCircle
+              size={38}
+              className="text-blue-600"
+              strokeWidth={2.3}
+            />
+            <span className="text-[14px] font-black text-blue-700">
+              सहायता
+            </span>
+          </div>
         </div>
       </header>
 
-      <div className="mx-auto max-w-2xl px-4 pb-10">
-        {/* Hero */}
-        <section className="relative mt-4 overflow-hidden rounded-[28px] bg-gradient-to-r from-blue-50 to-cyan-50 p-5 shadow-sm">
-          <div className="relative z-10">
-            <p className="text-3xl font-black leading-tight">
-              अपना वीडियो डालें
-            </p>
+      {/* HERO */}
+      <section className="bg-gradient-to-r from-blue-50 via-sky-50 to-cyan-50 px-5 py-7">
 
-            <p className="mt-2 text-lg font-semibold text-slate-600">
-              वीडियो अपलोड करें और कमाई शुरू करें
-            </p>
+        <h2 className="text-center text-[42px] font-black leading-tight text-slate-900">
+          अपना वीडियो डालें
+        </h2>
 
-            {/* Steps */}
-            <div className="mt-5 grid grid-cols-3 gap-2">
-              {[
-                ["1", "🎥", "वीडियो चुनें"],
-                ["2", "✏️", "जानकारी भरें"],
-                ["3", "☁️", "अपलोड करें"],
-              ].map(([number, icon, text]) => (
-                <div
-                  key={number}
-                  className="rounded-2xl bg-white px-2 py-3 text-center shadow-sm"
-                >
-                  <div className="mx-auto flex h-10 w-10 items-center justify-center rounded-full bg-blue-600 text-lg font-black text-white">
-                    {number}
-                  </div>
-                  <div className="mt-1 text-xl">{icon}</div>
-                  <p className="text-xs font-bold">{text}</p>
-                </div>
-              ))}
+        <p className="mt-2 text-center text-[22px] font-bold text-slate-600">
+          वीडियो अपलोड करें और कमाई शुरू करें
+        </p>
+
+        {/* STEPS */}
+        <div className="mt-6 grid grid-cols-3 gap-3">
+
+          <div className="rounded-[25px] bg-white px-2 py-5 text-center shadow-md">
+            <div className="mx-auto flex h-16 w-16 items-center justify-center rounded-full bg-blue-600 text-3xl font-black text-white">
+              1
             </div>
+            <Video
+              size={32}
+              className="mx-auto mt-3"
+              strokeWidth={2.5}
+            />
+            <p className="mt-2 text-[17px] font-black">
+              वीडियो चुनें
+            </p>
           </div>
-        </section>
 
-        {/* History */}
+          <div className="rounded-[25px] bg-white px-2 py-5 text-center shadow-md">
+            <div className="mx-auto flex h-16 w-16 items-center justify-center rounded-full bg-blue-600 text-3xl font-black text-white">
+              2
+            </div>
+            <Pencil
+              size={32}
+              className="mx-auto mt-3"
+              strokeWidth={2.5}
+            />
+            <p className="mt-2 text-[17px] font-black">
+              जानकारी भरें
+            </p>
+          </div>
+
+          <div className="rounded-[25px] bg-white px-2 py-5 text-center shadow-md">
+            <div className="mx-auto flex h-16 w-16 items-center justify-center rounded-full bg-blue-600 text-3xl font-black text-white">
+              3
+            </div>
+            <CloudUpload
+              size={32}
+              className="mx-auto mt-3"
+              strokeWidth={2.5}
+            />
+            <p className="mt-2 text-[17px] font-black">
+              अपलोड करें
+            </p>
+          </div>
+
+        </div>
+      </section>
+
+      {/* HISTORY */}
+      <div className="px-5 pt-6">
         <Link
           href="/mlm/watch-earn/history"
-          className="mt-4 block rounded-2xl bg-white px-5 py-4 text-center text-base font-black text-blue-600 shadow-sm"
+          className="flex h-[78px] items-center justify-center gap-3 rounded-[25px] bg-white text-[24px] font-black text-blue-600 shadow-md"
         >
-          📋 मेरे अपलोड देखें
+          <ClipboardList size={30} />
+          मेरे अपलोड देखें
         </Link>
+      </div>
 
-        {/* Video picker */}
+      {/* SELECT VIDEO */}
+      <section className="px-5 pt-7">
+
         {!file ? (
-          <label className="mt-5 block cursor-pointer rounded-[28px] border-2 border-dashed border-blue-400 bg-white p-7 text-center shadow-sm">
-            <div className="mx-auto flex h-20 w-20 items-center justify-center rounded-full bg-blue-100">
-              <Upload size={42} className="text-blue-600" />
+          <label className="block cursor-pointer rounded-[32px] border-[3px] border-dashed border-blue-400 bg-white px-5 py-12 text-center shadow-sm">
+
+            <div className="mx-auto flex h-36 w-36 items-center justify-center rounded-full bg-blue-50">
+              <Upload
+                size={72}
+                className="text-blue-600"
+                strokeWidth={2.2}
+              />
             </div>
 
-            <h2 className="mt-4 text-2xl font-black">
-              यहां वीडियो चुनें
-            </h2>
+            <h3 className="mt-7 text-[32px] font-black">
+              यहाँ वीडियो चुनें
+            </h3>
 
-            <p className="mt-2 text-base font-semibold text-slate-500">
-              या यहां टैप करके वीडियो चुनें
+            <p className="mt-3 text-[20px] font-bold text-slate-500">
+              या यहाँ टैप करके वीडियो चुनें
             </p>
 
-            <div className="mt-5 rounded-2xl bg-blue-600 px-6 py-4 text-xl font-black text-white shadow-lg">
-              🎬 वीडियो चुनें
+            <div className="mt-7 flex h-[76px] items-center justify-center gap-3 rounded-[25px] bg-blue-600 text-[27px] font-black text-white shadow-lg">
+              <span>🎬</span>
+              <span>वीडियो चुनें</span>
             </div>
 
-            <p className="mt-4 text-sm font-semibold text-slate-500">
-              MP4 • MOV • AVI &nbsp; | &nbsp; अधिकतम 100 MB
+            <p className="mt-6 text-[18px] font-bold text-slate-500">
+              MP4 • MOV • AVI&nbsp;&nbsp;|&nbsp;&nbsp;
+              अधिकतम 100 MB
             </p>
 
             <input
               type="file"
               accept="video/*"
               hidden
-              onChange={(e) => {
-                selectVideo(e.target.files?.[0] || null);
-                e.currentTarget.value = "";
-              }}
+              onChange={handleFileChange}
             />
           </label>
         ) : (
-          /* Selected video */
-          <section className="mt-5 overflow-hidden rounded-[28px] border border-blue-100 bg-white shadow-sm">
-            {previewUrl && (
-              <div className="relative bg-black">
+          <div className="overflow-hidden rounded-[30px] border border-slate-200 bg-white shadow-md">
+
+            <div className="relative bg-black">
+              {previewUrl && (
                 <video
                   src={previewUrl}
                   controls
                   playsInline
-                  className="max-h-[360px] w-full object-contain"
+                  className="max-h-[390px] w-full"
                 />
-                <div className="absolute left-3 top-3 rounded-full bg-white/95 px-3 py-2 text-sm font-black">
-                  <CheckCircle2
-                    size={18}
-                    className="mr-1 inline text-green-600"
-                  />
-                  वीडियो चुना गया
-                </div>
-              </div>
-            )}
-
-            <div className="flex items-center justify-between gap-3 p-5">
-              <div className="min-w-0">
-                <p className="text-xs font-black uppercase text-blue-600">
-                  आपका वीडियो
-                </p>
-                <p className="mt-1 truncate text-lg font-black">
-                  {file.name}
-                </p>
-                <p className="mt-1 text-sm font-semibold text-slate-500">
-                  {(file.size / (1024 * 1024)).toFixed(1)} MB
-                </p>
-              </div>
+              )}
 
               <button
                 type="button"
-                onClick={removeVideo}
-                className="flex h-12 w-12 shrink-0 items-center justify-center rounded-full bg-slate-100"
+                onClick={removeFile}
+                className="absolute right-4 top-4 flex h-14 w-14 items-center justify-center rounded-full bg-black/70 text-white"
                 aria-label="वीडियो हटाएं"
               >
-                <X size={26} />
+                <X size={32} />
               </button>
             </div>
-          </section>
-        )}
 
-        {/* Caption */}
-        {file && (
-          <section className="mt-5 rounded-[28px] bg-white p-5 shadow-sm">
-            <div className="flex items-center gap-3">
-              <div className="flex h-11 w-11 items-center justify-center rounded-xl bg-purple-100 text-purple-600">
-                ✏️
+            <div className="flex items-center gap-4 px-5 py-5">
+              <div className="flex h-14 w-14 shrink-0 items-center justify-center rounded-full bg-blue-100">
+                <CheckCircle2
+                  size={32}
+                  className="text-blue-600"
+                />
               </div>
 
-              <div>
-                <h2 className="text-lg font-black">
-                  वीडियो के बारे में लिखें
-                </h2>
+              <div className="min-w-0">
+                <p className="text-sm font-bold text-slate-500">
+                  चुना गया वीडियो
+                </p>
+                <p className="truncate text-[20px] font-black">
+                  {file.name}
+                </p>
                 <p className="text-sm font-semibold text-slate-500">
-                  चाहें तो कुछ शब्द लिखें
+                  {(file.size / (1024 * 1024)).toFixed(1)} MB
                 </p>
               </div>
             </div>
-
-            <textarea
-              value={caption}
-              onChange={(e) => setCaption(e.target.value.slice(0, 200))}
-              placeholder="जैसे: मेरी पहली वीडियो, गांव का सुंदर दृश्य..."
-              className="mt-4 min-h-28 w-full resize-none rounded-2xl border-2 border-slate-200 bg-slate-50 p-4 text-base font-semibold outline-none focus:border-blue-500"
-            />
-
-            <p className="mt-1 text-right text-xs font-bold text-slate-400">
-              {caption.length}/200
-            </p>
-          </section>
+          </div>
         )}
 
-        {/* Tips */}
-        <section className="mt-5 rounded-[28px] bg-green-50 p-5 shadow-sm">
+      </section>
+
+      {/* CAPTION */}
+      {file && (
+        <section className="px-5 pt-6">
+
           <div className="flex items-center gap-3">
-            <div className="flex h-11 w-11 items-center justify-center rounded-full bg-yellow-100">
-              <Lightbulb size={27} className="text-yellow-600" />
+            <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-fuchsia-100">
+              <Pencil
+                size={27}
+                className="text-fuchsia-600"
+              />
             </div>
 
-            <h2 className="text-xl font-black text-green-800">
-              अच्छी वीडियो के लिए सुझाव
-            </h2>
+            <h3 className="text-[21px] font-black">
+              वीडियो का शीर्षक / विवरण
+              <span className="text-slate-500">
+                {" "}(Caption)
+              </span>
+            </h3>
           </div>
 
-          <div className="mt-5 grid grid-cols-2 gap-4">
-            <div className="rounded-2xl bg-white p-4 text-center">
-              <Video className="mx-auto" size={30} />
-              <p className="mt-2 text-sm font-black">
-                वीडियो साफ और स्पष्ट हो
-              </p>
-            </div>
+          <div className="mt-3 rounded-[25px] border-2 border-slate-300 bg-white p-4">
+            <textarea
+              value={caption}
+              maxLength={200}
+              onChange={(event) =>
+                setCaption(event.target.value)
+              }
+              placeholder={
+                "यहाँ कुछ लिखें...\nजैसे: मेरी पहली वीडियो, मजेदार वीडियो, गाँव का दृश्य आदि..."
+              }
+              className="h-32 w-full resize-none text-[19px] font-semibold outline-none placeholder:text-slate-400"
+            />
 
-            <div className="rounded-2xl bg-white p-4 text-center">
-              <Clock3 className="mx-auto" size={30} />
-              <p className="mt-2 text-sm font-black">
-                छोटी और अच्छी वीडियो
-              </p>
-            </div>
-
-            <div className="rounded-2xl bg-white p-4 text-center">
-              <Users className="mx-auto" size={30} />
-              <p className="mt-2 text-sm font-black">
-                अच्छा कंटेंट डालें
-              </p>
-            </div>
-
-            <div className="rounded-2xl bg-white p-4 text-center">
-              <Ban className="mx-auto" size={30} />
-              <p className="mt-2 text-sm font-black">
-                गलत कंटेंट न डालें
-              </p>
+            <div className="text-right text-sm font-bold text-slate-500">
+              {caption.length}/200
             </div>
           </div>
+
         </section>
+      )}
 
-        {/* Error */}
-        {uploadError && (
-          <section className="mt-5 rounded-2xl border-2 border-red-300 bg-red-50 p-4 text-red-700">
-            <p className="font-black">❌ वीडियो अपलोड नहीं हुआ</p>
+      {/* TIPS */}
+      {file && (
+        <section className="px-5 pt-5">
+
+          <div className="rounded-[25px] bg-green-50 px-4 py-5">
+
+            <div className="flex items-center gap-2">
+              <Lightbulb
+                size={31}
+                className="text-yellow-500"
+                fill="currentColor"
+              />
+              <h3 className="text-[21px] font-black text-green-800">
+                अच्छी वीडियो के लिए सुझाव
+              </h3>
+            </div>
+
+            <div className="mt-5 grid grid-cols-4 gap-2">
+
+              <div className="text-center">
+                <Video
+                  size={31}
+                  className="mx-auto"
+                  strokeWidth={2.5}
+                />
+                <p className="mt-2 text-[13px] font-bold leading-tight">
+                  वीडियो साफ
+                  <br />
+                  और स्पष्ट हो
+                </p>
+              </div>
+
+              <div className="border-l border-green-200 text-center">
+                <Clock3
+                  size={31}
+                  className="mx-auto"
+                  strokeWidth={2.5}
+                />
+                <p className="mt-2 text-[13px] font-bold leading-tight">
+                  छोटी वीडियो
+                  <br />
+                  (1-5 मिनट)
+                </p>
+              </div>
+
+              <div className="border-l border-green-200 text-center">
+                <Users
+                  size={31}
+                  className="mx-auto"
+                  strokeWidth={2.5}
+                />
+                <p className="mt-2 text-[13px] font-bold leading-tight">
+                  अच्छा और
+                  <br />
+                  सकारात्मक कंटेंट
+                </p>
+              </div>
+
+              <div className="border-l border-green-200 text-center">
+                <Ban
+                  size={31}
+                  className="mx-auto"
+                  strokeWidth={2.5}
+                />
+                <p className="mt-2 text-[13px] font-bold leading-tight">
+                  गलत या आपत्तिजनक
+                  <br />
+                  कंटेंट न डालें
+                </p>
+              </div>
+
+            </div>
+          </div>
+
+        </section>
+      )}
+
+      {/* ERROR */}
+      {uploadError && (
+        <section className="px-5 pt-5">
+          <div className="rounded-2xl border-2 border-red-500 bg-red-50 p-4 text-red-700">
+            <p className="font-black">
+              ❌ वीडियो अपलोड में समस्या
+            </p>
             <p className="mt-2 break-words text-sm font-semibold">
               {uploadError}
             </p>
-            {loading === false && (
+            {loading && (
               <p className="mt-2 text-xs font-bold">
-                जहां तक पहुंचा: {uploadProgress}%
+                अपलोड: {uploadProgress}%
               </p>
             )}
-          </section>
-        )}
+          </div>
+        </section>
+      )}
 
-        {/* Upload button */}
-        <button
-          type="button"
-          onClick={handleUpload}
-          disabled={loading || !file}
-          className={`mt-5 flex w-full items-center justify-center gap-3 rounded-[28px] px-5 py-5 text-xl font-black text-white shadow-xl transition ${
-            file && !loading
-              ? "bg-gradient-to-r from-blue-600 to-blue-500 active:scale-[0.98]"
-              : "cursor-not-allowed bg-slate-300"
-          }`}
-        >
-          {loading ? (
-            <>
-              <Loader2 size={28} className="animate-spin" />
-              वीडियो अपलोड हो रहा है {uploadProgress}%
-            </>
-          ) : (
-            <>
-              <Upload size={28} />
-              वीडियो अपलोड करें
-            </>
-          )}
-        </button>
+      {/* UPLOAD BUTTON */}
+      {file && (
+        <section className="px-5 pt-5">
 
-        <p className="mt-4 text-center text-sm font-semibold text-slate-500">
-          ☁️ वीडियो पहले जांच के लिए भेजा जाएगा
-        </p>
+          <button
+            type="button"
+            onClick={handleUpload}
+            disabled={loading}
+            className="flex min-h-[82px] w-full items-center justify-center gap-4 rounded-[28px] bg-blue-600 px-5 text-[27px] font-black text-white shadow-xl disabled:opacity-70"
+          >
+            {loading ? (
+              <>
+                <Loader2
+                  size={35}
+                  className="animate-spin"
+                />
+                वीडियो अपलोड हो रहा है {uploadProgress}%
+              </>
+            ) : (
+              <>
+                <Upload
+                  size={35}
+                  strokeWidth={2.5}
+                />
+                वीडियो अपलोड करें
+              </>
+            )}
+          </button>
 
-        {/* Bottom navigation */}
-        <nav className="mt-8 grid grid-cols-4 rounded-[28px] border border-slate-200 bg-white p-3 shadow-lg">
+        </section>
+      )}
+
+      {/* BOTTOM NAVIGATION */}
+      <nav className="fixed bottom-0 left-0 right-0 z-40 border-t border-slate-200 bg-white shadow-[0_-4px_20px_rgba(0,0,0,0.08)]">
+        <div className="mx-auto grid max-w-xl grid-cols-5">
+
           <Link
             href="/mlm/watch-earn"
-            className="flex flex-col items-center gap-1 py-2 text-xs font-bold"
+            className="flex min-h-[92px] flex-col items-center justify-center gap-1"
           >
-            🏠
-            <span>होम</span>
+            <Home size={31} strokeWidth={2.2} />
+            <span className="text-[14px] font-bold">
+              होम
+            </span>
           </Link>
 
           <Link
             href="/mlm/watch-earn"
-            className="flex flex-col items-center gap-1 py-2 text-xs font-bold"
+            className="flex min-h-[92px] flex-col items-center justify-center gap-1"
           >
-            ▶️
-            <span>वीडियो देखें</span>
+            <Play size={31} strokeWidth={2.2} />
+            <span className="text-[14px] font-bold">
+              वीडियो देखें
+            </span>
           </Link>
 
-          <div className="flex flex-col items-center gap-1 py-2 text-xs font-black text-blue-600">
-            <div className="flex h-12 w-12 -mt-8 items-center justify-center rounded-full bg-blue-600 text-2xl text-white shadow-lg">
-              +
+          <div className="relative flex min-h-[92px] flex-col items-center justify-center">
+            <div className="absolute -top-7 flex h-16 w-16 items-center justify-center rounded-full bg-blue-600 text-white shadow-lg">
+              <Upload size={34} strokeWidth={2.5} />
             </div>
-            <span>वीडियो डालें</span>
+            <span className="mt-8 text-[14px] font-black text-blue-700">
+              वीडियो डालें
+            </span>
           </div>
 
           <Link
-            href="/mlm/watch-earn/history"
-            className="flex flex-col items-center gap-1 py-2 text-xs font-bold"
+            href="/mlm/watch-earn/earnings"
+            className="flex min-h-[92px] flex-col items-center justify-center gap-1"
           >
-            💰
-            <span>मेरी कमाई</span>
+            <Wallet size={31} strokeWidth={2.2} />
+            <span className="text-[14px] font-bold">
+              कमाई
+            </span>
           </Link>
-        </nav>
-      </div>
+
+          <Link
+            href="/mlm/profile"
+            className="flex min-h-[92px] flex-col items-center justify-center gap-1"
+          >
+            <User size={31} strokeWidth={2.2} />
+            <span className="text-[14px] font-bold">
+              मेरा प्रोफाइल
+            </span>
+          </Link>
+
+        </div>
+      </nav>
+
     </main>
   );
 }
