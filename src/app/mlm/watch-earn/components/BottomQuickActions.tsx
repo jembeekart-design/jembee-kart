@@ -32,7 +32,7 @@ export default function BottomQuickActions({
         inset-x-0
         bottom-0
         z-50
-        px-4
+        px-2
         pb-[calc(0.65rem+env(safe-area-inset-bottom))]
       "
     >
@@ -42,7 +42,7 @@ export default function BottomQuickActions({
           relative
           mx-auto
           flex
-          h-[88px]
+          h-[78px]
           w-full
           max-w-[680px]
           items-end
@@ -71,7 +71,7 @@ export default function BottomQuickActions({
           "
         >
           <Home
-            size={30}
+            size={27}
             strokeWidth={2.3}
             className="
               fill-cyan-300
@@ -80,7 +80,7 @@ export default function BottomQuickActions({
             "
           />
 
-          <span className="text-[14px] font-semibold">
+          <span className="text-[13px] font-semibold">
             Home
           </span>
         </button>
@@ -99,11 +99,11 @@ export default function BottomQuickActions({
           "
         >
           <Compass
-            size={30}
+            size={27}
             strokeWidth={2.1}
           />
 
-          <span className="text-[14px] font-semibold">
+          <span className="text-[13px] font-semibold">
             Explore
           </span>
         </button>
@@ -131,8 +131,8 @@ export default function BottomQuickActions({
           <span
             className="
               flex
-              h-[70px]
-              w-[70px]
+              h-[62px]
+              w-[62px]
               items-center
               justify-center
               rounded-full
@@ -152,7 +152,7 @@ export default function BottomQuickActions({
             />
           </span>
 
-          <span className="text-[14px] font-bold">
+          <span className="text-[13px] font-bold">
             Upload
           </span>
         </button>
@@ -172,7 +172,7 @@ export default function BottomQuickActions({
           "
         >
           <WalletCards
-            size={30}
+            size={27}
             strokeWidth={2.1}
           />
 
@@ -189,7 +189,7 @@ export default function BottomQuickActions({
             "
           />
 
-          <span className="text-[14px] font-semibold">
+          <span className="text-[13px] font-semibold">
             Earn
           </span>
         </button>
@@ -208,11 +208,11 @@ export default function BottomQuickActions({
           "
         >
           <User
-            size={30}
+            size={27}
             strokeWidth={2.1}
           />
 
-          <span className="text-[14px] font-semibold">
+          <span className="text-[13px] font-semibold">
             Profile
           </span>
         </button>
