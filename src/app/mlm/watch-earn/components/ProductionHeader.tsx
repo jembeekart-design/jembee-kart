@@ -3,15 +3,15 @@
 import React, { useState } from "react";
 import { useRouter } from "next/navigation";
 import {
-  ArrowLeft,
+  Menu,
   Search,
-  Users,
+  UserPlus,
   Bell,
   Flame,
   Coins,
-  Plus,
+  ChevronRight,
+  X,
 } from "lucide-react";
-import { motion } from "framer-motion";
 
 export default function ProductionHeader({
   activeTab,
@@ -25,124 +25,148 @@ export default function ProductionHeader({
 
   return (
     <header
-      className="pointer-events-none fixed inset-x-0 top-0 z-50 pt-safe"
+      className="pointer-events-none fixed inset-x-0 top-0 z-50 text-white"
       style={{ paddingTop: "env(safe-area-inset-top)" }}
     >
-      {/* Top glass bar */}
-      <div className="pointer-events-auto flex h-16 items-center justify-between px-4">
-        <div className="flex items-center gap-2">
-          <button
-            onClick={() => router.back()}
-            aria-label="Back"
-            className="flex h-10 w-10 items-center justify-center rounded-full border border-white/15 bg-black/35 text-white backdrop-blur-xl"
-          >
-            <ArrowLeft size={20} />
-          </button>
-
-          <div className="flex items-center gap-2 rounded-full border border-white/10 bg-black/30 px-3 py-2 backdrop-blur-xl">
-            <span className="text-[15px] font-black tracking-tight text-white">
-              Jembee Shorts
-            </span>
-
-            <motion.span
-              animate={{ scale: [1, 1.12, 1] }}
-              transition={{
-                repeat: Infinity,
-                duration: 2,
-              }}
-              className="text-orange-400"
-            >
-              <Flame size={17} fill="currentColor" />
-            </motion.span>
-          </div>
-        </div>
-
-        <div className="flex items-center gap-2">
-          <div className="hidden sm:flex items-center gap-1 rounded-full border border-cyan-300/20 bg-cyan-400/10 px-3 py-2 text-xs font-black text-cyan-100 backdrop-blur-xl">
-            <Coins size={15} />
-            <span>1,250</span>
-          </div>
-
-          <button
-            onClick={() => setShowSearch(true)}
-            aria-label="Search"
-            className="flex h-10 w-10 items-center justify-center rounded-full border border-white/10 bg-black/35 text-white backdrop-blur-xl"
-          >
-            <Search size={19} />
-          </button>
-
-          <button
-            onClick={() => router.push("/followers")}
-            aria-label="Friends"
-            className="flex h-10 w-10 items-center justify-center rounded-full border border-white/10 bg-black/35 text-white backdrop-blur-xl"
-          >
-            <Users size={19} />
-          </button>
-
-          <button
-            onClick={() => router.push("/mlm/notifications")}
-            aria-label="Notifications"
-            className="relative flex h-10 w-10 items-center justify-center rounded-full border border-white/10 bg-black/35 text-white backdrop-blur-xl"
-          >
-            <Bell size={19} />
-
-            <span className="absolute right-1 top-1 flex h-4 min-w-4 items-center justify-center rounded-full bg-cyan-400 px-1 text-[9px] font-black text-black">
-              3
-            </span>
-          </button>
-        </div>
-      </div>
-
-      {/* Feed tabs */}
-      <div className="pointer-events-auto flex justify-center">
-        <div className="flex items-center gap-1 rounded-full border border-white/10 bg-black/30 p-1 backdrop-blur-xl">
-          <button
-            onClick={() => setActiveTab("foryou")}
-            className={`rounded-full px-5 py-2 text-sm font-black transition ${
-              activeTab === "foryou"
-                ? "bg-white text-black shadow-lg"
-                : "text-white/65"
-            }`}
-          >
-            For You
-          </button>
-
-          <button
-            onClick={() => setActiveTab("following")}
-            className={`rounded-full px-5 py-2 text-sm font-black transition ${
-              activeTab === "following"
-                ? "bg-white text-black shadow-lg"
-                : "text-white/65"
-            }`}
-          >
-            Following
-          </button>
-        </div>
-      </div>
-
-      {showSearch && (
-        <div className="pointer-events-auto absolute left-4 right-4 top-20 rounded-2xl border border-white/10 bg-black/80 p-3 backdrop-blur-2xl">
-          <div className="flex items-center gap-2">
-            <Search size={18} className="text-cyan-300" />
-            <input
-              autoFocus
-              placeholder="Search videos..."
-              className="w-full bg-transparent text-sm text-white outline-none placeholder:text-white/40"
-              onKeyDown={(event) => {
-                if (event.key === "Escape") {
-                  setShowSearch(false);
-                }
-              }}
-            />
+      <div className="pointer-events-auto px-5 pt-4">
+        {/* HEADER */}
+        <div className="flex items-start justify-between">
+          {/* LEFT */}
+          <div className="flex min-w-0 items-start gap-4">
             <button
-              onClick={() => setShowSearch(false)}
-              className="text-xs font-bold text-white/60"
+              type="button"
+              onClick={() => router.back()}
+              aria-label="Menu"
+              className="mt-1 flex h-9 w-9 shrink-0 items-center justify-center text-white"
             >
-              Close
+              <Menu size={31} strokeWidth={2} />
+            </button>
+
+            <div className="min-w-0">
+              <div className="flex items-center gap-1">
+                <span className="text-[25px] font-extrabold leading-none tracking-tight">
+                  Jembee
+                </span>
+
+                <span className="text-[25px] font-extrabold leading-none tracking-tight text-cyan-300">
+                  Shorts
+                </span>
+
+                <Flame
+                  size={23}
+                  fill="currentColor"
+                  className="ml-0.5 text-orange-400"
+                />
+              </div>
+
+              <p className="mt-1 text-[13px] font-medium text-white/70">
+                Watch · Like · Earn
+              </p>
+            </div>
+          </div>
+
+          {/* RIGHT */}
+          <div className="flex items-center gap-2">
+            <button
+              type="button"
+              onClick={() => setShowSearch((v) => !v)}
+              aria-label="Search"
+              className="flex h-11 w-11 items-center justify-center rounded-full bg-black/20 backdrop-blur-md"
+            >
+              {showSearch ? <X size={25} /> : <Search size={25} />}
+            </button>
+
+            <button
+              type="button"
+              onClick={() => router.push("/followers")}
+              aria-label="Friends"
+              className="relative flex h-11 w-11 items-center justify-center rounded-full bg-black/20 backdrop-blur-md"
+            >
+              <UserPlus size={25} strokeWidth={2} />
+
+              <span className="absolute right-1 top-1 h-2.5 w-2.5 rounded-full bg-pink-500" />
+            </button>
+
+            <button
+              type="button"
+              onClick={() => router.push("/mlm/notifications")}
+              aria-label="Notifications"
+              className="relative flex h-11 w-11 items-center justify-center rounded-full bg-black/20 backdrop-blur-md"
+            >
+              <Bell size={25} strokeWidth={2} />
+
+              <span className="absolute -right-0.5 -top-0.5 flex h-5 min-w-5 items-center justify-center rounded-full bg-pink-500 px-1 text-[10px] font-extrabold">
+                3
+              </span>
             </button>
           </div>
         </div>
-      )}
+
+        {/* TABS + COINS */}
+        <div className="mt-4 flex items-center justify-center gap-3">
+          <div className="flex h-[52px] items-center rounded-full bg-black/20 p-1 backdrop-blur-md">
+            <button
+              type="button"
+              onClick={() => setActiveTab("foryou")}
+              className={`h-[44px] rounded-full px-7 text-[16px] font-bold ${
+                activeTab === "foryou"
+                  ? "bg-gradient-to-r from-cyan-400 to-teal-400 text-white shadow-[0_0_20px_rgba(34,211,238,0.35)]"
+                  : "text-white/80"
+              }`}
+            >
+              For You
+            </button>
+
+            <button
+              type="button"
+              onClick={() => setActiveTab("following")}
+              className={`h-[44px] rounded-full px-7 text-[16px] font-bold ${
+                activeTab === "following"
+                  ? "bg-gradient-to-r from-cyan-400 to-teal-400 text-white shadow-[0_0_20px_rgba(34,211,238,0.35)]"
+                  : "text-white/80"
+              }`}
+            >
+              Following
+            </button>
+          </div>
+
+          <button
+            type="button"
+            onClick={() => router.push("/mlm")}
+            className="flex h-[52px] items-center gap-1 rounded-full bg-black/30 px-4 backdrop-blur-md"
+          >
+            <Coins size={21} className="text-yellow-300" />
+
+            <span className="text-[17px] font-extrabold">
+              1,250
+            </span>
+
+            <ChevronRight
+              size={19}
+              className="text-white/70"
+            />
+          </button>
+        </div>
+
+        {/* SEARCH */}
+        {showSearch && (
+          <div className="mx-2 mt-3 rounded-2xl border border-white/10 bg-black/75 p-3 backdrop-blur-xl">
+            <div className="flex items-center gap-2">
+              <Search
+                size={19}
+                className="text-cyan-300"
+              />
+
+              <input
+                autoFocus
+                type="search"
+                placeholder="Search Shorts..."
+                className="w-full bg-transparent text-sm text-white outline-none placeholder:text-white/40"
+              />
+            </div>
+          </div>
+        )}
+      </div>
     </header>
   );
 }
