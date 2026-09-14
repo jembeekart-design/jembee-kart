@@ -103,29 +103,6 @@ export default function VideoInfo({
         <div className="pointer-events-auto shrink-0">
           <FollowButton targetUid={creatorId} />
         </div>
-
-        {/* MORE */}
-        <button
-          type="button"
-          aria-label="More options"
-          className="
-            pointer-events-auto
-            ml-auto
-            flex
-            h-10
-            w-8
-            shrink-0
-            items-center
-            justify-center
-            text-white
-            drop-shadow-[0_2px_5px_rgba(0,0,0,0.9)]
-          "
-        >
-          <MoreVertical
-            size={26}
-            strokeWidth={2.4}
-          />
-        </button>
       </div>
 
       {/* CAPTION */}

@@ -33,15 +33,6 @@ export default function ProductionHeader({
         <div className="flex items-start justify-between">
           {/* LEFT */}
           <div className="flex min-w-0 items-start gap-4">
-            <button
-              type="button"
-              onClick={() => router.back()}
-              aria-label="Menu"
-              className="mt-1 flex h-9 w-9 shrink-0 items-center justify-center text-white"
-            >
-              <Menu size={31} strokeWidth={2} />
-            </button>
-
             <div className="min-w-0">
               <div className="flex items-center gap-1">
                 <span className="text-[25px] font-extrabold leading-none tracking-tight">
@@ -58,10 +49,6 @@ export default function ProductionHeader({
                   className="ml-0.5 text-orange-400"
                 />
               </div>
-
-              <p className="mt-1 text-[13px] font-medium text-white/70">
-                Watch · Like · Earn
-              </p>
             </div>
           </div>
 
@@ -102,13 +89,13 @@ export default function ProductionHeader({
           </div>
         </div>
 
-        {/* TABS + COINS */}
+        {/* TABS */}
         <div className="mt-4 flex items-center justify-center gap-3">
           <div className="flex h-[52px] items-center rounded-full bg-black/20 p-1 backdrop-blur-md">
             <button
               type="button"
               onClick={() => setActiveTab("foryou")}
-              className={`h-[44px] rounded-full px-7 text-[16px] font-bold ${
+              className={`h-[44px] rounded-full px-7 text-[14px] font-bold ${
                 activeTab === "foryou"
                   ? "bg-gradient-to-r from-cyan-400 to-teal-400 text-white shadow-[0_0_20px_rgba(34,211,238,0.35)]"
                   : "text-white/80"
@@ -120,7 +107,7 @@ export default function ProductionHeader({
             <button
               type="button"
               onClick={() => setActiveTab("following")}
-              className={`h-[44px] rounded-full px-7 text-[16px] font-bold ${
+              className={`h-[44px] rounded-full px-7 text-[14px] font-bold ${
                 activeTab === "following"
                   ? "bg-gradient-to-r from-cyan-400 to-teal-400 text-white shadow-[0_0_20px_rgba(34,211,238,0.35)]"
                   : "text-white/80"
@@ -129,23 +116,6 @@ export default function ProductionHeader({
               Following
             </button>
           </div>
-
-          <button
-            type="button"
-            onClick={() => router.push("/mlm")}
-            className="flex h-[52px] items-center gap-1 rounded-full bg-black/30 px-4 backdrop-blur-md"
-          >
-            <Coins size={21} className="text-yellow-300" />
-
-            <span className="text-[17px] font-extrabold">
-              1,250
-            </span>
-
-            <ChevronRight
-              size={19}
-              className="text-white/70"
-            />
-          </button>
         </div>
 
         {/* SEARCH */}
