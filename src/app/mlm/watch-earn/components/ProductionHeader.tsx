@@ -2,7 +2,15 @@
 
 import React, { useState } from "react";
 import { useRouter } from "next/navigation";
-import { ArrowLeft, Search, Users, Bell, Flame } from "lucide-react";
+import {
+  ArrowLeft,
+  Search,
+  Users,
+  Bell,
+  Flame,
+  Coins,
+  Plus,
+} from "lucide-react";
 import { motion } from "framer-motion";
 
 export default function ProductionHeader({
@@ -16,66 +24,84 @@ export default function ProductionHeader({
   const [showSearch, setShowSearch] = useState(false);
 
   return (
-    <>
-      <header
-        className="pointer-events-auto fixed inset-x-0 top-0 z-50 flex flex-col pt-safe bg-transparent translate-y-4"
-        style={{ paddingTop: "env(safe-area-inset-top)" }}
-      >
-        <div className="flex items-center justify-between px-4 h-[56px]">
-          <div className="flex items-center gap-3">
-            <button
-              onClick={() => router.back()}
-              aria-label="Back"
-              className="p-2 rounded-full bg-white/6 backdrop-blur-sm border border-white/6 shadow-sm"
-            >
-              <ArrowLeft size={18} />
-            </button>
+    <header
+      className="pointer-events-none fixed inset-x-0 top-0 z-50 pt-safe"
+      style={{ paddingTop: "env(safe-area-inset-top)" }}
+    >
+      {/* Top glass bar */}
+      <div className="pointer-events-auto flex h-16 items-center justify-between px-4">
+        <div className="flex items-center gap-2">
+          <button
+            onClick={() => router.back()}
+            aria-label="Back"
+            className="flex h-10 w-10 items-center justify-center rounded-full border border-white/15 bg-black/35 text-white backdrop-blur-xl"
+          >
+            <ArrowLeft size={20} />
+          </button>
 
-            <h2 className="text-base font-extrabold tracking-tight flex items-center gap-2">
+          <div className="flex items-center gap-2 rounded-full border border-white/10 bg-black/30 px-3 py-2 backdrop-blur-xl">
+            <span className="text-[15px] font-black tracking-tight text-white">
               Jembee Shorts
-              <motion.span
-                initial={{ scale: 0.95 }}
-                animate={{ scale: [1, 1.02, 1] }}
-                transition={{ repeat: Infinity, duration: 2 }}
-                className="text-amber-400"
-              >
-                <Flame size={14} />
-              </motion.span>
-            </h2>
+            </span>
+
+            <motion.span
+              animate={{ scale: [1, 1.12, 1] }}
+              transition={{
+                repeat: Infinity,
+                duration: 2,
+              }}
+              className="text-orange-400"
+            >
+              <Flame size={17} fill="currentColor" />
+            </motion.span>
           </div>
-
-          <nav className="flex items-center gap-2">
-            <button
-              onClick={() => setShowSearch(true)}
-              aria-label="Search"
-              className="p-2 rounded-full bg-white/5 backdrop-blur-sm"
-            >
-              <Search size={16} />
-            </button>
-
-            <button
-              onClick={() => router.push("/followers")}
-              aria-label="Friends"
-              className="p-2 rounded-full bg-white/5 backdrop-blur-sm"
-            >
-              <Users size={16} />
-            </button>
-
-            <button
-              onClick={() => router.push("/mlm/notifications")}
-              aria-label="Notifications"
-              className="p-2 rounded-full bg-white/5 backdrop-blur-sm"
-            >
-              <Bell size={16} />
-            </button>
-          </nav>
         </div>
 
-        <div className="flex justify-center gap-4 py-2 bg-transparent">
+        <div className="flex items-center gap-2">
+          <div className="hidden sm:flex items-center gap-1 rounded-full border border-cyan-300/20 bg-cyan-400/10 px-3 py-2 text-xs font-black text-cyan-100 backdrop-blur-xl">
+            <Coins size={15} />
+            <span>1,250</span>
+          </div>
+
+          <button
+            onClick={() => setShowSearch(true)}
+            aria-label="Search"
+            className="flex h-10 w-10 items-center justify-center rounded-full border border-white/10 bg-black/35 text-white backdrop-blur-xl"
+          >
+            <Search size={19} />
+          </button>
+
+          <button
+            onClick={() => router.push("/followers")}
+            aria-label="Friends"
+            className="flex h-10 w-10 items-center justify-center rounded-full border border-white/10 bg-black/35 text-white backdrop-blur-xl"
+          >
+            <Users size={19} />
+          </button>
+
+          <button
+            onClick={() => router.push("/mlm/notifications")}
+            aria-label="Notifications"
+            className="relative flex h-10 w-10 items-center justify-center rounded-full border border-white/10 bg-black/35 text-white backdrop-blur-xl"
+          >
+            <Bell size={19} />
+
+            <span className="absolute right-1 top-1 flex h-4 min-w-4 items-center justify-center rounded-full bg-cyan-400 px-1 text-[9px] font-black text-black">
+              3
+            </span>
+          </button>
+        </div>
+      </div>
+
+      {/* Feed tabs */}
+      <div className="pointer-events-auto flex justify-center">
+        <div className="flex items-center gap-1 rounded-full border border-white/10 bg-black/30 p-1 backdrop-blur-xl">
           <button
             onClick={() => setActiveTab("foryou")}
-            className={`font-black ${
-              activeTab === "foryou" ? "text-white" : "text-gray-400"
+            className={`rounded-full px-5 py-2 text-sm font-black transition ${
+              activeTab === "foryou"
+                ? "bg-white text-black shadow-lg"
+                : "text-white/65"
             }`}
           >
             For You
@@ -83,14 +109,40 @@ export default function ProductionHeader({
 
           <button
             onClick={() => setActiveTab("following")}
-            className={`font-black ${
-              activeTab === "following" ? "text-white" : "text-gray-400"
+            className={`rounded-full px-5 py-2 text-sm font-black transition ${
+              activeTab === "following"
+                ? "bg-white text-black shadow-lg"
+                : "text-white/65"
             }`}
           >
             Following
           </button>
         </div>
-      </header>
-    </>
+      </div>
+
+      {showSearch && (
+        <div className="pointer-events-auto absolute left-4 right-4 top-20 rounded-2xl border border-white/10 bg-black/80 p-3 backdrop-blur-2xl">
+          <div className="flex items-center gap-2">
+            <Search size={18} className="text-cyan-300" />
+            <input
+              autoFocus
+              placeholder="Search videos..."
+              className="w-full bg-transparent text-sm text-white outline-none placeholder:text-white/40"
+              onKeyDown={(event) => {
+                if (event.key === "Escape") {
+                  setShowSearch(false);
+                }
+              }}
+            />
+            <button
+              onClick={() => setShowSearch(false)}
+              className="text-xs font-bold text-white/60"
+            >
+              Close
+            </button>
+          </div>
+        </div>
+      )}
+    </header>
   );
 }

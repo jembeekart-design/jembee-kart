@@ -7,7 +7,6 @@ import {
   MessageCircle,
   Share2,
   Bookmark,
-  Coins,
   Volume2,
   VolumeX,
 } from "lucide-react";
@@ -18,13 +17,11 @@ export interface VideoActionsProps {
   shares: number;
   coins: number;
   isMuted: boolean;
-
   onLike: () => void;
   onComment: () => void;
   onShare: () => void;
   onSave: () => void;
   toggleMute: () => void;
-
   isLiked: boolean;
   isSaved: boolean;
 }
@@ -33,7 +30,6 @@ export default function VideoActions({
   likes,
   comments,
   shares,
-  coins,
   isMuted,
   onLike,
   onComment,
@@ -48,34 +44,44 @@ export default function VideoActions({
       key: "like",
       icon: (
         <Heart
-          size={22}
-          className={isLiked ? "fill-red-500 text-red-500" : ""}
+          size={25}
+          strokeWidth={2}
+          className={
+            isLiked
+              ? "fill-red-500 text-red-500"
+              : "text-white"
+          }
         />
       ),
-      label: isLiked ? "Unlike" : "Like",
       value: likes,
+      label: isLiked ? "Unlike" : "Like",
       onClick: onLike,
     },
     {
       key: "comment",
-      icon: <MessageCircle size={22} />,
-      label: "Comments",
+      icon: <MessageCircle size={25} strokeWidth={2} />,
       value: comments,
+      label: "Comments",
       onClick: onComment,
     },
     {
       key: "share",
-      icon: <Share2 size={22} />,
-      label: "Share",
+      icon: <Share2 size={25} strokeWidth={2} />,
       value: shares,
+      label: "Share",
       onClick: onShare,
     },
     {
       key: "save",
       icon: (
         <Bookmark
-          size={22}
-          className={isSaved ? "fill-current" : ""}
+          size={25}
+          strokeWidth={2}
+          className={
+            isSaved
+              ? "fill-white text-white"
+              : "text-white"
+          }
         />
       ),
       label: isSaved ? "Unsave" : "Save",
@@ -83,7 +89,11 @@ export default function VideoActions({
     },
     {
       key: "mute",
-      icon: isMuted ? <VolumeX size={22} /> : <Volume2 size={22} />,
+      icon: isMuted ? (
+        <VolumeX size={25} strokeWidth={2} />
+      ) : (
+        <Volume2 size={25} strokeWidth={2} />
+      ),
       label: isMuted ? "Unmute" : "Mute",
       onClick: toggleMute,
     },
@@ -92,24 +102,25 @@ export default function VideoActions({
   return (
     <aside
       className="
+        pointer-events-auto
         absolute
-        right-4
-        bottom-[calc(7rem+env(safe-area-inset-bottom))]
-        z-30
+        right-3
+        bottom-[calc(8.5rem+env(safe-area-inset-bottom))]
+        z-40
         flex
         flex-col
         items-center
-        gap-4
+        gap-3
       "
     >
-      {actions.map((action) => (
+      {actions.map((action, index) => (
         <div
           key={action.key}
-          className="flex flex-col items-center gap-1"
+          className="flex flex-col items-center"
         >
           <motion.button
             type="button"
-            whileTap={{ scale: 0.9 }}
+            whileTap={{ scale: 0.88 }}
             aria-label={action.label}
             title={action.label}
             onClick={(event) => {
@@ -117,33 +128,46 @@ export default function VideoActions({
               event.stopPropagation();
               action.onClick();
             }}
-            className="
+            className={`
+              relative
+              flex
               h-12
               w-12
-              flex
               items-center
               justify-center
               rounded-full
               border
-              border-white/20
-              bg-black/20
-              text-white
-              backdrop-blur-md
-              transition
-              active:bg-black/40
-            "
+              backdrop-blur-xl
+              shadow-lg
+              transition-all
+              ${
+                index === 0 && isLiked
+                  ? "border-red-400/60 bg-red-500/20"
+                  : "border-white/20 bg-black/35"
+              }
+              active:bg-white/20
+            `}
           >
             {action.icon}
           </motion.button>
 
           {action.value !== undefined && (
-            <span className="text-xs font-medium text-white drop-shadow">
+            <span
+              className="
+                mt-1
+                min-w-[24px]
+                text-center
+                text-[12px]
+                font-bold
+                text-white
+                drop-shadow-[0_1px_3px_rgba(0,0,0,0.8)]
+              "
+            >
               {action.value}
             </span>
           )}
         </div>
       ))}
-
     </aside>
   );
 }
