@@ -7,6 +7,7 @@ import {
   MessageCircle,
   Share2,
   Bookmark,
+  Coins,
   Volume2,
   VolumeX,
 } from "lucide-react";
@@ -17,11 +18,13 @@ export interface VideoActionsProps {
   shares: number;
   coins: number;
   isMuted: boolean;
+
   onLike: () => void;
   onComment: () => void;
   onShare: () => void;
   onSave: () => void;
   toggleMute: () => void;
+
   isLiked: boolean;
   isSaved: boolean;
 }
@@ -30,6 +33,7 @@ export default function VideoActions({
   likes,
   comments,
   shares,
+  coins,
   isMuted,
   onLike,
   onComment,
@@ -44,71 +48,54 @@ export default function VideoActions({
       key: "like",
       icon: (
         <Heart
-          size={27}
-          strokeWidth={2}
-          className={
-            isLiked
-              ? "fill-white text-white"
-              : "text-white"
-          }
+          size={22}
+          className={isLiked ? "fill-red-500 text-red-500" : ""}
         />
       ),
-      value: likes,
       label: isLiked ? "Unlike" : "Like",
+      value: likes,
       onClick: onLike,
     },
     {
       key: "comment",
-      icon: (
-        <MessageCircle
-          size={27}
-          strokeWidth={2}
-          className="text-white"
-        />
-      ),
-      value: comments,
+      icon: <MessageCircle size={22} />,
       label: "Comments",
+      value: comments,
       onClick: onComment,
     },
     {
       key: "share",
-      icon: (
-        <Share2
-          size={27}
-          strokeWidth={2}
-          className="text-white"
-        />
-      ),
-      value: shares,
+      icon: <Share2 size={22} />,
       label: "Share",
+      value: shares,
       onClick: onShare,
     },
     {
       key: "save",
       icon: (
         <Bookmark
-          size={27}
-          strokeWidth={2}
-          className={
-            isSaved
-              ? "fill-white text-white"
-              : "text-white"
-          }
+          size={22}
+          className={isSaved ? "fill-current" : ""}
         />
       ),
       label: isSaved ? "Unsave" : "Save",
       onClick: onSave,
+    },
+    {
+      key: "mute",
+      icon: isMuted ? <VolumeX size={22} /> : <Volume2 size={22} />,
+      label: isMuted ? "Unmute" : "Mute",
+      onClick: toggleMute,
     },
   ];
 
   return (
     <aside
       className="
-        pointer-events-auto
         absolute
         right-4
-        bottom-[calc(9.6rem+env(safe-area-inset-bottom))]
-        z-40
+        bottom-[calc(7rem+env(safe-area-inset-bottom))]
+        z-30
         flex
         flex-col
         items-center
@@ -118,11 +105,11 @@ export default function VideoActions({
       {actions.map((action) => (
         <div
           key={action.key}
-          className="flex flex-col items-center"
+          className="flex flex-col items-center gap-1"
         >
           <motion.button
             type="button"
-            whileTap={{ scale: 0.88 }}
+            whileTap={{ scale: 0.9 }}
             aria-label={action.label}
             title={action.label}
             onClick={(event) => {
@@ -131,109 +118,32 @@ export default function VideoActions({
               action.onClick();
             }}
             className="
+              h-12
+              w-12
               flex
-              h-[46px]
-              w-[46px]
               items-center
               justify-center
               rounded-full
               border
-              border-white/35
+              border-white/20
               bg-black/20
               text-white
-              backdrop-blur-[2px]
-              shadow-[0_2px_8px_rgba(0,0,0,0.45)]
-              transition-transform
-              active:bg-white/10
+              backdrop-blur-md
+              transition
+              active:bg-black/40
             "
           >
             {action.icon}
           </motion.button>
 
           {action.value !== undefined && (
-            <span
-              className="
-                mt-1
-                min-w-[18px]
-                text-center
-                text-[13px]
-                font-medium
-                leading-none
-                text-white
-                drop-shadow-[0_2px_5px_rgba(0,0,0,0.9)]
-              "
-            >
+            <span className="text-xs font-medium text-white drop-shadow">
               {action.value}
             </span>
           )}
         </div>
       ))}
 
-      {/* MORE */}
-      <motion.button
-        type="button"
-        whileTap={{ scale: 0.88 }}
-        aria-label="More options"
-        title="More options"
-        onClick={(event) => {
-          event.preventDefault();
-          event.stopPropagation();
-        }}
-        className="
-          flex
-          h-[46px]
-          w-[46px]
-          items-center
-          justify-center
-          rounded-full
-          border
-          border-white/35
-          bg-black/20
-          text-white
-          backdrop-blur-[2px]
-          shadow-[0_2px_8px_rgba(0,0,0,0.45)]
-        "
-      >
-        <span className="flex flex-col items-center gap-[3px]">
-          <span className="h-[4px] w-[4px] rounded-full bg-white" />
-          <span className="h-[4px] w-[4px] rounded-full bg-white" />
-          <span className="h-[4px] w-[4px] rounded-full bg-white" />
-        </span>
-      </motion.button>
-
-      {/* SOUND */}
-      <motion.button
-        type="button"
-        whileTap={{ scale: 0.88 }}
-        aria-label={isMuted ? "Unmute" : "Mute"}
-        title={isMuted ? "Unmute" : "Mute"}
-        onClick={(event) => {
-          event.preventDefault();
-          event.stopPropagation();
-          toggleMute();
-        }}
-        className="
-          mt-1
-          flex
-          h-[50px]
-          w-[50px]
-          items-center
-          justify-center
-          rounded-full
-          border-2
-          border-cyan-400
-          bg-black/20
-          text-white
-          backdrop-blur-[2px]
-          shadow-[0_0_14px_rgba(34,211,238,0.5)]
-        "
-      >
-        {isMuted ? (
-          <VolumeX size={27} strokeWidth={2} />
-        ) : (
-          <Volume2 size={27} strokeWidth={2} />
-        )}
-      </motion.button>
     </aside>
   );
 }

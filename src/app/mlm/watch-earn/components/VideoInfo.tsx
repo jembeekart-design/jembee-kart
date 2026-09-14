@@ -1,9 +1,7 @@
 "use client";
-
 import {
   Music2,
-  BadgeCheck,
-  MoreVertical,
+  BadgeCheck
 } from "lucide-react";
 import FollowButton from "@/components/social/FollowButton";
 
@@ -28,198 +26,62 @@ export default function VideoInfo({
   hashtags,
   music,
   verified,
-  originalVideoId,
+  originalVideoId
 }: VideoInfoProps) {
-  const displayLabel =
-    displayName || username || "Unknown User";
+  const displayLabel = displayName || username || "Unknown User";
 
   return (
     <div
-      className="
-        pointer-events-none
-        absolute
-        bottom-[calc(6.6rem+env(safe-area-inset-bottom))]
-        left-5
-        right-16
-        z-40
-        text-white
-      "
+      className="absolute bottom-[calc(10rem+env(safe-area-inset-bottom))] left-4 z-40 max-w-[72%] text-[var(--button-text-color)] pointer-events-none"
+      aria-hidden={false}
     >
-      {/* CREATOR ROW — REFERENCE STYLE */}
+      {/* Compact user row */}
       <div className="flex items-center gap-3">
-        {/* AVATAR */}
-        <div
-          className="
-            h-[54px]
-            w-[54px]
-            shrink-0
-            rounded-full
-            bg-gradient-to-br
-            from-cyan-300
-            via-cyan-400
-            to-orange-400
-            p-[2px]
-            shadow-[0_0_12px_rgba(34,211,238,0.4)]
-          "
-        >
-          <div className="h-full w-full rounded-full bg-black p-[2px]">
-            {photoURL ? (
-              <img
-                src={photoURL}
-                alt={displayLabel}
-                className="h-full w-full rounded-full object-cover"
-              />
-            ) : (
-              <div className="h-full w-full rounded-full bg-zinc-800" />
-            )}
-          </div>
+        <div className="h-10 w-10 rounded-full bg-gradient-to-br from-pink-500 to-yellow-400 p-0.5">
+          {photoURL ? (
+            <img src={photoURL} alt={displayLabel} className="h-full w-full rounded-full object-cover" />
+          ) : (
+            <div className="h-full w-full rounded-full bg-[var(--color-card-background)]" aria-hidden />
+          )}
         </div>
 
-        {/* USERNAME */}
-        <div className="min-w-0 max-w-[48vw]">
-          <div className="flex items-center gap-1">
-            <span
-              className="
-                truncate
-                text-[16px]
-                font-extrabold
-                text-white
-                drop-shadow-[0_2px_5px_rgba(0,0,0,0.9)]
-              "
-            >
-              {displayLabel}
-            </span>
-
+        <div className="flex flex-col leading-tight">
+          <div className="flex items-center gap-2">
+            <span className="text-sm font-extrabold">{displayLabel}</span>
             {verified && (
-              <BadgeCheck
-                size={16}
-                className="shrink-0 text-cyan-300"
-              />
+              <BadgeCheck size={14} className="text-blue-400" aria-label="Verified account" />
             )}
+            <div className="pointer-events-auto">
+              <FollowButton targetUid={creatorId} />
+            </div>
           </div>
-        </div>
 
-        {/* FOLLOW — SAME ROW */}
-        <div className="pointer-events-auto shrink-0">
-          <FollowButton targetUid={creatorId} />
+          <span className="text-xs text-[var(--text-primary)]/80 truncate max-w-[40vw]">{music}</span>
+          {originalVideoId && (
+            <a href={`/mlm/watch-earn/original/${originalVideoId}`} className="text-xs font-bold text-pink-500 pointer-events-auto">
+              Created from Original
+            </a>
+          )}
         </div>
-
-        {/* MORE */}
-        <button
-          type="button"
-          aria-label="More options"
-          className="
-            pointer-events-auto
-            ml-auto
-            flex
-            h-10
-            w-8
-            shrink-0
-            items-center
-            justify-center
-            text-white
-            drop-shadow-[0_2px_5px_rgba(0,0,0,0.9)]
-          "
-        >
-          <MoreVertical
-            size={26}
-            strokeWidth={2.4}
-          />
-        </button>
       </div>
 
-      {/* CAPTION */}
+      {/* Caption (compact) */}
       {caption && (
-        <p
-          className="
-            pointer-events-auto
-            mt-3
-            text-[15px]
-            font-medium
-            leading-5
-            text-white
-            drop-shadow-[0_2px_5px_rgba(0,0,0,0.9)]
-          "
-        >
+        <p className="mt-2 text-sm leading-5 max-w-[72%] text-[var(--button-text-color)]/90 pointer-events-auto">
           {caption}
         </p>
       )}
 
-      {/* HASHTAGS */}
+      {/* Hashtags (compact single-line overflow) */}
       {hashtags && hashtags.length > 0 && (
-        <div
-          className="
-            pointer-events-auto
-            mt-1
-            flex
-            flex-wrap
-            gap-x-2
-            gap-y-0.5
-          "
-        >
-          {hashtags.slice(0, 5).map((tag) => (
-            <span
-              key={tag}
-              className="
-                text-[14px]
-                font-bold
-                text-cyan-300
-                drop-shadow-[0_2px_4px_rgba(0,0,0,0.9)]
-              "
-            >
-              #{tag}
-            </span>
+        <div className="mt-2 flex items-center gap-2 overflow-hidden">
+          {hashtags.slice(0, 3).map((tag) => (
+            <span key={tag} className="text-xs font-semibold text-[var(--color-primary-button)]">#{tag}</span>
           ))}
+          {hashtags.length > 3 && (
+            <span className="text-xs text-[var(--text-primary)]/70">+{hashtags.length - 3}</span>
+          )}
         </div>
-      )}
-
-      {/* ORIGINAL SOUND — REFERENCE STYLE */}
-      <div
-        className="
-          pointer-events-auto
-          mt-3
-          inline-flex
-          max-w-[94%]
-          items-center
-          gap-2
-          rounded-full
-          bg-black/45
-          px-4
-          py-2.5
-          backdrop-blur-md
-        "
-      >
-        <Music2
-          size={20}
-          strokeWidth={2.2}
-          className="shrink-0 text-white"
-        />
-
-        <span className="truncate text-[13px] font-medium text-white/85">
-          {music || "Original Sound - Jembee Shorts"}
-        </span>
-      </div>
-
-      {/* ORIGINAL VIDEO */}
-      {originalVideoId && (
-        <a
-          href={`/mlm/watch-earn/original/${originalVideoId}`}
-          className="
-            pointer-events-auto
-            mt-2
-            inline-block
-            rounded-full
-            bg-black/45
-            px-3
-            py-1.5
-            text-[11px]
-            font-bold
-            text-cyan-200
-            backdrop-blur-md
-          "
-        >
-          Created from Original
-        </a>
       )}
     </div>
   );
