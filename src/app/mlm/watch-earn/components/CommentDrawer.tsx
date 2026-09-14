@@ -64,9 +64,9 @@ export default function CommentDrawer({ open, onClose, videoId, onCommentAdded }
         right-0
         z-[999]
         rounded-t-[35px]
-        bg-[var(--color-primary-button)]
+        bg-gray-950/80
+        backdrop-blur-md
         transition-all
-        duration-300
 
         ${
           open
