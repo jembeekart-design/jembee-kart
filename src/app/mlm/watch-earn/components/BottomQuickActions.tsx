@@ -1,7 +1,13 @@
 "use client";
 
 import React from "react";
-import { UploadCloud } from "lucide-react";
+import {
+  Home,
+  Compass,
+  Plus,
+  WalletCards,
+  User,
+} from "lucide-react";
 import { useRouter } from "next/navigation";
 import { WatchVideo } from "../services/watchVideos.service";
 import { useRequireAuth } from "@/hooks/useRequireAuth";
@@ -14,68 +20,203 @@ export default function BottomQuickActions({
   const router = useRouter();
   const { requireAuth } = useRequireAuth();
 
+  const go = (path: string) => {
+    requireAuth(() => router.push(path));
+  };
+
   return (
-    <div
+    <nav
       className="
         pointer-events-none
         fixed
         inset-x-0
-        bottom-[calc(1rem+env(safe-area-inset-bottom))]
+        bottom-0
         z-50
-        flex
-        justify-center
-        px-5
+        px-4
+        pb-[calc(0.65rem+env(safe-area-inset-bottom))]
       "
     >
-      <button
-        type="button"
-        onClick={() =>
-          requireAuth(() =>
-            router.push("/mlm/watch-earn/upload")
-          )
-        }
-        aria-label="Upload video"
+      <div
         className="
           pointer-events-auto
+          relative
+          mx-auto
           flex
-          min-w-[190px]
-          items-center
-          justify-center
-          gap-3
-          rounded-full
+          h-[88px]
+          w-full
+          max-w-[680px]
+          items-end
+          justify-between
+          rounded-[28px]
           border
-          border-cyan-300/40
-          bg-black/45
-          px-8
-          py-4
-          text-[16px]
-          font-black
-          text-white
-          shadow-[0_0_28px_rgba(34,211,238,0.28)]
-          backdrop-blur-2xl
-          transition-all
-          active:scale-95
-          active:bg-cyan-400/20
+          border-white/15
+          bg-black/50
+          px-3
+          pb-3
+          backdrop-blur-xl
+          shadow-[0_-2px_24px_rgba(0,0,0,0.35)]
         "
       >
-        <span
+        {/* HOME */}
+        <button
+          type="button"
+          onClick={() => go("/mlm/watch-earn")}
           className="
             flex
-            h-9
-            w-9
+            w-[18%]
+            flex-col
             items-center
-            justify-center
-            rounded-full
-            bg-cyan-400
-            text-black
-            shadow-[0_0_18px_rgba(34,211,238,0.6)]
+            gap-1
+            text-white
           "
         >
-          <UploadCloud size={21} strokeWidth={2.5} />
-        </span>
+          <Home
+            size={30}
+            strokeWidth={2.3}
+            className="
+              fill-cyan-300
+              text-cyan-300
+              drop-shadow-[0_0_9px_rgba(34,211,238,0.8)]
+            "
+          />
 
-        <span>Upload</span>
-      </button>
-    </div>
+          <span className="text-[14px] font-semibold">
+            Home
+          </span>
+        </button>
+
+        {/* EXPLORE */}
+        <button
+          type="button"
+          onClick={() => go("/mlm/watch-earn")}
+          className="
+            flex
+            w-[18%]
+            flex-col
+            items-center
+            gap-1
+            text-white/90
+          "
+        >
+          <Compass
+            size={30}
+            strokeWidth={2.1}
+          />
+
+          <span className="text-[14px] font-semibold">
+            Explore
+          </span>
+        </button>
+
+        {/* UPLOAD */}
+        <button
+          type="button"
+          aria-label="Upload video"
+          onClick={() =>
+            requireAuth(() =>
+              router.push("/mlm/watch-earn/upload")
+            )
+          }
+          className="
+            relative
+            -mt-[38px]
+            flex
+            w-[20%]
+            flex-col
+            items-center
+            gap-1
+            text-white
+          "
+        >
+          <span
+            className="
+              flex
+              h-[70px]
+              w-[70px]
+              items-center
+              justify-center
+              rounded-full
+              border-[3px]
+              border-cyan-300
+              bg-gradient-to-br
+              from-cyan-300
+              via-cyan-400
+              to-teal-400
+              text-black
+              shadow-[0_0_30px_rgba(34,211,238,0.8)]
+            "
+          >
+            <Plus
+              size={45}
+              strokeWidth={1.7}
+            />
+          </span>
+
+          <span className="text-[14px] font-bold">
+            Upload
+          </span>
+        </button>
+
+        {/* EARN */}
+        <button
+          type="button"
+          onClick={() => go("/mlm")}
+          className="
+            relative
+            flex
+            w-[18%]
+            flex-col
+            items-center
+            gap-1
+            text-white/90
+          "
+        >
+          <WalletCards
+            size={30}
+            strokeWidth={2.1}
+          />
+
+          <span
+            className="
+              absolute
+              right-[22%]
+              top-[-2px]
+              h-[10px]
+              w-[10px]
+              rounded-full
+              bg-pink-500
+              shadow-[0_0_8px_rgba(236,72,153,0.9)]
+            "
+          />
+
+          <span className="text-[14px] font-semibold">
+            Earn
+          </span>
+        </button>
+
+        {/* PROFILE */}
+        <button
+          type="button"
+          onClick={() => go("/profile")}
+          className="
+            flex
+            w-[18%]
+            flex-col
+            items-center
+            gap-1
+            text-white/90
+          "
+        >
+          <User
+            size={30}
+            strokeWidth={2.1}
+          />
+
+          <span className="text-[14px] font-semibold">
+            Profile
+          </span>
+        </button>
+      </div>
+    </nav>
   );
 }
