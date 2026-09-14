@@ -5,6 +5,12 @@ function getCloudinaryClient() {
   const cloudName = process.env.CLOUDINARY_CLOUD_NAME?.trim();
   const apiKey = process.env.CLOUDINARY_API_KEY?.trim();
   const apiSecret = process.env.CLOUDINARY_API_SECRET?.trim();
+  console.log("[CloudinaryEnvCheck]", {
+    cloudName: Boolean(cloudName),
+    apiKey: Boolean(apiKey),
+    apiSecret: Boolean(apiSecret),
+    nodeEnv: process.env.NODE_ENV,
+  });
 
   if (!cloudName || !apiKey || !apiSecret) {
     throw new Error(
