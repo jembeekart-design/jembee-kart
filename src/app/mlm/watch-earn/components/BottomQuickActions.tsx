@@ -147,7 +147,7 @@ export default function BottomQuickActions({
             "
           >
             <Plus
-              size={45}
+              size={38}
               strokeWidth={1.7}
             />
           </span>

@@ -44,7 +44,7 @@ export default function VideoActions({
       key: "like",
       icon: (
         <Heart
-          size={30}
+          size={27}
           strokeWidth={2}
           className={
             isLiked
@@ -61,7 +61,7 @@ export default function VideoActions({
       key: "comment",
       icon: (
         <MessageCircle
-          size={29}
+          size={27}
           strokeWidth={2}
           className="text-white"
         />
@@ -74,7 +74,7 @@ export default function VideoActions({
       key: "share",
       icon: (
         <Share2
-          size={29}
+          size={27}
           strokeWidth={2}
           className="text-white"
         />
@@ -87,7 +87,7 @@ export default function VideoActions({
       key: "save",
       icon: (
         <Bookmark
-          size={29}
+          size={27}
           strokeWidth={2}
           className={
             isSaved
@@ -132,8 +132,8 @@ export default function VideoActions({
             }}
             className="
               flex
-              h-[52px]
-              w-[52px]
+              h-[46px]
+              w-[46px]
               items-center
               justify-center
               rounded-full
@@ -181,8 +181,8 @@ export default function VideoActions({
         }}
         className="
           flex
-          h-[52px]
-          w-[52px]
+          h-[46px]
+          w-[46px]
           items-center
           justify-center
           rounded-full
@@ -215,8 +215,8 @@ export default function VideoActions({
         className="
           mt-1
           flex
-          h-[56px]
-          w-[56px]
+          h-[50px]
+          w-[50px]
           items-center
           justify-center
           rounded-full
@@ -229,9 +229,9 @@ export default function VideoActions({
         "
       >
         {isMuted ? (
-          <VolumeX size={30} strokeWidth={2} />
+          <VolumeX size={27} strokeWidth={2} />
         ) : (
-          <Volume2 size={30} strokeWidth={2} />
+          <Volume2 size={27} strokeWidth={2} />
         )}
       </motion.button>
     </aside>

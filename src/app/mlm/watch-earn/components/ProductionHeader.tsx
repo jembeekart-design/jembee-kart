@@ -3,7 +3,6 @@
 import React, { useState } from "react";
 import { useRouter } from "next/navigation";
 import {
-  Menu,
   Search,
   UserPlus,
   Bell,
@@ -33,16 +32,7 @@ export default function ProductionHeader({
         <div className="flex items-start justify-between">
           {/* LEFT */}
           <div className="flex min-w-0 items-start gap-4">
-            <button
-              type="button"
-              onClick={() => router.back()}
-              aria-label="Menu"
-              className="mt-1 flex h-9 w-9 shrink-0 items-center justify-center text-white"
-            >
-              <Menu size={31} strokeWidth={2} />
-            </button>
-
-            <div className="min-w-0">
+<div className="min-w-0">
               <div className="flex items-center gap-1">
                 <span className="text-[25px] font-extrabold leading-none tracking-tight">
                   Jembee
@@ -108,7 +98,7 @@ export default function ProductionHeader({
             <button
               type="button"
               onClick={() => setActiveTab("foryou")}
-              className={`h-[44px] rounded-full px-7 text-[16px] font-bold ${
+              className={`h-[44px] rounded-full px-7 text-[14px] font-bold ${
                 activeTab === "foryou"
                   ? "bg-gradient-to-r from-cyan-400 to-teal-400 text-white shadow-[0_0_20px_rgba(34,211,238,0.35)]"
                   : "text-white/80"
@@ -120,7 +110,7 @@ export default function ProductionHeader({
             <button
               type="button"
               onClick={() => setActiveTab("following")}
-              className={`h-[44px] rounded-full px-7 text-[16px] font-bold ${
+              className={`h-[44px] rounded-full px-7 text-[14px] font-bold ${
                 activeTab === "following"
                   ? "bg-gradient-to-r from-cyan-400 to-teal-400 text-white shadow-[0_0_20px_rgba(34,211,238,0.35)]"
                   : "text-white/80"
