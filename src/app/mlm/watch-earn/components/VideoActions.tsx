@@ -106,13 +106,13 @@ export default function VideoActions({
       className="
         pointer-events-auto
         absolute
-        right-4
+        right-2
         bottom-[calc(9.6rem+env(safe-area-inset-bottom))]
         z-40
         flex
         flex-col
         items-center
-        gap-4
+        gap-3
       "
     >
       {actions.map((action) => (
@@ -132,8 +132,8 @@ export default function VideoActions({
             }}
             className="
               flex
-              h-[52px]
-              w-[52px]
+              h-[44px]
+              w-[44px]
               items-center
               justify-center
               rounded-full
@@ -156,8 +156,8 @@ export default function VideoActions({
                 mt-1
                 min-w-[18px]
                 text-center
-                text-[13px]
-                font-medium
+                text-[12px]
+                font-bold
                 leading-none
                 text-white
                 drop-shadow-[0_2px_5px_rgba(0,0,0,0.9)]
@@ -181,8 +181,8 @@ export default function VideoActions({
         }}
         className="
           flex
-          h-[52px]
-          w-[52px]
+          h-[44px]
+          w-[44px]
           items-center
           justify-center
           rounded-full
@@ -195,9 +195,9 @@ export default function VideoActions({
         "
       >
         <span className="flex flex-col items-center gap-[3px]">
-          <span className="h-[4px] w-[4px] rounded-full bg-white" />
-          <span className="h-[4px] w-[4px] rounded-full bg-white" />
-          <span className="h-[4px] w-[4px] rounded-full bg-white" />
+          <span className="h-[3px] w-[3px] rounded-full bg-white" />
+          <span className="h-[3px] w-[3px] rounded-full bg-white" />
+          <span className="h-[3px] w-[3px] rounded-full bg-white" />
         </span>
       </motion.button>
 
@@ -215,8 +215,8 @@ export default function VideoActions({
         className="
           mt-1
           flex
-          h-[56px]
-          w-[56px]
+          h-[48px]
+          w-[48px]
           items-center
           justify-center
           rounded-full
@@ -229,9 +229,9 @@ export default function VideoActions({
         "
       >
         {isMuted ? (
-          <VolumeX size={30} strokeWidth={2} />
+          <VolumeX size={24} strokeWidth={2} />
         ) : (
-          <Volume2 size={30} strokeWidth={2} />
+          <Volume2 size={24} strokeWidth={2} />
         )}
       </motion.button>
     </aside>
