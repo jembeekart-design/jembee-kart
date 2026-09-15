@@ -69,7 +69,8 @@ export default function VideoPlayer({
     };
   }, [watchSeconds, active, isPlaying]);
 
-  const togglePlayPause = () => {
+  const togglePlayPause = (e: React.MouseEvent) => {
+    e.stopPropagation();
     const video = videoRef.current;
     if (!video) return;
     setShowControls(true);
@@ -163,7 +164,7 @@ export default function VideoPlayer({
       {showControls && duration > 0 && (
         <div
           ref={progressBarRef}
-          className="absolute bottom-28 left-4 right-4 h-6 flex items-center z-40 touch-none"
+          className="absolute bottom-28 left-4 right-4 h-6 flex items-center z-50 touch-none"
           onTouchStart={handleTouchStart}
           onTouchMove={handleTouchMove}
           onTouchEnd={handleTouchEnd}
