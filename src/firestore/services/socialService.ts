@@ -26,9 +26,11 @@ export interface ChatComment {
   text: string;
   createdAt: any;
   status?: string;
+  likes?: number;
+  likedByCurrentUser?: boolean;
 }
 
-export async function getComments(contentId: string, callback: (comments: any[]) => void) {
+export async function getComments(contentId: string, userId: string, callback: (comments: any[]) => void) {
   // Requirement 6: Only approved comments appear in UI.
   // Note: Old comments without status might not show up.
   const q = query(
@@ -37,8 +39,21 @@ export async function getComments(contentId: string, callback: (comments: any[])
       where("status", "==", "approved"),
       orderBy("createdAt", "asc")
   );
+
+  // Fetch likes to determine if user liked them
+  const likesSnapshot = await getDocs(query(collection(db, "videoCommentLikes"), where("userId", "==", userId)));
+  const likedCommentIds = new Set(likesSnapshot.docs.map(doc => doc.data().commentId));
+
   return onSnapshot(q, (snapshot) => {
-    callback(snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() })));
+    callback(snapshot.docs.map(doc => {
+      const data = doc.data();
+      return { 
+        id: doc.id, 
+        ...data, 
+        likes: data.likes || 0,
+        likedByCurrentUser: likedCommentIds.has(doc.id)
+      };
+    }));
   });
 }
 
@@ -81,6 +96,7 @@ export async function addComment(contentId: string, userId: string, userName: st
     text,
     createdAt: serverTimestamp(),
     status: isApproved ? 'approved' : 'pending',
+    likes: 0
   });
 
   // Requirement 5: Create moderation queue entry.
