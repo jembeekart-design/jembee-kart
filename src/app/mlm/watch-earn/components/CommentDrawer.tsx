@@ -174,7 +174,7 @@ export default function CommentDrawer({ open, onClose, videoId, onCommentAdded }
                     className="
                       mt-1
                       text-sm
-                      text-[var(--text-primary)]
+                      text-white
                     "
                   >
 
