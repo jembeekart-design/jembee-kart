@@ -191,7 +191,7 @@ export default function CommentDrawer({ open, onClose, videoId, onCommentAdded }
                     flex-col
                     items-center
                     gap-1
-                    ${item.likedByCurrentUser ? 'text-red-500' : 'text-[var(--text-primary)]'}
+                    ${item.likedByCurrentUser ? 'text-red-500' : 'text-white'}
                   `}
                 >
 
@@ -203,6 +203,7 @@ export default function CommentDrawer({ open, onClose, videoId, onCommentAdded }
                   <span
                     className="
                       text-xs
+                      text-white
                     "
                   >
 
