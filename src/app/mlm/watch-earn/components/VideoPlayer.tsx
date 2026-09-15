@@ -141,6 +141,7 @@ export default function VideoPlayer({
         muted={isMuted}
         loop
         playsInline
+        onClick={togglePlayPause}
         onPlay={() => setIsPlaying(true)}
         onPause={() => setIsPlaying(false)}
         onTimeUpdate={handleTimeUpdate}
