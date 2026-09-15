@@ -77,7 +77,7 @@ export default function VideoPlayer({
     const video = videoRef.current;
     if (!video) return;
     setShowControls(true);
-    if (isPlaying) {
+    if (!video.paused) {
       video.pause();
     } else {
       video.play().catch(() => {});
@@ -148,6 +148,12 @@ export default function VideoPlayer({
         className="absolute inset-0 h-full w-full object-cover cursor-pointer bg-black"
       />
 
+      {/* OVERLAY */}
+
+      <div
+        className="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-black/30 pointer-events-none"
+      />
+
       {/* PLAY/PAUSE OVERLAY ICON */}
       {!isPlaying && (
         <div
@@ -160,17 +166,11 @@ export default function VideoPlayer({
         </div>
       )}
 
-      {/* OVERLAY */}
-
-      <div
-        className="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-black/30 pointer-events-none"
-      />
-
       {/* SEEK BAR */}
       {showControls && duration > 0 && (
         <div
           ref={progressBarRef}
-          className="absolute bottom-28 left-4 right-4 h-6 flex items-center z-50 touch-none"
+          className="absolute bottom-24 left-4 right-4 h-6 flex items-center z-50 touch-none"
           onTouchStart={handleTouchStart}
           onTouchMove={handleTouchMove}
           onTouchEnd={handleTouchEnd}
