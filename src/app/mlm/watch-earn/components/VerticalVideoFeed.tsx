@@ -29,6 +29,7 @@ import { auth, db } from "@/firebase/config";
 import { likeVideo } from "@/lib/mlm/watch-earn/likeVideo";
 import { unlikeVideo } from "@/lib/mlm/watch-earn/unlikeVideo";
 import { shareVideo } from "@/lib/mlm/watch-earn/shareVideo";
+import { reportVideo } from "@/lib/mlm/watch-earn/reportVideo";
 import { useRequireAuth } from "@/hooks/useRequireAuth";
 import { collection, onSnapshot } from "firebase/firestore";
 
@@ -148,6 +149,8 @@ export default function VerticalVideoFeed({
     activeVideoId,
     setActiveVideoId
   ] = useState<string>("");
+
+  const [playbackSpeeds, setPlaybackSpeeds] = useState<Record<string, number>>({});
 
   const containerRef =
     useRef<HTMLElement>(null);
@@ -339,6 +342,8 @@ export default function VerticalVideoFeed({
                 active={
                   activeVideoId === video.id
                 }
+
+                playbackRate={playbackSpeeds[video.id] || 1}
               />
 
               {/* INFO */}
@@ -478,6 +483,20 @@ export default function VerticalVideoFeed({
                   );
                 }}
 
+                onReport={async (reason) => {
+                  requireAuth(async () => {
+                    const res = await reportVideo({
+                      videoId: video.id,
+                      reason
+                    });
+                    if (res.success) {
+                      setToastMessage("Report submitted successfully.");
+                    } else {
+                      setToastMessage(res.message || "Failed to submit report.");
+                    }
+                  }, "report", video.id);
+                }}
+
                 toggleMute={() =>
                   setIsMuted(!isMuted)
                 }
@@ -493,6 +512,12 @@ export default function VerticalVideoFeed({
                     video.id
                   ]
                 }
+
+                onPlaybackSpeedChange={(speed) => {
+                  setPlaybackSpeeds(prev => ({ ...prev, [video.id]: speed }));
+                }}
+
+                currentPlaybackSpeed={playbackSpeeds[video.id] || 1}
               />
             </section>
           )

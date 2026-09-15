@@ -7,6 +7,7 @@ import {
 
 import { db }
 from "@/firebase/config";
+import { FIRESTORE_PATHS } from "@/firestore/collections/firestorePaths";
 
 interface SaveVideoData {
 
@@ -31,7 +32,7 @@ saveVideo({
     const saveRef =
       doc(
         db,
-        "savedWatchVideos",
+        FIRESTORE_PATHS.WATCH_EARN.SAVED_VIDEOS,
         `${videoId}_${userId}`
       );
 

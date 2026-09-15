@@ -11,6 +11,7 @@ interface VideoPlayerProps {
   watchSeconds: number;
   isMuted?: boolean;
   active?: boolean;
+  playbackRate?: number;
 }
 
 export default function VideoPlayer({
@@ -18,6 +19,7 @@ export default function VideoPlayer({
   watchSeconds,
   isMuted = true,
   active = false,
+  playbackRate = 1,
 }: VideoPlayerProps) {
   const videoRef =
     useRef<HTMLVideoElement>(null);
@@ -26,6 +28,12 @@ export default function VideoPlayer({
     useState(0);
 
   const [isPlaying, setIsPlaying] = useState(false);
+
+  useEffect(() => {
+    const video = videoRef.current;
+    if (!video) return;
+    video.playbackRate = playbackRate;
+  }, [playbackRate]);
 
   useEffect(() => {
     const video = videoRef.current;
