@@ -4,6 +4,7 @@ import {
   useEffect,
   useRef,
   useState,
+  useCallback,
 } from "react";
 
 interface VideoPlayerProps {
@@ -21,13 +22,15 @@ export default function VideoPlayer({
   active = false,
   playbackRate = 1,
 }: VideoPlayerProps) {
-  const videoRef =
-    useRef<HTMLVideoElement>(null);
+  const videoRef = useRef<HTMLVideoElement>(null);
+  const progressBarRef = useRef<HTMLDivElement>(null);
 
-  const [progress, setProgress] =
-    useState(0);
-
+  const [progress, setProgress] = useState(0);
   const [isPlaying, setIsPlaying] = useState(false);
+  const [duration, setDuration] = useState(0);
+  const [currentTime, setCurrentTime] = useState(0);
+  const [isDragging, setIsDragging] = useState(false);
+  const [showControls, setShowControls] = useState(false);
 
   useEffect(() => {
     const video = videoRef.current;
@@ -42,9 +45,7 @@ export default function VideoPlayer({
     setProgress(0);
 
     if (active) {
-      video.play().catch(() => {
-        // Silent failure if play is prevented
-      });
+      video.play().catch(() => {});
     } else {
       video.pause();
     }
@@ -55,15 +56,9 @@ export default function VideoPlayer({
 
     if (videoRef.current && active && isPlaying) {
       interval = setInterval(() => {
-        const current =
-          videoRef.current?.currentTime || 0;
-
-        const percent =
-          (current / watchSeconds) * 100;
-
-        setProgress(
-          Math.min(percent, 100)
-        );
+        const current = videoRef.current?.currentTime || 0;
+        const percent = (current / watchSeconds) * 100;
+        setProgress(Math.min(percent, 100));
       }, 500);
     }
 
@@ -77,19 +72,59 @@ export default function VideoPlayer({
   const togglePlayPause = () => {
     const video = videoRef.current;
     if (!video) return;
-
+    setShowControls(true);
     if (isPlaying) {
       video.pause();
     } else {
-      video.play().catch(() => {
-        // Silent failure if play is prevented
-      });
+      video.play().catch(() => {});
     }
+  };
+
+  const handleTimeUpdate = () => {
+    if (videoRef.current && !isDragging) {
+      setCurrentTime(videoRef.current.currentTime);
+    }
+  };
+
+  const handleLoadedMetadata = () => {
+    if (videoRef.current) {
+      setDuration(videoRef.current.duration);
+    }
+  };
+
+  const handleSeek = useCallback((clientX: number) => {
+    if (!progressBarRef.current || !videoRef.current || duration === 0) return;
+
+    const rect = progressBarRef.current.getBoundingClientRect();
+    const x = Math.max(0, Math.min(clientX - rect.left, rect.width));
+    const seekTime = (x / rect.width) * duration;
+
+    videoRef.current.currentTime = seekTime;
+    setCurrentTime(seekTime);
+  }, [duration]);
+
+  const handleTouchStart = (e: React.TouchEvent) => {
+    setIsDragging(true);
+    handleSeek(e.touches[0].clientX);
+    e.stopPropagation();
+  };
+
+  const handleTouchMove = (e: React.TouchEvent) => {
+    if (isDragging) {
+      handleSeek(e.touches[0].clientX);
+      e.stopPropagation();
+      e.preventDefault();
+    }
+  };
+
+  const handleTouchEnd = () => {
+    setIsDragging(false);
   };
 
   return (
     <div
       className="relative h-screen w-full overflow-hidden"
+      onClick={() => setShowControls(!showControls)}
     >
       {/* VIDEO */}
 
@@ -99,15 +134,16 @@ export default function VideoPlayer({
         muted={isMuted}
         loop
         playsInline
-        onClick={togglePlayPause}
         onPlay={() => setIsPlaying(true)}
         onPause={() => setIsPlaying(false)}
+        onTimeUpdate={handleTimeUpdate}
+        onLoadedMetadata={handleLoadedMetadata}
         className="absolute inset-0 h-full w-full object-cover cursor-pointer bg-black"
       />
-      
+
       {/* PLAY/PAUSE OVERLAY ICON */}
       {!isPlaying && (
-        <div 
+        <div
           onClick={togglePlayPause}
           className="absolute inset-0 flex items-center justify-center z-30 cursor-pointer"
         >
@@ -122,6 +158,29 @@ export default function VideoPlayer({
       <div
         className="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-black/30 pointer-events-none"
       />
+
+      {/* SEEK BAR */}
+      {showControls && duration > 0 && (
+        <div
+          ref={progressBarRef}
+          className="absolute bottom-20 left-4 right-4 h-6 flex items-center z-40 touch-none"
+          onTouchStart={handleTouchStart}
+          onTouchMove={handleTouchMove}
+          onTouchEnd={handleTouchEnd}
+          onClick={(e) => { e.stopPropagation(); handleSeek(e.clientX); }}
+        >
+          <div className="relative w-full h-1 bg-white/30 rounded-full">
+            <div
+              className="absolute h-full bg-white rounded-full"
+              style={{ width: `${(currentTime / duration) * 100}%` }}
+            />
+            <div
+              className="absolute top-1/2 -mt-2.5 w-5 h-5 bg-white rounded-full shadow-lg"
+              style={{ left: `calc(${(currentTime / duration) * 100}% - 10px)` }}
+            />
+          </div>
+        </div>
+      )}
 
       {/* REWARD PROGRESS (compact chip + bottom bars) */}
     </div>
