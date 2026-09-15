@@ -27,6 +27,7 @@ import { DEFAULT_BUSINESS_RULES } from "@/firestore/businessRules/defaults";
 // New imports for persistence and auth
 import { auth, db } from "@/firebase/config";
 import { likeVideo } from "@/lib/mlm/watch-earn/likeVideo";
+import { unlikeVideo } from "@/lib/mlm/watch-earn/unlikeVideo";
 import { shareVideo } from "@/lib/mlm/watch-earn/shareVideo";
 import { useRequireAuth } from "@/hooks/useRequireAuth";
 import { collection, onSnapshot } from "firebase/firestore";
@@ -131,6 +132,11 @@ export default function VerticalVideoFeed({
   const [
     likedVideos,
     setLikedVideos
+  ] = useState<Record<string, boolean>>({});
+
+  const [
+    liking,
+    setLiking
   ] = useState<Record<string, boolean>>({});
 
   const [
@@ -379,10 +385,7 @@ export default function VerticalVideoFeed({
 
               <VideoActions
                 likes={
-                  video.likes +
-                  (likedVideos[video.id]
-                    ? 1
-                    : 0)
+                  video.likes
                 }
 
                 comments={
@@ -413,84 +416,41 @@ export default function VerticalVideoFeed({
                     return;
                   }
 
-                  // If already liked locally,
-                  // treat as unlike locally
-                  // (no server unlike available)
+                  if (liking[video.id]) return;
 
-                  if (
-                    likedVideos[video.id]
-                  ) {
-                    setLikedVideos(
-                      prev => ({
-                        ...prev,
-                        [video.id]: false
-                      })
-                    );
-
-                    setVideos(
-                      prev =>
-                        prev.map(v =>
-                          v.id === video.id
-                            ? {
-                                ...v,
-                                likes:
-                                  Math.max(
-                                    0,
-                                    v.likes - 1
-                                  )
-                              }
-                            : v
-                        )
-                    );
-
-                    return;
-                  }
+                  setLiking(prev => ({ ...prev, [video.id]: true }));
 
                   try {
-                    const res =
-                      await likeVideo({
-                        videoId:
-                          video.id,
+                    if (likedVideos[video.id]) {
+                      const res = await unlikeVideo({
+                        videoId: video.id,
                         userId: uid
                       });
 
-                    if (
-                      res &&
-                      res.success
-                    ) {
-                      setLikedVideos(
-                        prev => ({
-                          ...prev,
-                          [video.id]: true
-                        })
-                      );
-
-                      setVideos(
-                        prev =>
-                          prev.map(v =>
-                            v.id === video.id
-                              ? {
-                                  ...v,
-                                  likes:
-                                    v.likes + 1
-                                }
-                              : v
-                          )
-                      );
+                      if (res && res.success) {
+                        setLikedVideos(prev => ({ ...prev, [video.id]: false }));
+                        setVideos(prev => prev.map(v => v.id === video.id ? { ...v, likes: Math.max(0, v.likes - 1) } : v));
+                      } else {
+                        setToastMessage("Failed to unlike the video.");
+                      }
                     } else {
-                      setToastMessage(
-                        "Failed to like the video."
-                      );
+                      const res = await likeVideo({
+                        videoId: video.id,
+                        userId: uid
+                      });
+
+                      if (res && res.success) {
+                        setLikedVideos(prev => ({ ...prev, [video.id]: true }));
+                        setVideos(prev => prev.map(v => v.id === video.id ? { ...v, likes: v.likes + 1 } : v));
+                      } else {
+                        setToastMessage("Failed to like the video.");
+                      }
                     }
                   } catch (err) {
-                    console.error(
-                      "likeVideo error:",
-                      err
-                    );
-
-                    setToastMessage(
-                      "Failed to like the video."
-                    );
+                    console.error("like/unlike video error:", err);
+                    setToastMessage("An error occurred.");
+                  } finally {
+                    setLiking(prev => ({ ...prev, [video.id]: false }));
                   }
                 }}
 

@@ -9,6 +9,7 @@ import {
 
 import { db }
 from "@/firebase/config";
+import { FIRESTORE_PATHS } from "@/firestore/collections/firestorePaths";
 
 interface LikeVideoCommentData {
   commentId: string;
@@ -31,7 +32,7 @@ likeVideoComment(
     await updateDoc(
       doc(
         db,
-        "videoComments",
+        FIRESTORE_PATHS.WATCH_EARN.COMMENTS,
         data.commentId
       ),
       {
@@ -70,7 +71,7 @@ unlikeVideoComment(
     await updateDoc(
       doc(
         db,
-        "videoComments",
+        FIRESTORE_PATHS.WATCH_EARN.COMMENTS,
         data.commentId
       ),
       {

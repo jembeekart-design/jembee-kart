@@ -32,7 +32,6 @@ export interface ChatComment {
 
 export async function getComments(contentId: string, userId: string, callback: (comments: any[]) => void) {
   // Requirement 6: Only approved comments appear in UI.
-  // Note: Old comments without status might not show up.
   const q = query(
       collection(db, COMMENTS_COLLECTION), 
       where("contentId", "==", contentId),
@@ -40,21 +39,35 @@ export async function getComments(contentId: string, userId: string, callback: (
       orderBy("createdAt", "asc")
   );
 
-  // Fetch likes to determine if user liked them
-  const likesSnapshot = await getDocs(query(collection(db, "videoCommentLikes"), where("userId", "==", userId)));
-  const likedCommentIds = new Set(likesSnapshot.docs.map(doc => doc.data().commentId));
+  const qLikes = query(collection(db, "videoCommentLikes"), where("userId", "==", userId));
 
-  return onSnapshot(q, (snapshot) => {
-    callback(snapshot.docs.map(doc => {
-      const data = doc.data();
-      return { 
-        id: doc.id, 
-        ...data, 
-        likes: data.likes || 0,
-        likedByCurrentUser: likedCommentIds.has(doc.id)
-      };
-    }));
+  let commentsData: any[] = [];
+  let likedCommentIds = new Set<string>();
+
+  function update() {
+    callback(commentsData.map(doc => ({ 
+      ...doc,
+      likedByCurrentUser: likedCommentIds.has(doc.id)
+    })));
+  }
+
+  const unsubComments = onSnapshot(q, (snapshot) => {
+      commentsData = snapshot.docs.map(doc => {
+          const data = doc.data();
+          return { id: doc.id, ...data, likes: data.likes || 0 };
+      });
+      update();
   });
+
+  const unsubLikes = onSnapshot(qLikes, (snapshot) => {
+      likedCommentIds = new Set(snapshot.docs.map(doc => doc.data().commentId));
+      update();
+  });
+
+  return () => {
+    unsubComments();
+    unsubLikes();
+  };
 }
 
 export async function addComment(contentId: string, userId: string, userName: string, text: string) {
