@@ -10,6 +10,7 @@ import {
   Volume2,
   VolumeX,
 } from "lucide-react";
+import ShortsMenuSheet from "./ShortsMenuSheet";
 
 export interface VideoActionsProps {
   likes: number;
@@ -21,9 +22,12 @@ export interface VideoActionsProps {
   onComment: () => void;
   onShare: () => void;
   onSave: () => void;
+  onReport: (reason: string) => void;
   toggleMute: () => void;
   isLiked: boolean;
   isSaved: boolean;
+  onPlaybackSpeedChange: (speed: number) => void;
+  currentPlaybackSpeed: number;
 }
 
 export default function VideoActions({
@@ -35,10 +39,14 @@ export default function VideoActions({
   onComment,
   onShare,
   onSave,
+  onReport,
   toggleMute,
   isLiked,
   isSaved,
+  onPlaybackSpeedChange,
+  currentPlaybackSpeed,
 }: VideoActionsProps) {
+  const [menuOpen, setMenuOpen] = React.useState(false);
   const actions = [
     {
       key: "like",
@@ -178,6 +186,7 @@ export default function VideoActions({
         onClick={(event) => {
           event.preventDefault();
           event.stopPropagation();
+          setMenuOpen(true);
         }}
         className="
           flex
@@ -200,6 +209,16 @@ export default function VideoActions({
           <span className="h-[3px] w-[3px] rounded-full bg-white" />
         </span>
       </motion.button>
+
+      <ShortsMenuSheet
+        open={menuOpen}
+        onClose={() => setMenuOpen(false)}
+        isSaved={isSaved}
+        onSave={onSave}
+        onPlaybackSpeedChange={onPlaybackSpeedChange}
+        currentPlaybackSpeed={currentPlaybackSpeed}
+        onReport={onReport}
+      />
 
       {/* SOUND */}
       <motion.button
