@@ -3,6 +3,7 @@
 import { useState, useEffect } from "react";
 import { useAdminConfig } from "@/lib/admin-config/provider";
 import { getComments, addComment, ChatComment } from "@/firestore/services/socialService";
+import { likeVideoComment, unlikeVideoComment } from "@/lib/mlm/watch-earn/likeVideoComment";
 import { auth } from "@/firebase/config";
 import {
   Send,
@@ -18,7 +19,6 @@ interface CommentDrawerProps {
 
 export default function CommentDrawer({ open, onClose, videoId, onCommentAdded }: CommentDrawerProps) {
   const { config } = useAdminConfig();
-  const { commentModeration } = config;
   const [commentText, setCommentText] = useState("");
   const [error, setError] = useState("");
   const [comments, setComments] = useState<ChatComment[]>([]);
@@ -28,11 +28,21 @@ export default function CommentDrawer({ open, onClose, videoId, onCommentAdded }
     
     let unsub: any;
     async function loadComments() {
-      unsub = await getComments(videoId, (data) => setComments(data as ChatComment[]));
+      unsub = await getComments(videoId, auth.currentUser?.uid || "", (data: ChatComment[]) => setComments(data));
     }
     loadComments();
     return () => unsub && unsub();
   }, [open, videoId]);
+
+  async function handleToggleLike(commentId: string, currentlyLiked: boolean | undefined) {
+    if (!auth.currentUser) return;
+    
+    if (currentlyLiked) {
+        await unlikeVideoComment({ commentId, userId: auth.currentUser.uid });
+    } else {
+        await likeVideoComment({ commentId, userId: auth.currentUser.uid });
+    }
+  }
 
   async function handleAddComment() {
     if (!commentText.trim() || !auth.currentUser) return;
@@ -175,17 +185,19 @@ export default function CommentDrawer({ open, onClose, videoId, onCommentAdded }
                 </div>
 
                 <button
-                  className="
+                  onClick={() => handleToggleLike(item.id, item.likedByCurrentUser)}
+                  className={`
                     flex
                     flex-col
                     items-center
                     gap-1
-                    text-[var(--text-primary)]
-                  "
+                    ${item.likedByCurrentUser ? 'text-red-500' : 'text-[var(--text-primary)]'}
+                  `}
                 >
 
                   <Heart
                     size={18}
+                    fill={item.likedByCurrentUser ? 'currentColor' : 'none'}
                   />
 
                   <span
@@ -194,7 +206,7 @@ export default function CommentDrawer({ open, onClose, videoId, onCommentAdded }
                     "
                   >
 
-                    0
+                    {item.likes || 0}
                   </span>
 
                 </button>
