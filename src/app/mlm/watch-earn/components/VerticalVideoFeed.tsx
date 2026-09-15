@@ -30,6 +30,7 @@ import { likeVideo } from "@/lib/mlm/watch-earn/likeVideo";
 import { unlikeVideo } from "@/lib/mlm/watch-earn/unlikeVideo";
 import { shareVideo } from "@/lib/mlm/watch-earn/shareVideo";
 import { reportVideo } from "@/lib/mlm/watch-earn/reportVideo";
+import { setVideoPreference } from "@/lib/mlm/watch-earn/setVideoPreference";
 import { useRequireAuth } from "@/hooks/useRequireAuth";
 import { collection, onSnapshot } from "firebase/firestore";
 
@@ -151,6 +152,8 @@ export default function VerticalVideoFeed({
   ] = useState<string>("");
 
   const [playbackSpeeds, setPlaybackSpeeds] = useState<Record<string, number>>({});
+  
+  const [showWhySeeingModal, setShowWhySeeingModal] = useState(false);
 
   const containerRef =
     useRef<HTMLElement>(null);
@@ -497,6 +500,30 @@ export default function VerticalVideoFeed({
                   }, "report", video.id);
                 }}
 
+                onInterested={async () => {
+                  requireAuth(async () => {
+                    const res = await setVideoPreference(video.id, 'interested');
+                    if (res.success) {
+                      setToastMessage("Added to interested.");
+                    } else {
+                      setToastMessage(res.message || "Failed to update preference.");
+                    }
+                  }, "interested", video.id);
+                }}
+
+                onNotInterested={async () => {
+                  requireAuth(async () => {
+                    const res = await setVideoPreference(video.id, 'notInterested');
+                    if (res.success) {
+                      setToastMessage("Video marked as not interested.");
+                    } else {
+                      setToastMessage(res.message || "Failed to update preference.");
+                    }
+                  }, "notInterested", video.id);
+                }}
+
+                onWhySeeing={() => setShowWhySeeingModal(true)}
+
                 toggleMute={() =>
                   setIsMuted(!isMuted)
                 }
@@ -522,6 +549,18 @@ export default function VerticalVideoFeed({
             </section>
           )
         )
+      )}
+
+      {/* MODAL */}
+
+      {showWhySeeingModal && (
+        <div className="fixed inset-0 z-[1001] flex items-center justify-center p-4 bg-black/80" onClick={() => setShowWhySeeingModal(false)}>
+          <div className="bg-neutral-900 p-6 rounded-lg max-w-sm text-center" onClick={e => e.stopPropagation()}>
+            <h3 className="text-lg font-bold mb-2">Why you're seeing this</h3>
+            <p className="text-gray-300">Recommendations can be influenced by content relevance and general engagement signals.</p>
+            <button className="mt-4 w-full p-2 bg-neutral-800 rounded-lg" onClick={() => setShowWhySeeingModal(false)}>Close</button>
+          </div>
+        </div>
       )}
 
       {/* COMMENT DRAWER */}

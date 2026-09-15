@@ -18,9 +18,12 @@ interface ShortsMenuSheetProps {
   onClose: () => void;
   isSaved: boolean;
   onSave: () => void;
-  onPlaybackSpeedChange: (speed: number) => void;
-  currentPlaybackSpeed: number;
-  onReport: (reason: string) => void;
+  onPlaybackSpeedChange?: (speed: number) => void;
+  currentPlaybackSpeed?: number;
+  onReport?: (reason: string) => void;
+  onInterested?: () => void;
+  onNotInterested?: () => void;
+  onWhySeeing?: () => void;
 }
 
 export default function ShortsMenuSheet({
@@ -31,6 +34,9 @@ export default function ShortsMenuSheet({
   onPlaybackSpeedChange,
   currentPlaybackSpeed,
   onReport,
+  onInterested,
+  onNotInterested,
+  onWhySeeing,
 }: ShortsMenuSheetProps) {
 
   const [activeTab, setActiveTab] = useState<'main' | 'playback' | 'report'>('main');
@@ -58,30 +64,40 @@ export default function ShortsMenuSheet({
               <Bookmark size={24} className={isSaved ? "text-cyan-400" : ""} />
               {isSaved ? "Remove from Saved" : "Save"}
             </button>
-            <button onClick={() => setActiveTab('playback')} className="flex items-center gap-4 p-4 hover:bg-neutral-800 rounded-lg">
-              <Gauge size={24} />
-              Playback speed
-            </button>
-            <button className="flex items-center gap-4 p-4 hover:bg-neutral-800 rounded-lg">
-              <Info size={24} />
-              Why you're seeing this post
-            </button>
-            <button className="flex items-center gap-4 p-4 hover:bg-neutral-800 rounded-lg">
-              <ThumbsUp size={24} />
-              Interested
-            </button>
-            <button className="flex items-center gap-4 p-4 hover:bg-neutral-800 rounded-lg">
-              <ThumbsDown size={24} />
-              Not interested
-            </button>
-            <button onClick={() => setActiveTab('report')} className="flex items-center gap-4 p-4 hover:bg-neutral-800 rounded-lg text-red-500">
-              <Flag size={24} />
-              Report
-            </button>
+            {onPlaybackSpeedChange && (
+              <button onClick={() => setActiveTab('playback')} className="flex items-center gap-4 p-4 hover:bg-neutral-800 rounded-lg">
+                <Gauge size={24} />
+                Playback speed
+              </button>
+            )}
+            {onWhySeeing && (
+              <button onClick={() => { onWhySeeing(); onClose(); }} className="flex items-center gap-4 p-4 hover:bg-neutral-800 rounded-lg">
+                <Info size={24} />
+                Why you're seeing this post
+              </button>
+            )}
+            {onInterested && (
+              <button onClick={() => { onInterested(); onClose(); }} className="flex items-center gap-4 p-4 hover:bg-neutral-800 rounded-lg">
+                <ThumbsUp size={24} />
+                Interested
+              </button>
+            )}
+            {onNotInterested && (
+              <button onClick={() => { onNotInterested(); onClose(); }} className="flex items-center gap-4 p-4 hover:bg-neutral-800 rounded-lg">
+                <ThumbsDown size={24} />
+                Not interested
+              </button>
+            )}
+            {onReport && (
+              <button onClick={() => setActiveTab('report')} className="flex items-center gap-4 p-4 hover:bg-neutral-800 rounded-lg text-red-500">
+                <Flag size={24} />
+                Report
+              </button>
+            )}
           </div>
         )}
 
-        {activeTab === 'playback' && (
+        {onPlaybackSpeedChange && activeTab === 'playback' && (
           <div className="flex flex-col gap-1">
             <button onClick={() => setActiveTab('main')} className="p-4 mb-2">Back</button>
             {[0.5, 1, 1.5, 2].map(speed => (
@@ -97,7 +113,7 @@ export default function ShortsMenuSheet({
           </div>
         )}
 
-        {activeTab === 'report' && (
+        {onReport && activeTab === 'report' && (
             <div className="flex flex-col gap-1">
                 <button onClick={() => setActiveTab('main')} className="p-4 mb-2">Back</button>
                 {['Spam', 'Misleading', 'Hate', 'Nudity', 'Violence', 'Copyright', 'Other'].map(reason => (

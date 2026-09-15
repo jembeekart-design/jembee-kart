@@ -22,12 +22,15 @@ export interface VideoActionsProps {
   onComment: () => void;
   onShare: () => void;
   onSave: () => void;
-  onReport: (reason: string) => void;
+  onReport?: (reason: string) => void;
+  onInterested?: () => void;
+  onNotInterested?: () => void;
+  onWhySeeing?: () => void;
   toggleMute: () => void;
   isLiked: boolean;
   isSaved: boolean;
-  onPlaybackSpeedChange: (speed: number) => void;
-  currentPlaybackSpeed: number;
+  onPlaybackSpeedChange?: (speed: number) => void;
+  currentPlaybackSpeed?: number;
 }
 
 export default function VideoActions({
@@ -40,6 +43,9 @@ export default function VideoActions({
   onShare,
   onSave,
   onReport,
+  onInterested,
+  onNotInterested,
+  onWhySeeing,
   toggleMute,
   isLiked,
   isSaved,
@@ -218,6 +224,9 @@ export default function VideoActions({
         onPlaybackSpeedChange={onPlaybackSpeedChange}
         currentPlaybackSpeed={currentPlaybackSpeed}
         onReport={onReport}
+        onInterested={onInterested}
+        onNotInterested={onNotInterested}
+        onWhySeeing={onWhySeeing}
       />
 
       {/* SOUND */}
