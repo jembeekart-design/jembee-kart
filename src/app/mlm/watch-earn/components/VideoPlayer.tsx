@@ -46,6 +46,9 @@ export default function VideoPlayer({
 
     if (active) {
       video.play().catch(() => {});
+      if (video.duration && !isNaN(video.duration)) {
+        setDuration(video.duration);
+      }
     } else {
       video.pause();
     }
@@ -84,6 +87,9 @@ export default function VideoPlayer({
   const handleTimeUpdate = () => {
     if (videoRef.current && !isDragging) {
       setCurrentTime(videoRef.current.currentTime);
+      if (duration === 0 && videoRef.current.duration > 0) {
+        setDuration(videoRef.current.duration);
+      }
     }
   };
 
@@ -125,7 +131,7 @@ export default function VideoPlayer({
   return (
     <div
       className="relative h-screen w-full overflow-hidden"
-      onClick={() => setShowControls(!showControls)}
+      onClick={() => setShowControls(true)}
     >
       {/* VIDEO */}
 
