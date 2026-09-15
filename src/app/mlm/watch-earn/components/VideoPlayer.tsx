@@ -171,7 +171,7 @@ export default function VideoPlayer({
       {showControls && duration > 0 && (
         <div
           ref={progressBarRef}
-          className="absolute bottom-24 left-4 right-4 h-6 flex items-center z-50 touch-none"
+          className="absolute bottom-[calc(6rem+env(safe-area-inset-bottom))] left-4 right-4 h-6 flex items-center z-50 touch-none"
           onTouchStart={handleTouchStart}
           onTouchMove={handleTouchMove}
           onTouchEnd={handleTouchEnd}
