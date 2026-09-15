@@ -159,6 +159,8 @@ export const FIRESTORE_PATHS = {
     COMMENTS: "comments",
     COMMENT_REPORTS: "commentReports",
     SAVED_VIDEOS: "savedWatchVideos",
+    INTERESTED_VIDEOS: "interestedWatchVideos",
+    NOT_INTERESTED_VIDEOS: "notInterestedWatchVideos",
     VIDEO_REPORTS: "videoReports",
     BLOCKED_WORDS: "blockedWords",
     SETTINGS: "settings/watchEarn",
