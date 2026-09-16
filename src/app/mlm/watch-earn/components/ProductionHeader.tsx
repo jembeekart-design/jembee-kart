@@ -49,26 +49,58 @@ export default function ProductionHeader({
       style={{ paddingTop: "env(safe-area-inset-top)" }}
     >
       <div className="pointer-events-auto px-5 pt-4">
-        {/* TOP ROW: TITLE & CONTROLS */}
-        <div className="flex items-center justify-between mb-4">
-          {/* TITLE */}
-          <div className="flex items-center gap-1">
-            <span className="text-[25px] font-extrabold leading-none tracking-tight">
-              Jembee
-            </span>
+        {/* ROW: TITLE+TABS + CONTROLS */}
+        <div className="flex items-start justify-between">
+          {/* LEFT PART: TITLE + TABS */}
+          <div className="flex flex-col gap-4">
+            {/* TITLE */}
+            <div className="flex items-center gap-1">
+              <span className="text-[25px] font-extrabold leading-none tracking-tight">
+                Jembee
+              </span>
 
-            <span className="text-[25px] font-extrabold leading-none tracking-tight text-cyan-300">
-              Shorts
-            </span>
+              <span className="text-[25px] font-extrabold leading-none tracking-tight text-cyan-300">
+                Shorts
+              </span>
 
-            <Flame
-              size={23}
-              fill="currentColor"
-              className="ml-0.5 text-orange-400"
-            />
+              <Flame
+                size={23}
+                fill="currentColor"
+                className="ml-0.5 text-orange-400"
+              />
+            </div>
+
+            {/* TABS */}
+            <div className="flex items-center gap-3">
+              <div className="flex h-[52px] items-center rounded-full bg-black/20 p-1 backdrop-blur-md">
+                <button
+                  type="button"
+                  onClick={() => setActiveTab("foryou")}
+                  className={`h-[44px] rounded-full px-7 text-[14px] font-bold ${
+                    activeTab === "foryou"
+                      ? "bg-gradient-to-r from-cyan-400 to-teal-400 text-white shadow-[0_0_20px_rgba(34,211,238,0.35)]"
+                      : "text-white/80"
+                  }`}
+                >
+                  For You
+                </button>
+
+                <button
+                  type="button"
+                  onClick={() => setActiveTab("following")}
+                  className={`h-[44px] rounded-full px-7 text-[14px] font-bold ${
+                    activeTab === "following"
+                      ? "bg-gradient-to-r from-cyan-400 to-teal-400 text-white shadow-[0_0_20px_rgba(34,211,238,0.35)]"
+                      : "text-white/80"
+                  }`}
+                >
+                  Following
+                </button>
+              </div>
+            </div>
           </div>
 
-          {/* RIGHT */}
+          {/* RIGHT PART: CONTROLS */}
           <div className="flex items-center gap-2">
             <button
               type="button"
@@ -103,35 +135,6 @@ export default function ProductionHeader({
                   {unreadCount > 99 ? "99+" : unreadCount}
                 </span>
               )}
-            </button>
-          </div>
-        </div>
-
-        {/* TABS */}
-        <div className="flex items-center justify-center gap-3">
-          <div className="flex h-[52px] items-center rounded-full bg-black/20 p-1 backdrop-blur-md">
-            <button
-              type="button"
-              onClick={() => setActiveTab("foryou")}
-              className={`h-[44px] rounded-full px-7 text-[14px] font-bold ${
-                activeTab === "foryou"
-                  ? "bg-gradient-to-r from-cyan-400 to-teal-400 text-white shadow-[0_0_20px_rgba(34,211,238,0.35)]"
-                  : "text-white/80"
-              }`}
-            >
-              For You
-            </button>
-
-            <button
-              type="button"
-              onClick={() => setActiveTab("following")}
-              className={`h-[44px] rounded-full px-7 text-[14px] font-bold ${
-                activeTab === "following"
-                  ? "bg-gradient-to-r from-cyan-400 to-teal-400 text-white shadow-[0_0_20px_rgba(34,211,238,0.35)]"
-                  : "text-white/80"
-              }`}
-            >
-              Following
             </button>
           </div>
         </div>
