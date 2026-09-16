@@ -49,27 +49,23 @@ export default function ProductionHeader({
       style={{ paddingTop: "env(safe-area-inset-top)" }}
     >
       <div className="pointer-events-auto px-5 pt-4">
-        {/* HEADER */}
-        <div className="flex items-start justify-between">
-          {/* LEFT */}
-          <div className="flex min-w-0 items-start gap-4">
-            <div className="min-w-0">
-              <div className="flex items-center gap-1">
-                <span className="text-[25px] font-extrabold leading-none tracking-tight">
-                  Jembee
-                </span>
+        {/* TOP ROW: TITLE & CONTROLS */}
+        <div className="flex items-center justify-between mb-4">
+          {/* TITLE */}
+          <div className="flex items-center gap-1">
+            <span className="text-[25px] font-extrabold leading-none tracking-tight">
+              Jembee
+            </span>
 
-                <span className="text-[25px] font-extrabold leading-none tracking-tight text-cyan-300">
-                  Shorts
-                </span>
+            <span className="text-[25px] font-extrabold leading-none tracking-tight text-cyan-300">
+              Shorts
+            </span>
 
-                <Flame
-                  size={23}
-                  fill="currentColor"
-                  className="ml-0.5 text-orange-400"
-                />
-              </div>
-            </div>
+            <Flame
+              size={23}
+              fill="currentColor"
+              className="ml-0.5 text-orange-400"
+            />
           </div>
 
           {/* RIGHT */}
@@ -112,7 +108,7 @@ export default function ProductionHeader({
         </div>
 
         {/* TABS */}
-        <div className="mt-4 flex items-center justify-center gap-3">
+        <div className="flex items-center justify-center gap-3">
           <div className="flex h-[52px] items-center rounded-full bg-black/20 p-1 backdrop-blur-md">
             <button
               type="button"
