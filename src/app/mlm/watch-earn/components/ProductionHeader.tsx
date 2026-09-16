@@ -76,7 +76,7 @@ export default function ProductionHeader({
                 <button
                   type="button"
                   onClick={() => setActiveTab("foryou")}
-                  className={`h-[44px] rounded-full px-7 text-[13px] font-bold ${
+                  className={`h-[44px] rounded-full px-7 text-[13px] font-bold whitespace-nowrap ${
                     activeTab === "foryou"
                       ? "bg-gradient-to-r from-cyan-400 to-teal-400 text-white shadow-[0_0_20px_rgba(34,211,238,0.35)]"
                       : "text-white/80"
@@ -88,7 +88,7 @@ export default function ProductionHeader({
                 <button
                   type="button"
                   onClick={() => setActiveTab("following")}
-                  className={`h-[44px] rounded-full px-7 text-[13px] font-bold ${
+                  className={`h-[44px] rounded-full px-7 text-[13px] font-bold whitespace-nowrap ${
                     activeTab === "following"
                       ? "bg-gradient-to-r from-cyan-400 to-teal-400 text-white shadow-[0_0_20px_rgba(34,211,238,0.35)]"
                       : "text-white/80"
