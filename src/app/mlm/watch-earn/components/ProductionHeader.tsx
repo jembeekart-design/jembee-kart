@@ -1,7 +1,9 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
+import { auth } from "@/firebase/config";
+import { subscribeToShortsUnreadCount } from "@/firestore/services/shortsNotificationService";
 import {
   Menu,
   Search,
@@ -22,6 +24,24 @@ export default function ProductionHeader({
 }) {
   const router = useRouter();
   const [showSearch, setShowSearch] = useState(false);
+  const [unreadCount, setUnreadCount] = useState(0);
+
+  useEffect(() => {
+    const unsubscribeAuth = auth.onAuthStateChanged((user) => {
+      if (!user) {
+        setUnreadCount(0);
+        return;
+      }
+
+      return subscribeToShortsUnreadCount(
+        user.uid,
+        setUnreadCount,
+        () => setUnreadCount(0)
+      );
+    });
+
+    return () => unsubscribeAuth();
+  }, []);
 
   return (
     <header
@@ -76,15 +96,17 @@ export default function ProductionHeader({
 
             <button
               type="button"
-              onClick={() => router.push("/mlm/notifications")}
+              onClick={() => router.push("/mlm/watch-earn/notifications")}
               aria-label="Notifications"
               className="relative flex h-11 w-11 items-center justify-center rounded-full bg-black/20 backdrop-blur-md"
             >
               <Bell size={25} strokeWidth={2} />
 
-              <span className="absolute -right-0.5 -top-0.5 flex h-5 min-w-5 items-center justify-center rounded-full bg-pink-500 px-1 text-[10px] font-extrabold">
-                3
-              </span>
+              {unreadCount > 0 && (
+                <span className="absolute -right-0.5 -top-0.5 flex h-5 min-w-5 items-center justify-center rounded-full bg-pink-500 px-1 text-[10px] font-extrabold">
+                  {unreadCount > 99 ? "99+" : unreadCount}
+                </span>
+              )}
             </button>
           </div>
         </div>

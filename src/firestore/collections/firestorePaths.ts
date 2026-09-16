@@ -95,6 +95,18 @@ export const FIRESTORE_PATHS = {
     CHANNELS: "config/notifications/channels",
     SCHEDULING: "config/notifications/scheduling",
   },
+  SHORTS_NOTIFICATIONS: {
+    ROOT: "shorts_notifications",
+    USER_META: "shorts_notification_meta",
+    PREFERENCES: "shorts_notification_preferences",
+  },
+  SHORTS_BROADCAST: {
+    ROOT: "shorts_broadcast_notifications",
+    READ_STATE: "shorts_broadcast_read_state",
+  },
+  USER_FEED_INDEX: {
+    ROOT: "user_feed_index",
+  },
   BROADCAST_NOTIFICATIONS: {
     ROOT: "broadcast_notifications",
     READ_STATE: "broadcast_read_state",

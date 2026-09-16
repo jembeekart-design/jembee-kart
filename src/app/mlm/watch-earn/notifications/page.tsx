@@ -1,0 +1,204 @@
+"use client";
+
+import { useEffect, useState } from "react";
+import { useRouter } from "next/navigation";
+import { ArrowLeft, Bell, CheckCheck } from "lucide-react";
+import { auth } from "@/firebase/config";
+import {
+  subscribeToShortsNotifications,
+  ShortsNotification,
+} from "@/firestore/services/shortsNotificationService";
+
+export default function ShortsNotificationsPage() {
+  const router = useRouter();
+
+  const [notifications, setNotifications] = useState<ShortsNotification[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [markingAll, setMarkingAll] = useState(false);
+
+  useEffect(() => {
+    const unsubscribeAuth = auth.onAuthStateChanged((user) => {
+      if (!user) {
+        setNotifications([]);
+        setLoading(false);
+        return;
+      }
+
+      const unsubscribe = subscribeToShortsNotifications(
+        user.uid,
+        (items) => {
+          setNotifications(items);
+          setLoading(false);
+        },
+        () => {
+          setLoading(false);
+        }
+      );
+
+      return unsubscribe;
+    });
+
+    return () => unsubscribeAuth();
+  }, []);
+
+  async function getAuthToken() {
+    const user = auth.currentUser;
+
+    if (!user) {
+      return null;
+    }
+
+    return user.getIdToken();
+  }
+
+  async function markNotificationAsRead(notificationId: string) {
+    try {
+      const token = await getAuthToken();
+
+      if (!token) {
+        return false;
+      }
+
+      const response = await fetch("/api/shorts/notifications/mark-read", {
+        method: "POST",
+        headers: {
+          Authorization: `Bearer ${token}`,
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ notificationId }),
+      });
+
+      return response.ok;
+    } catch (error) {
+      console.error("MARK SHORTS NOTIFICATION READ ERROR:", error);
+      return false;
+    }
+  }
+
+  async function markAllAsRead() {
+    if (markingAll) {
+      return;
+    }
+
+    try {
+      setMarkingAll(true);
+
+      const token = await getAuthToken();
+
+      if (!token) {
+        return;
+      }
+
+      const response = await fetch(
+        "/api/shorts/notifications/mark-all-read",
+        {
+          method: "POST",
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+
+      if (!response.ok) {
+        console.error("MARK ALL SHORTS NOTIFICATIONS ERROR:", response.status);
+      }
+    } catch (error) {
+      console.error("MARK ALL SHORTS NOTIFICATIONS ERROR:", error);
+    } finally {
+      setMarkingAll(false);
+    }
+  }
+
+  async function openNotification(notification: ShortsNotification) {
+    if (!notification.isRead) {
+      await markNotificationAsRead(notification.id);
+    }
+
+    if (notification.deepLink) {
+      router.push(notification.deepLink);
+    } else if (notification.videoId) {
+      router.push(`/mlm/watch-earn/original/${notification.videoId}`);
+    }
+  }
+
+  return (
+    <main className="min-h-screen bg-[var(--background-color)] text-[var(--text-color)]">
+      <header className="sticky top-0 z-50 flex items-center justify-between border-b border-[var(--border-color)] bg-[var(--card-color)] px-4 py-4">
+        <button
+          type="button"
+          onClick={() => router.back()}
+          aria-label="Back"
+          className="flex h-10 w-10 items-center justify-center rounded-full"
+        >
+          <ArrowLeft size={22} />
+        </button>
+
+        <h1 className="text-lg font-bold">Notifications</h1>
+
+        <button
+          type="button"
+          onClick={markAllAsRead}
+          disabled={markingAll || notifications.length === 0}
+          aria-label="Mark all as read"
+          className="flex h-10 w-10 items-center justify-center rounded-full disabled:opacity-40"
+        >
+          <CheckCheck size={21} />
+        </button>
+      </header>
+
+      <section className="mx-auto max-w-2xl p-4">
+        {loading ? (
+          <div className="flex min-h-[50vh] items-center justify-center">
+            <p className="text-sm opacity-60">Loading notifications...</p>
+          </div>
+        ) : notifications.length === 0 ? (
+          <div className="flex min-h-[50vh] flex-col items-center justify-center text-center">
+            <Bell size={48} className="mb-4 opacity-40" />
+            <h2 className="text-lg font-bold">No notifications yet</h2>
+            <p className="mt-2 text-sm opacity-60">
+              Your Shorts activity notifications will appear here.
+            </p>
+          </div>
+        ) : (
+          <div className="space-y-2">
+            {notifications.map((notification) => (
+              <button
+                key={notification.id}
+                type="button"
+                onClick={() => openNotification(notification)}
+                className={`flex w-full items-start gap-3 rounded-2xl p-4 text-left transition ${
+                  notification.isRead
+                    ? "bg-[var(--card-color)]"
+                    : "bg-[var(--primary-color)]/10"
+                }`}
+              >
+                <div className="flex h-11 w-11 shrink-0 items-center justify-center overflow-hidden rounded-full bg-[var(--primary-color)]/20">
+                  {notification.actorAvatarUrl ? (
+                    <img
+                      src={notification.actorAvatarUrl}
+                      alt=""
+                      className="h-full w-full object-cover"
+                    />
+                  ) : (
+                    <Bell size={20} />
+                  )}
+                </div>
+
+                <div className="min-w-0 flex-1">
+                  <p className="font-semibold">{notification.title}</p>
+                  <p className="mt-1 text-sm opacity-70">
+                    {notification.body}
+                  </p>
+                </div>
+
+                {!notification.isRead && (
+                  <span className="mt-2 h-2.5 w-2.5 shrink-0 rounded-full bg-[var(--primary-color)]" />
+                )}
+              </button>
+            ))}
+          </div>
+        )}
+      </section>
+    </main>
+  );
+}
