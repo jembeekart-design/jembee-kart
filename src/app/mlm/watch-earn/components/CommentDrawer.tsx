@@ -48,12 +48,34 @@ export default function CommentDrawer({ open, onClose, videoId, onCommentAdded }
     if (!commentText.trim() || !auth.currentUser) return;
     
     try {
-      await addComment(
+      const commentRef = await addComment(
         videoId, 
         auth.currentUser.uid, 
         auth.currentUser.displayName || "User", 
         commentText
       );
+
+      // Trigger notification in the background
+      (async () => {
+        try {
+          const token = await auth.currentUser?.getIdToken();
+          if (token) {
+            await fetch("/api/shorts/notifications/create-comment", {
+              method: "POST",
+              headers: {
+                "Authorization": `Bearer ${token}`,
+                "Content-Type": "application/json",
+              },
+              body: JSON.stringify({
+                videoId,
+                commentId: commentRef.id,
+              }),
+            });
+          }
+        } catch (err) {
+          console.error("Failed to send comment notification:", err);
+        }
+      })();
 
       // Notify parent to update its local aggregated comment count
       onCommentAdded?.();
