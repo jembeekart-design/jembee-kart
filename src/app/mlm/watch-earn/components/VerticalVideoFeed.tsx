@@ -450,6 +450,28 @@ export default function VerticalVideoFeed({
                       if (res && res.success) {
                         setLikedVideos(prev => ({ ...prev, [video.id]: true }));
                         setVideos(prev => prev.map(v => v.id === video.id ? { ...v, likes: v.likes + 1 } : v));
+
+                        try {
+                          const token = await auth.currentUser?.getIdToken();
+
+                          if (token) {
+                            await fetch("/api/shorts/notifications/create-like", {
+                              method: "POST",
+                              headers: {
+                                Authorization: `Bearer ${token}`,
+                                "Content-Type": "application/json",
+                              },
+                              body: JSON.stringify({
+                                videoId: video.id,
+                              }),
+                            });
+                          }
+                        } catch (notificationError) {
+                          console.error(
+                            "SHORTS LIKE NOTIFICATION ERROR:",
+                            notificationError
+                          );
+                        }
                       } else {
                         setToastMessage("Failed to like the video.");
                       }
