@@ -88,9 +88,19 @@ export const FIRESTORE_PATHS = {
   // NOTIFICATIONS CONFIGURATION
   // ==========================================
   NOTIFICATIONS: {
+    ROOT: "notifications",
+    USER_META: "user_notification_meta",
+    PREFERENCES: "notification_preferences",
     TEMPLATES: "config/notifications/templates",
     CHANNELS: "config/notifications/channels",
     SCHEDULING: "config/notifications/scheduling",
+  },
+  BROADCAST_NOTIFICATIONS: {
+    ROOT: "broadcast_notifications",
+    READ_STATE: "broadcast_read_state",
+  },
+  CREATOR_ACTIVITY: {
+    ROOT: "creator_activity_events",
   },
 
   // ==========================================
