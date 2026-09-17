@@ -622,7 +622,9 @@ async function processVideoDoc(
   =============================================== */
 
   const finalCreatorId =
-    creator?.documentId || "";
+    creatorUid ||
+    creator?.documentId ||
+    "";
 
   /* ===============================================
      DISPLAY NAME
@@ -837,25 +839,11 @@ export async function fetchCreatorVideos(creatorId: string) {
 
     const videos: WatchVideo[] = [];
     const creatorCache: Record<string, CreatorInfo | null> = {};
-    const diagnostic = {
-      creatorId,
-      q1Count: snap1.size,
-      q2Count: snap2.size,
-      q1Docs: snap1.docs.slice(0, 3).map(d => ({
-        userId: d.data().userId ?? null,
-        creatorId: d.data().creatorId ?? null,
-      })),
-      q2Docs: snap2.docs.slice(0, 3).map(d => ({
-        userId: d.data().userId ?? null,
-        creatorId: d.data().creatorId ?? null,
-      })),
-    };
-
     for (const doc of uniqueDocs) {
       videos.push(await processVideoDoc(doc, creatorCache));
     }
 
-    return { success: true, videos, diagnostic };
+    return { success: true, videos };
   } catch (error) {
     console.error("FETCH CREATOR VIDEOS ERROR:", error);
     return { success: false, videos: [] };

@@ -14,7 +14,6 @@ export default function PublicUploaderPage() {
   const [creatorInfo, setCreatorInfo] = useState<CreatorInfo | null>(null);
   const [videos, setVideos] = useState<WatchVideo[]>([]);
   const [loading, setLoading] = useState(true);
-  const [debug, setDebug] = useState<unknown>(null);
 
   useEffect(() => {
     async function fetchData() {
@@ -28,8 +27,6 @@ export default function PublicUploaderPage() {
       // 2. Fetch sanitized videos using production logic
       const result = await fetchCreatorVideos(creatorId);
       console.log("[DEBUG] UploaderPage - fetchCreatorVideos result count:", result.videos.length);
-      setDebug(result.diagnostic ?? null);
-
       if (result.success) {
         setVideos(result.videos);
       }
@@ -43,14 +40,6 @@ export default function PublicUploaderPage() {
 
   return (
     <main className="min-h-screen bg-black p-4 text-white">
-      <div className="mb-4 rounded-lg bg-yellow-900 p-3 text-xs font-mono whitespace-pre-wrap">
-        <div className="mb-2 font-bold text-yellow-300">TEMP DEBUG</div>
-        {JSON.stringify({
-          receivedCreatorId: creatorId,
-          ...((debug as Record<string, unknown>) || {}),
-          finalVideosLength: videos.length,
-        }, null, 2)}
-      </div>
       <button onClick={() => router.back()} className="mb-4 flex items-center gap-2 text-sm text-gray-400">
         <ArrowLeft size={16} /> Back
       </button>
