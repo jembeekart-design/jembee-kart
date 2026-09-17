@@ -453,7 +453,7 @@ export async function getCreatorInfo(
 
     /* =================================================
        7. FINAL FALLBACK
-       
+
        Scan users collection and compare all common
        identity fields.
     ================================================= */
@@ -817,12 +817,19 @@ export async function fetchWatchVideos() {
 
 export async function fetchCreatorVideos(creatorId: string) {
   try {
+    console.log("[DEBUG] fetchCreatorVideos - Querying for creatorId:", creatorId);
     const videosRef = collection(db, "watchEarnVideos");
 
     const q1 = query(videosRef, where("userId", "==", creatorId));
     const q2 = query(videosRef, where("creatorId", "==", creatorId));
 
     const [snap1, snap2] = await Promise.all([getDocs(q1), getDocs(q2)]);
+
+    console.log("[DEBUG] fetchCreatorVideos - q1 count:", snap1.size);
+    console.log("[DEBUG] fetchCreatorVideos - q2 count:", snap2.size);
+
+    snap1.docs.slice(0, 3).forEach((d, i) => console.log(`[DEBUG] fetchCreatorVideos - q1 doc ${i} userId:`, d.data().userId, "creatorId:", d.data().creatorId));
+    snap2.docs.slice(0, 3).forEach((d, i) => console.log(`[DEBUG] fetchCreatorVideos - q2 doc ${i} userId:`, d.data().userId, "creatorId:", d.data().creatorId));
 
     const docs = [...snap1.docs, ...snap2.docs];
     // Deduplicate
