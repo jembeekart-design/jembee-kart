@@ -22,7 +22,11 @@ export default function ShortsProfile() {
     if (!user) return;
 
     // Fetch Profile
-    getDoc(doc(db, "users", user.uid)).then(snap => setProfile(snap.data()));
+    getDoc(doc(db, "users", user.uid)).then(snap => {
+      if (snap.exists()) {
+        setProfile({ id: snap.id, ...snap.data() });
+      }
+    });
 
     // Fetch Earnings (Available only)
     const earningsQuery = query(collection(db, "creatorAdEarnings"), 
@@ -81,7 +85,12 @@ export default function ShortsProfile() {
           </div>
         </div>
       </div>
-      <div className="mb-6 font-bold">{profile?.name} <span className="text-gray-400">@{profile?.username}</span></div>
+      <div className="mb-6 font-bold">
+        {profile?.name || profile?.displayName || "User"}{" "}
+        <span className="text-gray-400">
+          @{profile?.username || profile?.userName || "User"}
+        </span>
+      </div>
       
       <div className="bg-neutral-900 p-4 rounded-xl mb-6 flex justify-between items-center">
         <div className="flex items-center gap-2"><Wallet className="text-cyan-400" /> <span>Available Ad Earnings</span></div>
