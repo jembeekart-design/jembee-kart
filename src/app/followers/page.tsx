@@ -3,8 +3,6 @@
 import { useEffect, useState } from "react";
 import { auth, db } from "@/firebase/config";
 import { doc, onSnapshot, collection, getDoc, DocumentData } from "firebase/firestore";
-import Header from "@/components/navigation/Header";
-import BottomNavbar from "@/components/navigation/BottomNavbar";
 import { useTheme } from "@/context/ThemeContext";
 import { unfollowUser } from "@/lib/social/followService";
 import Link from "next/link";
@@ -19,39 +17,30 @@ interface FollowedUser {
 }
 
 export default function FollowersPage() {
-  const { theme } = useTheme();
   const [userData, setUserData] = useState<DocumentData | null>(null);
   const [following, setFollowing] = useState<FollowedUser[]>([]);
+  const [activeTab, setActiveTab] = useState<'history' | 'list'>('history');
 
   useEffect(() => {
     if (!auth.currentUser) return;
 
-    // Listen to user doc for counts
     const userUnsub = onSnapshot(doc(db, "users", auth.currentUser.uid), (doc) => {
       const data = doc.data();
       if (data) setUserData(data);
     });
 
-    // Listen to following list
     const followingRef = collection(db, "users", auth.currentUser.uid, "following");
     const followingUnsub = onSnapshot(followingRef, async (snapshot) => {
       const results = await Promise.all(snapshot.docs.map(async (docSnap) => {
         const followedUserRef = doc(db, "users", docSnap.id);
         const followedUserSnap = await getDoc(followedUserRef);
-        if (!followedUserSnap.exists()) {
-          return null;
-        }
+        if (!followedUserSnap.exists()) return null;
 
         const data = followedUserSnap.data();
-
-        // Robust fallback for name and username to avoid 'Anonymous' or '@unknown'
-        const displayName = data.name || "User";
-        const displayUsername = data.username || (data.name ? data.name.replace(/\s+/g, '').toLowerCase() : `user_${docSnap.id.slice(0, 4)}`);
-
         return {
           id: docSnap.id,
-          name: displayName,
-          username: displayUsername,
+          name: data.name || "User",
+          username: data.username || `user_${docSnap.id.slice(0, 4)}`,
           photoUrl: data.photoUrl || "/default-avatar.png",
           followedAt: docSnap.data().timestamp
         } as FollowedUser;
@@ -76,51 +65,61 @@ export default function FollowersPage() {
   };
 
   return (
-    <main
-      className="min-h-screen pb-20 pt-[130px]"
-      style={{ backgroundColor: theme.backgroundColor, color: theme.textColor }}
-    >
-      <Header />
-      <div className="px-4">
-        <h1 className="text-2xl font-black mb-6">Followers</h1>
-        
-        <div className="grid grid-cols-2 gap-4 mb-8">
-            <div className="bg-[var(--card-color)] p-4 rounded-xl text-center">
-                <div className="text-2xl font-black">{userData?.followersCount || 0}</div>
-                <div className="text-sm text-[var(--muted-text-color)]">Followers</div>
-            </div>
-            <div className="bg-[var(--card-color)] p-4 rounded-xl text-center">
-                <div className="text-2xl font-black">{userData?.followingCount || 0}</div>
-                <div className="text-sm text-[var(--muted-text-color)]">Following</div>
-            </div>
+    <main className="min-h-screen bg-white text-gray-900 p-4 pt-8">
+      <h1 className="text-2xl font-black mb-6">Followers</h1>
+      <div className="grid grid-cols-2 gap-4 mb-8">
+        <div className="bg-teal-50 border border-teal-100 p-4 rounded-2xl text-center shadow-sm">
+          <div className="text-2xl font-black text-teal-800">{userData?.followersCount || 0}</div>
+          <div className="text-sm text-teal-600">Followers</div>
         </div>
-
-        <h2 className="text-xl font-bold mb-4">Follow History</h2>
-        <div className="space-y-4">
-          {following.map((user) => (
-            <div key={user.id} className="flex items-center justify-between bg-[var(--card-color)] p-4 rounded-xl">
-              <div className="flex items-center gap-3">
-                <Avatar name={user.name} photoUrl={user.photoUrl} size="w-12 h-12" />
-                <div>
-                  <div className="font-bold">{user.name}</div>
-                  <div className="text-xs text-[var(--muted-text-color)]">@{user.username}</div>
-                  <div className="text-xs text-[var(--muted-text-color)]">
-                    Followed: {user.followedAt?.toDate().toLocaleDateString()}
-                  </div>
-                </div>
-              </div>
-              <div className="flex gap-2">
-                <Link href={`/profile/${user.id}`} className="px-3 py-1 bg-[var(--primary-color)] text-white rounded-lg text-sm">View</Link>
-                <button onClick={() => handleUnfollow(user.id)} className="px-3 py-1 bg-[var(--danger-color)] text-white rounded-lg text-sm">Unfollow</button>
-              </div>
-            </div>
-          ))}
-          {following.length === 0 && (
-              <div className="text-center text-[var(--muted-text-color)] py-10">No users followed yet.</div>
-          )}
+        <div className="bg-teal-50 border border-teal-100 p-4 rounded-2xl text-center shadow-sm">
+          <div className="text-2xl font-black text-teal-800">{userData?.followingCount || 0}</div>
+          <div className="text-sm text-teal-600">Following</div>
         </div>
       </div>
-      <BottomNavbar />
+      <div className="flex border-b border-gray-200 mb-6">
+        <button
+          className={`flex-1 py-2 text-sm font-bold ${activeTab === 'history' ? 'text-teal-600 border-b-2 border-teal-600' : 'text-gray-500'}`}
+          onClick={() => setActiveTab('history')}
+        >
+          Follow History
+        </button>
+        <button
+          className={`flex-1 py-2 text-sm font-bold ${activeTab === 'list' ? 'text-teal-600 border-b-2 border-teal-600' : 'text-gray-500'}`}
+          onClick={() => setActiveTab('list')}
+        >
+          Followers List
+        </button>
+      </div>
+
+      <div className="space-y-4">
+        {following.map((user) => (
+          <div key={user.id} className="flex items-center justify-between bg-white border border-gray-100 p-4 rounded-2xl shadow-sm">
+            <div className="flex items-center gap-3">
+              <Avatar name={user.name} photoUrl={user.photoUrl} size="w-12 h-12" />
+              <div>
+                <div className="font-bold">{user.name}</div>
+                <div className="text-xs text-gray-500">@{user.username}</div>
+                {activeTab === 'history' && (
+                  <div className="text-xs text-teal-600">
+                    Followed: {user.followedAt?.toDate().toLocaleDateString()}
+                  </div>
+                )}
+              </div>
+            </div>
+            <div className="flex gap-2">
+              <Link href={`/profile/${user.id}`} className="px-3 py-1 bg-gray-100 text-gray-700 rounded-lg text-sm font-medium hover:bg-gray-200">View</Link>
+              <button onClick={() => handleUnfollow(user.id)} className="px-3 py-1 bg-teal-50 text-teal-700 border border-teal-200 rounded-lg text-sm font-medium hover:bg-teal-100">Unfollow</button>
+            </div>
+          </div>
+        ))}
+        {following.length === 0 && (
+          <div className="text-center text-gray-500 py-10">
+            <p>No users followed yet.</p>
+            <Link href="/explore" className="text-teal-600 font-bold mt-2 inline-block">Explore Users</Link>
+          </div>
+        )}
+      </div>
     </main>
   );
 }
