@@ -2,9 +2,8 @@
 
 import { useEffect, useState } from "react";
 import { useParams, useRouter } from "next/navigation";
-import { collection, query, where, getDocs, doc, getDoc } from "firebase/firestore";
-import { db } from "@/firebase/config";
-import { WatchVideo } from "@/lib/mlm/watch-earn/fetchWatchVideos";
+import { fetchCreatorVideos, getCreatorInfo } from "@/lib/mlm/watch-earn/fetchWatchVideos";
+import type { WatchVideo, CreatorInfo } from "@/lib/mlm/watch-earn/fetchWatchVideos";
 import { ArrowLeft } from "lucide-react";
 
 export default function PublicUploaderPage() {
@@ -12,7 +11,7 @@ export default function PublicUploaderPage() {
   const creatorId = params.creatorId as string;
   const router = useRouter();
 
-  const [uploader, setUploader] = useState<{ username: string } | null>(null);
+  const [creatorInfo, setCreatorInfo] = useState<CreatorInfo | null>(null);
   const [videos, setVideos] = useState<WatchVideo[]>([]);
   const [loading, setLoading] = useState(true);
 
@@ -20,19 +19,16 @@ export default function PublicUploaderPage() {
     async function fetchData() {
       if (!creatorId) return;
 
-      // Fetch Uploader Info
-      const userDoc = await getDoc(doc(db, "users", creatorId));
-      if (userDoc.exists()) {
-        setUploader({ username: userDoc.data().username || "User" });
+      // 1. Resolve creator info using production logic
+      const info = await getCreatorInfo(creatorId, "");
+      setCreatorInfo(info);
+
+      // 2. Fetch sanitized videos using production logic
+      const result = await fetchCreatorVideos(creatorId);
+      if (result.success) {
+        setVideos(result.videos);
       }
 
-      // Fetch Uploader's Shorts
-      const q = query(
-        collection(db, "watchEarnVideos"),
-        where("creatorId", "==", creatorId)
-      );
-      const snapshot = await getDocs(q);
-      setVideos(snapshot.docs.map(d => ({ id: d.id, ...d.data() } as WatchVideo)));
       setLoading(false);
     }
     fetchData();
@@ -47,7 +43,7 @@ export default function PublicUploaderPage() {
       </button>
 
       <div className="mb-8 text-center">
-        <h1 className="text-2xl font-bold">@{uploader?.username}</h1>
+        <h1 className="text-2xl font-bold">@{creatorInfo?.username || "User"}</h1>
       </div>
 
       <div className="grid grid-cols-3 gap-1">
