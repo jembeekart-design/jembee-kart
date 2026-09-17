@@ -13,13 +13,7 @@ import {
 } from "lucide-react";
 import ShortsSearch from "./ShortsSearch";
 
-export default function ProductionHeader({
-  activeTab,
-  setActiveTab,
-}: {
-  activeTab: "foryou" | "following";
-  setActiveTab: (tab: "foryou" | "following") => void;
-}) {
+export default function ProductionHeader() {
   const router = useRouter();
   const [showSearch, setShowSearch] = useState(false);
   const [unreadCount, setUnreadCount] = useState(0);
@@ -62,33 +56,6 @@ export default function ProductionHeader({
                   fill="currentColor"
                   className="ml-0.5 text-orange-400"
                 />
-              </div>
-
-              <div className="flex items-center gap-3">
-                <div className="flex h-[52px] items-center rounded-full bg-black/20 p-1 backdrop-blur-md">
-                  <button
-                    type="button"
-                    onClick={() => setActiveTab("foryou")}
-                    className={`h-[44px] rounded-full px-7 text-[13px] font-bold whitespace-nowrap ${
-                      activeTab === "foryou"
-                        ? "bg-gradient-to-r from-cyan-400 to-teal-400 text-white shadow-[0_0_20px_rgba(34,211,238,0.35)]"
-                        : "text-white/80"
-                    }`}
-                  >
-                    For You
-                  </button>
-                  <button
-                    type="button"
-                    onClick={() => setActiveTab("following")}
-                    className={`h-[44px] rounded-full px-7 text-[13px] font-bold whitespace-nowrap ${
-                      activeTab === "following"
-                        ? "bg-gradient-to-r from-cyan-400 to-teal-400 text-white shadow-[0_0_20px_rgba(34,211,238,0.35)]"
-                        : "text-white/80"
-                    }`}
-                  >
-                    Following
-                  </button>
-                </div>
               </div>
             </div>
 
