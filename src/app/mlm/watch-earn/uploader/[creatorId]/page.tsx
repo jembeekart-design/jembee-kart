@@ -115,8 +115,15 @@ export default function PublicUploaderPage() {
     );
   }
 
+  const rawUsername =
+    creatorInfo?.username?.trim() ||
+    creatorInfo?.displayName?.trim() ||
+    "User";
+
   const username =
-    creatorInfo?.username || "User";
+    rawUsername.includes("@")
+      ? (creatorInfo?.displayName?.trim() || "User")
+      : rawUsername;
 
   return (
     <main className="min-h-screen bg-white text-gray-900">
