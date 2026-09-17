@@ -73,6 +73,32 @@ export default function PublicUploaderPage() {
 
       if (result.success) {
         setVideos(result.videos);
+
+        // If the users document has no username, use the
+        // existing username/displayName already stored on the Shorts video.
+        if (!userSnap.exists() || !creatorInfo?.username) {
+          const firstVideo = result.videos[0];
+
+          if (firstVideo) {
+            setCreatorInfo((prev) => ({
+              documentId: creatorId,
+              displayName:
+                prev?.displayName ||
+                firstVideo.displayName ||
+                firstVideo.username ||
+                undefined,
+              username:
+                prev?.username ||
+                firstVideo.username ||
+                firstVideo.displayName ||
+                undefined,
+              photoURL:
+                prev?.photoURL ||
+                firstVideo.photoURL ||
+                undefined,
+            }));
+          }
+        }
       }
 
       setLoading(false);
