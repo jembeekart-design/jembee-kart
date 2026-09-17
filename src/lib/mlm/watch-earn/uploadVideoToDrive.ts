@@ -14,9 +14,9 @@ export async function uploadVideoToDrive(
   uploadUrl: string,
   onProgress?: (uploadedBytes: number, totalBytes: number) => void
 ): Promise<string> {
-  // 4MB keeps individual mobile requests smaller while remaining
+  // 2MB keeps individual mobile requests smaller while remaining
   // a multiple of Google's required 256KB chunk size.
-  const CHUNK_SIZE = 4 * 1024 * 1024;
+  const CHUNK_SIZE = 2 * 1024 * 1024;
 
   let uploadedBytes = 0;
 
@@ -67,7 +67,9 @@ export async function uploadVideoToDrive(
     let response: Response | null = null;
     let lastFetchError: unknown = null;
 
-    for (let attempt = 1; attempt <= 5; attempt++) {
+    for (let attempt = 1; attempt <= 3; attempt++) {
+      const controller = new AbortController();
+      const timeoutId = setTimeout(() => controller.abort(), 60000);
       try {
         response = await fetch(uploadUrl, {
           method: "PUT",
@@ -76,7 +78,10 @@ export async function uploadVideoToDrive(
             "Content-Type": file.type,
           },
           body: chunk,
+          signal: controller.signal,
         });
+
+        clearTimeout(timeoutId);
 
         console.log("[DRIVE_DEBUG] CHUNK_ATTEMPT_RESPONSE", {
           attempt,
@@ -95,11 +100,12 @@ export async function uploadVideoToDrive(
 
         break;
       } catch (error) {
+        clearTimeout(timeoutId);
         lastFetchError = error;
 
         console.error("[DRIVE_DEBUG] CHUNK_ATTEMPT_ERROR", {
           attempt,
-          maxRetries: 5,
+          maxRetries: 3,
           name: error instanceof Error ? error.name : typeof error,
           message: error instanceof Error ? error.message : String(error),
           uploadedBytes: start,
@@ -108,7 +114,7 @@ export async function uploadVideoToDrive(
           isFinalChunk: end === file.size,
         });
 
-        if (attempt < 5) {
+        if (attempt < 3) {
           await new Promise((resolve) =>
             setTimeout(resolve, Math.min(2000 * attempt, 8000))
           );
