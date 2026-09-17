@@ -32,39 +32,47 @@ export default function PublicUploaderPage() {
     async function fetchData() {
       if (!creatorId) return;
 
-      const info = await getCreatorInfo(
-        creatorId,
-        ""
+      const userSnap = await getDoc(
+        doc(db, "users", creatorId)
       );
 
-      setCreatorInfo(info);
+      if (userSnap.exists()) {
+        const data = userSnap.data();
+
+        setCreatorInfo({
+          documentId: creatorId,
+          displayName:
+            typeof data.name === "string"
+              ? data.name
+              : typeof data.displayName === "string"
+                ? data.displayName
+                : undefined,
+          username:
+            typeof data.username === "string"
+              ? data.username
+              : typeof data.userName === "string"
+                ? data.userName
+                : undefined,
+          photoURL:
+            typeof data.photoUrl === "string"
+              ? data.photoUrl
+              : typeof data.photoURL === "string"
+                ? data.photoURL
+                : undefined,
+        });
+
+        setFollowers(
+          typeof data.followersCount === "number"
+            ? data.followersCount
+            : 0
+        );
+      }
 
       const result =
         await fetchCreatorVideos(creatorId);
 
       if (result.success) {
         setVideos(result.videos);
-      }
-
-      try {
-        const userSnap = await getDoc(
-          doc(db, "users", creatorId)
-        );
-
-        if (userSnap.exists()) {
-          const data = userSnap.data();
-
-          setFollowers(
-            typeof data.followersCount === "number"
-              ? data.followersCount
-              : 0
-          );
-        }
-      } catch (error) {
-        console.error(
-          "Failed to load follower count:",
-          error
-        );
       }
 
       setLoading(false);
