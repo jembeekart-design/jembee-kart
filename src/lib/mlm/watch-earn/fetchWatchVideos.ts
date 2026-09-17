@@ -7,6 +7,8 @@ import {
   orderBy,
   query,
   where,
+  DocumentData,
+  QueryDocumentSnapshot,
 } from "firebase/firestore";
 
 import { db } from "@/firebase/config";
@@ -35,7 +37,7 @@ export interface WatchVideo {
   createdAt?: number;
 }
 
-interface CreatorInfo {
+export interface CreatorInfo {
   documentId: string;
   displayName?: string;
   username?: string;
@@ -178,7 +180,7 @@ function userDataContainsId(
    FIND CREATOR
 ===================================================== */
 
-async function getCreatorInfo(
+export async function getCreatorInfo(
   creatorUid: string,
   videoUsername: string
 ): Promise<CreatorInfo | null> {
@@ -543,6 +545,203 @@ async function getCreatorInfo(
 }
 
 /* =====================================================
+   SHARED PROCESSING LOGIC
+===================================================== */
+
+async function processVideoDoc(
+  videoDoc: QueryDocumentSnapshot<DocumentData>,
+  creatorCache: Record<string, CreatorInfo | null>
+): Promise<WatchVideo> {
+  const data = videoDoc.data();
+
+  /* ===============================================
+     CREATOR UID
+  =============================================== */
+
+  const creatorUid =
+    getString(
+      data.userId
+    ) ||
+    getString(
+      data.creatorId
+    );
+
+  /* ===============================================
+     VIDEO USERNAME
+  =============================================== */
+
+  const videoUsername =
+    getString(
+      data.username
+    );
+
+  const videoDisplayName =
+    getString(
+      data.displayName
+    );
+
+  const videoPhotoURL =
+    getString(
+      data.photoURL
+    );
+
+  const videoPhoto =
+    getString(
+      data.photo
+    );
+
+  /* ===============================================
+     CREATOR CACHE
+  =============================================== */
+
+  const cacheKey =
+    creatorUid ||
+    videoUsername;
+
+  if (
+    cacheKey &&
+    !Object.prototype.hasOwnProperty.call(
+      creatorCache,
+      cacheKey
+    )
+  ) {
+    creatorCache[cacheKey] =
+      await getCreatorInfo(
+        creatorUid,
+        videoUsername
+      );
+  }
+
+  const creator =
+    cacheKey
+      ? creatorCache[cacheKey]
+      : null;
+
+  /* ===============================================
+     CREATOR ID
+  =============================================== */
+
+  const finalCreatorId =
+    creator?.documentId || "";
+
+  /* ===============================================
+     DISPLAY NAME
+  =============================================== */
+
+  let finalDisplayName =
+    creator?.displayName ||
+    "";
+
+  if (
+    !finalDisplayName ||
+    finalDisplayName ===
+      "JembeeKart User" ||
+    finalDisplayName ===
+      "Unknown User"
+  ) {
+    finalDisplayName =
+      creator?.username ||
+      "";
+  }
+
+  if (
+    !finalDisplayName &&
+    videoDisplayName &&
+    videoDisplayName !==
+      "JembeeKart User" &&
+    videoDisplayName !==
+      "Unknown User"
+  ) {
+    finalDisplayName =
+      videoDisplayName;
+  }
+
+  if (
+    !finalDisplayName &&
+    videoUsername &&
+    videoUsername !==
+      "JembeeKart User" &&
+    videoUsername !==
+      "Unknown User"
+  ) {
+    finalDisplayName =
+      videoUsername;
+  }
+
+  if (!finalDisplayName) {
+    finalDisplayName =
+      "Unknown User";
+  }
+
+  /* ===============================================
+     USERNAME
+  =============================================== */
+
+  const finalUsername =
+    creator?.username ||
+    videoUsername ||
+    "";
+
+  /* ===============================================
+     PHOTO
+  =============================================== */
+
+  const finalPhotoURL =
+    creator?.photoURL ||
+    videoPhotoURL ||
+    videoPhoto ||
+    "";
+
+  return {
+    id: videoDoc.id,
+
+    creatorId: finalCreatorId,
+
+    username: finalUsername,
+
+    displayName: finalDisplayName,
+
+    photoURL: finalPhotoURL,
+
+    caption: getString(data.caption),
+
+    hashtags: Array.isArray(data.hashtags)
+      ? data.hashtags.filter(
+          (tag): tag is string => typeof tag === "string"
+        )
+      : [],
+
+    music: getString(data.music),
+
+    verified: data.verified === true,
+
+    video: getString(data.video),
+
+    thumbnail: getString(data.thumbnail),
+
+    productId: getString(data.productId),
+
+    coins: typeof data.coins === "number" ? data.coins : 0,
+
+    likes: typeof data.likes === "number" ? data.likes : 0,
+
+    comments: typeof data.comments === "number" ? data.comments : 0,
+
+    shares: typeof data.shares === "number" ? data.shares : 0,
+
+    views: typeof data.views === "number" ? data.views : 0,
+
+    originalVideoId: getString(data.originalVideoId) || undefined,
+
+    originalAudioId: getString(data.originalAudioId) || undefined,
+
+    sponsor: data.sponsor === true,
+
+    createdAt: typeof data.createdAt === "number" ? data.createdAt : 0,
+  };
+}
+
+/* =====================================================
    FETCH WATCH VIDEOS
 ===================================================== */
 
@@ -583,300 +782,7 @@ export async function fetchWatchVideos() {
     for (
       const videoDoc of snapshot.docs
     ) {
-      const data =
-        videoDoc.data();
-
-      /* ===============================================
-         CREATOR UID
-      =============================================== */
-
-      const creatorUid =
-        getString(
-          data.userId
-        ) ||
-        getString(
-          data.creatorId
-        );
-
-      /* ===============================================
-         VIDEO USERNAME
-      =============================================== */
-
-      const videoUsername =
-        getString(
-          data.username
-        );
-
-      const videoDisplayName =
-        getString(
-          data.displayName
-        );
-
-      const videoPhotoURL =
-        getString(
-          data.photoURL
-        );
-
-      const videoPhoto =
-        getString(
-          data.photo
-        );
-
-      console.log(
-        "PROCESSING VIDEO CREATOR:",
-        {
-          videoId:
-            videoDoc.id,
-
-          creatorUid,
-
-          videoUsername,
-
-          videoDisplayName,
-        }
-      );
-
-      /* ===============================================
-         CREATOR CACHE
-      =============================================== */
-
-      const cacheKey =
-        creatorUid ||
-        videoUsername;
-
-      if (
-        cacheKey &&
-        !Object.prototype.hasOwnProperty.call(
-          creatorCache,
-          cacheKey
-        )
-      ) {
-        creatorCache[cacheKey] =
-          await getCreatorInfo(
-            creatorUid,
-            videoUsername
-          );
-      }
-
-      const creator =
-        cacheKey
-          ? creatorCache[cacheKey]
-          : null;
-
-      /* ===============================================
-         CREATOR ID
-      =============================================== */
-
-      const finalCreatorId =
-        creator?.documentId || "";
-
-      /* ===============================================
-         DISPLAY NAME
-      =============================================== */
-
-      let finalDisplayName =
-        creator?.displayName ||
-        "";
-
-      if (
-        !finalDisplayName ||
-        finalDisplayName ===
-          "JembeeKart User" ||
-        finalDisplayName ===
-          "Unknown User"
-      ) {
-        finalDisplayName =
-          creator?.username ||
-          "";
-      }
-
-      if (
-        !finalDisplayName &&
-        videoDisplayName &&
-        videoDisplayName !==
-          "JembeeKart User" &&
-        videoDisplayName !==
-          "Unknown User"
-      ) {
-        finalDisplayName =
-          videoDisplayName;
-      }
-
-      if (
-        !finalDisplayName &&
-        videoUsername &&
-        videoUsername !==
-          "JembeeKart User" &&
-        videoUsername !==
-          "Unknown User"
-      ) {
-        finalDisplayName =
-          videoUsername;
-      }
-
-      if (!finalDisplayName) {
-        finalDisplayName =
-          "Unknown User";
-      }
-
-      /* ===============================================
-         USERNAME
-      =============================================== */
-
-      const finalUsername =
-        creator?.username ||
-        videoUsername ||
-        "";
-
-      /* ===============================================
-         PHOTO
-      =============================================== */
-
-      const finalPhotoURL =
-        creator?.photoURL ||
-        videoPhotoURL ||
-        videoPhoto ||
-        "";
-
-      /* ===============================================
-         DEBUG
-      =============================================== */
-
-      console.log(
-        "FINAL WATCH CREATOR:",
-        {
-          videoId:
-            videoDoc.id,
-
-          creatorUid,
-
-          creatorDocumentId:
-            creator?.documentId,
-
-          finalCreatorId,
-
-          finalDisplayName,
-
-          finalUsername,
-
-          finalPhotoURL,
-        }
-      );
-
-      /* ===============================================
-         PUSH VIDEO
-      =============================================== */
-
-      videos.push({
-        id:
-          videoDoc.id,
-
-        creatorId:
-          finalCreatorId,
-
-        username:
-          finalUsername,
-
-        displayName:
-          finalDisplayName,
-
-        photoURL:
-          finalPhotoURL,
-
-        caption:
-          getString(
-            data.caption
-          ),
-
-        hashtags:
-          Array.isArray(
-            data.hashtags
-          )
-            ? data.hashtags.filter(
-                (
-                  tag
-                ): tag is string =>
-                  typeof tag ===
-                  "string"
-              )
-            : [],
-
-        music:
-          getString(
-            data.music
-          ),
-
-        verified:
-          data.verified ===
-          true,
-
-        video:
-          getString(
-            data.video
-          ),
-
-        thumbnail:
-          getString(
-            data.thumbnail
-          ),
-
-        productId:
-          getString(
-            data.productId
-          ),
-
-        coins:
-          typeof data.coins ===
-          "number"
-            ? data.coins
-            : 0,
-
-        likes:
-          typeof data.likes ===
-          "number"
-            ? data.likes
-            : 0,
-
-        comments:
-          typeof data.comments ===
-          "number"
-            ? data.comments
-            : 0,
-
-        shares:
-          typeof data.shares ===
-          "number"
-            ? data.shares
-            : 0,
-
-        views:
-          typeof data.views ===
-          "number"
-            ? data.views
-            : 0,
-
-        originalVideoId:
-          getString(
-            data.originalVideoId
-          ) ||
-          undefined,
-
-        originalAudioId:
-          getString(
-            data.originalAudioId
-          ) ||
-          undefined,
-
-        sponsor:
-          data.sponsor ===
-          true,
-
-        createdAt:
-          typeof data.createdAt ===
-          "number"
-            ? data.createdAt
-            : 0,
-      });
+      videos.push(await processVideoDoc(videoDoc, creatorCache));
     }
 
     /* =================================================
@@ -902,5 +808,36 @@ export async function fetchWatchVideos() {
       success: false,
       videos: [],
     };
+  }
+}
+
+/* =====================================================
+   FETCH CREATOR VIDEOS
+===================================================== */
+
+export async function fetchCreatorVideos(creatorId: string) {
+  try {
+    const videosRef = collection(db, "watchEarnVideos");
+
+    const q1 = query(videosRef, where("userId", "==", creatorId));
+    const q2 = query(videosRef, where("creatorId", "==", creatorId));
+
+    const [snap1, snap2] = await Promise.all([getDocs(q1), getDocs(q2)]);
+
+    const docs = [...snap1.docs, ...snap2.docs];
+    // Deduplicate
+    const uniqueDocs = Array.from(new Map(docs.map(item => [item.id, item])).values());
+
+    const videos: WatchVideo[] = [];
+    const creatorCache: Record<string, CreatorInfo | null> = {};
+
+    for (const doc of uniqueDocs) {
+      videos.push(await processVideoDoc(doc, creatorCache));
+    }
+
+    return { success: true, videos };
+  } catch (error) {
+    console.error("FETCH CREATOR VIDEOS ERROR:", error);
+    return { success: false, videos: [] };
   }
 }
