@@ -197,7 +197,7 @@ export default function BottomQuickActions({
         {/* PROFILE */}
         <button
           type="button"
-          onClick={() => go("/profile")}
+          onClick={() => go("/mlm/watch-earn/profile")}
           className="
             flex
             w-[18%]
