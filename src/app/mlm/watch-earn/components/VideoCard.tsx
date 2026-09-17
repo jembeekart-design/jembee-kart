@@ -8,6 +8,7 @@ import VideoActions from "./VideoActions";
 interface VideoCardProps {
   video: {
     id: string;
+    creatorId: string;
     username: string;
     caption: string;
     video: string;
@@ -109,7 +110,13 @@ export default function VideoCard({
       {/* Info Section */}
       <div className="absolute bottom-24 left-4 z-20 max-w-[75%] text-white pointer-events-none">
         <div className="flex items-center gap-2">
-          <h2 className="text-lg font-bold">@{video.username}</h2>
+          {video.creatorId ? (
+            <a href={`/mlm/watch-earn/uploader/${video.creatorId}`} className="text-lg font-bold pointer-events-auto hover:underline">
+              @{video.username}
+            </a>
+          ) : (
+            <h2 className="text-lg font-bold">@{video.username}</h2>
+          )}
           {video.verified && <BadgeCheck size={16} className="text-blue-500 fill-blue-500" />}
         </div>
         <p className="mt-2 text-sm line-clamp-2">{video.caption}</p>
