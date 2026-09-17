@@ -1,5 +1,6 @@
 "use client";
 
+import Link from "next/link";
 import {
   Music2,
   BadgeCheck,
@@ -78,8 +79,10 @@ export default function VideoInfo({
         {/* USERNAME */}
         <div className="min-w-0 max-w-[48vw]">
           <div className="flex items-center gap-1">
-            <span
+            <Link
+              href={`/mlm/watch-earn/uploader/${creatorId}`}
               className="
+                pointer-events-auto
                 truncate
                 text-[16px]
                 font-extrabold
@@ -88,7 +91,7 @@ export default function VideoInfo({
               "
             >
               {displayLabel}
-            </span>
+            </Link>
 
             {verified && (
               <BadgeCheck
