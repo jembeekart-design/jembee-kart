@@ -18,6 +18,7 @@ export default function PublicUploaderPage() {
   useEffect(() => {
     async function fetchData() {
       if (!creatorId) return;
+      console.log("[DEBUG] UploaderPage - Received creatorId:", creatorId);
 
       // 1. Resolve creator info using production logic
       const info = await getCreatorInfo(creatorId, "");
@@ -25,6 +26,8 @@ export default function PublicUploaderPage() {
 
       // 2. Fetch sanitized videos using production logic
       const result = await fetchCreatorVideos(creatorId);
+      console.log("[DEBUG] UploaderPage - fetchCreatorVideos result count:", result.videos.length);
+
       if (result.success) {
         setVideos(result.videos);
       }
