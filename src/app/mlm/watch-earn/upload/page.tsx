@@ -17,7 +17,8 @@ import {
   Ban,
   HelpCircle,
 } from "lucide-react";
-import { auth } from "@/firebase/config";
+import { auth, db } from "@/firebase/config";
+import { doc, getDoc } from "firebase/firestore";
 import { uploadWatchVideo } from "@/lib/mlm/watch-earn/uploadWatchVideo";
 
 export default function UploadWatchVideoPage() {
@@ -98,6 +99,33 @@ export default function UploadWatchVideoPage() {
         return;
       }
 
+      let username =
+        currentUser.displayName ||
+        currentUser.email ||
+        "Unknown User";
+
+      try {
+        const userSnap = await getDoc(
+          doc(db, "users", currentUser.uid)
+        );
+
+        if (userSnap.exists()) {
+          const userData = userSnap.data();
+
+          username =
+            (typeof userData.username === "string" &&
+              userData.username.trim()) ||
+            (typeof userData.userName === "string" &&
+              userData.userName.trim()) ||
+            username;
+        }
+      } catch (error) {
+        console.warn(
+          "Failed to load username:",
+          error
+        );
+      }
+
       setUploadError(null);
       setLoading(true);
       setUploadProgress(0);
@@ -107,10 +135,7 @@ export default function UploadWatchVideoPage() {
         creatorId: currentUser.uid,
         displayName: currentUser.displayName || undefined,
         photoURL: currentUser.photoURL || undefined,
-        username:
-          currentUser.displayName ||
-          currentUser.email ||
-          "Unknown User",
+        username,
         caption,
         hashtags: [],
         music: "",
