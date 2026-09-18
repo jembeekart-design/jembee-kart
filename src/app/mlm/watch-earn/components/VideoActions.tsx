@@ -216,7 +216,7 @@ export default function VideoActions({
         </span>
       </motion.button>
 
-      {false && <ShortsMenuSheet
+      <ShortsMenuSheet
         open={menuOpen}
         onClose={() => setMenuOpen(false)}
         isSaved={isSaved}
