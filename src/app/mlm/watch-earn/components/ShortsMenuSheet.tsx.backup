@@ -44,7 +44,7 @@ export default function ShortsMenuSheet({
   return (
     <div
       className={`
-        fixed inset-x-0 bottom-[80px] z-[99999] max-h-[calc(100dvh-80px)] overflow-y-auto overscroll-contain pb-4
+        fixed bottom-0 left-0 right-0 z-[1000]
         rounded-t-[20px] bg-neutral-900 text-white
         transition-all duration-300
         ${open ? "translate-y-0" : "translate-y-full"}
@@ -60,18 +60,6 @@ export default function ShortsMenuSheet({
       <div className="p-2">
         {activeTab === 'main' && (
           <div className="flex flex-col gap-1">
-            {onInterested && (
-              <button onClick={() => { onInterested(); onClose(); }} className="flex items-center gap-4 p-4 hover:bg-neutral-800 rounded-lg">
-                <ThumbsUp size={24} />
-                Interested
-              </button>
-            )}
-            {onNotInterested && (
-              <button onClick={() => { onNotInterested(); onClose(); }} className="flex items-center gap-4 p-4 hover:bg-neutral-800 rounded-lg">
-                <ThumbsDown size={24} />
-                Not interested
-              </button>
-            )}
             <button onClick={() => { onSave(); onClose(); }} className="flex items-center gap-4 p-4 hover:bg-neutral-800 rounded-lg">
               <Bookmark size={24} className={isSaved ? "text-cyan-400" : ""} />
               {isSaved ? "Remove from Saved" : "Save"}
@@ -86,6 +74,18 @@ export default function ShortsMenuSheet({
               <button onClick={() => { onWhySeeing(); onClose(); }} className="flex items-center gap-4 p-4 hover:bg-neutral-800 rounded-lg">
                 <Info size={24} />
                 Why you're seeing this post
+              </button>
+            )}
+            {onInterested && (
+              <button onClick={() => { onInterested(); onClose(); }} className="flex items-center gap-4 p-4 hover:bg-neutral-800 rounded-lg">
+                <ThumbsUp size={24} />
+                Interested
+              </button>
+            )}
+            {onNotInterested && (
+              <button onClick={() => { onNotInterested(); onClose(); }} className="flex items-center gap-4 p-4 hover:bg-neutral-800 rounded-lg">
+                <ThumbsDown size={24} />
+                Not interested
               </button>
             )}
             {onReport && (
