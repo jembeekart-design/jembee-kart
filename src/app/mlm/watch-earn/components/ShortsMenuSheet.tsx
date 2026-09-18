@@ -44,7 +44,7 @@ export default function ShortsMenuSheet({
   return (
     <div
       className={`
-        fixed inset-x-0 bottom-[80px] z-[99999] max-h-[calc(100dvh-80px)] overflow-y-auto overscroll-contain pb-4
+        fixed bottom-[150px] left-0 right-0 z-[99999] max-h-[calc(100dvh-150px)] pb-6 overflow-y-auto
         rounded-t-[20px] bg-neutral-900 text-white
         transition-all duration-300
         ${open ? "translate-y-0" : "translate-y-full"}
@@ -114,8 +114,8 @@ export default function ShortsMenuSheet({
         )}
 
         {onReport && activeTab === 'report' && (
-            <div className="flex flex-col gap-1 pb-6">
-                <button onClick={() => setActiveTab('main')} className="p-4 mb-2 shrink-0">Back</button>
+            <div className="flex flex-col gap-1">
+                <button onClick={() => setActiveTab('main')} className="p-4 mb-2">Back</button>
                 {['Spam', 'Misleading', 'Hate', 'Nudity', 'Violence', 'Copyright', 'Other'].map(reason => (
                     <button 
                         key={reason} 
