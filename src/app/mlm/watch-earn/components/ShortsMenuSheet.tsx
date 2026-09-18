@@ -41,7 +41,13 @@ export default function ShortsMenuSheet({
 
   const [activeTab, setActiveTab] = useState<'main' | 'playback' | 'report'>('main');
 
-  return (
+  useEffect(() => {
+    setMounted(true);
+  }, []);
+
+  if (!mounted) return null;
+
+  return createPortal(
     <div
       className={`
         fixed inset-x-0 bottom-0 z-[99999] max-h-[calc(100dvh-80px)] overflow-y-auto pb-[90px]
@@ -128,6 +134,7 @@ export default function ShortsMenuSheet({
             </div>
         )}
       </div>
-    </div>
+    </div>,
+    document.body
   );
 }
