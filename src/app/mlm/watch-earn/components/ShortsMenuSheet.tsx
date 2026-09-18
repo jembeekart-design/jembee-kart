@@ -44,7 +44,7 @@ export default function ShortsMenuSheet({
   return (
     <div
       className={`
-        fixed bottom-[70px] left-0 right-0 z-[1000]
+        fixed bottom-[60px] left-0 right-0 z-[1000]
         rounded-t-[20px] bg-neutral-900 text-white
         transition-all duration-300
         ${open ? "translate-y-0" : "translate-y-full"}
