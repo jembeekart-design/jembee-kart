@@ -114,8 +114,8 @@ export default function ShortsMenuSheet({
         )}
 
         {onReport && activeTab === 'report' && (
-            <div className="flex flex-col gap-1">
-                <button onClick={() => setActiveTab('main')} className="p-4 mb-2">Back</button>
+            <div className="flex flex-col gap-1 pb-6">
+                <button onClick={() => setActiveTab('main')} className="p-4 mb-2 shrink-0">Back</button>
                 {['Spam', 'Misleading', 'Hate', 'Nudity', 'Violence', 'Copyright', 'Other'].map(reason => (
                     <button 
                         key={reason} 
