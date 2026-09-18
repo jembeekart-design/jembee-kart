@@ -629,12 +629,7 @@ export default function VerticalVideoFeed({
         }
       />
 
-      <BottomQuickActions
-        video={videos.find(
-          v =>
-            v.id === activeVideoId
-        )}
-      />
+      
     </main>
   );
 }
