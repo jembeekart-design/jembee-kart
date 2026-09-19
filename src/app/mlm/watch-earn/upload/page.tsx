@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useState, Suspense } from "react";
 import { useSearchParams } from "next/navigation";
 import {
   ArrowLeft,
@@ -21,7 +21,7 @@ import { auth, db } from "@/firebase/config";
 import { doc, getDoc } from "firebase/firestore";
 import { uploadWatchVideo } from "@/lib/mlm/watch-earn/uploadWatchVideo";
 
-export default function UploadWatchVideoPage() {
+function UploadWatchVideoContent() {
   const searchParams = useSearchParams();
   const videoUrlFromParams = searchParams.get("url");
 
@@ -479,5 +479,13 @@ export default function UploadWatchVideoPage() {
         </nav>
       </div>
     </main>
+  );
+}
+
+export default function UploadWatchVideoPage() {
+  return (
+    <Suspense fallback={<div>Loading upload...</div>}>
+      <UploadWatchVideoContent />
+    </Suspense>
   );
 }
