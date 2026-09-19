@@ -47,7 +47,7 @@ export default function ShortsMenuSheet({
         fixed bottom-[150px] left-0 right-0 z-[99999] max-h-[calc(100dvh-150px)] pb-6 overflow-y-auto
         rounded-t-[20px] bg-neutral-900 text-white
         transition-all duration-300
-        ${open ? "translate-y-0" : "translate-y-full"}
+        ${open ? "translate-y-0 opacity-100 pointer-events-auto" : "translate-y-full opacity-0 pointer-events-none"}
       `}
     >
       <div className="flex items-center justify-between p-4 border-b border-neutral-700">
