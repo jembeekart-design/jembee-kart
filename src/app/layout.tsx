@@ -6,8 +6,24 @@ import { ThemeManager } from "@/components/theme-manager";
 import SystemSeeder from "@/components/SystemSeeder";
 
 export const metadata: Metadata = {
-  title: "JembeeKart",
-  description: "AI Ecommerce Ecosystem",
+  metadataBase: new URL("https://jembee-kart.vercel.app"),
+  title: {
+    default: "JembeeKart | Online Shopping & Rewards",
+    template: "%s | JembeeKart",
+  },
+  description: "Explore a wide range of products at JembeeKart. Shop online and participate in our rewards programme.",
+  robots: {
+    index: true,
+    follow: true,
+  },
+  openGraph: {
+    title: "JembeeKart",
+    description: "Explore a wide range of products at JembeeKart.",
+    url: "https://jembee-kart.vercel.app",
+    siteName: "JembeeKart",
+    locale: "en_IN",
+    type: "website",
+  },
 };
 
 interface RootLayoutProps {

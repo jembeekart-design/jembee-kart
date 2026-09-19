@@ -212,8 +212,8 @@ export default function MLMPage() {
         <div className="mt-4 grid grid-cols-2 gap-3">
           <div className="rounded-2xl bg-[var(--color-card-background)] p-4 shadow-sm border border-[var(--color-border)]">
             <CheckCircle2 size={28} className="text-[var(--color-primary-button)]" />
-            <h3 className="mt-3 text-[15px] font-black">Passive Income</h3>
-            <p className="mt-1 text-[11px] text-[var(--text-secondary)]">Team se automatic earning.</p>
+            <h3 className="mt-3 text-[15px] font-black">Referral Rewards</h3>
+            <p className="mt-1 text-[11px] text-[var(--text-secondary)]">Rewards are subject to eligibility and applicable programme rules.</p>
           </div>
 
           <div className="rounded-2xl bg-[var(--color-card-background)] p-4 shadow-sm border border-[var(--color-border)]">
