@@ -93,7 +93,7 @@ export default function MLMPage() {
               MLM Income
             </h1>
             <p className="text-[11px] text-[var(--text-secondary)]">
-              Build Team & Earn Money
+              Referral Program Overview
             </p>
           </div>
         </div>
@@ -107,7 +107,7 @@ export default function MLMPage() {
           </div>
 
           <h2 className="mt-5 text-[32px] font-black leading-[38px]">
-            Earn Money<br />From Your Network 🚀
+            Referral Rewards<br />Program 🚀
           </h2>
 
           <p className="mt-4 text-[13px] leading-6 text-[var(--button-text-color)]/90">
@@ -219,19 +219,19 @@ export default function MLMPage() {
           <div className="rounded-2xl bg-[var(--color-card-background)] p-4 shadow-sm border border-[var(--color-border)]">
             <Users size={28} className="text-[var(--color-primary-button)]" />
             <h3 className="mt-3 text-[15px] font-black">Unlimited Team</h3>
-            <p className="mt-1 text-[11px] text-[var(--text-secondary)]">Jitni badi team utni earning.</p>
+            <p className="mt-1 text-[11px] text-[var(--text-secondary)]">Rewards are based on team participation.</p>
           </div>
 
           <div className="rounded-2xl bg-[var(--color-card-background)] p-4 shadow-sm border border-[var(--color-border)]">
             <ShieldCheck size={28} className="text-[var(--color-success)]" />
             <h3 className="mt-3 text-[15px] font-black">Secure System</h3>
-            <p className="mt-1 text-[11px] text-[var(--text-secondary)]">Safe & transparent income.</p>
+            <p className="mt-1 text-[11px] text-[var(--text-secondary)]">Transparent referral system.</p>
           </div>
 
           <div className="rounded-2xl bg-[var(--color-card-background)] p-4 shadow-sm border border-[var(--color-border)]">
             <BadgeIndianRupee size={28} className="text-[var(--color-warning)]" />
-            <h3 className="mt-3 text-[15px] font-black">Daily Earnings</h3>
-            <p className="mt-1 text-[11px] text-[var(--text-secondary)]">Roz commission earn karo.</p>
+            <h3 className="mt-3 text-[15px] font-black">Referral Rewards</h3>
+            <p className="mt-1 text-[11px] text-[var(--text-secondary)]">Earn rewards based on program rules.</p>
           </div>
         </div>
       </section>
