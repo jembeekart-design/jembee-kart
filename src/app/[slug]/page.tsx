@@ -1,18 +1,21 @@
-import { doc, getDoc } from "firebase/firestore";
-import { db } from "@/firebase/config";
+import { getAdminDb } from "@/firebase/admin";
 import { notFound } from "next/navigation";
 
 export default async function DynamicPage({ params }: { params: Promise<{ slug: string }> }) {
   const { slug } = await params;
   
-  const docRef = doc(db, "dynamic_pages", slug);
-  const docSnap = await getDoc(docRef);
+  const adminDb = getAdminDb();
+  const docRef = adminDb.collection("dynamic_pages").doc(slug);
+  const docSnap = await docRef.get();
 
-  if (!docSnap.exists() || !docSnap.data().visible) {
+  if (!docSnap.exists || !docSnap.data()?.visible) {
     notFound();
   }
 
   const data = docSnap.data();
+  if (!data) {
+    notFound();
+  }
 
   return (
     <main className="p-8 min-h-screen">
