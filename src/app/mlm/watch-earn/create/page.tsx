@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useRef, useEffect, useCallback } from "react";
+import { useState, useRef, useEffect, useCallback, Suspense } from "react";
 import { useSearchParams, useRouter } from "next/navigation";
 import { Camera, Mic, MicOff, Play, Pause, RotateCcw, X, Upload, Zap, FlipHorizontal, Camera as CameraIcon } from "lucide-react";
 import { collection, onSnapshot } from "firebase/firestore";
@@ -19,7 +19,7 @@ interface Product {
   reviews?: number;
 }
 
-export default function CreateStudioPage() {
+function CreateStudioContent() {
   const searchParams = useSearchParams();
   const router = useRouter();
   const videoUrl = searchParams.get('url');
@@ -200,5 +200,13 @@ export default function CreateStudioPage() {
         ))}
       </div>
     </main>
+  );
+}
+
+export default function CreateStudioPage() {
+  return (
+    <Suspense fallback={<div>Loading studio...</div>}>
+      <CreateStudioContent />
+    </Suspense>
   );
 }
