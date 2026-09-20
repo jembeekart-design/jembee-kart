@@ -33,7 +33,7 @@ const AdminConfigContext = createContext<AdminConfigContextType | undefined>(und
 
 export function AdminConfigProvider({ children }: { children: ReactNode }) {
   const [config, setConfig] = useState<AdminConfig>(DEFAULT_ADMIN_CONFIG);
-  const [status, setStatus] = useState<ConfigStatus>("loading");
+  const [status, setStatus] = useState<ConfigStatus>("ready");
   const [source, setSource] = useState<ConfigSource>("defaults");
   const [error, setError] = useState<Error | null>(null);
   const [lastUpdated, setLastUpdated] = useState<Date | null>(null);
@@ -191,16 +191,6 @@ export function AdminConfigProvider({ children }: { children: ReactNode }) {
     () => ({ config, status, source, error, lastUpdated }),
     [config, status, source, error, lastUpdated]
   );
-
-  if (status === "loading") {
-    return (
-      <div className="flex min-h-screen items-center justify-center bg-[var(--background)]">
-        <div className="text-[14px] font-black uppercase tracking-widest text-[var(--primary)] animate-pulse">
-          Loading JembeeKart...
-        </div>
-      </div>
-    );
-  }
 
   return (
     <AdminConfigContext.Provider value={contextValue}>
