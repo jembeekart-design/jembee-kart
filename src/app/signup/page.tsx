@@ -381,7 +381,7 @@ function RegistrationForm() {
             />
             <label htmlFor="terms" className="text-xs text-[var(--text-secondary)] select-none">
               I agree to the{" "}
-              <Link href="/terms" className="text-[var(--color-primary-button)] font-bold hover:underline">
+              <Link href="/terms_conditions" className="text-[var(--color-primary-button)] font-bold hover:underline">
                 Terms & Conditions
               </Link>{" "}
               and{" "}
