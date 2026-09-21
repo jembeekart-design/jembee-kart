@@ -8,7 +8,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
     { url: `${baseUrl}/mlm/watch-earn`, lastModified: new Date() },
     { url: `${baseUrl}/contact`, lastModified: new Date() },
     { url: `${baseUrl}/privacy-policy`, lastModified: new Date() },
-    { url: `${baseUrl}/terms-and-conditions`, lastModified: new Date() },
+    { url: `${baseUrl}/terms_conditions`, lastModified: new Date() },
     { url: `${baseUrl}/refund-policy`, lastModified: new Date() },
     { url: `${baseUrl}/shipping-policy`, lastModified: new Date() },
     { url: `${baseUrl}/rewards-policy`, lastModified: new Date() },
