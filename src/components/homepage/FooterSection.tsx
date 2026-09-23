@@ -1,5 +1,7 @@
 "use client";
 
+import Link from "next/link";
+
 export default function FooterSection() {
   return (
     <footer className="w-full overflow-hidden bg-[var(--card-color)] text-[var(--button-text-color)]">
@@ -33,19 +35,27 @@ export default function FooterSection() {
           <ul className="mt-5 space-y-3 text-sm text-[var(--muted-text-color)] md:text-lg">
 
             <li className="break-words transition-all duration-300 hover:text-[var(--button-text-color)]">
-              Home
+              <Link href="/" className="block">
+                Home
+              </Link>
             </li>
 
             <li className="break-words transition-all duration-300 hover:text-[var(--button-text-color)]">
-              Products
+              <Link href="/" className="block">
+                Products
+              </Link>
             </li>
 
             <li className="break-words transition-all duration-300 hover:text-[var(--button-text-color)]">
-              Affiliate
+              <Link href="/affiliate" className="block">
+                Affiliate
+              </Link>
             </li>
 
             <li className="break-words transition-all duration-300 hover:text-[var(--button-text-color)]">
-              Seller
+              <Link href="/mlm" className="block">
+                Seller
+              </Link>
             </li>
 
           </ul>
@@ -63,19 +73,39 @@ export default function FooterSection() {
           <ul className="mt-5 space-y-3 text-sm text-[var(--muted-text-color)] md:text-lg">
 
             <li className="break-words transition-all duration-300 hover:text-[var(--button-text-color)]">
-              Help Center
+              <Link href="/mlm/support" className="block">
+                Help Center
+              </Link>
             </li>
 
             <li className="break-words transition-all duration-300 hover:text-[var(--button-text-color)]">
-              Refund Policy
+              <Link href="/refund-policy" className="block">
+                Refund Policy
+              </Link>
             </li>
 
             <li className="break-words transition-all duration-300 hover:text-[var(--button-text-color)]">
-              Privacy Policy
+              <Link href="/privacy" className="block">
+                Privacy Policy
+              </Link>
             </li>
 
             <li className="break-words transition-all duration-300 hover:text-[var(--button-text-color)]">
-              Contact Us
+              <Link href="/terms_conditions" className="block">
+                Terms &amp; Conditions
+              </Link>
+            </li>
+
+            <li className="break-words transition-all duration-300 hover:text-[var(--button-text-color)]">
+              <Link href="/shipping" className="block">
+                Shipping &amp; Delivery
+              </Link>
+            </li>
+
+            <li className="break-words transition-all duration-300 hover:text-[var(--button-text-color)]">
+              <Link href="/contact" className="block">
+                Contact Us
+              </Link>
             </li>
 
           </ul>
@@ -93,19 +123,27 @@ export default function FooterSection() {
           <ul className="mt-5 space-y-3 text-sm text-[var(--muted-text-color)] md:text-lg">
 
             <li className="break-words transition-all duration-300 hover:text-[var(--button-text-color)]">
-              Seller Program
+              <Link href="/mlm" className="block">
+                Seller Program
+              </Link>
             </li>
 
             <li className="break-words transition-all duration-300 hover:text-[var(--button-text-color)]">
-              Affiliate System
+              <Link href="/affiliate" className="block">
+                Affiliate System
+              </Link>
             </li>
 
             <li className="break-words transition-all duration-300 hover:text-[var(--button-text-color)]">
-              MLM Network
+              <Link href="/mlm/network" className="block">
+                MLM Network
+              </Link>
             </li>
 
             <li className="break-words transition-all duration-300 hover:text-[var(--button-text-color)]">
-              AI Automation
+              <Link href="/mlm" className="block">
+                AI Automation
+              </Link>
             </li>
 
           </ul>
