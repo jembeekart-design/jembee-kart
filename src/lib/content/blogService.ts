@@ -1,4 +1,4 @@
-import { getAdminDb } from "@/firebase/admin";
+import { adminDb } from "@/firebase/admin";
 
 export interface Blog {
   id: string;
@@ -14,7 +14,7 @@ export interface Blog {
 }
 
 export async function getPublishedBlogs(): Promise<Blog[]> {
-  const snapshot = await getAdminDb()
+  const snapshot = await adminDb
     .collection("blogs")
     .where("published", "==", true)
     .orderBy("createdAt", "desc")
@@ -29,7 +29,7 @@ export async function getPublishedBlogs(): Promise<Blog[]> {
 export async function getPublishedBlogBySlug(
   slug: string
 ): Promise<Blog | null> {
-  const snapshot = await getAdminDb()
+  const snapshot = await adminDb
     .collection("blogs")
     .where("slug", "==", slug)
     .where("published", "==", true)
