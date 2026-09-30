@@ -2,14 +2,12 @@
 
 import React, { useState } from "react";
 import { useRouter } from "next/navigation";
-import { ArrowLeft, Search, Users, Coins, Bell, Flame } from "lucide-react";
+import { ArrowLeft, Search, Users, Bell, Flame } from "lucide-react";
 import { motion } from "framer-motion";
-import { useWallet } from "@/hooks/useWallet";
 
 export default function ProductionHeader({ activeTab, setActiveTab }: { activeTab: 'foryou' | 'following', setActiveTab: (tab: 'foryou' | 'following') => void }) {
   const router = useRouter();
   const [showSearch, setShowSearch] = useState(false);
-  const { wallet, loading } = useWallet();
 
   return (
     <>
@@ -25,7 +23,7 @@ export default function ProductionHeader({ activeTab, setActiveTab }: { activeTa
             </button>
 
             <h2 className="text-base font-extrabold tracking-tight flex items-center gap-2">
-              Watch & Earn
+              Jembee Shorts
               <motion.span
                 initial={{ scale: 0.95 }}
                 animate={{ scale: [1, 1.02, 1] }}
@@ -44,11 +42,6 @@ export default function ProductionHeader({ activeTab, setActiveTab }: { activeTa
 
             <button onClick={() => router.push('/mlm/team-business')} aria-label="Friends" className="p-2 rounded-full bg-white/5 backdrop-blur-sm">
               <Users size={16} />
-            </button>
-
-            <button onClick={() => router.push('/mlm/wallet')} aria-label="Coins" className="flex items-center gap-2 rounded-full bg-white/5 px-2 py-1">
-              <Coins size={14} className="text-yellow-300" />
-              <span className="font-semibold text-sm">{loading ? '...' : wallet?.walletBalance || 0}</span>
             </button>
 
             <button onClick={() => router.push('/mlm/notifications')} aria-label="Notifications" className="p-2 rounded-full bg-white/5 backdrop-blur-sm">

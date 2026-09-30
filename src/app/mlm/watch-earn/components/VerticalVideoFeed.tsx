@@ -22,7 +22,6 @@ import CommentDrawer
 import Toast from "./Toast";
 import BottomQuickActions from "./BottomQuickActions";
 import { getWatchVideos, WatchVideo } from "../services/watchVideos.service";
-import { DEFAULT_BUSINESS_RULES } from "@/firestore/businessRules/defaults";
 
 // New imports for persistence and auth
 import { auth, db } from "@/firebase/config";
