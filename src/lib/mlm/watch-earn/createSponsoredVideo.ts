@@ -18,10 +18,6 @@ interface CreateSponsoredVideoData {
   thumbnail: string;
 
   budget: number;
-
-  rewardCoins: number;
-
-  minimumWatchTime: number;
 }
 
 export async function
@@ -55,14 +51,7 @@ createSponsoredVideo(
 
         budget:
           data.budget,
-
-        rewardCoins:
-          data.rewardCoins,
-
-        minimumWatchTime:
-          data.minimumWatchTime,
-
-        sponsored: true,
+sponsored: true,
 
         totalViews: 0,
 

@@ -28,20 +28,13 @@ export async function POST(request: Request) {
 
     let newStatus = "pending";
     let newModeration = "pending";
-    let newCoins = 0;
-    let newPendingCoins = 0;
-
-    if (moderation_status === "approved") {
+if (moderation_status === "approved") {
       newStatus = "approved";
       newModeration = "safe";
-      newCoins = videoData.pendingCoins || 0;
-      newPendingCoins = 0;
-    } else if (moderation_status === "rejected") {
+} else if (moderation_status === "rejected") {
       newStatus = "rejected";
       newModeration = "rejected";
-      newCoins = 0;
-      newPendingCoins = 0;
-    }
+}
 
     // Use a transaction for atomicity
     await adminDb.runTransaction(async (transaction) => {
@@ -55,9 +48,7 @@ export async function POST(request: Request) {
           status: moderation_status,
           details: moderation_details,
         },
-        coins: newCoins,
-        pendingCoins: newPendingCoins,
-      });
+});
 
       // Create Admin Notification if flagged/rejected
       if (newStatus === "rejected") {

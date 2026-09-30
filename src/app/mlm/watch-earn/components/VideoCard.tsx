@@ -11,7 +11,6 @@ interface VideoCardProps {
     username: string;
     caption: string;
     video: string;
-    coins: number;
     verified?: boolean;
     likes: number;
     comments: number;
@@ -26,7 +25,6 @@ interface VideoCardProps {
   active: boolean;
   onComment: () => void;
   onShare: () => void;
-  coins: number;
 }
 
 export default function VideoCard({ 
@@ -37,7 +35,6 @@ export default function VideoCard({
     active, 
     onComment, 
     onShare,
-    coins 
 }: VideoCardProps) {
   const [isLiked, setIsLiked] = useState(false);
   const [isSaved, setIsSaved] = useState(false);
@@ -134,20 +131,6 @@ export default function VideoCard({
            <p className="text-xs">Product Strip (Slideable)</p>
         </div>
 
-        {/* Reward Progress Countdown */}
-        <div className="mt-4 w-full">
-            <div className="flex justify-between items-end mb-1">
-                <span className="text-[10px] font-black uppercase tracking-wider text-yellow-500">Reward Progress</span>
-                <span className="text-[10px] font-bold text-white/60">{Math.round(watchProgress)}%</span>
-            </div>
-            <div className="h-1.5 w-full bg-white/20 rounded-full overflow-hidden">
-                <motion.div 
-                    className="h-full bg-yellow-500"
-                    animate={{ width: `${watchProgress}%` }}
-                    transition={{ type: "spring", bounce: 0, duration: 0.5 }}
-                />
-            </div>
-        </div>
       </div>
 
       {/* Consolidated Social Actions */}
@@ -155,7 +138,6 @@ export default function VideoCard({
         likes={video.likes}
         comments={video.comments}
         shares={video.shares}
-        coins={coins}
         isMuted={isMuted}
         toggleMute={toggleMute}
         onLike={() => setIsLiked(!isLiked)}

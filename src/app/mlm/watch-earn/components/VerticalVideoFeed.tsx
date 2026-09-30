@@ -321,16 +321,6 @@ export default function VerticalVideoFeed({
                   video.video
                 }
 
-                rewardCoins={
-                  video.coins
-                }
-
-                watchSeconds={
-                  DEFAULT_BUSINESS_RULES
-                    .watchEarn
-                    .minimumWatchDuration
-                }
-
                 isMuted={isMuted}
 
                 active={
@@ -394,10 +384,6 @@ export default function VerticalVideoFeed({
 
                 shares={
                   video.shares
-                }
-
-                coins={
-                  video.coins
                 }
 
                 isMuted={

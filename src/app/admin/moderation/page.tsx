@@ -18,8 +18,6 @@ interface VideoModerationItem {
   hashtags: string[];
   status: string;
   moderation: string;
-  coins: number;
-  pendingCoins: number;
   createdAt: any;
 }
 
@@ -90,15 +88,12 @@ export default function AdminModerationDashboard() {
         const updatePayload = action === 'approved' ? {
           status: 'approved',
           moderation: 'safe',
-          coins: data.pendingCoins || 0,
-          pendingCoins: 0,
-          moderationCheckedAt: serverTimestamp()
+moderationCheckedAt: serverTimestamp()
         } : {
           status: 'rejected',
           moderation: 'rejected',
           coins: 0,
-          pendingCoins: 0,
-          moderationCheckedAt: serverTimestamp()
+moderationCheckedAt: serverTimestamp()
         };
 
         transaction.update(videoRef, updatePayload);

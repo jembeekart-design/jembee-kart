@@ -332,8 +332,6 @@ export interface EnterpriseScannerResults {
 
   mlm: unknown;
 
-  watchEarn: unknown;
-
   creatorEconomy: unknown;
 
   antiFraud: unknown;

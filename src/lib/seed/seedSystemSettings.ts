@@ -124,13 +124,6 @@ const DEFAULT_SETTINGS = {
 
   watchEarn: {
     enabled: true,
-    videosRequired: 100,
-    rewardAmount: 50,
-    videoWatchSeconds: 30,
-    rewardProgressSeconds: 5,
-    minimumWatchPercent: 80,
-    allowSkip: true,
-    rewardDelay: 3,
     enableUploadButton: true,
     uploadButtonText: "Upload Video",
     uploadButtonIcon: "upload",

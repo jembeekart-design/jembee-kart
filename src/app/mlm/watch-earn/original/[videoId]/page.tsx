@@ -68,7 +68,6 @@ export default function OriginalPage() {
               active={false} 
               onComment={() => {}} 
               onShare={() => {}} 
-              coins={v.coins} 
             />
           </div>
         ))}

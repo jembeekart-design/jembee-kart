@@ -51,11 +51,3 @@ export async function getWatchStats(userId: string, callback: (stats: any) => vo
 }
 // ... (rest of file)
 
-export async function updateWatchStats(userId: string, coinsEarned: number) {
-  const statsRef = doc(db, STATS_COLLECTION, userId);
-  await updateDoc(statsRef, {
-    totalCoins: increment(coinsEarned),
-    videosWatched: increment(1),
-    updatedAt: serverTimestamp(),
-  });
-}

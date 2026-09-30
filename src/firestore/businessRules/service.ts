@@ -2,7 +2,6 @@ import {
   BusinessRulesConfig,
   ProfitabilityRules,
   ReferralRules,
-  WatchEarnRules,
   WalletRules,
   CreatorEconomyRules,
   FeatureFlags,
@@ -13,7 +12,6 @@ import {
   loadBusinessRules,
   loadProfitabilityRules,
   loadReferralRules,
-  loadWatchEarnRules,
   loadWalletRules,
   loadCreatorEconomyRules,
   loadFeatureFlags,
@@ -58,14 +56,6 @@ class BusinessRulesService {
 
   async getReferralRules(): Promise<ReferralRules> {
     return loadReferralRules();
-  }
-
-  // ====================================================
-  // Watch & Earn
-  // ====================================================
-
-  async getWatchEarnRules(): Promise<WatchEarnRules> {
-    return loadWatchEarnRules();
   }
 
   // ====================================================
@@ -117,24 +107,6 @@ class BusinessRulesService {
   this.clearCache();
 }
 
-  async saveWatchEarnRules(
-  rules: WatchEarnRules
-): Promise<void> {
-
-  await setDoc(
-    doc(
-      db,
-      BUSINESS_RULES_COLLECTION,
-      BUSINESS_RULE_DOCUMENTS.watchEarn
-    ),
-    rules,
-    {
-      merge: true,
-    }
-  );
-
-  this.clearCache();
-}
 
   async saveReferralRules(
   rules: ReferralRules

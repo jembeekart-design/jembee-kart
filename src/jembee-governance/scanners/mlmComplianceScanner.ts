@@ -27,9 +27,6 @@ export class MlmComplianceScanner {
     "signupBonus",
     "registrationBonus",
     "joiningBonus",
-    "videoViewCommission",
-    "watchVideoCommission",
-    "watchRewardCommission",
   ];
 
   /**

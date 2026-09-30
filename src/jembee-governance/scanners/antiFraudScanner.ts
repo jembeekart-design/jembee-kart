@@ -179,7 +179,6 @@ export class AntiFraudScanner {
        * Watch Farming Protection
        */
       const watchLogic =
-        content.includes("watchReward") ||
         content.includes("watchVideo");
 
       const watchProtection =

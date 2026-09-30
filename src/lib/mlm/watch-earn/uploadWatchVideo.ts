@@ -137,13 +137,6 @@ export async function uploadWatchVideo({
     }
 
     // ==================================================
-    // AUTO REWARD
-    // ==================================================
-
-    const rewardCoins =
-      sponsor ? 25 : 5;
-
-    // ==================================================
     // FORM DATA
     // ==================================================
 
@@ -308,18 +301,7 @@ export async function uploadWatchVideo({
 
       thumbnail:
         thumbnailUrl,
-
-      // ================================================
-      // REWARD
-      // ================================================
-
-      coins:
-        0,
-
-      pendingCoins:
-        rewardCoins,
-
-      // ================================================
+// ================================================
       // SOCIAL COUNTERS
       // ================================================
 
@@ -412,9 +394,6 @@ export async function uploadWatchVideo({
 
       thumbnail:
         thumbnailUrl,
-
-      coins:
-        rewardCoins,
 
       userId:
         authenticatedUserId,

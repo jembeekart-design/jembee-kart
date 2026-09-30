@@ -21,14 +21,4 @@ export const mockIssues: ControlTowerIssue[] = [
     message: "Authentication guard missing.",
     fix: "Wrap page with DashboardGuard",
   },
-  {
-    id: "WATCH-001",
-    category: "WATCH_EARN",
-    severity: "CRITICAL",
-    title: "Locked Reward Missing",
-    file: "src/lib/mlm/watch-earn/createWatchReward.ts",
-    line: 35,
-    message: "Reward unlock flow missing.",
-    fix: "Implement lockedReward architecture",
-  },
 ];

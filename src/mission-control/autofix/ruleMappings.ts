@@ -36,20 +36,6 @@ export const VERIFIED_RULES: RuleMapping[] = [
     safe: true,
   },
   {
-    name: "Watch Reward",
-    pattern: /\brewardAmount\b/i,
-    configPath: "watchEarn.rewardAmount",
-    replacement: "settings.watchEarn.rewardAmount",
-    safe: true,
-  },
-  {
-    name: "Required Videos",
-    pattern: /\brequiredVideos\b/i,
-    configPath: "watchEarn.requiredVideos",
-    replacement: "settings.watchEarn.requiredVideos",
-    safe: true,
-  },
-  {
     name: "Referral Bonus",
     pattern: /\breferralBonus\b/i,
     configPath: "referral.referralBonus",

@@ -81,22 +81,6 @@ export const GOVERNANCE_VIOLATION_IDS = Object.freeze({
     "MLM_PARENT_CHAIN_INVALID",
 
   // ====================================================
-  // WATCH & EARN
-  // ====================================================
-
-  WATCH_EARN_RULE_FAILED:
-    "WATCH_EARN_RULE_FAILED",
-
-  WATCH_EARN_INVALID_REWARD:
-    "WATCH_EARN_INVALID_REWARD",
-
-  WATCH_EARN_UNLOCK_FAILED:
-    "WATCH_EARN_UNLOCK_FAILED",
-
-  WATCH_EARN_DUPLICATE_REWARD:
-    "WATCH_EARN_DUPLICATE_REWARD",
-
-  // ====================================================
   // FIRESTORE
   // ====================================================
 

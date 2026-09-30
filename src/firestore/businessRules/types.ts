@@ -39,20 +39,6 @@ export interface ReferralRules {
 }
 
 // ======================================================
-// Watch & Earn
-// ======================================================
-
-export interface WatchEarnRules {
-  rewardPerVideo: number; 
-  watchDurationPerReward: number;
-  videosRequired: number;
-  rewardAmount: number;
-  requiredSales: number;
-  maxActiveCycles: number;
-  minimumWatchDuration: number;
-}
-
-// ======================================================
 // Wallet
 // ======================================================
 
@@ -107,9 +93,7 @@ export interface BusinessRulesMetadata {
 
 export interface BusinessRulesConfig {
   profitability: ProfitabilityRules;
-  referral: ReferralRules;
-  watchEarn: WatchEarnRules;
-  wallet: WalletRules;
+  referral: ReferralRules;  wallet: WalletRules;
   creatorEconomy: CreatorEconomyRules;
   featureFlags: FeatureFlags;
   metadata: BusinessRulesMetadata;

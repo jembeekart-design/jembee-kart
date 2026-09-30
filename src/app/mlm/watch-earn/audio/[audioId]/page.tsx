@@ -97,7 +97,6 @@ export default function AudioPage() {
               active={false} 
               onComment={() => {}} 
               onShare={() => {}} 
-              coins={v.coins} 
             />
           </div>
         ))}

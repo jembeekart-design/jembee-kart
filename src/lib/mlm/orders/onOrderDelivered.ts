@@ -4,7 +4,6 @@ import { checkRankUpgrade } from "./checkRankUpgrade";
 // Sabhi modules ka standard Absolute Path implementation
 import { distributeLevelCommission } from "@/lib/mlm/distributeLevelCommission";
 import { processCashback } from "@/lib/mlm/financial/processCashback"; 
-import { processDeliveredOrderForRewardCycle } from "@/lib/mlm/watch-earn/processDeliveredOrderForRewardCycle";
 
 interface ProfitResult {
   success: boolean;
@@ -43,7 +42,6 @@ export async function onOrderDelivered(orderId: string, userId: string) {
     ]);
 
     // 3. System State Updates (Sequential for consistency)
-    const rewardResult = await processDeliveredOrderForRewardCycle(userId);
     const rankResult = await checkRankUpgrade(userId);
 
     // 4. Report Generation
@@ -51,7 +49,6 @@ export async function onOrderDelivered(orderId: string, userId: string) {
       profit: true,
       cashback: finResults[0].status === 'fulfilled' && (finResults[0].value as any)?.success === true,
       mlm: finResults[1].status === 'fulfilled' && (finResults[1].value as any)?.success === true,
-      reward: rewardResult?.success === true,
       rank: rankResult?.success === true
     };
 

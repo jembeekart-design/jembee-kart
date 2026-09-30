@@ -60,14 +60,6 @@ export const DEFAULT_ADMIN_CONFIG: AdminConfig = {
 
   watchEarn: {
     enabled: true,
-    videoWatchSeconds: 30,
-    rewardProgressSeconds: 5,
-    minimumWatchPercent: 80,
-    allowSkip: true,
-    rewardAmount: 5,
-    requiredVideos: 100,
-    requiredSales: 10,
-    rewardDelay: 3,
     enableUploadButton: true,
     uploadButtonText: "Upload Video",
     uploadButtonIcon: "upload",

@@ -207,14 +207,6 @@ export interface AnnouncementConfig {
 
 export interface WatchEarnConfig {
   enabled: boolean;
-  videoWatchSeconds: number;
-  rewardProgressSeconds: number;
-  minimumWatchPercent: number;
-  allowSkip: boolean;
-  rewardAmount: number;
-  requiredVideos: number;
-  requiredSales: number;
-  rewardDelay: number;
   enableUploadButton: boolean;
   uploadButtonText: string;
   uploadButtonIcon: string;

@@ -1,7 +1,6 @@
 // src/jembee-governance/services/governanceConfigService.ts
 
 import { profitabilityConfigService } from "./profitabilityConfigService";
-import { watchEarnConfigService } from "./watchEarnConfigService";
 import { mlmConfigService } from "./mlmConfigService";
 import { walletConfigService } from "./walletConfigService";
 import { creatorEconomyConfigService } from "./creatorEconomyConfigService";
@@ -11,11 +10,6 @@ export interface GovernanceConfiguration {
   profitability: Awaited<
     ReturnType<typeof profitabilityConfigService.getRules>
   >;
-
-  watchEarn: Awaited<
-    ReturnType<typeof watchEarnConfigService.getRules>
-  >;
-
   mlm: Awaited<
     ReturnType<typeof mlmConfigService.getRules>
   >;
@@ -41,18 +35,13 @@ class GovernanceConfigService {
   async getConfiguration(): Promise<GovernanceConfiguration> {
 
     const [
-      profitability,
-      watchEarn,
-      mlm,
+      profitability,      mlm,
       wallet,
       creatorEconomy,
       featureFlags,
     ] = await Promise.all([
 
       profitabilityConfigService.getRules(),
-
-      watchEarnConfigService.getRules(),
-
       mlmConfigService.getRules(),
 
       walletConfigService.getRules(),
@@ -64,9 +53,7 @@ class GovernanceConfigService {
     ]);
 
     return {
-      profitability,
-      watchEarn,
-      mlm,
+      profitability,      mlm,
       wallet,
       creatorEconomy,
       featureFlags,
@@ -82,9 +69,6 @@ class GovernanceConfigService {
     const checks = await Promise.all([
 
       profitabilityConfigService.health(),
-
-      watchEarnConfigService.health(),
-
       mlmConfigService.health(),
 
       walletConfigService.health(),
@@ -105,9 +89,6 @@ class GovernanceConfigService {
   refresh(): void {
 
     profitabilityConfigService.refresh();
-
-    watchEarnConfigService.refresh();
-
     mlmConfigService.refresh();
 
     walletConfigService.refresh();

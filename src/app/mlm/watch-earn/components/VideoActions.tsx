@@ -7,7 +7,6 @@ import {
   MessageCircle,
   Share2,
   Bookmark,
-  Coins,
   Volume2,
   VolumeX,
 } from "lucide-react";
@@ -16,7 +15,6 @@ export interface VideoActionsProps {
   likes: number;
   comments: number;
   shares: number;
-  coins: number;
   isMuted: boolean;
 
   onLike: () => void;
@@ -33,7 +31,6 @@ export default function VideoActions({
   likes,
   comments,
   shares,
-  coins,
   isMuted,
   onLike,
   onComment,
@@ -144,30 +141,6 @@ export default function VideoActions({
         </div>
       ))}
 
-      {coins > 0 && (
-        <div className="flex flex-col items-center gap-1">
-          <div
-            className="
-              flex
-              items-center
-              gap-1
-              rounded-full
-              border
-              border-yellow-400/30
-              bg-black/30
-              px-3
-              py-1.5
-              text-yellow-300
-              backdrop-blur-md
-            "
-          >
-            <Coins size={16} />
-            <span className="text-xs font-semibold">
-              +{coins}
-            </span>
-          </div>
-        </div>
-      )}
     </aside>
   );
 }

@@ -10,7 +10,6 @@ import {
   BusinessRulesConfig,
   ProfitabilityRules,
   ReferralRules,
-  WatchEarnRules,
   WalletRules,
   CreatorEconomyRules,
   FeatureFlags,
@@ -28,7 +27,6 @@ import { businessRulesCache } from "./cache";
 import {
   validateProfitabilityRules,
   validateReferralRules,
-  validateWatchEarnRules,
   validateWalletRules,
   validateCreatorEconomyRules,
   validateFeatureFlags,
@@ -125,14 +123,6 @@ export const loadReferralRules =
     validateReferralRules
   );
 
-export const loadWatchEarnRules =
-() =>
-  loadRule<WatchEarnRules>(
-    BUSINESS_RULE_DOCUMENTS.watchEarn,
-    DEFAULT_BUSINESS_RULES.watchEarn,
-    validateWatchEarnRules
-  );
-
 export const loadWalletRules =
 () =>
   loadRule<WalletRules>(
@@ -178,8 +168,6 @@ Promise<BusinessRulesConfig> {
 
     referral,
 
-    watchEarn,
-
     wallet,
 
     creatorEconomy,
@@ -193,8 +181,6 @@ Promise<BusinessRulesConfig> {
     loadProfitabilityRules(),
 
     loadReferralRules(),
-
-    loadWatchEarnRules(),
 
     loadWalletRules(),
 
@@ -211,8 +197,6 @@ Promise<BusinessRulesConfig> {
     profitability,
 
     referral,
-
-    watchEarn,
 
     wallet,
 

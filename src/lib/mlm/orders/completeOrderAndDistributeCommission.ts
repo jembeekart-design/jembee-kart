@@ -1,10 +1,7 @@
 import {
-  doc,
-  getDoc,
   updateDoc,
   addDoc,
   collection,
-  increment,
   serverTimestamp,
 } from "firebase/firestore";
 
@@ -122,72 +119,13 @@ const { orderRef, order } = validation;
     }
 
     /* ========================================================
-       3. SECONDARY SUBSYSTEM: WATCH REWARD LIFECYCLE (SANDBOXED)
-       - FIXED: Type-casted 'watchReward' into valid strict format 'type: "reward"'
+       3. WATCH & EARN REWARD
+       DISABLED BY BUSINESS DESIGN
+       Video watching does NOT generate coins, points or cash.
+       Normal cashback and MLM commission remain active.
        ======================================================== */
-    let rewardUnlocked = false;
-    let unlockedAmount = 0;
-
-    const watchEarnRules = await businessRules.getWatchEarnRules();
-
-    if (!flags.rewardEnabled) {
-      console.log("ℹ️ [REWARD ENGINE]: Reward feature is currently disabled.");
-    } else {
-      try {
-        const userRef = doc(db, "users", userId);
-        const userSnap = await getDoc(userRef);
-
-        if (userSnap.exists()) {
-          const user = userSnap.data();
-          const qualifiedSales = Number(user.qualifiedSalesCount || 0) + 1;
-
-          // Dynamic key alignment fallback for locked rewards schemas
-          const lockedReward = Number(user.currentCycleLockedReward || user.lockedWatchReward || 0);
-          const cycleStatus = user.currentCycleStatus || "active";
-
-          // Condition Check for Cycle Phase
-          if (qualifiedSales >= watchEarnRules.requiredSales && lockedReward > 0 && cycleStatus === "pending") {
-            const rewardResult = await creditWallet({
-              uid: userId,
-              amount: lockedReward,
-              type: "reward", // Conformed type constraint
-              description: `Watch Video Cycle Milestone Unlocked successfully from Order Ref: ${orderId}`, // Injected description
-              orderId: orderId,
-            });
-
-            if (rewardResult.success) {
-              rewardUnlocked = true;
-              unlockedAmount = lockedReward;
-
-              await updateDoc(userRef, {
-                lockedWatchReward: 0,
-                currentCycleLockedReward: 0,
-                qualifiedSalesCount: 0,
-                videoWatchCount: 0,
-                rewardCycleNumber: increment(1),
-                currentCycleStatus: "active",
-                updatedAt: serverTimestamp(),
-              });
-              console.log(`🎁 [REWARD ENGINE]: Watch Reward Cycle Unlocked for User: ${userId}`);
-            } else {
-              // Fallback: If wallet transaction fails, increment the count safely without resetting cycles
-              await updateDoc(userRef, {
-                qualifiedSalesCount: increment(1),
-                updatedAt: serverTimestamp(),
-              });
-            }
-          } else {
-            // Standard Incremental Lifecycle Path
-            await updateDoc(userRef, {
-              qualifiedSalesCount: increment(1),
-              updatedAt: serverTimestamp(),
-            });
-          }
-        }
-      } catch (rewardError: any) {
-        console.error("⚠️ [REWARD ENGINE EXCEPTION]: Safely isolated fallback handler:", rewardError.message);
-      }
-    }
+    const rewardUnlocked = false;
+    const unlockedAmount = 0;
 
     /* ========================================================
        4. AUDIT COMPLIANCE & HISTORICAL INGESTION

@@ -22,7 +22,6 @@ import { adminControlScanner } from "../scanners/adminControlScanner";
 import { profitabilityScanner } from "../scanners/profitabilityScanner";
 import { mlmComplianceScanner } from "../scanners/mlmComplianceScanner";
 import { walletScanner } from "../scanners/walletScanner";
-import { watchEarnScanner } from "../scanners/watchEarnScanner";
 import { antiFraudScanner } from "../scanners/antiFraudScanner";
 import { creatorEconomyScanner } from "../scanners/creatorEconomyScanner";
 import { deploymentScanner } from "../scanners/deploymentScanner";
@@ -166,11 +165,6 @@ export class GovernanceReportService {
         projectRoot
       );
 
-    const watchEarnResult =
-      watchEarnScanner.scanProject(
-        projectRoot
-      );
-
     const creatorResult =
       creatorEconomyScanner.scanProject(
         projectRoot
@@ -211,10 +205,6 @@ export class GovernanceReportService {
 
       mlm:
         mlmResult,
-
-      watchEarn:
-        watchEarnResult,
-
       creatorEconomy:
         creatorResult,
 
@@ -244,10 +234,6 @@ export class GovernanceReportService {
 
         mlmViolations:
           mlmResult.violations,
-
-        watchEarnViolations:
-          watchEarnResult.violations,
-
         antiFraudViolations:
           antiFraudResult.violations,
 
@@ -301,9 +287,6 @@ export class GovernanceReportService {
       ...walletResult.violations,
 
       ...mlmResult.violations,
-
-      ...watchEarnResult.violations,
-
       ...creatorResult.violations,
 
       ...antiFraudResult.violations,
@@ -407,9 +390,7 @@ deploymentViolations:
   hardcodedResult.filesScanned +
   adminControlResult.filesScanned +
   walletResult.filesScanned +
-  mlmResult.filesScanned +
-  watchEarnResult.filesScanned +
-  creatorResult.filesScanned +
+  mlmResult.filesScanned +  creatorResult.filesScanned +
   antiFraudResult.filesScanned,
 
 pagesScanned:
@@ -558,10 +539,6 @@ deploymentScore:
 
         mlm:
           mlmResult,
-
-        watchEarn:
-          watchEarnResult,
-
         creatorEconomy:
           creatorResult,
 

@@ -1,7 +1,6 @@
 import {
   ProfitabilityRules,
   ReferralRules,
-  WatchEarnRules,
   WalletRules,
   CreatorEconomyRules,
   FeatureFlags,
@@ -152,57 +151,6 @@ export function validateReferralRules(
 }
 
 // ======================================================
-// Watch & Earn
-// ======================================================
-
-export function validateWatchEarnRules(
-  rules: WatchEarnRules
-): WatchEarnRules {
-
-  ensurePositive(
-    ensureNumber(
-      rules.videosRequired,
-      "videosRequired"
-    ),
-    "videosRequired"
-  );
-
-  ensurePositive(
-    ensureNumber(
-      rules.rewardAmount,
-      "rewardAmount"
-    ),
-    "rewardAmount"
-  );
-
-  ensurePositive(
-    ensureNumber(
-      rules.requiredSales,
-      "requiredSales"
-    ),
-    "requiredSales"
-  );
-
-  ensurePositive(
-    ensureNumber(
-      rules.maxActiveCycles,
-      "maxActiveCycles"
-    ),
-    "maxActiveCycles"
-  );
-
-  ensurePositive(
-    ensureNumber(
-      rules.minimumWatchDuration,
-      "minimumWatchDuration"
-    ),
-    "minimumWatchDuration"
-  );
-
-  return rules;
-}
-
-// ======================================================
 // Wallet
 // ======================================================
 
@@ -306,9 +254,7 @@ export function validateBusinessRules(
 ): BusinessRulesConfig {
 
   validateProfitabilityRules(config.profitability);
-  validateReferralRules(config.referral);
-  validateWatchEarnRules(config.watchEarn);
-  validateWalletRules(config.wallet);
+  validateReferralRules(config.referral);  validateWalletRules(config.wallet);
   validateCreatorEconomyRules(config.creatorEconomy);
   validateFeatureFlags(config.featureFlags);
 

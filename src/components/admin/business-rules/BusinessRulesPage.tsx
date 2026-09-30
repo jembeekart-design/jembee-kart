@@ -1,7 +1,6 @@
 "use client";
 
 import ProfitabilityCard from "./ProfitabilityCard";
-import WatchEarnCard from "./WatchEarnCard";
 import ReferralCard from "./ReferralCard";
 import WalletCard from "./WalletCard";
 import CreatorEconomyCard from "./CreatorEconomyCard";
@@ -23,7 +22,6 @@ export default function BusinessRulesPage() {
 
           <ProfitabilityCard />
 
-          <WatchEarnCard />
 
          <ReferralCard />
           

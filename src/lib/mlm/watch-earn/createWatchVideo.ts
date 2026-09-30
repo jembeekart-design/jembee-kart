@@ -14,10 +14,6 @@ interface CreateWatchVideoData {
   videoUrl: string;
 
   thumbnail: string;
-
-  rewardCoins: number;
-
-  minimumWatchTime: number;
 }
 
 export async function
@@ -45,12 +41,6 @@ createWatchVideo(
 
         thumbnail:
           data.thumbnail,
-
-        rewardCoins:
-          data.rewardCoins,
-
-        minimumWatchTime:
-          data.minimumWatchTime,
 
         totalViews: 0,
 

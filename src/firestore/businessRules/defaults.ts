@@ -27,16 +27,6 @@ export const DEFAULT_BUSINESS_RULES: BusinessRulesConfig = {
     level4Commission: 1,
   },
 
-  watchEarn: {
-    rewardPerVideo: 1,
-    watchDurationPerReward: 30,
-    videosRequired: 100,
-    rewardAmount: 50,
-    requiredSales: 5,
-    maxActiveCycles: 1,
-    minimumWatchDuration: 30,
-  },
-
   wallet: {
     minimumWithdrawal: 200,
     withdrawalCharge: 0,

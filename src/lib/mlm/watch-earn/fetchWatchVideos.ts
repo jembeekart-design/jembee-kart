@@ -24,7 +24,6 @@ export interface WatchVideo {
   video: string;
   thumbnail?: string;
   productId?: string;
-  coins: number;
   likes: number;
   comments: number;
   shares: number;
@@ -825,14 +824,7 @@ export async function fetchWatchVideos() {
           getString(
             data.productId
           ),
-
-        coins:
-          typeof data.coins ===
-          "number"
-            ? data.coins
-            : 0,
-
-        likes:
+likes:
           typeof data.likes ===
           "number"
             ? data.likes
