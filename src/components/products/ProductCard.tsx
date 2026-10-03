@@ -1,5 +1,6 @@
 "use client";
 
+import Image from "next/image";
 import { Heart } from "lucide-react";
 import { useWishlist } from "@/hooks/useWishlist";
 
@@ -66,11 +67,13 @@ export default function ProductCard({
 
         {/* IMAGE AREA */}
 
-        <div className="relative">
+        <div className="relative h-[165px] w-full overflow-hidden rounded-b-[32px]">
 
-          <img
+          <Image
             src={firstImage}
             alt={title}
+            fill
+            sizes="(max-width: 768px) 100vw, 300px"
             className="
               h-[165px]
               w-full
