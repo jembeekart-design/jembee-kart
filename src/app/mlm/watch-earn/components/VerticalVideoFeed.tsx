@@ -334,12 +334,6 @@ export default function VerticalVideoFeed({
                   video.video
                 }
 
-                watchSeconds={
-                  DEFAULT_BUSINESS_RULES
-                    .watchEarn
-                    .minimumWatchDuration
-                }
-
                 isMuted={isMuted}
 
                 active={

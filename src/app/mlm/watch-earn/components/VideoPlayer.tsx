@@ -9,7 +9,6 @@ import {
 
 interface VideoPlayerProps {
   videoUrl: string;
-  watchSeconds: number;
   isMuted?: boolean;
   active?: boolean;
   playbackRate?: number;
@@ -17,7 +16,6 @@ interface VideoPlayerProps {
 
 export default function VideoPlayer({
   videoUrl,
-  watchSeconds,
   isMuted = true,
   active = false,
   playbackRate = 1,
@@ -53,24 +51,6 @@ export default function VideoPlayer({
       video.pause();
     }
   }, [active, videoUrl]);
-
-  useEffect(() => {
-    let interval: ReturnType<typeof setInterval>;
-
-    if (videoRef.current && active && isPlaying) {
-      interval = setInterval(() => {
-        const current = videoRef.current?.currentTime || 0;
-        const percent = (current / watchSeconds) * 100;
-        setProgress(Math.min(percent, 100));
-      }, 500);
-    }
-
-    return () => {
-      if (interval) {
-        clearInterval(interval);
-      }
-    };
-  }, [watchSeconds, active, isPlaying]);
 
   const togglePlayPause = (e: React.MouseEvent) => {
     e.stopPropagation();
