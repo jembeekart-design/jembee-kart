@@ -11,6 +11,8 @@ import {
 
 import Link from "next/link";
 
+import Image from "next/image";
+
 import {
   collection,
   onSnapshot
@@ -532,10 +534,11 @@ export default function HomePage() {
                             <div
                               className="
                                 aspect-square
+                                relative
                               "
                             >
 
-                              <img
+                              <Image
                                 src={
                                   product.images?.[0] ||
 
@@ -543,6 +546,10 @@ export default function HomePage() {
                                 }
 
                                 alt=""
+
+                                fill
+
+                                sizes="(max-width: 768px) 50vw, 33vw"
 
                                 className="
                                   h-full
@@ -1081,10 +1088,11 @@ export default function HomePage() {
                               <div
                                 className="
                                   aspect-square
+                                  relative
                                 "
                               >
 
-                                <img
+                                <Image
                                   src={
                                     product.images?.[0] ||
 
@@ -1092,6 +1100,10 @@ export default function HomePage() {
                                   }
 
                                   alt=""
+
+                                  fill
+
+                                  sizes="(max-width: 768px) 50vw, 33vw"
 
                                   className="
                                     h-full
