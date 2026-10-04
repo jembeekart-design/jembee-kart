@@ -350,6 +350,7 @@ export default function HomepageSlider() {
                             "Banner"
                           }
                           fill
+                          sizes="(max-width: 768px) 100vw, 1200px"
                           priority={
                             current ===
                             index
