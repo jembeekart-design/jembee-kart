@@ -30,6 +30,7 @@ type AdEventType = "impression" | "click";
 
 export default function AdSlot() {
   const [ad, setAd] = useState<Ad | null>(null);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     let cancelled = false;
@@ -44,7 +45,10 @@ export default function AdSlot() {
 
         const snapshot = await getDocs(q);
 
-        if (snapshot.empty || cancelled) {
+        if (cancelled) return;
+
+        setLoading(false);
+        if (snapshot.empty) {
           setAd(null);
           return;
         }
@@ -78,6 +82,7 @@ export default function AdSlot() {
       } catch (error) {
         console.error("AdSlot error:", error);
         if (!cancelled) {
+          setLoading(false);
           setAd(null);
         }
       }
@@ -194,6 +199,15 @@ export default function AdSlot() {
     if (ad.url) {
       window.open(ad.url, "_blank", "noopener,noreferrer");
     }
+  }
+
+  if (loading) {
+    return (
+      <section
+        className="relative z-30 w-full px-3 py-4 md:px-6 min-h-[161px]"
+        aria-hidden="true"
+      />
+    );
   }
 
   if (!ad) return null;
