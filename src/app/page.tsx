@@ -1036,7 +1036,7 @@ export default function HomePage() {
             >
 
               {filteredProducts.map(
-                (product) => {
+                (product, index) => {
 
                   const isLiked =
                     wishlistItems.includes(
@@ -1102,6 +1102,8 @@ export default function HomePage() {
                                   alt=""
 
                                   fill
+
+                                  priority={index === 0}
 
                                   sizes="(max-width: 768px) 50vw, 33vw"
 
