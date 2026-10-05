@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import Script from "next/script";
 import "./globals.css";
 
 import Providers from "./providers";
@@ -41,9 +42,10 @@ export default function RootLayout({
         <link rel="preconnect" href="https://jembee-kart1.firebaseapp.com" crossOrigin="anonymous" />
         <link rel="preconnect" href="https://firestore.googleapis.com" crossOrigin="anonymous" />
         <link rel="preconnect" href="https://www.googleapis.com" crossOrigin="anonymous" />
-        <script
-          async
+        <Script
+          id="google-adsense"
           src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-7471322988540402"
+          strategy="lazyOnload"
           crossOrigin="anonymous"
         />
       </head>
