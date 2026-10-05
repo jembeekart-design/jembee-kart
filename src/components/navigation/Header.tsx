@@ -305,6 +305,7 @@ export default function Header({
           >
             <Link
               href="/followers"
+              aria-label="View followers"
               className="
                 flex
                 h-11
@@ -360,6 +361,8 @@ export default function Header({
           <input
             type="text"
 
+            aria-label="Search products"
+
             value={search}
 
             onChange={(e) =>
@@ -413,6 +416,12 @@ export default function Header({
           <button
 
             type="button"
+
+            aria-label={
+              listening
+                ? "Stop voice search"
+                : "Start voice search"
+            }
 
             onClick={
               startVoiceSearch

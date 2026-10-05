@@ -41,6 +41,7 @@ export default function BottomNavbar() {
   return (
 
     <nav
+      aria-label="Bottom Navigation"
       className="
         fixed
         bottom-0

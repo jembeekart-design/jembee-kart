@@ -566,6 +566,12 @@ export default function HomePageClient({ initialProducts }: HomePageClientProps)
 
                             <button
 
+                              aria-label={
+                                isLiked
+                                  ? "Remove from wishlist"
+                                  : "Add to wishlist"
+                              }
+
                               onClick={(
                                 event
                               ) => {
@@ -1121,6 +1127,12 @@ export default function HomePageClient({ initialProducts }: HomePageClientProps)
 
 
                               <button
+
+                                aria-label={
+                                  isLiked
+                                    ? "Remove from wishlist"
+                                    : "Add to wishlist"
+                                }
 
                                 onClick={(
                                   event

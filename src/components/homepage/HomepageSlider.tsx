@@ -540,6 +540,7 @@ export default function HomepageSlider() {
         {/* LEFT BUTTON */}
 
         <button
+          aria-label="Previous slide"
           onClick={
             previousSlide
           }
@@ -573,6 +574,7 @@ export default function HomepageSlider() {
         {/* RIGHT BUTTON */}
 
         <button
+          aria-label="Next slide"
           onClick={
             nextSlide
           }
@@ -629,6 +631,7 @@ export default function HomepageSlider() {
 
                 <button
                   key={index}
+                  aria-label={`Go to slide ${index + 1}`}
                   onClick={() => {
                     setCurrent(
                       index
