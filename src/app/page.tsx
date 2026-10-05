@@ -1,6 +1,7 @@
 export const dynamic = "force-dynamic";
 
 import HomePageClient, { type Product } from "@/components/homepage/HomePageClient";
+import { type Slide } from "@/components/homepage/HomepageSlider";
 import { getAdminDb } from "@/firebase/admin";
 
 async function getInitialProducts(): Promise<Product[]> {
@@ -28,8 +29,46 @@ async function getInitialProducts(): Promise<Product[]> {
   }
 }
 
-export default async function HomePage() {
-  const initialProducts = await getInitialProducts();
+async function getInitialSlides(): Promise<Slide[]> {
+  try {
+    const db = getAdminDb();
+    const snapshot = await db.collection("homepage_banners").get();
+    const data = snapshot.docs.map(doc => {
+      const data = doc.data();
+      return {
+        id: doc.id,
+        title: data.title || "",
+        subtitle: data.subtitle || "",
+        buttonText: data.buttonText || "",
+        buttonLink: data.buttonLink || "",
+        backgroundColor: data.backgroundColor || "",
+        gradientColor: data.gradientColor || "",
+        textColor: data.textColor || "",
+        buttonColor: data.buttonColor || "",
+        buttonTextColor: data.buttonTextColor || "",
+        imageUrl: data.imageUrl || "",
+        videoUrl: data.videoUrl || "",
+        mediaType: data.mediaType || "",
+        visible: data.visible === true,
+        position: data.position !== undefined ? Number(data.position) : 0,
+        badge: data.badge || "",
+      } as Slide;
+    });
 
-  return <HomePageClient initialProducts={initialProducts} />;
+    return data
+      .filter(slide => slide.visible)
+      .sort((a, b) => Number(a.position || 0) - Number(b.position || 0));
+  } catch (error) {
+    console.error("Error fetching initial homepage banners on server:", error);
+    return [];
+  }
+}
+
+export default async function HomePage() {
+  const [initialProducts, initialSlides] = await Promise.all([
+    getInitialProducts(),
+    getInitialSlides(),
+  ]);
+
+  return <HomePageClient initialProducts={initialProducts} initialSlides={initialSlides} />;
 }

@@ -26,8 +26,9 @@ from "@/firebase/config";
 import Header
 from "@/components/navigation/Header";
 
-import HomepageSlider
-from "@/components/homepage/HomepageSlider";
+import HomepageSlider, {
+  type Slide
+} from "@/components/homepage/HomepageSlider";
 
 
 import FooterSection
@@ -100,9 +101,10 @@ export interface Product {
 
 interface HomePageClientProps {
   initialProducts: Product[];
+  initialSlides: Slide[];
 }
 
-export default function HomePageClient({ initialProducts }: HomePageClientProps) {
+export default function HomePageClient({ initialProducts, initialSlides }: HomePageClientProps) {
   const { theme } = useTheme();
   const { wishlistItems, toggleWishlist } = useWishlist();
 
@@ -733,7 +735,7 @@ export default function HomePageClient({ initialProducts }: HomePageClientProps)
           <>
 
 
-            <HomepageSlider />
+            <HomepageSlider initialSlides={initialSlides} />
 
 
             <section

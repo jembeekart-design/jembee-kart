@@ -29,7 +29,7 @@ import { db } from "@/firebase/config";
 TYPES
 ====================================================== */
 
-interface Slide {
+export interface Slide {
 
   id: string;
 
@@ -69,16 +69,20 @@ interface Slide {
 COMPONENT
 ====================================================== */
 
-export default function HomepageSlider() {
+interface HomepageSliderProps {
+  initialSlides?: Slide[];
+}
+
+export default function HomepageSlider({ initialSlides = [] }: HomepageSliderProps) {
 
   const [slides, setSlides] =
-    useState<Slide[]>([]);
+    useState<Slide[]>(initialSlides);
 
   const [current, setCurrent] =
     useState(0);
 
   const [loading, setLoading] =
-    useState(true);
+    useState(initialSlides.length === 0);
 
   const [paused, setPaused] =
     useState(false);
