@@ -86,7 +86,8 @@ export async function createResumableUploadSession(
     },
   });
 
-  const uploadUrl = response.headers.get("location");
+  const headers = response.headers as unknown as Record<string, string>;
+  const uploadUrl = headers["location"] || headers["Location"];
 
   if (!uploadUrl) {
     throw new Error(
