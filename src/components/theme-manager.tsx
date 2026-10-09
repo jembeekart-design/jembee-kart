@@ -1,119 +1,113 @@
 "use client";
 
 import { useEffect } from "react";
+import { doc, onSnapshot } from "firebase/firestore";
+import { db } from "@/firebase/config";
 import { useAdminConfig } from "@/lib/admin-config/provider";
 
 function rgb(color: string): [number, number, number] | null {
-  const value = color.trim();
-
-  const hex = value.match(/^#([0-9a-f]{3}|[0-9a-f]{6})$/i);
-  if (hex) {
-    let h = hex[1];
-    if (h.length === 3) h = h.split("").map((c) => c + c).join("");
-    return [
-      parseInt(h.slice(0, 2), 16),
-      parseInt(h.slice(2, 4), 16),
-      parseInt(h.slice(4, 6), 16),
-    ];
-  }
-
-  const parsed = value.match(/^rgba?\(\s*(\d+)[,\s]+(\d+)[,\s]+(\d+)/i);
-  if (parsed) return [Number(parsed[1]), Number(parsed[2]), Number(parsed[3])];
-
-  return null;
+  const hex = color.trim().match(/^#([0-9a-f]{3}|[0-9a-f]{6})$/i);
+  if (!hex) return null;
+  let h = hex[1];
+  if (h.length === 3) h = h.split("").map((c) => c + c).join("");
+  return [
+    parseInt(h.slice(0, 2), 16),
+    parseInt(h.slice(2, 4), 16),
+    parseInt(h.slice(4, 6), 16),
+  ];
 }
 
-function luminance(color: string): number | null {
+function luminance(color: string): number {
   const values = rgb(color);
-  if (!values) return null;
-
+  if (!values) return 0.5;
   const channels = values.map((v) => {
     const c = v / 255;
     return c <= 0.04045 ? c / 12.92 : Math.pow((c + 0.055) / 1.055, 2.4);
   });
-
   return 0.2126 * channels[0] + 0.7152 * channels[1] + 0.0722 * channels[2];
 }
 
-function contrast(a: string, b: string): number {
-  const la = luminance(a);
-  const lb = luminance(b);
-  if (la === null || lb === null) return 0;
-  const light = Math.max(la, lb);
-  const dark = Math.min(la, lb);
-  return (light + 0.05) / (dark + 0.05);
-}
-
 function readableText(background: string, preferred?: string): string {
-  if (preferred && contrast(background, preferred) >= 4.5) return preferred;
-  return contrast(background, "#111827") >= contrast(background, "#FFFFFF")
-    ? "#111827"
-    : "#FFFFFF";
+  if (preferred && rgb(preferred)) {
+    const contrast = (a: string, b: string) => {
+      const x = luminance(a);
+      const y = luminance(b);
+      return (Math.max(x, y) + 0.05) / (Math.min(x, y) + 0.05);
+    };
+    if (contrast(background, preferred) >= 4.5) return preferred;
+  }
+  return luminance(background) > 0.45 ? "#111827" : "#FFFFFF";
 }
 
 export function ThemeManager({ children }: { children: React.ReactNode }) {
   const { config } = useAdminConfig();
-  const theme = config.theme || {};
 
   useEffect(() => {
     const root = document.documentElement;
+    const ref = doc(db, "admin_settings", "customize");
 
-    const pageBackground =
-      theme.pageBackground || theme.backgroundColor || "#F8F9FE";
-    const surface = theme.surfaceColor || theme.cardColor || "#FFFFFF";
-    const cardBg = theme.cardColor || theme.surfaceColor || "#FFFFFF";
-    const sectionBg = theme.sectionBackground || theme.surfaceColor || "#F1F5F9";
-    const headerBg = theme.headerBackground || theme.primaryColor || "#4F46E5";
-    const inputBg = theme.inputBackground || theme.cardColor || "#FFFFFF";
-    const border = theme.borderColor || theme.cardBorderColor || "#E5E7EB";
-    const primaryBtn = theme.primaryButtonColor || theme.buttonColor || theme.primaryColor || "#4F46E5";
-    const secondaryBtn = theme.secondaryButtonColor || theme.secondaryColor || "#0284c7";
+    const unsubscribe = onSnapshot(ref, (snap) => {
+      const adminTheme = snap.exists() ? snap.data() : {};
+      const theme = config.theme || {};
 
-    const textPrimary = readableText(pageBackground, theme.textColor);
-    const textSecondary = readableText(surface, theme.textSecondary || "#6B7280");
-    const textMuted = readableText(surface, theme.mutedTextColor || "#6B7280");
-    const buttonText = readableText(primaryBtn, theme.buttonTextColor);
-    const secondaryButtonText = readableText(secondaryBtn);
-    const headerText = readableText(headerBg);
+      // Theme Builder values take priority. Other theme settings remain fallbacks.
+      const headerBg =
+        adminTheme.headerBackground || theme.headerBackground || theme.primaryColor || "#ffffff";
+      const buttonBg =
+        adminTheme.buttonColor || theme.buttonColor || theme.primaryColor || "#4f46e5";
+      const border =
+        adminTheme.cardBorderColor || theme.cardBorderColor || theme.borderColor || "#e5e7eb";
+      const searchBg =
+        adminTheme.searchBarColor || theme.searchBarColor || theme.cardColor || "#ffffff";
+      const pageBg = theme.pageBackground || theme.backgroundColor || "#f8fafc";
+      const cardBg = theme.cardColor || "#ffffff";
+      const text = readableText(pageBg, theme.textColor);
+      const buttonText = readableText(buttonBg, theme.buttonTextColor);
+      const headerText = readableText(headerBg);
 
-    const vars: Record<string, string> = {
-      "--primary-color": theme.primaryColor || primaryBtn,
-      "--secondary-color": theme.secondaryColor || secondaryBtn,
-      "--background-color": theme.backgroundColor || pageBackground,
-      "--card-color": cardBg,
-      "--text-color": textPrimary,
-      "--muted-text-color": textMuted,
-      "--border-color": border,
-      "--color-page-background": pageBackground,
-      "--color-surface": surface,
-      "--color-card-background": cardBg,
-      "--color-section-background": sectionBg,
-      "--color-header": headerBg,
-      "--color-input-background": inputBg,
-      "--color-border": border,
-      "--color-primary-button": primaryBtn,
-      "--color-secondary-button": secondaryBtn,
-      "--text-primary": textPrimary,
-      "--text-secondary": textSecondary,
-      "--text-muted": textMuted,
-      "--button-color": theme.buttonColor || primaryBtn,
-      "--button-text-color": buttonText,
-      "--button-hover-color": theme.buttonHoverColor || primaryBtn,
-      "--text-on-header": headerText,
-      "--text-on-primary": buttonText,
-      "--text-on-secondary": secondaryButtonText,
-      "--color-success": theme.successColor || "#10B981",
-      "--color-warning": theme.warningColor || "#F59E0B",
-      "--color-danger": theme.dangerColor || "#EF4444",
-    };
+      const vars: Record<string, string> = {
+        "--header-color": headerBg,
+        "--search-bar-color": searchBg,
+        "--primary-color": buttonBg,
+        "--button-color": buttonBg,
+        "--button-text-color": buttonText,
+        "--border-color": border,
+        "--card-color": cardBg,
+        "--background": pageBg,
+        "--text": text,
+        "--background-color": pageBg,
+        "--color-page-background": pageBg,
+        "--color-card-background": cardBg,
+        "--color-surface": cardBg,
+        "--color-header": headerBg,
+        "--color-input-background": searchBg,
+        "--color-border": border,
+        "--color-primary-button": buttonBg,
+        "--text-color": text,
+        "--text-primary": text,
+        "--text-secondary": readableText(cardBg, theme.textSecondary || "#6b7280"),
+        "--text-muted": readableText(cardBg, theme.mutedTextColor || "#6b7280"),
+        "--text-on-header": headerText,
+        "--text-on-primary": buttonText,
+        "--button-hover-color": theme.buttonHoverColor || buttonBg,
+        "--secondary-color": theme.secondaryColor || buttonBg,
+        "--color-secondary-button": theme.secondaryButtonColor || theme.secondaryColor || buttonBg,
+        "--color-section-background": theme.sectionBackground || cardBg,
+        "--color-success": theme.successColor || "#10b981",
+        "--color-warning": theme.warningColor || "#f59e0b",
+        "--color-danger": theme.dangerColor || "#ef4444",
+      };
 
-    Object.entries(vars).forEach(([name, value]) => {
-      root.style.setProperty(name, value);
+      Object.entries(vars).forEach(([name, value]) => {
+        root.style.setProperty(name, value);
+      });
+
+      if (theme.borderRadius) root.style.setProperty("--border-radius", String(theme.borderRadius));
+      if (theme.fontFamily) root.style.setProperty("--font-family", theme.fontFamily);
     });
 
-    if (theme.borderRadius) root.style.setProperty("--border-radius", String(theme.borderRadius));
-    if (theme.fontFamily) root.style.setProperty("--font-family", theme.fontFamily);
-  }, [theme]);
+    return () => unsubscribe();
+  }, [config.theme]);
 
   return <>{children}</>;
 }
