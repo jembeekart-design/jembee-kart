@@ -179,7 +179,11 @@ const DEFAULT_SETTINGS = {
 export async function seedSystemSettings() {
   console.log("🌱 Initializing System Settings...");
 
-  const entries = Object.entries(DEFAULT_SETTINGS);
+  // Theme colours are managed by Admin Theme Page (admin_settings/customize).
+  // Do not seed settings/theme, because its defaults can overwrite theme choices.
+  const entries = Object.entries(DEFAULT_SETTINGS).filter(
+    ([documentId]) => documentId !== "theme"
+  );
 
   for (const [documentId, documentData] of entries) {
     try {
