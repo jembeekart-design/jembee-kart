@@ -1,5 +1,13 @@
 "use client";
-import { createContext, useContext, useState, useEffect } from "react";
+
+import {
+  createContext,
+  useContext,
+  useState,
+  useEffect,
+} from "react";
+import { doc, onSnapshot } from "firebase/firestore";
+import { db } from "@/firebase/config";
 import { useAdminConfig } from "@/lib/admin-config/provider";
 import type { Theme } from "@/types/theme";
 
@@ -16,9 +24,29 @@ export function ThemeProvider({ children }: { children: React.ReactNode }) {
 
   useEffect(() => {
     if (config.theme) {
-        setTheme(config.theme as Theme);
+      setTheme(config.theme as Theme);
     }
   }, [config.theme]);
+
+  useEffect(() => {
+    const ref = doc(db, "admin_settings", "customize");
+
+    const unsubscribe = onSnapshot(ref, (snap) => {
+      if (!snap.exists()) return;
+
+      const saved = snap.data();
+
+      setTheme((previous) => ({
+        ...previous,
+        headerBackground: saved.headerBackground ?? previous.headerBackground,
+        searchBarColor: saved.searchBarColor ?? previous.searchBarColor,
+        buttonColor: saved.buttonColor ?? previous.buttonColor,
+        cardBorderColor: saved.cardBorderColor ?? previous.cardBorderColor,
+      } as Theme));
+    });
+
+    return () => unsubscribe();
+  }, []);
 
   return (
     <ThemeContext.Provider value={{ theme, setTheme }}>
