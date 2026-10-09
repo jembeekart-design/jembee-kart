@@ -24,7 +24,13 @@ export function ThemeProvider({ children }: { children: React.ReactNode }) {
 
   useEffect(() => {
     if (config.theme) {
-      setTheme(config.theme as Theme);
+      setTheme((previous) => ({
+        ...config.theme,
+        headerBackground: previous.headerBackground ?? config.theme.headerBackground,
+        searchBarColor: previous.searchBarColor ?? config.theme.searchBarColor,
+        buttonColor: previous.buttonColor ?? config.theme.buttonColor,
+        cardBorderColor: previous.cardBorderColor ?? config.theme.cardBorderColor,
+      } as Theme));
     }
   }, [config.theme]);
 
