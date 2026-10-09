@@ -67,7 +67,7 @@ export function ThemeManager({ children }: { children: React.ReactNode }) {
     const inputBg = theme.inputBackground || theme.cardColor || "#FFFFFF";
     const border = theme.borderColor || theme.cardBorderColor || "#E5E7EB";
     const primaryBtn = theme.primaryButtonColor || theme.buttonColor || theme.primaryColor || "#4F46E5";
-    const secondaryBtn = theme.secondaryButtonColor || theme.secondaryColor || "#7C3AED";
+    const secondaryBtn = theme.secondaryButtonColor || theme.secondaryColor || "#0284c7";
 
     const textPrimary = readableText(pageBackground, theme.textColor);
     const textSecondary = readableText(surface, theme.textSecondary || "#6B7280");
