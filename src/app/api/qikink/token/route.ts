@@ -1,6 +1,8 @@
 import { NextResponse } from "next/server";
+import { withAdminAuth } from "@/lib/api/adminAuth";
 
-export async function GET() {
+export async function GET(req: Request) {
+  return withAdminAuth(async () => {
   try {
     const response = await fetch(
       `${process.env.QIKINK_BASE_URL}/api/token`,
@@ -31,4 +33,5 @@ export async function GET() {
       { status: 500 }
     );
   }
+  }, req);
 }
