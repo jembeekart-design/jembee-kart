@@ -50,15 +50,11 @@ export function ThemeManager({ children }: { children: React.ReactNode }) {
       const adminTheme = snap.exists() ? snap.data() : {};
       const theme = config.theme || {};
 
-      // Theme Builder values take priority. Other theme settings remain fallbacks.
-      const headerBg =
-        adminTheme.headerBackground || theme.headerBackground || theme.primaryColor || "#ffffff";
-      const buttonBg =
-        adminTheme.buttonColor || theme.buttonColor || theme.primaryColor || "#4f46e5";
-      const border =
-        adminTheme.cardBorderColor || theme.cardBorderColor || theme.borderColor || "#e5e7eb";
-      const searchBg =
-        adminTheme.searchBarColor || theme.searchBarColor || theme.cardColor || "#ffffff";
+      // Admin Theme Builder is the source of truth for its four saved colours.
+      const headerBg = adminTheme.headerBackground || "#ffffff";
+      const buttonBg = adminTheme.buttonColor || "#ffffff";
+      const border = adminTheme.cardBorderColor || "#e5e7eb";
+      const searchBg = adminTheme.searchBarColor || "#f3f4f6";
       const pageBg = theme.pageBackground || theme.backgroundColor || "#f8fafc";
       const cardBg = theme.cardColor || "#ffffff";
       const text = readableText(pageBg, theme.textColor);
