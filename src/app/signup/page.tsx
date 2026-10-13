@@ -8,23 +8,13 @@ import {
   createUserWithEmailAndPassword,
   GoogleAuthProvider,
   signInWithPopup,
-  signOut,
   sendEmailVerification,
   User,
 } from "firebase/auth";
 
 import {
   doc,
-  query,
-  collection,
-  where,
-  limit,
-  getDocs,
   getDoc,
-  serverTimestamp,
-  runTransaction,
-  DocumentReference,
-  increment
 } from "firebase/firestore";
 
 import { auth, db } from "@/firebase/config";
@@ -55,188 +45,34 @@ function RegistrationForm() {
   }, [searchParams]);
 
   /* ======================================================
-  CORE USER PROFILE INITIALIZATION ENGINE (ACID TRANSACTION)
+  SECURE SERVER-SIDE USER PROFILE INITIALIZATION
   ====================================================== */
   async function createUserProfile(user: User, displayName?: string) {
-    const userRef = doc(db, "users", user.uid);
+    const idToken = await user.getIdToken();
 
-    const sponsorCode = localStorage.getItem("jbk_pending_ref") || "";
-    let sponsorUid = "";
-    let sponsorDocRef: DocumentReference | null = null;
-    let sponsorParentChain: string[] = [];
+    const response = await fetch("/api/auth/create-profile", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${idToken}`,
+      },
+      body: JSON.stringify({
+        name: displayName || user.displayName || "",
+        sponsorCode: localStorage.getItem("jbk_pending_ref") || "",
+      }),
+    });
 
-    if (sponsorCode) {
-      const q = query(
-        collection(db, "users"),
-        where("shareCode", "==", sponsorCode),
-        limit(1)
+    const result = await response.json().catch(() => null);
+
+    if (!response.ok || result?.success !== true) {
+      throw new Error(
+        typeof result?.error === "string"
+          ? result.error
+          : "Profile creation failed"
       );
-      const sponsorSnap = await getDocs(q);
-      if (!sponsorSnap.empty) {
-        const sponsorDoc = sponsorSnap.docs[0];
-        let resolvedSponsorUid = sponsorDoc.id || sponsorDoc.data().uid;
-
-        if (resolvedSponsorUid === user.uid) {
-          console.warn("Self-referral attempt detected and blocked automatically.");
-          sponsorUid = "";
-          sponsorDocRef = null;
-        } else {
-          sponsorUid = resolvedSponsorUid;
-          sponsorDocRef = sponsorDoc.ref;
-          const chain = sponsorDoc.data().parentChain;
-          sponsorParentChain = Array.isArray(chain) ? chain : [];
-        }
-      }
     }
 
-    const marketingShareCode = `JBK${user.uid.slice(0, 8)}`.toUpperCase();
-
-    try {
-      await runTransaction(db, async (transaction) => {
-        const userSnapshot = await transaction.get(userRef);
-        if (userSnapshot.exists()) {
-          console.log("Profile node already instantiated. Aborting transaction.");
-          return;
-        }
-
-        // Materialized Lineage Array tightly capped at 10 levels for compliance
-        const currentParentChain = sponsorUid ? [sponsorUid, ...sponsorParentChain].slice(0, 10) : [];
-
-        transaction.set(userRef, {
-          uid: user.uid,
-          name: displayName || user.displayName || "JembeeKart User",
-          email: (user.email || "").toLowerCase(),
-          photo: user.photoURL || "",
-          mobileNumber: "",
-          phoneVerified: false,
-          emailVerified: user.emailVerified || false,
-          authProvider: user.providerData?.[0]?.providerId || "password",
-          role: "user",
-          walletLocked: false,
-          accountStatus: "active",
-          profileCompleted: false,
-          schemaVersion: 1, 
-          lastPlatform: "web", 
-
-          parentChain: currentParentChain,
-
-          joinedPackage: false,
-          packageAmount: 0,
-          activationDate: null,
-          activatedByOrderId: "",
-          packageId: null,
-          packageName: "",
-          packageStatus: "inactive",
-
-          walletBalance: 0,
-          commissionWallet: 0,
-          rewardWallet: 0,
-          totalIncome: 0,
-          todayIncome: 0,
-          totalWithdraw: 0,
-          pendingWithdrawal: 0,
-          
-          rewardCount: 0,
-
-          directBusiness: 0,
-          teamBusiness: 0,
-          totalTeamBusiness: 0,
-          lifetimeBusiness: 0,
-          directActiveReferrals: 0,
-          teamActiveReferrals: 0,
-
-          totalProductsPurchased: 0,
-
-          level1Count: 0,
-          level2Count: 0,
-          level3Count: 0,
-          level4Count: 0,
-          level5Count: 0,
-
-          referralIncome: 0,
-          levelIncome: 0,
-          rankIncome: 0,
-
-          totalOrders: 0,
-          lastOrderAt: null,
-          isActive: false,
-          isBlocked: false,
-          kycStatus: "pending",
-          kycSubmittedAt: null,
-          kycApprovedAt: null,
-          mlmActive: false,
-          notificationCount: 0,
-          unreadNotifications: 0,
-          sponsorId: sponsorUid || "",
-          sponsorReferralCode: sponsorUid ? sponsorCode : "",
-          shareCode: marketingShareCode,
-          referralCode: marketingShareCode, 
-          referralLink: "", 
-          totalReferrals: 0,
-          directReferrals: 0,
-          teamSize: 0, // Fresh node starts at 0
-          rank: "Member",
-          currentRankId: "member",
-          rankAchievedAt: null,
-          settings: {
-            darkMode: false,
-            notifications: true,
-          },
-          loginCount: 1,
-          createdAt: serverTimestamp(),
-          lastLogin: serverTimestamp(),
-          lastSeenAt: serverTimestamp(),
-        });
-
-        /* ======================================================
-        ✅ MODIFIED: Immediate Level 1 Sponsor Node Atomic Updates
-        ====================================================== */
-        if (sponsorDocRef) {
-          transaction.update(sponsorDocRef, {
-            totalReferrals: increment(1),
-            directReferrals: increment(1),
-            level1Count: increment(1),
-            // Note: Immediate sponsor ka teamSize niche loop me update ho jayega 
-            // kyunki sponsorUid currentParentChain ke index 0 par majood hai.
-          });
-        }
-
-        /* ======================================================
-        ✅ ADDED: Deep Lineage Loop for Global teamSize Increments
-        ====================================================== */
-        for (const uplineId of currentParentChain) {
-          if (uplineId && uplineId.trim() !== "") {
-            const uplineRef = doc(db, "users", uplineId);
-            transaction.update(uplineRef, {
-              teamSize: increment(1),
-            });
-          }
-        }
-
-      });
-
-      console.log("Profile node committed successfully via transaction context.");
-      localStorage.removeItem("jbk_pending_ref");
-    } catch (transactionError: any) {
-      console.error("Critical Firestore Transaction Failed:", transactionError);
-      throw transactionError;
-    }
-  }
-
-  /* ======================================================
-  AUTONOMOUS ROLLBACK CLEANUP CONTROL
-  ====================================================== */
-  async function handleOrphanRollback(authUser: User) {
-    console.warn("Rollback Engine Active: Remediating orphan Auth state credentials.");
-    try {
-      await authUser.delete();
-    } catch (authDeleteError: any) {
-      try {
-        await signOut(auth);
-      } catch (signOutError) {
-        console.error("Critical tracking fallback error logged:", signOutError);
-      }
-    }
+    localStorage.removeItem("jbk_pending_ref");
   }
 
   /* ======================================================
@@ -283,9 +119,9 @@ function RegistrationForm() {
       router.push("/verify-email");
     } catch (error: any) {
       console.error("Email Registration Sequence Fault:", error);
-      if (createdAuthUser) {
-        await handleOrphanRollback(createdAuthUser);
-      }
+      // Keep the Auth account if profile creation or its response fails.
+      // This avoids deleting an account when the server may have committed
+      // the profile but the client did not receive the response.
       alert(error.message || "Signup Failed");
     } finally {
       setLoading(false);
@@ -320,9 +156,8 @@ function RegistrationForm() {
       router.push("/mlm/dashboard");
     } catch (error: any) {
       console.error("Google Registration Sequence Fault:", error);
-      if (createdAuthUser) {
-        await handleOrphanRollback(createdAuthUser);
-      }
+      // Do not delete a Google Auth account when profile creation fails.
+      // The account may already belong to an existing user.
       alert(error.message || "Google Signup Failed");
     } finally {
       setLoading(false);
