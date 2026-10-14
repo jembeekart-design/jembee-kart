@@ -2,6 +2,7 @@ rules_version = '2';
 
 service cloud.firestore {
   match /databases/{database}/documents {
+
     function signedIn() {
       return request.auth != null;
     }
@@ -14,7 +15,18 @@ service cloud.firestore {
       return signedIn()
         && exists(/databases/$(database)/documents/users/$(request.auth.uid))
         && get(/databases/$(database)/documents/users/$(request.auth.uid)).data.role
-             in ['admin', 'super_admin'];
+          in ['admin', 'super_admin'];
+    }
+
+    function validCartItem() {
+      return request.resource.data.keys().hasOnly([
+          'productId', 'quantity', 'size', 'color',
+          'title', 'price', 'image', 'updatedAt'
+        ])
+        && request.resource.data.productId is string
+        && request.resource.data.quantity is int
+        && request.resource.data.quantity >= 1
+        && request.resource.data.quantity <= 20;
     }
 
     match /products/{productId} {
@@ -27,23 +39,53 @@ service cloud.firestore {
       allow create, update, delete: if isAdmin();
     }
 
+    match /admin_settings/{settingId} {
+      allow read: if settingId in ['customize', 'footer_builder'];
+      allow create, update, delete: if isAdmin()
+        && settingId in ['customize', 'footer_builder'];
+    }
+
     match /users/{uid} {
       allow read: if isOwner(uid) || isAdmin();
-      allow create, update, delete: if false;
+
+      // Profile creation and sensitive profile changes must use a
+      // trusted server-side flow.
+      allow create, delete: if false;
+      allow update: if false;
 
       match /cart/{itemId} {
-        allow read, write: if isOwner(uid);
+        allow read: if isOwner(uid) || isAdmin();
+        allow create, update: if isOwner(uid) && validCartItem();
+        allow delete: if isOwner(uid) || isAdmin();
       }
 
       match /addresses/{addressId} {
-        allow read, write: if isOwner(uid);
+        allow read: if isOwner(uid) || isAdmin();
+
+        allow create, update: if isOwner(uid)
+          && request.resource.data.keys().hasOnly([
+            'userId', 'fullName', 'mobile', 'address',
+            'landmark', 'city', 'state', 'pincode',
+            'isDefault', 'createdAt', 'updatedAt'
+          ])
+          && request.resource.data.userId == uid
+          && request.resource.data.fullName is string
+          && request.resource.data.mobile is string
+          && request.resource.data.address is string
+          && request.resource.data.city is string
+          && request.resource.data.state is string
+          && request.resource.data.pincode is string;
+
+        allow delete: if isOwner(uid) || isAdmin();
       }
 
       match /transactions/{transactionId} {
         allow read: if isOwner(uid) || isAdmin();
-        allow write: if false;
+        allow create, update, delete: if false;
       }
 
+      // Wallets, reward balances and other private subcollections
+      // remain denied unless an explicit safe rule is added.
       match /{subcollection}/{documentId} {
         allow read, write: if false;
       }
@@ -51,7 +93,13 @@ service cloud.firestore {
 
     match /orders/{orderId} {
       allow read: if signedIn()
-        && (resource.data.userId == request.auth.uid || isAdmin());
+        && (
+          resource.data.userId == request.auth.uid
+          || isAdmin()
+        );
+
+      // Order creation and financial/status changes must go through
+      // trusted server-side code.
       allow create, update, delete: if isAdmin();
     }
 

@@ -155,3 +155,77 @@ test("customer cannot create an order with a manipulated amount", async () => {
     }
   ));
 });
+
+test("public can read saved theme colors", async () => {
+  await env.withSecurityRulesDisabled(async (ctx) => {
+    await setDoc(doc(ctx.firestore(), "admin_settings/customize"), {
+      headerBackground: "#ffffff",
+      buttonColor: "#2563eb",
+    });
+  });
+
+  await assertSucceeds(
+    getDoc(doc(env.unauthenticatedContext().firestore(), "admin_settings/customize"))
+  );
+});
+
+test("public can read footer links", async () => {
+  await env.withSecurityRulesDisabled(async (ctx) => {
+    await setDoc(doc(ctx.firestore(), "admin_settings/footer_builder"), {
+      companyName: "JembeeKart",
+      links: [{ title: "Privacy Policy", url: "/privacy" }],
+    });
+  });
+
+  await assertSucceeds(
+    getDoc(doc(env.unauthenticatedContext().firestore(), "admin_settings/footer_builder"))
+  );
+});
+
+test("ordinary user cannot change saved theme colors", async () => {
+  await env.withSecurityRulesDisabled(async (ctx) => {
+    await setDoc(doc(ctx.firestore(), "admin_settings/customize"), {
+      buttonColor: "#2563eb",
+    });
+  });
+
+  await assertFails(
+    updateDoc(
+      doc(env.authenticatedContext("userA").firestore(), "admin_settings/customize"),
+      { buttonColor: "#ff0000" }
+    )
+  );
+});
+
+test("ordinary user cannot change footer links", async () => {
+  await env.withSecurityRulesDisabled(async (ctx) => {
+    await setDoc(doc(ctx.firestore(), "admin_settings/footer_builder"), {
+      links: [{ title: "Privacy Policy", url: "/privacy" }],
+    });
+  });
+
+  await assertFails(
+    setDoc(
+      doc(env.authenticatedContext("userA").firestore(), "admin_settings/footer_builder"),
+      { links: [{ title: "Malicious link", url: "https://example.com" }] }
+    )
+  );
+});
+
+test("admin can save theme colors", async () => {
+  await assertSucceeds(
+    setDoc(
+      doc(env.authenticatedContext("adminA").firestore(), "admin_settings/customize"),
+      { headerBackground: "#ffffff", buttonColor: "#2563eb" }
+    )
+  );
+});
+
+test("admin can save footer links", async () => {
+  await assertSucceeds(
+    setDoc(
+      doc(env.authenticatedContext("adminA").firestore(), "admin_settings/footer_builder"),
+      { companyName: "JembeeKart", links: [{ title: "Privacy Policy", url: "/privacy" }] }
+    )
+  );
+});

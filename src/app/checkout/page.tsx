@@ -3,7 +3,7 @@
 import { useEffect, useState, Suspense } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { auth, db } from "@/firebase/config";
-import { doc, getDoc, addDoc, collection, serverTimestamp } from "firebase/firestore";
+import { doc, getDoc } from "firebase/firestore";
 import { ArrowLeft, MapPin, Loader2, ShieldCheck, CreditCard, Home, Truck, CheckCircle2 } from "lucide-react";
 
 function CheckoutContent() {
@@ -38,51 +38,63 @@ function CheckoutContent() {
     const user = auth.currentUser;
 
     if (!user || !product || !address) {
-      console.error("Missing order data");
+      alert("Please log in and save your delivery address first.");
       return;
     }
+
+    if (loading) return;
 
     setLoading(true);
 
     try {
-      const orderNumber = `JK-${Date.now()}`;
-      
-      const price = product.price || 0;
-      const discountPrice = product.discountPrice || price;
-      const discount = price - discountPrice;
+      // Keep one key for this checkout attempt, including retries.
+      const storageKey = `jembeekart_checkout_${user.uid}_${product.id}`;
+      let idempotencyKey = sessionStorage.getItem(storageKey);
 
-      await addDoc(collection(db, "orders"), {
-        orderNumber,
-        userId: user.uid,
-        customerName: address.fullName,
-        customerPhone: address.mobile,
-        shippingAddress: address,
-        productId: product.id,
-        productTitle: product.title,
-        productImage: product.images?.[0] || product.image || "",
-        productPrice: price,
-        productDiscountPrice: discountPrice,
-        quantity: 1,
-        subtotal: price,
-        discount: discount,
-        finalAmount: discountPrice,
-        paymentMethod: "cod",
-        status: "placed",
-        referralEligible: true,
-        cashbackProcessed: false,
-        commissionProcessed: false,
-        rewardProcessed: false,
-        exchangeEligible: true,
-        exchangeRequested: false,
-        placedAt: serverTimestamp(),
-        createdAt: serverTimestamp(),
-        sellerId: product.sellerId || "default_seller",
-        sellerName: product.sellerName || "JembeeKart Official",
+      if (!idempotencyKey) {
+        idempotencyKey =
+          typeof crypto !== "undefined" && "randomUUID" in crypto
+            ? crypto.randomUUID()
+            : `${Date.now()}_${Math.random().toString(36).slice(2)}_${Math.random().toString(36).slice(2)}`;
+
+        sessionStorage.setItem(storageKey, idempotencyKey);
+      }
+
+      const idToken = await user.getIdToken();
+
+      const response = await fetch("/api/orders/create", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${idToken}`,
+        },
+        body: JSON.stringify({
+          productId: product.id,
+          quantity: 1,
+          paymentMethod: "cod",
+          idempotencyKey,
+        }),
       });
 
-      router.push("/payment-success");
-    } catch (error: any) {
-      console.error("Order placement failed:", error);
+      const result = await response.json().catch(() => null);
+
+      if (!response.ok || result?.success !== true || !result?.orderId) {
+        throw new Error(result?.error || "Order placement failed.");
+      }
+
+      router.push(
+        `/payment-success?orderId=${encodeURIComponent(result.orderId)}&orderNumber=${encodeURIComponent(result.orderNumber || "")}`
+      );
+    } catch (error) {
+      console.error(
+        "Order placement failed:",
+        error instanceof Error ? error.message : "unknown"
+      );
+      alert(
+        error instanceof Error
+          ? error.message
+          : "Order placement failed. Please try again."
+      );
     } finally {
       setLoading(false);
     }

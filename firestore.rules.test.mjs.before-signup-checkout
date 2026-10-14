@@ -1,0 +1,120 @@
+import { after, before, beforeEach, test } from "node:test";
+import assert from "node:assert/strict";
+import {
+  initializeTestEnvironment,
+  assertSucceeds,
+  assertFails,
+} from "@firebase/rules-unit-testing";
+import {
+  doc, getDoc, setDoc, updateDoc,
+} from "firebase/firestore";
+import { readFile } from "node:fs/promises";
+
+const rules = await readFile("firestore.rules", "utf8");
+let env;
+
+before(async () => {
+  env = await initializeTestEnvironment({
+    projectId: "demo-jembeekart-rules-test",
+    firestore: { host: "127.0.0.1", port: 8080, rules },
+  });
+});
+
+beforeEach(async () => {
+  await env.clearFirestore();
+  await env.withSecurityRulesDisabled(async (ctx) => {
+    const db = ctx.firestore();
+    await setDoc(doc(db, "users", "userA"), {
+      uid: "userA", role: "user", walletBalance: 100,
+    });
+    await setDoc(doc(db, "users", "userB"), {
+      uid: "userB", role: "user", walletBalance: 50,
+    });
+    await setDoc(doc(db, "users", "adminA"), {
+      uid: "adminA", role: "admin",
+    });
+    await setDoc(doc(db, "products", "visible"), {
+      title: "Visible product", visible: true,
+    });
+    await setDoc(doc(db, "products", "hidden"), {
+      title: "Hidden product", visible: false,
+    });
+    await setDoc(doc(db, "orders", "orderA"), {
+      userId: "userA", status: "placed",
+    });
+  });
+});
+
+after(async () => {
+  if (env) await env.cleanup();
+});
+
+test("unauthenticated user cannot read a user profile", async () => {
+  await assertFails(getDoc(doc(env.unauthenticatedContext().firestore(), "users/userA")));
+});
+
+test("visible product can be read publicly", async () => {
+  await assertSucceeds(getDoc(doc(env.unauthenticatedContext().firestore(), "products/visible")));
+});
+
+test("hidden product cannot be read publicly", async () => {
+  await assertFails(getDoc(doc(env.unauthenticatedContext().firestore(), "products/hidden")));
+});
+
+test("owner can read own profile", async () => {
+  await assertSucceeds(getDoc(doc(env.authenticatedContext("userA").firestore(), "users/userA")));
+});
+
+test("user cannot read another user's profile", async () => {
+  await assertFails(getDoc(doc(env.authenticatedContext("userA").firestore(), "users/userB")));
+});
+
+test("user cannot directly change wallet balance", async () => {
+  await assertFails(updateDoc(
+    doc(env.authenticatedContext("userA").firestore(), "users/userA"),
+    { walletBalance: 999999 }
+  ));
+});
+
+test("user can write own cart", async () => {
+  await assertSucceeds(setDoc(
+    doc(env.authenticatedContext("userA").firestore(), "users/userA/cart/item1"),
+    { productId: "visible", quantity: 1 }
+  ));
+});
+
+test("user cannot write another user's cart", async () => {
+  await assertFails(setDoc(
+    doc(env.authenticatedContext("userA").firestore(), "users/userB/cart/item1"),
+    { productId: "visible", quantity: 1 }
+  ));
+});
+
+test("customer can read own order", async () => {
+  await assertSucceeds(getDoc(doc(env.authenticatedContext("userA").firestore(), "orders/orderA")));
+});
+
+test("customer cannot read another user's order", async () => {
+  await assertFails(getDoc(doc(env.authenticatedContext("userB").firestore(), "orders/orderA")));
+});
+
+test("customer cannot create an order with client SDK", async () => {
+  await assertFails(setDoc(
+    doc(env.authenticatedContext("userA").firestore(), "orders/newOrder"),
+    { userId: "userA", finalAmount: 1 }
+  ));
+});
+
+test("admin can create a product", async () => {
+  await assertSucceeds(setDoc(
+    doc(env.authenticatedContext("adminA").firestore(), "products/adminProduct"),
+    { title: "Admin product", visible: true }
+  ));
+});
+
+test("ordinary user cannot create a product", async () => {
+  await assertFails(setDoc(
+    doc(env.authenticatedContext("userA").firestore(), "products/forbidden"),
+    { title: "Forbidden", visible: true }
+  ));
+});
