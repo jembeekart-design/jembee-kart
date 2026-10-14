@@ -201,8 +201,10 @@ export default function AdminModerationDashboard() {
       setMessage('Settings updated successfully!');
       setTimeout(() => setMessage(''), 3000);
     } catch (err) {
-      console.error(err);
-      setMessage('Failed to update settings.');
+      console.error('Moderation settings save failed:', err);
+      setMessage(
+        `Failed to update settings: ${err instanceof Error ? err.message : String(err)}`
+      );
     } finally {
       setSaving(false);
     }
