@@ -95,10 +95,14 @@ export const updateModerationSettings = async (
   reason: string
 ): Promise<void> => {
   const docRef = doc(db, 'commentModeration', 'settings');
+  console.log("[Moderation Save] Step 1: Reading settings");
   const currentSnap = await getDoc(docRef);
+  console.log("[Moderation Save] Step 1 OK");
   const oldValue = currentSnap.exists() ? currentSnap.data() : {};
 
+  console.log("[Moderation Save] Step 2: Writing settings");
   await setDoc(docRef, newSettings, { merge: true });
+  console.log("[Moderation Save] Step 2 OK");
   settingsCache = null; // Invalidate cache
 
   // Write audit log
@@ -115,7 +119,9 @@ export const updateModerationSettings = async (
     reason,
   };
 
+  console.log("[Moderation Save] Step 3: Writing audit log");
   await addDoc(collection(db, 'commentAuditLogs'), auditLog);
+  console.log("[Moderation Save] Step 3 OK");
 };
 
 export const getRegexRules = async (): Promise<RegexRule[]> => {
