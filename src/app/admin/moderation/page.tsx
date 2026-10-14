@@ -194,7 +194,10 @@ export default function AdminModerationDashboard() {
   const handleSave = async (updatedFields: Partial<ModerationSettings>, reason: string) => {
     setSaving(true);
     try {
-      const adminId = auth.currentUser?.uid || 'admin_system_user';
+      console.log("[Moderation Debug] Authenticated:", !!auth.currentUser);
+    console.log("[Moderation Debug] UID:", auth.currentUser?.uid ?? "NO_USER");
+    console.log("[Moderation Debug] Project ID:", auth.app.options.projectId);
+    const adminId = auth.currentUser?.uid || 'admin_system_user';
       const merged = { ...settings, ...updatedFields };
       await updateModerationSettings(merged, adminId, reason);
       setSettings(merged);
