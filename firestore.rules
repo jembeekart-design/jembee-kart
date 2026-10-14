@@ -45,6 +45,30 @@ service cloud.firestore {
         && settingId in ['customize', 'footer_builder'];
     }
 
+    // COMMENT MODERATION SETTINGS
+    match /commentModeration/{documentId} {
+      allow read, write: if isAdmin();
+    }
+
+    // COMMENT MODERATION AUDIT LOGS
+    match /commentAuditLogs/{logId} {
+      allow read: if isAdmin();
+      allow create: if isAdmin();
+      allow update, delete: if false;
+    }
+
+    // COMMENT REGEX RULES
+    match /commentRegexRules/{ruleId} {
+      allow read: if isAdmin();
+      allow write: if isAdmin();
+    }
+
+    // COMMENT VIOLATIONS
+    match /commentViolations/{userId} {
+      allow read: if isAdmin();
+      allow write: if false;
+    }
+
     match /users/{uid} {
       allow read: if isOwner(uid) || isAdmin();
 
