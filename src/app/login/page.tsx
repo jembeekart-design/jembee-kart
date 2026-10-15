@@ -46,23 +46,29 @@ function LoginCard() {
   VERIFY & TELEMETRY SYNC (STRICT EXISTING USERS ONLY)
   ====================================================== */
   async function verifyAndTelemetrySync(user: User) {
-  const q = query(
-    collection(db, "users"),
-    where("uid", "==", user.uid)
-  );
+    const q = query(
+      collection(db, "users"),
+      where("uid", "==", user.uid)
+    );
 
-  const snapshot = await getDocs(q);
+    const snapshot = await getDocs(q);
 
-  if (snapshot.empty) {
-    return false;
+    if (snapshot.empty) {
+      return false;
+    }
+
+    // Login verification must not fail because telemetry updates
+    // are blocked by the secure Firestore profile rules.
+    try {
+      await updateDoc(snapshot.docs[0].ref, {
+        lastLogin: serverTimestamp(),
+      });
+    } catch (error) {
+      console.warn("Login telemetry update skipped:", error);
+    }
+
+    return true;
   }
-
-  await updateDoc(snapshot.docs[0].ref, {
-    lastLogin: serverTimestamp(),
-  });
-
-  return true;
-}
   
 
   /* ======================================================
