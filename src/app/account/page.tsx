@@ -145,7 +145,7 @@ export default function AccountPage() {
       const photoURL = cloudinaryResponse.secure_url;
       
       const docRef = doc(db, "users", user.uid);
-      await updateDoc(docRef, { photoURL });
+      await updateDoc(docRef, { photoURL, photoUrl: photoURL });
       
       // UI update is handled automatically by onSnapshot
     } catch (error) {
