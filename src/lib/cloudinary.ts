@@ -198,8 +198,24 @@ export async function uploadToCloudinary(
     /* ---------------- ERROR ---------------- */
 
     if (!response.ok) {
+      let details = "";
+      try {
+        const body = await response.json();
+        details =
+          typeof body?.error?.message === "string"
+            ? body.error.message
+            : JSON.stringify(body);
+      } catch {
+        details = await response.text().catch(() => "");
+      }
+
+      console.error("Cloudinary HTTP Error:", {
+        status: response.status,
+        details: details.slice(0, 1000),
+      });
+
       throw new Error(
-        "Cloudinary Upload Failed"
+        `Cloudinary Upload Failed (${response.status}): ${details.slice(0, 300)}`
       );
     }
 
