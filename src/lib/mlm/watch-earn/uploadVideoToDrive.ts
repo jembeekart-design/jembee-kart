@@ -69,6 +69,11 @@ export async function uploadVideoToDrive(
 
     for (let attempt = 1; attempt <= 3; attempt++) {
       const controller = new AbortController();
+      const attemptStartedAt = Date.now();
+      const safeUploadHost = (() => {
+        try { return new URL(uploadUrl).host; }
+        catch { return "invalid-url"; }
+      })();
       const timeoutId = setTimeout(() => controller.abort(), 60000);
       try {
         response = await fetch(uploadUrl, {
@@ -108,6 +113,14 @@ export async function uploadVideoToDrive(
           maxRetries: 3,
           name: error instanceof Error ? error.name : typeof error,
           message: error instanceof Error ? error.message : String(error),
+          elapsedMs: Date.now() - attemptStartedAt,
+          uploadHost: safeUploadHost,
+          online: typeof navigator !== "undefined" ? navigator.onLine : "unknown",
+          visibility: typeof document !== "undefined" ? document.visibilityState : "unknown",
+          userAgent: typeof navigator !== "undefined" ? navigator.userAgent : "unknown",
+          connection: typeof navigator !== "undefined" && "connection" in navigator
+            ? String((navigator as Navigator & { connection?: { effectiveType?: string } }).connection?.effectiveType ?? "unknown")
+            : "unknown",
           uploadedBytes: start,
           end,
           fileSize: file.size,
