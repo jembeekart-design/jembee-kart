@@ -97,6 +97,16 @@ function VideoPreview({ driveFileId }: { driveFileId: string }) {
 }
 
 // ... existing interface
+interface ShortsReport {
+  id: string;
+  videoId: string;
+  userId: string;
+  reason: string;
+  message: string;
+  status: string;
+  createdAt: number | null;
+}
+
 interface ModerationSubmission {
   id: string;
   submissionId: string;
@@ -121,10 +131,62 @@ export default function AdminModerationDashboard() {
   const [connectingGoogleDrive, setConnectingGoogleDrive] = useState(false);
   const [auditLogs, setAuditLogs] = useState<CommentAuditLog[]>([]);
   const [submissions, setSubmissions] = useState<ModerationSubmission[]>([]);
+  const [shortsReports, setShortsReports] = useState<ShortsReport[]>([]);
   const [newBlockedWord, setNewBlockedWord] = useState('');
   const [newAllowedWord, setNewAllowedWord] = useState('');
   const [saving, setSaving] = useState(false);
   const [message, setMessage] = useState('');
+
+  const fetchShortsReports = useCallback(async () => {
+    try {
+      const user = auth.currentUser;
+      if (!user) throw new Error("Not authenticated");
+      const token = await user.getIdToken();
+      const response = await fetch("/api/admin/shorts-reports", {
+        headers: { Authorization: `Bearer ${token}` },
+      });
+      const data = await response.json();
+      if (!response.ok || !data.success) {
+        throw new Error(data.message || "Failed to load Shorts reports");
+      }
+      setShortsReports(Array.isArray(data.reports) ? data.reports : []);
+    } catch (error) {
+      console.error("Error fetching Shorts reports:", error);
+      setMessage(`Reports: ${error instanceof Error ? error.message : String(error)}`);
+    }
+  }, []);
+
+  const handleShortsReportAction = async (
+    reportId: string,
+    action: "reviewed" | "dismissed"
+  ) => {
+    setSaving(true);
+    try {
+      const user = auth.currentUser;
+      if (!user) throw new Error("Not authenticated");
+      const token = await user.getIdToken();
+      const response = await fetch("/api/admin/shorts-reports", {
+        method: "POST",
+        headers: {
+          Authorization: `Bearer ${token}`,
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ reportId, action }),
+      });
+      const data = await response.json();
+      if (!response.ok || !data.success) {
+        throw new Error(data.message || "Failed to update report");
+      }
+      setShortsReports((current) => current.filter((report) => report.id !== reportId));
+      setMessage(action === "reviewed" ? "Report marked reviewed." : "Report dismissed.");
+      setTimeout(() => setMessage(""), 3000);
+    } catch (error) {
+      console.error("Shorts report action failed:", error);
+      setMessage(`Report action failed: ${error instanceof Error ? error.message : String(error)}`);
+    } finally {
+      setSaving(false);
+    }
+  };
 
   const fetchSubmissions = useCallback(async () => {
     try {
@@ -157,8 +219,8 @@ export default function AdminModerationDashboard() {
         setAuditLogs(snap.docs.map((d) => ({ id: d.id, ...d.data() } as CommentAuditLog)))
       );
 
-    setTimeout(() => fetchSubmissions(), 0);
-  }, [fetchSubmissions]);
+    setTimeout(() => { fetchSubmissions(); fetchShortsReports(); }, 0);
+  }, [fetchSubmissions, fetchShortsReports]);
 
   const handleModerationAction = async (submissionId: string, action: 'approve' | 'reject') => {
     setSaving(true);
@@ -314,6 +376,60 @@ export default function AdminModerationDashboard() {
           ))}
         </div>
       </div>
+      {/* Shorts Reports Queue */}
+      <div className="bg-gray-800 p-6 rounded-lg space-y-4">
+        <div className="flex flex-wrap items-center justify-between gap-3">
+          <h2 className="text-lg font-semibold text-orange-400">
+            Shorts Reports Queue ({shortsReports.length})
+          </h2>
+          <button
+            type="button"
+            onClick={fetchShortsReports}
+            disabled={saving}
+            className="bg-gray-700 hover:bg-gray-600 disabled:opacity-50 px-3 py-2 rounded text-sm"
+          >
+            Refresh Reports
+          </button>
+        </div>
+        {shortsReports.length === 0 ? (
+          <p className="text-sm text-gray-400">No pending Shorts reports.</p>
+        ) : (
+          <div className="space-y-3">
+            {shortsReports.map((report) => (
+              <div key={report.id} className="bg-gray-700 p-4 rounded-lg space-y-2">
+                <div className="flex flex-wrap gap-x-4 gap-y-1 text-sm">
+                  <span>Reason: <strong className="text-orange-300">{report.reason}</strong></span>
+                  <span className="text-gray-300">Video ID: <code className="break-all">{report.videoId}</code></span>
+                </div>
+                <p className="text-xs text-gray-400 break-all">Reporter UID: {report.userId}</p>
+                {report.message && <p className="text-sm whitespace-pre-wrap break-words">{report.message}</p>}
+                <p className="text-xs text-gray-400">
+                  Reported: {report.createdAt ? new Date(report.createdAt).toLocaleString() : "Unknown date"}
+                </p>
+                <div className="flex flex-wrap gap-2 pt-1">
+                  <button
+                    type="button"
+                    onClick={() => handleShortsReportAction(report.id, "reviewed")}
+                    disabled={saving}
+                    className="bg-green-600 hover:bg-green-700 disabled:opacity-50 px-3 py-2 rounded text-sm"
+                  >
+                    Reviewed
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => handleShortsReportAction(report.id, "dismissed")}
+                    disabled={saving}
+                    className="bg-red-600 hover:bg-red-700 disabled:opacity-50 px-3 py-2 rounded text-sm"
+                  >
+                    Dismiss
+                  </button>
+                </div>
+              </div>
+            ))}
+          </div>
+        )}
+      </div>
+
       {/* Global Toggles */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6 bg-gray-800 p-6 rounded-lg">
         <label className="flex items-center space-x-3 cursor-pointer">
