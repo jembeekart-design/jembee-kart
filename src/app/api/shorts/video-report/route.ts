@@ -17,7 +17,9 @@ const ALLOWED_REASONS = [
 export async function POST(req: Request) {
   try {
     const body = await req.json();
-    const { videoId, reason, message, token } = body ?? {};
+    const { videoId, reason: rawReason, message, token } = body ?? {};
+    const reason =
+      typeof rawReason === "string" ? rawReason.trim().toLowerCase() : rawReason;
 
     if (
       typeof videoId !== "string" ||
