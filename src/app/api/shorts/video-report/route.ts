@@ -3,12 +3,15 @@ import { getAdminAuth, getAdminDb } from "@/firebase/admin";
 
 const ALLOWED_REASONS = [
   "spam",
+  "misleading",
+  "hate",
+  "nudity",
   "violence",
+  "copyright",
+  "other",
   "harassment",
   "misinformation",
   "inappropriate",
-  "copyright",
-  "other",
 ];
 
 export async function POST(req: Request) {
