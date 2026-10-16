@@ -1,33 +1,33 @@
-import {
-  doc,
-  increment,
-  updateDoc,
-  deleteDoc
-} from "firebase/firestore";
-
-import { db } from "@/firebase/config";
+import { auth } from "@/firebase/config";
 
 interface UnlikeVideoData {
   videoId: string;
   userId: string;
 }
 
-export async function unlikeVideo({
-  videoId,
-  userId
-}: UnlikeVideoData) {
+export async function unlikeVideo({ videoId, userId }: UnlikeVideoData) {
   try {
-    const likeRef = doc(db, "watchVideoLikes", `${videoId}_${userId}`);
-    await deleteDoc(likeRef);
+    const user = auth.currentUser;
 
-    const videoRef = doc(db, "watchEarnVideos", videoId);
-    await updateDoc(videoRef, {
-      likes: increment(-1)
+    if (!user) {
+      return { success: false, message: "Authentication required" };
+    }
+
+    if (!videoId || user.uid !== userId) {
+      return { success: false, message: "Invalid user or video" };
+    }
+
+    const token = await user.getIdToken();
+
+    const response = await fetch("/api/shorts/video-like", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ videoId, action: "unlike", token }),
     });
 
-    return { success: true };
+    return await response.json();
   } catch (error) {
     console.error("UNLIKE VIDEO ERROR:", error);
-    return { success: false };
+    return { success: false, message: "Failed to unlike the video" };
   }
 }

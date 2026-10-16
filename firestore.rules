@@ -127,6 +127,36 @@ service cloud.firestore {
       allow create, update, delete: if isAdmin();
     }
 
+
+    // Shorts preferences: each user manages only their own preferences.
+    match /interestedWatchVideos/{uid}/videos/{videoId} {
+      allow read: if isOwner(uid) || isAdmin();
+
+      allow create, update: if isOwner(uid)
+        && request.resource.data.keys().hasOnly(['videoId', 'createdAt'])
+        && request.resource.data.videoId == videoId;
+
+      allow delete: if isOwner(uid) || isAdmin();
+    }
+
+    match /notInterestedWatchVideos/{uid}/videos/{videoId} {
+      allow read: if isOwner(uid) || isAdmin();
+
+      allow create, update: if isOwner(uid)
+        && request.resource.data.keys().hasOnly(['videoId', 'createdAt'])
+        && request.resource.data.videoId == videoId;
+
+      allow delete: if isOwner(uid) || isAdmin();
+    }
+
+    // Like documents are written only by the authenticated server API.
+    // Users may read only their own like records.
+    match /watchVideoLikes/{likeId} {
+      allow read: if (signedIn()
+        && resource.data.userId == request.auth.uid) || isAdmin();
+      allow create, update, delete: if false;
+    }
+
     match /{document=**} {
       allow read, write: if false;
     }

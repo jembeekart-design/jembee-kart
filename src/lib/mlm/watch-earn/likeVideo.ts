@@ -1,112 +1,33 @@
-import {
-  doc,
-  increment,
-  updateDoc,
-  setDoc,
-  getDoc
-} from "firebase/firestore";
-
-import { db }
-from "@/firebase/config";
+import { auth } from "@/firebase/config";
 
 interface LikeVideoData {
-
   videoId: string;
-
   userId: string;
-
 }
 
-export async function
-likeVideo({
-  videoId,
-  userId
-}: LikeVideoData) {
-
+export async function likeVideo({ videoId, userId }: LikeVideoData) {
   try {
+    const user = auth.currentUser;
 
-    /* =========================
-       LIKE REF
-    ========================= */
-
-    const likeRef =
-      doc(
-        db,
-        "watchVideoLikes",
-        `${videoId}_${userId}`
-      );
-
-    const likeSnap =
-      await getDoc(
-        likeRef
-      );
-
-    /* =========================
-       ALREADY LIKED
-    ========================= */
-
-    if (
-      likeSnap.exists()
-    ) {
-
-      return {
-        success: false,
-
-        message:
-          "Already liked"
-      };
+    if (!user) {
+      return { success: false, message: "Authentication required" };
     }
 
-    /* =========================
-       SAVE LIKE
-    ========================= */
+    if (!videoId || user.uid !== userId) {
+      return { success: false, message: "Invalid user or video" };
+    }
 
-    await setDoc(
-      likeRef,
-      {
-        videoId:
-          videoId,
+    const token = await user.getIdToken();
 
-        userId:
-          userId,
+    const response = await fetch("/api/shorts/video-like", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ videoId, action: "like", token }),
+    });
 
-        createdAt:
-          Date.now()
-      }
-    );
-
-    /* =========================
-       UPDATE VIDEO
-    ========================= */
-
-    const videoRef =
-      doc(
-        db,
-        "watchEarnVideos",
-        videoId
-      );
-
-    await updateDoc(
-      videoRef,
-      {
-        likes:
-          increment(1)
-      }
-    );
-
-    return {
-      success: true
-    };
-
+    return await response.json();
   } catch (error) {
-
-    console.error(
-      "LIKE VIDEO ERROR:",
-      error
-    );
-
-    return {
-      success: false
-    };
+    console.error("LIKE VIDEO ERROR:", error);
+    return { success: false, message: "Failed to like the video" };
   }
 }
