@@ -143,9 +143,23 @@ export default function AccountPage() {
     try {
       const cloudinaryResponse = await uploadToCloudinary(file, "image");
       const photoURL = cloudinaryResponse.secure_url;
-      
-      const docRef = doc(db, "users", user.uid);
-      await updateDoc(docRef, { photoURL, photoUrl: photoURL });
+      const currentUser = auth.currentUser;
+      if (!currentUser) throw new Error("Please log in again.");
+
+      const token = await currentUser.getIdToken();
+      const response = await fetch("/api/profile/photo", {
+        method: "PATCH",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify({ photoURL }),
+      });
+
+      const result = await response.json();
+      if (!response.ok) {
+        throw new Error(result.error || "Failed to save profile photo.");
+      }
       
       // UI update is handled automatically by onSnapshot
     } catch (error) {

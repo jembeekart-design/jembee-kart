@@ -82,10 +82,23 @@ export default function ShortsProfile() {
     try {
       const result = await uploadToCloudinary(file, "image");
       const photoURL = result.secure_url;
-      await updateDoc(doc(db, "users", user.uid), {
-        photoURL,
-        photoUrl: photoURL,
+      const currentUser = auth.currentUser;
+      if (!currentUser) throw new Error("Please log in again.");
+
+      const token = await currentUser.getIdToken();
+      const response = await fetch("/api/profile/photo", {
+        method: "PATCH",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify({ photoURL }),
       });
+
+      const responseData = await response.json();
+      if (!response.ok) {
+        throw new Error(responseData.error || "Failed to save profile photo.");
+      }
       setProfile((prev: any) => ({
         ...prev,
         photoURL,
