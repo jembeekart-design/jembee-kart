@@ -156,7 +156,7 @@ export default function CommentDrawer({ open, onClose, videoId, onCommentAdded }
         right-0
         z-[999]
         rounded-t-[35px]
-        bg-[#080D18]/95
+        bg-gray-950/80
         backdrop-blur-md
         transition-all
 
@@ -186,7 +186,7 @@ export default function CommentDrawer({ open, onClose, videoId, onCommentAdded }
           className="
             text-lg
             font-black
-            text-[#FFFFFF]
+            text-[var(--button-text-color)]
           "
         >
 
@@ -198,7 +198,7 @@ export default function CommentDrawer({ open, onClose, videoId, onCommentAdded }
           onClick={onClose}
           className="
             text-2xl
-            text-[#FFFFFF]
+            text-[var(--button-text-color)]
           "
         >
 
@@ -234,14 +234,7 @@ export default function CommentDrawer({ open, onClose, videoId, onCommentAdded }
                   flex
                   items-start
                   justify-between
-                  gap-3
-                  rounded-2xl
-                  border
-                  border-white/10
-                  bg-white/[0.04]
-                  px-3
-                  py-3
-                  shadow-sm
+                  gap-4
                 "
               >
 
@@ -251,7 +244,7 @@ export default function CommentDrawer({ open, onClose, videoId, onCommentAdded }
                     className="
                       text-sm
                       font-black
-                      text-[#FFFFFF]
+                      text-[var(--button-text-color)]
                     "
                   >
 
@@ -263,10 +256,7 @@ export default function CommentDrawer({ open, onClose, videoId, onCommentAdded }
                     className="
                       mt-1
                       text-sm
-                      leading-6
-                      text-[#FFFFFF]
-                      whitespace-pre-wrap
-                      break-words
+                      text-white
                     "
                   >
 
@@ -328,29 +318,25 @@ export default function CommentDrawer({ open, onClose, videoId, onCommentAdded }
 
         <input
           value={commentText}
-          maxLength={200}
 
           onChange={(e) => {
             setCommentText(e.target.value);
             if (error) setError(""); // Clear error when user starts typing again
           }}
 
-          placeholder="Write a comment..."
+          placeholder="Write comment..."
 
           className="
             flex-1
             rounded-full
             border
-            border-[#60A5FA]/70
-            bg-[#071426]/95
+            border-[var(--color-border)]/10
+            bg-[var(--color-card-background)]/5
             px-5
             py-3
             text-sm
-            text-[#FFFFFF]
-            placeholder:text-[#9CA3AF]
+            text-[var(--button-text-color)]
             outline-none
-            focus:ring-2
-            focus:ring-[#3B82F6]/40
           "
         />
 
@@ -363,12 +349,10 @@ export default function CommentDrawer({ open, onClose, videoId, onCommentAdded }
             items-center
             justify-center
             rounded-full
-            bg-[#FFF000]
-            text-[#000000]
-            shadow-lg
-            shadow-yellow-400/20
-            transition-transform
-            active:scale-95
+            bg-gradient-to-r
+            from-[var(--color-primary-button)]
+            to-[var(--color-primary-button)]
+            text-[var(--button-text-color)]
           "
         >
 
