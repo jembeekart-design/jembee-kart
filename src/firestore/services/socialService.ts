@@ -71,31 +71,59 @@ export async function getComments(contentId: string, userId: string, callback: (
 }
 
 export async function addComment(contentId: string, userId: string, userName: string, text: string) {
-  // Requirement 1: Load moderation settings from Firestore.
+  // Validate comments before saving them.
   const settings = await getModerationSettings();
-  
-  if (!settings.commentsEnabled) throw new Error("Comments are currently disabled by administrators.");
 
-  // Requirement 2, 3: Check against blockedWords and profanity filter.
-  const textToCheck = settings.caseInsensitive ? text.toLowerCase() : text;
+  if (!settings.enabled) {
+    throw new Error("Comment moderation is currently unavailable.");
+  }
+  if (!settings.commentsEnabled) {
+    throw new Error("Comments are currently disabled by administrators.");
+  }
 
-  // Requirement 2: Whitelist check
-  const whitelisted = settings.allowedWords.some(w => {
-    const word = settings.caseInsensitive ? w.toLowerCase() : w;
-    return textToCheck.includes(word);
+  const trimmedText = text.trim();
+  if (trimmedText.length < settings.minCommentLength) {
+    throw new Error(`Comment is too short (minimum ${settings.minCommentLength} characters).`);
+  }
+  if (trimmedText.length > settings.maxCommentLength) {
+    throw new Error(`Comment exceeds the ${settings.maxCommentLength}-character limit.`);
+  }
+
+  const textToCheck = settings.caseInsensitive ? trimmedText.toLowerCase() : trimmedText;
+
+  // Blocked words cannot be bypassed by adding a whitelisted word.
+  const blockedWords = (settings.blockedWords || []).filter(word => word.trim());
+  const isBlocked = blockedWords.some(word => {
+    const normalizedWord = settings.caseInsensitive ? word.toLowerCase() : word;
+    return settings.blockPartialMatch
+      ? textToCheck.includes(normalizedWord)
+      : textToCheck.split(/\\s+/).includes(normalizedWord);
   });
 
-  if (!whitelisted && settings.enabled && settings.blockedWords.length > 0) {
-    const isBlocked = settings.blockedWords.some(word => {
-      const bWord = settings.caseInsensitive ? word.toLowerCase() : word;
-      return settings.blockPartialMatch 
-        ? textToCheck.includes(bWord) 
-        : textToCheck.split(/\s+/).includes(bWord);
-    });
+  if (isBlocked) {
+    throw new Error(settings.customMessage || "Please avoid abusive language.");
+  }
 
-    // Requirement 4: If blocked: Do NOT save comment.
-    if (isBlocked) {
-        throw new Error("Please avoid abusive language.");
+  // Apply enabled administrator-defined regex rules.
+  const regexSnapshot = await getDocs(collection(db, "commentRegexRules"));
+  for (const ruleDoc of regexSnapshot.docs) {
+    const rule = ruleDoc.data();
+    if (rule.enabled !== true || typeof rule.pattern !== "string" || !rule.pattern) continue;
+
+    let regex: RegExp;
+    try {
+      regex = new RegExp(rule.pattern, settings.caseInsensitive ? "i" : "");
+    } catch {
+      console.error("Skipping invalid comment moderation regex:", rule.pattern);
+      continue;
+    }
+
+    if (regex.test(trimmedText)) {
+      throw new Error(
+        typeof rule.message === "string" && rule.message
+          ? rule.message
+          : settings.customMessage || "Please avoid abusive language."
+      );
     }
   }
 
