@@ -1,98 +1,45 @@
-import {
-  doc,
-  increment,
-  updateDoc,
-  deleteDoc,
-  setDoc,
-  getDoc
-} from "firebase/firestore";
-
-import { db }
-from "@/firebase/config";
-import { FIRESTORE_PATHS } from "@/firestore/collections/firestorePaths";
+import { auth } from "@/firebase/config";
 
 interface LikeVideoCommentData {
   commentId: string;
   userId: string;
 }
 
-export async function
-likeVideoComment(
-  data:
-  LikeVideoCommentData
-) {
+async function updateCommentLike(data: LikeVideoCommentData, action: "like" | "unlike") {
+  const user = auth.currentUser;
+  if (!user || user.uid !== data.userId) {
+    return { success: false, message: "Please sign in again." };
+  }
 
   try {
-    const likeRef = doc(db, "videoCommentLikes", `${data.commentId}_${data.userId}`);
-    const likeSnap = await getDoc(likeRef);
-    if (likeSnap.exists()) return { success: false, message: "Already liked" };
+    const token = await user.getIdToken();
+    const response = await fetch("/api/shorts/comment-like", {
+      method: "POST",
+      headers: {
+        Authorization: "Bearer " + token,
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ commentId: data.commentId, action }),
+    });
+    const result = await response.json().catch(() => ({}));
 
-    await setDoc(likeRef, { commentId: data.commentId, userId: data.userId, createdAt: Date.now() });
-
-    await updateDoc(
-      doc(
-        db,
-        FIRESTORE_PATHS.WATCH_EARN.COMMENTS,
-        data.commentId
-      ),
-      {
-        likes:
-          increment(1),
-
-        updatedAt:
-          Date.now()
-      }
-    );
-
-    return {
-      success: true
-    };
-
+    if (!response.ok || result.success !== true) {
+      return {
+        success: false,
+        message: typeof result.message === "string" ? result.message : "Unable to update like.",
+      };
+    }
+    return { success: true };
   } catch (error) {
-
-    console.error(error);
-
-    return {
-      success: false
-    };
+    console.error("Comment like request failed:", error);
+    return { success: false, message: "Unable to update like." };
   }
 }
 
-export async function
-unlikeVideoComment(
-  data:
-  LikeVideoCommentData
-) {
+export function likeVideoComment(data: LikeVideoCommentData) {
+  return updateCommentLike(data, "like");
+}
 
-  try {
-    const likeRef = doc(db, "videoCommentLikes", `${data.commentId}_${data.userId}`);
-    await deleteDoc(likeRef);
-
-    await updateDoc(
-      doc(
-        db,
-        FIRESTORE_PATHS.WATCH_EARN.COMMENTS,
-        data.commentId
-      ),
-      {
-        likes:
-          increment(-1),
-
-        updatedAt:
-          Date.now()
-      }
-    );
-
-    return {
-      success: true
-    };
-
-  } catch (error) {
-
-    console.error(error);
-
-    return {
-      success: false
-    };
-  }
+export function unlikeVideoComment(data: LikeVideoCommentData) {
+  return updateCommentLike(data, "unlike");
 }

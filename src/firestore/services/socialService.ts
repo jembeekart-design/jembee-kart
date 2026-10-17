@@ -12,7 +12,7 @@ import {
   increment,
   getDocs
 } from "firebase/firestore";
-import { db } from "@/firebase/config";
+import { db, auth } from "@/firebase/config";
 import { FIRESTORE_PATHS } from "@/firestore/collections/firestorePaths";
 import { getModerationSettings } from "@/services/moderationService";
 
@@ -70,101 +70,49 @@ export async function getComments(contentId: string, userId: string, callback: (
   };
 }
 
-export async function addComment(contentId: string, userId: string, userName: string, text: string) {
-  // Validate comments before saving them.
-  const settings = await getModerationSettings();
+export async function addComment(
+  contentId: string,
+  userId: string,
+  userName: string,
+  text: string
+) {
+  const currentUser = auth.currentUser;
 
-  if (!settings.enabled) {
-    throw new Error("Comment moderation is currently unavailable.");
-  }
-  if (!settings.commentsEnabled) {
-    throw new Error("Comments are currently disabled by administrators.");
+  if (!currentUser || currentUser.uid !== userId) {
+    throw new Error("Please sign in before commenting.");
   }
 
   const trimmedText = text.trim();
-  if (trimmedText.length < settings.minCommentLength) {
-    throw new Error(`Comment is too short (minimum ${settings.minCommentLength} characters).`);
-  }
-  if (trimmedText.length > settings.maxCommentLength) {
-    throw new Error(`Comment exceeds the ${settings.maxCommentLength}-character limit.`);
+  if (!trimmedText) {
+    throw new Error("Comment cannot be empty.");
   }
 
-  const textToCheck = settings.caseInsensitive ? trimmedText.toLowerCase() : trimmedText;
+  const token = await currentUser.getIdToken();
 
-  // Blocked words cannot be bypassed by adding a whitelisted word.
-  const blockedWords = (settings.blockedWords || []).filter(word => word.trim());
-  const isBlocked = blockedWords.some(word => {
-    const normalizedWord = settings.caseInsensitive ? word.toLowerCase() : word;
-    return settings.blockPartialMatch
-      ? textToCheck.includes(normalizedWord)
-      : textToCheck.split(/\\s+/).includes(normalizedWord);
+  const response = await fetch("/api/shorts/comments", {
+    method: "POST",
+    headers: {
+      Authorization: `Bearer ${token}`,
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({
+      videoId: contentId,
+      text: trimmedText,
+    }),
   });
 
-  if (isBlocked) {
-    throw new Error(settings.customMessage || "Please avoid abusive language.");
+  const result = await response.json().catch(() => ({}));
+
+  if (!response.ok || result.success !== true || !result.comment?.id) {
+    throw new Error(
+      typeof result.message === "string"
+        ? result.message
+        : "Failed to submit comment."
+    );
   }
 
-  // Apply enabled administrator-defined regex rules.
-  const regexSnapshot = await getDocs(collection(db, "commentRegexRules"));
-  for (const ruleDoc of regexSnapshot.docs) {
-    const rule = ruleDoc.data();
-    if (rule.enabled !== true || typeof rule.pattern !== "string" || !rule.pattern) continue;
-
-    let regex: RegExp;
-    try {
-      regex = new RegExp(rule.pattern, settings.caseInsensitive ? "i" : "");
-    } catch {
-      console.error("Skipping invalid comment moderation regex:", rule.pattern);
-      continue;
-    }
-
-    if (regex.test(trimmedText)) {
-      throw new Error(
-        typeof rule.message === "string" && rule.message
-          ? rule.message
-          : settings.customMessage || "Please avoid abusive language."
-      );
-    }
-  }
-
-  // Requirement 5: If autoApprove=false: Save status="pending".
-  const isApproved = settings.autoApproveComments;
-
-  const commentRef = await addDoc(collection(db, COMMENTS_COLLECTION), {
-    contentId,
-    userId,
-    userName,
-    text,
-    createdAt: serverTimestamp(),
-    status: isApproved ? 'approved' : 'pending',
-    likes: 0
-  });
-
-  // Requirement 5: Create moderation queue entry.
-  if (!isApproved) {
-     await addDoc(collection(db, "videoCommentReports"), {
-        commentId: commentRef.id,
-        contentId,
-        userId,
-        userName,
-        text,
-        status: "pending",
-        createdAt: serverTimestamp(),
-        reason: "auto-moderation-pending"
-     });
-  }
-
-  // Also increment the aggregated comments counter on the video document so the feed shows updated counts
-  try {
-    await updateDoc(doc(db, "watchEarnVideos", contentId), {
-      comments: increment(1)
-    });
-  } catch (err) {
-    // If increment fails, do not throw — comment is stored; log for debugging.
-    console.error("Failed to increment video comments counter:", err);
-  }
-
-  return commentRef;
+  // Keep the existing caller contract: CommentDrawer uses commentRef.id.
+  return { id: result.comment.id };
 }
 
 export async function deleteComment(commentId: string) {

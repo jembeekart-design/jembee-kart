@@ -49,6 +49,104 @@ after(async () => {
   if (env) await env.cleanup();
 });
 
+test("approved comments can be read by users", async () => {
+  await env.withSecurityRulesDisabled(async (ctx) => {
+    await setDoc(doc(ctx.firestore(), "comments/approvedComment"), {
+      contentId: "videoA",
+      userId: "userA",
+      text: "A normal comment",
+      status: "approved",
+    });
+  });
+
+  await assertSucceeds(
+    getDoc(doc(env.authenticatedContext("userB").firestore(), "comments/approvedComment"))
+  );
+});
+
+test("pending comments cannot be read by ordinary users", async () => {
+  await env.withSecurityRulesDisabled(async (ctx) => {
+    await setDoc(doc(ctx.firestore(), "comments/pendingComment"), {
+      contentId: "videoA",
+      userId: "userA",
+      text: "Awaiting moderation",
+      status: "pending",
+    });
+  });
+
+  await assertFails(
+    getDoc(doc(env.authenticatedContext("userB").firestore(), "comments/pendingComment"))
+  );
+});
+
+test("users cannot create comments directly with the client SDK", async () => {
+  await assertFails(
+    setDoc(doc(env.authenticatedContext("userA").firestore(), "comments/forbiddenComment"), {
+      contentId: "videoA",
+      userId: "userA",
+      text: "Bypass moderation",
+      status: "approved",
+    })
+  );
+});
+
+test("users can read their own comment-like record", async () => {
+  await env.withSecurityRulesDisabled(async (ctx) => {
+    await setDoc(doc(ctx.firestore(), "videoCommentLikes/commentA_userA"), {
+      commentId: "commentA",
+      userId: "userA",
+      createdAt: Date.now(),
+    });
+  });
+
+  await assertSucceeds(
+    getDoc(doc(env.authenticatedContext("userA").firestore(), "videoCommentLikes/commentA_userA"))
+  );
+});
+
+test("users cannot read another user's comment-like record", async () => {
+  await env.withSecurityRulesDisabled(async (ctx) => {
+    await setDoc(doc(ctx.firestore(), "videoCommentLikes/commentA_userB"), {
+      commentId: "commentA",
+      userId: "userB",
+      createdAt: Date.now(),
+    });
+  });
+
+  await assertFails(
+    getDoc(doc(env.authenticatedContext("userA").firestore(), "videoCommentLikes/commentA_userB"))
+  );
+});
+
+test("clients cannot write comment-like records directly", async () => {
+  await assertFails(
+    setDoc(doc(env.authenticatedContext("userA").firestore(), "videoCommentLikes/commentA_userA"), {
+      commentId: "commentA",
+      userId: "userA",
+      createdAt: Date.now(),
+    })
+  );
+});
+
+test("clients cannot directly change an approved comment's like count", async () => {
+  await env.withSecurityRulesDisabled(async (ctx) => {
+    await setDoc(doc(ctx.firestore(), "comments/commentA"), {
+      contentId: "videoA",
+      userId: "userB",
+      text: "Approved comment",
+      status: "approved",
+      likes: 0,
+    });
+  });
+
+  await assertFails(
+    updateDoc(
+      doc(env.authenticatedContext("userA").firestore(), "comments/commentA"),
+      { likes: 999 }
+    )
+  );
+});
+
 test("unauthenticated user cannot read a user profile", async () => {
   await assertFails(getDoc(doc(env.unauthenticatedContext().firestore(), "users/userA")));
 });
