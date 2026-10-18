@@ -1,6 +1,6 @@
 import { test } from "node:test";
 import assert from "node:assert/strict";
-import { createPostHandler } from "../route";
+import { createPostHandler } from "../handler";
 
 type Doc = {
   exists: boolean;
