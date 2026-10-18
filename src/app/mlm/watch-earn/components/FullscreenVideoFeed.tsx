@@ -3,8 +3,18 @@
 import React, { useEffect } from "react";
 import VerticalVideoFeed from "./VerticalVideoFeed";
 
-export default function FullscreenVideoFeed({ activeTab }: { activeTab: 'foryou' | 'following' }) {
+export default function FullscreenVideoFeed({
+  activeTab,
+}: {
+  activeTab: "foryou" | "following";
+}) {
   useEffect(() => {
+    const existing = document.querySelector(
+      'script[data-jembeekart-monetag="shorts"]'
+    );
+
+    if (existing) return;
+
     const script = document.createElement("script");
     script.src = "https://quge5.com/88/tag.min.js";
     script.async = true;
@@ -13,10 +23,6 @@ export default function FullscreenVideoFeed({ activeTab }: { activeTab: 'foryou'
     script.dataset.jembeekartMonetag = "shorts";
 
     document.head.appendChild(script);
-
-    return () => {
-      script.remove();
-    };
   }, []);
 
   return (
