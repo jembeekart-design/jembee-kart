@@ -18,7 +18,7 @@ export default function FullscreenVideoFeed({
     const script = document.createElement("script");
     script.src = "https://quge5.com/88/tag.min.js";
     script.async = true;
-    script.dataset.zone = "297942";
+    script.dataset.zone = "297992";
     script.dataset.cfasync = "false";
     script.dataset.jembeekartMonetag = "shorts";
 
