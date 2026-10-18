@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { useAdminConfig } from "@/lib/admin-config/provider";
 import { getComments, addComment, ChatComment } from "@/firestore/services/socialService";
 import { likeVideoComment, unlikeVideoComment } from "@/lib/mlm/watch-earn/likeVideoComment";
@@ -28,19 +28,79 @@ export default function CommentDrawer({ open, onClose, videoId, onCommentAdded }
     
     let unsub: any;
     async function loadComments() {
-      unsub = await getComments(videoId, auth.currentUser?.uid || "", (data: ChatComment[]) => setComments(data));
+      unsub = await getComments(videoId, auth.currentUser?.uid || "", (data: ChatComment[]) => {
+        setComments(data.map(comment => {
+          const optimistic = optimisticLikesRef.current.get(comment.id);
+          return optimistic
+            ? { ...comment, likes: optimistic.likes, likedByCurrentUser: optimistic.liked }
+            : comment;
+        }));
+      });
     }
     loadComments();
     return () => unsub && unsub();
   }, [open, videoId]);
 
+  const [likingComments, setLikingComments] = useState<Set<string>>(new Set());
+  const likingCommentsRef = useRef<Set<string>>(new Set());
+  const optimisticLikesRef = useRef<Map<string, { likes: number; liked: boolean }>>(new Map());
+
   async function handleToggleLike(commentId: string, currentlyLiked: boolean | undefined) {
-    if (!auth.currentUser) return;
-    
-    if (currentlyLiked) {
-        await unlikeVideoComment({ commentId, userId: auth.currentUser.uid });
-    } else {
-        await likeVideoComment({ commentId, userId: auth.currentUser.uid });
+    const user = auth.currentUser;
+    if (!user || likingCommentsRef.current.has(commentId)) return;
+
+    likingCommentsRef.current.add(commentId);
+    setLikingComments(previous => new Set(previous).add(commentId));
+
+    const wasLiked = Boolean(currentlyLiked);
+    const currentComment = comments.find(comment => comment.id === commentId);
+    const previousLikes = Math.max(0, currentComment?.likes || 0);
+    const delta = wasLiked ? -1 : 1;
+    const optimistic = {
+      likes: Math.max(0, previousLikes + delta),
+      liked: !wasLiked,
+    };
+
+    optimisticLikesRef.current.set(commentId, optimistic);
+
+    setComments(previous => previous.map(comment =>
+      comment.id === commentId
+        ? { ...comment, likes: optimistic.likes, likedByCurrentUser: optimistic.liked }
+        : comment
+    ));
+
+    try {
+      const result = wasLiked
+        ? await unlikeVideoComment({ commentId, userId: user.uid })
+        : await likeVideoComment({ commentId, userId: user.uid });
+
+      if (!result.success) {
+        optimisticLikesRef.current.delete(commentId);
+        setComments(previous => previous.map(comment =>
+          comment.id === commentId
+            ? { ...comment, likes: previousLikes, likedByCurrentUser: wasLiked }
+            : comment
+        ));
+        setError(result.message || "Unable to update like.");
+      } else {
+        setError("");
+        optimisticLikesRef.current.delete(commentId);
+      }
+    } catch {
+      optimisticLikesRef.current.delete(commentId);
+      setComments(previous => previous.map(comment =>
+        comment.id === commentId
+          ? { ...comment, likes: previousLikes, likedByCurrentUser: wasLiked }
+          : comment
+      ));
+      setError("Unable to update like.");
+    } finally {
+      likingCommentsRef.current.delete(commentId);
+      setLikingComments(previous => {
+        const next = new Set(previous);
+        next.delete(commentId);
+        return next;
+      });
     }
   }
 

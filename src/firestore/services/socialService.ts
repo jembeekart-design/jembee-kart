@@ -12,7 +12,7 @@ import {
   increment,
   getDocs
 } from "firebase/firestore";
-import { db } from "@/firebase/config";
+import { db, auth } from "@/firebase/config";
 import { FIRESTORE_PATHS } from "@/firestore/collections/firestorePaths";
 import { getModerationSettings } from "@/services/moderationService";
 
@@ -70,73 +70,49 @@ export async function getComments(contentId: string, userId: string, callback: (
   };
 }
 
-export async function addComment(contentId: string, userId: string, userName: string, text: string) {
-  // Requirement 1: Load moderation settings from Firestore.
-  const settings = await getModerationSettings();
-  
-  if (!settings.commentsEnabled) throw new Error("Comments are currently disabled by administrators.");
+export async function addComment(
+  contentId: string,
+  userId: string,
+  userName: string,
+  text: string
+) {
+  const currentUser = auth.currentUser;
 
-  // Requirement 2, 3: Check against blockedWords and profanity filter.
-  const textToCheck = settings.caseInsensitive ? text.toLowerCase() : text;
+  if (!currentUser || currentUser.uid !== userId) {
+    throw new Error("Please sign in before commenting.");
+  }
 
-  // Requirement 2: Whitelist check
-  const whitelisted = settings.allowedWords.some(w => {
-    const word = settings.caseInsensitive ? w.toLowerCase() : w;
-    return textToCheck.includes(word);
+  const trimmedText = text.trim();
+  if (!trimmedText) {
+    throw new Error("Comment cannot be empty.");
+  }
+
+  const token = await currentUser.getIdToken();
+
+  const response = await fetch("/api/shorts/comments", {
+    method: "POST",
+    headers: {
+      Authorization: `Bearer ${token}`,
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({
+      videoId: contentId,
+      text: trimmedText,
+    }),
   });
 
-  if (!whitelisted && settings.enabled && settings.blockedWords.length > 0) {
-    const isBlocked = settings.blockedWords.some(word => {
-      const bWord = settings.caseInsensitive ? word.toLowerCase() : word;
-      return settings.blockPartialMatch 
-        ? textToCheck.includes(bWord) 
-        : textToCheck.split(/\s+/).includes(bWord);
-    });
+  const result = await response.json().catch(() => ({}));
 
-    // Requirement 4: If blocked: Do NOT save comment.
-    if (isBlocked) {
-        throw new Error("Please avoid abusive language.");
-    }
+  if (!response.ok || result.success !== true || !result.comment?.id) {
+    throw new Error(
+      typeof result.message === "string"
+        ? result.message
+        : "Failed to submit comment."
+    );
   }
 
-  // Requirement 5: If autoApprove=false: Save status="pending".
-  const isApproved = settings.autoApproveComments;
-
-  const commentRef = await addDoc(collection(db, COMMENTS_COLLECTION), {
-    contentId,
-    userId,
-    userName,
-    text,
-    createdAt: serverTimestamp(),
-    status: isApproved ? 'approved' : 'pending',
-    likes: 0
-  });
-
-  // Requirement 5: Create moderation queue entry.
-  if (!isApproved) {
-     await addDoc(collection(db, "videoCommentReports"), {
-        commentId: commentRef.id,
-        contentId,
-        userId,
-        userName,
-        text,
-        status: "pending",
-        createdAt: serverTimestamp(),
-        reason: "auto-moderation-pending"
-     });
-  }
-
-  // Also increment the aggregated comments counter on the video document so the feed shows updated counts
-  try {
-    await updateDoc(doc(db, "watchEarnVideos", contentId), {
-      comments: increment(1)
-    });
-  } catch (err) {
-    // If increment fails, do not throw — comment is stored; log for debugging.
-    console.error("Failed to increment video comments counter:", err);
-  }
-
-  return commentRef;
+  // Keep the existing caller contract: CommentDrawer uses commentRef.id.
+  return { id: result.comment.id };
 }
 
 export async function deleteComment(commentId: string) {

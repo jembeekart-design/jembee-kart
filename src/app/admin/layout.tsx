@@ -3,13 +3,7 @@
 import { useEffect, useState } from "react";
 import { useRouter, usePathname } from "next/navigation";
 import { onAuthStateChanged } from "firebase/auth";
-import {
-  collection,
-  query,
-  where,
-  getDocs,
-} from "firebase/firestore";
-import { auth, db } from "@/firebase/config";
+import { auth } from "@/firebase/config";
 
 export default function AdminLayout({
   children,
@@ -20,58 +14,93 @@ export default function AdminLayout({
   const pathname = usePathname();
 
   const [loading, setLoading] = useState(true);
+  const [error, setError] = useState("");
 
   useEffect(() => {
-    const unsubscribe = onAuthStateChanged(auth, async (user) => {
-      // Admin login page ko allow karo
-      if (pathname === "/admin/login") {
-        setLoading(false);
-        return;
-      }
+    if (pathname === "/admin/login") {
+      setLoading(false);
+      setError("");
+      return;
+    }
 
-      // Login nahi hai
+    let active = true;
+
+    const unsubscribe = onAuthStateChanged(auth, async (user) => {
+      if (!active) return;
+
+      setLoading(true);
+      setError("");
+
       if (!user) {
         router.replace("/admin/login");
         return;
       }
 
       try {
-        // Firestore me uid se user search karo
-        const q = query(
-          collection(db, "users"),
-          where("uid", "==", user.uid)
-        );
+        const token = await user.getIdToken();
 
-        const snapshot = await getDocs(q);
+        const response = await fetch("/api/auth/admin-check", {
+          method: "GET",
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+          cache: "no-store",
+        });
 
-        if (snapshot.empty) {
+        if (!active) return;
+
+        if (response.status === 401 || response.status === 403) {
           router.replace("/");
           return;
         }
 
-        const userData = snapshot.docs[0].data();
-        const role = userData.role;
+        if (!response.ok) {
+          setError("Admin verification failed. Please try again.");
+          setLoading(false);
+          return;
+        }
 
-        // Sirf admin aur super_admin allow
-        if (role !== "admin" && role !== "super_admin") {
+        const result = await response.json();
+
+        if (result.isAdmin !== true) {
           router.replace("/");
           return;
         }
 
         setLoading(false);
-      } catch (error) {
-        console.error("Admin Auth Error:", error);
-        router.replace("/");
+      } catch (err) {
+        console.error("Admin Auth Error:", err);
+        if (active) {
+          setError("Admin verification failed. Check your connection and retry.");
+          setLoading(false);
+        }
       }
     });
 
-    return () => unsubscribe();
+    return () => {
+      active = false;
+      unsubscribe();
+    };
   }, [router, pathname]);
 
   if (loading) {
     return (
       <div className="flex min-h-screen items-center justify-center bg-[var(--card-color)] text-[var(--success-color)]">
         Loading...
+      </div>
+    );
+  }
+
+  if (error) {
+    return (
+      <div className="flex min-h-screen flex-col items-center justify-center gap-4 p-4">
+        <p>{error}</p>
+        <button
+          onClick={() => window.location.reload()}
+          className="rounded bg-black px-4 py-2 text-white"
+        >
+          Retry
+        </button>
       </div>
     );
   }

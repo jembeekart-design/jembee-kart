@@ -48,6 +48,7 @@ export default function RootLayout({
           strategy="lazyOnload"
           crossOrigin="anonymous"
         />
+              <meta name="monetag" content="ffc36b1add65212e386c64b0bf1e6c0e" />
       </head>
 
       <body className="min-h-screen antialiased">

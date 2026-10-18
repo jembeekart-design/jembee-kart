@@ -29,19 +29,35 @@ async function verifyAdmin(req: Request): Promise<string> {
   const decodedToken =
     await getAdminAuth().verifyIdToken(token);
 
-  const snapshot = await getAdminDb()
-    .collection("users")
-    .where("uid", "==", decodedToken.uid)
-    .limit(1)
-    .get();
+  const users = getAdminDb().collection("users");
+  const directDoc = await users.doc(decodedToken.uid).get();
 
-  const userDoc = snapshot.docs[0];
+  let userData = directDoc.exists ? directDoc.data() : undefined;
 
   if (
-    !userDoc ||
+    userData?.role !== "admin" &&
+    userData?.role !== "super_admin"
+  ) {
+    const snapshot = await users
+      .where("uid", "==", decodedToken.uid)
+      .limit(1)
+      .get();
+
+    const fallbackData = snapshot.docs[0]?.data();
+
+    if (
+      fallbackData?.role === "admin" ||
+      fallbackData?.role === "super_admin"
+    ) {
+      userData = fallbackData;
+    }
+  }
+
+  if (
+    !userData ||
     (
-      userDoc.data()?.role !== "admin" &&
-      userDoc.data()?.role !== "super_admin"
+      userData?.role !== "admin" &&
+      userData?.role !== "super_admin"
     )
   ) {
     throw new Error("FORBIDDEN");

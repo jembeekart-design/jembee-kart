@@ -13,9 +13,6 @@ import {
   User, // Strict User type implementation
 } from "firebase/auth";
 import {
-  collection,
-  query,
-  where,
   getDocs,
   getDoc,
   doc,
@@ -46,23 +43,25 @@ function LoginCard() {
   VERIFY & TELEMETRY SYNC (STRICT EXISTING USERS ONLY)
   ====================================================== */
   async function verifyAndTelemetrySync(user: User) {
-  const q = query(
-    collection(db, "users"),
-    where("uid", "==", user.uid)
-  );
+    // Read the profile by its UID document path, matching Firestore rules.
+    const userRef = doc(db, "users", user.uid);
+    const userSnap = await getDoc(userRef);
 
-  const snapshot = await getDocs(q);
+    if (!userSnap.exists()) {
+      return false;
+    }
 
-  if (snapshot.empty) {
-    return false;
+    // Login must not fail because telemetry updates are blocked by rules.
+    try {
+      await updateDoc(userRef, {
+        lastLogin: serverTimestamp(),
+      });
+    } catch (error) {
+      console.warn("Login telemetry update skipped:", error);
+    }
+
+    return true;
   }
-
-  await updateDoc(snapshot.docs[0].ref, {
-    lastLogin: serverTimestamp(),
-  });
-
-  return true;
-}
   
 
   /* ======================================================
@@ -127,16 +126,16 @@ function LoginCard() {
         console.log("GOOGLE EMAIL:", result.user.email);
 
         const isExistingUser = await verifyAndTelemetrySync(result.user);
-        const userDoc = await getDoc(doc(db, "users", result.user.uid));
 
-if (userDoc.exists()) {
-  const role = userDoc.data().role;
+        if (isExistingUser) {
+          const userDoc = await getDoc(doc(db, "users", result.user.uid));
+          const role = userDoc.data()?.role;
 
-  if (role === "admin" || role === "super_admin") {
-    window.location.href = "/admin";
-    return;
-  }
-}
+          if (role === "admin" || role === "super_admin") {
+            window.location.href = "/admin";
+            return;
+          }
+        }
         console.log("USER EXISTS IN FIRESTORE:", isExistingUser);
         
         if (isExistingUser) {

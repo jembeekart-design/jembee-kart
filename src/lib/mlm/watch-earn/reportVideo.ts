@@ -1,12 +1,4 @@
-import {
-  doc,
-  getDoc,
-  setDoc,
-  serverTimestamp
-} from "firebase/firestore";
-
-import { db, auth } from "@/firebase/config";
-import { FIRESTORE_PATHS } from "@/firestore/collections/firestorePaths";
+import { auth } from "@/firebase/config";
 
 interface ReportVideoData {
   videoId: string;
@@ -16,37 +8,58 @@ interface ReportVideoData {
 
 export async function reportVideo(data: ReportVideoData) {
   try {
-    // 1. Secure identity verification
-    const currentUser = auth.currentUser;
-    if (!currentUser) {
-      return { success: false, message: "Authentication required" };
-    }
-    
-    const authenticatedUserId = currentUser.uid;
+    const user = auth.currentUser;
 
-    // 2. Deterministic ID for idempotency (prevent duplicate reports by same user for same video)
-    const reportId = `${data.videoId}_${authenticatedUserId}`;
-    const reportRef = doc(db, FIRESTORE_PATHS.WATCH_EARN.VIDEO_REPORTS, reportId);
-
-    // 3. Check if already reported
-    const reportSnap = await getDoc(reportRef);
-    if (reportSnap.exists()) {
-      return { success: false, message: "Already reported" };
+    if (!user) {
+      return {
+        success: false,
+        message: "Authentication required",
+      };
     }
 
-    // 4. Create report document
-    await setDoc(reportRef, {
-      userId: authenticatedUserId,
-      videoId: data.videoId,
-      reason: data.reason,
-      message: data.message || "",
-      status: "pending",
-      createdAt: serverTimestamp() // Convention: using serverTimestamp
+    if (
+      typeof data.videoId !== "string" ||
+      !data.videoId.trim() ||
+      typeof data.reason !== "string" ||
+      !data.reason.trim()
+    ) {
+      return {
+        success: false,
+        message: "Invalid report details",
+      };
+    }
+
+    const token = await user.getIdToken();
+
+    const response = await fetch("/api/shorts/video-report", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        videoId: data.videoId,
+        reason: data.reason,
+        message: data.message || "",
+        token,
+      }),
     });
+
+    const result = await response.json();
+
+    if (!response.ok || !result.success) {
+      return {
+        success: false,
+        message: result.message || "Failed to submit report",
+      };
+    }
 
     return { success: true };
   } catch (error) {
     console.error("REPORT VIDEO ERROR:", error);
-    return { success: false, message: "An error occurred" };
+
+    return {
+      success: false,
+      message: "Unable to submit report",
+    };
   }
 }

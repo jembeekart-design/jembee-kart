@@ -1,4 +1,5 @@
 import { NextResponse } from "next/server";
+import { withAdminAuth } from "@/lib/api/adminAuth";
 
 import {
   fixHardcodedBusinessRules,
@@ -60,10 +61,10 @@ async function handleRequest() {
   }
 }
 
-export async function GET() {
-  return handleRequest();
+export async function GET(req: Request) {
+  return withAdminAuth(async () => handleRequest(), req);
 }
 
-export async function POST() {
-  return handleRequest();
+export async function POST(req: Request) {
+  return withAdminAuth(async () => handleRequest(), req);
 }

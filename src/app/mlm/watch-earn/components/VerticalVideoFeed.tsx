@@ -32,7 +32,7 @@ import { shareVideo } from "@/lib/mlm/watch-earn/shareVideo";
 import { reportVideo } from "@/lib/mlm/watch-earn/reportVideo";
 import { setVideoPreference } from "@/lib/mlm/watch-earn/setVideoPreference";
 import { useRequireAuth } from "@/hooks/useRequireAuth";
-import { collection, onSnapshot } from "firebase/firestore";
+import { collection, doc, getDoc, onSnapshot } from "firebase/firestore";
 
 export default function VerticalVideoFeed({
   activeTab
@@ -42,6 +42,7 @@ export default function VerticalVideoFeed({
   const { requireAuth, isAuthenticated } = useRequireAuth();
 
   const [followingList, setFollowingList] = useState<string[]>([]);
+  const [notInterestedIds, setNotInterestedIds] = useState<string[]>([]);
   const [videos, setVideos] = useState<WatchVideo[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
@@ -67,14 +68,54 @@ export default function VerticalVideoFeed({
   }, [isAuthenticated]);
 
   const filteredVideos = useMemo(() => {
+    const visibleVideos = videos.filter(
+      video => !notInterestedIds.includes(video.id)
+    );
+
     if (activeTab === 'following') {
-      return videos.filter(
-        v => followingList.includes(v.creatorId)
+      return visibleVideos.filter(
+        video => followingList.includes(video.creatorId)
       );
     }
 
-    return videos;
-  }, [activeTab, videos, followingList]);
+    return visibleVideos;
+  }, [activeTab, videos, followingList, notInterestedIds]);
+
+  useEffect(() => {
+    const user = auth.currentUser;
+
+    if (!isAuthenticated || !user) {
+      setNotInterestedIds([]);
+      return;
+    }
+
+    let cancelled = false;
+
+    async function loadNotInterested() {
+      try {
+        const preferenceRef = doc(
+          db,
+          "notInterestedWatchVideos",
+          user!.uid
+        );
+        const videosCollection = collection(preferenceRef, "videos");
+        const { getDocs } = await import("firebase/firestore");
+        const snapshot = await getDocs(videosCollection);
+
+        if (!cancelled) {
+          setNotInterestedIds(snapshot.docs.map(item => item.id));
+        }
+      } catch (error) {
+        console.error("Failed to load video preferences:", error);
+      }
+    }
+
+    loadNotInterested();
+
+    return () => {
+      cancelled = true;
+    };
+  }, [isAuthenticated]);
 
   useEffect(() => {
     let isMounted = true;
@@ -531,6 +572,9 @@ export default function VerticalVideoFeed({
                   requireAuth(async () => {
                     const res = await setVideoPreference(video.id, 'notInterested');
                     if (res.success) {
+                      setNotInterestedIds(prev =>
+                        prev.includes(video.id) ? prev : [...prev, video.id]
+                      );
                       setToastMessage("Video marked as not interested.");
                     } else {
                       setToastMessage(res.message || "Failed to update preference.");

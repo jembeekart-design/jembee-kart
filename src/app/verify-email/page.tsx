@@ -2,9 +2,8 @@
 
 import { useEffect, useState, useRef } from "react";
 import { useRouter } from "next/navigation";
-import { doc, updateDoc, serverTimestamp } from "firebase/firestore";
 import { onAuthStateChanged, signOut } from "firebase/auth";
-import { auth, db } from "@/firebase/config";
+import { auth } from "@/firebase/config";
 
 export default function VerifyEmailPage() {
   const router = useRouter();
@@ -75,17 +74,31 @@ export default function VerifyEmailPage() {
     syncedRef.current = true; // Set block state instantly before async task execution
 
     try {
-      const userRef = doc(db, "users", uid);
-      
-      // ✅ Enhanced Verification Audit Update
-      await updateDoc(userRef, {
-        emailVerified: true,
-        emailVerifiedAt: serverTimestamp(),
-        accountStatus: "active",            
-        lastLogin: serverTimestamp()         
+      const currentUser = auth.currentUser;
+      if (!currentUser || currentUser.uid !== uid) {
+        throw new Error("Authentication session expired. Please sign in again.");
+      }
+
+      await currentUser.reload();
+      const token = await currentUser.getIdToken(true);
+
+      const response = await fetch("/api/auth/verify-email", {
+        method: "POST",
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
       });
 
-      console.log("Firestore emailVerified status successfully synchronized with Firebase Auth state.");
+      const result = await response.json();
+      if (!response.ok || result.success !== true) {
+        throw new Error(
+          typeof result.error === "string"
+            ? result.error
+            : "Could not synchronize verified account"
+        );
+      }
+
+      console.log("Email verification profile synchronized securely.");
       router.push("/mlm/dashboard");
     } catch (syncError) {
       console.error("Critical State Mismatch Sync Error:", syncError);

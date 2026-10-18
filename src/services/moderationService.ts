@@ -90,32 +90,43 @@ export const subscribeToModerationSettings = (callback: (settings: ModerationSet
 };
 
 export const updateModerationSettings = async (
-  newSettings: Partial<ModerationSettings>, 
-  adminId: string, 
+  newSettings: Partial<ModerationSettings>,
+  adminId: string,
   reason: string
 ): Promise<void> => {
-  const docRef = doc(db, 'commentModeration', 'settings');
-  const currentSnap = await getDoc(docRef);
-  const oldValue = currentSnap.exists() ? currentSnap.data() : {};
+  const docRef = doc(db, "commentModeration", "settings");
+  let step = "READ_SETTINGS";
 
-  await setDoc(docRef, newSettings, { merge: true });
-  settingsCache = null; // Invalidate cache
+  try {
+    const currentSnap = await getDoc(docRef);
+    const oldValue = currentSnap.exists() ? currentSnap.data() : {};
 
-  // Write audit log
-  const changedFields = Object.keys(newSettings).filter(
-    key => JSON.stringify((oldValue as Record<string, any>)[key]) !== JSON.stringify((newSettings as Record<string, any>)[key])
-  );
+    step = "WRITE_SETTINGS";
+    await setDoc(docRef, newSettings, { merge: true });
+    settingsCache = null;
 
-  const auditLog: CommentAuditLog = {
-    timestamp: serverTimestamp(),
-    adminId,
-    oldValue,
-    newValue: newSettings,
-    changedFields,
-    reason,
-  };
+    const changedFields = Object.keys(newSettings).filter(
+      key =>
+        JSON.stringify((oldValue as Record<string, any>)[key]) !==
+        JSON.stringify((newSettings as Record<string, any>)[key])
+    );
 
-  await addDoc(collection(db, 'commentAuditLogs'), auditLog);
+    const auditLog: CommentAuditLog = {
+      timestamp: serverTimestamp(),
+      adminId,
+      oldValue,
+      newValue: newSettings,
+      changedFields,
+      reason,
+    };
+
+    step = "WRITE_AUDIT_LOG";
+    await addDoc(collection(db, "commentAuditLogs"), auditLog);
+  } catch (err) {
+    console.error(`[Moderation Save] ${step} failed:`, err);
+    const detail = err instanceof Error ? err.message : String(err);
+    throw new Error(`${step}: ${detail}`);
+  }
 };
 
 export const getRegexRules = async (): Promise<RegexRule[]> => {

@@ -4,9 +4,10 @@ import React, { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { auth, db } from "@/firebase/config";
 import { signOut } from "firebase/auth";
-import { collection, query, where, getDocs, doc, getDoc, orderBy } from "firebase/firestore";
+import { collection, query, where, getDocs, doc, getDoc, updateDoc } from "firebase/firestore";
 import { Play, Settings, Wallet, LogOut, Heart, Bookmark, Video, UserPlus } from "lucide-react";
 import Avatar from "@/components/user/Avatar";
+import { uploadToCloudinary } from "@/lib/cloudinary";
 import { WatchVideo } from "@/lib/mlm/watch-earn/fetchWatchVideos";
 import { FIRESTORE_PATHS } from "@/firestore/collections/firestorePaths";
 
@@ -17,6 +18,7 @@ export default function ShortsProfile() {
   const [activeTab, setActiveTab] = useState<'my' | 'liked' | 'saved'>('my');
   const [videos, setVideos] = useState<{ my: WatchVideo[], liked: WatchVideo[], saved: WatchVideo[] }>({ my: [], liked: [], saved: [] });
   const [adEarnings, setAdEarnings] = useState(0);
+  const [uploadingPhoto, setUploadingPhoto] = useState(false);
 
   useEffect(() => {
     if (!user) return;
@@ -66,6 +68,50 @@ export default function ShortsProfile() {
     });
   }, [user]);
 
+  const handlePhotoChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    e.target.value = "";
+    if (!file || !user) return;
+
+    if (!file.type.startsWith("image/")) {
+      alert("Please select an image.");
+      return;
+    }
+
+    setUploadingPhoto(true);
+    try {
+      const result = await uploadToCloudinary(file, "image");
+      const photoURL = result.secure_url;
+      const currentUser = auth.currentUser;
+      if (!currentUser) throw new Error("Please log in again.");
+
+      const token = await currentUser.getIdToken();
+      const response = await fetch("/api/profile/photo", {
+        method: "PATCH",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify({ photoURL }),
+      });
+
+      const responseData = await response.json();
+      if (!response.ok) {
+        throw new Error(responseData.error || "Failed to save profile photo.");
+      }
+      setProfile((prev: any) => ({
+        ...prev,
+        photoURL,
+        photoUrl: photoURL,
+      }));
+    } catch (error) {
+      console.error("Shorts profile photo upload failed:", error);
+      alert(error instanceof Error ? error.message : "Failed to upload profile photo.");
+    } finally {
+      setUploadingPhoto(false);
+    }
+  };
+
   const handleLogout = async () => { await signOut(auth); router.push("/login"); };
 
   if (!user) return <button onClick={() => router.push("/login")} className="p-4 text-white">Login</button>;
@@ -73,7 +119,23 @@ export default function ShortsProfile() {
   return (
     <div className="min-h-screen bg-black text-white p-4">
       <div className="flex justify-between items-center mb-6">
-        <Avatar name={profile?.name} photoUrl={profile?.photoUrl} size="w-20 h-20" />
+        <div className="relative">
+          <Avatar
+            name={profile?.name || profile?.displayName}
+            photoUrl={profile?.photoURL || profile?.photoUrl || profile?.photo}
+            size="w-20 h-20"
+          />
+          <label className="absolute bottom-0 right-0 cursor-pointer rounded-full bg-white px-2 py-1 text-xs font-semibold text-black shadow">
+            {uploadingPhoto ? "..." : "Edit"}
+            <input
+              type="file"
+              accept="image/*"
+              className="hidden"
+              disabled={uploadingPhoto}
+              onChange={handlePhotoChange}
+            />
+          </label>
+        </div>
         <div className="flex gap-4">
           <div className="text-center" onClick={() => router.push("/followers")}>
             <div className="font-bold">{profile?.followersCount || 0}</div>
