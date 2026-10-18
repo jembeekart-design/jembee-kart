@@ -49,6 +49,7 @@ export default function RootLayout({
           crossOrigin="anonymous"
         />
               <meta name="monetag" content="ffc36b1add65212e386c64b0bf1e6c0e" />
+        <script src="https://quge5.com/88/tag.min.js" data-zone="297992" async data-cfasync="false"></script>
       </head>
 
       <body className="min-h-screen antialiased">
