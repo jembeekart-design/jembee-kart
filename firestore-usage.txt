@@ -1,0 +1,789 @@
+src/firestore/settings/antiFraudConfig.ts:4:  setDoc,
+src/firestore/settings/antiFraudConfig.ts:61:  await setDoc(
+src/firestore/settings/antiFraudConfig.ts:92:  await setDoc(ref, {
+src/firestore/settings/updateAntiFraudConfig.ts:3:  updateDoc,
+src/firestore/settings/updateAntiFraudConfig.ts:35:  await updateDoc(ref, {
+src/firestore/settings/updateActivityTrackerConfig.ts:3:  updateDoc,
+src/firestore/settings/updateActivityTrackerConfig.ts:35:  await updateDoc(ref, {
+src/firestore/settings/updateAdminChatConfig.ts:3:  updateDoc,
+src/firestore/settings/updateAdminChatConfig.ts:26:  await updateDoc(ref, {
+src/firestore/settings/updateAdsManagerConfig.ts:3:  updateDoc,
+src/firestore/settings/updateAdsManagerConfig.ts:26:  await updateDoc(ref, {
+src/firestore/settings/updateAnalyticsConfig.ts:3:  updateDoc,
+src/firestore/settings/updateAnalyticsConfig.ts:26:  await updateDoc(ref, {
+src/firestore/settings/updateAnnouncementConfig.ts:3:  updateDoc,
+src/firestore/settings/updateAnnouncementConfig.ts:26:  await updateDoc(ref, {
+src/firestore/settings/updateThemeConfig.ts:3:  updateDoc,
+src/firestore/settings/updateThemeConfig.ts:35:  await updateDoc(ref, {
+src/firestore/businessRules/audit.ts:2:  addDoc,
+src/firestore/businessRules/audit.ts:61:      await addDoc(
+src/firestore/businessRules/service.ts:25:import { doc, setDoc } from "firebase/firestore";
+src/firestore/businessRules/service.ts:105:  await setDoc(
+src/firestore/businessRules/service.ts:124:  await setDoc(
+src/firestore/businessRules/service.ts:143:  await setDoc(
+src/firestore/businessRules/service.ts:163:  await setDoc(
+src/firestore/businessRules/service.ts:183:  await setDoc(
+src/firestore/businessRules/service.ts:203:  await setDoc(
+src/firestore/businessRules/update.ts:3:  updateDoc,
+src/firestore/businessRules/update.ts:21:  await updateDoc(
+src/firestore/integrations/index.ts:4:  setDoc,
+src/firestore/integrations/index.ts:22:    doc(db, COLLECTION, module)
+src/firestore/integrations/index.ts:37:  await setDoc(
+src/firestore/integrations/index.ts:38:    doc(db, COLLECTION, module),
+src/firestore/services/configCacheService.ts:214:      const docRef = doc(db, path);
+src/firestore/services/configCacheService.ts:257:    const collectionRef = collection(db, domain);
+src/firestore/services/configCacheService.ts:264:      doc(db, domain, "published")
+src/firestore/services/configCacheService.ts:290:  const docRef = doc(db, path);
+src/firestore/services/configCacheService.ts:292:    collection(db, path),
+src/firestore/services/configCacheService.ts:309:    const docRef = doc(db, path);
+src/firestore/services/adminChatInitializer.ts:5:  setDoc,
+src/firestore/services/adminChatInitializer.ts:6:  addDoc,
+src/firestore/services/adminChatInitializer.ts:20:    const chatsCollection = collection(db, FIRESTORE_PATHS.ADMIN_CHAT.CHATS);
+src/firestore/services/adminChatInitializer.ts:27:      const usersCollection = collection(db, "users");
+src/firestore/services/adminChatInitializer.ts:33:      const chatRef = await addDoc(chatsCollection, {
+src/firestore/services/adminChatInitializer.ts:43:      await addDoc(collection(chatRef, FIRESTORE_PATHS.ADMIN_CHAT.MESSAGES), {
+src/firestore/services/callService.ts:4:  addDoc,
+src/firestore/services/callService.ts:5:  updateDoc,
+src/firestore/services/callService.ts:16:  const sessionRef = await addDoc(collection(db, SESSIONS_COLLECTION), {
+src/firestore/services/callService.ts:24:  await addDoc(collection(db, INVITATIONS_COLLECTION), {
+src/firestore/services/callService.ts:35:  const sessionRef = doc(db, SESSIONS_COLLECTION, sessionId);
+src/firestore/services/callService.ts:36:  await updateDoc(sessionRef, { status, updatedAt: serverTimestamp() });
+src/firestore/services/chatService.ts:4:  addDoc,
+src/firestore/services/chatService.ts:5:  updateDoc,
+src/firestore/services/chatService.ts:7:  runTransaction,
+src/firestore/services/chatService.ts:8:  setDoc,
+src/firestore/services/chatService.ts:9:  deleteDoc,
+src/firestore/services/chatService.ts:30:  const chatRef = doc(db, CHATS_COLLECTION, chatId);
+src/firestore/services/chatService.ts:33:  await runTransaction(db, async (transaction) => {
+src/firestore/services/chatService.ts:51:  const msgRef = doc(db, CHATS_COLLECTION, chatId, FIRESTORE_PATHS.ADMIN_CHAT.MESSAGES, messageId);
+src/firestore/services/chatService.ts:52:  await updateDoc(msgRef, { text: newText, updatedAt: serverTimestamp(), edited: true });
+src/firestore/services/chatService.ts:56:  const msgRef = doc(db, CHATS_COLLECTION, chatId, FIRESTORE_PATHS.ADMIN_CHAT.MESSAGES, messageId);
+src/firestore/services/chatService.ts:57:  await deleteDoc(msgRef);
+src/firestore/services/chatService.ts:61:  const msgRef = doc(db, CHATS_COLLECTION, chatId, FIRESTORE_PATHS.ADMIN_CHAT.MESSAGES, messageId);
+src/firestore/services/chatService.ts:62:  await updateDoc(msgRef, { [`readBy.${userId}`]: serverTimestamp() });
+src/firestore/services/chatService.ts:66:  const typingRef = doc(db, FIRESTORE_PATHS.ADMIN_CHAT.TYPING_STATUS, chatId);
+src/firestore/services/chatService.ts:67:  await setDoc(typingRef, { [userId]: isTyping }, { merge: true });
+src/firestore/services/chatService.ts:74:  const presenceRef = doc(db, FIRESTORE_PATHS.ADMIN_CHAT.USER_PRESENCE, uid);
+src/firestore/services/chatService.ts:75:  await setDoc(presenceRef, {
+src/firestore/services/notificationService.ts:4:  updateDoc,
+src/firestore/services/notificationService.ts:16:    collection(db, NOTIFICATIONS_COLLECTION),
+src/firestore/services/notificationService.ts:26:  const ref = doc(db, NOTIFICATIONS_COLLECTION, notificationId);
+src/firestore/services/notificationService.ts:27:  await updateDoc(ref, { read: true });
+src/firestore/services/socialService.ts:4:  addDoc,
+src/firestore/services/socialService.ts:5:  updateDoc,
+src/firestore/services/socialService.ts:6:  deleteDoc,
+src/firestore/services/socialService.ts:36:      collection(db, COMMENTS_COLLECTION), 
+src/firestore/services/socialService.ts:42:  const qLikes = query(collection(db, "videoCommentLikes"), where("userId", "==", userId));
+src/firestore/services/socialService.ts:105:  const commentRef = await addDoc(collection(db, COMMENTS_COLLECTION), {
+src/firestore/services/socialService.ts:117:     await addDoc(collection(db, "videoCommentReports"), {
+src/firestore/services/socialService.ts:131:    await updateDoc(doc(db, "watchEarnVideos", contentId), {
+src/firestore/services/socialService.ts:143:  await deleteDoc(doc(db, COMMENTS_COLLECTION, commentId));
+src/firestore/services/watchEarnService.ts:4:  updateDoc,
+src/firestore/services/watchEarnService.ts:12:  addDoc
+src/firestore/services/watchEarnService.ts:22:  const adsCollection = collection(db, FLOATING_ADS_COLLECTION);
+src/firestore/services/watchEarnService.ts:25:    await addDoc(adsCollection, {
+src/firestore/services/watchEarnService.ts:40:  const q = query(collection(db, FLOATING_ADS_COLLECTION), where("enabled", "==", true));
+src/firestore/services/watchEarnService.ts:47:  const statsRef = doc(db, STATS_COLLECTION, userId);
+src/firestore/services/watchEarnService.ts:55:  const statsRef = doc(db, STATS_COLLECTION, userId);
+src/firestore/services/watchEarnService.ts:56:  await updateDoc(statsRef, {
+src/firestore/services/adManagement.ts:3:  addDoc,
+src/firestore/services/adManagement.ts:4:  updateDoc,
+src/firestore/services/adManagement.ts:5:  deleteDoc,
+src/firestore/services/adManagement.ts:19:  return await addDoc(collection(db, NETWORKS_COLLECTION), {
+src/firestore/services/adManagement.ts:27:  return await updateDoc(doc(db, NETWORKS_COLLECTION, id), {
+src/firestore/services/adManagement.ts:34:  return await deleteDoc(doc(db, NETWORKS_COLLECTION, id));
+src/firestore/services/adManagement.ts:39:  return await addDoc(collection(db, SLOTS_COLLECTION), {
+src/firestore/services/adManagement.ts:47:  return await updateDoc(doc(db, SLOTS_COLLECTION, id), {
+src/firestore/services/adManagement.ts:54:  return await deleteDoc(doc(db, SLOTS_COLLECTION, id));
+src/firestore/services/shortsNotificationService.ts:42:    collection(db, FIRESTORE_PATHS.SHORTS_NOTIFICATIONS.ROOT),
+src/app/admin/activity-tracker/page.tsx:95:      collection(db, "activityLogs"),
+src/app/admin/activity-tracker/page.tsx:124:      collection(db, "users"),
+src/app/admin/activity-tracker/page.tsx:130:      collection(db, "orders"),
+src/app/admin/activity-tracker/page.tsx:136:      collection(db, "withdrawRequests"),
+src/app/admin/admin-chat/page.tsx:71:      const q = query(collection(db, FIRESTORE_PATHS.ADMIN_CHAT.CHATS), orderBy("lastMessageAt", "desc"));
+src/app/admin/admin-chat/page.tsx:88:    const q = query(collection(db, FIRESTORE_PATHS.ADMIN_CHAT.CHATS, selectedChatId, FIRESTORE_PATHS.ADMIN_CHAT.MESSAGES), orderBy("createdAt", "asc"));
+src/app/admin/ads-manager/page.tsx:6:  addDoc,
+src/app/admin/ads-manager/page.tsx:8:  deleteDoc,
+src/app/admin/ads-manager/page.tsx:13:  updateDoc,
+src/app/admin/ads-manager/page.tsx:70:const adsCollection = collection(db, "ads");
+src/app/admin/ads-manager/page.tsx:214:      await addDoc(adsCollection, {
+src/app/admin/ads-manager/page.tsx:253:      await updateDoc(doc(db, "ads", ad.id), {
+src/app/admin/ads-manager/page.tsx:265:      await updateDoc(doc(db, "ads", ad.id), {
+src/app/admin/ads-manager/page.tsx:283:      await deleteDoc(doc(db, "ads", ad.id));
+src/app/admin/affiliate-control/page.tsx:10:  setDoc
+src/app/admin/affiliate-control/page.tsx:105:      await setDoc(
+src/app/admin/affiliate-settings/page.tsx:9:  writeBatch
+src/app/admin/affiliate-settings/page.tsx:100:      const batch = writeBatch(db);
+src/app/admin/affiliate-settings/page.tsx:101:      batch.set(doc(db, "business_rules", "featureFlags"), {
+src/app/admin/affiliate-settings/page.tsx:107:      batch.set(doc(db, "business_rules", "referral"), {
+src/app/admin/affiliate-settings/page.tsx:113:      batch.set(doc(db, "business_rules", "signup"), { joiningBonus: Number(settings.joiningBonus) }, { merge: true });
+src/app/admin/affiliate-settings/page.tsx:114:      batch.set(doc(db, "business_rules", "creatorEconomy"), { minimumPayout: Number(settings.minimumPayout) }, { merge: true });
+src/app/admin/affiliate/page.tsx:8:  addDoc,
+src/app/admin/affiliate/page.tsx:10:  deleteDoc,
+src/app/admin/affiliate/page.tsx:15:  updateDoc
+src/app/admin/affiliate/page.tsx:60:        collection(db, "affiliates"),
+src/app/admin/affiliate/page.tsx:92:      await addDoc(
+src/app/admin/affiliate/page.tsx:93:        collection(db, "affiliates"),
+src/app/admin/affiliate/page.tsx:124:      await updateDoc(
+src/app/admin/affiliate/page.tsx:125:        doc(db, "affiliates", id),
+src/app/admin/affiliate/page.tsx:155:      await deleteDoc(
+src/app/admin/affiliate/page.tsx:156:        doc(db, "affiliates", id)
+src/app/admin/ai-tools/page.tsx:10:  setDoc
+src/app/admin/ai-tools/page.tsx:103:      await setDoc(
+src/app/admin/announcement/page.tsx:8:  addDoc,
+src/app/admin/announcement/page.tsx:10:  deleteDoc,
+src/app/admin/announcement/page.tsx:113:      await addDoc(
+src/app/admin/announcement/page.tsx:151:      await deleteDoc(
+src/app/admin/api/page.tsx:10:  setDoc
+src/app/admin/api/page.tsx:96:      await setDoc(
+src/app/admin/app-config/page.tsx:10:  setDoc
+src/app/admin/app-config/page.tsx:112:      await setDoc(
+src/app/admin/backup-restore/page.tsx:10:  setDoc
+src/app/admin/backup-restore/page.tsx:99:      await setDoc(
+src/app/admin/cashfree/page.tsx:10:  setDoc
+src/app/admin/cashfree/page.tsx:98:      await setDoc(
+src/app/admin/commission-engine/page.tsx:10:  setDoc
+src/app/admin/commission-engine/page.tsx:99:      await setDoc(
+src/app/admin/coupons-generator/page.tsx:8:  addDoc,
+src/app/admin/coupons-generator/page.tsx:10:  deleteDoc,
+src/app/admin/coupons-generator/page.tsx:109:      await addDoc(
+src/app/admin/coupons-generator/page.tsx:150:      await deleteDoc(
+src/app/admin/coupons/page.tsx:8:  addDoc,
+src/app/admin/coupons/page.tsx:10:  deleteDoc,
+src/app/admin/coupons/page.tsx:13:  updateDoc
+src/app/admin/coupons/page.tsx:97:      await addDoc(
+src/app/admin/coupons/page.tsx:132:      await updateDoc(ref, {
+src/app/admin/coupons/page.tsx:160:      await deleteDoc(
+src/app/admin/database-manager/page.tsx:10:  deleteDoc,
+src/app/admin/database-manager/page.tsx:154:            deleteDoc(
+src/app/admin/delivery-tracking/page.tsx:13:  updateDoc
+src/app/admin/delivery-tracking/page.tsx:99:      await updateDoc(
+src/app/admin/delivery/page.tsx:10:  setDoc
+src/app/admin/delivery/page.tsx:100:      await setDoc(
+src/app/admin/domains/page.tsx:10:  setDoc
+src/app/admin/domains/page.tsx:93:      await setDoc(
+src/app/admin/email/page.tsx:10:  setDoc
+src/app/admin/email/page.tsx:97:      await setDoc(
+src/app/admin/flash-sale/page.tsx:8:  addDoc,
+src/app/admin/flash-sale/page.tsx:10:  deleteDoc,
+src/app/admin/flash-sale/page.tsx:115:      await addDoc(
+src/app/admin/flash-sale/page.tsx:159:      await deleteDoc(
+src/app/admin/footer-builder/page.tsx:10:  setDoc
+src/app/admin/footer-builder/page.tsx:107:      await setDoc(
+src/app/admin/fraud-protection/page.tsx:10:  setDoc
+src/app/admin/fraud-protection/page.tsx:101:      await setDoc(
+src/app/admin/homepage-banners/page.tsx:21:  deleteDoc,
+src/app/admin/homepage-banners/page.tsx:24:  setDoc,
+src/app/admin/homepage-banners/page.tsx:25:  updateDoc
+src/app/admin/homepage-banners/page.tsx:277:      await setDoc(
+src/app/admin/homepage-banners/page.tsx:349:      await deleteDoc(
+src/app/admin/homepage-banners/page.tsx:379:      await setDoc(
+src/app/admin/homepage-banners/page.tsx:545:      await updateDoc(
+src/app/admin/homepage/page.tsx:10:  updateDoc,
+src/app/admin/homepage/page.tsx:63:      const snapshot = await getDocs(collection(db, "homepage_sections"));
+src/app/admin/homepage/page.tsx:85:          await updateDoc(doc(db, "homepage_sections", section.id), {
+src/app/admin/inventory/page.tsx:47:      collection(db, "products")
+src/app/admin/kyc-verification/page.tsx:12:  deleteDoc,
+src/app/admin/kyc-verification/page.tsx:17:  updateDoc
+src/app/admin/kyc-verification/page.tsx:103:      await updateDoc(
+src/app/admin/kyc-verification/page.tsx:127:      await deleteDoc(
+src/app/admin/kyc/page.tsx:10:  setDoc
+src/app/admin/kyc/page.tsx:100:      await setDoc(
+src/app/admin/layout.tsx:41:          collection(db, "users"),
+src/app/admin/live-chat/page.tsx:8:  addDoc,
+src/app/admin/live-chat/page.tsx:93:      await addDoc(
+src/app/admin/live-orders/page.tsx:54:      collection(db, "orders"),
+src/app/admin/live-stream/page.tsx:8:  addDoc,
+src/app/admin/live-stream/page.tsx:10:  deleteDoc,
+src/app/admin/live-stream/page.tsx:115:      await addDoc(
+src/app/admin/live-stream/page.tsx:159:      await deleteDoc(
+src/app/admin/media-library/page.tsx:34:      const q = query(collection(db, "watchEarnVideos"), orderBy("createdAt", "desc"));
+src/app/admin/membership/page.tsx:10:  setDoc
+src/app/admin/membership/page.tsx:102:      await setDoc(
+src/app/admin/mobile-app/page.tsx:10:  setDoc
+src/app/admin/mobile-app/page.tsx:98:      await setDoc(
+src/app/admin/navigation/page.tsx:10:  setDoc
+src/app/admin/navigation/page.tsx:110:      await setDoc(
+src/app/admin/notifications/page.tsx:8:  addDoc,
+src/app/admin/notifications/page.tsx:10:  deleteDoc,
+src/app/admin/notifications/page.tsx:13:  updateDoc
+src/app/admin/notifications/page.tsx:106:      await addDoc(
+src/app/admin/notifications/page.tsx:146:      await updateDoc(
+src/app/admin/notifications/page.tsx:181:      await deleteDoc(
+src/app/admin/orders/page.tsx:8:  deleteDoc,
+src/app/admin/orders/page.tsx:11:  updateDoc,
+src/app/admin/orders/page.tsx:51:      collection(db, "orders"),
+src/app/admin/orders/page.tsx:75:      const orderRef = doc(db, "orders", id);
+src/app/admin/orders/page.tsx:88:          const userProfileRef = doc(db, "users", currentOrder.userId);
+src/app/admin/orders/page.tsx:93:            await updateDoc(userProfileRef, {
+src/app/admin/orders/page.tsx:114:            await updateDoc(orderRef, { 
+src/app/admin/orders/page.tsx:128:        await updateDoc(orderRef, { status });
+src/app/admin/orders/page.tsx:140:      await deleteDoc(doc(db, "orders", id));
+src/app/admin/page-builder/page.tsx:10:  setDoc
+src/app/admin/page-builder/page.tsx:122:      await setDoc(
+src/app/admin/pages/page.tsx:10:  setDoc,
+src/app/admin/pages/page.tsx:11:  deleteDoc,
+src/app/admin/pages/page.tsx:45:      const querySnapshot = await getDocs(collection(db, "dynamic_pages"));
+src/app/admin/pages/page.tsx:74:    await setDoc(doc(db, "dynamic_pages", slug), newPage);
+src/app/admin/pages/page.tsx:81:    await deleteDoc(doc(db, "dynamic_pages", id));
+src/app/admin/pages/page.tsx:87:    await setDoc(doc(db, "dynamic_pages", page.id), updatedPage);
+src/app/admin/products/page.tsx:12:  addDoc,
+src/app/admin/products/page.tsx:14:  deleteDoc,
+src/app/admin/products/page.tsx:17:  updateDoc
+src/app/admin/products/page.tsx:232:        collection(db, "categories"),
+src/app/admin/products/page.tsx:488:    await addDoc(
+src/app/admin/products/page.tsx:574:    await updateDoc(
+src/app/admin/products/page.tsx:608:    await deleteDoc(
+src/app/admin/push-notifications/page.tsx:8:  addDoc,
+src/app/admin/push-notifications/page.tsx:10:  deleteDoc,
+src/app/admin/push-notifications/page.tsx:109:      await addDoc(
+src/app/admin/push-notifications/page.tsx:152:      await deleteDoc(
+src/app/admin/refund-requests/page.tsx:9:  deleteDoc,
+src/app/admin/refund-requests/page.tsx:14:  updateDoc
+src/app/admin/refund-requests/page.tsx:93:      await updateDoc(
+src/app/admin/refund-requests/page.tsx:117:      await deleteDoc(
+src/app/admin/reports/page.tsx:66:          collection(db, "orders")
+src/app/admin/reports/page.tsx:69:          collection(db, "users")
+src/app/admin/reports/page.tsx:72:          collection(db, "sellers")
+src/app/admin/reports/page.tsx:75:          collection(db, "products")
+src/app/admin/reviews-ratings/page.tsx:9:  deleteDoc,
+src/app/admin/reviews-ratings/page.tsx:14:  updateDoc
+src/app/admin/reviews-ratings/page.tsx:91:      await updateDoc(
+src/app/admin/reviews-ratings/page.tsx:115:      await deleteDoc(
+src/app/admin/reviews/page.tsx:9:  deleteDoc,
+src/app/admin/reviews/page.tsx:12:  updateDoc
+src/app/admin/reviews/page.tsx:95:      await updateDoc(ref, {
+src/app/admin/reviews/page.tsx:123:      await deleteDoc(
+src/app/admin/rewards/page.tsx:10:  setDoc
+src/app/admin/rewards/page.tsx:102:      await setDoc(
+src/app/admin/settings/page.tsx:10:  setDoc
+src/app/admin/settings/page.tsx:104:      await setDoc(
+src/app/admin/sms/page.tsx:10:  setDoc
+src/app/admin/sms/page.tsx:99:      await setDoc(
+src/app/admin/spin-wheel/page.tsx:10:  setDoc
+src/app/admin/spin-wheel/page.tsx:102:      await setDoc(
+src/app/admin/storage-manager/page.tsx:10:  setDoc
+src/app/admin/storage-manager/page.tsx:101:      await setDoc(
+src/app/admin/subscriptions/page.tsx:10:  setDoc
+src/app/admin/subscriptions/page.tsx:102:      await setDoc(
+src/app/admin/support-tickets/page.tsx:9:  deleteDoc,
+src/app/admin/support-tickets/page.tsx:14:  updateDoc
+src/app/admin/support-tickets/page.tsx:92:      await updateDoc(
+src/app/admin/support-tickets/page.tsx:116:      await deleteDoc(
+src/app/admin/moderation/page.tsx:155:    getDocs(query(collection(db, 'commentAuditLogs'), orderBy('timestamp', 'desc'), limit(15)))
+src/app/admin/theme/page.tsx:4:import { doc, getDoc, setDoc, updateDoc } from "firebase/firestore";
+src/app/admin/theme/page.tsx:30:    const ref = doc(db, "admin_settings", "customize");
+src/app/admin/theme/page.tsx:48:      await setDoc(ref, DEFAULT_THEME);
+src/app/admin/theme/page.tsx:66:    await updateDoc(
+src/app/admin/theme/page.tsx:67:      doc(db, "admin_settings", "customize"),
+src/app/admin/users/page.tsx:9:  updateDoc,
+src/app/admin/users/page.tsx:72:      collection(db, "users"),
+src/app/admin/users/page.tsx:123:      const userRef = doc(db, "users", id);
+src/app/admin/users/page.tsx:124:      await updateDoc(userRef, {
+src/app/admin/users/page.tsx:138:      const userRef = doc(db, "users", id);
+src/app/admin/users/page.tsx:139:      await updateDoc(userRef, {
+src/app/admin/users/page.tsx:151:      const userRef = doc(db, "users", id);
+src/app/admin/users/page.tsx:152:      await updateDoc(userRef, {
+src/app/admin/wallet/page.tsx:10:  setDoc
+src/app/admin/wallet/page.tsx:103:      await setDoc(
+src/app/admin/withdrawal-requests/page.tsx:9:  deleteDoc,
+src/app/admin/withdrawal-requests/page.tsx:14:  updateDoc
+src/app/admin/withdrawal-requests/page.tsx:92:      await updateDoc(
+src/app/admin/withdrawal-requests/page.tsx:116:      await deleteDoc(
+src/app/admin/dummy-audit/page.tsx:21:  /addDoc/i,
+src/app/admin/dummy-audit/page.tsx:22:  /setDoc/i,
+src/app/admin/dummy-audit/page.tsx:23:  /updateDoc/i,
+src/app/admin/dummy-audit/page.tsx:24:  /deleteDoc/i,
+src/app/product/[id]/page.tsx:10:  addDoc,
+src/app/product/[id]/page.tsx:89:        const productRef = doc(db, "products", String(productId));
+src/app/product/[id]/page.tsx:125:      collection(db, "reviews"),
+src/app/product/[id]/page.tsx:168:      const cartRef = collection(db, "users", auth.currentUser.uid, "cart");
+src/app/product/[id]/page.tsx:170:      await addDoc(cartRef, {
+src/app/mlm/dashboard/page.tsx:49:      const userRef = doc(db, "users", user.uid);
+src/app/mlm/earnings/page.tsx:111:        const ref = collection(db, "creatorAdEarnings");
+src/app/mlm/invite/page.tsx:34:        const userRef = doc(db, "users", user.uid);
+src/app/mlm/cashback/page.tsx:166:        const configSnap = await getDoc(doc(db, "settings", "appConfig"));
+src/app/mlm/cashback/page.tsx:187:      const userRef = doc(db, "users", user.uid);
+src/app/mlm/cashback/page.tsx:213:      const transactionsRef = collection(db, "users", user.uid, "cashbackTransactions");
+src/app/mlm/network/page.tsx:66:          collection(db, "users"),
+src/app/mlm/network/page.tsx:93:              collection(db, "users"),
+src/app/mlm/network/page.tsx:118:                collection(db, "users"),
+src/app/mlm/page.tsx:32:          const userRef = doc(db, "users", user.uid);
+src/app/mlm/ranks/page.tsx:29:    const unsubscribe = onSnapshot(doc(db, FIRESTORE_PATHS.BUSINESS_RULES.MLM), (doc) => {
+src/app/mlm/wallet/history/page.tsx:61:        const txRef = collection(db, "users", user.uid, "walletTransactions");
+src/app/mlm/team-business/page.tsx:38:        const userSnap = await getDoc(doc(db, "users", user.uid));
+src/app/mlm/team-business/page.tsx:50:          collection(db, "users"),
+src/app/mlm/watch-earn/components/ShortsSearch.tsx:32:        const videosRef = collection(db, "watchEarnVideos");
+src/app/mlm/watch-earn/components/ShortsSearch.tsx:45:        const usersRef = collection(db, "users");
+src/app/mlm/watch-earn/components/ShortsProfile.tsx:25:    getDoc(doc(db, "users", user.uid)).then(snap => {
+src/app/mlm/watch-earn/components/ShortsProfile.tsx:32:    const earningsQuery = query(collection(db, "creatorAdEarnings"), 
+src/app/mlm/watch-earn/components/ShortsProfile.tsx:42:    getDocs(query(collection(db, "watchEarnVideos"), where("creatorId", "==", user.uid))).then(snap => {
+src/app/mlm/watch-earn/components/ShortsProfile.tsx:47:    getDocs(query(collection(db, "watchVideoLikes"), where("userId", "==", user.uid))).then(async snap => {
+src/app/mlm/watch-earn/components/ShortsProfile.tsx:51:            const vSnap = await getDoc(doc(db, "watchEarnVideos", id));
+src/app/mlm/watch-earn/components/ShortsProfile.tsx:58:    getDocs(query(collection(db, FIRESTORE_PATHS.WATCH_EARN.SAVED_VIDEOS), where("userId", "==", user.uid))).then(async snap => {
+src/app/mlm/watch-earn/components/ShortsProfile.tsx:62:            const vSnap = await getDoc(doc(db, "watchEarnVideos", id));
+src/app/mlm/watch-earn/upload/page.tsx:109:          doc(db, "users", currentUser.uid)
+src/app/mlm/watch-earn/repositories/reward.repository.ts:2:import { doc, setDoc, serverTimestamp } from "firebase/firestore";
+src/app/mlm/watch-earn/repositories/reward.repository.ts:10:    const rewardRef = doc(db, "users", uid, "rewardedVideos", videoId);
+src/app/mlm/watch-earn/repositories/reward.repository.ts:11:    await setDoc(rewardRef, {
+src/app/mlm/watch-earn/audio/[audioId]/page.tsx:29:        collection(db, "watchEarnVideos"),
+src/app/mlm/watch-earn/create/page.tsx:75:    const unsubscribe = onSnapshot(collection(db, "products"), (snapshot) => {
+src/app/mlm/watch-earn/original/[videoId]/page.tsx:22:      const origDoc = await getDoc(doc(db, "watchEarnVideos", originalVideoId));
+src/app/mlm/watch-earn/original/[videoId]/page.tsx:32:        collection(db, "watchEarnVideos"),
+src/app/mlm/watch-earn/history/page.tsx:39:      const collectionRef = collection(db, "watchEarnVideos");
+src/app/mlm/watch-earn/reward-center/page.tsx:12:      const userRef = doc(db, "users", uid);
+src/app/mlm/watch-earn/uploader/[creatorId]/page.tsx:36:        doc(db, "users", creatorId)
+src/app/cart/page.tsx:8:import { collection, deleteDoc, doc, onSnapshot, updateDoc } from "firebase/firestore";
+src/app/cart/page.tsx:36:      const cartRef = collection(db, "users", user.uid, "cart");
+src/app/cart/page.tsx:108:                      <button onClick={() => updateDoc(doc(db, "users", auth.currentUser!.uid, "cart", item.id), { quantity: Math.max(1, item.quantity - 1) })} className="p-1"><Minus size={12}/></button>
+src/app/cart/page.tsx:110:                      <button onClick={() => updateDoc(doc(db, "users", auth.currentUser!.uid, "cart", item.id), { quantity: item.quantity + 1 })} className="p-1"><Plus size={12}/></button>
+src/app/cart/page.tsx:112:                    <button onClick={() => deleteDoc(doc(db, "users", auth.currentUser!.uid, "cart", item.id))} className="text-[var(--color-danger)] p-2"><Trash2 size={16}/></button>
+src/app/account/page.tsx:7:import { doc, onSnapshot, updateDoc } from "firebase/firestore";
+src/app/account/page.tsx:75:      const docRef = doc(db, "users", currentUser.uid);
+src/app/account/page.tsx:147:      const docRef = doc(db, "users", user.uid);
+src/app/account/page.tsx:148:      await updateDoc(docRef, { photoURL });
+src/app/affiliate/page.tsx:77:      const snap = await getDoc(doc(db, "users", user.uid));
+src/app/login/page.tsx:22:  updateDoc,
+src/app/login/page.tsx:50:    collection(db, "users"),
+src/app/login/page.tsx:60:  await updateDoc(snapshot.docs[0].ref, {
+src/app/login/page.tsx:130:        const userDoc = await getDoc(doc(db, "users", result.user.uid));
+src/app/verify-email/page.tsx:5:import { doc, updateDoc, serverTimestamp } from "firebase/firestore";
+src/app/verify-email/page.tsx:78:      const userRef = doc(db, "users", uid);
+src/app/verify-email/page.tsx:81:      await updateDoc(userRef, {
+src/app/address/page.tsx:6:import { doc, getDoc, setDoc, serverTimestamp } from "firebase/firestore";
+src/app/address/page.tsx:40:        const addressRef = doc(db, "users", user.uid, "addresses", "default");
+src/app/address/page.tsx:89:      const addressRef = doc(db, "users", user.uid, "addresses", "default");
+src/app/address/page.tsx:92:      await setDoc(
+src/app/payment-success/page.tsx:9:  updateDoc,
+src/app/payment-success/page.tsx:68:            await updateDoc(userRef, {
+src/app/payment-success/page.tsx:73:            await updateDoc(userRef, {
+src/app/signup/page.tsx:150:      const userRef = doc(db, "users", result.user.uid);
+src/app/api/admin/moderate-video/route.ts:174:      await adminDb.runTransaction(async (transaction) => {
+src/app/api/ads/event/route.ts:65:    const result = await adminDb.runTransaction(async (transaction) => {
+src/app/api/webhooks/cloudinary-moderation/route.ts:27:    await adminDb.runTransaction(async (transaction) => {
+src/app/api/cron/release-creator-ad-earnings/route.ts:50:        await adminDb.runTransaction(async (transaction) => {
+src/app/api/shorts/notifications/mark-read/route.ts:87:    await db.runTransaction(async (transaction) => {
+src/app/api/auth/create-profile/route.ts:86:    const result = await db.runTransaction(async (transaction) => {
+src/app/api/orders/create/route.ts:78:    const result = await db.runTransaction(async (transaction) => {
+src/app/checkout/page.tsx:25:        const addrRef = doc(db, "users", user.uid, "addresses", "default");
+src/app/checkout/page.tsx:29:        const prodRef = doc(db, "products", productId);
+src/app/orders/[id]/page.tsx:5:import { doc, getDoc, updateDoc } from "firebase/firestore";
+src/app/orders/[id]/page.tsx:17:    getDoc(doc(db, "orders", id as string)).then(snap => {
+src/app/orders/[id]/page.tsx:24:      await updateDoc(doc(db, "orders", id as string), { status: "Cancelled" });
+src/app/orders/page.tsx:21:      const q = query(collection(db, "orders"), where("userId", "==", user.uid));
+src/app/wishlist/page.tsx:45:      const wishlistRef = collection(db, "wishlist");
+src/app/followers/page.tsx:27:    const userUnsub = onSnapshot(doc(db, "users", auth.currentUser.uid), (doc) => {
+src/app/followers/page.tsx:32:    const followingRef = collection(db, "users", auth.currentUser.uid, "following");
+src/app/followers/page.tsx:35:        const followedUserRef = doc(db, "users", docSnap.id);
+src/app/profile/[uid]/page.tsx:35:    const docRef = doc(db, "users", uid);
+src/app/track-order/[id]/page.tsx:17:    getDoc(doc(db, "orders", id as string)).then(snap => {
+src/lib/mlm/approveKYC.ts:2:  addDoc,
+src/lib/mlm/approveKYC.ts:6:  updateDoc,
+src/lib/mlm/approveKYC.ts:70:    await updateDoc(
+src/lib/mlm/approveKYC.ts:81:    await updateDoc(
+src/lib/mlm/approveKYC.ts:93:    await addDoc(
+src/lib/mlm/blockUser.ts:2:  addDoc,
+src/lib/mlm/blockUser.ts:6:  updateDoc,
+src/lib/mlm/blockUser.ts:95:    await updateDoc(
+src/lib/mlm/blockUser.ts:114:    await addDoc(
+src/lib/mlm/blockUser.ts:141:    await addDoc(
+src/lib/mlm/claimDailyReward.ts:3:  runTransaction,
+src/lib/mlm/claimDailyReward.ts:52:    const rewardLogRef = doc(db, "daily_rewards", rewardDocId);
+src/lib/mlm/claimDailyReward.ts:53:    const userRef = doc(db, "users", cleanUserId);
+src/lib/mlm/claimDailyReward.ts:54:    const innerTxLedgerRef = doc(db, `users/${cleanUserId}/transactions`, `${rewardDocId}_TX`);
+src/lib/mlm/claimDailyReward.ts:59:    const transactionResult = await runTransaction(db, async (transaction) => {
+src/lib/mlm/config/fetchConfigHelper.ts:22:    const referralSnap = await getDoc(doc(db, "business_rules", "referral"));
+src/lib/mlm/config/fetchConfigHelper.ts:23:    const creatorEconomySnap = await getDoc(doc(db, "business_rules", "creatorEconomy"));
+src/lib/mlm/config/fetchConfigHelper.ts:24:    const signupSnap = await getDoc(doc(db, "business_rules", "signup"));
+src/lib/mlm/config/fetchConfigHelper.ts:25:    const featureFlagsSnap = await getDoc(doc(db, "business_rules", "featureFlags"));
+src/lib/mlm/createBroadcastNotification.ts:2:  addDoc,
+src/lib/mlm/createBroadcastNotification.ts:50:      await addDoc(
+src/lib/mlm/createBroadcastNotification.ts:80:    await addDoc(
+src/lib/mlm/createKYCRequest.ts:2:  addDoc,
+src/lib/mlm/createKYCRequest.ts:6:  updateDoc,
+src/lib/mlm/createKYCRequest.ts:162:      await addDoc(
+src/lib/mlm/createKYCRequest.ts:218:    await updateDoc(
+src/lib/mlm/createLeaderboardEntry.ts:4:  setDoc,
+src/lib/mlm/createLeaderboardEntry.ts:160:      await setDoc(
+src/lib/mlm/createLeaderboardEntry.ts:175:    await setDoc(
+src/lib/mlm/creditWallet.ts:2:import { doc, runTransaction, serverTimestamp, increment, collection } from "firebase/firestore";
+src/lib/mlm/creditWallet.ts:57:  const userRef = doc(db, "users", targetUid);
+src/lib/mlm/creditWallet.ts:60:  const transactionDocId = payload.orderId || doc(collection(db, `users/${targetUid}/transactions`)).id;
+src/lib/mlm/creditWallet.ts:61:  const ledgerLogRef = doc(db, `users/${targetUid}/transactions`, transactionDocId);
+src/lib/mlm/creditWallet.ts:64:    const transactionResult = await runTransaction(db, async (transaction) => {
+src/lib/mlm/financial/processCashback.ts:2:import { doc, runTransaction, serverTimestamp, increment } from "firebase/firestore";
+src/lib/mlm/financial/processCashback.ts:14:    const userRef = doc(db, "users", userId);
+src/lib/mlm/financial/processCashback.ts:17:    await runTransaction(db, async (transaction) => {
+src/lib/mlm/orders/approveWithdrawTransaction.ts:4:  updateDoc,
+src/lib/mlm/orders/approveWithdrawTransaction.ts:7:  setDoc,
+src/lib/mlm/orders/approveWithdrawTransaction.ts:152:    await updateDoc(
+src/lib/mlm/orders/approveWithdrawTransaction.ts:169:    await updateDoc(
+src/lib/mlm/orders/approveWithdrawTransaction.ts:195:    await setDoc(
+src/lib/mlm/orders/autoJoinMLMOnPurchase.ts:1:import { doc, runTransaction, serverTimestamp } from "firebase/firestore";
+src/lib/mlm/orders/autoJoinMLMOnPurchase.ts:9:    const result = await runTransaction(db, async (transaction) => {
+src/lib/mlm/orders/autoJoinMLMOnPurchase.ts:10:      const userRef = doc(db, "users", userId);
+src/lib/mlm/orders/autoJoinMLMOnPurchase.ts:11:      const mlmUserRef = doc(db, "mlmUsers", userId);
+src/lib/mlm/orders/cancelOrder.ts:5:  updateDoc
+src/lib/mlm/orders/cancelOrder.ts:56:    await updateDoc(
+src/lib/mlm/orders/cancelOrder.ts:71:    await updateDoc(
+src/lib/mlm/orders/checkRankUpgrade.ts:5:  runTransaction,
+src/lib/mlm/orders/checkRankUpgrade.ts:56:    const userRef = doc(db, "users", cleanUserId);
+src/lib/mlm/orders/checkRankUpgrade.ts:61:    const transactionResult = await runTransaction(db, async (transaction) => {
+src/lib/mlm/orders/checkRankUpgrade.ts:142:      const historyLogRef = doc(db, `users/${cleanUserId}/rank_history`, promoStaticTokenId);
+src/lib/mlm/orders/completeOrderAndDistributeCommission.ts:3:  updateDoc,
+src/lib/mlm/orders/completeOrderAndDistributeCommission.ts:4:  addDoc,
+src/lib/mlm/orders/completeOrderAndDistributeCommission.ts:127:    await addDoc(collection(db, "orderIncomeHistory"), {
+src/lib/mlm/orders/completeOrderAndDistributeCommission.ts:142:    await updateDoc(orderRef, {
+src/lib/mlm/orders/createCashbackReward.ts:2:  addDoc,
+src/lib/mlm/orders/createCashbackReward.ts:6:  updateDoc
+src/lib/mlm/orders/createCashbackReward.ts:25:    await updateDoc(
+src/lib/mlm/orders/createCashbackReward.ts:43:    await addDoc(
+src/lib/mlm/orders/createDailyPassiveIncome.ts:2:  runTransaction,
+src/lib/mlm/orders/createDailyPassiveIncome.ts:22:    const historyRef = doc(db, "dailyPassiveIncomeHistory", historyId);
+src/lib/mlm/orders/createDailyPassiveIncome.ts:23:    const userRef = doc(db, "users", data.userId);
+src/lib/mlm/orders/createDailyPassiveIncome.ts:25:    await runTransaction(db, async (transaction) => {
+src/lib/mlm/orders/createLuckySpinReward.ts:2:  addDoc,
+src/lib/mlm/orders/createLuckySpinReward.ts:6:  updateDoc
+src/lib/mlm/orders/createLuckySpinReward.ts:32:    await updateDoc(
+src/lib/mlm/orders/createLuckySpinReward.ts:60:    await addDoc(
+src/lib/mlm/orders/createOrderHistory.ts:2:  addDoc,
+src/lib/mlm/orders/createOrderHistory.ts:28:    await addDoc(
+src/lib/mlm/orders/createOrderIncome.ts:2:  addDoc,
+src/lib/mlm/orders/createOrderIncome.ts:6:  updateDoc
+src/lib/mlm/orders/createOrderIncome.ts:25:    await updateDoc(
+src/lib/mlm/orders/createOrderIncome.ts:47:    await addDoc(
+src/lib/mlm/orders/createOrderNotification.ts:2:  addDoc,
+src/lib/mlm/orders/createOrderNotification.ts:25:    await addDoc(
+src/lib/mlm/orders/createOrderTransaction.ts:2:  addDoc,
+src/lib/mlm/orders/createOrderTransaction.ts:28:    await addDoc(
+src/lib/mlm/orders/createPendingCommission.ts:5:  updateDoc
+src/lib/mlm/orders/createPendingCommission.ts:90:      await updateDoc(
+src/lib/mlm/orders/createProductReviewReward.ts:2:  addDoc,
+src/lib/mlm/orders/createProductReviewReward.ts:6:  updateDoc
+src/lib/mlm/orders/createProductReviewReward.ts:36:    await updateDoc(
+src/lib/mlm/orders/createProductReviewReward.ts:64:    await addDoc(
+src/lib/mlm/orders/createRankReward.ts:5:  runTransaction,
+src/lib/mlm/orders/createRankReward.ts:96:    const userRef = doc(db, "users", cleanUserId);
+src/lib/mlm/orders/createRankReward.ts:97:    const rewardClaimIdempotencyRef = doc(db, `users/${cleanUserId}/rank_rewards`, `${cleanRankId}_CLAIMED`);
+src/lib/mlm/orders/createRankReward.ts:102:    const transactionResult = await runTransaction(db, async (transaction) => {
+src/lib/mlm/orders/createRankReward.ts:158:      const userTxRef = doc(db, `users/${cleanUserId}/transactions`, `${cleanUserId}_RWD_LOG_${cleanRankId}`);
+src/lib/mlm/orders/createRankReward.ts:169:      const globalTxRef = doc(db, "transactions", `${cleanUserId}_REWARD_TRX_${cleanRankId}`);
+src/lib/mlm/orders/createReferralVisitReward.ts:2:  addDoc,
+src/lib/mlm/orders/createReferralVisitReward.ts:6:  updateDoc
+src/lib/mlm/orders/createReferralVisitReward.ts:32:    await updateDoc(
+src/lib/mlm/orders/createReferralVisitReward.ts:60:    await addDoc(
+src/lib/mlm/orders/createScratchCardReward.ts:2:  addDoc,
+src/lib/mlm/orders/createScratchCardReward.ts:6:  updateDoc
+src/lib/mlm/orders/createScratchCardReward.ts:32:    await updateDoc(
+src/lib/mlm/orders/createScratchCardReward.ts:60:    await addDoc(
+src/lib/mlm/orders/createSocialShareReward.ts:2:  addDoc,
+src/lib/mlm/orders/createSocialShareReward.ts:6:  updateDoc
+src/lib/mlm/orders/createSocialShareReward.ts:32:    await updateDoc(
+src/lib/mlm/orders/createSocialShareReward.ts:60:    await addDoc(
+src/lib/mlm/orders/createTeamBusiness.ts:5:  updateDoc
+src/lib/mlm/orders/createTeamBusiness.ts:56:      await updateDoc(
+src/lib/mlm/orders/createWithdrawTransaction.ts:4:  runTransaction,
+src/lib/mlm/orders/createWithdrawTransaction.ts:38:    await runTransaction(
+src/lib/mlm/orders/holdWithdrawAmount.ts:3:  runTransaction
+src/lib/mlm/orders/holdWithdrawAmount.ts:29:    await runTransaction(
+src/lib/mlm/orders/rejectWithdrawTransaction.ts:4:  updateDoc,
+src/lib/mlm/orders/rejectWithdrawTransaction.ts:7:  setDoc,
+src/lib/mlm/orders/rejectWithdrawTransaction.ts:155:    await updateDoc(
+src/lib/mlm/orders/rejectWithdrawTransaction.ts:176:    await updateDoc(
+src/lib/mlm/orders/rejectWithdrawTransaction.ts:207:    await setDoc(
+src/lib/mlm/orders/releaseHoldAmount.ts:4:  updateDoc
+src/lib/mlm/orders/releaseHoldAmount.ts:24:    await updateDoc(
+src/lib/mlm/orders/releasePendingCommission.ts:5:  updateDoc
+src/lib/mlm/orders/releasePendingCommission.ts:90:      await updateDoc(
+src/lib/mlm/orders/reverseLevelCommission.ts:5:  updateDoc
+src/lib/mlm/orders/reverseLevelCommission.ts:84:      await updateDoc(
+src/lib/mlm/orders/reverseTeamBusiness.ts:5:  updateDoc
+src/lib/mlm/orders/reverseTeamBusiness.ts:62:      await updateDoc(
+src/lib/mlm/orders/updateDirectReferrals.ts:4:  updateDoc
+src/lib/mlm/orders/updateDirectReferrals.ts:17:    await updateDoc(
+src/lib/mlm/orders/updateOrderStatus.ts:5:  updateDoc,
+src/lib/mlm/orders/updateOrderStatus.ts:153:    await updateDoc(orderRef, {
+src/lib/mlm/orders/updateTeamVolume.ts:3:  runTransaction,
+src/lib/mlm/orders/updateTeamVolume.ts:77:    const performanceLogRef = doc(db, "team_performance_bonuses", bonusDocId);
+src/lib/mlm/orders/updateTeamVolume.ts:78:    const userRef = doc(db, "users", cleanUserId);
+src/lib/mlm/orders/updateTeamVolume.ts:79:    const innerTxLedgerRef = doc(db, `users/${cleanUserId}/transactions`, `${bonusDocId}_TX`);
+src/lib/mlm/orders/updateTeamVolume.ts:84:    const transactionResult = await runTransaction(db, async (transaction) => {
+src/lib/mlm/orders/processOrderProfit.ts:1:import { doc, runTransaction, serverTimestamp } from "firebase/firestore";
+src/lib/mlm/orders/processOrderProfit.ts:7:    return await runTransaction(db, async (transaction) => {
+src/lib/mlm/orders/processOrderProfit.ts:8:      const orderRef = doc(db, "orders", orderId);
+src/lib/mlm/orders/orderValidation.ts:12:  const orderRef = doc(db, "orders", orderId);
+src/lib/mlm/createNotification.ts:2:  addDoc,
+src/lib/mlm/createNotification.ts:60:      await addDoc(
+src/lib/mlm/createPayoutRequest.ts:3:  runTransaction,
+src/lib/mlm/createPayoutRequest.ts:94:    const payoutDocRef = doc(db, "payout_requests", uniquePayoutId);
+src/lib/mlm/createPayoutRequest.ts:95:    const userRef = doc(db, "users", cleanUserId); 
+src/lib/mlm/createPayoutRequest.ts:96:    const globalLedgerHoldRef = doc(db, "transactions", `${uniquePayoutId}_HOLD_TX`);
+src/lib/mlm/createPayoutRequest.ts:101:    const transactionResult = await runTransaction(db, async (transaction) => {
+src/lib/mlm/createPayoutRequest.ts:178:      const ledgerUserHoldRef = doc(db, `users/${cleanUserId}/transactions`, `${uniquePayoutId}_HOLD_TX`);
+src/lib/mlm/createReferralBonus.ts:3:  runTransaction,
+src/lib/mlm/createReferralBonus.ts:75:    const bonusLogRef = doc(db, "referral_bonuses", referralBonusDocId);
+src/lib/mlm/createReferralBonus.ts:76:    const referrerRef = doc(db, "users", cleanReferrerId);
+src/lib/mlm/createReferralBonus.ts:77:    const newUserRef = doc(db, "users", cleanNewUserId);
+src/lib/mlm/createReferralBonus.ts:78:    const orderRef = doc(db, "orders", cleanOrderId);
+src/lib/mlm/createReferralBonus.ts:79:    const innerTxLedgerRef = doc(db, `users/${cleanReferrerId}/transactions`, `${referralBonusDocId}_TX`);
+src/lib/mlm/createReferralBonus.ts:80:    const systemAuditAlertRef = doc(db, "system_audit_alerts", `ALERT_${referralBonusDocId}`);
+src/lib/mlm/createReferralBonus.ts:85:    const transactionResult = await runTransaction(db, async (transaction) => {
+src/lib/mlm/createReferralLink.ts:88:    const userRef = doc(db, "users", userId);
+src/lib/mlm/createSupportTicket.ts:2:  addDoc,
+src/lib/mlm/createSupportTicket.ts:131:      await addDoc(
+src/lib/mlm/createSupportTicket.ts:196:    await addDoc(
+src/lib/mlm/createTaskReward.ts:3:  runTransaction,
+src/lib/mlm/createTaskReward.ts:54:    const rewardLogRef = doc(db, "task_rewards", rewardDocId);
+src/lib/mlm/createTaskReward.ts:55:    const userRef = doc(db, "users", cleanUserId);
+src/lib/mlm/createTaskReward.ts:56:    const userTaskRef = doc(db, `users/${cleanUserId}/userTasks`, cleanTaskId);
+src/lib/mlm/createTaskReward.ts:57:    const innerTxLedgerRef = doc(db, `users/${cleanUserId}/transactions`, `${rewardDocId}_TX`);
+src/lib/mlm/createTaskReward.ts:62:    const transactionResult = await runTransaction(db, async (transaction) => {
+src/lib/mlm/distributeLevelCommission.ts:2:import { doc, getDoc, setDoc, serverTimestamp } from "firebase/firestore";
+src/lib/mlm/distributeLevelCommission.ts:92:    const buyerRef = doc(db, "users", cleanBuyerUid);
+src/lib/mlm/distributeLevelCommission.ts:144:      const commissionLogRef = doc(db, "commissionLogs", commissionLogId);
+src/lib/mlm/distributeLevelCommission.ts:164:      const uplineUserRef = doc(db, "users", currentLevelUplineUid);
+src/lib/mlm/distributeLevelCommission.ts:186:        await setDoc(commissionLogRef, {
+src/lib/mlm/distributeLevelCommission.ts:226:        await setDoc(commissionLogRef, {
+src/lib/mlm/distributeLevelCommission.ts:236:        await setDoc(commissionLogRef, {
+src/lib/mlm/giveCommission.ts:2:  addDoc,
+src/lib/mlm/giveCommission.ts:7:  updateDoc,
+src/lib/mlm/giveCommission.ts:107:    await updateDoc(
+src/lib/mlm/giveCommission.ts:128:    await addDoc(
+src/lib/mlm/registerUser.ts:2:import { doc, runTransaction, serverTimestamp, increment } from "firebase/firestore";
+src/lib/mlm/registerUser.ts:39:  const userRef = doc(db, "users", targetUid);
+src/lib/mlm/registerUser.ts:42:    const transactionResult = await runTransaction(db, async (transaction) => {
+src/lib/mlm/rejectKYC.ts:2:  addDoc,
+src/lib/mlm/rejectKYC.ts:7:  updateDoc
+src/lib/mlm/rejectKYC.ts:104:    await updateDoc(
+src/lib/mlm/rejectKYC.ts:134:    await updateDoc(
+src/lib/mlm/rejectKYC.ts:152:    await addDoc(
+src/lib/mlm/rejectKYC.ts:182:    await addDoc(
+src/lib/mlm/rejectPayoutRequest.ts:2:  addDoc,
+src/lib/mlm/rejectPayoutRequest.ts:8:  updateDoc
+src/lib/mlm/rejectPayoutRequest.ts:94:    await updateDoc(
+src/lib/mlm/rejectPayoutRequest.ts:124:    await updateDoc(
+src/lib/mlm/rejectPayoutRequest.ts:146:    await addDoc(
+src/lib/mlm/rejectPayoutRequest.ts:182:    await addDoc(
+src/lib/mlm/replySupportTicket.ts:2:  addDoc,
+src/lib/mlm/replySupportTicket.ts:7:  updateDoc
+src/lib/mlm/replySupportTicket.ts:103:    await updateDoc(
+src/lib/mlm/replySupportTicket.ts:130:    await addDoc(
+src/lib/mlm/replySupportTicket.ts:160:    await addDoc(
+src/lib/mlm/unblockUser.ts:2:  addDoc,
+src/lib/mlm/unblockUser.ts:7:  updateDoc
+src/lib/mlm/unblockUser.ts:81:    await updateDoc(
+src/lib/mlm/unblockUser.ts:107:    await addDoc(
+src/lib/mlm/unblockUser.ts:131:    await addDoc(
+src/lib/mlm/updateRank.ts:3:  runTransaction,
+src/lib/mlm/updateRank.ts:59:    const userRef = doc(db, "users", cleanUserId);
+src/lib/mlm/updateRank.ts:64:    const transactionResult = await runTransaction(db, async (transaction) => {
+src/lib/mlm/updateRank.ts:121:      const rankHistoryLogRef = doc(db, `users/${cleanUserId}/rank_history`, `${qualifiedRank}_PROMOTION`);
+src/lib/mlm/updateRank.ts:154:        const globalTxRef = doc(db, "transactions", `${cleanUserId}_RANK_UP_${qualifiedRank}`);
+src/lib/mlm/updateRank.ts:168:        const userInnerTxRef = doc(db, `users/${cleanUserId}/transactions`, `${cleanUserId}_RANK_UP_${qualifiedRank}_TX`);
+src/lib/mlm/updateReferralTree.ts:1:import { doc, runTransaction, serverTimestamp, increment } from "firebase/firestore";
+src/lib/mlm/updateReferralTree.ts:19:    return await runTransaction(db, async (transaction) => {
+src/lib/mlm/updateReferralTree.ts:25:        const userRef = doc(db, "users", currentSponsorId);
+src/lib/mlm/withdrawals/approveWithdrawal.ts:5:  runTransaction, 
+src/lib/mlm/withdrawals/approveWithdrawal.ts:11:  updateDoc 
+src/lib/mlm/withdrawals/approveWithdrawal.ts:26:    const withdrawRef = doc(db, "withdraws", withdrawId);
+src/lib/mlm/withdrawals/approveWithdrawal.ts:29:    const result = await runTransaction(db, async (transaction) => {
+src/lib/mlm/withdrawals/approveWithdrawal.ts:37:      const userRef = doc(db, "users", userId);
+src/lib/mlm/withdrawals/approveWithdrawal.ts:68:      collection(db, "user_transactions"),
+src/lib/mlm/withdrawals/approveWithdrawal.ts:75:      updateDoc(d.ref, { 
+src/lib/mlm/withdrawals/getWithdrawalHistory.ts:17:    const withdrawsCollection = collection(db, "withdraws");
+src/lib/mlm/withdrawals/rejectWithdrawal.ts:5:  runTransaction, 
+src/lib/mlm/withdrawals/rejectWithdrawal.ts:11:  updateDoc 
+src/lib/mlm/withdrawals/rejectWithdrawal.ts:23:    const withdrawRef = doc(db, "withdraws", data.withdrawId);
+src/lib/mlm/withdrawals/rejectWithdrawal.ts:26:    const result = await runTransaction(db, async (transaction) => {
+src/lib/mlm/withdrawals/rejectWithdrawal.ts:33:      const userRef = doc(db, "users", withdrawData.userId);
+src/lib/mlm/withdrawals/rejectWithdrawal.ts:65:      collection(db, "user_transactions"),
+src/lib/mlm/withdrawals/rejectWithdrawal.ts:72:      updateDoc(d.ref, { 
+src/lib/mlm/withdrawals/requestWithdraw.ts:2:import { doc, collection, runTransaction, serverTimestamp, increment } from "firebase/firestore";
+src/lib/mlm/withdrawals/requestWithdraw.ts:31:    const userRef = doc(db, "users", data.userId);
+src/lib/mlm/withdrawals/requestWithdraw.ts:32:    const withdrawsCollection = collection(db, "withdraws");
+src/lib/mlm/withdrawals/requestWithdraw.ts:33:    const ledgerCollection = collection(db, "user_transactions"); // Unified Ledger
+src/lib/mlm/withdrawals/requestWithdraw.ts:35:    const result = await runTransaction(db, async (transaction) => {
+src/lib/mlm/withdrawals/withdrawalSettings.ts:2:import { doc, getDoc, setDoc, serverTimestamp } from "firebase/firestore";
+src/lib/mlm/withdrawals/withdrawalSettings.ts:15:const SETTINGS_REF = doc(db, "settings", "withdrawal");
+src/lib/mlm/withdrawals/withdrawalSettings.ts:49:    const adminRef = doc(db, "admins", adminId);
+src/lib/mlm/withdrawals/withdrawalSettings.ts:57:    await setDoc(SETTINGS_REF, {
+src/lib/mlm/watch-earn/blockSponsoredVideo.ts:3:  updateDoc
+src/lib/mlm/watch-earn/blockSponsoredVideo.ts:23:    await updateDoc(
+src/lib/mlm/watch-earn/fetchWatchVideos.ts:193:      collection(db, "users");
+src/lib/mlm/watch-earn/fetchWatchVideos.ts:823:    const videosRef = collection(db, "watchEarnVideos");
+src/lib/mlm/watch-earn/createSponsoredVideo.ts:2:  addDoc,
+src/lib/mlm/watch-earn/createSponsoredVideo.ts:35:    await addDoc(
+src/lib/mlm/watch-earn/createCreatorRevenueShare.ts:2:  addDoc,
+src/lib/mlm/watch-earn/createCreatorRevenueShare.ts:6:  updateDoc
+src/lib/mlm/watch-earn/createCreatorRevenueShare.ts:32:    await updateDoc(
+src/lib/mlm/watch-earn/createCreatorRevenueShare.ts:60:    await addDoc(
+src/lib/mlm/watch-earn/createVideoAdRevenue.ts:2:  addDoc,
+src/lib/mlm/watch-earn/createVideoAdRevenue.ts:6:  updateDoc
+src/lib/mlm/watch-earn/createVideoAdRevenue.ts:34:    await updateDoc(
+src/lib/mlm/watch-earn/createVideoAdRevenue.ts:60:    await addDoc(
+src/lib/mlm/watch-earn/createVideoComment.ts:2:  addDoc,
+src/lib/mlm/watch-earn/createVideoComment.ts:25:    await addDoc(
+src/lib/mlm/watch-earn/createWatchVideo.ts:2:  addDoc,
+src/lib/mlm/watch-earn/createWatchVideo.ts:31:    await addDoc(
+src/lib/mlm/watch-earn/likeVideoComment.ts:4:  updateDoc,
+src/lib/mlm/watch-earn/likeVideoComment.ts:5:  deleteDoc,
+src/lib/mlm/watch-earn/likeVideoComment.ts:6:  setDoc,
+src/lib/mlm/watch-earn/likeVideoComment.ts:26:    const likeRef = doc(db, "videoCommentLikes", `${data.commentId}_${data.userId}`);
+src/lib/mlm/watch-earn/likeVideoComment.ts:30:    await setDoc(likeRef, { commentId: data.commentId, userId: data.userId, createdAt: Date.now() });
+src/lib/mlm/watch-earn/likeVideoComment.ts:32:    await updateDoc(
+src/lib/mlm/watch-earn/likeVideoComment.ts:68:    const likeRef = doc(db, "videoCommentLikes", `${data.commentId}_${data.userId}`);
+src/lib/mlm/watch-earn/likeVideoComment.ts:69:    await deleteDoc(likeRef);
+src/lib/mlm/watch-earn/likeVideoComment.ts:71:    await updateDoc(
+src/lib/mlm/watch-earn/deductSponsorVideoBudget.ts:4:  updateDoc
+src/lib/mlm/watch-earn/deductSponsorVideoBudget.ts:24:    await updateDoc(
+src/lib/mlm/watch-earn/deleteSponsoredVideo.ts:2:  deleteDoc,
+src/lib/mlm/watch-earn/deleteSponsoredVideo.ts:21:    await deleteDoc(
+src/lib/mlm/watch-earn/deleteVideoComment.ts:2:  deleteDoc,
+src/lib/mlm/watch-earn/deleteVideoComment.ts:21:    await deleteDoc(
+src/lib/mlm/watch-earn/deleteVideoReply.ts:2:  deleteDoc,
+src/lib/mlm/watch-earn/deleteVideoReply.ts:21:    await deleteDoc(
+src/lib/mlm/watch-earn/processRewardUnlock.ts:3:  runTransaction, 
+src/lib/mlm/watch-earn/processRewardUnlock.ts:13:    const userRef = doc(db, "users", userId);
+src/lib/mlm/watch-earn/processRewardUnlock.ts:14:    const cycleRef = doc(db, "rewardCycles", cycleId);
+src/lib/mlm/watch-earn/processRewardUnlock.ts:15:    const configRef = doc(db, "adminSettings", "watchReward");
+src/lib/mlm/watch-earn/processRewardUnlock.ts:17:    return await runTransaction(db, async (transaction) => {
+src/lib/mlm/watch-earn/processRewardUnlock.ts:74:      const txRef = doc(collection(db, "user_transactions"));
+src/lib/mlm/watch-earn/processRewardUnlock.ts:92:        const nextCycleRef = doc(collection(db, "rewardCycles"));
+src/lib/mlm/watch-earn/likeVideo.ts:4:  updateDoc,
+src/lib/mlm/watch-earn/likeVideo.ts:5:  setDoc,
+src/lib/mlm/watch-earn/likeVideo.ts:64:    await setDoc(
+src/lib/mlm/watch-earn/likeVideo.ts:89:    await updateDoc(
+src/lib/mlm/watch-earn/saveVideo.ts:4:  setDoc,
+src/lib/mlm/watch-earn/saveVideo.ts:5:  deleteDoc
+src/lib/mlm/watch-earn/saveVideo.ts:52:      await deleteDoc(
+src/lib/mlm/watch-earn/saveVideo.ts:67:    await setDoc(
+src/lib/mlm/watch-earn/reportVideo.ts:4:  setDoc,
+src/lib/mlm/watch-earn/reportVideo.ts:29:    const reportRef = doc(db, FIRESTORE_PATHS.WATCH_EARN.VIDEO_REPORTS, reportId);
+src/lib/mlm/watch-earn/reportVideo.ts:38:    await setDoc(reportRef, {
+src/lib/mlm/watch-earn/likeVideoReply.ts:4:  updateDoc
+src/lib/mlm/watch-earn/likeVideoReply.ts:22:    await updateDoc(
+src/lib/mlm/watch-earn/pauseSponsoredVideo.ts:3:  updateDoc
+src/lib/mlm/watch-earn/pauseSponsoredVideo.ts:23:    await updateDoc(
+src/lib/mlm/watch-earn/replyVideoComment.ts:2:  addDoc,
+src/lib/mlm/watch-earn/replyVideoComment.ts:25:    await addDoc(
+src/lib/mlm/watch-earn/reportSponsoredVideo.ts:2:  addDoc,
+src/lib/mlm/watch-earn/reportSponsoredVideo.ts:27:    await addDoc(
+src/lib/mlm/watch-earn/reportVideoComment.ts:2:  addDoc,
+src/lib/mlm/watch-earn/reportVideoComment.ts:29:    await addDoc(
+src/lib/mlm/watch-earn/resumeSponsoredVideo.ts:3:  updateDoc
+src/lib/mlm/watch-earn/resumeSponsoredVideo.ts:21:    await updateDoc(
+src/lib/mlm/watch-earn/unlikeVideo.ts:4:  updateDoc,
+src/lib/mlm/watch-earn/unlikeVideo.ts:5:  deleteDoc
+src/lib/mlm/watch-earn/unlikeVideo.ts:20:    const likeRef = doc(db, "watchVideoLikes", `${videoId}_${userId}`);
+src/lib/mlm/watch-earn/unlikeVideo.ts:21:    await deleteDoc(likeRef);
+src/lib/mlm/watch-earn/unlikeVideo.ts:23:    const videoRef = doc(db, "watchEarnVideos", videoId);
+src/lib/mlm/watch-earn/unlikeVideo.ts:24:    await updateDoc(videoRef, {
+src/lib/mlm/watch-earn/shareVideo.ts:4:  setDoc,
+src/lib/mlm/watch-earn/shareVideo.ts:5:  updateDoc,
+src/lib/mlm/watch-earn/shareVideo.ts:64:    await setDoc(
+src/lib/mlm/watch-earn/shareVideo.ts:89:    await updateDoc(
+src/lib/mlm/watch-earn/setVideoPreference.ts:1:import { doc, runTransaction, serverTimestamp } from "firebase/firestore";
+src/lib/mlm/watch-earn/setVideoPreference.ts:21:  const interestedRef = doc(db, FIRESTORE_PATHS.WATCH_EARN.INTERESTED_VIDEOS, uid, "videos", videoId);
+src/lib/mlm/watch-earn/setVideoPreference.ts:22:  const notInterestedRef = doc(db, FIRESTORE_PATHS.WATCH_EARN.NOT_INTERESTED_VIDEOS, uid, "videos", videoId);
+src/lib/mlm/watch-earn/setVideoPreference.ts:25:    await runTransaction(db, async (transaction) => {
+src/lib/mlm/watch-earn/unblockSponsoredVideo.ts:3:  updateDoc
+src/lib/mlm/watch-earn/unblockSponsoredVideo.ts:21:    await updateDoc(
+src/lib/mlm/watch-earn/updateVideoViews.ts:4:  updateDoc
+src/lib/mlm/watch-earn/updateVideoViews.ts:22:    await updateDoc(
+src/lib/security/sponsorUpdater.ts:10:  const sponsorRef = doc(db, "users", sponsorUid);
+src/lib/security/updateUplineTree.ts:13:    const uplineRef = doc(db, "users", cleanUplineId);
+src/lib/admin-config/firestore.ts:42:      doc(db, "admin_settings", "config")
+src/lib/admin-config/provider.backup.tsx:38:    const configRef = doc(db, "settings", "global_config");
+src/lib/admin-config/provider.tsx:42:    const configRef = doc(db, "settings", "global_config");
+src/lib/admin-config/provider.tsx:43:    const themeRef = doc(db, "admin_settings", "customize");
+src/lib/admin-config/provider.tsx:44:    const activityTrackerRef = doc(db, "settings", "activityTracker");
+src/lib/admin-config/provider.tsx:45:    const adminChatRef = doc(db, "settings", "adminChat");
+src/lib/admin-config/provider.tsx:46:    const adsManagerRef = doc(db, "settings", "adsManager");
+src/lib/admin-config/provider.tsx:47:    const analyticsRef = doc(db, "settings", "analytics");
+src/lib/admin-config/provider.tsx:48:    const announcementRef = doc(db, "settings", "announcement");
+src/lib/admin-config/provider.tsx:49:    const watchEarnRef = doc(db, "settings", "watchEarn");
+src/lib/admin-config/provider.tsx:50:    const commentModerationRef = doc(db, "settings", "commentModeration");
+src/lib/admin-config/provider.tsx:51:    const featureFlagsRef = doc(db, "settings", "feature_flags");
+src/lib/admin-config/provider.tsx:52:    const walletRef = doc(db, "settings", "wallet");
+src/lib/admin-config/provider.tsx:53:    const mlmRef = doc(db, "settings", "mlm"); // Add MLM ref
+src/lib/admin-config/provider.tsx:54:    const homepageRef = doc(db, "settings", "homepage");
+src/lib/admin-config/provider.tsx:55:    const paymentRef = doc(db, "settings", "payment");
+src/lib/admin-config/provider.tsx:56:    const shippingRef = doc(db, "settings", "shipping");
+src/lib/admin-config/provider.tsx:57:    const notificationRef = doc(db, "settings", "notification");
+src/lib/governance/scanners/adminControlScanner.ts:44:        doc(db, item.collection, item.document)
+src/lib/governance/scanners/deploymentScanner.ts:84:      doc(db, "settings", "version")
+src/lib/governance/scanners/featureFlagScanner.ts:8:      doc(db, "settings", "feature_flags")
+src/lib/governance/scanners/firestoreScanner.ts:12:      ref: doc(db, "settings", "global_config"),
+src/lib/governance/scanners/firestoreScanner.ts:18:      ref: doc(db, "settings", "theme"),
+src/lib/governance/scanners/pageConnectionScanner.ts:69:        doc(db, page.collection, page.document)
+src/lib/governance/scanners/themeScanner.ts:8:      doc(db, "settings", "theme")
+src/lib/seed/seedSystemSettings.ts:1:import { doc, getDoc, setDoc } from "firebase/firestore";
+src/lib/seed/seedSystemSettings.ts:190:      const reference = doc(db, SETTINGS_COLLECTION, documentId);
+src/lib/seed/seedSystemSettings.ts:194:  await setDoc(reference, documentData, {
+src/lib/seed/seedSystemSettings.ts:200:  await setDoc(reference, documentData);
+src/lib/social/followService.ts:3:  runTransaction,
+src/lib/social/followService.ts:63:  await runTransaction(
+src/lib/social/followService.ts:214:  await runTransaction(
+src/lib/social/notificationService.ts:1:import { doc, setDoc, serverTimestamp } from 'firebase/firestore';
+src/lib/social/notificationService.ts:5:  const notificationRef = doc(db, 'notifications', `${targetUid}_${followerUid}_${Date.now()}`);
+src/lib/social/notificationService.ts:7:  await setDoc(notificationRef, {
+src/components/admin/CategoryAdmin.tsx:10:  addDoc,
+src/components/admin/CategoryAdmin.tsx:12:  deleteDoc,
+src/components/admin/CategoryAdmin.tsx:15:  updateDoc
+src/components/admin/CategoryAdmin.tsx:119:    await addDoc(
+src/components/admin/CategoryAdmin.tsx:190:    await updateDoc(
+src/components/admin/CategoryAdmin.tsx:209:    await deleteDoc(
+src/components/admin/theme-builder/ThemeBuilderPage.tsx:3:import { doc, setDoc } from "firebase/firestore";
+src/components/admin/theme-builder/ThemeBuilderPage.tsx:24:      await setDoc(doc(db, "admin_settings", "customize"), localTheme, { merge: true });
+src/components/admin/AdNetworkManager.tsx:24:    const q = query(collection(db, FIRESTORE_PATHS.AD_MANAGEMENT.NETWORKS));
+src/components/admin/AdSlotManager.tsx:30:    const q = query(collection(db, FIRESTORE_PATHS.AD_MANAGEMENT.SLOTS));
+src/components/guards/DashboardGuard.tsx:12:  const [docExists, setDocExists] = useState<boolean>(false);
+src/components/guards/DashboardGuard.tsx:24:      const userDocRef = doc(db, "users", currentUser.uid);
+src/components/guards/DashboardGuard.tsx:28:          setDocExists(true);
+src/components/guards/DashboardGuard.tsx:32:          setDocExists(false);
+src/components/theme-manager.tsx:47:    const ref = doc(db, "admin_settings", "customize");
+src/components/ads/AdSlot.tsx:41:          collection(db, "ads"),
+src/components/ads/ExternalAdSlot.tsx:25:        const slotRef = doc(db, "adSlots", slotId);
+src/components/ads/ExternalAdSlot.tsx:34:        const networkRef = doc(db, "adNetworks", slot.networkId);
+src/components/social/FollowButton.tsx:101:          doc(db, "users", currentUser.uid)
+src/context/ThemeContext.tsx:38:    const ref = doc(db, "admin_settings", "customize");
+src/jembee-governance/repositories/governanceRepository.ts:8:  setDoc,
+src/jembee-governance/repositories/governanceRepository.ts:9:  updateDoc,
+src/jembee-governance/repositories/governanceRepository.ts:34:      await setDoc(
+src/jembee-governance/repositories/governanceRepository.ts:117:    await updateDoc(
+src/jembee-governance/services/governanceIssueService.ts:12:  addDoc,
+src/jembee-governance/services/governanceIssueService.ts:13:  updateDoc,
+src/jembee-governance/services/governanceIssueService.ts:14:  deleteDoc,
+src/jembee-governance/services/governanceIssueService.ts:15:  writeBatch,
+src/jembee-governance/services/governanceIssueService.ts:374:    await addDoc(
+src/jembee-governance/services/governanceIssueService.ts:408:    writeBatch(db);
+src/jembee-governance/services/governanceIssueService.ts:497:  await updateDoc(reference, {
+src/jembee-governance/services/governanceIssueService.ts:517:  await deleteDoc(reference);
+src/jembee-governance/services/governanceIssueService.ts:535:  await updateDoc(reference, {
+src/hooks/useWallet.ts:24:    const userRef = doc(db, 'users', auth.currentUser.uid);
+src/hooks/useAdConfig.ts:13:    const unsub = onSnapshot(doc(db, 'ads_config', networkId), (doc) => {
+src/hooks/useWishlist.ts:4:  addDoc,
+src/hooks/useWishlist.ts:5:  deleteDoc,
+src/hooks/useWishlist.ts:31:      const wishlistRef = collection(db, "wishlist");
+src/hooks/useWishlist.ts:58:        collection(db, "wishlist"),
+src/hooks/useWishlist.ts:63:      querySnapshot.forEach(async (d) => await deleteDoc(doc(db, "wishlist", d.id)));
+src/hooks/useWishlist.ts:69:      await addDoc(collection(db, "wishlist"), {
+src/modules/anti-fraud/services/auditLogger.ts:2:  addDoc,
+src/modules/anti-fraud/services/auditLogger.ts:28:  await addDoc(
+src/scripts/test-mlm.ts:6:  setDoc, 
+src/scripts/test-mlm.ts:23:  const userRef = doc(db, "users", userId);
+src/scripts/test-mlm.ts:27:    await setDoc(userRef, { 
+src/scripts/test-mlm.ts:43:    const historyRef = collection(db, "dailyPassiveIncomeHistory");
+src/scripts/test-mlm.ts:72:    const txRef = collection(db, `users/${userId}/transactions`);
+src/shared/governance/auditCommission.ts:33:  const logsRef = collection(db, "commissionLogs");
+src/mission-control/scanners/firestoreScanner.ts:32:    regex: /\b(setDoc|addDoc|updateDoc)\b/g,
+src/mission-control/scanners/firestoreScanner.ts:36:    regex: /\bdeleteDoc\b/g,
+src/services/moderationService.ts:2:  doc, getDoc, setDoc, updateDoc, collection, getDocs, addDoc, 
+src/services/moderationService.ts:63:    const docRef = doc(db, 'commentModeration', 'settings');
+src/services/moderationService.ts:70:      await setDoc(docRef, DEFAULT_SETTINGS);
+src/services/moderationService.ts:81:  const docRef = doc(db, 'commentModeration', 'settings');
+src/services/moderationService.ts:97:  const docRef = doc(db, 'commentModeration', 'settings');
+src/services/moderationService.ts:101:  await setDoc(docRef, newSettings, { merge: true });
+src/services/moderationService.ts:118:  await addDoc(collection(db, 'commentAuditLogs'), auditLog);
+src/services/moderationService.ts:122:  const snapshot = await getDocs(collection(db, 'commentRegexRules'));
+src/services/moderationService.ts:127:  const docRef = doc(db, 'commentViolations', userId);

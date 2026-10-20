@@ -1,0 +1,131 @@
+src/firestore/services/adminChatInitializer.ts:27:      const usersCollection = collection(db, "users");
+src/firestore/services/socialService.ts:42:  const qLikes = query(collection(db, "videoCommentLikes"), where("userId", "==", userId));
+src/firestore/services/socialService.ts:131:    await updateDoc(doc(db, "watchEarnVideos", contentId), {
+src/app/admin/activity-tracker/page.tsx:124:      collection(db, "users"),
+src/app/admin/activity-tracker/page.tsx:130:      collection(db, "orders"),
+src/app/admin/activity-tracker/page.tsx:136:      collection(db, "withdrawRequests"),
+src/app/admin/affiliate-settings/page.tsx:101:      batch.set(doc(db, "business_rules", "featureFlags"), {
+src/app/admin/affiliate-settings/page.tsx:107:      batch.set(doc(db, "business_rules", "referral"), {
+src/app/admin/affiliate-settings/page.tsx:113:      batch.set(doc(db, "business_rules", "signup"), { joiningBonus: Number(settings.joiningBonus) }, { merge: true });
+src/app/admin/affiliate-settings/page.tsx:114:      batch.set(doc(db, "business_rules", "creatorEconomy"), { minimumPayout: Number(settings.minimumPayout) }, { merge: true });
+src/app/admin/layout.tsx:41:          collection(db, "users"),
+src/app/admin/live-orders/page.tsx:54:      collection(db, "orders"),
+src/app/admin/media-library/page.tsx:34:      const q = query(collection(db, "watchEarnVideos"), orderBy("createdAt", "desc"));
+src/app/admin/orders/page.tsx:51:      collection(db, "orders"),
+src/app/admin/orders/page.tsx:75:      const orderRef = doc(db, "orders", id);
+src/app/admin/orders/page.tsx:88:          const userProfileRef = doc(db, "users", currentOrder.userId);
+src/app/admin/orders/page.tsx:140:      await deleteDoc(doc(db, "orders", id));
+src/app/admin/reports/page.tsx:66:          collection(db, "orders")
+src/app/admin/reports/page.tsx:69:          collection(db, "users")
+src/app/admin/users/page.tsx:72:      collection(db, "users"),
+src/app/admin/users/page.tsx:123:      const userRef = doc(db, "users", id);
+src/app/admin/users/page.tsx:138:      const userRef = doc(db, "users", id);
+src/app/admin/users/page.tsx:151:      const userRef = doc(db, "users", id);
+src/app/product/[id]/page.tsx:168:      const cartRef = collection(db, "users", auth.currentUser.uid, "cart");
+src/app/mlm/dashboard/page.tsx:49:      const userRef = doc(db, "users", user.uid);
+src/app/mlm/invite/page.tsx:34:        const userRef = doc(db, "users", user.uid);
+src/app/mlm/cashback/page.tsx:187:      const userRef = doc(db, "users", user.uid);
+src/app/mlm/cashback/page.tsx:213:      const transactionsRef = collection(db, "users", user.uid, "cashbackTransactions");
+src/app/mlm/network/page.tsx:66:          collection(db, "users"),
+src/app/mlm/network/page.tsx:93:              collection(db, "users"),
+src/app/mlm/network/page.tsx:118:                collection(db, "users"),
+src/app/mlm/page.tsx:32:          const userRef = doc(db, "users", user.uid);
+src/app/mlm/wallet/history/page.tsx:61:        const txRef = collection(db, "users", user.uid, "walletTransactions");
+src/app/mlm/team-business/page.tsx:38:        const userSnap = await getDoc(doc(db, "users", user.uid));
+src/app/mlm/team-business/page.tsx:50:          collection(db, "users"),
+src/app/mlm/watch-earn/components/ShortsSearch.tsx:32:        const videosRef = collection(db, "watchEarnVideos");
+src/app/mlm/watch-earn/components/ShortsSearch.tsx:45:        const usersRef = collection(db, "users");
+src/app/mlm/watch-earn/components/ShortsProfile.tsx:25:    getDoc(doc(db, "users", user.uid)).then(snap => {
+src/app/mlm/watch-earn/components/ShortsProfile.tsx:42:    getDocs(query(collection(db, "watchEarnVideos"), where("creatorId", "==", user.uid))).then(snap => {
+src/app/mlm/watch-earn/components/ShortsProfile.tsx:47:    getDocs(query(collection(db, "watchVideoLikes"), where("userId", "==", user.uid))).then(async snap => {
+src/app/mlm/watch-earn/components/ShortsProfile.tsx:51:            const vSnap = await getDoc(doc(db, "watchEarnVideos", id));
+src/app/mlm/watch-earn/components/ShortsProfile.tsx:62:            const vSnap = await getDoc(doc(db, "watchEarnVideos", id));
+src/app/mlm/watch-earn/upload/page.tsx:109:          doc(db, "users", currentUser.uid)
+src/app/mlm/watch-earn/repositories/reward.repository.ts:10:    const rewardRef = doc(db, "users", uid, "rewardedVideos", videoId);
+src/app/mlm/watch-earn/audio/[audioId]/page.tsx:29:        collection(db, "watchEarnVideos"),
+src/app/mlm/watch-earn/original/[videoId]/page.tsx:22:      const origDoc = await getDoc(doc(db, "watchEarnVideos", originalVideoId));
+src/app/mlm/watch-earn/original/[videoId]/page.tsx:32:        collection(db, "watchEarnVideos"),
+src/app/mlm/watch-earn/history/page.tsx:39:      const collectionRef = collection(db, "watchEarnVideos");
+src/app/mlm/watch-earn/reward-center/page.tsx:12:      const userRef = doc(db, "users", uid);
+src/app/mlm/watch-earn/uploader/[creatorId]/page.tsx:36:        doc(db, "users", creatorId)
+src/app/cart/page.tsx:36:      const cartRef = collection(db, "users", user.uid, "cart");
+src/app/cart/page.tsx:108:                      <button onClick={() => updateDoc(doc(db, "users", auth.currentUser!.uid, "cart", item.id), { quantity: Math.max(1, item.quantity - 1) })} className="p-1"><Minus size={12}/></button>
+src/app/cart/page.tsx:110:                      <button onClick={() => updateDoc(doc(db, "users", auth.currentUser!.uid, "cart", item.id), { quantity: item.quantity + 1 })} className="p-1"><Plus size={12}/></button>
+src/app/cart/page.tsx:112:                    <button onClick={() => deleteDoc(doc(db, "users", auth.currentUser!.uid, "cart", item.id))} className="text-[var(--color-danger)] p-2"><Trash2 size={16}/></button>
+src/app/account/page.tsx:75:      const docRef = doc(db, "users", currentUser.uid);
+src/app/account/page.tsx:147:      const docRef = doc(db, "users", user.uid);
+src/app/affiliate/page.tsx:77:      const snap = await getDoc(doc(db, "users", user.uid));
+src/app/login/page.tsx:50:    collection(db, "users"),
+src/app/login/page.tsx:130:        const userDoc = await getDoc(doc(db, "users", result.user.uid));
+src/app/verify-email/page.tsx:78:      const userRef = doc(db, "users", uid);
+src/app/address/page.tsx:40:        const addressRef = doc(db, "users", user.uid, "addresses", "default");
+src/app/address/page.tsx:89:      const addressRef = doc(db, "users", user.uid, "addresses", "default");
+src/app/signup/page.tsx:150:      const userRef = doc(db, "users", result.user.uid);
+src/app/checkout/page.tsx:25:        const addrRef = doc(db, "users", user.uid, "addresses", "default");
+src/app/orders/[id]/page.tsx:17:    getDoc(doc(db, "orders", id as string)).then(snap => {
+src/app/orders/[id]/page.tsx:24:      await updateDoc(doc(db, "orders", id as string), { status: "Cancelled" });
+src/app/orders/page.tsx:21:      const q = query(collection(db, "orders"), where("userId", "==", user.uid));
+src/app/followers/page.tsx:27:    const userUnsub = onSnapshot(doc(db, "users", auth.currentUser.uid), (doc) => {
+src/app/followers/page.tsx:32:    const followingRef = collection(db, "users", auth.currentUser.uid, "following");
+src/app/followers/page.tsx:35:        const followedUserRef = doc(db, "users", docSnap.id);
+src/app/profile/[uid]/page.tsx:35:    const docRef = doc(db, "users", uid);
+src/app/track-order/[id]/page.tsx:17:    getDoc(doc(db, "orders", id as string)).then(snap => {
+src/lib/mlm/claimDailyReward.ts:52:    const rewardLogRef = doc(db, "daily_rewards", rewardDocId);
+src/lib/mlm/claimDailyReward.ts:53:    const userRef = doc(db, "users", cleanUserId);
+src/lib/mlm/config/fetchConfigHelper.ts:22:    const referralSnap = await getDoc(doc(db, "business_rules", "referral"));
+src/lib/mlm/config/fetchConfigHelper.ts:23:    const creatorEconomySnap = await getDoc(doc(db, "business_rules", "creatorEconomy"));
+src/lib/mlm/config/fetchConfigHelper.ts:24:    const signupSnap = await getDoc(doc(db, "business_rules", "signup"));
+src/lib/mlm/config/fetchConfigHelper.ts:25:    const featureFlagsSnap = await getDoc(doc(db, "business_rules", "featureFlags"));
+src/lib/mlm/creditWallet.ts:57:  const userRef = doc(db, "users", targetUid);
+src/lib/mlm/financial/processCashback.ts:14:    const userRef = doc(db, "users", userId);
+src/lib/mlm/orders/autoJoinMLMOnPurchase.ts:10:      const userRef = doc(db, "users", userId);
+src/lib/mlm/orders/checkRankUpgrade.ts:56:    const userRef = doc(db, "users", cleanUserId);
+src/lib/mlm/orders/createDailyPassiveIncome.ts:23:    const userRef = doc(db, "users", data.userId);
+src/lib/mlm/orders/createRankReward.ts:96:    const userRef = doc(db, "users", cleanUserId);
+src/lib/mlm/orders/createRankReward.ts:169:      const globalTxRef = doc(db, "transactions", `${cleanUserId}_REWARD_TRX_${cleanRankId}`);
+src/lib/mlm/orders/updateTeamVolume.ts:78:    const userRef = doc(db, "users", cleanUserId);
+src/lib/mlm/orders/processOrderProfit.ts:8:      const orderRef = doc(db, "orders", orderId);
+src/lib/mlm/orders/orderValidation.ts:12:  const orderRef = doc(db, "orders", orderId);
+src/lib/mlm/createPayoutRequest.ts:94:    const payoutDocRef = doc(db, "payout_requests", uniquePayoutId);
+src/lib/mlm/createPayoutRequest.ts:95:    const userRef = doc(db, "users", cleanUserId); 
+src/lib/mlm/createPayoutRequest.ts:96:    const globalLedgerHoldRef = doc(db, "transactions", `${uniquePayoutId}_HOLD_TX`);
+src/lib/mlm/createReferralBonus.ts:75:    const bonusLogRef = doc(db, "referral_bonuses", referralBonusDocId);
+src/lib/mlm/createReferralBonus.ts:76:    const referrerRef = doc(db, "users", cleanReferrerId);
+src/lib/mlm/createReferralBonus.ts:77:    const newUserRef = doc(db, "users", cleanNewUserId);
+src/lib/mlm/createReferralBonus.ts:78:    const orderRef = doc(db, "orders", cleanOrderId);
+src/lib/mlm/createReferralLink.ts:88:    const userRef = doc(db, "users", userId);
+src/lib/mlm/createTaskReward.ts:54:    const rewardLogRef = doc(db, "task_rewards", rewardDocId);
+src/lib/mlm/createTaskReward.ts:55:    const userRef = doc(db, "users", cleanUserId);
+src/lib/mlm/distributeLevelCommission.ts:92:    const buyerRef = doc(db, "users", cleanBuyerUid);
+src/lib/mlm/distributeLevelCommission.ts:144:      const commissionLogRef = doc(db, "commissionLogs", commissionLogId);
+src/lib/mlm/distributeLevelCommission.ts:164:      const uplineUserRef = doc(db, "users", currentLevelUplineUid);
+src/lib/mlm/registerUser.ts:39:  const userRef = doc(db, "users", targetUid);
+src/lib/mlm/updateRank.ts:59:    const userRef = doc(db, "users", cleanUserId);
+src/lib/mlm/updateRank.ts:154:        const globalTxRef = doc(db, "transactions", `${cleanUserId}_RANK_UP_${qualifiedRank}`);
+src/lib/mlm/updateReferralTree.ts:25:        const userRef = doc(db, "users", currentSponsorId);
+src/lib/mlm/withdrawals/approveWithdrawal.ts:26:    const withdrawRef = doc(db, "withdraws", withdrawId);
+src/lib/mlm/withdrawals/approveWithdrawal.ts:37:      const userRef = doc(db, "users", userId);
+src/lib/mlm/withdrawals/approveWithdrawal.ts:68:      collection(db, "user_transactions"),
+src/lib/mlm/withdrawals/getWithdrawalHistory.ts:17:    const withdrawsCollection = collection(db, "withdraws");
+src/lib/mlm/withdrawals/rejectWithdrawal.ts:23:    const withdrawRef = doc(db, "withdraws", data.withdrawId);
+src/lib/mlm/withdrawals/rejectWithdrawal.ts:33:      const userRef = doc(db, "users", withdrawData.userId);
+src/lib/mlm/withdrawals/rejectWithdrawal.ts:65:      collection(db, "user_transactions"),
+src/lib/mlm/withdrawals/requestWithdraw.ts:31:    const userRef = doc(db, "users", data.userId);
+src/lib/mlm/withdrawals/requestWithdraw.ts:32:    const withdrawsCollection = collection(db, "withdraws");
+src/lib/mlm/withdrawals/requestWithdraw.ts:33:    const ledgerCollection = collection(db, "user_transactions"); // Unified Ledger
+src/lib/mlm/watch-earn/fetchWatchVideos.ts:193:      collection(db, "users");
+src/lib/mlm/watch-earn/fetchWatchVideos.ts:823:    const videosRef = collection(db, "watchEarnVideos");
+src/lib/mlm/watch-earn/likeVideoComment.ts:26:    const likeRef = doc(db, "videoCommentLikes", `${data.commentId}_${data.userId}`);
+src/lib/mlm/watch-earn/likeVideoComment.ts:68:    const likeRef = doc(db, "videoCommentLikes", `${data.commentId}_${data.userId}`);
+src/lib/mlm/watch-earn/processRewardUnlock.ts:13:    const userRef = doc(db, "users", userId);
+src/lib/mlm/watch-earn/processRewardUnlock.ts:14:    const cycleRef = doc(db, "rewardCycles", cycleId);
+src/lib/mlm/watch-earn/processRewardUnlock.ts:74:      const txRef = doc(collection(db, "user_transactions"));
+src/lib/mlm/watch-earn/processRewardUnlock.ts:92:        const nextCycleRef = doc(collection(db, "rewardCycles"));
+src/lib/mlm/watch-earn/unlikeVideo.ts:20:    const likeRef = doc(db, "watchVideoLikes", `${videoId}_${userId}`);
+src/lib/mlm/watch-earn/unlikeVideo.ts:23:    const videoRef = doc(db, "watchEarnVideos", videoId);
+src/lib/security/sponsorUpdater.ts:10:  const sponsorRef = doc(db, "users", sponsorUid);
+src/lib/security/updateUplineTree.ts:13:    const uplineRef = doc(db, "users", cleanUplineId);
+src/components/guards/DashboardGuard.tsx:24:      const userDocRef = doc(db, "users", currentUser.uid);
+src/components/social/FollowButton.tsx:101:          doc(db, "users", currentUser.uid)
+src/scripts/test-mlm.ts:23:  const userRef = doc(db, "users", userId);
+src/shared/governance/auditCommission.ts:33:  const logsRef = collection(db, "commissionLogs");

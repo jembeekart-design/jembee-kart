@@ -1,0 +1,152 @@
+import {
+  collection,
+  doc,
+  addDoc,
+  updateDoc,
+  deleteDoc,
+  serverTimestamp,
+  onSnapshot,
+  query,
+  orderBy,
+  where,
+  increment,
+  getDocs
+} from "firebase/firestore";
+import { db } from "@/firebase/config";
+import { FIRESTORE_PATHS } from "@/firestore/collections/firestorePaths";
+import { getModerationSettings } from "@/services/moderationService";
+
+const COMMENTS_COLLECTION = FIRESTORE_PATHS.WATCH_EARN.COMMENTS;
+
+export interface ChatComment {
+  id: string;
+  contentId: string;
+  userId: string;
+  userName: string;
+  text: string;
+  createdAt: any;
+  status?: string;
+  likes?: number;
+  likedByCurrentUser?: boolean;
+}
+
+export async function getComments(contentId: string, userId: string, callback: (comments: any[]) => void) {
+  // Requirement 6: Only approved comments appear in UI.
+  const q = query(
+      collection(db, COMMENTS_COLLECTION), 
+      where("contentId", "==", contentId),
+      where("status", "==", "approved"),
+      orderBy("createdAt", "asc")
+  );
+
+  const qLikes = query(collection(db, "videoCommentLikes"), where("userId", "==", userId));
+
+  let commentsData: any[] = [];
+  let likedCommentIds = new Set<string>();
+
+  function update() {
+    callback(commentsData.map(doc => ({ 
+      ...doc,
+      likedByCurrentUser: likedCommentIds.has(doc.id)
+    })));
+  }
+
+  const unsubComments = onSnapshot(q, (snapshot) => {
+      commentsData = snapshot.docs.map(doc => {
+          const data = doc.data();
+          return { id: doc.id, ...data, likes: data.likes || 0 };
+      });
+      update();
+  });
+
+  const unsubLikes = onSnapshot(qLikes, (snapshot) => {
+      likedCommentIds = new Set(snapshot.docs.map(doc => doc.data().commentId));
+      update();
+  });
+
+  return () => {
+    unsubComments();
+    unsubLikes();
+  };
+}
+
+export async function addComment(contentId: string, userId: string, userName: string, text: string) {
+  // Validate comments before saving them.
+  const settings = await getModerationSettings();
+
+  if (!settings.enabled) {
+    throw new Error("Comment moderation is currently unavailable.");
+  }
+  if (!settings.commentsEnabled) {
+    throw new Error("Comments are currently disabled by administrators.");
+  }
+
+  const trimmedText = text.trim();
+  if (trimmedText.length < settings.minCommentLength) {
+    throw new Error(`Comment is too short (minimum ${settings.minCommentLength} characters).`);
+  }
+  if (trimmedText.length > settings.maxCommentLength) {
+    throw new Error(`Comment exceeds the ${settings.maxCommentLength}-character limit.`);
+  }
+
+  const textToCheck = settings.caseInsensitive ? trimmedText.toLowerCase() : trimmedText;
+
+  // Blocked words cannot be bypassed by adding a whitelisted word.
+  const blockedWords = (settings.blockedWords || []).filter(word => word.trim());
+  const isBlocked = blockedWords.some(word => {
+    const normalizedWord = settings.caseInsensitive ? word.toLowerCase() : word;
+    return settings.blockPartialMatch
+      ? textToCheck.includes(normalizedWord)
+      : textToCheck.split(/\\s+/).includes(normalizedWord);
+  });
+
+  if (isBlocked) {
+    throw new Error(settings.customMessage || "Please avoid abusive language.");
+  }
+
+  // Regex rules are admin-only in Firestore. Do not read them from
+  // the normal user's comment submission flow.
+
+  // Requirement 5: If autoApprove=false: Save status="pending".
+  const isApproved = settings.autoApproveComments;
+
+  const commentRef = await addDoc(collection(db, COMMENTS_COLLECTION), {
+    contentId,
+    userId,
+    userName,
+    text,
+    createdAt: serverTimestamp(),
+    status: isApproved ? 'approved' : 'pending',
+    likes: 0
+  });
+
+  // Requirement 5: Create moderation queue entry.
+  if (!isApproved) {
+     await addDoc(collection(db, "videoCommentReports"), {
+        commentId: commentRef.id,
+        contentId,
+        userId,
+        userName,
+        text,
+        status: "pending",
+        createdAt: serverTimestamp(),
+        reason: "auto-moderation-pending"
+     });
+  }
+
+  // Also increment the aggregated comments counter on the video document so the feed shows updated counts
+  try {
+    await updateDoc(doc(db, "watchEarnVideos", contentId), {
+      comments: increment(1)
+    });
+  } catch (err) {
+    // If increment fails, do not throw — comment is stored; log for debugging.
+    console.error("Failed to increment video comments counter:", err);
+  }
+
+  return commentRef;
+}
+
+export async function deleteComment(commentId: string) {
+  await deleteDoc(doc(db, COMMENTS_COLLECTION, commentId));
+}

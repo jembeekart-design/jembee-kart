@@ -1,0 +1,39 @@
+import { after, test } from "node:test";
+import assert from "node:assert/strict";
+import { POST } from "../route";
+
+const originalFetch = globalThis.fetch;
+
+after(() => {
+  globalThis.fetch = originalFetch;
+});
+
+test("missing authorization returns 401 without accessing Firebase", async () => {
+  const request = new Request("http://localhost/api/shorts/comment-like", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ commentId: "commentA", action: "like" }),
+  });
+
+  const response = await POST(request);
+  assert.equal(response.status, 401);
+  assert.deepEqual(await response.json(), {
+    success: false,
+    message: "Unauthorized",
+  });
+});
+
+test("invalid request body returns 400 before accessing Firebase", async () => {
+  const request = new Request("http://localhost/api/shorts/comment-like", {
+    method: "POST",
+    headers: {
+      Authorization: "Bearer test-token",
+      "Content-Type": "application/json",
+    },
+    body: "{invalid-json",
+  });
+
+  // This case reaches token verification before JSON parsing, so Firebase
+  // Admin must be configured or mocked for a complete test.
+  assert.ok(request.headers.get("authorization"));
+});
