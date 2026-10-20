@@ -28,7 +28,12 @@ function LoginCard() {
 
   const searchParams = useSearchParams();
   const referralCode = searchParams.get("ref") || "";
-  const redirect = searchParams.get("redirect") || "/";
+  const isJembeeVideoApp =
+    typeof navigator !== "undefined" &&
+    navigator.userAgent.includes("JembeeVideoApp/1.0");
+  const redirect =
+    searchParams.get("redirect") ||
+    (isJembeeVideoApp ? "/mlm/watch-earn" : "/");
 
   /* ======================================================
   STEP 1: ONLY PASSIVE CAPTURE (Safe Transfer to Signup Engine)
