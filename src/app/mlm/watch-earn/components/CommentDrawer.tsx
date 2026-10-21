@@ -155,6 +155,9 @@ export default function CommentDrawer({ open, onClose, videoId, onCommentAdded }
         left-0
         right-0
         z-[999]
+        max-h-[85dvh]
+        overflow-y-auto
+        pb-[env(safe-area-inset-bottom)]
         rounded-t-[35px]
         bg-gray-950/80
         backdrop-blur-md
@@ -186,7 +189,7 @@ export default function CommentDrawer({ open, onClose, videoId, onCommentAdded }
           className="
             text-lg
             font-black
-            text-[var(--button-text-color)]
+            text-white
           "
         >
 
@@ -198,7 +201,7 @@ export default function CommentDrawer({ open, onClose, videoId, onCommentAdded }
           onClick={onClose}
           className="
             text-2xl
-            text-[var(--button-text-color)]
+            text-white
           "
         >
 
@@ -244,7 +247,7 @@ export default function CommentDrawer({ open, onClose, videoId, onCommentAdded }
                     className="
                       text-sm
                       font-black
-                      text-[var(--button-text-color)]
+                      text-white
                     "
                   >
 
@@ -331,11 +334,13 @@ export default function CommentDrawer({ open, onClose, videoId, onCommentAdded }
             rounded-full
             border
             border-[var(--color-border)]/10
-            bg-[var(--color-card-background)]/5
+            bg-[#111827]
             px-5
             py-3
             text-sm
-            text-[var(--button-text-color)]
+            text-white
+            placeholder:text-gray-400
+            caret-white
             outline-none
           "
         />
@@ -352,7 +357,7 @@ export default function CommentDrawer({ open, onClose, videoId, onCommentAdded }
             bg-gradient-to-r
             from-[var(--color-primary-button)]
             to-[var(--color-primary-button)]
-            text-[var(--button-text-color)]
+            text-white
           "
         >
 
