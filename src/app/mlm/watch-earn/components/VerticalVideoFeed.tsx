@@ -260,7 +260,25 @@ export default function VerticalVideoFeed({
     };
 
     try {
-      if (navigator.share) {
+      const nativeBridge = (
+        window as Window & {
+          JembeeNativeShare?: {
+            shareVideo: (url: string, caption: string) => void;
+          };
+        }
+      ).JembeeNativeShare;
+
+      const isNativeApp =
+        navigator.userAgent.includes("JembeeVideoApp/1.0");
+
+      if (isNativeApp && nativeBridge?.shareVideo) {
+        nativeBridge.shareVideo(
+          video.video,
+          video.caption || ""
+        );
+
+        setToastMessage("Preparing video to share.");
+      } else if (navigator.share) {
         await navigator.share(shareData);
 
         setToastMessage(
