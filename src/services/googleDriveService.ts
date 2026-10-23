@@ -219,12 +219,13 @@ export async function getDriveFileMetadata(
   size: number;
   name: string;
   parents: string[];
+  thumbnailLink?: string;
 }> {
   const drive = getDriveClient();
 
   const response = await drive.files.get({
     fileId: fileId.trim(),
-    fields: "mimeType,size,name,parents",
+    fields: "mimeType,size,name,parents,thumbnailLink",
   });
 
   if (
@@ -242,6 +243,7 @@ export async function getDriveFileMetadata(
     size: parseInt(response.data.size, 10),
     name: response.data.name,
     parents: response.data.parents || [],
+    thumbnailLink: response.data.thumbnailLink || undefined,
   };
 }
 

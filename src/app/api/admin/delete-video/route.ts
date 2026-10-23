@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import { getAdminDb, getAdminAuth } from "@/firebase/admin";
 import { v2 as cloudinary } from "cloudinary";
+import { deleteDriveFile } from "@/services/googleDriveService";
 
 // Configure Cloudinary
 cloudinary.config({
@@ -13,7 +14,7 @@ export async function POST(req: Request) {
   try {
     const adminDb = getAdminDb();
     const adminAuth = getAdminAuth();
-    const { videoId, publicId, token } = await req.json();
+    const { videoId, token } = await req.json();
     // 1. Verify Admin Role
     const decodedToken = await adminAuth.verifyIdToken(token);
     
@@ -35,14 +36,32 @@ export async function POST(req: Request) {
         return NextResponse.json({ success: false, message: "Video not found" }, { status: 404 });
     }
 
-    // 3. Delete Cloudinary Asset FIRST
-    if (publicId) {
+    // 3. Delete the stored asset from its actual storage provider.
+    const videoData = videoDoc.data() || {};
+    const driveFileId =
+      typeof videoData.driveFileId === "string"
+        ? videoData.driveFileId.trim()
+        : "";
+    const storedPublicId =
+      typeof videoData.publicId === "string"
+        ? videoData.publicId.trim()
+        : "";
+
+    if (driveFileId) {
       try {
-        await cloudinary.uploader.destroy(publicId, { resource_type: "video" });
-        // NOTE: If thumbnail is stored separately with a known public_id pattern, 
-        // delete it here as well before proceeding.
+        await deleteDriveFile(driveFileId);
+      } catch (driveError) {
+        console.error("Drive deletion failed; video was not deleted:", driveError);
+        return NextResponse.json(
+          { success: false, message: "Drive asset removal failed. Video was not deleted." },
+          { status: 500 }
+        );
+      }
+    } else if (storedPublicId) {
+      try {
+        await cloudinary.uploader.destroy(storedPublicId, { resource_type: "video" });
       } catch (cloudinaryError) {
-        console.error("Cloudinary Deletion Failed, aborting Firestore deletion:", cloudinaryError);
+        console.error("Cloudinary deletion failed; video was not deleted:", cloudinaryError);
         return NextResponse.json(
           { success: false, message: "Cloudinary asset removal failed. Video was not deleted." },
           { status: 500 }
