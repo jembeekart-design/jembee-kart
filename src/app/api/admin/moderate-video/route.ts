@@ -2,14 +2,7 @@ import { NextResponse } from "next/server";
 import { FieldValue } from "firebase-admin/firestore";
 
 import { getAdminAuth, getAdminDb } from "@/firebase/admin";
-import {
-  deleteDriveFile,
-  downloadDriveFile,
-} from "@/services/googleDriveService";
-import {
-  deleteCloudinaryVideo,
-  uploadVideoStreamToCloudinary,
-} from "@/services/cloudinaryServerService";
+import { deleteDriveFile } from "@/services/googleDriveService";
 
 export const runtime = "nodejs";
 
@@ -68,7 +61,6 @@ async function verifyAdmin(req: Request): Promise<string> {
 
 export async function POST(req: Request) {
   let submissionId = "";
-  let uploadedCloudinaryPublicId = "";
 
   try {
     const adminId = await verifyAdmin(req);
@@ -222,66 +214,23 @@ export async function POST(req: Request) {
       );
     }
 
-    let cloudinaryResult:
-      | Awaited<
-          ReturnType<
-            typeof uploadVideoStreamToCloudinary
-          >
-        >
-      | null = null;
+    let createdVideoDocument = false;
 
     try {
-      const driveVideo =
-        await downloadDriveFile(driveFileId);
-
-      const uploadPreset =
-        submission.isEnhanced === true
-          ? "jembeekart_enhanced"
-          : "jembeekart";
-
-      cloudinaryResult =
-        await uploadVideoStreamToCloudinary(
-          driveVideo,
-          {
-            folder:
-              "jembeekart/watch-earn",
-            publicId:
-              `moderation_${submissionId}`,
-            uploadPreset,
-          }
-        );
-
-      uploadedCloudinaryPublicId =
-        cloudinaryResult.publicId;
-
       const finalVideoUrl =
-        submission.isEnhanced === true &&
-        cloudinaryResult.eagerSecureUrl
-          ? cloudinaryResult.eagerSecureUrl
-          : cloudinaryResult.secureUrl;
-
-      const finalIsEnhanced =
-        submission.isEnhanced === true &&
-        Boolean(
-          cloudinaryResult.eagerSecureUrl
-        );
+        `/api/shorts/video-stream/${encodeURIComponent(submissionId)}`;
 
       const thumbnailUrl =
-        finalVideoUrl
-          .replace(
-            "/video/upload/",
-            "/video/upload/so_1/"
-          )
-          .replace(
-            /\.mp4($|\?)/i,
-            ".jpg$1"
-          );
+        `/api/shorts/video-thumbnail/${encodeURIComponent(submissionId)}`;
+
+      // Drive-hosted videos are not Cloudinary-enhanced.
+      const finalIsEnhanced = false;
 
       const musicId =
         typeof submission.music === "string" &&
         submission.music.trim()
           ? submission.music
-          : `original-${cloudinaryResult.publicId}`;
+          : `original-${submissionId}`;
 
       const rewardCoins =
         submission.sponsor === true
@@ -330,8 +279,7 @@ export async function POST(req: Request) {
         sponsor:
           submission.sponsor === true,
 
-        publicId:
-          cloudinaryResult.publicId,
+        driveFileId,
         video: finalVideoUrl,
         thumbnail: thumbnailUrl,
 
@@ -355,6 +303,7 @@ export async function POST(req: Request) {
         moderationCheckedAt:
           FieldValue.serverTimestamp(),
       });
+      createdVideoDocument = true;
 
       await submissionRef.update({
         status: "approved",
@@ -365,19 +314,7 @@ export async function POST(req: Request) {
         approvedAt:
           FieldValue.serverTimestamp(),
         watchEarnVideoId: submissionId,
-        cloudinaryPublicId:
-          cloudinaryResult.publicId,
-        cloudinaryUrl: finalVideoUrl,
       });
-
-      try {
-        await deleteDriveFile(driveFileId);
-      } catch (driveCleanupError) {
-        console.error(
-          "Drive cleanup failed after approval:",
-          driveCleanupError
-        );
-      }
 
       return NextResponse.json({
         success: true,
@@ -390,15 +327,16 @@ export async function POST(req: Request) {
         coins: rewardCoins,
       });
     } catch (processingError) {
-      if (uploadedCloudinaryPublicId) {
+      if (createdVideoDocument) {
         try {
-          await deleteCloudinaryVideo(
-            uploadedCloudinaryPublicId
-          );
-        } catch (cleanupError) {
+          await adminDb
+            .collection("watchEarnVideos")
+            .doc(submissionId)
+            .delete();
+        } catch (rollbackError) {
           console.error(
-            "Cloudinary cleanup failed:",
-            cleanupError
+            "Failed to roll back newly created video document:",
+            rollbackError
           );
         }
       }

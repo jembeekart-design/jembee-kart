@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import { getAdminDb, getAdminAuth } from "@/firebase/admin";
 import { v2 as cloudinary } from "cloudinary";
+import { deleteDriveFile } from "@/services/googleDriveService";
 
 // Configure Cloudinary securely
 cloudinary.config({
@@ -37,11 +38,40 @@ export async function POST(req: Request) {
       return NextResponse.json({ success: false, message: "Unauthorized: You do not own this video" }, { status: 403 });
     }
 
-    // 4. Delete Cloudinary Asset
-    const publicId = videoData?.publicId;
-    if (publicId) {
+    // 4. Delete the stored asset from its actual storage provider
+    const driveFileId =
+      typeof videoData?.driveFileId === "string"
+        ? videoData.driveFileId.trim()
+        : "";
+    const publicId =
+      typeof videoData?.publicId === "string"
+        ? videoData.publicId.trim()
+        : "";
+
+    if (driveFileId) {
       try {
-        await cloudinary.uploader.destroy(publicId, { resource_type: "video" });
+        await deleteDriveFile(driveFileId);
+      } catch (driveError) {
+        console.error("Drive deletion failed:", driveError);
+        return NextResponse.json(
+          { success: false, message: "Drive asset removal failed." },
+          { status: 500 }
+        );
+      }
+    } else if (publicId) {
+      try {
+        const result = await cloudinary.uploader.destroy(
+          publicId,
+          { resource_type: "video" }
+        );
+
+        if (result.result !== "ok" && result.result !== "not found") {
+          console.error("Unexpected Cloudinary deletion result:", result.result);
+          return NextResponse.json(
+            { success: false, message: "Cloudinary asset removal failed." },
+            { status: 500 }
+          );
+        }
       } catch (cloudinaryError) {
         console.error("Cloudinary Deletion Failed:", cloudinaryError);
         return NextResponse.json(
