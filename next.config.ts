@@ -1,10 +1,6 @@
 import type { NextConfig } from "next";
 
-const nextConfig: NextConfig = {
-  typescript: {
-    ignoreBuildErrors: true,
-  },
-  experimental: {
+const nextConfig: NextConfig = {experimental: {
     webpackMemoryOptimizations: true,
   },
   images: {
