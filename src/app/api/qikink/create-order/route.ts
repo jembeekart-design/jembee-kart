@@ -1,6 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
 import { getAdminAuth, getAdminDb } from "@/firebase/admin";
-import { getQikinkConfig } from "@/lib/server/qikinkSettings";
 
 /**
  * Create a Qikink order only for an authenticated customer and a server-priced product.
@@ -64,13 +63,17 @@ export async function POST(req: NextRequest) {
     }
     const total = Math.round(price * qty * 100) / 100;
 
-    const config = await getQikinkConfig();
-    if (!config) return NextResponse.json({ success: false, error: "Qikink is not configured" }, { status: 503 });
+    const baseUrl = process.env.QIKINK_BASE_URL;
+    const clientId = process.env.QIKINK_CLIENT_ID;
+    const clientSecret = process.env.QIKINK_CLIENT_SECRET;
+    if (!baseUrl || !clientId || !clientSecret) {
+      return NextResponse.json({ success: false, error: "Qikink is not configured" }, { status: 503 });
+    }
 
-    const tokenResponse = await fetch(`${config.baseUrl}/api/token`, {
+    const tokenResponse = await fetch(`${baseUrl}/api/token`, {
       method: "POST",
       headers: { "Content-Type": "application/x-www-form-urlencoded" },
-      body: new URLSearchParams({ ClientId: config.clientId, client_secret: config.clientSecret }),
+      body: new URLSearchParams({ ClientId: clientId, client_secret: clientSecret }),
       cache: "no-store",
     });
     if (!tokenResponse.ok) {
@@ -95,9 +98,9 @@ export async function POST(req: NextRequest) {
         city: city.trim(), zip: pincode.trim(), province: state.trim(), country_code: "IN",
       },
     };
-    const response = await fetch(`${config.baseUrl}/api/order/create`, {
+    const response = await fetch(`${baseUrl}/api/order/create`, {
       method: "POST",
-      headers: { "Content-Type": "application/json", ClientId: config.clientId, Accesstoken: tokenData.Accesstoken },
+      headers: { "Content-Type": "application/json", ClientId: clientId, Accesstoken: tokenData.Accesstoken },
       body: JSON.stringify(payload), cache: "no-store",
     });
     const result = await response.json().catch(() => null);

@@ -55,7 +55,7 @@ export const DEFAULT_BUSINESS_RULES: BusinessRulesConfig = {
   featureFlags: {
     ecommerceEnabled: true,
     referralEnabled: true,
-    watchEarnEnabled: false,
+    watchEarnEnabled: true,
     creatorEconomyEnabled: true,
     cashbackEnabled: true,
     adsEnabled: true,

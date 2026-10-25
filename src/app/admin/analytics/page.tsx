@@ -18,22 +18,22 @@ export default function AnalyticsPage() {
   const stats = [
     {
       title: "Total Sales",
-      value: "₹1,25,000",
+      value: "Not connected",
       icon: IndianRupee
     },
     {
       title: "Total Orders",
-      value: "1,240",
+      value: "Not connected",
       icon: ShoppingCart
     },
     {
       title: "Total Users",
-      value: "3,420",
+      value: "Not connected",
       icon: Users
     },
     {
       title: "Products",
-      value: "540",
+      value: "Not connected",
       icon: Package
     }
   ];
@@ -41,6 +41,9 @@ export default function AnalyticsPage() {
   return (
 
     <main className="min-h-screen bg-[var(--color-page-background)] p-4 text-[var(--button-text-color)]">
+      <div className="mb-4 rounded-xl border border-amber-400/50 bg-amber-500/10 p-3 text-sm">
+        Live analytics data is not wired to these cards yet. Values are intentionally not presented as real business metrics.
+      </div>
 
       {/* HEADER */}
 

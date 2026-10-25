@@ -100,6 +100,9 @@ export default function SEOAIPage() {
   return (
 
     <main className="min-h-screen bg-[var(--color-page-background)] p-4 text-[var(--button-text-color)]">
+      <div className="mb-4 rounded-xl border border-amber-400/50 bg-amber-500/10 p-3 text-sm">
+        Template mode: titles, descriptions and keywords are generated from fixed patterns, not an AI service.
+      </div>
 
       {/* HEADER */}
 
@@ -114,7 +117,7 @@ export default function SEOAIPage() {
         <div>
 
           <h1 className="text-3xl font-black">
-            AI SEO Generator
+            SEO Template Generator
           </h1>
 
           <p className="mt-1 text-sm text-[var(--muted-text-color)]">
