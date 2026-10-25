@@ -5,7 +5,7 @@ import {
   Home,
   Compass,
   Plus,
-  WalletCards,
+  Share2,
   User,
 } from "lucide-react";
 import { useRouter } from "next/navigation";
@@ -160,7 +160,7 @@ export default function BottomQuickActions({
         {/* EARN */}
         <button
           type="button"
-          onClick={() => go("/mlm")}
+          onClick={() => go("/share")}
           className="
             relative
             flex
@@ -171,26 +171,13 @@ export default function BottomQuickActions({
             text-white/90
           "
         >
-          <WalletCards
+          <Share2
             size={22}
             strokeWidth={2.1}
           />
 
-          <span
-            className="
-              absolute
-              right-[22%]
-              top-[-2px]
-              h-[8px]
-              w-[8px]
-              rounded-full
-              bg-pink-500
-              shadow-[0_0_8px_rgba(236,72,153,0.9)]
-            "
-          />
-
           <span className="text-[11px] font-semibold">
-            Earn
+            Share
           </span>
         </button>
 

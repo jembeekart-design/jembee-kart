@@ -1,34 +1,44 @@
-import { NextResponse } from 'next/server';
-import { uploadToCloudinary } from '@/lib/cloudinary';
-import { getAdminDb } from '@/firebase/admin';
+import { NextResponse } from "next/server";
+import { getAdminAuth, getAdminDb } from "@/firebase/admin";
+import { uploadToCloudinary } from "@/lib/cloudinary";
+
+const MAX_UPLOAD_BYTES = 100 * 1024 * 1024;
+const ALLOWED_TYPES = new Set(["video/mp4", "video/webm", "video/quicktime"]);
 
 export async function POST(req: Request) {
   try {
-    const adminDb = getAdminDb();
+    const authHeader = req.headers.get("authorization");
+    if (!authHeader?.startsWith("Bearer ")) {
+      return NextResponse.json({ success: false, error: "Unauthorized" }, { status: 401 });
+    }
+    const decoded = await getAdminAuth().verifyIdToken(authHeader.slice(7).trim());
     const formData = await req.formData();
-    const file = formData.get('file') as File;
-    const userId = formData.get('userId') as string;
-
-    if (!file) {
-      return NextResponse.json({ success: false, error: 'Invalid input' }, { status: 400 });
+    const fileValue = formData.get("file");
+    if (!(fileValue instanceof File)) {
+      return NextResponse.json({ success: false, error: "Video file is required" }, { status: 400 });
+    }
+    if (fileValue.size <= 0 || fileValue.size > MAX_UPLOAD_BYTES) {
+      return NextResponse.json({ success: false, error: "Video file size is invalid" }, { status: 413 });
+    }
+    if (!ALLOWED_TYPES.has(fileValue.type)) {
+      return NextResponse.json({ success: false, error: "Unsupported video type" }, { status: 415 });
     }
 
-    // Upload recorded video directly to Cloudinary
-    const cloudinaryResponse = await uploadToCloudinary(file, 'video');
-
-    // Save to Firestore
-    await adminDb.collection('watchEarnVideos').add({
+    // Bind ownership to the verified Firebase identity; ignore client-supplied userId.
+    const userId = decoded.uid;
+    const cloudinaryResponse = await uploadToCloudinary(fileValue, "video");
+    const adminDb = getAdminDb();
+    await adminDb.collection("watchEarnVideos").add({
       userId,
       video: cloudinaryResponse.secure_url,
-      createdAt: Date.now()
+      status: "pending",
+      coins: 0,
+      pendingCoins: 0,
+      createdAt: Date.now(),
     });
-
-    return NextResponse.json({ success: true, videoUrl: cloudinaryResponse.secure_url });
+    return NextResponse.json({ success: true, videoUrl: cloudinaryResponse.secure_url }, { status: 201 });
   } catch (error) {
-    console.error('Merge API Error:', error);
-    return NextResponse.json(
-      { success: false, error: (error as Error).message },
-      { status: 500 }
-    );
+    console.error("MLM merge upload failed", error instanceof Error ? error.message : "unknown");
+    return NextResponse.json({ success: false, error: "Unable to upload video" }, { status: 500 });
   }
 }

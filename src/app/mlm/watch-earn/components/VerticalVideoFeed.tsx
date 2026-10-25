@@ -32,7 +32,7 @@ import { shareVideo } from "@/lib/mlm/watch-earn/shareVideo";
 import { reportVideo } from "@/lib/mlm/watch-earn/reportVideo";
 import { setVideoPreference } from "@/lib/mlm/watch-earn/setVideoPreference";
 import { useRequireAuth } from "@/hooks/useRequireAuth";
-import { collection, doc, getDoc, onSnapshot } from "firebase/firestore";
+import { collection, onSnapshot } from "firebase/firestore";
 
 export default function VerticalVideoFeed({
   activeTab
@@ -42,7 +42,6 @@ export default function VerticalVideoFeed({
   const { requireAuth, isAuthenticated } = useRequireAuth();
 
   const [followingList, setFollowingList] = useState<string[]>([]);
-  const [notInterestedIds, setNotInterestedIds] = useState<string[]>([]);
   const [videos, setVideos] = useState<WatchVideo[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
@@ -68,54 +67,14 @@ export default function VerticalVideoFeed({
   }, [isAuthenticated]);
 
   const filteredVideos = useMemo(() => {
-    const visibleVideos = videos.filter(
-      video => !notInterestedIds.includes(video.id)
-    );
-
     if (activeTab === 'following') {
-      return visibleVideos.filter(
-        video => followingList.includes(video.creatorId)
+      return videos.filter(
+        v => followingList.includes(v.creatorId)
       );
     }
 
-    return visibleVideos;
-  }, [activeTab, videos, followingList, notInterestedIds]);
-
-  useEffect(() => {
-    const user = auth.currentUser;
-
-    if (!isAuthenticated || !user) {
-      setNotInterestedIds([]);
-      return;
-    }
-
-    let cancelled = false;
-
-    async function loadNotInterested() {
-      try {
-        const preferenceRef = doc(
-          db,
-          "notInterestedWatchVideos",
-          user!.uid
-        );
-        const videosCollection = collection(preferenceRef, "videos");
-        const { getDocs } = await import("firebase/firestore");
-        const snapshot = await getDocs(videosCollection);
-
-        if (!cancelled) {
-          setNotInterestedIds(snapshot.docs.map(item => item.id));
-        }
-      } catch (error) {
-        console.error("Failed to load video preferences:", error);
-      }
-    }
-
-    loadNotInterested();
-
-    return () => {
-      cancelled = true;
-    };
-  }, [isAuthenticated]);
+    return videos;
+  }, [activeTab, videos, followingList]);
 
   useEffect(() => {
     let isMounted = true;
@@ -205,6 +164,16 @@ export default function VerticalVideoFeed({
     }
   }, [videos, activeVideoId]);
 
+  // Open the specific video when a shared link contains ?v=<videoId>.
+  useEffect(() => {
+    if (!videos.length || typeof window === "undefined") return;
+    const targetId = new URLSearchParams(window.location.search).get("v");
+    if (!targetId || !videos.some(video => video.id === targetId)) return;
+    setActiveVideoId(targetId);
+    const target = containerRef.current?.querySelector(`[data-video-id="${CSS.escape(targetId)}"]`);
+    target?.scrollIntoView({ behavior: "auto", block: "start" });
+  }, [videos]);
+
   useEffect(() => {
     const container = containerRef.current;
 
@@ -256,29 +225,11 @@ export default function VerticalVideoFeed({
       url:
         window.location.origin +
         '/mlm/watch-earn?v=' +
-        video.id,
+        video.id + (auth.currentUser ? '&shareBy=' + encodeURIComponent(auth.currentUser.uid) : ''),
     };
 
     try {
-      const nativeBridge = (
-        window as Window & {
-          JembeeNativeShare?: {
-            shareVideo: (url: string, caption: string) => void;
-          };
-        }
-      ).JembeeNativeShare;
-
-      const isNativeApp =
-        navigator.userAgent.includes("JembeeVideoApp/1.0");
-
-      if (isNativeApp && nativeBridge?.shareVideo) {
-        nativeBridge.shareVideo(
-          video.video,
-          video.caption || ""
-        );
-
-        setToastMessage("Preparing video to share.");
-      } else if (navigator.share) {
+      if (navigator.share) {
         await navigator.share(shareData);
 
         setToastMessage(
@@ -292,38 +243,23 @@ export default function VerticalVideoFeed({
         setToastMessage("Link copied.");
       }
 
-      // Persist share via existing service
-      // (if user is authenticated)
+      // Record a share event for the authenticated account. Platform is
+      // recorded as "native" because navigator.share does not reveal which app
+      // the person selected. The URL carries attribution for in-app watch time.
       try {
-        const uid =
-          auth.currentUser?.uid;
-
-        if (uid) {
-          const res = await shareVideo({
-            videoId: video.id,
-            userId: uid
+        const user = auth.currentUser;
+        if (user) {
+          const token = await user.getIdToken();
+          await fetch("/api/share-center", {
+            method: "POST",
+            headers: { "Content-Type": "application/json", Authorization: `Bearer ${token}` },
+            body: JSON.stringify({ type: "share", videoId: video.id, platform: typeof navigator.share === "function" ? "native" : "copy", eventId: crypto.randomUUID() }),
           });
-
-          if (res && res.success) {
-            // Update local state to reflect increment
-            setVideos(prev =>
-              prev.map(v =>
-                v.id === video.id
-                  ? {
-                      ...v,
-                      shares: v.shares + 1
-                    }
-                  : v
-              )
-            );
-          }
+          const res = await shareVideo({ videoId: video.id, userId: user.uid });
+          if (res?.success) setVideos(prev => prev.map(v => v.id === video.id ? { ...v, shares: v.shares + 1 } : v));
         }
       } catch (err) {
-        // Log and continue; UI already shows toast
-        console.error(
-          "shareVideo error:",
-          err
-        );
+        console.error("Share event could not be recorded", err);
       }
     } catch {
       // Fail silently without console logging
@@ -392,6 +328,7 @@ export default function VerticalVideoFeed({
                 videoUrl={
                   video.video
                 }
+                videoId={video.id}
 
                 isMuted={isMuted}
 
@@ -590,9 +527,6 @@ export default function VerticalVideoFeed({
                   requireAuth(async () => {
                     const res = await setVideoPreference(video.id, 'notInterested');
                     if (res.success) {
-                      setNotInterestedIds(prev =>
-                        prev.includes(video.id) ? prev : [...prev, video.id]
-                      );
                       setToastMessage("Video marked as not interested.");
                     } else {
                       setToastMessage(res.message || "Failed to update preference.");

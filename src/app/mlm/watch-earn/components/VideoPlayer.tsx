@@ -1,5 +1,6 @@
 "use client";
 
+import { auth } from "@/firebase/config";
 import {
   useEffect,
   useRef,
@@ -9,6 +10,7 @@ import {
 
 interface VideoPlayerProps {
   videoUrl: string;
+  videoId?: string;
   isMuted?: boolean;
   active?: boolean;
   playbackRate?: number;
@@ -16,6 +18,7 @@ interface VideoPlayerProps {
 
 export default function VideoPlayer({
   videoUrl,
+  videoId,
   isMuted = true,
   active = false,
   playbackRate = 1,
@@ -23,39 +26,20 @@ export default function VideoPlayer({
   const videoRef = useRef<HTMLVideoElement>(null);
   const progressBarRef = useRef<HTMLDivElement>(null);
 
-  const optimizedVideoUrl = (() => {
-    try {
-      const url = new URL(videoUrl);
-
-      if (
-        url.hostname !== "res.cloudinary.com" ||
-        !url.pathname.includes("/video/upload/")
-      ) {
-        return videoUrl;
-      }
-
-      const marker = "/video/upload/";
-      const index = url.pathname.indexOf(marker);
-      const before = url.pathname.slice(0, index + marker.length);
-      const after = url.pathname.slice(index + marker.length);
-
-      if (/^(q_auto|f_auto)(,|\/)/.test(after)) {
-        return videoUrl;
-      }
-
-      url.pathname = before + "q_auto,f_auto/" + after;
-      return url.toString();
-    } catch {
-      return videoUrl;
-    }
-  })();
-
   const [progress, setProgress] = useState(0);
   const [isPlaying, setIsPlaying] = useState(false);
   const [duration, setDuration] = useState(0);
   const [currentTime, setCurrentTime] = useState(0);
   const [isDragging, setIsDragging] = useState(false);
   const [showControls, setShowControls] = useState(false);
+  const watchSessionId = useRef("");
+  const lastMediaTime = useRef(0);
+  const pendingWatchSeconds = useRef(0);
+  const watchDisabled = useRef(false);
+
+  useEffect(() => {
+    watchSessionId.current = typeof crypto !== "undefined" && "randomUUID" in crypto ? crypto.randomUUID() : `${Date.now()}-${Math.random().toString(36).slice(2)}`;
+  }, [videoUrl]);
 
   useEffect(() => {
     const video = videoRef.current;
@@ -68,6 +52,9 @@ export default function VideoPlayer({
     if (!video) return;
 
     setProgress(0);
+    lastMediaTime.current = 0;
+    pendingWatchSeconds.current = 0;
+    watchDisabled.current = false;
 
     if (active) {
       video.play().catch(() => {});
@@ -91,12 +78,43 @@ export default function VideoPlayer({
     }
   };
 
-  const handleTimeUpdate = () => {
-    if (videoRef.current && !isDragging) {
-      setCurrentTime(videoRef.current.currentTime);
-      if (duration === 0 && videoRef.current.duration > 0) {
-        setDuration(videoRef.current.duration);
-      }
+  const handleTimeUpdate = async () => {
+    const video = videoRef.current;
+    if (!video) return;
+    if (!isDragging) setCurrentTime(video.currentTime);
+    if (duration === 0 && video.duration > 0) setDuration(video.duration);
+
+    // Count only the first forward playback pass of a video for this mounted
+    // player. A loop/rewind disables further counting; the API also deduplicates
+    // by viewer + video so reopening the same video cannot count it again.
+    if (!active || video.paused || watchDisabled.current || !auth.currentUser) {
+      lastMediaTime.current = video.currentTime;
+      return;
+    }
+    const current = video.currentTime;
+    const previous = lastMediaTime.current;
+    lastMediaTime.current = current;
+    if (current + 0.15 < previous) {
+      watchDisabled.current = true;
+      return;
+    }
+    const delta = current - previous;
+    if (delta > 0 && delta < 2) pendingWatchSeconds.current += delta;
+    if (pendingWatchSeconds.current >= 15) {
+      const seconds = 15;
+      pendingWatchSeconds.current -= seconds;
+      try {
+        const user = auth.currentUser;
+        if (!user) return;
+        const token = await user.getIdToken();
+        const shareBy = new URLSearchParams(window.location.search).get("shareBy");
+        if (!shareBy || !/^[a-zA-Z0-9_-]{1,180}$/.test(shareBy)) return;
+        await fetch("/api/share-center", {
+          method: "POST",
+          headers: { "Content-Type": "application/json", Authorization: `Bearer ${token}` },
+          body: JSON.stringify({ type: "watch", videoId: videoId || videoUrl.split("/").pop()?.split("?")[0] || "video", seconds, sessionId: watchSessionId.current, shareOwnerId: shareBy || user.uid }),
+        });
+      } catch (error) { console.error("Watch time event failed", error); }
     }
   };
 
@@ -144,8 +162,7 @@ export default function VideoPlayer({
 
       <video
         ref={videoRef}
-        src={optimizedVideoUrl}
-        preload={active ? "auto" : "none"}
+        src={videoUrl}
         muted={isMuted}
         loop
         playsInline

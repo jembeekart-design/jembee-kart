@@ -20,7 +20,11 @@ import {
   Shield,
   User,
   Wallet,
-  Camera
+  Camera,
+  Share2,
+  Video,
+  CalendarDays,
+  ReceiptText
 } from "lucide-react";
 
 import Header from "@/components/navigation/Header";
@@ -333,6 +337,24 @@ export default function AccountPage() {
           </div>
 
         </div>
+      </section>
+
+      {/* ======================================================
+      EARNINGS & PAYMENTS — UI entry point
+      ====================================================== */}
+      <section className="mt-6 px-4">
+        <Link href="/account/earnings" className="group flex items-center justify-between rounded-[30px] border border-[var(--color-primary-button)]/15 bg-[var(--color-card-background)] p-5 shadow-sm transition-all duration-300 hover:shadow-md">
+          <div className="flex min-w-0 items-center gap-4">
+            <div className="flex h-14 w-14 shrink-0 items-center justify-center rounded-2xl bg-[var(--color-primary-button)]/10 text-[var(--color-primary-button)]">
+              <Wallet size={26} />
+            </div>
+            <div className="min-w-0">
+              <h3 className="text-lg font-black text-[var(--text-primary)]">Earnings &amp; Payments</h3>
+              <p className="mt-1 text-sm text-[var(--text-secondary)]">Share earnings, creator earnings and their histories</p>
+            </div>
+          </div>
+          <ChevronRight size={22} className="shrink-0 text-[var(--text-secondary)] transition-transform group-hover:translate-x-1" />
+        </Link>
       </section>
 
       {/* ======================================================
