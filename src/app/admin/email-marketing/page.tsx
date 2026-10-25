@@ -50,6 +50,9 @@ export default function EmailMarketingPage() {
   return (
 
     <main className="min-h-screen bg-[var(--color-page-background)] p-4 text-[var(--button-text-color)]">
+      <div className="mb-4 rounded-xl border border-amber-400/50 bg-amber-500/10 p-3 text-sm">
+        Campaign entries shown here are sample data. No live email delivery is confirmed by this page.
+      </div>
 
       {/* HEADER */}
 

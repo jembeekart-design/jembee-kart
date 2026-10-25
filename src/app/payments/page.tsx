@@ -19,18 +19,16 @@ export default function PaymentPage() {
   const [loading, setLoading] = useState(false);
 
   async function handlePlaceOrder() {
+    // This legacy route has no verified order context or real payment provider flow.
+    // Never show a success page unless the server creates an order and verifies payment.
+    setLoading(true);
     try {
-      setLoading(true);
-
-      // TODO:
-      // Firestore Order Create Logic Here
-
-      setTimeout(() => {
-        router.push("/payment-success");
-      }, 1500);
-    } catch (error) {
-      console.error(error);
-      alert("Order Failed");
+      if (selectedMethod !== "cod") {
+        alert("Online payment is not configured yet. Please use Cash on Delivery from Checkout.");
+        return;
+      }
+      alert("Please place your order from Checkout so the server can validate the product, address and total.");
+      router.push("/checkout");
     } finally {
       setLoading(false);
     }
@@ -62,17 +60,17 @@ export default function PaymentPage() {
 
           <div className="flex justify-between">
             <span>Subtotal</span>
-            <span>₹999</span>
+            <span>Calculated at Checkout</span>
           </div>
 
           <div className="flex justify-between mt-2">
             <span>Shipping</span>
-            <span>₹0</span>
+            <span>Calculated at Checkout</span>
           </div>
 
           <div className="border-t mt-3 pt-3 flex justify-between font-black text-lg">
             <span>Total</span>
-            <span className="text-[var(--color-primary-button)]">₹999</span>
+            <span className="text-[var(--color-primary-button)]">Calculated at Checkout</span>
           </div>
         </div>
 

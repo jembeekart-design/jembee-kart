@@ -55,7 +55,7 @@ export default function AIProductGeneratorPage() {
 
       setLoading(true);
 
-      /* FREE AI MOCK GENERATOR */
+      /* TEMPLATE-BASED PRODUCT TEXT GENERATOR */
 
       const title =
         `${productName} Premium ${category}`;
@@ -104,6 +104,9 @@ export default function AIProductGeneratorPage() {
   return (
 
     <main className="min-h-screen bg-[var(--color-page-background)] p-4 text-[var(--button-text-color)]">
+      <div className="mb-4 rounded-xl border border-amber-400/50 bg-amber-500/10 p-3 text-sm">
+        Template mode: this tool builds text from fixed patterns; it does not call an AI provider.
+      </div>
 
       {/* HEADER */}
 
@@ -118,7 +121,7 @@ export default function AIProductGeneratorPage() {
         <div>
 
           <h1 className="text-3xl font-black">
-            AI Product Generator
+            Product Text Template Generator
           </h1>
 
           <p className="mt-1 text-sm text-[var(--text-muted)]">

@@ -37,8 +37,8 @@ function CheckoutContent() {
   const handlePlaceOrder = async () => {
     const user = auth.currentUser;
 
-    if (!user || !product || !address) {
-      alert("Please log in and save your delivery address first.");
+    if (!user || !product || !address || !address.fullName || !address.mobile || !(address.addressLine1 || address.address) || !address.city || !address.state || !address.pincode) {
+      alert("Please log in and complete your delivery address first.");
       return;
     }
 
@@ -130,7 +130,7 @@ function CheckoutContent() {
           <div className="bg-[var(--color-success)] text-[var(--color-success)] text-[9px] font-bold px-2 py-0.5 rounded-md w-fit my-1.5">27% OFF</div>
           <div className="flex items-baseline gap-2">
             <span className="text-[10px] line-through text-[var(--text-secondary)] font-bold">₹{product?.price || 0}</span>
-            <span className="text-base font-extrabold">₹{product?.discountPrice || product?.price || 0}</span>
+            <span className="text-base font-extrabold">₹{Number(product?.discountPrice) > 0 ? product.discountPrice : (product?.price || 0)}</span>
           </div>
         </div>
         <div className="absolute top-4 right-4 text-[10px] font-bold bg-[var(--color-page-background)] px-2.5 py-1 rounded-lg">Qty: 1</div>
@@ -143,14 +143,14 @@ function CheckoutContent() {
       <div className="bg-[var(--color-card-background)] p-5 rounded-3xl mb-4 shadow-sm border border-[var(--color-border)]">
         <div className="flex justify-between items-center mb-4">
           <h2 className="font-bold text-sm flex items-center gap-2 text-[var(--text-primary)]"><MapPin size={16} className="text-[var(--color-primary-button)]"/> Delivery Address</h2>
-          <button className="text-[var(--color-primary-button)] font-bold text-[10px]">Change Address {">"}</button>
+          <button onClick={() => router.push("/address")} className="text-[var(--color-primary-button)] font-bold text-[10px]">Change Address {">"}</button>
         </div>
         <div className="flex gap-4">
           <div className="bg-[var(--color-primary-button)] p-3 rounded-2xl h-fit"><Home size={20} className="text-[var(--color-primary-button)]"/></div>
           <div className="text-xs text-[var(--text-secondary)] leading-relaxed">
-            <p className="font-bold text-[var(--text-primary)] text-sm">{address?.fullName || "Md Alim Ansari"}</p>
-            <p className="font-semibold text-[var(--text-secondary)] mt-0.5">{address?.mobile || "7061369212"}</p>
-            <p className="text-[11px] mt-1 pr-4">Purelia road no 12 mango Jamshedpur, Petrol pump, EAST SINGHBUM, 831012</p>
+            <p className="font-bold text-[var(--text-primary)] text-sm">{address?.fullName || "Name not provided"}</p>
+            <p className="font-semibold text-[var(--text-secondary)] mt-0.5">{address?.mobile || "Mobile not provided"}</p>
+            <p className="text-[11px] mt-1 pr-4">{[address?.addressLine1, address?.addressLine2, address?.city, address?.state, address?.pincode].filter(Boolean).join(", ") || "Please add your delivery address."}</p>
           </div>
         </div>
       </div>
@@ -176,12 +176,12 @@ function CheckoutContent() {
         <h2 className="font-bold text-sm mb-4 text-[var(--text-primary)]">Price Details</h2>
         <div className="space-y-2.5 text-xs">
             <div className="flex justify-between text-[var(--text-secondary)]"><span>MRP</span><span>₹{product?.price || 0}</span></div>
-            <div className="flex justify-between text-[var(--color-success)] font-bold"><span>Discount</span><span>- ₹{(product?.price || 0) - (product?.discountPrice || 0)}</span></div>
+            <div className="flex justify-between text-[var(--color-success)] font-bold"><span>Discount</span><span>- ₹{Math.max(0, (Number(product?.price) || 0) - (Number(product?.discountPrice) > 0 ? Number(product.discountPrice) : (Number(product?.price) || 0)))}</span></div>
             <div className="flex justify-between text-[var(--text-secondary)]"><span>Delivery Charges</span><span className="text-[var(--color-success)] font-bold">FREE</span></div>
             <div className="border-t border-dashed my-2"></div>
-            <div className="flex justify-between text-base font-extrabold text-[var(--text-primary)] pt-1"><span>Total Payable</span><span>₹{product?.discountPrice || 0}</span></div>
+            <div className="flex justify-between text-base font-extrabold text-[var(--text-primary)] pt-1"><span>Total Payable</span><span>₹{Number(product?.discountPrice) > 0 ? product.discountPrice : (product?.price || 0)}</span></div>
         </div>
-        <div className="mt-4 bg-[var(--color-success)] text-[var(--color-success)] text-[10px] font-bold p-2.5 rounded-xl text-center">You save ₹{(product?.price || 0) - (product?.discountPrice || 0)} on this order</div>
+        <div className="mt-4 bg-[var(--color-success)] text-[var(--color-success)] text-[10px] font-bold p-2.5 rounded-xl text-center">You save ₹{Math.max(0, (Number(product?.price) || 0) - (Number(product?.discountPrice) > 0 ? Number(product.discountPrice) : (Number(product?.price) || 0)))} on this order</div>
       </div>
 
       {/* EXPECTED DELIVERY */}
@@ -189,7 +189,7 @@ function CheckoutContent() {
         <div className="bg-[var(--color-warning)] p-3 rounded-2xl"><Truck className="text-[var(--color-warning)]" size={20} /></div>
         <div>
           <p className="text-[9px] font-extrabold text-[var(--text-secondary)] uppercase tracking-widest">Expected Delivery</p>
-          <p className="text-sm font-bold text-[var(--text-primary)]">Between 24 - 26 May 2025</p>
+          <p className="text-sm font-bold text-[var(--text-primary)]">Delivery estimate will be confirmed after order placement.</p>
         </div>
       </div>
 

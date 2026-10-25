@@ -54,6 +54,9 @@ export default function CouponManagerPage() {
   return (
 
     <main className="min-h-screen bg-[var(--color-page-background)] p-4 text-[var(--button-text-color)]">
+      <div className="mb-4 rounded-xl border border-amber-400/50 bg-amber-500/10 p-3 text-sm">
+        These are sample coupon entries in the current page, not verified live coupon records. Do not treat them as active customer discounts.
+      </div>
 
       {/* HEADER */}
 

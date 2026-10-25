@@ -1,505 +1,83 @@
 "use client";
 
+import { useState } from "react";
+import { AlertTriangle, CheckCircle, CreditCard, ShieldCheck, Server, KeyRound } from "lucide-react";
+
 export const dynamic = "force-dynamic";
 
-import { useEffect, useState } from "react";
-
-import {
-  doc,
-  getDoc,
-  setDoc
-} from "firebase/firestore";
-
-import {
-  CreditCard,
-  Save,
-  ShieldCheck,
-  Globe,
-  Key,
-  Wallet,
-  CheckCircle
-} from "lucide-react";
-
-import { db } from "@/firebase/config";
-
-interface CashfreeSettings {
-  enabled: boolean;
-  sandboxMode: boolean;
-  appId: string;
-  secretKey: string;
-  webhookSecret: string;
-  paymentGatewayName: string;
-  autoSettlement: boolean;
-}
-
 export default function CashfreePage() {
-
-  const [settings, setSettings] =
-    useState<CashfreeSettings>({
-      enabled: true,
-      sandboxMode: true,
-      appId: "",
-      secretKey: "",
-      webhookSecret: "",
-      paymentGatewayName: "Cashfree",
-      autoSettlement: true
-    });
-
-  const [loading, setLoading] =
-    useState(true);
-
-  const [saving, setSaving] =
-    useState(false);
-
-  useEffect(() => {
-
-    fetchSettings();
-
-  }, []);
-
-  async function fetchSettings() {
-
-    try {
-
-      const ref = doc(
-        db,
-        "admin_settings",
-        "cashfree"
-      );
-
-      const snap =
-        await getDoc(ref);
-
-      if (snap.exists()) {
-
-        setSettings(
-          snap.data() as CashfreeSettings
-        );
-
-      }
-
-    } catch (error) {
-
-      console.log(error);
-
-    } finally {
-
-      setLoading(false);
-
-    }
-  }
-
-  async function saveSettings() {
-
-    try {
-
-      setSaving(true);
-
-      await setDoc(
-        doc(
-          db,
-          "admin_settings",
-          "cashfree"
-        ),
-        settings
-      );
-
-      alert(
-        "Cashfree Settings Saved"
-      );
-
-    } catch (error) {
-
-      console.log(error);
-
-    } finally {
-
-      setSaving(false);
-
-    }
-  }
-
-  function updateField(
-    field: keyof CashfreeSettings,
-    value: any
-  ) {
-
-    setSettings((prev) => ({
-      ...prev,
-      [field]: value
-    }));
-  }
-
-  if (loading) {
-
-    return (
-
-      <div className="flex min-h-screen items-center justify-center bg-[var(--card-color)] text-[var(--button-text-color)]">
-
-        Loading...
-
-      </div>
-
-    );
-  }
+  const [showSetup, setShowSetup] = useState(false);
 
   return (
-
     <main className="min-h-screen bg-[var(--color-page-background)] p-4 text-[var(--button-text-color)]">
-
-      {/* HEADER */}
-
-      <div className="mb-8 flex items-center justify-between">
-
-        <div className="flex items-center gap-4">
-
-          <div className="flex h-16 w-16 items-center justify-center rounded-[24px] theme-primary-bg">
-
-            <CreditCard size={30} />
-
+      <div className="mx-auto max-w-3xl">
+        <header className="mb-6 flex items-center gap-4">
+          <div className="flex h-14 w-14 items-center justify-center rounded-2xl theme-primary-bg">
+            <CreditCard size={28} />
           </div>
-
           <div>
-
-            <h1 className="text-3xl font-black">
-              Cashfree Settings
-            </h1>
-
-            <p className="mt-1 text-sm text-[var(--muted-text-color)]">
-              Configure Cashfree payment gateway
-            </p>
-
+            <h1 className="text-2xl font-black">Cashfree Settings</h1>
+            <p className="text-sm text-[var(--muted-text-color)]">Secure server-side payment gateway configuration</p>
           </div>
+        </header>
 
-        </div>
+        <section className="rounded-2xl border border-amber-400/50 bg-amber-500/10 p-5">
+          <div className="flex items-start gap-3">
+            <AlertTriangle className="mt-1 shrink-0 text-amber-600" />
+            <div>
+              <h2 className="font-bold">Not connected — payment integration is not verified</h2>
+              <p className="mt-2 text-sm leading-6">
+                This page no longer saves Cashfree secrets in browser-accessible Firestore or displays them in plain text.
+                Checkout must not treat Cashfree as active until server-side payment session creation, webhook/signature
+                verification and order-status reconciliation are implemented and tested.
+              </p>
+            </div>
+          </div>
+        </section>
+
+        <section className="mt-5 grid gap-4 md:grid-cols-2">
+          <div className="rounded-2xl border border-[var(--color-border)] bg-[var(--color-card-background)] p-5">
+            <Server className="mb-3" size={24} />
+            <h3 className="font-bold">Credential storage</h3>
+            <p className="mt-2 text-sm text-[var(--muted-text-color)]">
+              Configure Cashfree credentials as server-only environment variables or through a secured admin API with encrypted storage.
+              Never put secret keys in client-side state or a client-readable document.
+            </p>
+          </div>
+          <div className="rounded-2xl border border-[var(--color-border)] bg-[var(--color-card-background)] p-5">
+            <ShieldCheck className="mb-3" size={24} />
+            <h3 className="font-bold">Payment verification</h3>
+            <p className="mt-2 text-sm text-[var(--muted-text-color)]">
+              Only a server-verified Cashfree payment result may mark an order as paid. A browser redirect alone is not proof of payment.
+            </p>
+          </div>
+        </section>
 
         <button
-          onClick={saveSettings}
-          disabled={saving}
-          className="flex items-center gap-2 rounded-2xl theme-primary-bg px-5 py-3 font-bold"
+          type="button"
+          onClick={() => setShowSetup((value) => !value)}
+          className="mt-5 rounded-xl border border-[var(--color-border)] px-4 py-3 font-semibold"
         >
-
-          <Save size={18} />
-
-          {saving
-            ? "Saving..."
-            : "Save"}
-
+          {showSetup ? "Hide required setup" : "Show required setup"}
         </button>
 
+        {showSetup && (
+          <section className="mt-4 rounded-2xl border border-[var(--color-border)] bg-[var(--color-card-background)] p-5">
+            <h2 className="mb-3 flex items-center gap-2 font-bold"><KeyRound size={20} /> Required before enabling</h2>
+            <ol className="list-decimal space-y-2 pl-5 text-sm leading-6">
+              <li>Set Cashfree App ID and Secret only on the server; never expose the secret to the browser.</li>
+              <li>Add an authenticated admin-only connection-test endpoint that returns status only.</li>
+              <li>Create payment sessions using server-calculated order totals.</li>
+              <li>Verify webhook signatures and confirm payment status server-to-server.</li>
+              <li>Use idempotent order state transitions and test failures/retries before production.</li>
+            </ol>
+          </section>
+        )}
+
+        <p className="mt-5 flex items-center gap-2 text-xs text-[var(--muted-text-color)]">
+          <CheckCircle size={16} /> This safety page does not claim a live Cashfree connection.
+        </p>
       </div>
-
-      {/* TOGGLES */}
-
-      <div className="grid grid-cols-1 gap-5 md:grid-cols-2">
-
-        <ToggleCard
-          title="Cashfree Gateway"
-          description="Enable payment gateway"
-          icon={
-            <Wallet size={24} />
-          }
-          enabled={
-            settings.enabled
-          }
-          onClick={() =>
-            updateField(
-              "enabled",
-              !settings.enabled
-            )
-          }
-        />
-
-        <ToggleCard
-          title="Sandbox Mode"
-          description="Enable testing environment"
-          icon={
-            <Globe size={24} />
-          }
-          enabled={
-            settings.sandboxMode
-          }
-          onClick={() =>
-            updateField(
-              "sandboxMode",
-              !settings.sandboxMode
-            )
-          }
-        />
-
-        <ToggleCard
-          title="Auto Settlement"
-          description="Automatically settle payments"
-          icon={
-            <ShieldCheck size={24} />
-          }
-          enabled={
-            settings.autoSettlement
-          }
-          onClick={() =>
-            updateField(
-              "autoSettlement",
-              !settings.autoSettlement
-            )
-          }
-        />
-
-      </div>
-
-      {/* INPUTS */}
-
-      <div className="mt-6 grid grid-cols-1 gap-5 md:grid-cols-2">
-
-        <InputCard
-          title="Cashfree App ID"
-          icon={
-            <Key size={22} />
-          }
-          value={settings.appId}
-          onChange={(value: string) =>
-            updateField(
-              "appId",
-              value
-            )
-          }
-        />
-
-        <InputCard
-          title="Secret Key"
-          icon={
-            <ShieldCheck size={22} />
-          }
-          value={settings.secretKey}
-          onChange={(value: string) =>
-            updateField(
-              "secretKey",
-              value
-            )
-          }
-        />
-
-        <InputCard
-          title="Webhook Secret"
-          icon={
-            <Globe size={22} />
-          }
-          value={
-            settings.webhookSecret
-          }
-          onChange={(value: string) =>
-            updateField(
-              "webhookSecret",
-              value
-            )
-          }
-        />
-
-        <InputCard
-          title="Gateway Name"
-          icon={
-            <CreditCard size={22} />
-          }
-          value={
-            settings.paymentGatewayName
-          }
-          onChange={(value: string) =>
-            updateField(
-              "paymentGatewayName",
-              value
-            )
-          }
-        />
-
-      </div>
-
-      {/* STATUS */}
-
-      <div className="mt-6 rounded-[30px] bg-gradient-to-r from-[var(--primary-color)] to-[var(--primary-color)] p-6">
-
-        <div className="flex items-center gap-3">
-
-          <CheckCircle size={28} />
-
-          <h2 className="text-3xl font-black">
-            Cashfree Status
-          </h2>
-
-        </div>
-
-        <div className="mt-6 grid grid-cols-1 gap-4 md:grid-cols-2">
-
-          <StatusCard
-            title="Gateway"
-            value={
-              settings.enabled
-                ? "Enabled"
-                : "Disabled"
-            }
-          />
-
-          <StatusCard
-            title="Mode"
-            value={
-              settings.sandboxMode
-                ? "Sandbox"
-                : "Production"
-            }
-          />
-
-          <StatusCard
-            title="Settlement"
-            value={
-              settings.autoSettlement
-                ? "Automatic"
-                : "Manual"
-            }
-          />
-
-          <StatusCard
-            title="Gateway Name"
-            value={
-              settings.paymentGatewayName
-            }
-          />
-
-        </div>
-
-      </div>
-
     </main>
-
-  );
-}
-
-function InputCard({
-  title,
-  value,
-  onChange,
-  icon
-}: {
-  title: string;
-  value: string;
-  onChange: (
-    value: string
-  ) => void;
-  icon: React.ReactNode;
-}) {
-
-  return (
-
-    <div className="rounded-[30px] bg-[var(--primary-color)] p-5">
-
-      <div className="mb-4 flex items-center gap-3">
-
-        {icon}
-
-        <h2 className="text-2xl font-black">
-          {title}
-        </h2>
-
-      </div>
-
-      <input
-        type="text"
-        value={value}
-        onChange={(e) =>
-          onChange(
-            e.target.value
-          )
-        }
-        className="w-full rounded-2xl bg-[var(--card-color)] px-4 py-4 outline-none"
-      />
-
-    </div>
-
-  );
-}
-
-function ToggleCard({
-  title,
-  description,
-  icon,
-  enabled,
-  onClick
-}: {
-  title: string;
-  description: string;
-  icon: React.ReactNode;
-  enabled: boolean;
-  onClick: () => void;
-}) {
-
-  return (
-
-    <div className="rounded-[30px] bg-[var(--primary-color)] p-5">
-
-      <div className="flex items-center justify-between">
-
-        <div className="flex items-center gap-3">
-
-          <div className="flex h-14 w-14 items-center justify-center rounded-2xl bg-[var(--card-color)]">
-
-            {icon}
-
-          </div>
-
-          <div>
-
-            <h2 className="text-xl font-black">
-              {title}
-            </h2>
-
-            <p className="text-sm text-[var(--muted-text-color)]">
-              {description}
-            </p>
-
-          </div>
-
-        </div>
-
-        <button
-          onClick={onClick}
-          className={`rounded-full px-5 py-3 text-sm font-bold ${
-            enabled
-              ? "bg-[var(--success-color)]"
-              : "bg-[var(--danger-color)]"
-          }`}
-        >
-
-          {enabled
-            ? "Enabled"
-            : "Disabled"}
-
-        </button>
-
-      </div>
-
-    </div>
-
-  );
-}
-
-function StatusCard({
-  title,
-  value
-}: {
-  title: string;
-  value: string;
-}) {
-
-  return (
-
-    <div className="rounded-2xl bg-[var(--card-color)]/10 p-4">
-
-      <p className="text-sm text-[var(--button-text-color)]/70">
-        {title}
-      </p>
-
-      <h3 className="mt-2 text-2xl font-black">
-        {value}
-      </h3>
-
-    </div>
-
   );
 }

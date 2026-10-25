@@ -1,29 +1,46 @@
 import { NextResponse } from "next/server";
 import { withAdminAuth } from "@/lib/api/adminAuth";
-import { getQikinkConfig } from "@/lib/server/qikinkSettings";
 
 export async function GET(req: Request) {
   return withAdminAuth(async () => {
+    const baseUrl = process.env.QIKINK_BASE_URL?.trim();
+    const clientId = process.env.QIKINK_CLIENT_ID?.trim();
+    const clientSecret = process.env.QIKINK_CLIENT_SECRET;
+
+    if (!baseUrl || !clientId || !clientSecret) {
+      return NextResponse.json(
+        { success: false, configured: false, message: "Qikink credentials are not configured" },
+        { status: 503 }
+      );
+    }
+
     try {
-      const config = await getQikinkConfig();
-      if (!config) return NextResponse.json({ success: false, message: "Qikink is not configured" }, { status: 503 });
-      const response = await fetch(`${config.baseUrl}/api/token`, {
+      const response = await fetch(`${baseUrl.replace(/\/$/, "")}/api/token`, {
         method: "POST",
         headers: { "Content-Type": "application/x-www-form-urlencoded" },
-        body: new URLSearchParams({ ClientId: config.clientId, client_secret: config.clientSecret }),
+        body: new URLSearchParams({ ClientId: clientId, client_secret: clientSecret }),
         cache: "no-store",
+        signal: AbortSignal.timeout(10000),
       });
+
       if (!response.ok) {
-        return NextResponse.json({ success: false, message: "Qikink authentication failed" }, { status: 502 });
+        return NextResponse.json(
+          { success: false, configured: true, message: "Qikink connection test failed" },
+          { status: 502 }
+        );
       }
-      const data = await response.json();
-      if (typeof data?.Accesstoken !== "string" || !data.Accesstoken) {
-        return NextResponse.json({ success: false, message: "Qikink authentication failed" }, { status: 502 });
-      }
-      // Never return the upstream access token to the browser.
-      return NextResponse.json({ success: true, connected: true });
+
+      const data = await response.json().catch(() => null);
+      const authenticated = typeof data?.Accesstoken === "string" && data.Accesstoken.length > 0;
+      return NextResponse.json(
+        { success: authenticated, configured: true, message: authenticated ? "Qikink credentials accepted" : "Qikink authentication failed" },
+        { status: authenticated ? 200 : 502, headers: { "Cache-Control": "no-store" } }
+      );
     } catch {
-      return NextResponse.json({ success: false, message: "Qikink connection test failed" }, { status: 502 });
+      return NextResponse.json(
+        { success: false, configured: true, message: "Qikink connection test failed" },
+        { status: 502, headers: { "Cache-Control": "no-store" } }
+      );
     }
   }, req);
 }

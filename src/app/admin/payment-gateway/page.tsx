@@ -22,13 +22,13 @@ const gateways = [
   {
     name: "Cashfree",
     method: "UPI / Cards",
-    status: "Active"
+    status: "Not connected"
   },
 
   {
     name: "Razorpay",
     method: "UPI / Wallet",
-    status: "Active"
+    status: "Not connected"
   },
 
   {
@@ -312,7 +312,7 @@ export default function PaymentGatewayPage() {
           <CheckCircle2 size={30} />
 
           <h2 className="text-3xl font-black">
-            Payment System Active
+            Payment System Not Verified
           </h2>
 
         </div>

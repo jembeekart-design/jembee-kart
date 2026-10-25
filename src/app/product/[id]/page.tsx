@@ -134,15 +134,18 @@ export default function ProductPage() {
 
   const discount = useMemo(() => {
     if (!product) return 0;
-    return Math.round(
-      (((product.price || 0) - (product.discountPrice || 0)) / (product.price || 1)) * 100
-    );
+    const price = Number(product.price) || 0;
+    const discounted = Number(product.discountPrice);
+    if (price <= 0 || !Number.isFinite(discounted) || discounted <= 0 || discounted >= price) return 0;
+    return Math.round(((price - discounted) / price) * 100);
   }, [product]);
 
   const { avgRating, reviewCount } = useMemo(() => {
-    if (reviews.length === 0) return { avgRating: product?.rating || 4.5, reviewCount: 0 };
-    const sum = reviews.reduce((acc, r) => acc + (r.rating || 0), 0);
-    return { avgRating: (sum / reviews.length).toFixed(1), reviewCount: reviews.length };
+    if (reviews.length === 0) return { avgRating: null, reviewCount: 0 };
+    const validRatings = reviews.map((r) => Number(r.rating)).filter((rating) => Number.isFinite(rating) && rating >= 1 && rating <= 5);
+    if (validRatings.length === 0) return { avgRating: null, reviewCount: 0 };
+    const sum = validRatings.reduce((acc, rating) => acc + rating, 0);
+    return { avgRating: (sum / validRatings.length).toFixed(1), reviewCount: validRatings.length };
   }, [reviews, product]);
 
   const deliveryDate = useMemo(() => {
@@ -337,11 +340,10 @@ function buyNow() {
           <div className="mt-2 flex items-center gap-2 text-[11px]">
             <div className="flex items-center gap-1 text-[var(--color-success)]">
               <Star size={12} fill="green" />
-              <span className="font-bold">{avgRating}</span>
+              <span className="font-bold">{avgRating ?? "No rating"}</span>
             </div>
             <span className="text-[var(--text-secondary)]">({reviewCount} Reviews)</span>
-            <span className="text-[var(--text-primary)]">|</span>
-            <span className="text-[var(--text-secondary)]">5k+ sold</span>
+
           </div>
 
           <div className="mt-3 flex items-center gap-2">

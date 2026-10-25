@@ -21,31 +21,10 @@ import {
 } from "lucide-react";
 
 const stats = [
-
-  {
-    title: "Total Revenue",
-    value: "₹18.4L",
-    icon: IndianRupee
-  },
-
-  {
-    title: "Orders",
-    value: "12,840",
-    icon: ShoppingCart
-  },
-
-  {
-    title: "Users",
-    value: "42,120",
-    icon: Users
-  },
-
-  {
-    title: "Products",
-    value: "8,420",
-    icon: Package
-  }
-
+  { title: "Total Revenue", value: "Not connected", icon: IndianRupee },
+  { title: "Orders", value: "Not connected", icon: ShoppingCart },
+  { title: "Users", value: "Not connected", icon: Users },
+  { title: "Products", value: "Not connected", icon: Package }
 ];
 
 const quickLinks = [
@@ -283,28 +262,14 @@ export default function AdminHomePage() {
 
           </div>
 
-          <div className="mt-6 space-y-4">
-
-            <ActivityItem
-              title="New iPhone Order"
-              subtitle="Order var(--color-primary-button) placed"
-            />
-
-            <ActivityItem
-              title="Fashion Product"
-              subtitle="Order var(--color-primary-button) shipped"
-            />
-
-            <ActivityItem
-              title="Gaming Laptop"
-              subtitle="Order var(--color-primary-button) delivered"
-            />
-
+          <div className="mt-6 rounded-2xl border border-dashed border-[var(--color-border)] p-4 text-sm text-[var(--muted-text-color)]">
+            Live order activity is not connected to this dashboard yet. Open Orders to view available order records.
+            <div className="mt-3"><Link href="/admin/orders" className="font-bold underline">Open Orders</Link></div>
           </div>
 
         </div>
 
-        {/* SYSTEM STATUS */}
+                {/* SYSTEM STATUS */}
 
         <div className="rounded-[30px] border border-[var(--color-border)]/10 bg-[var(--color-primary-button)] p-6">
 

@@ -14,7 +14,19 @@ export async function GET(req: Request) {
       : "";
 
     if (providedSecret !== expectedSecret) {
-      return NextResponse.json({ success: false, message: "Unauthorized" }, { status: 401 });
+      return NextResponse.json(
+        {
+          success: false,
+          message: "Unauthorized",
+          debug: {
+            serverSecretPresent: Boolean(expectedSecret),
+            serverSecretLength: expectedSecret.length,
+            providedSecretLength: providedSecret.length,
+            hasBearer: authHeader?.startsWith("Bearer ") ?? false,
+          },
+        },
+        { status: 401 }
+      );
     }
 
     // 2. Find due earnings: status == PENDING AND payoutDueAt <= now

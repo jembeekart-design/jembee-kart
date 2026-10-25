@@ -16,6 +16,9 @@ export default function FinancePage() {
   return (
 
     <main className="min-h-screen bg-[var(--color-page-background)] p-4 text-[var(--button-text-color)]">
+      <div className="mb-4 rounded-xl border border-amber-400/50 bg-amber-500/10 p-3 text-sm">
+        Finance ledger integration is not verified. Figures are hidden until they can be sourced from trusted transaction records.
+      </div>
 
       {/* HEADER */}
 
@@ -57,7 +60,7 @@ export default function FinancePage() {
           </p>
 
           <h2 className="mt-2 text-3xl font-black">
-            ₹4,85,000
+            Not connected
           </h2>
 
         </div>
