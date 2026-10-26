@@ -8,7 +8,8 @@ import { ArrowLeft, ChartNoAxesCombined, History, Wallet } from "lucide-react";
 export default function ShareIncomePage() {
   const router = useRouter();
   const [earnings, setEarnings] = useState<Array<Record<string, unknown>>>([]);
-  const [payments, setPayments] = useState<Array<Record<string, unknown>>>([]);\n  const [sharerPercent, setSharerPercent] = useState(20);
+  const [payments, setPayments] = useState<Array<Record<string, unknown>>>([]);
+  const [sharerPercent, setSharerPercent] = useState(20);
   const [message, setMessage] = useState("कमाई और भुगतान का इतिहास लोड हो रहा है…");
   useEffect(() => {
     let active = true;
