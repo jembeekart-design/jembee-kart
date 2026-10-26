@@ -123,11 +123,12 @@ const DEFAULT_SETTINGS = {
 },
 
   watchEarn: {
-    enabled: true,
+    // Normal video playback/upload remains available; watch-based monetary rewards are disabled.
+    enabled: false,
     videosRequired: 100,
-    rewardAmount: 50,
-    videoWatchSeconds: 30,
-    rewardProgressSeconds: 5,
+    rewardAmount: 0,
+    videoWatchSeconds: 0,
+    rewardProgressSeconds: 0,
     minimumWatchPercent: 80,
     allowSkip: true,
     rewardDelay: 3,
@@ -140,7 +141,7 @@ const DEFAULT_SETTINGS = {
     requireAdminApproval: true,
     autoPublish: false,
     maxVideoDuration: 60,
-    maxFileSize: 50,
+    maxFileSize: 500,
     allowedVideoFormats: ["mp4", "mov"],
   },
 

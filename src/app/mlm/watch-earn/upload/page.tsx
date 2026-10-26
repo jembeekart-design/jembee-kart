@@ -69,8 +69,8 @@ function UploadWatchVideoContent() {
       return;
     }
 
-    if (selected.size > 100 * 1024 * 1024) {
-      alert("वीडियो 100 MB से ज्यादा नहीं होना चाहिए");
+    if (selected.size > 500 * 1024 * 1024) {
+      alert("वीडियो का आकार 500 MB से अधिक नहीं होना चाहिए।");
       return;
     }
 
@@ -268,7 +268,7 @@ function UploadWatchVideoContent() {
             </div>
 
             <p className="mt-4 text-sm font-semibold text-slate-500">
-              MP4 • MOV • AVI &nbsp; | &nbsp; अधिकतम 100 MB
+              MP4 • MOV • AVI &nbsp; | &nbsp; अधिकतम 500 MB
             </p>
 
             <input

@@ -9,6 +9,6 @@ export async function createWatchReward(
 ) {
   return {
     success: false,
-    message: "Watch & Earn reward system is disabled.",
+    message: "वीडियो देखने पर कमाई की सुविधा बंद है।",
   };
 }

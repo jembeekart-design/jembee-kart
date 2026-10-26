@@ -5,7 +5,7 @@ import { createResumableUploadSession } from "@/services/googleDriveService";
 
 export const runtime = "nodejs";
 
-const MAX_VIDEO_SIZE = 100 * 1024 * 1024;
+const MAX_VIDEO_SIZE = 500 * 1024 * 1024;
 
 export async function POST(req: Request) {
   const authHeader = req.headers.get("authorization");
@@ -17,7 +17,7 @@ export async function POST(req: Request) {
 
   if (!authHeader?.startsWith("Bearer ")) {
     return NextResponse.json(
-      { success: false, message: "Unauthorized" },
+      { success: false, message: "कृपया लॉगिन करें।" },
       { status: 401 }
     );
   }
@@ -32,7 +32,7 @@ export async function POST(req: Request) {
   } catch (err) {
     console.error("[AuthDiagnostic] Start Upload - Token Verification Failed:", err);
     return NextResponse.json(
-      { success: false, message: "Unauthorized" },
+      { success: false, message: "कृपया लॉगिन करें।" },
       { status: 401 }
     );
   }
@@ -56,7 +56,7 @@ export async function POST(req: Request) {
     body = await req.json();
   } catch {
     return NextResponse.json(
-      { success: false, message: "Invalid JSON" },
+      { success: false, message: "अनुरोध की जानकारी सही नहीं है।" },
       { status: 400 }
     );
   }
@@ -69,21 +69,21 @@ export async function POST(req: Request) {
 
   if (!filename || !mimeType || !Number.isFinite(fileSize) || fileSize <= 0) {
     return NextResponse.json(
-      { success: false, message: "Missing or invalid required fields" },
+      { success: false, message: "कुछ आवश्यक जानकारी उपलब्ध नहीं है। कृपया विवरण जाँचें।" },
       { status: 400 }
     );
   }
 
   if (!mimeType.toLowerCase().startsWith("video/")) {
     return NextResponse.json(
-      { success: false, message: "Only video MIME types are allowed" },
+      { success: false, message: "कृपया मान्य वीडियो फ़ाइल चुनें।" },
       { status: 400 }
     );
   }
 
   if (fileSize > MAX_VIDEO_SIZE) {
     return NextResponse.json(
-      { success: false, message: "Video exceeds the 100MB limit" },
+      { success: false, message: "वीडियो का आकार 500 MB से अधिक नहीं होना चाहिए।" },
       { status: 400 }
     );
   }
@@ -150,7 +150,7 @@ export async function POST(req: Request) {
 
     console.error("Failed to start drive upload session:", error);
     return NextResponse.json(
-      { success: false, message: "Failed to initialize upload" },
+      { success: false, message: "वीडियो अपलोड शुरू नहीं हो सका। कृपया पुनः प्रयास करें।" },
       { status: 500 }
     );
   }

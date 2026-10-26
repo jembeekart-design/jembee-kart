@@ -4,13 +4,13 @@ import { getDriveFileMetadata } from "@/services/googleDriveService";
 
 export const runtime = "nodejs";
 
-const MAX_VIDEO_SIZE = 100 * 1024 * 1024;
+const MAX_VIDEO_SIZE = 500 * 1024 * 1024;
 
 export async function POST(req: Request) {
   const moderationFolderId = process.env.GOOGLE_DRIVE_FOLDER_ID?.trim();
   if (!moderationFolderId) {
     return NextResponse.json(
-      { success: false, message: "Google Drive moderation folder is not configured" },
+      { success: false, message: "वीडियो अपलोड सेवा अभी उपलब्ध नहीं है। कृपया बाद में पुनः प्रयास करें।" },
       { status: 500 }
     );
   }
@@ -23,7 +23,7 @@ export async function POST(req: Request) {
   }
 
   if (!authHeader?.startsWith("Bearer ")) {
-    return NextResponse.json({ success: false, message: "Unauthorized" }, { status: 401 });
+    return NextResponse.json({ success: false, message: "कृपया लॉगिन करें।" }, { status: 401 });
   }
 
   const token = authHeader.slice("Bearer ".length).trim();
@@ -34,7 +34,7 @@ export async function POST(req: Request) {
     console.log("[AuthDiagnostic] Complete Upload - Token Verified. UID:", creatorId);
   } catch (err) {
     console.error("[AuthDiagnostic] Complete Upload - Token Verification Failed:", err);
-    return NextResponse.json({ success: false, message: "Unauthorized" }, { status: 401 });
+    return NextResponse.json({ success: false, message: "कृपया लॉगिन करें।" }, { status: 401 });
   }
 
   let body: {
@@ -44,7 +44,7 @@ export async function POST(req: Request) {
   try {
     body = await req.json();
   } catch {
-    return NextResponse.json({ success: false, message: "Invalid JSON" }, { status: 400 });
+    return NextResponse.json({ success: false, message: "अनुरोध की जानकारी सही नहीं है।" }, { status: 400 });
   }
 
   const submissionId =
@@ -54,7 +54,7 @@ export async function POST(req: Request) {
 
   if (!submissionId || !driveFileId) {
     return NextResponse.json(
-      { success: false, message: "Missing required fields" },
+      { success: false, message: "कुछ आवश्यक जानकारी उपलब्ध नहीं है। कृपया विवरण जाँचें।" },
       { status: 400 }
     );
   }
@@ -71,16 +71,16 @@ export async function POST(req: Request) {
     const submissionDoc = await submissionRef.get();
 
     if (!submissionDoc.exists) {
-      return NextResponse.json({ success: false, message: "Submission not found" }, { status: 404 });
+      return NextResponse.json({ success: false, message: "वीडियो अपलोड का रिकॉर्ड नहीं मिला। कृपया पुनः प्रयास करें।" }, { status: 404 });
     }
 
     const submission = submissionDoc.data()!;
     if (submission.creatorId !== creatorId) {
-      return NextResponse.json({ success: false, message: "Unauthorized" }, { status: 403 });
+      return NextResponse.json({ success: false, message: "कृपया लॉगिन करें।" }, { status: 403 });
     }
 
     if (submission.status !== "uploading") {
-      return NextResponse.json({ success: false, message: "Invalid status" }, { status: 400 });
+      return NextResponse.json({ success: false, message: "वीडियो की स्थिति मान्य नहीं है।" }, { status: 400 });
     }
 
     console.log("[UPLOAD_DEBUG_SERVER] SUBMISSION_VERIFIED", {
@@ -99,16 +99,16 @@ export async function POST(req: Request) {
     console.log("[UPLOAD_DEBUG_SERVER] DRIVE_METADATA_RESULT", metadata);
 
     if (!metadata.mimeType.startsWith("video/")) {
-      return NextResponse.json({ success: false, message: "Invalid file type" }, { status: 400 });
+      return NextResponse.json({ success: false, message: "कृपया मान्य वीडियो फ़ाइल चुनें।" }, { status: 400 });
     }
     if (metadata.size > MAX_VIDEO_SIZE) {
-      return NextResponse.json({ success: false, message: "File exceeds 100MB" }, { status: 400 });
+      return NextResponse.json({ success: false, message: "फ़ाइल का आकार 500 MB से अधिक नहीं होना चाहिए।" }, { status: 400 });
     }
     if (!metadata.parents.includes(moderationFolderId)) {
-      return NextResponse.json({ success: false, message: "Invalid file location" }, { status: 403 });
+      return NextResponse.json({ success: false, message: "वीडियो फ़ाइल की जानकारी सत्यापित नहीं हो सकी।" }, { status: 403 });
     }
     if (metadata.name !== `moderation_${submissionId}`) {
-      return NextResponse.json({ success: false, message: "Invalid file name" }, { status: 400 });
+      return NextResponse.json({ success: false, message: "वीडियो फ़ाइल का नाम मान्य नहीं है।" }, { status: 400 });
     }
 
     await submissionRef.update({
@@ -127,6 +127,6 @@ export async function POST(req: Request) {
     });
 
     console.error("Failed to complete drive upload:", error);
-    return NextResponse.json({ success: false, message: "Failed to finalize upload" }, { status: 500 });
+    return NextResponse.json({ success: false, message: "वीडियो अपलोड पूरा नहीं हो सका। कृपया पुनः प्रयास करें।" }, { status: 500 });
   }
 }

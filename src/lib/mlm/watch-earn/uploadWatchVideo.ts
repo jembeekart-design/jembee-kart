@@ -107,12 +107,12 @@ export async function uploadWatchVideo({
       };
     }
 
-    const maxSize = 100 * 1024 * 1024;
+    const maxSize = 500 * 1024 * 1024;
 
     if (file.size > maxSize) {
       return {
         success: false,
-        message: "Video too large. Maximum size is 100MB",
+        message: "वीडियो का आकार 500 MB से अधिक नहीं होना चाहिए।",
       };
     }
 

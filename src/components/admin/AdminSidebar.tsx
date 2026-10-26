@@ -32,7 +32,8 @@ import {
   FileText,
   Headphones,
   ClipboardList,
-  AppWindow
+  AppWindow,
+  ChartNoAxesCombined
 } from "lucide-react";
 
 const menuItems = [
@@ -75,6 +76,11 @@ const menuItems = [
     title: "Payments",
     icon: CreditCard,
     href: "/admin/payments"
+  },
+  {
+    title: "Monetag Revenue",
+    icon: ChartNoAxesCombined,
+    href: "/admin/monetag-revenue"
   },
   {
     title: "Affiliate",

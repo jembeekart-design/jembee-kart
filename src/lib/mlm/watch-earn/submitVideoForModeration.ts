@@ -49,10 +49,10 @@ export async function submitVideoForModeration(
     };
   }
 
-  if (file.size > 100 * 1024 * 1024) {
+  if (file.size > 500 * 1024 * 1024) {
     return {
       success: false,
-      message: "Video exceeds the 100MB limit",
+      message: "वीडियो का आकार 500 MB से अधिक नहीं होना चाहिए।",
     };
   }
 
