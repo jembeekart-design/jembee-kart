@@ -12,6 +12,8 @@ export interface ModerationSubmissionMetadata {
   originalVideoId?: string;
   originalAudioId?: string;
   isEnhanced: boolean;
+  videoAccess?: "free" | "paid";
+  videoPrice?: number;
 }
 
 export interface ModerationSubmissionResult {

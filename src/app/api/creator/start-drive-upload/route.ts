@@ -45,6 +45,8 @@ export async function POST(req: Request) {
     photoURL?: unknown;
     username?: unknown;
     caption?: unknown;
+    videoAccess?: unknown;
+    videoPrice?: unknown;
     hashtags?: unknown;
     music?: unknown;
     sponsor?: unknown;
@@ -66,6 +68,11 @@ export async function POST(req: Request) {
   const fileSize = typeof body.fileSize === "number" ? body.fileSize : 0;
 
   const { displayName, photoURL, username, caption, hashtags, music, sponsor, originalVideoId, originalAudioId, isEnhanced } = body;
+  const videoAccess = body.videoAccess === "paid" ? "paid" : "free";
+  const videoPrice = typeof body.videoPrice === "number" ? body.videoPrice : 0;
+  if (videoAccess === "paid" && (!Number.isFinite(videoPrice) || videoPrice < 1 || videoPrice > 100000)) {
+    return NextResponse.json({ success: false, message: "Paid वीडियो की कीमत ₹1 से ₹100000 के बीच होनी चाहिए।" }, { status: 400 });
+  }
 
   if (!filename || !mimeType || !Number.isFinite(fileSize) || fileSize <= 0) {
     return NextResponse.json(
@@ -125,6 +132,9 @@ export async function POST(req: Request) {
         photoURL: photoURL || "",
         username: username || "",
         caption: caption || "",
+        videoAccess,
+        videoPrice: videoAccess === "paid" ? videoPrice : 0,
+        paidVideoStatus: videoAccess === "paid" ? "payment_integration_pending" : "free",
         hashtags: Array.isArray(hashtags) ? hashtags : [],
         music: music || "",
         sponsor: sponsor === true,

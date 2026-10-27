@@ -8,7 +8,6 @@ import {
   Upload,
   Loader2,
   Video,
-  Play,
   X,
   CheckCircle2,
   Lightbulb,
@@ -30,6 +29,8 @@ function UploadWatchVideoContent() {
   const [uploadProgress, setUploadProgress] = useState(0);
   const [uploadError, setUploadError] = useState<string | null>(null);
   const [caption, setCaption] = useState("");
+  const [videoAccess, setVideoAccess] = useState<"free" | "paid">("free");
+  const [videoPrice, setVideoPrice] = useState("49");
 
   useEffect(() => {
     async function loadBlob() {
@@ -91,6 +92,10 @@ function UploadWatchVideoContent() {
         alert("पहले अपना वीडियो चुनें");
         return;
       }
+      if (videoAccess === "paid" && (!Number.isFinite(Number(videoPrice)) || Number(videoPrice) < 1 || Number(videoPrice) > 100000)) {
+        alert("Paid वीडियो की कीमत ₹1 से ₹100000 के बीच रखें।");
+        return;
+      }
 
       const currentUser = auth.currentUser;
 
@@ -137,6 +142,8 @@ function UploadWatchVideoContent() {
         photoURL: currentUser.photoURL || undefined,
         username,
         caption,
+        videoAccess,
+        videoPrice: videoAccess === "paid" ? Number(videoPrice) : 0,
         hashtags: [],
         music: "",
         isEnhanced: false,
@@ -324,6 +331,23 @@ function UploadWatchVideoContent() {
                 <X size={26} />
               </button>
             </div>
+          </section>
+        )}
+
+        {/* Paid video selection (payment/unlock integration is separate) */}
+        {file && (
+          <section className="mt-5 rounded-[28px] bg-white p-5 shadow-sm">
+            <h2 className="text-lg font-black">वीडियो की कीमत</h2>
+            <p className="mt-1 text-sm font-semibold text-slate-500">फ्री वीडियो सभी देख सकते हैं। Paid वीडियो की बिक्री भुगतान सिस्टम जुड़ने के बाद ही चालू होगी।</p>
+            <div className="mt-4 grid grid-cols-2 gap-3">
+              <button type="button" onClick={() => setVideoAccess("free")} className={`rounded-xl border-2 p-3 font-bold ${videoAccess === "free" ? "border-blue-600 bg-blue-50 text-blue-700" : "border-slate-200"}`}>Free · मुफ़्त</button>
+              <button type="button" onClick={() => setVideoAccess("paid")} className={`rounded-xl border-2 p-3 font-bold ${videoAccess === "paid" ? "border-blue-600 bg-blue-50 text-blue-700" : "border-slate-200"}`}>Paid · सशुल्क</button>
+            </div>
+            {videoAccess === "paid" && (
+              <label className="mt-4 block text-sm font-bold">कीमत (₹)
+                <input type="number" min="1" max="100000" step="1" value={videoPrice} onChange={(e) => setVideoPrice(e.target.value)} className="mt-2 w-full rounded-xl border-2 border-slate-200 bg-slate-50 p-3 text-base" />
+              </label>
+            )}
           </section>
         )}
 
