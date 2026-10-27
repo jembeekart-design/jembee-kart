@@ -19,15 +19,19 @@ export async function GET(req: Request) {
   try {
     await verifyMonetagAdmin(req);
     const db = getAdminDb();
-    const [importsSnap, earningsSnap, paymentsSnap] = await Promise.all([
+    const [importsSnap, earningsSnap, paymentsSnap, sharesSnap, syncsSnap] = await Promise.all([
       db.collection("monetagRevenueImports").orderBy("createdAt", "desc").limit(200).get(),
       db.collection("monetagEarnings").limit(1000).get(),
       db.collection("monetagPayments").limit(1000).get(),
+      db.collection("monetagShareAttributions").orderBy("createdAt", "desc").limit(100).get(),
+      db.collection("monetagApiSyncs").orderBy("fetchedAt", "desc").limit(10).get(),
     ]);
     const imports = importsSnap.docs.map((doc) => {
       const data = doc.data();
       return { id: doc.id, ...data, createdAt: data.createdAt?.toDate?.()?.toISOString?.() ?? null };
     });
+    const shareAttributions = sharesSnap.docs.map((doc) => { const data = doc.data(); return { id: doc.id, ...data, createdAt: data.createdAt?.toDate?.()?.toISOString?.() ?? null, lastLandingAt: data.lastLandingAt?.toDate?.()?.toISOString?.() ?? null }; });
+    const apiSyncs = syncsSnap.docs.map((doc) => { const data = doc.data(); return { id: doc.id, ...data, fetchedAt: data.fetchedAt?.toDate?.()?.toISOString?.() ?? null }; });
     const earnings = earningsSnap.docs.map((doc) => doc.data());
     const payments = paymentsSnap.docs.map((doc) => doc.data());
     const sum = (items: Array<Record<string, unknown>>, predicate: (item: Record<string, unknown>) => boolean, field: string) =>
@@ -38,7 +42,7 @@ export async function GET(req: Request) {
     const paidOutUsd = sum(payments, (item) => item.status === "paid", "amountUsd");
     const unallocatedRevenueUsd = sum(imports, (item) => item.status === "verified", "unallocatedRevenueUsd");
     const platformRetainedUsd = sum(imports, (item) => item.status === "verified", "platformRetainedUsd");
-    return NextResponse.json({ success: true, summary: { grossRevenueUsd, uploaderEarningsUsd, sharerEarningsUsd, platformRetainedUsd, unallocatedRevenueUsd, paidOutUsd, importedRecords: importsSnap.size }, imports });
+    return NextResponse.json({ success: true, summary: { grossRevenueUsd, uploaderEarningsUsd, sharerEarningsUsd, platformRetainedUsd, unallocatedRevenueUsd, paidOutUsd, importedRecords: importsSnap.size, shareAttributionRecords: sharesSnap.size }, imports, shareAttributions, apiSyncs });
   } catch (error) {
     const code = error instanceof Error ? error.message : "";
     const status = code === "UNAUTHORIZED" ? 401 : code === "FORBIDDEN" ? 403 : 500;
