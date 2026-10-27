@@ -79,8 +79,17 @@ export async function POST(req: Request) {
       return NextResponse.json({ success: false, message: "कृपया लॉगिन करें।" }, { status: 403 });
     }
 
+    // Make completion idempotent if Firestore was updated but the client lost
+    // the HTTP response and retries the same completion request.
+    if (
+      submission.status === "pending" &&
+      submission.driveFileId === driveFileId
+    ) {
+      return NextResponse.json({ success: true, submissionId, status: "pending" });
+    }
+
     if (submission.status !== "uploading") {
-      return NextResponse.json({ success: false, message: "वीडियो की स्थिति मान्य नहीं है।" }, { status: 400 });
+      return NextResponse.json({ success: false, message: "वीडियो की स्थिति मान्य नहीं है।" }, { status: 409 });
     }
 
     console.log("[UPLOAD_DEBUG_SERVER] SUBMISSION_VERIFIED", {

@@ -102,6 +102,47 @@ export async function submitVideoForModeration(
 
   const { submissionId, uploadUrl } = startData;
 
+  // Query the resumable session through our authenticated server endpoint.
+  // This avoids depending on browser CORS/header visibility for Drive status checks.
+  const recoverUploadStatus = async (): Promise<{
+    uploadedBytes: number;
+    driveFileId?: string;
+  }> => {
+    const response = await fetch("/api/creator/recover-drive-upload", {
+      method: "POST",
+      headers: {
+        Authorization: `Bearer ${token}`,
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ submissionId }),
+    });
+    const data = await response.json().catch(() => null);
+
+    if (!response.ok || data?.success !== true) {
+      throw new Error(
+        typeof data?.message === "string"
+          ? data.message
+          : "Could not check Google Drive upload status."
+      );
+    }
+
+    const uploadedBytes = Number(data.uploadedBytes);
+    if (
+      !Number.isSafeInteger(uploadedBytes) ||
+      uploadedBytes < 0 ||
+      uploadedBytes > file.size
+    ) {
+      throw new Error("Google Drive returned an invalid upload position.");
+    }
+
+    const driveFileId =
+      typeof data.driveFileId === "string" && data.driveFileId.trim()
+        ? data.driveFileId.trim()
+        : undefined;
+
+    return { uploadedBytes, driveFileId };
+  };
+
   console.log("[UPLOAD_DEBUG] DRIVE_UPLOAD_START", {
     submissionId,
     uploadUrlPresent: !!uploadUrl,
@@ -109,7 +150,12 @@ export async function submitVideoForModeration(
 
   // 2. Direct-to-Drive Upload
   try {
-    const driveFileId = await uploadVideoToDrive(file, uploadUrl, onProgress);
+    const driveFileId = await uploadVideoToDrive(
+      file,
+      uploadUrl,
+      onProgress,
+      recoverUploadStatus
+    );
 
     console.log("[UPLOAD_DEBUG] DRIVE_UPLOAD_RETURNED", {
       submissionId,
@@ -237,14 +283,16 @@ export async function submitVideoForModeration(
       if (
         recoveryResponse.ok &&
         recoveryData?.success === true &&
-        Number(recoveryData?.uploadedBytes) > 0 &&
+        Number.isSafeInteger(Number(recoveryData?.uploadedBytes)) &&
+        Number(recoveryData?.uploadedBytes) >= 0 &&
         Number(recoveryData?.uploadedBytes) < file.size
       ) {
         try {
           const resumedDriveFileId = await uploadVideoToDrive(
             file,
             uploadUrl,
-            onProgress
+            onProgress,
+            recoverUploadStatus
           );
 
           const resumedCompleteResponse = await fetch(
@@ -311,15 +359,30 @@ export async function submitVideoForModeration(
       });
     }
 
-    // Cleanup only after recovery/resume attempts fail.
-    await fetch("/api/creator/cancel-video-moderation", {
-      method: "POST",
-      headers: {
-        Authorization: `Bearer ${token}`,
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({ submissionId }),
-    });
+    // Cleanup only after recovery/resume attempts fail. A cleanup network error
+    // must not replace the original upload error or escape this result contract.
+    try {
+      const cancelResponse = await fetch("/api/creator/cancel-video-moderation", {
+        method: "POST",
+        headers: {
+          Authorization: `Bearer ${token}`,
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ submissionId }),
+      });
+      if (!cancelResponse.ok) {
+        console.warn("[UPLOAD_DEBUG] CANCEL_AFTER_FAILURE_NOT_COMPLETED", {
+          status: cancelResponse.status,
+          submissionId,
+        });
+      }
+    } catch (cancelError) {
+      console.warn("[UPLOAD_DEBUG] CANCEL_AFTER_FAILURE_REQUEST_FAILED", {
+        message:
+          cancelError instanceof Error ? cancelError.message : String(cancelError),
+        submissionId,
+      });
+    }
 
     return {
       success: false,
