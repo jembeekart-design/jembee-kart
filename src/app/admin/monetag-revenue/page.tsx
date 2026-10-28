@@ -22,7 +22,10 @@ export default function MonetagRevenueAdminPage() {
     const token = await user.getIdToken();
     const res = await fetch(path, { ...init, headers: { "Content-Type": "application/json", Authorization: `Bearer ${token}`, ...(init.headers || {}) } });
     const data = await res.json();
-    if (!res.ok || !data.success) throw new Error(data.message || "अनुरोध पूरा नहीं हो सका।");
+    if (!res.ok || !data.success) {
+      const detail = data.details ? JSON.stringify(data.details, null, 2) : "";
+      throw new Error([data.message || "अनुरोध पूरा नहीं हो सका।", detail].filter(Boolean).join("\\n"));
+    }
     return data;
   }
   async function refreshDashboard() { const data = await api("/api/admin/monetag-revenue"); setSummary(data.summary); setRecentImports(data.imports || []); setShareAttributions(data.shareAttributions || []); }
