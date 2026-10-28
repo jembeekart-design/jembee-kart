@@ -4,11 +4,6 @@ export const dynamic = "force-dynamic";
 
 import { useEffect, useState } from "react";
 
-import {
-  doc,
-  getDoc,
-  setDoc
-} from "firebase/firestore";
 
 import {
   CreditCard,
@@ -20,7 +15,7 @@ import {
   CheckCircle
 } from "lucide-react";
 
-import { db } from "@/firebase/config";
+import { auth } from "@/firebase/config";
 
 interface CashfreeSettings {
   enabled: boolean;
@@ -30,6 +25,8 @@ interface CashfreeSettings {
   webhookSecret: string;
   paymentGatewayName: string;
   autoSettlement: boolean;
+  hasSecretKey?: boolean;
+  hasWebhookSecret?: boolean;
 }
 
 export default function CashfreePage() {
@@ -51,43 +48,33 @@ export default function CashfreePage() {
   const [saving, setSaving] =
     useState(false);
 
-  useEffect(() => {
-
-    fetchSettings();
-
-  }, []);
-
-  async function fetchSettings() {
+  const fetchSettings = async () => {
 
     try {
 
-      const ref = doc(
-        db,
-        "admin_settings",
-        "cashfree"
-      );
-
-      const snap =
-        await getDoc(ref);
-
-      if (snap.exists()) {
-
-        setSettings(
-          snap.data() as CashfreeSettings
-        );
-
-      }
+      const user = auth.currentUser;
+      if (!user) throw new Error("Please sign in again.");
+      const token = await user.getIdToken();
+      const response = await fetch("/api/admin/cashfree-settings", { headers: { Authorization: `Bearer ${token}` }, cache: "no-store" });
+      const result = await response.json();
+      if (!response.ok || !result.success) throw new Error(result.message || "Unable to load settings");
+      setSettings((prev) => ({ ...prev, ...result.settings, secretKey: "", webhookSecret: "" }));
 
     } catch (error) {
 
-      console.log(error);
+      console.error("Unable to load Cashfree settings:", error);
+      alert(error instanceof Error ? error.message : "Unable to load settings");
 
     } finally {
 
       setLoading(false);
 
     }
-  }
+  };
+
+  useEffect(() => {
+    Promise.resolve().then(() => fetchSettings());
+  }, []);
 
   async function saveSettings() {
 
@@ -95,22 +82,19 @@ export default function CashfreePage() {
 
       setSaving(true);
 
-      await setDoc(
-        doc(
-          db,
-          "admin_settings",
-          "cashfree"
-        ),
-        settings
-      );
-
-      alert(
-        "Cashfree Settings Saved"
-      );
+      const user = auth.currentUser;
+      if (!user) throw new Error("Please sign in again.");
+      const token = await user.getIdToken();
+      const response = await fetch("/api/admin/cashfree-settings", { method: "PUT", headers: { Authorization: `Bearer ${token}`, "Content-Type": "application/json" }, body: JSON.stringify(settings) });
+      const result = await response.json();
+      if (!response.ok || !result.success) throw new Error(result.message || "Unable to save settings");
+      setSettings((prev) => ({ ...prev, secretKey: "", webhookSecret: "", hasSecretKey: Boolean(prev.hasSecretKey || settings.secretKey.trim()), hasWebhookSecret: Boolean(prev.hasWebhookSecret || settings.webhookSecret.trim()) }));
+      alert("Settings saved securely. Secret values will not be displayed again.");
 
     } catch (error) {
 
-      console.log(error);
+      console.error("Unable to save Cashfree settings:", error);
+      alert(error instanceof Error ? error.message : "Unable to save settings");
 
     } finally {
 
@@ -121,7 +105,7 @@ export default function CashfreePage() {
 
   function updateField(
     field: keyof CashfreeSettings,
-    value: any
+    value: string | boolean
   ) {
 
     setSettings((prev) => ({
@@ -270,6 +254,7 @@ export default function CashfreePage() {
             <ShieldCheck size={22} />
           }
           value={settings.secretKey}
+          placeholder={settings.hasSecretKey ? "Saved securely — enter only to replace" : "Enter secret key"}
           onChange={(value: string) =>
             updateField(
               "secretKey",
@@ -283,9 +268,8 @@ export default function CashfreePage() {
           icon={
             <Globe size={22} />
           }
-          value={
-            settings.webhookSecret
-          }
+          value={settings.webhookSecret}
+          placeholder={settings.hasWebhookSecret ? "Saved securely — enter only to replace" : "Enter webhook secret"}
           onChange={(value: string) =>
             updateField(
               "webhookSecret",
@@ -375,7 +359,8 @@ function InputCard({
   title,
   value,
   onChange,
-  icon
+  icon,
+  placeholder
 }: {
   title: string;
   value: string;
@@ -383,6 +368,7 @@ function InputCard({
     value: string
   ) => void;
   icon: React.ReactNode;
+  placeholder?: string;
 }) {
 
   return (
@@ -400,7 +386,9 @@ function InputCard({
       </div>
 
       <input
-        type="text"
+        type={title.toLowerCase().includes("secret") ? "password" : "text"}
+        autoComplete="off"
+        placeholder={placeholder}
         value={value}
         onChange={(e) =>
           onChange(

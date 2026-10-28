@@ -9,6 +9,6 @@ export async function trackVideoWatch(
 ) {
   return {
     success: false,
-    message: "Video watch tracking for rewards is disabled.",
+    message: "वीडियो देखने के आधार पर रिवॉर्ड ट्रैकिंग बंद है।",
   };
 }

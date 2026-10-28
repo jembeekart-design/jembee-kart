@@ -91,6 +91,19 @@ export async function POST(req: Request) {
     );
   }
 
+  // Only incomplete uploads may be cancelled. In particular, never delete a
+  // submission that was already promoted to pending if the client's completion
+  // response was lost due to a network error.
+  if (data.status !== "uploading") {
+    return NextResponse.json(
+      {
+        success: false,
+        message: "This submission is no longer an incomplete upload and was not cancelled.",
+      },
+      { status: 409 }
+    );
+  }
+
   const driveFileId =
     typeof data.driveFileId === "string"
       ? data.driveFileId.trim()

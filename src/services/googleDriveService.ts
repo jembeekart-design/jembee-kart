@@ -64,8 +64,8 @@ export async function createResumableUploadSession(
     throw new Error("File size must be greater than zero");
   }
 
-  if (fileSize > 100 * 1024 * 1024) {
-    throw new Error("File size exceeds 100MB");
+  if (fileSize > 500 * 1024 * 1024) {
+    throw new Error("फ़ाइल का आकार 500 MB से अधिक नहीं होना चाहिए।");
   }
 
   const client = getOAuthClient();

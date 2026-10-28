@@ -263,6 +263,19 @@ export async function POST(req: Request) {
 
         caption:
           submission.caption || "",
+        videoAccess: submission.videoAccess === "paid" ? "paid" : "free",
+        videoPrice:
+          submission.videoAccess === "paid" &&
+          typeof submission.videoPrice === "number" &&
+          Number.isFinite(submission.videoPrice) &&
+          submission.videoPrice >= 1 &&
+          submission.videoPrice <= 100000
+            ? submission.videoPrice
+            : 0,
+        paidVideoStatus:
+          submission.videoAccess === "paid"
+            ? "payment_integration_pending"
+            : "free",
         hashtags:
           Array.isArray(submission.hashtags)
             ? submission.hashtags

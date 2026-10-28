@@ -12,13 +12,16 @@ type UploadStatusResult = {
 export async function uploadVideoToDrive(
   file: File,
   uploadUrl: string,
-  onProgress?: (uploadedBytes: number, totalBytes: number) => void
+  onProgress?: (uploadedBytes: number, totalBytes: number) => void,
+  recoverStatus?: () => Promise<UploadStatusResult>
 ): Promise<string> {
   // 2MB keeps individual mobile requests smaller while remaining
   // a multiple of Google's required 256KB chunk size.
   const CHUNK_SIZE = 2 * 1024 * 1024;
 
   let uploadedBytes = 0;
+  let consecutiveNoProgress = 0;
+  const getUploadStatus = recoverStatus ?? (() => queryUploadStatus(uploadUrl, file.size));
 
   console.log("[DRIVE_DEBUG] UPLOAD_START", {
     fileName: file.name,
@@ -28,7 +31,7 @@ export async function uploadVideoToDrive(
     uploadUrlPresent: !!uploadUrl,
   });
 
-  const initialStatus = await queryUploadStatus(uploadUrl, file.size);
+  const initialStatus = await getUploadStatus();
 
   if (initialStatus.driveFileId) {
     console.log("[DRIVE_DEBUG] ALREADY_COMPLETE", {
@@ -143,7 +146,7 @@ export async function uploadVideoToDrive(
       });
 
       try {
-        const recovered = await queryUploadStatus(uploadUrl, file.size);
+        const recovered = await getUploadStatus();
 
         if (recovered.driveFileId) {
           console.log("[DRIVE_DEBUG] RECOVERED_COMPLETED_UPLOAD", {
@@ -249,7 +252,7 @@ export async function uploadVideoToDrive(
 
       // Completed response without a readable body:
       // query the resumable session to recover the completed metadata.
-      const recovered = await queryUploadStatus(uploadUrl, file.size);
+      const recovered = await getUploadStatus();
 
       if (recovered.driveFileId) {
         console.log("[DRIVE_DEBUG] DRIVE_COMPLETE_RECOVERED", {
@@ -283,7 +286,7 @@ export async function uploadVideoToDrive(
       // Never assume the whole chunk arrived.
       // If Drive did not provide a Range, query the session.
       if (uploadedBytes === start) {
-        const recovered = await queryUploadStatus(uploadUrl, file.size);
+        const recovered = await getUploadStatus();
 
         if (recovered.driveFileId) {
           onProgress?.(file.size, file.size);
@@ -291,6 +294,17 @@ export async function uploadVideoToDrive(
         }
 
         uploadedBytes = recovered.uploadedBytes;
+      }
+
+      if (uploadedBytes <= start) {
+        consecutiveNoProgress += 1;
+        if (consecutiveNoProgress >= 3) {
+          throw new Error(
+            `Google Drive upload made no progress after ${consecutiveNoProgress} status checks (byte ${start} of ${file.size}).`
+          );
+        }
+      } else {
+        consecutiveNoProgress = 0;
       }
 
       onProgress?.(uploadedBytes, file.size);
@@ -305,7 +319,7 @@ export async function uploadVideoToDrive(
 
     // For 5xx and other unexpected responses, ask Drive for the
     // authoritative upload position before retrying.
-    const recovered = await queryUploadStatus(uploadUrl, file.size);
+    const recovered = await getUploadStatus();
 
     if (recovered.driveFileId) {
       onProgress?.(file.size, file.size);
@@ -313,10 +327,20 @@ export async function uploadVideoToDrive(
     }
 
     uploadedBytes = recovered.uploadedBytes;
+    if (uploadedBytes <= start) {
+      consecutiveNoProgress += 1;
+      if (consecutiveNoProgress >= 3) {
+        throw new Error(
+          `Google Drive upload made no progress after repeated HTTP ${response.status} responses (byte ${start} of ${file.size}).`
+        );
+      }
+    } else {
+      consecutiveNoProgress = 0;
+    }
     onProgress?.(uploadedBytes, file.size);
   }
 
-  const finalStatus = await queryUploadStatus(uploadUrl, file.size);
+  const finalStatus = await getUploadStatus();
 
   if (finalStatus.driveFileId) {
     onProgress?.(file.size, file.size);

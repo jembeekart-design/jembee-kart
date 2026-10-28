@@ -9,6 +9,8 @@ interface UploadWatchVideoData {
   photoURL?: string;
   username: string;
   caption: string;
+  videoAccess?: "free" | "paid";
+  videoPrice?: number;
   hashtags: string[];
   music: string;
   sponsor?: boolean;
@@ -29,6 +31,8 @@ export interface ModerationSubmissionMetadata {
   originalVideoId?: string;
   originalAudioId?: string;
   isEnhanced: boolean;
+  videoAccess?: "free" | "paid";
+  videoPrice?: number;
 }
 
 export async function uploadWatchVideo({
@@ -37,6 +41,8 @@ export async function uploadWatchVideo({
   photoURL,
   username,
   caption,
+  videoAccess = "free",
+  videoPrice = 0,
   hashtags,
   music,
   sponsor,
@@ -107,12 +113,12 @@ export async function uploadWatchVideo({
       };
     }
 
-    const maxSize = 100 * 1024 * 1024;
+    const maxSize = 500 * 1024 * 1024;
 
     if (file.size > maxSize) {
       return {
         success: false,
-        message: "Video too large. Maximum size is 100MB",
+        message: "वीडियो का आकार 500 MB से अधिक नहीं होना चाहिए।",
       };
     }
 
@@ -132,6 +138,8 @@ export async function uploadWatchVideo({
       photoURL,
       username,
       caption,
+      videoAccess,
+      videoPrice: videoAccess === "paid" ? videoPrice : 0,
       hashtags,
       music,
       sponsor: sponsor === true,

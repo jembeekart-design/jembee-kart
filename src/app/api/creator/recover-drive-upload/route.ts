@@ -75,10 +75,32 @@ export async function POST(req: Request) {
       );
     }
 
+    // If completion was committed but its response was lost, report the
+    // persisted completed submission so the client can safely retry completion.
+    if (
+      submission.status === "pending" &&
+      typeof submission.driveFileId === "string" &&
+      submission.driveFileId.trim()
+    ) {
+      const completedFileSize =
+        typeof submission.fileSize === "number" &&
+        Number.isFinite(submission.fileSize) &&
+        submission.fileSize > 0
+          ? submission.fileSize
+          : 0;
+      return NextResponse.json({
+        success: true,
+        submissionId,
+        uploadedBytes: completedFileSize,
+        driveFileId: submission.driveFileId.trim(),
+        completed: true,
+      });
+    }
+
     if (submission.status !== "uploading") {
       return NextResponse.json(
         { success: false, message: "Invalid upload status" },
-        { status: 400 }
+        { status: 409 }
       );
     }
 

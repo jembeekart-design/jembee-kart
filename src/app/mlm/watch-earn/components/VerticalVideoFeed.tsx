@@ -22,7 +22,6 @@ import CommentDrawer
 import Toast from "./Toast";
 import BottomQuickActions from "./BottomQuickActions";
 import { getWatchVideos, WatchVideo } from "../services/watchVideos.service";
-import { DEFAULT_BUSINESS_RULES } from "@/firestore/businessRules/defaults";
 
 // New imports for persistence and auth
 import { auth, db } from "@/firebase/config";
@@ -32,7 +31,7 @@ import { shareVideo } from "@/lib/mlm/watch-earn/shareVideo";
 import { reportVideo } from "@/lib/mlm/watch-earn/reportVideo";
 import { setVideoPreference } from "@/lib/mlm/watch-earn/setVideoPreference";
 import { useRequireAuth } from "@/hooks/useRequireAuth";
-import { collection, doc, getDoc, onSnapshot } from "firebase/firestore";
+import { collection, doc, onSnapshot } from "firebase/firestore";
 
 export default function VerticalVideoFeed({
   activeTab
@@ -49,6 +48,7 @@ export default function VerticalVideoFeed({
 
   useEffect(() => {
     if (!isAuthenticated || !auth.currentUser) {
+      // eslint-disable-next-line react-hooks/set-state-in-effect
       setFollowingList([]);
       return;
     }
@@ -85,6 +85,7 @@ export default function VerticalVideoFeed({
     const user = auth.currentUser;
 
     if (!isAuthenticated || !user) {
+      // eslint-disable-next-line react-hooks/set-state-in-effect
       setNotInterestedIds([]);
       return;
     }
@@ -201,6 +202,7 @@ export default function VerticalVideoFeed({
 
   useEffect(() => {
     if (videos.length > 0 && !activeVideoId) {
+      // eslint-disable-next-line react-hooks/set-state-in-effect
       setActiveVideoId(videos[0].id);
     }
   }, [videos, activeVideoId]);
@@ -249,14 +251,27 @@ export default function VerticalVideoFeed({
   const handleShare = async (
     video: WatchVideo
   ) => {
+    let shareUrl = window.location.origin + '/mlm/watch-earn?v=' + encodeURIComponent(video.id);
+    // Create a server-authenticated unique attribution link for every share action.
+    try {
+      const currentUser = auth.currentUser;
+      if (currentUser) {
+        const token = await currentUser.getIdToken();
+        const attributionResponse = await fetch('/api/monetag/share-attribution', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${token}` },
+          body: JSON.stringify({ videoId: video.id }),
+        });
+        const attribution = await attributionResponse.json();
+        if (attributionResponse.ok && attribution.success && attribution.url) shareUrl = attribution.url;
+      }
+    } catch (error) {
+      console.error('Share attribution unavailable:', error);
+    }
     const shareData = {
-      title:
-        'Check out this video on JembeeKart',
+      title: 'Check out this video on JembeeKart',
       text: video.caption,
-      url:
-        window.location.origin +
-        '/mlm/watch-earn?v=' +
-        video.id,
+      url: shareUrl,
     };
 
     try {
@@ -634,7 +649,7 @@ export default function VerticalVideoFeed({
       {showWhySeeingModal && (
         <div className="fixed inset-0 z-[1001] flex items-center justify-center p-4 bg-black/80" onClick={() => setShowWhySeeingModal(false)}>
           <div className="bg-neutral-900 p-6 rounded-lg max-w-sm text-center" onClick={e => e.stopPropagation()}>
-            <h3 className="text-lg font-bold mb-2">Why you're seeing this</h3>
+            <h3 className="text-lg font-bold mb-2">Why you&apos;re seeing this</h3>
             <p className="text-gray-300">Recommendations can be influenced by content relevance and general engagement signals.</p>
             <button className="mt-4 w-full p-2 bg-neutral-800 rounded-lg" onClick={() => setShowWhySeeingModal(false)}>Close</button>
           </div>

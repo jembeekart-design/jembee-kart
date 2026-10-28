@@ -11,14 +11,14 @@ import {
 
 export const runtime = "nodejs";
 
-const MAX_VIDEO_SIZE = 100 * 1024 * 1024;
+const MAX_VIDEO_SIZE = 500 * 1024 * 1024;
 
 export async function POST(req: Request) {
   const authHeader = req.headers.get("authorization");
 
   if (!authHeader?.startsWith("Bearer ")) {
     return NextResponse.json(
-      { success: false, message: "Unauthorized" },
+      { success: false, message: "कृपया लॉगिन करें।" },
       { status: 401 }
     );
   }
@@ -27,7 +27,7 @@ export async function POST(req: Request) {
 
   if (!token) {
     return NextResponse.json(
-      { success: false, message: "Unauthorized" },
+      { success: false, message: "कृपया लॉगिन करें।" },
       { status: 401 }
     );
   }
@@ -39,14 +39,14 @@ export async function POST(req: Request) {
     creatorId = decodedToken.uid;
   } catch {
     return NextResponse.json(
-      { success: false, message: "Unauthorized" },
+      { success: false, message: "कृपया लॉगिन करें।" },
       { status: 401 }
     );
   }
 
   if (!req.body) {
     return NextResponse.json(
-      { success: false, message: "Request body is required" },
+      { success: false, message: "वीडियो अपलोड की जानकारी उपलब्ध नहीं है।" },
       { status: 400 }
     );
   }
@@ -57,7 +57,7 @@ export async function POST(req: Request) {
     return NextResponse.json(
       {
         success: false,
-        message: "multipart/form-data is required",
+        message: "वीडियो अपलोड का अनुरोध मान्य नहीं है। कृपया पुनः प्रयास करें।",
       },
       { status: 400 }
     );
@@ -171,7 +171,7 @@ export async function POST(req: Request) {
               sizeExceeded = true;
 
               file.destroy(
-                new Error("Video exceeds the 100MB limit")
+                new Error("वीडियो का आकार 500 MB से अधिक नहीं होना चाहिए।")
               );
             });
 
@@ -224,7 +224,7 @@ export async function POST(req: Request) {
 
             if (sizeExceeded) {
               await settleFailure(
-                new Error("Video exceeds the 100MB limit")
+                new Error("वीडियो का आकार 500 MB से अधिक नहीं होना चाहिए।")
               );
               return;
             }
@@ -271,7 +271,7 @@ export async function POST(req: Request) {
           const webStream = req.body;
 
           if (!webStream) {
-            throw new Error("Request body is required");
+            throw new Error("वीडियो अपलोड की जानकारी उपलब्ध नहीं है।");
           }
 
           Readable.from(
@@ -350,7 +350,7 @@ export async function POST(req: Request) {
       return NextResponse.json(
         {
           success: false,
-          message: "Moderation registration failed",
+          message: "वीडियो समीक्षा के लिए जमा नहीं हो सका। कृपया पुनः प्रयास करें।",
         },
         { status: 500 }
       );
@@ -374,12 +374,12 @@ export async function POST(req: Request) {
 
     if (
       error instanceof Error &&
-      error.message.includes("100MB")
+      error.message.includes("500MB")
     ) {
       return NextResponse.json(
         {
           success: false,
-          message: "Video exceeds the 100MB limit",
+          message: "वीडियो का आकार 500 MB से अधिक नहीं होना चाहिए।",
         },
         { status: 413 }
       );
@@ -393,7 +393,7 @@ export async function POST(req: Request) {
     return NextResponse.json(
       {
         success: false,
-        message: "Video moderation submission failed",
+        message: "वीडियो समीक्षा के लिए जमा नहीं हो सका। कृपया कुछ समय बाद पुनः प्रयास करें।",
       },
       { status: requestAborted ? 499 : 500 }
     );

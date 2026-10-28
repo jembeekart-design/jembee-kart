@@ -1,0 +1,28 @@
+JembeeKart सुधार रिपोर्ट — संस्करण 3
+
+आधार: JembeeKart_Main_Latest.zip
+
+इस ZIP में लागू बदलाव:
+- Explore नेविगेशन अलग Explore पेज पर जाता है।
+- Earn टैब को Share में बदला गया है।
+- वीडियो अपलोड की 100 MB सीमाओं को सक्रिय ज्ञात client/server/Drive validation में 500 MB किया गया है।
+- Watch & Earn reward helper पहले से disabled था; legacy reward-unlock helper को भी निष्क्रिय किया गया।
+- fallback feature flag में watch-based earning बंद की गई; सामान्य वीडियो playback/upload को बंद नहीं किया गया।
+- Admin-only Monetag percentage settings API (default 30% uploader, 20% sharer) जोड़ी गई।
+- सत्यापित Monetag रिपोर्ट दर्ज करने के लिए admin-only API, duplicate external record रोकना, और सर्वर पर प्रतिशत गणना जोड़ी गई।
+- लॉगिन उपयोगकर्ता के लिए उसकी अपनी earning/payment history पढ़ने की API जोड़ी गई।
+- Admin UI: /admin/monetag-revenue
+- Admin के लिए वास्तविक भुगतान रिकॉर्ड दर्ज करने का सुरक्षित API/UI जोड़ा गया; यह पैसा ट्रांसफ़र नहीं करता।
+- Share page earning/payment history API से डेटा पढ़ता है।
+- Profile पर confirmed uploader earning का योग दिखाने की सुविधा जोड़ी गई।
+- वीडियो अपलोड API के ग्राहक-सामने वाले मुख्य त्रुटि संदेश सरल, पेशेवर हिंदी में किए गए; कच्ची सर्वर त्रुटियाँ ग्राहक को नहीं लौटाई जातीं।
+- Admin Sidebar में Monetag Revenue का लिंक जोड़ा गया।
+- वीडियो सेटिंग में अधिकतम फ़ाइल आकार 500 MB के अनुरूप किया गया।
+
+सीमाएँ/अभी सत्यापित नहीं:
+- Monetag खाते का API credential/endpoint उपलब्ध न होने से स्वचालित Monetag sync नहीं जोड़ा गया। Admin को Monetag रिपोर्ट से सत्यापित रिकॉर्ड दर्ज करना होगा।
+- भुगतान अपने-आप नहीं किया जाता; Admin द्वारा वास्तविक भुगतान की पुष्टि के बाद ही रिकॉर्ड दर्ज होना चाहिए।
+- इस वातावरण में npm dependencies install करके Next.js build/tests नहीं चलाए गए। ZIP को production-ready प्रमाणित न मानें।
+- Firestore security rules/deployment environment में इस नए डेटा के व्यवहार को अलग से verify करना आवश्यक है।
+- लाइव वेबसाइट, GitHub branch और Vercel deployment नहीं बदले गए।
+\nअतिरिक्त सुधार संस्करण 4:\n- Share पेज अब API से प्राप्त वास्तविक कमाई रिकॉर्ड सूचीबद्ध करता है।\n- Share पेज में sharer प्रतिशत Admin की सुरक्षित सेटिंग से दिखता है।\n- लॉगिन उपयोगकर्ता की कमाई API सेटिंग के केवल प्रतिशत लौटाती है, कोई गोपनीय जानकारी नहीं।\n
