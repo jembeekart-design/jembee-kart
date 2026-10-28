@@ -92,9 +92,15 @@ function parseReport(csv: string) {
       continue;
     }
 
-    if (reportType === "daily" &&
-        !/^\d{4}-\d{2}-\d{2}$/.test(item.date || "")) {
-      throw new Error("Daily CSV में तारीख YYYY-MM-DD format में होनी चाहिए।");
+    if (reportType === "daily") {
+      const date = item.date || "";
+      const validDate = /^\d{4}-\d{2}-\d{2}$/.test(date) &&
+        Number.isFinite(new Date(`${date}T00:00:00Z`).getTime()) &&
+        new Date(`${date}T00:00:00Z`).toISOString().slice(0, 10) === date;
+
+      if (!validDate) {
+        throw new Error("Daily CSV में वास्तविक तारीख YYYY-MM-DD format में होनी चाहिए।");
+      }
     }
 
     if (reportType === "zone" && !/^\d+$/.test(item["zone id"] || "")) {
