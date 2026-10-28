@@ -29,18 +29,29 @@ export async function POST(req: Request) {
     const sites = Array.isArray(sitesData?.sites) ? sitesData.sites : [];
     const site = sites.find((s: { id?: string | number; url?: string }) => String(s?.url || "").replace(/^https?:\/\//, "").replace(/\/$/, "") === siteUrl.replace(/^https?:\/\//, "").replace(/\/$/, ""));
     if (!site?.id) return NextResponse.json({ success: false, message: `Monetag account में ${siteUrl} नाम की site नहीं मिली। MONETAG_SITE_URL जाँचें।` }, { status: 404 });
-    const statsRes = await fetch(`${API}/pub/statistics`, { method: "POST", headers, cache: "no-store", body: JSON.stringify({ date_from: dateFrom, date_to: dateTo, group_by: ["site_id"], page: 1, page_size: pageSize }) });
+    const statsRes = await fetch(`${API}/pub/statistics`, { method: "POST", headers, cache: "no-store", body: JSON.stringify({
+      date_from: dateFrom,
+      date_to: dateTo,
+      zone_ids: [12065645, 12065644, 12065643, 12065642, 12064903, 12064902, 12064901, 12064900],
+      page: 1,
+      page_size: pageSize
+    }) });
     const statsData = await statsRes.json().catch(() => ({}));
     if (!statsRes.ok) return NextResponse.json({ success: false, message: `Monetag statistics API ने HTTP ${statsRes.status} दिया।`, details: statsData }, { status: statsRes.status === 401 ? 401 : statsRes.status === 429 ? 429 : 502 });
     const allRows: Array<Record<string, unknown>> = Array.isArray(statsData?.result) ? statsData.result : [];
     const rowFieldNames = allRows[0] ? Object.keys(allRows[0]) : [];
     const rows = allRows.filter((row) => {
       const rowSiteId = row.site_id ?? row.siteId ?? row.site;
+      // Never attribute statistics to a site when the response
+      // does not identify which site the row belongs to.
+      if (rowSiteId === undefined || rowSiteId === null || rowSiteId === "") {
+        return false;
+      }
       if (rowSiteId && typeof rowSiteId === "object") {
         const nested = rowSiteId as Record<string, unknown>;
         return String(nested.id ?? "") === String(site.id);
       }
-      return String(rowSiteId ?? "") === String(site.id);
+      return String(rowSiteId) === String(site.id);
     });
     const totals = rows.reduce((acc: Record<string, number>, row: Record<string, unknown>) => {
       for (const key of ["prerequests", "requests", "impressions", "clicks", "conversions", "subscriptions", "money"]) acc[key] = (acc[key] || 0) + numeric(row[key]);
