@@ -32,6 +32,8 @@ export async function POST(req: Request) {
     const statsRes = await fetch(`${API}/pub/statistics`, { method: "POST", headers, cache: "no-store", body: JSON.stringify({
       date_from: dateFrom,
       date_to: dateTo,
+      site_ids: [7835975],
+      group_by: ["zone_id"],
       zone_ids: [12065645, 12065644, 12065643, 12065642, 12064903, 12064902, 12064901, 12064900],
       page: 1,
       page_size: pageSize
@@ -40,18 +42,19 @@ export async function POST(req: Request) {
     if (!statsRes.ok) return NextResponse.json({ success: false, message: `Monetag statistics API ने HTTP ${statsRes.status} दिया।`, details: statsData }, { status: statsRes.status === 401 ? 401 : statsRes.status === 429 ? 429 : 502 });
     const allRows: Array<Record<string, unknown>> = Array.isArray(statsData?.result) ? statsData.result : [];
     const rowFieldNames = allRows[0] ? Object.keys(allRows[0]) : [];
+    const allowedZoneIds = new Set([
+      12065645, 12065644, 12065643, 12065642,
+      12064903, 12064902, 12064901, 12064900
+    ]);
     const rows = allRows.filter((row) => {
-      const rowSiteId = row.site_id ?? row.siteId ?? row.site;
-      // Never attribute statistics to a site when the response
-      // does not identify which site the row belongs to.
-      if (rowSiteId === undefined || rowSiteId === null || rowSiteId === "") {
+      const rowZoneId = row.zone_id ?? row.zoneId ?? row.zone;
+      if (rowZoneId === undefined || rowZoneId === null || rowZoneId === "") {
         return false;
       }
-      if (rowSiteId && typeof rowSiteId === "object") {
-        const nested = rowSiteId as Record<string, unknown>;
-        return String(nested.id ?? "") === String(site.id);
-      }
-      return String(rowSiteId) === String(site.id);
+      const zoneId = typeof rowZoneId === "object"
+        ? Number((rowZoneId as Record<string, unknown>).id)
+        : Number(rowZoneId);
+      return Number.isInteger(zoneId) && allowedZoneIds.has(zoneId);
     });
     const totals = rows.reduce((acc: Record<string, number>, row: Record<string, unknown>) => {
       for (const key of ["prerequests", "requests", "impressions", "clicks", "conversions", "subscriptions", "money"]) acc[key] = (acc[key] || 0) + numeric(row[key]);
