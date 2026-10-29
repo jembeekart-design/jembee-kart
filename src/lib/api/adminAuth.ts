@@ -1,7 +1,22 @@
 import { NextResponse } from "next/server";
 import { getAdminAuth, getAdminDb } from "@/firebase/admin";
 
-export async function withAdminAuth(handler: Function, req?: Request) {
+type AdminHandler<TRequest extends Request = Request> =
+  (() => Promise<NextResponse>) |
+  ((req: TRequest) => Promise<NextResponse>);
+
+export function withAdminAuth(
+  handler: () => Promise<NextResponse>,
+  req?: Request
+): Promise<NextResponse>;
+export function withAdminAuth<TRequest extends Request>(
+  handler: (req: TRequest) => Promise<NextResponse>,
+  req: TRequest
+): Promise<NextResponse>;
+export async function withAdminAuth(
+  handler: AdminHandler<Request>,
+  req?: Request
+): Promise<NextResponse> {
   try {
     const adminAuth = getAdminAuth();
     const adminDb = getAdminDb();
@@ -33,7 +48,10 @@ export async function withAdminAuth(handler: Function, req?: Request) {
     if (role !== "admin" && role !== "super_admin") {
       return NextResponse.json({ success: false, message: "Admin access required" }, { status: 403 });
     }
-    return await (req ? handler(req) : handler());
+    if (req) {
+      return await (handler as (request: Request) => Promise<NextResponse>)(req);
+    }
+    return await (handler as () => Promise<NextResponse>)();
   } catch (error) {
     console.error("Admin authorization service error:", error instanceof Error ? error.message : "unknown");
     return NextResponse.json({ success: false, message: "Unable to verify admin access" }, { status: 500 });

@@ -72,7 +72,6 @@ export async function GET(req: Request) {
 export async function POST(req: Request) {
   try {
     const adminId = await verifyAdmin(req);
-    let body: unknown;
     const parsedBody = await readBoundedJson(req, 8192);
   if (!parsedBody.ok) {
     return NextResponse.json({ success: false, message: parsedBody.message }, { status: parsedBody.status });
@@ -80,7 +79,7 @@ export async function POST(req: Request) {
   if (!parsedBody.value || typeof parsedBody.value !== "object" || Array.isArray(parsedBody.value)) {
     return NextResponse.json({ success: false, message: "Request body must be a JSON object" }, { status: 400 });
   }
-  body = parsedBody.value as typeof body;
+    const body = parsedBody.value;
 
     const input = body as { reportId?: unknown; action?: unknown } | null;
     const reportId = typeof input?.reportId === "string" ? input.reportId.trim() : "";

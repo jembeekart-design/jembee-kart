@@ -6,7 +6,7 @@ import { auth } from "@/firebase/config";
 export default function RollbackCard() {
   const [backupPath, setBackupPath] = useState("");
   const [loading, setLoading] = useState(false);
-  const [result, setResult] = useState<any>(null);
+  const [result, setResult] = useState<unknown>(null);
 
   async function rollback() {
     setLoading(true);
@@ -53,7 +53,7 @@ export default function RollbackCard() {
         {loading ? "Rolling Back..." : "Rollback"}
       </button>
 
-      {result && (
+      {result !== null && (
         <pre className="text-xs overflow-auto">
           {JSON.stringify(result, null, 2)}
         </pre>

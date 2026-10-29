@@ -5,7 +5,7 @@ import { auth } from "@/firebase/config";
 
 export default function BackupCard() {
   const [loading, setLoading] = useState(false);
-  const [result, setResult] = useState<any>(null);
+  const [result, setResult] = useState<unknown>(null);
 
   async function createBackup() {
     setLoading(true);
@@ -41,7 +41,7 @@ export default function BackupCard() {
         {loading ? "Creating..." : "Create Backup"}
       </button>
 
-      {result && (
+      {result !== null && (
         <pre className="text-xs overflow-auto">
           {JSON.stringify(result, null, 2)}
         </pre>

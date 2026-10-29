@@ -29,14 +29,10 @@ export async function POST(req: Request) {
   try {
     const decodedToken = await getAdminAuth().verifyIdToken(token);
     creatorId = decodedToken.uid;
-  } catch (err) {
+  } catch {
     return NextResponse.json({ success: false, message: "कृपया लॉगिन करें।" }, { status: 401 });
   }
 
-  let body: {
-    submissionId?: unknown;
-    driveFileId?: unknown;
-  };
   const parsedBody = await readBoundedJson(req, 8192);
   if (!parsedBody.ok) {
     return NextResponse.json({ success: false, message: parsedBody.message }, { status: parsedBody.status });
@@ -44,7 +40,10 @@ export async function POST(req: Request) {
   if (!parsedBody.value || typeof parsedBody.value !== "object" || Array.isArray(parsedBody.value)) {
     return NextResponse.json({ success: false, message: "Request body must be a JSON object" }, { status: 400 });
   }
-  body = parsedBody.value as typeof body;
+  const body = parsedBody.value as {
+    submissionId?: unknown;
+    driveFileId?: unknown;
+  };
 
   const submissionId =
     typeof body.submissionId === "string" ? body.submissionId.trim() : "";

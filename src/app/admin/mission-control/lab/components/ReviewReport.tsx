@@ -2,9 +2,16 @@
 
 import { useEffect, useState } from "react";
 import { auth } from "@/firebase/config";
+import type { ReviewItem, ReviewReport } from "@/mission-control/review/types";
 
 export default function ReviewReport() {
-  const [report, setReport] = useState<any>(null);
+  type ReviewReportState = Partial<ReviewReport> & {
+  success?: boolean;
+  message?: string;
+  modifiedFiles?: unknown;
+};
+
+  const [report, setReport] = useState<ReviewReportState | null>(null);
 
   useEffect(() => {
     loadReport();
@@ -21,7 +28,7 @@ export default function ReviewReport() {
 
   async function reviewAction(
     action: "approve" | "reject",
-    item: any
+    item: ReviewItem
   ) {
     const user = auth.currentUser;
     if (!user) { alert("Please sign in as an administrator."); return; }
@@ -42,6 +49,7 @@ export default function ReviewReport() {
   }
 
   async function applySelected() {
+    if (!report) return;
     const user = auth.currentUser;
     if (!user) { alert("Please sign in as an administrator."); return; }
     const token = await user.getIdToken();
@@ -86,7 +94,7 @@ loadReport();
       <div>Rejected: {report.rejected}</div>
 
       <div className="space-y-2">
-        {report.items?.slice(0, 20).map((item: any) => (
+        {report.items?.slice(0, 20).map((item: ReviewItem) => (
           <div
             key={item.id}
             className="border rounded-lg p-3 space-y-2"

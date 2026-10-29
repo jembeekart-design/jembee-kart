@@ -26,14 +26,21 @@ export async function POST(req: Request) {
   try {
     const decodedToken = await getAdminAuth().verifyIdToken(token);
     creatorId = decodedToken.uid;
-  } catch (err) {
+  } catch {
     return NextResponse.json(
       { success: false, message: "कृपया लॉगिन करें।" },
       { status: 401 }
     );
   }
 
-  let body: {
+  const parsedBody = await readBoundedJson(req, 16384);
+  if (!parsedBody.ok) {
+    return NextResponse.json({ success: false, message: parsedBody.message }, { status: parsedBody.status });
+  }
+  if (!parsedBody.value || typeof parsedBody.value !== "object" || Array.isArray(parsedBody.value)) {
+    return NextResponse.json({ success: false, message: "Request body must be a JSON object" }, { status: 400 });
+  }
+  const body = parsedBody.value as {
     filename?: unknown;
     mimeType?: unknown;
     fileSize?: unknown;
@@ -50,14 +57,6 @@ export async function POST(req: Request) {
     originalAudioId?: unknown;
     isEnhanced?: unknown;
   };
-  const parsedBody = await readBoundedJson(req, 16384);
-  if (!parsedBody.ok) {
-    return NextResponse.json({ success: false, message: parsedBody.message }, { status: parsedBody.status });
-  }
-  if (!parsedBody.value || typeof parsedBody.value !== "object" || Array.isArray(parsedBody.value)) {
-    return NextResponse.json({ success: false, message: "Request body must be a JSON object" }, { status: 400 });
-  }
-  body = parsedBody.value as typeof body;
 
   const filename = typeof body.filename === "string" ? body.filename.trim() : "";
   const mimeType = typeof body.mimeType === "string" ? body.mimeType.trim() : "";

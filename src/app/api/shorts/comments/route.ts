@@ -25,7 +25,6 @@ export async function POST(req: Request) {
     return jsonError("Unauthorized", 401);
   }
 
-  let body: { videoId?: unknown; text?: unknown };
   const parsedBody = await readBoundedJson(req, 8192);
   if (!parsedBody.ok) {
     return NextResponse.json({ success: false, message: parsedBody.message }, { status: parsedBody.status });
@@ -33,7 +32,7 @@ export async function POST(req: Request) {
   if (!parsedBody.value || typeof parsedBody.value !== "object" || Array.isArray(parsedBody.value)) {
     return NextResponse.json({ success: false, message: "Request body must be a JSON object" }, { status: 400 });
   }
-  body = parsedBody.value as typeof body;
+  const body = parsedBody.value as { videoId?: unknown; text?: unknown };
 
   const videoId = typeof body.videoId === "string" ? body.videoId.trim() : "";
   const text = typeof body.text === "string" ? body.text.trim() : "";
