@@ -46,41 +46,118 @@ export default function ShortsProfile({ activeSection, onSectionChange }: Props)
     setVideoLoadError("");
 
     const load = async () => {
-      try {
-        const [profileSnap, earningsSnap, creatorResult, likedSnap, savedSnap] = await Promise.all([
-          getDoc(doc(db, "users", user.uid)),
-          getDocs(query(collection(db, "creatorAdEarnings"), where("creatorId", "==", user.uid), where("status", "==", "AVAILABLE"))),
-          fetchCreatorVideos(user.uid),
-          getDocs(query(collection(db, "watchVideoLikes"), where("userId", "==", user.uid))),
-          getDocs(query(collection(db, FIRESTORE_PATHS.WATCH_EARN.SAVED_VIDEOS), where("userId", "==", user.uid))),
-        ]);
-        if (!active) return;
-        if (profileSnap.exists()) setProfile({ id: profileSnap.id, ...profileSnap.data() });
-        setAdEarnings(earningsSnap.docs.reduce((sum, item) => sum + Number(item.data().creatorAmount || 0), 0));
-        if (creatorResult.success) setVideos((prev) => ({ ...prev, videos: creatorResult.videos }));
-        else setVideoLoadError("Videos load नहीं हो पाए। थोड़ी देर बाद फिर कोशिश करें।");
+      const fallbackProfile = {
+        name: user.displayName || "Creator",
+        photoURL: user.photoURL || "",
+        photoUrl: user.photoURL || "",
+      };
 
-        const fetchByIds = async (ids: unknown[]) => {
-          const uniqueIds = [...new Set(ids.filter((id): id is string => typeof id === "string" && id.length > 0))];
-          const docs = await Promise.all(uniqueIds.map(async (id) => {
-            const snap = await getDoc(doc(db, "watchEarnVideos", id));
-            return snap.exists() ? ({ id: snap.id, ...snap.data() } as WatchVideo) : null;
+      setProfile((prev: any) => ({ ...fallbackProfile, ...prev }));
+
+      const results = await Promise.allSettled([
+        getDoc(doc(db, "users", user.uid)),
+        getDocs(query(
+          collection(db, "creatorAdEarnings"),
+          where("creatorId", "==", user.uid),
+          where("status", "==", "AVAILABLE")
+        )),
+        fetchCreatorVideos(user.uid),
+        getDocs(query(
+          collection(db, "watchVideoLikes"),
+          where("userId", "==", user.uid)
+        )),
+        getDocs(query(
+          collection(db, FIRESTORE_PATHS.WATCH_EARN.SAVED_VIDEOS),
+          where("userId", "==", user.uid)
+        )),
+      ]);
+
+      if (!active) return;
+      const [profileResult, earningsResult, videosResult, likedResult, savedResult] = results;
+      const errors: string[] = [];
+
+      if (profileResult.status === "fulfilled") {
+        const snap = profileResult.value;
+        if (snap.exists()) {
+          const data = snap.data();
+          setProfile((prev: any) => ({
+            ...prev,
+            ...data,
+            photoURL: data.photoURL || data.photoUrl || data.photo || user.photoURL || "",
+            photoUrl: data.photoUrl || data.photoURL || data.photo || user.photoURL || "",
           }));
-          return docs.filter((item): item is WatchVideo => item !== null);
-        };
-        const [liked, saved] = await Promise.all([
-          fetchByIds(likedSnap.docs.map((item) => item.data().videoId)),
-          fetchByIds(savedSnap.docs.map((item) => item.data().videoId)),
-        ]);
-        if (active) setVideos((prev) => ({ ...prev, liked, saved }));
-      } catch (error) {
-        console.error("Failed to load creator profile:", error);
-        if (active) setVideoLoadError("Profile data load नहीं हो पाया। Firebase permissions और network जाँचें।");
-      } finally {
-        if (active) setVideosLoading(false);
+        }
+      } else {
+        console.error("Profile document load failed:", profileResult.reason);
+        errors.push("Profile");
+      }
+
+      if (earningsResult.status === "fulfilled") {
+        setAdEarnings(earningsResult.value.docs.reduce(
+          (sum, item) => sum + Number(item.data().creatorAmount || 0), 0
+        ));
+      } else {
+        console.error("Creator earnings load failed:", earningsResult.reason);
+        errors.push("Earnings");
+      }
+
+      if (videosResult.status === "fulfilled" && videosResult.value.success) {
+        setVideos((prev) => ({ ...prev, videos: videosResult.value.videos }));
+      } else {
+        console.error(
+          "Creator videos load failed:",
+          videosResult.status === "rejected"
+            ? videosResult.reason
+            : "fetchCreatorVideos returned success:false"
+        );
+        errors.push("Videos");
+      }
+
+      const fetchByIds = async (ids: unknown[]) => {
+        const uniqueIds = [...new Set(
+          ids.filter((id): id is string => typeof id === "string" && id.length > 0)
+        )];
+        const results = await Promise.allSettled(uniqueIds.map(async (id) => {
+          const snap = await getDoc(doc(db, "watchEarnVideos", id));
+          return snap.exists() ? ({ id: snap.id, ...snap.data() } as WatchVideo) : null;
+        }));
+        return results.flatMap((result) =>
+          result.status === "fulfilled" && result.value ? [result.value] : []
+        );
+      };
+
+      if (likedResult.status === "fulfilled") {
+        const liked = await fetchByIds(likedResult.value.docs.map((item) => item.data().videoId));
+        if (active) setVideos((prev) => ({ ...prev, liked }));
+      } else {
+        console.error("Liked videos load failed:", likedResult.reason);
+        errors.push("Liked");
+      }
+
+      if (savedResult.status === "fulfilled") {
+        const saved = await fetchByIds(savedResult.value.docs.map((item) => item.data().videoId));
+        if (active) setVideos((prev) => ({ ...prev, saved }));
+      } else {
+        console.error("Saved videos load failed:", savedResult.reason);
+        errors.push("Saved");
+      }
+
+      if (active) {
+        setVideoLoadError(
+          errors.length
+            ? `कुछ डेटा लोड नहीं हुआ: ${errors.join(", ")}. Console में error देखें।`
+            : ""
+        );
       }
     };
-    void load();
+
+    void load().catch((error) => {
+      console.error("Unexpected profile loading error:", error);
+      if (active) setVideoLoadError("Profile loading में unexpected error आया।");
+    }).finally(() => {
+      if (active) setVideosLoading(false);
+    });
+
     return () => { active = false; };
   }, [user]);
 
