@@ -1,3 +1,4 @@
+import { readBoundedJson } from "@/lib/server/readBoundedJson";
 import { NextResponse } from "next/server";
 import { FieldValue, Timestamp } from "firebase-admin/firestore";
 import { getAdminAuth, getAdminDb } from "@/firebase/admin";
@@ -29,7 +30,14 @@ export async function POST(req: Request) {
 
     const decodedToken = await adminAuth.verifyIdToken(token);
 
-    const body = await req.json();
+    const parsedBody = await readBoundedJson(req, 8192);
+    if (!parsedBody.ok) {
+      return NextResponse.json({ success: false, message: parsedBody.message }, { status: parsedBody.status });
+    }
+    if (!parsedBody.value || typeof parsedBody.value !== "object" || Array.isArray(parsedBody.value)) {
+      return NextResponse.json({ success: false, message: "Request body must be a JSON object" }, { status: 400 });
+    }
+    const body = parsedBody.value as Record<string, unknown>;
 
     const adId = String(body.adId ?? "").trim();
     const eventType = body.eventType as EventType;

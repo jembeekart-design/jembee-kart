@@ -1,7 +1,8 @@
-import { NextResponse } from "next/server";
+import { NextRequest, NextResponse } from "next/server";
+import { withAdminAuth } from "@/lib/api/adminAuth";
 
-export async function GET() {
-  return NextResponse.json([
+export async function GET(request: NextRequest) {
+  return withAdminAuth(async () => NextResponse.json([
     {
       id: "admin-1",
       name: "Administrator",
@@ -10,5 +11,5 @@ export async function GET() {
       active: true,
       lastLogin: new Date().toISOString(),
     },
-  ]);
+  ]), request);
 }

@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { FieldValue } from "firebase-admin/firestore";
 import { getAdminAuth, getAdminDb } from "@/firebase/admin";
+import { readBoundedJson } from "@/lib/server/readBoundedJson";
 
 export const runtime = "nodejs";
 
@@ -28,11 +29,12 @@ export async function POST(req: NextRequest) {
     }
 
     const userId = decodedToken.uid;
-    const body = await req.json().catch(() => null);
-
-    if (!body || typeof body !== "object" || Array.isArray(body)) {
+    const parsed = await readBoundedJson(req, 8 * 1024);
+    if (!parsed.ok) return errorResponse(parsed.message, parsed.status);
+    if (!parsed.value || typeof parsed.value !== "object" || Array.isArray(parsed.value)) {
       return errorResponse("Invalid request.", 400);
     }
+    const body = parsed.value as Record<string, unknown>;
 
     const productId =
       typeof body.productId === "string" ? body.productId.trim() : "";

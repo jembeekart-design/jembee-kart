@@ -3,6 +3,7 @@ import { NextResponse } from "next/server";
 import { FieldValue } from "firebase-admin/firestore";
 import { getAdminDb } from "@/firebase/admin";
 import { verifyMonetagAdmin } from "@/lib/server/monetagAdminAuth";
+import { readBoundedJson } from "@/lib/server/readBoundedJson";
 
 export const runtime = "nodejs";
 const API = "https://api.monetag.com/v5";
@@ -15,11 +16,20 @@ export async function POST(req: Request) {
     const adminUid = await verifyMonetagAdmin(req);
     const token = process.env.MONETAG_API_TOKEN;
     if (!token) return NextResponse.json({ success: false, message: "MONETAG_API_TOKEN server environment में सेट नहीं है।" }, { status: 503 });
-    const body = await req.json().catch(() => ({}));
-    const dateFrom = String(body.date_from || "").trim();
-    const dateTo = String(body.date_to || "").trim();
-    const datePattern = /^\d{4}-\d{2}-\d{2}$/;
-    if (!datePattern.test(dateFrom) || !datePattern.test(dateTo) || dateFrom > dateTo) return NextResponse.json({ success: false, message: "date_from और date_to YYYY-MM-DD format में दें।" }, { status: 400 });
+    const parsed = await readBoundedJson(req, 16 * 1024);
+    if (!parsed.ok) return NextResponse.json({ success: false, message: parsed.message }, { status: parsed.status });
+    if (!parsed.value || typeof parsed.value !== "object" || Array.isArray(parsed.value)) return NextResponse.json({ success: false, message: "Request body must be an object." }, { status: 400 });
+    const body = parsed.value as Record<string, unknown>;
+    const dateFrom = typeof body.date_from === "string" ? body.date_from.trim() : "";
+    const dateTo = typeof body.date_to === "string" ? body.date_to.trim() : "";
+    const validDate = (value: string) => {
+      if (!/^\d{4}-\d{2}-\d{2}$/.test(value)) return false;
+      const parsedDate = new Date(`${value}T00:00:00.000Z`);
+      return Number.isFinite(parsedDate.getTime()) && parsedDate.toISOString().slice(0, 10) === value;
+    };
+    if (!validDate(dateFrom) || !validDate(dateTo) || dateFrom > dateTo) return NextResponse.json({ success: false, message: "date_from और date_to वैध YYYY-MM-DD तारीखें होनी चाहिए।" }, { status: 400 });
+    const dayCount = (Date.parse(`${dateTo}T00:00:00.000Z`) - Date.parse(`${dateFrom}T00:00:00.000Z`)) / 86400000 + 1;
+    if (dayCount > 366) return NextResponse.json({ success: false, message: "एक बार में अधिकतम 366 दिनों की रिपोर्ट माँग सकते हैं।" }, { status: 400 });
     const pageSize = Math.min(100, Math.max(1, Math.trunc(numeric(body.page_size) || 100)));
     const siteUrl = String(process.env.MONETAG_SITE_URL || DEFAULT_SITE).trim();
     const headers = { Authorization: `Bearer ${token}`, Accept: "application/json", "Content-Type": "application/json", "X-Request-Id": randomUUID() };
@@ -29,17 +39,21 @@ export async function POST(req: Request) {
     const sites = Array.isArray(sitesData?.sites) ? sitesData.sites : [];
     const site = sites.find((s: { id?: string | number; url?: string }) => String(s?.url || "").replace(/^https?:\/\//, "").replace(/\/$/, "") === siteUrl.replace(/^https?:\/\//, "").replace(/\/$/, ""));
     if (!site?.id) return NextResponse.json({ success: false, message: `Monetag account में ${siteUrl} नाम की site नहीं मिली। MONETAG_SITE_URL जाँचें।` }, { status: 404 });
+    const siteId = Number(site.id);
+    if (!Number.isSafeInteger(siteId) || siteId <= 0) {
+      return NextResponse.json({ success: false, message: "Monetag site ID मान्य नहीं है।" }, { status: 502 });
+    }
     const statsRes = await fetch(`${API}/pub/statistics`, { method: "POST", headers, cache: "no-store", body: JSON.stringify({
       date_from: dateFrom,
       date_to: dateTo,
-      site_ids: [7835975],
+      site_ids: [siteId],
       group_by: ["zone_id"],
       zone_ids: [12065645, 12065644, 12065643, 12065642, 12064903, 12064902, 12064901, 12064900],
       page: 1,
       page_size: pageSize
     }) });
     const statsData = await statsRes.json().catch(() => ({}));
-    if (!statsRes.ok) return NextResponse.json({ success: false, message: `Monetag statistics API ने HTTP ${statsRes.status} दिया।`, details: statsData }, { status: statsRes.status === 401 ? 401 : statsRes.status === 429 ? 429 : 502 });
+    if (!statsRes.ok) return NextResponse.json({ success: false, message: `Monetag statistics API ने HTTP ${statsRes.status} दिया। Token, permission या रिपोर्ट अवधि जाँचें।` }, { status: statsRes.status === 401 ? 401 : statsRes.status === 429 ? 429 : 502 });
     const allRows: Array<Record<string, unknown>> = Array.isArray(statsData?.result) ? statsData.result : [];
     const rowFieldNames = allRows[0] ? Object.keys(allRows[0]) : [];
     const allowedZoneIds = new Set([

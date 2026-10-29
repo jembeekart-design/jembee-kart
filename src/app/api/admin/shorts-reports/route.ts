@@ -1,3 +1,4 @@
+import { readBoundedJson } from "@/lib/server/readBoundedJson";
 import { NextResponse } from "next/server";
 import { FieldValue } from "firebase-admin/firestore";
 import { getAdminAuth, getAdminDb } from "@/firebase/admin";
@@ -72,11 +73,14 @@ export async function POST(req: Request) {
   try {
     const adminId = await verifyAdmin(req);
     let body: unknown;
-    try {
-      body = await req.json();
-    } catch {
-      return NextResponse.json({ success: false, message: "Invalid JSON body" }, { status: 400 });
-    }
+    const parsedBody = await readBoundedJson(req, 8192);
+  if (!parsedBody.ok) {
+    return NextResponse.json({ success: false, message: parsedBody.message }, { status: parsedBody.status });
+  }
+  if (!parsedBody.value || typeof parsedBody.value !== "object" || Array.isArray(parsedBody.value)) {
+    return NextResponse.json({ success: false, message: "Request body must be a JSON object" }, { status: 400 });
+  }
+  body = parsedBody.value as typeof body;
 
     const input = body as { reportId?: unknown; action?: unknown } | null;
     const reportId = typeof input?.reportId === "string" ? input.reportId.trim() : "";

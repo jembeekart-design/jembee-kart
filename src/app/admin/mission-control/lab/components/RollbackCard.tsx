@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { auth } from "@/firebase/config";
 
 export default function RollbackCard() {
   const [backupPath, setBackupPath] = useState("");
@@ -11,10 +12,14 @@ export default function RollbackCard() {
     setLoading(true);
 
     try {
+      const user = auth.currentUser;
+      if (!user) { setResult({ success: false, message: "Please sign in as an administrator." }); setLoading(false); return; }
+      const token = await user.getIdToken();
       const res = await fetch("/api/mission-control/rollback", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
         },
         body: JSON.stringify({ backupPath }),
       });

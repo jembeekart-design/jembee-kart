@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import { auth } from "@/firebase/config";
 
 export default function ReviewReport() {
   const [report, setReport] = useState<any>(null);
@@ -10,7 +11,10 @@ export default function ReviewReport() {
   }, []);
 
   async function loadReport() {
-    const res = await fetch("/api/mission-control/review");
+    const user = auth.currentUser;
+    if (!user) { setReport({ success: false, message: "Please sign in as an administrator." }); return; }
+    const token = await user.getIdToken();
+    const res = await fetch("/api/mission-control/review", { headers: { Authorization: `Bearer ${token}` }, cache: "no-store" });
     const data = await res.json();
     setReport(data);
   }
@@ -19,10 +23,14 @@ export default function ReviewReport() {
     action: "approve" | "reject",
     item: any
   ) {
+    const user = auth.currentUser;
+    if (!user) { alert("Please sign in as an administrator."); return; }
+    const token = await user.getIdToken();
     await fetch("/api/mission-control/review/action", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
       },
       body: JSON.stringify({
         action,
@@ -34,10 +42,14 @@ export default function ReviewReport() {
   }
 
   async function applySelected() {
+    const user = auth.currentUser;
+    if (!user) { alert("Please sign in as an administrator."); return; }
+    const token = await user.getIdToken();
     const res = await fetch("/api/mission-control/review/apply", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
       },
       body: JSON.stringify({
         items: report.items,

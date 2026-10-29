@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import { getAdminDb } from "@/firebase/admin";
 import { verifyMonetagAdmin } from "@/lib/server/monetagAdminAuth";
+import { readBoundedJson } from "@/lib/server/readBoundedJson";
 
 export const runtime = "nodejs";
 const DEFAULTS = { uploaderPercent: 30, sharerPercent: 20, updatedAt: null as unknown };
@@ -21,7 +22,10 @@ export async function GET(req: Request) {
 export async function PUT(req: Request) {
   try {
     const uid = await verifyMonetagAdmin(req);
-    const body = await req.json();
+    const parsedBody = await readBoundedJson(req, 16 * 1024);
+    if (!parsedBody.ok) return NextResponse.json({ success: false, message: parsedBody.message }, { status: parsedBody.status });
+    if (!parsedBody.value || typeof parsedBody.value !== "object" || Array.isArray(parsedBody.value)) return NextResponse.json({ success: false, message: "A JSON object is required." }, { status: 400 });
+    const body = parsedBody.value as Record<string, unknown>;
     const uploaderPercent = Number(body.uploaderPercent);
     const sharerPercent = Number(body.sharerPercent);
     if (!Number.isFinite(uploaderPercent) || !Number.isFinite(sharerPercent) || uploaderPercent < 0 || sharerPercent < 0 || uploaderPercent > 100 || sharerPercent > 100 || uploaderPercent + sharerPercent > 100) {

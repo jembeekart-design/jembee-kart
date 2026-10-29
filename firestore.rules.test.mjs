@@ -6,7 +6,7 @@ import {
   assertFails,
 } from "@firebase/rules-unit-testing";
 import {
-  doc, getDoc, setDoc, updateDoc,
+  doc, getDoc, setDoc, updateDoc, deleteDoc,
 } from "firebase/firestore";
 import { readFile } from "node:fs/promises";
 
@@ -47,6 +47,50 @@ beforeEach(async () => {
 
 after(async () => {
   if (env) await env.cleanup();
+});
+
+
+test("user can create and read their own wishlist item", async () => {
+  const db = env.authenticatedContext("userA").firestore();
+  const ref = doc(db, "wishlist", "itemA");
+  await assertSucceeds(setDoc(ref, {
+    userId: "userA",
+    productId: "productA",
+    productTitle: "Test product",
+    image: "/placeholder.png",
+    price: 12.5,
+  }));
+  await assertSucceeds(getDoc(ref));
+});
+
+test("user cannot read another user's wishlist item", async () => {
+  await env.withSecurityRulesDisabled(async (ctx) => {
+    await setDoc(doc(ctx.firestore(), "wishlist/itemB"), {
+      userId: "userB", productId: "productB", productTitle: "Private item", image: "", price: 1,
+    });
+  });
+  await assertFails(getDoc(doc(env.authenticatedContext("userA").firestore(), "wishlist/itemB")));
+});
+
+test("user cannot create a wishlist item for another user or add extra fields", async () => {
+  const db = env.authenticatedContext("userA").firestore();
+  await assertFails(setDoc(doc(db, "wishlist/forgedOwner"), {
+    userId: "userB", productId: "productB", productTitle: "Forged", image: "", price: 1,
+  }));
+  await assertFails(setDoc(doc(db, "wishlist/extraField"), {
+    userId: "userA", productId: "productA", productTitle: "Test", image: "", price: 1, role: "admin",
+  }));
+});
+
+test("wishlist item cannot be updated directly but owner can delete it", async () => {
+  await env.withSecurityRulesDisabled(async (ctx) => {
+    await setDoc(doc(ctx.firestore(), "wishlist/itemC"), {
+      userId: "userA", productId: "productC", productTitle: "Test", image: "", price: 1,
+    });
+  });
+  const ref = doc(env.authenticatedContext("userA").firestore(), "wishlist/itemC");
+  await assertFails(updateDoc(ref, { price: 0 }));
+  await assertSucceeds(deleteDoc(ref));
 });
 
 test("approved comments can be read by users", async () => {

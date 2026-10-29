@@ -1,3 +1,5 @@
+import { readBoundedJson } from "@/lib/server/readBoundedJson";
+import { randomUUID } from "node:crypto";
 import { NextRequest, NextResponse } from "next/server";
 import { getAdminAuth, getAdminDb } from "@/firebase/admin";
 
@@ -18,9 +20,16 @@ export async function POST(req: NextRequest) {
     }
 
     const decoded = await getAdminAuth().verifyIdToken(authHeader.slice(7).trim());
-    const body = await req.json();
+    const parsedBody = await readBoundedJson(req, 16384);
+    if (!parsedBody.ok) {
+      return NextResponse.json({ success: false, message: parsedBody.message }, { status: parsedBody.status });
+    }
+    if (!parsedBody.value || typeof parsedBody.value !== "object" || Array.isArray(parsedBody.value)) {
+      return NextResponse.json({ success: false, message: "Request body must be a JSON object" }, { status: 400 });
+    }
+    const body = parsedBody.value as Record<string, unknown>;
     const {
-      orderNumber, sku, quantity, customerName, customerPhone, email,
+      sku, quantity, customerName, customerPhone, email,
       address, city, state, pincode, paymentMethod,
     } = body ?? {};
 
@@ -37,7 +46,7 @@ export async function POST(req: NextRequest) {
         error: "Prepaid Qikink orders are disabled until server-side Cashfree payment verification is configured.",
       }, { status: 409 });
     }
-    if (![customerName, customerPhone, address, city, state, pincode].every((v) => typeof v === "string" && v.trim())) {
+    if (typeof customerName !== "string" || !customerName.trim() || typeof customerPhone !== "string" || !customerPhone.trim() || typeof address !== "string" || !address.trim() || typeof city !== "string" || !city.trim() || typeof state !== "string" || !state.trim() || typeof pincode !== "string" || !pincode.trim()) {
       return NextResponse.json({ success: false, error: "Complete shipping details are required" }, { status: 400 });
     }
 
@@ -53,8 +62,14 @@ export async function POST(req: NextRequest) {
     if (product.visible === false) {
       return NextResponse.json({ success: false, error: "Product is not available" }, { status: 409 });
     }
-    const stock = Number(product.stock);
-    if (Number.isFinite(stock) && stock < qty) {
+    // Missing, malformed, fractional, or negative stock must never mean "unlimited".
+    // This is only a preflight check; see AUDIT_STATUS.md for the remaining cross-system
+    // reservation/idempotency requirement before this endpoint is used in production.
+    const stock = product.stock;
+    if (typeof stock !== "number" || !Number.isSafeInteger(stock) || stock < 0) {
+      return NextResponse.json({ success: false, error: "Product inventory is not configured" }, { status: 409 });
+    }
+    if (stock < qty) {
       return NextResponse.json({ success: false, error: "Insufficient stock" }, { status: 409 });
     }
     const price = Number(product.discountPrice) > 0 ? Number(product.discountPrice) : Number(product.price);
@@ -75,6 +90,7 @@ export async function POST(req: NextRequest) {
       headers: { "Content-Type": "application/x-www-form-urlencoded" },
       body: new URLSearchParams({ ClientId: clientId, client_secret: clientSecret }),
       cache: "no-store",
+      signal: AbortSignal.timeout(10_000),
     });
     if (!tokenResponse.ok) {
       return NextResponse.json({ success: false, error: "Qikink authentication failed" }, { status: 502 });
@@ -84,8 +100,9 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ success: false, error: "Qikink authentication failed" }, { status: 502 });
     }
 
-    const safeOrderNumber = typeof orderNumber === "string" && /^[A-Za-z0-9_-]{1,80}$/.test(orderNumber)
-      ? orderNumber : `JK-${decoded.uid.slice(0, 8)}-${Date.now()}`;
+    // Never accept the provider-facing order reference from the browser: it must be
+    // server-generated to prevent collisions and cross-user reference spoofing.
+    const safeOrderNumber = `JK-${decoded.uid.slice(0, 8)}-${randomUUID().replace(/-/g, "").slice(0, 20)}`;
     const payload = {
       order_number: safeOrderNumber,
       qikink_shipping: "1",
@@ -102,12 +119,15 @@ export async function POST(req: NextRequest) {
       method: "POST",
       headers: { "Content-Type": "application/json", ClientId: clientId, Accesstoken: tokenData.Accesstoken },
       body: JSON.stringify(payload), cache: "no-store",
+      signal: AbortSignal.timeout(15_000),
     });
-    const result = await response.json().catch(() => null);
+    // Consume but do not relay the provider payload; it may contain internal diagnostics
+    // or customer/provider metadata not intended for the browser.
+    await response.text().catch(() => "");
     if (!response.ok) {
       return NextResponse.json({ success: false, error: "Qikink rejected the order" }, { status: 502 });
     }
-    return NextResponse.json({ success: true, orderNumber: safeOrderNumber, total, qikink: result });
+    return NextResponse.json({ success: true, orderNumber: safeOrderNumber, total }, { headers: { "Cache-Control": "no-store" } });
   } catch (error) {
     console.error("QIKINK ORDER ERROR", error instanceof Error ? error.message : "unknown");
     return NextResponse.json({ success: false, error: "Unable to create Qikink order" }, { status: 500 });

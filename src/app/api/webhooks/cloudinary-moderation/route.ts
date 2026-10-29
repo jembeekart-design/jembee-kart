@@ -1,3 +1,4 @@
+import { readBoundedJson } from "@/lib/server/readBoundedJson";
 import { NextResponse } from "next/server";
 import { getAdminDb } from "@/firebase/admin";
 import { FieldValue } from "firebase-admin/firestore";
@@ -12,9 +13,16 @@ export async function POST(request: Request) {
   }
 
   try {
-    const body = await request.json();
-    const { public_id, moderation_status, moderation_kind, moderation_details } = body ?? {};
-    if (typeof public_id !== "string" || !["approved", "rejected"].includes(moderation_status)) {
+    const parsedBody = await readBoundedJson(request, 16384);
+    if (!parsedBody.ok) {
+      return NextResponse.json({ error: parsedBody.message }, { status: parsedBody.status });
+    }
+    if (!parsedBody.value || typeof parsedBody.value !== "object" || Array.isArray(parsedBody.value)) {
+      return NextResponse.json({ error: "Request body must be a JSON object" }, { status: 400 });
+    }
+    const body = parsedBody.value as Record<string, unknown>;
+    const { public_id, moderation_status, moderation_kind, moderation_details } = body;
+    if (typeof public_id !== "string" || typeof moderation_status !== "string" || !["approved", "rejected"].includes(moderation_status)) {
       return NextResponse.json({ error: "Invalid moderation payload" }, { status: 400 });
     }
     const adminDb = getAdminDb();

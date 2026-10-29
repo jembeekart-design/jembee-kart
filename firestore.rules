@@ -115,6 +115,28 @@ service cloud.firestore {
       }
     }
 
+    // Wishlist items are private to their owner; client updates are not used by the UI.
+    match /wishlist/{wishlistId} {
+      allow read: if (signedIn() && resource.data.userId == request.auth.uid) || isAdmin();
+      allow create: if signedIn()
+        && request.resource.data.keys().hasOnly([
+          'userId', 'productId', 'productTitle', 'image', 'price'
+        ])
+        && request.resource.data.userId == request.auth.uid
+        && request.resource.data.productId is string
+        && request.resource.data.productId.size() > 0
+        && request.resource.data.productId.size() <= 128
+        && request.resource.data.productTitle is string
+        && request.resource.data.productTitle.size() <= 200
+        && request.resource.data.image is string
+        && request.resource.data.image.size() <= 2048
+        && request.resource.data.price is number
+        && request.resource.data.price >= 0
+        && request.resource.data.price <= 100000000;
+      allow update: if false;
+      allow delete: if (signedIn() && resource.data.userId == request.auth.uid) || isAdmin();
+    }
+
     match /orders/{orderId} {
       allow read: if signedIn()
         && (

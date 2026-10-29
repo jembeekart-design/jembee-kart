@@ -3,12 +3,40 @@ import { NextResponse } from "next/server";
 import { FieldValue } from "firebase-admin/firestore";
 import { getAdminDb } from "@/firebase/admin";
 import { verifyMonetagAdmin } from "@/lib/server/monetagAdminAuth";
+import { readBoundedJson } from "@/lib/server/readBoundedJson";
 
 export const runtime = "nodejs";
 
 type CsvRow = Record<string, string>;
 
+function detectCsvDelimiter(text: string): "," | ";" {
+  // Detect the separator in the first logical record, ignoring delimiters inside quotes.
+  let commas = 0;
+  let semicolons = 0;
+  let quoted = false;
+
+  for (let i = 0; i < text.length; i++) {
+    const ch = text[i];
+    if (ch === '"') {
+      if (quoted && text[i + 1] === '"') {
+        i++;
+      } else {
+        quoted = !quoted;
+      }
+    } else if (!quoted && (ch === "\n" || ch === "\r")) {
+      break;
+    } else if (!quoted && ch === ",") {
+      commas++;
+    } else if (!quoted && ch === ";") {
+      semicolons++;
+    }
+  }
+
+  return semicolons > commas ? ";" : ",";
+}
+
 function parseCsv(text: string): string[][] {
+  const delimiter = detectCsvDelimiter(text);
   const rows: string[][] = [];
   let row: string[] = [];
   let field = "";
@@ -24,7 +52,7 @@ function parseCsv(text: string): string[][] {
       } else {
         quoted = !quoted;
       }
-    } else if (ch === ";" && !quoted) {
+    } else if (ch === delimiter && !quoted) {
       row.push(field.trim());
       field = "";
     } else if ((ch === "\n" || ch === "\r") && !quoted) {
@@ -154,7 +182,10 @@ function parseReport(csv: string) {
 export async function POST(req: Request) {
   try {
     const adminUid = await verifyMonetagAdmin(req);
-    const body = await req.json();
+    const parsedBody = await readBoundedJson(req, 1024 * 1024 + 16 * 1024);
+    if (!parsedBody.ok) return NextResponse.json({ success: false, message: parsedBody.message }, { status: parsedBody.status });
+    if (!parsedBody.value || typeof parsedBody.value !== "object" || Array.isArray(parsedBody.value)) return NextResponse.json({ success: false, message: "A JSON object is required." }, { status: 400 });
+    const body = parsedBody.value as Record<string, unknown>;
     const action = String(body.action || "");
     const csv = String(body.csv || "");
 

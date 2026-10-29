@@ -2,6 +2,7 @@ import { randomUUID } from "node:crypto";
 import { NextResponse } from "next/server";
 import { FieldValue } from "firebase-admin/firestore";
 import { getAdminAuth, getAdminDb } from "@/firebase/admin";
+import { readBoundedJson } from "@/lib/server/readBoundedJson";
 export const runtime = "nodejs";
 
 export async function POST(req: Request) {
@@ -9,8 +10,11 @@ export async function POST(req: Request) {
     const authHeader = req.headers.get("authorization");
     if (!authHeader?.startsWith("Bearer ")) return NextResponse.json({ success: false, message: "शेयर attribution के लिए लॉगिन करें।" }, { status: 401 });
     const decoded = await getAdminAuth().verifyIdToken(authHeader.slice(7).trim());
-    const body = await req.json();
-    const videoId = String(body.videoId || "").trim();
+    const parsed = await readBoundedJson(req, 8 * 1024);
+    if (!parsed.ok) return NextResponse.json({ success: false, message: parsed.message }, { status: parsed.status });
+    if (!parsed.value || typeof parsed.value !== "object" || Array.isArray(parsed.value)) return NextResponse.json({ success: false, message: "Invalid request body." }, { status: 400 });
+    const body = parsed.value as Record<string, unknown>;
+    const videoId = typeof body.videoId === "string" ? body.videoId.trim() : "";
     if (!videoId || videoId.length > 180) return NextResponse.json({ success: false, message: "वीडियो ID मान्य नहीं है।" }, { status: 400 });
     const db = getAdminDb();
     const videoSnap = await db.collection("watchEarnVideos").doc(videoId).get();

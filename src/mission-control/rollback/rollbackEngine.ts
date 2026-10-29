@@ -14,6 +14,8 @@ function copyRecursive(source: string, destination: string): number {
   const entries = fs.readdirSync(source, { withFileTypes: true });
 
   for (const entry of entries) {
+    // Never follow symlinks from backup contents into arbitrary filesystem paths.
+    if (entry.isSymbolicLink()) continue;
     const src = path.join(source, entry.name);
     const dest = path.join(destination, entry.name);
 

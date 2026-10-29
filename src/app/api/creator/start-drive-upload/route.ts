@@ -1,3 +1,4 @@
+import { readBoundedJson } from "@/lib/server/readBoundedJson";
 import { NextResponse } from "next/server";
 import crypto from "node:crypto";
 import { getAdminAuth, getAdminDb } from "@/firebase/admin";
@@ -9,10 +10,7 @@ const MAX_VIDEO_SIZE = 500 * 1024 * 1024;
 
 export async function POST(req: Request) {
   const authHeader = req.headers.get("authorization");
-
-  console.log("[AuthDiagnostic] Start Upload - Auth Header:", authHeader ? "Present" : "Missing");
   if (authHeader) {
-      console.log("[AuthDiagnostic] Start Upload - Bearer Prefix:", authHeader.startsWith("Bearer ") ? "Present" : "Missing");
   }
 
   if (!authHeader?.startsWith("Bearer ")) {
@@ -28,9 +26,7 @@ export async function POST(req: Request) {
   try {
     const decodedToken = await getAdminAuth().verifyIdToken(token);
     creatorId = decodedToken.uid;
-    console.log("[AuthDiagnostic] Start Upload - Token Verified. UID:", creatorId);
   } catch (err) {
-    console.error("[AuthDiagnostic] Start Upload - Token Verification Failed:", err);
     return NextResponse.json(
       { success: false, message: "कृपया लॉगिन करें।" },
       { status: 401 }
@@ -54,14 +50,14 @@ export async function POST(req: Request) {
     originalAudioId?: unknown;
     isEnhanced?: unknown;
   };
-  try {
-    body = await req.json();
-  } catch {
-    return NextResponse.json(
-      { success: false, message: "अनुरोध की जानकारी सही नहीं है।" },
-      { status: 400 }
-    );
+  const parsedBody = await readBoundedJson(req, 16384);
+  if (!parsedBody.ok) {
+    return NextResponse.json({ success: false, message: parsedBody.message }, { status: parsedBody.status });
   }
+  if (!parsedBody.value || typeof parsedBody.value !== "object" || Array.isArray(parsedBody.value)) {
+    return NextResponse.json({ success: false, message: "Request body must be a JSON object" }, { status: 400 });
+  }
+  body = parsedBody.value as typeof body;
 
   const filename = typeof body.filename === "string" ? body.filename.trim() : "";
   const mimeType = typeof body.mimeType === "string" ? body.mimeType.trim() : "";
@@ -98,24 +94,12 @@ export async function POST(req: Request) {
   const submissionId = crypto.randomUUID();
 
   try {
-    console.log("[UPLOAD_DEBUG_SERVER] START_BEGIN", {
-      creatorId,
-      filename,
-      mimeType,
-      fileSize,
-      submissionId,
-    });
 
     const uploadUrl = await createResumableUploadSession(
       `moderation_${submissionId}`,
       mimeType,
       fileSize
     );
-
-    console.log("[UPLOAD_DEBUG_SERVER] DRIVE_SESSION_CREATED", {
-      submissionId,
-      uploadUrlPresent: !!uploadUrl,
-    });
 
     const adminDb = getAdminDb();
     await adminDb
@@ -150,13 +134,6 @@ export async function POST(req: Request) {
       uploadUrl,
     });
   } catch (error) {
-    console.error("[UPLOAD_DEBUG_SERVER] START_ERROR", {
-      name: error instanceof Error ? error.name : typeof error,
-      message: error instanceof Error ? error.message : String(error),
-      stack: error instanceof Error ? error.stack : undefined,
-      creatorId,
-      submissionId,
-    });
 
     console.error("Failed to start drive upload session:", error);
     return NextResponse.json(

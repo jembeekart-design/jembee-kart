@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import { createCipheriv, randomBytes } from "node:crypto";
 import { getAdminAuth, getAdminDb } from "@/firebase/admin";
+import { readBoundedJson } from "@/lib/server/readBoundedJson";
 
 export const runtime = "nodejs";
 
@@ -63,7 +64,10 @@ export async function GET(req: Request) {
 export async function PUT(req: Request) {
   try {
     const uid = await verifyAdmin(req);
-    const body = await req.json();
+    const parsed = await readBoundedJson(req, 16 * 1024);
+    if (!parsed.ok) return NextResponse.json({ success: false, message: parsed.message }, { status: parsed.status });
+    if (!parsed.value || typeof parsed.value !== "object" || Array.isArray(parsed.value)) return NextResponse.json({ success: false, message: "Request body must be an object" }, { status: 400 });
+    const body = parsed.value as Record<string, unknown>;
     const appId = typeof body.appId === "string" ? body.appId.trim() : "";
     const secretKey = typeof body.secretKey === "string" ? body.secretKey : "";
     const webhookSecret = typeof body.webhookSecret === "string" ? body.webhookSecret : "";

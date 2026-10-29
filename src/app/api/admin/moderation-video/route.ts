@@ -1,3 +1,4 @@
+import { readBoundedJson } from "@/lib/server/readBoundedJson";
 import { NextResponse } from "next/server";
 import { Readable } from "node:stream";
 import { getAdminAuth, getAdminDb } from "@/firebase/admin";
@@ -197,7 +198,14 @@ export async function POST(req: Request) {
 
     const uid = await verifyAdmin(req);
 
-    const body = await req.json();
+    const parsedBody = await readBoundedJson(req, 8192);
+    if (!parsedBody.ok) {
+      return NextResponse.json({ error: parsedBody.message }, { status: parsedBody.status });
+    }
+    if (!parsedBody.value || typeof parsedBody.value !== "object" || Array.isArray(parsedBody.value)) {
+      return NextResponse.json({ error: "Request body must be a JSON object" }, { status: 400 });
+    }
+    const body = parsedBody.value as Record<string, unknown>;
     const { driveFileId } = body;
 
     if (!driveFileId || typeof driveFileId !== "string") {

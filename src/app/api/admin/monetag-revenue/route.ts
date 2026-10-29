@@ -1,3 +1,4 @@
+import { readBoundedJson } from "@/lib/server/readBoundedJson";
 import { createHash } from "node:crypto";
 import { NextResponse } from "next/server";
 import { FieldValue } from "firebase-admin/firestore";
@@ -53,7 +54,14 @@ export async function GET(req: Request) {
 export async function POST(req: Request) {
   try {
     const adminUid = await verifyMonetagAdmin(req);
-    const body = await req.json();
+    const parsedBody = await readBoundedJson(req, 16384);
+    if (!parsedBody.ok) {
+      return NextResponse.json({ success: false, message: parsedBody.message }, { status: parsedBody.status });
+    }
+    if (!parsedBody.value || typeof parsedBody.value !== "object" || Array.isArray(parsedBody.value)) {
+      return NextResponse.json({ success: false, message: "Request body must be a JSON object" }, { status: 400 });
+    }
+    const body = parsedBody.value as Record<string, unknown>;
     const externalRecordId = String(body.externalRecordId || "").trim();
     const uploaderUserId = String(body.uploaderUserId || "").trim();
     const sharerUserId = String(body.sharerUserId || "").trim();

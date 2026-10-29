@@ -1,3 +1,4 @@
+import { readBoundedJson } from "@/lib/server/readBoundedJson";
 import { NextResponse } from "next/server";
 import { FieldValue } from "firebase-admin/firestore";
 import { getAdminAuth, getAdminDb } from "@/firebase/admin";
@@ -25,11 +26,14 @@ export async function POST(req: Request) {
   }
 
   let body: { videoId?: unknown; text?: unknown };
-  try {
-    body = await req.json();
-  } catch {
-    return jsonError("Invalid JSON body", 400);
+  const parsedBody = await readBoundedJson(req, 8192);
+  if (!parsedBody.ok) {
+    return NextResponse.json({ success: false, message: parsedBody.message }, { status: parsedBody.status });
   }
+  if (!parsedBody.value || typeof parsedBody.value !== "object" || Array.isArray(parsedBody.value)) {
+    return NextResponse.json({ success: false, message: "Request body must be a JSON object" }, { status: 400 });
+  }
+  body = parsedBody.value as typeof body;
 
   const videoId = typeof body.videoId === "string" ? body.videoId.trim() : "";
   const text = typeof body.text === "string" ? body.text.trim() : "";

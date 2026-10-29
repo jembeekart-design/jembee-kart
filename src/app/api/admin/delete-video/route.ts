@@ -2,6 +2,7 @@ import { NextResponse } from "next/server";
 import { getAdminDb, getAdminAuth } from "@/firebase/admin";
 import { v2 as cloudinary } from "cloudinary";
 import { deleteDriveFile } from "@/services/googleDriveService";
+import { readBoundedJson } from "@/lib/server/readBoundedJson";
 
 // Configure Cloudinary
 cloudinary.config({
@@ -12,9 +13,19 @@ cloudinary.config({
 
 export async function POST(req: Request) {
   try {
+    const parsed = await readBoundedJson(req, 8 * 1024);
+    if (!parsed.ok) {
+      return NextResponse.json({ success: false, message: parsed.message }, { status: parsed.status });
+    }
+    if (!parsed.value || typeof parsed.value !== "object" || Array.isArray(parsed.value)) {
+      return NextResponse.json({ success: false, message: "Request body must be a JSON object" }, { status: 400 });
+    }
+    const { videoId, token } = parsed.value as { videoId?: unknown; token?: unknown };
+    if (typeof videoId !== "string" || !videoId.trim() || videoId.length > 128 || videoId.includes("/") || typeof token !== "string" || !token.trim()) {
+      return NextResponse.json({ success: false, message: "Valid videoId and token are required" }, { status: 400 });
+    }
     const adminDb = getAdminDb();
     const adminAuth = getAdminAuth();
-    const { videoId, token } = await req.json();
     // 1. Verify Admin Role
     const decodedToken = await adminAuth.verifyIdToken(token);
     
@@ -69,13 +80,15 @@ export async function POST(req: Request) {
       }
     }
 
-    // 4. Perform Cascading Deletion in Firestore (only if Cloudinary succeeded)
-    const batch = adminDb.batch();
-
-    // Helper to delete associated records
+    // 4. Delete related Firestore records in bounded batches (Firestore limit is 500 writes/batch).
+    // Use smaller batches to leave headroom if additional cleanup writes are added later.
     const deleteRelated = async (collection: string, field: string, value: string) => {
       const snapshot = await adminDb.collection(collection).where(field, "==", value).get();
-      snapshot.forEach((doc) => batch.delete(doc.ref));
+      for (let offset = 0; offset < snapshot.docs.length; offset += 400) {
+        const batch = adminDb.batch();
+        snapshot.docs.slice(offset, offset + 400).forEach((doc) => batch.delete(doc.ref));
+        await batch.commit();
+      }
     };
 
     await deleteRelated("watchVideoLikes", "videoId", videoId);
@@ -84,11 +97,8 @@ export async function POST(req: Request) {
     await deleteRelated("videoComments", "videoId", videoId);
     await deleteRelated("videoReports", "videoId", videoId);
 
-    // Delete Main Video Document
-    batch.delete(videoRef);
-
-    // 5. Commit Firestore Changes
-    await batch.commit();
+    // Delete the main record only after related-record cleanup succeeds.
+    await videoRef.delete();
 
     return NextResponse.json({ success: true, message: "Video deleted successfully." });
   } catch (error) {

@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { FieldValue } from "firebase-admin/firestore";
 import { getAdminAuth, getAdminDb } from "@/firebase/admin";
+import { readBoundedJson } from "@/lib/server/readBoundedJson";
 
 export const runtime = "nodejs";
 
@@ -26,7 +27,10 @@ export async function POST(req: NextRequest) {
     const decoded = await getAdminAuth().verifyIdToken(token, true);
     const uid = decoded.uid;
 
-    const body = await req.json();
+    const parsed = await readBoundedJson(req, 8 * 1024);
+    if (!parsed.ok) return NextResponse.json({ success: false, error: parsed.message }, { status: parsed.status });
+    if (!parsed.value || typeof parsed.value !== "object" || Array.isArray(parsed.value)) return NextResponse.json({ success: false, error: "Invalid request body" }, { status: 400 });
+    const body = parsed.value as Record<string, unknown>;
     const name =
       typeof body?.name === "string" ? body.name.trim().replace(/\s+/g, " ") : "";
     const sponsorCode =
