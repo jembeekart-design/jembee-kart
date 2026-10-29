@@ -127,23 +127,23 @@ export default function ProfilePage() {
   return (
     <>
       <ShortsProfile />
-      <section className="bg-black px-4 pb-32 text-white">
+      <section className="min-h-screen bg-[#070816] px-4 pb-32 text-white">
         <div className="mx-auto max-w-3xl space-y-5">
           <header>
-            <h2 className="text-2xl font-black">Monetag Earnings Dashboard</h2>
+            <h2 className="bg-gradient-to-r from-fuchsia-300 via-violet-300 to-cyan-300 bg-clip-text text-2xl font-black text-transparent">Monetag Earnings Dashboard</h2>
             <p className="mt-1 text-sm text-white/65">
               Uploader और Sharer की दर्ज कमाई, भुगतान और हाल की हिस्ट्री।
             </p>
           </header>
 
           {message && (
-            <p role="status" className="rounded-xl border border-amber-500/30 bg-amber-950/30 p-3 text-sm">
+            <p role="status" className="rounded-xl border border-amber-400/30 bg-amber-500/10 p-3 text-sm text-amber-200">
               {message}
             </p>
           )}
 
           {loading ? (
-            <p className="rounded-xl bg-neutral-900 p-4 text-sm text-white/70">कमाई लोड हो रही है…</p>
+            <p className="rounded-2xl border border-indigo-400/20 bg-gradient-to-r from-indigo-950 to-[#151326] p-4 text-sm text-white/70">कमाई लोड हो रही है…</p>
           ) : data ? (
             <>
               <div className="grid grid-cols-2 gap-3">
@@ -155,12 +155,12 @@ export default function ProfilePage() {
                   ["Paid amount recorded", paidTotal],
                   ["Available for payout", availableForPayout],
                 ].map(([label, amount]) => (
-                  <div key={String(label)} className="rounded-2xl border border-white/10 bg-neutral-900 p-4">
+                  <div key={String(label)} className="rounded-2xl border border-indigo-300/15 bg-gradient-to-br from-[#17162b] via-[#111426] to-[#151522] p-4 shadow-lg shadow-purple-950/15">
                     <p className="text-xs text-white/60">{label}</p>
                     <p className="mt-2 break-words text-lg font-black">{usd(amount)}</p>
                   </div>
                 ))}
-                <div className="rounded-2xl border border-white/10 bg-neutral-900 p-4">
+                <div className="rounded-2xl border border-indigo-300/15 bg-gradient-to-br from-[#17162b] via-[#111426] to-[#151522] p-4 shadow-lg shadow-purple-950/15">
                   <p className="text-xs text-white/60">Revenue share settings</p>
                   <p className="mt-2 text-sm font-bold">
                     Uploader {Number(data.revenueShare?.uploaderPercent ?? 30)}% · Sharer {Number(data.revenueShare?.sharerPercent ?? 20)}%
@@ -168,8 +168,8 @@ export default function ProfilePage() {
                 </div>
               </div>
 
-              <div className="rounded-2xl border border-white/10 bg-neutral-900 p-4">
-                <h3 className="text-lg font-bold">कमाई की हिस्ट्री</h3>
+              <div className="rounded-2xl border border-indigo-300/15 bg-gradient-to-br from-[#17162b] via-[#111426] to-[#151522] p-4 shadow-lg shadow-purple-950/15">
+                <h3 className="bg-gradient-to-r from-fuchsia-200 to-cyan-200 bg-clip-text text-lg font-bold text-transparent">कमाई की हिस्ट्री</h3>
                 <p className="mb-3 mt-1 text-xs text-white/55">
                   यह केवल तुम्हारे खाते में मौजूद earning records दिखाता है। API की aggregate कमाई अपने-आप व्यक्तिगत earning नहीं बनती।
                 </p>
@@ -178,7 +178,7 @@ export default function ProfilePage() {
                 ) : (
                   <div className="space-y-3">
                     {recentEarnings.map((item) => (
-                      <article key={item.id} className="rounded-xl border border-white/10 p-3">
+                      <article key={item.id} className="rounded-xl border border-white/10 bg-white/[0.03] p-3">
                         <div className="flex items-start justify-between gap-3">
                           <div>
                             <p className="font-semibold">
@@ -198,14 +198,14 @@ export default function ProfilePage() {
                 )}
               </div>
 
-              <div className="rounded-2xl border border-white/10 bg-neutral-900 p-4">
-                <h3 className="text-lg font-bold">Payment history</h3>
+              <div className="rounded-2xl border border-indigo-300/15 bg-gradient-to-br from-[#17162b] via-[#111426] to-[#151522] p-4 shadow-lg shadow-purple-950/15">
+                <h3 className="bg-gradient-to-r from-fuchsia-200 to-cyan-200 bg-clip-text text-lg font-bold text-transparent">Payment history</h3>
                 {recentPayments.length === 0 ? (
                   <p className="mt-2 text-sm text-white/60">अभी कोई payment record नहीं है।</p>
                 ) : (
                   <div className="mt-3 space-y-3">
                     {recentPayments.map((item) => (
-                      <article key={item.id} className="rounded-xl border border-white/10 p-3">
+                      <article key={item.id} className="rounded-xl border border-white/10 bg-white/[0.03] p-3">
                         <div className="flex items-start justify-between gap-3">
                           <div>
                             <p className="font-semibold">{item.transactionReference || "Payment record"}</p>

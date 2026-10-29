@@ -117,8 +117,8 @@ export default function ShortsProfile() {
   if (!user) return <button onClick={() => router.push("/login")} className="p-4 text-white">Login</button>;
 
   return (
-    <div className="min-h-screen bg-black text-white p-4">
-      <div className="flex justify-between items-center mb-6">
+    <div className="min-h-screen bg-[#070816] text-white p-4 relative overflow-hidden">
+      <div className="flex justify-between items-center mb-6 rounded-2xl border border-indigo-400/20 bg-gradient-to-br from-[#17152f] via-[#101326] to-[#111827] p-4 shadow-xl shadow-purple-950/30">
         <div className="relative">
           <Avatar
             name={profile?.name || profile?.displayName}
@@ -147,21 +147,21 @@ export default function ShortsProfile() {
           </div>
         </div>
       </div>
-      <div className="mb-6 font-bold">
+      <div className="mb-6 rounded-xl border border-white/10 bg-white/[0.04] p-3 text-lg font-bold">
         {profile?.name || profile?.displayName || "User"}{" "}
         <span className="text-gray-400">
           @{profile?.username || profile?.userName || "User"}
         </span>
       </div>
       
-      <div className="bg-neutral-900 p-4 rounded-xl mb-6 flex justify-between items-center">
+      <div className="mb-6 flex items-center justify-between gap-3 rounded-2xl border border-amber-300/20 bg-gradient-to-r from-amber-950/60 via-[#241b29] to-[#15162c] p-4 shadow-lg shadow-amber-950/20">
         <div className="flex items-center gap-2"><Wallet className="text-cyan-400" /> <span>Available Ad Earnings</span></div>
         <div className="font-black text-xl">₹{adEarnings.toFixed(2)}</div>
       </div>
 
-      <div className="flex gap-4 mb-6 border-b border-neutral-800">
+      <div className="mb-5 grid grid-cols-3 gap-2 rounded-2xl border border-white/10 bg-[#111326] p-2">
         {(['my', 'liked', 'saved'] as const).map(tab => (
-            <button key={tab} className={`pb-2 ${activeTab === tab ? 'border-b-2 border-white' : 'text-gray-500'}`} onClick={() => setActiveTab(tab)}>
+            <button key={tab} className={`flex min-h-16 flex-col items-center justify-center gap-2 rounded-xl border p-3 transition-all duration-200 ${activeTab === tab ? (tab === 'my' ? 'border-fuchsia-400 bg-gradient-to-br from-fuchsia-600 to-violet-700 text-white shadow-lg shadow-fuchsia-900/40' : tab === 'liked' ? 'border-rose-400/60 bg-rose-500/15 text-rose-300' : 'border-teal-400/60 bg-teal-500/15 text-teal-300') : 'border-white/10 bg-white/[0.03] text-slate-400 hover:bg-white/[0.07]'}`} onClick={() => setActiveTab(tab)}>
                 {tab === 'my' && <Video size={20} />}
                 {tab === 'liked' && <Heart size={20} />}
                 {tab === 'saved' && <Bookmark size={20} />}
@@ -169,15 +169,15 @@ export default function ShortsProfile() {
         ))}
       </div>
 
-      <div className="grid grid-cols-3 gap-1">
+      <div className="grid grid-cols-3 gap-2 rounded-2xl border border-indigo-400/15 bg-[#101222] p-2">
         {videos[activeTab].map(v => (
-          <div key={v.id} className="aspect-[9/16] bg-neutral-800 overflow-hidden" onClick={() => router.push(`/mlm/watch-earn/original/${v.id}`)}>
-            <img src={v.thumbnail} className="w-full h-full object-cover" />
+          <div key={v.id} className="aspect-[9/16] overflow-hidden rounded-xl border border-white/10 bg-gradient-to-br from-indigo-950 to-slate-900 shadow-md shadow-black/30 transition-transform duration-200 active:scale-95" onClick={() => router.push(`/mlm/watch-earn/original/${v.id}`)}>
+            <img src={v.thumbnail} className="h-full w-full object-cover transition-transform duration-300 hover:scale-105" />
           </div>
         ))}
       </div>
       
-      <button onClick={handleLogout} className="flex items-center gap-2 mt-10 text-red-500"><LogOut size={20} /> Logout</button>
+      <button onClick={handleLogout} className="mt-8 flex items-center gap-2 rounded-xl border border-rose-400/20 bg-rose-500/10 px-4 py-3 text-rose-300 transition hover:bg-rose-500/20"><LogOut size={20} /> Logout</button>
     </div>
   );
 }
