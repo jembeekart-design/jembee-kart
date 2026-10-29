@@ -54,22 +54,27 @@ export default function ShortsProfile({ activeSection, onSectionChange }: Props)
 
       setProfile((prev: any) => ({ ...fallbackProfile, ...prev }));
 
+      const watchDataPromise = (async () => {
+        const token = await user.getIdToken();
+        const response = await fetch("/api/profile/watch-data", {
+          headers: { Authorization: `Bearer ${token}` },
+          cache: "no-store",
+        });
+        if (!response.ok) {
+          throw new Error(`Profile watch data API failed: ${response.status}`);
+        }
+        return response.json();
+      })();
+
       const results = await Promise.allSettled([
         getDoc(doc(db, "users", user.uid)),
-        getDocs(query(
-          collection(db, "creatorAdEarnings"),
-          where("creatorId", "==", user.uid),
-          where("status", "==", "AVAILABLE")
-        )),
+        watchDataPromise,
         fetchCreatorVideos(user.uid),
         getDocs(query(
           collection(db, "watchVideoLikes"),
           where("userId", "==", user.uid)
         )),
-        getDocs(query(
-          collection(db, FIRESTORE_PATHS.WATCH_EARN.SAVED_VIDEOS),
-          where("userId", "==", user.uid)
-        )),
+        watchDataPromise,
       ]);
 
       if (!active) return;
@@ -93,9 +98,7 @@ export default function ShortsProfile({ activeSection, onSectionChange }: Props)
       }
 
       if (earningsResult.status === "fulfilled") {
-        setAdEarnings(earningsResult.value.docs.reduce(
-          (sum, item) => sum + Number(item.data().creatorAmount || 0), 0
-        ));
+        setAdEarnings(Number(earningsResult.value.adEarnings || 0));
       } else {
         console.error("Creator earnings load failed:", earningsResult.reason);
         errors.push("Earnings");
@@ -135,7 +138,9 @@ export default function ShortsProfile({ activeSection, onSectionChange }: Props)
       }
 
       if (savedResult.status === "fulfilled") {
-        const saved = await fetchByIds(savedResult.value.docs.map((item) => item.data().videoId));
+        const saved = Array.isArray(savedResult.value.savedVideos)
+          ? savedResult.value.savedVideos as WatchVideo[]
+          : [];
         if (active) setVideos((prev) => ({ ...prev, saved }));
       } else {
         console.error("Saved videos load failed:", savedResult.reason);
