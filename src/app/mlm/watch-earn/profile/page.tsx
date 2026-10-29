@@ -116,6 +116,7 @@ export default function ProfilePage() {
   const paidTotal = payments
     .filter((item) => item.status === "paid")
     .reduce((sum, item) => sum + Number(item.amountUsd || 0), 0);
+  const availableForPayout = Math.max(0, confirmedTotal - paidTotal);
   const recentEarnings = [...earnings].sort(
     (a, b) => new Date(b.createdAt || 0).getTime() - new Date(a.createdAt || 0).getTime()
   ).slice(0, 20);
@@ -152,6 +153,7 @@ export default function ProfilePage() {
                   ["Total confirmed", confirmedTotal],
                   ["Pending / review", pendingTotal],
                   ["Paid amount recorded", paidTotal],
+                  ["Available for payout", availableForPayout],
                 ].map(([label, amount]) => (
                   <div key={String(label)} className="rounded-2xl border border-white/10 bg-neutral-900 p-4">
                     <p className="text-xs text-white/60">{label}</p>

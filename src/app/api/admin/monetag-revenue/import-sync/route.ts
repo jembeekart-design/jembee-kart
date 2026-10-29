@@ -108,7 +108,7 @@ export async function POST(req: Request) {
         platformRetainedUsd,
         unallocatedRevenueUsd,
         currency: "USD",
-        status: "verified",
+        status: "unallocated",
         attributionStatus: "aggregate_only_unallocated",
         source: "monetag_api_sync",
         sourceSyncId: syncId,

@@ -36,12 +36,12 @@ export async function GET(req: Request) {
     const payments = paymentsSnap.docs.map((doc) => doc.data());
     const sum = (items: Array<Record<string, unknown>>, predicate: (item: Record<string, unknown>) => boolean, field: string) =>
       items.reduce((total, item) => predicate(item) ? total + Number(item[field] || 0) : total, 0);
-    const grossRevenueUsd = sum(imports, (item) => item.status === "verified", "grossRevenueUsd");
+    const grossRevenueUsd = sum(imports, (item) => ["verified", "unallocated"].includes(String(item.status)), "grossRevenueUsd");
     const uploaderEarningsUsd = sum(earnings, (item) => item.role === "uploader" && item.status === "confirmed", "amountUsd");
     const sharerEarningsUsd = sum(earnings, (item) => item.role === "sharer" && item.status === "confirmed", "amountUsd");
     const paidOutUsd = sum(payments, (item) => item.status === "paid", "amountUsd");
-    const unallocatedRevenueUsd = sum(imports, (item) => item.status === "verified", "unallocatedRevenueUsd");
-    const platformRetainedUsd = sum(imports, (item) => item.status === "verified", "platformRetainedUsd");
+    const unallocatedRevenueUsd = sum(imports, (item) => ["verified", "unallocated"].includes(String(item.status)), "unallocatedRevenueUsd");
+    const platformRetainedUsd = sum(imports, (item) => ["verified", "unallocated"].includes(String(item.status)), "platformRetainedUsd");
     return NextResponse.json({ success: true, summary: { grossRevenueUsd, uploaderEarningsUsd, sharerEarningsUsd, platformRetainedUsd, unallocatedRevenueUsd, paidOutUsd, importedRecords: importsSnap.size, shareAttributionRecords: sharesSnap.size }, imports, shareAttributions, apiSyncs });
   } catch (error) {
     const code = error instanceof Error ? error.message : "";
