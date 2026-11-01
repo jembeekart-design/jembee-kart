@@ -34,7 +34,7 @@ export async function GET(req: Request) {
 
         duplicate: {
           warnings: duplicate?.warnings ?? 0,
-          errors: duplicate?.errors ?? 0,
+          errors: duplicate?.failed ?? 0,
         },
 
         rules: {

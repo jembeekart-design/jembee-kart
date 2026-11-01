@@ -67,7 +67,7 @@ export async function POST(req: Request) {
     return NextResponse.json({ success: false, message: "Paid video publishing is temporarily disabled until verified purchase access is available." }, { status: 409 });
   }
   const videoPrice = typeof body.videoPrice === "number" ? body.videoPrice : 0;
-  if (videoAccess === "paid" && (!Number.isFinite(videoPrice) || videoPrice < 1 || videoPrice > 100000)) {
+  if (!Number.isFinite(videoPrice) || videoPrice < 0 || videoPrice > 100000) {
     return NextResponse.json({ success: false, message: "Paid वीडियो की कीमत ₹1 से ₹100000 के बीच होनी चाहिए।" }, { status: 400 });
   }
 
@@ -139,8 +139,8 @@ export async function POST(req: Request) {
         username: username || "",
         caption: caption || "",
         videoAccess,
-        videoPrice: videoAccess === "paid" ? videoPrice : 0,
-        paidVideoStatus: videoAccess === "paid" ? "payment_integration_pending" : "free",
+        videoPrice: 0,
+        paidVideoStatus: "free",
         hashtags: Array.isArray(hashtags) ? hashtags : [],
         music: music || "",
         sponsor: sponsor === true,

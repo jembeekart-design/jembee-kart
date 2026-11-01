@@ -19,7 +19,7 @@ function safeNumber(value: unknown, fallback = 0) {
   return typeof value === "number" && Number.isFinite(value) ? value : fallback;
 }
 
-export async function GET(_req: NextRequest) {
+export async function GET(req: NextRequest) {
   try {
     const authorization = req.headers.get("authorization") || "";
     if (!authorization.startsWith("Bearer ")) return fail("Authentication required", 401);

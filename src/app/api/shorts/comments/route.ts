@@ -141,7 +141,7 @@ export async function POST(req: Request) {
         tx.get(rateRef),
         tx.get(videoRef),
       ]);
-      if (existingComment.exists) return { kind: "duplicate", data: existingComment.data() || {} };
+      if (existingComment.exists) return { kind: "duplicate", data: existingComment.data() ?? {} };
       const currentVideo = freshVideo.data() || {};
       if (!freshVideo.exists || currentVideo.status !== "approved" || currentVideo.active !== true || currentVideo.moderation !== "safe") {
         return { kind: "unavailable" };
@@ -192,7 +192,7 @@ export async function POST(req: Request) {
     if (result.kind === "rate-limited") return jsonError("Comment rate limit reached. Please try again later.", 429);
     if (result.kind === "duplicate-text") return jsonError("You recently posted the same comment. Please wait before repeating it.", 409);
     if (result.kind === "unavailable") return jsonError("Comments are unavailable for this video", 404);
-    if (result.kind === "duplicate") {
+    if (result.kind === "duplicate" && result.data) {
       return NextResponse.json({ success: true, duplicate: true, comment: { id: commentRef.id, contentId: videoId, userId: uid, userName: result.data.userName || userName, text: result.data.text || text, status: result.data.status || "pending", likes: Number(result.data.likes || 0) } });
     }
 

@@ -68,7 +68,9 @@ export async function GET(
     if (!metadata.mimeType.startsWith("video/") || !metadata.thumbnailLink) return new NextResponse("Drive thumbnail not available", { status: 404 });
     const image = await fetchBoundedDriveImage(metadata.thumbnailLink);
     if (!image) return new NextResponse("Drive thumbnail unavailable", { status: 502 });
-    return new NextResponse(image.bytes, { status: 200, headers: { "Content-Type": image.contentType, "Content-Length": String(image.bytes.byteLength), "Cache-Control": "private, no-store", "X-Content-Type-Options": "nosniff" } });
+    const imageBody = new ArrayBuffer(image.bytes.byteLength);
+    new Uint8Array(imageBody).set(image.bytes);
+    return new NextResponse(imageBody, { status: 200, headers: { "Content-Type": image.contentType, "Content-Length": String(image.bytes.byteLength), "Cache-Control": "private, no-store", "X-Content-Type-Options": "nosniff" } });
   } catch (error) {
     console.error("Drive thumbnail request failed:", error);
     return new NextResponse("Thumbnail unavailable", { status: 500 });
