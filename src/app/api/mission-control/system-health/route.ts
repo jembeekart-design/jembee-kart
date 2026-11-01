@@ -1,3 +1,4 @@
+import { requireAdmin, isAdminIdentity } from "@/lib/server/requireAdmin";
 import { NextResponse } from "next/server";
 
 import { getAdminDb } from "@/firebase/admin";
@@ -6,6 +7,9 @@ import { withAdminAuth } from "@/lib/api/adminAuth";
 export const dynamic = "force-dynamic";
 
 export async function GET(req: Request) {
+  const adminIdentity = await requireAdmin(req);
+  if (!isAdminIdentity(adminIdentity)) return adminIdentity;
+
   const adminDb = getAdminDb();
   return withAdminAuth(async () => {
     const startedAt = Date.now();
@@ -32,8 +36,8 @@ export async function GET(req: Request) {
       /* Firestore Health Check                     */
       /* ------------------------------------------ */
 
-      const usersSnapshot = await adminDb.collection("users").get();
-      const databaseConnected = usersSnapshot !== undefined;
+      const usersCountSnapshot = await adminDb.collection("users").count().get();
+      const databaseConnected = Number.isFinite(usersCountSnapshot.data().count);
 
       /* ------------------------------------------ */
       /* Response Time                              */
@@ -56,7 +60,7 @@ export async function GET(req: Request) {
           database: {
             connected: databaseConnected,
             collectionsChecked: 1,
-            users: usersSnapshot.size,
+            users: usersCountSnapshot.data().count,
             status: databaseConnected
               ? "Healthy"
               : "Disconnected",
@@ -75,9 +79,10 @@ export async function GET(req: Request) {
           },
 
           scanners: {
-            total: 18,
-            healthy: 18,
+            total: 0,
+            healthy: 0,
             failed: 0,
+            status: "not_connected",
           },
 
           system: {
@@ -90,7 +95,7 @@ export async function GET(req: Request) {
             memoryUsage: null,
             uptime: null,
 
-            status: "Healthy",
+            status: "Monitoring unavailable",
           },
         },
         {

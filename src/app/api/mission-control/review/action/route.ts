@@ -1,42 +1,14 @@
+import { requireAdmin, isAdminIdentity } from "@/lib/server/requireAdmin";
 import { NextRequest, NextResponse } from "next/server";
 import { reviewManager } from "@/mission-control/review/reviewManager";
 
 export async function POST(request: NextRequest) {
-  try {
-    const body = await request.json();
+  const adminIdentity = await requireAdmin(request);
+  if (!isAdminIdentity(adminIdentity)) return adminIdentity;
 
-    const { action, item } = body;
-
-    if (action === "approve") {
-      return NextResponse.json({
-        success: true,
-        item: reviewManager.approve(item),
-      });
-    }
-
-    if (action === "reject") {
-      return NextResponse.json({
-        success: true,
-        item: reviewManager.reject(item),
-      });
-    }
-
-    return NextResponse.json(
-      {
-        success: false,
-        message: "Invalid action.",
-      },
-      { status: 400 }
-    );
-  } catch (error) {
-    console.error(error);
-
-    return NextResponse.json(
-      {
-        success: false,
-        message: "Review action failed.",
-      },
-      { status: 500 }
-    );
-  }
+  return NextResponse.json({
+    success: false,
+    code: "NOT_IMPLEMENTED",
+    message: "Mission Control review actions are not backed by persistent storage and are disabled.",
+  }, { status: 501 });
 }

@@ -1,5 +1,7 @@
 "use client";
 
+import { adminFetch } from "@/lib/client/adminFetch";
+
 import { useState, useEffect } from "react";
 
 import {
@@ -59,7 +61,7 @@ export default function AutomationCenter() {
     try {
       setLoading(true);
 
-      const res = await fetch("/api/mission-control/run", {
+      const res = await adminFetch("/api/mission-control/run", {
         method: "POST",
       });
 
@@ -79,7 +81,7 @@ export default function AutomationCenter() {
 
   const runAutoFix = async () => {
     try {
-      const res = await fetch("/api/mission-control/autofix", {
+      const res = await adminFetch("/api/mission-control/autofix", {
         method: "POST",
       });
 
@@ -107,7 +109,7 @@ const createBackup = async () => {
   try {
     setLoading(true);
 
-    const res = await fetch("/api/mission-control/backup", {
+    const res = await adminFetch("/api/mission-control/backup", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -146,7 +148,7 @@ Location: ${data.backupPath}`
 };
   const applyAutoFix = async () => {
     try {
-      const res = await fetch("/api/mission-control/apply-fix", {
+      const res = await adminFetch("/api/mission-control/apply-fix", {
         method: "POST",
       });
 

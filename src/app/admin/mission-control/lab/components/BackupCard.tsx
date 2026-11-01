@@ -1,5 +1,7 @@
 "use client";
 
+import { adminFetch } from "@/lib/client/adminFetch";
+
 import { useState } from "react";
 
 export default function BackupCard() {
@@ -10,7 +12,7 @@ export default function BackupCard() {
     setLoading(true);
 
     try {
-      const res = await fetch("/api/mission-control/backup", {
+      const res = await adminFetch("/api/mission-control/backup", {
         method: "POST",
       });
 

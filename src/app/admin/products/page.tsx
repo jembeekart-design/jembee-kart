@@ -36,6 +36,7 @@ import {
 } from "lucide-react";
 
 import { db } from "@/firebase/config";
+import { uploadToCloudinary } from "@/lib/cloudinary";
 
 /* ======================================================
 TYPES
@@ -307,81 +308,20 @@ export default function ProductsAdminPage() {
   CLOUDINARY IMAGE UPLOAD
   ====================================================== */
 
-  async function uploadImages(
-    files: FileList
-  ) {
+  async function uploadImages(files: FileList) {
     try {
       setUploading(true);
-
       const uploaded: string[] = [];
-
       for (let i = 0; i < files.length; i++) {
-        const formData = new FormData();
-
-        formData.append("file", files[i]);
-
-        const preset =
-          process.env.NEXT_PUBLIC_CLOUDINARY_UPLOAD_PRESET;
-
-        const cloudName =
-          process.env.NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME;
-
-        if (!preset || !cloudName) {
-          throw new Error(
-            "Cloudinary configuration missing"
-          );
-        }
-
-        formData.append(
-          "upload_preset",
-          preset
-        );
-
-        const response = await fetch(
-          `https://api.cloudinary.com/v1_1/${cloudName}/image/upload`,
-          {
-            method: "POST",
-            body: formData
-          }
-        );
-
-        const data = await response.json();
-
-        if (!response.ok || !data.secure_url) {
-          console.error(
-            "Cloudinary upload response:",
-            data
-          );
-
-          throw new Error(
-            data?.error?.message ||
-            "Cloudinary image upload failed"
-          );
-        }
-
-        uploaded.push(data.secure_url);
+        const result = await uploadToCloudinary(files[i], "image");
+        uploaded.push(result.secure_url);
       }
-
-      setProductImages((prev) => [
-        ...prev,
-        ...uploaded
-      ]);
-
-      setUploading(false);
-
+      setProductImages((prev) => [...prev, ...uploaded]);
     } catch (error) {
-      console.error(
-        "Image upload failed:",
-        error
-      );
-
+      console.error("Image upload failed:", error);
+      alert(error instanceof Error ? error.message : "Image upload failed");
+    } finally {
       setUploading(false);
-
-      alert(
-        error instanceof Error
-          ? error.message
-          : "Image upload failed"
-      );
     }
   }
 
@@ -389,79 +329,19 @@ export default function ProductsAdminPage() {
   CLOUDINARY VIDEO UPLOAD
   ====================================================== */
 
-  async function uploadVideos(
-    files: FileList
-  ) {
-
+  async function uploadVideos(files: FileList) {
     try {
-
       setUploading(true);
-
-      const uploaded:
-        string[] = [];
-
-      for (
-        let i = 0;
-        i < files.length;
-        i++
-      ) {
-
-        const formData =
-          new FormData();
-
-        formData.append(
-          "file",
-          files[i]
-        );
-
-        formData.append(
-          "upload_preset",
-
-          process.env
-            .NEXT_PUBLIC_CLOUDINARY_UPLOAD_PRESET ||
-            ""
-        );
-
-        const response =
-          await fetch(
-
-            `https://api.cloudinary.com/v1_1/${
-              process.env
-                .NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME
-            }/video/upload`,
-
-            {
-              method:
-                "POST",
-
-              body:
-                formData
-            }
-          );
-
-        const data =
-          await response.json();
-
-        uploaded.push(
-          data.secure_url
-        );
+      const uploaded: string[] = [];
+      for (let i = 0; i < files.length; i++) {
+        const result = await uploadToCloudinary(files[i], "video");
+        uploaded.push(result.secure_url);
       }
-
-      setProductVideos(
-        (prev) => [
-          ...prev,
-          ...uploaded
-        ]
-      );
-
-      setUploading(false);
-
+      setProductVideos((prev) => [...prev, ...uploaded]);
     } catch (error) {
-
-      console.error(
-        error
-      );
-
+      console.error("Video upload failed:", error);
+      alert(error instanceof Error ? error.message : "Video upload failed");
+    } finally {
       setUploading(false);
     }
   }
@@ -472,19 +352,37 @@ export default function ProductsAdminPage() {
 
   async function addProduct() {
 
-    if (
-      !title ||
-      !sku ||
-      !price
-    ) {
+    const parsedPrice = Number(price);
+    const parsedDiscountPrice = discountPrice.trim() ? Number(discountPrice) : 0;
+    const parsedCostPrice = costPrice.trim() ? Number(costPrice) : 0;
+    const parsedStock = stock.trim() ? Number(stock) : 0;
 
-      alert(
-        "Please fill Title, SKU & Price"
-      );
-
+    if (!title.trim() || !sku.trim() || !price.trim()) {
+      alert("Please fill Title, SKU & Price");
+      return;
+    }
+    if (!Number.isFinite(parsedPrice) || parsedPrice <= 0 || !Number.isSafeInteger(Math.round(parsedPrice * 100))) {
+      alert("Enter a valid product price greater than zero.");
+      return;
+    }
+    if (!Number.isFinite(parsedDiscountPrice) || parsedDiscountPrice < 0 || parsedDiscountPrice > parsedPrice) {
+      alert("Discount price must be zero (no discount) or less than/equal to the product price.");
+      return;
+    }
+    if (!Number.isFinite(parsedCostPrice) || parsedCostPrice < 0) {
+      alert("Enter a valid non-negative cost price.");
+      return;
+    }
+    if (!Number.isSafeInteger(parsedStock) || parsedStock < 0) {
+      alert("Stock must be a whole number zero or greater.");
+      return;
+    }
+    if (title.trim().length > 200 || sku.trim().length > 100) {
+      alert("Product title or SKU is too long.");
       return;
     }
 
+    try {
     await addDoc(
 
       collection(
@@ -502,19 +400,13 @@ export default function ProductsAdminPage() {
 
         description: description ?? "",
 
-        price:
-          Number(price),
+        price: parsedPrice,
 
-        discountPrice:
-          Number(
-            discountPrice
-          ) || 0,
+        discountPrice: parsedDiscountPrice,
 
-        costPrice:
-          Number(costPrice) || 0,
+        costPrice: parsedCostPrice,
 
-        stock:
-          Number(stock) || 0,
+        stock: parsedStock,
 
         sku: sku ?? "",
 
@@ -559,6 +451,10 @@ export default function ProductsAdminPage() {
     setActiveTab(
       "products"
     );
+    } catch (error) {
+      console.error("Unable to add product:", error instanceof Error ? error.message : "unknown");
+      alert("Product could not be saved. Please check your admin access and try again.");
+    }
   }
 
   /* ======================================================
@@ -570,20 +466,62 @@ export default function ProductsAdminPage() {
     field: string,
     value: any
   ) {
-
-    await updateDoc(
-
-      doc(
-        db,
-        "products",
-        id
-      ),
-
-      {
-        [field]:
-          value
+    const allowedFields = new Set(["visible", "title", "description", "sku", "price", "discountPrice", "costPrice", "stock", "sizes"]);
+    if (!allowedFields.has(field)) {
+      alert("This product field cannot be edited here.");
+      return;
+    }
+    if (field === "visible" && typeof value !== "boolean") {
+      alert("Product visibility must be enabled or disabled.");
+      return;
+    }
+    if (field === "description" && (typeof value !== "string" || value.length > 10000)) {
+      alert("Product description must be 10,000 characters or fewer.");
+      return;
+    }
+    const numericFields = new Set(["price", "discountPrice", "costPrice", "stock"]);
+    if (numericFields.has(field)) {
+      if (typeof value !== "number" || !Number.isFinite(value) || value < 0) {
+        alert("Enter a valid non-negative number.");
+        return;
       }
-    );
+      if (field === "stock" && !Number.isSafeInteger(value)) {
+        alert("Stock must be a whole number.");
+        return;
+      }
+      if (field === "price" && value <= 0) {
+        alert("Product price must be greater than zero.");
+        return;
+      }
+      const current = products.find((product) => product.id === id);
+      if (field === "discountPrice" && value > Number(current?.price || 0)) {
+        alert("Discount price cannot exceed the product price.");
+        return;
+      }
+      if (field === "price" && Number(current?.discountPrice || 0) > value) {
+        alert("Update the discount price first; it cannot exceed the new product price.");
+        return;
+      }
+    }
+    if (field === "title" && (typeof value !== "string" || !value.trim() || value.length > 200)) {
+      alert("Product title is required and must be 200 characters or fewer.");
+      return;
+    }
+    if (field === "sku" && (typeof value !== "string" || !value.trim() || value.length > 100)) {
+      alert("SKU is required and must be 100 characters or fewer.");
+      return;
+    }
+    if (field === "sizes" && (!Array.isArray(value) || value.length > 30 || value.some((item) => typeof item !== "string" || !item.trim() || item.length > 50) || new Set(value).size !== value.length)) {
+      alert("Invalid or duplicate size options.");
+      return;
+    }
+
+    try {
+      await updateDoc(doc(db, "products", id), { [field]: value });
+    } catch (error) {
+      console.error("Unable to update product:", error instanceof Error ? error.message : "unknown");
+      alert("Product update failed. Please check your admin access and try again.");
+    }
   }
 
   /* ======================================================

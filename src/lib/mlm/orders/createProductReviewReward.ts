@@ -1,102 +1,20 @@
-import {
-  addDoc,
-  collection,
-  doc,
-  increment,
-  updateDoc
-} from "firebase/firestore";
-
-import { db }
-from "@/firebase/config";
-
+/**
+ * Legacy client-side payout intentionally disabled.
+ * Client input is not authoritative for reward eligibility or amount.
+ * Re-enable only after a server endpoint verifies the underlying event and
+ * credits the wallet and ledger atomically with a deterministic idempotency key.
+ */
 interface CreateProductReviewRewardData {
   userId: string;
-
   productId: string;
-
   review: string;
-
   rating: number;
-
   rewardAmount: number;
 }
 
-export async function
-createProductReviewReward(
-  data:
-  CreateProductReviewRewardData
-) {
-
-  try {
-
-    /* =========================
-       UPDATE USER
-    ========================= */
-
-    await updateDoc(
-      doc(
-        db,
-        "users",
-        data.userId
-      ),
-      {
-        walletBalance:
-          increment(
-            data.rewardAmount
-          ),
-
-        totalIncome:
-          increment(
-            data.rewardAmount
-          ),
-
-        reviewIncome:
-          increment(
-            data.rewardAmount
-          )
-      }
-    );
-
-    /* =========================
-       SAVE REVIEW HISTORY
-    ========================= */
-
-    await addDoc(
-      collection(
-        db,
-        "productReviewRewards"
-      ),
-      {
-        userId:
-          data.userId,
-
-        productId:
-          data.productId,
-
-        review:
-          data.review,
-
-        rating:
-          data.rating,
-
-        rewardAmount:
-          data.rewardAmount,
-
-        createdAt:
-          Date.now()
-      }
-    );
-
-    return {
-      success: true
-    };
-
-  } catch (error) {
-
-    console.error(error);
-
-    return {
-      success: false
-    };
-  }
+export async function createProductReviewReward(_data: CreateProductReviewRewardData) {
+  return {
+    success: false as const,
+    message: "Review rewards are disabled until server-side purchase, review, and moderation checks are implemented.",
+  };
 }

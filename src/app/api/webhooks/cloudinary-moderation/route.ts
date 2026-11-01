@@ -1,18 +1,28 @@
 import { NextResponse } from "next/server";
+import { createHash, timingSafeEqual } from "node:crypto";
 import { getAdminDb } from "@/firebase/admin";
 import { FieldValue } from "firebase-admin/firestore";
 
 export async function POST(request: Request) {
-  // Configure this shared secret in the Cloudinary webhook caller and server environment.
-  // Fail closed: an unsigned request must never be able to change moderation state.
-  const expectedSecret = process.env.CLOUDINARY_MODERATION_WEBHOOK_SECRET;
-  const suppliedSecret = request.headers.get("x-webhook-secret");
-  if (!expectedSecret || !suppliedSecret || suppliedSecret !== expectedSecret) {
+  const apiSecret = process.env.CLOUDINARY_WEBHOOK_API_SECRET || process.env.CLOUDINARY_API_SECRET;
+  const signature = request.headers.get("x-cld-signature") || "";
+  const timestampHeader = request.headers.get("x-cld-timestamp") || "";
+  if (!apiSecret || !/^\d{10}$/.test(timestampHeader) || !/^[a-f0-9]{40}$|^[a-f0-9]{64}$/i.test(signature)) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   }
-
   try {
-    const body = await request.json();
+    const contentLength = Number(request.headers.get("content-length") || 0);
+    if (contentLength > 65536) return NextResponse.json({ error: "Payload too large" }, { status: 413 });
+    const rawBody = await request.text();
+    if (new TextEncoder().encode(rawBody).byteLength > 65536) return NextResponse.json({ error: "Payload too large" }, { status: 413 });
+    const timestamp = Number(timestampHeader);
+    const now = Math.floor(Date.now() / 1000);
+    if (timestamp < now - 7200 || timestamp > now + 300) return NextResponse.json({ error: "Expired webhook signature" }, { status: 401 });
+    const algorithm = signature.length === 64 ? "sha256" : "sha1";
+    const expected = createHash(algorithm).update(`${rawBody}${timestampHeader}${apiSecret}`).digest();
+    const supplied = Buffer.from(signature, "hex");
+    if (supplied.length !== expected.length || !timingSafeEqual(supplied, expected)) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+    const body = JSON.parse(rawBody);
     const { public_id, moderation_status, moderation_kind, moderation_details } = body ?? {};
     if (typeof public_id !== "string" || !["approved", "rejected"].includes(moderation_status)) {
       return NextResponse.json({ error: "Invalid moderation payload" }, { status: 400 });

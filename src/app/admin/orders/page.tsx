@@ -3,30 +3,18 @@
 export const dynamic = "force-dynamic";
 
 import { useEffect, useState } from "react";
-import {
-  collection,
-  deleteDoc,
-  doc,
-  getDoc,
-  updateDoc,
-  onSnapshot,
-  serverTimestamp
-} from "firebase/firestore";
+import { collection, onSnapshot } from "firebase/firestore";
 
 import {
   Package,
   Truck,
   CheckCircle2,
-  Trash2,
   Clock3,
   ShieldCheck,
   AlertCircle
 } from "lucide-react";
 
-import { db } from "@/firebase/config";
-
-// ✅ Import MLM Level Distribution Engine Pipeline Hook
-import { distributeLevelCommission } from "@/lib/mlm/distributeLevelCommission";
+import { auth, db } from "@/firebase/config";
 
 interface Order {
   id: string;
@@ -67,79 +55,35 @@ export default function OrdersPage() {
     return () => unsubscribe();
   }, []);
 
-  /* ======================================================
-  CRITICAL STATUS TRANSITION ROUTER (WITH INTEGRATED MLM ENGINE)
-  ====================================================== */
+  /* Order lifecycle changes are performed by the authenticated server API.
+     Browser-side commission and wallet writes are intentionally not invoked here. */
   async function updateStatus(id: string, status: string) {
     try {
-      const orderRef = doc(db, "orders", id);
-      const currentOrder = orders.find((o) => o.id === id);
-      if (!currentOrder) return;
-
-      // Duplicate Delivered click protection & payment safety interceptor
-      if (status === "delivered" && currentOrder.commissionProcessed) {
-        alert("Security Alert: System distribution ledger already finalized for this order ID.");
-        return;
+      const user = auth.currentUser;
+      if (!user) throw new Error("Please sign in again.");
+      const token = await user.getIdToken();
+      const response = await fetch("/api/admin/orders/status", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify({ orderId: id, status }),
+      });
+      const result = await response.json().catch(() => ({}));
+      if (!response.ok || result.success !== true) {
+        throw new Error(typeof result.message === "string" ? result.message : "Order status update failed.");
       }
-
-      // Node Activation Dynamic Wrapper Strategy
       if (status === "delivered") {
-        if (currentOrder.userId) {
-          const userProfileRef = doc(db, "users", currentOrder.userId);
-          const userSnap = await getDoc(userProfileRef);
-          
-          if (userSnap.exists()) {
-            // STEP 1: Delivered → MLM profile state activation tracking
-            await updateDoc(userProfileRef, {
-              joinedPackage: true,
-              mlmActive: true,
-              packageStatus: "active",
-              activationDate: serverTimestamp(),
-            });
-
-            console.log(`MLM parameters initialized for User ID: ${currentOrder.userId}`);
-
-            // ✅ STEP 2: Trigger Multi-level Commission Engine calculations with exact property map keys
-            // Temp fallback mapping currentOrder.amount to profitAmount to keep pipeline continuous until profit computation ingestion is bound.
-            await distributeLevelCommission({
-              userId: currentOrder.userId,
-              profitAmount: currentOrder.profitAmount || currentOrder.amount,
-              orderId: currentOrder.id,
-              orderStatus: "delivered",
-            });
-
-            console.log(`Up-line level distribution sequence dispatched for order trace context: ${id}`);
-
-            // ✅ STEP 3: Single write transaction lock pipeline settlement
-            await updateDoc(orderRef, { 
-              status, 
-              commissionProcessed: true 
-            });
-
-            console.log(`Financial settlement locks and status committed atomically for Order ID: ${id}`);
-          } else {
-            console.warn("User profile path missing from Firestore trees.");
-          }
-        } else {
-          console.warn("Operation bypassed: No userId tracking reference bound inside order doc.");
-        }
-      } else {
-        // Safe router tracking fallback state adjustments (Pending/Shipped execution profiles)
-        await updateDoc(orderRef, { status });
+        alert("Order marked delivered. Financial settlement remains pending and no commission has been marked as paid.");
+      } else if (status === "cancelled" && result.inventoryRestockStatus === "manual_review") {
+        alert("Order cancelled. This legacy order has no verified stock-deduction marker, so inventory must be reviewed manually.");
+      } else if (status === "cancelled" && result.inventoryRestockStatus === "restocked") {
+        alert("Order cancelled and product stock restored.");
       }
     } catch (error) {
-      console.error("Pipeline breakdown exception caught inside updateStatus stream:", error);
-      alert("System execution fault: Failed to alter order parameter updates.");
-    }
-  }
-
-  // Delete user traces validation confirmation wrapper
-  async function deleteOrder(id: string) {
-    if (!confirm("Are you absolutely sure you want to drop this order document trace?")) return;
-    try {
-      await deleteDoc(doc(db, "orders", id));
-    } catch (error) {
-      console.error("Failed to safely destroy data node mapping:", error);
+      console.error("Order status update failed:", error);
+      alert(error instanceof Error ? error.message : "Failed to update order status.");
     }
   }
 
@@ -156,7 +100,7 @@ export default function OrdersPage() {
       {/* HEADER MODULE CONTAINER */}
       <div className="mb-6">
         <h1 className="text-3xl font-black">Orders Manager</h1>
-        <p className="mt-1 text-sm text-[var(--text-muted)]">Manage customer orders & MLM structural conversions</p>
+        <p className="mt-1 text-sm text-[var(--text-muted)]">Manage customer orders and delivery status</p>
       </div>
 
       {/* ORDERS FEED LAYOUT LAYER */}
@@ -182,12 +126,7 @@ export default function OrdersPage() {
                 </div>
               </div>
 
-              <button
-                onClick={() => deleteOrder(order.id)}
-                className="flex h-10 w-10 items-center justify-center rounded-xl bg-[var(--color-danger)]/10 text-[var(--color-danger)] hover:bg-[var(--color-danger)]/20 transition active:scale-90"
-              >
-                <Trash2 size={18} />
-              </button>
+
             </div>
 
             {/* DATA LAYOUT PARAMETERS MATRIX */}
@@ -204,6 +143,10 @@ export default function OrdersPage() {
                     </span>
                   )}
                 </div>
+
+                {order.status === "delivered" && order.commissionProcessed !== true && (
+                  <p className="mb-3 rounded-xl border border-[var(--color-warning)]/30 bg-[var(--color-warning)]/10 px-3 py-2 text-xs font-semibold text-[var(--text-primary)]">Delivered — financial settlement pending; no commission payout is confirmed.</p>
+                )}
 
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-2 text-sm text-[var(--text-primary)]">
                   <div>
@@ -225,13 +168,13 @@ export default function OrdersPage() {
                 <p className="mb-3 text-xs uppercase font-bold tracking-wider text-[var(--text-muted)]">Modify Order Execution State</p>
                 <div className="grid grid-cols-3 gap-3">
                   <button
-                    onClick={() => updateStatus(order.id, "pending")}
+                    onClick={() => updateStatus(order.id, "processing")}
                     disabled={order.commissionProcessed || order.status === "delivered"}
                     className="flex items-center justify-center gap-2 rounded-2xl px-3 py-3 text-sm font-bold transition active:scale-95 disabled:opacity-30 disabled:cursor-not-allowed disabled:hover:bg-[var(--color-card-background)] bg-[var(--color-card-background)] hover:bg-[var(--color-card-background)] text-[var(--text-muted)] data-[active=true]:bg-[var(--color-warning)] data-[active=true]:text-[var(--text-primary)]"
-                    data-active={order.status === "pending"}
+                    data-active={order.status === "processing" || order.status === "pending" || order.status === "placed"}
                   >
                     <Clock3 size={16} />
-                    Pending
+                    Processing
                   </button>
 
                   <button

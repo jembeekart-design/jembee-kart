@@ -1,16 +1,8 @@
 import { NextResponse } from "next/server";
-import { withAdminAuth } from "@/lib/api/adminAuth";
+import { requireAdmin, isAdminIdentity } from "@/lib/server/requireAdmin";
 
 export async function GET(req: Request) {
-  return withAdminAuth(async () => {
-    return NextResponse.json([
-      {
-        id: "sec-1",
-        severity: "low",
-        title: "No security threats detected",
-        resolved: true,
-        detectedAt: new Date().toISOString(),
-      },
-    ]);
-  }, req);
+  const adminIdentity = await requireAdmin(req);
+  if (!isAdminIdentity(adminIdentity)) return adminIdentity;
+  return NextResponse.json({ success: false, demo: true, code: "NOT_CONNECTED", message: "Security event metrics are not connected to a live provider." }, { status: 501 });
 }

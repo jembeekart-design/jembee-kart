@@ -1,5 +1,5 @@
 import { NextResponse } from "next/server";
-import { FieldValue } from "firebase-admin/firestore";
+import { FieldPath, FieldValue } from "firebase-admin/firestore";
 import { getAdminAuth, getAdminDb } from "@/firebase/admin";
 
 export const runtime = "nodejs";
@@ -11,7 +11,7 @@ async function verifyAdmin(req: Request): Promise<string> {
   const token = header.slice("Bearer ".length).trim();
   if (!token) throw new Error("UNAUTHORIZED");
 
-  const decoded = await getAdminAuth().verifyIdToken(token);
+  const decoded = await getAdminAuth().verifyIdToken(token, true);
   const users = getAdminDb().collection("users");
   const direct = await users.doc(decoded.uid).get();
   let userData = direct.exists ? direct.data() : undefined;
@@ -42,13 +42,16 @@ function authError(error: unknown) {
 export async function GET(req: Request) {
   try {
     await verifyAdmin(req);
-    const snapshot = await getAdminDb()
-      .collection("videoReports")
+    const cursor = new URL(req.url).searchParams.get("cursor");
+    if (cursor && (cursor.length > 1500 || cursor.includes("/"))) return NextResponse.json({ success: false, message: "Invalid cursor" }, { status: 400 });
+    let reportQuery = getAdminDb().collection("videoReports")
       .where("status", "==", "pending")
-      .limit(100)
-      .get();
+      .orderBy(FieldPath.documentId()).limit(101);
+    if (cursor) reportQuery = reportQuery.startAfter(cursor);
+    const snapshot = await reportQuery.get();
+    const pageDocs = snapshot.docs.slice(0, 100);
 
-    const reports = snapshot.docs.map((doc) => {
+    const reports = pageDocs.map((doc) => {
       const data = doc.data();
       return {
         id: doc.id,
@@ -62,7 +65,7 @@ export async function GET(req: Request) {
     });
 
     reports.sort((a, b) => (b.createdAt ?? 0) - (a.createdAt ?? 0));
-    return NextResponse.json({ success: true, reports });
+    return NextResponse.json({ success: true, reports, nextCursor: snapshot.docs.length > 100 ? pageDocs[pageDocs.length - 1]?.id ?? null : null, hasMore: snapshot.docs.length > 100 });
   } catch (error) {
     return authError(error);
   }

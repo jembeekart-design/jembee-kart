@@ -1,5 +1,7 @@
 "use client";
 
+import { adminFetch } from "@/lib/client/adminFetch";
+
 import { useEffect, useState } from "react";
 import {
   CheckCircle2,
@@ -23,7 +25,7 @@ export default function RecentScanResults() {
   useEffect(() => {
     async function loadScans() {
       try {
-        const res = await fetch("/api/mission-control/scanner-results");
+        const res = await adminFetch("/api/mission-control/scanner-results");
         const json = await res.json();
 
         if (json.success) {

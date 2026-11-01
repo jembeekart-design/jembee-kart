@@ -10,7 +10,7 @@ export async function withAdminAuth(handler: Function, req?: Request) {
       return NextResponse.json({ success: false, message: "Unauthorized" }, { status: 401 });
     }
     const token = authHeader.slice(7).trim();
-    const decodedToken = await adminAuth.verifyIdToken(token);
+    const decodedToken = await adminAuth.verifyIdToken(token, true);
     
     const userSnapshot = await adminDb
       .collection("users")

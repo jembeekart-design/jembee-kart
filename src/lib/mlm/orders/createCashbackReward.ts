@@ -1,72 +1,24 @@
-import {
-  addDoc,
-  collection,
-  doc,
-  increment,
-  updateDoc
-} from "firebase/firestore";
+import { processCashback } from "@/lib/mlm/financial/processCashback";
 
-import { db }
-from "@/firebase/config";
-
-export async function
-createCashbackReward(
+/**
+ * Legacy cashback entry point retained for compatibility.
+ * All balance mutations are delegated to the canonical order-idempotent ledger.
+ */
+export async function createCashbackReward(
   userId: string,
-  orderAmount: number
+  orderAmount: number,
+  orderId: string
 ) {
-
-  try {
-
-    const cashback =
-      Math.floor(
-        orderAmount * 0.05
-      );
-
-    await updateDoc(
-      doc(
-        db,
-        "users",
-        userId
-      ),
-      {
-        walletBalance:
-          increment(cashback),
-
-        cashbackIncome:
-          increment(cashback),
-
-        totalIncome:
-          increment(cashback)
-      }
-    );
-
-    await addDoc(
-      collection(
-        db,
-        "cashbackHistory"
-      ),
-      {
-        userId,
-
-        orderAmount,
-
-        cashback,
-
-        createdAt:
-          Date.now()
-      }
-    );
-
-    return {
-      success: true
-    };
-
-  } catch (error) {
-
-    console.error(error);
-
-    return {
-      success: false
-    };
+  const normalizedOrderAmount = Number(orderAmount);
+  if (!Number.isFinite(normalizedOrderAmount) || normalizedOrderAmount <= 0) {
+    return { success: false, message: "Order amount must be a finite positive number." };
   }
+
+  const cashback = Math.floor(normalizedOrderAmount * 0.05);
+  if (cashback <= 0) {
+    return { success: true, cashback: 0, message: "Calculated cashback is zero." };
+  }
+
+  const result = await processCashback(userId, cashback, orderId);
+  return { ...result, cashback: result.success ? cashback : 0 };
 }

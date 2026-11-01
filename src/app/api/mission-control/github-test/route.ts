@@ -1,6 +1,10 @@
+import { requireAdmin, isAdminIdentity } from "@/lib/server/requireAdmin";
 import { NextResponse } from "next/server";
 
-export async function GET() {
+export async function GET(req: Request) {
+  const adminIdentity = await requireAdmin(req);
+  if (!isAdminIdentity(adminIdentity)) return adminIdentity;
+
   try {
     const owner = process.env.GITHUB_OWNER!;
     const repo = process.env.GITHUB_REPO!;

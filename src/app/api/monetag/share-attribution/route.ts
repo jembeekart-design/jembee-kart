@@ -1,4 +1,4 @@
-import { randomUUID } from "node:crypto";
+import { createHash } from "node:crypto";
 import { NextResponse } from "next/server";
 import { FieldValue } from "firebase-admin/firestore";
 import { getAdminAuth, getAdminDb } from "@/firebase/admin";
@@ -16,13 +16,22 @@ export async function POST(req: Request) {
     const videoSnap = await db.collection("watchEarnVideos").doc(videoId).get();
     if (!videoSnap.exists) return NextResponse.json({ success: false, message: "वीडियो नहीं मिला।" }, { status: 404 });
     const video = videoSnap.data() || {};
+    if (video.status !== "approved" || video.active !== true || video.moderation !== "safe") {
+      return NextResponse.json({ success: false, message: "यह वीडियो अभी शेयर करने के लिए उपलब्ध नहीं है।" }, { status: 409 });
+    }
     const uploaderUserId = String(video.creatorId || video.uploaderUserId || "").trim();
     if (!uploaderUserId) return NextResponse.json({ success: false, message: "इस वीडियो का verified uploader ID उपलब्ध नहीं है।" }, { status: 409 });
-    const shareId = randomUUID();
-    await db.collection("monetagShareAttributions").doc(shareId).create({ shareId, videoId, uploaderUserId, sharerUserId: decoded.uid, createdAt: FieldValue.serverTimestamp(), status: "created", attributionSource: "authenticated_share_action", selfShare: decoded.uid === uploaderUserId, landingCount: 0, lastLandingAt: null });
+    if (decoded.uid === uploaderUserId) return NextResponse.json({ success: false, message: "Self-sharing is not eligible for attribution." }, { status: 403 });
+    const day = new Date().toISOString().slice(0, 10);
+    const shareId = createHash("sha256").update(`${decoded.uid}:${videoId}:${day}`).digest("hex");
+    const shareRef = db.collection("monetagShareAttributions").doc(shareId);
+    await db.runTransaction(async (tx) => {
+      const existing = await tx.get(shareRef);
+      if (!existing.exists) tx.create(shareRef, { shareId, videoId, uploaderUserId, sharerUserId: decoded.uid, createdAt: FieldValue.serverTimestamp(), status: "created", attributionSource: "authenticated_share_action", selfShare: false, landingCount: 0, lastLandingAt: null, shareDay: day });
+    });
     const origin = new URL(req.url).origin;
     const url = `${origin}/mlm/watch-earn?v=${encodeURIComponent(videoId)}&ref=${encodeURIComponent(shareId)}`;
-    return NextResponse.json({ success: true, shareId, url, uploaderUserId, sharerUserId: decoded.uid, selfShare: decoded.uid === uploaderUserId });
+    return NextResponse.json({ success: true, shareId, url });
   } catch (error) {
     const code = error instanceof Error ? error.message : "";
     const status = code === "auth/id-token-expired" || code === "auth/argument-error" ? 401 : 500;

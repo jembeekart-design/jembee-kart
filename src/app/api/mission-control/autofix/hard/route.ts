@@ -1,8 +1,12 @@
+import { requireAdmin, isAdminIdentity } from "@/lib/server/requireAdmin";
 import { NextRequest, NextResponse } from "next/server";
 import { hardAutoFix } from "@/mission-control/autofix/hardAutoFix";
 import { withAdminAuth } from "@/lib/api/adminAuth";
 
 export async function POST(req: NextRequest) {
+  const adminIdentity = await requireAdmin(req);
+  if (!isAdminIdentity(adminIdentity)) return adminIdentity;
+
   return withAdminAuth(async (req: NextRequest) => {
     try {
       const body = await req.json();

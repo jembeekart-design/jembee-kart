@@ -3,6 +3,10 @@
     {
       "path": "/api/cron/release-creator-ad-earnings",
       "schedule": "0 0 * * *"
+    },
+    {
+      "path": "/api/cron/expire-unpaid-cashfree-orders",
+      "schedule": "*/10 * * * *"
     }
   ]
 }

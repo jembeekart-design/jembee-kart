@@ -14,7 +14,7 @@ async function verifyAdmin(req: Request) {
   }
 
   const token = authHeader.slice("Bearer ".length).trim();
-  const decodedToken = await getAdminAuth().verifyIdToken(token);
+  const decodedToken = await getAdminAuth().verifyIdToken(token, true);
 
   const users = getAdminDb().collection("users");
   const directDoc = await users.doc(decodedToken.uid).get();

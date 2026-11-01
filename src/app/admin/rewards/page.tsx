@@ -5,12 +5,6 @@ export const dynamic = "force-dynamic";
 import { useEffect, useState } from "react";
 
 import {
-  doc,
-  getDoc,
-  setDoc
-} from "firebase/firestore";
-
-import {
   Gift,
   Save,
   Trophy,
@@ -20,7 +14,7 @@ import {
   Sparkles
 } from "lucide-react";
 
-import { db } from "@/firebase/config";
+import { auth } from "@/firebase/config";
 
 interface RewardSettings {
   rewardsEnabled: boolean;
@@ -62,64 +56,44 @@ export default function RewardsPage() {
   }, []);
 
   async function fetchSettings() {
-
     try {
-
-      const ref = doc(
-        db,
-        "admin_settings",
-        "rewards"
-      );
-
-      const snap =
-        await getDoc(ref);
-
-      if (snap.exists()) {
-
-        setSettings(
-          snap.data() as RewardSettings
-        );
-
-      }
-
+      const user = auth.currentUser;
+      if (!user) throw new Error("Please sign in again.");
+      const token = await user.getIdToken();
+      const response = await fetch("/api/admin/rewards-settings", {
+        headers: { Authorization: `Bearer ${token}` },
+        cache: "no-store",
+      });
+      const result = await response.json().catch(() => ({}));
+      if (!response.ok || !result.success) throw new Error(result.message || "Could not load reward settings.");
+      setSettings((previous) => ({ ...previous, ...result.settings }));
     } catch (error) {
-
-      console.log(error);
-
+      console.error("Rewards settings load failed", error);
+      alert(error instanceof Error ? error.message : "Could not load reward settings.");
     } finally {
-
       setLoading(false);
-
     }
   }
 
   async function saveSettings() {
-
     try {
-
       setSaving(true);
-
-      await setDoc(
-        doc(
-          db,
-          "admin_settings",
-          "rewards"
-        ),
-        settings
-      );
-
-      alert(
-        "Rewards Settings Saved"
-      );
-
+      const user = auth.currentUser;
+      if (!user) throw new Error("Please sign in again.");
+      const token = await user.getIdToken();
+      const response = await fetch("/api/admin/rewards-settings", {
+        method: "PUT",
+        headers: { Authorization: `Bearer ${token}`, "Content-Type": "application/json" },
+        body: JSON.stringify(settings),
+      });
+      const result = await response.json().catch(() => ({}));
+      if (!response.ok || !result.success) throw new Error(result.message || "Rewards settings could not be saved.");
+      alert("Rewards Settings Saved");
     } catch (error) {
-
-      console.log(error);
-
+      console.error("Rewards settings save failed", error);
+      alert(error instanceof Error ? error.message : "Rewards settings could not be saved.");
     } finally {
-
       setSaving(false);
-
     }
   }
 
@@ -171,6 +145,9 @@ export default function RewardsPage() {
 
             <p className="mt-1 text-sm text-[var(--muted-text-color)]">
               Manage points, rewards & loyalty system
+            </p>
+            <p className="mt-2 max-w-2xl rounded-xl border border-amber-500/40 bg-amber-500/10 px-3 py-2 text-xs text-[var(--button-text-color)]">
+              Only the main Rewards switch and Daily Rewards settings currently control the server-side claim flow. Referral, Cashback, VIP and Signup fields below are legacy configuration and do not independently authorize or issue payouts.
             </p>
 
           </div>
@@ -233,7 +210,7 @@ export default function RewardsPage() {
 
         <ToggleCard
           title="Referral Rewards"
-          description="Referral bonus points"
+          description="Configuration only — not connected to a verified referral payout yet"
           icon={
             <Sparkles size={24} />
           }
@@ -250,7 +227,7 @@ export default function RewardsPage() {
 
         <ToggleCard
           title="Cashback Rewards"
-          description="Reward cashback points"
+          description="Configuration only — cashback payouts use separate order rules"
           icon={
             <Coins size={24} />
           }
@@ -267,7 +244,7 @@ export default function RewardsPage() {
 
         <ToggleCard
           title="VIP Rewards"
-          description="Enable VIP loyalty system"
+          description="Configuration only — VIP payout/eligibility flow is not connected yet"
           icon={
             <Trophy size={24} />
           }
@@ -289,7 +266,7 @@ export default function RewardsPage() {
       <div className="mt-6 grid grid-cols-1 gap-5 md:grid-cols-2">
 
         <InputCard
-          title="Signup Reward"
+          title="Signup Reward (not active)"
           value={
             settings.signupReward
           }
@@ -315,7 +292,7 @@ export default function RewardsPage() {
         />
 
         <InputCard
-          title="Referral Reward Points"
+          title="Referral Reward Points (not active)"
           value={
             settings.referralRewardPoints
           }
@@ -328,7 +305,7 @@ export default function RewardsPage() {
         />
 
         <InputCard
-          title="VIP Minimum Points"
+          title="VIP Minimum Points (not active)"
           value={
             settings.vipMinimumPoints
           }

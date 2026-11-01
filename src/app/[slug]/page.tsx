@@ -20,10 +20,9 @@ export default async function DynamicPage({ params }: { params: Promise<{ slug: 
   return (
     <main className="p-8 min-h-screen">
       <h1 className="text-3xl font-black mb-6">{data.title}</h1>
-      <div
-        className="prose max-w-none text-[var(--text-color)]"
-        dangerouslySetInnerHTML={{ __html: data.content || "No content available." }}
-      />
+      <div className="prose max-w-none text-[var(--text-color)] whitespace-pre-wrap">
+        {typeof data.content === "string" ? data.content : "No content available."}
+      </div>
     </main>
   );
 }

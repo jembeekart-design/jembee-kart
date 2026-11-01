@@ -1,5 +1,7 @@
 "use client";
 
+import { adminFetch } from "@/lib/client/adminFetch";
+
 import { useEffect, useState } from "react";
 
 export default function ReviewReport() {
@@ -10,7 +12,7 @@ export default function ReviewReport() {
   }, []);
 
   async function loadReport() {
-    const res = await fetch("/api/mission-control/review");
+    const res = await adminFetch("/api/mission-control/review");
     const data = await res.json();
     setReport(data);
   }
@@ -19,7 +21,7 @@ export default function ReviewReport() {
     action: "approve" | "reject",
     item: any
   ) {
-    await fetch("/api/mission-control/review/action", {
+    await adminFetch("/api/mission-control/review/action", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -34,7 +36,7 @@ export default function ReviewReport() {
   }
 
   async function applySelected() {
-    const res = await fetch("/api/mission-control/review/apply", {
+    const res = await adminFetch("/api/mission-control/review/apply", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",

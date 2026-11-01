@@ -1,16 +1,8 @@
 import { NextResponse } from "next/server";
-import { withAdminAuth } from "@/lib/api/adminAuth";
+import { requireAdmin, isAdminIdentity } from "@/lib/server/requireAdmin";
 
 export async function GET(req: Request) {
-  return withAdminAuth(async () => {
-    return NextResponse.json({
-      cpuUsage: 18,
-      memoryUsage: 46,
-      diskUsage: 32,
-      networkLatency: 24,
-      averageResponseTime: 182,
-      uptime: "99.99%",
-      updatedAt: new Date().toISOString(),
-    });
-  }, req);
+  const adminIdentity = await requireAdmin(req);
+  if (!isAdminIdentity(adminIdentity)) return adminIdentity;
+  return NextResponse.json({ success: false, demo: true, code: "NOT_CONNECTED", message: "Performance metrics are not connected to a live monitoring provider." }, { status: 501 });
 }

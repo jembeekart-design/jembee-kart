@@ -10,11 +10,6 @@ const MAX_VIDEO_SIZE = 500 * 1024 * 1024;
 export async function POST(req: Request) {
   const authHeader = req.headers.get("authorization");
 
-  console.log("[AuthDiagnostic] Start Upload - Auth Header:", authHeader ? "Present" : "Missing");
-  if (authHeader) {
-      console.log("[AuthDiagnostic] Start Upload - Bearer Prefix:", authHeader.startsWith("Bearer ") ? "Present" : "Missing");
-  }
-
   if (!authHeader?.startsWith("Bearer ")) {
     return NextResponse.json(
       { success: false, message: "कृपया लॉगिन करें।" },
@@ -26,11 +21,10 @@ export async function POST(req: Request) {
   let creatorId: string;
 
   try {
-    const decodedToken = await getAdminAuth().verifyIdToken(token);
+    const decodedToken = await getAdminAuth().verifyIdToken(token, true);
     creatorId = decodedToken.uid;
-    console.log("[AuthDiagnostic] Start Upload - Token Verified. UID:", creatorId);
   } catch (err) {
-    console.error("[AuthDiagnostic] Start Upload - Token Verification Failed:", err);
+    console.error("Creator upload authentication failed");
     return NextResponse.json(
       { success: false, message: "कृपया लॉगिन करें।" },
       { status: 401 }
@@ -69,6 +63,9 @@ export async function POST(req: Request) {
 
   const { displayName, photoURL, username, caption, hashtags, music, sponsor, originalVideoId, originalAudioId, isEnhanced } = body;
   const videoAccess = body.videoAccess === "paid" ? "paid" : "free";
+  if (videoAccess === "paid") {
+    return NextResponse.json({ success: false, message: "Paid video publishing is temporarily disabled until verified purchase access is available." }, { status: 409 });
+  }
   const videoPrice = typeof body.videoPrice === "number" ? body.videoPrice : 0;
   if (videoAccess === "paid" && (!Number.isFinite(videoPrice) || videoPrice < 1 || videoPrice > 100000)) {
     return NextResponse.json({ success: false, message: "Paid वीडियो की कीमत ₹1 से ₹100000 के बीच होनी चाहिए।" }, { status: 400 });
@@ -98,13 +95,23 @@ export async function POST(req: Request) {
   const submissionId = crypto.randomUUID();
 
   try {
-    console.log("[UPLOAD_DEBUG_SERVER] START_BEGIN", {
-      creatorId,
-      filename,
-      mimeType,
-      fileSize,
-      submissionId,
+    const adminDb = getAdminDb();
+    const activeSessions = await adminDb.collection("videoModerationSubmissions")
+      .where("creatorId", "==", creatorId)
+      .where("status", "in", ["uploading", "completing"])
+      .limit(3).get();
+    if (activeSessions.size >= 2) {
+      return NextResponse.json({ success: false, message: "एक समय में अधिकतम 2 वीडियो upload session ही सक्रिय रख सकते हैं।" }, { status: 429 });
+    }
+    const cooldownRef = adminDb.collection("creatorUploadRateLimits").doc(creatorId);
+    const allowed = await adminDb.runTransaction(async (tx) => {
+      const snap = await tx.get(cooldownRef);
+      const last = Number(snap.data()?.lastStartedAtMs || 0);
+      if (Date.now() - last < 30000) return false;
+      tx.set(cooldownRef, { lastStartedAtMs: Date.now(), updatedAt: new Date() }, { merge: true });
+      return true;
     });
+    if (!allowed) return NextResponse.json({ success: false, message: "कृपया नया upload शुरू करने से पहले 30 सेकंड प्रतीक्षा करें।" }, { status: 429 });
 
     const uploadUrl = await createResumableUploadSession(
       `moderation_${submissionId}`,
@@ -117,7 +124,6 @@ export async function POST(req: Request) {
       uploadUrlPresent: !!uploadUrl,
     });
 
-    const adminDb = getAdminDb();
     await adminDb
       .collection("videoModerationSubmissions")
       .doc(submissionId)

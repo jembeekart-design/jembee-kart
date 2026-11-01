@@ -16,6 +16,7 @@ import {
 } from "firebase/firestore";
 
 import { db } from "@/firebase/config";
+import { uploadToCloudinary } from "@/lib/cloudinary";
 
 import {
   ChevronUp,
@@ -315,64 +316,14 @@ export default function CategoryAdmin() {
   UPLOAD IMAGE
   ====================================================== */
 
-  async function uploadImage(
-    categoryId: string,
-    file: File
-  ) {
+  async function uploadImage(categoryId: string, file: File) {
     try {
-      const compressedFile =
-        await compressImage(
-          file
-        );
-
-      const formData =
-        new FormData();
-
-      formData.append(
-        "file",
-        compressedFile
-      );
-
-      formData.append(
-        "upload_preset",
-        process.env
-          .NEXT_PUBLIC_CLOUDINARY_UPLOAD_PRESET ||
-          ""
-      );
-
-      const response =
-        await fetch(
-          `https://api.cloudinary.com/v1_1/${
-            process.env
-              .NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME
-          }/image/upload`,
-          {
-            method:
-              "POST",
-
-            body:
-              formData
-          }
-        );
-
-      const data =
-        await response.json();
-
-      await updateField(
-        categoryId,
-        "image",
-        data.secure_url
-      );
-
-      alert(
-        "Image Uploaded"
-      );
+      const result = await uploadToCloudinary(file, "image");
+      await updateField(categoryId, "image", result.secure_url);
+      alert("Image Uploaded");
     } catch (error) {
-      console.error(error);
-
-      alert(
-        "Upload Failed"
-      );
+      console.error("Category image upload failed:", error);
+      alert(error instanceof Error ? error.message : "Upload Failed");
     }
   }
 

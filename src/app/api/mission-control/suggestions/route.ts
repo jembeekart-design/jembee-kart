@@ -1,7 +1,11 @@
+import { requireAdmin, isAdminIdentity } from "@/lib/server/requireAdmin";
 import { NextResponse } from "next/server";
 import { generateSuggestions } from "@/mission-control/suggestions/suggestionEngine";
 
-export async function GET() {
+export async function GET(req: Request) {
+  const adminIdentity = await requireAdmin(req);
+  if (!isAdminIdentity(adminIdentity)) return adminIdentity;
+
   try {
     const report = generateSuggestions();
 

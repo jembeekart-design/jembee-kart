@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { FieldValue } from "firebase-admin/firestore";
 import { getAdminAuth, getAdminDb } from "@/firebase/admin";
+import { getCashfreeConfig } from "@/lib/payments/cashfree";
 
 export const runtime = "nodejs";
 
@@ -28,7 +29,17 @@ export async function POST(req: NextRequest) {
     }
 
     const userId = decodedToken.uid;
-    const body = await req.json().catch(() => null);
+    const contentLength = Number(req.headers.get("content-length") || 0);
+    if (contentLength > 8192) return errorResponse("Request body too large.", 413);
+    const rawBody = await req.text();
+    if (Buffer.byteLength(rawBody, "utf8") > 8192) return errorResponse("Request body too large.", 413);
+    let body: Record<string, unknown> | null = null;
+    try {
+      const parsed: unknown = JSON.parse(rawBody);
+      if (parsed && typeof parsed === "object" && !Array.isArray(parsed)) body = parsed as Record<string, unknown>;
+    } catch {
+      return errorResponse("Invalid JSON request.", 400);
+    }
 
     if (!body || typeof body !== "object" || Array.isArray(body)) {
       return errorResponse("Invalid request.", 400);
@@ -41,6 +52,8 @@ export async function POST(req: NextRequest) {
       typeof body.idempotencyKey === "string"
         ? body.idempotencyKey.trim()
         : "";
+    const selectedSize = typeof body.selectedSize === "string" ? body.selectedSize.trim() : "N/A";
+    const selectedColor = typeof body.selectedColor === "string" ? body.selectedColor.trim() : "N/A";
 
     if (!productId || productId.length > 200) {
       return errorResponse("Invalid product.", 400);
@@ -50,8 +63,18 @@ export async function POST(req: NextRequest) {
       return errorResponse("Invalid checkout request key. Please try again.", 400);
     }
 
-    if (body.paymentMethod !== "cod") {
-      return errorResponse("Only Cash on Delivery is currently supported.", 400);
+    if (selectedSize.length > 50 || selectedColor.length > 100) {
+      return errorResponse("Invalid product variant selection.", 400);
+    }
+
+    const paymentMethod = body.paymentMethod === "cashfree" ? "cashfree" : body.paymentMethod === "cod" ? "cod" : "";
+    if (!paymentMethod) return errorResponse("Choose a supported payment method.", 400);
+    if (paymentMethod === "cashfree") {
+      try {
+        await getCashfreeConfig();
+      } catch {
+        return errorResponse("Online payment is not enabled yet. Please choose Cash on Delivery.", 503);
+      }
     }
 
     const quantity = Number(body.quantity ?? 1);
@@ -81,9 +104,29 @@ export async function POST(req: NextRequest) {
       const addressSnap = await transaction.get(addressRef);
       const productSnap = await transaction.get(productRef);
 
-      // A retry of the same checkout returns the original order.
+      // A retry of the same checkout returns the original order, but a reused
+      // idempotency key must never silently resolve to a different cart payload.
       if (requestSnap.exists) {
         const previous = requestSnap.data()!;
+        if (typeof previous.orderId !== "string" || !previous.orderId) {
+          throw new Error("IDEMPOTENCY_RECORD_INCONSISTENT");
+        }
+        const previousOrderRef = db.collection("orders").doc(previous.orderId);
+        const previousOrderSnap = await transaction.get(previousOrderRef);
+        if (!previousOrderSnap.exists) throw new Error("IDEMPOTENCY_RECORD_INCONSISTENT");
+        const previousOrder = previousOrderSnap.data()!;
+        const previousStatus = typeof previousOrder.status === "string" ? previousOrder.status.toLowerCase() : "placed";
+        const previousPaymentStatus = typeof previousOrder.paymentStatus === "string" ? previousOrder.paymentStatus.toLowerCase() : "";
+        if (previousStatus === "cancelled" || previousPaymentStatus === "expired") {
+          throw new Error("IDEMPOTENCY_KEY_TERMINAL");
+        }
+        const sameCheckout =
+          previousOrder.productId === productId &&
+          Number(previousOrder.quantity) === quantity &&
+          (previousOrder.selectedSize || "N/A") === selectedSize &&
+          (previousOrder.selectedColor || "N/A") === selectedColor &&
+          previousOrder.paymentMethod === paymentMethod;
+        if (!sameCheckout) throw new Error("IDEMPOTENCY_KEY_REUSED");
 
         return {
           orderId: previous.orderId as string,
@@ -134,6 +177,15 @@ export async function POST(req: NextRequest) {
       if (product.visible !== true) {
         throw new Error("PRODUCT_UNAVAILABLE");
       }
+
+      const allowedSizes = Array.isArray(product.sizes) && product.sizes.length
+        ? product.sizes.filter((value: unknown): value is string => typeof value === "string").slice(0, 30)
+        : ["S", "M", "L", "XL", "XXL"];
+      const allowedColors = Array.isArray(product.colors) && product.colors.length
+        ? product.colors.filter((value: unknown): value is string => typeof value === "string").slice(0, 30)
+        : ["var(--color-primary-button)", "var(--color-primary-button)", "var(--color-primary-button)", "var(--color-primary-button)"];
+      if (selectedSize !== "N/A" && !allowedSizes.includes(selectedSize)) throw new Error("INVALID_PRODUCT_SIZE");
+      if (selectedColor !== "N/A" && !allowedColors.includes(selectedColor)) throw new Error("INVALID_PRODUCT_COLOR");
 
       // The existing admin product form stores price as a number.
       if (
@@ -193,6 +245,9 @@ export async function POST(req: NextRequest) {
       ) {
         throw new Error("INVALID_ORDER_AMOUNT");
       }
+      if (paymentMethod === "cashfree" && finalAmount < 1) {
+        throw new Error("CASHFREE_MINIMUM_ORDER_AMOUNT");
+      }
 
       const orderRef = db.collection("orders").doc();
 
@@ -229,15 +284,23 @@ export async function POST(req: NextRequest) {
         productPrice: price,
         productDiscountPrice: discountPrice,
         quantity,
+        selectedSize,
+        selectedColor,
         subtotal,
         discount: totalDiscount,
         finalAmount,
-        paymentMethod: "cod",
-        status: "placed",
+        paymentMethod,
+        status: paymentMethod === "cashfree" ? "payment_pending" : "placed",
+        paymentStatus: paymentMethod === "cashfree" ? "pending" : "not_required",
+        ...(paymentMethod === "cashfree" ? { paymentExpiresAt: new Date(Date.now() + 30 * 60 * 1000) } : {}),
         referralEligible: true,
         cashbackProcessed: false,
         commissionProcessed: false,
         rewardProcessed: false,
+        // Explicit inventory markers allow a later cancellation to restore stock
+        // exactly once inside the same Admin SDK transaction.
+        stockDeducted: true,
+        stockRestocked: false,
         exchangeEligible: true,
         exchangeRequested: false,
         placedAt: FieldValue.serverTimestamp(),
@@ -331,6 +394,15 @@ export async function POST(req: NextRequest) {
         message: "The order amount is invalid.",
         status: 409,
       },
+      CASHFREE_MINIMUM_ORDER_AMOUNT: {
+        message: "Online payment requires an order total of at least ₹1. Please choose Cash on Delivery or adjust the cart.",
+        status: 409,
+      },
+      INVALID_PRODUCT_SIZE: { message: "The selected size is not available for this product.", status: 409 },
+      INVALID_PRODUCT_COLOR: { message: "The selected color is not available for this product.", status: 409 },
+      IDEMPOTENCY_KEY_REUSED: { message: "This checkout request key was already used for a different order selection. Please restart checkout.", status: 409 },
+      IDEMPOTENCY_RECORD_INCONSISTENT: { message: "This checkout request could not be safely verified. Please contact support before retrying.", status: 409 },
+      IDEMPOTENCY_KEY_TERMINAL: { message: "This checkout attempt has ended. Start a new checkout to place another order.", status: 409 },
     };
 
     if (knownErrors[code]) {

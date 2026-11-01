@@ -1,5 +1,6 @@
 import { NextResponse } from "next/server";
 import { FieldValue } from "firebase-admin/firestore";
+import { createHash } from "node:crypto";
 import { getAdminAuth, getAdminDb } from "@/firebase/admin";
 
 export const runtime = "nodejs";
@@ -24,17 +25,22 @@ export async function POST(req: Request) {
     return jsonError("Unauthorized", 401);
   }
 
-  let body: { videoId?: unknown; text?: unknown };
+  let body: { videoId?: unknown; text?: unknown; requestId?: unknown };
   try {
-    body = await req.json();
+    const contentLength = Number(req.headers.get("content-length") || 0);
+    if (contentLength > 8192) return jsonError("Request body too large", 413);
+    const raw = await req.text();
+    if (new TextEncoder().encode(raw).byteLength > 8192) return jsonError("Request body too large", 413);
+    body = JSON.parse(raw);
   } catch {
     return jsonError("Invalid JSON body", 400);
   }
 
   const videoId = typeof body.videoId === "string" ? body.videoId.trim() : "";
   const text = typeof body.text === "string" ? body.text.trim() : "";
+  const requestId = typeof body.requestId === "string" ? body.requestId.trim() : "";
 
-  if (!videoId || videoId.length > 500 || !text) {
+  if (!videoId || videoId.length > 500 || !text || !/^[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i.test(requestId)) {
     return jsonError("Video ID and comment text are required", 400);
   }
 
@@ -92,42 +98,21 @@ export async function POST(req: Request) {
       }
     }
 
-    // Apply administrator-defined regex rules on the trusted server.
-    const regexSnapshot = await adminDb.collection("commentRegexRules").get();
-
-    for (const ruleDoc of regexSnapshot.docs) {
-      const rule = ruleDoc.data();
-
-      if (rule.enabled !== true || typeof rule.pattern !== "string" || !rule.pattern) {
-        continue;
-      }
-
-      try {
-        const regex = new RegExp(
-          rule.pattern,
-          settings.caseInsensitive === false ? "" : "i"
-        );
-
-        if (regex.test(text)) {
-          return jsonError(
-            typeof rule.message === "string" && rule.message.trim()
-              ? rule.message
-              : typeof settings.customMessage === "string" && settings.customMessage
-                ? settings.customMessage
-                : "Please avoid abusive language",
-            400
-          );
-        }
-      } catch {
-        // Ignore invalid administrator patterns rather than breaking all comments.
-        console.error("Skipping invalid comment moderation regex:", ruleDoc.id);
-      }
+    // Arbitrary JavaScript regexes can catastrophically backtrack and block the Node event loop.
+    // Until a linear-time RE2-compatible engine is installed, fail closed if active rules exist.
+    const regexSnapshot = await adminDb.collection("commentRegexRules").where("enabled", "==", true).limit(51).get();
+    if (!regexSnapshot.empty) {
+      return jsonError("Custom regex moderation is temporarily unavailable. Please disable custom regex rules; blocked-word moderation remains active.", 503);
     }
 
     const videoRef = adminDb.collection("watchEarnVideos").doc(videoId);
     const videoSnap = await videoRef.get();
     if (!videoSnap.exists) {
       return jsonError("Video not found", 404);
+    }
+    const videoData = videoSnap.data() || {};
+    if (videoData.status !== "approved" || videoData.active !== true || videoData.moderation !== "safe") {
+      return jsonError("Comments are unavailable for this video", 404);
     }
 
     let userName = "User";
@@ -139,38 +124,77 @@ export async function POST(req: Request) {
     }
 
     const approved = settings.autoApproveComments === true;
-    const commentRef = adminDb.collection("comments").doc();
+    const requestHash = createHash("sha256").update(`${uid}:${requestId}`).digest("hex");
+    const commentRef = adminDb.collection("comments").doc(requestHash);
+    const rateRef = adminDb.collection("commentRateLimits").doc(uid);
+    const queueRef = adminDb.collection("videoCommentReports").doc(requestHash);
+    const nowMs = Date.now();
+    const textHash = createHash("sha256").update(text.toLowerCase().replace(/\s+/g, " ")).digest("hex");
+    const maxPerMinute = Number.isFinite(Number(settings.maxCommentsPerMinute)) ? Math.max(1, Math.min(30, Number(settings.maxCommentsPerMinute))) : 5;
+    const maxPerHour = Number.isFinite(Number(settings.maxCommentsPerHour)) ? Math.max(1, Math.min(300, Number(settings.maxCommentsPerHour))) : 30;
+    const maxPerDay = Number.isFinite(Number(settings.maxCommentsPerDay)) ? Math.max(1, Math.min(1000, Number(settings.maxCommentsPerDay))) : 100;
+    const duplicateWindowMs = Number.isFinite(Number(settings.duplicateCommentWindowSeconds)) ? Math.max(0, Math.min(86400, Number(settings.duplicateCommentWindowSeconds))) * 1000 : 30000;
 
-    const batch = adminDb.batch();
-    batch.set(commentRef, {
-      contentId: videoId,
-      userId: uid,
-      userName,
-      text,
-      createdAt: FieldValue.serverTimestamp(),
-      status: approved ? "approved" : "pending",
-      likes: 0,
-    });
+    const result = await adminDb.runTransaction(async (tx) => {
+      const [existingComment, rateSnap, freshVideo] = await Promise.all([
+        tx.get(commentRef),
+        tx.get(rateRef),
+        tx.get(videoRef),
+      ]);
+      if (existingComment.exists) return { kind: "duplicate", data: existingComment.data() || {} };
+      const currentVideo = freshVideo.data() || {};
+      if (!freshVideo.exists || currentVideo.status !== "approved" || currentVideo.active !== true || currentVideo.moderation !== "safe") {
+        return { kind: "unavailable" };
+      }
+      const rate = rateSnap.data() || {};
+      const minuteWindow = Math.floor(nowMs / 60000);
+      const hourWindow = Math.floor(nowMs / 3600000);
+      const dayWindow = new Date(nowMs).toISOString().slice(0, 10);
+      const minuteCount = rate.minuteWindow === minuteWindow ? Number(rate.minuteCount || 0) : 0;
+      const hourCount = rate.hourWindow === hourWindow ? Number(rate.hourCount || 0) : 0;
+      const dayCount = rate.dayWindow === dayWindow ? Number(rate.dayCount || 0) : 0;
+      if (minuteCount >= maxPerMinute || hourCount >= maxPerHour || dayCount >= maxPerDay) return { kind: "rate-limited" };
+      if (duplicateWindowMs > 0 && rate.lastTextHash === textHash && nowMs - Number(rate.lastCommentAt || 0) < duplicateWindowMs) return { kind: "duplicate-text" };
 
-    if (!approved) {
-      const queueRef = adminDb.collection("videoCommentReports").doc();
-      batch.set(queueRef, {
-        commentId: commentRef.id,
+      tx.create(commentRef, {
         contentId: videoId,
         userId: uid,
         userName,
         text,
-        status: "pending",
+        requestId,
         createdAt: FieldValue.serverTimestamp(),
-        reason: "auto-moderation-pending",
+        status: approved ? "approved" : "pending",
+        likes: 0,
       });
-    }
-
-    batch.update(videoRef, {
-      comments: FieldValue.increment(1),
+      if (!approved) {
+        tx.create(queueRef, {
+          commentId: commentRef.id,
+          contentId: videoId,
+          userId: uid,
+          userName,
+          text,
+          status: "pending",
+          createdAt: FieldValue.serverTimestamp(),
+          reason: "auto-moderation-pending",
+        });
+      }
+      tx.update(videoRef, { comments: FieldValue.increment(1) });
+      tx.set(rateRef, {
+        minuteWindow, minuteCount: minuteCount + 1,
+        hourWindow, hourCount: hourCount + 1,
+        dayWindow, dayCount: dayCount + 1,
+        lastTextHash: textHash, lastCommentAt: nowMs,
+        updatedAt: FieldValue.serverTimestamp(),
+      }, { merge: true });
+      return { kind: "created" };
     });
 
-    await batch.commit();
+    if (result.kind === "rate-limited") return jsonError("Comment rate limit reached. Please try again later.", 429);
+    if (result.kind === "duplicate-text") return jsonError("You recently posted the same comment. Please wait before repeating it.", 409);
+    if (result.kind === "unavailable") return jsonError("Comments are unavailable for this video", 404);
+    if (result.kind === "duplicate") {
+      return NextResponse.json({ success: true, duplicate: true, comment: { id: commentRef.id, contentId: videoId, userId: uid, userName: result.data.userName || userName, text: result.data.text || text, status: result.data.status || "pending", likes: Number(result.data.likes || 0) } });
+    }
 
     return NextResponse.json({
       success: true,

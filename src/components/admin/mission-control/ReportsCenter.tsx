@@ -1,5 +1,7 @@
 "use client";
 
+import { adminFetch } from "@/lib/client/adminFetch";
+
 import { useState } from "react";
 import {
   FileText,
@@ -51,7 +53,7 @@ export default function ReportsCenter() {
     try {
       setLoading(true);
 
-      const response = await fetch("/api/mission-control/run", {
+      const response = await adminFetch("/api/mission-control/run", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",

@@ -16,12 +16,13 @@ export async function GET(req: Request) {
 
     if (error) {
       return new NextResponse(
-        `<h1>Google authorization cancelled</h1><p>${error}</p>`,
+        "<!doctype html><html><body><h1>Google authorization cancelled</h1><p>Google authorization was cancelled or denied.</p></body></html>",
         {
           status: 400,
           headers: {
             "Content-Type": "text/html; charset=utf-8",
             "Cache-Control": "no-store",
+            "Content-Security-Policy": "default-src 'none'; style-src 'unsafe-inline'; base-uri 'none'; form-action 'none'; frame-ancestors 'none'",
           },
         }
       );
@@ -98,9 +99,7 @@ export async function GET(req: Request) {
     console.error("Google Drive OAuth callback error:", error);
 
     return new NextResponse(
-      `<h1>Google Drive authorization failed</h1><p>${
-        error instanceof Error ? error.message : "Unknown error"
-      }</p>`,
+      "<!doctype html><html><body><h1>Google Drive authorization failed</h1><p>Authorization could not be completed. Please retry or contact an administrator.</p></body></html>",
       {
         status: 500,
         headers: {

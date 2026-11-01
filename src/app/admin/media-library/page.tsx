@@ -62,8 +62,8 @@ export default function MediaLibraryPage() {
 
       const response = await fetch("/api/admin/delete-video", {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ videoId: file.id, publicId: file.publicId, token }),
+        headers: { "Content-Type": "application/json", Authorization: `Bearer ${token}` },
+        body: JSON.stringify({ videoId: file.id }),
       });
 
       const result = await response.json();

@@ -20,7 +20,7 @@ async function verifyAdmin(req: Request): Promise<string> {
   }
 
   const decodedToken =
-    await getAdminAuth().verifyIdToken(token);
+    await getAdminAuth().verifyIdToken(token, true);
 
   const users = getAdminDb().collection("users");
   const directDoc = await users.doc(decodedToken.uid).get();
@@ -119,7 +119,7 @@ export async function POST(req: Request) {
     const submission =
       submissionSnapshot.data() || {};
 
-    if (submission.status !== "pending") {
+    if (submission.status !== "pending" && !(action === "reject" && submission.status === "reject_failed")) {
       return NextResponse.json(
         {
           success: false,
@@ -128,6 +128,10 @@ export async function POST(req: Request) {
         },
         { status: 409 }
       );
+    }
+
+    if (action === "approve" && submission.videoAccess === "paid") {
+      return NextResponse.json({ success: false, message: "Paid video approval is disabled until purchase entitlement and payment verification are implemented." }, { status: 409 });
     }
 
     const driveFileId =
@@ -150,17 +154,21 @@ export async function POST(req: Request) {
     // ==================================================
 
     if (action === "reject") {
-      await deleteDriveFile(driveFileId);
-
-      await submissionRef.update({
-        status: "rejected",
-        moderation: "rejected",
-        moderatedBy: adminId,
-        moderationCheckedAt:
-          FieldValue.serverTimestamp(),
-        rejectedAt:
-          FieldValue.serverTimestamp(),
+      const claimed = await adminDb.runTransaction(async (transaction) => {
+        const current = await transaction.get(submissionRef);
+        const currentStatus = current.data()?.status;
+        if (!current.exists || (currentStatus !== "pending" && currentStatus !== "reject_failed")) return false;
+        transaction.update(submissionRef, { status: "rejecting", processingBy: adminId, rejectionStartedAt: FieldValue.serverTimestamp() });
+        return true;
       });
+      if (!claimed) return NextResponse.json({ success: false, message: "Submission is already being processed" }, { status: 409 });
+      try {
+        await deleteDriveFile(driveFileId);
+      } catch (deleteError) {
+        await submissionRef.update({ status: "reject_failed", rejectionErrorAt: FieldValue.serverTimestamp() }).catch(() => undefined);
+        throw deleteError;
+      }
+      await submissionRef.update({ status: "rejected", moderation: "rejected", moderatedBy: adminId, moderationCheckedAt: FieldValue.serverTimestamp(), rejectedAt: FieldValue.serverTimestamp() });
 
       return NextResponse.json({
         success: true,
