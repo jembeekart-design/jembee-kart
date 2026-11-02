@@ -2,31 +2,20 @@ import { NextResponse } from "next/server";
 import { getAdminDb } from "@/firebase/admin";
 import { FieldValue, Timestamp } from "firebase-admin/firestore";
 import { adminCreditWallet } from "@/lib/mlm/adminCreditWallet";
+import { timingSafeEqual } from "node:crypto";
 
 export async function GET(req: Request) {
   try {
     const adminDb = getAdminDb();
-    // 1. Authenticate request using CRON_SECRET for security
-    const authHeader = req.headers.get("authorization");
-    const expectedSecret = process.env.CRON_SECRET ?? "";
-    const providedSecret = authHeader?.startsWith("Bearer ")
-      ? authHeader.slice(7)
-      : "";
-
-    if (providedSecret !== expectedSecret) {
-      return NextResponse.json(
-        {
-          success: false,
-          message: "Unauthorized",
-          debug: {
-            serverSecretPresent: Boolean(expectedSecret),
-            serverSecretLength: expectedSecret.length,
-            providedSecretLength: providedSecret.length,
-            hasBearer: authHeader?.startsWith("Bearer ") ?? false,
-          },
-        },
-        { status: 401 }
-      );
+    // Fail closed: an absent/blank secret must never authorize a cron request.
+    const authHeader = req.headers.get("authorization") || "";
+    const expectedSecret = process.env.CRON_SECRET?.trim() || "";
+    const providedSecret = authHeader.startsWith("Bearer ") ? authHeader.slice(7).trim() : "";
+    const expected = Buffer.from(expectedSecret);
+    const provided = Buffer.from(providedSecret);
+    const authorized = expected.length > 0 && provided.length === expected.length && timingSafeEqual(provided, expected);
+    if (!authorized) {
+      return NextResponse.json({ success: false, message: "Unauthorized" }, { status: 401 });
     }
 
     // 2. Find due earnings: status == PENDING AND payoutDueAt <= now
@@ -34,7 +23,9 @@ export async function GET(req: Request) {
     const pendingEarningsRef = adminDb
       .collection("creatorAdEarnings")
       .where("status", "==", "PENDING")
-      .where("payoutDueAt", "<=", now);
+      .where("payoutDueAt", "<=", now)
+      .orderBy("payoutDueAt", "asc")
+      .limit(50);
 
     const snapshot = await pendingEarningsRef.get();
 
@@ -57,24 +48,30 @@ export async function GET(req: Request) {
 
           const data = earningSnap.data();
           if (!data) return;
+          const creatorId = typeof data.creatorId === "string" ? data.creatorId.trim() : "";
+          const eventId = typeof data.eventId === "string" ? data.eventId.trim() : "";
+          const creatorAmount = Number(data.creatorAmount);
+          if (!creatorId || !eventId || !Number.isFinite(creatorAmount) || creatorAmount <= 0) {
+            throw new Error("Invalid creator earning record; refusing wallet release");
+          }
           
           // Create a deterministic ID for the wallet ledger entry
           // This ensures that even if the cron runs twice, the same ID is used for the wallet transaction,
           // which adminCreditWallet uses to prevent duplicate ledger entries (via .doc(eventId)).
-          const walletTxDeterministicId = `payout_${data.eventId}`;
+          const walletTxDeterministicId = `payout_${eventId}`;
 
           // 4. Call corrected adminCreditWallet (Atomic & Idempotent)
           // adminCreditWallet now returns the ledger doc ID (which is the deterministic ID passed)
           await adminCreditWallet({
-            uid: data.creatorId,
-            amount: data.creatorAmount,
+            uid: creatorId,
+            amount: creatorAmount,
             type: "adRevenue",
-            description: `Ad Revenue Release: ${data.adTitle || "Ad"}`,
+            description: `Ad Revenue Release: ${data.adTitle || "Ad"}`.slice(0, 300),
             transaction: transaction,
             eventId: walletTxDeterministicId,
           });
 
-          // 5. Mark available and link the ACTUAL wallet transaction ID returned
+          // 5. Mark available and link the deterministic wallet transaction ID.
           transaction.update(doc.ref, {
             status: "AVAILABLE",
             releasedAt: FieldValue.serverTimestamp(),
@@ -88,7 +85,7 @@ export async function GET(req: Request) {
       }
     }
 
-    return NextResponse.json({ success: true, ...results });
+    return NextResponse.json({ success: true, ...results, batchLimit: 50, hasMore: snapshot.size === 50 });
   } catch (error) {
     console.error("Cron payout release error:", error);
     return NextResponse.json({ success: false, message: "Internal server error" }, { status: 500 });

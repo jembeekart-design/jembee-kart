@@ -1,8 +1,12 @@
+import { requireAdmin, isAdminIdentity } from "@/lib/server/requireAdmin";
 import { NextRequest, NextResponse } from "next/server";
 import { withAdminAuth } from "@/lib/api/adminAuth";
 import { applySelected } from "@/mission-control/review/applySelected";
 
 export async function POST(request: NextRequest) {
+  const adminIdentity = await requireAdmin(request);
+  if (!isAdminIdentity(adminIdentity)) return adminIdentity;
+
   return withAdminAuth(async () => {
   try {
     const body = await request.json();

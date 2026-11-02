@@ -1,97 +1,24 @@
-import { db } from "@/firebase/config";
-import { 
-  doc, 
-  collection, 
-  runTransaction, 
-  serverTimestamp, 
-  increment, 
-  query, 
-  where, 
-  getDocs, 
-  updateDoc 
-} from "firebase/firestore";
-import { createNotification } from "../createNotification";
-import { ENGINE_VERSION } from "@/lib/mlm/config";
+import { auth } from "@/firebase/config";
 
-/**
- * Enterprise Withdrawal Approval Module
- * Final Version: 10/10 Production Ready
- */
+/** Client adapter. The server verifies admin role and atomically updates wallet, ledger and audit records. */
 export async function approveWithdrawTransaction(
   withdrawId: string,
-  adminId: string,
-  adminRemark: string = "Approved"
+  _adminId: string,
+  payoutReference: string = ""
 ) {
   try {
-    const withdrawRef = doc(db, "withdraws", withdrawId);
-    
-    // 1. Transactional Update for Wallet & Withdraw Status
-    const result = await runTransaction(db, async (transaction) => {
-      const withdrawDoc = await transaction.get(withdrawRef);
-      if (!withdrawDoc.exists()) throw new Error("WITHDRAW_NOT_FOUND");
-
-      const withdrawData = withdrawDoc.data();
-      if (withdrawData.status !== "pending") throw new Error("ALREADY_PROCESSED");
-
-      const userId = withdrawData.userId;
-      const userRef = doc(db, "users", userId);
-      const userDoc = await transaction.get(userRef);
-      
-      if (!userDoc.exists()) throw new Error("USER_NOT_FOUND");
-      const userData = userDoc.data();
-
-      // Negative Pending Withdrawal Guard
-      if ((userData.pendingWithdrawal || 0) < withdrawData.amount) {
-        throw new Error("INVALID_PENDING_AMOUNT");
-      }
-
-      // Update Withdraw Status
-      transaction.update(withdrawRef, {
-        status: "completed",
-        adminRemark,
-        approvedBy: adminId,
-        approvedAt: serverTimestamp(),
-        engineVersion: ENGINE_VERSION
-      });
-
-      // Update User Wallet
-      transaction.update(userRef, {
-        pendingWithdrawal: increment(-withdrawData.amount),
-        updatedAt: serverTimestamp()
-      });
-
-      return { userId, amount: withdrawData.amount };
+    const user = auth.currentUser;
+    if (!user) throw new Error("Admin login required");
+    const token = await user.getIdToken();
+    const response = await fetch("/api/admin/withdrawal-requests", {
+      method: "POST",
+      headers: { Authorization: `Bearer ${token}`, "Content-Type": "application/json" },
+      body: JSON.stringify({ withdrawId, action: "approve", payoutReference }),
     });
-
-    // 2. Update Ledger Entries (Promise.all for safety)
-    const ledgerQuery = query(
-      collection(db, "user_transactions"),
-      where("withdrawId", "==", withdrawId), // Consistency: Matched with requestWithdraw.ts
-      where("status", "==", "pending")
-    );
-    
-    const ledgerSnapshot = await getDocs(ledgerQuery);
-    const updates = ledgerSnapshot.docs.map((d) => 
-      updateDoc(d.ref, { 
-        status: "completed",
-        updatedAt: serverTimestamp() 
-      })
-    );
-    
-    await Promise.all(updates);
-
-    // 3. Notify User
-    await createNotification({
-      userId: result.userId,
-      title: "Withdrawal Approved",
-      message: `Your withdrawal of ₹${result.amount} has been approved and processed.`,
-      type: "withdraw"
-    });
-
-    return { success: true, message: "Withdrawal Approved Successfully" };
-
-  } catch (error: any) {
-    console.error("APPROVE_ERROR:", error.message);
-    return { success: false, message: error.message };
+    const result = await response.json().catch(() => ({}));
+    if (!response.ok || result.success !== true) throw new Error(result.message || "Withdrawal approval failed");
+    return { success: true, message: "Withdrawal marked paid successfully" };
+  } catch (error) {
+    return { success: false, message: error instanceof Error ? error.message : "Withdrawal approval failed" };
   }
 }

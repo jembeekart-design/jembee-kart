@@ -17,7 +17,7 @@ async function verifyAdmin(req: Request) {
     throw new Error("UNAUTHORIZED");
   }
 
-  const decodedToken = await getAdminAuth().verifyIdToken(token);
+  const decodedToken = await getAdminAuth().verifyIdToken(token, true);
 
   const users = getAdminDb().collection("users");
   const directDoc = await users.doc(decodedToken.uid).get();

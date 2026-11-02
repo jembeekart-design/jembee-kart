@@ -51,9 +51,27 @@ export async function GET(req: NextRequest) {
         if (!snap.exists) return null;
 
         const data = snap.data();
-        if (!data) return null;
+        if (!data || data.status !== "approved" || data.active !== true || data.moderation !== "safe" || data.videoAccess === "paid") return null;
 
-        return JSON.parse(JSON.stringify({ id: snap.id, ...data }));
+        const publicVideo = {
+          id: snap.id,
+          title: typeof data.title === "string" ? data.title : "",
+          caption: typeof data.caption === "string" ? data.caption : "",
+          description: typeof data.description === "string" ? data.description : "",
+          thumbnail: typeof data.thumbnail === "string" ? data.thumbnail : "",
+          video: typeof data.video === "string" ? data.video : "",
+          creatorId: typeof data.creatorId === "string" ? data.creatorId : "",
+          displayName: typeof data.displayName === "string" ? data.displayName : "",
+          username: typeof data.username === "string" ? data.username : "",
+          photoURL: typeof data.photoURL === "string" ? data.photoURL : "",
+          hashtags: Array.isArray(data.hashtags) ? data.hashtags.filter((tag: unknown) => typeof tag === "string").slice(0, 30) : [],
+          likes: Number.isFinite(Number(data.likes)) ? Number(data.likes) : 0,
+          comments: Number.isFinite(Number(data.comments)) ? Number(data.comments) : 0,
+          views: Number.isFinite(Number(data.views)) ? Number(data.views) : 0,
+          createdAt: data.createdAt ?? null,
+          videoAccess: "free",
+        };
+        return JSON.parse(JSON.stringify(publicVideo));
       })
     );
 

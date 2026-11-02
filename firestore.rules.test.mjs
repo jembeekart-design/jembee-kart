@@ -327,3 +327,49 @@ test("admin can save footer links", async () => {
     )
   );
 });
+
+
+test("ordinary users cannot read dynamic page documents directly", async () => {
+  await env.withSecurityRulesDisabled(async (ctx) => {
+    await setDoc(doc(ctx.firestore(), "dynamic_pages/about"), {
+      title: "About", visible: true, content: "Public page content",
+    });
+  });
+  await assertFails(
+    getDoc(doc(env.authenticatedContext("userA").firestore(), "dynamic_pages/about"))
+  );
+});
+
+test("admins cannot bypass the dynamic page server API with direct client writes", async () => {
+  await assertFails(
+    setDoc(doc(env.authenticatedContext("adminA").firestore(), "dynamic_pages/direct-write"), {
+      title: "Direct write", visible: false, content: "Must use server API",
+    })
+  );
+});
+
+test("clients cannot read or write dynamic page version snapshots", async () => {
+  const db = env.authenticatedContext("adminA").firestore();
+  await env.withSecurityRulesDisabled(async (ctx) => {
+    await setDoc(doc(ctx.firestore(), "dynamic_pages/about/versions/version1"), {
+      title: "About", content: "Snapshot",
+    });
+  });
+  await assertFails(getDoc(doc(db, "dynamic_pages/about/versions/version1")));
+  await assertFails(setDoc(doc(db, "dynamic_pages/about/versions/client-version"), {
+    title: "Forged", content: "Forged snapshot",
+  }));
+});
+
+test("clients cannot read or write dynamic page audit events", async () => {
+  const db = env.authenticatedContext("adminA").firestore();
+  await env.withSecurityRulesDisabled(async (ctx) => {
+    await setDoc(doc(ctx.firestore(), "dynamic_page_audit/event1"), {
+      pageId: "about", action: "page_created", actorUid: "adminA",
+    });
+  });
+  await assertFails(getDoc(doc(db, "dynamic_page_audit/event1")));
+  await assertFails(setDoc(doc(db, "dynamic_page_audit/forged"), {
+    pageId: "about", action: "forged", actorUid: "adminA",
+  }));
+});

@@ -3,8 +3,7 @@
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { onAuthStateChanged } from "firebase/auth";
-import { collection, onSnapshot, query, orderBy, Timestamp } from "firebase/firestore";
-import { auth, db } from "@/firebase/config";
+import { auth } from "@/firebase/config";
 import { ArrowLeft, Loader2, ArrowUpRight, ArrowDownLeft, AlertCircle } from "lucide-react";
 
 const VALID_TRANSACTION_TYPES = [
@@ -15,11 +14,12 @@ const VALID_TRANSACTION_TYPES = [
   "watchReward",
   "creatorIncome",
   "withdrawal",
-  "cashback_transfer"
+  "cashback_transfer",
+  "unknown"
 ] as const;
 type AllowedTransactionType = typeof VALID_TRANSACTION_TYPES[number];
 
-const VALID_STATUS_TYPES = ["success", "pending", "failed"] as const;
+const VALID_STATUS_TYPES = ["success", "pending", "failed", "unknown"] as const;
 type AllowedStatusType = typeof VALID_STATUS_TYPES[number];
 
 interface WalletTxItem {
@@ -34,7 +34,7 @@ interface WalletTxItem {
   destinationWallet?: string;
   beforeWalletBalance?: number;
   afterWalletBalance?: number;
-  createdAt?: Timestamp;
+  createdAt?: string | null;
 }
 
 export default function WalletHistoryPage() {
@@ -43,73 +43,62 @@ export default function WalletHistoryPage() {
   const [loading, setLoading] = useState<boolean>(true);
 
   useEffect(() => {
-    let unsubscribeTx: (() => void) | null = null;
-
-    const unsubscribeAuth = onAuthStateChanged(auth, (user) => {
-      if (unsubscribeTx) {
-        unsubscribeTx();
-        unsubscribeTx = null;
-      }
-
+    let active = true;
+    const unsubscribeAuth = onAuthStateChanged(auth, async (user) => {
       if (!user) {
-        setHistory([]);
-        setLoading(false);
+        if (active) {
+          setHistory([]);
+          setLoading(false);
+        }
         return;
       }
 
       try {
-        const txRef = collection(db, "users", user.uid, "walletTransactions");
-        const q = query(txRef, orderBy("createdAt", "desc"));
-
-        unsubscribeTx = onSnapshot(q, (snapshot) => {
-          const list: WalletTxItem[] = snapshot.docs.map((doc) => {
-            const d = doc.data();
-            
-            const rawTypeStr = String(d.type || "");
-            
-            // Fix 1: Unknown transaction type fallback to "directIncome"
-            const assertedType: AllowedTransactionType = 
-              VALID_TRANSACTION_TYPES.includes(rawTypeStr as AllowedTransactionType)
-                ? (rawTypeStr as AllowedTransactionType)
-                : "directIncome";
-
-            const rawStatusStr = String(d.status || "");
-            const assertedStatus: AllowedStatusType = 
-              VALID_STATUS_TYPES.includes(rawStatusStr as AllowedStatusType)
-                ? (rawStatusStr as AllowedStatusType)
-                : "success";
-
-            return {
-              id: doc.id,
-              transactionId: d.transactionId || doc.id, 
-              userId: d.userId || user.uid,             
-              title: d.title || "Income Distribution Log",
-              amount: typeof d.amount === "number" ? d.amount : 0,
-              type: assertedType,
-              status: assertedStatus,
-              walletType: d.walletType || "Credit Wallet",
-              destinationWallet: d.destinationWallet,
-              beforeWalletBalance: typeof d.beforeWalletBalance === "number" ? d.beforeWalletBalance : undefined,
-              afterWalletBalance: typeof d.afterWalletBalance === "number" ? d.afterWalletBalance : undefined,
-              createdAt: d.createdAt,
-            };
-          });
-          
-          setHistory(list);
-          setLoading(false);
-        }, (error) => {
-          console.error("Ledger Node Snapshot Pipeline Fault:", error);
-          setLoading(false); 
+        const token = await user.getIdToken();
+        const response = await fetch("/api/wallet/history", {
+          method: "GET",
+          headers: { Authorization: `Bearer ${token}` },
+          cache: "no-store",
         });
-      } catch (err) {
-        console.error("Subscription process failure:", err);
-        setLoading(false);
+        const payload = await response.json();
+        if (!response.ok || payload.success !== true || !Array.isArray(payload.history)) {
+          throw new Error(payload.message || "Wallet history could not be loaded");
+        }
+
+        const list: WalletTxItem[] = payload.history.map((d: Record<string, unknown>) => {
+          const type = typeof d.type === "string" ? d.type : "unknown";
+          const status = typeof d.status === "string" ? d.status : "unknown";
+          return {
+            id: String(d.id || ""),
+            transactionId: String(d.transactionId || d.id || ""),
+            userId: String(d.userId || user.uid),
+            title: String(d.title || "Wallet transaction"),
+            amount: typeof d.amount === "number" ? d.amount : 0,
+            type: VALID_TRANSACTION_TYPES.includes(type as AllowedTransactionType)
+              ? type as AllowedTransactionType
+              : "unknown" as AllowedTransactionType,
+            status: VALID_STATUS_TYPES.includes(status as AllowedStatusType)
+              ? status as AllowedStatusType
+              : "unknown" as AllowedStatusType,
+            walletType: String(d.walletType || "Wallet"),
+            destinationWallet: typeof d.destinationWallet === "string" ? d.destinationWallet : undefined,
+            beforeWalletBalance: typeof d.beforeWalletBalance === "number" ? d.beforeWalletBalance : undefined,
+            afterWalletBalance: typeof d.afterWalletBalance === "number" ? d.afterWalletBalance : undefined,
+            createdAt: typeof d.createdAt === "string" ? d.createdAt : null,
+          };
+        });
+        if (active) setHistory(list);
+      } catch (error) {
+        console.error("Wallet history load failed:", error);
+        if (active) setHistory([]);
+      } finally {
+        if (active) setLoading(false);
       }
     });
 
     return () => {
+      active = false;
       unsubscribeAuth();
-      if (unsubscribeTx) unsubscribeTx();
     };
   }, []);
 
@@ -122,18 +111,18 @@ export default function WalletHistoryPage() {
       watchReward: "Jembee Shorts Reward",
       creatorIncome: "Creator Pool Income",
       withdrawal: "Wallet Withdrawal",
-      cashback_transfer: "Internal Node Transfer"
+      cashback_transfer: "Internal Node Transfer",
+      unknown: "Unclassified transaction"
     };
     return labels[type] || type;
   };
 
   // Fix 3: Strict Firestore timestamp conversion safety check
-  const formatTxDate = (timestamp?: Timestamp) => {
-    if (!timestamp || typeof (timestamp as any).toDate !== "function") {
-      return "Syncing Ledger...";
-    }
-
-    return timestamp.toDate().toLocaleDateString("en-IN", {
+  const formatTxDate = (value?: string | null) => {
+    if (!value) return "Date unavailable";
+    const date = new Date(value);
+    if (Number.isNaN(date.getTime())) return "Date unavailable";
+    return date.toLocaleString("en-IN", {
       day: "2-digit",
       month: "short",
       year: "numeric",
@@ -202,7 +191,7 @@ export default function WalletHistoryPage() {
                     </p>
                     <span className={`text-[8px] px-1.5 py-0.5 rounded font-black tracking-wider uppercase ${
                       tx.status === "success" ? "bg-[var(--color-success)] text-[var(--color-success)]" :
-                      tx.status === "pending" ? "bg-[var(--color-warning)] text-[var(--color-warning)]" : "bg-[var(--color-primary-button)] text-[var(--color-primary-button)]"
+                      tx.status === "pending" ? "bg-[var(--color-warning)] text-[var(--color-warning)]" : tx.status === "unknown" ? "bg-[var(--color-border)] text-[var(--text-primary)]" : "bg-[var(--color-primary-button)] text-[var(--color-primary-button)]"
                     }`}>
                       {tx.status}
                     </span>

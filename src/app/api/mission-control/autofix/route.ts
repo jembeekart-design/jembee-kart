@@ -1,8 +1,12 @@
+import { requireAdmin, isAdminIdentity } from "@/lib/server/requireAdmin";
 import { NextResponse } from "next/server";
 import { previewAstFix } from "@/mission-control/autofix/astAutoFix";
 import { withAdminAuth } from "@/lib/api/adminAuth";
 
 export async function POST(req: Request) {
+  const adminIdentity = await requireAdmin(req);
+  if (!isAdminIdentity(adminIdentity)) return adminIdentity;
+
   return withAdminAuth(async () => {
     try {
       const result = await previewAstFix();

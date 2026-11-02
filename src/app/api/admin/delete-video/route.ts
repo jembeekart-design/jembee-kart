@@ -2,6 +2,7 @@ import { NextResponse } from "next/server";
 import { getAdminDb, getAdminAuth } from "@/firebase/admin";
 import { v2 as cloudinary } from "cloudinary";
 import { deleteDriveFile } from "@/services/googleDriveService";
+import { cleanupVideoRecords } from "@/services/videoDeletionService";
 
 // Configure Cloudinary
 cloudinary.config({
@@ -14,9 +15,12 @@ export async function POST(req: Request) {
   try {
     const adminDb = getAdminDb();
     const adminAuth = getAdminAuth();
-    const { videoId, token } = await req.json();
-    // 1. Verify Admin Role
-    const decodedToken = await adminAuth.verifyIdToken(token);
+    const authHeader = req.headers.get("authorization");
+    if (!authHeader?.startsWith("Bearer ")) return NextResponse.json({ success: false, message: "Unauthorized" }, { status: 401 });
+    const { videoId } = await req.json();
+    if (typeof videoId !== "string" || !videoId.trim() || videoId.length > 200 || videoId.includes("/")) return NextResponse.json({ success: false, message: "Invalid video ID" }, { status: 400 });
+    // 1. Verify Admin Role and token revocation state.
+    const decodedToken = await adminAuth.verifyIdToken(authHeader.slice(7).trim(), true);
     
     const userSnapshot = await adminDb
       .collection("users")
@@ -38,6 +42,9 @@ export async function POST(req: Request) {
 
     // 3. Delete the stored asset from its actual storage provider.
     const videoData = videoDoc.data() || {};
+    if (videoData.deletionState !== "deleting") {
+      await videoRef.update({ active: false, status: "deleting", deletionState: "deleting", deletionStartedAt: new Date(), deletionRequestedBy: decodedToken.uid });
+    }
     const driveFileId =
       typeof videoData.driveFileId === "string"
         ? videoData.driveFileId.trim()
@@ -51,15 +58,21 @@ export async function POST(req: Request) {
       try {
         await deleteDriveFile(driveFileId);
       } catch (driveError) {
-        console.error("Drive deletion failed; video was not deleted:", driveError);
-        return NextResponse.json(
+        const status = (driveError as any)?.code ?? (driveError as any)?.response?.status;
+        if (Number(status) !== 404) {
+          console.error("Drive deletion failed; video remains hidden for retry:", driveError);
+          return NextResponse.json(
           { success: false, message: "Drive asset removal failed. Video was not deleted." },
-          { status: 500 }
-        );
+            { status: 500 }
+          );
+        }
       }
     } else if (storedPublicId) {
       try {
-        await cloudinary.uploader.destroy(storedPublicId, { resource_type: "video" });
+        const result = await cloudinary.uploader.destroy(storedPublicId, { resource_type: "video" });
+        if (result.result !== "ok" && result.result !== "not found") {
+          return NextResponse.json({ success: false, message: "Cloudinary asset removal failed; video is safely hidden and can be retried." }, { status: 502 });
+        }
       } catch (cloudinaryError) {
         console.error("Cloudinary deletion failed; video was not deleted:", cloudinaryError);
         return NextResponse.json(
@@ -69,26 +82,8 @@ export async function POST(req: Request) {
       }
     }
 
-    // 4. Perform Cascading Deletion in Firestore (only if Cloudinary succeeded)
-    const batch = adminDb.batch();
-
-    // Helper to delete associated records
-    const deleteRelated = async (collection: string, field: string, value: string) => {
-      const snapshot = await adminDb.collection(collection).where(field, "==", value).get();
-      snapshot.forEach((doc) => batch.delete(doc.ref));
-    };
-
-    await deleteRelated("watchVideoLikes", "videoId", videoId);
-    await deleteRelated("watchVideoShares", "videoId", videoId);
-    await deleteRelated("savedWatchVideos", "videoId", videoId);
-    await deleteRelated("videoComments", "videoId", videoId);
-    await deleteRelated("videoReports", "videoId", videoId);
-
-    // Delete Main Video Document
-    batch.delete(videoRef);
-
-    // 5. Commit Firestore Changes
-    await batch.commit();
+    // 4. Chunked, retryable cleanup. The video is already hidden with deletionState=deleting.
+    await cleanupVideoRecords(adminDb, videoId, videoRef);
 
     return NextResponse.json({ success: true, message: "Video deleted successfully." });
   } catch (error) {

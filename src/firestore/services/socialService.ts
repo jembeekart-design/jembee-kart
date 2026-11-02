@@ -88,6 +88,7 @@ export async function addComment(
   }
 
   const token = await currentUser.getIdToken();
+  const requestId = crypto.randomUUID();
 
   const response = await fetch("/api/shorts/comments", {
     method: "POST",
@@ -98,6 +99,7 @@ export async function addComment(
     body: JSON.stringify({
       videoId: contentId,
       text: trimmedText,
+      requestId,
     }),
   });
 

@@ -11,7 +11,10 @@
     "start": "next start",
     "lint": "eslint",
     "scan:hardcoded": "tsx src/scripts/hardcodedScanner.ts",
-    "autofix": "dotenv -e .env.production -- tsx src/scripts/autofix.ts"
+    "autofix": "dotenv -e .env.production -- tsx src/scripts/autofix.ts",
+    "test:dynamic-pages-audit": "node --test src/app/api/admin/dynamic-pages/__tests__/audit-contract.test.mjs",
+    "test:dynamic-pages-firestore": "firebase emulators:exec --only firestore --project demo-jembeekart-rules-test --config firebase.json \"node --test firestore.rules.test.mjs\"",
+    "test:dynamic-pages": "npm run test:dynamic-pages-audit && npm run test:dynamic-pages-firestore"
   },
   "dependencies": {
     "@mediapipe/tasks-vision": "^1.0.1",

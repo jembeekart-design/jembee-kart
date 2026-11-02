@@ -79,6 +79,9 @@ export async function POST(req: Request) {
           limits: {
             files: 1,
             fileSize: MAX_VIDEO_SIZE,
+            fields: 30,
+            fieldSize: 2048,
+            parts: 32,
           },
         });
 
@@ -88,8 +91,6 @@ export async function POST(req: Request) {
         let sizeExceeded = false;
         let uploadPromise: Promise<string> | null = null;
         let fileStream: Readable | null = null;
-
-        const fields: Record<string, string> = {};
 
         busboy.on("field", (fieldname, value) => {
           if (fieldname !== "file") {

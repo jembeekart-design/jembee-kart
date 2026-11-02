@@ -1,5 +1,7 @@
 "use client";
 
+import { adminFetch } from "@/lib/client/adminFetch";
+
 import { useState } from "react";
 
 export default function RollbackCard() {
@@ -11,7 +13,7 @@ export default function RollbackCard() {
     setLoading(true);
 
     try {
-      const res = await fetch("/api/mission-control/rollback", {
+      const res = await adminFetch("/api/mission-control/rollback", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",

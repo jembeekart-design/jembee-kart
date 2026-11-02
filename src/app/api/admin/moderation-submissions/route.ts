@@ -1,4 +1,5 @@
 import { NextResponse } from "next/server";
+import { FieldPath } from "firebase-admin/firestore";
 import { getAdminAuth, getAdminDb } from "@/firebase/admin";
 
 export const runtime = "nodejs";
@@ -17,7 +18,7 @@ async function verifyAdmin(req: Request) {
   }
 
   const decodedToken =
-    await getAdminAuth().verifyIdToken(token);
+    await getAdminAuth().verifyIdToken(token, true);
 
   const users = getAdminDb().collection("users");
   const directDoc = await users.doc(decodedToken.uid).get();
@@ -60,13 +61,16 @@ export async function GET(req: Request) {
   try {
     await verifyAdmin(req);
 
-    const snapshot = await getAdminDb()
-      .collection("videoModerationSubmissions")
+    const cursor = new URL(req.url).searchParams.get("cursor");
+    if (cursor && (cursor.length > 1500 || cursor.includes("/"))) return NextResponse.json({ success: false, message: "Invalid cursor" }, { status: 400 });
+    let queueQuery = getAdminDb().collection("videoModerationSubmissions")
       .where("status", "==", "pending")
-      .limit(100)
-      .get();
+      .orderBy(FieldPath.documentId()).limit(101);
+    if (cursor) queueQuery = queueQuery.startAfter(cursor);
+    const snapshot = await queueQuery.get();
+    const pageDocs = snapshot.docs.slice(0, 100);
 
-    const submissions = snapshot.docs.map((doc) => {
+    const submissions = pageDocs.map((doc) => {
       const data = doc.data();
 
       return {
@@ -97,6 +101,8 @@ export async function GET(req: Request) {
     return NextResponse.json({
       success: true,
       submissions,
+      nextCursor: snapshot.docs.length > 100 ? pageDocs[pageDocs.length - 1]?.id ?? null : null,
+      hasMore: snapshot.docs.length > 100,
     });
   } catch (error) {
     if (

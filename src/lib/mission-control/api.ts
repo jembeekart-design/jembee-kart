@@ -1,3 +1,4 @@
+import { auth } from "@/firebase/config";
 import {
   ActivityLog,
   AdminSession,
@@ -21,10 +22,13 @@ import {
 
 const BASE_URL = "/api/mission-control";
 
-async function request<T>(url: string): Promise<T> {
-  const response = await fetch(url, {
-    cache: "no-store",
-  });
+async function request<T>(url: string, init: RequestInit = {}): Promise<T> {
+  const user = auth.currentUser;
+  if (!user) throw new Error("Admin login required");
+  const token = await user.getIdToken();
+  const headers = new Headers(init.headers);
+  headers.set("Authorization", `Bearer ${token}`);
+  const response = await fetch(url, { ...init, cache: "no-store", headers });
 
   if (!response.ok) {
     throw new Error(`Mission Control API Error: ${response.status}`);
@@ -57,7 +61,7 @@ export async function getScannerResults() {
 
 export async function getGovernanceReport() {
   return request<GovernanceReport>(
-    `${BASE_URL}/governance`
+    "/api/governance/report"
   );
 }
 
@@ -107,27 +111,19 @@ export async function getAuditLogs() {
 /* -------------------------------------------------------------------------- */
 
 export async function runAllScanners() {
-  return request<{ success: boolean; message?: string }>(
-    `${BASE_URL}/run`
-  );
+  return request<{ success: boolean; message?: string }>(`${BASE_URL}/run`, { method: "POST" });
 }
 
 export async function runAutoFix() {
-  return request<{ success: boolean; message?: string }>(
-    `${BASE_URL}/autofix`
-  );
+  return request<{ success: boolean; message?: string }>(`${BASE_URL}/autofix`, { method: "POST" });
 }
 
 export async function rollbackProject() {
-  return request<{ success: boolean; message?: string }>(
-    `${BASE_URL}/rollback`
-  );
+  return request<{ success: boolean; message?: string }>(`${BASE_URL}/rollback`, { method: "POST" });
 }
 
 export async function createBackup() {
-  return request<{ success: boolean; message?: string }>(
-    `${BASE_URL}/backup`
-  );
+  return request<{ success: boolean; message?: string }>(`${BASE_URL}/backup`, { method: "POST" });
 }
 
 export async function getBackups() {
@@ -139,9 +135,7 @@ export async function getBackups() {
 export async function restoreBackup(
   backupId: string
 ) {
-  return request<{ success: boolean }>(
-    `${BASE_URL}/backup/${backupId}/restore`
-  );
+  return request<{ success: boolean }>(`${BASE_URL}/backups/${encodeURIComponent(backupId)}/restore`, { method: "POST" });
 }
 
 export async function getFeatureFlags() {
@@ -154,9 +148,7 @@ export async function updateFeatureFlag(
   id: string,
   enabled: boolean
 ) {
-  return request<{ success: boolean }>(
-    `${BASE_URL}/feature-flags/${id}?enabled=${enabled}`
-  );
+  return request<{ success: boolean }>(`${BASE_URL}/feature-flags/${encodeURIComponent(id)}`, { method: "PATCH", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ enabled }) });
 }
 export async function getSchedulerJobs() {
   return request<SchedulerJob[]>(
@@ -167,18 +159,14 @@ export async function getSchedulerJobs() {
 export async function runSchedulerJob(
   jobId: string
 ) {
-  return request<{ success: boolean }>(
-    `${BASE_URL}/scheduler/${jobId}/run`
-  );
+  return request<{ success: boolean }>(`${BASE_URL}/scheduler/${encodeURIComponent(jobId)}/run`, { method: "POST" });
 }
 
 export async function toggleSchedulerJob(
   jobId: string,
   enabled: boolean
 ) {
-  return request<{ success: boolean }>(
-    `${BASE_URL}/scheduler/${jobId}?enabled=${enabled}`
-  );
+  return request<{ success: boolean }>(`${BASE_URL}/scheduler?jobId=${encodeURIComponent(jobId)}&enabled=${enabled}`, { method: "PATCH" });
 }
 
 export async function getDeployments() {
@@ -190,9 +178,7 @@ export async function getDeployments() {
 export async function redeployProject(
   deploymentId: string
 ) {
-  return request<{ success: boolean }>(
-    `${BASE_URL}/deployments/${deploymentId}/redeploy`
-  );
+  return request<{ success: boolean }>(`${BASE_URL}/deployments/${encodeURIComponent(deploymentId)}/redeploy`, { method: "POST" });
 }
 
 export async function getApiMonitor() {
@@ -204,9 +190,7 @@ export async function getApiMonitor() {
 export async function retryApiEndpoint(
   endpointId: string
 ) {
-  return request<{ success: boolean }>(
-    `${BASE_URL}/api-monitor/${endpointId}/retry`
-  );
+  return request<{ success: boolean }>(`${BASE_URL}/api-monitor/${encodeURIComponent(endpointId)}/retry`, { method: "POST" });
 }
 
 export async function getStorageInfo() {
@@ -224,9 +208,7 @@ export async function getSecurityEvents() {
 export async function resolveSecurityEvent(
   eventId: string
 ) {
-  return request<{ success: boolean }>(
-    `${BASE_URL}/security/${eventId}/resolve`
-  );
+  return request<{ success: boolean }>(`${BASE_URL}/security/${encodeURIComponent(eventId)}/resolve`, { method: "POST" });
 }
 
 export async function getAdminSessions() {
@@ -238,9 +220,7 @@ export async function getAdminSessions() {
 export async function terminateAdminSession(
   sessionId: string
 ) {
-  return request<{ success: boolean }>(
-    `${BASE_URL}/users/${sessionId}/terminate`
-  );
+  return request<{ success: boolean }>(`${BASE_URL}/users/${encodeURIComponent(sessionId)}/terminate`, { method: "POST" });
 }
 export async function getRealtimeStatus() {
   return request<SystemHealth>(

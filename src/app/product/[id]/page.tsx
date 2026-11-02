@@ -194,7 +194,7 @@ function buyNow() {
   if (!product) return;
 
   router.push(
-    `/checkout?productId=${product.id}`
+    `/checkout?productId=${encodeURIComponent(product.id)}&size=${encodeURIComponent(selectedSize || "N/A")}&color=${encodeURIComponent(selectedColor || "N/A")}`
   );
 }
 

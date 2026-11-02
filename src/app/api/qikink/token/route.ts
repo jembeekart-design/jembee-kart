@@ -1,37 +1,24 @@
 import { NextResponse } from "next/server";
 import { withAdminAuth } from "@/lib/api/adminAuth";
 
+/**
+ * Legacy diagnostic endpoint intentionally disabled.
+ * Qikink access tokens must remain server-side and must never be returned to
+ * an administrator's browser. The authenticated fulfillment route obtains
+ * and consumes the provider token entirely on the server.
+ */
 export async function GET(req: Request) {
-  return withAdminAuth(async () => {
-  try {
-    const response = await fetch(
-      `${process.env.QIKINK_BASE_URL}/api/token`,
-      {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/x-www-form-urlencoded",
-        },
-        body: new URLSearchParams({
-          ClientId: process.env.QIKINK_CLIENT_ID || "",
-          client_secret:
-            process.env.QIKINK_CLIENT_SECRET || "",
-        }),
-      }
-    );
-
-    const data = await response.json();
-
-    return NextResponse.json(data);
-
-  } catch (error) {
-
-    return NextResponse.json(
+  return withAdminAuth(async () =>
+    NextResponse.json(
       {
         success: false,
-        message: "Qikink token failed",
+        code: "QIKINK_TOKEN_ENDPOINT_DISABLED",
+        message: "Provider credentials are server-managed. Use the secure fulfillment workflow instead.",
       },
-      { status: 500 }
-    );
-  }
-  }, req);
+      { status: 410, headers: { "Cache-Control": "no-store" } },
+    ), req);
+}
+
+export async function POST(req: Request) {
+  return GET(req);
 }

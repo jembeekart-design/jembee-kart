@@ -1,39 +1,36 @@
-import { db } from "@/firebase/config";
-import { doc, runTransaction, serverTimestamp, increment } from "firebase/firestore";
+import { creditWallet } from "@/lib/mlm/creditWallet";
 
 /**
- * Enterprise-Grade Cashback Processor
- * Uses Firestore Atomic Transactions & Increments for 100% Data Integrity
+ * Process cashback through the canonical wallet ledger.
+ * The order-scoped idempotency key prevents duplicate cashback on delivery retries.
  */
-export async function processCashback(userId: string, amount: number) {
-  try {
-    if (amount <= 0) {
-      return { success: true, message: "No amount to process" };
-    }
+export async function processCashback(
+  userId: string,
+  amount: number,
+  orderId: string
+) {
+  const cleanUserId = userId?.trim();
+  const cleanOrderId = orderId?.trim();
+  const cashbackAmount = Number(amount);
 
-    const userRef = doc(db, "users", userId);
-
-    // Atomic Transaction ensures total consistency
-    await runTransaction(db, async (transaction) => {
-      const userDoc = await transaction.get(userRef);
-      
-      if (!userDoc.exists()) {
-        throw new Error("User document does not exist!");
-      }
-
-      // Using increment() for atomic, scalable updates
-      transaction.update(userRef, {
-        walletBalance: increment(amount),
-        cashbackWallet: increment(amount),
-        updatedAt: serverTimestamp()
-      });
-    });
-
-    console.log(`✅ Enterprise Cashback processed for ${userId}: ${amount}`);
-    return { success: true };
-
-  } catch (error: any) {
-    console.error("❌ Critical Failure in Cashback Transaction:", error.message);
-    return { success: false, error: error.message };
+  if (!cleanUserId || !cleanOrderId) {
+    return { success: false, message: "Cashback requires a valid user ID and order ID." };
   }
+
+  if (!Number.isFinite(cashbackAmount) || cashbackAmount < 0) {
+    return { success: false, message: "Cashback amount must be a finite, non-negative number." };
+  }
+
+  if (cashbackAmount === 0) {
+    return { success: true, message: "No cashback amount to process." };
+  }
+
+  return creditWallet({
+    uid: cleanUserId,
+    amount: cashbackAmount,
+    type: "cashback",
+    description: `Cashback processed for delivered Order ID: ${cleanOrderId}`,
+    orderId: cleanOrderId,
+    idempotencyKey: `${cleanOrderId}_CASHBACK`,
+  });
 }

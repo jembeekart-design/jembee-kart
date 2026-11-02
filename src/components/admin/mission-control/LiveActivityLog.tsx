@@ -1,5 +1,7 @@
 "use client";
 
+import { adminFetch } from "@/lib/client/adminFetch";
+
 import { useEffect, useState } from "react";
 import {
   Activity,
@@ -26,7 +28,7 @@ export default function LiveActivityLog() {
   useEffect(() => {
     async function loadActivities() {
       try {
-        const res = await fetch("/api/mission-control/activity");
+        const res = await adminFetch("/api/mission-control/activity");
         const json = await res.json();
 
         if (json.success) {

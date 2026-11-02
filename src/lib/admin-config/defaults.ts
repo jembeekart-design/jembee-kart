@@ -103,6 +103,7 @@ export const DEFAULT_ADMIN_CONFIG: AdminConfig = {
   shipping: {
     freeShipping: false,
     shippingCharge: 0,
+    freeShippingThreshold: null,
     deliveryDays: 0,
   },
 

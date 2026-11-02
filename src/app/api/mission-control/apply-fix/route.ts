@@ -1,3 +1,4 @@
+import { requireAdmin, isAdminIdentity } from "@/lib/server/requireAdmin";
 import { NextResponse } from "next/server";
 import { withAdminAuth } from "@/lib/api/adminAuth";
 
@@ -61,10 +62,13 @@ async function handleRequest() {
   }
 }
 
-export async function GET(req: Request) {
-  return withAdminAuth(async () => handleRequest(), req);
+export async function GET() {
+  return NextResponse.json({ success: false, message: "Auto-fix requires an authenticated POST request." }, { status: 405, headers: { Allow: "POST" } });
 }
 
 export async function POST(req: Request) {
+  const adminIdentity = await requireAdmin(req);
+  if (!isAdminIdentity(adminIdentity)) return adminIdentity;
+
   return withAdminAuth(async () => handleRequest(), req);
 }

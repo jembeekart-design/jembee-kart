@@ -26,7 +26,7 @@ export async function POST(req: Request) {
   let creatorId: string;
 
   try {
-    const decodedToken = await getAdminAuth().verifyIdToken(token);
+    const decodedToken = await getAdminAuth().verifyIdToken(token, true);
     creatorId = decodedToken.uid;
   } catch {
     return NextResponse.json(
@@ -94,14 +94,14 @@ export async function POST(req: Request) {
   // Only incomplete uploads may be cancelled. In particular, never delete a
   // submission that was already promoted to pending if the client's completion
   // response was lost due to a network error.
-  if (data.status !== "uploading") {
-    return NextResponse.json(
-      {
-        success: false,
-        message: "This submission is no longer an incomplete upload and was not cancelled.",
-      },
-      { status: 409 }
-    );
+  const claimed = await adminDb.runTransaction(async (tx) => {
+    const current = await tx.get(docRef);
+    if (!current.exists || current.data()?.creatorId !== creatorId || current.data()?.status !== "uploading") return false;
+    tx.update(docRef, { status: "cancelling", cancellationStartedAt: new Date() });
+    return true;
+  });
+  if (!claimed) {
+    return NextResponse.json({ success: false, message: "This upload is already completing/cancelling or is no longer cancellable." }, { status: 409 });
   }
 
   const driveFileId =
@@ -113,10 +113,8 @@ export async function POST(req: Request) {
     try {
       await deleteDriveFile(driveFileId);
     } catch (error) {
-      console.error(
-        "Drive cleanup failed during moderation cancellation:",
-        error
-      );
+      console.error("Drive cleanup failed during moderation cancellation:", error);
+      await docRef.update({ status: "cancellation_failed", cancellationErrorAt: new Date() }).catch(() => undefined);
 
       return NextResponse.json(
         {

@@ -1,16 +1,6 @@
 name: "Enterprise Business Rule Governance & AST AutoFix Engine"
 
 on:
-  push:
-    branches:
-      - main
-      - staging
-      - 'feature/**'
-      - 'fix/**'
-  pull_request:
-    branches:
-      - main
-      - staging
   workflow_dispatch:
 
 concurrency:
@@ -22,9 +12,10 @@ jobs:
     name: "Scan, AST Autofix & Validate Architecture"
     runs-on: ubuntu-latest
 
+    if: ${{ false }} # SAFETY: disabled pending AST transformer rewrite and review
     permissions:
-      contents: write
-      pull-requests: write
+      contents: read
+      pull-requests: read
       actions: read
 
     steps:

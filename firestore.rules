@@ -103,6 +103,7 @@ service cloud.firestore {
         allow delete: if isOwner(uid) || isAdmin();
       }
 
+      // Canonical wallet ledger: owner/admin read only; all mutations use Admin SDK.
       match /transactions/{transactionId} {
         allow read: if isOwner(uid) || isAdmin();
         allow create, update, delete: if false;
@@ -170,6 +171,19 @@ service cloud.firestore {
       allow read: if (signedIn()
         && resource.data.userId == request.auth.uid) || isAdmin();
       allow create, update, delete: if false;
+    }
+
+    // Dynamic pages and their audit/version records are accessed only by
+    // authenticated server routes using the Firebase Admin SDK.
+    match /dynamic_pages/{pageId} {
+      allow read, write: if false;
+      match /{subcollection}/{documentId} {
+        allow read, write: if false;
+      }
+    }
+
+    match /dynamic_page_audit/{eventId} {
+      allow read, write: if false;
     }
 
     match /{document=**} {

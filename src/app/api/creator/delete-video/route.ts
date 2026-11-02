@@ -2,6 +2,7 @@ import { NextResponse } from "next/server";
 import { getAdminDb, getAdminAuth } from "@/firebase/admin";
 import { v2 as cloudinary } from "cloudinary";
 import { deleteDriveFile } from "@/services/googleDriveService";
+import { cleanupVideoRecords } from "@/services/videoDeletionService";
 
 // Configure Cloudinary securely
 cloudinary.config({
@@ -14,10 +15,13 @@ export async function POST(req: Request) {
   try {
     const adminDb = getAdminDb();
     const adminAuth = getAdminAuth();
-    const { videoId, token } = await req.json();
+    const authHeader = req.headers.get("authorization");
+    if (!authHeader?.startsWith("Bearer ")) return NextResponse.json({ success: false, message: "Unauthorized" }, { status: 401 });
+    const { videoId } = await req.json();
+    if (typeof videoId !== "string" || !videoId.trim() || videoId.length > 200 || videoId.includes("/")) return NextResponse.json({ success: false, message: "Invalid video ID" }, { status: 400 });
 
-    // 1. Verify User Authentication
-    const decodedToken = await adminAuth.verifyIdToken(token);
+    // 1. Verify User Authentication and token revocation state.
+    const decodedToken = await adminAuth.verifyIdToken(authHeader.slice(7).trim(), true);
     const authenticatedUid = decodedToken.uid;
 
     // 2. Validate Video Exists and fetch data
@@ -37,6 +41,9 @@ export async function POST(req: Request) {
     if (creatorId !== authenticatedUid && userId !== authenticatedUid) {
       return NextResponse.json({ success: false, message: "Unauthorized: You do not own this video" }, { status: 403 });
     }
+    if (videoData?.deletionState !== "deleting") {
+      await videoRef.update({ active: false, status: "deleting", deletionState: "deleting", deletionStartedAt: new Date(), deletionRequestedBy: authenticatedUid });
+    }
 
     // 4. Delete the stored asset from its actual storage provider
     const driveFileId =
@@ -52,11 +59,14 @@ export async function POST(req: Request) {
       try {
         await deleteDriveFile(driveFileId);
       } catch (driveError) {
-        console.error("Drive deletion failed:", driveError);
-        return NextResponse.json(
+        const status = (driveError as any)?.code ?? (driveError as any)?.response?.status;
+        if (Number(status) !== 404) {
+          console.error("Drive deletion failed; video remains hidden for retry:", driveError);
+          return NextResponse.json(
           { success: false, message: "Drive asset removal failed." },
-          { status: 500 }
-        );
+            { status: 500 }
+          );
+        }
       }
     } else if (publicId) {
       try {
@@ -81,26 +91,8 @@ export async function POST(req: Request) {
       }
     }
 
-    // 5. Perform Cascading Deletion in Firestore (Atomic)
-    const batch = adminDb.batch();
-
-    // Helper to delete associated records
-    const deleteRelated = async (collection: string, field: string, value: string) => {
-      const snapshot = await adminDb.collection(collection).where(field, "==", value).get();
-      snapshot.forEach((doc) => batch.delete(doc.ref));
-    };
-
-    await deleteRelated("watchVideoLikes", "videoId", videoId);
-    await deleteRelated("watchVideoShares", "videoId", videoId);
-    await deleteRelated("savedWatchVideos", "videoId", videoId);
-    await deleteRelated("videoComments", "videoId", videoId);
-    // Preserving videoReports (audit/moderation record)
-
-    // Delete Main Video Document
-    batch.delete(videoRef);
-
-    // Commit Firestore Changes
-    await batch.commit();
+    // 5. Shared chunked cleanup preserves moderation evidence consistently for admin and creator paths.
+    await cleanupVideoRecords(adminDb, videoId, videoRef);
 
     return NextResponse.json({ success: true, message: "Video deleted successfully." });
   } catch (error) {

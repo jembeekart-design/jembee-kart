@@ -1,3 +1,4 @@
+import { auth } from "@/firebase/config";
 /* =======================================================
    FILE:
    src/lib/cloudinary.ts
@@ -128,25 +129,9 @@ export async function uploadToCloudinary(
   try {
     /* ---------------- ENV ---------------- */
 
-    const cloudName =
-      process.env
-        .NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME;
-
-    const uploadPreset =
-      process.env
-        .NEXT_PUBLIC_CLOUDINARY_UPLOAD_PRESET;
-
-    if (!cloudName) {
-      throw new Error(
-        "NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME Missing"
-      );
-    }
-
-    if (!uploadPreset) {
-      throw new Error(
-        "NEXT_PUBLIC_CLOUDINARY_UPLOAD_PRESET Missing"
-      );
-    }
+    const currentUser = auth.currentUser;
+    if (!currentUser) throw new Error("Please sign in before uploading.");
+    const idToken = await currentUser.getIdToken();
 
     /* ---------------- IMAGE COMPRESS ---------------- */
 
@@ -163,37 +148,30 @@ export async function uploadToCloudinary(
         );
     }
 
-    /* ---------------- FORM DATA ---------------- */
+    /* ---------------- SERVER-SIGNED UPLOAD ---------------- */
+    const signatureResponse = await fetch("/api/cloudinary/signature", {
+      method: "POST",
+      headers: { Authorization: `Bearer ${idToken}`, "Content-Type": "application/json" },
+      body: JSON.stringify({ resourceType, mimeType: uploadFile.type, fileSize: uploadFile.size }),
+      cache: "no-store",
+    });
+    const signed = await signatureResponse.json().catch(() => ({}));
+    if (!signatureResponse.ok || signed.success !== true || typeof signed.signature !== "string" || typeof signed.uploadPreset !== "string") throw new Error(signed.message || "Signed upload authorization failed");
 
-    const formData =
-      new FormData();
+    const formData = new FormData();
+    formData.append("file", uploadFile);
+    formData.append("api_key", signed.apiKey);
+    formData.append("timestamp", String(signed.timestamp));
+    formData.append("folder", signed.folder);
+    formData.append("public_id", signed.publicId);
+    formData.append("overwrite", "false");
+    formData.append("upload_preset", signed.uploadPreset);
+    formData.append("signature", signed.signature);
 
-    formData.append(
-      "file",
-      uploadFile
+    const response = await fetch(
+      `https://api.cloudinary.com/v1_1/${signed.cloudName}/${resourceType}/upload`,
+      { method: "POST", body: formData, cache: "no-store" }
     );
-
-    formData.append(
-      "upload_preset",
-      uploadPreset
-    );
-
-    formData.append(
-      "folder",
-      "jembeekart"
-    );
-
-    /* ---------------- API CALL ---------------- */
-
-    const response =
-      await fetch(
-        `https://api.cloudinary.com/v1_1/${cloudName}/${resourceType}/upload`,
-        {
-          method: "POST",
-
-          body: formData
-        }
-      );
 
     /* ---------------- ERROR ---------------- */
 

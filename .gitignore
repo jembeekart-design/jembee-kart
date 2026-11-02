@@ -40,3 +40,8 @@ yarn-error.log*
 *.tsbuildinfo
 next-env.d.ts
 .env*.local
+
+# Never include real environment secrets in source archives
+.env
+.env.*
+!.env.example

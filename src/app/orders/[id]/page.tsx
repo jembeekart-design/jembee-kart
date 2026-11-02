@@ -1,9 +1,9 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import { onAuthStateChanged } from "firebase/auth";
 import { useParams, useRouter } from "next/navigation";
-import { doc, getDoc, updateDoc } from "firebase/firestore";
-import { db } from "@/firebase/config";
+import { auth } from "@/firebase/config";
 import Link from "next/link";
 import { ArrowLeft, Copy, MapPin, Phone, Truck, FileText, XCircle, RotateCcw } from "lucide-react";
 
@@ -11,22 +11,72 @@ export default function OrderDetailsPage() {
   const { id } = useParams();
   const router = useRouter();
   const [order, setOrder] = useState<any>(null);
+  const [loading, setLoading] = useState(true);
+  const [loadError, setLoadError] = useState("");
 
   useEffect(() => {
     if (!id) return;
-    getDoc(doc(db, "orders", id as string)).then(snap => {
-      if (snap.exists()) setOrder({ id: snap.id, ...snap.data() });
+    let active = true;
+    const unsubscribe = onAuthStateChanged(auth, async (user) => {
+      if (!active) return;
+      if (!user) {
+        setLoadError("Please sign in to view this order.");
+        setLoading(false);
+        return;
+      }
+      try {
+        setLoading(true);
+        const token = await user.getIdToken();
+        const response = await fetch(`/api/orders/${encodeURIComponent(String(id))}`, {
+          headers: { Authorization: `Bearer ${token}` },
+          cache: "no-store",
+        });
+        const result = await response.json().catch(() => null);
+        if (!response.ok || result?.success !== true || !result.order) {
+          throw new Error(result?.message || "Unable to load order details.");
+        }
+        if (active) {
+          setOrder(result.order);
+          setLoadError("");
+        }
+      } catch (error) {
+        if (active) setLoadError(error instanceof Error ? error.message : "Unable to load order details.");
+      } finally {
+        if (active) setLoading(false);
+      }
     });
+    return () => {
+      active = false;
+      unsubscribe();
+    };
   }, [id]);
 
   const handleCancel = async () => {
-    if (confirm("Are you sure you want to cancel this order?")) {
-      await updateDoc(doc(db, "orders", id as string), { status: "Cancelled" });
-      setOrder({ ...order, status: "Cancelled" });
+    if (!confirm("Are you sure you want to cancel this order?")) return;
+    const user = auth.currentUser;
+    if (!user) {
+      alert("Please sign in again to cancel this order.");
+      return;
+    }
+    try {
+      const token = await user.getIdToken();
+      const response = await fetch(`/api/orders/${encodeURIComponent(String(id))}/cancel`, {
+        method: "POST",
+        headers: { Authorization: `Bearer ${token}` },
+      });
+      const result = await response.json().catch(() => null);
+      if (!response.ok || result?.success !== true) {
+        throw new Error(result?.message || "Order cancellation failed.");
+      }
+      setOrder({ ...order, status: "cancelled", inventoryRestockStatus: result.inventoryRestockStatus });
+      alert(result.message || "Order cancelled.");
+    } catch (error) {
+      alert(error instanceof Error ? error.message : "Order cancellation failed.");
     }
   };
 
-  if (!order) return <div className="p-10 text-center font-bold">Loading Order Details...</div>;
+  if (loading) return <div className="p-10 text-center font-bold">Loading Order Details...</div>;
+  if (loadError || !order) return <div className="p-10 text-center space-y-3"><p className="font-bold">{loadError || "Order not found."}</p><button onClick={() => router.push("/orders")} className="underline">Back to Orders</button></div>;
 
   const status = order.status?.toLowerCase() || "placed";
   const steps = ['placed', 'processing', 'shipped', 'delivered'];

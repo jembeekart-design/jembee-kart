@@ -61,7 +61,8 @@ export const DEFAULT_BUSINESS_RULES: BusinessRulesConfig = {
     adsEnabled: true,
     walletEnabled: true,
     loyaltyEnabled: true,
-    commissionDistributedEnabled: true,
+    // Fail closed: no trusted order-profit settlement pipeline is enabled yet.
+    commissionDistributedEnabled: false,
     rewardEnabled: true,
     affiliateEnabled: true,
     mlmEnabled: true,

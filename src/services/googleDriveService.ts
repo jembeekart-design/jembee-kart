@@ -1,41 +1,26 @@
 import { google } from "googleapis";
 import { Readable } from "node:stream";
+import { getGoogleDriveRefreshToken } from "@/lib/googleDriveTokenStore";
 
-function getOAuthClient() {
+async function getOAuthClient() {
   const clientId = process.env.GOOGLE_OAUTH_CLIENT_ID?.trim();
   const clientSecret = process.env.GOOGLE_OAUTH_CLIENT_SECRET?.trim();
   const redirectUri = process.env.GOOGLE_OAUTH_REDIRECT_URI?.trim();
-  const refreshToken = process.env.GOOGLE_OAUTH_REFRESH_TOKEN?.trim();
 
   if (!clientId || !clientSecret || !redirectUri) {
-    throw new Error(
-      "Google OAuth client credentials are not configured"
-    );
+    throw new Error("Google OAuth client credentials are not configured");
   }
 
-  if (!refreshToken) {
-    throw new Error(
-      "GOOGLE_OAUTH_REFRESH_TOKEN is not configured"
-    );
-  }
-
-  const oauth2Client = new google.auth.OAuth2(
-    clientId,
-    clientSecret,
-    redirectUri
-  );
-
-  oauth2Client.setCredentials({
-    refresh_token: refreshToken,
-  });
-
+  const refreshToken = await getGoogleDriveRefreshToken();
+  const oauth2Client = new google.auth.OAuth2(clientId, clientSecret, redirectUri);
+  oauth2Client.setCredentials({ refresh_token: refreshToken });
   return oauth2Client;
 }
 
-function getDriveClient() {
+async function getDriveClient() {
   return google.drive({
     version: "v3",
-    auth: getOAuthClient(),
+    auth: await getOAuthClient(),
   });
 }
 
@@ -68,7 +53,7 @@ export async function createResumableUploadSession(
     throw new Error("फ़ाइल का आकार 500 MB से अधिक नहीं होना चाहिए।");
   }
 
-  const client = getOAuthClient();
+  const client = await getOAuthClient();
   
 
   const response = await client.request<{ location?: string }>({
@@ -187,7 +172,7 @@ export async function uploadVideoToDrive(
     throw new Error("Only video MIME types are allowed");
   }
 
-  const drive = getDriveClient();
+  const drive = await getDriveClient();
 
   const response = await drive.files.create({
     requestBody: {
@@ -221,7 +206,7 @@ export async function getDriveFileMetadata(
   parents: string[];
   thumbnailLink?: string;
 }> {
-  const drive = getDriveClient();
+  const drive = await getDriveClient();
 
   const response = await drive.files.get({
     fileId: fileId.trim(),
@@ -263,7 +248,7 @@ export async function getDriveFileStream(
     throw new Error("Drive file ID is required");
   }
 
-  const drive = getDriveClient();
+  const drive = await getDriveClient();
   const metadata =
     await getDriveFileMetadata(trimmedFileId);
 
@@ -294,7 +279,7 @@ export async function getDriveFileStream(
 export async function downloadDriveFile(
   fileId: string
 ): Promise<Readable> {
-  const drive = getDriveClient();
+  const drive = await getDriveClient();
 
   const response = await drive.files.get(
     {
@@ -324,7 +309,7 @@ export async function deleteDriveFile(
     return;
   }
 
-  const drive = getDriveClient();
+  const drive = await getDriveClient();
 
   await drive.files.delete({
     fileId: trimmedFileId,

@@ -1,19 +1,29 @@
-# Jembeekart security patch notes
+# JembeeKart security remediation notes
 
-This package contains targeted source changes for isolated testing. It is NOT a claim that every item in the prior audit is fixed.
+This source tree contains a **partial remediation worktree**, not a production-ready release. See `REMEDIATION_STATUS_20261031.md` and `TEST_RESULTS_20261031.md` for the exact state of all findings.
 
-## Changes in this patch
-- Qikink create-order now requires a Firebase ID token, looks up the product by SKU in Firestore, calculates price on the server, validates quantity/stock/shipping fields, and does not return Qikink token data. Prepaid Qikink order creation is intentionally blocked until server-verified Cashfree payment linkage is implemented.
-- Cloudinary moderation webhook now fails closed unless `CLOUDINARY_MODERATION_WEBHOOK_SECRET` is configured and sent as `x-webhook-secret`. It sets video coins and pendingCoins to zero, consistent with the no-watch-reward business rule. Configure the webhook caller before testing; otherwise requests return 401.
-- The Qikink token, Mission Control auto-fix, and Mission Control review/apply routes in this source tree use `withAdminAuth`.
+## Implemented safeguards
 
-## Not fixed / must not be treated as verified
-- Firestore production rules are NOT changed by this patch. The existing Console rules shown in screenshots (`allow read, write: if true`) remain a critical risk until a collection-by-collection ruleset is tested and deployed. Do not deploy guessed rules.
-- Cashfree credential encryption/verified payment webhooks, all withdrawal/payout engines, order ownership, admin checks across all APIs, dependency vulnerabilities, build/lint issues, and full integration tests are not all resolved by this package.
-- This archive excludes environment files and secrets. Do not copy production secrets into the test environment.
+- Cloudinary client uploads now request a Firebase-authenticated server signature. Active product/category/image/video upload callers use the shared signed helper. Configure a signed Cloudinary upload preset using `CLOUDINARY_SIGNED_UPLOAD_PRESET`; set allowed formats and max file size in Cloudinary.
+- Cloudinary moderation webhook now verifies Cloudinary-native `X-Cld-Signature` and `X-Cld-Timestamp` headers over the raw body using the configured Cloudinary API secret (or `CLOUDINARY_WEBHOOK_API_SECRET`). Configure the webhook trigger to send legacy HMAC signature headers (`default` or `legacy_hmac`), not EdDSA-only.
+- Qikink create-order requires a real internal JembeeKart order owned by the authenticated user and uses order/product data from Firestore. It only accepts placed COD orders. Ambiguous provider results are locked for manual reconciliation.
+- Wallet withdrawals use authenticated server transactions for wallet holds, withdrawal records, ledger writes, idempotency and daily limits. Admin approval/rejection is also server-side; approval requires a manual verified payout reference and rejection atomically refunds the wallet.
+- Mission Control and Governance APIs require verified admin identity and token-revocation checks. Known mock/demo endpoints and unsafe rollback actions are disabled rather than returning fake success.
+- Comment moderation has bounded bodies, transactional per-user rate limits, deterministic request IDs, safe-video checks and an authenticated pending-comment review queue.
+- Video deletion hides the video first, validates Cloudinary deletion results, cleans related records in bounded batches and archives moderation evidence.
+- Paid-video publishing and Cashfree checkout remain disabled until purchase/payment entitlement flows are implemented and verified.
+- Real environment files and debug artifacts have been removed from the archive. Rotate every secret that was present in the originally uploaded environment files.
 
-## Required isolated test setup
+## Remaining release blockers
+
+- Next.js/sharp dependencies are not yet upgraded to patched versions; the lockfile could not be regenerated because the npm registry was unavailable.
+- Full Firestore rules migration, order-delivery commission pipeline, complete product public/private projection, Cloudinary preset configuration, and some legacy/demo admin modules remain unresolved or partial.
+- Typecheck, build, lint, Firebase Emulator, browser/E2E, concurrency and live-provider tests have not passed or have not run. Do not deploy this worktree to production.
+
+## Required setup before testing
+
 1. Use a separate Firebase test project and test-only credentials.
-2. Set `CLOUDINARY_MODERATION_WEBHOOK_SECRET` in the test environment and configure the test webhook to send `x-webhook-secret`.
-3. Use Qikink test/sandbox credentials if available. Prepaid order creation is intentionally blocked.
-4. Run lint/build and functional tests before any deployment.
+2. Configure `CLOUDINARY_CLOUD_NAME`, `CLOUDINARY_API_KEY`, `CLOUDINARY_API_SECRET`, and a signed `CLOUDINARY_SIGNED_UPLOAD_PRESET`.
+3. Configure the Cloudinary moderation webhook with HMAC signature headers and set `CLOUDINARY_WEBHOOK_API_SECRET` if using a dedicated webhook secret.
+4. Use Qikink sandbox credentials and a real test JembeeKart COD order.
+5. Install dependencies, upgrade vulnerable packages, then run typecheck/build/lint and all emulator/API/browser tests before any deployment.

@@ -1,3 +1,4 @@
+import { requireAdmin, isAdminIdentity } from "@/lib/server/requireAdmin";
 import { NextRequest, NextResponse } from "next/server";
 import { governanceEngine } from "@/jembee-governance";
 
@@ -8,6 +9,9 @@ import { governanceEngine } from "@/jembee-governance";
  * This keeps all file-system scanning (fs, path, process.cwd) server-only.
  */
 export async function GET(request: NextRequest) {
+  const adminIdentity = await requireAdmin(request);
+  if (!isAdminIdentity(adminIdentity)) return adminIdentity;
+
   try {
     const report = await governanceEngine.run();
 

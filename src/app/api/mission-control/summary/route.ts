@@ -1,7 +1,11 @@
+import { requireAdmin, isAdminIdentity } from "@/lib/server/requireAdmin";
 import { NextResponse } from "next/server";
 import { runEnterpriseScanners } from "@/mission-control/scanners/runEnterpriseScanners";
 
-export async function GET() {
+export async function GET(req: Request) {
+  const adminIdentity = await requireAdmin(req);
+  if (!isAdminIdentity(adminIdentity)) return adminIdentity;
+
   try {
     const result = await runEnterpriseScanners({
       executionId: crypto.randomUUID(),
@@ -24,13 +28,13 @@ export async function GET() {
 
       scanners: {
         firestore: {
-          scannedFiles: firestore?.scannedItems ?? 0,
-          collections: firestore?.scannedItems ?? 0,
+          scannedItems: firestore?.scannedItems ?? 0,
+          warnings: firestore?.warnings ?? 0,
         },
 
         duplicate: {
-          duplicates: duplicate?.warnings ?? 0,
-          duplicateGroups: duplicate?.warnings ?? 0,
+          warnings: duplicate?.warnings ?? 0,
+          errors: duplicate?.failed ?? 0,
         },
 
         rules: {

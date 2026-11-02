@@ -1,7 +1,11 @@
+import { requireAdmin, isAdminIdentity } from "@/lib/server/requireAdmin";
 import { NextResponse } from "next/server";
 import { reviewManager } from "@/mission-control/review/reviewManager";
 
-export async function GET() {
+export async function GET(req: Request) {
+  const adminIdentity = await requireAdmin(req);
+  if (!isAdminIdentity(adminIdentity)) return adminIdentity;
+
   try {
     const report = await reviewManager.getReport();
 
