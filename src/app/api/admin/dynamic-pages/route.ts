@@ -212,7 +212,11 @@ export async function PATCH(request: Request) {
       const existing = await transaction.get(ref);
       if (!existing.exists) throw new Error("PAGE_NOT_FOUND");
       const page = existing.data();
-      const currentRevision = Number.isSafeInteger(page?.auditRevision) ? page.auditRevision : 0;
+      const revisionCandidate = page?.auditRevision;
+      const currentRevision =
+        typeof revisionCandidate === "number" && Number.isSafeInteger(revisionCandidate)
+          ? revisionCandidate
+          : 0;
       if (currentRevision !== input.expectedAuditRevision) throw new Error("STALE_PAGE_REVISION");
       resultingRevision = currentRevision;
       if (page?.isDeleted === true) throw new Error("PAGE_ARCHIVED");
@@ -325,7 +329,11 @@ export async function PUT(request: Request) {
       const existing = await transaction.get(ref);
       if (!existing.exists) throw new Error("PAGE_NOT_FOUND");
       const page = existing.data();
-      const currentRevision = Number.isSafeInteger(page?.auditRevision) ? page.auditRevision : 0;
+      const revisionCandidate = page?.auditRevision;
+      const currentRevision =
+        typeof revisionCandidate === "number" && Number.isSafeInteger(revisionCandidate)
+          ? revisionCandidate
+          : 0;
       if (currentRevision !== input.expectedAuditRevision) throw new Error("STALE_PAGE_REVISION");
       if (page?.isDeleted !== true) throw new Error("PAGE_NOT_ARCHIVED");
       const auditRevision = currentRevision + 1;
@@ -377,7 +385,11 @@ export async function DELETE(request: Request) {
       const existing = await transaction.get(ref);
       if (!existing.exists) throw new Error("PAGE_NOT_FOUND");
       const page = existing.data();
-      const currentRevision = Number.isSafeInteger(page?.auditRevision) ? page.auditRevision : 0;
+      const revisionCandidate = page?.auditRevision;
+      const currentRevision =
+        typeof revisionCandidate === "number" && Number.isSafeInteger(revisionCandidate)
+          ? revisionCandidate
+          : 0;
       if (currentRevision !== input.expectedAuditRevision) throw new Error("STALE_PAGE_REVISION");
       if (page?.isDeleted === true) throw new Error("PAGE_ALREADY_ARCHIVED");
       if (page?.visible === true) throw new Error("PAGE_MUST_BE_HIDDEN");
