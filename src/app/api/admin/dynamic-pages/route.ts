@@ -48,7 +48,11 @@ export async function GET(request: Request) {
         const legacyEvents = allCount.data().count - snapshot.size;
         const pageSnapshot = await db.collection("dynamic_pages").doc(requestedAudit).get();
         const pageData = pageSnapshot.data();
-        const pageRevision = Number.isSafeInteger(pageData?.auditRevision) ? pageData.auditRevision : 0;
+        const revisionCandidate = pageData?.auditRevision;
+        const pageRevision =
+          typeof revisionCandidate === "number" && Number.isSafeInteger(revisionCandidate)
+            ? revisionCandidate
+            : 0;
         const pageHash = typeof pageData?.lastAuditHash === "string" ? pageData.lastAuditHash : null;
         const pageHeadMatches = pageRevision === snapshot.size && pageHash === chain.lastHash;
         const valid = chain.valid && pageHeadMatches;
