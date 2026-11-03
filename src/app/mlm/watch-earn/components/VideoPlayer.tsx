@@ -56,6 +56,7 @@ export default function VideoPlayer({
   const [currentTime, setCurrentTime] = useState(0);
   const [isDragging, setIsDragging] = useState(false);
   const [showControls, setShowControls] = useState(false);
+  const [rotation, setRotation] = useState<0 | 90 | 180 | 270>(0);
 
   useEffect(() => {
     const video = videoRef.current;
@@ -68,6 +69,8 @@ export default function VideoPlayer({
     if (!video) return;
 
     setProgress(0);
+    setCurrentTime(0);
+    setDuration(0);
 
     if (active) {
       video.play().catch(() => {});
@@ -79,11 +82,14 @@ export default function VideoPlayer({
     }
   }, [active, videoUrl]);
 
-  const togglePlayPause = (e: React.MouseEvent) => {
-    e.stopPropagation();
+  const togglePlayPause = (e?: React.SyntheticEvent) => {
+    e?.stopPropagation();
+
     const video = videoRef.current;
     if (!video) return;
+
     setShowControls(true);
+
     if (!video.paused) {
       video.pause();
     } else {
@@ -91,11 +97,33 @@ export default function VideoPlayer({
     }
   };
 
+  const rotateVideo = () => {
+    setRotation((current) => ((current + 90) % 360) as 0 | 90 | 180 | 270);
+    setShowControls(true);
+  };
+
+  const seekBy = (seconds: number) => {
+    const video = videoRef.current;
+    if (!video || !Number.isFinite(video.duration)) return;
+
+    const nextTime = Math.max(0, Math.min(video.currentTime + seconds, video.duration));
+    video.currentTime = nextTime;
+    setCurrentTime(nextTime);
+    setShowControls(true);
+  };
+
   const handleTimeUpdate = () => {
-    if (videoRef.current && !isDragging) {
-      setCurrentTime(videoRef.current.currentTime);
-      if (duration === 0 && videoRef.current.duration > 0) {
-        setDuration(videoRef.current.duration);
+    const video = videoRef.current;
+
+    if (video && !isDragging) {
+      setCurrentTime(video.currentTime);
+
+      if (duration === 0 && video.duration > 0) {
+        setDuration(video.duration);
+      }
+
+      if (video.duration > 0) {
+        setProgress((video.currentTime / video.duration) * 100);
       }
     }
   };
@@ -106,16 +134,22 @@ export default function VideoPlayer({
     }
   };
 
-  const handleSeek = useCallback((clientX: number) => {
-    if (!progressBarRef.current || !videoRef.current || duration === 0) return;
+  const handleSeek = useCallback(
+    (clientX: number) => {
+      if (!progressBarRef.current || !videoRef.current || duration === 0) return;
 
-    const rect = progressBarRef.current.getBoundingClientRect();
-    const x = Math.max(0, Math.min(clientX - rect.left, rect.width));
-    const seekTime = (x / rect.width) * duration;
+      const rect = progressBarRef.current.getBoundingClientRect();
+      if (rect.width <= 0) return;
 
-    videoRef.current.currentTime = seekTime;
-    setCurrentTime(seekTime);
-  }, [duration]);
+      const x = Math.max(0, Math.min(clientX - rect.left, rect.width));
+      const seekTime = (x / rect.width) * duration;
+
+      videoRef.current.currentTime = seekTime;
+      setCurrentTime(seekTime);
+      setProgress((seekTime / duration) * 100);
+    },
+    [duration],
+  );
 
   const handleTouchStart = (e: React.TouchEvent) => {
     setIsDragging(true);
@@ -135,13 +169,58 @@ export default function VideoPlayer({
     setIsDragging(false);
   };
 
+  const handleVideoKeyDown = (e: React.KeyboardEvent<HTMLVideoElement>) => {
+    if (e.key === "ArrowLeft") {
+      e.preventDefault();
+      seekBy(-10);
+    } else if (e.key === "ArrowRight") {
+      e.preventDefault();
+      seekBy(10);
+    } else if (e.key === "ArrowUp") {
+      e.preventDefault();
+      seekBy(30);
+    } else if (e.key === "ArrowDown") {
+      e.preventDefault();
+      seekBy(-30);
+    } else if (e.key === " " || e.key === "Enter" || e.key === "MediaPlayPause") {
+      e.preventDefault();
+      togglePlayPause();
+    } else if (e.key.toLowerCase() === "r") {
+      e.preventDefault();
+      rotateVideo();
+    }
+  };
+
+  const handleSeekKeyDown = (e: React.KeyboardEvent<HTMLDivElement>) => {
+    if (e.key === "ArrowLeft") {
+      e.preventDefault();
+      seekBy(-10);
+    } else if (e.key === "ArrowRight") {
+      e.preventDefault();
+      seekBy(10);
+    } else if (e.key === "Home") {
+      e.preventDefault();
+      if (videoRef.current) {
+        videoRef.current.currentTime = 0;
+        setCurrentTime(0);
+      }
+    } else if (e.key === "End") {
+      e.preventDefault();
+      if (videoRef.current && duration > 0) {
+        videoRef.current.currentTime = duration;
+        setCurrentTime(duration);
+      }
+    }
+  };
+
+  const rotated = rotation === 90 || rotation === 270;
+
   return (
     <div
-      className="relative h-screen w-full overflow-hidden"
+      className="relative h-screen w-full overflow-hidden bg-black"
       onClick={() => setShowControls(true)}
     >
       {/* VIDEO */}
-
       <video
         ref={videoRef}
         src={optimizedVideoUrl}
@@ -149,29 +228,89 @@ export default function VideoPlayer({
         muted={isMuted}
         loop
         playsInline
+        tabIndex={0}
+        aria-label="Video player. Use arrow keys to seek and R to rotate."
+        onKeyDown={handleVideoKeyDown}
         onClick={togglePlayPause}
         onPlay={() => setIsPlaying(true)}
         onPause={() => setIsPlaying(false)}
         onTimeUpdate={handleTimeUpdate}
         onLoadedMetadata={handleLoadedMetadata}
-        className="absolute inset-0 h-full w-full object-cover cursor-pointer bg-black"
+        className="absolute bg-black object-contain cursor-pointer focus-visible:outline focus-visible:outline-2 focus-visible:outline-white"
+        style={
+          rotated
+            ? {
+                left: "50%",
+                top: "50%",
+                width: "100vh",
+                height: "100vw",
+                maxWidth: "none",
+                transform: `translate(-50%, -50%) rotate(${rotation}deg)`,
+              }
+            : {
+                inset: 0,
+                width: "100%",
+                height: "100%",
+                transform: `rotate(${rotation}deg)`,
+              }
+        }
       />
 
       {/* OVERLAY */}
+      <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-black/30 pointer-events-none" />
 
-      <div
-        className="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-black/30 pointer-events-none"
-      />
-
-      {/* PLAY/PAUSE OVERLAY ICON */}
+      {/* PLAY / PAUSE OVERLAY */}
       {!isPlaying && (
-        <div
+        <button
+          type="button"
+          aria-label="Play video"
           onClick={togglePlayPause}
-          className="absolute inset-0 flex items-center justify-center z-30 cursor-pointer"
+          className="absolute inset-0 z-30 flex items-center justify-center cursor-pointer"
         >
-          <div className="rounded-full bg-black/60 p-3 text-white text-2xl">
+          <span className="rounded-full bg-black/60 p-4 text-white text-3xl focus-visible:outline focus-visible:outline-2 focus-visible:outline-white">
             ▶
-          </div>
+          </span>
+        </button>
+      )}
+
+      {/* TV REMOTE AND TOUCH CONTROLS */}
+      {showControls && (
+        <div className="absolute bottom-[calc(2rem+env(safe-area-inset-bottom))] left-4 right-4 z-50 flex items-center justify-center gap-3">
+          <button
+            type="button"
+            onClick={togglePlayPause}
+            aria-label={isPlaying ? "Pause video" : "Play video"}
+            className="rounded-full bg-black/70 px-4 py-3 text-white focus-visible:outline focus-visible:outline-2 focus-visible:outline-white"
+          >
+            {isPlaying ? "❚❚" : "▶"}
+          </button>
+
+          <button
+            type="button"
+            onClick={() => seekBy(-10)}
+            aria-label="Rewind 10 seconds"
+            className="rounded-full bg-black/70 px-4 py-3 text-white focus-visible:outline focus-visible:outline-2 focus-visible:outline-white"
+          >
+            ↶ 10s
+          </button>
+
+          <button
+            type="button"
+            onClick={() => seekBy(10)}
+            aria-label="Forward 10 seconds"
+            className="rounded-full bg-black/70 px-4 py-3 text-white focus-visible:outline focus-visible:outline-2 focus-visible:outline-white"
+          >
+            10s ↷
+          </button>
+
+          <button
+            type="button"
+            onClick={rotateVideo}
+            aria-label={`Rotate video. Current rotation ${rotation} degrees`}
+            className="rounded-full bg-black/70 px-4 py-3 text-white focus-visible:outline focus-visible:outline-2 focus-visible:outline-white"
+          >
+            ↻ {rotation}°
+          </button>
         </div>
       )}
 
@@ -179,20 +318,31 @@ export default function VideoPlayer({
       {showControls && duration > 0 && (
         <div
           ref={progressBarRef}
-          className="absolute bottom-[calc(6rem+env(safe-area-inset-bottom))] left-4 right-4 h-6 flex items-center z-50 touch-none"
+          role="slider"
+          aria-label="Video progress"
+          aria-valuemin={0}
+          aria-valuemax={Math.floor(duration)}
+          aria-valuenow={Math.floor(currentTime)}
+          aria-valuetext={`${Math.floor(currentTime)} of ${Math.floor(duration)} seconds`}
+          tabIndex={0}
+          onKeyDown={handleSeekKeyDown}
+          className="absolute bottom-[calc(6rem+env(safe-area-inset-bottom))] left-4 right-4 h-6 flex items-center z-50 touch-none cursor-pointer focus-visible:outline focus-visible:outline-2 focus-visible:outline-white"
           onTouchStart={handleTouchStart}
           onTouchMove={handleTouchMove}
           onTouchEnd={handleTouchEnd}
-          onClick={(e) => { e.stopPropagation(); handleSeek(e.clientX); }}
+          onClick={(e) => {
+            e.stopPropagation();
+            handleSeek(e.clientX);
+          }}
         >
           <div className="relative w-full h-1 bg-white/30 rounded-full">
             <div
               className="absolute h-full bg-white rounded-full"
-              style={{ width: `${(currentTime / duration) * 100}%` }}
+              style={{ width: `${duration > 0 ? (currentTime / duration) * 100 : 0}%` }}
             />
             <div
               className="absolute top-1/2 -mt-2.5 w-5 h-5 bg-white rounded-full shadow-lg"
-              style={{ left: `calc(${(currentTime / duration) * 100}% - 10px)` }}
+              style={{ left: `calc(${duration > 0 ? (currentTime / duration) * 100 : 0}% - 10px)` }}
             />
           </div>
         </div>
