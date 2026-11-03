@@ -6,7 +6,7 @@ import { getDriveFileMetadata, getDriveFileStream } from "@/services/googleDrive
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
 
-function parseRange(value: string, size: number) {
+function parseRange(value: string, size: number, maxChunkBytes: number) {
   const match = /^bytes=(\d*)-(\d*)$/.exec(value.trim());
   if (!match || (!match[1] && !match[2])) return null;
 
@@ -14,7 +14,7 @@ function parseRange(value: string, size: number) {
   let end: number;
 
   if (!match[1]) {
-    const suffix = Number(match[2]);
+    const suffix = Math.min(Number(match[2]), maxChunkBytes);
     if (!Number.isSafeInteger(suffix) || suffix <= 0) return null;
     start = Math.max(0, size - suffix);
     end = size - 1;
@@ -33,7 +33,7 @@ function parseRange(value: string, size: number) {
     return null;
   }
 
-  return { start, end: Math.min(end, size - 1) };
+  return { start, end: Math.min(end, size - 1, start + maxChunkBytes - 1) };
 }
 
 export async function GET(
@@ -115,7 +115,7 @@ export async function GET(
       );
     }
 
-    const range = parseRange(rangeHeader, metadata.size);
+    const range = parseRange(rangeHeader, metadata.size, MAX_STREAM_CHUNK_BYTES);
 
     if (!range) {
       return new NextResponse("Range Not Satisfiable", {
