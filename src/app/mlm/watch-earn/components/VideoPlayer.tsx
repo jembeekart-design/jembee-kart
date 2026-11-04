@@ -12,6 +12,7 @@ interface VideoPlayerProps {
   isMuted?: boolean;
   active?: boolean;
   playbackRate?: number;
+  onActualPlaybackSeconds?: (seconds: number) => void;
 }
 
 export default function VideoPlayer({
@@ -19,9 +20,14 @@ export default function VideoPlayer({
   isMuted = true,
   active = false,
   playbackRate = 1,
+  onActualPlaybackSeconds,
 }: VideoPlayerProps) {
   const videoRef = useRef<HTMLVideoElement>(null);
   const progressBarRef = useRef<HTMLDivElement>(null);
+  const lastMediaTimeRef = useRef<number | null>(null);
+  const lastWallTimeRef = useRef<number | null>(null);
+  const playbackFractionRef = useRef(0);
+
 
   const optimizedVideoUrl = (() => {
     try {
@@ -92,10 +98,44 @@ export default function VideoPlayer({
   };
 
   const handleTimeUpdate = () => {
-    if (videoRef.current && !isDragging) {
-      setCurrentTime(videoRef.current.currentTime);
-      if (duration === 0 && videoRef.current.duration > 0) {
-        setDuration(videoRef.current.duration);
+    const video = videoRef.current;
+    if (!video) return;
+
+    const mediaTime = video.currentTime;
+    const wallTime = Date.now();
+
+    if (active && !video.paused && !video.seeking) {
+      const previousMediaTime = lastMediaTimeRef.current;
+      const previousWallTime = lastWallTimeRef.current;
+
+      if (previousMediaTime !== null && previousWallTime !== null) {
+        const mediaDelta = mediaTime - previousMediaTime;
+        const wallDelta = Math.max(0, (wallTime - previousWallTime) / 1000);
+        const maximumExpectedDelta = wallDelta * playbackRate + 1;
+
+        // Ignore seeks, backward jumps and implausible media-time jumps.
+        if (
+          mediaDelta > 0 &&
+          mediaDelta <= Math.max(2.5, maximumExpectedDelta)
+        ) {
+          playbackFractionRef.current += mediaDelta;
+          const wholeSeconds = Math.floor(playbackFractionRef.current);
+
+          if (wholeSeconds > 0) {
+            playbackFractionRef.current -= wholeSeconds;
+            onActualPlaybackSeconds?.(wholeSeconds);
+          }
+        }
+      }
+    }
+
+    lastMediaTimeRef.current = mediaTime;
+    lastWallTimeRef.current = wallTime;
+
+    if (!isDragging) {
+      setCurrentTime(mediaTime);
+      if (duration === 0 && video.duration > 0) {
+        setDuration(video.duration);
       }
     }
   };
@@ -150,10 +190,26 @@ export default function VideoPlayer({
         loop
         playsInline
         onClick={togglePlayPause}
-        onPlay={() => setIsPlaying(true)}
-        onPause={() => setIsPlaying(false)}
+        onPlay={() => {
+            lastMediaTimeRef.current = videoRef.current?.currentTime ?? null;
+            lastWallTimeRef.current = Date.now();
+            setIsPlaying(true);
+          }}
+        onPause={() => {
+            lastMediaTimeRef.current = null;
+            lastWallTimeRef.current = null;
+            setIsPlaying(false);
+          }}
         onTimeUpdate={handleTimeUpdate}
         onLoadedMetadata={handleLoadedMetadata}
+          onSeeking={() => {
+            lastMediaTimeRef.current = null;
+            lastWallTimeRef.current = null;
+          }}
+          onSeeked={() => {
+            lastMediaTimeRef.current = videoRef.current?.currentTime ?? null;
+            lastWallTimeRef.current = Date.now();
+          }}
         className="absolute inset-0 h-full w-full object-cover cursor-pointer bg-black"
       />
 

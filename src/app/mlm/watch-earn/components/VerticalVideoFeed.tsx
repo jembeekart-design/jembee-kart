@@ -10,6 +10,8 @@ import {
 import VideoPlayer
   from "./VideoPlayer";
 
+
+
 import VideoInfo
   from "./VideoInfo";
 
@@ -30,8 +32,27 @@ import { unlikeVideo } from "@/lib/mlm/watch-earn/unlikeVideo";
 import { shareVideo } from "@/lib/mlm/watch-earn/shareVideo";
 import { reportVideo } from "@/lib/mlm/watch-earn/reportVideo";
 import { setVideoPreference } from "@/lib/mlm/watch-earn/setVideoPreference";
+
+import FloatingAdComponent, { type FloatingAd } from "./FloatingAd";
+
+
 import { useRequireAuth } from "@/hooks/useRequireAuth";
 import { collection, doc, onSnapshot } from "firebase/firestore";
+
+interface VideoAdsResponse {
+  enabled: boolean;
+  rules: {
+    enabled: boolean;
+    firstAdAfterMinutes: number;
+    secondAdAtMinutes: number;
+    thirdAdAtMinutes: number;
+    fourthAdAtMinutes: number;
+    repeatEveryMinutes: number;
+    autoDismissSeconds: number;
+  };
+  ads: FloatingAd[];
+}
+
 
 export default function VerticalVideoFeed({
   activeTab
@@ -43,6 +64,75 @@ export default function VerticalVideoFeed({
   const [followingList, setFollowingList] = useState<string[]>([]);
   const [notInterestedIds, setNotInterestedIds] = useState<string[]>([]);
   const [videos, setVideos] = useState<WatchVideo[]>([]);
+  const [videoAdsData, setVideoAdsData] = useState<VideoAdsResponse | null>(null);
+  const [watchSeconds, setWatchSeconds] = useState(0);
+  const [currentVideoAd, setCurrentVideoAd] = useState<FloatingAd | null>(null);
+  const [videoAdIndex, setVideoAdIndex] = useState(0);
+  const nextAdMilestoneIndex = useRef(0);
+
+  const handleActualPlaybackSeconds = (seconds: number) => {
+    setWatchSeconds((previous) => previous + seconds);
+  };
+
+
+  useEffect(() => {
+    let cancelled = false;
+
+    async function loadVideoAds() {
+      try {
+        const response = await fetch("/api/watch-earn/video-ads", {
+          method: "GET",
+          cache: "no-store",
+        });
+
+        if (!response.ok) throw new Error("Video ads request failed");
+
+        const data = (await response.json()) as VideoAdsResponse;
+        if (!cancelled) setVideoAdsData(data);
+      } catch (error) {
+        console.error("Unable to load video ads:", error);
+        if (!cancelled) setVideoAdsData(null);
+      }
+    }
+
+    loadVideoAds();
+    return () => {
+      cancelled = true;
+    };
+  }, []);
+
+  useEffect(() => {
+    const data = videoAdsData;
+
+    if (!data?.enabled || !data.rules.enabled || currentVideoAd) return;
+
+    const milestoneIndex = nextAdMilestoneIndex.current;
+    const milestones = [
+      data.rules.firstAdAfterMinutes,
+      data.rules.secondAdAtMinutes,
+      data.rules.thirdAdAtMinutes,
+      data.rules.fourthAdAtMinutes,
+    ];
+
+    const nextMinute =
+      milestoneIndex < milestones.length
+        ? milestones[milestoneIndex]
+        : data.rules.fourthAdAtMinutes +
+          (milestoneIndex - 3) * data.rules.repeatEveryMinutes;
+
+    if (watchSeconds < nextMinute * 60) return;
+
+    // Consume this milestone once, even if no campaign is currently available.
+    nextAdMilestoneIndex.current += 1;
+
+    const availableAds = data.ads.filter((ad) => ad.enabled);
+    if (availableAds.length === 0) return;
+
+    const selectedAd = availableAds[videoAdIndex % availableAds.length];
+    setVideoAdIndex((previous) => previous + 1);
+    setCurrentVideoAd(selectedAd);
+  }, [watchSeconds, videoAdsData, currentVideoAd, videoAdIndex]);
+
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
 
@@ -415,6 +505,7 @@ export default function VerticalVideoFeed({
                 }
 
                 playbackRate={playbackSpeeds[video.id] || 1}
+                onActualPlaybackSeconds={handleActualPlaybackSeconds}
               />
 
               {/* INFO */}
@@ -642,6 +733,15 @@ export default function VerticalVideoFeed({
             </section>
           )
         )
+      )}
+
+      {currentVideoAd && (
+        <FloatingAdComponent
+          key={currentVideoAd.id}
+          ad={currentVideoAd}
+          autoDismissSeconds={videoAdsData?.rules.autoDismissSeconds ?? 8}
+          onDismiss={() => setCurrentVideoAd(null)}
+        />
       )}
 
       {/* MODAL */}
