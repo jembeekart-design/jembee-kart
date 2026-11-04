@@ -16,6 +16,7 @@ import {
   FeatureFlags,
   SignupRules,
   BusinessRulesMetadata,
+  VideoAdsRules,
 } from "./types";
 
 import {
@@ -33,6 +34,7 @@ import {
   validateWalletRules,
   validateCreatorEconomyRules,
   validateFeatureFlags,
+  validateVideoAdsRules,
 } from "./validator";
 
 // ======================================================
@@ -134,6 +136,13 @@ export const loadWatchEarnRules =
     validateWatchEarnRules
   );
 
+export const loadVideoAdsRules = () =>
+  loadRule<VideoAdsRules>(
+    BUSINESS_RULE_DOCUMENTS.videoAds,
+    DEFAULT_BUSINESS_RULES.videoAds,
+    validateVideoAdsRules
+  );
+
 export const loadWalletRules =
 () =>
   loadRule<WalletRules>(
@@ -187,6 +196,7 @@ Promise<BusinessRulesConfig> {
     referral,
 
     watchEarn,
+    videoAds,
 
     wallet,
 
@@ -205,6 +215,7 @@ Promise<BusinessRulesConfig> {
     loadReferralRules(),
 
     loadWatchEarnRules(),
+    loadVideoAdsRules(),
 
     loadWalletRules(),
 
@@ -225,6 +236,7 @@ Promise<BusinessRulesConfig> {
     referral,
 
     watchEarn,
+    videoAds,
 
     wallet,
 

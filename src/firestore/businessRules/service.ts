@@ -7,6 +7,7 @@ import {
   CreatorEconomyRules,
   FeatureFlags,
   BusinessRulesMetadata,
+  VideoAdsRules,
 } from "./types";
 
 import {
@@ -14,6 +15,7 @@ import {
   loadProfitabilityRules,
   loadReferralRules,
   loadWatchEarnRules,
+  loadVideoAdsRules,
   loadWalletRules,
   loadCreatorEconomyRules,
   loadFeatureFlags,
@@ -22,12 +24,7 @@ import {
   getBusinessRulesCacheStats,
 } from "./loader";
 
-import { doc, setDoc } from "firebase/firestore";
-import { db } from "../../firebase/config";
-import {
-  BUSINESS_RULES_COLLECTION,
-  BUSINESS_RULE_DOCUMENTS,
-} from "./defaults";
+import { auth } from "../../firebase/config";
 
 // ======================================================
 // JembeeKart Business Rules Service
@@ -69,6 +66,13 @@ class BusinessRulesService {
   }
 
   // ====================================================
+  // Global Video Ads
+  // ====================================================
+  async getVideoAdsRules(): Promise<VideoAdsRules> {
+    return loadVideoAdsRules();
+  }
+
+  // ====================================================
   // Wallet
   // ====================================================
 
@@ -99,122 +103,48 @@ class BusinessRulesService {
   async getMetadata(): Promise<BusinessRulesMetadata> {
     return loadMetadata();
   }
- async saveProfitabilityRules(
-  rules: ProfitabilityRules
-): Promise<void> {
-  await setDoc(
-    doc(
-      db,
-      BUSINESS_RULES_COLLECTION,
-      BUSINESS_RULE_DOCUMENTS.profitability
-    ),
-    rules,
-    {
-      merge: true,
-    }
-  );
+  private async saveSection(section: string, rules: unknown): Promise<void> {
+    const user = auth.currentUser;
+    if (!user) throw new Error("Admin login required");
+    const token = await user.getIdToken();
+    const response = await fetch("/api/admin/business-rules", {
+      method: "POST",
+      headers: { Authorization: `Bearer ${token}`, "Content-Type": "application/json" },
+      body: JSON.stringify({ section, rules }),
+      cache: "no-store",
+    });
+    const result = await response.json().catch(() => ({}));
+    if (!response.ok || result.success !== true) throw new Error(typeof result.message === "string" ? result.message : "Business rules could not be saved.");
+    this.clearCache();
+  }
 
-  this.clearCache();
-}
+  async saveProfitabilityRules(rules: ProfitabilityRules): Promise<void> {
+    await this.saveSection("profitability", rules);
+  }
 
-  async saveWatchEarnRules(
-  rules: WatchEarnRules
-): Promise<void> {
+  async saveVideoAdsRules(rules: VideoAdsRules): Promise<void> {
+    await this.saveSection("videoAds", rules);
+  }
 
-  await setDoc(
-    doc(
-      db,
-      BUSINESS_RULES_COLLECTION,
-      BUSINESS_RULE_DOCUMENTS.watchEarn
-    ),
-    rules,
-    {
-      merge: true,
-    }
-  );
+  async saveWatchEarnRules(rules: WatchEarnRules): Promise<void> {
+    await this.saveSection("watchEarn", rules);
+  }
 
-  this.clearCache();
-}
+  async saveReferralRules(rules: ReferralRules): Promise<void> {
+    await this.saveSection("referral", rules);
+  }
 
-  async saveReferralRules(
-  rules: ReferralRules
-): Promise<void> {
+  async saveWalletRules(rules: WalletRules): Promise<void> {
+    await this.saveSection("wallet", rules);
+  }
 
-  await setDoc(
-    doc(
-      db,
-      BUSINESS_RULES_COLLECTION,
-      BUSINESS_RULE_DOCUMENTS.referral
-    ),
-    rules,
-    {
-      merge: true,
-    }
-  );
+  async saveCreatorEconomyRules(rules: CreatorEconomyRules): Promise<void> {
+    await this.saveSection("creatorEconomy", rules);
+  }
 
-  this.clearCache();
-
-}
-
-  async saveWalletRules(
-  rules: WalletRules
-): Promise<void> {
-
-  await setDoc(
-    doc(
-      db,
-      BUSINESS_RULES_COLLECTION,
-      BUSINESS_RULE_DOCUMENTS.wallet
-    ),
-    rules,
-    {
-      merge: true,
-    }
-  );
-
-  this.clearCache();
-
-}
-
-  async saveCreatorEconomyRules(
-  rules: CreatorEconomyRules
-): Promise<void> {
-
-  await setDoc(
-    doc(
-      db,
-      BUSINESS_RULES_COLLECTION,
-      BUSINESS_RULE_DOCUMENTS.creatorEconomy
-    ),
-    rules,
-    {
-      merge: true,
-    }
-  );
-
-  this.clearCache();
-
-}
-
-  async saveFeatureFlags(
-  flags: FeatureFlags
-): Promise<void> {
-
-  await setDoc(
-    doc(
-      db,
-      BUSINESS_RULES_COLLECTION,
-      BUSINESS_RULE_DOCUMENTS.featureFlags
-    ),
-    flags,
-    {
-      merge: true,
-    }
-  );
-
-  this.clearCache();
-
-}
+  async saveFeatureFlags(flags: FeatureFlags): Promise<void> {
+    await this.saveSection("featureFlags", flags);
+  }
   
   // ====================================================
   // Version

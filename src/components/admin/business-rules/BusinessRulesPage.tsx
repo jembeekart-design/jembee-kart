@@ -6,6 +6,7 @@ import ReferralCard from "./ReferralCard";
 import WalletCard from "./WalletCard";
 import CreatorEconomyCard from "./CreatorEconomyCard";
 import FeatureFlagsCard from "./FeatureFlagsCard";
+import VideoAdsCard from "./VideoAdsCard";
 export default function BusinessRulesPage() {
   return (
     <div className="min-h-screen bg-[var(--color-page-background)] text-[var(--text-primary)] p-6">
@@ -32,6 +33,7 @@ export default function BusinessRulesPage() {
           <CreatorEconomyCard />
           
           <FeatureFlagsCard />
+          <VideoAdsCard />
           
         </div>
       </div>
