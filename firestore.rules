@@ -194,6 +194,20 @@ service cloud.firestore {
       allow create, update, delete: if false;
     }
 
+    // Advertising management is restricted to authenticated admins.
+    // These collections are used by the Admin Ads Manager only.
+    match /ads/{adId} {
+      allow read, create, update, delete: if isAdmin();
+    }
+
+    match /adNetworks/{networkId} {
+      allow read, create, update, delete: if isAdmin();
+    }
+
+    match /adSlots/{slotId} {
+      allow read, create, update, delete: if isAdmin();
+    }
+
     match /{document=**} {
       allow read, write: if false;
     }

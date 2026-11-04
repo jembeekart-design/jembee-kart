@@ -12,9 +12,10 @@ import { AdSlotManager } from "./AdSlotManager";
 export function AdNetworkManager() {
   const [networks, setNetworks] = useState<AdNetwork[]>([]);
   const [loading, setLoading] = useState(true);
+  const [loadError, setLoadError] = useState("");
   const [showCreate, setShowCreate] = useState(false);
   const [activeSubTab, setActiveSubTab] = useState<"networks" | "slots">("networks");
-  
+
   // Create form state
   const [name, setName] = useState("");
   const [mode, setMode] = useState<AdNetworkMode>("GAM");
@@ -22,11 +23,24 @@ export function AdNetworkManager() {
 
   useEffect(() => {
     const q = query(collection(db, FIRESTORE_PATHS.AD_MANAGEMENT.NETWORKS));
-    const unsubscribe = onSnapshot(q, (snapshot) => {
-      const data = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() } as AdNetwork));
-      setNetworks(data);
-      setLoading(false);
-    });
+    const unsubscribe = onSnapshot(
+      q,
+      (snapshot) => {
+        const data = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() } as AdNetwork));
+        setNetworks(data);
+        setLoadError("");
+        setLoading(false);
+      },
+      (error) => {
+        console.error("Ad networks Firestore listener failed:", error);
+        setLoadError(
+          error.code === "permission-denied"
+            ? "Permission denied. Admin role aur Firestore rules check karein."
+            : `Ad networks load nahi ho sake: ${error.message}`
+        );
+        setLoading(false);
+      }
+    );
     return () => unsubscribe();
   }, []);
 
@@ -76,9 +90,13 @@ export function AdNetworkManager() {
 
             {loading ? (
                 <div className="p-8 text-center">Loading...</div>
+            ) : loadError ? (
+                <div role="alert" className="rounded-xl border border-red-500/30 bg-red-500/10 p-4 text-sm text-red-700">{loadError}</div>
             ) : (
                 <div className="grid gap-4">
-                {networks.map((network) => (
+                {networks.length === 0 ? (
+                  <p className="p-8 text-center text-[var(--text-muted)]">No ad networks added yet.</p>
+                ) : networks.map((network) => (
                     <div key={network.id} className="rounded-[28px] border border-[var(--color-border)]/10 bg-[var(--color-primary-button)] p-5">
                     <h3 className="text-lg font-bold">{network.name}</h3>
                     <p className="text-sm text-[var(--text-muted)]">Mode: {network.mode} | Status: {network.enabled ? "Enabled" : "Disabled"}</p>

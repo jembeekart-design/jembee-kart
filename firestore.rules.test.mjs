@@ -371,3 +371,25 @@ test("admin can save footer links", async () => {
     )
   );
 });
+
+test("admin can manage ads, ad networks, and ad slots", async () => {
+  const db = env.authenticatedContext("adminA").firestore();
+
+  await assertSucceeds(setDoc(doc(db, "ads/adA"), { title: "Campaign A", status: "Running" }));
+  await assertSucceeds(getDoc(doc(db, "ads/adA")));
+  await assertSucceeds(setDoc(doc(db, "adNetworks/networkA"), { name: "Test Network", enabled: false }));
+  await assertSucceeds(getDoc(doc(db, "adNetworks/networkA")));
+  await assertSucceeds(setDoc(doc(db, "adSlots/slotA"), { name: "Home Banner", enabled: false }));
+  await assertSucceeds(getDoc(doc(db, "adSlots/slotA")));
+});
+
+test("ordinary users cannot access ads management collections", async () => {
+  const db = env.authenticatedContext("userA").firestore();
+
+  await assertFails(getDoc(doc(db, "ads/adA")));
+  await assertFails(setDoc(doc(db, "ads/adA"), { title: "Unauthorized" }));
+  await assertFails(getDoc(doc(db, "adNetworks/networkA")));
+  await assertFails(setDoc(doc(db, "adNetworks/networkA"), { name: "Unauthorized" }));
+  await assertFails(getDoc(doc(db, "adSlots/slotA")));
+  await assertFails(setDoc(doc(db, "adSlots/slotA"), { name: "Unauthorized" }));
+});
