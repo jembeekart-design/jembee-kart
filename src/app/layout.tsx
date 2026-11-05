@@ -5,6 +5,7 @@ import "./globals.css";
 import Providers from "./providers";
 import { ThemeManager } from "@/components/theme-manager";
 import SystemSeeder from "@/components/SystemSeeder";
+import MonetagScriptGate from "@/components/MonetagScriptGate";
 
 export const metadata: Metadata = {
   metadataBase: new URL("https://jembee-kart.vercel.app"),
@@ -50,11 +51,12 @@ export default function RootLayout({
         />
               <meta name="monetag" content="ffc36b1add65212e386c64b0bf1e6c0e" />
         
-              <script src="https://quge5.com/88/tag.min.js" data-zone="297992" async data-cfasync="false"></script>
+
       </head>
 
       <body className="min-h-screen antialiased">
         <Providers>
+          <MonetagScriptGate />
 
           {/* Auto create missing Firestore settings */}
           <SystemSeeder />

@@ -8,6 +8,7 @@ import { AdNetwork, AdNetworkMode } from "@/types/ads";
 import { Plus, X } from "lucide-react";
 import { addAdNetwork } from "@/firestore/services/adManagement";
 import { AdSlotManager } from "./AdSlotManager";
+import { MonetagGlobalControl } from "./MonetagGlobalControl";
 
 export function AdNetworkManager() {
   const [networks, setNetworks] = useState<AdNetwork[]>([]);
@@ -70,6 +71,7 @@ export function AdNetworkManager() {
 
   return (
     <div className="space-y-6">
+      <MonetagGlobalControl />
         <div className="flex gap-4">
           <button onClick={() => setActiveSubTab("networks")} className={`font-bold ${activeSubTab === "networks" ? "text-[var(--text-primary)]" : "text-[var(--text-muted)]"}`}>Networks</button>
           <button onClick={() => setActiveSubTab("slots")} className={`font-bold ${activeSubTab === "slots" ? "text-[var(--text-primary)]" : "text-[var(--text-muted)]"}`}>Slots</button>
