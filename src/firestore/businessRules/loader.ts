@@ -136,7 +136,8 @@ export const loadWatchEarnRules =
     validateWatchEarnRules
   );
 
-export const loadVideoAdsRules = () =>
+export const loadVideoAdsRules =
+() =>
   loadRule<VideoAdsRules>(
     BUSINESS_RULE_DOCUMENTS.videoAds,
     DEFAULT_BUSINESS_RULES.videoAds,
@@ -196,6 +197,7 @@ Promise<BusinessRulesConfig> {
     referral,
 
     watchEarn,
+
     videoAds,
 
     wallet,
@@ -215,6 +217,7 @@ Promise<BusinessRulesConfig> {
     loadReferralRules(),
 
     loadWatchEarnRules(),
+
     loadVideoAdsRules(),
 
     loadWalletRules(),
@@ -236,6 +239,7 @@ Promise<BusinessRulesConfig> {
     referral,
 
     watchEarn,
+
     videoAds,
 
     wallet,

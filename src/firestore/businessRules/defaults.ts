@@ -37,16 +37,6 @@ export const DEFAULT_BUSINESS_RULES: BusinessRulesConfig = {
     minimumWatchDuration: 30,
   },
 
-  videoAds: {
-    enabled: false,
-    firstAdAfterMinutes: 5,
-    secondAdAtMinutes: 10,
-    thirdAdAtMinutes: 20,
-    fourthAdAtMinutes: 35,
-    repeatEveryMinutes: 15,
-    autoDismissSeconds: 8,
-  },
-
   wallet: {
     minimumWithdrawal: 200,
     withdrawalCharge: 0,
@@ -71,8 +61,7 @@ export const DEFAULT_BUSINESS_RULES: BusinessRulesConfig = {
     adsEnabled: true,
     walletEnabled: true,
     loyaltyEnabled: true,
-    // Fail closed: no trusted order-profit settlement pipeline is enabled yet.
-    commissionDistributedEnabled: false,
+    commissionDistributedEnabled: true,
     rewardEnabled: true,
     affiliateEnabled: true,
     mlmEnabled: true,
@@ -84,6 +73,13 @@ export const DEFAULT_BUSINESS_RULES: BusinessRulesConfig = {
     joiningBonus: 0,
     referralBonus: 0,
     requireReferral: true,
+  },
+
+  videoAds: {
+    enabled: false,
+    firstAdAfterVideos: 5,
+    repeatEveryVideos: 3,
+    autoDismissSeconds: 8,
   },
 
   metadata: {
@@ -111,9 +107,9 @@ export const BUSINESS_RULE_DOCUMENTS = {
   profitability: "profitability",
   referral: "referral",
   watchEarn: "watchEarn",
-  videoAds: "videoAds",
   wallet: "wallet",
   creatorEconomy: "creatorEconomy",
   featureFlags: "featureFlags",
+  videoAds: "videoAds",
   metadata: "metadata",
 } as const;

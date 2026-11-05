@@ -43,11 +43,8 @@ interface VideoAdsResponse {
   enabled: boolean;
   rules: {
     enabled: boolean;
-    firstAdAfterMinutes: number;
-    secondAdAtMinutes: number;
-    thirdAdAtMinutes: number;
-    fourthAdAtMinutes: number;
-    repeatEveryMinutes: number;
+    firstAdAfterVideos: number;
+    repeatEveryVideos: number;
     autoDismissSeconds: number;
   };
   ads: FloatingAd[];
@@ -65,13 +62,19 @@ export default function VerticalVideoFeed({
   const [notInterestedIds, setNotInterestedIds] = useState<string[]>([]);
   const [videos, setVideos] = useState<WatchVideo[]>([]);
   const [videoAdsData, setVideoAdsData] = useState<VideoAdsResponse | null>(null);
-  const [watchSeconds, setWatchSeconds] = useState(0);
+  const [watchedVideoCount, setWatchedVideoCount] = useState(0);
+  const countedVideoIds = useRef<Set<string>>(new Set());
+  const nextAdAtVideoCount = useRef<number | null>(null);
   const [currentVideoAd, setCurrentVideoAd] = useState<FloatingAd | null>(null);
   const [videoAdIndex, setVideoAdIndex] = useState(0);
   const nextAdMilestoneIndex = useRef(0);
 
-  const handleActualPlaybackSeconds = (seconds: number) => {
-    setWatchSeconds((previous) => previous + seconds);
+  const handleActualPlaybackSeconds = (videoId: string, seconds: number) => {
+    if (seconds <= 0) return;
+    if (!countedVideoIds.current.has(videoId)) {
+      countedVideoIds.current.add(videoId);
+      setWatchedVideoCount(countedVideoIds.current.size);
+    }
   };
 
 
@@ -103,35 +106,23 @@ export default function VerticalVideoFeed({
 
   useEffect(() => {
     const data = videoAdsData;
-
     if (!data?.enabled || !data.rules.enabled || currentVideoAd) return;
 
-    const milestoneIndex = nextAdMilestoneIndex.current;
-    const milestones = [
-      data.rules.firstAdAfterMinutes,
-      data.rules.secondAdAtMinutes,
-      data.rules.thirdAdAtMinutes,
-      data.rules.fourthAdAtMinutes,
-    ];
-
-    const nextMinute =
-      milestoneIndex < milestones.length
-        ? milestones[milestoneIndex]
-        : data.rules.fourthAdAtMinutes +
-          (milestoneIndex - 3) * data.rules.repeatEveryMinutes;
-
-    if (watchSeconds < nextMinute * 60) return;
-
-    // Consume this milestone once, even if no campaign is currently available.
-    nextAdMilestoneIndex.current += 1;
+    const firstAdAfter = Math.max(5, data.rules.firstAdAfterVideos || 5);
+    const repeatEvery = Math.max(1, data.rules.repeatEveryVideos || 1);
+    if (nextAdAtVideoCount.current === null) {
+      nextAdAtVideoCount.current = firstAdAfter + 1;
+    }
+    if (watchedVideoCount < nextAdAtVideoCount.current) return;
 
     const availableAds = data.ads.filter((ad) => ad.enabled);
     if (availableAds.length === 0) return;
 
     const selectedAd = availableAds[videoAdIndex % availableAds.length];
+    nextAdAtVideoCount.current = watchedVideoCount + repeatEvery;
     setVideoAdIndex((previous) => previous + 1);
     setCurrentVideoAd(selectedAd);
-  }, [watchSeconds, videoAdsData, currentVideoAd, videoAdIndex]);
+  }, [watchedVideoCount, videoAdsData, currentVideoAd, videoAdIndex]);
 
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
@@ -505,7 +496,7 @@ export default function VerticalVideoFeed({
                 }
 
                 playbackRate={playbackSpeeds[video.id] || 1}
-                onActualPlaybackSeconds={handleActualPlaybackSeconds}
+                onActualPlaybackSeconds={(seconds) => handleActualPlaybackSeconds(video.id, seconds)}
               />
 
               {/* INFO */}

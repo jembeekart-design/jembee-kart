@@ -116,25 +116,15 @@ export interface SignupRules {
 // Metadata
 // ======================================================
 
-export interface VideoAdsRules {
-  enabled: boolean;
-  firstAdAfterMinutes: number;
-  secondAdAtMinutes: number;
-  thirdAdAtMinutes: number;
-  fourthAdAtMinutes: number;
-  repeatEveryMinutes: number;
-  autoDismissSeconds: number;
-}
-
 export interface BusinessRulesConfig {
   profitability: ProfitabilityRules;
   referral: ReferralRules;
   watchEarn: WatchEarnRules;
-  videoAds: VideoAdsRules;
   wallet: WalletRules;
   creatorEconomy: CreatorEconomyRules;
   featureFlags: FeatureFlags;
   signup: SignupRules;
+  videoAds: VideoAdsRules;
   metadata: BusinessRulesMetadata;
 }
 
@@ -170,4 +160,12 @@ export interface BusinessRulesMetrics {
   fallbackReads: number;
   validationFailures: number;
   lastRefresh: string | null;
+}
+
+
+export interface VideoAdsRules {
+  enabled: boolean;
+  firstAdAfterVideos: number;
+  repeatEveryVideos: number;
+  autoDismissSeconds: number;
 }
