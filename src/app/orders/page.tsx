@@ -4,8 +4,7 @@ import { useEffect, useState } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { onAuthStateChanged } from "firebase/auth";
-import { collection, query, where, onSnapshot } from "firebase/firestore";
-import { auth, db } from "@/firebase/config";
+import { auth } from "@/firebase/config";
 import { Copy, ShieldCheck, Truck, RotateCcw, Headphones, Home, LayoutGrid, ShoppingBag, ListOrdered, User, Box, Check } from "lucide-react";
 
 export default function MyOrdersPage() {
@@ -13,17 +12,46 @@ export default function MyOrdersPage() {
   const [activeTab, setActiveTab] = useState("All Orders");
   const [search, setSearch] = useState("");
   const [toast, setToast] = useState<string | null>(null);
+  const [loading, setLoading] = useState(true);
+  const [loadError, setLoadError] = useState<string | null>(null);
   const pathname = usePathname();
 
   useEffect(() => {
-    const unsubscribeAuth = onAuthStateChanged(auth, (user) => {
-      if (!user) return;
-      const q = query(collection(db, "orders"), where("userId", "==", user.uid));
-      return onSnapshot(q, (snapshot) => {
-        setOrders(snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() })));
-      });
+    let cancelled = false;
+    let requestVersion = 0;
+    const unsubscribeAuth = onAuthStateChanged(auth, async (user) => {
+      const currentRequest = ++requestVersion;
+      setOrders([]);
+      setLoadError(null);
+      if (!user) {
+        setLoading(false);
+        setLoadError("Please sign in to view your orders.");
+        return;
+      }
+      setLoading(true);
+      try {
+        const token = await user.getIdToken();
+        const response = await fetch("/api/orders", {
+          headers: { Authorization: `Bearer ${token}` },
+          cache: "no-store",
+        });
+        const data = await response.json();
+        if (!response.ok || data?.success !== true || !Array.isArray(data.orders)) {
+          throw new Error(typeof data?.message === "string" ? data.message : "Unable to load orders.");
+        }
+        if (!cancelled && currentRequest === requestVersion) setOrders(data.orders);
+      } catch (error) {
+        if (!cancelled && currentRequest === requestVersion) {
+          setLoadError(error instanceof Error ? error.message : "Unable to load orders.");
+        }
+      } finally {
+        if (!cancelled && currentRequest === requestVersion) setLoading(false);
+      }
     });
-    return () => unsubscribeAuth();
+    return () => {
+      cancelled = true;
+      unsubscribeAuth();
+    };
   }, []);
 
   const showToast = (msg: string) => { setToast(msg); setTimeout(() => setToast(null), 2000); };
@@ -31,14 +59,15 @@ export default function MyOrdersPage() {
   const stats = {
     total: orders.length,
     delivered: orders.filter(o => o.status?.toLowerCase() === 'delivered').length,
-    pending: orders.filter(o => ['pending', 'placed'].includes(o.status?.toLowerCase())).length,
+    pending: orders.filter(o => ['payment_pending', 'pending', 'placed', 'processing'].includes(o.status?.toLowerCase())).length,
     spent: orders.reduce((acc, curr) => acc + Number(curr.finalAmount || 0), 0)
   };
 
   const filteredOrders = orders.filter(o => {
     const matchesTab = activeTab === "All Orders" || o.status?.toLowerCase() === activeTab.toLowerCase();
     const title = o.productTitle || "";
-    const matchesSearch = title.toLowerCase().includes(search.toLowerCase()) || o.id?.toLowerCase().includes(search.toLowerCase());
+    const term = search.toLowerCase();
+    const matchesSearch = title.toLowerCase().includes(term) || o.id?.toLowerCase().includes(term) || o.orderNumber?.toLowerCase().includes(term);
     return matchesTab && matchesSearch;
   });
 
@@ -60,7 +89,7 @@ export default function MyOrdersPage() {
           <input value={search} onChange={(e) => setSearch(e.target.value)} placeholder="Search..." className="bg-[var(--color-card-background)]/20 rounded-full px-4 py-2 text-xs outline-none placeholder:text-[var(--button-text-color)]/60 w-32" />
         </div>
         <div className="grid grid-cols-2 gap-3">
-          {[ {l: "Total Orders", v: stats.total}, {l: "Total Spent", v: `₹${stats.spent}`}, {l: "Delivered", v: stats.delivered}, {l: "Pending", v: stats.pending} ].map((s, i) => (
+          {[ {l: "Latest Orders", v: stats.total}, {l: "Spend (latest orders)", v: `₹${stats.spent}`}, {l: "Delivered", v: stats.delivered}, {l: "Pending", v: stats.pending} ].map((s, i) => (
              <div key={i} className="bg-[var(--color-card-background)]/10 p-3 rounded-2xl border border-[var(--color-border)]/10"><p className="text-[9px] opacity-70">{s.l}</p><p className="font-black text-sm">{s.v}</p></div>
           ))}
         </div>
@@ -68,7 +97,7 @@ export default function MyOrdersPage() {
 
       <div className="px-4 -mt-12 mb-6">
         <div className="flex gap-2 overflow-x-auto no-scrollbar bg-[var(--color-card-background)] p-1.5 rounded-2xl shadow-sm border border-[var(--color-border)]">
-          {['All Orders', 'Pending', 'Placed', 'Shipped', 'Delivered', 'Cancelled'].map(tab => (
+          {['All Orders', 'Payment_Pending', 'Pending', 'Placed', 'Processing', 'Shipped', 'Delivered', 'Cancelled'].map(tab => (
             <button key={tab} onClick={() => setActiveTab(tab)} className={`px-4 py-2 rounded-xl text-[10px] font-black whitespace-nowrap transition-all ${activeTab === tab ? 'bg-[var(--color-primary-button)] text-[var(--button-text-color)] shadow-lg' : 'bg-transparent text-[var(--text-secondary)]'}`}>
               {tab} ({tab === 'All Orders' ? orders.length : orders.filter(o => o.status?.toLowerCase() === tab.toLowerCase()).length})
             </button>
@@ -77,7 +106,11 @@ export default function MyOrdersPage() {
       </div>
 
       <section className="px-4 space-y-4">
-        {filteredOrders.length === 0 ? (
+        {loading ? (
+          <div className="text-center py-16 text-sm text-[var(--text-secondary)]">Loading your orders…</div>
+        ) : loadError ? (
+          <div role="alert" className="text-center py-16 bg-[var(--color-card-background)] rounded-3xl shadow-sm text-sm text-[var(--color-danger)]">{loadError}</div>
+        ) : filteredOrders.length === 0 ? (
           <div className="text-center py-20 bg-[var(--color-card-background)] rounded-3xl shadow-sm"><Box size={50} className="mx-auto text-[var(--text-primary)]"/><p className="font-black mt-4">No Orders Found</p></div>
         ) : filteredOrders.map(order => (
           <div key={order.id} className="bg-[var(--color-card-background)] p-5 rounded-3xl shadow-sm border border-[var(--color-border)]">
@@ -106,6 +139,7 @@ export default function MyOrdersPage() {
             </div>
           </div>
         ))}
+        {!loading && !loadError && orders.length > 0 && <p className="text-center text-[10px] text-[var(--text-secondary)]">Showing your latest {orders.length} orders (maximum 100).</p>}
       </section>
 
       <div className="fixed bottom-0 w-full bg-[var(--color-card-background)] border-t border-[var(--color-border)] px-6 py-4 flex justify-between items-center z-50">

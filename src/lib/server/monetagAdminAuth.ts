@@ -5,7 +5,7 @@ export async function verifyMonetagAdmin(req: Request): Promise<string> {
   if (!header?.startsWith("Bearer ")) throw new Error("UNAUTHORIZED");
   const token = header.slice(7).trim();
   if (!token) throw new Error("UNAUTHORIZED");
-  const decoded = await getAdminAuth().verifyIdToken(token);
+  const decoded = await getAdminAuth().verifyIdToken(token, true);
   const users = getAdminDb().collection("users");
   let data = (await users.doc(decoded.uid).get()).data();
   if (data?.role !== "admin" && data?.role !== "super_admin") {

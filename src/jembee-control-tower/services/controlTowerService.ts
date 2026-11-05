@@ -1,3 +1,4 @@
+import { auth } from "@/firebase/config";
 /**
  * Control Tower Service
  * 
@@ -18,11 +19,11 @@ export interface ControlTowerReport {
 
 export async function getControlTowerReport(): Promise<ControlTowerReport> {
   try {
+    const token = await auth.currentUser?.getIdToken();
+    if (!token) throw new Error("Admin login required");
     const response = await fetch("/api/governance/report", {
       method: "GET",
-      headers: {
-        "Content-Type": "application/json",
-      },
+      headers: { "Content-Type": "application/json", Authorization: `Bearer ${token}` },
       // Disable cache to always get fresh report
       cache: "no-store",
     });

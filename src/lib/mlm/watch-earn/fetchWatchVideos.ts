@@ -749,21 +749,13 @@ async function processVideoDoc(
 
 export async function fetchWatchVideos() {
   try {
-    const videosRef =
-      collection(
-        db,
-        "watchEarnVideos"
-      );
+    const videosRef = collection(db, "watchEarnVideos");
 
-    const videosQuery =
-      query(
-        videosRef,
-        orderBy(
-          "createdAt",
-          "desc"
-        ),
-        limit(50)
-      );
+    const videosQuery = query(
+      videosRef,
+      orderBy("createdAt", "desc"),
+      limit(50)
+    );
 
     const snapshot =
       await getDocs(

@@ -1,24 +1,16 @@
-import { readBoundedJson } from "@/lib/server/readBoundedJson";
 import { NextResponse } from "next/server";
 import { getAdminDb, getAdminAuth } from "@/firebase/admin";
 
 export async function POST(req: Request) {
   try {
-    const parsedBody = await readBoundedJson(req, 8192);
-    if (!parsedBody.ok) {
-      return NextResponse.json({ success: false, message: parsedBody.message }, { status: parsedBody.status });
-    }
-    if (!parsedBody.value || typeof parsedBody.value !== "object" || Array.isArray(parsedBody.value)) {
-      return NextResponse.json({ success: false, message: "Request body must be a JSON object" }, { status: 400 });
-    }
-    const body = parsedBody.value as Record<string, unknown>;
+    const body = await req.json();
     const { videoId, action, token } = body ?? {};
 
     if (
       typeof videoId !== "string" ||
       !videoId.trim() ||
       videoId.length > 500 ||
-      typeof action !== "string" || !["like", "unlike"].includes(action) ||
+      !["like", "unlike"].includes(action) ||
       typeof token !== "string" ||
       !token
     ) {

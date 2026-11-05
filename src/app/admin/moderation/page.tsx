@@ -124,6 +124,17 @@ interface ModerationSubmission {
   createdAt: { toDate: () => Date } | null;
 }
 
+
+interface CommentModerationReport {
+  id: string;
+  commentId: string;
+  contentId: string;
+  userId: string;
+  text: string;
+  reason: string;
+  createdAt: string | null;
+}
+
 // ... existing component function
 export default function AdminModerationDashboard() {
   // ... existing hooks
@@ -132,6 +143,7 @@ export default function AdminModerationDashboard() {
   const [auditLogs, setAuditLogs] = useState<CommentAuditLog[]>([]);
   const [submissions, setSubmissions] = useState<ModerationSubmission[]>([]);
   const [shortsReports, setShortsReports] = useState<ShortsReport[]>([]);
+  const [commentReports, setCommentReports] = useState<CommentModerationReport[]>([]);
   const [newBlockedWord, setNewBlockedWord] = useState('');
   const [newAllowedWord, setNewAllowedWord] = useState('');
   const [saving, setSaving] = useState(false);
@@ -142,14 +154,21 @@ export default function AdminModerationDashboard() {
       const user = auth.currentUser;
       if (!user) throw new Error("Not authenticated");
       const token = await user.getIdToken();
-      const response = await fetch("/api/admin/shorts-reports", {
-        headers: { Authorization: `Bearer ${token}` },
-      });
-      const data = await response.json();
-      if (!response.ok || !data.success) {
-        throw new Error(data.message || "Failed to load Shorts reports");
+      const allReports: ShortsReport[] = [];
+      let cursor = "";
+      let hasMore = false;
+      for (let page = 0; page < 20; page++) {
+        const url = cursor ? `/api/admin/shorts-reports?cursor=${encodeURIComponent(cursor)}` : "/api/admin/shorts-reports";
+        const response = await fetch(url, { headers: { Authorization: `Bearer ${token}` } });
+        const data = await response.json();
+        if (!response.ok || !data.success) throw new Error(data.message || "Failed to load Shorts reports");
+        allReports.push(...(Array.isArray(data.reports) ? data.reports : []));
+        cursor = typeof data.nextCursor === "string" ? data.nextCursor : "";
+        hasMore = data.hasMore === true && !!cursor;
+        if (!hasMore) break;
       }
-      setShortsReports(Array.isArray(data.reports) ? data.reports : []);
+      setShortsReports(allReports);
+      if (hasMore) setMessage("Shorts reports: display capped at 2,000 items; more remain in the queue.");
     } catch (error) {
       console.error("Error fetching Shorts reports:", error);
       setMessage(`Reports: ${error instanceof Error ? error.message : String(error)}`);
@@ -188,6 +207,50 @@ export default function AdminModerationDashboard() {
     }
   };
 
+  const fetchCommentReports = useCallback(async () => {
+    try {
+      const user = auth.currentUser;
+      if (!user) throw new Error("Not authenticated");
+      const token = await user.getIdToken();
+      const allReports: CommentModerationReport[] = [];
+      let cursor = "";
+      let hasMore = false;
+      for (let page = 0; page < 20; page++) {
+        const url = cursor ? `/api/admin/comment-moderation?cursor=${encodeURIComponent(cursor)}` : "/api/admin/comment-moderation";
+        const response = await fetch(url, { headers: { Authorization: `Bearer ${token}` } });
+        const data = await response.json();
+        if (!response.ok || !data.success) throw new Error(data.message || "Failed to load pending comments");
+        allReports.push(...(Array.isArray(data.reports) ? data.reports : []));
+        cursor = typeof data.nextCursor === "string" ? data.nextCursor : "";
+        hasMore = data.hasMore === true && !!cursor;
+        if (!hasMore) break;
+      }
+      setCommentReports(allReports);
+      if (hasMore) setMessage("Comment queue capped at 2,000 items; more remain.");
+    } catch (error) {
+      setMessage(`Comments: ${error instanceof Error ? error.message : String(error)}`);
+    }
+  }, []);
+
+  const handleCommentModeration = async (reportId: string, action: "approve" | "reject") => {
+    setSaving(true);
+    try {
+      const user = auth.currentUser;
+      if (!user) throw new Error("Not authenticated");
+      const token = await user.getIdToken();
+      const response = await fetch("/api/admin/comment-moderation", {
+        method: "POST", headers: { Authorization: `Bearer ${token}`, "Content-Type": "application/json" },
+        body: JSON.stringify({ reportId, action }),
+      });
+      const data = await response.json();
+      if (!response.ok || !data.success) throw new Error(data.message || "Comment moderation failed");
+      setCommentReports((current) => current.filter((item) => item.id !== reportId));
+      setMessage(action === "approve" ? "Comment approved." : "Comment rejected.");
+    } catch (error) {
+      setMessage(error instanceof Error ? error.message : "Comment moderation failed");
+    } finally { setSaving(false); }
+  };
+
   const fetchSubmissions = useCallback(async () => {
     try {
       setMessage('Loading submissions...');
@@ -195,16 +258,21 @@ export default function AdminModerationDashboard() {
       if (!user) throw new Error('Not authenticated');
       const token = await user.getIdToken();
 
-      const response = await fetch('/api/admin/moderation-submissions', {
-        headers: {
-          'Authorization': `Bearer ${token}`,
-        },
-      });
-      const data = await response.json();
-      if (!data.success) throw new Error(data.message || 'Failed to load');
-
-      setSubmissions(data.submissions);
-      setMessage('');
+      const allSubmissions: ModerationSubmission[] = [];
+      let cursor = "";
+      let hasMore = false;
+      for (let page = 0; page < 20; page++) {
+        const url = cursor ? `/api/admin/moderation-submissions?cursor=${encodeURIComponent(cursor)}` : "/api/admin/moderation-submissions";
+        const response = await fetch(url, { headers: { Authorization: `Bearer ${token}` } });
+        const data = await response.json();
+        if (!response.ok || !data.success) throw new Error(data.message || 'Failed to load');
+        allSubmissions.push(...(Array.isArray(data.submissions) ? data.submissions : []));
+        cursor = typeof data.nextCursor === "string" ? data.nextCursor : "";
+        hasMore = data.hasMore === true && !!cursor;
+        if (!hasMore) break;
+      }
+      setSubmissions(allSubmissions);
+      setMessage(hasMore ? "Video queue capped at 2,000 items; more remain." : "");
     } catch (error) {
       console.error('Error fetching submissions:', error);
       setMessage(`Error: ${error instanceof Error ? error.message : String(error)}`);
@@ -219,8 +287,8 @@ export default function AdminModerationDashboard() {
         setAuditLogs(snap.docs.map((d) => ({ id: d.id, ...d.data() } as CommentAuditLog)))
       );
 
-    setTimeout(() => { fetchSubmissions(); fetchShortsReports(); }, 0);
-  }, [fetchSubmissions, fetchShortsReports]);
+    setTimeout(() => { fetchSubmissions(); fetchShortsReports(); fetchCommentReports(); }, 0);
+  }, [fetchSubmissions, fetchShortsReports, fetchCommentReports]);
 
   const handleModerationAction = async (submissionId: string, action: 'approve' | 'reject') => {
     setSaving(true);
@@ -376,6 +444,28 @@ export default function AdminModerationDashboard() {
           ))}
         </div>
       </div>
+      {/* Pending Comment Moderation Queue */}
+      <div className="bg-gray-800 p-6 rounded-lg space-y-4">
+        <div className="flex flex-wrap items-center justify-between gap-3">
+          <h2 className="text-lg font-semibold text-cyan-400">Pending Comment Queue ({commentReports.length})</h2>
+          <button type="button" onClick={fetchCommentReports} disabled={saving} className="bg-gray-700 hover:bg-gray-600 disabled:opacity-50 px-3 py-2 rounded text-sm">Refresh Comments</button>
+        </div>
+        {commentReports.length === 0 ? <p className="text-sm text-gray-400">No pending comments.</p> : (
+          <div className="space-y-3">
+            {commentReports.map((report) => (
+              <div key={report.id} className="bg-gray-700 p-4 rounded-lg space-y-2">
+                <p className="text-sm whitespace-pre-wrap break-words">{report.text}</p>
+                <p className="text-xs text-gray-400">Reason: {report.reason} · Video: {report.contentId} · User: {report.userId}</p>
+                <div className="flex gap-2">
+                  <button type="button" onClick={() => handleCommentModeration(report.id, "approve")} disabled={saving} className="bg-green-600 hover:bg-green-700 disabled:opacity-50 px-3 py-2 rounded text-sm">Approve</button>
+                  <button type="button" onClick={() => handleCommentModeration(report.id, "reject")} disabled={saving} className="bg-red-600 hover:bg-red-700 disabled:opacity-50 px-3 py-2 rounded text-sm">Reject</button>
+                </div>
+              </div>
+            ))}
+          </div>
+        )}
+      </div>
+
       {/* Shorts Reports Queue */}
       <div className="bg-gray-800 p-6 rounded-lg space-y-4">
         <div className="flex flex-wrap items-center justify-between gap-3">

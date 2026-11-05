@@ -2,7 +2,7 @@ import { NextResponse } from "next/server";
 import { getAdminDb, getAdminAuth } from "@/firebase/admin";
 import { v2 as cloudinary } from "cloudinary";
 import { deleteDriveFile } from "@/services/googleDriveService";
-import { readBoundedJson } from "@/lib/server/readBoundedJson";
+import { cleanupVideoRecords } from "@/services/videoDeletionService";
 
 // Configure Cloudinary
 cloudinary.config({
@@ -13,21 +13,14 @@ cloudinary.config({
 
 export async function POST(req: Request) {
   try {
-    const parsed = await readBoundedJson(req, 8 * 1024);
-    if (!parsed.ok) {
-      return NextResponse.json({ success: false, message: parsed.message }, { status: parsed.status });
-    }
-    if (!parsed.value || typeof parsed.value !== "object" || Array.isArray(parsed.value)) {
-      return NextResponse.json({ success: false, message: "Request body must be a JSON object" }, { status: 400 });
-    }
-    const { videoId, token } = parsed.value as { videoId?: unknown; token?: unknown };
-    if (typeof videoId !== "string" || !videoId.trim() || videoId.length > 128 || videoId.includes("/") || typeof token !== "string" || !token.trim()) {
-      return NextResponse.json({ success: false, message: "Valid videoId and token are required" }, { status: 400 });
-    }
     const adminDb = getAdminDb();
     const adminAuth = getAdminAuth();
-    // 1. Verify Admin Role
-    const decodedToken = await adminAuth.verifyIdToken(token);
+    const authHeader = req.headers.get("authorization");
+    if (!authHeader?.startsWith("Bearer ")) return NextResponse.json({ success: false, message: "Unauthorized" }, { status: 401 });
+    const { videoId } = await req.json();
+    if (typeof videoId !== "string" || !videoId.trim() || videoId.length > 200 || videoId.includes("/")) return NextResponse.json({ success: false, message: "Invalid video ID" }, { status: 400 });
+    // 1. Verify Admin Role and token revocation state.
+    const decodedToken = await adminAuth.verifyIdToken(authHeader.slice(7).trim(), true);
     
     const userSnapshot = await adminDb
       .collection("users")
@@ -49,6 +42,9 @@ export async function POST(req: Request) {
 
     // 3. Delete the stored asset from its actual storage provider.
     const videoData = videoDoc.data() || {};
+    if (videoData.deletionState !== "deleting") {
+      await videoRef.update({ active: false, status: "deleting", deletionState: "deleting", deletionStartedAt: new Date(), deletionRequestedBy: decodedToken.uid });
+    }
     const driveFileId =
       typeof videoData.driveFileId === "string"
         ? videoData.driveFileId.trim()
@@ -62,15 +58,21 @@ export async function POST(req: Request) {
       try {
         await deleteDriveFile(driveFileId);
       } catch (driveError) {
-        console.error("Drive deletion failed; video was not deleted:", driveError);
-        return NextResponse.json(
+        const status = (driveError as any)?.code ?? (driveError as any)?.response?.status;
+        if (Number(status) !== 404) {
+          console.error("Drive deletion failed; video remains hidden for retry:", driveError);
+          return NextResponse.json(
           { success: false, message: "Drive asset removal failed. Video was not deleted." },
-          { status: 500 }
-        );
+            { status: 500 }
+          );
+        }
       }
     } else if (storedPublicId) {
       try {
-        await cloudinary.uploader.destroy(storedPublicId, { resource_type: "video" });
+        const result = await cloudinary.uploader.destroy(storedPublicId, { resource_type: "video" });
+        if (result.result !== "ok" && result.result !== "not found") {
+          return NextResponse.json({ success: false, message: "Cloudinary asset removal failed; video is safely hidden and can be retried." }, { status: 502 });
+        }
       } catch (cloudinaryError) {
         console.error("Cloudinary deletion failed; video was not deleted:", cloudinaryError);
         return NextResponse.json(
@@ -80,25 +82,8 @@ export async function POST(req: Request) {
       }
     }
 
-    // 4. Delete related Firestore records in bounded batches (Firestore limit is 500 writes/batch).
-    // Use smaller batches to leave headroom if additional cleanup writes are added later.
-    const deleteRelated = async (collection: string, field: string, value: string) => {
-      const snapshot = await adminDb.collection(collection).where(field, "==", value).get();
-      for (let offset = 0; offset < snapshot.docs.length; offset += 400) {
-        const batch = adminDb.batch();
-        snapshot.docs.slice(offset, offset + 400).forEach((doc) => batch.delete(doc.ref));
-        await batch.commit();
-      }
-    };
-
-    await deleteRelated("watchVideoLikes", "videoId", videoId);
-    await deleteRelated("watchVideoShares", "videoId", videoId);
-    await deleteRelated("savedWatchVideos", "videoId", videoId);
-    await deleteRelated("videoComments", "videoId", videoId);
-    await deleteRelated("videoReports", "videoId", videoId);
-
-    // Delete the main record only after related-record cleanup succeeds.
-    await videoRef.delete();
+    // 4. Chunked, retryable cleanup. The video is already hidden with deletionState=deleting.
+    await cleanupVideoRecords(adminDb, videoId, videoRef);
 
     return NextResponse.json({ success: true, message: "Video deleted successfully." });
   } catch (error) {

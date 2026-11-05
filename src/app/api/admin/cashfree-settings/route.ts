@@ -1,7 +1,6 @@
 import { NextResponse } from "next/server";
 import { createCipheriv, randomBytes } from "node:crypto";
 import { getAdminAuth, getAdminDb } from "@/firebase/admin";
-import { readBoundedJson } from "@/lib/server/readBoundedJson";
 
 export const runtime = "nodejs";
 
@@ -10,7 +9,9 @@ async function verifyAdmin(req: Request): Promise<string> {
   if (!header?.startsWith("Bearer ")) throw new Error("UNAUTHORIZED");
   const token = header.slice(7).trim();
   if (!token) throw new Error("UNAUTHORIZED");
-  const decoded = await getAdminAuth().verifyIdToken(token);
+  let decoded: { uid: string };
+  try { decoded = await getAdminAuth().verifyIdToken(token, true); }
+  catch { throw new Error("UNAUTHORIZED"); }
   const db = getAdminDb();
   const direct = await db.collection("users").doc(decoded.uid).get();
   let data = direct.exists ? direct.data() : undefined;
@@ -20,6 +21,12 @@ async function verifyAdmin(req: Request): Promise<string> {
   }
   if (data?.role !== "admin" && data?.role !== "super_admin") throw new Error("FORBIDDEN");
   return decoded.uid;
+}
+
+
+function encryptionKeyReady(): boolean {
+  const encoded = process.env.CASHFREE_CREDENTIALS_ENCRYPTION_KEY || "";
+  return Buffer.from(encoded, "base64").length === 32;
 }
 
 function encryptSecret(value: string): string {
@@ -49,7 +56,7 @@ export async function GET(req: Request) {
     return NextResponse.json({
       success: true,
       settings: {
-        enabled: data.enabled === true,
+        enabled: process.env.CASHFREE_PAYMENTS_ENABLED === "true" && encryptionKeyReady() && data.enabled === true && Boolean(data.appId && data.secretKeyEncrypted && data.webhookSecretEncrypted),
         sandboxMode: data.sandboxMode !== false,
         appId: typeof data.appId === "string" ? data.appId : "",
         hasSecretKey: Boolean(data.secretKeyEncrypted),
@@ -57,25 +64,44 @@ export async function GET(req: Request) {
         paymentGatewayName: "Cashfree",
         autoSettlement: data.autoSettlement === true,
       },
-    });
+    }, { headers: { "Cache-Control": "no-store" } });
   } catch (error) { return authError(error); }
 }
 
 export async function PUT(req: Request) {
   try {
     const uid = await verifyAdmin(req);
-    const parsed = await readBoundedJson(req, 16 * 1024);
-    if (!parsed.ok) return NextResponse.json({ success: false, message: parsed.message }, { status: parsed.status });
-    if (!parsed.value || typeof parsed.value !== "object" || Array.isArray(parsed.value)) return NextResponse.json({ success: false, message: "Request body must be an object" }, { status: 400 });
-    const body = parsed.value as Record<string, unknown>;
+    const contentLength = Number(req.headers.get("content-length") || 0);
+    if (contentLength > 8192) {
+      return NextResponse.json({ success: false, message: "Request body too large" }, { status: 413 });
+    }
+    const raw = await req.text();
+    if (Buffer.byteLength(raw, "utf8") > 8192) {
+      return NextResponse.json({ success: false, message: "Request body too large" }, { status: 413 });
+    }
+    let body: Record<string, unknown>;
+    try {
+      const parsed: unknown = JSON.parse(raw);
+      if (!parsed || typeof parsed !== "object" || Array.isArray(parsed)) throw new Error("INVALID_BODY");
+      body = parsed as Record<string, unknown>;
+    } catch {
+      return NextResponse.json({ success: false, message: "Invalid JSON request" }, { status: 400 });
+    }
     const appId = typeof body.appId === "string" ? body.appId.trim() : "";
     const secretKey = typeof body.secretKey === "string" ? body.secretKey : "";
     const webhookSecret = typeof body.webhookSecret === "string" ? body.webhookSecret : "";
     if (appId.length > 300 || secretKey.length > 2000 || webhookSecret.length > 2000) {
       return NextResponse.json({ success: false, message: "Invalid credential length" }, { status: 400 });
     }
+    const settingsRef = getAdminDb().collection("admin_settings").doc("cashfree");
+    const existingSnap = await settingsRef.get();
+    const existing = existingSnap.data() || {};
+    const hasSecretKey = Boolean(secretKey.trim() || existing.secretKeyEncrypted);
+    const hasWebhookSecret = Boolean(webhookSecret.trim() || existing.webhookSecretEncrypted);
+    const enabled = process.env.CASHFREE_PAYMENTS_ENABLED === "true" && encryptionKeyReady() && body.enabled === true && Boolean(appId && hasSecretKey && hasWebhookSecret);
     const update: Record<string, unknown> = {
-      enabled: body.enabled === true,
+      // A deployment-level kill switch and all three credential fields are required to enable checkout.
+      enabled,
       sandboxMode: body.sandboxMode !== false,
       appId,
       paymentGatewayName: "Cashfree",
@@ -85,7 +111,10 @@ export async function PUT(req: Request) {
     };
     if (secretKey.trim()) update.secretKeyEncrypted = encryptSecret(secretKey);
     if (webhookSecret.trim()) update.webhookSecretEncrypted = encryptSecret(webhookSecret);
-    await getAdminDb().collection("admin_settings").doc("cashfree").set(update, { merge: true });
-    return NextResponse.json({ success: true, message: "Settings saved. Secret values are never returned." });
+    await settingsRef.set(update, { merge: true });
+    return NextResponse.json(
+      { success: true, enabled, message: enabled ? "Cashfree settings saved. Sandbox/provider verification is still required before production use." : "Credentials saved securely. Cashfree remains disabled by the deployment safety switch." },
+      { headers: { "Cache-Control": "no-store" } },
+    );
   } catch (error) { return authError(error); }
 }

@@ -6,7 +6,7 @@ import { useEffect, useMemo, useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { collection, deleteDoc, doc, onSnapshot, updateDoc } from "firebase/firestore";
-import { ArrowLeft, Minus, Plus, ShoppingBag, Trash2, Zap, ShieldCheck, Truck, RotateCcw, CreditCard } from "lucide-react";
+import { ArrowLeft, Minus, Plus, Trash2, Zap } from "lucide-react";
 import { db, auth } from "@/firebase/config";
 
 interface CartItem {
@@ -25,8 +25,6 @@ export default function CartPage() {
   const router = useRouter();
   const [cartItems, setCartItems] = useState<CartItem[]>([]);
   const [loading, setLoading] = useState(true);
-
-  const FREE_GIFT_THRESHOLD = 3500;
 
   useEffect(() => {
     let unsubscribeSnapshot: () => void = () => {};
@@ -47,17 +45,13 @@ export default function CartPage() {
     return cartItems.reduce((total, item) => total + (item.discountPrice || item.price) * item.quantity, 0);
   }, [cartItems]);
 
-  const progress = Math.min((totalPrice / FREE_GIFT_THRESHOLD) * 100, 100);
-  const remaining = Math.max(FREE_GIFT_THRESHOLD - totalPrice, 0);
-
-  // FINAL FIX: Checkout navigation logic
+  // The current server checkout contract accepts one product per order.
+  // Never silently discard the remaining cart items.
   const handleCheckout = () => {
+    if (cartItems.length !== 1) return;
     const item = cartItems[0];
-    if (item) {
-      // Agar productId exist karta hai toh wo use karo, warna doc ID (item.id) use karo
-      const pid = item.productId || item.id;
-      router.push(`/checkout?productId=${pid}`);
-    }
+    const pid = item.productId || item.id;
+    router.push(`/checkout?productId=${encodeURIComponent(pid)}`);
   };
 
   return (
@@ -77,21 +71,6 @@ export default function CartPage() {
           <div className="text-center py-20 font-bold text-[var(--text-secondary)]">Your cart is empty</div>
         ) : (
           <>
-            {/* PROGRESS BAR */}
-            {remaining > 0 ? (
-              <div className="bg-[var(--color-card-background)] p-4 rounded-2xl border border-[var(--color-primary-button)] shadow-sm">
-                <div className="flex justify-between text-[11px] font-bold mb-2">
-                  <span className="text-[var(--color-primary-button)] flex items-center gap-1">🎁 Add ₹{remaining} more for FREE GIFT</span>
-                  <span>₹{totalPrice} / ₹{FREE_GIFT_THRESHOLD}</span>
-                </div>
-                <div className="w-full h-2 bg-[var(--color-page-background)] rounded-full overflow-hidden">
-                  <div className="h-full bg-[var(--color-primary-button)] rounded-full transition-all duration-500" style={{ width: `${progress}%` }} />
-                </div>
-              </div>
-            ) : (
-              <div className="text-center text-xs font-bold text-[var(--color-success)] bg-[var(--color-success)] p-3 rounded-2xl border border-[var(--color-success)]"> 🎉 You've unlocked a FREE GIFT! </div>
-            )}
-
             {/* ITEMS LIST */}
             {cartItems.map((item) => (
               <div key={item.id} className="bg-[var(--color-card-background)] p-4 rounded-3xl shadow-sm border border-[var(--color-border)] flex gap-4">
@@ -125,11 +104,13 @@ export default function CartPage() {
             <span className="text-[var(--text-secondary)] font-medium text-sm">Total Amount</span>
             <span className="text-2xl font-black text-[var(--color-primary-button)]">₹{totalPrice}</span>
           </div>
-          <button 
-            onClick={handleCheckout} 
-            className="w-full bg-[var(--color-primary-button)] text-[var(--button-text-color)] py-4 rounded-2xl font-black flex items-center justify-center gap-2 hover:bg-[var(--color-primary-button)] transition"
+          {cartItems.length > 1 && <p className="mb-3 rounded-xl border border-[var(--color-border)] p-3 text-xs text-[var(--text-secondary)]">Checkout currently supports one product per order. Remove other items or place separate orders. Your remaining cart items will not be silently skipped.</p>}
+          <button
+            onClick={handleCheckout}
+            disabled={cartItems.length !== 1}
+            className="w-full bg-[var(--color-primary-button)] text-[var(--button-text-color)] py-4 rounded-2xl font-black flex items-center justify-center gap-2 transition disabled:cursor-not-allowed disabled:opacity-50"
           >
-            <Zap size={18} /> Secure Checkout
+            <Zap size={18} /> {cartItems.length > 1 ? "Checkout unavailable for multiple items" : "Secure Checkout"}
           </button>
         </div>
       )}

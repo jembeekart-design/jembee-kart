@@ -1,5 +1,7 @@
 "use client";
 
+import { adminFetch } from "@/lib/client/adminFetch";
+
 import { useState } from "react";
 
 export default function AutoFixCard() {
@@ -9,10 +11,10 @@ export default function AutoFixCard() {
     setLoading(true);
 
     try {
-      const review = await fetch("/api/mission-control/review");
+      const review = await adminFetch("/api/mission-control/review");
       const report = await review.json();
 
-      const res = await fetch("/api/mission-control/autofix/hard", {
+      const res = await adminFetch("/api/mission-control/autofix/hard", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",

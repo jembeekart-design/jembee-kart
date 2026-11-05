@@ -1,25 +1,8 @@
 import { NextResponse } from "next/server";
-import { withAdminAuth } from "@/lib/api/adminAuth";
+import { requireAdmin, isAdminIdentity } from "@/lib/server/requireAdmin";
 
 export async function GET(req: Request) {
-  return withAdminAuth(async () => {
-    return NextResponse.json([
-      {
-        id: "1",
-        title: "Build Completed",
-        message: "Production build completed successfully.",
-        type: "success",
-        read: false,
-        createdAt: new Date().toISOString(),
-      },
-      {
-        id: "2",
-        title: "Scanner Finished",
-        message: "All governance scanners passed.",
-        type: "info",
-        read: true,
-        createdAt: new Date().toISOString(),
-      },
-    ]);
-  }, req);
+  const identity = await requireAdmin(req);
+  if (!isAdminIdentity(identity)) return identity;
+  return NextResponse.json({ success: false, demo: true, code: "NOT_CONNECTED", message: "Mission Control notifications are not connected to a persistent notification source." }, { status: 501 });
 }

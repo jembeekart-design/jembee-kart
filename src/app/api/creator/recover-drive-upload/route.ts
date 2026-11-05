@@ -1,4 +1,3 @@
-import { readBoundedJson } from "@/lib/server/readBoundedJson";
 import { NextResponse } from "next/server";
 import { getAdminAuth, getAdminDb } from "@/firebase/admin";
 import { getResumableUploadStatus } from "@/services/googleDriveService";
@@ -29,15 +28,16 @@ export async function POST(req: Request) {
     );
   }
 
+  let body: { submissionId?: unknown };
 
-  const parsedBody = await readBoundedJson(req, 8192);
-  if (!parsedBody.ok) {
-    return NextResponse.json({ success: false, message: parsedBody.message }, { status: parsedBody.status });
+  try {
+    body = await req.json();
+  } catch {
+    return NextResponse.json(
+      { success: false, message: "Invalid JSON" },
+      { status: 400 }
+    );
   }
-  if (!parsedBody.value || typeof parsedBody.value !== "object" || Array.isArray(parsedBody.value)) {
-    return NextResponse.json({ success: false, message: "Request body must be a JSON object" }, { status: 400 });
-  }
-  const body = parsedBody.value as { submissionId?: unknown };
 
   const submissionId =
     typeof body.submissionId === "string"
@@ -121,10 +121,22 @@ export async function POST(req: Request) {
       );
     }
 
+    console.log("[UPLOAD_DEBUG_SERVER] RECOVERY_BEGIN", {
+      submissionId,
+      creatorId,
+      fileSize,
+    });
+
     const status = await getResumableUploadStatus(
       uploadUrl,
       fileSize
     );
+
+    console.log("[UPLOAD_DEBUG_SERVER] RECOVERY_RESULT", {
+      submissionId,
+      uploadedBytes: status.uploadedBytes,
+      completed: !!status.driveFileId,
+    });
 
     return NextResponse.json({
       success: true,
@@ -134,6 +146,12 @@ export async function POST(req: Request) {
       completed: !!status.driveFileId,
     });
   } catch (error) {
+    console.error("[UPLOAD_DEBUG_SERVER] RECOVERY_ERROR", {
+      name: error instanceof Error ? error.name : typeof error,
+      message: error instanceof Error ? error.message : String(error),
+      submissionId,
+      creatorId,
+    });
 
     return NextResponse.json(
       {

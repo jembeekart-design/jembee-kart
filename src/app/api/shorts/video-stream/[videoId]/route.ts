@@ -58,9 +58,14 @@ export async function GET(
 
     const data = snapshot.data();
 
+    if (data?.videoAccess === "paid" || data?.paidVideoStatus === "payment_integration_pending") {
+      return new NextResponse("Paid video access is not available until purchase verification is enabled", { status: 403 });
+    }
+
     if (
       data?.status !== "approved" ||
       data?.active !== true ||
+      data?.moderation !== "safe" ||
       typeof data?.driveFileId !== "string" ||
       !data.driveFileId.trim()
     ) {
@@ -86,6 +91,7 @@ export async function GET(
     }
 
     const rangeHeader = req.headers.get("range");
+    const MAX_STREAM_CHUNK_BYTES = 8 * 1024 * 1024;
     const headers = new Headers({
       "Content-Type": metadata.mimeType,
       "Accept-Ranges": "bytes",
@@ -94,6 +100,12 @@ export async function GET(
     });
 
     if (!rangeHeader) {
+      if (metadata.size > MAX_STREAM_CHUNK_BYTES) {
+        return new NextResponse("A bounded byte range is required", {
+          status: 416,
+          headers: { "Content-Range": `bytes */${metadata.size}`, "Accept-Ranges": "bytes" },
+        });
+      }
       const { stream } = await getDriveFileStream(driveFileId);
       headers.set("Content-Length", String(metadata.size));
 
@@ -113,6 +125,12 @@ export async function GET(
     }
 
     const { start, end } = range;
+    if (end - start + 1 > MAX_STREAM_CHUNK_BYTES) {
+      return new NextResponse("Requested range is too large", {
+        status: 416,
+        headers: { "Content-Range": `bytes */${metadata.size}`, "Accept-Ranges": "bytes" },
+      });
+    }
     const { stream } = await getDriveFileStream(
       driveFileId,
       `bytes=${start}-${end}`

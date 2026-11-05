@@ -1,22 +1,19 @@
 "use client";
 
+import { adminFetch } from "@/lib/client/adminFetch";
+
 import { useState } from "react";
-import { auth } from "@/firebase/config";
 
 export default function BackupCard() {
   const [loading, setLoading] = useState(false);
-  const [result, setResult] = useState<unknown>(null);
+  const [result, setResult] = useState<any>(null);
 
   async function createBackup() {
     setLoading(true);
 
     try {
-      const user = auth.currentUser;
-      if (!user) { setResult({ success: false, message: "Please sign in as an administrator." }); setLoading(false); return; }
-      const token = await user.getIdToken();
-      const res = await fetch("/api/mission-control/backup", {
+      const res = await adminFetch("/api/mission-control/backup", {
         method: "POST",
-        headers: { Authorization: `Bearer ${token}` },
       });
 
       const data = await res.json();
@@ -41,7 +38,7 @@ export default function BackupCard() {
         {loading ? "Creating..." : "Create Backup"}
       </button>
 
-      {result !== null && (
+      {result && (
         <pre className="text-xs overflow-auto">
           {JSON.stringify(result, null, 2)}
         </pre>

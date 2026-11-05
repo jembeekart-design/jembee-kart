@@ -1,15 +1,8 @@
-import { NextRequest, NextResponse } from "next/server";
-import { withAdminAuth } from "@/lib/api/adminAuth";
+import { NextResponse } from "next/server";
+import { requireAdmin, isAdminIdentity } from "@/lib/server/requireAdmin";
 
-export async function GET(request: NextRequest) {
-  return withAdminAuth(async () => NextResponse.json([
-    {
-      id: "admin-1",
-      name: "Administrator",
-      email: "admin@jembeekart.com",
-      role: "Super Admin",
-      active: true,
-      lastLogin: new Date().toISOString(),
-    },
-  ]), request);
+export async function GET(req: Request) {
+  const adminIdentity = await requireAdmin(req);
+  if (!isAdminIdentity(adminIdentity)) return adminIdentity;
+  return NextResponse.json({ success: false, demo: true, code: "NOT_CONNECTED", message: "Session data is not connected to a live authentication provider." }, { status: 501 });
 }

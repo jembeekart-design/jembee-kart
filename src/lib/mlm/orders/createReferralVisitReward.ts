@@ -1,92 +1,18 @@
-import {
-  addDoc,
-  collection,
-  doc,
-  increment,
-  updateDoc
-} from "firebase/firestore";
-
-import { db }
-from "@/firebase/config";
-
+/**
+ * Legacy client-side payout intentionally disabled.
+ * Client input is not authoritative for reward eligibility or amount.
+ * Re-enable only after a server endpoint verifies the underlying event and
+ * credits the wallet and ledger atomically with a deterministic idempotency key.
+ */
 interface CreateReferralVisitRewardData {
   userId: string;
-
   visitorId: string;
-
   rewardAmount: number;
 }
 
-export async function
-createReferralVisitReward(
-  data:
-  CreateReferralVisitRewardData
-) {
-
-  try {
-
-    /* =========================
-       UPDATE USER
-    ========================= */
-
-    await updateDoc(
-      doc(
-        db,
-        "users",
-        data.userId
-      ),
-      {
-        walletBalance:
-          increment(
-            data.rewardAmount
-          ),
-
-        totalIncome:
-          increment(
-            data.rewardAmount
-          ),
-
-        referralVisitIncome:
-          increment(
-            data.rewardAmount
-          )
-      }
-    );
-
-    /* =========================
-       SAVE HISTORY
-    ========================= */
-
-    await addDoc(
-      collection(
-        db,
-        "referralVisitRewardHistory"
-      ),
-      {
-        userId:
-          data.userId,
-
-        visitorId:
-          data.visitorId,
-
-        rewardAmount:
-          data.rewardAmount,
-
-        createdAt:
-          Date.now()
-      }
-    );
-
-    return {
-      success: true
-    };
-
-  } catch (error) {
-
-    console.error(error);
-
-    return {
-      success: false
-    };
-  }
+export async function createReferralVisitReward(_data: CreateReferralVisitRewardData) {
+  return {
+    success: false as const,
+    message: "Referral-visit rewards are disabled until a trusted, abuse-resistant visit verification flow is implemented.",
+  };
 }

@@ -1,4 +1,3 @@
-import { readBoundedJson } from "@/lib/server/readBoundedJson";
 import { NextResponse } from "next/server";
 import crypto from "node:crypto";
 import { getAdminAuth, getAdminDb } from "@/firebase/admin";
@@ -10,8 +9,6 @@ const MAX_VIDEO_SIZE = 500 * 1024 * 1024;
 
 export async function POST(req: Request) {
   const authHeader = req.headers.get("authorization");
-  if (authHeader) {
-  }
 
   if (!authHeader?.startsWith("Bearer ")) {
     return NextResponse.json(
@@ -24,23 +21,17 @@ export async function POST(req: Request) {
   let creatorId: string;
 
   try {
-    const decodedToken = await getAdminAuth().verifyIdToken(token);
+    const decodedToken = await getAdminAuth().verifyIdToken(token, true);
     creatorId = decodedToken.uid;
-  } catch {
+  } catch (err) {
+    console.error("Creator upload authentication failed");
     return NextResponse.json(
       { success: false, message: "कृपया लॉगिन करें।" },
       { status: 401 }
     );
   }
 
-  const parsedBody = await readBoundedJson(req, 16384);
-  if (!parsedBody.ok) {
-    return NextResponse.json({ success: false, message: parsedBody.message }, { status: parsedBody.status });
-  }
-  if (!parsedBody.value || typeof parsedBody.value !== "object" || Array.isArray(parsedBody.value)) {
-    return NextResponse.json({ success: false, message: "Request body must be a JSON object" }, { status: 400 });
-  }
-  const body = parsedBody.value as {
+  let body: {
     filename?: unknown;
     mimeType?: unknown;
     fileSize?: unknown;
@@ -57,6 +48,14 @@ export async function POST(req: Request) {
     originalAudioId?: unknown;
     isEnhanced?: unknown;
   };
+  try {
+    body = await req.json();
+  } catch {
+    return NextResponse.json(
+      { success: false, message: "अनुरोध की जानकारी सही नहीं है।" },
+      { status: 400 }
+    );
+  }
 
   const filename = typeof body.filename === "string" ? body.filename.trim() : "";
   const mimeType = typeof body.mimeType === "string" ? body.mimeType.trim() : "";
@@ -64,8 +63,11 @@ export async function POST(req: Request) {
 
   const { displayName, photoURL, username, caption, hashtags, music, sponsor, originalVideoId, originalAudioId, isEnhanced } = body;
   const videoAccess = body.videoAccess === "paid" ? "paid" : "free";
+  if (videoAccess === "paid") {
+    return NextResponse.json({ success: false, message: "Paid video publishing is temporarily disabled until verified purchase access is available." }, { status: 409 });
+  }
   const videoPrice = typeof body.videoPrice === "number" ? body.videoPrice : 0;
-  if (videoAccess === "paid" && (!Number.isFinite(videoPrice) || videoPrice < 1 || videoPrice > 100000)) {
+  if (!Number.isFinite(videoPrice) || videoPrice < 0 || videoPrice > 100000) {
     return NextResponse.json({ success: false, message: "Paid वीडियो की कीमत ₹1 से ₹100000 के बीच होनी चाहिए।" }, { status: 400 });
   }
 
@@ -93,6 +95,23 @@ export async function POST(req: Request) {
   const submissionId = crypto.randomUUID();
 
   try {
+    const adminDb = getAdminDb();
+    const activeSessions = await adminDb.collection("videoModerationSubmissions")
+      .where("creatorId", "==", creatorId)
+      .where("status", "in", ["uploading", "completing"])
+      .limit(3).get();
+    if (activeSessions.size >= 2) {
+      return NextResponse.json({ success: false, message: "एक समय में अधिकतम 2 वीडियो upload session ही सक्रिय रख सकते हैं।" }, { status: 429 });
+    }
+    const cooldownRef = adminDb.collection("creatorUploadRateLimits").doc(creatorId);
+    const allowed = await adminDb.runTransaction(async (tx) => {
+      const snap = await tx.get(cooldownRef);
+      const last = Number(snap.data()?.lastStartedAtMs || 0);
+      if (Date.now() - last < 30000) return false;
+      tx.set(cooldownRef, { lastStartedAtMs: Date.now(), updatedAt: new Date() }, { merge: true });
+      return true;
+    });
+    if (!allowed) return NextResponse.json({ success: false, message: "कृपया नया upload शुरू करने से पहले 30 सेकंड प्रतीक्षा करें।" }, { status: 429 });
 
     const uploadUrl = await createResumableUploadSession(
       `moderation_${submissionId}`,
@@ -100,7 +119,11 @@ export async function POST(req: Request) {
       fileSize
     );
 
-    const adminDb = getAdminDb();
+    console.log("[UPLOAD_DEBUG_SERVER] DRIVE_SESSION_CREATED", {
+      submissionId,
+      uploadUrlPresent: !!uploadUrl,
+    });
+
     await adminDb
       .collection("videoModerationSubmissions")
       .doc(submissionId)
@@ -116,8 +139,8 @@ export async function POST(req: Request) {
         username: username || "",
         caption: caption || "",
         videoAccess,
-        videoPrice: videoAccess === "paid" ? videoPrice : 0,
-        paidVideoStatus: videoAccess === "paid" ? "payment_integration_pending" : "free",
+        videoPrice: 0,
+        paidVideoStatus: "free",
         hashtags: Array.isArray(hashtags) ? hashtags : [],
         music: music || "",
         sponsor: sponsor === true,
@@ -133,6 +156,13 @@ export async function POST(req: Request) {
       uploadUrl,
     });
   } catch (error) {
+    console.error("[UPLOAD_DEBUG_SERVER] START_ERROR", {
+      name: error instanceof Error ? error.name : typeof error,
+      message: error instanceof Error ? error.message : String(error),
+      stack: error instanceof Error ? error.stack : undefined,
+      creatorId,
+      submissionId,
+    });
 
     console.error("Failed to start drive upload session:", error);
     return NextResponse.json(

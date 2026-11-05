@@ -1,43 +1,30 @@
 "use client";
 
+import { adminFetch } from "@/lib/client/adminFetch";
+
 import { useEffect, useState } from "react";
-import { auth } from "@/firebase/config";
-import type { ReviewItem, ReviewReport } from "@/mission-control/review/types";
 
 export default function ReviewReport() {
-  type ReviewReportState = Partial<ReviewReport> & {
-  success?: boolean;
-  message?: string;
-  modifiedFiles?: unknown;
-};
-
-  const [report, setReport] = useState<ReviewReportState | null>(null);
+  const [report, setReport] = useState<any>(null);
 
   useEffect(() => {
     loadReport();
   }, []);
 
   async function loadReport() {
-    const user = auth.currentUser;
-    if (!user) { setReport({ success: false, message: "Please sign in as an administrator." }); return; }
-    const token = await user.getIdToken();
-    const res = await fetch("/api/mission-control/review", { headers: { Authorization: `Bearer ${token}` }, cache: "no-store" });
+    const res = await adminFetch("/api/mission-control/review");
     const data = await res.json();
     setReport(data);
   }
 
   async function reviewAction(
     action: "approve" | "reject",
-    item: ReviewItem
+    item: any
   ) {
-    const user = auth.currentUser;
-    if (!user) { alert("Please sign in as an administrator."); return; }
-    const token = await user.getIdToken();
-    await fetch("/api/mission-control/review/action", {
+    await adminFetch("/api/mission-control/review/action", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
-        Authorization: `Bearer ${token}`,
       },
       body: JSON.stringify({
         action,
@@ -49,15 +36,10 @@ export default function ReviewReport() {
   }
 
   async function applySelected() {
-    if (!report) return;
-    const user = auth.currentUser;
-    if (!user) { alert("Please sign in as an administrator."); return; }
-    const token = await user.getIdToken();
-    const res = await fetch("/api/mission-control/review/apply", {
+    const res = await adminFetch("/api/mission-control/review/apply", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
-        Authorization: `Bearer ${token}`,
       },
       body: JSON.stringify({
         items: report.items,
@@ -94,7 +76,7 @@ loadReport();
       <div>Rejected: {report.rejected}</div>
 
       <div className="space-y-2">
-        {report.items?.slice(0, 20).map((item: ReviewItem) => (
+        {report.items?.slice(0, 20).map((item: any) => (
           <div
             key={item.id}
             className="border rounded-lg p-3 space-y-2"

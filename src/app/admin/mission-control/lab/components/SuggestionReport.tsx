@@ -1,12 +1,14 @@
 "use client";
 
+import { adminFetch } from "@/lib/client/adminFetch";
+
 import { useEffect, useState } from "react";
 
 export default function SuggestionReport() {
   const [report, setReport] = useState<any>(null);
 
   useEffect(() => {
-    fetch("/api/mission-control/suggestions")
+    adminFetch("/api/mission-control/suggestions")
       .then((r) => r.json())
       .then(setReport)
       .catch(console.error);

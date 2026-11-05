@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { GovernanceDashboardReport } from "@/jembee-governance/types/governance.types";
+import { auth } from "@/firebase/config";
 
 // --- Components ---
 
@@ -28,7 +29,9 @@ export default function GovernancePage() {
   const loadDashboard = async () => {
     try {
       setLoading(true);
-      const response = await fetch("/api/governance");
+      const token = await auth.currentUser?.getIdToken();
+      if (!token) throw new Error("Admin login required");
+      const response = await fetch("/api/governance", { headers: { Authorization: `Bearer ${token}` }, cache: "no-store" });
       const json = await response.json();
       if (json.report) setReport(json.report);
     } catch (error) {

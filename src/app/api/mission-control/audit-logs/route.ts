@@ -1,23 +1,8 @@
 import { NextResponse } from "next/server";
-import { withAdminAuth } from "@/lib/api/adminAuth";
+import { requireAdmin, isAdminIdentity } from "@/lib/server/requireAdmin";
 
 export async function GET(req: Request) {
-  return withAdminAuth(async () => {
-    return NextResponse.json([
-      {
-        id: "1",
-        action: "Mission Control Scan",
-        user: "System",
-        status: "success",
-        createdAt: new Date().toISOString(),
-      },
-      {
-        id: "2",
-        action: "Deployment",
-        user: "Admin",
-        status: "success",
-        createdAt: new Date().toISOString(),
-      },
-    ]);
-  }, req);
+  const identity = await requireAdmin(req);
+  if (!isAdminIdentity(identity)) return identity;
+  return NextResponse.json({ success: false, demo: true, code: "NOT_CONNECTED", message: "Mission Control audit logs are not connected to a persistent audit collection." }, { status: 501 });
 }

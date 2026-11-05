@@ -1,4 +1,3 @@
-import { readBoundedJson } from "@/lib/server/readBoundedJson";
 import { NextRequest, NextResponse } from "next/server";
 import { getAdminAuth, getAdminDb } from "@/firebase/admin";
 
@@ -18,14 +17,7 @@ export async function PATCH(req: NextRequest) {
 
     const token = authorization.slice(7).trim();
     const decoded = await getAdminAuth().verifyIdToken(token, true);
-    const parsedBody = await readBoundedJson(req, 8192);
-    if (!parsedBody.ok) {
-      return NextResponse.json({ success: false, message: parsedBody.message }, { status: parsedBody.status });
-    }
-    if (!parsedBody.value || typeof parsedBody.value !== "object" || Array.isArray(parsedBody.value)) {
-      return NextResponse.json({ success: false, message: "Request body must be a JSON object" }, { status: 400 });
-    }
-    const body = parsedBody.value as Record<string, unknown>;
+    const body = await req.json();
 
     const photoURL =
       typeof body?.photoURL === "string" ? body.photoURL.trim() : "";

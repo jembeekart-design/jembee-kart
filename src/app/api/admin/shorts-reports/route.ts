@@ -1,6 +1,5 @@
-import { readBoundedJson } from "@/lib/server/readBoundedJson";
 import { NextResponse } from "next/server";
-import { FieldValue } from "firebase-admin/firestore";
+import { FieldPath, FieldValue } from "firebase-admin/firestore";
 import { getAdminAuth, getAdminDb } from "@/firebase/admin";
 
 export const runtime = "nodejs";
@@ -12,7 +11,7 @@ async function verifyAdmin(req: Request): Promise<string> {
   const token = header.slice("Bearer ".length).trim();
   if (!token) throw new Error("UNAUTHORIZED");
 
-  const decoded = await getAdminAuth().verifyIdToken(token);
+  const decoded = await getAdminAuth().verifyIdToken(token, true);
   const users = getAdminDb().collection("users");
   const direct = await users.doc(decoded.uid).get();
   let userData = direct.exists ? direct.data() : undefined;
@@ -43,13 +42,16 @@ function authError(error: unknown) {
 export async function GET(req: Request) {
   try {
     await verifyAdmin(req);
-    const snapshot = await getAdminDb()
-      .collection("videoReports")
+    const cursor = new URL(req.url).searchParams.get("cursor");
+    if (cursor && (cursor.length > 1500 || cursor.includes("/"))) return NextResponse.json({ success: false, message: "Invalid cursor" }, { status: 400 });
+    let reportQuery = getAdminDb().collection("videoReports")
       .where("status", "==", "pending")
-      .limit(100)
-      .get();
+      .orderBy(FieldPath.documentId()).limit(101);
+    if (cursor) reportQuery = reportQuery.startAfter(cursor);
+    const snapshot = await reportQuery.get();
+    const pageDocs = snapshot.docs.slice(0, 100);
 
-    const reports = snapshot.docs.map((doc) => {
+    const reports = pageDocs.map((doc) => {
       const data = doc.data();
       return {
         id: doc.id,
@@ -63,7 +65,7 @@ export async function GET(req: Request) {
     });
 
     reports.sort((a, b) => (b.createdAt ?? 0) - (a.createdAt ?? 0));
-    return NextResponse.json({ success: true, reports });
+    return NextResponse.json({ success: true, reports, nextCursor: snapshot.docs.length > 100 ? pageDocs[pageDocs.length - 1]?.id ?? null : null, hasMore: snapshot.docs.length > 100 });
   } catch (error) {
     return authError(error);
   }
@@ -72,14 +74,12 @@ export async function GET(req: Request) {
 export async function POST(req: Request) {
   try {
     const adminId = await verifyAdmin(req);
-    const parsedBody = await readBoundedJson(req, 8192);
-  if (!parsedBody.ok) {
-    return NextResponse.json({ success: false, message: parsedBody.message }, { status: parsedBody.status });
-  }
-  if (!parsedBody.value || typeof parsedBody.value !== "object" || Array.isArray(parsedBody.value)) {
-    return NextResponse.json({ success: false, message: "Request body must be a JSON object" }, { status: 400 });
-  }
-    const body = parsedBody.value;
+    let body: unknown;
+    try {
+      body = await req.json();
+    } catch {
+      return NextResponse.json({ success: false, message: "Invalid JSON body" }, { status: 400 });
+    }
 
     const input = body as { reportId?: unknown; action?: unknown } | null;
     const reportId = typeof input?.reportId === "string" ? input.reportId.trim() : "";

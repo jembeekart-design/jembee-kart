@@ -1,9 +1,12 @@
+import { auth } from "@/firebase/config";
 import type { ScanResult } from "../runSystemScan";
 
 export async function hardcodedRuleScanner(): Promise<ScanResult[]> {
   try {
+    const token = await auth.currentUser?.getIdToken();
+    if (!token) throw new Error("Admin login required");
     const response = await fetch("/api/governance/hardcoded", {
-      cache: "no-store",
+      headers: { Authorization: `Bearer ${token}` }, cache: "no-store",
     });
 
     if (!response.ok) {

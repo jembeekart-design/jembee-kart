@@ -2,7 +2,7 @@ import {
   doc, getDoc, setDoc, updateDoc, collection, getDocs, addDoc, 
   onSnapshot, serverTimestamp, query, where, Timestamp 
 } from 'firebase/firestore';
-import { db } from '@/firebase/config';
+import { db, auth } from '@/firebase/config';
 import { ModerationSettings, RegexRule, CommentViolation, CommentAuditLog } from '@/types/moderation';
 
 let settingsCache: ModerationSettings | null = null;
@@ -91,42 +91,20 @@ export const subscribeToModerationSettings = (callback: (settings: ModerationSet
 
 export const updateModerationSettings = async (
   newSettings: Partial<ModerationSettings>,
-  adminId: string,
+  _adminId: string,
   reason: string
 ): Promise<void> => {
-  const docRef = doc(db, "commentModeration", "settings");
-  let step = "READ_SETTINGS";
-
-  try {
-    const currentSnap = await getDoc(docRef);
-    const oldValue = currentSnap.exists() ? currentSnap.data() : {};
-
-    step = "WRITE_SETTINGS";
-    await setDoc(docRef, newSettings, { merge: true });
-    settingsCache = null;
-
-    const changedFields = Object.keys(newSettings).filter(
-      key =>
-        JSON.stringify((oldValue as Record<string, any>)[key]) !==
-        JSON.stringify((newSettings as Record<string, any>)[key])
-    );
-
-    const auditLog: CommentAuditLog = {
-      timestamp: serverTimestamp(),
-      adminId,
-      oldValue,
-      newValue: newSettings,
-      changedFields,
-      reason,
-    };
-
-    step = "WRITE_AUDIT_LOG";
-    await addDoc(collection(db, "commentAuditLogs"), auditLog);
-  } catch (err) {
-    console.error(`[Moderation Save] ${step} failed:`, err);
-    const detail = err instanceof Error ? err.message : String(err);
-    throw new Error(`${step}: ${detail}`);
-  }
+  const currentUser = auth.currentUser;
+  if (!currentUser) throw new Error("Please sign in again.");
+  const token = await currentUser.getIdToken();
+  const response = await fetch("/api/admin/comment-moderation-settings", {
+    method: "POST",
+    headers: { Authorization: `Bearer ${token}`, "Content-Type": "application/json" },
+    body: JSON.stringify({ settings: newSettings, reason }),
+  });
+  const result = await response.json().catch(() => ({}));
+  if (!response.ok || result.success !== true) throw new Error(typeof result.message === "string" ? result.message : "Moderation settings could not be saved.");
+  settingsCache = null;
 };
 
 export const getRegexRules = async (): Promise<RegexRule[]> => {

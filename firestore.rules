@@ -171,6 +171,26 @@ service cloud.firestore {
       allow delete: if isOwner(uid) || isAdmin();
     }
 
+    // Public Shorts: only approved, active, safe, free videos.
+    match /watchEarnVideos/{videoId} {
+      allow read: if isAdmin()
+        || (
+          resource.data.status == "approved"
+          && resource.data.active == true
+          && resource.data.moderation == "safe"
+          && resource.data.videoAccess == "free"
+        )
+        || (
+          signedIn()
+          && (
+            resource.data.userId == request.auth.uid
+            || resource.data.creatorId == request.auth.uid
+          )
+        );
+
+      allow create, update, delete: if false;
+    }
+
     // Like documents are written only by the authenticated server API.
     // Users may read only their own like records.
     match /watchVideoLikes/{likeId} {

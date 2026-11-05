@@ -2,13 +2,7 @@
 
 export const dynamic = "force-dynamic";
 
-import {
-  BarChart3,
-  ShoppingCart,
-  Users,
-  IndianRupee,
-  Package
-} from "lucide-react";
+import { BarChart3, ShoppingCart, Users, IndianRupee, Package } from "lucide-react";
 import { useAdminConfig } from "@/lib/admin-config/provider";
 
 export default function AnalyticsPage() {
@@ -16,189 +10,51 @@ export default function AnalyticsPage() {
   const { analytics } = config;
 
   const stats = [
-    {
-      title: "Total Sales",
-      value: "₹1,25,000",
-      icon: IndianRupee
-    },
-    {
-      title: "Total Orders",
-      value: "1,240",
-      icon: ShoppingCart
-    },
-    {
-      title: "Total Users",
-      value: "3,420",
-      icon: Users
-    },
-    {
-      title: "Products",
-      value: "540",
-      icon: Package
-    }
+    { title: "Total Sales", value: "Not connected", icon: IndianRupee },
+    { title: "Total Orders", value: "Not connected", icon: ShoppingCart },
+    { title: "Total Users", value: "Not connected", icon: Users },
+    { title: "Products", value: "Not connected", icon: Package },
   ];
 
   return (
-
     <main className="min-h-screen bg-[var(--color-page-background)] p-4 text-[var(--button-text-color)]">
-
-      {/* HEADER */}
-
-      <div className="mb-8 flex items-center gap-3">
-
+      <header className="mb-8 flex items-center gap-3">
         <div className="flex h-16 w-16 items-center justify-center rounded-[24px] bg-[var(--primary-color)]">
-
           <BarChart3 size={30} />
-
         </div>
-
         <div>
-
-          <h1 className="text-3xl font-black">
-            {analytics.pageTitle}
-          </h1>
-
+          <h1 className="text-3xl font-black">{analytics.pageTitle}</h1>
           <p className="mt-1 text-sm text-[var(--muted-text-color)]">
-            Track sales and performance
+            Verified store analytics are not connected yet. Sample figures are intentionally hidden.
           </p>
-
         </div>
+      </header>
 
-      </div>
-
-      {/* STATS */}
-
-      <div className="grid grid-cols-2 gap-4">
-
-        {stats.map((item, index) => {
-
-          const Icon =
-            item.icon;
-
-          return (
-
-            <div
-              key={index}
-              className="rounded-[30px] border border-[var(--border-color)]/10 bg-[var(--primary-color)] p-5"
-            >
-
-              <div className="flex h-14 w-14 items-center justify-center rounded-2xl bg-[var(--primary-color)]">
-
-                <Icon size={24} />
-
-              </div>
-
-              <p className="mt-5 text-sm text-[var(--muted-text-color)]">
-                {item.title}
-              </p>
-
-              <h2 className="mt-2 text-3xl font-black">
-                {item.value}
-              </h2>
-
+      <section className="grid grid-cols-2 gap-4">
+        {stats.map(({ title, value, icon: Icon }) => (
+          <div key={title} className="rounded-[30px] border border-[var(--border-color)]/10 bg-[var(--primary-color)] p-5">
+            <div className="flex h-14 w-14 items-center justify-center rounded-2xl bg-[var(--primary-color)]">
+              <Icon size={24} />
             </div>
+            <p className="mt-5 text-sm text-[var(--muted-text-color)]">{title}</p>
+            <h2 className="mt-2 text-xl font-black">{value}</h2>
+          </div>
+        ))}
+      </section>
 
-          );
-        })}
-
-      </div>
-
-      {/* SALES CARD */}
-
-      <div className="mt-6 rounded-[30px] bg-gradient-to-r from-[var(--primary-color)] to-[var(--primary-color)] p-6">
-
-        <h2 className="text-3xl font-black">
-          Monthly Revenue
-        </h2>
-
-        <p className="mt-2 text-[var(--button-text-color)]/80">
-          Your store performance is growing fast 🚀
+      <section className="mt-6 rounded-[30px] bg-[var(--primary-color)] p-6">
+        <h2 className="text-2xl font-black">Monthly Revenue</h2>
+        <p className="mt-2 text-sm text-[var(--muted-text-color)]">
+          Revenue chart will appear after verified order and settlement data is connected.
         </p>
+      </section>
 
-        <div className="mt-6 flex items-end gap-3">
-
-          <div className="h-[120px] w-full rounded-t-2xl bg-[var(--card-color)]/20" />
-
-          <div className="h-[180px] w-full rounded-t-2xl bg-[var(--card-color)]/30" />
-
-          <div className="h-[90px] w-full rounded-t-2xl bg-[var(--card-color)]/20" />
-
-          <div className="h-[220px] w-full rounded-t-2xl bg-[var(--card-color)]/40" />
-
-          <div className="h-[150px] w-full rounded-t-2xl bg-[var(--card-color)]/20" />
-
-          <div className="h-[250px] w-full rounded-t-2xl bg-[var(--card-color)]/50" />
-
-        </div>
-
-      </div>
-
-      {/* RECENT ACTIVITY */}
-
-      <div className="mt-6 rounded-[30px] border border-[var(--border-color)]/10 bg-[var(--primary-color)] p-6">
-
-        <h2 className="text-2xl font-black">
-          Recent Activity
-        </h2>
-
-        <div className="mt-5 space-y-4">
-
-          <ActivityItem
-            title="New Order Received"
-            subtitle="Order var(--primary-color) placed"
-          />
-
-          <ActivityItem
-            title="New User Registered"
-            subtitle="User joined today"
-          />
-
-          <ActivityItem
-            title="Product Added"
-            subtitle="New fashion item uploaded"
-          />
-
-          <ActivityItem
-            title="Affiliate Commission Paid"
-            subtitle="₹450 commission transferred"
-          />
-
-        </div>
-
-      </div>
-
+      <section className="mt-6 rounded-[30px] border border-[var(--border-color)]/10 bg-[var(--primary-color)] p-6">
+        <h2 className="text-2xl font-black">Recent Activity</h2>
+        <p className="mt-3 text-sm text-[var(--muted-text-color)]">
+          Live activity feed is not connected. No sample events are displayed.
+        </p>
+      </section>
     </main>
-
-  );
-}
-
-function ActivityItem({
-  title,
-  subtitle
-}: {
-  title: string;
-  subtitle: string;
-}) {
-
-  return (
-
-    <div className="flex items-center justify-between rounded-2xl bg-[var(--card-color)]/30 p-4">
-
-      <div>
-
-        <h3 className="font-bold">
-          {title}
-        </h3>
-
-        <p className="mt-1 text-sm text-[var(--muted-text-color)]">
-          {subtitle}
-        </p>
-
-      </div>
-
-      <div className="h-3 w-3 rounded-full bg-[var(--success-color)]" />
-
-    </div>
-
   );
 }

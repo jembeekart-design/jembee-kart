@@ -27,6 +27,8 @@ interface Ad {
 }
 
 type AdEventType = "impression" | "click";
+// Billing is paused until the server can validate trusted/provider-signed events.
+const TRUSTED_AD_EVENT_BILLING_ENABLED = false;
 
 export default function AdSlot() {
   const [ad, setAd] = useState<Ad | null>(null);
@@ -36,6 +38,11 @@ export default function AdSlot() {
     let cancelled = false;
 
     async function loadAd() {
+      if (!TRUSTED_AD_EVENT_BILLING_ENABLED) {
+        setLoading(false);
+        setAd(null);
+        return;
+      }
       try {
         const q = query(
           collection(db, "ads"),
@@ -200,6 +207,8 @@ export default function AdSlot() {
       window.open(ad.url, "_blank", "noopener,noreferrer");
     }
   }
+
+  if (!TRUSTED_AD_EVENT_BILLING_ENABLED) return null;
 
   if (loading) {
     return (

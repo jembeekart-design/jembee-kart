@@ -1,4 +1,3 @@
-import { readBoundedJson } from "@/lib/server/readBoundedJson";
 import { NextResponse } from "next/server";
 import { getAdminAuth, getAdminDb } from "@/firebase/admin";
 import { FIRESTORE_PATHS } from "@/firestore/collections/firestorePaths";
@@ -36,15 +35,16 @@ export async function POST(req: Request) {
     );
   }
 
+  let body: { notificationId?: unknown };
 
-  const parsedBody = await readBoundedJson(req, 8192);
-  if (!parsedBody.ok) {
-    return NextResponse.json({ success: false, message: parsedBody.message }, { status: parsedBody.status });
+  try {
+    body = await req.json();
+  } catch {
+    return NextResponse.json(
+      { success: false, message: "Invalid JSON body" },
+      { status: 400 }
+    );
   }
-  if (!parsedBody.value || typeof parsedBody.value !== "object" || Array.isArray(parsedBody.value)) {
-    return NextResponse.json({ success: false, message: "Request body must be a JSON object" }, { status: 400 });
-  }
-  const body = parsedBody.value as { notificationId?: unknown };
 
   const notificationId = body.notificationId;
 

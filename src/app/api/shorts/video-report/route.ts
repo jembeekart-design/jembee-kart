@@ -1,6 +1,5 @@
 import { NextResponse } from "next/server";
 import { getAdminAuth, getAdminDb } from "@/firebase/admin";
-import { readBoundedJson } from "@/lib/server/readBoundedJson";
 
 const ALLOWED_REASONS = [
   "spam",
@@ -17,10 +16,7 @@ const ALLOWED_REASONS = [
 
 export async function POST(req: Request) {
   try {
-    const parsedBody = await readBoundedJson(req, 8 * 1024);
-    if (!parsedBody.ok) return NextResponse.json({ success: false, message: parsedBody.message }, { status: parsedBody.status });
-    if (!parsedBody.value || typeof parsedBody.value !== "object" || Array.isArray(parsedBody.value)) return NextResponse.json({ success: false, message: "A JSON object is required." }, { status: 400 });
-    const body = parsedBody.value as Record<string, unknown>;
+    const body = await req.json();
     const { videoId, reason: rawReason, message, token } = body ?? {};
     const reason =
       typeof rawReason === "string" ? rawReason.trim().toLowerCase() : rawReason;

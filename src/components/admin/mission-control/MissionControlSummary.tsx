@@ -1,5 +1,7 @@
 "use client";
 
+import { adminFetch } from "@/lib/client/adminFetch";
+
 import { useEffect, useState } from "react";
 import {
   FolderOpen,
@@ -16,12 +18,12 @@ interface SummaryData {
   duration: number;
   scanners: {
     firestore: {
-      scannedFiles?: number;
-      collections?: number;
+      scannedItems?: number;
+      warnings?: number;
     };
     duplicate: {
-      duplicates?: number;
-      duplicateGroups?: number;
+      warnings?: number;
+      errors?: number;
     };
     rules: {
       issueCount?: number;
@@ -36,7 +38,7 @@ export default function MissionControlSummary() {
   useEffect(() => {
     async function loadSummary() {
       try {
-        const res = await fetch("/api/mission-control/summary");
+        const res = await adminFetch("/api/mission-control/summary");
         const json = await res.json();
         setData(json);
       } catch (err) {
@@ -68,20 +70,17 @@ export default function MissionControlSummary() {
   const cards = [
     {
       title: "Scanned Files",
-      value: data.scanners.firestore.scannedFiles ?? 0,
+      value: data.scanners.firestore.scannedItems ?? 0,
       icon: FolderOpen,
     },
     {
-      title: "Firestore Collections",
-      value: data.scanners.firestore.collections ?? 0,
+      title: "Firestore Scanner Warnings",
+      value: data.scanners.firestore.warnings ?? 0,
       icon: Database,
     },
     {
-      title: "Duplicate Files",
-      value:
-        data.scanners.duplicate.duplicates ??
-        data.scanners.duplicate.duplicateGroups ??
-        0,
+      title: "Duplicate Scanner Warnings",
+      value: data.scanners.duplicate.warnings ?? 0,
       icon: Copy,
     },
     {

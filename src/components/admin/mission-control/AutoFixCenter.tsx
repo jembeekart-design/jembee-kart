@@ -1,5 +1,7 @@
 "use client";
 
+import { adminFetch } from "@/lib/client/adminFetch";
+
 import { useState } from "react";
 import {
   Wrench,
@@ -47,7 +49,7 @@ export default function AutoFixCenter() {
           return;
       }
 
-      const response = await fetch(endpoint, {
+      const response = await adminFetch(endpoint, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",

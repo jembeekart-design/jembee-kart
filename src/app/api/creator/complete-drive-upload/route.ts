@@ -1,4 +1,3 @@
-import { readBoundedJson } from "@/lib/server/readBoundedJson";
 import { NextResponse } from "next/server";
 import { getAdminAuth, getAdminDb } from "@/firebase/admin";
 import { getDriveFileMetadata } from "@/services/googleDriveService";
@@ -17,7 +16,10 @@ export async function POST(req: Request) {
   }
 
   const authHeader = req.headers.get("authorization");
+
+  console.log("[AuthDiagnostic] Complete Upload - Auth Header:", authHeader ? "Present" : "Missing");
   if (authHeader) {
+      console.log("[AuthDiagnostic] Complete Upload - Bearer Prefix:", authHeader.startsWith("Bearer ") ? "Present" : "Missing");
   }
 
   if (!authHeader?.startsWith("Bearer ")) {
@@ -29,21 +31,21 @@ export async function POST(req: Request) {
   try {
     const decodedToken = await getAdminAuth().verifyIdToken(token);
     creatorId = decodedToken.uid;
-  } catch {
+    console.log("[AuthDiagnostic] Complete Upload - Token Verified. UID:", creatorId);
+  } catch (err) {
+    console.error("[AuthDiagnostic] Complete Upload - Token Verification Failed:", err);
     return NextResponse.json({ success: false, message: "कृपया लॉगिन करें।" }, { status: 401 });
   }
 
-  const parsedBody = await readBoundedJson(req, 8192);
-  if (!parsedBody.ok) {
-    return NextResponse.json({ success: false, message: parsedBody.message }, { status: parsedBody.status });
-  }
-  if (!parsedBody.value || typeof parsedBody.value !== "object" || Array.isArray(parsedBody.value)) {
-    return NextResponse.json({ success: false, message: "Request body must be a JSON object" }, { status: 400 });
-  }
-  const body = parsedBody.value as {
+  let body: {
     submissionId?: unknown;
     driveFileId?: unknown;
   };
+  try {
+    body = await req.json();
+  } catch {
+    return NextResponse.json({ success: false, message: "अनुरोध की जानकारी सही नहीं है।" }, { status: 400 });
+  }
 
   const submissionId =
     typeof body.submissionId === "string" ? body.submissionId.trim() : "";
@@ -58,6 +60,11 @@ export async function POST(req: Request) {
   }
 
   try {
+    console.log("[UPLOAD_DEBUG_SERVER] COMPLETE_BEGIN", {
+      creatorId,
+      submissionId,
+      driveFileId,
+    });
 
     const adminDb = getAdminDb();
     const submissionRef = adminDb.collection("videoModerationSubmissions").doc(submissionId);
@@ -81,12 +88,20 @@ export async function POST(req: Request) {
       return NextResponse.json({ success: true, submissionId, status: "pending" });
     }
 
-    if (submission.status !== "uploading") {
-      return NextResponse.json({ success: false, message: "वीडियो की स्थिति मान्य नहीं है।" }, { status: 409 });
-    }
+    console.log("[UPLOAD_DEBUG_SERVER] SUBMISSION_VERIFIED", {
+      submissionId,
+      creatorId,
+      status: submission.status,
+    });
+
+    console.log("[UPLOAD_DEBUG_SERVER] DRIVE_METADATA_BEGIN", {
+      driveFileId,
+    });
 
     // Verify Drive File
     const metadata = await getDriveFileMetadata(driveFileId);
+
+    console.log("[UPLOAD_DEBUG_SERVER] DRIVE_METADATA_RESULT", metadata);
 
     if (!metadata.mimeType.startsWith("video/")) {
       return NextResponse.json({ success: false, message: "कृपया मान्य वीडियो फ़ाइल चुनें।" }, { status: 400 });
@@ -101,15 +116,39 @@ export async function POST(req: Request) {
       return NextResponse.json({ success: false, message: "वीडियो फ़ाइल का नाम मान्य नहीं है।" }, { status: 400 });
     }
 
-    await submissionRef.update({
-      driveFileId: driveFileId,
-      status: "pending",
+    // Claim only after Drive validation; cancellation and completion then race on one state transition.
+    const claimed = await adminDb.runTransaction(async (tx) => {
+      const current = await tx.get(submissionRef);
+      if (!current.exists || current.data()?.creatorId !== creatorId || current.data()?.status !== "uploading") return false;
+      tx.update(submissionRef, { status: "completing", completionStartedAt: new Date(), completionDriveFileId: driveFileId });
+      return true;
+    });
+    if (!claimed) return NextResponse.json({ success: false, message: "वीडियो पहले से complete/cancel हो रहा है।" }, { status: 409 });
+
+    await adminDb.runTransaction(async (tx) => {
+      const current = await tx.get(submissionRef);
+      if (!current.exists || current.data()?.status !== "completing" || current.data()?.completionDriveFileId !== driveFileId) throw new Error("Upload completion claim was lost");
+      tx.update(submissionRef, { driveFileId, status: "pending", completedAt: new Date(), completionDriveFileId: null });
     });
 
     return NextResponse.json({ success: true, submissionId, status: "pending" });
   } catch (error) {
+    console.error("[UPLOAD_DEBUG_SERVER] COMPLETE_ERROR", {
+      name: error instanceof Error ? error.name : typeof error,
+      message: error instanceof Error ? error.message : String(error),
+      stack: error instanceof Error ? error.stack : undefined,
+      submissionId,
+      driveFileId,
+    });
 
     console.error("Failed to complete drive upload:", error);
+    if (submissionId) {
+      const recoveryRef = getAdminDb().collection("videoModerationSubmissions").doc(submissionId);
+      await getAdminDb().runTransaction(async (tx) => {
+        const current = await tx.get(recoveryRef);
+        if (current.exists && current.data()?.status === "completing") tx.update(recoveryRef, { status: "uploading", completionDriveFileId: null, completionLastErrorAt: new Date() });
+      }).catch(() => undefined);
+    }
     return NextResponse.json({ success: false, message: "वीडियो अपलोड पूरा नहीं हो सका। कृपया पुनः प्रयास करें।" }, { status: 500 });
   }
 }

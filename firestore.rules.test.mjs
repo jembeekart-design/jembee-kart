@@ -393,3 +393,86 @@ test("ordinary users cannot access ads management collections", async () => {
   await assertFails(getDoc(doc(db, "adSlots/slotA")));
   await assertFails(setDoc(doc(db, "adSlots/slotA"), { name: "Unauthorized" }));
 });
+
+test("approved active safe free Shorts video can be read publicly", async () => {
+  await env.withSecurityRulesDisabled(async (ctx) => {
+    await setDoc(doc(ctx.firestore(), "watchEarnVideos/freeVideo"), {
+      userId: "userA",
+      status: "approved",
+      active: true,
+      moderation: "safe",
+      videoAccess: "free",
+      video: "/api/shorts/video-stream/freeVideo",
+    });
+  });
+
+  await assertSucceeds(
+    getDoc(doc(env.unauthenticatedContext().firestore(), "watchEarnVideos/freeVideo"))
+  );
+});
+
+test("paid Shorts video cannot be read publicly", async () => {
+  await env.withSecurityRulesDisabled(async (ctx) => {
+    await setDoc(doc(ctx.firestore(), "watchEarnVideos/paidVideo"), {
+      userId: "userA",
+      status: "approved",
+      active: true,
+      moderation: "safe",
+      videoAccess: "paid",
+    });
+  });
+
+  await assertFails(
+    getDoc(doc(env.unauthenticatedContext().firestore(), "watchEarnVideos/paidVideo"))
+  );
+});
+
+test("pending or inactive Shorts video cannot be read publicly", async () => {
+  await env.withSecurityRulesDisabled(async (ctx) => {
+    await setDoc(doc(ctx.firestore(), "watchEarnVideos/pendingVideo"), {
+      status: "pending",
+      active: true,
+      moderation: "safe",
+      videoAccess: "free",
+    });
+
+    await setDoc(doc(ctx.firestore(), "watchEarnVideos/inactiveVideo"), {
+      status: "approved",
+      active: false,
+      moderation: "safe",
+      videoAccess: "free",
+    });
+  });
+
+  const db = env.unauthenticatedContext().firestore();
+
+  await assertFails(getDoc(doc(db, "watchEarnVideos/pendingVideo")));
+  await assertFails(getDoc(doc(db, "watchEarnVideos/inactiveVideo")));
+});
+
+test("clients cannot create, update, or delete Shorts video documents", async () => {
+  const db = env.authenticatedContext("userA").firestore();
+  const ref = doc(db, "watchEarnVideos/clientVideo");
+
+  await assertFails(setDoc(ref, {
+    userId: "userA",
+    status: "approved",
+    active: true,
+    moderation: "safe",
+    videoAccess: "free",
+  }));
+
+  await env.withSecurityRulesDisabled(async (ctx) => {
+    await setDoc(doc(ctx.firestore(), "watchEarnVideos/existingVideo"), {
+      userId: "userA",
+      status: "approved",
+      active: true,
+      moderation: "safe",
+      videoAccess: "free",
+    });
+  });
+
+  const existing = doc(db, "watchEarnVideos/existingVideo");
+  await assertFails(updateDoc(existing, { active: false }));
+  await assertFails(deleteDoc(existing));
+});

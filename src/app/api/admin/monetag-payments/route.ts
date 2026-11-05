@@ -3,15 +3,11 @@ import { NextResponse } from "next/server";
 import { FieldValue } from "firebase-admin/firestore";
 import { getAdminDb } from "@/firebase/admin";
 import { verifyMonetagAdmin } from "@/lib/server/monetagAdminAuth";
-import { readBoundedJson } from "@/lib/server/readBoundedJson";
 export const runtime = "nodejs";
 export async function POST(req: Request) {
   try {
     const adminUid = await verifyMonetagAdmin(req);
-    const parsedBody = await readBoundedJson(req, 16 * 1024);
-    if (!parsedBody.ok) return NextResponse.json({ success: false, message: parsedBody.message }, { status: parsedBody.status });
-    if (!parsedBody.value || typeof parsedBody.value !== "object" || Array.isArray(parsedBody.value)) return NextResponse.json({ success: false, message: "A JSON object is required." }, { status: 400 });
-    const body = parsedBody.value as Record<string, unknown>;
+    const body = await req.json();
     const userId = String(body.userId || "").trim();
     const transactionReference = String(body.transactionReference || "").trim();
     const amountUsd = Number(body.amountUsd);
