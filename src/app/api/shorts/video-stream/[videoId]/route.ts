@@ -148,13 +148,12 @@ export async function GET(
       });
     }
 
-    const { start, end } = range;
-    if (end - start + 1 > MAX_STREAM_CHUNK_BYTES) {
-      return new NextResponse("Requested range is too large", {
-        status: 416,
-        headers: { "Content-Range": `bytes */${metadata.size}`, "Accept-Ranges": "bytes" },
-      });
-    }
+    const start = range.start;
+    const end = Math.min(
+      range.end,
+      start + MAX_STREAM_CHUNK_BYTES - 1
+    );
+
     const { stream } = await getDriveFileStream(
       driveFileId,
       `bytes=${start}-${end}`
