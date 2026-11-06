@@ -1,0 +1,67 @@
+src/app/account/page.tsx.before-earnings-ui:139: trailing whitespace.
+[32m+[m[41m    [m
+src/app/account/page.tsx.before-earnings-ui:142: trailing whitespace.
+[32m+[m[41m    [m
+src/app/account/page.tsx.before-earnings-ui:163: trailing whitespace.
+[32m+[m[41m      [m
+src/app/account/page.tsx.before-earnings-ui:260: trailing whitespace.
+[32m+[m[41m            [m
+src/app/account/page.tsx.before-earnings-ui:264: trailing whitespace.
+[32m+[m[41m              [m
+src/app/account/page.tsx.before-earnings-ui:265: trailing whitespace.
+[32m+[m[32m              <button[m[41m [m
+src/app/account/page.tsx.before-earnings-ui:272: trailing whitespace.
+[32m+[m[32m              <input[m[41m [m
+src/app/account/page.tsx.before-earnings-ui:273: trailing whitespace.
+[32m+[m[32m                type="file"[m[41m [m
+src/app/account/page.tsx.before-earnings-ui:274: trailing whitespace.
+[32m+[m[32m                ref={fileInputRef}[m[41m [m
+src/app/account/page.tsx.before-earnings-ui:275: trailing whitespace.
+[32m+[m[32m                onChange={handlePhotoChange}[m[41m [m
+src/app/account/page.tsx.before-earnings-ui:285: trailing whitespace.
+[32m+[m[41m              [m
+src/app/account/page.tsx.before-earnings-ui:402: new blank line at EOF.
+src/app/api/admin/delete-video/route.ts.before-drive-delete:19: trailing whitespace.
+[32m+[m[41m    [m
+src/app/api/admin/delete-video/route.ts.before-drive-delete:24: trailing whitespace.
+[32m+[m[41m      [m
+src/app/api/admin/delete-video/route.ts.before-drive-delete:26: trailing whitespace.
+[32m+[m[41m    [m
+src/app/api/admin/delete-video/route.ts.before-drive-delete:42: trailing whitespace.
+[32m+[m[32m        // NOTE: If thumbnail is stored separately with a known public_id pattern,[m[41m [m
+src/app/api/creator/delete-video/route.ts.before-drive-delete:25: trailing whitespace.
+[32m+[m[41m    [m
+src/app/layout.tsx.before-multitag-restore:52: trailing whitespace.
+[32m+[m[41m        [m
+src/app/login/page.tsx.before-jembeevideo-redirect-fix:65: trailing whitespace.
+[32m+[m[41m  [m
+src/app/login/page.tsx.before-jembeevideo-redirect-fix:80: trailing whitespace.
+[32m+[m[41m      [m
+src/app/login/page.tsx.before-jembeevideo-redirect-fix:92: trailing whitespace.
+[32m+[m[41m      [m
+src/app/login/page.tsx.before-jembeevideo-redirect-fix:97: trailing whitespace.
+[32m+[m[32m        window.location.href = redirect;[m[41m [m
+src/app/login/page.tsx.before-jembeevideo-redirect-fix:122: trailing whitespace.
+[32m+[m[41m      [m
+src/app/login/page.tsx.before-jembeevideo-redirect-fix:140: trailing whitespace.
+[32m+[m[41m        [m
+src/app/login/page.tsx.before-jembeevideo-redirect-fix:144: trailing whitespace.
+[32m+[m[32m          window.location.href = redirect;[m[41m [m
+src/app/login/page.tsx.before-jembeevideo-redirect-fix:211: trailing whitespace.
+[32m+[m[32m        <Link[m[41m [m
+src/app/login/page.tsx.before-jembeevideo-redirect-fix:212: trailing whitespace.
+[32m+[m[32m          href={referralCode ? `/signup?ref=${referralCode}` : "/signup"}[m[41m [m
+src/app/mlm/watch-earn/components/CommentDrawer.tsx.before-input-visibility-fix:28: trailing whitespace.
+[32m+[m[41m    [m
+src/app/mlm/watch-earn/components/CommentDrawer.tsx.before-input-visibility-fix:109: trailing whitespace.
+[32m+[m[41m    [m
+src/app/mlm/watch-earn/components/CommentDrawer.tsx.before-input-visibility-fix:112: trailing whitespace.
+[32m+[m[32m        videoId,[m[41m [m
+src/app/mlm/watch-earn/components/CommentDrawer.tsx.before-input-visibility-fix:113: trailing whitespace.
+[32m+[m[32m        auth.currentUser.uid,[m[41m [m
+src/app/mlm/watch-earn/components/CommentDrawer.tsx.before-input-visibility-fix:114: trailing whitespace.
+[32m+[m[32m        auth.currentUser.displayName || "User",[m[41m [m
+src/app/mlm/watch-earn/components/VerticalVideoFeed.tsx.before-native-video-share:196: trailing whitespace.
+[32m+[m[41m  [m
+src/app/mlm/watch-earn/components/VerticalVideoFeed.tsx.before-share-fix:155: trailing whitespace.
+[32m+[m[41m  [m

@@ -1,8 +1,8 @@
 import ThemeBuilderPage from "@/components/admin/theme-builder/ThemeBuilderPage";
 
 export const metadata = {
-  title: "Theme Builder | JembeeKart Admin",
-  description: "Manage JembeeKart Theme Settings",
+  title: "Theme Builder | Jembee Shorts Admin",
+  description: "Manage Jembee Shorts Theme Settings",
 };
 
 export default function Page() {

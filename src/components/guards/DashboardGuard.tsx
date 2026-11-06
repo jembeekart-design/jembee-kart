@@ -52,7 +52,7 @@ export default function DashboardGuard({ children }: { children: React.ReactNode
         </div>
         <h3 className="text-sm font-black uppercase tracking-widest text-[var(--text-color)]">Securing Ledger Space</h3>
         <p className="text-[11px] font-medium text-[var(--text-color)] max-w-xs mt-1.5 leading-relaxed">
-          Initial user profile generation structure state is getting verified by JembeeKart Node Engine. Please wait a moment...
+          Initial user profile generation structure state is getting verified by Jembee Shorts Node Engine. Please wait a moment...
         </p>
       </div>
     );

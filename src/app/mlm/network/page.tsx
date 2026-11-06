@@ -289,7 +289,7 @@ export default function MLMNetworkPage() {
                     <div className="space-y-1.5 flex-1">
                       <div className="flex items-center gap-2">
                         <h3 className="text-[15px] font-black text-[var(--text-primary)]">
-                          {member.name || "JembeeKart User"}
+                          {member.name || "Jembee Shorts User"}
                         </h3>
                         <span className="flex items-center gap-1 bg-[var(--color-primary-button)] text-[var(--color-primary-button)] text-[10px] font-black px-2 py-0.5 rounded-full">
                           <Shield size={10} />

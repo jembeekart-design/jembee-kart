@@ -40,7 +40,7 @@ export default function MLMInvitePage() {
           setReferralName(
             data.name ||
             data.displayName ||
-            "JembeeKart User"
+            "Jembee Shorts User"
           );
 
           setReferralCode(
@@ -77,7 +77,7 @@ export default function MLMInvitePage() {
   }
 
   function shareWhatsApp() {
-    const text = `Join JembeeKart MLM 🚀\n\n${referralName}\n${referralLink}`;
+    const text = `Join Jembee Shorts MLM 🚀\n\n${referralName}\n${referralLink}`;
     window.open(
       `https://wa.me/?text=${encodeURIComponent(text)}`,
       "_blank"
@@ -85,7 +85,7 @@ export default function MLMInvitePage() {
   }
 
   function shareTelegram() {
-    const text = `Join JembeeKart MLM 🚀\n\n${referralName}\n${referralLink}`;
+    const text = `Join Jembee Shorts MLM 🚀\n\n${referralName}\n${referralLink}`;
     window.open(
       `https://t.me/share/url?url=${encodeURIComponent(
         referralLink

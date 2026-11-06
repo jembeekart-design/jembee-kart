@@ -273,7 +273,7 @@ export default function BackupsPage() {
         </h2>
 
         <p className="mt-2 text-[var(--button-text-color)]/80">
-          Secure your JembeeKart data & restore anytime
+          Secure your Jembee Shorts data & restore anytime
         </p>
 
       </div>

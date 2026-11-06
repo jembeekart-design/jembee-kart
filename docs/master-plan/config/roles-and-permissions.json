@@ -1,0 +1,17 @@
+{
+  "roles": {
+    "learner": ["watch_public_approved_content", "save_content", "comment_when_allowed", "submit_questions", "take_tests"],
+    "guardian": ["view_linked_child_learning_summary", "manage_child_safety_preferences"],
+    "creator_teacher": ["manage_own_profile", "upload_own_content", "link_content_to_catalogue", "view_own_analytics", "manage_own_courses"],
+    "school_admin": ["manage_verified_school_profile", "request_teacher_associations", "view_school_content_summary"],
+    "moderator": ["review_content", "review_reports", "review_school_claims", "record_moderation_decisions"],
+    "super_admin": ["manage_roles", "manage_categories", "manage_catalogue", "manage_ad_placements", "manage_platform_settings", "review_audit_logs"]
+  },
+  "securityRules": [
+    "Never trust role, approval, active, paid, price, or purchase flags supplied by the client.",
+    "All sensitive writes require server-side authorization and audit logging.",
+    "Paid playback requires confirmed server-side entitlement; unknown states deny access.",
+    "Only approved, active, safe content is publicly discoverable.",
+    "School and teacher verification badges require actual review evidence."
+  ]
+}

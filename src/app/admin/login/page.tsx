@@ -30,9 +30,7 @@ export default function AdminLoginPage() {
       );
    const user = auth.currentUser;
 
-alert(
-  `UID: ${user?.uid}\nEMAIL: ${user?.email}`
-);
+
 
 console.log("LOGIN UID:", user?.uid);
 console.log("LOGIN EMAIL:", user?.email);
@@ -58,7 +56,7 @@ console.log("LOGIN EMAIL:", user?.email);
       >
 
         <h1 className="text-3xl font-bold text-[var(--text-primary)] mb-6 text-center">
-          Admin Login
+          Jembee Shorts Admin Login
         </h1>
 
         <input

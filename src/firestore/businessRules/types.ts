@@ -124,6 +124,7 @@ export interface BusinessRulesConfig {
   creatorEconomy: CreatorEconomyRules;
   featureFlags: FeatureFlags;
   signup: SignupRules;
+  videoAds: VideoAdsRules;
   metadata: BusinessRulesMetadata;
 }
 
@@ -159,4 +160,12 @@ export interface BusinessRulesMetrics {
   fallbackReads: number;
   validationFailures: number;
   lastRefresh: string | null;
+}
+
+
+export interface VideoAdsRules {
+  enabled: boolean;
+  firstAdAfterVideos: number;
+  repeatEveryVideos: number;
+  autoDismissSeconds: number;
 }

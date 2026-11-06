@@ -1,0 +1,23 @@
+[
+  {"id":"school-education","name":"School Education","icon":"school","subcategories":["Nursery","Primary","Middle School","Secondary","Higher Secondary","Board Preparation","Homework Help"]},
+  {"id":"agriculture","name":"Agriculture","icon":"sprout","subcategories":["Crop Farming","Seeds","Soil & Fertilizer","Irrigation","Organic Farming","Farm Machinery","Crop Protection","Government Schemes"]},
+  {"id":"college-higher-education","name":"College & Higher Education","icon":"graduation-cap","subcategories":["Arts","Science","Commerce","Engineering","Medical","Diploma","Postgraduate"]},
+  {"id":"competitive-exams","name":"Competitive Exams","icon":"trophy","subcategories":["JEE","NEET","CUET","SSC","Railway","Banking","UPSC","State Exams"]},
+  {"id":"computer-technology","name":"Computer & Technology","icon":"laptop","subcategories":["Basic Computer","Coding","Web Development","AI","Cyber Safety","Office Tools","Mobile Technology"]},
+  {"id":"skill-development","name":"Skill Development","icon":"wrench","subcategories":["Electrician","Plumbing","Repairing","Tailoring","Graphic Design","Digital Marketing","Beauty & Wellness"]},
+  {"id":"animal-husbandry","name":"Animal Husbandry & Dairy","icon":"paw-print","subcategories":["Dairy","Cattle","Goat Farming","Poultry","Fish Farming","Animal Care"]},
+  {"id":"health-education","name":"Health Education & First Aid","icon":"heart-pulse","subcategories":["General Health Education","First Aid","Nutrition","Hygiene","Public Health Awareness"]},
+  {"id":"languages","name":"Languages & Communication","icon":"languages","subcategories":["English","Hindi","Spoken English","Grammar","Writing","Regional Languages"]},
+  {"id":"business","name":"Business & Entrepreneurship","icon":"briefcase-business","subcategories":["Starting a Business","Accounting Basics","Marketing","Customer Service","Small Business Skills"]},
+  {"id":"arts-culture","name":"Art, Music & Culture","icon":"palette","subcategories":["Drawing","Painting","Craft","Music","Dance","Photography"]},
+  {"id":"sports-fitness","name":"Sports, Fitness & Yoga","icon":"dumbbell","subcategories":["Sports Skills","Yoga","Fitness Basics","Safety & Conditioning"]},
+  {"id":"science-discovery","name":"Science & Discovery","icon":"flask-conical","subcategories":["Physics","Chemistry","Biology","Space","Experiments"]},
+  {"id":"general-knowledge","name":"General Knowledge & History","icon":"globe","subcategories":["History","Geography","Civics","Current Awareness","General Knowledge"]},
+  {"id":"environment-gardening","name":"Environment & Gardening","icon":"trees","subcategories":["Gardening","Nursery","Waste Management","Water Conservation","Climate Awareness"]},
+  {"id":"cooking-nutrition","name":"Cooking & Nutrition","icon":"chef-hat","subcategories":["Recipes","Baking","Food Safety","Meal Preparation"]},
+  {"id":"home-diy","name":"Home Skills & DIY","icon":"house","subcategories":["Home Repair","Cleaning Skills","Basic Maintenance","DIY Projects"]},
+  {"id":"career-jobs","name":"Career & Job Preparation","icon":"compass","subcategories":["Resume","Interview Skills","Workplace Skills","Career Guidance"]},
+  {"id":"legal-civic-awareness","name":"Legal & Civic Awareness","icon":"scale","subcategories":["Citizen Rights","Public Services","Legal Basics","Digital Safety"]},
+  {"id":"kids-learning","name":"Kids Learning","icon":"blocks","subcategories":["Early Learning","Rhymes","Basic Numbers","Reading","Creative Activities"],"agePolicy":"child_safe_review_required"},
+  {"id":"shorts-entertainment","name":"Shorts & Entertainment","icon":"play-circle","subcategories":["Comedy","Stories","Talent","Culture","Behind the Scenes"]}
+]

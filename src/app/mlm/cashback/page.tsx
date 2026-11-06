@@ -194,7 +194,7 @@ export default function CashbackPage() {
         
         const data = snap.data();
         
-        // Issue #3 Fix: Validated pure types parameters matching the JembeeKart exact model rules
+        // Issue #3 Fix: Validated pure types parameters matching the Jembee Shorts exact model rules
         setStats({
           walletBalance: typeof data.walletBalance === "number" ? data.walletBalance : 0,
           commissionWallet: typeof data.commissionWallet === "number" ? data.commissionWallet : 0,
@@ -333,7 +333,7 @@ export default function CashbackPage() {
         <section className="bg-[var(--color-card-background)] rounded-[32px] p-5 border border-[var(--color-border)] space-y-4 shadow-sm">
           <div className="flex items-center gap-2 pb-1 border-b border-[var(--color-border)]">
             <SlidersHorizontal size={15} className="text-[var(--text-primary)]" />
-            <h3 className="text-xs font-black uppercase tracking-wider text-[var(--text-primary)]">JembeeKart Active Master Wallets</h3>
+            <h3 className="text-xs font-black uppercase tracking-wider text-[var(--text-primary)]">Jembee Shorts Active Master Wallets</h3>
           </div>
           
           <div className="grid grid-cols-2 gap-4">

@@ -11,7 +11,6 @@ import {
   Package,
   TrendingUp,
   Wallet,
-  Bell,
   Shield,
   Store,
   Truck,
@@ -24,25 +23,25 @@ const stats = [
 
   {
     title: "Total Revenue",
-    value: "₹18.4L",
+    value: "Not connected",
     icon: IndianRupee
   },
 
   {
     title: "Orders",
-    value: "12,840",
+    value: "Not connected",
     icon: ShoppingCart
   },
 
   {
     title: "Users",
-    value: "42,120",
+    value: "Not connected",
     icon: Users
   },
 
   {
     title: "Products",
-    value: "8,420",
+    value: "Not connected",
     icon: Package
   }
 
@@ -116,7 +115,7 @@ export default function AdminHomePage() {
 
             <h1 className="text-4xl font-black lg:text-5xl">
 
-              JembeeKart Admin
+              Jembee Shorts Admin
 
             </h1>
 
@@ -129,13 +128,10 @@ export default function AdminHomePage() {
 
             </p>
 
-            <button className="mt-6 flex items-center gap-2 rounded-2xl bg-[var(--color-card-background)] px-6 py-4 font-bold text-[var(--button-text-color)]">
-
+            <Link href="/admin/analytics" className="mt-6 inline-flex items-center gap-2 rounded-2xl bg-[var(--color-card-background)] px-6 py-4 font-bold text-[var(--button-text-color)]">
               Open Analytics
-
               <ArrowRight size={18} />
-
-            </button>
+            </Link>
 
           </div>
 
@@ -264,46 +260,6 @@ export default function AdminHomePage() {
 
       <div className="mt-10 grid gap-5 lg:grid-cols-2">
 
-        {/* RECENT ORDERS */}
-
-        <div className="rounded-[30px] border border-[var(--color-border)]/10 bg-[var(--color-primary-button)] p-6">
-
-          <div className="flex items-center gap-3">
-
-            <ShoppingCart
-              size={24}
-              className="text-[var(--color-primary-button)]"
-            />
-
-            <h2 className="text-2xl font-black">
-
-              Recent Orders
-
-            </h2>
-
-          </div>
-
-          <div className="mt-6 space-y-4">
-
-            <ActivityItem
-              title="New iPhone Order"
-              subtitle="Order var(--color-primary-button) placed"
-            />
-
-            <ActivityItem
-              title="Fashion Product"
-              subtitle="Order var(--color-primary-button) shipped"
-            />
-
-            <ActivityItem
-              title="Gaming Laptop"
-              subtitle="Order var(--color-primary-button) delivered"
-            />
-
-          </div>
-
-        </div>
-
         {/* SYSTEM STATUS */}
 
         <div className="rounded-[30px] border border-[var(--color-border)]/10 bg-[var(--color-primary-button)] p-6">
@@ -327,22 +283,22 @@ export default function AdminHomePage() {
 
             <StatusItem
               title="Payment Gateway"
-              status="Active"
+              status="Not verified"
             />
 
             <StatusItem
               title="Realtime Notifications"
-              status="Running"
+              status="Not verified"
             />
 
             <StatusItem
               title="Security Firewall"
-              status="Protected"
+              status="Not verified"
             />
 
             <StatusItem
               title="Cloud Storage"
-              status="Connected"
+              status="Not verified"
             />
 
           </div>
@@ -367,9 +323,7 @@ export default function AdminHomePage() {
 
             <p className="mt-4 max-w-2xl text-sm text-[var(--button-text-color)]/90">
 
-              Your ecommerce admin panel is now powered
-              with AI systems, affiliate engine,
-              analytics, live chat and realtime tracking.
+              Some modules require live service integration and operational verification before production use.
 
             </p>
 
@@ -377,93 +331,22 @@ export default function AdminHomePage() {
 
           <div className="flex gap-4">
 
-            <button className="rounded-2xl bg-[var(--color-card-background)] px-6 py-4 font-bold text-[var(--button-text-color)]">
-
+            <Link href="/admin/ai-tools" className="rounded-2xl bg-[var(--color-card-background)] px-6 py-4 font-bold text-[var(--button-text-color)]">
               Open AI Tools
+            </Link>
 
-            </button>
-
-            <button className="rounded-2xl bg-[var(--color-card-background)] px-6 py-4 font-bold text-[var(--text-primary)]">
-
+            <Link href="/admin/products" className="rounded-2xl bg-[var(--color-card-background)] px-6 py-4 font-bold text-[var(--text-primary)]">
               Manage Store
-
-            </button>
-
-          </div>
-
-        </div>
-
-      </div>
-
-      {/* ALERT */}
-
-      <div className="mt-8 rounded-[28px] border border-[var(--color-warning)]/20 bg-[var(--color-warning)]/10 p-5">
-
-        <div className="flex items-start gap-4">
-
-          <Bell
-            size={24}
-            className="text-[var(--color-warning)]"
-          />
-
-          <div>
-
-            <h3 className="text-xl font-black text-[var(--color-warning)]">
-
-              System Notification
-
-            </h3>
-
-            <p className="mt-2 text-sm text-[var(--text-primary)]">
-
-              Admin dashboard successfully connected
-              with sidebar layout and navigation system.
-
-            </p>
+            </Link>
 
           </div>
 
         </div>
 
       </div>
+
 
     </main>
-
-  );
-
-}
-
-function ActivityItem({
-  title,
-  subtitle
-}: {
-  title: string;
-  subtitle: string;
-}) {
-
-  return (
-
-    <div className="flex items-center justify-between rounded-2xl bg-[var(--color-primary-button)] p-4">
-
-      <div>
-
-        <h3 className="font-bold">
-
-          {title}
-
-        </h3>
-
-        <p className="mt-1 text-sm text-[var(--text-muted)]">
-
-          {subtitle}
-
-        </p>
-
-      </div>
-
-      <div className="h-3 w-3 rounded-full bg-[var(--color-success)]" />
-
-    </div>
 
   );
 
@@ -487,10 +370,8 @@ function StatusItem({
 
       </h3>
 
-      <div className="rounded-full bg-[var(--color-success)]/20 px-4 py-2 text-sm font-bold text-[var(--color-success)]">
-
+      <div className="rounded-full bg-[var(--color-card-background)] px-4 py-2 text-sm font-bold text-[var(--text-secondary)]">
         {status}
-
       </div>
 
     </div>

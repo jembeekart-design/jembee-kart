@@ -1,59 +1,37 @@
 "use client";
 
-import {
-  createContext,
-  useContext,
-  useState,
-  useEffect,
-} from "react";
-import { doc, onSnapshot } from "firebase/firestore";
-import { db } from "@/firebase/config";
-import { useAdminConfig } from "@/lib/admin-config/provider";
+import { createContext, useContext, useState } from "react";
 import type { Theme } from "@/types/theme";
+
+const JEMBEE_SHORTS_THEME = {
+  primaryColor: "#06B6D4",
+  secondaryColor: "#8B5CF6",
+  backgroundColor: "#05070B",
+  surfaceColor: "#111827",
+  cardColor: "#111827",
+  textColor: "#F8FAFC",
+  headingColor: "#F8FAFC",
+  subTextColor: "#CBD5E1",
+  mutedTextColor: "#94A3B8",
+  borderColor: "#263244",
+  buttonColor: "#06B6D4",
+  buttonHoverColor: "#0891B2",
+  buttonTextColor: "#03131A",
+  darkMode: true,
+} as unknown as Theme;
 
 interface ThemeContextType {
   theme: Theme;
   setTheme: React.Dispatch<React.SetStateAction<Theme>>;
 }
 
-export const ThemeContext = createContext<ThemeContextType>({} as ThemeContextType);
+export const ThemeContext = createContext<ThemeContextType>({
+  theme: JEMBEE_SHORTS_THEME,
+  setTheme: () => undefined,
+});
 
 export function ThemeProvider({ children }: { children: React.ReactNode }) {
-  const { config } = useAdminConfig();
-  const [theme, setTheme] = useState<Theme>(config.theme as Theme);
-
-  useEffect(() => {
-    if (config.theme) {
-      setTheme((previous) => ({
-        ...config.theme,
-        headerBackground: previous.headerBackground ?? config.theme.headerBackground,
-        searchBarColor: previous.searchBarColor ?? config.theme.searchBarColor,
-        buttonColor: previous.buttonColor ?? config.theme.buttonColor,
-        cardBorderColor: previous.cardBorderColor ?? config.theme.cardBorderColor,
-      } as Theme));
-    }
-  }, [config.theme]);
-
-  useEffect(() => {
-    const ref = doc(db, "admin_settings", "customize");
-
-    const unsubscribe = onSnapshot(ref, (snap) => {
-      if (!snap.exists()) return;
-
-      const saved = snap.data();
-
-      setTheme((previous) => ({
-        ...previous,
-        headerBackground: saved.headerBackground ?? previous.headerBackground,
-        searchBarColor: saved.searchBarColor ?? previous.searchBarColor,
-        buttonColor: saved.buttonColor ?? previous.buttonColor,
-        cardBorderColor: saved.cardBorderColor ?? previous.cardBorderColor,
-      } as Theme));
-    });
-
-    return () => unsubscribe();
-  }, []);
-
+  const [theme, setTheme] = useState<Theme>(JEMBEE_SHORTS_THEME);
   return (
     <ThemeContext.Provider value={{ theme, setTheme }}>
       {children}

@@ -82,7 +82,7 @@ export default function AccountPage() {
         setUser({
           uid: data.uid || currentUser.uid,
           email: data.email || "",
-          name: data.displayName || data.name || currentUser.displayName || "JembeeKart User",
+          name: data.displayName || data.name || currentUser.displayName || "Jembee Shorts User",
           photo: data.photoURL || data.photo || currentUser.photoURL || "",
           phone: data.phone || "",
           walletBalance: data.walletBalance || 0,
@@ -99,7 +99,7 @@ export default function AccountPage() {
         setUser({
           uid: currentUser.uid,
           email: currentUser.email || "",
-          name: currentUser.displayName || "JembeeKart User",
+          name: currentUser.displayName || "Jembee Shorts User",
           photo: currentUser.photoURL || "",
           phone: currentUser.phoneNumber || "",
           walletBalance: 0,

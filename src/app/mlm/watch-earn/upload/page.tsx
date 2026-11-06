@@ -185,7 +185,7 @@ function UploadWatchVideoContent() {
       <header className="sticky top-0 z-20 border-b border-slate-200 bg-white/95 px-4 py-3 backdrop-blur">
         <div className="mx-auto flex max-w-2xl items-center justify-between">
           <Link
-            href="/mlm/watch-earn"
+            href="/shorts"
             className="flex h-11 w-11 items-center justify-center rounded-full"
           >
             <ArrowLeft size={30} />
@@ -193,7 +193,7 @@ function UploadWatchVideoContent() {
 
           <div className="text-center">
             <h1 className="text-xl font-black">
-              Watch & <span className="text-blue-600">Earn</span>
+              Jembee <span className="text-cyan-400">Shorts</span>
             </h1>
             <p className="text-sm font-bold">👑 वीडियो डालें</p>
           </div>
@@ -222,7 +222,7 @@ function UploadWatchVideoContent() {
             </p>
 
             <p className="mt-2 text-lg font-semibold text-slate-600">
-              वीडियो अपलोड करें और कमाई शुरू करें
+              Jembee Shorts पर अपना वीडियो साझा करें
             </p>
 
             {/* Steps */}
@@ -471,7 +471,7 @@ function UploadWatchVideoContent() {
         {/* Bottom navigation */}
         <nav className="mt-8 grid grid-cols-4 rounded-[28px] border border-slate-200 bg-white p-3 shadow-lg">
           <Link
-            href="/mlm/watch-earn"
+            href="/shorts"
             className="flex flex-col items-center gap-1 py-2 text-xs font-bold"
           >
             🏠
@@ -479,7 +479,7 @@ function UploadWatchVideoContent() {
           </Link>
 
           <Link
-            href="/mlm/watch-earn"
+            href="/shorts"
             className="flex flex-col items-center gap-1 py-2 text-xs font-bold"
           >
             ▶️

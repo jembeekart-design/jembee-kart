@@ -16,7 +16,7 @@ export async function POST(req: Request) {
   }
 
   const authHeader = req.headers.get("authorization");
-  
+
   console.log("[AuthDiagnostic] Complete Upload - Auth Header:", authHeader ? "Present" : "Missing");
   if (authHeader) {
       console.log("[AuthDiagnostic] Complete Upload - Bearer Prefix:", authHeader.startsWith("Bearer ") ? "Present" : "Missing");

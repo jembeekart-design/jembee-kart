@@ -13,7 +13,7 @@ export default function FooterSection() {
         <div className="min-w-0">
 
           <h2 className="break-words text-3xl font-black theme-primary-text md:text-4xl">
-            JembeeKart
+            Jembee Shorts
           </h2>
 
           <p className="mt-4 break-words text-sm leading-relaxed text-[var(--muted-text-color)] md:text-lg">
@@ -156,7 +156,7 @@ export default function FooterSection() {
 
       <div className="border-t border-[var(--border-color)] px-4 py-5 text-center text-sm text-[var(--muted-text-color)] md:text-base">
 
-        © 2026 JembeeKart. All rights reserved.
+        © 2026 Jembee Shorts. All rights reserved.
 
       </div>
 

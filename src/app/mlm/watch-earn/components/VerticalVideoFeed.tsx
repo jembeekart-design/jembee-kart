@@ -9,6 +9,9 @@ import {
 
 import VideoPlayer
   from "./VideoPlayer";
+import PaidVideoGate from "./PaidVideoGate";
+
+
 
 import VideoInfo
   from "./VideoInfo";
@@ -24,14 +27,30 @@ import BottomQuickActions from "./BottomQuickActions";
 import { getWatchVideos, WatchVideo } from "../services/watchVideos.service";
 
 // New imports for persistence and auth
-import { auth, db } from "@/firebase/config";
+import { auth, db, isFirebaseConfigured } from "@/firebase/config";
 import { likeVideo } from "@/lib/mlm/watch-earn/likeVideo";
 import { unlikeVideo } from "@/lib/mlm/watch-earn/unlikeVideo";
 import { shareVideo } from "@/lib/mlm/watch-earn/shareVideo";
 import { reportVideo } from "@/lib/mlm/watch-earn/reportVideo";
 import { setVideoPreference } from "@/lib/mlm/watch-earn/setVideoPreference";
+
+import FloatingAdComponent, { type FloatingAd } from "./FloatingAd";
+
+
 import { useRequireAuth } from "@/hooks/useRequireAuth";
 import { collection, doc, onSnapshot } from "firebase/firestore";
+
+interface VideoAdsResponse {
+  enabled: boolean;
+  rules: {
+    enabled: boolean;
+    firstAdAfterVideos: number;
+    repeatEveryVideos: number;
+    autoDismissSeconds: number;
+  };
+  ads: FloatingAd[];
+}
+
 
 export default function VerticalVideoFeed({
   activeTab
@@ -43,6 +62,88 @@ export default function VerticalVideoFeed({
   const [followingList, setFollowingList] = useState<string[]>([]);
   const [notInterestedIds, setNotInterestedIds] = useState<string[]>([]);
   const [videos, setVideos] = useState<WatchVideo[]>([]);
+  const [videoAdsData, setVideoAdsData] = useState<VideoAdsResponse | null>(null);
+  const [watchedVideoCount, setWatchedVideoCount] = useState(0);
+  const countedVideoIds = useRef<Set<string>>(new Set());
+  const nextAdAtVideoCount = useRef<number | null>(null);
+  const [currentVideoAd, setCurrentVideoAd] = useState<FloatingAd | null>(null);
+  const [videoAdIndex, setVideoAdIndex] = useState(0);
+  const nextAdMilestoneIndex = useRef(0);
+
+  const handleActualPlaybackSeconds = (videoId: string, seconds: number) => {
+    if (seconds <= 0) return;
+    if (!countedVideoIds.current.has(videoId)) {
+      countedVideoIds.current.add(videoId);
+      setWatchedVideoCount(countedVideoIds.current.size);
+    }
+  };
+
+  const requestVideoReviewEmail = async (videoId: string) => {
+    const user = auth.currentUser;
+    if (!user || !user.emailVerified) return;
+    try {
+      const token = await user.getIdToken();
+      await fetch("/api/shorts/review-email", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify({ videoId }),
+      });
+    } catch (error) {
+      // Review-email delivery is non-blocking and must never interrupt playback.
+      console.warn("Unable to request video review email", error);
+    }
+  };
+
+
+  useEffect(() => {
+    let cancelled = false;
+
+    async function loadVideoAds() {
+      try {
+        const response = await fetch("/api/watch-earn/video-ads", {
+          method: "GET",
+          cache: "no-store",
+        });
+
+        if (!response.ok) throw new Error("Video ads request failed");
+
+        const data = (await response.json()) as VideoAdsResponse;
+        if (!cancelled) setVideoAdsData(data);
+      } catch (error) {
+        console.error("Unable to load video ads:", error);
+        if (!cancelled) setVideoAdsData(null);
+      }
+    }
+
+    loadVideoAds();
+    return () => {
+      cancelled = true;
+    };
+  }, []);
+
+  useEffect(() => {
+    const data = videoAdsData;
+    if (!data?.enabled || !data.rules.enabled || currentVideoAd) return;
+
+    const firstAdAfter = Math.max(5, data.rules.firstAdAfterVideos || 5);
+    const repeatEvery = Math.max(1, data.rules.repeatEveryVideos || 1);
+    if (nextAdAtVideoCount.current === null) {
+      nextAdAtVideoCount.current = firstAdAfter + 1;
+    }
+    if (watchedVideoCount < nextAdAtVideoCount.current) return;
+
+    const availableAds = data.ads.filter((ad) => ad.enabled);
+    if (availableAds.length === 0) return;
+
+    const selectedAd = availableAds[videoAdIndex % availableAds.length];
+    nextAdAtVideoCount.current = watchedVideoCount + repeatEvery;
+    setVideoAdIndex((previous) => previous + 1);
+    setCurrentVideoAd(selectedAd);
+  }, [watchedVideoCount, videoAdsData, currentVideoAd, videoAdIndex]);
+
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
 
@@ -135,8 +236,16 @@ export default function VerticalVideoFeed({
           Array.isArray(result.videos)
         ) {
           setVideos(result.videos);
+          if (result.videos.length === 0) {
+            setError(
+              "Firebase is connected, but no approved videos were found in the watchEarnVideos collection yet."
+            );
+          }
         } else {
           setVideos([]);
+          setError(
+            "Jembee Shorts could not load videos. Check Firebase configuration, Firestore access rules, and the watchEarnVideos collection."
+          );
         }
       } catch {
         if (!isMounted) return;
@@ -192,6 +301,16 @@ export default function VerticalVideoFeed({
     activeVideoId,
     setActiveVideoId
   ] = useState<string>("");
+
+  const [authorizedPaidVideos, setAuthorizedPaidVideos] = useState<Record<string, boolean>>({});
+
+  useEffect(() => {
+    const paidVideoId = new URLSearchParams(window.location.search).get("paidVideoId");
+    if (paidVideoId && /^[^/]{1,200}$/.test(paidVideoId)) {
+      setAuthorizedPaidVideos((current) => ({ ...current, [paidVideoId]: true }));
+      setActiveVideoId(paidVideoId);
+    }
+  }, []);
 
   const [playbackSpeeds, setPlaybackSpeeds] = useState<Record<string, number>>({});
   
@@ -269,7 +388,7 @@ export default function VerticalVideoFeed({
       console.error('Share attribution unavailable:', error);
     }
     const shareData = {
-      title: 'Check out this video on JembeeKart',
+      title: 'Check out this video on Jembee Shorts',
       text: video.caption,
       url: shareUrl,
     };
@@ -363,8 +482,47 @@ export default function VerticalVideoFeed({
 
   if (videos.length === 0) {
     return (
-      <main className="h-screen flex items-center justify-center bg-black text-white">
-        <p>No videos available.</p>
+      <main className="relative h-[100dvh] w-full overflow-hidden bg-[#05070B] text-white">
+        <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_48%_42%,rgba(6,182,212,0.18),transparent_42%),radial-gradient(ellipse_at_85%_75%,rgba(139,92,246,0.16),transparent_38%)]" />
+        <div className="absolute left-8 right-24 top-[34%] z-10 text-center">
+          <div className="mx-auto mb-5 flex h-20 w-20 items-center justify-center rounded-3xl border border-cyan-300/40 bg-cyan-300/10 text-4xl shadow-[0_0_45px_rgba(6,182,212,0.18)]">
+            ▶
+          </div>
+          <h2 className="text-2xl font-extrabold tracking-tight">
+            Jembee <span className="text-cyan-300">Shorts</span>
+          </h2>
+          <p className="mt-3 text-sm font-medium text-white/80">
+            {isFirebaseConfigured ? "Your Shorts feed is ready" : "Connect your JembeeKart Firebase project"}
+          </p>
+          <p className="mx-auto mt-2 max-w-xs text-xs leading-5 text-white/50">
+            {isFirebaseConfigured
+              ? "Firebase is configured. Publish approved videos to the watchEarnVideos collection to populate this feed."
+              : "Real videos, creators, likes and comments will load after the existing Firebase Web configuration is added to .env.local."}
+          </p>
+        </div>
+
+        <VideoActions
+          likes={0}
+          comments={0}
+          shares={0}
+          coins={0}
+          isMuted={isMuted}
+          onLike={() => setToastMessage("Like becomes available when a real video is loaded.")}
+          onComment={() => setToastMessage("Comments become available when a real video is loaded.")}
+          onShare={() => setToastMessage("Share becomes available when a real video is loaded.")}
+          onSave={() => setToastMessage("Save becomes available when a real video is loaded.")}
+          toggleMute={() => setIsMuted((value) => !value)}
+          isLiked={false}
+          isSaved={false}
+        />
+
+        <div className="absolute bottom-[calc(6.2rem+env(safe-area-inset-bottom))] left-5 z-20 max-w-[62%] pr-2">
+          <p className="text-sm font-bold">Jembee Shorts</p>
+          <p className="mt-1 text-xs text-white/65">Discover • Watch • Share</p>
+        </div>
+
+        <BottomQuickActions video={undefined} />
+        <Toast message={toastMessage} onClose={() => setToastMessage(null)} />
       </main>
     );
   }
@@ -403,19 +561,26 @@ export default function VerticalVideoFeed({
             >
               {/* VIDEO */}
 
-              <VideoPlayer
-                videoUrl={
-                  video.video
-                }
-
-                isMuted={isMuted}
-
-                active={
-                  activeVideoId === video.id
-                }
-
-                playbackRate={playbackSpeeds[video.id] || 1}
-              />
+              {video.videoAccess === "paid" && !authorizedPaidVideos[video.id] ? (
+                <PaidVideoGate
+                  videoId={video.id}
+                  price={video.videoPrice}
+                  onAuthorized={() => setAuthorizedPaidVideos((current) => ({ ...current, [video.id]: true }))}
+                />
+              ) : (
+                <VideoPlayer
+                  videoUrl={
+                    video.videoAccess === "paid"
+                      ? `/api/shorts/video-stream/${encodeURIComponent(video.id)}`
+                      : video.video
+                  }
+                  isMuted={isMuted}
+                  active={activeVideoId === video.id}
+                  playbackRate={playbackSpeeds[video.id] || 1}
+                  onActualPlaybackSeconds={(seconds) => handleActualPlaybackSeconds(video.id, seconds)}
+                  onNinetyPercentWatched={() => void requestVideoReviewEmail(video.id)}
+                />
+              )}
 
               {/* INFO */}
 
@@ -642,6 +807,15 @@ export default function VerticalVideoFeed({
             </section>
           )
         )
+      )}
+
+      {currentVideoAd && (
+        <FloatingAdComponent
+          key={currentVideoAd.id}
+          ad={currentVideoAd}
+          autoDismissSeconds={videoAdsData?.rules.autoDismissSeconds ?? 8}
+          onDismiss={() => setCurrentVideoAd(null)}
+        />
       )}
 
       {/* MODAL */}

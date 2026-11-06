@@ -1,5 +1,6 @@
-import { useState, useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { doc, onSnapshot } from 'firebase/firestore';
+import { onAuthStateChanged } from 'firebase/auth';
 import { auth, db } from '@/firebase/config';
 
 export interface WalletData {
@@ -11,34 +12,65 @@ export interface WalletData {
   todayIncome: number;
 }
 
+const toFiniteAmount = (value: unknown): number => {
+  const amount = typeof value === 'number' ? value : Number(value ?? 0);
+  return Number.isFinite(amount) && amount >= 0 ? amount : 0;
+};
+
 export const useWallet = () => {
   const [wallet, setWallet] = useState<WalletData | null>(null);
   const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
-    if (!auth.currentUser) {
-      setLoading(false);
-      return;
-    }
-
-    const userRef = doc(db, 'users', auth.currentUser.uid);
-    const unsubscribe = onSnapshot(userRef, (doc) => {
-      if (doc.exists()) {
-        const data = doc.data();
-        setWallet({
-          walletBalance: data.walletBalance || 0,
-          commissionWallet: data.commissionWallet || 0,
-          rewardWallet: data.rewardWallet || 0,
-          cashbackWallet: data.cashbackWallet || 0,
-          totalIncome: data.totalIncome || 0,
-          todayIncome: data.todayIncome || 0,
-        });
+    let unsubscribeWallet: (() => void) | undefined;
+    let active = true;
+    const unsubscribeAuth = onAuthStateChanged(auth, (user) => {
+      unsubscribeWallet?.();
+      unsubscribeWallet = undefined;
+      if (!active) return;
+      setWallet(null);
+      setError(null);
+      if (!user) {
+        setLoading(false);
+        return;
       }
-      setLoading(false);
+      setLoading(true);
+      unsubscribeWallet = onSnapshot(
+        doc(db, 'users', user.uid),
+        (snapshot) => {
+          if (!active) return;
+          if (!snapshot.exists()) {
+            setWallet(null);
+          } else {
+            const data = snapshot.data();
+            setWallet({
+              walletBalance: toFiniteAmount(data.walletBalance),
+              commissionWallet: toFiniteAmount(data.commissionWallet),
+              rewardWallet: toFiniteAmount(data.rewardWallet),
+              cashbackWallet: toFiniteAmount(data.cashbackWallet),
+              totalIncome: toFiniteAmount(data.totalIncome),
+              todayIncome: toFiniteAmount(data.todayIncome),
+            });
+          }
+          setLoading(false);
+        },
+        (snapshotError) => {
+          console.error('Wallet subscription failed:', snapshotError);
+          if (!active) return;
+          setWallet(null);
+          setError('Wallet balance is temporarily unavailable. Please try again later.');
+          setLoading(false);
+        },
+      );
     });
 
-    return () => unsubscribe();
-  }, [auth.currentUser]);
+    return () => {
+      active = false;
+      unsubscribeWallet?.();
+      unsubscribeAuth();
+    };
+  }, []);
 
-  return { wallet, loading };
+  return { wallet, loading, error };
 };

@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { FieldValue } from "firebase-admin/firestore";
 import { getAdminAuth, getAdminDb } from "@/firebase/admin";
 import { getCashfreeConfig } from "@/lib/payments/cashfree";
+import { calculateInvoice, paiseToRupees } from "@/lib/commerce/invoice";
 
 export const runtime = "nodejs";
 
@@ -54,6 +55,7 @@ export async function POST(req: NextRequest) {
         : "";
     const selectedSize = typeof body.selectedSize === "string" ? body.selectedSize.trim() : "N/A";
     const selectedColor = typeof body.selectedColor === "string" ? body.selectedColor.trim() : "N/A";
+    const expectedTotalPaise = Number(body.expectedTotalPaise);
 
     if (!productId || productId.length > 200) {
       return errorResponse("Invalid product.", 400);
@@ -61,6 +63,10 @@ export async function POST(req: NextRequest) {
 
     if (!/^[A-Za-z0-9_-]{16,100}$/.test(idempotencyKey)) {
       return errorResponse("Invalid checkout request key. Please try again.", 400);
+    }
+
+    if (!Number.isSafeInteger(expectedTotalPaise) || expectedTotalPaise <= 0) {
+      return errorResponse("Please refresh the invoice before placing your order.", 409);
     }
 
     if (selectedSize.length > 50 || selectedColor.length > 100) {
@@ -92,6 +98,7 @@ export async function POST(req: NextRequest) {
       .doc("default");
 
     const productRef = db.collection("products").doc(productId);
+    const shippingRef = db.collection("settings").doc("shipping");
 
     // The key is scoped to the authenticated customer.
     const requestRef = db
@@ -103,6 +110,7 @@ export async function POST(req: NextRequest) {
       const requestSnap = await transaction.get(requestRef);
       const addressSnap = await transaction.get(addressRef);
       const productSnap = await transaction.get(productRef);
+      const shippingSnap = await transaction.get(shippingRef);
 
       // A retry of the same checkout returns the original order, but a reused
       // idempotency key must never silently resolve to a different cart payload.
@@ -127,6 +135,9 @@ export async function POST(req: NextRequest) {
           (previousOrder.selectedColor || "N/A") === selectedColor &&
           previousOrder.paymentMethod === paymentMethod;
         if (!sameCheckout) throw new Error("IDEMPOTENCY_KEY_REUSED");
+        if (Math.round(Number(previousOrder.finalAmount) * 100) !== expectedTotalPaise) {
+          throw new Error("INVOICE_CHANGED");
+        }
 
         return {
           orderId: previous.orderId as string,
@@ -198,6 +209,25 @@ export async function POST(req: NextRequest) {
 
       const price = product.price;
 
+      // Snapshot the admin-maintained product cost into the order so later
+      // catalog edits cannot silently rewrite historical order economics.
+      // A zero cost is retained but flagged for review because the current
+      // product form does not distinguish "unknown" from a genuinely free COGS.
+      const rawCostPrice = product.costPrice;
+      if (
+        rawCostPrice !== undefined &&
+        (
+          typeof rawCostPrice !== "number" ||
+          !Number.isFinite(rawCostPrice) ||
+          rawCostPrice < 0 ||
+          !Number.isSafeInteger(Math.round(rawCostPrice * 100))
+        )
+      ) {
+        throw new Error("INVALID_PRODUCT_COST");
+      }
+      const costPrice = rawCostPrice === undefined ? 0 : rawCostPrice;
+      const costPriceNeedsReview = product.costPriceConfigured !== true;
+
       // The existing admin form uses discountPrice = 0 for no discount.
       const rawDiscountPrice = product.discountPrice;
 
@@ -232,19 +262,16 @@ export async function POST(req: NextRequest) {
         throw new Error("INSUFFICIENT_STOCK");
       }
 
-      const subtotal = Math.round(price * quantity * 100) / 100;
-      const finalAmount =
-        Math.round(discountPrice * quantity * 100) / 100;
-      const totalDiscount =
-        Math.round((subtotal - finalAmount) * 100) / 100;
-
-      if (
-        !Number.isFinite(subtotal) ||
-        !Number.isFinite(finalAmount) ||
-        finalAmount <= 0
-      ) {
-        throw new Error("INVALID_ORDER_AMOUNT");
+      if (!shippingSnap.exists || shippingSnap.data()?.shippingConfigured !== true) {
+        throw new Error("SHIPPING_NOT_CONFIGURED");
       }
+      const invoice = calculateInvoice(product, shippingSnap.data() || {}, quantity);
+      if (invoice.totalPaise !== expectedTotalPaise) throw new Error("INVOICE_CHANGED");
+
+      const subtotal = paiseToRupees(invoice.subtotalPaise);
+      const totalDiscount = paiseToRupees(invoice.discountPaise);
+      const shippingCharge = paiseToRupees(invoice.shippingPaise);
+      const finalAmount = paiseToRupees(invoice.totalPaise);
       if (paymentMethod === "cashfree" && finalAmount < 1) {
         throw new Error("CASHFREE_MINIMUM_ORDER_AMOUNT");
       }
@@ -283,11 +310,29 @@ export async function POST(req: NextRequest) {
               : "",
         productPrice: price,
         productDiscountPrice: discountPrice,
+        // Immutable per-order COGS snapshot; never recompute from the live
+        // product document after order creation.
+        productCostPrice: costPrice,
+        productCostTotal: Math.round(costPrice * quantity * 100) / 100,
+        costPriceNeedsReview,
+        profitInputsStatus: "incomplete",
+        profitInputsVersion: 1,
         quantity,
         selectedSize,
         selectedColor,
         subtotal,
         discount: totalDiscount,
+        itemTotal: paiseToRupees(invoice.itemTotalPaise),
+        shippingCharge,
+        shippingPolicyVersion: 1,
+        deliveryDays: invoice.deliveryDays,
+        currency: "INR",
+        invoiceVersion: 1,
+        invoiceSubtotalPaise: invoice.subtotalPaise,
+        invoiceDiscountPaise: invoice.discountPaise,
+        invoiceItemTotalPaise: invoice.itemTotalPaise,
+        invoiceShippingPaise: invoice.shippingPaise,
+        invoiceTotalPaise: invoice.totalPaise,
         finalAmount,
         paymentMethod,
         status: paymentMethod === "cashfree" ? "payment_pending" : "placed",
@@ -312,7 +357,7 @@ export async function POST(req: NextRequest) {
         sellerName:
           typeof product.sellerName === "string"
             ? product.sellerName
-            : "JembeeKart Official",
+            : "Jembee Shorts Official",
       };
 
       // Stock decrement, order creation, and idempotency record
@@ -378,6 +423,10 @@ export async function POST(req: NextRequest) {
         message: "The product price is not configured correctly.",
         status: 409,
       },
+      INVALID_PRODUCT_COST: {
+        message: "The product cost price is not configured correctly.",
+        status: 409,
+      },
       INVALID_PRODUCT_DISCOUNT: {
         message: "The product discount is not configured correctly.",
         status: 409,
@@ -392,6 +441,18 @@ export async function POST(req: NextRequest) {
       },
       INVALID_ORDER_AMOUNT: {
         message: "The order amount is invalid.",
+        status: 409,
+      },
+      INVALID_INVOICE_AMOUNT: {
+        message: "The invoice amount is invalid. Please contact support.",
+        status: 409,
+      },
+      SHIPPING_NOT_CONFIGURED: {
+        message: "Store shipping settings are not configured yet. Please try again later.",
+        status: 503,
+      },
+      INVOICE_CHANGED: {
+        message: "The order total changed. Please review the updated invoice and try again.",
         status: 409,
       },
       CASHFREE_MINIMUM_ORDER_AMOUNT: {

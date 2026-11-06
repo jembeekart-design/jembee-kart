@@ -649,7 +649,7 @@ export default function AdsManagerPage() {
                     <option>Google Ads</option>
                     <option>Meta Ads</option>
                     <option>YouTube Ads</option>
-                    <option>JembeeKart Ads</option>
+                    <option>Jembee Shorts Ads</option>
                     <option>Direct Sponsor</option>
                     <option>Other</option>
                   </optgroup>

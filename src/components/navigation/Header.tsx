@@ -271,7 +271,7 @@ export default function Header({
               }}
             >
 
-              JembeeKart
+              Jembee Shorts
 
             </h1>
 

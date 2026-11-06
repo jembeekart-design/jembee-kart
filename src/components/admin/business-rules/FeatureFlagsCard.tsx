@@ -70,7 +70,7 @@ export default function FeatureFlagsCard() {
           </h2>
 
           <p className="mt-1 text-sm text-[var(--text-muted)]">
-            Enable or disable JembeeKart modules.
+            Enable or disable Jembee Shorts modules.
           </p>
 
         </div>

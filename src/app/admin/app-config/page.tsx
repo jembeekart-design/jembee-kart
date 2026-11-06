@@ -40,7 +40,7 @@ export default function AppConfigPage() {
 
   const [settings, setSettings] =
     useState<AppConfig>({
-      appName: "JembeeKart",
+      appName: "Jembee Shorts",
       appVersion: "1.0.0",
       appMode: "Production",
       darkMode: true,

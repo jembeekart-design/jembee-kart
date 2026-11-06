@@ -132,7 +132,7 @@ export default function ScannerResults() {
 
       <div className="divide-y">
         <div className="border-b bg-slate-50 p-5">
-          <h3 className="text-sm font-bold">🤖 JembeeKart Governance AI</h3>
+          <h3 className="text-sm font-bold">🤖 Jembee Shorts Governance AI</h3>
           <div className="mt-4 grid grid-cols-2 md:grid-cols-4 gap-3">
             <div className="rounded-lg border bg-white p-3">
               <p className="text-[10px] uppercase text-gray-500">AI Status</p>

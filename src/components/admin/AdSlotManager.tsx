@@ -11,7 +11,8 @@ import { addAdSlot, updateAdSlot, deleteAdSlot } from "@/firestore/services/adMa
 export function AdSlotManager({ networks }: { networks: AdNetwork[] }) {
   const [slots, setSlots] = useState<AdSlot[]>([]);
   const [loading, setLoading] = useState(true);
-  
+  const [loadError, setLoadError] = useState("");
+
   // Modal State
   const [showModal, setShowModal] = useState(false);
   const [editingSlot, setEditingSlot] = useState<AdSlot | null>(null);
@@ -28,10 +29,23 @@ export function AdSlotManager({ networks }: { networks: AdNetwork[] }) {
 
   useEffect(() => {
     const q = query(collection(db, FIRESTORE_PATHS.AD_MANAGEMENT.SLOTS));
-    const unsubscribe = onSnapshot(q, (snapshot) => {
-      setSlots(snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() } as AdSlot)));
-      setLoading(false);
-    });
+    const unsubscribe = onSnapshot(
+      q,
+      (snapshot) => {
+        setSlots(snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() } as AdSlot)));
+        setLoadError("");
+        setLoading(false);
+      },
+      (error) => {
+        console.error("Ad slots Firestore listener failed:", error);
+        setLoadError(
+          error.code === "permission-denied"
+            ? "Permission denied. Admin role aur Firestore rules check karein."
+            : `Ad slots load nahi ho sake: ${error.message}`
+        );
+        setLoading(false);
+      }
+    );
     return () => unsubscribe();
   }, []);
 
@@ -90,9 +104,13 @@ export function AdSlotManager({ networks }: { networks: AdNetwork[] }) {
         </button>
       </div>
 
-      {loading ? <div>Loading...</div> : (
+      {loading ? <div>Loading...</div> : loadError ? (
+        <div role="alert" className="rounded-xl border border-red-500/30 bg-red-500/10 p-4 text-sm text-red-700">{loadError}</div>
+      ) : (
         <div className="grid gap-4">
-          {slots.map(slot => (
+          {slots.length === 0 ? (
+            <p className="p-8 text-center text-[var(--text-muted)]">No ad slots added yet.</p>
+          ) : slots.map(slot => (
             <div key={slot.id} className="flex items-center justify-between rounded-[28px] border border-[var(--color-border)]/10 bg-[var(--color-primary-button)] p-5">
               <div>
                 <h3 className="font-bold">{slot.name}</h3>

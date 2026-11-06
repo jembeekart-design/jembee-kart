@@ -4,11 +4,21 @@ import { notFound } from "next/navigation";
 export default async function DynamicPage({ params }: { params: Promise<{ slug: string }> }) {
   const { slug } = await params;
   
+  const hasAdminCredentials = Boolean(
+    process.env.FIREBASE_PROJECT_ID &&
+    process.env.FIREBASE_CLIENT_EMAIL &&
+    process.env.FIREBASE_PRIVATE_KEY
+  ) || Boolean(process.env.GOOGLE_SERVICE_ACCOUNT_CREDENTIALS);
+
+  if (!hasAdminCredentials) {
+    notFound();
+  }
+
   const adminDb = getAdminDb();
   const docRef = adminDb.collection("dynamic_pages").doc(slug);
   const docSnap = await docRef.get();
 
-  if (!docSnap.exists || !docSnap.data()?.visible) {
+  if (!docSnap.exists || !docSnap.data()?.visible || docSnap.data()?.isDeleted === true) {
     notFound();
   }
 

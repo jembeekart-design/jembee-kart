@@ -6,6 +6,7 @@ import ReferralCard from "./ReferralCard";
 import WalletCard from "./WalletCard";
 import CreatorEconomyCard from "./CreatorEconomyCard";
 import FeatureFlagsCard from "./FeatureFlagsCard";
+import VideoAdsCard from "./VideoAdsCard";
 export default function BusinessRulesPage() {
   return (
     <div className="min-h-screen bg-[var(--color-page-background)] text-[var(--text-primary)] p-6">
@@ -16,7 +17,7 @@ export default function BusinessRulesPage() {
         </h1>
 
         <p className="mt-2 text-[var(--text-muted)]">
-          Manage all JembeeKart business rules from one place.
+          Manage all Jembee Shorts business rules from one place.
         </p>
 
         <div className="mt-8 grid gap-6">
@@ -32,6 +33,8 @@ export default function BusinessRulesPage() {
           <CreatorEconomyCard />
           
           <FeatureFlagsCard />
+
+          <VideoAdsCard />
           
         </div>
       </div>

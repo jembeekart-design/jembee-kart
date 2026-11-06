@@ -23,7 +23,7 @@ import ReviewReport from "./components/ReviewReport";
 
 export const metadata = {
   title: "Mission Control Lab",
-  description: "Enterprise Mission Control Dashboard for JembeeKart",
+  description: "Enterprise Mission Control Dashboard for Jembee Shorts",
 };
 
 export default function MissionControlLabPage() {

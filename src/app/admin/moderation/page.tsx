@@ -387,7 +387,7 @@ export default function AdminModerationDashboard() {
     <div className="p-6 max-w-7xl mx-auto space-y-8 bg-gray-900 text-gray-100 rounded-lg shadow-xl">
       <div className="flex justify-between items-center border-b border-gray-800 pb-4">
         <div>
-          <h1 className="text-2xl font-bold">JembeeKart Enterprise Moderation</h1>
+          <h1 className="text-2xl font-bold">Jembee Shorts Enterprise Moderation</h1>
           <p className="text-sm text-gray-400">Manage Comments and Video Content Moderation.</p>
         </div>
         <div className="flex items-center gap-3">

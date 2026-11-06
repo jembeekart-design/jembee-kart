@@ -354,7 +354,7 @@ export default function ProductsAdminPage() {
 
     const parsedPrice = Number(price);
     const parsedDiscountPrice = discountPrice.trim() ? Number(discountPrice) : 0;
-    const parsedCostPrice = costPrice.trim() ? Number(costPrice) : 0;
+    const parsedCostPrice = costPrice.trim() ? Number(costPrice) : NaN;
     const parsedStock = stock.trim() ? Number(stock) : 0;
 
     if (!title.trim() || !sku.trim() || !price.trim()) {
@@ -369,8 +369,8 @@ export default function ProductsAdminPage() {
       alert("Discount price must be zero (no discount) or less than/equal to the product price.");
       return;
     }
-    if (!Number.isFinite(parsedCostPrice) || parsedCostPrice < 0) {
-      alert("Enter a valid non-negative cost price.");
+    if (!costPrice.trim() || !Number.isFinite(parsedCostPrice) || parsedCostPrice < 0 || !Number.isSafeInteger(Math.round(parsedCostPrice * 100))) {
+      alert("Enter the actual product cost price. Enter 0 only if the product genuinely has zero cost.");
       return;
     }
     if (!Number.isSafeInteger(parsedStock) || parsedStock < 0) {
@@ -405,6 +405,7 @@ export default function ProductsAdminPage() {
         discountPrice: parsedDiscountPrice,
 
         costPrice: parsedCostPrice,
+        costPriceConfigured: true,
 
         stock: parsedStock,
 
@@ -517,7 +518,12 @@ export default function ProductsAdminPage() {
     }
 
     try {
-      await updateDoc(doc(db, "products", id), { [field]: value });
+      const currentProduct = products.find((product) => product.id === id);
+      const updatePayload: Record<string, unknown> = { [field]: value };
+      if (field === "costPrice" && Number(currentProduct?.costPrice ?? 0) !== value) {
+        updatePayload.costPriceConfigured = true;
+      }
+      await updateDoc(doc(db, "products", id), updatePayload);
     } catch (error) {
       console.error("Unable to update product:", error instanceof Error ? error.message : "unknown");
       alert("Product update failed. Please check your admin access and try again.");
@@ -1039,7 +1045,7 @@ export default function ProductsAdminPage() {
         />
 
         <p className="mt-1 text-xs text-[var(--text-secondary)]">
-          Actual purchase/supplier cost used for MLM profit calculation.
+          Required. Enter the actual supplier cost; enter 0 only when the product genuinely has zero cost. Used for profit calculation.
         </p>
       </div>
 

@@ -570,7 +570,7 @@ export default function AdminPage() {
         <div className="mb-8 rounded-[35px] bg-gradient-to-r from-[var(--primary-color)] via-[var(--primary-color)] to-[var(--primary-color)] p-8 text-[var(--button-text-color)] shadow-2xl">
 
           <h1 className="text-4xl font-black md:text-6xl">
-            JembeeKart Admin
+            Jembee Shorts Admin
           </h1>
 
           <p className="mt-3 text-[var(--primary-color)]">

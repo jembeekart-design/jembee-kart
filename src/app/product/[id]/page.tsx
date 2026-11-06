@@ -72,8 +72,8 @@ export default function ProductPage() {
   const [product, setProduct] = useState<Product | null>(null);
   const [loading, setLoading] = useState(true);
   const [currentImage, setCurrentImage] = useState(0);
-  const [selectedSize, setSelectedSize] = useState("M");
-  const [selectedColor, setSelectedColor] = useState("var(--color-primary-button)");
+  const [selectedSize, setSelectedSize] = useState("");
+  const [selectedColor, setSelectedColor] = useState("");
   const { wishlistItems, toggleWishlist } = useWishlist();
   const [showZoom, setShowZoom] = useState(false);
   const [reviews, setReviews] = useState<any[]>([]);
@@ -100,13 +100,10 @@ export default function ProductPage() {
               : data.image
               ? [data.image]
               : [],
-            sizes: data.sizes || ["S", "M", "L", "XL", "XXL"],
-            colors: data.colors || ["var(--color-primary-button)", "var(--color-primary-button)", "var(--color-primary-button)", "var(--color-primary-button)"],
-            coupons: data.coupons || ["SAVE50", "FREESHIP", "EXTRA100"],
-            seller: data.seller || {
-              name: "JembeeKart Official",
-              rating: 4.6
-            }
+            sizes: Array.isArray(data.sizes) ? data.sizes : [],
+            colors: Array.isArray(data.colors) ? data.colors : [],
+            coupons: Array.isArray(data.coupons) ? data.coupons : [],
+            seller: data.seller || undefined
           });
         }
         setLoading(false);
@@ -140,16 +137,11 @@ export default function ProductPage() {
   }, [product]);
 
   const { avgRating, reviewCount } = useMemo(() => {
-    if (reviews.length === 0) return { avgRating: product?.rating || 4.5, reviewCount: 0 };
+    if (reviews.length === 0) return { avgRating: null, reviewCount: 0 };
     const sum = reviews.reduce((acc, r) => acc + (r.rating || 0), 0);
     return { avgRating: (sum / reviews.length).toFixed(1), reviewCount: reviews.length };
   }, [reviews, product]);
 
-  const deliveryDate = useMemo(() => {
-    const date = new Date();
-    date.setDate(date.getDate() + 4);
-    return date.toDateString();
-  }, []);
 
  /* ======================================================
   ADD TO CART
@@ -228,7 +220,7 @@ function buyNow() {
             >
               <ArrowLeft size={16} />
             </Link>
-            <h1 className="text-[18px] font-black text-[var(--color-primary-button)]">JembeeKart</h1>
+            <h1 className="text-[18px] font-black text-[var(--color-primary-button)]">Jembee Shorts</h1>
           </div>
 
           <div className="flex items-center gap-3">
@@ -335,13 +327,8 @@ function buyNow() {
           <h1 className="mt-1 text-[22px] font-black leading-[26px] text-[var(--text-primary)]">{product.title}</h1>
 
           <div className="mt-2 flex items-center gap-2 text-[11px]">
-            <div className="flex items-center gap-1 text-[var(--color-success)]">
-              <Star size={12} fill="green" />
-              <span className="font-bold">{avgRating}</span>
-            </div>
+            {reviewCount > 0 ? <div className="flex items-center gap-1 text-[var(--color-success)]"><Star size={12} fill="green" /><span className="font-bold">{avgRating}</span></div> : <span className="text-[var(--text-secondary)]">No verified reviews yet</span>}
             <span className="text-[var(--text-secondary)]">({reviewCount} Reviews)</span>
-            <span className="text-[var(--text-primary)]">|</span>
-            <span className="text-[var(--text-secondary)]">5k+ sold</span>
           </div>
 
           <div className="mt-3 flex items-center gap-2">
@@ -359,8 +346,8 @@ function buyNow() {
           <div className="flex items-center gap-3">
             <Truck size={18} className="text-[var(--color-primary-button)]" />
             <div>
-              <h3 className="text-sm font-bold text-[var(--color-primary-button)]">Free Delivery</h3>
-              <p className="text-[11px] text-[var(--text-secondary)]">Delivery by {deliveryDate}</p>
+              <h3 className="text-sm font-bold text-[var(--color-primary-button)]">Delivery estimate</h3>
+              <p className="text-[11px] text-[var(--text-secondary)]">Check availability at checkout</p>
             </div>
           </div>
         </div>
@@ -369,7 +356,7 @@ function buyNow() {
         <div>
           <h2 className="mb-2 text-sm font-bold">Select Size</h2>
           <div className="flex flex-wrap gap-2">
-            {product.sizes?.map((size) => (
+            {product.sizes?.length ? product.sizes.map((size) => (
               <button
                 key={size}
                 onClick={() => setSelectedSize(size)}
@@ -381,14 +368,14 @@ function buyNow() {
               >
                 {size}
               </button>
-            ))}
+            )) : <p className="text-xs text-[var(--text-secondary)]">No size variants specified</p>}
           </div>
         </div>
 
         <div>
           <h2 className="mb-2 text-sm font-bold">Select Color</h2>
           <div className="flex gap-3">
-            {product.colors?.map((color, index) => (
+            {product.colors?.length ? product.colors.map((color, index) => (
               <button
                 key={`${color}-${index}`}
                 onClick={() => setSelectedColor(color)}
@@ -397,7 +384,7 @@ function buyNow() {
                   selectedColor === color ? "border-[var(--color-primary-button)]" : "border-[var(--color-border)]"
                 }`}
               />
-            ))}
+            )) : <p className="text-xs text-[var(--text-secondary)]">No color variants specified</p>}
           </div>
         </div>
 
@@ -406,24 +393,24 @@ function buyNow() {
           <div className="flex items-center gap-2">
             <ShieldCheck size={18} className="text-[var(--color-success)]" />
             <div>
-              <h3 className="text-[12px] font-bold">Original</h3>
-              <p className="text-[10px] text-[var(--text-secondary)]">Authentic</p>
+              <h3 className="text-[12px] font-bold">Product information</h3>
+              <p className="text-[10px] text-[var(--text-secondary)]">See seller details</p>
             </div>
           </div>
 
           <div className="flex items-center gap-2">
             <RotateCcw size={18} className="text-[var(--color-primary-button)]" />
             <div>
-              <h3 className="text-[12px] font-bold">7 Day Return</h3>
-              <p className="text-[10px] text-[var(--text-secondary)]">Easy Return</p>
+              <h3 className="text-[12px] font-bold">Return policy</h3>
+              <p className="text-[10px] text-[var(--text-secondary)]">Shown at checkout when available</p>
             </div>
           </div>
 
           <div className="flex items-center gap-2">
             <BadgeCheck size={18} className="theme-primary-text" />
             <div>
-              <h3 className="text-[12px] font-bold">Secure Payment</h3>
-              <p className="text-[10px] text-[var(--text-secondary)]">Protected</p>
+              <h3 className="text-[12px] font-bold">Payment options</h3>
+              <p className="text-[10px] text-[var(--text-secondary)]">Available options at checkout</p>
             </div>
           </div>
 
@@ -443,7 +430,7 @@ function buyNow() {
               <Truck size={18} className="text-[var(--color-success)]" />
               <div>
                 <h3 className="text-sm font-bold">Delivery</h3>
-                <p className="mt-1 text-[18px] font-black text-[var(--color-success)]">{deliveryDate}</p>
+                <p className="mt-1 text-sm text-[var(--text-secondary)]">Estimate will be shown after address selection</p>
               </div>
             </div>
           </div>
@@ -463,7 +450,7 @@ function buyNow() {
         <div>
           <div className="mb-3 flex items-center justify-between">
             <h2 className="text-[18px] font-black">Offers & Coupons</h2>
-            <button className="text-xs font-bold text-[var(--color-primary-button)]">View All</button>
+
           </div>
 
           <div className="space-y-2">
@@ -476,16 +463,15 @@ function buyNow() {
                   <h3 className="text-[14px] font-black">{coupon}</h3>
                   <p className="mt-1 text-[10px] text-[var(--text-secondary)]">Extra discount available</p>
                 </div>
-                <button className="rounded-lg bg-gradient-to-r from-[var(--color-primary-button)] to-[var(--color-primary-button)] px-3 py-1.5 text-[10px] font-bold text-[var(--button-text-color)]">
-                  Apply
-                </button>
+                <span className="text-[10px] font-medium text-[var(--text-secondary)]">Check eligibility at checkout</span>
               </div>
             ))}
+            {!product.coupons?.length && <p className="text-xs text-[var(--text-secondary)]">No active coupons are listed for this product.</p>}
           </div>
         </div>
 
         {/* SELLER STATS */}
-        <div className="rounded-[18px] bg-[var(--color-card-background)] p-4 shadow-sm">
+        {product.seller?.name && <div className="rounded-[18px] bg-[var(--color-card-background)] p-4 shadow-sm">
           <h2 className="text-[18px] font-black">Seller Details</h2>
           <div className="mt-3 flex items-center justify-between">
             <div className="flex items-center gap-3">
@@ -494,14 +480,14 @@ function buyNow() {
               </div>
               <div>
                 <h3 className="text-[13px] font-black">{product.seller?.name}</h3>
-                <p className="text-[11px] text-[var(--text-secondary)]">{product.seller?.rating}★ Seller Rating</p>
+                {typeof product.seller?.rating === "number" && (
+                  <p className="text-[11px] text-[var(--text-secondary)]">{product.seller.rating}★ Seller Rating</p>
+                )}
               </div>
             </div>
-            <button className="rounded-xl border border-[var(--color-primary-button)] px-3 py-2 text-[11px] font-bold text-[var(--color-primary-button)]">
-              View Store
-            </button>
+
           </div>
-        </div>
+        </div>}
 
         {/* CORE MARKDOWN */}
         <div className="rounded-[18px] bg-[var(--color-card-background)] p-4 shadow-sm">

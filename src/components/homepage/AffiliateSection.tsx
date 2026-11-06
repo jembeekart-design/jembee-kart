@@ -25,7 +25,7 @@ interface AffiliateSectionProps {
 export default function AffiliateSection({
   title = "Earn With Affiliate Marketing",
 
-  description = "Share products and grow your network with JembeeKart affiliate ecosystem. Rewards are subject to eligibility and applicable programme rules.",
+  description = "Share products and grow your network with Jembee Shorts affiliate ecosystem. Rewards are subject to eligibility and applicable programme rules.",
 
   buttonText = "Join Affiliate Program",
 

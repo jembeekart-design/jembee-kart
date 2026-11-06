@@ -15,7 +15,7 @@ import {
 export default function SEOPage() {
 
   const [metaTitle, setMetaTitle] =
-    useState("JembeeKart");
+    useState("Jembee Shorts");
 
   const [
     metaDescription,

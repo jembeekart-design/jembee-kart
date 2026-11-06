@@ -39,7 +39,7 @@ export default function SettingsPage() {
 
   const [settings, setSettings] =
     useState<AppSettings>({
-      appName: "JembeeKart",
+      appName: "Jembee Shorts",
       supportEmail: "",
       supportPhone: "",
       address: "",

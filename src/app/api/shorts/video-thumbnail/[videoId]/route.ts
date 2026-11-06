@@ -1,29 +1,159 @@
 import { NextResponse } from "next/server";
 import { getAdminDb } from "@/firebase/admin";
 import { getDriveFileMetadata } from "@/services/googleDriveService";
+import { playbackCookieName, verifyPlaybackToken } from "@/lib/payments/cashfreeServer";
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
-const MAX_THUMBNAIL_BYTES = 5 * 1024 * 1024;
-const ALLOWED_HOSTS = new Set(["lh3.googleusercontent.com", "drive.google.com", "drive.usercontent.google.com"]);
 
-async function fetchBoundedDriveImage(initialUrl: string): Promise<{ bytes: Uint8Array; contentType: string } | null> {
-  let current = new URL(initialUrl);
-  for (let redirects = 0; redirects <= 3; redirects++) {
-    if (current.protocol !== "https:" || !ALLOWED_HOSTS.has(current.hostname)) return null;
-    const response = await fetch(current, { cache: "no-store", redirect: "manual", signal: AbortSignal.timeout(10000) });
-    if ([301, 302, 303, 307, 308].includes(response.status)) {
-      const location = response.headers.get("location");
-      if (!location || redirects === 3) return null;
-      current = new URL(location, current);
-      continue;
+export async function GET(
+  req: Request,
+  context: { params: Promise<{ videoId: string }> }
+) {
+  try {
+    const { videoId } = await context.params;
+
+    if (!videoId || videoId.length > 200 || videoId.includes("/")) {
+      return new NextResponse("Invalid video ID", { status: 400 });
     }
-    if (!response.ok || !response.body) return null;
-    const contentType = (response.headers.get("content-type") || "").split(";")[0].trim().toLowerCase();
-    if (!["image/jpeg", "image/png", "image/webp", "image/gif"].includes(contentType)) return null;
-    const length = Number(response.headers.get("content-length") || 0);
-    if (length > MAX_THUMBNAIL_BYTES) return null;
-    const reader = response.body.getReader();
+
+    const snapshot = await getAdminDb()
+      .collection("watchEarnVideos")
+      .doc(videoId)
+      .get();
+
+    if (!snapshot.exists) {
+      return new NextResponse("Video not found", { status: 404 });
+    }
+
+    const data = snapshot.data();
+
+    if (
+      data?.status !== "approved" ||
+      data?.active !== true ||
+      data?.moderation !== "safe" ||
+      data?.paidVideoStatus === "payment_integration_pending" ||
+      typeof data?.driveFileId !== "string" ||
+      !data.driveFileId.trim()
+    ) {
+      return new NextResponse("Thumbnail unavailable", { status: 404 });
+    }
+
+    // Paid thumbnails use the same short-lived, video-scoped playback cookie
+    // as the stream endpoint. Never expose Drive thumbnail URLs to unpaid users.
+    if (data?.videoAccess === "paid") {
+      const cookieName = playbackCookieName(videoId);
+      const cookieHeader = req.headers.get("cookie") || "";
+      const cookie = cookieHeader
+        .split(";")
+        .map((part) => part.trim())
+        .find((part) => part.startsWith(`${cookieName}=`));
+      const token = cookie
+        ? decodeURIComponent(cookie.slice(cookieName.length + 1))
+        : "";
+
+      if (!token || !verifyPlaybackToken(token, videoId)) {
+        return new NextResponse("Playback session required", {
+          status: 401,
+          headers: { "Cache-Control": "private, no-store" },
+        });
+      }
+
+      let payload: { uid?: string };
+      try {
+        payload = JSON.parse(
+          Buffer.from(token.split(".")[0], "base64url").toString("utf8")
+        ) as { uid?: string };
+      } catch {
+        return new NextResponse("Invalid playback session", {
+          status: 401,
+          headers: { "Cache-Control": "private, no-store" },
+        });
+      }
+
+      if (!payload.uid) {
+        return new NextResponse("Invalid playback session", {
+          status: 401,
+          headers: { "Cache-Control": "private, no-store" },
+        });
+      }
+
+      const purchase = await getAdminDb()
+        .collection("watchVideoPurchases")
+        .doc(`${videoId}_${payload.uid}`)
+        .get();
+      const purchaseData = purchase.data();
+
+      if (
+        !purchase.exists ||
+        purchaseData?.status !== "paid" ||
+        purchaseData?.accessRevoked === true ||
+        purchaseData?.userId !== payload.uid ||
+        purchaseData?.videoId !== videoId
+      ) {
+        return new NextResponse("Purchase required", {
+          status: 403,
+          headers: { "Cache-Control": "private, no-store" },
+        });
+      }
+    }
+
+    const folderId = process.env.GOOGLE_DRIVE_FOLDER_ID?.trim();
+
+    if (!folderId) {
+      console.error("GOOGLE_DRIVE_FOLDER_ID is not configured");
+      return new NextResponse("Server configuration error", { status: 500 });
+    }
+
+    const metadata = await getDriveFileMetadata(data.driveFileId.trim());
+
+    if (!metadata.parents.includes(folderId)) {
+      return new NextResponse("Thumbnail access denied", { status: 403 });
+    }
+
+    if (!metadata.mimeType.startsWith("video/")) {
+      return new NextResponse("Invalid video file", { status: 415 });
+    }
+
+    if (!metadata.thumbnailLink) {
+      return new NextResponse("Drive thumbnail not available", { status: 404 });
+    }
+
+    // Keep thumbnail retrieval bounded and restrict redirects/hosts. Drive's
+    // thumbnailLink is provider-controlled metadata; do not blindly follow it.
+    const thumbnailUrl = new URL(metadata.thumbnailLink);
+    const allowedHosts = new Set(["drive.google.com", "lh3.googleusercontent.com", "googleusercontent.com"]);
+    if (thumbnailUrl.protocol !== "https:" || ![...allowedHosts].some((host) => thumbnailUrl.hostname === host || thumbnailUrl.hostname.endsWith(`.${host}`))) {
+      return new NextResponse("Invalid thumbnail host", { status: 502 });
+    }
+
+    const controller = new AbortController();
+    const timeout = setTimeout(() => controller.abort(), 8000);
+    let thumbnailResponse: Response;
+    try {
+      thumbnailResponse = await fetch(thumbnailUrl, {
+        cache: "no-store",
+        redirect: "error",
+        signal: controller.signal,
+      });
+    } finally {
+      clearTimeout(timeout);
+    }
+
+    if (!thumbnailResponse.ok || !thumbnailResponse.body) {
+      return new NextResponse("Drive thumbnail unavailable", { status: 502 });
+    }
+
+    const contentType = (thumbnailResponse.headers.get("content-type") || "").split(";")[0].trim().toLowerCase();
+    const allowedTypes = new Set(["image/jpeg", "image/png", "image/webp", "image/gif"]);
+    const declaredLength = Number(thumbnailResponse.headers.get("content-length") || 0);
+    const MAX_THUMBNAIL_BYTES = 5 * 1024 * 1024;
+    if (!allowedTypes.has(contentType) || (declaredLength > 0 && declaredLength > MAX_THUMBNAIL_BYTES)) {
+      await thumbnailResponse.body.cancel().catch(() => undefined);
+      return new NextResponse("Invalid thumbnail response", { status: 502 });
+    }
+
+    const reader = thumbnailResponse.body.getReader();
     const chunks: Uint8Array[] = [];
     let total = 0;
     try {
@@ -33,7 +163,7 @@ async function fetchBoundedDriveImage(initialUrl: string): Promise<{ bytes: Uint
         total += value.byteLength;
         if (total > MAX_THUMBNAIL_BYTES) {
           await reader.cancel();
-          return null;
+          return new NextResponse("Thumbnail too large", { status: 502 });
         }
         chunks.push(value);
       }
@@ -43,34 +173,16 @@ async function fetchBoundedDriveImage(initialUrl: string): Promise<{ bytes: Uint
     const bytes = new Uint8Array(total);
     let offset = 0;
     for (const chunk of chunks) { bytes.set(chunk, offset); offset += chunk.byteLength; }
-    return { bytes, contentType };
-  }
-  return null;
-}
 
-export async function GET(
-  _req: Request,
-  context: { params: Promise<{ videoId: string }> }
-) {
-  try {
-    const { videoId } = await context.params;
-    if (!videoId || videoId.length > 200 || videoId.includes("/")) return new NextResponse("Invalid video ID", { status: 400 });
-    const snapshot = await getAdminDb().collection("watchEarnVideos").doc(videoId).get();
-    if (!snapshot.exists) return new NextResponse("Video not found", { status: 404 });
-    const data = snapshot.data();
-    if (data?.status !== "approved" || data?.active !== true || data?.videoAccess === "paid" || typeof data?.driveFileId !== "string" || !data.driveFileId.trim()) {
-      return new NextResponse("Thumbnail unavailable", { status: 404 });
-    }
-    const folderId = process.env.GOOGLE_DRIVE_FOLDER_ID?.trim();
-    if (!folderId) return new NextResponse("Server configuration error", { status: 500 });
-    const metadata = await getDriveFileMetadata(data.driveFileId.trim());
-    if (!metadata.parents.includes(folderId)) return new NextResponse("Thumbnail access denied", { status: 403 });
-    if (!metadata.mimeType.startsWith("video/") || !metadata.thumbnailLink) return new NextResponse("Drive thumbnail not available", { status: 404 });
-    const image = await fetchBoundedDriveImage(metadata.thumbnailLink);
-    if (!image) return new NextResponse("Drive thumbnail unavailable", { status: 502 });
-    const imageBody = new ArrayBuffer(image.bytes.byteLength);
-    new Uint8Array(imageBody).set(image.bytes);
-    return new NextResponse(imageBody, { status: 200, headers: { "Content-Type": image.contentType, "Content-Length": String(image.bytes.byteLength), "Cache-Control": "private, no-store", "X-Content-Type-Options": "nosniff" } });
+    return new NextResponse(bytes, {
+      status: 200,
+      headers: {
+        "Content-Type": contentType,
+        "Content-Length": String(bytes.byteLength),
+        "Cache-Control": "private, no-store",
+        "X-Content-Type-Options": "nosniff",
+      },
+    });
   } catch (error) {
     console.error("Drive thumbnail request failed:", error);
     return new NextResponse("Thumbnail unavailable", { status: 500 });

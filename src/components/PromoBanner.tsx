@@ -110,7 +110,7 @@ export default function PromoBanner() {
 
             <h2 className="text-[28px] font-black leading-none text-[var(--primary-color)]">
 
-              JembeeKart
+              Jembee Shorts
 
             </h2>
 

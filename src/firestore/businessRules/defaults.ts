@@ -75,6 +75,13 @@ export const DEFAULT_BUSINESS_RULES: BusinessRulesConfig = {
     requireReferral: true,
   },
 
+  videoAds: {
+    enabled: false,
+    firstAdAfterVideos: 5,
+    repeatEveryVideos: 3,
+    autoDismissSeconds: 8,
+  },
+
   metadata: {
     version: "1.0.0",
     updatedAt: null,
@@ -103,5 +110,6 @@ export const BUSINESS_RULE_DOCUMENTS = {
   wallet: "wallet",
   creatorEconomy: "creatorEconomy",
   featureFlags: "featureFlags",
+  videoAds: "videoAds",
   metadata: "metadata",
 } as const;

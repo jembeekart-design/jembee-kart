@@ -1,7 +1,7 @@
 import ControlTowerDashboard from "@/jembee-control-tower/dashboard/ControlTowerDashboard";
 
 export const metadata = {
-  title: "JembeeKart Control Tower",
+  title: "Jembee Shorts Control Tower",
   description: "Architecture • Security • Governance • Scanner Center",
 };
 

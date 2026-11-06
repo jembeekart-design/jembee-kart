@@ -1,0 +1,7 @@
+JembeeKart Safe Source Package
+
+This archive intentionally excludes all .env* files, node_modules, Next.js build output, Vercel cache, log files, and nested ZIP archives.
+
+Before running locally, restore required environment variables from your private secure backup or hosting secret manager. Do not commit real credentials to source control or send them in a public archive.
+
+Audit status: see AUDIT_STATUS.md. TypeScript/TSX syntax-only scan passed (767 files, 0 syntax diagnostics), and no direct req.json()/request.json() calls were found in API route.ts files. This is not a full type-check, lint, production build, or integration/security certification. Firebase emulator tests and external-provider integration tests remain outstanding.

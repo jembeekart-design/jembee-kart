@@ -6,7 +6,7 @@ import {
   assertFails,
 } from "@firebase/rules-unit-testing";
 import {
-  doc, getDoc, setDoc, updateDoc,
+  doc, getDoc, setDoc, updateDoc, deleteDoc,
 } from "firebase/firestore";
 import { readFile } from "node:fs/promises";
 
@@ -47,6 +47,50 @@ beforeEach(async () => {
 
 after(async () => {
   if (env) await env.cleanup();
+});
+
+
+test("user can create and read their own wishlist item", async () => {
+  const db = env.authenticatedContext("userA").firestore();
+  const ref = doc(db, "wishlist", "itemA");
+  await assertSucceeds(setDoc(ref, {
+    userId: "userA",
+    productId: "productA",
+    productTitle: "Test product",
+    image: "/placeholder.png",
+    price: 12.5,
+  }));
+  await assertSucceeds(getDoc(ref));
+});
+
+test("user cannot read another user's wishlist item", async () => {
+  await env.withSecurityRulesDisabled(async (ctx) => {
+    await setDoc(doc(ctx.firestore(), "wishlist/itemB"), {
+      userId: "userB", productId: "productB", productTitle: "Private item", image: "", price: 1,
+    });
+  });
+  await assertFails(getDoc(doc(env.authenticatedContext("userA").firestore(), "wishlist/itemB")));
+});
+
+test("user cannot create a wishlist item for another user or add extra fields", async () => {
+  const db = env.authenticatedContext("userA").firestore();
+  await assertFails(setDoc(doc(db, "wishlist/forgedOwner"), {
+    userId: "userB", productId: "productB", productTitle: "Forged", image: "", price: 1,
+  }));
+  await assertFails(setDoc(doc(db, "wishlist/extraField"), {
+    userId: "userA", productId: "productA", productTitle: "Test", image: "", price: 1, role: "admin",
+  }));
+});
+
+test("wishlist item cannot be updated directly but owner can delete it", async () => {
+  await env.withSecurityRulesDisabled(async (ctx) => {
+    await setDoc(doc(ctx.firestore(), "wishlist/itemC"), {
+      userId: "userA", productId: "productC", productTitle: "Test", image: "", price: 1,
+    });
+  });
+  const ref = doc(env.authenticatedContext("userA").firestore(), "wishlist/itemC");
+  await assertFails(updateDoc(ref, { price: 0 }));
+  await assertSucceeds(deleteDoc(ref));
 });
 
 test("approved comments can be read by users", async () => {
@@ -326,4 +370,109 @@ test("admin can save footer links", async () => {
       { companyName: "JembeeKart", links: [{ title: "Privacy Policy", url: "/privacy" }] }
     )
   );
+});
+
+test("admin can manage ads, ad networks, and ad slots", async () => {
+  const db = env.authenticatedContext("adminA").firestore();
+
+  await assertSucceeds(setDoc(doc(db, "ads/adA"), { title: "Campaign A", status: "Running" }));
+  await assertSucceeds(getDoc(doc(db, "ads/adA")));
+  await assertSucceeds(setDoc(doc(db, "adNetworks/networkA"), { name: "Test Network", enabled: false }));
+  await assertSucceeds(getDoc(doc(db, "adNetworks/networkA")));
+  await assertSucceeds(setDoc(doc(db, "adSlots/slotA"), { name: "Home Banner", enabled: false }));
+  await assertSucceeds(getDoc(doc(db, "adSlots/slotA")));
+});
+
+test("ordinary users cannot access ads management collections", async () => {
+  const db = env.authenticatedContext("userA").firestore();
+
+  await assertFails(getDoc(doc(db, "ads/adA")));
+  await assertFails(setDoc(doc(db, "ads/adA"), { title: "Unauthorized" }));
+  await assertFails(getDoc(doc(db, "adNetworks/networkA")));
+  await assertFails(setDoc(doc(db, "adNetworks/networkA"), { name: "Unauthorized" }));
+  await assertFails(getDoc(doc(db, "adSlots/slotA")));
+  await assertFails(setDoc(doc(db, "adSlots/slotA"), { name: "Unauthorized" }));
+});
+
+test("approved active safe free Shorts video can be read publicly", async () => {
+  await env.withSecurityRulesDisabled(async (ctx) => {
+    await setDoc(doc(ctx.firestore(), "watchEarnVideos/freeVideo"), {
+      userId: "userA",
+      status: "approved",
+      active: true,
+      moderation: "safe",
+      videoAccess: "free",
+      video: "/api/shorts/video-stream/freeVideo",
+    });
+  });
+
+  await assertSucceeds(
+    getDoc(doc(env.unauthenticatedContext().firestore(), "watchEarnVideos/freeVideo"))
+  );
+});
+
+test("paid Shorts video cannot be read publicly", async () => {
+  await env.withSecurityRulesDisabled(async (ctx) => {
+    await setDoc(doc(ctx.firestore(), "watchEarnVideos/paidVideo"), {
+      userId: "userA",
+      status: "approved",
+      active: true,
+      moderation: "safe",
+      videoAccess: "paid",
+    });
+  });
+
+  await assertFails(
+    getDoc(doc(env.unauthenticatedContext().firestore(), "watchEarnVideos/paidVideo"))
+  );
+});
+
+test("pending or inactive Shorts video cannot be read publicly", async () => {
+  await env.withSecurityRulesDisabled(async (ctx) => {
+    await setDoc(doc(ctx.firestore(), "watchEarnVideos/pendingVideo"), {
+      status: "pending",
+      active: true,
+      moderation: "safe",
+      videoAccess: "free",
+    });
+
+    await setDoc(doc(ctx.firestore(), "watchEarnVideos/inactiveVideo"), {
+      status: "approved",
+      active: false,
+      moderation: "safe",
+      videoAccess: "free",
+    });
+  });
+
+  const db = env.unauthenticatedContext().firestore();
+
+  await assertFails(getDoc(doc(db, "watchEarnVideos/pendingVideo")));
+  await assertFails(getDoc(doc(db, "watchEarnVideos/inactiveVideo")));
+});
+
+test("clients cannot create, update, or delete Shorts video documents", async () => {
+  const db = env.authenticatedContext("userA").firestore();
+  const ref = doc(db, "watchEarnVideos/clientVideo");
+
+  await assertFails(setDoc(ref, {
+    userId: "userA",
+    status: "approved",
+    active: true,
+    moderation: "safe",
+    videoAccess: "free",
+  }));
+
+  await env.withSecurityRulesDisabled(async (ctx) => {
+    await setDoc(doc(ctx.firestore(), "watchEarnVideos/existingVideo"), {
+      userId: "userA",
+      status: "approved",
+      active: true,
+      moderation: "safe",
+      videoAccess: "free",
+    });
+  });
+
+  const existing = doc(db, "watchEarnVideos/existingVideo");
+  await assertFails(updateDoc(existing, { active: false }));
+  await assertFails(deleteDoc(existing));
 });

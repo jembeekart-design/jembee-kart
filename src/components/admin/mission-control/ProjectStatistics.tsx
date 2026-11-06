@@ -59,7 +59,7 @@ export default function ProjectStatistics() {
           </h2>
 
           <p className="text-sm text-gray-500">
-            Live overview of your JembeeKart project.
+            Live overview of your Jembee Shorts project.
           </p>
         </div>
 

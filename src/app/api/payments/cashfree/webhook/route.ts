@@ -45,7 +45,7 @@ export async function POST(req: NextRequest) {
       .limit(2)
       .get();
     if (matchingOrders.size > 1) {
-      console.error("Cashfree webhook provider order ID maps to multiple JembeeKart orders");
+      console.error("Cashfree webhook provider order ID maps to multiple Jembee Shorts orders");
       return NextResponse.json({ success: false }, { status: 409 });
     }
 
@@ -61,7 +61,7 @@ export async function POST(req: NextRequest) {
 
     const result = await confirmCashfreePayment(internalOrderId, providerOrderId, payment as Record<string, unknown>);
     if (result === "order_not_found") return NextResponse.json({ success: false }, { status: 404 });
-    if (result === "order_mismatch" || result === "amount_mismatch") {
+    if (result === "order_mismatch" || result === "amount_mismatch" || result === "payment_id_reused") {
       console.error("Cashfree webhook rejected by order/amount reconciliation:", result);
       return NextResponse.json({ success: false }, { status: 409 });
     }

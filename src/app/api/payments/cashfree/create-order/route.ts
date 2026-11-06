@@ -75,7 +75,7 @@ export async function POST(req: NextRequest) {
         order_currency: "INR",
         customer_details: {
           customer_id: uid.slice(0, 50),
-          customer_name: typeof order.customerName === "string" ? order.customerName.slice(0, 100) : "JembeeKart Customer",
+          customer_name: typeof order.customerName === "string" ? order.customerName.slice(0, 100) : "Jembee Shorts Customer",
           customer_phone: phone,
           ...(email ? { customer_email: email } : {}),
         },
@@ -84,7 +84,7 @@ export async function POST(req: NextRequest) {
           notify_url: `${appUrl}/api/payments/cashfree/webhook`,
         },
         order_expiry_time: expiresAt,
-        order_note: `JembeeKart ${String(order.orderNumber || orderId).slice(0, 150)}`,
+        order_note: `Jembee Shorts ${String(order.orderNumber || orderId).slice(0, 150)}`,
       },
     });
 

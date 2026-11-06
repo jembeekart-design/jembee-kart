@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import { Readable } from "node:stream";
 import { getAdminDb } from "@/firebase/admin";
+import { playbackCookieName, verifyPlaybackToken } from "@/lib/payments/cashfreeServer";
 import { getDriveFileMetadata, getDriveFileStream } from "@/services/googleDriveService";
 
 export const runtime = "nodejs";
@@ -58,8 +59,31 @@ export async function GET(
 
     const data = snapshot.data();
 
-    if (data?.videoAccess === "paid" || data?.paidVideoStatus === "payment_integration_pending") {
-      return new NextResponse("Paid video access is not available until purchase verification is enabled", { status: 403 });
+    // Paid playback uses a short-lived, HttpOnly, video-scoped cookie because
+    // native HTML video elements cannot attach Firebase Authorization headers.
+    if (data?.videoAccess === "paid") {
+      const cookieName = playbackCookieName(videoId);
+      const cookieHeader = req.headers.get("cookie") || "";
+      const cookie = cookieHeader.split(";").map((part) => part.trim()).find((part) => part.startsWith(`${cookieName}=`));
+      const token = cookie ? decodeURIComponent(cookie.slice(cookieName.length + 1)) : "";
+      if (!token || !verifyPlaybackToken(token, videoId)) {
+        return new NextResponse("Playback session required", { status: 401, headers: { "Cache-Control": "no-store" } });
+      }
+      const payload = JSON.parse(Buffer.from(token.split(".")[0], "base64url").toString("utf8")) as { uid: string };
+      const purchase = await getAdminDb().collection("watchVideoPurchases").doc(`${videoId}_${payload.uid}`).get();
+      const purchaseData = purchase.data();
+      if (!purchase.exists || purchaseData?.status !== "paid" || purchaseData?.accessRevoked === true || purchaseData?.userId !== payload.uid || purchaseData?.videoId !== videoId) {
+        return new NextResponse("Purchase required", { status: 403, headers: { "Cache-Control": "no-store" } });
+      }
+    }
+
+    // Legacy records without videoAccess remain on the existing free-video path.
+    // Explicitly pending paid records always fail closed.
+    if (data?.paidVideoStatus === "payment_integration_pending") {
+      return new NextResponse("Paid video playback is not enabled yet", {
+        status: 403,
+        headers: { "Cache-Control": "no-store" },
+      });
     }
 
     if (

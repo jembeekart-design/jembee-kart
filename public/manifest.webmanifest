@@ -1,0 +1,11 @@
+{
+  "name": "Jembee Shorts",
+  "short_name": "Jembee Shorts",
+  "description": "Watch, create and share videos on Jembee Shorts.",
+  "start_url": "/shorts",
+  "scope": "/",
+  "display": "standalone",
+  "background_color": "#05070B",
+  "theme_color": "#06B6D4",
+  "orientation": "portrait"
+}

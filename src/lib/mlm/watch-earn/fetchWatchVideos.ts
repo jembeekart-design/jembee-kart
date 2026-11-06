@@ -35,6 +35,8 @@ export interface WatchVideo {
   originalAudioId?: string;
   sponsor?: boolean;
   createdAt?: number;
+  videoAccess?: "free" | "paid";
+  videoPrice?: number;
 }
 
 export interface CreatorInfo {
@@ -181,365 +183,51 @@ function userDataContainsId(
 ===================================================== */
 
 export async function getCreatorInfo(
+  videoId: string,
   creatorUid: string,
   videoUsername: string
 ): Promise<CreatorInfo | null> {
-  if (!creatorUid && !videoUsername) {
-    return null;
-  }
+  if (!videoId) return null;
 
   try {
-    const usersRef =
-      collection(db, "users");
-
-    /* =================================================
-       1. DIRECT DOCUMENT ID
-    ================================================= */
-
-    if (creatorUid) {
-      const directRef =
-        doc(
-          db,
-          "users",
-          creatorUid
-        );
-
-      const directSnap =
-        await getDoc(directRef);
-
-      if (directSnap.exists()) {
-        const userData =
-          directSnap.data();
-
-        const creator =
-          makeCreatorInfo(
-            directSnap.id,
-            userData
-          );
-
-        console.log(
-          "CREATOR FOUND BY DOCUMENT ID:",
-          creator
-        );
-
-        return creator;
-      }
-    }
-
-    /* =================================================
-       2. SEARCH BY uid
-    ================================================= */
-
-    if (creatorUid) {
-      try {
-        const q =
-          query(
-            usersRef,
-            where(
-              "uid",
-              "==",
-              creatorUid
-            ),
-            limit(1)
-          );
-
-        const snap =
-          await getDocs(q);
-
-        if (!snap.empty) {
-          const userDoc =
-            snap.docs[0];
-
-          const creator =
-            makeCreatorInfo(
-              userDoc.id,
-              userDoc.data()
-            );
-
-          console.log(
-            "CREATOR FOUND BY uid:",
-            creator
-          );
-
-          return creator;
-        }
-      } catch (error) {
-        console.warn(
-          "uid QUERY FAILED:",
-          error
-        );
-      }
-    }
-
-    /* =================================================
-       3. SEARCH BY userId
-    ================================================= */
-
-    if (creatorUid) {
-      try {
-        const q =
-          query(
-            usersRef,
-            where(
-              "userId",
-              "==",
-              creatorUid
-            ),
-            limit(1)
-          );
-
-        const snap =
-          await getDocs(q);
-
-        if (!snap.empty) {
-          const userDoc =
-            snap.docs[0];
-
-          const creator =
-            makeCreatorInfo(
-              userDoc.id,
-              userDoc.data()
-            );
-
-          console.log(
-            "CREATOR FOUND BY userId:",
-            creator
-          );
-
-          return creator;
-        }
-      } catch (error) {
-        console.warn(
-          "userId QUERY FAILED:",
-          error
-        );
-      }
-    }
-
-    /* =================================================
-       4. SEARCH BY authUid
-    ================================================= */
-
-    if (creatorUid) {
-      try {
-        const q =
-          query(
-            usersRef,
-            where(
-              "authUid",
-              "==",
-              creatorUid
-            ),
-            limit(1)
-          );
-
-        const snap =
-          await getDocs(q);
-
-        if (!snap.empty) {
-          const userDoc =
-            snap.docs[0];
-
-          const creator =
-            makeCreatorInfo(
-              userDoc.id,
-              userDoc.data()
-            );
-
-          console.log(
-            "CREATOR FOUND BY authUid:",
-            creator
-          );
-
-          return creator;
-        }
-      } catch (error) {
-        console.warn(
-          "authUid QUERY FAILED:",
-          error
-        );
-      }
-    }
-
-    /* =================================================
-       5. SEARCH BY firebaseUid
-    ================================================= */
-
-    if (creatorUid) {
-      try {
-        const q =
-          query(
-            usersRef,
-            where(
-              "firebaseUid",
-              "==",
-              creatorUid
-            ),
-            limit(1)
-          );
-
-        const snap =
-          await getDocs(q);
-
-        if (!snap.empty) {
-          const userDoc =
-            snap.docs[0];
-
-          const creator =
-            makeCreatorInfo(
-              userDoc.id,
-              userDoc.data()
-            );
-
-          console.log(
-            "CREATOR FOUND BY firebaseUid:",
-            creator
-          );
-
-          return creator;
-        }
-      } catch (error) {
-        console.warn(
-          "firebaseUid QUERY FAILED:",
-          error
-        );
-      }
-    }
-
-    /* =================================================
-       6. SEARCH BY USERNAME
-    ================================================= */
-
-    if (videoUsername) {
-      try {
-        const q =
-          query(
-            usersRef,
-            where(
-              "username",
-              "==",
-              videoUsername
-            ),
-            limit(1)
-          );
-
-        const snap =
-          await getDocs(q);
-
-        if (!snap.empty) {
-          const userDoc =
-            snap.docs[0];
-
-          const creator =
-            makeCreatorInfo(
-              userDoc.id,
-              userDoc.data()
-            );
-
-          console.log(
-            "CREATOR FOUND BY USERNAME:",
-            creator
-          );
-
-          return creator;
-        }
-      } catch (error) {
-        console.warn(
-          "USERNAME QUERY FAILED:",
-          error
-        );
-      }
-    }
-
-    /* =================================================
-       7. FINAL FALLBACK
-
-       Scan users collection and compare all common
-       identity fields.
-    ================================================= */
-
-    console.log(
-      "RUNNING FINAL USER SCAN:",
+    const response = await fetch(
+      `/api/creator/public-profile?videoId=${encodeURIComponent(videoId)}`,
       {
-        creatorUid,
-        videoUsername,
+        method: "GET",
+        cache: "no-store",
       }
     );
 
-    const allUsersSnapshot =
-      await getDocs(usersRef);
+    if (!response.ok) return null;
 
-    for (
-      const userDoc of allUsersSnapshot.docs
+    const result: unknown = await response.json();
+
+    if (
+      !result ||
+      typeof result !== "object" ||
+      !("success" in result) ||
+      result.success !== true ||
+      !("creator" in result) ||
+      !result.creator ||
+      typeof result.creator !== "object"
     ) {
-      const userData =
-        userDoc.data();
-
-      /* ---------------------------------------------
-         Match creator ID
-      --------------------------------------------- */
-
-      if (
-        creatorUid &&
-        userDataContainsId(
-          userData,
-          creatorUid
-        )
-      ) {
-        const creator =
-          makeCreatorInfo(
-            userDoc.id,
-            userData
-          );
-
-        console.log(
-          "CREATOR FOUND BY FINAL ID SCAN:",
-          creator
-        );
-
-        return creator;
-      }
-
-      /* ---------------------------------------------
-         Match username
-      --------------------------------------------- */
-
-      if (
-        videoUsername &&
-        getString(
-          userData.username
-        ) === videoUsername
-      ) {
-        const creator =
-          makeCreatorInfo(
-            userDoc.id,
-            userData
-          );
-
-        console.log(
-          "CREATOR FOUND BY FINAL USERNAME SCAN:",
-          creator
-        );
-
-        return creator;
-      }
+      return null;
     }
 
-    console.warn(
-      "CREATOR COMPLETELY NOT FOUND:",
-      {
-        creatorUid,
-        videoUsername,
-      }
-    );
+    const creator = result.creator as Record<string, unknown>;
 
-    return null;
+    return {
+      documentId:
+        getString(creator.documentId) || creatorUid,
+      displayName:
+        getString(creator.displayName) || undefined,
+      username:
+        getString(creator.username) || videoUsername || undefined,
+      photoURL:
+        getString(creator.photoURL) || undefined,
+    };
   } catch (error) {
-    console.error(
-      "CREATOR LOOKUP ERROR:",
-      error
-    );
-
+    console.warn("[PublicCreatorProfile] Client lookup failed:", error);
     return null;
   }
 }
@@ -607,6 +295,7 @@ async function processVideoDoc(
   ) {
     creatorCache[cacheKey] =
       await getCreatorInfo(
+        videoDoc.id,
         creatorUid,
         videoUsername
       );
@@ -739,6 +428,11 @@ async function processVideoDoc(
 
     sponsor: data.sponsor === true,
 
+    videoAccess: data.videoAccess === "paid" || data.videoAccess === "free"
+      ? data.videoAccess
+      : undefined,
+    videoPrice: typeof data.videoPrice === "number" ? data.videoPrice : undefined,
+
     createdAt: typeof data.createdAt === "number" ? data.createdAt : 0,
   };
 }
@@ -758,14 +452,15 @@ export async function fetchWatchVideos() {
     const videosQuery =
       query(
         videosRef,
-        orderBy(
-          "createdAt",
-          "desc"
-        ),
+        where("status", "==", "approved"),
+        where("active", "==", true),
+        where("moderation", "==", "safe"),
+        where("videoAccess", "==", "free"),
+        orderBy("createdAt", "desc"),
         limit(50)
       );
 
-    const snapshot =
+      const snapshot =
       await getDocs(
         videosQuery
       );

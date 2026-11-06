@@ -39,14 +39,27 @@ export async function GET(req: NextRequest) {
     const snap = await getAdminDb().collection("refund_requests").orderBy("status", "asc").limit(100).get();
     const requests = snap.docs.map((item) => {
       const data = item.data();
-      const amount = Number(data.amount);
+      const rawAmount = data.amount;
+      const amount = typeof rawAmount === "number" ? rawAmount : Number.NaN;
+      const amountValid = Number.isFinite(amount) && amount > 0 &&
+        Number.isSafeInteger(Math.round(amount * 100)) &&
+        Math.abs(amount * 100 - Math.round(amount * 100)) <= 1e-7;
+      const createdAt = data.createdAt?.toDate?.();
       return {
         id: item.id,
         userName: typeof data.userName === "string" ? data.userName.slice(0, 120) : "Unknown",
         productName: typeof data.productName === "string" ? data.productName.slice(0, 200) : "Product",
-        amount: Number.isFinite(amount) && amount >= 0 ? amount : 0,
+        amount: amountValid ? amount : 0,
+        amountValid,
         reason: typeof data.reason === "string" ? data.reason.slice(0, 2000) : "",
-        status: typeof data.status === "string" ? data.status : "Pending",
+        status: typeof data.status === "string" && data.status.trim() ? data.status : "legacy_status_missing",
+        dataQualityIssues: [
+          ...(!amountValid ? ["invalid_amount"] : []),
+          ...(typeof data.userId !== "string" || !data.userId.trim() ? ["missing_user_id"] : []),
+          ...(typeof data.orderId !== "string" || !data.orderId.trim() ? ["missing_order_id"] : []),
+          ...(typeof data.reason !== "string" || !data.reason.trim() ? ["missing_reason"] : []),
+          ...(!createdAt || Number.isNaN(createdAt.getTime()) ? ["missing_or_invalid_created_at"] : []),
+        ],
         refundExecutionStatus: typeof data.refundExecutionStatus === "string" ? data.refundExecutionStatus : "not_executed",
         providerRefundStatus: typeof data.providerRefundStatus === "string" ? data.providerRefundStatus : null,
         refundArn: typeof data.refundArn === "string" ? data.refundArn : null,
@@ -93,7 +106,7 @@ export async function POST(req: NextRequest) {
       const refundSnap = await tx.get(refundRef);
       if (!refundSnap.exists) return "missing";
       const refund = refundSnap.data() || {};
-      const currentStatus = String(refund.status || "Pending").toLowerCase();
+      const currentStatus = typeof refund.status === "string" ? refund.status.trim().toLowerCase() : "";
       if (currentStatus !== "pending" && currentStatus !== "requested") return "processed";
       const amount = Number(refund.amount);
       const amountPaise = Math.round(amount * 100);

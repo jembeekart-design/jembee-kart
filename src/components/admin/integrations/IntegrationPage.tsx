@@ -112,7 +112,7 @@ export default function IntegrationPage() {
         </h1>
 
         <p className="mt-2 text-[var(--text-color)]">
-          Connect Business Rules with JembeeKart modules.
+          Connect Business Rules with Jembee Shorts modules.
         </p>
 
         <div className="mt-8 space-y-4">

@@ -25,7 +25,7 @@ export default function MissionControl() {
     <div className="p-8 max-w-6xl mx-auto space-y-8 font-sans">
       <header className="flex justify-between items-center">
         <div>
-          <h1 className="text-2xl font-bold text-gray-900">JembeeKart Mission Control</h1>
+          <h1 className="text-2xl font-bold text-gray-900">Jembee Shorts Mission Control</h1>
           <p className="text-gray-500 text-sm">System Status: {status === "ready" ? "Operational" : "Degraded"}</p>
         </div>
         <div className="text-right">

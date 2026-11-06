@@ -16,7 +16,7 @@ export default function PrivacyPolicyPage() {
           <section>
             <h2 className="mb-2 text-xl font-semibold">1. Introduction</h2>
             <p>
-              JembeeKart respects your privacy and is committed to protecting
+              Jembee Shorts respects your privacy and is committed to protecting
               the personal information you provide while using our services.
             </p>
           </section>
@@ -38,7 +38,7 @@ export default function PrivacyPolicyPage() {
               3. Google Account and Drive Access
             </h2>
             <p>
-              If you authorize a Google integration, JembeeKart may request
+              If you authorize a Google integration, Jembee Shorts may request
               access to the Google Drive resources necessary for the specific
               feature you authorize. Access is used only for the purposes
               described during authorization and is not used to access
@@ -51,7 +51,7 @@ export default function PrivacyPolicyPage() {
               4. How We Use Information
             </h2>
             <p>
-              Information may be used to provide and improve JembeeKart,
+              Information may be used to provide and improve Jembee Shorts,
               authenticate users, process transactions, moderate uploaded
               content, maintain security, prevent abuse, and provide customer
               support.
@@ -65,7 +65,7 @@ export default function PrivacyPolicyPage() {
             <p>
               We do not sell your personal information. Information may be
               shared with service providers when necessary to operate,
-              secure, or improve JembeeKart and to comply with applicable law.
+              secure, or improve Jembee Shorts and to comply with applicable law.
             </p>
           </section>
 

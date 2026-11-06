@@ -1,0 +1,21 @@
+src/app/api/shorts/video-stream/[videoId]/route.ts(4,57): error TS2307: Cannot find module '@/lib/payments/cashfreeServer' or its corresponding type declarations.
+src/app/api/shorts/video-thumbnail/[videoId]/route.ts(4,57): error TS2307: Cannot find module '@/lib/payments/cashfreeServer' or its corresponding type declarations.
+src/app/mlm/watch-earn/components/PaidVideoGate.tsx(25,5): error TS2322: Type 'Promise<unknown>' is not assignable to type 'Promise<void>'.
+  Type 'unknown' is not assignable to type 'void'.
+src/app/mlm/watch-earn/components/PaidVideoGate.tsx(32,47): error TS2794: Expected 1 arguments, but got 0. Did you forget to include 'void' in your type argument to 'Promise'?
+src/app/mlm/watch-earn/components/PaidVideoGate.tsx(40,3): error TS2322: Type 'Promise<void> | null' is not assignable to type 'Promise<void>'.
+  Type 'null' is not assignable to type 'Promise<void>'.
+src/app/mlm/watch-earn/components/VerticalVideoFeed.tsx(495,14): error TS2304: Cannot find name 'isFirebaseConfigured'.
+src/app/mlm/watch-earn/components/VerticalVideoFeed.tsx(498,14): error TS2304: Cannot find name 'isFirebaseConfigured'.
+src/app/mlm/watch-earn/components/VerticalVideoFeed.tsx(581,19): error TS2322: Type '{ videoUrl: string; isMuted: boolean; active: boolean; playbackRate: number; onActualPlaybackSeconds: (seconds: number) => void; onNinetyPercentWatched: () => undefined; }' is not assignable to type 'IntrinsicAttributes & VideoPlayerProps'.
+  Property 'onNinetyPercentWatched' does not exist on type 'IntrinsicAttributes & VideoPlayerProps'.
+src/firebase/config.ts(9,7): error TS2339: Property 'NEXT_PUBLIC_FIREBASE_API_KEY' does not exist on type '{}'.
+src/firebase/config.ts(10,7): error TS2339: Property 'NEXT_PUBLIC_FIREBASE_AUTH_DOMAIN' does not exist on type '{}'.
+src/firebase/config.ts(11,7): error TS2339: Property 'NEXT_PUBLIC_FIREBASE_PROJECT_ID' does not exist on type '{}'.
+src/firebase/config.ts(12,7): error TS2339: Property 'NEXT_PUBLIC_FIREBASE_APP_ID' does not exist on type '{}'.
+src/firebase/config.ts(27,15): error TS2339: Property 'NEXT_PUBLIC_FIREBASE_API_KEY' does not exist on type '{}'.
+src/firebase/config.ts(28,19): error TS2339: Property 'NEXT_PUBLIC_FIREBASE_AUTH_DOMAIN' does not exist on type '{}'.
+src/firebase/config.ts(29,18): error TS2339: Property 'NEXT_PUBLIC_FIREBASE_PROJECT_ID' does not exist on type '{}'.
+src/firebase/config.ts(30,22): error TS2339: Property 'NEXT_PUBLIC_FIREBASE_STORAGE_BUCKET' does not exist on type '{}'.
+src/firebase/config.ts(31,26): error TS2339: Property 'NEXT_PUBLIC_FIREBASE_MESSAGING_SENDER_ID' does not exist on type '{}'.
+src/firebase/config.ts(32,14): error TS2339: Property 'NEXT_PUBLIC_FIREBASE_APP_ID' does not exist on type '{}'.

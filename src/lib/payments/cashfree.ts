@@ -125,21 +125,33 @@ export async function confirmCashfreePayment(
   internalOrderId: string,
   providerOrderId: string,
   payment: Record<string, unknown>,
-): Promise<"paid" | "late_payment_after_cancel_review" | "duplicate_payment_review" | "already_processed" | "ignored_non_success" | "order_not_found" | "order_mismatch" | "amount_mismatch"> {
+): Promise<"paid" | "late_payment_after_cancel_review" | "duplicate_payment_review" | "already_processed" | "ignored_non_success" | "order_not_found" | "order_mismatch" | "amount_mismatch" | "payment_id_reused"> {
   const paymentStatus = typeof payment.payment_status === "string" ? payment.payment_status.toUpperCase() : "";
   if (paymentStatus !== "SUCCESS") return "ignored_non_success";
   const paymentId = String(payment.cf_payment_id ?? "").trim();
   const amount = Number(payment.payment_amount);
-  const currency = typeof payment.payment_currency === "string" ? payment.payment_currency.toUpperCase() : "INR";
-  if (!paymentId || !Number.isFinite(amount) || amount <= 0 || currency !== "INR") return "amount_mismatch";
+  // Never infer INR when the provider omits currency. Accept only an explicit,
+  // well-formed INR amount with no fractional paise.
+  const currency = typeof payment.payment_currency === "string" ? payment.payment_currency.trim().toUpperCase() : "";
+  const amountPaise = Math.round(amount * 100);
+  if (
+    !paymentId || paymentId.length > 128 ||
+    !Number.isFinite(amount) || amount <= 0 || !Number.isSafeInteger(amountPaise) ||
+    Math.abs(amount * 100 - amountPaise) > 1e-7 || currency !== "INR"
+  ) return "amount_mismatch";
 
   const db = getAdminDb();
   const orderRef = db.collection("orders").doc(internalOrderId);
   const eventId = createHash("sha256").update(`${internalOrderId}:${paymentId}:${paymentStatus}`).digest("hex");
   const eventRef = db.collection("cashfreePaymentEvents").doc(eventId);
+  const paymentIdQuery = db.collection("orders").where("cashfreePaymentId", "==", paymentId).limit(2);
 
   return db.runTransaction(async (tx) => {
-    const [orderSnap, eventSnap] = await Promise.all([tx.get(orderRef), tx.get(eventRef)]);
+    const [orderSnap, eventSnap, paymentIdSnap] = await Promise.all([
+      tx.get(orderRef),
+      tx.get(eventRef),
+      tx.get(paymentIdQuery),
+    ]);
     if (!orderSnap.exists) return "order_not_found";
     const order = orderSnap.data() || {};
     const priorEvent = eventSnap.exists ? eventSnap.data() || {} : {};
@@ -151,8 +163,19 @@ export async function confirmCashfreePayment(
       else tx.create(eventRef, { ...mismatch, createdAt: FieldValue.serverTimestamp() });
       return "order_mismatch";
     }
+    const paymentIdUsedElsewhere = paymentIdSnap.docs.some((item) => item.id !== internalOrderId);
+    if (paymentIdUsedElsewhere) {
+      const mismatch = { internalOrderId, providerOrderId, paymentId, paymentStatus, ignored: true, retryableMismatch: true, reason: "PAYMENT_ID_REUSED", lastSeenAt: FieldValue.serverTimestamp() };
+      if (eventSnap.exists) tx.update(eventRef, mismatch);
+      else tx.create(eventRef, { ...mismatch, createdAt: FieldValue.serverTimestamp() });
+      return "payment_id_reused";
+    }
     const expectedAmount = Number(order.finalAmount);
-    if (!Number.isFinite(expectedAmount) || Math.round(expectedAmount * 100) !== Math.round(amount * 100)) {
+    const expectedPaise = Math.round(expectedAmount * 100);
+    if (
+      !Number.isFinite(expectedAmount) || !Number.isSafeInteger(expectedPaise) ||
+      Math.abs(expectedAmount * 100 - expectedPaise) > 1e-7 || expectedPaise !== amountPaise
+    ) {
       const mismatch = { internalOrderId, providerOrderId, paymentId, paymentStatus, ignored: true, retryableMismatch: true, reason: "AMOUNT_MISMATCH", receivedAmount: amount, expectedAmount, lastSeenAt: FieldValue.serverTimestamp() };
       if (eventSnap.exists) tx.update(eventRef, mismatch);
       else tx.create(eventRef, { ...mismatch, createdAt: FieldValue.serverTimestamp() });

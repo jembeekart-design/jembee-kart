@@ -39,7 +39,7 @@ export default function EmailPage() {
       smtpPort: "587",
       smtpEmail: "",
       smtpPassword: "",
-      senderName: "JembeeKart",
+      senderName: "Jembee Shorts",
       secureConnection: true,
       emailNotifications: true
     });

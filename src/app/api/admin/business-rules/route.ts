@@ -4,6 +4,7 @@ import { getAdminAuth, getAdminDb } from "@/firebase/admin";
 import {
   validateProfitabilityRules, validateReferralRules, validateWatchEarnRules,
   validateWalletRules, validateCreatorEconomyRules, validateFeatureFlags,
+  validateVideoAdsRules,
 } from "@/firestore/businessRules/validator";
 import { DEFAULT_BUSINESS_RULES } from "@/firestore/businessRules/defaults";
 
@@ -16,6 +17,7 @@ const VALIDATORS: Record<string, (value: any) => any> = {
   wallet: validateWalletRules,
   creatorEconomy: validateCreatorEconomyRules,
   featureFlags: validateFeatureFlags,
+  videoAds: validateVideoAdsRules,
 };
 
 async function verifyAdmin(req: Request) {

@@ -222,7 +222,7 @@ PermissionPage() {
           "
         >
 
-          JembeeKart needs some permissions
+          Jembee Shorts needs some permissions
           for smooth video playback,
           uploads, notifications and
           rewards experience.

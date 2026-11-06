@@ -64,7 +64,7 @@ export default function GovernancePage() {
       <div className="flex items-center justify-between">
         <div>
           <h1 className="text-3xl font-bold">Governance Dashboard</h1>
-          <p className="text-[var(--text-color)]">JembeeKart Governance Engine</p>
+          <p className="text-[var(--text-color)]">Jembee Shorts Governance Engine</p>
         </div>
         <button onClick={loadDashboard} className="rounded-lg bg-[var(--primary-color)] px-4 py-2 text-sm hover:bg-[var(--primary-color)] transition">Refresh</button>
       </div>

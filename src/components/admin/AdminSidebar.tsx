@@ -196,7 +196,7 @@ export default function AdminSidebar() {
         </div>
 
         <div>
-          <h1 className="text-2xl font-black">JembeeKart</h1>
+          <h1 className="text-2xl font-black">Jembee Shorts</h1>
           <p className="text-sm text-[var(--text-muted)]">Admin Panel</p>
         </div>
       </div>

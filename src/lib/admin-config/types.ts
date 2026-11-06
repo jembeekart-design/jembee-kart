@@ -42,6 +42,7 @@ export interface PaymentConfig {
 export interface ShippingConfig {
   freeShipping: boolean;
   shippingCharge: number;
+  freeShippingThreshold?: number | null;
   deliveryDays: number;
 }
 

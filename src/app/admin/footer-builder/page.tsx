@@ -35,9 +35,9 @@ export default function FooterBuilderPage() {
   const [settings, setSettings] =
     useState<FooterSettings>({
       companyName:
-        "JembeeKart",
+        "Jembee Shorts",
       copyrightText:
-        "© 2026 JembeeKart. All rights reserved.",
+        "© 2026 Jembee Shorts. All rights reserved.",
       links: [
         {
           title: "About Us",

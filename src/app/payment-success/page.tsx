@@ -16,7 +16,7 @@ type OrderState = {
 
 export default function PaymentSuccessPage() {
   const [loading, setLoading] = useState(true);
-  const [userName, setUserName] = useState("JembeeKart User");
+  const [userName, setUserName] = useState("Jembee Shorts User");
   const [referralCode, setReferralCode] = useState("");
   const [order, setOrder] = useState<OrderState | null>(null);
   const [message, setMessage] = useState("");
@@ -33,7 +33,7 @@ export default function PaymentSuccessPage() {
         const userSnap = await getDoc(doc(db, "users", user.uid));
         if (userSnap.exists()) {
           const userData = userSnap.data();
-          setUserName(typeof userData.name === "string" ? userData.name : user.displayName || "JembeeKart User");
+          setUserName(typeof userData.name === "string" ? userData.name : user.displayName || "Jembee Shorts User");
           setReferralCode(typeof userData.referralCode === "string" ? userData.referralCode : "");
         }
 

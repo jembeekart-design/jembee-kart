@@ -57,6 +57,9 @@ function CheckoutContent() {
   const [cashfreeSandbox, setCashfreeSandbox] = useState(true);
   const [address, setAddress] = useState<any>(null);
   const [product, setProduct] = useState<any>(null);
+  const [invoice, setInvoice] = useState<any>(null);
+  const [quoteLoading, setQuoteLoading] = useState(false);
+  const [quoteError, setQuoteError] = useState("");
 
   useEffect(() => {
     fetch("/api/payments/cashfree/availability", { cache: "no-store" })
@@ -84,10 +87,44 @@ function CheckoutContent() {
     return () => unsubscribe();
   }, [productId]);
 
+  useEffect(() => {
+    let active = true;
+    async function loadQuote() {
+      if (!product?.id) { setInvoice(null); return; }
+      const user = auth.currentUser;
+      if (!user) { setInvoice(null); return; }
+      setQuoteLoading(true);
+      setQuoteError("");
+      try {
+        const token = await user.getIdToken();
+        const response = await fetch("/api/orders/quote", {
+          method: "POST",
+          headers: { "Content-Type": "application/json", Authorization: `Bearer ${token}` },
+          body: JSON.stringify({ productId: product.id, quantity: 1 }),
+          cache: "no-store",
+        });
+        const result = await response.json().catch(() => null);
+        if (!response.ok || result?.success !== true || !result?.invoice) {
+          throw new Error(result?.error || "Unable to calculate your invoice.");
+        }
+        if (active) setInvoice(result.invoice);
+      } catch (error) {
+        if (active) {
+          setInvoice(null);
+          setQuoteError(error instanceof Error ? error.message : "Unable to calculate your invoice.");
+        }
+      } finally {
+        if (active) setQuoteLoading(false);
+      }
+    }
+    loadQuote();
+    return () => { active = false; };
+  }, [product]);
+
   const handlePlaceOrder = async () => {
     const user = auth.currentUser;
 
-    if (!user || !product || !address) {
+    if (!user || !product || !address || !invoice) {
       alert("Please log in and save your delivery address first.");
       return;
     }
@@ -125,13 +162,17 @@ function CheckoutContent() {
           selectedSize,
           selectedColor,
           idempotencyKey,
+          expectedTotalPaise: invoice.totalPaise,
         }),
       });
 
       const result = await response.json().catch(() => null);
 
       if (!response.ok || result?.success !== true || !result?.orderId) {
-        if (result?.error === "This checkout attempt has ended. Start a new checkout to place another order.") {
+        if (
+          result?.error === "This checkout attempt has ended. Start a new checkout to place another order." ||
+          result?.error === "The order total changed. Please review the updated invoice and try again."
+        ) {
           sessionStorage.removeItem(storageKey);
         }
         throw new Error(result?.error || "Order placement failed.");
@@ -170,10 +211,8 @@ function CheckoutContent() {
     }
   };
   if (dataLoading) return <div className="flex min-h-screen items-center justify-center"><Loader2 className="animate-spin text-[var(--color-primary-button)]" /></div>;
-  const checkoutPrice = product && typeof product.discountPrice === "number" && product.discountPrice > 0
-    ? product.discountPrice
-    : Number(product?.price || 0);
-  const checkoutDiscount = Math.max(0, Number(product?.price || 0) - checkoutPrice);
+  const checkoutPrice = invoice?.itemTotal ?? 0;
+  const checkoutDiscount = invoice?.discount ?? 0;
 
   return (
     <main className="min-h-screen bg-[var(--color-page-background)] pb-32 px-4 max-w-lg mx-auto font-sans">
@@ -248,9 +287,11 @@ function CheckoutContent() {
         <div className="space-y-2.5 text-xs">
             <div className="flex justify-between text-[var(--text-secondary)]"><span>MRP</span><span>₹{product?.price || 0}</span></div>
             <div className="flex justify-between text-[var(--color-success)] font-bold"><span>Discount</span><span>- ₹{checkoutDiscount}</span></div>
-            <div className="flex justify-between text-[var(--text-secondary)]"><span>Delivery Charges</span><span className="text-[var(--color-success)] font-bold">FREE</span></div>
+            <div className="flex justify-between text-[var(--text-secondary)]"><span>Delivery Charges</span><span>₹{invoice?.shippingCharge ?? "—"}</span></div>
             <div className="border-t border-dashed my-2"></div>
-            <div className="flex justify-between text-base font-extrabold text-[var(--text-primary)] pt-1"><span>Total Payable</span><span>₹{checkoutPrice}</span></div>
+            <div className="flex justify-between text-base font-extrabold text-[var(--text-primary)] pt-1"><span>Total Payable</span><span>₹{invoice?.total ?? "—"}</span></div>
+            {quoteLoading && <p className="text-[var(--text-secondary)]">Calculating verified total…</p>}
+            {quoteError && <p role="alert" className="text-[var(--color-danger)]">{quoteError}</p>}
         </div>
         {checkoutDiscount > 0 && <div className="mt-4 bg-[var(--color-success)] text-[var(--color-success)] text-[10px] font-bold p-2.5 rounded-xl text-center">You save ₹{checkoutDiscount} on this order</div>}
       </div>
@@ -260,13 +301,13 @@ function CheckoutContent() {
         <div className="bg-[var(--color-warning)] p-3 rounded-2xl"><Truck className="text-[var(--color-warning)]" size={20} /></div>
         <div>
           <p className="text-[9px] font-extrabold text-[var(--text-secondary)] uppercase tracking-widest">Expected Delivery</p>
-          <p className="text-sm font-bold text-[var(--text-primary)]">Delivery estimate will be confirmed after order placement.</p>
+          <p className="text-sm font-bold text-[var(--text-primary)]">{invoice?.deliveryDays ? `${invoice.deliveryDays} day(s) estimated` : "Delivery estimate will be confirmed after order placement."}</p>
         </div>
       </div>
 
       {/* FIXED BUTTON */}
       <div className="fixed bottom-0 left-0 right-0 p-4 bg-[var(--color-card-background)] border-t border-[var(--color-border)] rounded-t-3xl shadow-[0_-5px_20px_rgba(0,0,0,0.05)]">
-        <button onClick={handlePlaceOrder} disabled={loading || (paymentMethod === "cashfree" && !cashfreeAvailable)} className="w-full bg-[var(--color-primary-button)] text-[var(--button-text-color)] py-4 rounded-2xl font-bold text-lg shadow-lg disabled:opacity-50">
+        <button onClick={handlePlaceOrder} disabled={loading || quoteLoading || !invoice || Boolean(quoteError) || (paymentMethod === "cashfree" && !cashfreeAvailable)} className="w-full bg-[var(--color-primary-button)] text-[var(--button-text-color)] py-4 rounded-2xl font-bold text-lg shadow-lg disabled:opacity-50">
           {loading ? "Processing..." : paymentMethod === "cashfree" ? "Continue to Secure Payment" : "Place Order (COD)"}
         </button>
         <p className="text-center text-[10px] text-[var(--text-secondary)] mt-3 font-semibold">Your information is safe with us</p>

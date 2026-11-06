@@ -16,7 +16,7 @@ function ensureNumber(
   value: unknown,
   field: string
 ): number {
-  if (typeof value !== "number" || !Number.isFinite(value)) {
+  if (typeof value !== "number" || Number.isNaN(value)) {
     throw new Error(`${field} must be a valid number.`);
   }
 
@@ -80,11 +80,6 @@ export function validateProfitabilityRules(
   ensurePositive(
     ensureNumber(rules.cashbackExpense, "cashbackExpense"),
     "cashbackExpense"
-  );
-
-  ensurePositive(
-    ensureNumber(rules.cashbackThreshold, "cashbackThreshold"),
-    "cashbackThreshold"
   );
 
   ensurePositive(
@@ -164,9 +159,6 @@ export function validateWatchEarnRules(
   rules: WatchEarnRules
 ): WatchEarnRules {
 
-  ensurePositive(ensureNumber(rules.rewardPerVideo, "rewardPerVideo"), "rewardPerVideo");
-  ensurePositive(ensureNumber(rules.watchDurationPerReward, "watchDurationPerReward"), "watchDurationPerReward");
-
   ensurePositive(
     ensureNumber(
       rules.videosRequired,
@@ -226,8 +218,11 @@ export function validateWalletRules(
     "minimumWithdrawal"
   );
 
-  const withdrawalCharge = ensurePositive(
-    ensureNumber(rules.withdrawalCharge, "withdrawalCharge"),
+  ensurePositive(
+    ensureNumber(
+      rules.withdrawalCharge,
+      "withdrawalCharge"
+    ),
     "withdrawalCharge"
   );
 
@@ -235,12 +230,6 @@ export function validateWalletRules(
     rules.kycRequired,
     "kycRequired"
   );
-  if (rules.withdrawalChargeType !== "FIXED" && rules.withdrawalChargeType !== "PERCENTAGE") {
-    throw new Error("withdrawalChargeType must be FIXED or PERCENTAGE.");
-  }
-  if (rules.withdrawalChargeType === "PERCENTAGE" && withdrawalCharge > 100) {
-    throw new Error("Percentage withdrawalCharge cannot exceed 100.");
-  }
 
   ensurePositive(
     ensureNumber(
@@ -312,11 +301,6 @@ export function validateFeatureFlags(
   ensureBoolean(flags.adsEnabled, "adsEnabled");
   ensureBoolean(flags.walletEnabled, "walletEnabled");
   ensureBoolean(flags.loyaltyEnabled, "loyaltyEnabled");
-  ensureBoolean(flags.commissionDistributedEnabled, "commissionDistributedEnabled");
-  ensureBoolean(flags.rewardEnabled, "rewardEnabled");
-  ensureBoolean(flags.affiliateEnabled, "affiliateEnabled");
-  ensureBoolean(flags.mlmEnabled, "mlmEnabled");
-  ensureBoolean(flags.autoApprove, "autoApprove");
 
   return flags;
 }
@@ -337,4 +321,17 @@ export function validateBusinessRules(
   validateFeatureFlags(config.featureFlags);
 
   return config;
+}
+
+
+export function validateVideoAdsRules(rules: import("./types").VideoAdsRules): import("./types").VideoAdsRules {
+  if (typeof rules.enabled !== "boolean") throw new Error("videoAds.enabled must be boolean");
+  for (const [key, value, min, max] of [
+    ["firstAdAfterVideos", rules.firstAdAfterVideos, 5, 1000],
+    ["repeatEveryVideos", rules.repeatEveryVideos, 1, 1000],
+    ["autoDismissSeconds", rules.autoDismissSeconds, 1, 60],
+  ] as const) {
+    if (!Number.isInteger(value) || value < min || value > max) throw new Error(`videoAds.${key} is out of range`);
+  }
+  return rules;
 }

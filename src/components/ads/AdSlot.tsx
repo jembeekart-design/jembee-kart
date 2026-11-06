@@ -67,7 +67,7 @@ export default function AdSlot() {
           id: adDoc.id,
           title: String(data.title ?? "Sponsored Ad"),
           url: String(data.url ?? ""),
-          platform: String(data.platform ?? "JembeeKart Ads"),
+          platform: String(data.platform ?? "Jembee Shorts Ads"),
           budget: Number(data.budget ?? 0),
           status: String(data.status ?? "Running"),
           impressions: Number(data.impressions ?? 0),

@@ -32,7 +32,7 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ success: false, error: "Invalid JSON request" }, { status: 400, headers: { "Cache-Control": "no-store" } });
     }
     const orderId = typeof body.orderId === "string" ? body.orderId.trim() : "";
-    if (!orderId || orderId.length > 200 || !/^[A-Za-z0-9_-]+$/.test(orderId)) return NextResponse.json({ success: false, error: "A valid JembeeKart orderId is required" }, { status: 400, headers: { "Cache-Control": "no-store" } });
+    if (!orderId || orderId.length > 200 || !/^[A-Za-z0-9_-]+$/.test(orderId)) return NextResponse.json({ success: false, error: "A valid Jembee Shorts orderId is required" }, { status: 400, headers: { "Cache-Control": "no-store" } });
 
     const db = getAdminDb();
     const orderRef = db.collection("orders").doc(orderId);

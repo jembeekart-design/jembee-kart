@@ -195,7 +195,7 @@ export async function POST(req: NextRequest) {
 
       const profileName =
         name || (typeof decoded.name === "string" ? decoded.name.trim() : "") ||
-        "JembeeKart User";
+        "Jembee Shorts User";
 
       transaction.set(userRef, {
         uid,
