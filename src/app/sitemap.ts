@@ -1,20 +1,14 @@
-import { MetadataRoute } from 'next';
+import { MetadataRoute } from "next";
+
+const siteUrl = (process.env.NEXT_PUBLIC_SITE_URL || "https://jembee-kart.vercel.app").replace(/\/$/, "");
 
 export default function sitemap(): MetadataRoute.Sitemap {
-  const baseUrl = 'https://jembee-kart.vercel.app';
-
+  const lastModified = new Date();
   return [
-    { url: baseUrl, lastModified: new Date() },
-    { url: `${baseUrl}/shop`, lastModified: new Date() },
-    { url: `${baseUrl}/mlm/watch-earn`, lastModified: new Date() },
-    { url: `${baseUrl}/contact`, lastModified: new Date() },
-
-    // Legal & Policy Pages
-    { url: `${baseUrl}/privacy`, lastModified: new Date() },
-    { url: `${baseUrl}/terms_conditions`, lastModified: new Date() },
-    { url: `${baseUrl}/refund-policy`, lastModified: new Date() },
-    { url: `${baseUrl}/shipping`, lastModified: new Date() },
-    { url: `${baseUrl}/rewards-policy`, lastModified: new Date() },
-    { url: `${baseUrl}/disclaimer`, lastModified: new Date() },
+    { url: siteUrl, lastModified, changeFrequency: "daily", priority: 1 },
+    { url: `${siteUrl}/about`, lastModified, changeFrequency: "monthly", priority: 0.7 },
+    { url: `${siteUrl}/contact`, lastModified, changeFrequency: "monthly", priority: 0.5 },
+    { url: `${siteUrl}/privacy`, lastModified, changeFrequency: "yearly", priority: 0.4 },
+    { url: `${siteUrl}/terms_conditions`, lastModified, changeFrequency: "yearly", priority: 0.4 },
   ];
 }

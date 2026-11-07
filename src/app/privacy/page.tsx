@@ -9,14 +9,14 @@ export default function PrivacyPolicyPage() {
         </h1>
 
         <p className="mb-8 text-sm opacity-70">
-          Last updated: September 3, 2026
+          Last updated: November 7, 2026
         </p>
 
         <div className="space-y-7 leading-7">
           <section>
             <h2 className="mb-2 text-xl font-semibold">1. Introduction</h2>
             <p>
-              JembeeKart respects your privacy and is committed to protecting
+              Jembee Shorts respects your privacy and is committed to protecting
               the personal information you provide while using our services.
             </p>
           </section>
@@ -38,7 +38,7 @@ export default function PrivacyPolicyPage() {
               3. Google Account and Drive Access
             </h2>
             <p>
-              If you authorize a Google integration, JembeeKart may request
+              If you authorize a Google integration, Jembee Shorts may request
               access to the Google Drive resources necessary for the specific
               feature you authorize. Access is used only for the purposes
               described during authorization and is not used to access
@@ -51,7 +51,7 @@ export default function PrivacyPolicyPage() {
               4. How We Use Information
             </h2>
             <p>
-              Information may be used to provide and improve JembeeKart,
+              Information may be used to provide and improve Jembee Shorts,
               authenticate users, process transactions, moderate uploaded
               content, maintain security, prevent abuse, and provide customer
               support.
@@ -65,7 +65,7 @@ export default function PrivacyPolicyPage() {
             <p>
               We do not sell your personal information. Information may be
               shared with service providers when necessary to operate,
-              secure, or improve JembeeKart and to comply with applicable law.
+              secure, or improve Jembee Shorts and to comply with applicable law.
             </p>
           </section>
 
@@ -101,7 +101,42 @@ export default function PrivacyPolicyPage() {
           </section>
 
           <section>
-            <h2 className="mb-2 text-xl font-semibold">9. Contact Us</h2>
+            <h2 className="mb-2 text-xl font-semibold">
+              9. Advertising, Cookies, and Google AdSense
+            </h2>
+            <p>
+              Jembee Shorts may use third-party advertising services, including
+              Google AdSense, to display ads. These providers may use cookies,
+              device identifiers, or similar technologies to collect information
+              about visits to this and other websites in order to provide,
+              measure, limit, and personalize advertising where permitted by law
+              and your settings. Google’s use of advertising cookies enables
+              Google and its partners to serve ads based on visits to this site
+              and/or other sites. Users can learn about Google advertising
+              settings at https://adssettings.google.com and review how Google
+              uses data at https://policies.google.com/technologies/partner-sites.
+            </p>
+            <p>
+              Where required, we will request consent before using non-essential
+              cookies or personalized advertising. You can manage cookies through
+              your browser settings. Blocking some cookies may affect features.
+            </p>
+          </section>
+          <section>
+            <h2 className="mb-2 text-xl font-semibold">
+              10. Children’s Privacy
+            </h2>
+            <p>
+              Jembee Shorts is not intended to knowingly collect personal
+              information from children in violation of applicable law. A parent
+              or guardian who believes a child has provided personal information
+              may contact us to request review and deletion where appropriate.
+            </p>
+          </section>
+          <section>
+            <h2 className="mb-2 text-xl font-semibold">
+              11. Contact Us
+            </h2>
             <p>
               For privacy-related questions or requests, contact us at
               <a

@@ -1,46 +1,35 @@
-import { getFirestoreDocument } from "@/lib/firestore/getFirestoreDocument";
+export const metadata = {
+  title: "Contact Us",
+  description: "Contact the Jembee Shorts team for support, privacy questions, and content concerns.",
+};
 
-export const dynamic = "force-dynamic";
-
-export default async function ContactPage() {
-  const result = await getFirestoreDocument("dynamic_pages", "contact");
-
-  if (!result.success || !result.data || result.data.visible === false) {
-    return (
-      <main className="min-h-screen bg-[var(--background-color)] text-[var(--text-color)]">
-        <div className="mx-auto max-w-4xl px-5 py-12 md:px-8">
-          <h1 className="text-3xl font-bold">Contact Us</h1>
-
-          <p className="mt-4 opacity-70">
-            Contact information is currently unavailable.
-          </p>
-        </div>
-      </main>
-    );
-  }
-
-  const title =
-    typeof result.data.title === "string"
-      ? result.data.title
-      : "Contact Us";
-
-  const content =
-    typeof result.data.content === "string"
-      ? result.data.content
-      : "";
-
+export default function ContactPage() {
   return (
     <main className="min-h-screen bg-[var(--background-color)] text-[var(--text-color)]">
-      <div className="mx-auto max-w-4xl px-5 py-12 md:px-8">
-        <h1 className="mb-3 text-3xl font-bold md:text-4xl">
-          {title}
-        </h1>
-
-        <div
-          className="space-y-5 leading-7"
-          dangerouslySetInnerHTML={{ __html: content }}
-        />
-      </div>
+      <article className="mx-auto max-w-3xl px-5 py-12 md:px-8">
+        <h1 className="mb-4 text-3xl font-bold md:text-4xl">Contact Us</h1>
+        <div className="space-y-5 leading-7">
+          <p>
+            We welcome questions, feedback, support requests, privacy requests,
+            and reports about content that may violate our rules or someone else's rights.
+          </p>
+          <section>
+            <h2 className="text-xl font-semibold">Email support</h2>
+            <p>
+              Email: <a className="underline" href="mailto:jembeekart@gmail.com">jembeekart@gmail.com</a>
+            </p>
+            <p>When reporting a video, include its link and a short explanation so we can identify it.</p>
+          </section>
+          <section>
+            <h2 className="text-xl font-semibold">Privacy and account requests</h2>
+            <p>
+              Use the same email address to ask about personal information,
+              account access, correction, or deletion. Do not send passwords
+              or payment card details by email.
+            </p>
+          </section>
+        </div>
+      </article>
     </main>
   );
 }
