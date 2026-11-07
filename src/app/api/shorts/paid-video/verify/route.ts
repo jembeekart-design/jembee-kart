@@ -3,6 +3,7 @@ import { FieldValue } from "firebase-admin/firestore";
 import { getAdminAuth, getAdminDb } from "@/firebase/admin";
 import { readBoundedJson } from "@/lib/server/readBoundedJson";
 import { cashfreeRequest, getCashfreeConfig } from "@/lib/payments/cashfree";
+import { resolvePaidVideoSharer, splitPaidVideoRevenue } from "@/lib/server/paidVideoRevenueSplit.mjs";
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
@@ -28,14 +29,36 @@ async function verifyAndGrant(orderId: string, uid: string) {
   const orderSnap = await orderRef.get();
   if (!orderSnap.exists || orderSnap.data()?.userId !== uid) throw new Error("ORDER_NOT_FOUND");
   const order = orderSnap.data()!;
-  const videoId = typeof order.videoId === "string" ? order.videoId : "";
-  const purchaseId = `${videoId}_${uid}`;
-  if (!videoId || videoId.length > 200 || !/^[A-Za-z0-9_-]{3,50}$/.test(String(order.cashfreeOrderId || orderId))) throw new Error("ORDER_INVALID");
-  if (order.status === "paid") {
-    const existing = await db.collection("watchVideoPurchases").doc(purchaseId).get();
-    return existing.exists && existing.data()?.status === "paid" && existing.data()?.accessRevoked !== true;
+  if (order.paymentProvider !== "cashfree" || order.status === "cancelled" || order.status === "expired") {
+    throw new Error("ORDER_INVALID");
   }
+  const videoId = typeof order.videoId === "string" ? order.videoId : "";
+  if (!videoId || videoId.length > 200 || !/^[A-Za-z0-9_-]{3,50}$/.test(String(order.cashfreeOrderId || orderId))) throw new Error("ORDER_INVALID");
 
+  // Never grant or preserve a purchase entitlement unless the exact video is
+  // approved, safe, active, and explicitly enabled for paid checkout.
+  const videoRef = db.collection("watchEarnVideos").doc(videoId);
+  const videoSnap = await videoRef.get();
+  const video = videoSnap.data();
+  if (
+    !videoSnap.exists ||
+    video?.status !== "approved" ||
+    video?.active !== true ||
+    video?.moderation !== "safe" ||
+    video?.videoAccess !== "paid" ||
+    video?.paidVideoStatus !== "enabled" ||
+    video?.paidCheckoutEnabled !== true ||
+    typeof video?.creatorId !== "string" || video.creatorId.trim().length === 0 ||
+    typeof order.creatorId !== "string" || order.creatorId !== video.creatorId
+  ) {
+    throw new Error("VIDEO_NOT_ELIGIBLE_FOR_PAID_PURCHASE");
+  }
+  const expectedVideoPaise = validInrAmount(video.videoPrice);
+  const orderVideoPaise = validInrAmount(order.amount);
+  if (expectedVideoPaise === null || orderVideoPaise === null || expectedVideoPaise !== orderVideoPaise) {
+    throw new Error("ORDER_VIDEO_AMOUNT_MISMATCH");
+  }
+  const purchaseId = `${videoId}_${uid}`;
   const expectedPaise = validInrAmount(order.amount);
   if (expectedPaise === null) throw new Error("ORDER_AMOUNT_INVALID");
   const config = await getCashfreeConfig();
@@ -52,21 +75,41 @@ async function verifyAndGrant(orderId: string, uid: string) {
   const paymentId = String(payment.cf_payment_id);
   const purchaseRef = db.collection("watchVideoPurchases").doc(purchaseId);
   const paymentEventRef = db.collection("watchVideoPaymentEvents").doc(paymentId);
+  const totalPaise = expectedPaise;
+  const split = splitPaidVideoRevenue(totalPaise);
+  const sharerUid = resolvePaidVideoSharer(order, uid, String(video.creatorId));
+  const ledgerCollection = db.collection("shortsSettlementLedger");
+  const ledgerRefs = [
+    ledgerCollection.doc(`paidvideo_${orderId}_creator`),
+    ledgerCollection.doc(`paidvideo_${orderId}_sharer`),
+    ledgerCollection.doc(`paidvideo_${orderId}_platform`),
+  ];
 
   await db.runTransaction(async (tx) => {
-    const [freshOrder, purchase, paymentEvent] = await Promise.all([tx.get(orderRef), tx.get(purchaseRef), tx.get(paymentEventRef)]);
-    if (!freshOrder.exists || freshOrder.data()?.userId !== uid || freshOrder.data()?.videoId !== videoId) throw new Error("ORDER_MISMATCH");
+    const [freshOrder, freshVideo, purchase, paymentEvent, creatorLedger, sharerLedger, platformLedger] = await Promise.all([tx.get(orderRef), tx.get(videoRef), tx.get(purchaseRef), tx.get(paymentEventRef), tx.get(ledgerRefs[0]), tx.get(ledgerRefs[1]), tx.get(ledgerRefs[2])]);
+    const freshOrderData = freshOrder.data();
+    const freshVideoData = freshVideo.data();
+    if (!freshOrder.exists || freshOrderData?.userId !== uid || freshOrderData?.videoId !== videoId) throw new Error("ORDER_MISMATCH");
+    if (!freshVideo.exists || freshVideoData?.status !== "approved" || freshVideoData?.active !== true || freshVideoData?.moderation !== "safe" || freshVideoData?.videoAccess !== "paid" || freshVideoData?.paidVideoStatus !== "enabled" || freshVideoData?.paidCheckoutEnabled !== true || typeof freshVideoData?.creatorId !== "string" || freshVideoData.creatorId.trim().length === 0 || typeof freshOrderData?.creatorId !== "string" || freshVideoData.creatorId !== freshOrderData.creatorId) throw new Error("VIDEO_NOT_ELIGIBLE_FOR_PAID_PURCHASE");
+    if (validInrAmount(freshVideoData?.videoPrice) !== validInrAmount(freshOrderData?.amount)) throw new Error("ORDER_VIDEO_AMOUNT_MISMATCH");
     if (paymentEvent.exists && paymentEvent.data()?.orderId !== orderId) throw new Error("PAYMENT_ID_REUSED");
-    if (purchase.exists && purchase.data()?.status === "paid" && purchase.data()?.accessRevoked !== true) {
-      if (purchase.data()?.orderId !== orderId) throw new Error("PURCHASE_ALREADY_EXISTS_REVIEW_REQUIRED");
-      return;
+    if (purchase.exists && purchase.data()?.status === "paid" && purchase.data()?.accessRevoked !== true && purchase.data()?.orderId !== orderId) {
+      throw new Error("PURCHASE_ALREADY_EXISTS_REVIEW_REQUIRED");
     }
-    tx.set(purchaseRef, {
+    if (!purchase.exists || purchase.data()?.status !== "paid" || purchase.data()?.accessRevoked === true) tx.set(purchaseRef, {
       videoId, userId: uid, orderId, amount: Number(order.amount), currency: "INR",
       status: "paid", cfPaymentId: paymentId, purchasedAt: FieldValue.serverTimestamp(), accessRevoked: false,
     }, { merge: true });
-    tx.update(orderRef, { status: "paid", cfPaymentId: paymentId, paidAt: FieldValue.serverTimestamp() });
-    tx.create(paymentEventRef, { orderId, videoId, userId: uid, cfPaymentId: paymentId, amount: Number(payment.payment_amount), currency: "INR", createdAt: FieldValue.serverTimestamp() });
+    if (freshOrderData?.status !== "paid") tx.update(orderRef, { status: "paid", cfPaymentId: paymentId, paidAt: FieldValue.serverTimestamp() });
+    if (!paymentEvent.exists) tx.create(paymentEventRef, { orderId, videoId, userId: uid, cfPaymentId: paymentId, amount: Number(payment.payment_amount), currency: "INR", createdAt: FieldValue.serverTimestamp() });
+
+    // Accrue a traceable revenue split only after provider payment verification.
+    // These entries do not credit wallets or trigger payouts.
+    const now = FieldValue.serverTimestamp();
+    const common = { orderId, videoId, buyerUid: uid, cfPaymentId: paymentId, currency: "INR", source: "cashfree_verified_paid_video", status: "pending_settlement", createdAt: now };
+    if (!creatorLedger.exists) tx.create(ledgerRefs[0], { ...common, entryType: "creator_share", beneficiaryUid: String(freshVideoData?.creatorId), amountPaise: split.creatorPaise });
+    if (!sharerLedger.exists) tx.create(ledgerRefs[1], { ...common, entryType: sharerUid ? "sharer_share" : "sharer_share_unallocated", beneficiaryUid: sharerUid, amountPaise: split.sharerPaise, attributionVerified: Boolean(sharerUid) });
+    if (!platformLedger.exists) tx.create(ledgerRefs[2], { ...common, entryType: "platform_share", beneficiaryUid: "platform", amountPaise: split.platformPaise });
   });
   return true;
 }
@@ -88,7 +131,8 @@ export async function POST(req: Request) {
   } catch (error) {
     const code = error instanceof Error ? error.message : "unknown";
     console.error("Paid video payment verification failed", code);
-    const status = code === "ORDER_NOT_FOUND" ? 404 : code === "ORDER_INVALID" ? 400 : 500;
-    return NextResponse.json({ success: false, error: status === 404 ? "Order not found" : "Payment verification unavailable; manual review may be required" }, { status, headers: { "Cache-Control": "no-store" } });
+    const status = code === "ORDER_NOT_FOUND" ? 404 : code === "ORDER_INVALID" ? 400 :
+      code === "VIDEO_NOT_ELIGIBLE_FOR_PAID_PURCHASE" || code === "ORDER_VIDEO_AMOUNT_MISMATCH" ? 409 : 500;
+    return NextResponse.json({ success: false, error: status === 404 ? "Order not found" : status === 409 ? "This video is not eligible for purchase" : "Payment verification unavailable; manual review may be required" }, { status, headers: { "Cache-Control": "no-store" } });
   }
 }

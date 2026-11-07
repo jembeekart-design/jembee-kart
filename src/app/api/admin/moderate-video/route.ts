@@ -130,10 +130,6 @@ export async function POST(req: Request) {
       );
     }
 
-    if (action === "approve" && submission.videoAccess === "paid") {
-      return NextResponse.json({ success: false, message: "Paid video approval is disabled until purchase entitlement and payment verification are implemented." }, { status: 409 });
-    }
-
     const driveFileId =
       typeof submission.driveFileId === "string"
         ? submission.driveFileId.trim()
@@ -240,10 +236,8 @@ export async function POST(req: Request) {
           ? submission.music
           : `original-${submissionId}`;
 
-      const rewardCoins =
-        submission.sponsor === true
-          ? 25
-          : 5;
+      // Video moderation never credits viewer wallet coins.
+      const rewardCoins = 0;
 
       const videoRef = adminDb
         .collection("watchEarnVideos")
@@ -282,8 +276,9 @@ export async function POST(req: Request) {
             : 0,
         paidVideoStatus:
           submission.videoAccess === "paid"
-            ? "payment_integration_pending"
+            ? "pending_admin_activation"
             : "free",
+        paidCheckoutEnabled: false,
         hashtags:
           Array.isArray(submission.hashtags)
             ? submission.hashtags
@@ -314,7 +309,8 @@ export async function POST(req: Request) {
         views: 0,
         watchTime: 0,
 
-        active: true,
+        // Paid videos remain hidden until an admin explicitly enables checkout.
+        active: submission.videoAccess !== "paid",
         featured: false,
 
         status: "approved",

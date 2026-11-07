@@ -15,7 +15,18 @@
     "test:dynamic-pages-audit": "node --test src/app/api/admin/dynamic-pages/__tests__/audit-contract.test.mjs",
     "test:dynamic-pages-firestore": "firebase emulators:exec --only firestore --project demo-jembeekart-rules-test --config firebase.json \"node --test firestore.rules.test.mjs\"",
     "test:dynamic-pages": "npm run test:dynamic-pages-audit && npm run test:dynamic-pages-firestore",
-    "dev:turbo": "next dev"
+    "dev:turbo": "next dev",
+    "test:paid-video-eligibility": "node --test src/app/api/shorts/paid-video/verify/__tests__/paid-video-eligibility.test.mjs",
+    "test:paid-video-revenue-split": "node --test src/lib/server/__tests__/paidVideoRevenueSplit.test.mjs src/app/api/shorts/paid-video/verify/__tests__/paid-video-eligibility.test.mjs src/app/api/shorts/paid-video/verify/__tests__/settlement-ledger-contract.test.mjs",
+    "test:paid-video-refunds": "node --test src/lib/server/__tests__/paidVideoRefundReversal.test.mjs src/lib/server/__tests__/paidVideoRevenueSplit.test.mjs src/app/api/shorts/paid-video/verify/__tests__/paid-video-eligibility.test.mjs src/app/api/shorts/paid-video/verify/__tests__/settlement-ledger-contract.test.mjs",
+    "test:paid-video-refund-reconcile": "node --test src/app/api/admin/shorts/paid-video-refunds/reconcile/__tests__/route-contract.test.mjs",
+    "test:teacher-referral-commission": "node --test src/lib/server/__tests__/teacherReferralCommission.test.mjs",
+    "test:teacher-referral-settlement": "node --test src/app/api/admin/shorts/teacher-referral/reconcile/__tests__/route-contract.test.mjs src/lib/server/__tests__/teacherReferralCommission.test.mjs src/lib/server/__tests__/paidVideoRevenueSplit.test.mjs src/lib/server/__tests__/paidVideoRefundReversal.test.mjs",
+    "test:paid-video-checkout-flow": "node --test src/app/api/shorts/paid-video/create-order/__tests__/route-contract.test.mjs src/app/api/admin/shorts/paid-video/enable/__tests__/route-contract.test.mjs src/app/api/payments/cashfree/webhook/__tests__/shorts-settlement-contract.test.mjs src/app/api/shorts/paid-video/verify/__tests__/paid-video-eligibility.test.mjs src/app/api/shorts/paid-video/verify/__tests__/settlement-ledger-contract.test.mjs src/app/api/admin/moderate-video/__tests__/paid-video-approval.test.mjs src/app/api/admin/shorts/teacher-referral/reconcile/__tests__/route-contract.test.mjs src/lib/server/__tests__/paidVideoRevenueSplit.test.mjs src/lib/server/__tests__/paidVideoRefundReversal.test.mjs src/lib/server/__tests__/teacherReferralCommission.test.mjs",
+    "test:share-attribution-claim": "node --test src/app/api/monetag/share-attribution/__tests__/route-contract.test.mjs src/app/api/monetag/share-attribution/claim/__tests__/route-contract.test.mjs src/app/mlm/watch-earn/components/__tests__/PaidVideoGate-attribution.test.mjs",
+    "test:shorts-expense-evidence": "node --test src/app/api/admin/shorts/expenses/__tests__/route-contract.test.mjs src/app/api/admin/shorts/expenses/verify/__tests__/route-contract.test.mjs",
+    "test:storage-expense-evidence": "node --test src/firebase/__tests__/storage-expense-evidence-rules.test.mjs src/app/api/admin/shorts/expenses/__tests__/route-contract.test.mjs src/app/api/admin/shorts/expenses/verify/__tests__/route-contract.test.mjs",
+    "test:shorts-expense-ui": "node --test src/app/admin/shorts-expenses/__tests__/page-contract.test.mjs"
   },
   "dependencies": {
     "@mediapipe/tasks-vision": "^1.0.1",

@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { useSearchParams } from "next/navigation";
 import { auth } from "@/firebase/config";
 
 type CashfreeMode = "sandbox" | "production";
@@ -65,6 +66,8 @@ export default function PaidVideoGate({
   price?: number;
   onAuthorized: () => void;
 }) {
+  const searchParams = useSearchParams();
+  const shareId = searchParams.get("ref") || "";
   const [busy, setBusy] = useState(false);
   const [message, setMessage] = useState("");
   const [mobileNumber, setMobileNumber] = useState("");
@@ -87,13 +90,23 @@ export default function PaidVideoGate({
     setMessage("");
     try {
       const token = await user.getIdToken();
+      if (shareId) {
+        const claimResponse = await fetch("/api/monetag/share-attribution/claim", {
+          method: "POST",
+          headers: { Authorization: `Bearer ${token}`, "Content-Type": "application/json" },
+          body: JSON.stringify({ shareId, videoId }),
+          cache: "no-store",
+        });
+        const claim = await claimResponse.json().catch(() => null);
+        if (!claimResponse.ok || claim?.success !== true) throw new Error("Share attribution could not be verified; purchase can continue without referral credit only if you remove the referral link.");
+      }
       const response = await fetch("/api/shorts/paid-video/create-order", {
         method: "POST",
         headers: {
           Authorization: `Bearer ${token}`,
           "Content-Type": "application/json",
         },
-        body: JSON.stringify({ videoId, mobileNumber: phone }),
+        body: JSON.stringify({ videoId, mobileNumber: phone, ...(shareId ? { shareId } : {}) }),
         cache: "no-store",
       });
       const order = await response.json().catch(() => null);

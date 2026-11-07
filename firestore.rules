@@ -228,6 +228,18 @@ service cloud.firestore {
       allow read, create, update, delete: if isAdmin();
     }
 
+    // Financial settlement, verified expense evidence, and teacher referral
+    // attribution are server-managed only. Admin SDK APIs enforce role checks.
+    match /shortsSettlementLedger/{entryId} {
+      allow read, write: if false;
+    }
+    match /shortsVerifiedExpenses/{expenseId} {
+      allow read, write: if false;
+    }
+    match /teacherReferralAttributions/{teacherUid} {
+      allow read, write: if false;
+    }
+
     match /{document=**} {
       allow read, write: if false;
     }

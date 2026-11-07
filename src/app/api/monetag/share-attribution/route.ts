@@ -1,4 +1,4 @@
-import { createHash } from "node:crypto";
+import { randomBytes } from "node:crypto";
 import { NextResponse } from "next/server";
 import { FieldValue } from "firebase-admin/firestore";
 import { getAdminAuth, getAdminDb } from "@/firebase/admin";
@@ -23,14 +23,14 @@ export async function POST(req: Request) {
     if (!uploaderUserId) return NextResponse.json({ success: false, message: "इस वीडियो का verified uploader ID उपलब्ध नहीं है।" }, { status: 409 });
     if (decoded.uid === uploaderUserId) return NextResponse.json({ success: false, message: "Self-sharing is not eligible for attribution." }, { status: 403 });
     const day = new Date().toISOString().slice(0, 10);
-    const shareId = createHash("sha256").update(`${decoded.uid}:${videoId}:${day}`).digest("hex");
+    const shareId = randomBytes(24).toString("base64url");
     const shareRef = db.collection("monetagShareAttributions").doc(shareId);
     await db.runTransaction(async (tx) => {
       const existing = await tx.get(shareRef);
       if (!existing.exists) tx.create(shareRef, { shareId, videoId, uploaderUserId, sharerUserId: decoded.uid, createdAt: FieldValue.serverTimestamp(), status: "created", attributionSource: "authenticated_share_action", selfShare: false, landingCount: 0, lastLandingAt: null, shareDay: day });
     });
     const origin = new URL(req.url).origin;
-    const url = `${origin}/mlm/watch-earn?v=${encodeURIComponent(videoId)}&ref=${encodeURIComponent(shareId)}`;
+    const url = `${origin}/shorts?v=${encodeURIComponent(videoId)}&ref=${encodeURIComponent(shareId)}`;
     return NextResponse.json({ success: true, shareId, url });
   } catch (error) {
     const code = error instanceof Error ? error.message : "";
