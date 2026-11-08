@@ -1,6 +1,6 @@
 /**
  * ==========================================================
- * JembeeKart Security Types
+ * JEMBEE PLAY Security Types
  * Enterprise Security Layer
  * Version : 1.0.0
  * ==========================================================

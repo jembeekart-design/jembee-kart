@@ -28,12 +28,9 @@ function LoginCard() {
 
   const searchParams = useSearchParams();
   const referralCode = searchParams.get("ref") || "";
-  const isJembeeVideoApp =
-    typeof navigator !== "undefined" &&
-    navigator.userAgent.includes("JembeeVideoApp/1.0");
   const redirect =
     searchParams.get("redirect") ||
-    (isJembeeVideoApp ? "/mlm/watch-earn" : "/");
+    "/shorts";
 
   /* ======================================================
   STEP 1: ONLY PASSIVE CAPTURE (Safe Transfer to Signup Engine)
@@ -99,9 +96,9 @@ function LoginCard() {
         // Clear cached reference tracking payloads safely
         localStorage.removeItem("jbk_pending_ref");
         // ✅ Redirect updated to target path
-        window.location.href = redirect; 
+        window.location.href = redirect || "/shorts"; 
       } else {
-        alert("Account records not found in JembeeKart database. Please Signup first.");
+        alert("Account records not found in JEMBEE PLAY database. Please Signup first.");
         await auth.signOut();
       }
     } catch (error: any) {
@@ -146,7 +143,7 @@ function LoginCard() {
         if (isExistingUser) {
           localStorage.removeItem("jbk_pending_ref");
           // ✅ Redirect updated to target path
-          window.location.href = redirect; 
+          window.location.href = redirect || "/shorts"; 
         } else {
           // Agar user Firestore me nahi mila, to ye alert chalega aur signup pe bhejega
           alert("No existing profile found. Redirecting to Signup page to apply your referral code.");
@@ -165,10 +162,10 @@ function LoginCard() {
     <div className="w-full max-w-md bg-[var(--color-card-background)] rounded-[32px] shadow-2xl border border-[var(--color-border)] p-8 md:p-10 z-10">
       <div className="text-center mb-8">
         <div className="inline-flex items-center justify-center w-16 h-16 rounded-2xl bg-gradient-to-br from-[var(--color-primary-button)] via-[var(--color-primary-button)] to-[var(--color-primary-button)] text-[var(--button-text-color)] text-3xl shadow-md mb-4">
-          🛍️
+          ▶
         </div>
         <h1 className="text-3xl font-black tracking-tight text-[var(--text-primary)] bg-gradient-to-r from-[var(--color-primary-button)] via-[var(--color-primary-button)] to-[var(--color-primary-button)] bg-clip-text text-transparent">
-          JembeeKart
+          JEMBEE PLAY
         </h1>
         <p className="text-sm font-medium text-[var(--text-secondary)] mt-2">Welcome back! Login to continue.</p>
       </div>

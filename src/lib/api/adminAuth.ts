@@ -10,14 +10,14 @@ export async function withAdminAuth(handler: Function, req?: Request) {
       return NextResponse.json({ success: false, message: "Unauthorized" }, { status: 401 });
     }
     const token = authHeader.slice(7).trim();
-    const decodedToken = await adminAuth.verifyIdToken(token);
-    
+    const decodedToken = await adminAuth.verifyIdToken(token, true);
+
     const userSnapshot = await adminDb
       .collection("users")
       .where("uid", "==", decodedToken.uid)
       .get();
     const userDoc = userSnapshot.docs[0];
-    
+
     if (!userDoc || (userDoc.data()?.role !== "admin" && userDoc.data()?.role !== "super_admin")) {
       return NextResponse.json({ success: false, message: "Unauthorized" }, { status: 403 });
     }

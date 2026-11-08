@@ -55,7 +55,7 @@ export const DEFAULT_ADMIN_CONFIG: AdminConfig = {
 
   announcement: {
     pageTitle: "Announcement",
-    defaultMessage: "Welcome to JembeeKart!",
+    defaultMessage: "Welcome to JEMBEE PLAY!",
   },
 
   watchEarn: {
@@ -93,94 +93,28 @@ export const DEFAULT_ADMIN_CONFIG: AdminConfig = {
     totalCoins: 0,
     videosWatched: 0,
   },
-  
-  payment: {
-    codEnabled: false,
-    onlinePaymentEnabled: false,
-    defaultPaymentMethod: "none",
-  },
-
-  shipping: {
-    freeShipping: false,
-    shippingCharge: 0,
-    deliveryDays: 0,
-  },
-
-  cashback: {
-    enabled: false,
-    cashbackPercent: 0,
-  },
-  
-  mlm: {
-    enabled: false,
-    level1: 0,
-    level2: 0,
-    level3: 0,
-    maxLevels: 0,
-  },
-
-  referral: {
-    enabled: false,
-    referralBonus: 0,
-    maxReferralLevels: 0,
-  },
-
-  signup: {
-    enabled: false,
-    joiningBonus: 0,
-    referralBonus: 0,
-    requireReferral: true,
-  },
-
-  wallet: {
-    commissionWalletEnabled: false,
-    rewardWalletEnabled: false,
-    cashbackWalletEnabled: false,
-  },
-
-  seller: {
-    enabled: false,
-    defaultSellerId: "",
-    defaultSellerName: "",
-  },
-
-  mlmPage: {
-    enabled: false,
-    pageTitle: "",
-    pageSubtitle: "",
-    minimumTransfer: 0,
-    transferFunction: "",
-    searchPlaceholder: "",
-    filters: [],
-    transactionTypes: [],
-    statusTypes: [],
-  },
 
   featureFlags: {
-    ecommerce: false,
-    referral: false,
-    watchEarn: false,
-    cashback: false,
-    mlm: false,
-    creatorEconomy: false,
-    wallet: false,
-    seller: false,
-    payment: false,
-    shipping: false,
-    notifications: false,
-    support: false,
+    shorts: true,
+    schoolLearning: true,
+    creatorUploads: true,
+    videoModeration: true,
+    paidVideo: false,
+    livePayouts: false,
+    videoAds: true,
+    notifications: true,
+    support: true,
   },
 
   header: {
     logo: "/logo.png",
     showSearch: false, // Changed to false for safe fallback
-    showCart: false,   // Changed to false for safe fallback
     showNotification: false, // Changed to false for safe fallback
   },
 
   footer: {
-    companyName: "JembeeKart",
-    copyright: "© 2026 JembeeKart. All rights reserved.",
+    companyName: "JEMBEE PLAY",
+    copyright: "© 2026 JEMBEE PLAY. All rights reserved.",
     links: [],
   },
 
@@ -206,7 +140,7 @@ export const DEFAULT_ADMIN_CONFIG: AdminConfig = {
   },
 
   app: {
-    appName: "JembeeKart",
+    appName: "JEMBEE PLAY",
     version: "1.0.0",
     maintenanceMode: false,
     minSupportedVersion: "1.0.0",

@@ -44,7 +44,11 @@ export function createPostHandler(deps: CommentLikeDependencies) {
     let body: { commentId?: unknown; action?: unknown };
 
     try {
-      body = await req.json();
+      const contentLength = Number(req.headers.get("content-length") || 0);
+      if (contentLength > 8192) return NextResponse.json({ success: false, message: "Request body too large" }, { status: 413 });
+      const raw = await req.text();
+      if (new TextEncoder().encode(raw).byteLength > 8192) return NextResponse.json({ success: false, message: "Request body too large" }, { status: 413 });
+      body = JSON.parse(raw);
     } catch {
       return NextResponse.json(
         { success: false, message: "Invalid JSON" },

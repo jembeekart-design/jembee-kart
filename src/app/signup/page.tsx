@@ -153,7 +153,7 @@ function RegistrationForm() {
       if (!userSnap.exists()) {
         await createUserProfile(result.user);
       }
-      router.push("/mlm/dashboard");
+      router.push("/shorts");
     } catch (error: any) {
       console.error("Google Registration Sequence Fault:", error);
       // Do not delete a Google Auth account when profile creation fails.
@@ -169,7 +169,7 @@ function RegistrationForm() {
       <div className="w-full max-w-md rounded-[32px] bg-[var(--color-card-background)] p-8 shadow-sm border border-[var(--color-border)]">
         <div className="text-center mb-8">
           <h1 className="text-[28px] font-black text-[var(--color-primary-button)]">Create Account</h1>
-          <p className="text-sm text-[var(--text-secondary)] mt-1">Join JembeeKart Today</p>
+          <p className="text-sm text-[var(--text-secondary)] mt-1">Join JEMBEE PLAY</p>
         </div>
 
         <form onSubmit={handleEmailSignup} className="space-y-4">
@@ -223,7 +223,7 @@ function RegistrationForm() {
               <Link href="/privacy" className="text-[var(--color-primary-button)] font-bold hover:underline">
                 Privacy Policy
               </Link>{" "}
-              of JembeeKart.
+              of JEMBEE PLAY.
             </label>
           </div>
 
@@ -263,7 +263,7 @@ export default function SignupPage() {
       fallback={
         <div className="flex min-h-screen items-center justify-center bg-[var(--color-page-background)]">
           <p className="text-sm font-bold text-[var(--text-secondary)] animate-pulse">
-            Loading JembeeKart Secure Node...
+            Loading JEMBEE PLAY Secure Node...
           </p>
         </div>
       }

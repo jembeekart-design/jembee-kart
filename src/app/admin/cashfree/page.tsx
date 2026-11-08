@@ -88,8 +88,8 @@ export default function CashfreePage() {
       const response = await fetch("/api/admin/cashfree-settings", { method: "PUT", headers: { Authorization: `Bearer ${token}`, "Content-Type": "application/json" }, body: JSON.stringify(settings) });
       const result = await response.json();
       if (!response.ok || !result.success) throw new Error(result.message || "Unable to save settings");
-      setSettings((prev) => ({ ...prev, secretKey: "", webhookSecret: "", hasSecretKey: Boolean(prev.hasSecretKey || settings.secretKey.trim()), hasWebhookSecret: Boolean(prev.hasWebhookSecret || settings.webhookSecret.trim()) }));
-      alert("Settings saved securely. Secret values will not be displayed again.");
+      setSettings((prev) => ({ ...prev, enabled: result.enabled === true, secretKey: "", webhookSecret: "", hasSecretKey: Boolean(prev.hasSecretKey || settings.secretKey.trim()), hasWebhookSecret: Boolean(prev.hasWebhookSecret || settings.webhookSecret.trim()) }));
+      alert(result.message || "Settings saved securely. Secret values will not be displayed again.");
 
     } catch (error) {
 
@@ -150,7 +150,7 @@ export default function CashfreePage() {
             </h1>
 
             <p className="mt-1 text-sm text-[var(--muted-text-color)]">
-              Configure Cashfree payment gateway
+              Configure Cashfree. Checkout stays disabled until the Vercel deployment safety switch is enabled.
             </p>
 
           </div>

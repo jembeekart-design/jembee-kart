@@ -1,6 +1,5 @@
 "use client";
 
-import { CartProvider } from "@/context/CartContext";
 import { ThemeProvider } from "@/context/ThemeContext";
 import { AdminConfigProvider } from "@/lib/admin-config/provider";
 
@@ -14,9 +13,7 @@ export default function Providers({
   return (
     <AdminConfigProvider>
       <ThemeProvider>
-        <CartProvider>
-          {children}
-        </CartProvider>
+        {children}
       </ThemeProvider>
     </AdminConfigProvider>
   );

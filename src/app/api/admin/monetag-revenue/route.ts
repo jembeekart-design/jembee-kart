@@ -42,7 +42,8 @@ export async function GET(req: Request) {
     const paidOutUsd = sum(payments, (item) => item.status === "paid", "amountUsd");
     const unallocatedRevenueUsd = sum(imports, (item) => ["verified", "unallocated"].includes(String(item.status)), "unallocatedRevenueUsd");
     const platformRetainedUsd = sum(imports, (item) => ["verified", "unallocated"].includes(String(item.status)), "platformRetainedUsd");
-    return NextResponse.json({ success: true, summary: { grossRevenueUsd, uploaderEarningsUsd, sharerEarningsUsd, platformRetainedUsd, unallocatedRevenueUsd, paidOutUsd, importedRecords: importsSnap.size, shareAttributionRecords: sharesSnap.size }, imports, shareAttributions, apiSyncs });
+    const totalsComplete = importsSnap.size < 200 && earningsSnap.size < 1000 && paymentsSnap.size < 1000 && sharesSnap.size < 100;
+    return NextResponse.json({ success: true, totalsComplete, summaryScope: totalsComplete ? "all_loaded_records_within_current_query_limits" : "partial_latest_records_only", summary: { grossRevenueUsd, uploaderEarningsUsd, sharerEarningsUsd, platformRetainedUsd, unallocatedRevenueUsd, paidOutUsd, importedRecords: importsSnap.size, shareAttributionRecords: sharesSnap.size }, imports, shareAttributions, apiSyncs });
   } catch (error) {
     const code = error instanceof Error ? error.message : "";
     const status = code === "UNAUTHORIZED" ? 401 : code === "FORBIDDEN" ? 403 : 500;

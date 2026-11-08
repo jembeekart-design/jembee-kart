@@ -1,0 +1,910 @@
+"use client";
+
+import {
+  useState,
+  useEffect,
+  useRef,
+  useMemo
+} from "react";
+
+import VideoPlayer
+  from "./VideoPlayer";
+import PaidVideoGate from "./PaidVideoGate";
+
+
+
+import VideoInfo
+  from "./VideoInfo";
+
+import VideoActions
+  from "./VideoActions";
+
+import CommentDrawer
+  from "./CommentDrawer";
+
+import Toast from "./Toast";
+import BottomQuickActions from "./BottomQuickActions";
+import { getWatchVideos, WatchVideo } from "../services/watchVideos.service";
+
+// New imports for persistence and auth
+import { auth, db, isFirebaseConfigured } from "@/firebase/config";
+import { likeVideo } from "@/lib/videos/watch-earn/likeVideo";
+import { unlikeVideo } from "@/lib/videos/watch-earn/unlikeVideo";
+import { shareVideo } from "@/lib/videos/watch-earn/shareVideo";
+import { reportVideo } from "@/lib/videos/watch-earn/reportVideo";
+import { setVideoPreference } from "@/lib/videos/watch-earn/setVideoPreference";
+
+import FloatingAdComponent, { type FloatingAd } from "./FloatingAd";
+
+
+import { useRequireAuth } from "@/hooks/useRequireAuth";
+import { collection, doc, onSnapshot } from "firebase/firestore";
+
+function getVideoThumbnailUrl(video: WatchVideo): string {
+  const secureDriveThumbnail = `/api/shorts/video-thumbnail/${encodeURIComponent(video.id)}`;
+  if (video.videoAccess === "paid") return secureDriveThumbnail;
+  const candidate = typeof video.thumbnail === "string" ? video.thumbnail.trim() : "";
+  return candidate.startsWith("https://") ? candidate : secureDriveThumbnail;
+}
+
+interface VideoAdsResponse {
+  enabled: boolean;
+  rules: {
+    enabled: boolean;
+    firstAdAfterVideos: number;
+    repeatEveryVideos: number;
+    autoDismissSeconds: number;
+  };
+  ads: FloatingAd[];
+}
+
+
+export default function VerticalVideoFeed({
+  activeTab
+}: {
+  activeTab: 'foryou' | 'following'
+}) {
+  const { requireAuth, isAuthenticated } = useRequireAuth();
+  const [authorizedPaidVideos, setAuthorizedPaidVideos] = useState<Record<string, boolean>>({});
+
+  const [followingList, setFollowingList] = useState<string[]>([]);
+  const [notInterestedIds, setNotInterestedIds] = useState<string[]>([]);
+  const [videos, setVideos] = useState<WatchVideo[]>([]);
+  const thumbnailPreloads = useRef<HTMLImageElement[]>([]);
+  const [videoAdsData, setVideoAdsData] = useState<VideoAdsResponse | null>(null);
+  const [watchedVideoCount, setWatchedVideoCount] = useState(0);
+  const countedVideoIds = useRef<Set<string>>(new Set());
+  const nextAdAtVideoCount = useRef<number | null>(null);
+  const [currentVideoAd, setCurrentVideoAd] = useState<FloatingAd | null>(null);
+  const [videoAdIndex, setVideoAdIndex] = useState(0);
+  const nextAdMilestoneIndex = useRef(0);
+
+  const handleActualPlaybackSeconds = (videoId: string, seconds: number) => {
+    if (seconds <= 0) return;
+    if (!countedVideoIds.current.has(videoId)) {
+      countedVideoIds.current.add(videoId);
+      setWatchedVideoCount(countedVideoIds.current.size);
+    }
+  };
+
+  const requestVideoReviewEmail = async (videoId: string) => {
+    const user = auth.currentUser;
+    if (!user || !user.emailVerified) return;
+    try {
+      const token = await user.getIdToken();
+      await fetch("/api/shorts/review-email", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify({ videoId }),
+      });
+    } catch (error) {
+      // Review-email delivery is non-blocking and must never interrupt playback.
+      console.warn("Unable to request video review email", error);
+    }
+  };
+
+
+  useEffect(() => {
+    let cancelled = false;
+
+    async function loadVideoAds() {
+      try {
+        const response = await fetch("/api/videos/video-ads", {
+          method: "GET",
+          cache: "no-store",
+        });
+
+        if (!response.ok) throw new Error("Video ads request failed");
+
+        const data = (await response.json()) as VideoAdsResponse;
+        if (!cancelled) setVideoAdsData(data);
+      } catch (error) {
+        console.error("Unable to load video ads:", error);
+        if (!cancelled) setVideoAdsData(null);
+      }
+    }
+
+    loadVideoAds();
+    return () => {
+      cancelled = true;
+    };
+  }, []);
+
+  useEffect(() => {
+    const data = videoAdsData;
+    if (!data?.enabled || !data.rules.enabled || currentVideoAd) return;
+
+    const firstAdAfter = Math.max(5, data.rules.firstAdAfterVideos || 5);
+    const repeatEvery = Math.max(1, data.rules.repeatEveryVideos || 1);
+    if (nextAdAtVideoCount.current === null) {
+      nextAdAtVideoCount.current = firstAdAfter + 1;
+    }
+    if (watchedVideoCount < nextAdAtVideoCount.current) return;
+
+    const availableAds = data.ads.filter((ad) => ad.enabled);
+    if (availableAds.length === 0) return;
+
+    const selectedAd = availableAds[videoAdIndex % availableAds.length];
+    nextAdAtVideoCount.current = watchedVideoCount + repeatEvery;
+    setVideoAdIndex((previous) => previous + 1);
+    setCurrentVideoAd(selectedAd);
+  }, [watchedVideoCount, videoAdsData, currentVideoAd, videoAdIndex]);
+
+  const [loading, setLoading] = useState<boolean>(true);
+  const [error, setError] = useState<string | null>(null);
+
+  useEffect(() => {
+    if (!isAuthenticated || !auth.currentUser) {
+      // eslint-disable-next-line react-hooks/set-state-in-effect
+      setFollowingList([]);
+      return;
+    }
+
+    const followingRef = collection(
+      db,
+      'users',
+      auth.currentUser.uid,
+      'following'
+    );
+
+    const unsubscribe = onSnapshot(followingRef, (snapshot) => {
+      setFollowingList(snapshot.docs.map(doc => doc.id));
+    });
+
+    return () => unsubscribe();
+  }, [isAuthenticated]);
+
+  const filteredVideos = useMemo(() => {
+    const visibleVideos = videos.filter(
+      video => !notInterestedIds.includes(video.id)
+    );
+
+    if (activeTab === 'following') {
+      return visibleVideos.filter(
+        video => followingList.includes(video.creatorId)
+      );
+    }
+
+    return visibleVideos;
+  }, [activeTab, videos, followingList, notInterestedIds]);
+
+  const activeVideoIndex = Math.max(0, filteredVideos.findIndex((video) => video.id === activeVideoId));
+
+  // Preload only the current and next four thumbnails; never download full videos here.
+  useEffect(() => {
+    const upcoming = filteredVideos.slice(activeVideoIndex, activeVideoIndex + 5).filter((video) => video.videoAccess !== "paid" || authorizedPaidVideos[video.id]);
+    const images = upcoming.map((video) => {
+      const image = new window.Image();
+      image.decoding = "async";
+      image.src = getVideoThumbnailUrl(video);
+      return image;
+    });
+    thumbnailPreloads.current = images;
+    return () => { for (const image of images) { image.onload = null; image.onerror = null; } };
+  }, [filteredVideos, activeVideoIndex, authorizedPaidVideos]);
+
+  useEffect(() => {
+    const user = auth.currentUser;
+
+    if (!isAuthenticated || !user) {
+      // eslint-disable-next-line react-hooks/set-state-in-effect
+      setNotInterestedIds([]);
+      return;
+    }
+
+    let cancelled = false;
+
+    async function loadNotInterested() {
+      try {
+        const preferenceRef = doc(
+          db,
+          "notInterestedWatchVideos",
+          user!.uid
+        );
+        const videosCollection = collection(preferenceRef, "videos");
+        const { getDocs } = await import("firebase/firestore");
+        const snapshot = await getDocs(videosCollection);
+
+        if (!cancelled) {
+          setNotInterestedIds(snapshot.docs.map(item => item.id));
+        }
+      } catch (error) {
+        console.error("Failed to load video preferences:", error);
+      }
+    }
+
+    loadNotInterested();
+
+    return () => {
+      cancelled = true;
+    };
+  }, [isAuthenticated]);
+
+  useEffect(() => {
+    let isMounted = true;
+
+    async function loadVideos() {
+      try {
+        setLoading(true);
+
+        const result = await getWatchVideos();
+
+        if (!isMounted) return;
+
+        if (
+          result &&
+          result.success &&
+          Array.isArray(result.videos)
+        ) {
+          setVideos(result.videos);
+          if (result.videos.length === 0) {
+            setError(
+              "Firebase is connected, but no approved videos were found in the watchEarnVideos collection yet."
+            );
+          }
+        } else {
+          setVideos([]);
+          setError(
+            "JEMBEE PLAY could not load videos. Check Firebase configuration, Firestore access rules, and the watchEarnVideos collection."
+          );
+        }
+      } catch {
+        if (!isMounted) return;
+
+        setError("Failed to load videos");
+      } finally {
+        if (isMounted) {
+          setLoading(false);
+        }
+      }
+    }
+
+    loadVideos();
+
+    return () => {
+      isMounted = false;
+    };
+  }, []);
+
+  const [
+    commentOpen,
+    setCommentOpen
+  ] = useState(false);
+
+  const [
+    toastMessage,
+    setToastMessage
+  ] = useState<string | null>(null);
+
+  const [
+    selectedVideo,
+    setSelectedVideo
+  ] = useState("");
+
+  const [isMuted, setIsMuted] = useState(false);
+
+  const [
+    likedVideos,
+    setLikedVideos
+  ] = useState<Record<string, boolean>>({});
+
+  const [
+    liking,
+    setLiking
+  ] = useState<Record<string, boolean>>({});
+
+  const [
+    savedVideos,
+    setSavedVideos
+  ] = useState<Record<string, boolean>>({});
+
+  const [
+    activeVideoId,
+    setActiveVideoId
+  ] = useState<string>("");
+
+
+  useEffect(() => {
+    const paidVideoId = new URLSearchParams(window.location.search).get("paidVideoId");
+    if (paidVideoId && /^[^/]{1,200}$/.test(paidVideoId)) {
+      setAuthorizedPaidVideos((current) => ({ ...current, [paidVideoId]: true }));
+      setActiveVideoId(paidVideoId);
+    }
+  }, []);
+
+  const [playbackSpeeds, setPlaybackSpeeds] = useState<Record<string, number>>({});
+  
+  const [showWhySeeingModal, setShowWhySeeingModal] = useState(false);
+
+  const containerRef =
+    useRef<HTMLElement>(null);
+
+  useEffect(() => {
+    if (videos.length > 0 && !activeVideoId) {
+      // eslint-disable-next-line react-hooks/set-state-in-effect
+      setActiveVideoId(videos[0].id);
+    }
+  }, [videos, activeVideoId]);
+
+  useEffect(() => {
+    const container = containerRef.current;
+
+    if (!container) return;
+
+    const sections =
+      container.querySelectorAll(
+        "section[data-video-id]"
+      );
+
+    const observer =
+      new IntersectionObserver(
+        (entries) => {
+          entries.forEach((entry) => {
+            if (entry.isIntersecting) {
+              const videoId =
+                entry.target.getAttribute(
+                  "data-video-id"
+                );
+
+              if (videoId) {
+                setActiveVideoId(videoId);
+              }
+            }
+          });
+        },
+        {
+          root: container,
+          threshold: 0.6,
+        }
+      );
+
+    sections.forEach((section) =>
+      observer.observe(section)
+    );
+
+    return () => {
+      observer.disconnect();
+    };
+  }, [videos]);
+
+  const handleShare = async (
+    video: WatchVideo
+  ) => {
+    let shareUrl = window.location.origin + '/videos?v=' + encodeURIComponent(video.id);
+    // Create a server-authenticated unique attribution link for every share action.
+    try {
+      const currentUser = auth.currentUser;
+      if (currentUser) {
+        const token = await currentUser.getIdToken();
+        const attributionResponse = await fetch('/api/monetag/share-attribution', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${token}` },
+          body: JSON.stringify({ videoId: video.id }),
+        });
+        const attribution = await attributionResponse.json();
+        if (attributionResponse.ok && attribution.success && attribution.url) shareUrl = attribution.url;
+      }
+    } catch (error) {
+      console.error('Share attribution unavailable:', error);
+    }
+    const shareData = {
+      title: 'Check out this video on JEMBEE PLAY',
+      text: video.caption,
+      url: shareUrl,
+    };
+
+    try {
+      const nativeBridge = (
+        window as Window & {
+          JembeeNativeShare?: {
+            shareVideo: (url: string, caption: string) => void;
+          };
+        }
+      ).JembeeNativeShare;
+
+      const isNativeApp =
+        navigator.userAgent.includes("JembeeVideoApp/1.0");
+
+      if (isNativeApp && nativeBridge?.shareVideo) {
+        nativeBridge.shareVideo(
+          video.video,
+          video.caption || ""
+        );
+
+        setToastMessage("Preparing video to share.");
+      } else if (navigator.share) {
+        await navigator.share(shareData);
+
+        setToastMessage(
+          "Shared successfully."
+        );
+      } else {
+        await navigator.clipboard.writeText(
+          shareData.url
+        );
+
+        setToastMessage("Link copied.");
+      }
+
+      // Persist share via existing service
+      // (if user is authenticated)
+      try {
+        const uid =
+          auth.currentUser?.uid;
+
+        if (uid) {
+          const res = await shareVideo({
+            videoId: video.id,
+            userId: uid
+          });
+
+          if (res && res.success) {
+            // Update local state to reflect increment
+            setVideos(prev =>
+              prev.map(v =>
+                v.id === video.id
+                  ? {
+                      ...v,
+                      shares: v.shares + 1
+                    }
+                  : v
+              )
+            );
+          }
+        }
+      } catch (err) {
+        // Log and continue; UI already shows toast
+        console.error(
+          "shareVideo error:",
+          err
+        );
+      }
+    } catch {
+      // Fail silently without console logging
+    }
+  };
+
+  if (loading) {
+    return (
+      <main className="h-screen flex items-center justify-center bg-black text-white">
+        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-white"></div>
+      </main>
+    );
+  }
+
+  if (error) {
+    return (
+      <main className="h-screen flex items-center justify-center bg-black text-white">
+        <p>{error}</p>
+      </main>
+    );
+  }
+
+  if (videos.length === 0) {
+    return (
+      <main className="relative h-[100dvh] w-full overflow-hidden bg-[#05070B] text-white">
+        <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_48%_42%,rgba(6,182,212,0.18),transparent_42%),radial-gradient(ellipse_at_85%_75%,rgba(139,92,246,0.16),transparent_38%)]" />
+        <div className="absolute left-8 right-24 top-[34%] z-10 text-center">
+          <div className="mx-auto mb-5 flex h-20 w-20 items-center justify-center rounded-3xl border border-cyan-300/40 bg-cyan-300/10 text-4xl shadow-[0_0_45px_rgba(6,182,212,0.18)]">
+            ▶
+          </div>
+          <h2 className="text-2xl font-extrabold tracking-tight">
+            Jembee <span className="text-cyan-300">Shorts</span>
+          </h2>
+          <p className="mt-3 text-sm font-medium text-white/80">
+            {isFirebaseConfigured ? "Your Shorts feed is ready" : "Connect your JEMBEE PLAY Firebase project"}
+          </p>
+          <p className="mx-auto mt-2 max-w-xs text-xs leading-5 text-white/50">
+            {isFirebaseConfigured
+              ? "Firebase is configured. Publish approved videos to the watchEarnVideos collection to populate this feed."
+              : "Real videos, creators, likes and comments will load after the existing Firebase Web configuration is added to .env.local."}
+          </p>
+        </div>
+
+        <VideoActions
+          likes={0}
+          comments={0}
+          shares={0}
+          coins={0}
+          isMuted={isMuted}
+          onLike={() => setToastMessage("Like becomes available when a real video is loaded.")}
+          onComment={() => setToastMessage("Comments become available when a real video is loaded.")}
+          onShare={() => setToastMessage("Share becomes available when a real video is loaded.")}
+          onSave={() => setToastMessage("Save becomes available when a real video is loaded.")}
+          toggleMute={() => setIsMuted((value) => !value)}
+          isLiked={false}
+          isSaved={false}
+        />
+
+        <div className="absolute bottom-[calc(6.2rem+env(safe-area-inset-bottom))] left-5 z-20 max-w-[62%] pr-2">
+          <p className="text-sm font-bold">JEMBEE PLAY</p>
+          <p className="mt-1 text-xs text-white/65">Discover • Watch • Share</p>
+        </div>
+
+        <BottomQuickActions video={undefined} />
+        <Toast message={toastMessage} onClose={() => setToastMessage(null)} />
+      </main>
+    );
+  }
+
+  return (
+    <main
+      ref={containerRef}
+      className="
+        h-screen
+        snap-y
+        snap-mandatory
+        overflow-y-scroll
+        bg-black
+      "
+    >
+      {filteredVideos.length === 0 ? (
+        <div className="h-screen flex items-center justify-center text-gray-400 p-4 text-center">
+          {activeTab === 'following'
+            ? followingList.length > 0
+                ? "No videos from creators you follow."
+                : "You aren't following anyone yet."
+            : "No videos found."
+          }
+        </div>
+      ) : (
+        filteredVideos.map(
+          (video, index) => (
+            <section
+              key={video.id}
+              data-video-id={video.id}
+              className="
+                relative
+                h-screen
+                snap-start
+              "
+            >
+              {/* VIDEO */}
+
+              {video.videoAccess === "paid" && !authorizedPaidVideos[video.id] ? (
+                <PaidVideoGate
+                  videoId={video.id}
+                  price={video.videoPrice}
+                  onAuthorized={() => setAuthorizedPaidVideos((current) => ({ ...current, [video.id]: true }))}
+                />
+              ) : (
+                <VideoPlayer
+                  videoUrl={
+                    video.videoAccess === "paid"
+                      ? `/api/shorts/video-stream/${encodeURIComponent(video.id)}`
+                      : video.video
+                  }
+                  isMuted={isMuted}
+                  active={activeVideoId === video.id}
+                  playbackRate={playbackSpeeds[video.id] || 1}
+                  onActualPlaybackSeconds={(seconds) => handleActualPlaybackSeconds(video.id, seconds)}
+                  onNinetyPercentWatched={() => void requestVideoReviewEmail(video.id)}
+                  poster={index < activeVideoIndex + 5 && (video.videoAccess !== "paid" || authorizedPaidVideos[video.id]) ? getVideoThumbnailUrl(video) : undefined}
+                  preloadMetadata={index >= activeVideoIndex && index < activeVideoIndex + 5 && (video.videoAccess !== "paid" || authorizedPaidVideos[video.id])}
+                />
+              )}
+
+              {/* INFO */}
+
+              <VideoInfo
+                creatorId={
+                  video.creatorId
+                }
+
+                displayName={
+                  video.displayName
+                }
+
+                username={
+                  video.username
+                }
+
+                photoURL={
+                  video.photoURL
+                }
+
+                caption={
+                  video.caption
+                }
+
+                hashtags={
+                  video.hashtags
+                }
+
+                music={
+                  video.music
+                }
+
+                verified={
+                  video.verified
+                }
+
+                originalVideoId={
+                  video.originalVideoId
+                }
+              />
+
+              {/* ACTIONS */}
+
+              <VideoActions
+                likes={
+                  video.likes
+                }
+
+                comments={
+                  video.comments
+                }
+
+                shares={
+                  video.shares
+                }
+
+                coins={
+                  video.coins
+                }
+
+                isMuted={
+                  isMuted
+                }
+
+                onLike={async () => {
+                  const uid =
+                    auth.currentUser?.uid;
+
+                  if (!uid) {
+                    setToastMessage(
+                      "Please log in to like videos."
+                    );
+
+                    return;
+                  }
+
+                  if (liking[video.id]) return;
+
+                  setLiking(prev => ({ ...prev, [video.id]: true }));
+
+                  try {
+                    if (likedVideos[video.id]) {
+                      const res = await unlikeVideo({
+                        videoId: video.id,
+                        userId: uid
+                      });
+
+                      if (res && res.success) {
+                        setLikedVideos(prev => ({ ...prev, [video.id]: false }));
+                        setVideos(prev => prev.map(v => v.id === video.id ? { ...v, likes: Math.max(0, v.likes - 1) } : v));
+                      } else {
+                        setToastMessage("Failed to unlike the video.");
+                      }
+                    } else {
+                      const res = await likeVideo({
+                        videoId: video.id,
+                        userId: uid
+                      });
+
+                      if (res && res.success) {
+                        setLikedVideos(prev => ({ ...prev, [video.id]: true }));
+                        setVideos(prev => prev.map(v => v.id === video.id ? { ...v, likes: v.likes + 1 } : v));
+
+                        try {
+                          const token = await auth.currentUser?.getIdToken();
+
+                          if (token) {
+                            await fetch("/api/shorts/notifications/create-like", {
+                              method: "POST",
+                              headers: {
+                                Authorization: `Bearer ${token}`,
+                                "Content-Type": "application/json",
+                              },
+                              body: JSON.stringify({
+                                videoId: video.id,
+                              }),
+                            });
+                          }
+                        } catch (notificationError) {
+                          console.error(
+                            "SHORTS LIKE NOTIFICATION ERROR:",
+                            notificationError
+                          );
+                        }
+                      } else {
+                        setToastMessage("Failed to like the video.");
+                      }
+                    }
+                  } catch (err) {
+                    console.error("like/unlike video error:", err);
+                    setToastMessage("An error occurred.");
+                  } finally {
+                    setLiking(prev => ({ ...prev, [video.id]: false }));
+                  }
+                }}
+
+                onComment={() => {
+                  setSelectedVideo(
+                    video.id
+                  );
+
+                  setCommentOpen(
+                    true
+                  );
+                }}
+
+                onShare={() => {
+                  handleShare(video);
+                }}
+
+                onSave={() => {
+                  setSavedVideos(
+                    prev => ({
+                      ...prev,
+                      [video.id]:
+                        !prev[video.id]
+                    })
+                  );
+                }}
+
+                onReport={async (reason) => {
+                  requireAuth(async () => {
+                    const res = await reportVideo({
+                      videoId: video.id,
+                      reason
+                    });
+                    if (res.success) {
+                      setToastMessage("Report submitted successfully.");
+                    } else {
+                      setToastMessage(res.message || "Failed to submit report.");
+                    }
+                  }, "report", video.id);
+                }}
+
+                onInterested={async () => {
+                  requireAuth(async () => {
+                    const res = await setVideoPreference(video.id, 'interested');
+                    if (res.success) {
+                      setToastMessage("Added to interested.");
+                    } else {
+                      setToastMessage(res.message || "Failed to update preference.");
+                    }
+                  }, "interested", video.id);
+                }}
+
+                onNotInterested={async () => {
+                  requireAuth(async () => {
+                    const res = await setVideoPreference(video.id, 'notInterested');
+                    if (res.success) {
+                      setNotInterestedIds(prev =>
+                        prev.includes(video.id) ? prev : [...prev, video.id]
+                      );
+                      setToastMessage("Video marked as not interested.");
+                    } else {
+                      setToastMessage(res.message || "Failed to update preference.");
+                    }
+                  }, "notInterested", video.id);
+                }}
+
+                onWhySeeing={() => setShowWhySeeingModal(true)}
+
+                toggleMute={() =>
+                  setIsMuted(!isMuted)
+                }
+
+                isLiked={
+                  !!likedVideos[
+                    video.id
+                  ]
+                }
+
+                isSaved={
+                  !!savedVideos[
+                    video.id
+                  ]
+                }
+
+                onPlaybackSpeedChange={(speed) => {
+                  setPlaybackSpeeds(prev => ({ ...prev, [video.id]: speed }));
+                }}
+
+                currentPlaybackSpeed={playbackSpeeds[video.id] || 1}
+              />
+            </section>
+          )
+        )
+      )}
+
+      {currentVideoAd && (
+        <FloatingAdComponent
+          key={currentVideoAd.id}
+          ad={currentVideoAd}
+          autoDismissSeconds={videoAdsData?.rules.autoDismissSeconds ?? 8}
+          onDismiss={() => setCurrentVideoAd(null)}
+        />
+      )}
+
+      {/* MODAL */}
+
+      {showWhySeeingModal && (
+        <div className="fixed inset-0 z-[1001] flex items-center justify-center p-4 bg-black/80" onClick={() => setShowWhySeeingModal(false)}>
+          <div className="bg-neutral-900 p-6 rounded-lg max-w-sm text-center" onClick={e => e.stopPropagation()}>
+            <h3 className="text-lg font-bold mb-2">Why you&apos;re seeing this</h3>
+            <p className="text-gray-300">Recommendations can be influenced by content relevance and general engagement signals.</p>
+            <button className="mt-4 w-full p-2 bg-neutral-800 rounded-lg" onClick={() => setShowWhySeeingModal(false)}>Close</button>
+          </div>
+        </div>
+      )}
+
+      {/* COMMENT DRAWER */}
+
+      {selectedVideo && (
+        <CommentDrawer
+          open={commentOpen}
+
+          onClose={() => {
+            setCommentOpen(false);
+            setSelectedVideo("");
+          }}
+
+          videoId={
+            selectedVideo
+          }
+
+          onCommentAdded={() => {
+            // Optimistically increment
+            // local video's comments count
+
+            setVideos(
+              prev =>
+                prev.map(v =>
+                  v.id === selectedVideo
+                    ? {
+                        ...v,
+                        comments:
+                          v.comments + 1
+                      }
+                    : v
+                )
+            );
+          }}
+        />
+      )}
+
+      {/* Toast */}
+
+      <Toast
+        message={toastMessage}
+        onClose={() =>
+          setToastMessage(null)
+        }
+      />
+
+      <BottomQuickActions
+        video={videos.find(
+          v =>
+            v.id === activeVideoId
+        )}
+      />
+    </main>
+  );
+}

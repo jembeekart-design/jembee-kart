@@ -3,25 +3,23 @@ import Script from "next/script";
 import "./globals.css";
 
 import Providers from "./providers";
-import { ThemeManager } from "@/components/theme-manager";
 import SystemSeeder from "@/components/SystemSeeder";
+import MonetagScriptGate from "@/components/MonetagScriptGate";
 
 export const metadata: Metadata = {
-  metadataBase: new URL("https://jembee-kart.vercel.app"),
   title: {
-    default: "JembeeKart | Online Shopping & Rewards",
-    template: "%s | JembeeKart",
+    default: "JEMBEE PLAY",
+    template: "%s | JEMBEE PLAY",
   },
-  description: "Explore a wide range of products at JembeeKart. Shop online and participate in our rewards programme.",
+  description: "JEMBEE PLAY — Watch, Learn, Create, Share and Earn.",
   robots: {
     index: true,
     follow: true,
   },
   openGraph: {
-    title: "JembeeKart",
-    description: "Explore a wide range of products at JembeeKart.",
-    url: "https://jembee-kart.vercel.app",
-    siteName: "JembeeKart",
+    title: "JEMBEE PLAY",
+    description: "Watch, learn, create and share on JEMBEE PLAY.",
+    siteName: "JEMBEE PLAY",
     locale: "en_IN",
     type: "website",
   },
@@ -37,6 +35,8 @@ export default function RootLayout({
   return (
     <html lang="en" suppressHydrationWarning>
       <head>
+        <link rel="manifest" href="/manifest.webmanifest" />
+        <meta name="theme-color" content="#06B6D4" />
         <link rel="preconnect" href="https://res.cloudinary.com" crossOrigin="anonymous" />
         <link rel="preconnect" href="https://images.unsplash.com" crossOrigin="anonymous" />
         <link rel="preconnect" href="https://jembee-kart1.firebaseapp.com" crossOrigin="anonymous" />
@@ -50,20 +50,19 @@ export default function RootLayout({
         />
               <meta name="monetag" content="ffc36b1add65212e386c64b0bf1e6c0e" />
         
-              <script src="https://quge5.com/88/tag.min.js" data-zone="297992" async data-cfasync="false"></script>
+
       </head>
 
       <body className="min-h-screen antialiased">
         <Providers>
+          <MonetagScriptGate />
 
           {/* Auto create missing Firestore settings */}
           <SystemSeeder />
 
-          <ThemeManager>
-            <div className="min-h-screen w-full overflow-x-hidden bg-[var(--background)] text-[var(--text)] transition-colors duration-300">
-              {children}
-            </div>
-          </ThemeManager>
+          <div className="min-h-screen w-full overflow-x-hidden bg-[var(--background)] text-[var(--text)]">
+            {children}
+          </div>
 
         </Providers>
       </body>

@@ -1,6 +1,7 @@
 import { cert, getApp, initializeApp, type App } from "firebase-admin/app";
 import { getFirestore } from "firebase-admin/firestore";
 import { getAuth } from "firebase-admin/auth";
+import { getStorage } from "firebase-admin/storage";
 
 const ADMIN_APP_NAME = "jembee-admin";
 let cachedApp: App | null = null;
@@ -81,3 +82,4 @@ const getAdminApp = () => {
 
 export const getAdminDb = () => getFirestore(getAdminApp());
 export const getAdminAuth = () => getAuth(getAdminApp());
+export const getAdminStorage = () => getStorage(getAdminApp());

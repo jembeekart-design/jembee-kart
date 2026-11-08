@@ -1,0 +1,45 @@
+rules_version = '2';
+
+service firebase.storage {
+  match /b/{bucket}/o {
+    function signedIn() {
+      return request.auth != null;
+    }
+
+    function isAdmin() {
+      return signedIn()
+        && firestore.get(/databases/(default)/documents/users/$(request.auth.uid)).data.role
+          in ['admin', 'super_admin'];
+    }
+
+    function isPaidVideoOrder(orderId) {
+      return firestore.get(/databases/(default)/documents/watchVideoPaymentOrders/$(orderId)).data.status == 'paid';
+    }
+
+    // Invoice evidence is write-once, admin-uploaded, scoped to a verified
+    // paid-video order, and never directly readable/deletable by clients.
+    // The Super Admin verification API reads it with the Admin SDK.
+    match /shorts-expense-evidence/{orderId}/{fileName} {
+      allow create: if isAdmin()
+        && isPaidVideoOrder(orderId)
+        && fileName.matches('^[A-Za-z0-9][A-Za-z0-9._-]{0,119}$')
+        && request.resource.size > 0
+        && request.resource.size <= 10 * 1024 * 1024
+        && request.resource.contentType in [
+          'application/pdf', 'image/jpeg', 'image/png', 'image/webp'
+        ]
+        && request.resource.metadata.orderId == orderId
+        && request.resource.metadata.invoiceNumber is string
+        && request.resource.metadata.invoiceNumber.size() > 0
+        && request.resource.metadata.invoiceNumber.size() <= 80
+        && request.resource.metadata.uploadedByUid == request.auth.uid;
+
+      allow read, update, delete: if false;
+    }
+
+    // All other Storage paths remain denied unless an explicit rule exists.
+    match /{allPaths=**} {
+      allow read, write: if false;
+    }
+  }
+}

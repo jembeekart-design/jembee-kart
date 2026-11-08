@@ -33,7 +33,7 @@ export async function initializeAdminChat() {
       const chatRef = await addDoc(chatsCollection, {
         name: userName,
         participants: [userId, auth.currentUser?.uid || "admin"],
-        lastMessage: "Welcome to JembeeKart Chat!",
+        lastMessage: "Welcome to JEMBEE PLAY Support!",
         lastMessageAt: serverTimestamp(),
         online: true,
         updatedAt: serverTimestamp(),
@@ -43,7 +43,7 @@ export async function initializeAdminChat() {
       await addDoc(collection(chatRef, FIRESTORE_PATHS.ADMIN_CHAT.MESSAGES), {
         senderId: "system",
         senderName: "System",
-        text: "Welcome to JembeeKart Chat!",
+        text: "Welcome to JEMBEE PLAY Support!",
         createdAt: serverTimestamp(),
       });
 

@@ -169,7 +169,7 @@ export default function TypographySettings({
               "400",
           }}
         >
-          JembeeKart Theme Preview
+          JEMBEE PLAY Theme Preview
         </h1>
 
         <p

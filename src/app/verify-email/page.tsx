@@ -30,7 +30,7 @@ export default function VerifyEmailPage() {
 
       if (isGoogleUser) {
         console.log("Google user verified via provider token. Bypassing activation layout.");
-        router.push("/mlm/dashboard");
+        router.push("/shorts");
         return;
       }
 
@@ -99,7 +99,7 @@ export default function VerifyEmailPage() {
       }
 
       console.log("Email verification profile synchronized securely.");
-      router.push("/mlm/dashboard");
+      router.push("/shorts");
     } catch (syncError) {
       console.error("Critical State Mismatch Sync Error:", syncError);
       syncedRef.current = false; // Reset lock to allow retry if transaction fails

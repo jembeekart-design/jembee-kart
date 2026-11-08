@@ -124,7 +124,7 @@ export default function ThemePreview({
               fontWeight: theme.fontWeight,
             }}
           >
-            JembeeKart
+            JEMBEE PLAY
           </h1>
 
           <button
@@ -149,7 +149,7 @@ export default function ThemePreview({
         >
 
           <h2 className="text-4xl font-bold">
-            Welcome to JembeeKart
+            Welcome to JEMBEE PLAY
           </h2>
 
           <p className="mt-3 opacity-90">
@@ -273,7 +273,7 @@ export default function ThemePreview({
         >
 
           <p>
-            © 2026 JembeeKart
+            © 2026 JEMBEE PLAY
           </p>
 
         </footer>

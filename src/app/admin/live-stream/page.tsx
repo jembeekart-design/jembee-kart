@@ -205,7 +205,7 @@ export default function LiveStreamPage() {
           </h1>
 
           <p className="mt-1 text-sm text-[var(--muted-text-color)]">
-            Manage live shopping streams
+            Manage live video streams
           </p>
 
         </div>

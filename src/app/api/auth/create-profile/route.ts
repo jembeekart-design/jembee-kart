@@ -23,14 +23,54 @@ export async function POST(req: NextRequest) {
       );
     }
 
+    const contentLength = Number(req.headers.get("content-length") || 0);
+    if (Number.isFinite(contentLength) && contentLength > 4096) {
+      return NextResponse.json(
+        { success: false, error: "Request body is too large" },
+        { status: 413 }
+      );
+    }
+
+    const rawBody = await req.text();
+    if (Buffer.byteLength(rawBody, "utf8") > 4096) {
+      return NextResponse.json(
+        { success: false, error: "Request body is too large" },
+        { status: 413 }
+      );
+    }
+
+    let body: unknown;
+    try {
+      body = JSON.parse(rawBody);
+    } catch {
+      return NextResponse.json(
+        { success: false, error: "Invalid JSON body" },
+        { status: 400 }
+      );
+    }
+
+    if (!body || typeof body !== "object" || Array.isArray(body)) {
+      return NextResponse.json(
+        { success: false, error: "Invalid request body" },
+        { status: 400 }
+      );
+    }
+
     const decoded = await getAdminAuth().verifyIdToken(token, true);
     const uid = decoded.uid;
-
-    const body = await req.json();
+    const payload = body as Record<string, unknown>;
     const name =
-      typeof body?.name === "string" ? body.name.trim().replace(/\s+/g, " ") : "";
+      typeof payload.name === "string" ? payload.name.trim().replace(/\s+/g, " ") : "";
     const sponsorCode =
-      typeof body?.sponsorCode === "string" ? body.sponsorCode.trim() : "";
+      typeof payload.sponsorCode === "string" ? payload.sponsorCode.trim() : "";
+
+    if ((payload.name !== undefined && typeof payload.name !== "string") ||
+        (payload.sponsorCode !== undefined && typeof payload.sponsorCode !== "string")) {
+      return NextResponse.json(
+        { success: false, error: "Invalid profile fields" },
+        { status: 400 }
+      );
+    }
 
     if (name.length > 50) {
       return NextResponse.json(
@@ -155,7 +195,7 @@ export async function POST(req: NextRequest) {
 
       const profileName =
         name || (typeof decoded.name === "string" ? decoded.name.trim() : "") ||
-        "JembeeKart User";
+        "JEMBEE PLAY User";
 
       transaction.set(userRef, {
         uid,
@@ -210,7 +250,6 @@ export async function POST(req: NextRequest) {
         kycStatus: "pending",
         kycSubmittedAt: null,
         kycApprovedAt: null,
-        mlmActive: false,
         notificationCount: 0,
         unreadNotifications: 0,
         sponsorId: sponsorUid,

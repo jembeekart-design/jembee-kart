@@ -1,17 +1,26 @@
 {
-  "name": "jembeekart",
+  "name": "jembee-play",
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "dev": "next dev",
-    "governance": "dotenv -e .env.production -- tsx src/jembee-governance/index.ts",
-    "governance:check": "dotenv -e .env.production -- tsx src/jembee-governance/index.ts",
-    "theme:codemod": "tsx src/scripts/theme-codemod.ts",
+    "dev": "next dev --webpack",
     "build": "next build --webpack",
     "start": "next start",
     "lint": "eslint",
     "scan:hardcoded": "tsx src/scripts/hardcodedScanner.ts",
-    "autofix": "dotenv -e .env.production -- tsx src/scripts/autofix.ts"
+    "dev:turbo": "next dev",
+    "test:paid-video-eligibility": "node --test src/app/api/shorts/paid-video/verify/__tests__/paid-video-eligibility.test.mjs",
+    "test:paid-video-revenue-split": "node --test src/lib/server/__tests__/paidVideoRevenueSplit.test.mjs src/app/api/shorts/paid-video/verify/__tests__/paid-video-eligibility.test.mjs src/app/api/shorts/paid-video/verify/__tests__/settlement-ledger-contract.test.mjs",
+    "test:paid-video-refunds": "node --test src/lib/server/__tests__/paidVideoRefundReversal.test.mjs src/lib/server/__tests__/paidVideoRevenueSplit.test.mjs src/app/api/shorts/paid-video/verify/__tests__/paid-video-eligibility.test.mjs src/app/api/shorts/paid-video/verify/__tests__/settlement-ledger-contract.test.mjs",
+    "test:paid-video-refund-reconcile": "node --test src/app/api/admin/shorts/paid-video-refunds/reconcile/__tests__/route-contract.test.mjs",
+    "test:teacher-referral-commission": "node --test src/lib/server/__tests__/teacherReferralCommission.test.mjs",
+    "test:teacher-referral-settlement": "node --test src/app/api/admin/shorts/teacher-referral/reconcile/__tests__/route-contract.test.mjs src/lib/server/__tests__/teacherReferralCommission.test.mjs src/lib/server/__tests__/paidVideoRevenueSplit.test.mjs src/lib/server/__tests__/paidVideoRefundReversal.test.mjs",
+    "test:paid-video-checkout-flow": "node --test src/app/api/shorts/paid-video/create-order/__tests__/route-contract.test.mjs src/app/api/shorts/paid-video/playback-session/__tests__/route-contract.test.mjs src/app/api/admin/shorts/paid-video/enable/__tests__/route-contract.test.mjs src/app/api/payments/cashfree/webhook/__tests__/shorts-settlement-contract.test.mjs src/app/api/shorts/paid-video/verify/__tests__/paid-video-eligibility.test.mjs src/app/api/shorts/paid-video/verify/__tests__/settlement-ledger-contract.test.mjs src/app/api/admin/moderate-video/__tests__/paid-video-approval.test.mjs src/app/api/admin/shorts/teacher-referral/reconcile/__tests__/route-contract.test.mjs src/lib/server/__tests__/paidVideoRevenueSplit.test.mjs src/lib/server/__tests__/paidVideoRefundReversal.test.mjs src/lib/server/__tests__/teacherReferralCommission.test.mjs",
+    "test:share-attribution-claim": "node --test src/app/api/monetag/share-attribution/__tests__/route-contract.test.mjs src/app/api/monetag/share-attribution/claim/__tests__/route-contract.test.mjs src/app/videos/components/__tests__/PaidVideoGate-attribution.test.mjs",
+    "test:shorts-expense-evidence": "node --test src/app/api/admin/shorts/expenses/__tests__/route-contract.test.mjs src/app/api/admin/shorts/expenses/verify/__tests__/route-contract.test.mjs",
+    "test:storage-expense-evidence": "node --test src/firebase/__tests__/storage-expense-evidence-rules.test.mjs src/app/api/admin/shorts/expenses/__tests__/route-contract.test.mjs src/app/api/admin/shorts/expenses/verify/__tests__/route-contract.test.mjs",
+    "test:shorts-expense-ui": "node --test src/app/admin/shorts-expenses/__tests__/page-contract.test.mjs",
+    "test:video-preload-cache": "node --test src/app/videos/components/__tests__/video-preload-cache.test.mjs"
   },
   "dependencies": {
     "@mediapipe/tasks-vision": "^1.0.1",
@@ -50,6 +59,6 @@
     "firebase-tools": "^15.33.0",
     "tailwindcss": "^4",
     "tsx": "^4.22.4",
-    "typescript": "^6"
+    "typescript": "^6.0.3"
   }
 }

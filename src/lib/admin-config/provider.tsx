@@ -49,11 +49,6 @@ export function AdminConfigProvider({ children }: { children: ReactNode }) {
     const watchEarnRef = doc(db, "settings", "watchEarn");
     const commentModerationRef = doc(db, "settings", "commentModeration");
     const featureFlagsRef = doc(db, "settings", "feature_flags");
-    const walletRef = doc(db, "settings", "wallet");
-    const mlmRef = doc(db, "settings", "mlm"); // Add MLM ref
-    const homepageRef = doc(db, "settings", "homepage");
-    const paymentRef = doc(db, "settings", "payment");
-    const shippingRef = doc(db, "settings", "shipping");
     const notificationRef = doc(db, "settings", "notification");
     const unsubscribe = onSnapshot(
       configRef,
@@ -76,11 +71,6 @@ export function AdminConfigProvider({ children }: { children: ReactNode }) {
               watchEarnRef,
               commentModerationRef,
               featureFlagsRef,
-              walletRef,
-              mlmRef, // Add MLM ref
-              homepageRef,
-              paymentRef,
-              shippingRef,
               notificationRef,
             ];
 
@@ -94,11 +84,6 @@ export function AdminConfigProvider({ children }: { children: ReactNode }) {
               watchEarnSnap,
               commentModerationSnap,
               featureFlagsSnap,
-              walletSnap,
-              mlmSnap, // Add MLM snap
-              homepageSnap,
-              paymentSnap,
-              shippingSnap,
               notificationSnap,
             ] = await Promise.all(refs.map((ref) => getDoc(ref)));
 
@@ -133,24 +118,6 @@ export function AdminConfigProvider({ children }: { children: ReactNode }) {
               featureFlags: featureFlagsSnap.exists()
                 ? featureFlagsSnap.data()
                 : DEFAULT_ADMIN_CONFIG.featureFlags,
-              wallet: walletSnap.exists()
-                ? walletSnap.data()
-                : DEFAULT_ADMIN_CONFIG.wallet,
-              mlm: mlmSnap.exists() // Add MLM merge
-                ? mlmSnap.data()
-                : DEFAULT_ADMIN_CONFIG.mlm,
-
-              homepage: homepageSnap.exists()
-                ? homepageSnap.data()
-                : DEFAULT_ADMIN_CONFIG.homepage,
-
-              payment: paymentSnap.exists()
-                ? paymentSnap.data()
-                : DEFAULT_ADMIN_CONFIG.payment,
-
-              shipping: shippingSnap.exists()
-                ? shippingSnap.data()
-                : DEFAULT_ADMIN_CONFIG.shipping,
 
               notification: notificationSnap.exists()
                 ? notificationSnap.data()

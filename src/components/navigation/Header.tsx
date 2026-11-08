@@ -271,7 +271,7 @@ export default function Header({
               }}
             >
 
-              JembeeKart
+              JEMBEE PLAY
 
             </h1>
 
@@ -285,7 +285,7 @@ export default function Header({
               "
             >
 
-              AI Ecommerce Ecosystem
+              Watch • Learn • Create • Share
 
             </p>
 
@@ -361,7 +361,7 @@ export default function Header({
           <input
             type="text"
 
-            aria-label="Search products"
+            aria-label="Search videos"
 
             value={search}
 
@@ -372,7 +372,7 @@ export default function Header({
             }
 
             placeholder="
-              Search products...
+              Search videos...
             "
 
             className="

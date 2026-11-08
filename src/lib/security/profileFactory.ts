@@ -24,7 +24,7 @@ export function createInitialProfileState({
 }: CreateInitialProfileStateParams) {
   return {
     uid: targetUid,
-    name: data.name?.trim() || data.displayName?.trim() || "JembeeKart User",
+    name: data.name?.trim() || data.displayName?.trim() || "JEMBEE PLAY User",
     email: rawEmail,
     photo: data.photoURL || "",
     mobileNumber: "",

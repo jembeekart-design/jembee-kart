@@ -55,7 +55,7 @@ export default function AdminNavbar() {
 
           <input
             type="text"
-            placeholder="Search products, users, orders..."
+            placeholder="Search videos, creators and users..."
             className="w-full bg-transparent text-sm text-[var(--button-text-color)] outline-none placeholder:text-[var(--text-muted)]"
           />
 

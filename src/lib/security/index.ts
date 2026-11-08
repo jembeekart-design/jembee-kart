@@ -1,6 +1,6 @@
 /**
  * ==========================================================
- * JembeeKart Security Module
+ * JEMBEE PLAY Security Module
  * Central Export File
  * Version : 1.0.0
  * ==========================================================

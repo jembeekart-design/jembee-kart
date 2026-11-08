@@ -1,36 +1,27 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# JEMBEE PLAY — Video Platform
 
-## Getting Started
+This source package contains the JEMBEE PLAY video platform only. Legacy legacy non-video commerce and network-management routes/modules have been removed from this package.
 
-First, run the development server:
+## Included
+- Shorts/video feed and video playback
+- Creator upload and Google Drive resumable upload/OAuth integration
+- Video moderation, reports, comments, likes and notifications
+- School Learning catalog and education admin entry point
+- Cashfree paid-video checkout verification, playback entitlement and refund reconciliation
+- Monetag video advertising/revenue tooling and video expense evidence
+- Creator profiles, followers and platform administration
+- Mobile/Android TV video-app settings
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
+## Safety gates
+- Paid-video checkout must remain disabled until Cashfree webhook, payment verification, playback-session and entitlement tests pass in the target environment.
+- Live creator payouts must remain disabled until settlement implementation and required reconciliation tests are verified.
+- Creator settlement ledger entries are not wallet credits and do not trigger payouts.
+- The project uses environment variables for Firebase Admin, Google Drive and Cashfree credentials. Never commit `.env*` or service-account files.
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+## Local setup
+1. Use Node.js 22 LTS.
+2. Install dependencies with `npm ci`.
+3. Configure `.env.local` from the deployment secret store; do not add real credentials to this archive.
+4. Run `npm run build` and the paid-video test scripts before deployment.
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
-
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
-
-## Learn More
-
-To learn more about Next.js, take a look at the following resources:
-
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
-
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+68 Node contract/unit tests pass in this workspace. Dependency installation did not complete, so TypeScript and the Next.js production build were not verified. This archive is a source cleanup/integration package, not a declaration of production readiness.

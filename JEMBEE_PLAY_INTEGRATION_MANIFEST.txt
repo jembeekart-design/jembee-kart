@@ -1,0 +1,6 @@
+JEMBEE PLAY VIDEO PLATFORM ONLY
+Legacy non-video commerce and network-management routes/modules removed.
+See README.md and JEMBEE_PLAY_CLEANUP_REPORT_HI.md.
+Paid-video playback-session endpoint added.
+Video thumbnails and metadata preload is limited to the active and next four videos; full videos are not auto-downloaded.
+Live payouts remain disabled.

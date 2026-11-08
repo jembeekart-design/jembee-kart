@@ -31,16 +31,6 @@ export function validateConfig(data: any): AdminConfig {
       watchEarn: { ...DEFAULT_ADMIN_CONFIG.watchEarn, ...(data.watchEarn || {}) },
       watchEarnStats: { ...DEFAULT_ADMIN_CONFIG.watchEarnStats, ...(data.watchEarnStats || {}) },
       commentModeration: { ...DEFAULT_ADMIN_CONFIG.commentModeration, ...(data.commentModeration || {}) },
-      
-      payment: { ...DEFAULT_ADMIN_CONFIG.payment, ...(data.payment || {}) },
-      shipping: { ...DEFAULT_ADMIN_CONFIG.shipping, ...(data.shipping || {}) },
-      cashback: { ...DEFAULT_ADMIN_CONFIG.cashback, ...(data.cashback || {}) },
-      mlm: { ...DEFAULT_ADMIN_CONFIG.mlm, ...(data.mlm || {}) },
-      referral: { ...DEFAULT_ADMIN_CONFIG.referral, ...(data.referral || {}) },
-      signup: { ...DEFAULT_ADMIN_CONFIG.signup, ...(data.signup || {}) },
-      wallet: { ...DEFAULT_ADMIN_CONFIG.wallet, ...(data.wallet || {}) },
-      seller: { ...DEFAULT_ADMIN_CONFIG.seller, ...(data.seller || {}) },
-      mlmPage: { ...DEFAULT_ADMIN_CONFIG.mlmPage, ...(data.mlmPage || {}) },
       featureFlags: { ...DEFAULT_ADMIN_CONFIG.featureFlags, ...(data.featureFlags || {}) },
       
       header: { ...DEFAULT_ADMIN_CONFIG.header, ...(data.header || {}) },

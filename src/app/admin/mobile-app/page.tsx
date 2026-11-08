@@ -35,7 +35,7 @@ export default function MobileAppPage() {
 
   const [settings, setSettings] =
     useState<MobileAppSettings>({
-      appName: "JembeeKart",
+      appName: "JEMBEE PLAY",
       packageName:
         "com.jembeekart.app",
       version: "1.0.0",

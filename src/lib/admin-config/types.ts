@@ -33,60 +33,10 @@ export interface ThemeConfig {
 }
 
 // --- Module Configs ---
-export interface PaymentConfig {
-  codEnabled: boolean;
-  onlinePaymentEnabled: boolean;
-  defaultPaymentMethod: string;
-}
-
-export interface ShippingConfig {
-  freeShipping: boolean;
-  shippingCharge: number;
-  deliveryDays: number;
-}
-
-export interface CashbackConfig {
-  enabled: boolean;
-  cashbackPercent: number;
-}
-
-export interface MLMConfig {
-  enabled: boolean;
-  level1: number;
-  level2: number;
-  level3: number;
-  maxLevels: number;
-}
-
-export interface ReferralConfig {
-  enabled: boolean;
-  referralBonus: number;
-  maxReferralLevels: number;
-}
-
-export interface SignupConfig {
-  enabled: boolean;
-  joiningBonus: number;
-  referralBonus: number;
-  requireReferral: boolean;
-}
-
-export interface WalletConfig {
-  commissionWalletEnabled: boolean;
-  rewardWalletEnabled: boolean;
-  cashbackWalletEnabled: boolean;
-}
-
-export interface SellerConfig {
-  enabled: boolean;
-  defaultSellerId: string;
-  defaultSellerName: string;
-}
-
 // --- Dynamic Page Builder ---
 export interface HomepageSection {
   id: string;
-  type: string; // e.g., "banner", "product_grid", "category_slider"
+  type: string; // e.g., "video_feature", "learning_catalog"
   enabled: boolean;
   order: number;
   config?: Record<string, unknown>; // Flexible settings for each section
@@ -115,7 +65,6 @@ export interface NavigationConfig {
 export interface HeaderConfig {
   logo: string;
   showSearch: boolean;
-  showCart: boolean;
   showNotification: boolean;
 }
 
@@ -147,30 +96,15 @@ export interface AppConfig {
 
 // --- Feature Flags ---
 export interface FeatureFlags {
-  ecommerce: boolean;
-  referral: boolean;
-  watchEarn: boolean;
-  cashback: boolean;
-  mlm: boolean;
-  creatorEconomy: boolean;
-  wallet: boolean;
-  seller: boolean;
-  payment: boolean;
-  shipping: boolean;
+  shorts: boolean;
+  schoolLearning: boolean;
+  creatorUploads: boolean;
+  videoModeration: boolean;
+  paidVideo: boolean;
+  livePayouts: boolean;
+  videoAds: boolean;
   notifications: boolean;
   support: boolean;
-}
-
-export interface MLMPageConfig {
-  enabled: boolean;
-  pageTitle: string;
-  pageSubtitle: string;
-  minimumTransfer: number;
-  transferFunction: string;
-  searchPlaceholder: string;
-  filters: string[];
-  transactionTypes: string[];
-  statusTypes: string[];
 }
 
 // --- ROOT CONFIGURATION ---
@@ -267,15 +201,6 @@ export interface AdminConfig {
   watchEarn: WatchEarnConfig;
   watchEarnStats: WatchEarnStatsConfig;
   commentModeration: CommentModerationConfig;
-  payment: PaymentConfig;
-  shipping: ShippingConfig;
-  cashback: CashbackConfig;
-  mlm: MLMConfig;
-  referral: ReferralConfig;
-  signup: SignupConfig;
-  wallet: WalletConfig;
-  seller: SellerConfig;
-  mlmPage: MLMPageConfig;
   
   featureFlags: FeatureFlags;
   header: HeaderConfig;

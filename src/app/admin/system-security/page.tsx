@@ -325,7 +325,7 @@ export default function SystemSecurityPage() {
 
         <p className="mt-4 max-w-2xl text-sm font-medium">
 
-          Your ecommerce platform is protected with
+          Your JEMBEE PLAY video platform is protected with
           advanced firewall security & realtime monitoring.
 
         </p>
