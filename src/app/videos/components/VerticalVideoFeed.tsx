@@ -66,6 +66,11 @@ export default function VerticalVideoFeed({
 }) {
   const { requireAuth, isAuthenticated } = useRequireAuth();
   const [authorizedPaidVideos, setAuthorizedPaidVideos] = useState<Record<string, boolean>>({});
+  const [
+    activeVideoId,
+    setActiveVideoId
+  ] = useState<string>("");
+
 
   const [followingList, setFollowingList] = useState<string[]>([]);
   const [notInterestedIds, setNotInterestedIds] = useState<string[]>([]);
@@ -320,11 +325,6 @@ export default function VerticalVideoFeed({
     savedVideos,
     setSavedVideos
   ] = useState<Record<string, boolean>>({});
-
-  const [
-    activeVideoId,
-    setActiveVideoId
-  ] = useState<string>("");
 
 
   useEffect(() => {
