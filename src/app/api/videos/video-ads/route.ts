@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
 import { getAdminDb } from "@/firebase/admin";
-import { DEFAULT_BUSINESS_RULES } from "@/lib/ads/videoAdsRules";
+import { DEFAULT_VIDEO_ADS_RULES } from "@/lib/ads/videoAdsRules";
 import { validateVideoAdsRules } from "@/lib/ads/videoAdsRules";
 
 export const runtime = "nodejs";

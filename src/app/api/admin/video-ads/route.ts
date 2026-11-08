@@ -1,7 +1,7 @@
 import { NextResponse } from "next/server";
 import { getAdminDb } from "@/firebase/admin";
 import { verifyMonetagAdmin } from "@/lib/server/monetagAdminAuth";
-import { DEFAULT_BUSINESS_RULES } from "@/lib/ads/videoAdsRules";
+import { DEFAULT_VIDEO_ADS_RULES } from "@/lib/ads/videoAdsRules";
 import { validateVideoAdsRules } from "@/lib/ads/videoAdsRules";
 import { readBoundedJson } from "@/lib/server/readBoundedJson";
 

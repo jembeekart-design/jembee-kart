@@ -65,6 +65,7 @@ export default function VerticalVideoFeed({
   activeTab: 'foryou' | 'following'
 }) {
   const { requireAuth, isAuthenticated } = useRequireAuth();
+  const [authorizedPaidVideos, setAuthorizedPaidVideos] = useState<Record<string, boolean>>({});
 
   const [followingList, setFollowingList] = useState<string[]>([]);
   const [notInterestedIds, setNotInterestedIds] = useState<string[]>([]);
@@ -325,7 +326,6 @@ export default function VerticalVideoFeed({
     setActiveVideoId
   ] = useState<string>("");
 
-  const [authorizedPaidVideos, setAuthorizedPaidVideos] = useState<Record<string, boolean>>({});
 
   useEffect(() => {
     const paidVideoId = new URLSearchParams(window.location.search).get("paidVideoId");
