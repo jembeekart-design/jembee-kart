@@ -1,0 +1,11 @@
+{
+  "name": "JEMBEE PLAY",
+  "short_name": "JEMBEE PLAY",
+  "description": "Watch, learn, create, share and earn on JEMBEE PLAY.",
+  "start_url": "/",
+  "scope": "/",
+  "display": "standalone",
+  "background_color": "#05070B",
+  "theme_color": "#06B6D4",
+  "orientation": "any"
+}

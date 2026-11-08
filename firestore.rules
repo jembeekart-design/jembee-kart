@@ -1,0 +1,73 @@
+rules_version = '2';
+
+service cloud.firestore {
+  match /databases/{database}/documents {
+    function signedIn() { return request.auth != null; }
+    function isOwner(uid) { return signedIn() && request.auth.uid == uid; }
+    function isAdmin() {
+      return signedIn()
+        && exists(/databases/$(database)/documents/users/$(request.auth.uid))
+        && get(/databases/$(database)/documents/users/$(request.auth.uid)).data.role in ['admin', 'super_admin'];
+    }
+
+    match /admin_settings/{settingId} {
+      allow read: if settingId == 'customize';
+      allow create, update, delete: if isAdmin() && settingId == 'customize';
+    }
+    match /users/{uid} {
+      allow read: if isOwner(uid) || isAdmin();
+      allow create, update, delete: if false;
+      match /{subcollection}/{documentId} { allow read, write: if false; }
+    }
+    match /watchEarnVideos/{videoId} {
+      allow read: if isAdmin()
+        || (resource.data.status == 'approved' && resource.data.active == true && resource.data.moderation == 'safe' && resource.data.videoAccess == 'free')
+        || (signedIn() && (resource.data.userId == request.auth.uid || resource.data.creatorId == request.auth.uid));
+      allow create, update, delete: if false;
+    }
+    match /interestedWatchVideos/{uid}/videos/{videoId} {
+      allow read: if isOwner(uid) || isAdmin();
+      allow create, update: if isOwner(uid) && request.resource.data.keys().hasOnly(['videoId', 'createdAt']) && request.resource.data.videoId == videoId;
+      allow delete: if isOwner(uid) || isAdmin();
+    }
+    match /notInterestedWatchVideos/{uid}/videos/{videoId} {
+      allow read: if isOwner(uid) || isAdmin();
+      allow create, update: if isOwner(uid) && request.resource.data.keys().hasOnly(['videoId', 'createdAt']) && request.resource.data.videoId == videoId;
+      allow delete: if isOwner(uid) || isAdmin();
+    }
+    match /watchVideoLikes/{likeId} {
+      allow read: if (signedIn() && resource.data.userId == request.auth.uid) || isAdmin();
+      allow create, update, delete: if false;
+    }
+    match /comments/{commentId} {
+      allow read: if resource.data.status == 'approved';
+      allow create, update, delete: if false;
+    }
+    match /videoCommentLikes/{likeId} {
+      allow read: if (signedIn() && resource.data.userId == request.auth.uid) || isAdmin();
+      allow create, update, delete: if false;
+    }
+    match /commentModeration/{documentId} { allow read, write: if isAdmin(); }
+    match /commentAuditLogs/{logId} { allow read: if isAdmin(); allow create: if isAdmin(); allow update, delete: if false; }
+    match /commentRegexRules/{ruleId} { allow read, write: if isAdmin(); }
+    match /ads/{adId} { allow read, create, update, delete: if isAdmin(); }
+    match /adNetworks/{networkId} { allow read, create, update, delete: if isAdmin(); }
+    match /adSlots/{slotId} { allow read, create, update, delete: if isAdmin(); }
+
+    // Paid video, uploads, moderation, payment and settlement are server-managed only.
+    match /watchVideoPaymentOrders/{id} { allow read, write: if false; }
+    match /watchVideoPurchases/{id} { allow read, write: if false; }
+    match /watchVideoPaymentEvents/{id} { allow read, write: if false; }
+    match /shortsSettlementLedger/{id} { allow read, write: if false; }
+    match /shortsVerifiedExpenses/{id} { allow read, write: if false; }
+    match /teacherReferralAttributions/{id} { allow read, write: if false; }
+    match /videoModerationSubmissions/{id} { allow read, write: if false; }
+    match /videoReports/{id} { allow read, write: if false; }
+    match /videoCommentReports/{id} { allow read, write: if false; }
+    match /creatorAdEarnings/{id} { allow read, write: if false; }
+    match /shorts_notifications/{id} { allow read, write: if false; }
+    match /shorts_notification_meta/{id} { allow read, write: if false; }
+
+    match /{document=**} { allow read, write: if false; }
+  }
+}

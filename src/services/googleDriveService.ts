@@ -1,0 +1,317 @@
+import { google } from "googleapis";
+import { Readable } from "node:stream";
+import { getGoogleDriveRefreshToken } from "@/lib/googleDriveTokenStore";
+
+async function getOAuthClient() {
+  const clientId = process.env.GOOGLE_OAUTH_CLIENT_ID?.trim();
+  const clientSecret = process.env.GOOGLE_OAUTH_CLIENT_SECRET?.trim();
+  const redirectUri = process.env.GOOGLE_OAUTH_REDIRECT_URI?.trim();
+
+  if (!clientId || !clientSecret || !redirectUri) {
+    throw new Error("Google OAuth client credentials are not configured");
+  }
+
+  const refreshToken = await getGoogleDriveRefreshToken();
+  const oauth2Client = new google.auth.OAuth2(clientId, clientSecret, redirectUri);
+  oauth2Client.setCredentials({ refresh_token: refreshToken });
+  return oauth2Client;
+}
+
+async function getDriveClient() {
+  return google.drive({
+    version: "v3",
+    auth: await getOAuthClient(),
+  });
+}
+
+function getFolderId(): string {
+  const folderId = process.env.GOOGLE_DRIVE_FOLDER_ID?.trim();
+
+  if (!folderId) {
+    throw new Error(
+      "GOOGLE_DRIVE_FOLDER_ID not configured"
+    );
+  }
+
+  return folderId;
+}
+
+export async function createResumableUploadSession(
+  filename: string,
+  mimeType: string,
+  fileSize: number
+): Promise<string> {
+  if (!mimeType.toLowerCase().startsWith("video/")) {
+    throw new Error("Only video MIME types are allowed");
+  }
+
+  if (fileSize <= 0) {
+    throw new Error("File size must be greater than zero");
+  }
+
+  if (fileSize > 500 * 1024 * 1024) {
+    throw new Error("फ़ाइल का आकार 500 MB से अधिक नहीं होना चाहिए।");
+  }
+
+  const client = await getOAuthClient();
+  
+
+  const response = await client.request<{ location?: string }>({
+    url:
+      "https://www.googleapis.com/upload/drive/v3/files?uploadType=resumable",
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json; charset=UTF-8",
+      "X-Upload-Content-Type": mimeType,
+      "X-Upload-Content-Length": fileSize.toString(),
+    },
+    data: {
+      name: filename,
+      parents: [getFolderId()],
+    },
+  });
+
+  const uploadUrl = response.headers.get("location");
+
+  if (!uploadUrl) {
+    throw new Error(
+      "Failed to obtain resumable upload URL"
+    );
+  }
+
+  return uploadUrl;
+}
+
+export async function getResumableUploadStatus(
+  uploadUrl: string,
+  fileSize: number
+): Promise<{
+  uploadedBytes: number;
+  driveFileId?: string;
+}> {
+  const trimmedUploadUrl = uploadUrl.trim();
+
+  if (!trimmedUploadUrl) {
+    throw new Error("Drive upload URL is required");
+  }
+
+  if (!Number.isFinite(fileSize) || fileSize <= 0) {
+    throw new Error("Valid Drive upload file size is required");
+  }
+
+  const response = await fetch(trimmedUploadUrl, {
+    method: "PUT",
+    headers: {
+      "Content-Range": `bytes */${fileSize}`,
+    },
+  });
+
+  const range = response.headers.get("Range");
+
+  if (response.status === 200 || response.status === 201) {
+    let data: { id?: string } | null = null;
+
+    try {
+      data = await response.json();
+    } catch {
+      // Drive may have completed the upload even if the response body is unreadable.
+    }
+
+    if (data?.id) {
+      return {
+        uploadedBytes: fileSize,
+        driveFileId: data.id,
+      };
+    }
+
+    throw new Error(
+      "Drive reports the upload as complete but did not return a file ID"
+    );
+  }
+
+  if (response.status === 308) {
+    if (range) {
+      const match = range.match(/bytes=0-(\d+)/);
+
+      if (match) {
+        return {
+          uploadedBytes: Math.min(
+            parseInt(match[1], 10) + 1,
+            fileSize
+          ),
+        };
+      }
+    }
+
+    return {
+      uploadedBytes: 0,
+    };
+  }
+
+  if (response.status === 404) {
+    throw new Error(
+      "Google Drive resumable upload session expired"
+    );
+  }
+
+  throw new Error(
+    `Google Drive session status check failed with HTTP ${response.status}`
+  );
+}
+
+export async function uploadVideoToDrive(
+  filename: string,
+  stream: Readable,
+  mimeType: string
+): Promise<string> {
+  if (!filename.trim()) {
+    throw new Error("Drive filename is required");
+  }
+
+  if (!mimeType.toLowerCase().startsWith("video/")) {
+    throw new Error("Only video MIME types are allowed");
+  }
+
+  const drive = await getDriveClient();
+
+  const response = await drive.files.create({
+    requestBody: {
+      name: filename,
+      parents: [getFolderId()],
+    },
+    media: {
+      mimeType,
+      body: stream,
+    },
+    fields: "id",
+  });
+
+  const fileId = response.data.id;
+
+  if (!fileId) {
+    throw new Error(
+      "Google Drive upload completed without a file ID"
+    );
+  }
+
+  return fileId;
+}
+
+export async function getDriveFileMetadata(
+  fileId: string
+): Promise<{
+  mimeType: string;
+  size: number;
+  name: string;
+  parents: string[];
+  thumbnailLink?: string;
+}> {
+  const drive = await getDriveClient();
+
+  const response = await drive.files.get({
+    fileId: fileId.trim(),
+    fields: "mimeType,size,name,parents,thumbnailLink",
+  });
+
+  if (
+    !response.data.mimeType ||
+    !response.data.size ||
+    !response.data.name
+  ) {
+    throw new Error(
+      "Could not fetch valid file metadata"
+    );
+  }
+
+  return {
+    mimeType: response.data.mimeType,
+    size: parseInt(response.data.size, 10),
+    name: response.data.name,
+    parents: response.data.parents || [],
+    thumbnailLink: response.data.thumbnailLink || undefined,
+  };
+}
+
+export interface DriveFileStreamResponse {
+  stream: Readable;
+  mimeType: string;
+  size: number;
+}
+
+export async function getDriveFileStream(
+  fileId: string,
+  range?: string
+): Promise<DriveFileStreamResponse> {
+  const trimmedFileId = fileId.trim();
+
+  if (!trimmedFileId) {
+    throw new Error("Drive file ID is required");
+  }
+
+  const drive = await getDriveClient();
+  const metadata =
+    await getDriveFileMetadata(trimmedFileId);
+
+  const response = await drive.files.get(
+    {
+      fileId: trimmedFileId,
+      alt: "media",
+    },
+    {
+      responseType: "stream",
+      headers: range ? { Range: range } : {},
+    }
+  );
+
+  if (!response.data) {
+    throw new Error(
+      "Google Drive returned an empty video stream"
+    );
+  }
+
+  return {
+    stream: response.data as Readable,
+    mimeType: metadata.mimeType,
+    size: metadata.size,
+  };
+}
+
+export async function downloadDriveFile(
+  fileId: string
+): Promise<Readable> {
+  const drive = await getDriveClient();
+
+  const response = await drive.files.get(
+    {
+      fileId: fileId.trim(),
+      alt: "media",
+    },
+    {
+      responseType: "stream",
+    }
+  );
+
+  if (!response.data) {
+    throw new Error(
+      "Google Drive returned an empty file stream"
+    );
+  }
+
+  return response.data as Readable;
+}
+
+export async function deleteDriveFile(
+  fileId: string
+): Promise<void> {
+  const trimmedFileId = fileId.trim();
+
+  if (!trimmedFileId) {
+    return;
+  }
+
+  const drive = await getDriveClient();
+
+  await drive.files.delete({
+    fileId: trimmedFileId,
+  });
+}

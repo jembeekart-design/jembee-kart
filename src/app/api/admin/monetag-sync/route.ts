@@ -1,0 +1,89 @@
+import { createHash, randomUUID } from "node:crypto";
+import { NextResponse } from "next/server";
+import { FieldValue } from "firebase-admin/firestore";
+import { getAdminDb } from "@/firebase/admin";
+import { verifyMonetagAdmin } from "@/lib/server/monetagAdminAuth";
+
+export const runtime = "nodejs";
+const API = "https://api.monetag.com/v5";
+const DEFAULT_SITE = "jembee-kart.vercel.app";
+const numeric = (v: unknown) => { const n = Number(v ?? 0); return Number.isFinite(n) ? n : 0; };
+
+// Pulls official aggregate statistics. Aggregate stats cannot safely identify individual uploader/sharer earnings.
+export async function POST(req: Request) {
+  try {
+    const adminUid = await verifyMonetagAdmin(req);
+    const token = process.env.MONETAG_API_TOKEN;
+    if (!token) return NextResponse.json({ success: false, message: "MONETAG_API_TOKEN server environment में सेट नहीं है।" }, { status: 503 });
+    const body = await req.json().catch(() => ({}));
+    const dateFrom = String(body.date_from || "").trim();
+    const dateTo = String(body.date_to || "").trim();
+    const datePattern = /^\d{4}-\d{2}-\d{2}$/;
+    if (!datePattern.test(dateFrom) || !datePattern.test(dateTo) || dateFrom > dateTo) return NextResponse.json({ success: false, message: "date_from और date_to YYYY-MM-DD format में दें।" }, { status: 400 });
+    const pageSize = Math.min(100, Math.max(1, Math.trunc(numeric(body.page_size) || 100)));
+    const siteUrl = String(process.env.MONETAG_SITE_URL || DEFAULT_SITE).trim();
+    const headers = { Authorization: `Bearer ${token}`, Accept: "application/json", "Content-Type": "application/json", "X-Request-Id": randomUUID() };
+    const sitesRes = await fetch(`${API}/pub/sites`, { headers: { Authorization: headers.Authorization, Accept: "application/json", "X-Request-Id": headers["X-Request-Id"] }, cache: "no-store" });
+    if (!sitesRes.ok) return NextResponse.json({ success: false, message: `Monetag sites API ने HTTP ${sitesRes.status} दिया। Token/permission जाँचें।` }, { status: sitesRes.status === 401 ? 401 : 502 });
+    const sitesData = await sitesRes.json();
+    const sites = Array.isArray(sitesData?.sites) ? sitesData.sites : [];
+    const site = sites.find((s: { id?: string | number; url?: string }) => String(s?.url || "").replace(/^https?:\/\//, "").replace(/\/$/, "") === siteUrl.replace(/^https?:\/\//, "").replace(/\/$/, ""));
+    if (!site?.id) return NextResponse.json({ success: false, message: `Monetag account में ${siteUrl} नाम की site नहीं मिली। MONETAG_SITE_URL जाँचें।` }, { status: 404 });
+    const allRows: Array<Record<string, unknown>> = [];
+    let complete = false;
+    let statsData: any = {};
+    const MAX_PAGES = 20;
+    for (let page = 1; page <= MAX_PAGES; page++) {
+      const statsRes = await fetch(`${API}/pub/statistics`, { method: "POST", headers, cache: "no-store", body: JSON.stringify({
+        date_from: dateFrom, date_to: dateTo, site_ids: [site.id],
+        group_by: ["zone_id"],
+        zone_ids: [12065645, 12065644, 12065643, 12065642, 12064903, 12064902, 12064901, 12064900],
+        page, page_size: pageSize
+      }), signal: AbortSignal.timeout(20000) });
+      statsData = await statsRes.json().catch(() => ({}));
+      if (!statsRes.ok) return NextResponse.json({ success: false, message: `Monetag statistics API ने HTTP ${statsRes.status} दिया।`, details: statsData }, { status: statsRes.status === 401 ? 401 : statsRes.status === 429 ? 429 : 502 });
+      const pageRows = Array.isArray(statsData?.result) ? statsData.result : [];
+      allRows.push(...pageRows);
+      if (pageRows.length < pageSize) { complete = true; break; }
+    }
+    const rowFieldNames = allRows[0] ? Object.keys(allRows[0]) : [];
+    const allowedZoneIds = new Set([
+      12065645, 12065644, 12065643, 12065642,
+      12064903, 12064902, 12064901, 12064900
+    ]);
+    const rows = allRows.filter((row) => {
+      const rowZoneId = row.zone_id ?? row.zoneId ?? row.zone;
+      if (rowZoneId === undefined || rowZoneId === null || rowZoneId === "") {
+        return false;
+      }
+      const zoneId = typeof rowZoneId === "object"
+        ? Number((rowZoneId as Record<string, unknown>).id)
+        : Number(rowZoneId);
+      return Number.isInteger(zoneId) && allowedZoneIds.has(zoneId);
+    });
+    const totals = rows.reduce((acc: Record<string, number>, row: Record<string, unknown>) => {
+      for (const key of ["prerequests", "requests", "impressions", "clicks", "conversions", "subscriptions", "money"]) acc[key] = (acc[key] || 0) + numeric(row[key]);
+      return acc;
+    }, {});
+    const fingerprint = createHash("sha256").update(`${site.id}|${dateFrom}|${dateTo}|${JSON.stringify(rows)}`).digest("hex");
+    const db = getAdminDb();
+    await db.collection("monetagApiSyncs").doc(fingerprint).set({ provider: "monetag", siteId: String(site.id), siteUrl: String(site.url || siteUrl), dateFrom, dateTo, fetchedAt: FieldValue.serverTimestamp(), fetchedBy: adminUid, rowCount: rows.length, totals, rows, attributionStatus: "aggregate_only_unallocated", note: "Monetag aggregate statistics do not establish per-uploader/per-sharer revenue attribution. No user earnings were generated by this sync." }, { merge: true });
+    return NextResponse.json({ success: complete, complete, hasMore: !complete, pagesScanned: Math.min(MAX_PAGES, Math.ceil(allRows.length / pageSize)), site: { id: String(site.id), url: site.url }, period: { dateFrom, dateTo }, rowCount: rows.length, responseRowCount: allRows.length, responseFields: rowFieldNames, totals, attributionStatus: "aggregate_only_unallocated", message: complete ? "Monetag statistics sync सफल हुआ। Aggregate revenue सुरक्षित है; individual user earnings बिना verified attribution के नहीं बाँटी गईं।" : "Monetag sync safety page limit तक पहुँचा; परिणाम अधूरा है और उसे पूर्ण total न मानें।" }, { status: complete ? 200 : 206 });
+  } catch (error) {
+    const code = error instanceof Error ? error.message : "";
+    const status = code === "UNAUTHORIZED" ? 401 : code === "FORBIDDEN" ? 403 : 500;
+    return NextResponse.json({ success: false, message: status === 401 ? "कृपया Admin में लॉगिन करें।" : status === 403 ? "केवल Admin यह कार्य कर सकता है।" : "Monetag sync पूरा नहीं हो सका।" }, { status });
+  }
+}
+
+export async function GET(req: Request) {
+  try {
+    await verifyMonetagAdmin(req);
+    const snap = await getAdminDb().collection("monetagApiSyncs").orderBy("fetchedAt", "desc").limit(20).get();
+    return NextResponse.json({ success: true, syncs: snap.docs.map(d => ({ id: d.id, ...d.data(), fetchedAt: d.data().fetchedAt?.toDate?.()?.toISOString?.() ?? null })) });
+  } catch (error) {
+    const code = error instanceof Error ? error.message : "";
+    const status = code === "UNAUTHORIZED" ? 401 : code === "FORBIDDEN" ? 403 : 500;
+    return NextResponse.json({ success: false, message: status === 401 ? "कृपया लॉगिन करें।" : status === 403 ? "केवल Admin यह कार्य कर सकता है।" : "Sync history लोड नहीं हुई।" }, { status });
+  }
+}
