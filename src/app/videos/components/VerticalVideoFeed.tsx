@@ -66,11 +66,6 @@ export default function VerticalVideoFeed({
 }) {
   const { requireAuth, isAuthenticated } = useRequireAuth();
   const [authorizedPaidVideos, setAuthorizedPaidVideos] = useState<Record<string, boolean>>({});
-  const [
-    activeVideoId,
-    setActiveVideoId
-  ] = useState<string>("");
-
 
   const [followingList, setFollowingList] = useState<string[]>([]);
   const [notInterestedIds, setNotInterestedIds] = useState<string[]>([]);
@@ -175,9 +170,15 @@ export default function VerticalVideoFeed({
       'following'
     );
 
-    const unsubscribe = onSnapshot(followingRef, (snapshot) => {
-      setFollowingList(snapshot.docs.map(doc => doc.id));
-    });
+    const unsubscribe = onSnapshot(
+      followingRef,
+      (snapshot) => setFollowingList(snapshot.docs.map((item) => item.id)),
+      (snapshotError) => {
+        console.error("Unable to load following list:", snapshotError);
+        setFollowingList([]);
+        setToastMessage("Following list is temporarily unavailable.");
+      }
+    );
 
     return () => unsubscribe();
   }, [isAuthenticated]);
@@ -326,6 +327,11 @@ export default function VerticalVideoFeed({
     setSavedVideos
   ] = useState<Record<string, boolean>>({});
 
+  const [
+    activeVideoId,
+    setActiveVideoId
+  ] = useState<string>("");
+
 
   useEffect(() => {
     const paidVideoId = new URLSearchParams(window.location.search).get("paidVideoId");
@@ -430,7 +436,7 @@ export default function VerticalVideoFeed({
 
       if (isNativeApp && nativeBridge?.shareVideo) {
         nativeBridge.shareVideo(
-          video.video,
+          shareUrl,
           video.caption || ""
         );
 
@@ -603,7 +609,7 @@ export default function VerticalVideoFeed({
                   onActualPlaybackSeconds={(seconds) => handleActualPlaybackSeconds(video.id, seconds)}
                   onNinetyPercentWatched={() => void requestVideoReviewEmail(video.id)}
                   poster={index < activeVideoIndex + 5 && (video.videoAccess !== "paid" || authorizedPaidVideos[video.id]) ? getVideoThumbnailUrl(video) : undefined}
-                  preloadMetadata={index >= activeVideoIndex && index < activeVideoIndex + 5 && (video.videoAccess !== "paid" || authorizedPaidVideos[video.id])}
+                  preloadMetadata={activeVideoId === video.id && (video.videoAccess !== "paid" || authorizedPaidVideos[video.id])}
                 />
               )}
 

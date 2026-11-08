@@ -34,12 +34,6 @@ export const followUser = async (
     followerUid
   );
 
-  const targetRef = doc(
-    db,
-    "users",
-    targetUid
-  );
-
   const followRef = doc(
     collection(
       db,
@@ -67,14 +61,9 @@ export const followUser = async (
       // ALL READS FIRST
       // -----------------------------------------
 
-      const [
-        followSnap,
-        followerSnap,
-        targetSnap,
-      ] = await Promise.all([
+      const [followSnap, followerSnap] = await Promise.all([
         transaction.get(followRef),
         transaction.get(followerRef),
-        transaction.get(targetRef),
       ]);
 
       if (followSnap.exists()) {
@@ -87,28 +76,12 @@ export const followUser = async (
         );
       }
 
-      if (!targetSnap.exists()) {
-        throw new Error(
-          "Target user document not found"
-        );
-      }
-
-      const followerData =
-        followerSnap.data();
-
-      const targetData =
-        targetSnap.data();
+      const followerData = followerSnap.data();
 
       const currentFollowingCount =
         typeof followerData.followingCount ===
         "number"
           ? followerData.followingCount
-          : 0;
-
-      const currentFollowersCount =
-        typeof targetData.followersCount ===
-        "number"
-          ? targetData.followersCount
           : 0;
 
       // -----------------------------------------
@@ -130,10 +103,6 @@ export const followUser = async (
           currentFollowingCount + 1,
       });
 
-      transaction.update(targetRef, {
-        followersCount:
-          currentFollowersCount + 1,
-      });
     }
   );
 
@@ -185,12 +154,6 @@ export const unfollowUser = async (
     followerUid
   );
 
-  const targetRef = doc(
-    db,
-    "users",
-    targetUid
-  );
-
   const followRef = doc(
     collection(
       db,
@@ -218,25 +181,14 @@ export const unfollowUser = async (
       // ALL READS FIRST
       // -----------------------------------------
 
-      const [
-        followSnap,
-        followerSnap,
-        targetSnap,
-      ] = await Promise.all([
+      const [followSnap, followerSnap] = await Promise.all([
         transaction.get(followRef),
         transaction.get(followerRef),
-        transaction.get(targetRef),
       ]);
 
       if (!followerSnap.exists()) {
         throw new Error(
           "Follower user document not found"
-        );
-      }
-
-      if (!targetSnap.exists()) {
-        throw new Error(
-          "Target user document not found"
         );
       }
 
@@ -253,19 +205,10 @@ export const unfollowUser = async (
       const followerData =
         followerSnap.data();
 
-      const targetData =
-        targetSnap.data();
-
       const currentFollowingCount =
         typeof followerData.followingCount ===
         "number"
           ? followerData.followingCount
-          : 0;
-
-      const currentFollowersCount =
-        typeof targetData.followersCount ===
-        "number"
-          ? targetData.followersCount
           : 0;
 
       transaction.update(followerRef, {
@@ -275,12 +218,6 @@ export const unfollowUser = async (
         ),
       });
 
-      transaction.update(targetRef, {
-        followersCount: Math.max(
-          0,
-          currentFollowersCount - 1
-        ),
-      });
     }
   );
 

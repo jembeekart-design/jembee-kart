@@ -16,7 +16,35 @@ service cloud.firestore {
     }
     match /users/{uid} {
       allow read: if isOwner(uid) || isAdmin();
-      allow create, update, delete: if false;
+      allow create, delete: if false;
+      // A signed-in user may update only their own following counter by one
+      // step; profile fields and all other account data remain server-managed.
+      allow update: if isOwner(uid)
+        && request.resource.data.diff(resource.data).affectedKeys().hasOnly(['followingCount'])
+        && request.resource.data.followingCount is int
+        && request.resource.data.followingCount >= 0
+        && request.resource.data.followingCount >= resource.data.get('followingCount', 0) - 1
+        && request.resource.data.followingCount <= resource.data.get('followingCount', 0) + 1;
+
+      match /following/{targetUid} {
+        allow read: if isOwner(uid) || isAdmin();
+        allow create, update: if isOwner(uid)
+          && request.resource.data.keys().hasOnly(['uid', 'timestamp'])
+          && request.resource.data.uid == targetUid;
+        allow delete: if isOwner(uid) || isAdmin();
+      }
+
+      match /followers/{followerUid} {
+        // Each user can read/write only their own follower edge, not another
+        // person's follower list or private user document.
+        allow read: if (signedIn() && request.auth.uid == followerUid) || isAdmin();
+        allow create, update: if signedIn()
+          && request.auth.uid == followerUid
+          && request.resource.data.keys().hasOnly(['uid', 'timestamp'])
+          && request.resource.data.uid == followerUid;
+        allow delete: if (signedIn() && request.auth.uid == followerUid) || isAdmin();
+      }
+
       match /{subcollection}/{documentId} { allow read, write: if false; }
     }
     match /watchEarnVideos/{videoId} {
