@@ -21,7 +21,8 @@
     "test:storage-expense-evidence": "node --test src/firebase/__tests__/storage-expense-evidence-rules.test.mjs src/app/api/admin/shorts/expenses/__tests__/route-contract.test.mjs src/app/api/admin/shorts/expenses/verify/__tests__/route-contract.test.mjs",
     "test:shorts-expense-ui": "node --test src/app/admin/shorts-expenses/__tests__/page-contract.test.mjs",
     "test:video-preload-cache": "node --test src/app/videos/components/__tests__/video-preload-cache.test.mjs",
-    "test:shorts-share": "node --test src/app/api/shorts/video-share/__tests__/route-contract.test.mjs"
+    "test:shorts-share": "node --test src/app/api/shorts/video-share/__tests__/route-contract.test.mjs",
+    "test:shorts-page": "node --test src/app/shorts/__tests__/page-contract.test.mjs"
   },
   "dependencies": {
     "@mediapipe/tasks-vision": "^1.0.1",
