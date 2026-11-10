@@ -199,7 +199,6 @@ export default function VideoPlayer({
         ref={videoRef}
         src={optimizedVideoUrl}
         preload={active || preloadMetadata ? "metadata" : "none"}
-        fetchPriority={active ? "high" : "auto"}
         poster={poster}
         muted={isMuted}
         loop

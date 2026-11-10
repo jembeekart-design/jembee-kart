@@ -7,14 +7,14 @@ import { fileURLToPath } from "node:url";
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "../../../../..");
 const read = (relative) => readFile(path.join(root, relative), "utf8");
 
-test("active Shorts use the protected bounded-range stream and prioritised active preload", async () => {
+test("active Shorts use protected bounded-range streaming with type-safe preload", async () => {
   const feed = await read("src/app/videos/components/VerticalVideoFeed.tsx");
   const player = await read("src/app/videos/components/VideoPlayer.tsx");
   const stream = await read("src/app/api/shorts/video-stream/[videoId]/route.ts");
 
   assert.match(feed, /videoUrl=\{`\/api\/shorts\/video-stream\/\$\{encodeURIComponent\(video\.id\)\}`\}/);
   assert.match(player, /preload=\{active \|\| preloadMetadata \? "metadata" : "none"\}/);
-  assert.match(player, /fetchPriority=\{active \? "high" : "auto"\}/);
+  assert.doesNotMatch(player, /fetchPriority=/);
   assert.match(stream, /MAX_STREAM_CHUNK_BYTES = 4 \* 1024 \* 1024/);
   assert.match(stream, /bytes=\$\{start\}-\$\{end\}/);
   assert.match(stream, /private, max-age=30/);
