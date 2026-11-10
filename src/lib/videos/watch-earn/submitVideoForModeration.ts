@@ -14,6 +14,8 @@ export interface ModerationSubmissionMetadata {
   isEnhanced: boolean;
   videoAccess?: "free" | "paid";
   videoPrice?: number;
+  videoFormat?: "short" | "long";
+  durationSeconds?: number;
 }
 
 export interface ModerationSubmissionResult {

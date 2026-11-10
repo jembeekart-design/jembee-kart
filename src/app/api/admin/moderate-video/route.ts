@@ -1,4 +1,5 @@
 import { NextResponse } from "next/server";
+import { classifyGoogleDriveError, googleDriveClientMessage, googleDriveErrorHttpStatus } from "@/lib/googleDriveErrors";
 import { FieldValue } from "firebase-admin/firestore";
 
 import { getAdminAuth, getAdminDb } from "@/firebase/admin";
@@ -266,6 +267,8 @@ export async function POST(req: Request) {
         caption:
           submission.caption || "",
         videoAccess: submission.videoAccess === "paid" ? "paid" : "free",
+        videoFormat: submission.videoFormat === "long" ? "long" : "short",
+        durationSeconds: typeof submission.durationSeconds === "number" && Number.isFinite(submission.durationSeconds) && submission.durationSeconds > 0 ? submission.durationSeconds : null,
         videoPrice:
           submission.videoAccess === "paid" &&
           typeof submission.videoPrice === "number" &&
@@ -406,20 +409,11 @@ export async function POST(req: Request) {
       );
     }
 
-    console.error(
-      "Admin video moderation API error:",
-      error
-    );
-
+    const code = classifyGoogleDriveError(error);
+    console.error("Admin video moderation request failed:", code);
     return NextResponse.json(
-      {
-        success: false,
-        message:
-          error instanceof Error
-            ? error.message
-            : "Video moderation failed",
-      },
-      { status: 500 }
+      { success: false, code, message: googleDriveClientMessage(code) },
+      { status: googleDriveErrorHttpStatus(code) }
     );
   }
 }

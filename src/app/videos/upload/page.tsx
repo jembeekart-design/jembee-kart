@@ -20,6 +20,22 @@ import { auth, db } from "@/firebase/config";
 import { doc, getDoc } from "firebase/firestore";
 import { uploadWatchVideo } from "@/lib/videos/watch-earn/uploadWatchVideo";
 
+function inspectVideoDuration(selectedFile: File, onRead: (duration: number | undefined) => void) {
+  const objectUrl = URL.createObjectURL(selectedFile);
+  const metadataVideo = document.createElement("video");
+  metadataVideo.preload = "metadata";
+  metadataVideo.onloadedmetadata = () => {
+    const duration = metadataVideo.duration;
+    onRead(Number.isFinite(duration) && duration > 0 ? Math.round(duration) : undefined);
+    URL.revokeObjectURL(objectUrl);
+  };
+  metadataVideo.onerror = () => {
+    onRead(undefined);
+    URL.revokeObjectURL(objectUrl);
+  };
+  metadataVideo.src = objectUrl;
+}
+
 function UploadWatchVideoContent() {
   const searchParams = useSearchParams();
   const videoUrlFromParams = searchParams.get("url");
@@ -30,6 +46,8 @@ function UploadWatchVideoContent() {
   const [uploadError, setUploadError] = useState<string | null>(null);
   const [caption, setCaption] = useState("");
   const [videoAccess, setVideoAccess] = useState<"free" | "paid">("free");
+  const [videoFormat, setVideoFormat] = useState<"short" | "long">("short");
+  const [videoDurationSeconds, setVideoDurationSeconds] = useState<number | undefined>(undefined);
   const [videoPrice, setVideoPrice] = useState("49");
 
   useEffect(() => {
@@ -39,11 +57,11 @@ function UploadWatchVideoContent() {
       try {
         const response = await fetch(videoUrlFromParams);
         const blob = await response.blob();
-        setFile(
-          new File([blob], "recording.webm", {
-            type: blob.type || "video/webm",
-          })
-        );
+        const recording = new File([blob], "recording.webm", {
+          type: blob.type || "video/webm",
+        });
+        setFile(recording);
+        inspectVideoDuration(recording, setVideoDurationSeconds);
       } catch (error) {
         console.error("Failed to load blob", error);
       }
@@ -77,11 +95,14 @@ function UploadWatchVideoContent() {
 
     setUploadError(null);
     setFile(selected);
+    setVideoDurationSeconds(undefined);
+    inspectVideoDuration(selected, setVideoDurationSeconds);
   }
 
   function removeVideo() {
     if (loading) return;
     setFile(null);
+    setVideoDurationSeconds(undefined);
     setUploadError(null);
     setUploadProgress(0);
   }
@@ -144,6 +165,8 @@ function UploadWatchVideoContent() {
         caption,
         videoAccess,
         videoPrice: videoAccess === "paid" ? Number(videoPrice) : 0,
+        videoFormat,
+        durationSeconds: videoDurationSeconds,
         hashtags: [],
         music: "",
         isEnhanced: false,
@@ -329,6 +352,22 @@ function UploadWatchVideoContent() {
                 aria-label="वीडियो हटाएं"
               >
                 <X size={26} />
+              </button>
+            </div>
+          </section>
+        )}
+
+        {/* Content format is saved with the moderation submission and published video record. */}
+        {file && (
+          <section className="mt-5 rounded-[28px] bg-white p-5 shadow-sm">
+            <h2 className="text-lg font-black">वीडियो का प्रकार</h2>
+            <p className="mt-1 text-sm font-semibold text-slate-500">Shorts vertical feed में दिखेगा। Long Video सामान्य landscape player में खुलेगा। {videoDurationSeconds ? `Duration: ${Math.floor(videoDurationSeconds / 60)}:${String(videoDurationSeconds % 60).padStart(2, "0")}` : "Duration metadata नहीं पढ़ पाया तो player इसे playback के समय दिखाएगा।"}</p>
+            <div className="mt-4 grid grid-cols-2 gap-3">
+              <button type="button" onClick={() => setVideoFormat("short")} className={`rounded-xl border-2 p-3 text-left font-bold ${videoFormat === "short" ? "border-blue-600 bg-blue-50 text-blue-700" : "border-slate-200"}`}>
+                <span className="block">Shorts</span><span className="mt-1 block text-xs font-medium">Vertical · 9:16 recommended</span>
+              </button>
+              <button type="button" onClick={() => setVideoFormat("long")} className={`rounded-xl border-2 p-3 text-left font-bold ${videoFormat === "long" ? "border-blue-600 bg-blue-50 text-blue-700" : "border-slate-200"}`}>
+                <span className="block">Long Video</span><span className="mt-1 block text-xs font-medium">Landscape · 16:9 recommended</span>
               </button>
             </div>
           </section>

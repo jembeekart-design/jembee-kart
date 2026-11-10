@@ -9,21 +9,23 @@ import { DEFAULT_ADMIN_CONFIG } from "./defaults";
 /**
  * Safely merge Firestore config with defaults.
  */
+function isRecord(value: unknown): value is Record<string, unknown> {
+  return typeof value === "object" && value !== null && !Array.isArray(value);
+}
+
 function mergeConfig(
-  defaults: Record<string, any>,
-  firestore: Record<string, any>
-): Record<string, any> {
+  defaults: Record<string, unknown>,
+  firestore: Record<string, unknown>
+): Record<string, unknown> {
   const output = { ...defaults };
 
   for (const key in firestore) {
-    if (
-      firestore[key] &&
-      typeof firestore[key] === "object" &&
-      !Array.isArray(firestore[key])
-    ) {
+    const firestoreValue = firestore[key];
+    if (isRecord(firestoreValue)) {
+      const defaultValue = defaults[key];
       output[key] = mergeConfig(
-        defaults[key] || {},
-        firestore[key]
+        isRecord(defaultValue) ? defaultValue : {},
+        firestoreValue
       );
     } else {
       output[key] = firestore[key];
@@ -52,9 +54,9 @@ export async function loadAdminConfig(): Promise<AdminConfig> {
     const firestoreData = snap.data();
 
     return mergeConfig(
-      DEFAULT_ADMIN_CONFIG,
-      firestoreData
-    ) as AdminConfig;
+      DEFAULT_ADMIN_CONFIG as unknown as Record<string, unknown>,
+      firestoreData as Record<string, unknown>
+    ) as unknown as AdminConfig;
   } catch (error) {
     console.error(
       "❌ Failed to load Admin Config",

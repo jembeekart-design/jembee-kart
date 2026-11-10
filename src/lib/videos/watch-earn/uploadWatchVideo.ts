@@ -11,6 +11,8 @@ interface UploadWatchVideoData {
   caption: string;
   videoAccess?: "free" | "paid";
   videoPrice?: number;
+  videoFormat?: "short" | "long";
+  durationSeconds?: number;
   hashtags: string[];
   music: string;
   sponsor?: boolean;
@@ -33,6 +35,8 @@ export interface ModerationSubmissionMetadata {
   isEnhanced: boolean;
   videoAccess?: "free" | "paid";
   videoPrice?: number;
+  videoFormat?: "short" | "long";
+  durationSeconds?: number;
 }
 
 export async function uploadWatchVideo({
@@ -43,6 +47,8 @@ export async function uploadWatchVideo({
   caption,
   videoAccess = "free",
   videoPrice = 0,
+  videoFormat = "short",
+  durationSeconds,
   hashtags,
   music,
   sponsor,
@@ -140,6 +146,8 @@ export async function uploadWatchVideo({
       caption,
       videoAccess,
       videoPrice: videoAccess === "paid" ? videoPrice : 0,
+      videoFormat,
+      durationSeconds,
       hashtags,
       music,
       sponsor: sponsor === true,

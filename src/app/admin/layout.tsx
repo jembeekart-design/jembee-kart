@@ -17,11 +17,7 @@ export default function AdminLayout({
   const [error, setError] = useState("");
 
   useEffect(() => {
-    if (pathname === "/admin/login") {
-      setLoading(false);
-      setError("");
-      return;
-    }
+    if (pathname === "/admin/login") return;
 
     let active = true;
 
@@ -82,6 +78,8 @@ export default function AdminLayout({
       unsubscribe();
     };
   }, [router, pathname]);
+
+  if (pathname === "/admin/login") return <>{children}</>;
 
   if (loading) {
     return (

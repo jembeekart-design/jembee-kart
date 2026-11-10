@@ -1,5 +1,6 @@
 "use client";
 
+import type { Timestamp } from "firebase/firestore";
 export const dynamic = "force-dynamic";
 
 import { useEffect, useState } from "react";
@@ -27,7 +28,7 @@ interface ChatMessage {
   sender: string;
   message: string;
   role: string;
-  createdAt?: any;
+  createdAt?: Timestamp | null;
 }
 
 export default function LiveChatPage() {

@@ -36,17 +36,31 @@ export async function initializeFloatingAds() {
   }
 }
 
-export async function getFloatingAds(callback: (ads: any[]) => void) {
+export interface FloatingAdRecord {
+  id: string;
+  enabled: boolean;
+  title: string;
+  imageUrl: string;
+  actionUrl: string;
+  skipAfterSeconds: number;
+  autoHide: boolean;
+  position: "left" | "right" | "center";
+  priority: number;
+}
+
+export type WatchEarnStats = typeof DEFAULT_ADMIN_CONFIG.watchEarnStats;
+
+export async function getFloatingAds(callback: (ads: FloatingAdRecord[]) => void) {
   const q = query(collection(db, FLOATING_ADS_COLLECTION), where("enabled", "==", true));
   return onSnapshot(q, (snapshot) => {
-    callback(snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() })));
+    callback(snapshot.docs.map((item) => ({ id: item.id, ...item.data() }) as FloatingAdRecord));
   });
 }
 
-export async function getWatchStats(userId: string, callback: (stats: any) => void) {
+export async function getWatchStats(userId: string, callback: (stats: WatchEarnStats) => void) {
   const statsRef = doc(db, STATS_COLLECTION, userId);
   return onSnapshot(statsRef, (docSnap) => {
-    callback(docSnap.exists() ? docSnap.data() : DEFAULT_ADMIN_CONFIG.watchEarnStats);
+    callback(docSnap.exists() ? docSnap.data() as WatchEarnStats : DEFAULT_ADMIN_CONFIG.watchEarnStats);
   });
 }
 // ... (rest of file)

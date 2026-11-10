@@ -124,7 +124,7 @@ export function AdminConfigProvider({ children }: { children: ReactNode }) {
                 : DEFAULT_ADMIN_CONFIG.notification,
             };
 
-            setConfig(validateConfig(mergedConfig as any));
+            setConfig(validateConfig(mergedConfig));
             setSource("firestore");
           };
 

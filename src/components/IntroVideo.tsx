@@ -15,7 +15,8 @@ export default function IntroVideo() {
       );
 
     if (watched === "true") {
-      setShowIntro(false);
+      const timer = window.setTimeout(() => setShowIntro(false), 0);
+      return () => window.clearTimeout(timer);
     }
 
   }, []);

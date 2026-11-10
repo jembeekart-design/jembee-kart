@@ -1,32 +1,22 @@
 import { NextResponse } from "next/server";
-import { getAdminDb } from "@/firebase/admin";
 import { verifyMonetagAdmin } from "@/lib/server/monetagAdminAuth";
 import { readBoundedJson } from "@/lib/server/readBoundedJson";
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
 
-function statusFor(error: unknown) {
-  const code = error instanceof Error ? error.message : "";
-  return code === "UNAUTHORIZED" ? 401 : code === "FORBIDDEN" ? 403 : 500;
-}
-
 export async function GET(req: Request) {
   try {
     await verifyMonetagAdmin(req);
-    const snap = await getAdminDb()
-      .collection("payment_settings")
-      .doc("monetagGlobal")
-      .get();
-
     return NextResponse.json(
-      { success: true, enabled: snap.exists && snap.data()?.enabled === true },
+      { success: true, enabled: false, mode: "MANUAL_PLACEMENTS_ONLY" },
       { headers: { "Cache-Control": "no-store" } }
     );
   } catch (error) {
-    const status = statusFor(error);
+    const code = error instanceof Error ? error.message : "";
+    const status = code === "UNAUTHORIZED" ? 401 : code === "FORBIDDEN" ? 403 : 500;
     return NextResponse.json(
-      { success: false, message: status === 401 ? "कृपया लॉगिन करें।" : status === 403 ? "केवल Admin यह सेटिंग बदल सकता है।" : "Monetag setting लोड नहीं हुई।" },
+      { success: false, message: status === 401 ? "कृपया Admin में लॉगिन करें।" : status === 403 ? "केवल Admin यह सेटिंग देख सकता है।" : "Monetag setting उपलब्ध नहीं है।" },
       { status }
     );
   }
@@ -34,43 +24,28 @@ export async function GET(req: Request) {
 
 export async function PUT(req: Request) {
   try {
-    const uid = await verifyMonetagAdmin(req);
+    await verifyMonetagAdmin(req);
     const parsed = await readBoundedJson(req, 4096);
-
-    if (!parsed.ok) {
+    if (!parsed.ok) return NextResponse.json({ success: false, message: parsed.message }, { status: parsed.status });
+    const value = parsed.value;
+    if (!value || typeof value !== "object" || Array.isArray(value) || typeof (value as { enabled?: unknown }).enabled !== "boolean") {
+      return NextResponse.json({ success: false, message: "enabled must be true or false." }, { status: 400 });
+    }
+    if ((value as { enabled: boolean }).enabled) {
       return NextResponse.json(
-        { success: false, message: parsed.message },
-        { status: parsed.status }
+        { success: false, enabled: false, message: "Global Monetag auto placements are disabled. Use an Admin-selected Direct Link placement instead." },
+        { status: 409, headers: { "Cache-Control": "no-store" } }
       );
     }
-
-    if (
-      !parsed.value ||
-      typeof parsed.value !== "object" ||
-      Array.isArray(parsed.value) ||
-      typeof (parsed.value as { enabled?: unknown }).enabled !== "boolean"
-    ) {
-      return NextResponse.json(
-        { success: false, message: "enabled must be true or false." },
-        { status: 400 }
-      );
-    }
-
-    const enabled = (parsed.value as { enabled: boolean }).enabled;
-
-    await getAdminDb()
-      .collection("payment_settings")
-      .doc("monetagGlobal")
-      .set({ enabled, updatedAt: new Date(), updatedBy: uid }, { merge: true });
-
     return NextResponse.json(
-      { success: true, enabled },
+      { success: true, enabled: false, mode: "MANUAL_PLACEMENTS_ONLY" },
       { headers: { "Cache-Control": "no-store" } }
     );
   } catch (error) {
-    const status = statusFor(error);
+    const code = error instanceof Error ? error.message : "";
+    const status = code === "UNAUTHORIZED" ? 401 : code === "FORBIDDEN" ? 403 : 500;
     return NextResponse.json(
-      { success: false, message: status === 401 ? "कृपया लॉगिन करें।" : status === 403 ? "केवल Admin यह सेटिंग बदल सकता है।" : "Monetag setting सेव नहीं हुई।" },
+      { success: false, message: status === 401 ? "कृपया Admin में लॉगिन करें।" : status === 403 ? "केवल Admin यह सेटिंग बदल सकता है।" : "Monetag setting सेव नहीं हुई।" },
       { status }
     );
   }

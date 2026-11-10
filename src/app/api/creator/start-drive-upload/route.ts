@@ -2,6 +2,7 @@ import { NextResponse } from "next/server";
 import crypto from "node:crypto";
 import { getAdminAuth, getAdminDb } from "@/firebase/admin";
 import { createResumableUploadSession } from "@/services/googleDriveService";
+import { classifyGoogleDriveError, googleDriveClientMessage, googleDriveErrorHttpStatus } from "@/lib/googleDriveErrors";
 
 export const runtime = "nodejs";
 
@@ -41,6 +42,8 @@ export async function POST(req: Request) {
     caption?: unknown;
     videoAccess?: unknown;
     videoPrice?: unknown;
+    videoFormat?: unknown;
+    durationSeconds?: unknown;
     hashtags?: unknown;
     music?: unknown;
     sponsor?: unknown;
@@ -66,6 +69,8 @@ export async function POST(req: Request) {
   if (videoAccess === "paid") {
     return NextResponse.json({ success: false, message: "Paid video publishing is temporarily disabled until verified purchase access is available." }, { status: 409 });
   }
+  const videoFormat = body.videoFormat === "long" ? "long" : "short";
+  const durationSeconds = typeof body.durationSeconds === "number" && Number.isFinite(body.durationSeconds) && body.durationSeconds > 0 && body.durationSeconds <= 86400 ? Math.round(body.durationSeconds) : null;
   const videoPrice = typeof body.videoPrice === "number" ? body.videoPrice : 0;
   if (!Number.isFinite(videoPrice) || videoPrice < 0 || videoPrice > 100000) {
     return NextResponse.json({ success: false, message: "Paid वीडियो की कीमत ₹1 से ₹100000 के बीच होनी चाहिए।" }, { status: 400 });
@@ -140,6 +145,8 @@ export async function POST(req: Request) {
         caption: caption || "",
         videoAccess,
         videoPrice: 0,
+        videoFormat,
+        durationSeconds,
         paidVideoStatus: "free",
         hashtags: Array.isArray(hashtags) ? hashtags : [],
         music: music || "",
@@ -156,18 +163,11 @@ export async function POST(req: Request) {
       uploadUrl,
     });
   } catch (error) {
-    console.error("[UPLOAD_DEBUG_SERVER] START_ERROR", {
-      name: error instanceof Error ? error.name : typeof error,
-      message: error instanceof Error ? error.message : String(error),
-      stack: error instanceof Error ? error.stack : undefined,
-      creatorId,
-      submissionId,
-    });
-
-    console.error("Failed to start drive upload session:", error);
+    const code = classifyGoogleDriveError(error);
+    console.error("Drive upload session creation failed:", code);
     return NextResponse.json(
-      { success: false, message: "वीडियो अपलोड शुरू नहीं हो सका। कृपया पुनः प्रयास करें।" },
-      { status: 500 }
+      { success: false, code, message: googleDriveClientMessage(code) },
+      { status: googleDriveErrorHttpStatus(code) }
     );
   }
 }

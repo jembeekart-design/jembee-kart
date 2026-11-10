@@ -34,11 +34,11 @@ import { shareVideo } from "@/lib/videos/watch-earn/shareVideo";
 import { reportVideo } from "@/lib/videos/watch-earn/reportVideo";
 import { setVideoPreference } from "@/lib/videos/watch-earn/setVideoPreference";
 
-import FloatingAdComponent, { type FloatingAd } from "./FloatingAd";
 
 
 import { useRequireAuth } from "@/hooks/useRequireAuth";
 import { collection, doc, onSnapshot } from "firebase/firestore";
+import { useSearchParams } from "next/navigation";
 
 function getVideoThumbnailUrl(video: WatchVideo): string {
   const secureDriveThumbnail = `/api/shorts/video-thumbnail/${encodeURIComponent(video.id)}`;
@@ -47,16 +47,6 @@ function getVideoThumbnailUrl(video: WatchVideo): string {
   return candidate.startsWith("https://") ? candidate : secureDriveThumbnail;
 }
 
-interface VideoAdsResponse {
-  enabled: boolean;
-  rules: {
-    enabled: boolean;
-    firstAdAfterVideos: number;
-    repeatEveryVideos: number;
-    autoDismissSeconds: number;
-  };
-  ads: FloatingAd[];
-}
 
 
 export default function VerticalVideoFeed({
@@ -65,27 +55,30 @@ export default function VerticalVideoFeed({
   activeTab: 'foryou' | 'following'
 }) {
   const { requireAuth, isAuthenticated } = useRequireAuth();
-  const [authorizedPaidVideos, setAuthorizedPaidVideos] = useState<Record<string, boolean>>({});
+  const searchParams = useSearchParams();
+  const requestedPaidVideoId = searchParams.get("paidVideoId");
+  const requestedLibraryVideoId = searchParams.get("v");
+  const paidVideoId = requestedPaidVideoId && /^[^/]{1,200}$/.test(requestedPaidVideoId)
+    ? requestedPaidVideoId
+    : null;
+  const libraryVideoId = requestedLibraryVideoId && /^[^/]{1,200}$/.test(requestedLibraryVideoId)
+    ? requestedLibraryVideoId
+    : null;
+  const [authorizedPaidVideos, setAuthorizedPaidVideos] = useState<Record<string, boolean>>(
+    () => paidVideoId ? { [paidVideoId]: true } : {}
+  );
+  const [toastMessage, setToastMessage] = useState<string | null>(null);
+  const [activeVideoId, setActiveVideoId] = useState<string>(paidVideoId ?? libraryVideoId ?? "");
+  const currentUserId = isAuthenticated ? auth.currentUser?.uid ?? null : null;
 
-  const [followingList, setFollowingList] = useState<string[]>([]);
-  const [notInterestedIds, setNotInterestedIds] = useState<string[]>([]);
+  const [followingState, setFollowingState] = useState<{ userId: string; ids: string[] } | null>(null);
+  const followingList = followingState?.userId === currentUserId ? followingState.ids : [];
+  const [notInterestedState, setNotInterestedState] = useState<{ userId: string; ids: string[] } | null>(null);
+  const notInterestedIds = notInterestedState?.userId === currentUserId ? notInterestedState.ids : [];
   const [videos, setVideos] = useState<WatchVideo[]>([]);
   const thumbnailPreloads = useRef<HTMLImageElement[]>([]);
-  const [videoAdsData, setVideoAdsData] = useState<VideoAdsResponse | null>(null);
-  const [watchedVideoCount, setWatchedVideoCount] = useState(0);
-  const countedVideoIds = useRef<Set<string>>(new Set());
-  const nextAdAtVideoCount = useRef<number | null>(null);
-  const [currentVideoAd, setCurrentVideoAd] = useState<FloatingAd | null>(null);
-  const [videoAdIndex, setVideoAdIndex] = useState(0);
-  const nextAdMilestoneIndex = useRef(0);
 
-  const handleActualPlaybackSeconds = (videoId: string, seconds: number) => {
-    if (seconds <= 0) return;
-    if (!countedVideoIds.current.has(videoId)) {
-      countedVideoIds.current.add(videoId);
-      setWatchedVideoCount(countedVideoIds.current.size);
-    }
-  };
+
 
   const requestVideoReviewEmail = async (videoId: string) => {
     const user = auth.currentUser;
@@ -107,75 +100,35 @@ export default function VerticalVideoFeed({
   };
 
 
-  useEffect(() => {
-    let cancelled = false;
 
-    async function loadVideoAds() {
-      try {
-        const response = await fetch("/api/videos/video-ads", {
-          method: "GET",
-          cache: "no-store",
-        });
 
-        if (!response.ok) throw new Error("Video ads request failed");
 
-        const data = (await response.json()) as VideoAdsResponse;
-        if (!cancelled) setVideoAdsData(data);
-      } catch (error) {
-        console.error("Unable to load video ads:", error);
-        if (!cancelled) setVideoAdsData(null);
-      }
-    }
-
-    loadVideoAds();
-    return () => {
-      cancelled = true;
-    };
-  }, []);
-
-  useEffect(() => {
-    const data = videoAdsData;
-    if (!data?.enabled || !data.rules.enabled || currentVideoAd) return;
-
-    const firstAdAfter = Math.max(5, data.rules.firstAdAfterVideos || 5);
-    const repeatEvery = Math.max(1, data.rules.repeatEveryVideos || 1);
-    if (nextAdAtVideoCount.current === null) {
-      nextAdAtVideoCount.current = firstAdAfter + 1;
-    }
-    if (watchedVideoCount < nextAdAtVideoCount.current) return;
-
-    const availableAds = data.ads.filter((ad) => ad.enabled);
-    if (availableAds.length === 0) return;
-
-    const selectedAd = availableAds[videoAdIndex % availableAds.length];
-    nextAdAtVideoCount.current = watchedVideoCount + repeatEvery;
-    setVideoAdIndex((previous) => previous + 1);
-    setCurrentVideoAd(selectedAd);
-  }, [watchedVideoCount, videoAdsData, currentVideoAd, videoAdIndex]);
 
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
-    if (!isAuthenticated || !auth.currentUser) {
-      // eslint-disable-next-line react-hooks/set-state-in-effect
-      setFollowingList([]);
-      return;
-    }
+    if (!currentUserId) return;
 
     const followingRef = collection(
       db,
       'users',
-      auth.currentUser.uid,
+      currentUserId,
       'following'
     );
 
-    const unsubscribe = onSnapshot(followingRef, (snapshot) => {
-      setFollowingList(snapshot.docs.map(doc => doc.id));
-    });
+    const unsubscribe = onSnapshot(
+      followingRef,
+      (snapshot) => setFollowingState({ userId: currentUserId, ids: snapshot.docs.map((item) => item.id) }),
+      (snapshotError) => {
+        console.error("Unable to load following list:", snapshotError);
+        setFollowingState({ userId: currentUserId, ids: [] });
+        setToastMessage("Following list is temporarily unavailable.");
+      }
+    );
 
     return () => unsubscribe();
-  }, [isAuthenticated]);
+  }, [currentUserId]);
 
   const filteredVideos = useMemo(() => {
     const visibleVideos = videos.filter(
@@ -191,7 +144,8 @@ export default function VerticalVideoFeed({
     return visibleVideos;
   }, [activeTab, videos, followingList, notInterestedIds]);
 
-  const activeVideoIndex = Math.max(0, filteredVideos.findIndex((video) => video.id === activeVideoId));
+  const effectiveActiveVideoId = activeVideoId || filteredVideos[0]?.id || "";
+  const activeVideoIndex = Math.max(0, filteredVideos.findIndex((video) => video.id === effectiveActiveVideoId));
 
   // Preload only the current and next four thumbnails; never download full videos here.
   useEffect(() => {
@@ -207,13 +161,8 @@ export default function VerticalVideoFeed({
   }, [filteredVideos, activeVideoIndex, authorizedPaidVideos]);
 
   useEffect(() => {
-    const user = auth.currentUser;
-
-    if (!isAuthenticated || !user) {
-      // eslint-disable-next-line react-hooks/set-state-in-effect
-      setNotInterestedIds([]);
-      return;
-    }
+    if (!currentUserId) return;
+    const userId = currentUserId;
 
     let cancelled = false;
 
@@ -222,14 +171,14 @@ export default function VerticalVideoFeed({
         const preferenceRef = doc(
           db,
           "notInterestedWatchVideos",
-          user!.uid
+          userId
         );
         const videosCollection = collection(preferenceRef, "videos");
         const { getDocs } = await import("firebase/firestore");
         const snapshot = await getDocs(videosCollection);
 
         if (!cancelled) {
-          setNotInterestedIds(snapshot.docs.map(item => item.id));
+          setNotInterestedState({ userId, ids: snapshot.docs.map(item => item.id) });
         }
       } catch (error) {
         console.error("Failed to load video preferences:", error);
@@ -241,7 +190,7 @@ export default function VerticalVideoFeed({
     return () => {
       cancelled = true;
     };
-  }, [isAuthenticated]);
+  }, [currentUserId]);
 
   useEffect(() => {
     let isMounted = true;
@@ -259,8 +208,9 @@ export default function VerticalVideoFeed({
           result.success &&
           Array.isArray(result.videos)
         ) {
-          setVideos(result.videos);
-          if (result.videos.length === 0) {
+          const shortsOnly = result.videos.filter((video) => video.videoFormat !== "long");
+          setVideos(shortsOnly);
+          if (shortsOnly.length === 0) {
             setError(
               "Firebase is connected, but no approved videos were found in the watchEarnVideos collection yet."
             );
@@ -295,11 +245,6 @@ export default function VerticalVideoFeed({
   ] = useState(false);
 
   const [
-    toastMessage,
-    setToastMessage
-  ] = useState<string | null>(null);
-
-  const [
     selectedVideo,
     setSelectedVideo
   ] = useState("");
@@ -321,20 +266,6 @@ export default function VerticalVideoFeed({
     setSavedVideos
   ] = useState<Record<string, boolean>>({});
 
-  const [
-    activeVideoId,
-    setActiveVideoId
-  ] = useState<string>("");
-
-
-  useEffect(() => {
-    const paidVideoId = new URLSearchParams(window.location.search).get("paidVideoId");
-    if (paidVideoId && /^[^/]{1,200}$/.test(paidVideoId)) {
-      setAuthorizedPaidVideos((current) => ({ ...current, [paidVideoId]: true }));
-      setActiveVideoId(paidVideoId);
-    }
-  }, []);
-
   const [playbackSpeeds, setPlaybackSpeeds] = useState<Record<string, number>>({});
   
   const [showWhySeeingModal, setShowWhySeeingModal] = useState(false);
@@ -343,11 +274,24 @@ export default function VerticalVideoFeed({
     useRef<HTMLElement>(null);
 
   useEffect(() => {
-    if (videos.length > 0 && !activeVideoId) {
-      // eslint-disable-next-line react-hooks/set-state-in-effect
-      setActiveVideoId(videos[0].id);
-    }
-  }, [videos, activeVideoId]);
+    if (!libraryVideoId || videos.length === 0) return;
+
+    // Wait for the committed video sections before updating feed state and scrolling.
+    const frameId = window.requestAnimationFrame(() => {
+      const requestedVideoExists = videos.some((video) => video.id === libraryVideoId);
+      if (!requestedVideoExists) {
+        setToastMessage("यह वीडियो अभी उपलब्ध नहीं है या हटाया जा चुका है।");
+        return;
+      }
+
+      setActiveVideoId(libraryVideoId);
+      const sections = Array.from(containerRef.current?.querySelectorAll<HTMLElement>("section[data-video-id]") || []);
+      const target = sections.find((section) => section.getAttribute("data-video-id") === libraryVideoId);
+      target?.scrollIntoView({ block: "start" });
+    });
+
+    return () => window.cancelAnimationFrame(frameId);
+  }, [libraryVideoId, videos]);
 
   useEffect(() => {
     const container = containerRef.current;
@@ -430,7 +374,7 @@ export default function VerticalVideoFeed({
 
       if (isNativeApp && nativeBridge?.shareVideo) {
         nativeBridge.shareVideo(
-          video.video,
+          shareUrl,
           video.caption || ""
         );
 
@@ -598,9 +542,8 @@ export default function VerticalVideoFeed({
                       : video.video
                   }
                   isMuted={isMuted}
-                  active={activeVideoId === video.id}
+                  active={effectiveActiveVideoId === video.id}
                   playbackRate={playbackSpeeds[video.id] || 1}
-                  onActualPlaybackSeconds={(seconds) => handleActualPlaybackSeconds(video.id, seconds)}
                   onNinetyPercentWatched={() => void requestVideoReviewEmail(video.id)}
                   poster={index < activeVideoIndex + 5 && (video.videoAccess !== "paid" || authorizedPaidVideos[video.id]) ? getVideoThumbnailUrl(video) : undefined}
                   preloadMetadata={index >= activeVideoIndex && index < activeVideoIndex + 5 && (video.videoAccess !== "paid" || authorizedPaidVideos[video.id])}
@@ -795,9 +738,14 @@ export default function VerticalVideoFeed({
                   requireAuth(async () => {
                     const res = await setVideoPreference(video.id, 'notInterested');
                     if (res.success) {
-                      setNotInterestedIds(prev =>
-                        prev.includes(video.id) ? prev : [...prev, video.id]
-                      );
+                      if (currentUserId) {
+                        setNotInterestedState((previous) => {
+                          const previousIds = previous?.userId === currentUserId ? previous.ids : [];
+                          return previousIds.includes(video.id)
+                            ? previous ?? { userId: currentUserId, ids: previousIds }
+                            : { userId: currentUserId, ids: [...previousIds, video.id] };
+                        });
+                      }
                       setToastMessage("Video marked as not interested.");
                     } else {
                       setToastMessage(res.message || "Failed to update preference.");
@@ -834,14 +782,7 @@ export default function VerticalVideoFeed({
         )
       )}
 
-      {currentVideoAd && (
-        <FloatingAdComponent
-          key={currentVideoAd.id}
-          ad={currentVideoAd}
-          autoDismissSeconds={videoAdsData?.rules.autoDismissSeconds ?? 8}
-          onDismiss={() => setCurrentVideoAd(null)}
-        />
-      )}
+
 
       {/* MODAL */}
 
@@ -902,7 +843,7 @@ export default function VerticalVideoFeed({
       <BottomQuickActions
         video={videos.find(
           v =>
-            v.id === activeVideoId
+            v.id === effectiveActiveVideoId
         )}
       />
     </main>

@@ -3,6 +3,7 @@ import { Readable } from "node:stream";
 import { getAdminDb } from "@/firebase/admin";
 import { playbackCookieName, verifyPlaybackToken } from "@/lib/payments/cashfreeServer";
 import { getDriveFileMetadata, getDriveFileStream } from "@/services/googleDriveService";
+import { classifyGoogleDriveError, googleDriveErrorHttpStatus } from "@/lib/googleDriveErrors";
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
@@ -167,7 +168,11 @@ export async function GET(
       { status: 206, headers }
     );
   } catch (error) {
-    console.error("Approved video stream failed:", error);
-    return new NextResponse("Video stream unavailable", { status: 500 });
+    const code = classifyGoogleDriveError(error);
+    console.error("Approved video stream failed:", code);
+    return new NextResponse("Video stream unavailable", {
+      status: googleDriveErrorHttpStatus(code),
+      headers: { "Cache-Control": "private, no-store" },
+    });
   }
 }

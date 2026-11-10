@@ -94,8 +94,13 @@ FloatingRewards({
 
       {/* FLOATING COINS */}
 
-      {[...Array(12)].map(
-        (_, index) => (
+      {Array.from({ length: 12 }, (_, index) => index).map(
+        (index) => {
+          const left = (index * 37 + 11) % 100;
+          const top = (index * 61 + 19) % 100;
+          const duration = 1 + (index % 3) * 0.5;
+          const size = 20 + (index % 4) * 5;
+          return (
 
           <div
             key={index}
@@ -104,32 +109,22 @@ FloatingRewards({
               animate-ping
             "
             style={{
-              left:
-                `${Math.random() * 100}%`,
-
-              top:
-                `${Math.random() * 100}%`,
-
-              animationDuration:
-                `${
-                  1 +
-                  Math.random() * 2
-                }s`
+              left: `${left}%`,
+              top: `${top}%`,
+              animationDuration: `${duration}s`
             }}
           >
 
             <Coins
-              size={
-                20 +
-                Math.random() * 20
-              }
+              size={size}
               className="
                 text-[var(--color-warning)]
               "
             />
 
           </div>
-        )
+          );
+        }
       )}
 
     </div>

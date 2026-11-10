@@ -13,3 +13,13 @@ test("feed limits video metadata preload to the same five-card window", () => {
   assert.ok(player.includes('preload={active || preloadMetadata ? "metadata" : "none"}'));
   assert.ok(!player.includes('preload={active ? "auto" : "none"}'));
 });
+
+test("active video state is initialized before it is read for the preload window", () => {
+  const stateDeclaration = feed.indexOf('const [activeVideoId, setActiveVideoId] = useState<string>(paidVideoId ?? libraryVideoId ?? "");');
+  const effectiveActiveId = feed.indexOf('const effectiveActiveVideoId = activeVideoId || filteredVideos[0]?.id || "";');
+  const activeIndexCalculation = feed.indexOf("const activeVideoIndex = Math.max(0, filteredVideos.findIndex((video) => video.id === effectiveActiveVideoId));");
+  assert.ok(stateDeclaration >= 0, "activeVideoId state declaration must exist");
+  assert.ok(effectiveActiveId >= 0, "effective active video id must exist");
+  assert.ok(activeIndexCalculation >= 0, "activeVideoIndex calculation must exist");
+  assert.ok(stateDeclaration < effectiveActiveId && effectiveActiveId < activeIndexCalculation, "activeVideoId must be initialized before activeVideoIndex reads it");
+});

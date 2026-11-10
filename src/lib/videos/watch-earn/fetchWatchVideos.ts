@@ -36,6 +36,8 @@ export interface WatchVideo {
   createdAt?: number;
   videoAccess?: "free" | "paid";
   videoPrice?: number;
+  videoFormat?: "short" | "long";
+  durationSeconds?: number;
 }
 
 export interface CreatorInfo {
@@ -430,6 +432,9 @@ async function processVideoDoc(
       ? data.videoAccess
       : undefined,
     videoPrice: typeof data.videoPrice === "number" ? data.videoPrice : undefined,
+    // Legacy uploads came through the Shorts-only upload flow. New uploads store this explicitly.
+    videoFormat: data.videoFormat === "long" ? "long" : "short",
+    durationSeconds: typeof data.durationSeconds === "number" && Number.isFinite(data.durationSeconds) && data.durationSeconds > 0 ? data.durationSeconds : undefined,
 
     createdAt: typeof data.createdAt === "number" ? data.createdAt : 0,
   };

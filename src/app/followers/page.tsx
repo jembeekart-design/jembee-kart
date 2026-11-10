@@ -1,5 +1,6 @@
 "use client";
 
+import type { Timestamp } from "firebase/firestore";
 import { useEffect, useState } from "react";
 import { auth, db } from "@/firebase/config";
 import { doc, onSnapshot, collection, getDoc, DocumentData } from "firebase/firestore";
@@ -13,7 +14,7 @@ interface FollowedUser {
   name: string;
   username: string;
   photoUrl: string;
-  followedAt: any;
+  followedAt: Timestamp | null;
 }
 
 export default function FollowersPage() {

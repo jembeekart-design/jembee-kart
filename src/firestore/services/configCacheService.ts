@@ -26,7 +26,7 @@ import { CACHE_DURATION } from "@/firestore/collections/baseConfigTypes";
 // CACHE STORAGE
 // ======================================================
 
-interface CacheEntry<T = any> {
+interface CacheEntry<T = unknown> {
   data: T;
   timestamp: number;
   expiresAt: number;
@@ -35,7 +35,7 @@ interface CacheEntry<T = any> {
 class ConfigCache {
   private cache = new Map<string, CacheEntry>();
   private listeners = new Map<string, Unsubscribe>();
-  private loadingPromises = new Map<string, Promise<any>>();
+  private loadingPromises = new Map<string, Promise<unknown>>();
 
   // ================================================
   // SET: Store in cache
@@ -175,19 +175,19 @@ export const configCache = new ConfigCache();
 // CONFIG LOADER WITH CACHING
 // ======================================================
 
-export interface ConfigLoaderOptions {
+export interface ConfigLoaderOptions<T = unknown> {
   cacheDuration?: number;
-  fallbackValue?: any;
-  validateSchema?: (data: any) => boolean;
+  fallbackValue?: T;
+  validateSchema?: (data: unknown) => boolean;
 }
 
 export async function loadConfig<T>(
   path: string,
-  options: ConfigLoaderOptions = {}
+  options: ConfigLoaderOptions<T> = {}
 ): Promise<T> {
   const {
     cacheDuration = CACHE_DURATION.MEDIUM,
-    fallbackValue = null,
+    fallbackValue = null as T,
     validateSchema,
   } = options;
 
@@ -251,7 +251,7 @@ export async function loadConfig<T>(
 
 export async function loadConfigDomain<T>(
   domain: string,
-  options: ConfigLoaderOptions = {}
+  options: ConfigLoaderOptions<Record<string, T>> = {}
 ): Promise<Record<string, T>> {
   try {
     const collectionRef = collection(db, domain);
@@ -274,7 +274,7 @@ export async function loadConfigDomain<T>(
     return data;
   } catch (error) {
     console.error(`Error loading config domain ${domain}:`, error);
-    return options.fallbackValue || {};
+    return options.fallbackValue ?? {};
   }
 }
 
@@ -302,7 +302,7 @@ export function setupConfigListener<T>(
 
 export async function publishConfig(
   path: string,
-  draft: any,
+  draft: unknown,
   userId: string
 ): Promise<{ success: boolean; error?: string }> {
   try {

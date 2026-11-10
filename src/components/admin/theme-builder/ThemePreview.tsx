@@ -158,22 +158,17 @@ export default function ThemePreview({
 
         </section>
 
-        {/* Categories */}
+        {/* Video categories */}
 
         <section className="p-6">
 
           <h3 className="mb-5 text-2xl font-bold">
-            Categories
+            Video & Learning Categories
           </h3>
 
           <div className="grid grid-cols-2 gap-4 md:grid-cols-4">
 
-            {[
-              "Fashion",
-              "Electronics",
-              "Beauty",
-              "Home",
-            ].map((item) => (
+            {["School Education", "Agriculture", "Technology", "Skill Development"].map((item) => (
 
               <div
                 key={item}
@@ -183,10 +178,7 @@ export default function ThemePreview({
                   color: theme.textColor,
                   borderRadius: `${theme.cardRadius ?? 20}px`,
                   border: `${theme.borderWidth ?? 1}px solid ${theme.borderColor}`,
-                  boxShadow: getShadow(
-                    theme.shadow,
-                    theme.shadowOpacity
-                  ),
+                  boxShadow: getShadow(theme.shadow, theme.shadowOpacity),
                 }}
               >
                 {item}
@@ -198,63 +190,63 @@ export default function ThemePreview({
 
         </section>
 
-        {/* Products */}
+        {/* Video feed preview */}
 
         <section className="p-6">
 
           <h3 className="mb-5 text-2xl font-bold">
-            Featured Products
+            Featured Videos & Shorts
           </h3>
 
           <div className="grid gap-6 md:grid-cols-3">
 
-            {[1, 2, 3].map((id) => (
+            {["Board Exam Preparation", "Smartphone Basics", "Modern Farming Tips"].map((title, index) => (
 
-              <div
-                key={id}
+              <article
+                key={title}
                 style={{
                   background: theme.cardColor,
                   borderRadius: `${theme.cardRadius ?? 20}px`,
                   border: `${theme.borderWidth ?? 1}px solid ${theme.borderColor}`,
-                  boxShadow: getShadow(
-                    theme.shadow,
-                    theme.shadowOpacity
-                  ),
+                  boxShadow: getShadow(theme.shadow, theme.shadowOpacity),
                 }}
               >
 
                 <div
-                  className="h-48"
+                  className="flex h-40 items-center justify-center"
                   style={{
                     background: theme.secondaryColor,
                     borderTopLeftRadius: `${theme.cardRadius ?? 20}px`,
                     borderTopRightRadius: `${theme.cardRadius ?? 20}px`,
                   }}
-                />
+                >
+                  <span className="text-sm font-bold tracking-widest">VIDEO PREVIEW {index + 1}</span>
+                </div>
 
                 <div className="p-5">
 
-                  <h4 className="text-xl font-bold">
-                    Product {id}
+                  <h4 className="text-lg font-bold">
+                    {title}
                   </h4>
 
-                  <p className="mt-2">
-                    ₹999
+                  <p className="mt-2 text-sm opacity-70">
+                    JEMBEE PLAY Creator · Video lesson
                   </p>
 
                   <button
+                    type="button"
                     className="mt-5 w-full py-3"
                     style={{
                       ...getButtonStyle(theme),
                       borderRadius: `${theme.buttonRadius}px`,
                     }}
                   >
-                    Add To Cart
+                    Watch Video
                   </button>
 
                 </div>
 
-              </div>
+              </article>
 
             ))}
 

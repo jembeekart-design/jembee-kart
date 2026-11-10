@@ -5,6 +5,7 @@ import {
 } from "@/lib/googleDriveOAuth";
 import { saveGoogleDriveRefreshToken } from "@/lib/googleDriveTokenStore";
 import { getAdminDb } from "@/firebase/admin";
+import { classifyGoogleDriveError } from "@/lib/googleDriveErrors";
 
 export const runtime = "nodejs";
 
@@ -64,7 +65,8 @@ export async function GET(req: Request) {
     return html(200, "<h1>Google Drive authorization successful</h1><p>The refresh token has been encrypted and stored server-side. It was not displayed in this browser.</p><p>You may close this window and return to the admin panel.</p>");
   } catch (error) {
     // Never log OAuth codes, state payloads, or provider tokens.
-    console.error("Google Drive OAuth callback failed:", error instanceof Error ? error.message : "Unknown error");
+    const code = classifyGoogleDriveError(error);
+    console.error("Google Drive OAuth callback failed:", code);
     return html(500, "<h1>Google Drive authorization failed</h1><p>The credential could not be stored securely. Check server configuration and retry.</p>");
   }
 }

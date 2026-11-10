@@ -2,27 +2,31 @@
 
 import React, { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
-import { Search, X, Loader2, User, Play, Hash } from "lucide-react";
+import { Search, X, Loader2, Play } from "lucide-react";
 import { collection, query, where, getDocs, limit, orderBy } from "firebase/firestore";
 import { db } from "@/firebase/config";
 import { WatchVideo } from "@/lib/videos/watch-earn/fetchWatchVideos";
 import Avatar from "@/components/user/Avatar";
 
+interface CreatorSearchResult {
+  id: string;
+  name?: string;
+  username?: string;
+  photoURL?: string;
+}
+
 export default function ShortsSearch({ onClose }: { onClose: () => void }) {
   const [queryText, setQueryText] = useState("");
   const [results, setResults] = useState<{
     videos: WatchVideo[];
-    users: any[];
+    users: CreatorSearchResult[];
     loading: boolean;
   }>({ videos: [], users: [], loading: false });
   
   const router = useRouter();
 
   useEffect(() => {
-    if (!queryText.trim()) {
-      setResults({ videos: [], users: [], loading: false });
-      return;
-    }
+    if (!queryText.trim()) return;
 
     const timer = setTimeout(async () => {
       setResults(prev => ({ ...prev, loading: true }));
@@ -38,7 +42,7 @@ export default function ShortsSearch({ onClose }: { onClose: () => void }) {
         const allVideos = vSnap.docs.map(d => ({ id: d.id, ...d.data() } as WatchVideo));
         const filteredVideos = allVideos.filter(v => 
           v.caption.toLowerCase().includes(queryText.toLowerCase()) ||
-          v.hashtags.some(h => h.toLowerCase().includes(queryText.toLowerCase()))
+          (Array.isArray(v.hashtags) && v.hashtags.some((h) => h.toLowerCase().includes(queryText.toLowerCase())))
         );
 
         // Search Users
@@ -46,9 +50,9 @@ export default function ShortsSearch({ onClose }: { onClose: () => void }) {
         const uQuery = query(usersRef, limit(20));
         const uSnap = await getDocs(uQuery);
         const filteredUsers = uSnap.docs
-            .map(d => ({ id: d.id, ...d.data() }))
-            .filter((u: any) => 
-                u.name?.toLowerCase().includes(queryText.toLowerCase()) || 
+            .map(d => ({ id: d.id, ...d.data() }) as CreatorSearchResult)
+            .filter((u) =>
+                u.name?.toLowerCase().includes(queryText.toLowerCase()) ||
                 u.username?.toLowerCase().includes(queryText.toLowerCase())
             );
 
@@ -71,7 +75,11 @@ export default function ShortsSearch({ onClose }: { onClose: () => void }) {
           <input 
             autoFocus
             value={queryText}
-            onChange={(e) => setQueryText(e.target.value)}
+            onChange={(e) => {
+              const nextQuery = e.target.value;
+              setQueryText(nextQuery);
+              if (!nextQuery.trim()) setResults({ videos: [], users: [], loading: false });
+            }}
             placeholder="Search creators, videos, hashtags..."
             className="w-full bg-transparent outline-none text-white"
           />
@@ -87,9 +95,9 @@ export default function ShortsSearch({ onClose }: { onClose: () => void }) {
               <h3 className="text-sm font-bold text-gray-400 mb-3">Creators</h3>
               {results.users.map(u => (
                 <div key={u.id} className="flex items-center gap-3 mb-3" onClick={() => router.push(`/profile/${u.id}`)}>
-                  <Avatar name={u.name} photoUrl={u.photoURL} size="w-10 h-10" />
+                  <Avatar name={u.name || u.username || "Creator"} photoUrl={u.photoURL} size="w-10 h-10" />
                   <div>
-                    <div className="font-bold">{u.name}</div>
+                    <div className="font-bold">{u.name || u.username || "Creator"}</div>
                     <div className="text-xs text-gray-400">@{u.username}</div>
                   </div>
                 </div>

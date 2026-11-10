@@ -35,13 +35,10 @@ export default function AdminLoginPage() {
 console.log("LOGIN UID:", user?.uid);
 console.log("LOGIN EMAIL:", user?.email);
       router.replace("/admin");
-    } catch (err: any) {
+    } catch (err: unknown) {
       console.error(err);
 
-      setError(
-        err?.message ??
-        "Login Failed"
-      );
+      setError(err instanceof Error ? err.message : "Login Failed");
     }
 
     setLoading(false);

@@ -26,7 +26,7 @@ ShareDrawer({
 }: ShareDrawerProps) {
 
   const shareLink =
-    `https://jembeekart.com/watch/${videoId}`;
+    `${window.location.origin}/shorts?v=${encodeURIComponent(videoId)}`;
 
   async function
   copyLink() {

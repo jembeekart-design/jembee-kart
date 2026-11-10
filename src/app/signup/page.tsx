@@ -1,7 +1,7 @@
 "use client";
 
-import { useState, useEffect, Suspense } from "react"; 
-import { useRouter, useSearchParams } from "next/navigation"; 
+import { useState, Suspense } from "react"; 
+import { useRouter } from "next/navigation"; 
 import Link from "next/link";
 
 import {
@@ -24,7 +24,6 @@ INTERNAL FORM COMPONENT (Safely isolates useSearchParams)
 ====================================================== */
 function RegistrationForm() {
   const router = useRouter();
-  const searchParams = useSearchParams(); 
 
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
@@ -32,17 +31,6 @@ function RegistrationForm() {
   const [confirmPassword, setConfirmPassword] = useState("");
   const [acceptedTerms, setAcceptedTerms] = useState(false);
   const [loading, setLoading] = useState(false);
-
-  /* ======================================================
-  ✅ URL REFERRAL INTERACTION CAPTURE
-  ====================================================== */
-  useEffect(() => {
-    const refParam = searchParams.get("ref");
-    if (refParam?.trim()) {
-      localStorage.setItem("jbk_pending_ref", refParam.trim());
-      console.log(`🔗 Referral tracking synchronized inside client state: ${refParam}`);
-    }
-  }, [searchParams]);
 
   /* ======================================================
   SECURE SERVER-SIDE USER PROFILE INITIALIZATION
@@ -58,7 +46,6 @@ function RegistrationForm() {
       },
       body: JSON.stringify({
         name: displayName || user.displayName || "",
-        sponsorCode: localStorage.getItem("jbk_pending_ref") || "",
       }),
     });
 
@@ -72,7 +59,6 @@ function RegistrationForm() {
       );
     }
 
-    localStorage.removeItem("jbk_pending_ref");
   }
 
   /* ======================================================
@@ -117,12 +103,12 @@ function RegistrationForm() {
       await createUserProfile(result.user, cleanName);
       await sendEmailVerification(result.user);
       router.push("/verify-email");
-    } catch (error: any) {
+    } catch (error: unknown) {
       console.error("Email Registration Sequence Fault:", error);
       // Keep the Auth account if profile creation or its response fails.
       // This avoids deleting an account when the server may have committed
       // the profile but the client did not receive the response.
-      alert(error.message || "Signup Failed");
+      alert(error instanceof Error ? error.message : "Signup Failed");
     } finally {
       setLoading(false);
     }
@@ -154,11 +140,11 @@ function RegistrationForm() {
         await createUserProfile(result.user);
       }
       router.push("/shorts");
-    } catch (error: any) {
+    } catch (error: unknown) {
       console.error("Google Registration Sequence Fault:", error);
       // Do not delete a Google Auth account when profile creation fails.
       // The account may already belong to an existing user.
-      alert(error.message || "Google Signup Failed");
+      alert(error instanceof Error ? error.message : "Google Signup Failed");
     } finally {
       setLoading(false);
     }

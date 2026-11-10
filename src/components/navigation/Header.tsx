@@ -14,19 +14,31 @@ FULLY WORKING HEADER
 
 "use client";
 
-import {
-  useEffect,
-  useState
-} from "react";
-
+import { useEffect, useState } from "react";
 import Link from "next/link";
+import { Mic, MicOff, Search, Users } from "lucide-react";
 
-import {
-  Mic,
-  MicOff,
-  Search,
-  Users
-} from "lucide-react";
+interface SpeechRecognitionAlternativeLike { transcript: string }
+type SpeechRecognitionResultLike = ArrayLike<SpeechRecognitionAlternativeLike>;
+interface SpeechRecognitionEventLike extends Event { results: ArrayLike<SpeechRecognitionResultLike> }
+interface SpeechRecognitionErrorLike extends Event { error?: string }
+interface SpeechRecognitionLike {
+  lang: string;
+  interimResults: boolean;
+  maxAlternatives: number;
+  start(): void;
+  onresult: ((event: SpeechRecognitionEventLike) => void) | null;
+  onerror: ((event: SpeechRecognitionErrorLike) => void) | null;
+  onend: (() => void) | null;
+}
+type SpeechRecognitionConstructor = new () => SpeechRecognitionLike;
+
+declare global {
+  interface Window {
+    SpeechRecognition?: SpeechRecognitionConstructor;
+    webkitSpeechRecognition?: SpeechRecognitionConstructor;
+  }
+}
 
 /* ======================================================
 PROPS
@@ -128,14 +140,7 @@ export default function Header({
       return;
     }
 
-    const SpeechRecognition =
-      (
-        window as any
-      ).SpeechRecognition ||
-
-      (
-        window as any
-      ).webkitSpeechRecognition;
+    const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
 
     if (
       !SpeechRecognition
@@ -168,7 +173,7 @@ export default function Header({
 
     recognition.onresult =
       (
-        event: any
+        event: SpeechRecognitionEventLike
       ) => {
 
         const transcript =
@@ -182,7 +187,7 @@ export default function Header({
 
     recognition.onerror =
       (
-        error: any
+        error: SpeechRecognitionErrorLike
       ) => {
 
         console.log(

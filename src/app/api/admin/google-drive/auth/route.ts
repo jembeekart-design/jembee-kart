@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import { getAdminAuth, getAdminDb } from "@/firebase/admin";
 import { createGoogleAuthorizationUrl } from "@/lib/googleDriveOAuth";
+import { classifyGoogleDriveError, googleDriveClientMessage, googleDriveErrorHttpStatus } from "@/lib/googleDriveErrors";
 
 export const runtime = "nodejs";
 
@@ -80,14 +81,11 @@ export async function POST(req: Request) {
       );
     }
 
-    console.error("Google Drive OAuth start error:", error);
-
+    const code = classifyGoogleDriveError(error);
+    console.error("Google Drive OAuth start failed:", code);
     return NextResponse.json(
-      {
-        success: false,
-        message: "Failed to start Google Drive authorization",
-      },
-      { status: 500 }
+      { success: false, code, message: googleDriveClientMessage(code) },
+      { status: googleDriveErrorHttpStatus(code) }
     );
   }
 }

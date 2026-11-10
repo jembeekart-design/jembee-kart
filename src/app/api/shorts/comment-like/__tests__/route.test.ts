@@ -6,6 +6,12 @@ type Doc = {
   exists: boolean;
   data: () => Record<string, unknown> | undefined;
 };
+type HarnessTransaction = {
+  get(ref: object): Promise<Doc>;
+  set(ref: object, value: Record<string, unknown>): void;
+  update(ref: object, value: Record<string, unknown>): void;
+  delete(ref: object): void;
+};
 
 function makeHarness(options?: {
   comment?: Record<string, unknown> | null;
@@ -31,10 +37,10 @@ function makeHarness(options?: {
         },
       };
     },
-    async runTransaction(callback: (tx: any) => Promise<any>) {
+    async runTransaction<T>(callback: (tx: HarnessTransaction) => Promise<T>): Promise<T> {
       dbCalls++;
       const tx = {
-        async get(ref: typeof commentRef | typeof likeRef): Promise<Doc> {
+        async get(ref: object): Promise<Doc> {
           if (ref === commentRef) {
             return {
               exists: commentData !== null,
@@ -46,16 +52,16 @@ function makeHarness(options?: {
             data: () => liked ? { userId: "userA" } : undefined,
           };
         },
-        set(ref: typeof likeRef, value: Record<string, unknown>) {
+        set(ref: object, value: Record<string, unknown>) {
           assert.equal(ref, likeRef);
           assert.equal(value.userId, "userA");
           liked = true;
         },
-        update(ref: typeof commentRef, value: Record<string, unknown>) {
+        update(ref: object, value: Record<string, unknown>) {
           assert.equal(ref, commentRef);
           commentData = { ...(commentData ?? {}), ...value };
         },
-        delete(ref: typeof likeRef) {
+        delete(ref: object) {
           assert.equal(ref, likeRef);
           liked = false;
         },

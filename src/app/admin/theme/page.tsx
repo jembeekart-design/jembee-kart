@@ -11,7 +11,7 @@ const DEFAULT_THEME = {
   cardBorderColor: "#e5e7eb",
 };
 
-const cssMap: Record<string, string> = {
+const cssMap: Record<keyof typeof DEFAULT_THEME, string> = {
   headerBackground: "--header-color",
   searchBarColor: "--search-bar-color",
   buttonColor: "--primary-color",
@@ -23,36 +23,50 @@ export default function ThemePage() {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    loadTheme();
+    let active = true;
+
+    const timer = window.setTimeout(() => {
+      void (async () => {
+        try {
+          const ref = doc(db, "admin_settings", "customize");
+          const snap = await getDoc(ref);
+
+          if (!active) return;
+
+          if (snap.exists()) {
+            const data = {
+              ...DEFAULT_THEME,
+              ...snap.data(),
+            };
+
+            setTheme(data);
+
+            Object.entries(cssMap).forEach(([field, css]) => {
+              document.documentElement.style.setProperty(
+                css,
+                data[field as keyof typeof DEFAULT_THEME]
+              );
+            });
+          } else {
+            await setDoc(ref, DEFAULT_THEME);
+            if (!active) return;
+            setTheme(DEFAULT_THEME);
+          }
+        } catch (error) {
+          if (active) console.error(error);
+        } finally {
+          if (active) setLoading(false);
+        }
+      })();
+    }, 0);
+
+    return () => {
+      active = false;
+      window.clearTimeout(timer);
+    };
   }, []);
 
-  async function loadTheme() {
-    const ref = doc(db, "admin_settings", "customize");
-    const snap = await getDoc(ref);
-
-    if (snap.exists()) {
-      const data = {
-        ...DEFAULT_THEME,
-        ...snap.data(),
-      };
-
-      setTheme(data);
-
-      Object.entries(cssMap).forEach(([field, css]) => {
-        document.documentElement.style.setProperty(
-          css,
-          (data as any)[field]
-        );
-      });
-    } else {
-      await setDoc(ref, DEFAULT_THEME);
-      setTheme(DEFAULT_THEME);
-    }
-
-    setLoading(false);
-  }
-
-  async function changeColor(field: string, value: string) {
+  async function changeColor(field: keyof typeof DEFAULT_THEME, value: string) {
     setTheme((prev) => ({
       ...prev,
       [field]: value,
@@ -86,7 +100,7 @@ export default function ThemePage() {
           Theme Builder
         </h1>
 
-        {Object.entries(theme).map(([key, value]) => (
+        {(Object.entries(theme) as Array<[keyof typeof DEFAULT_THEME, string]>).map(([key, value]) => (
           <div
             key={key}
             className="mb-6"

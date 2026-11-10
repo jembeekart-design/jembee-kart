@@ -17,11 +17,23 @@ export async function POST(req: NextRequest) {
     const signature = req.headers.get("x-webhook-signature") || "";
     const timestamp = req.headers.get("x-webhook-timestamp") || "";
     if (!verifyCashfreeWebhookSignature(rawBody, timestamp, signature, config.webhookSecret)) return NextResponse.json({ success: false }, { status: 401 });
-    let payload: Record<string, any>;
-    try { const parsed: unknown = JSON.parse(rawBody); if (!parsed || typeof parsed !== "object" || Array.isArray(parsed)) throw new Error("INVALID_PAYLOAD"); payload = parsed as Record<string, any>; }
-    catch { return NextResponse.json({ success: false }, { status: 400 }); }
-    const providerOrderId = typeof payload.data?.order?.order_id === "string" ? payload.data.order.order_id : "";
-    const payment = payload.data?.payment;
+    const asRecord = (value: unknown): Record<string, unknown> | null =>
+      typeof value === "object" && value !== null && !Array.isArray(value)
+        ? value as Record<string, unknown>
+        : null;
+    let payload: Record<string, unknown>;
+    try {
+      const parsed: unknown = JSON.parse(rawBody);
+      const parsedRecord = asRecord(parsed);
+      if (!parsedRecord) throw new Error("INVALID_PAYLOAD");
+      payload = parsedRecord;
+    } catch {
+      return NextResponse.json({ success: false }, { status: 400 });
+    }
+    const eventData = asRecord(payload.data);
+    const orderData = asRecord(eventData?.order);
+    const payment = asRecord(eventData?.payment);
+    const providerOrderId = typeof orderData?.order_id === "string" ? orderData.order_id : "";
     const rawPaymentId = payment?.cf_payment_id;
     if (!providerOrderId || !payment || (typeof rawPaymentId !== "string" && typeof rawPaymentId !== "number")) return NextResponse.json({ success: true, ignored: true });
     if (String(payment.payment_status || "").toUpperCase() !== "SUCCESS") return NextResponse.json({ success: true, ignored: true });
@@ -32,7 +44,7 @@ export async function POST(req: NextRequest) {
     const orderId = orderDoc.id;
     const order = orderDoc.data();
     const paymentId = String(rawPaymentId).trim();
-    const amount = Number(payment.payment_amount);
+    const amount = Number(String(payment.payment_amount ?? ""));
     const amountPaise = Math.round(amount * 100);
     const expectedPaise = Number.isSafeInteger(order.amountPaise) ? Number(order.amountPaise) : Math.round(Number(order.amount) * 100);
     if (!paymentId || paymentId.length > 128 || String(payment.payment_currency || "").toUpperCase() !== "INR" || !Number.isSafeInteger(amountPaise) || Math.abs(amount * 100 - amountPaise) > 1e-7 || expectedPaise <= 0 || amountPaise !== expectedPaise || payment.order_id !== providerOrderId) return NextResponse.json({ success: false, reason: "payment_reconciliation_failed" }, { status: 409 });
