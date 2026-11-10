@@ -3,7 +3,7 @@
 // Force Next.js to bypass static prerendering for this route to eliminate useSearchParams compilation flags
 export const dynamic = "force-dynamic";
 
-import { useState, useEffect, Suspense } from "react";
+import { useState, Suspense } from "react";
 import { useSearchParams } from "next/navigation";
 import Link from "next/link";
 import {
@@ -27,19 +27,9 @@ function LoginCard() {
   const [loading, setLoading] = useState(false);
 
   const searchParams = useSearchParams();
-  const referralCode = searchParams.get("ref") || "";
   const redirect =
     searchParams.get("redirect") ||
     "/shorts";
-
-  /* ======================================================
-  STEP 1: ONLY PASSIVE CAPTURE (Safe Transfer to Signup Engine)
-  ====================================================== */
-  useEffect(() => {
-    if (referralCode) {
-      localStorage.setItem("jbk_pending_ref", referralCode);
-    }
-  }, [referralCode]);
 
   /* ======================================================
   VERIFY & TELEMETRY SYNC (STRICT EXISTING USERS ONLY)
@@ -94,16 +84,15 @@ function LoginCard() {
       
       if (isExistingUser) {
         // Clear cached reference tracking payloads safely
-        localStorage.removeItem("jbk_pending_ref");
         // ✅ Redirect updated to target path
         window.location.href = redirect || "/shorts"; 
       } else {
         alert("Account records not found in JEMBEE PLAY database. Please Signup first.");
         await auth.signOut();
       }
-    } catch (error: any) {
+    } catch (error: unknown) {
       console.error("Email Login Error Pipeline Exception:", error);
-      alert(error.message || "Invalid email or password");
+      alert(error instanceof Error ? error.message : "Invalid email or password");
     } finally {
       setLoading(false);
     }
@@ -141,18 +130,17 @@ function LoginCard() {
         console.log("USER EXISTS IN FIRESTORE:", isExistingUser);
         
         if (isExistingUser) {
-          localStorage.removeItem("jbk_pending_ref");
-          // ✅ Redirect updated to target path
+            // ✅ Redirect updated to target path
           window.location.href = redirect || "/shorts"; 
         } else {
           // Agar user Firestore me nahi mila, to ye alert chalega aur signup pe bhejega
-          alert("No existing profile found. Redirecting to Signup page to apply your referral code.");
-          window.location.href = referralCode ? `/signup?ref=${referralCode}` : "/signup";
+          alert("No existing profile found. Please create an account first.");
+          window.location.href = "/signup";
         }
       }
-    } catch (error: any) {
+    } catch (error: unknown) {
       console.error("Google Login Error Pipeline Exception:", error);
-      alert(error.message || "Google sign-in failed");
+      alert(error instanceof Error ? error.message : "Google sign-in failed");
     } finally {
       setLoading(false);
     }
@@ -209,9 +197,9 @@ function LoginCard() {
 
       {/* DYNAMIC REGISTRATION ROUTE LINK */}
       <p className="text-center text-xs font-bold text-[var(--text-secondary)] mt-5">
-        Don't have an account?{" "}
+        Don&apos;t have an account?{" "}
         <Link 
-          href={referralCode ? `/signup?ref=${referralCode}` : "/signup"} 
+          href="/signup" 
           className="text-[var(--color-primary-button)] hover:underline font-black"
         >
           Create an Account

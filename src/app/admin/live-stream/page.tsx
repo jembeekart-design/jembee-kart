@@ -1,5 +1,6 @@
 "use client";
 
+import type { Timestamp } from "firebase/firestore";
 export const dynamic = "force-dynamic";
 
 import { useEffect, useState } from "react";
@@ -31,7 +32,7 @@ interface LiveStream {
   streamer: string;
   streamUrl: string;
   startTime: string;
-  createdAt?: any;
+  createdAt?: Timestamp | null;
 }
 
 export default function LiveStreamPage() {

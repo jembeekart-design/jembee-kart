@@ -32,7 +32,6 @@ interface AppSettings {
   instagram: string;
   youtube: string;
   currency: string;
-  deliveryCharge: string;
 }
 
 export default function SettingsPage() {
@@ -47,8 +46,7 @@ export default function SettingsPage() {
       facebook: "",
       instagram: "",
       youtube: "",
-      currency: "₹",
-      deliveryCharge: "0"
+      currency: "₹"
     });
 
   const [loading, setLoading] =
@@ -58,42 +56,44 @@ export default function SettingsPage() {
     useState(false);
 
   useEffect(() => {
+    let active = true;
 
-    fetchSettings();
+    const timer = window.setTimeout(() => {
+      void (async () => {
+        try {
+          const ref = doc(db, "settings", "app_settings");
+          const snapshot = await getDoc(ref);
 
+          if (!active) return;
+
+          if (snapshot.exists()) {
+            const stored = snapshot.data() as Record<string, unknown>;
+            // Read only video-platform settings; ignore legacy shopping fields.
+            setSettings({
+              appName: typeof stored.appName === "string" ? stored.appName : "JEMBEE PLAY",
+              supportEmail: typeof stored.supportEmail === "string" ? stored.supportEmail : "",
+              supportPhone: typeof stored.supportPhone === "string" ? stored.supportPhone : "",
+              address: typeof stored.address === "string" ? stored.address : "",
+              website: typeof stored.website === "string" ? stored.website : "",
+              facebook: typeof stored.facebook === "string" ? stored.facebook : "",
+              instagram: typeof stored.instagram === "string" ? stored.instagram : "",
+              youtube: typeof stored.youtube === "string" ? stored.youtube : "",
+              currency: typeof stored.currency === "string" ? stored.currency : "₹",
+            });
+          }
+        } catch (error) {
+          if (active) console.error(error);
+        } finally {
+          if (active) setLoading(false);
+        }
+      })();
+    }, 0);
+
+    return () => {
+      active = false;
+      window.clearTimeout(timer);
+    };
   }, []);
-
-  async function fetchSettings() {
-
-    try {
-
-      const ref = doc(
-        db,
-        "settings",
-        "app_settings"
-      );
-
-      const snapshot =
-        await getDoc(ref);
-
-      if (snapshot.exists()) {
-
-        setSettings(
-          snapshot.data() as AppSettings
-        );
-
-      }
-
-    } catch (error) {
-
-      console.log(error);
-
-    } finally {
-
-      setLoading(false);
-
-    }
-  }
 
   async function saveSettings() {
 
@@ -125,9 +125,9 @@ export default function SettingsPage() {
     }
   }
 
-  function handleChange(
-    field: string,
-    value: string
+  function handleChange<K extends keyof AppSettings>(
+    field: K,
+    value: AppSettings[K]
   ) {
 
     setSettings((prev) => ({
@@ -221,19 +221,6 @@ export default function SettingsPage() {
               onChange={(value) =>
                 handleChange(
                   "currency",
-                  value
-                )
-              }
-            />
-
-            <InputField
-              label="Delivery Charge"
-              value={
-                settings.deliveryCharge
-              }
-              onChange={(value) =>
-                handleChange(
-                  "deliveryCharge",
                   value
                 )
               }

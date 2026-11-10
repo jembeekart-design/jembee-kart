@@ -1,5 +1,5 @@
 "use client";
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { doc, setDoc } from "firebase/firestore";
 import { db } from "@/firebase/config";
 import { useTheme } from "@/context/ThemeContext";
@@ -12,11 +12,6 @@ export default function ThemeBuilderPage() {
   const { theme, setTheme } = useTheme();
   const [localTheme, setLocalTheme] = useState<Theme>(theme);
   const [saving, setSaving] = useState(false);
-
-  // Sync agar context badle
-  useEffect(() => {
-    setLocalTheme(theme);
-  }, [theme]);
 
   async function saveTheme() {
     setSaving(true);

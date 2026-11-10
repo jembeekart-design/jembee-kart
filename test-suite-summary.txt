@@ -1,0 +1,10 @@
+test:paid-video-checkout-flow => EXIT_CODE=0
+test:paid-video-refund-reconcile => EXIT_CODE=0
+test:teacher-referral-settlement => EXIT_CODE=0
+test:share-attribution-claim => EXIT_CODE=0
+test:shorts-expense-evidence => EXIT_CODE=0
+test:storage-expense-evidence => EXIT_CODE=0
+test:shorts-expense-ui => EXIT_CODE=0
+test:video-preload-cache => EXIT_CODE=0
+test:shorts-share => EXIT_CODE=0
+test:shorts-page => EXIT_CODE=0

@@ -85,7 +85,7 @@ export default function ShortsMenuSheet({
             {onWhySeeing && (
               <button onClick={() => { onWhySeeing(); onClose(); }} className="flex items-center gap-4 p-4 hover:bg-neutral-800 rounded-lg">
                 <Info size={24} />
-                Why you're seeing this post
+                Why you&apos;re seeing this post
               </button>
             )}
             {onReport && (

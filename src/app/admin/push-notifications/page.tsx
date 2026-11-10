@@ -1,5 +1,6 @@
 "use client";
 
+import type { Timestamp } from "firebase/firestore";
 export const dynamic = "force-dynamic";
 
 import { useEffect, useState } from "react";
@@ -30,7 +31,7 @@ interface NotificationData {
   title: string;
   message: string;
   audience: string;
-  createdAt?: any;
+  createdAt?: Timestamp | null;
 }
 
 export default function PushNotificationsPage() {
@@ -297,17 +298,13 @@ export default function PushNotificationsPage() {
                   All Users
                 </option>
 
-                <option>
-                  Sellers
-                </option>
+                <option>Creators</option>
 
-                <option>
-                  Affiliates
-                </option>
+                <option>Teachers</option>
 
-                <option>
-                  Premium Members
-                </option>
+                <option>Sharers</option>
+
+                <option>Moderators</option>
 
               </select>
 

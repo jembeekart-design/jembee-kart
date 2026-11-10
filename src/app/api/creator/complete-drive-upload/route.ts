@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import { getAdminAuth, getAdminDb } from "@/firebase/admin";
 import { getDriveFileMetadata } from "@/services/googleDriveService";
+import { classifyGoogleDriveError, googleDriveClientMessage, googleDriveErrorHttpStatus } from "@/lib/googleDriveErrors";
 
 export const runtime = "nodejs";
 
@@ -32,8 +33,8 @@ export async function POST(req: Request) {
     const decodedToken = await getAdminAuth().verifyIdToken(token);
     creatorId = decodedToken.uid;
     console.log("[AuthDiagnostic] Complete Upload - Token Verified. UID:", creatorId);
-  } catch (err) {
-    console.error("[AuthDiagnostic] Complete Upload - Token Verification Failed:", err);
+  } catch {
+    console.warn("Complete upload authentication failed: FIREBASE_ID_TOKEN_REJECTED");
     return NextResponse.json({ success: false, message: "कृपया लॉगिन करें।" }, { status: 401 });
   }
 
@@ -101,7 +102,12 @@ export async function POST(req: Request) {
     // Verify Drive File
     const metadata = await getDriveFileMetadata(driveFileId);
 
-    console.log("[UPLOAD_DEBUG_SERVER] DRIVE_METADATA_RESULT", metadata);
+    console.log("[UPLOAD_DEBUG_SERVER] DRIVE_METADATA_RESULT", {
+      mimeType: metadata.mimeType,
+      size: metadata.size,
+      parentCount: metadata.parents.length,
+      thumbnailAvailable: !!metadata.thumbnailLink,
+    });
 
     if (!metadata.mimeType.startsWith("video/")) {
       return NextResponse.json({ success: false, message: "कृपया मान्य वीडियो फ़ाइल चुनें।" }, { status: 400 });
@@ -133,15 +139,8 @@ export async function POST(req: Request) {
 
     return NextResponse.json({ success: true, submissionId, status: "pending" });
   } catch (error) {
-    console.error("[UPLOAD_DEBUG_SERVER] COMPLETE_ERROR", {
-      name: error instanceof Error ? error.name : typeof error,
-      message: error instanceof Error ? error.message : String(error),
-      stack: error instanceof Error ? error.stack : undefined,
-      submissionId,
-      driveFileId,
-    });
-
-    console.error("Failed to complete drive upload:", error);
+    const driveErrorCode = classifyGoogleDriveError(error);
+    console.error("Drive upload completion failed:", driveErrorCode);
     if (submissionId) {
       const recoveryRef = getAdminDb().collection("videoModerationSubmissions").doc(submissionId);
       await getAdminDb().runTransaction(async (tx) => {
@@ -149,6 +148,9 @@ export async function POST(req: Request) {
         if (current.exists && current.data()?.status === "completing") tx.update(recoveryRef, { status: "uploading", completionDriveFileId: null, completionLastErrorAt: new Date() });
       }).catch(() => undefined);
     }
-    return NextResponse.json({ success: false, message: "वीडियो अपलोड पूरा नहीं हो सका। कृपया पुनः प्रयास करें।" }, { status: 500 });
+    return NextResponse.json(
+      { success: false, code: driveErrorCode, message: googleDriveClientMessage(driveErrorCode) },
+      { status: googleDriveErrorHttpStatus(driveErrorCode) }
+    );
   }
 }

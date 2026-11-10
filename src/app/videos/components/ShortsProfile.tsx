@@ -9,11 +9,23 @@ import { BadgeCheck, Bookmark, Camera, CreditCard, Eye, Heart, History, LogOut, 
 import Avatar from "@/components/user/Avatar";
 import { uploadToCloudinary } from "@/lib/cloudinary";
 import { WatchVideo, fetchCreatorVideos } from "@/lib/videos/watch-earn/fetchWatchVideos";
-import { FIRESTORE_PATHS } from "@/firestore/collections/firestorePaths";
 
 export type ProfileSection = "videos" | "liked" | "saved" | "earnings" | "history" | "payments";
 type Props = { activeSection: ProfileSection; onSectionChange: (section: ProfileSection) => void };
 type VideoTab = "videos" | "liked" | "saved";
+interface CreatorProfile {
+  name?: string;
+  displayName?: string;
+  photoURL?: string;
+  photoUrl?: string;
+  photo?: string;
+  username?: string;
+  userName?: string;
+  bio?: string;
+  followersCount?: number;
+  followingCount?: number;
+  [key: string]: unknown;
+}
 
 const sections: { id: ProfileSection; label: string; icon: React.ElementType; tone: string }[] = [
   { id: "videos", label: "Videos", icon: Video, tone: "from-fuchsia-500 to-violet-600" },
@@ -27,7 +39,7 @@ const sections: { id: ProfileSection; label: string; icon: React.ElementType; to
 export default function ShortsProfile({ activeSection, onSectionChange }: Props) {
   const router = useRouter();
   const [user, setUser] = useState(auth.currentUser);
-  const [profile, setProfile] = useState<any>(null);
+  const [profile, setProfile] = useState<CreatorProfile | null>(null);
   const [videos, setVideos] = useState<{ videos: WatchVideo[]; liked: WatchVideo[]; saved: WatchVideo[] }>({ videos: [], liked: [], saved: [] });
   const [adEarnings, setAdEarnings] = useState(0);
   const [uploadingPhoto, setUploadingPhoto] = useState(false);
@@ -37,14 +49,8 @@ export default function ShortsProfile({ activeSection, onSectionChange }: Props)
   useEffect(() => auth.onAuthStateChanged(setUser), []);
 
   useEffect(() => {
-    if (!user) {
-      setVideosLoading(false);
-      return;
-    }
+    if (!user) return;
     let active = true;
-    setVideosLoading(true);
-    setVideoLoadError("");
-
     const load = async () => {
       const fallbackProfile = {
         name: user.displayName || "Creator",
@@ -52,7 +58,7 @@ export default function ShortsProfile({ activeSection, onSectionChange }: Props)
         photoUrl: user.photoURL || "",
       };
 
-      setProfile((prev: any) => ({ ...fallbackProfile, ...prev }));
+      setProfile((prev) => ({ ...fallbackProfile, ...(prev ?? {}) }));
 
       const watchDataPromise = (async () => {
         const token = await user.getIdToken();
@@ -84,9 +90,9 @@ export default function ShortsProfile({ activeSection, onSectionChange }: Props)
       if (profileResult.status === "fulfilled") {
         const snap = profileResult.value;
         if (snap.exists()) {
-          const data = snap.data();
-          setProfile((prev: any) => ({
-            ...prev,
+          const data = snap.data() as Partial<CreatorProfile>;
+          setProfile((prev) => ({
+            ...(prev ?? {}),
             ...data,
             photoURL: data.photoURL || data.photoUrl || data.photo || user.photoURL || "",
             photoUrl: data.photoUrl || data.photoURL || data.photo || user.photoURL || "",
@@ -184,7 +190,7 @@ export default function ShortsProfile({ activeSection, onSectionChange }: Props)
       });
       const responseData = await response.json();
       if (!response.ok) throw new Error(responseData.error || "Failed to save profile photo.");
-      setProfile((prev: any) => ({ ...prev, photoURL: result.secure_url, photoUrl: result.secure_url }));
+      setProfile((prev) => ({ ...(prev ?? {}), photoURL: result.secure_url, photoUrl: result.secure_url }));
     } catch (error) {
       console.error("Shorts profile photo upload failed:", error);
       alert(error instanceof Error ? error.message : "Failed to upload profile photo.");

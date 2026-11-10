@@ -1,10 +1,8 @@
 import type { Metadata } from "next";
-import Script from "next/script";
 import "./globals.css";
 
 import Providers from "./providers";
 import SystemSeeder from "@/components/SystemSeeder";
-import MonetagScriptGate from "@/components/MonetagScriptGate";
 
 export const metadata: Metadata = {
   title: {
@@ -42,21 +40,15 @@ export default function RootLayout({
         <link rel="preconnect" href="https://jembee-kart1.firebaseapp.com" crossOrigin="anonymous" />
         <link rel="preconnect" href="https://firestore.googleapis.com" crossOrigin="anonymous" />
         <link rel="preconnect" href="https://www.googleapis.com" crossOrigin="anonymous" />
-        <Script
-          id="google-adsense"
-          src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-7471322988540402"
-          strategy="lazyOnload"
-          crossOrigin="anonymous"
-        />
-              <meta name="monetag" content="ffc36b1add65212e386c64b0bf1e6c0e" />
+        {/* Monetag website-verification meta tag; it does not load an ad script. */}
+        <meta name="monetag" content="ffc36b1add65212e386c64b0bf1e6c0e" />
         
 
       </head>
 
       <body className="min-h-screen antialiased">
         <Providers>
-          <MonetagScriptGate />
-
+          {/* Ads are loaded only in Admin-enabled, allowlisted page placements. */}
           {/* Auto create missing Firestore settings */}
           <SystemSeeder />
 

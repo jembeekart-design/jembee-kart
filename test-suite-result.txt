@@ -1,0 +1,716 @@
+
+> jembee-play@0.1.0 test:paid-video-checkout-flow
+> node --test src/app/api/shorts/paid-video/create-order/__tests__/route-contract.test.mjs src/app/api/shorts/paid-video/playback-session/__tests__/route-contract.test.mjs src/app/api/admin/shorts/paid-video/enable/__tests__/route-contract.test.mjs src/app/api/payments/cashfree/webhook/__tests__/shorts-settlement-contract.test.mjs src/app/api/shorts/paid-video/verify/__tests__/paid-video-eligibility.test.mjs src/app/api/shorts/paid-video/verify/__tests__/settlement-ledger-contract.test.mjs src/app/api/admin/moderate-video/__tests__/paid-video-approval.test.mjs src/app/api/admin/shorts/teacher-referral/reconcile/__tests__/route-contract.test.mjs src/lib/server/__tests__/paidVideoRevenueSplit.test.mjs src/lib/server/__tests__/paidVideoRefundReversal.test.mjs src/lib/server/__tests__/teacherReferralCommission.test.mjs
+
+TAP version 13
+# Subtest: paid videos can enter moderation but are not publicly activated by approval
+ok 1 - paid videos can enter moderation but are not publicly activated by approval
+  ---
+  duration_ms: 2.147154
+  type: 'test'
+  ...
+# Subtest: moderation never grants viewer coins
+ok 2 - moderation never grants viewer coins
+  ---
+  duration_ms: 0.932308
+  type: 'test'
+  ...
+# Subtest: only authenticated admins can enable paid checkout behind environment and Cashfree gates
+ok 3 - only authenticated admins can enable paid checkout behind environment and Cashfree gates
+  ---
+  duration_ms: 3.999769
+  type: 'test'
+  ...
+# Subtest: activation only accepts approved safe paid videos and writes explicit flags
+ok 4 - activation only accepts approved safe paid videos and writes explicit flags
+  ---
+  duration_ms: 1.272
+  type: 'test'
+  ...
+# Subtest: reconciliation is admin-authenticated and reads verified paid-video orders
+ok 5 - reconciliation is admin-authenticated and reads verified paid-video orders
+  ---
+  duration_ms: 2.213231
+  type: 'test'
+  ...
+# Subtest: net profit subtracts only verified INR expenses from platform ledger after refunds
+ok 6 - net profit subtracts only verified INR expenses from platform ledger after refunds
+  ---
+  duration_ms: 0.694154
+  type: 'test'
+  ...
+# Subtest: teacher commission uses the existing 2 percent net-profit calculator
+ok 7 - teacher commission uses the existing 2 percent net-profit calculator
+  ---
+  duration_ms: 0.463077
+  type: 'test'
+  ...
+# Subtest: reconciliation is idempotent and does not issue wallet credits or payouts
+ok 8 - reconciliation is idempotent and does not issue wallet credits or payouts
+  ---
+  duration_ms: 4.739769
+  type: 'test'
+  ...
+# Subtest: signed Cashfree webhook resolves only Shorts paid-video orders
+ok 9 - signed Cashfree webhook resolves only Shorts paid-video orders
+  ---
+  duration_ms: 1.936385
+  type: 'test'
+  ...
+# Subtest: webhook checks payment amount, INR currency, video eligibility and creator attribution
+ok 10 - webhook checks payment amount, INR currency, video eligibility and creator attribution
+  ---
+  duration_ms: 0.646231
+  type: 'test'
+  ...
+# Subtest: webhook grants purchase and records idempotent creator, sharer and platform ledger entries transactionally
+ok 11 - webhook grants purchase and records idempotent creator, sharer and platform ledger entries transactionally
+  ---
+  duration_ms: 0.460077
+  type: 'test'
+  ...
+# Subtest: paid-video checkout authenticates buyer and validates server-owned video state
+ok 12 - paid-video checkout authenticates buyer and validates server-owned video state
+  ---
+  duration_ms: 1.951385
+  type: 'test'
+  ...
+# Subtest: checkout price is read from Firestore and bounded in integer paise
+ok 13 - checkout price is read from Firestore and bounded in integer paise
+  ---
+  duration_ms: 0.766384
+  type: 'test'
+  ...
+# Subtest: Cashfree order creation is idempotent and persists attribution server-side
+ok 14 - Cashfree order creation is idempotent and persists attribution server-side
+  ---
+  duration_ms: 0.45323
+  type: 'test'
+  ...
+# Subtest: existing paid purchase bypasses a second payment order
+ok 15 - existing paid purchase bypasses a second payment order
+  ---
+  duration_ms: 3.486077
+  type: 'test'
+  ...
+# Subtest: Cashfree return URL uses the Shorts payment-return page and expected order_id parameter
+ok 16 - Cashfree return URL uses the Shorts payment-return page and expected order_id parameter
+  ---
+  duration_ms: 0.512615
+  type: 'test'
+  ...
+# Subtest: playback session requires a verified Firebase identity and paid purchase
+ok 17 - playback session requires a verified Firebase identity and paid purchase
+  ---
+  duration_ms: 1.717616
+  type: 'test'
+  ...
+# Subtest: playback session checks video eligibility before issuing a cookie
+ok 18 - playback session checks video eligibility before issuing a cookie
+  ---
+  duration_ms: 0.404923
+  type: 'test'
+  ...
+# Subtest: playback cookie is HttpOnly, Secure, SameSite and short-lived
+ok 19 - playback cookie is HttpOnly, Secure, SameSite and short-lived
+  ---
+  duration_ms: 0.633154
+  type: 'test'
+  ...
+# Subtest: verification requires an approved, active, safe paid video
+ok 20 - verification requires an approved, active, safe paid video
+  ---
+  duration_ms: 2.158769
+  type: 'test'
+  ...
+# Subtest: verification requires explicit paid checkout enablement
+ok 21 - verification requires explicit paid checkout enablement
+  ---
+  duration_ms: 0.443462
+  type: 'test'
+  ...
+# Subtest: order amount must match the server video price in paise
+ok 22 - order amount must match the server video price in paise
+  ---
+  duration_ms: 0.626769
+  type: 'test'
+  ...
+# Subtest: eligibility and amount are rechecked inside the Firestore transaction
+ok 23 - eligibility and amount are rechecked inside the Firestore transaction
+  ---
+  duration_ms: 0.413769
+  type: 'test'
+  ...
+# Subtest: settlement entries are created only in the provider-verified payment transaction
+ok 24 - settlement entries are created only in the provider-verified payment transaction
+  ---
+  duration_ms: 1.795
+  type: 'test'
+  ...
+# Subtest: ledger entries are idempotent and do not directly credit wallets
+ok 25 - ledger entries are idempotent and do not directly credit wallets
+  ---
+  duration_ms: 0.597846
+  type: 'test'
+  ...
+# Subtest: unverified sharer allocation remains unallocated
+ok 26 - unverified sharer allocation remains unallocated
+  ---
+  duration_ms: 0.612308
+  type: 'test'
+  ...
+# Subtest: client Firestore writes remain denied by the default deny rule
+ok 27 - client Firestore writes remain denied by the default deny rule
+  ---
+  duration_ms: 4.210461
+  type: 'test'
+  ...
+# Subtest: full refund reverses the exact original 30/20/50 allocation
+ok 28 - full refund reverses the exact original 30/20/50 allocation
+  ---
+  duration_ms: 4.007307
+  type: 'test'
+  ...
+# Subtest: multiple partial refunds reverse only the incremental allocation
+ok 29 - multiple partial refunds reverse only the incremental allocation
+  ---
+  duration_ms: 0.612
+  type: 'test'
+  ...
+# Subtest: platform receives rounding remainder and allocations exactly equal refund
+ok 30 - platform receives rounding remainder and allocations exactly equal refund
+  ---
+  duration_ms: 0.807077
+  type: 'test'
+  ...
+# Subtest: rejects zero, fractional, negative and over-refund values
+ok 31 - rejects zero, fractional, negative and over-refund values
+  ---
+  duration_ms: 4.168384
+  type: 'test'
+  ...
+# Subtest: allocates 30/20/50 and balances odd paise exactly
+ok 32 - allocates 30/20/50 and balances odd paise exactly
+  ---
+  duration_ms: 4.550846
+  type: 'test'
+  ...
+# Subtest: rejects invalid monetary amounts
+ok 33 - rejects invalid monetary amounts
+  ---
+  duration_ms: 0.830461
+  type: 'test'
+  ...
+# Subtest: only accepts explicitly verified sharer attribution
+ok 34 - only accepts explicitly verified sharer attribution
+  ---
+  duration_ms: 0.631385
+  type: 'test'
+  ...
+# Subtest: calculates 2% of verified admin net profit, not gross price
+ok 35 - calculates 2% of verified admin net profit, not gross price
+  ---
+  duration_ms: 1.992847
+  type: 'test'
+  ...
+# Subtest: unverified referral earns no commission
+ok 36 - unverified referral earns no commission
+  ---
+  duration_ms: 0.576307
+  type: 'test'
+  ...
+# Subtest: rejects invalid or negative profit
+ok 37 - rejects invalid or negative profit
+  ---
+  duration_ms: 0.978462
+  type: 'test'
+  ...
+# Subtest: prevents self or conflicted referral attribution
+ok 38 - prevents self or conflicted referral attribution
+  ---
+  duration_ms: 0.388
+  type: 'test'
+  ...
+# Subtest: rounds down to whole paise
+ok 39 - rounds down to whole paise
+  ---
+  duration_ms: 0.852615
+  type: 'test'
+  ...
+# Subtest: does not pay a zero-profit referral
+ok 40 - does not pay a zero-profit referral
+  ---
+  duration_ms: 0.403385
+  type: 'test'
+  ...
+1..40
+# tests 40
+# suites 0
+# pass 40
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 766.011923
+
+> jembee-play@0.1.0 test:paid-video-refund-reconcile
+> node --test src/app/api/admin/shorts/paid-video-refunds/reconcile/__tests__/route-contract.test.mjs
+
+TAP version 13
+# Subtest: refund reconciliation is admin authenticated
+ok 1 - refund reconciliation is admin authenticated
+  ---
+  duration_ms: 1.901
+  type: 'test'
+  ...
+# Subtest: only verified paid-video orders are reconciled
+ok 2 - only verified paid-video orders are reconciled
+  ---
+  duration_ms: 0.359385
+  type: 'test'
+  ...
+# Subtest: Cashfree SUCCESS refunds alone affect the reversal total
+ok 3 - Cashfree SUCCESS refunds alone affect the reversal total
+  ---
+  duration_ms: 0.523384
+  type: 'test'
+  ...
+# Subtest: reversal entries are deterministic and transactionally committed
+ok 4 - reversal entries are deterministic and transactionally committed
+  ---
+  duration_ms: 2.479385
+  type: 'test'
+  ...
+# Subtest: full refund revokes the purchase entitlement
+ok 5 - full refund revokes the purchase entitlement
+  ---
+  duration_ms: 0.471308
+  type: 'test'
+  ...
+# Subtest: refund reconciliation never credits a wallet or initiates a payout
+ok 6 - refund reconciliation never credits a wallet or initiates a payout
+  ---
+  duration_ms: 0.596538
+  type: 'test'
+  ...
+1..6
+# tests 6
+# suites 0
+# pass 6
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 223.450846
+
+> jembee-play@0.1.0 test:teacher-referral-settlement
+> node --test src/app/api/admin/shorts/teacher-referral/reconcile/__tests__/route-contract.test.mjs src/lib/server/__tests__/teacherReferralCommission.test.mjs src/lib/server/__tests__/paidVideoRevenueSplit.test.mjs src/lib/server/__tests__/paidVideoRefundReversal.test.mjs
+
+TAP version 13
+# Subtest: reconciliation is admin-authenticated and reads verified paid-video orders
+ok 1 - reconciliation is admin-authenticated and reads verified paid-video orders
+  ---
+  duration_ms: 2.171308
+  type: 'test'
+  ...
+# Subtest: net profit subtracts only verified INR expenses from platform ledger after refunds
+ok 2 - net profit subtracts only verified INR expenses from platform ledger after refunds
+  ---
+  duration_ms: 0.681231
+  type: 'test'
+  ...
+# Subtest: teacher commission uses the existing 2 percent net-profit calculator
+ok 3 - teacher commission uses the existing 2 percent net-profit calculator
+  ---
+  duration_ms: 0.444307
+  type: 'test'
+  ...
+# Subtest: reconciliation is idempotent and does not issue wallet credits or payouts
+ok 4 - reconciliation is idempotent and does not issue wallet credits or payouts
+  ---
+  duration_ms: 3.015077
+  type: 'test'
+  ...
+# Subtest: full refund reverses the exact original 30/20/50 allocation
+ok 5 - full refund reverses the exact original 30/20/50 allocation
+  ---
+  duration_ms: 3.883
+  type: 'test'
+  ...
+# Subtest: multiple partial refunds reverse only the incremental allocation
+ok 6 - multiple partial refunds reverse only the incremental allocation
+  ---
+  duration_ms: 0.692923
+  type: 'test'
+  ...
+# Subtest: platform receives rounding remainder and allocations exactly equal refund
+ok 7 - platform receives rounding remainder and allocations exactly equal refund
+  ---
+  duration_ms: 0.747154
+  type: 'test'
+  ...
+# Subtest: rejects zero, fractional, negative and over-refund values
+ok 8 - rejects zero, fractional, negative and over-refund values
+  ---
+  duration_ms: 3.329
+  type: 'test'
+  ...
+# Subtest: allocates 30/20/50 and balances odd paise exactly
+ok 9 - allocates 30/20/50 and balances odd paise exactly
+  ---
+  duration_ms: 3.753615
+  type: 'test'
+  ...
+# Subtest: rejects invalid monetary amounts
+ok 10 - rejects invalid monetary amounts
+  ---
+  duration_ms: 0.750153
+  type: 'test'
+  ...
+# Subtest: only accepts explicitly verified sharer attribution
+ok 11 - only accepts explicitly verified sharer attribution
+  ---
+  duration_ms: 0.523692
+  type: 'test'
+  ...
+# Subtest: calculates 2% of verified admin net profit, not gross price
+ok 12 - calculates 2% of verified admin net profit, not gross price
+  ---
+  duration_ms: 2.183769
+  type: 'test'
+  ...
+# Subtest: unverified referral earns no commission
+ok 13 - unverified referral earns no commission
+  ---
+  duration_ms: 0.597461
+  type: 'test'
+  ...
+# Subtest: rejects invalid or negative profit
+ok 14 - rejects invalid or negative profit
+  ---
+  duration_ms: 1.036231
+  type: 'test'
+  ...
+# Subtest: prevents self or conflicted referral attribution
+ok 15 - prevents self or conflicted referral attribution
+  ---
+  duration_ms: 0.499
+  type: 'test'
+  ...
+# Subtest: rounds down to whole paise
+ok 16 - rounds down to whole paise
+  ---
+  duration_ms: 1.829461
+  type: 'test'
+  ...
+# Subtest: does not pay a zero-profit referral
+ok 17 - does not pay a zero-profit referral
+  ---
+  duration_ms: 0.811385
+  type: 'test'
+  ...
+1..17
+# tests 17
+# suites 0
+# pass 17
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 327.351692
+
+> jembee-play@0.1.0 test:share-attribution-claim
+> node --test src/app/api/monetag/share-attribution/__tests__/route-contract.test.mjs src/app/api/monetag/share-attribution/claim/__tests__/route-contract.test.mjs src/app/videos/components/__tests__/PaidVideoGate-attribution.test.mjs
+
+TAP version 13
+# Subtest: share tokens are random, authenticated and bound to an approved safe video
+ok 1 - share tokens are random, authenticated and bound to an approved safe video
+  ---
+  duration_ms: 1.838846
+  type: 'test'
+  ...
+# Subtest: share link preserves video and attribution token on the Shorts route
+ok 2 - share link preserves video and attribution token on the Shorts route
+  ---
+  duration_ms: 0.426538
+  type: 'test'
+  ...
+# Subtest: share claim requires verified Firebase identity and exact share/video match
+ok 3 - share claim requires verified Firebase identity and exact share/video match
+  ---
+  duration_ms: 1.859385
+  type: 'test'
+  ...
+# Subtest: share claim rejects expired or unsafe links and records buyer-scoped claim
+ok 4 - share claim rejects expired or unsafe links and records buyer-scoped claim
+  ---
+  duration_ms: 0.470461
+  type: 'test'
+  ...
+# Subtest: paid video checkout claims referral link before creating order
+ok 5 - paid video checkout claims referral link before creating order
+  ---
+  duration_ms: 1.715384
+  type: 'test'
+  ...
+1..5
+# tests 5
+# suites 0
+# pass 5
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 295.985846
+
+> jembee-play@0.1.0 test:shorts-expense-evidence
+> node --test src/app/api/admin/shorts/expenses/__tests__/route-contract.test.mjs src/app/api/admin/shorts/expenses/verify/__tests__/route-contract.test.mjs
+
+TAP version 13
+# Subtest: expense records require admin, paid order, invoice evidence path and integer paise
+ok 1 - expense records require admin, paid order, invoice evidence path and integer paise
+  ---
+  duration_ms: 1.707615
+  type: 'test'
+  ...
+# Subtest: expense invoice IDs are idempotent and conflicting duplicates are rejected
+ok 2 - expense invoice IDs are idempotent and conflicting duplicates are rejected
+  ---
+  duration_ms: 0.398462
+  type: 'test'
+  ...
+# Subtest: only super admin can verify and evidence must exist in Firebase Storage
+ok 3 - only super admin can verify and evidence must exist in Firebase Storage
+  ---
+  duration_ms: 1.82277
+  type: 'test'
+  ...
+# Subtest: invoice evidence metadata must bind order, invoice and uploader before verification
+ok 4 - invoice evidence metadata must bind order, invoice and uploader before verification
+  ---
+  duration_ms: 0.425153
+  type: 'test'
+  ...
+# Subtest: pending review list is super-admin-only and issues short-lived private invoice previews
+ok 5 - pending review list is super-admin-only and issues short-lived private invoice previews
+  ---
+  duration_ms: 0.608616
+  type: 'test'
+  ...
+1..5
+# tests 5
+# suites 0
+# pass 5
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 261.451385
+
+> jembee-play@0.1.0 test:storage-expense-evidence
+> node --test src/firebase/__tests__/storage-expense-evidence-rules.test.mjs src/app/api/admin/shorts/expenses/__tests__/route-contract.test.mjs src/app/api/admin/shorts/expenses/verify/__tests__/route-contract.test.mjs
+
+TAP version 13
+# Subtest: expense records require admin, paid order, invoice evidence path and integer paise
+ok 1 - expense records require admin, paid order, invoice evidence path and integer paise
+  ---
+  duration_ms: 2.097154
+  type: 'test'
+  ...
+# Subtest: expense invoice IDs are idempotent and conflicting duplicates are rejected
+ok 2 - expense invoice IDs are idempotent and conflicting duplicates are rejected
+  ---
+  duration_ms: 0.514461
+  type: 'test'
+  ...
+# Subtest: only super admin can verify and evidence must exist in Firebase Storage
+ok 3 - only super admin can verify and evidence must exist in Firebase Storage
+  ---
+  duration_ms: 2.016
+  type: 'test'
+  ...
+# Subtest: invoice evidence metadata must bind order, invoice and uploader before verification
+ok 4 - invoice evidence metadata must bind order, invoice and uploader before verification
+  ---
+  duration_ms: 0.44977
+  type: 'test'
+  ...
+# Subtest: pending review list is super-admin-only and issues short-lived private invoice previews
+ok 5 - pending review list is super-admin-only and issues short-lived private invoice previews
+  ---
+  duration_ms: 0.681769
+  type: 'test'
+  ...
+# Subtest: Firebase deploy config includes Storage rules and Storage Emulator
+ok 6 - Firebase deploy config includes Storage rules and Storage Emulator
+  ---
+  duration_ms: 1.810846
+  type: 'test'
+  ...
+# Subtest: invoice evidence is restricted to the paid-video evidence path
+ok 7 - invoice evidence is restricted to the paid-video evidence path
+  ---
+  duration_ms: 0.779769
+  type: 'test'
+  ...
+# Subtest: only authenticated admins can create invoice evidence
+ok 8 - only authenticated admins can create invoice evidence
+  ---
+  duration_ms: 0.439692
+  type: 'test'
+  ...
+# Subtest: invoice upload enforces type, size and uploader metadata
+ok 9 - invoice upload enforces type, size and uploader metadata
+  ---
+  duration_ms: 2.973153
+  type: 'test'
+  ...
+# Subtest: clients cannot read, overwrite or delete invoice evidence
+ok 10 - clients cannot read, overwrite or delete invoice evidence
+  ---
+  duration_ms: 0.461308
+  type: 'test'
+  ...
+# Subtest: unmatched Storage paths are denied by default
+ok 11 - unmatched Storage paths are denied by default
+  ---
+  duration_ms: 0.513847
+  type: 'test'
+  ...
+1..11
+# tests 11
+# suites 0
+# pass 11
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 753.177923
+
+> jembee-play@0.1.0 test:shorts-expense-ui
+> node --test src/app/admin/shorts-expenses/__tests__/page-contract.test.mjs
+
+TAP version 13
+# Subtest: expense UI uploads only supported invoice types with scoped metadata
+ok 1 - expense UI uploads only supported invoice types with scoped metadata
+  ---
+  duration_ms: 1.655615
+  type: 'test'
+  ...
+# Subtest: expense UI authenticates API submission and records integer paise
+ok 2 - expense UI authenticates API submission and records integer paise
+  ---
+  duration_ms: 0.559462
+  type: 'test'
+  ...
+# Subtest: super admin review UI provides private invoice preview and verification action
+ok 3 - super admin review UI provides private invoice preview and verification action
+  ---
+  duration_ms: 0.356307
+  type: 'test'
+  ...
+# Subtest: expense amount parsing rejects more than two decimal places and avoids float rounding
+ok 4 - expense amount parsing rejects more than two decimal places and avoids float rounding
+  ---
+  duration_ms: 1.852
+  type: 'test'
+  ...
+1..4
+# tests 4
+# suites 0
+# pass 4
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 214.364385
+
+> jembee-play@0.1.0 test:video-preload-cache
+> node --test src/app/videos/components/__tests__/video-preload-cache.test.mjs
+
+TAP version 13
+# Subtest: feed preloads thumbnails for the active and next four videos only
+ok 1 - feed preloads thumbnails for the active and next four videos only
+  ---
+  duration_ms: 1.452
+  type: 'test'
+  ...
+# Subtest: feed limits video metadata preload to the same five-card window
+ok 2 - feed limits video metadata preload to the same five-card window
+  ---
+  duration_ms: 0.363154
+  type: 'test'
+  ...
+# Subtest: active video state is initialized before it is read for the preload window
+ok 3 - active video state is initialized before it is read for the preload window
+  ---
+  duration_ms: 0.490846
+  type: 'test'
+  ...
+1..3
+# tests 3
+# suites 0
+# pass 3
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 209.045308
+
+> jembee-play@0.1.0 test:shorts-share
+> node --test src/app/api/shorts/video-share/__tests__/route-contract.test.mjs
+
+TAP version 13
+# Subtest: video share writes are authenticated and transactionally idempotent
+ok 1 - video share writes are authenticated and transactionally idempotent
+  ---
+  duration_ms: 1.543692
+  type: 'test'
+  ...
+1..1
+# tests 1
+# suites 0
+# pass 1
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 211.433846
+
+> jembee-play@0.1.0 test:shorts-page
+> node --test src/app/shorts/__tests__/page-contract.test.mjs
+
+TAP version 13
+# Subtest: Shorts page statically imports its visible header and feed
+ok 1 - Shorts page statically imports its visible header and feed
+  ---
+  duration_ms: 1.892
+  type: 'test'
+  ...
+# Subtest: legacy third-party service worker import is removed
+ok 2 - legacy third-party service worker import is removed
+  ---
+  duration_ms: 0.464077
+  type: 'test'
+  ...
+# Subtest: Shorts route has a user-visible recovery boundary
+ok 3 - Shorts route has a user-visible recovery boundary
+  ---
+  duration_ms: 0.535077
+  type: 'test'
+  ...
+# Subtest: Shorts feed query hook is inside a Suspense boundary for production prerendering
+ok 4 - Shorts feed query hook is inside a Suspense boundary for production prerendering
+  ---
+  duration_ms: 0.389923
+  type: 'test'
+  ...
+1..4
+# tests 4
+# suites 0
+# pass 4
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 234.382154

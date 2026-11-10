@@ -1,7 +1,7 @@
 import { NextResponse } from "next/server";
 import { getAdminAuth, getAdminDb } from "@/firebase/admin";
 
-export async function withAdminAuth(handler: Function, req?: Request) {
+export async function withAdminAuth(handler: (request?: Request) => Response | Promise<Response>, req?: Request) {
   try {
     const adminAuth = getAdminAuth();
     const adminDb = getAdminDb();

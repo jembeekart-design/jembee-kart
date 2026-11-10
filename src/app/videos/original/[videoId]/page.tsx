@@ -61,7 +61,7 @@ export default function OriginalPage() {
         {derivedVideos.map(v => (
           <div key={v.id} className="aspect-[9/16] rounded-lg overflow-hidden">
             <VideoCard 
-              video={v as any} 
+              video={v as unknown as import("@/lib/videos/watch-earn/fetchWatchVideos").WatchVideo} 
               isMuted={true} 
               toggleMute={() => {}} 
               watchProgress={0} 

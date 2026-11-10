@@ -2,6 +2,7 @@ import { NextResponse } from "next/server";
 import crypto from "node:crypto";
 import { getAdminAuth, getAdminDb } from "@/firebase/admin";
 import { createResumableUploadSession } from "@/services/googleDriveService";
+import { classifyGoogleDriveError, googleDriveClientMessage, googleDriveErrorHttpStatus } from "@/lib/googleDriveErrors";
 
 export const runtime = "nodejs";
 
@@ -156,18 +157,11 @@ export async function POST(req: Request) {
       uploadUrl,
     });
   } catch (error) {
-    console.error("[UPLOAD_DEBUG_SERVER] START_ERROR", {
-      name: error instanceof Error ? error.name : typeof error,
-      message: error instanceof Error ? error.message : String(error),
-      stack: error instanceof Error ? error.stack : undefined,
-      creatorId,
-      submissionId,
-    });
-
-    console.error("Failed to start drive upload session:", error);
+    const code = classifyGoogleDriveError(error);
+    console.error("Drive upload session creation failed:", code);
     return NextResponse.json(
-      { success: false, message: "वीडियो अपलोड शुरू नहीं हो सका। कृपया पुनः प्रयास करें।" },
-      { status: 500 }
+      { success: false, code, message: googleDriveClientMessage(code) },
+      { status: googleDriveErrorHttpStatus(code) }
     );
   }
 }

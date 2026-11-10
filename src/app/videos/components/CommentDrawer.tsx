@@ -5,6 +5,7 @@ import { useAdminConfig } from "@/lib/admin-config/provider";
 import { getComments, addComment, ChatComment } from "@/firestore/services/socialService";
 import { likeVideoComment, unlikeVideoComment } from "@/lib/videos/watch-earn/likeVideoComment";
 import { auth } from "@/firebase/config";
+import type { Unsubscribe } from "firebase/firestore";
 import {
   Send,
   Heart
@@ -26,7 +27,7 @@ export default function CommentDrawer({ open, onClose, videoId, onCommentAdded }
   useEffect(() => {
     if (!open) return;
     
-    let unsub: any;
+    let unsub: Unsubscribe | undefined;
     async function loadComments() {
       unsub = await getComments(videoId, auth.currentUser?.uid || "", (data: ChatComment[]) => {
         setComments(data.map(comment => {
@@ -142,8 +143,8 @@ export default function CommentDrawer({ open, onClose, videoId, onCommentAdded }
 
       setCommentText("");
       setError("");
-    } catch (err: any) {
-      setError(err.message || "Failed to add comment.");
+    } catch (err: unknown) {
+      setError(err instanceof Error ? err.message : "Failed to add comment.");
     }
   }
 

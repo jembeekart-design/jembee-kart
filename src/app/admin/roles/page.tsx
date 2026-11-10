@@ -34,7 +34,7 @@ export default function RolesPage() {
       },
       {
         id: 3,
-        role: "Order Manager",
+        role: "Video Moderator",
         users: 2
       }
     ]);

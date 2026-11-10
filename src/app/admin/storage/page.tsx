@@ -39,7 +39,7 @@ export default function StoragePage() {
       },
       {
         id: 3,
-        name: "product-photo.jpg",
+        name: "video-thumbnail.jpg",
         type: "Image",
         size: "3.2 MB"
       }

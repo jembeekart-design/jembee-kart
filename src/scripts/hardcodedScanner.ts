@@ -49,7 +49,7 @@ interface PerformanceMetric {
 // ==========================================
 const UI_ENGINE_PATTERNS = [/className\s*=/, /max-w-\[/, /min-w-\[/, /w-\[/, /h-\[/, /rounded-/, /text-/, /bg-/, /border-/, /gap-/, /flex\b/, /grid\b/, /justify-/, /items-/, /p[xy]?-\d+/, /m[xy]?-\d+/];
 const PROGRAMMING_INFRA_PATTERNS = [/success\s*:/, /loading\s*:/, /blocked\s*:/, /enabled\s*:/, /disabled\s*:/, /isOpen/, /isLoading/, /console\.(log|error|warn|info)/, /return\s+/, /useState\s*\(/, /useEffect\s*\(/, /useCallback\s*\(/];
-const BUSINESS_LOGIC_KEYWORDS = ["commission", "cashback", "discount", "reward", "watch", "withdraw", "wallet", "gst", "shipping", "coin", "loyalty", "affiliate", "bonus", "profit", "seller", "referral"];
+const BUSINESS_LOGIC_KEYWORDS = ["commission", "reward", "watch", "withdraw", "wallet", "coin", "bonus", "profit", "creator", "teacher", "sharer", "settlement", "moderation"];
 
 const CORE_REGEXP_RULES = [
   { name: "Hardcoded Percentage", regex: /\b\d+\s*%/g, severity: "Critical" as const },

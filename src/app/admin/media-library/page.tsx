@@ -23,9 +23,17 @@ import {
   Loader2
 } from "lucide-react";
 
+interface MediaLibraryVideo {
+  id: string;
+  name: string;
+  type: "Video";
+  size: string;
+  publicId?: string;
+}
+
 export default function MediaLibraryPage() {
   const [search, setSearch] = useState("");
-  const [files, setFiles] = useState<any[]>([]);
+  const [files, setFiles] = useState<MediaLibraryVideo[]>([]);
   const [loading, setLoading] = useState(true);
   const [deletingId, setDeletingId] = useState<string | null>(null);
 
@@ -33,12 +41,12 @@ export default function MediaLibraryPage() {
     try {
       const q = query(collection(db, "watchEarnVideos"), orderBy("createdAt", "desc"));
       const snapshot = await getDocs(q);
-      const data = snapshot.docs.map((doc) => ({
-        id: doc.id,
-        name: doc.data().title || "Untitled Video",
+      const data: MediaLibraryVideo[] = snapshot.docs.map((item) => ({
+        id: item.id,
+        name: typeof item.data().title === "string" ? item.data().title : "Untitled Video",
         type: "Video",
         size: "N/A",
-        publicId: doc.data().publicId,
+        publicId: typeof item.data().publicId === "string" ? item.data().publicId : undefined,
       }));
       setFiles(data);
     } catch (error) {
@@ -49,10 +57,11 @@ export default function MediaLibraryPage() {
   };
 
   useEffect(() => {
-    fetchVideos();
+    const timer = window.setTimeout(() => { void fetchVideos(); }, 0);
+    return () => window.clearTimeout(timer);
   }, []);
 
-  const handleDelete = async (file: any) => {
+  const handleDelete = async (file: MediaLibraryVideo) => {
     if (!confirm("Are you sure you want to permanently delete this video?")) return;
 
     setDeletingId(file.id);
@@ -73,8 +82,8 @@ export default function MediaLibraryPage() {
       } else {
         throw new Error(result.message || "Failed to delete video");
       }
-    } catch (error: any) {
-      toast.error(error.message);
+    } catch (error) {
+      toast.error(error instanceof Error ? error.message : "Failed to delete video.");
     } finally {
       setDeletingId(null);
     }

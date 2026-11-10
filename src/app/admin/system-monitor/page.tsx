@@ -2,6 +2,7 @@
 
 export const dynamic = "force-dynamic";
 
+import type { LucideIcon } from "lucide-react";
 import {
   Activity,
   Cpu,
@@ -366,7 +367,11 @@ function StatsCard({
   title,
   value,
   icon: Icon
-}: any) {
+}: {
+  title: string;
+  value: string;
+  icon: LucideIcon;
+}) {
 
   return (
 

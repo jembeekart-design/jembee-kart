@@ -19,28 +19,28 @@ const tickets = [
   {
     id: "#SUP-1021",
     user: "Rahul Sharma",
-    issue: "Order not delivered",
+    issue: "Shorts playback is not starting",
     status: "Pending",
     priority: "High"
   },
   {
     id: "#SUP-1022",
     user: "Aman Khan",
-    issue: "Refund request",
+    issue: "Paid video refund review",
     status: "Resolved",
     priority: "Medium"
   },
   {
     id: "#SUP-1023",
     user: "Priya Singh",
-    issue: "Payment failed",
+    issue: "Creator upload status",
     status: "Open",
     priority: "High"
   },
   {
     id: "#SUP-1024",
     user: "Rohit Das",
-    issue: "Account issue",
+    issue: "Account sign-in issue",
     status: "Resolved",
     priority: "Low"
   }
@@ -80,11 +80,11 @@ export default function CustomerSupportPage() {
         <div>
 
           <h1 className="text-3xl font-black">
-            Customer Support
+            Viewer & Creator Support
           </h1>
 
           <p className="mt-1 text-sm text-[var(--muted-text-color)]">
-            Manage customer tickets & support
+            Manage viewer, creator and learning-platform tickets
           </p>
 
         </div>
@@ -132,7 +132,7 @@ export default function CustomerSupportPage() {
 
         <input
           type="text"
-          placeholder="Search customer..."
+          placeholder="Search viewers and creators..."
           value={search}
           onChange={(e) =>
             setSearch(

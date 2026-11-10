@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import { getAdminAuth, getAdminDb } from "@/firebase/admin";
 import { getResumableUploadStatus } from "@/services/googleDriveService";
+import { classifyGoogleDriveError, googleDriveClientMessage, googleDriveErrorHttpStatus } from "@/lib/googleDriveErrors";
 
 export const runtime = "nodejs";
 
@@ -146,22 +147,11 @@ export async function POST(req: Request) {
       completed: !!status.driveFileId,
     });
   } catch (error) {
-    console.error("[UPLOAD_DEBUG_SERVER] RECOVERY_ERROR", {
-      name: error instanceof Error ? error.name : typeof error,
-      message: error instanceof Error ? error.message : String(error),
-      submissionId,
-      creatorId,
-    });
-
+    const code = classifyGoogleDriveError(error);
+    console.error("Drive upload recovery failed:", code);
     return NextResponse.json(
-      {
-        success: false,
-        message:
-          error instanceof Error
-            ? error.message
-            : "Failed to recover Drive upload",
-      },
-      { status: 500 }
+      { success: false, code, message: googleDriveClientMessage(code) },
+      { status: googleDriveErrorHttpStatus(code) }
     );
   }
 }

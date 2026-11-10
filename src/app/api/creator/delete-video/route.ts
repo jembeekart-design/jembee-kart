@@ -1,4 +1,5 @@
 import { NextResponse } from "next/server";
+import { classifyGoogleDriveError } from "@/lib/googleDriveErrors";
 import { getAdminDb, getAdminAuth } from "@/firebase/admin";
 import { v2 as cloudinary } from "cloudinary";
 import { deleteDriveFile } from "@/services/googleDriveService";
@@ -59,7 +60,10 @@ export async function POST(req: Request) {
       try {
         await deleteDriveFile(driveFileId);
       } catch (driveError) {
-        const status = (driveError as any)?.code ?? (driveError as any)?.response?.status;
+        const driveErrorValue = driveError && typeof driveError === "object"
+          ? driveError as { code?: unknown; response?: { status?: unknown } }
+          : null;
+        const status = driveErrorValue?.code ?? driveErrorValue?.response?.status;
         if (Number(status) !== 404) {
           console.error("Drive deletion failed; video remains hidden for retry:", driveError);
           return NextResponse.json(
@@ -96,7 +100,7 @@ export async function POST(req: Request) {
 
     return NextResponse.json({ success: true, message: "Video deleted successfully." });
   } catch (error) {
-    console.error("Delete Video API Error:", error);
+    console.error("Creator video deletion failed:", classifyGoogleDriveError(error));
     return NextResponse.json({ success: false, message: "Internal server error" }, { status: 500 });
   }
 }

@@ -26,11 +26,7 @@ export default function UserProfilePage() {
   const [notFound, setNotFound] = useState(false);
 
   useEffect(() => {
-    if (!uid) {
-      setLoading(false);
-      setNotFound(true);
-      return;
-    }
+    if (!uid) return;
 
     const docRef = doc(db, "users", uid);
 
@@ -63,6 +59,14 @@ export default function UserProfilePage() {
 
     return () => unsubscribe();
   }, [uid]);
+
+  if (!uid) {
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-[var(--color-page-background)] p-4">
+        User profile not found.
+      </div>
+    );
+  }
 
   if (loading) {
     return (

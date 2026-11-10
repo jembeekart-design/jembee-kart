@@ -12,7 +12,6 @@ interface VideoPlayerProps {
   isMuted?: boolean;
   active?: boolean;
   playbackRate?: number;
-  onActualPlaybackSeconds?: (seconds: number) => void;
   onNinetyPercentWatched?: () => void;
   poster?: string;
   preloadMetadata?: boolean;
@@ -23,7 +22,6 @@ export default function VideoPlayer({
   isMuted = true,
   active = false,
   playbackRate = 1,
-  onActualPlaybackSeconds,
   onNinetyPercentWatched,
   poster,
   preloadMetadata = false,
@@ -32,7 +30,6 @@ export default function VideoPlayer({
   const progressBarRef = useRef<HTMLDivElement>(null);
   const lastMediaTimeRef = useRef<number | null>(null);
   const lastWallTimeRef = useRef<number | null>(null);
-  const playbackFractionRef = useRef(0);
   const watchedMediaSecondsRef = useRef(0);
   const ninetyPercentReportedRef = useRef(false);
 
@@ -82,7 +79,6 @@ export default function VideoPlayer({
     if (!video) return;
 
     setProgress(0);
-    playbackFractionRef.current = 0;
     watchedMediaSecondsRef.current = 0;
     ninetyPercentReportedRef.current = false;
     lastMediaTimeRef.current = null;
@@ -131,7 +127,6 @@ export default function VideoPlayer({
           mediaDelta > 0 &&
           mediaDelta <= Math.max(2.5, maximumExpectedDelta)
         ) {
-          playbackFractionRef.current += mediaDelta;
           watchedMediaSecondsRef.current += mediaDelta;
           const totalDuration = video.duration;
           if (
@@ -142,12 +137,6 @@ export default function VideoPlayer({
           ) {
             ninetyPercentReportedRef.current = true;
             onNinetyPercentWatched?.();
-          }
-          const wholeSeconds = Math.floor(playbackFractionRef.current);
-
-          if (wholeSeconds > 0) {
-            playbackFractionRef.current -= wholeSeconds;
-            onActualPlaybackSeconds?.(wholeSeconds);
           }
         }
       }
