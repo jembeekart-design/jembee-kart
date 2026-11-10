@@ -11,7 +11,7 @@ test("feed preloads thumbnails for the active and next four videos only", () => 
 test("feed limits video metadata preload to the same five-card window", () => {
   assert.ok(feed.includes("preloadMetadata={index >= activeVideoIndex && index < activeVideoIndex + 5"));
   assert.ok(player.includes('preload={active || preloadMetadata ? "metadata" : "none"}'));
-  assert.ok(!player.includes('preload={active ? "auto" : "none"}'));
+  assert.ok(player.includes('fetchPriority={active ? "high" : "auto"}'));
 });
 
 test("active video state is initialized before it is read for the preload window", () => {

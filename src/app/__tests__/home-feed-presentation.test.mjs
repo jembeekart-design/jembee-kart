@@ -17,6 +17,8 @@ test("Home feed has separate Shorts grid, Long Video cards and manual ad slots b
   assert.match(home, /home-after-video-grid/);
   assert.match(home, /View all Shorts/);
   assert.match(home, /View all videos/);
+  assert.match(home, /videos\.slice\(0, 4\)/);
+  assert.match(home, /grid grid-cols-2 gap-3/);
 });
 
 test("Public creator labels never fall back to a private email address", async () => {
@@ -45,6 +47,6 @@ test("Short or long video format is saved at upload and copied after admin appro
 test("Long video cards use a landscape poster and native controls without eager video downloads", async () => {
   const videos = await read("src/app/videos/page.tsx");
   assert.match(videos, /aspect-video/);
-  assert.match(videos, /controls playsInline preload="none"/);
+  assert.match(videos, /controls playsInline preload="metadata"/);
   assert.match(videos, /video\.videoFormat === "long"/);
 });

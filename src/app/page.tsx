@@ -60,8 +60,8 @@ function ShortsGrid({ videos }: { videos: WatchVideo[] }) {
 
   if (!videos.length) return <div className="rounded-2xl border border-dashed border-white/15 p-6 text-center text-sm text-slate-400">अभी कोई approved Short उपलब्ध नहीं है। नया approved Short आने पर वह यहाँ दिखेगा।</div>;
   return (
-    <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-4">
-      {videos.slice(0, 8).map((video, index) => (
+    <div className="grid grid-cols-2 gap-3">
+      {videos.slice(0, 4).map((video, index) => (
         <Link key={video.id} href={`/shorts?v=${encodeURIComponent(video.id)}`} className="group relative min-w-0 overflow-hidden rounded-2xl bg-slate-900">
           <Thumbnail video={video} ratio="short" eager={index < 4}/>
           <div className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-black/95 via-black/45 to-transparent p-3 pt-12 text-white">
@@ -149,7 +149,7 @@ export default function HomePage() {
               <h2 id="shorts-heading" className="flex items-center gap-2 text-lg font-bold sm:text-xl"><PlaySquare className="text-rose-500" size={23}/> Shorts</h2>
               <Link href="/shorts" className="shrink-0 text-sm font-semibold text-cyan-300 hover:underline">View all Shorts</Link>
             </div>
-            {loading ? <div className="grid grid-cols-2 gap-3 sm:grid-cols-4">{Array.from({ length: 4 }, (_, index) => <div key={index} className="aspect-[9/16] animate-pulse rounded-2xl bg-white/5"/>)}</div> : error ? <p role="status" className="rounded-xl border border-amber-400/20 bg-amber-400/5 p-4 text-sm text-amber-100">{error}</p> : <ShortsGrid videos={shorts}/>}
+            {loading ? <div className="grid grid-cols-2 gap-3">{Array.from({ length: 4 }, (_, index) => <div key={index} className="aspect-[9/16] animate-pulse rounded-2xl bg-white/5"/>)}</div> : error ? <p role="status" className="rounded-xl border border-amber-400/20 bg-amber-400/5 p-4 text-sm text-amber-100">{error}</p> : <ShortsGrid videos={shorts}/>}
           </section>
 
           <MonetagPlacement placement="home-after-shorts" />

@@ -53,6 +53,9 @@ test("Monetag card opens only through a user click with sponsored link attribute
   assert.match(component, /logoImageUrl/);
   assert.match(component, /advertiserName/);
   assert.doesNotMatch(component, /window\.open|setTimeout|location\.href/);
+  assert.match(component, /data-ad-slot-placeholder="true"/);
+  assert.match(component, /विज्ञापन स्थान Admin द्वारा नियंत्रित/);
+  assert.match(component, /Sponsored space/);
 });
 
 test("Home, Explore and Video Library mount only their allowlisted placements", async () => {

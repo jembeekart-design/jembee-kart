@@ -9,11 +9,23 @@ type UploadStatusResult = {
   driveFileId?: string;
 };
 
+export interface UploadControl {
+  signal?: AbortSignal;
+  waitWhilePaused?: () => Promise<void>;
+}
+
+function throwIfUploadAborted(control?: UploadControl) {
+  if (control?.signal?.aborted) {
+    throw new DOMException("Upload cancelled", "AbortError");
+  }
+}
+
 export async function uploadVideoToDrive(
   file: File,
   uploadUrl: string,
   onProgress?: (uploadedBytes: number, totalBytes: number) => void,
-  recoverStatus?: () => Promise<UploadStatusResult>
+  recoverStatus?: () => Promise<UploadStatusResult>,
+  control?: UploadControl
 ): Promise<string> {
   // 2MB keeps individual mobile requests smaller while remaining
   // a multiple of Google's required 256KB chunk size.
@@ -31,6 +43,7 @@ export async function uploadVideoToDrive(
     uploadUrlPresent: !!uploadUrl,
   });
 
+  throwIfUploadAborted(control);
   const initialStatus = await getUploadStatus();
 
   if (initialStatus.driveFileId) {
@@ -53,6 +66,8 @@ export async function uploadVideoToDrive(
   onProgress?.(uploadedBytes, file.size);
 
   while (uploadedBytes < file.size) {
+    await control?.waitWhilePaused?.();
+    throwIfUploadAborted(control);
     const start = uploadedBytes;
     const end = Math.min(start + CHUNK_SIZE, file.size);
     const chunk = file.slice(start, end);
@@ -78,6 +93,9 @@ export async function uploadVideoToDrive(
         catch { return "invalid-url"; }
       })();
       const timeoutId = setTimeout(() => controller.abort(), 60000);
+      const abortFromParent = () => controller.abort();
+      control?.signal?.addEventListener("abort", abortFromParent, { once: true });
+      if (control?.signal?.aborted) controller.abort();
       try {
         response = await fetch(uploadUrl, {
           method: "PUT",
@@ -90,6 +108,7 @@ export async function uploadVideoToDrive(
         });
 
         clearTimeout(timeoutId);
+        control?.signal?.removeEventListener("abort", abortFromParent);
 
         console.log("[DRIVE_DEBUG] CHUNK_ATTEMPT_RESPONSE", {
           attempt,
@@ -109,6 +128,10 @@ export async function uploadVideoToDrive(
         break;
       } catch (error) {
         clearTimeout(timeoutId);
+        control?.signal?.removeEventListener("abort", abortFromParent);
+        if (control?.signal?.aborted) {
+          throw new DOMException("Upload cancelled", "AbortError");
+        }
         lastFetchError = error;
 
         console.error("[DRIVE_DEBUG] CHUNK_ATTEMPT_ERROR", {
@@ -137,6 +160,8 @@ export async function uploadVideoToDrive(
         }
       }
     }
+
+    throwIfUploadAborted(control);
 
     if (!response) {
       console.warn("[DRIVE_DEBUG] CHUNK_FETCH_FAILED_STATUS_RECOVERY", {

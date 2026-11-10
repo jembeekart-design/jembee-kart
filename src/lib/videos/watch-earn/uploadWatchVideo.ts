@@ -1,6 +1,7 @@
 import { auth } from "@/firebase/config";
 import { onAuthStateChanged, type User } from "firebase/auth";
 import { submitVideoForModeration } from "./submitVideoForModeration";
+import type { UploadControl } from "./uploadVideoToDrive";
 
 interface UploadWatchVideoData {
   file: File;
@@ -20,6 +21,7 @@ interface UploadWatchVideoData {
   originalAudioId?: string;
   isEnhanced?: boolean;
   onProgress?: (uploadedBytes: number, totalBytes: number) => void;
+  control?: UploadControl;
 }
 
 export interface ModerationSubmissionMetadata {
@@ -56,6 +58,7 @@ export async function uploadWatchVideo({
   originalAudioId,
   isEnhanced,
   onProgress,
+  control,
 }: UploadWatchVideoData) {
   try {
     // ==================================================
@@ -166,7 +169,8 @@ export async function uploadWatchVideo({
     const result = await submitVideoForModeration(
       file,
       metadata,
-      onProgress
+      onProgress,
+      control
     );
 
     console.log("[UPLOAD_DEBUG] WATCH_AFTER_SUBMIT", result);

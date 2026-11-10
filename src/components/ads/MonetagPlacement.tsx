@@ -47,7 +47,24 @@ export function MonetagPlacement({ placement }: { placement: MonetagPlacementId 
     };
   }, [placement]);
 
-  if (!slot) return null;
+  if (!slot) {
+    // Keep the Admin-defined location visible without inventing an advertiser,
+    // creative, destination URL, or clickable fake ad.
+    return (
+      <aside
+        aria-label="Advertisement space"
+        data-ad-placement={placement}
+        data-ad-slot-placeholder="true"
+        role="note"
+        className="my-5 flex min-h-20 items-center justify-center rounded-2xl border border-dashed border-white/15 bg-white/[0.025] px-4 py-5 text-center"
+      >
+        <div>
+          <p className="text-xs font-bold uppercase tracking-wider text-slate-400">Sponsored space</p>
+          <p className="mt-1 text-sm text-slate-500">यह विज्ञापन स्थान Admin द्वारा नियंत्रित है</p>
+        </div>
+      </aside>
+    );
+  }
 
   const advertiser = slot.advertiserName?.trim() || slot.name || "Sponsored offer";
 

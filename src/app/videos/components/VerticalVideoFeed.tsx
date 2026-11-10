@@ -536,11 +536,10 @@ export default function VerticalVideoFeed({
                 />
               ) : (
                 <VideoPlayer
-                  videoUrl={
-                    video.videoAccess === "paid"
-                      ? `/api/shorts/video-stream/${encodeURIComponent(video.id)}`
-                      : video.video
-                  }
+                  // Route both free and authorized paid playback through the
+                  // bounded byte-range Drive stream endpoint. This prevents the
+                  // browser from fetching a full source file during preload.
+                  videoUrl={`/api/shorts/video-stream/${encodeURIComponent(video.id)}`}
                   isMuted={isMuted}
                   active={effectiveActiveVideoId === video.id}
                   playbackRate={playbackSpeeds[video.id] || 1}

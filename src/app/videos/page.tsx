@@ -43,7 +43,7 @@ function LongVideoWatch({ video }: { video: WatchVideo }) {
       </header>
       <section className="mx-auto max-w-5xl px-3 py-4 sm:px-5">
         <div className="overflow-hidden rounded-xl bg-black">
-          <video src={video.video} poster={publicVideoThumbnail(video)} controls playsInline preload="none" className="block aspect-video w-full bg-black" aria-label={video.caption || "JEMBEE PLAY long video"}/>
+          <video src={`/api/shorts/video-stream/${encodeURIComponent(video.id)}`} poster={publicVideoThumbnail(video)} controls playsInline preload="metadata" className="block aspect-video w-full bg-black" aria-label={video.caption || "JEMBEE PLAY long video"}/>
         </div>
         <h1 className="mt-4 text-xl font-black sm:text-2xl">{video.caption || "Untitled video"}</h1>
         <div className="mt-3 flex items-center gap-3">
