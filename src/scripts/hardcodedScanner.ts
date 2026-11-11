@@ -135,7 +135,7 @@ class GovernanceEngineSuite {
   private parseFileKernel(filePath: string) {
     try {
       const bufferedContent = fs.readFileSync(filePath, "utf8");
-      const computedHash = crypto.createHash("md5").update(bufferedContent).digest("hex");
+      const computedHash = crypto.createHash("sha256").update(bufferedContent).digest("hex");
       const relativeWorkspacePath = filePath.replace(process.cwd(), "");
 
       // Incremental Analyzer Core
