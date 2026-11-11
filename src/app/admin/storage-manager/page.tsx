@@ -55,42 +55,32 @@ export default function StorageManagerPage() {
     useState(false);
 
   useEffect(() => {
+    let active = true;
 
-    fetchSettings();
+    const timer = window.setTimeout(() => {
+      void (async () => {
+        try {
+          const ref = doc(db, "admin_settings", "storage_manager");
+          const snap = await getDoc(ref);
 
+          if (!active) return;
+
+          if (snap.exists()) {
+            setSettings(snap.data() as StorageSettings);
+          }
+        } catch (error) {
+          if (active) console.error(error);
+        } finally {
+          if (active) setLoading(false);
+        }
+      })();
+    }, 0);
+
+    return () => {
+      active = false;
+      window.clearTimeout(timer);
+    };
   }, []);
-
-  async function fetchSettings() {
-
-    try {
-
-      const ref = doc(
-        db,
-        "admin_settings",
-        "storage_manager"
-      );
-
-      const snap =
-        await getDoc(ref);
-
-      if (snap.exists()) {
-
-        setSettings(
-          snap.data() as StorageSettings
-        );
-
-      }
-
-    } catch (error) {
-
-      console.log(error);
-
-    } finally {
-
-      setLoading(false);
-
-    }
-  }
 
   async function saveSettings() {
 
@@ -122,9 +112,9 @@ export default function StorageManagerPage() {
     }
   }
 
-  function updateField(
-    field: keyof StorageSettings,
-    value: any
+  function updateField<K extends keyof StorageSettings>(
+    field: K,
+    value: StorageSettings[K]
   ) {
 
     setSettings((prev) => ({

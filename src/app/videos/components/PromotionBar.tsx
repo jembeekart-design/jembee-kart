@@ -1,15 +1,18 @@
 "use client";
 
+import { useRouter } from "next/navigation";
+
 export default function PromotionBar() {
-  const url = "https://jembeekart.com";
-  
+  const router = useRouter();
+
   return (
-    <div 
-      className="absolute bottom-40 left-4 right-4 z-40 bg-black/60 backdrop-blur-md border border-white/10 rounded-xl p-3 flex items-center justify-between text-white cursor-pointer hover:bg-black/80 transition"
-      onClick={() => window.open(url, '_blank')}
+    <button
+      type="button"
+      className="absolute bottom-40 left-4 right-4 z-40 flex items-center justify-between rounded-xl border border-white/10 bg-black/60 p-3 text-left text-white backdrop-blur-md transition hover:bg-black/80"
+      onClick={() => router.push("/learn/school")}
     >
-      <span className="text-sm font-bold truncate">🌐 Visit: jembeekart.com</span>
-      <span className="text-xs font-semibold px-3 py-1 bg-white/20 rounded-full">Open</span>
-    </div>
+      <span className="truncate text-sm font-bold">Explore School Learning</span>
+      <span className="rounded-full bg-white/20 px-3 py-1 text-xs font-semibold">Open</span>
+    </button>
   );
 }

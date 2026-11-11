@@ -1,6 +1,7 @@
 import { auth } from "@/firebase/config";
 import { onAuthStateChanged, type User } from "firebase/auth";
 import { submitVideoForModeration } from "./submitVideoForModeration";
+import type { UploadControl } from "./uploadVideoToDrive";
 
 interface UploadWatchVideoData {
   file: File;
@@ -11,6 +12,8 @@ interface UploadWatchVideoData {
   caption: string;
   videoAccess?: "free" | "paid";
   videoPrice?: number;
+  videoFormat?: "short" | "long";
+  durationSeconds?: number;
   hashtags: string[];
   music: string;
   sponsor?: boolean;
@@ -18,6 +21,7 @@ interface UploadWatchVideoData {
   originalAudioId?: string;
   isEnhanced?: boolean;
   onProgress?: (uploadedBytes: number, totalBytes: number) => void;
+  control?: UploadControl;
 }
 
 export interface ModerationSubmissionMetadata {
@@ -33,6 +37,8 @@ export interface ModerationSubmissionMetadata {
   isEnhanced: boolean;
   videoAccess?: "free" | "paid";
   videoPrice?: number;
+  videoFormat?: "short" | "long";
+  durationSeconds?: number;
 }
 
 export async function uploadWatchVideo({
@@ -43,6 +49,8 @@ export async function uploadWatchVideo({
   caption,
   videoAccess = "free",
   videoPrice = 0,
+  videoFormat = "short",
+  durationSeconds,
   hashtags,
   music,
   sponsor,
@@ -50,6 +58,7 @@ export async function uploadWatchVideo({
   originalAudioId,
   isEnhanced,
   onProgress,
+  control,
 }: UploadWatchVideoData) {
   try {
     // ==================================================
@@ -140,6 +149,8 @@ export async function uploadWatchVideo({
       caption,
       videoAccess,
       videoPrice: videoAccess === "paid" ? videoPrice : 0,
+      videoFormat,
+      durationSeconds,
       hashtags,
       music,
       sponsor: sponsor === true,
@@ -158,7 +169,8 @@ export async function uploadWatchVideo({
     const result = await submitVideoForModeration(
       file,
       metadata,
-      onProgress
+      onProgress,
+      control
     );
 
     console.log("[UPLOAD_DEBUG] WATCH_AFTER_SUBMIT", result);

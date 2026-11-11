@@ -1,8 +1,25 @@
 import { NextResponse } from "next/server";
 
+interface CommentLikeSnapshot {
+  exists: boolean;
+  data(): Record<string, unknown> | undefined;
+}
+
+interface CommentLikeTransaction {
+  get(reference: object): Promise<CommentLikeSnapshot>;
+  set(reference: object, data: Record<string, unknown>): void;
+  update(reference: object, data: Record<string, unknown>): void;
+  delete(reference: object): void;
+}
+
+export interface CommentLikeDatabase {
+  collection(name: string): { doc(id: string): object };
+  runTransaction<T>(callback: (transaction: CommentLikeTransaction) => Promise<T>): Promise<T>;
+}
+
 type CommentLikeDependencies = {
   verifyToken: (token: string) => Promise<{ uid: string }>;
-  getDb: () => any;
+  getDb: () => CommentLikeDatabase;
 };
 
 export function createPostHandler(deps: CommentLikeDependencies) {
@@ -78,7 +95,7 @@ export function createPostHandler(deps: CommentLikeDependencies) {
         .collection("videoCommentLikes")
         .doc(commentId + "_" + uid);
 
-      const result = await db.runTransaction(async (tx: any) => {
+      const result = await db.runTransaction(async (tx: CommentLikeTransaction) => {
         const comment = await tx.get(commentRef);
         const like = await tx.get(likeRef);
 

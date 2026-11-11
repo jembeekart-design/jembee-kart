@@ -14,6 +14,17 @@ interface FollowButtonProps {
   targetUid: string;
 }
 
+function getFirebaseErrorDetails(error: unknown): { code: string | null; message: string } {
+  if (typeof error !== "object" || error === null) {
+    return { code: null, message: "An unexpected error occurred." };
+  }
+  const value = error as { code?: unknown; message?: unknown };
+  return {
+    code: typeof value.code === "string" ? value.code : null,
+    message: typeof value.message === "string" ? value.message : "Unable to complete the follow action.",
+  };
+}
+
 export default function FollowButton({
   targetUid,
 }: FollowButtonProps) {
@@ -50,16 +61,17 @@ export default function FollowButton({
       );
 
       setFollowing(status);
-    } catch (error: any) {
+    } catch (error: unknown) {
       console.error(
         "CHECK FOLLOW STATUS ERROR:",
         error
       );
 
+      const details = getFirebaseErrorDetails(error);
       setErrorMessage(
-        error?.code
-          ? `Follow status error: ${error.code}`
-          : error?.message || "Failed to check follow status."
+        details.code
+          ? `Follow status error: ${details.code}`
+          : details.message || "Failed to check follow status."
       );
 
       setFollowing(false);
@@ -120,15 +132,15 @@ export default function FollowButton({
 
         setFollowing(true);
       }
-    } catch (error: any) {
+    } catch (error: unknown) {
       console.error(
         "FOLLOW ACTION ERROR:",
         error
       );
 
-      const code = error?.code;
-      const message =
-        error?.message || "Unable to follow user.";
+      const details = getFirebaseErrorDetails(error);
+      const code = details.code;
+      const message = details.message || "Unable to follow user.";
 
       setErrorMessage(
         code
@@ -231,7 +243,7 @@ export default function FollowButton({
               if (!cancelled) {
                 setFollowing(true);
               }
-            } catch (error: any) {
+            } catch (error: unknown) {
               console.error(
                 "PENDING FOLLOW ERROR:",
                 error
@@ -239,12 +251,12 @@ export default function FollowButton({
 
               if (!cancelled) {
                 setErrorMessage(
-                  error?.code
-                    ? `${error.code}: ${
-                        error?.message || "Follow failed."
-                      }`
-                    : error?.message ||
-                      "Follow failed."
+                  (() => {
+                    const details = getFirebaseErrorDetails(error);
+                    return details.code
+                      ? `${details.code}: ${details.message}`
+                      : details.message || "Follow failed.";
+                  })()
                 );
               }
             }
@@ -272,7 +284,7 @@ export default function FollowButton({
         if (!cancelled) {
           setFollowing(status);
         }
-      } catch (error: any) {
+      } catch (error: unknown) {
         console.error(
           "FOLLOW INITIALIZATION ERROR:",
           error
@@ -281,14 +293,11 @@ export default function FollowButton({
         if (!cancelled) {
           setFollowing(false);
 
+          const details = getFirebaseErrorDetails(error);
           setErrorMessage(
-            error?.code
-              ? `${error.code}: ${
-                  error?.message ||
-                  "Failed to load follow status."
-                }`
-              : error?.message ||
-                "Failed to load follow status."
+            details.code
+              ? `${details.code}: ${details.message}`
+              : details.message
           );
         }
       } finally {

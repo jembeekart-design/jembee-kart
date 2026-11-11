@@ -14,7 +14,7 @@ export default function MessagesPage() {
   const messages = [
     {
       name: "Rahul Kumar",
-      message: "Order kab deliver hoga?"
+      message: "Mera video upload moderation mein kab tak rahega?"
     },
     {
       name: "Aman Ali",
@@ -22,11 +22,11 @@ export default function MessagesPage() {
     },
     {
       name: "Sneha Sharma",
-      message: "Affiliate link kaise use kare?"
+      message: "Video share link aur attribution kaise kaam karte hain?"
     },
     {
       name: "Rohit Raj",
-      message: "Return request bhejna hai"
+      message: "Mere learning chapter mein video answer add karna hai."
     }
   ];
 
@@ -47,11 +47,11 @@ export default function MessagesPage() {
         <div>
 
           <h1 className="text-3xl font-black">
-            Customer Messages
+            Platform Messages
           </h1>
 
           <p className="mt-1 text-sm text-[var(--muted-text-color)]">
-            Manage customer chats
+            Manage viewer, creator and learning-platform support messages
           </p>
 
         </div>

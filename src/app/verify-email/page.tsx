@@ -130,9 +130,9 @@ export default function VerifyEmailPage() {
       } else {
         alert("Email verification pending. Please verify via the link inside your inbox.");
       }
-    } catch (reloadError: any) {
+    } catch (reloadError: unknown) {
       console.error("Auth status sync invocation faulted:", reloadError);
-      alert(reloadError.message || "Status check failed.");
+      alert(reloadError instanceof Error ? reloadError.message : "Status check failed.");
     } finally {
       setChecking(false);
     }
@@ -154,9 +154,9 @@ export default function VerifyEmailPage() {
       const { sendEmailVerification } = await import("firebase/auth");
       await sendEmailVerification(currentUser);
       alert("A fresh verification mail sequence has been dispatched to your email address.");
-    } catch (resendError: any) {
+    } catch (resendError: unknown) {
       console.error("Token transmission engine sequence exception:", resendError);
-      alert(resendError.message || "Failed to resend token verification packet.");
+      alert(resendError instanceof Error ? resendError.message : "Failed to resend token verification packet.");
     } finally {
       setResendLoading(false);
     }

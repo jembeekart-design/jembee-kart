@@ -3,6 +3,7 @@ import { Readable } from "node:stream";
 import { getAdminDb } from "@/firebase/admin";
 import { playbackCookieName, verifyPlaybackToken } from "@/lib/payments/cashfreeServer";
 import { getDriveFileMetadata, getDriveFileStream } from "@/services/googleDriveService";
+import { classifyGoogleDriveError, googleDriveErrorHttpStatus } from "@/lib/googleDriveErrors";
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
@@ -115,27 +116,32 @@ export async function GET(
     }
 
     const rangeHeader = req.headers.get("range");
-    const MAX_STREAM_CHUNK_BYTES = 8 * 1024 * 1024;
+    // Keep each browser request bounded for mobile playback. Public free
+    // segments may be cached briefly by that user's browser; paid segments
+    // always remain no-store and continue to require the purchase cookie.
+    const MAX_STREAM_CHUNK_BYTES = 4 * 1024 * 1024;
+    const cacheControl = data?.videoAccess === "paid"
+      ? "private, no-store"
+      : "private, max-age=30, stale-while-revalidate=30";
     const headers = new Headers({
       "Content-Type": metadata.mimeType,
       "Accept-Ranges": "bytes",
-      "Cache-Control": "private, no-store",
+      "Cache-Control": cacheControl,
       "X-Content-Type-Options": "nosniff",
     });
 
     if (!rangeHeader) {
-      if (metadata.size > MAX_STREAM_CHUNK_BYTES) {
-        return new NextResponse("A bounded byte range is required", {
-          status: 416,
-          headers: { "Content-Range": `bytes */${metadata.size}`, "Accept-Ranges": "bytes" },
-        });
-      }
-      const { stream } = await getDriveFileStream(driveFileId);
-      headers.set("Content-Length", String(metadata.size));
+      // A first-segment response also helps browsers that begin metadata
+      // probing without a Range header. Never return the whole large file.
+      const start = 0;
+      const end = Math.min(metadata.size - 1, MAX_STREAM_CHUNK_BYTES - 1);
+      const { stream } = await getDriveFileStream(driveFileId, `bytes=${start}-${end}`);
+      headers.set("Content-Length", String(end - start + 1));
+      headers.set("Content-Range", `bytes ${start}-${end}/${metadata.size}`);
 
       return new NextResponse(
         Readable.toWeb(stream) as unknown as BodyInit,
-        { status: 200, headers }
+        { status: 206, headers }
       );
     }
 
@@ -167,7 +173,11 @@ export async function GET(
       { status: 206, headers }
     );
   } catch (error) {
-    console.error("Approved video stream failed:", error);
-    return new NextResponse("Video stream unavailable", { status: 500 });
+    const code = classifyGoogleDriveError(error);
+    console.error("Approved video stream failed:", code);
+    return new NextResponse("Video stream unavailable", {
+      status: googleDriveErrorHttpStatus(code),
+      headers: { "Cache-Control": "private, no-store" },
+    });
   }
 }

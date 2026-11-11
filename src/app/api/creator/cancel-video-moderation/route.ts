@@ -1,4 +1,5 @@
 import { NextResponse } from "next/server";
+import { classifyGoogleDriveError } from "@/lib/googleDriveErrors";
 import { getAdminAuth, getAdminDb } from "@/firebase/admin";
 import { deleteDriveFile } from "@/services/googleDriveService";
 
@@ -113,7 +114,7 @@ export async function POST(req: Request) {
     try {
       await deleteDriveFile(driveFileId);
     } catch (error) {
-      console.error("Drive cleanup failed during moderation cancellation:", error);
+      console.error("Drive cleanup failed during moderation cancellation:", classifyGoogleDriveError(error));
       await docRef.update({ status: "cancellation_failed", cancellationErrorAt: new Date() }).catch(() => undefined);
 
       return NextResponse.json(

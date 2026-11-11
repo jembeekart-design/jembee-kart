@@ -31,7 +31,7 @@ export async function POST(req: Request) {
     if (!site?.id) return NextResponse.json({ success: false, message: `Monetag account में ${siteUrl} नाम की site नहीं मिली। MONETAG_SITE_URL जाँचें।` }, { status: 404 });
     const allRows: Array<Record<string, unknown>> = [];
     let complete = false;
-    let statsData: any = {};
+    let statsData: Record<string, unknown> = {};
     const MAX_PAGES = 20;
     for (let page = 1; page <= MAX_PAGES; page++) {
       const statsRes = await fetch(`${API}/pub/statistics`, { method: "POST", headers, cache: "no-store", body: JSON.stringify({
@@ -40,7 +40,10 @@ export async function POST(req: Request) {
         zone_ids: [12065645, 12065644, 12065643, 12065642, 12064903, 12064902, 12064901, 12064900],
         page, page_size: pageSize
       }), signal: AbortSignal.timeout(20000) });
-      statsData = await statsRes.json().catch(() => ({}));
+      const parsedStats: unknown = await statsRes.json().catch(() => ({}));
+      statsData = typeof parsedStats === "object" && parsedStats !== null && !Array.isArray(parsedStats)
+        ? parsedStats as Record<string, unknown>
+        : {};
       if (!statsRes.ok) return NextResponse.json({ success: false, message: `Monetag statistics API ने HTTP ${statsRes.status} दिया।`, details: statsData }, { status: statsRes.status === 401 ? 401 : statsRes.status === 429 ? 429 : 502 });
       const pageRows = Array.isArray(statsData?.result) ? statsData.result : [];
       allRows.push(...pageRows);

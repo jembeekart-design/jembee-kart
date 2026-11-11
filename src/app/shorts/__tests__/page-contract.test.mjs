@@ -24,3 +24,8 @@ test('Shorts route has a user-visible recovery boundary', () => {
   assert.match(errorBoundary, /Shorts अभी लोड नहीं हो पाया/);
   assert.match(errorBoundary, /reset\(\)/);
 });
+
+test('Shorts feed query hook is inside a Suspense boundary for production prerendering', () => {
+  assert.match(page, /<Suspense\b[\s\S]*<FullscreenVideoFeed[\s\S]*<\/Suspense>/);
+});
+

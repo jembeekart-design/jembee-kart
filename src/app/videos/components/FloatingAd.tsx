@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useEffect, useRef, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 
 export interface FloatingAd {
@@ -22,29 +22,24 @@ export default function FloatingAdComponent({
   onDismiss?: () => void;
   autoDismissSeconds?: number;
 }) {
-  const [showAd, setShowAd] = useState(true);
   const [countdown, setCountdown] = useState(autoDismissSeconds);
+  const dismissNotified = useRef(false);
 
   useEffect(() => {
     if (countdown > 0) {
-      const timer = setTimeout(() => setCountdown(countdown - 1), 1000);
+      const timer = setTimeout(() => setCountdown((current) => Math.max(0, current - 1)), 1000);
       return () => clearTimeout(timer);
     }
   }, [countdown]);
 
   useEffect(() => {
-    setShowAd(true);
-    setCountdown(autoDismissSeconds);
-  }, [ad.id, autoDismissSeconds]);
-
-  useEffect(() => {
-    if (countdown === 0) {
-      setShowAd(false);
+    if (countdown === 0 && !dismissNotified.current) {
+      dismissNotified.current = true;
       onDismiss?.();
     }
-  }, [countdown]);
+  }, [countdown, onDismiss]);
 
-  if (!showAd || !ad.enabled || !ad.imageUrl || !ad.actionUrl) return null;
+  if (countdown === 0 || !ad.enabled || !ad.imageUrl || !ad.actionUrl) return null;
 
   return (
     <AnimatePresence>

@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import { getAdminDb } from "@/firebase/admin";
 import { getDriveFileMetadata } from "@/services/googleDriveService";
+import { classifyGoogleDriveError, googleDriveErrorHttpStatus } from "@/lib/googleDriveErrors";
 import { playbackCookieName, verifyPlaybackToken } from "@/lib/payments/cashfreeServer";
 
 export const runtime = "nodejs";
@@ -188,7 +189,11 @@ export async function GET(
       },
     });
   } catch (error) {
-    console.error("Drive thumbnail request failed:", error);
-    return new NextResponse("Thumbnail unavailable", { status: 500 });
+    const code = classifyGoogleDriveError(error);
+    console.error("Drive thumbnail request failed:", code);
+    return new NextResponse("Thumbnail unavailable", {
+      status: googleDriveErrorHttpStatus(code),
+      headers: { "Cache-Control": "private, no-store" },
+    });
   }
 }

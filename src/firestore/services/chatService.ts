@@ -1,3 +1,4 @@
+import type { Timestamp } from "firebase/firestore";
 import {
   collection,
   doc,
@@ -22,8 +23,8 @@ export interface ChatMessage {
   senderId: string;
   senderName: string;
   text: string;
-  createdAt: any;
-  readBy: Record<string, any>;
+  createdAt: Timestamp | null;
+  readBy: Record<string, Timestamp>;
 }
 
 export async function sendMessage(chatId: string, senderId: string, senderName: string, text: string) {

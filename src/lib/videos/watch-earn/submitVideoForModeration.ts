@@ -1,5 +1,5 @@
 import { auth } from "@/firebase/config";
-import { uploadVideoToDrive } from "./uploadVideoToDrive";
+import { uploadVideoToDrive, type UploadControl } from "./uploadVideoToDrive";
 
 export interface ModerationSubmissionMetadata {
   displayName?: string;
@@ -14,6 +14,8 @@ export interface ModerationSubmissionMetadata {
   isEnhanced: boolean;
   videoAccess?: "free" | "paid";
   videoPrice?: number;
+  videoFormat?: "short" | "long";
+  durationSeconds?: number;
 }
 
 export interface ModerationSubmissionResult {
@@ -26,7 +28,8 @@ export interface ModerationSubmissionResult {
 export async function submitVideoForModeration(
   file: File,
   metadata: ModerationSubmissionMetadata,
-  onProgress?: (uploadedBytes: number, totalBytes: number) => void
+  onProgress?: (uploadedBytes: number, totalBytes: number) => void,
+  control?: UploadControl
 ): Promise<ModerationSubmissionResult> {
   const currentUser = auth.currentUser;
 
@@ -115,6 +118,7 @@ export async function submitVideoForModeration(
         "Content-Type": "application/json",
       },
       body: JSON.stringify({ submissionId }),
+      signal: control?.signal,
     });
     const data = await response.json().catch(() => null);
 
@@ -154,7 +158,8 @@ export async function submitVideoForModeration(
       file,
       uploadUrl,
       onProgress,
-      recoverUploadStatus
+      recoverUploadStatus,
+      control
     );
 
     console.log("[UPLOAD_DEBUG] DRIVE_UPLOAD_RETURNED", {
@@ -202,6 +207,24 @@ export async function submitVideoForModeration(
       driveFileId,
     };
   } catch (error) {
+    if (control?.signal?.aborted || (error instanceof Error && error.name === "AbortError")) {
+      // Explicit user cancellation is not a network failure: do not recover or
+      // silently resume the upload. Close the moderation session best-effort.
+      try {
+        await fetch("/api/creator/cancel-video-moderation", {
+          method: "POST",
+          headers: {
+            Authorization: `Bearer ${token}`,
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({ submissionId }),
+        });
+      } catch {
+        // The resumable Drive session can expire naturally if cleanup is offline.
+      }
+      return { success: false, message: "Upload cancelled by you." };
+    }
+
     console.error("[UPLOAD_DEBUG] SUBMIT_ERROR", {
       name: error instanceof Error ? error.name : typeof error,
       message: error instanceof Error ? error.message : String(error),
@@ -292,7 +315,8 @@ export async function submitVideoForModeration(
             file,
             uploadUrl,
             onProgress,
-            recoverUploadStatus
+            recoverUploadStatus,
+            control
           );
 
           const resumedCompleteResponse = await fetch(

@@ -1,3 +1,5 @@
+import type { Timestamp } from "firebase/firestore";
+
 export type ModerationAction = 'reject' | 'hide' | 'pendingReview';
 
 export type CommentApprovalMode = 'instant' | 'pendingReview' | 'manual' | 'auto' | 'aiReady';
@@ -85,10 +87,10 @@ export interface CommentViolation {
 
 export interface CommentAuditLog {
   id?: string;
-  timestamp: any;
+  timestamp: Timestamp;
   adminId: string;
-  oldValue: Record<string, any>;
-  newValue: Record<string, any>;
+  oldValue: Record<string, unknown>;
+  newValue: Record<string, unknown>;
   changedFields: string[];
   reason: string;
   userId?: string;
@@ -99,7 +101,7 @@ export interface ReviewQueueItem {
   userId: string;
   videoId: string;
   commentText: string;
-  createdAt: any;
+  createdAt: Timestamp;
   status: 'pending' | 'approved' | 'rejected';
   reason: string;
   toxicScore?: number;

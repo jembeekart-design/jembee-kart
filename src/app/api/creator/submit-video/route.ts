@@ -1,4 +1,5 @@
 import { NextResponse } from "next/server";
+import { classifyGoogleDriveError, googleDriveClientMessage, googleDriveErrorHttpStatus } from "@/lib/googleDriveErrors";
 import Busboy from "busboy";
 import { Readable } from "node:stream";
 import crypto from "node:crypto";
@@ -366,10 +367,7 @@ export async function POST(req: Request) {
       try {
         await deleteDriveFile(uploadedDriveFileId);
       } catch (cleanupError) {
-        console.error(
-          "Drive cleanup failed:",
-          cleanupError
-        );
+        console.error("Drive cleanup after submission failed:", classifyGoogleDriveError(cleanupError));
       }
     }
 
@@ -386,17 +384,11 @@ export async function POST(req: Request) {
       );
     }
 
-    console.error(
-      "Creator moderation submission failed:",
-      error
-    );
-
+    const code = classifyGoogleDriveError(error);
+    console.error("Creator moderation submission failed:", code);
     return NextResponse.json(
-      {
-        success: false,
-        message: "वीडियो समीक्षा के लिए जमा नहीं हो सका। कृपया कुछ समय बाद पुनः प्रयास करें।",
-      },
-      { status: requestAborted ? 499 : 500 }
+      { success: false, code, message: googleDriveClientMessage(code) },
+      { status: requestAborted ? 499 : googleDriveErrorHttpStatus(code) }
     );
   }
 }

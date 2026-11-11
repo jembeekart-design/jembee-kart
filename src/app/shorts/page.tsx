@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { Suspense, useState } from "react";
 import ProductionHeader from "../videos/components/ProductionHeader";
 import FullscreenVideoFeed from "../videos/components/FullscreenVideoFeed";
 
@@ -13,7 +13,9 @@ export default function JembeeShortsPage() {
       aria-label="JEMBEE PLAY video feed"
     >
       <ProductionHeader />
-      <FullscreenVideoFeed activeTab={activeTab} />
+      <Suspense fallback={<div className="h-full w-full bg-black" aria-label="Loading video feed" />}>
+        <FullscreenVideoFeed activeTab={activeTab} />
+      </Suspense>
     </main>
   );
 }

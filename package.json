@@ -22,7 +22,10 @@
     "test:shorts-expense-ui": "node --test src/app/admin/shorts-expenses/__tests__/page-contract.test.mjs",
     "test:video-preload-cache": "node --test src/app/videos/components/__tests__/video-preload-cache.test.mjs",
     "test:shorts-share": "node --test src/app/api/shorts/video-share/__tests__/route-contract.test.mjs",
-    "test:shorts-page": "node --test src/app/shorts/__tests__/page-contract.test.mjs"
+    "test:shorts-page": "node --test src/app/shorts/__tests__/page-contract.test.mjs",
+    "test:home-feed": "node --test src/app/__tests__/home-feed-presentation.test.mjs src/lib/ads/__tests__/monetag-manual-placements.test.mjs",
+    "test:video-playback-smoothing": "node --test src/app/videos/components/__tests__/video-playback-smoothing.test.mjs",
+    "test:chatgpt-mcp": "node --test src/app/api/mcp/__tests__/route-contract.test.mjs"
   },
   "dependencies": {
     "@mediapipe/tasks-vision": "^1.0.1",

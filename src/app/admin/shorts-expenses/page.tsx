@@ -32,7 +32,10 @@ export default function ShortsExpensesPage() {
     } catch { setReviewMessage("Could not load pending expense reviews."); }
   }
 
-  useEffect(() => { void loadPendingExpenses(); }, []);
+  useEffect(() => {
+    const timer = window.setTimeout(() => { void loadPendingExpenses(); }, 0);
+    return () => window.clearTimeout(timer);
+  }, []);
 
   async function verifyExpense(expenseId: string) {
     const user = auth.currentUser;

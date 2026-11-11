@@ -1,6 +1,33 @@
-JEMBEE PLAY VIDEO PLATFORM ONLY
-Legacy non-video commerce and network-management routes/modules removed.
-See README.md and JEMBEE_PLAY_CLEANUP_REPORT_HI.md.
-Paid-video playback-session endpoint added.
-Video thumbnails and metadata preload is limited to the active and next four videos; full videos are not auto-downloaded.
-Live payouts remain disabled.
+JEMBEE PLAY — VIDEO PLATFORM ONLY
+
+Product scope:
+- Home / long-form videos / Shorts / School Learning
+- Viewer, Creator, Teacher, Sharer, Moderator and Admin roles
+- Video-related social actions, moderation, payments and settlement ledger
+
+Out of scope and removed from the active user journey:
+- Shopping and product selling
+- Product catalogue, cart, inventory and shipping UI
+- Seller / vendor and MLM sponsor-tree / downline / rank / package registration
+- Multi-level sponsor commission fields for newly created accounts
+
+Preserved video-platform flows:
+- Google Drive creator upload and moderation
+- Per-video share attribution
+- Cashfree paid-video purchase, verification, playback entitlement and refunds
+- Creator 30% / Sharer 20% / Platform 50% ledger split on the defined eligible revenue base
+- Separate Teacher Referral 2% ledger
+- Live payouts remain disabled until settlement and reconciliation verification
+
+Safety:
+- Existing Firestore historical data is not bulk-deleted by source cleanup.
+- No production Firebase / Drive / Cashfree connection was run as part of this archive.
+- Next.js build, TypeScript and ESLint are not verified in the current offline dependency environment.
+- Node contract tests: 79 passed, 0 failed at the recorded cleanup checkpoint.
+- GitHub integration write remains blocked (403); no commit or push is claimed.
+
+See:
+- JEMBEE_PLAY_CLEANUP_REPORT_HI.md
+- docs/jembee-play-audit/VIDEO_ONLY_SCOPE_CLEANUP_2026-11-09.md
+- docs/jembee-play-audit/PHASE_3_ARCHITECTURE_CLEANUP_MAP_2026-11-09.md
+- docs/jembee-play-audit/NEXT_IMPLEMENTATION_QUEUE_2026-11-09.md

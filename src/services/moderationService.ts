@@ -24,7 +24,7 @@ export const DEFAULT_SETTINGS: ModerationSettings = {
   allowPhoneNumbers: false,
   allowEmailAddresses: false,
   allowEmojis: true,
-  allowedDomains: ['youtube.com', 'github.com', 'jembeekart.com'],
+  allowedDomains: ['youtube.com', 'github.com'],
   blockedDomains: [],
   allowMentions: true,
   mentionRule: 'all',

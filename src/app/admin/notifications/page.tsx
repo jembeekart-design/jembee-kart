@@ -137,8 +137,8 @@ export default function NotificationsPage() {
 
   async function updateNotification(
     id: string,
-    field: string,
-    value: any
+    field: "title" | "message" | "imageUrl" | "visible",
+    value: string | boolean
   ) {
 
     try {

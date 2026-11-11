@@ -6,18 +6,17 @@ import {
   collection,
   query,
   where,
-  orderBy,
   getDocs,
   Timestamp,
 } from "firebase/firestore";
-import { Loader2, Trash2, Play, AlertCircle } from "lucide-react";
+import { Loader2, Trash2, Play } from "lucide-react";
 import { useRouter } from "next/navigation";
 
 interface HistoryVideo {
   id: string;
   caption: string;
   thumbnail: string;
-  createdAt: any;
+  createdAt: Timestamp | number | null;
   status: string;
   isEnhanced: boolean;
   video: string;
@@ -31,35 +30,53 @@ export default function MyUploadHistoryPage() {
   const router = useRouter();
 
   const fetchHistory = useCallback(async () => {
-    if (!auth.currentUser) return;
-    
-    setLoading(true);
-    setError(null);
+    const currentUser = auth.currentUser;
+    if (!currentUser) {
+      setError("Please sign in to view your upload history.");
+      setLoading(false);
+      return;
+    }
+
     try {
       const collectionRef = collection(db, "watchEarnVideos");
       
       const q1 = query(
         collectionRef,
-        where("creatorId", "==", auth.currentUser.uid)
+        where("creatorId", "==", currentUser.uid)
       );
       
       const q2 = query(
         collectionRef,
-        where("userId", "==", auth.currentUser.uid)
+        where("userId", "==", currentUser.uid)
       );
       
       const [snapshot1, snapshot2] = await Promise.all([getDocs(q1), getDocs(q2)]);
       
-      const videosMap = new Map();
-      [...snapshot1.docs, ...snapshot2.docs].forEach(doc => {
-        videosMap.set(doc.id, { id: doc.id, ...doc.data() });
+      const videosMap = new Map<string, HistoryVideo>();
+      [...snapshot1.docs, ...snapshot2.docs].forEach((item) => {
+        const data = item.data();
+        const rawCreatedAt: unknown = data.createdAt;
+        const createdAt = rawCreatedAt instanceof Timestamp
+          ? rawCreatedAt
+          : typeof rawCreatedAt === "number" && Number.isFinite(rawCreatedAt)
+            ? rawCreatedAt
+            : null;
+        videosMap.set(item.id, {
+          id: item.id,
+          caption: typeof data.caption === "string" ? data.caption : "",
+          thumbnail: typeof data.thumbnail === "string" ? data.thumbnail : "",
+          createdAt,
+          status: typeof data.status === "string" ? data.status : "unknown",
+          isEnhanced: data.isEnhanced === true,
+          video: typeof data.video === "string" ? data.video : "",
+        });
       });
-      
+
       const historyVideos = Array.from(videosMap.values()).sort((a, b) => {
-        const dateA = a.createdAt?.toDate ? a.createdAt.toDate() : new Date(a.createdAt || 0);
-        const dateB = b.createdAt?.toDate ? b.createdAt.toDate() : new Date(b.createdAt || 0);
-        return dateB.getTime() - dateA.getTime();
-      }) as HistoryVideo[];
+        const dateA = a.createdAt instanceof Timestamp ? a.createdAt.toMillis() : a.createdAt ?? 0;
+        const dateB = b.createdAt instanceof Timestamp ? b.createdAt.toMillis() : b.createdAt ?? 0;
+        return dateB - dateA;
+      });
       
       setVideos(historyVideos);
     } catch (err) {
@@ -71,7 +88,8 @@ export default function MyUploadHistoryPage() {
   }, []);
 
   useEffect(() => {
-    fetchHistory();
+    const timer = window.setTimeout(() => { void fetchHistory(); }, 0);
+    return () => window.clearTimeout(timer);
   }, [fetchHistory]);
 
   const handleDelete = async (videoId: string) => {
@@ -105,7 +123,7 @@ export default function MyUploadHistoryPage() {
     <div className="p-4 max-w-2xl mx-auto">
       <h1 className="text-2xl font-bold mb-6">My Upload History</h1>
       {videos.length === 0 ? (
-        <p className="text-center">You haven't uploaded any videos yet.</p>
+        <p className="text-center">You haven&apos;t uploaded any videos yet.</p>
       ) : (
         <div className="space-y-4">
           {videos.map(video => (
@@ -114,9 +132,11 @@ export default function MyUploadHistoryPage() {
               <div className="flex-1">
                 <h3 className="font-semibold line-clamp-1">{video.caption || "No title"}</h3>
                 <p className="text-sm text-gray-500">
-                    {video.createdAt?.toDate 
-                        ? video.createdAt.toDate().toLocaleDateString() 
-                        : new Date(video.createdAt || Date.now()).toLocaleDateString()}
+                    {video.createdAt instanceof Timestamp
+                      ? video.createdAt.toDate().toLocaleDateString()
+                      : typeof video.createdAt === "number"
+                        ? new Date(video.createdAt).toLocaleDateString()
+                        : "Date unavailable"}
                 </p>
                 <div className="flex gap-2 mt-2">
                     <span className={`text-xs px-2 py-1 rounded ${video.isEnhanced ? 'bg-purple-100 text-purple-800' : 'bg-blue-100 text-blue-800'}`}>

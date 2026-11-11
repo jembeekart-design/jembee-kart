@@ -34,14 +34,17 @@ export default function AdminLoginPage() {
 
 console.log("LOGIN UID:", user?.uid);
 console.log("LOGIN EMAIL:", user?.email);
-      router.replace("/admin");
-    } catch (err: any) {
+      const requestedNext = new URLSearchParams(window.location.search).get("next") || "";
+      // Preserve only the fixed same-origin ChatGPT consent route.
+      if (requestedNext.startsWith("/connect/chatgpt/") || requestedNext === "/connect/chatgpt") {
+        router.replace(requestedNext);
+      } else {
+        router.replace("/admin");
+      }
+    } catch (err: unknown) {
       console.error(err);
 
-      setError(
-        err?.message ??
-        "Login Failed"
-      );
+      setError(err instanceof Error ? err.message : "Login Failed");
     }
 
     setLoading(false);

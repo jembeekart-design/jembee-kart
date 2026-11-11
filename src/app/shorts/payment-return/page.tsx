@@ -13,9 +13,11 @@ export default function PaidVideoPaymentReturnPage() {
     const orderId = new URLSearchParams(window.location.search).get("order_id");
 
     if (!orderId || !/^[A-Za-z0-9_-]{3,50}$/.test(orderId)) {
-      setMessage("Payment order reference is missing or invalid.");
-      setFailed(true);
-      return;
+      const invalidTimer = window.setTimeout(() => {
+        setMessage("Payment order reference is missing or invalid.");
+        setFailed(true);
+      }, 0);
+      return () => window.clearTimeout(invalidTimer);
     }
 
     const unsubscribe = onAuthStateChanged(auth, async (user) => {

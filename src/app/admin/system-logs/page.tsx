@@ -1,5 +1,6 @@
 "use client";
 
+import type { Timestamp } from "firebase/firestore";
 export const dynamic = "force-dynamic";
 
 import { useEffect, useState } from "react";
@@ -28,7 +29,7 @@ interface SystemLog {
   type: string;
   title: string;
   message: string;
-  createdAt?: any;
+  createdAt?: Timestamp | null;
 }
 
 export default function SystemLogsPage() {

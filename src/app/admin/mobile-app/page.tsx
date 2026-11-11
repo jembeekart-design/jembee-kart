@@ -52,42 +52,32 @@ export default function MobileAppPage() {
     useState(false);
 
   useEffect(() => {
+    let active = true;
 
-    fetchSettings();
+    const timer = window.setTimeout(() => {
+      void (async () => {
+        try {
+          const ref = doc(db, "admin_settings", "mobile_app");
+          const snap = await getDoc(ref);
 
+          if (!active) return;
+
+          if (snap.exists()) {
+            setSettings(snap.data() as MobileAppSettings);
+          }
+        } catch (error) {
+          if (active) console.error(error);
+        } finally {
+          if (active) setLoading(false);
+        }
+      })();
+    }, 0);
+
+    return () => {
+      active = false;
+      window.clearTimeout(timer);
+    };
   }, []);
-
-  async function fetchSettings() {
-
-    try {
-
-      const ref = doc(
-        db,
-        "admin_settings",
-        "mobile_app"
-      );
-
-      const snap =
-        await getDoc(ref);
-
-      if (snap.exists()) {
-
-        setSettings(
-          snap.data() as MobileAppSettings
-        );
-
-      }
-
-    } catch (error) {
-
-      console.log(error);
-
-    } finally {
-
-      setLoading(false);
-
-    }
-  }
 
   async function saveSettings() {
 
@@ -119,9 +109,9 @@ export default function MobileAppPage() {
     }
   }
 
-  function updateField(
-    field: keyof MobileAppSettings,
-    value: any
+  function updateField<K extends keyof MobileAppSettings>(
+    field: K,
+    value: MobileAppSettings[K]
   ) {
 
     setSettings((prev) => ({

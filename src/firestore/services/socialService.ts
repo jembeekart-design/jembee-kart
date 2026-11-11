@@ -1,3 +1,4 @@
+import type { Timestamp } from "firebase/firestore";
 import {
   collection,
   doc,
@@ -24,13 +25,13 @@ export interface ChatComment {
   userId: string;
   userName: string;
   text: string;
-  createdAt: any;
+  createdAt: Timestamp | null;
   status?: string;
   likes?: number;
   likedByCurrentUser?: boolean;
 }
 
-export async function getComments(contentId: string, userId: string, callback: (comments: any[]) => void) {
+export async function getComments(contentId: string, userId: string, callback: (comments: ChatComment[]) => void) {
   // Requirement 6: Only approved comments appear in UI.
   const q = query(
       collection(db, COMMENTS_COLLECTION), 
@@ -41,7 +42,7 @@ export async function getComments(contentId: string, userId: string, callback: (
 
   const qLikes = query(collection(db, "videoCommentLikes"), where("userId", "==", userId));
 
-  let commentsData: any[] = [];
+  let commentsData: ChatComment[] = [];
   let likedCommentIds = new Set<string>();
 
   function update() {
@@ -54,7 +55,7 @@ export async function getComments(contentId: string, userId: string, callback: (
   const unsubComments = onSnapshot(q, (snapshot) => {
       commentsData = snapshot.docs.map(doc => {
           const data = doc.data();
-          return { id: doc.id, ...data, likes: data.likes || 0 };
+          return { id: doc.id, ...data, likes: Number(data.likes || 0) } as ChatComment;
       });
       update();
   });

@@ -24,18 +24,6 @@ export interface RegisterUserData {
 
   signupSource?: string;
 
-  /**
-   * Verified Sponsor Information
-   * These values must be resolved by the
-   * trusted backend/controller.
-   */
-
-  sponsorUid?: string;
-
-  sponsorCode?: string;
-
-  sponsorParentChain?: string[];
-
 }
 
 export interface RegisterUserResponse {
@@ -49,24 +37,6 @@ export interface RegisterUserResponse {
 export interface SecurityValidationResult {
 
   success: boolean;
-
-  message?: string;
-
-}
-
-export interface ReferralValidationResult {
-
-  success: boolean;
-
-  sponsorUid: string;
-
-  sponsorCode: string;
-
-  parentChain: string[];
-
-  referralCode: string;
-
-  shareCode: string;
 
   message?: string;
 

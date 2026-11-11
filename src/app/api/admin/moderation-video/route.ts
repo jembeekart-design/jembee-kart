@@ -1,4 +1,5 @@
 import { NextResponse } from "next/server";
+import { classifyGoogleDriveError } from "@/lib/googleDriveErrors";
 import { Readable } from "node:stream";
 import { getAdminAuth, getAdminDb } from "@/firebase/admin";
 import { getDriveFileMetadata, getDriveFileStream } from "@/services/googleDriveService";
@@ -232,7 +233,7 @@ export async function POST(req: Request) {
       headers: { "Content-Type": "application/json" },
     });
   } catch (error) {
-    console.error("Preview token generation error:", error);
+    console.error("Preview token generation failed:", classifyGoogleDriveError(error));
     if (error instanceof Error) {
       if (error.message === "UNAUTHORIZED") {
         return new NextResponse(JSON.stringify({ error: "Unauthorized" }), {
@@ -354,7 +355,7 @@ export async function GET(req: Request) {
       headers,
     });
   } catch (error) {
-    console.error("Moderation video preview error:", error);
+    console.error("Moderation video preview failed:", classifyGoogleDriveError(error));
     return new NextResponse("Internal Server Error", { status: 500 });
   }
 }

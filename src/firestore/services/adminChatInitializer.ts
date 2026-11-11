@@ -27,7 +27,8 @@ export async function initializeAdminChat() {
       const usersCollection = collection(db, "users");
       const usersSnapshot = await getDocs(query(usersCollection, limit(1)));
       const userId = !usersSnapshot.empty ? usersSnapshot.docs[0].id : "anonymous";
-      const userName = !usersSnapshot.empty ? (usersSnapshot.docs[0].data() as any).name || "User" : "User";
+      const firstUserData = usersSnapshot.empty ? null : usersSnapshot.docs[0].data();
+      const userName = typeof firstUserData?.name === "string" && firstUserData.name.trim() ? firstUserData.name : "User";
 
       // 1. Create initial chat document
       const chatRef = await addDoc(chatsCollection, {
