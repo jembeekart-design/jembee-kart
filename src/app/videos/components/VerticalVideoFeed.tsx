@@ -545,7 +545,7 @@ export default function VerticalVideoFeed({
                   playbackRate={playbackSpeeds[video.id] || 1}
                   onNinetyPercentWatched={() => void requestVideoReviewEmail(video.id)}
                   poster={index < activeVideoIndex + 5 && (video.videoAccess !== "paid" || authorizedPaidVideos[video.id]) ? getVideoThumbnailUrl(video) : undefined}
-                  preloadMetadata={activeVideoId === video.id && (video.videoAccess !== "paid" || authorizedPaidVideos[video.id])}
+                  preloadMetadata={index >= activeVideoIndex && index < activeVideoIndex + 5 && (video.videoAccess !== "paid" || authorizedPaidVideos[video.id])}
                 />
               )}
 
