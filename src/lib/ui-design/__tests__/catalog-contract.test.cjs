@@ -1,10 +1,14 @@
-import test from 'node:test';
-import assert from 'node:assert/strict';
-import { readFileSync, existsSync } from 'node:fs';
+const test = require('node:test');
+const assert = require('node:assert/strict');
+const fs = require('node:fs');
+const path = require('node:path');
 
-const source = readFileSync(new URL('../catalog.ts', import.meta.url), 'utf8');
-const slugs = [...source.matchAll(/\{slug:'([^']+)'/g)].map((match) => match[1]);
-const tvSlugs = [...source.matchAll(/\{slug:'([^']+)'[^}]*tv:true/g)].map((match) => match[1]);
+const source = fs.readFileSync(
+  path.join(__dirname, '../catalog.ts'), 'utf8'
+);
+
+const slugs = [...source.matchAll(/\{slug:'([^']+)'/g)].map((m) => m[1]);
+const tvSlugs = [...source.matchAll(/\{slug:'([^']+)'[^}]*tv:true/g)].map((m) => m[1]);
 
 test('UI design catalog contains 58 unique page concepts', () => {
   assert.equal(slugs.length, 58);
@@ -28,7 +32,9 @@ test('creator monetization and admin screens are not exposed as Android TV scree
 });
 
 test('page-specific layouts exist for core list, learning and TV screens', () => {
-  const component = readFileSync(new URL('../../../components/ui-design/DesignPreview.tsx', import.meta.url), 'utf8');
+  const component = fs.readFileSync(
+    path.join(__dirname, '../../../components/ui-design/DesignPreview.tsx'), 'utf8'
+  );
   for (const marker of [
     'jp-comment-list', 'jp-history-group', 'jp-channel-list', 'jp-playlist-grid',
     'jp-library-list', 'jp-notification-list', 'jp-help-grid', 'jp-referral-card',
@@ -48,7 +54,10 @@ test('all catalog entries have unique preview route slugs and required content f
 });
 
 test('design thumbnails are bundled locally for offline preview', () => {
-  for (const name of ['art-01.svg','art-02.svg','art-03.svg','art-04.svg']) {
-    assert.ok(existsSync(new URL(`../../../../public/ui-design/${name}`, import.meta.url)), `${name} should exist`);
+  for (const name of ['art-01.svg', 'art-02.svg', 'art-03.svg', 'art-04.svg']) {
+    assert.ok(
+      fs.existsSync(path.join(__dirname, '../../../../public/ui-design', name)),
+      `${name} should exist`
+    );
   }
 });
