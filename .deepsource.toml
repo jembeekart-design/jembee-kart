@@ -1,0 +1,20 @@
+version = 1
+
+test_patterns = [
+  "**/*.test.mjs",
+  "**/*.test.cjs",
+  "**/*.test.js",
+  "**/*.test.ts",
+  "**/*.test.tsx",
+  "**/__tests__/**"
+]
+
+[[analyzers]]
+name = "javascript"
+enabled = true
+
+[analyzers.meta]
+module_system = "es-modules"
+dialect = "typescript"
+plugins = ["react"]
+environment = ["nodejs", "browser"]
