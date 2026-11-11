@@ -1,5 +1,6 @@
 import { getFirestoreDocument } from "@/lib/firestore/getFirestoreDocument";
 import { sanitizeRichHtml } from "@/lib/security/sanitizeRichHtml";
+import parse from "html-react-parser";
 
 export const dynamic = "force-dynamic";
 
@@ -37,10 +38,9 @@ export default async function ContactPage() {
           {title}
         </h1>
 
-        <div
-          className="space-y-5 leading-7"
-          dangerouslySetInnerHTML={{ __html: sanitizeRichHtml(content) }}
-        />
+        <div className="space-y-5 leading-7">
+          {parse(sanitizeRichHtml(content))}
+        </div>
       </div>
     </main>
   );
