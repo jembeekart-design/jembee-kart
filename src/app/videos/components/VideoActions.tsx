@@ -62,7 +62,7 @@ export default function VideoActions({
           strokeWidth={2}
           className={
             isLiked
-              ? "fill-white text-white"
+              ? "fill-amber-300 text-amber-300"
               : "text-white"
           }
         />
@@ -105,7 +105,7 @@ export default function VideoActions({
           strokeWidth={2}
           className={
             isSaved
-              ? "fill-white text-white"
+              ? "fill-amber-300 text-amber-300"
               : "text-white"
           }
         />
@@ -152,11 +152,11 @@ export default function VideoActions({
               justify-center
               rounded-full
               border
-              border-white/35
-              bg-black/20
+              border-amber-200/35
+              bg-[#071329]/60
               text-white
               backdrop-blur-[2px]
-              shadow-[0_2px_8px_rgba(0,0,0,0.45)]
+              shadow-[0_4px_18px_rgba(0,0,0,0.48),0_0_12px_rgba(245,158,11,0.08)]
               transition-transform
               active:bg-white/10
             "
@@ -202,11 +202,11 @@ export default function VideoActions({
           justify-center
           rounded-full
           border
-          border-white/35
-          bg-black/20
+          border-amber-200/35
+          bg-[#071329]/60
           text-white
           backdrop-blur-[2px]
-          shadow-[0_2px_8px_rgba(0,0,0,0.45)]
+          shadow-[0_4px_18px_rgba(0,0,0,0.48),0_0_12px_rgba(245,158,11,0.08)]
         "
       >
         <span className="flex flex-col items-center gap-[3px]">
@@ -249,11 +249,11 @@ export default function VideoActions({
           justify-center
           rounded-full
           border-2
-          border-cyan-400
-          bg-black/20
+          border-amber-300
+          bg-[#071329]/60
           text-white
           backdrop-blur-[2px]
-          shadow-[0_0_14px_rgba(34,211,238,0.5)]
+          shadow-[0_0_14px_rgba(245,158,11,0.32)]
         "
       >
         {isMuted ? (

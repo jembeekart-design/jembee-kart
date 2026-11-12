@@ -56,11 +56,11 @@ export default function VideoInfo({
             shrink-0
             rounded-full
             bg-gradient-to-br
-            from-cyan-300
-            via-cyan-400
-            to-orange-400
+            from-amber-200
+            via-amber-400
+            to-sky-500
             p-[2px]
-            shadow-[0_0_12px_rgba(34,211,238,0.4)]
+            shadow-[0_0_12px_rgba(245,158,11,0.28)]
           "
         >
           <div className="h-full w-full rounded-full bg-black p-[2px]">
@@ -96,7 +96,7 @@ export default function VideoInfo({
             {verified && (
               <BadgeCheck
                 size={16}
-                className="shrink-0 text-cyan-300"
+                className="shrink-0 text-amber-300"
               />
             )}
           </div>
@@ -143,7 +143,7 @@ export default function VideoInfo({
               className="
                 text-[14px]
                 font-bold
-                text-cyan-300
+                text-amber-300
                 drop-shadow-[0_2px_4px_rgba(0,0,0,0.9)]
               "
             >
@@ -163,7 +163,8 @@ export default function VideoInfo({
           items-center
           gap-2
           rounded-full
-          bg-black/45
+          border border-amber-200/20
+          bg-[#071329]/65
           px-4
           py-2.5
           backdrop-blur-md
@@ -189,12 +190,13 @@ export default function VideoInfo({
             mt-2
             inline-block
             rounded-full
-            bg-black/45
+            border border-amber-200/20
+            bg-[#071329]/65
             px-3
             py-1.5
             text-[11px]
             font-bold
-            text-cyan-200
+            text-amber-200
             backdrop-blur-md
           "
         >
