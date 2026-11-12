@@ -1,0 +1,675 @@
+
+=================================================================
+PAGE: src/app/account/page.tsx
+LINES: 18
+IMPORTS:
+import { useEffect, useState } from "react";
+import Link from "next/link";
+import { useRouter } from "next/navigation";
+import { onAuthStateChanged, signOut, type User } from "firebase/auth";
+import { auth } from "@/firebase/config";
+EXPORTS / COMPONENTS:
+export default function AccountPage() {
+
+=================================================================
+PAGE: src/app/admin/ads-manager/page.tsx
+LINES: 17
+IMPORTS:
+import { AdNetworkManager } from "@/components/admin/AdNetworkManager";
+EXPORTS / COMPONENTS:
+export default function AdsManagerPage() {
+
+=================================================================
+PAGE: src/app/admin/analytics/page.tsx
+LINES: 10
+IMPORTS:
+import Link from "next/link";
+EXPORTS / COMPONENTS:
+export default function AnalyticsPage(){return <main className="min-h-screen bg-[#0b1220] p-5 text-white md:p-8"><div className="mx-auto max-w-5xl"><h1 className="text-3xl font-black">JEMBEE PLAY Video Analytics</h1><p className="mt-2 text-sm text-wh
+
+=================================================================
+PAGE: src/app/admin/announcement/page.tsx
+LINES: 350
+IMPORTS:
+import type { Timestamp } from "firebase/firestore";
+import { useEffect, useState } from "react";
+import {
+import {
+import { db } from "@/firebase/config";
+import { useAdminConfig } from "@/lib/admin-config/provider";
+EXPORTS / COMPONENTS:
+export default function AnnouncementPage() {
+
+=================================================================
+PAGE: src/app/admin/cashfree/page.tsx
+LINES: 493
+IMPORTS:
+import { useEffect, useState } from "react";
+import {
+import { auth } from "@/firebase/config";
+EXPORTS / COMPONENTS:
+export default function CashfreePage() {
+
+=================================================================
+PAGE: src/app/admin/customer-support/page.tsx
+LINES: 265
+IMPORTS:
+import { useState } from "react";
+import {
+EXPORTS / COMPONENTS:
+export default function CustomerSupportPage() {
+
+=================================================================
+PAGE: src/app/admin/education/schools/page.tsx
+LINES: 9
+IMPORTS:
+import { useState } from "react";
+import Link from "next/link";
+import { ArrowLeft, PlusCircle, School, Search, ShieldCheck } from "lucide-react";
+EXPORTS / COMPONENTS:
+export default function EducationSchoolsAdminPage(){
+
+=================================================================
+PAGE: src/app/admin/integrations/chatgpt/page.tsx
+LINES: 133
+IMPORTS:
+import { useCallback, useEffect, useState } from "react";
+import { auth } from "@/firebase/config";
+import AdminSidebar from "@/components/admin/AdminSidebar";
+import { Bot, CheckCircle2, Copy, ExternalLink, LockKeyhole, RefreshCw, ShieldCheck, ToggleLeft, ToggleRight } from "lucide-react";
+EXPORTS / COMPONENTS:
+export default function ChatGPTIntegrationPage() {
+
+=================================================================
+PAGE: src/app/admin/live-chat/page.tsx
+LINES: 268
+IMPORTS:
+import type { Timestamp } from "firebase/firestore";
+import { useEffect, useState } from "react";
+import {
+import {
+import { db } from "@/firebase/config";
+EXPORTS / COMPONENTS:
+export default function LiveChatPage() {
+
+=================================================================
+PAGE: src/app/admin/live-stream/page.tsx
+LINES: 441
+IMPORTS:
+import type { Timestamp } from "firebase/firestore";
+import { useEffect, useState } from "react";
+import {
+import {
+import { db } from "@/firebase/config";
+EXPORTS / COMPONENTS:
+export default function LiveStreamPage() {
+
+=================================================================
+PAGE: src/app/admin/login/page.tsx
+LINES: 105
+IMPORTS:
+import { useState } from "react";
+import { useRouter } from "next/navigation";
+import { signInWithEmailAndPassword } from "firebase/auth";
+import { auth } from "@/firebase/config";
+EXPORTS / COMPONENTS:
+export default function AdminLoginPage() {
+
+=================================================================
+PAGE: src/app/admin/logs/page.tsx
+LINES: 267
+IMPORTS:
+import { useState } from "react";
+import {
+EXPORTS / COMPONENTS:
+export default function LogsPage() {
+
+=================================================================
+PAGE: src/app/admin/media-library/page.tsx
+LINES: 341
+IMPORTS:
+import { useState, useEffect } from "react";
+import { collection, getDocs, query, orderBy } from "firebase/firestore";
+import { getAuth } from "firebase/auth";
+import { db } from "@/firebase/config";
+import toast, { Toaster } from "react-hot-toast";
+import {
+EXPORTS / COMPONENTS:
+export default function MediaLibraryPage() {
+
+=================================================================
+PAGE: src/app/admin/messages/page.tsx
+LINES: 176
+IMPORTS:
+import {
+EXPORTS / COMPONENTS:
+export default function MessagesPage() {
+
+=================================================================
+PAGE: src/app/admin/mobile-app/page.tsx
+LINES: 478
+IMPORTS:
+import { useEffect, useState } from "react";
+import {
+import {
+import { db } from "@/firebase/config";
+EXPORTS / COMPONENTS:
+export default function MobileAppPage() {
+
+=================================================================
+PAGE: src/app/admin/moderation/page.tsx
+LINES: 678
+IMPORTS:
+import React, { useState, useEffect, useCallback, useRef } from 'react';
+import { ModerationSettings, CommentAuditLog } from '@/types/moderation';
+import { getModerationSettings, updateModerationSettings } from '@/services/moderationService';
+import { collection, getDocs, query, orderBy, limit } from 'firebase/firestore';
+import { db, auth } from '@/firebase/config';
+EXPORTS / COMPONENTS:
+export default function AdminModerationDashboard() {
+
+=================================================================
+PAGE: src/app/admin/monetag-revenue/page.tsx
+LINES: 212
+IMPORTS:
+import { useEffect, useState } from "react";
+import { auth } from "@/firebase/config";
+EXPORTS / COMPONENTS:
+export default function MonetagRevenueAdminPage() {
+
+=================================================================
+PAGE: src/app/admin/notifications/page.tsx
+LINES: 494
+IMPORTS:
+import { useEffect, useState } from "react";
+import {
+import {
+import { db } from "@/firebase/config";
+EXPORTS / COMPONENTS:
+export default function NotificationsPage() {
+
+=================================================================
+PAGE: src/app/admin/page.tsx
+LINES: 14
+IMPORTS:
+import Link from "next/link";
+import { Video, ShieldCheck, GraduationCap, ChartNoAxesCombined, Users, Wallet, Megaphone, Smartphone } from "lucide-react";
+EXPORTS / COMPONENTS:
+export default function AdminHomePage(){return <main className="min-h-screen bg-[#0b1220] p-5 text-white md:p-8"><div className="mx-auto max-w-6xl"><p className="text-sm font-bold uppercase tracking-[.2em] text-cyan-300">JEMBEE PLAY</p><h1 className=
+
+=================================================================
+PAGE: src/app/admin/payouts/page.tsx
+LINES: 1
+IMPORTS:
+EXPORTS / COMPONENTS:
+export default function PayoutsPage(){return <main className="min-h-screen bg-[#0b1220] p-6 text-white"><section className="mx-auto max-w-2xl rounded-2xl border border-white/10 bg-white/5 p-6"><h1 className="text-2xl font-bold">Creator Settlement Rev
+
+=================================================================
+PAGE: src/app/admin/push-notifications/page.tsx
+LINES: 408
+IMPORTS:
+import type { Timestamp } from "firebase/firestore";
+import { useEffect, useState } from "react";
+import {
+import {
+import { db } from "@/firebase/config";
+EXPORTS / COMPONENTS:
+export default function PushNotificationsPage() {
+
+=================================================================
+PAGE: src/app/admin/roles/page.tsx
+LINES: 224
+IMPORTS:
+import { useState } from "react";
+import {
+EXPORTS / COMPONENTS:
+export default function RolesPage() {
+
+=================================================================
+PAGE: src/app/admin/security/page.tsx
+LINES: 264
+IMPORTS:
+import { useState } from "react";
+import {
+EXPORTS / COMPONENTS:
+export default function SecurityPage() {
+
+=================================================================
+PAGE: src/app/admin/settings/page.tsx
+LINES: 520
+IMPORTS:
+import { useEffect, useState } from "react";
+import {
+import {
+import { db } from "@/firebase/config";
+EXPORTS / COMPONENTS:
+export default function SettingsPage() {
+
+=================================================================
+PAGE: src/app/admin/shorts-expenses/page.tsx
+LINES: 122
+IMPORTS:
+import { useEffect, useState } from "react";
+import { ref, uploadBytes } from "firebase/storage";
+import { auth, storage } from "@/firebase/config";
+EXPORTS / COMPONENTS:
+export default function ShortsExpensesPage() {
+
+=================================================================
+PAGE: src/app/admin/storage/page.tsx
+LINES: 258
+IMPORTS:
+import { useState } from "react";
+import {
+EXPORTS / COMPONENTS:
+export default function StoragePage() {
+
+=================================================================
+PAGE: src/app/admin/storage-manager/page.tsx
+LINES: 502
+IMPORTS:
+import { useEffect, useState } from "react";
+import {
+import {
+import { db } from "@/firebase/config";
+EXPORTS / COMPONENTS:
+export default function StorageManagerPage() {
+
+=================================================================
+PAGE: src/app/admin/support/page.tsx
+LINES: 215
+IMPORTS:
+import { useState } from "react";
+import {
+EXPORTS / COMPONENTS:
+export default function SupportPage() {
+
+=================================================================
+PAGE: src/app/admin/support-tickets/page.tsx
+LINES: 388
+IMPORTS:
+import { useEffect, useState } from "react";
+import {
+import {
+import { db } from "@/firebase/config";
+EXPORTS / COMPONENTS:
+export default function SupportTicketsPage() {
+
+=================================================================
+PAGE: src/app/admin/system-logs/page.tsx
+LINES: 361
+IMPORTS:
+import type { Timestamp } from "firebase/firestore";
+import { useEffect, useState } from "react";
+import {
+import {
+import { db } from "@/firebase/config";
+EXPORTS / COMPONENTS:
+export default function SystemLogsPage() {
+
+=================================================================
+PAGE: src/app/admin/system-monitor/page.tsx
+LINES: 450
+IMPORTS:
+import type { LucideIcon } from "lucide-react";
+import {
+EXPORTS / COMPONENTS:
+export default function SystemMonitorPage() {
+
+=================================================================
+PAGE: src/app/admin/system-security/page.tsx
+LINES: 504
+IMPORTS:
+import {
+EXPORTS / COMPONENTS:
+export default function SystemSecurityPage() {
+
+=================================================================
+PAGE: src/app/admin/theme/page.tsx
+LINES: 128
+IMPORTS:
+import { useEffect, useState } from "react";
+import { doc, getDoc, setDoc, updateDoc } from "firebase/firestore";
+import { db } from "@/firebase/config";
+EXPORTS / COMPONENTS:
+export default function ThemePage() {
+
+=================================================================
+PAGE: src/app/admin/users/page.tsx
+LINES: 12
+IMPORTS:
+import { useEffect, useState } from "react";
+import { collection, getDocs, limit, query } from "firebase/firestore";
+import { auth, db } from "@/firebase/config";
+EXPORTS / COMPONENTS:
+export default function AdminUsersPage(){
+
+=================================================================
+PAGE: src/app/connect/chatgpt/page.tsx
+LINES: 143
+IMPORTS:
+import { Suspense, useEffect, useMemo, useState } from "react";
+import { useSearchParams } from "next/navigation";
+import { onAuthStateChanged, type User } from "firebase/auth";
+import { auth } from "@/firebase/config";
+import { Bot, CheckCircle2, LockKeyhole, ShieldCheck, XCircle } from "lucide-react";
+EXPORTS / COMPONENTS:
+export default function ChatGPTConsentPage() {
+
+=================================================================
+PAGE: src/app/contact/page.tsx
+LINES: 47
+IMPORTS:
+import { getFirestoreDocument } from "@/lib/firestore/getFirestoreDocument";
+import { sanitizeRichHtml } from "@/lib/security/sanitizeRichHtml";
+import parse from "html-react-parser";
+EXPORTS / COMPONENTS:
+export default async function ContactPage() {
+
+=================================================================
+PAGE: src/app/explore/page.tsx
+LINES: 52
+IMPORTS:
+import Link from "next/link";
+import { useMemo, useState } from "react";
+import { Search, Play, BookOpen, GraduationCap, Sprout, Laptop, Stethoscope, Wrench, PawPrint, Languages, BriefcaseBusiness, Palette, Trophy, Music, Leaf, Video, ChevronRight, Sparkles, History, ChefHat, House, Briefcase, Scale, Baby } from "lucide-react";
+import { MonetagPlacement } from "@/components/ads/MonetagPlacement";
+EXPORTS / COMPONENTS:
+export default function ExplorePage(){
+
+=================================================================
+PAGE: src/app/followers/page.tsx
+LINES: 126
+IMPORTS:
+import type { Timestamp } from "firebase/firestore";
+import { useEffect, useState } from "react";
+import { auth, db } from "@/firebase/config";
+import { doc, onSnapshot, collection, getDoc, DocumentData } from "firebase/firestore";
+import { useTheme } from "@/context/ThemeContext";
+import { unfollowUser } from "@/lib/social/followService";
+import Link from "next/link";
+import Avatar from "@/components/user/Avatar";
+EXPORTS / COMPONENTS:
+export default function FollowersPage() {
+
+=================================================================
+PAGE: src/app/learn/school/page.tsx
+LINES: 31
+IMPORTS:
+import Link from "next/link";
+import { useMemo, useState } from "react";
+import { ArrowLeft, Search, ChevronRight, GraduationCap, BookOpen, LibraryBig, Hash, Video, PlusCircle, SlidersHorizontal } from "lucide-react";
+EXPORTS / COMPONENTS:
+export default function SchoolLearningPage(){
+function back(){if(stage===0)return;setStage(s=>s-1);setQuery("");setPage(1)}
+function choose(x:Item){if(stage===0)setBoard(x);if(stage===1)setSchool(x);if(stage===2)setKlass(x);if(stage===3)setSubject(x);if(stage===4)setChapter(x);if(stage===5)setQuestion(x);setStage(s=>s+1);setQuery("");setPage(1)}
+
+=================================================================
+PAGE: src/app/login/page.tsx
+LINES: 250
+IMPORTS:
+import { useState, Suspense } from "react";
+import { useSearchParams } from "next/navigation";
+import Link from "next/link";
+import {
+import {
+import { auth, db } from "@/firebase/config";
+EXPORTS / COMPONENTS:
+export default function LoginPage() {
+
+=================================================================
+PAGE: src/app/page.tsx
+LINES: 184
+IMPORTS:
+import Link from "next/link";
+import { useEffect, useMemo, useState } from "react";
+import { Search, Menu, Home, Compass, PlaySquare, History, GraduationCap, PlusSquare, Bell, UserCircle, ThumbsUp, BookOpen, ChevronRight, Eye, type LucideIcon } from "lucide-react";
+import { usePublicWatchVideos } from "@/hooks/usePublicWatchVideos";
+import { MonetagPlacement } from "@/components/ads/MonetagPlacement";
+import { formatVideoDuration, publicCreatorName, publicVideoAge, publicVideoThumbnail } from "@/lib/videos/publicVideoPresentation";
+import type { WatchVideo } from "@/lib/videos/watch-earn/fetchWatchVideos";
+EXPORTS / COMPONENTS:
+export default function HomePage() {
+
+=================================================================
+PAGE: src/app/privacy/page.tsx
+LINES: 120
+IMPORTS:
+EXPORTS / COMPONENTS:
+export default function PrivacyPolicyPage() {
+
+=================================================================
+PAGE: src/app/profile/[uid]/page.tsx
+LINES: 139
+IMPORTS:
+import { useEffect, useState } from "react";
+import { useParams } from "next/navigation";
+import { doc, onSnapshot } from "firebase/firestore";
+import { db } from "@/firebase/config";
+import Header from "@/components/navigation/Header";
+import BottomNavbar from "@/components/navigation/BottomNavbar";
+import FollowButton from "@/components/social/FollowButton";
+import { User } from "lucide-react";
+EXPORTS / COMPONENTS:
+export default function UserProfilePage() {
+
+=================================================================
+PAGE: src/app/refund-policy/page.tsx
+LINES: 1
+IMPORTS:
+EXPORTS / COMPONENTS:
+export default function RefundPolicyPage(){return <main className="mx-auto min-h-screen max-w-3xl bg-[#0b0b0b] px-5 py-12 text-white"><h1 className="text-3xl font-black">JEMBEE PLAY Paid Video Refund Policy</h1><p className="mt-4 text-white/75">This 
+
+=================================================================
+PAGE: src/app/shorts/page.tsx
+LINES: 21
+IMPORTS:
+import { Suspense, useState } from "react";
+import ProductionHeader from "../videos/components/ProductionHeader";
+import FullscreenVideoFeed from "../videos/components/FullscreenVideoFeed";
+EXPORTS / COMPONENTS:
+export default function JembeeShortsPage() {
+
+=================================================================
+PAGE: src/app/shorts/payment-return/page.tsx
+LINES: 92
+IMPORTS:
+import { useEffect, useState } from "react";
+import { onAuthStateChanged } from "firebase/auth";
+import { auth } from "@/firebase/config";
+EXPORTS / COMPONENTS:
+export default function PaidVideoPaymentReturnPage() {
+
+=================================================================
+PAGE: src/app/signup/page.tsx
+LINES: 260
+IMPORTS:
+import { useState, Suspense } from "react";
+import { useRouter } from "next/navigation";
+import Link from "next/link";
+import {
+import {
+import { auth, db } from "@/firebase/config";
+EXPORTS / COMPONENTS:
+export default function SignupPage() {
+
+=================================================================
+PAGE: src/app/terms_conditions/page.tsx
+LINES: 55
+IMPORTS:
+EXPORTS / COMPONENTS:
+export default function TermsConditionsPage() {
+
+=================================================================
+PAGE: src/app/ui-design/[slug]/page.tsx
+LINES: 8
+IMPORTS:
+import { notFound } from 'next/navigation';
+import DesignPreview from '@/components/ui-design/DesignPreview';
+import { designPages, getDesignPage } from '@/lib/ui-design/catalog';
+import '../ui-design.css';
+EXPORTS / COMPONENTS:
+export function generateStaticParams() { return designPages.map(page => ({ slug: page.slug })); }
+export async function generateMetadata({ params }: { params: Promise<{slug:string}> }) { const {slug}=await params; const page=getDesignPage(slug); return {title:page?.title ?? 'UI Design Preview'}; }
+export default async function UiDesignDetail({ params }: { params: Promise<{slug:string}> }) { const {slug}=await params; const page=getDesignPage(slug); if(!page) notFound(); return <DesignPreview page={page} allPages={designPages}/>; }
+
+=================================================================
+PAGE: src/app/ui-design/page.tsx
+LINES: 13
+IMPORTS:
+import Link from 'next/link';
+import { ArrowUpRight, BookOpen, Clapperboard, GraduationCap, Headphones, ShieldCheck, Smartphone, Tv, Users } from 'lucide-react';
+import { designCategories, designPages } from '@/lib/ui-design/catalog';
+import './ui-design.css';
+EXPORTS / COMPONENTS:
+export default function UiDesignIndex() {
+
+=================================================================
+PAGE: src/app/verify-email/page.tsx
+LINES: 221
+IMPORTS:
+import { useEffect, useState, useRef } from "react";
+import { useRouter } from "next/navigation";
+import { onAuthStateChanged, signOut } from "firebase/auth";
+import { auth } from "@/firebase/config";
+EXPORTS / COMPONENTS:
+export default function VerifyEmailPage() {
+
+=================================================================
+PAGE: src/app/videos/audio/[audioId]/page.tsx
+LINES: 107
+IMPORTS:
+import { useParams, useRouter } from "next/navigation";
+import { useEffect, useState } from "react";
+import { collection, query, where, getDocs } from "firebase/firestore";
+import { db } from "@/firebase/config";
+import { WatchVideo } from "@/lib/videos/watch-earn/fetchWatchVideos";
+import { Music, Play, Heart, Users, ArrowLeft } from "lucide-react";
+import VideoCard from "@/app/videos/components/VideoCard";
+EXPORTS / COMPONENTS:
+export default function AudioPage() {
+
+=================================================================
+PAGE: src/app/videos/explore/page.tsx
+LINES: 87
+IMPORTS:
+import { useEffect, useMemo, useState } from "react";
+import { useRouter } from "next/navigation";
+import { ArrowLeft, Search, PlayCircle } from "lucide-react";
+import { getWatchVideos, type WatchVideo } from "../services/watchVideos.service";
+EXPORTS / COMPONENTS:
+export default function WatchExplorePage() {
+
+=================================================================
+PAGE: src/app/videos/history/page.tsx
+LINES: 164
+IMPORTS:
+import { useState, useEffect, useCallback } from "react";
+import { auth, db } from "@/firebase/config";
+import {
+import { Loader2, Trash2, Play } from "lucide-react";
+import { useRouter } from "next/navigation";
+EXPORTS / COMPONENTS:
+export default function MyUploadHistoryPage() {
+
+=================================================================
+PAGE: src/app/videos/notifications/page.tsx
+LINES: 204
+IMPORTS:
+import { useEffect, useState } from "react";
+import { useRouter } from "next/navigation";
+import { ArrowLeft, Bell, CheckCheck } from "lucide-react";
+import { auth } from "@/firebase/config";
+import {
+EXPORTS / COMPONENTS:
+export default function ShortsNotificationsPage() {
+
+=================================================================
+PAGE: src/app/videos/original/[videoId]/page.tsx
+LINES: 78
+IMPORTS:
+import { useParams, useRouter } from "next/navigation";
+import { useEffect, useState } from "react";
+import { collection, query, where, getDocs, doc, getDoc } from "firebase/firestore";
+import { db } from "@/firebase/config";
+import { WatchVideo } from "@/lib/videos/watch-earn/fetchWatchVideos";
+import { ArrowLeft } from "lucide-react";
+import VideoCard from "@/app/videos/components/VideoCard";
+EXPORTS / COMPONENTS:
+export default function OriginalPage() {
+
+=================================================================
+PAGE: src/app/videos/page.tsx
+LINES: 110
+IMPORTS:
+import { Suspense, useMemo, useState } from "react";
+import Link from "next/link";
+import { useSearchParams } from "next/navigation";
+import { Search, ArrowLeft, PlaySquare, Eye } from "lucide-react";
+import FullscreenVideoFeed from "./components/FullscreenVideoFeed";
+import { usePublicWatchVideos } from "@/hooks/usePublicWatchVideos";
+import { MonetagPlacement } from "@/components/ads/MonetagPlacement";
+import { formatVideoDuration, publicCreatorName, publicVideoAge, publicVideoThumbnail } from "@/lib/videos/publicVideoPresentation";
+import type { WatchVideo } from "@/lib/videos/watch-earn/fetchWatchVideos";
+EXPORTS / COMPONENTS:
+function VideosPageContent() {
+export default function VideosHomePage() {
+
+=================================================================
+PAGE: src/app/videos/profile/page.tsx
+LINES: 117
+IMPORTS:
+import { useEffect, useState } from "react";
+import ShortsProfile, { ProfileSection } from "../components/ShortsProfile";
+import { auth } from "@/firebase/config";
+EXPORTS / COMPONENTS:
+export default function ProfilePage() {
+
+=================================================================
+PAGE: src/app/videos/reward-center/page.tsx
+LINES: 27
+IMPORTS:
+import { useEffect, useState } from "react";
+import { doc, getDoc } from "firebase/firestore";
+import { db, auth } from "@/firebase/config";
+EXPORTS / COMPONENTS:
+export default function RewardCenterPage() {
+
+=================================================================
+PAGE: src/app/videos/share/page.tsx
+LINES: 48
+IMPORTS:
+import { useRouter } from "next/navigation";
+import { useEffect, useState } from "react";
+import { auth } from "@/firebase/config";
+import { ArrowLeft, ChartNoAxesCombined, History, Wallet } from "lucide-react";
+EXPORTS / COMPONENTS:
+export default function ShareIncomePage() {
+
+=================================================================
+PAGE: src/app/videos/upload/page.tsx
+LINES: 419
+IMPORTS:
+import Link from "next/link";
+import { useEffect, useMemo, useRef, useState, Suspense } from "react";
+import { useSearchParams } from "next/navigation";
+import {
+import { auth, db } from "@/firebase/config";
+import { doc, getDoc } from "firebase/firestore";
+import { uploadWatchVideo } from "@/lib/videos/watch-earn/uploadWatchVideo";
+EXPORTS / COMPONENTS:
+export default function UploadWatchVideoPage() {
+
+=================================================================
+PAGE: src/app/videos/uploader/[creatorId]/page.tsx
+LINES: 205
+IMPORTS:
+import { useEffect, useState } from "react";
+import { useParams, useRouter } from "next/navigation";
+import {
+import type {
+import { ArrowLeft } from "lucide-react";
+import { db } from "@/firebase/config";
+import { doc, getDoc } from "firebase/firestore";
+EXPORTS / COMPONENTS:
+export default function PublicUploaderPage() {
