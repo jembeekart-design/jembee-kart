@@ -7,7 +7,6 @@ import { usePublicWatchVideos } from "@/hooks/usePublicWatchVideos";
 import { MonetagPlacement } from "@/components/ads/MonetagPlacement";
 import { formatVideoDuration, publicCreatorName, publicVideoAge, publicVideoThumbnail } from "@/lib/videos/publicVideoPresentation";
 import type { WatchVideo } from "@/lib/videos/watch-earn/fetchWatchVideos";
-import "./home.css";
 
 const chips = ["All", "Education", "Music", "Science", "Technology", "Gaming", "Learning", "Travel"];
 type NavigationItem = { icon: LucideIcon; label: string; href: string };
@@ -109,7 +108,7 @@ export default function HomePage() {
   const longVideos = filtered.filter((video) => video.videoFormat === "long");
 
   return (
-    <main className="jp-home-light min-h-screen bg-[#0b0b0b] text-white">
+    <main className="min-h-screen bg-[#0b0b0b] text-white">
       <header className="sticky top-0 z-40 flex h-16 items-center gap-3 border-b border-white/10 bg-[#0b0b0b]/95 px-3 backdrop-blur sm:px-4">
         <button type="button" aria-label="Toggle menu" onClick={() => setSidebar((value) => !value)} className="rounded-full p-2 hover:bg-white/10"><Menu size={23}/></button>
         <Link href="/" className="flex min-w-fit items-center gap-1 text-lg font-black tracking-tight sm:text-xl">JEMBEE <span className="text-cyan-400">PLAY</span><PlaySquare size={19} className="ml-1 text-cyan-400"/></Link>
