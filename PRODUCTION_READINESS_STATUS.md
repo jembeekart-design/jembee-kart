@@ -10,7 +10,7 @@ The original `JembeeKart-main.zip` remains unchanged. This package does not bulk
 
 ## Verified on this corrected source checkpoint
 
-- All 23 Node contract test files were run together with Node.js 22: **81 passed, 0 failed**.
+- All 27 Node contract test files were run together with Node.js 22 after the Shorts metadata-preload repair: **103 passed, 0 failed**.
 - TypeScript/TSX syntax parse covered 300 source files: **0 syntax diagnostics**. This is a syntax-only parse and is not a semantic TypeScript typecheck.
 - Targeted ESLint remediation changes were applied across 58 source files against the user's earlier report of 110 errors and 109 warnings.
 - No `eslint-disable` directives remain under `src`; explicit `any` type annotations were removed from the source scan.
@@ -21,7 +21,7 @@ The original `JembeeKart-main.zip` remains unchanged. This package does not bulk
 
 ## Important verification limitation
 
-The full ESLint CLI, semantic TypeScript typecheck and Next.js production build were **not re-run on this exact corrected revision in this workspace**. The uploaded `node_modules` directories contained no package files, and `npm view` failed with DNS `EAI_AGAIN`. The user previously ran `npm ci`, TypeScript and a successful Next.js 16.2.9 production build on the earlier source revision; that success must not be represented as verification of this corrected revision.
+The full ESLint CLI, semantic TypeScript typecheck and Next.js production build were **not completed on this exact repaired revision in this workspace**. `npm ci --no-audit --no-fund` timed out before dependencies were installed. A fallback global TypeScript 5.8.3 check is not valid for this project because the lockfile requires TypeScript 6.0.3 and Node type definitions were unavailable. The user previously ran `npm ci`, TypeScript and a successful Next.js 16.2.9 production build on the earlier source revision; that success must not be represented as verification of this corrected revision.
 
 After extracting this ZIP in Ubuntu/Node.js 22, run:
 
@@ -53,7 +53,7 @@ The script runs all Node contract tests, `npm ci`, TypeScript, ESLint and the Ne
 ## Status
 
 **VIDEO-ONLY SOURCE SCOPE + NODE CONTRACT TESTS: PASS (81/81)**  
-**TYPESCRIPT/TSX SYNTAX PARSE: PASS (300 FILES; SYNTAX ONLY)**  
+**TYPESCRIPT/TSX SYNTAX PARSE: PREVIOUS CHECKPOINT PASS (300 FILES; SYNTAX ONLY); CURRENT SEMANTIC CHECK PENDING**  
 **ESLINT REMEDIATION: APPLIED; FULL ESLINT RESULT PENDING USER ENVIRONMENT**  
 **SEMANTIC TYPESCRIPT / NEXT BUILD ON CORRECTED REVISION: PENDING**  
 **PRODUCTION FIREBASE / DRIVE / CASHFREE / ADS / ANDROID: NOT VERIFIED**  

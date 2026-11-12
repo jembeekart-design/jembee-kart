@@ -433,15 +433,15 @@ export default function VerticalVideoFeed({
 
   if (loading) {
     return (
-      <main className="h-screen flex items-center justify-center bg-black text-white">
-        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-white"></div>
+      <main className="h-screen flex items-center justify-center bg-[#050b1c] text-white">
+        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-amber-300"></div>
       </main>
     );
   }
 
   if (error) {
     return (
-      <main className="h-screen flex items-center justify-center bg-black text-white">
+      <main className="h-screen flex items-center justify-center bg-[#050b1c] text-white">
         <p>{error}</p>
       </main>
     );
@@ -449,14 +449,14 @@ export default function VerticalVideoFeed({
 
   if (videos.length === 0) {
     return (
-      <main className="relative h-[100dvh] w-full overflow-hidden bg-[#05070B] text-white">
-        <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_48%_42%,rgba(6,182,212,0.18),transparent_42%),radial-gradient(ellipse_at_85%_75%,rgba(139,92,246,0.16),transparent_38%)]" />
+      <main className="relative h-[100dvh] w-full overflow-hidden bg-[#050b1c] text-white">
+        <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_48%_42%,rgba(245,158,11,0.15),transparent_42%),radial-gradient(ellipse_at_85%_75%,rgba(30,64,175,0.20),transparent_38%)]" />
         <div className="absolute left-8 right-24 top-[34%] z-10 text-center">
-          <div className="mx-auto mb-5 flex h-20 w-20 items-center justify-center rounded-3xl border border-cyan-300/40 bg-cyan-300/10 text-4xl shadow-[0_0_45px_rgba(6,182,212,0.18)]">
+          <div className="mx-auto mb-5 flex h-20 w-20 items-center justify-center rounded-3xl border border-amber-300/40 bg-amber-300/10 text-4xl shadow-[0_0_45px_rgba(245,158,11,0.15)]">
             ▶
           </div>
           <h2 className="text-2xl font-extrabold tracking-tight">
-            Jembee <span className="text-cyan-300">Shorts</span>
+            Jembee <span className="text-amber-300">Shorts</span>
           </h2>
           <p className="mt-3 text-sm font-medium text-white/80">
             {isFirebaseConfigured ? "Your Shorts feed is ready" : "Connect your JEMBEE PLAY Firebase project"}
@@ -502,11 +502,11 @@ export default function VerticalVideoFeed({
         snap-y
         snap-mandatory
         overflow-y-scroll
-        bg-black
+        bg-[#050b1c]
       "
     >
       {filteredVideos.length === 0 ? (
-        <div className="h-screen flex items-center justify-center text-gray-400 p-4 text-center">
+        <div className="h-screen flex items-center justify-center text-white/75 p-4 text-center">
           {activeTab === 'following'
             ? followingList.length > 0
                 ? "No videos from creators you follow."
@@ -545,7 +545,7 @@ export default function VerticalVideoFeed({
                   playbackRate={playbackSpeeds[video.id] || 1}
                   onNinetyPercentWatched={() => void requestVideoReviewEmail(video.id)}
                   poster={index < activeVideoIndex + 5 && (video.videoAccess !== "paid" || authorizedPaidVideos[video.id]) ? getVideoThumbnailUrl(video) : undefined}
-                  preloadMetadata={activeVideoId === video.id && (video.videoAccess !== "paid" || authorizedPaidVideos[video.id])}
+                  preloadMetadata={index >= activeVideoIndex && index < activeVideoIndex + 5 && (video.videoAccess !== "paid" || authorizedPaidVideos[video.id])}
                 />
               )}
 

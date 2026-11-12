@@ -41,20 +41,20 @@ export default function ProductionHeader() {
         className="pointer-events-none fixed inset-x-0 top-0 z-50 text-white"
         style={{ paddingTop: "env(safe-area-inset-top)" }}
       >
-        <div className="pointer-events-auto px-5 pt-4">
+        <div className="pointer-events-auto bg-gradient-to-b from-[#050b1c]/85 via-[#050b1c]/35 to-transparent px-5 pb-5 pt-4">
           <div className="flex items-start justify-between">
             <div className="flex flex-col gap-4">
               <div className="flex items-center gap-1">
                 <span className="text-[25px] font-extrabold leading-none tracking-tight">
                   Jembee
                 </span>
-                <span className="text-[25px] font-extrabold leading-none tracking-tight text-cyan-300">
+                <span className="text-[25px] font-extrabold leading-none tracking-tight text-amber-300">
                   Shorts
                 </span>
                 <Flame
                   size={23}
                   fill="currentColor"
-                  className="ml-0.5 text-orange-400"
+                  className="ml-0.5 text-amber-300"
                 />
               </div>
             </div>
@@ -64,7 +64,7 @@ export default function ProductionHeader() {
                 type="button"
                 onClick={() => setShowSearch(true)}
                 aria-label="Search"
-                className="flex h-11 w-11 items-center justify-center rounded-full bg-black/20 backdrop-blur-md"
+                className="flex h-11 w-11 items-center justify-center rounded-full border border-amber-200/20 bg-[#071329]/55 shadow-[0_4px_18px_rgba(0,0,0,0.28)] backdrop-blur-xl"
               >
                 <Search size={25} />
               </button>
@@ -72,20 +72,20 @@ export default function ProductionHeader() {
                 type="button"
                 onClick={() => router.push("/followers")}
                 aria-label="Friends"
-                className="relative flex h-11 w-11 items-center justify-center rounded-full bg-black/20 backdrop-blur-md"
+                className="relative flex h-11 w-11 items-center justify-center rounded-full border border-amber-200/20 bg-[#071329]/55 shadow-[0_4px_18px_rgba(0,0,0,0.28)] backdrop-blur-xl"
               >
                 <UserPlus size={25} strokeWidth={2} />
-                <span className="absolute right-1 top-1 h-2.5 w-2.5 rounded-full bg-pink-500" />
+                <span className="absolute right-1 top-1 h-2.5 w-2.5 rounded-full bg-amber-400" />
               </button>
               <button
                 type="button"
                 onClick={() => router.push("/videos/notifications")}
                 aria-label="Notifications"
-                className="relative flex h-11 w-11 items-center justify-center rounded-full bg-black/20 backdrop-blur-md"
+                className="relative flex h-11 w-11 items-center justify-center rounded-full border border-amber-200/20 bg-[#071329]/55 shadow-[0_4px_18px_rgba(0,0,0,0.28)] backdrop-blur-xl"
               >
                 <Bell size={25} strokeWidth={2} />
                 {unreadCount > 0 && (
-                  <span className="absolute -right-0.5 -top-0.5 flex h-5 min-w-5 items-center justify-center rounded-full bg-pink-500 px-1 text-[10px] font-extrabold">
+                  <span className="absolute -right-0.5 -top-0.5 flex h-5 min-w-5 items-center justify-center rounded-full bg-amber-400 px-1 text-[10px] font-extrabold">
                     {unreadCount > 99 ? "99+" : unreadCount}
                   </span>
                 )}
