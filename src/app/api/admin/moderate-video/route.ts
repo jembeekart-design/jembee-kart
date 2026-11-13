@@ -170,6 +170,7 @@ export async function POST(req: Request) {
         const startedAt = toModerationTimestampMillis(data.rejectionStartedAt);
         const expiredRejecting =
           currentStatus === "rejecting" &&
+          startedAt !== null &&
           isModerationLeaseExpired(startedAt, Date.now(), 5 * 60 * 1000);
 
         if (!retryable && !expiredRejecting) return false;
