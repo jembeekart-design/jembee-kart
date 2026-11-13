@@ -3,10 +3,11 @@ import crypto from "node:crypto";
 import { getAdminAuth, getAdminDb } from "@/firebase/admin";
 import { createResumableUploadSession } from "@/services/googleDriveService";
 import { classifyGoogleDriveError, googleDriveClientMessage, googleDriveErrorHttpStatus } from "@/lib/googleDriveErrors";
+import { validateVideoUpload } from "@/schemas/media/videoUpload";
+import { validateUploadMetadata } from "@/modules/media/uploadMetadata";
 
 export const runtime = "nodejs";
 
-const MAX_VIDEO_SIZE = 500 * 1024 * 1024;
 
 export async function POST(req: Request) {
   const authHeader = req.headers.get("authorization");
@@ -52,7 +53,15 @@ export async function POST(req: Request) {
     isEnhanced?: unknown;
   };
   try {
-    body = await req.json();
+    const contentLength = Number(req.headers.get("content-length") || 0);
+    if (contentLength > 16 * 1024) {
+      return NextResponse.json({ success: false, message: "अनुरोध की जानकारी बहुत बड़ी है।" }, { status: 413 });
+    }
+    const rawBody = await req.text();
+    if (new TextEncoder().encode(rawBody).byteLength > 16 * 1024) {
+      return NextResponse.json({ success: false, message: "अनुरोध की जानकारी बहुत बड़ी है।" }, { status: 413 });
+    }
+    body = JSON.parse(rawBody);
   } catch {
     return NextResponse.json(
       { success: false, message: "अनुरोध की जानकारी सही नहीं है।" },
@@ -60,42 +69,27 @@ export async function POST(req: Request) {
     );
   }
 
-  const filename = typeof body.filename === "string" ? body.filename.trim() : "";
-  const mimeType = typeof body.mimeType === "string" ? body.mimeType.trim() : "";
-  const fileSize = typeof body.fileSize === "number" ? body.fileSize : 0;
-
-  const { displayName, photoURL, username, caption, hashtags, music, sponsor, originalVideoId, originalAudioId, isEnhanced } = body;
+  const upload = validateVideoUpload(body);
+  if (!upload.ok) {
+    const message = upload.reason === "invalid_mime"
+      ? "कृपया मान्य वीडियो फ़ाइल चुनें।"
+      : upload.reason === "too_large"
+        ? "वीडियो का आकार 500 MB से अधिक नहीं होना चाहिए।"
+        : "कुछ आवश्यक जानकारी उपलब्ध नहीं है। कृपया विवरण जाँचें।";
+    return NextResponse.json({ success: false, message }, { status: 400 });
+  }
+  const { filename, mimeType, fileSize } = upload;
+  const metadata = validateUploadMetadata(body);
+  if (!metadata) {
+    return NextResponse.json({ success: false, message: "वीडियो का विवरण मान्य नहीं है। कृपया caption, hashtags और अन्य जानकारी जाँचें।" }, { status: 400 });
+  }
+  const { displayName, photoURL, username, caption, hashtags, music, sponsor, originalVideoId, originalAudioId, isEnhanced } = metadata;
   const videoAccess = body.videoAccess === "paid" ? "paid" : "free";
   if (videoAccess === "paid") {
     return NextResponse.json({ success: false, message: "Paid video publishing is temporarily disabled until verified purchase access is available." }, { status: 409 });
   }
-  const videoFormat = body.videoFormat === "long" ? "long" : "short";
-  const durationSeconds = typeof body.durationSeconds === "number" && Number.isFinite(body.durationSeconds) && body.durationSeconds > 0 && body.durationSeconds <= 86400 ? Math.round(body.durationSeconds) : null;
-  const videoPrice = typeof body.videoPrice === "number" ? body.videoPrice : 0;
-  if (!Number.isFinite(videoPrice) || videoPrice < 0 || videoPrice > 100000) {
-    return NextResponse.json({ success: false, message: "Paid वीडियो की कीमत ₹1 से ₹100000 के बीच होनी चाहिए।" }, { status: 400 });
-  }
+  const { videoFormat, durationSeconds } = metadata;
 
-  if (!filename || !mimeType || !Number.isFinite(fileSize) || fileSize <= 0) {
-    return NextResponse.json(
-      { success: false, message: "कुछ आवश्यक जानकारी उपलब्ध नहीं है। कृपया विवरण जाँचें।" },
-      { status: 400 }
-    );
-  }
-
-  if (!mimeType.toLowerCase().startsWith("video/")) {
-    return NextResponse.json(
-      { success: false, message: "कृपया मान्य वीडियो फ़ाइल चुनें।" },
-      { status: 400 }
-    );
-  }
-
-  if (fileSize > MAX_VIDEO_SIZE) {
-    return NextResponse.json(
-      { success: false, message: "वीडियो का आकार 500 MB से अधिक नहीं होना चाहिए।" },
-      { status: 400 }
-    );
-  }
 
   const submissionId = crypto.randomUUID();
 

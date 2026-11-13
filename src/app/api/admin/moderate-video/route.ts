@@ -4,6 +4,13 @@ import { FieldValue } from "firebase-admin/firestore";
 
 import { getAdminAuth, getAdminDb } from "@/firebase/admin";
 import { deleteDriveFile } from "@/services/googleDriveService";
+import { createVideoModerationAuditRecord, parseVideoModerationDecision } from "@/modules/moderation/decision";
+import {
+  createModerationAuditDocumentId,
+  isMatchingModerationAuditRecord,
+  isModerationLeaseExpired,
+  toModerationTimestampMillis,
+} from "@/modules/moderation/recovery.mjs";
 
 export const runtime = "nodejs";
 
@@ -73,10 +80,8 @@ export async function POST(req: Request) {
         ? body.submissionId.trim()
         : "";
 
-    const action =
-      typeof body?.action === "string"
-        ? body.action.trim().toLowerCase()
-        : "";
+    const decision = parseVideoModerationDecision(body);
+    const action = decision?.action ?? "";
 
     if (!submissionId) {
       return NextResponse.json(
@@ -88,13 +93,9 @@ export async function POST(req: Request) {
       );
     }
 
-    if (action !== "approve" && action !== "reject") {
+    if (!decision) {
       return NextResponse.json(
-        {
-          success: false,
-          message:
-            "Action must be approve or reject",
-        },
+        { success: false, message: "Invalid moderation decision. Rejection requires a reason of at most 500 characters." },
         { status: 400 }
       );
     }
@@ -120,7 +121,11 @@ export async function POST(req: Request) {
     const submission =
       submissionSnapshot.data() || {};
 
-    if (submission.status !== "pending" && !(action === "reject" && submission.status === "reject_failed")) {
+    const rejectionRetryable =
+    action === "reject" &&
+    ["reject_failed", "reject_audit_failed", "rejecting"].includes(submission.status);
+
+  if (submission.status !== "pending" && !rejectionRetryable) {
       return NextResponse.json(
         {
           success: false,
@@ -153,19 +158,101 @@ export async function POST(req: Request) {
     if (action === "reject") {
       const claimed = await adminDb.runTransaction(async (transaction) => {
         const current = await transaction.get(submissionRef);
-        const currentStatus = current.data()?.status;
-        if (!current.exists || (currentStatus !== "pending" && currentStatus !== "reject_failed")) return false;
-        transaction.update(submissionRef, { status: "rejecting", processingBy: adminId, rejectionStartedAt: FieldValue.serverTimestamp() });
+        if (!current.exists) return false;
+
+        const data = current.data() || {};
+        const currentStatus = data.status;
+        const retryable =
+          currentStatus === "pending" ||
+          currentStatus === "reject_failed" ||
+          currentStatus === "reject_audit_failed";
+
+        const startedAt = toModerationTimestampMillis(data.rejectionStartedAt);
+        const expiredRejecting =
+          currentStatus === "rejecting" &&
+          isModerationLeaseExpired(startedAt, Date.now(), 5 * 60 * 1000);
+
+        if (!retryable && !expiredRejecting) return false;
+
+        transaction.update(submissionRef, {
+          status: "rejecting",
+          processingBy: adminId,
+          rejectionStartedAt: FieldValue.serverTimestamp(),
+        });
         return true;
       });
-      if (!claimed) return NextResponse.json({ success: false, message: "Submission is already being processed" }, { status: 409 });
-      try {
-        await deleteDriveFile(driveFileId);
-      } catch (deleteError) {
-        await submissionRef.update({ status: "reject_failed", rejectionErrorAt: FieldValue.serverTimestamp() }).catch(() => undefined);
-        throw deleteError;
+
+      if (!claimed) {
+        return NextResponse.json(
+          { success: false, message: "Submission is already being processed or is no longer rejectable" },
+          { status: 409 }
+        );
       }
-      await submissionRef.update({ status: "rejected", moderation: "rejected", moderatedBy: adminId, moderationCheckedAt: FieldValue.serverTimestamp(), rejectedAt: FieldValue.serverTimestamp() });
+
+      const auditRef = adminDb
+        .collection("videoModerationAuditLogs")
+        .doc(createModerationAuditDocumentId(submissionId, "reject"));
+
+      try {
+        const currentSubmission = await submissionRef.get();
+        const alreadyDeleted = currentSubmission.data()?.rejectionDriveFileDeleted === true;
+
+        if (!alreadyDeleted) {
+          await deleteDriveFile(driveFileId);
+          await submissionRef.update({
+            status: "reject_audit_failed",
+            rejectionDriveFileDeleted: true,
+            rejectionDriveDeletedAt: FieldValue.serverTimestamp(),
+          });
+        }
+
+        await adminDb.runTransaction(async (transaction) => {
+          const current = await transaction.get(submissionRef);
+          const existingAudit = await transaction.get(auditRef);
+
+          if (!current.exists) {
+            throw new Error("Moderation submission disappeared during rejection");
+          }
+
+          const currentData = current.data() || {};
+          if (!["rejecting", "reject_audit_failed"].includes(currentData.status)) {
+            throw new Error("Rejection state changed unexpectedly");
+          }
+
+          if (existingAudit.exists) {
+            if (!isMatchingModerationAuditRecord(existingAudit.data(), submissionId, "reject")) {
+              throw new Error("Existing moderation audit record does not match this rejection");
+            }
+          } else {
+            transaction.create(auditRef, {
+              ...createVideoModerationAuditRecord({
+                submissionId,
+                adminId,
+                action: "reject",
+                reason: decision.reason,
+              }),
+              createdAt: FieldValue.serverTimestamp(),
+            });
+          }
+
+          transaction.update(submissionRef, {
+            status: "rejected",
+            moderation: "rejected",
+            moderatedBy: adminId,
+            moderationReason: decision.reason,
+            moderationCheckedAt: FieldValue.serverTimestamp(),
+            rejectedAt: FieldValue.serverTimestamp(),
+            processingBy: FieldValue.delete(),
+            rejectionStartedAt: FieldValue.delete(),
+          });
+        });
+      } catch (rejectionError) {
+        await submissionRef.update({
+          status: "reject_audit_failed",
+          rejectionRecoveryErrorAt: FieldValue.serverTimestamp(),
+        }).catch(() => undefined);
+        throw rejectionError;
+      }
 
       return NextResponse.json({
         success: true,
@@ -219,7 +306,15 @@ export async function POST(req: Request) {
       );
     }
 
+    const videoRef = adminDb
+      .collection("watchEarnVideos")
+      .doc(submissionId);
+    const auditRef = adminDb
+      .collection("videoModerationAuditLogs")
+      .doc(createModerationAuditDocumentId(submissionId, "approve"));
+
     let createdVideoDocument = false;
+    let existingVideoConflict = false;
 
     try {
       const finalVideoUrl =
@@ -240,14 +335,11 @@ export async function POST(req: Request) {
       // Video moderation never credits viewer wallet coins.
       const rewardCoins = 0;
 
-      const videoRef = adminDb
-        .collection("watchEarnVideos")
-        .doc(submissionId);
-
       const existingVideo =
         await videoRef.get();
 
       if (existingVideo.exists) {
+        existingVideoConflict = true;
         throw new Error(
           "WatchEarn video already exists for this submission"
         );
@@ -325,16 +417,21 @@ export async function POST(req: Request) {
       });
       createdVideoDocument = true;
 
-      await submissionRef.update({
+      const approveBatch = adminDb.batch();
+      approveBatch.update(submissionRef, {
         status: "approved",
         moderation: "safe",
         moderatedBy: adminId,
-        moderationCheckedAt:
-          FieldValue.serverTimestamp(),
-        approvedAt:
-          FieldValue.serverTimestamp(),
+        moderationReason: null,
+        moderationCheckedAt: FieldValue.serverTimestamp(),
+        approvedAt: FieldValue.serverTimestamp(),
         watchEarnVideoId: submissionId,
       });
+      approveBatch.create(auditRef, {
+        ...createVideoModerationAuditRecord({ submissionId, adminId, action: "approve" }),
+        createdAt: FieldValue.serverTimestamp(),
+      });
+      await approveBatch.commit();
 
       return NextResponse.json({
         success: true,
@@ -347,35 +444,117 @@ export async function POST(req: Request) {
         coins: rewardCoins,
       });
     } catch (processingError) {
-      if (createdVideoDocument) {
+      let auditSnapshot = null;
+
+      try {
+        auditSnapshot = await auditRef.get();
+      } catch (auditReadError) {
+        console.error(
+          "Could not verify approval audit after processing error:",
+          auditReadError
+        );
+      }
+
+      if (auditSnapshot?.exists) {
+        if (
+          !isMatchingModerationAuditRecord(
+            auditSnapshot.data(),
+            submissionId,
+            "approve"
+          )
+        ) {
+          await submissionRef.update({
+            status: "approval_recovery_failed",
+            approvalRecoveryErrorAt: FieldValue.serverTimestamp(),
+          }).catch(() => undefined);
+
+          throw new Error("Existing approval audit record does not match this submission");
+        }
+
+        await adminDb.runTransaction(async (transaction) => {
+          const current = await transaction.get(submissionRef);
+          const confirmedAudit = await transaction.get(auditRef);
+
+          if (
+            !current.exists ||
+            !confirmedAudit.exists ||
+            !isMatchingModerationAuditRecord(
+              confirmedAudit.data(),
+              submissionId,
+              "approve"
+            )
+          ) {
+            throw new Error("Approval audit could not be confirmed during recovery");
+          }
+
+          transaction.update(submissionRef, {
+            status: "approved",
+            moderation: "safe",
+            watchEarnVideoId: submissionId,
+            processingBy: FieldValue.delete(),
+            processingStartedAt: FieldValue.delete(),
+            approvedAt: FieldValue.serverTimestamp(),
+          });
+        });
+
+        return NextResponse.json({
+          success: true,
+          action: "approved",
+          submissionId,
+          videoId: submissionId,
+          recovered: true,
+        });
+      }
+
+      let rollbackSucceeded = false;
+
+      // Never delete a video when the audit read failed:
+      // the approval batch may already have committed.
+      if (
+        auditSnapshot !== null &&
+        !auditSnapshot.exists &&
+        !existingVideoConflict
+      ) {
         try {
-          await adminDb
-            .collection("watchEarnVideos")
-            .doc(submissionId)
-            .delete();
+          const persistedVideo = await videoRef.get();
+
+          if (persistedVideo.exists) {
+            await videoRef.delete();
+          }
+
+          rollbackSucceeded = true;
         } catch (rollbackError) {
           console.error(
-            "Failed to roll back newly created video document:",
+            "Failed to verify or roll back approval video document:",
             rollbackError
           );
         }
       }
 
+      const canReturnToPending =
+        auditSnapshot !== null &&
+        !auditSnapshot.exists &&
+        rollbackSucceeded &&
+        !existingVideoConflict;
+
       try {
         await submissionRef.update({
-          status: "pending",
-          processingBy:
-            FieldValue.delete(),
-          processingStartedAt:
-            FieldValue.delete(),
+          status: canReturnToPending
+            ? "pending"
+            : "approval_recovery_failed",
+          processingBy: FieldValue.delete(),
+          processingStartedAt: FieldValue.delete(),
           lastProcessingError:
             processingError instanceof Error
               ? processingError.message
               : "Approval processing failed",
+          approvalRecoveryErrorAt: canReturnToPending
+            ? FieldValue.delete()
+            : FieldValue.serverTimestamp(),
         });
       } catch (stateError) {
         console.error(
-          "Failed to restore moderation submission state:",
+          "Failed to update moderation recovery state:",
           stateError
         );
       }

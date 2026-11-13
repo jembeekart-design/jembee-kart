@@ -37,7 +37,8 @@ test("Short or long video format is saved at upload and copied after admin appro
   assert.match(form, /setVideoFormat\("short"\)/);
   assert.match(form, /setVideoFormat\("long"\)/);
   assert.match(form, /videoFormat,/);
-  assert.match(start, /const videoFormat = body\.videoFormat === "long" \? "long" : "short"/);
+  assert.match(start, /validateUploadMetadata\(body\)/);
+  assert.match(start, /const \{ videoFormat, durationSeconds \} = metadata/);
   assert.match(start, /videoFormat,/);
   assert.match(approve, /videoFormat: submission\.videoFormat === "long" \? "long" : "short"/);
   assert.match(fetcher, /videoFormat: data\.videoFormat === "long" \? "long" : "short"/);
