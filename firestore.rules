@@ -11,8 +11,8 @@ service cloud.firestore {
     }
 
     match /admin_settings/{settingId} {
-      allow read: if settingId == 'customize';
-      allow create, update, delete: if isAdmin() && settingId == 'customize';
+      allow read: if settingId == 'customize' || (isAdmin() && settingId == 'mobile_app');
+      allow create, update, delete: if isAdmin() && settingId in ['customize', 'mobile_app'];
     }
     match /users/{uid} {
       allow read: if isOwner(uid) || isAdmin();
@@ -90,6 +90,8 @@ service cloud.firestore {
     match /shortsVerifiedExpenses/{id} { allow read, write: if false; }
     match /teacherReferralAttributions/{id} { allow read, write: if false; }
     match /videoModerationSubmissions/{id} { allow read, write: if false; }
+    match /copyrightClaims/{id} { allow read, write: if false; }
+    match /videoModerationAuditLogs/{id} { allow read, write: if false; }
     match /videoReports/{id} { allow read, write: if false; }
     match /videoCommentReports/{id} { allow read, write: if false; }
     match /creatorAdEarnings/{id} { allow read, write: if false; }

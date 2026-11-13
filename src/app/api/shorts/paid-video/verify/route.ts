@@ -4,6 +4,7 @@ import { getAdminAuth, getAdminDb } from "@/firebase/admin";
 import { readBoundedJson } from "@/lib/server/readBoundedJson";
 import { cashfreeRequest, getCashfreeConfig } from "@/lib/payments/cashfree";
 import { resolvePaidVideoSharer, splitPaidVideoRevenue } from "@/lib/server/paidVideoRevenueSplit.mjs";
+import { isPaidOrderDuplicatePayment } from "@/lib/server/paidVideoDuplicatePaymentGuard.mjs";
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
@@ -85,7 +86,7 @@ async function verifyAndGrant(orderId: string, uid: string) {
     ledgerCollection.doc(`paidvideo_${orderId}_platform`),
   ];
 
-  await db.runTransaction(async (tx) => {
+  const transactionResult = await db.runTransaction(async (tx) => {
     const [freshOrder, freshVideo, purchase, paymentEvent, creatorLedger, sharerLedger, platformLedger] = await Promise.all([tx.get(orderRef), tx.get(videoRef), tx.get(purchaseRef), tx.get(paymentEventRef), tx.get(ledgerRefs[0]), tx.get(ledgerRefs[1]), tx.get(ledgerRefs[2])]);
     const freshOrderData = freshOrder.data();
     const freshVideoData = freshVideo.data();
@@ -93,6 +94,17 @@ async function verifyAndGrant(orderId: string, uid: string) {
     if (!freshVideo.exists || freshVideoData?.status !== "approved" || freshVideoData?.active !== true || freshVideoData?.moderation !== "safe" || freshVideoData?.videoAccess !== "paid" || freshVideoData?.paidVideoStatus !== "enabled" || freshVideoData?.paidCheckoutEnabled !== true || typeof freshVideoData?.creatorId !== "string" || freshVideoData.creatorId.trim().length === 0 || typeof freshOrderData?.creatorId !== "string" || freshVideoData.creatorId !== freshOrderData.creatorId) throw new Error("VIDEO_NOT_ELIGIBLE_FOR_PAID_PURCHASE");
     if (validInrAmount(freshVideoData?.videoPrice) !== validInrAmount(freshOrderData?.amount)) throw new Error("ORDER_VIDEO_AMOUNT_MISMATCH");
     if (paymentEvent.exists && paymentEvent.data()?.orderId !== orderId) throw new Error("PAYMENT_ID_REUSED");
+    // Match the webhook's duplicate-success protection. Commit only the review
+    // marker, then return a non-success result outside the transaction so the
+    // marker is not rolled back by a thrown exception.
+    if (isPaidOrderDuplicatePayment(freshOrderData?.status, freshOrderData?.cfPaymentId, paymentId)) {
+      tx.update(orderRef, {
+        duplicatePaymentReviewRequired: true,
+        duplicatePaymentId: paymentId,
+        updatedAt: FieldValue.serverTimestamp(),
+      });
+      return { status: "duplicate_payment_review" as const };
+    }
     if (purchase.exists && purchase.data()?.status === "paid" && purchase.data()?.accessRevoked !== true && purchase.data()?.orderId !== orderId) {
       throw new Error("PURCHASE_ALREADY_EXISTS_REVIEW_REQUIRED");
     }
@@ -110,7 +122,11 @@ async function verifyAndGrant(orderId: string, uid: string) {
     if (!creatorLedger.exists) tx.create(ledgerRefs[0], { ...common, entryType: "creator_share", beneficiaryUid: String(freshVideoData?.creatorId), amountPaise: split.creatorPaise });
     if (!sharerLedger.exists) tx.create(ledgerRefs[1], { ...common, entryType: sharerUid ? "sharer_share" : "sharer_share_unallocated", beneficiaryUid: sharerUid, amountPaise: split.sharerPaise, attributionVerified: Boolean(sharerUid) });
     if (!platformLedger.exists) tx.create(ledgerRefs[2], { ...common, entryType: "platform_share", beneficiaryUid: "platform", amountPaise: split.platformPaise });
+    return { status: "verified" as const };
   });
+  if (transactionResult.status === "duplicate_payment_review") {
+    throw new Error("DUPLICATE_PAYMENT_REVIEW_REQUIRED");
+  }
   return true;
 }
 
@@ -132,7 +148,13 @@ export async function POST(req: Request) {
     const code = error instanceof Error ? error.message : "unknown";
     console.error("Paid video payment verification failed", code);
     const status = code === "ORDER_NOT_FOUND" ? 404 : code === "ORDER_INVALID" ? 400 :
-      code === "VIDEO_NOT_ELIGIBLE_FOR_PAID_PURCHASE" || code === "ORDER_VIDEO_AMOUNT_MISMATCH" ? 409 : 500;
-    return NextResponse.json({ success: false, error: status === 404 ? "Order not found" : status === 409 ? "This video is not eligible for purchase" : "Payment verification unavailable; manual review may be required" }, { status, headers: { "Cache-Control": "no-store" } });
+      code === "VIDEO_NOT_ELIGIBLE_FOR_PAID_PURCHASE" || code === "ORDER_VIDEO_AMOUNT_MISMATCH" ||
+      code === "DUPLICATE_PAYMENT_REVIEW_REQUIRED" ? 409 : 500;
+    const message = code === "DUPLICATE_PAYMENT_REVIEW_REQUIRED"
+      ? "A different successful payment was detected; manual review is required"
+      : status === 404 ? "Order not found"
+      : status === 409 ? "This video is not eligible for purchase"
+      : "Payment verification unavailable; manual review may be required";
+    return NextResponse.json({ success: false, error: message }, { status, headers: { "Cache-Control": "no-store" } });
   }
 }

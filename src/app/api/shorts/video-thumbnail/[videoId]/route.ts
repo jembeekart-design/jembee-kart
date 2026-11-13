@@ -3,6 +3,13 @@ import { getAdminDb } from "@/firebase/admin";
 import { getDriveFileMetadata } from "@/services/googleDriveService";
 import { classifyGoogleDriveError, googleDriveErrorHttpStatus } from "@/lib/googleDriveErrors";
 import { playbackCookieName, verifyPlaybackToken } from "@/lib/payments/cashfreeServer";
+import {
+  isAllowedThumbnailContentType,
+  isAllowedThumbnailUrl,
+  isThumbnailLengthAllowed,
+  MAX_THUMBNAIL_BYTES,
+  THUMBNAIL_FETCH_TIMEOUT_MS,
+} from "@/modules/media/thumbnailPolicy";
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
@@ -122,14 +129,13 @@ export async function GET(
 
     // Keep thumbnail retrieval bounded and restrict redirects/hosts. Drive's
     // thumbnailLink is provider-controlled metadata; do not blindly follow it.
-    const thumbnailUrl = new URL(metadata.thumbnailLink);
-    const allowedHosts = new Set(["drive.google.com", "lh3.googleusercontent.com", "googleusercontent.com"]);
-    if (thumbnailUrl.protocol !== "https:" || ![...allowedHosts].some((host) => thumbnailUrl.hostname === host || thumbnailUrl.hostname.endsWith(`.${host}`))) {
+    if (!isAllowedThumbnailUrl(metadata.thumbnailLink)) {
       return new NextResponse("Invalid thumbnail host", { status: 502 });
     }
+    const thumbnailUrl = metadata.thumbnailLink;
 
     const controller = new AbortController();
-    const timeout = setTimeout(() => controller.abort(), 8000);
+    const timeout = setTimeout(() => controller.abort(), THUMBNAIL_FETCH_TIMEOUT_MS);
     let thumbnailResponse: Response;
     try {
       thumbnailResponse = await fetch(thumbnailUrl, {
@@ -146,10 +152,8 @@ export async function GET(
     }
 
     const contentType = (thumbnailResponse.headers.get("content-type") || "").split(";")[0].trim().toLowerCase();
-    const allowedTypes = new Set(["image/jpeg", "image/png", "image/webp", "image/gif"]);
-    const declaredLength = Number(thumbnailResponse.headers.get("content-length") || 0);
-    const MAX_THUMBNAIL_BYTES = 5 * 1024 * 1024;
-    if (!allowedTypes.has(contentType) || (declaredLength > 0 && declaredLength > MAX_THUMBNAIL_BYTES)) {
+    const declaredLength = thumbnailResponse.headers.get("content-length");
+    if (!isAllowedThumbnailContentType(contentType) || !isThumbnailLengthAllowed(declaredLength)) {
       await thumbnailResponse.body.cancel().catch(() => undefined);
       return new NextResponse("Invalid thumbnail response", { status: 502 });
     }

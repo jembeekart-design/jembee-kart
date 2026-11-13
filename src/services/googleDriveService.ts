@@ -311,7 +311,19 @@ export async function deleteDriveFile(
 
   const drive = await getDriveClient();
 
-  await drive.files.delete({
-    fileId: trimmedFileId,
-  });
+  try {
+    await drive.files.delete({
+      fileId: trimmedFileId,
+    });
+  } catch (error) {
+    const value =
+      error && typeof error === "object"
+        ? error as { code?: unknown; response?: { status?: unknown } }
+        : null;
+    const status = value?.response?.status ?? value?.code;
+
+    // A missing Drive file is already in the desired deleted state.
+    if (Number(status) === 404) return;
+    throw error;
+  }
 }

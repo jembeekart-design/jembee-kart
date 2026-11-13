@@ -3,16 +3,16 @@ import { FieldValue } from "firebase-admin/firestore";
 import { getAdminDb } from "@/firebase/admin";
 import { splitPaidVideoRevenue, resolvePaidVideoSharer } from "@/lib/server/paidVideoRevenueSplit.mjs";
 import { getCashfreeConfig, verifyCashfreeWebhookSignature } from "@/lib/payments/cashfree";
+import { readBoundedRawBody } from "@/lib/server/readBoundedRawBody";
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
 
 export async function POST(req: NextRequest) {
   try {
-    const declared = Number(req.headers.get("content-length") || 0);
-    if (declared > 131072) return NextResponse.json({ success: false }, { status: 413 });
-    const rawBody = await req.text();
-    if (Buffer.byteLength(rawBody, "utf8") > 131072) return NextResponse.json({ success: false }, { status: 413 });
+    const boundedBody = await readBoundedRawBody(req, 128 * 1024);
+    if (!boundedBody.ok) return NextResponse.json({ success: false }, { status: boundedBody.status });
+    const rawBody = boundedBody.rawBody;
     const config = await getCashfreeConfig({ requireEnabled: false });
     const signature = req.headers.get("x-webhook-signature") || "";
     const timestamp = req.headers.get("x-webhook-timestamp") || "";

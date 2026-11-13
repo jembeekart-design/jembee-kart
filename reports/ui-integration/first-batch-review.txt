@@ -1,0 +1,367 @@
+
+============================================================
+src/app/page.tsx
+Lines: 184
+Class names / styling references:
+<div className="relative grid h-10 w-10 shrink-0 place-items-center overflow-hidden rounded-full bg-gradient-to-br from-cyan-400 to-violet-500 text-sm font-black text-slate-950">
+{video.photoURL?.startsWith("https://") ? <img src={video.photoURL} alt="" loading="lazy" className="absolute inset-0 h-full w-full object-cover" onError={(event) => { event.currentTarget.style.display = "none"; }} /> : null}
+<div className={`relative overflow-hidden bg-gradient-to-br from-slate-800 via-slate-900 to-black ${ratio === "short" ? "aspect-[9/16]" : "aspect-video"}`}>
+<img src={publicVideoThumbnail(video)} alt="" loading={eager ? "eager" : "lazy"} fetchPriority={eager ? "high" : "auto"} decoding="async" className="h-full w-full object-cover" onError={() => setFailed(true)} />
+<div className="absolute inset-0 flex flex-col items-center justify-center gap-2 text-white/60"><PlaySquare size={35}/><span className="text-xs font-semibold">Thumbnail unavailable</span></div>
+{ratio === "landscape" ? <span className="absolute bottom-2 right-2 rounded-md bg-black/85 px-2 py-1 text-[11px] font-semibold text-white">{formatVideoDuration(video.durationSeconds) || "Watch video"}</span> : null}
+if (!videos.length) return <div className="rounded-2xl border border-dashed border-white/15 p-6 text-center text-sm text-slate-400">अभी कोई approved Short उपलब्ध नहीं है। नया approved Short आने पर वह यहाँ दिखेगा।</div>;
+<div className="grid grid-cols-2 gap-3">
+<Link key={video.id} href={`/shorts?v=${encodeURIComponent(video.id)}`} className="group relative min-w-0 overflow-hidden rounded-2xl bg-slate-900">
+<div className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-black/95 via-black/45 to-transparent p-3 pt-12 text-white">
+{now !== null && video.createdAt && now - video.createdAt <= 7 * 24 * 60 * 60 * 1000 ? <span className="mb-1 inline-flex rounded bg-white px-2 py-0.5 text-[10px] font-bold text-slate-950">New</span> : null}
+<p className="line-clamp-2 text-xs font-bold leading-4 sm:text-sm">{video.caption || "Untitled Short"}</p>
+<p className="mt-1 truncate text-[10px] text-white/70">{publicCreatorName(video)}</p>
+<article className="min-w-0">
+<Link href={`/videos?v=${encodeURIComponent(video.id)}`} className="group block overflow-hidden rounded-2xl bg-[#202020]">
+<div className="mt-3 flex gap-3">
+<div className="min-w-0 flex-1">
+<Link href={`/videos?v=${encodeURIComponent(video.id)}`} className="line-clamp-2 text-sm font-bold leading-5 sm:text-base">{video.caption || "Untitled video"}</Link>
+<p className="mt-1 truncate text-xs text-slate-400">{publicCreatorName(video)}</p>
+<p className="mt-0.5 flex flex-wrap items-center gap-1.5 text-xs text-slate-400"><Eye size={13}/>{Number(video.views || 0).toLocaleString("en-IN")} views <span>·</span>{publicVideoAge(video.createdAt)}</p>
+<main className="min-h-screen bg-[#0b0b0b] text-white">
+<header className="sticky top-0 z-40 flex h-16 items-center gap-3 border-b border-white/10 bg-[#0b0b0b]/95 px-3 backdrop-blur sm:px-4">
+<button type="button" aria-label="Toggle menu" onClick={() => setSidebar((value) => !value)} className="rounded-full p-2 hover:bg-white/10"><Menu size={23}/></button>
+<Link href="/" className="flex min-w-fit items-center gap-1 text-lg font-black tracking-tight sm:text-xl">JEMBEE <span className="text-cyan-400">PLAY</span><PlaySquare size={19} className="ml-1 text-cyan-400"/></Link>
+<div className="mx-auto flex min-w-0 flex-1 max-w-2xl">
+<div className="flex w-full overflow-hidden rounded-full border border-white/20 bg-[#121212]">
+<input value={search} onChange={(event) => setSearch(event.target.value)} placeholder="Search videos, teachers and topics" aria-label="Search videos" className="w-full min-w-0 bg-transparent px-3 py-2.5 text-sm outline-none sm:px-5"/>
+<button type="button" aria-label="Search" className="border-l border-white/15 bg-white/5 px-3 sm:px-5"><Search size={19}/></button>
+<Link href="/videos/upload" className="hidden items-center gap-2 rounded-full bg-white/10 px-4 py-2 text-sm font-semibold sm:flex"><PlusSquare size={18}/> Create</Link>
+<Link href="/videos/notifications" aria-label="Notifications" className="rounded-full p-2 hover:bg-white/10"><Bell size={21}/></Link>
+<div className="flex">
+{sidebar && <aside className="sticky top-16 hidden h-[calc(100dvh-4rem)] w-60 shrink-0 overflow-y-auto border-r border-white/10 p-3 md:block">
+{desktopNavigation.map(({ icon: Icon, label, href }) => <Link key={label} href={href} className="flex items-center gap-5 rounded-xl px-4 py-3 text-sm hover:bg-white/10"><Icon size={21}/>{label}</Link>)}
+<div className="my-3 border-t border-white/10"/>
+<p className="px-4 py-2 text-xs font-bold uppercase tracking-wider text-slate-500">Learning</p>
+<Link href="/learn/school" className="flex items-center gap-5 rounded-xl px-4 py-3 text-sm hover:bg-white/10"><BookOpen size={21}/>Boards & Books</Link>
+<p className="mt-8 px-4 text-xs text-slate-500">JEMBEE PLAY · Watch • Learn • Create • Share</p>
+<section className="min-w-0 flex-1 px-3 pb-28 pt-3 sm:px-4 sm:pt-4 md:px-6">
+<div className="sticky top-16 z-30 -mx-3 mb-4 flex gap-3 overflow-x-auto bg-[#0b0b0b] px-3 py-2 [scrollbar-width:none] sm:-mx-4 sm:px-4 md:-mx-6 md:px-6">
+{chips.map((chip) => <button type="button" key={chip} onClick={() => setActive(chip)} className={`shrink-0 rounded-xl px-4 py-2.5 text-sm font-semibold ${active === chip ? "bg-white text-black" : "bg-white/10 text-white hover:bg-white/20"}`}>{chip}</button>)}
+<div className="mb-5 rounded-2xl border border-cyan-400/20 bg-gradient-to-r from-cyan-950/70 to-violet-950/50 p-5 sm:flex sm:items-center sm:justify-between">
+<div><p className="text-xs font-bold uppercase tracking-widest text-cyan-300">Jembee Play Learning</p><h1 className="mt-1 text-2xl font-black">अपनी किताब का हर सवाल सीखें</h1><p className="mt-1 text-sm text-slate-300">Board → School → Book → Chapter → Question → Video Answer</p></div>
+<Link href="/learn/school" className="mt-4 inline-flex min-h-11 items-center justify-center gap-2 rounded-full bg-cyan-400 px-5 py-2.5 text-sm font-bold text-slate-950 sm:mt-0">Find your school <ChevronRight size={17}/></Link>
+<section className="mb-7" aria-labelledby="shorts-heading">
+<div className="mb-4 flex items-center justify-between gap-3">
+<h2 id="shorts-heading" className="flex items-center gap-2 text-lg font-bold sm:text-xl"><PlaySquare className="text-rose-500" size={23}/> Shorts</h2>
+<Link href="/shorts" className="shrink-0 text-sm font-semibold text-cyan-300 hover:underline">View all Shorts</Link>
+{loading ? <div className="grid grid-cols-2 gap-3">{Array.from({ length: 4 }, (_, index) => <div key={index} className="aspect-[9/16] animate-pulse rounded-2xl bg-white/5"/>)}</div> : error ? <p role="status" className="rounded-xl border border-amber-400/20 bg-amber-400/5 p-4 text-sm text-amber-100">{error}</p> : <ShortsGrid videos={shorts}/>}
+<section className="mb-7" aria-labelledby="long-videos-heading">
+<h2 id="long-videos-heading" className="text-lg font-bold sm:text-xl">Latest Long Videos</h2>
+<Link href="/videos" className="shrink-0 text-sm font-semibold text-cyan-300 hover:underline">View all videos</Link>
+<div className="grid gap-x-4 gap-y-8 sm:grid-cols-2 xl:grid-cols-3">{Array.from({ length: 3 }, (_, index) => <div key={index} className="aspect-video animate-pulse rounded-xl bg-white/5" />)}</div>
+<div className="rounded-2xl border border-dashed border-white/15 p-7 text-center">
+<p className="font-semibold">अभी कोई approved Long Video उपलब्ध नहीं है।</p>
+<p className="mt-2 text-sm text-slate-400">Upload में Long Video चुनकर वीडियो भेजें। Admin approval के बाद वह यहाँ दिखाई देगा।</p>
+<Link href="/videos/upload" className="mt-4 inline-flex rounded-full bg-cyan-400 px-4 py-2 text-sm font-bold text-slate-950">Upload Long Video</Link>
+<div className="grid gap-x-4 gap-y-8 sm:grid-cols-2 xl:grid-cols-3">{longVideos.slice(0, 12).map((video, index) => <LongVideoCard key={video.id} video={video} eager={index < 3}/>)}</div>
+<nav className="fixed inset-x-0 bottom-0 z-40 flex justify-around border-t border-white/10 bg-[#0b0b0b]/95 px-2 pb-[calc(0.5rem+env(safe-area-inset-bottom))] pt-2 backdrop-blur md:hidden">
+{mobileNavigation.map(({ icon: Icon, label, href }) => <Link key={label} href={href} className={`flex min-w-0 flex-col items-center gap-1 px-2 py-1 text-[10px] ${label === "Home" ? "text-cyan-300" : "text-slate-300"}`}><Icon size={21}/>{label}</Link>)}
+
+============================================================
+src/app/shorts/page.tsx
+Lines: 21
+Class names / styling references:
+className="relative h-[100dvh] min-h-[100svh] w-full overflow-hidden bg-black text-white"
+<Suspense fallback={<div className="h-full w-full bg-black" aria-label="Loading video feed" />}>
+
+============================================================
+src/app/explore/page.tsx
+Lines: 52
+Class names / styling references:
+return <main className="min-h-screen bg-[#080d18] text-white">
+<header className="sticky top-0 z-20 border-b border-white/10 bg-[#080d18]/95 px-4 py-3 backdrop-blur">
+<div className="mx-auto flex max-w-6xl items-center justify-between gap-3"><div><p className="text-xl font-black tracking-tight">JEMBEE <span className="text-cyan-400">PLAY</span></p><p className="text-xs text-slate-400">Explore • Watch • Learn</p></div><Link href="/shorts" className="flex items-center gap-2 rounded-full bg-cyan-400 px-4 py-2 text-
+<section className="mx-auto max-w-6xl px-4 pb-10 pt-7">
+<div className="mb-6"><p className="mb-2 flex items-center gap-2 text-sm font-semibold text-cyan-300"><Sparkles size={16}/> Explore Jembee</p><h1 className="text-3xl font-black leading-tight sm:text-4xl">हर रुचि, हर हुनर के लिए <span className="text-cyan-300">एक जगह</span></h1><p className="mt-2 max-w-2xl text-sm text-slate-400">Short videos dekhei
+<label className="mb-6 flex items-center gap-3 rounded-2xl border border-white/10 bg-white/5 px-4 py-3"><Search className="text-slate-400" size={20}/><input value={query} onChange={e=>setQuery(e.target.value)} placeholder="School, krishi, computer, teacher ya topic khojein..." className="w-full bg-transparent text-sm outline-none placeholder:text-s
+<div className="mb-3 flex items-center justify-between"><h2 className="text-lg font-bold">Explore Categories</h2><span className="text-xs text-slate-500">Swipe karein →</span></div>
+<div className="-mx-4 flex snap-x gap-4 overflow-x-auto px-4 pb-4 [scrollbar-width:thin]">{filtered.map(c=>{const Icon=c.icon;return <button key={c.id} onClick={()=>setSelected(selected===c.id?null:c.id)} className={`group flex w-[104px] shrink-0 snap-start flex-col items-center gap-2 rounded-2xl p-2 text-center transition ${selected===c.id?"bg-cya
+{active&&<section className="mb-7 rounded-3xl border border-cyan-300/20 bg-cyan-300/5 p-5"><div className="flex items-start justify-between gap-3"><div><p className="text-xs font-bold uppercase tracking-widest text-cyan-300">Selected category</p><h3 className="mt-1 text-2xl font-black">{active.name}</h3><p className="mt-1 text-sm text-slate-400">{a
+<section className="mb-7 grid gap-3 sm:grid-cols-2"><Link href="/shorts" className="flex items-center justify-between rounded-3xl border border-white/10 bg-gradient-to-r from-violet-500/20 to-fuchsia-500/10 p-5"><div><p className="text-xs font-bold text-violet-200">ENTERTAINMENT & LEARNING</p><h3 className="mt-1 text-xl font-black">Watch Shorts</h3
+<div className="mt-8 flex items-center justify-between text-xs text-slate-500"><span>JEMBEE PLAY • Explore</span><span className="flex items-center gap-1">More categories <ChevronRight size={14}/></span></div>
+
+============================================================
+src/app/videos/history/page.tsx
+Lines: 164
+Class names / styling references:
+if (loading) return <div className="flex justify-center p-10"><Loader2 className="animate-spin" /></div>;
+if (error) return <div className="p-10 text-center text-red-500">{error} <button onClick={fetchHistory} className="underline">Retry</button></div>;
+<div className="p-4 max-w-2xl mx-auto">
+<h1 className="text-2xl font-bold mb-6">My Upload History</h1>
+<p className="text-center">You haven&apos;t uploaded any videos yet.</p>
+<div className="space-y-4">
+<div key={video.id} className="flex gap-4 p-4 bg-white rounded-lg border">
+<img src={video.thumbnail} alt="Thumbnail" className="w-20 h-20 object-cover rounded" />
+<div className="flex-1">
+<h3 className="font-semibold line-clamp-1">{video.caption || "No title"}</h3>
+<p className="text-sm text-gray-500">
+<div className="flex gap-2 mt-2">
+<span className={`text-xs px-2 py-1 rounded ${video.isEnhanced ? 'bg-purple-100 text-purple-800' : 'bg-blue-100 text-blue-800'}`}>
+<span className="text-xs px-2 py-1 bg-gray-100 rounded text-gray-700">{video.status}</span>
+<div className="flex flex-col gap-2">
+<button onClick={() => router.push(`/videos/original/${video.id}`)} className="p-2 bg-gray-100 rounded"><Play size={16}/></button>
+className="p-2 bg-red-100 text-red-600 rounded"
+{deletingId === video.id ? <Loader2 size={16} className="animate-spin" /> : <Trash2 size={16} />}
+
+============================================================
+src/app/followers/page.tsx
+Lines: 126
+Class names / styling references:
+<main className="min-h-screen bg-white text-gray-900 p-4 pt-8">
+<h1 className="text-2xl font-black mb-6">Followers</h1>
+<div className="grid grid-cols-2 gap-4 mb-8">
+<div className="bg-teal-50 border border-teal-100 p-4 rounded-2xl text-center shadow-sm">
+<div className="text-2xl font-black text-teal-800">{userData?.followersCount || 0}</div>
+<div className="text-sm text-teal-600">Followers</div>
+<div className="text-2xl font-black text-teal-800">{userData?.followingCount || 0}</div>
+<div className="text-sm text-teal-600">Following</div>
+<div className="flex border-b border-gray-200 mb-6">
+className={`flex-1 py-2 text-sm font-bold ${activeTab === 'history' ? 'text-teal-600 border-b-2 border-teal-600' : 'text-gray-500'}`}
+className={`flex-1 py-2 text-sm font-bold ${activeTab === 'list' ? 'text-teal-600 border-b-2 border-teal-600' : 'text-gray-500'}`}
+<div className="space-y-4">
+<div key={user.id} className="flex items-center justify-between bg-white border border-gray-100 p-4 rounded-2xl shadow-sm">
+<div className="flex items-center gap-3">
+<div className="font-bold">{user.name}</div>
+<div className="text-xs text-gray-500">@{user.username}</div>
+<div className="text-xs text-teal-600">
+<div className="flex gap-2">
+<Link href={`/profile/${user.id}`} className="px-3 py-1 bg-gray-100 text-gray-700 rounded-lg text-sm font-medium hover:bg-gray-200">View</Link>
+<button onClick={() => handleUnfollow(user.id)} className="px-3 py-1 bg-teal-50 text-teal-700 border border-teal-200 rounded-lg text-sm font-medium hover:bg-teal-100">Unfollow</button>
+<div className="text-center text-gray-500 py-10">
+<Link href="/explore" className="text-teal-600 font-bold mt-2 inline-block">Explore Users</Link>
+
+============================================================
+src/app/videos/original/[videoId]/page.tsx
+Lines: 78
+Class names / styling references:
+if (loading) return <main className="min-h-screen bg-black p-4 text-white">Loading...</main>;
+<main className="min-h-screen bg-black p-4 text-white">
+<button onClick={() => router.back()} className="mb-4 flex items-center gap-2 text-sm text-gray-400">
+<div className="mb-8">
+<h1 className="text-xl font-bold mb-2">Original Video</h1>
+<video src={originalVideo.video} className="w-full rounded-xl" controls />
+<h2 className="text-lg font-bold mb-4">Videos created from this original</h2>
+<div className="grid grid-cols-2 gap-2">
+<div key={v.id} className="aspect-[9/16] rounded-lg overflow-hidden">
+
+============================================================
+src/app/videos/upload/page.tsx
+Lines: 419
+Class names / styling references:
+<main className="min-h-screen bg-[#080a0f] pb-[calc(6.5rem+env(safe-area-inset-bottom))] text-white">
+<header className="sticky top-0 z-30 border-b border-white/10 bg-[#080a0f]/95 px-4 py-3 backdrop-blur">
+<div className="mx-auto flex max-w-2xl items-center justify-between gap-3">
+<Link href="/" aria-label="Back to home" className="flex h-10 w-10 items-center justify-center rounded-full bg-white/5 text-white">
+<Link href="/" className="flex items-center gap-2 text-lg font-black tracking-tight">
+<span className="grid h-8 w-8 place-items-center rounded-xl bg-blue-600"><Play size={17} fill="currentColor" /></span>
+JEMBEE <span className="text-blue-400">PLAY</span>
+<div className="flex items-center gap-1">
+<Link href="/videos/history" aria-label="My uploads" className="rounded-full p-2 text-slate-300 hover:bg-white/10"><Bell size={19} /></Link>
+<button type="button" aria-label="Upload help" onClick={() => alert("वीडियो चुनें → जानकारी भरें → Google Drive पर भेजें → Admin approval के बाद प्रकाशित होगा।")} className="rounded-full p-2 text-slate-300 hover:bg-white/10"><HelpCircle size={20} /></button>
+<div className="mx-auto max-w-2xl space-y-4 px-3 pb-7 pt-4 sm:px-4">
+<section className="relative overflow-hidden rounded-3xl border border-blue-500/30 bg-[#0d1b35] p-5 sm:p-6">
+<div className="pointer-events-none absolute -right-10 -top-14 h-44 w-44 rounded-full bg-blue-600/20 blur-3xl" />
+<div className="relative">
+<p className="text-2xl font-black leading-tight sm:text-3xl">वीडियो अपलोड करें</p>
+<p className="mt-2 max-w-md text-sm leading-6 text-slate-300 sm:text-base">अपना ज्ञान, अनुभव या क्रिएटिव वीडियो JEMBEE PLAY पर साझा करें</p>
+<section aria-label="Upload steps" className="grid grid-cols-3 gap-2 rounded-2xl border border-white/10 bg-[#11151e] p-3">
+<div key={number} className="flex min-w-0 items-center gap-2">
+<span className="grid h-9 w-9 shrink-0 place-items-center rounded-full bg-blue-600 text-base font-black">{number}</span>
+<div className="min-w-0"><p className="truncate text-xs font-bold sm:text-sm">{title}</p><p className="mt-0.5 truncate text-[10px] text-slate-400 sm:text-xs">{detail}</p></div>
+{index < 2 ? <span className="ml-auto hidden text-slate-500 sm:inline">›</span> : null}
+<label className="block cursor-pointer rounded-3xl border-2 border-dashed border-blue-500/70 bg-[#10141d] px-4 py-8 text-center transition hover:border-blue-400 hover:bg-[#111a2a]">
+<span className="mx-auto grid h-16 w-16 place-items-center rounded-2xl bg-blue-600/15 text-blue-400"><Upload size={36} /></span>
+<h2 className="mt-4 text-lg font-extrabold sm:text-xl">वीडियो चुनें या यहाँ ड्रैग और ड्रॉप करें</h2>
+<p className="mt-2 text-xs text-slate-400 sm:text-sm">MP4, MOV, WEBM · अधिकतम 500 MB</p>
+<span className="mt-5 inline-flex min-h-12 items-center justify-center gap-2 rounded-xl bg-blue-600 px-7 py-3 text-base font-bold text-white transition hover:bg-blue-500">
+<section className="overflow-hidden rounded-3xl border border-white/10 bg-[#11151e]">
+{previewUrl ? <div className="bg-black"><video src={previewUrl} controls playsInline preload="metadata" className="max-h-64 w-full object-contain" /></div> : null}
+<div className="flex items-center gap-3 p-4">
+<span className="grid h-12 w-12 shrink-0 place-items-center rounded-xl bg-blue-600/15 text-blue-400"><FileVideo size={25} /></span>
+<div className="min-w-0 flex-1">
+<p className="truncate text-sm font-bold">{file.name}</p>
+<p className="mt-1 text-xs text-slate-400">{formatBytes(file.size)} · {durationLabel}</p>
+<button type="button" onClick={removeVideo} disabled={loading} aria-label="Remove selected video" className="rounded-xl border border-white/10 p-2 text-slate-300 disabled:opacity-40"><X size={19} /></button>
+<section className="rounded-3xl border border-white/10 bg-[#11151e] p-4" aria-live="polite" aria-label="Upload progress">
+<div className="flex items-center justify-between gap-3">
+<h2 className="flex items-center gap-2 text-sm font-bold"><Upload size={18} className="text-blue-400" /> अपलोड प्रगति</h2>
+<span className="text-sm font-extrabold tabular-nums">{uploadProgress}%</span>
+<div className="mt-3 flex items-center gap-3">
+<span className="grid h-12 w-12 shrink-0 place-items-center rounded-xl bg-blue-600 text-white"><FileVideo size={24} /></span>
+<p className="truncate text-xs font-bold">{file?.name || "Video upload"}</p>
+<p className="mt-1 text-[11px] text-slate-400">{uploadPaused ? "अपलोड रोका गया है" : "Google Drive पर अपलोड हो रहा है…"}</p>
+<div className="mt-2 h-2 overflow-hidden rounded-full bg-white/15"><div className="h-full rounded-full bg-blue-500 transition-[width] duration-300" style={{ width: `${uploadProgress}%` }} /></div>
+<p className="mt-1 text-[11px] text-slate-400">{formatBytes(uploadedBytes)} / {formatBytes(file?.size || 0)}</p>
+<div className="flex shrink-0 flex-col gap-2">
+<button type="button" onClick={uploadPaused ? resumeUpload : pauseUpload} disabled={!loading} className="rounded-lg border border-white/20 p-2 text-white disabled:opacity-40" aria-label={uploadPaused ? "Resume upload" : "Pause upload"}>{uploadPaused ? <Play size={18} /> : <Pause size={18} />}</button>
+<button type="button" onClick={cancelUpload} disabled={!loading} className="rounded-lg border border-red-400/50 p-2 text-red-300 disabled:opacity-40" aria-label="Cancel upload"><X size={18} /></button>
+<section className="rounded-3xl border border-white/10 bg-[#11151e] p-4 sm:p-5">
+<h2 className="flex items-center gap-2 text-base font-extrabold"><FileVideo size={19} className="text-blue-400" /> वीडियो की जानकारी</h2>
+<label className="mt-4 block text-xs font-bold text-slate-200">शीर्षक / कैप्शन <span className="text-red-400">*</span>
+<textarea value={caption} onChange={(event) => setCaption(event.target.value.slice(0, 200))} maxLength={200} placeholder="वीडियो का शीर्षक लिखें…" className="mt-2 min-h-24 w-full resize-y rounded-xl border border-white/15 bg-[#090d14] px-3 py-3 text-sm text-white outline-none placeholder:text-slate-500 focus:border-blue-500" />
+<p className="mt-1 text-right text-[11px] text-slate-500">{caption.length}/200</p>
+<div className="mt-4">
+<p className="text-xs font-bold text-slate-200">वीडियो का प्रकार</p>
+<div className="mt-2 grid grid-cols-2 gap-2">
+<button type="button" onClick={() => setVideoFormat("short")} className={`rounded-xl border p-3 text-left ${videoFormat === "short" ? "border-blue-500 bg-blue-600/15" : "border-white/10 bg-[#0b0f16]"}`}>
+<span className="block text-sm font-bold">Shorts</span><span className="mt-1 block text-[11px] text-slate-400">Vertical · 9:16</span>
+<button type="button" onClick={() => setVideoFormat("long")} className={`rounded-xl border p-3 text-left ${videoFormat === "long" ? "border-blue-500 bg-blue-600/15" : "border-white/10 bg-[#0b0f16]"}`}>
+<span className="block text-sm font-bold">Long Video</span><span className="mt-1 block text-[11px] text-slate-400">Landscape · 16:9</span>
+<p className="text-xs font-bold text-slate-200">वीडियो की पहुँच</p>
+<button type="button" onClick={() => setVideoAccess("free")} className={`rounded-xl border p-3 text-sm font-bold ${videoAccess === "free" ? "border-blue-500 bg-blue-600/15" : "border-white/10 bg-[#0b0f16]"}`}>Free · मुफ़्त</button>
+<button type="button" onClick={() => setVideoAccess("paid")} className={`rounded-xl border p-3 text-sm font-bold ${videoAccess === "paid" ? "border-blue-500 bg-blue-600/15" : "border-white/10 bg-[#0b0f16]"}`}>Paid · सशुल्क</button>
+{videoAccess === "paid" ? <label className="mt-3 block text-xs font-bold">कीमत (₹)<input type="number" min="1" max="100000" step="1" value={videoPrice} onChange={(event) => setVideoPrice(event.target.value)} className="mt-2 w-full rounded-xl border border-white/15 bg-[#090d14] px-3 py-3 text-sm text-white outline-none focus:border-blue-500" /></lab
+<section className="rounded-3xl border border-white/10 bg-[#11151e] p-4">
+<h2 className="flex items-center gap-2 text-sm font-extrabold"><Lightbulb size={19} className="text-amber-300" /> अच्छी वीडियो के लिए सुझाव</h2>
+<div className="mt-3 grid grid-cols-2 gap-2">
+<div key={id} className="flex min-h-20 items-center gap-2 rounded-xl bg-[#090d14] p-3">
+<CheckCircle2 size={18} className="shrink-0 text-green-400" />
+<span className="text-xs font-semibold leading-5 text-slate-200">{label}</span>
+<section className="rounded-2xl border border-red-400/40 bg-red-950/30 p-4 text-red-200" role="alert">
+<p className="font-bold">वीडियो अपलोड नहीं हुआ</p>
+<p className="mt-1 break-words text-sm">{uploadError}</p>
+{!loading ? <p className="mt-2 text-xs text-red-300">जहां तक पहुंचा: {uploadProgress}%</p> : null}
+<button type="button" onClick={handleUpload} disabled={loading || !file} className="flex min-h-14 w-full items-center justify-center gap-3 rounded-xl bg-blue-600 px-5 py-4 text-base font-extrabold text-white transition hover:bg-blue-500 active:bg-blue-700 disabled:cursor-not-allowed disabled:bg-slate-700 disabled:text-slate-400">
+{loading ? <><Loader2 size={22} className="animate-spin" />{uploadPaused ? "अपलोड रुका हुआ है" : `वीडियो अपलोड हो रहा है ${uploadProgress}%`}</> : <><Upload size={22} />वीडियो अपलोड करें</>}
+<p className="text-center text-xs text-slate-500">वीडियो पहले Google Drive पर जांच के लिए भेजा जाएगा। मंजूरी के बाद प्रकाशित होगा।</p>
+<nav className="fixed inset-x-0 bottom-0 z-40 grid grid-cols-5 border-t border-white/10 bg-[#090b10]/95 px-1 pb-[calc(0.45rem+env(safe-area-inset-bottom))] pt-2 backdrop-blur">
+<Link href="/" className="flex flex-col items-center gap-1 py-1 text-[10px] font-semibold text-slate-300"><House size={20} /><span>होम</span></Link>
+<Link href="/videos" className="flex flex-col items-center gap-1 py-1 text-[10px] font-semibold text-slate-300"><Play size={20} /><span>वीडियो देखें</span></Link>
+<div className="flex flex-col items-center gap-1 text-[10px] font-extrabold text-blue-400"><span className="-mt-5 grid h-11 w-11 place-items-center rounded-full border-4 border-[#090b10] bg-blue-600 text-white"><Plus size={23} /></span><span>वीडियो डालें</span></div>
+<Link href="/learn/school" className="flex flex-col items-center gap-1 py-1 text-[10px] font-semibold text-slate-300"><GraduationCap size={20} /><span>सीखें</span></Link>
+<Link href="/videos/history" className="flex flex-col items-center gap-1 py-1 text-[10px] font-semibold text-slate-300"><WalletCards size={20} /><span>मेरी कमाई</span></Link>
+return <Suspense fallback={<div className="min-h-screen bg-[#080a0f] p-6 text-white">Loading upload…</div>}><UploadWatchVideoContent /></Suspense>;
+
+============================================================
+src/app/videos/uploader/[creatorId]/page.tsx
+Lines: 205
+Class names / styling references:
+<main className="min-h-screen bg-white p-4 text-gray-900">
+<main className="min-h-screen bg-white text-gray-900">
+<header className="sticky top-0 z-50 border-b border-gray-200 bg-white/95 px-4 py-3 backdrop-blur">
+<div className="flex items-center justify-center">
+<h1 className="text-xl font-extrabold tracking-tight text-teal-600">
+<section className="px-4 pb-5 pt-6">
+className="mb-5 flex items-center gap-2 text-sm font-medium text-gray-500"
+<div className="text-center">
+<h2 className="text-2xl font-extrabold text-gray-900">
+<div className="mt-2 flex items-center justify-center gap-2 text-sm text-gray-500">
+<section className="border-t border-gray-100">
+<div className="px-4 py-16 text-center text-gray-500">
+<div className="grid grid-cols-3 gap-1 bg-gray-100">
+className="aspect-[9/16] overflow-hidden bg-gray-200"
+className="h-full w-full object-cover"
+<div className="flex h-full w-full items-center justify-center text-xs text-gray-400">
+
+============================================================
+src/app/login/page.tsx
+Lines: 250
+Class names / styling references:
+<div className="w-full max-w-md bg-[var(--color-card-background)] rounded-[32px] shadow-2xl border border-[var(--color-border)] p-8 md:p-10 z-10">
+<div className="text-center mb-8">
+<div className="inline-flex items-center justify-center w-16 h-16 rounded-2xl bg-gradient-to-br from-[var(--color-primary-button)] via-[var(--color-primary-button)] to-[var(--color-primary-button)] text-[var(--button-text-color)] text-3xl shadow-md mb-4">
+<h1 className="text-3xl font-black tracking-tight text-[var(--text-primary)] bg-gradient-to-r from-[var(--color-primary-button)] via-[var(--color-primary-button)] to-[var(--color-primary-button)] bg-clip-text text-transparent">
+<p className="text-sm font-medium text-[var(--text-secondary)] mt-2">Welcome back! Login to continue.</p>
+<form onSubmit={handleEmailLogin} className="space-y-5">
+<label className="block text-xs font-black uppercase tracking-wider text-[var(--text-secondary)] mb-2">Email Address</label>
+className="w-full border-2 border-[var(--color-border)] text-sm font-semibold text-[var(--text-primary)] rounded-2xl px-4 py-3.5 outline-none transition-all focus:border-[var(--color-primary-button)] bg-[var(--color-page-background)]/50 focus:bg-[var(--color-card-background)]"
+<label className="block text-xs font-black uppercase tracking-wider text-[var(--text-secondary)] mb-2">Password</label>
+className="w-full mt-2 bg-gradient-to-r from-[var(--color-primary-button)] to-[var(--color-primary-button)] text-[var(--button-text-color)] font-black text-sm p-4 rounded-2xl shadow-lg transition-all active:scale-[0.98] disabled:opacity-50"
+<p className="text-center text-xs font-bold text-[var(--text-secondary)] mt-5">
+className="text-[var(--color-primary-button)] hover:underline font-black"
+<div className="relative flex py-5 items-center">
+<div className="flex-grow border-t border-[var(--color-border)]"></div>
+<span className="flex-shrink mx-4 text-xs font-black uppercase tracking-widest text-[var(--text-secondary)]">Or</span>
+className="w-full flex items-center justify-center gap-3 bg-[var(--color-card-background)] border-2 border-[var(--color-border)] hover:bg-[var(--color-page-background)] transition-all text-[var(--text-primary)] font-bold p-4 rounded-2xl disabled:opacity-50"
+<svg className="h-5 w-5" viewBox="0 0 24 24">
+<main className="min-h-screen flex items-center justify-center bg-[var(--color-page-background)] p-4 sm:p-6 lg:p-8">
+<div className="absolute top-0 left-0 w-full h-full overflow-hidden pointer-events-none z-0">
+<div className="absolute -top-40 -right-40 w-96 h-96 bg-[var(--color-primary-button)] rounded-full mix-blend-multiply filter blur-3xl opacity-30 animate-pulse"></div>
+<div className="absolute -bottom-40 -left-40 w-96 h-96 bg-[var(--color-primary-button)] rounded-full mix-blend-multiply filter blur-3xl opacity-30 animate-pulse delay-1000"></div>
+<div className="w-full max-w-md bg-[var(--color-card-background)] rounded-[32px] p-10 shadow-xl text-center text-sm font-semibold text-[var(--text-secondary)]">
+
+============================================================
+src/app/signup/page.tsx
+Lines: 260
+Class names / styling references:
+<main className="flex min-h-screen items-center justify-center bg-[var(--color-page-background)] px-4 py-12">
+<div className="w-full max-w-md rounded-[32px] bg-[var(--color-card-background)] p-8 shadow-sm border border-[var(--color-border)]">
+<div className="text-center mb-8">
+<h1 className="text-[28px] font-black text-[var(--color-primary-button)]">Create Account</h1>
+<p className="text-sm text-[var(--text-secondary)] mt-1">Join JEMBEE PLAY</p>
+<form onSubmit={handleEmailSignup} className="space-y-4">
+className="w-full rounded-2xl border p-4 outline-none transition focus:border-[var(--color-primary-button)]"
+<div className="flex items-start gap-3 py-2 px-1">
+className="mt-1 h-4 w-4 rounded border-[var(--color-border)] text-[var(--color-primary-button)] focus:ring-[var(--color-primary-button)]"
+<label htmlFor="terms" className="text-xs text-[var(--text-secondary)] select-none">
+<Link href="/terms_conditions" className="text-[var(--color-primary-button)] font-bold hover:underline">
+<Link href="/privacy" className="text-[var(--color-primary-button)] font-bold hover:underline">
+className="w-full rounded-2xl bg-[var(--color-primary-button)] p-4 font-black text-[var(--button-text-color)] transition hover:bg-[var(--color-primary-button)] disabled:opacity-50"
+<div className="my-6 flex items-center">
+<div className="h-px flex-1 bg-[var(--color-card-background)]" />
+<span className="px-4 text-xs font-bold text-[var(--text-secondary)]">OR</span>
+className="w-full rounded-2xl border p-4 font-bold bg-[var(--color-card-background)] text-[var(--text-primary)] hover:bg-[var(--color-page-background)] transition disabled:opacity-50"
+<div className="flex min-h-screen items-center justify-center bg-[var(--color-page-background)]">
+<p className="text-sm font-bold text-[var(--text-secondary)] animate-pulse">
+
+============================================================
+src/app/verify-email/page.tsx
+Lines: 221
+Class names / styling references:
+<main className="min-h-screen flex items-center justify-center bg-[var(--color-primary-button)] p-4">
+<div className="w-full max-w-md rounded-[32px] bg-[var(--color-card-background)] p-8 shadow-2xl text-center">
+<div className="mb-6">
+<div className="h-16 w-16 bg-[var(--color-primary-button)] text-[var(--color-primary-button)] rounded-full flex items-center justify-center mx-auto mb-4">
+<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor" className="w-8 h-8">
+<h1 className="text-2xl font-black text-[var(--text-primary)]">Verify Your Email</h1>
+<p className="mt-2 text-sm text-[var(--text-secondary)]">
+<span className="font-bold text-[var(--color-primary-button)]">{userEmail || "your inbox"}</span>
+<div className="space-y-3">
+className="w-full rounded-2xl bg-[var(--color-primary-button)] p-4 font-black text-[var(--button-text-color)] transition hover:bg-[var(--color-primary-button)] disabled:opacity-50"
+className="w-full rounded-2xl border border-[var(--color-border)] p-4 font-bold bg-[var(--color-card-background)] text-[var(--text-primary)] hover:bg-[var(--color-page-background)] transition disabled:opacity-50 text-sm"
+className="mt-6 text-xs text-[var(--text-secondary)] font-bold hover:text-[var(--color-primary-button)] transition underline"
+
+============================================================
+src/app/videos/notifications/page.tsx
+Lines: 204
+Class names / styling references:
+<main className="min-h-screen bg-[var(--background-color)] text-[var(--text-color)]">
+<header className="sticky top-0 z-50 flex items-center justify-between border-b border-[var(--border-color)] bg-[var(--card-color)] px-4 py-4">
+className="flex h-10 w-10 items-center justify-center rounded-full"
+<h1 className="text-lg font-bold">Notifications</h1>
+className="flex h-10 w-10 items-center justify-center rounded-full disabled:opacity-40"
+<section className="mx-auto max-w-2xl p-4">
+<div className="flex min-h-[50vh] items-center justify-center">
+<p className="text-sm opacity-60">Loading notifications...</p>
+<div className="flex min-h-[50vh] flex-col items-center justify-center text-center">
+<Bell size={48} className="mb-4 opacity-40" />
+<h2 className="text-lg font-bold">No notifications yet</h2>
+<p className="mt-2 text-sm opacity-60">
+<div className="space-y-2">
+className={`flex w-full items-start gap-3 rounded-2xl p-4 text-left transition ${
+<div className="flex h-11 w-11 shrink-0 items-center justify-center overflow-hidden rounded-full bg-[var(--primary-color)]/20">
+className="h-full w-full object-cover"
+<div className="min-w-0 flex-1">
+<p className="font-semibold">{notification.title}</p>
+<p className="mt-1 text-sm opacity-70">
+<span className="mt-2 h-2.5 w-2.5 shrink-0 rounded-full bg-[var(--primary-color)]" />
+
+============================================================
+src/app/learn/school/page.tsx
+Lines: 31
+Class names / styling references:
+return <main className="min-h-screen bg-[#080d18] text-white"><header className="sticky top-0 z-20 border-b border-white/10 bg-[#080d18]/95 px-4 py-4 backdrop-blur"><div className="mx-auto flex max-w-5xl items-center gap-3"><Link href="/" className="text-sm text-slate-300">JEMBEE <b className="text-cyan-300">PLAY</b></Link><ChevronRight size={15}/>
+<section className="mx-auto max-w-5xl px-4 py-7"><div className="mb-5 flex items-center gap-3"><button onClick={back} disabled={stage===0} className="rounded-full border border-white/15 p-2 disabled:opacity-30"><ArrowLeft size={19}/></button><div><p className="text-xs font-bold uppercase tracking-widest text-cyan-300">School learning pathway</p><h1
+<div className="mb-5 flex flex-wrap gap-2">{trail.map((x,i)=><span key={i} className="rounded-full bg-white/10 px-3 py-1 text-xs text-slate-300">{x}</span>)}</div>
+{stage<6?<><label className="mb-4 flex items-center gap-3 rounded-xl border border-white/10 bg-white/5 px-4 py-3"><Search size={19} className="text-slate-400"/><input value={query} onChange={e=>{setQuery(e.target.value);setPage(1)}} placeholder={`Search ${titles[stage].toLowerCase()}...`} className="w-full bg-transparent text-sm outline-none"/><Sli
+<div className="mb-3 flex items-center justify-between text-xs text-slate-400"><span>{filtered.length} results</span><span>Page {page} of {total}</span></div>
+{visible.length?<div className="grid gap-3 sm:grid-cols-2">{visible.map(x=><button key={x.id} onClick={()=>choose(x)} className="flex items-center gap-4 rounded-2xl border border-white/10 bg-[#111827] p-4 text-left transition hover:border-cyan-300/50 hover:bg-cyan-400/5"><span className="grid h-12 w-12 shrink-0 place-items-center rounded-xl bg-cyan
+<div className="mt-6 flex items-center justify-between"><button disabled={page<=1} onClick={()=>setPage(p=>p-1)} className="rounded-lg border border-white/15 px-4 py-2 text-sm disabled:opacity-30">Previous</button><span className="text-xs text-slate-400">Showing {(page-1)*pageSize+1}–{Math.min(page*pageSize,filtered.length)} of {filtered.length}</s
+</>:<><div className="rounded-2xl border border-cyan-300/20 bg-cyan-300/5 p-5"><p className="text-xs font-bold uppercase tracking-widest text-cyan-300">Selected question</p><h2 className="mt-1 text-xl font-black">{question?.name} · {chapter?.name}</h2><p className="mt-1 text-sm text-slate-400">{board?.name} / {school?.name} / {klass?.name} / {subje
+<p className="mt-10 text-center text-xs text-slate-500">Catalog can grow without loading every record: search + server pagination are required for the production Firestore integration.</p></section></main>

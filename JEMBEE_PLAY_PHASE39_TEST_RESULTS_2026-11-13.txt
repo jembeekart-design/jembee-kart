@@ -1,0 +1,1950 @@
+TAP version 13
+# Subtest: Home feed has separate Shorts grid, Long Video cards and manual ad slots between sections
+ok 1 - Home feed has separate Shorts grid, Long Video cards and manual ad slots between sections
+  ---
+  duration_ms: 5.231883
+  type: 'test'
+  ...
+# Subtest: Public creator labels never fall back to a private email address
+ok 2 - Public creator labels never fall back to a private email address
+  ---
+  duration_ms: 1.202858
+  type: 'test'
+  ...
+# Subtest: Short or long video format is saved at upload and copied after admin approval
+ok 3 - Short or long video format is saved at upload and copied after admin approval
+  ---
+  duration_ms: 4.850552
+  type: 'test'
+  ...
+# Subtest: Long video cards use a landscape poster and native controls without eager video downloads
+ok 4 - Long video cards use a landscape poster and native controls without eager video downloads
+  ---
+  duration_ms: 0.835932
+  type: 'test'
+  ...
+# Subtest: expense UI uploads only supported invoice types with scoped metadata
+ok 5 - expense UI uploads only supported invoice types with scoped metadata
+  ---
+  duration_ms: 0.706069
+  type: 'test'
+  ...
+# Subtest: expense UI authenticates API submission and records integer paise
+ok 6 - expense UI authenticates API submission and records integer paise
+  ---
+  duration_ms: 0.151755
+  type: 'test'
+  ...
+# Subtest: super admin review UI provides private invoice preview and verification action
+ok 7 - super admin review UI provides private invoice preview and verification action
+  ---
+  duration_ms: 0.167299
+  type: 'test'
+  ...
+# Subtest: expense amount parsing rejects more than two decimal places and avoids float rounding
+ok 8 - expense amount parsing rejects more than two decimal places and avoids float rounding
+  ---
+  duration_ms: 0.120088
+  type: 'test'
+  ...
+# Subtest: paid videos can enter moderation but are not publicly activated by approval
+ok 9 - paid videos can enter moderation but are not publicly activated by approval
+  ---
+  duration_ms: 1.001849
+  type: 'test'
+  ...
+# Subtest: moderation never grants viewer coins
+ok 10 - moderation never grants viewer coins
+  ---
+  duration_ms: 0.152116
+  type: 'test'
+  ...
+# Subtest: Cashfree webhook validates signature before parsing or touching order data
+ok 11 - Cashfree webhook validates signature before parsing or touching order data
+  ---
+  duration_ms: 0.795412
+  type: 'test'
+  ...
+# Subtest: Cashfree webhook reconciles exact INR amount and payment identity
+ok 12 - Cashfree webhook reconciles exact INR amount and payment identity
+  ---
+  duration_ms: 0.342018
+  type: 'test'
+  ...
+# Subtest: paid-video verify requires a revocation-checked Firebase ID token and bounded JSON
+ok 13 - paid-video verify requires a revocation-checked Firebase ID token and bounded JSON
+  ---
+  duration_ms: 0.221789
+  type: 'test'
+  ...
+# Subtest: refund reconciliation requires revocation-checked token and admin role
+ok 14 - refund reconciliation requires revocation-checked token and admin role
+  ---
+  duration_ms: 0.22172
+  type: 'test'
+  ...
+# Subtest: teacher referral reconciliation requires admin role and verified paid order
+ok 15 - teacher referral reconciliation requires admin role and verified paid order
+  ---
+  duration_ms: 0.219196
+  type: 'test'
+  ...
+# Subtest: paid-video order creation checks buyer, eligibility, price and server-side attribution
+ok 16 - paid-video order creation checks buyer, eligibility, price and server-side attribution
+  ---
+  duration_ms: 0.173598
+  type: 'test'
+  ...
+# Subtest: paid playback requires an owned verified purchase and short-lived secure cookie
+ok 17 - paid playback requires an owned verified purchase and short-lived secure cookie
+  ---
+  duration_ms: 0.166247
+  type: 'test'
+  ...
+# Subtest: financial route success responses prevent shared caching
+ok 18 - financial route success responses prevent shared caching
+  ---
+  duration_ms: 0.238785
+  type: 'test'
+  ...
+# Subtest: expense records require admin, paid order, invoice evidence path and integer paise
+ok 19 - expense records require admin, paid order, invoice evidence path and integer paise
+  ---
+  duration_ms: 0.944874
+  type: 'test'
+  ...
+# Subtest: expense invoice IDs are idempotent and conflicting duplicates are rejected
+ok 20 - expense invoice IDs are idempotent and conflicting duplicates are rejected
+  ---
+  duration_ms: 0.121551
+  type: 'test'
+  ...
+# Subtest: only super admin can verify and evidence must exist in Firebase Storage
+ok 21 - only super admin can verify and evidence must exist in Firebase Storage
+  ---
+  duration_ms: 0.886077
+  type: 'test'
+  ...
+# Subtest: invoice evidence metadata must bind order, invoice and uploader before verification
+ok 22 - invoice evidence metadata must bind order, invoice and uploader before verification
+  ---
+  duration_ms: 0.279004
+  type: 'test'
+  ...
+# Subtest: pending review list is super-admin-only and issues short-lived private invoice previews
+ok 23 - pending review list is super-admin-only and issues short-lived private invoice previews
+  ---
+  duration_ms: 0.184344
+  type: 'test'
+  ...
+# Subtest: refund reconciliation is admin authenticated
+ok 24 - refund reconciliation is admin authenticated
+  ---
+  duration_ms: 0.69989
+  type: 'test'
+  ...
+# Subtest: only verified paid-video orders are reconciled
+ok 25 - only verified paid-video orders are reconciled
+  ---
+  duration_ms: 0.145286
+  type: 'test'
+  ...
+# Subtest: Cashfree SUCCESS refunds alone affect the reversal total
+ok 26 - Cashfree SUCCESS refunds alone affect the reversal total
+  ---
+  duration_ms: 0.152907
+  type: 'test'
+  ...
+# Subtest: reversal entries are deterministic and transactionally committed
+ok 27 - reversal entries are deterministic and transactionally committed
+  ---
+  duration_ms: 0.125196
+  type: 'test'
+  ...
+# Subtest: full refund revokes the purchase entitlement
+ok 28 - full refund revokes the purchase entitlement
+  ---
+  duration_ms: 0.102282
+  type: 'test'
+  ...
+# Subtest: refund reconciliation never credits a wallet or initiates a payout
+ok 29 - refund reconciliation never credits a wallet or initiates a payout
+  ---
+  duration_ms: 0.230683
+  type: 'test'
+  ...
+# Subtest: only authenticated admins can enable paid checkout behind environment and Cashfree gates
+ok 30 - only authenticated admins can enable paid checkout behind environment and Cashfree gates
+  ---
+  duration_ms: 0.945595
+  type: 'test'
+  ...
+# Subtest: activation only accepts approved safe paid videos and writes explicit flags
+ok 31 - activation only accepts approved safe paid videos and writes explicit flags
+  ---
+  duration_ms: 0.549607
+  type: 'test'
+  ...
+# Subtest: reconciliation is admin-authenticated and reads verified paid-video orders
+ok 32 - reconciliation is admin-authenticated and reads verified paid-video orders
+  ---
+  duration_ms: 0.651077
+  type: 'test'
+  ...
+# Subtest: net profit subtracts only verified INR expenses from platform ledger after refunds
+ok 33 - net profit subtracts only verified INR expenses from platform ledger after refunds
+  ---
+  duration_ms: 0.984362
+  type: 'test'
+  ...
+# Subtest: teacher commission uses the existing 2 percent net-profit calculator
+ok 34 - teacher commission uses the existing 2 percent net-profit calculator
+  ---
+  duration_ms: 0.229931
+  type: 'test'
+  ...
+# Subtest: reconciliation is idempotent and does not issue wallet credits or payouts
+ok 35 - reconciliation is idempotent and does not issue wallet credits or payouts
+  ---
+  duration_ms: 0.278554
+  type: 'test'
+  ...
+# Subtest: new user profiles do not initialise legacy shopping or MLM fields
+ok 36 - new user profiles do not initialise legacy shopping or MLM fields
+  ---
+  duration_ms: 3.140997
+  type: 'test'
+  ...
+# Subtest: signup and login no longer capture old JBK MLM sponsor codes
+ok 37 - signup and login no longer capture old JBK MLM sponsor codes
+  ---
+  duration_ms: 0.502396
+  type: 'test'
+  ...
+# Subtest: video share attribution and paid-video order flows remain present
+ok 38 - video share attribution and paid-video order flows remain present
+  ---
+  duration_ms: 0.339845
+  type: 'test'
+  ...
+# Subtest: unused multi-level referral helper modules are removed from the source surface
+ok 39 - unused multi-level referral helper modules are removed from the source surface
+  ---
+  duration_ms: 0.386704
+  type: 'test'
+  ...
+# Subtest: admin theme and notifications are video-first, not commerce/MLM themed
+ok 40 - admin theme and notifications are video-first, not commerce/MLM themed
+  ---
+  duration_ms: 0.326846
+  type: 'test'
+  ...
+# Subtest: admin support, roles, and settings no longer expose shopping operations
+ok 41 - admin support, roles, and settings no longer expose shopping operations
+  ---
+  duration_ms: 0.468957
+  type: 'test'
+  ...
+# Subtest: Shorts metadata preload is limited to current and next four visible videos
+ok 42 - Shorts metadata preload is limited to current and next four visible videos
+  ---
+  duration_ms: 0.300877
+  type: 'test'
+  ...
+# Subtest: school catalog public reads are approved-only and bounded
+ok 43 - school catalog public reads are approved-only and bounded
+  ---
+  duration_ms: 1.511606
+  type: 'test'
+  ...
+# Subtest: school creation is server-admin protected, validated and duplicate-safe
+ok 44 - school creation is server-admin protected, validated and duplicate-safe
+  ---
+  duration_ms: 0.185946
+  type: 'test'
+  ...
+# Subtest: school review is admin-only and audited
+ok 45 - school review is admin-only and audited
+  ---
+  duration_ms: 0.31636
+  type: 'test'
+  ...
+# Subtest: education route delegates to module and repository boundaries
+ok 46 - education route delegates to module and repository boundaries
+  ---
+  duration_ms: 0.204414
+  type: 'test'
+  ...
+# Subtest: admin and learner pages call the real school API
+ok 47 - admin and learner pages call the real school API
+  ---
+  duration_ms: 0.170434
+  type: 'test'
+  ...
+# Subtest: MCP endpoint advertises per-tool OAuth and linking challenge metadata
+ok 48 - MCP endpoint advertises per-tool OAuth and linking challenge metadata
+  ---
+  duration_ms: 6.127896
+  type: 'test'
+  ...
+# Subtest: OAuth discovery uses canonical origin, CIMD, issuer binding and PKCE S256
+ok 49 - OAuth discovery uses canonical origin, CIMD, issuer binding and PKCE S256
+  ---
+  duration_ms: 2.203654
+  type: 'test'
+  ...
+# Subtest: ChatGPT client metadata and callback are allowlisted, redirects are not followed
+ok 50 - ChatGPT client metadata and callback are allowlisted, redirects are not followed
+  ---
+  duration_ms: 2.39568
+  type: 'test'
+  ...
+# Subtest: MCP exposes only read-only approved-video and own-upload tools
+ok 51 - MCP exposes only read-only approved-video and own-upload tools
+  ---
+  duration_ms: 0.858135
+  type: 'test'
+  ...
+# Subtest: Admin switch invalidates outstanding tokens
+ok 52 - Admin switch invalidates outstanding tokens
+  ---
+  duration_ms: 0.563838
+  type: 'test'
+  ...
+# Subtest: OAuth consent returns a state- and issuer-bound callback and creates short-lived one-use codes
+ok 53 - OAuth consent returns a state- and issuer-bound callback and creates short-lived one-use codes
+  ---
+  duration_ms: 0.884845
+  type: 'test'
+  ...
+# Subtest: OAuth token exchange enforces the resource, PKCE, one-time codes, rotation and revocation
+ok 54 - OAuth token exchange enforces the resource, PKCE, one-time codes, rotation and revocation
+  ---
+  duration_ms: 3.470126
+  type: 'test'
+  ...
+# Subtest: share tokens are random, authenticated and bound to an approved safe video
+ok 55 - share tokens are random, authenticated and bound to an approved safe video
+  ---
+  duration_ms: 0.815442
+  type: 'test'
+  ...
+# Subtest: share link preserves video and attribution token on the Shorts route
+ok 56 - share link preserves video and attribution token on the Shorts route
+  ---
+  duration_ms: 0.121921
+  type: 'test'
+  ...
+# Subtest: share claim requires verified Firebase identity and exact share/video match
+ok 57 - share claim requires verified Firebase identity and exact share/video match
+  ---
+  duration_ms: 0.617848
+  type: 'test'
+  ...
+# Subtest: share claim rejects expired or unsafe links and records buyer-scoped claim
+ok 58 - share claim rejects expired or unsafe links and records buyer-scoped claim
+  ---
+  duration_ms: 0.190413
+  type: 'test'
+  ...
+# Subtest: signed Cashfree webhook resolves only Shorts paid-video orders
+ok 59 - signed Cashfree webhook resolves only Shorts paid-video orders
+  ---
+  duration_ms: 0.796464
+  type: 'test'
+  ...
+# Subtest: webhook checks payment amount, INR currency, video eligibility and creator attribution
+ok 60 - webhook checks payment amount, INR currency, video eligibility and creator attribution
+  ---
+  duration_ms: 0.177674
+  type: 'test'
+  ...
+# Subtest: webhook grants purchase and records idempotent creator, sharer and platform ledger entries transactionally
+ok 61 - webhook grants purchase and records idempotent creator, sharer and platform ledger entries transactionally
+  ---
+  duration_ms: 0.883132
+  type: 'test'
+  ...
+# Subtest: comment abuse limits are keyed by verified user and updated transactionally
+ok 62 - comment abuse limits are keyed by verified user and updated transactionally
+  ---
+  duration_ms: 1.029079
+  type: 'test'
+  ...
+# Subtest: comment request id is user-scoped for idempotent submission
+ok 63 - comment request id is user-scoped for idempotent submission
+  ---
+  duration_ms: 0.17468
+  type: 'test'
+  ...
+# Subtest: paid-video checkout authenticates buyer and validates server-owned video state
+ok 64 - paid-video checkout authenticates buyer and validates server-owned video state
+  ---
+  duration_ms: 0.973236
+  type: 'test'
+  ...
+# Subtest: checkout price is read from Firestore and bounded in integer paise
+ok 65 - checkout price is read from Firestore and bounded in integer paise
+  ---
+  duration_ms: 0.32306
+  type: 'test'
+  ...
+# Subtest: Cashfree order creation is idempotent and persists attribution server-side
+ok 66 - Cashfree order creation is idempotent and persists attribution server-side
+  ---
+  duration_ms: 0.22259
+  type: 'test'
+  ...
+# Subtest: existing paid purchase bypasses a second payment order
+ok 67 - existing paid purchase bypasses a second payment order
+  ---
+  duration_ms: 0.160609
+  type: 'test'
+  ...
+# Subtest: Cashfree return URL uses the Shorts payment-return page and expected order_id parameter
+ok 68 - Cashfree return URL uses the Shorts payment-return page and expected order_id parameter
+  ---
+  duration_ms: 0.216772
+  type: 'test'
+  ...
+# Subtest: playback session requires a verified Firebase identity and paid purchase
+ok 69 - playback session requires a verified Firebase identity and paid purchase
+  ---
+  duration_ms: 0.651768
+  type: 'test'
+  ...
+# Subtest: playback session checks video eligibility before issuing a cookie
+ok 70 - playback session checks video eligibility before issuing a cookie
+  ---
+  duration_ms: 0.160889
+  type: 'test'
+  ...
+# Subtest: playback cookie is HttpOnly, Secure, SameSite and short-lived
+ok 71 - playback cookie is HttpOnly, Secure, SameSite and short-lived
+  ---
+  duration_ms: 0.111716
+  type: 'test'
+  ...
+# Subtest: verification requires an approved, active, safe paid video
+ok 72 - verification requires an approved, active, safe paid video
+  ---
+  duration_ms: 0.697807
+  type: 'test'
+  ...
+# Subtest: verification requires explicit paid checkout enablement
+ok 73 - verification requires explicit paid checkout enablement
+  ---
+  duration_ms: 0.111335
+  type: 'test'
+  ...
+# Subtest: order amount must match the server video price in paise
+ok 74 - order amount must match the server video price in paise
+  ---
+  duration_ms: 1.006496
+  type: 'test'
+  ...
+# Subtest: eligibility and amount are rechecked inside the Firestore transaction
+ok 75 - eligibility and amount are rechecked inside the Firestore transaction
+  ---
+  duration_ms: 0.157524
+  type: 'test'
+  ...
+# Subtest: checkout creates a pending order and reuses only a still-valid pending session
+ok 76 - checkout creates a pending order and reuses only a still-valid pending session
+  ---
+  duration_ms: 2.703957
+  type: 'test'
+  ...
+# Subtest: webhook rejects cancelled and expired orders before granting access
+ok 77 - webhook rejects cancelled and expired orders before granting access
+  ---
+  duration_ms: 0.170193
+  type: 'test'
+  ...
+# Subtest: webhook marks a second distinct successful payment for manual review
+ok 78 - webhook marks a second distinct successful payment for manual review
+  ---
+  duration_ms: 0.229131
+  type: 'test'
+  ...
+# Subtest: buyer recovery currently lacks the webhook's paid-order different-payment guard
+ok 79 - buyer recovery currently lacks the webhook's paid-order different-payment guard
+  ---
+  duration_ms: 0.348057
+  type: 'test'
+  ...
+# Subtest: duplicate-payment review marker has no admin resolution route or UI reference
+ok 80 - duplicate-payment review marker has no admin resolution route or UI reference
+  ---
+  duration_ms: 7.694773
+  type: 'test'
+  ...
+# Subtest: refund reconciliation is separate and only reconciles provider-confirmed refunds for the recorded payment
+ok 81 - refund reconciliation is separate and only reconciles provider-confirmed refunds for the recorded payment
+  ---
+  duration_ms: 0.159967
+  type: 'test'
+  ...
+# Subtest: settlement entries are created only in the provider-verified payment transaction
+ok 82 - settlement entries are created only in the provider-verified payment transaction
+  ---
+  duration_ms: 0.640472
+  type: 'test'
+  ...
+# Subtest: ledger entries are idempotent and do not directly credit wallets
+ok 83 - ledger entries are idempotent and do not directly credit wallets
+  ---
+  duration_ms: 0.760049
+  type: 'test'
+  ...
+# Subtest: unverified sharer allocation remains unallocated
+ok 84 - unverified sharer allocation remains unallocated
+  ---
+  duration_ms: 0.193387
+  type: 'test'
+  ...
+# Subtest: client Firestore writes remain denied by the default deny rule
+ok 85 - client Firestore writes remain denied by the default deny rule
+  ---
+  duration_ms: 0.34994
+  type: 'test'
+  ...
+# Subtest: authenticated owner verification provides a provider-backed webhook recovery path
+ok 86 - authenticated owner verification provides a provider-backed webhook recovery path
+  ---
+  duration_ms: 1.738583
+  type: 'test'
+  ...
+# Subtest: recovery refuses ambiguous multiple successful provider payment attempts
+ok 87 - recovery refuses ambiguous multiple successful provider payment attempts
+  ---
+  duration_ms: 0.157664
+  type: 'test'
+  ...
+# Subtest: recovery commits purchase, order, payment event and ledger in one Firestore transaction
+ok 88 - recovery commits purchase, order, payment event and ledger in one Firestore transaction
+  ---
+  duration_ms: 0.159457
+  type: 'test'
+  ...
+# Subtest: webhook event identity is cf_payment_id and cross-order reuse is rejected
+ok 89 - webhook event identity is cf_payment_id and cross-order reuse is rejected
+  ---
+  duration_ms: 0.110995
+  type: 'test'
+  ...
+# Subtest: refund reconciliation rechecks order and cumulative refund watermark transactionally
+ok 90 - refund reconciliation rechecks order and cumulative refund watermark transactionally
+  ---
+  duration_ms: 0.157795
+  type: 'test'
+  ...
+# Subtest: video share writes are authenticated and transactionally idempotent
+ok 91 - video share writes are authenticated and transactionally idempotent
+  ---
+  duration_ms: 0.803454
+  type: 'test'
+  ...
+# Subtest: Shorts page statically imports its visible header and feed
+ok 92 - Shorts page statically imports its visible header and feed
+  ---
+  duration_ms: 0.999034
+  type: 'test'
+  ...
+# Subtest: legacy third-party service worker import is removed
+ok 93 - legacy third-party service worker import is removed
+  ---
+  duration_ms: 0.152026
+  type: 'test'
+  ...
+# Subtest: Shorts route has a user-visible recovery boundary
+ok 94 - Shorts route has a user-visible recovery boundary
+  ---
+  duration_ms: 1.200223
+  type: 'test'
+  ...
+# Subtest: Shorts feed query hook is inside a Suspense boundary for production prerendering
+ok 95 - Shorts feed query hook is inside a Suspense boundary for production prerendering
+  ---
+  duration_ms: 0.145696
+  type: 'test'
+  ...
+# Subtest: paid video checkout claims referral link before creating order
+ok 96 - paid video checkout claims referral link before creating order
+  ---
+  duration_ms: 0.718848
+  type: 'test'
+  ...
+# Subtest: active Shorts use protected bounded-range streaming with type-safe preload
+ok 97 - active Shorts use protected bounded-range streaming with type-safe preload
+  ---
+  duration_ms: 5.418682
+  type: 'test'
+  ...
+# Subtest: upload progress pause and cancel controls are connected to the resumable Drive uploader
+ok 98 - upload progress pause and cancel controls are connected to the resumable Drive uploader
+  ---
+  duration_ms: 3.735871
+  type: 'test'
+  ...
+# Subtest: feed preloads thumbnails for the active and next four videos only
+ok 99 - feed preloads thumbnails for the active and next four videos only
+  ---
+  duration_ms: 0.730035
+  type: 'test'
+  ...
+# Subtest: feed limits video metadata preload to the same five-card window
+ok 100 - feed limits video metadata preload to the same five-card window
+  ---
+  duration_ms: 0.116202
+  type: 'test'
+  ...
+# Subtest: active video state is initialized before it is read for the preload window
+ok 101 - active video state is initialized before it is read for the preload window
+  ---
+  duration_ms: 0.122663
+  type: 'test'
+  ...
+# Subtest: Firestore financial Rules Emulator suite
+ok 102 - Firestore financial Rules Emulator suite # SKIP
+  ---
+  duration_ms: 0.777635
+  type: 'test'
+  ...
+# Subtest: rules source explicitly denies client access to all inventoried financial collections
+ok 103 - rules source explicitly denies client access to all inventoried financial collections
+  ---
+  duration_ms: 0.411391
+  type: 'test'
+  ...
+# Subtest: rules default deny unmatched documents
+ok 104 - rules default deny unmatched documents
+  ---
+  duration_ms: 1.712084
+  type: 'test'
+  ...
+# Subtest: Firebase deploy config includes Storage rules and Storage Emulator
+ok 105 - Firebase deploy config includes Storage rules and Storage Emulator
+  ---
+  duration_ms: 0.974928
+  type: 'test'
+  ...
+# Subtest: invoice evidence is restricted to the paid-video evidence path
+ok 106 - invoice evidence is restricted to the paid-video evidence path
+  ---
+  duration_ms: 1.027817
+  type: 'test'
+  ...
+# Subtest: only authenticated admins can create invoice evidence
+ok 107 - only authenticated admins can create invoice evidence
+  ---
+  duration_ms: 0.193127
+  type: 'test'
+  ...
+# Subtest: invoice upload enforces type, size and uploader metadata
+ok 108 - invoice upload enforces type, size and uploader metadata
+  ---
+  duration_ms: 0.37008
+  type: 'test'
+  ...
+# Subtest: clients cannot read, overwrite or delete invoice evidence
+ok 109 - clients cannot read, overwrite or delete invoice evidence
+  ---
+  duration_ms: 0.137595
+  type: 'test'
+  ...
+# Subtest: unmatched Storage paths are denied by default
+ok 110 - unmatched Storage paths are denied by default
+  ---
+  duration_ms: 0.177634
+  type: 'test'
+  ...
+# Subtest: Monetag manual placement allowlist is limited to named page positions
+ok 111 - Monetag manual placement allowlist is limited to named page positions
+  ---
+  duration_ms: 4.665623
+  type: 'test'
+  ...
+# Subtest: public ad endpoint returns only enabled Monetag Direct Link slots for exact environment and position
+ok 112 - public ad endpoint returns only enabled Monetag Direct Link slots for exact environment and position
+  ---
+  duration_ms: 0.855631
+  type: 'test'
+  ...
+# Subtest: global Monetag tags, AdSense auto script and timed Shorts ads are fail-closed
+ok 113 - global Monetag tags, AdSense auto script and timed Shorts ads are fail-closed
+  ---
+  duration_ms: 2.676947
+  type: 'test'
+  ...
+# Subtest: Monetag card opens only through a user click with sponsored link attributes
+ok 114 - Monetag card opens only through a user click with sponsored link attributes
+  ---
+  duration_ms: 1.007076
+  type: 'test'
+  ...
+# Subtest: Home, Explore and Video Library mount only their allowlisted placements
+ok 115 - Home, Explore and Video Library mount only their allowlisted placements
+  ---
+  duration_ms: 4.821985
+  type: 'test'
+  ...
+# Subtest: video-only Terms no longer contain legacy merchant or MLM clauses
+ok 116 - video-only Terms no longer contain legacy merchant or MLM clauses
+  ---
+  duration_ms: 2.00918
+  type: 'test'
+  ...
+# Subtest: Google Drive error handlers classify without logging provider error objects
+ok 117 - Google Drive error handlers classify without logging provider error objects
+  ---
+  duration_ms: 2.327508
+  type: 'test'
+  ...
+# Subtest: Explore retains all 20 requested learning categories
+ok 118 - Explore retains all 20 requested learning categories
+  ---
+  duration_ms: 0.820018
+  type: 'test'
+  ...
+# Subtest: Videos library is separate from Shorts and supports selected video deep links
+ok 119 - Videos library is separate from Shorts and supports selected video deep links
+  ---
+  duration_ms: 2.034714
+  type: 'test'
+  ...
+# (node:33420) ExperimentalWarning: Type Stripping is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# (node:33420) [MODULE_TYPELESS_PACKAGE_JSON] Warning: Module type of file:///mnt/data/jembee_phase19_work/jembee-kart-main/src/lib/payments/cashfreeWebhookSignature.ts is not specified and it doesn't parse as CommonJS.
+# Reparsing as ES module because module syntax was detected. This incurs a performance overhead.
+# To eliminate this warning, add "type": "module" to /mnt/data/jembee_phase19_work/jembee-kart-main/package.json.
+# Subtest: Cashfree signature follows timestamp concatenated with the exact raw body
+ok 120 - Cashfree signature follows timestamp concatenated with the exact raw body
+  ---
+  duration_ms: 13.711243
+  type: 'test'
+  ...
+# Subtest: Cashfree signature rejects payload changes and timestamp changes
+ok 121 - Cashfree signature rejects payload changes and timestamp changes
+  ---
+  duration_ms: 0.505522
+  type: 'test'
+  ...
+# Subtest: Cashfree signature rejects missing timestamp or signature
+ok 122 - Cashfree signature rejects missing timestamp or signature
+  ---
+  duration_ms: 0.206136
+  type: 'test'
+  ...
+# Subtest: Cashfree signature rejects oversized timestamp and signature headers
+ok 123 - Cashfree signature rejects oversized timestamp and signature headers
+  ---
+  duration_ms: 0.429638
+  type: 'test'
+  ...
+# Subtest: full refund reverses the exact original 30/20/50 allocation
+ok 124 - full refund reverses the exact original 30/20/50 allocation
+  ---
+  duration_ms: 1.893985
+  type: 'test'
+  ...
+# Subtest: multiple partial refunds reverse only the incremental allocation
+ok 125 - multiple partial refunds reverse only the incremental allocation
+  ---
+  duration_ms: 0.251644
+  type: 'test'
+  ...
+# Subtest: platform receives rounding remainder and allocations exactly equal refund
+ok 126 - platform receives rounding remainder and allocations exactly equal refund
+  ---
+  duration_ms: 0.414126
+  type: 'test'
+  ...
+# Subtest: rejects zero, fractional, negative and over-refund values
+ok 127 - rejects zero, fractional, negative and over-refund values
+  ---
+  duration_ms: 0.413484
+  type: 'test'
+  ...
+# Subtest: allocates 30/20/50 and balances odd paise exactly
+ok 128 - allocates 30/20/50 and balances odd paise exactly
+  ---
+  duration_ms: 1.077391
+  type: 'test'
+  ...
+# Subtest: rejects invalid monetary amounts
+ok 129 - rejects invalid monetary amounts
+  ---
+  duration_ms: 0.24212
+  type: 'test'
+  ...
+# Subtest: only accepts explicitly verified sharer attribution
+ok 130 - only accepts explicitly verified sharer attribution
+  ---
+  duration_ms: 1.075118
+  type: 'test'
+  ...
+# (node:33456) ExperimentalWarning: Type Stripping is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# (node:33456) [MODULE_TYPELESS_PACKAGE_JSON] Warning: Module type of file:///mnt/data/jembee_phase19_work/jembee-kart-main/src/lib/server/readBoundedRawBody.ts is not specified and it doesn't parse as CommonJS.
+# Reparsing as ES module because module syntax was detected. This incurs a performance overhead.
+# To eliminate this warning, add "type": "module" to /mnt/data/jembee_phase19_work/jembee-kart-main/package.json.
+# Subtest: bounded raw reader accepts body within limit and preserves exact UTF-8 text
+ok 131 - bounded raw reader accepts body within limit and preserves exact UTF-8 text
+  ---
+  duration_ms: 34.217402
+  type: 'test'
+  ...
+# Subtest: bounded raw reader accepts a body exactly at the byte limit
+ok 132 - bounded raw reader accepts a body exactly at the byte limit
+  ---
+  duration_ms: 0.613852
+  type: 'test'
+  ...
+# Subtest: bounded raw reader rejects streamed overflow and cancels the reader
+ok 133 - bounded raw reader rejects streamed overflow and cancels the reader
+  ---
+  duration_ms: 0.823714
+  type: 'test'
+  ...
+# Subtest: bounded raw reader accepts absent Content-Length
+ok 134 - bounded raw reader accepts absent Content-Length
+  ---
+  duration_ms: 0.575195
+  type: 'test'
+  ...
+# Subtest: bounded raw reader rejects invalid Content-Length
+ok 135 - bounded raw reader rejects invalid Content-Length
+  ---
+  duration_ms: 0.88822
+  type: 'test'
+  ...
+# Subtest: bounded raw reader rejects oversized declared Content-Length before reading
+ok 136 - bounded raw reader rejects oversized declared Content-Length before reading
+  ---
+  duration_ms: 0.382989
+  type: 'test'
+  ...
+# Subtest: bounded raw reader preserves multibyte UTF-8 split across chunks
+ok 137 - bounded raw reader preserves multibyte UTF-8 split across chunks
+  ---
+  duration_ms: 0.711878
+  type: 'test'
+  ...
+# Subtest: bounded raw reader rejects empty body as an empty raw string
+ok 138 - bounded raw reader rejects empty body as an empty raw string
+  ---
+  duration_ms: 0.536217
+  type: 'test'
+  ...
+# Subtest: bounded raw reader rejects malformed UTF-8 instead of normalizing signed bytes
+ok 139 - bounded raw reader rejects malformed UTF-8 instead of normalizing signed bytes
+  ---
+  duration_ms: 1.269777
+  type: 'test'
+  ...
+# Subtest: bounded raw reader rejects invalid limit configuration
+ok 140 - bounded raw reader rejects invalid limit configuration
+  ---
+  duration_ms: 1.782378
+  type: 'test'
+  ...
+# Subtest: calculates 2% of verified admin net profit, not gross price
+ok 141 - calculates 2% of verified admin net profit, not gross price
+  ---
+  duration_ms: 1.099994
+  type: 'test'
+  ...
+# Subtest: unverified referral earns no commission
+ok 142 - unverified referral earns no commission
+  ---
+  duration_ms: 0.261989
+  type: 'test'
+  ...
+# Subtest: rejects invalid or negative profit
+ok 143 - rejects invalid or negative profit
+  ---
+  duration_ms: 0.397761
+  type: 'test'
+  ...
+# Subtest: prevents self or conflicted referral attribution
+ok 144 - prevents self or conflicted referral attribution
+  ---
+  duration_ms: 0.176312
+  type: 'test'
+  ...
+# Subtest: rounds down to whole paise
+ok 145 - rounds down to whole paise
+  ---
+  duration_ms: 0.27561
+  type: 'test'
+  ...
+# Subtest: does not pay a zero-profit referral
+ok 146 - does not pay a zero-profit referral
+  ---
+  duration_ms: 0.167139
+  type: 'test'
+  ...
+# Subtest: UI design catalog contains 58 unique page concepts
+ok 147 - UI design catalog contains 58 unique page concepts
+  ---
+  duration_ms: 1.572336
+  type: 'test'
+  ...
+# Subtest: core video, learning and TV app screens have TV layouts
+ok 148 - core video, learning and TV app screens have TV layouts
+  ---
+  duration_ms: 0.249071
+  type: 'test'
+  ...
+# Subtest: creator monetization and admin screens are not exposed as Android TV screens
+ok 149 - creator monetization and admin screens are not exposed as Android TV screens
+  ---
+  duration_ms: 0.11413
+  type: 'test'
+  ...
+# Subtest: page-specific layouts exist for core list, learning and TV screens
+ok 150 - page-specific layouts exist for core list, learning and TV screens
+  ---
+  duration_ms: 0.337381
+  type: 'test'
+  ...
+# Subtest: all catalog entries have unique preview route slugs and required content fields
+ok 151 - all catalog entries have unique preview route slugs and required content fields
+  ---
+  duration_ms: 0.337051
+  type: 'test'
+  ...
+# Subtest: design thumbnails are bundled locally for offline preview
+ok 152 - design thumbnails are bundled locally for offline preview
+  ---
+  duration_ms: 0.337812
+  type: 'test'
+  ...
+# (node:33494) ExperimentalWarning: Type Stripping is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# (node:33494) [MODULE_TYPELESS_PACKAGE_JSON] Warning: Module type of file:///mnt/data/jembee_phase19_work/jembee-kart-main/src/modules/communication/contracts.ts is not specified and it doesn't parse as CommonJS.
+# Reparsing as ES module because module syntax was detected. This incurs a performance overhead.
+# To eliminate this warning, add "type": "module" to /mnt/data/jembee_phase19_work/jembee-kart-main/package.json.
+# Subtest: accepts bounded in-app notification contract
+ok 153 - accepts bounded in-app notification contract
+  ---
+  duration_ms: 0.876502
+  type: 'test'
+  ...
+# Subtest: rejects unknown channel and malformed recipient
+ok 154 - rejects unknown channel and malformed recipient
+  ---
+  duration_ms: 0.265094
+  type: 'test'
+  ...
+# Subtest: rejects empty and oversized message
+ok 155 - rejects empty and oversized message
+  ---
+  duration_ms: 0.206447
+  type: 'test'
+  ...
+# Subtest: validates email recipient for email channel
+ok 156 - validates email recipient for email channel
+  ---
+  duration_ms: 0.339434
+  type: 'test'
+  ...
+# Subtest: requires E.164 number and explicit WhatsApp consent
+ok 157 - requires E.164 number and explicit WhatsApp consent
+  ---
+  duration_ms: 0.247988
+  type: 'test'
+  ...
+# Subtest: rejects invalid priority and subject overflow
+ok 158 - rejects invalid priority and subject overflow
+  ---
+  duration_ms: 0.107249
+  type: 'test'
+  ...
+# Subtest: builds deterministic recipient-scoped idempotency key
+ok 159 - builds deterministic recipient-scoped idempotency key
+  ---
+  duration_ms: 0.16789
+  type: 'test'
+  ...
+# Subtest: creator dashboard is bounded to bounded 100 video sample
+ok 160 - creator dashboard is bounded to bounded 100 video sample
+  ---
+  duration_ms: 0.718548
+  type: 'test'
+  ...
+# Subtest: dashboard authenticates and checks revoked Firebase tokens
+ok 161 - dashboard authenticates and checks revoked Firebase tokens
+  ---
+  duration_ms: 0.838907
+  type: 'test'
+  ...
+# Subtest: dashboard never reports unverified earnings as payable
+ok 162 - dashboard never reports unverified earnings as payable
+  ---
+  duration_ms: 0.103925
+  type: 'test'
+  ...
+# Subtest: teacher verification is distinct from referral eligibility
+ok 163 - teacher verification is distinct from referral eligibility
+  ---
+  duration_ms: 0.166948
+  type: 'test'
+  ...
+# Subtest: creator module exports bounded profile projection
+ok 164 - creator module exports bounded profile projection
+  ---
+  duration_ms: 0.835852
+  type: 'test'
+  ...
+# Subtest: public creator visibility requires approved, active, safe, free video
+ok 165 - public creator visibility requires approved, active, safe, free video
+  ---
+  duration_ms: 0.1283
+  type: 'test'
+  ...
+# Subtest: public profile route delegates to creator domain module
+ok 166 - public profile route delegates to creator domain module
+  ---
+  duration_ms: 0.830304
+  type: 'test'
+  ...
+# Subtest: public profile projection does not expose payout or private account fields
+ok 167 - public profile projection does not expose payout or private account fields
+  ---
+  duration_ms: 0.21504
+  type: 'test'
+  ...
+# (node:33530) ExperimentalWarning: Type Stripping is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# (node:33530) [MODULE_TYPELESS_PACKAGE_JSON] Warning: Module type of file:///mnt/data/jembee_phase19_work/jembee-kart-main/src/modules/discovery/categoryCatalog.ts is not specified and it doesn't parse as CommonJS.
+# Reparsing as ES module because module syntax was detected. This incurs a performance overhead.
+# To eliminate this warning, add "type": "module" to /mnt/data/jembee_phase19_work/jembee-kart-main/package.json.
+# Subtest: empty query returns a new array with every category
+ok 168 - empty query returns a new array with every category
+  ---
+  duration_ms: 1.775489
+  type: 'test'
+  ...
+# Subtest: search matches category names, descriptions and topics case-insensitively
+ok 169 - search matches category names, descriptions and topics case-insensitively
+  ---
+  duration_ms: 0.325674
+  type: 'test'
+  ...
+# Subtest: search normalization trims and applies unicode compatibility normalization
+ok 170 - search normalization trims and applies unicode compatibility normalization
+  ---
+  duration_ms: 0.146248
+  type: 'test'
+  ...
+# Subtest: non-matching query returns an empty list
+ok 171 - non-matching query returns an empty list
+  ---
+  duration_ms: 0.364632
+  type: 'test'
+  ...
+# (node:33547) ExperimentalWarning: Type Stripping is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# (node:33547) [MODULE_TYPELESS_PACKAGE_JSON] Warning: Module type of file:///mnt/data/jembee_phase19_work/jembee-kart-main/src/modules/learning/analytics-contracts.ts is not specified and it doesn't parse as CommonJS.
+# Reparsing as ES module because module syntax was detected. This incurs a performance overhead.
+# To eliminate this warning, add "type": "module" to /mnt/data/jembee_phase19_work/jembee-kart-main/package.json.
+# Subtest: validates bounded server learning events
+ok 172 - validates bounded server learning events
+  ---
+  duration_ms: 1.274754
+  type: 'test'
+  ...
+# Subtest: summarizes only scoped events and authoritative lessons
+ok 173 - summarizes only scoped events and authoritative lessons
+  ---
+  duration_ms: 0.864074
+  type: 'test'
+  ...
+# Subtest: deduplicates repeated event IDs and completed lesson IDs
+ok 174 - deduplicates repeated event IDs and completed lesson IDs
+  ---
+  duration_ms: 0.221419
+  type: 'test'
+  ...
+# Subtest: rejects invalid scope and excessive event volume
+ok 175 - rejects invalid scope and excessive event volume
+  ---
+  duration_ms: 0.262009
+  type: 'test'
+  ...
+# Subtest: summarizes unique learner course performance
+ok 176 - summarizes unique learner course performance
+  ---
+  duration_ms: 0.310462
+  type: 'test'
+  ...
+# Subtest: rejects invalid aggregate metrics
+ok 177 - rejects invalid aggregate metrics
+  ---
+  duration_ms: 0.159106
+  type: 'test'
+  ...
+# (node:33550) ExperimentalWarning: Type Stripping is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# (node:33550) [MODULE_TYPELESS_PACKAGE_JSON] Warning: Module type of file:///mnt/data/jembee_phase19_work/jembee-kart-main/src/modules/learning/assessment-contracts.ts is not specified and it doesn't parse as CommonJS.
+# Reparsing as ES module because module syntax was detected. This incurs a performance overhead.
+# To eliminate this warning, add "type": "module" to /mnt/data/jembee_phase19_work/jembee-kart-main/package.json.
+# Subtest: accepts a bounded assessment with unique questions and valid answer keys
+ok 178 - accepts a bounded assessment with unique questions and valid answer keys
+  ---
+  duration_ms: 1.313662
+  type: 'test'
+  ...
+# Subtest: rejects malformed assessment metadata, duplicate IDs and answer keys outside options
+ok 179 - rejects malformed assessment metadata, duplicate IDs and answer keys outside options
+  ---
+  duration_ms: 0.230703
+  type: 'test'
+  ...
+# Subtest: assessment attempts require published status, eligible enrollment and remaining server-counted attempts
+ok 180 - assessment attempts require published status, eligible enrollment and remaining server-counted attempts
+  ---
+  duration_ms: 0.13467
+  type: 'test'
+  ...
+# Subtest: grades answers from trusted answer keys and derives pass state
+ok 181 - grades answers from trusted answer keys and derives pass state
+  ---
+  duration_ms: 0.523378
+  type: 'test'
+  ...
+# Subtest: pass threshold is bounded and inclusive
+ok 182 - pass threshold is bounded and inclusive
+  ---
+  duration_ms: 0.123854
+  type: 'test'
+  ...
+# Subtest: certificate eligibility requires completion, all lessons, passing, verified identity and no prior issue
+ok 183 - certificate eligibility requires completion, all lessons, passing, verified identity and no prior issue
+  ---
+  duration_ms: 0.163784
+  type: 'test'
+  ...
+# (node:33571) ExperimentalWarning: Type Stripping is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# (node:33571) [MODULE_TYPELESS_PACKAGE_JSON] Warning: Module type of file:///mnt/data/jembee_phase19_work/jembee-kart-main/src/modules/learning/canonical-ledger-schema.ts is not specified and it doesn't parse as CommonJS.
+# Reparsing as ES module because module syntax was detected. This incurs a performance overhead.
+# To eliminate this warning, add "type": "module" to /mnt/data/jembee_phase19_work/jembee-kart-main/package.json.
+# Subtest: defines server-only canonical collection and explicit versioned schema
+ok 184 - defines server-only canonical collection and explicit versioned schema
+  ---
+  duration_ms: 0.797585
+  type: 'test'
+  ...
+# Subtest: accepts valid version-one canonical ledger row
+ok 185 - accepts valid version-one canonical ledger row
+  ---
+  duration_ms: 0.884895
+  type: 'test'
+  ...
+# Subtest: rejects missing fields, unknown fields, unsafe IDs and invalid currency
+ok 186 - rejects missing fields, unknown fields, unsafe IDs and invalid currency
+  ---
+  duration_ms: 0.167709
+  type: 'test'
+  ...
+# Subtest: requires integer bounded minor-unit amount and boolean verification flags
+ok 187 - requires integer bounded minor-unit amount and boolean verification flags
+  ---
+  duration_ms: 0.135842
+  type: 'test'
+  ...
+# Subtest: enforces owner role and earning type pairing
+ok 188 - enforces owner role and earning type pairing
+  ---
+  duration_ms: 0.237073
+  type: 'test'
+  ...
+# Subtest: reversal rows require safe link to original entry
+ok 189 - reversal rows require safe link to original entry
+  ---
+  duration_ms: 0.180939
+  type: 'test'
+  ...
+# Subtest: immutable fields and settled history cannot be mutated
+ok 190 - immutable fields and settled history cannot be mutated
+  ---
+  duration_ms: 0.148691
+  type: 'test'
+  ...
+# Subtest: status reversal requires linked compensating record
+ok 191 - status reversal requires linked compensating record
+  ---
+  duration_ms: 0.08759
+  type: 'test'
+  ...
+# Subtest: legacy migration requires every explicit safety gate
+ok 192 - legacy migration requires every explicit safety gate
+  ---
+  duration_ms: 0.359644
+  type: 'test'
+  ...
+# (node:33578) ExperimentalWarning: Type Stripping is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# (node:33578) [MODULE_TYPELESS_PACKAGE_JSON] Warning: Module type of file:///mnt/data/jembee_phase19_work/jembee-kart-main/src/modules/learning/contracts.ts is not specified and it doesn't parse as CommonJS.
+# Reparsing as ES module because module syntax was detected. This incurs a performance overhead.
+# To eliminate this warning, add "type": "module" to /mnt/data/jembee_phase19_work/jembee-kart-main/package.json.
+# Subtest: accepts a published bounded course summary
+ok 193 - accepts a published bounded course summary
+  ---
+  duration_ms: 0.963822
+  type: 'test'
+  ...
+# Subtest: rejects draft, archived, invalid and oversized course metadata
+ok 194 - rejects draft, archived, invalid and oversized course metadata
+  ---
+  duration_ms: 0.152927
+  type: 'test'
+  ...
+# Subtest: validates lesson completion identifiers and boolean state
+ok 195 - validates lesson completion identifiers and boolean state
+  ---
+  duration_ms: 0.146268
+  type: 'test'
+  ...
+# Subtest: calculates progress from unique server-confirmed lesson IDs only
+ok 196 - calculates progress from unique server-confirmed lesson IDs only
+  ---
+  duration_ms: 0.148461
+  type: 'test'
+  ...
+# Subtest: enrollment is allowed only for published courses without active enrollment
+ok 197 - enrollment is allowed only for published courses without active enrollment
+  ---
+  duration_ms: 0.170904
+  type: 'test'
+  ...
+# Subtest: lesson access requires published course and enrollment except free preview
+ok 198 - lesson access requires published course and enrollment except free preview
+  ---
+  duration_ms: 0.131475
+  type: 'test'
+  ...
+# Subtest: completion can only reference lesson IDs in the authoritative course list
+ok 199 - completion can only reference lesson IDs in the authoritative course list
+  ---
+  duration_ms: 0.158305
+  type: 'test'
+  ...
+# (node:33595) ExperimentalWarning: Type Stripping is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# (node:33595) [MODULE_TYPELESS_PACKAGE_JSON] Warning: Module type of file:///mnt/data/jembee_phase19_work/jembee-kart-main/src/modules/learning/curriculum-contracts.ts is not specified and it doesn't parse as CommonJS.
+# Reparsing as ES module because module syntax was detected. This incurs a performance overhead.
+# To eliminate this warning, add "type": "module" to /mnt/data/jembee_phase19_work/jembee-kart-main/package.json.
+# Subtest: validates curriculum tree and normalizes ordering
+ok 200 - validates curriculum tree and normalizes ordering
+  ---
+  duration_ms: 1.902357
+  type: 'test'
+  ...
+# Subtest: rejects invalid IDs, empty modules, invalid content types and unsafe durations
+ok 201 - rejects invalid IDs, empty modules, invalid content types and unsafe durations
+  ---
+  duration_ms: 0.18844
+  type: 'test'
+  ...
+# Subtest: rejects duplicate module and lesson IDs or positions
+ok 202 - rejects duplicate module and lesson IDs or positions
+  ---
+  duration_ms: 0.338994
+  type: 'test'
+  ...
+# Subtest: publishing requires each module to contain a published lesson
+ok 203 - publishing requires each module to contain a published lesson
+  ---
+  duration_ms: 0.312294
+  type: 'test'
+  ...
+# Subtest: archived curriculum cannot be republished and status transitions are explicit
+ok 204 - archived curriculum cannot be republished and status transitions are explicit
+  ---
+  duration_ms: 0.217183
+  type: 'test'
+  ...
+# Subtest: reordering requires a complete permutation of existing IDs
+ok 205 - reordering requires a complete permutation of existing IDs
+  ---
+  duration_ms: 0.185266
+  type: 'test'
+  ...
+# (node:33607) ExperimentalWarning: Type Stripping is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# (node:33607) [MODULE_TYPELESS_PACKAGE_JSON] Warning: Module type of file:///mnt/data/jembee_phase19_work/jembee-kart-main/src/modules/learning/earnings-access-contracts.ts is not specified and it doesn't parse as CommonJS.
+# Reparsing as ES module because module syntax was detected. This incurs a performance overhead.
+# To eliminate this warning, add "type": "module" to /mnt/data/jembee_phase19_work/jembee-kart-main/package.json.
+# Subtest: extracts bounded bearer tokens only
+ok 206 - extracts bounded bearer tokens only
+  ---
+  duration_ms: 1.548321
+  type: 'test'
+  ...
+# Subtest: requires trusted creator role and explicit creator enablement
+ok 207 - requires trusted creator role and explicit creator enablement
+  ---
+  duration_ms: 1.07032
+  type: 'test'
+  ...
+# Subtest: requires explicit sharer enablement and verified teacher status
+ok 208 - requires explicit sharer enablement and verified teacher status
+  ---
+  duration_ms: 0.270592
+  type: 'test'
+  ...
+# Subtest: denies unsupported roles and malformed identities
+ok 209 - denies unsupported roles and malformed identities
+  ---
+  duration_ms: 0.141441
+  type: 'test'
+  ...
+# Subtest: requested uid can never override verified token subject
+ok 210 - requested uid can never override verified token subject
+  ---
+  duration_ms: 0.162021
+  type: 'test'
+  ...
+# Subtest: earnings endpoint verifies Firebase token and checks revocation before response
+ok 211 - earnings endpoint verifies Firebase token and checks revocation before response
+  ---
+  duration_ms: 0.788111
+  type: 'test'
+  ...
+# Subtest: earnings endpoint fails closed until canonical ledger repository exists
+ok 212 - earnings endpoint fails closed until canonical ledger repository exists
+  ---
+  duration_ms: 1.310677
+  type: 'test'
+  ...
+# Subtest: earnings endpoint prevents shared caching
+ok 213 - earnings endpoint prevents shared caching
+  ---
+  duration_ms: 0.16122
+  type: 'test'
+  ...
+# (node:33631) ExperimentalWarning: Type Stripping is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# (node:33631) [MODULE_TYPELESS_PACKAGE_JSON] Warning: Module type of file:///mnt/data/jembee_phase19_work/jembee-kart-main/src/modules/learning/earnings-dashboard-contracts.ts is not specified and it doesn't parse as CommonJS.
+# Reparsing as ES module because module syntax was detected. This incurs a performance overhead.
+# To eliminate this warning, add "type": "module" to /mnt/data/jembee_phase19_work/jembee-kart-main/package.json.
+# Subtest: builds owner-scoped dashboard and omits owner identity from each row
+ok 214 - builds owner-scoped dashboard and omits owner identity from each row
+  ---
+  duration_ms: 1.46033
+  type: 'test'
+  ...
+# Subtest: excludes other owners and unverified or unreconciled rows
+ok 215 - excludes other owners and unverified or unreconciled rows
+  ---
+  duration_ms: 0.847399
+  type: 'test'
+  ...
+# Subtest: enforces role to earning-type mapping
+ok 216 - enforces role to earning-type mapping
+  ---
+  duration_ms: 0.163713
+  type: 'test'
+  ...
+# Subtest: deduplicates ledger entry IDs
+ok 217 - deduplicates ledger entry IDs
+  ---
+  duration_ms: 0.258394
+  type: 'test'
+  ...
+# Subtest: keeps currencies separate and calculates status buckets
+ok 218 - keeps currencies separate and calculates status buckets
+  ---
+  duration_ms: 8.40567
+  type: 'test'
+  ...
+# Subtest: applies date filters and bounded result limit
+ok 219 - applies date filters and bounded result limit
+  ---
+  duration_ms: 0.291954
+  type: 'test'
+  ...
+# Subtest: rejects invalid identity, dates and oversized input
+ok 220 - rejects invalid identity, dates and oversized input
+  ---
+  duration_ms: 0.204945
+  type: 'test'
+  ...
+# Subtest: excludes malformed money, currency, status and timestamp rows
+ok 221 - excludes malformed money, currency, status and timestamp rows
+  ---
+  duration_ms: 0.173358
+  type: 'test'
+  ...
+# (node:33638) ExperimentalWarning: Type Stripping is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# (node:33638) [MODULE_TYPELESS_PACKAGE_JSON] Warning: Module type of file:///mnt/data/jembee_phase19_work/jembee-kart-main/src/modules/learning/legacy-earnings-inventory.ts is not specified and it doesn't parse as CommonJS.
+# Reparsing as ES module because module syntax was detected. This incurs a performance overhead.
+# To eliminate this warning, add "type": "module" to /mnt/data/jembee_phase19_work/jembee-kart-main/package.json.
+# Subtest: inventory records the active paid-video settlement ledger and evidence
+ok 222 - inventory records the active paid-video settlement ledger and evidence
+  ---
+  duration_ms: 1.258459
+  type: 'test'
+  ...
+# Subtest: paid-video orders, purchases and events remain separate source domains
+ok 223 - paid-video orders, purchases and events remain separate source domains
+  ---
+  duration_ms: 0.202171
+  type: 'test'
+  ...
+# Subtest: verified expenses and referral attribution are not earnings rows
+ok 224 - verified expenses and referral attribution are not earnings rows
+  ---
+  duration_ms: 0.088442
+  type: 'test'
+  ...
+# Subtest: Monetag collections remain a separate external USD legacy domain
+ok 225 - Monetag collections remain a separate external USD legacy domain
+  ---
+  duration_ms: 0.256191
+  type: 'test'
+  ...
+# Subtest: legacy creator earnings collection is marked unverified, not assumed compatible
+ok 226 - legacy creator earnings collection is marked unverified, not assumed compatible
+  ---
+  duration_ms: 0.097484
+  type: 'test'
+  ...
+# Subtest: unknown collections are not guessed and no inventory item authorizes deletion
+ok 227 - unknown collections are not guessed and no inventory item authorizes deletion
+  ---
+  duration_ms: 0.212906
+  type: 'test'
+  ...
+# Subtest: inventory is defensive-copy read-only metadata
+ok 228 - inventory is defensive-copy read-only metadata
+  ---
+  duration_ms: 0.150133
+  type: 'test'
+  ...
+# (node:33655) ExperimentalWarning: Type Stripping is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# (node:33655) [MODULE_TYPELESS_PACKAGE_JSON] Warning: Module type of file:///mnt/data/jembee_phase19_work/jembee-kart-main/src/modules/learning/pricing-access-contracts.ts is not specified and it doesn't parse as CommonJS.
+# Reparsing as ES module because module syntax was detected. This incurs a performance overhead.
+# To eliminate this warning, add "type": "module" to /mnt/data/jembee_phase19_work/jembee-kart-main/package.json.
+# Subtest: validates free and paid pricing using integer minor units and ISO currency
+ok 229 - validates free and paid pricing using integer minor units and ISO currency
+  ---
+  duration_ms: 1.642711
+  type: 'test'
+  ...
+# Subtest: enrollment offer requires published course, verified teacher, valid pricing and open enrollment
+ok 230 - enrollment offer requires published course, verified teacher, valid pricing and open enrollment
+  ---
+  duration_ms: 0.164986
+  type: 'test'
+  ...
+# Subtest: free course access does not require payment but still requires publication and enrollment
+ok 231 - free course access does not require payment but still requires publication and enrollment
+  ---
+  duration_ms: 0.205114
+  type: 'test'
+  ...
+# Subtest: paid course access requires active matching entitlement and enrollment
+ok 232 - paid course access requires active matching entitlement and enrollment
+  ---
+  duration_ms: 0.110644
+  type: 'test'
+  ...
+# Subtest: paid enrollment activation requires reconciled paid order scoped to user and course
+ok 233 - paid enrollment activation requires reconciled paid order scoped to user and course
+  ---
+  duration_ms: 0.322319
+  type: 'test'
+  ...
+# Subtest: paid entitlement expires and refund or unreconciled payment revokes access
+ok 234 - paid entitlement expires and refund or unreconciled payment revokes access
+  ---
+  duration_ms: 0.140528
+  type: 'test'
+  ...
+# Subtest: enrollment keys are safe and duplicate active records are not created
+ok 235 - enrollment keys are safe and duplicate active records are not created
+  ---
+  duration_ms: 0.2013
+  type: 'test'
+  ...
+# (node:33667) ExperimentalWarning: Type Stripping is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# (node:33667) [MODULE_TYPELESS_PACKAGE_JSON] Warning: Module type of file:///mnt/data/jembee_phase19_work/jembee-kart-main/src/modules/learning/recommendation-contracts.ts is not specified and it doesn't parse as CommonJS.
+# Reparsing as ES module because module syntax was detected. This incurs a performance overhead.
+# To eliminate this warning, add "type": "module" to /mnt/data/jembee_phase19_work/jembee-kart-main/package.json.
+# Subtest: validates bounded course recommendation metadata
+ok 236 - validates bounded course recommendation metadata
+  ---
+  duration_ms: 1.35268
+  type: 'test'
+  ...
+# Subtest: ranks published courses by authorized category signals deterministically
+ok 237 - ranks published courses by authorized category signals deterministically
+  ---
+  duration_ms: 15.35149
+  type: 'test'
+  ...
+# Subtest: excludes drafts, archived, already enrolled and duplicate course IDs
+ok 238 - excludes drafts, archived, already enrolled and duplicate course IDs
+  ---
+  duration_ms: 0.289971
+  type: 'test'
+  ...
+# Subtest: validates signal weights and result limits
+ok 239 - validates signal weights and result limits
+  ---
+  duration_ms: 0.318253
+  type: 'test'
+  ...
+# Subtest: preferred level is only a tie-break bonus and results are bounded
+ok 240 - preferred level is only a tie-break bonus and results are bounded
+  ---
+  duration_ms: 0.269951
+  type: 'test'
+  ...
+# Subtest: returns an empty list when there are no eligible courses
+ok 241 - returns an empty list when there are no eligible courses
+  ---
+  duration_ms: 0.174369
+  type: 'test'
+  ...
+# (node:33679) ExperimentalWarning: Type Stripping is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# (node:33679) [MODULE_TYPELESS_PACKAGE_JSON] Warning: Module type of file:///mnt/data/jembee_phase19_work/jembee-kart-main/src/modules/learning/revenue-ledger-contracts.ts is not specified and it doesn't parse as CommonJS.
+# Reparsing as ES module because module syntax was detected. This incurs a performance overhead.
+# To eliminate this warning, add "type": "module" to /mnt/data/jembee_phase19_work/jembee-kart-main/package.json.
+# Subtest: allocates reconciled eligible ad revenue 30/20/50 after deductions
+ok 242 - allocates reconciled eligible ad revenue 30/20/50 after deductions
+  ---
+  duration_ms: 1.802488
+  type: 'test'
+  ...
+# Subtest: rejects unverified, unreconciled, pending and wrong-source revenue
+ok 243 - rejects unverified, unreconciled, pending and wrong-source revenue
+  ---
+  duration_ms: 0.317501
+  type: 'test'
+  ...
+# Subtest: rejects invalid money, currency and deductions exceeding gross
+ok 244 - rejects invalid money, currency and deductions exceeding gross
+  ---
+  duration_ms: 0.186206
+  type: 'test'
+  ...
+# Subtest: teacher referral is 2 percent of verified reconciled eligible paid-course platform net profit
+ok 245 - teacher referral is 2 percent of verified reconciled eligible paid-course platform net profit
+  ---
+  duration_ms: 0.274508
+  type: 'test'
+  ...
+# Subtest: teacher referral rejects negative or non-integer net profit
+ok 246 - teacher referral rejects negative or non-integer net profit
+  ---
+  duration_ms: 0.178765
+  type: 'test'
+  ...
+# Subtest: ledger append is idempotent and requires verified reconciled entry
+ok 247 - ledger append is idempotent and requires verified reconciled entry
+  ---
+  duration_ms: 0.22835
+  type: 'test'
+  ...
+# Subtest: reversals require existing unreversed original and distinct safe identity
+ok 248 - reversals require existing unreversed original and distinct safe identity
+  ---
+  duration_ms: 0.24263
+  type: 'test'
+  ...
+# Subtest: payout readiness fails closed unless every independent gate passes
+ok 249 - payout readiness fails closed unless every independent gate passes
+  ---
+  duration_ms: 0.202951
+  type: 'test'
+  ...
+# Subtest: Firestore Emulator settlement transaction integration
+ok 250 - Firestore Emulator settlement transaction integration # SKIP
+  ---
+  duration_ms: 0.560132
+  type: 'test'
+  ...
+# Subtest: Phase 33 emulator suite is explicitly opt-in and refuses non-emulator execution
+ok 251 - Phase 33 emulator suite is explicitly opt-in and refuses non-emulator execution
+  ---
+  duration_ms: 0.139256
+  type: 'test'
+  ...
+# (node:33703) ExperimentalWarning: Type Stripping is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# (node:33703) [MODULE_TYPELESS_PACKAGE_JSON] Warning: Module type of file:///mnt/data/jembee_phase19_work/jembee-kart-main/src/modules/learning/settlement-ledger-repository-contracts.ts is not specified and it doesn't parse as CommonJS.
+# Reparsing as ES module because module syntax was detected. This incurs a performance overhead.
+# To eliminate this warning, add "type": "module" to /mnt/data/jembee_phase19_work/jembee-kart-main/package.json.
+# Subtest: supports only the entry types observed in current settlement routes
+ok 252 - supports only the entry types observed in current settlement routes
+  ---
+  duration_ms: 1.286722
+  type: 'test'
+  ...
+# Subtest: validates existing INR paise row shape and rejects unsafe values
+ok 253 - validates existing INR paise row shape and rejects unsafe values
+  ---
+  duration_ms: 0.504459
+  type: 'test'
+  ...
+# Subtest: reversal rows must be non-positive and adjustments may be signed
+ok 254 - reversal rows must be non-positive and adjustments may be signed
+  ---
+  duration_ms: 0.306005
+  type: 'test'
+  ...
+# Subtest: enforces unallocated sharer and platform admin beneficiary semantics
+ok 255 - enforces unallocated sharer and platform admin beneficiary semantics
+  ---
+  duration_ms: 0.265665
+  type: 'test'
+  ...
+# Subtest: create plan skips existing deterministic IDs and preserves fields
+ok 256 - create plan skips existing deterministic IDs and preserves fields
+  ---
+  duration_ms: 1.054097
+  type: 'test'
+  ...
+# Subtest: create plan rejects duplicate IDs and invalid rows before any write
+ok 257 - create plan rejects duplicate IDs and invalid rows before any write
+  ---
+  duration_ms: 0.235219
+  type: 'test'
+  ...
+# Subtest: ledger entries are read-only; correction requires compensating append
+ok 258 - ledger entries are read-only; correction requires compensating append
+  ---
+  duration_ms: 0.264242
+  type: 'test'
+  ...
+# Subtest: generates only known paid-video document IDs and rejects unsafe order IDs
+ok 259 - generates only known paid-video document IDs and rejects unsafe order IDs
+  ---
+  duration_ms: 0.214859
+  type: 'test'
+  ...
+# (node:33710) ExperimentalWarning: Type Stripping is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# (node:33710) [MODULE_TYPELESS_PACKAGE_JSON] Warning: Module type of file:///mnt/data/jembee_phase19_work/jembee-kart-main/src/modules/learning/teacher-publishing-contracts.ts is not specified and it doesn't parse as CommonJS.
+# Reparsing as ES module because module syntax was detected. This incurs a performance overhead.
+# To eliminate this warning, add "type": "module" to /mnt/data/jembee_phase19_work/jembee-kart-main/package.json.
+# Subtest: validates teacher course draft and normalizes bounded text
+ok 260 - validates teacher course draft and normalizes bounded text
+  ---
+  duration_ms: 1.189047
+  type: 'test'
+  ...
+# Subtest: rejects unsafe IDs, duplicate lesson IDs, duplicate tags and invalid revisions
+ok 261 - rejects unsafe IDs, duplicate lesson IDs, duplicate tags and invalid revisions
+  ---
+  duration_ms: 0.14122
+  type: 'test'
+  ...
+# Subtest: course review submission requires verified teacher and complete published lessons
+ok 262 - course review submission requires verified teacher and complete published lessons
+  ---
+  duration_ms: 0.12762
+  type: 'test'
+  ...
+# Subtest: teacher and reviewer workflow transitions are separately constrained
+ok 263 - teacher and reviewer workflow transitions are separately constrained
+  ---
+  duration_ms: 0.128992
+  type: 'test'
+  ...
+# Subtest: publishing requires approval of the exact current revision and verified teacher
+ok 264 - publishing requires approval of the exact current revision and verified teacher
+  ---
+  duration_ms: 0.143032
+  type: 'test'
+  ...
+# Subtest: course edits advance revision and invalid revisions fail closed
+ok 265 - course edits advance revision and invalid revisions fail closed
+  ---
+  duration_ms: 0.590828
+  type: 'test'
+  ...
+# Subtest: ownership comparison requires exact safe authenticated IDs
+ok 266 - ownership comparison requires exact safe authenticated IDs
+  ---
+  duration_ms: 0.170233
+  type: 'test'
+  ...
+# Subtest: byte-range parser is owned by the media module and imported by streaming route
+ok 267 - byte-range parser is owned by the media module and imported by streaming route
+  ---
+  duration_ms: 20.080867
+  type: 'test'
+  ...
+# Subtest: stream route preserves bounded 4 MiB responses and partial-content status
+ok 268 - stream route preserves bounded 4 MiB responses and partial-content status
+  ---
+  duration_ms: 1.180274
+  type: 'test'
+  ...
+# Subtest: upload validation is centralized and enforces video MIME and 500 MiB cap
+ok 269 - upload validation is centralized and enforces video MIME and 500 MiB cap
+  ---
+  duration_ms: 1.060015
+  type: 'test'
+  ...
+# Subtest: paid video publishing remains disabled at upload initiation
+ok 270 - paid video publishing remains disabled at upload initiation
+  ---
+  duration_ms: 1.685494
+  type: 'test'
+  ...
+# (node:33739) ExperimentalWarning: Type Stripping is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# (node:33739) [MODULE_TYPELESS_PACKAGE_JSON] Warning: Module type of file:///mnt/data/jembee_phase19_work/jembee-kart-main/src/modules/media/thumbnailPolicy.ts is not specified and it doesn't parse as CommonJS.
+# Reparsing as ES module because module syntax was detected. This incurs a performance overhead.
+# To eliminate this warning, add "type": "module" to /mnt/data/jembee_phase19_work/jembee-kart-main/package.json.
+# Subtest: accepts HTTPS Google thumbnail hosts only
+ok 271 - accepts HTTPS Google thumbnail hosts only
+  ---
+  duration_ms: 1.600298
+  type: 'test'
+  ...
+# Subtest: allows only supported image response types
+ok 272 - allows only supported image response types
+  ---
+  duration_ms: 0.559551
+  type: 'test'
+  ...
+# Subtest: enforces a strict bounded content length
+ok 273 - enforces a strict bounded content length
+  ---
+  duration_ms: 0.213467
+  type: 'test'
+  ...
+# (node:33741) ExperimentalWarning: Type Stripping is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# (node:33741) [MODULE_TYPELESS_PACKAGE_JSON] Warning: Module type of file:///mnt/data/jembee_phase19_work/jembee-kart-main/src/modules/media/uploadMetadata.ts is not specified and it doesn't parse as CommonJS.
+# Reparsing as ES module because module syntax was detected. This incurs a performance overhead.
+# To eliminate this warning, add "type": "module" to /mnt/data/jembee_phase19_work/jembee-kart-main/package.json.
+# Subtest: normalizes valid creator upload metadata and deduplicates hashtags
+ok 274 - normalizes valid creator upload metadata and deduplicates hashtags
+  ---
+  duration_ms: 1.750441
+  type: 'test'
+  ...
+# Subtest: rejects oversized caption and excessive hashtags
+ok 275 - rejects oversized caption and excessive hashtags
+  ---
+  duration_ms: 0.197002
+  type: 'test'
+  ...
+# Subtest: rejects unsafe photo URL and invalid duration
+ok 276 - rejects unsafe photo URL and invalid duration
+  ---
+  duration_ms: 0.224234
+  type: 'test'
+  ...
+# Subtest: rejects malformed metadata types and nonzero paid price
+ok 277 - rejects malformed metadata types and nonzero paid price
+  ---
+  duration_ms: 0.238545
+  type: 'test'
+  ...
+# Subtest: moderation decision contract restricts actions and reason size
+ok 278 - moderation decision contract restricts actions and reason size
+  ---
+  duration_ms: 0.832818
+  type: 'test'
+  ...
+# Subtest: moderation audit records identify actor, action and submission
+ok 279 - moderation audit records identify actor, action and submission
+  ---
+  duration_ms: 0.969911
+  type: 'test'
+  ...
+# Subtest: admin moderation handler uses the shared decision contract
+ok 280 - admin moderation handler uses the shared decision contract
+  ---
+  duration_ms: 0.149412
+  type: 'test'
+  ...
+# (node:33775) ExperimentalWarning: Type Stripping is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# (node:33775) [MODULE_TYPELESS_PACKAGE_JSON] Warning: Module type of file:///mnt/data/jembee_phase19_work/jembee-kart-main/src/modules/social/contracts.ts is not specified and it doesn't parse as CommonJS.
+# Reparsing as ES module because module syntax was detected. This incurs a performance overhead.
+# To eliminate this warning, add "type": "module" to /mnt/data/jembee_phase19_work/jembee-kart-main/package.json.
+# Subtest: follow pair rejects missing and self-follow identities
+ok 281 - follow pair rejects missing and self-follow identities
+  ---
+  duration_ms: 0.679429
+  type: 'test'
+  ...
+# Subtest: comment like input is normalized and constrained
+ok 282 - comment like input is normalized and constrained
+  ---
+  duration_ms: 0.565841
+  type: 'test'
+  ...
+# Subtest: follow notification payload bounds user-controlled display name
+ok 283 - follow notification payload bounds user-controlled display name
+  ---
+  duration_ms: 0.222961
+  type: 'test'
+  ...
+# (node:33787) ExperimentalWarning: Type Stripping is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# (node:33787) [MODULE_TYPELESS_PACKAGE_JSON] Warning: Module type of file:///mnt/data/jembee_phase19_work/jembee-kart-main/src/modules/support/contracts.ts is not specified and it doesn't parse as CommonJS.
+# Reparsing as ES module because module syntax was detected. This incurs a performance overhead.
+# To eliminate this warning, add "type": "module" to /mnt/data/jembee_phase19_work/jembee-kart-main/package.json.
+# Subtest: accepts a bounded support ticket and normalizes whitespace
+ok 284 - accepts a bounded support ticket and normalizes whitespace
+  ---
+  duration_ms: 1.616302
+  type: 'test'
+  ...
+# Subtest: rejects malformed, oversized, empty and control-character ticket fields
+ok 285 - rejects malformed, oversized, empty and control-character ticket fields
+  ---
+  duration_ms: 0.133148
+  type: 'test'
+  ...
+# Subtest: allows only known categories and safe related video ids
+ok 286 - allows only known categories and safe related video ids
+  ---
+  duration_ms: 0.229702
+  type: 'test'
+  ...
+# Subtest: validates teacher contact without accepting client identity as requester
+ok 287 - validates teacher contact without accepting client identity as requester
+  ---
+  duration_ms: 0.210233
+  type: 'test'
+  ...
+# Subtest: creates requester-scoped idempotency keys
+ok 288 - creates requester-scoped idempotency keys
+  ---
+  duration_ms: 0.108762
+  type: 'test'
+  ...
+# Subtest: conversation access requires authenticated uid to be a participant
+ok 289 - conversation access requires authenticated uid to be a participant
+  ---
+  duration_ms: 0.11446
+  type: 'test'
+  ...
+# Subtest: requester can reopen only waiting tickets; staff transitions are bounded
+ok 290 - requester can reopen only waiting tickets; staff transitions are bounded
+  ---
+  duration_ms: 0.172947
+  type: 'test'
+  ...
+# Subtest: teacher application schema bounds user-controlled fields
+ok 291 - teacher application schema bounds user-controlled fields
+  ---
+  duration_ms: 0.956701
+  type: 'test'
+  ...
+# Subtest: teacher application route derives uid from verified Firebase token
+ok 292 - teacher application route derives uid from verified Firebase token
+  ---
+  duration_ms: 1.462703
+  type: 'test'
+  ...
+# Subtest: teacher submissions are transactionally pending and audited
+ok 293 - teacher submissions are transactionally pending and audited
+  ---
+  duration_ms: 0.147058
+  type: 'test'
+  ...
+# Subtest: admin queue and review require admin authorization
+ok 294 - admin queue and review require admin authorization
+  ---
+  duration_ms: 0.147309
+  type: 'test'
+  ...
+# Subtest: teacher review refuses invalid or missing rejection reason
+ok 295 - teacher review refuses invalid or missing rejection reason
+  ---
+  duration_ms: 0.214549
+  type: 'test'
+  ...
+# Subtest: teacher verification states are explicit and bounded
+ok 296 - teacher verification states are explicit and bounded
+  ---
+  duration_ms: 1.032384
+  type: 'test'
+  ...
+# Subtest: creator identity alone cannot imply verified teacher
+ok 297 - creator identity alone cannot imply verified teacher
+  ---
+  duration_ms: 0.158045
+  type: 'test'
+  ...
+# Subtest: resubmission is restricted to not submitted or rejected states
+ok 298 - resubmission is restricted to not submitted or rejected states
+  ---
+  duration_ms: 1.188115
+  type: 'test'
+  ...
+# Subtest: review requires reviewer identity and rejection reason
+ok 299 - review requires reviewer identity and rejection reason
+  ---
+  duration_ms: 0.185325
+  type: 'test'
+  ...
+# (node:33823) ExperimentalWarning: Type Stripping is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# (node:33823) [MODULE_TYPELESS_PACKAGE_JSON] Warning: Module type of file:///mnt/data/jembee_phase19_work/jembee-kart-main/src/modules/trust-safety/copyrightClaim.ts is not specified and it doesn't parse as CommonJS.
+# Reparsing as ES module because module syntax was detected. This incurs a performance overhead.
+# To eliminate this warning, add "type": "module" to /mnt/data/jembee_phase19_work/jembee-kart-main/package.json.
+# Subtest: accepts a complete bounded copyright claim
+ok 300 - accepts a complete bounded copyright claim
+  ---
+  duration_ms: 0.965805
+  type: 'test'
+  ...
+# Subtest: rejects unconfirmed legal attestations
+ok 301 - rejects unconfirmed legal attestations
+  ---
+  duration_ms: 0.301157
+  type: 'test'
+  ...
+# Subtest: rejects unsafe URLs and malformed email
+ok 302 - rejects unsafe URLs and malformed email
+  ---
+  duration_ms: 0.165266
+  type: 'test'
+  ...
+# Subtest: rejects oversized and path-like video identifiers
+ok 303 - rejects oversized and path-like video identifiers
+  ---
+  duration_ms: 0.133428
+  type: 'test'
+  ...
+# Subtest: requires a reason for destructive or dismissive review decisions
+ok 304 - requires a reason for destructive or dismissive review decisions
+  ---
+  duration_ms: 0.220949
+  type: 'test'
+  ...
+# Subtest: rejects invalid claim review actions
+ok 305 - rejects invalid claim review actions
+  ---
+  duration_ms: 0.146288
+  type: 'test'
+  ...
+1..305
+# tests 305
+# suites 0
+# pass 303
+# fail 0
+# cancelled 0
+# skipped 2
+# todo 0
+# duration_ms 2074.8723
