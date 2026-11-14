@@ -14,6 +14,16 @@ interface UploadWatchVideoData {
   videoPrice?: number;
   videoFormat?: "short" | "long";
   durationSeconds?: number;
+  categoryId?: string;
+  categoryName?: string;
+  categoryTopic?: string;
+  schoolBoardId?: string;
+  schoolId?: string;
+  schoolClassId?: string;
+  schoolSubjectId?: string;
+  schoolBookId?: string;
+  schoolChapterId?: string;
+  schoolQuestionId?: string;
   hashtags: string[];
   music: string;
   sponsor?: boolean;
@@ -39,6 +49,16 @@ export interface ModerationSubmissionMetadata {
   videoPrice?: number;
   videoFormat?: "short" | "long";
   durationSeconds?: number;
+  categoryId?: string;
+  categoryName?: string;
+  categoryTopic?: string;
+  schoolBoardId?: string;
+  schoolId?: string;
+  schoolClassId?: string;
+  schoolSubjectId?: string;
+  schoolBookId?: string;
+  schoolChapterId?: string;
+  schoolQuestionId?: string;
 }
 
 export async function uploadWatchVideo({
@@ -51,6 +71,16 @@ export async function uploadWatchVideo({
   videoPrice = 0,
   videoFormat = "short",
   durationSeconds,
+  categoryId,
+  categoryName,
+  categoryTopic,
+  schoolBoardId,
+  schoolId,
+  schoolClassId,
+  schoolSubjectId,
+  schoolBookId,
+  schoolChapterId,
+  schoolQuestionId,
   hashtags,
   music,
   sponsor,
@@ -151,6 +181,16 @@ export async function uploadWatchVideo({
       videoPrice: videoAccess === "paid" ? videoPrice : 0,
       videoFormat,
       durationSeconds,
+      categoryId,
+      categoryName,
+      categoryTopic,
+      schoolBoardId,
+      schoolId,
+      schoolClassId,
+      schoolSubjectId,
+      schoolBookId,
+      schoolChapterId,
+      schoolQuestionId,
       hashtags,
       music,
       sponsor: sponsor === true,

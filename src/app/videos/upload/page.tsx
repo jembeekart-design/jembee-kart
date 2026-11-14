@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { useEffect, useMemo, useRef, useState, Suspense } from "react";
+import { useEffect, useMemo, useRef, useState, Suspense, type FormEvent } from "react";
 import { useSearchParams } from "next/navigation";
 import {
   ArrowLeft,
@@ -19,12 +19,26 @@ import {
   Upload,
   WalletCards,
   X,
+  BookOpen,
+  GraduationCap as SchoolCap,
 } from "lucide-react";
 import { auth, db } from "@/firebase/config";
 import { doc, getDoc } from "firebase/firestore";
 import { uploadWatchVideo } from "@/lib/videos/watch-earn/uploadWatchVideo";
+import { DEFAULT_EXPLORE_CATEGORIES, type ExploreCategoryRecord } from "@/lib/catalog/defaultExploreCategories";
 
 const MAX_VIDEO_BYTES = 500 * 1024 * 1024;
+type SchoolNode = { id: string; type: string; name: string; parentId?: string | null };
+type SchoolNodeType = "board" | "school" | "class" | "subject" | "book" | "chapter" | "question";
+const SCHOOL_NODE_TYPES: { value: SchoolNodeType; label: string; parent?: SchoolNodeType }[] = [
+  { value: "board", label: "Board / Curriculum" },
+  { value: "school", label: "School", parent: "board" },
+  { value: "class", label: "Class", parent: "school" },
+  { value: "subject", label: "Subject", parent: "class" },
+  { value: "book", label: "Book", parent: "class" },
+  { value: "chapter", label: "Chapter", parent: "subject" },
+  { value: "question", label: "Question number", parent: "chapter" },
+];
 
 function inspectVideoDuration(selectedFile: File, onRead: (duration: number | undefined) => void) {
   const objectUrl = URL.createObjectURL(selectedFile);
@@ -50,6 +64,8 @@ function formatBytes(bytes: number): string {
 function UploadWatchVideoContent() {
   const searchParams = useSearchParams();
   const videoUrlFromParams = searchParams.get("url");
+  const requestedCategoryId = searchParams.get("category");
+  const requestedQuestionId = searchParams.get("question");
 
   const [file, setFile] = useState<File | null>(null);
   const [loading, setLoading] = useState(false);
@@ -57,6 +73,25 @@ function UploadWatchVideoContent() {
   const [uploadProgress, setUploadProgress] = useState(0);
   const [uploadError, setUploadError] = useState<string | null>(null);
   const [caption, setCaption] = useState("");
+  const [categories, setCategories] = useState<ExploreCategoryRecord[]>(DEFAULT_EXPLORE_CATEGORIES);
+  const [schoolNodes, setSchoolNodes] = useState<SchoolNode[]>([]);
+  const [categoryId, setCategoryId] = useState("");
+  const [categoryTopic, setCategoryTopic] = useState("");
+  const [schoolBoardId, setSchoolBoardId] = useState("");
+  const [schoolId, setSchoolId] = useState("");
+  const [schoolClassId, setSchoolClassId] = useState("");
+  const [schoolSubjectId, setSchoolSubjectId] = useState("");
+  const [schoolBookId, setSchoolBookId] = useState("");
+  const [schoolChapterId, setSchoolChapterId] = useState("");
+  const [schoolQuestionId, setSchoolQuestionId] = useState("");
+  const [savingCatalog, setSavingCatalog] = useState(false);
+  const [catalogNotice, setCatalogNotice] = useState("");
+  const [newCategoryName, setNewCategoryName] = useState("");
+  const [newCategoryDescription, setNewCategoryDescription] = useState("");
+  const [newCategoryTopics, setNewCategoryTopics] = useState("");
+  const [newNodeType, setNewNodeType] = useState<SchoolNodeType>("board");
+  const [newNodeName, setNewNodeName] = useState("");
+  const [newNodeParentId, setNewNodeParentId] = useState("");
   const [videoAccess, setVideoAccess] = useState<"free" | "paid">("free");
   const [videoFormat, setVideoFormat] = useState<"short" | "long">("short");
   const [videoDurationSeconds, setVideoDurationSeconds] = useState<number | undefined>(undefined);
@@ -84,6 +119,123 @@ function UploadWatchVideoContent() {
 
     loadBlob();
   }, [videoUrlFromParams]);
+
+  useEffect(() => {
+    let active = true;
+    fetch("/api/content-categories", { cache: "no-store" })
+      .then(async (response) => { if (!response.ok) throw new Error("Catalog unavailable"); return response.json(); })
+      .then((data) => {
+        if (!active || data.success !== true) return;
+        const merged = new Map(DEFAULT_EXPLORE_CATEGORIES.map((item) => [item.id, item]));
+        for (const item of (Array.isArray(data.categories) ? data.categories : []) as ExploreCategoryRecord[]) {
+          if (item && typeof item.id === "string" && typeof item.name === "string") merged.set(item.id, { ...merged.get(item.id), ...item, topics: Array.isArray(item.topics) ? item.topics : [] });
+        }
+        setCategories([...merged.values()]);
+        const loadedNodes = (Array.isArray(data.schoolNodes) ? data.schoolNodes : []) as SchoolNode[];
+        setSchoolNodes(loadedNodes);
+        if (requestedCategoryId && merged.has(requestedCategoryId)) setCategoryId(requestedCategoryId);
+        if (requestedQuestionId) {
+          const question = loadedNodes.find((item) => item.id === requestedQuestionId && item.type === "question");
+          const chapter = question ? loadedNodes.find((item) => item.id === question.parentId && item.type === "chapter") : undefined;
+          const subjectOrBook = chapter ? loadedNodes.find((item) => item.id === chapter.parentId && (item.type === "subject" || item.type === "book")) : undefined;
+          const klass = subjectOrBook ? loadedNodes.find((item) => item.id === subjectOrBook.parentId && item.type === "class") : undefined;
+          const school = klass ? loadedNodes.find((item) => item.id === klass.parentId && item.type === "school") : undefined;
+          const board = school ? loadedNodes.find((item) => item.id === school.parentId && item.type === "board") : undefined;
+          if (question && chapter && subjectOrBook && klass && school && board) {
+            setSchoolQuestionId(question.id); setSchoolChapterId(chapter.id); setSchoolClassId(klass.id); setSchoolId(school.id); setSchoolBoardId(board.id);
+            if (subjectOrBook.type === "subject") setSchoolSubjectId(subjectOrBook.id); else setSchoolBookId(subjectOrBook.id);
+          }
+        }
+      })
+      .catch(() => undefined);
+    return () => { active = false; };
+  }, [requestedCategoryId, requestedQuestionId]);
+
+  const selectedCategory = categories.find((item) => item.id === categoryId);
+  const isSchoolCategory = selectedCategory?.id === "school" || selectedCategory?.schoolSpecial === true;
+  const schoolBoards = schoolNodes.filter((item) => item.type === "board");
+  const schoolOptions = schoolNodes.filter((item) => item.type === "school" && item.parentId === schoolBoardId);
+  const classOptions = schoolNodes.filter((item) => item.type === "class" && item.parentId === schoolId);
+  const subjectOptions = schoolNodes.filter((item) => item.type === "subject" && item.parentId === schoolClassId);
+  const bookOptions = schoolNodes.filter((item) => item.type === "book" && item.parentId === schoolClassId);
+  const chapterParentId = schoolBookId || schoolSubjectId;
+  const chapterOptions = schoolNodes.filter((item) => item.type === "chapter" && item.parentId === chapterParentId);
+  const questionOptions = schoolNodes.filter((item) => item.type === "question" && item.parentId === schoolChapterId);
+  const newNodeTypeConfig = SCHOOL_NODE_TYPES.find((item) => item.value === newNodeType)!;
+  const newNodeParentOptions = newNodeType === "school" ? schoolBoards
+    : newNodeType === "class" ? schoolNodes.filter((item) => item.type === "school")
+    : newNodeType === "subject" || newNodeType === "book" ? schoolNodes.filter((item) => item.type === "class")
+    : newNodeType === "chapter" ? schoolNodes.filter((item) => item.type === "subject" || item.type === "book")
+    : newNodeType === "question" ? schoolNodes.filter((item) => item.type === "chapter") : [];
+
+  async function creatorCatalogRequest(payload: Record<string, unknown>) {
+    const user = auth.currentUser;
+    if (!user) throw new Error("पहले JEMBEE PLAY में login करें।");
+    const token = await user.getIdToken();
+    const response = await fetch("/api/content-categories", {
+      method: "POST",
+      headers: { Authorization: `Bearer ${token}`, "Content-Type": "application/json" },
+      body: JSON.stringify(payload),
+    });
+    const data = await response.json();
+    if (!response.ok || data.success !== true) throw new Error(data.message || "Catalog save नहीं हो पाया।");
+    const catalogResponse = await fetch("/api/content-categories", { cache: "no-store" });
+    const catalogData = await catalogResponse.json();
+    if (catalogResponse.ok && catalogData.success === true) {
+      const merged = new Map(DEFAULT_EXPLORE_CATEGORIES.map((item) => [item.id, item]));
+      for (const item of (Array.isArray(catalogData.categories) ? catalogData.categories : []) as ExploreCategoryRecord[]) {
+        if (item && typeof item.id === "string" && typeof item.name === "string") merged.set(item.id, { ...merged.get(item.id), ...item, topics: Array.isArray(item.topics) ? item.topics : [] });
+      }
+      setCategories([...merged.values()]);
+      setSchoolNodes(Array.isArray(catalogData.schoolNodes) ? catalogData.schoolNodes as SchoolNode[] : []);
+    }
+    return data as { id?: string };
+  }
+
+  async function createCreatorCategory(event: FormEvent) {
+    event.preventDefault();
+    setSavingCatalog(true);
+    setCatalogNotice("");
+    try {
+      const result = await creatorCatalogRequest({
+        action: "save-category",
+        name: newCategoryName,
+        description: newCategoryDescription,
+        topics: newCategoryTopics.split(/[，,\n]/).map((value) => value.trim()).filter(Boolean),
+      });
+      if (result.id) setCategoryId(result.id);
+      setNewCategoryName(""); setNewCategoryDescription(""); setNewCategoryTopics("");
+      setCatalogNotice("आपकी Category जोड़ दी गई है। अब इसे चुनकर वीडियो upload कर सकते हैं।");
+    } catch (error) {
+      setCatalogNotice(error instanceof Error ? error.message : "Category save नहीं हो पाई।");
+    } finally { setSavingCatalog(false); }
+  }
+
+  async function createCreatorSchoolNode(event: FormEvent) {
+    event.preventDefault();
+    setSavingCatalog(true);
+    setCatalogNotice("");
+    try {
+      const result = await creatorCatalogRequest({
+        action: "save-school-node",
+        type: newNodeType,
+        name: newNodeName,
+        parentId: newNodeParentId || undefined,
+      });
+      const id = result.id || "";
+      if (newNodeType === "board") { setSchoolBoardId(id); setSchoolId(""); setSchoolClassId(""); }
+      if (newNodeType === "school") { setSchoolId(id); setSchoolClassId(""); }
+      if (newNodeType === "class") { setSchoolClassId(id); setSchoolSubjectId(""); setSchoolBookId(""); }
+      if (newNodeType === "subject") { setSchoolSubjectId(id); setSchoolBookId(""); }
+      if (newNodeType === "book") { setSchoolBookId(id); setSchoolSubjectId(""); }
+      if (newNodeType === "chapter") setSchoolChapterId(id);
+      if (newNodeType === "question") setSchoolQuestionId(id);
+      setNewNodeName(""); setNewNodeParentId("");
+      setCatalogNotice("आपकी School learning entry जोड़ दी गई है और अब चुनी जा सकती है।");
+    } catch (error) {
+      setCatalogNotice(error instanceof Error ? error.message : "School entry save नहीं हो पाई।");
+    } finally { setSavingCatalog(false); }
+  }
 
   const previewUrl = useMemo(() => {
     return file ? URL.createObjectURL(file) : null;
@@ -170,6 +322,7 @@ function UploadWatchVideoContent() {
         alert("पहले अपना वीडियो चुनें");
         return;
       }
+      if (!categoryId) { alert("कृपया वीडियो की Category चुनें।"); return; }
       if (videoAccess === "paid" && (!Number.isFinite(Number(videoPrice)) || Number(videoPrice) < 1 || Number(videoPrice) > 100000)) {
         alert("Paid वीडियो की कीमत ₹1 से ₹100000 के बीच रखें।");
         return;
@@ -215,6 +368,16 @@ function UploadWatchVideoContent() {
         videoPrice: videoAccess === "paid" ? Number(videoPrice) : 0,
         videoFormat,
         durationSeconds: videoDurationSeconds,
+        categoryId,
+        categoryName: selectedCategory?.name,
+        categoryTopic,
+        schoolBoardId,
+        schoolId,
+        schoolClassId,
+        schoolSubjectId,
+        schoolBookId,
+        schoolChapterId,
+        schoolQuestionId,
         hashtags: [],
         music: "",
         isEnhanced: false,
@@ -348,6 +511,50 @@ function UploadWatchVideoContent() {
               <textarea value={caption} onChange={(event) => setCaption(event.target.value.slice(0, 200))} maxLength={200} placeholder="वीडियो का शीर्षक लिखें…" className="mt-2 min-h-24 w-full resize-y rounded-xl border border-white/15 bg-[#090d14] px-3 py-3 text-sm text-white outline-none placeholder:text-slate-500 focus:border-blue-500" />
             </label>
             <p className="mt-1 text-right text-[11px] text-slate-500">{caption.length}/200</p>
+
+            <div className="mt-5 rounded-2xl border border-cyan-300/20 bg-cyan-300/[0.04] p-4">
+              <h3 className="flex items-center gap-2 text-sm font-extrabold"><BookOpen size={18} className="text-cyan-300"/> Category & Learning Details</h3>
+              <label className="mt-3 block text-xs font-bold text-slate-200">Category <span className="text-red-400">*</span>
+                <select required value={categoryId} onChange={(event) => { setCategoryId(event.target.value); setCategoryTopic(""); setSchoolBoardId(""); setSchoolId(""); setSchoolClassId(""); setSchoolSubjectId(""); setSchoolBookId(""); setSchoolChapterId(""); setSchoolQuestionId(""); }} className="mt-2 w-full rounded-xl border border-white/15 bg-[#090d14] px-3 py-3 text-sm text-white outline-none focus:border-cyan-400">
+                  <option value="">Category चुनें</option>{categories.map((item) => <option key={item.id} value={item.id}>{item.name}</option>)}
+                </select>
+              </label>
+              <details className="mt-3 rounded-xl border border-white/10 bg-black/20 p-3">
+                <summary className="cursor-pointer text-xs font-bold text-cyan-200">अपनी नई Category / Topic जोड़ें</summary>
+                <form onSubmit={createCreatorCategory} className="mt-3 space-y-2">
+                  <input required maxLength={80} value={newCategoryName} onChange={(event) => setNewCategoryName(event.target.value)} placeholder="Category name" className="w-full rounded-lg border border-white/15 bg-[#090d14] px-3 py-2 text-sm"/>
+                  <input maxLength={240} value={newCategoryDescription} onChange={(event) => setNewCategoryDescription(event.target.value)} placeholder="Description (optional)" className="w-full rounded-lg border border-white/15 bg-[#090d14] px-3 py-2 text-sm"/>
+                  <textarea required rows={2} value={newCategoryTopics} onChange={(event) => setNewCategoryTopics(event.target.value)} placeholder="Topics / subcategories (comma separated)" className="w-full rounded-lg border border-white/15 bg-[#090d14] px-3 py-2 text-sm"/>
+                  <button disabled={savingCatalog} className="rounded-lg bg-cyan-400 px-3 py-2 text-xs font-bold text-slate-950 disabled:opacity-50"><Plus size={14} className="mr-1 inline"/> Add my Category</button>
+                </form>
+              </details>
+              {selectedCategory?.topics?.length ? <label className="mt-3 block text-xs font-bold text-slate-200">Topic / Subcategory
+                <select value={categoryTopic} onChange={(event) => setCategoryTopic(event.target.value)} className="mt-2 w-full rounded-xl border border-white/15 bg-[#090d14] px-3 py-3 text-sm text-white outline-none focus:border-cyan-400"><option value="">Topic चुनें (optional)</option>{selectedCategory.topics.map((topic) => <option key={topic} value={topic}>{topic}</option>)}</select>
+              </label> : null}
+              {isSchoolCategory ? <div className="mt-4 space-y-3 rounded-xl border border-cyan-300/15 bg-[#081421] p-3">
+                <p className="flex items-center gap-2 text-xs font-bold uppercase tracking-wide text-cyan-200"><SchoolCap size={16}/> School Special: Board → School → Class → Subject / Book → Chapter → Question</p>
+                <label className="block text-xs font-bold">Board / Curriculum<select value={schoolBoardId} onChange={(e) => { setSchoolBoardId(e.target.value); setSchoolId(""); setSchoolClassId(""); setSchoolSubjectId(""); setSchoolBookId(""); setSchoolChapterId(""); setSchoolQuestionId(""); }} className="mt-2 w-full rounded-xl border border-white/15 bg-[#090d14] px-3 py-3 text-sm"><option value="">Board चुनें</option>{schoolBoards.map((item) => <option key={item.id} value={item.id}>{item.name}</option>)}</select></label>
+                <label className="block text-xs font-bold">School<select value={schoolId} onChange={(e) => { setSchoolId(e.target.value); setSchoolClassId(""); setSchoolSubjectId(""); setSchoolBookId(""); setSchoolChapterId(""); setSchoolQuestionId(""); }} disabled={!schoolBoardId} className="mt-2 w-full rounded-xl border border-white/15 bg-[#090d14] px-3 py-3 text-sm disabled:opacity-50"><option value="">School चुनें</option>{schoolOptions.map((item) => <option key={item.id} value={item.id}>{item.name}</option>)}</select></label>
+                <label className="block text-xs font-bold">Class<select value={schoolClassId} onChange={(e) => { setSchoolClassId(e.target.value); setSchoolSubjectId(""); setSchoolBookId(""); setSchoolChapterId(""); setSchoolQuestionId(""); }} disabled={!schoolId} className="mt-2 w-full rounded-xl border border-white/15 bg-[#090d14] px-3 py-3 text-sm disabled:opacity-50"><option value="">Class चुनें</option>{classOptions.map((item) => <option key={item.id} value={item.id}>{item.name}</option>)}</select></label>
+                <div className="grid gap-3 sm:grid-cols-2"><label className="block text-xs font-bold">Subject<select value={schoolSubjectId} onChange={(e) => { setSchoolSubjectId(e.target.value); setSchoolBookId(""); setSchoolChapterId(""); setSchoolQuestionId(""); }} disabled={!schoolClassId} className="mt-2 w-full rounded-xl border border-white/15 bg-[#090d14] px-3 py-3 text-sm disabled:opacity-50"><option value="">Subject चुनें</option>{subjectOptions.map((item) => <option key={item.id} value={item.id}>{item.name}</option>)}</select></label>
+                  <label className="block text-xs font-bold">Book (optional)<select value={schoolBookId} onChange={(e) => { setSchoolBookId(e.target.value); setSchoolSubjectId(""); setSchoolChapterId(""); setSchoolQuestionId(""); }} disabled={!schoolClassId} className="mt-2 w-full rounded-xl border border-white/15 bg-[#090d14] px-3 py-3 text-sm disabled:opacity-50"><option value="">Book चुनें</option>{bookOptions.map((item) => <option key={item.id} value={item.id}>{item.name}</option>)}</select></label></div>
+                <label className="block text-xs font-bold">Chapter<select value={schoolChapterId} onChange={(e) => { setSchoolChapterId(e.target.value); setSchoolQuestionId(""); }} disabled={!chapterParentId} className="mt-2 w-full rounded-xl border border-white/15 bg-[#090d14] px-3 py-3 text-sm disabled:opacity-50"><option value="">Chapter चुनें</option>{chapterOptions.map((item) => <option key={item.id} value={item.id}>{item.name}</option>)}</select></label>
+                <label className="block text-xs font-bold">Question Number (optional)<select value={schoolQuestionId} onChange={(e) => setSchoolQuestionId(e.target.value)} disabled={!schoolChapterId} className="mt-2 w-full rounded-xl border border-white/15 bg-[#090d14] px-3 py-3 text-sm disabled:opacity-50"><option value="">Question चुनें</option>{questionOptions.map((item) => <option key={item.id} value={item.id}>{item.name}</option>)}</select></label>
+                <details className="rounded-xl border border-cyan-300/20 bg-black/20 p-3">
+                  <summary className="cursor-pointer text-xs font-bold text-cyan-200">जानकारी नहीं मिली? अपनी School entry जोड़ें</summary>
+                  <form onSubmit={createCreatorSchoolNode} className="mt-3 grid gap-2">
+                    <select value={newNodeType} onChange={(event) => { setNewNodeType(event.target.value as SchoolNodeType); setNewNodeParentId(""); }} className="w-full rounded-lg border border-white/15 bg-[#090d14] px-3 py-2 text-sm">
+                      {SCHOOL_NODE_TYPES.map((item) => <option key={item.value} value={item.value}>{item.label}</option>)}
+                    </select>
+                    {newNodeTypeConfig.parent ? <select required value={newNodeParentId} onChange={(event) => setNewNodeParentId(event.target.value)} className="w-full rounded-lg border border-white/15 bg-[#090d14] px-3 py-2 text-sm"><option value="">Parent चुनें ({newNodeTypeConfig.parent})</option>{newNodeParentOptions.map((item) => <option key={item.id} value={item.id}>{item.name}</option>)}</select> : <p className="text-[11px] text-slate-400">Board एक top-level entry है।</p>}
+                    <input required maxLength={120} value={newNodeName} onChange={(event) => setNewNodeName(event.target.value)} placeholder={`${newNodeTypeConfig.label} का नाम`} className="w-full rounded-lg border border-white/15 bg-[#090d14] px-3 py-2 text-sm"/>
+                    <button disabled={savingCatalog || (Boolean(newNodeTypeConfig.parent) && !newNodeParentId)} className="rounded-lg bg-cyan-400 px-3 py-2 text-xs font-bold text-slate-950 disabled:opacity-50"><Plus size={14} className="mr-1 inline"/> Add School Information</button>
+                  </form>
+                </details>
+                {catalogNotice && <p role="status" className="rounded-lg border border-cyan-300/20 bg-cyan-300/10 p-2 text-xs text-cyan-100">{catalogNotice}</p>}
+                {schoolBoards.length === 0 && <p className="text-xs text-amber-200">अभी School Board नहीं है। Teacher / uploader ऊपर से Board जोड़ सकता है।</p>}
+              </div> : null}
+            </div>
 
             <div className="mt-4">
               <p className="text-xs font-bold text-slate-200">वीडियो का प्रकार</p>

@@ -1,9 +1,10 @@
 import Link from "next/link";
-import { Video, ShieldCheck, GraduationCap, ChartNoAxesCombined, Users, Wallet, Megaphone, Smartphone } from "lucide-react";
+import { Video, ShieldCheck, GraduationCap, ChartNoAxesCombined, Users, Wallet, Megaphone, Smartphone, Layers3 } from "lucide-react";
 
 const sections = [
   ["Video moderation", "Review creator submissions, reports and comments.", "/admin/moderation", ShieldCheck],
   ["Media library", "Manage approved videos and their metadata.", "/admin/media-library", Video],
+  ["Category management", "Manage Explore categories, topics and the dedicated School hierarchy.", "/admin/categories", Layers3],
   ["School learning", "Manage the learning catalog and video answers.", "/admin/education/schools", GraduationCap],
   ["Video analytics", "View video-platform metrics when connected.", "/admin/analytics", ChartNoAxesCombined],
   ["Creators and users", "Manage accounts and creator access.", "/admin/users", Users],

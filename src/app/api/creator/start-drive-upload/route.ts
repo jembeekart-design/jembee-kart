@@ -5,6 +5,7 @@ import { createResumableUploadSession } from "@/services/googleDriveService";
 import { classifyGoogleDriveError, googleDriveClientMessage, googleDriveErrorHttpStatus } from "@/lib/googleDriveErrors";
 import { validateVideoUpload } from "@/schemas/media/videoUpload";
 import { validateUploadMetadata } from "@/modules/media/uploadMetadata";
+import { DEFAULT_EXPLORE_CATEGORIES } from "@/lib/catalog/defaultExploreCategories";
 
 export const runtime = "nodejs";
 
@@ -51,6 +52,16 @@ export async function POST(req: Request) {
     originalVideoId?: unknown;
     originalAudioId?: unknown;
     isEnhanced?: unknown;
+    categoryId?: unknown;
+    categoryName?: unknown;
+    categoryTopic?: unknown;
+    schoolBoardId?: unknown;
+    schoolId?: unknown;
+    schoolClassId?: unknown;
+    schoolSubjectId?: unknown;
+    schoolBookId?: unknown;
+    schoolChapterId?: unknown;
+    schoolQuestionId?: unknown;
   };
   try {
     const contentLength = Number(req.headers.get("content-length") || 0);
@@ -89,12 +100,64 @@ export async function POST(req: Request) {
     return NextResponse.json({ success: false, message: "Paid video publishing is temporarily disabled until verified purchase access is available." }, { status: 409 });
   }
   const { videoFormat, durationSeconds } = metadata;
-
+  const safeId = (value: unknown) => typeof value === "string" && /^[a-z0-9][a-z0-9_-]{1,63}$/.test(value) ? value : "";
+  const categoryId = safeId(body.categoryId);
+  const categoryName = typeof body.categoryName === "string" ? body.categoryName.trim().slice(0, 80) : "";
+  const categoryTopic = typeof body.categoryTopic === "string" ? body.categoryTopic.trim().slice(0, 120) : "";
+  if (!categoryId || !categoryName) return NextResponse.json({ success: false, message: "कृपया मान्य Category चुनें।" }, { status: 400 });
+  const schoolIds = {
+    schoolBoardId: safeId(body.schoolBoardId), schoolId: safeId(body.schoolId),
+    schoolClassId: safeId(body.schoolClassId), schoolSubjectId: safeId(body.schoolSubjectId),
+    schoolBookId: safeId(body.schoolBookId), schoolChapterId: safeId(body.schoolChapterId),
+    schoolQuestionId: safeId(body.schoolQuestionId),
+  };
+  const hasSchoolMetadata = Object.values(schoolIds).some(Boolean);
+  if (categoryId === "school") {
+    if (!schoolIds.schoolBoardId || !schoolIds.schoolId || !schoolIds.schoolClassId || (!schoolIds.schoolSubjectId && !schoolIds.schoolBookId) || (schoolIds.schoolSubjectId && schoolIds.schoolBookId)) {
+      return NextResponse.json({ success: false, message: "School video के लिए Board, School, Class और Subject या Book चुनना आवश्यक है।" }, { status: 400 });
+    }
+  } else if (hasSchoolMetadata) {
+    return NextResponse.json({ success: false, message: "School hierarchy केवल School category के साथ भेजें।" }, { status: 400 });
+  }
 
   const submissionId = crypto.randomUUID();
 
   try {
     const adminDb = getAdminDb();
+    const categoryRef = adminDb.collection("contentCategories").doc(categoryId);
+    const categorySnap = await categoryRef.get();
+    const defaultCategory = DEFAULT_EXPLORE_CATEGORIES.find((item) => item.id === categoryId);
+    if (!categorySnap.exists && !defaultCategory) return NextResponse.json({ success: false, message: "यह Category उपलब्ध नहीं है।" }, { status: 400 });
+    if (categorySnap.exists && categorySnap.data()?.status !== "published") {
+      return NextResponse.json({ success: false, message: "यह Category अभी प्रकाशित नहीं है।" }, { status: 400 });
+    }
+    const categoryRecord = categorySnap.exists ? categorySnap.data() : defaultCategory;
+    if (categoryRecord?.name !== categoryName) return NextResponse.json({ success: false, message: "चुनी गई Category की जानकारी मेल नहीं खाती।" }, { status: 400 });
+    const allowedTopics = Array.isArray(categoryRecord?.topics) ? categoryRecord.topics : [];
+    if (categoryTopic && !allowedTopics.includes(categoryTopic)) return NextResponse.json({ success: false, message: "चुना गया Topic इस Category का हिस्सा नहीं है।" }, { status: 400 });
+    if (categoryId === "school") {
+      const nodeTypes: Record<keyof typeof schoolIds, string> = {
+        schoolBoardId: "board", schoolId: "school", schoolClassId: "class", schoolSubjectId: "subject",
+        schoolBookId: "book", schoolChapterId: "chapter", schoolQuestionId: "question",
+      };
+      const nodeSnaps = await Promise.all(Object.entries(schoolIds).filter(([, id]) => Boolean(id)).map(async ([key, id]) => ({ key, snap: await adminDb.collection("schoolLearningNodes").doc(id).get() })));
+      const nodeData = new Map<string, Record<string, unknown>>();
+      for (const { key, snap } of nodeSnaps) {
+        if (!snap.exists || snap.data()?.status !== "published" || snap.data()?.type !== nodeTypes[key as keyof typeof schoolIds]) {
+          return NextResponse.json({ success: false, message: "School catalog में चुनी गई कोई entry उपलब्ध नहीं है।" }, { status: 400 });
+        }
+        nodeData.set(key, snap.data()!);
+      }
+      const expectedParents: [keyof typeof schoolIds, keyof typeof schoolIds][] = [
+        ["schoolId", "schoolBoardId"], ["schoolClassId", "schoolId"],
+      ];
+      for (const [child, parent] of expectedParents) if (nodeData.get(child)?.parentId !== schoolIds[parent]) return NextResponse.json({ success: false, message: "School hierarchy का क्रम सही नहीं है।" }, { status: 400 });
+      const subjectOrBookId = schoolIds.schoolSubjectId || schoolIds.schoolBookId;
+      const subjectOrBook = nodeData.get(schoolIds.schoolSubjectId ? "schoolSubjectId" : "schoolBookId");
+      if (subjectOrBook?.parentId !== schoolIds.schoolClassId) return NextResponse.json({ success: false, message: "Subject / Book चुनी गई Class से संबंधित नहीं है।" }, { status: 400 });
+      if (schoolIds.schoolChapterId && nodeData.get("schoolChapterId")?.parentId !== subjectOrBookId) return NextResponse.json({ success: false, message: "Chapter चुने गए Subject / Book से संबंधित नहीं है।" }, { status: 400 });
+      if (schoolIds.schoolQuestionId && (!schoolIds.schoolChapterId || nodeData.get("schoolQuestionId")?.parentId !== schoolIds.schoolChapterId)) return NextResponse.json({ success: false, message: "Question चुने गए Chapter से संबंधित नहीं है।" }, { status: 400 });
+    }
     const activeSessions = await adminDb.collection("videoModerationSubmissions")
       .where("creatorId", "==", creatorId)
       .where("status", "in", ["uploading", "completing"])
@@ -148,6 +211,10 @@ export async function POST(req: Request) {
         originalVideoId: originalVideoId || "",
         originalAudioId: originalAudioId || "",
         isEnhanced: isEnhanced === true,
+        categoryId,
+        categoryName,
+        categoryTopic,
+        ...schoolIds,
         createdAt: new Date(),
       });
 

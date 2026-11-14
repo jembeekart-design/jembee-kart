@@ -16,6 +16,16 @@ export interface ModerationSubmissionMetadata {
   videoPrice?: number;
   videoFormat?: "short" | "long";
   durationSeconds?: number;
+  categoryId?: string;
+  categoryName?: string;
+  categoryTopic?: string;
+  schoolBoardId?: string;
+  schoolId?: string;
+  schoolClassId?: string;
+  schoolSubjectId?: string;
+  schoolBookId?: string;
+  schoolChapterId?: string;
+  schoolQuestionId?: string;
 }
 
 export interface ModerationSubmissionResult {

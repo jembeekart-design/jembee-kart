@@ -391,6 +391,17 @@ export async function POST(req: Request) {
         sponsor:
           submission.sponsor === true,
 
+        categoryId: typeof submission.categoryId === "string" ? submission.categoryId : "",
+        categoryName: typeof submission.categoryName === "string" ? submission.categoryName : "",
+        categoryTopic: typeof submission.categoryTopic === "string" ? submission.categoryTopic : "",
+        schoolBoardId: typeof submission.schoolBoardId === "string" ? submission.schoolBoardId : "",
+        schoolId: typeof submission.schoolId === "string" ? submission.schoolId : "",
+        schoolClassId: typeof submission.schoolClassId === "string" ? submission.schoolClassId : "",
+        schoolSubjectId: typeof submission.schoolSubjectId === "string" ? submission.schoolSubjectId : "",
+        schoolBookId: typeof submission.schoolBookId === "string" ? submission.schoolBookId : "",
+        schoolChapterId: typeof submission.schoolChapterId === "string" ? submission.schoolChapterId : "",
+        schoolQuestionId: typeof submission.schoolQuestionId === "string" ? submission.schoolQuestionId : "",
+
         driveFileId,
         video: finalVideoUrl,
         thumbnail: thumbnailUrl,

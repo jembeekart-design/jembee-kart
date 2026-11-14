@@ -5,13 +5,14 @@ import { usePathname } from "next/navigation";
 import {
   LayoutDashboard, Video, ShieldCheck, GraduationCap, ChartNoAxesCombined,
   Users, Bell, Wallet, Smartphone, HardDrive, Settings, Radio, Megaphone,
-  FileVideo, Bot,
+  FileVideo, Bot, Layers3,
 } from "lucide-react";
 
 const items = [
   ["Dashboard", "/admin", LayoutDashboard],
   ["Video moderation", "/admin/moderation", ShieldCheck],
   ["Media library", "/admin/media-library", FileVideo],
+  ["Category management", "/admin/categories", Layers3],
   ["School learning", "/admin/education/schools", GraduationCap],
   ["Video analytics", "/admin/analytics", ChartNoAxesCombined],
   ["Creator payouts (review only)", "/admin/payouts", Wallet],

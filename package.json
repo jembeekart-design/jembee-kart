@@ -27,7 +27,8 @@
     "test:video-playback-smoothing": "node --test src/app/videos/components/__tests__/video-playback-smoothing.test.mjs",
     "test:chatgpt-mcp": "node --test src/app/api/mcp/__tests__/route-contract.test.mjs",
     "test:settlement-emulator": "firebase emulators:exec --project demo-jembee-play --only firestore \"node --experimental-strip-types --test src/modules/learning/__tests__/settlement-ledger-emulator.integration.test.mjs\"",
-    "test:firestore-rules-emulator": "firebase emulators:exec --project demo-jembee-play --only firestore \"node --test src/firebase/__tests__/firestore-financial-rules.emulator.test.mjs\""
+    "test:firestore-rules-emulator": "firebase emulators:exec --project demo-jembee-play --only firestore \"node --test src/firebase/__tests__/firestore-financial-rules.emulator.test.mjs\"",
+    "test:category-catalog": "node --test src/app/api/content-categories/__tests__/route-contract.test.mjs src/app/videos/upload/__tests__/category-upload-contract.test.mjs src/app/learn/school/__tests__/school-catalog-contract.test.mjs"
   },
   "dependencies": {
     "@mediapipe/tasks-vision": "^1.0.1",
