@@ -1,15 +1,86 @@
 import { NextResponse } from "next/server";
+import { getAdminDb } from "@/firebase/admin";
+import {
+  DEFAULT_VIDEO_ADS_RULES,
+  validateVideoAdsRules,
+} from "@/lib/ads/videoAdsRules";
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
 
-/**
- * Legacy timed floating campaigns are disabled. External ads are served only
- * through Admin-enabled Monetag Direct Link cards at allowlisted page slots.
- */
-export async function GET() {
+function isRecord(value: unknown): value is Record<string, unknown> {
+  return typeof value === "object" && value !== null && !Array.isArray(value);
+}
+
+function disabledResponse() {
   return NextResponse.json(
-    { enabled: false, rules: { enabled: false, firstAdAfterVideos: 0, repeatEveryVideos: 0, autoDismissSeconds: 0 }, ads: [] },
-    { headers: { "Cache-Control": "no-store, max-age=0" } }
+    {
+      enabled: false,
+      rules: {
+        enabled: false,
+        firstAdAfterVideos: 0,
+        repeatEveryVideos: 0,
+        autoDismissSeconds: 0,
+      },
+      longVideoAds: DEFAULT_VIDEO_ADS_RULES.longVideoAds,
+      ads: [],
+    },
+    { headers: { "Cache-Control": "no-store, max-age=0" } },
   );
+}
+
+export async function GET() {
+  try {
+    const snap = await getAdminDb()
+      .collection("business_rules")
+      .doc("videoAds")
+      .get();
+
+    const stored = snap.data() || {};
+    const storedLongVideoAds = isRecord(stored.longVideoAds)
+      ? stored.longVideoAds
+      : {};
+    const storedFree = isRecord(storedLongVideoAds.free)
+      ? storedLongVideoAds.free
+      : {};
+    const storedPaid = isRecord(storedLongVideoAds.paid)
+      ? storedLongVideoAds.paid
+      : {};
+
+    const rules = validateVideoAdsRules({
+      ...DEFAULT_VIDEO_ADS_RULES,
+      ...stored,
+      longVideoAds: {
+        ...DEFAULT_VIDEO_ADS_RULES.longVideoAds,
+        ...storedLongVideoAds,
+        free: {
+          ...DEFAULT_VIDEO_ADS_RULES.longVideoAds.free,
+          ...storedFree,
+        },
+        paid: {
+          ...DEFAULT_VIDEO_ADS_RULES.longVideoAds.paid,
+          ...storedPaid,
+        },
+      },
+    });
+
+    return NextResponse.json(
+      {
+        // Legacy Shorts timed campaigns remain disabled.
+        enabled: false,
+        rules: {
+          enabled: false,
+          firstAdAfterVideos: 0,
+          repeatEveryVideos: 0,
+          autoDismissSeconds: 0,
+        },
+        // Public schedule only; no provider credentials or secrets.
+        longVideoAds: rules.longVideoAds,
+        ads: [],
+      },
+      { headers: { "Cache-Control": "no-store, max-age=0" } },
+    );
+  } catch {
+    return disabledResponse();
+  }
 }

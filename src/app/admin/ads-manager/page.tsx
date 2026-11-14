@@ -7,8 +7,8 @@ export default function AdsManagerPage() {
     <main className="min-h-screen bg-[var(--background)] p-4 text-[var(--text-primary)] sm:p-6">
       <div className="mx-auto max-w-5xl space-y-3">
         <header>
-          <h1 className="text-3xl font-black">Monetag Ads Manager</h1>
-          <p className="mt-1 text-sm text-[var(--text-muted)]">केवल Admin द्वारा चुने गए page locations पर Monetag sponsored cards।</p>
+          <h1 className="text-3xl font-black">Ads Manager</h1>
+          <p className="mt-1 text-sm text-[var(--text-muted)]">Monetag sponsored placements और Free/Paid Long Video ad schedules नियंत्रित करें।</p>
         </header>
         <AdNetworkManager />
       </div>

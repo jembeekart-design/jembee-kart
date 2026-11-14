@@ -40,7 +40,17 @@ test("global Monetag tags, AdSense auto script and timed Shorts ads are fail-clo
   assert.match(layout, /name="monetag"/); // verification meta only
   assert.match(gate, /return null/);
   assert.match(providers, /return null/);
+  // Legacy Shorts timed ads must remain disabled.
   assert.match(videoAds, /enabled: false/);
+  assert.match(videoAds, /firstAdAfterVideos: 0/);
+
+  // Long-video schedules are read from validated Admin settings.
+  assert.match(videoAds, /getAdminDb\(\)/);
+  assert.match(videoAds, /validateVideoAdsRules/);
+  assert.match(videoAds, /longVideoAds: rules\.longVideoAds/);
+  assert.match(videoAds, /Cache-Control/);
+
+  // Shorts feed must not regain automatic floating ads.
   assert.doesNotMatch(feed, /FloatingAdComponent|currentVideoAd|videoAdsData/);
 });
 
@@ -94,8 +104,8 @@ test("Google Drive error handlers classify without logging provider error object
 });
 
 test("Explore retains all 20 requested learning categories", async () => {
-  const explore = await read("src/app/explore/page.tsx");
-  const ids = [...explore.matchAll(/\{id:"([^"]+)"/g)].map((match) => match[1]);
+  const explore = await read("src/lib/catalog/defaultExploreCategories.ts");
+  const ids = [...explore.matchAll(/\bid:\s*"([^"]+)"/g)].map((match) => match[1]);
   assert.equal(ids.length, 20);
   assert.ok(ids.includes("general-knowledge"));
   assert.ok(ids.includes("cooking"));

@@ -13,11 +13,35 @@ function statusFor(error: unknown) {
   return code === "UNAUTHORIZED" ? 401 : code === "FORBIDDEN" ? 403 : 500;
 }
 
+function isRecord(value: unknown): value is Record<string, unknown> {
+  return typeof value === "object" && value !== null && !Array.isArray(value);
+}
+
 export async function GET(req: Request) {
   try {
     await verifyMonetagAdmin(req);
     const snap = await getAdminDb().collection("business_rules").doc("videoAds").get();
-    const rules = validateVideoAdsRules({ ...DEFAULT_VIDEO_ADS_RULES, ...(snap.data() || {}) });
+    const stored = snap.data() || {};
+    const storedLongVideoAds = isRecord(stored.longVideoAds) ? stored.longVideoAds : {};
+    const storedFree = isRecord(storedLongVideoAds.free) ? storedLongVideoAds.free : {};
+    const storedPaid = isRecord(storedLongVideoAds.paid) ? storedLongVideoAds.paid : {};
+
+    const rules = validateVideoAdsRules({
+      ...DEFAULT_VIDEO_ADS_RULES,
+      ...stored,
+      longVideoAds: {
+        ...DEFAULT_VIDEO_ADS_RULES.longVideoAds,
+        ...storedLongVideoAds,
+        free: {
+          ...DEFAULT_VIDEO_ADS_RULES.longVideoAds.free,
+          ...storedFree,
+        },
+        paid: {
+          ...DEFAULT_VIDEO_ADS_RULES.longVideoAds.paid,
+          ...storedPaid,
+        },
+      },
+    });
     return NextResponse.json({ success: true, rules }, { headers: { "Cache-Control": "no-store" } });
   } catch (error) {
     const status = statusFor(error);
