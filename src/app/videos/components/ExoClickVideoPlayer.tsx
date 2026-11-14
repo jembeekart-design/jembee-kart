@@ -31,6 +31,7 @@ type ImaAdsManager = {
 type ImaAdsLoader = {
   addEventListener(type: string, listener: (event: ImaEvent) => void): void;
   requestAds(request: ImaAdsRequest): void;
+  destroy(): void;
 };
 
 type ImaNamespace = {
@@ -111,6 +112,8 @@ export default function ExoClickVideoPlayer({
   const videoRef = useRef<HTMLVideoElement>(null);
   const adContainerRef = useRef<HTMLDivElement>(null);
   const managerRef = useRef<ImaAdsManager | null>(null);
+  const loaderRef = useRef<ImaAdsLoader | null>(null);
+  const adTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const contentStartedRef = useRef(false);
   const adAttemptedRef = useRef(false);
   const [sdkReady, setSdkReady] = useState(false);
@@ -139,11 +142,19 @@ export default function ExoClickVideoPlayer({
   }, [vastUrl]);
 
   const playContent = useCallback(() => {
+    if (adTimeoutRef.current !== null) {
+      clearTimeout(adTimeoutRef.current);
+      adTimeoutRef.current = null;
+    }
+    const manager = managerRef.current;
+    managerRef.current = null;
+    try { manager?.destroy(); } catch { /* Ignore IMA cleanup errors. */ }
+    const loader = loaderRef.current;
+    loaderRef.current = null;
+    try { loader?.destroy(); } catch { /* Ignore IMA cleanup errors. */ }
+
     const video = videoRef.current;
     if (!video) return;
-
-    managerRef.current?.destroy();
-    managerRef.current = null;
 
     setAdPlaying(false);
     setContentStarted(true);
@@ -186,6 +197,11 @@ export default function ExoClickVideoPlayer({
       display.initialize();
 
       const loader = new ima.AdsLoader(display);
+      loaderRef.current = loader;
+      adTimeoutRef.current = setTimeout(() => {
+        setMessage("Advertisement timed out. Starting video…");
+        playContent();
+      }, 10000);
       const request = new ima.AdsRequest();
 
       request.adTagUrl = vastUrl;
@@ -200,6 +216,10 @@ export default function ExoClickVideoPlayer({
       loader.addEventListener(
         ima.AdsManagerLoadedEvent.Type.ADS_MANAGER_LOADED,
         (event) => {
+          if (adTimeoutRef.current !== null) {
+            clearTimeout(adTimeoutRef.current);
+            adTimeoutRef.current = null;
+          }
           try {
             const manager = event.getAdsManager(video);
             managerRef.current = manager;
@@ -249,8 +269,12 @@ export default function ExoClickVideoPlayer({
 
   useEffect(() => {
     return () => {
-      managerRef.current?.destroy();
+      if (adTimeoutRef.current !== null) clearTimeout(adTimeoutRef.current);
+      adTimeoutRef.current = null;
+      try { managerRef.current?.destroy(); } catch { /* Ignore IMA cleanup errors. */ }
       managerRef.current = null;
+      try { loaderRef.current?.destroy(); } catch { /* Ignore IMA cleanup errors. */ }
+      loaderRef.current = null;
     };
   }, []);
 
