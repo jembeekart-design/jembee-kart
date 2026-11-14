@@ -1,6 +1,7 @@
 "use client";
 
 import {
+  Fragment,
   useState,
   useEffect,
   useRef,
@@ -25,6 +26,8 @@ import CommentDrawer
 import Toast from "./Toast";
 import BottomQuickActions from "./BottomQuickActions";
 import { getWatchVideos, WatchVideo } from "../services/watchVideos.service";
+import ExoClickShortsAd from "./ExoClickShortsAd";
+import { getExoClickShortsVastUrl } from "@/lib/ads/exoclick";
 
 // New imports for persistence and auth
 import { auth, db, isFirebaseConfigured } from "@/firebase/config";
@@ -69,6 +72,8 @@ export default function VerticalVideoFeed({
   );
   const [toastMessage, setToastMessage] = useState<string | null>(null);
   const [activeVideoId, setActiveVideoId] = useState<string>(paidVideoId ?? libraryVideoId ?? "");
+  const [activeAdId, setActiveAdId] = useState<string>("");
+  const shortsAdsEnabled = Boolean(getExoClickShortsVastUrl());
   const currentUserId = isAuthenticated ? auth.currentUser?.uid ?? null : null;
 
   const [followingState, setFollowingState] = useState<{ userId: string; ids: string[] } | null>(null);
@@ -144,7 +149,7 @@ export default function VerticalVideoFeed({
     return visibleVideos;
   }, [activeTab, videos, followingList, notInterestedIds]);
 
-  const effectiveActiveVideoId = activeVideoId || filteredVideos[0]?.id || "";
+  const effectiveActiveVideoId = activeAdId ? "" : activeVideoId || filteredVideos[0]?.id || "";
   const activeVideoIndex = Math.max(0, filteredVideos.findIndex((video) => video.id === effectiveActiveVideoId));
 
   // Preload only the current and next four thumbnails; never download full videos here.
@@ -298,22 +303,22 @@ export default function VerticalVideoFeed({
 
     if (!container) return;
 
-    const sections =
-      container.querySelectorAll(
-        "section[data-video-id]"
-      );
+    const sections = container.querySelectorAll<HTMLElement>(
+      "section[data-video-id], section[data-ad-id]"
+    );
 
     const observer =
       new IntersectionObserver(
         (entries) => {
           entries.forEach((entry) => {
             if (entry.isIntersecting) {
-              const videoId =
-                entry.target.getAttribute(
-                  "data-video-id"
-                );
+              const adId = entry.target.getAttribute("data-ad-id");
+              const videoId = entry.target.getAttribute("data-video-id");
 
-              if (videoId) {
+              if (adId) {
+                setActiveAdId(adId);
+              } else if (videoId) {
+                setActiveAdId("");
                 setActiveVideoId(videoId);
               }
             }
@@ -332,7 +337,7 @@ export default function VerticalVideoFeed({
     return () => {
       observer.disconnect();
     };
-  }, [videos]);
+  }, [filteredVideos]);
 
   const handleShare = async (
     video: WatchVideo
@@ -517,9 +522,10 @@ export default function VerticalVideoFeed({
       ) : (
         filteredVideos.map(
           (video, index) => (
+            <Fragment key={video.id}>
             <section
-              key={video.id}
               data-video-id={video.id}
+              data-video-index={index}
               className="
                 relative
                 h-screen
@@ -777,6 +783,28 @@ export default function VerticalVideoFeed({
                 currentPlaybackSpeed={playbackSpeeds[video.id] || 1}
               />
             </section>
+
+            {shortsAdsEnabled && index % 5 === 4 && index < filteredVideos.length - 1 && (
+              <section
+                data-ad-id={`shorts-ad-after-${video.id}`}
+                className="relative h-screen snap-start"
+              >
+                <ExoClickShortsAd
+                  active={activeAdId === `shorts-ad-after-${video.id}`}
+                  onContinue={() => {
+                    setActiveAdId("");
+                    const nextVideo = containerRef.current?.querySelector<HTMLElement>(
+                      `section[data-video-index="${index + 1}"]`
+                    );
+                    nextVideo?.scrollIntoView({
+                      block: "start",
+                      behavior: "smooth",
+                    });
+                  }}
+                />
+              </section>
+            )}
+            </Fragment>
           )
         )
       )}
