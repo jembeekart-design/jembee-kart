@@ -46,16 +46,19 @@ export function AdDiagnosticsPanel() {
     <section className="space-y-4 rounded-2xl border border-white/10 bg-[#111a28] p-5 text-white sm:p-6">
       <div className="flex flex-wrap items-center justify-between gap-3">
         <div>
-          <p className="text-xs font-bold uppercase tracking-widest text-cyan-300">Operations & QA</p>
-          <h2 className="mt-1 text-xl font-black">Ad Network Status & Diagnostics</h2>
+          <p className="text-xs font-bold uppercase tracking-widest text-cyan-300">संचालन और QA</p>
+          <h2 className="mt-1 text-xl font-black">Ad Network स्थिति और जाँच</h2>
           <p className="mt-1 text-sm text-slate-400">ये operational diagnostics हैं, billable impressions/clicks या settlement evidence नहीं।</p>
         </div>
-        <button type="button" onClick={() => void load()} disabled={refreshing} className="rounded-xl border border-white/15 px-4 py-2 text-sm font-semibold disabled:opacity-50">{refreshing ? "Refreshing…" : "Refresh logs"}</button>
+        <button type="button" onClick={() => void load()} disabled={refreshing} className="rounded-xl border border-white/15 px-4 py-2 text-sm font-semibold disabled:opacity-50">{refreshing ? "रीफ्रेश हो रहा है…" : "लॉग रीफ्रेश करें"}</button>
       </div>
 
-      {loading ? <p className="text-sm text-slate-400">Ad status लोड हो रहा है…</p> : null}
+      {loading ? <p className="text-sm text-slate-400">Ad स्थिति लोड हो रही है…</p> : null}
       {error ? <p role="alert" className="rounded-xl border border-red-400/20 bg-red-400/10 p-3 text-sm text-red-200">{error}</p> : null}
       {data ? <>
+        <p className="rounded-xl border border-cyan-300/15 bg-cyan-300/5 p-3 text-xs leading-5 text-cyan-100">
+          Shorts और Long Video में VAST request, ad start, no-fill, timeout और error events यहाँ दिखेंगे। No-fill का अर्थ है provider ने उस request के लिए playable ad नहीं लौटाया।
+        </p>
         <div className="grid gap-3 sm:grid-cols-3">
           <Status label="Global Ads Master" enabled={data.providerStatus.masterEnabled} />
           <Status label="ExoClick Environment Flag" enabled={data.providerStatus.exoclickEnvironmentEnabled} />

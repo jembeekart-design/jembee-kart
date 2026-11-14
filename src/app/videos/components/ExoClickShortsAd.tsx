@@ -2,6 +2,7 @@
 
 import { useCallback, useEffect, useRef, useState } from "react";
 import { getExoClickShortsVastUrl } from "@/lib/ads/exoclick";
+import { sendAdDiagnostic } from "@/lib/ads/diagnostics";
 
 type ImaManager = {
   addEventListener(type: string, listener: (event: unknown) => void): void;
@@ -39,6 +40,7 @@ type ImaNamespace = {
   AdErrorEvent: { Type: { AD_ERROR: string } };
   AdEvent: {
     Type: {
+      CONTENT_PAUSE_REQUESTED: string;
       CONTENT_RESUME_REQUESTED: string;
       ALL_ADS_COMPLETED: string;
     };
@@ -176,7 +178,8 @@ export default function ExoClickShortsAd({
       .catch(() => {
         if (cancelled) return;
         setSdkReady(false);
-        setError("Advertisement could not be loaded. Continuing…");
+        setError("विज्ञापन लोड नहीं हो पाया। अगला Short चल रहा है…");
+        sendAdDiagnostic("sdk_error", "ima", "shorts");
         finishAd();
       });
 
@@ -266,14 +269,15 @@ export default function ExoClickShortsAd({
     const container = containerRef.current;
 
     if (!vastUrl || !ima || !video || !container) {
-      setError("Advertisement unavailable. Continuing…");
+      setError("विज्ञापन उपलब्ध नहीं है। अगला Short चल रहा है…");
+      sendAdDiagnostic("ad_error", "exoclick", "shorts");
       finishAd();
       return;
     }
 
     finishedRef.current = false;
     setLoading(true);
-    setError("Loading advertisement…");
+    setError("विज्ञापन लोड हो रहा है…");
 
     try {
       // Initialize the IMA display and request the ad automatically for the active slot.
@@ -292,14 +296,16 @@ export default function ExoClickShortsAd({
       request.vastLoadTimeout = 8000;
 
       timeoutRef.current = setTimeout(() => {
-        setError("Advertisement timed out. Continuing…");
+        setError("विज्ञापन का समय समाप्त हुआ। अगला Short चल रहा है…");
+        sendAdDiagnostic("ad_timeout", "exoclick", "shorts");
         finishAd();
       }, 10000);
 
       loader.addEventListener(
         ima.AdErrorEvent.Type.AD_ERROR,
         () => {
-          setError("No advertisement available. Continuing…");
+          setError("अभी विज्ञापन उपलब्ध नहीं है। अगला Short चल रहा है…");
+          sendAdDiagnostic("ad_no_fill", "exoclick", "shorts");
           finishAd();
         }
       );
@@ -329,19 +335,22 @@ export default function ExoClickShortsAd({
             managerRef.current = manager;
 
             manager.addEventListener(
-              ima.AdEvent.Type.CONTENT_RESUME_REQUESTED,
-              () => finishAd()
+              ima.AdEvent.Type.CONTENT_PAUSE_REQUESTED,
+              () => sendAdDiagnostic("ad_started", "exoclick", "shorts")
             );
 
-            manager.addEventListener(
-              ima.AdEvent.Type.ALL_ADS_COMPLETED,
-              () => finishAd()
-            );
+            const completeAd = () => {
+              if (!finishedRef.current) sendAdDiagnostic("ad_completed", "exoclick", "shorts");
+              finishAd();
+            };
+            manager.addEventListener(ima.AdEvent.Type.CONTENT_RESUME_REQUESTED, completeAd);
+            manager.addEventListener(ima.AdEvent.Type.ALL_ADS_COMPLETED, completeAd);
 
             manager.addEventListener(
               ima.AdErrorEvent.Type.AD_ERROR,
               () => {
-                setError("Advertisement failed. Continuing…");
+                setError("विज्ञापन चल नहीं पाया। अगला Short चल रहा है…");
+                sendAdDiagnostic("ad_error", "exoclick", "shorts");
                 finishAd();
               }
             );
@@ -356,7 +365,8 @@ export default function ExoClickShortsAd({
 
             clearAdTimeout();
             timeoutRef.current = setTimeout(() => {
-              setError("Advertisement ended. Continuing…");
+              setError("विज्ञापन प्लेबैक रुक गया। अगला Short चल रहा है…");
+              sendAdDiagnostic("ad_timeout", "exoclick", "shorts");
               finishAd();
             }, 60000);
 
@@ -364,15 +374,18 @@ export default function ExoClickShortsAd({
             setPlaying(true);
             setError("");
           } catch {
-            setError("Advertisement failed. Continuing…");
+            setError("विज्ञापन चल नहीं पाया। अगला Short चल रहा है…");
+            sendAdDiagnostic("ad_error", "exoclick", "shorts");
             finishAd();
           }
         }
       );
 
+      sendAdDiagnostic("vast_request", "exoclick", "shorts");
       loader.requestAds(request);
     } catch {
-      setError("Advertisement unavailable. Continuing…");
+      setError("विज्ञापन उपलब्ध नहीं है। अगला Short चल रहा है…");
+      sendAdDiagnostic("ad_error", "exoclick", "shorts");
       finishAd();
     }
   }, [vastUrl, finishAd, clearAdTimeout]);
@@ -409,7 +422,7 @@ export default function ExoClickShortsAd({
         <div className="absolute inset-0 z-10 flex flex-col items-center justify-center gap-4 bg-black/60 p-6 text-center">
           <p className="text-xl font-bold">Sponsored video</p>
           <p className="text-sm text-white/70">
-            Advertisement is loading automatically. If no ad is available, the next Short will play.
+            विज्ञापन अपने-आप लोड होगा। विज्ञापन उपलब्ध न होने पर अगला Short चलेगा।
           </p>
           {error && (
             <p role="status" className="text-sm text-amber-200">

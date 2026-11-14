@@ -73,8 +73,29 @@ export default function VerticalVideoFeed({
   const [toastMessage, setToastMessage] = useState<string | null>(null);
   const [activeVideoId, setActiveVideoId] = useState<string>(paidVideoId ?? libraryVideoId ?? "");
   const [activeAdId, setActiveAdId] = useState<string>("");
-  const shortsAdsEnabled = Boolean(getExoClickShortsVastUrl());
+  const [shortsAdsEnabled, setShortsAdsEnabled] = useState(false);
   const currentUserId = isAuthenticated ? auth.currentUser?.uid ?? null : null;
+
+  // Shorts ads obey the same global admin master switch and deployment flag
+  // as every other ad placement. Fail closed if public config cannot be read.
+  useEffect(() => {
+    let cancelled = false;
+    if (!getExoClickShortsVastUrl()) {
+      setShortsAdsEnabled(false);
+      return;
+    }
+    fetch("/api/videos/video-ads", { cache: "no-store" })
+      .then((response) => response.ok ? response.json() : null)
+      .then((config: { masterEnabled?: boolean; providerReady?: boolean } | null) => {
+        if (!cancelled) {
+          setShortsAdsEnabled(Boolean(config?.masterEnabled && config?.providerReady && getExoClickShortsVastUrl()));
+        }
+      })
+      .catch(() => {
+        if (!cancelled) setShortsAdsEnabled(false);
+      });
+    return () => { cancelled = true; };
+  }, []);
 
   const [followingState, setFollowingState] = useState<{ userId: string; ids: string[] } | null>(null);
   const followingList = followingState?.userId === currentUserId ? followingState.ids : [];
