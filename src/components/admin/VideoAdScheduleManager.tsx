@@ -140,11 +140,24 @@ export function VideoAdScheduleManager() {
         </p>
       </div>
 
+      <label className="flex items-center justify-between gap-3 rounded-xl border border-amber-300/25 bg-amber-300/5 p-4">
+        <span>
+          <span className="block font-bold">Master Advertisement ON / OFF</span>
+          <span className="mt-1 block text-xs text-slate-400">OFF रहने पर ExoClick और सभी Monetag sponsored placements बंद रहेंगे। QA के बाद ही ON करें।</span>
+        </span>
+        <input
+          type="checkbox"
+          checked={rules.masterEnabled}
+          onChange={(event) => setRules((current) => ({ ...current, masterEnabled: event.target.checked }))}
+          className="h-5 w-5 accent-amber-300"
+        />
+      </label>
+
       <label className="flex items-center justify-between gap-3 rounded-xl border border-white/10 bg-black/20 p-4">
         <span>
           <span className="block font-bold">Long Video Ads Master Switch</span>
           <span className="mt-1 block text-xs text-slate-400">
-            इसे बंद करने पर दोनों audiences के long-video ads disabled रहेंगे।
+            इसे बंद करने पर Free और Paid Long Videos के ads disabled रहेंगे। Global Master Switch भी ON होना जरूरी है।
           </span>
         </span>
         <input

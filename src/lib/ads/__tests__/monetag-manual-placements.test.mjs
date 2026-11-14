@@ -14,12 +14,14 @@ test("Monetag manual placement allowlist is limited to named page positions", as
   assert.match(placements, /home-after-video-grid/);
   assert.match(placements, /explore-bottom/);
   assert.match(placements, /videos-after-feed/);
-  assert.doesNotMatch(placements, /route: "\/shorts"|route: "\/learn\/school"/);
+  assert.match(placements, /learning-bottom/);
+  assert.doesNotMatch(placements, /route: "\/shorts"/);
 });
 
 test("public ad endpoint returns only enabled Monetag Direct Link slots for exact environment and position", async () => {
   const route = await read("src/app/api/ads/placements/route.ts");
   assert.match(route, /isMonetagPlacementId\(placement\)/);
+  assert.match(route, /masterEnabled !== true/);
   assert.match(route, /item\.enabled === true/);
   assert.match(route, /item\.networkId === "monetag-direct-link"/);
   assert.match(route, /item\.format === "monetag-direct-link"/);
@@ -78,7 +80,7 @@ test("Home, Explore and Video Library mount only their allowlisted placements", 
   assert.match(home, /home-after-video-grid/);
   assert.match(explore, /explore-bottom/);
   assert.match(videos, /videos-after-feed/);
-  assert.doesNotMatch(school, /MonetagPlacement/);
+  assert.match(school, /MonetagPlacement placement="learning-bottom"/);
 });
 
 test("video-only Terms no longer contain legacy merchant or MLM clauses", async () => {

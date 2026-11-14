@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react";
 import { ExternalLink, Megaphone } from "lucide-react";
 import type { MonetagPlacementId } from "@/lib/ads/monetagPlacements";
+import { sendAdDiagnostic } from "@/lib/ads/diagnostics";
 
 type PublicMonetagSlot = {
   id: string;
@@ -35,6 +36,7 @@ export function MonetagPlacement({ placement }: { placement: MonetagPlacementId 
       .then((result) => {
         if (active && result?.success === true && result.slot?.url?.startsWith("https://")) {
           setSlot(result.slot);
+          sendAdDiagnostic("placement_loaded", "monetag", placement);
         }
       })
       .catch(() => {
@@ -74,10 +76,7 @@ export function MonetagPlacement({ placement }: { placement: MonetagPlacementId 
       data-ad-placement={placement}
       className="my-6 overflow-hidden rounded-[22px] border border-white/10 bg-white text-slate-950 shadow-lg"
     >
-      <a
-        href={slot.url}
-        target="_blank"
-        rel="nofollow sponsored noopener noreferrer"
+      <div
         aria-label={`${slot.title} — Sponsored offer`}
         className="group relative block aspect-[16/9] overflow-hidden bg-gradient-to-br from-cyan-950 via-slate-900 to-violet-950"
       >
@@ -91,7 +90,7 @@ export function MonetagPlacement({ placement }: { placement: MonetagPlacementId 
         <span className="absolute bottom-3 right-3 grid h-10 w-10 place-items-center rounded-full bg-black/65 text-white backdrop-blur">
           <ExternalLink size={19} />
         </span>
-      </a>
+      </div>
 
       <div className="p-4 sm:p-5">
         <div className="flex items-start gap-3">
@@ -113,6 +112,7 @@ export function MonetagPlacement({ placement }: { placement: MonetagPlacementId 
           href={slot.url}
           target="_blank"
           rel="nofollow sponsored noopener noreferrer"
+          onClick={() => sendAdDiagnostic("placement_click", "monetag", placement)}
           className="mt-4 flex min-h-12 w-full items-center justify-center rounded-full bg-slate-950 px-5 py-3 text-sm font-bold text-white transition hover:bg-slate-800 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-cyan-500"
         >
           {slot.ctaLabel}

@@ -29,6 +29,11 @@ export const MONETAG_PLACEMENTS = [
     label: "Videos · below the video library",
     route: "/videos",
   },
+  {
+    id: "learning-bottom",
+    label: "Learning · below School Learning content",
+    route: "/learn/school",
+  },
 ] as const;
 
 export type MonetagPlacementId = (typeof MONETAG_PLACEMENTS)[number]["id"];

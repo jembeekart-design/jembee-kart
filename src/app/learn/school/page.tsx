@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import { MonetagPlacement } from "@/components/ads/MonetagPlacement";
 import { useEffect, useMemo, useState } from "react";
 import { ArrowLeft, Search, ChevronRight, GraduationCap, BookOpen, LibraryBig, Hash, Video, PlusCircle, SlidersHorizontal, Play, RefreshCw } from "lucide-react";
 
@@ -95,6 +96,7 @@ export default function SchoolLearningPage() {
         {videoLoading ? <p className="rounded-xl border border-white/10 p-5 text-sm text-slate-300">Loading matching answers…</p> : videos.length ? <div className="grid gap-4 sm:grid-cols-2">{videos.map((video) => <Link key={video.id} href={`/videos/original/${encodeURIComponent(video.id)}`} className="overflow-hidden rounded-2xl border border-white/10 bg-[#111827]"><div className="flex aspect-video items-center justify-center bg-black">{video.thumbnail ? <img src={video.thumbnail} alt="Video thumbnail" className="h-full w-full object-cover"/> : <Play size={34} className="text-cyan-300"/>}</div><div className="p-4"><p className="font-bold">{video.caption || "Video answer"}</p><p className="mt-1 text-xs text-slate-400">{video.username} · {video.videoAccess === "paid" ? "Paid" : "Free"} · {video.videoFormat === "short" ? "Shorts" : "Long video"}</p></div></Link>)}</div> : <div className="rounded-2xl border border-dashed border-white/15 p-8 text-center"><Video className="mx-auto mb-3 text-slate-500" size={30}/><p className="font-semibold">इस प्रश्न के लिए अभी कोई approved video answer उपलब्ध नहीं है।</p><p className="mt-2 text-sm text-slate-400">Teacher या creator इस प्रश्न को चुनकर वीडियो अपलोड कर सकते हैं। Admin approval के बाद वीडियो यहाँ दिखाई देगा।</p><Link href={`/videos/upload?category=school&question=${encodeURIComponent(question?.id || "")}`} className="mt-4 inline-flex items-center gap-2 rounded-full bg-cyan-400 px-4 py-2 text-sm font-bold text-slate-950"><PlusCircle size={16}/> Upload answer video</Link></div>}
       </>}
       <p className="mt-10 text-center text-xs text-slate-500">Teachers and uploaders contribute School catalog entries. Search and pagination keep large learning lists manageable.</p>
+      <MonetagPlacement placement="learning-bottom" />
     </section>
   </main>;
 }

@@ -15,6 +15,8 @@ export interface LongVideoAdsRules {
 }
 
 export interface VideoAdsRules {
+  /** Master switch for all supported advertisement placements. */
+  masterEnabled: boolean;
   enabled: boolean;
   firstAdAfterVideos: number;
   repeatEveryVideos: number;
@@ -33,6 +35,7 @@ const DEFAULT_LONG_VIDEO_AUDIENCE_RULES: LongVideoAdAudienceRules = {
 };
 
 export const DEFAULT_VIDEO_ADS_RULES: VideoAdsRules = {
+  masterEnabled: false,
   enabled: false,
   firstAdAfterVideos: 5,
   repeatEveryVideos: 3,
@@ -110,6 +113,9 @@ export function validateVideoAdsRules(value: unknown): VideoAdsRules {
     throw new Error("Invalid video ads rules");
   }
 
+  if (typeof value.masterEnabled !== "boolean") {
+    throw new Error("videoAds.masterEnabled must be boolean");
+  }
   if (typeof value.enabled !== "boolean") {
     throw new Error("videoAds.enabled must be boolean");
   }
@@ -131,6 +137,7 @@ export function validateVideoAdsRules(value: unknown): VideoAdsRules {
   }
 
   return {
+    masterEnabled: value.masterEnabled,
     enabled: value.enabled,
     firstAdAfterVideos: Number(value.firstAdAfterVideos),
     repeatEveryVideos: Number(value.repeatEveryVideos),

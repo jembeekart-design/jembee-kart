@@ -148,6 +148,9 @@ export default function PaidVideoGate({
         <p className="mt-2 text-sm text-white/75">
           Purchase this video to unlock secure playback.
         </p>
+        <p role="note" className="mt-3 rounded-xl border border-amber-300/25 bg-amber-300/10 px-3 py-3 text-left text-xs leading-5 text-amber-100">
+          इस Paid Video में JEMBEE PLAY के विज्ञापन दिख सकते हैं। विज्ञापन उपलब्धता नेटवर्क पर निर्भर करेगी।
+        </p>
         {typeof price === "number" && price > 0 && (
           <p className="mt-3 text-2xl font-extrabold">₹{price.toFixed(2)}</p>
         )}

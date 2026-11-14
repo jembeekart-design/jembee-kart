@@ -27,10 +27,18 @@ export async function GET(request: Request) {
   }
 
   try {
-    const snapshot = await getAdminDb()
-      .collection(FIRESTORE_PATHS.AD_MANAGEMENT.SLOTS)
-      .limit(100)
-      .get();
+    const db = getAdminDb();
+    const [masterSnapshot, snapshot] = await Promise.all([
+      db.collection("business_rules").doc("videoAds").get(),
+      db.collection(FIRESTORE_PATHS.AD_MANAGEMENT.SLOTS).limit(100).get(),
+    ]);
+    // All ad networks remain fail-closed until Admin explicitly enables the master switch.
+    if (masterSnapshot.data()?.masterEnabled !== true) {
+      return NextResponse.json(
+        { success: true, placement, slot: null, masterEnabled: false },
+        { headers: { "Cache-Control": "no-store, max-age=0" } },
+      );
+    }
 
     const environment = expectedEnvironment();
     const candidates = snapshot.docs

@@ -48,8 +48,12 @@ function LongVideoWatch({ video }: { video: WatchVideo }) {
             src={`/api/shorts/video-stream/${encodeURIComponent(video.id)}`}
             poster={publicVideoThumbnail(video)}
             title={video.caption || "JEMBEE PLAY long video"}
+            videoAccess={video.videoAccess === "paid" ? "paid" : "free"}
           />
         </div>
+        {video.videoAccess === "paid" ? (
+          <p role="note" className="mt-3 rounded-xl border border-amber-300/25 bg-amber-300/10 px-4 py-3 text-sm leading-6 text-amber-100">इस Paid Video में JEMBEE PLAY के विज्ञापन दिख सकते हैं। विज्ञापन उपलब्धता नेटवर्क पर निर्भर करेगी।</p>
+        ) : null}
         <h1 className="mt-4 text-xl font-black sm:text-2xl">{video.caption || "Untitled video"}</h1>
         <div className="mt-3 flex items-center gap-3">
           <div className="grid h-10 w-10 place-items-center overflow-hidden rounded-full bg-gradient-to-br from-cyan-400 to-violet-500 font-black text-slate-950">{video.photoURL?.startsWith("https://") ? <img src={video.photoURL} alt="" className="h-full w-full object-cover"/> : publicCreatorName(video).replace(/^@/, "").slice(0, 1).toUpperCase()}</div>

@@ -102,6 +102,7 @@ export default function ExoClickShortsAd({
   const imaRef = useRef<ImaNamespace | null>(null);
   const activeRef = useRef(active);
   const finishedRef = useRef(false);
+  const startedRef = useRef(false);
   const onContinueRef = useRef(onContinue);
   const timeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
@@ -190,6 +191,7 @@ export default function ExoClickShortsAd({
 
     if (active) {
       finishedRef.current = false;
+      startedRef.current = false;
       return;
     }
 
@@ -255,8 +257,9 @@ export default function ExoClickShortsAd({
     };
   }, [clearAdTimeout]);
 
-  const startAd = () => {
-    if (!activeRef.current || loading || adIsPlaying) return;
+  const startAd = useCallback(() => {
+    if (!activeRef.current || startedRef.current || finishedRef.current) return;
+    startedRef.current = true;
 
     const ima = imaRef.current;
     const video = videoRef.current;
@@ -273,8 +276,10 @@ export default function ExoClickShortsAd({
     setError("Loading advertisement…");
 
     try {
-      // IMA requires initialization directly inside the user's click.
+      // Initialize the IMA display and request the ad automatically for the active slot.
       const display = new ima.AdDisplayContainer(container, video);
+      // Muted autoplay is used because mobile browsers may block audible autoplay.
+      video.muted = true;
       display.initialize();
 
       const loader = new ima.AdsLoader(display);
@@ -370,7 +375,13 @@ export default function ExoClickShortsAd({
       setError("Advertisement unavailable. Continuing…");
       finishAd();
     }
-  };
+  }, [vastUrl, finishAd, clearAdTimeout]);
+
+  // Start the VAST request automatically as soon as the active slot and IMA SDK are ready.
+  useEffect(() => {
+    if (!active || !sdkReady || !vastUrl || startedRef.current || finishedRef.current) return;
+    startAd();
+  }, [active, sdkReady, vastUrl, startAd]);
 
   return (
     <div className="relative h-full w-full overflow-hidden bg-black text-white">
@@ -395,40 +406,16 @@ export default function ExoClickShortsAd({
       </div>
 
       {!adIsPlaying && (
-        <div className="absolute inset-0 z-10 flex flex-col items-center justify-center gap-5 bg-black/60 p-6 text-center">
+        <div className="absolute inset-0 z-10 flex flex-col items-center justify-center gap-4 bg-black/60 p-6 text-center">
           <p className="text-xl font-bold">Sponsored video</p>
-
           <p className="text-sm text-white/70">
-            Advertisement may be available. Your next Short is always accessible.
+            Advertisement is loading automatically. If no ad is available, the next Short will play.
           </p>
-
-          <button
-            type="button"
-            disabled={!active || loading || !sdkReady}
-            onClick={startAd}
-            className="rounded-full bg-cyan-400 px-7 py-3 font-bold text-slate-950 disabled:opacity-50"
-          >
-            {loading
-              ? "Loading…"
-              : sdkReady
-                ? "▶ Play Ad"
-                : "Preparing advertisement…"}
-          </button>
-
           {error && (
             <p role="status" className="text-sm text-amber-200">
               {error}
             </p>
           )}
-
-          <button
-            type="button"
-            disabled={!active}
-            onClick={onContinue}
-            className="rounded-full border border-white/30 px-6 py-2 text-sm font-semibold disabled:opacity-50"
-          >
-            Continue to next Short
-          </button>
         </div>
       )}
     </div>

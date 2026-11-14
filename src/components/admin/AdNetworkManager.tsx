@@ -3,6 +3,7 @@
 import { AdSlotManager } from "./AdSlotManager";
 import { MonetagGlobalControl } from "./MonetagGlobalControl";
 import { VideoAdScheduleManager } from "./VideoAdScheduleManager";
+import { AdDiagnosticsPanel } from "./AdDiagnosticsPanel";
 
 export function AdNetworkManager() {
   return (
@@ -10,6 +11,7 @@ export function AdNetworkManager() {
       <MonetagGlobalControl />
       <VideoAdScheduleManager />
       <AdSlotManager />
+      <AdDiagnosticsPanel />
     </div>
   );
 }

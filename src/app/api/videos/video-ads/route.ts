@@ -22,6 +22,8 @@ function disabledResponse() {
         repeatEveryVideos: 0,
         autoDismissSeconds: 0,
       },
+      masterEnabled: false,
+      providerReady: false,
       longVideoAds: DEFAULT_VIDEO_ADS_RULES.longVideoAds,
       ads: [],
     },
@@ -66,7 +68,9 @@ export async function GET() {
 
     return NextResponse.json(
       {
-        // Legacy Shorts timed campaigns remain disabled.
+        // Legacy Shorts timed campaigns remain disabled. Long-video schedules
+        // are public configuration only; the player also requires the explicit
+        // deployment feature flag before requesting ExoClick VAST.
         enabled: false,
         rules: {
           enabled: false,
@@ -74,6 +78,8 @@ export async function GET() {
           repeatEveryVideos: 0,
           autoDismissSeconds: 0,
         },
+        masterEnabled: rules.masterEnabled,
+        providerReady: process.env.NEXT_PUBLIC_EXOCLICK_VIDEO_ADS_ENABLED === "true",
         // Public schedule only; no provider credentials or secrets.
         longVideoAds: rules.longVideoAds,
         ads: [],

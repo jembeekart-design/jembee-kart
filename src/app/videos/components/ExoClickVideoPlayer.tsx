@@ -1,327 +1,262 @@
 "use client";
 
-import { useCallback, useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { getExoClickLongVideoVastUrl } from "@/lib/ads/exoclick";
+import type { LongVideoAdAudienceRules } from "@/lib/ads/videoAdsRules";
+import { sendAdDiagnostic } from "@/lib/ads/diagnostics";
 
-type ImaEvent = {
-  getAdsManager(video: HTMLVideoElement): ImaAdsManager;
-};
-
-type ImaManagerEvent = {
-  getType(): string;
-};
-
+type ImaEvent = { getAdsManager(video: HTMLVideoElement): ImaAdsManager };
+type ImaManagerEvent = { getType(): string };
 type ImaAdsRequest = {
   adTagUrl: string;
   linearAdSlotWidth: number;
   linearAdSlotHeight: number;
+  vastLoadTimeout?: number;
 };
-
-type ImaDisplayContainer = {
-  initialize(): void;
-};
-
+type ImaDisplayContainer = { initialize(): void; destroy?(): void };
 type ImaAdsManager = {
   addEventListener(type: string, listener: (event: ImaManagerEvent) => void): void;
   init(width: number, height: number, viewMode: string): void;
   start(): void;
   destroy(): void;
 };
-
 type ImaAdsLoader = {
   addEventListener(type: string, listener: (event: ImaEvent) => void): void;
   requestAds(request: ImaAdsRequest): void;
   destroy(): void;
 };
-
 type ImaNamespace = {
-  AdDisplayContainer: new (
-    container: HTMLElement,
-    video: HTMLVideoElement
-  ) => ImaDisplayContainer;
+  AdDisplayContainer: new (container: HTMLElement, video: HTMLVideoElement) => ImaDisplayContainer;
   AdsLoader: new (container: ImaDisplayContainer) => ImaAdsLoader;
   AdsRequest: new () => ImaAdsRequest;
-  AdsManagerLoadedEvent: {
-    Type: { ADS_MANAGER_LOADED: string };
-  };
-  AdErrorEvent: {
-    Type: { AD_ERROR: string };
-  };
-  AdEvent: {
-    Type: {
-      CONTENT_PAUSE_REQUESTED: string;
-      CONTENT_RESUME_REQUESTED: string;
-      ALL_ADS_COMPLETED: string;
-    };
-  };
+  AdsManagerLoadedEvent: { Type: { ADS_MANAGER_LOADED: string } };
+  AdErrorEvent: { Type: { AD_ERROR: string } };
+  AdEvent: { Type: { CONTENT_PAUSE_REQUESTED: string; CONTENT_RESUME_REQUESTED: string; ALL_ADS_COMPLETED: string } };
   ViewMode: { NORMAL: string };
 };
-
-declare global {
-  interface Window {
-    google?: {
-      ima?: ImaNamespace;
-    };
-  }
-}
-
+declare global { interface Window { google?: { ima?: ImaNamespace } } }
 let imaSdkPromise: Promise<ImaNamespace> | null = null;
 
 function loadImaSdk(): Promise<ImaNamespace> {
-  if (typeof window === "undefined") {
-    return Promise.reject(new Error("Browser unavailable"));
-  }
-
-  if (window.google?.ima) {
-    return Promise.resolve(window.google.ima);
-  }
-
+  if (typeof window === "undefined") return Promise.reject(new Error("Browser unavailable"));
+  if (window.google?.ima) return Promise.resolve(window.google.ima);
   if (!imaSdkPromise) {
     imaSdkPromise = new Promise((resolve, reject) => {
       const script = document.createElement("script");
       script.src = "https://imasdk.googleapis.com/js/sdkloader/ima3.js";
       script.async = true;
-
-      script.onload = () => {
-        const ima = window.google?.ima;
-        if (ima) resolve(ima);
-        else reject(new Error("IMA SDK unavailable"));
-      };
-
-      script.onerror = () => {
-        imaSdkPromise = null;
-        reject(new Error("IMA SDK failed to load"));
-      };
-
+      script.onload = () => window.google?.ima ? resolve(window.google.ima) : reject(new Error("IMA SDK unavailable"));
+      script.onerror = () => { imaSdkPromise = null; reject(new Error("IMA SDK failed to load")); };
       document.head.appendChild(script);
     });
   }
-
   return imaSdkPromise;
 }
 
+type PublicVideoAdConfig = { masterEnabled?: boolean; providerReady?: boolean; longVideoAds?: { enabled?: boolean; free?: LongVideoAdAudienceRules; paid?: LongVideoAdAudienceRules } };
+
 export default function ExoClickVideoPlayer({
-  src,
-  poster,
-  title,
-}: {
-  src: string;
-  poster?: string;
-  title?: string;
-}) {
+  src, poster, title, videoAccess = "free",
+}: { src: string; poster?: string; title?: string; videoAccess?: "free" | "paid" }) {
   const videoRef = useRef<HTMLVideoElement>(null);
   const adContainerRef = useRef<HTMLDivElement>(null);
   const managerRef = useRef<ImaAdsManager | null>(null);
+  const displayRef = useRef<ImaDisplayContainer | null>(null);
   const loaderRef = useRef<ImaAdsLoader | null>(null);
   const adTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const contentStartedRef = useRef(false);
-  const adAttemptedRef = useRef(false);
+  const adInProgressRef = useRef(false);
+  const adCountRef = useRef(0);
+  const lastAdAtRef = useRef(-Infinity);
+  const scheduleRef = useRef<number[]>([]);
+  const consumedBreaksRef = useRef<Set<number>>(new Set());
   const [sdkReady, setSdkReady] = useState(false);
+  const [config, setConfig] = useState<PublicVideoAdConfig | null>(null);
   const [contentStarted, setContentStarted] = useState(false);
   const [adPlaying, setAdPlaying] = useState(false);
   const [message, setMessage] = useState("");
-
   const vastUrl = getExoClickLongVideoVastUrl();
+  const audienceRules = videoAccess === "paid" ? config?.longVideoAds?.paid : config?.longVideoAds?.free;
+  const adsEnabled = Boolean(vastUrl && config?.masterEnabled && config.providerReady && config.longVideoAds?.enabled && audienceRules?.enabled);
+  const midrollSchedule = useMemo(() => {
+    if (!audienceRules) return [];
+    const candidates = [...audienceRules.customBreaksSeconds];
+    if (audienceRules.firstMidrollSeconds > 0) {
+      for (let at = audienceRules.firstMidrollSeconds, count = 0; at <= 86400 && count < audienceRules.maxAdsPerVideo; at += audienceRules.repeatIntervalSeconds, count++) candidates.push(at);
+    }
+    const sorted = [...new Set(candidates)].filter((n) => Number.isFinite(n) && n >= 30).sort((a, b) => a - b);
+    const result: number[] = [];
+    for (const at of sorted) {
+      if (result.length >= audienceRules.maxAdsPerVideo) break;
+      if (!result.length || at - result[result.length - 1] >= audienceRules.minGapSeconds) result.push(at);
+    }
+    return result;
+  }, [audienceRules]);
 
   useEffect(() => {
-    if (!vastUrl) return;
-
-    let active = true;
-
-    loadImaSdk()
-      .then(() => {
-        if (active) setSdkReady(true);
-      })
-      .catch(() => {
-        if (active) setMessage("Ad service unavailable. Video is ready.");
-      });
-
-    return () => {
-      active = false;
-    };
-  }, [vastUrl]);
-
-  const playContent = useCallback(() => {
-    if (adTimeoutRef.current !== null) {
-      clearTimeout(adTimeoutRef.current);
-      adTimeoutRef.current = null;
-    }
-    const manager = managerRef.current;
-    managerRef.current = null;
-    try { manager?.destroy(); } catch { /* Ignore IMA cleanup errors. */ }
-    const loader = loaderRef.current;
-    loaderRef.current = null;
-    try { loader?.destroy(); } catch { /* Ignore IMA cleanup errors. */ }
-
-    const video = videoRef.current;
-    if (!video) return;
-
-    setAdPlaying(false);
-    setContentStarted(true);
-    contentStartedRef.current = true;
-
-    void video.play().catch(() => {
-      setMessage("Tap Play to start the video.");
-    });
+    const controller = new AbortController();
+    fetch("/api/videos/video-ads", { cache: "no-store", signal: controller.signal })
+      .then((response) => response.ok ? response.json() : null)
+      .then((data: PublicVideoAdConfig | null) => { if (!controller.signal.aborted && data) setConfig(data); })
+      .catch(() => { if (!controller.signal.aborted) setConfig(null); });
+    return () => controller.abort();
   }, []);
 
-  const startPlayback = useCallback(() => {
+  useEffect(() => {
+    if (!adsEnabled) return;
+    let active = true;
+    loadImaSdk().then(() => { if (active) setSdkReady(true); }).catch(() => { if (active) { setMessage("Ad service unavailable. Video will play without ads."); sendAdDiagnostic("sdk_error", "ima", "long-video"); } });
+    return () => { active = false; };
+  }, [adsEnabled]);
+
+  useEffect(() => { scheduleRef.current = midrollSchedule; }, [midrollSchedule]);
+
+  const clearAdResources = useCallback(() => {
+    if (adTimeoutRef.current !== null) clearTimeout(adTimeoutRef.current);
+    adTimeoutRef.current = null;
+    try { managerRef.current?.destroy(); } catch { /* IMA cleanup is best effort. */ }
+    managerRef.current = null;
+    try { loaderRef.current?.destroy(); } catch { /* IMA cleanup is best effort. */ }
+    loaderRef.current = null;
+  }, []);
+
+  const resumeContent = useCallback(() => {
+    clearAdResources();
+    adInProgressRef.current = false;
+    setAdPlaying(false);
+    setMessage("");
     const video = videoRef.current;
+    if (video && contentStartedRef.current) void video.play().catch(() => setMessage("Tap Play to continue the video."));
+  }, [clearAdResources]);
 
-    if (!video) return;
-    if (contentStartedRef.current) {
-      void video.play().catch(() => {});
+  const requestAd = useCallback((isPreroll: boolean) => {
+    const video = videoRef.current;
+    const container = adContainerRef.current;
+    const ima = window.google?.ima;
+    if (!video || !container || !ima || !adsEnabled || !sdkReady || adInProgressRef.current) {
+      if (isPreroll && video) { contentStartedRef.current = true; setContentStarted(true); void video.play().catch(() => setMessage("Tap Play to start the video.")); }
       return;
     }
-
-    if (!vastUrl || !sdkReady || !window.google?.ima || adAttemptedRef.current) {
-      playContent();
-      return;
-    }
-
-    const ima = window.google.ima;
-    const adContainer = adContainerRef.current;
-
-    if (!adContainer) {
-      playContent();
-      return;
-    }
-
-    adAttemptedRef.current = true;
+    adInProgressRef.current = true;
+    video.pause();
+    setAdPlaying(true);
     setMessage("Loading advertisement…");
-
+    sendAdDiagnostic("vast_request", "exoclick", "long-video");
+    const finishAd = () => {
+      if (!adInProgressRef.current) return;
+      adCountRef.current += 1;
+      // Pre-roll does not consume the first-midroll spacing window; minGapSeconds
+      // applies between mid-roll breaks, so a configured 30s first break remains reachable.
+      if (!isPreroll) lastAdAtRef.current = video.currentTime;
+      resumeContent();
+    };
     try {
-      const display = new ima.AdDisplayContainer(adContainer, video);
-
-      // Must run directly from the user's Play interaction.
-      display.initialize();
-
+      const display = displayRef.current ?? new ima.AdDisplayContainer(container, video);
+      displayRef.current = display;
       const loader = new ima.AdsLoader(display);
       loaderRef.current = loader;
       adTimeoutRef.current = setTimeout(() => {
-        setMessage("Advertisement timed out. Starting video…");
-        playContent();
+        setMessage("Advertisement timed out. Continuing video…");
+        sendAdDiagnostic("ad_timeout", "exoclick", "long-video");
+        finishAd();
       }, 10000);
       const request = new ima.AdsRequest();
-
-      request.adTagUrl = vastUrl;
+      request.adTagUrl = vastUrl!;
       request.linearAdSlotWidth = Math.max(1, video.clientWidth);
       request.linearAdSlotHeight = Math.max(1, video.clientHeight);
-
-      loader.addEventListener(
-        ima.AdErrorEvent.Type.AD_ERROR,
-        () => playContent()
-      );
-
-      loader.addEventListener(
-        ima.AdsManagerLoadedEvent.Type.ADS_MANAGER_LOADED,
-        (event) => {
-          if (adTimeoutRef.current !== null) {
-            clearTimeout(adTimeoutRef.current);
-            adTimeoutRef.current = null;
-          }
-          try {
-            const manager = event.getAdsManager(video);
-            managerRef.current = manager;
-
-            manager.addEventListener(
-              ima.AdEvent.Type.CONTENT_PAUSE_REQUESTED,
-              () => {
-                video.pause();
-                setAdPlaying(true);
-                setMessage("");
-              }
-            );
-
-            manager.addEventListener(
-              ima.AdEvent.Type.CONTENT_RESUME_REQUESTED,
-              () => playContent()
-            );
-
-            manager.addEventListener(
-              ima.AdEvent.Type.ALL_ADS_COMPLETED,
-              () => playContent()
-            );
-
-            manager.addEventListener(
-              ima.AdErrorEvent.Type.AD_ERROR,
-              () => playContent()
-            );
-
-            manager.init(
-              Math.max(1, video.clientWidth),
-              Math.max(1, video.clientHeight),
-              ima.ViewMode.NORMAL
-            );
-
-            manager.start();
-          } catch {
-            playContent();
-          }
-        }
-      );
-
+      request.vastLoadTimeout = 8000;
+      loader.addEventListener(ima.AdErrorEvent.Type.AD_ERROR, () => {
+        sendAdDiagnostic("ad_error", "exoclick", "long-video");
+        finishAd();
+      });
+      loader.addEventListener(ima.AdsManagerLoadedEvent.Type.ADS_MANAGER_LOADED, (event) => {
+        if (adTimeoutRef.current !== null) clearTimeout(adTimeoutRef.current);
+        adTimeoutRef.current = setTimeout(() => {
+          setMessage("Advertisement took too long. Continuing video…");
+          sendAdDiagnostic("ad_timeout", "exoclick", "long-video");
+          finishAd();
+        }, 60_000);
+        try {
+          const manager = event.getAdsManager(video);
+          managerRef.current = manager;
+          manager.addEventListener(ima.AdEvent.Type.CONTENT_PAUSE_REQUESTED, () => { setAdPlaying(true); setMessage(""); sendAdDiagnostic("ad_started", "exoclick", "long-video"); });
+          const completeAd = () => { if (!adInProgressRef.current) return; sendAdDiagnostic("ad_completed", "exoclick", "long-video"); finishAd(); };
+          manager.addEventListener(ima.AdEvent.Type.CONTENT_RESUME_REQUESTED, completeAd);
+          manager.addEventListener(ima.AdEvent.Type.ALL_ADS_COMPLETED, completeAd);
+          manager.addEventListener(ima.AdErrorEvent.Type.AD_ERROR, () => { sendAdDiagnostic("ad_error", "exoclick", "long-video"); finishAd(); });
+          manager.init(Math.max(1, video.clientWidth), Math.max(1, video.clientHeight), ima.ViewMode.NORMAL);
+          manager.start();
+        } catch { sendAdDiagnostic("ad_error", "exoclick", "long-video"); finishAd(); }
+      });
       loader.requestAds(request);
     } catch {
-      playContent();
+      sendAdDiagnostic("ad_error", "exoclick", "long-video");
+      finishAd();
     }
-  }, [vastUrl, sdkReady, playContent]);
+  }, [adsEnabled, sdkReady, vastUrl, resumeContent]);
+
+  const startPlayback = useCallback(() => {
+    const video = videoRef.current;
+    if (!video) return;
+    if (contentStartedRef.current) { void video.play().catch(() => {}); return; }
+    contentStartedRef.current = true;
+    setContentStarted(true);
+    if (adsEnabled && sdkReady && window.google?.ima && adContainerRef.current) {
+      try {
+        const display = new window.google.ima.AdDisplayContainer(adContainerRef.current, video);
+        display.initialize();
+        displayRef.current = display;
+      } catch { displayRef.current = null; }
+    }
+    if (adsEnabled && audienceRules?.preRollEnabled && sdkReady && displayRef.current) { requestAd(true); return; }
+    void video.play().catch(() => setMessage("Tap Play to start the video."));
+  }, [adsEnabled, audienceRules?.preRollEnabled, sdkReady, requestAd]);
+
+  const checkMidroll = useCallback(() => {
+    const video = videoRef.current;
+    if (!video || !adsEnabled || !sdkReady || !contentStartedRef.current || adInProgressRef.current) return;
+    if (video.paused || video.seeking || video.readyState < HTMLMediaElement.HAVE_FUTURE_DATA) return;
+    if (adCountRef.current >= (audienceRules?.maxAdsPerVideo ?? 0)) return;
+    const due = scheduleRef.current.find((at) => at <= video.currentTime && !consumedBreaksRef.current.has(at));
+    if (due === undefined) return;
+    consumedBreaksRef.current.add(due);
+    if (video.currentTime - lastAdAtRef.current < (audienceRules?.minGapSeconds ?? 300)) return;
+    requestAd(false);
+  }, [adsEnabled, sdkReady, audienceRules?.maxAdsPerVideo, audienceRules?.minGapSeconds, requestAd]);
 
   useEffect(() => {
     return () => {
-      if (adTimeoutRef.current !== null) clearTimeout(adTimeoutRef.current);
-      adTimeoutRef.current = null;
-      try { managerRef.current?.destroy(); } catch { /* Ignore IMA cleanup errors. */ }
-      managerRef.current = null;
-      try { loaderRef.current?.destroy(); } catch { /* Ignore IMA cleanup errors. */ }
-      loaderRef.current = null;
+      clearAdResources();
+      try { displayRef.current?.destroy?.(); } catch { /* IMA cleanup is best effort. */ }
+      displayRef.current = null;
+      adInProgressRef.current = false;
     };
-  }, []);
+  }, [clearAdResources]);
+
+  useEffect(() => {
+    contentStartedRef.current = false;
+    adInProgressRef.current = false;
+    adCountRef.current = 0;
+    lastAdAtRef.current = -Infinity;
+    consumedBreaksRef.current = new Set();
+    setContentStarted(false);
+    setAdPlaying(false);
+    setMessage("");
+    clearAdResources();
+    try { displayRef.current?.destroy?.(); } catch { /* IMA cleanup is best effort. */ }
+    displayRef.current = null;
+  }, [src, clearAdResources]);
 
   return (
     <div className="relative aspect-video w-full overflow-hidden bg-black">
-      <video
-        ref={videoRef}
-        src={src}
-        poster={poster}
-        controls={contentStarted && !adPlaying}
-        playsInline
-        preload="metadata"
-        className="h-full w-full bg-black object-contain"
-        aria-label={title || "JEMBEE PLAY video"}
-        onEnded={() => {
-          contentStartedRef.current = false;
-          setContentStarted(false);
-        }}
-      />
-
-      <div
-        ref={adContainerRef}
-        className={`absolute inset-0 z-10 ${adPlaying ? "pointer-events-auto" : "pointer-events-none"}`}
-        aria-label="Advertisement player"
-      />
-
+      <video ref={videoRef} src={src} poster={poster} controls={contentStarted && !adPlaying} playsInline preload="metadata" className="h-full w-full bg-black object-contain" aria-label={title || "JEMBEE PLAY video"} onTimeUpdate={checkMidroll} onWaiting={() => { /* Playback-time schedule naturally pauses while buffering. */ }} onEnded={() => { contentStartedRef.current = false; setContentStarted(false); }} />
+      <div ref={adContainerRef} className={`absolute inset-0 z-10 ${adPlaying ? "pointer-events-auto" : "pointer-events-none"}`} aria-label="Advertisement player" />
       {!contentStarted && !adPlaying ? (
-        <button
-          type="button"
-          onClick={startPlayback}
-          className="absolute inset-0 z-20 flex items-center justify-center bg-black/25 text-white"
-          aria-label="Play video"
-        >
-          <span className="rounded-full bg-cyan-400 px-7 py-4 font-bold text-slate-950">
-            ▶ Play
-          </span>
+        <button type="button" onClick={startPlayback} className="absolute inset-0 z-20 flex items-center justify-center bg-black/25 text-white" aria-label="Play video">
+          <span className="rounded-full bg-cyan-400 px-7 py-4 font-bold text-slate-950">▶ Play</span>
         </button>
       ) : null}
-
-      {message ? (
-        <p
-          role="status"
-          className="absolute bottom-3 left-3 z-30 rounded-lg bg-black/75 px-3 py-2 text-xs text-white"
-        >
-          {message}
-        </p>
-      ) : null}
+      {message ? <p role="status" className="absolute bottom-3 left-3 z-30 rounded-lg bg-black/75 px-3 py-2 text-xs text-white">{message}</p> : null}
     </div>
   );
 }
