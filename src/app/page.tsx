@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { useEffect, useMemo, useState } from "react";
-import { Search, Menu, Home, Compass, PlaySquare, History, GraduationCap, PlusSquare, Bell, UserCircle, ThumbsUp, BookOpen, ChevronRight, Eye, type LucideIcon } from "lucide-react";
+import { Search, Menu, X, Home, Compass, PlaySquare, History, GraduationCap, PlusSquare, Bell, UserCircle, ThumbsUp, BookOpen, ChevronRight, Eye, Share2, Video, Wallet, type LucideIcon } from "lucide-react";
 import { usePublicWatchVideos } from "@/hooks/usePublicWatchVideos";
 import { MonetagPlacement } from "@/components/ads/MonetagPlacement";
 import { formatVideoDuration, publicCreatorName, publicVideoAge, publicVideoThumbnail } from "@/lib/videos/publicVideoPresentation";
@@ -10,6 +10,11 @@ import type { WatchVideo } from "@/lib/videos/watch-earn/fetchWatchVideos";
 
 const chips = ["All", "Education", "Music", "Science", "Technology", "Gaming", "Learning", "Travel"];
 type NavigationItem = { icon: LucideIcon; label: string; href: string };
+const earningsNavigation: NavigationItem[] = [
+  { icon: Share2, label: "Sharer की कमाई", href: "/earnings/sharer" },
+  { icon: Video, label: "Creator की कमाई", href: "/earnings/creator" },
+  { icon: GraduationCap, label: "Teacher Referral Commission", href: "/earnings/teacher" },
+];
 const desktopNavigation: NavigationItem[] = [
   { icon: Home, label: "Home", href: "/" },
   { icon: PlaySquare, label: "Shorts", href: "/shorts" },
@@ -96,7 +101,8 @@ function LongVideoCard({ video, eager = false }: { video: WatchVideo; eager?: bo
 export default function HomePage() {
   const [search, setSearch] = useState("");
   const [active, setActive] = useState("All");
-  const [sidebar, setSidebar] = useState(true);
+  const sidebar = true;
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const { videos, loading, error } = usePublicWatchVideos();
 
   const filtered = useMemo(() => videos.filter((video) => {
@@ -110,7 +116,7 @@ export default function HomePage() {
   return (
     <main className="min-h-screen bg-[#0b0b0b] text-white">
       <header className="sticky top-0 z-40 flex h-16 items-center gap-3 border-b border-white/10 bg-[#0b0b0b]/95 px-3 backdrop-blur sm:px-4">
-        <button type="button" aria-label="Toggle menu" onClick={() => setSidebar((value) => !value)} className="rounded-full p-2 hover:bg-white/10"><Menu size={23}/></button>
+        <button type="button" aria-label="Toggle menu" aria-expanded={mobileMenuOpen} aria-controls="mobile-navigation-drawer" onClick={() => setMobileMenuOpen((value) => !value)} className="rounded-full p-2 hover:bg-white/10"><Menu size={23}/></button>
         <Link href="/" className="flex min-w-fit items-center gap-1 text-lg font-black tracking-tight sm:text-xl">JEMBEE <span className="text-cyan-400">PLAY</span><PlaySquare size={19} className="ml-1 text-cyan-400"/></Link>
         <div className="mx-auto flex min-w-0 flex-1 max-w-2xl">
           <div className="flex w-full overflow-hidden rounded-full border border-white/20 bg-[#121212]">
@@ -123,12 +129,32 @@ export default function HomePage() {
         <Link href="/account" aria-label="Profile"><UserCircle size={25}/></Link>
       </header>
 
+      {mobileMenuOpen ? (
+        <div className="fixed inset-0 z-[70] md:hidden" role="presentation">
+          <button type="button" aria-label="Close menu overlay" onClick={() => setMobileMenuOpen(false)} className="absolute inset-0 bg-black/70"/>
+          <aside id="mobile-navigation-drawer" role="dialog" aria-modal="true" aria-label="Main navigation" className="absolute inset-y-0 left-0 flex w-[min(86vw,340px)] flex-col overflow-y-auto border-r border-white/10 bg-[#101014] p-4 pt-[calc(env(safe-area-inset-top)+1rem)] shadow-2xl">
+            <div className="mb-4 flex items-center justify-between"><Link href="/" onClick={() => setMobileMenuOpen(false)} className="text-lg font-black">JEMBEE <span className="text-cyan-400">PLAY</span></Link><button type="button" onClick={() => setMobileMenuOpen(false)} aria-label="Close menu" className="rounded-full p-2 hover:bg-white/10"><X size={22}/></button></div>
+            <p className="px-3 py-2 text-xs font-bold uppercase tracking-wider text-slate-500">Discover</p>
+            {desktopNavigation.map(({ icon: Icon, label, href }) => <Link key={label} href={href} onClick={() => setMobileMenuOpen(false)} className="flex min-h-12 items-center gap-4 rounded-xl px-3 py-3 text-sm hover:bg-white/10"><Icon size={20}/>{label}</Link>)}
+            <div className="my-3 border-t border-white/10"/>
+            <p className="px-3 py-2 text-xs font-bold uppercase tracking-wider text-slate-500">Earnings · अलग-अलग कमाई</p>
+            {earningsNavigation.map(({ icon: Icon, label, href }) => <Link key={label} href={href} onClick={() => setMobileMenuOpen(false)} className="flex min-h-12 items-center gap-4 rounded-xl px-3 py-3 text-sm hover:bg-white/10"><Icon size={20} className="text-cyan-300"/>{label}<ChevronRight size={16} className="ml-auto text-slate-500"/></Link>)}
+            <div className="my-3 border-t border-white/10"/>
+            <Link href="/videos/share" onClick={() => setMobileMenuOpen(false)} className="flex min-h-12 items-center gap-4 rounded-xl px-3 py-3 text-sm hover:bg-white/10"><Wallet size={20}/>Share Income (पुराना लिंक)</Link>
+            <p className="mt-auto px-3 pt-6 text-xs text-slate-500">Watch • Learn • Create • Share</p>
+          </aside>
+        </div>
+      ) : null}
+
       <div className="flex">
         {sidebar && <aside className="sticky top-16 hidden h-[calc(100dvh-4rem)] w-60 shrink-0 overflow-y-auto border-r border-white/10 p-3 md:block">
           {desktopNavigation.map(({ icon: Icon, label, href }) => <Link key={label} href={href} className="flex items-center gap-5 rounded-xl px-4 py-3 text-sm hover:bg-white/10"><Icon size={21}/>{label}</Link>)}
           <div className="my-3 border-t border-white/10"/>
           <p className="px-4 py-2 text-xs font-bold uppercase tracking-wider text-slate-500">Learning</p>
           <Link href="/learn/school" className="flex items-center gap-5 rounded-xl px-4 py-3 text-sm hover:bg-white/10"><BookOpen size={21}/>Boards & Books</Link>
+          <div className="my-3 border-t border-white/10"/>
+          <p className="px-4 py-2 text-xs font-bold uppercase tracking-wider text-slate-500">Earnings</p>
+          {earningsNavigation.map(({ icon: Icon, label, href }) => <Link key={label} href={href} className="flex items-center gap-5 rounded-xl px-4 py-3 text-sm hover:bg-white/10"><Icon size={21}/>{label}</Link>)}
           <p className="mt-8 px-4 text-xs text-slate-500">JEMBEE PLAY · Watch • Learn • Create • Share</p>
         </aside>}
 
