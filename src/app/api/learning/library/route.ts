@@ -65,7 +65,8 @@ export async function GET(request: Request) {
     }
     if (exhausted && items.length <= limit) nextCursor = null;
     return NextResponse.json({ success: true, items, nextCursor }, { headers: noStore });
-  } catch {
+  } catch (error) {
+    console.error("[learning-library] GET failed:", error);
     return NextResponse.json({ success: false, message: "Learning Library page could not be loaded" }, { status: 500, headers: noStore });
   }
 }
