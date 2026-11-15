@@ -1,11 +1,13 @@
 {
   "title": "JEMBEE PLAY NCERT Grade 6 starter catalog",
-  "datasetVersion": "2026-27-metadata-v1",
+  "datasetVersion": "2026-27-metadata-v2",
   "notes": [
-    "Metadata-only starter: subject, book title, chapter title and original JEMBEE PLAY practice prompts.",
-    "No NCERT PDF pages, official cover artwork, exercise questions, answer keys or textbook scans are included.",
-    "Practice prompts are independently written and are not represented as NCERT textbook questions.",
-    "Book cover images are original JEMBEE PLAY artwork."
+    "Metadata starter for the NCERT Grade 6 English-medium books listed here: subjects, book titles, chapter titles and original JEMBEE PLAY practice prompts.",
+    "All practice prompts prefixed JEMBEE PLAY Practice are independently written; they are not NCERT textbook exercise questions or official answer keys.",
+    "No NCERT textbook pages, scans, exercise question text, answer keys or official cover artwork are copied into this dataset.",
+    "Book cover SVGs are original JEMBEE PLAY navigation artwork, not official NCERT covers.",
+    "NCERT textbooks are copyrighted. JEMBEE PLAY must link to NCERT's official textbook portal only after obtaining any written permission NCERT requires for digital-content packages; do not host or redistribute NCERT PDFs.",
+    "Class and edition are dataset metadata encoded in stable IDs/book labels, not extra selection steps in the learner hierarchy."
   ],
   "sourceReferences": [
     "https://ncert.nic.in/textbook.php",
@@ -15,7 +17,13 @@
     "https://ncert.philoid.app/book/fegp1",
     "https://ncert.philoid.app/book/fecu1",
     "https://ncert.philoid.app/book/fees1",
-    "https://ncert.philoid.app/book/fsde1"
+    "https://ncert.philoid.app/book/fsde1",
+    "https://ncert.nic.in/division/pd/pdf/list_of_publication.pdf",
+    "https://ncert.nic.in/textbook.php?fekr1=2-17",
+    "https://ncert.nic.in/textbook.php?feky1=0-5",
+    "https://ncert.nic.in/textbook.php?fekb1=1-5",
+    "https://www.ciet.ncert.gov.in/audio-book/174",
+    "https://www.ciet.ncert.gov.in/audio-book/173"
   ],
   "entries": [
     {
@@ -641,6 +649,726 @@
       "type": "chapter",
       "name": "Chapter 16 — षोडशः पाठः — वृक्षाः सत्पुरुषाः इव",
       "parentId": "ncert-g6-deepakam"
+    },
+    {
+      "id": "arts",
+      "type": "subject",
+      "name": "Arts"
+    },
+    {
+      "id": "physical-education",
+      "type": "subject",
+      "name": "Physical Education and Well-being"
+    },
+    {
+      "id": "vocational-education",
+      "type": "subject",
+      "name": "Vocational Education"
+    },
+    {
+      "id": "ncert-g6-kriti",
+      "type": "book",
+      "name": "Kriti-I — Grade 6 (Arts, English, NCERT 2026–27)",
+      "parentId": "arts",
+      "coverImageUrl": "/learning-covers/ncert-grade-6-kriti.svg"
+    },
+    {
+      "id": "ncert-g6-khel-yatra",
+      "type": "book",
+      "name": "Khel Yatra — Grade 6 (Physical Education and Well-being, English, NCERT 2026–27)",
+      "parentId": "physical-education",
+      "coverImageUrl": "/learning-covers/ncert-grade-6-khel-yatra.svg"
+    },
+    {
+      "id": "ncert-g6-kaushal-bodh",
+      "type": "book",
+      "name": "Kaushal Bodh — Grade 6 (Vocational Education, English, NCERT 2026–27)",
+      "parentId": "vocational-education",
+      "coverImageUrl": "/learning-covers/ncert-grade-6-kaushal-bodh.svg"
+    },
+    {
+      "id": "ncert-g6-kriti-ch-01",
+      "type": "chapter",
+      "name": "Chapter 1 — Objects and Still Life",
+      "parentId": "ncert-g6-kriti"
+    },
+    {
+      "id": "ncert-g6-kriti-ch-01-practice-q1",
+      "type": "question",
+      "name": "JEMBEE PLAY Practice Q1 — Create a simple still-life composition using three everyday objects. Explain your choice of arrangement.",
+      "parentId": "ncert-g6-kriti-ch-01"
+    },
+    {
+      "id": "ncert-g6-kriti-ch-02",
+      "type": "chapter",
+      "name": "Chapter 2 — Changing the Typical Picture",
+      "parentId": "ncert-g6-kriti"
+    },
+    {
+      "id": "ncert-g6-kriti-ch-02-practice-q1",
+      "type": "question",
+      "name": "JEMBEE PLAY Practice Q1 — How can changing colour, size or position change the way a familiar picture communicates?",
+      "parentId": "ncert-g6-kriti-ch-02"
+    },
+    {
+      "id": "ncert-g6-kriti-ch-03",
+      "type": "chapter",
+      "name": "Chapter 3 — Portraying People",
+      "parentId": "ncert-g6-kriti"
+    },
+    {
+      "id": "ncert-g6-kriti-ch-03-practice-q1",
+      "type": "question",
+      "name": "JEMBEE PLAY Practice Q1 — Draw or describe a person using shapes and details that show their activity or mood.",
+      "parentId": "ncert-g6-kriti-ch-03"
+    },
+    {
+      "id": "ncert-g6-kriti-ch-04",
+      "type": "chapter",
+      "name": "Chapter 4 — Paper Crafts",
+      "parentId": "ncert-g6-kriti"
+    },
+    {
+      "id": "ncert-g6-kriti-ch-04-practice-q1",
+      "type": "question",
+      "name": "JEMBEE PLAY Practice Q1 — Design a useful paper craft and list the steps and materials needed to make it.",
+      "parentId": "ncert-g6-kriti-ch-04"
+    },
+    {
+      "id": "ncert-g6-kriti-ch-05",
+      "type": "chapter",
+      "name": "Chapter 5 — Seals to Prints",
+      "parentId": "ncert-g6-kriti"
+    },
+    {
+      "id": "ncert-g6-kriti-ch-05-practice-q1",
+      "type": "question",
+      "name": "JEMBEE PLAY Practice Q1 — Create a simple repeating print pattern using a safe homemade stamp.",
+      "parentId": "ncert-g6-kriti-ch-05"
+    },
+    {
+      "id": "ncert-g6-kriti-ch-06",
+      "type": "chapter",
+      "name": "Chapter 6 — Music and Your Emotions",
+      "parentId": "ncert-g6-kriti"
+    },
+    {
+      "id": "ncert-g6-kriti-ch-06-practice-q1",
+      "type": "question",
+      "name": "JEMBEE PLAY Practice Q1 — Describe how one piece of music can create different emotions in different listeners.",
+      "parentId": "ncert-g6-kriti-ch-06"
+    },
+    {
+      "id": "ncert-g6-kriti-ch-07",
+      "type": "chapter",
+      "name": "Chapter 7 — Musical Instruments",
+      "parentId": "ncert-g6-kriti"
+    },
+    {
+      "id": "ncert-g6-kriti-ch-07-practice-q1",
+      "type": "question",
+      "name": "JEMBEE PLAY Practice Q1 — Choose an instrument and explain how its shape and playing method help produce sound.",
+      "parentId": "ncert-g6-kriti-ch-07"
+    },
+    {
+      "id": "ncert-g6-kriti-ch-08",
+      "type": "chapter",
+      "name": "Chapter 8 — Taal or Talam and Raga or Ragam in Indian Music",
+      "parentId": "ncert-g6-kriti"
+    },
+    {
+      "id": "ncert-g6-kriti-ch-08-practice-q1",
+      "type": "question",
+      "name": "JEMBEE PLAY Practice Q1 — What is one way rhythm and melody work together in a song you know?",
+      "parentId": "ncert-g6-kriti-ch-08"
+    },
+    {
+      "id": "ncert-g6-kriti-ch-09",
+      "type": "chapter",
+      "name": "Chapter 9 — Melodies of Diversity",
+      "parentId": "ncert-g6-kriti"
+    },
+    {
+      "id": "ncert-g6-kriti-ch-09-practice-q1",
+      "type": "question",
+      "name": "JEMBEE PLAY Practice Q1 — Describe a musical tradition from your community and what makes it distinctive.",
+      "parentId": "ncert-g6-kriti-ch-09"
+    },
+    {
+      "id": "ncert-g6-kriti-ch-10",
+      "type": "chapter",
+      "name": "Chapter 10 — Songwriting",
+      "parentId": "ncert-g6-kriti"
+    },
+    {
+      "id": "ncert-g6-kriti-ch-10-practice-q1",
+      "type": "question",
+      "name": "JEMBEE PLAY Practice Q1 — Write four original lines for a song about a positive action in your school.",
+      "parentId": "ncert-g6-kriti-ch-10"
+    },
+    {
+      "id": "ncert-g6-kriti-ch-11",
+      "type": "chapter",
+      "name": "Chapter 11 — Music and Society",
+      "parentId": "ncert-g6-kriti"
+    },
+    {
+      "id": "ncert-g6-kriti-ch-11-practice-q1",
+      "type": "question",
+      "name": "JEMBEE PLAY Practice Q1 — Give two examples of how music can bring people together in a community.",
+      "parentId": "ncert-g6-kriti-ch-11"
+    },
+    {
+      "id": "ncert-g6-kriti-ch-12",
+      "type": "chapter",
+      "name": "Chapter 12 — My Body in Motion",
+      "parentId": "ncert-g6-kriti"
+    },
+    {
+      "id": "ncert-g6-kriti-ch-12-practice-q1",
+      "type": "question",
+      "name": "JEMBEE PLAY Practice Q1 — Create a short movement sequence that shows three different actions.",
+      "parentId": "ncert-g6-kriti-ch-12"
+    },
+    {
+      "id": "ncert-g6-kriti-ch-13",
+      "type": "chapter",
+      "name": "Chapter 13 — Breaking Barriers with Dance",
+      "parentId": "ncert-g6-kriti"
+    },
+    {
+      "id": "ncert-g6-kriti-ch-13-practice-q1",
+      "type": "question",
+      "name": "JEMBEE PLAY Practice Q1 — Suggest how a group can adapt a dance activity so everyone can participate.",
+      "parentId": "ncert-g6-kriti-ch-13"
+    },
+    {
+      "id": "ncert-g6-kriti-ch-14",
+      "type": "chapter",
+      "name": "Chapter 14 — Harmony in Motion",
+      "parentId": "ncert-g6-kriti"
+    },
+    {
+      "id": "ncert-g6-kriti-ch-14-practice-q1",
+      "type": "question",
+      "name": "JEMBEE PLAY Practice Q1 — Describe how dancers can move together while keeping safe space between them.",
+      "parentId": "ncert-g6-kriti-ch-14"
+    },
+    {
+      "id": "ncert-g6-kriti-ch-15",
+      "type": "chapter",
+      "name": "Chapter 15 — Dances of Our Land",
+      "parentId": "ncert-g6-kriti"
+    },
+    {
+      "id": "ncert-g6-kriti-ch-15-practice-q1",
+      "type": "question",
+      "name": "JEMBEE PLAY Practice Q1 — Choose a folk dance and identify the community or region associated with it.",
+      "parentId": "ncert-g6-kriti-ch-15"
+    },
+    {
+      "id": "ncert-g6-kriti-ch-16",
+      "type": "chapter",
+      "name": "Chapter 16 — Emotions Unveiled!",
+      "parentId": "ncert-g6-kriti"
+    },
+    {
+      "id": "ncert-g6-kriti-ch-16-practice-q1",
+      "type": "question",
+      "name": "JEMBEE PLAY Practice Q1 — Show how facial expression and body posture can communicate an emotion.",
+      "parentId": "ncert-g6-kriti-ch-16"
+    },
+    {
+      "id": "ncert-g6-kriti-ch-17",
+      "type": "chapter",
+      "name": "Chapter 17 — Let’s Design",
+      "parentId": "ncert-g6-kriti"
+    },
+    {
+      "id": "ncert-g6-kriti-ch-17-practice-q1",
+      "type": "question",
+      "name": "JEMBEE PLAY Practice Q1 — Sketch an everyday object and suggest one improvement to its design.",
+      "parentId": "ncert-g6-kriti-ch-17"
+    },
+    {
+      "id": "ncert-g6-kriti-ch-18",
+      "type": "chapter",
+      "name": "Chapter 18 — In the Company of Theatre",
+      "parentId": "ncert-g6-kriti"
+    },
+    {
+      "id": "ncert-g6-kriti-ch-18-practice-q1",
+      "type": "question",
+      "name": "JEMBEE PLAY Practice Q1 — Invent a short scene with two characters and write the dialogue for it.",
+      "parentId": "ncert-g6-kriti-ch-18"
+    },
+    {
+      "id": "ncert-g6-kriti-ch-19",
+      "type": "chapter",
+      "name": "Chapter 19 — Stories of Shadows and Strings — Puppetry",
+      "parentId": "ncert-g6-kriti"
+    },
+    {
+      "id": "ncert-g6-kriti-ch-19-practice-q1",
+      "type": "question",
+      "name": "JEMBEE PLAY Practice Q1 — Design a simple shadow-puppet character and explain how its shadow will look.",
+      "parentId": "ncert-g6-kriti-ch-19"
+    },
+    {
+      "id": "ncert-g6-kriti-ch-20",
+      "type": "chapter",
+      "name": "Chapter 20 — The Grand Finale",
+      "parentId": "ncert-g6-kriti"
+    },
+    {
+      "id": "ncert-g6-kriti-ch-20-practice-q1",
+      "type": "question",
+      "name": "JEMBEE PLAY Practice Q1 — Plan a short presentation that combines two different art forms.",
+      "parentId": "ncert-g6-kriti-ch-20"
+    },
+    {
+      "id": "ncert-g6-kriti-ch-21",
+      "type": "chapter",
+      "name": "Chapter 21 — Integration of All Art Forms",
+      "parentId": "ncert-g6-kriti"
+    },
+    {
+      "id": "ncert-g6-kriti-ch-21-practice-q1",
+      "type": "question",
+      "name": "JEMBEE PLAY Practice Q1 — Create a small artwork that combines drawing, rhythm or movement. Explain your choices.",
+      "parentId": "ncert-g6-kriti-ch-21"
+    },
+    {
+      "id": "ncert-g6-kriti-ch-22",
+      "type": "chapter",
+      "name": "Chapter 22 — Assessment",
+      "parentId": "ncert-g6-kriti"
+    },
+    {
+      "id": "ncert-g6-kriti-ch-22-practice-q1",
+      "type": "question",
+      "name": "JEMBEE PLAY Practice Q1 — Write three things you learned from an art activity and one skill you want to improve.",
+      "parentId": "ncert-g6-kriti-ch-22"
+    },
+    {
+      "id": "ncert-g6-khel-yatra-ch-01",
+      "type": "chapter",
+      "name": "Chapter 1 — Importance of Physical Education and Well-being",
+      "parentId": "ncert-g6-khel-yatra"
+    },
+    {
+      "id": "ncert-g6-khel-yatra-ch-01-practice-q1",
+      "type": "question",
+      "name": "JEMBEE PLAY Practice Q1 — Explain two ways regular physical activity can support health and well-being.",
+      "parentId": "ncert-g6-khel-yatra-ch-01"
+    },
+    {
+      "id": "ncert-g6-khel-yatra-ch-02",
+      "type": "chapter",
+      "name": "Chapter 2 — Motor Fitness",
+      "parentId": "ncert-g6-khel-yatra"
+    },
+    {
+      "id": "ncert-g6-khel-yatra-ch-02-practice-q1",
+      "type": "question",
+      "name": "JEMBEE PLAY Practice Q1 — Suggest a safe activity that can improve balance, coordination and agility.",
+      "parentId": "ncert-g6-khel-yatra-ch-02"
+    },
+    {
+      "id": "ncert-g6-khel-yatra-ch-03",
+      "type": "chapter",
+      "name": "Chapter 3 — Fundamental Skills of Kho-Kho",
+      "parentId": "ncert-g6-khel-yatra"
+    },
+    {
+      "id": "ncert-g6-khel-yatra-ch-03-practice-q1",
+      "type": "question",
+      "name": "JEMBEE PLAY Practice Q1 — Describe the basic aim of Kho-Kho and one skill a player needs to practise.",
+      "parentId": "ncert-g6-khel-yatra-ch-03"
+    },
+    {
+      "id": "ncert-g6-khel-yatra-ch-04",
+      "type": "chapter",
+      "name": "Chapter 4 — Fundamental Skills of Handball",
+      "parentId": "ncert-g6-khel-yatra"
+    },
+    {
+      "id": "ncert-g6-khel-yatra-ch-04-practice-q1",
+      "type": "question",
+      "name": "JEMBEE PLAY Practice Q1 — Name two basic handball skills and explain when a player might use each one.",
+      "parentId": "ncert-g6-khel-yatra-ch-04"
+    },
+    {
+      "id": "ncert-g6-khel-yatra-ch-05",
+      "type": "chapter",
+      "name": "Chapter 5 — Yoga",
+      "parentId": "ncert-g6-khel-yatra"
+    },
+    {
+      "id": "ncert-g6-khel-yatra-ch-05-practice-q1",
+      "type": "question",
+      "name": "JEMBEE PLAY Practice Q1 — Describe one simple yoga posture and mention a safety point to remember while practising it.",
+      "parentId": "ncert-g6-khel-yatra-ch-05"
+    },
+    {
+      "id": "ncert-g6-kaushal-bodh-ch-01",
+      "type": "chapter",
+      "name": "Chapter 1 — School Kitchen Garden",
+      "parentId": "ncert-g6-kaushal-bodh"
+    },
+    {
+      "id": "ncert-g6-kaushal-bodh-ch-01-practice-q1",
+      "type": "question",
+      "name": "JEMBEE PLAY Practice Q1 — Plan a small school kitchen garden. Name three plants and describe how you would care for them.",
+      "parentId": "ncert-g6-kaushal-bodh-ch-01"
+    },
+    {
+      "id": "ncert-g6-kaushal-bodh-ch-02",
+      "type": "chapter",
+      "name": "Chapter 2 — Biodiversity Register",
+      "parentId": "ncert-g6-kaushal-bodh"
+    },
+    {
+      "id": "ncert-g6-kaushal-bodh-ch-02-practice-q1",
+      "type": "question",
+      "name": "JEMBEE PLAY Practice Q1 — Choose a nearby habitat and list five living things you could record in a biodiversity register.",
+      "parentId": "ncert-g6-kaushal-bodh-ch-02"
+    },
+    {
+      "id": "ncert-g6-kaushal-bodh-ch-03",
+      "type": "chapter",
+      "name": "Chapter 3 — Maker Skills",
+      "parentId": "ncert-g6-kaushal-bodh"
+    },
+    {
+      "id": "ncert-g6-kaushal-bodh-ch-03-practice-q1",
+      "type": "question",
+      "name": "JEMBEE PLAY Practice Q1 — Design a simple useful object from safe reusable materials and explain how you would make it.",
+      "parentId": "ncert-g6-kaushal-bodh-ch-03"
+    },
+    {
+      "id": "ncert-g6-kaushal-bodh-ch-04",
+      "type": "chapter",
+      "name": "Chapter 4 — Animation and Games",
+      "parentId": "ncert-g6-kaushal-bodh"
+    },
+    {
+      "id": "ncert-g6-kaushal-bodh-ch-04-practice-q1",
+      "type": "question",
+      "name": "JEMBEE PLAY Practice Q1 — Describe the steps for planning a simple educational game or animation.",
+      "parentId": "ncert-g6-kaushal-bodh-ch-04"
+    },
+    {
+      "id": "ncert-g6-kaushal-bodh-ch-05",
+      "type": "chapter",
+      "name": "Chapter 5 — School Museum",
+      "parentId": "ncert-g6-kaushal-bodh"
+    },
+    {
+      "id": "ncert-g6-kaushal-bodh-ch-05-practice-q1",
+      "type": "question",
+      "name": "JEMBEE PLAY Practice Q1 — Suggest three objects or stories that could be included in a school museum and explain why.",
+      "parentId": "ncert-g6-kaushal-bodh-ch-05"
+    },
+    {
+      "id": "ncert-g6-kaushal-bodh-ch-06",
+      "type": "chapter",
+      "name": "Chapter 6 — Cooking without Fire",
+      "parentId": "ncert-g6-kaushal-bodh"
+    },
+    {
+      "id": "ncert-g6-kaushal-bodh-ch-06-practice-q1",
+      "type": "question",
+      "name": "JEMBEE PLAY Practice Q1 — Plan a no-fire snack and list the ingredients, hygiene steps and preparation sequence.",
+      "parentId": "ncert-g6-kaushal-bodh-ch-06"
+    },
+    {
+      "id": "ncert-g6-poorvi-ch-01-practice-q1",
+      "type": "question",
+      "name": "JEMBEE PLAY Practice Q1 — Retell a short folk tale in your own words and identify its lesson.",
+      "parentId": "ncert-g6-poorvi-ch-01"
+    },
+    {
+      "id": "ncert-g6-poorvi-ch-02-practice-q1",
+      "type": "question",
+      "name": "JEMBEE PLAY Practice Q1 — Describe two qualities that make someone a good friend, with examples.",
+      "parentId": "ncert-g6-poorvi-ch-02"
+    },
+    {
+      "id": "ncert-g6-poorvi-ch-03-practice-q1",
+      "type": "question",
+      "name": "JEMBEE PLAY Practice Q1 — Suggest three practical actions students can take to care for nature.",
+      "parentId": "ncert-g6-poorvi-ch-03"
+    },
+    {
+      "id": "ncert-g6-poorvi-ch-04-practice-q1",
+      "type": "question",
+      "name": "JEMBEE PLAY Practice Q1 — Explain how a healthy routine can balance sports, rest and study.",
+      "parentId": "ncert-g6-poorvi-ch-04"
+    },
+    {
+      "id": "ncert-g6-poorvi-ch-05-practice-q1",
+      "type": "question",
+      "name": "JEMBEE PLAY Practice Q1 — Describe one tradition in your community and how it is passed to younger generations.",
+      "parentId": "ncert-g6-poorvi-ch-05"
+    },
+    {
+      "id": "ncert-g6-malhar-ch-01-practice-q1",
+      "type": "question",
+      "name": "JEMBEE PLAY अभ्यास प्रश्न 1 — कविता में मातृभूमि के प्रति व्यक्त भावों को अपने शब्दों में लिखिए।",
+      "parentId": "ncert-g6-malhar-ch-01"
+    },
+    {
+      "id": "ncert-g6-malhar-ch-02-practice-q1",
+      "type": "question",
+      "name": "JEMBEE PLAY अभ्यास प्रश्न 1 — किसी खेल या अनुभव का वर्णन संस्मरण की शैली में कीजिए।",
+      "parentId": "ncert-g6-malhar-ch-02"
+    },
+    {
+      "id": "ncert-g6-malhar-ch-03-practice-q1",
+      "type": "question",
+      "name": "JEMBEE PLAY अभ्यास प्रश्न 1 — वर्षा की पहली बूँद से प्रकृति में होने वाले दो परिवर्तनों का वर्णन कीजिए।",
+      "parentId": "ncert-g6-malhar-ch-03"
+    },
+    {
+      "id": "ncert-g6-malhar-ch-04-practice-q1",
+      "type": "question",
+      "name": "JEMBEE PLAY अभ्यास प्रश्न 1 — ऐसी घटना लिखिए जिसमें किसी व्यक्ति ने कठिन परिस्थिति में धैर्य और समझदारी दिखाई हो।",
+      "parentId": "ncert-g6-malhar-ch-04"
+    },
+    {
+      "id": "ncert-g6-malhar-ch-05-practice-q1",
+      "type": "question",
+      "name": "JEMBEE PLAY अभ्यास प्रश्न 1 — रहीम के दोहों से मिलने वाली किसी एक सीख को उदाहरण सहित समझाइए।",
+      "parentId": "ncert-g6-malhar-ch-05"
+    },
+    {
+      "id": "ncert-g6-malhar-ch-06-practice-q1",
+      "type": "question",
+      "name": "JEMBEE PLAY अभ्यास प्रश्न 1 — अपनी माँ या देखभाल करने वाले व्यक्ति की एक प्रेरक विशेषता लिखिए।",
+      "parentId": "ncert-g6-malhar-ch-06"
+    },
+    {
+      "id": "ncert-g6-malhar-ch-07-practice-q1",
+      "type": "question",
+      "name": "JEMBEE PLAY अभ्यास प्रश्न 1 — निरंतर प्रयास करने का महत्व अपने जीवन के उदाहरण से समझाइए।",
+      "parentId": "ncert-g6-malhar-ch-07"
+    },
+    {
+      "id": "ncert-g6-malhar-ch-08-practice-q1",
+      "type": "question",
+      "name": "JEMBEE PLAY अभ्यास प्रश्न 1 — सत्रिया और बिहू नृत्य के बारे में दो बातें लिखिए और सांस्कृतिक विविधता का महत्व बताइए।",
+      "parentId": "ncert-g6-malhar-ch-08"
+    },
+    {
+      "id": "ncert-g6-malhar-ch-09-practice-q1",
+      "type": "question",
+      "name": "JEMBEE PLAY अभ्यास प्रश्न 1 — बाल-कृष्ण के प्रसंग से हास्य या वात्सल्य का एक उदाहरण अपने शब्दों में लिखिए।",
+      "parentId": "ncert-g6-malhar-ch-09"
+    },
+    {
+      "id": "ncert-g6-malhar-ch-10-practice-q1",
+      "type": "question",
+      "name": "JEMBEE PLAY अभ्यास प्रश्न 1 — परीक्षा की तैयारी के लिए समय-सारणी बनाने के दो लाभ लिखिए।",
+      "parentId": "ncert-g6-malhar-ch-10"
+    },
+    {
+      "id": "ncert-g6-malhar-ch-11-practice-q1",
+      "type": "question",
+      "name": "JEMBEE PLAY अभ्यास प्रश्न 1 — चेतक की वीरता से निष्ठा या साहस के बारे में क्या सीख मिलती है?",
+      "parentId": "ncert-g6-malhar-ch-11"
+    },
+    {
+      "id": "ncert-g6-malhar-ch-12-practice-q1",
+      "type": "question",
+      "name": "JEMBEE PLAY अभ्यास प्रश्न 1 — हिंद महासागर के किसी द्वीप या तटीय क्षेत्र की एक विशेषता बताइए।",
+      "parentId": "ncert-g6-malhar-ch-12"
+    },
+    {
+      "id": "ncert-g6-malhar-ch-13-practice-q1",
+      "type": "question",
+      "name": "JEMBEE PLAY अभ्यास प्रश्न 1 — पेड़ों से मिलने वाले चार लाभ लिखिए और उनकी रक्षा का एक उपाय बताइए।",
+      "parentId": "ncert-g6-malhar-ch-13"
+    },
+    {
+      "id": "ncert-g6-exploring-society-ch-01-practice-q1",
+      "type": "question",
+      "name": "JEMBEE PLAY Practice Q1 — Explain how a map scale, direction and symbols help someone locate a place.",
+      "parentId": "ncert-g6-exploring-society-ch-01"
+    },
+    {
+      "id": "ncert-g6-exploring-society-ch-02-practice-q1",
+      "type": "question",
+      "name": "JEMBEE PLAY Practice Q1 — Name the five oceans and explain one way oceans influence life on Earth.",
+      "parentId": "ncert-g6-exploring-society-ch-02"
+    },
+    {
+      "id": "ncert-g6-exploring-society-ch-03-practice-q1",
+      "type": "question",
+      "name": "JEMBEE PLAY Practice Q1 — Compare two landforms and describe how people adapt their lives to each.",
+      "parentId": "ncert-g6-exploring-society-ch-03"
+    },
+    {
+      "id": "ncert-g6-exploring-society-ch-04-practice-q1",
+      "type": "question",
+      "name": "JEMBEE PLAY Practice Q1 — Give two examples of sources historians use to learn about the past.",
+      "parentId": "ncert-g6-exploring-society-ch-04"
+    },
+    {
+      "id": "ncert-g6-exploring-society-ch-05-practice-q1",
+      "type": "question",
+      "name": "JEMBEE PLAY Practice Q1 — Explain why the names India and Bharat are both used for our country.",
+      "parentId": "ncert-g6-exploring-society-ch-05"
+    },
+    {
+      "id": "ncert-g6-exploring-society-ch-06-practice-q1",
+      "type": "question",
+      "name": "JEMBEE PLAY Practice Q1 — Name one feature of an early Indian civilisation and explain what it tells us about daily life.",
+      "parentId": "ncert-g6-exploring-society-ch-06"
+    },
+    {
+      "id": "ncert-g6-exploring-society-ch-07-practice-q1",
+      "type": "question",
+      "name": "JEMBEE PLAY Practice Q1 — Describe one idea, practice or tradition that has shaped India's cultural roots.",
+      "parentId": "ncert-g6-exploring-society-ch-07"
+    },
+    {
+      "id": "ncert-g6-exploring-society-ch-08-practice-q1",
+      "type": "question",
+      "name": "JEMBEE PLAY Practice Q1 — Give an example of unity in diversity from your school or neighbourhood.",
+      "parentId": "ncert-g6-exploring-society-ch-08"
+    },
+    {
+      "id": "ncert-g6-exploring-society-ch-09-practice-q1",
+      "type": "question",
+      "name": "JEMBEE PLAY Practice Q1 — Explain two ways family and community members can support one another.",
+      "parentId": "ncert-g6-exploring-society-ch-09"
+    },
+    {
+      "id": "ncert-g6-exploring-society-ch-10-practice-q1",
+      "type": "question",
+      "name": "JEMBEE PLAY Practice Q1 — What is governance, and why do communities need shared rules?",
+      "parentId": "ncert-g6-exploring-society-ch-10"
+    },
+    {
+      "id": "ncert-g6-exploring-society-ch-11-practice-q1",
+      "type": "question",
+      "name": "JEMBEE PLAY Practice Q1 — Name two responsibilities of a local government in a village.",
+      "parentId": "ncert-g6-exploring-society-ch-11"
+    },
+    {
+      "id": "ncert-g6-exploring-society-ch-12-practice-q1",
+      "type": "question",
+      "name": "JEMBEE PLAY Practice Q1 — Name two services that a local government provides in an urban area.",
+      "parentId": "ncert-g6-exploring-society-ch-12"
+    },
+    {
+      "id": "ncert-g6-exploring-society-ch-13-practice-q1",
+      "type": "question",
+      "name": "JEMBEE PLAY Practice Q1 — Explain why different kinds of work deserve respect.",
+      "parentId": "ncert-g6-exploring-society-ch-13"
+    },
+    {
+      "id": "ncert-g6-exploring-society-ch-14-practice-q1",
+      "type": "question",
+      "name": "JEMBEE PLAY Practice Q1 — Give examples of two economic activities and explain how each meets a need.",
+      "parentId": "ncert-g6-exploring-society-ch-14"
+    },
+    {
+      "id": "ncert-g6-deepakam-ch-01-practice-q1",
+      "type": "question",
+      "name": "JEMBEE PLAY अभ्यास प्रश्न 1 — संस्कृतवर्णमालायाः स्वरान् व्यञ्जनानि च उदाहरणैः सह लिखत।",
+      "parentId": "ncert-g6-deepakam-ch-01"
+    },
+    {
+      "id": "ncert-g6-deepakam-ch-02-practice-q1",
+      "type": "question",
+      "name": "JEMBEE PLAY अभ्यास प्रश्न 1 — संयुक्तव्यञ्जनयुक्तानि पञ्च पदानि लिखत।",
+      "parentId": "ncert-g6-deepakam-ch-02"
+    },
+    {
+      "id": "ncert-g6-deepakam-ch-03-practice-q1",
+      "type": "question",
+      "name": "JEMBEE PLAY अभ्यास प्रश्न 1 — 'एषः कः?', 'एषा का?' तथा 'एतत् किम्?' इति प्रश्नानाम् उत्तराणि लिखत।",
+      "parentId": "ncert-g6-deepakam-ch-03"
+    },
+    {
+      "id": "ncert-g6-deepakam-ch-04-practice-q1",
+      "type": "question",
+      "name": "JEMBEE PLAY अभ्यास प्रश्न 1 — 'अहम्' तथा 'त्वम्' इत्येतयोः प्रयोगेण सरलवाक्यानि रचयत।",
+      "parentId": "ncert-g6-deepakam-ch-04"
+    },
+    {
+      "id": "ncert-g6-deepakam-ch-05-practice-q1",
+      "type": "question",
+      "name": "JEMBEE PLAY अभ्यास प्रश्न 1 — संस्कृते एकतः दशपर्यन्तं संख्याः लिखत।",
+      "parentId": "ncert-g6-deepakam-ch-05"
+    },
+    {
+      "id": "ncert-g6-deepakam-ch-06-practice-q1",
+      "type": "question",
+      "name": "JEMBEE PLAY अभ्यास प्रश्न 1 — प्रातःकाले करणीयानि त्रीणि कार्याणि संस्कृते लिखत।",
+      "parentId": "ncert-g6-deepakam-ch-06"
+    },
+    {
+      "id": "ncert-g6-deepakam-ch-07-practice-q1",
+      "type": "question",
+      "name": "JEMBEE PLAY अभ्यास प्रश्न 1 — साहसस्य धैर्यस्य च महत्त्वं सरलसंस्कृतवाक्यैः वर्णयत।",
+      "parentId": "ncert-g6-deepakam-ch-07"
+    },
+    {
+      "id": "ncert-g6-deepakam-ch-08-practice-q1",
+      "type": "question",
+      "name": "JEMBEE PLAY अभ्यास प्रश्न 1 — चित्रकारः किं करोति? इति विषये त्रयः सरलवाक्यानि लिखत।",
+      "parentId": "ncert-g6-deepakam-ch-08"
+    },
+    {
+      "id": "ncert-g6-deepakam-ch-09-practice-q1",
+      "type": "question",
+      "name": "JEMBEE PLAY अभ्यास प्रश्न 1 — अतिथिसत्कारस्य महत्त्वं सरलसंस्कृतवाक्येन लिखत।",
+      "parentId": "ncert-g6-deepakam-ch-09"
+    },
+    {
+      "id": "ncert-g6-deepakam-ch-10-practice-q1",
+      "type": "question",
+      "name": "JEMBEE PLAY अभ्यास प्रश्न 1 — बुद्धेः उपयोगं दर्शयन्तीं लघुकथां स्वशब्दैः लिखत।",
+      "parentId": "ncert-g6-deepakam-ch-10"
+    },
+    {
+      "id": "ncert-g6-deepakam-ch-11-practice-q1",
+      "type": "question",
+      "name": "JEMBEE PLAY अभ्यास प्रश्न 1 — ज्ञानस्य महत्त्वं द्वाभ्यां सरलसंस्कृतवाक्याभ्यां लिखत।",
+      "parentId": "ncert-g6-deepakam-ch-11"
+    },
+    {
+      "id": "ncert-g6-deepakam-ch-12-practice-q1",
+      "type": "question",
+      "name": "JEMBEE PLAY अभ्यास प्रश्न 1 — आपणं गत्वा क्रेतुं शक्याः त्रीणि वस्तूनि संस्कृते लिखत।",
+      "parentId": "ncert-g6-deepakam-ch-12"
+    },
+    {
+      "id": "ncert-g6-deepakam-ch-13-practice-q1",
+      "type": "question",
+      "name": "JEMBEE PLAY अभ्यास प्रश्न 1 — पृथिव्यां उपयोगीनि त्रीणि रत्नानि कानि? स्वविचारं लिखत।",
+      "parentId": "ncert-g6-deepakam-ch-13"
+    },
+    {
+      "id": "ncert-g6-deepakam-ch-14-practice-q1",
+      "type": "question",
+      "name": "JEMBEE PLAY अभ्यास प्रश्न 1 — आलस्यस्य हानिं तथा परिश्रमस्य लाभं सरलवाक्यैः लिखत।",
+      "parentId": "ncert-g6-deepakam-ch-14"
+    },
+    {
+      "id": "ncert-g6-deepakam-ch-15-practice-q1",
+      "type": "question",
+      "name": "JEMBEE PLAY अभ्यास प्रश्न 1 — शरीरस्य प्रियाङ्गस्य कार्यं संस्कृते वर्णयत।",
+      "parentId": "ncert-g6-deepakam-ch-15"
+    },
+    {
+      "id": "ncert-g6-deepakam-ch-16-practice-q1",
+      "type": "question",
+      "name": "JEMBEE PLAY अभ्यास प्रश्न 1 — वृक्षाः सज्जनैः कथं तुलनीयाः? द्वे कारणे लिखत।",
+      "parentId": "ncert-g6-deepakam-ch-16"
     }
   ]
 }
