@@ -20,6 +20,9 @@ test("Question answers only return approved active safe videos", () => {
   assert.match(answers, /data\.status !== "approved"/);
   assert.match(answers, /data\.active !== true/);
   assert.match(answers, /data\.moderation !== "safe"/);
+  assert.match(answers, /process\.env\.SHORTS_PAID_VIDEO_CHECKOUT_ENABLED !== "true"/);
+  assert.match(answers, /data\.paidCheckoutEnabled !== true/);
+  assert.match(answers, /data\.paidVideoStatus !== "enabled"/);
 });
 
 test("Approved video records retain Subject Book Chapter Question metadata", () => {
