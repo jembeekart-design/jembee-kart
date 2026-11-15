@@ -53,3 +53,22 @@ test("public catalog reads only published nodes and Explore links to Learning Li
   assert.match(explorePage, /Book-centric Learning Library/);
   assert.doesNotMatch(explorePage, /Board → School → Class/);
 });
+
+test("learning catalog supports bounded parent-scoped cursor pagination", () => {
+  assert.match(route, /params\.get\("type"\)/);
+  assert.match(route, /params\.get\("parentId"\)/);
+  assert.match(route, /Math\.min\(50, Math\.max\(1, pageSizeValue\)\)/);
+  assert.match(route, /query\.startAfter\(cursorDoc\)/);
+  assert.match(route, /limit\(pageSize \+ 1\)/);
+  assert.match(route, /nextCursor/);
+  assert.match(route, /cursorDoc\.data\(\)\?\.parentId !== parentId/);
+  assert.match(route, /Invalid learning node type/);
+});
+
+test("public learning discovery requests each hierarchy level from the paginated API", () => {
+  assert.match(page, /types\[stage\]/);
+  assert.match(page, /params\.set\("parentId", parentId\)/);
+  assert.match(page, /params\.set\("cursor", cursor\)/);
+  assert.match(page, /data\.pagination\?\.hasMore/);
+  assert.match(page, /nextCursors/);
+});
