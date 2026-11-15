@@ -327,6 +327,38 @@ export async function POST(req: Request) {
       // Drive-hosted videos are not Cloudinary-enhanced.
       const finalIsEnhanced = false;
 
+      // Revalidate the complete published learning path at approval time.
+      // Catalog records may have changed after the creator started uploading.
+      if (submission.categoryId === "school") {
+        const learningIds = {
+          subject: typeof submission.schoolSubjectId === "string" ? submission.schoolSubjectId : "",
+          book: typeof submission.schoolBookId === "string" ? submission.schoolBookId : "",
+          chapter: typeof submission.schoolChapterId === "string" ? submission.schoolChapterId : "",
+          question: typeof submission.schoolQuestionId === "string" ? submission.schoolQuestionId : "",
+        };
+        if (!learningIds.subject || !learningIds.book || !learningIds.chapter || !learningIds.question) {
+          throw new Error("Learning submission is missing its complete Subject → Book → Chapter → Question path");
+        }
+        const [subjectSnap, bookSnap, chapterSnap, questionSnap] = await Promise.all([
+          adminDb.collection("schoolLearningNodes").doc(learningIds.subject).get(),
+          adminDb.collection("schoolLearningNodes").doc(learningIds.book).get(),
+          adminDb.collection("schoolLearningNodes").doc(learningIds.chapter).get(),
+          adminDb.collection("schoolLearningNodes").doc(learningIds.question).get(),
+        ]);
+        const subject = subjectSnap.data();
+        const book = bookSnap.data();
+        const chapter = chapterSnap.data();
+        const question = questionSnap.data();
+        if (
+          !subjectSnap.exists || subject?.status !== "published" || subject?.type !== "subject" || subject?.parentId != null ||
+          !bookSnap.exists || book?.status !== "published" || book?.type !== "book" || book?.parentId !== learningIds.subject ||
+          !chapterSnap.exists || chapter?.status !== "published" || chapter?.type !== "chapter" || chapter?.parentId !== learningIds.book ||
+          !questionSnap.exists || question?.status !== "published" || question?.type !== "question" || question?.parentId !== learningIds.chapter
+        ) {
+          throw new Error("Learning catalog path is no longer valid or published");
+        }
+      }
+
       const musicId =
         typeof submission.music === "string" &&
         submission.music.trim()
@@ -394,12 +426,8 @@ export async function POST(req: Request) {
         categoryId: typeof submission.categoryId === "string" ? submission.categoryId : "",
         categoryName: typeof submission.categoryName === "string" ? submission.categoryName : "",
         categoryTopic: typeof submission.categoryTopic === "string" ? submission.categoryTopic : "",
-        schoolBoardId: typeof submission.schoolBoardId === "string" ? submission.schoolBoardId : "",
-        schoolId: typeof submission.schoolId === "string" ? submission.schoolId : "",
-        schoolClassId: typeof submission.schoolClassId === "string" ? submission.schoolClassId : "",
         schoolSubjectId: typeof submission.schoolSubjectId === "string" ? submission.schoolSubjectId : "",
         schoolBookId: typeof submission.schoolBookId === "string" ? submission.schoolBookId : "",
-        schoolEditionId: typeof submission.schoolEditionId === "string" ? submission.schoolEditionId : "",
         schoolChapterId: typeof submission.schoolChapterId === "string" ? submission.schoolChapterId : "",
         schoolQuestionId: typeof submission.schoolQuestionId === "string" ? submission.schoolQuestionId : "",
 
