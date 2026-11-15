@@ -42,6 +42,7 @@ export default function VideoPlayer({
     let cancelled = false;
     let sessionId: string | null = null;
     let heartbeatTimer: ReturnType<typeof setInterval> | null = null;
+    let progressTimer: ReturnType<typeof setInterval> | null = null;
 
     const saveProgress = async (currentSessionId: string) => {
       const user = auth.currentUser;
@@ -91,11 +92,15 @@ export default function VideoPlayer({
       heartbeatTimer = setInterval(() => {
         if (sessionId) void send("heartbeat", sessionId);
       }, 10000);
+      progressTimer = setInterval(() => {
+        if (sessionId) void saveProgress(sessionId);
+      }, 30000);
     })();
 
     return () => {
       cancelled = true;
       if (heartbeatTimer) clearInterval(heartbeatTimer);
+      if (progressTimer) clearInterval(progressTimer);
       if (sessionId) {
         void (async () => {
           await saveProgress(sessionId!);
