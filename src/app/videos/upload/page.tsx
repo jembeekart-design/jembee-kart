@@ -72,6 +72,10 @@ function UploadWatchVideoContent() {
   const searchParams = useSearchParams();
   const videoUrlFromParams = searchParams.get("url");
   const requestedCategoryId = searchParams.get("category");
+  const requestedSubjectId = searchParams.get("subjectId");
+  const requestedBookId = searchParams.get("bookId");
+  const requestedChapterId = searchParams.get("chapterId");
+  const requestedQuestionNumber = searchParams.get("questionNumber");
 
   const [file, setFile] = useState<File | null>(null);
   const [loading, setLoading] = useState(false);
@@ -137,9 +141,15 @@ function UploadWatchVideoContent() {
       setCategories([...merged.values()]);
       setSchoolNodes(subjects);
       if (requestedCategoryId && merged.has(requestedCategoryId)) setCategoryId(requestedCategoryId);
+      if (requestedSubjectId && requestedBookId && requestedChapterId && requestedQuestionNumber) {
+        setSchoolSubjectId(requestedSubjectId);
+        setSchoolBookId(requestedBookId);
+        setSchoolChapterId(requestedChapterId);
+        setSchoolQuestionNumber(requestedQuestionNumber.slice(0, 30));
+      }
     }).catch(() => undefined);
     return () => { active = false; };
-  }, [requestedCategoryId]);
+  }, [requestedCategoryId, requestedSubjectId, requestedBookId, requestedChapterId, requestedQuestionNumber]);
 
   useEffect(() => {
     if (!schoolSubjectId) return;
