@@ -62,7 +62,7 @@ export async function POST(req: Request) {
   const submissionId =
     (body as { submissionId: string }).submissionId.trim();
 
-  if (!submissionId) {
+  if (!/^[A-Za-z0-9_-]{3,128}$/.test(submissionId)) {
     return NextResponse.json(
       { success: false, message: "submissionId is required" },
       { status: 400 }
@@ -127,9 +127,15 @@ export async function POST(req: Request) {
     }
   }
 
-  await docRef.delete();
-
-  return NextResponse.json({
-    success: true,
+  const removed = await adminDb.runTransaction(async (tx) => {
+    const current = await tx.get(docRef);
+    if (!current.exists || current.data()?.creatorId !== creatorId || current.data()?.status !== "cancelling") return false;
+    tx.delete(docRef);
+    return true;
   });
+  if (!removed) {
+    return NextResponse.json({ success: false, message: "Cancellation state changed; please recover the upload before retrying." }, { status: 409 });
+  }
+
+  return NextResponse.json({ success: true });
 }
