@@ -12,7 +12,7 @@ There are no Board, School, Class, or Edition / Part selection steps. Subject is
 - Book list: search by official book name; display the book cover.
 - Chapter list: search by chapter number or chapter name.
 - Question list: search by question number or question text.
-- Question answer page: show all approved matching free and paid answer videos from different teachers together.
+- Question answer page: show approved matching free answer videos and paid answer videos only when the global paid-checkout feature flag is enabled and an Admin has explicitly enabled that individual video. Paid videos remain hidden otherwise.
 
 The same stable question ID links teacher uploads and discovery results.
 
