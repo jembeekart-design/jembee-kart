@@ -6,6 +6,7 @@ const route = await readFile(new URL("../route.ts", import.meta.url), "utf8");
 const uploadPage = await readFile(new URL("../../../videos/upload/page.tsx", import.meta.url), "utf8");
 const adminPage = await readFile(new URL("../../../admin/categories/page.tsx", import.meta.url), "utf8");
 const explorePage = await readFile(new URL("../../../explore/page.tsx", import.meta.url), "utf8");
+const learningPage = await readFile(new URL("../../../learn/school/page.tsx", import.meta.url), "utf8");
 
 test("learning master catalog writes require a verified admin or super_admin", () => {
   assert.match(route, /getAdminAuth\(\)\.verifyIdToken\(header\.slice\(7\)\.trim\(\), true\)/);
@@ -66,9 +67,9 @@ test("learning catalog supports bounded parent-scoped cursor pagination", () => 
 });
 
 test("public learning discovery requests each hierarchy level from the paginated API", () => {
-  assert.match(page, /types\[stage\]/);
-  assert.match(page, /params\.set\("parentId", parentId\)/);
-  assert.match(page, /params\.set\("cursor", cursor\)/);
-  assert.match(page, /data\.pagination\?\.hasMore/);
-  assert.match(page, /nextCursors/);
+  assert.match(learningPage, /types\[stage\]/);
+  assert.match(learningPage, /params\.set\("parentId", parentId\)/);
+  assert.match(learningPage, /params\.set\("cursor", cursor\)/);
+  assert.match(learningPage, /data\.pagination\?\.hasMore/);
+  assert.match(learningPage, /nextCursors/);
 });
