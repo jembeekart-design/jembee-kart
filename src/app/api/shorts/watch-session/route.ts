@@ -10,6 +10,7 @@ const VIDEO_ID_PATTERN = /^[A-Za-z0-9_-]{3,200}$/;
 const SESSION_ID_PATTERN = /^[0-9a-f-]{36}$/i;
 const MIN_HEARTBEAT_SECONDS = 8;
 const MAX_HEARTBEAT_SECONDS = 20;
+const MAX_SESSION_AGE_MS = 4 * 60 * 60 * 1000;
 
 function response(success: boolean, status: number, data: Record<string, unknown> = {}) {
   return NextResponse.json({ success, ...data }, {
@@ -68,6 +69,24 @@ export async function POST(req: Request) {
       if (data.uid !== uid) return { error: "forbidden" as const };
       if (data.status !== "active") return { error: "closed" as const };
       const now = Date.now();
+      const startedAt = Number(data.startedAtMs);
+      if (!Number.isSafeInteger(startedAt) || startedAt > now) return { error: "invalid" as const };
+      if (now - startedAt > MAX_SESSION_AGE_MS) {
+        tx.update(sessionRef, { status: "closed", closeReason: "expired", closedAt: new Date(now), updatedAt: new Date(now) });
+        return { error: "expired" as const };
+      }
+
+      // Re-check moderation and availability on every heartbeat so a video
+      // that is unpublished, disabled, or made unsafe cannot keep a session alive.
+      const videoRef = db.collection("watchEarnVideos").doc(String(data.videoId));
+      const videoSnap = await tx.get(videoRef);
+      const video = videoSnap.data() || {};
+      if (!videoSnap.exists || video.status !== "approved" || video.active !== true ||
+          video.moderation !== "safe" || video.videoAccess !== "free") {
+        tx.update(sessionRef, { status: "closed", closeReason: "video_unavailable", closedAt: new Date(now), updatedAt: new Date(now) });
+        return { error: "video_unavailable" as const };
+      }
+
       const previous = Number(data.lastHeartbeatAtMs);
       if (!Number.isSafeInteger(previous) || previous > now) return { error: "invalid" as const };
       const elapsed = Math.floor((now - previous) / 1000);
