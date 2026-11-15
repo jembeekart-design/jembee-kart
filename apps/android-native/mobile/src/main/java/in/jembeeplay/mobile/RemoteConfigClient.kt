@@ -1,4 +1,4 @@
-package in.jembeeplay.mobile
+package `in`.jembeeplay.mobile
 
 import android.content.Context
 import org.json.JSONObject
