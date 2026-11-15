@@ -85,11 +85,25 @@ internal fun NativeAuthPanel() {
                             auth.signInWithEmailAndPassword(cleanEmail, password)
                         }
                         task.addOnCompleteListener { result ->
-                            busy = false
-                            message = if (result.isSuccessful) {
-                                if (createAccount) "Account created successfully." else "Signed in successfully."
+                            if (result.isSuccessful && createAccount) {
+                                val newUser = auth.currentUser
+                                if (newUser != null) {
+                                    newUser.sendEmailVerification().addOnCompleteListener { verification ->
+                                        busy = false
+                                        message = if (verification.isSuccessful) {
+                                            "Account created. Please check your email to verify your address."
+                                        } else {
+                                            "Account created, but verification email could not be sent. You can request it after signing in."
+                                        }
+                                    }
+                                } else {
+                                    busy = false
+                                    message = "Account created successfully."
+                                }
                             } else {
-                                result.exception?.localizedMessage ?: "Authentication failed. Please try again."
+                                busy = false
+                                message = if (result.isSuccessful) "Signed in successfully."
+                                else result.exception?.localizedMessage ?: "Authentication failed. Please try again."
                             }
                         }
                     }
@@ -101,6 +115,21 @@ internal fun NativeAuthPanel() {
             }
             TextButton(onClick = { createAccount = !createAccount; message = null }) {
                 Text(if (createAccount) "Already have an account? Sign in" else "New to JEMBEE PLAY? Create account")
+            }
+            if (!createAccount) {
+                TextButton(onClick = {
+                    val cleanEmail = email.trim()
+                    if (cleanEmail.isBlank()) {
+                        message = "Enter your email first to receive a password reset link."
+                    } else {
+                        busy = true
+                        auth.sendPasswordResetEmail(cleanEmail).addOnCompleteListener { result ->
+                            busy = false
+                            message = if (result.isSuccessful) "Password reset email sent. Check your inbox."
+                            else result.exception?.localizedMessage ?: "Could not send password reset email."
+                        }
+                    }
+                }, enabled = !busy) { Text("Forgot password?") }
             }
             Text("Google sign-in will be enabled after Android signing fingerprints are added.")
         }
