@@ -13,6 +13,11 @@ type LearningNode = {
   name: string;
   parentId?: string | null;
   coverImageUrl?: string | null;
+  questionNumber?: string;
+  sourceType?: string;
+  sourceReference?: string;
+  licenseName?: string;
+  rightsVerified?: boolean;
 };
 const TYPES: { value: NodeType; label: string; parent?: NodeType[] }[] = [
   { value: "subject", label: "Subject" },
@@ -32,6 +37,11 @@ export default function AdminCategoriesPage() {
   const [name, setName] = useState("");
   const [parentId, setParentId] = useState("");
   const [coverImageUrl, setCoverImageUrl] = useState("");
+  const [questionNumber, setQuestionNumber] = useState("");
+  const [sourceType, setSourceType] = useState("jembee-practice");
+  const [sourceReference, setSourceReference] = useState("");
+  const [licenseName, setLicenseName] = useState("");
+  const [rightsVerified, setRightsVerified] = useState(false);
   const [editingId, setEditingId] = useState("");
 
   const load = useCallback(async () => {
@@ -127,6 +137,11 @@ export default function AdminCategoriesPage() {
     setName("");
     setParentId("");
     setCoverImageUrl("");
+    setQuestionNumber("");
+    setSourceType("jembee-practice");
+    setSourceReference("");
+    setLicenseName("");
+    setRightsVerified(false);
   }
 
   function startEdit(node: LearningNode) {
@@ -135,6 +150,11 @@ export default function AdminCategoriesPage() {
     setName(node.name);
     setParentId(node.parentId || "");
     setCoverImageUrl(node.coverImageUrl || "");
+    setQuestionNumber(node.questionNumber || "");
+    setSourceType(node.sourceType || "jembee-practice");
+    setSourceReference(node.sourceReference || "");
+    setLicenseName(node.licenseName || "");
+    setRightsVerified(node.rightsVerified === true);
     setNotice("Selected learning entry is ready to edit.");
   }
 
@@ -170,6 +190,7 @@ export default function AdminCategoriesPage() {
         name: name.trim(),
         parentId: parentId || null,
         ...(type === "book" ? { coverImageUrl: coverImageUrl.trim() } : {}),
+        ...(type === "question" ? { questionNumber: questionNumber.trim(), sourceType, sourceReference: sourceReference.trim(), licenseName: licenseName.trim(), rightsVerified } : {}),
         ...(editingId ? { id: editingId } : {}),
       });
       setNotice(editingId ? "Learning entry updated." : "Learning entry added.");
@@ -276,6 +297,31 @@ export default function AdminCategoriesPage() {
                 {parents.map((item) => <option key={item.id} value={item.id}>{item.name} · {item.type}</option>)}
               </select>
             </label>}
+            {type === "question" && <>
+              <label className="text-sm text-slate-300">Question number / reference
+                <input value={questionNumber} onChange={(event) => setQuestionNumber(event.target.value)} maxLength={40} placeholder="e.g. 1(a), 2 or JP-1" className="mt-1 w-full rounded-xl border border-white/15 bg-[#111827] p-3 text-white"/>
+              </label>
+              <label className="text-sm text-slate-300">Question source
+                <select value={sourceType} onChange={(event) => setSourceType(event.target.value)} className="mt-1 w-full rounded-xl border border-white/15 bg-[#111827] p-3 text-white">
+                  <option value="jembee-practice">JEMBEE PLAY Practice (original)</option>
+                  <option value="user-authored">Teacher / user-authored</option>
+                  <option value="open-license">Open-license source</option>
+                  <option value="permissioned-textbook">Textbook with written permission</option>
+                </select>
+              </label>
+              {(sourceType === "open-license" || sourceType === "permissioned-textbook") && <>
+                <label className="text-sm text-slate-300 sm:col-span-2">Source / permission record URL (HTTPS)
+                  <input value={sourceReference} onChange={(event) => setSourceReference(event.target.value)} maxLength={2048} placeholder="https://…" className="mt-1 w-full rounded-xl border border-white/15 bg-[#111827] p-3 text-white"/>
+                </label>
+              </>}
+              {sourceType === "open-license" && <label className="text-sm text-slate-300">License name
+                <input value={licenseName} onChange={(event) => setLicenseName(event.target.value)} maxLength={120} placeholder="e.g. CC BY 4.0" className="mt-1 w-full rounded-xl border border-white/15 bg-[#111827] p-3 text-white"/>
+              </label>}
+              {sourceType === "permissioned-textbook" && <label className="flex items-center gap-2 text-sm text-amber-200 sm:col-span-2">
+                <input type="checkbox" checked={rightsVerified} onChange={(event) => setRightsVerified(event.target.checked)} />
+                Admin has checked written permission covering commercial digital redistribution
+              </label>}
+            </>}
             {type === "book" && <>
               <label className="text-sm text-slate-300">Book cover image URL
                 <input type="text" required value={coverImageUrl} onChange={(event) => setCoverImageUrl(event.target.value)} placeholder="/learning-covers/book.svg or https://…/book-cover.jpg" className="mt-1 w-full rounded-xl border border-white/15 bg-[#111827] p-3 text-white"/>
