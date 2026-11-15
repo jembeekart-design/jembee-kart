@@ -20,6 +20,7 @@ import androidx.compose.ui.unit.sp
 import androidx.compose.ui.viewinterop.AndroidView
 import androidx.compose.ui.platform.LocalContext
 import coil.compose.AsyncImage
+import androidx.media3.common.Player
 import androidx.media3.common.MediaItem
 import androidx.media3.exoplayer.ExoPlayer
 import androidx.media3.ui.PlayerView
@@ -120,7 +121,20 @@ private fun NativeVideoPlayer(video: CatalogVideo, onClose: () -> Unit) {
             playWhenReady = true
         }
     }
-    DisposableEffect(player) { onDispose { player.release() } }
+    DisposableEffect(player, video.id) {
+        val listener = object : Player.Listener {
+            override fun onPlaybackStateChanged(playbackState: Int) {
+                if (playbackState == Player.STATE_ENDED) {
+                    recordNativeWatch(video.id, player.currentPosition / 1000L, player.duration / 1000L)
+                }
+            }
+        }
+        player.addListener(listener)
+        onDispose {
+            player.removeListener(listener)
+            player.release()
+        }
+    }
     androidx.compose.ui.window.Dialog(onDismissRequest = onClose) {
         Column(Modifier.fillMaxWidth().background(Color(0xFF0B1020), RoundedCornerShape(18.dp)).padding(12.dp)) {
             Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween) {
