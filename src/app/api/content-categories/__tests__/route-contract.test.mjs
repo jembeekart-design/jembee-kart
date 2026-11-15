@@ -111,5 +111,5 @@ test("NCERT Grade 6 seed is Admin-only and is available from the built-in catalo
   assert.match(route, /NCERT_GRADE_6_SEED\.entries/);
   assert.match(route, /action === "seed-ncert-grade-6" \? 500 : 100/);
   assert.match(adminPage, /Add NCERT Grade 6 starter catalog/);
-  assert.match(adminPage, /9 Subjects, 9 Books, 103 Chapters and 103 original JEMBEE PLAY practice questions/);
+  assert.match(adminPage, /9 Subjects, 9 Books, 103 Chapters और 103 original JEMBEE PLAY practice questions/);
 });
