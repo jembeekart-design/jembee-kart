@@ -92,6 +92,7 @@ function VideosPageContent() {
         <div className="mx-auto flex max-w-6xl items-center justify-between gap-3">
           <Link href="/" className="text-lg font-black">JEMBEE <span className="text-cyan-300">PLAY</span></Link>
           <Link href="/shorts" className="inline-flex items-center gap-2 rounded-full bg-cyan-400 px-4 py-2 text-sm font-bold text-slate-950"><PlaySquare size={16}/> Shorts</Link>
+          <Link href="/videos/continue-watching" className="rounded-full bg-white/10 px-4 py-2 text-sm font-semibold text-white">Continue Watching</Link>
         </div>
       </header>
       <section className="mx-auto max-w-6xl px-3 py-6 sm:px-4 sm:py-7">
