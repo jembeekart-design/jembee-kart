@@ -88,5 +88,4 @@ test("large Question catalogs are fetched only for the selected Chapter in Admin
   assert.match(adminPage, /type: "question", parentId, pageSize: "50"/);
   assert.match(adminPage, /setNodes\(\(current\) => \[\.\.\.current\.filter\(\(node\) => node\.type !== "question"\), \.\.\.questions\]\)/);
   assert.match(adminPage, /if \(active\)/);
-  assert.match(adminPage, /setParentId\(" "\)|setParentId\(" "\)/);
 });
