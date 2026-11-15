@@ -28,7 +28,7 @@ import { uploadWatchVideo } from "@/lib/videos/watch-earn/uploadWatchVideo";
 import { DEFAULT_EXPLORE_CATEGORIES, type ExploreCategoryRecord } from "@/lib/catalog/defaultExploreCategories";
 
 const MAX_VIDEO_BYTES = 500 * 1024 * 1024;
-type LearningNode = { id: string; type: string; name: string; parentId?: string | null; coverImageUrl?: string | null; publisher?: string | null; classLabels?: string[] };
+type LearningNode = { id: string; type: string; name: string; parentId?: string | null; coverImageUrl?: string | null };
 
 function inspectVideoDuration(selectedFile: File, onRead: (duration: number | undefined) => void) {
   const objectUrl = URL.createObjectURL(selectedFile);
@@ -121,8 +121,7 @@ function UploadWatchVideoContent() {
         if (requestedQuestionId) {
           const question = loadedNodes.find((item) => item.id === requestedQuestionId && item.type === "question");
           const chapter = question ? loadedNodes.find((item) => item.id === question.parentId && item.type === "chapter") : undefined;
-          const editionOrBook = chapter ? loadedNodes.find((item) => item.id === chapter.parentId && (item.type === "edition" || item.type === "book")) : undefined;
-          const book = editionOrBook?.type === "edition" ? loadedNodes.find((item) => item.id === editionOrBook.parentId && item.type === "book") : editionOrBook;
+          const book = chapter ? loadedNodes.find((item) => item.id === chapter.parentId && item.type === "book") : undefined;
           const subject = book ? loadedNodes.find((item) => item.id === book.parentId && item.type === "subject") : undefined;
           if (question && chapter && book && subject) {
             setSchoolQuestionId(question.id); setSchoolChapterId(chapter.id); setSchoolBookId(book.id); setSchoolSubjectId(subject.id);
