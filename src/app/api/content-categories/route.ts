@@ -103,7 +103,7 @@ export async function POST(req: Request) {
         return {
           id: cleanText(entry.id, 64),
           type: cleanText(entry.type, 20) as NodeType,
-          name: cleanText(entry.name, 180),
+          name: cleanText(entry.name, cleanText(entry.type, 20) === "question" ? 3000 : 180),
           parentId: cleanText(entry.parentId, 64),
           coverImageUrl: cleanText(entry.coverImageUrl, 2048),
           publisher: cleanText(entry.publisher, 120),
@@ -193,7 +193,7 @@ export async function POST(req: Request) {
 
     if (action === "save-school-node") {
       const type = cleanText(body.type, 20) as NodeType;
-      const name = cleanText(body.name, 180);
+      const name = cleanText(body.name, type === "question" ? 3000 : 180);
       const parentId = cleanText(body.parentId, 64);
       const existingId = cleanText(body.id, 64);
       const coverImageUrl = cleanText(body.coverImageUrl, 2048);
