@@ -50,7 +50,7 @@ export default function AdminCategoriesPage() {
         if (item && typeof item.id === "string") merged.set(item.id, { ...merged.get(item.id), ...item });
       }
       setCategories([...merged.values()]);
-      setNodes(Array.isArray(data.learningBooks) ? data.learningBooks : []);
+      setNodes(Array.isArray(data.learningNodes) ? data.learningNodes : []);
       setNotice("");
     } catch (error) {
       setNotice(error instanceof Error ? error.message : "Library load failed");
