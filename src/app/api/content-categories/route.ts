@@ -202,6 +202,7 @@ export async function POST(req: Request) {
       if (!NODE_TYPES.includes(type) || !name || (existingId && !ID_PATTERN.test(existingId))) {
         return NextResponse.json({ success: false, message: "Learning entry की जानकारी सही नहीं है।" }, { status: 400, headers: noStore });
       }
+      if (type === "book" && !coverImageUrl) return NextResponse.json({ success: false, message: "Book cover image आवश्यक है।" }, { status: 400, headers: noStore });
       if (type === "book" && coverImageUrl) {
         try {
           const imageUrl = new URL(coverImageUrl);
