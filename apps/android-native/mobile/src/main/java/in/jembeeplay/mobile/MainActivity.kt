@@ -89,6 +89,7 @@ private fun HomeScreen(onLearn: () -> Unit, onShorts: () -> Unit) {
                 FilterChip(selected = index == 0, onClick = { if (label == "Learning") onLearn() }, label = { Text(label) })
             }
         }
+        NativeCatalogSection()
         Text("Featured for you", Modifier.padding(start = 18.dp, top = 14.dp, bottom = 10.dp), fontSize = 19.sp, fontWeight = FontWeight.Bold)
         Box(Modifier.fillMaxWidth().padding(horizontal = 16.dp)) {
             ThumbnailCard("Learn something new every day", "JEMBEE PLAY • FEATURED", Modifier.fillMaxWidth().height(214.dp))
