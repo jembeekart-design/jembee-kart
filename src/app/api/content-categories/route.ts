@@ -32,11 +32,26 @@ async function verifyUploader(req: Request): Promise<string> {
   return decoded.uid;
 }
 
+async function verifyAdmin(req: Request): Promise<string> {
+  const header = req.headers.get("authorization") || "";
+  if (!header.startsWith("Bearer ")) throw new Error("UNAUTHORIZED");
+  const decoded = await getAdminAuth().verifyIdToken(header.slice(7).trim(), true);
+  const db = getAdminDb();
+  const direct = await db.collection("users").doc(decoded.uid).get();
+  let role = direct.data()?.role;
+  if (role !== "admin" && role !== "super_admin") {
+    const fallback = await db.collection("users").where("uid", "==", decoded.uid).limit(1).get();
+    role = fallback.docs[0]?.data()?.role;
+  }
+  if (role !== "admin" && role !== "super_admin") throw new Error("FORBIDDEN");
+  return decoded.uid;
+}
+
 function authError(error: unknown) {
   const code = error instanceof Error ? error.message : "";
   return NextResponse.json(
-    { success: false, message: code === "UNAUTHORIZED" ? "कृपया पहले लॉगिन करें।" : "आपका login सत्यापित नहीं हो सका।" },
-    { status: 401, headers: noStore },
+    { success: false, message: code === "UNAUTHORIZED" ? "कृपया पहले लॉगिन करें।" : code === "FORBIDDEN" ? "इस Master Catalog को केवल Admin बदल सकता है।" : "आपका login सत्यापित नहीं हो सका।" },
+    { status: code === "FORBIDDEN" ? 403 : 401, headers: noStore },
   );
 }
 
@@ -115,6 +130,14 @@ export async function POST(req: Request) {
       return NextResponse.json({ success: true, id }, { headers: noStore });
     }
 
+    if (action === "save-school-node" || action === "delete-school-node") {
+      try {
+        uploaderUid = await verifyAdmin(req);
+      } catch (error) {
+        return authError(error);
+      }
+    }
+
     if (action === "save-school-node") {
       const type = cleanText(body.type, 20) as NodeType;
       const name = cleanText(body.name, 120);
@@ -138,17 +161,13 @@ export async function POST(req: Request) {
       const id = existingId || `${type}-${crypto.randomUUID().replace(/-/g, "").slice(0, 20)}`;
       const ref = db.collection("schoolLearningNodes").doc(id);
       const current = existingId ? await ref.get() : null;
-      if (existingId && (!current?.exists || current.data()?.ownerUid !== uploaderUid || current.data()?.type !== type)) {
-        return NextResponse.json({ success: false, message: "आप केवल अपनी बनाई हुई entry edit कर सकते हैं।" }, { status: 403, headers: noStore });
-      }
-      if (!current?.exists) {
-        const owned = await db.collection("schoolLearningNodes").where("ownerUid", "==", uploaderUid).limit(150).get();
-        if (owned.size >= 150) return NextResponse.json({ success: false, message: "आप अधिकतम 150 School catalog entries बना सकते हैं।" }, { status: 429, headers: noStore });
+      if (existingId && (!current?.exists || current.data()?.type !== type)) {
+        return NextResponse.json({ success: false, message: "Catalog entry उपलब्ध नहीं है या उसका type बदल गया है।" }, { status: 404, headers: noStore });
       }
       await ref.set({
         id, type, name, parentId: parentId || null, status: "published",
-        ownerUid: uploaderUid, createdByUid: uploaderUid, updatedBy: uploaderUid,
-        updatedAt: new Date(), ...(current?.exists ? {} : { createdAt: new Date() }),
+        managedBy: "admin", updatedBy: uploaderUid,
+        updatedAt: new Date(), ...(current?.exists ? {} : { createdByUid: uploaderUid, createdAt: new Date() }),
       }, { merge: true });
       return NextResponse.json({ success: true, id }, { headers: noStore });
     }
@@ -158,9 +177,7 @@ export async function POST(req: Request) {
       if (!ID_PATTERN.test(id)) return NextResponse.json({ success: false, message: "Invalid catalog entry" }, { status: 400, headers: noStore });
       const ref = db.collection("schoolLearningNodes").doc(id);
       const snap = await ref.get();
-      if (!snap.exists || snap.data()?.ownerUid !== uploaderUid) {
-        return NextResponse.json({ success: false, message: "आप केवल अपनी बनाई हुई entry हटा सकते हैं।" }, { status: 403, headers: noStore });
-      }
+      if (!snap.exists) return NextResponse.json({ success: false, message: "Catalog entry नहीं मिली।" }, { status: 404, headers: noStore });
       const children = await db.collection("schoolLearningNodes").where("parentId", "==", id).limit(1).get();
       if (!children.empty) return NextResponse.json({ success: false, message: "पहले इसके अंदर की entries हटाएँ या move करें।" }, { status: 409, headers: noStore });
       await ref.delete();
