@@ -27,6 +27,10 @@ test("catalog supports only Subject, Book, Chapter and Question hierarchy", () =
   assert.match(adminPage, /Choose JSON dataset/);
   assert.match(route, /where\("parentId", "==", id\)/);
   assert.match(route, /!children\.empty/);
+  assert.match(route, /const visited = new Set<string>/);
+  assert.match(route, /Import file में पूरी Subject → Book → Chapter → Question hierarchy valid होनी चाहिए/);
+  assert.match(route, /parentId \\|\\| null/);
+  assert.match(route, /इस entry के अंदर child entries हैं/);
 });
 
 test("teachers select existing Subject Book Chapter Question and cannot create master entries", () => {
