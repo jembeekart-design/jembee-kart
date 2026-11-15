@@ -213,6 +213,18 @@ export default function AdminCategoriesPage() {
     }
   }
 
+  async function seedNcertGrade6() {
+    if (!window.confirm("NCERT Grade 6 का starter catalog जोड़ें? इसमें 6 Subjects, 6 Books, 70 Chapters और 22 original practice questions हैं। पहले से मौजूद matching IDs update होंगे; duplicate records नहीं बनेंगे।")) return;
+    setImporting(true);
+    setNotice("");
+    try {
+      const result = await adminRequest({ action: "seed-ncert-grade-6" });
+      setNotice("NCERT Grade 6 starter catalog में " + Number(result.imported || 0) + " entries जोड़ दी गईं।");
+      await load();
+    } catch (error) {
+      setNotice(error instanceof Error ? error.message : "NCERT starter catalog import failed");
+    } finally { setImporting(false); }
+  }
   const books = nodes.filter((node) => node.type === "book");
   return (
     <main className="min-h-screen bg-[#080d18] px-4 py-6 text-white sm:px-8">
@@ -231,11 +243,16 @@ export default function AdminCategoriesPage() {
         <section className="mt-5 rounded-3xl border border-cyan-300/20 bg-[#0c1725] p-5">
           <h2 className="text-lg font-bold">Bulk import preloaded books and questions</h2>
           <p className="mt-2 text-sm leading-6 text-slate-300">Verified JSON dataset एक बार चुनें। System entries को 50-record batches में import करेगा; हर book, chapter और question अलग-अलग manually add करने की जरूरत नहीं होगी। Parent entries पहले से मौजूद हों या उसी dataset में शामिल हों।</p>
-          <label className="mt-4 inline-flex cursor-pointer items-center gap-2 rounded-xl bg-cyan-400 px-4 py-3 text-sm font-bold text-slate-950">
-            {importing ? "Importing…" : "Choose JSON dataset"}
-            <input type="file" accept="application/json,.json" disabled={importing} className="sr-only" onChange={(event) => { const file = event.currentTarget.files?.[0]; if (file) void importLibraryFile(file); event.currentTarget.value = ""; }}/>
-          </label>
-          <p className="mt-3 text-xs text-slate-400">Expected fields: id, type, name, parentId. Book entries must include coverImageUrl (HTTPS).</p>
+          <div className="mt-4 flex flex-wrap gap-3">
+            <button type="button" onClick={() => void seedNcertGrade6()} disabled={importing} className="inline-flex items-center gap-2 rounded-xl bg-cyan-400 px-4 py-3 text-sm font-bold text-slate-950 disabled:opacity-50">
+              {importing ? "Importing…" : "Add NCERT Grade 6 starter catalog"}
+            </button>
+            <label className="inline-flex cursor-pointer items-center gap-2 rounded-xl border border-white/20 px-4 py-3 text-sm font-semibold">
+              Choose JSON dataset
+              <input type="file" accept="application/json,.json" disabled={importing} className="sr-only" onChange={(event) => { const file = event.currentTarget.files?.[0]; if (file) void importLibraryFile(file); event.currentTarget.value = ""; }}/>
+            </label>
+          </div>
+          <p className="mt-3 text-xs text-slate-400">Starter catalog: 6 subjects, 6 books, 70 chapters and 22 independently written practice questions. Book covers are original Jembee artwork. NCERT textbook pages, scans and exercise questions are not copied.</p>
         </section>
         <section className="mt-6 rounded-3xl border border-white/10 bg-white/[0.04] p-5">
           <h2 className="text-lg font-bold">{editingId ? "Edit learning entry" : "Add learning entry"}</h2>
