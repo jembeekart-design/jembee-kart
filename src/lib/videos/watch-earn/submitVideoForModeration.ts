@@ -24,6 +24,7 @@ export interface ModerationSubmissionMetadata {
   schoolClassId?: string;
   schoolSubjectId?: string;
   schoolBookId?: string;
+  schoolEditionId?: string;
   schoolChapterId?: string;
   schoolQuestionId?: string;
 }
