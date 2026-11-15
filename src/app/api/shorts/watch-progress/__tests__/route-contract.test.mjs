@@ -36,3 +36,8 @@ test("history response revalidates public video availability", () => {
   assert.match(source, /orderBy\("updatedAt", "desc"\)\.limit\(50\)/);
   assert.match(source, /items: items\.filter\(Boolean\)/);
 });
+
+test("resume writes close stale sessions after the four-hour telemetry limit", () => {
+  assert.match(source, /nowMs - startedAt > 4 \* 60 \* 60 \* 1000/);
+  assert.match(source, /closeReason: "expired"/);
+});
