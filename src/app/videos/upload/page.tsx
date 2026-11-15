@@ -116,7 +116,7 @@ function UploadWatchVideoContent() {
           if (item && typeof item.id === "string" && typeof item.name === "string") merged.set(item.id, { ...merged.get(item.id), ...item, topics: Array.isArray(item.topics) ? item.topics : [] });
         }
         setCategories([...merged.values()]);
-        const loadedNodes = (Array.isArray(data.learningBooks) ? data.learningBooks : []) as LearningNode[];
+        const loadedNodes = (Array.isArray(data.learningNodes) ? data.learningNodes : []) as LearningNode[];
         setSchoolNodes(loadedNodes);
         if (requestedCategoryId && merged.has(requestedCategoryId)) setCategoryId(requestedCategoryId);
         if (requestedQuestionId) {
@@ -164,7 +164,7 @@ function UploadWatchVideoContent() {
         if (item && typeof item.id === "string" && typeof item.name === "string") merged.set(item.id, { ...merged.get(item.id), ...item, topics: Array.isArray(item.topics) ? item.topics : [] });
       }
       setCategories([...merged.values()]);
-      setSchoolNodes(Array.isArray(catalogData.learningBooks) ? catalogData.learningBooks as LearningNode[] : []);
+      setSchoolNodes(Array.isArray(catalogData.learningNodes) ? catalogData.learningNodes as LearningNode[] : []);
     }
     return data as { id?: string };
   }
