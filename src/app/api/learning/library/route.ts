@@ -32,31 +32,24 @@ export async function GET(request: Request) {
     let query: FirebaseFirestore.Query = collection.where("status", "==", "published").where("type", "==", type);
     if (parentId) query = query.where("parentId", "==", parentId);
     query = query.orderBy("__name__");
+    let lastDoc: FirebaseFirestore.DocumentSnapshot | null = null;
     if (cursor) {
       const cursorDoc = await collection.doc(cursor).get();
       if (!cursorDoc.exists) {
         return NextResponse.json({ success: false, message: "Invalid pagination cursor" }, { status: 400, headers: noStore });
       }
-      query = query.startAfter(cursorDoc);
+      lastDoc = cursorDoc;
     }
 
     const items: Record<string, unknown>[] = [];
-    let scanCursor = cursor;
     let nextCursor: string | null = null;
     let exhausted = false;
     while (items.length <= limit && !exhausted) {
-      let pageQuery = query.limit(SCAN_BATCH);
-      if (scanCursor && !cursor) {
-        const scanDoc = await collection.doc(scanCursor).get();
-        if (scanDoc.exists) pageQuery = query.startAfter(scanDoc).limit(SCAN_BATCH);
-      } else if (scanCursor && cursor && scanCursor !== cursor) {
-        const scanDoc = await collection.doc(scanCursor).get();
-        if (scanDoc.exists) pageQuery = query.startAfter(scanDoc).limit(SCAN_BATCH);
-      }
+      const pageQuery = lastDoc ? query.startAfter(lastDoc).limit(SCAN_BATCH) : query.limit(SCAN_BATCH);
       const snap = await pageQuery.get();
       if (snap.empty) { exhausted = true; break; }
       for (const doc of snap.docs) {
-        scanCursor = doc.id;
+        lastDoc = doc;
         const data = doc.data();
         const name = typeof data.name === "string" ? data.name : "";
         if (!search || name.toLocaleLowerCase().includes(search)) {
@@ -71,10 +64,10 @@ export async function GET(request: Request) {
       }
       if (!exhausted) {
         if (snap.size < SCAN_BATCH) exhausted = true;
-        else nextCursor = scanCursor;
+        else nextCursor = lastDoc?.id || null;
       }
     }
-    if (exhausted && items.length <= limit && nextCursor === scanCursor) nextCursor = null;
+    if (exhausted && items.length <= limit) nextCursor = null;
     return NextResponse.json({ success: true, items, nextCursor }, { headers: noStore });
   } catch {
     return NextResponse.json({ success: false, message: "Learning Library page could not be loaded" }, { status: 500, headers: noStore });
