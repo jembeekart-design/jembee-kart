@@ -37,15 +37,38 @@ export default function AdminCategoriesPage() {
   const load = useCallback(async () => {
     setBusy(true);
     try {
-      const response = await fetch("/api/content-categories", { cache: "no-store" });
+      const response = await fetch("/api/content-categories?type=subject&pageSize=50", { cache: "no-store" });
       const data = await response.json();
       if (!response.ok || data.success !== true) throw new Error(data.message || "Library load failed");
       const merged = new Map(DEFAULT_EXPLORE_CATEGORIES.map((item) => [item.id, item]));
       for (const item of (data.categories || []) as ExploreCategoryRecord[]) {
         if (item && typeof item.id === "string") merged.set(item.id, { ...merged.get(item.id), ...item });
       }
+      const allNodes: LearningNode[] = [];
+      async function loadLevel(nodeType: NodeType, parent?: string) {
+        let cursor = "";
+        for (let page = 0; page < 200; page += 1) {
+          const params = new URLSearchParams({ type: nodeType, pageSize: "50" });
+          if (parent) params.set("parentId", parent);
+          if (cursor) params.set("cursor", cursor);
+          const pageResponse = await fetch(`/api/content-categories?${params.toString()}`, { cache: "no-store" });
+          const pageData = await pageResponse.json();
+          if (!pageResponse.ok || pageData.success !== true || !Array.isArray(pageData.learningNodes)) throw new Error(pageData.message || "Learning entries could not be loaded");
+          allNodes.push(...pageData.learningNodes as LearningNode[]);
+          if (pageData.pagination?.hasMore !== true || typeof pageData.pagination?.nextCursor !== "string") return;
+          cursor = pageData.pagination.nextCursor;
+        }
+        throw new Error("Learning Library has too many pages to load at once");
+      }
+      await loadLevel("subject");
+      const subjects = [...allNodes];
+      for (const subject of subjects) await loadLevel("book", subject.id);
+      const books = allNodes.filter((node) => node.type === "book");
+      for (const book of books) await loadLevel("chapter", book.id);
+      const chapters = allNodes.filter((node) => node.type === "chapter");
+      for (const chapter of chapters) await loadLevel("question", chapter.id);
       setCategories([...merged.values()]);
-      setNodes(Array.isArray(data.learningNodes) ? data.learningNodes : []);
+      setNodes(allNodes);
       setNotice("");
     } catch (error) {
       setNotice(error instanceof Error ? error.message : "Library load failed");
