@@ -18,11 +18,6 @@ export async function POST(req: Request) {
 
   const authHeader = req.headers.get("authorization");
 
-  console.log("[AuthDiagnostic] Complete Upload - Auth Header:", authHeader ? "Present" : "Missing");
-  if (authHeader) {
-      console.log("[AuthDiagnostic] Complete Upload - Bearer Prefix:", authHeader.startsWith("Bearer ") ? "Present" : "Missing");
-  }
-
   if (!authHeader?.startsWith("Bearer ")) {
     return NextResponse.json({ success: false, message: "कृपया लॉगिन करें।" }, { status: 401 });
   }
@@ -30,9 +25,8 @@ export async function POST(req: Request) {
   const token = authHeader.slice("Bearer ".length).trim();
   let creatorId: string;
   try {
-    const decodedToken = await getAdminAuth().verifyIdToken(token);
+    const decodedToken = await getAdminAuth().verifyIdToken(token, true);
     creatorId = decodedToken.uid;
-    console.log("[AuthDiagnostic] Complete Upload - Token Verified. UID:", creatorId);
   } catch {
     console.warn("Complete upload authentication failed: FIREBASE_ID_TOKEN_REJECTED");
     return NextResponse.json({ success: false, message: "कृपया लॉगिन करें।" }, { status: 401 });
@@ -61,12 +55,6 @@ export async function POST(req: Request) {
   }
 
   try {
-    console.log("[UPLOAD_DEBUG_SERVER] COMPLETE_BEGIN", {
-      creatorId,
-      submissionId,
-      driveFileId,
-    });
-
     const adminDb = getAdminDb();
     const submissionRef = adminDb.collection("videoModerationSubmissions").doc(submissionId);
     const submissionDoc = await submissionRef.get();
@@ -89,25 +77,8 @@ export async function POST(req: Request) {
       return NextResponse.json({ success: true, submissionId, status: "pending" });
     }
 
-    console.log("[UPLOAD_DEBUG_SERVER] SUBMISSION_VERIFIED", {
-      submissionId,
-      creatorId,
-      status: submission.status,
-    });
-
-    console.log("[UPLOAD_DEBUG_SERVER] DRIVE_METADATA_BEGIN", {
-      driveFileId,
-    });
-
     // Verify Drive File
     const metadata = await getDriveFileMetadata(driveFileId);
-
-    console.log("[UPLOAD_DEBUG_SERVER] DRIVE_METADATA_RESULT", {
-      mimeType: metadata.mimeType,
-      size: metadata.size,
-      parentCount: metadata.parents.length,
-      thumbnailAvailable: !!metadata.thumbnailLink,
-    });
 
     if (!metadata.mimeType.startsWith("video/")) {
       return NextResponse.json({ success: false, message: "कृपया मान्य वीडियो फ़ाइल चुनें।" }, { status: 400 });
