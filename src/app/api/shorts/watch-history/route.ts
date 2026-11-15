@@ -29,17 +29,35 @@ export async function GET(req: Request) {
     .limit(50)
     .get();
 
-  const items = await Promise.all(sessions.docs.map(async (sessionDoc) => {
+  const grouped = new Map<string, {
+    sessionId: string;
+    videoId: string;
+    title: string;
+    caption: string;
+    thumbnail: string;
+    creatorName: string;
+    startedAt: string | null;
+    elapsedSeconds: number;
+    sessionCount: number;
+  }>();
+
+  for (const sessionDoc of sessions.docs) {
     const session = sessionDoc.data();
     const videoId = typeof session.videoId === "string" ? session.videoId : "";
-    if (!videoId) return null;
+    if (!videoId) continue;
     const videoSnap = await db.collection("watchEarnVideos").doc(videoId).get();
-    if (!videoSnap.exists) return null;
+    if (!videoSnap.exists) continue;
     const video = videoSnap.data()!;
     // History exposes only videos that remain publicly eligible.
     if (video.status !== "approved" || video.active !== true ||
-        video.moderation !== "safe" || video.videoAccess !== "free") return null;
-    return {
+        video.moderation !== "safe" || video.videoAccess !== "free") continue;
+
+    const current = grouped.get(videoId);
+    if (current) {
+      current.sessionCount += 1;
+      continue;
+    }
+    grouped.set(videoId, {
       sessionId: sessionDoc.id,
       videoId,
       title: typeof video.title === "string" ? video.title : "",
@@ -48,9 +66,10 @@ export async function GET(req: Request) {
       creatorName: typeof video.displayName === "string" ? video.displayName : typeof video.username === "string" ? video.username : "",
       startedAt: Number.isSafeInteger(session.startedAtMs) ? new Date(session.startedAtMs).toISOString() : null,
       elapsedSeconds: Number.isFinite(Number(session.elapsedSeconds)) ? Math.max(0, Number(session.elapsedSeconds)) : 0,
-      status: session.status === "active" ? "active" : "completed",
-    };
-  }));
+      sessionCount: 1,
+    });
+  }
 
-  return reply(true, 200, { items: items.filter(Boolean), limit: 50 });
+
+  return reply(true, 200, { items: Array.from(grouped.values()), scannedSessions: sessions.size, limit: 50 });
 }
