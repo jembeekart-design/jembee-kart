@@ -1,4 +1,4 @@
-# Verified textbook question ingestion
+# Verified textbook metadata and teacher question-number entry
 
 ## Malhar Grade 6 chapter catalog
 
@@ -20,47 +20,24 @@ The existing NCERT Grade 6 starter dataset already contains the Malhar book and 
 
 Reference: https://ncert.philoid.app/book/fhml1
 
-## Question source labels
+## Teacher question-number flow
 
-Every Question node may carry:
+Teachers do not need Admin to pre-enter textbook exercise questions. The teacher selects the existing Subject, Book and Chapter, then types the number printed next to the exercise question (for example `1`, `1(a)`, or `Q.2`). The platform saves the original label and a normalized key against the video submission. After Admin approval, the Learning Library discovers that number from approved videos and groups all matching teacher answers.
+
+The question number is only a locator. Do not copy textbook question wording, page images, answer keys or official covers into JEMBEE PLAY unless the platform has the required commercial reuse permission.
+
+## Optional legacy Question-node source labels
+
+Existing Admin-created Question nodes remain supported for backward compatibility. If an Admin chooses to maintain separate question text records, each Question node may carry:
+
 - `questionNumber`: printed number or a stable identifier such as `JP-1`
 - `sourceType`: `jembee-practice`, `user-authored`, `open-license`, or `permissioned-textbook`
 - `sourceReference`: HTTPS source URL or attribution reference
 - `licenseName`: required for `open-license`
 - `rightsVerified`: must be true for `permissioned-textbook`
 
-The API rejects a permissioned textbook question unless an Admin supplies `rightsVerified: true` and an HTTPS source reference. Open-license questions require a license name and HTTPS source reference. This is an Admin-only master-catalog operation.
-
-Example JSON entry for an independently authored question:
-
-```json
-{
-  "id": "malhar-ch-01-jp-2",
-  "type": "question",
-  "name": "JEMBEE PLAY Practice Q2 — Write an original question here.",
-  "parentId": "ncert-g6-malhar-ch-01",
-  "questionNumber": "JP-2",
-  "sourceType": "jembee-practice"
-}
-```
-
-Example metadata for a question whose reuse has been explicitly licensed (do not use until permission is actually obtained):
-
-```json
-{
-  "id": "malhar-ch-01-textbook-q1",
-  "type": "question",
-  "name": "Question text supplied under documented permission",
-  "parentId": "ncert-g6-malhar-ch-01",
-  "questionNumber": "1",
-  "sourceType": "permissioned-textbook",
-  "sourceReference": "https://example.org/permission-record",
-  "rightsVerified": true
-}
-```
-
-The example URL is illustrative only and must be replaced with the real permission/source record. Uploading a PDF or photograph does not itself grant redistribution rights. Do not copy NCERT exercise wording into the commercial platform unless written permission covering that use has been obtained. Until then, keep independently authored prompts clearly labelled as JEMBEE PLAY Practice, and do not describe them as NCERT exercise questions.
+The API rejects a permissioned textbook question unless an Admin supplies `rightsVerified: true` and an HTTPS source reference. Open-license questions require a license name and HTTPS source reference. This metadata workflow is optional and is not part of the normal teacher upload path.
 
 ## Import behaviour
 
-Use the existing Admin Learning Library JSON import. Parent chapter IDs must already exist or be included in the same import. The existing stable IDs and parent-child checks remain in force. Re-importing must not silently republish Admin-unpublished entries.
+Use the existing Admin Learning Library JSON import for Subject, Book and Chapter master records. Parent IDs must already exist or be included in the same import. Re-importing must not silently republish Admin-unpublished entries. Existing legacy Question nodes and videos linked to them remain readable.
