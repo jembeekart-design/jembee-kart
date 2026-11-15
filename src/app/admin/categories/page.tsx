@@ -78,10 +78,7 @@ export default function AdminCategoriesPage() {
   useEffect(() => { void load(); }, [load]);
 
   useEffect(() => {
-    if (type !== "question" || !parentId) {
-      setNodes((current) => current.filter((node) => node.type !== "question"));
-      return;
-    }
+    if (type !== "question" || !parentId) return;
     let active = true;
     async function loadSelectedChapterQuestions() {
       setBusy(true);
@@ -244,7 +241,7 @@ export default function AdminCategoriesPage() {
           <h2 className="text-lg font-bold">{editingId ? "Edit learning entry" : "Add learning entry"}</h2>
           <form onSubmit={saveNode} className="mt-4 grid gap-3 sm:grid-cols-2">
             <label className="text-sm text-slate-300">Entry type
-              <select value={type} onChange={(event) => { setType(event.target.value as NodeType); setParentId(""); }} disabled={Boolean(editingId)} className="mt-1 w-full rounded-xl border border-white/15 bg-[#111827] p-3 text-white">
+              <select value={type} onChange={(event) => { setType(event.target.value as NodeType); setParentId(""); setNodes((current) => current.filter((node) => node.type !== "question")); }} disabled={Boolean(editingId)} className="mt-1 w-full rounded-xl border border-white/15 bg-[#111827] p-3 text-white">
                 {TYPES.map((item) => <option key={item.value} value={item.value}>{item.label}</option>)}
               </select>
             </label>
@@ -254,7 +251,7 @@ export default function AdminCategoriesPage() {
                 : <input value={name} onChange={(event) => setName(event.target.value)} maxLength={180} required placeholder="Official subject, book or chapter name" className="mt-1 w-full rounded-xl border border-white/15 bg-[#111827] p-3 text-white"/>}
             </label>
             {config.parent && <label className="text-sm text-slate-300 sm:col-span-2">Parent entry
-              <select value={parentId} onChange={(event) => setParentId(event.target.value)} required className="mt-1 w-full rounded-xl border border-white/15 bg-[#111827] p-3 text-white">
+              <select value={parentId} onChange={(event) => { setParentId(event.target.value); setNodes((current) => current.filter((node) => node.type !== "question")); }} required className="mt-1 w-full rounded-xl border border-white/15 bg-[#111827] p-3 text-white">
                 <option value="">Choose parent</option>
                 {parents.map((item) => <option key={item.id} value={item.id}>{item.name} · {item.type}</option>)}
               </select>
