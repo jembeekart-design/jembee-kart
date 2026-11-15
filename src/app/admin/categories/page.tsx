@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { useCallback, useEffect, useMemo, useState, type FormEvent } from "react";
-import { ArrowLeft, BookOpen, GraduationCap, RefreshCw, Plus, Trash2, Pencil, Save } from "lucide-react";
+import { ArrowLeft, BookOpen, RefreshCw, Trash2, Pencil, Save } from "lucide-react";
 import { auth } from "@/firebase/config";
 import { DEFAULT_EXPLORE_CATEGORIES, type ExploreCategoryRecord } from "@/lib/catalog/defaultExploreCategories";
 
