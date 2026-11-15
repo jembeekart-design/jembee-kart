@@ -4,32 +4,35 @@ import "./globals.css";
 import Providers from "./providers";
 import SystemSeeder from "@/components/SystemSeeder";
 
+const siteUrl = new URL("https://jembeeplay.in");
+
 export const metadata: Metadata = {
+  metadataBase: siteUrl,
   title: {
     default: "JEMBEE PLAY",
     template: "%s | JEMBEE PLAY",
   },
   description: "JEMBEE PLAY — Watch, Learn, Create, Share and Earn.",
-  robots: {
-    index: true,
-    follow: true,
-  },
+  alternates: { canonical: "/" },
+  robots: { index: true, follow: true },
   openGraph: {
     title: "JEMBEE PLAY",
     description: "Watch, learn, create and share on JEMBEE PLAY.",
     siteName: "JEMBEE PLAY",
+    url: siteUrl,
     locale: "en_IN",
     type: "website",
   },
+  twitter: {
+    card: "summary_large_image",
+    title: "JEMBEE PLAY",
+    description: "Watch, learn, create and share on JEMBEE PLAY.",
+  },
 };
 
-interface RootLayoutProps {
-  children: React.ReactNode;
-}
+interface RootLayoutProps { children: React.ReactNode; }
 
-export default function RootLayout({
-  children,
-}: Readonly<RootLayoutProps>) {
+export default function RootLayout({ children }: Readonly<RootLayoutProps>) {
   return (
     <html lang="en" suppressHydrationWarning>
       <head>
@@ -43,20 +46,13 @@ export default function RootLayout({
         {/* Monetag website-verification meta tag; it does not load an ad script. */}
         <meta name="monetag" content="ffc36b1add65212e386c64b0bf1e6c0e" />
         <meta name="6a97888e-site-verification" content="2a751b9fa06b8c40236414df5d6abc81" />
-        
-
       </head>
-
       <body className="min-h-screen antialiased">
         <Providers>
-          {/* Ads are loaded only in Admin-enabled, allowlisted page placements. */}
-          {/* Auto create missing Firestore settings */}
           <SystemSeeder />
-
           <div className="min-h-screen w-full overflow-x-hidden bg-[var(--background)] text-[var(--text)]">
             {children}
           </div>
-
         </Providers>
       </body>
     </html>
