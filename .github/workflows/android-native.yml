@@ -31,7 +31,7 @@ jobs:
         with:
           node-version: "22"
       - name: Run remote config contract tests
-        run: node --test src/app/api/app/remote-config/__tests__/remote-config-contract.test.mjs
+        run: node --test src/app/api/app/remote-config/__tests__/remote-config-contract.test.mjs src/app/admin/system-health/__tests__/remote-recovery-contract.test.mjs
 
   build-native-apps:
     name: Build Mobile and TV debug variants
