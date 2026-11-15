@@ -7,10 +7,10 @@ const answers = await readFile(new URL("../../../api/learning/school-video-answe
 const moderation = await readFile(new URL("../../../api/admin/moderate-video/route.ts", import.meta.url), "utf8");
 
 test("Learning discovery follows Subject Book Chapter Question and has level-specific search", () => {
-  for (const type of ["subject", "book", "chapter", "question"]) assert.ok(page.includes(`type === "${type}"`), `Missing hierarchy type ${type}`);
-  assert.match(page, /Search book name/);
-  assert.match(page, /Search chapter name or number/);
-  assert.match(page, /Search question number or text/);
+  assert.match(page, /const types = \["subject", "book", "chapter", "question"\] as const/);
+  assert.match(page, /Search books on this page/);
+  assert.match(page, /Search chapters on this page/);
+  assert.match(page, /Search questions on this page/);
   assert.match(page, /coverImageUrl/);
   assert.doesNotMatch(page, /edition|Board →|Choose School|Choose Class/);
 });
