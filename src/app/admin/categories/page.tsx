@@ -201,7 +201,9 @@ export default function AdminCategoriesPage() {
               </select>
             </label>
             <label className="text-sm text-slate-300">Name / Question text
-              <input value={name} onChange={(event) => setName(event.target.value)} maxLength={3000} required placeholder="Official subject, book, chapter or full question text" className="mt-1 w-full rounded-xl border border-white/15 bg-[#111827] p-3 text-white"/>
+              {type === "question"
+                ? <textarea value={name} onChange={(event) => setName(event.target.value)} maxLength={3000} required rows={4} placeholder="Q1. Write the complete verified textbook question…" className="mt-1 w-full rounded-xl border border-white/15 bg-[#111827] p-3 text-white"/>
+                : <input value={name} onChange={(event) => setName(event.target.value)} maxLength={180} required placeholder="Official subject, book or chapter name" className="mt-1 w-full rounded-xl border border-white/15 bg-[#111827] p-3 text-white"/>}
             </label>
             {config.parent && <label className="text-sm text-slate-300 sm:col-span-2">Parent entry
               <select value={parentId} onChange={(event) => setParentId(event.target.value)} required className="mt-1 w-full rounded-xl border border-white/15 bg-[#111827] p-3 text-white">
