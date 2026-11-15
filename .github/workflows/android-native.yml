@@ -5,6 +5,9 @@ on:
     paths:
       - "apps/android-native/**"
       - "src/app/api/app/remote-config/**"
+      - "src/app/admin/system-health/**"
+      - "src/app/api/admin/system-health/**"
+      - "src/app/api/shorts/paid-video/**"
       - ".github/workflows/android-native.yml"
   push:
     branches:
