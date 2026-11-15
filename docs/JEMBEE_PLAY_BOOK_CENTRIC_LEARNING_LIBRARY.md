@@ -65,10 +65,10 @@ Only import question text and cover images that JEMBEE PLAY is authorized to rep
 
 A versioned metadata-only starter dataset is maintained at `src/data/learning-library/ncert-grade-6-seed.json`.
 
-- Nine subjects, nine Grade 6 English-medium books, 103 chapter entries, and 103 independently authored practice prompts.
+- Nine subjects, nine Grade 6 NCERT books, 103 chapter entries, and 103 independently authored practice prompts. The listed language tracks include English, Hindi and Sanskrit.
 - Books: Poorvi, Malhar, Ganita Prakash, Curiosity, Exploring Society: India and Beyond, Deepakam, Kriti-I, Khel Yatra, and Kaushal Bodh.
 - Original JEMBEE PLAY SVG cover artwork is stored under `public/learning-covers/`; these are navigation illustrations, not official NCERT covers.
-- An authenticated Admin action, `seed-ncert-grade-6`, imports the complete starter catalog with stable IDs and merge semantics. Re-running it updates the same records rather than creating duplicates.
+- An authenticated Admin action, `seed-ncert-grade-6`, imports the complete starter catalog with stable IDs and merge semantics. Re-running it updates the same records rather than creating duplicates, and preserves an existing entry's current publication status so an Admin-unpublished entry is not silently republished.
 - Every chapter in this starter dataset has one independently written practice prompt. These prompts are not NCERT exercise questions and do not include official answer keys.
 - The dataset includes chapter/book metadata checked against NCERT's published catalogue and CIET / textbook references. Verify each title and revision against the current official book before publishing changes.
 - NCERT states its textbooks are copyrighted and prohibits republication, redistribution, inclusion in digital content packages/software and hosting without permission. Do not download and rehost NCERT PDFs, scans, pages, exercise text or official covers. Any permitted links to NCERT resources must comply with NCERT's terms and any written permission requirement.
