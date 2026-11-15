@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "185822683860",
+    "project_id": "jembee-kart1",
+    "storage_bucket": "jembee-kart1.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:185822683860:android:b8833aa30ea6617d365141",
+        "android_client_info": {
+          "package_name": "in.jembeeplay.mobile"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "185822683860-3mrgnt64bnoq8itl8oph7u48dohk1tt5.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCJFVfZa4mecULhn4CK77kaf_kjEarrBpE"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "185822683860-3mrgnt64bnoq8itl8oph7u48dohk1tt5.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
