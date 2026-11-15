@@ -43,6 +43,23 @@ export default function VideoPlayer({
     let sessionId: string | null = null;
     let heartbeatTimer: ReturnType<typeof setInterval> | null = null;
 
+    const saveProgress = async (currentSessionId: string) => {
+      const user = auth.currentUser;
+      const positionSeconds = videoRef.current?.currentTime;
+      if (!user || typeof positionSeconds !== "number" || !Number.isFinite(positionSeconds)) return;
+      try {
+        const token = await user.getIdToken();
+        await fetch("/api/shorts/watch-progress", {
+          method: "POST",
+          cache: "no-store",
+          headers: { "Content-Type": "application/json", Authorization: `Bearer ${token}` },
+          body: JSON.stringify({ sessionId: currentSessionId, positionSeconds }),
+        });
+      } catch {
+        // Resume progress is best-effort and never blocks playback.
+      }
+    };
+
     const send = async (action: "start" | "heartbeat" | "stop", currentSessionId?: string) => {
       const user = auth.currentUser;
       if (!user) return null;
@@ -79,7 +96,12 @@ export default function VideoPlayer({
     return () => {
       cancelled = true;
       if (heartbeatTimer) clearInterval(heartbeatTimer);
-      if (sessionId) void send("stop", sessionId);
+      if (sessionId) {
+        void (async () => {
+          await saveProgress(sessionId!);
+          await send("stop", sessionId!);
+        })();
+      }
     };
   }, [active, isPlaying, watchSessionVideoId]);
 
