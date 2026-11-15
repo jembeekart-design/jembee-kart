@@ -30,7 +30,7 @@ import { DEFAULT_EXPLORE_CATEGORIES, type ExploreCategoryRecord } from "@/lib/ca
 const MAX_VIDEO_BYTES = 500 * 1024 * 1024;
  type LearningNode = { id: string; type: string; name: string; parentId?: string | null; coverImageUrl?: string | null };
 
-async function fetchLearningNodes(type: "subject" | "book" | "chapter" | "question", parentId?: string): Promise<LearningNode[]> {
+async function fetchLearningNodes(type: "subject" | "book" | "chapter", parentId?: string): Promise<LearningNode[]> {
   const nodes: LearningNode[] = [];
   let cursor = "";
   for (let page = 0; page < 200; page += 1) {
@@ -78,7 +78,6 @@ function UploadWatchVideoContent() {
   const searchParams = useSearchParams();
   const videoUrlFromParams = searchParams.get("url");
   const requestedCategoryId = searchParams.get("category");
-  const requestedQuestionId = searchParams.get("question");
 
   const [file, setFile] = useState<File | null>(null);
   const [loading, setLoading] = useState(false);
@@ -93,7 +92,7 @@ function UploadWatchVideoContent() {
   const [schoolSubjectId, setSchoolSubjectId] = useState("");
   const [schoolBookId, setSchoolBookId] = useState("");
   const [schoolChapterId, setSchoolChapterId] = useState("");
-  const [schoolQuestionId, setSchoolQuestionId] = useState("");
+  const [schoolQuestionNumber, setSchoolQuestionNumber] = useState("");
   const [savingCatalog, setSavingCatalog] = useState(false);
   const [catalogNotice, setCatalogNotice] = useState("");
   const [newCategoryName, setNewCategoryName] = useState("");
@@ -144,23 +143,9 @@ function UploadWatchVideoContent() {
       setCategories([...merged.values()]);
       setSchoolNodes(subjects);
       if (requestedCategoryId && merged.has(requestedCategoryId)) setCategoryId(requestedCategoryId);
-      if (requestedQuestionId) {
-        const question = await fetchLearningNode(requestedQuestionId);
-        const chapter = question?.parentId ? await fetchLearningNode(question.parentId) : null;
-        const book = chapter?.parentId ? await fetchLearningNode(chapter.parentId) : null;
-        const subject = book?.parentId ? await fetchLearningNode(book.parentId) : null;
-        if (!active) return;
-        if (question?.type === "question" && chapter?.type === "chapter" && book?.type === "book" && subject?.type === "subject") {
-          setSchoolNodes((current) => [...current.filter((item) => ![question.id, chapter.id, book.id, subject.id].includes(item.id)), subject, book, chapter, question]);
-          setSchoolQuestionId(question.id);
-          setSchoolChapterId(chapter.id);
-          setSchoolBookId(book.id);
-          setSchoolSubjectId(subject.id);
-        }
-      }
     }).catch(() => undefined);
     return () => { active = false; };
-  }, [requestedCategoryId, requestedQuestionId]);
+  }, [requestedCategoryId]);
 
   useEffect(() => {
     if (!schoolSubjectId) return;
@@ -180,21 +165,12 @@ function UploadWatchVideoContent() {
     return () => { active = false; };
   }, [schoolBookId]);
 
-  useEffect(() => {
-    if (!schoolChapterId) return;
-    let active = true;
-    fetchLearningNodes("question", schoolChapterId).then((items) => {
-      if (active) setSchoolNodes((current) => [...current.filter((item) => item.type !== "question" || item.parentId !== schoolChapterId), ...items]);
-    }).catch(() => undefined);
-    return () => { active = false; };
-  }, [schoolChapterId]);
 
   const selectedCategory = categories.find((item) => item.id === categoryId);
   const isSchoolCategory = selectedCategory?.id === "school" || selectedCategory?.schoolSpecial === true;
   const subjectOptions = schoolNodes.filter((item) => item.type === "subject");
   const bookOptions = schoolNodes.filter((item) => item.type === "book" && item.parentId === schoolSubjectId);
   const chapterOptions = schoolNodes.filter((item) => item.type === "chapter" && item.parentId === schoolBookId);
-  const questionOptions = schoolNodes.filter((item) => item.type === "question" && item.parentId === schoolChapterId);
   const selectedBook = schoolNodes.find((item) => item.id === schoolBookId && item.type === "book");
 
   async function creatorCatalogRequest(payload: Record<string, unknown>) {
@@ -327,7 +303,7 @@ function UploadWatchVideoContent() {
         return;
       }
       if (!categoryId) { alert("कृपया वीडियो की Category चुनें।"); return; }
-      if (isSchoolCategory && (!schoolSubjectId || !schoolBookId || !schoolChapterId || !schoolQuestionId)) { alert("कृपया Subject, Book, Chapter और Question चुनें।"); return; }
+      if (isSchoolCategory && (!schoolSubjectId || !schoolBookId || !schoolChapterId || !schoolQuestionNumber.trim())) { alert("कृपया Subject, Book, Chapter और किताब में दिया Question Number लिखें।"); return; }
       if (videoAccess === "paid" && (!Number.isFinite(Number(videoPrice)) || Number(videoPrice) < 1 || Number(videoPrice) > 100000)) {
         alert("Paid वीडियो की कीमत ₹1 से ₹100000 के बीच रखें।");
         return;
@@ -379,7 +355,7 @@ function UploadWatchVideoContent() {
         schoolSubjectId,
         schoolBookId,
         schoolChapterId,
-        schoolQuestionId,
+        questionNumber: schoolQuestionNumber,
         hashtags: [],
         music: "",
         isEnhanced: false,
@@ -517,7 +493,7 @@ function UploadWatchVideoContent() {
             <div className="mt-5 rounded-2xl border border-cyan-300/20 bg-cyan-300/[0.04] p-4">
               <h3 className="flex items-center gap-2 text-sm font-extrabold"><BookOpen size={18} className="text-cyan-300"/> Category & Learning Details</h3>
               <label className="mt-3 block text-xs font-bold text-slate-200">Category <span className="text-red-400">*</span>
-                <select required value={categoryId} onChange={(event) => { setCategoryId(event.target.value); setCategoryTopic(""); setSchoolSubjectId(""); setSchoolBookId(""); setSchoolChapterId(""); setSchoolQuestionId(""); }} className="mt-2 w-full rounded-xl border border-white/15 bg-[#090d14] px-3 py-3 text-sm text-white outline-none focus:border-cyan-400">
+                <select required value={categoryId} onChange={(event) => { setCategoryId(event.target.value); setCategoryTopic(""); setSchoolSubjectId(""); setSchoolBookId(""); setSchoolChapterId(""); setSchoolQuestionNumber(""); }} className="mt-2 w-full rounded-xl border border-white/15 bg-[#090d14] px-3 py-3 text-sm text-white outline-none focus:border-cyan-400">
                   <option value="">Category चुनें</option>{categories.map((item) => <option key={item.id} value={item.id}>{item.name}</option>)}
                 </select>
               </label>
@@ -535,12 +511,12 @@ function UploadWatchVideoContent() {
               </label> : null}
               {isSchoolCategory ? <div className="mt-4 space-y-3 rounded-xl border border-cyan-300/15 bg-[#081421] p-3">
                 <p className="flex items-center gap-2 text-xs font-bold uppercase tracking-wide text-cyan-200"><SchoolCap size={16}/> Subject → Book → Chapter → Question</p>
-                <label className="block text-xs font-bold">Subject<select value={schoolSubjectId} onChange={(e) => { setSchoolSubjectId(e.target.value); setSchoolBookId(""); setSchoolChapterId(""); setSchoolQuestionId(""); }} className="mt-2 w-full rounded-xl border border-white/15 bg-[#090d14] px-3 py-3 text-sm"><option value="">Subject चुनें</option>{subjectOptions.map((item) => <option key={item.id} value={item.id}>{item.name}</option>)}</select></label>
-                <div className="space-y-2"><p className="text-xs font-bold">Book चुनें</p><div className="grid grid-cols-2 gap-3 sm:grid-cols-3">{bookOptions.map((item) => <button key={item.id} type="button" onClick={() => { setSchoolBookId(item.id); setSchoolChapterId(""); setSchoolQuestionId(""); }} className={`overflow-hidden rounded-xl border text-left ${schoolBookId === item.id ? "border-cyan-300 bg-cyan-300/10" : "border-white/10 bg-black/20"}`}>{item.coverImageUrl ? <img src={item.coverImageUrl} alt={item.name} loading="lazy" className="h-36 w-full bg-white/5 object-contain" referrerPolicy="no-referrer"/> : <div className="grid h-36 place-items-center text-xs text-slate-500">Cover unavailable</div>}<span className="block p-2 text-xs font-bold">{item.name}</span></button>)}</div></div>
+                <label className="block text-xs font-bold">Subject<select value={schoolSubjectId} onChange={(e) => { setSchoolSubjectId(e.target.value); setSchoolBookId(""); setSchoolChapterId(""); setSchoolQuestionNumber(""); }} className="mt-2 w-full rounded-xl border border-white/15 bg-[#090d14] px-3 py-3 text-sm"><option value="">Subject चुनें</option>{subjectOptions.map((item) => <option key={item.id} value={item.id}>{item.name}</option>)}</select></label>
+                <div className="space-y-2"><p className="text-xs font-bold">Book चुनें</p><div className="grid grid-cols-2 gap-3 sm:grid-cols-3">{bookOptions.map((item) => <button key={item.id} type="button" onClick={() => { setSchoolBookId(item.id); setSchoolChapterId(""); setSchoolQuestionNumber(""); }} className={`overflow-hidden rounded-xl border text-left ${schoolBookId === item.id ? "border-cyan-300 bg-cyan-300/10" : "border-white/10 bg-black/20"}`}>{item.coverImageUrl ? <img src={item.coverImageUrl} alt={item.name} loading="lazy" className="h-36 w-full bg-white/5 object-contain" referrerPolicy="no-referrer"/> : <div className="grid h-36 place-items-center text-xs text-slate-500">Cover unavailable</div>}<span className="block p-2 text-xs font-bold">{item.name}</span></button>)}</div></div>
                 {selectedBook ? <div className="flex items-center gap-3 rounded-xl border border-cyan-300/20 bg-black/20 p-2">{selectedBook.coverImageUrl ? <img src={selectedBook.coverImageUrl} alt="" className="h-16 w-12 rounded object-cover" referrerPolicy="no-referrer"/> : null}<p className="text-xs font-bold">{selectedBook.name}</p></div> : null}
-                <label className="block text-xs font-bold">Chapter<select required value={schoolChapterId} onChange={(e) => { setSchoolChapterId(e.target.value); setSchoolQuestionId(""); }} disabled={!schoolBookId} className="mt-2 w-full rounded-xl border border-white/15 bg-[#090d14] px-3 py-3 text-sm disabled:opacity-50"><option value="">Chapter चुनें</option>{chapterOptions.map((item) => <option key={item.id} value={item.id}>{item.name}</option>)}</select></label>
-                <label className="block text-xs font-bold">Question चुनें<select required value={schoolQuestionId} onChange={(e) => setSchoolQuestionId(e.target.value)} disabled={!schoolChapterId} className="mt-2 w-full rounded-xl border border-white/15 bg-[#090d14] px-3 py-3 text-sm disabled:opacity-50"><option value="">Question चुनें</option>{questionOptions.map((item) => <option key={item.id} value={item.id}>{item.name}</option>)}</select></label>
-                <p className="rounded-xl border border-white/10 bg-black/20 p-3 text-xs leading-5 text-slate-400">Book, chapter ya question list mein nahi hai? Admin Learning Library mein verified entry add karega. <Link href="/admin/categories" className="font-bold text-cyan-300">Admin Learning Library</Link></p>
+                <label className="block text-xs font-bold">Chapter<select required value={schoolChapterId} onChange={(e) => { setSchoolChapterId(e.target.value); setSchoolQuestionNumber(""); }} disabled={!schoolBookId} className="mt-2 w-full rounded-xl border border-white/15 bg-[#090d14] px-3 py-3 text-sm disabled:opacity-50"><option value="">Chapter चुनें</option>{chapterOptions.map((item) => <option key={item.id} value={item.id}>{item.name}</option>)}</select></label>
+                <label className="block text-xs font-bold">किताब का Question Number लिखें <span className="text-red-400">*</span><input required maxLength={30} value={schoolQuestionNumber} onChange={(e) => setSchoolQuestionNumber(e.target.value.slice(0, 30))} disabled={!schoolChapterId} placeholder="जैसे 1, 1(a), Q.2" className="mt-2 w-full rounded-xl border border-white/15 bg-[#090d14] px-3 py-3 text-sm" /></label>
+                <p className="rounded-xl border border-white/10 bg-black/20 p-3 text-xs leading-5 text-slate-400">Question Number किताब में देखकर खुद लिखें। Admin को हर प्रश्न पहले से दर्ज नहीं करना होगा. <Link href="/admin/categories" className="font-bold text-cyan-300">Admin Learning Library</Link></p>
                 {catalogNotice && <p role="status" className="rounded-lg border border-cyan-300/20 bg-cyan-300/10 p-2 text-xs text-cyan-100">{catalogNotice}</p>}
                 {schoolNodes.length === 0 && <p className="text-xs text-amber-200">Learning Library abhi populate nahi hui hai.</p>}
               </div> : null}
