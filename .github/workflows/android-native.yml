@@ -4,6 +4,7 @@ on:
   pull_request:
     paths:
       - "apps/android-native/**"
+      - "src/app/api/app/remote-config/**"
       - ".github/workflows/android-native.yml"
   push:
     branches:
@@ -11,6 +12,7 @@ on:
       - "native-mobile-tv-app-foundation-2026-11-15"
     paths:
       - "apps/android-native/**"
+      - "src/app/api/app/remote-config/**"
       - ".github/workflows/android-native.yml"
   workflow_dispatch:
 
@@ -18,6 +20,19 @@ permissions:
   contents: read
 
 jobs:
+  remote-config-contract:
+    name: Remote config security contract
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+      - name: Run remote config contract tests
+        run: node --test src/app/api/app/remote-config/__tests__/remote-config-contract.test.mjs
+
   build-native-apps:
     name: Build Mobile and TV debug variants
     runs-on: ubuntu-latest
