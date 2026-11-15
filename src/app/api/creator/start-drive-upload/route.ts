@@ -150,7 +150,7 @@ export async function POST(req: Request) {
       if (nodeData.get("schoolBookId")?.parentId !== schoolIds.schoolSubjectId) return NextResponse.json({ success: false, message: "Book चुने गए Subject से संबंधित नहीं है।" }, { status: 400 });
       const chapterParentId = schoolIds.schoolBookId;
       if (nodeData.get("schoolChapterId")?.parentId !== chapterParentId) return NextResponse.json({ success: false, message: "Chapter चुनी गई Book / Edition से संबंधित नहीं है।" }, { status: 400 });
-      if (!/^[a-z]{0,3}\\.?\\s*\\d+(?:\\s*\\([a-z0-9]+\\))?(?:[.-]\\d+)?$/i.test(schoolIds.questionNumber)) return NextResponse.json({ success: false, message: "कृपया सही Question Number लिखें, जैसे 1, 1(a), Q.2।" }, { status: 400 });
+      if (!/^[a-z]{0,3}\.?\s*\d+(?:\s*\([a-z0-9]+\))?(?:[.-]\d+)?$/i.test(schoolIds.questionNumber)) return NextResponse.json({ success: false, message: "कृपया सही Question Number लिखें, जैसे 1, 1(a), Q.2।" }, { status: 400 });
     }
     const activeSessions = await adminDb.collection("videoModerationSubmissions")
       .where("creatorId", "==", creatorId)
@@ -212,7 +212,7 @@ export async function POST(req: Request) {
         schoolBookId: schoolIds.schoolBookId,
         schoolChapterId: schoolIds.schoolChapterId,
         schoolQuestionNumber: schoolIds.questionNumber,
-        schoolQuestionKey: schoolIds.questionNumber.toLowerCase().replace(/\\s+/g, ""),
+        schoolQuestionKey: schoolIds.questionNumber.toLowerCase().replace(/\s+/g, ""),
         createdAt: new Date(),
       });
 
