@@ -65,8 +65,8 @@ export default function AdminCategoriesPage() {
       for (const subject of subjects) await loadLevel("book", subject.id);
       const books = allNodes.filter((node) => node.type === "book");
       for (const book of books) await loadLevel("chapter", book.id);
-      const chapters = allNodes.filter((node) => node.type === "chapter");
-      for (const chapter of chapters) await loadLevel("question", chapter.id);
+      // Questions are the largest catalog level. Load them only after an
+      // Admin selects a specific Chapter in the Question editor.
       setCategories([...merged.values()]);
       setNodes(allNodes);
       setNotice("");
@@ -76,6 +76,44 @@ export default function AdminCategoriesPage() {
   }, []);
 
   useEffect(() => { void load(); }, [load]);
+
+  useEffect(() => {
+    if (type !== "question" || !parentId) {
+      setNodes((current) => current.filter((node) => node.type !== "question"));
+      return;
+    }
+    let active = true;
+    async function loadSelectedChapterQuestions() {
+      setBusy(true);
+      try {
+        const questions: LearningNode[] = [];
+        let cursor = "";
+        for (let page = 0; page < 200; page += 1) {
+          const params = new URLSearchParams({ type: "question", parentId, pageSize: "50" });
+          if (cursor) params.set("cursor", cursor);
+          const response = await fetch("/api/content-categories?" + params.toString(), { cache: "no-store" });
+          const data = await response.json();
+          if (!response.ok || data.success !== true || !Array.isArray(data.learningNodes)) {
+            throw new Error(data.message || "Questions could not be loaded");
+          }
+          questions.push(...data.learningNodes as LearningNode[]);
+          if (data.pagination?.hasMore !== true || typeof data.pagination?.nextCursor !== "string") break;
+          cursor = data.pagination.nextCursor;
+          if (page === 199) throw new Error("Too many question pages for one chapter");
+        }
+        if (active) {
+          setNodes((current) => [...current.filter((node) => node.type !== "question"), ...questions]);
+          setNotice("");
+        }
+      } catch (error) {
+        if (active) setNotice(error instanceof Error ? error.message : "Questions could not be loaded");
+      } finally {
+        if (active) setBusy(false);
+      }
+    }
+    void loadSelectedChapterQuestions();
+    return () => { active = false; };
+  }, [type, parentId]);
 
   const config = TYPES.find((item) => item.value === type)!;
   const parents = useMemo(
