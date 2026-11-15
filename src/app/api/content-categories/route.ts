@@ -6,19 +6,17 @@ export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
 const noStore = { "Cache-Control": "no-store, max-age=0" };
 const ID_PATTERN = /^[a-z0-9][a-z0-9_-]{1,63}$/;
-const NODE_TYPES = ["board", "school", "class", "subject", "book", "chapter", "question"] as const;
+const NODE_TYPES = ["subject", "book", "edition", "chapter", "question"] as const;
 type NodeType = typeof NODE_TYPES[number];
-const PARENT_TYPE: Record<NodeType, NodeType | null> = {
-  board: null,
-  school: "board",
-  class: "school",
-  subject: "class",
-  book: "class",
-  chapter: "subject",
-  question: "chapter",
+const PARENT_TYPES: Record<NodeType, NodeType[]> = {
+  subject: [],
+  book: ["subject"],
+  edition: ["book"],
+  chapter: ["edition", "book"],
+  question: ["chapter"],
 };
 const cleanText = (value: unknown, max: number) =>
-  typeof value === "string" ? value.trim().replace(/[\\u0000-\\u001f\\u007f]/g, "").slice(0, max) : "";
+  typeof value === "string" ? value.trim().replace(/[\u0000-\u001f\u007f]/g, "").slice(0, max) : "";
 const cleanList = (value: unknown, maxItems = 80) => Array.isArray(value)
   ? value.map((item) => cleanText(item, 120)).filter(Boolean).slice(0, maxItems)
   : [];
@@ -50,7 +48,7 @@ async function verifyAdmin(req: Request): Promise<string> {
 function authError(error: unknown) {
   const code = error instanceof Error ? error.message : "";
   return NextResponse.json(
-    { success: false, message: code === "UNAUTHORIZED" ? "कृपया पहले लॉगिन करें।" : code === "FORBIDDEN" ? "इस Master Catalog को केवल Admin बदल सकता है।" : "आपका login सत्यापित नहीं हो सका।" },
+    { success: false, message: code === "UNAUTHORIZED" ? "कृपया पहले लॉगिन करें।" : code === "FORBIDDEN" ? "इस Learning Library को केवल Admin बदल सकता है।" : "आपका login सत्यापित नहीं हो सका।" },
     { status: code === "FORBIDDEN" ? 403 : 401, headers: noStore },
   );
 }
@@ -62,27 +60,23 @@ export async function GET() {
       db.collection("contentCategories").where("status", "==", "published").limit(200).get(),
       db.collection("schoolLearningNodes").where("status", "==", "published").limit(1000).get(),
     ]);
-    const categories: Record<string, unknown>[] = categorySnap.docs.map((doc): Record<string, unknown> => {
+    const categories = categorySnap.docs.map((doc) => {
       const { ownerUid: _ownerUid, updatedBy: _updatedBy, createdByUid: _createdByUid, ...data } = doc.data();
       return { id: doc.id, ...data };
     });
-    const schoolNodes: Record<string, unknown>[] = nodeSnap.docs.map((doc): Record<string, unknown> => {
+    const learningBooks = nodeSnap.docs.map((doc) => {
       const { ownerUid: _ownerUid, updatedBy: _updatedBy, createdByUid: _createdByUid, ...data } = doc.data();
       return { id: doc.id, ...data };
-    });
-    return NextResponse.json({ success: true, categories, schoolNodes }, { headers: noStore });
+    }).filter((item) => NODE_TYPES.includes(item.type as NodeType));
+    return NextResponse.json({ success: true, categories, learningBooks }, { headers: noStore });
   } catch {
-    return NextResponse.json({ success: false, message: "Category catalog could not be loaded" }, { status: 500, headers: noStore });
+    return NextResponse.json({ success: false, message: "Learning Library could not be loaded" }, { status: 500, headers: noStore });
   }
 }
 
 export async function POST(req: Request) {
   let uploaderUid = "";
-  try {
-    uploaderUid = await verifyUploader(req);
-  } catch (error) {
-    return authError(error);
-  }
+  try { uploaderUid = await verifyUploader(req); } catch (error) { return authError(error); }
 
   let body: Record<string, unknown>;
   try {
@@ -121,40 +115,46 @@ export async function POST(req: Request) {
         id, name, description, topics,
         iconKey: cleanText(body.iconKey, 32) || "book-open",
         schoolSpecial: body.schoolSpecial === true,
-        status: "published",
-        ownerUid: uploaderUid,
-        createdByUid: uploaderUid,
-        updatedAt: new Date(),
-        ...(current.exists ? {} : { createdAt: new Date() }),
+        status: "published", ownerUid: uploaderUid, createdByUid: uploaderUid,
+        updatedAt: new Date(), ...(current.exists ? {} : { createdAt: new Date() }),
       }, { merge: true });
       return NextResponse.json({ success: true, id }, { headers: noStore });
     }
 
     if (action === "save-school-node" || action === "delete-school-node") {
-      try {
-        uploaderUid = await verifyAdmin(req);
-      } catch (error) {
-        return authError(error);
-      }
+      try { uploaderUid = await verifyAdmin(req); } catch (error) { return authError(error); }
     }
 
     if (action === "save-school-node") {
       const type = cleanText(body.type, 20) as NodeType;
-      const name = cleanText(body.name, 120);
+      const name = cleanText(body.name, 180);
       const parentId = cleanText(body.parentId, 64);
       const existingId = cleanText(body.id, 64);
+      const coverImageUrl = cleanText(body.coverImageUrl, 2048);
+      const publisher = cleanText(body.publisher, 120);
+      const classLabels = cleanList(body.classLabels, 30);
       if (!NODE_TYPES.includes(type) || !name || (existingId && !ID_PATTERN.test(existingId))) {
-        return NextResponse.json({ success: false, message: "School entry की जानकारी सही नहीं है।" }, { status: 400, headers: noStore });
+        return NextResponse.json({ success: false, message: "Learning entry की जानकारी सही नहीं है।" }, { status: 400, headers: noStore });
       }
-      const requiredParent = PARENT_TYPE[type];
-      if (requiredParent === null && parentId) {
-        return NextResponse.json({ success: false, message: "Board top-level entry है।" }, { status: 400, headers: noStore });
+      if (type === "book" && coverImageUrl) {
+        try {
+          const imageUrl = new URL(coverImageUrl);
+          if (imageUrl.protocol !== "https:") throw new Error("invalid protocol");
+        } catch {
+          return NextResponse.json({ success: false, message: "Book cover के लिए valid HTTPS image URL दें।" }, { status: 400, headers: noStore });
+        }
       }
-      if (requiredParent !== null) {
+      if (type !== "book" && (coverImageUrl || publisher || classLabels.length)) {
+        return NextResponse.json({ success: false, message: "Cover, publisher और class mapping केवल Book पर लागू हैं।" }, { status: 400, headers: noStore });
+      }
+      const allowedParents = PARENT_TYPES[type];
+      if (allowedParents.length === 0 && parentId) {
+        return NextResponse.json({ success: false, message: "Subject top-level entry है।" }, { status: 400, headers: noStore });
+      }
+      if (allowedParents.length > 0) {
         if (!ID_PATTERN.test(parentId)) return NextResponse.json({ success: false, message: "पहले सही parent entry चुनें।" }, { status: 400, headers: noStore });
         const parent = await db.collection("schoolLearningNodes").doc(parentId).get();
-        const allowedParentTypes = type === "chapter" ? ["subject", "book"] : [requiredParent];
-        if (!parent.exists || !allowedParentTypes.includes(String(parent.data()?.type)) || parent.data()?.status !== "published") {
+        if (!parent.exists || !allowedParents.includes(String(parent.data()?.type) as NodeType) || parent.data()?.status !== "published") {
           return NextResponse.json({ success: false, message: "चुनी गई parent entry उपलब्ध नहीं है।" }, { status: 400, headers: noStore });
         }
       }
@@ -166,8 +166,9 @@ export async function POST(req: Request) {
       }
       await ref.set({
         id, type, name, parentId: parentId || null, status: "published",
-        managedBy: "admin", updatedBy: uploaderUid,
-        updatedAt: new Date(), ...(current?.exists ? {} : { createdByUid: uploaderUid, createdAt: new Date() }),
+        ...(type === "book" ? { coverImageUrl: coverImageUrl || null, publisher: publisher || null, classLabels } : {}),
+        managedBy: "admin", updatedBy: uploaderUid, updatedAt: new Date(),
+        ...(current?.exists ? {} : { createdByUid: uploaderUid, createdAt: new Date() }),
       }, { merge: true });
       return NextResponse.json({ success: true, id }, { headers: noStore });
     }
@@ -183,7 +184,6 @@ export async function POST(req: Request) {
       await ref.delete();
       return NextResponse.json({ success: true, id }, { headers: noStore });
     }
-
     return NextResponse.json({ success: false, message: "Unknown action" }, { status: 400, headers: noStore });
   } catch {
     return NextResponse.json({ success: false, message: "Catalog update failed" }, { status: 500, headers: noStore });
