@@ -73,3 +73,20 @@ test("public learning discovery requests each hierarchy level from the paginated
   assert.match(learningPage, /data\.pagination\?\.hasMore/);
   assert.match(learningPage, /nextCursors/);
 });
+
+test("deep links resolve one exact published learning node without requiring a full catalog read", () => {
+  assert.match(route, /params\.get\("nodeId"\)/);
+  assert.match(route, /schoolLearningNodes"\)\.doc\(nodeId\)\.get\(\)/);
+  assert.match(route, /doc\.data\(\)\?\.status !== "published"/);
+  assert.match(route, /Published learning entry not found/);
+  assert.match(uploadPage, /fetchLearningNode\(/);
+  assert.match(uploadPage, /nodeId/);
+});
+
+test("large Question catalogs are fetched only for the selected Chapter in Admin", () => {
+  assert.match(adminPage, /type !== "question" \|\| !parentId/);
+  assert.match(adminPage, /type: "question", parentId, pageSize: "50"/);
+  assert.match(adminPage, /setNodes\(\(current\) => \[\.\.\.current\.filter\(\(node\) => node\.type !== "question"\), \.\.\.questions\]\)/);
+  assert.match(adminPage, /if \(active\)/);
+  assert.match(adminPage, /setParentId\(" "\)|setParentId\(" "\)/);
+});
