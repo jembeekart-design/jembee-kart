@@ -14,6 +14,7 @@ export async function GET(req: Request) {
     const videos = snapshot.docs.flatMap((doc) => {
       const data = doc.data();
       if (data.status !== "approved" || data.active !== true || data.moderation !== "safe") return [];
+      if (data.videoAccess === "paid" && (process.env.SHORTS_PAID_VIDEO_CHECKOUT_ENABLED !== "true" || data.paidCheckoutEnabled !== true || data.paidVideoStatus !== "enabled")) return [];
       return [{
         id: doc.id,
         caption: typeof data.caption === "string" ? data.caption.slice(0, 200) : "",
