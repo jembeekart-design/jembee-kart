@@ -199,3 +199,113 @@ internal fun recordNativeWatch(videoId: String, positionSeconds: Long, durationS
         }.start()
     }
 }
+
+
+private data class NativeHistoryItem(val id: String, val caption: String, val creator: String, val position: Long)
+
+@Composable
+internal fun NativeWatchHistoryPanel(auth: FirebaseAuth) {
+    var entries by remember { mutableStateOf<List<NativeHistoryItem>>(emptyList()) }
+    var loading by remember { mutableStateOf(false) }
+    var message by remember { mutableStateOf("Loading watch history…") }
+    var reload by remember { mutableStateOf(0) }
+
+    LaunchedEffect(auth.currentUser?.uid, reload) {
+        val user = auth.currentUser
+        if (user == null) {
+            entries = emptyList()
+            message = "Sign in to see watch history."
+        } else {
+            loading = true
+            message = "Loading watch history…"
+            user.getIdToken(false).addOnCompleteListener { task ->
+                val token = task.result?.token
+                if (!task.isSuccessful || token.isNullOrBlank()) {
+                    loading = false
+                    message = "Please sign in again to load watch history."
+                } else {
+                    Thread {
+                        val result = runCatching {
+                            val connection = java.net.URL("https://jembeeplay.in/api/app/library/history").openConnection() as java.net.HttpURLConnection
+                            try {
+                                connection.requestMethod = "GET"
+                                connection.connectTimeout = 7000
+                                connection.readTimeout = 10000
+                                connection.setRequestProperty("Authorization", "Bearer $token")
+                                check(connection.responseCode in 200..299)
+                                val root = JSONObject(connection.inputStream.bufferedReader().use { it.readText() })
+                                check(root.optBoolean("success"))
+                                val array = root.optJSONArray("history") ?: org.json.JSONArray()
+                                (0 until array.length()).mapNotNull { index ->
+                                    val item = array.optJSONObject(index) ?: return@mapNotNull null
+                                    val id = item.optString("id")
+                                    if (id.isBlank()) null else NativeHistoryItem(
+                                        id.take(160),
+                                        item.optString("caption").take(250).ifBlank { "Watched video" },
+                                        item.optString("displayName").take(100).ifBlank { item.optString("username").take(80) },
+                                        item.optLong("lastPositionSeconds").coerceAtLeast(0)
+                                    )
+                                }
+                            } finally { connection.disconnect() }
+                        }
+                        android.os.Handler(android.os.Looper.getMainLooper()).post {
+                            result.onSuccess {
+                                entries = it
+                                message = if (it.isEmpty()) "No watch history yet." else ""
+                            }.onFailure { message = "Watch history could not load. Tap retry." }
+                            loading = false
+                        }
+                    }.start()
+                }
+            }
+        }
+    }
+
+    Column(
+        modifier = Modifier.fillMaxWidth().padding(top = 18.dp),
+        verticalArrangement = Arrangement.spacedBy(8.dp)
+    ) {
+        Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween) {
+            Text("Watch history")
+            if (entries.isNotEmpty()) {
+                TextButton(onClick = {
+                    val user = auth.currentUser ?: return@TextButton
+                    user.getIdToken(false).addOnCompleteListener { task ->
+                        val token = task.result?.token
+                        if (task.isSuccessful && !token.isNullOrBlank()) Thread {
+                            runCatching {
+                                val connection = java.net.URL("https://jembeeplay.in/api/app/library/history?videoId=all").openConnection() as java.net.HttpURLConnection
+                                try {
+                                    connection.requestMethod = "DELETE"
+                                    connection.connectTimeout = 7000
+                                    connection.readTimeout = 10000
+                                    connection.setRequestProperty("Authorization", "Bearer $token")
+                                    check(connection.responseCode in 200..299)
+                                } finally { connection.disconnect() }
+                            }.onSuccess {
+                                android.os.Handler(android.os.Looper.getMainLooper()).post { entries = emptyList(); message = "Watch history cleared." }
+                            }
+                        }.start()
+                    }
+                }) { Text("Clear all") }
+            }
+        }
+        if (loading) CircularProgressIndicator()
+        else if (message.isNotBlank()) {
+            Text(message)
+            if (message.contains("retry", ignoreCase = true)) TextButton(onClick = { reload++ }) { Text("Retry") }
+        } else {
+            LazyColumn(Modifier.height(190.dp)) {
+                items(entries, key = { it.id }) { entry ->
+                    Column(Modifier.fillMaxWidth().padding(vertical = 6.dp)) {
+                        Text(entry.caption)
+                        Text(
+                            (if (entry.creator.isBlank()) "" else entry.creator + " · ") + "Last position " + entry.position + " sec",
+                            color = androidx.compose.ui.graphics.Color.Gray
+                        )
+                    }
+                }
+            }
+        }
+    }
+}
