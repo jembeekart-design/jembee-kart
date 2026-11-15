@@ -132,6 +132,7 @@ private fun NativeVideoPlayer(video: CatalogVideo, onClose: () -> Unit) {
         player.addListener(listener)
         onDispose {
             player.removeListener(listener)
+            recordNativeWatch(video.id, player.currentPosition / 1000L, player.duration / 1000L)
             player.release()
         }
     }
