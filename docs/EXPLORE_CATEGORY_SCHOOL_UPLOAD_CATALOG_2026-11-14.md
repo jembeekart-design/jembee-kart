@@ -16,6 +16,6 @@
 
 The metadata-only Grade 6 starter catalog is maintained at `src/data/learning-library/ncert-grade-6-seed.json` and can be imported by an authenticated Admin from `/admin/categories`.
 
-It includes 6 subjects, 6 books, 70 chapter records, and 22 independently authored practice questions, with original JEMBEE PLAY SVG book covers. It does not contain NCERT PDF scans, official cover art, verbatim textbook exercises, or answer keys.
+It includes 9 subjects, 9 books, 103 chapter records, and 103 independently authored JEMBEE PLAY practice questions (224 records total), with original JEMBEE PLAY SVG book covers. It does not contain NCERT PDF scans, official cover art, verbatim textbook exercises, or answer keys.
 
 See `docs/JEMBEE_PLAY_BOOK_CENTRIC_LEARNING_LIBRARY.md` for the current data model, import workflow, sources, and copyright restrictions.
