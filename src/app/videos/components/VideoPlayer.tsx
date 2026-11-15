@@ -36,6 +36,44 @@ export default function VideoPlayer({
   const watchedMediaSecondsRef = useRef(0);
   const ninetyPercentReportedRef = useRef(false);
 
+
+
+
+
+  const optimizedVideoUrl = (() => {
+    try {
+      const url = new URL(videoUrl);
+
+      if (
+        url.hostname !== "res.cloudinary.com" ||
+        !url.pathname.includes("/video/upload/")
+      ) {
+        return videoUrl;
+      }
+
+      const marker = "/video/upload/";
+      const index = url.pathname.indexOf(marker);
+      const before = url.pathname.slice(0, index + marker.length);
+      const after = url.pathname.slice(index + marker.length);
+
+      if (/^(q_auto|f_auto)(,|\/)/.test(after)) {
+        return videoUrl;
+      }
+
+      url.pathname = before + "q_auto,f_auto/" + after;
+      return url.toString();
+    } catch {
+      return videoUrl;
+    }
+  })();
+
+  const [progress, setProgress] = useState(0);
+  const [isPlaying, setIsPlaying] = useState(false);
+  const [duration, setDuration] = useState(0);
+  const [currentTime, setCurrentTime] = useState(0);
+  const [isDragging, setIsDragging] = useState(false);
+  const [showControls, setShowControls] = useState(false);
+
   // Server-time telemetry only: never a reward or human-view verification signal.
   useEffect(() => {
     if (!active || !isPlaying || !watchSessionVideoId) return;
@@ -109,42 +147,6 @@ export default function VideoPlayer({
       }
     };
   }, [active, isPlaying, watchSessionVideoId]);
-
-
-
-  const optimizedVideoUrl = (() => {
-    try {
-      const url = new URL(videoUrl);
-
-      if (
-        url.hostname !== "res.cloudinary.com" ||
-        !url.pathname.includes("/video/upload/")
-      ) {
-        return videoUrl;
-      }
-
-      const marker = "/video/upload/";
-      const index = url.pathname.indexOf(marker);
-      const before = url.pathname.slice(0, index + marker.length);
-      const after = url.pathname.slice(index + marker.length);
-
-      if (/^(q_auto|f_auto)(,|\/)/.test(after)) {
-        return videoUrl;
-      }
-
-      url.pathname = before + "q_auto,f_auto/" + after;
-      return url.toString();
-    } catch {
-      return videoUrl;
-    }
-  })();
-
-  const [progress, setProgress] = useState(0);
-  const [isPlaying, setIsPlaying] = useState(false);
-  const [duration, setDuration] = useState(0);
-  const [currentTime, setCurrentTime] = useState(0);
-  const [isDragging, setIsDragging] = useState(false);
-  const [showControls, setShowControls] = useState(false);
 
   useEffect(() => {
     const video = videoRef.current;
