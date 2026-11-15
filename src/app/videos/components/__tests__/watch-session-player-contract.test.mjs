@@ -25,3 +25,7 @@ test("player heartbeats every ten seconds and closes session on cleanup", () => 
 test("player telemetry is not connected to rewards", () => {
   assert.doesNotMatch(player, /createWatchReward|walletBalance|totalCoins|rewardRepository/);
 });
+
+test("watch telemetry effect is declared after playback state", () => {
+  assert.ok(player.indexOf('const [isPlaying, setIsPlaying] = useState(false)') < player.indexOf("// Server-time telemetry only"));
+});
