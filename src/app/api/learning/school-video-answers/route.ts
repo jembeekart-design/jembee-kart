@@ -35,7 +35,7 @@ export async function GET(req: Request) {
   if (!safeId.test(chapterId) && !safeId.test(legacyQuestionId)) {
     return NextResponse.json({ success: false, message: "Valid chapter is required" }, { status: 400, headers: noStore });
   }
-  if (questionNumber && !/^[a-z]{0,3}\.\?\s*\d+(?:\s*\([a-z0-9]+\))?(?:[.-]\d+)?$/i.test(questionNumber)) {
+  if (questionNumber && !/^[a-z]{0,3}\.?\s*\d+(?:\s*\([a-z0-9]+\))?(?:[.-]\d+)?$/i.test(questionNumber)) {
     return NextResponse.json({ success: false, message: "Valid question number is required" }, { status: 400, headers: noStore });
   }
   try {
