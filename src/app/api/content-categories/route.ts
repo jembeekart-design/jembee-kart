@@ -172,6 +172,11 @@ export async function POST(req: Request) {
           name: cleanText(entry.name, cleanText(entry.type, 20) === "question" ? 3000 : 180),
           parentId: cleanText(entry.parentId, 64),
           coverImageUrl: cleanText(entry.coverImageUrl, 2048),
+          questionNumber: cleanText(entry.questionNumber, 40),
+          sourceType: cleanText(entry.sourceType, 32),
+          sourceReference: cleanText(entry.sourceReference, 2048),
+          licenseName: cleanText(entry.licenseName, 120),
+          rightsVerified: entry.rightsVerified === true,
         };
       });
       const ids = new Set<string>();
@@ -180,6 +185,18 @@ export async function POST(req: Request) {
           return NextResponse.json({ success: false, message: "Import file में duplicate ID या invalid entry मिली।" }, { status: 400, headers: noStore });
         }
         ids.add(entry.id);
+        if (entry.type === "question" && entry.sourceType && !["jembee-practice", "user-authored", "open-license", "permissioned-textbook"].includes(entry.sourceType)) {
+          return NextResponse.json({ success: false, message: "Question sourceType मान्य नहीं है।" }, { status: 400, headers: noStore });
+        }
+        if (entry.type === "question" && entry.sourceType === "permissioned-textbook" && (!entry.rightsVerified || !entry.sourceReference.startsWith("https://"))) {
+          return NextResponse.json({ success: false, message: "Textbook question publish करने के लिए Admin-verified permission और HTTPS source reference आवश्यक है।" }, { status: 400, headers: noStore });
+        }
+        if (entry.type === "question" && entry.sourceType === "open-license" && (!entry.licenseName || !entry.sourceReference.startsWith("https://"))) {
+          return NextResponse.json({ success: false, message: "Open-license question के लिए license name और HTTPS source reference आवश्यक है।" }, { status: 400, headers: noStore });
+        }
+        if (entry.type !== "question" && (entry.questionNumber || entry.sourceType || entry.sourceReference || entry.licenseName || entry.rightsVerified)) {
+          return NextResponse.json({ success: false, message: "Question source metadata केवल Question entry पर लागू है।" }, { status: 400, headers: noStore });
+        }
         if (entry.type === "book") {
           if (!entry.coverImageUrl) return NextResponse.json({ success: false, message: "हर Book entry के साथ cover image आवश्यक है।" }, { status: 400, headers: noStore });
           if (!isAllowedBookCover(entry.coverImageUrl)) {
@@ -219,6 +236,13 @@ export async function POST(req: Request) {
           // Re-seeding must never silently re-publish an entry that an Admin unpublished.
           status: existingNode.exists && typeof existingStatus === "string" ? existingStatus : "published",
           ...(entry.type === "book" ? { coverImageUrl: entry.coverImageUrl } : {}),
+          ...(entry.type === "question" ? {
+            ...(entry.questionNumber ? { questionNumber: entry.questionNumber } : {}),
+            ...(entry.sourceType ? { sourceType: entry.sourceType } : {}),
+            ...(entry.sourceReference ? { sourceReference: entry.sourceReference } : {}),
+            ...(entry.licenseName ? { licenseName: entry.licenseName } : {}),
+            ...(entry.sourceType ? { rightsVerified: entry.rightsVerified } : {}),
+          } : {}),
           managedBy: "admin", updatedBy: uploaderUid, updatedAt: new Date(),
           importedAt: new Date(),
         }, { merge: true });
@@ -266,8 +290,25 @@ export async function POST(req: Request) {
       const parentId = cleanText(body.parentId, 64);
       const existingId = cleanText(body.id, 64);
       const coverImageUrl = cleanText(body.coverImageUrl, 2048);
+      const questionNumber = cleanText(body.questionNumber, 40);
+      const sourceType = cleanText(body.sourceType, 32);
+      const sourceReference = cleanText(body.sourceReference, 2048);
+      const licenseName = cleanText(body.licenseName, 120);
+      const rightsVerified = body.rightsVerified === true;
       if (!NODE_TYPES.includes(type) || !name || (existingId && !ID_PATTERN.test(existingId))) {
         return NextResponse.json({ success: false, message: "Learning entry की जानकारी सही नहीं है।" }, { status: 400, headers: noStore });
+      }
+      if (type === "question" && sourceType && !["jembee-practice", "user-authored", "open-license", "permissioned-textbook"].includes(sourceType)) {
+        return NextResponse.json({ success: false, message: "Question sourceType मान्य नहीं है।" }, { status: 400, headers: noStore });
+      }
+      if (type === "question" && sourceType === "permissioned-textbook" && (!rightsVerified || !sourceReference.startsWith("https://"))) {
+        return NextResponse.json({ success: false, message: "Textbook question publish करने के लिए Admin-verified permission और HTTPS source reference आवश्यक है।" }, { status: 400, headers: noStore });
+      }
+      if (type === "question" && sourceType === "open-license" && (!licenseName || !sourceReference.startsWith("https://"))) {
+        return NextResponse.json({ success: false, message: "Open-license question के लिए license name और HTTPS source reference आवश्यक है।" }, { status: 400, headers: noStore });
+      }
+      if (type !== "question" && (questionNumber || sourceType || sourceReference || licenseName || rightsVerified)) {
+        return NextResponse.json({ success: false, message: "Question source metadata केवल Question entry पर लागू है।" }, { status: 400, headers: noStore });
       }
       if (type === "book" && !coverImageUrl) return NextResponse.json({ success: false, message: "Book cover image आवश्यक है।" }, { status: 400, headers: noStore });
       if (type === "book" && coverImageUrl) {
@@ -298,6 +339,13 @@ export async function POST(req: Request) {
       await ref.set({
         id, type, name, parentId: parentId || null, status: "published",
         ...(type === "book" ? { coverImageUrl } : {}),
+        ...(type === "question" ? {
+          ...(questionNumber ? { questionNumber } : {}),
+          ...(sourceType ? { sourceType } : {}),
+          ...(sourceReference ? { sourceReference } : {}),
+          ...(licenseName ? { licenseName } : {}),
+          ...(sourceType ? { rightsVerified } : {}),
+        } : {}),
         managedBy: "admin", updatedBy: uploaderUid, updatedAt: new Date(),
         ...(current?.exists ? {} : { createdByUid: uploaderUid, createdAt: new Date() }),
       }, { merge: true });
