@@ -33,6 +33,54 @@ export default function VideoPlayer({
   const watchedMediaSecondsRef = useRef(0);
   const ninetyPercentReportedRef = useRef(false);
 
+  // Server-time telemetry only: never a reward or human-view verification signal.
+  useEffect(() => {
+    if (!active) return;
+    let cancelled = false;
+    let sessionId: string | null = null;
+    let heartbeatTimer: ReturnType<typeof setInterval> | null = null;
+
+    const send = async (action: "start" | "heartbeat" | "stop", currentSessionId?: string) => {
+      const user = auth.currentUser;
+      if (!user) return null;
+      try {
+        const token = await user.getIdToken();
+        const response = await fetch("/api/shorts/watch-session", {
+          method: "POST",
+          cache: "no-store",
+          headers: { "Content-Type": "application/json", Authorization: `Bearer ${token}` },
+          body: JSON.stringify(action === "start"
+            ? { action, videoId: videoUrl.split("/").pop() }
+            : { action, sessionId: currentSessionId }),
+        });
+        if (!response.ok) return null;
+        return await response.json() as { sessionId?: string; success?: boolean };
+      } catch {
+        return null;
+      }
+    };
+
+    void (async () => {
+      const result = await send("start");
+      if (cancelled) {
+        if (result?.sessionId) void send("stop", result.sessionId);
+        return;
+      }
+      if (!result?.sessionId) return;
+      sessionId = result.sessionId;
+      heartbeatTimer = setInterval(() => {
+        if (sessionId) void send("heartbeat", sessionId);
+      }, 10000);
+    })();
+
+    return () => {
+      cancelled = true;
+      if (heartbeatTimer) clearInterval(heartbeatTimer);
+      if (sessionId) void send("stop", sessionId);
+    };
+  }, [active, videoUrl]);
+
+
 
   const optimizedVideoUrl = (() => {
     try {
