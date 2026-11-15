@@ -123,5 +123,5 @@ test("re-importing the NCERT seed never silently republishes an Admin-unpublishe
 test("book cover editor accepts the bundled local SVG artwork paths", () => {
   assert.match(adminPage, /type="text" required value=\{coverImageUrl\}/);
   assert.match(adminPage, /learning-covers\/book\.svg/);
-  assert.match(route, /\^\\\/learning-covers\\\/[a-z0-9-]+\\\.svg\$/);
+  assert.match(route, /\^\\\/learning-covers\\\/\[a-z0-9-\]\+\\\.svg\$/);
 });
