@@ -209,11 +209,15 @@ export async function POST(req: Request) {
           return NextResponse.json({ success: false, message: "Cover image केवल Book entry पर रखें।" }, { status: 400, headers: noStore });
         }
       }
+      const existingNodeSnapshots = await Promise.all(normalized.map((entry) => db.collection("schoolLearningNodes").doc(entry.id).get()));
       const batch = db.batch();
-      for (const entry of normalized) {
+      for (const [index, entry] of normalized.entries()) {
+        const existingNode = existingNodeSnapshots[index];
+        const existingStatus = existingNode.data()?.status;
         batch.set(db.collection("schoolLearningNodes").doc(entry.id), {
           id: entry.id, type: entry.type, name: entry.name, parentId: entry.parentId || null,
-          status: "published",
+          // Re-seeding must never silently re-publish an entry that an Admin unpublished.
+          status: existingNode.exists && typeof existingStatus === "string" ? existingStatus : "published",
           ...(entry.type === "book" ? { coverImageUrl: entry.coverImageUrl } : {}),
           managedBy: "admin", updatedBy: uploaderUid, updatedAt: new Date(),
           importedAt: new Date(),
