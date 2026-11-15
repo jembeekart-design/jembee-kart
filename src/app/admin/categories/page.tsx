@@ -108,11 +108,7 @@ export default function AdminCategoriesPage() {
         type,
         name: name.trim(),
         parentId: parentId || null,
-        ...(type === "book" ? {
-          coverImageUrl: coverImageUrl.trim(),
-          publisher: publisher.trim(),
-          classLabels: classLabelsText.split(/[，,\n]/).map((value) => value.trim()).filter(Boolean),
-        } : {}),
+        ...(type === "book" ? { coverImageUrl: coverImageUrl.trim() } : {}),
         ...(editingId ? { id: editingId } : {}),
       });
       setNotice(editingId ? "Learning entry updated." : "Learning entry added.");
