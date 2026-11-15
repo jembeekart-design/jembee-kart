@@ -20,6 +20,7 @@ test("master catalog validates hierarchy and prevents deleting a parent with chi
   assert.match(route, /coverImageUrl/);
   assert.match(route, /classLabels/);
   assert.match(route, /bulk-import-learning-library/);
+  assert.match(route, /हर Book entry के साथ cover image आवश्यक है/);
   assert.match(adminPage, /Choose JSON dataset/);
   assert.match(route, /where\("parentId", "==", id\)/);
   assert.match(route, /!children\.empty/);
