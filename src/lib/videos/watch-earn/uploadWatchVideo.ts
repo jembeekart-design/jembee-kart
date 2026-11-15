@@ -22,7 +22,6 @@ interface UploadWatchVideoData {
   schoolClassId?: string;
   schoolSubjectId?: string;
   schoolBookId?: string;
-  schoolEditionId?: string;
   schoolChapterId?: string;
   schoolQuestionId?: string;
   hashtags: string[];
@@ -80,7 +79,6 @@ export async function uploadWatchVideo({
   schoolClassId,
   schoolSubjectId,
   schoolBookId,
-  schoolEditionId,
   schoolChapterId,
   schoolQuestionId,
   hashtags,
@@ -191,7 +189,6 @@ export async function uploadWatchVideo({
       schoolClassId,
       schoolSubjectId,
       schoolBookId,
-      schoolEditionId,
       schoolChapterId,
       schoolQuestionId,
       hashtags,
