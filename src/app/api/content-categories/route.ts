@@ -237,11 +237,11 @@ export async function POST(req: Request) {
           status: existingNode.exists && typeof existingStatus === "string" ? existingStatus : "published",
           ...(entry.type === "book" ? { coverImageUrl: entry.coverImageUrl } : {}),
           ...(entry.type === "question" ? {
-            ...(entry.questionNumber ? { questionNumber: entry.questionNumber } : {}),
-            ...(entry.sourceType ? { sourceType: entry.sourceType } : {}),
-            ...(entry.sourceReference ? { sourceReference: entry.sourceReference } : {}),
-            ...(entry.licenseName ? { licenseName: entry.licenseName } : {}),
-            ...(entry.sourceType ? { rightsVerified: entry.rightsVerified } : {}),
+            questionNumber: entry.questionNumber,
+            sourceType: entry.sourceType,
+            sourceReference: entry.sourceReference,
+            licenseName: entry.licenseName,
+            rightsVerified: entry.rightsVerified,
           } : {}),
           managedBy: "admin", updatedBy: uploaderUid, updatedAt: new Date(),
           importedAt: new Date(),
@@ -339,13 +339,7 @@ export async function POST(req: Request) {
       await ref.set({
         id, type, name, parentId: parentId || null, status: "published",
         ...(type === "book" ? { coverImageUrl } : {}),
-        ...(type === "question" ? {
-          ...(questionNumber ? { questionNumber } : {}),
-          ...(sourceType ? { sourceType } : {}),
-          ...(sourceReference ? { sourceReference } : {}),
-          ...(licenseName ? { licenseName } : {}),
-          ...(sourceType ? { rightsVerified } : {}),
-        } : {}),
+        ...(type === "question" ? { questionNumber, sourceType, sourceReference, licenseName, rightsVerified } : {}),
         managedBy: "admin", updatedBy: uploaderUid, updatedAt: new Date(),
         ...(current?.exists ? {} : { createdByUid: uploaderUid, createdAt: new Date() }),
       }, { merge: true });
