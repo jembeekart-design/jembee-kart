@@ -14,6 +14,9 @@ test("Learning Library API scopes published entries by type and parent", () => {
 test("Learning Library API supports bounded cursor pagination and server-side search", () => {
   assert.match(route, /PAGE_SIZE_MAX = 40/);
   assert.match(route, /SCAN_BATCH = 100/);
+  assert.match(route, /MAX_SCAN_PER_REQUEST = 500/);
+  assert.match(route, /CURSOR_ID_PATTERN/);
+  assert.match(route, /cursorData\\?\\.type !== type/);
   assert.match(route, /startAfter\(lastDoc\)/);
   assert.match(route, /name\.toLocaleLowerCase\(\)\.includes\(search\)/);
   assert.match(route, /nextCursor/);
