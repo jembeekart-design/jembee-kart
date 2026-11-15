@@ -58,12 +58,46 @@ private fun JembeeMobileApp() {
         ) { padding ->
             Column(Modifier.fillMaxSize().padding(padding)) {
                 if (selected != "Shorts") {
-                    Row(Modifier.fillMaxWidth().padding(horizontal = 18.dp, vertical = 12.dp), verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.SpaceBetween) {
-                        Column {
-                            Text("JEMBEE PLAY", fontSize = 22.sp, fontWeight = FontWeight.Black, color = MaterialTheme.colorScheme.onBackground)
-                            Text("WATCH · LEARN · CREATE · SHARE", fontSize = 10.sp, letterSpacing = 1.sp, color = Muted)
+                    Box(
+                        Modifier.fillMaxWidth().padding(horizontal = 14.dp, vertical = 10.dp)
+                            .background(
+                                Brush.linearGradient(listOf(Color(0xFF10172D), Color(0xFF243B68), Color(0xFF111629))),
+                                RoundedCornerShape(24.dp)
+                            ).padding(horizontal = 16.dp, vertical = 17.dp)
+                    ) {
+                        Column(Modifier.fillMaxWidth()) {
+                            Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(12.dp)) {
+                                Surface(
+                                    shape = RoundedCornerShape(16.dp),
+                                    color = Color(0xFFFFD782),
+                                    modifier = Modifier.size(48.dp)
+                                ) {
+                                    Box(contentAlignment = Alignment.Center) {
+                                        Text("J", color = Color(0xFF17213B), fontSize = 30.sp, fontWeight = FontWeight.Black)
+                                    }
+                                }
+                                Column(Modifier.weight(1f)) {
+                                    Text("JEMBEE", color = Color.White, fontSize = 25.sp, fontWeight = FontWeight.Black, letterSpacing = 1.1.sp)
+                                    Text("PLAY", color = Color(0xFFFFD782), fontSize = 15.sp, fontWeight = FontWeight.ExtraBold, letterSpacing = 4.sp)
+                                }
+                                TextButton(onClick = { dark = !dark }) {
+                                    Text(if (dark) "☀ Light" else "☾ Dark", color = Color(0xFFFFD782), fontWeight = FontWeight.Bold)
+                                }
+                            }
+                            Spacer(Modifier.height(14.dp))
+                            Text(
+                                "WATCH  •  LEARN  •  CREATE  •  SHARE",
+                                color = Color.White.copy(alpha = 0.88f),
+                                fontSize = 10.sp,
+                                fontWeight = FontWeight.SemiBold,
+                                letterSpacing = 1.25.sp
+                            )
+                            Spacer(Modifier.height(10.dp))
+                            Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(7.dp)) {
+                                Box(Modifier.size(7.dp).background(Color(0xFFFFD782), RoundedCornerShape(50)))
+                                Text("YOUR WORLD OF VIDEO & LEARNING", color = Color(0xFFFFE7B5), fontSize = 9.sp, fontWeight = FontWeight.Bold, letterSpacing = 1.sp)
+                            }
                         }
-                        TextButton(onClick = { dark = !dark }) { Text(if (dark) "Light" else "Dark") }
                     }
                 }
                 if (remoteConfig.maintenanceEnabled) {
