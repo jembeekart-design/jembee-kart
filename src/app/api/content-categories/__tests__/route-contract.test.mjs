@@ -45,5 +45,6 @@ test("admin page exposes authenticated create, edit and delete controls", () => 
 
 test("public catalog reads only published nodes and Explore continues using the published catalog", () => {
   assert.match(route, /where\("status", "==", "published"\)/);
-  assert.match(explorePage, /teacher \/ uploader/);
+  assert.match(explorePage, /Book-centric Learning Library/);
+  assert.doesNotMatch(explorePage, /Board → School → Class/);
 });
