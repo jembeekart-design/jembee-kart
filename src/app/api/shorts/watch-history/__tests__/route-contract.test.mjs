@@ -29,3 +29,11 @@ test("watch history never creates rewards", () => {
   assert.doesNotMatch(source, /wallet|coin|reward|payout/i);
   assert.match(source, /Cache-Control.*no-store/);
 });
+
+
+test("watch history groups repeated sessions into one video entry", () => {
+  assert.match(source, /const grouped = new Map<string/);
+  assert.match(source, /current\.sessionCount \+= 1/);
+  assert.match(source, /sessionCount: 1/);
+  assert.match(source, /Array\.from\(grouped\.values\(\)\)/);
+});
