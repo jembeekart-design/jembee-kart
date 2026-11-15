@@ -58,3 +58,14 @@ test("watch sessions expire after a bounded maximum age", () => {
 test("watch telemetry receives a finite retention expiry", () => {
   assert.match(source, /expiresAt: new Date\(now \+ 90 \* 24 \* 60 \* 60 \* 1000\)/);
 });
+
+
+test("Firestore TTL is configured for watch session expiry", () => {
+  const configPath = resolve(here, "../../../../../../firestore.indexes.json");
+  const config = JSON.parse(readFileSync(configPath, "utf8"));
+  assert.ok(config.fieldOverrides.some((entry) =>
+    entry.collectionGroup === "videoWatchSessions" &&
+    entry.fieldPath === "expiresAt" &&
+    entry.ttl === true
+  ));
+});
