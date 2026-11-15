@@ -567,6 +567,7 @@ export default function VerticalVideoFeed({
                   // bounded byte-range Drive stream endpoint. This prevents the
                   // browser from fetching a full source file during preload.
                   videoUrl={`/api/shorts/video-stream/${encodeURIComponent(video.id)}`}
+                  watchSessionVideoId={video.videoAccess === "free" ? video.id : undefined}
                   isMuted={isMuted}
                   active={effectiveActiveVideoId === video.id}
                   playbackRate={playbackSpeeds[video.id] || 1}
