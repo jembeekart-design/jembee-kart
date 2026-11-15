@@ -150,6 +150,24 @@ export async function POST(req: Request) {
           return NextResponse.json({ success: false, message: "Subject top-level entry होना चाहिए।" }, { status: 400, headers: noStore });
         }
       }
+      const existingEntries = await Promise.all(normalized.map(async (entry) => {
+        const ref = db.collection("schoolLearningNodes").doc(entry.id);
+        const snap = await ref.get();
+        return { entry, ref, snap };
+      }));
+      for (const { entry, ref, snap } of existingEntries) {
+        if (!snap.exists) continue;
+        const existing = snap.data() || {};
+        if (existing.type !== entry.type) {
+          return NextResponse.json({ success: false, message: "Import किसी existing entry का type नहीं बदल सकता।" }, { status: 409, headers: noStore });
+        }
+        if ((existing.parentId || "") !== entry.parentId) {
+          const children = await db.collection("schoolLearningNodes").where("parentId", "==", entry.id).limit(1).get();
+          if (!children.empty) {
+            return NextResponse.json({ success: false, message: "Import किसी ऐसे parent को move नहीं कर सकता जिसके अंदर child entries हैं।" }, { status: 409, headers: noStore });
+          }
+        }
+      }
       const batch = db.batch();
       for (const entry of normalized) {
         batch.set(db.collection("schoolLearningNodes").doc(entry.id), {
