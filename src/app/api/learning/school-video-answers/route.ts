@@ -10,7 +10,14 @@ export async function GET(req: Request) {
     return NextResponse.json({ success: false, message: "Valid question is required" }, { status: 400, headers: { "Cache-Control": "no-store" } });
   }
   try {
-    const snapshot = await getAdminDb().collection("watchEarnVideos").where("schoolQuestionId", "==", questionId).limit(100).get();
+    const db = getAdminDb();
+    const questionSnapshot = await db.collection("schoolLearningNodes").doc(questionId).get();
+    const question = questionSnapshot.data();
+    if (!questionSnapshot.exists || question?.type !== "question" || question.status !== "published") {
+      return NextResponse.json({ success: false, message: "Published learning question not found" }, { status: 404, headers: { "Cache-Control": "no-store" } });
+    }
+
+    const snapshot = await db.collection("watchEarnVideos").where("schoolQuestionId", "==", questionId).limit(100).get();
     const videos = snapshot.docs.flatMap((doc) => {
       const data = doc.data();
       if (data.status !== "approved" || data.active !== true || data.moderation !== "safe") return [];
