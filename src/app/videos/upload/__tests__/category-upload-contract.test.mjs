@@ -27,3 +27,14 @@ test("upload API validates the direct Subject to Book to Chapter to Question cha
   assert.match(startRoute, /schoolQuestionId/);
   assert.doesNotMatch(startRoute, /schoolEditionId/);
 });
+
+
+test("teacher enters a textbook question number instead of selecting an Admin-created question node", () => {
+  assert.match(page, /किताब का Question Number लिखें/);
+  assert.match(page, /questionNumber: schoolQuestionNumber/);
+  assert.doesNotMatch(page, /schoolQuestionId|questionOptions|Question चुनें<select/);
+  assert.match(startRoute, /schoolQuestionNumber: schoolIds\.questionNumber/);
+  assert.match(startRoute, /schoolChapterId: schoolIds\.schoolChapterId/);
+  assert.match(startRoute, /schoolQuestionKey/);
+  assert.doesNotMatch(startRoute, /schoolQuestionId/);
+});
