@@ -29,6 +29,7 @@ export default function AdminCategoriesPage() {
   const [nodes, setNodes] = useState<LearningNode[]>([]);
   const [busy, setBusy] = useState(false);
   const [saving, setSaving] = useState(false);
+  const [importing, setImporting] = useState(false);
   const [notice, setNotice] = useState("");
   const [type, setType] = useState<NodeType>("subject");
   const [name, setName] = useState("");
@@ -144,6 +145,29 @@ export default function AdminCategoriesPage() {
     } finally { setSaving(false); }
   }
 
+  async function importLibraryFile(file: File) {
+    setImporting(true);
+    setNotice("");
+    try {
+      const parsed: unknown = JSON.parse(await file.text());
+      const entries = Array.isArray(parsed) ? parsed : parsed && typeof parsed === "object" && "entries" in parsed && Array.isArray((parsed as { entries?: unknown[] }).entries) ? (parsed as { entries: unknown[] }).entries : [];
+      if (!entries.length) throw new Error("JSON file में entries की सूची नहीं मिली।");
+      let imported = 0;
+      for (let index = 0; index < entries.length; index += 50) {
+        const chunk = entries.slice(index, index + 50);
+        const result = await adminRequest({ action: "bulk-import-learning-library", entries: chunk });
+        imported += Number(result.imported || 0);
+        setNotice(`Import progress: ${imported} / ${entries.length}`);
+      }
+      setNotice(`Learning Library में ${imported} entries import हो गईं।`);
+      await load();
+    } catch (error) {
+      setNotice(error instanceof Error ? error.message : "Import failed");
+    } finally {
+      setImporting(false);
+    }
+  }
+
   const books = nodes.filter((node) => node.type === "book");
   return (
     <main className="min-h-screen bg-[#080d18] px-4 py-6 text-white sm:px-8">
@@ -159,6 +183,15 @@ export default function AdminCategoriesPage() {
           <p className="mt-2 text-xs text-slate-400">Bulk import support aur verified textbook datasets अगला चरण हैं। अभी यह screen master entries manage करती है।</p>
         </section>
         {notice && <p role="status" className="mt-4 rounded-xl border border-cyan-300/20 bg-cyan-300/10 p-3 text-sm">{notice}</p>}
+        <section className="mt-5 rounded-3xl border border-cyan-300/20 bg-[#0c1725] p-5">
+          <h2 className="text-lg font-bold">Bulk import preloaded books and questions</h2>
+          <p className="mt-2 text-sm leading-6 text-slate-300">Verified JSON dataset एक बार चुनें। System entries को 50-record batches में import करेगा; हर book, chapter और question अलग-अलग manually add करने की जरूरत नहीं होगी। Parent entries पहले से मौजूद हों या उसी dataset में शामिल हों।</p>
+          <label className="mt-4 inline-flex cursor-pointer items-center gap-2 rounded-xl bg-cyan-400 px-4 py-3 text-sm font-bold text-slate-950">
+            {importing ? "Importing…" : "Choose JSON dataset"}
+            <input type="file" accept="application/json,.json" disabled={importing} className="sr-only" onChange={(event) => { const file = event.currentTarget.files?.[0]; if (file) void importLibraryFile(file); event.currentTarget.value = ""; }}/>
+          </label>
+          <p className="mt-3 text-xs text-slate-400">Expected fields: id, type, name, parentId. Book entries can also include coverImageUrl (HTTPS), publisher and classLabels.</p>
+        </section>
         <section className="mt-6 rounded-3xl border border-white/10 bg-white/[0.04] p-5">
           <h2 className="text-lg font-bold">{editingId ? "Edit learning entry" : "Add learning entry"}</h2>
           <form onSubmit={saveNode} className="mt-4 grid gap-3 sm:grid-cols-2">
