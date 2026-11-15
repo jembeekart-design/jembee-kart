@@ -102,11 +102,22 @@ export async function GET(req: Request) {
   const progressSnap = await db.collection("users").doc(uid)
     .collection("watchProgress").orderBy("updatedAt", "desc").limit(50).get();
 
-  const items = await Promise.all(progressSnap.docs.map(async (progressDoc) => {
+  // Fetch each referenced video once, in parallel, instead of issuing a
+  // sequential read for every progress row.
+  const progressRows = progressSnap.docs.map((progressDoc) => {
     const progress = progressDoc.data();
     const videoId = typeof progress.videoId === "string" ? progress.videoId : progressDoc.id;
-    const videoSnap = await db.collection("watchEarnVideos").doc(videoId).get();
-    if (!videoSnap.exists) return null;
+    return { progress, videoId };
+  });
+  const videoIds = Array.from(new Set(progressRows.map((row) => row.videoId).filter(Boolean)));
+  const videoSnapshots = await Promise.all(videoIds.map((videoId) =>
+    db.collection("watchEarnVideos").doc(videoId).get()
+  ));
+  const videosById = new Map(videoIds.map((videoId, index) => [videoId, videoSnapshots[index]]));
+
+  const items = progressRows.map(({ progress, videoId }) => {
+    const videoSnap = videosById.get(videoId);
+    if (!videoSnap?.exists) return null;
     const video = videoSnap.data()!;
     if (video.status !== "approved" || video.active !== true ||
         video.moderation !== "safe" || video.videoAccess !== "free") return null;
@@ -120,7 +131,7 @@ export async function GET(req: Request) {
       positionSeconds: typeof progress.positionSeconds === "number" ? progress.positionSeconds : 0,
       updatedAt: progress.updatedAt?.toDate?.()?.toISOString?.() ?? null,
     };
-  }));
+  });
 
-  return reply(true, 200, { items: items.filter(Boolean) });
+  return reply(true, 200, { items: items.filter(Boolean), scannedProgress: progressSnap.size, limit: 50 });
 }
