@@ -60,7 +60,6 @@ export async function POST(req: Request) {
     schoolClassId?: unknown;
     schoolSubjectId?: unknown;
     schoolBookId?: unknown;
-    schoolEditionId?: unknown;
     schoolChapterId?: unknown;
     schoolQuestionId?: unknown;
   };
@@ -109,7 +108,6 @@ export async function POST(req: Request) {
   const schoolIds = {
     schoolSubjectId: safeId(body.schoolSubjectId),
     schoolBookId: safeId(body.schoolBookId),
-    schoolEditionId: safeId(body.schoolEditionId),
     schoolChapterId: safeId(body.schoolChapterId),
     schoolQuestionId: safeId(body.schoolQuestionId),
   };
@@ -139,7 +137,7 @@ export async function POST(req: Request) {
     if (categoryTopic && !allowedTopics.includes(categoryTopic)) return NextResponse.json({ success: false, message: "चुना गया Topic इस Category का हिस्सा नहीं है।" }, { status: 400 });
     if (categoryId === "school") {
       const nodeTypes: Record<keyof typeof schoolIds, string> = {
-        schoolSubjectId: "subject", schoolBookId: "book", schoolEditionId: "edition",
+        schoolSubjectId: "subject", schoolBookId: "book",
         schoolChapterId: "chapter", schoolQuestionId: "question",
       };
       const nodeSnaps = await Promise.all(Object.entries(schoolIds).filter(([, id]) => Boolean(id)).map(async ([key, id]) => ({ key, snap: await adminDb.collection("schoolLearningNodes").doc(id).get() })));
@@ -151,8 +149,7 @@ export async function POST(req: Request) {
         nodeData.set(key, snap.data()!);
       }
       if (nodeData.get("schoolBookId")?.parentId !== schoolIds.schoolSubjectId) return NextResponse.json({ success: false, message: "Book चुने गए Subject से संबंधित नहीं है।" }, { status: 400 });
-      if (schoolIds.schoolEditionId && nodeData.get("schoolEditionId")?.parentId !== schoolIds.schoolBookId) return NextResponse.json({ success: false, message: "Edition चुनी गई Book से संबंधित नहीं है।" }, { status: 400 });
-      const chapterParentId = schoolIds.schoolEditionId || schoolIds.schoolBookId;
+      const chapterParentId = schoolIds.schoolBookId;
       if (nodeData.get("schoolChapterId")?.parentId !== chapterParentId) return NextResponse.json({ success: false, message: "Chapter चुनी गई Book / Edition से संबंधित नहीं है।" }, { status: 400 });
       if (nodeData.get("schoolQuestionId")?.parentId !== schoolIds.schoolChapterId) return NextResponse.json({ success: false, message: "Question चुने गए Chapter से संबंधित नहीं है।" }, { status: 400 });
     }
