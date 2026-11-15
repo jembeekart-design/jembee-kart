@@ -83,6 +83,7 @@ fun NativeCatalogSection() {
                             }
                             Text(video.title, Modifier.padding(top = 8.dp), maxLines = 2, fontWeight = FontWeight.Bold, fontSize = 14.sp)
                             Text(video.creator + " · " + video.views.toString() + " views", color = Color.Gray, fontSize = 11.sp)
+                            NativeSaveVideoButton(video.id)
                         }
                     }
                 }
@@ -201,6 +202,7 @@ fun NativeShortsScreen() {
                         }
                         Text(video.title, Modifier.padding(top = 8.dp), fontSize = 16.sp, fontWeight = FontWeight.Bold, maxLines = 2)
                         Text(video.creator + " · " + video.views + " views", color = Color.Gray, fontSize = 12.sp)
+                        NativeSaveVideoButton(video.id)
                     }
                 }
             }
