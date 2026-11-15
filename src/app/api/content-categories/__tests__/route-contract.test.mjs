@@ -113,3 +113,9 @@ test("NCERT Grade 6 seed is Admin-only and is available from the built-in catalo
   assert.match(adminPage, /Add NCERT Grade 6 starter catalog/);
   assert.match(adminPage, /9 Subjects, 9 Books, 103 Chapters और 103 original JEMBEE PLAY practice questions/);
 });
+
+test("re-importing the NCERT seed never silently republishes an Admin-unpublished entry", () => {
+  assert.match(route, /existingNodeSnapshots = await Promise\.all\(normalized\.map/);
+  assert.match(route, /existingNode\.exists && typeof existingStatus === "string" \? existingStatus : "published"/);
+  assert.match(route, /Re-seeding must never silently re-publish/);
+});
