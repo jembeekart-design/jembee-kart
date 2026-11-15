@@ -7,8 +7,8 @@
 
 export const EXOCLICK_ZONES = {
   longVideo: {
-    id: "6089786",
-    vastUrl: "https://s.magsrv.com/v1/vast.php?id=6089786",
+    id: "6090508",
+    vastUrl: "https://s.magsrv.com/v1/vast.php?idzone=6090508",
     format: "long-video",
   },
   shorts: {
