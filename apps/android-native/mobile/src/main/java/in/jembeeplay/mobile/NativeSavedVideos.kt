@@ -167,3 +167,35 @@ internal fun NativeSaveVideoButton(videoId: String) {
     }
     message?.let { Text(it, color = androidx.compose.ui.graphics.Color.Gray) }
 }
+
+
+internal fun recordNativeWatch(videoId: String, positionSeconds: Long, durationSeconds: Long) {
+    if (positionSeconds <= 0L || durationSeconds <= 0L) return
+    val user = FirebaseAuth.getInstance().currentUser ?: return
+    user.getIdToken(false).addOnCompleteListener { tokenTask ->
+        val token = tokenTask.result?.token
+        if (!tokenTask.isSuccessful || token.isNullOrBlank()) return@addOnCompleteListener
+        Thread {
+            runCatching {
+                val connection = java.net.URL("https://jembeeplay.in/api/app/library/history").openConnection() as java.net.HttpURLConnection
+                try {
+                    connection.requestMethod = "POST"
+                    connection.connectTimeout = 7000
+                    connection.readTimeout = 10000
+                    connection.doOutput = true
+                    connection.setRequestProperty("Authorization", "Bearer $token")
+                    connection.setRequestProperty("Content-Type", "application/json")
+                    val payload = JSONObject()
+                        .put("videoId", videoId)
+                        .put("positionSeconds", positionSeconds.toDouble())
+                        .put("durationSeconds", durationSeconds.toDouble())
+                        .put("completed", positionSeconds.toDouble() >= durationSeconds.toDouble() * 0.9)
+                    connection.outputStream.use { it.write(payload.toString().toByteArray(Charsets.UTF_8)) }
+                    check(connection.responseCode in 200..299)
+                } finally {
+                    connection.disconnect()
+                }
+            }
+        }.start()
+    }
+}
