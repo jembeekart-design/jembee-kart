@@ -276,6 +276,7 @@ fun NativeLearningScreen() {
     var answers by remember { mutableStateOf<List<String>>(emptyList()) }
     var answersLoading by remember { mutableStateOf(false) }
     var answersFailed by remember { mutableStateOf(false) }
+    var answersReloadKey by remember { mutableIntStateOf(0) }
     var selectedQuestion by remember { mutableStateOf<LearningNode?>(null) }
 
     LaunchedEffect(reloadKey) {
@@ -363,7 +364,7 @@ fun NativeLearningScreen() {
                 }
             }
         } else {
-            LaunchedEffect(selectedQuestion?.id) {
+            LaunchedEffect(selectedQuestion?.id, answersReloadKey) {
                 val questionId = selectedQuestion?.id ?: return@LaunchedEffect
                 answersLoading = true
                 answersFailed = false
@@ -374,7 +375,7 @@ fun NativeLearningScreen() {
             Text(selectedQuestion?.name ?: "Video answers", fontSize = 18.sp, fontWeight = FontWeight.Bold)
             when {
                 answersLoading -> CircularProgressIndicator(Modifier.padding(top = 16.dp))
-                answersFailed -> TextButton(onClick = { selectedQuestion = selectedQuestion?.copy() }) { Text("Couldn't load answers. Try again") }
+                answersFailed -> TextButton(onClick = { answersReloadKey++ }) { Text("Couldn't load answers. Try again") }
                 answers.isEmpty() -> Text("No approved video answers are available for this question yet.", color = Color.Gray, modifier = Modifier.padding(top = 12.dp))
                 else -> answers.forEach { answer ->
                     Text(answer, Modifier.fillMaxWidth().padding(vertical = 10.dp), color = MaterialTheme.colorScheme.onSurface)
