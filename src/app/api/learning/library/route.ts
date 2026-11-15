@@ -29,16 +29,12 @@ export async function GET(request: Request) {
 
     const db = getAdminDb();
     const collection = db.collection("schoolLearningNodes");
-    let query: FirebaseFirestore.Query = collection.where("status", "==", "published").where("type", "==", type);
+    let query = collection.where("status", "==", "published").where("type", "==", type);
     if (parentId) query = query.where("parentId", "==", parentId);
     query = query.orderBy("__name__");
-    let lastDoc: FirebaseFirestore.DocumentSnapshot | null = null;
-    if (cursor) {
-      const cursorDoc = await collection.doc(cursor).get();
-      if (!cursorDoc.exists) {
-        return NextResponse.json({ success: false, message: "Invalid pagination cursor" }, { status: 400, headers: noStore });
-      }
-      lastDoc = cursorDoc;
+    let lastDoc = cursor ? await collection.doc(cursor).get() : null;
+    if (lastDoc && !lastDoc.exists) {
+      return NextResponse.json({ success: false, message: "Invalid pagination cursor" }, { status: 400, headers: noStore });
     }
 
     const items: Record<string, unknown>[] = [];
