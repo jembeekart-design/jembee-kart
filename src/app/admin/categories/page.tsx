@@ -237,7 +237,7 @@ export default function AdminCategoriesPage() {
         <section className="mt-5 rounded-3xl border border-cyan-300/20 bg-cyan-300/[0.05] p-5">
           <p className="font-bold text-cyan-100">Subject → Book → Chapter → Question</p>
           <p className="mt-2 text-sm leading-6 text-slate-300">Board, School aur Class selection नहीं होंगे। Admin Subject, Book cover, Chapter और Question manage करेगा; teachers केवल पहले से प्रकाशित entries चुनेंगे।</p>
-          <p className="mt-2 text-xs text-slate-400">Bulk import support aur verified textbook datasets अगला चरण हैं। अभी यह screen master entries manage करती है।</p>
+          <p className="mt-2 text-xs text-slate-400">NCERT Grade 6 starter catalog को एक क्लिक में import करें। Admin केवल missing, गलत या unpublished entries को सुधारता है।</p>
         </section>
         {notice && <p role="status" className="mt-4 rounded-xl border border-cyan-300/20 bg-cyan-300/10 p-3 text-sm">{notice}</p>}
         <section className="mt-5 rounded-3xl border border-cyan-300/20 bg-[#0c1725] p-5">
