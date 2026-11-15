@@ -61,7 +61,7 @@ export async function POST(req: Request) {
     schoolSubjectId?: unknown;
     schoolBookId?: unknown;
     schoolChapterId?: unknown;
-    schoolQuestionId?: unknown;
+    questionNumber?: unknown;
   };
   try {
     const contentLength = Number(req.headers.get("content-length") || 0);
@@ -109,12 +109,12 @@ export async function POST(req: Request) {
     schoolSubjectId: safeId(body.schoolSubjectId),
     schoolBookId: safeId(body.schoolBookId),
     schoolChapterId: safeId(body.schoolChapterId),
-    schoolQuestionId: safeId(body.schoolQuestionId),
+    questionNumber: typeof body.questionNumber === "string" ? body.questionNumber.trim().slice(0, 30) : "",
   };
   const hasSchoolMetadata = Object.values(schoolIds).some(Boolean);
   if (categoryId === "school") {
-    if (!schoolIds.schoolSubjectId || !schoolIds.schoolBookId || !schoolIds.schoolChapterId || !schoolIds.schoolQuestionId) {
-      return NextResponse.json({ success: false, message: "Learning video के लिए Subject, Book, Chapter और Question चुनना आवश्यक है।" }, { status: 400 });
+    if (!schoolIds.schoolSubjectId || !schoolIds.schoolBookId || !schoolIds.schoolChapterId || !schoolIds.questionNumber) {
+      return NextResponse.json({ success: false, message: "Learning video के लिए Subject, Book, Chapter और Question Number लिखना आवश्यक है।" }, { status: 400 });
     }
   } else if (hasSchoolMetadata) {
     return NextResponse.json({ success: false, message: "Learning book metadata केवल School category के साथ भेजें।" }, { status: 400 });
@@ -136,11 +136,10 @@ export async function POST(req: Request) {
     const allowedTopics = Array.isArray(categoryRecord?.topics) ? categoryRecord.topics : [];
     if (categoryTopic && !allowedTopics.includes(categoryTopic)) return NextResponse.json({ success: false, message: "चुना गया Topic इस Category का हिस्सा नहीं है।" }, { status: 400 });
     if (categoryId === "school") {
-      const nodeTypes: Record<keyof typeof schoolIds, string> = {
-        schoolSubjectId: "subject", schoolBookId: "book",
-        schoolChapterId: "chapter", schoolQuestionId: "question",
+      const nodeTypes: Record<string, string> = {
+        schoolSubjectId: "subject", schoolBookId: "book", schoolChapterId: "chapter",
       };
-      const nodeSnaps = await Promise.all(Object.entries(schoolIds).filter(([, id]) => Boolean(id)).map(async ([key, id]) => ({ key, snap: await adminDb.collection("schoolLearningNodes").doc(id).get() })));
+      const nodeSnaps = await Promise.all(Object.entries({ schoolSubjectId: schoolIds.schoolSubjectId, schoolBookId: schoolIds.schoolBookId, schoolChapterId: schoolIds.schoolChapterId }).map(async ([key, id]) => ({ key, snap: await adminDb.collection("schoolLearningNodes").doc(id).get() })));
       const nodeData = new Map<string, Record<string, unknown>>();
       for (const { key, snap } of nodeSnaps) {
         if (!snap.exists || snap.data()?.status !== "published" || snap.data()?.type !== nodeTypes[key as keyof typeof schoolIds]) {
@@ -151,7 +150,7 @@ export async function POST(req: Request) {
       if (nodeData.get("schoolBookId")?.parentId !== schoolIds.schoolSubjectId) return NextResponse.json({ success: false, message: "Book चुने गए Subject से संबंधित नहीं है।" }, { status: 400 });
       const chapterParentId = schoolIds.schoolBookId;
       if (nodeData.get("schoolChapterId")?.parentId !== chapterParentId) return NextResponse.json({ success: false, message: "Chapter चुनी गई Book / Edition से संबंधित नहीं है।" }, { status: 400 });
-      if (nodeData.get("schoolQuestionId")?.parentId !== schoolIds.schoolChapterId) return NextResponse.json({ success: false, message: "Question चुने गए Chapter से संबंधित नहीं है।" }, { status: 400 });
+      if (!/^[a-z]{0,3}\\.?\\s*\\d+(?:\\s*\\([a-z0-9]+\\))?(?:[.-]\\d+)?$/i.test(schoolIds.questionNumber)) return NextResponse.json({ success: false, message: "कृपया सही Question Number लिखें, जैसे 1, 1(a), Q.2।" }, { status: 400 });
     }
     const activeSessions = await adminDb.collection("videoModerationSubmissions")
       .where("creatorId", "==", creatorId)
@@ -209,7 +208,11 @@ export async function POST(req: Request) {
         categoryId,
         categoryName,
         categoryTopic,
-        ...schoolIds,
+        schoolSubjectId: schoolIds.schoolSubjectId,
+        schoolBookId: schoolIds.schoolBookId,
+        schoolChapterId: schoolIds.schoolChapterId,
+        schoolQuestionNumber: schoolIds.questionNumber,
+        schoolQuestionKey: schoolIds.questionNumber.toLowerCase().replace(/\\s+/g, ""),
         createdAt: new Date(),
       });
 
