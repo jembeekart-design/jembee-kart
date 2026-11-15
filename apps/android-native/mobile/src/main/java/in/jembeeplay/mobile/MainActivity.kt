@@ -106,7 +106,7 @@ private fun JembeeMobileApp() {
                 when (selected) {
                     "Home" -> HomeScreen(onLearn = { selected = "Learn" }, onShorts = { selected = "Shorts" })
                     "Shorts" -> NativeShortsScreen()
-                    "Learn" -> LearnScreen()
+                    "Learn" -> NativeLearningScreen()
                     "Library" -> LibraryScreen()
                     else -> YouScreen(onTheme = { dark = !dark }, dark = dark)
                 }
@@ -183,27 +183,6 @@ private fun MiniVideo(title: String, subtitle: String, accent: Color) {
         ThumbnailCard(title, "JEMBEE PLAY", Modifier.fillMaxWidth().height(122.dp), accent)
         Text(title, Modifier.padding(top = 8.dp), fontWeight = FontWeight.Bold, fontSize = 14.sp)
         Text(subtitle, color = Muted, fontSize = 12.sp)
-    }
-}
-
-@Composable
-private fun LearnScreen() {
-    Column(Modifier.fillMaxSize().verticalScroll(rememberScrollState()).padding(18.dp)) {
-        Text("Learn with JEMBEE", fontSize = 24.sp, fontWeight = FontWeight.Black)
-        Text("Choose your curriculum and continue learning.", color = Muted, modifier = Modifier.padding(top = 4.dp, bottom = 18.dp))
-        OutlinedTextField(value = "", onValueChange = {}, readOnly = true, modifier = Modifier.fillMaxWidth(), label = { Text("Search classes, subjects or chapters") }, placeholder = { Text("Search learning library") })
-        listOf("CBSE", "ICSE", "JAC", "Other boards").forEach { board ->
-            Text(board, Modifier.padding(top = 18.dp, bottom = 8.dp), fontWeight = FontWeight.Bold, fontSize = 18.sp)
-            listOf("Class 6", "Class 7", "Class 8", "Class 9", "Class 10").forEach { grade ->
-                Surface(shape = RoundedCornerShape(14.dp), color = MaterialTheme.colorScheme.surface, modifier = Modifier.fillMaxWidth().padding(vertical = 4.dp)) {
-                    Row(Modifier.padding(16.dp), horizontalArrangement = Arrangement.SpaceBetween) {
-                        Text(grade, fontWeight = FontWeight.SemiBold)
-                        Text("Subjects  →", color = JembeeBlue)
-                    }
-                }
-            }
-        }
-        Text("Catalog preview · Board and lesson data integration pending", color = Muted, fontSize = 11.sp, modifier = Modifier.padding(top = 12.dp))
     }
 }
 
