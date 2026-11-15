@@ -399,6 +399,7 @@ export async function POST(req: Request) {
         schoolClassId: typeof submission.schoolClassId === "string" ? submission.schoolClassId : "",
         schoolSubjectId: typeof submission.schoolSubjectId === "string" ? submission.schoolSubjectId : "",
         schoolBookId: typeof submission.schoolBookId === "string" ? submission.schoolBookId : "",
+        schoolEditionId: typeof submission.schoolEditionId === "string" ? submission.schoolEditionId : "",
         schoolChapterId: typeof submission.schoolChapterId === "string" ? submission.schoolChapterId : "",
         schoolQuestionId: typeof submission.schoolQuestionId === "string" ? submission.schoolQuestionId : "",
 
