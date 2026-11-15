@@ -64,11 +64,11 @@ export async function GET() {
       const { ownerUid: _ownerUid, updatedBy: _updatedBy, createdByUid: _createdByUid, ...data } = doc.data();
       return { id: doc.id, ...data };
     });
-    const learningBooks = nodeSnap.docs.map((doc) => {
+    const learningNodes = nodeSnap.docs.map((doc) => {
       const { ownerUid: _ownerUid, updatedBy: _updatedBy, createdByUid: _createdByUid, ...data } = doc.data();
       return { id: doc.id, ...data };
     }).filter((item) => NODE_TYPES.includes(item.type as NodeType));
-    return NextResponse.json({ success: true, categories, learningBooks }, { headers: noStore });
+    return NextResponse.json({ success: true, categories, learningNodes }, { headers: noStore });
   } catch {
     return NextResponse.json({ success: false, message: "Learning Library could not be loaded" }, { status: 500, headers: noStore });
   }
