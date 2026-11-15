@@ -37,3 +37,10 @@ test("watch history groups repeated sessions into one video entry", () => {
   assert.match(source, /sessionCount: 1/);
   assert.match(source, /Array\.from\(grouped\.values\(\)\)/);
 });
+
+
+test("watch history fetches each distinct video once in parallel", () => {
+  assert.match(source, /Array\.from\(new Set\(sessions\.docs/);
+  assert.match(source, /Promise\.all\(videoIds\.map/);
+  assert.match(source, /videosById\.get\(videoId\)/);
+});
