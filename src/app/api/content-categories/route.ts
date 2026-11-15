@@ -61,12 +61,24 @@ export async function GET(req: Request) {
     const cursor = cleanText(params.get("cursor"), 64);
     const pageSizeValue = Number(params.get("pageSize") || 25);
     const pageSize = Number.isInteger(pageSizeValue) ? Math.min(50, Math.max(1, pageSizeValue)) : 25;
+    const nodeId = cleanText(params.get("nodeId"), 64);
 
     const categorySnap = await db.collection("contentCategories").where("status", "==", "published").limit(200).get();
     const categories = categorySnap.docs.map((doc) => {
       const { ownerUid: _ownerUid, updatedBy: _updatedBy, createdByUid: _createdByUid, ...data } = doc.data();
       return { id: doc.id, ...data };
     });
+
+    // Exact published-node lookup supports deep links without loading the full catalog.
+    if (nodeId) {
+      if (!ID_PATTERN.test(nodeId)) return NextResponse.json({ success: false, message: "Invalid learning node ID" }, { status: 400, headers: noStore });
+      const doc = await db.collection("schoolLearningNodes").doc(nodeId).get();
+      if (!doc.exists || doc.data()?.status !== "published" || !NODE_TYPES.includes(doc.data()?.type)) {
+        return NextResponse.json({ success: false, message: "Published learning entry not found" }, { status: 404, headers: noStore });
+      }
+      const { ownerUid: _ownerUid, updatedBy: _updatedBy, createdByUid: _createdByUid, ...data } = doc.data()!;
+      return NextResponse.json({ success: true, categories, learningNode: { id: doc.id, ...data } }, { headers: noStore });
+    }
 
     // Cursor pagination is scoped to one hierarchy level so large catalogs never
     // require downloading the entire Subject → Book → Chapter → Question tree.
