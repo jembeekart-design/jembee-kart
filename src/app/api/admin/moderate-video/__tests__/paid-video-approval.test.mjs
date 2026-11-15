@@ -19,10 +19,10 @@ test("moderation never grants viewer coins", () => {
 test("school learning video approval revalidates the complete published catalog path", () => {
   assert.match(source, /Revalidate the complete published learning path at approval time/);
   assert.match(source, /schoolLearningNodes/);
-  assert.match(source, /subject\?\.type !== "subject"/);
-  assert.match(source, /book\?\.parentId !== learningIds\.subject/);
-  assert.match(source, /chapter\?\.parentId !== learningIds\.book/);
-  assert.match(source, /question\?\.parentId !== learningIds\.chapter/);
+  assert.ok(source.includes('subject?.type !== "subject"'));
+  assert.ok(source.includes("book?.parentId !== learningIds.subject"));
+  assert.ok(source.includes("chapter?.parentId !== learningIds.book"));
+  assert.ok(source.includes("question?.parentId !== learningIds.chapter"));
   assert.doesNotMatch(source, /schoolBoardId: typeof submission/);
   assert.doesNotMatch(source, /schoolEditionId: typeof submission/);
 });
