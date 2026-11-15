@@ -38,7 +38,7 @@ export default function VideoPlayer({
 
   // Server-time telemetry only: never a reward or human-view verification signal.
   useEffect(() => {
-    if (!active || !watchSessionVideoId) return;
+    if (!active || !isPlaying || !watchSessionVideoId) return;
     let cancelled = false;
     let sessionId: string | null = null;
     let heartbeatTimer: ReturnType<typeof setInterval> | null = null;
@@ -81,7 +81,7 @@ export default function VideoPlayer({
       if (heartbeatTimer) clearInterval(heartbeatTimer);
       if (sessionId) void send("stop", sessionId);
     };
-  }, [active, videoUrl, watchSessionVideoId]);
+  }, [active, isPlaying, watchSessionVideoId]);
 
 
 
