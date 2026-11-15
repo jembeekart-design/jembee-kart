@@ -28,7 +28,31 @@ import { uploadWatchVideo } from "@/lib/videos/watch-earn/uploadWatchVideo";
 import { DEFAULT_EXPLORE_CATEGORIES, type ExploreCategoryRecord } from "@/lib/catalog/defaultExploreCategories";
 
 const MAX_VIDEO_BYTES = 500 * 1024 * 1024;
-type LearningNode = { id: string; type: string; name: string; parentId?: string | null; coverImageUrl?: string | null };
+ type LearningNode = { id: string; type: string; name: string; parentId?: string | null; coverImageUrl?: string | null };
+
+async function fetchAllLearningNodes(): Promise<LearningNode[]> {
+  const nodes: LearningNode[] = [];
+  async function load(type: "subject" | "book" | "chapter" | "question", parentId?: string) {
+    let cursor = "";
+    for (let page = 0; page < 200; page += 1) {
+      const params = new URLSearchParams({ type, pageSize: "50" });
+      if (parentId) params.set("parentId", parentId);
+      if (cursor) params.set("cursor", cursor);
+      const response = await fetch("/api/content-categories?" + params.toString(), { cache: "no-store" });
+      const data = await response.json();
+      if (!response.ok || data.success !== true || !Array.isArray(data.learningNodes)) throw new Error(data.message || "Learning Library unavailable");
+      nodes.push(...data.learningNodes as LearningNode[]);
+      if (data.pagination?.hasMore !== true || typeof data.pagination?.nextCursor !== "string") return;
+      cursor = data.pagination.nextCursor;
+    }
+    throw new Error("Learning Library page limit exceeded");
+  }
+  await load("subject");
+  for (const item of nodes.filter((node) => node.type === "subject")) await load("book", item.id);
+  for (const item of nodes.filter((node) => node.type === "book")) await load("chapter", item.id);
+  for (const item of nodes.filter((node) => node.type === "chapter")) await load("question", item.id);
+  return nodes;
+}
 
 function inspectVideoDuration(selectedFile: File, onRead: (duration: number | undefined) => void) {
   const objectUrl = URL.createObjectURL(selectedFile);
@@ -106,16 +130,17 @@ function UploadWatchVideoContent() {
 
   useEffect(() => {
     let active = true;
-    fetch("/api/content-categories", { cache: "no-store" })
+    fetch("/api/content-categories?type=subject&pageSize=50", { cache: "no-store" })
       .then(async (response) => { if (!response.ok) throw new Error("Catalog unavailable"); return response.json(); })
-      .then((data) => {
+      .then(async (data) => {
         if (!active || data.success !== true) return;
         const merged = new Map(DEFAULT_EXPLORE_CATEGORIES.map((item) => [item.id, item]));
         for (const item of (Array.isArray(data.categories) ? data.categories : []) as ExploreCategoryRecord[]) {
           if (item && typeof item.id === "string" && typeof item.name === "string") merged.set(item.id, { ...merged.get(item.id), ...item, topics: Array.isArray(item.topics) ? item.topics : [] });
         }
         setCategories([...merged.values()]);
-        const loadedNodes = (Array.isArray(data.learningNodes) ? data.learningNodes : []) as LearningNode[];
+        const loadedNodes = await fetchAllLearningNodes();
+        if (!active) return;
         setSchoolNodes(loadedNodes);
         if (requestedCategoryId && merged.has(requestedCategoryId)) setCategoryId(requestedCategoryId);
         if (requestedQuestionId) {
@@ -151,7 +176,7 @@ function UploadWatchVideoContent() {
     });
     const data = await response.json();
     if (!response.ok || data.success !== true) throw new Error(data.message || "Catalog save नहीं हो पाया।");
-    const catalogResponse = await fetch("/api/content-categories", { cache: "no-store" });
+    const catalogResponse = await fetch("/api/content-categories?type=subject&pageSize=50", { cache: "no-store" });
     const catalogData = await catalogResponse.json();
     if (catalogResponse.ok && catalogData.success === true) {
       const merged = new Map(DEFAULT_EXPLORE_CATEGORIES.map((item) => [item.id, item]));
@@ -159,7 +184,7 @@ function UploadWatchVideoContent() {
         if (item && typeof item.id === "string" && typeof item.name === "string") merged.set(item.id, { ...merged.get(item.id), ...item, topics: Array.isArray(item.topics) ? item.topics : [] });
       }
       setCategories([...merged.values()]);
-      setSchoolNodes(Array.isArray(catalogData.learningNodes) ? catalogData.learningNodes as LearningNode[] : []);
+      setSchoolNodes(await fetchAllLearningNodes());
     }
     return data as { id?: string };
   }
