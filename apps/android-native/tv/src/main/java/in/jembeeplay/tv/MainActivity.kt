@@ -71,6 +71,8 @@ private fun JembeeTvApp() {
                         Text("Discover videos, teachers and learning paths", Modifier.padding(top = 10.dp), fontSize = 17.sp)
                     }
                 }
+                Spacer(Modifier.height(28.dp))
+                TvLiveVideoShelf()
                 shelves.forEach { shelf ->
                     Text(shelf.title, Modifier.padding(top = 26.dp, bottom = 12.dp), fontSize = 21.sp, fontWeight = FontWeight.Bold)
                     LazyRow(horizontalArrangement = Arrangement.spacedBy(18.dp)) {
