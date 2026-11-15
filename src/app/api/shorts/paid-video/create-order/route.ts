@@ -48,6 +48,9 @@ export async function POST(req: NextRequest) {
     if (!/^\d{10}$/.test(mobile)) return fail("A valid 10-digit mobile number is required", 400);
 
     const db = getAdminDb();
+    const remoteConfigSnap = await db.collection("app_remote_config").doc("current").get();
+    if (remoteConfigSnap.data()?.features?.paidVideo !== true) return fail("Paid-video checkout is temporarily disabled", 503);
+    const remoteConfigRef = db.collection("app_remote_config").doc("current");
     const videoRef = db.collection("watchEarnVideos").doc(videoId);
     const videoSnap = await videoRef.get();
     if (!videoSnap.exists) return fail("Video not found", 404);
@@ -141,8 +144,9 @@ export async function POST(req: NextRequest) {
     }
 
     await db.runTransaction(async (tx) => {
-      const freshVideo = await tx.get(videoRef);
+      const [freshVideo, freshRemoteConfig] = await Promise.all([tx.get(videoRef), tx.get(remoteConfigRef)]);
       const fresh = freshVideo.data() || {};
+      if (freshRemoteConfig.data()?.features?.paidVideo !== true) throw new Error("PAID_VIDEO_REMOTE_DISABLED");
       if (!freshVideo.exists || fresh.status !== "approved" || fresh.active !== true ||
           fresh.moderation !== "safe" || fresh.videoAccess !== "paid" ||
           fresh.paidVideoStatus !== "enabled" || fresh.paidCheckoutEnabled !== true ||
@@ -168,6 +172,7 @@ export async function POST(req: NextRequest) {
     const code = error instanceof Error ? error.message : "UNKNOWN";
     console.error("Paid-video Cashfree order creation failed", code);
     const status = code === "VIDEO_CHANGED_DURING_CHECKOUT" ? 409 :
+      code === "PAID_VIDEO_REMOTE_DISABLED" ? 503 :
       code === "CASHFREE_DISABLED" || code === "CASHFREE_NOT_CONFIGURED" ? 503 : 502;
     return fail(status === 409 ? "Video changed during checkout; please retry" :
       "Paid-video checkout is temporarily unavailable", status);
