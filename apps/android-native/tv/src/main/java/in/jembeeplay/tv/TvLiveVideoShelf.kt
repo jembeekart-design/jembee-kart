@@ -42,7 +42,7 @@ fun TvLiveVideoShelf() {
                 Text("Watch on JEMBEE PLAY", fontSize = 21.sp, fontWeight = FontWeight.Bold)
                 Text("Live approved video catalog", fontSize = 12.sp, color = MaterialTheme.colorScheme.onSurfaceVariant)
             }
-            if (loading) CircularProgressIndicator()
+            if (loading) Text("Loading…", fontSize = 12.sp, color = MaterialTheme.colorScheme.onSurfaceVariant)
         }
         when {
             videos.isNotEmpty() -> LazyRow(horizontalArrangement = Arrangement.spacedBy(18.dp)) {
