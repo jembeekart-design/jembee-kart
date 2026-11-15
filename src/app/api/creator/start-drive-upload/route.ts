@@ -60,6 +60,7 @@ export async function POST(req: Request) {
     schoolClassId?: unknown;
     schoolSubjectId?: unknown;
     schoolBookId?: unknown;
+    schoolEditionId?: unknown;
     schoolChapterId?: unknown;
     schoolQuestionId?: unknown;
   };
