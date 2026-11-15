@@ -303,6 +303,29 @@ internal fun NativeWatchHistoryPanel(auth: FirebaseAuth) {
                             (if (entry.creator.isBlank()) "" else entry.creator + " · ") + "Last position " + entry.position + " sec",
                             color = androidx.compose.ui.graphics.Color.Gray
                         )
+                        TextButton(onClick = {
+                            val user = auth.currentUser ?: return@TextButton
+                            user.getIdToken(false).addOnCompleteListener { task ->
+                                val token = task.result?.token
+                                if (task.isSuccessful && !token.isNullOrBlank()) Thread {
+                                    val deleted = runCatching {
+                                        val url = "https://jembeeplay.in/api/app/library/history?videoId=" + java.net.URLEncoder.encode(entry.id, "UTF-8")
+                                        val connection = java.net.URL(url).openConnection() as java.net.HttpURLConnection
+                                        try {
+                                            connection.requestMethod = "DELETE"
+                                            connection.connectTimeout = 7000
+                                            connection.readTimeout = 10000
+                                            connection.setRequestProperty("Authorization", "Bearer " + token)
+                                            connection.responseCode in 200..299
+                                        } finally { connection.disconnect() }
+                                    }.getOrDefault(false)
+                                    if (deleted) android.os.Handler(android.os.Looper.getMainLooper()).post {
+                                        entries = entries.filterNot { it.id == entry.id }
+                                        if (entries.isEmpty()) message = "No watch history yet."
+                                    }
+                                }.start()
+                            }
+                        }) { Text("Remove from history") }
                     }
                 }
             }
