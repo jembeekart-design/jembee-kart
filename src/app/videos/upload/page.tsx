@@ -29,16 +29,6 @@ import { DEFAULT_EXPLORE_CATEGORIES, type ExploreCategoryRecord } from "@/lib/ca
 
 const MAX_VIDEO_BYTES = 500 * 1024 * 1024;
 type SchoolNode = { id: string; type: string; name: string; parentId?: string | null };
-type SchoolNodeType = "board" | "school" | "class" | "subject" | "book" | "chapter" | "question";
-const SCHOOL_NODE_TYPES: { value: SchoolNodeType; label: string; parent?: SchoolNodeType }[] = [
-  { value: "board", label: "Board / Curriculum" },
-  { value: "school", label: "School", parent: "board" },
-  { value: "class", label: "Class", parent: "school" },
-  { value: "subject", label: "Subject", parent: "class" },
-  { value: "book", label: "Book", parent: "class" },
-  { value: "chapter", label: "Chapter", parent: "subject" },
-  { value: "question", label: "Question number", parent: "chapter" },
-];
 
 function inspectVideoDuration(selectedFile: File, onRead: (duration: number | undefined) => void) {
   const objectUrl = URL.createObjectURL(selectedFile);
@@ -89,9 +79,6 @@ function UploadWatchVideoContent() {
   const [newCategoryName, setNewCategoryName] = useState("");
   const [newCategoryDescription, setNewCategoryDescription] = useState("");
   const [newCategoryTopics, setNewCategoryTopics] = useState("");
-  const [newNodeType, setNewNodeType] = useState<SchoolNodeType>("board");
-  const [newNodeName, setNewNodeName] = useState("");
-  const [newNodeParentId, setNewNodeParentId] = useState("");
   const [videoAccess, setVideoAccess] = useState<"free" | "paid">("free");
   const [videoFormat, setVideoFormat] = useState<"short" | "long">("short");
   const [videoDurationSeconds, setVideoDurationSeconds] = useState<number | undefined>(undefined);
@@ -161,12 +148,6 @@ function UploadWatchVideoContent() {
   const chapterParentId = schoolBookId || schoolSubjectId;
   const chapterOptions = schoolNodes.filter((item) => item.type === "chapter" && item.parentId === chapterParentId);
   const questionOptions = schoolNodes.filter((item) => item.type === "question" && item.parentId === schoolChapterId);
-  const newNodeTypeConfig = SCHOOL_NODE_TYPES.find((item) => item.value === newNodeType)!;
-  const newNodeParentOptions = newNodeType === "school" ? schoolBoards
-    : newNodeType === "class" ? schoolNodes.filter((item) => item.type === "school")
-    : newNodeType === "subject" || newNodeType === "book" ? schoolNodes.filter((item) => item.type === "class")
-    : newNodeType === "chapter" ? schoolNodes.filter((item) => item.type === "subject" || item.type === "book")
-    : newNodeType === "question" ? schoolNodes.filter((item) => item.type === "chapter") : [];
 
   async function creatorCatalogRequest(payload: Record<string, unknown>) {
     const user = auth.currentUser;
@@ -211,31 +192,6 @@ function UploadWatchVideoContent() {
     } finally { setSavingCatalog(false); }
   }
 
-  async function createCreatorSchoolNode(event: FormEvent) {
-    event.preventDefault();
-    setSavingCatalog(true);
-    setCatalogNotice("");
-    try {
-      const result = await creatorCatalogRequest({
-        action: "save-school-node",
-        type: newNodeType,
-        name: newNodeName,
-        parentId: newNodeParentId || undefined,
-      });
-      const id = result.id || "";
-      if (newNodeType === "board") { setSchoolBoardId(id); setSchoolId(""); setSchoolClassId(""); }
-      if (newNodeType === "school") { setSchoolId(id); setSchoolClassId(""); }
-      if (newNodeType === "class") { setSchoolClassId(id); setSchoolSubjectId(""); setSchoolBookId(""); }
-      if (newNodeType === "subject") { setSchoolSubjectId(id); setSchoolBookId(""); }
-      if (newNodeType === "book") { setSchoolBookId(id); setSchoolSubjectId(""); }
-      if (newNodeType === "chapter") setSchoolChapterId(id);
-      if (newNodeType === "question") setSchoolQuestionId(id);
-      setNewNodeName(""); setNewNodeParentId("");
-      setCatalogNotice("आपकी School learning entry जोड़ दी गई है और अब चुनी जा सकती है।");
-    } catch (error) {
-      setCatalogNotice(error instanceof Error ? error.message : "School entry save नहीं हो पाई।");
-    } finally { setSavingCatalog(false); }
-  }
 
   const previewUrl = useMemo(() => {
     return file ? URL.createObjectURL(file) : null;
