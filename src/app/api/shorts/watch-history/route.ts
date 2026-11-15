@@ -29,6 +29,14 @@ export async function GET(req: Request) {
     .limit(50)
     .get();
 
+  const videoIds = Array.from(new Set(sessions.docs
+    .map((doc) => doc.data().videoId)
+    .filter((id): id is string => typeof id === "string" && id.length > 0)));
+  const videoSnapshots = await Promise.all(videoIds.map((id) =>
+    db.collection("watchEarnVideos").doc(id).get()
+  ));
+  const videosById = new Map(videoIds.map((id, index) => [id, videoSnapshots[index]]));
+
   const grouped = new Map<string, {
     sessionId: string;
     videoId: string;
@@ -45,8 +53,8 @@ export async function GET(req: Request) {
     const session = sessionDoc.data();
     const videoId = typeof session.videoId === "string" ? session.videoId : "";
     if (!videoId) continue;
-    const videoSnap = await db.collection("watchEarnVideos").doc(videoId).get();
-    if (!videoSnap.exists) continue;
+    const videoSnap = videosById.get(videoId);
+    if (!videoSnap?.exists) continue;
     const video = videoSnap.data()!;
     // History exposes only videos that remain publicly eligible.
     if (video.status !== "approved" || video.active !== true ||
@@ -69,7 +77,6 @@ export async function GET(req: Request) {
       sessionCount: 1,
     });
   }
-
 
   return reply(true, 200, { items: Array.from(grouped.values()), scannedSessions: sessions.size, limit: 50 });
 }
