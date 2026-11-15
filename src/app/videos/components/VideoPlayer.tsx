@@ -1,5 +1,6 @@
 "use client";
 
+import { auth } from "@/firebase/config";
 import {
   useEffect,
   useRef,
@@ -9,6 +10,7 @@ import {
 
 interface VideoPlayerProps {
   videoUrl: string;
+  watchSessionVideoId?: string;
   isMuted?: boolean;
   active?: boolean;
   playbackRate?: number;
@@ -19,6 +21,7 @@ interface VideoPlayerProps {
 
 export default function VideoPlayer({
   videoUrl,
+  watchSessionVideoId,
   isMuted = true,
   active = false,
   playbackRate = 1,
@@ -35,7 +38,7 @@ export default function VideoPlayer({
 
   // Server-time telemetry only: never a reward or human-view verification signal.
   useEffect(() => {
-    if (!active) return;
+    if (!active || !watchSessionVideoId) return;
     let cancelled = false;
     let sessionId: string | null = null;
     let heartbeatTimer: ReturnType<typeof setInterval> | null = null;
@@ -50,7 +53,7 @@ export default function VideoPlayer({
           cache: "no-store",
           headers: { "Content-Type": "application/json", Authorization: `Bearer ${token}` },
           body: JSON.stringify(action === "start"
-            ? { action, videoId: videoUrl.split("/").pop() }
+            ? { action, videoId: watchSessionVideoId }
             : { action, sessionId: currentSessionId }),
         });
         if (!response.ok) return null;
@@ -78,7 +81,7 @@ export default function VideoPlayer({
       if (heartbeatTimer) clearInterval(heartbeatTimer);
       if (sessionId) void send("stop", sessionId);
     };
-  }, [active, videoUrl]);
+  }, [active, videoUrl, watchSessionVideoId]);
 
 
 
