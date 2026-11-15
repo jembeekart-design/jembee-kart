@@ -110,3 +110,60 @@ internal fun NativeSavedVideosPanel(auth: FirebaseAuth) {
         }
     }
 }
+
+
+@Composable
+internal fun NativeSaveVideoButton(videoId: String) {
+    var busy by remember(videoId) { mutableStateOf(false) }
+    var saved by remember(videoId) { mutableStateOf(false) }
+    var message by remember(videoId) { mutableStateOf<String?>(null) }
+    TextButton(
+        enabled = !busy && !saved,
+        onClick = {
+            val user = FirebaseAuth.getInstance().currentUser
+            if (user == null) {
+                message = "Sign in to save this video."
+            } else {
+                busy = true
+                user.getIdToken(false).addOnCompleteListener { tokenTask ->
+                    val token = tokenTask.result?.token
+                    if (!tokenTask.isSuccessful || token.isNullOrBlank()) {
+                        busy = false
+                        message = "Please sign in again."
+                    } else {
+                        Thread {
+                            val result = runCatching {
+                                val connection = java.net.URL("https://jembeeplay.in/api/app/library/saved").openConnection() as java.net.HttpURLConnection
+                                try {
+                                    connection.requestMethod = "POST"
+                                    connection.connectTimeout = 7000
+                                    connection.readTimeout = 10000
+                                    connection.doOutput = true
+                                    connection.setRequestProperty("Authorization", "Bearer $token")
+                                    connection.setRequestProperty("Content-Type", "application/json")
+                                    connection.outputStream.use { it.write(JSONObject().put("videoId", videoId).toString().toByteArray(Charsets.UTF_8)) }
+                                    check(connection.responseCode in 200..299) { "Save failed" }
+                                    JSONObject(connection.inputStream.bufferedReader().use { it.readText() }).optBoolean("saved")
+                                } finally {
+                                    connection.disconnect()
+                                }
+                            }
+                            android.os.Handler(android.os.Looper.getMainLooper()).post {
+                                result.onSuccess {
+                                    saved = it
+                                    message = if (it) "Saved to Library" else "Could not save. Retry."
+                                }.onFailure {
+                                    message = "Could not save. Please retry."
+                                }
+                                busy = false
+                            }
+                        }.start()
+                    }
+                }
+            }
+        }
+    ) {
+        Text(when { busy -> "Saving…"; saved -> "Saved ✓"; else -> "＋ Save" })
+    }
+    message?.let { Text(it, color = androidx.compose.ui.graphics.Color.Gray) }
+}
