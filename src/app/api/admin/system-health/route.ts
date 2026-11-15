@@ -23,13 +23,22 @@ export async function GET(request: Request) {
     await verifyAdmin(request);
     const started = Date.now();
     const db = getAdminDb();
-    await db.collection("app_remote_config").doc("current").get();
+    const [remoteConfigSnap, cashfreeSnap] = await Promise.all([
+      db.collection("app_remote_config").doc("current").get(),
+      db.collection("admin_settings").doc("cashfree").get(),
+    ]);
     const firestoreLatencyMs = Date.now() - started;
+    const cashfree = cashfreeSnap.data() || {};
+    const cashfreeConfigured = process.env.CASHFREE_PAYMENTS_ENABLED === "true" &&
+      Boolean(process.env.CASHFREE_CREDENTIALS_ENCRYPTION_KEY) && cashfree.enabled === true &&
+      typeof cashfree.appId === "string" && typeof cashfree.secretKeyEncrypted === "string" &&
+      typeof cashfree.webhookSecretEncrypted === "string";
     const checks = [
+      { id: "remote_config", label: "Remote config document", status: remoteConfigSnap.exists ? "healthy" as const : "using_defaults" as const },
       { id: "admin_api", label: "Admin API", status: "healthy" as const },
       { id: "firestore", label: "Firestore", status: "healthy" as const, latencyMs: firestoreLatencyMs },
       { id: "firebase_admin_credentials", label: "Firebase Admin credentials", status: "healthy" as const },
-      { id: "cashfree_config", label: "Cashfree configuration", status: process.env.CASHFREE_APP_ID && process.env.CASHFREE_SECRET_KEY ? "configured" as const : "not_configured" as const },
+      { id: "cashfree_config", label: "Cashfree configuration", status: cashfreeConfigured ? "configured" as const : "not_configured" as const },
       { id: "monetag_config", label: "Monetag configuration", status: process.env.MONETAG_API_TOKEN ? "configured" as const : "not_configured" as const },
       { id: "android_mobile_apk", label: "Android Mobile APK URL", status: process.env.NEXT_PUBLIC_JEMBEE_ANDROID_MOBILE_APK_URL ? "configured" as const : "not_configured" as const },
       { id: "android_tv_apk", label: "Android TV APK URL", status: process.env.NEXT_PUBLIC_JEMBEE_ANDROID_TV_APK_URL ? "configured" as const : "not_configured" as const },
