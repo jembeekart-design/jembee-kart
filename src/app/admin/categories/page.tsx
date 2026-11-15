@@ -214,7 +214,7 @@ export default function AdminCategoriesPage() {
   }
 
   async function seedNcertGrade6() {
-    if (!window.confirm("NCERT Grade 6 का starter catalog जोड़ें? इसमें 6 Subjects, 6 Books, 70 Chapters और 22 original practice questions हैं। पहले से मौजूद matching IDs update होंगे; duplicate records नहीं बनेंगे।")) return;
+    if (!window.confirm("NCERT Grade 6 का starter catalog जोड़ें? इसमें 9 Subjects, 9 Books, 103 Chapters और 103 original JEMBEE PLAY practice questions हैं। पहले से मौजूद matching IDs update होंगे; duplicate records नहीं बनेंगे।")) return;
     setImporting(true);
     setNotice("");
     try {
@@ -252,7 +252,7 @@ export default function AdminCategoriesPage() {
               <input type="file" accept="application/json,.json" disabled={importing} className="sr-only" onChange={(event) => { const file = event.currentTarget.files?.[0]; if (file) void importLibraryFile(file); event.currentTarget.value = ""; }}/>
             </label>
           </div>
-          <p className="mt-3 text-xs text-slate-400">Starter catalog: 6 subjects, 6 books, 70 chapters and 22 independently written practice questions. Book covers are original Jembee artwork. NCERT textbook pages, scans and exercise questions are not copied.</p>
+          <p className="mt-3 text-xs text-slate-400">Starter catalog: 9 subjects, 9 books, 103 chapters and 103 independently written JEMBEE PLAY practice questions. Book covers are original JEMBEE PLAY artwork. NCERT textbook pages, scans and exercise questions are not copied.</p>
         </section>
         <section className="mt-6 rounded-3xl border border-white/10 bg-white/[0.04] p-5">
           <h2 className="text-lg font-bold">{editingId ? "Edit learning entry" : "Add learning entry"}</h2>
