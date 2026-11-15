@@ -1,4 +1,4 @@
-package in.jembeeplay.tv
+package `in`.jembeeplay.tv
 
 import android.os.Bundle
 import androidx.activity.ComponentActivity
