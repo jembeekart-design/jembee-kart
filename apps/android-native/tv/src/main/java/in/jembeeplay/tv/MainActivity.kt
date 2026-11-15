@@ -4,6 +4,8 @@ import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.background
+import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.ui.graphics.Brush
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
@@ -42,12 +44,27 @@ private fun JembeeTvApp() {
     MaterialTheme(colorScheme = colors) {
         Surface(Modifier.fillMaxSize()) {
             Column(Modifier.fillMaxSize().background(colors.background).padding(horizontal = 42.dp, vertical = 28.dp)) {
-                Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween) {
-                    Column {
-                        Text("JEMBEE PLAY", fontSize = 30.sp, fontWeight = FontWeight.Black)
-                        Text("WATCH · LEARN · CREATE · SHARE", fontSize = 12.sp, color = colors.onSurfaceVariant)
+                Row(
+                    Modifier.fillMaxWidth().background(
+                        Brush.linearGradient(listOf(Color(0xFF10172D), Color(0xFF243B68), Color(0xFF111629))),
+                        RoundedCornerShape(26.dp)
+                    ).padding(horizontal = 24.dp, vertical = 20.dp),
+                    horizontalArrangement = Arrangement.SpaceBetween,
+                    verticalAlignment = androidx.compose.ui.Alignment.CenterVertically
+                ) {
+                    Row(verticalAlignment = androidx.compose.ui.Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(16.dp)) {
+                        Surface(shape = RoundedCornerShape(18.dp), color = Color(0xFFFFD782), modifier = Modifier.size(64.dp)) {
+                            Box(contentAlignment = androidx.compose.ui.Alignment.Center) {
+                                Text("J", color = Color(0xFF17213B), fontSize = 42.sp, fontWeight = FontWeight.Black)
+                            }
+                        }
+                        Column {
+                            Text("JEMBEE", color = Color.White, fontSize = 34.sp, fontWeight = FontWeight.Black, letterSpacing = 1.5.sp)
+                            Text("PLAY", color = Color(0xFFFFD782), fontSize = 19.sp, fontWeight = FontWeight.ExtraBold, letterSpacing = 7.sp)
+                            Text("WATCH  •  LEARN  •  CREATE  •  SHARE", color = Color.White.copy(alpha = .86f), fontSize = 11.sp, letterSpacing = 1.5.sp)
+                        }
                     }
-                    Row(horizontalArrangement = Arrangement.spacedBy(10.dp)) {
+                    Row(horizontalArrangement = Arrangement.spacedBy(10.dp), verticalAlignment = androidx.compose.ui.Alignment.CenterVertically) {
                         listOf("Home", "Shorts", "Learning", "My List", "Settings").forEach { item ->
                             Surface(
                                 onClick = { selected = item },
