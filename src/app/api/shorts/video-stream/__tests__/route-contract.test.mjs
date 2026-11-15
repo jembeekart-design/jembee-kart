@@ -33,7 +33,7 @@ test("stream responses use bounded byte ranges and never return the whole video"
     "parseByteRange(rangeHeader, metadata.size)",
     "boundedByteRange(range, MAX_STREAM_CHUNK_BYTES)",
     "const MAX_STREAM_CHUNK_BYTES = 4 * 1024 * 1024",
-    'headers.set("Accept-Ranges", "bytes")',
+    '"Accept-Ranges": "bytes"',
     'headers.set("Content-Range"',
     'status: 206',
     'status: 416',
