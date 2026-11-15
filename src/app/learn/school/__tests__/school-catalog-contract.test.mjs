@@ -8,7 +8,7 @@ const moderation = await readFile(new URL("../../../api/admin/moderate-video/rou
 
 test("Learning discovery follows the preloaded book-centric hierarchy", () => {
   for (const type of ["subject", "book", "edition", "chapter", "question"]) assert.ok(page.includes(`type === "${type}"`), `Missing hierarchy type ${type}`);
-  assert.match(page, /data\\.learningBooks/);
+  assert.match(page, /data\\.learningNodes/);
   assert.match(page, /coverImageUrl/);
   assert.doesNotMatch(page, /Choose Board \\/ Pattern|Find your School|Choose Class/);
 });
