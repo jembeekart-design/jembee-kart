@@ -6,21 +6,18 @@ import { ArrowLeft, BookOpen, RefreshCw, Trash2, Pencil, Save, ImagePlus } from 
 import { auth } from "@/firebase/config";
 import { DEFAULT_EXPLORE_CATEGORIES, type ExploreCategoryRecord } from "@/lib/catalog/defaultExploreCategories";
 
-type NodeType = "subject" | "book" | "edition" | "chapter" | "question";
+type NodeType = "subject" | "book" | "chapter" | "question";
 type LearningNode = {
   id: string;
   type: NodeType;
   name: string;
   parentId?: string | null;
   coverImageUrl?: string | null;
-  publisher?: string | null;
-  classLabels?: string[];
 };
 const TYPES: { value: NodeType; label: string; parent?: NodeType[] }[] = [
   { value: "subject", label: "Subject" },
   { value: "book", label: "Book", parent: ["subject"] },
-  { value: "edition", label: "Edition / Part", parent: ["book"] },
-  { value: "chapter", label: "Chapter", parent: ["edition", "book"] },
+  { value: "chapter", label: "Chapter", parent: ["book"] },
   { value: "question", label: "Question", parent: ["chapter"] },
 ];
 
@@ -35,8 +32,6 @@ export default function AdminCategoriesPage() {
   const [name, setName] = useState("");
   const [parentId, setParentId] = useState("");
   const [coverImageUrl, setCoverImageUrl] = useState("");
-  const [publisher, setPublisher] = useState("");
-  const [classLabelsText, setClassLabelsText] = useState("");
   const [editingId, setEditingId] = useState("");
 
   const load = useCallback(async () => {
@@ -71,8 +66,6 @@ export default function AdminCategoriesPage() {
     setName("");
     setParentId("");
     setCoverImageUrl("");
-    setPublisher("");
-    setClassLabelsText("");
   }
 
   function startEdit(node: LearningNode) {
@@ -81,8 +74,6 @@ export default function AdminCategoriesPage() {
     setName(node.name);
     setParentId(node.parentId || "");
     setCoverImageUrl(node.coverImageUrl || "");
-    setPublisher(node.publisher || "");
-    setClassLabelsText((node.classLabels || []).join(", "));
     setNotice("Selected learning entry is ready to edit.");
   }
 
@@ -178,8 +169,8 @@ export default function AdminCategoriesPage() {
           <button type="button" onClick={() => void load()} disabled={busy} className="inline-flex items-center gap-2 rounded-xl border border-white/15 px-4 py-2 text-sm"><RefreshCw size={16}/> Refresh</button>
         </div>
         <section className="mt-5 rounded-3xl border border-cyan-300/20 bg-cyan-300/[0.05] p-5">
-          <p className="font-bold text-cyan-100">Subject → Book → Edition / Part → Chapter → Question</p>
-          <p className="mt-2 text-sm leading-6 text-slate-300">School aur Class book ki identity nahi hain. Ek hi Book ko multiple classes se map kiya ja sakta hai. Admin master data aur book cover manage karega; uploaders sirf published book, chapter aur question select karenge.</p>
+          <p className="font-bold text-cyan-100">Subject → Book → Chapter → Question</p>
+          <p className="mt-2 text-sm leading-6 text-slate-300">Board, School aur Class selection नहीं होंगे। Admin Subject, Book cover, Chapter और Question manage करेगा; teachers केवल पहले से प्रकाशित entries चुनेंगे।</p>
           <p className="mt-2 text-xs text-slate-400">Bulk import support aur verified textbook datasets अगला चरण हैं। अभी यह screen master entries manage करती है।</p>
         </section>
         {notice && <p role="status" className="mt-4 rounded-xl border border-cyan-300/20 bg-cyan-300/10 p-3 text-sm">{notice}</p>}
@@ -190,7 +181,7 @@ export default function AdminCategoriesPage() {
             {importing ? "Importing…" : "Choose JSON dataset"}
             <input type="file" accept="application/json,.json" disabled={importing} className="sr-only" onChange={(event) => { const file = event.currentTarget.files?.[0]; if (file) void importLibraryFile(file); event.currentTarget.value = ""; }}/>
           </label>
-          <p className="mt-3 text-xs text-slate-400">Expected fields: id, type, name, parentId. Book entries can also include coverImageUrl (HTTPS), publisher and classLabels.</p>
+          <p className="mt-3 text-xs text-slate-400">Expected fields: id, type, name, parentId. Book entries must include coverImageUrl (HTTPS).</p>
         </section>
         <section className="mt-6 rounded-3xl border border-white/10 bg-white/[0.04] p-5">
           <h2 className="text-lg font-bold">{editingId ? "Edit learning entry" : "Add learning entry"}</h2>
@@ -215,12 +206,6 @@ export default function AdminCategoriesPage() {
               <label className="text-sm text-slate-300">Book cover image URL
                 <input type="url" required value={coverImageUrl} onChange={(event) => setCoverImageUrl(event.target.value)} placeholder="https://…/book-cover.jpg" className="mt-1 w-full rounded-xl border border-white/15 bg-[#111827] p-3 text-white"/>
               </label>
-              <label className="text-sm text-slate-300">Publisher
-                <input value={publisher} onChange={(event) => setPublisher(event.target.value)} maxLength={120} placeholder="Publisher name" className="mt-1 w-full rounded-xl border border-white/15 bg-[#111827] p-3 text-white"/>
-              </label>
-              <label className="text-sm text-slate-300 sm:col-span-2">Applicable classes (optional, comma separated)
-                <input value={classLabelsText} onChange={(event) => setClassLabelsText(event.target.value)} placeholder="Class 7, Class 8" className="mt-1 w-full rounded-xl border border-white/15 bg-[#111827] p-3 text-white"/>
-              </label>
               {coverImageUrl && <div className="sm:col-span-2"><p className="mb-2 text-xs text-slate-400">Cover preview</p><img src={coverImageUrl} alt="Book cover preview" className="h-48 w-36 rounded-xl border border-white/10 object-cover" referrerPolicy="no-referrer"/></div>}
             </>}
             <div className="flex flex-wrap gap-2 sm:col-span-2">
@@ -234,7 +219,7 @@ export default function AdminCategoriesPage() {
           <div className="mt-4 grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-5">
             {books.map((book) => <article key={book.id} className="overflow-hidden rounded-xl border border-white/10 bg-black/20">
               {book.coverImageUrl ? <img src={book.coverImageUrl} alt={book.name} loading="lazy" className="h-44 w-full object-contain bg-white/5" referrerPolicy="no-referrer"/> : <div className="grid h-44 place-items-center text-slate-500"><ImagePlus size={28}/></div>}
-              <div className="p-3"><h3 className="line-clamp-2 text-sm font-bold">{book.name}</h3><p className="mt-1 text-[11px] text-slate-400">{book.publisher || "Publisher not set"}</p><p className="mt-1 text-[11px] text-cyan-200">{(book.classLabels || []).join(", ")}</p><div className="mt-2 flex gap-3"><button type="button" onClick={() => startEdit(book)} className="text-xs text-cyan-300">Edit</button><button type="button" onClick={() => void deleteNode(book)} disabled={saving} className="text-xs text-rose-300">Delete</button></div></div>
+              <div className="p-3"><h3 className="line-clamp-2 text-sm font-bold">{book.name}</h3><div className="mt-2 flex gap-3"><button type="button" onClick={() => startEdit(book)} className="text-xs text-cyan-300">Edit</button><button type="button" onClick={() => void deleteNode(book)} disabled={saving} className="text-xs text-rose-300">Delete</button></div></div>
             </article>)}
           </div>
         </section>
