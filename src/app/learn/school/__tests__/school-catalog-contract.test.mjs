@@ -15,7 +15,14 @@ test("Learning discovery follows Subject Book Chapter Question and has level-spe
   assert.doesNotMatch(page, /edition|Board →|Choose School|Choose Class/);
 });
 
-test("Question answers only return approved active safe videos", () => {
+test("Question answers require a published Question node before reading matching videos", () => {
+  assert.match(answers, /collection\("schoolLearningNodes"\)\.doc\(questionId\)\.get\(\)/);
+  assert.match(answers, /question\?\.type !== "question"/);
+  assert.match(answers, /question\.status !== "published"/);
+  assert.match(answers, /Published learning question not found/);
+});
+
+test("Question answers only return approved active safe videos and keep paid checkout gated", () => {
   assert.match(answers, /schoolQuestionId/);
   assert.match(answers, /data\.status !== "approved"/);
   assert.match(answers, /data\.active !== true/);
