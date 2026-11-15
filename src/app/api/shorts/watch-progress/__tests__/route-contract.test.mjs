@@ -41,3 +41,10 @@ test("resume writes close stale sessions after the four-hour telemetry limit", (
   assert.match(source, /nowMs - startedAt > 4 \* 60 \* 60 \* 1000/);
   assert.match(source, /closeReason: "expired"/);
 });
+
+test("continue watching fetches unique video records in parallel", () => {
+  assert.match(source, /const videoIds = Array\.from\(new Set\(progressRows\.map/);
+  assert.match(source, /Promise\.all\(videoIds\.map/);
+  assert.match(source, /videosById\.get\(videoId\)/);
+  assert.match(source, /scannedProgress: progressSnap\.size, limit: 50/);
+});
