@@ -21,8 +21,9 @@ export async function GET(req: NextRequest) {
     const uid = await uidFromRequest(req);
     if (!uid) return NextResponse.json({ success: false, message: "Unauthorized" }, { status: 401 });
     const db = getAdminDb();
-    const history = await db.collection("watchHistory").where("userId", "==", uid).orderBy("lastWatchedAt", "desc").limit(100).get();
-    const entries = await Promise.all(history.docs.map(async (entry) => {
+    const history = await db.collection("watchHistory").where("userId", "==", uid).limit(500).get();
+    const orderedHistory = history.docs.sort((a, b) => Number(b.data().lastWatchedAt || 0) - Number(a.data().lastWatchedAt || 0)).slice(0, 100);
+    const entries = await Promise.all(orderedHistory.map(async (entry) => {
       const videoId = entry.data().videoId;
       if (!validId(videoId)) return null;
       const video = await db.collection("watchEarnVideos").doc(videoId).get();
@@ -98,10 +99,14 @@ export async function DELETE(req: NextRequest) {
     const videoId = new URL(req.url).searchParams.get("videoId");
     const db = getAdminDb();
     if (videoId === "all") {
-      const snapshot = await db.collection("watchHistory").where("userId", "==", uid).limit(500).get();
-      const batch = db.batch();
-      snapshot.docs.forEach((doc) => batch.delete(doc.ref));
-      await batch.commit();
+      while (true) {
+        const snapshot = await db.collection("watchHistory").where("userId", "==", uid).limit(400).get();
+        if (snapshot.empty) break;
+        const batch = db.batch();
+        snapshot.docs.forEach((doc) => batch.delete(doc.ref));
+        await batch.commit();
+        if (snapshot.size < 400) break;
+      }
     } else if (validId(videoId)) {
       const ref = db.collection("watchHistory").doc(videoId + "_" + uid);
       const snap = await ref.get();
