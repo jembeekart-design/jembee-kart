@@ -8,6 +8,7 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
 import androidx.compose.runtime.*
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
@@ -27,6 +28,9 @@ class MainActivity : ComponentActivity() {
 
 @Composable
 private fun JembeeTvApp() {
+    val context = LocalContext.current
+    var remoteConfig by remember { mutableStateOf(JembeeRemoteConfig()) }
+    LaunchedEffect(Unit) { RemoteConfigClient.fetch(context) { remoteConfig = it } }
     var selected by remember { mutableStateOf("Home") }
     var dark by remember { mutableStateOf(true) }
     val shelves = listOf(
@@ -56,6 +60,9 @@ private fun JembeeTvApp() {
                         }
                         Button(onClick = { dark = !dark }) { Text(if (dark) "Dark" else "Light") }
                     }
+                }
+                if (remoteConfig.maintenanceEnabled) {
+                    Text(remoteConfig.maintenanceMessage.ifBlank { "JEMBEE PLAY is temporarily under maintenance." }, Modifier.padding(top = 14.dp), color = colors.error)
                 }
                 Spacer(Modifier.height(34.dp))
                 Card(onClick = { selected = "Featured" }, modifier = Modifier.fillMaxWidth().height(190.dp)) {
