@@ -14,6 +14,7 @@ interface HistoryItem {
   creatorName: string;
   startedAt: string | null;
   elapsedSeconds: number;
+  sessionCount: number;
 }
 
 function formatTime(seconds: number) {
