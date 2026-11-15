@@ -75,7 +75,10 @@ export default function AdminCategoriesPage() {
     } finally { setBusy(false); }
   }, []);
 
-  useEffect(() => { load(); }, [load]);
+  useEffect(() => {
+    const timer = window.setTimeout(() => { void load(); }, 0);
+    return () => window.clearTimeout(timer);
+  }, [load]);
 
   useEffect(() => {
     if (type !== "question" || !parentId) return;
