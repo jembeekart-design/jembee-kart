@@ -98,12 +98,12 @@ test("NCERT Grade 6 starter catalog is admin-only, bounded and repeatable", () =
   assert.match(route, /\{ merge: true \}/);
   assert.match(adminPage, /Add NCERT Grade 6 starter catalog/);
   assert.match(adminPage, /seed-ncert-grade-6/);
-  assert.equal(seed.entries.filter((entry) => entry.type === "subject").length, 6);
-  assert.equal(seed.entries.filter((entry) => entry.type === "book").length, 6);
-  assert.equal(seed.entries.filter((entry) => entry.type === "chapter").length, 70);
-  assert.equal(seed.entries.filter((entry) => entry.type === "question").length, 22);
+  assert.equal(seed.entries.filter((entry) => entry.type === "subject").length, 9);
+  assert.equal(seed.entries.filter((entry) => entry.type === "book").length, 9);
+  assert.equal(seed.entries.filter((entry) => entry.type === "chapter").length, 103);
+  assert.equal(seed.entries.filter((entry) => entry.type === "question").length, 103);
   assert.ok(seed.entries.filter((entry) => entry.type === "book").every((entry) => entry.coverImageUrl.startsWith("/learning-covers/")));
-  assert.ok(seed.entries.filter((entry) => entry.type === "question").every((entry) => entry.name.startsWith("Practice Q1 — ")));
+  assert.ok(seed.entries.filter((entry) => entry.type === "question").every((entry) => entry.name.startsWith("JEMBEE PLAY Practice Q1 — ") || entry.name.startsWith("JEMBEE PLAY अभ्यास प्रश्न 1 — ")));
 });
 
 test("NCERT Grade 6 seed is Admin-only and is available from the built-in catalog action", () => {
