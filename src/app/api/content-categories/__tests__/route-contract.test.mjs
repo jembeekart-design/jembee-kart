@@ -31,6 +31,8 @@ test("catalog supports only Subject, Book, Chapter and Question hierarchy", () =
   assert.match(route, /Import file में पूरी Subject → Book → Chapter → Question hierarchy valid होनी चाहिए/);
   assert.match(route, /parentId \\|\\| null/);
   assert.match(route, /इस entry के अंदर child entries हैं/);
+  assert.match(route, /Import किसी existing entry का type नहीं बदल सकता/);
+  assert.match(route, /Import किसी ऐसे parent को move नहीं कर सकता/);
 });
 
 test("teachers select existing Subject Book Chapter Question and cannot create master entries", () => {
