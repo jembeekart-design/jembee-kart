@@ -75,7 +75,7 @@ export default function AdminCategoriesPage() {
     } finally { setBusy(false); }
   }, []);
 
-  useEffect(() => { void load(); }, [load]);
+  useEffect(() => { load(); }, [load]);
 
   useEffect(() => {
     if (type !== "question" || !parentId) return;
@@ -108,7 +108,7 @@ export default function AdminCategoriesPage() {
         if (active) setBusy(false);
       }
     }
-    void loadSelectedChapterQuestions();
+    loadSelectedChapterQuestions();
     return () => { active = false; };
   }, [type, parentId]);
 
@@ -219,7 +219,7 @@ export default function AdminCategoriesPage() {
     setNotice("");
     try {
       const result = await adminRequest({ action: "seed-ncert-grade-6" });
-      setNotice("NCERT Grade 6 starter catalog में " + Number(result.imported || 0) + " entries जोड़ दी गईं।");
+      setNotice(`NCERT Grade 6 starter catalog में ${Number(result.imported || 0)} entries जोड़ दी गईं।`);
       await load();
     } catch (error) {
       setNotice(error instanceof Error ? error.message : "NCERT starter catalog import failed");
@@ -232,7 +232,7 @@ export default function AdminCategoriesPage() {
         <Link href="/admin" className="inline-flex items-center gap-2 text-sm text-slate-400"><ArrowLeft size={16}/> Admin Dashboard</Link>
         <div className="mt-6 flex flex-wrap items-center justify-between gap-3">
           <div><p className="text-xs font-bold uppercase tracking-widest text-cyan-300">Preloaded book-centric learning library</p><h1 className="text-2xl font-black sm:text-3xl">Learning Library</h1></div>
-          <button type="button" onClick={() => void load()} disabled={busy} className="inline-flex items-center gap-2 rounded-xl border border-white/15 px-4 py-2 text-sm"><RefreshCw size={16}/> Refresh</button>
+          <button type="button" onClick={load} disabled={busy} className="inline-flex items-center gap-2 rounded-xl border border-white/15 px-4 py-2 text-sm"><RefreshCw size={16}/> Refresh</button>
         </div>
         <section className="mt-5 rounded-3xl border border-cyan-300/20 bg-cyan-300/[0.05] p-5">
           <p className="font-bold text-cyan-100">Subject → Book → Chapter → Question</p>
@@ -244,12 +244,12 @@ export default function AdminCategoriesPage() {
           <h2 className="text-lg font-bold">Bulk import preloaded books and questions</h2>
           <p className="mt-2 text-sm leading-6 text-slate-300">Verified JSON dataset एक बार चुनें। System entries को 50-record batches में import करेगा; हर book, chapter और question अलग-अलग manually add करने की जरूरत नहीं होगी। Parent entries पहले से मौजूद हों या उसी dataset में शामिल हों।</p>
           <div className="mt-4 flex flex-wrap gap-3">
-            <button type="button" onClick={() => void seedNcertGrade6()} disabled={importing} className="inline-flex items-center gap-2 rounded-xl bg-cyan-400 px-4 py-3 text-sm font-bold text-slate-950 disabled:opacity-50">
+            <button type="button" onClick={seedNcertGrade6} disabled={importing} className="inline-flex items-center gap-2 rounded-xl bg-cyan-400 px-4 py-3 text-sm font-bold text-slate-950 disabled:opacity-50">
               {importing ? "Importing…" : "Add NCERT Grade 6 starter catalog"}
             </button>
             <label className="inline-flex cursor-pointer items-center gap-2 rounded-xl border border-white/20 px-4 py-3 text-sm font-semibold">
               Choose JSON dataset
-              <input type="file" accept="application/json,.json" disabled={importing} className="sr-only" onChange={(event) => { const file = event.currentTarget.files?.[0]; if (file) void importLibraryFile(file); event.currentTarget.value = ""; }}/>
+              <input type="file" accept="application/json,.json" disabled={importing} className="sr-only" onChange={(event) => { const file = event.currentTarget.files?.[0]; if (file) importLibraryFile(file); event.currentTarget.value = ""; }}/>
             </label>
           </div>
           <p className="mt-3 text-xs text-slate-400">Starter catalog: 9 subjects, 9 books, 103 chapters and 103 independently written JEMBEE PLAY practice questions. Book covers are original JEMBEE PLAY artwork. NCERT textbook pages, scans and exercise questions are not copied.</p>
@@ -290,7 +290,7 @@ export default function AdminCategoriesPage() {
           <div className="mt-4 grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-5">
             {books.map((book) => <article key={book.id} className="overflow-hidden rounded-xl border border-white/10 bg-black/20">
               {book.coverImageUrl ? <img src={book.coverImageUrl} alt={book.name} loading="lazy" className="h-44 w-full object-contain bg-white/5" referrerPolicy="no-referrer"/> : <div className="grid h-44 place-items-center text-slate-500"><ImagePlus size={28}/></div>}
-              <div className="p-3"><h3 className="line-clamp-2 text-sm font-bold">{book.name}</h3><div className="mt-2 flex gap-3"><button type="button" onClick={() => startEdit(book)} className="text-xs text-cyan-300">Edit</button><button type="button" onClick={() => void deleteNode(book)} disabled={saving} className="text-xs text-rose-300">Delete</button></div></div>
+              <div className="p-3"><h3 className="line-clamp-2 text-sm font-bold">{book.name}</h3><div className="mt-2 flex gap-3"><button type="button" onClick={() => startEdit(book)} className="text-xs text-cyan-300">Edit</button><button type="button" onClick={() => deleteNode(book)} disabled={saving} className="text-xs text-rose-300">Delete</button></div></div>
             </article>)}
           </div>
         </section>
@@ -302,7 +302,7 @@ export default function AdminCategoriesPage() {
               return <div key={item.value} className="rounded-xl border border-white/10 bg-black/20 p-3">
                 <p className="font-semibold">{item.label} ({group.length})</p>
                 <ul className="mt-2 space-y-2 text-xs text-slate-300">
-                  {group.slice(0, 40).map((node) => <li key={node.id} className="flex items-center justify-between gap-2"><span className="min-w-0 truncate">{node.name}</span><span className="flex shrink-0 gap-2"><button type="button" aria-label={`Edit ${node.name}`} onClick={() => startEdit(node)} className="rounded p-1 text-cyan-300"><Pencil size={14}/></button><button type="button" aria-label={`Delete ${node.name}`} onClick={() => void deleteNode(node)} disabled={saving} className="rounded p-1 text-rose-300 disabled:opacity-40"><Trash2 size={14}/></button></span></li>)}
+                  {group.slice(0, 40).map((node) => <li key={node.id} className="flex items-center justify-between gap-2"><span className="min-w-0 truncate">{node.name}</span><span className="flex shrink-0 gap-2"><button type="button" aria-label={`Edit ${node.name}`} onClick={() => startEdit(node)} className="rounded p-1 text-cyan-300"><Pencil size={14}/></button><button type="button" aria-label={`Delete ${node.name}`} onClick={() => deleteNode(node)} disabled={saving} className="rounded p-1 text-rose-300 disabled:opacity-40"><Trash2 size={14}/></button></span></li>)}
                 </ul>
               </div>;
             })}
