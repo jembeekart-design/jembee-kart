@@ -120,25 +120,34 @@ export async function POST(req: Request) {
         }
       }
       const entryById = new Map(normalized.map((entry) => [entry.id, entry]));
-      const parentIds = [...new Set(normalized.map((entry) => entry.parentId).filter(Boolean))];
-      const parentDocs = await Promise.all(parentIds.map(async (id) => {
+      const resolveEntry = async (id: string) => {
         const local = entryById.get(id);
-        if (local) return { id, type: local.type, status: "published" };
+        if (local) return { id, type: local.type, parentId: local.parentId, status: "published" };
         const snap = await db.collection("schoolLearningNodes").doc(id).get();
-        return { id, type: snap.data()?.type, status: snap.data()?.status };
-      }));
-      const parentTypes = new Map(parentDocs.map((item) => [item.id, item]));
+        if (!snap.exists) return null;
+        const data = snap.data() || {};
+        return { id, type: data.type as NodeType, parentId: typeof data.parentId === "string" ? data.parentId : "", status: data.status };
+      };
       for (const entry of normalized) {
-        const allowed = PARENT_TYPES[entry.type];
-        if (!allowed.length && entry.parentId) return NextResponse.json({ success: false, message: "Subject top-level entry होना चाहिए।" }, { status: 400, headers: noStore });
-        if (allowed.length) {
-          const parent = parentTypes.get(entry.parentId);
-          if (!parent || parent.status !== "published" || !allowed.includes(parent.type as NodeType)) {
-            return NextResponse.json({ success: false, message: "Import file में parent-child hierarchy गलत है।" }, { status: 400, headers: noStore });
-          }
-        }
         if (entry.type !== "book" && entry.coverImageUrl) {
           return NextResponse.json({ success: false, message: "Cover image केवल Book entry पर रखें।" }, { status: 400, headers: noStore });
+        }
+        const visited = new Set<string>([entry.id]);
+        let current = entry;
+        while (current.type !== "subject") {
+          const expectedParentType = PARENT_TYPES[current.type][0];
+          if (!current.parentId || visited.has(current.parentId)) {
+            return NextResponse.json({ success: false, message: "Import file में parent-child hierarchy गलत या cyclic है।" }, { status: 400, headers: noStore });
+          }
+          visited.add(current.parentId);
+          const parent = await resolveEntry(current.parentId);
+          if (!parent || parent.status !== "published" || parent.type !== expectedParentType) {
+            return NextResponse.json({ success: false, message: "Import file में पूरी Subject → Book → Chapter → Question hierarchy valid होनी चाहिए।" }, { status: 400, headers: noStore });
+          }
+          current = parent;
+        }
+        if (current.parentId) {
+          return NextResponse.json({ success: false, message: "Subject top-level entry होना चाहिए।" }, { status: 400, headers: noStore });
         }
       }
       const batch = db.batch();
@@ -225,6 +234,12 @@ export async function POST(req: Request) {
       const current = existingId ? await ref.get() : null;
       if (existingId && (!current?.exists || current.data()?.type !== type)) {
         return NextResponse.json({ success: false, message: "Catalog entry उपलब्ध नहीं है या उसका type बदल गया है।" }, { status: 404, headers: noStore });
+      }
+      if (current?.exists && (current.data()?.parentId || null) !== (parentId || null)) {
+        const children = await db.collection("schoolLearningNodes").where("parentId", "==", id).limit(1).get();
+        if (!children.empty) {
+          return NextResponse.json({ success: false, message: "इस entry के अंदर child entries हैं। पहले उन्हें move करें, फिर parent बदलें।" }, { status: 409, headers: noStore });
+        }
       }
       await ref.set({
         id, type, name, parentId: parentId || null, status: "published",
