@@ -120,6 +120,15 @@ test("re-importing the NCERT seed never silently republishes an Admin-unpublishe
   assert.match(route, /Re-seeding must never silently re-publish/);
 });
 
+test("question records retain source provenance and require permission evidence for textbook reuse", () => {
+  assert.match(route, /questionNumber: cleanText\(entry\.questionNumber, 40\)/);
+  assert.match(route, /sourceType: cleanText\(entry\.sourceType, 32\)/);
+  assert.match(route, /sourceReference: cleanText\(entry\.sourceReference, 2048\)/);
+  assert.match(route, /sourceType === "permissioned-textbook" && \(!entry\.rightsVerified/);
+  assert.match(route, /sourceType === "open-license" && \(!entry\.licenseName/);
+  assert.ok(seed.entries.filter((entry) => entry.type === "question").every((entry) => entry.sourceType === "jembee-practice" && entry.questionNumber === "JP-1"));
+});
+
 test("book cover editor accepts the bundled local SVG artwork paths", () => {
   assert.match(adminPage, /type="text" required value=\{coverImageUrl\}/);
   assert.match(adminPage, /learning-covers\/book\.svg/);
