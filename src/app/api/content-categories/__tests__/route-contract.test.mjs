@@ -127,6 +127,10 @@ test("question records retain source provenance and require permission evidence 
   assert.match(route, /sourceType === "permissioned-textbook" && \(!entry\.rightsVerified/);
   assert.match(route, /sourceType === "open-license" && \(!entry\.licenseName/);
   assert.ok(seed.entries.filter((entry) => entry.type === "question").every((entry) => entry.sourceType === "jembee-practice" && entry.questionNumber === "JP-1"));
+  assert.match(adminPage, /Question source/);
+  assert.match(adminPage, /permissioned-textbook/);
+  assert.match(adminPage, /rightsVerified/);
+  assert.match(adminPage, /commercial digital redistribution/);
 });
 
 test("book cover editor accepts the bundled local SVG artwork paths", () => {
