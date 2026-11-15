@@ -20,7 +20,7 @@ export async function POST(req: Request) {
   let creatorId: string;
 
   try {
-    const decodedToken = await getAdminAuth().verifyIdToken(token);
+    const decodedToken = await getAdminAuth().verifyIdToken(token, true);
     creatorId = decodedToken.uid;
   } catch {
     return NextResponse.json(
@@ -32,7 +32,15 @@ export async function POST(req: Request) {
   let body: { submissionId?: unknown };
 
   try {
-    body = await req.json();
+    const contentLength = Number(req.headers.get("content-length") || 0);
+    if (contentLength > 4 * 1024) {
+      return NextResponse.json({ success: false, message: "Request body is too large" }, { status: 413 });
+    }
+    const rawBody = await req.text();
+    if (new TextEncoder().encode(rawBody).byteLength > 4 * 1024) {
+      return NextResponse.json({ success: false, message: "Request body is too large" }, { status: 413 });
+    }
+    body = JSON.parse(rawBody);
   } catch {
     return NextResponse.json(
       { success: false, message: "Invalid JSON" },
@@ -45,7 +53,7 @@ export async function POST(req: Request) {
       ? body.submissionId.trim()
       : "";
 
-  if (!submissionId) {
+  if (!/^[A-Za-z0-9_-]{3,128}$/.test(submissionId)) {
     return NextResponse.json(
       { success: false, message: "Submission ID is required" },
       { status: 400 }
@@ -122,22 +130,10 @@ export async function POST(req: Request) {
       );
     }
 
-    console.log("[UPLOAD_DEBUG_SERVER] RECOVERY_BEGIN", {
-      submissionId,
-      creatorId,
-      fileSize,
-    });
-
     const status = await getResumableUploadStatus(
       uploadUrl,
       fileSize
     );
-
-    console.log("[UPLOAD_DEBUG_SERVER] RECOVERY_RESULT", {
-      submissionId,
-      uploadedBytes: status.uploadedBytes,
-      completed: !!status.driveFileId,
-    });
 
     return NextResponse.json({
       success: true,
