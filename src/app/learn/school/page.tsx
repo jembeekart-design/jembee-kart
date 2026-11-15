@@ -50,7 +50,7 @@ export default function SchoolLearningPage() {
       .catch((reason) => { if (active) setError(reason instanceof Error ? reason.message : "Library unavailable"); })
       .finally(() => { if (active) setLoading(false); });
     return () => { active = false; };
-  }, [stage, subject?.id, book?.id, chapter?.id, page, nextCursors]);
+  }, [stage, subject?.id, book?.id, chapter?.id, page]);
 
   useEffect(() => {
     if (stage !== 4 || !question) return;
