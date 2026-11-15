@@ -460,7 +460,7 @@ function UploadWatchVideoContent() {
             <div className="mt-5 rounded-2xl border border-cyan-300/20 bg-cyan-300/[0.04] p-4">
               <h3 className="flex items-center gap-2 text-sm font-extrabold"><BookOpen size={18} className="text-cyan-300"/> Category & Learning Details</h3>
               <label className="mt-3 block text-xs font-bold text-slate-200">Category <span className="text-red-400">*</span>
-                <select required value={categoryId} onChange={(event) => { setCategoryId(event.target.value); setCategoryTopic(""); setSchoolSubjectId(""); setSchoolBookId(""); setSchoolEditionId(""); setSchoolChapterId(""); setSchoolQuestionId(""); }} className="mt-2 w-full rounded-xl border border-white/15 bg-[#090d14] px-3 py-3 text-sm text-white outline-none focus:border-cyan-400">
+                <select required value={categoryId} onChange={(event) => { setCategoryId(event.target.value); setCategoryTopic(""); setSchoolSubjectId(""); setSchoolBookId(""); setSchoolChapterId(""); setSchoolQuestionId(""); }} className="mt-2 w-full rounded-xl border border-white/15 bg-[#090d14] px-3 py-3 text-sm text-white outline-none focus:border-cyan-400">
                   <option value="">Category चुनें</option>{categories.map((item) => <option key={item.id} value={item.id}>{item.name}</option>)}
                 </select>
               </label>
