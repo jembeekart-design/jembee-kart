@@ -45,7 +45,7 @@ test("admin page exposes authenticated create, edit and delete controls", () => 
   assert.match(adminPage, /save-school-node/);
   assert.match(adminPage, /delete-school-node/);
   assert.match(adminPage, /Update entry/);
-  assert.match(adminPage, /Book cover image URL/);
+  assert.match(adminPage, /Book cover path or URL/);
   assert.doesNotMatch(adminPage, /Edition|Publisher|Applicable classes/);
   assert.match(adminPage, /Only admin \/ super_admin accounts/);
 });
@@ -118,4 +118,10 @@ test("re-importing the NCERT seed never silently republishes an Admin-unpublishe
   assert.match(route, /existingNodeSnapshots = await Promise\.all\(normalized\.map/);
   assert.match(route, /existingNode\.exists && typeof existingStatus === "string" \? existingStatus : "published"/);
   assert.match(route, /Re-seeding must never silently re-publish/);
+});
+
+test("book cover editor accepts the bundled local SVG artwork paths", () => {
+  assert.match(adminPage, /type="text" required value=\{coverImageUrl\}/);
+  assert.match(adminPage, /learning-covers\/book\.svg/);
+  assert.match(route, /\^\\\/learning-covers\\\/[a-z0-9-]+\\\.svg\$/);
 });
