@@ -6,10 +6,11 @@ export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
 const noStore = { "Cache-Control": "no-store, max-age=0" };
 const ID_PATTERN = /^[a-z0-9][a-z0-9_-]{1,63}$/;
-const NODE_TYPES = ["book", "chapter", "question"] as const;
+const NODE_TYPES = ["subject", "book", "chapter", "question"] as const;
 type NodeType = typeof NODE_TYPES[number];
 const PARENT_TYPES: Record<NodeType, NodeType[]> = {
-  book: [],
+  subject: [],
+  book: ["subject"],
   chapter: ["book"],
   question: ["chapter"],
 };
@@ -129,7 +130,7 @@ export async function POST(req: Request) {
       const parentTypes = new Map(parentDocs.map((item) => [item.id, item]));
       for (const entry of normalized) {
         const allowed = PARENT_TYPES[entry.type];
-        if (!allowed.length && entry.parentId) return NextResponse.json({ success: false, message: "Book top-level entry होना चाहिए।" }, { status: 400, headers: noStore });
+        if (!allowed.length && entry.parentId) return NextResponse.json({ success: false, message: "Subject top-level entry होना चाहिए।" }, { status: 400, headers: noStore });
         if (allowed.length) {
           const parent = parentTypes.get(entry.parentId);
           if (!parent || parent.status !== "published" || !allowed.includes(parent.type as NodeType)) {
@@ -210,7 +211,7 @@ export async function POST(req: Request) {
       }
       const allowedParents = PARENT_TYPES[type];
       if (allowedParents.length === 0 && parentId) {
-        return NextResponse.json({ success: false, message: "Book top-level entry है।" }, { status: 400, headers: noStore });
+        return NextResponse.json({ success: false, message: "Subject top-level entry है।" }, { status: 400, headers: noStore });
       }
       if (allowedParents.length > 0) {
         if (!ID_PATTERN.test(parentId)) return NextResponse.json({ success: false, message: "पहले सही parent entry चुनें।" }, { status: 400, headers: noStore });
