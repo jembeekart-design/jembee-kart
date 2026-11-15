@@ -85,13 +85,13 @@ export default function SystemHealthPage() {
     } finally { setSaving(false); }
   }
 
-  const featureLabels: Array<[keyof Config["features"], string, string]> = [
-    ["shorts", "Shorts", "Short video feed"],
-    ["schoolLearning", "School Learning", "Learning catalog"],
-    ["creatorUploads", "Creator uploads", "New video submissions"],
-    ["paidVideo", "Paid video", "Paid checkout feature flag only"],
-    ["videoAds", "Video ads", "Ad placements"],
-    ["notifications", "Notifications", "Push and in-app notification feature"],
+  const featureLabels: Array<[keyof Config["features"], string, string, boolean]> = [
+    ["shorts", "Shorts", "Backend enforcement pending", false],
+    ["schoolLearning", "School Learning", "Backend enforcement pending", false],
+    ["creatorUploads", "Creator uploads", "Backend enforcement pending", false],
+    ["paidVideo", "Paid video", "Enforced at checkout and playback session", true],
+    ["videoAds", "Video ads", "Backend enforcement pending", false],
+    ["notifications", "Notifications", "Backend enforcement pending", false],
   ];
 
   if (loading) return <main className="min-h-screen bg-slate-50 p-8 text-slate-700">Loading system controls…</main>;
@@ -125,7 +125,7 @@ export default function SystemHealthPage() {
           <h2 className="text-xl font-bold">Feature emergency switches</h2>
           <p className="mt-1 text-sm text-slate-600">These settings are remote config values. Backend enforcement must be implemented separately for each feature before relying on a switch for security.</p>
           <div className="mt-4 grid gap-3 md:grid-cols-2">
-            {featureLabels.map(([key, label, description]) => <label key={key} className="flex cursor-pointer items-center justify-between gap-4 rounded-xl border p-4"><span><span className="block font-semibold">{label}</span><span className="text-xs text-slate-500">{description}</span></span><input type="checkbox" checked={config.features[key]} onChange={() => toggleFeature(key)} className="h-5 w-5"/></label>)}
+            {featureLabels.map(([key, label, description, supported]) => <label key={key} className="flex items-center justify-between gap-4 rounded-xl border p-4"><span><span className="block font-semibold">{label}</span><span className="text-xs text-slate-500">{description}</span></span><input type="checkbox" disabled={!supported} checked={config.features[key]} onChange={() => toggleFeature(key)} className="h-5 w-5 disabled:opacity-40"/></label>)}
           </div>
         </section>
 
