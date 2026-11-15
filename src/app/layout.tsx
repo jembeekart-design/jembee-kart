@@ -42,7 +42,7 @@ export default function RootLayout({
         <link rel="preconnect" href="https://www.googleapis.com" crossOrigin="anonymous" />
         {/* Monetag website-verification meta tag; it does not load an ad script. */}
         <meta name="monetag" content="ffc36b1add65212e386c64b0bf1e6c0e" />
-        <meta name="6a97888e-site-verification" content="04c4ca81fada3ebca5468b281d1e7642" />
+        <meta name="6a97888e-site-verification" content="2a751b9fa06b8c40236414df5d6abc81" />
         
 
       </head>
