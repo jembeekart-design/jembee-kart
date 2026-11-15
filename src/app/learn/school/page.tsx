@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { MonetagPlacement } from "@/components/ads/MonetagPlacement";
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useState } from "react";
 import { ArrowLeft, Search, ChevronRight, BookOpen, Hash, Video, PlusCircle, Play, RefreshCw } from "lucide-react";
 
 type Item = { id: string; name: string; type?: string; parentId?: string | null; coverImageUrl?: string | null };
@@ -63,7 +63,6 @@ export default function SchoolLearningPage() {
   const titles = ["Choose Subject", "Choose Book", "Choose Chapter", "Choose Question", "Video Answers"];
   const filtered = nodes;
   const visible = filtered;
-  const total = nextCursor ? page + 1 : page;
 
   function back() {
     if (stage === 0) return;
