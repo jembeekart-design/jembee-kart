@@ -32,6 +32,8 @@ export default function SystemHealthPage() {
   const [saving, setSaving] = useState(false);
   const [status, setStatus] = useState("");
   const [error, setError] = useState("");
+  const [healthChecks, setHealthChecks] = useState<Array<{ id: string; label: string; status: string; latencyMs?: number }>>([]);
+  const [checkedAt, setCheckedAt] = useState("");
 
   const load = useCallback(async (idToken?: string) => {
     setLoading(true);
@@ -41,7 +43,13 @@ export default function SystemHealthPage() {
       if (!response.ok) throw new Error("Remote configuration could not be loaded.");
       const result = await response.json();
       if (result.success && result.config) setConfig({ ...defaults, ...result.config });
-      if (idToken) setToken(idToken);
+      if (idToken) {
+        setToken(idToken);
+        const healthResponse = await fetch("/api/admin/system-health", { headers: { Authorization: `Bearer ${idToken}` }, cache: "no-store" });
+        const health = await healthResponse.json();
+        if (healthResponse.ok && health.success) { setHealthChecks(health.checks || []); setCheckedAt(health.checkedAt || ""); }
+        else setHealthChecks([{ id: "health_api", label: "System health diagnostics", status: "unavailable" }]);
+      }
     } catch (e) {
       setError(e instanceof Error ? e.message : "Unable to load settings.");
     } finally {
@@ -108,8 +116,14 @@ export default function SystemHealthPage() {
           <button onClick={() => void load(token)} className="inline-flex items-center gap-2 rounded-xl border bg-white px-4 py-3 font-semibold"><RefreshCw size={17}/> Refresh</button>
         </header>
 
-        <section className="grid gap-4 md:grid-cols-3">
-          <div className="rounded-2xl border bg-white p-5"><Activity className="text-sky-700"/><p className="mt-3 font-bold">Remote Config API</p><p className="text-sm text-emerald-700">Responding</p></div>
+        <section className="rounded-2xl border bg-white p-5 md:p-6">
+          <div className="flex flex-wrap items-center justify-between gap-2"><h2 className="text-xl font-bold">System diagnostics</h2><span className="text-xs text-slate-500">{checkedAt ? `Checked ${new Date(checkedAt).toLocaleString()}` : "Not checked"}</span></div>
+          <div className="mt-4 grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
+            {healthChecks.map((check) => <div key={check.id} className="rounded-xl border p-4"><p className="font-semibold">{check.label}</p><p className={`mt-1 text-sm ${check.status === "healthy" || check.status === "configured" ? "text-emerald-700" : "text-amber-700"}`}>{check.status.replaceAll("_", " ")}{typeof check.latencyMs === "number" ? ` · ${check.latencyMs} ms` : ""}</p></div>)}
+          </div>
+          <p className="mt-3 text-xs text-slate-500">Provider checks show configuration presence only, not successful live provider transactions.</p>
+        </section>
+        <section className="grid gap-4 md:grid-cols-2">
           <div className="rounded-2xl border bg-white p-5"><Smartphone className="text-sky-700"/><p className="mt-3 font-bold">Android Mobile</p><p className="text-sm text-slate-600">Target {config.latestVersions.mobile}</p></div>
           <div className="rounded-2xl border bg-white p-5"><Tv className="text-sky-700"/><p className="mt-3 font-bold">Android TV</p><p className="text-sm text-slate-600">Target {config.latestVersions.tv}</p></div>
         </section>
