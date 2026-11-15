@@ -4,6 +4,7 @@ import android.view.ViewGroup
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -130,4 +131,78 @@ private fun NativeVideoPlayer(video: CatalogVideo, onClose: () -> Unit) {
             Text(video.creator, Modifier.padding(top = 8.dp), color = Color.LightGray, fontSize = 12.sp)
         }
     }
+}
+
+
+@Composable
+fun NativeShortsScreen() {
+    var videos by remember { mutableStateOf<List<CatalogVideo>>(emptyList()) }
+    var loading by remember { mutableStateOf(true) }
+    var failed by remember { mutableStateOf(false) }
+    var selected by remember { mutableStateOf<CatalogVideo?>(null) }
+
+    fun refresh() {
+        loading = true
+        failed = false
+        VideoCatalogClient.fetch { result ->
+            result.onSuccess { page ->
+                videos = page.videos.filter { it.format == "short" }
+                failed = false
+            }.onFailure { failed = true }
+            loading = false
+        }
+    }
+
+    LaunchedEffect(Unit) { refresh() }
+
+    Column(Modifier.fillMaxSize().padding(horizontal = 16.dp, vertical = 8.dp)) {
+        Text("JEMBEE SHORTS", fontSize = 22.sp, fontWeight = FontWeight.Black)
+        Text("Short videos from approved creators", color = Color.Gray, fontSize = 12.sp, modifier = Modifier.padding(top = 3.dp, bottom = 12.dp))
+        when {
+            loading -> Box(Modifier.fillMaxSize(), contentAlignment = androidx.compose.ui.Alignment.Center) {
+                CircularProgressIndicator()
+            }
+            failed -> Column(Modifier.fillMaxWidth().padding(24.dp), horizontalAlignment = androidx.compose.ui.Alignment.CenterHorizontally) {
+                Text("Shorts couldn't load right now.", color = Color.Gray)
+                TextButton(onClick = { refresh() }) { Text("Try again") }
+            }
+            videos.isEmpty() -> Box(Modifier.fillMaxSize(), contentAlignment = androidx.compose.ui.Alignment.Center) {
+                Text("No approved Shorts are available yet.", color = Color.Gray)
+            }
+            else -> LazyColumn(verticalArrangement = Arrangement.spacedBy(14.dp), contentPadding = PaddingValues(bottom = 18.dp)) {
+                items(videos, key = { it.id }) { video ->
+                    Column(Modifier.fillMaxWidth()) {
+                        Box(
+                            Modifier.fillMaxWidth().height(390.dp).clip(RoundedCornerShape(22.dp))
+                                .background(Color(0xFF111629)).clickable { selected = video }
+                        ) {
+                            AsyncImage(
+                                model = video.thumbnailUrl,
+                                contentDescription = video.title,
+                                contentScale = ContentScale.Crop,
+                                modifier = Modifier.fillMaxSize()
+                            )
+                            Surface(
+                                Modifier.align(androidx.compose.ui.Alignment.Center),
+                                color = Color.Black.copy(alpha = .68f),
+                                shape = RoundedCornerShape(50)
+                            ) {
+                                Text("▶", Modifier.padding(horizontal = 18.dp, vertical = 12.dp), color = Color.White, fontSize = 28.sp)
+                            }
+                            Text(
+                                "JEMBEE SHORTS",
+                                Modifier.align(androidx.compose.ui.Alignment.BottomStart).padding(14.dp)
+                                    .background(Color.Black.copy(alpha = .62f), RoundedCornerShape(8.dp))
+                                    .padding(horizontal = 9.dp, vertical = 5.dp),
+                                color = Color.White, fontSize = 10.sp, fontWeight = FontWeight.Bold
+                            )
+                        }
+                        Text(video.title, Modifier.padding(top = 8.dp), fontSize = 16.sp, fontWeight = FontWeight.Bold, maxLines = 2)
+                        Text(video.creator + " · " + video.views + " views", color = Color.Gray, fontSize = 12.sp)
+                    }
+                }
+            }
+        }
+    }
+    selected?.let { video -> NativeVideoPlayer(video = video, onClose = { selected = null }) }
 }
