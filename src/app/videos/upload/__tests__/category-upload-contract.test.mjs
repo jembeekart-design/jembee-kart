@@ -16,15 +16,17 @@ test("video upload offers Subject Book Chapter Question without Board, Class or 
   assert.doesNotMatch(helper, /schoolEditionId/);
 });
 
-test("upload API validates the direct Subject to Book to Chapter to Question chain", () => {
+test("upload API validates Subject to Book to Chapter and a teacher-entered question number", () => {
   assert.match(startRoute, /कृपया मान्य Category चुनें/);
-  assert.match(startRoute, /Learning video के लिए Subject, Book, Chapter और Question/);
+  assert.match(startRoute, /Learning video के लिए Subject, Book, Chapter और Question Number लिखना आवश्यक है/);
   assert.match(startRoute, /schoolSubjectId/);
   assert.match(startRoute, /schoolLearningNodes/);
   assert.match(startRoute, /Book चुने गए Subject से संबंधित नहीं है/);
   assert.match(startRoute, /const chapterParentId = schoolIds\.schoolBookId/);
-  assert.match(startRoute, /Question चुने गए Chapter से संबंधित नहीं है/);
-  assert.match(startRoute, /schoolQuestionId/);
+  assert.match(startRoute, /कृपया सही Question Number लिखें/);
+  assert.match(startRoute, /schoolQuestionNumber/);
+  assert.match(startRoute, /schoolQuestionKey/);
+  assert.doesNotMatch(startRoute, /schoolQuestionId/);
   assert.doesNotMatch(startRoute, /schoolEditionId/);
 });
 
