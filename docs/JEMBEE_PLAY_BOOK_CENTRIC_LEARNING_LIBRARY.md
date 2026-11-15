@@ -60,3 +60,24 @@ The sample is not a real textbook dataset and must not be imported as production
 ## Content and image rights
 
 Only import question text and cover images that JEMBEE PLAY is authorized to reproduce (for example, open-licensed/public-domain material or content with the required permission). Verify the exact title, cover, chapter and question text before publishing. Do not represent AI-generated practice questions as verbatim textbook questions.
+
+## Grade 6 starter catalog
+
+A versioned metadata-only starter dataset is maintained at `src/data/learning-library/ncert-grade-6-seed.json`.
+
+- Six subjects, six Grade 6 books, 70 chapter entries, and 22 independently authored practice prompts.
+- The six starter books are Poorvi, Malhar, Ganita Prakash, Curiosity, Exploring Society: India and Beyond, and Deepakam.
+- Original Jembee Play SVG cover artwork is stored under `public/learning-covers/`.
+- An authenticated Admin action, `seed-ncert-grade-6`, imports the complete starter catalog with stable IDs and merge semantics. Re-running it updates the same records rather than creating duplicates.
+- The first seed is metadata only. It does not import NCERT scans, official cover artwork, textbook exercise questions, answer keys, or PDFs. The 22 practice prompts are original JEMBEE PLAY questions and are clearly labelled as practice questions.
+- Source chapter/title metadata is cross-checked against the NCERT textbook catalogue and Grade 6 book index. The official NCERT portal states that its textbooks are copyrighted and prohibits republication, redistribution, commercial packaging and hosting without permission. JEMBEE PLAY must therefore link to official NCERT resources only where permitted and must obtain written permission before hosting or monetizing NCERT e-content.
+
+References:
+- NCERT textbook portal and copyright notice: https://ncert.nic.in/textbook.php
+- Grade 6 book index: https://ncert.philoid.app/class/6
+- Poorvi: https://ncert.philoid.app/book/fepr1
+- Malhar: https://ncert.philoid.app/book/fhml1
+- Ganita Prakash: https://ncert.philoid.app/book/fegp1
+- Curiosity: https://ncert.philoid.app/book/fecu1
+- Exploring Society: https://ncert.philoid.app/book/fees1
+- Deepakam: https://ncert.philoid.app/book/fsde1
