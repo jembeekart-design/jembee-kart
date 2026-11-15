@@ -11,7 +11,8 @@ test("video upload offers Subject Book Chapter Question without Board, Class or 
   assert.match(page, /schoolSubjectId/);
   assert.match(page, /schoolBookId/);
   assert.match(page, /schoolChapterId/);
-  assert.match(page, /schoolQuestionId/);
+  assert.match(page, /schoolQuestionNumber/);
+  assert.doesNotMatch(page, /schoolQuestionId|questionOptions/);
   assert.doesNotMatch(page, /schoolEditionId|editionOptions|schoolBoardId|schoolClassId/);
   assert.doesNotMatch(helper, /schoolEditionId/);
 });
