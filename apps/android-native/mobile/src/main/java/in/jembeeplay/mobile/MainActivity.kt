@@ -10,6 +10,7 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
@@ -28,6 +29,9 @@ class MainActivity : ComponentActivity() {
 
 @Composable
 private fun JembeeMobileApp() {
+    val context = LocalContext.current
+    var remoteConfig by remember { mutableStateOf(JembeeRemoteConfig()) }
+    LaunchedEffect(Unit) { RemoteConfigClient.fetch(context) { remoteConfig = it } }
     var dark by remember { mutableStateOf(false) }
     var selected by remember { mutableStateOf("Home") }
     val shelves = listOf(
@@ -61,6 +65,9 @@ private fun JembeeMobileApp() {
                         Text("WATCH · LEARN · CREATE · SHARE", fontSize = 10.sp, color = MaterialTheme.colorScheme.onSurfaceVariant)
                     }
                     TextButton(onClick = { dark = !dark }) { Text(if (dark) "Dark" else "Light") }
+                }
+                if (remoteConfig.maintenanceEnabled) {
+                    Text(remoteConfig.maintenanceMessage.ifBlank { "JEMBEE PLAY is temporarily under maintenance." }, Modifier.fillMaxWidth().padding(top = 14.dp), color = MaterialTheme.colorScheme.error)
                 }
                 Spacer(Modifier.height(22.dp))
                 Card(shape = RoundedCornerShape(24.dp), colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.primaryContainer)) {
