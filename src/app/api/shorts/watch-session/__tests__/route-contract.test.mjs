@@ -37,3 +37,19 @@ test("telemetry is explicitly not a reward verification signal", () => {
   assert.match(source, /telemetryOnly: true/);
   assert.doesNotMatch(source, /wallet|coin|reward|payout/i);
 });
+
+
+test("heartbeat revalidates video moderation and availability", () => {
+  assert.match(source, /const videoRef = db\.collection\("watchEarnVideos"\)\.doc\(String\(data\.videoId\)\)/);
+  assert.match(source, /video\.status !== "approved"/);
+  assert.match(source, /video\.active !== true/);
+  assert.match(source, /video\.moderation !== "safe"/);
+  assert.match(source, /video\.videoAccess !== "free"/);
+  assert.match(source, /closeReason: "video_unavailable"/);
+});
+
+test("watch sessions expire after a bounded maximum age", () => {
+  assert.match(source, /MAX_SESSION_AGE_MS = 4 \* 60 \* 60 \* 1000/);
+  assert.match(source, /now - startedAt > MAX_SESSION_AGE_MS/);
+  assert.match(source, /closeReason: "expired"/);
+});
