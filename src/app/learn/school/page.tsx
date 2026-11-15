@@ -27,7 +27,7 @@ export default function SchoolLearningPage() {
     let active = true;
     fetch("/api/content-categories", { cache: "no-store" })
       .then(async (response) => { if (!response.ok) throw new Error("Learning Library could not be loaded"); return response.json(); })
-      .then((data) => { if (active && data.success === true) setNodes(Array.isArray(data.learningBooks) ? data.learningBooks : []); })
+      .then((data) => { if (active && data.success === true) setNodes(Array.isArray(data.learningNodes) ? data.learningNodes : []); })
       .catch((reason) => { if (active) setError(reason instanceof Error ? reason.message : "Library unavailable"); })
       .finally(() => { if (active) setLoading(false); });
     return () => { active = false; };
