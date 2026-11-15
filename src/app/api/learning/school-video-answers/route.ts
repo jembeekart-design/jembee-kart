@@ -83,11 +83,19 @@ export async function GET(req: Request) {
     }
 
     const key = normalizeQuestionNumber(questionNumber);
-    const videos = visibleDocs.filter((doc) => {
+    const matchingDocs = visibleDocs.filter((doc) => {
       const data = doc.data();
       const savedKey = typeof data.schoolQuestionKey === "string" ? data.schoolQuestionKey : normalizeQuestionNumber(typeof data.schoolQuestionNumber === "string" ? data.schoolQuestionNumber : "");
       return savedKey === key;
-    }).map(toVideo);
+    });
+    const legacySnapshot = await db.collection("schoolLearningNodes").where("parentId", "==", chapterId).limit(100).get();
+    const legacyIds = legacySnapshot.docs.filter((doc) => {
+      const data = doc.data();
+      return data.type === "question" && data.status === "published" && typeof data.name === "string" && normalizeQuestionNumber(data.name) === key;
+    }).map((doc) => doc.id);
+    const legacyDocs = visibleDocs.filter((doc) => legacyIds.includes(String(doc.data().schoolQuestionId || "")));
+    const uniqueDocs = new Map([...matchingDocs, ...legacyDocs].map((doc) => [doc.id, doc]));
+    const videos = [...uniqueDocs.values()].map(toVideo);
     return NextResponse.json({ success: true, videos }, { headers: noStore });
   } catch {
     return NextResponse.json({ success: false, message: "Video answers could not be loaded" }, { status: 500, headers: noStore });
