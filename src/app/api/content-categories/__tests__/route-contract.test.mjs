@@ -3,6 +3,7 @@ import assert from "node:assert/strict";
 import { readFile } from "node:fs/promises";
 
 const route = await readFile(new URL("../route.ts", import.meta.url), "utf8");
+const seed = JSON.parse(await readFile(new URL("../../../../../data/learning-library/ncert-grade-6-seed.json", import.meta.url), "utf8"));
 const uploadPage = await readFile(new URL("../../../videos/upload/page.tsx", import.meta.url), "utf8");
 const adminPage = await readFile(new URL("../../../admin/categories/page.tsx", import.meta.url), "utf8");
 const explorePage = await readFile(new URL("../../../explore/page.tsx", import.meta.url), "utf8");
@@ -88,4 +89,19 @@ test("large Question catalogs are fetched only for the selected Chapter in Admin
   assert.match(adminPage, /type: "question", parentId, pageSize: "50"/);
   assert.match(adminPage, /setNodes\(\(current\) => \[\.\.\.current\.filter\(\(node\) => node\.type !== "question"\), \.\.\.questions\]\)/);
   assert.match(adminPage, /if \(active\)/);
+});
+
+test("NCERT Grade 6 starter catalog is admin-only, bounded and repeatable", () => {
+  assert.match(route, /action === "seed-ncert-grade-6"/);
+  assert.match(route, /verifyAdmin\(req\)/);
+  assert.match(route, /action === "seed-ncert-grade-6" \? 500 : 100/);
+  assert.match(route, /\{ merge: true \}/);
+  assert.match(adminPage, /Add NCERT Grade 6 starter catalog/);
+  assert.match(adminPage, /seed-ncert-grade-6/);
+  assert.equal(seed.entries.filter((entry) => entry.type === "subject").length, 6);
+  assert.equal(seed.entries.filter((entry) => entry.type === "book").length, 6);
+  assert.equal(seed.entries.filter((entry) => entry.type === "chapter").length, 70);
+  assert.equal(seed.entries.filter((entry) => entry.type === "question").length, 22);
+  assert.ok(seed.entries.filter((entry) => entry.type === "book").every((entry) => entry.coverImageUrl.startsWith("/learning-covers/")));
+  assert.ok(seed.entries.filter((entry) => entry.type === "question").every((entry) => entry.name.startsWith("Practice Q1 — ")));
 });
