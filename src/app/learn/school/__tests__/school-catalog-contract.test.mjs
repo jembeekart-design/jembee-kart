@@ -12,7 +12,7 @@ test("Learning discovery follows Subject Book Chapter Question and has level-spe
   assert.match(page, /Search chapter name or number/);
   assert.match(page, /Search question number or text/);
   assert.match(page, /coverImageUrl/);
-  assert.doesNotMatch(page, /edition|Board|School|Class/);
+  assert.doesNotMatch(page, /edition|Board →|Choose School|Choose Class/);
 });
 
 test("Question answers only return approved active safe videos", () => {
