@@ -1,5 +1,7 @@
 package `in`.jembeeplay.tv
 
+import android.os.Handler
+import android.os.Looper
 import org.json.JSONObject
 import java.net.HttpURLConnection
 import java.net.URL
@@ -11,6 +13,7 @@ object TvVideoCatalogClient {
     private const val ORIGIN = "https://jembeeplay.in"
     private const val THUMBNAIL_PREFIX = "/api/shorts/video-thumbnail/"
     private const val PLAYBACK_PREFIX = "/api/shorts/video-stream/"
+    private val mainHandler = Handler(Looper.getMainLooper())
 
     private fun trustedMediaUrl(path: String, expectedPrefix: String): String? {
         if (!path.startsWith(expectedPrefix) || path.length <= expectedPrefix.length) return null
@@ -48,7 +51,7 @@ object TvVideoCatalogClient {
                     }
                 } finally { connection.disconnect() }
             }
-            onResult(result)
+            mainHandler.post { onResult(result) }
         }.start()
     }
 }
