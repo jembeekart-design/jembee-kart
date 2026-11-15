@@ -52,6 +52,7 @@ internal fun NativeAuthPanel() {
                 onClick = { auth.signOut(); message = "Signed out successfully." },
                 enabled = !busy
             ) { Text("Sign out") }
+            NativeSavedVideosPanel(auth)
         } else {
             Text(if (createAccount) "Create your account with email" else "Sign in with email")
             OutlinedTextField(
