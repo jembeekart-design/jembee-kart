@@ -20,14 +20,14 @@ async function authenticatedUid(req: NextRequest): Promise<string | null> {
 function safeVideo(id: string, data: FirebaseFirestore.DocumentData) {
   return {
     id,
-    title: typeof data.title === "string" ? data.title.slice(0, 300) : "",
     caption: typeof data.caption === "string" ? data.caption.slice(0, 500) : "",
-    thumbnail: typeof data.thumbnail === "string" ? data.thumbnail : "",
-    creatorId: typeof data.creatorId === "string" ? data.creatorId : "",
+    creatorId: typeof data.userId === "string" ? data.userId : typeof data.creatorId === "string" ? data.creatorId : "",
     displayName: typeof data.displayName === "string" ? data.displayName.slice(0, 120) : "",
     username: typeof data.username === "string" ? data.username.slice(0, 80) : "",
-    views: Number.isFinite(Number(data.views)) ? Math.max(0, Number(data.views)) : 0,
-    createdAt: data.createdAt ?? null,
+    thumbnailUrl: "/api/shorts/video-thumbnail/" + encodeURIComponent(id),
+    playbackUrl: "/api/shorts/video-stream/" + encodeURIComponent(id),
+    views: typeof data.views === "number" && Number.isFinite(data.views) && data.views >= 0 ? Math.floor(data.views) : 0,
+    createdAt: typeof data.createdAt === "number" && Number.isFinite(data.createdAt) ? data.createdAt : 0,
     videoAccess: "free",
   };
 }
@@ -44,7 +44,7 @@ export async function GET(req: NextRequest) {
       const snap = await db.collection("watchEarnVideos").doc(id).get();
       if (!snap.exists) return null;
       const data = snap.data();
-      if (!data || data.status !== "approved" || data.active !== true || data.moderation !== "safe" || data.videoAccess === "paid") return null;
+      if (!data || data.status !== "approved" || data.active !== true || data.moderation !== "safe" || data.videoAccess !== "free") return null;
       return safeVideo(snap.id, data);
     }));
     return NextResponse.json({ success: true, videos: videos.filter(Boolean) }, { headers: { "Cache-Control": "no-store" } });
@@ -65,7 +65,7 @@ export async function POST(req: NextRequest) {
     const db = getAdminDb();
     const video = await db.collection("watchEarnVideos").doc(videoId).get();
     const data = video.data();
-    if (!video.exists || !data || data.status !== "approved" || data.active !== true || data.moderation !== "safe" || data.videoAccess === "paid") {
+    if (!video.exists || !data || data.status !== "approved" || data.active !== true || data.moderation !== "safe" || data.videoAccess !== "free") {
       return NextResponse.json({ success: false, message: "Video is unavailable for saving" }, { status: 404 });
     }
     const saveId = `${videoId}_${uid}`;
