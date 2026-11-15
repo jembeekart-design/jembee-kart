@@ -53,6 +53,8 @@ export async function POST(req: Request) {
       sessionId, uid, videoId, status: "active",
       startedAtMs: now, lastHeartbeatAtMs: now,
       elapsedSeconds: 0, createdAt: new Date(now), updatedAt: new Date(now),
+      // Firestore TTL removes old telemetry records after 90 days.
+      expiresAt: new Date(now + 90 * 24 * 60 * 60 * 1000),
     });
     return response(true, 201, { sessionId, telemetryOnly: true });
   }
