@@ -19,5 +19,5 @@ test("School question answers only return approved active safe videos", () => {
 });
 
 test("Approved video records retain category and school path metadata", () => {
-  for (const field of ["categoryId", "categoryName", "schoolBoardId", "schoolId", "schoolClassId", "schoolSubjectId", "schoolBookId", "schoolChapterId", "schoolQuestionId"]) assert.ok(moderation.includes(`${field}:`), `Missing approval field ${field}`);
+  for (const field of ["categoryId", "categoryName", "schoolSubjectId", "schoolBookId", "schoolEditionId", "schoolChapterId", "schoolQuestionId"]) assert.ok(moderation.includes(`${field}:`), `Missing approval field ${field}`);
 });
