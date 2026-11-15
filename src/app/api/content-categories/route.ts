@@ -6,13 +6,11 @@ export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
 const noStore = { "Cache-Control": "no-store, max-age=0" };
 const ID_PATTERN = /^[a-z0-9][a-z0-9_-]{1,63}$/;
-const NODE_TYPES = ["subject", "book", "edition", "chapter", "question"] as const;
+const NODE_TYPES = ["book", "chapter", "question"] as const;
 type NodeType = typeof NODE_TYPES[number];
 const PARENT_TYPES: Record<NodeType, NodeType[]> = {
-  subject: [],
-  book: ["subject"],
-  edition: ["book"],
-  chapter: ["edition", "book"],
+  book: [],
+  chapter: ["book"],
   question: ["chapter"],
 };
 const cleanText = (value: unknown, max: number) =>
@@ -106,8 +104,6 @@ export async function POST(req: Request) {
           name: cleanText(entry.name, cleanText(entry.type, 20) === "question" ? 3000 : 180),
           parentId: cleanText(entry.parentId, 64),
           coverImageUrl: cleanText(entry.coverImageUrl, 2048),
-          publisher: cleanText(entry.publisher, 120),
-          classLabels: cleanList(entry.classLabels, 30),
         };
       });
       const ids = new Set<string>();
@@ -133,15 +129,15 @@ export async function POST(req: Request) {
       const parentTypes = new Map(parentDocs.map((item) => [item.id, item]));
       for (const entry of normalized) {
         const allowed = PARENT_TYPES[entry.type];
-        if (!allowed.length && entry.parentId) return NextResponse.json({ success: false, message: "Subject top-level entry होना चाहिए।" }, { status: 400, headers: noStore });
+        if (!allowed.length && entry.parentId) return NextResponse.json({ success: false, message: "Book top-level entry होना चाहिए।" }, { status: 400, headers: noStore });
         if (allowed.length) {
           const parent = parentTypes.get(entry.parentId);
           if (!parent || parent.status !== "published" || !allowed.includes(parent.type as NodeType)) {
             return NextResponse.json({ success: false, message: "Import file में parent-child hierarchy गलत है।" }, { status: 400, headers: noStore });
           }
         }
-        if (entry.type !== "book" && (entry.coverImageUrl || entry.publisher || entry.classLabels.length)) {
-          return NextResponse.json({ success: false, message: "Cover, publisher और class labels केवल Book entry पर रखें।" }, { status: 400, headers: noStore });
+        if (entry.type !== "book" && entry.coverImageUrl) {
+          return NextResponse.json({ success: false, message: "Cover image केवल Book entry पर रखें।" }, { status: 400, headers: noStore });
         }
       }
       const batch = db.batch();
@@ -149,7 +145,7 @@ export async function POST(req: Request) {
         batch.set(db.collection("schoolLearningNodes").doc(entry.id), {
           id: entry.id, type: entry.type, name: entry.name, parentId: entry.parentId || null,
           status: "published",
-          ...(entry.type === "book" ? { coverImageUrl: entry.coverImageUrl || null, publisher: entry.publisher || null, classLabels: entry.classLabels } : {}),
+          ...(entry.type === "book" ? { coverImageUrl: entry.coverImageUrl } : {}),
           managedBy: "admin", updatedBy: uploaderUid, updatedAt: new Date(),
           importedAt: new Date(),
         }, { merge: true });
@@ -197,8 +193,6 @@ export async function POST(req: Request) {
       const parentId = cleanText(body.parentId, 64);
       const existingId = cleanText(body.id, 64);
       const coverImageUrl = cleanText(body.coverImageUrl, 2048);
-      const publisher = cleanText(body.publisher, 120);
-      const classLabels = cleanList(body.classLabels, 30);
       if (!NODE_TYPES.includes(type) || !name || (existingId && !ID_PATTERN.test(existingId))) {
         return NextResponse.json({ success: false, message: "Learning entry की जानकारी सही नहीं है।" }, { status: 400, headers: noStore });
       }
@@ -211,12 +205,12 @@ export async function POST(req: Request) {
           return NextResponse.json({ success: false, message: "Book cover के लिए valid HTTPS image URL दें।" }, { status: 400, headers: noStore });
         }
       }
-      if (type !== "book" && (coverImageUrl || publisher || classLabels.length)) {
-        return NextResponse.json({ success: false, message: "Cover, publisher और class mapping केवल Book पर लागू हैं।" }, { status: 400, headers: noStore });
+      if (type !== "book" && coverImageUrl) {
+        return NextResponse.json({ success: false, message: "Cover image केवल Book पर लागू है।" }, { status: 400, headers: noStore });
       }
       const allowedParents = PARENT_TYPES[type];
       if (allowedParents.length === 0 && parentId) {
-        return NextResponse.json({ success: false, message: "Subject top-level entry है।" }, { status: 400, headers: noStore });
+        return NextResponse.json({ success: false, message: "Book top-level entry है।" }, { status: 400, headers: noStore });
       }
       if (allowedParents.length > 0) {
         if (!ID_PATTERN.test(parentId)) return NextResponse.json({ success: false, message: "पहले सही parent entry चुनें।" }, { status: 400, headers: noStore });
@@ -233,7 +227,7 @@ export async function POST(req: Request) {
       }
       await ref.set({
         id, type, name, parentId: parentId || null, status: "published",
-        ...(type === "book" ? { coverImageUrl: coverImageUrl || null, publisher: publisher || null, classLabels } : {}),
+        ...(type === "book" ? { coverImageUrl } : {}),
         managedBy: "admin", updatedBy: uploaderUid, updatedAt: new Date(),
         ...(current?.exists ? {} : { createdByUid: uploaderUid, createdAt: new Date() }),
       }, { merge: true });
