@@ -52,17 +52,64 @@ function authError(error: unknown) {
   );
 }
 
-export async function GET() {
+export async function GET(req: Request) {
   try {
     const db = getAdminDb();
-    const [categorySnap, nodeSnap] = await Promise.all([
-      db.collection("contentCategories").where("status", "==", "published").limit(200).get(),
-      db.collection("schoolLearningNodes").where("status", "==", "published").limit(1000).get(),
-    ]);
+    const params = new URL(req.url).searchParams;
+    const requestedType = cleanText(params.get("type"), 20);
+    const parentId = cleanText(params.get("parentId"), 64);
+    const cursor = cleanText(params.get("cursor"), 64);
+    const pageSizeValue = Number(params.get("pageSize") || 25);
+    const pageSize = Number.isInteger(pageSizeValue) ? Math.min(50, Math.max(1, pageSizeValue)) : 25;
+
+    const categorySnap = await db.collection("contentCategories").where("status", "==", "published").limit(200).get();
     const categories = categorySnap.docs.map((doc) => {
       const { ownerUid: _ownerUid, updatedBy: _updatedBy, createdByUid: _createdByUid, ...data } = doc.data();
       return { id: doc.id, ...data };
     });
+
+    // Cursor pagination is scoped to one hierarchy level so large catalogs never
+    // require downloading the entire Subject → Book → Chapter → Question tree.
+    if (requestedType) {
+      if (!NODE_TYPES.includes(requestedType as NodeType)) {
+        return NextResponse.json({ success: false, message: "Invalid learning node type" }, { status: 400, headers: noStore });
+      }
+      const type = requestedType as NodeType;
+      if (PARENT_TYPES[type].length > 0 && !ID_PATTERN.test(parentId)) {
+        return NextResponse.json({ success: false, message: "A valid parentId is required for this learning level" }, { status: 400, headers: noStore });
+      }
+      if (PARENT_TYPES[type].length === 0 && parentId) {
+        return NextResponse.json({ success: false, message: "Subject entries cannot have a parent" }, { status: 400, headers: noStore });
+      }
+      let query = db.collection("schoolLearningNodes")
+        .where("status", "==", "published")
+        .where("type", "==", type);
+      if (PARENT_TYPES[type].length > 0) query = query.where("parentId", "==", parentId);
+      query = query.orderBy("__name__");
+      if (cursor) {
+        if (!ID_PATTERN.test(cursor)) return NextResponse.json({ success: false, message: "Invalid pagination cursor" }, { status: 400, headers: noStore });
+        const cursorDoc = await db.collection("schoolLearningNodes").doc(cursor).get();
+        if (!cursorDoc.exists || cursorDoc.data()?.type !== type || cursorDoc.data()?.status !== "published" ||
+          (PARENT_TYPES[type].length > 0 && cursorDoc.data()?.parentId !== parentId)) {
+          return NextResponse.json({ success: false, message: "Pagination cursor is no longer valid" }, { status: 400, headers: noStore });
+        }
+        query = query.startAfter(cursorDoc);
+      }
+      const nodeSnap = await query.limit(pageSize + 1).get();
+      const hasMore = nodeSnap.docs.length > pageSize;
+      const pageDocs = nodeSnap.docs.slice(0, pageSize);
+      const learningNodes = pageDocs.map((doc) => {
+        const { ownerUid: _ownerUid, updatedBy: _updatedBy, createdByUid: _createdByUid, ...data } = doc.data();
+        return { id: doc.id, ...data, type: data.type as NodeType };
+      });
+      return NextResponse.json({
+        success: true, categories, learningNodes,
+        pagination: { pageSize, hasMore, nextCursor: hasMore ? pageDocs[pageDocs.length - 1]?.id || null : null },
+      }, { headers: noStore });
+    }
+
+    // Legacy response retained while non-learning consumers migrate to scoped queries.
+    const nodeSnap = await db.collection("schoolLearningNodes").where("status", "==", "published").limit(1000).get();
     const learningNodes = nodeSnap.docs.map((doc) => {
       const { ownerUid: _ownerUid, updatedBy: _updatedBy, createdByUid: _createdByUid, ...data } = doc.data();
       return { id: doc.id, ...data, type: data.type as NodeType };
