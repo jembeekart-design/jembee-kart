@@ -7,18 +7,21 @@ const uploadPage = await readFile(new URL("../../../videos/upload/page.tsx", imp
 const adminPage = await readFile(new URL("../../../admin/categories/page.tsx", import.meta.url), "utf8");
 const explorePage = await readFile(new URL("../../../explore/page.tsx", import.meta.url), "utf8");
 
-test("school master catalog writes require a verified admin or super_admin", () => {
+test("learning master catalog writes require a verified admin or super_admin", () => {
   assert.match(route, /getAdminAuth\(\)\.verifyIdToken\(header\.slice\(7\)\.trim\(\), true\)/);
   assert.match(route, /role !== "admin" && role !== "super_admin"/);
   assert.match(route, /action === "save-school-node" \|\| action === "delete-school-node"/);
   assert.match(route, /managedBy: "admin"/);
 });
 
-test("master catalog validates hierarchy and prevents deleting a parent with children", () => {
-  assert.match(route, /PARENT_TYPES/);
-  assert.match(route, /allowedParents/);
+test("catalog supports only Subject, Book, Chapter and Question hierarchy", () => {
+  assert.match(route, /const NODE_TYPES = \["subject", "book", "chapter", "question"\]/);
+  assert.match(route, /subject: \[\]/);
+  assert.match(route, /book: \["subject"\]/);
+  assert.match(route, /chapter: \["book"\]/);
+  assert.match(route, /question: \["chapter"\]/);
+  assert.doesNotMatch(route, /"edition"/);
   assert.match(route, /coverImageUrl/);
-  assert.match(route, /classLabels/);
   assert.match(route, /bulk-import-learning-library/);
   assert.match(route, /हर Book entry के साथ cover image आवश्यक है/);
   assert.match(adminPage, /Choose JSON dataset/);
@@ -26,12 +29,13 @@ test("master catalog validates hierarchy and prevents deleting a parent with chi
   assert.match(route, /!children\.empty/);
 });
 
-test("teachers can select the master catalog but cannot create school nodes from upload", () => {
-  assert.match(uploadPage, /Book → Edition \/ Part → Chapter → Question/);
+test("teachers select existing Subject Book Chapter Question and cannot create master entries", () => {
+  assert.match(uploadPage, /Subject → Book → Chapter → Question/);
   assert.match(uploadPage, /coverImageUrl/);
-  assert.match(uploadPage, /schoolEditionId/);
-  assert.doesNotMatch(uploadPage, /<details[^>]*>[\s\S]*?createCreatorSchoolNode/);
+  assert.match(uploadPage, /schoolSubjectId/);
   assert.match(uploadPage, /schoolQuestionId/);
+  assert.doesNotMatch(uploadPage, /schoolEditionId|editionOptions|publisher|classLabels/);
+  assert.doesNotMatch(uploadPage, /<details[^>]*>[\s\S]*?createCreatorSchoolNode/);
 });
 
 test("admin page exposes authenticated create, edit and delete controls", () => {
@@ -40,11 +44,11 @@ test("admin page exposes authenticated create, edit and delete controls", () => 
   assert.match(adminPage, /delete-school-node/);
   assert.match(adminPage, /Update entry/);
   assert.match(adminPage, /Book cover image URL/);
-  assert.match(adminPage, /Applicable classes/);
+  assert.doesNotMatch(adminPage, /Edition|Publisher|Applicable classes/);
   assert.match(adminPage, /Only admin \/ super_admin accounts/);
 });
 
-test("public catalog reads only published nodes and Explore continues using the published catalog", () => {
+test("public catalog reads only published nodes and Explore links to Learning Library", () => {
   assert.match(route, /where\("status", "==", "published"\)/);
   assert.match(explorePage, /Book-centric Learning Library/);
   assert.doesNotMatch(explorePage, /Board → School → Class/);
