@@ -47,12 +47,6 @@ async function fetchLearningNodes(type: "subject" | "book" | "chapter", parentId
   throw new Error("Learning Library page limit exceeded");
 }
 
-async function fetchLearningNode(id: string): Promise<LearningNode | null> {
-  const response = await fetch("/api/content-categories?nodeId=" + encodeURIComponent(id), { cache: "no-store" });
-  const data = await response.json();
-  if (!response.ok || data.success !== true || !data.learningNode || typeof data.learningNode.id !== "string") return null;
-  return data.learningNode as LearningNode;
-}
 function inspectVideoDuration(selectedFile: File, onRead: (duration: number | undefined) => void) {
   const objectUrl = URL.createObjectURL(selectedFile);
   const metadataVideo = document.createElement("video");
@@ -510,13 +504,13 @@ function UploadWatchVideoContent() {
                 <select value={categoryTopic} onChange={(event) => setCategoryTopic(event.target.value)} className="mt-2 w-full rounded-xl border border-white/15 bg-[#090d14] px-3 py-3 text-sm text-white outline-none focus:border-cyan-400"><option value="">Topic चुनें (optional)</option>{selectedCategory.topics.map((topic) => <option key={topic} value={topic}>{topic}</option>)}</select>
               </label> : null}
               {isSchoolCategory ? <div className="mt-4 space-y-3 rounded-xl border border-cyan-300/15 bg-[#081421] p-3">
-                <p className="flex items-center gap-2 text-xs font-bold uppercase tracking-wide text-cyan-200"><SchoolCap size={16}/> Subject → Book → Chapter → Question</p>
+                <p className="flex items-center gap-2 text-xs font-bold uppercase tracking-wide text-cyan-200"><SchoolCap size={16}/> Subject → Book → Chapter → Question Number</p>
                 <label className="block text-xs font-bold">Subject<select value={schoolSubjectId} onChange={(e) => { setSchoolSubjectId(e.target.value); setSchoolBookId(""); setSchoolChapterId(""); setSchoolQuestionNumber(""); }} className="mt-2 w-full rounded-xl border border-white/15 bg-[#090d14] px-3 py-3 text-sm"><option value="">Subject चुनें</option>{subjectOptions.map((item) => <option key={item.id} value={item.id}>{item.name}</option>)}</select></label>
                 <div className="space-y-2"><p className="text-xs font-bold">Book चुनें</p><div className="grid grid-cols-2 gap-3 sm:grid-cols-3">{bookOptions.map((item) => <button key={item.id} type="button" onClick={() => { setSchoolBookId(item.id); setSchoolChapterId(""); setSchoolQuestionNumber(""); }} className={`overflow-hidden rounded-xl border text-left ${schoolBookId === item.id ? "border-cyan-300 bg-cyan-300/10" : "border-white/10 bg-black/20"}`}>{item.coverImageUrl ? <img src={item.coverImageUrl} alt={item.name} loading="lazy" className="h-36 w-full bg-white/5 object-contain" referrerPolicy="no-referrer"/> : <div className="grid h-36 place-items-center text-xs text-slate-500">Cover unavailable</div>}<span className="block p-2 text-xs font-bold">{item.name}</span></button>)}</div></div>
                 {selectedBook ? <div className="flex items-center gap-3 rounded-xl border border-cyan-300/20 bg-black/20 p-2">{selectedBook.coverImageUrl ? <img src={selectedBook.coverImageUrl} alt="" className="h-16 w-12 rounded object-cover" referrerPolicy="no-referrer"/> : null}<p className="text-xs font-bold">{selectedBook.name}</p></div> : null}
                 <label className="block text-xs font-bold">Chapter<select required value={schoolChapterId} onChange={(e) => { setSchoolChapterId(e.target.value); setSchoolQuestionNumber(""); }} disabled={!schoolBookId} className="mt-2 w-full rounded-xl border border-white/15 bg-[#090d14] px-3 py-3 text-sm disabled:opacity-50"><option value="">Chapter चुनें</option>{chapterOptions.map((item) => <option key={item.id} value={item.id}>{item.name}</option>)}</select></label>
                 <label className="block text-xs font-bold">किताब का Question Number लिखें <span className="text-red-400">*</span><input required maxLength={30} value={schoolQuestionNumber} onChange={(e) => setSchoolQuestionNumber(e.target.value.slice(0, 30))} disabled={!schoolChapterId} placeholder="जैसे 1, 1(a), Q.2" className="mt-2 w-full rounded-xl border border-white/15 bg-[#090d14] px-3 py-3 text-sm" /></label>
-                <p className="rounded-xl border border-white/10 bg-black/20 p-3 text-xs leading-5 text-slate-400">Question Number किताब में देखकर खुद लिखें। Admin को हर प्रश्न पहले से दर्ज नहीं करना होगा. <Link href="/admin/categories" className="font-bold text-cyan-300">Admin Learning Library</Link></p>
+                <p className="rounded-xl border border-white/10 bg-black/20 p-3 text-xs leading-5 text-slate-400">Question Number किताब में देखकर खुद लिखें। Admin केवल Subject, Book और Chapter की सूची संभालेगा. <Link href="/admin/categories" className="font-bold text-cyan-300">Admin Learning Library</Link></p>
                 {catalogNotice && <p role="status" className="rounded-lg border border-cyan-300/20 bg-cyan-300/10 p-2 text-xs text-cyan-100">{catalogNotice}</p>}
                 {schoolNodes.length === 0 && <p className="text-xs text-amber-200">Learning Library abhi populate nahi hui hai.</p>}
               </div> : null}
