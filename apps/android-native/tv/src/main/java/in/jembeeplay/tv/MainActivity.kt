@@ -53,10 +53,11 @@ private fun JembeeTvApp() {
                     verticalAlignment = androidx.compose.ui.Alignment.CenterVertically
                 ) {
                     Row(verticalAlignment = androidx.compose.ui.Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(16.dp)) {
-                        Surface(shape = RoundedCornerShape(18.dp), color = Color(0xFFFFD782), modifier = Modifier.size(64.dp)) {
-                            Box(contentAlignment = androidx.compose.ui.Alignment.Center) {
-                                Text("J", color = Color(0xFF17213B), fontSize = 42.sp, fontWeight = FontWeight.Black)
-                            }
+                        Box(
+                            Modifier.size(64.dp).background(Color(0xFFFFD782), RoundedCornerShape(18.dp)),
+                            contentAlignment = androidx.compose.ui.Alignment.Center
+                        ) {
+                            Text("J", color = Color(0xFF17213B), fontSize = 42.sp, fontWeight = FontWeight.Black)
                         }
                         Column {
                             Text("JEMBEE", color = Color.White, fontSize = 34.sp, fontWeight = FontWeight.Black, letterSpacing = 1.5.sp)
