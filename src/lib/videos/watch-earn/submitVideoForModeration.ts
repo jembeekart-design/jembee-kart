@@ -26,7 +26,7 @@ export interface ModerationSubmissionMetadata {
   schoolBookId?: string;
   schoolEditionId?: string;
   schoolChapterId?: string;
-  schoolQuestionId?: string;
+  questionNumber?: string;
 }
 
 export interface ModerationSubmissionResult {
