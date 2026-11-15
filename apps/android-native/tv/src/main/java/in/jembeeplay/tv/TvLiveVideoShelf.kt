@@ -3,6 +3,11 @@ package `in`.jembeeplay.tv
 import android.view.ViewGroup
 import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.background
+import androidx.compose.ui.graphics.Brush
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.layout.ContentScale
+import coil.compose.AsyncImage
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
 import androidx.compose.runtime.*
@@ -53,10 +58,19 @@ fun TvLiveVideoShelf() {
                         shape = ClickableSurfaceDefaults.shape(),
                         colors = ClickableSurfaceDefaults.colors(focusedContainerColor = androidx.compose.ui.graphics.Color(0xFF0878D1))
                     ) {
-                        Column(Modifier.fillMaxSize().padding(18.dp), verticalArrangement = Arrangement.Bottom) {
-                            Text("▶", fontSize = 28.sp)
-                            Text(video.title, fontSize = 16.sp, fontWeight = FontWeight.Bold, maxLines = 2)
-                            Text("${video.creator} · ${video.views} views", fontSize = 11.sp)
+                        Box(Modifier.fillMaxSize()) {
+                            AsyncImage(
+                                model = video.thumbnailUrl,
+                                contentDescription = video.title,
+                                contentScale = ContentScale.Crop,
+                                modifier = Modifier.fillMaxSize()
+                            )
+                            Box(Modifier.fillMaxSize().background(Brush.verticalGradient(listOf(Color.Transparent, Color(0xDD05070B)))))
+                            Column(Modifier.align(androidx.compose.ui.Alignment.BottomStart).padding(16.dp), verticalArrangement = Arrangement.Bottom) {
+                                Text("▶", fontSize = 25.sp)
+                                Text(video.title, fontSize = 16.sp, fontWeight = FontWeight.Bold, maxLines = 2)
+                                Text("${video.creator} · ${video.views} views", fontSize = 11.sp)
+                            }
                         }
                     }
                 }
