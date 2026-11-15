@@ -81,7 +81,7 @@ export async function POST(req: Request) {
   let body: Record<string, unknown>;
   try {
     const raw = await req.text();
-    if (Buffer.byteLength(raw, "utf8") > 24 * 1024) {
+    if (Buffer.byteLength(raw, "utf8") > 256 * 1024) {
       return NextResponse.json({ success: false, message: "Request too large" }, { status: 413, headers: noStore });
     }
     body = JSON.parse(raw) as Record<string, unknown>;
@@ -92,6 +92,71 @@ export async function POST(req: Request) {
   const db = getAdminDb();
   const action = cleanText(body.action, 40);
   try {
+    if (action === "bulk-import-learning-library") {
+      try { uploaderUid = await verifyAdmin(req); } catch (error) { return authError(error); }
+      const entries = Array.isArray(body.entries) ? body.entries : [];
+      if (!entries.length || entries.length > 100) {
+        return NextResponse.json({ success: false, message: "एक import batch में 1 से 100 entries भेजें।" }, { status: 400, headers: noStore });
+      }
+      const normalized = entries.map((rawEntry) => {
+        const entry = rawEntry && typeof rawEntry === "object" ? rawEntry as Record<string, unknown> : {};
+        return {
+          id: cleanText(entry.id, 64),
+          type: cleanText(entry.type, 20) as NodeType,
+          name: cleanText(entry.name, 180),
+          parentId: cleanText(entry.parentId, 64),
+          coverImageUrl: cleanText(entry.coverImageUrl, 2048),
+          publisher: cleanText(entry.publisher, 120),
+          classLabels: cleanList(entry.classLabels, 30),
+        };
+      });
+      const ids = new Set<string>();
+      for (const entry of normalized) {
+        if (!ID_PATTERN.test(entry.id) || ids.has(entry.id) || !NODE_TYPES.includes(entry.type) || !entry.name) {
+          return NextResponse.json({ success: false, message: "Import file में duplicate ID या invalid entry मिली।" }, { status: 400, headers: noStore });
+        }
+        ids.add(entry.id);
+        if (entry.type === "book" && entry.coverImageUrl) {
+          try { const url = new URL(entry.coverImageUrl); if (url.protocol !== "https:") throw new Error("invalid"); }
+          catch { return NextResponse.json({ success: false, message: "हर Book cover के लिए valid HTTPS image URL दें।" }, { status: 400, headers: noStore }); }
+        }
+      }
+      const entryById = new Map(normalized.map((entry) => [entry.id, entry]));
+      const parentIds = [...new Set(normalized.map((entry) => entry.parentId).filter(Boolean))];
+      const parentDocs = await Promise.all(parentIds.map(async (id) => {
+        const local = entryById.get(id);
+        if (local) return { id, type: local.type, status: "published" };
+        const snap = await db.collection("schoolLearningNodes").doc(id).get();
+        return { id, type: snap.data()?.type, status: snap.data()?.status };
+      }));
+      const parentTypes = new Map(parentDocs.map((item) => [item.id, item]));
+      for (const entry of normalized) {
+        const allowed = PARENT_TYPES[entry.type];
+        if (!allowed.length && entry.parentId) return NextResponse.json({ success: false, message: "Subject top-level entry होना चाहिए।" }, { status: 400, headers: noStore });
+        if (allowed.length) {
+          const parent = parentTypes.get(entry.parentId);
+          if (!parent || parent.status !== "published" || !allowed.includes(parent.type as NodeType)) {
+            return NextResponse.json({ success: false, message: "Import file में parent-child hierarchy गलत है।" }, { status: 400, headers: noStore });
+          }
+        }
+        if (entry.type !== "book" && (entry.coverImageUrl || entry.publisher || entry.classLabels.length)) {
+          return NextResponse.json({ success: false, message: "Cover, publisher और class labels केवल Book entry पर रखें।" }, { status: 400, headers: noStore });
+        }
+      }
+      const batch = db.batch();
+      for (const entry of normalized) {
+        batch.set(db.collection("schoolLearningNodes").doc(entry.id), {
+          id: entry.id, type: entry.type, name: entry.name, parentId: entry.parentId || null,
+          status: "published",
+          ...(entry.type === "book" ? { coverImageUrl: entry.coverImageUrl || null, publisher: entry.publisher || null, classLabels: entry.classLabels } : {}),
+          managedBy: "admin", updatedBy: uploaderUid, updatedAt: new Date(),
+          importedAt: new Date(),
+        }, { merge: true });
+      }
+      await batch.commit();
+      return NextResponse.json({ success: true, imported: normalized.length }, { headers: noStore });
+    }
+
     if (action === "save-category") {
       const name = cleanText(body.name, 80);
       const description = cleanText(body.description, 240);
