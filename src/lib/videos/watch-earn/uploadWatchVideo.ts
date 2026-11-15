@@ -23,7 +23,7 @@ interface UploadWatchVideoData {
   schoolSubjectId?: string;
   schoolBookId?: string;
   schoolChapterId?: string;
-  schoolQuestionId?: string;
+  questionNumber?: string;
   hashtags: string[];
   music: string;
   sponsor?: boolean;
@@ -58,7 +58,7 @@ export interface ModerationSubmissionMetadata {
   schoolSubjectId?: string;
   schoolBookId?: string;
   schoolChapterId?: string;
-  schoolQuestionId?: string;
+  questionNumber?: string;
 }
 
 export async function uploadWatchVideo({
@@ -80,7 +80,7 @@ export async function uploadWatchVideo({
   schoolSubjectId,
   schoolBookId,
   schoolChapterId,
-  schoolQuestionId,
+  questionNumber,
   hashtags,
   music,
   sponsor,
@@ -190,7 +190,7 @@ export async function uploadWatchVideo({
       schoolSubjectId,
       schoolBookId,
       schoolChapterId,
-      schoolQuestionId,
+      questionNumber,
       hashtags,
       music,
       sponsor: sponsor === true,
