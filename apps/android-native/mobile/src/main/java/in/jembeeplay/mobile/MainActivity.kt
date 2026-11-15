@@ -105,7 +105,7 @@ private fun JembeeMobileApp() {
                 }
                 when (selected) {
                     "Home" -> HomeScreen(onLearn = { selected = "Learn" }, onShorts = { selected = "Shorts" })
-                    "Shorts" -> ShortsScreen()
+                    "Shorts" -> NativeShortsScreen()
                     "Learn" -> LearnScreen()
                     "Library" -> LibraryScreen()
                     else -> YouScreen(onTheme = { dark = !dark }, dark = dark)
@@ -183,32 +183,6 @@ private fun MiniVideo(title: String, subtitle: String, accent: Color) {
         ThumbnailCard(title, "JEMBEE PLAY", Modifier.fillMaxWidth().height(122.dp), accent)
         Text(title, Modifier.padding(top = 8.dp), fontWeight = FontWeight.Bold, fontSize = 14.sp)
         Text(subtitle, color = Muted, fontSize = 12.sp)
-    }
-}
-
-@Composable
-private fun ShortsScreen() {
-    Column(Modifier.fillMaxSize().padding(horizontal = 16.dp, vertical = 8.dp)) {
-        Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween, verticalAlignment = Alignment.CenterVertically) {
-            Text("JEMBEE SHORTS", fontSize = 20.sp, fontWeight = FontWeight.Black)
-            Text("Following  •  For you", color = Muted, fontSize = 12.sp)
-        }
-        Spacer(Modifier.height(12.dp))
-        Box(Modifier.weight(1f).fillMaxWidth().background(Brush.linearGradient(listOf(Color(0xFF31265E), Color(0xFF176A83), Color(0xFF101116))), RoundedCornerShape(22.dp))) {
-            Column(Modifier.align(Alignment.Center), horizontalAlignment = Alignment.CenterHorizontally) {
-                Text("▶", color = Color.White, fontSize = 54.sp)
-                Text("Short video preview", color = Color.White, fontSize = 19.sp, fontWeight = FontWeight.Bold)
-                Text("Real video feed will appear after API integration", color = Color.White.copy(alpha = 0.75f), fontSize = 11.sp)
-            }
-            Column(Modifier.align(Alignment.BottomStart).padding(18.dp)) {
-                Text("@jembee_creator", color = Color.White, fontWeight = FontWeight.Bold)
-                Text("Learn a new idea in 60 seconds", color = Color.White)
-            }
-            Column(Modifier.align(Alignment.CenterEnd).padding(14.dp), horizontalAlignment = Alignment.CenterHorizontally) {
-                listOf("♡", "▢", "↗", "⋯").forEach { Text(it, color = Color.White, fontSize = 27.sp, modifier = Modifier.padding(vertical = 8.dp)) }
-            }
-        }
-        Text("Demo layout · Not a live playable video", Modifier.padding(8.dp), color = Muted, fontSize = 11.sp)
     }
 }
 
