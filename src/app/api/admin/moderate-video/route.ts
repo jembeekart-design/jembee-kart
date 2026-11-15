@@ -401,7 +401,8 @@ export async function POST(req: Request) {
         schoolBookId: typeof submission.schoolBookId === "string" ? submission.schoolBookId : "",
         schoolEditionId: typeof submission.schoolEditionId === "string" ? submission.schoolEditionId : "",
         schoolChapterId: typeof submission.schoolChapterId === "string" ? submission.schoolChapterId : "",
-        schoolQuestionId: typeof submission.schoolQuestionId === "string" ? submission.schoolQuestionId : "",
+        schoolQuestionNumber: typeof submission.schoolQuestionNumber === "string" ? submission.schoolQuestionNumber : "",
+        schoolQuestionKey: typeof submission.schoolQuestionKey === "string" ? submission.schoolQuestionKey : "",
 
         driveFileId,
         video: finalVideoUrl,
