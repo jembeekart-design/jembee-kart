@@ -116,7 +116,8 @@ export async function POST(req: Request) {
           return NextResponse.json({ success: false, message: "Import file में duplicate ID या invalid entry मिली।" }, { status: 400, headers: noStore });
         }
         ids.add(entry.id);
-        if (entry.type === "book" && entry.coverImageUrl) {
+        if (entry.type === "book") {
+          if (!entry.coverImageUrl) return NextResponse.json({ success: false, message: "हर Book entry के साथ cover image आवश्यक है।" }, { status: 400, headers: noStore });
           try { const url = new URL(entry.coverImageUrl); if (url.protocol !== "https:") throw new Error("invalid"); }
           catch { return NextResponse.json({ success: false, message: "हर Book cover के लिए valid HTTPS image URL दें।" }, { status: 400, headers: noStore }); }
         }
