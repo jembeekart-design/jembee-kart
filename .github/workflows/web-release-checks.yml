@@ -46,6 +46,8 @@ jobs:
           src/app/api/shorts/paid-video/playback-session/route.ts
           src/app/download/page.tsx
           src/components/download/AppInstallActions.tsx
+      - name: Learning catalog contract tests
+        run: npm run test:category-catalog
       - name: Production build
         run: npm run build
         env:
