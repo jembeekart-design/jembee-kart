@@ -88,7 +88,7 @@ export default function AdminCategoriesPage() {
         for (let page = 0; page < 200; page += 1) {
           const params = new URLSearchParams({ type: "question", parentId, pageSize: "50" });
           if (cursor) params.set("cursor", cursor);
-          const response = await fetch("/api/content-categories?" + params.toString(), { cache: "no-store" });
+          const response = await fetch(`/api/content-categories?${params.toString()}`, { cache: "no-store" });
           const data = await response.json();
           if (!response.ok || data.success !== true || !Array.isArray(data.learningNodes)) {
             throw new Error(data.message || "Questions could not be loaded");
