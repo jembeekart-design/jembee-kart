@@ -192,7 +192,7 @@ private fun LibraryScreen() {
         Text("▣", fontSize = 48.sp, color = JembeeBlue)
         Text("Your Library", fontSize = 24.sp, fontWeight = FontWeight.Bold, modifier = Modifier.padding(top = 12.dp))
         Text("Saved videos, history and downloads will live here.", color = Muted, modifier = Modifier.padding(top = 8.dp))
-        Text("Sign in and video services are not connected in this preview.", color = Muted, fontSize = 11.sp, modifier = Modifier.padding(top = 14.dp))
+        NativeAuthPanel()
     }
 }
 
@@ -212,6 +212,6 @@ private fun YouScreen(onTheme: () -> Unit, dark: Boolean) {
             HorizontalDivider()
         }
         TextButton(onClick = onTheme) { Text(if (dark) "Switch to light theme" else "Switch to dark theme") }
-        Text("Account integration pending", color = Muted, fontSize = 11.sp)
+        NativeAuthPanel()
     }
 }
