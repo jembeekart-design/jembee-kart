@@ -20,7 +20,8 @@ export default function RewardCenterPage() {
   return (
     <main className="min-h-screen bg-black p-4 text-white">
       <h1 className="text-2xl font-black">Reward Center</h1>
-      <p>Coins: {walletBalance}</p>
+      <p>Wallet balance: {walletBalance}</p>
+      <p className="mt-2 text-sm text-white/60">Watch-based rewards are currently disabled. Video views do not add coins or wallet credits.</p>
       {/* UI implementation as per requirements */}
     </main>
   );
