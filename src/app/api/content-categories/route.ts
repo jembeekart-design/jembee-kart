@@ -160,8 +160,9 @@ export async function POST(req: Request) {
       const entries = action === "seed-ncert-grade-6"
         ? NCERT_GRADE_6_SEED.entries
         : Array.isArray(body.entries) ? body.entries : [];
-      if (!entries.length || entries.length > 100) {
-        return NextResponse.json({ success: false, message: "एक import batch में 1 से 100 entries भेजें।" }, { status: 400, headers: noStore });
+      const maxEntries = action === "seed-ncert-grade-6" ? 500 : 100;
+      if (!entries.length || entries.length > maxEntries) {
+        return NextResponse.json({ success: false, message: `एक import में 1 से ${maxEntries} entries भेजें।` }, { status: 400, headers: noStore });
       }
       const normalized = entries.map((rawEntry) => {
         const entry = rawEntry && typeof rawEntry === "object" ? rawEntry as Record<string, unknown> : {};
