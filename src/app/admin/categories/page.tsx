@@ -275,7 +275,7 @@ export default function AdminCategoriesPage() {
             </label>}
             {type === "book" && <>
               <label className="text-sm text-slate-300">Book cover image URL
-                <input type="url" required value={coverImageUrl} onChange={(event) => setCoverImageUrl(event.target.value)} placeholder="https://…/book-cover.jpg" className="mt-1 w-full rounded-xl border border-white/15 bg-[#111827] p-3 text-white"/>
+                <input type="text" required value={coverImageUrl} onChange={(event) => setCoverImageUrl(event.target.value)} placeholder="/learning-covers/book.svg or https://…/book-cover.jpg" className="mt-1 w-full rounded-xl border border-white/15 bg-[#111827] p-3 text-white"/>
               </label>
               {coverImageUrl && <div className="sm:col-span-2"><p className="mb-2 text-xs text-slate-400">Cover preview</p><img src={coverImageUrl} alt="Book cover preview" className="h-48 w-36 rounded-xl border border-white/10 object-cover" referrerPolicy="no-referrer"/></div>}
             </>}
