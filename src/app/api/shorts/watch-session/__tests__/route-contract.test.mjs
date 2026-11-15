@@ -53,3 +53,8 @@ test("watch sessions expire after a bounded maximum age", () => {
   assert.match(source, /now - startedAt > MAX_SESSION_AGE_MS/);
   assert.match(source, /closeReason: "expired"/);
 });
+
+
+test("watch telemetry receives a finite retention expiry", () => {
+  assert.match(source, /expiresAt: new Date\(now \+ 90 \* 24 \* 60 \* 60 \* 1000\)/);
+});
