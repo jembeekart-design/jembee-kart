@@ -82,13 +82,13 @@ export default function WatchHistoryPage() {
                 <div className="min-w-0 flex-1 py-1">
                   <h2 className="line-clamp-2 text-sm font-bold">{item.title || item.caption || "Untitled video"}</h2>
                   <p className="mt-1 truncate text-xs text-slate-400">{item.creatorName || "JEMBEE PLAY creator"}</p>
-                  <p className="mt-2 text-xs text-slate-500">{item.startedAt ? new Date(item.startedAt).toLocaleString() : "Date unavailable"} · {formatTime(item.elapsedSeconds)} session</p>
+                  <p className="mt-2 text-xs text-slate-500">{item.startedAt ? new Date(item.startedAt).toLocaleString() : "Date unavailable"} · {formatTime(item.elapsedSeconds)} latest session · {item.sessionCount} session{item.sessionCount === 1 ? "" : "s"}</p>
                   <Link href={`/videos?v=${encodeURIComponent(item.videoId)}`} className="mt-2 inline-flex items-center gap-1 text-xs font-bold text-cyan-300">Watch again <Play size={12}/></Link>
                 </div>
               </article>
             ))}
           </div>}
-        <p className="mt-5 text-xs leading-5 text-slate-500">यह playback session history है, verified watch time नहीं। इससे coins, rewards या wallet balance credit नहीं होते। अभी केवल हाल के 50 sessions दिखते हैं।</p>
+        <p className="mt-5 text-xs leading-5 text-slate-500">यह playback session history है, verified watch time नहीं। इससे coins, rewards या wallet balance credit नहीं होते। पिछले 50 sessions scan करके प्रति वीडियो एक entry दिखाई जाती है।</p>
       </section>
     </main>
   );
