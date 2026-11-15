@@ -69,7 +69,6 @@ function UploadWatchVideoContent() {
   const [categoryTopic, setCategoryTopic] = useState("");
   const [schoolSubjectId, setSchoolSubjectId] = useState("");
   const [schoolBookId, setSchoolBookId] = useState("");
-  const [schoolEditionId, setSchoolEditionId] = useState("");
   const [schoolChapterId, setSchoolChapterId] = useState("");
   const [schoolQuestionId, setSchoolQuestionId] = useState("");
   const [savingCatalog, setSavingCatalog] = useState(false);
@@ -127,7 +126,6 @@ function UploadWatchVideoContent() {
           const subject = book ? loadedNodes.find((item) => item.id === book.parentId && item.type === "subject") : undefined;
           if (question && chapter && book && subject) {
             setSchoolQuestionId(question.id); setSchoolChapterId(chapter.id); setSchoolBookId(book.id); setSchoolSubjectId(subject.id);
-            if (editionOrBook?.type === "edition") setSchoolEditionId(editionOrBook.id);
           }
         }
       })
@@ -139,9 +137,7 @@ function UploadWatchVideoContent() {
   const isSchoolCategory = selectedCategory?.id === "school" || selectedCategory?.schoolSpecial === true;
   const subjectOptions = schoolNodes.filter((item) => item.type === "subject");
   const bookOptions = schoolNodes.filter((item) => item.type === "book" && item.parentId === schoolSubjectId);
-  const editionOptions = schoolNodes.filter((item) => item.type === "edition" && item.parentId === schoolBookId);
-  const chapterParentId = schoolEditionId || schoolBookId;
-  const chapterOptions = schoolNodes.filter((item) => item.type === "chapter" && item.parentId === chapterParentId);
+  const chapterOptions = schoolNodes.filter((item) => item.type === "chapter" && item.parentId === schoolBookId);
   const questionOptions = schoolNodes.filter((item) => item.type === "question" && item.parentId === schoolChapterId);
   const selectedBook = schoolNodes.find((item) => item.id === schoolBookId && item.type === "book");
 
@@ -275,7 +271,7 @@ function UploadWatchVideoContent() {
         return;
       }
       if (!categoryId) { alert("कृपया वीडियो की Category चुनें।"); return; }
-      if (isSchoolCategory && (!schoolSubjectId || !schoolBookId || !schoolChapterId || !schoolQuestionId || (editionOptions.length > 0 && !schoolEditionId))) { alert("कृपया Subject, Book, Edition (यदि उपलब्ध हो), Chapter और Question चुनें।"); return; }
+      if (isSchoolCategory && (!schoolSubjectId || !schoolBookId || !schoolChapterId || !schoolQuestionId)) { alert("कृपया Subject, Book, Chapter और Question चुनें।"); return; }
       if (videoAccess === "paid" && (!Number.isFinite(Number(videoPrice)) || Number(videoPrice) < 1 || Number(videoPrice) > 100000)) {
         alert("Paid वीडियो की कीमत ₹1 से ₹100000 के बीच रखें।");
         return;
@@ -326,7 +322,6 @@ function UploadWatchVideoContent() {
         categoryTopic,
         schoolSubjectId,
         schoolBookId,
-        schoolEditionId,
         schoolChapterId,
         schoolQuestionId,
         hashtags: [],
@@ -483,14 +478,13 @@ function UploadWatchVideoContent() {
                 <select value={categoryTopic} onChange={(event) => setCategoryTopic(event.target.value)} className="mt-2 w-full rounded-xl border border-white/15 bg-[#090d14] px-3 py-3 text-sm text-white outline-none focus:border-cyan-400"><option value="">Topic चुनें (optional)</option>{selectedCategory.topics.map((topic) => <option key={topic} value={topic}>{topic}</option>)}</select>
               </label> : null}
               {isSchoolCategory ? <div className="mt-4 space-y-3 rounded-xl border border-cyan-300/15 bg-[#081421] p-3">
-                <p className="flex items-center gap-2 text-xs font-bold uppercase tracking-wide text-cyan-200"><SchoolCap size={16}/> Book → Edition / Part → Chapter → Question</p>
-                <label className="block text-xs font-bold">Subject<select value={schoolSubjectId} onChange={(e) => { setSchoolSubjectId(e.target.value); setSchoolBookId(""); setSchoolEditionId(""); setSchoolChapterId(""); setSchoolQuestionId(""); }} className="mt-2 w-full rounded-xl border border-white/15 bg-[#090d14] px-3 py-3 text-sm"><option value="">Subject चुनें</option>{subjectOptions.map((item) => <option key={item.id} value={item.id}>{item.name}</option>)}</select></label>
-                <div className="space-y-2"><p className="text-xs font-bold">Book चुनें</p><div className="grid grid-cols-2 gap-3 sm:grid-cols-3">{bookOptions.map((item) => <button key={item.id} type="button" onClick={() => { setSchoolBookId(item.id); setSchoolEditionId(""); setSchoolChapterId(""); setSchoolQuestionId(""); }} className={`overflow-hidden rounded-xl border text-left ${schoolBookId === item.id ? "border-cyan-300 bg-cyan-300/10" : "border-white/10 bg-black/20"}`}>{item.coverImageUrl ? <img src={item.coverImageUrl} alt={item.name} loading="lazy" className="h-36 w-full bg-white/5 object-contain" referrerPolicy="no-referrer"/> : <div className="grid h-36 place-items-center text-xs text-slate-500">Cover unavailable</div>}<span className="block p-2 text-xs font-bold">{item.name}</span>{item.publisher ? <span className="block px-2 pb-2 text-[10px] text-slate-400">{item.publisher}</span> : null}</button>)}</div></div>
-                {selectedBook ? <div className="flex items-center gap-3 rounded-xl border border-cyan-300/20 bg-black/20 p-2">{selectedBook.coverImageUrl ? <img src={selectedBook.coverImageUrl} alt="" className="h-16 w-12 rounded object-cover" referrerPolicy="no-referrer"/> : null}<div><p className="text-xs font-bold">{selectedBook.name}</p><p className="text-[10px] text-slate-400">{selectedBook.publisher || "Book selected"}</p>{selectedBook.classLabels?.length ? <p className="text-[10px] text-cyan-200">Also used: {selectedBook.classLabels.join(", ")}</p> : null}</div></div> : null}
-                {editionOptions.length > 0 ? <label className="block text-xs font-bold">Edition / Part <select required value={schoolEditionId} onChange={(e) => { setSchoolEditionId(e.target.value); setSchoolChapterId(""); setSchoolQuestionId(""); }} disabled={!schoolBookId} className="mt-2 w-full rounded-xl border border-white/15 bg-[#090d14] px-3 py-3 text-sm disabled:opacity-50"><option value="">Edition / Part चुनें</option>{editionOptions.map((item) => <option key={item.id} value={item.id}>{item.name}</option>)}</select></label> : null}
+                <p className="flex items-center gap-2 text-xs font-bold uppercase tracking-wide text-cyan-200"><SchoolCap size={16}/> Subject → Book → Chapter → Question</p>
+                <label className="block text-xs font-bold">Subject<select value={schoolSubjectId} onChange={(e) => { setSchoolSubjectId(e.target.value); setSchoolBookId(""); setSchoolChapterId(""); setSchoolQuestionId(""); }} className="mt-2 w-full rounded-xl border border-white/15 bg-[#090d14] px-3 py-3 text-sm"><option value="">Subject चुनें</option>{subjectOptions.map((item) => <option key={item.id} value={item.id}>{item.name}</option>)}</select></label>
+                <div className="space-y-2"><p className="text-xs font-bold">Book चुनें</p><div className="grid grid-cols-2 gap-3 sm:grid-cols-3">{bookOptions.map((item) => <button key={item.id} type="button" onClick={() => { setSchoolBookId(item.id); setSchoolChapterId(""); setSchoolQuestionId(""); }} className={`overflow-hidden rounded-xl border text-left ${schoolBookId === item.id ? "border-cyan-300 bg-cyan-300/10" : "border-white/10 bg-black/20"}`}>{item.coverImageUrl ? <img src={item.coverImageUrl} alt={item.name} loading="lazy" className="h-36 w-full bg-white/5 object-contain" referrerPolicy="no-referrer"/> : <div className="grid h-36 place-items-center text-xs text-slate-500">Cover unavailable</div>}<span className="block p-2 text-xs font-bold">{item.name}</span></button>)}</div></div>
+                {selectedBook ? <div className="flex items-center gap-3 rounded-xl border border-cyan-300/20 bg-black/20 p-2">{selectedBook.coverImageUrl ? <img src={selectedBook.coverImageUrl} alt="" className="h-16 w-12 rounded object-cover" referrerPolicy="no-referrer"/> : null}<p className="text-xs font-bold">{selectedBook.name}</p></div> : null}
                 <label className="block text-xs font-bold">Chapter<select required value={schoolChapterId} onChange={(e) => { setSchoolChapterId(e.target.value); setSchoolQuestionId(""); }} disabled={!schoolBookId} className="mt-2 w-full rounded-xl border border-white/15 bg-[#090d14] px-3 py-3 text-sm disabled:opacity-50"><option value="">Chapter चुनें</option>{chapterOptions.map((item) => <option key={item.id} value={item.id}>{item.name}</option>)}</select></label>
                 <label className="block text-xs font-bold">Question चुनें<select required value={schoolQuestionId} onChange={(e) => setSchoolQuestionId(e.target.value)} disabled={!schoolChapterId} className="mt-2 w-full rounded-xl border border-white/15 bg-[#090d14] px-3 py-3 text-sm disabled:opacity-50"><option value="">Question चुनें</option>{questionOptions.map((item) => <option key={item.id} value={item.id}>{item.name}</option>)}</select></label>
-                <p className="rounded-xl border border-white/10 bg-black/20 p-3 text-xs leading-5 text-slate-400">Book, chapter ya question list mein nahi hai? Admin Learning Library mein verified entry add karega. Uploader master data create nahi kar sakta. <Link href="/admin/categories" className="font-bold text-cyan-300">Admin Learning Library</Link></p>
+                <p className="rounded-xl border border-white/10 bg-black/20 p-3 text-xs leading-5 text-slate-400">Book, chapter ya question list mein nahi hai? Admin Learning Library mein verified entry add karega. <Link href="/admin/categories" className="font-bold text-cyan-300">Admin Learning Library</Link></p>
                 {catalogNotice && <p role="status" className="rounded-lg border border-cyan-300/20 bg-cyan-300/10 p-2 text-xs text-cyan-100">{catalogNotice}</p>}
                 {schoolNodes.length === 0 && <p className="text-xs text-amber-200">Learning Library abhi populate nahi hui hai.</p>}
               </div> : null}
