@@ -48,6 +48,19 @@ export async function POST(req: Request) {
     if (session.uid !== uid) return "forbidden";
     if (session.status !== "active") return "closed";
 
+    const startedAt = Number(session.startedAtMs);
+    const nowMs = Date.now();
+    if (!Number.isSafeInteger(startedAt) || startedAt > nowMs) return "invalid_session";
+    if (nowMs - startedAt > 4 * 60 * 60 * 1000) {
+      tx.update(sessionRef, {
+        status: "closed",
+        closeReason: "expired",
+        closedAt: new Date(nowMs),
+        updatedAt: new Date(nowMs),
+      });
+      return "closed";
+    }
+
     const videoRef = db.collection("watchEarnVideos").doc(String(session.videoId));
     const videoSnap = await tx.get(videoRef);
     if (!videoSnap.exists) return "unavailable";
