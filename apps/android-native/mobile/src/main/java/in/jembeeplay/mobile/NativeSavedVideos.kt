@@ -104,6 +104,35 @@ internal fun NativeSavedVideosPanel(auth: FirebaseAuth) {
                     Column(modifier = Modifier.fillMaxWidth().padding(vertical = 6.dp)) {
                         Text(video.caption)
                         if (video.creator.isNotBlank()) Text(video.creator)
+                        TextButton(onClick = {
+                            val user = auth.currentUser ?: return@TextButton
+                            user.getIdToken(false).addOnCompleteListener { task ->
+                                val token = task.result?.token
+                                if (!task.isSuccessful || token.isNullOrBlank()) {
+                                    message = "Please sign in again, then retry."
+                                } else Thread {
+                                    val removed = runCatching {
+                                        val url = "https://jembeeplay.in/api/app/library/saved?videoId=" + java.net.URLEncoder.encode(video.id, "UTF-8")
+                                        val connection = java.net.URL(url).openConnection() as java.net.HttpURLConnection
+                                        try {
+                                            connection.requestMethod = "DELETE"
+                                            connection.connectTimeout = 7000
+                                            connection.readTimeout = 10000
+                                            connection.setRequestProperty("Authorization", "Bearer " + token)
+                                            connection.responseCode in 200..299
+                                        } finally { connection.disconnect() }
+                                    }.getOrDefault(false)
+                                    android.os.Handler(android.os.Looper.getMainLooper()).post {
+                                        if (removed) {
+                                            items = items.filterNot { it.id == video.id }
+                                            message = if (items.isEmpty()) "No saved videos yet." else ""
+                                        } else {
+                                            message = "Could not remove saved video. Retry."
+                                        }
+                                    }
+                                }.start()
+                            }
+                        }) { Text("Remove from saved") }
                     }
                 }
             }
