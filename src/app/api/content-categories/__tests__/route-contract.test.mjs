@@ -3,9 +3,9 @@ import assert from "node:assert/strict";
 import { readFile } from "node:fs/promises";
 
 const route = await readFile(new URL("../route.ts", import.meta.url), "utf8");
-const uploadPage = await readFile(new URL("../../../../videos/upload/page.tsx", import.meta.url), "utf8");
-const adminPage = await readFile(new URL("../../../../admin/categories/page.tsx", import.meta.url), "utf8");
-const explorePage = await readFile(new URL("../../../../explore/page.tsx", import.meta.url), "utf8");
+const uploadPage = await readFile(new URL("../../../videos/upload/page.tsx", import.meta.url), "utf8");
+const adminPage = await readFile(new URL("../../../admin/categories/page.tsx", import.meta.url), "utf8");
+const explorePage = await readFile(new URL("../../../explore/page.tsx", import.meta.url), "utf8");
 
 test("school master catalog writes require a verified admin or super_admin", () => {
   assert.match(route, /getAdminAuth\(\)\.verifyIdToken\(header\.slice\(7\)\.trim\(\), true\)/);
