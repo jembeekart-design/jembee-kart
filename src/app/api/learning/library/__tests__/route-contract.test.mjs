@@ -16,7 +16,7 @@ test("Learning Library API supports bounded cursor pagination and server-side se
   assert.match(route, /SCAN_BATCH = 100/);
   assert.match(route, /MAX_SCAN_PER_REQUEST = 500/);
   assert.match(route, /CURSOR_ID_PATTERN/);
-  assert.match(route, /cursorData\\?\\.type !== type/);
+  assert.ok(route.includes("cursorData?.type !== type"));
   assert.match(route, /startAfter\(lastDoc\)/);
   assert.match(route, /name\.toLocaleLowerCase\(\)\.includes\(search\)/);
   assert.match(route, /nextCursor/);
