@@ -30,30 +30,29 @@ import { DEFAULT_EXPLORE_CATEGORIES, type ExploreCategoryRecord } from "@/lib/ca
 const MAX_VIDEO_BYTES = 500 * 1024 * 1024;
  type LearningNode = { id: string; type: string; name: string; parentId?: string | null; coverImageUrl?: string | null };
 
-async function fetchAllLearningNodes(): Promise<LearningNode[]> {
+async function fetchLearningNodes(type: "subject" | "book" | "chapter" | "question", parentId?: string): Promise<LearningNode[]> {
   const nodes: LearningNode[] = [];
-  async function load(type: "subject" | "book" | "chapter" | "question", parentId?: string) {
-    let cursor = "";
-    for (let page = 0; page < 200; page += 1) {
-      const params = new URLSearchParams({ type, pageSize: "50" });
-      if (parentId) params.set("parentId", parentId);
-      if (cursor) params.set("cursor", cursor);
-      const response = await fetch("/api/content-categories?" + params.toString(), { cache: "no-store" });
-      const data = await response.json();
-      if (!response.ok || data.success !== true || !Array.isArray(data.learningNodes)) throw new Error(data.message || "Learning Library unavailable");
-      nodes.push(...data.learningNodes as LearningNode[]);
-      if (data.pagination?.hasMore !== true || typeof data.pagination?.nextCursor !== "string") return;
-      cursor = data.pagination.nextCursor;
-    }
-    throw new Error("Learning Library page limit exceeded");
+  let cursor = "";
+  for (let page = 0; page < 200; page += 1) {
+    const params = new URLSearchParams({ type, pageSize: "50" });
+    if (parentId) params.set("parentId", parentId);
+    if (cursor) params.set("cursor", cursor);
+    const response = await fetch("/api/content-categories?" + params.toString(), { cache: "no-store" });
+    const data = await response.json();
+    if (!response.ok || data.success !== true || !Array.isArray(data.learningNodes)) throw new Error(data.message || "Learning Library unavailable");
+    nodes.push(...data.learningNodes as LearningNode[]);
+    if (data.pagination?.hasMore !== true || typeof data.pagination?.nextCursor !== "string") return nodes;
+    cursor = data.pagination.nextCursor;
   }
-  await load("subject");
-  for (const item of nodes.filter((node) => node.type === "subject")) await load("book", item.id);
-  for (const item of nodes.filter((node) => node.type === "book")) await load("chapter", item.id);
-  for (const item of nodes.filter((node) => node.type === "chapter")) await load("question", item.id);
-  return nodes;
+  throw new Error("Learning Library page limit exceeded");
 }
 
+async function fetchLearningNode(id: string): Promise<LearningNode | null> {
+  const response = await fetch("/api/content-categories?nodeId=" + encodeURIComponent(id), { cache: "no-store" });
+  const data = await response.json();
+  if (!response.ok || data.success !== true || !data.learningNode || typeof data.learningNode.id !== "string") return null;
+  return data.learningNode as LearningNode;
+}
 function inspectVideoDuration(selectedFile: File, onRead: (duration: number | undefined) => void) {
   const objectUrl = URL.createObjectURL(selectedFile);
   const metadataVideo = document.createElement("video");
@@ -130,32 +129,65 @@ function UploadWatchVideoContent() {
 
   useEffect(() => {
     let active = true;
-    fetch("/api/content-categories?type=subject&pageSize=50", { cache: "no-store" })
-      .then(async (response) => { if (!response.ok) throw new Error("Catalog unavailable"); return response.json(); })
-      .then(async (data) => {
-        if (!active || data.success !== true) return;
-        const merged = new Map(DEFAULT_EXPLORE_CATEGORIES.map((item) => [item.id, item]));
-        for (const item of (Array.isArray(data.categories) ? data.categories : []) as ExploreCategoryRecord[]) {
-          if (item && typeof item.id === "string" && typeof item.name === "string") merged.set(item.id, { ...merged.get(item.id), ...item, topics: Array.isArray(item.topics) ? item.topics : [] });
-        }
-        setCategories([...merged.values()]);
-        const loadedNodes = await fetchAllLearningNodes();
+    Promise.all([
+      fetch("/api/content-categories?type=subject&pageSize=50", { cache: "no-store" }).then(async (response) => {
+        if (!response.ok) throw new Error("Catalog unavailable");
+        return response.json();
+      }),
+      fetchLearningNodes("subject"),
+    ]).then(async ([data, subjects]) => {
+      if (!active || data.success !== true) return;
+      const merged = new Map(DEFAULT_EXPLORE_CATEGORIES.map((item) => [item.id, item]));
+      for (const item of (Array.isArray(data.categories) ? data.categories : []) as ExploreCategoryRecord[]) {
+        if (item && typeof item.id === "string" && typeof item.name === "string") merged.set(item.id, { ...merged.get(item.id), ...item, topics: Array.isArray(item.topics) ? item.topics : [] });
+      }
+      setCategories([...merged.values()]);
+      setSchoolNodes(subjects);
+      if (requestedCategoryId && merged.has(requestedCategoryId)) setCategoryId(requestedCategoryId);
+      if (requestedQuestionId) {
+        const question = await fetchLearningNode(requestedQuestionId);
+        const chapter = question?.parentId ? await fetchLearningNode(question.parentId) : null;
+        const book = chapter?.parentId ? await fetchLearningNode(chapter.parentId) : null;
+        const subject = book?.parentId ? await fetchLearningNode(book.parentId) : null;
         if (!active) return;
-        setSchoolNodes(loadedNodes);
-        if (requestedCategoryId && merged.has(requestedCategoryId)) setCategoryId(requestedCategoryId);
-        if (requestedQuestionId) {
-          const question = loadedNodes.find((item) => item.id === requestedQuestionId && item.type === "question");
-          const chapter = question ? loadedNodes.find((item) => item.id === question.parentId && item.type === "chapter") : undefined;
-          const book = chapter ? loadedNodes.find((item) => item.id === chapter.parentId && item.type === "book") : undefined;
-          const subject = book ? loadedNodes.find((item) => item.id === book.parentId && item.type === "subject") : undefined;
-          if (question && chapter && book && subject) {
-            setSchoolQuestionId(question.id); setSchoolChapterId(chapter.id); setSchoolBookId(book.id); setSchoolSubjectId(subject.id);
-          }
+        if (question?.type === "question" && chapter?.type === "chapter" && book?.type === "book" && subject?.type === "subject") {
+          setSchoolNodes((current) => [...current.filter((item) => ![question.id, chapter.id, book.id, subject.id].includes(item.id)), subject, book, chapter, question]);
+          setSchoolQuestionId(question.id);
+          setSchoolChapterId(chapter.id);
+          setSchoolBookId(book.id);
+          setSchoolSubjectId(subject.id);
         }
-      })
-      .catch(() => undefined);
+      }
+    }).catch(() => undefined);
     return () => { active = false; };
   }, [requestedCategoryId, requestedQuestionId]);
+
+  useEffect(() => {
+    if (!schoolSubjectId) return;
+    let active = true;
+    fetchLearningNodes("book", schoolSubjectId).then((items) => {
+      if (active) setSchoolNodes((current) => [...current.filter((item) => item.type !== "book" || item.parentId !== schoolSubjectId), ...items]);
+    }).catch(() => undefined);
+    return () => { active = false; };
+  }, [schoolSubjectId]);
+
+  useEffect(() => {
+    if (!schoolBookId) return;
+    let active = true;
+    fetchLearningNodes("chapter", schoolBookId).then((items) => {
+      if (active) setSchoolNodes((current) => [...current.filter((item) => item.type !== "chapter" || item.parentId !== schoolBookId), ...items]);
+    }).catch(() => undefined);
+    return () => { active = false; };
+  }, [schoolBookId]);
+
+  useEffect(() => {
+    if (!schoolChapterId) return;
+    let active = true;
+    fetchLearningNodes("question", schoolChapterId).then((items) => {
+      if (active) setSchoolNodes((current) => [...current.filter((item) => item.type !== "question" || item.parentId !== schoolChapterId), ...items]);
+    }).catch(() => undefined);
+    return () => { active = false; };
+  }, [schoolChapterId]);
 
   const selectedCategory = categories.find((item) => item.id === categoryId);
   const isSchoolCategory = selectedCategory?.id === "school" || selectedCategory?.schoolSpecial === true;
@@ -184,7 +216,7 @@ function UploadWatchVideoContent() {
         if (item && typeof item.id === "string" && typeof item.name === "string") merged.set(item.id, { ...merged.get(item.id), ...item, topics: Array.isArray(item.topics) ? item.topics : [] });
       }
       setCategories([...merged.values()]);
-      setSchoolNodes(await fetchAllLearningNodes());
+      setSchoolNodes(await fetchLearningNodes("subject"));
     }
     return data as { id?: string };
   }
