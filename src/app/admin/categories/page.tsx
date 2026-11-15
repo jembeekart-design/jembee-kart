@@ -156,7 +156,7 @@ export default function AdminCategoriesPage() {
       return;
     }
     if (type === "book" && !coverImageUrl.trim()) {
-      setNotice("Book cover image URL देना आवश्यक है।");
+      setNotice("Book cover path or URL देना आवश्यक है।");
       return;
     }
     setSaving(true);
