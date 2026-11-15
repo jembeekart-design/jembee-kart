@@ -1,0 +1,646 @@
+{
+  "title": "JEMBEE PLAY NCERT Grade 6 starter catalog",
+  "datasetVersion": "2026-27-metadata-v1",
+  "notes": [
+    "Metadata-only starter: subject, book title, chapter title and original JEMBEE PLAY practice prompts.",
+    "No NCERT PDF pages, official cover artwork, exercise questions, answer keys or textbook scans are included.",
+    "Practice prompts are independently written and are not represented as NCERT textbook questions.",
+    "Book cover images are original JEMBEE PLAY artwork."
+  ],
+  "sourceReferences": [
+    "https://ncert.nic.in/textbook.php",
+    "https://ncert.philoid.app/class/6",
+    "https://ncert.philoid.app/book/fepr1",
+    "https://ncert.philoid.app/book/fhml1",
+    "https://ncert.philoid.app/book/fegp1",
+    "https://ncert.philoid.app/book/fecu1",
+    "https://ncert.philoid.app/book/fees1",
+    "https://ncert.philoid.app/book/fsde1"
+  ],
+  "entries": [
+    {
+      "id": "english",
+      "type": "subject",
+      "name": "English"
+    },
+    {
+      "id": "hindi",
+      "type": "subject",
+      "name": "Hindi"
+    },
+    {
+      "id": "mathematics",
+      "type": "subject",
+      "name": "Mathematics"
+    },
+    {
+      "id": "science",
+      "type": "subject",
+      "name": "Science"
+    },
+    {
+      "id": "social-science",
+      "type": "subject",
+      "name": "Social Science"
+    },
+    {
+      "id": "sanskrit",
+      "type": "subject",
+      "name": "Sanskrit"
+    },
+    {
+      "id": "ncert-g6-poorvi",
+      "type": "book",
+      "name": "Poorvi — Grade 6 (English, NCERT 2026–27)",
+      "parentId": "english",
+      "coverImageUrl": "/learning-covers/ncert-grade-6-poorvi.svg"
+    },
+    {
+      "id": "ncert-g6-malhar",
+      "type": "book",
+      "name": "Malhar — Grade 6 (Hindi, NCERT 2026–27)",
+      "parentId": "hindi",
+      "coverImageUrl": "/learning-covers/ncert-grade-6-malhar.svg"
+    },
+    {
+      "id": "ncert-g6-ganita-prakash",
+      "type": "book",
+      "name": "Ganita Prakash — Grade 6 (Mathematics, English, NCERT 2026–27)",
+      "parentId": "mathematics",
+      "coverImageUrl": "/learning-covers/ncert-grade-6-ganita-prakash.svg"
+    },
+    {
+      "id": "ncert-g6-curiosity",
+      "type": "book",
+      "name": "Curiosity — Grade 6 (Science, English, NCERT 2026–27)",
+      "parentId": "science",
+      "coverImageUrl": "/learning-covers/ncert-grade-6-curiosity.svg"
+    },
+    {
+      "id": "ncert-g6-exploring-society",
+      "type": "book",
+      "name": "Exploring Society: India and Beyond — Grade 6 (Social Science, English, NCERT 2026–27)",
+      "parentId": "social-science",
+      "coverImageUrl": "/learning-covers/ncert-grade-6-exploring-society.svg"
+    },
+    {
+      "id": "ncert-g6-deepakam",
+      "type": "book",
+      "name": "Deepakam — Grade 6 (Sanskrit, NCERT 2026–27)",
+      "parentId": "sanskrit",
+      "coverImageUrl": "/learning-covers/ncert-grade-6-deepakam.svg"
+    },
+    {
+      "id": "ncert-g6-poorvi-ch-01",
+      "type": "chapter",
+      "name": "Chapter 1 — Fables and Folk Tales",
+      "parentId": "ncert-g6-poorvi"
+    },
+    {
+      "id": "ncert-g6-poorvi-ch-02",
+      "type": "chapter",
+      "name": "Chapter 2 — Friendship",
+      "parentId": "ncert-g6-poorvi"
+    },
+    {
+      "id": "ncert-g6-poorvi-ch-03",
+      "type": "chapter",
+      "name": "Chapter 3 — Nurturing Nature",
+      "parentId": "ncert-g6-poorvi"
+    },
+    {
+      "id": "ncert-g6-poorvi-ch-04",
+      "type": "chapter",
+      "name": "Chapter 4 — Sports and Wellness",
+      "parentId": "ncert-g6-poorvi"
+    },
+    {
+      "id": "ncert-g6-poorvi-ch-05",
+      "type": "chapter",
+      "name": "Chapter 5 — Culture and Tradition",
+      "parentId": "ncert-g6-poorvi"
+    },
+    {
+      "id": "ncert-g6-malhar-ch-01",
+      "type": "chapter",
+      "name": "Chapter 1 — मातृभूमि (कविता)",
+      "parentId": "ncert-g6-malhar"
+    },
+    {
+      "id": "ncert-g6-malhar-ch-02",
+      "type": "chapter",
+      "name": "Chapter 2 — गोल (संस्मरण)",
+      "parentId": "ncert-g6-malhar"
+    },
+    {
+      "id": "ncert-g6-malhar-ch-03",
+      "type": "chapter",
+      "name": "Chapter 3 — पहली बूँद (कविता)",
+      "parentId": "ncert-g6-malhar"
+    },
+    {
+      "id": "ncert-g6-malhar-ch-04",
+      "type": "chapter",
+      "name": "Chapter 4 — हार की जीत (कहानी)",
+      "parentId": "ncert-g6-malhar"
+    },
+    {
+      "id": "ncert-g6-malhar-ch-05",
+      "type": "chapter",
+      "name": "Chapter 5 — रहीम के दोहे",
+      "parentId": "ncert-g6-malhar"
+    },
+    {
+      "id": "ncert-g6-malhar-ch-06",
+      "type": "chapter",
+      "name": "Chapter 6 — मेरी माँ (आत्मकथा)",
+      "parentId": "ncert-g6-malhar"
+    },
+    {
+      "id": "ncert-g6-malhar-ch-07",
+      "type": "chapter",
+      "name": "Chapter 7 — जलाते चलो (कविता)",
+      "parentId": "ncert-g6-malhar"
+    },
+    {
+      "id": "ncert-g6-malhar-ch-08",
+      "type": "chapter",
+      "name": "Chapter 8 — सत्रिया और बिहू नृत्य",
+      "parentId": "ncert-g6-malhar"
+    },
+    {
+      "id": "ncert-g6-malhar-ch-09",
+      "type": "chapter",
+      "name": "Chapter 9 — मैया मैं नहि माखन खायो",
+      "parentId": "ncert-g6-malhar"
+    },
+    {
+      "id": "ncert-g6-malhar-ch-10",
+      "type": "chapter",
+      "name": "Chapter 10 — परीक्षा (कहानी)",
+      "parentId": "ncert-g6-malhar"
+    },
+    {
+      "id": "ncert-g6-malhar-ch-11",
+      "type": "chapter",
+      "name": "Chapter 11 — चेतक की वीरता",
+      "parentId": "ncert-g6-malhar"
+    },
+    {
+      "id": "ncert-g6-malhar-ch-12",
+      "type": "chapter",
+      "name": "Chapter 12 — हिंद महासागर में छोटा सा हिंदुस्तान",
+      "parentId": "ncert-g6-malhar"
+    },
+    {
+      "id": "ncert-g6-malhar-ch-13",
+      "type": "chapter",
+      "name": "Chapter 13 — पेड़ की बात",
+      "parentId": "ncert-g6-malhar"
+    },
+    {
+      "id": "ncert-g6-ganita-prakash-ch-01",
+      "type": "chapter",
+      "name": "Chapter 1 — Patterns in Mathematics",
+      "parentId": "ncert-g6-ganita-prakash"
+    },
+    {
+      "id": "ncert-g6-ganita-prakash-ch-01-practice-q1",
+      "type": "question",
+      "name": "Practice Q1 — Give two examples of patterns you can find in numbers or shapes around you.",
+      "parentId": "ncert-g6-ganita-prakash-ch-01"
+    },
+    {
+      "id": "ncert-g6-ganita-prakash-ch-02",
+      "type": "chapter",
+      "name": "Chapter 2 — Lines and Angles",
+      "parentId": "ncert-g6-ganita-prakash"
+    },
+    {
+      "id": "ncert-g6-ganita-prakash-ch-02-practice-q1",
+      "type": "question",
+      "name": "Practice Q1 — Draw two intersecting lines and mark the angles formed at their intersection.",
+      "parentId": "ncert-g6-ganita-prakash-ch-02"
+    },
+    {
+      "id": "ncert-g6-ganita-prakash-ch-03",
+      "type": "chapter",
+      "name": "Chapter 3 — Number Play",
+      "parentId": "ncert-g6-ganita-prakash"
+    },
+    {
+      "id": "ncert-g6-ganita-prakash-ch-03-practice-q1",
+      "type": "question",
+      "name": "Practice Q1 — Create a number puzzle using a three-digit number and explain its solution.",
+      "parentId": "ncert-g6-ganita-prakash-ch-03"
+    },
+    {
+      "id": "ncert-g6-ganita-prakash-ch-04",
+      "type": "chapter",
+      "name": "Chapter 4 — Data Handling and Presentation",
+      "parentId": "ncert-g6-ganita-prakash"
+    },
+    {
+      "id": "ncert-g6-ganita-prakash-ch-04-practice-q1",
+      "type": "question",
+      "name": "Practice Q1 — Collect the favourite fruits of ten classmates and show the data in a simple table.",
+      "parentId": "ncert-g6-ganita-prakash-ch-04"
+    },
+    {
+      "id": "ncert-g6-ganita-prakash-ch-05",
+      "type": "chapter",
+      "name": "Chapter 5 — Prime Time",
+      "parentId": "ncert-g6-ganita-prakash"
+    },
+    {
+      "id": "ncert-g6-ganita-prakash-ch-05-practice-q1",
+      "type": "question",
+      "name": "Practice Q1 — Explain how you can decide whether a number is prime or composite.",
+      "parentId": "ncert-g6-ganita-prakash-ch-05"
+    },
+    {
+      "id": "ncert-g6-ganita-prakash-ch-06",
+      "type": "chapter",
+      "name": "Chapter 6 — Perimeter and Area",
+      "parentId": "ncert-g6-ganita-prakash"
+    },
+    {
+      "id": "ncert-g6-ganita-prakash-ch-06-practice-q1",
+      "type": "question",
+      "name": "Practice Q1 — Find the perimeter of a rectangular garden that is 8 m long and 5 m wide.",
+      "parentId": "ncert-g6-ganita-prakash-ch-06"
+    },
+    {
+      "id": "ncert-g6-ganita-prakash-ch-07",
+      "type": "chapter",
+      "name": "Chapter 7 — Fractions",
+      "parentId": "ncert-g6-ganita-prakash"
+    },
+    {
+      "id": "ncert-g6-ganita-prakash-ch-07-practice-q1",
+      "type": "question",
+      "name": "Practice Q1 — Show two different fractions that are equal to one-half.",
+      "parentId": "ncert-g6-ganita-prakash-ch-07"
+    },
+    {
+      "id": "ncert-g6-ganita-prakash-ch-08",
+      "type": "chapter",
+      "name": "Chapter 8 — Playing with Constructions",
+      "parentId": "ncert-g6-ganita-prakash"
+    },
+    {
+      "id": "ncert-g6-ganita-prakash-ch-08-practice-q1",
+      "type": "question",
+      "name": "Practice Q1 — Describe the steps you would use to construct a line segment of a given length.",
+      "parentId": "ncert-g6-ganita-prakash-ch-08"
+    },
+    {
+      "id": "ncert-g6-ganita-prakash-ch-09",
+      "type": "chapter",
+      "name": "Chapter 9 — Symmetry",
+      "parentId": "ncert-g6-ganita-prakash"
+    },
+    {
+      "id": "ncert-g6-ganita-prakash-ch-09-practice-q1",
+      "type": "question",
+      "name": "Practice Q1 — Draw a shape that has exactly one line of symmetry and explain your choice.",
+      "parentId": "ncert-g6-ganita-prakash-ch-09"
+    },
+    {
+      "id": "ncert-g6-ganita-prakash-ch-10",
+      "type": "chapter",
+      "name": "Chapter 10 — The Other Side of Zero",
+      "parentId": "ncert-g6-ganita-prakash"
+    },
+    {
+      "id": "ncert-g6-ganita-prakash-ch-10-practice-q1",
+      "type": "question",
+      "name": "Practice Q1 — Show the positions of −3, 0 and 4 on a number line and compare them.",
+      "parentId": "ncert-g6-ganita-prakash-ch-10"
+    },
+    {
+      "id": "ncert-g6-curiosity-ch-01",
+      "type": "chapter",
+      "name": "Chapter 1 — The Wonderful World of Science",
+      "parentId": "ncert-g6-curiosity"
+    },
+    {
+      "id": "ncert-g6-curiosity-ch-01-practice-q1",
+      "type": "question",
+      "name": "Practice Q1 — How can you investigate whether a question about the natural world is supported by evidence?",
+      "parentId": "ncert-g6-curiosity-ch-01"
+    },
+    {
+      "id": "ncert-g6-curiosity-ch-02",
+      "type": "chapter",
+      "name": "Chapter 2 — Diversity in the Living World",
+      "parentId": "ncert-g6-curiosity"
+    },
+    {
+      "id": "ncert-g6-curiosity-ch-02-practice-q1",
+      "type": "question",
+      "name": "Practice Q1 — Choose two nearby plants and describe three observable features that help you compare them.",
+      "parentId": "ncert-g6-curiosity-ch-02"
+    },
+    {
+      "id": "ncert-g6-curiosity-ch-03",
+      "type": "chapter",
+      "name": "Chapter 3 — Mindful Eating: A Path to a Healthy Body",
+      "parentId": "ncert-g6-curiosity"
+    },
+    {
+      "id": "ncert-g6-curiosity-ch-03-practice-q1",
+      "type": "question",
+      "name": "Practice Q1 — Plan a balanced meal and identify the different nutrients it should provide.",
+      "parentId": "ncert-g6-curiosity-ch-03"
+    },
+    {
+      "id": "ncert-g6-curiosity-ch-04",
+      "type": "chapter",
+      "name": "Chapter 4 — Exploring Magnets",
+      "parentId": "ncert-g6-curiosity"
+    },
+    {
+      "id": "ncert-g6-curiosity-ch-04-practice-q1",
+      "type": "question",
+      "name": "Practice Q1 — How can you test which of three everyday objects is attracted by a magnet?",
+      "parentId": "ncert-g6-curiosity-ch-04"
+    },
+    {
+      "id": "ncert-g6-curiosity-ch-05",
+      "type": "chapter",
+      "name": "Chapter 5 — Measurement of Length and Motion",
+      "parentId": "ncert-g6-curiosity"
+    },
+    {
+      "id": "ncert-g6-curiosity-ch-05-practice-q1",
+      "type": "question",
+      "name": "Practice Q1 — Explain how you would measure the length of a curved line using simple materials.",
+      "parentId": "ncert-g6-curiosity-ch-05"
+    },
+    {
+      "id": "ncert-g6-curiosity-ch-06",
+      "type": "chapter",
+      "name": "Chapter 6 — Materials Around Us",
+      "parentId": "ncert-g6-curiosity"
+    },
+    {
+      "id": "ncert-g6-curiosity-ch-06-practice-q1",
+      "type": "question",
+      "name": "Practice Q1 — Choose two materials used at home and compare their observable properties.",
+      "parentId": "ncert-g6-curiosity-ch-06"
+    },
+    {
+      "id": "ncert-g6-curiosity-ch-07",
+      "type": "chapter",
+      "name": "Chapter 7 — Temperature and its Measurement",
+      "parentId": "ncert-g6-curiosity"
+    },
+    {
+      "id": "ncert-g6-curiosity-ch-07-practice-q1",
+      "type": "question",
+      "name": "Practice Q1 — Why should a thermometer be read carefully, and what precautions would you take?",
+      "parentId": "ncert-g6-curiosity-ch-07"
+    },
+    {
+      "id": "ncert-g6-curiosity-ch-08",
+      "type": "chapter",
+      "name": "Chapter 8 — A Journey through States of Water",
+      "parentId": "ncert-g6-curiosity"
+    },
+    {
+      "id": "ncert-g6-curiosity-ch-08-practice-q1",
+      "type": "question",
+      "name": "Practice Q1 — Describe what happens to a small amount of water when it is heated and then cooled.",
+      "parentId": "ncert-g6-curiosity-ch-08"
+    },
+    {
+      "id": "ncert-g6-curiosity-ch-09",
+      "type": "chapter",
+      "name": "Chapter 9 — Methods of Separation in Everyday Life",
+      "parentId": "ncert-g6-curiosity"
+    },
+    {
+      "id": "ncert-g6-curiosity-ch-09-practice-q1",
+      "type": "question",
+      "name": "Practice Q1 — Suggest a method to separate a mixture of sand and salt, explaining each step.",
+      "parentId": "ncert-g6-curiosity-ch-09"
+    },
+    {
+      "id": "ncert-g6-curiosity-ch-10",
+      "type": "chapter",
+      "name": "Chapter 10 — Living Creatures: Exploring their Characteristics",
+      "parentId": "ncert-g6-curiosity"
+    },
+    {
+      "id": "ncert-g6-curiosity-ch-10-practice-q1",
+      "type": "question",
+      "name": "Practice Q1 — What observations can help you decide whether something is living?",
+      "parentId": "ncert-g6-curiosity-ch-10"
+    },
+    {
+      "id": "ncert-g6-curiosity-ch-11",
+      "type": "chapter",
+      "name": "Chapter 11 — Nature’s Treasures",
+      "parentId": "ncert-g6-curiosity"
+    },
+    {
+      "id": "ncert-g6-curiosity-ch-11-practice-q1",
+      "type": "question",
+      "name": "Practice Q1 — Name two natural resources used in daily life and suggest one way to conserve each.",
+      "parentId": "ncert-g6-curiosity-ch-11"
+    },
+    {
+      "id": "ncert-g6-curiosity-ch-12",
+      "type": "chapter",
+      "name": "Chapter 12 — Beyond Earth",
+      "parentId": "ncert-g6-curiosity"
+    },
+    {
+      "id": "ncert-g6-curiosity-ch-12-practice-q1",
+      "type": "question",
+      "name": "Practice Q1 — What causes the apparent changes in the Moon’s shape that we observe over a month?",
+      "parentId": "ncert-g6-curiosity-ch-12"
+    },
+    {
+      "id": "ncert-g6-exploring-society-ch-01",
+      "type": "chapter",
+      "name": "Chapter 1 — Locating Places on the Earth",
+      "parentId": "ncert-g6-exploring-society"
+    },
+    {
+      "id": "ncert-g6-exploring-society-ch-02",
+      "type": "chapter",
+      "name": "Chapter 2 — Oceans and Continents",
+      "parentId": "ncert-g6-exploring-society"
+    },
+    {
+      "id": "ncert-g6-exploring-society-ch-03",
+      "type": "chapter",
+      "name": "Chapter 3 — Landforms and Life",
+      "parentId": "ncert-g6-exploring-society"
+    },
+    {
+      "id": "ncert-g6-exploring-society-ch-04",
+      "type": "chapter",
+      "name": "Chapter 4 — Timeline and Sources of History",
+      "parentId": "ncert-g6-exploring-society"
+    },
+    {
+      "id": "ncert-g6-exploring-society-ch-05",
+      "type": "chapter",
+      "name": "Chapter 5 — India, That Is Bharat",
+      "parentId": "ncert-g6-exploring-society"
+    },
+    {
+      "id": "ncert-g6-exploring-society-ch-06",
+      "type": "chapter",
+      "name": "Chapter 6 — The Beginnings of Indian Civilisation",
+      "parentId": "ncert-g6-exploring-society"
+    },
+    {
+      "id": "ncert-g6-exploring-society-ch-07",
+      "type": "chapter",
+      "name": "Chapter 7 — India’s Cultural Roots",
+      "parentId": "ncert-g6-exploring-society"
+    },
+    {
+      "id": "ncert-g6-exploring-society-ch-08",
+      "type": "chapter",
+      "name": "Chapter 8 — Unity in Diversity, or Many in the One",
+      "parentId": "ncert-g6-exploring-society"
+    },
+    {
+      "id": "ncert-g6-exploring-society-ch-09",
+      "type": "chapter",
+      "name": "Chapter 9 — Family and Community",
+      "parentId": "ncert-g6-exploring-society"
+    },
+    {
+      "id": "ncert-g6-exploring-society-ch-10",
+      "type": "chapter",
+      "name": "Chapter 10 — Grassroots Democracy — Part 1: Governance",
+      "parentId": "ncert-g6-exploring-society"
+    },
+    {
+      "id": "ncert-g6-exploring-society-ch-11",
+      "type": "chapter",
+      "name": "Chapter 11 — Grassroots Democracy — Part 2: Local Government in Rural Areas",
+      "parentId": "ncert-g6-exploring-society"
+    },
+    {
+      "id": "ncert-g6-exploring-society-ch-12",
+      "type": "chapter",
+      "name": "Chapter 12 — Grassroots Democracy — Part 3: Local Government in Urban Areas",
+      "parentId": "ncert-g6-exploring-society"
+    },
+    {
+      "id": "ncert-g6-exploring-society-ch-13",
+      "type": "chapter",
+      "name": "Chapter 13 — The Value of Work",
+      "parentId": "ncert-g6-exploring-society"
+    },
+    {
+      "id": "ncert-g6-exploring-society-ch-14",
+      "type": "chapter",
+      "name": "Chapter 14 — Economic Activities Around Us",
+      "parentId": "ncert-g6-exploring-society"
+    },
+    {
+      "id": "ncert-g6-deepakam-ch-01",
+      "type": "chapter",
+      "name": "Chapter 1 — प्रथमः पाठः — वयं वर्णमालां पठामः",
+      "parentId": "ncert-g6-deepakam"
+    },
+    {
+      "id": "ncert-g6-deepakam-ch-02",
+      "type": "chapter",
+      "name": "Chapter 2 — द्वितीयः पाठः — संयुक्त-व्यञ्जनानि",
+      "parentId": "ncert-g6-deepakam"
+    },
+    {
+      "id": "ncert-g6-deepakam-ch-03",
+      "type": "chapter",
+      "name": "Chapter 3 — तृतीयः पाठः — एषः कः? एषा का? एतत् किम्?",
+      "parentId": "ncert-g6-deepakam"
+    },
+    {
+      "id": "ncert-g6-deepakam-ch-04",
+      "type": "chapter",
+      "name": "Chapter 4 — चतुर्थः पाठः — अहं च त्वं च",
+      "parentId": "ncert-g6-deepakam"
+    },
+    {
+      "id": "ncert-g6-deepakam-ch-05",
+      "type": "chapter",
+      "name": "Chapter 5 — पञ्चमः पाठः — संख्यागणना ननु सरला",
+      "parentId": "ncert-g6-deepakam"
+    },
+    {
+      "id": "ncert-g6-deepakam-ch-06",
+      "type": "chapter",
+      "name": "Chapter 6 — षष्ठः पाठः — अहं प्रातः उत्तिष्ठामि",
+      "parentId": "ncert-g6-deepakam"
+    },
+    {
+      "id": "ncert-g6-deepakam-ch-07",
+      "type": "chapter",
+      "name": "Chapter 7 — सप्तमः पाठः — शूराः वयं धीराः वयम्",
+      "parentId": "ncert-g6-deepakam"
+    },
+    {
+      "id": "ncert-g6-deepakam-ch-08",
+      "type": "chapter",
+      "name": "Chapter 8 — अष्टमः पाठः — सः एव महान् चित्रकारः",
+      "parentId": "ncert-g6-deepakam"
+    },
+    {
+      "id": "ncert-g6-deepakam-ch-09",
+      "type": "chapter",
+      "name": "Chapter 9 — नवमः पाठः — अतिथिदेवो भव",
+      "parentId": "ncert-g6-deepakam"
+    },
+    {
+      "id": "ncert-g6-deepakam-ch-10",
+      "type": "chapter",
+      "name": "Chapter 10 — दशमः पाठः — बुद्धिः सर्वार्थसाधिका",
+      "parentId": "ncert-g6-deepakam"
+    },
+    {
+      "id": "ncert-g6-deepakam-ch-11",
+      "type": "chapter",
+      "name": "Chapter 11 — एकादशः पाठः — यः जानाति सः पण्डितः",
+      "parentId": "ncert-g6-deepakam"
+    },
+    {
+      "id": "ncert-g6-deepakam-ch-12",
+      "type": "chapter",
+      "name": "Chapter 12 — द्वादशः पाठः — त्वम् आपणं गच्छ",
+      "parentId": "ncert-g6-deepakam"
+    },
+    {
+      "id": "ncert-g6-deepakam-ch-13",
+      "type": "chapter",
+      "name": "Chapter 13 — त्रयोदशः पाठः — पृथिव्यां त्रीणि रत्नानि",
+      "parentId": "ncert-g6-deepakam"
+    },
+    {
+      "id": "ncert-g6-deepakam-ch-14",
+      "type": "chapter",
+      "name": "Chapter 14 — चतुर्दशः पाठः — आलस्यं हि मनुष्याणां शरीरस्थः महान् रिपुः",
+      "parentId": "ncert-g6-deepakam"
+    },
+    {
+      "id": "ncert-g6-deepakam-ch-15",
+      "type": "chapter",
+      "name": "Chapter 15 — पञ्चदशः पाठः — माधवस्य प्रियम् अङ्गम्",
+      "parentId": "ncert-g6-deepakam"
+    },
+    {
+      "id": "ncert-g6-deepakam-ch-16",
+      "type": "chapter",
+      "name": "Chapter 16 — षोडशः पाठः — वृक्षाः सत्पुरुषाः इव",
+      "parentId": "ncert-g6-deepakam"
+    }
+  ]
+}
