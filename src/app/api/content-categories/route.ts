@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import crypto from "node:crypto";
 import { getAdminAuth, getAdminDb } from "@/firebase/admin";
+import NCERT_GRADE_6_SEED from "@/data/learning-library/ncert-grade-6-seed.json";
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
@@ -19,6 +20,10 @@ const cleanText = (value: unknown, max: number) =>
 const cleanList = (value: unknown, maxItems = 80) => Array.isArray(value)
   ? value.map((item) => cleanText(item, 120)).filter(Boolean).slice(0, maxItems)
   : [];
+const isAllowedBookCover = (value: string) =>
+  /^\/learning-covers\/[a-z0-9-]+\.svg$/.test(value) || (() => {
+    try { return new URL(value).protocol === "https:"; } catch { return false; }
+  })();
 
 async function verifyUploader(req: Request): Promise<string> {
   const header = req.headers.get("authorization");
@@ -150,9 +155,11 @@ export async function POST(req: Request) {
   const db = getAdminDb();
   const action = cleanText(body.action, 40);
   try {
-    if (action === "bulk-import-learning-library") {
+    if (action === "bulk-import-learning-library" || action === "seed-ncert-grade-6") {
       try { uploaderUid = await verifyAdmin(req); } catch (error) { return authError(error); }
-      const entries = Array.isArray(body.entries) ? body.entries : [];
+      const entries = action === "seed-ncert-grade-6"
+        ? NCERT_GRADE_6_SEED.entries
+        : Array.isArray(body.entries) ? body.entries : [];
       if (!entries.length || entries.length > 100) {
         return NextResponse.json({ success: false, message: "एक import batch में 1 से 100 entries भेजें।" }, { status: 400, headers: noStore });
       }
@@ -174,8 +181,9 @@ export async function POST(req: Request) {
         ids.add(entry.id);
         if (entry.type === "book") {
           if (!entry.coverImageUrl) return NextResponse.json({ success: false, message: "हर Book entry के साथ cover image आवश्यक है।" }, { status: 400, headers: noStore });
-          try { const url = new URL(entry.coverImageUrl); if (url.protocol !== "https:") throw new Error("invalid"); }
-          catch { return NextResponse.json({ success: false, message: "हर Book cover के लिए valid HTTPS image URL दें।" }, { status: 400, headers: noStore }); }
+          if (!isAllowedBookCover(entry.coverImageUrl)) {
+            return NextResponse.json({ success: false, message: "हर Book cover के लिए valid HTTPS URL या approved local cover path दें।" }, { status: 400, headers: noStore });
+          }
         }
       }
       const entryById = new Map(normalized.map((entry) => [entry.id, entry]));
@@ -258,11 +266,8 @@ export async function POST(req: Request) {
       }
       if (type === "book" && !coverImageUrl) return NextResponse.json({ success: false, message: "Book cover image आवश्यक है।" }, { status: 400, headers: noStore });
       if (type === "book" && coverImageUrl) {
-        try {
-          const imageUrl = new URL(coverImageUrl);
-          if (imageUrl.protocol !== "https:") throw new Error("invalid protocol");
-        } catch {
-          return NextResponse.json({ success: false, message: "Book cover के लिए valid HTTPS image URL दें।" }, { status: 400, headers: noStore });
+        if (!isAllowedBookCover(coverImageUrl)) {
+          return NextResponse.json({ success: false, message: "Book cover के लिए valid HTTPS URL या approved local cover path दें।" }, { status: 400, headers: noStore });
         }
       }
       if (type !== "book" && coverImageUrl) {
