@@ -19,3 +19,10 @@ test("non-admin accounts are signed out and shown an authorization error", () =>
 test("login loading state is cleared on success, errors and early returns", () => {
   assert.match(source, /finally \{\s*setLoading\(false\);\s*\}/);
 });
+
+test("admin layout returns failed role checks to the admin login page, not public home", async () => {
+  const layout = await readFile(new URL("../../layout.tsx", import.meta.url), "utf8");
+  assert.match(layout, /router\.replace\("\/admin\/login\?error=not-admin"\)/);
+  assert.doesNotMatch(layout, /router\.replace\("\/"\)/);
+  assert.match(source, /reason === "not-admin"/);
+});
