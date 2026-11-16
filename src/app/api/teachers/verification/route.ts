@@ -8,7 +8,9 @@ const noStore = { "Cache-Control": "no-store" };
 async function authenticatedUid(req: Request) {
   const header = req.headers.get("authorization");
   if (!header?.startsWith("Bearer ")) throw new Error("UNAUTHORIZED");
-  try { return (await getAdminAuth().verifyIdToken(header.slice(7).trim())).uid; } catch { throw new Error("UNAUTHORIZED"); }
+  const token = header.slice(7).trim();
+  if (!token || token.length > 8192) throw new Error("UNAUTHORIZED");
+  try { return (await getAdminAuth().verifyIdToken(token, true)).uid; } catch { throw new Error("UNAUTHORIZED"); }
 }
 export async function GET(req: Request) {
   try { const uid = await authenticatedUid(req); return NextResponse.json({ success: true, application: await getTeacherApplication(uid) }, { headers: noStore }); }
