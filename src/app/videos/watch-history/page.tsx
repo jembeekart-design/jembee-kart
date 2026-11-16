@@ -3,6 +3,7 @@
 import { useCallback, useEffect, useState } from "react";
 import Link from "next/link";
 import { auth } from "@/firebase/config";
+import { onAuthStateChanged } from "firebase/auth";
 import { ArrowLeft, Clock3, Play, Trash2 } from "lucide-react";
 
 type HistoryItem = {
@@ -56,7 +57,10 @@ export default function ViewerWatchHistoryPage() {
     }
   }, []);
 
-  useEffect(() => { void loadHistory(); }, [loadHistory]);
+  useEffect(() => {
+    const unsubscribe = onAuthStateChanged(auth, () => { void loadHistory(); });
+    return () => unsubscribe();
+  }, [loadHistory]);
 
   const removeItem = async (videoId: string) => {
     const user = auth.currentUser;
