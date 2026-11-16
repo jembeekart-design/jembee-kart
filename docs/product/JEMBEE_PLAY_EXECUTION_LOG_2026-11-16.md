@@ -246,3 +246,12 @@ This log records source changes only. It is not a production-readiness certifica
 - It now rejects JSON primitives, null and arrays with HTTP 400 rather than allowing malformed shapes to reach action handling.
 - Added contract assertions for both guards.
 - New school hierarchy nodes remain pending until Admin approval; public catalog reads remain published-only.
+
+
+## Published learning-path enforcement for answer videos — 16 November 2026
+
+- The school video-answer API now validates the selected question and each ancestor (chapter, subject/book, class, school, board) against the live Firestore catalog.
+- If any node is missing, unpublished, or linked to the wrong parent, the endpoint returns an empty answer list. Previously approved videos no longer remain discoverable through this Learning endpoint after catalog removal/unpublishing.
+- The existing approved + active + safe video filters remain in place.
+- Added `test:learning-answer-gates` contract test and included it in release script discovery automatically.
+- These are source-level changes; runtime Firestore behavior and full CI are not yet verified.
