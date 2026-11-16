@@ -219,3 +219,12 @@ This log records source changes only. It is not a production-readiness certifica
 - The workflow uses Node.js 22 and runs the existing `scripts/verify-release.sh` release gate: dependency-free Node contract tests, locked dependency installation, TypeScript, ESLint and Next.js production build.
 - The workflow is a verification mechanism, not proof of a passing build. Its first GitHub Actions run must complete successfully before release readiness can be assessed. External Firebase, Drive, Cashfree, ad-provider, Android-device and production-domain checks remain separate.
 - No deployment, payout activation or bulk video upload performed.
+
+
+## Teacher verification authentication hardening — 16 November 2026
+
+- Teacher application GET and POST now reject empty or oversized bearer tokens and verify Firebase ID tokens with revocation checking enabled.
+- Updated the teacher application contract test to assert both the token size guard and revocation-aware verification.
+- Added the `test:teacher-verification` npm script so the contract can be run independently and is included in the release script's full Node test discovery.
+- The teacher application and review flow still requires runtime integration checks against Firebase, authorization/rules review, and UI acceptance. Teacher ratings/reviews are a separate missing feature and are not represented as implemented by teacher verification.
+- No deployment, payout activation or bulk video upload performed.
