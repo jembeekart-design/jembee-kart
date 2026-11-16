@@ -5,6 +5,7 @@ import { useAdminConfig } from "@/lib/admin-config/provider";
 import { getComments, addComment, ChatComment } from "@/firestore/services/socialService";
 import { likeVideoComment, unlikeVideoComment } from "@/lib/videos/watch-earn/likeVideoComment";
 import { auth } from "@/firebase/config";
+import { deleteVideoReply } from "@/lib/videos/watch-earn/deleteVideoReply";
 import type { Unsubscribe } from "firebase/firestore";
 import {
   Send,
@@ -138,6 +139,19 @@ export default function CommentDrawer({ open, onClose, videoId, onCommentAdded }
         return next;
       });
     }
+  }
+
+  async function handleDeleteReply(commentId: string, replyId: string) {
+    const result = await deleteVideoReply({ replyId });
+    if (!result.success) {
+      setError(result.message || "Unable to delete reply.");
+      return;
+    }
+    setReplies((previous) => ({
+      ...previous,
+      [commentId]: (previous[commentId] || []).filter((reply) => reply.id !== replyId),
+    }));
+    setError("");
   }
 
   async function handleSendReply(commentId: string) {
@@ -369,6 +383,15 @@ export default function CommentDrawer({ open, onClose, videoId, onCommentAdded }
                     <div key={reply.id} className="ml-3 mt-3 border-l border-white/10 pl-3">
                       <p className="text-xs font-bold text-slate-200">@{reply.userName}</p>
                       <p className="mt-1 text-xs text-slate-300">{reply.reply}</p>
+                      {auth.currentUser?.uid === reply.userId && (
+                        <button
+                          type="button"
+                          onClick={() => void handleDeleteReply(item.id, reply.id)}
+                          className="mt-1 text-xs text-rose-300"
+                        >
+                          Delete reply
+                        </button>
+                      )}
                     </div>
                   ))}
                 </div>
