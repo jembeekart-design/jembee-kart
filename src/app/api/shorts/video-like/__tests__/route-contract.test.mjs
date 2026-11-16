@@ -13,7 +13,7 @@ test("like endpoint authenticates with a revocation-checked bearer token", () =>
 });
 
 test("like endpoint bounds input and hashes composite identifiers", () => {
-  assert.match(route, /byteLength\(raw\) > 4096/);
+  assert.match(route, /encode\(raw\)\.byteLength > 4096/);
   assert.match(route, /videoId\.length > 200/);
   assert.match(route, /createHash\("sha256"\)/);
   assert.match(route, /update\("\\0"\)/);
