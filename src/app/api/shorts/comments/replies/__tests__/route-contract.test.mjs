@@ -22,6 +22,7 @@ test("reply input is bounded, moderated, rate-limited and idempotent", () => {
   assert.match(route, /blockedWords/);
   assert.match(route, /count >= 5/);
   assert.match(route, /createHash\("sha256"\)/);
+  assert.match(route, /update\(commentId\)/);
 });
 
 test("reply and parent reply counter are written atomically", () => {
