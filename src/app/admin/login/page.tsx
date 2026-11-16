@@ -51,11 +51,10 @@ export default function AdminLoginPage() {
       }
     } catch (err: unknown) {
       console.error(err);
-
       setError(err instanceof Error ? err.message : "Login Failed");
+    } finally {
+      setLoading(false);
     }
-
-    setLoading(false);
   };
 
   return (
