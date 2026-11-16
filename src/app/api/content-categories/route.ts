@@ -27,7 +27,7 @@ async function verifyUploader(req: Request): Promise<string> {
   const header = req.headers.get("authorization");
   if (!header?.startsWith("Bearer ")) throw new Error("UNAUTHORIZED");
   const token = header.slice(7).trim();
-  if (!token) throw new Error("UNAUTHORIZED");
+  if (!token || token.length > 8192) throw new Error("UNAUTHORIZED");
   const decoded = await getAdminAuth().verifyIdToken(token, true);
   return decoded.uid;
 }
@@ -75,7 +75,11 @@ export async function POST(req: Request) {
     if (Buffer.byteLength(raw, "utf8") > 24 * 1024) {
       return NextResponse.json({ success: false, message: "Request too large" }, { status: 413, headers: noStore });
     }
-    body = JSON.parse(raw) as Record<string, unknown>;
+    const parsed: unknown = JSON.parse(raw);
+    if (!parsed || typeof parsed !== "object" || Array.isArray(parsed)) {
+      return NextResponse.json({ success: false, message: "Invalid request" }, { status: 400, headers: noStore });
+    }
+    body = parsed as Record<string, unknown>;
   } catch {
     return NextResponse.json({ success: false, message: "Invalid request" }, { status: 400, headers: noStore });
   }
