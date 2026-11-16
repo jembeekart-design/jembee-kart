@@ -263,6 +263,14 @@ export default function HomePage() {
             }
             return null;
           })}
+          {featuredCreators.length ? <section className="mb-8" aria-labelledby="featured-creators-heading">
+            <h2 id="featured-creators-heading" className="mb-4 text-lg font-bold sm:text-xl">Recommended Creators</h2>
+            <div className="grid gap-3 sm:grid-cols-2 xl:grid-cols-3">{featuredCreators.map((creator) => <article key={creator.creatorId} className="rounded-2xl border border-white/10 bg-[var(--color-card-background)] p-4"><Link href={`/videos/uploader/${encodeURIComponent(creator.creatorId)}`} className="flex items-center gap-3"><CreatorAvatar video={creator.videos[0]}/><div className="min-w-0"><p className="truncate font-semibold">{creator.label}</p><p className="text-xs text-slate-400">{creator.videos.length} featured videos</p></div><ChevronRight className="ml-auto shrink-0 text-slate-500" size={18}/></Link><div className="mt-3 grid grid-cols-2 gap-2">{creator.videos.slice(0, 2).map((video) => <Link key={video.id} href={`/videos?v=${encodeURIComponent(video.id)}`} className="overflow-hidden rounded-lg"><Thumbnail video={video} ratio="landscape"/><p className="mt-1 line-clamp-1 text-xs">{video.caption || "Untitled video"}</p></Link>)}</div></article>)}</div>
+          </section> : null}
+          {featuredPlaylists.map((playlist) => <section key={playlist.id} className="mb-8" aria-labelledby={`playlist-${playlist.id}`}>
+            <div className="mb-3"><h2 id={`playlist-${playlist.id}`} className="text-lg font-bold sm:text-xl">{playlist.title}</h2>{playlist.description ? <p className="mt-1 text-sm text-slate-400">{playlist.description}</p> : null}</div>
+            <div className={`grid gap-x-4 gap-y-6 sm:grid-cols-2 ${siteExperience.compactCards ? "xl:grid-cols-4" : "xl:grid-cols-3"}`}>{playlist.videos.slice(0, 12).map((video, index) => <LongVideoCard key={video.id} video={video} eager={index < 2}/>)}</div>
+          </section>)}
         </section>
       </div>
 
