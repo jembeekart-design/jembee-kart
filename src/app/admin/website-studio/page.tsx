@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { onAuthStateChanged } from "firebase/auth";
 import { doc, getDoc } from "firebase/firestore";
 import { ArrowDown, ArrowUp, Check, Eye, Palette, RotateCcw, Save, Sparkles } from "lucide-react";
@@ -80,6 +80,7 @@ type ToggleKey = "announcementEnabled" | "showLearningBanner" | "showShorts" | "
 type TextKey = "siteName" | "tagline" | "heroTitle" | "heroSubtitle" | "announcementText";
 type ColorKey = "primaryColor" | "accentColor" | "pageColor" | "surfaceColor";
 type StudioVersion = { version: number; createdAt: string | null; actorUid: string };
+type StudioActivity = { action: string; actorUid: string; fromVersion: number | null; toVersion: number | null; restoredVersion: number | null; createdAt: string | null };
 
 const COLOR_FIELDS: { key: ColorKey; label: string }[] = [
   { key: "primaryColor", label: "Primary brand colour" },
@@ -118,6 +119,7 @@ export default function WebsiteStudioPage() {
   const [error, setError] = useState("");
   const [currentVersion, setCurrentVersion] = useState(1);
   const [versions, setVersions] = useState<StudioVersion[]>([]);
+  const [activity, setActivity] = useState<StudioActivity[]>([]);
   const [historyLoading, setHistoryLoading] = useState(false);
   const [restoringVersion, setRestoringVersion] = useState<number | null>(null);
 
@@ -154,7 +156,7 @@ export default function WebsiteStudioPage() {
     return () => { active = false; };
   }, []);
 
-  async function refreshHistory(idToken: string) {
+  const refreshHistory = useCallback(async (idToken: string) => {
     setHistoryLoading(true);
     try {
       const response = await fetch("/api/admin/website-studio", { headers: { Authorization: "Bearer " + idToken }, cache: "no-store" });
@@ -162,14 +164,15 @@ export default function WebsiteStudioPage() {
       if (!response.ok || !result.success) throw new Error("History unavailable");
       setCurrentVersion(Number(result.currentVersion) || 1);
       setVersions(Array.isArray(result.versions) ? result.versions : []);
+      setActivity(Array.isArray(result.activity) ? result.activity : []);
     } catch {
       setError("Settings history load नहीं हो सकी। Admin session जाँचें।");
     } finally { setHistoryLoading(false); }
-  }
+  }, []);
 
   useEffect(() => onAuthStateChanged(auth, (user) => {
     if (user) void user.getIdToken().then(refreshHistory);
-  }), []);
+  }), [refreshHistory]);
 
   const [newCategoryLabel, setNewCategoryLabel] = useState("");
   const [newCategoryFilter, setNewCategoryFilter] = useState("");
@@ -393,6 +396,7 @@ export default function WebsiteStudioPage() {
           </div>
           <div className="mt-4 space-y-2">
             {historyLoading ? <p className="text-sm text-slate-400">History loading…</p> : versions.length ? versions.map((item) => <div key={item.version} className="flex flex-wrap items-center justify-between gap-3 rounded-xl border border-white/10 bg-[#090d16] p-3"><div><p className="text-sm font-semibold">Version {item.version}</p><p className="text-xs text-slate-500">{item.createdAt ? new Date(item.createdAt).toLocaleString() : "Date unavailable"} · Admin ID {item.actorUid || "unknown"}</p></div><button type="button" disabled={restoringVersion !== null || item.version >= currentVersion} onClick={() => restoreVersion(item.version)} className="rounded-lg border border-cyan-300/30 px-3 py-2 text-xs font-semibold text-cyan-200 disabled:opacity-40">{restoringVersion === item.version ? "Restoring…" : "Restore this version"}</button></div>) : <p className="text-sm text-slate-500">पहला successful save होने पर version history यहाँ दिखाई देगी।</p>}
+          {activity.length ? <div className="mt-5 border-t border-white/10 pt-4"><h3 className="text-sm font-bold">Recent Admin Activity</h3><div className="mt-2 space-y-2">{activity.map((item, index) => <div key={item.action + "-" + item.createdAt + "-" + index} className="flex flex-wrap justify-between gap-2 rounded-lg bg-[#090d16] px-3 py-2 text-xs"><span className="text-slate-300">{item.action === "website_studio_restore" ? "Restored version " + item.restoredVersion : "Saved Website Studio settings"} · v{item.fromVersion} → v{item.toVersion}</span><span className="text-slate-500">{item.createdAt ? new Date(item.createdAt).toLocaleString() : "Date unavailable"}</span></div>)}</div></div> : null}
           </div>
         </section>
 
