@@ -1,16 +1,11 @@
 import type { Timestamp } from "firebase/firestore";
 import {
   collection,
-  doc,
-  addDoc,
-  updateDoc,
-  serverTimestamp,
   onSnapshot,
   query,
   orderBy,
   where,
-  increment,
-  getDocs
+  getDocs,
 } from "firebase/firestore";
 import { db, auth } from "@/firebase/config";
 import { FIRESTORE_PATHS } from "@/firestore/collections/firestorePaths";
