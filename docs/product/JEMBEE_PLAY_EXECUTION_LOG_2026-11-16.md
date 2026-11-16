@@ -169,3 +169,14 @@ This log records source changes only. It is not a production-readiness certifica
 - Rebuilt the Followers page tabs so Followers and Following display separate lists. Unfollow is available only in the Following list.
 - Updated follow contract coverage and added npm scripts for the follow and follow-list APIs.
 - Verification limitation: contract tests, TypeScript, ESLint, Firebase Emulator, browser/device tests and production build have not been run. The list API currently returns a cursor indicator but the UI does not yet load subsequent pages. No deployment performed.
+
+
+## Creator follow counts and comment replies — 16 November 2026
+
+- Follow and Unfollow now run through authenticated server API transactions. Both sides of the relationship are updated atomically; the follower's `followingCount` and creator's `followersCount` are adjusted together. Follow status uses the server API.
+- Added an owner-authenticated, bounded followers/following list API and corrected the profile page to render distinct lists rather than showing the Following list under both tabs.
+- Existing legacy reply helper used a direct Firestore client write, which is denied by the checked default-deny rules. Added authenticated `GET/POST /api/shorts/comments/replies` endpoints and routed the helper through the API.
+- Reply submission validates a revocation-checked bearer token, parent comment and active approved moderation-safe video, moderation settings and blocked words, bounded input, UUID idempotency, per-user rate limit and a transactionally updated parent reply counter. Replies default to pending unless reply/comment auto-approval is enabled.
+- Connected the Shorts comment drawer with Reply, Send and View replies interactions. Reply reads return approved replies only.
+- Added reply API contract tests and the `test:shorts-comment-replies` script.
+- Verification limitation: no contract tests, TypeScript, ESLint, Firebase Emulator, browser/device tests or production build have been executed. Followers/following UI currently loads the first 50 entries; API exposes a bounded continuation indicator but the page does not yet paginate. No deployment performed.
