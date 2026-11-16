@@ -201,12 +201,12 @@ export default function HomePage() {
             {chips.map((chip) => <button type="button" key={chip} onClick={() => setActive(chip)} className={`shrink-0 rounded-xl px-4 py-2.5 text-sm font-semibold ${active === chip ? "bg-white text-black" : "bg-white/10 text-white hover:bg-white/20"}`}>{chip}</button>)}
           </div>
 
-          <div className="mb-5 rounded-2xl border border-cyan-400/20 bg-gradient-to-r from-cyan-950/70 to-violet-950/50 p-5 sm:flex sm:items-center sm:justify-between">
-            <div><p className="text-xs font-bold uppercase tracking-widest text-cyan-300">Jembee Play Learning</p><h1 className="mt-1 text-2xl font-black">अपनी किताब का हर सवाल सीखें</h1><p className="mt-1 text-sm text-slate-300">Board → School → Book → Chapter → Question → Video Answer</p></div>
+          {siteExperience.showLearningBanner ? <div className="mb-5 rounded-2xl border border-cyan-400/20 bg-gradient-to-r from-cyan-950/70 to-violet-950/50 p-5 sm:flex sm:items-center sm:justify-between">
+            <div><p className="text-xs font-bold uppercase tracking-widest text-cyan-300">Jembee Play Learning</p><h1 className="mt-1 text-2xl font-black">{siteExperience.heroTitle}</h1><p className="mt-1 text-sm text-slate-300">{siteExperience.heroSubtitle}</p></div>
             <Link href="/learn/school" className="mt-4 inline-flex min-h-11 items-center justify-center gap-2 rounded-full bg-cyan-400 px-5 py-2.5 text-sm font-bold text-slate-950 sm:mt-0">Find your school <ChevronRight size={17}/></Link>
-          </div>
+          </div> : null}
 
-          <MonetagPlacement placement="home-after-learning-banner" />
+          {siteExperience.showHomeAds ? <MonetagPlacement placement="home-after-learning-banner" /> : null}
 
           {siteExperience.showShorts ? <section className="mb-7" aria-labelledby="shorts-heading">
             <div className="mb-4 flex items-center justify-between gap-3">
