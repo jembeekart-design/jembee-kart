@@ -10,10 +10,11 @@ test("learning answer API validates question ID and published question node", ()
 });
 
 test("learning answer API requires every ancestor to remain published", () => {
-  for (const type of ["chapter", "class", "school", "board"]) {
-    assert.match(route, new RegExp(`loadPublishedNode\\\\([^\\\\n]+\\\\["${type}"\\\\]\\\\)`));
-  }
-  assert.match(route, /loadPublishedNode\\(chapter\\.data\\.parentId, \\["subject", "book"\\]\\)/);
+  assert.ok(route.includes('loadPublishedNode(question.data.parentId, ["chapter"])'));
+  assert.ok(route.includes('loadPublishedNode(chapter.data.parentId, ["subject", "book"])'));
+  assert.ok(route.includes('loadPublishedNode(subjectOrBook.data.parentId, ["class"])'));
+  assert.ok(route.includes('loadPublishedNode(klass.data.parentId, ["school"])'));
+  assert.ok(route.includes('loadPublishedNode(school.data.parentId, ["board"])'));
   assert.match(route, /question\.data\.parentId !== chapter\.id/);
   assert.match(route, /chapter\.data\.parentId !== subjectOrBook\.id/);
   assert.match(route, /school\.data\.parentId !== board\.id/);
