@@ -31,7 +31,7 @@ test("upload page lets teachers add missing categories and school hierarchy them
 });
 
 test("admin catalog page is read-only and directs teachers to the upload flow", () => {
-  assert.match(adminPage, /केवल देख सकता है/);
+  assert.match(adminPage, /Admin catalog entries को review करके publish या unpublish कर सकता है/);
   assert.match(adminPage, /href="\/videos\/upload"/);
   assert.doesNotMatch(adminPage, /save-school-node/);
   assert.doesNotMatch(adminPage, /Publish Category/);
@@ -42,7 +42,7 @@ test("Explore reads the published catalog for creator-contributed categories", (
 });
 
 test("catalog text sanitizer removes actual control characters", () => {
-  assert.ok(route.includes(String.raw`replace(/[\\u0000-\\u001f\\u007f]/g, "")`));
+  assert.match(route, /replace\(\/\[\\\\u0000-\\\\u001f\\\\u007f\]\/g, ""\)/);
 });
 
 test("new teacher learning nodes remain pending until an admin publishes them", () => {
