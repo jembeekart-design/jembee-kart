@@ -13,12 +13,25 @@ export default function VerifyEmailPage() {
   
   const intervalRef = useRef<NodeJS.Timeout | null>(null);
   const syncedRef = useRef(false); // ✅ Strict Race-Condition Concurrency Lock
+  const redirectRef = useRef("/shorts");
+
+  useEffect(() => {
+    const value = new URLSearchParams(window.location.search).get("redirect");
+    if (!value || !value.startsWith("/") || value.startsWith("//") || value.includes(String.fromCharCode(92))) return;
+    try {
+      const target = new URL(value, window.location.origin);
+      if (target.origin === window.location.origin && !["/login", "/signup", "/verify-email"].includes(target.pathname)) {
+        redirectRef.current = target.pathname + target.search + target.hash;
+      }
+    } catch { redirectRef.current = "/shorts"; }
+  }, []);
+
 
   useEffect(() => {
     // Structural Gate: Lock validation layer context on execution mount
     const unsubscribe = onAuthStateChanged(auth, (user) => {
       if (!user) {
-        router.push("/login");
+        router.push("/login?redirect=" + encodeURIComponent(redirectRef.current));
         return;
       }
       setUserEmail(user.email || "");
@@ -30,7 +43,7 @@ export default function VerifyEmailPage() {
 
       if (isGoogleUser) {
         console.log("Google user verified via provider token. Bypassing activation layout.");
-        router.push("/shorts");
+        router.push(redirectRef.current);
         return;
       }
 
