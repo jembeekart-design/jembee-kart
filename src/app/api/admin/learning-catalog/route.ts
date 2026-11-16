@@ -66,7 +66,7 @@ export async function PATCH(req: Request) {
       if (!snapshot.exists) return { missing: true as const };
       const current = snapshot.data() || {};
       const previousStatus = current.status;
-      if (previousStatus !== "published" && previousStatus !== "unpublished") {
+      if (previousStatus !== "pending" && previousStatus !== "published" && previousStatus !== "unpublished") {
         return { invalid: true as const };
       }
       if (previousStatus === status) return { unchanged: true as const };
