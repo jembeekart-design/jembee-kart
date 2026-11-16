@@ -228,3 +228,13 @@ This log records source changes only. It is not a production-readiness certifica
 - Added the `test:teacher-verification` npm script so the contract can be run independently and is included in the release script's full Node test discovery.
 - The teacher application and review flow still requires runtime integration checks against Firebase, authorization/rules review, and UI acceptance. Teacher ratings/reviews are a separate missing feature and are not represented as implemented by teacher verification.
 - No deployment, payout activation or bulk video upload performed.
+
+
+## Learning catalog approval gate — 16 November 2026
+
+- New teacher/uploader-created Board, School, Class, Subject, Book, Chapter and Question nodes are now saved as `pending`, not immediately published.
+- Editing an already published owned node preserves its published status; editing a non-published owned node keeps it pending.
+- Public Learning catalog GET continues to expose only published nodes, so pending entries cannot be selected for video mapping.
+- Admin Learning Catalog now exposes an Approve action for pending entries; approval/unpublish transitions continue through the protected transactional audit API.
+- Added source-contract assertions for pending-by-default and admin approval.
+- Runtime Firestore transaction tests and full CI/build have not yet been run.
