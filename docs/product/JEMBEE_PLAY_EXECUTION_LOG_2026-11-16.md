@@ -74,3 +74,10 @@ This log records source changes only. It is not a production-readiness certifica
 - Replaced per-history-item video document reads with a single Firestore `getAll(...videoRefs)` batch for the bounded 100-record response.
 - Extended route contract tests to assert the delimiter and batch-read behavior.
 - Verification status: source reviewed from the branch after commit; automated test execution, TypeScript check, lint and production build remain unverified in this environment. No deployment performed.
+
+## Saved Videos follow-up hardening
+- Replaced delimiter-concatenated saved-video document IDs with SHA-256 IDs based on authenticated UID, a NUL separator and video ID.
+- Added a 4 KiB request-body limit and explicit malformed JSON handling for save mutations.
+- Added legacy-key read compatibility and transactional legacy cleanup on unsave; saves avoid creating a second record when a legacy record already exists.
+- Added contract coverage for the hash key, body limit and legacy migration behavior.
+- Verification status: source reviewed after commit; automated tests, TypeScript, lint and production build have not yet been executed. No deployment performed.
