@@ -2,6 +2,7 @@ import { NextResponse } from "next/server";
 import { getAdminAuth, getAdminDb } from "@/firebase/admin";
 
 export const dynamic = "force-dynamic";
+export const runtime = "nodejs";
 
 export async function GET(req: Request) {
   try {
@@ -12,30 +13,29 @@ export async function GET(req: Request) {
     }
 
     const token = authorization.slice(7).trim();
-    const decoded = await getAdminAuth().verifyIdToken(token);
-    const db = getAdminDb();
+    if (!token || token.length > 8192) {
+      return NextResponse.json({ isAdmin: false }, { status: 401 });
+    }
 
-    let userData: Record<string, unknown> | undefined;
+    // Match the shared requireAdmin() policy: reject revoked sessions and
+    // resolve admin records stored either at users/{uid} or by uid field.
+    const decoded = await getAdminAuth().verifyIdToken(token, true);
+    const users = getAdminDb().collection("users");
+    const directDoc = await users.doc(decoded.uid).get();
 
-    const directDoc = await db.collection("users").doc(decoded.uid).get();
+    let role = directDoc.exists ? directDoc.data()?.role : undefined;
 
-    if (directDoc.exists) {
-      userData = directDoc.data();
-    } else {
-      const snapshot = await db
-        .collection("users")
+    // A non-admin profile at users/{uid} must not mask a separate legacy
+    // admin profile whose document ID differs but whose uid matches.
+    if (role !== "admin" && role !== "super_admin") {
+      const fallback = await users
         .where("uid", "==", decoded.uid)
         .limit(1)
         .get();
-
-      if (!snapshot.empty) {
-        userData = snapshot.docs[0].data();
-      }
+      role = fallback.docs[0]?.data()?.role;
     }
 
-    const role = userData?.role;
     const isAdmin = role === "admin" || role === "super_admin";
-
     if (!isAdmin) {
       return NextResponse.json({ isAdmin: false }, { status: 403 });
     }
@@ -45,7 +45,7 @@ export async function GET(req: Request) {
     console.error("Admin check failed:", error);
     return NextResponse.json(
       { isAdmin: false, message: "Admin verification failed" },
-      { status: 500 }
+      { status: 401 }
     );
   }
 }
