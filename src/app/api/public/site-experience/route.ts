@@ -54,7 +54,8 @@ export async function GET() {
       showShorts: safeBoolean(stored.showShorts, true),
       showLongVideos: safeBoolean(stored.showLongVideos, true),
       showHomeAds: safeBoolean(stored.showHomeAds, true),
-      compactCards: safeBoolean(stored.compactCards, false),\n      sectionOrder: safeSectionOrder(stored.sectionOrder),
+      compactCards: safeBoolean(stored.compactCards, false),
+      sectionOrder: safeSectionOrder(stored.sectionOrder),
     };
 
     return NextResponse.json(experience, {
