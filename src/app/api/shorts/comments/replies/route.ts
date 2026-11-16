@@ -141,14 +141,15 @@ export async function POST(req: Request) {
       if (existing.exists) return { kind: "duplicate" as const };
       const freshCommentData = freshComment.data() || {};
       const freshVideoData = freshVideo.data() || {};
-      if (!freshComment.exists || freshCommentData.status !== "approved" ||
+      if (!freshComment.exists || freshCommentData.status !== "approved" || freshCommentData.contentId !== videoId ||
           !freshVideo.exists || freshVideoData.status !== "approved" ||
           freshVideoData.active !== true || freshVideoData.moderation !== "safe") {
         return { kind: "unavailable" as const };
       }
       const rateData = rate.data() || {};
       const window = Math.floor(now / 60000);
-      const count = rateData.window === window ? Number(rateData.count || 0) : 0;
+      const rawCount = Number(rateData.count || 0);
+      const count = rateData.window === window && Number.isFinite(rawCount) ? Math.max(0, Math.floor(rawCount)) : 0;
       if (count >= 5) return { kind: "rate-limited" as const };
       tx.create(replyRef, {
         commentId,
