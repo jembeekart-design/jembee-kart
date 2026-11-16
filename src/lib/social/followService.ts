@@ -61,47 +61,42 @@ export const followUser = async (
       // ALL READS FIRST
       // -----------------------------------------
 
-      const [followSnap, followerSnap] = await Promise.all([
+      const [followSnap, followingSnap, followerSnap] = await Promise.all([
         transaction.get(followRef),
+        transaction.get(followingRef),
         transaction.get(followerRef),
       ]);
 
-      if (followSnap.exists()) {
+      if (!followerSnap.exists()) {
+        throw new Error("Follower user document not found");
+      }
+
+      const hasFollowerEdge = followSnap.exists();
+      const hasFollowingEdge = followingSnap.exists();
+      if (hasFollowerEdge && hasFollowingEdge) {
         throw new Error("Already following");
       }
 
-      if (!followerSnap.exists()) {
-        throw new Error(
-          "Follower user document not found"
-        );
-      }
-
       const followerData = followerSnap.data();
-
-      const currentFollowingCount =
-        typeof followerData.followingCount ===
-        "number"
-          ? followerData.followingCount
-          : 0;
+      const rawFollowingCount = Number(followerData.followingCount ?? 0);
+      const currentFollowingCount = Number.isFinite(rawFollowingCount)
+        ? Math.max(0, Math.floor(rawFollowingCount))
+        : 0;
+      const isNewRelationship = !hasFollowerEdge && !hasFollowingEdge;
 
       // -----------------------------------------
       // WRITES AFTER ALL READS
       // -----------------------------------------
 
-      transaction.set(followRef, {
-        uid: followerUid,
-        timestamp: new Date(),
-      });
-
-      transaction.set(followingRef, {
-        uid: targetUid,
-        timestamp: new Date(),
-      });
-
-      transaction.update(followerRef, {
-        followingCount:
-          currentFollowingCount + 1,
-      });
+      if (!hasFollowerEdge) {
+        transaction.set(followRef, { uid: followerUid, timestamp: new Date() });
+      }
+      if (!hasFollowingEdge) {
+        transaction.set(followingRef, { uid: targetUid, timestamp: new Date() });
+      }
+      if (isNewRelationship) {
+        transaction.update(followerRef, { followingCount: currentFollowingCount + 1 });
+      }
 
     }
   );
@@ -112,11 +107,11 @@ export const followUser = async (
   // -----------------------------------------
 
   try {
-    await sendFollowNotification(
-      followerUid,
-      targetUid,
-      followerName
-    );
+    // Repairing a one-sided legacy edge must not emit a second follow notification.
+    // Only a newly-created relationship is announced.
+    if (isNewRelationship) {
+      await sendFollowNotification(followerUid, targetUid, followerName);
+    }
   } catch (notificationError) {
     console.error(
       "Follow notification failed:",
