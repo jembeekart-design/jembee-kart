@@ -6,7 +6,7 @@ export const dynamic = "force-dynamic";
 
 const MAX_TOKEN_LENGTH = 10_000;
 
-export async function GET(req: NextRequest) {
+export async function GET() {
   try {
     const authorization = req.headers.get("authorization") || "";
     if (!authorization.startsWith("Bearer ")) {
