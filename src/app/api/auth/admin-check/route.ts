@@ -45,7 +45,7 @@ export async function GET(req: Request) {
     console.error("Admin check failed:", error);
     return NextResponse.json(
       { isAdmin: false, message: "Admin verification failed" },
-      { status: 401 }
+      { status: 500 }
     );
   }
 }
