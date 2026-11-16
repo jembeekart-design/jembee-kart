@@ -9,6 +9,8 @@ import { formatVideoDuration, publicCreatorName, publicVideoAge, publicVideoThum
 import type { WatchVideo } from "@/lib/videos/watch-earn/fetchWatchVideos";
 
 type HomeCategory = { id: string; label: string; filter: string; enabled: boolean };
+type FeaturedCreator = { creatorId: string; label: string; enabled: boolean };
+type FeaturedPlaylist = { id: string; title: string; description: string; videoIds: string[]; enabled: boolean };
 type NavigationKey = "home" | "shorts" | "explore" | "learning" | "history" | "liked";
 const DEFAULT_HOME_CATEGORIES: HomeCategory[] = [
   { id: "education", label: "Education", filter: "education", enabled: true },
@@ -24,7 +26,7 @@ type SiteExperience = {
   siteName: string; tagline: string; heroTitle: string; heroSubtitle: string;
   primaryColor: string; accentColor: string; pageColor: string; surfaceColor: string;
   announcementEnabled: boolean; announcementText: string; showLearningBanner: boolean;
-  showShorts: boolean; showLongVideos: boolean; showHomeAds: boolean; compactCards: boolean; sectionOrder: ("learning" | "shorts" | "longVideos")[]; homeCategories: HomeCategory[]; navigationLabels: Record<NavigationKey, string>;
+  showShorts: boolean; showLongVideos: boolean; showHomeAds: boolean; compactCards: boolean; sectionOrder: ("learning" | "shorts" | "longVideos")[]; homeCategories: HomeCategory[]; navigationLabels: Record<NavigationKey, string>; featuredCreators: FeaturedCreator[]; featuredPlaylists: FeaturedPlaylist[];
 };
 const DEFAULT_SITE_EXPERIENCE: SiteExperience = {
   siteName: "JEMBEE PLAY", tagline: "Watch • Learn • Create • Share",
@@ -32,7 +34,7 @@ const DEFAULT_SITE_EXPERIENCE: SiteExperience = {
   heroSubtitle: "अपनी class, book और chapter चुनें और सही video answer खोजें।",
   primaryColor: "#22d3ee", accentColor: "#8b5cf6", pageColor: "#090d16", surfaceColor: "#111827",
   announcementEnabled: false, announcementText: "", showLearningBanner: true,
-  showShorts: true, showLongVideos: true, showHomeAds: true, compactCards: false, sectionOrder: ["learning", "shorts", "longVideos"], homeCategories: DEFAULT_HOME_CATEGORIES, navigationLabels: DEFAULT_NAVIGATION_LABELS,
+  showShorts: true, showLongVideos: true, showHomeAds: true, compactCards: false, sectionOrder: ["learning", "shorts", "longVideos"], homeCategories: DEFAULT_HOME_CATEGORIES, navigationLabels: DEFAULT_NAVIGATION_LABELS, featuredCreators: [], featuredPlaylists: [],
 };
 type NavigationItem = { icon: LucideIcon; label: string; href: string; key?: NavigationKey };
 const earningsNavigation: NavigationItem[] = [
@@ -161,6 +163,8 @@ export default function HomePage() {
   }), [videos, active, search]);
   const shorts = filtered.filter((video) => video.videoFormat !== "long");
   const longVideos = filtered.filter((video) => video.videoFormat === "long");
+  const featuredCreators = siteExperience.featuredCreators.filter((creator) => creator.enabled).map((creator) => ({ ...creator, videos: videos.filter((video) => video.creatorId === creator.creatorId).slice(0, 4) })).filter((creator) => creator.videos.length > 0);
+  const featuredPlaylists = siteExperience.featuredPlaylists.filter((playlist) => playlist.enabled).map((playlist) => ({ ...playlist, videos: playlist.videoIds.map((id) => videos.find((video) => video.id === id)).filter((video): video is WatchVideo => !!video) })).filter((playlist) => playlist.videos.length > 0);
 
   return (
     <main className="min-h-screen bg-[var(--color-page-background)] text-white">
