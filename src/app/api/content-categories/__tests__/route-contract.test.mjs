@@ -49,3 +49,8 @@ test("new teacher learning nodes remain pending until an admin publishes them", 
   assert.match(route, /status: current\?\.exists \? \(current\.data\(\)\?\.status === "published" \? "published" : "pending"\) : "pending"/);
   assert.match(route, /status", "==", "published"/);
 });
+
+test("learning catalog endpoint bounds tokens and rejects non-object JSON bodies", () => {
+  assert.match(route, /token\.length > 8192/);
+  assert.match(route, /!parsed \|\| typeof parsed !== "object" \|\| Array\.isArray\(parsed\)/);
+});
