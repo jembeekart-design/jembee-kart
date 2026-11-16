@@ -88,3 +88,11 @@ This log records source changes only. It is not a production-readiness certifica
 - Full-list and per-video reads send `Cache-Control: no-store`.
 - Request payload size is capped at 4 KiB and malformed JSON returns a validation response.
 - Source was reviewed from the branch. Automated test execution, TypeScript, lint, emulator and production build are still pending; no deployment performed.
+
+## Shorts comment endpoint hardening
+- Comment POST now verifies Firebase ID tokens with revocation checking.
+- Video IDs reject slash/backslash and are limited to 200 characters; comment text has a hard 5,000-character ceiling in addition to admin-configured limits.
+- Comment idempotency document IDs now use SHA-256 over authenticated UID, NUL separator and request UUID.
+- Added contract tests and `test:shorts-comments` npm script for auth, input bounds, moderation transaction and idempotency.
+- Important scope note: the inspected comments route is a POST submission endpoint. A verified public GET/replies API was not found in this pass; no fake endpoint was added.
+- Verification status: source and test files reviewed; tests, TypeScript, lint and production build remain unexecuted. No deployment performed.
