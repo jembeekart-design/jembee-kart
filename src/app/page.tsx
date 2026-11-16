@@ -8,13 +8,23 @@ import { MonetagPlacement } from "@/components/ads/MonetagPlacement";
 import { formatVideoDuration, publicCreatorName, publicVideoAge, publicVideoThumbnail } from "@/lib/videos/publicVideoPresentation";
 import type { WatchVideo } from "@/lib/videos/watch-earn/fetchWatchVideos";
 
-const chips = ["All", "Education", "Music", "Science", "Technology", "Gaming", "Learning", "Travel"];
+type HomeCategory = { id: string; label: string; filter: string; enabled: boolean };
+type NavigationKey = "home" | "shorts" | "explore" | "learning" | "history" | "liked";
+const DEFAULT_HOME_CATEGORIES: HomeCategory[] = [
+  { id: "education", label: "Education", filter: "education", enabled: true },
+  { id: "music", label: "Music", filter: "music", enabled: true },
+  { id: "science", label: "Science", filter: "science", enabled: true },
+  { id: "technology", label: "Technology", filter: "technology", enabled: true },
+  { id: "gaming", label: "Gaming", filter: "gaming", enabled: true },
+  { id: "travel", label: "Travel", filter: "travel", enabled: true },
+];
+const DEFAULT_NAVIGATION_LABELS: Record<NavigationKey, string> = { home: "Home", shorts: "Shorts", explore: "Explore", learning: "School Learning", history: "History", liked: "Liked videos" };
 
 type SiteExperience = {
   siteName: string; tagline: string; heroTitle: string; heroSubtitle: string;
   primaryColor: string; accentColor: string; pageColor: string; surfaceColor: string;
   announcementEnabled: boolean; announcementText: string; showLearningBanner: boolean;
-  showShorts: boolean; showLongVideos: boolean; showHomeAds: boolean; compactCards: boolean; sectionOrder: ("learning" | "shorts" | "longVideos")[];
+  showShorts: boolean; showLongVideos: boolean; showHomeAds: boolean; compactCards: boolean; sectionOrder: ("learning" | "shorts" | "longVideos")[]; homeCategories: HomeCategory[]; navigationLabels: Record<NavigationKey, string>;
 };
 const DEFAULT_SITE_EXPERIENCE: SiteExperience = {
   siteName: "JEMBEE PLAY", tagline: "Watch • Learn • Create • Share",
@@ -22,9 +32,9 @@ const DEFAULT_SITE_EXPERIENCE: SiteExperience = {
   heroSubtitle: "अपनी class, book और chapter चुनें और सही video answer खोजें।",
   primaryColor: "#22d3ee", accentColor: "#8b5cf6", pageColor: "#090d16", surfaceColor: "#111827",
   announcementEnabled: false, announcementText: "", showLearningBanner: true,
-  showShorts: true, showLongVideos: true, showHomeAds: true, compactCards: false, sectionOrder: ["learning", "shorts", "longVideos"],
+  showShorts: true, showLongVideos: true, showHomeAds: true, compactCards: false, sectionOrder: ["learning", "shorts", "longVideos"], homeCategories: DEFAULT_HOME_CATEGORIES, navigationLabels: DEFAULT_NAVIGATION_LABELS,
 };
-type NavigationItem = { icon: LucideIcon; label: string; href: string };
+type NavigationItem = { icon: LucideIcon; label: string; href: string; key?: NavigationKey };
 const earningsNavigation: NavigationItem[] = [
   { icon: Share2, label: "Sharer की कमाई", href: "/earnings/sharer" },
   { icon: Video, label: "Creator की कमाई", href: "/earnings/creator" },
@@ -42,7 +52,7 @@ const mobileNavigation: NavigationItem[] = [
   { icon: Home, label: "Home", href: "/" },
   { icon: PlaySquare, label: "Shorts", href: "/shorts" },
   { icon: PlusSquare, label: "Create", href: "/videos/upload" },
-  { icon: GraduationCap, label: "Learn", href: "/learn/school" },
+  { icon: GraduationCap, key: "learning", label: "Learn", href: "/learn/school" },
   { icon: UserCircle, label: "You", href: "/account" },
 ];
 
@@ -143,7 +153,7 @@ export default function HomePage() {
     return () => { active = false; };
   }, []);
 
-  const filtered = useMemo(() => videos.filter((video) => {
+  const visibleChips = siteExperience.homeCategories.filter((item) => item.enabled);\n  const navLabel = (item: NavigationItem) => item.key ? siteExperience.navigationLabels[item.key] || item.label : item.label;\n  const filtered = useMemo(() => videos.filter((video) => {
     const searchable = `${video.caption} ${video.displayName || ""} ${video.username} ${video.music} ${(video.hashtags || []).join(" ")}`.toLowerCase();
     const categoryMatch = active === "All" || searchable.includes(active.toLowerCase());
     return categoryMatch && searchable.includes(search.toLowerCase().trim());
@@ -174,7 +184,7 @@ export default function HomePage() {
           <aside id="mobile-navigation-drawer" role="dialog" aria-modal="true" aria-label="Main navigation" className="absolute inset-y-0 left-0 flex w-[min(86vw,340px)] flex-col overflow-y-auto border-r border-white/10 bg-[#101014] p-4 pt-[calc(env(safe-area-inset-top)+1rem)] shadow-2xl">
             <div className="mb-4 flex items-center justify-between"><Link href="/" onClick={() => setMobileMenuOpen(false)} className="text-lg font-black">{siteExperience.siteName}</Link><button type="button" onClick={() => setMobileMenuOpen(false)} aria-label="Close menu" className="rounded-full p-2 hover:bg-white/10"><X size={22}/></button></div>
             <p className="px-3 py-2 text-xs font-bold uppercase tracking-wider text-slate-500">Discover</p>
-            {desktopNavigation.map(({ icon: Icon, label, href }) => <Link key={label} href={href} onClick={() => setMobileMenuOpen(false)} className="flex min-h-12 items-center gap-4 rounded-xl px-3 py-3 text-sm hover:bg-white/10"><Icon size={20}/>{label}</Link>)}
+            {desktopNavigation.map(({ icon: Icon, label, href, key }) => <Link key={key || label} href={href} onClick={() => setMobileMenuOpen(false)} className="flex min-h-12 items-center gap-4 rounded-xl px-3 py-3 text-sm hover:bg-white/10"><Icon size={20}/>{key ? siteExperience.navigationLabels[key] || label : label}</Link>)}
             <div className="my-3 border-t border-white/10"/>
             <p className="px-3 py-2 text-xs font-bold uppercase tracking-wider text-slate-500">Earnings · अलग-अलग कमाई</p>
             {earningsNavigation.map(({ icon: Icon, label, href }) => <Link key={label} href={href} onClick={() => setMobileMenuOpen(false)} className="flex min-h-12 items-center gap-4 rounded-xl px-3 py-3 text-sm hover:bg-white/10"><Icon size={20} className="text-cyan-300"/>{label}<ChevronRight size={16} className="ml-auto text-slate-500"/></Link>)}
@@ -187,7 +197,7 @@ export default function HomePage() {
 
       <div className="flex">
         {sidebar && <aside className="sticky top-16 hidden h-[calc(100dvh-4rem)] w-60 shrink-0 overflow-y-auto border-r border-white/10 p-3 md:block">
-          {desktopNavigation.map(({ icon: Icon, label, href }) => <Link key={label} href={href} className="flex items-center gap-5 rounded-xl px-4 py-3 text-sm hover:bg-white/10"><Icon size={21}/>{label}</Link>)}
+          {desktopNavigation.map(({ icon: Icon, label, href, key }) => <Link key={key || label} href={href} className="flex items-center gap-5 rounded-xl px-4 py-3 text-sm hover:bg-white/10"><Icon size={21}/>{key ? siteExperience.navigationLabels[key] || label : label}</Link>)}
           <div className="my-3 border-t border-white/10"/>
           <p className="px-4 py-2 text-xs font-bold uppercase tracking-wider text-slate-500">Learning</p>
           <Link href="/learn/school" className="flex items-center gap-5 rounded-xl px-4 py-3 text-sm hover:bg-white/10"><BookOpen size={21}/>Boards & Books</Link>
@@ -199,7 +209,7 @@ export default function HomePage() {
 
         <section className="min-w-0 flex-1 px-3 pb-28 pt-3 sm:px-4 sm:pt-4 md:px-6">
           <div className="sticky top-16 z-30 -mx-3 mb-4 flex gap-3 overflow-x-auto bg-[var(--color-page-background)] px-3 py-2 [scrollbar-width:none] sm:-mx-4 sm:px-4 md:-mx-6 md:px-6">
-            {chips.map((chip) => <button type="button" key={chip} onClick={() => setActive(chip)} className={`shrink-0 rounded-xl px-4 py-2.5 text-sm font-semibold ${active === chip ? "bg-white text-black" : "bg-white/10 text-white hover:bg-white/20"}`}>{chip}</button>)}
+            {[{ id: "all", label: "All", filter: "All" }, ...visibleChips].map((chip) => <button type="button" key={chip.id} onClick={() => setActive(chip.filter)} className={`shrink-0 rounded-xl px-4 py-2.5 text-sm font-semibold ${active === chip.filter ? "bg-white text-black" : "bg-white/10 text-white hover:bg-white/20"}`}>{chip.label}</button>)}
           </div>
 
           {siteExperience.sectionOrder.map((sectionKey) => {
