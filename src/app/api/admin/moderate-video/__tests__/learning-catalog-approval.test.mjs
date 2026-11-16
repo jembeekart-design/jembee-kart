@@ -23,3 +23,9 @@ test("non-school submissions with stale school metadata cannot bypass catalog va
   assert.match(source, /submission\.categoryId === "school" \|\| hasSchoolPath/);
   assert.match(source, /submission\.categoryId !== "school"/);
 });
+
+test("catalog rejection is surfaced as a conflict instead of a generic Drive error", () => {
+  assert.match(source, /message\.includes\("Learning catalog"\)/);
+  assert.match(source, /code: "LEARNING_CATALOG_UNAVAILABLE"/);
+  assert.match(source, /status: 409/);
+});
