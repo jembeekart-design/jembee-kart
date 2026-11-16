@@ -52,3 +52,13 @@ test("video cards request one saved-state record instead of downloading the full
   assert.match(videoCard, /fetch\(\`\/api\/videos\/save\?videoId=\$\{encodeURIComponent\(video\.id\)\}\`/);
   assert.match(videoCard, /setIsSaved\(result\.saved === true\)/);
 });
+
+
+test("saved-video document keys are collision-resistant and request bodies are bounded", () => {
+  assert.match(route, /createHash\("sha256"\)/);
+  assert.match(route, /\.update\("\\0"\)/);
+  assert.match(route, /savedDocumentId\(requestedVideoId, decoded\.uid\)/);
+  assert.match(route, /savedDocumentId\(videoId, decoded\.uid\)/);
+  assert.match(route, /MAX_BODY_BYTES/);
+  assert.match(route, /Request too large/);
+});
