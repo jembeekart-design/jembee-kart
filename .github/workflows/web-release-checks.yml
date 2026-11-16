@@ -41,6 +41,7 @@ jobs:
           src/app/admin/page.tsx
           src/app/admin/website-studio/page.tsx
           src/app/api/public/site-experience/route.ts
+          src/app/api/admin/website-studio/route.ts
           src/app/page.tsx
           src/app/admin/system-health/page.tsx
           src/app/admin/categories/page.tsx
