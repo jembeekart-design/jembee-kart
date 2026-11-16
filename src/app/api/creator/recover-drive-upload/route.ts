@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import { getAdminAuth, getAdminDb } from "@/firebase/admin";
 import { getResumableUploadStatus } from "@/services/googleDriveService";
+import { readBoundedJson } from "@/lib/server/readBoundedJson";
 import { classifyGoogleDriveError, googleDriveClientMessage, googleDriveErrorHttpStatus } from "@/lib/googleDriveErrors";
 
 export const runtime = "nodejs";
@@ -16,11 +17,12 @@ export async function POST(req: Request) {
   }
 
   const token = authHeader.slice("Bearer ".length).trim();
+  if (!token || token.length > 10_000) return NextResponse.json({ success: false, message: "Unauthorized" }, { status: 401 });
 
   let creatorId: string;
 
   try {
-    const decodedToken = await getAdminAuth().verifyIdToken(token);
+    const decodedToken = await getAdminAuth().verifyIdToken(token, true);
     creatorId = decodedToken.uid;
   } catch {
     return NextResponse.json(
@@ -29,16 +31,11 @@ export async function POST(req: Request) {
     );
   }
 
-  let body: { submissionId?: unknown };
-
-  try {
-    body = await req.json();
-  } catch {
-    return NextResponse.json(
-      { success: false, message: "Invalid JSON" },
-      { status: 400 }
-    );
+  const parsed = await readBoundedJson(req, 4 * 1024);
+  if (!parsed.ok) {
+    return NextResponse.json({ success: false, message: parsed.message }, { status: parsed.status });
   }
+  const body = parsed.value as { submissionId?: unknown };
 
   const submissionId =
     typeof body.submissionId === "string"

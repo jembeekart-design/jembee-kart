@@ -26,7 +26,7 @@ export async function POST(req: Request) {
 
   const token = authHeader.slice("Bearer ".length).trim();
 
-  if (!token) {
+  if (!token || token.length > 10_000) {
     return NextResponse.json(
       { success: false, message: "कृपया लॉगिन करें।" },
       { status: 401 }
@@ -36,7 +36,7 @@ export async function POST(req: Request) {
   let creatorId: string;
 
   try {
-    const decodedToken = await getAdminAuth().verifyIdToken(token);
+    const decodedToken = await getAdminAuth().verifyIdToken(token, true);
     creatorId = decodedToken.uid;
   } catch {
     return NextResponse.json(
