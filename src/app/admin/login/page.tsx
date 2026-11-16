@@ -23,17 +23,25 @@ export default function AdminLoginPage() {
     setError("");
 
     try {
-      await signInWithEmailAndPassword(
-        auth,
-        email,
-        password
-      );
-   const user = auth.currentUser;
+      const credential = await signInWithEmailAndPassword(auth, email, password);
+      const token = await credential.user.getIdToken(true);
+      const adminResponse = await fetch("/api/auth/admin-check", {
+        method: "GET",
+        headers: { Authorization: `Bearer ${token}` },
+        cache: "no-store",
+      });
+      const adminResult = await adminResponse.json().catch(() => null);
 
+      if (adminResponse.status === 401 || adminResponse.status === 403 || adminResult?.isAdmin !== true) {
+        await auth.signOut();
+        setError("यह account Admin के रूप में अधिकृत नहीं है। सही Admin account से login करें।");
+        return;
+      }
+      if (!adminResponse.ok) {
+        setError("Admin verification अभी उपलब्ध नहीं है। कृपया दोबारा कोशिश करें।");
+        return;
+      }
 
-
-console.log("LOGIN UID:", user?.uid);
-console.log("LOGIN EMAIL:", user?.email);
       const requestedNext = new URLSearchParams(window.location.search).get("next") || "";
       // Preserve only the fixed same-origin ChatGPT consent route.
       if (requestedNext.startsWith("/connect/chatgpt/") || requestedNext === "/connect/chatgpt") {
