@@ -8,7 +8,7 @@ export const dynamic = "force-dynamic";
 const MAX_TOKEN_LENGTH = 10_000;
 const MAX_BODY_BYTES = 4 * 1024;
 const savedDocumentId = (videoId: string, uid: string) =>
-  createHash("sha256").update(uid).update("\\0").update(videoId).digest("hex");
+  createHash("sha256").update(uid).update("\0").update(videoId).digest("hex");
 
 export async function GET(req: NextRequest) {
   try {
@@ -76,7 +76,7 @@ export async function POST(req: NextRequest) {
 
     const db = getAdminDb();
     const videoRef = db.collection("watchEarnVideos").doc(videoId);
-    const saveRef = db.collection("savedWatchVideos").doc(`${videoId}_${decoded.uid}`);
+    const saveRef = db.collection("savedWatchVideos").doc(savedDocumentId(videoId, decoded.uid));
 
     const result = await db.runTransaction(async (transaction) => {
       const videoSnap = await transaction.get(videoRef);
