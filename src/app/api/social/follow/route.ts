@@ -34,8 +34,13 @@ export async function GET(req: Request) {
   const targetUid = targetFrom(new URL(req.url).searchParams.get("targetUid"));
   if (!targetUid || targetUid === uid) return fail("Invalid target user", 400);
   try {
-    const edge = await getAdminDb().collection("users").doc(uid).collection("following").doc(targetUid).get();
-    return NextResponse.json({ success: true, following: edge.exists });
+    const db = getAdminDb();
+    const [followingEdge, followerEdge] = await Promise.all([
+      db.collection("users").doc(uid).collection("following").doc(targetUid).get(),
+      db.collection("users").doc(targetUid).collection("followers").doc(uid).get(),
+    ]);
+    // Treat either legacy half-edge as following; the next follow action repairs the pair.
+    return NextResponse.json({ success: true, following: followingEdge.exists || followerEdge.exists });
   } catch (error) {
     console.error("Follow status lookup failed:", error);
     return fail("Unable to check follow status", 500);
