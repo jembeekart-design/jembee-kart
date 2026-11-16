@@ -29,3 +29,9 @@ test("catalog rejection is surfaced as a conflict instead of a generic Drive err
   assert.match(source, /code: "LEARNING_CATALOG_UNAVAILABLE"/);
   assert.match(source, /status: 409/);
 });
+
+test("catalog status and hierarchy are revalidated atomically with approved video creation", () => {
+  assert.match(source, /adminDb\.runTransaction\(async \(transaction\) => \{/);
+  assert.match(source, /transaction\.get\(adminDb\.collection\("schoolLearningNodes"\)\.doc\(id\)\)/);
+  assert.match(source, /transaction\.create\(videoRef, videoDocument\)/);
+});
