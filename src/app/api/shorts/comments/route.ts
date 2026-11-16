@@ -18,7 +18,8 @@ export async function POST(req: Request) {
   let uid: string;
   try {
     const decoded = await getAdminAuth().verifyIdToken(
-      authHeader.slice(7).trim()
+      authHeader.slice(7).trim(),
+      true
     );
     uid = decoded.uid;
   } catch {
@@ -40,7 +41,7 @@ export async function POST(req: Request) {
   const text = typeof body.text === "string" ? body.text.trim() : "";
   const requestId = typeof body.requestId === "string" ? body.requestId.trim() : "";
 
-  if (!videoId || videoId.length > 500 || !text || !/^[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i.test(requestId)) {
+  if (!videoId || videoId.length > 200 || /[\\/]/.test(videoId) || !text || text.length > 5000 || !/^[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i.test(requestId)) {
     return jsonError("Video ID and comment text are required", 400);
   }
 
@@ -124,7 +125,7 @@ export async function POST(req: Request) {
     }
 
     const approved = settings.autoApproveComments === true;
-    const requestHash = createHash("sha256").update(`${uid}:${requestId}`).digest("hex");
+    const requestHash = createHash("sha256").update(uid).update("\0").update(requestId).digest("hex");
     const commentRef = adminDb.collection("comments").doc(requestHash);
     const rateRef = adminDb.collection("commentRateLimits").doc(uid);
     const queueRef = adminDb.collection("videoCommentReports").doc(requestHash);
