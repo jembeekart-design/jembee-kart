@@ -674,6 +674,14 @@ export async function POST(req: Request) {
       );
     }
 
+    const message = error instanceof Error ? error.message : "";
+    if (message.includes("Learning catalog") || message.includes("School catalog")) {
+      return NextResponse.json(
+        { success: false, code: "LEARNING_CATALOG_UNAVAILABLE", message },
+        { status: 409 }
+      );
+    }
+
     const code = classifyGoogleDriveError(error);
     console.error("Admin video moderation request failed:", code);
     return NextResponse.json(
