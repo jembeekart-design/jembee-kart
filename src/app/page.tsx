@@ -153,7 +153,8 @@ export default function HomePage() {
     return () => { active = false; };
   }, []);
 
-  const visibleChips = siteExperience.homeCategories.filter((item) => item.enabled);\n  const navLabel = (item: NavigationItem) => item.key ? siteExperience.navigationLabels[item.key] || item.label : item.label;\n  const filtered = useMemo(() => videos.filter((video) => {
+  const visibleChips = siteExperience.homeCategories.filter((item) => item.enabled);
+  const filtered = useMemo(() => videos.filter((video) => {
     const searchable = `${video.caption} ${video.displayName || ""} ${video.username} ${video.music} ${(video.hashtags || []).join(" ")}`.toLowerCase();
     const categoryMatch = active === "All" || searchable.includes(active.toLowerCase());
     return categoryMatch && searchable.includes(search.toLowerCase().trim());
@@ -262,7 +263,7 @@ export default function HomePage() {
       </div>
 
       <nav className="fixed inset-x-0 bottom-0 z-40 flex justify-around border-t border-white/10 bg-[var(--color-page-background)]/95 px-2 pb-[calc(0.5rem+env(safe-area-inset-bottom))] pt-2 backdrop-blur md:hidden">
-        {mobileNavigation.map(({ icon: Icon, label, href }) => <Link key={label} href={href} className={`flex min-w-0 flex-col items-center gap-1 px-2 py-1 text-[10px] ${label === "Home" ? "text-cyan-300" : "text-slate-300"}`}><Icon size={21}/>{label}</Link>)}
+        {mobileNavigation.map(({ icon: Icon, label, href, key }) => <Link key={key || label} href={href} className={`flex min-w-0 flex-col items-center gap-1 px-2 py-1 text-[10px] ${key === "home" ? "text-cyan-300" : "text-slate-300"}`}><Icon size={21}/>{key ? siteExperience.navigationLabels[key] || label : label}</Link>)}
       </nav>
     </main>
   );
