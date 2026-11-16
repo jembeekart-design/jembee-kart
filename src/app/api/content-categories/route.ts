@@ -135,9 +135,18 @@ export async function GET(req: Request) {
   } catch (error) {
     const firebaseError = error as { code?: unknown; name?: unknown };
     // Log only non-secret error metadata; never log credentials, tokens, or request bodies.
+    const safeMessage = error instanceof Error
+      ? error.message
+          .replace(/-----BEGIN [A-Z ]*PRIVATE KEY-----[\\s\\S]*?-----END [A-Z ]*PRIVATE KEY-----/g, "[REDACTED_PRIVATE_KEY]")
+          .replace(/(Bearer\\s+)[A-Za-z0-9._~+\\/-]+=*/gi, "$1[REDACTED]")
+          .replace(/AIza[0-9A-Za-z_-]{20,}/g, "[REDACTED_API_KEY]")
+          .replace(/https?:\\/\\/\\S+/g, "[REDACTED_URL]")
+          .slice(0, 240)
+      : "Non-Error exception";
     console.error("Learning Library GET failed", {
       name: typeof firebaseError?.name === "string" ? firebaseError.name : "UnknownError",
       code: typeof firebaseError?.code === "string" ? firebaseError.code : "unknown",
+      message: safeMessage,
     });
     return NextResponse.json({ success: false, message: "Learning Library could not be loaded" }, { status: 500, headers: noStore });
   }
