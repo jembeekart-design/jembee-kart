@@ -277,7 +277,6 @@ export default function WebsiteStudioPage() {
             </section>
 
             <section className="rounded-3xl border border-white/10 bg-[#111827] p-5 sm:p-7">
-            <section className="rounded-3xl border border-white/10 bg-[#111827] p-5 sm:p-7">
               <h2 className="text-lg font-bold">Home page layout</h2>
               <p className="mt-1 text-xs text-slate-400">Visitors को sections इसी क्रम में दिखाई देंगे। ऊपर/नीचे करके क्रम बदलें।</p>
               <div className="mt-5 space-y-3">
@@ -320,6 +319,7 @@ export default function WebsiteStudioPage() {
               </div>
             </section>
 
+            <section className="rounded-3xl border border-white/10 bg-[#111827] p-5 sm:p-7">
               <h2 className="text-lg font-bold">Announcement bar</h2>
               <p className="mt-1 text-xs text-slate-400">Maintenance notice, launch message या important update</p>
               <label className="mt-5 flex items-center justify-between gap-4 rounded-xl border border-white/10 bg-[#090d16] p-4"><span className="text-sm font-semibold">Enable announcement</span><input type="checkbox" checked={config.announcementEnabled} onChange={(event) => updateToggle("announcementEnabled", event.target.checked)} className="h-5 w-5 accent-cyan-300"/></label>
