@@ -47,7 +47,10 @@ test("Short or long video format is saved at upload and copied after admin appro
 
 test("Long video cards use a landscape poster and native controls without eager video downloads", async () => {
   const videos = await read("src/app/videos/page.tsx");
+  const player = await read("src/app/videos/components/ExoClickVideoPlayer.tsx");
   assert.match(videos, /aspect-video/);
-  assert.match(videos, /controls playsInline preload="metadata"/);
+  assert.match(videos, /<ExoClickVideoPlayer/);
+  assert.match(player, /controls=\{contentStarted && !adPlaying\}/);
+  assert.match(player, /playsInline preload="metadata"/);
   assert.match(videos, /video\.videoFormat === "long"/);
 });
