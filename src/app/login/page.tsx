@@ -21,15 +21,22 @@ import {
 } from "firebase/firestore";
 import { auth, db } from "@/firebase/config";
 
+function getSafeRedirect(value: string | null): string {
+  if (!value || !value.startsWith("/") || value.startsWith("//") || value.includes(String.fromCharCode(92))) return "/shorts";
+  try {
+    const target = new URL(value, window.location.origin);
+    if (target.origin !== window.location.origin || ["/login", "/signup", "/verify-email"].includes(target.pathname)) return "/shorts";
+    return target.pathname + target.search + target.hash;
+  } catch { return "/shorts"; }
+}
+
 function LoginCard() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
 
   const searchParams = useSearchParams();
-  const redirect =
-    searchParams.get("redirect") ||
-    "/shorts";
+  const redirect = getSafeRedirect(searchParams.get("redirect"));
 
   /* ======================================================
   VERIFY & TELEMETRY SYNC (STRICT EXISTING USERS ONLY)
@@ -76,7 +83,7 @@ function LoginCard() {
       // Security Gate: Prevent unverified users from bypassing credentials screening
       if (!result.user.emailVerified) {
         console.warn("Access Intercepted: Email verification is required.");
-        window.location.href = "/verify-email";
+        window.location.href = "/verify-email?redirect=" + encodeURIComponent(redirect);
         return;
       }
 
