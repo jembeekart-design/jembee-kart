@@ -28,8 +28,10 @@ Settings are stored in admin_settings/site_experience. The public endpoint at /a
 | Home section order | sectionOrder | Reorder Learning, Shorts, and Long Videos on Home |
 | Home category chips | homeCategories | Add, rename, filter, reorder, hide/show, and remove up to 12 category chips |
 | Main navigation labels | navigationLabels | Rename the six supported main navigation labels without changing their routes |
+| Featured creators | featuredCreators | Curate up to 8 creator IDs; Home links to the creator page and shows available public videos |
+| Featured playlists | featuredPlaylists | Curate up to 8 editorial playlists with up to 12 public video IDs each; Home shows matching public videos |
 
-The public endpoint validates colour values, text lengths, booleans, section order, category IDs/labels/filters, and the allowlisted navigation-label keys. It uses safe defaults when settings are absent or unavailable. Category chips filter the Home feed using their configured text filter; they do not create new content categories in the creator upload catalogue.
+The public endpoint validates colour values, text lengths, booleans, section order, category IDs/labels/filters, allowlisted navigation-label keys, creator IDs/labels, and playlist IDs/titles/descriptions/video ID arrays. It uses safe defaults when settings are absent or unavailable. Category chips filter the Home feed using their configured text filter; they do not create new content categories in the creator upload catalogue.
 
 ## 2. Next Admin Studio modules — planned
 
