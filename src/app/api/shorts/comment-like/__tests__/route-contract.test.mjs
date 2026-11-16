@@ -4,7 +4,7 @@ import { readFile } from "node:fs/promises";
 
 const route = await readFile(new URL("../route.ts", import.meta.url), "utf8");
 const handler = await readFile(new URL("../handler.ts", import.meta.url), "utf8");
-const client = await readFile(new URL("../../../../../../lib/videos/watch-earn/likeVideoComment.ts", import.meta.url), "utf8");
+const client = await readFile(new URL("../../../../../lib/videos/watch-earn/likeVideoComment.ts", import.meta.url), "utf8");
 
 test("comment likes use revocation-checked bearer authentication", () => {
   assert.match(route, /verifyIdToken\(token, true\)/);
