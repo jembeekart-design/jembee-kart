@@ -146,7 +146,7 @@ export async function POST(req: Request) {
         if (owned.size >= 150) return NextResponse.json({ success: false, message: "आप अधिकतम 150 School catalog entries बना सकते हैं।" }, { status: 429, headers: noStore });
       }
       await ref.set({
-        id, type, name, parentId: parentId || null, status: "published",
+        id, type, name, parentId: parentId || null, status: current?.exists ? (current.data()?.status === "published" ? "published" : "pending") : "pending",
         ownerUid: uploaderUid, createdByUid: uploaderUid, updatedBy: uploaderUid,
         updatedAt: new Date(), ...(current?.exists ? {} : { createdAt: new Date() }),
       }, { merge: true });
