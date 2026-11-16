@@ -83,6 +83,7 @@ function UploadWatchVideoContent() {
   const [uploadProgress, setUploadProgress] = useState(0);
   const [uploadError, setUploadError] = useState<string | null>(null);
   const [uploadNotice, setUploadNotice] = useState("");
+  const [uploadHelpOpen, setUploadHelpOpen] = useState(false);
   const [caption, setCaption] = useState("");
   const [categories, setCategories] = useState<ExploreCategoryRecord[]>(DEFAULT_EXPLORE_CATEGORIES);
   const [schoolNodes, setSchoolNodes] = useState<LearningNode[]>([]);
@@ -236,12 +237,12 @@ function UploadWatchVideoContent() {
     if (!selected) return;
 
     if (!selected.type.startsWith("video/")) {
-      alert("कृपया केवल वीडियो चुनें");
+      setUploadError("कृपया केवल वीडियो चुनें");
       return;
     }
 
     if (selected.size > MAX_VIDEO_BYTES) {
-      alert("वीडियो का आकार 500 MB से अधिक नहीं होना चाहिए।");
+      setUploadError("वीडियो का आकार 500 MB से अधिक नहीं होना चाहिए।");
       return;
     }
 
@@ -414,10 +415,15 @@ function UploadWatchVideoContent() {
           </Link>
           <div className="flex items-center gap-1">
             <Link href="/videos/history" aria-label="My uploads" className="rounded-full p-2 text-slate-300 hover:bg-white/10"><Bell size={19} /></Link>
-            <button type="button" aria-label="Upload help" onClick={() => alert("वीडियो चुनें → जानकारी भरें → Google Drive पर भेजें → Admin approval के बाद प्रकाशित होगा।")} className="rounded-full p-2 text-slate-300 hover:bg-white/10"><HelpCircle size={20} /></button>
+            <button type="button" aria-label="Upload help" onClick={() => setUploadHelpOpen((open) => !open)} className="rounded-full p-2 text-slate-300 hover:bg-white/10"><HelpCircle size={20} /></button>
           </div>
         </div>
       </header>
+      {uploadHelpOpen ? (
+        <p className="mx-auto max-w-2xl px-4 pt-3 text-sm text-slate-300" role="status">
+          वीडियो चुनें → जानकारी भरें → Google Drive पर भेजें → Admin approval के बाद प्रकाशित होगा।
+        </p>
+      ) : null}
 
       <div className="mx-auto max-w-2xl space-y-4 px-3 pb-7 pt-4 sm:px-4">
         <section className="relative overflow-hidden rounded-3xl border border-blue-500/30 bg-[#0d1b35] p-5 sm:p-6">
