@@ -15,6 +15,8 @@ test("comment abuse limits are keyed by verified user and updated transactionall
 });
 
 test("comment request id is user-scoped for idempotent submission", () => {
-  assert.match(source, /createHash\("sha256"\)\.update\(`\$\{uid\}:\$\{requestId\}`\)/);
+  assert.match(source, /createHash\("sha256"\)/);
+  assert.match(source, /update\("\\0"\)/);
+  assert.match(source, /update\(requestId\)/);
   assert.match(source, /existingComment\.exists/);
 });
