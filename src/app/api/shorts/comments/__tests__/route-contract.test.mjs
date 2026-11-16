@@ -11,7 +11,7 @@ test("comment submission verifies Firebase token revocation", () => {
 
 test("comment input is size-bounded and rejects invalid Firestore document IDs", () => {
   assert.match(route, /content-length/);
-  assert.match(route, /Buffer\.byteLength\(raw, "utf8"\) > 8192/);
+  assert.match(route, /new TextEncoder\(\)\.encode\(raw\)\.byteLength > 8192/);
   assert.match(route, /videoId\.length > 200/);
   assert.ok(route.includes("!/[\\\\/]/.test(videoId)"));
   assert.match(route, /text\.length > 5000/);
