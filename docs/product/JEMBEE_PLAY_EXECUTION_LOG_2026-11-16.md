@@ -125,3 +125,14 @@ This log records source changes only. It is not a production-readiness certifica
 - Report document IDs now use a SHA-256 user/video composite key; repeat reports return an idempotent already-reported response.
 - Added focused contract tests and the `test:shorts-engagement` npm script.
 - Verification limitation: contract tests have been authored but not executed in this environment. No TypeScript, lint, emulator, browser, or production build result is claimed. No deployment performed.
+
+
+## Shorts comments and creator-follow integrity — 16 November 2026
+
+- Comment Like now uses revocation-checked Firebase bearer authentication, bounded input, hashed composite IDs, approved-comment and safe-video checks, idempotent writes, and legacy like-key compatibility.
+- Added a focused comment-like contract test and `test:shorts-comment-likes` npm script.
+- Found that comment deletion was still attempting a direct client Firestore delete even though the deployed rules deny client writes to `comments`. Added an authenticated server endpoint that only permits the comment owner to delete; comment deletion and video comment-counter decrement occur in one Firestore transaction.
+- Updated the comment service to use the new endpoint; added contract test and `test:shorts-comment-delete` script.
+- Found that repeated Unfollow calls decremented `followingCount` even when no relationship edge existed. Unfollow now reads both follower/following edges and is a no-op when neither exists; counter values are normalized before decrement.
+- Added follow-integrity contract test and `test:follow-integrity` script.
+- Verification: source and GitHub branch compare inspected; tests have not been run locally. TypeScript, ESLint, Firebase Emulator, end-to-end and production build remain unverified. No deployment, payout activation, or bulk upload performed.
