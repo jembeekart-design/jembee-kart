@@ -5,6 +5,6 @@ export const runtime = "nodejs";
 
 export const POST = createPostHandler({
   verifyToken: async (token) =>
-    getAdminAuth().verifyIdToken(token),
+    getAdminAuth().verifyIdToken(token, true),
   getDb: () => getAdminDb() as unknown as CommentLikeDatabase,
 });
