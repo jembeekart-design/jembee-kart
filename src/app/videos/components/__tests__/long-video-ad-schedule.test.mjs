@@ -17,7 +17,7 @@ test("long-video ads require deployment opt-in and Admin master/audience switche
 });
 
 test("mid-roll scheduling uses media currentTime and respects max ads and minimum gap", () => {
-  assert.match(player, /onTimeUpdate=\{checkMidroll\}/);
+  assert.match(player, /onTimeUpdate=\{\(\) => \{ checkMidroll\(\);/);
   assert.match(player, /video\.currentTime/);
   assert.match(player, /video\.paused \|\| video\.seeking/);
   assert.match(player, /maxAdsPerVideo/);
