@@ -132,7 +132,13 @@ export async function GET(req: Request) {
       return { id: doc.id, ...data, type: data.type as NodeType };
     }).filter((item) => NODE_TYPES.includes(item.type));
     return NextResponse.json({ success: true, categories, learningNodes }, { headers: noStore });
-  } catch {
+  } catch (error) {
+    const firebaseError = error as { code?: unknown; name?: unknown };
+    // Log only non-secret error metadata; never log credentials, tokens, or request bodies.
+    console.error("Learning Library GET failed", {
+      name: typeof firebaseError?.name === "string" ? firebaseError.name : "UnknownError",
+      code: typeof firebaseError?.code === "string" ? firebaseError.code : "unknown",
+    });
     return NextResponse.json({ success: false, message: "Learning Library could not be loaded" }, { status: 500, headers: noStore });
   }
 }
