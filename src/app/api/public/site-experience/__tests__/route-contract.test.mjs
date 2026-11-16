@@ -9,7 +9,10 @@ test("public site experience reads only the dedicated admin settings document", 
   assert.match(route, /DEFAULT_SITE_EXPERIENCE/);
   assert.match(route, /safeText/);
   assert.match(route, /safeColor/);
-  assert.match(route, /safeBoolean/);\n  assert.match(route, /safeSectionOrder/);
+  assert.match(route, /safeBoolean/);
+  assert.match(route, /safeSectionOrder/);
+  assert.match(route, /safeHomeCategories/);
+  assert.match(route, /safeNavigationLabels/);
 });
 
 test("public site experience allowlists fields and validates input types", () => {
@@ -17,7 +20,7 @@ test("public site experience allowlists fields and validates input types", () =>
     "siteName", "tagline", "heroTitle", "heroSubtitle",
     "primaryColor", "accentColor", "pageColor", "surfaceColor",
     "announcementEnabled", "announcementText", "showLearningBanner",
-    "showShorts", "showLongVideos", "showHomeAds", "compactCards", "sectionOrder",
+    "showShorts", "showLongVideos", "showHomeAds", "compactCards", "sectionOrder", "homeCategories", "navigationLabels",
   ]) {
     assert.match(route, new RegExp("\\b" + field + ":"));
   }
