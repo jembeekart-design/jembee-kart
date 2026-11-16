@@ -16,7 +16,7 @@ test("comment likes use revocation-checked bearer authentication", () => {
 test("comment identifiers and request bodies are bounded", () => {
   assert.ok(handler.includes("new TextEncoder().encode(raw).byteLength > 8192"));
   assert.ok(handler.includes("commentId.length > 500"));
-  assert.ok(handler.includes("/[\\\\\\\\/]/.test(commentId)"));
+  assert.ok(handler.includes(String.raw`/[\\/]/.test(commentId)`));
 });
 test("comment likes require a currently available safe video", () => {
   assert.match(handler, /videoData\.active !== true/);
