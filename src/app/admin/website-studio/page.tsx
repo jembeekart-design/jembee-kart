@@ -93,7 +93,10 @@ export default function WebsiteStudioPage() {
         if (!active) return;
         if (snapshot.exists()) {
           const stored = snapshot.data() as Partial<SiteExperience>;
-          const validOrder = Array.isArray(stored.sectionOrder) ? stored.sectionOrder.filter((item): item is HomeSectionKey => item === "learning" || item === "shorts" || item === "longVideos") : DEFAULT_CONFIG.sectionOrder;\n          const sectionOrder = [...new Set(validOrder)];\n          for (const item of DEFAULT_CONFIG.sectionOrder) if (!sectionOrder.includes(item)) sectionOrder.push(item);\n          const next = { ...DEFAULT_CONFIG, ...stored, sectionOrder };
+          const validOrder = Array.isArray(stored.sectionOrder) ? stored.sectionOrder.filter((item): item is HomeSectionKey => item === "learning" || item === "shorts" || item === "longVideos") : DEFAULT_CONFIG.sectionOrder;
+          const sectionOrder = [...new Set(validOrder)];
+          for (const item of DEFAULT_CONFIG.sectionOrder) if (!sectionOrder.includes(item)) sectionOrder.push(item);
+          const next = { ...DEFAULT_CONFIG, ...stored, sectionOrder };
           setConfig(next);
           applyBrand(next);
         } else {
