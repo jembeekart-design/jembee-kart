@@ -18,7 +18,7 @@ const PARENT_TYPE: Record<NodeType, NodeType | null> = {
   question: "chapter",
 };
 const cleanText = (value: unknown, max: number) =>
-  typeof value === "string" ? value.trim().replace(/[\\u0000-\\u001f\\u007f]/g, "").slice(0, max) : "";
+  typeof value === "string" ? value.trim().replace(/[\u0000-\u001f\u007f]/g, "").slice(0, max) : "";
 const cleanList = (value: unknown, maxItems = 80) => Array.isArray(value)
   ? value.map((item) => cleanText(item, 120)).filter(Boolean).slice(0, maxItems)
   : [];
