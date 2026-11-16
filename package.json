@@ -35,7 +35,8 @@
     "test:firestore-rules-emulator": "firebase emulators:exec --project demo-jembee-play --only firestore \"node --test src/firebase/__tests__/firestore-financial-rules.emulator.test.mjs\"",
     "test:category-catalog": "node --test src/app/api/content-categories/__tests__/route-contract.test.mjs src/app/videos/upload/__tests__/category-upload-contract.test.mjs src/app/learn/school/__tests__/school-catalog-contract.test.mjs",
     "test:ads": "node --test src/app/api/ads/diagnostics/__tests__/route-contract.test.mjs src/lib/ads/__tests__/exoclick-config.test.mjs src/lib/ads/__tests__/monetag-manual-placements.test.mjs src/app/videos/components/__tests__/long-video-ad-schedule.test.mjs src/app/videos/components/__tests__/exoclick-shorts-autoplay.test.mjs",
-    "test:viewer-watch-history": "node --test src/app/api/videos/watch-history/__tests__/route-contract.test.mjs src/app/videos/watch-history/__tests__/page-contract.test.mjs"
+    "test:viewer-watch-history": "node --test src/app/api/videos/watch-history/__tests__/route-contract.test.mjs src/app/videos/watch-history/__tests__/page-contract.test.mjs",
+    "test:shorts-comments": "node --test src/app/api/shorts/comments/__tests__/route-contract.test.mjs"
   },
   "dependencies": {
     "@mediapipe/tasks-vision": "^1.0.1",
