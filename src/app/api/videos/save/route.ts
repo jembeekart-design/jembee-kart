@@ -21,7 +21,8 @@ export async function GET(req: NextRequest) {
       return NextResponse.json({ success: false, message: "Unauthorized" }, { status: 401 });
     }
     const decoded = await getAdminAuth().verifyIdToken(token, true);
-    const savedCollection = getAdminDb().collection("savedWatchVideos");
+    const db = getAdminDb();
+    const savedCollection = db.collection("savedWatchVideos");
     const requestedVideoId = req.nextUrl.searchParams.get("videoId")?.trim() || "";
     if (requestedVideoId) {
       if (requestedVideoId.length > 200 || /[\/\\]/.test(requestedVideoId)) {
@@ -38,8 +39,15 @@ export async function GET(req: NextRequest) {
       .get();
     const videoIds = [...new Set(snapshot.docs
       .map((item) => item.data().videoId)
-      .filter((id): id is string => typeof id === "string" && id.length > 0 && id.length <= 200))];
-    return NextResponse.json({ success: true, videoIds });
+      .filter((id): id is string => typeof id === "string" && id.length > 0 && id.length <= 200 && !/[\\/]/.test(id)))];
+    const videoRefs = videoIds.map((id) => db.collection("watchEarnVideos").doc(id));
+    const videoSnapshots = videoRefs.length ? await db.getAll(...videoRefs) : [];
+    const availableIds = videoSnapshots.filter((item) => {
+      const video = item.data();
+      return item.exists && video?.status === "approved" && video?.active === true &&
+        video?.moderation === "safe" && video?.videoAccess === "free";
+    }).map((item) => item.id);
+    return NextResponse.json({ success: true, videoIds: availableIds }, { headers: { "Cache-Control": "no-store" } });
   } catch (error) {
     const message = error instanceof Error ? error.message : "";
     const unauthorized = message.includes("Firebase ID token") || message === "UNAUTHORIZED";
