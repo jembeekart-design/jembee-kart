@@ -11,6 +11,8 @@ test("Learning catalog moderation requires server-side admin RBAC", () => {
   assert.match(route, /export async function GET/);
   assert.match(route, /export async function PATCH/);
   assert.match(route, /orderBy\("type", "asc"\)/);
+  assert.match(route, /collection\("contentCategories"\)/);
+  assert.match(route, /success: true, nodes, categories/);
 });
 
 test("catalog moderation accepts only valid IDs and publish states", () => {
@@ -18,6 +20,8 @@ test("catalog moderation accepts only valid IDs and publish states", () => {
   assert.match(route, /status !== "published" && status !== "unpublished"/);
   assert.match(route, /previousStatus !== "pending" && previousStatus !== "published" && previousStatus !== "unpublished"/);
   assert.match(route, /transaction\.get\(ref\)/);
+  assert.match(route, /body.kind === "explore-category"/);
+  assert.match(route, /collectionName/);
 });
 
 test("every actual catalog status change creates an audit record", () => {
@@ -36,4 +40,6 @@ test("admin UI requires confirmation and calls the protected catalog API", () =>
   assert.match(page, /Unpublish/);
   assert.match(page, /Publish/);
   assert.match(page, /node.status === "pending" \? "Approve"/);
+  assert.match(page, /Custom Explore Category Moderation/);
+  assert.match(page, /kind: "explore-category"/);
 });

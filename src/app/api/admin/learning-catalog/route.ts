@@ -17,6 +17,11 @@ export async function GET(req: Request) {
       .orderBy("type", "asc")
       .limit(1000)
       .get();
+    const categorySnapshot = await getAdminDb().collection("contentCategories").limit(200).get();
+    const categories = categorySnapshot.docs.map((item) => {
+      const data = item.data();
+      return { id: item.id, name: typeof data.name === "string" ? data.name : "", description: typeof data.description === "string" ? data.description : "", topics: Array.isArray(data.topics) ? data.topics.filter((topic) => typeof topic === "string").slice(0, 60) : [], status: typeof data.status === "string" ? data.status : "unknown", ownerUid: typeof data.ownerUid === "string" ? data.ownerUid : null };
+    });
     const nodes = snapshot.docs.map((item) => {
       const data = item.data();
       return {
@@ -27,7 +32,7 @@ export async function GET(req: Request) {
         status: typeof data.status === "string" ? data.status : "unknown",
       };
     });
-    return NextResponse.json({ success: true, nodes }, {
+    return NextResponse.json({ success: true, nodes, categories }, {
       headers: { "Cache-Control": "no-store, max-age=0" },
     });
   } catch (error) {
@@ -53,13 +58,15 @@ export async function PATCH(req: Request) {
 
   const id = typeof body.id === "string" ? body.id.trim() : "";
   const status = body.status;
+  const kind = body.kind === "explore-category" ? "explore-category" : "school-node";
   if (!ID_PATTERN.test(id) || (status !== "published" && status !== "unpublished")) {
     return NextResponse.json({ success: false, message: "Valid entry and status are required" }, { status: 400 });
   }
 
   try {
     const db = getAdminDb();
-    const ref = db.collection("schoolLearningNodes").doc(id);
+    const collectionName = kind === "explore-category" ? "contentCategories" : "schoolLearningNodes";
+    const ref = db.collection(collectionName).doc(id);
     const auditRef = db.collection("learningCatalogAuditLogs").doc();
     const result = await db.runTransaction(async (transaction) => {
       const snapshot = await transaction.get(ref);
@@ -82,7 +89,7 @@ export async function PATCH(req: Request) {
       transaction.create(auditRef, {
         action: status === "published" ? "publish" : "unpublish",
         nodeId: id,
-        nodeType: typeof current.type === "string" ? current.type : "unknown",
+        nodeType: kind === "explore-category" ? "explore-category" : (typeof current.type === "string" ? current.type : "unknown"),
         nodeName: typeof current.name === "string" ? current.name : "",
         previousStatus,
         newStatus: status,

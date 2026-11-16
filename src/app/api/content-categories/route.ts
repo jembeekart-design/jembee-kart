@@ -110,7 +110,7 @@ export async function POST(req: Request) {
         id, name, description, topics,
         iconKey: cleanText(body.iconKey, 32) || "book-open",
         schoolSpecial: body.schoolSpecial === true,
-        status: "published",
+        status: current.exists ? (current.data()?.status === "published" ? "published" : "pending") : "pending",
         ownerUid: uploaderUid,
         createdByUid: uploaderUid,
         updatedAt: new Date(),

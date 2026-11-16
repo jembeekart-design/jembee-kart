@@ -7,10 +7,12 @@ import { auth } from "@/firebase/config";
 import { DEFAULT_EXPLORE_CATEGORIES, type ExploreCategoryRecord } from "@/lib/catalog/defaultExploreCategories";
 
 type SchoolNode = { id: string; type: string; name: string; status?: string; parentId?: string | null };
+type CustomCategory = { id: string; name: string; description?: string; topics: string[]; status?: string; ownerUid?: string | null };
 
 export default function AdminCategoriesPage() {
   const [categories, setCategories] = useState<ExploreCategoryRecord[]>(DEFAULT_EXPLORE_CATEGORIES);
   const [nodes, setNodes] = useState<SchoolNode[]>([]);
+  const [customCategories, setCustomCategories] = useState<CustomCategory[]>([]);
   const [busy, setBusy] = useState(false);
   const [notice, setNotice] = useState("");
   const [updatingNodeId, setUpdatingNodeId] = useState("");
@@ -40,6 +42,7 @@ export default function AdminCategoriesPage() {
       }
       setCategories([...merged.values()]);
       setNodes(Array.isArray(adminData.nodes) ? adminData.nodes : []);
+      setCustomCategories(Array.isArray(adminData.categories) ? adminData.categories : []);
       setNotice("");
     } catch (error) {
       setNotice(error instanceof Error ? error.message : "Catalog load failed");
@@ -71,6 +74,32 @@ export default function AdminCategoriesPage() {
       setNotice(nextStatus === "unpublished" ? "Entry unpublished. Pending approvals using it will be blocked." : "Entry published.");
     } catch (error) {
       setNotice(error instanceof Error ? error.message : "Catalog status update failed");
+    } finally {
+      setUpdatingNodeId("");
+    }
+  };
+
+
+  const updateCategoryStatus = async (category: CustomCategory) => {
+    const nextStatus = category.status === "pending" || category.status === "unpublished" ? "published" : "unpublished";
+    if (!window.confirm(`${nextStatus === "published" ? "Approve and publish" : "Unpublish"} "${category.name}"?`)) return;
+    setUpdatingNodeId(category.id);
+    setNotice("");
+    try {
+      const user = auth.currentUser;
+      if (!user) throw new Error("Admin session expired. Please sign in again.");
+      const token = await user.getIdToken();
+      const response = await fetch("/api/admin/learning-catalog", {
+        method: "PATCH",
+        headers: { "Content-Type": "application/json", Authorization: `Bearer ${token}` },
+        body: JSON.stringify({ kind: "explore-category", id: category.id, status: nextStatus }),
+      });
+      const result = await response.json().catch(() => null);
+      if (!response.ok || result?.success !== true) throw new Error(result?.message || "Category status update failed");
+      setCustomCategories((current) => current.map((item) => item.id === category.id ? { ...item, status: nextStatus } : item));
+      setNotice(nextStatus === "published" ? "Custom Explore category approved and published." : "Custom Explore category unpublished.");
+    } catch (error) {
+      setNotice(error instanceof Error ? error.message : "Category status update failed");
     } finally {
       setUpdatingNodeId("");
     }
