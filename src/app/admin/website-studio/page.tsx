@@ -145,7 +145,8 @@ export default function WebsiteStudioPage() {
   function addCategory() {
     const label = newCategoryLabel.trim().slice(0, 24);
     const filter = (newCategoryFilter.trim() || label).slice(0, 40);
-    const id = label.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "");
+    const slug = label.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "");
+    const id = slug || `category-${crypto.randomUUID().slice(0, 8)}`;
     if (!label || !filter || !id || config.homeCategories.length >= 12 || config.homeCategories.some((item) => item.id === id)) return;
     setConfig((current) => ({ ...current, homeCategories: [...current.homeCategories, { id, label, filter, enabled: true }] }));
     setNewCategoryLabel("");
