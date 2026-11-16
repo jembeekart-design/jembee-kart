@@ -23,7 +23,7 @@ test("question numbers are discovered from approved videos without requiring Adm
   assert.match(answers, /schoolQuestionKey/);
   assert.ok(answers.includes("if (!questionNumber)"));
   assert.match(answers, /Published chapter not found/);
-  assert.ok(answers.includes(String.raw`const questionNumberPattern = /^[a-z]{0,3}\.\s*\d+(?:\s*\([a-z0-9]+\))?(?:[.-]\d+)?$/i;`));
+  assert.ok(answers.includes(String.raw`const questionNumberPattern = /^[a-z]{0,3}\.?\s*\d+(?:\s*\([a-z0-9]+\))?(?:[.-]\d+)?$/i;`));
   assert.ok(answers.includes(String.raw`replace(/\s+/g, "")`));
   const acceptedQuestionNumber = /^[a-z]{0,3}\.?\s*\d+(?:\s*\([a-z0-9]+\))?(?:[.-]\d+)?$/i;
   for (const sample of ["1", "1(a)", "Q.2", "2.1"]) assert.ok(acceptedQuestionNumber.test(sample), `Expected ${sample} to be valid`);
