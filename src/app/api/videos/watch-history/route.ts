@@ -45,8 +45,9 @@ export async function GET(req: NextRequest) {
       // are listed; paid access must be re-authorized by the purchase flow.
       if (
         video?.status !== "approved" || video?.active !== true ||
-        video?.moderation !== "safe" || video?.videoAccess !== "free" ||
-        video?.videoFormat !== "long"
+        video?.moderation !== "safe" ||
+        (video?.videoAccess !== "free" && video?.videoAccess !== undefined) ||
+        video?.paidVideoStatus === "payment_integration_pending" || video?.videoFormat !== "long"
       ) return null;
       const duration = Number(record.durationSeconds);
       const position = Number(record.positionSeconds);
@@ -79,7 +80,10 @@ export async function POST(req: NextRequest) {
     if (Buffer.byteLength(raw, "utf8") > 4 * 1024) {
       return NextResponse.json({ success: false, message: "Request too large" }, { status: 413 });
     }
-    const body = JSON.parse(raw) as Record<string, unknown>;
+    let body: Record<string, unknown>;
+    try { body = JSON.parse(raw) as Record<string, unknown>; } catch {
+      return NextResponse.json({ success: false, message: "Invalid request" }, { status: 400 });
+    }
     const videoId = body.videoId;
     const positionSeconds = body.positionSeconds;
     const durationSeconds = body.durationSeconds;
@@ -102,8 +106,9 @@ export async function POST(req: NextRequest) {
       const video = videoSnap.data();
       if (
         !videoSnap.exists || video?.status !== "approved" || video?.active !== true ||
-        video?.moderation !== "safe" || video?.videoAccess !== "free" ||
-        video?.videoFormat !== "long"
+        video?.moderation !== "safe" ||
+        (video?.videoAccess !== "free" && video?.videoAccess !== undefined) ||
+        video?.paidVideoStatus === "payment_integration_pending" || video?.videoFormat !== "long"
       ) return "UNAVAILABLE" as const;
 
       const previous = historySnap.data();
