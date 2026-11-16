@@ -9,6 +9,7 @@ type HomeSectionKey = "learning" | "shorts" | "longVideos";
 type HomeCategory = { id: string; label: string; filter: string; enabled: boolean };
 type FeaturedCreator = { creatorId: string; label: string; enabled: boolean };
 type FeaturedPlaylist = { id: string; title: string; description: string; videoIds: string[]; enabled: boolean };
+type FeaturedVideo = { videoId: string; label: string; startsAt: string; endsAt: string; enabled: boolean };
 type NavigationKey = "home" | "shorts" | "explore" | "learning" | "history" | "liked";
 const DEFAULT_HOME_CATEGORIES: HomeCategory[] = [
   { id: "education", label: "Education", filter: "education", enabled: true },
@@ -48,6 +49,7 @@ const DEFAULT_CONFIG = {
   navigationLabels: DEFAULT_NAVIGATION_LABELS,
   featuredCreators: [] as FeaturedCreator[],
   featuredPlaylists: [] as FeaturedPlaylist[],
+  featuredVideos: [] as FeaturedVideo[],
 };
 
 type SiteExperience = {
@@ -71,6 +73,7 @@ type SiteExperience = {
   navigationLabels: Record<NavigationKey, string>;
   featuredCreators: FeaturedCreator[];
   featuredPlaylists: FeaturedPlaylist[];
+  featuredVideos: FeaturedVideo[];
 };
 type ToggleKey = "announcementEnabled" | "showLearningBanner" | "showShorts" | "showLongVideos" | "showHomeAds" | "compactCards";
 type TextKey = "siteName" | "tagline" | "heroTitle" | "heroSubtitle" | "announcementText";
@@ -128,7 +131,8 @@ export default function WebsiteStudioPage() {
           const navigationLabels = { ...DEFAULT_NAVIGATION_LABELS, ...(stored.navigationLabels && typeof stored.navigationLabels === "object" ? stored.navigationLabels : {}) };
           const featuredCreators = Array.isArray(stored.featuredCreators) ? stored.featuredCreators.filter((item): item is FeaturedCreator => !!item && typeof item.creatorId === "string" && typeof item.label === "string" && typeof item.enabled === "boolean").slice(0, 8) : [];
           const featuredPlaylists = Array.isArray(stored.featuredPlaylists) ? stored.featuredPlaylists.filter((item): item is FeaturedPlaylist => !!item && typeof item.id === "string" && typeof item.title === "string" && typeof item.description === "string" && Array.isArray(item.videoIds) && item.videoIds.every((id) => typeof id === "string") && typeof item.enabled === "boolean").slice(0, 8) : [];
-          const next = { ...DEFAULT_CONFIG, ...stored, sectionOrder, homeCategories, navigationLabels, featuredCreators, featuredPlaylists };
+          const featuredVideos = Array.isArray(stored.featuredVideos) ? stored.featuredVideos.filter((item): item is FeaturedVideo => !!item && typeof item.videoId === "string" && typeof item.label === "string" && typeof item.startsAt === "string" && typeof item.endsAt === "string" && typeof item.enabled === "boolean").slice(0, 12) : [];
+          const next = { ...DEFAULT_CONFIG, ...stored, sectionOrder, homeCategories, navigationLabels, featuredCreators, featuredPlaylists, featuredVideos };
           setConfig(next);
           applyBrand(next);
         } else {
@@ -151,6 +155,10 @@ export default function WebsiteStudioPage() {
   const [newPlaylistTitle, setNewPlaylistTitle] = useState("");
   const [newPlaylistDescription, setNewPlaylistDescription] = useState("");
   const [newPlaylistVideoIds, setNewPlaylistVideoIds] = useState("");
+  const [newFeaturedVideoId, setNewFeaturedVideoId] = useState("");
+  const [newFeaturedVideoLabel, setNewFeaturedVideoLabel] = useState("");
+  const [newFeaturedVideoStart, setNewFeaturedVideoStart] = useState("");
+  const [newFeaturedVideoEnd, setNewFeaturedVideoEnd] = useState("");
 
   function updateCategory(id: string, patch: Partial<HomeCategory>) {
     setConfig((current) => ({ ...current, homeCategories: current.homeCategories.map((item) => item.id === id ? { ...item, ...patch } : item) }));
@@ -216,6 +224,25 @@ export default function WebsiteStudioPage() {
 
   function updateFeaturedPlaylist(id: string, patch: Partial<FeaturedPlaylist>) {
     setConfig((current) => ({ ...current, featuredPlaylists: current.featuredPlaylists.map((item) => item.id === id ? { ...item, ...patch } : item) }));
+    setNotice("");
+  }
+
+  function addFeaturedVideo() {
+    const videoId = newFeaturedVideoId.trim().slice(0, 128);
+    const label = newFeaturedVideoLabel.trim().slice(0, 60);
+    if (!videoId || !label || config.featuredVideos.length >= 12 || config.featuredVideos.some((item) => item.videoId === videoId)) return;
+    if ((newFeaturedVideoStart && !Number.isFinite(Date.parse(newFeaturedVideoStart))) || (newFeaturedVideoEnd && !Number.isFinite(Date.parse(newFeaturedVideoEnd)))) {
+      setError("Schedule की तारीख और समय सही दर्ज करें।"); return;
+    }
+    const startsAt = newFeaturedVideoStart ? new Date(newFeaturedVideoStart).toISOString() : "";
+    const endsAt = newFeaturedVideoEnd ? new Date(newFeaturedVideoEnd).toISOString() : "";
+    if (startsAt && endsAt && Date.parse(endsAt) <= Date.parse(startsAt)) { setError("End time, start time के बाद होना चाहिए।"); return; }
+    setConfig((current) => ({ ...current, featuredVideos: [...current.featuredVideos, { videoId, label, startsAt, endsAt, enabled: true }] }));
+    setNewFeaturedVideoId(""); setNewFeaturedVideoLabel(""); setNewFeaturedVideoStart(""); setNewFeaturedVideoEnd(""); setError(""); setNotice("");
+  }
+
+  function updateFeaturedVideo(videoId: string, patch: Partial<FeaturedVideo>) {
+    setConfig((current) => ({ ...current, featuredVideos: current.featuredVideos.map((item) => item.videoId === videoId ? { ...item, ...patch } : item) }));
     setNotice("");
   }
 
@@ -389,6 +416,19 @@ export default function WebsiteStudioPage() {
               </div>
               <button type="button" onClick={addFeaturedPlaylist} disabled={!newPlaylistTitle.trim() || !newPlaylistVideoIds.trim() || config.featuredPlaylists.length >= 8} className="mt-3 rounded-xl bg-cyan-300 px-4 py-2 text-sm font-bold text-slate-950 disabled:opacity-40">Add playlist</button>
               <div className="mt-4 space-y-2">{config.featuredPlaylists.map((item) => <div key={item.id} className="rounded-xl border border-white/10 bg-[#090d16] p-3"><div className="flex items-center justify-between gap-3"><p className="text-sm font-semibold">{item.title}</p><div className="flex items-center gap-3"><label className="flex items-center gap-2 text-xs"><input type="checkbox" checked={item.enabled} onChange={(event) => updateFeaturedPlaylist(item.id, { enabled: event.target.checked })}/>Show</label><button type="button" onClick={() => setConfig((current) => ({ ...current, featuredPlaylists: current.featuredPlaylists.filter((playlist) => playlist.id !== item.id) }))} className="text-xs text-rose-300">Remove</button></div></div><p className="mt-1 text-xs text-slate-500">{item.videoIds.length} video IDs · {item.description}</p></div>)}</div>
+            </section>
+
+            <section className="rounded-3xl border border-white/10 bg-[#111827] p-5 sm:p-7">
+              <h2 className="text-lg font-bold">Featured Video & Scheduling</h2>
+              <p className="mt-1 text-xs leading-5 text-slate-400">केवल existing approved public Long Video का ID जोड़ें। Start/end समय वैकल्पिक हैं; समय न देने पर video तुरंत दिखेगा। अधिकतम 12 placements।</p>
+              <div className="mt-4 grid gap-3 sm:grid-cols-2">
+                <input value={newFeaturedVideoId} maxLength={128} onChange={(event) => setNewFeaturedVideoId(event.target.value)} placeholder="Public video ID" aria-label="Featured video ID" className="min-h-11 rounded-xl border border-white/10 bg-[#090d16] px-3 text-sm"/>
+                <input value={newFeaturedVideoLabel} maxLength={60} onChange={(event) => setNewFeaturedVideoLabel(event.target.value)} placeholder="Home label" aria-label="Featured video label" className="min-h-11 rounded-xl border border-white/10 bg-[#090d16] px-3 text-sm"/>
+                <label className="text-xs text-slate-400">Start showing (optional)<input type="datetime-local" value={newFeaturedVideoStart} onChange={(event) => setNewFeaturedVideoStart(event.target.value)} className="mt-2 min-h-11 w-full rounded-xl border border-white/10 bg-[#090d16] px-3 text-sm text-white"/></label>
+                <label className="text-xs text-slate-400">Stop showing (optional)<input type="datetime-local" value={newFeaturedVideoEnd} onChange={(event) => setNewFeaturedVideoEnd(event.target.value)} className="mt-2 min-h-11 w-full rounded-xl border border-white/10 bg-[#090d16] px-3 text-sm text-white"/></label>
+              </div>
+              <button type="button" onClick={addFeaturedVideo} disabled={!newFeaturedVideoId.trim() || !newFeaturedVideoLabel.trim() || config.featuredVideos.length >= 12} className="mt-3 rounded-xl bg-cyan-300 px-4 py-2 text-sm font-bold text-slate-950 disabled:opacity-40">Add scheduled video</button>
+              <div className="mt-4 space-y-2">{config.featuredVideos.map((item) => <div key={item.videoId} className="flex flex-wrap items-center gap-3 rounded-xl border border-white/10 bg-[#090d16] p-3"><div className="min-w-0 flex-1"><p className="text-sm font-semibold">{item.label}</p><p className="truncate text-xs text-slate-500">{item.videoId}</p><p className="mt-1 text-[11px] text-slate-500">{item.startsAt ? "From " + new Date(item.startsAt).toLocaleString() : "Immediate"} · {item.endsAt ? "Until " + new Date(item.endsAt).toLocaleString() : "No end time"}</p></div><label className="flex items-center gap-2 text-xs"><input type="checkbox" checked={item.enabled} onChange={(event) => updateFeaturedVideo(item.videoId, { enabled: event.target.checked })}/>Show</label><button type="button" onClick={() => setConfig((current) => ({ ...current, featuredVideos: current.featuredVideos.filter((video) => video.videoId !== item.videoId) }))} className="text-xs text-rose-300">Remove</button></div>)}</div>
             </section>
 
             <section className="rounded-3xl border border-white/10 bg-[#111827] p-5 sm:p-7">
