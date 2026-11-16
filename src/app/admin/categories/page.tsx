@@ -18,15 +18,28 @@ export default function AdminCategoriesPage() {
   const load = useCallback(async () => {
     setBusy(true);
     try {
-      const response = await fetch("/api/content-categories", { cache: "no-store" });
-      const data = await response.json();
-      if (!response.ok || data.success !== true) throw new Error(data.message || "Catalog load failed");
+      const user = auth.currentUser;
+      if (!user) throw new Error("Admin session expired. Please sign in again.");
+      const token = await user.getIdToken();
+      const [response, adminResponse] = await Promise.all([
+        fetch("/api/content-categories", { cache: "no-store" }),
+        fetch("/api/admin/learning-catalog", {
+          headers: { Authorization: `Bearer ${token}` },
+          cache: "no-store",
+        }),
+      ]);
+      const [data, adminData] = await Promise.all([
+        response.json().catch(() => null),
+        adminResponse.json().catch(() => null),
+      ]);
+      if (!response.ok || data?.success !== true) throw new Error(data?.message || "Category catalog load failed");
+      if (!adminResponse.ok || adminData?.success !== true) throw new Error(adminData?.message || "Admin Learning catalog load failed");
       const merged = new Map(DEFAULT_EXPLORE_CATEGORIES.map((item) => [item.id, item]));
       for (const item of (data.categories || []) as ExploreCategoryRecord[]) {
         if (item && typeof item.id === "string") merged.set(item.id, { ...merged.get(item.id), ...item });
       }
       setCategories([...merged.values()]);
-      setNodes(Array.isArray(data.schoolNodes) ? data.schoolNodes : []);
+      setNodes(Array.isArray(adminData.nodes) ? adminData.nodes : []);
       setNotice("");
     } catch (error) {
       setNotice(error instanceof Error ? error.message : "Catalog load failed");
