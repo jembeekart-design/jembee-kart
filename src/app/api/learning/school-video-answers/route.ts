@@ -6,11 +6,11 @@ export const dynamic = "force-dynamic";
 
 const noStore = { "Cache-Control": "no-store, max-age=0" };
 const safeId = /^[a-z0-9][a-z0-9_-]{1,63}$/;
-const questionNumberPattern = /^[a-z]{0,3}\\.?\\s*\\d+(?:\\s*\\([a-z0-9]+\\))?(?:[.-]\\d+)?$/i;
+const questionNumberPattern = /^[a-z]{0,3}\.?\s*\d+(?:\s*\([a-z0-9]+\))?(?:[.-]\d+)?$/i;
 
 type VideoDocument = { id: string; data: () => Record<string, unknown> };
 
-const normalizeQuestionNumber = (value: string) => value.toLowerCase().replace(/\\s+/g, "");
+const normalizeQuestionNumber = (value: string) => value.toLowerCase().replace(/\s+/g, "");
 
 function isVisibleVideo(data: Record<string, unknown>) {
   const isApprovedAndSafe =
