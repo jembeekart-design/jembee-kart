@@ -47,7 +47,8 @@
     "test:shorts-comment-replies": "node --test src/app/api/shorts/comments/replies/__tests__/route-contract.test.mjs",
     "test:shorts-reply-delete": "node --test src/app/api/shorts/comments/replies/delete/__tests__/route-contract.test.mjs",
     "test:shorts-reply-like": "node --test src/app/api/shorts/comments/replies/like/__tests__/route-contract.test.mjs",
-    "test:teacher-verification": "node --test src/modules/teachers/__tests__/application-contract.test.mjs"
+    "test:teacher-verification": "node --test src/modules/teachers/__tests__/application-contract.test.mjs",
+    "test:learning-answer-gates": "node --test src/app/api/learning/school-video-answers/__tests__/route-contract.test.mjs"
   },
   "dependencies": {
     "@mediapipe/tasks-vision": "^1.0.1",
