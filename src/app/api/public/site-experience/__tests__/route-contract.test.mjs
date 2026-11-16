@@ -24,7 +24,7 @@ test("public site experience allowlists fields and validates input types", () =>
     "siteName", "tagline", "heroTitle", "heroSubtitle",
     "primaryColor", "accentColor", "pageColor", "surfaceColor",
     "announcementEnabled", "announcementText", "showLearningBanner",
-    "showShorts", "showLongVideos", "showHomeAds", "compactCards", "sectionOrder", "homeCategories", "navigationLabels", "featuredCreators", "featuredPlaylists",
+    "showShorts", "showLongVideos", "showHomeAds", "compactCards", "sectionOrder", "homeCategories", "navigationLabels", "featuredCreators", "featuredPlaylists", "featuredVideos",
   ]) {
     assert.match(route, new RegExp("\\b" + field + ":"));
   }
