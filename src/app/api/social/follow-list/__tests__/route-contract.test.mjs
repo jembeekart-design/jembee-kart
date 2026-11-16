@@ -22,3 +22,10 @@ test("follow list is bounded and returns limited public profile fields", () => {
   assert.match(route, /photoUrl:/);
   assert.doesNotMatch(route, /email:|phone:|wallet|earnings/);
 });
+
+test("cursor pagination validates the cursor and advances deterministically", () => {
+  assert.match(route, /searchParams\.get\("cursor"\)/);
+  assert.match(route, /orderBy\("__name__"\)/);
+  assert.match(route, /startAfter\(cursor\)/);
+  assert.match(route, /nextCursor:/);
+});
