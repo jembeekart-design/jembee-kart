@@ -32,6 +32,7 @@ const DEFAULT_SITE_EXPERIENCE = {
   navigationLabels: { home: "Home", shorts: "Shorts", explore: "Explore", learning: "School Learning", history: "History", liked: "Liked videos" },
   featuredCreators: [],
   featuredPlaylists: [],
+  featuredVideos: [],
 };
 
 function safeText(value: unknown, fallback: string, maxLength: number) {
@@ -99,6 +100,24 @@ function safeFeaturedPlaylists(value: unknown) {
   });
 }
 
+function safeFeaturedVideos(value: unknown) {
+  if (!Array.isArray(value)) return [];
+  const seen = new Set<string>();
+  return value.slice(0, 12).flatMap((item) => {
+    if (!item || typeof item !== "object") return [];
+    const candidate = item as Record<string, unknown>;
+    const videoId = safeText(candidate.videoId, "", 128);
+    const label = safeText(candidate.label, "", 60);
+    const startsAt = candidate.startsAt === "" ? "" : typeof candidate.startsAt === "string" && Number.isFinite(Date.parse(candidate.startsAt)) ? new Date(candidate.startsAt).toISOString() : "";
+    const endsAt = candidate.endsAt === "" ? "" : typeof candidate.endsAt === "string" && Number.isFinite(Date.parse(candidate.endsAt)) ? new Date(candidate.endsAt).toISOString() : "";
+    if (!videoId || !label || typeof candidate.enabled !== "boolean" || seen.has(videoId)) return [];
+    if ((candidate.startsAt !== "" && !startsAt) || (candidate.endsAt !== "" && !endsAt)) return [];
+    if (startsAt && endsAt && Date.parse(endsAt) <= Date.parse(startsAt)) return [];
+    seen.add(videoId);
+    return [{ videoId, label, startsAt, endsAt, enabled: candidate.enabled }];
+  });
+}
+
 function safeSectionOrder(value: unknown): string[] {
   const allowed = ["learning", "shorts", "longVideos"];
   const requested = Array.isArray(value) ? value.filter((item): item is string => typeof item === "string" && allowed.includes(item)) : [];
@@ -131,6 +150,7 @@ export async function GET() {
       navigationLabels: safeNavigationLabels(stored.navigationLabels),
       featuredCreators: safeFeaturedCreators(stored.featuredCreators),
       featuredPlaylists: safeFeaturedPlaylists(stored.featuredPlaylists),
+      featuredVideos: safeFeaturedVideos(stored.featuredVideos),
     };
 
     return NextResponse.json(experience, {
