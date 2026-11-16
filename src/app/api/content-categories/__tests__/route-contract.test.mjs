@@ -40,3 +40,7 @@ test("admin catalog page is read-only and directs teachers to the upload flow", 
 test("Explore reads the published catalog for creator-contributed categories", () => {
   assert.match(explorePage, /teacher \/ uploader/);
 });
+
+test("catalog text sanitizer removes actual control characters", () => {
+  assert.ok(route.includes(String.raw\`replace(/[\\u0000-\\u001f\\u007f]/g, "")\`));
+});
