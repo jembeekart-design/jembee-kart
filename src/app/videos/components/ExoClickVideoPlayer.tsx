@@ -4,6 +4,7 @@ import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { getExoClickLongVideoVastUrl } from "@/lib/ads/exoclick";
 import type { LongVideoAdAudienceRules } from "@/lib/ads/videoAdsRules";
 import { sendAdDiagnostic } from "@/lib/ads/diagnostics";
+import { auth } from "@/firebase/config";
 
 type ImaEvent = { getAdsManager(video: HTMLVideoElement): ImaAdsManager };
 type ImaManagerEvent = { getType(): string };
@@ -56,8 +57,8 @@ function loadImaSdk(): Promise<ImaNamespace> {
 type PublicVideoAdConfig = { masterEnabled?: boolean; providerReady?: boolean; longVideoAds?: { enabled?: boolean; free?: LongVideoAdAudienceRules; paid?: LongVideoAdAudienceRules } };
 
 export default function ExoClickVideoPlayer({
-  src, poster, title, videoAccess = "free",
-}: { src: string; poster?: string; title?: string; videoAccess?: "free" | "paid" }) {
+  src, poster, title, videoAccess = "free", videoId,
+}: { src: string; poster?: string; title?: string; videoAccess?: "free" | "paid"; videoId?: string }) {
   const videoRef = useRef<HTMLVideoElement>(null);
   const adContainerRef = useRef<HTMLDivElement>(null);
   const managerRef = useRef<ImaAdsManager | null>(null);
@@ -65,6 +66,8 @@ export default function ExoClickVideoPlayer({
   const loaderRef = useRef<ImaAdsLoader | null>(null);
   const adTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const contentStartedRef = useRef(false);
+  const lastHistorySaveRef = useRef(0);
+  const restoredPositionRef = useRef(false);
   const adInProgressRef = useRef(false);
   const adCountRef = useRef(0);
   const lastAdAtRef = useRef(-Infinity);
@@ -212,6 +215,46 @@ export default function ExoClickVideoPlayer({
     void video.play().catch(() => setMessage("Tap Play to start the video."));
   }, [adsEnabled, audienceRules?.preRollEnabled, sdkReady, requestAd]);
 
+  const saveWatchProgress = useCallback(async () => {
+    const video = videoRef.current;
+    const user = auth.currentUser;
+    if (!videoId || videoAccess !== "free" || !user || !video || !Number.isFinite(video.duration) || video.duration <= 0) return;
+    const now = Date.now();
+    if (now - lastHistorySaveRef.current < 15000) return;
+    lastHistorySaveRef.current = now;
+    try {
+      const token = await user.getIdToken();
+      await fetch("/api/videos/watch-history", {
+        method: "POST",
+        headers: { "Content-Type": "application/json", Authorization: `Bearer ${token}` },
+        body: JSON.stringify({ videoId, positionSeconds: video.currentTime, durationSeconds: video.duration }),
+        keepalive: true,
+      });
+    } catch { /* History must never interrupt playback. */ }
+  }, [videoId, videoAccess]);
+
+  const restoreWatchProgress = useCallback(async () => {
+    const user = auth.currentUser;
+    const video = videoRef.current;
+    if (!videoId || videoAccess !== "free" || !user || !video || restoredPositionRef.current) return;
+    restoredPositionRef.current = true;
+    try {
+      const token = await user.getIdToken();
+      const response = await fetch("/api/videos/watch-history", {
+        headers: { Authorization: `Bearer ${token}` }, cache: "no-store",
+      });
+      const result = await response.json().catch(() => null);
+      const record = response.ok && Array.isArray(result?.history)
+        ? result.history.find((item: { videoId?: string }) => item.videoId === videoId)
+        : null;
+      if (record && Number.isFinite(record.positionSeconds) && record.positionSeconds > 5 &&
+          Number.isFinite(record.durationSeconds) && record.positionSeconds < record.durationSeconds - 10 &&
+          video.readyState >= HTMLMediaElement.HAVE_METADATA) {
+        video.currentTime = record.positionSeconds;
+      }
+    } catch { /* Resume is optional; playback remains available. */ }
+  }, [videoId, videoAccess]);
+
   const checkMidroll = useCallback(() => {
     const video = videoRef.current;
     if (!video || !adsEnabled || !sdkReady || !contentStartedRef.current || adInProgressRef.current) return;
@@ -235,6 +278,8 @@ export default function ExoClickVideoPlayer({
 
   useEffect(() => {
     contentStartedRef.current = false;
+    restoredPositionRef.current = false;
+    lastHistorySaveRef.current = 0;
     adInProgressRef.current = false;
     adCountRef.current = 0;
     lastAdAtRef.current = -Infinity;
@@ -249,7 +294,7 @@ export default function ExoClickVideoPlayer({
 
   return (
     <div className="relative aspect-video w-full overflow-hidden bg-black">
-      <video ref={videoRef} src={src} poster={poster} controls={contentStarted && !adPlaying} playsInline preload="metadata" className="h-full w-full bg-black object-contain" aria-label={title || "JEMBEE PLAY video"} onTimeUpdate={checkMidroll} onWaiting={() => { /* Playback-time schedule naturally pauses while buffering. */ }} onEnded={() => { contentStartedRef.current = false; setContentStarted(false); }} />
+      <video ref={videoRef} src={src} poster={poster} controls={contentStarted && !adPlaying} playsInline preload="metadata" className="h-full w-full bg-black object-contain" aria-label={title || "JEMBEE PLAY video"} onLoadedMetadata={() => { void restoreWatchProgress(); }} onTimeUpdate={() => { checkMidroll(); if (!videoRef.current?.paused && !adPlaying) void saveWatchProgress(); }} onPause={() => { void saveWatchProgress(); }} onWaiting={() => { /* Playback-time schedule naturally pauses while buffering. */ }} onEnded={() => { contentStartedRef.current = false; setContentStarted(false); }} />
       <div ref={adContainerRef} className={`absolute inset-0 z-10 ${adPlaying ? "pointer-events-auto" : "pointer-events-none"}`} aria-label="Advertisement player" />
       {!contentStarted && !adPlaying ? (
         <button type="button" onClick={startPlayback} className="absolute inset-0 z-20 flex items-center justify-center bg-black/25 text-white" aria-label="Play video">
