@@ -7,7 +7,7 @@ const route = await readFile(new URL("../../../app/api/social/follow/route.ts", 
 
 test("client follow actions use authenticated server API instead of direct Firestore writes", () => {
   assert.match(client, /\/api\/social\/follow/);
-  assert.match(client, /Authorization: `Bearer ${token}`/);
+  assert.ok(client.includes("Authorization: `Bearer ${token}`"));
   assert.doesNotMatch(client, /runTransaction|transaction\.set|transaction\.update/);
 });
 
