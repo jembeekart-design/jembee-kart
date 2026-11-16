@@ -13,36 +13,28 @@ export async function GET(req: Request) {
     const db = getAdminDb();
     // A previously approved answer must stop appearing when its question or
     // any ancestor in the learning path is unpublished or removed.
-    const expectedParents = [
-      { type: "question", parent: "chapter" },
-      { type: "chapter", parent: "subjectOrBook" },
-      { type: "subject", parent: "class" },
-      { type: "book", parent: "class" },
-      { type: "class", parent: "school" },
-      { type: "school", parent: "board" },
-      { type: "board", parent: null },
-    ] as const;
-    const chain: Record<string, Record<string, unknown>> = {};
-    let currentId = questionId;
-    let expectedType: string = "question";
-    for (let depth = 0; depth < 7; depth += 1) {
-      const nodeSnapshot = await db.collection("schoolLearningNodes").doc(currentId).get();
-      const node = nodeSnapshot.data();
-      if (!nodeSnapshot.exists || node?.status !== "published" || node?.type !== expectedType) {
-        return NextResponse.json({ success: true, videos: [] }, { headers: { "Cache-Control": "no-store, max-age=0" } });
-      }
-      chain[expectedType] = node as Record<string, unknown>;
-      const parentId = typeof node.parentId === "string" ? node.parentId : "";
-      if (expectedType === "board") {
-        if (parentId) return NextResponse.json({ success: true, videos: [] }, { headers: { "Cache-Control": "no-store, max-age=0" } });
-        break;
-      }
-      if (!parentId) return NextResponse.json({ success: true, videos: [] }, { headers: { "Cache-Control": "no-store, max-age=0" } });
-      currentId = parentId;
-      expectedType = expectedType === "question" ? "chapter"
-        : expectedType === "chapter" ? (chain.chapter?.parentType === "book" ? "book" : "subject")
-        : expectedType === "subject" || expectedType === "book" ? "class"
-        : expectedType === "class" ? "school" : "board";
+    const loadPublishedNode = async (id: unknown, allowedTypes: string[]) => {
+      if (typeof id !== "string" || !/^[a-z0-9][a-z0-9_-]{1,63}$/.test(id)) return null;
+      const snapshot = await db.collection("schoolLearningNodes").doc(id).get();
+      const data = snapshot.data();
+      if (!snapshot.exists || data?.status !== "published" || !allowedTypes.includes(String(data.type))) return null;
+      return { id: snapshot.id, data };
+    };
+    const question = await loadPublishedNode(questionId, ["question"]);
+    if (!question) return NextResponse.json({ success: true, videos: [] }, { headers: { "Cache-Control": "no-store, max-age=0" } });
+    const chapter = await loadPublishedNode(question.data.parentId, ["chapter"]);
+    if (!chapter) return NextResponse.json({ success: true, videos: [] }, { headers: { "Cache-Control": "no-store, max-age=0" } });
+    const subjectOrBook = await loadPublishedNode(chapter.data.parentId, ["subject", "book"]);
+    if (!subjectOrBook) return NextResponse.json({ success: true, videos: [] }, { headers: { "Cache-Control": "no-store, max-age=0" } });
+    const klass = await loadPublishedNode(subjectOrBook.data.parentId, ["class"]);
+    if (!klass) return NextResponse.json({ success: true, videos: [] }, { headers: { "Cache-Control": "no-store, max-age=0" } });
+    const school = await loadPublishedNode(klass.data.parentId, ["school"]);
+    if (!school) return NextResponse.json({ success: true, videos: [] }, { headers: { "Cache-Control": "no-store, max-age=0" } });
+    const board = await loadPublishedNode(school.data.parentId, ["board"]);
+    if (!board || school.data.parentId !== board.id || klass.data.parentId !== school.id ||
+        subjectOrBook.data.parentId !== klass.id || chapter.data.parentId !== subjectOrBook.id ||
+        question.data.parentId !== chapter.id) {
+      return NextResponse.json({ success: true, videos: [] }, { headers: { "Cache-Control": "no-store, max-age=0" } });
     }
     const snapshot = await db.collection("watchEarnVideos").where("schoolQuestionId", "==", questionId).limit(100).get();
     const videos = snapshot.docs.flatMap((doc) => {
