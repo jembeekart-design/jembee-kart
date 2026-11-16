@@ -51,9 +51,10 @@ export default function VideoCard({
   const videoRef = useRef<HTMLVideoElement>(null);
 
   useEffect(() => {
+    let active = true;
     const unsubscribe = onAuthStateChanged(auth, async (user) => {
       if (!user) {
-        setIsSaved(false);
+        if (active) setIsSaved(false);
         return;
       }
       try {
@@ -63,14 +64,17 @@ export default function VideoCard({
           cache: "no-store",
         });
         const result = await response.json().catch(() => null);
-        if (response.ok && result?.success) {
+        if (active && response.ok && result?.success) {
           setIsSaved(result.saved === true);
         }
       } catch (error) {
         console.warn("Unable to load saved state for video card:", error);
       }
     });
-    return () => unsubscribe();
+    return () => {
+      active = false;
+      unsubscribe();
+    };
   }, [video.id]);
 
   const handleSave = async () => {
