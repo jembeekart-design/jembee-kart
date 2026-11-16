@@ -127,6 +127,29 @@ export default function AdminCategoriesPage() {
             {categories.map((item) => <article key={item.id} className="rounded-xl border border-white/10 bg-black/20 p-3"><h3 className="font-semibold">{item.name}</h3><p className="mt-1 text-xs text-slate-400">{item.description}</p><p className="mt-2 text-xs text-cyan-200">{item.topics.join(" · ")}</p></article>)}
           </div>
         </section>
+        <section className="mt-6 rounded-3xl border border-violet-300/20 bg-violet-300/[0.04] p-5">
+          <h2 className="text-lg font-bold">Custom Explore Category Moderation ({customCategories.length})</h2>
+          <p className="mt-1 text-xs text-slate-400">Creator द्वारा जोड़ी गई Explore categories पहले pending रहेंगी। Admin review के बाद publish कर सकता है।</p>
+          {customCategories.length === 0 ? (
+            <p className="mt-4 rounded-xl border border-white/10 bg-black/20 p-4 text-sm text-slate-400">अभी कोई custom Explore category review के लिए नहीं है।</p>
+          ) : (
+            <div className="mt-4 grid gap-3 sm:grid-cols-2">
+              {customCategories.map((category) => (
+                <article key={category.id} className="rounded-xl border border-white/10 bg-black/20 p-4">
+                  <div className="flex items-start justify-between gap-3">
+                    <div className="min-w-0">
+                      <h3 className="font-semibold">{category.name}</h3>
+                      <p className="mt-1 text-xs text-slate-400">{category.description || "No description"}</p>
+                      <p className="mt-2 text-xs text-cyan-200">{category.topics.join(" · ")}</p>
+                      <p className="mt-2 text-xs text-slate-400">Status: <span className={category.status === "published" ? "text-emerald-300" : "text-amber-300"}>{category.status || "unknown"}</span></p>
+                    </div>
+                    <button type="button" disabled={updatingNodeId === category.id || !["pending", "published", "unpublished"].includes(category.status || "")} onClick={() => void updateCategoryStatus(category)} className="shrink-0 rounded-lg border border-white/15 px-3 py-2 text-xs font-semibold disabled:opacity-40">{updatingNodeId === category.id ? "Saving…" : category.status === "pending" ? "Approve & Publish" : category.status === "unpublished" ? "Publish" : "Unpublish"}</button>
+                  </div>
+                </article>
+              ))}
+            </div>
+          )}
+        </section>
         <section className="mt-6 rounded-3xl border border-white/10 bg-white/[0.04] p-5">
           <h2 className="text-lg font-bold">School Learning Hierarchy ({nodes.length} entries)</h2>
           <p className="mt-1 text-xs text-slate-400">Board → School → Class → Subject / Book → Chapter → Question · Admin can publish or unpublish entries. Every change is audited.</p>
