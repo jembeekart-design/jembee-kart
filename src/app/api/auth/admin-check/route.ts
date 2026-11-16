@@ -30,9 +30,12 @@ export async function GET(req: Request) {
     if (role !== "admin" && role !== "super_admin") {
       const fallback = await users
         .where("uid", "==", decoded.uid)
-        .limit(1)
+        .limit(20)
         .get();
-      role = fallback.docs[0]?.data()?.role;
+      role = fallback.docs.find((item) => {
+        const candidateRole = item.data()?.role;
+        return candidateRole === "admin" || candidateRole === "super_admin";
+      })?.data()?.role;
     }
 
     const isAdmin = role === "admin" || role === "super_admin";
