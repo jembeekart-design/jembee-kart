@@ -1,0 +1,26 @@
+import test from "node:test";
+import assert from "node:assert/strict";
+import { readFile } from "node:fs/promises";
+
+const route = await readFile(new URL("../route.ts", import.meta.url), "utf8");
+
+test("public site experience reads only the dedicated admin settings document", () => {
+  assert.match(route, /collection\("admin_settings"\)\.doc\("site_experience"\)/);
+  assert.match(route, /DEFAULT_SITE_EXPERIENCE/);
+  assert.match(route, /safeText/);
+  assert.match(route, /safeColor/);
+  assert.match(route, /safeBoolean/);
+});
+
+test("public site experience allowlists fields and validates input types", () => {
+  for (const field of [
+    "siteName", "tagline", "heroTitle", "heroSubtitle",
+    "primaryColor", "accentColor", "pageColor", "surfaceColor",
+    "announcementEnabled", "announcementText", "showLearningBanner",
+    "showShorts", "showLongVideos", "showHomeAds", "compactCards",
+  ]) {
+    assert.match(route, new RegExp("\\\\b" + field + ":"));
+  }
+  assert.match(route, /max-age=30/);
+  assert.doesNotMatch(route, /process\.env|private_key|refresh_token|apiKey/i);
+});
