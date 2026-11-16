@@ -136,3 +136,14 @@ This log records source changes only. It is not a production-readiness certifica
 - Found that repeated Unfollow calls decremented `followingCount` even when no relationship edge existed. Unfollow now reads both follower/following edges and is a no-op when neither exists; counter values are normalized before decrement.
 - Added follow-integrity contract test and `test:follow-integrity` script.
 - Verification: source and GitHub branch compare inspected; tests have not been run locally. TypeScript, ESLint, Firebase Emulator, end-to-end and production build remain unverified. No deployment, payout activation, or bulk upload performed.
+
+
+## Follow edge repair and notification idempotency — 16 November 2026
+
+- Follow now reads both relationship edges before writing. If legacy data contains only one edge, it repairs the missing edge without incrementing the follower's followingCount a second time.
+- A fully existing relationship still returns the existing Already following result; a genuinely new relationship increments the normalized finite followingCount once.
+- Follow notifications now use a deterministic recipient/sender document ID and merge writes, preventing duplicate notification documents on retries.
+- Notifications are emitted only for newly-created relationships, not when repairing a partial legacy edge.
+- Expanded the follow contract test to cover both-edge reads, partial-edge repair, one-time counter increment and deterministic notification identity.
+- Remaining count limitation: the inspected client Follow service updates only the follower's followingCount. The target creator's followersCount is not updated here, and Firestore rules must be checked before implementing a secure server-side counter path. Public follower-list access must not be widened merely to make counts work.
+- Verification limitation: contract tests have been authored but not executed. TypeScript, ESLint, Firebase Emulator, browser/device tests and production build remain unverified. No deployment or bulk upload performed.
