@@ -20,6 +20,7 @@ const DEFAULT_SITE_EXPERIENCE = {
   showLongVideos: true,
   showHomeAds: true,
   compactCards: false,
+  sectionOrder: ["learning", "shorts", "longVideos"],
 };
 
 function safeText(value: unknown, fallback: string, maxLength: number) {
@@ -32,6 +33,12 @@ function safeColor(value: unknown, fallback: string) {
 
 function safeBoolean(value: unknown, fallback: boolean) {
   return typeof value === "boolean" ? value : fallback;
+}
+
+function safeSectionOrder(value: unknown): string[] {
+  const allowed = ["learning", "shorts", "longVideos"];
+  const requested = Array.isArray(value) ? value.filter((item): item is string => typeof item === "string" && allowed.includes(item)) : [];
+  return [...new Set(requested), ...allowed.filter((item) => !requested.includes(item))];
 }
 
 export async function GET() {
