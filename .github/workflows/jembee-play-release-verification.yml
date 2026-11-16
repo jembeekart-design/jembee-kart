@@ -1,0 +1,36 @@
+name: JEMBEE PLAY release verification
+
+on:
+  push:
+    branches:
+      - main
+      - feat/jembee-premium-product-execution-2026-11-16
+  pull_request:
+    branches:
+      - main
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: jembee-play-quality-${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  release-verification:
+    name: Contract tests, TypeScript, ESLint and production build
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+    steps:
+      - name: Check out source
+        uses: actions/checkout@v4
+
+      - name: Set up Node.js 22
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+
+      - name: Verify release
+        run: bash scripts/verify-release.sh
