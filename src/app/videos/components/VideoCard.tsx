@@ -1,6 +1,8 @@
 "use client";
 
 import { useState, useRef, useEffect } from "react";
+import { onAuthStateChanged } from "firebase/auth";
+import { auth } from "@/firebase/config";
 import { motion, AnimatePresence } from "framer-motion";
 import { BadgeCheck, Music2, Pause, Play } from "lucide-react";
 import VideoActions from "./VideoActions";
@@ -42,9 +44,68 @@ export default function VideoCard({
 }: VideoCardProps) {
   const [isLiked, setIsLiked] = useState(false);
   const [isSaved, setIsSaved] = useState(false);
+  const [saving, setSaving] = useState(false);
+  const [saveNotice, setSaveNotice] = useState("");
   const [isPlaying, setIsPlaying] = useState(false);
   const [showOverlay, setShowOverlay] = useState(false);
   const videoRef = useRef<HTMLVideoElement>(null);
+
+  useEffect(() => {
+    const unsubscribe = onAuthStateChanged(auth, async (user) => {
+      if (!user) {
+        setIsSaved(false);
+        return;
+      }
+      try {
+        const token = await user.getIdToken();
+        const response = await fetch("/api/videos/save", {
+          headers: { Authorization: `Bearer ${token}` },
+          cache: "no-store",
+        });
+        const result = await response.json().catch(() => null);
+        if (response.ok && result?.success && Array.isArray(result.videoIds)) {
+          setIsSaved(result.videoIds.includes(video.id));
+        }
+      } catch (error) {
+        console.warn("Unable to load saved state for video card:", error);
+      }
+    });
+    return () => unsubscribe();
+  }, [video.id]);
+
+  const handleSave = async () => {
+    const user = auth.currentUser;
+    if (!user) {
+      setSaveNotice("Sign in to save this video.");
+      return;
+    }
+    if (saving) return;
+    setSaving(true);
+    setSaveNotice("");
+    try {
+      const token = await user.getIdToken();
+      const response = await fetch("/api/videos/save", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify({ videoId: video.id, saved: !isSaved }),
+      });
+      const result = await response.json().catch(() => null);
+      if (!response.ok || !result?.success) {
+        setSaveNotice(result?.message || "Could not update saved videos.");
+        return;
+      }
+      setIsSaved(result.saved === true);
+      setSaveNotice(result.saved ? "Saved." : "Removed from saved videos.");
+    } catch (error) {
+      console.error("Video card save failed:", error);
+      setSaveNotice("Saved videos are temporarily unavailable.");
+    } finally {
+      setSaving(false);
+    }
+  };
 
   // Synchronize active state with play/pause
   useEffect(() => {
@@ -149,10 +210,15 @@ export default function VideoCard({
         onLike={() => setIsLiked(!isLiked)}
         onComment={onComment}
         onShare={onShare}
-        onSave={() => setIsSaved(!isSaved)}
+        onSave={handleSave}
         isLiked={isLiked}
         isSaved={isSaved}
       />
+      {saveNotice && (
+        <p role="status" className="absolute bottom-4 right-3 z-40 max-w-[75%] rounded-lg bg-black/80 px-3 py-2 text-xs text-white">
+          {saving ? "Saving…" : saveNotice}
+        </p>
+      )}
     </div>
   );
 }
