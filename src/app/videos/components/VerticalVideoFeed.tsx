@@ -67,9 +67,9 @@ export default function VerticalVideoFeed({
   const libraryVideoId = requestedLibraryVideoId && /^[^/]{1,200}$/.test(requestedLibraryVideoId)
     ? requestedLibraryVideoId
     : null;
-  const [authorizedPaidVideos, setAuthorizedPaidVideos] = useState<Record<string, boolean>>(
-    () => paidVideoId ? { [paidVideoId]: true } : {}
-  );
+  // A URL parameter may select a video, but it must never grant playback access.
+  // Only PaidVideoGate can mark a video authorized after the server issues a verified session.
+  const [authorizedPaidVideos, setAuthorizedPaidVideos] = useState<Record<string, boolean>>({});
   const [toastMessage, setToastMessage] = useState<string | null>(null);
   const [activeVideoId, setActiveVideoId] = useState<string>(paidVideoId ?? libraryVideoId ?? "");
   const [activeAdId, setActiveAdId] = useState<string>("");
