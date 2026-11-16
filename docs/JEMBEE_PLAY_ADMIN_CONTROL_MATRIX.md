@@ -30,15 +30,16 @@ Settings are stored in admin_settings/site_experience. The public endpoint at /a
 | Main navigation labels | navigationLabels | Rename the six supported main navigation labels without changing their routes |
 | Featured creators | featuredCreators | Curate up to 8 creator IDs; Home links to the creator page and shows available public videos |
 | Featured playlists | featuredPlaylists | Curate up to 8 editorial playlists with up to 12 public video IDs each; Home shows matching public videos |
+| Featured video scheduling | featuredVideos | Schedule up to 12 existing approved public Long Videos by video ID, with optional start/end time; expired or not-yet-started placements stay hidden |
 
-The public endpoint validates colour values, text lengths, booleans, section order, category IDs/labels/filters, allowlisted navigation-label keys, creator IDs/labels, and playlist IDs/titles/descriptions/video ID arrays. It uses safe defaults when settings are absent or unavailable. Category chips filter the Home feed using their configured text filter; they do not create new content categories in the creator upload catalogue.
+The public endpoint validates colour values, text lengths, booleans, section order, category IDs/labels/filters, allowlisted navigation-label keys, creator IDs/labels, playlist IDs/titles/descriptions/video ID arrays, and scheduled video IDs/labels/date windows. Scheduled placements only resolve against videos already present in the existing public approved-video feed; they cannot approve, unhide, or directly fetch a private video. It uses safe defaults when settings are absent or unavailable. Category chips filter the Home feed using their configured text filter; they do not create new content categories in the creator upload catalogue.
 
 ## 2. Next Admin Studio modules — planned
 
 ### Content and navigation
 - Reorder Home sections and choose which supported sections appear.
 - Manage category chips, category ordering, and featured topics.
-- Manage featured playlists, featured creators, and editorial collections.
+- Manage featured playlists, featured creators, editorial collections, and time-windowed featured video placements.
 - Manage navigation order and footer links.
 - Manage launch banners, maintenance notices, and scheduled announcements.
 - Manage static information pages and support links.
@@ -102,7 +103,7 @@ Before publishing a new Admin-controlled setting:
 
 ## 5. Current release status
 
-- Website Studio UI, safe public settings endpoint, Home page integration, and configurable section ordering are proposed in PR #65.
+- Website Studio UI, safe public settings endpoint, Home page integration, configurable section ordering, featured creators/playlists, and scheduled featured Long Video placements are proposed in PR #65.
 - The layout builder supports moving Learning, Shorts, and Long Videos up/down; its preview follows the same order.
 - PR #65 is Draft and stacked on PR #64.
 - Automated validation for the latest PR #65 head has not yet been confirmed.
