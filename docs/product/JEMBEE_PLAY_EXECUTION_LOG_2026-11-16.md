@@ -114,3 +114,14 @@ This log records source changes only. It is not a production-readiness certifica
 - Report document IDs now use a SHA-256 user/video composite key; repeat reports return an idempotent already-reported response.
 - Added focused contract tests and the `test:shorts-engagement` npm script.
 - Verification limitation: contract tests have been authored but not executed in this environment. No TypeScript, lint, emulator, browser, or production build result is claimed. No deployment performed.
+
+## Shorts Like and Report API hardening — 16 November 2026
+
+- Like and Unlike client helpers now send Firebase ID tokens in the Authorization Bearer header instead of the JSON request body.
+- Like API now checks token revocation, bounds request size and video ID, rejects path separators, and uses a SHA-256 user/video composite document key.
+- Like/unlike operations are idempotent for the current desired state and continue to require the video to be approved, active, and moderation-safe.
+- Report client now sends its Firebase token in the Authorization Bearer header.
+- Report API now checks token revocation, bounds request size and fields, rejects invalid Firestore document IDs, validates the reason allowlist, and revalidates video availability inside the transaction.
+- Report document IDs now use a SHA-256 user/video composite key; repeat reports return an idempotent already-reported response.
+- Added focused contract tests and the `test:shorts-engagement` npm script.
+- Verification limitation: contract tests have been authored but not executed in this environment. No TypeScript, lint, emulator, browser, or production build result is claimed. No deployment performed.
