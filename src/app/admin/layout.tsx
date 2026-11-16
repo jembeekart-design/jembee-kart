@@ -59,7 +59,7 @@ export default function AdminLayout({
         const result = await response.json();
 
         if (result.isAdmin !== true) {
-          router.replace("/");
+          router.replace("/admin/login?error=not-admin");
           return;
         }
 
