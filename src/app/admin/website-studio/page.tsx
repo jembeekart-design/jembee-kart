@@ -110,11 +110,9 @@ export default function WebsiteStudioPage() {
 
   function updateColor(key: ColorKey, value: string) {
     if (!/^#[0-9a-fA-F]{6}$/.test(value)) return;
-    setConfig((current) => {
-      const next = { ...current, [key]: value };
-      applyBrand(next);
-      return next;
-    });
+    const next = { ...config, [key]: value };
+    setConfig(next);
+    applyBrand(next);
     setNotice("");
   }
 
