@@ -3,7 +3,7 @@ import assert from "node:assert/strict";
 import { readFile } from "node:fs/promises";
 
 const route = await readFile(new URL("../route.ts", import.meta.url), "utf8");
-const service = await readFile(new URL("../../../../../firestore/services/socialService.ts", import.meta.url), "utf8");
+const service = await readFile(new URL("../../../../../../firestore/services/socialService.ts", import.meta.url), "utf8");
 
 test("comment deletion verifies a revocation-checked Firebase bearer token", () => {
   assert.match(route, /verifyIdToken\(token, true\)/);
