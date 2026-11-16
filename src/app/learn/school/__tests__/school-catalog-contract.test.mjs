@@ -34,9 +34,8 @@ test("legacy Admin Question records and videos remain readable", () => {
 });
 
 test("Question answers only return approved active safe videos and keep paid checkout gated", () => {
-  assert.ok(answers.includes('data.status !== "approved"'));
-  assert.ok(answers.includes("data.active !== true"));
-  assert.ok(answers.includes('data.moderation !== "safe"'));
+  assert.match(answers, /data.status === "approved" && data.active === true && data.moderation === "safe"/);
+  assert.match(answers, /data.videoAccess === "paid"/);
   assert.ok(answers.includes('process.env.SHORTS_PAID_VIDEO_CHECKOUT_ENABLED !== "true"'));
   assert.ok(answers.includes("data.paidCheckoutEnabled !== true"));
   assert.ok(answers.includes('data.paidVideoStatus !== "enabled"'));
