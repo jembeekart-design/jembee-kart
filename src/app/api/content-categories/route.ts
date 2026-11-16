@@ -139,6 +139,20 @@ export async function POST(req: Request) {
           return NextResponse.json({ success: false, message: "चुनी गई parent entry उपलब्ध नहीं है।" }, { status: 400, headers: noStore });
         }
       }
+      const normalizedName = name.normalize("NFKC").trim().replace(/\s+/g, " ").toLocaleLowerCase("en");
+      const siblingSnapshot = await db.collection("schoolLearningNodes")
+        .where("type", "==", type)
+        .where("parentId", "==", parentId || null)
+        .limit(200)
+        .get();
+      const duplicate = siblingSnapshot.docs.find((doc) =>
+        doc.id !== existingId &&
+        typeof doc.data().name === "string" &&
+        doc.data().name.normalize("NFKC").trim().replace(/\s+/g, " ").toLocaleLowerCase("en") === normalizedName
+      );
+      if (duplicate) {
+        return NextResponse.json({ success: false, message: "इसी parent के अंदर इस नाम की entry पहले से मौजूद है। मौजूदा entry चुनें।", duplicateId: duplicate.id }, { status: 409, headers: noStore });
+      }
       const id = existingId || `${type}-${crypto.randomUUID().replace(/-/g, "").slice(0, 20)}`;
       const ref = db.collection("schoolLearningNodes").doc(id);
       const current = existingId ? await ref.get() : null;
