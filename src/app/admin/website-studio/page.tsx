@@ -27,6 +27,7 @@ const DEFAULT_CONFIG = {
   showLongVideos: true,
   showHomeAds: true,
   compactCards: false,
+  sectionOrder: ["learning", "shorts", "longVideos"] as HomeSectionKey[],
 };
 
 type SiteExperience = {
@@ -45,6 +46,7 @@ type SiteExperience = {
   showLongVideos: boolean;
   showHomeAds: boolean;
   compactCards: boolean;
+  sectionOrder: HomeSectionKey[];
 };
 type ToggleKey = "announcementEnabled" | "showLearningBanner" | "showShorts" | "showLongVideos" | "showHomeAds" | "compactCards";
 type TextKey = "siteName" | "tagline" | "heroTitle" | "heroSubtitle" | "announcementText";
