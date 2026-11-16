@@ -55,7 +55,7 @@ function validateConfig(value: unknown): Record<string, unknown> {
     ...Object.keys(TEXT_LIMITS), "primaryColor", "accentColor", "pageColor", "surfaceColor",
     "announcementEnabled", "showLearningBanner", "showShorts", "showLongVideos", "showHomeAds",
     "compactCards", "sectionOrder", "homeCategories", "navigationLabels", "featuredCreators",
-    "featuredPlaylists", "featuredVideos", "schemaVersion",
+    "featuredPlaylists", "featuredVideos", "schemaVersion", "configVersion", "updatedAt", "updatedBy",
   ]);
   if (Object.keys(value).some((key) => !allowed.has(key))) throw new Error("UNKNOWN_CONFIG_KEY");
   for (const [key, max] of Object.entries(TEXT_LIMITS)) if (!safeText(value[key], max)) throw new Error("INVALID_TEXT");
@@ -84,7 +84,8 @@ function validateConfig(value: unknown): Record<string, unknown> {
         const end = item.endsAt === "" || (typeof item.endsAt === "string" && Number.isFinite(Date.parse(item.endsAt)));
         return !start || !end || (item.startsAt !== "" && item.endsAt !== "" && Date.parse(String(item.endsAt)) <= Date.parse(String(item.startsAt)));
       })) throw new Error("INVALID_FEATURED_VIDEOS");
-  return { ...value, schemaVersion: 1 };
+  const { configVersion: _configVersion, updatedAt: _updatedAt, updatedBy: _updatedBy, ...clean } = value;
+  return { ...clean, schemaVersion: 1 };
 }
 function failure(error: unknown) {
   const code = error instanceof Error ? error.message : "";
@@ -141,8 +142,10 @@ export async function POST(request: Request) {
       if (body.action === "restore") {
         if (!Number.isSafeInteger(body.targetVersion) || Number(body.targetVersion) < 1 || Number(body.targetVersion) >= currentVersion) throw new Error("INVALID_TARGET_VERSION");
         const targetRef = db.collection(CURRENT_PATH.join("/") + "/versions").doc(String(body.targetVersion));
-        const targetSnap = await tx.get(targetRef);
+        const currentVersionRef = db.collection(CURRENT_PATH.join("/") + "/versions").doc(String(currentVersion));
+        const [targetSnap, currentVersionSnap] = await Promise.all([tx.get(targetRef), tx.get(currentVersionRef)]);
         if (!targetSnap.exists || !isObject(targetSnap.data()?.config)) throw new Error("VERSION_NOT_FOUND");
+        if (!currentVersionSnap.exists) tx.create(currentVersionRef, { version: currentVersion, config: currentData, actorUid: uid, createdAt: FieldValue.serverTimestamp() });
         const restored = validateConfig(targetSnap.data()?.config);
         const nextVersion = currentVersion + 1;
         tx.set(currentRef, { ...restored, configVersion: nextVersion, updatedAt: FieldValue.serverTimestamp(), updatedBy: uid });
