@@ -64,8 +64,16 @@ export async function POST(req: NextRequest) {
 
     const result = await db.runTransaction(async (transaction) => {
       const videoSnap = await transaction.get(videoRef);
-      if (!videoSnap.exists) return { error: "VIDEO_UNAVAILABLE" as const };
+      const saveSnap = await transaction.get(saveRef);
 
+      // Unsave must remain possible even after a video is removed, unpublished,
+      // made private, or converted to paid access.
+      if (!saved) {
+        if (saveSnap.exists) transaction.delete(saveRef);
+        return { saved: false };
+      }
+
+      if (!videoSnap.exists) return { error: "VIDEO_UNAVAILABLE" as const };
       const video = videoSnap.data();
       // Only public, approved, active and safe videos may be saved. Paid/private
       // content is deliberately excluded; authorization is never inferred here.
@@ -78,20 +86,15 @@ export async function POST(req: NextRequest) {
         return { error: "VIDEO_UNAVAILABLE" as const };
       }
 
-      const saveSnap = await transaction.get(saveRef);
-      if (saved) {
-        if (!saveSnap.exists) {
-          transaction.create(saveRef, {
-            videoId,
-            userId: decoded.uid,
-            createdAt: Date.now(),
-          });
-        }
-      } else if (saveSnap.exists) {
-        transaction.delete(saveRef);
+      if (!saveSnap.exists) {
+        transaction.create(saveRef, {
+          videoId,
+          userId: decoded.uid,
+          createdAt: Date.now(),
+        });
       }
 
-      return { saved };
+      return { saved: true };
     });
 
     if ("error" in result) {
