@@ -1,4 +1,5 @@
 import { NextResponse } from "next/server";
+import { createHash } from "node:crypto";
 
 interface CommentLikeSnapshot {
   exists: boolean;
@@ -37,7 +38,7 @@ export function createPostHandler(deps: CommentLikeDependencies) {
 
     try {
       const token = header.slice(7).trim();
-      if (!token) {
+      if (!token || token.length > 8192) {
         return NextResponse.json(
           { success: false, message: "Unauthorized" },
           { status: 401 },
@@ -80,6 +81,7 @@ export function createPostHandler(deps: CommentLikeDependencies) {
     if (
       !commentId ||
       commentId.length > 500 ||
+      /[\\/]/.test(commentId) ||
       (action !== "like" && action !== "unlike")
     ) {
       return NextResponse.json(
@@ -91,60 +93,50 @@ export function createPostHandler(deps: CommentLikeDependencies) {
     try {
       const db = deps.getDb();
       const commentRef = db.collection("comments").doc(commentId);
-      const likeRef = db
-        .collection("videoCommentLikes")
-        .doc(commentId + "_" + uid);
+      const likeId = createHash("sha256")
+        .update(uid)
+        .update("\\0")
+        .update(commentId)
+        .digest("hex");
+      const likeRef = db.collection("videoCommentLikes").doc(likeId);
+      // Read legacy key too so existing likes remain effective after key hardening.
+      const legacyLikeRef = db.collection("videoCommentLikes").doc(commentId + "_" + uid);
 
       const result = await db.runTransaction(async (tx: CommentLikeTransaction) => {
         const comment = await tx.get(commentRef);
-        const like = await tx.get(likeRef);
-
         if (!comment.exists || comment.data()?.status !== "approved") {
-          return {
-            success: false,
-            message: "Comment not available",
-            status: 404,
-          };
+          return { success: false, message: "Comment not available", status: 404 };
         }
 
-        const raw = Number(comment.data()?.likes ?? 0);
-        const count =
-          Number.isFinite(raw) && raw >= 0 ? Math.floor(raw) : 0;
+        const commentData = comment.data() ?? {};
+        const contentId = typeof commentData.contentId === "string" ? commentData.contentId : "";
+        if (!contentId || contentId.length > 200 || /[\\\\/]/.test(contentId)) {
+          return { success: false, message: "Comment not available", status: 404 };
+        }
+        const videoRef = db.collection("watchEarnVideos").doc(contentId);
+        const [video, like, legacyLike] = await Promise.all([
+          tx.get(videoRef),
+          tx.get(likeRef),
+          tx.get(legacyLikeRef),
+        ]);
+        const videoData = video.data() ?? {};
+        if (!video.exists || videoData.active !== true || videoData.status !== "approved" || videoData.moderation !== "safe") {
+          return { success: false, message: "Comment not available", status: 404 };
+        }
+
+        const raw = Number(commentData.likes ?? 0);
+        const count = Number.isFinite(raw) && raw >= 0 ? Math.floor(raw) : 0;
+        const hasLike = like.exists || legacyLike.exists;
 
         if (action === "like") {
-          if (like.exists) {
-            return {
-              success: false,
-              message: "Already liked",
-              status: 409,
-            };
-          }
-
-          tx.set(likeRef, {
-            commentId,
-            userId: uid,
-            createdAt: Date.now(),
-          });
-
-          tx.update(commentRef, {
-            likes: count + 1,
-            updatedAt: Date.now(),
-          });
+          if (hasLike) return { success: true, alreadyLiked: true, status: 200 };
+          tx.set(likeRef, { commentId, userId: uid, createdAt: Date.now() });
+          tx.update(commentRef, { likes: count + 1, updatedAt: Date.now() });
         } else {
-          if (!like.exists) {
-            return {
-              success: false,
-              message: "Not liked",
-              status: 409,
-            };
-          }
-
-          tx.delete(likeRef);
-
-          tx.update(commentRef, {
-            likes: Math.max(0, count - 1),
-            updatedAt: Date.now(),
-          });
+          if (!hasLike) return { success: true, alreadyLiked: false, status: 200 };
+          if (like.exists) tx.delete(likeRef);
+          if (legacyLike.exists) tx.delete(legacyLikeRef);
+          tx.update(commentRef, { likes: Math.max(0, count - 1), updatedAt: Date.now() });
         }
 
         return { success: true, status: 200 };
