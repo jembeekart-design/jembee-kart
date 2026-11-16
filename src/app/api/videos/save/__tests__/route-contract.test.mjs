@@ -62,3 +62,11 @@ test("saved-video document keys are collision-resistant and request bodies are b
   assert.match(route, /MAX_BODY_BYTES/);
   assert.match(route, /Request too large/);
 });
+
+
+test("saved-video migration reads and removes legacy keys without creating duplicates", () => {
+  assert.match(route, /legacyDocument = savedDocument\.exists \? null/);
+  assert.match(route, /legacySaveRef/);
+  assert.match(route, /legacySaveSnap\.exists\) transaction\.delete\(legacySaveRef\)/);
+  assert.match(route, /!saveSnap\.exists && !legacySaveSnap\.exists/);
+});
