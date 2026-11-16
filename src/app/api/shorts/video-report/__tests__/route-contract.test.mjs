@@ -13,7 +13,7 @@ test("report endpoint uses revocation-checked bearer authentication", () => {
 });
 
 test("report endpoint validates bounded input and allowed reasons", () => {
-  assert.match(route, /byteLength\(raw\) > 8192/);
+  assert.match(route, /encode\(raw\)\.byteLength > 8192/);
   assert.match(route, /videoId\.length > 200/);
   assert.match(route, /ALLOWED_REASONS\.includes\(reason\)/);
   assert.match(route, /message\.length > 1000/);
