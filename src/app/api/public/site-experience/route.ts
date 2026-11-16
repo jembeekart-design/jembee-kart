@@ -30,6 +30,8 @@ const DEFAULT_SITE_EXPERIENCE = {
     { id: "travel", label: "Travel", filter: "travel", enabled: true },
   ],
   navigationLabels: { home: "Home", shorts: "Shorts", explore: "Explore", learning: "School Learning", history: "History", liked: "Liked videos" },
+  featuredCreators: [],
+  featuredPlaylists: [],
 };
 
 function safeText(value: unknown, fallback: string, maxLength: number) {
@@ -65,6 +67,38 @@ function safeNavigationLabels(value: unknown) {
   return Object.fromEntries(Object.entries(fallback).map(([key, label]) => [key, safeText(input[key], label, 32) || label]));
 }
 
+function safeFeaturedCreators(value: unknown) {
+  if (!Array.isArray(value)) return [];
+  const seen = new Set<string>();
+  return value.slice(0, 8).flatMap((item) => {
+    if (!item || typeof item !== "object") return [];
+    const candidate = item as Record<string, unknown>;
+    const creatorId = safeText(candidate.creatorId, "", 128);
+    const label = safeText(candidate.label, "", 48);
+    if (!creatorId || !label || typeof candidate.enabled !== "boolean" || seen.has(creatorId)) return [];
+    seen.add(creatorId);
+    return [{ creatorId, label, enabled: candidate.enabled }];
+  });
+}
+
+function safeFeaturedPlaylists(value: unknown) {
+  if (!Array.isArray(value)) return [];
+  const seen = new Set<string>();
+  return value.slice(0, 8).flatMap((item) => {
+    if (!item || typeof item !== "object") return [];
+    const candidate = item as Record<string, unknown>;
+    const id = safeText(candidate.id, "", 48).toLowerCase();
+    const title = safeText(candidate.title, "", 60);
+    const description = safeText(candidate.description, "", 120);
+    const videoIds = Array.isArray(candidate.videoIds)
+      ? [...new Set(candidate.videoIds.filter((entry): entry is string => typeof entry === "string").map((entry) => entry.trim()).filter((entry) => entry.length > 0 && entry.length <= 128))].slice(0, 12)
+      : [];
+    if (!/^[a-z0-9][a-z0-9-]{0,47}$/.test(id) || !title || !videoIds.length || typeof candidate.enabled !== "boolean" || seen.has(id)) return [];
+    seen.add(id);
+    return [{ id, title, description, videoIds, enabled: candidate.enabled }];
+  });
+}
+
 function safeSectionOrder(value: unknown): string[] {
   const allowed = ["learning", "shorts", "longVideos"];
   const requested = Array.isArray(value) ? value.filter((item): item is string => typeof item === "string" && allowed.includes(item)) : [];
@@ -95,6 +129,8 @@ export async function GET() {
       sectionOrder: safeSectionOrder(stored.sectionOrder),
       homeCategories: safeHomeCategories(stored.homeCategories),
       navigationLabels: safeNavigationLabels(stored.navigationLabels),
+      featuredCreators: safeFeaturedCreators(stored.featuredCreators),
+      featuredPlaylists: safeFeaturedPlaylists(stored.featuredPlaylists),
     };
 
     return NextResponse.json(experience, {
