@@ -198,7 +198,7 @@ export default function HomePage() {
         </aside>}
 
         <section className="min-w-0 flex-1 px-3 pb-28 pt-3 sm:px-4 sm:pt-4 md:px-6">
-          <div className="sticky top-16 z-30 -mx-3 mb-4 flex gap-3 overflow-x-auto bg-[#0b0b0b] px-3 py-2 [scrollbar-width:none] sm:-mx-4 sm:px-4 md:-mx-6 md:px-6">
+          <div className="sticky top-16 z-30 -mx-3 mb-4 flex gap-3 overflow-x-auto bg-[var(--color-page-background)] px-3 py-2 [scrollbar-width:none] sm:-mx-4 sm:px-4 md:-mx-6 md:px-6">
             {chips.map((chip) => <button type="button" key={chip} onClick={() => setActive(chip)} className={`shrink-0 rounded-xl px-4 py-2.5 text-sm font-semibold ${active === chip ? "bg-white text-black" : "bg-white/10 text-white hover:bg-white/20"}`}>{chip}</button>)}
           </div>
 
@@ -251,7 +251,7 @@ export default function HomePage() {
         </section>
       </div>
 
-      <nav className="fixed inset-x-0 bottom-0 z-40 flex justify-around border-t border-white/10 bg-[#0b0b0b]/95 px-2 pb-[calc(0.5rem+env(safe-area-inset-bottom))] pt-2 backdrop-blur md:hidden">
+      <nav className="fixed inset-x-0 bottom-0 z-40 flex justify-around border-t border-white/10 bg-[var(--color-page-background)]/95 px-2 pb-[calc(0.5rem+env(safe-area-inset-bottom))] pt-2 backdrop-blur md:hidden">
         {mobileNavigation.map(({ icon: Icon, label, href }) => <Link key={label} href={href} className={`flex min-w-0 flex-col items-center gap-1 px-2 py-1 text-[10px] ${label === "Home" ? "text-cyan-300" : "text-slate-300"}`}><Icon size={21}/>{label}</Link>)}
       </nav>
     </main>
