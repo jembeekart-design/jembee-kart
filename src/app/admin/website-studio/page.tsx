@@ -204,7 +204,7 @@ export default function WebsiteStudioPage() {
   function addFeaturedPlaylist() {
     const title = newPlaylistTitle.trim().slice(0, 60);
     const description = newPlaylistDescription.trim().slice(0, 120);
-    const videoIds = [...new Set(newPlaylistVideoIds.split(/[\\s,]+/).map((id) => id.trim()).filter(Boolean))].slice(0, 12);
+    const videoIds = [...new Set(newPlaylistVideoIds.split(/[,\s]+/).map((id) => id.trim()).filter(Boolean))].slice(0, 12);
     const id = title.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "") || `playlist-${crypto.randomUUID().slice(0, 8)}`;
     if (!title || !videoIds.length || config.featuredPlaylists.length >= 8 || config.featuredPlaylists.some((item) => item.id === id)) return;
     setConfig((current) => ({ ...current, featuredPlaylists: [...current.featuredPlaylists, { id, title, description, videoIds, enabled: true }] }));
