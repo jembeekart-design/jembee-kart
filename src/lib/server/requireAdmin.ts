@@ -18,8 +18,11 @@ export async function requireAdmin(req: Request): Promise<AdminIdentity | NextRe
     const direct = await db.collection("users").doc(decoded.uid).get();
     let role = direct.exists ? direct.data()?.role : undefined;
     if (role !== "admin" && role !== "super_admin") {
-      const fallback = await db.collection("users").where("uid", "==", decoded.uid).limit(1).get();
-      role = fallback.docs[0]?.data()?.role;
+      const fallback = await db.collection("users").where("uid", "==", decoded.uid).limit(20).get();
+      role = fallback.docs.find((item) => {
+        const candidateRole = item.data()?.role;
+        return candidateRole === "admin" || candidateRole === "super_admin";
+      })?.data()?.role;
     }
     if (role !== "admin" && role !== "super_admin") {
       return NextResponse.json({ success: false, message: "Admin access required" }, { status: 403 });
