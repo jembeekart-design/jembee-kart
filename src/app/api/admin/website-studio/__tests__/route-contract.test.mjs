@@ -31,6 +31,11 @@ test("Website Studio API validates configuration fields and schedule windows", (
   assert.match(route, /MAX_BODY_BYTES/);
 });
 
+test("Website Studio settings are writable only through the audited server API", () => {
+  assert.match(rules, /allow create, update, delete: if isAdmin\(\) && settingId in \[\x27customize\x27, \x27mobile_app\x27\]/);
+  assert.doesNotMatch(rules, /allow create, update, delete: if isAdmin\(\) && settingId in \[[^\]]*site_experience/);
+});
+
 test("version snapshots and Admin activity records are not client-writable", () => {
   assert.match(rules, /match \/admin_settings\/site_experience\/versions\/\{versionId\}/);
   assert.match(rules, /match \/adminActivityLogs\/\{logId\}/);
