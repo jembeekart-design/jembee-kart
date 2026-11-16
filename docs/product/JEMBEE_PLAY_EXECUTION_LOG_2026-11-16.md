@@ -147,3 +147,13 @@ This log records source changes only. It is not a production-readiness certifica
 - Expanded the follow contract test to cover both-edge reads, partial-edge repair, one-time counter increment and deterministic notification identity.
 - Remaining count limitation: the inspected client Follow service updates only the follower's followingCount. The target creator's followersCount is not updated here, and Firestore rules must be checked before implementing a secure server-side counter path. Public follower-list access must not be widened merely to make counts work.
 - Verification limitation: contract tests have been authored but not executed. TypeScript, ESLint, Firebase Emulator, browser/device tests and production build remain unverified. No deployment or bulk upload performed.
+
+
+## Follow notification authorization fix — 16 November 2026
+
+- Firestore rules inspection confirmed client writes to the general `notifications` collection are not granted by the checked rules; the prior client-side notification writer could therefore fail under the default-deny rules.
+- Replaced the direct client Firestore write with `POST /api/shorts/notifications/follow`.
+- The new Node.js endpoint verifies a revocation-checked Firebase bearer token, derives the sender identity from Firebase Admin Auth, validates the target creator, and requires both persisted follow relationship edges before creating a notification.
+- Notification identity is a SHA-256 hash of recipient and sender; creation uses a Firestore transaction and `create`, making retries idempotent.
+- Added a focused contract test and `test:follow-notification` npm script.
+- Verification limitation: the contract test has not been executed. Firebase Emulator, rules integration, TypeScript, ESLint, browser/device tests and production build remain unverified. No deployment performed.
