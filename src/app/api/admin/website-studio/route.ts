@@ -6,6 +6,24 @@ export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
 
 const CURRENT_PATH = ["admin_settings", "site_experience"] as const;
+const DEFAULT_CONFIG = {
+  siteName: "JEMBEE PLAY", tagline: "Watch • Learn • Create • Share",
+  heroTitle: "अपनी किताब का हर सवाल सीखें", heroSubtitle: "अपनी class, book और chapter चुनें और सही video answer खोजें।",
+  primaryColor: "#22d3ee", accentColor: "#8b5cf6", pageColor: "#090d16", surfaceColor: "#111827",
+  announcementEnabled: false, announcementText: "", showLearningBanner: true, showShorts: true,
+  showLongVideos: true, showHomeAds: true, compactCards: false,
+  sectionOrder: ["learning", "shorts", "longVideos"],
+  homeCategories: [
+    { id: "education", label: "Education", filter: "education", enabled: true },
+    { id: "music", label: "Music", filter: "music", enabled: true },
+    { id: "science", label: "Science", filter: "science", enabled: true },
+    { id: "technology", label: "Technology", filter: "technology", enabled: true },
+    { id: "gaming", label: "Gaming", filter: "gaming", enabled: true },
+    { id: "travel", label: "Travel", filter: "travel", enabled: true },
+  ],
+  navigationLabels: { home: "Home", shorts: "Shorts", explore: "Explore", learning: "School Learning", history: "History", liked: "Liked videos" },
+  featuredCreators: [], featuredPlaylists: [], featuredVideos: [], schemaVersion: 1,
+};
 const MAX_BODY_BYTES = 32 * 1024;
 const TEXT_LIMITS: Record<string, number> = {
   siteName: 40, tagline: 80, heroTitle: 100, heroSubtitle: 220, announcementText: 180,
@@ -107,7 +125,7 @@ export async function POST(request: Request) {
     const auditRef = db.collection("adminActivityLogs").doc();
     const result = await db.runTransaction(async (tx) => {
       const currentSnap = await tx.get(currentRef);
-      const currentData = currentSnap.exists ? currentSnap.data() || {} : {};
+      const currentData = currentSnap.exists ? currentSnap.data() || {} : DEFAULT_CONFIG;
       const currentVersion = Number(currentData.configVersion) || 1;
       if (currentVersion !== body.expectedVersion) return { conflict: true, currentVersion };
       const versionRef = db.collection(CURRENT_PATH.join("/") + "/versions").doc(String(currentVersion));
