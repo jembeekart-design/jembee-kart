@@ -47,11 +47,11 @@ export default function AdminCategoriesPage() {
   }, []);
 
   const updateNodeStatus = async (node: SchoolNode) => {
-    const nextStatus = node.status === "unpublished" ? "published" : "unpublished";
+    const nextStatus = node.status === "pending" || node.status === "unpublished" ? "published" : "unpublished";
     const confirmed = window.confirm(
       nextStatus === "unpublished"
         ? `Unpublish "${node.name}"? New video approvals using this entry will be blocked.`
-        : `Publish "${node.name}" again?`
+        : `Approve and publish "${node.name}"?`
     );
     if (!confirmed) return;
     setUpdatingNodeId(node.id);
@@ -104,7 +104,7 @@ export default function AdminCategoriesPage() {
           <div className="mt-4 grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
             {["board", "school", "class", "subject", "book", "chapter", "question"].map((type) => {
               const group = nodes.filter((node) => node.type === type);
-              return <div key={type} className="rounded-xl border border-white/10 bg-black/20 p-3"><p className="font-semibold capitalize">{type} ({group.length})</p><ul className="mt-2 space-y-2 text-xs text-slate-400">{group.slice(0, 30).map((node) => <li key={node.id} className="flex items-center justify-between gap-2 border-t border-white/5 pt-2"><span className="min-w-0"><span className="block truncate">{node.name}</span><span className={node.status === "unpublished" ? "text-amber-300" : "text-emerald-300"}>{node.status || "status unknown"}</span></span><button type="button" disabled={updatingNodeId === node.id || !["published", "unpublished"].includes(node.status || "")} onClick={() => void updateNodeStatus(node)} className="shrink-0 rounded-lg border border-white/15 px-2 py-1 text-[11px] font-semibold text-white disabled:opacity-40">{updatingNodeId === node.id ? "Saving…" : node.status === "unpublished" ? "Publish" : "Unpublish"}</button></li>)}</ul></div>;
+              return <div key={type} className="rounded-xl border border-white/10 bg-black/20 p-3"><p className="font-semibold capitalize">{type} ({group.length})</p><ul className="mt-2 space-y-2 text-xs text-slate-400">{group.slice(0, 30).map((node) => <li key={node.id} className="flex items-center justify-between gap-2 border-t border-white/5 pt-2"><span className="min-w-0"><span className="block truncate">{node.name}</span><span className={node.status === "unpublished" ? "text-amber-300" : "text-emerald-300"}>{node.status || "status unknown"}</span></span><button type="button" disabled={updatingNodeId === node.id || !["pending", "published", "unpublished"].includes(node.status || "")} onClick={() => void updateNodeStatus(node)} className="shrink-0 rounded-lg border border-white/15 px-2 py-1 text-[11px] font-semibold text-white disabled:opacity-40">{updatingNodeId === node.id ? "Saving…" : node.status === "pending" ? "Approve" : node.status === "unpublished" ? "Publish" : "Unpublish"}</button></li>)}</ul></div>;
             })}
           </div>
         </section>
