@@ -11,8 +11,8 @@ service cloud.firestore {
     }
 
     match /admin_settings/{settingId} {
-      allow read: if settingId == 'customize' || (isAdmin() && settingId == 'mobile_app');
-      allow create, update, delete: if isAdmin() && settingId in ['customize', 'mobile_app'];
+      allow read: if settingId == 'customize' || (isAdmin() && settingId in ['mobile_app', 'site_experience']);
+      allow create, update, delete: if isAdmin() && settingId in ['customize', 'mobile_app', 'site_experience'];
     }
     match /users/{uid} {
       allow read: if isOwner(uid) || isAdmin();
