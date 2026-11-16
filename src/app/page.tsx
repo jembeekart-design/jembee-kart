@@ -9,6 +9,21 @@ import { formatVideoDuration, publicCreatorName, publicVideoAge, publicVideoThum
 import type { WatchVideo } from "@/lib/videos/watch-earn/fetchWatchVideos";
 
 const chips = ["All", "Education", "Music", "Science", "Technology", "Gaming", "Learning", "Travel"];
+
+type SiteExperience = {
+  siteName: string; tagline: string; heroTitle: string; heroSubtitle: string;
+  primaryColor: string; accentColor: string; pageColor: string; surfaceColor: string;
+  announcementEnabled: boolean; announcementText: string; showLearningBanner: boolean;
+  showShorts: boolean; showLongVideos: boolean; showHomeAds: boolean; compactCards: boolean;
+};
+const DEFAULT_SITE_EXPERIENCE: SiteExperience = {
+  siteName: "JEMBEE PLAY", tagline: "Watch • Learn • Create • Share",
+  heroTitle: "अपनी किताब का हर सवाल सीखें",
+  heroSubtitle: "अपनी class, book और chapter चुनें और सही video answer खोजें।",
+  primaryColor: "#22d3ee", accentColor: "#8b5cf6", pageColor: "#090d16", surfaceColor: "#111827",
+  announcementEnabled: false, announcementText: "", showLearningBanner: true,
+  showShorts: true, showLongVideos: true, showHomeAds: true, compactCards: false,
+};
 type NavigationItem = { icon: LucideIcon; label: string; href: string };
 const earningsNavigation: NavigationItem[] = [
   { icon: Share2, label: "Sharer की कमाई", href: "/earnings/sharer" },
@@ -104,6 +119,29 @@ export default function HomePage() {
   const sidebar = true;
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const { videos, loading, error } = usePublicWatchVideos();
+  const [siteExperience, setSiteExperience] = useState<SiteExperience>(DEFAULT_SITE_EXPERIENCE);
+
+  useEffect(() => {
+    let active = true;
+    fetch("/api/public/site-experience", { cache: "no-store" })
+      .then((response) => response.ok ? response.json() as Promise<Partial<SiteExperience>> : null)
+      .then((settings) => {
+        if (!active || !settings) return;
+        const next = { ...DEFAULT_SITE_EXPERIENCE, ...settings };
+        setSiteExperience(next);
+        const root = document.documentElement;
+        root.style.setProperty("--primary-color", next.primaryColor);
+        root.style.setProperty("--secondary-color", next.accentColor);
+        root.style.setProperty("--background-color", next.pageColor);
+        root.style.setProperty("--card-color", next.surfaceColor);
+        root.style.setProperty("--color-primary-button", next.primaryColor);
+        root.style.setProperty("--color-secondary-button", next.accentColor);
+        root.style.setProperty("--color-page-background", next.pageColor);
+        root.style.setProperty("--color-card-background", next.surfaceColor);
+      })
+      .catch(() => undefined);
+    return () => { active = false; };
+  }, []);
 
   const filtered = useMemo(() => videos.filter((video) => {
     const searchable = `${video.caption} ${video.displayName || ""} ${video.username} ${video.music} ${(video.hashtags || []).join(" ")}`.toLowerCase();
@@ -117,7 +155,7 @@ export default function HomePage() {
     <main className="min-h-screen bg-[#0b0b0b] text-white">
       <header className="sticky top-0 z-40 flex h-16 items-center gap-3 border-b border-white/10 bg-[#0b0b0b]/95 px-3 backdrop-blur sm:px-4">
         <button type="button" aria-label="Toggle menu" aria-expanded={mobileMenuOpen} aria-controls="mobile-navigation-drawer" onClick={() => setMobileMenuOpen((value) => !value)} className="rounded-full p-2 hover:bg-white/10"><Menu size={23}/></button>
-        <Link href="/" className="flex min-w-fit items-center gap-1 text-lg font-black tracking-tight sm:text-xl">JEMBEE <span className="text-cyan-400">PLAY</span><PlaySquare size={19} className="ml-1 text-cyan-400"/></Link>
+        <Link href="/" className="flex min-w-fit items-center gap-1 text-lg font-black tracking-tight sm:text-xl">{siteExperience.siteName}<PlaySquare size={19} className="ml-1 text-cyan-400"/></Link>
         <div className="mx-auto flex min-w-0 flex-1 max-w-2xl">
           <div className="flex w-full overflow-hidden rounded-full border border-white/20 bg-[#121212]">
             <input value={search} onChange={(event) => setSearch(event.target.value)} placeholder="Search videos, teachers and topics" aria-label="Search videos" className="w-full min-w-0 bg-transparent px-3 py-2.5 text-sm outline-none sm:px-5"/>
@@ -170,7 +208,7 @@ export default function HomePage() {
 
           <MonetagPlacement placement="home-after-learning-banner" />
 
-          <section className="mb-7" aria-labelledby="shorts-heading">
+          {siteExperience.showShorts ? <section className="mb-7" aria-labelledby="shorts-heading">
             <div className="mb-4 flex items-center justify-between gap-3">
               <h2 id="shorts-heading" className="flex items-center gap-2 text-lg font-bold sm:text-xl"><PlaySquare className="text-rose-500" size={23}/> Shorts</h2>
               <Link href="/shorts" className="shrink-0 text-sm font-semibold text-cyan-300 hover:underline">View all Shorts</Link>
@@ -180,7 +218,7 @@ export default function HomePage() {
 
           <MonetagPlacement placement="home-after-shorts" />
 
-          <section className="mb-7" aria-labelledby="long-videos-heading">
+          {siteExperience.showLongVideos ? <section className="mb-7" aria-labelledby="long-videos-heading">
             <div className="mb-4 flex items-center justify-between gap-3">
               <h2 id="long-videos-heading" className="text-lg font-bold sm:text-xl">Latest Long Videos</h2>
               <Link href="/videos" className="shrink-0 text-sm font-semibold text-cyan-300 hover:underline">View all videos</Link>
@@ -194,7 +232,7 @@ export default function HomePage() {
                 <Link href="/videos/upload" className="mt-4 inline-flex rounded-full bg-cyan-400 px-4 py-2 text-sm font-bold text-slate-950">Upload Long Video</Link>
               </div>
             ) : (
-              <div className="grid gap-x-4 gap-y-8 sm:grid-cols-2 xl:grid-cols-3">{longVideos.slice(0, 12).map((video, index) => <LongVideoCard key={video.id} video={video} eager={index < 3}/>)}</div>
+              <div className={`grid gap-x-4 gap-y-8 sm:grid-cols-2 ${siteExperience.compactCards ? "xl:grid-cols-4" : "xl:grid-cols-3"}`}>{longVideos.slice(0, 12).map((video, index) => <LongVideoCard key={video.id} video={video} eager={index < 3}/>)}</div>
             )}
           </section>
 
