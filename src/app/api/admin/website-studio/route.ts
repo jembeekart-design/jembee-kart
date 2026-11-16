@@ -99,7 +99,10 @@ export async function GET(request: Request) {
     await requireAdmin(request);
     const db = getAdminDb();
     const current = await db.doc(CURRENT_PATH.join("/")).get();
-    const history = await db.collection(CURRENT_PATH.join("/") + "/versions").orderBy("version", "desc").limit(10).get();
+    const [history, activity] = await Promise.all([
+      db.collection(CURRENT_PATH.join("/") + "/versions").orderBy("version", "desc").limit(10).get(),
+      db.collection("adminActivityLogs").where("target", "==", "site_experience").orderBy("createdAt", "desc").limit(10).get(),
+    ]);
     return NextResponse.json({
       success: true,
       currentVersion: Number(current.data()?.configVersion) || 1,
@@ -107,6 +110,14 @@ export async function GET(request: Request) {
         version: Number(item.data().version) || 1,
         createdAt: item.data().createdAt?.toDate?.()?.toISOString?.() || null,
         actorUid: typeof item.data().actorUid === "string" ? item.data().actorUid : "",
+      })),
+      activity: activity.docs.map((item) => ({
+        action: typeof item.data().action === "string" ? item.data().action : "unknown",
+        actorUid: typeof item.data().actorUid === "string" ? item.data().actorUid : "",
+        fromVersion: Number(item.data().fromVersion) || null,
+        toVersion: Number(item.data().toVersion) || null,
+        restoredVersion: Number(item.data().restoredVersion) || null,
+        createdAt: item.data().createdAt?.toDate?.()?.toISOString?.() || null,
       })),
     }, { headers: { "Cache-Control": "no-store" } });
   } catch (error) { return failure(error); }
