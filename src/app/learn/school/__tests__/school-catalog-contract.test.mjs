@@ -23,7 +23,10 @@ test("question numbers are discovered from approved videos without requiring Adm
   assert.match(answers, /schoolQuestionKey/);
   assert.ok(answers.includes("if (!questionNumber)"));
   assert.match(answers, /Published chapter not found/);
-  assert.equal(answers.includes('questionSnapshot = await db.collection("schoolLearningNodes").doc(questionId)'), false);
+  const publicHandler = answers.slice(answers.indexOf("export async function GET"));
+  assert.equal(publicHandler.includes('db.collection("schoolLearningNodes").doc(questionId)'), false);
+  assert.match(publicHandler, /getChapterQuestionVideos/);
+  assert.match(answers, /getLegacyQuestionVideos/);
 });
 
 test("legacy Admin Question records and videos remain readable", () => {
