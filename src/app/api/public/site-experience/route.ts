@@ -21,6 +21,15 @@ const DEFAULT_SITE_EXPERIENCE = {
   showHomeAds: true,
   compactCards: false,
   sectionOrder: ["learning", "shorts", "longVideos"],
+  homeCategories: [
+    { id: "education", label: "Education", filter: "education", enabled: true },
+    { id: "music", label: "Music", filter: "music", enabled: true },
+    { id: "science", label: "Science", filter: "science", enabled: true },
+    { id: "technology", label: "Technology", filter: "technology", enabled: true },
+    { id: "gaming", label: "Gaming", filter: "gaming", enabled: true },
+    { id: "travel", label: "Travel", filter: "travel", enabled: true },
+  ],
+  navigationLabels: { home: "Home", shorts: "Shorts", explore: "Explore", learning: "School Learning", history: "History", liked: "Liked videos" },
 };
 
 function safeText(value: unknown, fallback: string, maxLength: number) {
@@ -33,6 +42,27 @@ function safeColor(value: unknown, fallback: string) {
 
 function safeBoolean(value: unknown, fallback: boolean) {
   return typeof value === "boolean" ? value : fallback;
+}
+
+function safeHomeCategories(value: unknown) {
+  const fallback = DEFAULT_SITE_EXPERIENCE.homeCategories;
+  if (!Array.isArray(value)) return fallback;
+  return value.slice(0, 12).flatMap((item) => {
+    if (!item || typeof item !== "object") return [];
+    const candidate = item as Record<string, unknown>;
+    const id = safeText(candidate.id, "", 48).toLowerCase();
+    const label = safeText(candidate.label, "", 24);
+    const filter = safeText(candidate.filter, "", 40);
+    if (!/^[a-z0-9][a-z0-9-]{0,47}$/.test(id) || !label || !filter || typeof candidate.enabled !== "boolean") return [];
+    return [{ id, label, filter, enabled: candidate.enabled }];
+  });
+}
+
+function safeNavigationLabels(value: unknown) {
+  const fallback = DEFAULT_SITE_EXPERIENCE.navigationLabels;
+  if (!value || typeof value !== "object") return fallback;
+  const input = value as Record<string, unknown>;
+  return Object.fromEntries(Object.entries(fallback).map(([key, label]) => [key, safeText(input[key], label, 32) || label]));
 }
 
 function safeSectionOrder(value: unknown): string[] {
@@ -62,7 +92,7 @@ export async function GET() {
       showLongVideos: safeBoolean(stored.showLongVideos, true),
       showHomeAds: safeBoolean(stored.showHomeAds, true),
       compactCards: safeBoolean(stored.compactCards, false),
-      sectionOrder: safeSectionOrder(stored.sectionOrder),
+      sectionOrder: safeSectionOrder(stored.sectionOrder),\n      homeCategories: safeHomeCategories(stored.homeCategories),\n      navigationLabels: safeNavigationLabels(stored.navigationLabels),
     };
 
     return NextResponse.json(experience, {
