@@ -152,7 +152,8 @@ export default function HomePage() {
   const longVideos = filtered.filter((video) => video.videoFormat === "long");
 
   return (
-    <main className="min-h-screen bg-[#0b0b0b] text-white">
+    <main className="min-h-screen bg-[var(--color-page-background)] text-white">
+      {siteExperience.announcementEnabled && siteExperience.announcementText ? <div className="px-4 py-2 text-center text-xs font-bold text-slate-950 sm:text-sm" style={{ backgroundColor: siteExperience.primaryColor }}>{siteExperience.announcementText}</div> : null}
       <header className="sticky top-0 z-40 flex h-16 items-center gap-3 border-b border-white/10 bg-[#0b0b0b]/95 px-3 backdrop-blur sm:px-4">
         <button type="button" aria-label="Toggle menu" aria-expanded={mobileMenuOpen} aria-controls="mobile-navigation-drawer" onClick={() => setMobileMenuOpen((value) => !value)} className="rounded-full p-2 hover:bg-white/10"><Menu size={23}/></button>
         <Link href="/" className="flex min-w-fit items-center gap-1 text-lg font-black tracking-tight sm:text-xl">{siteExperience.siteName}<PlaySquare size={19} className="ml-1 text-cyan-400"/></Link>
@@ -214,9 +215,9 @@ export default function HomePage() {
               <Link href="/shorts" className="shrink-0 text-sm font-semibold text-cyan-300 hover:underline">View all Shorts</Link>
             </div>
             {loading ? <div className="grid grid-cols-2 gap-3">{Array.from({ length: 4 }, (_, index) => <div key={index} className="aspect-[9/16] animate-pulse rounded-2xl bg-white/5"/>)}</div> : error ? <p role="status" className="rounded-xl border border-amber-400/20 bg-amber-400/5 p-4 text-sm text-amber-100">{error}</p> : <ShortsGrid videos={shorts}/>}
-          </section>
+          </section> : null}
 
-          <MonetagPlacement placement="home-after-shorts" />
+          {siteExperience.showHomeAds ? <MonetagPlacement placement="home-after-shorts" /> : null}
 
           {siteExperience.showLongVideos ? <section className="mb-7" aria-labelledby="long-videos-heading">
             <div className="mb-4 flex items-center justify-between gap-3">
@@ -234,9 +235,9 @@ export default function HomePage() {
             ) : (
               <div className={`grid gap-x-4 gap-y-8 sm:grid-cols-2 ${siteExperience.compactCards ? "xl:grid-cols-4" : "xl:grid-cols-3"}`}>{longVideos.slice(0, 12).map((video, index) => <LongVideoCard key={video.id} video={video} eager={index < 3}/>)}</div>
             )}
-          </section>
+          </section> : null}
 
-          <MonetagPlacement placement="home-after-video-grid" />
+          {siteExperience.showHomeAds ? <MonetagPlacement placement="home-after-video-grid" /> : null}
         </section>
       </div>
 
