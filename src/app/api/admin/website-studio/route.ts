@@ -101,7 +101,7 @@ export async function GET(request: Request) {
     const current = await db.doc(CURRENT_PATH.join("/")).get();
     const [history, activity] = await Promise.all([
       db.collection(CURRENT_PATH.join("/") + "/versions").orderBy("version", "desc").limit(10).get(),
-      db.collection("adminActivityLogs").where("target", "==", "site_experience").orderBy("createdAt", "desc").limit(10).get(),
+      db.collection("adminActivityLogs").orderBy("createdAt", "desc").limit(30).get(),
     ]);
     return NextResponse.json({
       success: true,
@@ -111,7 +111,7 @@ export async function GET(request: Request) {
         createdAt: item.data().createdAt?.toDate?.()?.toISOString?.() || null,
         actorUid: typeof item.data().actorUid === "string" ? item.data().actorUid : "",
       })),
-      activity: activity.docs.map((item) => ({
+      activity: activity.docs.filter((item) => item.data().target === "site_experience").slice(0, 10).map((item) => ({
         action: typeof item.data().action === "string" ? item.data().action : "unknown",
         actorUid: typeof item.data().actorUid === "string" ? item.data().actorUid : "",
         fromVersion: Number(item.data().fromVersion) || null,
