@@ -6,7 +6,7 @@ const route = await readFile(new URL("../route.ts", import.meta.url), "utf8");
 const rules = await readFile(new URL("../../../../../../firestore.rules", import.meta.url), "utf8");
 
 test("Website Studio API verifies an Admin identity before exposing version history", () => {
-  assert.match(route, /verifyIdToken\([^)]*, true\)/);
+  assert.match(route, /verifyIdToken\(header\.slice\(7\)\.trim\(\), true\)/);
   assert.match(route, /role !== "admin" && role !== "super_admin"/);
   assert.match(route, /export async function GET/);
   assert.match(route, /Cache-Control.*no-store/);
