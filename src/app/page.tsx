@@ -158,9 +158,9 @@ export default function HomePage() {
   }, []);
 
   useEffect(() => {
-    setClientNow(Date.now());
+    const initial = window.setTimeout(() => setClientNow(Date.now()), 0);
     const interval = window.setInterval(() => setClientNow(Date.now()), 30_000);
-    return () => window.clearInterval(interval);
+    return () => { window.clearTimeout(initial); window.clearInterval(interval); };
   }, []);
 
   const visibleChips = siteExperience.homeCategories.filter((item) => item.enabled);
