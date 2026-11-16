@@ -1,5 +1,6 @@
 import { NextResponse } from "next/server";
 import { getAdminAuth, getAdminDb } from "@/firebase/admin";
+import { readBoundedJson } from "@/lib/server/readBoundedJson";
 import { getDriveFileMetadata } from "@/services/googleDriveService";
 import { classifyGoogleDriveError, googleDriveClientMessage, googleDriveErrorHttpStatus } from "@/lib/googleDriveErrors";
 
@@ -28,9 +29,10 @@ export async function POST(req: Request) {
   }
 
   const token = authHeader.slice("Bearer ".length).trim();
+  if (!token || token.length > 10_000) return NextResponse.json({ success: false, message: "कृपया लॉगिन करें।" }, { status: 401 });
   let creatorId: string;
   try {
-    const decodedToken = await getAdminAuth().verifyIdToken(token);
+    const decodedToken = await getAdminAuth().verifyIdToken(token, true);
     creatorId = decodedToken.uid;
     console.log("[AuthDiagnostic] Complete Upload - Token Verified. UID:", creatorId);
   } catch {
@@ -42,11 +44,11 @@ export async function POST(req: Request) {
     submissionId?: unknown;
     driveFileId?: unknown;
   };
-  try {
-    body = await req.json();
-  } catch {
-    return NextResponse.json({ success: false, message: "अनुरोध की जानकारी सही नहीं है।" }, { status: 400 });
+  const parsed = await readBoundedJson(req, 4 * 1024);
+  if (!parsed.ok) {
+    return NextResponse.json({ success: false, message: parsed.message }, { status: parsed.status });
   }
+  body = parsed.value as typeof body;
 
   const submissionId =
     typeof body.submissionId === "string" ? body.submissionId.trim() : "";
