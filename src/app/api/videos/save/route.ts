@@ -28,7 +28,9 @@ export async function GET(req: NextRequest) {
         return NextResponse.json({ success: false, message: "Invalid video ID" }, { status: 400 });
       }
       const savedDocument = await savedCollection.doc(savedDocumentId(requestedVideoId, decoded.uid)).get();
-      return NextResponse.json({ success: true, saved: savedDocument.exists });
+      // Read legacy keys during migration so existing saved items remain visible.
+      const legacyDocument = savedDocument.exists ? null : await savedCollection.doc(`${requestedVideoId}_${decoded.uid}`).get();
+      return NextResponse.json({ success: true, saved: savedDocument.exists || Boolean(legacyDocument?.exists) }, { headers: { "Cache-Control": "no-store" } });
     }
     const snapshot = await savedCollection
       .where("userId", "==", decoded.uid)
@@ -77,15 +79,18 @@ export async function POST(req: NextRequest) {
     const db = getAdminDb();
     const videoRef = db.collection("watchEarnVideos").doc(videoId);
     const saveRef = db.collection("savedWatchVideos").doc(savedDocumentId(videoId, decoded.uid));
+    const legacySaveRef = db.collection("savedWatchVideos").doc(`${videoId}_${decoded.uid}`);
 
     const result = await db.runTransaction(async (transaction) => {
       const videoSnap = await transaction.get(videoRef);
       const saveSnap = await transaction.get(saveRef);
+      const legacySaveSnap = await transaction.get(legacySaveRef);
 
       // Unsave must remain possible even after a video is removed, unpublished,
       // made private, or converted to paid access.
       if (!saved) {
         if (saveSnap.exists) transaction.delete(saveRef);
+        if (legacySaveSnap.exists) transaction.delete(legacySaveRef);
         return { saved: false };
       }
 
@@ -102,7 +107,7 @@ export async function POST(req: NextRequest) {
         return { error: "VIDEO_UNAVAILABLE" as const };
       }
 
-      if (!saveSnap.exists) {
+      if (!saveSnap.exists && !legacySaveSnap.exists) {
         transaction.create(saveRef, {
           videoId,
           userId: decoded.uid,
