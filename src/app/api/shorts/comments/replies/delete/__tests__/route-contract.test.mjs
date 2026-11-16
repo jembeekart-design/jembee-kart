@@ -7,7 +7,7 @@ test("reply delete requires a revocation-checked Firebase token", () => {
   assert.match(route, /token\.length > 8192/);
 });
 test("reply delete validates input and requires ownership", () => {
-  assert.match(route, /byteLength\(raw\) > 4096/);
+  assert.match(route, /encode\(raw\)\.byteLength > 4096/);
   assert.match(route, /reply\.userId !== uid/);
   assert.match(route, /Invalid reply ID/);
 });
