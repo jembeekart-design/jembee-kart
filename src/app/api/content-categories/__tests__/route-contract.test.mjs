@@ -42,7 +42,7 @@ test("Explore reads the published catalog for creator-contributed categories", (
 });
 
 test("catalog text sanitizer removes actual control characters", () => {
-  assert.match(route, /replace\(\/\[\\\\u0000-\\\\u001f\\\\u007f\]\/g, ""\)/);
+  assert.ok(route.includes(String.raw`replace(/[\u0000-\u001f\u007f]/g, "")`));
 });
 
 test("new teacher learning nodes remain pending until an admin publishes them", () => {
