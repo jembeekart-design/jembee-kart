@@ -43,16 +43,16 @@ const earningsNavigation: NavigationItem[] = [
   { icon: GraduationCap, label: "Teacher Referral Commission", href: "/earnings/teacher" },
 ];
 const desktopNavigation: NavigationItem[] = [
-  { icon: Home, label: "Home", href: "/" },
-  { icon: PlaySquare, label: "Shorts", href: "/shorts" },
-  { icon: Compass, label: "Explore", href: "/explore" },
-  { icon: GraduationCap, label: "School Learning", href: "/learn/school" },
-  { icon: History, label: "History", href: "/account" },
-  { icon: ThumbsUp, label: "Liked videos", href: "/account" },
+  { icon: Home, key: "home", label: "Home", href: "/" },
+  { icon: PlaySquare, key: "shorts", label: "Shorts", href: "/shorts" },
+  { icon: Compass, key: "explore", label: "Explore", href: "/explore" },
+  { icon: GraduationCap, key: "learning", label: "School Learning", href: "/learn/school" },
+  { icon: History, key: "history", label: "History", href: "/account" },
+  { icon: ThumbsUp, key: "liked", label: "Liked videos", href: "/account" },
 ];
 const mobileNavigation: NavigationItem[] = [
-  { icon: Home, label: "Home", href: "/" },
-  { icon: PlaySquare, label: "Shorts", href: "/shorts" },
+  { icon: Home, key: "home", label: "Home", href: "/" },
+  { icon: PlaySquare, key: "shorts", label: "Shorts", href: "/shorts" },
   { icon: PlusSquare, label: "Create", href: "/videos/upload" },
   { icon: GraduationCap, key: "learning", label: "Learn", href: "/learn/school" },
   { icon: UserCircle, label: "You", href: "/account" },
