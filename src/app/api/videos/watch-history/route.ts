@@ -7,7 +7,7 @@ export const dynamic = "force-dynamic";
 
 const MAX_TOKEN_LENGTH = 10_000;
 const historyDocumentId = (uid: string, videoId: string) =>
-  createHash("sha256").update(uid).update("\\0").update(videoId).digest("hex");
+  createHash("sha256").update(uid).update("\0").update(videoId).digest("hex");
 
 const validVideoId = (value: unknown): value is string =>
   typeof value === "string" && value.length > 0 && value.length <= 200 && !/[\\/\\\\]/.test(value);
@@ -38,12 +38,18 @@ export async function GET(req: NextRequest) {
       .limit(100)
       .get();
 
-    const records = await Promise.all(snapshot.docs.map(async (item) => {
-      const record = item.data();
-      const videoId = record.videoId;
-      if (!validVideoId(videoId)) return null;
-      const videoSnap = await db.collection("watchEarnVideos").doc(videoId).get();
-      if (!videoSnap.exists) return null;
+    const validRecords = snapshot.docs
+      .map((item) => item.data())
+      .filter((record) => validVideoId(record.videoId));
+    const videoRefs = validRecords.map((record) => db.collection("watchEarnVideos").doc(record.videoId));
+    // Fetch the associated videos in one Firestore batch instead of issuing
+    // one network read per history item.
+    const videoSnapshots = videoRefs.length ? await db.getAll(...videoRefs) : [];
+    const videoById = new Map(videoSnapshots.map((item) => [item.id, item]));
+    const records = validRecords.map((record) => {
+      const videoId = record.videoId as string;
+      const videoSnap = videoById.get(videoId);
+      if (!videoSnap?.exists) return null;
       const video = videoSnap.data();
       // History never grants playback rights. Only currently public free videos
       // are listed; paid access must be re-authorized by the purchase flow.
@@ -63,7 +69,7 @@ export async function GET(req: NextRequest) {
         positionSeconds: Number.isFinite(position) ? position : 0,
         updatedAt: typeof record.updatedAt?.toMillis === "function" ? record.updatedAt.toMillis() : 0,
       };
-    }));
+    });
 
     const history = records.filter((item): item is NonNullable<typeof item> => item !== null)
       .sort((a, b) => b.updatedAt - a.updatedAt);
