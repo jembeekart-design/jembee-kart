@@ -46,7 +46,7 @@ export default function AdminLayout({
         if (!active) return;
 
         if (response.status === 401 || response.status === 403) {
-          router.replace("/");
+          router.replace("/admin/login?error=not-admin");
           return;
         }
 
