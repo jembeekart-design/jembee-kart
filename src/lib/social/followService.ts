@@ -181,41 +181,41 @@ export const unfollowUser = async (
       // ALL READS FIRST
       // -----------------------------------------
 
-      const [followSnap, followerSnap] = await Promise.all([
+      const [followSnap, followingSnap, followerSnap] = await Promise.all([
         transaction.get(followRef),
+        transaction.get(followingRef),
         transaction.get(followerRef),
       ]);
 
       if (!followerSnap.exists()) {
-        throw new Error(
-          "Follower user document not found"
-        );
+        throw new Error("Follower user document not found");
       }
 
       // -----------------------------------------
       // WRITES
       // -----------------------------------------
 
-      if (followSnap.exists()) {
-        transaction.delete(followRef);
+      const hasFollowerEdge = followSnap.exists();
+      const hasFollowingEdge = followingSnap.exists();
+
+      // A repeated unfollow is a no-op. Never decrement the counter
+      // unless at least one persisted relationship edge existed.
+      if (!hasFollowerEdge && !hasFollowingEdge) {
+        return;
       }
 
-      transaction.delete(followingRef);
+      if (hasFollowerEdge) transaction.delete(followRef);
+      if (hasFollowingEdge) transaction.delete(followingRef);
 
-      const followerData =
-        followerSnap.data();
-
+      const followerData = followerSnap.data();
       const currentFollowingCount =
-        typeof followerData.followingCount ===
-        "number"
-          ? followerData.followingCount
+        typeof followerData.followingCount === "number" &&
+        Number.isFinite(followerData.followingCount)
+          ? Math.max(0, Math.floor(followerData.followingCount))
           : 0;
 
       transaction.update(followerRef, {
-        followingCount: Math.max(
-          0,
-          currentFollowingCount - 1
-        ),
+        followingCount: Math.max(0, currentFollowingCount - 1),
       });
 
     }
