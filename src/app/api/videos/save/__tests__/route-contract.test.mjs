@@ -43,3 +43,10 @@ test("derived video cards use the same persistent saved-video API", () => {
   assert.match(videoCard, /body: JSON\.stringify\(\{ videoId: video\.id, saved: !isSaved \}\)/);
   assert.match(videoCard, /onSave=\{handleSave\}/);
 });
+
+test("video cards request one saved-state record instead of downloading the full saved list", () => {
+  assert.match(route, /searchParams\.get\("videoId"\)/);
+  assert.match(route, /savedCollection\.doc\(\`\$\{requestedVideoId\}_\$\{decoded\.uid\}\`\)/);
+  assert.match(videoCard, /fetch\(\`\/api\/videos\/save\?videoId=\$\{encodeURIComponent\(video\.id\)\}\`/);
+  assert.match(videoCard, /setIsSaved\(result\.saved === true\)/);
+});
