@@ -63,6 +63,8 @@ type SiteExperience = {
   showHomeAds: boolean;
   compactCards: boolean;
   sectionOrder: HomeSectionKey[];
+  homeCategories: HomeCategory[];
+  navigationLabels: Record<NavigationKey, string>;
 };
 type ToggleKey = "announcementEnabled" | "showLearningBanner" | "showShorts" | "showLongVideos" | "showHomeAds" | "compactCards";
 type TextKey = "siteName" | "tagline" | "heroTitle" | "heroSubtitle" | "announcementText";
