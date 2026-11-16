@@ -9,8 +9,11 @@ export async function verifyMonetagAdmin(req: Request): Promise<string> {
   const users = getAdminDb().collection("users");
   let data = (await users.doc(decoded.uid).get()).data();
   if (data?.role !== "admin" && data?.role !== "super_admin") {
-    const fallback = await users.where("uid", "==", decoded.uid).limit(1).get();
-    data = fallback.docs[0]?.data();
+    const fallback = await users.where("uid", "==", decoded.uid).limit(20).get();
+    data = fallback.docs.find((item) => {
+      const candidateRole = item.data()?.role;
+      return candidateRole === "admin" || candidateRole === "super_admin";
+    })?.data();
   }
   if (data?.role !== "admin" && data?.role !== "super_admin") throw new Error("FORBIDDEN");
   return decoded.uid;
