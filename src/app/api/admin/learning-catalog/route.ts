@@ -8,6 +8,34 @@ export const dynamic = "force-dynamic";
 
 const ID_PATTERN = /^[a-z0-9][a-z0-9_-]{1,63}$/;
 
+export async function GET(req: Request) {
+  const identity = await requireAdmin(req);
+  if (!isAdminIdentity(identity)) return identity;
+  try {
+    const snapshot = await getAdminDb()
+      .collection("schoolLearningNodes")
+      .orderBy("type", "asc")
+      .limit(1000)
+      .get();
+    const nodes = snapshot.docs.map((item) => {
+      const data = item.data();
+      return {
+        id: item.id,
+        type: typeof data.type === "string" ? data.type : "",
+        name: typeof data.name === "string" ? data.name : "",
+        parentId: typeof data.parentId === "string" ? data.parentId : null,
+        status: typeof data.status === "string" ? data.status : "unknown",
+      };
+    });
+    return NextResponse.json({ success: true, nodes }, {
+      headers: { "Cache-Control": "no-store, max-age=0" },
+    });
+  } catch (error) {
+    console.error("Admin Learning catalog load failed:", error);
+    return NextResponse.json({ success: false, message: "Catalog could not be loaded" }, { status: 500 });
+  }
+}
+
 export async function PATCH(req: Request) {
   const identity = await requireAdmin(req);
   if (!isAdminIdentity(identity)) return identity;
