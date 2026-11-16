@@ -25,10 +25,18 @@ export async function GET(req: Request) {
   if (type !== "followers" && type !== "following") return fail("Invalid list type", 400);
   const requestedLimit = Number(url.searchParams.get("limit") || 50);
   const limit = Number.isFinite(requestedLimit) ? Math.max(1, Math.min(100, Math.floor(requestedLimit))) : 50;
+  const cursor = url.searchParams.get("cursor");
+  if (cursor !== null && (!cursor || cursor.length > 128 || /[\\/]/.test(cursor))) {
+    return fail("Invalid pagination cursor", 400);
+  }
 
   try {
     const db = getAdminDb();
-    const edgeSnapshot = await db.collection("users").doc(uid).collection(type).limit(limit + 1).get();
+    const collectionRef = db.collection("users").doc(uid).collection(type);
+    const query = cursor
+      ? collectionRef.orderBy("__name__").startAfter(cursor).limit(limit + 1)
+      : collectionRef.orderBy("__name__").limit(limit + 1);
+    const edgeSnapshot = await query.get();
     const hasMore = edgeSnapshot.docs.length > limit;
     const edges = edgeSnapshot.docs.slice(0, limit);
     const users = await Promise.all(edges.map(async (edge) => {
