@@ -21,8 +21,8 @@ export async function unlikeVideo({ videoId, userId }: UnlikeVideoData) {
 
     const response = await fetch("/api/shorts/video-like", {
       method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ videoId, action: "unlike", token }),
+      headers: { "Content-Type": "application/json", Authorization: `Bearer ${token}` },
+      body: JSON.stringify({ videoId, action: "unlike" }),
     });
 
     return await response.json();
