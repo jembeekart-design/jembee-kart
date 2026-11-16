@@ -6,7 +6,7 @@ const route = await readFile(new URL("../route.ts", import.meta.url), "utf8");
 
 test("reply API requires revocation-checked Firebase bearer authentication", () => {
   assert.match(route, /verifyIdToken\(token, true\)/);
-  assert.match(route, /authorization\?\.startsWith\("Bearer "\)/);
+  assert.match(route, /header\?\.startsWith\("Bearer "\)/);
 });
 
 test("reply reads and writes require approved parent comment and safe active video", () => {
@@ -17,7 +17,7 @@ test("reply reads and writes require approved parent comment and safe active vid
 });
 
 test("reply input is bounded, moderated, rate-limited and idempotent", () => {
-  assert.match(route, /byteLength\(raw\) > 8192/);
+  assert.match(route, /encode\(raw\)\.byteLength > 8192/);
   assert.match(route, /reply\.length > 1000/);
   assert.match(route, /blockedWords/);
   assert.match(route, /count >= 5/);
