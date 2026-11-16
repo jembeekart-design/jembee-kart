@@ -1,9 +1,10 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { doc, getDoc, setDoc } from "firebase/firestore";
+import { onAuthStateChanged } from "firebase/auth";
+import { doc, getDoc } from "firebase/firestore";
 import { ArrowDown, ArrowUp, Check, Eye, Palette, RotateCcw, Save, Sparkles } from "lucide-react";
-import { db } from "@/firebase/config";
+import { auth, db } from "@/firebase/config";
 
 type HomeSectionKey = "learning" | "shorts" | "longVideos";
 type HomeCategory = { id: string; label: string; filter: string; enabled: boolean };
@@ -78,6 +79,7 @@ type SiteExperience = {
 type ToggleKey = "announcementEnabled" | "showLearningBanner" | "showShorts" | "showLongVideos" | "showHomeAds" | "compactCards";
 type TextKey = "siteName" | "tagline" | "heroTitle" | "heroSubtitle" | "announcementText";
 type ColorKey = "primaryColor" | "accentColor" | "pageColor" | "surfaceColor";
+type StudioVersion = { version: number; createdAt: string | null; actorUid: string };
 
 const COLOR_FIELDS: { key: ColorKey; label: string }[] = [
   { key: "primaryColor", label: "Primary brand colour" },
@@ -114,6 +116,10 @@ export default function WebsiteStudioPage() {
   const [saving, setSaving] = useState(false);
   const [notice, setNotice] = useState("");
   const [error, setError] = useState("");
+  const [currentVersion, setCurrentVersion] = useState(1);
+  const [versions, setVersions] = useState<StudioVersion[]>([]);
+  const [historyLoading, setHistoryLoading] = useState(false);
+  const [restoringVersion, setRestoringVersion] = useState<number | null>(null);
 
   useEffect(() => {
     let active = true;
@@ -147,6 +153,23 @@ export default function WebsiteStudioPage() {
       });
     return () => { active = false; };
   }, []);
+
+  async function refreshHistory(idToken: string) {
+    setHistoryLoading(true);
+    try {
+      const response = await fetch("/api/admin/website-studio", { headers: { Authorization: "Bearer " + idToken }, cache: "no-store" });
+      const result = await response.json();
+      if (!response.ok || !result.success) throw new Error("History unavailable");
+      setCurrentVersion(Number(result.currentVersion) || 1);
+      setVersions(Array.isArray(result.versions) ? result.versions : []);
+    } catch {
+      setError("Settings history load नहीं हो सकी। Admin session जाँचें।");
+    } finally { setHistoryLoading(false); }
+  }
+
+  useEffect(() => onAuthStateChanged(auth, (user) => {
+    if (user) void user.getIdToken().then(refreshHistory);
+  }), []);
 
   const [newCategoryLabel, setNewCategoryLabel] = useState("");
   const [newCategoryFilter, setNewCategoryFilter] = useState("");
@@ -287,18 +310,51 @@ export default function WebsiteStudioPage() {
     setError("");
     setNotice("");
     try {
-      await setDoc(doc(db, "admin_settings", "site_experience"), {
-        ...config,
-        updatedAt: new Date().toISOString(),
-        schemaVersion: 1,
-      }, { merge: true });
+      const user = auth.currentUser;
+      if (!user) throw new Error("Admin session missing. Reload and sign in again.");
+      const idToken = await user.getIdToken();
+      const response = await fetch("/api/admin/website-studio", {
+        method: "POST",
+        headers: { "Content-Type": "application/json", Authorization: "Bearer " + idToken },
+        body: JSON.stringify({ action: "save", expectedVersion: currentVersion, config }),
+      });
+      const result = await response.json();
+      if (!response.ok || !result.success) throw new Error(result.error === "VERSION_CONFLICT" ? "Settings किसी दूसरे Admin ने बदली हैं। History refresh करके फिर प्रयास करें।" : result.error || "Save failed.");
+      setCurrentVersion(Number(result.currentVersion) || currentVersion + 1);
       applyBrand(config);
-      setNotice("Website experience settings save हो गईं।");
-    } catch {
-      setError("Save नहीं हुआ। Admin permission और Firestore rules जाँचें।");
+      await refreshHistory(idToken);
+      setNotice("Settings save हो गईं और version history में सुरक्षित हैं।");
+    } catch (saveError) {
+      setError(saveError instanceof Error ? saveError.message : "Save नहीं हुआ। Admin permission जाँचें।");
     } finally {
       setSaving(false);
     }
+  }
+
+  async function restoreVersion(targetVersion: number) {
+    const user = auth.currentUser;
+    if (!user) { setError("Admin session missing. Reload and sign in again."); return; }
+    setRestoringVersion(targetVersion); setError(""); setNotice("");
+    try {
+      const idToken = await user.getIdToken();
+      const response = await fetch("/api/admin/website-studio", {
+        method: "POST",
+        headers: { "Content-Type": "application/json", Authorization: "Bearer " + idToken },
+        body: JSON.stringify({ action: "restore", expectedVersion: currentVersion, targetVersion }),
+      });
+      const result = await response.json();
+      if (!response.ok || !result.success) throw new Error(result.error === "VERSION_CONFLICT" ? "Settings version बदल गया है। History refresh करें।" : result.error || "Restore failed.");
+      const snapshot = await getDoc(doc(db, "admin_settings", "site_experience"));
+      if (!snapshot.exists()) throw new Error("Restored settings were not found.");
+      const stored = snapshot.data() as Partial<SiteExperience>;
+      const next = { ...DEFAULT_CONFIG, ...stored };
+      setConfig(next); applyBrand(next);
+      setCurrentVersion(Number(result.currentVersion) || currentVersion + 1);
+      await refreshHistory(idToken);
+      setNotice("Version " + targetVersion + " restore हो गया। नया version " + (Number(result.currentVersion) || currentVersion + 1) + " बनाया गया।");
+    } catch (restoreError) {
+      setError(restoreError instanceof Error ? restoreError.message : "Restore failed.");
+    } finally { setRestoringVersion(null); }
   }
 
   function resetDraft() {
@@ -329,6 +385,16 @@ export default function WebsiteStudioPage() {
 
         {error ? <p role="alert" className="mb-5 rounded-xl border border-rose-400/30 bg-rose-400/10 p-3 text-sm text-rose-200">{error}</p> : null}
         {notice ? <p role="status" className="mb-5 flex items-center gap-2 rounded-xl border border-emerald-400/25 bg-emerald-400/10 p-3 text-sm text-emerald-200"><Check size={17}/>{notice}</p> : null}
+
+        <section className="mb-6 rounded-3xl border border-white/10 bg-[#111827] p-5 sm:p-6">
+          <div className="flex flex-wrap items-center justify-between gap-3">
+            <div><h2 className="text-lg font-bold">Settings History & Rollback</h2><p className="mt-1 text-xs text-slate-400">हर successful save का previous version सुरक्षित रहता है। Restore करने पर नया version बनता है; पुराना record नहीं मिटता।</p></div>
+            <div className="text-right"><p className="text-xs text-slate-400">Current version</p><p className="text-2xl font-black text-cyan-300">v{currentVersion}</p></div>
+          </div>
+          <div className="mt-4 space-y-2">
+            {historyLoading ? <p className="text-sm text-slate-400">History loading…</p> : versions.length ? versions.map((item) => <div key={item.version} className="flex flex-wrap items-center justify-between gap-3 rounded-xl border border-white/10 bg-[#090d16] p-3"><div><p className="text-sm font-semibold">Version {item.version}</p><p className="text-xs text-slate-500">{item.createdAt ? new Date(item.createdAt).toLocaleString() : "Date unavailable"} · Admin ID {item.actorUid || "unknown"}</p></div><button type="button" disabled={restoringVersion !== null || item.version >= currentVersion} onClick={() => restoreVersion(item.version)} className="rounded-lg border border-cyan-300/30 px-3 py-2 text-xs font-semibold text-cyan-200 disabled:opacity-40">{restoringVersion === item.version ? "Restoring…" : "Restore this version"}</button></div>) : <p className="text-sm text-slate-500">पहला successful save होने पर version history यहाँ दिखाई देगी।</p>}
+          </div>
+        </section>
 
         <div className="grid gap-6 xl:grid-cols-[minmax(0,1fr)_380px]">
           <div className="space-y-6">
