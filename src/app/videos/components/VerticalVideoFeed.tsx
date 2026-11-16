@@ -292,6 +292,35 @@ export default function VerticalVideoFeed({
     setSavedVideos
   ] = useState<Record<string, boolean>>({});
 
+  useEffect(() => {
+    if (!currentUserId) {
+      setSavedVideos({});
+      return;
+    }
+    let cancelled = false;
+    const loadSavedVideos = async () => {
+      try {
+        const user = auth.currentUser;
+        if (!user || user.uid !== currentUserId) return;
+        const token = await user.getIdToken();
+        const response = await fetch("/api/videos/save", {
+          headers: { Authorization: `Bearer ${token}` },
+          cache: "no-store",
+        });
+        const result = await response.json().catch(() => null);
+        if (!cancelled && response.ok && result?.success && Array.isArray(result.videoIds)) {
+          setSavedVideos(Object.fromEntries(
+            result.videoIds.filter((id: unknown): id is string => typeof id === "string").map((id: string) => [id, true])
+          ));
+        }
+      } catch (error) {
+        console.warn("Unable to load saved videos:", error);
+      }
+    };
+    void loadSavedVideos();
+    return () => { cancelled = true; };
+  }, [currentUserId]);
+
   const [playbackSpeeds, setPlaybackSpeeds] = useState<Record<string, number>>({});
   
   const [showWhySeeingModal, setShowWhySeeingModal] = useState(false);
