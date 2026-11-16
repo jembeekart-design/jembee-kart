@@ -58,7 +58,7 @@ export default function VideoCard({
       }
       try {
         const token = await user.getIdToken();
-        const response = await fetch("/api/videos/save", {
+        const response = await fetch(`/api/videos/save?videoId=${encodeURIComponent(video.id)}`, {
           headers: { Authorization: `Bearer ${token}` },
           cache: "no-store",
         });
