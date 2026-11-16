@@ -9,3 +9,10 @@ test("paid video checkout claims referral link before creating order", () => {
   assert.match(source, /shareId, videoId/);
   assert.match(source, /api\/shorts\/paid-video\/create-order/);
 });
+
+test("a paidVideoId URL parameter never grants client-side playback authorization", async () => {
+  const feed = await readFile(new URL("./VerticalVideoFeed.tsx", import.meta.url), "utf8");
+  assert.match(feed, /useState<Record<string, boolean>>\(\{\}\)/);
+  assert.doesNotMatch(feed, /paidVideoId \? \{ \[paidVideoId\]: true \}/);
+  assert.match(feed, /onAuthorized=\{\(\) => setAuthorizedPaidVideos/);
+});
