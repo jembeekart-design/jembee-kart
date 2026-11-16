@@ -15,10 +15,13 @@ export async function POST(req: Request) {
     return jsonError("Unauthorized", 401);
   }
 
+  const token = authHeader.slice(7).trim();
+  if (!token || token.length > 8192) return jsonError("Unauthorized", 401);
+
   let uid: string;
   try {
     const decoded = await getAdminAuth().verifyIdToken(
-      authHeader.slice(7).trim(),
+      token,
       true
     );
     uid = decoded.uid;
@@ -33,6 +36,7 @@ export async function POST(req: Request) {
     const raw = await req.text();
     if (new TextEncoder().encode(raw).byteLength > 8192) return jsonError("Request body too large", 413);
     body = JSON.parse(raw);
+    if (!body || typeof body !== "object" || Array.isArray(body)) return jsonError("Invalid JSON body", 400);
   } catch {
     return jsonError("Invalid JSON body", 400);
   }
