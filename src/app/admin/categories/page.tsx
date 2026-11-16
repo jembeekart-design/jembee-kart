@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { useCallback, useEffect, useState } from "react";
-import { ArrowLeft, BookOpen, GraduationCap, RefreshCw, ShieldCheck } from "lucide-react";
+import { ArrowLeft, BookOpen, GraduationCap, RefreshCw } from "lucide-react";
 import { auth } from "@/firebase/config";
 import { DEFAULT_EXPLORE_CATEGORIES, type ExploreCategoryRecord } from "@/lib/catalog/defaultExploreCategories";
 
@@ -75,7 +75,7 @@ export default function AdminCategoriesPage() {
         </div>
         <section className="mt-5 rounded-3xl border border-cyan-300/20 bg-cyan-300/[0.05] p-5">
           <p className="font-bold text-cyan-100">Teacher / uploader managed catalog</p>
-          <p className="mt-2 text-sm leading-6 text-slate-300">अब School की जानकारी, Board, Class, Subject, Book, Chapter और Question संबंधित teacher या uploader स्वयं जोड़ता है। Admin को हर School की जानकारी manually collect या publish नहीं करनी होगी। Admin यहाँ catalog केवल देख सकता है; entries बनाने और बदलने का अधिकार उनके creators के पास है। वीडियो फिर भी सामान्य moderation approval से गुजरेगा।</p>
+          <p className="mt-2 text-sm leading-6 text-slate-300">अब School की जानकारी, Board, Class, Subject, Book, Chapter और Question संबंधित teacher या uploader स्वयं जोड़ता है। Admin को हर School की जानकारी manually collect या publish नहीं करनी होगी। Admin catalog entries को review करके publish या unpublish कर सकता है। Entry unpublish होने पर उससे जुड़े नए video approvals रुकेंगे; creator अपनी entries जोड़ सकता है।</p>
           <Link href="/videos/upload" className="mt-4 inline-flex items-center gap-2 rounded-xl bg-cyan-400 px-4 py-3 text-sm font-bold text-slate-950"><GraduationCap size={17}/> Teacher / Creator Upload खोलें</Link>
         </section>
         {notice && <p role="status" className="mt-4 rounded-xl border border-amber-300/20 bg-amber-300/10 p-3 text-sm">{notice}</p>}
