@@ -3,7 +3,7 @@ import assert from "node:assert/strict";
 import { readFileSync } from "node:fs";
 
 const route = readFileSync(new URL("../route.ts", import.meta.url), "utf8");
-const feed = readFileSync(new URL("../../../../videos/components/VerticalVideoFeed.tsx", import.meta.url), "utf8");
+const feed = readFileSync(new URL("../../../../videos/components/VerticalVideoFeed.tsx", import.meta.url), "utf8");\nconst videoCard = readFileSync(new URL("../../../../videos/components/VideoCard.tsx", import.meta.url), "utf8");
 
 test("saved video API requires a revocation-checked Firebase bearer token", () => {\n  assert.match(route, /export async function GET\\(req: NextRequest\\)/);
   assert.match(route, /authorization\.startsWith\("Bearer "\)/);
@@ -35,4 +35,11 @@ test("saved video list is loaded from the server for the current account", () =>
 test("a user can always remove a stale saved-video reference", () => {
   assert.match(route, /if \(!saved\) \{\s*if \(saveSnap\.exists\) transaction\.delete\(saveRef\);\s*return \{ saved: false \};\s*\}/);
   assert.ok(route.indexOf("if (!saved)") < route.indexOf('if (!videoSnap.exists) return { error: "VIDEO_UNAVAILABLE"'));
+});
+
+test("derived video cards use the same persistent saved-video API", () => {
+  assert.match(videoCard, /onAuthStateChanged\(auth/);
+  assert.match(videoCard, /fetch\("\/api\/videos\/save"/);
+  assert.match(videoCard, /body: JSON\.stringify\(\{ videoId: video\.id, saved: !isSaved \}\)/);
+  assert.match(videoCard, /onSave=\{handleSave\}/);
 });
