@@ -157,3 +157,15 @@ This log records source changes only. It is not a production-readiness certifica
 - Notification identity is a SHA-256 hash of recipient and sender; creation uses a Firestore transaction and `create`, making retries idempotent.
 - Added a focused contract test and `test:follow-notification` npm script.
 - Verification limitation: the contract test has not been executed. Firebase Emulator, rules integration, TypeScript, ESLint, browser/device tests and production build remain unverified. No deployment performed.
+
+
+## Server-side creator follow counters and list correction — 16 November 2026
+
+- Replaced client Firestore follow/unfollow mutations with authenticated `/api/social/follow` operations. The API verifies Firebase token revocation and changes both relationship edges in one Admin SDK transaction.
+- A genuinely new follow increments the follower's `followingCount` and creator's `followersCount` atomically. Unfollow removes existing edges and decrements both counters with finite, non-negative normalization. Repeated follow/unfollow is idempotent; partial legacy edges are repaired without counting a second relationship.
+- Follow notification creation is part of the same follow transaction and uses a deterministic recipient/sender key. Notification creation checks for an existing record before creating it.
+- Follow status now reads the authenticated user's own following edge through the server API.
+- Added an owner-authenticated `/api/social/follow-list` endpoint. It exposes only minimal public profile fields for the signed-in user's followers/following and caps each response at 100 entries; the current page requests the first 50.
+- Rebuilt the Followers page tabs so Followers and Following display separate lists. Unfollow is available only in the Following list.
+- Updated follow contract coverage and added npm scripts for the follow and follow-list APIs.
+- Verification limitation: contract tests, TypeScript, ESLint, Firebase Emulator, browser/device tests and production build have not been run. The list API currently returns a cursor indicator but the UI does not yet load subsequent pages. No deployment performed.
