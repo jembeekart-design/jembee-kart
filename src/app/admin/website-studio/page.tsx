@@ -2,9 +2,15 @@
 
 import { useEffect, useState } from "react";
 import { doc, getDoc, setDoc } from "firebase/firestore";
-import { Check, Eye, Palette, RotateCcw, Save, Sparkles } from "lucide-react";
+import { ArrowDown, ArrowUp, Check, Eye, Palette, RotateCcw, Save, Sparkles } from "lucide-react";
 import { db } from "@/firebase/config";
 
+type HomeSectionKey = "learning" | "shorts" | "longVideos";
+const HOME_SECTIONS: { key: HomeSectionKey; label: string; description: string }[] = [
+  { key: "learning", label: "Learning banner", description: "School and textbook learning entry point" },
+  { key: "shorts", label: "Shorts", description: "Short-form video feed preview" },
+  { key: "longVideos", label: "Long videos", description: "Latest long-form videos grid" },
+];
 const DEFAULT_CONFIG = {
   siteName: "JEMBEE PLAY",
   tagline: "Watch • Learn • Create • Share",
@@ -87,7 +93,7 @@ export default function WebsiteStudioPage() {
         if (!active) return;
         if (snapshot.exists()) {
           const stored = snapshot.data() as Partial<SiteExperience>;
-          const next = { ...DEFAULT_CONFIG, ...stored };
+          const validOrder = Array.isArray(stored.sectionOrder) ? stored.sectionOrder.filter((item): item is HomeSectionKey => item === "learning" || item === "shorts" || item === "longVideos") : DEFAULT_CONFIG.sectionOrder;\n          const sectionOrder = [...new Set(validOrder)];\n          for (const item of DEFAULT_CONFIG.sectionOrder) if (!sectionOrder.includes(item)) sectionOrder.push(item);\n          const next = { ...DEFAULT_CONFIG, ...stored, sectionOrder };
           setConfig(next);
           applyBrand(next);
         } else {
@@ -118,6 +124,16 @@ export default function WebsiteStudioPage() {
 
   function updateToggle(key: ToggleKey, value: boolean) {
     setConfig((current) => ({ ...current, [key]: value }));
+    setNotice("");
+  }
+
+  function moveSection(key: HomeSectionKey, direction: -1 | 1) {
+    const currentIndex = config.sectionOrder.indexOf(key);
+    const targetIndex = currentIndex + direction;
+    if (currentIndex < 0 || targetIndex < 0 || targetIndex >= config.sectionOrder.length) return;
+    const sectionOrder = [...config.sectionOrder];
+    [sectionOrder[currentIndex], sectionOrder[targetIndex]] = [sectionOrder[targetIndex], sectionOrder[currentIndex]];
+    setConfig((current) => ({ ...current, sectionOrder }));
     setNotice("");
   }
 
@@ -200,6 +216,24 @@ export default function WebsiteStudioPage() {
             </section>
 
             <section className="rounded-3xl border border-white/10 bg-[#111827] p-5 sm:p-7">
+            <section className="rounded-3xl border border-white/10 bg-[#111827] p-5 sm:p-7">
+              <h2 className="text-lg font-bold">Home page layout</h2>
+              <p className="mt-1 text-xs text-slate-400">Visitors को sections इसी क्रम में दिखाई देंगे। ऊपर/नीचे करके क्रम बदलें।</p>
+              <div className="mt-5 space-y-3">
+                {config.sectionOrder.map((key, index) => {
+                  const section = HOME_SECTIONS.find((item) => item.key === key);
+                  if (!section) return null;
+                  return <div key={key} className="flex items-center justify-between gap-3 rounded-2xl border border-white/10 bg-[#090d16] p-3">
+                    <div><p className="text-sm font-semibold">{index + 1}. {section.label}</p><p className="mt-1 text-xs text-slate-500">{section.description}</p></div>
+                    <div className="flex gap-1">
+                      <button type="button" aria-label={`Move ${section.label} up`} disabled={index === 0} onClick={() => moveSection(key, -1)} className="grid h-9 w-9 place-items-center rounded-lg border border-white/10 hover:bg-white/10 disabled:opacity-30"><ArrowUp size={16}/></button>
+                      <button type="button" aria-label={`Move ${section.label} down`} disabled={index === config.sectionOrder.length - 1} onClick={() => moveSection(key, 1)} className="grid h-9 w-9 place-items-center rounded-lg border border-white/10 hover:bg-white/10 disabled:opacity-30"><ArrowDown size={16}/></button>
+                    </div>
+                  </div>;
+                })}
+              </div>
+            </section>
+
               <h2 className="text-lg font-bold">Announcement bar</h2>
               <p className="mt-1 text-xs text-slate-400">Maintenance notice, launch message या important update</p>
               <label className="mt-5 flex items-center justify-between gap-4 rounded-xl border border-white/10 bg-[#090d16] p-4"><span className="text-sm font-semibold">Enable announcement</span><input type="checkbox" checked={config.announcementEnabled} onChange={(event) => updateToggle("announcementEnabled", event.target.checked)} className="h-5 w-5 accent-cyan-300"/></label>
