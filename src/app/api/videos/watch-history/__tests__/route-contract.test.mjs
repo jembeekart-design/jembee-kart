@@ -27,6 +27,7 @@ test("progress input is bounded and never contains a media URL or playback crede
 });
 
 test("viewer can remove only their own history record", () => {
-  assert.match(route, /doc\(\`\$\{uid\}_\$\{videoId\}\`\)/);
+  assert.match(route, /historyDocumentId\(uid, videoId\)/);
+  assert.match(route, /createHash\("sha256"\)/);
   assert.match(route, /export async function DELETE/);
 });
