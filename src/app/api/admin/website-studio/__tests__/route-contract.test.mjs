@@ -29,6 +29,9 @@ test("Website Studio API validates configuration fields and schedule windows", (
   }
   assert.match(route, /INVALID_FEATURED_VIDEOS/);
   assert.match(route, /MAX_BODY_BYTES/);
+  assert.match(route, /readLimitedBody\(request\)/);
+  assert.match(route, /request\.body\.getReader\(\)/);
+  assert.match(route, /reader\.cancel\(\)/);
 });
 
 test("Website Studio settings are writable only through the audited server API", () => {
