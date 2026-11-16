@@ -53,3 +53,19 @@ This log records source changes only. It is not a production-readiness certifica
 ### Remaining evidence gates
 - No complete verified-learner teacher-review flow or WhatsApp Business API workflow was evidenced in inspected source. Do not fabricate review eligibility or report WhatsApp delivery without enrollment proof, approved provider templates, explicit opt-in/opt-out, and provider delivery receipts.
 - The `/videos/history` route's existing upload-history semantics are preserved. Viewer history remains an explicit unfinished workstream.
+
+## Continued implementation — viewer Watch History / Continue Watching
+
+- Added `src/app/api/videos/watch-history/route.ts` with Firebase ID-token verification including revocation checks, bounded request sizes, user-scoped progress records, server-side video eligibility checks, a 10-second write throttle, and per-user delete.
+- History stores only video ID, playback position, duration, user ID, and update time. It does not store Drive URLs, media URLs, playback cookies, or credentials.
+- GET revalidates each referenced video and returns only currently approved, active, safe long-form public videos. Paid videos and pending paid integrations are excluded; the history record never grants playback entitlement. Legacy public records without an explicit `videoAccess` field remain eligible unless marked as pending paid integration.
+- Added a separate `/videos/watch-history` viewer page with Continue / Watch again, progress display, and per-video Remove. The existing `/videos/history` creator Upload History page was not changed.
+- Integrated progress save and resume into the long-form ExoClick player using a stable `videoId`, Firebase authentication, periodic progress writes, pause/end flushes, and metadata/play resume restoration. The player skips history for paid content.
+- Added a Watch History link to the video library and focused API/page/player contract tests under `test:viewer-watch-history`.
+- Added a Learning catalog sanitizer correction: control-character regex now removes actual control characters, with a contract regression test.
+
+### Watch History limitations / acceptance work still required
+- This first implementation tracks long-form free public videos only. Shorts history, paid-video history after entitlement verification, cross-device behavior, retention/expiry, and clear-all are not implemented.
+- Resume restoration currently uses the authenticated user's current history list; verify Firebase auth initialization, browser playback behavior, and server write throttling in staging.
+- Contract tests have been added but have not been executed in this environment. No build, typecheck, lint, emulator, or end-to-end pass is claimed.
+
