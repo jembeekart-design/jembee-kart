@@ -37,3 +37,19 @@ Working branch: `feat/jembee-premium-product-execution-2026-11-16`
 - Keep payouts and paid-video checkout disabled until their complete settlement, refund, entitlement and security acceptance tests pass.
 
 This log records source changes only. It is not a production-readiness certificate.
+
+## Additional source audit — 16 November 2026
+
+### Watch History distinction
+- Inspected `src/app/videos/history/page.tsx`: this route queries `watchEarnVideos` by `creatorId` / `userId` and presents the current user's uploaded videos. It is Upload History, not viewer Watch History.
+- Do not silently repurpose or relabel this creator-owned page as watch history.
+- Viewer Watch History / Continue Watching still needs a separate user-scoped server-authorized event/progress model, API, clear/remove controls, retention limits, and player integration. The existing `VideoPlayer` receives a media URL but no stable video ID or authenticated history callback; wiring must add an explicit stable ID and must not record metadata-only preloads as watched items.
+
+### Learning catalog upload/approval traceability
+- Inspected `src/app/api/content-categories/route.ts` and `src/app/api/creator/start-drive-upload/route.ts`: creator-managed school entries are published on creation; upload start validates the selected published board/school/class/subject-or-book/chapter/question chain.
+- Admin catalog moderation added on this branch records publish/unpublish audit events. Video approval re-reads selected nodes and their hierarchy in the same transaction that creates the approved video document, so an unpublish racing approval is rechecked.
+- Existing creator catalog writes and public reads remain separate from Admin publish/unpublish; no bulk catalog import or production data migration was performed.
+
+### Remaining evidence gates
+- No complete verified-learner teacher-review flow or WhatsApp Business API workflow was evidenced in inspected source. Do not fabricate review eligibility or report WhatsApp delivery without enrollment proof, approved provider templates, explicit opt-in/opt-out, and provider delivery receipts.
+- The `/videos/history` route's existing upload-history semantics are preserved. Viewer history remains an explicit unfinished workstream.
