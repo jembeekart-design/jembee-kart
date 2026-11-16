@@ -17,6 +17,10 @@ test("Admin Website Studio saves the dedicated settings document and exposes saf
   assert.match(studio, /primaryColor/);
   assert.match(studio, /sectionOrder/);
   assert.match(studio, /moveSection/);
+  assert.match(studio, /Category & Navigation Manager/);
+  assert.match(studio, /addCategory/);
+  assert.match(studio, /moveCategory/);
+  assert.match(studio, /updateNavigationLabel/);
 });
 
 test("public Home consumes only the public settings endpoint for supported controls", () => {
