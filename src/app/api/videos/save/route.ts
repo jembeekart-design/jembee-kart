@@ -1,10 +1,14 @@
 import { NextRequest, NextResponse } from "next/server";
+import { createHash } from "node:crypto";
 import { getAdminAuth, getAdminDb } from "@/firebase/admin";
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
 
 const MAX_TOKEN_LENGTH = 10_000;
+const MAX_BODY_BYTES = 4 * 1024;
+const savedDocumentId = (videoId: string, uid: string) =>
+  createHash("sha256").update(uid).update("\\0").update(videoId).digest("hex");
 
 export async function GET(req: NextRequest) {
   try {
@@ -23,7 +27,7 @@ export async function GET(req: NextRequest) {
       if (requestedVideoId.length > 200 || /[\/\\]/.test(requestedVideoId)) {
         return NextResponse.json({ success: false, message: "Invalid video ID" }, { status: 400 });
       }
-      const savedDocument = await savedCollection.doc(`${requestedVideoId}_${decoded.uid}`).get();
+      const savedDocument = await savedCollection.doc(savedDocumentId(requestedVideoId, decoded.uid)).get();
       return NextResponse.json({ success: true, saved: savedDocument.exists });
     }
     const snapshot = await savedCollection
@@ -58,7 +62,11 @@ export async function POST(req: NextRequest) {
     }
 
     const decoded = await getAdminAuth().verifyIdToken(token, true);
-    const body = await req.json().catch(() => null);
+    const raw = await req.text();
+    if (Buffer.byteLength(raw, "utf8") > MAX_BODY_BYTES) {
+      return NextResponse.json({ success: false, message: "Request too large" }, { status: 413 });
+    }
+    const body = (() => { try { return JSON.parse(raw); } catch { return null; } })();
     const videoId = typeof body?.videoId === "string" ? body.videoId.trim() : "";
     const saved = body?.saved;
 
