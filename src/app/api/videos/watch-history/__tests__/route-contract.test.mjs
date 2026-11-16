@@ -14,13 +14,15 @@ test("history only stores and returns currently approved safe public long videos
   assert.match(route, /video\?\.status !== "approved"/);
   assert.match(route, /video\?\.active !== true/);
   assert.match(route, /video\?\.moderation !== "safe"/);
-  assert.match(route, /video\?\.videoAccess !== "free"/);
+  assert.match(route, /video\?\.videoAccess !== "free" && video\?\.videoAccess !== undefined/);
+  assert.match(route, /paidVideoStatus === "payment_integration_pending"/);
   assert.match(route, /video\?\.videoFormat !== "long"/);
 });
 
 test("progress input is bounded and never contains a media URL or playback credential", () => {
   assert.match(route, /durationSeconds > 24 \* 60 \* 60/);
   assert.match(route, /positionSeconds > durationSeconds/);
+  assert.match(route, /Invalid request/);
   assert.doesNotMatch(route, /driveFileId|videoUrl|playbackCookie/);
 });
 
