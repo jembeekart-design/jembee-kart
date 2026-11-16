@@ -3,7 +3,7 @@
 import { Suspense, useMemo, useState } from "react";
 import Link from "next/link";
 import { useSearchParams } from "next/navigation";
-import { Search, ArrowLeft, PlaySquare, Eye } from "lucide-react";
+import { Search, ArrowLeft, PlaySquare, Eye, Clock3 } from "lucide-react";
 import FullscreenVideoFeed from "./components/FullscreenVideoFeed";
 import ExoClickVideoPlayer from "./components/ExoClickVideoPlayer";
 import { usePublicWatchVideos } from "@/hooks/usePublicWatchVideos";
@@ -91,7 +91,7 @@ function VideosPageContent() {
       <header className="sticky top-0 z-30 border-b border-white/10 bg-[#080d18]/95 px-4 py-4 backdrop-blur">
         <div className="mx-auto flex max-w-6xl items-center justify-between gap-3">
           <Link href="/" className="text-lg font-black">JEMBEE <span className="text-cyan-300">PLAY</span></Link>
-          <Link href="/shorts" className="inline-flex items-center gap-2 rounded-full bg-cyan-400 px-4 py-2 text-sm font-bold text-slate-950"><PlaySquare size={16}/> Shorts</Link>
+          <div className="flex items-center gap-2"><Link href="/videos/watch-history" className="inline-flex items-center gap-1 rounded-full bg-white/10 px-3 py-2 text-xs font-semibold text-white"><Clock3 size={15}/> History</Link><Link href="/shorts" className="inline-flex items-center gap-2 rounded-full bg-cyan-400 px-4 py-2 text-sm font-bold text-slate-950"><PlaySquare size={16}/> Shorts</Link></div>
         </div>
       </header>
       <section className="mx-auto max-w-6xl px-3 py-6 sm:px-4 sm:py-7">
