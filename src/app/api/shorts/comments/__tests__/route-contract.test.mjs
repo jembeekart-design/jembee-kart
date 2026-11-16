@@ -13,7 +13,7 @@ test("comment input is size-bounded and rejects invalid Firestore document IDs",
   assert.match(route, /content-length/);
   assert.match(route, /byteLength\(raw\) > 8192/);
   assert.match(route, /videoId\.length > 200/);
-  assert.match(route, /\[\\\\\/\]/);
+  assert.ok(route.includes("!/[\\\\/]/.test(videoId)"));
   assert.match(route, /text\.length > 5000/);
 });
 
