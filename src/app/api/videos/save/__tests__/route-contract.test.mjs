@@ -70,3 +70,13 @@ test("saved-video migration reads and removes legacy keys without creating dupli
   assert.match(route, /legacySaveSnap\.exists\) transaction\.delete\(legacySaveRef\)/);
   assert.match(route, /!saveSnap\.exists && !legacySaveSnap\.exists/);
 });
+
+
+test("saved-video list batch-filters entries that are no longer public and free", () => {
+  assert.match(route, /db\.getAll\(\.\.\.videoRefs\)/);
+  assert.match(route, /video\?\.status === "approved"/);
+  assert.match(route, /video\?\.active === true/);
+  assert.match(route, /video\?\.moderation === "safe"/);
+  assert.match(route, /video\?\.videoAccess === "free"/);
+  assert.match(route, /availableIds/);
+});
