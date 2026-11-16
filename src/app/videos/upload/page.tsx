@@ -82,6 +82,7 @@ function UploadWatchVideoContent() {
   const [uploadPaused, setUploadPaused] = useState(false);
   const [uploadProgress, setUploadProgress] = useState(0);
   const [uploadError, setUploadError] = useState<string | null>(null);
+  const [uploadNotice, setUploadNotice] = useState("");
   const [caption, setCaption] = useState("");
   const [categories, setCategories] = useState<ExploreCategoryRecord[]>(DEFAULT_EXPLORE_CATEGORIES);
   const [schoolNodes, setSchoolNodes] = useState<LearningNode[]>([]);
@@ -301,21 +302,22 @@ function UploadWatchVideoContent() {
   }
 
   async function handleUpload() {
+    setUploadNotice("");
     try {
       if (!file) {
-        alert("पहले अपना वीडियो चुनें");
+        setUploadError("पहले अपना वीडियो चुनें");
         return;
       }
-      if (!categoryId) { alert("कृपया वीडियो की Category चुनें।"); return; }
-      if (isSchoolCategory && (!schoolSubjectId || !schoolBookId || !schoolChapterId || !schoolQuestionNumber.trim())) { alert("कृपया Subject, Book, Chapter और किताब में दिया Question Number लिखें।"); return; }
+      if (!categoryId) { setUploadError("कृपया वीडियो की Category चुनें।"); return; }
+      if (isSchoolCategory && (!schoolSubjectId || !schoolBookId || !schoolChapterId || !schoolQuestionNumber.trim())) { setUploadError("कृपया Subject, Book, Chapter और किताब में दिया Question Number लिखें।"); return; }
       if (videoAccess === "paid" && (!Number.isFinite(Number(videoPrice)) || Number(videoPrice) < 1 || Number(videoPrice) > 100000)) {
-        alert("Paid वीडियो की कीमत ₹1 से ₹100000 के बीच रखें।");
+        setUploadError("Paid वीडियो की कीमत ₹1 से ₹100000 के बीच रखें।");
         return;
       }
 
       const currentUser = auth.currentUser;
       if (!currentUser?.uid) {
-        alert("कृपया पहले लॉगिन करें");
+        setUploadError("कृपया पहले लॉगिन करें");
         return;
       }
 
@@ -374,7 +376,7 @@ function UploadWatchVideoContent() {
       });
 
       if (result.success) {
-        alert("वीडियो सफलतापूर्वक भेज दिया गया है। मंजूरी के बाद यह प्रकाशित होगा।");
+        setUploadNotice("वीडियो सफलतापूर्वक भेज दिया गया है। मंजूरी के बाद यह प्रकाशित होगा।");
         setCaption("");
         setFile(null);
         setUploadProgress(0);
@@ -565,6 +567,13 @@ function UploadWatchVideoContent() {
             ))}
           </div>
         </section>
+
+        {uploadNotice ? (
+          <section className="rounded-2xl border border-green-400/30 bg-green-950/20 p-4 text-green-200" role="status">
+            <p className="font-bold">वीडियो भेज दिया गया</p>
+            <p className="mt-1 text-sm">{uploadNotice}</p>
+          </section>
+        ) : null}
 
         {uploadError ? (
           <section className="rounded-2xl border border-red-400/40 bg-red-950/30 p-4 text-red-200" role="alert">
