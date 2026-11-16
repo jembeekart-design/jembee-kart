@@ -11,6 +11,7 @@ import type { WatchVideo } from "@/lib/videos/watch-earn/fetchWatchVideos";
 type HomeCategory = { id: string; label: string; filter: string; enabled: boolean };
 type FeaturedCreator = { creatorId: string; label: string; enabled: boolean };
 type FeaturedPlaylist = { id: string; title: string; description: string; videoIds: string[]; enabled: boolean };
+type FeaturedVideo = { videoId: string; label: string; startsAt: string; endsAt: string; enabled: boolean };
 type NavigationKey = "home" | "shorts" | "explore" | "learning" | "history" | "liked";
 const DEFAULT_HOME_CATEGORIES: HomeCategory[] = [
   { id: "education", label: "Education", filter: "education", enabled: true },
@@ -26,7 +27,7 @@ type SiteExperience = {
   siteName: string; tagline: string; heroTitle: string; heroSubtitle: string;
   primaryColor: string; accentColor: string; pageColor: string; surfaceColor: string;
   announcementEnabled: boolean; announcementText: string; showLearningBanner: boolean;
-  showShorts: boolean; showLongVideos: boolean; showHomeAds: boolean; compactCards: boolean; sectionOrder: ("learning" | "shorts" | "longVideos")[]; homeCategories: HomeCategory[]; navigationLabels: Record<NavigationKey, string>; featuredCreators: FeaturedCreator[]; featuredPlaylists: FeaturedPlaylist[];
+  showShorts: boolean; showLongVideos: boolean; showHomeAds: boolean; compactCards: boolean; sectionOrder: ("learning" | "shorts" | "longVideos")[]; homeCategories: HomeCategory[]; navigationLabels: Record<NavigationKey, string>; featuredCreators: FeaturedCreator[]; featuredPlaylists: FeaturedPlaylist[]; featuredVideos: FeaturedVideo[];
 };
 const DEFAULT_SITE_EXPERIENCE: SiteExperience = {
   siteName: "JEMBEE PLAY", tagline: "Watch • Learn • Create • Share",
@@ -34,7 +35,7 @@ const DEFAULT_SITE_EXPERIENCE: SiteExperience = {
   heroSubtitle: "अपनी class, book और chapter चुनें और सही video answer खोजें।",
   primaryColor: "#22d3ee", accentColor: "#8b5cf6", pageColor: "#090d16", surfaceColor: "#111827",
   announcementEnabled: false, announcementText: "", showLearningBanner: true,
-  showShorts: true, showLongVideos: true, showHomeAds: true, compactCards: false, sectionOrder: ["learning", "shorts", "longVideos"], homeCategories: DEFAULT_HOME_CATEGORIES, navigationLabels: DEFAULT_NAVIGATION_LABELS, featuredCreators: [], featuredPlaylists: [],
+  showShorts: true, showLongVideos: true, showHomeAds: true, compactCards: false, sectionOrder: ["learning", "shorts", "longVideos"], homeCategories: DEFAULT_HOME_CATEGORIES, navigationLabels: DEFAULT_NAVIGATION_LABELS, featuredCreators: [], featuredPlaylists: [], featuredVideos: [],
 };
 type NavigationItem = { icon: LucideIcon; label: string; href: string; key?: NavigationKey };
 const earningsNavigation: NavigationItem[] = [
@@ -132,6 +133,7 @@ export default function HomePage() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const { videos, loading, error } = usePublicWatchVideos();
   const [siteExperience, setSiteExperience] = useState<SiteExperience>(DEFAULT_SITE_EXPERIENCE);
+  const [clientNow, setClientNow] = useState<number | null>(null);
 
   useEffect(() => {
     let active = true;
@@ -155,6 +157,8 @@ export default function HomePage() {
     return () => { active = false; };
   }, []);
 
+  useEffect(() => { setClientNow(Date.now()); }, []);
+
   const visibleChips = siteExperience.homeCategories.filter((item) => item.enabled);
   const filtered = useMemo(() => videos.filter((video) => {
     const searchable = `${video.caption} ${video.displayName || ""} ${video.username} ${video.music} ${(video.hashtags || []).join(" ")}`.toLowerCase();
@@ -165,6 +169,7 @@ export default function HomePage() {
   const longVideos = filtered.filter((video) => video.videoFormat === "long");
   const featuredCreators = siteExperience.featuredCreators.filter((creator) => creator.enabled).map((creator) => ({ ...creator, videos: videos.filter((video) => video.creatorId === creator.creatorId).slice(0, 4) })).filter((creator) => creator.videos.length > 0);
   const featuredPlaylists = siteExperience.featuredPlaylists.filter((playlist) => playlist.enabled).map((playlist) => ({ ...playlist, videos: playlist.videoIds.map((id) => videos.find((video) => video.id === id)).filter((video): video is WatchVideo => !!video) })).filter((playlist) => playlist.videos.length > 0);
+  const featuredVideos = clientNow === null ? [] : siteExperience.featuredVideos.filter((item) => item.enabled && (!item.startsAt || Date.parse(item.startsAt) <= clientNow) && (!item.endsAt || Date.parse(item.endsAt) > clientNow)).map((item) => ({ ...item, video: videos.find((video) => video.id === item.videoId) })).filter((item): item is typeof item & { video: WatchVideo } => !!item.video && item.video.videoFormat === "long");
 
   return (
     <main className="min-h-screen bg-[var(--color-page-background)] text-white">
@@ -263,6 +268,7 @@ export default function HomePage() {
             }
             return null;
           })}
+          {featuredVideos.length ? <section className="mb-8" aria-labelledby="featured-videos-heading"><h2 id="featured-videos-heading" className="mb-4 text-lg font-bold sm:text-xl">Featured Video</h2><div className={`grid gap-x-4 gap-y-6 sm:grid-cols-2 ${siteExperience.compactCards ? "xl:grid-cols-4" : "xl:grid-cols-3"}`}>{featuredVideos.map((item, index) => <div key={item.videoId}><p className="mb-2 text-xs font-semibold text-cyan-300">{item.label}</p><LongVideoCard video={item.video} eager={index === 0}/></div>)}</div></section> : null}
           {featuredCreators.length ? <section className="mb-8" aria-labelledby="featured-creators-heading">
             <h2 id="featured-creators-heading" className="mb-4 text-lg font-bold sm:text-xl">Recommended Creators</h2>
             <div className="grid gap-3 sm:grid-cols-2 xl:grid-cols-3">{featuredCreators.map((creator) => <article key={creator.creatorId} className="rounded-2xl border border-white/10 bg-[var(--color-card-background)] p-4"><Link href={`/videos/uploader/${encodeURIComponent(creator.creatorId)}`} className="flex items-center gap-3"><CreatorAvatar video={creator.videos[0]}/><div className="min-w-0"><p className="truncate font-semibold">{creator.label}</p><p className="text-xs text-slate-400">{creator.videos.length} featured videos</p></div><ChevronRight className="ml-auto shrink-0 text-slate-500" size={18}/></Link><div className="mt-3 grid grid-cols-2 gap-2">{creator.videos.slice(0, 2).map((video) => <Link key={video.id} href={`/videos?v=${encodeURIComponent(video.id)}`} className="overflow-hidden rounded-lg"><Thumbnail video={video} ratio="landscape"/><p className="mt-1 line-clamp-1 text-xs">{video.caption || "Untitled video"}</p></Link>)}</div></article>)}</div>
