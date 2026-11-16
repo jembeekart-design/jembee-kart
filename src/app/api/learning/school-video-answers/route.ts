@@ -10,7 +10,41 @@ export async function GET(req: Request) {
     return NextResponse.json({ success: false, message: "Valid question is required" }, { status: 400, headers: { "Cache-Control": "no-store" } });
   }
   try {
-    const snapshot = await getAdminDb().collection("watchEarnVideos").where("schoolQuestionId", "==", questionId).limit(100).get();
+    const db = getAdminDb();
+    // A previously approved answer must stop appearing when its question or
+    // any ancestor in the learning path is unpublished or removed.
+    const expectedParents = [
+      { type: "question", parent: "chapter" },
+      { type: "chapter", parent: "subjectOrBook" },
+      { type: "subject", parent: "class" },
+      { type: "book", parent: "class" },
+      { type: "class", parent: "school" },
+      { type: "school", parent: "board" },
+      { type: "board", parent: null },
+    ] as const;
+    const chain: Record<string, Record<string, unknown>> = {};
+    let currentId = questionId;
+    let expectedType: string = "question";
+    for (let depth = 0; depth < 7; depth += 1) {
+      const nodeSnapshot = await db.collection("schoolLearningNodes").doc(currentId).get();
+      const node = nodeSnapshot.data();
+      if (!nodeSnapshot.exists || node?.status !== "published" || node?.type !== expectedType) {
+        return NextResponse.json({ success: true, videos: [] }, { headers: { "Cache-Control": "no-store, max-age=0" } });
+      }
+      chain[expectedType] = node as Record<string, unknown>;
+      const parentId = typeof node.parentId === "string" ? node.parentId : "";
+      if (expectedType === "board") {
+        if (parentId) return NextResponse.json({ success: true, videos: [] }, { headers: { "Cache-Control": "no-store, max-age=0" } });
+        break;
+      }
+      if (!parentId) return NextResponse.json({ success: true, videos: [] }, { headers: { "Cache-Control": "no-store, max-age=0" } });
+      currentId = parentId;
+      expectedType = expectedType === "question" ? "chapter"
+        : expectedType === "chapter" ? (chain.chapter?.parentType === "book" ? "book" : "subject")
+        : expectedType === "subject" || expectedType === "book" ? "class"
+        : expectedType === "class" ? "school" : "board";
+    }
+    const snapshot = await db.collection("watchEarnVideos").where("schoolQuestionId", "==", questionId).limit(100).get();
     const videos = snapshot.docs.flatMap((doc) => {
       const data = doc.data();
       if (data.status !== "approved" || data.active !== true || data.moderation !== "safe") return [];
