@@ -29,5 +29,12 @@ test("progress input is bounded and never contains a media URL or playback crede
 test("viewer can remove only their own history record", () => {
   assert.match(route, /historyDocumentId\(uid, videoId\)/);
   assert.match(route, /createHash\("sha256"\)/);
+  assert.match(route, /\.update\("\\0"\)/);
   assert.match(route, /export async function DELETE/);
+});
+
+
+test("history reads associated video documents with a bounded batch read", () => {
+  assert.match(route, /db\.getAll\(\.\.\.videoRefs\)/);
+  assert.doesNotMatch(route, /snapshot\.docs\.map\(async \(item\)/);
 });
