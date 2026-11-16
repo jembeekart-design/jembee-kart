@@ -19,7 +19,7 @@ test("public site experience allowlists fields and validates input types", () =>
     "announcementEnabled", "announcementText", "showLearningBanner",
     "showShorts", "showLongVideos", "showHomeAds", "compactCards",
   ]) {
-    assert.match(route, new RegExp("\\\\b" + field + ":"));
+    assert.match(route, new RegExp("\\b" + field + ":"));
   }
   assert.match(route, /max-age=30/);
   assert.doesNotMatch(route, /process\.env|private_key|refresh_token|apiKey/i);
