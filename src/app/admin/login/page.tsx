@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 
 import { signInWithEmailAndPassword } from "firebase/auth";
@@ -15,6 +15,13 @@ export default function AdminLoginPage() {
 
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
+
+  useEffect(() => {
+    const reason = new URLSearchParams(window.location.search).get("error");
+    if (reason === "not-admin") {
+      setError("Admin session verify नहीं हुआ। कृपया Admin account से दोबारा login करें।");
+    }
+  }, []);
 
   const login = async (e: React.FormEvent) => {
     e.preventDefault();
