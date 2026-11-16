@@ -221,7 +221,7 @@ export default function WebsiteStudioPage() {
                 {config.showShorts ? <div className="mt-5"><p className="text-xs font-bold">Shorts</p><div className="mt-2 grid grid-cols-3 gap-2">{[1,2,3].map((item) => <div key={item} className="aspect-[3/4] rounded-xl" style={{ background: "linear-gradient(145deg, " + config.accentColor + "99, " + config.surfaceColor + ")" }}/>)}</div></div> : null}
                 {config.showLongVideos ? <div className="mt-5"><p className="text-xs font-bold">Videos for you</p><div className="mt-2 aspect-video rounded-xl" style={{ background: "linear-gradient(120deg, " + config.surfaceColor + ", " + config.primaryColor + "44)" }}/></div> : null}
               </div>
-              <p className="border-t border-white/10 px-5 py-3 text-[11px] leading-5 text-slate-500">Preview only. Save changes to store settings. Public-page integration is applied in the next rollout stage.</p>
+              <p className="border-t border-white/10 px-5 py-3 text-[11px] leading-5 text-slate-500">Preview updates as you edit. Save changes to publish supported settings on the Home page.</p>
             </section>
             <div className="rounded-2xl border border-amber-300/20 bg-amber-300/5 p-4 text-xs leading-5 text-amber-100/80"><strong className="text-amber-100">Safety controls stay protected.</strong> This studio cannot enable payouts, bypass video moderation, approve paid checkout, or change payment verification rules.</div>
           </aside>
