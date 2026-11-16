@@ -92,7 +92,9 @@ export async function GET() {
       showLongVideos: safeBoolean(stored.showLongVideos, true),
       showHomeAds: safeBoolean(stored.showHomeAds, true),
       compactCards: safeBoolean(stored.compactCards, false),
-      sectionOrder: safeSectionOrder(stored.sectionOrder),\n      homeCategories: safeHomeCategories(stored.homeCategories),\n      navigationLabels: safeNavigationLabels(stored.navigationLabels),
+      sectionOrder: safeSectionOrder(stored.sectionOrder),
+      homeCategories: safeHomeCategories(stored.homeCategories),
+      navigationLabels: safeNavigationLabels(stored.navigationLabels),
     };
 
     return NextResponse.json(experience, {
