@@ -6,6 +6,37 @@ export const dynamic = "force-dynamic";
 
 const MAX_TOKEN_LENGTH = 10_000;
 
+export async function GET(req: NextRequest) {
+  try {
+    const authorization = req.headers.get("authorization") || "";
+    if (!authorization.startsWith("Bearer ")) {
+      return NextResponse.json({ success: false, message: "Unauthorized" }, { status: 401 });
+    }
+    const token = authorization.slice(7).trim();
+    if (!token || token.length > MAX_TOKEN_LENGTH) {
+      return NextResponse.json({ success: false, message: "Unauthorized" }, { status: 401 });
+    }
+    const decoded = await getAdminAuth().verifyIdToken(token, true);
+    const snapshot = await getAdminDb()
+      .collection("savedWatchVideos")
+      .where("userId", "==", decoded.uid)
+      .limit(200)
+      .get();
+    const videoIds = [...new Set(snapshot.docs
+      .map((item) => item.data().videoId)
+      .filter((id): id is string => typeof id === "string" && id.length > 0 && id.length <= 200))];
+    return NextResponse.json({ success: true, videoIds });
+  } catch (error) {
+    const message = error instanceof Error ? error.message : "";
+    const unauthorized = message.includes("Firebase ID token") || message === "UNAUTHORIZED";
+    console.error("Saved video list load failed:", error);
+    return NextResponse.json(
+      { success: false, message: unauthorized ? "Unauthorized" : "Saved videos are temporarily unavailable" },
+      { status: unauthorized ? 401 : 500 }
+    );
+  }
+}
+
 export async function POST(req: NextRequest) {
   try {
     const authorization = req.headers.get("authorization") || "";
