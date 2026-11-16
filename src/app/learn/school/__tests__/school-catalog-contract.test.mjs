@@ -22,11 +22,21 @@ test("question numbers are discovered from approved videos without requiring Adm
   assert.match(answers, /schoolQuestionNumber/);
   assert.match(answers, /schoolQuestionKey/);
   assert.ok(answers.includes("if (!questionNumber)"));
-  assert.match(answers, /Published chapter not found/);
   const publicHandler = answers.slice(answers.indexOf("export async function GET"));
   assert.equal(publicHandler.includes('db.collection("schoolLearningNodes").doc(questionId)'), false);
   assert.match(publicHandler, /getChapterQuestionVideos/);
   assert.match(answers, /getLegacyQuestionVideos/);
+  assert.match(answers, /Published chapter not found/);
+  assert.ok(answers.includes(String.raw`const questionNumberPattern = /^[a-z]{0,3}\.?\s*\d+(?:\s*\([a-z0-9]+\))?(?:[.-]\d+)?$/i;`));
+  assert.ok(answers.includes(String.raw`replace(/\s+/g, "")`));
+  const acceptedQuestionNumber = /^[a-z]{0,3}\.?\s*\d+(?:\s*\([a-z0-9]+\))?(?:[.-]\d+)?$/i;
+  for (const sample of ["1", "1(a)", "Q.2", "2.1"]) assert.ok(acceptedQuestionNumber.test(sample), `Expected ${sample} to be valid`);
+  for (const sample of ["", "Q.abc", "1(a)(b)", "2/3"]) assert.equal(acceptedQuestionNumber.test(sample), false, `Expected ${sample} to be invalid`);
+  const discovery = answers.slice(answers.indexOf("async function listChapterQuestions"), answers.indexOf("async function getChapterQuestionVideos"));
+  assert.ok(discovery.includes("schoolQuestionNumber"));
+  assert.ok(discovery.includes("schoolQuestionKey"));
+  assert.ok(discovery.includes("visibleDocs"));
+  assert.ok(discovery.includes("legacySnapshot"), "legacy Admin questions remain an optional compatibility source");
 });
 
 test("legacy Admin Question records and videos remain readable", () => {
@@ -37,11 +47,14 @@ test("legacy Admin Question records and videos remain readable", () => {
 });
 
 test("Question answers only return approved active safe videos and keep paid checkout gated", () => {
-  assert.match(answers, /data.status === "approved" && data.active === true && data.moderation === "safe"/);
-  assert.match(answers, /data.videoAccess === "paid"/);
-  assert.ok(answers.includes('process.env.SHORTS_PAID_VIDEO_CHECKOUT_ENABLED !== "true"'));
-  assert.ok(answers.includes("data.paidCheckoutEnabled !== true"));
-  assert.ok(answers.includes('data.paidVideoStatus !== "enabled"'));
+  const visibility = answers.slice(answers.indexOf("function isVisibleVideo"), answers.indexOf("function toVideo"));
+  assert.ok(visibility.includes('data.status === "approved"'));
+  assert.ok(visibility.includes("data.active === true"));
+  assert.ok(visibility.includes('data.moderation === "safe"'));
+  assert.ok(visibility.includes('process.env.SHORTS_PAID_VIDEO_CHECKOUT_ENABLED !== "true"'));
+  assert.ok(visibility.includes("data.paidCheckoutEnabled !== true"));
+  assert.ok(visibility.includes('data.paidVideoStatus !== "enabled"'));
+  assert.ok(answers.includes(".filter((doc) => isVisibleVideo(doc.data()))"));
 });
 
 test("Approved video records retain Subject Book Chapter and normalized Question Number metadata", () => {
