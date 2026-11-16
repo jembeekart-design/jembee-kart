@@ -26,8 +26,10 @@ Settings are stored in admin_settings/site_experience. The public endpoint at /a
 | Home ad placements visibility | showHomeAds | Show/hide the existing Home ad placements only |
 | Compact video cards | compactCards | Increase desktop long-video grid density |
 | Home section order | sectionOrder | Reorder Learning, Shorts, and Long Videos on Home |
+| Home category chips | homeCategories | Add, rename, filter, reorder, hide/show, and remove up to 12 category chips |
+| Main navigation labels | navigationLabels | Rename the six supported main navigation labels without changing their routes |
 
-The public endpoint validates colour values, text lengths, and boolean types and uses safe defaults when settings are absent or unavailable.
+The public endpoint validates colour values, text lengths, booleans, section order, category IDs/labels/filters, and the allowlisted navigation-label keys. It uses safe defaults when settings are absent or unavailable. Category chips filter the Home feed using their configured text filter; they do not create new content categories in the creator upload catalogue.
 
 ## 2. Next Admin Studio modules — planned
 
@@ -35,7 +37,7 @@ The public endpoint validates colour values, text lengths, and boolean types and
 - Reorder Home sections and choose which supported sections appear.
 - Manage category chips, category ordering, and featured topics.
 - Manage featured playlists, featured creators, and editorial collections.
-- Manage menu labels, navigation order, and footer links.
+- Manage navigation order and footer links.
 - Manage launch banners, maintenance notices, and scheduled announcements.
 - Manage static information pages and support links.
 
