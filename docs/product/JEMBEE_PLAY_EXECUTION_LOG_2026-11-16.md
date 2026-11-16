@@ -211,3 +211,11 @@ This log records source changes only. It is not a production-readiness certifica
 - Reply deletion already existed as an owner-authenticated transactional endpoint; the helper calls that endpoint. The endpoint removes the reply and decrements the parent count without allowing a negative count.
 - Follow status now checks both relationship edges, so a one-sided legacy relationship is not incorrectly shown as unfollowed while the follow mutation repairs the missing edge.
 - Verification limitation: these new contract tests and the wider suite have not been executed in this environment. TypeScript, ESLint, Firebase Emulator, browser/device tests and production build remain unverified. No deployment, payout activation or bulk video upload performed.
+
+
+## Automated release verification workflow — 16 November 2026
+
+- Added `.github/workflows/jembee-play-release-verification.yml` for pushes to the working branch and main, pull requests targeting main, and manual workflow dispatch.
+- The workflow uses Node.js 22 and runs the existing `scripts/verify-release.sh` release gate: dependency-free Node contract tests, locked dependency installation, TypeScript, ESLint and Next.js production build.
+- The workflow is a verification mechanism, not proof of a passing build. Its first GitHub Actions run must complete successfully before release readiness can be assessed. External Firebase, Drive, Cashfree, ad-provider, Android-device and production-domain checks remain separate.
+- No deployment, payout activation or bulk video upload performed.
