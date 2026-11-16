@@ -5,7 +5,7 @@ import { readFileSync } from "node:fs";
 const route = readFileSync(new URL("../route.ts", import.meta.url), "utf8");
 const feed = readFileSync(new URL("../../../../videos/components/VerticalVideoFeed.tsx", import.meta.url), "utf8");
 
-test("saved video API requires a revocation-checked Firebase bearer token", () => {
+test("saved video API requires a revocation-checked Firebase bearer token", () => {\n  assert.match(route, /export async function GET\\(req: NextRequest\\)/);
   assert.match(route, /authorization\.startsWith\("Bearer "\)/);
   assert.match(route, /verifyIdToken\(token, true\)/);
   assert.match(route, /MAX_TOKEN_LENGTH/);
