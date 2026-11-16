@@ -35,7 +35,7 @@ test("saved video list is loaded from the server for the current account", () =>
 });
 
 test("a user can always remove a stale saved-video reference", () => {
-  assert.match(route, /if \(!saved\) \{\s*if \(saveSnap\.exists\) transaction\.delete\(saveRef\);\s*return \{ saved: false \};\s*\}/);
+  assert.match(route, /if \(!saved\) \{[\s\S]*?if \(saveSnap\.exists\) transaction\.delete\(saveRef\);[\s\S]*?if \(legacySaveSnap\.exists\) transaction\.delete\(legacySaveRef\);[\s\S]*?return \{ saved: false \};[\s\S]*?\}/);
   assert.ok(route.indexOf("if (!saved)") < route.indexOf('if (!videoSnap.exists) return { error: "VIDEO_UNAVAILABLE"'));
 });
 
@@ -49,7 +49,7 @@ test("derived video cards use the same persistent saved-video API", () => {
 test("video cards request one saved-state record instead of downloading the full saved list", () => {
   assert.match(route, /searchParams\.get\("videoId"\)/);
   assert.match(route, /savedCollection.doc(savedDocumentId(requestedVideoId, decoded.uid))/);
-  assert.match(videoCard, /fetch\(\`\/api\/videos\/save\?videoId=\$\{encodeURIComponent\(video\.id\)\}\`/);
+  assert.ok(videoCard.includes("fetch(`/api/videos/save?videoId=${encodeURIComponent(video.id)}`"));
   assert.match(videoCard, /setIsSaved\(result\.saved === true\)/);
 });
 
