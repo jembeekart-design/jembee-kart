@@ -4,7 +4,6 @@ import {
   doc,
   addDoc,
   updateDoc,
-  deleteDoc,
   serverTimestamp,
   onSnapshot,
   query,
@@ -119,5 +118,25 @@ export async function addComment(
 }
 
 export async function deleteComment(commentId: string) {
-  await deleteDoc(doc(db, COMMENTS_COLLECTION, commentId));
+  const currentUser = auth.currentUser;
+  if (!currentUser) throw new Error("Please sign in before deleting a comment.");
+  if (!commentId || commentId.length > 500 || /[\\\\/]/.test(commentId)) {
+    throw new Error("Invalid comment ID.");
+  }
+
+  const token = await currentUser.getIdToken();
+  const response = await fetch("/api/shorts/comments/delete", {
+    method: "POST",
+    headers: {
+      Authorization: `Bearer ${token}`,
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({ commentId }),
+  });
+  const result = await response.json().catch(() => ({}));
+  if (!response.ok || result.success !== true) {
+    throw new Error(
+      typeof result.message === "string" ? result.message : "Unable to delete comment."
+    );
+  }
 }
