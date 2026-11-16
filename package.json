@@ -9,7 +9,7 @@
     "lint": "eslint",
     "scan:hardcoded": "tsx src/scripts/hardcodedScanner.ts",
     "dev:turbo": "next dev",
-    "test:paid-video-eligibility": "node --test src/app/api/shorts/paid-video/verify/__tests__/paid-video-eligibility.test.mjs",
+    "test:paid-video-eligibility": "node --test src/app/api/shorts/paid-video/verify/__tests__/paid-video-eligibility.test.mjs src/app/videos/components/__tests__/PaidVideoGate-attribution.test.mjs",
     "test:paid-video-revenue-split": "node --test src/lib/server/__tests__/paidVideoRevenueSplit.test.mjs src/app/api/shorts/paid-video/verify/__tests__/paid-video-eligibility.test.mjs src/app/api/shorts/paid-video/verify/__tests__/settlement-ledger-contract.test.mjs",
     "test:paid-video-refunds": "node --test src/lib/server/__tests__/paidVideoRefundReversal.test.mjs src/lib/server/__tests__/paidVideoRevenueSplit.test.mjs src/app/api/shorts/paid-video/verify/__tests__/paid-video-eligibility.test.mjs src/app/api/shorts/paid-video/verify/__tests__/settlement-ledger-contract.test.mjs",
     "test:paid-video-refund-reconcile": "node --test src/app/api/admin/shorts/paid-video-refunds/reconcile/__tests__/route-contract.test.mjs",
