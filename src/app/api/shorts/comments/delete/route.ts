@@ -25,6 +25,7 @@ export async function POST(req: Request) {
     const raw = await req.text();
     if (new TextEncoder().encode(raw).byteLength > 4096) return error("Request body too large", 413);
     body = JSON.parse(raw);
+    if (!body || typeof body !== "object" || Array.isArray(body)) return error("Invalid JSON body", 400);
   } catch {
     return error("Invalid JSON body", 400);
   }
