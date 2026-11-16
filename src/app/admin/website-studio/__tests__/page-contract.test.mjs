@@ -46,5 +46,7 @@ test("public Home consumes only the public settings endpoint for supported contr
 
 test("Firestore grants site experience writes only to admins and exposes the studio link", () => {
   assert.match(rules, /isAdmin\(\) && settingId in \['customize', 'mobile_app', 'site_experience'\]/);
+  assert.match(rules, /match \/admin_settings\/site_experience\/versions/);
+  assert.match(rules, /match \/adminActivityLogs/);
   assert.match(adminHome, /\/admin\/website-studio/);
 });
