@@ -1,10 +1,14 @@
 import { NextRequest, NextResponse } from "next/server";
+import { createHash } from "node:crypto";
 import { getAdminAuth, getAdminDb } from "@/firebase/admin";
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
 
 const MAX_TOKEN_LENGTH = 10_000;
+const historyDocumentId = (uid: string, videoId: string) =>
+  createHash("sha256").update(uid).update("\\0").update(videoId).digest("hex");
+
 const validVideoId = (value: unknown): value is string =>
   typeof value === "string" && value.length > 0 && value.length <= 200 && !/[\\/\\\\]/.test(value);
 
@@ -99,7 +103,7 @@ export async function POST(req: NextRequest) {
 
     const db = getAdminDb();
     const videoRef = db.collection("watchEarnVideos").doc(videoId);
-    const historyRef = db.collection("videoWatchHistory").doc(`${uid}_${videoId}`);
+    const historyRef = db.collection("videoWatchHistory").doc(historyDocumentId(uid, videoId));
     const outcome = await db.runTransaction(async (transaction) => {
       const videoSnap = await transaction.get(videoRef);
       const historySnap = await transaction.get(historyRef);
@@ -142,7 +146,7 @@ export async function DELETE(req: NextRequest) {
     if (!validVideoId(videoId)) {
       return NextResponse.json({ success: false, message: "Invalid video ID" }, { status: 400 });
     }
-    await getAdminDb().collection("videoWatchHistory").doc(`${uid}_${videoId}`).delete();
+    await getAdminDb().collection("videoWatchHistory").doc(historyDocumentId(uid, videoId)).delete();
     return NextResponse.json({ success: true }, { headers: { "Cache-Control": "no-store" } });
   } catch (error) {
     console.error("Viewer watch history delete failed:", error);
