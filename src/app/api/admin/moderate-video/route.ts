@@ -41,10 +41,13 @@ async function verifyAdmin(req: Request): Promise<string> {
   ) {
     const snapshot = await users
       .where("uid", "==", decodedToken.uid)
-      .limit(1)
+      .limit(20)
       .get();
 
-    const fallbackData = snapshot.docs[0]?.data();
+    const fallbackData = snapshot.docs.find((item) => {
+      const candidateRole = item.data()?.role;
+      return candidateRole === "admin" || candidateRole === "super_admin";
+    })?.data();
 
     if (
       fallbackData?.role === "admin" ||
