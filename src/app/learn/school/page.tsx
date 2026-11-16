@@ -33,7 +33,7 @@ export default function SchoolLearningPage() {
     if (stage === 3) {
       setLoading(true);
       fetch(`/api/learning/school-video-answers?chapterId=${encodeURIComponent(chapter?.id || "")}`, { cache: "no-store" })
-        .then(async (response) => { if (!response.ok) throw new Error("Question numbers could not be loaded"); return response.json(); })
+        .then((response) => { if (!response.ok) throw new Error("Question numbers could not be loaded"); return response.json(); })
         .then((data) => {
           if (!active || data.success !== true) return;
           setNodes(Array.isArray(data.questions) ? data.questions.map((item: { questionNumber: string; questionKey: string; legacyQuestionId?: string }) => ({ id: `number-${item.questionKey}`, name: item.questionNumber, questionNumber: item.questionNumber, legacyQuestionId: item.legacyQuestionId })) : []);
@@ -51,7 +51,7 @@ export default function SchoolLearningPage() {
     setLoading(true);
     setError("");
     fetch(`/api/content-categories?${params.toString()}`, { cache: "no-store" })
-      .then(async (response) => { if (!response.ok) throw new Error("Learning Library could not be loaded"); return response.json(); })
+      .then((response) => { if (!response.ok) throw new Error("Learning Library could not be loaded"); return response.json(); })
       .then((data) => {
         if (!active || data.success !== true) return;
         setNodes(Array.isArray(data.learningNodes) ? data.learningNodes : []);
@@ -72,7 +72,7 @@ export default function SchoolLearningPage() {
       ? `questionId=${encodeURIComponent(question.legacyQuestionId)}`
       : `chapterId=${encodeURIComponent(chapter?.id || "")}&questionNumber=${encodeURIComponent(question.questionNumber || question.name)}`;
     fetch(`/api/learning/school-video-answers?${answerQuery}`, { cache: "no-store" })
-      .then(async (response) => { if (!response.ok) throw new Error("Video answers could not be loaded"); return response.json(); })
+      .then((response) => { if (!response.ok) throw new Error("Video answers could not be loaded"); return response.json(); })
       .then((data) => { if (active && data.success === true) setVideos(Array.isArray(data.videos) ? data.videos : []); })
       .catch((reason) => { if (active) setError(reason instanceof Error ? reason.message : "Video answers unavailable"); })
       .finally(() => { if (active) setVideoLoading(false); });
