@@ -15,6 +15,8 @@ test("public site experience reads only the dedicated admin settings document", 
   assert.match(route, /safeNavigationLabels/);
   assert.match(route, /safeFeaturedCreators/);
   assert.match(route, /safeFeaturedPlaylists/);
+  assert.match(route, /safeFeaturedVideos/);
+  assert.match(route, /Date\.parse\(endsAt\) <= Date\.parse\(startsAt\)/);
 });
 
 test("public site experience allowlists fields and validates input types", () => {
