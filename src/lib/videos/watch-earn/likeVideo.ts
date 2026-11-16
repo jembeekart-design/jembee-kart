@@ -21,8 +21,8 @@ export async function likeVideo({ videoId, userId }: LikeVideoData) {
 
     const response = await fetch("/api/shorts/video-like", {
       method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ videoId, action: "like", token }),
+      headers: { "Content-Type": "application/json", Authorization: `Bearer ${token}` },
+      body: JSON.stringify({ videoId, action: "like" }),
     });
 
     return await response.json();
