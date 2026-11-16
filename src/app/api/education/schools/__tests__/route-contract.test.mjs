@@ -35,7 +35,8 @@ test('admin and learner school pages accurately disclose deferred integration', 
   assert.match(adminPage, /does not save or publish school records/);
   assert.doesNotMatch(adminPage, /fetch\("\/api\/education\/schools"/);
 
-  assert.match(learnerPage, /const schools:Record<string,Item\[]>/);
-  assert.match(learnerPage, /Live Firestore question-to-video mapping/);
-  assert.doesNotMatch(learnerPage, /fetch\(["'`]\/api\/education\/schools/);
+  assert.match(learnerPage, /fetch\("\/api\/content-categories"/);
+  assert.match(learnerPage, /fetch\(`\/api\/learning\/school-video-answers\?questionId=/);
+  assert.match(learnerPage, /nodes\.filter\(\(item\) => item\.type === "board"\)/);
+  assert.doesNotMatch(learnerPage, /const schools:Record<string,Item\[]>/);
 });
