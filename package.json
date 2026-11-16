@@ -37,7 +37,8 @@
     "test:ads": "node --test src/app/api/ads/diagnostics/__tests__/route-contract.test.mjs src/lib/ads/__tests__/exoclick-config.test.mjs src/lib/ads/__tests__/monetag-manual-placements.test.mjs src/app/videos/components/__tests__/long-video-ad-schedule.test.mjs src/app/videos/components/__tests__/exoclick-shorts-autoplay.test.mjs",
     "test:viewer-watch-history": "node --test src/app/api/videos/watch-history/__tests__/route-contract.test.mjs src/app/videos/watch-history/__tests__/page-contract.test.mjs",
     "test:shorts-comments": "node --test src/app/api/shorts/comments/__tests__/route-contract.test.mjs",
-    "test:shorts-engagement": "node --test src/app/api/shorts/video-like/__tests__/route-contract.test.mjs src/app/api/shorts/video-report/__tests__/route-contract.test.mjs"
+    "test:shorts-engagement": "node --test src/app/api/shorts/video-like/__tests__/route-contract.test.mjs src/app/api/shorts/video-report/__tests__/route-contract.test.mjs",
+    "test:shorts-comment-likes": "node --test src/app/api/shorts/comment-like/__tests__/route-contract.test.mjs"
   },
   "dependencies": {
     "@mediapipe/tasks-vision": "^1.0.1",
