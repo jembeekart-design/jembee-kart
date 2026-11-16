@@ -26,6 +26,8 @@ export default function FollowersPage() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
   const [busyUid, setBusyUid] = useState("");
+  const [nextCursor, setNextCursor] = useState<string | null>(null);
+  const [loadingMore, setLoadingMore] = useState(false);
 
   useEffect(() => onAuthStateChanged(auth, setCurrentUser), []);
 
@@ -50,6 +52,8 @@ export default function FollowersPage() {
     }
     let active = true;
     setLoading(true);
+    setUsers([]);
+    setNextCursor(null);
     setError("");
     void (async () => {
       try {
@@ -62,7 +66,10 @@ export default function FollowersPage() {
         if (!response.ok || result.success !== true || !Array.isArray(result.users)) {
           throw new Error(typeof result.message === "string" ? result.message : "Unable to load this list.");
         }
-        if (active) setUsers(result.users as FollowedUser[]);
+        if (active) {
+          setUsers(result.users as FollowedUser[]);
+          setNextCursor(result.hasMore === true && typeof result.nextCursor === "string" ? result.nextCursor : null);
+        }
       } catch (cause) {
         console.error("Follow list load failed:", cause);
         if (active) setError(cause instanceof Error ? cause.message : "Unable to load this list.");
@@ -72,6 +79,32 @@ export default function FollowersPage() {
     })();
     return () => { active = false; };
   }, [currentUser, activeTab]);
+
+  const loadMore = async () => {
+    if (!currentUser || !nextCursor || loadingMore) return;
+    setLoadingMore(true);
+    setError("");
+    try {
+      const token = await currentUser.getIdToken();
+      const response = await fetch(
+        `/api/social/follow-list?type=${activeTab}&limit=50&cursor=${encodeURIComponent(nextCursor)}`,
+        { headers: { Authorization: `Bearer ${token}` }, cache: "no-store" }
+      );
+      const result = await response.json().catch(() => ({}));
+      if (!response.ok || result.success !== true || !Array.isArray(result.users)) {
+        throw new Error(typeof result.message === "string" ? result.message : "Unable to load more users.");
+      }
+      setUsers((previous) => {
+        const seen = new Set(previous.map((item) => item.id));
+        return [...previous, ...(result.users as FollowedUser[]).filter((item) => !seen.has(item.id))];
+      });
+      setNextCursor(result.hasMore === true && typeof result.nextCursor === "string" ? result.nextCursor : null);
+    } catch (cause) {
+      setError(cause instanceof Error ? cause.message : "Unable to load more users.");
+    } finally {
+      setLoadingMore(false);
+    }
+  };
 
   const handleUnfollow = async (targetUid: string) => {
     if (!currentUser || activeTab !== "following") return;
@@ -153,6 +186,16 @@ export default function FollowersPage() {
                 )}
               </div>
             ))}
+            {nextCursor && (
+              <button
+                type="button"
+                disabled={loadingMore}
+                onClick={() => void loadMore()}
+                className="mt-5 w-full rounded-xl border border-white/15 bg-white/10 px-4 py-3 text-sm font-bold text-white disabled:opacity-50"
+              >
+                {loadingMore ? "Loading more…" : "Load more"}
+              </button>
+            )}
           </div>
         )}
       </div>
