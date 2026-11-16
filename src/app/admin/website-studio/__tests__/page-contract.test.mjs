@@ -25,6 +25,12 @@ test("Admin Website Studio saves the dedicated settings document and exposes saf
   assert.match(studio, /Featured Playlists/);
   assert.match(studio, /addFeaturedCreator/);
   assert.match(studio, /addFeaturedPlaylist/);
+  assert.match(studio, /Featured Video & Scheduling/);
+  assert.match(studio, /addFeaturedVideo/);
+  assert.match(studio, /newFeaturedVideoStart/);
+  assert.match(studio, /newFeaturedVideoEnd/);
+  assert.match(home, /siteExperience\.featuredVideos/);
+  assert.match(home, /item\.video\.videoFormat === "long"/);
 });
 
 test("public Home consumes only the public settings endpoint for supported controls", () => {
