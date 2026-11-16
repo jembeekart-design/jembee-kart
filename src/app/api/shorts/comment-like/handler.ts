@@ -95,7 +95,7 @@ export function createPostHandler(deps: CommentLikeDependencies) {
       const commentRef = db.collection("comments").doc(commentId);
       const likeId = createHash("sha256")
         .update(uid)
-        .update("\\0")
+        .update("\0")
         .update(commentId)
         .digest("hex");
       const likeRef = db.collection("videoCommentLikes").doc(likeId);
