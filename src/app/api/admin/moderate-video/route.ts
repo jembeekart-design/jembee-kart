@@ -23,7 +23,7 @@ async function verifyAdmin(req: Request): Promise<string> {
 
   const token = authHeader.slice("Bearer ".length).trim();
 
-  if (!token) {
+  if (!token || token.length > 8192) {
     throw new Error("UNAUTHORIZED");
   }
 
