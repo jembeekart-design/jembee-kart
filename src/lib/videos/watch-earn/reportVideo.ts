@@ -35,12 +35,12 @@ export async function reportVideo(data: ReportVideoData) {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
       },
       body: JSON.stringify({
         videoId: data.videoId,
         reason: data.reason,
         message: data.message || "",
-        token,
       }),
     });
 
