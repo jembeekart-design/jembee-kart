@@ -87,6 +87,36 @@ function validateConfig(value: unknown): Record<string, unknown> {
   const { configVersion: _configVersion, updatedAt: _updatedAt, updatedBy: _updatedBy, ...clean } = value;
   return { ...clean, schemaVersion: 1 };
 }
+async function readLimitedBody(request: Request): Promise<string | null> {
+  const declaredLength = Number(request.headers.get("content-length"));
+  if (Number.isFinite(declaredLength) && declaredLength > MAX_BODY_BYTES) return null;
+  if (!request.body) return "";
+  const reader = request.body.getReader();
+  const chunks: Uint8Array[] = [];
+  let total = 0;
+  try {
+    while (true) {
+      const { done, value } = await reader.read();
+      if (done) break;
+      total += value.byteLength;
+      if (total > MAX_BODY_BYTES) {
+        await reader.cancel();
+        return null;
+      }
+      chunks.push(value);
+    }
+  } finally {
+    reader.releaseLock();
+  }
+  const body = new Uint8Array(total);
+  let offset = 0;
+  for (const chunk of chunks) {
+    body.set(chunk, offset);
+    offset += chunk.byteLength;
+  }
+  return new TextDecoder().decode(body);
+}
+
 function failure(error: unknown) {
   const code = error instanceof Error ? error.message : "";
   const status = code === "UNAUTHORIZED" ? 401 : code === "FORBIDDEN" ? 403 :
@@ -126,8 +156,8 @@ export async function GET(request: Request) {
 export async function POST(request: Request) {
   try {
     const uid = await requireAdmin(request);
-    const raw = await request.text();
-    if (new TextEncoder().encode(raw).byteLength > MAX_BODY_BYTES) return NextResponse.json({ success: false, error: "BODY_TOO_LARGE" }, { status: 413 });
+    const raw = await readLimitedBody(request);
+    if (raw === null) return NextResponse.json({ success: false, error: "BODY_TOO_LARGE" }, { status: 413 });
     let body: unknown;
     try { body = JSON.parse(raw); } catch { return NextResponse.json({ success: false, error: "INVALID_JSON" }, { status: 400 }); }
     if (!isObject(body) || !Number.isSafeInteger(body.expectedVersion) || typeof body.action !== "string") return NextResponse.json({ success: false, error: "INVALID_REQUEST" }, { status: 400 });
