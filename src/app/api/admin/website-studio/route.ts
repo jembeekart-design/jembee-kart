@@ -137,7 +137,7 @@ export async function POST(request: Request) {
     const auditRef = db.collection("adminActivityLogs").doc();
     const result = await db.runTransaction(async (tx) => {
       const currentSnap = await tx.get(currentRef);
-      const currentData = currentSnap.exists ? currentSnap.data() || {} : DEFAULT_CONFIG;
+      const currentData = (currentSnap.exists ? currentSnap.data() || {} : DEFAULT_CONFIG) as Record<string, unknown>;
       const currentVersion = Number(currentData.configVersion) || 1;
       if (currentVersion !== body.expectedVersion) return { conflict: true, currentVersion };
       const versionRef = db.collection(CURRENT_PATH.join("/") + "/versions").doc(String(currentVersion));
