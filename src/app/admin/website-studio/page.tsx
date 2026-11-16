@@ -6,6 +6,20 @@ import { ArrowDown, ArrowUp, Check, Eye, Palette, RotateCcw, Save, Sparkles } fr
 import { db } from "@/firebase/config";
 
 type HomeSectionKey = "learning" | "shorts" | "longVideos";
+type HomeCategory = { id: string; label: string; filter: string; enabled: boolean };
+type NavigationKey = "home" | "shorts" | "explore" | "learning" | "history" | "liked";
+const DEFAULT_HOME_CATEGORIES: HomeCategory[] = [
+  { id: "education", label: "Education", filter: "education", enabled: true },
+  { id: "music", label: "Music", filter: "music", enabled: true },
+  { id: "science", label: "Science", filter: "science", enabled: true },
+  { id: "technology", label: "Technology", filter: "technology", enabled: true },
+  { id: "gaming", label: "Gaming", filter: "gaming", enabled: true },
+  { id: "travel", label: "Travel", filter: "travel", enabled: true },
+];
+const DEFAULT_NAVIGATION_LABELS: Record<NavigationKey, string> = {
+  home: "Home", shorts: "Shorts", explore: "Explore", learning: "School Learning",
+  history: "History", liked: "Liked videos",
+};
 const HOME_SECTIONS: { key: HomeSectionKey; label: string; description: string }[] = [
   { key: "learning", label: "Learning banner", description: "School and textbook learning entry point" },
   { key: "shorts", label: "Shorts", description: "Short-form video feed preview" },
@@ -27,7 +41,7 @@ const DEFAULT_CONFIG = {
   showLongVideos: true,
   showHomeAds: true,
   compactCards: false,
-  sectionOrder: ["learning", "shorts", "longVideos"] as HomeSectionKey[],
+  sectionOrder: ["learning", "shorts", "longVideos"] as HomeSectionKey[],\n  homeCategories: DEFAULT_HOME_CATEGORIES,\n  navigationLabels: DEFAULT_NAVIGATION_LABELS,
 };
 
 type SiteExperience = {
@@ -98,7 +112,11 @@ export default function WebsiteStudioPage() {
           const validOrder = Array.isArray(stored.sectionOrder) ? stored.sectionOrder.filter((item): item is HomeSectionKey => item === "learning" || item === "shorts" || item === "longVideos") : DEFAULT_CONFIG.sectionOrder;
           const sectionOrder = [...new Set(validOrder)];
           for (const item of DEFAULT_CONFIG.sectionOrder) if (!sectionOrder.includes(item)) sectionOrder.push(item);
-          const next = { ...DEFAULT_CONFIG, ...stored, sectionOrder };
+          const homeCategories = Array.isArray(stored.homeCategories)
+            ? stored.homeCategories.filter((item): item is HomeCategory => !!item && typeof item === "object" && typeof item.id === "string" && typeof item.label === "string" && typeof item.filter === "string" && typeof item.enabled === "boolean").slice(0, 12)
+            : DEFAULT_HOME_CATEGORIES;
+          const navigationLabels = { ...DEFAULT_NAVIGATION_LABELS, ...(stored.navigationLabels && typeof stored.navigationLabels === "object" ? stored.navigationLabels : {}) };
+          const next = { ...DEFAULT_CONFIG, ...stored, sectionOrder, homeCategories, navigationLabels };
           setConfig(next);
           applyBrand(next);
         } else {
@@ -113,6 +131,42 @@ export default function WebsiteStudioPage() {
       });
     return () => { active = false; };
   }, []);
+
+  const [newCategoryLabel, setNewCategoryLabel] = useState("");
+  const [newCategoryFilter, setNewCategoryFilter] = useState("");
+
+  function updateCategory(id: string, patch: Partial<HomeCategory>) {
+    setConfig((current) => ({ ...current, homeCategories: current.homeCategories.map((item) => item.id === id ? { ...item, ...patch } : item) }));
+    setNotice("");
+  }
+
+  function addCategory() {
+    const label = newCategoryLabel.trim().slice(0, 24);
+    const filter = (newCategoryFilter.trim() || label).slice(0, 40);
+    const id = label.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "");
+    if (!label || !filter || !id || config.homeCategories.length >= 12 || config.homeCategories.some((item) => item.id === id)) return;
+    setConfig((current) => ({ ...current, homeCategories: [...current.homeCategories, { id, label, filter, enabled: true }] }));
+    setNewCategoryLabel("");
+    setNewCategoryFilter("");
+    setNotice("");
+  }
+
+  function moveCategory(id: string, direction: -1 | 1) {
+    setConfig((current) => {
+      const index = current.homeCategories.findIndex((item) => item.id === id);
+      const target = index + direction;
+      if (index < 0 || target < 0 || target >= current.homeCategories.length) return current;
+      const homeCategories = [...current.homeCategories];
+      [homeCategories[index], homeCategories[target]] = [homeCategories[target], homeCategories[index]];
+      return { ...current, homeCategories };
+    });
+    setNotice("");
+  }
+
+  function updateNavigationLabel(key: NavigationKey, value: string) {
+    setConfig((current) => ({ ...current, navigationLabels: { ...current.navigationLabels, [key]: value.slice(0, 32) } }));
+    setNotice("");
+  }
 
   function updateText(key: TextKey, value: string) {
     setConfig((current) => ({ ...current, [key]: value }));
