@@ -23,7 +23,23 @@ const DEFAULT_CONFIG = {
   compactCards: false,
 };
 
-type SiteExperience = typeof DEFAULT_CONFIG;
+type SiteExperience = {
+  siteName: string;
+  tagline: string;
+  heroTitle: string;
+  heroSubtitle: string;
+  primaryColor: string;
+  accentColor: string;
+  pageColor: string;
+  surfaceColor: string;
+  announcementEnabled: boolean;
+  announcementText: string;
+  showLearningBanner: boolean;
+  showShorts: boolean;
+  showLongVideos: boolean;
+  showHomeAds: boolean;
+  compactCards: boolean;
+};
 type ToggleKey = "announcementEnabled" | "showLearningBanner" | "showShorts" | "showLongVideos" | "showHomeAds" | "compactCards";
 type TextKey = "siteName" | "tagline" | "heroTitle" | "heroSubtitle" | "announcementText";
 type ColorKey = "primaryColor" | "accentColor" | "pageColor" | "surfaceColor";
