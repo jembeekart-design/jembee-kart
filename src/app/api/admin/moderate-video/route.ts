@@ -324,6 +324,80 @@ export async function POST(req: Request) {
       const thumbnailUrl =
         `/api/shorts/video-thumbnail/${encodeURIComponent(submissionId)}`;
 
+      // Re-check the live Learning catalog at approval time. A teacher may
+      // have submitted against an entry that was unpublished or removed while
+      // moderation was pending; such a submission must not become an approved video.
+      const schoolIds = {
+        board: typeof submission.schoolBoardId === "string" ? submission.schoolBoardId : "",
+        school: typeof submission.schoolId === "string" ? submission.schoolId : "",
+        class: typeof submission.schoolClassId === "string" ? submission.schoolClassId : "",
+        subject: typeof submission.schoolSubjectId === "string" ? submission.schoolSubjectId : "",
+        book: typeof submission.schoolBookId === "string" ? submission.schoolBookId : "",
+        chapter: typeof submission.schoolChapterId === "string" ? submission.schoolChapterId : "",
+        question: typeof submission.schoolQuestionId === "string" ? submission.schoolQuestionId : "",
+      };
+      const hasSchoolPath = Object.values(schoolIds).some(Boolean);
+      if (submission.categoryId === "school" || hasSchoolPath) {
+        if (
+          submission.categoryId !== "school" ||
+          !schoolIds.board ||
+          !schoolIds.school ||
+          !schoolIds.class ||
+          Boolean(schoolIds.subject) === Boolean(schoolIds.book)
+        ) {
+          throw new Error("Learning catalog entry is missing or no longer published; approval blocked");
+        }
+
+        const expectedTypes = {
+          board: "board",
+          school: "school",
+          class: "class",
+          subject: "subject",
+          book: "book",
+          chapter: "chapter",
+          question: "question",
+        } as const;
+        const selected = Object.entries(schoolIds).filter(([, id]) => Boolean(id));
+        const nodeSnapshots = await Promise.all(selected.map(async ([key, id]) => ({
+          key: key as keyof typeof expectedTypes,
+          id,
+          snapshot: await adminDb.collection("schoolLearningNodes").doc(id).get(),
+        })));
+        const nodeData = new Map<string, Record<string, unknown>>();
+        for (const item of nodeSnapshots) {
+          const data = item.snapshot.data();
+          if (
+            !item.snapshot.exists ||
+            data?.status !== "published" ||
+            data?.type !== expectedTypes[item.key]
+          ) {
+            throw new Error("Learning catalog entry is missing or no longer published; approval blocked");
+          }
+          nodeData.set(item.key, data);
+        }
+
+        if (
+          nodeData.get("school")?.parentId !== schoolIds.board ||
+          nodeData.get("class")?.parentId !== schoolIds.school
+        ) {
+          throw new Error("Learning catalog hierarchy changed; approval blocked");
+        }
+        const subjectOrBookId = schoolIds.subject || schoolIds.book;
+        const subjectOrBookKey = schoolIds.subject ? "subject" : "book";
+        if (nodeData.get(subjectOrBookKey)?.parentId !== schoolIds.class) {
+          throw new Error("Learning catalog hierarchy changed; approval blocked");
+        }
+        if (schoolIds.chapter && nodeData.get("chapter")?.parentId !== subjectOrBookId) {
+          throw new Error("Learning catalog hierarchy changed; approval blocked");
+        }
+        if (
+          schoolIds.question &&
+          (!schoolIds.chapter || nodeData.get("question")?.parentId !== schoolIds.chapter)
+        ) {
+          throw new Error("Learning catalog hierarchy changed; approval blocked");
+        }
+      }
+
       // Drive-hosted videos are not Cloudinary-enhanced.
       const finalIsEnhanced = false;
 
