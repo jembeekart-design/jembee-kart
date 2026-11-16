@@ -41,7 +41,9 @@ const DEFAULT_CONFIG = {
   showLongVideos: true,
   showHomeAds: true,
   compactCards: false,
-  sectionOrder: ["learning", "shorts", "longVideos"] as HomeSectionKey[],\n  homeCategories: DEFAULT_HOME_CATEGORIES,\n  navigationLabels: DEFAULT_NAVIGATION_LABELS,
+  sectionOrder: ["learning", "shorts", "longVideos"] as HomeSectionKey[],
+  homeCategories: DEFAULT_HOME_CATEGORIES,
+  navigationLabels: DEFAULT_NAVIGATION_LABELS,
 };
 
 type SiteExperience = {
@@ -290,6 +292,31 @@ export default function WebsiteStudioPage() {
                     </div>
                   </div>;
                 })}
+              </div>
+            </section>
+
+            <section className="rounded-3xl border border-white/10 bg-[#111827] p-5 sm:p-7">
+              <h2 className="text-lg font-bold">Category & Navigation Manager</h2>
+              <p className="mt-1 text-xs text-slate-400">Home category chips का नाम, filter, क्रम और visibility नियंत्रित करें। अधिकतम 12 categories।</p>
+              <div className="mt-4 grid gap-3 sm:grid-cols-2">
+                <label className="text-xs font-semibold text-slate-400">Category label<input value={newCategoryLabel} maxLength={24} onChange={(event) => setNewCategoryLabel(event.target.value)} placeholder="e.g. Mathematics" className="mt-1 min-h-11 w-full rounded-xl border border-white/10 bg-[#090d16] px-3 text-sm text-white"/></label>
+                <label className="text-xs font-semibold text-slate-400">Video search filter<input value={newCategoryFilter} maxLength={40} onChange={(event) => setNewCategoryFilter(event.target.value)} placeholder="e.g. maths" className="mt-1 min-h-11 w-full rounded-xl border border-white/10 bg-[#090d16] px-3 text-sm text-white"/></label>
+              </div>
+              <button type="button" onClick={addCategory} disabled={config.homeCategories.length >= 12 || !newCategoryLabel.trim()} className="mt-3 rounded-xl bg-cyan-300 px-4 py-2 text-sm font-bold text-slate-950 disabled:opacity-40">Add category</button>
+              <div className="mt-4 space-y-2">
+                {config.homeCategories.map((item, index) => <div key={item.id} className="grid gap-2 rounded-xl border border-white/10 bg-[#090d16] p-3 sm:grid-cols-[1fr_1fr_auto_auto] sm:items-center">
+                  <input aria-label={`Category ${index + 1} label`} value={item.label} maxLength={24} onChange={(event) => updateCategory(item.id, { label: event.target.value })} className="min-h-10 min-w-0 rounded-lg border border-white/10 bg-[#111827] px-2 text-sm"/>
+                  <input aria-label={`Category ${index + 1} filter`} value={item.filter} maxLength={40} onChange={(event) => updateCategory(item.id, { filter: event.target.value })} className="min-h-10 min-w-0 rounded-lg border border-white/10 bg-[#111827] px-2 text-sm"/>
+                  <div className="flex items-center gap-1"><button type="button" aria-label={`Move category ${item.label} up`} disabled={index === 0} onClick={() => moveCategory(item.id, -1)} className="rounded-lg border border-white/10 p-2 disabled:opacity-30"><ArrowUp size={14}/></button><button type="button" aria-label={`Move category ${item.label} down`} disabled={index === config.homeCategories.length - 1} onClick={() => moveCategory(item.id, 1)} className="rounded-lg border border-white/10 p-2 disabled:opacity-30"><ArrowDown size={14}/></button></div>
+                  <div className="flex items-center justify-between gap-3"><label className="flex items-center gap-2 text-xs text-slate-300"><input type="checkbox" checked={item.enabled} onChange={(event) => updateCategory(item.id, { enabled: event.target.checked })}/>Show</label><button type="button" onClick={() => setConfig((current) => ({ ...current, homeCategories: current.homeCategories.filter((category) => category.id !== item.id) }))} className="text-xs text-rose-300">Remove</button></div>
+                </div>)}
+              </div>
+              <div className="mt-6 border-t border-white/10 pt-5">
+                <h3 className="text-sm font-bold">Main navigation labels</h3>
+                <p className="mt-1 text-xs text-slate-500">इन labels से मुख्य menu का text बदलेगा; सुरक्षित routes नहीं बदलेंगे।</p>
+                <div className="mt-3 grid gap-3 sm:grid-cols-2">
+                  {(["home", "shorts", "explore", "learning", "history", "liked"] as NavigationKey[]).map((key) => <label key={key} className="text-xs font-semibold capitalize text-slate-400">{key}<input value={config.navigationLabels[key]} maxLength={32} onChange={(event) => updateNavigationLabel(key, event.target.value)} className="mt-1 min-h-10 w-full rounded-lg border border-white/10 bg-[#090d16] px-3 text-sm text-white"/></label>)}
+                </div>
               </div>
             </section>
 
