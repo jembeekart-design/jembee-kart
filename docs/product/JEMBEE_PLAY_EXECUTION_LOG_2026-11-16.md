@@ -69,3 +69,8 @@ This log records source changes only. It is not a production-readiness certifica
 - Resume restoration currently uses the authenticated user's current history list; verify Firebase auth initialization, browser playback behavior, and server write throttling in staging.
 - Contract tests have been added but have not been executed in this environment. No build, typecheck, lint, emulator, or end-to-end pass is claimed.
 
+## Watch History follow-up hardening
+- Corrected the SHA-256 composite-key separator to an actual NUL delimiter between the authenticated user ID and video ID.
+- Replaced per-history-item video document reads with a single Firestore `getAll(...videoRefs)` batch for the bounded 100-record response.
+- Extended route contract tests to assert the delimiter and batch-read behavior.
+- Verification status: source reviewed from the branch after commit; automated test execution, TypeScript check, lint and production build remain unverified in this environment. No deployment performed.
