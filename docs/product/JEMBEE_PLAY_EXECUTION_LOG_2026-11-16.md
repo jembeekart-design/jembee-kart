@@ -238,3 +238,11 @@ This log records source changes only. It is not a production-readiness certifica
 - Admin Learning Catalog now exposes an Approve action for pending entries; approval/unpublish transitions continue through the protected transactional audit API.
 - Added source-contract assertions for pending-by-default and admin approval.
 - Runtime Firestore transaction tests and full CI/build have not yet been run.
+
+
+## Learning catalog request hardening — 16 November 2026
+
+- The learning catalog write API now rejects empty or oversized Firebase bearer tokens (8,192-character maximum).
+- It now rejects JSON primitives, null and arrays with HTTP 400 rather than allowing malformed shapes to reach action handling.
+- Added contract assertions for both guards.
+- New school hierarchy nodes remain pending until Admin approval; public catalog reads remain published-only.
