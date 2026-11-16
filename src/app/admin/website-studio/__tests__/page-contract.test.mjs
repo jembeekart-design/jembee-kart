@@ -9,7 +9,10 @@ const adminHome = await readFile(new URL("../../page.tsx", import.meta.url), "ut
 
 test("Admin Website Studio saves the dedicated settings document and exposes safe controls", () => {
   assert.match(studio, /admin_settings", "site_experience/);
-  assert.match(studio, /setDoc/);
+  assert.match(studio, /api\/admin\/website-studio/);
+  assert.match(studio, /Settings History & Rollback/);
+  assert.match(studio, /restoreVersion/);
+  assert.match(studio, /Recent Admin Activity/);
   assert.match(studio, /showLearningBanner/);
   assert.match(studio, /showShorts/);
   assert.match(studio, /showLongVideos/);
