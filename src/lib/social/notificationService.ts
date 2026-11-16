@@ -2,7 +2,8 @@ import { doc, setDoc, serverTimestamp } from 'firebase/firestore';
 import { db } from '@/firebase/config';
 
 export const sendFollowNotification = async (followerUid: string, targetUid: string, followerName: string) => {
-  const notificationRef = doc(db, 'notifications', `${targetUid}_${followerUid}_${Date.now()}`);
+  // Stable identity makes retries idempotent instead of creating duplicate notifications.
+  const notificationRef = doc(db, 'notifications', `follow_${targetUid}_${followerUid}`);
   
   await setDoc(notificationRef, {
     recipientUid: targetUid,
@@ -11,5 +12,5 @@ export const sendFollowNotification = async (followerUid: string, targetUid: str
     message: `${followerName} started following you.`,
     read: false,
     timestamp: serverTimestamp()
-  });
+  }, { merge: true });
 };
