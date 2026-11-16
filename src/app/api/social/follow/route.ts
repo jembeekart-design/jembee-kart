@@ -69,11 +69,12 @@ async function changeFollow(req: Request, action: "follow" | "unfollow") {
     const sender = action === "follow" ? await getAdminAuth().getUser(uid) : null;
 
     const result = await db.runTransaction(async (tx) => {
-      const [followerSnap, targetSnap, followerEdgeSnap, followingEdgeSnap] = await Promise.all([
+      const [followerSnap, targetSnap, followerEdgeSnap, followingEdgeSnap, notificationSnap] = await Promise.all([
         tx.get(followerRef),
         tx.get(targetRef),
         tx.get(followerEdge),
         tx.get(followingEdge),
+        action === "follow" ? tx.get(notificationRef) : Promise.resolve(null),
       ]);
       if (!followerSnap.exists) return "follower-missing" as const;
       if (!targetSnap.exists) return "target-missing" as const;
@@ -97,16 +98,18 @@ async function changeFollow(req: Request, action: "follow" | "unfollow") {
           });
         }
 
-        // A deterministic notification record is created atomically with the relationship.
-        tx.create(notificationRef, {
-          recipientUid: targetUid,
-          senderUid: uid,
-          senderName: sender?.displayName || "Creator",
-          type: "follow",
-          message: `${sender?.displayName || "Someone"} started following you.`,
-          read: false,
-          timestamp: FieldValue.serverTimestamp(),
-        });
+        // A deterministic notification record is created once, atomically with a new relationship.
+        if (!notificationSnap?.exists) {
+          tx.create(notificationRef, {
+            recipientUid: targetUid,
+            senderUid: uid,
+            senderName: sender?.displayName || "Creator",
+            type: "follow",
+            message: `${sender?.displayName || "Someone"} started following you.`,
+            read: false,
+            timestamp: FieldValue.serverTimestamp(),
+          });
+        }
         return "followed" as const;
       }
 
@@ -132,17 +135,11 @@ async function changeFollow(req: Request, action: "follow" | "unfollow") {
       following: action === "follow" ? result !== "not-following" : false,
       alreadyFollowing: result === "already-following",
       changed: result === "followed" || result === "unfollowed",
-      repaired: result === "followed" && (hasPartialLegacyState(result) === true),
     });
   } catch (error) {
     console.error("Follow relationship update failed:", error);
     return fail("Unable to update follow status", 500);
   }
-}
-
-function hasPartialLegacyState(_result: string) {
-  // Repair is reported through the changed relationship state; no user data is exposed.
-  return false;
 }
 
 export async function POST(req: Request) {
