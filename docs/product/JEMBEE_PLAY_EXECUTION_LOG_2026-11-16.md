@@ -180,3 +180,14 @@ This log records source changes only. It is not a production-readiness certifica
 - Connected the Shorts comment drawer with Reply, Send and View replies interactions. Reply reads return approved replies only.
 - Added reply API contract tests and the `test:shorts-comment-replies` script.
 - Verification limitation: no contract tests, TypeScript, ESLint, Firebase Emulator, browser/device tests or production build have been executed. Followers/following UI currently loads the first 50 entries; API exposes a bounded continuation indicator but the page does not yet paginate. No deployment performed.
+
+
+## Reply workflow and follow transaction hardening — 16 November 2026
+
+- Added authenticated reply list and submit APIs for approved comments on currently approved, active, moderation-safe videos. Reply writes are server-side because the existing Firestore rules deny direct client writes to comment collections.
+- Reply submission applies configured blocked-word moderation, fails closed while enabled custom regex rules are present, bounds request/reply sizes, rate-limits per user, uses a comment-scoped SHA-256 idempotency key, revalidates parent/video state in the transaction, and increments the parent reply counter atomically.
+- The Shorts CommentDrawer now supports opening a reply composer, sending a reply and loading approved replies. The legacy reply helper now calls the authenticated API rather than attempting a denied direct Firestore write.
+- Follow and Unfollow have been moved behind the authenticated server API. Both relationship edges and both creator/follower counters are now changed in one transaction; notification creation is also part of that transaction. The followers/following screen uses a separate authenticated list API and displays distinct lists.
+- Rejected malformed non-object JSON bodies in the new follow and reply endpoints.
+- Remaining known limitations: reply likes and reply deletion legacy helpers still use direct Firestore writes and have no matching server API; replies currently show approved content only and are capped at 150 per parent in the API. The follow-list UI loads only the first 50 entries although the API returns a continuation indicator. These paths require further work before claiming complete social functionality.
+- Verification limitation: tests are authored but have not been executed. TypeScript, ESLint, Firebase Emulator, browser/device and production build remain unverified. No deployment or bulk upload performed.
