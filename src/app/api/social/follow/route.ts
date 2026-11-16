@@ -51,6 +51,7 @@ async function changeFollow(req: Request, action: "follow" | "unfollow") {
     const raw = await req.text();
     if (new TextEncoder().encode(raw).byteLength > 4096) return fail("Request body too large", 413);
     body = JSON.parse(raw);
+    if (!body || typeof body !== "object" || Array.isArray(body)) return fail("Invalid JSON body", 400);
   } catch {
     return fail("Invalid JSON body", 400);
   }
