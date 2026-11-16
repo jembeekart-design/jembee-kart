@@ -49,6 +49,7 @@ function LongVideoWatch({ video }: { video: WatchVideo }) {
             poster={publicVideoThumbnail(video)}
             title={video.caption || "JEMBEE PLAY long video"}
             videoAccess={video.videoAccess === "paid" ? "paid" : "free"}
+            videoId={video.id}
           />
         </div>
         {video.videoAccess === "paid" ? (
