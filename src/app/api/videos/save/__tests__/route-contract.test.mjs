@@ -31,3 +31,8 @@ test("saved video list is loaded from the server for the current account", () =>
   assert.match(feed, /fetch\("\/api\/videos\/save", \{/);
   assert.match(feed, /result\.videoIds/);
 });
+
+test("a user can always remove a stale saved-video reference", () => {
+  assert.match(route, /if \(!saved\) \{\s*if \(saveSnap\.exists\) transaction\.delete\(saveRef\);\s*return \{ saved: false \};\s*\}/);
+  assert.ok(route.indexOf("if (!saved)") < route.indexOf('if (!videoSnap.exists) return { error: "VIDEO_UNAVAILABLE"'));
+});
