@@ -37,7 +37,8 @@ test("teachers select Subject Book Chapter and type a question number without an
   assert.match(uploadPage, /schoolChapterId/);
   assert.match(uploadPage, /schoolQuestionNumber/);
   assert.match(uploadPage, /questionNumber: schoolQuestionNumber/);
-  assert.doesNotMatch(uploadPage, /schoolQuestionId|fetchLearningNode\\(/);
+  assert.equal(uploadPage.includes("schoolQuestionId"), false);
+  assert.equal(uploadPage.includes("fetchLearningNode("), false);
   assert.doesNotMatch(uploadPage, /schoolEditionId|editionOptions|publisher|classLabels/);
 });test("admin page exposes authenticated create, edit and delete controls", () => {
   assert.match(adminPage, /auth\.currentUser/);
@@ -67,17 +68,17 @@ test("learning catalog supports bounded parent-scoped cursor pagination", () => 
 });
 
 test("public learning discovery dynamically loads question numbers for the selected chapter", () => {
-  assert.match(learningPage, /stage === 0 \\? "subject" : stage === 1 \\? "book" : "chapter"/);
-  assert.match(learningPage, /school-video-answers\\?chapterId=/);
-  assert.match(learningPage, /questionNumber: item\\.questionNumber/);
+  assert.ok(learningPage.includes('stage === 0 ? "subject" : stage === 1 ? "book" : "chapter"'));
+  assert.ok(learningPage.includes("school-video-answers?chapterId="));
+  assert.ok(learningPage.includes("questionNumber: item.questionNumber"));
   assert.match(learningPage, /nextCursors/);
 });test("upload answer deep links prefill the selected Subject Book Chapter and Question Number", () => {
-  assert.match(route, /params\\.get\\("nodeId"\\)/);
-  assert.match(route, /schoolLearningNodes"\\)\\.doc\\(nodeId\\)\\.get\\(\\)/);
-  assert.match(uploadPage, /requestedSubjectId = searchParams\\.get\\("subjectId"\\)/);
-  assert.match(uploadPage, /requestedBookId = searchParams\\.get\\("bookId"\\)/);
-  assert.match(uploadPage, /requestedChapterId = searchParams\\.get\\("chapterId"\\)/);
-  assert.match(uploadPage, /requestedQuestionNumber = searchParams\\.get\\("questionNumber"\\)/);
+  assert.ok(route.includes('params.get("nodeId")'));
+  assert.ok(route.includes('schoolLearningNodes").doc(nodeId).get()'));
+  assert.ok(uploadPage.includes('requestedSubjectId = searchParams.get("subjectId")'));
+  assert.ok(uploadPage.includes('requestedBookId = searchParams.get("bookId")'));
+  assert.ok(uploadPage.includes('requestedChapterId = searchParams.get("chapterId")'));
+  assert.ok(uploadPage.includes('requestedQuestionNumber = searchParams.get("questionNumber")'));
 });test("large Question catalogs are fetched only for the selected Chapter in Admin", () => {
   assert.match(adminPage, /type !== "question" \|\| !parentId/);
   assert.match(adminPage, /type: "question", parentId, pageSize: "50"/);
