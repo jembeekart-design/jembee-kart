@@ -10,6 +10,8 @@ Working branch: `feat/jembee-premium-product-execution-2026-11-16`
 - Added Firebase bearer-token length bounds to video moderation and Monetag admin verification.
 - Shorts Save now persists through `/api/videos/save`; the API verifies Firebase token revocation, validates the video server-side, and only permits saving approved, active, safe, free videos.
 - Saved state is restored for Shorts and derived video cards. The API supports both the user's saved ID list and an efficient per-video saved-state lookup.
+- Fixed a malformed saved-video contract test file so the added tests contain valid JavaScript source.
+- Removed URL-derived paid-video authorization from the Shorts feed: `paidVideoId` now selects the requested video only; client playback state is granted only after the server confirms a purchase and issues the short-lived playback session. Added a regression test and included it in `test:paid-video-eligibility`.
 - Unsave remains possible when a video is deleted, unpublished, made private, or changed to paid access.
 - Removed the obsolete client-side Firestore saved-video writer; the server Admin SDK is now the write path.
 - Admin Learning catalog now lists all catalog states and provides audited publish/unpublish controls behind shared server-side Admin RBAC.
