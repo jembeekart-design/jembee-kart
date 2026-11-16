@@ -8,7 +8,8 @@ import { auth } from "@/firebase/config";
 import type { Unsubscribe } from "firebase/firestore";
 import {
   Send,
-  Heart
+  Heart,
+  MessageCircle
 } from "lucide-react";
 
 interface CommentDrawerProps {
@@ -23,6 +24,11 @@ export default function CommentDrawer({ open, onClose, videoId, onCommentAdded }
   const [commentText, setCommentText] = useState("");
   const [error, setError] = useState("");
   const [comments, setComments] = useState<ChatComment[]>([]);
+  const [replyTarget, setReplyTarget] = useState<string | null>(null);
+  const [replyText, setReplyText] = useState("");
+  const [replies, setReplies] = useState<Record<string, Array<{ id: string; userId: string; userName: string; reply: string; likes: number }>>>({});
+  const [repliesLoading, setRepliesLoading] = useState<Set<string>>(new Set());
+  const [replySending, setReplySending] = useState(false);
 
   useEffect(() => {
     if (!open) return;
@@ -102,6 +108,69 @@ export default function CommentDrawer({ open, onClose, videoId, onCommentAdded }
         next.delete(commentId);
         return next;
       });
+    }
+  }
+
+  async function loadReplies(commentId: string) {
+    const user = auth.currentUser;
+    if (!user) {
+      setError("Please sign in to view replies.");
+      return;
+    }
+    setRepliesLoading((previous) => new Set(previous).add(commentId));
+    try {
+      const token = await user.getIdToken();
+      const response = await fetch(`/api/shorts/comments/replies?commentId=${encodeURIComponent(commentId)}`, {
+        headers: { Authorization: `Bearer ${token}` },
+        cache: "no-store",
+      });
+      const result = await response.json().catch(() => ({}));
+      if (!response.ok || result.success !== true || !Array.isArray(result.replies)) {
+        throw new Error(result.message || "Unable to load replies.");
+      }
+      setReplies((previous) => ({ ...previous, [commentId]: result.replies }));
+    } catch (cause) {
+      setError(cause instanceof Error ? cause.message : "Unable to load replies.");
+    } finally {
+      setRepliesLoading((previous) => {
+        const next = new Set(previous);
+        next.delete(commentId);
+        return next;
+      });
+    }
+  }
+
+  async function handleSendReply(commentId: string) {
+    const user = auth.currentUser;
+    const text = replyText.trim();
+    if (!user || !text || replySending) return;
+    setReplySending(true);
+    try {
+      const token = await user.getIdToken();
+      const response = await fetch("/api/shorts/comments/replies", {
+        method: "POST",
+        headers: {
+          Authorization: `Bearer ${token}`,
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          commentId,
+          reply: text,
+          requestId: crypto.randomUUID(),
+        }),
+      });
+      const result = await response.json().catch(() => ({}));
+      if (!response.ok || result.success !== true) {
+        throw new Error(result.message || "Unable to send reply.");
+      }
+      setReplyText("");
+      setReplyTarget(null);
+      await loadReplies(commentId);
+      setError(result.reply?.status === "pending" ? "Reply submitted for moderation." : "");
+    } catch (cause) {
+      setError(cause instanceof Error ? cause.message : "Unable to send reply.");
+    } finally {
+      setReplySending(false);
     }
   }
 
@@ -256,18 +325,52 @@ export default function CommentDrawer({ open, onClose, videoId, onCommentAdded }
 
                   </h3>
 
-                  <p
-                    className="
-                      mt-1
-                      text-sm
-                      text-white
-                    "
-                  >
-
-                    {item.text}
-
-                  </p>
-
+                  <p className="mt-1 text-sm text-white">{item.text}</p>
+                  <div className="mt-2 flex items-center gap-3">
+                    <button
+                      type="button"
+                      onClick={() => {
+                        const next = replyTarget === item.id ? null : item.id;
+                        setReplyTarget(next);
+                        if (next) void loadReplies(item.id);
+                      }}
+                      className="inline-flex items-center gap-1 text-xs font-semibold text-violet-300"
+                    >
+                      <MessageCircle size={14} /> Reply
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => void loadReplies(item.id)}
+                      className="text-xs text-slate-400"
+                    >
+                      {repliesLoading.has(item.id) ? "Loading…" : `View replies ${replies[item.id] ? `(${replies[item.id].length})` : ""}`}
+                    </button>
+                  </div>
+                  {replyTarget === item.id && (
+                    <div className="mt-3 flex gap-2">
+                      <input
+                        value={replyText}
+                        maxLength={1000}
+                        onChange={(event) => setReplyText(event.target.value)}
+                        placeholder="Write a reply…"
+                        className="min-w-0 flex-1 rounded-full bg-slate-800 px-3 py-2 text-xs text-white outline-none"
+                      />
+                      <button
+                        type="button"
+                        disabled={!replyText.trim() || replySending}
+                        onClick={() => void handleSendReply(item.id)}
+                        className="rounded-full bg-violet-600 px-3 py-2 text-xs font-bold text-white disabled:opacity-50"
+                      >
+                        {replySending ? "Sending…" : "Send"}
+                      </button>
+                    </div>
+                  )}
+                  {(replies[item.id] || []).map((reply) => (
+                    <div key={reply.id} className="ml-3 mt-3 border-l border-white/10 pl-3">
+                      <p className="text-xs font-bold text-slate-200">@{reply.userName}</p>
+                      <p className="mt-1 text-xs text-slate-300">{reply.reply}</p>
+                    </div>
+                  ))}
                 </div>
 
                 <button
