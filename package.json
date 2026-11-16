@@ -45,7 +45,8 @@
     "test:social-follow-api": "node --test src/app/api/social/follow/__tests__/route-contract.test.mjs",
     "test:social-follow-list": "node --test src/app/api/social/follow-list/__tests__/route-contract.test.mjs",
     "test:shorts-comment-replies": "node --test src/app/api/shorts/comments/replies/__tests__/route-contract.test.mjs",
-    "test:shorts-reply-delete": "node --test src/app/api/shorts/comments/replies/delete/__tests__/route-contract.test.mjs"
+    "test:shorts-reply-delete": "node --test src/app/api/shorts/comments/replies/delete/__tests__/route-contract.test.mjs",
+    "test:shorts-reply-like": "node --test src/app/api/shorts/comments/replies/like/__tests__/route-contract.test.mjs"
   },
   "dependencies": {
     "@mediapipe/tasks-vision": "^1.0.1",
