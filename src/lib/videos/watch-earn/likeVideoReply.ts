@@ -1,49 +1,24 @@
-import {
-  doc,
-  increment,
-  updateDoc
-} from "firebase/firestore";
+import { auth } from "@/firebase/config";
 
-import { db }
-from "@/firebase/config";
+interface LikeVideoReplyData { replyId: string; }
 
-interface LikeVideoReplyData {
-  replyId: string;
-}
-
-export async function
-likeVideoReply(
-  data:
-  LikeVideoReplyData
-) {
-
+export async function likeVideoReply(data: LikeVideoReplyData) {
+  const user = auth.currentUser;
+  if (!user) return { success: false, message: "Please sign in before liking a reply." };
   try {
-
-    await updateDoc(
-      doc(
-        db,
-        "videoCommentReplies",
-        data.replyId
-      ),
-      {
-        likes:
-          increment(1),
-
-        updatedAt:
-          Date.now()
-      }
-    );
-
-    return {
-      success: true
-    };
-
+    const token = await user.getIdToken();
+    const response = await fetch("/api/shorts/comments/replies/like", {
+      method: "POST",
+      headers: { Authorization: `Bearer ${token}`, "Content-Type": "application/json" },
+      body: JSON.stringify({ replyId: data.replyId }),
+    });
+    const result = await response.json().catch(() => ({}));
+    if (!response.ok || result.success !== true) {
+      return { success: false, message: typeof result.message === "string" ? result.message : "Unable to like reply." };
+    }
+    return { success: true, alreadyLiked: result.alreadyLiked === true };
   } catch (error) {
-
-    console.error(error);
-
-    return {
-      success: false
-    };
+    console.error("Reply like failed:", error);
+    return { success: false, message: "Unable to like reply." };
   }
 }
