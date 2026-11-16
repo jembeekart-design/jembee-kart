@@ -157,7 +157,11 @@ export default function HomePage() {
     return () => { active = false; };
   }, []);
 
-  useEffect(() => { setClientNow(Date.now()); }, []);
+  useEffect(() => {
+    setClientNow(Date.now());
+    const interval = window.setInterval(() => setClientNow(Date.now()), 30_000);
+    return () => window.clearInterval(interval);
+  }, []);
 
   const visibleChips = siteExperience.homeCategories.filter((item) => item.enabled);
   const filtered = useMemo(() => videos.filter((video) => {
@@ -169,7 +173,7 @@ export default function HomePage() {
   const longVideos = filtered.filter((video) => video.videoFormat === "long");
   const featuredCreators = siteExperience.featuredCreators.filter((creator) => creator.enabled).map((creator) => ({ ...creator, videos: videos.filter((video) => video.creatorId === creator.creatorId).slice(0, 4) })).filter((creator) => creator.videos.length > 0);
   const featuredPlaylists = siteExperience.featuredPlaylists.filter((playlist) => playlist.enabled).map((playlist) => ({ ...playlist, videos: playlist.videoIds.map((id) => videos.find((video) => video.id === id)).filter((video): video is WatchVideo => !!video) })).filter((playlist) => playlist.videos.length > 0);
-  const featuredVideos = clientNow === null ? [] : siteExperience.featuredVideos.filter((item) => item.enabled && (!item.startsAt || Date.parse(item.startsAt) <= clientNow) && (!item.endsAt || Date.parse(item.endsAt) > clientNow)).map((item) => ({ ...item, video: videos.find((video) => video.id === item.videoId) })).filter((item): item is typeof item & { video: WatchVideo } => !!item.video && item.video.videoFormat === "long");
+  const featuredVideos = clientNow === null ? [] : siteExperience.featuredVideos.filter((item) => item.enabled && (!item.startsAt || Date.parse(item.startsAt) <= clientNow) && (!item.endsAt || Date.parse(item.endsAt) > clientNow)).map((item) => ({ ...item, video: videos.find((video) => video.id === item.videoId) })).filter((item): item is FeaturedVideo & { video: WatchVideo } => !!item.video && item.video.videoFormat === "long");
 
   return (
     <main className="min-h-screen bg-[var(--color-page-background)] text-white">
