@@ -110,7 +110,7 @@ export const followUser = async (
     // Repairing a one-sided legacy edge must not emit a second follow notification.
     // Only a newly-created relationship is announced.
     if (isNewRelationship) {
-      await sendFollowNotification(followerUid, targetUid, followerName);
+      await sendFollowNotification(followerUid, targetUid);
     }
   } catch (notificationError) {
     console.error(
