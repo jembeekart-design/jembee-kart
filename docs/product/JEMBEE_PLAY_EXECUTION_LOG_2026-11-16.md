@@ -201,3 +201,13 @@ This log records source changes only. It is not a production-readiness certifica
 - Replaced the legacy direct Firestore reply-delete helper with the authenticated API, and added a Delete reply action in CommentDrawer only for the reply's author.
 - Added contract coverage for pagination and reply deletion and the `test:shorts-reply-delete` script.
 - Remaining: reply-like helper still uses a denied direct client Firestore write; notification provider delivery, full social E2E and moderation queue behavior require verification. Tests/build/emulator have not been run; no deployment, payout activation or bulk video upload.
+
+
+## Reply likes and legacy follow-state repair — 16 November 2026
+
+- Added authenticated `POST /api/shorts/comments/replies/like`. It verifies Firebase token revocation, rejects oversized or malformed request bodies, and accepts only approved replies on approved, active, moderation-safe videos.
+- Reply likes now use a deterministic per-user/reply SHA-256 edge in `videoReplyLikes`; the edge and reply likes counter are written in one Firestore transaction. Repeated requests do not increment the counter again.
+- Replaced the legacy direct Firestore reply-like helper with the authenticated API and added `test:shorts-reply-like` contract coverage.
+- Reply deletion already existed as an owner-authenticated transactional endpoint; the helper calls that endpoint. The endpoint removes the reply and decrements the parent count without allowing a negative count.
+- Follow status now checks both relationship edges, so a one-sided legacy relationship is not incorrectly shown as unfollowed while the follow mutation repairs the missing edge.
+- Verification limitation: these new contract tests and the wider suite have not been executed in this environment. TypeScript, ESLint, Firebase Emulator, browser/device tests and production build remain unverified. No deployment, payout activation or bulk video upload performed.
