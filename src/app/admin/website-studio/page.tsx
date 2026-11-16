@@ -7,6 +7,8 @@ import { db } from "@/firebase/config";
 
 type HomeSectionKey = "learning" | "shorts" | "longVideos";
 type HomeCategory = { id: string; label: string; filter: string; enabled: boolean };
+type FeaturedCreator = { creatorId: string; label: string; enabled: boolean };
+type FeaturedPlaylist = { id: string; title: string; description: string; videoIds: string[]; enabled: boolean };
 type NavigationKey = "home" | "shorts" | "explore" | "learning" | "history" | "liked";
 const DEFAULT_HOME_CATEGORIES: HomeCategory[] = [
   { id: "education", label: "Education", filter: "education", enabled: true },
@@ -44,6 +46,8 @@ const DEFAULT_CONFIG = {
   sectionOrder: ["learning", "shorts", "longVideos"] as HomeSectionKey[],
   homeCategories: DEFAULT_HOME_CATEGORIES,
   navigationLabels: DEFAULT_NAVIGATION_LABELS,
+  featuredCreators: [] as FeaturedCreator[],
+  featuredPlaylists: [] as FeaturedPlaylist[],
 };
 
 type SiteExperience = {
@@ -65,6 +69,8 @@ type SiteExperience = {
   sectionOrder: HomeSectionKey[];
   homeCategories: HomeCategory[];
   navigationLabels: Record<NavigationKey, string>;
+  featuredCreators: FeaturedCreator[];
+  featuredPlaylists: FeaturedPlaylist[];
 };
 type ToggleKey = "announcementEnabled" | "showLearningBanner" | "showShorts" | "showLongVideos" | "showHomeAds" | "compactCards";
 type TextKey = "siteName" | "tagline" | "heroTitle" | "heroSubtitle" | "announcementText";
@@ -120,7 +126,9 @@ export default function WebsiteStudioPage() {
             ? stored.homeCategories.filter((item): item is HomeCategory => !!item && typeof item === "object" && typeof item.id === "string" && typeof item.label === "string" && typeof item.filter === "string" && typeof item.enabled === "boolean").slice(0, 12)
             : DEFAULT_HOME_CATEGORIES;
           const navigationLabels = { ...DEFAULT_NAVIGATION_LABELS, ...(stored.navigationLabels && typeof stored.navigationLabels === "object" ? stored.navigationLabels : {}) };
-          const next = { ...DEFAULT_CONFIG, ...stored, sectionOrder, homeCategories, navigationLabels };
+          const featuredCreators = Array.isArray(stored.featuredCreators) ? stored.featuredCreators.filter((item): item is FeaturedCreator => !!item && typeof item.creatorId === "string" && typeof item.label === "string" && typeof item.enabled === "boolean").slice(0, 8) : [];
+          const featuredPlaylists = Array.isArray(stored.featuredPlaylists) ? stored.featuredPlaylists.filter((item): item is FeaturedPlaylist => !!item && typeof item.id === "string" && typeof item.title === "string" && typeof item.description === "string" && Array.isArray(item.videoIds) && item.videoIds.every((id) => typeof id === "string") && typeof item.enabled === "boolean").slice(0, 8) : [];
+          const next = { ...DEFAULT_CONFIG, ...stored, sectionOrder, homeCategories, navigationLabels, featuredCreators, featuredPlaylists };
           setConfig(next);
           applyBrand(next);
         } else {
@@ -138,6 +146,11 @@ export default function WebsiteStudioPage() {
 
   const [newCategoryLabel, setNewCategoryLabel] = useState("");
   const [newCategoryFilter, setNewCategoryFilter] = useState("");
+  const [newCreatorId, setNewCreatorId] = useState("");
+  const [newCreatorLabel, setNewCreatorLabel] = useState("");
+  const [newPlaylistTitle, setNewPlaylistTitle] = useState("");
+  const [newPlaylistDescription, setNewPlaylistDescription] = useState("");
+  const [newPlaylistVideoIds, setNewPlaylistVideoIds] = useState("");
 
   function updateCategory(id: string, patch: Partial<HomeCategory>) {
     setConfig((current) => ({ ...current, homeCategories: current.homeCategories.map((item) => item.id === id ? { ...item, ...patch } : item) }));
@@ -170,6 +183,39 @@ export default function WebsiteStudioPage() {
 
   function updateNavigationLabel(key: NavigationKey, value: string) {
     setConfig((current) => ({ ...current, navigationLabels: { ...current.navigationLabels, [key]: value.slice(0, 32) } }));
+    setNotice("");
+  }
+
+  function addFeaturedCreator() {
+    const creatorId = newCreatorId.trim().slice(0, 128);
+    const label = newCreatorLabel.trim().slice(0, 48);
+    if (!creatorId || !label || config.featuredCreators.length >= 8 || config.featuredCreators.some((item) => item.creatorId === creatorId)) return;
+    setConfig((current) => ({ ...current, featuredCreators: [...current.featuredCreators, { creatorId, label, enabled: true }] }));
+    setNewCreatorId("");
+    setNewCreatorLabel("");
+    setNotice("");
+  }
+
+  function updateFeaturedCreator(creatorId: string, patch: Partial<FeaturedCreator>) {
+    setConfig((current) => ({ ...current, featuredCreators: current.featuredCreators.map((item) => item.creatorId === creatorId ? { ...item, ...patch } : item) }));
+    setNotice("");
+  }
+
+  function addFeaturedPlaylist() {
+    const title = newPlaylistTitle.trim().slice(0, 60);
+    const description = newPlaylistDescription.trim().slice(0, 120);
+    const videoIds = [...new Set(newPlaylistVideoIds.split(/[\\s,]+/).map((id) => id.trim()).filter(Boolean))].slice(0, 12);
+    const id = title.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "") || `playlist-${crypto.randomUUID().slice(0, 8)}`;
+    if (!title || !videoIds.length || config.featuredPlaylists.length >= 8 || config.featuredPlaylists.some((item) => item.id === id)) return;
+    setConfig((current) => ({ ...current, featuredPlaylists: [...current.featuredPlaylists, { id, title, description, videoIds, enabled: true }] }));
+    setNewPlaylistTitle("");
+    setNewPlaylistDescription("");
+    setNewPlaylistVideoIds("");
+    setNotice("");
+  }
+
+  function updateFeaturedPlaylist(id: string, patch: Partial<FeaturedPlaylist>) {
+    setConfig((current) => ({ ...current, featuredPlaylists: current.featuredPlaylists.map((item) => item.id === id ? { ...item, ...patch } : item) }));
     setNotice("");
   }
 
@@ -320,6 +366,29 @@ export default function WebsiteStudioPage() {
                   {(["home", "shorts", "explore", "learning", "history", "liked"] as NavigationKey[]).map((key) => <label key={key} className="text-xs font-semibold capitalize text-slate-400">{key}<input value={config.navigationLabels[key]} maxLength={32} onChange={(event) => updateNavigationLabel(key, event.target.value)} className="mt-1 min-h-10 w-full rounded-lg border border-white/10 bg-[#090d16] px-3 text-sm text-white"/></label>)}
                 </div>
               </div>
+            </section>
+
+            <section className="rounded-3xl border border-white/10 bg-[#111827] p-5 sm:p-7">
+              <h2 className="text-lg font-bold">Featured Creators</h2>
+              <p className="mt-1 text-xs text-slate-400">Creator का वास्तविक user ID डालें। Home पर उसी creator के उपलब्ध public videos दिखेंगे। अधिकतम 8 creators।</p>
+              <div className="mt-4 grid gap-3 sm:grid-cols-2">
+                <input value={newCreatorId} maxLength={128} onChange={(event) => setNewCreatorId(event.target.value)} placeholder="Creator user ID" aria-label="Creator user ID" className="min-h-11 rounded-xl border border-white/10 bg-[#090d16] px-3 text-sm"/>
+                <input value={newCreatorLabel} maxLength={48} onChange={(event) => setNewCreatorLabel(event.target.value)} placeholder="Display label" aria-label="Creator display label" className="min-h-11 rounded-xl border border-white/10 bg-[#090d16] px-3 text-sm"/>
+              </div>
+              <button type="button" onClick={addFeaturedCreator} disabled={!newCreatorId.trim() || !newCreatorLabel.trim() || config.featuredCreators.length >= 8} className="mt-3 rounded-xl bg-cyan-300 px-4 py-2 text-sm font-bold text-slate-950 disabled:opacity-40">Add creator</button>
+              <div className="mt-4 space-y-2">{config.featuredCreators.map((item) => <div key={item.creatorId} className="flex flex-wrap items-center gap-3 rounded-xl border border-white/10 bg-[#090d16] p-3"><div className="min-w-0 flex-1"><p className="text-sm font-semibold">{item.label}</p><p className="truncate text-xs text-slate-500">{item.creatorId}</p></div><label className="flex items-center gap-2 text-xs"><input type="checkbox" checked={item.enabled} onChange={(event) => updateFeaturedCreator(item.creatorId, { enabled: event.target.checked })}/>Show</label><button type="button" onClick={() => setConfig((current) => ({ ...current, featuredCreators: current.featuredCreators.filter((creator) => creator.creatorId !== item.creatorId) }))} className="text-xs text-rose-300">Remove</button></div>)}</div>
+            </section>
+
+            <section className="rounded-3xl border border-white/10 bg-[#111827] p-5 sm:p-7">
+              <h2 className="text-lg font-bold">Featured Playlists</h2>
+              <p className="mt-1 text-xs text-slate-400">एक playlist में approved public video IDs जोड़ें। IDs comma या space से अलग करें; अधिकतम 12 videos और 8 playlists।</p>
+              <div className="mt-4 grid gap-3">
+                <input value={newPlaylistTitle} maxLength={60} onChange={(event) => setNewPlaylistTitle(event.target.value)} placeholder="Playlist title" aria-label="Playlist title" className="min-h-11 rounded-xl border border-white/10 bg-[#090d16] px-3 text-sm"/>
+                <input value={newPlaylistDescription} maxLength={120} onChange={(event) => setNewPlaylistDescription(event.target.value)} placeholder="Short description (optional)" aria-label="Playlist description" className="min-h-11 rounded-xl border border-white/10 bg-[#090d16] px-3 text-sm"/>
+                <textarea value={newPlaylistVideoIds} onChange={(event) => setNewPlaylistVideoIds(event.target.value)} rows={3} placeholder="Paste public video IDs, separated by commas" aria-label="Playlist video IDs" className="rounded-xl border border-white/10 bg-[#090d16] px-3 py-2 text-sm"/>
+              </div>
+              <button type="button" onClick={addFeaturedPlaylist} disabled={!newPlaylistTitle.trim() || !newPlaylistVideoIds.trim() || config.featuredPlaylists.length >= 8} className="mt-3 rounded-xl bg-cyan-300 px-4 py-2 text-sm font-bold text-slate-950 disabled:opacity-40">Add playlist</button>
+              <div className="mt-4 space-y-2">{config.featuredPlaylists.map((item) => <div key={item.id} className="rounded-xl border border-white/10 bg-[#090d16] p-3"><div className="flex items-center justify-between gap-3"><p className="text-sm font-semibold">{item.title}</p><div className="flex items-center gap-3"><label className="flex items-center gap-2 text-xs"><input type="checkbox" checked={item.enabled} onChange={(event) => updateFeaturedPlaylist(item.id, { enabled: event.target.checked })}/>Show</label><button type="button" onClick={() => setConfig((current) => ({ ...current, featuredPlaylists: current.featuredPlaylists.filter((playlist) => playlist.id !== item.id) }))} className="text-xs text-rose-300">Remove</button></div></div><p className="mt-1 text-xs text-slate-500">{item.videoIds.length} video IDs · {item.description}</p></div>)}</div>
             </section>
 
             <section className="rounded-3xl border border-white/10 bg-[#111827] p-5 sm:p-7">
