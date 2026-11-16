@@ -726,13 +726,32 @@ export default function VerticalVideoFeed({
                 }}
 
                 onSave={() => {
-                  setSavedVideos(
-                    prev => ({
-                      ...prev,
-                      [video.id]:
-                        !prev[video.id]
-                    })
-                  );
+                  requireAuth(async () => {
+                    const user = auth.currentUser;
+                    if (!user) return;
+                    const nextSaved = !savedVideos[video.id];
+                    try {
+                      const token = await user.getIdToken();
+                      const response = await fetch("/api/videos/save", {
+                        method: "POST",
+                        headers: {
+                          "Content-Type": "application/json",
+                          Authorization: `Bearer ${token}`,
+                        },
+                        body: JSON.stringify({ videoId: video.id, saved: nextSaved }),
+                      });
+                      const result = await response.json().catch(() => null);
+                      if (!response.ok || !result?.success) {
+                        setToastMessage(result?.message || "Could not update saved videos.");
+                        return;
+                      }
+                      setSavedVideos(prev => ({ ...prev, [video.id]: result.saved === true }));
+                      setToastMessage(result.saved ? "Video saved." : "Removed from saved videos.");
+                    } catch (error) {
+                      console.error("Save video request failed:", error);
+                      setToastMessage("Saved videos are temporarily unavailable.");
+                    }
+                  }, "save", video.id);
                 }}
 
                 onReport={async (reason) => {
