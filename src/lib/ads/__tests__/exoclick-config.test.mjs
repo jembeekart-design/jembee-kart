@@ -8,7 +8,7 @@ const source = await readFile(
 );
 
 test("ExoClick configuration contains the three approved zone identifiers", () => {
-  assert.match(source, /6089786/);
+  assert.match(source, /6090508/);
   assert.match(source, /6089790/);
   assert.match(source, /6089796/);
 });
@@ -22,7 +22,7 @@ test("ExoClick video ads require explicit environment opt-in", () => {
 });
 
 test("ExoClick VAST endpoints use HTTPS", () => {
-  assert.match(source, /https:\/\/s\.magsrv\.com\/v1\/vast\.php\?id=6089786/);
+  assert.match(source, /https:\/\/s\.magsrv\.com\/v1\/vast\.php\?idzone=6090508/);
   assert.match(source, /https:\/\/s\.magsrv\.com\/v1\/vast\.php\?idzone=6089790/);
 });
 
