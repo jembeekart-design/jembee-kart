@@ -191,3 +191,13 @@ This log records source changes only. It is not a production-readiness certifica
 - Rejected malformed non-object JSON bodies in the new follow and reply endpoints.
 - Remaining known limitations: reply likes and reply deletion legacy helpers still use direct Firestore writes and have no matching server API; replies currently show approved content only and are capped at 150 per parent in the API. The follow-list UI loads only the first 50 entries although the API returns a continuation indicator. These paths require further work before claiming complete social functionality.
 - Verification limitation: tests are authored but have not been executed. TypeScript, ESLint, Firebase Emulator, browser/device and production build remain unverified. No deployment or bulk upload performed.
+
+
+## Follow pagination and reply deletion — 16 November 2026
+
+- Implemented bounded owner-scoped cursor pagination in `/api/social/follow-list` and added a Load More control to the Followers/Following page. Follow client now rejects a caller-supplied follower UID that differs from the authenticated user.
+- Hardened comments create/delete request parsing to reject JSON arrays/null; comment creation also now bounds the bearer token length.
+- Added `POST /api/shorts/comments/replies/delete` with revoked-token verification, owner authorization, bounded input and transactional reply deletion plus nonnegative parent reply count adjustment.
+- Replaced the legacy direct Firestore reply-delete helper with the authenticated API, and added a Delete reply action in CommentDrawer only for the reply's author.
+- Added contract coverage for pagination and reply deletion and the `test:shorts-reply-delete` script.
+- Remaining: reply-like helper still uses a denied direct client Firestore write; notification provider delivery, full social E2E and moderation queue behavior require verification. Tests/build/emulator have not been run; no deployment, payout activation or bulk video upload.
