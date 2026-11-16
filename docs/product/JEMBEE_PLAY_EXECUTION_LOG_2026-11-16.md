@@ -81,3 +81,10 @@ This log records source changes only. It is not a production-readiness certifica
 - Added legacy-key read compatibility and transactional legacy cleanup on unsave; saves avoid creating a second record when a legacy record already exists.
 - Added contract coverage for the hash key, body limit and legacy migration behavior.
 - Verification status: source reviewed after commit; automated tests, TypeScript, lint and production build have not yet been executed. No deployment performed.
+
+## Saved Videos visibility and migration review
+- Saved-video list now batch-loads referenced video documents and returns only videos that remain approved, active, moderation-safe and free.
+- Per-video saved-state reads support the previous document-key format during migration; unsave deletes both legacy and hashed records; save avoids duplicating an existing legacy record.
+- Full-list and per-video reads send `Cache-Control: no-store`.
+- Request payload size is capped at 4 KiB and malformed JSON returns a validation response.
+- Source was reviewed from the branch. Automated test execution, TypeScript, lint, emulator and production build are still pending; no deployment performed.
