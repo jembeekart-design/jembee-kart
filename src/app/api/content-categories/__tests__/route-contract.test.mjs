@@ -31,16 +31,15 @@ test("catalog supports only Subject, Book, Chapter and Question hierarchy", () =
   assert.match(route, /!children\.empty/);
 });
 
-test("teachers select existing Subject Book Chapter Question and cannot create master entries", () => {
-  assert.match(uploadPage, /Subject → Book → Chapter → Question/);
-  assert.match(uploadPage, /coverImageUrl/);
+test("teachers select Subject Book Chapter and type a question number without an Admin Question node", () => {
   assert.match(uploadPage, /schoolSubjectId/);
-  assert.match(uploadPage, /schoolQuestionId/);
+  assert.match(uploadPage, /schoolBookId/);
+  assert.match(uploadPage, /schoolChapterId/);
+  assert.match(uploadPage, /schoolQuestionNumber/);
+  assert.match(uploadPage, /questionNumber: schoolQuestionNumber/);
+  assert.doesNotMatch(uploadPage, /schoolQuestionId|fetchLearningNode\\(/);
   assert.doesNotMatch(uploadPage, /schoolEditionId|editionOptions|publisher|classLabels/);
-  assert.doesNotMatch(uploadPage, /<details[^>]*>[\s\S]*?createCreatorSchoolNode/);
-});
-
-test("admin page exposes authenticated create, edit and delete controls", () => {
+});test("admin page exposes authenticated create, edit and delete controls", () => {
   assert.match(adminPage, /auth\.currentUser/);
   assert.match(adminPage, /save-school-node/);
   assert.match(adminPage, /delete-school-node/);
@@ -67,24 +66,19 @@ test("learning catalog supports bounded parent-scoped cursor pagination", () => 
   assert.match(route, /Invalid learning node type/);
 });
 
-test("public learning discovery requests each hierarchy level from the paginated API", () => {
-  assert.match(learningPage, /types\[stage\]/);
-  assert.match(learningPage, /params\.set\("parentId", parentId\)/);
-  assert.match(learningPage, /params\.set\("cursor", cursor\)/);
-  assert.match(learningPage, /data\.pagination\?\.hasMore/);
+test("public learning discovery dynamically loads question numbers for the selected chapter", () => {
+  assert.match(learningPage, /stage === 0 \\? "subject" : stage === 1 \\? "book" : "chapter"/);
+  assert.match(learningPage, /school-video-answers\\?chapterId=/);
+  assert.match(learningPage, /questionNumber: item\\.questionNumber/);
   assert.match(learningPage, /nextCursors/);
-});
-
-test("deep links resolve one exact published learning node without requiring a full catalog read", () => {
-  assert.match(route, /params\.get\("nodeId"\)/);
-  assert.match(route, /schoolLearningNodes"\)\.doc\(nodeId\)\.get\(\)/);
-  assert.match(route, /doc\.data\(\)\?\.status !== "published"/);
-  assert.match(route, /Published learning entry not found/);
-  assert.match(uploadPage, /fetchLearningNode\(/);
-  assert.match(uploadPage, /nodeId/);
-});
-
-test("large Question catalogs are fetched only for the selected Chapter in Admin", () => {
+});test("upload answer deep links prefill the selected Subject Book Chapter and Question Number", () => {
+  assert.match(route, /params\\.get\\("nodeId"\\)/);
+  assert.match(route, /schoolLearningNodes"\\)\\.doc\\(nodeId\\)\\.get\\(\\)/);
+  assert.match(uploadPage, /requestedSubjectId = searchParams\\.get\\("subjectId"\\)/);
+  assert.match(uploadPage, /requestedBookId = searchParams\\.get\\("bookId"\\)/);
+  assert.match(uploadPage, /requestedChapterId = searchParams\\.get\\("chapterId"\\)/);
+  assert.match(uploadPage, /requestedQuestionNumber = searchParams\\.get\\("questionNumber"\\)/);
+});test("large Question catalogs are fetched only for the selected Chapter in Admin", () => {
   assert.match(adminPage, /type !== "question" \|\| !parentId/);
   assert.match(adminPage, /type: "question", parentId, pageSize: "50"/);
   assert.match(adminPage, /setNodes\(\(current\) => \[\.\.\.current\.filter\(\(node\) => node\.type !== "question"\), \.\.\.questions\]\)/);
