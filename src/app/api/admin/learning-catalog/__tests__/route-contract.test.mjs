@@ -8,7 +8,9 @@ const page = await readFile(new URL("../../../../admin/categories/page.tsx", imp
 test("Learning catalog moderation requires server-side admin RBAC", () => {
   assert.match(route, /requireAdmin\(req\)/);
   assert.match(route, /isAdminIdentity\(identity\)/);
+  assert.match(route, /export async function GET/);
   assert.match(route, /export async function PATCH/);
+  assert.match(route, /orderBy\("type", "asc"\)/);
 });
 
 test("catalog moderation accepts only valid IDs and publish states", () => {
@@ -28,6 +30,8 @@ test("admin UI requires confirmation and calls the protected catalog API", () =>
   assert.match(page, /window\.confirm/);
   assert.match(page, /\/api\/admin\/learning-catalog/);
   assert.match(page, /Authorization: `Bearer \$\{token\}`/);
+  assert.match(page, /fetch\("\/api\/admin\/learning-catalog"/);
+  assert.match(page, /adminData\.nodes/);
   assert.match(page, /Unpublish/);
   assert.match(page, /Publish/);
 });
