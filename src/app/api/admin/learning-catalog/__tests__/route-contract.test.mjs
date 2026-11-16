@@ -16,6 +16,7 @@ test("Learning catalog moderation requires server-side admin RBAC", () => {
 test("catalog moderation accepts only valid IDs and publish states", () => {
   assert.match(route, /ID_PATTERN\.test\(id\)/);
   assert.match(route, /status !== "published" && status !== "unpublished"/);
+  assert.match(route, /previousStatus !== "pending" && previousStatus !== "published" && previousStatus !== "unpublished"/);
   assert.match(route, /transaction\.get\(ref\)/);
 });
 
@@ -34,4 +35,5 @@ test("admin UI requires confirmation and calls the protected catalog API", () =>
   assert.match(page, /adminData\.nodes/);
   assert.match(page, /Unpublish/);
   assert.match(page, /Publish/);
+  assert.match(page, /node.status === "pending" \? "Approve"/);
 });
