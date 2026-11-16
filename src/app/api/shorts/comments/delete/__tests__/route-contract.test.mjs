@@ -11,7 +11,7 @@ test("comment deletion verifies a revocation-checked Firebase bearer token", () 
 });
 
 test("comment deletion is bounded and restricted to its owner", () => {
-  assert.match(route, /byteLength\(raw\) > 4096/);
+  assert.match(route, /encode\(raw\)\.byteLength > 4096/);
   assert.match(route, /commentId\.length > 500/);
   assert.match(route, /comment\.userId !== uid/);
   assert.match(service, /\/api\/shorts\/comments\/delete/);
