@@ -14,6 +14,14 @@ service cloud.firestore {
       allow read: if settingId == 'customize' || (isAdmin() && settingId in ['mobile_app', 'site_experience']);
       allow create, update, delete: if isAdmin() && settingId in ['customize', 'mobile_app', 'site_experience'];
     }
+    match /admin_settings/site_experience/versions/{versionId} {
+      allow read: if isAdmin();
+      allow create, update, delete: if false;
+    }
+    match /adminActivityLogs/{logId} {
+      allow read: if isAdmin();
+      allow create, update, delete: if false;
+    }
     match /users/{uid} {
       allow read: if isOwner(uid) || isAdmin();
       allow create, delete: if false;
