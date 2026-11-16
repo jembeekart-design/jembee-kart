@@ -120,20 +120,31 @@ export async function POST(req: Request) {
         }
       }
       const entryById = new Map(normalized.map((entry) => [entry.id, entry]));
-      const resolveEntry = async (id: string) => {
+      type ResolvedEntry = { id: string; type: NodeType; parentId: string; status: string };
+      const resolveEntry = async (id: string): Promise<ResolvedEntry | null> => {
         const local = entryById.get(id);
         if (local) return { id, type: local.type, parentId: local.parentId, status: "published" };
         const snap = await db.collection("schoolLearningNodes").doc(id).get();
         if (!snap.exists) return null;
         const data = snap.data() || {};
-        return { id, type: data.type as NodeType, parentId: typeof data.parentId === "string" ? data.parentId : "", status: data.status };
+        return {
+          id,
+          type: data.type as NodeType,
+          parentId: typeof data.parentId === "string" ? data.parentId : "",
+          status: typeof data.status === "string" ? data.status : "",
+        };
       };
       for (const entry of normalized) {
         if (entry.type !== "book" && entry.coverImageUrl) {
           return NextResponse.json({ success: false, message: "Cover image केवल Book entry पर रखें।" }, { status: 400, headers: noStore });
         }
         const visited = new Set<string>([entry.id]);
-        let current = entry;
+        let current: ResolvedEntry = {
+          id: entry.id,
+          type: entry.type,
+          parentId: entry.parentId,
+          status: "published",
+        };
         while (current.type !== "subject") {
           const expectedParentType = PARENT_TYPES[current.type][0];
           if (!current.parentId || visited.has(current.parentId)) {
