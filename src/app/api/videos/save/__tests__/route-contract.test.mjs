@@ -39,7 +39,7 @@ test("a user can always remove a stale saved-video reference", () => {
 
 test("derived video cards use the same persistent saved-video API", () => {
   assert.match(videoCard, /onAuthStateChanged\(auth/);
-  assert.match(videoCard, /fetch\("\/api\/videos\/save"/);
+  assert.match(videoCard, /fetch\(\`\/api\/videos\/save\?videoId=/);
   assert.match(videoCard, /body: JSON\.stringify\(\{ videoId: video\.id, saved: !isSaved \}\)/);
   assert.match(videoCard, /onSave=\{handleSave\}/);
 });
