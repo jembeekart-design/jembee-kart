@@ -17,8 +17,16 @@ export async function GET(req: NextRequest) {
       return NextResponse.json({ success: false, message: "Unauthorized" }, { status: 401 });
     }
     const decoded = await getAdminAuth().verifyIdToken(token, true);
-    const snapshot = await getAdminDb()
-      .collection("savedWatchVideos")
+    const savedCollection = getAdminDb().collection("savedWatchVideos");
+    const requestedVideoId = req.nextUrl.searchParams.get("videoId")?.trim() || "";
+    if (requestedVideoId) {
+      if (requestedVideoId.length > 200 || /[\/\\]/.test(requestedVideoId)) {
+        return NextResponse.json({ success: false, message: "Invalid video ID" }, { status: 400 });
+      }
+      const savedDocument = await savedCollection.doc(`${requestedVideoId}_${decoded.uid}`).get();
+      return NextResponse.json({ success: true, saved: savedDocument.exists });
+    }
+    const snapshot = await savedCollection
       .where("userId", "==", decoded.uid)
       .limit(200)
       .get();
