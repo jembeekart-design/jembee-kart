@@ -7,7 +7,7 @@ const route = await readFile(new URL("../route.ts", import.meta.url), "utf8");
 test("reply likes require a revocation-checked Firebase token and bounded JSON", () => {
   assert.match(route, /verifyIdToken\(token, true\)/);
   assert.match(route, /token\.length > 8192/);
-  assert.match(route, /byteLength\(raw\) > 2048/);
+  assert.match(route, /encode\(raw\)\.byteLength > 2048/);
   assert.match(route, /Invalid JSON body/);
 });
 
