@@ -255,3 +255,13 @@ This log records source changes only. It is not a production-readiness certifica
 - The existing approved + active + safe video filters remain in place.
 - Added `test:learning-answer-gates` contract test and included it in release script discovery automatically.
 - These are source-level changes; runtime Firestore behavior and full CI are not yet verified.
+
+
+## Learning catalog duplicate prevention — 16 November 2026
+
+- Teacher-created school hierarchy entries now check sibling entries by type and parent before writing.
+- Name comparison uses Unicode NFKC normalization, whitespace normalization and case-insensitive comparison; an existing sibling with the same normalized name returns HTTP 409 and its duplicate ID.
+- Editing excludes the current document from duplicate detection.
+- Added a composite Firestore index for `schoolLearningNodes(type, parentId)`.
+- Added a contract test for normalization, parent-scoped matching and conflict response.
+- This is a bounded query (200 siblings); very large parent catalogs need a normalized-name uniqueness strategy and runtime index verification before production rollout.
