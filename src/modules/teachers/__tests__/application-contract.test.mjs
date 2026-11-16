@@ -6,7 +6,7 @@ const repository = readFileSync(new URL("../../../repositories/teachers/firestor
 const userRoute = readFileSync(new URL("../../../app/api/teachers/verification/route.ts", import.meta.url), "utf8");
 const adminRoute = readFileSync(new URL("../../../app/api/admin/teachers/verification/route.ts", import.meta.url), "utf8");
 test("teacher application schema bounds user-controlled fields", () => { assert.match(schema, /clean\(v\.displayName, 80\)/); assert.match(schema, /experienceYears > 60/); assert.match(schema, /slice\(0, 12\)/); });
-test("teacher application route derives uid from verified Firebase token", () => { assert.match(userRoute, /verifyIdToken/); assert.match(userRoute, /submitTeacherApplication\(uid, input\)/); });
+test("teacher application route derives uid from a bounded revocation-checked Firebase token", () => { assert.match(userRoute, /token\.length > 8192/); assert.match(userRoute, /verifyIdToken\(token, true\)/); assert.match(userRoute, /submitTeacherApplication\(uid, input\)/); });
 test("teacher submissions are transactionally pending and audited", () => { assert.match(repository, /runTransaction/); assert.match(repository, /status: "pending"/); assert.match(repository, /teacherVerificationAuditLogs/); });
 test("admin queue and review require admin authorization", () => { assert.match(adminRoute, /verifyMonetagAdmin/); assert.match(adminRoute, /listPendingTeacherApplications/); assert.match(adminRoute, /reviewTeacherApplication/); });
 test("teacher review refuses invalid or missing rejection reason", () => { assert.match(schema, /decision === "rejected" && !reason/); });
