@@ -29,3 +29,10 @@ test('Shorts feed query hook is inside a Suspense boundary for production preren
   assert.match(page, /<Suspense\b[\s\S]*<FullscreenVideoFeed[\s\S]*<\/Suspense>/);
 });
 
+test('Shorts exposes working For You and Following tab controls', () => {
+  assert.match(page, /useState<"foryou" \| "following">\("foryou"\)/);
+  assert.match(page, /setActiveTab\("foryou"\)/);
+  assert.match(page, /setActiveTab\("following"\)/);
+  assert.match(page, /aria-pressed=\{activeTab === "following"\}/);
+  assert.match(page, /<FullscreenVideoFeed activeTab=\{activeTab\} \/>/);
+});
