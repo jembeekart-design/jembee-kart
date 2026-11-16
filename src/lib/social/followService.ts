@@ -25,10 +25,13 @@ async function followRequest(targetUid: string, action: "follow" | "unfollow") {
 }
 
 export const followUser = async (
-  _followerUid: string,
+  followerUid: string,
   targetUid: string,
   _followerName: string
-) => followRequest(targetUid, "follow");
+) => {
+  if (auth.currentUser?.uid !== followerUid) throw new Error("Authenticated user mismatch.");
+  return followRequest(targetUid, "follow");
+};
 
 export const unfollowUser = async (followerUid: string, targetUid: string) => {
   if (auth.currentUser?.uid !== followerUid) throw new Error("Authenticated user mismatch.");
