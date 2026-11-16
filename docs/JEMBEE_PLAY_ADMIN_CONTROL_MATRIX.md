@@ -24,7 +24,8 @@ Settings are stored in admin_settings/site_experience. The public endpoint at /a
 | Shorts section visibility | showShorts | Show/hide Home Shorts section |
 | Long video section visibility | showLongVideos | Show/hide Home Long Videos section |
 | Home ad placements visibility | showHomeAds | Show/hide the existing Home ad placements only |
-| Compact video cards | compactCards | Increase desktop long-video grid density |\n| Home section order | sectionOrder | Reorder Learning, Shorts, and Long Videos on Home |
+| Compact video cards | compactCards | Increase desktop long-video grid density |
+| Home section order | sectionOrder | Reorder Learning, Shorts, and Long Videos on Home |
 
 The public endpoint validates colour values, text lengths, and boolean types and uses safe defaults when settings are absent or unavailable.
 
@@ -97,7 +98,8 @@ Before publishing a new Admin-controlled setting:
 
 ## 5. Current release status
 
-- Website Studio UI, safe public settings endpoint, Home page integration, and configurable section ordering are proposed in PR #65.\n- The layout builder supports moving Learning, Shorts, and Long Videos up/down; its preview follows the same order.
+- Website Studio UI, safe public settings endpoint, Home page integration, and configurable section ordering are proposed in PR #65.
+- The layout builder supports moving Learning, Shorts, and Long Videos up/down; its preview follows the same order.
 - PR #65 is Draft and stacked on PR #64.
 - Automated validation for the latest PR #65 head has not yet been confirmed.
 - Nothing in this work is merged into main.
