@@ -154,7 +154,7 @@ export default function HomePage() {
   return (
     <main className="min-h-screen bg-[var(--color-page-background)] text-white">
       {siteExperience.announcementEnabled && siteExperience.announcementText ? <div className="px-4 py-2 text-center text-xs font-bold text-slate-950 sm:text-sm" style={{ backgroundColor: siteExperience.primaryColor }}>{siteExperience.announcementText}</div> : null}
-      <header className="sticky top-0 z-40 flex h-16 items-center gap-3 border-b border-white/10 bg-[#0b0b0b]/95 px-3 backdrop-blur sm:px-4">
+      <header className="sticky top-0 z-40 flex h-16 items-center gap-3 border-b border-white/10 bg-[var(--color-page-background)]/95 px-3 backdrop-blur sm:px-4">
         <button type="button" aria-label="Toggle menu" aria-expanded={mobileMenuOpen} aria-controls="mobile-navigation-drawer" onClick={() => setMobileMenuOpen((value) => !value)} className="rounded-full p-2 hover:bg-white/10"><Menu size={23}/></button>
         <Link href="/" className="flex min-w-fit items-center gap-1 text-lg font-black tracking-tight sm:text-xl">{siteExperience.siteName}<PlaySquare size={19} className="ml-1 text-cyan-400"/></Link>
         <div className="mx-auto flex min-w-0 flex-1 max-w-2xl">
@@ -172,7 +172,7 @@ export default function HomePage() {
         <div className="fixed inset-0 z-[70] md:hidden" role="presentation">
           <button type="button" aria-label="Close menu overlay" onClick={() => setMobileMenuOpen(false)} className="absolute inset-0 bg-black/70"/>
           <aside id="mobile-navigation-drawer" role="dialog" aria-modal="true" aria-label="Main navigation" className="absolute inset-y-0 left-0 flex w-[min(86vw,340px)] flex-col overflow-y-auto border-r border-white/10 bg-[#101014] p-4 pt-[calc(env(safe-area-inset-top)+1rem)] shadow-2xl">
-            <div className="mb-4 flex items-center justify-between"><Link href="/" onClick={() => setMobileMenuOpen(false)} className="text-lg font-black">JEMBEE <span className="text-cyan-400">PLAY</span></Link><button type="button" onClick={() => setMobileMenuOpen(false)} aria-label="Close menu" className="rounded-full p-2 hover:bg-white/10"><X size={22}/></button></div>
+            <div className="mb-4 flex items-center justify-between"><Link href="/" onClick={() => setMobileMenuOpen(false)} className="text-lg font-black">{siteExperience.siteName}</Link><button type="button" onClick={() => setMobileMenuOpen(false)} aria-label="Close menu" className="rounded-full p-2 hover:bg-white/10"><X size={22}/></button></div>
             <p className="px-3 py-2 text-xs font-bold uppercase tracking-wider text-slate-500">Discover</p>
             {desktopNavigation.map(({ icon: Icon, label, href }) => <Link key={label} href={href} onClick={() => setMobileMenuOpen(false)} className="flex min-h-12 items-center gap-4 rounded-xl px-3 py-3 text-sm hover:bg-white/10"><Icon size={20}/>{label}</Link>)}
             <div className="my-3 border-t border-white/10"/>
@@ -180,7 +180,7 @@ export default function HomePage() {
             {earningsNavigation.map(({ icon: Icon, label, href }) => <Link key={label} href={href} onClick={() => setMobileMenuOpen(false)} className="flex min-h-12 items-center gap-4 rounded-xl px-3 py-3 text-sm hover:bg-white/10"><Icon size={20} className="text-cyan-300"/>{label}<ChevronRight size={16} className="ml-auto text-slate-500"/></Link>)}
             <div className="my-3 border-t border-white/10"/>
             <Link href="/videos/share" onClick={() => setMobileMenuOpen(false)} className="flex min-h-12 items-center gap-4 rounded-xl px-3 py-3 text-sm hover:bg-white/10"><Wallet size={20}/>Share Income (पुराना लिंक)</Link>
-            <p className="mt-auto px-3 pt-6 text-xs text-slate-500">Watch • Learn • Create • Share</p>
+            <p className="mt-auto px-3 pt-6 text-xs text-slate-500">{siteExperience.tagline}</p>
           </aside>
         </div>
       ) : null}
@@ -194,7 +194,7 @@ export default function HomePage() {
           <div className="my-3 border-t border-white/10"/>
           <p className="px-4 py-2 text-xs font-bold uppercase tracking-wider text-slate-500">Earnings</p>
           {earningsNavigation.map(({ icon: Icon, label, href }) => <Link key={label} href={href} className="flex items-center gap-5 rounded-xl px-4 py-3 text-sm hover:bg-white/10"><Icon size={21}/>{label}</Link>)}
-          <p className="mt-8 px-4 text-xs text-slate-500">JEMBEE PLAY · Watch • Learn • Create • Share</p>
+          <p className="mt-8 px-4 text-xs text-slate-500">{siteExperience.siteName} · {siteExperience.tagline}</p>
         </aside>}
 
         <section className="min-w-0 flex-1 px-3 pb-28 pt-3 sm:px-4 sm:pt-4 md:px-6">
