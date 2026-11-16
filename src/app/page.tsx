@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { useEffect, useMemo, useState } from "react";
+import { Fragment, useEffect, useMemo, useState } from "react";
 import { Search, Menu, X, Home, Compass, PlaySquare, History, GraduationCap, PlusSquare, Bell, UserCircle, ThumbsUp, BookOpen, ChevronRight, Eye, Share2, Video, Wallet, type LucideIcon } from "lucide-react";
 import { usePublicWatchVideos } from "@/hooks/usePublicWatchVideos";
 import { MonetagPlacement } from "@/components/ads/MonetagPlacement";
@@ -14,7 +14,7 @@ type SiteExperience = {
   siteName: string; tagline: string; heroTitle: string; heroSubtitle: string;
   primaryColor: string; accentColor: string; pageColor: string; surfaceColor: string;
   announcementEnabled: boolean; announcementText: string; showLearningBanner: boolean;
-  showShorts: boolean; showLongVideos: boolean; showHomeAds: boolean; compactCards: boolean;
+  showShorts: boolean; showLongVideos: boolean; showHomeAds: boolean; compactCards: boolean; sectionOrder: ("learning" | "shorts" | "longVideos")[];
 };
 const DEFAULT_SITE_EXPERIENCE: SiteExperience = {
   siteName: "JEMBEE PLAY", tagline: "Watch • Learn • Create • Share",
@@ -22,7 +22,7 @@ const DEFAULT_SITE_EXPERIENCE: SiteExperience = {
   heroSubtitle: "अपनी class, book और chapter चुनें और सही video answer खोजें।",
   primaryColor: "#22d3ee", accentColor: "#8b5cf6", pageColor: "#090d16", surfaceColor: "#111827",
   announcementEnabled: false, announcementText: "", showLearningBanner: true,
-  showShorts: true, showLongVideos: true, showHomeAds: true, compactCards: false,
+  showShorts: true, showLongVideos: true, showHomeAds: true, compactCards: false, sectionOrder: ["learning", "shorts", "longVideos"],
 };
 type NavigationItem = { icon: LucideIcon; label: string; href: string };
 const earningsNavigation: NavigationItem[] = [
@@ -202,42 +202,52 @@ export default function HomePage() {
             {chips.map((chip) => <button type="button" key={chip} onClick={() => setActive(chip)} className={`shrink-0 rounded-xl px-4 py-2.5 text-sm font-semibold ${active === chip ? "bg-white text-black" : "bg-white/10 text-white hover:bg-white/20"}`}>{chip}</button>)}
           </div>
 
-          {siteExperience.showLearningBanner ? <div className="mb-5 rounded-2xl border border-cyan-400/20 bg-gradient-to-r from-cyan-950/70 to-violet-950/50 p-5 sm:flex sm:items-center sm:justify-between">
-            <div><p className="text-xs font-bold uppercase tracking-widest text-cyan-300">Jembee Play Learning</p><h1 className="mt-1 text-2xl font-black">{siteExperience.heroTitle}</h1><p className="mt-1 text-sm text-slate-300">{siteExperience.heroSubtitle}</p></div>
-            <Link href="/learn/school" className="mt-4 inline-flex min-h-11 items-center justify-center gap-2 rounded-full bg-cyan-400 px-5 py-2.5 text-sm font-bold text-slate-950 sm:mt-0">Find your school <ChevronRight size={17}/></Link>
-          </div> : null}
-
-          {siteExperience.showHomeAds ? <MonetagPlacement placement="home-after-learning-banner" /> : null}
-
-          {siteExperience.showShorts ? <section className="mb-7" aria-labelledby="shorts-heading">
-            <div className="mb-4 flex items-center justify-between gap-3">
-              <h2 id="shorts-heading" className="flex items-center gap-2 text-lg font-bold sm:text-xl"><PlaySquare className="text-rose-500" size={23}/> Shorts</h2>
-              <Link href="/shorts" className="shrink-0 text-sm font-semibold text-cyan-300 hover:underline">View all Shorts</Link>
-            </div>
-            {loading ? <div className="grid grid-cols-2 gap-3">{Array.from({ length: 4 }, (_, index) => <div key={index} className="aspect-[9/16] animate-pulse rounded-2xl bg-white/5"/>)}</div> : error ? <p role="status" className="rounded-xl border border-amber-400/20 bg-amber-400/5 p-4 text-sm text-amber-100">{error}</p> : <ShortsGrid videos={shorts}/>}
-          </section> : null}
-
-          {siteExperience.showHomeAds ? <MonetagPlacement placement="home-after-shorts" /> : null}
-
-          {siteExperience.showLongVideos ? <section className="mb-7" aria-labelledby="long-videos-heading">
-            <div className="mb-4 flex items-center justify-between gap-3">
-              <h2 id="long-videos-heading" className="text-lg font-bold sm:text-xl">Latest Long Videos</h2>
-              <Link href="/videos" className="shrink-0 text-sm font-semibold text-cyan-300 hover:underline">View all videos</Link>
-            </div>
-            {loading ? (
-              <div className="grid gap-x-4 gap-y-8 sm:grid-cols-2 xl:grid-cols-3">{Array.from({ length: 3 }, (_, index) => <div key={index} className="aspect-video animate-pulse rounded-xl bg-white/5" />)}</div>
-            ) : error ? null : longVideos.length === 0 ? (
-              <div className="rounded-2xl border border-dashed border-white/15 p-7 text-center">
-                <p className="font-semibold">अभी कोई approved Long Video उपलब्ध नहीं है।</p>
-                <p className="mt-2 text-sm text-slate-400">Upload में Long Video चुनकर वीडियो भेजें। Admin approval के बाद वह यहाँ दिखाई देगा।</p>
-                <Link href="/videos/upload" className="mt-4 inline-flex rounded-full bg-cyan-400 px-4 py-2 text-sm font-bold text-slate-950">Upload Long Video</Link>
-              </div>
-            ) : (
-              <div className={`grid gap-x-4 gap-y-8 sm:grid-cols-2 ${siteExperience.compactCards ? "xl:grid-cols-4" : "xl:grid-cols-3"}`}>{longVideos.slice(0, 12).map((video, index) => <LongVideoCard key={video.id} video={video} eager={index < 3}/>)}</div>
-            )}
-          </section> : null}
-
-          {siteExperience.showHomeAds ? <MonetagPlacement placement="home-after-video-grid" /> : null}
+          {siteExperience.sectionOrder.map((sectionKey) => {
+            if (sectionKey === "learning") {
+              return <Fragment key="learning">
+                {siteExperience.showLearningBanner ? <div className="mb-5 rounded-2xl border border-cyan-400/20 bg-gradient-to-r from-cyan-950/70 to-violet-950/50 p-5 sm:flex sm:items-center sm:justify-between">
+                  <div><p className="text-xs font-bold uppercase tracking-widest text-cyan-300">Jembee Play Learning</p><h1 className="mt-1 text-2xl font-black">{siteExperience.heroTitle}</h1><p className="mt-1 text-sm text-slate-300">{siteExperience.heroSubtitle}</p></div>
+                  <Link href="/learn/school" className="mt-4 inline-flex min-h-11 items-center justify-center gap-2 rounded-full bg-cyan-400 px-5 py-2.5 text-sm font-bold text-slate-950 sm:mt-0">Find your school <ChevronRight size={17}/></Link>
+                </div> : null}
+                {siteExperience.showHomeAds ? <MonetagPlacement placement="home-after-learning-banner" /> : null}
+              </Fragment>;
+            }
+            if (sectionKey === "shorts") {
+              return <Fragment key="shorts">
+                {siteExperience.showShorts ? <section className="mb-7" aria-labelledby="shorts-heading">
+                  <div className="mb-4 flex items-center justify-between gap-3">
+                    <h2 id="shorts-heading" className="flex items-center gap-2 text-lg font-bold sm:text-xl"><PlaySquare className="text-rose-500" size={23}/> Shorts</h2>
+                    <Link href="/shorts" className="shrink-0 text-sm font-semibold text-cyan-300 hover:underline">View all Shorts</Link>
+                  </div>
+                  {loading ? <div className="grid grid-cols-2 gap-3">{Array.from({ length: 4 }, (_, index) => <div key={index} className="aspect-[9/16] animate-pulse rounded-2xl bg-white/5"/>)}</div> : error ? <p role="status" className="rounded-xl border border-amber-400/20 bg-amber-400/5 p-4 text-sm text-amber-100">{error}</p> : <ShortsGrid videos={shorts}/>}
+                </section> : null}
+                {siteExperience.showHomeAds ? <MonetagPlacement placement="home-after-shorts" /> : null}
+              </Fragment>;
+            }
+            if (sectionKey === "longVideos") {
+              return <Fragment key="longVideos">
+                {siteExperience.showLongVideos ? <section className="mb-7" aria-labelledby="long-videos-heading">
+                  <div className="mb-4 flex items-center justify-between gap-3">
+                    <h2 id="long-videos-heading" className="text-lg font-bold sm:text-xl">Latest Long Videos</h2>
+                    <Link href="/videos" className="shrink-0 text-sm font-semibold text-cyan-300 hover:underline">View all videos</Link>
+                  </div>
+                  {loading ? (
+                    <div className="grid gap-x-4 gap-y-8 sm:grid-cols-2 xl:grid-cols-3">{Array.from({ length: 3 }, (_, index) => <div key={index} className="aspect-video animate-pulse rounded-xl bg-white/5" />)}</div>
+                  ) : error ? null : longVideos.length === 0 ? (
+                    <div className="rounded-2xl border border-dashed border-white/15 p-7 text-center">
+                      <p className="font-semibold">अभी कोई approved Long Video उपलब्ध नहीं है।</p>
+                      <p className="mt-2 text-sm text-slate-400">Upload में Long Video चुनकर वीडियो भेजें। Admin approval के बाद वह यहाँ दिखाई देगा।</p>
+                      <Link href="/videos/upload" className="mt-4 inline-flex rounded-full bg-cyan-400 px-4 py-2 text-sm font-bold text-slate-950">Upload Long Video</Link>
+                    </div>
+                  ) : (
+                    <div className={`grid gap-x-4 gap-y-8 sm:grid-cols-2 ${siteExperience.compactCards ? "xl:grid-cols-4" : "xl:grid-cols-3"}`}>{longVideos.slice(0, 12).map((video, index) => <LongVideoCard key={video.id} video={video} eager={index < 3}/>)}</div>
+                  )}
+                </section> : null}
+                {siteExperience.showHomeAds ? <MonetagPlacement placement="home-after-video-grid" /> : null}
+              </Fragment>;
+            }
+            return null;
+          })}
         </section>
       </div>
 
