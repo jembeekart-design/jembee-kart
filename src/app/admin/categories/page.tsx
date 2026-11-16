@@ -2,16 +2,18 @@
 
 import Link from "next/link";
 import { useCallback, useEffect, useState } from "react";
-import { ArrowLeft, BookOpen, GraduationCap, RefreshCw } from "lucide-react";
+import { ArrowLeft, BookOpen, GraduationCap, RefreshCw, ShieldCheck } from "lucide-react";
+import { auth } from "@/firebase/config";
 import { DEFAULT_EXPLORE_CATEGORIES, type ExploreCategoryRecord } from "@/lib/catalog/defaultExploreCategories";
 
-type SchoolNode = { id: string; type: string; name: string; parentId?: string | null };
+type SchoolNode = { id: string; type: string; name: string; status?: string; parentId?: string | null };
 
 export default function AdminCategoriesPage() {
   const [categories, setCategories] = useState<ExploreCategoryRecord[]>(DEFAULT_EXPLORE_CATEGORIES);
   const [nodes, setNodes] = useState<SchoolNode[]>([]);
   const [busy, setBusy] = useState(false);
   const [notice, setNotice] = useState("");
+  const [updatingNodeId, setUpdatingNodeId] = useState("");
 
   const load = useCallback(async () => {
     setBusy(true);
@@ -30,6 +32,36 @@ export default function AdminCategoriesPage() {
       setNotice(error instanceof Error ? error.message : "Catalog load failed");
     } finally { setBusy(false); }
   }, []);
+
+  const updateNodeStatus = async (node: SchoolNode) => {
+    const nextStatus = node.status === "unpublished" ? "published" : "unpublished";
+    const confirmed = window.confirm(
+      nextStatus === "unpublished"
+        ? `Unpublish "${node.name}"? New video approvals using this entry will be blocked.`
+        : `Publish "${node.name}" again?`
+    );
+    if (!confirmed) return;
+    setUpdatingNodeId(node.id);
+    setNotice("");
+    try {
+      const user = auth.currentUser;
+      if (!user) throw new Error("Admin session expired. Please sign in again.");
+      const token = await user.getIdToken();
+      const response = await fetch("/api/admin/learning-catalog", {
+        method: "PATCH",
+        headers: { "Content-Type": "application/json", Authorization: `Bearer ${token}` },
+        body: JSON.stringify({ id: node.id, status: nextStatus }),
+      });
+      const result = await response.json().catch(() => null);
+      if (!response.ok || result?.success !== true) throw new Error(result?.message || "Catalog status update failed");
+      setNodes((current) => current.map((item) => item.id === node.id ? { ...item, status: nextStatus } : item));
+      setNotice(nextStatus === "unpublished" ? "Entry unpublished. Pending approvals using it will be blocked." : "Entry published.");
+    } catch (error) {
+      setNotice(error instanceof Error ? error.message : "Catalog status update failed");
+    } finally {
+      setUpdatingNodeId("");
+    }
+  };
 
   useEffect(() => { void load(); }, [load]);
 
@@ -55,11 +87,11 @@ export default function AdminCategoriesPage() {
         </section>
         <section className="mt-6 rounded-3xl border border-white/10 bg-white/[0.04] p-5">
           <h2 className="text-lg font-bold">School Learning Hierarchy ({nodes.length} entries)</h2>
-          <p className="mt-1 text-xs text-slate-400">Board → School → Class → Subject / Book → Chapter → Question</p>
+          <p className="mt-1 text-xs text-slate-400">Board → School → Class → Subject / Book → Chapter → Question · Admin can publish or unpublish entries. Every change is audited.</p>
           <div className="mt-4 grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
             {["board", "school", "class", "subject", "book", "chapter", "question"].map((type) => {
               const group = nodes.filter((node) => node.type === type);
-              return <div key={type} className="rounded-xl border border-white/10 bg-black/20 p-3"><p className="font-semibold capitalize">{type} ({group.length})</p><ul className="mt-2 space-y-1 text-xs text-slate-400">{group.slice(0, 12).map((node) => <li key={node.id}>{node.name}</li>)}</ul></div>;
+              return <div key={type} className="rounded-xl border border-white/10 bg-black/20 p-3"><p className="font-semibold capitalize">{type} ({group.length})</p><ul className="mt-2 space-y-2 text-xs text-slate-400">{group.slice(0, 30).map((node) => <li key={node.id} className="flex items-center justify-between gap-2 border-t border-white/5 pt-2"><span className="min-w-0"><span className="block truncate">{node.name}</span><span className={node.status === "unpublished" ? "text-amber-300" : "text-emerald-300"}>{node.status || "status unknown"}</span></span><button type="button" disabled={updatingNodeId === node.id || !["published", "unpublished"].includes(node.status || "")} onClick={() => void updateNodeStatus(node)} className="shrink-0 rounded-lg border border-white/15 px-2 py-1 text-[11px] font-semibold text-white disabled:opacity-40">{updatingNodeId === node.id ? "Saving…" : node.status === "unpublished" ? "Publish" : "Unpublish"}</button></li>)}</ul></div>;
             })}
           </div>
         </section>
