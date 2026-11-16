@@ -31,7 +31,6 @@ export async function GET(req: NextRequest) {
     const db = getAdminDb();
     const snapshot = await db.collection("videoWatchHistory")
       .where("userId", "==", uid)
-      .orderBy("updatedAt", "desc")
       .limit(100)
       .get();
 
@@ -61,8 +60,10 @@ export async function GET(req: NextRequest) {
       };
     }));
 
+    const history = records.filter((item): item is NonNullable<typeof item> => item !== null)
+      .sort((a, b) => b.updatedAt - a.updatedAt);
     return NextResponse.json(
-      { success: true, history: records.filter(Boolean) },
+      { success: true, history },
       { headers: { "Cache-Control": "no-store" } },
     );
   } catch (error) {
