@@ -18,5 +18,5 @@ test("admin check verifies token revocation and uses the shared admin role set",
 test("a non-admin direct profile does not mask a uid-matched admin profile", () => {
   assert.match(source, /if \(role !== "admin" && role !== "super_admin"\)/);
   assert.match(source, /where\("uid", "==", decoded\.uid\)/);
-  assert.match(source, /role = fallback\.docs\[0\]\?\.data\(\)\?\.role/);
+  assert.match(source, /fallback\.docs\.find\(\(item\)/);\n  assert.match(source, /candidateRole === "admin" \|\| candidateRole === "super_admin"/);
 });
