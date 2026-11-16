@@ -340,6 +340,18 @@ export async function POST(req: Request) {
         question: typeof submission.schoolQuestionId === "string" ? submission.schoolQuestionId : "",
       };
       const hasSchoolPath = Object.values(schoolIds).some(Boolean);
+      const expectedTypes = {
+        board: "board",
+        school: "school",
+        class: "class",
+        subject: "subject",
+        book: "book",
+        chapter: "chapter",
+        question: "question",
+      } as const;
+      const selectedSchoolNodes = Object.entries(schoolIds)
+        .filter(([, id]) => Boolean(id))
+        .map(([key, id]) => ({ key: key as keyof typeof expectedTypes, id }));
       if (submission.categoryId === "school" || hasSchoolPath) {
         if (
           submission.categoryId !== "school" ||
@@ -351,18 +363,8 @@ export async function POST(req: Request) {
           throw new Error("Learning catalog entry is missing or no longer published; approval blocked");
         }
 
-        const expectedTypes = {
-          board: "board",
-          school: "school",
-          class: "class",
-          subject: "subject",
-          book: "book",
-          chapter: "chapter",
-          question: "question",
-        } as const;
-        const selected = Object.entries(schoolIds).filter(([, id]) => Boolean(id));
-        const nodeSnapshots = await Promise.all(selected.map(async ([key, id]) => ({
-          key: key as keyof typeof expectedTypes,
+        const nodeSnapshots = await Promise.all(selectedSchoolNodes.map(async ({ key, id }) => ({
+          key,
           id,
           snapshot: await adminDb.collection("schoolLearningNodes").doc(id).get(),
         })));
@@ -413,17 +415,7 @@ export async function POST(req: Request) {
       // Video moderation never credits viewer wallet coins.
       const rewardCoins = 0;
 
-      const existingVideo =
-        await videoRef.get();
-
-      if (existingVideo.exists) {
-        existingVideoConflict = true;
-        throw new Error(
-          "WatchEarn video already exists for this submission"
-        );
-      }
-
-      await videoRef.set({
+      const videoDocument = {
         userId: submission.creatorId,
         creatorId: submission.creatorId,
 
@@ -503,6 +495,51 @@ export async function POST(req: Request) {
         createdAt: Date.now(),
         moderationCheckedAt:
           FieldValue.serverTimestamp(),
+      };
+
+      // Atomically re-read every selected catalog node and create the approved
+      // video in the same transaction. An unpublish racing with approval causes
+      // a transaction retry and then blocks the approval.
+      await adminDb.runTransaction(async (transaction) => {
+        const existingVideo = await transaction.get(videoRef);
+        if (existingVideo.exists) {
+          existingVideoConflict = true;
+          throw new Error("WatchEarn video already exists for this submission");
+        }
+
+        const freshSnapshots = await Promise.all(selectedSchoolNodes.map(({ id }) =>
+          transaction.get(adminDb.collection("schoolLearningNodes").doc(id))
+        ));
+        const freshNodes = new Map<string, Record<string, unknown>>();
+        for (let index = 0; index < freshSnapshots.length; index += 1) {
+          const snapshot = freshSnapshots[index];
+          const selectedNode = selectedSchoolNodes[index];
+          const data = snapshot.data();
+          if (
+            !snapshot.exists ||
+            data?.status !== "published" ||
+            data?.type !== expectedTypes[selectedNode.key]
+          ) {
+            throw new Error("Learning catalog entry is missing or no longer published; approval blocked");
+          }
+          freshNodes.set(selectedNode.key, data);
+        }
+
+        if (submission.categoryId === "school" || hasSchoolPath) {
+          const subjectOrBookId = schoolIds.subject || schoolIds.book;
+          const subjectOrBookKey = schoolIds.subject ? "subject" : "book";
+          if (
+            freshNodes.get("school")?.parentId !== schoolIds.board ||
+            freshNodes.get("class")?.parentId !== schoolIds.school ||
+            freshNodes.get(subjectOrBookKey)?.parentId !== schoolIds.class ||
+            (schoolIds.chapter && freshNodes.get("chapter")?.parentId !== subjectOrBookId) ||
+            (schoolIds.question && (!schoolIds.chapter || freshNodes.get("question")?.parentId !== schoolIds.chapter))
+          ) {
+            throw new Error("Learning catalog hierarchy changed; approval blocked");
+          }
+        }
+
+        transaction.create(videoRef, videoDocument);
       });
       createdVideoDocument = true;
 
