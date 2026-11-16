@@ -14,7 +14,7 @@ test("comment likes use revocation-checked bearer authentication", () => {
 });
 
 test("comment identifiers and request bodies are bounded", () => {
-  assert.match(handler, /byteLength\(raw\) > 8192/);
+  assert.match(handler, /encode\(raw\)\.byteLength > 8192/);
   assert.match(handler, /test\\(commentId\\)/);
   assert.match(handler, /\/\[\\\\\/\]\/\.test\(commentId\)/);
 });
