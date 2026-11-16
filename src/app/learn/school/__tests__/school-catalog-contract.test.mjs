@@ -11,40 +11,40 @@ test("Learning discovery follows Subject Book Chapter then dynamic Question Numb
   assert.match(page, /Choose Book/);
   assert.match(page, /Choose Chapter/);
   assert.match(page, /Choose Question Number/);
-  assert.match(page, /school-video-answers\\?chapterId=/);
-  assert.match(page, /questionNumber: item\\.questionNumber/);
+  assert.ok(page.includes("school-video-answers?chapterId="));
+  assert.ok(page.includes("questionNumber: item.questionNumber"));
   assert.match(page, /coverImageUrl/);
   assert.doesNotMatch(page, /edition|Board →|Choose School|Choose Class/);
 });
 
 test("question numbers are discovered from approved videos without requiring Admin Question nodes", () => {
-  assert.match(answers, /params\\.get\\("chapterId"\\)/);
+  assert.ok(answers.includes('params.get("chapterId")'));
   assert.match(answers, /schoolQuestionNumber/);
   assert.match(answers, /schoolQuestionKey/);
-  assert.match(answers, /if \\(!questionNumber\\)/);
+  assert.ok(answers.includes("if (!questionNumber)"));
   assert.match(answers, /Published chapter not found/);
-  assert.doesNotMatch(answers, /questionSnapshot = await db\\.collection\\("schoolLearningNodes"\\)\\.doc\\(questionId\\)/);
+  assert.equal(answers.includes('questionSnapshot = await db.collection("schoolLearningNodes").doc(questionId)'), false);
 });
 
 test("legacy Admin Question records and videos remain readable", () => {
-  assert.match(answers, /params\\.get\\("questionId"\\)/);
+  assert.ok(answers.includes('params.get("questionId")'));
   assert.match(answers, /schoolQuestionId/);
   assert.match(answers, /legacySnapshot/);
   assert.match(answers, /legacyDocs/);
 });
 
 test("Question answers only return approved active safe videos and keep paid checkout gated", () => {
-  assert.match(answers, /data\\.status !== "approved"/);
-  assert.match(answers, /data\\.active !== true/);
-  assert.match(answers, /data\\.moderation !== "safe"/);
-  assert.match(answers, /process\\.env\\.SHORTS_PAID_VIDEO_CHECKOUT_ENABLED !== "true"/);
-  assert.match(answers, /data\\.paidCheckoutEnabled !== true/);
-  assert.match(answers, /data\\.paidVideoStatus !== "enabled"/);
+  assert.ok(answers.includes('data.status !== "approved"'));
+  assert.ok(answers.includes("data.active !== true"));
+  assert.ok(answers.includes('data.moderation !== "safe"'));
+  assert.ok(answers.includes('process.env.SHORTS_PAID_VIDEO_CHECKOUT_ENABLED !== "true"'));
+  assert.ok(answers.includes("data.paidCheckoutEnabled !== true"));
+  assert.ok(answers.includes('data.paidVideoStatus !== "enabled"'));
 });
 
 test("Approved video records retain Subject Book Chapter and normalized Question Number metadata", () => {
   for (const field of ["schoolSubjectId", "schoolBookId", "schoolChapterId", "schoolQuestionNumber", "schoolQuestionKey"]) {
     assert.ok(moderation.includes(`${field}:`), `Missing approval field ${field}`);
   }
-  assert.doesNotMatch(moderation, /schoolQuestionId:/);
+  assert.equal(moderation.includes("schoolQuestionId:"), false);
 });
