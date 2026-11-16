@@ -54,3 +54,11 @@ test("learning catalog endpoint bounds tokens and rejects non-object JSON bodies
   assert.match(route, /token\.length > 8192/);
   assert.match(route, /!parsed \|\| typeof parsed !== "object" \|\| Array\.isArray\(parsed\)/);
 });
+
+test("school learning catalog rejects duplicate sibling names after Unicode normalization", () => {
+  assert.match(route, /normalize\("NFKC"\)/);
+  assert.match(route, /where\("type", "==", type\)/);
+  assert.match(route, /where\("parentId", "==", parentId \|\| null\)/);
+  assert.match(route, /doc\.id !== existingId/);
+  assert.match(route, /duplicateId: duplicate\.id/);
+});
