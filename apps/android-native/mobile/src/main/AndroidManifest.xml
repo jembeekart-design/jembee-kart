@@ -3,9 +3,10 @@
     <uses-feature android:name="android.hardware.touchscreen" android:required="false" />
     <application
         android:allowBackup="false"
+        android:icon="@drawable/ic_launcher"
         android:label="JEMBEE PLAY"
         android:supportsRtl="true"
-        android:theme="@android:style/Theme.Material.Light.NoActionBar">
+        android:theme="@style/Theme.JembeePlay.Starting">
         <activity
             android:name=".MainActivity"
             android:exported="true">
