@@ -141,3 +141,11 @@ test("public learning catalog hides descendants when any ancestor is unpublished
   assert.match(route, /await hasPublishedAncestors\(db, parent\)/);
   assert.match(route, /parent\?\.type !== PARENT_TYPES\[type\]\[0\] \|\| parent\.status !== "published"/);
 });
+
+
+test("legacy all-level catalog response also excludes descendants of unpublished ancestors", () => {
+  assert.match(route, /const candidateNodes = nodeSnap\.docs\.map/);
+  assert.match(route, /candidateNodes\.map\(async \(node\) => \(\{/);
+  assert.match(route, /visible: await hasPublishedAncestors\(db, node\)/);
+  assert.match(route, /visibilityChecks\.filter\(\(item\) => item\.visible\)/);
+});
