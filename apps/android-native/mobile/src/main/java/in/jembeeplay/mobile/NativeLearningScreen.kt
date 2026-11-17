@@ -34,8 +34,9 @@ internal fun NativeLearningScreen() {
                     override fun shouldOverrideUrlLoading(view: WebView, request: WebResourceRequest): Boolean {
                         val uri = request.url
                         val allowedHost = uri.scheme == "https" && uri.host == "jembeeplay.in"
-                        val allowedPath = uri.path == "/learn/school" || uri.path.startsWith("/learn/school/") ||
-                            uri.path == "/videos" || uri.path == "/shorts"
+                        val path = uri.path.orEmpty()
+                        val allowedPath = path == "/learn/school" || path.startsWith("/learn/school/") ||
+                            path == "/videos" || path == "/shorts"
                         return !(allowedHost && allowedPath)
                     }
 
