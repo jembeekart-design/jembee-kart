@@ -35,3 +35,10 @@ test("catalog status and hierarchy are revalidated atomically with approved vide
   assert.match(source, /transaction\.get\(adminDb\.collection\("schoolLearningNodes"\)\.doc\(id\)\)/);
   assert.match(source, /transaction\.create\(videoRef, videoDocument\)/);
 });
+
+
+test("moderation endpoint bounds request JSON before parsing", () => {
+  assert.match(source, /readBoundedJson\(req, 8 \* 1024\)/);
+  assert.match(source, /parsed\.ok/);
+  assert.doesNotMatch(source, /await req\.json\(\)/);
+});
