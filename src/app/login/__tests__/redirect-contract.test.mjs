@@ -20,3 +20,8 @@ test("email verification retains the requested destination after successful veri
   assert.match(verify, /router\.push\(redirectRef\.current\)/);
   assert.match(verify, /\/login\?redirect=/);
 });
+
+
+test("Google sign-in preserves the requested same-origin destination for admins", () => {
+  assert.match(login, /if \(role === "admin" \|\| role === "super_admin"\)\s*\{\s*window\.location\.href = redirect \|\| "\/admin";/);
+});
