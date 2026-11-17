@@ -31,7 +31,7 @@ export default function ChatGPTIntegrationPage() {
     }
   }, []);
 
-  useEffect(() => { void load(); }, [load]);
+  useEffect(() => { const timer = window.setTimeout(() => { void load(); }, 0); return () => window.clearTimeout(timer); }, [load]);
 
   async function toggle() {
     if (!status) return;
