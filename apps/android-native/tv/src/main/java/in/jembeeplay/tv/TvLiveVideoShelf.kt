@@ -24,12 +24,12 @@ import androidx.media3.exoplayer.ExoPlayer
 import androidx.media3.ui.PlayerView
 
 @Composable
-fun TvLiveVideoShelf() {
+fun TvLiveVideoShelf(initialFormat: String = "all") {
     var videos by remember { mutableStateOf<List<TvCatalogVideo>>(emptyList()) }
     var loading by remember { mutableStateOf(true) }
     var failed by remember { mutableStateOf(false) }
     var selected by remember { mutableStateOf<TvCatalogVideo?>(null) }
-    var selectedFormat by remember { mutableStateOf("all") }
+    var selectedFormat by remember(initialFormat) { mutableStateOf(initialFormat) }
     val visibleVideos = videos.filter { selectedFormat == "all" || it.format.equals(selectedFormat, ignoreCase = true) }
 
     fun refresh() {
