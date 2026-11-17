@@ -50,6 +50,10 @@ async function getLegacyQuestionVideos(db: ReturnType<typeof getAdminDb>, questi
   if (!questionSnapshot.exists || question?.type !== "question" || question.status !== "published") {
     return { response: jsonError("Published learning question not found", 404) };
   }
+  const parentChapterId = typeof question.parentId === "string" ? question.parentId : "";
+  if (!parentChapterId || !(await getPublishedChapter(db, parentChapterId))) {
+    return { response: jsonError("The linked learning subject, book, or chapter is unpublished or unavailable", 404) };
+  }
 
   const snapshot = await db.collection("watchEarnVideos")
     .where("schoolQuestionId", "==", questionId)
@@ -60,9 +64,21 @@ async function getLegacyQuestionVideos(db: ReturnType<typeof getAdminDb>, questi
 }
 
 async function getPublishedChapter(db: ReturnType<typeof getAdminDb>, chapterId: string) {
-  const snapshot = await db.collection("schoolLearningNodes").doc(chapterId).get();
-  const chapter = snapshot.data();
-  return snapshot.exists && chapter?.type === "chapter" && chapter.status === "published";
+  const chapterSnapshot = await db.collection("schoolLearningNodes").doc(chapterId).get();
+  const chapter = chapterSnapshot.data();
+  if (!chapterSnapshot.exists || chapter?.type !== "chapter" || chapter.status !== "published") return false;
+
+  const bookId = typeof chapter.parentId === "string" ? chapter.parentId : "";
+  if (!bookId) return false;
+  const bookSnapshot = await db.collection("schoolLearningNodes").doc(bookId).get();
+  const book = bookSnapshot.data();
+  if (!bookSnapshot.exists || book?.type !== "book" || book.status !== "published") return false;
+
+  const subjectId = typeof book.parentId === "string" ? book.parentId : "";
+  if (!subjectId) return false;
+  const subjectSnapshot = await db.collection("schoolLearningNodes").doc(subjectId).get();
+  const subject = subjectSnapshot.data();
+  return subjectSnapshot.exists && subject?.type === "subject" && subject.status === "published";
 }
 
 async function listChapterQuestions(db: ReturnType<typeof getAdminDb>, chapterId: string, visibleDocs: VideoDocument[]) {
