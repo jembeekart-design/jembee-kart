@@ -37,13 +37,13 @@ export default function SchoolLearningPage() {
   useEffect(() => {
     if (stage !== 6 || !question) return;
     let active = true;
-    setVideoLoading(true);
+    const timer = window.setTimeout(() => setVideoLoading(true), 0);
     fetch(`/api/learning/school-video-answers?questionId=${encodeURIComponent(question.id)}`, { cache: "no-store" })
       .then(async (response) => { if (!response.ok) throw new Error("Video answers could not be loaded"); return response.json(); })
       .then((data) => { if (active && data.success === true) setVideos(Array.isArray(data.videos) ? data.videos : []); })
       .catch((reason) => { if (active) setError(reason instanceof Error ? reason.message : "Video answers unavailable"); })
       .finally(() => { if (active) setVideoLoading(false); });
-    return () => { active = false; };
+    return () => { active = false; window.clearTimeout(timer); };
   }, [stage, question]);
 
   const titles = ["Choose Board / Pattern", "Find your School", "Choose Class", "Choose Subject / Book", "Choose Chapter", "Choose Question", "Video Answers"];
