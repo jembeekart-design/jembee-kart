@@ -28,7 +28,6 @@ export async function GET(request: Request) {
       .where("status", "==", "approved")
       .where("active", "==", true)
       .where("moderation", "==", "safe")
-      .where("videoAccess", "==", "free")
       .orderBy("createdAt", "desc")
       .limit(50)
       .get();
@@ -36,6 +35,10 @@ export async function GET(request: Request) {
     const videos = snapshot.docs.flatMap((document) => {
       const data = document.data();
       if (typeof data.driveFileId !== "string" || !data.driveFileId.trim()) return [];
+      // The stream route treats records without videoAccess as legacy-free.
+      // Keep those visible, but never list explicitly paid content in this public feed.
+      if (data.videoAccess === "paid") return [];
+      if (data.videoAccess !== undefined && data.videoAccess !== "free") return [];
       const format = data.videoFormat === "long" ? "long" : "short";
       if (format !== requestedFormat) return [];
       const id = document.id;
