@@ -130,7 +130,7 @@ function LoginCard() {
           const role = userDoc.data()?.role;
 
           if (role === "admin" || role === "super_admin") {
-            window.location.href = "/admin";
+            window.location.href = redirect || "/admin";
             return;
           }
         }
