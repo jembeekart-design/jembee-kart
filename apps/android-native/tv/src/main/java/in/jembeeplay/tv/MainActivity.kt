@@ -49,6 +49,7 @@ private fun JembeeTvApp() {
             when (selected) {
                 "Shorts" -> TvShortsScreen(videos = shorts, error = shortError, onBack = { selected = "Home" }, onWatch = { activeVideo = it; selected = "Watch" })
                 "Watch" -> TvWatchScreen(video = activeVideo, onBack = { selected = "Home" })
+                "Learning" -> TvLearningScreen(onBack = { selected = "Home" })
                 else -> TvHomeScreen(
                     longVideos = longVideos,
                     error = longError,
@@ -79,7 +80,7 @@ private fun TvHomeScreen(
             }
             Row(horizontalArrangement = Arrangement.spacedBy(12.dp)) {
                 listOf("Home", "Shorts", "Learning").forEach { item ->
-                    Surface(onClick = { onSelect(if (item == "Shorts") "Shorts" else "Home") }, shape = ClickableSurfaceDefaults.shape(), colors = ClickableSurfaceDefaults.colors(containerColor = Color(0xFF151B27), focusedContainerColor = TvAccent)) {
+                    Surface(onClick = { onSelect(if (item == "Shorts") "Shorts" else if (item == "Learning") "Learning" else "Home") }, shape = ClickableSurfaceDefaults.shape(), colors = ClickableSurfaceDefaults.colors(containerColor = Color(0xFF151B27), focusedContainerColor = TvAccent)) {
                         Text(item, Modifier.padding(horizontal = 22.dp, vertical = 14.dp), color = Color.White, fontWeight = FontWeight.Bold, fontSize = 15.sp)
                     }
                 }
@@ -117,6 +118,58 @@ private fun TvHomeScreen(
         Text("Only approved, active, safe and free videos are listed.", Modifier.padding(top = 10.dp), color = Color(0xFF8392A7), fontSize = 11.sp)
     }
 }
+
+
+@Composable
+private fun TvLearningScreen(onBack: () -> Unit) {
+    var nodes by remember { mutableStateOf<List<SchoolLearningNode>>(emptyList()) }
+    var loading by remember { mutableStateOf(true) }
+    var error by remember { mutableStateOf<String?>(null) }
+    var stage by remember { mutableIntStateOf(0) }
+    var selected by remember { mutableStateOf<List<SchoolLearningNode>>(emptyList()) }
+    LaunchedEffect(Unit) { SchoolCatalogClient.fetch { items, message -> nodes = items; error = message; loading = false } }
+    val types = listOf("board", "school", "class", "subject", "chapter", "question")
+    val titles = listOf("Choose Board", "Choose School", "Choose Class", "Choose Subject / Book", "Choose Chapter", "Choose Question")
+    val parent = selected.lastOrNull()?.id
+    val type = types.getOrNull(stage)
+    val entries = remember(nodes, stage, parent) {
+        if (type == null) emptyList() else nodes.filter { it.type == type && it.parentId == if (stage == 0) null else parent }.sortedBy { it.name.lowercase() }
+    }
+    Column(Modifier.fillMaxSize().background(Color(0xFF080B12)).padding(horizontal = 48.dp, vertical = 28.dp)) {
+        Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween, verticalAlignment = Alignment.CenterVertically) {
+            Text("JEMBEE LEARNING", color = Color.White, fontSize = 28.sp, fontWeight = FontWeight.Black)
+            Button(onClick = onBack) { Text("Home") }
+        }
+        Text(if (stage < 6) titles[stage] else "Selected Question", color = TvAccent, fontSize = 20.sp, modifier = Modifier.padding(vertical = 12.dp))
+        if (selected.isNotEmpty()) Text(selected.joinToString("  ›  ") { it.name }, color = Color(0xFF9AA8BC), fontSize = 13.sp)
+        if (loading) {
+            Text("Loading published learning catalogue…", color = Color.White, modifier = Modifier.padding(24.dp))
+        } else if (nodes.isEmpty()) {
+            Text(error ?: "Abhi koi published learning entry available nahi hai.", color = Color(0xFF9AA8BC), modifier = Modifier.padding(24.dp))
+        } else if (stage < 6) {
+            LazyColumn(verticalArrangement = Arrangement.spacedBy(8.dp), modifier = Modifier.fillMaxWidth()) {
+                items(entries, key = { it.id }) { node ->
+                    Surface(onClick = { selected = selected.take(stage) + node; stage++ }, modifier = Modifier.fillMaxWidth().height(70.dp), shape = ClickableSurfaceDefaults.shape(), colors = ClickableSurfaceDefaults.colors(containerColor = Color(0xFF151B27), focusedContainerColor = Color(0xFF17445B))) {
+                        Row(Modifier.fillMaxSize().padding(horizontal = 20.dp), verticalAlignment = Alignment.CenterVertically) {
+                            Text(node.name, color = Color.White, fontSize = 18.sp, fontWeight = FontWeight.Bold)
+                            Spacer(Modifier.weight(1f))
+                            Text("SELECT  ›", color = TvAccent, fontSize = 13.sp, fontWeight = FontWeight.Bold)
+                        }
+                    }
+                }
+            }
+            if (entries.isEmpty()) Text("Is level ke liye koi published entry nahi hai.", color = Color(0xFF9AA8BC), modifier = Modifier.padding(20.dp))
+        } else {
+            Text(selected.lastOrNull()?.name ?: "Question selected", color = Color.White, fontSize = 22.sp, fontWeight = FontWeight.Bold)
+            Text("Question ke approved video answers ka TV player integration agle step mein verify hoga.", color = Color(0xFF9AA8BC), modifier = Modifier.padding(top = 10.dp))
+        }
+        Row(horizontalArrangement = Arrangement.spacedBy(12.dp), modifier = Modifier.padding(top = 14.dp)) {
+            if (stage > 0) Button(onClick = { stage-- }) { Text("‹ Back") }
+            Button(onClick = { stage = 0; selected = emptyList() }) { Text("Reset") }
+        }
+    }
+}
+
 
 @Composable
 private fun TvShortsScreen(videos: List<JembeeVideo>, error: String?, onBack: () -> Unit, onWatch: (JembeeVideo) -> Unit) {
