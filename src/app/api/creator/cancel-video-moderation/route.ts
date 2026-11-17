@@ -2,6 +2,7 @@ import { NextResponse } from "next/server";
 import { classifyGoogleDriveError } from "@/lib/googleDriveErrors";
 import { getAdminAuth, getAdminDb } from "@/firebase/admin";
 import { deleteDriveFile } from "@/services/googleDriveService";
+import { readBoundedJson } from "@/lib/server/readBoundedJson";
 
 export const runtime = "nodejs";
 
@@ -17,7 +18,7 @@ export async function POST(req: Request) {
 
   const token = authHeader.slice("Bearer ".length).trim();
 
-  if (!token) {
+  if (!token || token.length > 10_000) {
     return NextResponse.json(
       { success: false, message: "Unauthorized" },
       { status: 401 }
@@ -36,16 +37,11 @@ export async function POST(req: Request) {
     );
   }
 
-  let body: unknown;
-
-  try {
-    body = await req.json();
-  } catch {
-    return NextResponse.json(
-      { success: false, message: "Invalid JSON body" },
-      { status: 400 }
-    );
+  const parsed = await readBoundedJson(req, 4 * 1024);
+  if (!parsed.ok) {
+    return NextResponse.json({ success: false, message: parsed.message }, { status: parsed.status });
   }
+  const body: unknown = parsed.value;
 
   if (
     !body ||

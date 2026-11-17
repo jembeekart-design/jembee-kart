@@ -4,6 +4,7 @@ import { getAdminDb, getAdminAuth } from "@/firebase/admin";
 import { v2 as cloudinary } from "cloudinary";
 import { deleteDriveFile } from "@/services/googleDriveService";
 import { cleanupVideoRecords } from "@/services/videoDeletionService";
+import { readBoundedJson } from "@/lib/server/readBoundedJson";
 
 // Configure Cloudinary securely
 cloudinary.config({
@@ -18,11 +19,16 @@ export async function POST(req: Request) {
     const adminAuth = getAdminAuth();
     const authHeader = req.headers.get("authorization");
     if (!authHeader?.startsWith("Bearer ")) return NextResponse.json({ success: false, message: "Unauthorized" }, { status: 401 });
-    const { videoId } = await req.json();
+    const token = authHeader.slice(7).trim();
+    if (!token || token.length > 10_000) return NextResponse.json({ success: false, message: "Unauthorized" }, { status: 401 });
+    const parsed = await readBoundedJson(req, 4 * 1024);
+    if (!parsed.ok) return NextResponse.json({ success: false, message: parsed.message }, { status: parsed.status });
+    const body = parsed.value as Record<string, unknown>;
+    const videoId = body.videoId;
     if (typeof videoId !== "string" || !videoId.trim() || videoId.length > 200 || videoId.includes("/")) return NextResponse.json({ success: false, message: "Invalid video ID" }, { status: 400 });
 
     // 1. Verify User Authentication and token revocation state.
-    const decodedToken = await adminAuth.verifyIdToken(authHeader.slice(7).trim(), true);
+    const decodedToken = await adminAuth.verifyIdToken(token, true);
     const authenticatedUid = decodedToken.uid;
 
     // 2. Validate Video Exists and fetch data
