@@ -22,7 +22,7 @@ export async function POST(req: Request) {
     const result = await db.runTransaction(async (tx) => {
       const [videoSnap, saveSnap] = await Promise.all([tx.get(videoRef), tx.get(saveRef)]);
       const video = videoSnap.data();
-      if (!videoSnap.exists || video?.status !== "approved" || video?.active !== true || video?.moderation !== "safe" || video?.videoAccess === "paid") {
+      if (!videoSnap.exists || video?.status !== "approved" || video?.active !== true || video?.moderation !== "safe" || video?.videoAccess !== "free") {
         return { success: false, message: "This video cannot be saved", status: 404 };
       }
       if (action === "save") {
