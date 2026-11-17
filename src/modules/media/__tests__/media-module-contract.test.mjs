@@ -36,3 +36,13 @@ test('paid video publishing remains disabled at upload initiation', async () => 
   assert.match(route, /videoAccess === "paid"/);
   assert.match(route, /Paid video publishing is temporarily disabled/);
 });
+
+
+test('paid stream rechecks the live checkout switch and safely rejects malformed cookies', async () => {
+  const route = await read('app/api/shorts/video-stream/[videoId]/route.ts');
+  assert.match(route, /data\.paidVideoStatus !== "enabled"/);
+  assert.match(route, /data\.paidCheckoutEnabled !== true/);
+  assert.match(route, /decodeURIComponent/);
+  assert.match(route, /Invalid playback session/);
+  assert.match(route, /verifyPlaybackToken\(token, videoId\)/);
+});
