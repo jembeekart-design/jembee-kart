@@ -85,15 +85,15 @@ export default function MediaLibraryPage() {
   const canPreview = (video: MediaVideo) => video.status === "approved" && video.active && video.moderation === "safe" && Boolean(video.driveFileId);
 
   return (
-    <main className="min-h-screen bg-[var(--color-page-background)] p-4 text-[var(--button-text-color)] md:p-6">
+    <main className="min-h-screen bg-[#05070B] p-4 text-slate-100 md:p-6">
       <Toaster position="top-center" />
       <div className="mx-auto max-w-7xl">
         <header className="mb-7 flex flex-wrap items-center justify-between gap-4">
           <div className="flex items-center gap-4">
-            <div className="flex h-14 w-14 items-center justify-center rounded-2xl bg-[var(--primary-color)]"><Folder size={28} /></div>
-            <div><h1 className="text-2xl font-black md:text-3xl">Media Library</h1><p className="text-sm text-[var(--muted-text-color)]">Live Firestore video inventory · Admin only</p></div>
+            <div className="flex h-14 w-14 items-center justify-center rounded-2xl bg-cyan-500 text-slate-950"><Folder size={28} /></div>
+            <div><h1 className="text-2xl font-black md:text-3xl">Media Library</h1><p className="text-sm text-slate-300">Live Firestore video inventory · Admin only</p></div>
           </div>
-          <button type="button" onClick={() => void fetchVideos()} disabled={loading} className="inline-flex items-center gap-2 rounded-xl border border-[var(--border-color)] px-4 py-3 font-semibold disabled:opacity-50">
+          <button type="button" onClick={() => void fetchVideos()} disabled={loading} className="inline-flex items-center gap-2 rounded-xl border border-slate-600/70 px-4 py-3 font-semibold disabled:opacity-50">
             {loading ? <Loader2 className="animate-spin" size={18} /> : <RefreshCw size={18} />} Refresh
           </button>
         </header>
@@ -105,7 +105,7 @@ export default function MediaLibraryPage() {
           <Stat title="Known storage" value={knownSizes.length ? formatBytes(totalKnownBytes) : "Unknown"} note={knownSizes.length + " records में size उपलब्ध"} icon={<HardDrive />} />
         </section>
 
-        <div className="mb-5 flex items-center gap-3 rounded-2xl border border-[var(--border-color)] bg-[var(--card-color)] px-4 py-3">
+        <div className="mb-5 flex items-center gap-3 rounded-2xl border border-[var(--border-color)] bg-[#172235] text-slate-100 px-4 py-3">
           <Search size={20} /><input value={search} onChange={(event) => setSearch(event.target.value)} placeholder="Video title या ID खोजें…" className="w-full bg-transparent outline-none" />
         </div>
 
@@ -119,15 +119,15 @@ export default function MediaLibraryPage() {
         </div> : loading ? <div className="flex items-center justify-center gap-3 rounded-2xl border border-[var(--border-color)] p-12"><Loader2 className="animate-spin" /> Real records load हो रहे हैं…</div> : filtered.length === 0 ? <div className="rounded-2xl border border-dashed border-[var(--border-color)] p-12 text-center"><Video className="mx-auto mb-3 opacity-60" size={36} /><h2 className="font-bold">{videos.length ? "कोई matching video नहीं मिला" : "अभी कोई video record नहीं मिला"}</h2><p className="mt-2 text-sm text-[var(--muted-text-color)]">Firestore watchEarnVideos collection से live सूची आती है।</p></div> : (
           <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 xl:grid-cols-3">
             {filtered.map((video) => <article key={video.id} className="overflow-hidden rounded-2xl border border-[var(--border-color)] bg-[var(--card-color)]">
-              <div className="relative flex aspect-video items-center justify-center bg-black/80">
+              <div className="relative flex aspect-video items-center justify-center bg-slate-950">
                 {video.thumbnailUrl ? <img src={video.thumbnailUrl} alt="" className="h-full w-full object-cover" loading="lazy" /> : <Video size={42} className="text-white/70" />}
                 <span className="absolute bottom-2 left-2 rounded-md bg-black/75 px-2 py-1 text-xs text-white">{video.status}</span>
               </div>
               <div className="p-4"><h2 className="truncate font-bold" title={video.title}>{video.title}</h2><p className="mt-1 text-xs text-[var(--muted-text-color)]">ID: {video.id}</p>
-                <div className="mt-3 flex flex-wrap gap-2 text-xs"><span>{video.moderation}</span><span>{video.active ? "Active" : "Inactive"}</span><span>{video.videoAccess}</span></div>
+                <div className="mt-3 flex flex-wrap gap-2 text-xs text-slate-200"><span>{video.moderation}</span><span>{video.active ? "Active" : "Inactive"}</span><span>{video.videoAccess}</span></div>
                 <div className="mt-3 flex justify-between text-xs text-[var(--muted-text-color)]"><span>{formatBytes(video.sizeBytes)}</span><span>{video.createdAt ? new Date(video.createdAt).toLocaleDateString() : "Date unavailable"}</span></div>
                 <div className="mt-4 flex justify-between gap-2">
-                  <button type="button" onClick={() => setPreview(video)} disabled={!canPreview(video)} className="inline-flex flex-1 items-center justify-center gap-2 rounded-lg bg-[var(--primary-color)] px-3 py-2 text-sm font-semibold disabled:opacity-40"><Play size={16} /> Preview</button>
+                  <button type="button" onClick={() => setPreview(video)} disabled={!canPreview(video)} className="inline-flex flex-1 items-center justify-center gap-2 rounded-lg bg-cyan-500 px-3 py-2 text-sm font-bold text-slate-950 hover:bg-cyan-400 disabled:opacity-40"><Play size={16} /> Preview</button>
                   <button type="button" onClick={() => void handleDelete(video)} disabled={deletingId === video.id} aria-label={"Delete " + video.title} className="rounded-lg border border-red-500/40 px-3 py-2 text-red-500 disabled:opacity-50">{deletingId === video.id ? <Loader2 className="animate-spin" size={17} /> : <Trash2 size={17} />}</button>
                 </div>
               </div>
