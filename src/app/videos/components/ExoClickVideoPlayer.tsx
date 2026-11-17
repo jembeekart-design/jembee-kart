@@ -277,6 +277,7 @@ export default function ExoClickVideoPlayer({
   }, [clearAdResources]);
 
   useEffect(() => {
+    const timer = window.setTimeout(() => { setContentStarted(false); setAdPlaying(false); setMessage(""); }, 0);
     contentStartedRef.current = false;
     restoredPositionRef.current = false;
     lastHistorySaveRef.current = 0;
@@ -284,12 +285,10 @@ export default function ExoClickVideoPlayer({
     adCountRef.current = 0;
     lastAdAtRef.current = -Infinity;
     consumedBreaksRef.current = new Set();
-    setContentStarted(false);
-    setAdPlaying(false);
-    setMessage("");
     clearAdResources();
     try { displayRef.current?.destroy?.(); } catch { /* IMA cleanup is best effort. */ }
     displayRef.current = null;
+    return () => window.clearTimeout(timer);
   }, [src, clearAdResources]);
 
   return (
