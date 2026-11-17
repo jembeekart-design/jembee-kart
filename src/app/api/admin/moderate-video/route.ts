@@ -3,6 +3,7 @@ import { classifyGoogleDriveError, googleDriveClientMessage, googleDriveErrorHtt
 import { FieldValue } from "firebase-admin/firestore";
 
 import { getAdminAuth, getAdminDb } from "@/firebase/admin";
+import { readBoundedJson } from "@/lib/server/readBoundedJson";
 import { deleteDriveFile } from "@/services/googleDriveService";
 import { createVideoModerationAuditRecord, parseVideoModerationDecision } from "@/modules/moderation/decision";
 import {
@@ -76,7 +77,14 @@ export async function POST(req: Request) {
   try {
     const adminId = await verifyAdmin(req);
 
-    const body = await req.json();
+    const parsed = await readBoundedJson(req, 8 * 1024);
+    if (!parsed.ok) {
+      return NextResponse.json(
+        { success: false, message: parsed.message },
+        { status: parsed.status }
+      );
+    }
+    const body = parsed.value as Record<string, unknown>;
 
     submissionId =
       typeof body?.submissionId === "string"
