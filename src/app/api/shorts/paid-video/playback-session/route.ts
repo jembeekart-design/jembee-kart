@@ -17,6 +17,8 @@ export async function POST(req: Request) {
     const videoId = typeof body.videoId === "string" ? body.videoId.trim() : "";
     if (!/^[A-Za-z0-9_-]{3,200}$/.test(videoId)) return NextResponse.json({ success: false, error: "Invalid video" }, { status: 400 });
     const db = getAdminDb();
+    const remoteConfigSnap = await db.collection("app_remote_config").doc("current").get();
+    if (remoteConfigSnap.data()?.features?.paidVideo !== true) return NextResponse.json({ success: false, error: "Paid-video playback is temporarily disabled" }, { status: 503 });
     const [videoSnap, purchaseSnap] = await Promise.all([
       db.collection("watchEarnVideos").doc(videoId).get(),
       db.collection("watchVideoPurchases").doc(`${videoId}_${decoded.uid}`).get(),
