@@ -105,7 +105,7 @@ export default function AdminCategoriesPage() {
     }
   };
 
-  useEffect(() => { void load(); }, [load]);
+  useEffect(() => { const timer = window.setTimeout(() => { void load(); }, 0); return () => window.clearTimeout(timer); }, [load]);
 
   return (
     <main className="min-h-screen bg-[#080d18] px-4 py-6 text-white sm:px-8">
