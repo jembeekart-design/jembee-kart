@@ -195,15 +195,45 @@ private fun WatchScreen(video: JembeeVideo?, onBack: () -> Unit) {
 
 @Composable
 private fun LearnScreen() {
+    var schools by remember { mutableStateOf<List<Pair<String, String>>>(emptyList()) }
+    var loading by remember { mutableStateOf(true) }
+    var error by remember { mutableStateOf<String?>(null) }
+    LaunchedEffect(Unit) {
+        SchoolCatalogClient.fetch { items, message ->
+            schools = items
+            error = message
+            loading = false
+        }
+    }
     Column(Modifier.fillMaxSize().verticalScroll(rememberScrollState()).padding(18.dp)) {
         Text("Learn with JEMBEE", color = Color.White, fontSize = 24.sp, fontWeight = FontWeight.Black)
-        Text("Choose a class to explore subjects and chapters.", color = JembeeMuted, fontSize = 12.sp, modifier = Modifier.padding(top = 5.dp, bottom = 18.dp))
-        listOf("CBSE", "ICSE", "JAC", "Other boards").forEach { board ->
-            Text(board, color = JembeeAccent, fontWeight = FontWeight.Bold, modifier = Modifier.padding(vertical = 9.dp))
-            (6..10).forEach { grade ->
-                Text("Class $grade     •     Browse subjects  →", Modifier.fillMaxWidth().padding(vertical = 8.dp).background(JembeeSurface, RoundedCornerShape(12.dp)).padding(16.dp), color = Color.White)
+        Text("Approved school catalogue", color = JembeeMuted, fontSize = 12.sp, modifier = Modifier.padding(top = 5.dp, bottom = 18.dp))
+        when {
+            loading -> CircularProgressIndicator(color = JembeeAccent)
+            schools.isNotEmpty() -> schools.forEach { (name, board) ->
+                Row(
+                    Modifier.fillMaxWidth().padding(vertical = 5.dp).background(JembeeSurface, RoundedCornerShape(12.dp)).padding(16.dp),
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    Column(Modifier.weight(1f)) {
+                        Text(name, color = Color.White, fontWeight = FontWeight.Bold)
+                        Text(board, color = JembeeMuted, fontSize = 11.sp)
+                    }
+                    Text("School", color = JembeeAccent, fontSize = 11.sp)
+                }
             }
+            else -> Text(
+                error ?: "Abhi approved school catalogue mein koi school available nahi hai.",
+                color = JembeeMuted,
+                modifier = Modifier.padding(vertical = 12.dp)
+            )
         }
+        Text(
+            "Subjects, chapters aur questions ka native connection abhi agle learning integration step mein hai.",
+            color = JembeeMuted,
+            fontSize = 11.sp,
+            modifier = Modifier.padding(top = 18.dp)
+        )
     }
 }
 
