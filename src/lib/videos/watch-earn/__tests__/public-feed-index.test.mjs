@@ -2,7 +2,7 @@ import test from "node:test";
 import assert from "node:assert/strict";
 import { readFile } from "node:fs/promises";
 
-const root = new URL("../../../../", import.meta.url);
+const root = new URL("../../../../../", import.meta.url);
 
 test("public video feed has a composite index for all equality filters and createdAt ordering", async () => {
   const indexes = JSON.parse(await readFile(new URL("firestore.indexes.json", root), "utf8"));
