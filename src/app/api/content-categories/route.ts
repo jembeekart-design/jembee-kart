@@ -25,6 +25,26 @@ const isAllowedBookCover = (value: string) =>
     try { return new URL(value).protocol === "https:"; } catch { return false; }
   })();
 
+async function hasPublishedAncestors(
+  db: ReturnType<typeof getAdminDb>,
+  initial: Record<string, unknown>,
+): Promise<boolean> {
+  let current = initial;
+  let currentType = current.type as NodeType;
+  if (!NODE_TYPES.includes(currentType) || current.status !== "published") return false;
+  while (PARENT_TYPES[currentType].length > 0) {
+    const expectedParentType = PARENT_TYPES[currentType][0];
+    const parentId = typeof current.parentId === "string" ? current.parentId : "";
+    if (!parentId || !ID_PATTERN.test(parentId)) return false;
+    const parentSnapshot = await db.collection("schoolLearningNodes").doc(parentId).get();
+    const parent = parentSnapshot.data();
+    if (!parentSnapshot.exists || parent?.type !== expectedParentType || parent.status !== "published") return false;
+    current = parent;
+    currentType = expectedParentType;
+  }
+  return true;
+}
+
 async function verifyUploader(req: Request): Promise<string> {
   const header = req.headers.get("authorization");
   if (!header?.startsWith("Bearer ")) throw new Error("UNAUTHORIZED");
@@ -78,7 +98,8 @@ export async function GET(req: Request) {
     if (nodeId) {
       if (!ID_PATTERN.test(nodeId)) return NextResponse.json({ success: false, message: "Invalid learning node ID" }, { status: 400, headers: noStore });
       const doc = await db.collection("schoolLearningNodes").doc(nodeId).get();
-      if (!doc.exists || doc.data()?.status !== "published" || !NODE_TYPES.includes(doc.data()?.type)) {
+      if (!doc.exists || doc.data()?.status !== "published" || !NODE_TYPES.includes(doc.data()?.type) ||
+        !(await hasPublishedAncestors(db, doc.data()!))) {
         return NextResponse.json({ success: false, message: "Published learning entry not found" }, { status: 404, headers: noStore });
       }
       const { ownerUid: _ownerUid, updatedBy: _updatedBy, createdByUid: _createdByUid, ...data } = doc.data()!;
@@ -97,6 +118,14 @@ export async function GET(req: Request) {
       }
       if (PARENT_TYPES[type].length === 0 && parentId) {
         return NextResponse.json({ success: false, message: "Subject entries cannot have a parent" }, { status: 400, headers: noStore });
+      }
+      if (PARENT_TYPES[type].length > 0) {
+        const parentSnapshot = await db.collection("schoolLearningNodes").doc(parentId).get();
+        const parent = parentSnapshot.data();
+        if (!parentSnapshot.exists || parent?.type !== PARENT_TYPES[type][0] || parent.status !== "published" ||
+          !(await hasPublishedAncestors(db, parent))) {
+          return NextResponse.json({ success: true, categories, learningNodes: [], pagination: { pageSize, hasMore: false, nextCursor: null } }, { headers: noStore });
+        }
       }
       let query = db.collection("schoolLearningNodes")
         .where("status", "==", "published")
