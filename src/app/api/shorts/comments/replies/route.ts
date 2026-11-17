@@ -97,7 +97,7 @@ export async function POST(req: Request) {
     if (reply.length > maxLength) return fail(`Reply exceeds the ${maxLength}-character limit`, 400);
 
     const normalized = settings.caseInsensitive === false ? reply : reply.toLowerCase();
-    const blockedWords = Array.isArray(settings.blockedWords) ? settings.blockedWords.filter((word: unknown): word is string => typeof word === "string" && word.trim()) : [];
+    const blockedWords = Array.isArray(settings.blockedWords) ? settings.blockedWords.filter((word: unknown): word is string => typeof word === "string" && Boolean(word.trim())) : [];
     for (const word of blockedWords) {
       const needle = settings.caseInsensitive === false ? word.trim() : word.trim().toLowerCase();
       const blocked = settings.blockPartialMatch === false ? normalized.split(/\s+/).includes(needle) : normalized.includes(needle);
