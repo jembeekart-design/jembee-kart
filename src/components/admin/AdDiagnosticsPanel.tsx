@@ -40,7 +40,7 @@ export function AdDiagnosticsPanel() {
     }
   }, []);
 
-  useEffect(() => { void load(); }, [load]);
+  useEffect(() => { const timer = window.setTimeout(() => { void load(); }, 0); return () => window.clearTimeout(timer); }, [load]);
 
   return (
     <section className="space-y-4 rounded-2xl border border-white/10 bg-[#111a28] p-5 text-white sm:p-6">
