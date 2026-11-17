@@ -34,10 +34,22 @@ export async function GET(
     // Paid playback uses a short-lived, HttpOnly, video-scoped cookie because
     // native HTML video elements cannot attach Firebase Authorization headers.
     if (data?.videoAccess === "paid") {
+      // Re-check the live admin entitlement switch on every segment request.
+      // A previously issued cookie must not outlive a disabled paid offer.
+      if (data.paidVideoStatus !== "enabled" || data.paidCheckoutEnabled !== true) {
+        return new NextResponse("Paid video playback is disabled", { status: 403, headers: { "Cache-Control": "no-store" } });
+      }
       const cookieName = playbackCookieName(videoId);
       const cookieHeader = req.headers.get("cookie") || "";
       const cookie = cookieHeader.split(";").map((part) => part.trim()).find((part) => part.startsWith(`${cookieName}=`));
-      const token = cookie ? decodeURIComponent(cookie.slice(cookieName.length + 1)) : "";
+      let token = "";
+      if (cookie) {
+        try {
+          token = decodeURIComponent(cookie.slice(cookieName.length + 1));
+        } catch {
+          return new NextResponse("Invalid playback session", { status: 401, headers: { "Cache-Control": "no-store" } });
+        }
+      }
       if (!token || !verifyPlaybackToken(token, videoId)) {
         return new NextResponse("Playback session required", { status: 401, headers: { "Cache-Control": "no-store" } });
       }
