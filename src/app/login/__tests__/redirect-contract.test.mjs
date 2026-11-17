@@ -25,3 +25,13 @@ test("email verification retains the requested destination after successful veri
 test("Google sign-in preserves the requested same-origin destination for admins", () => {
   assert.match(login, /if \(role === "admin" \|\| role === "super_admin"\)\s*\{\s*window\.location\.href = redirect \|\| "\/admin";/);
 });
+
+
+test("Admin email login preserves only safe same-origin Admin destinations", async () => {
+  const adminLogin = await readFile(new URL("../../admin/login/page.tsx", import.meta.url), "utf8");
+  assert.match(adminLogin, /requestedNext\.startsWith\("\/admin\/"\)/);
+  assert.match(adminLogin, /requestedNext\.startsWith\("\/\/"\)/);
+  assert.match(adminLogin, /target\.origin === window\.location\.origin/);
+  assert.match(adminLogin, /target\.pathname !== "\/admin\/login"/);
+  assert.match(adminLogin, /router\.replace\(safeNext\)/);
+});
