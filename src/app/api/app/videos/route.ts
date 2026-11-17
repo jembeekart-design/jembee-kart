@@ -29,7 +29,9 @@ export async function GET(request: Request) {
       .where("active", "==", true)
       .where("moderation", "==", "safe")
       .orderBy("createdAt", "desc")
-      .limit(50)
+      // Fetch across both formats before filtering; a 50-document pre-filter
+      // could hide every Short/Long item when the newest uploads are the other format.
+      .limit(250)
       .get();
 
     const videos = snapshot.docs.flatMap((document) => {
@@ -59,7 +61,7 @@ export async function GET(request: Request) {
         thumbnailUrl: `/api/shorts/video-thumbnail/${encodeURIComponent(id)}`,
         streamUrl: `/api/shorts/video-stream/${encodeURIComponent(id)}`,
       }];
-    });
+    }).slice(0, 50);
 
     return NextResponse.json(
       { success: true, format: requestedFormat, count: videos.length, videos },
