@@ -6,10 +6,10 @@ import org.json.JSONObject
 import java.net.HttpURLConnection
 import java.net.URL
 
-data class TvCatalogVideo(val id: String, val title: String, val creator: String, val views: Int, val thumbnailUrl: String, val playbackUrl: String)
+data class TvCatalogVideo(val id: String, val title: String, val creator: String, val views: Int, val thumbnailUrl: String, val playbackUrl: String, val format: String)
 
 object TvVideoCatalogClient {
-    private const val ENDPOINT = "https://jembeeplay.in/api/app/video-catalog?limit=20"
+    private const val ENDPOINT = "https://jembeeplay.in/api/app/video-catalog?limit=40"
     private const val ORIGIN = "https://jembeeplay.in"
     private const val THUMBNAIL_PREFIX = "/api/shorts/video-thumbnail/"
     private const val PLAYBACK_PREFIX = "/api/shorts/video-stream/"
@@ -46,7 +46,8 @@ object TvVideoCatalogClient {
                         TvCatalogVideo(
                             id, item.optString("caption", "Untitled video").take(500).ifBlank { "Untitled video" },
                             item.optString("displayName").take(120).ifBlank { item.optString("username").take(80).ifBlank { "JEMBEE PLAY Creator" } },
-                            item.optInt("views", 0).coerceAtLeast(0), thumbnailUrl, playbackUrl
+                            item.optInt("views", 0).coerceAtLeast(0), thumbnailUrl, playbackUrl,
+                            item.optString("videoFormat", "short").ifBlank { "short" }
                         )
                     }
                 } finally { connection.disconnect() }
