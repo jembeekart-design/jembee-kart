@@ -42,7 +42,7 @@ private fun JembeeTvApp() {
         TvShelf("Explore Shorts", listOf("Quick facts", "Science bites", "Creator moments", "Daily learning"))
     )
     MaterialTheme(colorScheme = darkColorScheme(primary = TvAccent, background = Color(0xFF080B12), surface = Color(0xFF151B27))) {
-        Surface(Modifier.fillMaxSize(), color = Color(0xFF080B12)) {
+        Box(Modifier.fillMaxSize().background(Color(0xFF080B12))) {
             when (selected) {
                 "Shorts" -> TvShortsScreen(onBack = { selected = "Home" })
                 "Watch" -> TvWatchScreen(onBack = { selected = "Home" })
