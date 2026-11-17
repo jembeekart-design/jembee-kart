@@ -67,6 +67,34 @@ async function verifyAdmin(req: Request): Promise<string> {
   return decodedToken.uid;
 }
 
+async function hasPublishedLearningPath(
+  db: ReturnType<typeof getAdminDb>,
+  submission: Record<string, unknown>,
+): Promise<boolean> {
+  const chapterId = typeof submission.schoolChapterId === "string" ? submission.schoolChapterId.trim() : "";
+  const learningIds = [submission.schoolSubjectId, submission.schoolBookId, submission.schoolChapterId]
+    .some((value) => typeof value === "string" && value.trim().length > 0);
+  if (!chapterId) return !learningIds;
+
+  const chapterSnap = await db.collection("schoolLearningNodes").doc(chapterId).get();
+  const chapter = chapterSnap.data();
+  if (!chapterSnap.exists || chapter?.type !== "chapter" || chapter.status !== "published") return false;
+  const bookId = typeof chapter.parentId === "string" ? chapter.parentId : "";
+  if (!bookId) return false;
+  if (typeof submission.schoolBookId === "string" && submission.schoolBookId && submission.schoolBookId !== bookId) return false;
+
+  const bookSnap = await db.collection("schoolLearningNodes").doc(bookId).get();
+  const book = bookSnap.data();
+  if (!bookSnap.exists || book?.type !== "book" || book.status !== "published") return false;
+  const subjectId = typeof book.parentId === "string" ? book.parentId : "";
+  if (!subjectId) return false;
+  if (typeof submission.schoolSubjectId === "string" && submission.schoolSubjectId && submission.schoolSubjectId !== subjectId) return false;
+
+  const subjectSnap = await db.collection("schoolLearningNodes").doc(subjectId).get();
+  const subject = subjectSnap.data();
+  return subjectSnap.exists && subject?.type === "subject" && subject.status === "published";
+}
+
 export async function POST(req: Request) {
   let submissionId = "";
 
@@ -266,6 +294,14 @@ export async function POST(req: Request) {
     // APPROVE
     // ==================================================
 
+    // Education videos may only be approved while Subject → Book → Chapter remains published.
+    if (!(await hasPublishedLearningPath(adminDb, submission))) {
+      return NextResponse.json(
+        { success: false, message: "The linked learning subject, book, or chapter is unpublished or unavailable. Publish the full learning path before approving this video." },
+        { status: 409 }
+      );
+    }
+
     /*
      * Move pending -> processing before external work.
      * This prevents two admins from approving the same
@@ -323,6 +359,11 @@ export async function POST(req: Request) {
 
       const thumbnailUrl =
         `/api/shorts/video-thumbnail/${encodeURIComponent(submissionId)}`;
+
+      // Recheck immediately before publishing to avoid approving against a changed catalog.
+      if (!(await hasPublishedLearningPath(adminDb, submission))) {
+        throw new Error("Linked learning path is no longer fully published");
+      }
 
       // Drive-hosted videos are not Cloudinary-enhanced.
       const finalIsEnhanced = false;
