@@ -71,7 +71,7 @@ private fun JembeeMobileApp() {
                 }
                 when (selected) {
                     "Home" -> HomeScreen(onLearn = { selected = "Learn" }, onShorts = { selected = "Shorts" })
-                    "Shorts" -> ShortsScreen()
+                    "Shorts" -> NativeShortsScreen()
                     "Learn" -> LearnScreen()
                     "Library" -> LibraryScreen()
                     else -> YouScreen(onTheme = { dark = !dark }, dark = dark)
