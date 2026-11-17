@@ -29,6 +29,8 @@ fun TvLiveVideoShelf() {
     var loading by remember { mutableStateOf(true) }
     var failed by remember { mutableStateOf(false) }
     var selected by remember { mutableStateOf<TvCatalogVideo?>(null) }
+    var selectedFormat by remember { mutableStateOf("all") }
+    val visibleVideos = videos.filter { selectedFormat == "all" || it.format.equals(selectedFormat, ignoreCase = true) }
 
     fun refresh() {
         loading = true
@@ -49,9 +51,16 @@ fun TvLiveVideoShelf() {
             }
             if (loading) Text("Loading…", fontSize = 12.sp, color = MaterialTheme.colorScheme.onSurfaceVariant)
         }
+        Row(Modifier.fillMaxWidth().padding(vertical = 12.dp), horizontalArrangement = Arrangement.spacedBy(12.dp)) {
+            listOf("all" to "All videos", "long" to "Long videos", "short" to "Shorts").forEach { (format, label) ->
+                Surface(onClick = { selectedFormat = format }, shape = ClickableSurfaceDefaults.shape(), colors = ClickableSurfaceDefaults.colors(containerColor = if (selectedFormat == format) Color(0xFF0878D1) else MaterialTheme.colorScheme.surfaceVariant, focusedContainerColor = Color(0xFF0878D1))) {
+                    Text(label, Modifier.padding(horizontal = 18.dp, vertical = 10.dp), fontWeight = FontWeight.Bold)
+                }
+            }
+        }
         when {
-            videos.isNotEmpty() -> LazyRow(horizontalArrangement = Arrangement.spacedBy(18.dp)) {
-                items(videos, key = { it.id }) { video ->
+            visibleVideos.isNotEmpty() -> LazyRow(horizontalArrangement = Arrangement.spacedBy(18.dp)) {
+                items(visibleVideos, key = { it.id }) { video ->
                     Surface(
                         onClick = { selected = video },
                         modifier = Modifier.width(250.dp).height(148.dp),
@@ -77,7 +86,7 @@ fun TvLiveVideoShelf() {
             }
             loading -> Text("Loading approved videos…")
             failed -> Button(onClick = { refresh() }) { Text("Retry loading videos") }
-            else -> Text("No approved videos are available yet.")
+            else -> Text(if (videos.isEmpty()) "No approved videos are available yet." else "No videos in this category yet.")
         }
     }
 
