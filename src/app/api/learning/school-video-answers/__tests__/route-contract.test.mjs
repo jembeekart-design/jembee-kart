@@ -31,3 +31,11 @@ test("video approval is gated by the complete published Subject to Book to Chapt
   assert.match(route, /The linked learning subject, book, or chapter is unpublished or unavailable/);
   assert.match(route, /Recheck immediately before publishing/);
 });
+
+
+test("public school answers require published subject, book, and chapter ancestors", () => {
+  assert.match(route, /chapter\?\.type !== "chapter" \|\| chapter\.status !== "published"/);
+  assert.match(route, /book\?\.type !== "book" \|\| book\.status !== "published"/);
+  assert.match(route, /subject\?\.type === "subject" && subject\.status === "published"/);
+  assert.match(route, /getPublishedChapter\(db, parentChapterId\)/);
+});
