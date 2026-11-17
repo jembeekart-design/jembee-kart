@@ -1,341 +1,151 @@
 "use client";
 
-export const dynamic = "force-dynamic";
-
-import { useState, useEffect } from "react";
-import { collection, getDocs, query, orderBy } from "firebase/firestore";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import { getAuth } from "firebase/auth";
-import { db } from "@/firebase/config";
 import toast, { Toaster } from "react-hot-toast";
+import { AlertCircle, Folder, HardDrive, Image as ImageIcon, Loader2, Play, RefreshCw, Search, Trash2, Video, X } from "lucide-react";
 
-import {
-  Image,
-  Video,
-  FileText,
-  Upload,
-  Search,
-  Trash2,
-  Download,
-  Folder,
-  HardDrive,
-  Eye,
-  Grid3X3,
-  Loader2
-} from "lucide-react";
+type MediaVideo = {
+  id: string; title: string; status: string; active: boolean; moderation: string;
+  videoAccess: string; driveFileId: string; thumbnailUrl: string;
+  sizeBytes: number | null; createdAt: string | null;
+};
 
-interface MediaLibraryVideo {
-  id: string;
-  name: string;
-  type: "Video";
-  size: string;
-  publicId?: string;
-}
+const formatBytes = (bytes: number | null) => {
+  if (bytes === null) return "Size not recorded";
+  if (bytes < 1024) return bytes + " B";
+  if (bytes < 1024 * 1024) return (bytes / 1024).toFixed(1) + " KB";
+  if (bytes < 1024 * 1024 * 1024) return (bytes / (1024 * 1024)).toFixed(1) + " MB";
+  return (bytes / (1024 * 1024 * 1024)).toFixed(2) + " GB";
+};
 
 export default function MediaLibraryPage() {
   const [search, setSearch] = useState("");
-  const [files, setFiles] = useState<MediaLibraryVideo[]>([]);
+  const [videos, setVideos] = useState<MediaVideo[]>([]);
   const [loading, setLoading] = useState(true);
+  const [error, setError] = useState("");
   const [deletingId, setDeletingId] = useState<string | null>(null);
+  const [preview, setPreview] = useState<MediaVideo | null>(null);
 
-  const fetchVideos = async () => {
+  const fetchVideos = useCallback(async () => {
+    setLoading(true);
+    setError("");
     try {
-      const q = query(collection(db, "watchEarnVideos"), orderBy("createdAt", "desc"));
-      const snapshot = await getDocs(q);
-      const data: MediaLibraryVideo[] = snapshot.docs.map((item) => ({
-        id: item.id,
-        name: typeof item.data().title === "string" ? item.data().title : "Untitled Video",
-        type: "Video",
-        size: "N/A",
-        publicId: typeof item.data().publicId === "string" ? item.data().publicId : undefined,
-      }));
-      setFiles(data);
-    } catch (error) {
-      console.error("Error fetching videos:", error);
+      const token = await getAuth().currentUser?.getIdToken();
+      if (!token) throw new Error("Admin session नहीं मिला। दोबारा login करें।");
+      const response = await fetch("/api/admin/media-library", {
+        headers: { Authorization: "Bearer " + token },
+        cache: "no-store",
+      });
+      const result = await response.json().catch(() => ({}));
+      if (!response.ok) throw new Error(typeof result.message === "string" ? result.message : "Media list load नहीं हुई।");
+      setVideos(Array.isArray(result.videos) ? result.videos : []);
+    } catch (cause) {
+      setError(cause instanceof Error ? cause.message : "Media list load नहीं हुई।");
+      setVideos([]);
     } finally {
       setLoading(false);
     }
-  };
-
-  useEffect(() => {
-    const timer = window.setTimeout(() => { void fetchVideos(); }, 0);
-    return () => window.clearTimeout(timer);
   }, []);
 
-  const handleDelete = async (file: MediaLibraryVideo) => {
-    if (!confirm("Are you sure you want to permanently delete this video?")) return;
+  useEffect(() => { void fetchVideos(); }, [fetchVideos]);
 
-    setDeletingId(file.id);
+  const filtered = useMemo(() => {
+    const term = search.trim().toLowerCase();
+    return term ? videos.filter((video) => video.title.toLowerCase().includes(term) || video.id.toLowerCase().includes(term)) : videos;
+  }, [videos, search]);
+
+  const knownSizes = videos.filter((video) => video.sizeBytes !== null);
+  const totalKnownBytes = knownSizes.reduce((sum, video) => sum + (video.sizeBytes || 0), 0);
+  const approvedSafe = videos.filter((video) => video.status === "approved" && video.active && video.moderation === "safe").length;
+
+  const handleDelete = async (video: MediaVideo) => {
+    if (!window.confirm("“" + video.title + "” को permanently delete करना है? यह action वापस नहीं होगा।")) return;
+    setDeletingId(video.id);
     try {
-      const auth = getAuth();
-      const token = await auth.currentUser?.getIdToken();
-
+      const token = await getAuth().currentUser?.getIdToken();
+      if (!token) throw new Error("Admin session समाप्त हो गया। दोबारा login करें।");
       const response = await fetch("/api/admin/delete-video", {
         method: "POST",
-        headers: { "Content-Type": "application/json", Authorization: `Bearer ${token}` },
-        body: JSON.stringify({ videoId: file.id }),
+        headers: { "Content-Type": "application/json", Authorization: "Bearer " + token },
+        body: JSON.stringify({ videoId: video.id }),
       });
-
-      const result = await response.json();
-      if (result.success) {
-        toast.success("Video deleted successfully.");
-        setFiles((prev) => prev.filter((f) => f.id !== file.id));
-      } else {
-        throw new Error(result.message || "Failed to delete video");
-      }
-    } catch (error) {
-      toast.error(error instanceof Error ? error.message : "Failed to delete video.");
+      const result = await response.json().catch(() => ({}));
+      if (!response.ok || result.success !== true) throw new Error(typeof result.message === "string" ? result.message : "Video delete नहीं हुआ।");
+      setVideos((items) => items.filter((item) => item.id !== video.id));
+      if (preview?.id === video.id) setPreview(null);
+      toast.success("Video delete हो गया।");
+    } catch (cause) {
+      toast.error(cause instanceof Error ? cause.message : "Delete असफल रहा।");
     } finally {
       setDeletingId(null);
     }
   };
 
-  const filteredFiles = files.filter((item) =>
-    item.name.toLowerCase().includes(search.toLowerCase())
-  );
+  const canPreview = (video: MediaVideo) => video.status === "approved" && video.active && video.moderation === "safe" && Boolean(video.driveFileId);
 
   return (
-    <main className="min-h-screen bg-[var(--color-page-background)] p-4 text-[var(--button-text-color)]">
-      <Toaster />
-
-      {/* HEADER */}
-
-      <div className="mb-8 flex items-center justify-between">
-
-        <div className="flex items-center gap-4">
-
-          <div className="flex h-16 w-16 items-center justify-center rounded-[28px] bg-[var(--primary-color)]">
-
-            <Folder
-              size={30}
-              className="text-[var(--text-color)]"
-            />
-
+    <main className="min-h-screen bg-[var(--color-page-background)] p-4 text-[var(--button-text-color)] md:p-6">
+      <Toaster position="top-center" />
+      <div className="mx-auto max-w-7xl">
+        <header className="mb-7 flex flex-wrap items-center justify-between gap-4">
+          <div className="flex items-center gap-4">
+            <div className="flex h-14 w-14 items-center justify-center rounded-2xl bg-[var(--primary-color)]"><Folder size={28} /></div>
+            <div><h1 className="text-2xl font-black md:text-3xl">Media Library</h1><p className="text-sm text-[var(--muted-text-color)]">Live Firestore video inventory · Admin only</p></div>
           </div>
+          <button type="button" onClick={() => void fetchVideos()} disabled={loading} className="inline-flex items-center gap-2 rounded-xl border border-[var(--border-color)] px-4 py-3 font-semibold disabled:opacity-50">
+            {loading ? <Loader2 className="animate-spin" size={18} /> : <RefreshCw size={18} />} Refresh
+          </button>
+        </header>
 
-          <div>
+        <section className="mb-6 grid grid-cols-2 gap-3 lg:grid-cols-4">
+          <Stat title="Videos loaded" value={loading ? "…" : String(videos.length)} note="अधिकतम 250 नवीन records" icon={<Video />} />
+          <Stat title="Approved & safe" value={loading ? "…" : String(approvedSafe)} note="Approved, active, safe records" icon={<Play />} />
+          <Stat title="Images" value="Not connected" note="Image inventory उपलब्ध नहीं" icon={<ImageIcon />} />
+          <Stat title="Known storage" value={knownSizes.length ? formatBytes(totalKnownBytes) : "Unknown"} note={knownSizes.length + " records में size उपलब्ध"} icon={<HardDrive />} />
+        </section>
 
-            <h1 className="text-3xl font-black">
-              Media Library
-            </h1>
-
-            <p className="mt-1 text-sm text-[var(--muted-text-color)]">
-              Manage images, videos & documents
-            </p>
-
-          </div>
-
+        <div className="mb-5 flex items-center gap-3 rounded-2xl border border-[var(--border-color)] bg-[var(--card-color)] px-4 py-3">
+          <Search size={20} /><input value={search} onChange={(event) => setSearch(event.target.value)} placeholder="Video title या ID खोजें…" className="w-full bg-transparent outline-none" />
         </div>
 
-        <button className="flex items-center gap-2 rounded-2xl bg-[var(--primary-color)] px-5 py-3 font-bold text-[var(--text-color)]">
+        <div className="mb-5 flex flex-wrap justify-between gap-2 text-sm text-[var(--muted-text-color)]">
+          <span>{filtered.length} result(s) · {videos.length} loaded</span><span>Upload / image / document manager अभी उपलब्ध नहीं है</span>
+        </div>
 
-          <Upload size={18} />
-
-          Upload File
-
-        </button>
-
-      </div>
-
-      {/* SEARCH */}
-
-      <div className="flex items-center gap-3 rounded-[24px] border border-[var(--border-color)]/10 bg-[var(--primary-color)] px-4 py-3">
-
-        <Search
-          size={20}
-          className="text-[var(--muted-text-color)]"
-        />
-
-        <input
-          type="text"
-          placeholder="Search media..."
-          value={search}
-          onChange={(e) =>
-            setSearch(
-              e.target.value
-            )
-          }
-          className="w-full bg-transparent outline-none placeholder:text-[var(--muted-text-color)]"
-        />
-
-      </div>
-
-      {/* STATS */}
-
-      <div className="mt-6 grid grid-cols-2 gap-4 md:grid-cols-4">
-
-        <StatCard
-          title="Images"
-          value="1.2K"
-          icon={<Image size={22} />}
-        />
-
-        <StatCard
-          title="Videos"
-          value="320"
-          icon={<Video size={22} />}
-        />
-
-        <StatCard
-          title="Documents"
-          value="840"
-          icon={<FileText size={22} />}
-        />
-
-        <StatCard
-          title="Storage"
-          value="42GB"
-          icon={<HardDrive size={22} />}
-        />
-
-      </div>
-
-      {/* FILE GRID */}
-
-      <div className="mt-6 grid grid-cols-1 gap-5 md:grid-cols-2 lg:grid-cols-4">
-
-        {loading ? (
-          <p className="p-5">Loading...</p>
-        ) : filteredFiles.map(
-          (
-            item,
-            index
-          ) => (
-
-            <div
-              key={item.id}
-              className="overflow-hidden rounded-[28px] border border-[var(--border-color)]/10 bg-[var(--primary-color)]"
-            >
-
-              {/* PREVIEW */}
-
-              <div className="flex h-40 items-center justify-center bg-gradient-to-br from-[var(--primary-color)] to-[var(--primary-color)]">
-
-                <Video
-                  size={52}
-                  className="text-[var(--text-color)]"
-                />
-
+        {error ? <div role="alert" className="rounded-2xl border border-red-500/40 bg-red-500/10 p-5">
+          <div className="flex items-center gap-2 font-bold"><AlertCircle size={19} /> Media Library load नहीं हुई</div>
+          <p className="mt-2 text-sm">{error}</p><button type="button" onClick={() => void fetchVideos()} className="mt-4 rounded-lg bg-[var(--primary-color)] px-4 py-2 font-semibold">Retry</button>
+        </div> : loading ? <div className="flex items-center justify-center gap-3 rounded-2xl border border-[var(--border-color)] p-12"><Loader2 className="animate-spin" /> Real records load हो रहे हैं…</div> : filtered.length === 0 ? <div className="rounded-2xl border border-dashed border-[var(--border-color)] p-12 text-center"><Video className="mx-auto mb-3 opacity-60" size={36} /><h2 className="font-bold">{videos.length ? "कोई matching video नहीं मिला" : "अभी कोई video record नहीं मिला"}</h2><p className="mt-2 text-sm text-[var(--muted-text-color)]">Firestore watchEarnVideos collection से live सूची आती है।</p></div> : (
+          <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 xl:grid-cols-3">
+            {filtered.map((video) => <article key={video.id} className="overflow-hidden rounded-2xl border border-[var(--border-color)] bg-[var(--card-color)]">
+              <div className="relative flex aspect-video items-center justify-center bg-black/80">
+                {video.thumbnailUrl ? <img src={video.thumbnailUrl} alt="" className="h-full w-full object-cover" loading="lazy" /> : <Video size={42} className="text-white/70" />}
+                <span className="absolute bottom-2 left-2 rounded-md bg-black/75 px-2 py-1 text-xs text-white">{video.status}</span>
               </div>
-
-              {/* CONTENT */}
-
-              <div className="p-5">
-
-                <h2 className="truncate text-xl font-black">
-                  {item.name}
-                </h2>
-
-                <div className="mt-2 flex items-center justify-between text-sm text-[var(--muted-text-color)]">
-
-                  <span>
-                    {item.type}
-                  </span>
-
-                  <span>
-                    {item.size}
-                  </span>
-
+              <div className="p-4"><h2 className="truncate font-bold" title={video.title}>{video.title}</h2><p className="mt-1 text-xs text-[var(--muted-text-color)]">ID: {video.id}</p>
+                <div className="mt-3 flex flex-wrap gap-2 text-xs"><span>{video.moderation}</span><span>{video.active ? "Active" : "Inactive"}</span><span>{video.videoAccess}</span></div>
+                <div className="mt-3 flex justify-between text-xs text-[var(--muted-text-color)]"><span>{formatBytes(video.sizeBytes)}</span><span>{video.createdAt ? new Date(video.createdAt).toLocaleDateString() : "Date unavailable"}</span></div>
+                <div className="mt-4 flex justify-between gap-2">
+                  <button type="button" onClick={() => setPreview(video)} disabled={!canPreview(video)} className="inline-flex flex-1 items-center justify-center gap-2 rounded-lg bg-[var(--primary-color)] px-3 py-2 text-sm font-semibold disabled:opacity-40"><Play size={16} /> Preview</button>
+                  <button type="button" onClick={() => void handleDelete(video)} disabled={deletingId === video.id} aria-label={"Delete " + video.title} className="rounded-lg border border-red-500/40 px-3 py-2 text-red-500 disabled:opacity-50">{deletingId === video.id ? <Loader2 className="animate-spin" size={17} /> : <Trash2 size={17} />}</button>
                 </div>
-
-                {/* ACTIONS */}
-
-                <div className="mt-5 flex items-center justify-between">
-
-                  <button className="flex h-11 w-11 items-center justify-center rounded-2xl bg-[var(--card-color)]/10">
-
-                    <Eye size={18} />
-
-                  </button>
-
-                  <button className="flex h-11 w-11 items-center justify-center rounded-2xl bg-[var(--card-color)]/10">
-
-                    <Download size={18} />
-
-                  </button>
-
-                  <button 
-                    onClick={() => handleDelete(item)}
-                    disabled={deletingId === item.id}
-                    className="flex h-11 w-11 items-center justify-center rounded-2xl bg-[var(--danger-color)]/20 text-[var(--danger-color)] disabled:opacity-50">
-
-                    {deletingId === item.id ? <Loader2 size={18} className="animate-spin" /> : <Trash2 size={18} />}
-
-                  </button>
-
-                </div>
-
               </div>
-
-            </div>
-
-          )
+            </article>)}
+          </div>
         )}
 
+        <section className="mt-8 rounded-2xl border border-[var(--border-color)] p-5"><h2 className="font-bold">Media coverage status</h2><p className="mt-2 text-sm text-[var(--muted-text-color)]">यह release केवल Firestore video records दिखाती है। Images, documents, complete Drive inventory, upload और download को तब तक उपलब्ध नहीं बताया जाएगा जब तक सुरक्षित backend integration तैयार न हो।</p></section>
       </div>
 
-      {/* LIBRARY SECTION */}
-
-      <div className="mt-6 rounded-[30px] bg-gradient-to-r from-[var(--primary-color)] to-[var(--primary-color)] p-6">
-
-        <div className="flex items-center gap-3">
-
-          <Grid3X3 size={26} />
-
-          <h2 className="text-3xl font-black">
-            Smart Media System
-          </h2>
-
-        </div>
-
-        <p className="mt-3 max-w-2xl text-sm text-[var(--button-text-color)]/90">
-
-          Organize files with AI powered media tagging,
-          cloud sync and realtime optimization.
-
-        </p>
-
-        <button className="mt-6 rounded-2xl bg-[var(--card-color)] px-6 py-3 font-bold text-[var(--button-text-color)]">
-
-          Open Media Manager
-
-        </button>
-
-      </div>
-
+      {preview && canPreview(preview) && <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/85 p-4" role="dialog" aria-modal="true" aria-label="Video preview">
+        <div className="w-full max-w-3xl rounded-2xl bg-[var(--card-color)] p-4"><div className="mb-3 flex items-center justify-between gap-3"><h2 className="truncate font-bold">{preview.title}</h2><button type="button" onClick={() => setPreview(null)} aria-label="Close preview" className="rounded-lg p-2"><X /></button></div>
+          <video key={preview.id} controls playsInline className="max-h-[70vh] w-full bg-black" src={"/api/shorts/video-stream/" + encodeURIComponent(preview.id)} />
+        </div></div>}
     </main>
-
   );
 }
 
-function StatCard({
-  title,
-  value,
-  icon
-}: {
-  title: string;
-  value: string;
-  icon: React.ReactNode;
-}) {
-
-  return (
-
-    <div className="rounded-[28px] border border-[var(--border-color)]/10 bg-[var(--primary-color)] p-5">
-
-      <div className="flex h-14 w-14 items-center justify-center rounded-2xl bg-[var(--primary-color)] text-[var(--text-color)]">
-
-        {icon}
-
-      </div>
-
-      <p className="mt-4 text-sm text-[var(--muted-text-color)]">
-        {title}
-      </p>
-
-      <h2 className="mt-2 text-3xl font-black">
-        {value}
-      </h2>
-
-    </div>
-
-  );
+function Stat({ title, value, note, icon }: { title: string; value: string; note: string; icon: React.ReactNode }) {
+  return <div className="rounded-2xl border border-[var(--border-color)] bg-[var(--card-color)] p-4"><div className="flex items-center justify-between gap-2 text-[var(--muted-text-color)]"><span className="text-sm">{title}</span>{icon}</div><p className="mt-3 break-words text-xl font-black md:text-2xl">{value}</p><p className="mt-1 text-xs text-[var(--muted-text-color)]">{note}</p></div>;
 }
