@@ -44,6 +44,7 @@ private fun JembeeMobileApp() {
     var remoteConfig by remember { mutableStateOf(JembeeRemoteConfig()) }
     LaunchedEffect(Unit) { RemoteConfigClient.fetch(context) { remoteConfig = it } }
     var selected by remember { mutableStateOf("Home") }
+    var activeVideo by remember { mutableStateOf<JembeeVideo?>(null) }
     var dark by remember { mutableStateOf(true) }
     val colors = darkColorScheme(primary = JembeeAccent, background = JembeeBackground, surface = JembeeSurface)
     MaterialTheme(colorScheme = colors) {
@@ -79,9 +80,9 @@ private fun JembeeMobileApp() {
                     Text(remoteConfig.maintenanceMessage.ifBlank { "JEMBEE PLAY is temporarily under maintenance." }, Modifier.fillMaxWidth().padding(12.dp), color = colors.error)
                 }
                 when (selected) {
-                    "Home" -> HomeScreen(onOpenShorts = { selected = "Shorts" }, onOpenWatch = { selected = "Watch" }, onLearn = { selected = "Learn" })
-                    "Shorts" -> ShortsScreen(onBack = { selected = "Home" })
-                    "Watch" -> WatchScreen(onBack = { selected = "Home" })
+                    "Home" -> HomeScreen(onOpenShorts = { selected = "Shorts" }, onOpenWatch = { video -> activeVideo = video; selected = "Watch" }, onLearn = { selected = "Learn" })
+                    "Shorts" -> ShortsScreen(onBack = { selected = "Home" }, onOpenWatch = { video -> activeVideo = video; selected = "Watch" })
+                    "Watch" -> WatchScreen(video = activeVideo, onBack = { selected = "Home" })
                     "Learn" -> LearnScreen()
                     "Library" -> SimpleScreen("Your Library", "Saved videos, watch history and downloads")
                     else -> SimpleScreen("Your profile", "Sign in to manage your JEMBEE PLAY account")
@@ -92,47 +93,28 @@ private fun JembeeMobileApp() {
 }
 
 @Composable
-private fun HomeScreen(onOpenShorts: () -> Unit, onOpenWatch: () -> Unit, onLearn: () -> Unit) {
+private fun HomeScreen(onOpenShorts: () -> Unit, onOpenWatch: (JembeeVideo) -> Unit, onLearn: () -> Unit) {
+    var videos by remember { mutableStateOf<List<JembeeVideo>>(emptyList()) }
+    var loading by remember { mutableStateOf(true) }
+    var error by remember { mutableStateOf<String?>(null) }
+    LaunchedEffect(Unit) {
+        VideoCatalogClient.fetch("long") { items, message -> videos = items; error = message; loading = false }
+    }
     Column(Modifier.fillMaxSize().verticalScroll(rememberScrollState()).padding(bottom = 20.dp)) {
-        Row(Modifier.fillMaxWidth().padding(horizontal = 18.dp), horizontalArrangement = Arrangement.spacedBy(9.dp)) {
-            listOf("For you", "Trending", "Education", "Music").forEachIndexed { i, label ->
-                Surface(shape = CircleShape, color = if (i == 0) JembeeAccent else JembeeSurface, modifier = Modifier.clickable { if (label == "Education") onLearn() }) {
-                    Text(label, Modifier.padding(horizontal = 15.dp, vertical = 9.dp), color = if (i == 0) Color.Black else Color.White, fontSize = 12.sp, fontWeight = FontWeight.SemiBold)
-                }
-            }
-        }
-        Spacer(Modifier.height(18.dp))
-        Box(Modifier.fillMaxWidth().padding(horizontal = 16.dp).height(205.dp).background(Brush.linearGradient(listOf(Color(0xFF123C5B), Color(0xFF24234C), Color(0xFF101522))), RoundedCornerShape(24.dp)).clickable { onOpenWatch() }) {
-            Column(Modifier.align(Alignment.BottomStart).padding(20.dp)) {
-                Text("YOUR NEXT FAVOURITE VIDEO", color = JembeeAccent, fontSize = 9.sp, letterSpacing = 1.4.sp, fontWeight = FontWeight.Bold)
-                Text("Watch. Learn. Discover.", color = Color.White, fontSize = 25.sp, fontWeight = FontWeight.ExtraBold)
-                Text("Explore the world of JEMBEE PLAY", color = Color.White.copy(alpha = .75f), fontSize = 12.sp)
-            }
-            Surface(Modifier.align(Alignment.CenterEnd).padding(end = 22.dp), shape = CircleShape, color = Color.White.copy(alpha = .15f)) {
-                Text("▶", Modifier.padding(18.dp), color = Color.White, fontSize = 25.sp)
-            }
-        }
-        SectionHeader("Shorts for you", "Swipe up to watch", onOpenShorts)
-        Row(Modifier.fillMaxWidth().height(190.dp).padding(horizontal = 16.dp), horizontalArrangement = Arrangement.spacedBy(11.dp)) {
-            listOf("Quick facts", "One-minute learning", "Creator moments").forEachIndexed { i, title ->
-                Box(Modifier.weight(1f).fillMaxHeight().background(Brush.linearGradient(listOf(listOf(Color(0xFF673E89), Color(0xFF1A526E), Color(0xFF8B4A42))[i], Color(0xFF111827))), RoundedCornerShape(16.dp)).clickable { onOpenShorts() }) {
-                    Column(Modifier.align(Alignment.BottomStart).padding(10.dp)) {
-                        Text("▶", color = Color.White, fontSize = 20.sp)
-                        Text(title, color = Color.White, fontSize = 12.sp, fontWeight = FontWeight.Bold)
+        SectionHeader("Shorts for you", "Real approved videos", onOpenShorts)
+        Button(onClick = onOpenShorts, modifier = Modifier.padding(horizontal = 18.dp)) { Text("Open Shorts feed  ▶") }
+        SectionHeader("Long videos", "From JEMBEE PLAY catalogue", onClick = {})
+        when {
+            loading -> CircularProgressIndicator(Modifier.padding(20.dp), color = JembeeAccent)
+            videos.isEmpty() -> Text(error ?: "Abhi koi approved free long video available nahi hai.", Modifier.padding(18.dp), color = JembeeMuted)
+            else -> videos.forEach { video ->
+                Row(Modifier.fillMaxWidth().padding(horizontal = 16.dp, vertical = 6.dp).background(JembeeSurface, RoundedCornerShape(14.dp)).clickable { onOpenWatch(video) }.padding(14.dp), verticalAlignment = Alignment.CenterVertically) {
+                    Column(Modifier.weight(1f)) {
+                        Text(video.caption.ifBlank { "JEMBEE PLAY video" }, color = Color.White, fontWeight = FontWeight.Bold, fontSize = 14.sp)
+                        Text(video.creatorName, color = JembeeMuted, fontSize = 11.sp)
+                        Text("${video.views} views  •  ${video.likes} likes", color = JembeeMuted, fontSize = 10.sp)
                     }
-                }
-            }
-        }
-        SectionHeader("Long videos", "Continue watching", onOpenWatch)
-        Column(Modifier.padding(horizontal = 16.dp), verticalArrangement = Arrangement.spacedBy(12.dp)) {
-            listOf("Explore something new", "Stories that inspire").forEachIndexed { i, title ->
-                Row(Modifier.fillMaxWidth().background(JembeeSurface, RoundedCornerShape(16.dp)).clickable { onOpenWatch() }.padding(10.dp), verticalAlignment = Alignment.CenterVertically) {
-                    Box(Modifier.width(132.dp).height(78.dp).background(Brush.linearGradient(listOf(if (i == 0) Color(0xFF17647C) else Color(0xFF63406E), Color(0xFF141B2A))), RoundedCornerShape(10.dp)), contentAlignment = Alignment.Center) { Text("▶", color = Color.White, fontSize = 25.sp) }
-                    Column(Modifier.padding(start = 12.dp).weight(1f)) {
-                        Text(title, color = Color.White, fontWeight = FontWeight.Bold, fontSize = 14.sp)
-                        Text("JEMBEE PLAY • Video", color = JembeeMuted, fontSize = 11.sp)
-                        Text("Open video  →", color = JembeeAccent, fontSize = 11.sp)
-                    }
+                    Text("▶ Play", color = JembeeAccent, fontWeight = FontWeight.Bold)
                 }
             }
         }
@@ -147,7 +129,6 @@ private fun HomeScreen(onOpenShorts: () -> Unit, onOpenWatch: () -> Unit, onLear
                 }
             }
         }
-        Text("Video and account services connect in the next integration stage.", Modifier.padding(18.dp), color = JembeeMuted, fontSize = 10.sp)
     }
 }
 
@@ -163,59 +144,52 @@ private fun SectionHeader(title: String, subtitle: String, onClick: () -> Unit) 
 }
 
 @Composable
-private fun ShortsScreen(onBack: () -> Unit) {
-    val pagerState = rememberPagerState(pageCount = { 8 })
-    val labels = listOf("Discover something new", "A quick learning moment", "Creator spotlight", "Science in a minute", "Daily inspiration", "Explore more", "Learn every day", "JEMBEE SHORTS")
+private fun ShortsScreen(onBack: () -> Unit, onOpenWatch: (JembeeVideo) -> Unit) {
+    var videos by remember { mutableStateOf<List<JembeeVideo>>(emptyList()) }
+    var error by remember { mutableStateOf<String?>(null) }
+    var loading by remember { mutableStateOf(true) }
+    LaunchedEffect(Unit) { VideoCatalogClient.fetch("short") { items, message -> videos = items; error = message; loading = false } }
+    val pagerState = rememberPagerState(pageCount = { videos.size })
     Box(Modifier.fillMaxSize().background(Color.Black)) {
-        VerticalPager(state = pagerState, modifier = Modifier.fillMaxSize(), beyondViewportPageCount = 1) { page ->
-            Box(Modifier.fillMaxSize().background(Brush.linearGradient(listOf(Color(0xFF152E4A), Color(0xFF30234D), Color(0xFF080B12))))) {
-                Column(Modifier.align(Alignment.Center), horizontalAlignment = Alignment.CenterHorizontally) {
-                    Text("▶", color = Color.White, fontSize = 48.sp)
-                    Text("Shorts player", color = Color.White, fontSize = 20.sp, fontWeight = FontWeight.Bold)
-                    Text("Real video playback will connect to the website feed", color = Color.White.copy(alpha = .7f), fontSize = 10.sp)
-                }
-                Column(Modifier.align(Alignment.BottomStart).padding(start = 18.dp, end = 82.dp, bottom = 32.dp)) {
-                    Text("@jembeeplay", color = Color.White, fontWeight = FontWeight.Bold)
-                    Text(labels[page], color = Color.White, fontSize = 15.sp)
-                    Text("Swipe up for next video", color = Color.White.copy(alpha = .7f), fontSize = 11.sp)
-                }
-                Column(Modifier.align(Alignment.CenterEnd).padding(end = 14.dp), horizontalAlignment = Alignment.CenterHorizontally, verticalArrangement = Arrangement.spacedBy(22.dp)) {
-                    listOf("♡" to "Like", "▢" to "Comment", "↗" to "Share", "⋯" to "More").forEach { (symbol, label) ->
-                        Column(horizontalAlignment = Alignment.CenterHorizontally) {
-                            Text(symbol, color = Color.White, fontSize = 29.sp, fontWeight = FontWeight.Bold)
-                            Text(label, color = Color.White, fontSize = 9.sp)
-                        }
+        when {
+            loading -> CircularProgressIndicator(Modifier.align(Alignment.Center), color = JembeeAccent)
+            videos.isEmpty() -> Column(Modifier.align(Alignment.Center), horizontalAlignment = Alignment.CenterHorizontally) {
+                Text("Real Shorts abhi available nahi hain", color = Color.White, fontWeight = FontWeight.Bold)
+                Text(error ?: "Admin se approved, active, safe free Shorts publish karayein.", color = JembeeMuted, modifier = Modifier.padding(12.dp))
+                TextButton(onClick = onBack) { Text("Back") }
+            }
+            else -> VerticalPager(state = pagerState, modifier = Modifier.fillMaxSize(), beyondViewportPageCount = 1) { page ->
+                val video = videos[page]
+                Box(Modifier.fillMaxSize().background(Color.Black)) {
+                    RealVideoPlayer(video.streamUrl, Modifier.fillMaxSize(), autoplay = pagerState.currentPage == page)
+                    Column(Modifier.align(Alignment.BottomStart).padding(start = 18.dp, end = 82.dp, bottom = 32.dp)) {
+                        Text(video.creatorName, color = Color.White, fontWeight = FontWeight.Bold)
+                        Text(video.caption, color = Color.White, fontSize = 15.sp)
+                        Text("${video.views} views", color = Color.White.copy(alpha = .75f), fontSize = 11.sp)
                     }
+                    TextButton(onClick = onBack, modifier = Modifier.align(Alignment.TopStart).padding(10.dp)) { Text("‹ Back", color = Color.White) }
+                    Text("SHORTS  •  ${page + 1}/${videos.size}", Modifier.align(Alignment.TopCenter).padding(top = 22.dp), color = Color.White, fontSize = 11.sp, fontWeight = FontWeight.Bold)
+                    TextButton(onClick = { onOpenWatch(video) }, modifier = Modifier.align(Alignment.BottomEnd).padding(12.dp)) { Text("Open details", color = Color.White) }
                 }
-                TextButton(onClick = onBack, modifier = Modifier.align(Alignment.TopStart).padding(10.dp)) { Text("‹  Back", color = Color.White) }
-                Text("SHORTS  •  ${pagerState.currentPage + 1}/${pagerState.pageCount}", Modifier.align(Alignment.TopCenter).padding(top = 22.dp), color = Color.White, fontSize = 11.sp, fontWeight = FontWeight.Bold)
             }
         }
     }
 }
 
 @Composable
-private fun WatchScreen(onBack: () -> Unit) {
-    Column(Modifier.fillMaxSize().background(JembeeBackground).verticalScroll(rememberScrollState())) {
-        Box(Modifier.fillMaxWidth().aspectRatio(16f / 9f).background(Color.Black), contentAlignment = Alignment.Center) {
-            Column(horizontalAlignment = Alignment.CenterHorizontally) {
-                Text("▶", color = Color.White, fontSize = 48.sp)
-                Text("Long-video player", color = Color.White, fontWeight = FontWeight.Bold)
-                Text("Website streaming player integration pending", color = JembeeMuted, fontSize = 10.sp)
+private fun WatchScreen(video: JembeeVideo?, onBack: () -> Unit) {
+    Column(Modifier.fillMaxSize().background(JembeeBackground)) {
+        if (video == null) {
+            Text("Home se koi video select karein.", color = Color.White, modifier = Modifier.padding(24.dp))
+        } else {
+            RealVideoPlayer(video.streamUrl, Modifier.fillMaxWidth().aspectRatio(16f / 9f))
+            Column(Modifier.padding(18.dp)) {
+                Text(video.caption.ifBlank { "JEMBEE PLAY video" }, color = Color.White, fontSize = 20.sp, fontWeight = FontWeight.Bold)
+                Text("${video.creatorName}  •  ${video.views} views", color = JembeeMuted, fontSize = 11.sp, modifier = Modifier.padding(top = 6.dp))
+                Text("${video.likes} likes", color = JembeeMuted, fontSize = 11.sp, modifier = Modifier.padding(top = 8.dp))
             }
-            TextButton(onClick = onBack, modifier = Modifier.align(Alignment.TopStart)) { Text("‹ Back", color = Color.White) }
         }
-        Column(Modifier.padding(18.dp)) {
-            Text("Video title will appear here", color = Color.White, fontSize = 20.sp, fontWeight = FontWeight.Bold)
-            Text("Creator name  •  Views  •  Published date", color = JembeeMuted, fontSize = 11.sp, modifier = Modifier.padding(top = 6.dp))
-            Row(Modifier.fillMaxWidth().padding(vertical = 18.dp), horizontalArrangement = Arrangement.SpaceBetween) {
-                listOf("♡ Like", "↗ Share", "▢ Comment", "＋ Save").forEach { Text(it, color = Color.White, fontSize = 11.sp, fontWeight = FontWeight.SemiBold) }
-            }
-            HorizontalDivider(color = JembeeSurface)
-            Text("Comments", color = Color.White, fontSize = 17.sp, fontWeight = FontWeight.Bold, modifier = Modifier.padding(top = 18.dp))
-            Text("Comments load with the connected video service.", color = JembeeMuted, fontSize = 12.sp, modifier = Modifier.padding(top = 8.dp))
-            Text("Recommended videos", color = Color.White, fontSize = 17.sp, fontWeight = FontWeight.Bold, modifier = Modifier.padding(top = 22.dp))
-        }
+        TextButton(onClick = onBack) { Text("‹ Back", color = JembeeAccent) }
     }
 }
 
