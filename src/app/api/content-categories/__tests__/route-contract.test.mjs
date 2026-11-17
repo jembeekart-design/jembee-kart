@@ -133,3 +133,11 @@ test("book cover editor accepts the bundled local SVG artwork paths", () => {
   assert.match(adminPage, /learning-covers\/book\.svg/);
   assert.match(route, /\^\\\/learning-covers\\\/\[a-z0-9-\]\+\\\.svg\$/);
 });
+
+
+test("public learning catalog hides descendants when any ancestor is unpublished", () => {
+  assert.match(route, /async function hasPublishedAncestors/);
+  assert.match(route, /await hasPublishedAncestors\(db, doc\.data\(\)!\)/);
+  assert.match(route, /await hasPublishedAncestors\(db, parent\)/);
+  assert.match(route, /parent\?\.type !== PARENT_TYPES\[type\]\[0\] \|\| parent\.status !== "published"/);
+});
