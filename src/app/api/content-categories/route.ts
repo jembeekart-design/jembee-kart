@@ -156,10 +156,17 @@ export async function GET(req: Request) {
 
     // Legacy response retained while non-learning consumers migrate to scoped queries.
     const nodeSnap = await db.collection("schoolLearningNodes").where("status", "==", "published").limit(1000).get();
-    const learningNodes = nodeSnap.docs.map((doc) => {
+    const candidateNodes = nodeSnap.docs.map((doc) => {
       const { ownerUid: _ownerUid, updatedBy: _updatedBy, createdByUid: _createdByUid, ...data } = doc.data();
       return { id: doc.id, ...data, type: data.type as NodeType };
     }).filter((item) => NODE_TYPES.includes(item.type));
+    // Keep the legacy all-level response safe too: a published child must not
+    // leak into the public catalog when any ancestor has been unpublished.
+    const visibilityChecks = await Promise.all(candidateNodes.map(async (node) => ({
+      node,
+      visible: await hasPublishedAncestors(db, node),
+    })));
+    const learningNodes = visibilityChecks.filter((item) => item.visible).map((item) => item.node);
     return NextResponse.json({ success: true, categories, learningNodes }, { headers: noStore });
   } catch (error) {
     const firebaseError = error as { code?: unknown; name?: unknown };
