@@ -81,8 +81,8 @@ export default function VerticalVideoFeed({
   useEffect(() => {
     let cancelled = false;
     if (!getExoClickShortsVastUrl()) {
-      setShortsAdsEnabled(false);
-      return;
+      const timer = window.setTimeout(() => setShortsAdsEnabled(false), 0);
+      return () => { cancelled = true; window.clearTimeout(timer); };
     }
     fetch("/api/videos/video-ads", { cache: "no-store" })
       .then((response) => response.ok ? response.json() : null)
@@ -294,8 +294,8 @@ export default function VerticalVideoFeed({
 
   useEffect(() => {
     if (!currentUserId) {
-      setSavedVideos({});
-      return;
+      const timer = window.setTimeout(() => setSavedVideos({}), 0);
+      return () => window.clearTimeout(timer);
     }
     let cancelled = false;
     const loadSavedVideos = async () => {
