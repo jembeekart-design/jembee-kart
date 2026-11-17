@@ -17,10 +17,11 @@ export default function AdminLoginPage() {
   const [error, setError] = useState("");
 
   useEffect(() => {
-    const reason = new URLSearchParams(window.location.search).get("error");
-    if (reason === "not-admin") {
-      setError("Admin session verify नहीं हुआ। कृपया Admin account से दोबारा login करें।");
-    }
+    const timer = window.setTimeout(() => {
+      const reason = new URLSearchParams(window.location.search).get("error");
+      if (reason === "not-admin") setError("Admin session verify नहीं हुआ। कृपया Admin account से दोबारा login करें।");
+    }, 0);
+    return () => window.clearTimeout(timer);
   }, []);
 
   const login = async (e: React.FormEvent) => {
