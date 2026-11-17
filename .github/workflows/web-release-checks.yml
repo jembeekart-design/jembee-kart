@@ -1,0 +1,52 @@
+name: JEMBEE PLAY Web release checks
+
+on:
+  pull_request:
+    paths:
+      - "src/**"
+      - "public/**"
+      - "package.json"
+      - "package-lock.json"
+      - "next.config.*"
+      - "tsconfig.json"
+      - ".github/workflows/web-release-checks.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  web-release-checks:
+    name: TypeScript, changed-code lint and production build
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+          cache: npm
+      - name: Install locked dependencies
+        run: npm ci --no-audit --no-fund
+      - name: TypeScript check
+        run: npx tsc --noEmit --incremental false --pretty false
+      - name: Full repository ESLint baseline (informational)
+        continue-on-error: true
+        run: npm run lint
+      - name: Lint release-critical changed files
+        run: >-
+          npx eslint
+          src/app/admin/page.tsx
+          src/app/admin/system-health/page.tsx
+          src/app/api/admin/system-health/route.ts
+          src/app/api/app/remote-config/route.ts
+          src/app/api/shorts/paid-video/create-order/route.ts
+          src/app/api/shorts/paid-video/playback-session/route.ts
+          src/app/download/page.tsx
+          src/components/download/AppInstallActions.tsx
+      - name: Production build
+        run: npm run build
+        env:
+          NODE_OPTIONS: --max-old-space-size=4096
