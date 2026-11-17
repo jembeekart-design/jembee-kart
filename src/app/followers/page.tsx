@@ -33,8 +33,8 @@ export default function FollowersPage() {
 
   useEffect(() => {
     if (!currentUser) {
-      setUserData(null);
-      return;
+      const timer = window.setTimeout(() => setUserData(null), 0);
+      return () => window.clearTimeout(timer);
     }
     return onSnapshot(doc(db, "users", currentUser.uid), (snapshot) => {
       setUserData(snapshot.exists() ? snapshot.data() : null);
@@ -46,15 +46,11 @@ export default function FollowersPage() {
 
   useEffect(() => {
     if (!currentUser) {
-      setUsers([]);
-      setLoading(false);
-      return;
+      const timer = window.setTimeout(() => { setUsers([]); setLoading(false); }, 0);
+      return () => window.clearTimeout(timer);
     }
     let active = true;
-    setLoading(true);
-    setUsers([]);
-    setNextCursor(null);
-    setError("");
+    const resetTimer = window.setTimeout(() => { setLoading(true); setUsers([]); setNextCursor(null); setError(""); }, 0);
     void (async () => {
       try {
         const token = await currentUser.getIdToken();
@@ -77,7 +73,7 @@ export default function FollowersPage() {
         if (active) setLoading(false);
       }
     })();
-    return () => { active = false; };
+    return () => { active = false; window.clearTimeout(resetTimer); };
   }, [currentUser, activeTab]);
 
   const loadMore = async () => {
