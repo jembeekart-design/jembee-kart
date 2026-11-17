@@ -1,0 +1,5 @@
+<layer-list xmlns:android="http://schemas.android.com/apk/res/android">
+    <item><shape android:shape="rectangle"><gradient android:angle="0" android:startColor="#FF0B1830" android:centerColor="#FF174A68" android:endColor="#FF512B68"/></shape></item>
+    <item android:gravity="center_vertical|left" android:left="28dp"><bitmap android:src="@drawable/ic_jembee_mark" android:gravity="center" android:filter="true"/></item>
+    <item android:gravity="center_vertical|right" android:right="28dp"><shape android:shape="rectangle"><size android:width="2dp" android:height="40dp"/><solid android:color="#FF39C6F4"/></shape></item>
+</layer-list>
