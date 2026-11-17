@@ -127,7 +127,20 @@ private fun TvLearningScreen(onBack: () -> Unit) {
     var error by remember { mutableStateOf<String?>(null) }
     var stage by remember { mutableIntStateOf(0) }
     var selected by remember { mutableStateOf<List<SchoolLearningNode>>(emptyList()) }
+    var answerVideos by remember { mutableStateOf<List<SchoolAnswerVideo>>(emptyList()) }
+    var answerLoading by remember { mutableStateOf(false) }
+    var answerError by remember { mutableStateOf<String?>(null) }
+    var activeAnswer by remember { mutableStateOf<SchoolAnswerVideo?>(null) }
     LaunchedEffect(Unit) { SchoolCatalogClient.fetch { items, message -> nodes = items; error = message; loading = false } }
+    LaunchedEffect(stage, selected) {
+        if (stage == 6) {
+            val questionId = selected.lastOrNull()?.id ?: return@LaunchedEffect
+            answerLoading = true
+            SchoolAnswerClient.fetch(questionId) { items, message -> answerVideos = items; answerError = message; answerLoading = false }
+        } else {
+            activeAnswer = null
+        }
+    }
     val types = listOf("board", "school", "class", "subject", "chapter", "question")
     val titles = listOf("Choose Board", "Choose School", "Choose Class", "Choose Subject / Book", "Choose Chapter", "Choose Question")
     val parent = selected.lastOrNull()?.id
@@ -161,7 +174,29 @@ private fun TvLearningScreen(onBack: () -> Unit) {
             if (entries.isEmpty()) Text("Is level ke liye koi published entry nahi hai.", color = Color(0xFF9AA8BC), modifier = Modifier.padding(20.dp))
         } else {
             Text(selected.lastOrNull()?.name ?: "Question selected", color = Color.White, fontSize = 22.sp, fontWeight = FontWeight.Bold)
-            Text("Question ke approved video answers ka TV player integration agle step mein verify hoga.", color = Color(0xFF9AA8BC), modifier = Modifier.padding(top = 10.dp))
+            when {
+                activeAnswer != null -> {
+                    RealVideoPlayer(activeAnswer!!.streamUrl, Modifier.fillMaxWidth().weight(1f))
+                    Text(activeAnswer!!.caption.ifBlank { "Learning answer" }, color = Color.White, modifier = Modifier.padding(12.dp))
+                    Button(onClick = { activeAnswer = null }) { Text("‹ Answers") }
+                }
+                answerLoading -> Text("Loading approved video answers…", color = Color(0xFF9AA8BC), modifier = Modifier.padding(20.dp))
+                answerVideos.isEmpty() -> Text(answerError ?: "Is question ke liye abhi approved free video answer nahi hai.", color = Color(0xFF9AA8BC), modifier = Modifier.padding(20.dp))
+                else -> LazyColumn(verticalArrangement = Arrangement.spacedBy(8.dp)) {
+                    items(answerVideos, key = { it.id }) { answer ->
+                        Surface(onClick = { activeAnswer = answer }, modifier = Modifier.fillMaxWidth().height(72.dp), shape = ClickableSurfaceDefaults.shape(), colors = ClickableSurfaceDefaults.colors(containerColor = Color(0xFF151B27), focusedContainerColor = Color(0xFF17445B))) {
+                            Row(Modifier.fillMaxSize().padding(horizontal = 20.dp), verticalAlignment = Alignment.CenterVertically) {
+                                Text("▶", color = TvAccent, fontSize = 24.sp, modifier = Modifier.padding(end = 16.dp))
+                                Column(Modifier.weight(1f)) {
+                                    Text(answer.caption.ifBlank { "Video answer" }, color = Color.White, fontWeight = FontWeight.Bold)
+                                    Text(answer.creator, color = Color(0xFF9AA8BC), fontSize = 12.sp)
+                                }
+                                Text("PLAY", color = TvAccent, fontWeight = FontWeight.Bold)
+                            }
+                        }
+                    }
+                }
+            }
         }
         Row(horizontalArrangement = Arrangement.spacedBy(12.dp), modifier = Modifier.padding(top = 14.dp)) {
             if (stage > 0) Button(onClick = { stage-- }) { Text("‹ Back") }
