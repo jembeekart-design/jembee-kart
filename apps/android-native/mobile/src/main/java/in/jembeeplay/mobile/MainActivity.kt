@@ -72,7 +72,7 @@ private fun JembeeMobileApp() {
                 when (selected) {
                     "Home" -> HomeScreen(onLearn = { selected = "Learn" }, onShorts = { selected = "Shorts" })
                     "Shorts" -> NativeShortsScreen()
-                    "Learn" -> LearnScreen()
+                    "Learn" -> NativeLearningScreen()
                     "Library" -> LibraryScreen()
                     else -> YouScreen(onTheme = { dark = !dark }, dark = dark)
                 }
@@ -84,51 +84,28 @@ private fun JembeeMobileApp() {
 @Composable
 private fun HomeScreen(onLearn: () -> Unit, onShorts: () -> Unit) {
     Column(Modifier.fillMaxSize().verticalScroll(rememberScrollState()).padding(bottom = 18.dp)) {
-        Row(Modifier.fillMaxWidth().horizontalScroll(rememberScrollState()).padding(horizontal = 16.dp), horizontalArrangement = Arrangement.spacedBy(8.dp)) {
-            listOf("For you", "Learning", "Trending", "Music", "Technology", "News").forEachIndexed { index, label ->
-                FilterChip(selected = index == 0, onClick = { if (label == "Learning") onLearn() }, label = { Text(label) })
+        Row(Modifier.fillMaxWidth().padding(horizontal = 18.dp, vertical = 8.dp), verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.SpaceBetween) {
+            Column {
+                Text("Your video world", fontSize = 23.sp, fontWeight = FontWeight.Black)
+                Text("Approved videos from JEMBEE PLAY creators", fontSize = 12.sp, color = Muted)
             }
+            TextButton(onClick = onShorts) { Text("Open Shorts") }
         }
         NativeCatalogSection()
-        Text("Featured for you", Modifier.padding(start = 18.dp, top = 14.dp, bottom = 10.dp), fontSize = 19.sp, fontWeight = FontWeight.Bold)
-        Box(Modifier.fillMaxWidth().padding(horizontal = 16.dp)) {
-            ThumbnailCard("Learn something new every day", "JEMBEE PLAY • FEATURED", Modifier.fillMaxWidth().height(214.dp))
-        }
-        Row(Modifier.fillMaxWidth().padding(horizontal = 18.dp, vertical = 12.dp), verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.SpaceBetween) {
-            Text("Continue watching", fontSize = 19.sp, fontWeight = FontWeight.Bold)
-            TextButton(onClick = onLearn) { Text("See all") }
-        }
-        Row(Modifier.fillMaxWidth().horizontalScroll(rememberScrollState()).padding(horizontal = 16.dp), horizontalArrangement = Arrangement.spacedBy(12.dp)) {
-            MiniVideo("Your next lesson", "Continue learning", Color(0xFF5D6BCB))
-            MiniVideo("Science explained", "Education • 12 min", Color(0xFF168B87))
-            MiniVideo("Maths revision", "Class 7 • 8 min", Color(0xFFB66C36))
-        }
-        Row(Modifier.fillMaxWidth().padding(horizontal = 18.dp, vertical = 14.dp), verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.SpaceBetween) {
-            Text("Learning by class", fontSize = 19.sp, fontWeight = FontWeight.Bold)
-            TextButton(onClick = onLearn) { Text("Explore") }
-        }
-        Row(Modifier.fillMaxWidth().horizontalScroll(rememberScrollState()).padding(horizontal = 16.dp), horizontalArrangement = Arrangement.spacedBy(10.dp)) {
-            listOf("Class 6", "Class 7", "Class 8", "Class 9", "Class 10").forEachIndexed { i, name ->
-                Surface(onClick = onLearn, shape = RoundedCornerShape(16.dp), color = MaterialTheme.colorScheme.surface, modifier = Modifier.width(118.dp).height(76.dp)) {
-                    Column(Modifier.padding(14.dp), verticalArrangement = Arrangement.SpaceBetween) {
-                        Text("JEMBEE LEARN", fontSize = 9.sp, color = JembeeBlue, fontWeight = FontWeight.Bold)
-                        Text(name, fontWeight = FontWeight.Bold, fontSize = 16.sp)
-                    }
+        Surface(
+            onClick = onLearn,
+            modifier = Modifier.fillMaxWidth().padding(horizontal = 16.dp, vertical = 12.dp),
+            shape = RoundedCornerShape(18.dp),
+            color = MaterialTheme.colorScheme.surface
+        ) {
+            Row(Modifier.padding(18.dp), verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.SpaceBetween) {
+                Column(Modifier.weight(1f)) {
+                    Text("JEMBEE Learning", fontSize = 18.sp, fontWeight = FontWeight.Bold)
+                    Text("Explore school subjects, chapters and video answers", fontSize = 12.sp, color = Muted)
                 }
+                Text("Explore  →", color = JembeeBlue, fontWeight = FontWeight.Bold)
             }
         }
-        Row(Modifier.fillMaxWidth().padding(horizontal = 18.dp, vertical = 14.dp), verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.SpaceBetween) {
-            Text("Shorts for you", fontSize = 19.sp, fontWeight = FontWeight.Bold)
-            TextButton(onClick = onShorts) { Text("View Shorts") }
-        }
-        Row(Modifier.fillMaxWidth().horizontalScroll(rememberScrollState()).padding(horizontal = 16.dp), horizontalArrangement = Arrangement.spacedBy(10.dp)) {
-            listOf("Quick science facts", "One-minute maths", "Daily knowledge").forEachIndexed { i, title ->
-                Box(Modifier.width(132.dp).height(190.dp)) { ThumbnailCard(title, "SHORTS • PREVIEW", Modifier.fillMaxSize(), listOf(Color(0xFF713F9E), Color(0xFF187F9A), Color(0xFFB45B55))[i]) }
-            }
-        }
-        Text("Discover creators", Modifier.padding(start = 18.dp, top = 20.dp, bottom = 10.dp), fontSize = 19.sp, fontWeight = FontWeight.Bold)
-        Text("Find teachers and creators to follow.", Modifier.padding(horizontal = 18.dp), color = Muted)
-        Text("Preview content only · Live video services are not connected yet", Modifier.padding(18.dp), fontSize = 11.sp, color = Muted)
     }
 }
 
