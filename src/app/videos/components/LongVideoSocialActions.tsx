@@ -5,6 +5,7 @@ import { Bookmark, Heart, MessageCircle, Share2, Users } from "lucide-react";
 import { auth, db } from "@/firebase/config";
 import { doc, getDoc } from "firebase/firestore";
 import FollowButton from "@/components/social/FollowButton";
+import { useRequireAuth } from "@/hooks/useRequireAuth";
 import CommentDrawer from "./CommentDrawer";
 
 type Props = { videoId: string; creatorId: string; initialLikes: number; comments: number };
@@ -15,6 +16,8 @@ function countLabel(value: number) {
 
 export default function LongVideoSocialActions({ videoId, creatorId, initialLikes, comments }: Props) {
   const [likes, setLikes] = useState(Math.max(0, initialLikes));
+  const [commentCount, setCommentCount] = useState(Math.max(0, comments));
+  const { requireAuth } = useRequireAuth();
   const [liked, setLiked] = useState(false);
   const [saved, setSaved] = useState(false);
   const [followers, setFollowers] = useState<number | null>(null);
@@ -109,19 +112,19 @@ export default function LongVideoSocialActions({ videoId, creatorId, initialLike
   return (
     <section className="mt-4 rounded-2xl border border-white/10 bg-white/[0.04] p-3 sm:p-4" aria-label="Video engagement">
       <div className="flex flex-wrap items-center gap-2">
-        <button type="button" onClick={toggleLike} disabled={busy} aria-pressed={liked} className={`inline-flex min-h-10 items-center gap-2 rounded-full px-4 text-sm font-semibold transition ${liked ? "bg-rose-500/20 text-rose-300" : "bg-white/10 text-white"} disabled:opacity-50`}>
+        <button type="button" onClick={() => requireAuth(() => void toggleLike(), "like", videoId)} disabled={busy} aria-pressed={liked} className={`inline-flex min-h-10 items-center gap-2 rounded-full px-4 text-sm font-semibold transition ${liked ? "bg-rose-500/20 text-rose-300" : "bg-white/10 text-white"} disabled:opacity-50`}>
           <Heart size={17} fill={liked ? "currentColor" : "none"}/> Like <span>{countLabel(likes)}</span>
         </button>
-        <button type="button" onClick={() => setCommentsOpen(true)} className="inline-flex min-h-10 items-center gap-2 rounded-full bg-white/10 px-4 text-sm font-semibold"><MessageCircle size={17}/> Comment <span>{countLabel(comments)}</span></button>
+        <button type="button" onClick={() => setCommentsOpen(true)} className="inline-flex min-h-10 items-center gap-2 rounded-full bg-white/10 px-4 text-sm font-semibold"><MessageCircle size={17}/> Comment <span>{countLabel(commentCount)}</span></button>
         <button type="button" onClick={() => void shareVideo()} className="inline-flex min-h-10 items-center gap-2 rounded-full bg-white/10 px-4 text-sm font-semibold"><Share2 size={17}/> Share</button>
-        <button type="button" onClick={toggleSave} disabled={busy} aria-pressed={saved} className={`inline-flex min-h-10 items-center gap-2 rounded-full px-4 text-sm font-semibold disabled:opacity-50 ${saved ? "bg-cyan-400/20 text-cyan-200" : "bg-white/10"}`}><Bookmark size={17} fill={saved ? "currentColor" : "none"}/> {saved ? "Saved" : "Save"}</button>
+        <button type="button" onClick={() => requireAuth(() => void toggleSave(), "save", videoId)} disabled={busy} aria-pressed={saved} className={`inline-flex min-h-10 items-center gap-2 rounded-full px-4 text-sm font-semibold disabled:opacity-50 ${saved ? "bg-cyan-400/20 text-cyan-200" : "bg-white/10"}`}><Bookmark size={17} fill={saved ? "currentColor" : "none"}/> {saved ? "Saved" : "Save"}</button>
       </div>
       <div className="mt-4 flex flex-wrap items-center justify-between gap-3 border-t border-white/10 pt-4">
         <div className="flex items-center gap-2 text-sm text-slate-300"><Users size={18} className="text-cyan-300"/> <strong className="text-white">{followers === null ? "—" : countLabel(followers)}</strong> Followers</div>
         {creatorId ? <FollowButton targetUid={creatorId}/> : <span className="text-xs text-slate-500">Creator profile unavailable</span>}
       </div>
       {message ? <p role="status" className="mt-3 text-xs text-cyan-200">{message}</p> : null}
-      <CommentDrawer open={commentsOpen} onClose={() => setCommentsOpen(false)} videoId={videoId}/>
+      <CommentDrawer open={commentsOpen} onClose={() => setCommentsOpen(false)} videoId={videoId} onCommentAdded={() => setCommentCount((value) => value + 1)}/>
     </section>
   );
 }
