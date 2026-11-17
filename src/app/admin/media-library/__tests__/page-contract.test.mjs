@@ -3,7 +3,7 @@ import assert from "node:assert/strict";
 import { readFile } from "node:fs/promises";
 
 const pageUrl = new URL("../page.tsx", import.meta.url);
-const routeUrl = new URL("../../../../api/admin/media-library/route.ts", import.meta.url);
+const routeUrl = new URL("../../../api/admin/media-library/route.ts", import.meta.url);
 
 test("Media Library uses the server-side inventory endpoint, not client Firestore reads", async () => {
   const page = await readFile(pageUrl, "utf8");
