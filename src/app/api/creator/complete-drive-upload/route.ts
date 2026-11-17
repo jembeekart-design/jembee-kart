@@ -40,15 +40,11 @@ export async function POST(req: Request) {
     return NextResponse.json({ success: false, message: "कृपया लॉगिन करें।" }, { status: 401 });
   }
 
-  let body: {
-    submissionId?: unknown;
-    driveFileId?: unknown;
-  };
   const parsed = await readBoundedJson(req, 4 * 1024);
   if (!parsed.ok) {
     return NextResponse.json({ success: false, message: parsed.message }, { status: parsed.status });
   }
-  body = parsed.value as typeof body;
+  const body = parsed.value as { submissionId?: unknown; driveFileId?: unknown };
 
   const submissionId =
     typeof body.submissionId === "string" ? body.submissionId.trim() : "";

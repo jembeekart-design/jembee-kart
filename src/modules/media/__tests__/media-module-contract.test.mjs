@@ -6,10 +6,10 @@ const root = new URL('../../../', import.meta.url);
 const read = (path) => readFile(new URL(path, root), 'utf8');
 
 test('byte-range parser is owned by the media module and imported by streaming route', async () => {
-  const module = await read('modules/media/byteRange.ts');
+  const mediaModule = await read('modules/media/byteRange.ts');
   const route = await read('app/api/shorts/video-stream/[videoId]/route.ts');
-  assert.match(module, /export function parseByteRange/);
-  assert.match(module, /export function boundedByteRange/);
+  assert.match(mediaModule, /export function parseByteRange/);
+  assert.match(mediaModule, /export function boundedByteRange/);
   assert.match(route, /@\/modules\/media\/byteRange/);
   assert.match(route, /parseByteRange\(rangeHeader, metadata\.size\)/);
 });
