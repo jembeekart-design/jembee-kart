@@ -41,7 +41,7 @@ object VideoCatalogClient {
                             val item = items.optJSONObject(i) ?: continue
                             val id = item.optString("id").takeIf { it.isNotBlank() } ?: continue
                             val stream = item.optString("streamUrl")
-                            if (!stream.startsWith("$BASE/api/shorts/video-stream/")) continue
+                            if (!stream.startsWith("/api/shorts/video-stream/")) continue
                             add(JembeeVideo(
                                 id = id,
                                 format = item.optString("format", format),
