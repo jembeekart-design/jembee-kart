@@ -1,0 +1,14 @@
+<resources>
+    <style name="Theme.JembeePlay" parent="android:style/Theme.Material.NoActionBar">
+        <item name="android:fontFamily">sans</item>
+        <item name="android:windowLightStatusBar">false</item>
+        <item name="android:statusBarColor">#080B12</item>
+        <item name="android:navigationBarColor">#080B12</item>
+        <item name="android:windowBackground">#080B12</item>
+    </style>
+    <style name="Theme.JembeePlay.Starting" parent="Theme.SplashScreen">
+        <item name="windowSplashScreenBackground">@color/jembee_splash_background</item>
+        <item name="windowSplashScreenAnimatedIcon">@drawable/splash_brand_mark</item>
+        <item name="postSplashScreenTheme">@style/Theme.JembeePlay</item>
+    </style>
+</resources>
