@@ -118,17 +118,8 @@ private fun HomeScreen(onOpenShorts: () -> Unit, onOpenWatch: (JembeeVideo) -> U
                 }
             }
         }
-        SectionHeader("Learn by class", "Browse subjects", onLearn)
-        Row(Modifier.fillMaxWidth().padding(horizontal = 16.dp), horizontalArrangement = Arrangement.spacedBy(8.dp)) {
-            listOf("6", "7", "8", "9", "10").forEach { grade ->
-                Surface(Modifier.weight(1f).height(66.dp).clickable { onLearn() }, shape = RoundedCornerShape(13.dp), color = JembeeSurface) {
-                    Column(horizontalAlignment = Alignment.CenterHorizontally, verticalArrangement = Arrangement.Center) {
-                        Text("CLASS", color = JembeeMuted, fontSize = 8.sp)
-                        Text(grade, color = Color.White, fontSize = 19.sp, fontWeight = FontWeight.Bold)
-                    }
-                }
-            }
-        }
+        SectionHeader("Learn by class", "Browse published boards, books and questions", onLearn)
+        Button(onClick = onLearn, modifier = Modifier.padding(horizontal = 18.dp)) { Text("Explore Learning Catalogue  →") }
     }
 }
 
@@ -210,7 +201,7 @@ private fun LearnScreen() {
     val currentType = types.getOrNull(stage)
     val entries = remember(nodes, stage, parent) {
         if (currentType == null) emptyList()
-        else nodes.filter { node -> node.type == currentType && node.parentId == if (stage == 0) null else parent }.sortedBy { it.name.lowercase() }
+        else nodes.filter { node -> (if (stage == 3) node.type == "subject" || node.type == "book" else node.type == currentType) && node.parentId == if (stage == 0) null else parent }.sortedBy { it.name.lowercase() }
     }
     Column(Modifier.fillMaxSize().verticalScroll(rememberScrollState()).padding(18.dp)) {
         Text("Learn with JEMBEE", color = Color.White, fontSize = 24.sp, fontWeight = FontWeight.Black)
