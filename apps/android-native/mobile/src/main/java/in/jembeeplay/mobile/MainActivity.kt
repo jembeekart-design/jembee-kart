@@ -195,45 +195,77 @@ private fun WatchScreen(video: JembeeVideo?, onBack: () -> Unit) {
 
 @Composable
 private fun LearnScreen() {
-    var schools by remember { mutableStateOf<List<Pair<String, String>>>(emptyList()) }
+    var nodes by remember { mutableStateOf<List<SchoolLearningNode>>(emptyList()) }
     var loading by remember { mutableStateOf(true) }
     var error by remember { mutableStateOf<String?>(null) }
-    LaunchedEffect(Unit) {
-        SchoolCatalogClient.fetch { items, message ->
-            schools = items
-            error = message
-            loading = false
-        }
+    var stage by remember { mutableIntStateOf(0) }
+    var selected by remember { mutableStateOf<List<SchoolLearningNode>>(emptyList()) }
+    var answers by remember { mutableStateOf<List<SchoolAnswerVideo>>(emptyList()) }
+    var answersLoading by remember { mutableStateOf(false) }
+    var activeAnswer by remember { mutableStateOf<SchoolAnswerVideo?>(null) }
+    LaunchedEffect(Unit) { SchoolCatalogClient.fetch { items, message -> nodes = items; error = message; loading = false } }
+    val types = listOf("board", "school", "class", "subject", "chapter", "question")
+    val titles = listOf("Choose Board", "Choose School", "Choose Class", "Choose Subject / Book", "Choose Chapter", "Choose Question", "Video Answers")
+    val parent = selected.lastOrNull()?.id
+    val currentType = types.getOrNull(stage)
+    val entries = remember(nodes, stage, parent) {
+        if (currentType == null) emptyList()
+        else nodes.filter { node -> node.type == currentType && node.parentId == if (stage == 0) null else parent }.sortedBy { it.name.lowercase() }
     }
     Column(Modifier.fillMaxSize().verticalScroll(rememberScrollState()).padding(18.dp)) {
         Text("Learn with JEMBEE", color = Color.White, fontSize = 24.sp, fontWeight = FontWeight.Black)
-        Text("Approved school catalogue", color = JembeeMuted, fontSize = 12.sp, modifier = Modifier.padding(top = 5.dp, bottom = 18.dp))
-        when {
-            loading -> CircularProgressIndicator(color = JembeeAccent)
-            schools.isNotEmpty() -> schools.forEach { (name, board) ->
-                Row(
-                    Modifier.fillMaxWidth().padding(vertical = 5.dp).background(JembeeSurface, RoundedCornerShape(12.dp)).padding(16.dp),
-                    verticalAlignment = Alignment.CenterVertically
-                ) {
-                    Column(Modifier.weight(1f)) {
-                        Text(name, color = Color.White, fontWeight = FontWeight.Bold)
-                        Text(board, color = JembeeMuted, fontSize = 11.sp)
-                    }
-                    Text("School", color = JembeeAccent, fontSize = 11.sp)
-                }
+        Text("Board  •  School  •  Class  •  Subject  •  Chapter  •  Question", color = JembeeMuted, fontSize = 10.sp, modifier = Modifier.padding(top = 5.dp, bottom = 14.dp))
+        if (activeAnswer != null) {
+            TextButton(onClick = { activeAnswer = null }) { Text("‹ Back to answers", color = JembeeAccent) }
+            RealVideoPlayer(activeAnswer!!.streamUrl, Modifier.fillMaxWidth().aspectRatio(16f / 9f))
+            Text(activeAnswer!!.caption.ifBlank { "Video answer" }, color = Color.White, fontWeight = FontWeight.Bold, modifier = Modifier.padding(top = 12.dp))
+            Text(activeAnswer!!.creator, color = JembeeMuted, fontSize = 11.sp)
+        } else {
+            Row(Modifier.fillMaxWidth(), verticalAlignment = Alignment.CenterVertically) {
+                if (stage > 0) TextButton(onClick = { stage--; answers = emptyList(); error = null }) { Text("‹ Back", color = JembeeAccent) }
+                Text(titles[stage], color = Color.White, fontWeight = FontWeight.Bold, fontSize = 18.sp)
+                Spacer(Modifier.weight(1f))
+                if (stage > 0) TextButton(onClick = { stage = 0; selected = emptyList(); answers = emptyList() }) { Text("Reset", color = JembeeMuted) }
             }
-            else -> Text(
-                error ?: "Abhi approved school catalogue mein koi school available nahi hai.",
-                color = JembeeMuted,
-                modifier = Modifier.padding(vertical = 12.dp)
-            )
+            selected.forEach { node -> Text("${node.type.uppercase()}: ${node.name}", color = JembeeMuted, fontSize = 10.sp, modifier = Modifier.padding(top = 3.dp)) }
+            when {
+                loading -> CircularProgressIndicator(Modifier.padding(20.dp), color = JembeeAccent)
+                error != null && nodes.isEmpty() -> Text(error ?: "Learning catalogue unavailable", color = JembeeMuted, modifier = Modifier.padding(vertical = 16.dp))
+                stage < 6 && entries.isEmpty() -> Text(if (stage == 0) "Abhi koi published Board available nahi hai." else "Is level ke liye abhi published entry nahi hai.", color = JembeeMuted, modifier = Modifier.padding(vertical = 18.dp))
+                stage < 6 -> entries.forEach { node ->
+                    Row(
+                        Modifier.fillMaxWidth().padding(vertical = 5.dp).background(JembeeSurface, RoundedCornerShape(12.dp))
+                            .clickable {
+                                selected = selected.take(stage) + node
+                                stage++
+                                error = null
+                                if (stage == 6) {
+                                    answersLoading = true
+                                    SchoolAnswerClient.fetch(node.id) { found, message -> answers = found; error = message; answersLoading = false }
+                                }
+                            }.padding(15.dp),
+                        verticalAlignment = Alignment.CenterVertically
+                    ) {
+                        Column(Modifier.weight(1f)) {
+                            Text(node.name, color = Color.White, fontWeight = FontWeight.Bold)
+                            Text(node.type.replaceFirstChar { it.uppercase() }, color = JembeeMuted, fontSize = 10.sp)
+                        }
+                        Text("›", color = JembeeAccent, fontSize = 22.sp)
+                    }
+                }
+                answersLoading -> CircularProgressIndicator(Modifier.padding(20.dp), color = JembeeAccent)
+                answers.isNotEmpty() -> answers.forEach { video ->
+                    Row(Modifier.fillMaxWidth().padding(vertical = 5.dp).background(JembeeSurface, RoundedCornerShape(12.dp)).clickable { activeAnswer = video }.padding(15.dp), verticalAlignment = Alignment.CenterVertically) {
+                        Column(Modifier.weight(1f)) {
+                            Text(video.caption.ifBlank { "Video answer" }, color = Color.White, fontWeight = FontWeight.Bold)
+                            Text(video.creator, color = JembeeMuted, fontSize = 10.sp)
+                        }
+                        Text("▶ Play", color = JembeeAccent, fontWeight = FontWeight.Bold)
+                    }
+                }
+                else -> Text(error ?: "Is question ke liye abhi koi approved free video answer nahi hai.", color = JembeeMuted, modifier = Modifier.padding(vertical = 18.dp))
+            }
         }
-        Text(
-            "Subjects, chapters aur questions ka native connection abhi agle learning integration step mein hai.",
-            color = JembeeMuted,
-            fontSize = 11.sp,
-            modifier = Modifier.padding(top = 18.dp)
-        )
     }
 }
 
