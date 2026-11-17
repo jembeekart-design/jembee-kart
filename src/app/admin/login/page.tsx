@@ -35,12 +35,22 @@ export default function AdminLoginPage() {
 console.log("LOGIN UID:", user?.uid);
 console.log("LOGIN EMAIL:", user?.email);
       const requestedNext = new URLSearchParams(window.location.search).get("next") || "";
-      // Preserve only the fixed same-origin ChatGPT consent route.
+      // Only preserve same-origin Admin destinations (or the fixed consent route).
+      // Reject protocol-relative URLs, backslashes, auth loops, and non-admin paths.
+      let safeNext = "/admin";
       if (requestedNext.startsWith("/connect/chatgpt/") || requestedNext === "/connect/chatgpt") {
-        router.replace(requestedNext);
-      } else {
-        router.replace("/admin");
+        safeNext = requestedNext;
+      } else if (requestedNext.startsWith("/admin/") && !requestedNext.startsWith("//") && !requestedNext.includes(String.fromCharCode(92))) {
+        try {
+          const target = new URL(requestedNext, window.location.origin);
+          if (target.origin === window.location.origin && target.pathname !== "/admin/login") {
+            safeNext = target.pathname + target.search + target.hash;
+          }
+        } catch {
+          safeNext = "/admin";
+        }
       }
+      router.replace(safeNext);
     } catch (err: unknown) {
       console.error(err);
 
