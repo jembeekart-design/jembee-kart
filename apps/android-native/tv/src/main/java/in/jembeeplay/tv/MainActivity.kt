@@ -199,7 +199,7 @@ private fun TvLearningScreen(onBack: () -> Unit) {
             }
         }
         Row(horizontalArrangement = Arrangement.spacedBy(12.dp), modifier = Modifier.padding(top = 14.dp)) {
-            if (stage > 0) Button(onClick = { stage-- }) { Text("‹ Back") }
+            if (stage > 0) Button(onClick = { stage--; selected = selected.dropLast(1); answerVideos = emptyList(); answerError = null; activeAnswer = null }) { Text("‹ Back") }
             Button(onClick = { stage = 0; selected = emptyList() }) { Text("Reset") }
         }
     }
