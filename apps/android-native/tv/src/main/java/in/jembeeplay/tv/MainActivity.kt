@@ -3,6 +3,7 @@ package `in`.jembeeplay.tv
 import android.os.Bundle
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import androidx.activity.ComponentActivity
+import androidx.activity.compose.BackHandler
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
@@ -38,6 +39,14 @@ private fun JembeeTvApp() {
     var selected by remember { mutableStateOf("Home") }
     var watchReturn by remember { mutableStateOf("Home") }
     var activeVideo by remember { mutableStateOf<JembeeVideo?>(null) }
+
+    BackHandler(enabled = selected != "Home") {
+        selected = when (selected) {
+            "Watch" -> watchReturn
+            "Shorts", "Learning" -> "Home"
+            else -> "Home"
+        }
+    }
 
     LaunchedEffect(Unit) {
         RemoteConfigClient.fetch(context) { remoteConfig = it }
