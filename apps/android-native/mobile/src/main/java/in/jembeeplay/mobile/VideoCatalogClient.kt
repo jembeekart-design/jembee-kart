@@ -1,4 +1,4 @@
-package package `in`.jembeeplay.mobile
+package `in`.jembeeplay.mobile
 
 import org.json.JSONObject
 import java.net.HttpURLConnection
