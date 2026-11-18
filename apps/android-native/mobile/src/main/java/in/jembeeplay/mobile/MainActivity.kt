@@ -3,6 +3,7 @@ package `in`.jembeeplay.mobile
 import android.os.Bundle
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import androidx.activity.ComponentActivity
+import androidx.activity.compose.BackHandler
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -46,6 +47,12 @@ private fun JembeeMobileApp() {
     var selected by remember { mutableStateOf("Home") }
     var watchReturn by remember { mutableStateOf("Home") }
     var activeVideo by remember { mutableStateOf<JembeeVideo?>(null) }
+    BackHandler(enabled = selected != "Home") {
+        selected = when (selected) {
+            "Watch" -> watchReturn
+            else -> "Home"
+        }
+    }
     var dark by remember { mutableStateOf(true) }
     val colors = darkColorScheme(primary = JembeeAccent, background = JembeeBackground, surface = JembeeSurface)
     MaterialTheme(colorScheme = colors) {
