@@ -36,6 +36,7 @@ private fun JembeeTvApp() {
     var shortError by remember { mutableStateOf<String?>(null) }
     var longError by remember { mutableStateOf<String?>(null) }
     var selected by remember { mutableStateOf("Home") }
+    var watchReturn by remember { mutableStateOf("Home") }
     var activeVideo by remember { mutableStateOf<JembeeVideo?>(null) }
 
     LaunchedEffect(Unit) {
@@ -47,8 +48,8 @@ private fun JembeeTvApp() {
     MaterialTheme(colorScheme = darkColorScheme(primary = TvAccent, background = Color(0xFF080B12), surface = Color(0xFF151B27))) {
         Box(Modifier.fillMaxSize().background(Color(0xFF080B12))) {
             when (selected) {
-                "Shorts" -> TvShortsScreen(videos = shorts, error = shortError, onBack = { selected = "Home" }, onWatch = { activeVideo = it; selected = "Watch" })
-                "Watch" -> TvWatchScreen(video = activeVideo, onBack = { selected = "Home" })
+                "Shorts" -> TvShortsScreen(videos = shorts, error = shortError, onBack = { selected = "Home" }, onWatch = { activeVideo = it; watchReturn = "Shorts"; selected = "Watch" })
+                "Watch" -> TvWatchScreen(video = activeVideo, onBack = { selected = watchReturn })
                 "Learning" -> TvLearningScreen(onBack = { selected = "Home" })
                 else -> TvHomeScreen(
                     longVideos = longVideos,
@@ -56,7 +57,7 @@ private fun JembeeTvApp() {
                     maintenance = remoteConfig.maintenanceEnabled,
                     message = remoteConfig.maintenanceMessage,
                     onSelect = { selected = it },
-                    onWatch = { activeVideo = it; selected = "Watch" }
+                    onWatch = { activeVideo = it; watchReturn = "Home"; selected = "Watch" }
                 )
             }
         }
@@ -118,7 +119,6 @@ private fun TvHomeScreen(
         Text("Only approved, active, safe and free videos are listed.", Modifier.padding(top = 10.dp), color = Color(0xFF8392A7), fontSize = 11.sp)
     }
 }
-
 
 @Composable
 private fun TvLearningScreen(onBack: () -> Unit) {
@@ -204,7 +204,6 @@ private fun TvLearningScreen(onBack: () -> Unit) {
         }
     }
 }
-
 
 @Composable
 private fun TvShortsScreen(videos: List<JembeeVideo>, error: String?, onBack: () -> Unit, onWatch: (JembeeVideo) -> Unit) {
