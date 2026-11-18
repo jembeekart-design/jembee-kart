@@ -53,7 +53,6 @@ private fun JembeeMobileApp() {
             else -> "Home"
         }
     }
-    var dark by remember { mutableStateOf(true) }
     val colors = darkColorScheme(primary = JembeeAccent, background = JembeeBackground, surface = JembeeSurface)
     MaterialTheme(colorScheme = colors) {
         Scaffold(
@@ -81,7 +80,6 @@ private fun JembeeMobileApp() {
                             Text("JEMBEE PLAY", color = Color.White, fontSize = 21.sp, fontWeight = FontWeight.Black, letterSpacing = 1.sp)
                             Text("WATCH  •  LEARN  •  CREATE", color = JembeeMuted, fontSize = 9.sp, letterSpacing = 1.5.sp)
                         }
-                        TextButton(onClick = { dark = !dark }) { Text(if (dark) "☼" else "☾", fontSize = 20.sp) }
                     }
                 }
                 if (remoteConfig.maintenanceEnabled) {
@@ -111,7 +109,7 @@ private fun HomeScreen(onOpenShorts: () -> Unit, onOpenWatch: (JembeeVideo) -> U
     Column(Modifier.fillMaxSize().verticalScroll(rememberScrollState()).padding(bottom = 20.dp)) {
         SectionHeader("Shorts for you", "Real approved videos", onOpenShorts)
         Button(onClick = onOpenShorts, modifier = Modifier.padding(horizontal = 18.dp)) { Text("Open Shorts feed  ▶") }
-        SectionHeader("Long videos", "From JEMBEE PLAY catalogue", onClick = {})
+        SectionHeader("Long videos", "From JEMBEE PLAY catalogue")
         when {
             loading -> CircularProgressIndicator(Modifier.padding(20.dp), color = JembeeAccent)
             videos.isEmpty() -> Text(error ?: "Abhi koi approved free long video available nahi hai.", Modifier.padding(18.dp), color = JembeeMuted)
@@ -132,13 +130,15 @@ private fun HomeScreen(onOpenShorts: () -> Unit, onOpenWatch: (JembeeVideo) -> U
 }
 
 @Composable
-private fun SectionHeader(title: String, subtitle: String, onClick: () -> Unit) {
+private fun SectionHeader(title: String, subtitle: String, onClick: (() -> Unit)? = null) {
     Row(Modifier.fillMaxWidth().padding(horizontal = 18.dp, vertical = 14.dp), verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.SpaceBetween) {
         Column {
             Text(title, color = Color.White, fontSize = 18.sp, fontWeight = FontWeight.Bold)
             Text(subtitle, color = JembeeMuted, fontSize = 10.sp)
         }
-        TextButton(onClick = onClick) { Text("See all  →", color = JembeeAccent, fontSize = 11.sp) }
+        if (onClick != null) {
+            TextButton(onClick = onClick) { Text("See all  →", color = JembeeAccent, fontSize = 11.sp) }
+        }
     }
 }
 
