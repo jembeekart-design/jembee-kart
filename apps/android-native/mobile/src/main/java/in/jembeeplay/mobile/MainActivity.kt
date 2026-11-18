@@ -44,6 +44,7 @@ private fun JembeeMobileApp() {
     var remoteConfig by remember { mutableStateOf(JembeeRemoteConfig()) }
     LaunchedEffect(Unit) { RemoteConfigClient.fetch(context) { remoteConfig = it } }
     var selected by remember { mutableStateOf("Home") }
+    var watchReturn by remember { mutableStateOf("Home") }
     var activeVideo by remember { mutableStateOf<JembeeVideo?>(null) }
     var dark by remember { mutableStateOf(true) }
     val colors = darkColorScheme(primary = JembeeAccent, background = JembeeBackground, surface = JembeeSurface)
@@ -80,9 +81,9 @@ private fun JembeeMobileApp() {
                     Text(remoteConfig.maintenanceMessage.ifBlank { "JEMBEE PLAY is temporarily under maintenance." }, Modifier.fillMaxWidth().padding(12.dp), color = colors.error)
                 }
                 when (selected) {
-                    "Home" -> HomeScreen(onOpenShorts = { selected = "Shorts" }, onOpenWatch = { video -> activeVideo = video; selected = "Watch" }, onLearn = { selected = "Learn" })
-                    "Shorts" -> ShortsScreen(onBack = { selected = "Home" }, onOpenWatch = { video -> activeVideo = video; selected = "Watch" })
-                    "Watch" -> WatchScreen(video = activeVideo, onBack = { selected = "Home" })
+                    "Home" -> HomeScreen(onOpenShorts = { selected = "Shorts" }, onOpenWatch = { video -> activeVideo = video; watchReturn = "Home"; selected = "Watch" }, onLearn = { selected = "Learn" })
+                    "Shorts" -> ShortsScreen(onBack = { selected = "Home" }, onOpenWatch = { video -> activeVideo = video; watchReturn = "Shorts"; selected = "Watch" })
+                    "Watch" -> WatchScreen(video = activeVideo, onBack = { selected = watchReturn })
                     "Learn" -> LearnScreen()
                     "Library" -> SimpleScreen("Your Library", "Saved videos, watch history and downloads")
                     else -> SimpleScreen("Your profile", "Sign in to manage your JEMBEE PLAY account")
