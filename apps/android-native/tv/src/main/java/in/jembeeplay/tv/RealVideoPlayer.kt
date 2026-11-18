@@ -31,6 +31,10 @@ fun RealVideoPlayer(videoUrl: String, modifier: Modifier = Modifier, autoplay: B
                 useController = true
             }
         },
-        update = { it.player = player }
+        update = {
+            it.player = player
+            // Keep playback state in sync when the active TV screen/page changes.
+            player.playWhenReady = autoplay
+        }
     )
 }
