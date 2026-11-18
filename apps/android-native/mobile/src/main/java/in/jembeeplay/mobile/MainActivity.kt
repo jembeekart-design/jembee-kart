@@ -213,7 +213,7 @@ private fun LearnScreen() {
             Text(activeAnswer!!.creator, color = JembeeMuted, fontSize = 11.sp)
         } else {
             Row(Modifier.fillMaxWidth(), verticalAlignment = Alignment.CenterVertically) {
-                if (stage > 0) TextButton(onClick = { stage--; answers = emptyList(); error = null }) { Text("‹ Back", color = JembeeAccent) }
+                if (stage > 0) TextButton(onClick = { stage--; selected = selected.dropLast(1); answers = emptyList(); activeAnswer = null; error = null }) { Text("‹ Back", color = JembeeAccent) }
                 Text(titles[stage], color = Color.White, fontWeight = FontWeight.Bold, fontSize = 18.sp)
                 Spacer(Modifier.weight(1f))
                 if (stage > 0) TextButton(onClick = { stage = 0; selected = emptyList(); answers = emptyList() }) { Text("Reset", color = JembeeMuted) }
