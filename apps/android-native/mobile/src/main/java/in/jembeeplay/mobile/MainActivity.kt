@@ -196,12 +196,12 @@ private fun LearnScreen() {
     var activeAnswer by remember { mutableStateOf<SchoolAnswerVideo?>(null) }
     LaunchedEffect(Unit) { SchoolCatalogClient.fetch { items, message -> nodes = items; error = message; loading = false } }
     val types = listOf("board", "school", "class", "subject", "chapter", "question")
-    val titles = listOf("Choose Board", "Choose School", "Choose Class", "Choose Subject / Book", "Choose Chapter", "Choose Question", "Video Answers")
+    val titles = listOf("Choose Board", "Choose School", "Choose Class", "Choose Subject", "Choose Chapter", "Choose Question", "Video Answers")
     val parent = selected.lastOrNull()?.id
     val currentType = types.getOrNull(stage)
     val entries = remember(nodes, stage, parent) {
         if (currentType == null) emptyList()
-        else nodes.filter { node -> (if (stage == 3) node.type == "subject" || node.type == "book" else node.type == currentType) && node.parentId == if (stage == 0) null else parent }.sortedBy { it.name.lowercase() }
+        else nodes.filter { node -> node.type == currentType && node.parentId == if (stage == 0) null else parent }.sortedBy { it.name.lowercase() }
     }
     Column(Modifier.fillMaxSize().verticalScroll(rememberScrollState()).padding(18.dp)) {
         Text("Learn with JEMBEE", color = Color.White, fontSize = 24.sp, fontWeight = FontWeight.Black)
