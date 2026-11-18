@@ -1,4 +1,4 @@
-package package `in`.jembeeplay.tv
+package `in`.jembeeplay.tv
 
 import org.json.JSONObject
 import java.net.HttpURLConnection
