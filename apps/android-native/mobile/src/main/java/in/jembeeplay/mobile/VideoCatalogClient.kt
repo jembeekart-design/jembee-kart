@@ -1,4 +1,4 @@
-package `in`.jembeeplay.mobile
+package package `in`.jembeeplay.mobile
 
 import org.json.JSONObject
 import java.net.HttpURLConnection
@@ -16,14 +16,19 @@ data class JembeeVideo(
     val views: Int
 )
 
+/**
+ * Uses the already-published production catalogue contract.
+ * Do not switch this to /api/app/videos until that route is deployed to production.
+ */
 object VideoCatalogClient {
     private const val BASE = "https://jembeeplay.in"
+    private const val ENDPOINT = "$BASE/api/app/video-catalog?limit=40"
 
     fun fetch(format: String, onResult: (List<JembeeVideo>, String?) -> Unit) {
         Thread {
             val result = runCatching {
                 require(format == "short" || format == "long")
-                val connection = (URL("$BASE/api/app/videos?format=$format").openConnection() as HttpURLConnection).apply {
+                val connection = (URL(ENDPOINT).openConnection() as HttpURLConnection).apply {
                     requestMethod = "GET"
                     connectTimeout = 10000
                     readTimeout = 15000
@@ -40,18 +45,22 @@ object VideoCatalogClient {
                         for (i in 0 until items.length()) {
                             val item = items.optJSONObject(i) ?: continue
                             val id = item.optString("id").takeIf { it.isNotBlank() } ?: continue
-                            val stream = item.optString("streamUrl")
-                            if (!stream.startsWith("/api/shorts/video-stream/")) continue
+                            val itemFormat = item.optString("videoFormat", "short")
+                            if (itemFormat != format) continue
+                            val playback = item.optString("playbackUrl")
+                            if (!playback.startsWith("/api/shorts/video-stream/")) continue
+                            val thumbnail = item.optString("thumbnailUrl")
+                            if (!thumbnail.startsWith("/api/shorts/video-thumbnail/")) continue
                             add(JembeeVideo(
                                 id = id,
-                                format = item.optString("format", format),
+                                format = itemFormat,
                                 caption = item.optString("caption"),
                                 creatorName = item.optString("displayName").ifBlank { item.optString("username").ifBlank { "JEMBEE PLAY creator" } },
                                 username = item.optString("username"),
-                                thumbnailUrl = "$BASE" + item.optString("thumbnailUrl"),
-                                streamUrl = "$BASE$stream",
-                                likes = item.optInt("likes", 0),
-                                views = item.optInt("views", 0)
+                                thumbnailUrl = "$BASE$thumbnail",
+                                streamUrl = "$BASE$playback",
+                                likes = item.optInt("likes", 0).coerceAtLeast(0),
+                                views = item.optInt("views", 0).coerceAtLeast(0)
                             ))
                         }
                     }
