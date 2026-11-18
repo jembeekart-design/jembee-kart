@@ -31,6 +31,11 @@ fun RealVideoPlayer(videoUrl: String, modifier: Modifier = Modifier, autoplay: B
                 useController = true
             }
         },
-        update = { it.player = player }
+        update = {
+            it.player = player
+            // VerticalPager keeps adjacent pages composed. Reconcile playback
+            // whenever the page becomes/ceases to be the active page.
+            player.playWhenReady = autoplay
+        }
     )
 }
