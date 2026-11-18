@@ -142,7 +142,7 @@ private fun TvLearningScreen(onBack: () -> Unit) {
         }
     }
     val types = listOf("board", "school", "class", "subject", "chapter", "question")
-    val titles = listOf("Choose Board", "Choose School", "Choose Class", "Choose Subject / Book", "Choose Chapter", "Choose Question")
+    val titles = listOf("Choose Board", "Choose School", "Choose Class", "Choose Subject", "Choose Chapter", "Choose Question")
     val parent = selected.lastOrNull()?.id
     val type = types.getOrNull(stage)
     val entries = remember(nodes, stage, parent) {
