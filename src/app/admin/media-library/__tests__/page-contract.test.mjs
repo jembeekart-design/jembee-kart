@@ -83,3 +83,16 @@ test("Video deletion archives notifications and reconciles unread metadata", asy
   assert.match(service, /unreadCount: Math\.max\(0/);
   assert.match(service, /videoId: FieldValue\.delete\(\)/);
 });
+
+test("Malformed notifications are archived one at a time without skipping user unread reconciliation", async () => {
+  const service = await readFile(deletionServicePath, "utf8");
+  assert.match(service, /if \(!userId\) \{\s+await firstDoc\.ref\.update/);
+  assert.match(service, /where\("userId", "==", userId\)/);
+});
+
+test("Deletion removes both Drive and Cloudinary assets when both references exist", async () => {
+  const route = await readFile(deleteRoutePath, "utf8");
+  assert.match(route, /if \(driveFileId\) \{/);
+  assert.match(route, /if \(storedPublicId\) \{/);
+  assert.doesNotMatch(route, /else if \(storedPublicId\)/);
+});
