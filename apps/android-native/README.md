@@ -22,3 +22,35 @@ Open `apps/android-native` in Android Studio and sync Gradle. Build each applica
 - Do not enable paid checkout or payouts from the native clients. All entitlement and settlement decisions remain server-authoritative.
 - Direct APK URLs must only be published after signed builds, SHA-256 checksums, malware scanning and device QA.
 - Keep APK and AAB release artifacts for the same tested version; AAB is for later Play Console submission.
+
+
+## Reproducible internal QA build
+
+The repository workflow `.github/workflows/android-native.yml` builds both debug APKs on pull requests that touch this directory. The resulting `jembee-play-android-debug-apks` artifact is for internal installation and functional QA only; it is not a signed public release.
+
+### Build locally
+
+From this directory, with JDK 17, Android SDK 35, and Gradle 8.11.1 installed:
+
+```bash
+gradle --no-daemon :mobile:assembleDebug :tv:assembleDebug
+```
+
+Expected outputs:
+
+- `mobile/build/outputs/apk/debug/mobile-debug.apk`
+- `tv/build/outputs/apk/debug/tv-debug.apk`
+
+### Release acceptance checklist
+
+- Replace sample catalog cards with the production catalog API and verify empty/error/loading states.
+- Add Firebase Authentication and account/session lifecycle.
+- Connect video playback to the approved playback/session API; verify Drive/Cloudinary delivery, orientation, buffering and background/foreground recovery.
+- Implement creator upload with server-side moderation and storage authorization.
+- Wire learning-library book/chapter/question search and teacher answer flows.
+- Keep paid-video entitlements and payment verification server-authoritative; do not enable checkout until backend integration is tested.
+- Add notification registration/deep links, privacy disclosures, consent and account deletion flows.
+- Add TalkBack/keyboard/remote navigation, accessibility, crash reporting and offline/network failure tests.
+- Produce separately signed Mobile and TV release APKs/AABs using protected signing secrets; record SHA-256 checksums and verify installs on physical devices.
+
+A debug artifact must never be represented as a production release.
