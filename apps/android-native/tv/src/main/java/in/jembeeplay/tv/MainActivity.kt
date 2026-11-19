@@ -4,7 +4,6 @@ import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.background
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.runtime.*
@@ -55,12 +54,19 @@ private fun JembeeTvApp() {
                     }
                     Row(horizontalArrangement = Arrangement.spacedBy(8.dp), verticalAlignment = Alignment.CenterVertically) {
                         listOf("Home", "Shorts", "Learning", "Library", "Live").forEach { item ->
-                            androidx.compose.material3.Surface(
-                                modifier = Modifier.clickable { selected = item },
-                                shape = RoundedCornerShape(30.dp),
-                                color = if (selected == item) TvBlue else Color.Transparent
+                            Surface(
+                                onClick = { selected = item },
+                                modifier = Modifier.height(46.dp),
+                                shape = ClickableSurfaceDefaults.shape(shape = RoundedCornerShape(30.dp)),
+                                colors = ClickableSurfaceDefaults.colors(
+                                    containerColor = Color.Transparent,
+                                    focusedContainerColor = TvBlue,
+                                    focusedContentColor = Color.White
+                                )
                             ) {
-                                Text(item, Modifier.padding(horizontal = 20.dp, vertical = 12.dp), fontWeight = FontWeight.SemiBold, fontSize = 14.sp)
+                                Box(Modifier.padding(horizontal = 20.dp), contentAlignment = Alignment.Center) {
+                                    Text(item, fontWeight = FontWeight.SemiBold, fontSize = 14.sp)
+                                }
                             }
                         }
                     }
@@ -124,10 +130,15 @@ private fun JembeeTvApp() {
 
 @Composable
 private fun TvFeatureCard(title: String, subtitle: String, symbol: String, modifier: Modifier, onClick: () -> Unit) {
-    androidx.compose.material3.Surface(
-        modifier = modifier.height(112.dp).clickable(onClick = onClick),
-        shape = RoundedCornerShape(20.dp),
-        color = Color(0xFF121B29)
+    Surface(
+        onClick = onClick,
+        modifier = modifier.height(112.dp),
+        shape = ClickableSurfaceDefaults.shape(shape = RoundedCornerShape(20.dp)),
+        colors = ClickableSurfaceDefaults.colors(
+            containerColor = Color(0xFF121019),
+            focusedContainerColor = Color(0xFF351047),
+            focusedContentColor = Color.White
+        )
     ) {
         Row(Modifier.fillMaxSize().padding(horizontal = 22.dp), verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(18.dp)) {
             Text(symbol, fontSize = 30.sp, color = TvBlue, fontWeight = FontWeight.Bold)
