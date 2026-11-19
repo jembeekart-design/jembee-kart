@@ -48,10 +48,12 @@ export function subscribeToShortsNotifications(
   return onSnapshot(
     notificationsQuery,
     (snapshot) => {
-      const notifications = snapshot.docs.map((item) => ({
-        id: item.id,
-        ...(item.data() as Omit<ShortsNotification, "id">),
-      }));
+      const notifications = snapshot.docs
+        .filter((item) => item.data().videoDeleted !== true)
+        .map((item) => ({
+          id: item.id,
+          ...(item.data() as Omit<ShortsNotification, "id">),
+        }));
 
       callback(notifications);
     },
