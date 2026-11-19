@@ -33,7 +33,7 @@ const DEFAULT_SITE_EXPERIENCE: SiteExperience = {
   siteName: "JEMBEE PLAY", tagline: "Watch • Learn • Create • Share",
   heroTitle: "अपनी किताब का हर सवाल सीखें",
   heroSubtitle: "अपनी class, book और chapter चुनें और सही video answer खोजें।",
-  primaryColor: "#22d3ee", accentColor: "#8b5cf6", pageColor: "#090d16", surfaceColor: "#111827",
+  primaryColor: "#ec4899", accentColor: "#8b5cf6", pageColor: "#090d16", surfaceColor: "#111827",
   announcementEnabled: false, announcementText: "", showLearningBanner: true,
   showShorts: true, showLongVideos: true, showHomeAds: true, compactCards: false, sectionOrder: ["learning", "shorts", "longVideos"], homeCategories: DEFAULT_HOME_CATEGORIES, navigationLabels: DEFAULT_NAVIGATION_LABELS, featuredCreators: [], featuredPlaylists: [], featuredVideos: [],
 };
@@ -54,9 +54,9 @@ const desktopNavigation: NavigationItem[] = [
 const mobileNavigation: NavigationItem[] = [
   { icon: Home, key: "home", label: "Home", href: "/" },
   { icon: PlaySquare, key: "shorts", label: "Shorts", href: "/shorts" },
-  { icon: PlusSquare, label: "Create", href: "/videos/upload" },
-  { icon: GraduationCap, key: "learning", label: "Learn", href: "/learn/school" },
-  { icon: UserCircle, label: "You", href: "/account" },
+  { icon: GraduationCap, key: "learning", label: "Learning", href: "/learn/school" },
+  { icon: Wallet, label: "Earn", href: "/earnings/creator" },
+  { icon: BookOpen, label: "Library", href: "/learn/school" },
 ];
 
 function CreatorAvatar({ video }: { video: WatchVideo }) {
@@ -180,7 +180,7 @@ export default function HomePage() {
       {siteExperience.announcementEnabled && siteExperience.announcementText ? <div className="px-4 py-2 text-center text-xs font-bold text-slate-950 sm:text-sm" style={{ backgroundColor: siteExperience.primaryColor }}>{siteExperience.announcementText}</div> : null}
       <header className="sticky top-0 z-40 flex h-16 items-center gap-3 border-b border-white/10 bg-[var(--color-page-background)]/95 px-3 backdrop-blur sm:px-4">
         <button type="button" aria-label="Toggle menu" aria-expanded={mobileMenuOpen} aria-controls="mobile-navigation-drawer" onClick={() => setMobileMenuOpen((value) => !value)} className="rounded-full p-2 hover:bg-white/10"><Menu size={23}/></button>
-        <Link href="/" className="flex min-w-fit items-center gap-1 text-lg font-black tracking-tight sm:text-xl">{siteExperience.siteName}<PlaySquare size={19} className="ml-1 text-cyan-400"/></Link>
+        <Link href="/" className="flex min-w-fit items-center gap-1 text-lg font-black tracking-tight sm:text-xl">{siteExperience.siteName}<PlaySquare size={19} className="ml-1 text-pink-400"/></Link>
         <div className="mx-auto flex min-w-0 flex-1 max-w-2xl">
           <div className="flex w-full overflow-hidden rounded-full border border-white/20 bg-[#121212]">
             <input value={search} onChange={(event) => setSearch(event.target.value)} placeholder="Search videos, teachers and topics" aria-label="Search videos" className="w-full min-w-0 bg-transparent px-3 py-2.5 text-sm outline-none sm:px-5"/>
@@ -201,7 +201,7 @@ export default function HomePage() {
             {desktopNavigation.map(({ icon: Icon, label, href, key }) => <Link key={key || label} href={href} onClick={() => setMobileMenuOpen(false)} className="flex min-h-12 items-center gap-4 rounded-xl px-3 py-3 text-sm hover:bg-white/10"><Icon size={20}/>{key ? siteExperience.navigationLabels[key] || label : label}</Link>)}
             <div className="my-3 border-t border-white/10"/>
             <p className="px-3 py-2 text-xs font-bold uppercase tracking-wider text-slate-500">Earnings · अलग-अलग कमाई</p>
-            {earningsNavigation.map(({ icon: Icon, label, href }) => <Link key={label} href={href} onClick={() => setMobileMenuOpen(false)} className="flex min-h-12 items-center gap-4 rounded-xl px-3 py-3 text-sm hover:bg-white/10"><Icon size={20} className="text-cyan-300"/>{label}<ChevronRight size={16} className="ml-auto text-slate-500"/></Link>)}
+            {earningsNavigation.map(({ icon: Icon, label, href }) => <Link key={label} href={href} onClick={() => setMobileMenuOpen(false)} className="flex min-h-12 items-center gap-4 rounded-xl px-3 py-3 text-sm hover:bg-white/10"><Icon size={20} className="text-pink-300"/>{label}<ChevronRight size={16} className="ml-auto text-slate-500"/></Link>)}
             <div className="my-3 border-t border-white/10"/>
             <Link href="/videos/share" onClick={() => setMobileMenuOpen(false)} className="flex min-h-12 items-center gap-4 rounded-xl px-3 py-3 text-sm hover:bg-white/10"><Wallet size={20}/>Share Income (पुराना लिंक)</Link>
             <p className="mt-auto px-3 pt-6 text-xs text-slate-500">{siteExperience.tagline}</p>
@@ -229,9 +229,11 @@ export default function HomePage() {
           {siteExperience.sectionOrder.map((sectionKey) => {
             if (sectionKey === "learning") {
               return <Fragment key="learning">
-                {siteExperience.showLearningBanner ? <div className="mb-5 rounded-2xl border border-cyan-400/20 bg-gradient-to-r from-cyan-950/70 to-violet-950/50 p-5 sm:flex sm:items-center sm:justify-between">
-                  <div><p className="text-xs font-bold uppercase tracking-widest text-cyan-300">Jembee Play Learning</p><h1 className="mt-1 text-2xl font-black">{siteExperience.heroTitle}</h1><p className="mt-1 text-sm text-slate-300">{siteExperience.heroSubtitle}</p></div>
-                  <Link href="/learn/school" className="mt-4 inline-flex min-h-11 items-center justify-center gap-2 rounded-full bg-cyan-400 px-5 py-2.5 text-sm font-bold text-slate-950 sm:mt-0">Find your school <ChevronRight size={17}/></Link>
+                {siteExperience.showLearningBanner ? <div className="relative mb-5 min-h-[230px] overflow-hidden rounded-2xl border border-pink-400/20 bg-[#17113b] p-5 sm:flex sm:min-h-[280px] sm:items-center sm:justify-between sm:p-8">
+                  <img src="https://images.unsplash.com/photo-1529390079861-591de354faf5?w=1600&auto=format&fit=crop" alt="Students learning together" loading="lazy" className="absolute inset-0 h-full w-full object-cover object-center opacity-60"/>
+                  <div className="absolute inset-0 bg-gradient-to-r from-[#100b35] via-[#160d42]/90 to-[#160d42]/20"/>
+                  <div className="relative z-10 max-w-xl"><p className="text-xs font-bold uppercase tracking-widest text-pink-300">Videos · Chapters · Questions · Answers</p><h1 className="mt-3 text-3xl font-black leading-tight sm:text-5xl">{siteExperience.heroTitle}</h1><p className="mt-2 max-w-lg text-sm text-slate-200">{siteExperience.heroSubtitle}</p>
+                  <Link href="/learn/school" className="mt-5 inline-flex min-h-11 items-center justify-center gap-2 rounded-full bg-pink-500 px-5 py-2.5 text-sm font-bold text-white shadow-lg shadow-pink-950/40"> <PlaySquare size={17}/> Watch Now</Link></div>
                 </div> : null}
                 {siteExperience.showHomeAds ? <MonetagPlacement placement="home-after-learning-banner" /> : null}
               </Fragment>;
@@ -241,7 +243,7 @@ export default function HomePage() {
                 {siteExperience.showShorts ? <section className="mb-7" aria-labelledby="shorts-heading">
                   <div className="mb-4 flex items-center justify-between gap-3">
                     <h2 id="shorts-heading" className="flex items-center gap-2 text-lg font-bold sm:text-xl"><PlaySquare className="text-rose-500" size={23}/> Shorts</h2>
-                    <Link href="/shorts" className="shrink-0 text-sm font-semibold text-cyan-300 hover:underline">View all Shorts</Link>
+                    <Link href="/shorts" className="shrink-0 text-sm font-semibold text-pink-300 hover:underline">View all Shorts</Link>
                   </div>
                   {loading ? <div className="grid grid-cols-2 gap-3">{Array.from({ length: 4 }, (_, index) => <div key={index} className="aspect-[9/16] animate-pulse rounded-2xl bg-white/5"/>)}</div> : error ? <p role="status" className="rounded-xl border border-amber-400/20 bg-amber-400/5 p-4 text-sm text-amber-100">{error}</p> : <ShortsGrid videos={shorts}/>}
                 </section> : null}
@@ -253,7 +255,7 @@ export default function HomePage() {
                 {siteExperience.showLongVideos ? <section className="mb-7" aria-labelledby="long-videos-heading">
                   <div className="mb-4 flex items-center justify-between gap-3">
                     <h2 id="long-videos-heading" className="text-lg font-bold sm:text-xl">Latest Long Videos</h2>
-                    <Link href="/videos" className="shrink-0 text-sm font-semibold text-cyan-300 hover:underline">View all videos</Link>
+                    <Link href="/videos" className="shrink-0 text-sm font-semibold text-pink-300 hover:underline">View all videos</Link>
                   </div>
                   {loading ? (
                     <div className="grid gap-x-4 gap-y-8 sm:grid-cols-2 xl:grid-cols-3">{Array.from({ length: 3 }, (_, index) => <div key={index} className="aspect-video animate-pulse rounded-xl bg-white/5" />)}</div>
@@ -261,7 +263,7 @@ export default function HomePage() {
                     <div className="rounded-2xl border border-dashed border-white/15 p-7 text-center">
                       <p className="font-semibold">अभी कोई approved Long Video उपलब्ध नहीं है।</p>
                       <p className="mt-2 text-sm text-slate-400">Upload में Long Video चुनकर वीडियो भेजें। Admin approval के बाद वह यहाँ दिखाई देगा।</p>
-                      <Link href="/videos/upload" className="mt-4 inline-flex rounded-full bg-cyan-400 px-4 py-2 text-sm font-bold text-slate-950">Upload Long Video</Link>
+                      <Link href="/videos/upload" className="mt-4 inline-flex rounded-full bg-pink-500 px-4 py-2 text-sm font-bold text-slate-950">Upload Long Video</Link>
                     </div>
                   ) : (
                     <div className={`grid gap-x-4 gap-y-8 sm:grid-cols-2 ${siteExperience.compactCards ? "xl:grid-cols-4" : "xl:grid-cols-3"}`}>{longVideos.slice(0, 12).map((video, index) => <LongVideoCard key={video.id} video={video} eager={index < 3}/>)}</div>
@@ -272,7 +274,7 @@ export default function HomePage() {
             }
             return null;
           })}
-          {featuredVideos.length ? <section className="mb-8" aria-labelledby="featured-videos-heading"><h2 id="featured-videos-heading" className="mb-4 text-lg font-bold sm:text-xl">Featured Video</h2><div className={`grid gap-x-4 gap-y-6 sm:grid-cols-2 ${siteExperience.compactCards ? "xl:grid-cols-4" : "xl:grid-cols-3"}`}>{featuredVideos.map((item, index) => <div key={item.videoId}><p className="mb-2 text-xs font-semibold text-cyan-300">{item.label}</p><LongVideoCard video={item.video} eager={index === 0}/></div>)}</div></section> : null}
+          {featuredVideos.length ? <section className="mb-8" aria-labelledby="featured-videos-heading"><h2 id="featured-videos-heading" className="mb-4 text-lg font-bold sm:text-xl">Featured Video</h2><div className={`grid gap-x-4 gap-y-6 sm:grid-cols-2 ${siteExperience.compactCards ? "xl:grid-cols-4" : "xl:grid-cols-3"}`}>{featuredVideos.map((item, index) => <div key={item.videoId}><p className="mb-2 text-xs font-semibold text-pink-300">{item.label}</p><LongVideoCard video={item.video} eager={index === 0}/></div>)}</div></section> : null}
           {featuredCreators.length ? <section className="mb-8" aria-labelledby="featured-creators-heading">
             <h2 id="featured-creators-heading" className="mb-4 text-lg font-bold sm:text-xl">Recommended Creators</h2>
             <div className="grid gap-3 sm:grid-cols-2 xl:grid-cols-3">{featuredCreators.map((creator) => <article key={creator.creatorId} className="rounded-2xl border border-white/10 bg-[var(--color-card-background)] p-4"><Link href={`/videos/uploader/${encodeURIComponent(creator.creatorId)}`} className="flex items-center gap-3"><CreatorAvatar video={creator.videos[0]}/><div className="min-w-0"><p className="truncate font-semibold">{creator.label}</p><p className="text-xs text-slate-400">{creator.videos.length} featured videos</p></div><ChevronRight className="ml-auto shrink-0 text-slate-500" size={18}/></Link><div className="mt-3 grid grid-cols-2 gap-2">{creator.videos.slice(0, 2).map((video) => <Link key={video.id} href={`/videos?v=${encodeURIComponent(video.id)}`} className="overflow-hidden rounded-lg"><Thumbnail video={video} ratio="landscape"/><p className="mt-1 line-clamp-1 text-xs">{video.caption || "Untitled video"}</p></Link>)}</div></article>)}</div>
@@ -285,7 +287,7 @@ export default function HomePage() {
       </div>
 
       <nav className="fixed inset-x-0 bottom-0 z-40 flex justify-around border-t border-white/10 bg-[var(--color-page-background)]/95 px-2 pb-[calc(0.5rem+env(safe-area-inset-bottom))] pt-2 backdrop-blur md:hidden">
-        {mobileNavigation.map(({ icon: Icon, label, href, key }) => <Link key={key || label} href={href} className={`flex min-w-0 flex-col items-center gap-1 px-2 py-1 text-[10px] ${key === "home" ? "text-cyan-300" : "text-slate-300"}`}><Icon size={21}/>{key ? siteExperience.navigationLabels[key] || label : label}</Link>)}
+        {mobileNavigation.map(({ icon: Icon, label, href, key }) => <Link key={key || label} href={href} className={`flex min-w-0 flex-col items-center gap-1 px-2 py-1 text-[10px] ${key === "home" ? "text-pink-300" : "text-slate-300"}`}><Icon size={21}/>{key ? siteExperience.navigationLabels[key] || label : label}</Link>)}
       </nav>
     </main>
   );
