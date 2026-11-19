@@ -20,6 +20,8 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import coil.compose.AsyncImage
+import androidx.compose.ui.layout.ContentScale
 
 private val JembeeBlue = Color(0xFF1677D2)
 private val JembeeInk = Color(0xFF111827)
@@ -272,40 +274,54 @@ private fun YouScreen(onTheme: () -> Unit, dark: Boolean) {
 
 @Composable
 private fun PremiumHeroBanner(onWatch: () -> Unit) {
+    var heroThumbnail by remember { mutableStateOf<String?>(null) }
+    LaunchedEffect(Unit) {
+        VideoCatalogClient.fetch { result ->
+            result.onSuccess { page -> heroThumbnail = page.videos.firstOrNull()?.thumbnailUrl }
+        }
+    }
     Box(
         Modifier.fillMaxWidth().padding(horizontal = 16.dp).height(178.dp)
             .background(
                 Brush.horizontalGradient(
-                    listOf(Color(0xFF170B35), Color(0xFF37106A), Color(0xFF16112D))
+                    listOf(Color(0xFF17072F), Color(0xFF35106B), Color(0xFF16112D))
                 ),
-                RoundedCornerShape(24.dp)
+                RoundedCornerShape(20.dp)
             )
     ) {
+        if (heroThumbnail != null) {
+            AsyncImage(
+                model = heroThumbnail,
+                contentDescription = "Featured approved JEMBEE PLAY video",
+                contentScale = ContentScale.Crop,
+                modifier = Modifier.fillMaxSize()
+            )
+        }
+        Box(
+            Modifier.fillMaxSize().background(
+                Brush.horizontalGradient(
+                    listOf(Color(0xEE17072F), Color(0xCC35106B), Color(0x4416112D))
+                ),
+                RoundedCornerShape(20.dp)
+            )
+        )
         Column(
             Modifier.align(Alignment.CenterStart).padding(horizontal = 20.dp),
             verticalArrangement = Arrangement.spacedBy(8.dp)
         ) {
-            Text("JEMBEE PLAY", color = Color.White, fontSize = 12.sp, fontWeight = FontWeight.Black, letterSpacing = 1.4.sp)
-            Text("Watch. Learn. Create.", color = Color.White, fontSize = 24.sp, fontWeight = FontWeight.ExtraBold)
-            Text("Discover videos and ideas worth your time.", color = Color(0xFFE5DDF5), fontSize = 11.sp)
+            Text("JEMBEE PLAY  ▶", color = Color.White, fontSize = 12.sp, fontWeight = FontWeight.Black, letterSpacing = 1.sp)
+            Text("Watch  ·  Learn  ·  Create  ·  Share  ·  Earn", color = Color.White, fontSize = 17.sp, fontWeight = FontWeight.ExtraBold, maxLines = 2)
+            Text("Discover videos from the JEMBEE PLAY community", color = Color(0xFFE5DDF5), fontSize = 11.sp)
             Button(
                 onClick = onWatch,
                 colors = ButtonDefaults.buttonColors(containerColor = Color(0xFFFF1978)),
                 contentPadding = PaddingValues(horizontal = 18.dp, vertical = 4.dp)
             ) {
-                Text("▶  Watch Shorts", color = Color.White, fontWeight = FontWeight.Bold)
+                Text("▶  Watch Now", color = Color.White, fontWeight = FontWeight.Bold)
             }
         }
-        Text(
-            "▶",
-            Modifier.align(Alignment.CenterEnd).padding(end = 22.dp),
-            color = Color.White.copy(alpha = .10f),
-            fontSize = 88.sp,
-            fontWeight = FontWeight.Black
-        )
     }
 }
-
 
 @Composable
 private fun ReferenceQuickActions(onLearn: () -> Unit, onShorts: () -> Unit) {
