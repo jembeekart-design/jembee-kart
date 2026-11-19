@@ -111,7 +111,7 @@ fun NativeLearningLibraryScreen() {
 
     val stage = when { question != null -> 3; chapter != null -> 2; book != null -> 1; else -> 0 }
     val options = when (stage) {
-        0 -> nodes.filter { it.type == "book" }
+        0 -> nodes.filter { it.type == "book" || it.type == "subject" }
         1 -> nodes.filter { it.type == "chapter" && it.parentId == book?.id }
         2 -> nodes.filter { it.type == "question" && it.parentId == chapter?.id }
         else -> emptyList()
@@ -165,7 +165,7 @@ fun NativeLearningLibraryScreen() {
             if (options.isEmpty()) {
                 Box(Modifier.fillMaxWidth().weight(1f), contentAlignment = Alignment.Center) {
                     Column(horizontalAlignment = Alignment.CenterHorizontally) {
-                        Text(listOf("No published books yet", "No chapters in this book yet", "No questions in this chapter yet")[stage],
+                        Text(listOf("No published books or subjects yet", "No chapters in this selection yet", "No questions in this chapter yet")[stage],
                             fontWeight = FontWeight.Bold)
                         Text("Only published catalog entries are shown here.", color = Color(0xFF778196), fontSize = 12.sp)
                     }
