@@ -36,11 +36,11 @@ private fun JembeeMobileApp() {
     val context = LocalContext.current
     var remoteConfig by remember { mutableStateOf(JembeeRemoteConfig()) }
     LaunchedEffect(Unit) { RemoteConfigClient.fetch(context) { remoteConfig = it } }
-    var dark by remember { mutableStateOf(false) }
+    var dark by remember { mutableStateOf(true) }
     var selected by remember { mutableStateOf("Home") }
     val scheme = if (dark) darkColorScheme(
-        primary = Color(0xFF79BFFF), background = Color(0xFF0D1119),
-        surface = Color(0xFF171E2A), onSurface = Color(0xFFF2F5FA)
+        primary = Color(0xFFFF1978), background = Color(0xFF080A12),
+        surface = Color(0xFF15131E), onSurface = Color(0xFFF7F4F8)
     ) else lightColorScheme(
         primary = JembeeBlue, background = JembeeCanvas, surface = Color.White,
         onSurface = JembeeInk
@@ -50,7 +50,7 @@ private fun JembeeMobileApp() {
         Scaffold(
             containerColor = MaterialTheme.colorScheme.background,
             bottomBar = {
-                NavigationBar(
+                if (selected != "Shorts") NavigationBar(
                     containerColor = MaterialTheme.colorScheme.surface,
                     tonalElevation = 8.dp
                 ) {
