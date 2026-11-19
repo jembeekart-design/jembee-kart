@@ -91,7 +91,7 @@ private fun JembeeTvApp() {
                             horizontalAlignment = Alignment.CenterHorizontally) {
                             listOf("⌂", "♨", "▤", "◉", "♜", "⚙").forEachIndexed { index, symbol ->
                                 val destination = listOf("Home", "Shorts", "Learning", "Live", "Library", "Settings")[index]
-                                Surface(onClick = { selected = destination }, shape = RoundedCornerShape(14.dp),
+                                Surface(onClick = { selected = destination }, shape = ClickableSurfaceDefaults.shape(shape = RoundedCornerShape(14.dp)),
                                     colors = ClickableSurfaceDefaults.colors(
                                         containerColor = if (selected == destination) Color(0xFF42102E) else Color.Transparent,
                                         focusedContainerColor = Color(0xFFFF1978)
