@@ -83,30 +83,46 @@ private fun JembeeTvApp() {
 
                 if (selected == "Home" || selected == "Shorts") {
                     Surface(
-                        shape = RoundedCornerShape(28.dp),
+                        shape = RoundedCornerShape(24.dp),
                         color = colors.surface,
-                        modifier = Modifier.fillMaxWidth().height(174.dp)
+                        modifier = Modifier.fillMaxWidth().height(220.dp)
                     ) {
                         Box(Modifier.fillMaxSize().background(
-                            Brush.horizontalGradient(listOf(Color(0xFF210B45), Color(0xFF4A0E72), Color(0xFF170C32)))
+                            Brush.horizontalGradient(listOf(Color(0xFF17072F), Color(0xFF35106B), Color(0xFF170B35)))
                         )) {
                             Column(
-                                Modifier.align(Alignment.CenterStart).padding(horizontal = 30.dp),
-                                verticalArrangement = Arrangement.spacedBy(8.dp)
+                                Modifier.align(Alignment.CenterStart).padding(horizontal = 34.dp),
+                                verticalArrangement = Arrangement.spacedBy(9.dp)
                             ) {
-                                Text(if (selected == "Shorts") "Quick ideas. Big screen." else "Learn Anytime Anywhere", fontSize = 29.sp, fontWeight = FontWeight.ExtraBold)
+                                Text(if (selected == "Shorts") "Ideas that move you" else "Learn", fontSize = 17.sp, color = Color(0xFFFF8AB8), fontWeight = FontWeight.Bold)
+                                Text(if (selected == "Shorts") "Shorts on the big screen" else "Anytime Anywhere", fontSize = 34.sp, fontWeight = FontWeight.ExtraBold)
                                 Text(
-                                    if (selected == "Shorts") "Short-form video experience" else "Videos  ·  Chapters  ·  Questions  ·  Answers",
+                                    if (selected == "Shorts") "Discover short videos from JEMBEE PLAY creators" else "Videos  ·  Chapters  ·  Questions  ·  Answers",
                                     fontSize = 15.sp, color = TvMuted
                                 )
+                                Button(
+                                    onClick = { selected = if (selected == "Shorts") "Home" else "Learning" },
+                                    colors = ButtonDefaults.colors(containerColor = Color(0xFFFF1978)),
+                                    contentPadding = PaddingValues(horizontal = 22.dp, vertical = 7.dp)
+                                ) { Text("▶  Watch Now", color = Color.White, fontWeight = FontWeight.Bold) }
                             }
-                            Text("J", Modifier.align(Alignment.CenterEnd).padding(end = 48.dp), fontSize = 100.sp, fontWeight = FontWeight.Black, color = Color.White.copy(alpha = .08f))
+                            Box(
+                                Modifier.align(Alignment.CenterEnd).padding(end = 38.dp)
+                                    .size(190.dp, 160.dp)
+                                    .background(
+                                        Brush.radialGradient(listOf(Color(0x887E42D8), Color.Transparent)),
+                                        RoundedCornerShape(36.dp)
+                                    ),
+                                contentAlignment = Alignment.Center
+                            ) {
+                                Text("▶", fontSize = 94.sp, fontWeight = FontWeight.Black, color = Color.White.copy(alpha = .18f))
+                            }
                         }
                     }
                     TvLiveVideoShelf()
                     Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(18.dp)) {
-                        TvFeatureCard("Learning Library", "Explore books and question-wise lessons", "▤", Modifier.weight(1f)) { selected = "Learning" }
-                        TvFeatureCard("Your Library", "Return to saved videos and watch history", "▣", Modifier.weight(1f)) { selected = "My List" }
+                        TvFeatureCard("Learning Library", "Books  ·  Chapters  ·  Questions", "▤", Modifier.weight(1f)) { selected = "Learning" }
+                        TvFeatureCard("Your Library", "Saved videos and watch history", "▣", Modifier.weight(1f)) { selected = "My List" }
                     }
                 } else {
                     Column(
