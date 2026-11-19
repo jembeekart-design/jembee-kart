@@ -47,6 +47,9 @@ jobs:
           src/app/api/admin/system-health/route.ts
           src/app/admin/media-library/page.tsx
           src/app/admin/education/schools/page.tsx
+          src/app/teacher/dashboard/page.tsx
+          src/app/videos/reward-center/page.tsx
+          'src/app/videos/audio/[audioId]/page.tsx'
           src/app/api/admin/media-library/route.ts
           src/app/api/admin/delete-video/route.ts
           src/services/videoDeletionService.ts
