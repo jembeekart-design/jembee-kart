@@ -14,13 +14,17 @@ export async function GET(req: Request) {
     const videos = snapshot.docs.flatMap((doc) => {
       const data = doc.data();
       if (data.status !== "approved" || data.active !== true || data.moderation !== "safe") return [];
+      if (typeof data.driveFileId !== "string" || !data.driveFileId.trim()) return [];
+      // Do not expose paid content through the unauthenticated native learning feed.
+      if (data.videoAccess === "paid" || (data.videoAccess !== undefined && data.videoAccess !== "free")) return [];
       return [{
         id: doc.id,
         caption: typeof data.caption === "string" ? data.caption.slice(0, 200) : "",
         username: typeof data.username === "string" ? data.username.slice(0, 80) : "JEMBEE PLAY Creator",
-        videoAccess: data.videoAccess === "paid" ? "paid" as const : "free" as const,
+        videoAccess: "free" as const,
         videoFormat: data.videoFormat === "long" ? "long" as const : "short" as const,
-        thumbnail: typeof data.thumbnail === "string" ? data.thumbnail : null,
+        thumbnailUrl: `/api/shorts/video-thumbnail/${encodeURIComponent(doc.id)}`,
+        streamUrl: `/api/shorts/video-stream/${encodeURIComponent(doc.id)}`,
         createdAt: typeof data.createdAt === "number" ? data.createdAt : null,
       }];
     });
