@@ -11,6 +11,17 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.*
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Home
+import androidx.compose.material.icons.filled.PlayArrow
+import androidx.compose.material.icons.filled.MenuBook
+import androidx.compose.material.icons.filled.AccountBalanceWallet
+import androidx.compose.material.icons.filled.VideoLibrary
+import androidx.compose.material.icons.filled.Cast
+import androidx.compose.material.icons.filled.NotificationsNone
+import androidx.compose.material.icons.filled.Search
+import androidx.compose.material.icons.filled.Person
+import androidx.compose.ui.draw.clip
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -63,10 +74,13 @@ private fun JembeeMobileApp() {
                             selected = selected == item,
                             onClick = { selected = item },
                             icon = {
-                                Text(
-                                    when (item) { "Home" -> "⌂"; "Shorts" -> "▶"; "Learn" -> "▤"; "Library" -> "▣"; else -> "●" },
-                                    fontSize = 20.sp, fontWeight = FontWeight.Bold
-                                )
+                                Icon(when (item) {
+                                    "Home" -> Icons.Filled.Home
+                                    "Shorts" -> Icons.Filled.PlayArrow
+                                    "Learn" -> Icons.Filled.MenuBook
+                                    "Library" -> Icons.Filled.VideoLibrary
+                                    else -> Icons.Filled.AccountBalanceWallet
+                                }, contentDescription = item)
                             },
                             label = { Text(when (item) { "Learn" -> "Learning"; "You" -> "Earn"; else -> item }, fontSize = 11.sp) },
                             alwaysShowLabel = true
@@ -78,29 +92,28 @@ private fun JembeeMobileApp() {
             Column(Modifier.fillMaxSize().padding(padding)) {
                 if (selected != "Shorts") {
                     Row(
-                        Modifier.fillMaxWidth().padding(start = 20.dp, end = 16.dp, top = 16.dp, bottom = 12.dp),
+                        Modifier.fillMaxWidth().padding(start = 18.dp, end = 16.dp, top = 12.dp, bottom = 12.dp),
                         verticalAlignment = Alignment.CenterVertically,
                         horizontalArrangement = Arrangement.SpaceBetween
                     ) {
                         Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(9.dp)) {
-                            Box(
-                                Modifier.size(34.dp).background(
-                                    Brush.linearGradient(listOf(Color(0xFFFF1978), Color(0xFF8B2BDA))),
-                                    RoundedCornerShape(10.dp)
-                                ),
-                                contentAlignment = Alignment.Center
-                            ) { Text("▶", color = Color.White, fontSize = 17.sp, fontWeight = FontWeight.Black) }
-                            Column(verticalArrangement = Arrangement.spacedBy(2.dp)) {
-                                Text("JEMBEE PLAY", fontSize = 19.sp, fontWeight = FontWeight.Black, letterSpacing = 0.2.sp)
-                                Text("WATCH  ·  LEARN  ·  CREATE", fontSize = 8.sp, letterSpacing = 1.1.sp, color = JembeeMuted)
+                            Box(Modifier.size(35.dp).background(
+                                Brush.linearGradient(listOf(Color(0xFFFF1978), Color(0xFF8B2BDA))),
+                                RoundedCornerShape(10.dp)
+                            ), contentAlignment = Alignment.Center) {
+                                Icon(Icons.Filled.PlayArrow, contentDescription = "JEMBEE PLAY", tint = Color.White, modifier = Modifier.size(25.dp))
                             }
+                            Text("JEMBEE PLAY", fontSize = 19.sp, fontWeight = FontWeight.Black, letterSpacing = 0.2.sp)
                         }
-                        Surface(
-                            onClick = { selected = "You" },
-                            shape = RoundedCornerShape(50),
-                            color = MaterialTheme.colorScheme.surfaceVariant
-                        ) {
-                            Text("J", Modifier.padding(horizontal = 13.dp, vertical = 8.dp), color = MaterialTheme.colorScheme.primary, fontWeight = FontWeight.Black)
+                        Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(4.dp)) {
+                            IconButton(onClick = { selected = "Shorts" }) { Icon(Icons.Filled.Cast, contentDescription = "Cast", tint = Color.White) }
+                            IconButton(onClick = { selected = "You" }) { Icon(Icons.Filled.NotificationsNone, contentDescription = "Notifications", tint = Color.White) }
+                            IconButton(onClick = { selected = "Library" }) { Icon(Icons.Filled.Search, contentDescription = "Search", tint = Color.White) }
+                            Surface(onClick = { selected = "You" }, shape = RoundedCornerShape(50), color = Color(0xFF252332)) {
+                                Box(Modifier.size(34.dp), contentAlignment = Alignment.Center) {
+                                    Icon(Icons.Filled.Person, contentDescription = "Profile", tint = Color.White)
+                                }
+                            }
                         }
                     }
                 }
