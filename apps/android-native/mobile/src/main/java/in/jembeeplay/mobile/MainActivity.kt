@@ -141,64 +141,54 @@ private fun JembeeMobileApp() {
 
 @Composable
 private fun HomeScreen(onLearn: () -> Unit, onShorts: () -> Unit) {
+    var activeCategory by remember { mutableStateOf("All") }
     Column(
-        Modifier.fillMaxSize().verticalScroll(rememberScrollState()).padding(bottom = 22.dp),
-        verticalArrangement = Arrangement.spacedBy(18.dp)
+        Modifier.fillMaxSize().verticalScroll(rememberScrollState()).padding(bottom = 20.dp),
+        verticalArrangement = Arrangement.spacedBy(15.dp)
     ) {
-        LazyRow(
-            contentPadding = PaddingValues(horizontal = 18.dp),
-            horizontalArrangement = Arrangement.spacedBy(18.dp)
-        ) {
+        LazyRow(contentPadding = PaddingValues(horizontal = 18.dp), horizontalArrangement = Arrangement.spacedBy(9.dp)) {
             items(listOf("All", "Learning", "Shorts", "Education", "Craft")) { category ->
-                val active = category == "All"
-                Surface(
-                    shape = RoundedCornerShape(22.dp),
-                    color = if (active) Color(0xFFFF1978) else MaterialTheme.colorScheme.surface,
-                    tonalElevation = if (active) 0.dp else 1.dp
-                ) {
-                    Text(category, Modifier.padding(horizontal = 17.dp, vertical = 9.dp), color = Color.White, fontSize = 12.sp, fontWeight = if (active) FontWeight.Bold else FontWeight.Medium)
+                val active = activeCategory == category
+                Surface(onClick = { activeCategory = category; if (category == "Learning") onLearn(); if (category == "Shorts") onShorts() },
+                    shape = RoundedCornerShape(22.dp), color = if (active) Color(0xFFFF1978) else Color(0xFF171521)) {
+                    Text(category, Modifier.padding(horizontal = 17.dp, vertical = 9.dp), color = Color.White,
+                        fontSize = 12.sp, fontWeight = if (active) FontWeight.Bold else FontWeight.Medium)
                 }
             }
         }
         PremiumHeroBanner(onWatch = onShorts)
         ReferenceQuickActions(onLearn = onLearn, onShorts = onShorts)
-        Column(Modifier.fillMaxWidth().padding(horizontal = 18.dp), verticalArrangement = Arrangement.spacedBy(8.dp)) {
+        Column(Modifier.fillMaxWidth().padding(horizontal = 18.dp), verticalArrangement = Arrangement.spacedBy(9.dp)) {
             Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween, verticalAlignment = Alignment.CenterVertically) {
                 Text("Continue Learning", fontSize = 19.sp, fontWeight = FontWeight.Bold)
-                Text("See All  ›", color = MaterialTheme.colorScheme.primary, fontSize = 12.sp)
+                TextButton(onClick = onLearn, contentPadding = PaddingValues(0.dp)) { Text("See All  ›", color = Color.White, fontSize = 12.sp) }
             }
-            Surface(shape = RoundedCornerShape(17.dp), color = MaterialTheme.colorScheme.surface, modifier = Modifier.fillMaxWidth()) {
-                Row(Modifier.padding(14.dp), verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(12.dp)) {
-                    Box(Modifier.size(76.dp, 66.dp).background(Color(0xFF183C27), RoundedCornerShape(12.dp)), contentAlignment = Alignment.Center) {
-                        Text("▤", color = Color(0xFF8BE28B), fontSize = 30.sp)
+            Surface(onClick = onLearn, shape = RoundedCornerShape(17.dp), color = Color(0xFF15131E), modifier = Modifier.fillMaxWidth()) {
+                Row(Modifier.padding(10.dp), verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(12.dp)) {
+                    Box(Modifier.size(110.dp, 92.dp).clip(RoundedCornerShape(12.dp))
+                        .background(Brush.linearGradient(listOf(Color(0xFF103D20), Color(0xFF267A37)))),
+                        contentAlignment = Alignment.Center) {
+                        Text("🌿", fontSize = 43.sp)
                     }
-                    Column(Modifier.weight(1f), verticalArrangement = Arrangement.spacedBy(4.dp)) {
-                        Text("Your learning progress", fontSize = 14.sp, fontWeight = FontWeight.Bold)
-                        Text("Sign in to sync completed chapters and continue where you left off.", fontSize = 11.sp, color = JembeeMuted, lineHeight = 15.sp)
+                    Column(Modifier.weight(1f), verticalArrangement = Arrangement.spacedBy(5.dp)) {
+                        Text("Explore your Learning Library", fontSize = 14.sp, fontWeight = FontWeight.Bold, color = Color.White)
+                        Text("Books  ·  Chapters  ·  Questions", fontSize = 11.sp, color = JembeeMuted)
+                        Box(Modifier.fillMaxWidth().height(4.dp).clip(RoundedCornerShape(4.dp)).background(Color(0xFF34313F)))
                     }
                 }
             }
         }
-        NativeCatalogSection(sectionTitle = "Trending Videos 🔥", sectionSubtitle = "Recently approved videos from JEMBEE PLAY")
-        Surface(
-            onClick = onLearn,
-            shape = RoundedCornerShape(22.dp),
-            color = MaterialTheme.colorScheme.surface,
-            modifier = Modifier.fillMaxWidth().padding(horizontal = 16.dp)
-        ) {
-            Row(Modifier.padding(18.dp), verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(14.dp)) {
-                Box(
-                    Modifier.size(48.dp).background(
-                        Brush.linearGradient(listOf(Color(0xFF1B83DB), Color(0xFF73B8F2))),
-                        RoundedCornerShape(16.dp)
-                    ),
-                    contentAlignment = Alignment.Center
-                ) { Text("✦", color = Color.White, fontSize = 24.sp) }
+        NativeCatalogSection(sectionTitle = "Trending Videos 🔥", sectionSubtitle = "Popular approved videos from JEMBEE PLAY")
+        Surface(onClick = onLearn, shape = RoundedCornerShape(17.dp), color = Color(0xFF15131E),
+            modifier = Modifier.fillMaxWidth().padding(horizontal = 16.dp)) {
+            Row(Modifier.padding(16.dp), verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(14.dp)) {
+                Box(Modifier.size(48.dp).background(Brush.linearGradient(listOf(Color(0xFF4B176F), Color(0xFF991D65))), RoundedCornerShape(14.dp)),
+                    contentAlignment = Alignment.Center) { Icon(Icons.Filled.MenuBook, contentDescription = null, tint = Color.White, modifier = Modifier.size(27.dp)) }
                 Column(Modifier.weight(1f), verticalArrangement = Arrangement.spacedBy(3.dp)) {
-                    Text("Learning Library", fontWeight = FontWeight.Bold, fontSize = 16.sp)
-                    Text("Find a book, chapter or question", fontSize = 12.sp, color = JembeeMuted)
+                    Text("Learning Library", fontWeight = FontWeight.Bold, fontSize = 15.sp, color = Color.White)
+                    Text("Find a book, chapter or question", fontSize = 11.sp, color = JembeeMuted)
                 }
-                Text("→", color = MaterialTheme.colorScheme.primary, fontSize = 23.sp)
+                Text("→", color = Color(0xFFFF1978), fontSize = 23.sp)
             }
         }
     }
