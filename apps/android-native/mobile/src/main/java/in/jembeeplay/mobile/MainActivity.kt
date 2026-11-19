@@ -237,6 +237,7 @@ private fun LearnScreen() {
     var nodes by remember { mutableStateOf<List<LearningNode>>(emptyList()) }
     var questions by remember { mutableStateOf<List<LearningQuestion>>(emptyList()) }
     var answers by remember { mutableStateOf<List<LearningAnswer>>(emptyList()) }
+    var selectedQuestion by remember { mutableStateOf<String?>(null) }
     var loading by remember { mutableStateOf(true) }
     var error by remember { mutableStateOf(false) }
     var playing by remember { mutableStateOf<MobileCatalogVideo?>(null) }
@@ -279,21 +280,32 @@ private fun LearnScreen() {
                 Text("JEMBEE LEARNING", color = JembeeBlue, fontSize = 11.sp, fontWeight = FontWeight.Bold, letterSpacing = 1.sp)
                 Text(title, fontSize = 23.sp, fontWeight = FontWeight.Black)
             }
-            if (stage > 0) TextButton(onClick = { stage = (stage - 1).coerceAtLeast(0); error = false }) { Text("← Back") }
+            if (stage > 0) TextButton(onClick = {
+                stage = (stage - 1).coerceAtLeast(0)
+                error = false
+                if (stage < 4) selectedQuestion = null
+            }) { Text("← Back") }
         }
         Text(listOfNotNull(subject?.name, book?.name, chapter?.name).joinToString("  /  "), color = Muted, fontSize = 11.sp, modifier = Modifier.padding(top = 6.dp, bottom = 14.dp))
         when {
             loading -> Box(Modifier.fillMaxWidth().height(180.dp), contentAlignment = Alignment.Center) { CircularProgressIndicator() }
             error -> Column(Modifier.fillMaxWidth().padding(vertical = 28.dp), horizontalAlignment = Alignment.CenterHorizontally) {
-                Text("Learning Library load nahi ho payi.", color = Muted)
+                Text(if (stage == 4) "Video answers load nahi ho paye." else "Learning Library load nahi ho payi.", color = Muted)
                 TextButton(onClick = {
+                    loading = true
+                    error = false
                     when (stage) {
-                        0 -> LearningLibraryClient.loadNodes("subject") { it.onSuccess { rows -> nodes = rows }.onFailure { error = true }; loading = false }
-                        1 -> LearningLibraryClient.loadNodes("book", subject?.id) { it.onSuccess { rows -> nodes = rows }.onFailure { error = true }; loading = false }
-                        2 -> LearningLibraryClient.loadNodes("chapter", book?.id) { it.onSuccess { rows -> nodes = rows }.onFailure { error = true }; loading = false }
-                        3 -> LearningLibraryClient.loadQuestions(chapter?.id.orEmpty()) { it.onSuccess { rows -> questions = rows }.onFailure { error = true }; loading = false }
+                        0 -> LearningLibraryClient.loadNodes("subject") { result -> result.onSuccess { nodes = it }.onFailure { error = true }; loading = false }
+                        1 -> LearningLibraryClient.loadNodes("book", subject?.id) { result -> result.onSuccess { nodes = it }.onFailure { error = true }; loading = false }
+                        2 -> LearningLibraryClient.loadNodes("chapter", book?.id) { result -> result.onSuccess { nodes = it }.onFailure { error = true }; loading = false }
+                        3 -> LearningLibraryClient.loadQuestions(chapter?.id.orEmpty()) { result -> result.onSuccess { questions = it }.onFailure { error = true }; loading = false }
+                        4 -> selectedQuestion?.let { question ->
+                            LearningLibraryClient.loadAnswers(chapter?.id.orEmpty(), question) { result ->
+                                result.onSuccess { answers = it }.onFailure { error = true }
+                                loading = false
+                            }
+                        } ?: run { loading = false; error = true }
                     }
-                    loading = true; error = false
                 }) { Text("Retry") }
             }
             stage < 3 && nodes.isEmpty() -> Text("Abhi koi published entry available nahi hai.", color = Muted, modifier = Modifier.padding(vertical = 24.dp))
@@ -329,11 +341,16 @@ private fun LearnScreen() {
             stage == 3 && questions.isEmpty() -> Text("Is chapter ke liye abhi approved videos se koi question number nahi mila.", color = Muted, modifier = Modifier.padding(vertical = 24.dp))
             stage == 3 -> questions.forEach { item ->
                 Surface(shape = RoundedCornerShape(14.dp), color = MaterialTheme.colorScheme.surface, modifier = Modifier.fillMaxWidth().padding(vertical = 5.dp).clickable {
+                    selectedQuestion = item.questionNumber
+                    answers = emptyList()
                     loading = true
+                    error = false
                     LearningLibraryClient.loadAnswers(chapter?.id.orEmpty(), item.questionNumber) { result ->
-                        result.onSuccess { rows -> answers = rows }.onFailure { error = true }
+                        result.onSuccess { rows ->
+                            answers = rows
+                            stage = 4
+                        }.onFailure { error = true }
                         loading = false
-                        if (!error) stage = 4
                     }
                 }) {
                     Row(Modifier.padding(16.dp), verticalAlignment = Alignment.CenterVertically) {
