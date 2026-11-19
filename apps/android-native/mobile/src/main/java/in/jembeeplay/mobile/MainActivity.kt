@@ -5,6 +5,8 @@ import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.lazy.LazyRow
+import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
@@ -118,15 +120,23 @@ private fun HomeScreen(onLearn: () -> Unit, onShorts: () -> Unit) {
         Modifier.fillMaxSize().verticalScroll(rememberScrollState()).padding(bottom = 22.dp),
         verticalArrangement = Arrangement.spacedBy(18.dp)
     ) {
-        Column(Modifier.padding(horizontal = 18.dp), verticalArrangement = Arrangement.spacedBy(5.dp)) {
-            Text("Your next favourite starts here.", fontSize = 25.sp, lineHeight = 31.sp, fontWeight = FontWeight.ExtraBold)
-            Text("A calmer place to watch, discover and learn.", fontSize = 13.sp, color = JembeeMuted)
+        LazyRow(
+            contentPadding = PaddingValues(horizontal = 18.dp),
+            horizontalArrangement = Arrangement.spacedBy(18.dp)
+        ) {
+            items(listOf("All", "Learning", "Shorts", "Education", "Craft")) { category ->
+                val active = category == "All"
+                Surface(
+                    shape = RoundedCornerShape(22.dp),
+                    color = if (active) Color(0xFFFF1978) else MaterialTheme.colorScheme.surface,
+                    tonalElevation = if (active) 0.dp else 1.dp
+                ) {
+                    Text(category, Modifier.padding(horizontal = 17.dp, vertical = 9.dp), color = Color.White, fontSize = 12.sp, fontWeight = if (active) FontWeight.Bold else FontWeight.Medium)
+                }
+            }
         }
         PremiumHeroBanner(onWatch = onShorts)
-        Row(Modifier.fillMaxWidth().padding(horizontal = 16.dp), horizontalArrangement = Arrangement.spacedBy(10.dp)) {
-            PremiumActionCard("Explore learning", "Books, chapters and answers", "▤", Modifier.weight(1f), onLearn)
-            PremiumActionCard("Watch Shorts", "Quick ideas, one swipe away", "▶", Modifier.weight(1f), onShorts)
-        }
+        ReferenceQuickActions(onLearn = onLearn, onShorts = onShorts)
         NativeCatalogSection()
         Column(Modifier.padding(horizontal = 18.dp), verticalArrangement = Arrangement.spacedBy(8.dp)) {
             Text("Made for your big screen moments", fontSize = 18.sp, fontWeight = FontWeight.Bold)
@@ -270,5 +280,41 @@ private fun PremiumHeroBanner(onWatch: () -> Unit) {
             fontSize = 88.sp,
             fontWeight = FontWeight.Black
         )
+    }
+}
+
+
+@Composable
+private fun ReferenceQuickActions(onLearn: () -> Unit, onShorts: () -> Unit) {
+    val actions = listOf(
+        Triple("Learning Library", "▤", onLearn),
+        Triple("Shorts", "▶", onShorts),
+        Triple("Live", "◉", null),
+        Triple("Create Upload", "☁", null),
+        Triple("Earn & Rewards", "▥", null)
+    )
+    LazyRow(
+        contentPadding = PaddingValues(horizontal = 16.dp),
+        horizontalArrangement = Arrangement.spacedBy(10.dp)
+    ) {
+        items(actions) { (label, symbol, action) ->
+            Surface(
+                onClick = { action?.invoke() },
+                enabled = action != null,
+                shape = RoundedCornerShape(17.dp),
+                color = MaterialTheme.colorScheme.surface,
+                modifier = Modifier.width(78.dp).height(96.dp)
+            ) {
+                Column(
+                    Modifier.fillMaxSize().padding(8.dp),
+                    horizontalAlignment = Alignment.CenterHorizontally,
+                    verticalArrangement = Arrangement.Center
+                ) {
+                    Text(symbol, color = MaterialTheme.colorScheme.primary, fontSize = 25.sp, fontWeight = FontWeight.Bold)
+                    Spacer(Modifier.height(6.dp))
+                    Text(label, color = MaterialTheme.colorScheme.onSurface, fontSize = 10.sp, lineHeight = 12.sp, fontWeight = FontWeight.SemiBold)
+                }
+            }
+        }
     }
 }
