@@ -6,6 +6,7 @@ export type PublicCreatorProfile = {
   displayName: string;
   username: string;
   photoURL: string;
+  followersCount: number;
 };
 
 export function safeProfileString(value: unknown, maxLength = 500): string {
@@ -38,5 +39,6 @@ export function projectPublicCreatorProfile(
     username: safeProfileString(user.username) || safeProfileString(user.userName) || safeProfileString(video.username),
     photoURL: safeProfileString(user.photoURL) || safeProfileString(user.photo) ||
       safeProfileString(user.profilePhoto) || safeProfileString(video.photoURL) || safeProfileString(video.photo),
+    followersCount: Number.isFinite(Number(user.followersCount)) ? Math.max(0, Math.floor(Number(user.followersCount))) : 0,
   };
 }
