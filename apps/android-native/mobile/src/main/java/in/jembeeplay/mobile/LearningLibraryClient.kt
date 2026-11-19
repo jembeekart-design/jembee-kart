@@ -13,6 +13,7 @@ data class LearningAnswer(val id: String, val caption: String, val creator: Stri
 
 object LearningLibraryClient {
     private const val BASE = "https://jembeeplay.in"
+    private const val MAX_RESPONSE_CHARS = 512 * 1024
     private val main = Handler(Looper.getMainLooper())
 
     fun loadNodes(type: String, parentId: String? = null, onResult: (Result<List<LearningNode>>) -> Unit) {
@@ -80,8 +81,17 @@ object LearningLibraryClient {
                     require(connection.url.protocol == "https")
                     val status = connection.responseCode
                     require(status in 200..299) { "Learning request failed ($status)" }
-                    val body = connection.inputStream.bufferedReader().use { it.readText() }
-                    require(body.length <= 512 * 1024) { "Learning response too large" }
+                    val body = connection.inputStream.bufferedReader().use { reader ->
+                        val output = StringBuilder()
+                        val buffer = CharArray(8192)
+                        while (true) {
+                            val count = reader.read(buffer)
+                            if (count < 0) break
+                            require(output.length + count <= MAX_RESPONSE_CHARS) { "Learning response too large" }
+                            output.append(buffer, 0, count)
+                        }
+                        output.toString()
+                    }
                     parse(body)
                 } finally { connection.disconnect() }
             }
