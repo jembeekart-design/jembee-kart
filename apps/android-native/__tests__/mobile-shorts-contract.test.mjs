@@ -2,10 +2,10 @@ import test from "node:test";
 import assert from "node:assert/strict";
 import { readFileSync } from "node:fs";
 
-const root = new URL("../../", import.meta.url);
-const main = readFileSync(new URL("mobile/src/main/java/in/jembeeplay/mobile/MainActivity.kt", root), "utf8");
-const client = readFileSync(new URL("mobile/src/main/java/in/jembeeplay/mobile/MobileVideoCatalogClient.kt", root), "utf8");
-const api = readFileSync(new URL("../../../src/app/api/app/video-catalog/route.ts", root), "utf8");
+const root = new URL("../../../", import.meta.url);
+const main = readFileSync(new URL("apps/android-native/mobile/src/main/java/in/jembeeplay/mobile/MainActivity.kt", root), "utf8");
+const client = readFileSync(new URL("apps/android-native/mobile/src/main/java/in/jembeeplay/mobile/MobileVideoCatalogClient.kt", root), "utf8");
+const api = readFileSync(new URL("src/app/api/app/video-catalog/route.ts", root), "utf8");
 
 test("mobile Shorts loads the real approved catalog and opens native playback", () => {
   assert.match(main, /MobileVideoCatalogClient\.fetch/);
