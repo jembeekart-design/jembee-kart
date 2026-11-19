@@ -96,3 +96,9 @@ test("Deletion removes both Drive and Cloudinary assets when both references exi
   assert.match(route, /if \(storedPublicId\) \{/);
   assert.doesNotMatch(route, /else if \(storedPublicId\)/);
 });
+
+test("Deleted-video notifications are excluded from the live notification inbox", async () => {
+  const notificationServicePath = path.resolve(testDirectory, "../../../../firestore/services/shortsNotificationService.ts");
+  const notificationService = await readFile(notificationServicePath, "utf8");
+  assert.match(notificationService, /filter\(\(item\) => item\.data\(\)\.videoDeleted !== true\)/);
+});
