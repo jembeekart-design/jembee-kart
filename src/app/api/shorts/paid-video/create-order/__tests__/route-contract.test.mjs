@@ -20,9 +20,10 @@ test("checkout price is read from Firestore and bounded in integer paise", () =>
   assert.doesNotMatch(source, /body\.price|body\.amount/);
 });
 
-test("Cashfree order creation is idempotent and preserves only verified direct video-share attribution", () => {
+test("Cashfree order creation is idempotent and persists attribution server-side", () => {
   assert.match(source, /cashfreeRequest<CashfreeOrder>/);
   assert.match(source, /deterministicUuid/);
+  assert.match(source, /teacherReferralAttributions/);
   assert.match(source, /monetagShareClaims/);
   assert.match(source, /sharerAttributionVerified: Boolean\(sharerId\)/);
   assert.match(source, /tx\.create\(orderRef/);
