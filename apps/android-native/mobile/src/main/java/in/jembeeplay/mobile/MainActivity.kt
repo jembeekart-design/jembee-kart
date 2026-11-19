@@ -230,23 +230,144 @@ private fun MobileVideoPlayer(video: MobileCatalogVideo, onClose: () -> Unit) {
 
 @Composable
 private fun LearnScreen() {
-    Column(Modifier.fillMaxSize().verticalScroll(rememberScrollState()).padding(18.dp)) {
-        Text("Learn with JEMBEE", fontSize = 24.sp, fontWeight = FontWeight.Black)
-        Text("Choose your curriculum and continue learning.", color = Muted, modifier = Modifier.padding(top = 4.dp, bottom = 18.dp))
-        OutlinedTextField(value = "", onValueChange = {}, readOnly = true, modifier = Modifier.fillMaxWidth(), label = { Text("Search classes, subjects or chapters") }, placeholder = { Text("Search learning library") })
-        listOf("CBSE", "ICSE", "JAC", "Other boards").forEach { board ->
-            Text(board, Modifier.padding(top = 18.dp, bottom = 8.dp), fontWeight = FontWeight.Bold, fontSize = 18.sp)
-            listOf("Class 6", "Class 7", "Class 8", "Class 9", "Class 10").forEach { grade ->
-                Surface(shape = RoundedCornerShape(14.dp), color = MaterialTheme.colorScheme.surface, modifier = Modifier.fillMaxWidth().padding(vertical = 4.dp)) {
-                    Row(Modifier.padding(16.dp), horizontalArrangement = Arrangement.SpaceBetween) {
-                        Text(grade, fontWeight = FontWeight.SemiBold)
-                        Text("Subjects  →", color = JembeeBlue)
+    var stage by remember { mutableIntStateOf(0) }
+    var subject by remember { mutableStateOf<LearningNode?>(null) }
+    var book by remember { mutableStateOf<LearningNode?>(null) }
+    var chapter by remember { mutableStateOf<LearningNode?>(null) }
+    var nodes by remember { mutableStateOf<List<LearningNode>>(emptyList()) }
+    var questions by remember { mutableStateOf<List<LearningQuestion>>(emptyList()) }
+    var answers by remember { mutableStateOf<List<LearningAnswer>>(emptyList()) }
+    var loading by remember { mutableStateOf(true) }
+    var error by remember { mutableStateOf(false) }
+    var playing by remember { mutableStateOf<MobileCatalogVideo?>(null) }
+
+    LaunchedEffect(stage, subject?.id, book?.id, chapter?.id) {
+        loading = true
+        error = false
+        when (stage) {
+            0 -> LearningLibraryClient.loadNodes("subject") { result ->
+                result.onSuccess { nodes = it }.onFailure { error = true }
+                loading = false
+            }
+            1 -> LearningLibraryClient.loadNodes("book", subject?.id) { result ->
+                result.onSuccess { nodes = it }.onFailure { error = true }
+                loading = false
+            }
+            2 -> LearningLibraryClient.loadNodes("chapter", book?.id) { result ->
+                result.onSuccess { nodes = it }.onFailure { error = true }
+                loading = false
+            }
+            3 -> LearningLibraryClient.loadQuestions(chapter?.id.orEmpty()) { result ->
+                result.onSuccess { questions = it }.onFailure { error = true }
+                loading = false
+            }
+            else -> loading = false
+        }
+    }
+
+    val title = when (stage) {
+        0 -> "Choose Subject"
+        1 -> "Choose Book"
+        2 -> "Choose Chapter"
+        3 -> "Choose Question Number"
+        else -> "Video Answers"
+    }
+
+    Column(Modifier.fillMaxSize().verticalScroll(rememberScrollState()).padding(horizontal = 18.dp, vertical = 12.dp)) {
+        Row(Modifier.fillMaxWidth(), verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.SpaceBetween) {
+            Column(Modifier.weight(1f)) {
+                Text("JEMBEE LEARNING", color = JembeeBlue, fontSize = 11.sp, fontWeight = FontWeight.Bold, letterSpacing = 1.sp)
+                Text(title, fontSize = 23.sp, fontWeight = FontWeight.Black)
+            }
+            if (stage > 0) TextButton(onClick = { stage = (stage - 1).coerceAtLeast(0); error = false }) { Text("← Back") }
+        }
+        Text(listOfNotNull(subject?.name, book?.name, chapter?.name).joinToString("  /  "), color = Muted, fontSize = 11.sp, modifier = Modifier.padding(top = 6.dp, bottom = 14.dp))
+        when {
+            loading -> Box(Modifier.fillMaxWidth().height(180.dp), contentAlignment = Alignment.Center) { CircularProgressIndicator() }
+            error -> Column(Modifier.fillMaxWidth().padding(vertical = 28.dp), horizontalAlignment = Alignment.CenterHorizontally) {
+                Text("Learning Library load nahi ho payi.", color = Muted)
+                TextButton(onClick = {
+                    when (stage) {
+                        0 -> LearningLibraryClient.loadNodes("subject") { it.onSuccess { rows -> nodes = rows }.onFailure { error = true }; loading = false }
+                        1 -> LearningLibraryClient.loadNodes("book", subject?.id) { it.onSuccess { rows -> nodes = rows }.onFailure { error = true }; loading = false }
+                        2 -> LearningLibraryClient.loadNodes("chapter", book?.id) { it.onSuccess { rows -> nodes = rows }.onFailure { error = true }; loading = false }
+                        3 -> LearningLibraryClient.loadQuestions(chapter?.id.orEmpty()) { it.onSuccess { rows -> questions = rows }.onFailure { error = true }; loading = false }
+                    }
+                    loading = true; error = false
+                }) { Text("Retry") }
+            }
+            stage < 3 && nodes.isEmpty() -> Text("Abhi koi published entry available nahi hai.", color = Muted, modifier = Modifier.padding(vertical = 24.dp))
+            stage < 3 -> nodes.forEach { item ->
+                Surface(
+                    shape = RoundedCornerShape(14.dp),
+                    color = MaterialTheme.colorScheme.surface,
+                    modifier = Modifier.fillMaxWidth().padding(vertical = 5.dp).clickable {
+                        when (stage) {
+                            0 -> subject = item
+                            1 -> book = item
+                            2 -> chapter = item
+                        }
+                        stage += 1
+                    }
+                ) {
+                    Row(Modifier.padding(15.dp), verticalAlignment = Alignment.CenterVertically) {
+                        if (stage == 1 && item.coverImageUrl != null) {
+                            AsyncImage(model = if (item.coverImageUrl.startsWith("http")) item.coverImageUrl else "https://jembeeplay.in" + item.coverImageUrl, contentDescription = item.name, modifier = Modifier.size(width = 54.dp, height = 70.dp), contentScale = ContentScale.Crop)
+                        } else {
+                            Box(Modifier.size(48.dp).background(Color(0x1A0878D1), RoundedCornerShape(12.dp)), contentAlignment = Alignment.Center) {
+                                Text(if (stage == 2) "▤" else "◈", color = JembeeBlue, fontSize = 22.sp)
+                            }
+                        }
+                        Column(Modifier.weight(1f).padding(start = 12.dp)) {
+                            Text(item.name, fontWeight = FontWeight.Bold, fontSize = 14.sp)
+                            Text(when (stage) { 0 -> "Subject"; 1 -> "Book"; else -> "Chapter" }, color = Muted, fontSize = 11.sp)
+                        }
+                        Text("›", color = JembeeBlue, fontSize = 25.sp)
+                    }
+                }
+            }
+            stage == 3 && questions.isEmpty() -> Text("Is chapter ke liye abhi approved videos se koi question number nahi mila.", color = Muted, modifier = Modifier.padding(vertical = 24.dp))
+            stage == 3 -> questions.forEach { item ->
+                Surface(shape = RoundedCornerShape(14.dp), color = MaterialTheme.colorScheme.surface, modifier = Modifier.fillMaxWidth().padding(vertical = 5.dp).clickable {
+                    loading = true
+                    LearningLibraryClient.loadAnswers(chapter?.id.orEmpty(), item.questionNumber) { result ->
+                        result.onSuccess { rows -> answers = rows }.onFailure { error = true }
+                        loading = false
+                        if (!error) stage = 4
+                    }
+                }) {
+                    Row(Modifier.padding(16.dp), verticalAlignment = Alignment.CenterVertically) {
+                        Text("#", color = JembeeBlue, fontWeight = FontWeight.Black, fontSize = 22.sp)
+                        Text(item.questionNumber, Modifier.weight(1f).padding(start = 12.dp), fontWeight = FontWeight.Bold)
+                        Text("${item.videoCount} videos", color = Muted, fontSize = 11.sp)
+                    }
+                }
+            }
+            else -> {
+                Text("Approved free video answers", color = Muted, fontSize = 12.sp, modifier = Modifier.padding(bottom = 10.dp))
+                if (answers.isEmpty()) Text("Is question ka approved free video answer abhi available nahi hai.", color = Muted)
+                answers.forEach { answer ->
+                    Surface(shape = RoundedCornerShape(14.dp), color = MaterialTheme.colorScheme.surface, modifier = Modifier.fillMaxWidth().padding(vertical = 5.dp).clickable {
+                        playing = MobileCatalogVideo(
+                            answer.id, answer.caption, answer.creator, 0, 0, 0,
+                            "https://jembeeplay.in/api/shorts/video-thumbnail/${answer.id}",
+                            "https://jembeeplay.in/api/shorts/video-stream/${answer.id}"
+                        )
+                    }) {
+                        Row(Modifier.padding(15.dp), verticalAlignment = Alignment.CenterVertically) {
+                            Text("▶", color = JembeeBlue, fontSize = 22.sp)
+                            Column(Modifier.weight(1f).padding(start = 12.dp)) {
+                                Text(answer.caption.ifBlank { "Video answer" }, fontWeight = FontWeight.Bold, maxLines = 2)
+                                Text("${answer.creator} · ${answer.videoFormat}", color = Muted, fontSize = 11.sp)
+                            }
+                        }
                     }
                 }
             }
         }
-        Text("Catalog preview · Board and lesson data integration pending", color = Muted, fontSize = 11.sp, modifier = Modifier.padding(top = 12.dp))
+        Text("Subject → Book → Chapter → Question Number → Video Answers", color = Muted, fontSize = 10.sp, modifier = Modifier.padding(top = 22.dp))
     }
+    playing?.let { video -> MobileVideoPlayer(video = video, onClose = { playing = null }) }
 }
 
 @Composable
