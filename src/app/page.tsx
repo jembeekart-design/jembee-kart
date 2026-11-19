@@ -34,7 +34,7 @@ const mobileNavigation: NavigationItem[] = [
 function CreatorAvatar({ video }: { video: WatchVideo }) {
   const name = publicCreatorName(video);
   return (
-    <div className="relative grid h-10 w-10 shrink-0 place-items-center overflow-hidden rounded-full bg-gradient-to-br from-cyan-400 to-violet-500 text-sm font-black text-slate-950">
+    <div className="relative grid h-10 w-10 shrink-0 place-items-center overflow-hidden rounded-full bg-gradient-to-br from-pink-400 to-violet-500 text-sm font-black text-slate-950">
       <span>{name.replace(/^@/, "").slice(0, 1).toUpperCase()}</span>
       {video.photoURL?.startsWith("https://") ? <img src={video.photoURL} alt="" loading="lazy" className="absolute inset-0 h-full w-full object-cover" onError={(event) => { event.currentTarget.style.display = "none"; }} /> : null}
     </div>
@@ -114,10 +114,10 @@ export default function HomePage() {
   const longVideos = filtered.filter((video) => video.videoFormat === "long");
 
   return (
-    <main className="min-h-screen bg-[#0b0b0b] text-white">
-      <header className="sticky top-0 z-40 flex h-16 items-center gap-3 border-b border-white/10 bg-[#0b0b0b]/95 px-3 backdrop-blur sm:px-4">
+    <main className="min-h-screen bg-[#090611] text-white">
+      <header className="sticky top-0 z-40 flex h-16 items-center gap-3 border-b border-white/10 bg-[#090611]/95 px-3 backdrop-blur sm:px-4">
         <button type="button" aria-label="Toggle menu" aria-expanded={mobileMenuOpen} aria-controls="mobile-navigation-drawer" onClick={() => setMobileMenuOpen((value) => !value)} className="rounded-full p-2 hover:bg-white/10"><Menu size={23}/></button>
-        <Link href="/" className="flex min-w-fit items-center gap-1 text-lg font-black tracking-tight sm:text-xl">JEMBEE <span className="text-cyan-400">PLAY</span><PlaySquare size={19} className="ml-1 text-cyan-400"/></Link>
+        <Link href="/" className="flex min-w-fit items-center gap-1 text-lg font-black tracking-tight sm:text-xl">JEMBEE <span className="text-pink-400">PLAY</span><PlaySquare size={19} className="ml-1 text-pink-400"/></Link>
         <div className="mx-auto flex min-w-0 flex-1 max-w-2xl">
           <div className="flex w-full overflow-hidden rounded-full border border-white/20 bg-[#121212]">
             <input value={search} onChange={(event) => setSearch(event.target.value)} placeholder="Search videos, teachers and topics" aria-label="Search videos" className="w-full min-w-0 bg-transparent px-3 py-2.5 text-sm outline-none sm:px-5"/>
@@ -132,13 +132,13 @@ export default function HomePage() {
       {mobileMenuOpen ? (
         <div className="fixed inset-0 z-[70] md:hidden" role="presentation">
           <button type="button" aria-label="Close menu overlay" onClick={() => setMobileMenuOpen(false)} className="absolute inset-0 bg-black/70"/>
-          <aside id="mobile-navigation-drawer" role="dialog" aria-modal="true" aria-label="Main navigation" className="absolute inset-y-0 left-0 flex w-[min(86vw,340px)] flex-col overflow-y-auto border-r border-white/10 bg-[#101014] p-4 pt-[calc(env(safe-area-inset-top)+1rem)] shadow-2xl">
-            <div className="mb-4 flex items-center justify-between"><Link href="/" onClick={() => setMobileMenuOpen(false)} className="text-lg font-black">JEMBEE <span className="text-cyan-400">PLAY</span></Link><button type="button" onClick={() => setMobileMenuOpen(false)} aria-label="Close menu" className="rounded-full p-2 hover:bg-white/10"><X size={22}/></button></div>
+          <aside id="mobile-navigation-drawer" role="dialog" aria-modal="true" aria-label="Main navigation" className="absolute inset-y-0 left-0 flex w-[min(86vw,340px)] flex-col overflow-y-auto border-r border-white/10 bg-[#120b1c] p-4 pt-[calc(env(safe-area-inset-top)+1rem)] shadow-2xl">
+            <div className="mb-4 flex items-center justify-between"><Link href="/" onClick={() => setMobileMenuOpen(false)} className="text-lg font-black">JEMBEE <span className="text-pink-400">PLAY</span></Link><button type="button" onClick={() => setMobileMenuOpen(false)} aria-label="Close menu" className="rounded-full p-2 hover:bg-white/10"><X size={22}/></button></div>
             <p className="px-3 py-2 text-xs font-bold uppercase tracking-wider text-slate-500">Discover</p>
             {desktopNavigation.map(({ icon: Icon, label, href }) => <Link key={label} href={href} onClick={() => setMobileMenuOpen(false)} className="flex min-h-12 items-center gap-4 rounded-xl px-3 py-3 text-sm hover:bg-white/10"><Icon size={20}/>{label}</Link>)}
             <div className="my-3 border-t border-white/10"/>
             <p className="px-3 py-2 text-xs font-bold uppercase tracking-wider text-slate-500">Earnings · अलग-अलग कमाई</p>
-            {earningsNavigation.map(({ icon: Icon, label, href }) => <Link key={label} href={href} onClick={() => setMobileMenuOpen(false)} className="flex min-h-12 items-center gap-4 rounded-xl px-3 py-3 text-sm hover:bg-white/10"><Icon size={20} className="text-cyan-300"/>{label}<ChevronRight size={16} className="ml-auto text-slate-500"/></Link>)}
+            {earningsNavigation.map(({ icon: Icon, label, href }) => <Link key={label} href={href} onClick={() => setMobileMenuOpen(false)} className="flex min-h-12 items-center gap-4 rounded-xl px-3 py-3 text-sm hover:bg-white/10"><Icon size={20} className="text-pink-300"/>{label}<ChevronRight size={16} className="ml-auto text-slate-500"/></Link>)}
             <div className="my-3 border-t border-white/10"/>
             <Link href="/videos/share" onClick={() => setMobileMenuOpen(false)} className="flex min-h-12 items-center gap-4 rounded-xl px-3 py-3 text-sm hover:bg-white/10"><Wallet size={20}/>Share Income (पुराना लिंक)</Link>
             <p className="mt-auto px-3 pt-6 text-xs text-slate-500">Watch • Learn • Create • Share</p>
@@ -159,31 +159,30 @@ export default function HomePage() {
         </aside>}
 
         <section className="min-w-0 flex-1 px-3 pb-28 pt-3 sm:px-4 sm:pt-4 md:px-6">
-          <div className="sticky top-16 z-30 -mx-3 mb-4 flex gap-3 overflow-x-auto bg-[#0b0b0b] px-3 py-2 [scrollbar-width:none] sm:-mx-4 sm:px-4 md:-mx-6 md:px-6">
+          <div className="sticky top-16 z-30 -mx-3 mb-4 flex gap-3 overflow-x-auto bg-[#090611] px-3 py-2 [scrollbar-width:none] sm:-mx-4 sm:px-4 md:-mx-6 md:px-6">
             {chips.map((chip) => <button type="button" key={chip} onClick={() => setActive(chip)} className={`shrink-0 rounded-xl px-4 py-2.5 text-sm font-semibold ${active === chip ? "bg-white text-black" : "bg-white/10 text-white hover:bg-white/20"}`}>{chip}</button>)}
           </div>
 
-          <div className="mb-5 rounded-2xl border border-cyan-400/20 bg-gradient-to-r from-cyan-950/70 to-violet-950/50 p-5 sm:flex sm:items-center sm:justify-between">
-            <div><p className="text-xs font-bold uppercase tracking-widest text-cyan-300">Jembee Play Learning</p><h1 className="mt-1 text-2xl font-black">अपनी किताब का हर सवाल सीखें</h1><p className="mt-1 text-sm text-slate-300">Board → School → Book → Chapter → Question → Video Answer</p></div>
-            <Link href="/learn/school" className="mt-4 inline-flex min-h-11 items-center justify-center gap-2 rounded-full bg-cyan-400 px-5 py-2.5 text-sm font-bold text-slate-950 sm:mt-0">Find your school <ChevronRight size={17}/></Link>
-          </div>
+          <section className="relative mb-7 min-h-[250px] overflow-hidden rounded-[28px] border border-pink-400/30 bg-[#160b25] shadow-[0_0_38px_rgba(236,72,153,0.13)] sm:min-h-[310px]"><img src="/images/reference-hero-students.webp" alt="Jembee Play learning hero" fetchPriority="high" className="absolute inset-0 h-full w-full object-cover object-center"/><div className="absolute inset-0 bg-gradient-to-r from-[#100719]/95 via-[#160b25]/75 to-transparent"/><div className="relative z-10 flex min-h-[250px] max-w-xl flex-col justify-center p-5 sm:min-h-[310px] sm:p-8"><p className="text-xs font-black uppercase tracking-[0.22em] text-pink-300">Watch • Learn • Create • Share</p><h1 className="mt-3 text-3xl font-black leading-tight sm:text-4xl">हर सवाल का जवाब, वीडियो के साथ</h1><p className="mt-3 max-w-md text-sm leading-6 text-white/80">Shorts देखें, नए creators खोजें और अपनी किताब के सवालों के video answers सीखें।</p><div className="mt-5 flex flex-wrap gap-3"><Link href="/learn/school" className="inline-flex min-h-11 items-center gap-2 rounded-full bg-pink-500 px-5 py-2.5 text-sm font-black text-white shadow-lg shadow-pink-500/25">Explore Learning <ChevronRight size={17}/></Link><Link href="/shorts" className="inline-flex min-h-11 items-center gap-2 rounded-full border border-white/35 bg-black/25 px-5 py-2.5 text-sm font-bold text-white">Watch Shorts <PlaySquare size={17}/></Link></div></div></section>
 
           <MonetagPlacement placement="home-after-learning-banner" />
 
           <section className="mb-7" aria-labelledby="shorts-heading">
             <div className="mb-4 flex items-center justify-between gap-3">
               <h2 id="shorts-heading" className="flex items-center gap-2 text-lg font-bold sm:text-xl"><PlaySquare className="text-rose-500" size={23}/> Shorts</h2>
-              <Link href="/shorts" className="shrink-0 text-sm font-semibold text-cyan-300 hover:underline">View all Shorts</Link>
+              <Link href="/shorts" className="shrink-0 text-sm font-semibold text-pink-300 hover:underline">View all Shorts</Link>
             </div>
             {loading ? <div className="grid grid-cols-2 gap-3">{Array.from({ length: 4 }, (_, index) => <div key={index} className="aspect-[9/16] animate-pulse rounded-2xl bg-white/5"/>)}</div> : error ? <p role="status" className="rounded-xl border border-amber-400/20 bg-amber-400/5 p-4 text-sm text-amber-100">{error}</p> : <ShortsGrid videos={shorts}/>}
           </section>
+
+          <section className="mb-7" aria-labelledby="trending-heading"><div className="mb-4 flex items-center justify-between gap-3"><h2 id="trending-heading" className="text-lg font-black sm:text-xl">Trending on Jembee</h2><span className="text-xs font-semibold text-pink-300">Popular videos</span></div>{longVideos.length ? <div className="grid gap-x-4 gap-y-8 sm:grid-cols-2 xl:grid-cols-3">{[...longVideos].sort((a,b)=>Number(b.views||0)-Number(a.views||0)).slice(0,3).map((video,index)=><LongVideoCard key={`trending-${video.id}`} video={video} eager={index===0}/>)}</div> : <p className="rounded-2xl border border-dashed border-white/15 p-5 text-sm text-slate-400">Approved long videos आने पर trending list यहाँ दिखाई देगी।</p>}</section>
 
           <MonetagPlacement placement="home-after-shorts" />
 
           <section className="mb-7" aria-labelledby="long-videos-heading">
             <div className="mb-4 flex items-center justify-between gap-3">
               <h2 id="long-videos-heading" className="text-lg font-bold sm:text-xl">Latest Long Videos</h2>
-              <Link href="/videos" className="shrink-0 text-sm font-semibold text-cyan-300 hover:underline">View all videos</Link>
+              <Link href="/videos" className="shrink-0 text-sm font-semibold text-pink-300 hover:underline">View all videos</Link>
             </div>
             {loading ? (
               <div className="grid gap-x-4 gap-y-8 sm:grid-cols-2 xl:grid-cols-3">{Array.from({ length: 3 }, (_, index) => <div key={index} className="aspect-video animate-pulse rounded-xl bg-white/5" />)}</div>
@@ -191,7 +190,7 @@ export default function HomePage() {
               <div className="rounded-2xl border border-dashed border-white/15 p-7 text-center">
                 <p className="font-semibold">अभी कोई approved Long Video उपलब्ध नहीं है।</p>
                 <p className="mt-2 text-sm text-slate-400">Upload में Long Video चुनकर वीडियो भेजें। Admin approval के बाद वह यहाँ दिखाई देगा।</p>
-                <Link href="/videos/upload" className="mt-4 inline-flex rounded-full bg-cyan-400 px-4 py-2 text-sm font-bold text-slate-950">Upload Long Video</Link>
+                <Link href="/videos/upload" className="mt-4 inline-flex rounded-full bg-pink-400 px-4 py-2 text-sm font-bold text-slate-950">Upload Long Video</Link>
               </div>
             ) : (
               <div className="grid gap-x-4 gap-y-8 sm:grid-cols-2 xl:grid-cols-3">{longVideos.slice(0, 12).map((video, index) => <LongVideoCard key={video.id} video={video} eager={index < 3}/>)}</div>
@@ -203,7 +202,7 @@ export default function HomePage() {
       </div>
 
       <nav className="fixed inset-x-0 bottom-0 z-40 flex justify-around border-t border-white/10 bg-[#0b0b0b]/95 px-2 pb-[calc(0.5rem+env(safe-area-inset-bottom))] pt-2 backdrop-blur md:hidden">
-        {mobileNavigation.map(({ icon: Icon, label, href }) => <Link key={label} href={href} className={`flex min-w-0 flex-col items-center gap-1 px-2 py-1 text-[10px] ${label === "Home" ? "text-cyan-300" : "text-slate-300"}`}><Icon size={21}/>{label}</Link>)}
+        {mobileNavigation.map(({ icon: Icon, label, href }) => <Link key={label} href={href} className={`flex min-w-0 flex-col items-center gap-1 px-2 py-1 text-[10px] ${label === "Home" ? "text-pink-300" : "text-slate-300"}`}><Icon size={21}/>{label}</Link>)}
       </nav>
     </main>
   );
