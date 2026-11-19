@@ -54,9 +54,9 @@ Historical user Firestore records and Firebase collections are not migrated or d
 विस्तृत विवरण: `docs/jembee-play-audit/VIDEO_ONLY_SCOPE_CLEANUP_2026-11-09.md`।
 
 
-## Video-only scope enforcement — 19-11-2026
+## Video-only scope audit — 19-11-2026
 
-- Active Teacher Referral Commission earnings page, teacher earnings API, admin reconciliation route, and 2% teacher-referral commission calculator have been removed from the cleanup branch.
-- Home navigation no longer exposes Teacher Referral Commission. Direct creator earnings and single-video share attribution remain separate video-platform features; no sponsor tree, downline, team commission, product, cart, or shopping flow is part of JEMBEE PLAY.
-- Paid-video Cashfree checkout remains only for purchasing access to an individual approved video. It is not a product catalogue, cart, or shopping order system.
-- Existing Firestore historical records are not deleted or migrated by this source change.
+- The active route audit found no Shopping Store, Cart, Product Catalog, Seller, Shipping, or MLM storefront page under `src/app`.
+- Teacher Referral Earnings and its admin reconciliation flow are retained; they are not treated as shopping/MLM storefront features.
+- Individual paid-video checkout, creator earnings, direct video-share attribution, and Teacher Referral earnings remain video-platform features.
+- No historical Firestore records were deleted or migrated.
