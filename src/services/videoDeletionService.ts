@@ -1,4 +1,4 @@
-import type { Firestore, DocumentReference } from "firebase-admin/firestore";
+import { FieldValue, type Firestore, type DocumentReference } from "firebase-admin/firestore";
 
 const WRITE_BATCH_SIZE = 400;
 
@@ -36,6 +36,54 @@ async function archiveByField(db: Firestore, collectionName: string, field: stri
   return archived;
 }
 
+
+async function archiveVideoNotifications(db: Firestore, videoId: string) {
+  const notifications = db.collection("shorts_notifications");
+  let archived = 0;
+
+  while (true) {
+    const first = await notifications.where("videoId", "==", videoId).limit(1).get();
+    if (first.empty) break;
+
+    const firstDoc = first.docs[0];
+    const userId = typeof firstDoc.data().userId === "string" ? firstDoc.data().userId.trim() : "";
+
+    // Process malformed records individually so they cannot skip a valid user unread counter.
+    if (!userId) {
+      await firstDoc.ref.update({
+        videoDeleted: true, isRead: true,
+        deepLink: FieldValue.delete(), videoId: FieldValue.delete(),
+        commentId: FieldValue.delete(), archivedAt: new Date(),
+      });
+      archived += 1;
+      continue;
+    }
+
+    const userQuery = notifications.where("videoId", "==", videoId).where("userId", "==", userId).limit(400);
+    const count = await db.runTransaction(async (transaction) => {
+      const page = await transaction.get(userQuery);
+      if (page.empty) return 0;
+      const metaRef = db.collection("shorts_notification_meta").doc(userId);
+      const meta = await transaction.get(metaRef);
+      const unreadRemoved = page.docs.filter((doc) => doc.data().isRead !== true).length;
+      page.docs.forEach((doc) => transaction.update(doc.ref, {
+        videoDeleted: true, isRead: true,
+        deepLink: FieldValue.delete(), videoId: FieldValue.delete(),
+        commentId: FieldValue.delete(), archivedAt: new Date(),
+      }));
+      const currentUnread = Number(meta.data()?.unreadCount ?? 0);
+      transaction.set(metaRef, {
+        unreadCount: Math.max(0, (Number.isFinite(currentUnread) ? currentUnread : 0) - unreadRemoved),
+        updatedAt: new Date(),
+      }, { merge: true });
+      return page.size;
+    });
+    archived += count;
+  }
+
+  return archived;
+}
+
 export async function cleanupVideoRecords(db: Firestore, videoId: string, videoRef: DocumentReference) {
   let deletedComments = 0;
   // Remove current comments and their likes in bounded batches.
@@ -61,6 +109,8 @@ export async function cleanupVideoRecords(db: Firestore, videoId: string, videoR
     if (page.size < WRITE_BATCH_SIZE) break;
   }
 
+  const archivedNotifications = await archiveVideoNotifications(db, videoId);
+
   const deleted = {
     watchVideoLikes: await deleteByField(db, "watchVideoLikes", "videoId", videoId),
     watchVideoShares: await deleteByField(db, "watchVideoShares", "videoId", videoId),
@@ -74,5 +124,5 @@ export async function cleanupVideoRecords(db: Firestore, videoId: string, videoR
     legacyVideoCommentReports: await archiveByField(db, "videoCommentReports", "videoId", videoId),
   };
   await videoRef.delete();
-  return { deletedComments, deleted, archived };
+  return { deletedComments, deleted, archived, archivedNotifications };
 }
