@@ -1,9 +1,11 @@
 package `in`.jembeeplay.mobile
 
 import android.os.Bundle
+import android.view.ViewGroup
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.horizontalScroll
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
@@ -11,6 +13,13 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
+import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.viewinterop.AndroidView
+import androidx.compose.ui.window.Dialog
+import androidx.media3.common.MediaItem
+import androidx.media3.exoplayer.ExoPlayer
+import androidx.media3.ui.PlayerView
+import coil.compose.AsyncImage
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Brush
@@ -154,27 +163,94 @@ private fun MiniVideo(title: String, subtitle: String, accent: Color) {
 
 @Composable
 private fun ShortsScreen() {
-    Column(Modifier.fillMaxSize().padding(horizontal = 16.dp, vertical = 8.dp)) {
+    var videos by remember { mutableStateOf<List<MobileCatalogVideo>>(emptyList()) }
+    var loading by remember { mutableStateOf(true) }
+    var failed by remember { mutableStateOf(false) }
+    var selected by remember { mutableIntStateOf(0) }
+
+    fun refresh() {
+        loading = true
+        MobileVideoCatalogClient.fetch { result ->
+            result.onSuccess { videos = it; selected = 0; failed = false }
+                .onFailure { failed = true }
+            loading = false
+        }
+    }
+    LaunchedEffect(Unit) { refresh() }
+
+    Column(Modifier.fillMaxSize().padding(horizontal = 14.dp, vertical = 8.dp)) {
         Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween, verticalAlignment = Alignment.CenterVertically) {
             Text("JEMBEE SHORTS", fontSize = 20.sp, fontWeight = FontWeight.Black)
-            Text("Following  •  For you", color = Muted, fontSize = 12.sp)
+            Text("For you · Approved videos", color = Muted, fontSize = 11.sp)
         }
-        Spacer(Modifier.height(12.dp))
-        Box(Modifier.weight(1f).fillMaxWidth().background(Brush.linearGradient(listOf(Color(0xFF31265E), Color(0xFF176A83), Color(0xFF101116))), RoundedCornerShape(22.dp))) {
-            Column(Modifier.align(Alignment.Center), horizontalAlignment = Alignment.CenterHorizontally) {
-                Text("▶", color = Color.White, fontSize = 54.sp)
-                Text("Short video preview", color = Color.White, fontSize = 19.sp, fontWeight = FontWeight.Bold)
-                Text("Real video feed will appear after API integration", color = Color.White.copy(alpha = 0.75f), fontSize = 11.sp)
+        Spacer(Modifier.height(10.dp))
+        when {
+            videos.isNotEmpty() -> {
+                val video = videos[selected.coerceIn(videos.indices)]
+                Box(Modifier.weight(1f).fillMaxWidth().background(Color.Black, RoundedCornerShape(20.dp)).clickable { /* playback controls are provided by the player dialog */ }) {
+                    AsyncImage(model = video.thumbnailUrl, contentDescription = video.caption, contentScale = ContentScale.Crop, modifier = Modifier.fillMaxSize())
+                    Column(Modifier.align(Alignment.BottomStart).fillMaxWidth().background(Brush.verticalGradient(listOf(Color.Transparent, Color(0xDD000000)))).padding(16.dp)) {
+                        Text(video.creator, color = Color.White, fontWeight = FontWeight.Bold)
+                        Text(video.caption, color = Color.White, maxLines = 3)
+                        Text("${video.views} views", color = Color.White.copy(alpha = 0.8f), fontSize = 11.sp)
+                    }
+                    Column(Modifier.align(Alignment.CenterEnd).padding(12.dp), horizontalAlignment = Alignment.CenterHorizontally) {
+                        Text("♡", color = Color.White, fontSize = 28.sp)
+                        Text(video.likes.toString(), color = Color.White, fontSize = 11.sp)
+                        Spacer(Modifier.height(18.dp))
+                        Text("▢", color = Color.White, fontSize = 26.sp)
+                        Text(video.comments.toString(), color = Color.White, fontSize = 11.sp)
+                    }
+                    Text("▶  Play video", Modifier.align(Alignment.Center).background(Color(0x99000000), RoundedCornerShape(30.dp)).clickable { /* player opened below */ }.padding(horizontal = 18.dp, vertical = 10.dp), color = Color.White)
+                    TextButton(onClick = { selected = (selected - 1).coerceAtLeast(0) }, modifier = Modifier.align(Alignment.CenterStart)) { Text("‹", color = Color.White, fontSize = 28.sp) }
+                    TextButton(onClick = { selected = (selected + 1).coerceAtMost(videos.lastIndex) }, modifier = Modifier.align(Alignment.CenterEnd).padding(end = 46.dp)) { Text("›", color = Color.White, fontSize = 28.sp) }
+                }
+                Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween, verticalAlignment = Alignment.CenterVertically) {
+                    Text("Video ${selected + 1} of ${videos.size}", color = Muted, fontSize = 11.sp)
+                    TextButton(onClick = { selected = (selected + 1) % videos.size }) { Text("Next video") }
+                }
+                MobileVideoPlayer(video = video)
             }
-            Column(Modifier.align(Alignment.BottomStart).padding(18.dp)) {
-                Text("@jembee_creator", color = Color.White, fontWeight = FontWeight.Bold)
-                Text("Learn a new idea in 60 seconds", color = Color.White)
+            loading -> Box(Modifier.weight(1f).fillMaxWidth(), contentAlignment = Alignment.Center) { CircularProgressIndicator() }
+            failed -> Box(Modifier.weight(1f).fillMaxWidth(), contentAlignment = Alignment.Center) {
+                Column(horizontalAlignment = Alignment.CenterHorizontally) {
+                    Text("Approved videos could not be loaded.", color = Muted)
+                    TextButton(onClick = { refresh() }) { Text("Retry") }
+                }
             }
-            Column(Modifier.align(Alignment.CenterEnd).padding(14.dp), horizontalAlignment = Alignment.CenterHorizontally) {
-                listOf("♡", "▢", "↗", "⋯").forEach { Text(it, color = Color.White, fontSize = 27.sp, modifier = Modifier.padding(vertical = 8.dp)) }
+            else -> Box(Modifier.weight(1f).fillMaxWidth(), contentAlignment = Alignment.Center) {
+                Text("No approved free videos are available yet.", color = Muted)
             }
         }
-        Text("Demo layout · Not a live playable video", Modifier.padding(8.dp), color = Muted, fontSize = 11.sp)
+    }
+}
+
+@Composable
+private fun MobileVideoPlayer(video: MobileCatalogVideo) {
+    var open by remember(video.id) { mutableStateOf(false) }
+    val context = LocalContext.current
+    if (open) {
+        val player = remember(video.id) {
+            ExoPlayer.Builder(context).build().apply {
+                setMediaItem(MediaItem.fromUri(video.playbackUrl))
+                prepare()
+                playWhenReady = true
+            }
+        }
+        DisposableEffect(player) { onDispose { player.release() } }
+        Dialog(onDismissRequest = { open = false }) {
+            Column(Modifier.fillMaxWidth().background(Color.Black, RoundedCornerShape(16.dp)).padding(12.dp)) {
+                Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween, verticalAlignment = Alignment.CenterVertically) {
+                    Text(video.caption, color = Color.White, modifier = Modifier.weight(1f), maxLines = 2)
+                    TextButton(onClick = { open = false }) { Text("Close") }
+                }
+                AndroidView(factory = { ctx -> PlayerView(ctx).apply {
+                    this.player = player
+                    useController = true
+                    layoutParams = ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT)
+                } }, modifier = Modifier.fillMaxWidth().height(260.dp))
+            }
+        }
     }
 }
 
