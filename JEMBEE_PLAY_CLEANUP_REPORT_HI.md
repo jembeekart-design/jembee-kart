@@ -52,3 +52,11 @@ Historical user Firestore records and Firebase collections are not migrated or d
 **Regression:** सभी Node contract/unit tests: 79/79 pass। Next.js production build, project TypeScript और ESLint अभी verify नहीं हैं क्योंकि इस environment में `node_modules/next` और `@types/node` उपलब्ध नहीं हुए; dependency installation पूरा नहीं हुआ। GitHub write integration में 403 होने के कारण कोई commit/push नहीं किया गया। Live payouts disabled ही रहेंगे।
 
 विस्तृत विवरण: `docs/jembee-play-audit/VIDEO_ONLY_SCOPE_CLEANUP_2026-11-09.md`।
+
+
+## Video-only scope audit — 19-11-2026
+
+- The active route audit found no Shopping Store, Cart, Product Catalog, Seller, Shipping, or MLM storefront page under `src/app`.
+- Teacher Referral Earnings and its admin reconciliation flow are retained; they are not treated as shopping/MLM storefront features.
+- Individual paid-video checkout, creator earnings, direct video-share attribution, and Teacher Referral earnings remain video-platform features.
+- No historical Firestore records were deleted or migrated.
