@@ -1,5 +1,5 @@
 name: JEMBEE PLAY Android app build
-# Re-run native compilation after Learning Library integration
+# Rebuild native apps after reference-layout implementation
 
 on:
   pull_request:
