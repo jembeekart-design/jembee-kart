@@ -32,6 +32,8 @@ jobs:
         run: npm ci --no-audit --no-fund
       - name: TypeScript check
         run: npx tsc --noEmit --incremental false --pretty false
+      - name: Admin Media Library regression tests
+        run: npm run test:admin-media-library
       - name: Full repository ESLint baseline (informational)
         continue-on-error: true
         run: npm run lint
@@ -41,6 +43,10 @@ jobs:
           src/app/admin/page.tsx
           src/app/admin/system-health/page.tsx
           src/app/api/admin/system-health/route.ts
+          src/app/admin/media-library/page.tsx
+          src/app/api/admin/media-library/route.ts
+          src/app/api/admin/delete-video/route.ts
+          src/services/videoDeletionService.ts
           src/app/api/app/remote-config/route.ts
           src/app/api/shorts/paid-video/create-order/route.ts
           src/app/api/shorts/paid-video/playback-session/route.ts
