@@ -41,7 +41,7 @@ export default function ProductionHeader() {
         className="pointer-events-none fixed inset-x-0 top-0 z-50 text-white"
         style={{ paddingTop: "env(safe-area-inset-top)" }}
       >
-        <div className="pointer-events-auto bg-gradient-to-b from-[#050b1c]/85 via-[#050b1c]/35 to-transparent px-5 pb-5 pt-4">
+        <div className="pointer-events-auto bg-gradient-to-b from-[#13091e]/85 via-[#13091e]/35 to-transparent px-5 pb-5 pt-4">
           <div className="flex items-start justify-between">
             <div className="flex flex-col gap-4">
               <div className="flex items-center gap-1">
