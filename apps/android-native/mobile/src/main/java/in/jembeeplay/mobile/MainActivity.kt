@@ -137,11 +137,24 @@ private fun HomeScreen(onLearn: () -> Unit, onShorts: () -> Unit) {
         }
         PremiumHeroBanner(onWatch = onShorts)
         ReferenceQuickActions(onLearn = onLearn, onShorts = onShorts)
-        NativeCatalogSection()
-        Column(Modifier.padding(horizontal = 18.dp), verticalArrangement = Arrangement.spacedBy(8.dp)) {
-            Text("Made for your big screen moments", fontSize = 18.sp, fontWeight = FontWeight.Bold)
-            Text("Pick a video, settle in and enjoy. Your watch history and personal recommendations will appear here after account sync is connected.", fontSize = 13.sp, color = JembeeMuted, lineHeight = 19.sp)
+        Column(Modifier.fillMaxWidth().padding(horizontal = 18.dp), verticalArrangement = Arrangement.spacedBy(8.dp)) {
+            Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween, verticalAlignment = Alignment.CenterVertically) {
+                Text("Continue Learning", fontSize = 19.sp, fontWeight = FontWeight.Bold)
+                Text("See All  ›", color = MaterialTheme.colorScheme.primary, fontSize = 12.sp)
+            }
+            Surface(shape = RoundedCornerShape(17.dp), color = MaterialTheme.colorScheme.surface, modifier = Modifier.fillMaxWidth()) {
+                Row(Modifier.padding(14.dp), verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(12.dp)) {
+                    Box(Modifier.size(76.dp, 66.dp).background(Color(0xFF183C27), RoundedCornerShape(12.dp)), contentAlignment = Alignment.Center) {
+                        Text("▤", color = Color(0xFF8BE28B), fontSize = 30.sp)
+                    }
+                    Column(Modifier.weight(1f), verticalArrangement = Arrangement.spacedBy(4.dp)) {
+                        Text("Your learning progress", fontSize = 14.sp, fontWeight = FontWeight.Bold)
+                        Text("Sign in to sync completed chapters and continue where you left off.", fontSize = 11.sp, color = JembeeMuted, lineHeight = 15.sp)
+                    }
+                }
+            }
         }
+        NativeCatalogSection(sectionTitle = "Trending Videos 🔥", sectionSubtitle = "Recently approved videos from JEMBEE PLAY")
         Surface(
             onClick = onLearn,
             shape = RoundedCornerShape(22.dp),
