@@ -173,24 +173,11 @@ private fun HomeScreen(onLearn: () -> Unit, onShorts: () -> Unit) {
                     Column(Modifier.weight(1f), verticalArrangement = Arrangement.spacedBy(5.dp)) {
                         Text("Explore your Learning Library", fontSize = 14.sp, fontWeight = FontWeight.Bold, color = Color.White)
                         Text("Books  ·  Chapters  ·  Questions", fontSize = 11.sp, color = JembeeMuted)
-                        Box(Modifier.fillMaxWidth().height(4.dp).clip(RoundedCornerShape(4.dp)).background(Color(0xFF34313F)))
                     }
                 }
             }
         }
         NativeCatalogSection(sectionTitle = "Trending Videos 🔥", sectionSubtitle = "Popular approved videos from JEMBEE PLAY")
-        Surface(onClick = onLearn, shape = RoundedCornerShape(17.dp), color = Color(0xFF15131E),
-            modifier = Modifier.fillMaxWidth().padding(horizontal = 16.dp)) {
-            Row(Modifier.padding(16.dp), verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(14.dp)) {
-                Box(Modifier.size(48.dp).background(Brush.linearGradient(listOf(Color(0xFF4B176F), Color(0xFF991D65))), RoundedCornerShape(14.dp)),
-                    contentAlignment = Alignment.Center) { Icon(Icons.Filled.MenuBook, contentDescription = null, tint = Color.White, modifier = Modifier.size(27.dp)) }
-                Column(Modifier.weight(1f), verticalArrangement = Arrangement.spacedBy(3.dp)) {
-                    Text("Learning Library", fontWeight = FontWeight.Bold, fontSize = 15.sp, color = Color.White)
-                    Text("Find a book, chapter or question", fontSize = 11.sp, color = JembeeMuted)
-                }
-                Text("→", color = Color(0xFFFF1978), fontSize = 23.sp)
-            }
-        }
     }
 }
 
@@ -256,14 +243,8 @@ private fun YouScreen(onTheme: () -> Unit, dark: Boolean) {
 
 @Composable
 private fun PremiumHeroBanner(onWatch: () -> Unit) {
-    var heroThumbnail by remember { mutableStateOf<String?>(null) }
-    LaunchedEffect(Unit) {
-        VideoCatalogClient.fetch { result ->
-            result.onSuccess { page -> heroThumbnail = page.videos.firstOrNull()?.thumbnailUrl }
-        }
-    }
     Box(
-        Modifier.fillMaxWidth().padding(horizontal = 16.dp).height(178.dp)
+        Modifier.fillMaxWidth().padding(horizontal = 16.dp).height(190.dp)
             .background(
                 Brush.horizontalGradient(
                     listOf(Color(0xFF17072F), Color(0xFF35106B), Color(0xFF16112D))
@@ -271,35 +252,32 @@ private fun PremiumHeroBanner(onWatch: () -> Unit) {
                 RoundedCornerShape(20.dp)
             )
     ) {
-        if (heroThumbnail != null) {
-            AsyncImage(
-                model = heroThumbnail,
-                contentDescription = "Featured approved JEMBEE PLAY video",
-                contentScale = ContentScale.Crop,
-                modifier = Modifier.fillMaxSize()
-            )
-        }
+        AsyncImage(
+            model = R.drawable.reference_hero_students,
+            contentDescription = "Students featured in the JEMBEE PLAY learning banner",
+            contentScale = ContentScale.Crop,
+            modifier = Modifier.fillMaxHeight().fillMaxWidth(0.53f).align(Alignment.CenterEnd)
+        )
         Box(
             Modifier.fillMaxSize().background(
                 Brush.horizontalGradient(
-                    listOf(Color(0xEE17072F), Color(0xCC35106B), Color(0x4416112D))
+                    listOf(Color(0xFF17072F), Color(0xEE35106B), Color(0x2235116B))
                 ),
                 RoundedCornerShape(20.dp)
             )
         )
         Column(
-            Modifier.align(Alignment.CenterStart).padding(horizontal = 20.dp),
+            Modifier.align(Alignment.CenterStart).fillMaxWidth(0.61f).padding(start = 18.dp, end = 4.dp),
             verticalArrangement = Arrangement.spacedBy(8.dp)
         ) {
-            Text("JEMBEE PLAY  ▶", color = Color.White, fontSize = 12.sp, fontWeight = FontWeight.Black, letterSpacing = 1.sp)
-            Text("Watch  ·  Learn  ·  Create  ·  Share  ·  Earn", color = Color.White, fontSize = 17.sp, fontWeight = FontWeight.ExtraBold, maxLines = 2)
-            Text("Discover videos from the JEMBEE PLAY community", color = Color(0xFFE5DDF5), fontSize = 11.sp)
+            Text("JEMBEE PLAY  ▶", color = Color.White, fontSize = 13.sp, fontWeight = FontWeight.Black, letterSpacing = 0.6.sp)
+            Text("Watch  ·  Learn  ·  Create  ·  Share & Earn", color = Color.White, fontSize = 14.sp, fontWeight = FontWeight.ExtraBold, maxLines = 3, lineHeight = 17.sp)
             Button(
                 onClick = onWatch,
                 colors = ButtonDefaults.buttonColors(containerColor = Color(0xFFFF1978)),
-                contentPadding = PaddingValues(horizontal = 18.dp, vertical = 4.dp)
+                contentPadding = PaddingValues(horizontal = 16.dp, vertical = 3.dp)
             ) {
-                Text("▶  Watch Now", color = Color.White, fontWeight = FontWeight.Bold)
+                Text("▶  Watch Now", color = Color.White, fontWeight = FontWeight.Bold, fontSize = 12.sp)
             }
         }
     }

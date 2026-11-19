@@ -35,8 +35,6 @@ private fun JembeeTvApp() {
     var remoteConfig by remember { mutableStateOf(JembeeRemoteConfig()) }
     LaunchedEffect(Unit) { RemoteConfigClient.fetch(context) { remoteConfig = it } }
     var selected by remember { mutableStateOf("Home") }
-    var heroThumbnail by remember { mutableStateOf<String?>(null) }
-    LaunchedEffect(Unit) { TvVideoCatalogClient.fetch { result -> result.onSuccess { heroThumbnail = it.firstOrNull()?.thumbnailUrl } } }
     val colors = darkColorScheme(
         primary = TvBlue,
         background = Color(0xFF05060B),
@@ -85,7 +83,7 @@ private fun JembeeTvApp() {
                     }
                 }
 
-                if (selected == "Home" || selected == "Shorts") {
+                if (selected == "Home") {
                     Row(Modifier.fillMaxWidth().weight(1f), horizontalArrangement = Arrangement.spacedBy(24.dp)) {
                         Column(Modifier.width(58.dp).fillMaxHeight(), verticalArrangement = Arrangement.spacedBy(20.dp),
                             horizontalAlignment = Alignment.CenterHorizontally) {
@@ -111,12 +109,14 @@ private fun JembeeTvApp() {
                                 Box(Modifier.fillMaxSize().background(
                                     Brush.horizontalGradient(listOf(Color(0xFF17072F), Color(0xFF35106B), Color(0xFF170B35)))
                                 )) {
-                                    if (heroThumbnail != null) {
-                                        AsyncImage(model = heroThumbnail, contentDescription = "Featured approved JEMBEE PLAY video",
-                                            contentScale = ContentScale.Crop, modifier = Modifier.fillMaxSize())
-                                        Box(Modifier.fillMaxSize().background(Brush.horizontalGradient(
-                                            listOf(Color(0xEE17072F), Color(0xCC35106B), Color(0x44170B35)))))
-                                    }
+                                    AsyncImage(
+                                        model = R.drawable.reference_hero_student,
+                                        contentDescription = "JEMBEE PLAY learning hero artwork",
+                                        contentScale = ContentScale.Crop,
+                                        modifier = Modifier.fillMaxSize()
+                                    )
+                                    Box(Modifier.fillMaxSize().background(Brush.horizontalGradient(
+                                        listOf(Color(0xFF17072F), Color(0xDD35106B), Color(0x22170B35)))))
                                     Column(Modifier.align(Alignment.CenterStart).padding(horizontal = 34.dp),
                                         verticalArrangement = Arrangement.spacedBy(9.dp)) {
                                         Text("Learn", fontSize = 38.sp, color = Color.White, fontWeight = FontWeight.ExtraBold)
@@ -137,6 +137,17 @@ private fun JembeeTvApp() {
                                 TvFeatureCard("Your Library", "Saved videos and watch history", "▣", Modifier.weight(1f)) { selected = "Library" }
                             }
                         }
+                    }
+                } else if (selected == "Shorts") {
+                    Column(
+                        Modifier.fillMaxWidth().weight(1f),
+                        verticalArrangement = Arrangement.spacedBy(18.dp)
+                    ) {
+                        Column(verticalArrangement = Arrangement.spacedBy(5.dp)) {
+                            Text("Shorts", fontSize = 32.sp, fontWeight = FontWeight.ExtraBold)
+                            Text("Browse approved short videos. Select a card to play.", fontSize = 15.sp, color = TvMuted)
+                        }
+                        TvLiveVideoShelf(sectionTitle = "Latest Shorts", videoFormat = "short")
                     }
                 } else if (selected == "Learning") {
                     TvLearningLibraryScreen()

@@ -24,7 +24,7 @@ import androidx.media3.exoplayer.ExoPlayer
 import androidx.media3.ui.PlayerView
 
 @Composable
-fun TvLiveVideoShelf() {
+fun TvLiveVideoShelf(sectionTitle: String = "Trending Videos", videoFormat: String? = null) {
     var videos by remember { mutableStateOf<List<TvCatalogVideo>>(emptyList()) }
     var loading by remember { mutableStateOf(true) }
     var failed by remember { mutableStateOf(false) }
@@ -33,19 +33,19 @@ fun TvLiveVideoShelf() {
     fun refresh() {
         loading = true
         TvVideoCatalogClient.fetch { result ->
-            result.onSuccess { videos = it; failed = false }
+            result.onSuccess { page -> videos = if (videoFormat == null) page else page.filter { it.format == videoFormat }; failed = false }
                 .onFailure { failed = true }
             loading = false
         }
     }
 
-    LaunchedEffect(Unit) { refresh() }
+    LaunchedEffect(videoFormat) { refresh() }
 
     Column(Modifier.fillMaxWidth()) {
         Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween) {
             Column {
-                Text("Trending Videos", fontSize = 21.sp, fontWeight = FontWeight.Bold)
-                Text("Recently approved videos from JEMBEE PLAY", fontSize = 12.sp, color = MaterialTheme.colorScheme.onSurfaceVariant)
+                Text(sectionTitle, fontSize = 21.sp, fontWeight = FontWeight.Bold)
+                Text(if (videoFormat == "short") "Approved short videos from JEMBEE PLAY" else "Recently approved videos from JEMBEE PLAY", fontSize = 12.sp, color = MaterialTheme.colorScheme.onSurfaceVariant)
             }
             if (loading) Text("Loading…", fontSize = 12.sp, color = MaterialTheme.colorScheme.onSurfaceVariant)
         }
