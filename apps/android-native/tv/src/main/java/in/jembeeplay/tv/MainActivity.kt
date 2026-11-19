@@ -13,6 +13,10 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.Brush
+import androidx.compose.ui.layout.ContentScale
+import androidx.compose.foundation.shape.RoundedCornerShape
+import coil.compose.AsyncImage
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -98,6 +102,8 @@ private fun TvHomeScreen(
         }
         if (maintenance) Text(message.ifBlank { "JEMBEE PLAY is temporarily under maintenance." }, Modifier.padding(top = 12.dp), color = Color(0xFFFF8A80))
         Spacer(Modifier.height(24.dp))
+        TvReferenceHero(onWatch = { onSelect("Shorts") })
+        Spacer(Modifier.height(18.dp))
         Surface(onClick = { onSelect("Shorts") }, modifier = Modifier.fillMaxWidth().height(150.dp), shape = ClickableSurfaceDefaults.shape(), colors = ClickableSurfaceDefaults.colors(containerColor = Color(0xFF123C5B), focusedContainerColor = Color(0xFF1C5270))) {
             Box(Modifier.fillMaxSize().padding(28.dp), contentAlignment = Alignment.CenterStart) {
                 Column {
@@ -126,6 +132,33 @@ private fun TvHomeScreen(
             }
         }
         Text("Only approved, active, safe and free videos are listed.", Modifier.padding(top = 10.dp), color = Color(0xFF8392A7), fontSize = 11.sp)
+    }
+}
+
+
+@Composable
+private fun TvReferenceHero(onWatch: () -> Unit) {
+    Surface(
+        onClick = onWatch,
+        modifier = Modifier.fillMaxWidth().height(230.dp),
+        shape = ClickableSurfaceDefaults.shape(),
+        colors = ClickableSurfaceDefaults.colors(containerColor = Color(0xFF17072F), focusedContainerColor = Color(0xFF35106B))
+    ) {
+        Box(Modifier.fillMaxSize()) {
+            AsyncImage(
+                model = R.drawable.reference_hero_student,
+                contentDescription = "JEMBEE PLAY learning showcase artwork",
+                contentScale = ContentScale.Crop,
+                modifier = Modifier.fillMaxSize()
+            )
+            Box(Modifier.fillMaxSize().background(Brush.horizontalGradient(listOf(Color(0xFF17072F), Color(0xDD35106B), Color(0x22170B35)))))
+            Column(Modifier.align(Alignment.CenterStart).fillMaxWidth(0.58f).padding(start = 34.dp), verticalArrangement = Arrangement.spacedBy(9.dp)) {
+                Text("JEMBEE PLAY", color = Color.White, fontSize = 18.sp, fontWeight = FontWeight.Black, letterSpacing = 1.sp)
+                Text("Watch  ·  Learn  ·  Create  ·  Share & Earn", color = Color.White, fontSize = 27.sp, fontWeight = FontWeight.ExtraBold)
+                Text("Explore the community", color = Color(0xFFE5DDF5), fontSize = 15.sp)
+                Text("▶  WATCH NOW", color = Color.White, fontSize = 15.sp, fontWeight = FontWeight.Bold)
+            }
+        }
     }
 }
 
