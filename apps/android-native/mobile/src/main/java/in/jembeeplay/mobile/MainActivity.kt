@@ -308,32 +308,30 @@ private fun PremiumHeroBanner(onWatch: () -> Unit) {
 @Composable
 private fun ReferenceQuickActions(onLearn: () -> Unit, onShorts: () -> Unit) {
     val actions = listOf(
-        Triple("Learning Library", "▤", onLearn),
-        Triple("Shorts", "▶", onShorts),
-        Triple("Live", "◉", null),
-        Triple("Create Upload", "☁", null),
-        Triple("Earn & Rewards", "▥", null)
+        Triple("Learning\nLibrary", "▤", Color(0xFF29114E)) to onLearn,
+        Triple("Shorts", "▶", Color(0xFF4A102B)) to onShorts,
+        Triple("Live", "◉", Color(0xFF103B43)) to null,
+        Triple("Create\nUpload", "☁", Color(0xFF103F45)) to null,
+        Triple("Earn\n& Rewards", "▥", Color(0xFF443516)) to null
     )
-    LazyRow(
-        contentPadding = PaddingValues(horizontal = 16.dp),
-        horizontalArrangement = Arrangement.spacedBy(10.dp)
-    ) {
-        items(actions) { (label, symbol, action) ->
-            Surface(
-                onClick = { action?.invoke() },
-                enabled = action != null,
-                shape = RoundedCornerShape(17.dp),
-                color = MaterialTheme.colorScheme.surface,
-                modifier = Modifier.width(78.dp).height(96.dp)
-            ) {
-                Column(
-                    Modifier.fillMaxSize().padding(8.dp),
-                    horizontalAlignment = Alignment.CenterHorizontally,
-                    verticalArrangement = Arrangement.Center
-                ) {
-                    Text(symbol, color = MaterialTheme.colorScheme.primary, fontSize = 25.sp, fontWeight = FontWeight.Bold)
+    LazyRow(contentPadding = PaddingValues(horizontal = 16.dp), horizontalArrangement = Arrangement.spacedBy(9.dp)) {
+        items(actions) { (entry, action) ->
+            val (label, symbol, tileColor) = entry
+            Surface(onClick = { action?.invoke() }, enabled = action != null,
+                shape = RoundedCornerShape(17.dp), color = tileColor,
+                modifier = Modifier.width(76.dp).height(102.dp)) {
+                Column(Modifier.fillMaxSize().padding(7.dp), horizontalAlignment = Alignment.CenterHorizontally,
+                    verticalArrangement = Arrangement.Center) {
+                    Text(symbol, color = when(label) {
+                        "Learning\nLibrary" -> Color(0xFFD9A4FF)
+                        "Shorts" -> Color(0xFFFF1978)
+                        "Live" -> Color(0xFF45DCE7)
+                        "Create\nUpload" -> Color(0xFF57E5E8)
+                        else -> Color(0xFFFFC53D)
+                    }, fontSize = 29.sp, fontWeight = FontWeight.Bold)
                     Spacer(Modifier.height(6.dp))
-                    Text(label, color = MaterialTheme.colorScheme.onSurface, fontSize = 10.sp, lineHeight = 12.sp, fontWeight = FontWeight.SemiBold)
+                    Text(label, color = Color.White, fontSize = 10.sp, lineHeight = 12.sp, fontWeight = FontWeight.SemiBold,
+                        textAlign = androidx.compose.ui.text.style.TextAlign.Center)
                 }
             }
         }
