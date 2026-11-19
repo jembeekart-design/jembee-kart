@@ -1,26 +1,15 @@
 import { NextResponse } from "next/server";
-import { getAdminAuth, getAdminDb } from "@/firebase/admin";
+import { getAdminDb } from "@/firebase/admin";
+import { requireAdmin, isAdminIdentity } from "@/lib/server/requireAdmin";
 
 export const dynamic = "force-dynamic";
 
 export async function GET(req: Request) {
+  const identity = await requireAdmin(req);
+  if (!isAdminIdentity(identity)) return identity;
+
   try {
-    const authorization = req.headers.get("authorization");
-    if (!authorization?.startsWith("Bearer ")) {
-      return NextResponse.json({ message: "Unauthorized" }, { status: 401 });
-    }
-
-    const decoded = await getAdminAuth().verifyIdToken(authorization.slice(7).trim(), true);
     const adminDb = getAdminDb();
-    const directUser = await adminDb.collection("users").doc(decoded.uid).get();
-    const userSnapshot = directUser.exists
-      ? null
-      : await adminDb.collection("users").where("uid", "==", decoded.uid).limit(1).get();
-    const userData = directUser.exists ? directUser.data() : userSnapshot?.docs[0]?.data();
-    if (userData?.role !== "admin" && userData?.role !== "super_admin") {
-      return NextResponse.json({ message: "Forbidden" }, { status: 403 });
-    }
-
     const snapshot = await adminDb.collection("watchEarnVideos")
       .orderBy("createdAt", "desc")
       .limit(250)
