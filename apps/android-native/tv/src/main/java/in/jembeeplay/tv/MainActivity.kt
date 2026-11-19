@@ -86,53 +86,57 @@ private fun JembeeTvApp() {
                 }
 
                 if (selected == "Home" || selected == "Shorts") {
-                    Surface(
-                        shape = RoundedCornerShape(24.dp),
-                        colors = SurfaceDefaults.colors(containerColor = colors.surface),
-                        modifier = Modifier.fillMaxWidth().height(220.dp)
-                    ) {
-                        Box(Modifier.fillMaxSize().background(
-                            Brush.horizontalGradient(listOf(Color(0xFF17072F), Color(0xFF35106B), Color(0xFF170B35)))
-                        )) {
-                            if (heroThumbnail != null) {
-                                AsyncImage(model = heroThumbnail, contentDescription = "Featured approved JEMBEE PLAY video",
-                                    contentScale = ContentScale.Crop, modifier = Modifier.fillMaxSize())
-                                Box(Modifier.fillMaxSize().background(Brush.horizontalGradient(
-                                    listOf(Color(0xEE17072F), Color(0xCC35106B), Color(0x44170B35)))))
-                            }
-                            Column(
-                                Modifier.align(Alignment.CenterStart).padding(horizontal = 34.dp),
-                                verticalArrangement = Arrangement.spacedBy(9.dp)
-                            ) {
-                                Text(if (selected == "Shorts") "Ideas that move you" else "Learn", fontSize = 17.sp, color = Color(0xFFFF8AB8), fontWeight = FontWeight.Bold)
-                                Text(if (selected == "Shorts") "Shorts on the big screen" else "Anytime Anywhere", fontSize = 34.sp, fontWeight = FontWeight.ExtraBold)
-                                Text(
-                                    if (selected == "Shorts") "Discover short videos from JEMBEE PLAY creators" else "Videos  ·  Chapters  ·  Questions  ·  Answers",
-                                    fontSize = 15.sp, color = TvMuted
-                                )
-                                Button(
-                                    onClick = { selected = if (selected == "Shorts") "Home" else "Learning" },
-                                    colors = ButtonDefaults.colors(containerColor = Color(0xFFFF1978)),
-                                    contentPadding = PaddingValues(horizontal = 22.dp, vertical = 7.dp)
-                                ) { Text("▶  Watch Now", color = Color.White, fontWeight = FontWeight.Bold) }
-                            }
-                            Box(
-                                Modifier.align(Alignment.CenterEnd).padding(end = 38.dp)
-                                    .size(190.dp, 160.dp)
-                                    .background(
-                                        Brush.radialGradient(listOf(Color(0x887E42D8), Color.Transparent)),
-                                        RoundedCornerShape(36.dp)
-                                    ),
-                                contentAlignment = Alignment.Center
-                            ) {
-                                Text("▶", fontSize = 94.sp, fontWeight = FontWeight.Black, color = Color.White.copy(alpha = .18f))
+                    Row(Modifier.fillMaxWidth().weight(1f), horizontalArrangement = Arrangement.spacedBy(24.dp)) {
+                        Column(Modifier.width(58.dp).fillMaxHeight(), verticalArrangement = Arrangement.spacedBy(20.dp),
+                            horizontalAlignment = Alignment.CenterHorizontally) {
+                            listOf("⌂", "♨", "▤", "◉", "♜", "⚙").forEachIndexed { index, symbol ->
+                                val destination = listOf("Home", "Shorts", "Learning", "Live", "Library", "Settings")[index]
+                                Surface(onClick = { selected = destination }, shape = RoundedCornerShape(14.dp),
+                                    colors = ClickableSurfaceDefaults.colors(
+                                        containerColor = if (selected == destination) Color(0xFF42102E) else Color.Transparent,
+                                        focusedContainerColor = Color(0xFFFF1978)
+                                    ), modifier = Modifier.size(54.dp)) {
+                                    Box(contentAlignment = Alignment.Center) {
+                                        Text(symbol, fontSize = 25.sp, color = if (selected == destination) Color(0xFFFF5A9E) else Color.White)
+                                    }
+                                }
                             }
                         }
-                    }
-                    TvLiveVideoShelf()
-                    Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(18.dp)) {
-                        TvFeatureCard("Learning Library", "Books  ·  Chapters  ·  Questions", "▤", Modifier.weight(1f)) { selected = "Learning" }
-                        TvFeatureCard("Your Library", "Saved videos and watch history", "▣", Modifier.weight(1f)) { selected = "My List" }
+                        Column(Modifier.weight(1f).fillMaxHeight(), verticalArrangement = Arrangement.spacedBy(20.dp)) {
+                            Surface(
+                                shape = RoundedCornerShape(24.dp),
+                                colors = SurfaceDefaults.colors(containerColor = colors.surface),
+                                modifier = Modifier.fillMaxWidth().height(236.dp)
+                            ) {
+                                Box(Modifier.fillMaxSize().background(
+                                    Brush.horizontalGradient(listOf(Color(0xFF17072F), Color(0xFF35106B), Color(0xFF170B35)))
+                                )) {
+                                    if (heroThumbnail != null) {
+                                        AsyncImage(model = heroThumbnail, contentDescription = "Featured approved JEMBEE PLAY video",
+                                            contentScale = ContentScale.Crop, modifier = Modifier.fillMaxSize())
+                                        Box(Modifier.fillMaxSize().background(Brush.horizontalGradient(
+                                            listOf(Color(0xEE17072F), Color(0xCC35106B), Color(0x44170B35)))))
+                                    }
+                                    Column(Modifier.align(Alignment.CenterStart).padding(horizontal = 34.dp),
+                                        verticalArrangement = Arrangement.spacedBy(9.dp)) {
+                                        Text("Learn", fontSize = 38.sp, color = Color.White, fontWeight = FontWeight.ExtraBold)
+                                        Text("Anytime", fontSize = 36.sp, color = Color.White, fontWeight = FontWeight.ExtraBold)
+                                        Text("Anywhere", fontSize = 36.sp, color = Color(0xFFFF5A9E), fontWeight = FontWeight.ExtraBold)
+                                        Text("Videos  ·  Chapters  ·  Questions  ·  Answers", fontSize = 15.sp, color = Color.White)
+                                        Button(onClick = { selected = "Learning" },
+                                            colors = ButtonDefaults.colors(containerColor = Color(0xFFFF1978)),
+                                            contentPadding = PaddingValues(horizontal = 22.dp, vertical = 7.dp)) {
+                                            Text("▶  Watch Now", color = Color.White, fontWeight = FontWeight.Bold)
+                                        }
+                                    }
+                                }
+                            }
+                            TvLiveVideoShelf()
+                            Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(16.dp)) {
+                                TvFeatureCard("Learning Library", "Books  ·  Chapters  ·  Questions", "▤", Modifier.weight(1f)) { selected = "Learning" }
+                                TvFeatureCard("Your Library", "Saved videos and watch history", "▣", Modifier.weight(1f)) { selected = "Library" }
+                            }
+                        }
                     }
                 } else if (selected == "Learning") {
                     TvLearningLibraryScreen()
