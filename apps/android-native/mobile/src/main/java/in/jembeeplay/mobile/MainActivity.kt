@@ -229,8 +229,7 @@ private fun ShortsScreen() {
 @Composable
 private fun MobileVideoPlayer(video: MobileCatalogVideo, onClose: () -> Unit) {
     val context = LocalContext.current
-    {
-        val player = remember(video.id) {
+    val player = remember(video.id) {
             ExoPlayer.Builder(context).build().apply {
                 setMediaItem(MediaItem.fromUri(video.playbackUrl))
                 prepare()
@@ -251,7 +250,6 @@ private fun MobileVideoPlayer(video: MobileCatalogVideo, onClose: () -> Unit) {
                 } }, modifier = Modifier.fillMaxWidth().height(260.dp))
             }
         }
-    }
 }
 
 @Composable
