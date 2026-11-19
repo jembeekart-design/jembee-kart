@@ -19,6 +19,11 @@ test("Home feed has separate Shorts grid, Long Video cards and manual ad slots b
   assert.match(home, /View all videos/);
   assert.match(home, /videos\.slice\(0, 4\)/);
   assert.match(home, /grid grid-cols-2 gap-3/);
+  assert.match(home, /Students learning together/);
+  assert.match(home, /bg-pink-500/);
+  assert.match(home, /label: "Learning", href: "\/learn\/school"/);
+  assert.match(home, /label: "Earn", href: "\/earnings\/creator"/);
+  assert.match(home, /label: "Library", href: "\/learn\/school"/);
 });
 
 test("Public creator labels never fall back to a private email address", async () => {
