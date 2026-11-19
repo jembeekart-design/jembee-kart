@@ -167,6 +167,7 @@ private fun ShortsScreen() {
     var loading by remember { mutableStateOf(true) }
     var failed by remember { mutableStateOf(false) }
     var selected by remember { mutableIntStateOf(0) }
+    var playing by remember { mutableStateOf<MobileCatalogVideo?>(null) }
 
     fun refresh() {
         loading = true
@@ -187,7 +188,7 @@ private fun ShortsScreen() {
         when {
             videos.isNotEmpty() -> {
                 val video = videos[selected.coerceIn(videos.indices)]
-                Box(Modifier.weight(1f).fillMaxWidth().background(Color.Black, RoundedCornerShape(20.dp)).clickable { /* playback controls are provided by the player dialog */ }) {
+                Box(Modifier.weight(1f).fillMaxWidth().background(Color.Black, RoundedCornerShape(20.dp))) {
                     AsyncImage(model = video.thumbnailUrl, contentDescription = video.caption, contentScale = ContentScale.Crop, modifier = Modifier.fillMaxSize())
                     Column(Modifier.align(Alignment.BottomStart).fillMaxWidth().background(Brush.verticalGradient(listOf(Color.Transparent, Color(0xDD000000)))).padding(16.dp)) {
                         Text(video.creator, color = Color.White, fontWeight = FontWeight.Bold)
@@ -201,7 +202,7 @@ private fun ShortsScreen() {
                         Text("▢", color = Color.White, fontSize = 26.sp)
                         Text(video.comments.toString(), color = Color.White, fontSize = 11.sp)
                     }
-                    Text("▶  Play video", Modifier.align(Alignment.Center).background(Color(0x99000000), RoundedCornerShape(30.dp)).clickable { /* player opened below */ }.padding(horizontal = 18.dp, vertical = 10.dp), color = Color.White)
+                    Text("▶  Play video", Modifier.align(Alignment.Center).background(Color(0x99000000), RoundedCornerShape(30.dp)).clickable { playing = video }.padding(horizontal = 18.dp, vertical = 10.dp), color = Color.White)
                     TextButton(onClick = { selected = (selected - 1).coerceAtLeast(0) }, modifier = Modifier.align(Alignment.CenterStart)) { Text("‹", color = Color.White, fontSize = 28.sp) }
                     TextButton(onClick = { selected = (selected + 1).coerceAtMost(videos.lastIndex) }, modifier = Modifier.align(Alignment.CenterEnd).padding(end = 46.dp)) { Text("›", color = Color.White, fontSize = 28.sp) }
                 }
@@ -209,7 +210,7 @@ private fun ShortsScreen() {
                     Text("Video ${selected + 1} of ${videos.size}", color = Muted, fontSize = 11.sp)
                     TextButton(onClick = { selected = (selected + 1) % videos.size }) { Text("Next video") }
                 }
-                MobileVideoPlayer(video = video)
+                playing?.let { activeVideo -> MobileVideoPlayer(video = activeVideo, onClose = { playing = null }) }
             }
             loading -> Box(Modifier.weight(1f).fillMaxWidth(), contentAlignment = Alignment.Center) { CircularProgressIndicator() }
             failed -> Box(Modifier.weight(1f).fillMaxWidth(), contentAlignment = Alignment.Center) {
@@ -226,10 +227,9 @@ private fun ShortsScreen() {
 }
 
 @Composable
-private fun MobileVideoPlayer(video: MobileCatalogVideo) {
-    var open by remember(video.id) { mutableStateOf(false) }
+private fun MobileVideoPlayer(video: MobileCatalogVideo, onClose: () -> Unit) {
     val context = LocalContext.current
-    if (open) {
+    {
         val player = remember(video.id) {
             ExoPlayer.Builder(context).build().apply {
                 setMediaItem(MediaItem.fromUri(video.playbackUrl))
@@ -238,11 +238,11 @@ private fun MobileVideoPlayer(video: MobileCatalogVideo) {
             }
         }
         DisposableEffect(player) { onDispose { player.release() } }
-        Dialog(onDismissRequest = { open = false }) {
+        Dialog(onDismissRequest = onClose) {
             Column(Modifier.fillMaxWidth().background(Color.Black, RoundedCornerShape(16.dp)).padding(12.dp)) {
                 Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween, verticalAlignment = Alignment.CenterVertically) {
                     Text(video.caption, color = Color.White, modifier = Modifier.weight(1f), maxLines = 2)
-                    TextButton(onClick = { open = false }) { Text("Close") }
+                    TextButton(onClick = onClose) { Text("Close") }
                 }
                 AndroidView(factory = { ctx -> PlayerView(ctx).apply {
                     this.player = player
