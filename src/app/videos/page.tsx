@@ -8,6 +8,7 @@ import FullscreenVideoFeed from "./components/FullscreenVideoFeed";
 import ExoClickVideoPlayer from "./components/ExoClickVideoPlayer";
 import { usePublicWatchVideos } from "@/hooks/usePublicWatchVideos";
 import { MonetagPlacement } from "@/components/ads/MonetagPlacement";
+import LongVideoSocialActions from "./components/LongVideoSocialActions";
 import { formatVideoDuration, publicCreatorName, publicVideoAge, publicVideoThumbnail } from "@/lib/videos/publicVideoPresentation";
 import type { WatchVideo } from "@/lib/videos/watch-earn/fetchWatchVideos";
 
@@ -59,6 +60,7 @@ function LongVideoWatch({ video }: { video: WatchVideo }) {
           <div className="grid h-10 w-10 place-items-center overflow-hidden rounded-full bg-gradient-to-br from-cyan-400 to-violet-500 font-black text-slate-950">{video.photoURL?.startsWith("https://") ? <img src={video.photoURL} alt="" className="h-full w-full object-cover"/> : publicCreatorName(video).replace(/^@/, "").slice(0, 1).toUpperCase()}</div>
           <div><p className="text-sm font-bold">{publicCreatorName(video)}</p><p className="text-xs text-slate-400">{Number(video.views || 0).toLocaleString("en-IN")} views · {publicVideoAge(video.createdAt)}</p></div>
         </div>
+        <LongVideoSocialActions videoId={video.id} creatorId={video.creatorId} initialLikes={video.likes} comments={video.comments}/>
         {video.hashtags.length ? <div className="mt-3 flex flex-wrap gap-2">{video.hashtags.map((tag) => <span key={tag} className="rounded-full bg-white/10 px-3 py-1 text-xs text-cyan-200">#{tag.replace(/^#/, "")}</span>)}</div> : null}
       </section>
     </main>
