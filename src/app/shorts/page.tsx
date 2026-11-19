@@ -9,11 +9,11 @@ export default function JembeeShortsPage() {
 
   return (
     <main
-      className="relative h-[100dvh] min-h-[100svh] w-full overflow-hidden bg-black text-white"
+      className="relative h-[100dvh] min-h-[100svh] w-full overflow-hidden bg-[#090611] text-white"
       aria-label="JEMBEE PLAY video feed"
     >
       <ProductionHeader />
-      <Suspense fallback={<div className="h-full w-full bg-black" aria-label="Loading video feed" />}>
+      <Suspense fallback={<div className="h-full w-full bg-[#090611]" aria-label="Loading video feed" />}>
         <FullscreenVideoFeed activeTab={activeTab} />
       </Suspense>
     </main>
