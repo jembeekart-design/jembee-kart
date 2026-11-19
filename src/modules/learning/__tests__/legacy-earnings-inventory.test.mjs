@@ -10,9 +10,9 @@ test("paid-video orders, purchases and events remain separate source domains",()
  assert.equal(classifyEarningsCollection("watchVideoPurchases").domain,"paid_video_entitlements");
  assert.equal(classifyEarningsCollection("watchVideoPaymentEvents").domain,"provider_payment_events");
 });
-test("verified expenses and disabled legacy referral records are not earnings rows",()=>{
+test("verified expenses and referral attribution are not earnings rows",()=>{
  assert.equal(classifyEarningsCollection("shortsVerifiedExpenses").domain,"verified_costs");
- assert.equal(classifyEarningsCollection("teacherReferralAttributions").migrationClass,"legacy_disabled");
+ assert.equal(classifyEarningsCollection("teacherReferralAttributions").domain,"teacher_referral_attribution");
 });
 test("Monetag collections remain a separate external USD legacy domain",()=>{
  for(const n of ["monetagRevenueImports","monetagEarnings","monetagPayments","monetagShareAttributions"]) assert.equal(classifyEarningsCollection(n).migrationClass,"separate_legacy_domain");
