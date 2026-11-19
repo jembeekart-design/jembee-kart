@@ -1,5 +1,6 @@
 package `in`.jembeeplay.mobile
 
+import android.content.Intent
 import android.view.ViewGroup
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
@@ -129,6 +130,22 @@ fun NativeShortsFeed() {
                                 .padding(horizontal = 10.dp, vertical = 6.dp),
                             color = Color.White, fontSize = 11.sp
                         )
+                        Column(
+                            Modifier.align(Alignment.CenterEnd).padding(end = 12.dp, bottom = 92.dp),
+                            horizontalAlignment = Alignment.CenterHorizontally,
+                            verticalArrangement = Arrangement.spacedBy(18.dp)
+                        ) {
+                            ShortsAction("♡", "Like")
+                            ShortsAction("▢", "Comment")
+                            ShortsAction("↗", "Share") {
+                                val shareIntent = Intent(Intent.ACTION_SEND).apply {
+                                    type = "text/plain"
+                                    putExtra(Intent.EXTRA_TEXT, "${video.title} · JEMBEE PLAY")
+                                }
+                                context.startActivity(Intent.createChooser(shareIntent, "Share video"))
+                            }
+                            ShortsAction("⋯", "More")
+                        }
                     }
                 }
             }
@@ -152,5 +169,24 @@ fun NativeShortsFeed() {
                 OutlinedButton(onClick = { refresh() }) { Text("Refresh", color = Color.White) }
             }
         }
+    }
+}
+
+
+@Composable
+private fun ShortsAction(symbol: String, label: String, onClick: (() -> Unit)? = null) {
+    Column(horizontalAlignment = Alignment.CenterHorizontally, verticalArrangement = Arrangement.spacedBy(3.dp)) {
+        Surface(
+            onClick = { onClick?.invoke() },
+            enabled = onClick != null,
+            shape = RoundedCornerShape(50),
+            color = Color(0x66000000),
+            modifier = Modifier.size(44.dp)
+        ) {
+            Box(contentAlignment = Alignment.Center) {
+                Text(symbol, color = Color.White, fontSize = 24.sp, fontWeight = FontWeight.Medium)
+            }
+        }
+        Text(label, color = Color.White, fontSize = 10.sp, fontWeight = FontWeight.Medium)
     }
 }
