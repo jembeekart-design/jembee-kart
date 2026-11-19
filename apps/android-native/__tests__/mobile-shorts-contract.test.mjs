@@ -26,3 +26,13 @@ test("mobile catalog client only accepts free catalog stream and thumbnail paths
   assert.match(api, /\.where\("moderation", "==", "safe"\)/);
   assert.match(api, /\.where\("videoAccess", "==", "free"\)/);
 });
+
+test("mobile Home catalog client validates media paths and returns callbacks on main thread", () => {
+  const homeClient = readFileSync(new URL("apps/android-native/mobile/src/main/java/in/jembeeplay/mobile/VideoCatalogClient.kt", root), "utf8");
+  assert.match(homeClient, /Handler\(Looper\.getMainLooper\(\)\)/);
+  assert.match(homeClient, /mainHandler\.post \{ onResult\(result\) \}/);
+  assert.match(homeClient, /MAX_RESPONSE_CHARS/);
+  assert.match(homeClient, /thumbnailPath\.startsWith\("\/api\/shorts\/video-thumbnail\/"\)/);
+  assert.match(homeClient, /playbackPath\.startsWith\("\/api\/shorts\/video-stream\/"\)/);
+  assert.match(homeClient, /connection\.disconnect\(\)/);
+});
