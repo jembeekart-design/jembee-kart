@@ -24,7 +24,7 @@ import androidx.media3.exoplayer.ExoPlayer
 import androidx.media3.ui.PlayerView
 
 @Composable
-fun NativeCatalogSection() {
+fun NativeCatalogSection(sectionTitle: String = "Watch on JEMBEE PLAY", sectionSubtitle: String = "Approved videos · Live catalog") {
     var videos by remember { mutableStateOf<List<CatalogVideo>>(emptyList()) }
     var cursor by remember { mutableStateOf<String?>(null) }
     var hasMore by remember { mutableStateOf(false) }
@@ -61,8 +61,8 @@ fun NativeCatalogSection() {
     Column(Modifier.fillMaxWidth().padding(top = 20.dp, bottom = 12.dp)) {
         Row(Modifier.fillMaxWidth().padding(horizontal = 18.dp), horizontalArrangement = Arrangement.SpaceBetween) {
             Column {
-                Text("Watch on JEMBEE PLAY", fontSize = 19.sp, fontWeight = FontWeight.Bold)
-                Text("Approved videos · Live catalog", fontSize = 11.sp, color = Color.Gray)
+                Text(sectionTitle, fontSize = 19.sp, fontWeight = FontWeight.Bold)
+                Text(sectionSubtitle, fontSize = 11.sp, color = Color.Gray)
             }
             if (loading) CircularProgressIndicator(Modifier.size(20.dp), strokeWidth = 2.dp)
         }
