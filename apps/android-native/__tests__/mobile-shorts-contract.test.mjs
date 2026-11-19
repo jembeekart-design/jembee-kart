@@ -55,3 +55,10 @@ test("native Learning Library uses live Subject Book Chapter Question and answer
   assert.match(main, /MobileVideoPlayer\(video = video/);
   assert.doesNotMatch(main, /listOf\("CBSE", "ICSE", "JAC", "Other boards"\)/);
 });
+
+test("Learning Library retries answer requests and only advances after success", () => {
+  assert.match(main, /var selectedQuestion by remember/);
+  assert.match(main, /4 -> selectedQuestion\?\.let/);
+  assert.match(main, /result\.onSuccess \{ rows ->\s*answers = rows\s*stage = 4/);
+  assert.match(main, /Video answers load nahi ho paye/);
+});
