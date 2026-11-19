@@ -16,8 +16,9 @@ object LearningLibraryClient {
     private val main = Handler(Looper.getMainLooper())
 
     fun loadNodes(type: String, parentId: String? = null, onResult: (Result<List<LearningNode>>) -> Unit) {
-        request("/api/content-categories?type=${URLEncoder.encode(type, "UTF-8")}&pageSize=50" +
-            (parentId?.let { "&parentId=${URLEncoder.encode(it, "UTF-8")}" } ?: ""), onResult) { raw ->
+        val path = "/api/content-categories?type=" + URLEncoder.encode(type, "UTF-8") + "&pageSize=50" +
+            (parentId?.let { "&parentId=" + URLEncoder.encode(it, "UTF-8") } ?: "")
+        request(path, onResult) { raw ->
             val root = JSONObject(raw)
             require(root.optBoolean("success", false)) { "Learning catalogue unavailable" }
             val rows = root.optJSONArray("learningNodes") ?: org.json.JSONArray()
@@ -34,7 +35,8 @@ object LearningLibraryClient {
     }
 
     fun loadQuestions(chapterId: String, onResult: (Result<List<LearningQuestion>>) -> Unit) {
-        request("/api/learning/school-video-answers?chapterId=${URLEncoder.encode(chapterId, "UTF-8")}", onResult) { raw ->
+        val path = "/api/learning/school-video-answers?chapterId=" + URLEncoder.encode(chapterId, "UTF-8")
+        request(path, onResult) { raw ->
             val root = JSONObject(raw)
             require(root.optBoolean("success", false)) { "Question numbers unavailable" }
             val rows = root.optJSONArray("questions") ?: org.json.JSONArray()
@@ -47,8 +49,9 @@ object LearningLibraryClient {
     }
 
     fun loadAnswers(chapterId: String, questionNumber: String, onResult: (Result<List<LearningAnswer>>) -> Unit) {
-        val query = "/api/learning/school-video-answers?chapterId=" + URLEncoder.encode(chapterId, "UTF-8") + "&questionNumber=" + URLEncoder.encode(questionNumber, "UTF-8")
-        request(query, onResult) { raw ->
+        val path = "/api/learning/school-video-answers?chapterId=" + URLEncoder.encode(chapterId, "UTF-8") +
+            "&questionNumber=" + URLEncoder.encode(questionNumber, "UTF-8")
+        request(path, onResult) { raw ->
             val root = JSONObject(raw)
             require(root.optBoolean("success", false)) { "Video answers unavailable" }
             val rows = root.optJSONArray("videos") ?: org.json.JSONArray()
@@ -64,7 +67,7 @@ object LearningLibraryClient {
         }
     }
 
-    private fun <T> request(path: String, onResult: (Result<T>) -> Unit, parse: (String) -> T)(path: String, parse: (String) -> T): () -> Result<T> {
+    private fun <T> request(path: String, onResult: (Result<T>) -> Unit, parse: (String) -> T) {
         Thread {
             val result = runCatching {
                 val connection = (URL(BASE + path).openConnection() as HttpURLConnection).apply {
