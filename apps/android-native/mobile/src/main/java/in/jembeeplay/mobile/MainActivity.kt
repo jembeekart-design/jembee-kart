@@ -21,6 +21,8 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.layout.ContentScale
+import coil.compose.AsyncImage
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
@@ -107,6 +109,7 @@ private fun HomeScreen(onOpenShorts: () -> Unit, onOpenWatch: (JembeeVideo) -> U
         VideoCatalogClient.fetch("long") { items, message -> videos = items; error = message; loading = false }
     }
     Column(Modifier.fillMaxSize().verticalScroll(rememberScrollState()).padding(bottom = 20.dp)) {
+        MobileReferenceHero(onWatch = onOpenShorts)
         SectionHeader("Shorts for you", "Real approved videos", onOpenShorts)
         Button(onClick = onOpenShorts, modifier = Modifier.padding(horizontal = 18.dp)) { Text("Open Shorts feed  ▶") }
         SectionHeader("Long videos", "From JEMBEE PLAY catalogue")
@@ -126,6 +129,30 @@ private fun HomeScreen(onOpenShorts: () -> Unit, onOpenWatch: (JembeeVideo) -> U
         }
         SectionHeader("Learn by class", "Browse published boards, books and questions", onLearn)
         Button(onClick = onLearn, modifier = Modifier.padding(horizontal = 18.dp)) { Text("Explore Learning Catalogue  →") }
+    }
+}
+
+
+@Composable
+private fun MobileReferenceHero(onWatch: () -> Unit) {
+    Box(
+        Modifier.fillMaxWidth().padding(horizontal = 16.dp, vertical = 10.dp).height(190.dp)
+            .background(Brush.horizontalGradient(listOf(Color(0xFF17072F), Color(0xFF35106B), Color(0xFF16112D))), RoundedCornerShape(20.dp))
+    ) {
+        AsyncImage(
+            model = R.drawable.reference_hero_students,
+            contentDescription = "JEMBEE PLAY students showcase artwork",
+            contentScale = ContentScale.Crop,
+            modifier = Modifier.fillMaxHeight().fillMaxWidth(0.56f).align(Alignment.CenterEnd)
+        )
+        Box(Modifier.fillMaxSize().background(Brush.horizontalGradient(listOf(Color(0xFF17072F), Color(0xEE35106B), Color(0x2235116B))), RoundedCornerShape(20.dp)))
+        Column(Modifier.align(Alignment.CenterStart).fillMaxWidth(0.62f).padding(start = 18.dp, end = 4.dp), verticalArrangement = Arrangement.spacedBy(8.dp)) {
+            Text("JEMBEE PLAY  ▶", color = Color.White, fontSize = 13.sp, fontWeight = FontWeight.Black, letterSpacing = 0.6.sp)
+            Text("Watch  ·  Learn  ·  Create  ·  Share & Earn", color = Color.White, fontSize = 14.sp, fontWeight = FontWeight.ExtraBold, maxLines = 3, lineHeight = 17.sp)
+            Button(onClick = onWatch, colors = ButtonDefaults.buttonColors(containerColor = Color(0xFFFF1978)), contentPadding = PaddingValues(horizontal = 16.dp, vertical = 3.dp)) {
+                Text("▶  Watch Now", color = Color.White, fontWeight = FontWeight.Bold, fontSize = 12.sp)
+            }
+        }
     }
 }
 
