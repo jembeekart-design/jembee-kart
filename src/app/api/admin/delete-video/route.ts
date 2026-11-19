@@ -30,9 +30,6 @@ export async function POST(req: Request) {
 
     // 3. Delete the stored asset from its actual storage provider.
     const videoData = videoDoc.data() || {};
-    if (videoData.deletionState !== "deleting") {
-      await videoRef.update({ active: false, status: "deleting", deletionState: "deleting", deletionStartedAt: new Date(), deletionRequestedBy: identity.uid });
-    }
     const driveFileId =
       typeof videoData.driveFileId === "string"
         ? videoData.driveFileId.trim()
