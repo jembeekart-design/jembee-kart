@@ -70,3 +70,13 @@ test("Learning Library client bounds response while streaming and disconnects", 
   assert.match(learningClient, /connection\.disconnect\(\)/);
   assert.match(learningClient, /main\.post \{ onResult\(result\) \}/);
 });
+
+test("native Learning Library follows cursor pagination for large catalogues", () => {
+  const learningClient = readFileSync(new URL("apps/android-native/mobile/src/main/java/in/jembeeplay/mobile/LearningLibraryClient.kt", root), "utf8");
+  assert.match(learningClient, /pagination\?\.optBoolean\("hasMore", false\)/);
+  assert.match(learningClient, /pagination\.optString\("nextCursor"\)/);
+  assert.match(learningClient, /append\("&cursor="/);
+  assert.match(learningClient, /loadPage\(next, page \+ 1\)/);
+  assert.match(learningClient, /page >= 20/);
+  assert.match(learningClient, /collected\.toList\(\)/);
+});
