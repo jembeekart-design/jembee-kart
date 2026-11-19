@@ -80,3 +80,11 @@ test("native Learning Library follows cursor pagination for large catalogues", (
   assert.match(learningClient, /page >= 20/);
   assert.match(learningClient, /collected\.toList\(\)/);
 });
+
+test("mobile Shorts client bounds streamed response and rejects traversal media paths", () => {
+  assert.match(client, /MAX_RESPONSE_CHARS = 512 \* 1024/);
+  assert.match(client, /output\.length \+ count <= MAX_RESPONSE_CHARS/);
+  assert.match(client, /thumbnailPath\.contains\("\.\."\)/);
+  assert.match(client, /playbackPath\.contains\("\.\."\)/);
+  assert.match(client, /connection\.disconnect\(\)/);
+});
