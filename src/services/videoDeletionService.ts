@@ -122,7 +122,9 @@ export async function cleanupVideoRecords(db: Firestore, videoId: string, videoR
     if (page.size < WRITE_BATCH_SIZE) break;
   }
 
-  const archivedNotifications = await archiveVideoNotifications(db, videoId);\n\n  const deleted = {
+  const archivedNotifications = await archiveVideoNotifications(db, videoId);
+
+  const deleted = {
     watchVideoLikes: await deleteByField(db, "watchVideoLikes", "videoId", videoId),
     watchVideoShares: await deleteByField(db, "watchVideoShares", "videoId", videoId),
     savedWatchVideos: await deleteByField(db, "savedWatchVideos", "videoId", videoId),
