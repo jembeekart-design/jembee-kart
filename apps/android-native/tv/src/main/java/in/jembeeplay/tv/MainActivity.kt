@@ -18,7 +18,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.tv.material3.*
 
-private val TvBlue = Color(0xFF278BE6)
+private val TvBlue = Color(0xFFFF1978)
 private val TvMuted = Color(0xFFABB7C8)
 
 class MainActivity : ComponentActivity() {
@@ -36,9 +36,9 @@ private fun JembeeTvApp() {
     var selected by remember { mutableStateOf("Home") }
     val colors = darkColorScheme(
         primary = TvBlue,
-        background = Color(0xFF080D16),
-        surface = Color(0xFF121B29),
-        surfaceVariant = Color(0xFF1A2636),
+        background = Color(0xFF05060B),
+        surface = Color(0xFF101019),
+        surfaceVariant = Color(0xFF1B1B27),
         onSurface = Color(0xFFF4F7FC),
         onSurfaceVariant = TvMuted
     )
@@ -50,15 +50,15 @@ private fun JembeeTvApp() {
             ) {
                 Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween, verticalAlignment = Alignment.CenterVertically) {
                     Column(verticalArrangement = Arrangement.spacedBy(3.dp)) {
-                        Text("JEMBEE PLAY", fontSize = 31.sp, fontWeight = FontWeight.Black, letterSpacing = 1.sp)
+                        Text("▶  JEMBEE PLAY", fontSize = 31.sp, fontWeight = FontWeight.Black, letterSpacing = 1.sp)
                         Text("WATCH  ·  LEARN  ·  CREATE  ·  SHARE", fontSize = 11.sp, color = TvMuted, letterSpacing = 1.8.sp)
                     }
                     Row(horizontalArrangement = Arrangement.spacedBy(8.dp), verticalAlignment = Alignment.CenterVertically) {
-                        listOf("Home", "Shorts", "Learning", "My List").forEach { item ->
+                        listOf("Home", "Shorts", "Learning", "Library", "Live").forEach { item ->
                             androidx.compose.material3.Surface(
                                 modifier = Modifier.clickable { selected = item },
                                 shape = RoundedCornerShape(30.dp),
-                                color = if (selected == item) TvBlue.copy(alpha = .22f) else Color.Transparent
+                                color = if (selected == item) TvBlue else Color.Transparent
                             ) {
                                 Text(item, Modifier.padding(horizontal = 20.dp, vertical = 12.dp), fontWeight = FontWeight.SemiBold, fontSize = 14.sp)
                             }
@@ -82,15 +82,15 @@ private fun JembeeTvApp() {
                         modifier = Modifier.fillMaxWidth().height(174.dp)
                     ) {
                         Box(Modifier.fillMaxSize().background(
-                            Brush.horizontalGradient(listOf(Color(0xFF142B48), Color(0xFF172237), Color(0xFF111A29)))
+                            Brush.horizontalGradient(listOf(Color(0xFF210B45), Color(0xFF4A0E72), Color(0xFF170C32)))
                         )) {
                             Column(
                                 Modifier.align(Alignment.CenterStart).padding(horizontal = 30.dp),
                                 verticalArrangement = Arrangement.spacedBy(8.dp)
                             ) {
-                                Text(if (selected == "Shorts") "Quick ideas. Big screen." else "Settle in. Find something good.", fontSize = 29.sp, fontWeight = FontWeight.ExtraBold)
+                                Text(if (selected == "Shorts") "Quick ideas. Big screen." else "Learn Anytime Anywhere", fontSize = 29.sp, fontWeight = FontWeight.ExtraBold)
                                 Text(
-                                    if (selected == "Shorts") "Short-form video experience" else "A more comfortable way to watch and learn",
+                                    if (selected == "Shorts") "Short-form video experience" else "Videos  ·  Chapters  ·  Questions  ·  Answers",
                                     fontSize = 15.sp, color = TvMuted
                                 )
                             }
