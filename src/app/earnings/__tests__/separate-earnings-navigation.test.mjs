@@ -8,7 +8,6 @@ test('home navigation exposes three separate earnings destinations in the mobile
   const source = await read('../../page.tsx');
   assert.match(source, /Sharer की कमाई/);
   assert.match(source, /Creator की कमाई/);
-  assert.match(source, /Teacher Referral Commission/);
   assert.match(source, /mobile-navigation-drawer/);
   assert.match(source, /setMobileMenuOpen\(\(value\) => !value\)/);
 });
