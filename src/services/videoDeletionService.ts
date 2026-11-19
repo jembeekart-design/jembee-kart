@@ -45,31 +45,21 @@ async function archiveVideoNotifications(db: Firestore, videoId: string) {
     const first = await notifications.where("videoId", "==", videoId).limit(1).get();
     if (first.empty) break;
 
-    const firstData = first.docs[0].data();
-    const userId = typeof firstData.userId === "string" ? firstData.userId : "";
+    const firstDoc = first.docs[0];
+    const userId = typeof firstDoc.data().userId === "string" ? firstDoc.data().userId.trim() : "";
 
+    // Process malformed records individually so they cannot skip a valid user unread counter.
     if (!userId) {
-      const page = await notifications.where("videoId", "==", videoId).limit(400).get();
-      if (page.empty) break;
-      const batch = db.batch();
-      page.docs.forEach((doc) => batch.update(doc.ref, {
-        videoDeleted: true,
-        isRead: true,
-        deepLink: FieldValue.delete(),
-        videoId: FieldValue.delete(),
-        commentId: FieldValue.delete(),
-        archivedAt: new Date(),
-      }));
-      await batch.commit();
-      archived += page.size;
+      await firstDoc.ref.update({
+        videoDeleted: true, isRead: true,
+        deepLink: FieldValue.delete(), videoId: FieldValue.delete(),
+        commentId: FieldValue.delete(), archivedAt: new Date(),
+      });
+      archived += 1;
       continue;
     }
 
-    const userQuery = notifications
-      .where("videoId", "==", videoId)
-      .where("userId", "==", userId)
-      .limit(400);
-
+    const userQuery = notifications.where("videoId", "==", videoId).where("userId", "==", userId).limit(400);
     const count = await db.runTransaction(async (transaction) => {
       const page = await transaction.get(userQuery);
       if (page.empty) return 0;
@@ -77,12 +67,9 @@ async function archiveVideoNotifications(db: Firestore, videoId: string) {
       const meta = await transaction.get(metaRef);
       const unreadRemoved = page.docs.filter((doc) => doc.data().isRead !== true).length;
       page.docs.forEach((doc) => transaction.update(doc.ref, {
-        videoDeleted: true,
-        isRead: true,
-        deepLink: FieldValue.delete(),
-        videoId: FieldValue.delete(),
-        commentId: FieldValue.delete(),
-        archivedAt: new Date(),
+        videoDeleted: true, isRead: true,
+        deepLink: FieldValue.delete(), videoId: FieldValue.delete(),
+        commentId: FieldValue.delete(), archivedAt: new Date(),
       }));
       const currentUnread = Number(meta.data()?.unreadCount ?? 0);
       transaction.set(metaRef, {
