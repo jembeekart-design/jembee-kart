@@ -56,11 +56,12 @@ export async function GET(req: NextRequest) {
 
     const userSnap = await db.collection("users").doc(creatorId).get();
     const user = userSnap.exists ? userSnap.data() || {} : {};
+    const followersSnap = await db.collection("users").doc(creatorId).collection("followers").count().get();
 
     return NextResponse.json(
       {
         success: true,
-        creator: projectPublicCreatorProfile(creatorId, user, video),
+        creator: { ...projectPublicCreatorProfile(creatorId, user, video), followersCount: followersSnap.data().count },
       },
       {
         headers: {
