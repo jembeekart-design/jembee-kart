@@ -128,7 +128,7 @@ fun TvLearningLibraryScreen() {
             Text(error, color = Color(0xFFFFA0A0), fontSize = 15.sp)
             Button(onClick = { refresh() }) { Text("Try again") }
         } else if (loading) {
-            Box(Modifier.fillMaxWidth().weight(1f), contentAlignment = Alignment.Center) { CircularProgressIndicator() }
+            Box(Modifier.fillMaxWidth().weight(1f), contentAlignment = Alignment.Center) { Text("Loading learning catalog…", color = muted, fontSize = 17.sp) }
         } else if (stage < 3) {
             if (entries.isEmpty()) {
                 Box(Modifier.fillMaxWidth().weight(1f), contentAlignment = Alignment.Center) {
@@ -171,7 +171,7 @@ fun TvLearningLibraryScreen() {
             Text(question?.name ?: "Question", fontSize = 23.sp, fontWeight = FontWeight.Bold)
             Text("Approved video answers", color = muted, fontSize = 14.sp)
             when {
-                answerLoading -> Box(Modifier.fillMaxWidth().weight(1f), contentAlignment = Alignment.Center) { CircularProgressIndicator() }
+                answerLoading -> Box(Modifier.fillMaxWidth().weight(1f), contentAlignment = Alignment.Center) { Text("Loading video answers…", color = muted, fontSize = 17.sp) }
                 answers.isEmpty() -> Box(Modifier.fillMaxWidth().weight(1f), contentAlignment = Alignment.Center) {
                     Text("No approved video answers for this question yet.", color = muted, fontSize = 16.sp)
                 }
