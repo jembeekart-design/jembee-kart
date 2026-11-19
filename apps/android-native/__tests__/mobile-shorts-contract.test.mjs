@@ -62,3 +62,11 @@ test("Learning Library retries answer requests and only advances after success",
   assert.match(main, /result\.onSuccess \{ rows ->\s*answers = rows\s*stage = 4/);
   assert.match(main, /Video answers load nahi ho paye/);
 });
+
+test("Learning Library client bounds response while streaming and disconnects", () => {
+  const learningClient = readFileSync(new URL("apps/android-native/mobile/src/main/java/in/jembeeplay/mobile/LearningLibraryClient.kt", root), "utf8");
+  assert.match(learningClient, /MAX_RESPONSE_CHARS = 512 \* 1024/);
+  assert.match(learningClient, /output\.length \+ count <= MAX_RESPONSE_CHARS/);
+  assert.match(learningClient, /connection\.disconnect\(\)/);
+  assert.match(learningClient, /main\.post \{ onResult\(result\) \}/);
+});
