@@ -36,3 +36,17 @@ test("mobile Home catalog client validates media paths and returns callbacks on 
   assert.match(homeClient, /playbackPath\.startsWith\("\/api\/shorts\/video-stream\/"\)/);
   assert.match(homeClient, /connection\.disconnect\(\)/);
 });
+
+test("native Learning Library uses live Subject Book Chapter Question and answer APIs", () => {
+  const learningClient = readFileSync(new URL("apps/android-native/mobile/src/main/java/in/jembeeplay/mobile/LearningLibraryClient.kt", root), "utf8");
+  assert.match(main, /LearningLibraryClient\.loadNodes\("subject"\)/);
+  assert.match(main, /LearningLibraryClient\.loadNodes\("book", subject\?\.id\)/);
+  assert.match(main, /LearningLibraryClient\.loadNodes\("chapter", book\?\.id\)/);
+  assert.match(main, /LearningLibraryClient\.loadQuestions\(chapter\?\.id/);
+  assert.match(main, /LearningLibraryClient\.loadAnswers\(chapter\?\.id/);
+  assert.match(learningClient, /\/api\/content-categories\?type=/);
+  assert.match(learningClient, /\/api\/learning\/school-video-answers\?chapterId=/);
+  assert.match(learningClient, /item\.optString\("videoAccess"\) != "free"/);
+  assert.match(main, /MobileVideoPlayer\(video = video/);
+  assert.doesNotMatch(main, /listOf\("CBSE", "ICSE", "JAC", "Other boards"\)/);
+});
