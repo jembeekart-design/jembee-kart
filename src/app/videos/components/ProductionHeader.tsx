@@ -13,7 +13,13 @@ import {
 } from "lucide-react";
 import ShortsSearch from "./ShortsSearch";
 
-export default function ProductionHeader() {
+export default function ProductionHeader({
+  activeTab,
+  onTabChange,
+}: {
+  activeTab: "foryou" | "following";
+  onTabChange: (tab: "foryou" | "following") => void;
+}) {
   const router = useRouter();
   const [showSearch, setShowSearch] = useState(false);
   const [unreadCount, setUnreadCount] = useState(0);
@@ -92,6 +98,26 @@ export default function ProductionHeader() {
               </button>
             </div>
           </div>
+          <nav aria-label="Shorts feed" className="mt-4 flex justify-center">
+            <div className="inline-flex items-center gap-1 rounded-full border border-white/15 bg-[#071329]/75 p-1 shadow-lg backdrop-blur-xl">
+              <button
+                type="button"
+                aria-pressed={activeTab === "foryou"}
+                onClick={() => onTabChange("foryou")}
+                className={`min-h-10 rounded-full px-5 text-sm font-bold transition-colors ${activeTab === "foryou" ? "bg-amber-400 text-[#17120a]" : "text-white/80 hover:bg-white/10"}`}
+              >
+                For You
+              </button>
+              <button
+                type="button"
+                aria-pressed={activeTab === "following"}
+                onClick={() => onTabChange("following")}
+                className={`min-h-10 rounded-full px-5 text-sm font-bold transition-colors ${activeTab === "following" ? "bg-amber-400 text-[#17120a]" : "text-white/80 hover:bg-white/10"}`}
+              >
+                Following
+              </button>
+            </div>
+          </nav>
         </div>
       </header>
       {showSearch && <ShortsSearch onClose={() => setShowSearch(false)} />}
