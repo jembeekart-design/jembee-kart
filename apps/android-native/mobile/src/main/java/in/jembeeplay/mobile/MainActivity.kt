@@ -122,6 +122,7 @@ private fun HomeScreen(onLearn: () -> Unit, onShorts: () -> Unit) {
             Text("Your next favourite starts here.", fontSize = 25.sp, lineHeight = 31.sp, fontWeight = FontWeight.ExtraBold)
             Text("A calmer place to watch, discover and learn.", fontSize = 13.sp, color = JembeeMuted)
         }
+        PremiumHeroBanner(onWatch = onShorts)
         Row(Modifier.fillMaxWidth().padding(horizontal = 16.dp), horizontalArrangement = Arrangement.spacedBy(10.dp)) {
             PremiumActionCard("Explore learning", "Books, chapters and answers", "▤", Modifier.weight(1f), onLearn)
             PremiumActionCard("Watch Shorts", "Quick ideas, one swipe away", "▶", Modifier.weight(1f), onShorts)
@@ -232,5 +233,42 @@ private fun YouScreen(onTheme: () -> Unit, dark: Boolean) {
             HorizontalDivider(color = MaterialTheme.colorScheme.outlineVariant)
         }
         TextButton(onClick = onTheme) { Text(if (dark) "Switch to light theme" else "Switch to dark theme") }
+    }
+}
+
+
+@Composable
+private fun PremiumHeroBanner(onWatch: () -> Unit) {
+    Box(
+        Modifier.fillMaxWidth().padding(horizontal = 16.dp).height(178.dp)
+            .background(
+                Brush.horizontalGradient(
+                    listOf(Color(0xFF170B35), Color(0xFF37106A), Color(0xFF16112D))
+                ),
+                RoundedCornerShape(24.dp)
+            )
+    ) {
+        Column(
+            Modifier.align(Alignment.CenterStart).padding(horizontal = 20.dp),
+            verticalArrangement = Arrangement.spacedBy(8.dp)
+        ) {
+            Text("JEMBEE PLAY", color = Color.White, fontSize = 12.sp, fontWeight = FontWeight.Black, letterSpacing = 1.4.sp)
+            Text("Watch. Learn. Create.", color = Color.White, fontSize = 24.sp, fontWeight = FontWeight.ExtraBold)
+            Text("Discover videos and ideas worth your time.", color = Color(0xFFE5DDF5), fontSize = 11.sp)
+            Button(
+                onClick = onWatch,
+                colors = ButtonDefaults.buttonColors(containerColor = Color(0xFFFF1978)),
+                contentPadding = PaddingValues(horizontal = 18.dp, vertical = 4.dp)
+            ) {
+                Text("▶  Watch Shorts", color = Color.White, fontWeight = FontWeight.Bold)
+            }
+        }
+        Text(
+            "▶",
+            Modifier.align(Alignment.CenterEnd).padding(end = 22.dp),
+            color = Color.White.copy(alpha = .10f),
+            fontSize = 88.sp,
+            fontWeight = FontWeight.Black
+        )
     }
 }
