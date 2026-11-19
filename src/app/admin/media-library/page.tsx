@@ -1,14 +1,13 @@
 "use client";
 
 import { useCallback, useEffect, useMemo, useState } from "react";
-import { getAuth } from "firebase/auth";
+import { getAuth, onAuthStateChanged } from "firebase/auth";
 import toast, { Toaster } from "react-hot-toast";
 import { AlertCircle, Folder, HardDrive, Image as ImageIcon, Loader2, Play, RefreshCw, Search, Trash2, Video, X } from "lucide-react";
 
 type MediaVideo = {
   id: string; title: string; status: string; active: boolean; moderation: string;
-  videoAccess: string; driveFileId: string; thumbnailUrl: string;
-  sizeBytes: number | null; createdAt: string | null;
+  videoAccess: string; driveFileId: string; thumbnailUrl: string;\n  storageProvider: string; hasStorageAsset: boolean; canPreview: boolean;\n  sizeBytes: number | null; createdAt: string | null;
 };
 
 const formatBytes = (bytes: number | null) => {
@@ -48,7 +47,18 @@ export default function MediaLibraryPage() {
     }
   }, []);
 
-  useEffect(() => { void fetchVideos(); }, [fetchVideos]);
+  useEffect(() => {
+    const auth = getAuth();
+    return onAuthStateChanged(auth, (user) => {
+      if (user) {
+        void fetchVideos();
+      } else {
+        setVideos([]);
+        setError("Admin login required. कृपया दोबारा login करें।");
+        setLoading(false);
+      }
+    });
+  }, [fetchVideos]);
 
   const filtered = useMemo(() => {
     const term = search.trim().toLowerCase();
@@ -82,7 +92,7 @@ export default function MediaLibraryPage() {
     }
   };
 
-  const canPreview = (video: MediaVideo) => video.status === "approved" && video.active && video.moderation === "safe" && Boolean(video.driveFileId);
+  const canPreview = (video: MediaVideo) => video.status === "approved" && video.active && video.moderation === "safe" && video.videoAccess !== "paid" && video.storageProvider === "google_drive" && Boolean(video.driveFileId);
 
   return (
     <main className="min-h-screen bg-[#05070B] p-4 text-slate-100 md:p-6">
@@ -99,7 +109,7 @@ export default function MediaLibraryPage() {
         </header>
 
         <section className="mb-6 grid grid-cols-2 gap-3 lg:grid-cols-4">
-          <Stat title="Videos loaded" value={loading ? "…" : String(videos.length)} note="अधिकतम 250 नवीन records" icon={<Video />} />
+          <Stat title="Videos loaded" value={loading ? "…" : String(videos.length)} note="अधिकतम 250 records · partial inventory" icon={<Video />} />
           <Stat title="Approved & safe" value={loading ? "…" : String(approvedSafe)} note="Approved, active, safe records" icon={<Play />} />
           <Stat title="Images" value="Not connected" note="Image inventory उपलब्ध नहीं" icon={<ImageIcon />} />
           <Stat title="Known storage" value={knownSizes.length ? formatBytes(totalKnownBytes) : "Unknown"} note={knownSizes.length + " records में size उपलब्ध"} icon={<HardDrive />} />
@@ -124,11 +134,11 @@ export default function MediaLibraryPage() {
                 <span className="absolute bottom-2 left-2 rounded-md bg-black/75 px-2 py-1 text-xs text-white">{video.status}</span>
               </div>
               <div className="p-4"><h2 className="truncate font-bold" title={video.title}>{video.title}</h2><p className="mt-1 text-xs text-[var(--muted-text-color)]">ID: {video.id}</p>
-                <div className="mt-3 flex flex-wrap gap-2 text-xs text-slate-200"><span>{video.moderation}</span><span>{video.active ? "Active" : "Inactive"}</span><span>{video.videoAccess}</span></div>
+                <div className="mt-3 flex flex-wrap gap-2 text-xs text-slate-200"><span>{video.moderation}</span><span>{video.active ? "Active" : "Inactive"}</span><span>{video.videoAccess}</span><span>{video.storageProvider}</span></div>
                 <div className="mt-3 flex justify-between text-xs text-[var(--muted-text-color)]"><span>{formatBytes(video.sizeBytes)}</span><span>{video.createdAt ? new Date(video.createdAt).toLocaleDateString() : "Date unavailable"}</span></div>
                 <div className="mt-4 flex justify-between gap-2">
-                  <button type="button" onClick={() => setPreview(video)} disabled={!canPreview(video)} className="inline-flex flex-1 items-center justify-center gap-2 rounded-lg bg-cyan-500 px-3 py-2 text-sm font-bold text-slate-950 hover:bg-cyan-400 disabled:opacity-40"><Play size={16} /> Preview</button>
-                  <button type="button" onClick={() => void handleDelete(video)} disabled={deletingId === video.id} aria-label={"Delete " + video.title} className="rounded-lg border border-red-500/40 px-3 py-2 text-red-500 disabled:opacity-50">{deletingId === video.id ? <Loader2 className="animate-spin" size={17} /> : <Trash2 size={17} />}</button>
+                  <button type="button" onClick={() => setPreview(video)} disabled={!video.canPreview || !canPreview(video)} className="inline-flex flex-1 items-center justify-center gap-2 rounded-lg bg-cyan-500 px-3 py-2 text-sm font-bold text-slate-950 hover:bg-cyan-400 disabled:opacity-40"><Play size={16} /> Preview</button>
+                  <button type="button" onClick={() => void handleDelete(video)} disabled={deletingId === video.id || !video.hasStorageAsset} title={!video.hasStorageAsset ? "Storage asset reference missing; deletion disabled" : "Delete video"} aria-label={"Delete " + video.title} className="rounded-lg border border-red-500/40 px-3 py-2 text-red-500 disabled:opacity-50">{deletingId === video.id ? <Loader2 className="animate-spin" size={17} /> : <Trash2 size={17} />}</button>
                 </div>
               </div>
             </article>)}
