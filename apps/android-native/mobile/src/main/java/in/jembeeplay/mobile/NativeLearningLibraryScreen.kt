@@ -122,7 +122,7 @@ fun NativeLearningLibraryScreen() {
         Row(Modifier.fillMaxWidth(), verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.SpaceBetween) {
             Column(Modifier.weight(1f)) {
                 Text("Learning Library", fontSize = 24.sp, fontWeight = FontWeight.ExtraBold)
-                Text("Books  ·  Chapters  ·  Questions", color = JembeeMuted, fontSize = 12.sp)
+                Text("Books  ·  Chapters  ·  Questions", color = Color(0xFF778196), fontSize = 12.sp)
             }
             TextButton(onClick = { refresh() }, enabled = !loading) { Text("Refresh") }
         }
@@ -147,7 +147,7 @@ fun NativeLearningLibraryScreen() {
             }
         }
         if (book != null) Text(listOfNotNull(book?.name, chapter?.name, question?.name).joinToString("  ›  "),
-            color = JembeeMuted, fontSize = 11.sp)
+            color = Color(0xFF778196), fontSize = 11.sp)
         if (stage < 3) {
             OutlinedTextField(value = search, onValueChange = { search = it }, modifier = Modifier.fillMaxWidth(),
                 singleLine = true, shape = RoundedCornerShape(15.dp),
@@ -167,7 +167,7 @@ fun NativeLearningLibraryScreen() {
                     Column(horizontalAlignment = Alignment.CenterHorizontally) {
                         Text(listOf("No published books yet", "No chapters in this book yet", "No questions in this chapter yet")[stage],
                             fontWeight = FontWeight.Bold)
-                        Text("Only published catalog entries are shown here.", color = JembeeMuted, fontSize = 12.sp)
+                        Text("Only published catalog entries are shown here.", color = Color(0xFF778196), fontSize = 12.sp)
                     }
                 }
             } else {
@@ -200,9 +200,9 @@ fun NativeLearningLibraryScreen() {
                                 Column(Modifier.weight(1f), verticalArrangement = Arrangement.spacedBy(3.dp)) {
                                     Text(item.name, fontSize = 14.sp, fontWeight = FontWeight.Bold)
                                     Text(when (stage) { 0 -> "Published book"; 1 -> "Chapter"; else -> "Question number" },
-                                        color = JembeeMuted, fontSize = 11.sp)
+                                        color = Color(0xFF778196), fontSize = 11.sp)
                                 }
-                                Text("›", fontSize = 24.sp, color = JembeeMuted)
+                                Text("›", fontSize = 24.sp, color = Color(0xFF778196))
                             }
                         }
                     }
@@ -211,13 +211,13 @@ fun NativeLearningLibraryScreen() {
         } else {
             Column(Modifier.weight(1f), verticalArrangement = Arrangement.spacedBy(12.dp)) {
                 Text(question?.name ?: "Question", fontSize = 20.sp, fontWeight = FontWeight.Bold)
-                Text("Approved video answers", fontSize = 13.sp, color = JembeeMuted)
+                Text("Approved video answers", fontSize = 13.sp, color = Color(0xFF778196))
                 when {
                     answerLoading -> Box(Modifier.fillMaxWidth().weight(1f), contentAlignment = Alignment.Center) {
                         CircularProgressIndicator(color = Color(0xFFFF1978))
                     }
                     answers.isEmpty() -> Box(Modifier.fillMaxWidth().weight(1f), contentAlignment = Alignment.Center) {
-                        Text("No approved video answers for this question yet.", color = JembeeMuted, fontSize = 13.sp)
+                        Text("No approved video answers for this question yet.", color = Color(0xFF778196), fontSize = 13.sp)
                     }
                     else -> LazyColumn(verticalArrangement = Arrangement.spacedBy(9.dp)) {
                         items(answers, key = { it.id }) { answer ->
@@ -227,7 +227,7 @@ fun NativeLearningLibraryScreen() {
                             }, color = MaterialTheme.colorScheme.surface, shape = RoundedCornerShape(15.dp)) {
                                 Column(Modifier.fillMaxWidth().padding(14.dp), verticalArrangement = Arrangement.spacedBy(5.dp)) {
                                     Text(answer.title, fontSize = 14.sp, fontWeight = FontWeight.Bold)
-                                    Text(answer.creator, color = JembeeMuted, fontSize = 11.sp)
+                                    Text(answer.creator, color = Color(0xFF778196), fontSize = 11.sp)
                                     Text((if (answer.format == "long") "Long video" else "Short video") +
                                         "  ·  " + (if (answer.access == "paid") "Paid access" else "Free") + "  ·  Open video",
                                         color = Color(0xFFFF1978), fontSize = 11.sp, fontWeight = FontWeight.SemiBold)
