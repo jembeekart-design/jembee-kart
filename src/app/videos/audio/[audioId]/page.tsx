@@ -1,107 +1,56 @@
 "use client";
-import { useParams, useRouter } from "next/navigation";
-import { useEffect, useState } from "react";
-import { collection, query, where, getDocs } from "firebase/firestore";
-import { db } from "@/firebase/config";
-import { WatchVideo } from "@/lib/videos/watch-earn/fetchWatchVideos";
-import { Music, Play, Heart, Users, ArrowLeft } from "lucide-react";
-import VideoCard from "@/app/videos/components/VideoCard";
+
+import { useMemo } from "react";
+import type { ReactNode } from "react";
+import Link from "next/link";
+import { useParams } from "next/navigation";
+import { ArrowLeft, Eye, Heart, Music, Play } from "lucide-react";
+import { usePublicWatchVideos } from "@/hooks/usePublicWatchVideos";
+import { publicCreatorName, publicVideoAge, publicVideoThumbnail } from "@/lib/videos/publicVideoPresentation";
 
 export default function AudioPage() {
-  const params = useParams();
-  const audioId = decodeURIComponent(params.audioId as string);
-  const router = useRouter();
-  const [videos, setVideos] = useState<WatchVideo[]>([]);
-  const [loading, setLoading] = useState(true);
-
-  // TEMPORARILY DISABLED
-  // Future Feature: Use This Audio
-  const [showToast, setShowToast] = useState(false);
-
-  const handleDisabledClick = () => {
-    setShowToast(true);
-    setTimeout(() => setShowToast(false), 3000);
-  };
-
-  useEffect(() => {
-    async function fetchVideosByAudio() {
-      const q = query(
-        collection(db, "watchEarnVideos"),
-        where("music", "==", audioId),
-        where("status", "==", "approved"),
-        where("moderation", "==", "safe")
-      );
-      const snapshot = await getDocs(q);
-      const fetchedVideos: WatchVideo[] = snapshot.docs.map(doc => ({
-        id: doc.id,
-        ...doc.data()
-      } as WatchVideo));
-      setVideos(fetchedVideos);
-      setLoading(false);
-    }
-    fetchVideosByAudio();
-  }, [audioId]);
-
-  if (loading) return <main className="min-h-screen bg-black p-4 text-white">Loading...</main>;
-
-  const totalVideos = videos.length;
-  const totalPlays = videos.reduce((acc, v) => acc + (v.views || 0), 0);
-  const totalLikes = videos.reduce((acc, v) => acc + (v.likes || 0), 0);
-  const firstVideo = videos[0];
+  const params = useParams<{ audioId: string }>();
+  const audioId = typeof params.audioId === "string" ? params.audioId : "";
+  const { videos, loading, error } = usePublicWatchVideos();
+  const audioVideos = useMemo(
+    () => videos.filter((video) => video.music === audioId),
+    [videos, audioId],
+  );
+  const totalPlays = audioVideos.reduce((sum, video) => sum + Math.max(0, Number(video.views) || 0), 0);
+  const totalLikes = audioVideos.reduce((sum, video) => sum + Math.max(0, Number(video.likes) || 0), 0);
+  const firstVideo = audioVideos[0];
 
   return (
-    <main className="min-h-screen bg-black p-4 text-white">
-      <button onClick={() => router.back()} className="mb-4 flex items-center gap-2 text-sm text-gray-400">
-        <ArrowLeft size={16} /> Back
-      </button>
-      
-      {/* Audio Info */}
-      <div className="flex items-center gap-4 p-4 bg-white/10 rounded-xl mb-4">
-        {firstVideo?.thumbnail && <img src={firstVideo.thumbnail} alt={audioId} className="w-16 h-16 rounded-lg object-cover" />}
-        <div>
-          <h1 className="text-xl font-bold">{audioId.startsWith('original-') ? 'Original Audio' : audioId}</h1>
-          <p className="text-sm text-gray-400">Popular Creator: {firstVideo?.username || "Unknown"}</p>
-        </div>
-      </div>
-      
-      {/* Stats */}
-      <div className="flex justify-around p-4 bg-white/5 rounded-xl mb-4">
-        <div className="text-center text-sm"><Users className="mx-auto mb-1" size={20}/> {totalVideos} Videos</div>
-        <div className="text-center text-sm"><Play className="mx-auto mb-1" size={20}/> {totalPlays} Plays</div>
-        <div className="text-center text-sm"><Heart className="mx-auto mb-1" size={20}/> {totalLikes} Likes</div>
-      </div>
-
-      <button
-        onClick={handleDisabledClick}
-        className="w-full py-3 bg-gray-600 opacity-70 cursor-not-allowed rounded-lg font-bold mb-6"
-      >
-        Use This Audio (Coming Soon)
-      </button>
-
-      {showToast && (
-        <div className="fixed bottom-10 left-4 right-4 bg-white text-black p-4 rounded-lg text-center font-bold z-50">
-          This feature is coming soon.
-        </div>
-      )}
-
-      {/* Videos List */}
-      <h2 className="text-lg font-bold mb-4">Videos using this audio</h2>
-      <div className="grid grid-cols-2 gap-2">
-        {videos.map(v => (
-          <div key={v.id} className="aspect-[9/16] rounded-lg overflow-hidden">
-            <VideoCard 
-              video={v as unknown as import("@/lib/videos/watch-earn/fetchWatchVideos").WatchVideo} 
-              isMuted={true} 
-              toggleMute={() => {}} 
-              watchProgress={0} 
-              active={false} 
-              onComment={() => {}} 
-              onShare={() => {}} 
-              coins={v.coins} 
-            />
+    <main className="min-h-screen bg-[#080d18] p-4 pb-12 text-white sm:p-6">
+      <div className="mx-auto max-w-5xl">
+        <Link href="/shorts" className="mb-5 inline-flex items-center gap-2 text-sm text-slate-400 hover:text-white"><ArrowLeft size={16}/> Back to Shorts</Link>
+        <section className="flex flex-wrap items-center gap-4 rounded-2xl border border-white/10 bg-white/[0.05] p-5">
+          <div className="grid h-20 w-20 place-items-center overflow-hidden rounded-xl bg-gradient-to-br from-fuchsia-500/30 to-cyan-400/20">
+            {firstVideo ? <img src={publicVideoThumbnail(firstVideo)} alt="" className="h-full w-full object-cover"/> : <Music size={34} className="text-cyan-200"/>}
           </div>
-        ))}
+          <div className="min-w-0 flex-1">
+            <p className="text-xs font-bold uppercase tracking-widest text-cyan-300">Audio collection</p>
+            <h1 className="mt-1 break-all text-xl font-black">{audioId.startsWith("original-") ? "Original Audio" : audioId || "Audio"}</h1>
+            <p className="mt-1 text-sm text-slate-400">Latest public feed videos using this audio on JEMBEE PLAY</p>
+          </div>
+        </section>
+
+        <section className="mt-4 grid grid-cols-3 gap-2">
+          <Stat icon={<Play size={17}/>} label="Feed videos" value={loading ? "—" : audioVideos.length.toLocaleString("en-IN")}/>
+          <Stat icon={<Eye size={17}/>} label="Plays (sample)" value={loading ? "—" : totalPlays.toLocaleString("en-IN")}/>
+          <Stat icon={<Heart size={17}/>} label="Likes (sample)" value={loading ? "—" : totalLikes.toLocaleString("en-IN")}/>
+        </section>
+
+        <div className="mt-7 flex items-center justify-between gap-3"><h2 className="text-lg font-bold">Videos using this audio</h2><span className="text-xs text-slate-500">Latest 50-item public feed sample</span></div>
+        {loading ? <div className="mt-4 grid gap-3 grid-cols-2 sm:grid-cols-3 lg:grid-cols-4">{Array.from({ length: 8 }, (_, index) => <div key={index} className="aspect-[9/16] animate-pulse rounded-xl bg-white/5"/>)}</div>
+          : error ? <p role="alert" className="mt-4 rounded-xl border border-amber-300/20 bg-amber-300/10 p-4 text-sm text-amber-100">{error}</p>
+          : audioVideos.length === 0 ? <div className="mt-4 rounded-2xl border border-dashed border-white/15 p-10 text-center"><Music className="mx-auto text-slate-500" size={34}/><p className="mt-3 font-semibold">इस audio पर अभी कोई approved public video नहीं है।</p><p className="mt-2 text-sm text-slate-400">नए videos approval के बाद यहाँ दिखाई देंगे।</p></div>
+          : <div className="mt-4 grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-4">{audioVideos.map((video) => <Link key={video.id} href={`/videos?v=${encodeURIComponent(video.id)}`} className="group overflow-hidden rounded-xl border border-white/10 bg-white/[0.04]"><div className="relative aspect-[9/16] bg-black"><img src={publicVideoThumbnail(video)} alt="" loading="lazy" className="h-full w-full object-cover transition group-hover:scale-[1.02]"/><span className="absolute bottom-2 right-2 rounded bg-black/75 px-2 py-1 text-[10px]">{Number(video.views || 0).toLocaleString("en-IN")} views</span></div><div className="p-3"><p className="line-clamp-2 text-sm font-semibold">{video.caption || "Untitled video"}</p><p className="mt-1 truncate text-xs text-slate-400">{publicCreatorName(video)} · {publicVideoAge(video.createdAt)}</p></div></Link>)}</div>}
       </div>
     </main>
   );
+}
+
+function Stat({ icon, label, value }: { icon: ReactNode; label: string; value: string }) {
+  return <div className="rounded-xl border border-white/10 bg-white/[0.04] p-3"><div className="flex items-center gap-2 text-xs text-slate-400">{icon}{label}</div><p className="mt-2 text-lg font-black tabular-nums">{value}</p></div>;
 }
