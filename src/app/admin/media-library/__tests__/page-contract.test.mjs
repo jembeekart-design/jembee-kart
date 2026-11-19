@@ -2,10 +2,14 @@ import test from "node:test";
 import assert from "node:assert/strict";
 import { readFile } from "node:fs/promises";
 import path from "node:path";
+import { fileURLToPath } from "node:url";
 
-const pagePath = path.resolve(path.dirname(new URL(import.meta.url).pathname), "../page.tsx");
-const routePath = path.resolve(path.dirname(new URL(import.meta.url).pathname), "../../../api/admin/media-library/route.ts");
-const adminGuardPath = path.resolve(path.dirname(new URL(import.meta.url).pathname), "../../../../lib/server/requireAdmin.ts");
+const testDirectory = path.dirname(fileURLToPath(import.meta.url));
+const pagePath = path.resolve(testDirectory, "../page.tsx");
+const routePath = path.resolve(testDirectory, "../../../api/admin/media-library/route.ts");
+const adminGuardPath = path.resolve(testDirectory, "../../../../lib/server/requireAdmin.ts");
+const deleteRoutePath = path.resolve(testDirectory, "../../../api/admin/delete-video/route.ts");
+const deletionServicePath = path.resolve(testDirectory, "../../../../services/videoDeletionService.ts");
 
 test("Media Library uses the server-side inventory endpoint, not client Firestore reads", async () => {
   const page = await readFile(pagePath, "utf8");
@@ -46,4 +50,36 @@ test("Deletion sends the Firebase ID token to the protected deletion endpoint", 
   const page = await readFile(pagePath, "utf8");
   assert.match(page, /\/api\/admin\/delete-video/);
   assert.match(page, /Authorization: "Bearer " \+ token/);
+});
+
+
+test("Inventory normalizes Firestore Timestamp and legacy epoch-millisecond dates", async () => {
+  const route = await readFile(routePath, "utf8");
+  assert.match(route, /createdAtValue\.toDate\(\)/);
+  assert.match(route, /new Date\(createdAtValue\)/);
+  assert.match(route, /\.limit\(250\)/);
+  assert.doesNotMatch(route, /orderBy\("createdAt"/);
+});
+
+test("Paid and unsupported-provider media cannot be previewed from the Drive-only stream", async () => {
+  const page = await readFile(pagePath, "utf8");
+  assert.match(page, /video\.videoAccess !== "paid"/);
+  assert.match(page, /video\.storageProvider === "google_drive"/);
+  assert.match(page, /onAuthStateChanged\(auth/);
+});
+
+test("Admin deletion refuses records without a verified storage asset before cleanup", async () => {
+  const route = await readFile(deleteRoutePath, "utf8");
+  assert.match(route, /requireAdmin\(req\)/);
+  assert.match(route, /if \(!driveFileId && !storedPublicId\)/);
+  assert.match(route, /No verified Drive or Cloudinary asset reference/);
+});
+
+test("Video deletion archives notifications and reconciles unread metadata", async () => {
+  const service = await readFile(deletionServicePath, "utf8");
+  assert.match(service, /archiveVideoNotifications\(db, videoId\)/);
+  assert.match(service, /shorts_notifications/);
+  assert.match(service, /shorts_notification_meta/);
+  assert.match(service, /unreadCount: Math\.max\(0/);
+  assert.match(service, /videoId: FieldValue\.delete\(\)/);
 });
