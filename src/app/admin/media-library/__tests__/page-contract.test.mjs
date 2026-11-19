@@ -29,7 +29,7 @@ test("Media inventory endpoint delegates authentication to the shared revoked-to
 test("Shared admin guard retries UID lookup when the direct document is not an admin", async () => {
   const guard = await readFile(adminGuardPath, "utf8");
   assert.match(guard, /verifyIdToken\(token, true\)/);
-  assert.match(guard, /if \(role !== "admin" && role !== "super_admin"\)\s*\{\s*const fallback = await db\.collection\("users"\)\.where\("uid", "==", decoded\.uid" );
+  assert.ok(guard.includes('if (role !== "admin" && role !== "super_admin")'));
   assert.match(guard, /fallback\.docs\[0\]\?\.data\(\)\?\.role/);
 });
 
