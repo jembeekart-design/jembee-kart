@@ -42,7 +42,7 @@ private fun JembeeTvApp() {
         onSurfaceVariant = TvMuted
     )
     MaterialTheme(colorScheme = colors) {
-        Surface(Modifier.fillMaxSize(), color = colors.background) {
+        Surface(Modifier.fillMaxSize(), colors = SurfaceDefaults.colors(containerColor = colors.background)) {
             Column(
                 Modifier.fillMaxSize().padding(horizontal = 54.dp, vertical = 34.dp),
                 verticalArrangement = Arrangement.spacedBy(25.dp)
@@ -73,7 +73,7 @@ private fun JembeeTvApp() {
                 }
 
                 if (remoteConfig.maintenanceEnabled) {
-                    Surface(color = colors.errorContainer, shape = RoundedCornerShape(12.dp)) {
+                    Surface(colors = SurfaceDefaults.colors(containerColor = colors.errorContainer), shape = RoundedCornerShape(12.dp)) {
                         Text(
                             remoteConfig.maintenanceMessage.ifBlank { "JEMBEE PLAY is temporarily under maintenance." },
                             Modifier.fillMaxWidth().padding(14.dp), color = colors.onErrorContainer
@@ -84,7 +84,7 @@ private fun JembeeTvApp() {
                 if (selected == "Home" || selected == "Shorts") {
                     Surface(
                         shape = RoundedCornerShape(24.dp),
-                        color = colors.surface,
+                        colors = SurfaceDefaults.colors(containerColor = colors.surface),
                         modifier = Modifier.fillMaxWidth().height(220.dp)
                     ) {
                         Box(Modifier.fillMaxSize().background(
