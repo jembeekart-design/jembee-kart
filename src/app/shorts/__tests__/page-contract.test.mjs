@@ -29,3 +29,14 @@ test('Shorts feed query hook is inside a Suspense boundary for production preren
   assert.match(page, /<Suspense\b[\s\S]*<FullscreenVideoFeed[\s\S]*<\/Suspense>/);
 });
 
+
+test('Shorts feed tabs are stateful and accessible', () => {
+  const header = readFileSync(new URL('../../videos/components/ProductionHeader.tsx', import.meta.url), 'utf8');
+  assert.match(page, /setActiveTab/);
+  assert.match(page, /onTabChange=\{setActiveTab\}/);
+  assert.match(header, /aria-label="Shorts feed"/);
+  assert.match(header, /aria-pressed=\{activeTab === "foryou"\}/);
+  assert.match(header, /aria-pressed=\{activeTab === "following"\}/);
+  assert.match(header, /onTabChange\("foryou"\)/);
+  assert.match(header, /onTabChange\("following"\)/);
+});
