@@ -9,6 +9,7 @@ import java.net.URLEncoder
 
 data class LearningNode(val id: String, val name: String, val type: String, val coverImageUrl: String?)
 data class LearningQuestion(val questionNumber: String, val videoCount: Int)
+data class LearningAnswer(val id: String, val caption: String, val creator: String, val videoFormat: String)
 
 object LearningLibraryClient {
     private const val BASE = "https://jembeeplay.in"
@@ -41,6 +42,24 @@ object LearningLibraryClient {
                 val item = rows.optJSONObject(index) ?: return@mapNotNull null
                 val number = item.optString("questionNumber").take(40)
                 if (number.isBlank()) null else LearningQuestion(number, item.optInt("videoCount", 0).coerceAtLeast(0))
+            }
+        }
+    }
+
+    fun loadAnswers(chapterId: String, questionNumber: String, onResult: (Result<List<LearningAnswer>>) -> Unit) {
+        val query = "/api/learning/school-video-answers?chapterId=" + URLEncoder.encode(chapterId, "UTF-8") + "&questionNumber=" + URLEncoder.encode(questionNumber, "UTF-8")
+        request(query, onResult) { raw ->
+            val root = JSONObject(raw)
+            require(root.optBoolean("success", false)) { "Video answers unavailable" }
+            val rows = root.optJSONArray("videos") ?: org.json.JSONArray()
+            (0 until rows.length()).mapNotNull { index ->
+                val item = rows.optJSONObject(index) ?: return@mapNotNull null
+                val id = item.optString("id").take(160)
+                if (id.isBlank() || item.optString("videoAccess") != "free") null else LearningAnswer(
+                    id, item.optString("caption", "Video answer").take(500),
+                    item.optString("username", "JEMBEE PLAY Creator").take(80),
+                    item.optString("videoFormat", "short")
+                )
             }
         }
     }
