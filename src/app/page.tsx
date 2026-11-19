@@ -13,7 +13,6 @@ type NavigationItem = { icon: LucideIcon; label: string; href: string };
 const earningsNavigation: NavigationItem[] = [
   { icon: Share2, label: "Sharer की कमाई", href: "/earnings/sharer" },
   { icon: Video, label: "Creator की कमाई", href: "/earnings/creator" },
-  { icon: GraduationCap, label: "Teacher Referral Commission", href: "/earnings/teacher" },
 ];
 const desktopNavigation: NavigationItem[] = [
   { icon: Home, label: "Home", href: "/" },
