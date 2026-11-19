@@ -174,25 +174,7 @@ private fun PremiumActionCard(title: String, subtitle: String, symbol: String, m
 
 @Composable
 private fun ShortsScreen() {
-    Column(
-        Modifier.fillMaxSize().padding(22.dp),
-        verticalArrangement = Arrangement.Center,
-        horizontalAlignment = Alignment.CenterHorizontally
-    ) {
-        Box(
-            Modifier.size(76.dp).background(
-                Brush.linearGradient(listOf(Color(0xFF1677D2), Color(0xFF6C9FEA))),
-                RoundedCornerShape(25.dp)
-            ),
-            contentAlignment = Alignment.Center
-        ) { Text("▶", color = Color.White, fontSize = 32.sp) }
-        Text("Shorts", Modifier.padding(top = 20.dp), fontSize = 25.sp, fontWeight = FontWeight.ExtraBold)
-        Text(
-            "A smooth, full-screen video feed is being connected to your JEMBEE PLAY account and live catalog.",
-            Modifier.padding(top = 8.dp),
-            color = JembeeMuted, fontSize = 14.sp, lineHeight = 21.sp
-        )
-    }
+    NativeShortsFeed()
 }
 
 @Composable
