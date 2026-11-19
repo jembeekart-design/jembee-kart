@@ -7,7 +7,12 @@ const main = readFileSync(new URL("apps/android-native/mobile/src/main/java/in/j
 const client = readFileSync(new URL("apps/android-native/mobile/src/main/java/in/jembeeplay/mobile/MobileVideoCatalogClient.kt", root), "utf8");
 const api = readFileSync(new URL("src/app/api/app/video-catalog/route.ts", root), "utf8");
 
-test("mobile Home uses live catalog instead of fabricated preview cards", () => {\n  assert.match(main, /NativeCatalogSection\(\)/);\n  assert.doesNotMatch(main, /Your next lesson|Science explained|Maths revision|Quick science facts|Daily knowledge/);\n});\n\ntest("mobile Shorts loads the real approved catalog and opens native playback", () => {
+test("mobile Home uses live catalog instead of fabricated preview cards", () => {
+  assert.match(main, /NativeCatalogSection\(\)/);
+  assert.doesNotMatch(main, /Your next lesson|Science explained|Maths revision|Quick science facts|Daily knowledge/);
+});
+
+test("mobile Shorts loads the real approved catalog and opens native playback", () => {
   assert.match(main, /MobileVideoCatalogClient\.fetch/);
   assert.match(main, /MobileVideoPlayer\(video = activeVideo/);
   assert.match(main, /ExoPlayer\.Builder\(context\)/);
