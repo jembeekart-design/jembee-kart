@@ -39,7 +39,7 @@ test('admin school page uses the authenticated live create and review APIs', () 
   assert.match(adminPage, /Reject/);
   assert.doesNotMatch(adminPage, /UI prototype/);
 
-  assert.match(learnerPage, /const schools:Record<string,Item\[]>/);
-  assert.match(learnerPage, /Live Firestore question-to-video mapping/);
+  assert.match(learnerPage, /fetch\("\/api\/content-categories"/);
+  assert.match(learnerPage, /school-video-answers\?questionId=/);
   assert.doesNotMatch(learnerPage, /fetch\(["'`]\/api\/education\/schools/);
 });
