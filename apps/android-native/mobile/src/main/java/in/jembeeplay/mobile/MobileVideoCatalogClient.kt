@@ -20,6 +20,7 @@ data class MobileCatalogVideo(
 object MobileVideoCatalogClient {
     private const val BASE = "https://jembeeplay.in"
     private const val ENDPOINT = "$BASE/api/app/video-catalog?limit=20"
+    private const val MAX_RESPONSE_CHARS = 512 * 1024
 
     fun fetch(onResult: (Result<List<MobileCatalogVideo>>) -> Unit) {
         Thread {
@@ -33,8 +34,17 @@ object MobileVideoCatalogClient {
                 try {
                     require(connection.url.protocol == "https")
                     require(connection.responseCode in 200..299) { "Video catalog unavailable" }
-                    val body = connection.inputStream.bufferedReader().use { it.readText() }
-                    require(body.length <= 512 * 1024) { "Video catalog response too large" }
+                    val body = connection.inputStream.bufferedReader().use { reader ->
+                        val output = StringBuilder()
+                        val buffer = CharArray(8192)
+                        while (true) {
+                            val count = reader.read(buffer)
+                            if (count < 0) break
+                            require(output.length + count <= MAX_RESPONSE_CHARS) { "Video catalog response too large" }
+                            output.append(buffer, 0, count)
+                        }
+                        output.toString()
+                    }
                     val root = JSONObject(body)
                     require(root.optBoolean("success", false)) { "Video catalog response invalid" }
                     val items = root.optJSONArray("videos") ?: org.json.JSONArray()
@@ -45,7 +55,8 @@ object MobileVideoCatalogClient {
                         val playbackPath = item.optString("playbackUrl")
                         if (id.isBlank() || item.optString("videoAccess") != "free" ||
                             !thumbnailPath.startsWith("/api/shorts/video-thumbnail/") ||
-                            !playbackPath.startsWith("/api/shorts/video-stream/")) return@mapNotNull null
+                            !playbackPath.startsWith("/api/shorts/video-stream/") ||
+                            thumbnailPath.contains("..") || playbackPath.contains("..")) return@mapNotNull null
                         MobileCatalogVideo(
                             id = id,
                             caption = item.optString("caption", "Untitled video").take(500).ifBlank { "Untitled video" },
