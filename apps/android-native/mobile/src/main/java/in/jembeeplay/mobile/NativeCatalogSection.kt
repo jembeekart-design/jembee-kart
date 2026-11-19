@@ -1,5 +1,6 @@
 package `in`.jembeeplay.mobile
 
+import android.content.Intent
 import android.view.ViewGroup
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -102,12 +103,22 @@ fun NativeCatalogSection(sectionTitle: String = "Watch on JEMBEE PLAY", sectionS
     }
 
     selected?.let { video ->
-        NativeVideoPlayer(video = video, onClose = { selected = null })
+        NativeVideoPlayer(
+            video = video,
+            recommendations = videos.filterNot { it.id == video.id }.take(5),
+            onSelect = { selected = it },
+            onClose = { selected = null }
+        )
     }
 }
 
 @Composable
-private fun NativeVideoPlayer(video: CatalogVideo, onClose: () -> Unit) {
+private fun NativeVideoPlayer(
+    video: CatalogVideo,
+    recommendations: List<CatalogVideo>,
+    onSelect: (CatalogVideo) -> Unit,
+    onClose: () -> Unit
+) {
     val context = LocalContext.current
     val player = remember(video.id) {
         ExoPlayer.Builder(context).build().apply {
@@ -117,17 +128,117 @@ private fun NativeVideoPlayer(video: CatalogVideo, onClose: () -> Unit) {
         }
     }
     DisposableEffect(player) { onDispose { player.release() } }
-    androidx.compose.ui.window.Dialog(onDismissRequest = onClose) {
-        Column(Modifier.fillMaxWidth().background(Color(0xFF0B1020), RoundedCornerShape(18.dp)).padding(12.dp)) {
-            Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween) {
-                Text(video.title, Modifier.weight(1f), color = Color.White, fontWeight = FontWeight.Bold, maxLines = 2)
-                TextButton(onClick = onClose) { Text("Close") }
+    androidx.compose.ui.window.Dialog(
+        onDismissRequest = onClose,
+        properties = androidx.compose.ui.window.DialogProperties(usePlatformDefaultWidth = false)
+    ) {
+        BoxWithConstraints(
+            Modifier.fillMaxSize().background(Color(0xFF05060B)).padding(12.dp)
+        ) {
+            val wide = maxWidth > 600.dp
+            if (wide) {
+                Row(Modifier.fillMaxSize(), horizontalArrangement = Arrangement.spacedBy(16.dp)) {
+                    Column(Modifier.weight(2.5f).fillMaxHeight(), verticalArrangement = Arrangement.spacedBy(10.dp)) {
+                        Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween, verticalAlignment = androidx.compose.ui.Alignment.CenterVertically) {
+                            Text(video.title, Modifier.weight(1f), color = Color.White, fontWeight = FontWeight.Bold, maxLines = 2)
+                            TextButton(onClick = onClose) { Text("Close") }
+                        }
+                        AndroidView(
+                            factory = { ctx -> PlayerView(ctx).apply {
+                                this.player = player
+                                useController = true
+                                controllerShowTimeoutMs = 3500
+                                layoutParams = ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT)
+                            } },
+                            modifier = Modifier.fillMaxWidth().weight(1f)
+                        )
+                        Text(video.title, color = Color.White, fontWeight = FontWeight.Bold, fontSize = 17.sp)
+                        Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween, verticalAlignment = androidx.compose.ui.Alignment.CenterVertically) {
+                            Column {
+                                Text(video.creator, color = Color.LightGray, fontSize = 13.sp)
+                                Text("${video.views} views", color = Color.Gray, fontSize = 11.sp)
+                            }
+                            OutlinedButton(onClick = {
+                                val share = Intent(Intent.ACTION_SEND).apply {
+                                    type = "text/plain"
+                                    putExtra(Intent.EXTRA_TEXT, "${video.title} · JEMBEE PLAY")
+                                }
+                                context.startActivity(Intent.createChooser(share, "Share video"))
+                            }) { Text("↗  Share") }
+                        }
+                    }
+                    Column(Modifier.weight(1f).fillMaxHeight(), verticalArrangement = Arrangement.spacedBy(10.dp)) {
+                        Text("Up Next", color = Color.White, fontSize = 19.sp, fontWeight = FontWeight.Bold)
+                        if (recommendations.isEmpty()) {
+                            Text("No more approved videos in this list.", color = Color.LightGray, fontSize = 12.sp)
+                        } else {
+                            recommendations.forEach { next ->
+                                Surface(
+                                    onClick = { onSelect(next) },
+                                    color = Color(0xFF15131E),
+                                    shape = RoundedCornerShape(12.dp)
+                                ) {
+                                    Row(Modifier.fillMaxWidth().padding(7.dp), horizontalArrangement = Arrangement.spacedBy(9.dp)) {
+                                        AsyncImage(
+                                            model = next.thumbnailUrl,
+                                            contentDescription = next.title,
+                                            contentScale = ContentScale.Crop,
+                                            modifier = Modifier.size(100.dp, 62.dp).clip(RoundedCornerShape(8.dp))
+                                        )
+                                        Column(Modifier.weight(1f), verticalArrangement = Arrangement.spacedBy(3.dp)) {
+                                            Text(next.title, color = Color.White, fontSize = 12.sp, fontWeight = FontWeight.SemiBold, maxLines = 2)
+                                            Text("${next.views} views", color = Color.LightGray, fontSize = 10.sp)
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            } else {
+                Column(Modifier.fillMaxSize(), verticalArrangement = Arrangement.spacedBy(10.dp)) {
+                    Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween, verticalAlignment = androidx.compose.ui.Alignment.CenterVertically) {
+                        Text(video.title, Modifier.weight(1f), color = Color.White, fontWeight = FontWeight.Bold, maxLines = 2)
+                        TextButton(onClick = onClose) { Text("Close") }
+                    }
+                    AndroidView(
+                        factory = { ctx -> PlayerView(ctx).apply {
+                            this.player = player
+                            useController = true
+                            controllerShowTimeoutMs = 3500
+                            layoutParams = ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT)
+                        } },
+                        modifier = Modifier.fillMaxWidth().height(230.dp)
+                    )
+                    Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween, verticalAlignment = androidx.compose.ui.Alignment.CenterVertically) {
+                        Column {
+                            Text(video.creator, color = Color.White, fontWeight = FontWeight.Bold, fontSize = 13.sp)
+                            Text("${video.views} views", color = Color.LightGray, fontSize = 11.sp)
+                        }
+                        OutlinedButton(onClick = {
+                            val share = Intent(Intent.ACTION_SEND).apply {
+                                type = "text/plain"
+                                putExtra(Intent.EXTRA_TEXT, "${video.title} · JEMBEE PLAY")
+                            }
+                            context.startActivity(Intent.createChooser(share, "Share video"))
+                        }) { Text("↗  Share") }
+                    }
+                    Text("Up Next", color = Color.White, fontSize = 17.sp, fontWeight = FontWeight.Bold)
+                    androidx.compose.foundation.lazy.LazyColumn(verticalArrangement = Arrangement.spacedBy(8.dp)) {
+                        items(recommendations, key = { it.id }) { next ->
+                            Surface(onClick = { onSelect(next) }, color = Color(0xFF15131E), shape = RoundedCornerShape(12.dp)) {
+                                Row(Modifier.fillMaxWidth().padding(7.dp), horizontalArrangement = Arrangement.spacedBy(9.dp)) {
+                                    AsyncImage(model = next.thumbnailUrl, contentDescription = next.title, contentScale = ContentScale.Crop, modifier = Modifier.size(112.dp, 66.dp).clip(RoundedCornerShape(8.dp)))
+                                    Column(Modifier.weight(1f)) {
+                                        Text(next.title, color = Color.White, fontSize = 12.sp, fontWeight = FontWeight.SemiBold, maxLines = 2)
+                                        Text("${next.views} views", color = Color.LightGray, fontSize = 10.sp)
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
             }
-            AndroidView(
-                factory = { ctx -> PlayerView(ctx).apply { this.player = player; layoutParams = ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT); useController = true } },
-                modifier = Modifier.fillMaxWidth().height(220.dp)
-            )
-            Text(video.creator, Modifier.padding(top = 8.dp), color = Color.LightGray, fontSize = 12.sp)
         }
     }
 }
