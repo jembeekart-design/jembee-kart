@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import { classifyGoogleDriveError } from "@/lib/googleDriveErrors";
-import { getAdminDb, getAdminAuth } from "@/firebase/admin";
+import { getAdminDb } from "@/firebase/admin";
+import { requireAdmin, isAdminIdentity } from "@/lib/server/requireAdmin";
 import { v2 as cloudinary } from "cloudinary";
 import { deleteDriveFile } from "@/services/googleDriveService";
 import { cleanupVideoRecords } from "@/services/videoDeletionService";
@@ -14,25 +15,11 @@ cloudinary.config({
 
 export async function POST(req: Request) {
   try {
+    const identity = await requireAdmin(req);
+    if (!isAdminIdentity(identity)) return identity;
     const adminDb = getAdminDb();
-    const adminAuth = getAdminAuth();
-    const authHeader = req.headers.get("authorization");
-    if (!authHeader?.startsWith("Bearer ")) return NextResponse.json({ success: false, message: "Unauthorized" }, { status: 401 });
     const { videoId } = await req.json();
     if (typeof videoId !== "string" || !videoId.trim() || videoId.length > 200 || videoId.includes("/")) return NextResponse.json({ success: false, message: "Invalid video ID" }, { status: 400 });
-    // 1. Verify Admin Role and token revocation state.
-    const decodedToken = await adminAuth.verifyIdToken(authHeader.slice(7).trim(), true);
-    
-    const userSnapshot = await adminDb
-      .collection("users")
-      .where("uid", "==", decodedToken.uid)
-      .get();
-      
-    const userDoc = userSnapshot.docs[0];
-    
-    if (!userDoc || (userDoc.data()?.role !== "admin" && userDoc.data()?.role !== "super_admin")) {
-      return NextResponse.json({ success: false, message: "Unauthorized" }, { status: 403 });
-    }
 
     // 2. Validate Video Exists and fetch data (publicId is passed, but we should confirm video exists)
     const videoRef = adminDb.collection("watchEarnVideos").doc(videoId);
@@ -44,7 +31,7 @@ export async function POST(req: Request) {
     // 3. Delete the stored asset from its actual storage provider.
     const videoData = videoDoc.data() || {};
     if (videoData.deletionState !== "deleting") {
-      await videoRef.update({ active: false, status: "deleting", deletionState: "deleting", deletionStartedAt: new Date(), deletionRequestedBy: decodedToken.uid });
+      await videoRef.update({ active: false, status: "deleting", deletionState: "deleting", deletionStartedAt: new Date(), deletionRequestedBy: identity.uid });
     }
     const driveFileId =
       typeof videoData.driveFileId === "string"
@@ -54,6 +41,17 @@ export async function POST(req: Request) {
       typeof videoData.publicId === "string"
         ? videoData.publicId.trim()
         : "";
+
+    if (!driveFileId && !storedPublicId) {
+      return NextResponse.json(
+        { success: false, message: "No verified Drive or Cloudinary asset reference exists. Video record was not deleted." },
+        { status: 409 }
+      );
+    }
+
+    if (videoData.deletionState !== "deleting") {
+      await videoRef.update({ active: false, status: "deleting", deletionState: "deleting", deletionStartedAt: new Date(), deletionRequestedBy: identity.uid });
+    }
 
     if (driveFileId) {
       try {
