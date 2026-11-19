@@ -66,7 +66,9 @@ export async function POST(req: Request) {
           );
         }
       }
-    } else if (storedPublicId) {
+    }
+
+    if (storedPublicId) {
       try {
         const result = await cloudinary.uploader.destroy(storedPublicId, { resource_type: "video" });
         if (result.result !== "ok" && result.result !== "not found") {
