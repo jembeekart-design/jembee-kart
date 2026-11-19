@@ -14,6 +14,9 @@ test("Learning discovery follows Subject Book Chapter then dynamic Question Numb
   assert.ok(page.includes("school-video-answers?chapterId="));
   assert.ok(page.includes("questionNumber: item.questionNumber"));
   assert.match(page, /coverImageUrl/);
+  assert.match(page, /stage <= 1/);
+  assert.match(page, /bg-gradient-to-br from-\[#3b155f\]/);
+  assert.match(page, /text-pink-300/);
   assert.doesNotMatch(page, /edition|Board →|Choose School|Choose Class/);
 });
 
