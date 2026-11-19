@@ -7,7 +7,9 @@ import { AlertCircle, Folder, HardDrive, Image as ImageIcon, Loader2, Play, Refr
 
 type MediaVideo = {
   id: string; title: string; status: string; active: boolean; moderation: string;
-  videoAccess: string; driveFileId: string; thumbnailUrl: string;\n  storageProvider: string; hasStorageAsset: boolean; canPreview: boolean;\n  sizeBytes: number | null; createdAt: string | null;
+  videoAccess: string; driveFileId: string; thumbnailUrl: string;
+  storageProvider: string; hasStorageAsset: boolean; canPreview: boolean;
+  sizeBytes: number | null; createdAt: string | null;
 };
 
 const formatBytes = (bytes: number | null) => {
