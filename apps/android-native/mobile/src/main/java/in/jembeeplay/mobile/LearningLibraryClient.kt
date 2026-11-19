@@ -16,7 +16,7 @@ object LearningLibraryClient {
 
     fun loadNodes(type: String, parentId: String? = null, onResult: (Result<List<LearningNode>>) -> Unit) {
         request("/api/content-categories?type=${URLEncoder.encode(type, "UTF-8")}&pageSize=50" +
-            (parentId?.let { "&parentId=${URLEncoder.encode(it, "UTF-8")}" } ?: "")) { raw ->
+            (parentId?.let { "&parentId=${URLEncoder.encode(it, "UTF-8")}" } ?: ""), onResult) { raw ->
             val root = JSONObject(raw)
             require(root.optBoolean("success", false)) { "Learning catalogue unavailable" }
             val rows = root.optJSONArray("learningNodes") ?: org.json.JSONArray()
@@ -29,11 +29,11 @@ object LearningLibraryClient {
                     item.optString("coverImageUrl").takeIf { it.startsWith("https://") || it.startsWith("/learning-covers/") }
                 )
             }
-        }.let { future -> Thread { main.post { onResult(future()) } }.start() }
+        }
     }
 
     fun loadQuestions(chapterId: String, onResult: (Result<List<LearningQuestion>>) -> Unit) {
-        request("/api/learning/school-video-answers?chapterId=${URLEncoder.encode(chapterId, "UTF-8")}") { raw ->
+        request("/api/learning/school-video-answers?chapterId=${URLEncoder.encode(chapterId, "UTF-8")}", onResult) { raw ->
             val root = JSONObject(raw)
             require(root.optBoolean("success", false)) { "Question numbers unavailable" }
             val rows = root.optJSONArray("questions") ?: org.json.JSONArray()
@@ -42,14 +42,12 @@ object LearningLibraryClient {
                 val number = item.optString("questionNumber").take(40)
                 if (number.isBlank()) null else LearningQuestion(number, item.optInt("videoCount", 0).coerceAtLeast(0))
             }
-        }.let { future -> Thread { main.post { onResult(future()) } }.start() }
+        }
     }
 
-    private fun <T> request(path: String, parse: (String) -> T): () -> Result<T> {
-        var result: Result<T>? = null
-        val latch = java.util.concurrent.CountDownLatch(1)
+    private fun <T> request(path: String, onResult: (Result<T>) -> Unit, parse: (String) -> T)(path: String, parse: (String) -> T): () -> Result<T> {
         Thread {
-            result = runCatching {
+            val result = runCatching {
                 val connection = (URL(BASE + path).openConnection() as HttpURLConnection).apply {
                     requestMethod = "GET"
                     connectTimeout = 7000
@@ -65,8 +63,7 @@ object LearningLibraryClient {
                     parse(body)
                 } finally { connection.disconnect() }
             }
-            latch.countDown()
+            main.post { onResult(result) }
         }.start()
-        return { latch.await(); result ?: Result.failure(IllegalStateException("Learning request failed")) }
     }
 }
