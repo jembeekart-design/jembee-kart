@@ -7,6 +7,7 @@ const read = (rel) => fs.readFileSync(path.resolve(process.cwd(), rel), "utf8");
 const webhook = read("src/app/api/payments/cashfree/webhook/route.ts");
 const verify = read("src/app/api/shorts/paid-video/verify/route.ts");
 const refund = read("src/app/api/admin/shorts/paid-video-refunds/reconcile/route.ts");
+const referral = read("src/app/api/admin/shorts/teacher-referral/reconcile/route.ts");
 const create = read("src/app/api/shorts/paid-video/create-order/route.ts");
 const playback = read("src/app/api/shorts/paid-video/playback-session/route.ts");
 
@@ -42,6 +43,14 @@ test("refund reconciliation requires revocation-checked token and admin role", (
   assert.match(refund, /PROVIDER_TOTAL_REGRESSED/);
   assert.match(refund, /pending_settlement_reversal/);
 });
+test("teacher referral reconciliation requires admin role and verified paid order", () => {
+  assert.match(referral, /verifyIdToken\(header\.slice\(7\)\.trim\(\), true\)/);
+  assert.match(referral, /role !== "admin" && user\?\.role !== "super_admin"/);
+  assert.match(referral, /order\.status !== "paid"/);
+  assert.match(referral, /referral\.status === "verified"/);
+  assert.match(referral, /amountPaise: commissionPaise/);
+  assert.match(referral, /amountPaise: commissionDeltaPaise/);
+});
 test("paid-video order creation checks buyer, eligibility, price and server-side attribution", () => {
   assert.match(create, /verifyIdToken\(authHeader\.slice\(7\)\.trim\(\), true\)/);
   assert.match(create, /video\.paidCheckoutEnabled !== true/);
@@ -58,7 +67,7 @@ test("paid playback requires an owned verified purchase and short-lived secure c
   assert.match(playback, /Cache-Control": "no-store"/);
 });
 test("financial route success responses prevent shared caching", () => {
-  for (const [name, source] of [["webhook",webhook],["verify",verify],["refund",refund],["create-order",create],["playback",playback]]) {
+  for (const [name, source] of [["webhook",webhook],["verify",verify],["refund",refund],["referral",referral],["create-order",create],["playback",playback]]) {
     assert.match(source, /Cache-Control/ , `${name} must set cache policy`);
     assert.match(source, /no-store/, `${name} must disable shared caching`);
   }
