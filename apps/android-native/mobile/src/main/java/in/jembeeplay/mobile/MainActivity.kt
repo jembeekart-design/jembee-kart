@@ -215,28 +215,7 @@ private fun ShortsScreen() {
 
 @Composable
 private fun LearnScreen() {
-    var search by remember { mutableStateOf("") }
-    Column(Modifier.fillMaxSize().verticalScroll(rememberScrollState()).padding(20.dp)) {
-        Text("Learn at your pace", fontSize = 25.sp, fontWeight = FontWeight.ExtraBold)
-        Text("Find the exact book, chapter or question.", Modifier.padding(top = 5.dp, bottom = 18.dp), color = JembeeMuted, fontSize = 13.sp)
-        OutlinedTextField(
-            value = search, onValueChange = { search = it },
-            modifier = Modifier.fillMaxWidth(),
-            shape = RoundedCornerShape(16.dp),
-            label = { Text("Search learning library") },
-            placeholder = { Text("Book name, chapter or question no.") },
-            singleLine = true
-        )
-        Surface(
-            shape = RoundedCornerShape(20.dp), color = MaterialTheme.colorScheme.surface,
-            modifier = Modifier.fillMaxWidth().padding(top = 18.dp)
-        ) {
-            Column(Modifier.padding(18.dp), verticalArrangement = Arrangement.spacedBy(8.dp)) {
-                Text("Your Learning Library", fontWeight = FontWeight.Bold, fontSize = 17.sp)
-                Text("Books, chapter images and question-wise answers will be shown here when the Learning Library API is connected.", color = JembeeMuted, fontSize = 13.sp, lineHeight = 19.sp)
-            }
-        }
-    }
+    NativeLearningLibraryScreen()
 }
 
 @Composable
