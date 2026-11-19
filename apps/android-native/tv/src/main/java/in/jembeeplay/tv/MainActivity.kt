@@ -124,15 +124,17 @@ private fun JembeeTvApp() {
                         TvFeatureCard("Learning Library", "Books  ·  Chapters  ·  Questions", "▤", Modifier.weight(1f)) { selected = "Learning" }
                         TvFeatureCard("Your Library", "Saved videos and watch history", "▣", Modifier.weight(1f)) { selected = "My List" }
                     }
+                } else if (selected == "Learning") {
+                    TvLearningLibraryScreen()
                 } else {
                     Column(
                         Modifier.fillMaxWidth().weight(1f),
                         verticalArrangement = Arrangement.Center,
                         horizontalAlignment = Alignment.CenterHorizontally
                     ) {
-                        Text(if (selected == "Learning") "Learn on the big screen" else "Your Library", fontSize = 30.sp, fontWeight = FontWeight.ExtraBold)
+                        Text("Your Library", fontSize = 30.sp, fontWeight = FontWeight.ExtraBold)
                         Text(
-                            if (selected == "Learning") "Books, chapters and answers will appear here when Learning Library is connected." else "Saved videos and watch history will appear here after account sync.",
+                            "Saved videos and watch history will appear here after account sync.",
                             Modifier.padding(top = 10.dp), fontSize = 16.sp, color = TvMuted
                         )
                     }
