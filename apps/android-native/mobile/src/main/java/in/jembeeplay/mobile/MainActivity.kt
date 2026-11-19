@@ -56,7 +56,7 @@ private fun JembeeMobileApp() {
                     containerColor = MaterialTheme.colorScheme.surface,
                     tonalElevation = 8.dp
                 ) {
-                    listOf("Home", "Shorts", "Learn", "Library", "You").forEach { item ->
+                    listOf("Home", "Shorts", "Learn", "You", "Library").forEach { item ->
                         NavigationBarItem(
                             selected = selected == item,
                             onClick = { selected = item },
@@ -66,7 +66,7 @@ private fun JembeeMobileApp() {
                                     fontSize = 20.sp, fontWeight = FontWeight.Bold
                                 )
                             },
-                            label = { Text(item, fontSize = 11.sp) },
+                            label = { Text(when (item) { "Learn" -> "Learning"; "You" -> "Earn"; else -> item }, fontSize = 11.sp) },
                             alwaysShowLabel = true
                         )
                     }
@@ -80,15 +80,25 @@ private fun JembeeMobileApp() {
                         verticalAlignment = Alignment.CenterVertically,
                         horizontalArrangement = Arrangement.SpaceBetween
                     ) {
-                        Column(verticalArrangement = Arrangement.spacedBy(2.dp)) {
-                            Text("JEMBEE PLAY", fontSize = 21.sp, fontWeight = FontWeight.Black, letterSpacing = 0.6.sp)
-                            Text("WATCH  ·  LEARN  ·  CREATE", fontSize = 9.sp, letterSpacing = 1.5.sp, color = JembeeMuted)
-                        }
-                        Row(verticalAlignment = Alignment.CenterVertically) {
-                            TextButton(onClick = { dark = !dark }) { Text(if (dark) "Light" else "Dark") }
-                            Surface(shape = RoundedCornerShape(50), color = MaterialTheme.colorScheme.surfaceVariant) {
-                                Text("J", Modifier.padding(horizontal = 13.dp, vertical = 8.dp), color = MaterialTheme.colorScheme.primary, fontWeight = FontWeight.Black)
+                        Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(9.dp)) {
+                            Box(
+                                Modifier.size(34.dp).background(
+                                    Brush.linearGradient(listOf(Color(0xFFFF1978), Color(0xFF8B2BDA))),
+                                    RoundedCornerShape(10.dp)
+                                ),
+                                contentAlignment = Alignment.Center
+                            ) { Text("▶", color = Color.White, fontSize = 17.sp, fontWeight = FontWeight.Black) }
+                            Column(verticalArrangement = Arrangement.spacedBy(2.dp)) {
+                                Text("JEMBEE PLAY", fontSize = 19.sp, fontWeight = FontWeight.Black, letterSpacing = 0.2.sp)
+                                Text("WATCH  ·  LEARN  ·  CREATE", fontSize = 8.sp, letterSpacing = 1.1.sp, color = JembeeMuted)
                             }
+                        }
+                        Surface(
+                            onClick = { selected = "You" },
+                            shape = RoundedCornerShape(50),
+                            color = MaterialTheme.colorScheme.surfaceVariant
+                        ) {
+                            Text("J", Modifier.padding(horizontal = 13.dp, vertical = 8.dp), color = MaterialTheme.colorScheme.primary, fontWeight = FontWeight.Black)
                         }
                     }
                 }
