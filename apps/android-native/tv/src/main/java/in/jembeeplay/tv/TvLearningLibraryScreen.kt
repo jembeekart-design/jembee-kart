@@ -103,7 +103,7 @@ fun TvLearningLibraryScreen() {
     LaunchedEffect(Unit) { refresh() }
     val stage = when { question != null -> 3; chapter != null -> 2; book != null -> 1; else -> 0 }
     val entries = when (stage) {
-        0 -> nodes.filter { it.type == "book" }
+        0 -> nodes.filter { it.type == "book" || it.type == "subject" }
         1 -> nodes.filter { it.type == "chapter" && it.parentId == book?.id }
         2 -> nodes.filter { it.type == "question" && it.parentId == chapter?.id }
         else -> emptyList()
@@ -132,7 +132,7 @@ fun TvLearningLibraryScreen() {
         } else if (stage < 3) {
             if (entries.isEmpty()) {
                 Box(Modifier.fillMaxWidth().weight(1f), contentAlignment = Alignment.Center) {
-                    Text(listOf("No published books yet", "No chapters in this book yet", "No questions in this chapter yet")[stage],
+                    Text(listOf("No published books or subjects yet", "No chapters in this selection yet", "No questions in this chapter yet")[stage],
                         color = muted, fontSize = 18.sp)
                 }
             } else {
@@ -159,7 +159,7 @@ fun TvLearningLibraryScreen() {
                                 Text(when (stage) { 0 -> "▤"; 1 -> "▥"; else -> "#" }, color = Color(0xFFFF1978), fontSize = 28.sp)
                                 Column(Modifier.weight(1f)) {
                                     Text(item.name, fontSize = 19.sp, fontWeight = FontWeight.Bold)
-                                    Text(when (stage) { 0 -> "Published book"; 1 -> "Chapter"; else -> "Question" }, color = muted, fontSize = 12.sp)
+                                    Text(when (stage) { 0 -> if (item.type == "subject") "Published subject" else "Published book"; 1 -> "Chapter"; else -> "Question" }, color = muted, fontSize = 12.sp)
                                 }
                                 Text("›", fontSize = 26.sp, color = muted)
                             }
