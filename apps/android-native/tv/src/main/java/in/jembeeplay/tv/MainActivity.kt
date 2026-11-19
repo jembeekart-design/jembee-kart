@@ -5,19 +5,22 @@ import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.lazy.LazyRow
-import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.runtime.*
-import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.layout.ContentScale
+import coil.compose.AsyncImage
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.tv.material3.*
 
-private val TvBlue = Color(0xFF1687E8)
-private data class TvShelf(val title: String, val titles: List<String>)
+private val TvBlue = Color(0xFFFF1978)
+private val TvMuted = Color(0xFFABB7C8)
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -32,66 +35,148 @@ private fun JembeeTvApp() {
     var remoteConfig by remember { mutableStateOf(JembeeRemoteConfig()) }
     LaunchedEffect(Unit) { RemoteConfigClient.fetch(context) { remoteConfig = it } }
     var selected by remember { mutableStateOf("Home") }
-    var dark by remember { mutableStateOf(true) }
-    val shelves = listOf(
-        TvShelf("Featured for you", listOf("Featured video", "Continue watching", "New this week")),
-        TvShelf("Learning by class", listOf("Class 6", "Class 7", "Class 8", "Class 9", "Class 10")),
-        TvShelf("Explore JEMBEE PLAY", listOf("Shorts", "Teachers", "Creators", "My List"))
+    var heroThumbnail by remember { mutableStateOf<String?>(null) }
+    LaunchedEffect(Unit) { TvVideoCatalogClient.fetch { result -> result.onSuccess { heroThumbnail = it.firstOrNull()?.thumbnailUrl } } }
+    val colors = darkColorScheme(
+        primary = TvBlue,
+        background = Color(0xFF05060B),
+        surface = Color(0xFF101019),
+        surfaceVariant = Color(0xFF1B1B27),
+        onSurface = Color(0xFFF4F7FC),
+        onSurfaceVariant = TvMuted
     )
-    val colors = if (dark) darkColorScheme() else lightColorScheme()
     MaterialTheme(colorScheme = colors) {
-        Surface(Modifier.fillMaxSize()) {
-            Column(Modifier.fillMaxSize().background(colors.background).padding(horizontal = 42.dp, vertical = 28.dp)) {
-                Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween) {
-                    Column {
-                        Text("JEMBEE PLAY", fontSize = 30.sp, fontWeight = FontWeight.Black)
-                        Text("WATCH · LEARN · CREATE · SHARE", fontSize = 12.sp, color = colors.onSurfaceVariant)
+        Surface(Modifier.fillMaxSize(), colors = SurfaceDefaults.colors(containerColor = colors.background)) {
+            Column(
+                Modifier.fillMaxSize().padding(horizontal = 54.dp, vertical = 34.dp),
+                verticalArrangement = Arrangement.spacedBy(25.dp)
+            ) {
+                Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween, verticalAlignment = Alignment.CenterVertically) {
+                    Column(verticalArrangement = Arrangement.spacedBy(3.dp)) {
+                        Text("▶  JEMBEE PLAY", fontSize = 31.sp, fontWeight = FontWeight.Black, letterSpacing = 1.sp)
+                        Text("WATCH  ·  LEARN  ·  CREATE  ·  SHARE", fontSize = 11.sp, color = TvMuted, letterSpacing = 1.8.sp)
                     }
-                    Row(horizontalArrangement = Arrangement.spacedBy(10.dp)) {
-                        listOf("Home", "Shorts", "Learning", "My List", "Settings").forEach { item ->
+                    Row(horizontalArrangement = Arrangement.spacedBy(8.dp), verticalAlignment = Alignment.CenterVertically) {
+                        listOf("Home", "Shorts", "Learning", "Library", "Live").forEach { item ->
                             Surface(
                                 onClick = { selected = item },
-                                shape = ClickableSurfaceDefaults.shape(),
+                                modifier = Modifier.height(46.dp),
+                                shape = ClickableSurfaceDefaults.shape(shape = RoundedCornerShape(30.dp)),
                                 colors = ClickableSurfaceDefaults.colors(
-                                    containerColor = if (selected == item) TvBlue else colors.surfaceVariant,
-                                    focusedContainerColor = TvBlue
+                                    containerColor = Color.Transparent,
+                                    focusedContainerColor = TvBlue,
+                                    focusedContentColor = Color.White
                                 )
-                            ) { Text(item, Modifier.padding(horizontal = 18.dp, vertical = 12.dp), fontWeight = FontWeight.Bold) }
-                        }
-                        Button(onClick = { dark = !dark }) { Text(if (dark) "Dark" else "Light") }
-                    }
-                }
-                if (remoteConfig.maintenanceEnabled) {
-                    Text(remoteConfig.maintenanceMessage.ifBlank { "JEMBEE PLAY is temporarily under maintenance." }, Modifier.padding(top = 14.dp), color = colors.error)
-                }
-                Spacer(Modifier.height(34.dp))
-                Card(onClick = { selected = "Featured" }, modifier = Modifier.fillMaxWidth().height(190.dp)) {
-                    Column(Modifier.fillMaxSize().padding(28.dp), verticalArrangement = Arrangement.Center) {
-                        Text("A bigger screen for bigger ideas", fontSize = 30.sp, fontWeight = FontWeight.ExtraBold)
-                        Text("Discover videos, teachers and learning paths", Modifier.padding(top = 10.dp), fontSize = 17.sp)
-                    }
-                }
-                Spacer(Modifier.height(28.dp))
-                TvLiveVideoShelf()
-                shelves.forEach { shelf ->
-                    Text(shelf.title, Modifier.padding(top = 26.dp, bottom = 12.dp), fontSize = 21.sp, fontWeight = FontWeight.Bold)
-                    LazyRow(horizontalArrangement = Arrangement.spacedBy(18.dp)) {
-                        items(shelf.titles) { title ->
-                            Surface(
-                                onClick = { selected = title },
-                                modifier = Modifier.width(205.dp).height(116.dp),
-                                shape = ClickableSurfaceDefaults.shape(),
-                                colors = ClickableSurfaceDefaults.colors(focusedContainerColor = TvBlue)
                             ) {
-                                Box(Modifier.fillMaxSize().padding(18.dp), contentAlignment = androidx.compose.ui.Alignment.BottomStart) {
-                                    Text(title, fontSize = 17.sp, fontWeight = FontWeight.Bold)
+                                Box(Modifier.padding(horizontal = 20.dp), contentAlignment = Alignment.Center) {
+                                    Text(item, fontWeight = FontWeight.SemiBold, fontSize = 14.sp)
                                 }
                             }
                         }
                     }
                 }
-                Spacer(Modifier.height(18.dp))
-                Text("TV interface foundation · Live video and account APIs are not connected yet", fontSize = 12.sp, color = colors.onSurfaceVariant)
+
+                if (remoteConfig.maintenanceEnabled) {
+                    Surface(colors = SurfaceDefaults.colors(containerColor = colors.errorContainer), shape = RoundedCornerShape(12.dp)) {
+                        Text(
+                            remoteConfig.maintenanceMessage.ifBlank { "JEMBEE PLAY is temporarily under maintenance." },
+                            Modifier.fillMaxWidth().padding(14.dp), color = colors.onErrorContainer
+                        )
+                    }
+                }
+
+                if (selected == "Home" || selected == "Shorts") {
+                    Row(Modifier.fillMaxWidth().weight(1f), horizontalArrangement = Arrangement.spacedBy(24.dp)) {
+                        Column(Modifier.width(58.dp).fillMaxHeight(), verticalArrangement = Arrangement.spacedBy(20.dp),
+                            horizontalAlignment = Alignment.CenterHorizontally) {
+                            listOf("⌂", "♨", "▤", "◉", "♜", "⚙").forEachIndexed { index, symbol ->
+                                val destination = listOf("Home", "Shorts", "Learning", "Live", "Library", "Settings")[index]
+                                Surface(onClick = { selected = destination }, shape = ClickableSurfaceDefaults.shape(shape = RoundedCornerShape(14.dp)),
+                                    colors = ClickableSurfaceDefaults.colors(
+                                        containerColor = if (selected == destination) Color(0xFF42102E) else Color.Transparent,
+                                        focusedContainerColor = Color(0xFFFF1978)
+                                    ), modifier = Modifier.size(54.dp)) {
+                                    Box(contentAlignment = Alignment.Center) {
+                                        Text(symbol, fontSize = 25.sp, color = if (selected == destination) Color(0xFFFF5A9E) else Color.White)
+                                    }
+                                }
+                            }
+                        }
+                        Column(Modifier.weight(1f).fillMaxHeight(), verticalArrangement = Arrangement.spacedBy(20.dp)) {
+                            Surface(
+                                shape = RoundedCornerShape(24.dp),
+                                colors = SurfaceDefaults.colors(containerColor = colors.surface),
+                                modifier = Modifier.fillMaxWidth().height(236.dp)
+                            ) {
+                                Box(Modifier.fillMaxSize().background(
+                                    Brush.horizontalGradient(listOf(Color(0xFF17072F), Color(0xFF35106B), Color(0xFF170B35)))
+                                )) {
+                                    if (heroThumbnail != null) {
+                                        AsyncImage(model = heroThumbnail, contentDescription = "Featured approved JEMBEE PLAY video",
+                                            contentScale = ContentScale.Crop, modifier = Modifier.fillMaxSize())
+                                        Box(Modifier.fillMaxSize().background(Brush.horizontalGradient(
+                                            listOf(Color(0xEE17072F), Color(0xCC35106B), Color(0x44170B35)))))
+                                    }
+                                    Column(Modifier.align(Alignment.CenterStart).padding(horizontal = 34.dp),
+                                        verticalArrangement = Arrangement.spacedBy(9.dp)) {
+                                        Text("Learn", fontSize = 38.sp, color = Color.White, fontWeight = FontWeight.ExtraBold)
+                                        Text("Anytime", fontSize = 36.sp, color = Color.White, fontWeight = FontWeight.ExtraBold)
+                                        Text("Anywhere", fontSize = 36.sp, color = Color(0xFFFF5A9E), fontWeight = FontWeight.ExtraBold)
+                                        Text("Videos  ·  Chapters  ·  Questions  ·  Answers", fontSize = 15.sp, color = Color.White)
+                                        Button(onClick = { selected = "Learning" },
+                                            colors = ButtonDefaults.colors(containerColor = Color(0xFFFF1978)),
+                                            contentPadding = PaddingValues(horizontal = 22.dp, vertical = 7.dp)) {
+                                            Text("▶  Watch Now", color = Color.White, fontWeight = FontWeight.Bold)
+                                        }
+                                    }
+                                }
+                            }
+                            TvLiveVideoShelf()
+                            Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(16.dp)) {
+                                TvFeatureCard("Learning Library", "Books  ·  Chapters  ·  Questions", "▤", Modifier.weight(1f)) { selected = "Learning" }
+                                TvFeatureCard("Your Library", "Saved videos and watch history", "▣", Modifier.weight(1f)) { selected = "Library" }
+                            }
+                        }
+                    }
+                } else if (selected == "Learning") {
+                    TvLearningLibraryScreen()
+                } else {
+                    Column(
+                        Modifier.fillMaxWidth().weight(1f),
+                        verticalArrangement = Arrangement.Center,
+                        horizontalAlignment = Alignment.CenterHorizontally
+                    ) {
+                        Text("Your Library", fontSize = 30.sp, fontWeight = FontWeight.ExtraBold)
+                        Text(
+                            "Saved videos and watch history will appear here after account sync.",
+                            Modifier.padding(top = 10.dp), fontSize = 16.sp, color = TvMuted
+                        )
+                    }
+                }
+                Spacer(Modifier.weight(1f, fill = false))
+                Text("Designed for comfortable viewing · Use your remote to explore", fontSize = 12.sp, color = TvMuted)
+            }
+        }
+    }
+}
+
+@Composable
+private fun TvFeatureCard(title: String, subtitle: String, symbol: String, modifier: Modifier, onClick: () -> Unit) {
+    Surface(
+        onClick = onClick,
+        modifier = modifier.height(112.dp),
+        shape = ClickableSurfaceDefaults.shape(shape = RoundedCornerShape(20.dp)),
+        colors = ClickableSurfaceDefaults.colors(
+            containerColor = Color(0xFF121019),
+            focusedContainerColor = Color(0xFF351047),
+            focusedContentColor = Color.White
+        )
+    ) {
+        Row(Modifier.fillMaxSize().padding(horizontal = 22.dp), verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(18.dp)) {
+            Text(symbol, fontSize = 30.sp, color = TvBlue, fontWeight = FontWeight.Bold)
+            Column(verticalArrangement = Arrangement.spacedBy(5.dp)) {
+                Text(title, fontSize = 18.sp, fontWeight = FontWeight.Bold)
+                Text(subtitle, fontSize = 12.sp, color = TvMuted)
             }
         }
     }

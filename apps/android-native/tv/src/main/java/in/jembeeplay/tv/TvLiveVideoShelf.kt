@@ -44,8 +44,8 @@ fun TvLiveVideoShelf() {
     Column(Modifier.fillMaxWidth()) {
         Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween) {
             Column {
-                Text("Watch on JEMBEE PLAY", fontSize = 21.sp, fontWeight = FontWeight.Bold)
-                Text("Live approved video catalog", fontSize = 12.sp, color = MaterialTheme.colorScheme.onSurfaceVariant)
+                Text("Trending Videos", fontSize = 21.sp, fontWeight = FontWeight.Bold)
+                Text("Recently approved videos from JEMBEE PLAY", fontSize = 12.sp, color = MaterialTheme.colorScheme.onSurfaceVariant)
             }
             if (loading) Text("Loading…", fontSize = 12.sp, color = MaterialTheme.colorScheme.onSurfaceVariant)
         }

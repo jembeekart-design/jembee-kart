@@ -4,12 +4,24 @@ import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.background
-import androidx.compose.foundation.horizontalScroll
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.lazy.LazyRow
+import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.*
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Home
+import androidx.compose.material.icons.filled.PlayArrow
+import androidx.compose.material.icons.filled.MenuBook
+import androidx.compose.material.icons.filled.AccountBalanceWallet
+import androidx.compose.material.icons.filled.VideoLibrary
+import androidx.compose.material.icons.filled.Cast
+import androidx.compose.material.icons.filled.NotificationsNone
+import androidx.compose.material.icons.filled.Search
+import androidx.compose.material.icons.filled.Person
+import androidx.compose.ui.draw.clip
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -19,10 +31,13 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import coil.compose.AsyncImage
+import androidx.compose.ui.layout.ContentScale
 
-private val JembeeBlue = Color(0xFF0878D1)
-private val Ink = Color(0xFF171923)
-private val Muted = Color(0xFF777B86)
+private val JembeeBlue = Color(0xFF1677D2)
+private val JembeeInk = Color(0xFF111827)
+private val JembeeMuted = Color(0xFF778196)
+private val JembeeCanvas = Color(0xFFF5F7FB)
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -36,21 +51,39 @@ private fun JembeeMobileApp() {
     val context = LocalContext.current
     var remoteConfig by remember { mutableStateOf(JembeeRemoteConfig()) }
     LaunchedEffect(Unit) { RemoteConfigClient.fetch(context) { remoteConfig = it } }
-    var dark by remember { mutableStateOf(false) }
+    var dark by remember { mutableStateOf(true) }
     var selected by remember { mutableStateOf("Home") }
-    val scheme = if (dark) darkColorScheme(primary = Color(0xFF69C5FF), background = Color(0xFF101116), surface = Color(0xFF1B1D25)) else lightColorScheme(primary = JembeeBlue, background = Color(0xFFF8F8FA), surface = Color.White)
+    val scheme = if (dark) darkColorScheme(
+        primary = Color(0xFFFF1978), background = Color(0xFF080A12),
+        surface = Color(0xFF15131E), onSurface = Color(0xFFF7F4F8)
+    ) else lightColorScheme(
+        primary = JembeeBlue, background = JembeeCanvas, surface = Color.White,
+        onSurface = JembeeInk
+    )
 
     MaterialTheme(colorScheme = scheme) {
         Scaffold(
             containerColor = MaterialTheme.colorScheme.background,
             bottomBar = {
-                NavigationBar(containerColor = MaterialTheme.colorScheme.surface) {
-                    listOf("Home", "Shorts", "Learn", "Library", "You").forEach { item ->
+                if (selected != "Shorts") NavigationBar(
+                    containerColor = MaterialTheme.colorScheme.surface,
+                    tonalElevation = 8.dp
+                ) {
+                    listOf("Home", "Shorts", "Learn", "You", "Library").forEach { item ->
                         NavigationBarItem(
                             selected = selected == item,
                             onClick = { selected = item },
-                            icon = { Text(when (item) { "Home" -> "⌂"; "Shorts" -> "▶"; "Learn" -> "▤"; "Library" -> "▣"; else -> "●" }, fontSize = 19.sp, fontWeight = FontWeight.Bold) },
-                            label = { Text(item) }
+                            icon = {
+                                Icon(when (item) {
+                                    "Home" -> Icons.Filled.Home
+                                    "Shorts" -> Icons.Filled.PlayArrow
+                                    "Learn" -> Icons.Filled.MenuBook
+                                    "Library" -> Icons.Filled.VideoLibrary
+                                    else -> Icons.Filled.AccountBalanceWallet
+                                }, contentDescription = item)
+                            },
+                            label = { Text(when (item) { "Learn" -> "Learning"; "You" -> "Earn"; else -> item }, fontSize = 11.sp) },
+                            alwaysShowLabel = true
                         )
                     }
                 }
@@ -58,16 +91,41 @@ private fun JembeeMobileApp() {
         ) { padding ->
             Column(Modifier.fillMaxSize().padding(padding)) {
                 if (selected != "Shorts") {
-                    Row(Modifier.fillMaxWidth().padding(horizontal = 18.dp, vertical = 12.dp), verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.SpaceBetween) {
-                        Column {
-                            Text("JEMBEE PLAY", fontSize = 22.sp, fontWeight = FontWeight.Black, color = MaterialTheme.colorScheme.onBackground)
-                            Text("WATCH · LEARN · CREATE · SHARE", fontSize = 10.sp, letterSpacing = 1.sp, color = Muted)
+                    Row(
+                        Modifier.fillMaxWidth().padding(start = 18.dp, end = 16.dp, top = 12.dp, bottom = 12.dp),
+                        verticalAlignment = Alignment.CenterVertically,
+                        horizontalArrangement = Arrangement.SpaceBetween
+                    ) {
+                        Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(9.dp)) {
+                            Box(Modifier.size(35.dp).background(
+                                Brush.linearGradient(listOf(Color(0xFFFF1978), Color(0xFF8B2BDA))),
+                                RoundedCornerShape(10.dp)
+                            ), contentAlignment = Alignment.Center) {
+                                Icon(Icons.Filled.PlayArrow, contentDescription = "JEMBEE PLAY", tint = Color.White, modifier = Modifier.size(25.dp))
+                            }
+                            Text("JEMBEE PLAY", fontSize = 19.sp, fontWeight = FontWeight.Black, letterSpacing = 0.2.sp)
                         }
-                        TextButton(onClick = { dark = !dark }) { Text(if (dark) "Light" else "Dark") }
+                        Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(4.dp)) {
+                            IconButton(onClick = { selected = "Shorts" }) { Icon(Icons.Filled.Cast, contentDescription = "Cast", tint = Color.White) }
+                            IconButton(onClick = { selected = "You" }) { Icon(Icons.Filled.NotificationsNone, contentDescription = "Notifications", tint = Color.White) }
+                            IconButton(onClick = { selected = "Library" }) { Icon(Icons.Filled.Search, contentDescription = "Search", tint = Color.White) }
+                            Surface(onClick = { selected = "You" }, shape = RoundedCornerShape(50), color = Color(0xFF252332)) {
+                                Box(Modifier.size(34.dp), contentAlignment = Alignment.Center) {
+                                    Icon(Icons.Filled.Person, contentDescription = "Profile", tint = Color.White)
+                                }
+                            }
+                        }
                     }
                 }
                 if (remoteConfig.maintenanceEnabled) {
-                    Text(remoteConfig.maintenanceMessage.ifBlank { "JEMBEE PLAY is temporarily under maintenance." }, Modifier.fillMaxWidth().padding(horizontal = 18.dp, vertical = 8.dp), color = MaterialTheme.colorScheme.error)
+                    Surface(color = MaterialTheme.colorScheme.errorContainer, modifier = Modifier.fillMaxWidth()) {
+                        Text(
+                            remoteConfig.maintenanceMessage.ifBlank { "JEMBEE PLAY is temporarily under maintenance." },
+                            Modifier.padding(horizontal = 18.dp, vertical = 10.dp),
+                            color = MaterialTheme.colorScheme.onErrorContainer,
+                            fontSize = 13.sp
+                        )
+                    }
                 }
                 when (selected) {
                     "Home" -> HomeScreen(onLearn = { selected = "Learn" }, onShorts = { selected = "Shorts" })
@@ -83,148 +141,199 @@ private fun JembeeMobileApp() {
 
 @Composable
 private fun HomeScreen(onLearn: () -> Unit, onShorts: () -> Unit) {
-    Column(Modifier.fillMaxSize().verticalScroll(rememberScrollState()).padding(bottom = 18.dp)) {
-        Row(Modifier.fillMaxWidth().horizontalScroll(rememberScrollState()).padding(horizontal = 16.dp), horizontalArrangement = Arrangement.spacedBy(8.dp)) {
-            listOf("For you", "Learning", "Trending", "Music", "Technology", "News").forEachIndexed { index, label ->
-                FilterChip(selected = index == 0, onClick = { if (label == "Learning") onLearn() }, label = { Text(label) })
+    var activeCategory by remember { mutableStateOf("All") }
+    Column(
+        Modifier.fillMaxSize().verticalScroll(rememberScrollState()).padding(bottom = 20.dp),
+        verticalArrangement = Arrangement.spacedBy(15.dp)
+    ) {
+        LazyRow(contentPadding = PaddingValues(horizontal = 18.dp), horizontalArrangement = Arrangement.spacedBy(9.dp)) {
+            items(listOf("All", "Learning", "Shorts", "Education", "Craft")) { category ->
+                val active = activeCategory == category
+                Surface(onClick = { activeCategory = category; if (category == "Learning") onLearn(); if (category == "Shorts") onShorts() },
+                    shape = RoundedCornerShape(22.dp), color = if (active) Color(0xFFFF1978) else Color(0xFF171521)) {
+                    Text(category, Modifier.padding(horizontal = 17.dp, vertical = 9.dp), color = Color.White,
+                        fontSize = 12.sp, fontWeight = if (active) FontWeight.Bold else FontWeight.Medium)
+                }
             }
         }
-        NativeCatalogSection()
-        Text("Featured for you", Modifier.padding(start = 18.dp, top = 14.dp, bottom = 10.dp), fontSize = 19.sp, fontWeight = FontWeight.Bold)
-        Box(Modifier.fillMaxWidth().padding(horizontal = 16.dp)) {
-            ThumbnailCard("Learn something new every day", "JEMBEE PLAY • FEATURED", Modifier.fillMaxWidth().height(214.dp))
-        }
-        Row(Modifier.fillMaxWidth().padding(horizontal = 18.dp, vertical = 12.dp), verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.SpaceBetween) {
-            Text("Continue watching", fontSize = 19.sp, fontWeight = FontWeight.Bold)
-            TextButton(onClick = onLearn) { Text("See all") }
-        }
-        Row(Modifier.fillMaxWidth().horizontalScroll(rememberScrollState()).padding(horizontal = 16.dp), horizontalArrangement = Arrangement.spacedBy(12.dp)) {
-            MiniVideo("Your next lesson", "Continue learning", Color(0xFF5D6BCB))
-            MiniVideo("Science explained", "Education • 12 min", Color(0xFF168B87))
-            MiniVideo("Maths revision", "Class 7 • 8 min", Color(0xFFB66C36))
-        }
-        Row(Modifier.fillMaxWidth().padding(horizontal = 18.dp, vertical = 14.dp), verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.SpaceBetween) {
-            Text("Learning by class", fontSize = 19.sp, fontWeight = FontWeight.Bold)
-            TextButton(onClick = onLearn) { Text("Explore") }
-        }
-        Row(Modifier.fillMaxWidth().horizontalScroll(rememberScrollState()).padding(horizontal = 16.dp), horizontalArrangement = Arrangement.spacedBy(10.dp)) {
-            listOf("Class 6", "Class 7", "Class 8", "Class 9", "Class 10").forEachIndexed { i, name ->
-                Surface(onClick = onLearn, shape = RoundedCornerShape(16.dp), color = MaterialTheme.colorScheme.surface, modifier = Modifier.width(118.dp).height(76.dp)) {
-                    Column(Modifier.padding(14.dp), verticalArrangement = Arrangement.SpaceBetween) {
-                        Text("JEMBEE LEARN", fontSize = 9.sp, color = JembeeBlue, fontWeight = FontWeight.Bold)
-                        Text(name, fontWeight = FontWeight.Bold, fontSize = 16.sp)
+        PremiumHeroBanner(onWatch = onShorts)
+        ReferenceQuickActions(onLearn = onLearn, onShorts = onShorts)
+        Column(Modifier.fillMaxWidth().padding(horizontal = 18.dp), verticalArrangement = Arrangement.spacedBy(9.dp)) {
+            Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween, verticalAlignment = Alignment.CenterVertically) {
+                Text("Continue Learning", fontSize = 19.sp, fontWeight = FontWeight.Bold)
+                TextButton(onClick = onLearn, contentPadding = PaddingValues(0.dp)) { Text("See All  ›", color = Color.White, fontSize = 12.sp) }
+            }
+            Surface(onClick = onLearn, shape = RoundedCornerShape(17.dp), color = Color(0xFF15131E), modifier = Modifier.fillMaxWidth()) {
+                Row(Modifier.padding(10.dp), verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(12.dp)) {
+                    Box(Modifier.size(110.dp, 92.dp).clip(RoundedCornerShape(12.dp))
+                        .background(Brush.linearGradient(listOf(Color(0xFF103D20), Color(0xFF267A37)))),
+                        contentAlignment = Alignment.Center) {
+                        Text("🌿", fontSize = 43.sp)
+                    }
+                    Column(Modifier.weight(1f), verticalArrangement = Arrangement.spacedBy(5.dp)) {
+                        Text("Explore your Learning Library", fontSize = 14.sp, fontWeight = FontWeight.Bold, color = Color.White)
+                        Text("Books  ·  Chapters  ·  Questions", fontSize = 11.sp, color = JembeeMuted)
+                        Box(Modifier.fillMaxWidth().height(4.dp).clip(RoundedCornerShape(4.dp)).background(Color(0xFF34313F)))
                     }
                 }
             }
         }
-        Row(Modifier.fillMaxWidth().padding(horizontal = 18.dp, vertical = 14.dp), verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.SpaceBetween) {
-            Text("Shorts for you", fontSize = 19.sp, fontWeight = FontWeight.Bold)
-            TextButton(onClick = onShorts) { Text("View Shorts") }
-        }
-        Row(Modifier.fillMaxWidth().horizontalScroll(rememberScrollState()).padding(horizontal = 16.dp), horizontalArrangement = Arrangement.spacedBy(10.dp)) {
-            listOf("Quick science facts", "One-minute maths", "Daily knowledge").forEachIndexed { i, title ->
-                Box(Modifier.width(132.dp).height(190.dp)) { ThumbnailCard(title, "SHORTS • PREVIEW", Modifier.fillMaxSize(), listOf(Color(0xFF713F9E), Color(0xFF187F9A), Color(0xFFB45B55))[i]) }
+        NativeCatalogSection(sectionTitle = "Trending Videos 🔥", sectionSubtitle = "Popular approved videos from JEMBEE PLAY")
+        Surface(onClick = onLearn, shape = RoundedCornerShape(17.dp), color = Color(0xFF15131E),
+            modifier = Modifier.fillMaxWidth().padding(horizontal = 16.dp)) {
+            Row(Modifier.padding(16.dp), verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(14.dp)) {
+                Box(Modifier.size(48.dp).background(Brush.linearGradient(listOf(Color(0xFF4B176F), Color(0xFF991D65))), RoundedCornerShape(14.dp)),
+                    contentAlignment = Alignment.Center) { Icon(Icons.Filled.MenuBook, contentDescription = null, tint = Color.White, modifier = Modifier.size(27.dp)) }
+                Column(Modifier.weight(1f), verticalArrangement = Arrangement.spacedBy(3.dp)) {
+                    Text("Learning Library", fontWeight = FontWeight.Bold, fontSize = 15.sp, color = Color.White)
+                    Text("Find a book, chapter or question", fontSize = 11.sp, color = JembeeMuted)
+                }
+                Text("→", color = Color(0xFFFF1978), fontSize = 23.sp)
             }
         }
-        Text("Discover creators", Modifier.padding(start = 18.dp, top = 20.dp, bottom = 10.dp), fontSize = 19.sp, fontWeight = FontWeight.Bold)
-        Text("Find teachers and creators to follow.", Modifier.padding(horizontal = 18.dp), color = Muted)
-        Text("Preview content only · Live video services are not connected yet", Modifier.padding(18.dp), fontSize = 11.sp, color = Muted)
     }
 }
 
 @Composable
-private fun ThumbnailCard(title: String, eyebrow: String, modifier: Modifier, accent: Color = Color(0xFF394B78)) {
-    Box(modifier.background(Brush.linearGradient(listOf(accent, accent.copy(alpha = 0.72f), Color(0xFF171923))), RoundedCornerShape(18.dp))) {
-        Column(Modifier.align(Alignment.BottomStart).padding(16.dp)) {
-            Text(eyebrow, color = Color.White.copy(alpha = 0.8f), fontSize = 10.sp, fontWeight = FontWeight.Bold, letterSpacing = 1.sp)
-            Text(title, color = Color.White, fontSize = 20.sp, fontWeight = FontWeight.ExtraBold)
+private fun PremiumActionCard(title: String, subtitle: String, symbol: String, modifier: Modifier, onClick: () -> Unit) {
+    Surface(
+        onClick = onClick, modifier = modifier.height(132.dp),
+        shape = RoundedCornerShape(20.dp), color = MaterialTheme.colorScheme.surface,
+        tonalElevation = 1.dp
+    ) {
+        Column(Modifier.padding(14.dp), verticalArrangement = Arrangement.SpaceBetween) {
+            Text(symbol, color = MaterialTheme.colorScheme.primary, fontSize = 23.sp, fontWeight = FontWeight.Bold)
+            Column(verticalArrangement = Arrangement.spacedBy(3.dp)) {
+                Text(title, fontSize = 14.sp, fontWeight = FontWeight.Bold)
+                Text(subtitle, fontSize = 10.sp, color = JembeeMuted, lineHeight = 14.sp)
+            }
         }
-        Text("▶", Modifier.align(Alignment.Center), color = Color.White, fontSize = 34.sp)
-    }
-}
-
-@Composable
-private fun MiniVideo(title: String, subtitle: String, accent: Color) {
-    Column(Modifier.width(218.dp)) {
-        ThumbnailCard(title, "JEMBEE PLAY", Modifier.fillMaxWidth().height(122.dp), accent)
-        Text(title, Modifier.padding(top = 8.dp), fontWeight = FontWeight.Bold, fontSize = 14.sp)
-        Text(subtitle, color = Muted, fontSize = 12.sp)
     }
 }
 
 @Composable
 private fun ShortsScreen() {
-    Column(Modifier.fillMaxSize().padding(horizontal = 16.dp, vertical = 8.dp)) {
-        Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween, verticalAlignment = Alignment.CenterVertically) {
-            Text("JEMBEE SHORTS", fontSize = 20.sp, fontWeight = FontWeight.Black)
-            Text("Following  •  For you", color = Muted, fontSize = 12.sp)
-        }
-        Spacer(Modifier.height(12.dp))
-        Box(Modifier.weight(1f).fillMaxWidth().background(Brush.linearGradient(listOf(Color(0xFF31265E), Color(0xFF176A83), Color(0xFF101116))), RoundedCornerShape(22.dp))) {
-            Column(Modifier.align(Alignment.Center), horizontalAlignment = Alignment.CenterHorizontally) {
-                Text("▶", color = Color.White, fontSize = 54.sp)
-                Text("Short video preview", color = Color.White, fontSize = 19.sp, fontWeight = FontWeight.Bold)
-                Text("Real video feed will appear after API integration", color = Color.White.copy(alpha = 0.75f), fontSize = 11.sp)
-            }
-            Column(Modifier.align(Alignment.BottomStart).padding(18.dp)) {
-                Text("@jembee_creator", color = Color.White, fontWeight = FontWeight.Bold)
-                Text("Learn a new idea in 60 seconds", color = Color.White)
-            }
-            Column(Modifier.align(Alignment.CenterEnd).padding(14.dp), horizontalAlignment = Alignment.CenterHorizontally) {
-                listOf("♡", "▢", "↗", "⋯").forEach { Text(it, color = Color.White, fontSize = 27.sp, modifier = Modifier.padding(vertical = 8.dp)) }
-            }
-        }
-        Text("Demo layout · Not a live playable video", Modifier.padding(8.dp), color = Muted, fontSize = 11.sp)
-    }
+    NativeShortsFeed()
 }
 
 @Composable
 private fun LearnScreen() {
-    Column(Modifier.fillMaxSize().verticalScroll(rememberScrollState()).padding(18.dp)) {
-        Text("Learn with JEMBEE", fontSize = 24.sp, fontWeight = FontWeight.Black)
-        Text("Choose your curriculum and continue learning.", color = Muted, modifier = Modifier.padding(top = 4.dp, bottom = 18.dp))
-        OutlinedTextField(value = "", onValueChange = {}, readOnly = true, modifier = Modifier.fillMaxWidth(), label = { Text("Search classes, subjects or chapters") }, placeholder = { Text("Search learning library") })
-        listOf("CBSE", "ICSE", "JAC", "Other boards").forEach { board ->
-            Text(board, Modifier.padding(top = 18.dp, bottom = 8.dp), fontWeight = FontWeight.Bold, fontSize = 18.sp)
-            listOf("Class 6", "Class 7", "Class 8", "Class 9", "Class 10").forEach { grade ->
-                Surface(shape = RoundedCornerShape(14.dp), color = MaterialTheme.colorScheme.surface, modifier = Modifier.fillMaxWidth().padding(vertical = 4.dp)) {
-                    Row(Modifier.padding(16.dp), horizontalArrangement = Arrangement.SpaceBetween) {
-                        Text(grade, fontWeight = FontWeight.SemiBold)
-                        Text("Subjects  →", color = JembeeBlue)
-                    }
-                }
-            }
-        }
-        Text("Catalog preview · Board and lesson data integration pending", color = Muted, fontSize = 11.sp, modifier = Modifier.padding(top = 12.dp))
-    }
+    NativeLearningLibraryScreen()
 }
 
 @Composable
 private fun LibraryScreen() {
-    Column(Modifier.fillMaxSize().padding(22.dp), verticalArrangement = Arrangement.Center, horizontalAlignment = Alignment.CenterHorizontally) {
-        Text("▣", fontSize = 48.sp, color = JembeeBlue)
-        Text("Your Library", fontSize = 24.sp, fontWeight = FontWeight.Bold, modifier = Modifier.padding(top = 12.dp))
-        Text("Saved videos, history and downloads will live here.", color = Muted, modifier = Modifier.padding(top = 8.dp))
-        Text("Sign in and video services are not connected in this preview.", color = Muted, fontSize = 11.sp, modifier = Modifier.padding(top = 14.dp))
+    Column(Modifier.fillMaxSize().padding(26.dp), verticalArrangement = Arrangement.Center, horizontalAlignment = Alignment.CenterHorizontally) {
+        Text("▣", fontSize = 46.sp, color = MaterialTheme.colorScheme.primary)
+        Text("Your Library", fontSize = 24.sp, fontWeight = FontWeight.Bold, modifier = Modifier.padding(top = 14.dp))
+        Text("Saved videos, watch history and downloads will be gathered in one quiet, easy-to-find place.", color = JembeeMuted, fontSize = 13.sp, lineHeight = 19.sp, modifier = Modifier.padding(top = 8.dp))
     }
 }
 
 @Composable
 private fun YouScreen(onTheme: () -> Unit, dark: Boolean) {
     Column(Modifier.fillMaxSize().verticalScroll(rememberScrollState()).padding(20.dp)) {
-        Text("You", fontSize = 28.sp, fontWeight = FontWeight.Black)
-        Surface(shape = RoundedCornerShape(18.dp), color = MaterialTheme.colorScheme.surface, modifier = Modifier.fillMaxWidth().padding(top = 18.dp)) {
-            Column(Modifier.padding(18.dp)) {
-                Text("J", color = JembeeBlue, fontSize = 30.sp, fontWeight = FontWeight.Black)
-                Text("Your JEMBEE PLAY profile", fontWeight = FontWeight.Bold, fontSize = 18.sp)
-                Text("Sign in to manage your account and creator profile.", color = Muted, fontSize = 12.sp)
+        Text("Your space", fontSize = 26.sp, fontWeight = FontWeight.ExtraBold)
+        Surface(shape = RoundedCornerShape(22.dp), color = MaterialTheme.colorScheme.surface, modifier = Modifier.fillMaxWidth().padding(top = 18.dp)) {
+            Row(Modifier.padding(18.dp), verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(14.dp)) {
+                Surface(shape = RoundedCornerShape(18.dp), color = MaterialTheme.colorScheme.primaryContainer) {
+                    Text("J", Modifier.padding(horizontal = 18.dp, vertical = 13.dp), color = MaterialTheme.colorScheme.primary, fontSize = 24.sp, fontWeight = FontWeight.Black)
+                }
+                Column(verticalArrangement = Arrangement.spacedBy(4.dp)) {
+                    Text("Your JEMBEE PLAY account", fontWeight = FontWeight.Bold, fontSize = 16.sp)
+                    Text("Sign in and profile sync are being connected.", color = JembeeMuted, fontSize = 12.sp)
+                }
             }
         }
-        listOf("Your channel", "Watch history", "Downloads", "Settings", "Help & feedback").forEach { label ->
-            Text(label, Modifier.fillMaxWidth().padding(vertical = 16.dp), fontWeight = FontWeight.SemiBold)
-            HorizontalDivider()
+        listOf("Your channel", "Watch history", "Downloads", "Help & feedback").forEach { label ->
+            Text(label, Modifier.fillMaxWidth().padding(vertical = 17.dp), fontWeight = FontWeight.SemiBold)
+            HorizontalDivider(color = MaterialTheme.colorScheme.outlineVariant)
         }
         TextButton(onClick = onTheme) { Text(if (dark) "Switch to light theme" else "Switch to dark theme") }
-        Text("Account integration pending", color = Muted, fontSize = 11.sp)
+    }
+}
+
+
+@Composable
+private fun PremiumHeroBanner(onWatch: () -> Unit) {
+    var heroThumbnail by remember { mutableStateOf<String?>(null) }
+    LaunchedEffect(Unit) {
+        VideoCatalogClient.fetch { result ->
+            result.onSuccess { page -> heroThumbnail = page.videos.firstOrNull()?.thumbnailUrl }
+        }
+    }
+    Box(
+        Modifier.fillMaxWidth().padding(horizontal = 16.dp).height(178.dp)
+            .background(
+                Brush.horizontalGradient(
+                    listOf(Color(0xFF17072F), Color(0xFF35106B), Color(0xFF16112D))
+                ),
+                RoundedCornerShape(20.dp)
+            )
+    ) {
+        if (heroThumbnail != null) {
+            AsyncImage(
+                model = heroThumbnail,
+                contentDescription = "Featured approved JEMBEE PLAY video",
+                contentScale = ContentScale.Crop,
+                modifier = Modifier.fillMaxSize()
+            )
+        }
+        Box(
+            Modifier.fillMaxSize().background(
+                Brush.horizontalGradient(
+                    listOf(Color(0xEE17072F), Color(0xCC35106B), Color(0x4416112D))
+                ),
+                RoundedCornerShape(20.dp)
+            )
+        )
+        Column(
+            Modifier.align(Alignment.CenterStart).padding(horizontal = 20.dp),
+            verticalArrangement = Arrangement.spacedBy(8.dp)
+        ) {
+            Text("JEMBEE PLAY  ▶", color = Color.White, fontSize = 12.sp, fontWeight = FontWeight.Black, letterSpacing = 1.sp)
+            Text("Watch  ·  Learn  ·  Create  ·  Share  ·  Earn", color = Color.White, fontSize = 17.sp, fontWeight = FontWeight.ExtraBold, maxLines = 2)
+            Text("Discover videos from the JEMBEE PLAY community", color = Color(0xFFE5DDF5), fontSize = 11.sp)
+            Button(
+                onClick = onWatch,
+                colors = ButtonDefaults.buttonColors(containerColor = Color(0xFFFF1978)),
+                contentPadding = PaddingValues(horizontal = 18.dp, vertical = 4.dp)
+            ) {
+                Text("▶  Watch Now", color = Color.White, fontWeight = FontWeight.Bold)
+            }
+        }
+    }
+}
+
+@Composable
+private fun ReferenceQuickActions(onLearn: () -> Unit, onShorts: () -> Unit) {
+    val actions = listOf(
+        Triple("Learning\nLibrary", "▤", Color(0xFF29114E)) to onLearn,
+        Triple("Shorts", "▶", Color(0xFF4A102B)) to onShorts,
+        Triple("Live", "◉", Color(0xFF103B43)) to null,
+        Triple("Create\nUpload", "☁", Color(0xFF103F45)) to null,
+        Triple("Earn\n& Rewards", "▥", Color(0xFF443516)) to null
+    )
+    LazyRow(contentPadding = PaddingValues(horizontal = 16.dp), horizontalArrangement = Arrangement.spacedBy(9.dp)) {
+        items(actions) { (entry, action) ->
+            val (label, symbol, tileColor) = entry
+            Surface(onClick = { action?.invoke() }, enabled = action != null,
+                shape = RoundedCornerShape(17.dp), color = tileColor,
+                modifier = Modifier.width(76.dp).height(102.dp)) {
+                Column(Modifier.fillMaxSize().padding(7.dp), horizontalAlignment = Alignment.CenterHorizontally,
+                    verticalArrangement = Arrangement.Center) {
+                    Text(symbol, color = when(label) {
+                        "Learning\nLibrary" -> Color(0xFFD9A4FF)
+                        "Shorts" -> Color(0xFFFF1978)
+                        "Live" -> Color(0xFF45DCE7)
+                        "Create\nUpload" -> Color(0xFF57E5E8)
+                        else -> Color(0xFFFFC53D)
+                    }, fontSize = 29.sp, fontWeight = FontWeight.Bold)
+                    Spacer(Modifier.height(6.dp))
+                    Text(label, color = Color.White, fontSize = 10.sp, lineHeight = 12.sp, fontWeight = FontWeight.SemiBold,
+                        textAlign = androidx.compose.ui.text.style.TextAlign.Center)
+                }
+            }
+        }
     }
 }
