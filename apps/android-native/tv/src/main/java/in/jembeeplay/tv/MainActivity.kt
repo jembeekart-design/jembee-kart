@@ -11,6 +11,8 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.layout.ContentScale
+import coil.compose.AsyncImage
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
@@ -33,6 +35,8 @@ private fun JembeeTvApp() {
     var remoteConfig by remember { mutableStateOf(JembeeRemoteConfig()) }
     LaunchedEffect(Unit) { RemoteConfigClient.fetch(context) { remoteConfig = it } }
     var selected by remember { mutableStateOf("Home") }
+    var heroThumbnail by remember { mutableStateOf<String?>(null) }
+    LaunchedEffect(Unit) { TvVideoCatalogClient.fetch { result -> result.onSuccess { heroThumbnail = it.firstOrNull()?.thumbnailUrl } } }
     val colors = darkColorScheme(
         primary = TvBlue,
         background = Color(0xFF05060B),
@@ -90,6 +94,12 @@ private fun JembeeTvApp() {
                         Box(Modifier.fillMaxSize().background(
                             Brush.horizontalGradient(listOf(Color(0xFF17072F), Color(0xFF35106B), Color(0xFF170B35)))
                         )) {
+                            if (heroThumbnail != null) {
+                                AsyncImage(model = heroThumbnail, contentDescription = "Featured approved JEMBEE PLAY video",
+                                    contentScale = ContentScale.Crop, modifier = Modifier.fillMaxSize())
+                                Box(Modifier.fillMaxSize().background(Brush.horizontalGradient(
+                                    listOf(Color(0xEE17072F), Color(0xCC35106B), Color(0x44170B35)))))
+                            }
                             Column(
                                 Modifier.align(Alignment.CenterStart).padding(horizontal = 34.dp),
                                 verticalArrangement = Arrangement.spacedBy(9.dp)
