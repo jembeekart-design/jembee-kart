@@ -34,6 +34,8 @@ jobs:
         run: npx tsc --noEmit --incremental false --pretty false
       - name: Admin Media Library regression tests
         run: npm run test:admin-media-library
+      - name: Admin School Management regression tests
+        run: npm run test:admin-education-schools
       - name: Full repository ESLint baseline (informational)
         continue-on-error: true
         run: npm run lint
@@ -44,6 +46,7 @@ jobs:
           src/app/admin/system-health/page.tsx
           src/app/api/admin/system-health/route.ts
           src/app/admin/media-library/page.tsx
+          src/app/admin/education/schools/page.tsx
           src/app/api/admin/media-library/route.ts
           src/app/api/admin/delete-video/route.ts
           src/services/videoDeletionService.ts
