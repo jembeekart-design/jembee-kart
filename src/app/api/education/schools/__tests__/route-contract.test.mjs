@@ -30,12 +30,16 @@ test('education route delegates to module and repository boundaries', () => {
   assert.match(module, /interface SchoolCatalogRepository/);
   assert.match(schema, /export function parseCreateSchool/);
 });
-test('admin and learner school pages accurately disclose deferred integration', () => {
-  assert.match(adminPage, /UI prototype/);
-  assert.match(adminPage, /does not save or publish school records/);
-  assert.doesNotMatch(adminPage, /fetch\("\/api\/education\/schools"/);
+test('admin school page uses the authenticated live create and review APIs', () => {
+  assert.match(adminPage, /onAuthStateChanged\(auth/);
+  assert.match(adminPage, /fetch\("\/api\/education\/schools"/);
+  assert.match(adminPage, /Authorization: `Bearer \$\{token\}`/);
+  assert.match(adminPage, /fetch\("\/api\/education\/schools\/review"/);
+  assert.match(adminPage, /Approve & publish/);
+  assert.match(adminPage, /Reject/);
+  assert.doesNotMatch(adminPage, /UI prototype/);
 
-  assert.match(learnerPage, /const schools:Record<string,Item\[]>/);
-  assert.match(learnerPage, /Live Firestore question-to-video mapping/);
+  assert.match(learnerPage, /fetch\("\/api\/content-categories"/);
+  assert.match(learnerPage, /school-video-answers\?questionId=/);
   assert.doesNotMatch(learnerPage, /fetch\(["'`]\/api\/education\/schools/);
 });
