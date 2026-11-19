@@ -109,12 +109,6 @@ export async function POST(req: NextRequest) {
       }
     }
 
-    // Referral mapping is read from the canonical teacher attribution record.
-    const referralSnap = await db.collection("teacherReferralAttributions").doc(video.creatorId).get();
-    const referral = referralSnap.data() || {};
-    const teacherUid = referral.status === "verified" && referral.teacherUid === video.creatorId
-      ? video.creatorId : null;
-
     const provider = await cashfreeRequest<CashfreeOrder>(config, "/orders", {
       method: "POST",
       idempotencyKey: deterministicUuid(`jembeeshorts-paid-video:${orderId}`),
@@ -155,7 +149,7 @@ export async function POST(req: NextRequest) {
       }
       tx.create(orderRef, {
         userId: uid, videoId, creatorId: String(fresh.creatorId),
-        teacherUid, amount: pricePaise / 100, amountPaise: pricePaise, currency: "INR",
+        amount: pricePaise / 100, amountPaise: pricePaise, currency: "INR",
         status: "pending", paymentProvider: "cashfree", cashfreeOrderId,
         paymentSessionId: provider.payment_session_id,
         cashfreeOrderExpiryTime: provider.order_expiry_time || expiresAt,
