@@ -48,13 +48,13 @@ export default function ProductionHeader() {
                 <span className="text-[25px] font-extrabold leading-none tracking-tight">
                   Jembee
                 </span>
-                <span className="text-[25px] font-extrabold leading-none tracking-tight text-amber-300">
+                <span className="text-[25px] font-extrabold leading-none tracking-tight text-pink-300">
                   Shorts
                 </span>
                 <Flame
                   size={23}
                   fill="currentColor"
-                  className="ml-0.5 text-amber-300"
+                  className="ml-0.5 text-pink-300"
                 />
               </div>
             </div>
