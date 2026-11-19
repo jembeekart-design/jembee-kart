@@ -59,7 +59,7 @@ private fun JembeeTvApp() {
             when (selected) {
                 "Shorts" -> TvShortsScreen(videos = shorts, error = shortError, onBack = { selected = "Home" }, onWatch = { activeVideo = it; watchReturn = "Shorts"; selected = "Watch" })
                 "Watch" -> TvWatchScreen(video = activeVideo, onBack = { selected = watchReturn })
-                "Learning" -> TvLearningLibraryScreen()
+                "Learning" -> TvLearningScreen(onBack = { selected = "Home" })
                 else -> TvHomeScreen(
                     longVideos = longVideos,
                     error = longError,
