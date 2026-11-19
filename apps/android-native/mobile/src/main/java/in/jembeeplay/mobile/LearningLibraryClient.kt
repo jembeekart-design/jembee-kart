@@ -17,22 +17,55 @@ object LearningLibraryClient {
     private val main = Handler(Looper.getMainLooper())
 
     fun loadNodes(type: String, parentId: String? = null, onResult: (Result<List<LearningNode>>) -> Unit) {
-        val path = "/api/content-categories?type=" + URLEncoder.encode(type, "UTF-8") + "&pageSize=50" +
-            (parentId?.let { "&parentId=" + URLEncoder.encode(it, "UTF-8") } ?: "")
-        request(path, onResult) { raw ->
-            val root = JSONObject(raw)
-            require(root.optBoolean("success", false)) { "Learning catalogue unavailable" }
-            val rows = root.optJSONArray("learningNodes") ?: org.json.JSONArray()
-            (0 until rows.length()).mapNotNull { index ->
-                val item = rows.optJSONObject(index) ?: return@mapNotNull null
-                val id = item.optString("id").take(64)
-                val name = item.optString("name").take(3000)
-                if (id.isBlank() || name.isBlank()) null else LearningNode(
-                    id, name, item.optString("type", type),
-                    item.optString("coverImageUrl").takeIf { it.startsWith("https://") || it.startsWith("/learning-covers/") }
-                )
+        require(type in setOf("subject", "book", "chapter")) { "Invalid learning level" }
+        val collected = mutableListOf<LearningNode>()
+        fun loadPage(cursor: String?, page: Int) {
+            if (page >= 20) {
+                main.post { onResult(Result.failure(IllegalStateException("Learning catalogue exceeds the mobile page limit"))) }
+                return
+            }
+            val path = buildString {
+                append("/api/content-categories?type=")
+                append(URLEncoder.encode(type, "UTF-8"))
+                append("&pageSize=50")
+                if (parentId != null) {
+                    append("&parentId=")
+                    append(URLEncoder.encode(parentId, "UTF-8"))
+                }
+                if (cursor != null) {
+                    append("&cursor=")
+                    append(URLEncoder.encode(cursor, "UTF-8"))
+                }
+            }
+            request(path, { result ->
+                result.onSuccess { pageData ->
+                    collected.addAll(pageData.first)
+                    val next = pageData.second
+                    if (next != null) loadPage(next, page + 1)
+                    else onResult(Result.success(collected.toList()))
+                }.onFailure { onResult(Result.failure(it)) }
+            }) { raw ->
+                val root = JSONObject(raw)
+                require(root.optBoolean("success", false)) { "Learning catalogue unavailable" }
+                val rows = root.optJSONArray("learningNodes") ?: org.json.JSONArray()
+                val parsed = (0 until rows.length()).mapNotNull { index ->
+                    val item = rows.optJSONObject(index) ?: return@mapNotNull null
+                    val id = item.optString("id").take(64)
+                    val name = item.optString("name").take(3000)
+                    if (id.isBlank() || name.isBlank()) null else LearningNode(
+                        id, name, item.optString("type", type),
+                        item.optString("coverImageUrl").takeIf { it.startsWith("https://") || it.startsWith("/learning-covers/") }
+                    )
+                }
+                val pagination = root.optJSONObject("pagination")
+                val next = if (pagination?.optBoolean("hasMore", false) == true) {
+                    pagination.optString("nextCursor").takeIf { it.isNotBlank() && it != "null" }
+                        ?: error("Learning catalogue pagination cursor missing")
+                } else null
+                parsed to next
             }
         }
+        loadPage(null, 0)
     }
 
     fun loadQuestions(chapterId: String, onResult: (Result<List<LearningQuestion>>) -> Unit) {
