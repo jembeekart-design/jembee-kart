@@ -2,7 +2,9 @@ name: Android Mobile and TV APK
 on:
   workflow_dispatch:
   push:
-    branches: [feature/native-app-ott-redesign-2026-11-17]
+    branches:
+      - feature/native-app-ott-redesign-2026-11-17
+      - integration/jembeeplay-review-2026-11-19
   pull_request:
     branches: [main]
     paths:
