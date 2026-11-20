@@ -218,7 +218,17 @@ private fun PremiumActionCard(title: String, subtitle: String, symbol: String, m
 
 @Composable
 private fun ShortsScreen() {
-    NativeShortsFeed()
+    Column(
+        Modifier.fillMaxSize().verticalScroll(rememberScrollState()).padding(vertical = 16.dp),
+        verticalArrangement = Arrangement.spacedBy(12.dp)
+    ) {
+        Text("JEMBEE PLAY Shorts", Modifier.padding(horizontal = 18.dp), color = Color.White, fontSize = 21.sp, fontWeight = FontWeight.Black)
+        NativeCatalogSection(
+            sectionTitle = "Short Videos",
+            sectionSubtitle = "Short-form videos only",
+            videoFormat = "short"
+        )
+    }
 }
 
 @Composable
