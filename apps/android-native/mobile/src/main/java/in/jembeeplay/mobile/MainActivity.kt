@@ -369,12 +369,22 @@ private fun ShortsScreen(onBack: () -> Unit, onOpenWatch: (JembeeVideo) -> Unit)
 }
 
 @Composable
+@Composable
 private fun WatchScreen(video: JembeeVideo?, onBack: () -> Unit) {
+    var videoAdConfig by remember(video?.streamUrl) { mutableStateOf(NativeVideoAdConfig()) }
+    LaunchedEffect(video?.streamUrl) {
+        videoAdConfig = NativeVideoAdConfig()
+        if (video != null) VideoAdsConfigClient.fetch { videoAdConfig = it }
+    }
     Column(Modifier.fillMaxSize().background(JembeeBackground)) {
         if (video == null) {
             Text("Home se koi video select karein.", color = Color.White, modifier = Modifier.padding(24.dp))
         } else {
-            RealVideoPlayer(video.streamUrl, Modifier.fillMaxWidth().aspectRatio(16f / 9f))
+            RealVideoPlayer(
+                video.streamUrl,
+                Modifier.fillMaxWidth().aspectRatio(16f / 9f),
+                adTagUrl = videoAdConfig.longVideoPreRollUrl
+            )
             Column(Modifier.padding(18.dp)) {
                 Text(video.caption.ifBlank { "JEMBEE PLAY video" }, color = Color.White, fontSize = 20.sp, fontWeight = FontWeight.Bold)
                 Text("${video.creatorName}  •  ${video.views} views", color = JembeeMuted, fontSize = 11.sp, modifier = Modifier.padding(top = 6.dp))
