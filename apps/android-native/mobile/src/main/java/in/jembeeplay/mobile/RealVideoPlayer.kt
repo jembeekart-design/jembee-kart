@@ -20,7 +20,8 @@ fun RealVideoPlayer(
     videoUrl: String,
     modifier: Modifier = Modifier,
     autoplay: Boolean = true,
-    adTagUrl: String? = null
+    adTagUrl: String? = null,
+    isMuted: Boolean = false
 ) {
     val context = LocalContext.current
     val playerView = remember(context) {
@@ -69,6 +70,7 @@ fun RealVideoPlayer(
         update = {
             it.player = player
             player.playWhenReady = autoplay
+            player.volume = if (isMuted) 0f else 1f
         }
     )
 }
