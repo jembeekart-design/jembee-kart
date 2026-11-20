@@ -75,7 +75,7 @@ private fun JembeeMobileApp() {
                     listOf("Home", "Shorts", "Learn", "Earn", "Library").forEach { item ->
                         NavigationBarItem(
                             selected = selected == item,
-                            onClick = { if (item == "Earn") openJembeeWeb(context, "/videos/reward-center") else selected = item },
+                            onClick = { if (item == "Earn") openJembeeWeb(context, "/login?redirect=%2Fvideos%2Freward-center") else selected = item },
                             icon = {
                                 Icon(when (item) {
                                     "Home" -> Icons.Filled.Home
@@ -136,8 +136,8 @@ private fun JembeeMobileApp() {
                         onLearn = { selected = "Learn" },
                         onShorts = { selected = "Shorts" },
                         onLive = { selected = "Live" },
-                        onUpload = { openJembeeWeb(context, "/videos/upload") },
-                        onEarn = { openJembeeWeb(context, "/videos/reward-center") }
+                        onUpload = { openJembeeWeb(context, "/login?redirect=%2Fvideos%2Fupload") },
+                        onEarn = { openJembeeWeb(context, "/login?redirect=%2Fvideos%2Freward-center") }
                     )
                     "Shorts" -> ShortsScreen()
                     "Learn" -> LearnScreen()
