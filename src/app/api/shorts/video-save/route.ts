@@ -3,7 +3,7 @@ import { getAdminAuth, getAdminDb } from "@/firebase/admin";
 
 export const runtime = "nodejs";
 
-export async function POST(req: Request) {
+export const POST = async (req: Request) => {
   try {
     const authorization = req.headers.get("authorization");
     if (!authorization?.startsWith("Bearer ")) {
@@ -37,4 +37,4 @@ export async function POST(req: Request) {
     console.error("[VideoSave] Request failed:", error);
     return NextResponse.json({ success: false, message: "Unable to save video" }, { status: 500 });
   }
-}
+};
