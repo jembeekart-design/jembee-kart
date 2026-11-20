@@ -333,7 +333,7 @@ private fun VideoShelf(
                             Icon(Icons.Filled.PlayArrow, contentDescription = "Play video", tint = Color.White, modifier = Modifier.size(34.dp))
                         }
                         Text(
-                            if (video.durationSeconds > 0) "${video.durationSeconds / 60} min" else "JEMBEE PLAY",
+                            "JEMBEE PLAY",
                             Modifier.align(Alignment.BottomEnd).padding(8.dp).background(Color.Black.copy(alpha = .78f), RoundedCornerShape(7.dp)).padding(horizontal = 8.dp, vertical = 5.dp),
                             color = Color.White, fontSize = 10.sp
                         )
