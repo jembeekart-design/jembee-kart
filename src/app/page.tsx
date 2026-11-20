@@ -33,7 +33,7 @@ const DEFAULT_SITE_EXPERIENCE: SiteExperience = {
   siteName: "JEMBEE PLAY", tagline: "Watch • Learn • Create • Share",
   heroTitle: "अपनी किताब का हर सवाल सीखें",
   heroSubtitle: "अपनी class, book और chapter चुनें और सही video answer खोजें।",
-  primaryColor: "#ec4899", accentColor: "#8b5cf6", pageColor: "#090d16", surfaceColor: "#111827",
+  primaryColor: "#ec4899", accentColor: "#8b5cf6", pageColor: "#090611", surfaceColor: "#171024",
   announcementEnabled: false, announcementText: "", showLearningBanner: true,
   showShorts: true, showLongVideos: true, showHomeAds: true, compactCards: false, sectionOrder: ["learning", "shorts", "longVideos"], homeCategories: DEFAULT_HOME_CATEGORIES, navigationLabels: DEFAULT_NAVIGATION_LABELS, featuredCreators: [], featuredPlaylists: [], featuredVideos: [],
 };
@@ -62,7 +62,7 @@ const mobileNavigation: NavigationItem[] = [
 function CreatorAvatar({ video }: { video: WatchVideo }) {
   const name = publicCreatorName(video);
   return (
-    <div className="relative grid h-10 w-10 shrink-0 place-items-center overflow-hidden rounded-full bg-gradient-to-br from-cyan-400 to-violet-500 text-sm font-black text-slate-950">
+    <div className="relative grid h-10 w-10 shrink-0 place-items-center overflow-hidden rounded-full bg-gradient-to-br from-pink-400 to-violet-500 text-sm font-black text-slate-950">
       <span>{name.replace(/^@/, "").slice(0, 1).toUpperCase()}</span>
       {video.photoURL?.startsWith("https://") ? <img src={video.photoURL} alt="" loading="lazy" className="absolute inset-0 h-full w-full object-cover" onError={(event) => { event.currentTarget.style.display = "none"; }} /> : null}
     </div>
@@ -230,7 +230,7 @@ export default function HomePage() {
             if (sectionKey === "learning") {
               return <Fragment key="learning">
                 {siteExperience.showLearningBanner ? <div className="relative mb-5 min-h-[230px] overflow-hidden rounded-2xl border border-pink-400/20 bg-[#17113b] p-5 sm:flex sm:min-h-[280px] sm:items-center sm:justify-between sm:p-8">
-                  <img src="https://images.unsplash.com/photo-1529390079861-591de354faf5?w=1600&auto=format&fit=crop" alt="Students learning together" loading="lazy" className="absolute inset-0 h-full w-full object-cover object-center opacity-60"/>
+                  <img src="/images/reference-hero-students.webp" alt="Students learning together" loading="lazy" className="absolute inset-0 h-full w-full object-cover object-center opacity-60"/>
                   <div className="absolute inset-0 bg-gradient-to-r from-[#100b35] via-[#160d42]/90 to-[#160d42]/20"/>
                   <div className="relative z-10 max-w-xl"><p className="text-xs font-bold uppercase tracking-widest text-pink-300">Videos · Chapters · Questions · Answers</p><h1 className="mt-3 text-3xl font-black leading-tight sm:text-5xl">{siteExperience.heroTitle}</h1><p className="mt-2 max-w-lg text-sm text-slate-200">{siteExperience.heroSubtitle}</p>
                   <Link href="/learn/school" className="mt-5 inline-flex min-h-11 items-center justify-center gap-2 rounded-full bg-pink-500 px-5 py-2.5 text-sm font-bold text-white shadow-lg shadow-pink-950/40"> <PlaySquare size={17}/> Watch Now</Link></div>
