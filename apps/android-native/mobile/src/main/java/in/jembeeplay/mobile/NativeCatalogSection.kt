@@ -25,7 +25,7 @@ import androidx.media3.exoplayer.ExoPlayer
 import androidx.media3.ui.PlayerView
 
 @Composable
-fun NativeCatalogSection(sectionTitle: String = "Watch on JEMBEE PLAY", sectionSubtitle: String = "Approved videos · Live catalog") {
+fun NativeCatalogSection(sectionTitle: String = "Watch on JEMBEE PLAY", sectionSubtitle: String = "Approved videos · Live catalog", videoFormat: String? = null) {
     var videos by remember { mutableStateOf<List<CatalogVideo>>(emptyList()) }
     var cursor by remember { mutableStateOf<String?>(null) }
     var hasMore by remember { mutableStateOf(false) }
@@ -38,7 +38,7 @@ fun NativeCatalogSection(sectionTitle: String = "Watch on JEMBEE PLAY", sectionS
         loading = true
         VideoCatalogClient.fetch(cursor) { result ->
             result.onSuccess { page ->
-                videos = videos + page.videos
+                videos = videos + page.videos.filter { videoFormat == null || it.format == videoFormat }
                 cursor = page.nextCursor
                 hasMore = page.hasMore
                 error = false
@@ -50,7 +50,7 @@ fun NativeCatalogSection(sectionTitle: String = "Watch on JEMBEE PLAY", sectionS
     LaunchedEffect(Unit) {
         VideoCatalogClient.fetch { result ->
             result.onSuccess { page ->
-                videos = page.videos
+                videos = page.videos.filter { videoFormat == null || it.format == videoFormat }
                 cursor = page.nextCursor
                 hasMore = page.hasMore
                 error = false
@@ -94,7 +94,7 @@ fun NativeCatalogSection(sectionTitle: String = "Watch on JEMBEE PLAY", sectionS
                     loading = true
                     error = false
                     VideoCatalogClient.fetch { result ->
-                        result.onSuccess { page -> videos = page.videos; cursor = page.nextCursor; hasMore = page.hasMore }.onFailure { error = true }
+                        result.onSuccess { page -> videos = page.videos.filter { videoFormat == null || it.format == videoFormat }; cursor = page.nextCursor; hasMore = page.hasMore }.onFailure { error = true }
                         loading = false
                     }
                 }) { Text("Retry") }
