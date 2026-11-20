@@ -337,35 +337,98 @@ private fun SectionHeader(title: String, subtitle: String, onClick: (() -> Unit)
 
 @Composable
 private fun ShortsScreen(onBack: () -> Unit, onOpenWatch: (JembeeVideo) -> Unit) {
+    val context = LocalContext.current
     var videos by remember { mutableStateOf<List<JembeeVideo>>(emptyList()) }
     var error by remember { mutableStateOf<String?>(null) }
     var loading by remember { mutableStateOf(true) }
-    LaunchedEffect(Unit) { VideoCatalogClient.fetch("short") { items, message -> videos = items; error = message; loading = false } }
+    var muted by remember { mutableStateOf(false) }
+    var liked by remember { mutableStateOf<Set<String>>(emptySet()) }
+    LaunchedEffect(Unit) {
+        VideoCatalogClient.fetch("short") { items, message ->
+            videos = items
+            error = message
+            loading = false
+        }
+    }
     val pagerState = rememberPagerState(pageCount = { videos.size })
     Box(Modifier.fillMaxSize().background(Color.Black)) {
         when {
             loading -> CircularProgressIndicator(Modifier.align(Alignment.Center), color = JembeeAccent)
-            videos.isEmpty() -> Column(Modifier.align(Alignment.Center), horizontalAlignment = Alignment.CenterHorizontally) {
-                Text("Real Shorts abhi available nahi hain", color = Color.White, fontWeight = FontWeight.Bold)
-                Text(error ?: "Admin se approved, active, safe free Shorts publish karayein.", color = JembeeMuted, modifier = Modifier.padding(12.dp))
+            videos.isEmpty() -> Column(Modifier.align(Alignment.Center).padding(24.dp), horizontalAlignment = Alignment.CenterHorizontally) {
+                Text("Jembee Shorts", color = Color.White, fontSize = 24.sp, fontWeight = FontWeight.Bold)
+                Text(error ?: "Approved Shorts yahan dikhengi.", color = JembeeMuted, modifier = Modifier.padding(12.dp))
                 TextButton(onClick = onBack) { Text("Back") }
             }
             else -> VerticalPager(state = pagerState, modifier = Modifier.fillMaxSize(), beyondViewportPageCount = 1) { page ->
                 val video = videos[page]
+                val isLiked = video.id in liked
                 Box(Modifier.fillMaxSize().background(Color.Black)) {
                     RealVideoPlayer(video.streamUrl, Modifier.fillMaxSize(), autoplay = pagerState.currentPage == page)
-                    Column(Modifier.align(Alignment.BottomStart).padding(start = 18.dp, end = 82.dp, bottom = 32.dp)) {
-                        Text(video.creatorName, color = Color.White, fontWeight = FontWeight.Bold)
-                        Text(video.caption, color = Color.White, fontSize = 15.sp)
-                        Text("${video.views} views", color = Color.White.copy(alpha = .75f), fontSize = 11.sp)
+                    Box(Modifier.fillMaxWidth().height(210.dp).align(Alignment.TopCenter).background(Brush.verticalGradient(listOf(Color(0x9906060B), Color.Transparent))))
+                    Box(Modifier.fillMaxWidth().height(310.dp).align(Alignment.BottomCenter).background(Brush.verticalGradient(listOf(Color.Transparent, Color(0xAA050509), Color(0xDD050509)))))
+                    Row(Modifier.align(Alignment.TopEnd).padding(top = 18.dp, end = 16.dp), horizontalArrangement = Arrangement.spacedBy(12.dp), verticalAlignment = Alignment.CenterVertically) {
+                        ShortsHeaderButton("⌕", "Search") { context.startActivity(Intent(Intent.ACTION_VIEW, Uri.parse("https://jembeeplay.in/search"))) }
+                        ShortsHeaderButton("♙+", "Find creators") { context.startActivity(Intent(Intent.ACTION_VIEW, Uri.parse("https://jembeeplay.in/followers"))) }
+                        ShortsHeaderButton("♧", "Notifications") { context.startActivity(Intent(Intent.ACTION_VIEW, Uri.parse("https://jembeeplay.in/videos/notifications"))) }
                     }
-                    TextButton(onClick = onBack, modifier = Modifier.align(Alignment.TopStart).padding(10.dp)) { Text("‹ Back", color = Color.White) }
-                    Text("SHORTS  •  ${page + 1}/${videos.size}", Modifier.align(Alignment.TopCenter).padding(top = 22.dp), color = Color.White, fontSize = 11.sp, fontWeight = FontWeight.Bold)
-                    TextButton(onClick = { onOpenWatch(video) }, modifier = Modifier.align(Alignment.BottomEnd).padding(12.dp)) { Text("Open details", color = Color.White) }
+                    Column(Modifier.align(Alignment.CenterEnd).padding(end = 12.dp, top = 74.dp, bottom = 112.dp), horizontalAlignment = Alignment.CenterHorizontally, verticalArrangement = Arrangement.spacedBy(13.dp)) {
+                        ShortsRailAction("▣", "Video") { onOpenWatch(video) }
+                        ShortsRailAction(if (isLiked) "♥" else "♡", if (isLiked) "Liked" else compactCount(video.likes)) { liked = if (isLiked) liked - video.id else liked + video.id }
+                        ShortsRailAction("▤", "Comment") { Toast.makeText(context, "Comments will open with the full video details.", Toast.LENGTH_SHORT).show() }
+                        ShortsRailAction("🎁", "Support") { context.startActivity(Intent(Intent.ACTION_VIEW, Uri.parse("https://jembeeplay.in/login?redirect=%2Fvideos%2Freward-center"))) }
+                        ShortsRailAction("↗", "Share") {
+                            val send = Intent(Intent.ACTION_SEND).apply {
+                                type = "text/plain"
+                                putExtra(Intent.EXTRA_TEXT, "https://jembeeplay.in/shorts?v=" + Uri.encode(video.id))
+                            }
+                            context.startActivity(Intent.createChooser(send, "Share Jembee Short"))
+                        }
+                        ShortsRailAction("⋮", "More") { onOpenWatch(video) }
+                        ShortsRailAction(if (muted) "◖" else "◖))", "Sound") { muted = !muted }
+                    }
+                    Column(Modifier.align(Alignment.BottomStart).fillMaxWidth().padding(start = 22.dp, end = 104.dp, bottom = 30.dp), verticalArrangement = Arrangement.spacedBy(9.dp)) {
+                        Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(10.dp)) {
+                            Box(Modifier.size(48.dp).background(Color(0xFF30253B), CircleShape), contentAlignment = Alignment.Center) {
+                                Text(video.creatorName.take(1).uppercase(), color = Color.White, fontSize = 19.sp, fontWeight = FontWeight.Bold)
+                            }
+                            Column(Modifier.weight(1f)) {
+                                Text(video.username.ifBlank { video.creatorName }, color = Color.White, fontSize = 15.sp, fontWeight = FontWeight.Bold, maxLines = 1)
+                                Text(video.creatorName, color = Color.White.copy(alpha = .72f), fontSize = 11.sp, maxLines = 1)
+                            }
+                            TextButton(onClick = { context.startActivity(Intent(Intent.ACTION_VIEW, Uri.parse("https://jembeeplay.in/login"))) }, colors = ButtonDefaults.textButtonColors(contentColor = Color.White), modifier = Modifier.background(Color(0xFF8D25C8), RoundedCornerShape(24.dp))) {
+                                Text("Follow", fontWeight = FontWeight.Bold)
+                            }
+                        }
+                        Text(video.caption.ifBlank { "Watch more on JEMBEE PLAY" }, color = Color.White, fontSize = 15.sp, lineHeight = 21.sp, maxLines = 3)
+                        Text("${compactCount(video.views)} views  •  ${page + 1}/${videos.size}", color = Color.White.copy(alpha = .7f), fontSize = 11.sp)
+                    }
                 }
             }
         }
     }
+}
+
+@Composable
+private fun ShortsHeaderButton(symbol: String, description: String, onClick: () -> Unit) {
+    Surface(onClick = onClick, color = Color(0x990B0C16), shape = CircleShape, border = androidx.compose.foundation.BorderStroke(1.dp, Color.White.copy(alpha = .16f)), modifier = Modifier.size(48.dp)) {
+        Box(contentAlignment = Alignment.Center) { Text(symbol, color = Color.White, fontSize = 25.sp, fontWeight = FontWeight.Medium) }
+    }
+}
+
+@Composable
+private fun ShortsRailAction(symbol: String, label: String, onClick: () -> Unit) {
+    Column(horizontalAlignment = Alignment.CenterHorizontally, verticalArrangement = Arrangement.spacedBy(3.dp)) {
+        Surface(onClick = onClick, color = Color(0x990A0B12), shape = CircleShape, border = androidx.compose.foundation.BorderStroke(1.dp, Color.White.copy(alpha = .18f)), modifier = Modifier.size(52.dp)) {
+            Box(contentAlignment = Alignment.Center) { Text(symbol, color = Color.White, fontSize = 27.sp, fontWeight = FontWeight.Medium) }
+        }
+        Text(label, color = Color.White, fontSize = 11.sp, fontWeight = FontWeight.Medium, maxLines = 1)
+    }
+}
+
+private fun compactCount(value: Int): String = when {
+    value >= 1_000_000 -> String.format("%.1fM", value / 1_000_000f)
+    value >= 1_000 -> String.format("%.1fK", value / 1_000f)
+    else -> value.toString()
 }
 
 @Composable
