@@ -13,7 +13,7 @@ function safePlaybackUrl(value: unknown): string | null {
   try {
     const url = new URL(value);
     if (url.protocol !== "https:" || url.username || url.password) return null;
-    if (!/\\.(m3u8|mpd)$/i.test(url.pathname)) return null;
+    if (!/\.(m3u8|mpd)$/i.test(url.pathname)) return null;
     return url.toString();
   } catch {
     return null;
