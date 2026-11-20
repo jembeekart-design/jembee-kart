@@ -459,7 +459,7 @@ private fun JembeeWebScreen(path: String, title: String, onClose: () -> Unit) {
             TextButton(onClick = onClose) { Text("‹ Back", color = JembeeAccent) }
             Text(title, color = Color.White, fontWeight = FontWeight.Bold)
         }
-        AndroidView(modifier = Modifier.fillMaxSize(), factory = { webView }, update = { view -> if (view.url != startUrl) view.loadUrl(startUrl) })
+        AndroidView(modifier = Modifier.fillMaxSize(), factory = { webView.apply { if (url == null) loadUrl(startUrl) } }, update = { })
     }
 }
 @Composable
