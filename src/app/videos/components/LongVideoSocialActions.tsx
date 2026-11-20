@@ -30,10 +30,14 @@ const LongVideoSocialActions = ({ videoId, creatorId, initialLikes, comments }: 
     const loadState = async () => {
       try {
         const user = auth.currentUser;
-        const [profileResponse, likeSnap, saveSnap] = await Promise.all([
+        const token = user ? await user.getIdToken() : "";
+        const [profileResponse, likeSnap, saveResponse] = await Promise.all([
           creatorId ? fetch(`/api/creator/public-profile?videoId=${encodeURIComponent(videoId)}`, { cache: "no-store" }) : Promise.resolve(null),
           user ? getDoc(doc(db, "watchVideoLikes", `${videoId}_${user.uid}`)) : Promise.resolve(null),
-          user ? getDoc(doc(db, "savedWatchVideos", `${videoId}_${user.uid}`)) : Promise.resolve(null),
+          user ? fetch(`/api/shorts/video-save?videoId=${encodeURIComponent(videoId)}`, {
+            headers: { Authorization: `Bearer ${token}` },
+            cache: "no-store",
+          }) : Promise.resolve(null),
         ]);
         let followerCount: number | null = null;
         if (profileResponse?.ok) {
@@ -41,10 +45,11 @@ const LongVideoSocialActions = ({ videoId, creatorId, initialLikes, comments }: 
           const value = payload?.creator?.followersCount;
           if (typeof value === "number" && Number.isFinite(value)) followerCount = value;
         }
+        const savePayload = saveResponse?.ok ? await saveResponse.json() : null;
         if (!cancelled) {
           setFollowers(followerCount);
           setLiked(Boolean(likeSnap?.exists()));
-          setSaved(Boolean(saveSnap?.exists()));
+          setSaved(savePayload?.success === true && savePayload.saved === true);
         }
       } catch {
         if (!cancelled) setMessage("Engagement status could not be loaded.");
