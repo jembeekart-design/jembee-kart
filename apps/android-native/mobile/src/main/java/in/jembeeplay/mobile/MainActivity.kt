@@ -3,6 +3,12 @@ package `in`.jembeeplay.mobile
 import android.os.Bundle
 import android.content.Intent
 import android.net.Uri
+import android.webkit.CookieManager
+import android.webkit.WebChromeClient
+import android.webkit.WebResourceRequest
+import android.webkit.WebView
+import android.webkit.WebViewClient
+import androidx.compose.ui.viewinterop.AndroidView
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.BackHandler
@@ -63,6 +69,8 @@ private fun JembeeMobileApp() {
     var selected by remember { mutableStateOf("Home") }
     var watchReturn by remember { mutableStateOf("Home") }
     var activeVideo by remember { mutableStateOf<JembeeVideo?>(null) }
+    var activeWebPath by remember { mutableStateOf("/login") }
+    var activeWebTitle by remember { mutableStateOf("JEMBEE PLAY") }
     BackHandler(enabled = selected != "Home") {
         selected = when (selected) {
             "Watch" -> watchReturn
@@ -77,7 +85,7 @@ private fun JembeeMobileApp() {
                 if (selected != "Shorts" && selected != "Watch") {
                     JembeeBottomBar(selected = selected, onSelect = { item ->
                         when (item) {
-                            "Earn" -> openJembeeWeb(context, "/login?redirect=%2Fvideos%2Freward-center")
+                            "Earn" -> { activeWebPath = "/login?redirect=%2Fvideos%2Freward-center"; activeWebTitle = "Earn & Rewards"; selected = "Web" }
                             else -> selected = item
                         }
                     })
@@ -87,21 +95,22 @@ private fun JembeeMobileApp() {
             Column(Modifier.fillMaxSize().then(if (selected == "Shorts" || selected == "Watch") Modifier else Modifier.padding(padding))) {
                 if (selected != "Shorts" && selected != "Watch") {
                     HomeTopBar(
-                        onProfile = { openJembeeWeb(context, "/login") },
-                        onSearch = { openJembeeWeb(context, "/search") }
+                        onProfile = { activeWebPath = "/login"; activeWebTitle = "Profile & Login"; selected = "Web" },
+                        onSearch = { activeWebPath = "/search"; activeWebTitle = "Search"; selected = "Web" }
                     )
                 }
                 if (remoteConfig.maintenanceEnabled) {
                     Text(remoteConfig.maintenanceMessage.ifBlank { "JEMBEE PLAY is temporarily under maintenance." }, Modifier.fillMaxWidth().padding(12.dp), color = colors.error)
                 }
                 when (selected) {
-                    "Home" -> HomeScreen(onOpenShorts = { selected = "Shorts" }, onOpenWatch = { video -> activeVideo = video; watchReturn = "Home"; selected = "Watch" }, onLearn = { selected = "Learn" }, onLive = { selected = "Live" }, onUpload = { openJembeeWeb(context, "/login?redirect=%2Fvideos%2Fupload") }, onEarn = { openJembeeWeb(context, "/login?redirect=%2Fvideos%2Freward-center") })
+                    "Home" -> HomeScreen(onOpenShorts = { selected = "Shorts" }, onOpenWatch = { video -> activeVideo = video; watchReturn = "Home"; selected = "Watch" }, onLearn = { selected = "Learn" }, onLive = { selected = "Live" }, onUpload = { activeWebPath = "/login?redirect=%2Fvideos%2Fupload"; activeWebTitle = "Create & Upload"; selected = "Web" }, onEarn = { activeWebPath = "/login?redirect=%2Fvideos%2Freward-center"; activeWebTitle = "Earn & Rewards"; selected = "Web" })
                     "Shorts" -> ShortsScreen(onBack = { selected = "Home" }, onOpenWatch = { video -> activeVideo = video; watchReturn = "Shorts"; selected = "Watch" })
                     "Live" -> LiveScreen(onBack = { selected = "Home" })
                     "Watch" -> WatchScreen(video = activeVideo, onBack = { selected = watchReturn })
+                    "Web" -> JembeeWebScreen(path = activeWebPath, title = activeWebTitle, onClose = { selected = "Home" })
                     "Learn" -> NativeLearningLibraryScreen()
                     "Library" -> SimpleScreen("Your Library", "Saved videos, watch history and downloads")
-                    else -> SimpleScreen("Your profile", "Sign in to manage your JEMBEE PLAY account")
+                    else -> SimpleScreen("JEMBEE PLAY", "Choose a section to continue")
                 }
             }
         }
@@ -417,15 +426,46 @@ private fun SimpleScreen(title: String, subtitle: String) {
 }
 
  
-private fun openJembeeWeb(context: android.content.Context, path: String) {
-    val intent = Intent(Intent.ACTION_VIEW, Uri.parse("https://jembeeplay.in$path"))
-    context.startActivity(intent)
+@Composable
+private fun JembeeWebScreen(path: String, title: String, onClose: () -> Unit) {
+    val context = LocalContext.current
+    val startUrl = remember(path) { "https://jembeeplay.in" + path }
+    val webView = remember { WebView(context).apply {
+        settings.javaScriptEnabled = true
+        settings.domStorageEnabled = true
+        settings.loadsImagesAutomatically = true
+        settings.javaScriptCanOpenWindowsAutomatically = false
+        settings.setSupportMultipleWindows(false)
+        settings.allowFileAccess = false
+        settings.allowContentAccess = false
+        settings.mixedContentMode = android.webkit.WebSettings.MIXED_CONTENT_NEVER_ALLOW
+        CookieManager.getInstance().setAcceptCookie(true)
+        CookieManager.getInstance().setAcceptThirdPartyCookies(this, true)
+        webViewClient = object : WebViewClient() {
+            override fun shouldOverrideUrlLoading(view: WebView, request: WebResourceRequest): Boolean {
+                val uri = request.url
+                return when (uri.scheme?.lowercase()) {
+                    "https", "http" -> false
+                    "mailto", "tel" -> { runCatching { context.startActivity(Intent(Intent.ACTION_VIEW, uri)) }; true }
+                    else -> true
+                }
+            }
+        }
+        webChromeClient = WebChromeClient()
+    } }
+    DisposableEffect(webView) { onDispose { webView.stopLoading(); webView.destroy() } }
+    Column(Modifier.fillMaxSize().background(JembeeBackground)) {
+        Row(Modifier.fillMaxWidth().padding(horizontal = 12.dp, vertical = 6.dp), verticalAlignment = Alignment.CenterVertically) {
+            TextButton(onClick = onClose) { Text("‹ Back", color = JembeeAccent) }
+            Text(title, color = Color.White, fontWeight = FontWeight.Bold)
+        }
+        AndroidView(modifier = Modifier.fillMaxSize(), factory = { webView }, update = { view -> if (view.url != startUrl) view.loadUrl(startUrl) })
+    }
 }
-
 @Composable
 private fun LiveScreen(onBack: () -> Unit) {
-    val context = LocalContext.current
     var streams by remember { mutableStateOf<List<LiveStreamItem>>(emptyList()) }
+    var selectedStream by remember { mutableStateOf<LiveStreamItem?>(null) }
     var loading by remember { mutableStateOf(true) }
     var failed by remember { mutableStateOf(false) }
     var refresh by remember { mutableIntStateOf(0) }
@@ -437,12 +477,16 @@ private fun LiveScreen(onBack: () -> Unit) {
             loading = false
         }
     }
-    Column(Modifier.fillMaxSize().verticalScroll(rememberScrollState()).padding(18.dp)) {
+    Column(Modifier.fillMaxSize().padding(18.dp)) {
         Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween, verticalAlignment = Alignment.CenterVertically) {
-            Text("JEMBEE PLAY Live", color = Color.White, fontSize = 22.sp, fontWeight = FontWeight.Black)
-            TextButton(onClick = onBack) { Text("Back", color = JembeeAccent) }
+            Text(if (selectedStream == null) "JEMBEE PLAY Live" else selectedStream!!.title, color = Color.White, fontSize = 22.sp, fontWeight = FontWeight.Black)
+            TextButton(onClick = { if (selectedStream != null) selectedStream = null else onBack() }) { Text(if (selectedStream != null) "Back to Live" else "Back", color = JembeeAccent) }
         }
-        when {
+        if (selectedStream != null) {
+            RealVideoPlayer(selectedStream!!.playbackUrl, Modifier.fillMaxWidth().aspectRatio(16f / 9f))
+            Text(selectedStream!!.title, color = Color.White, fontWeight = FontWeight.Bold, modifier = Modifier.padding(top = 12.dp))
+            Text("By " + selectedStream!!.streamer + " · " + selectedStream!!.startTime, color = JembeeMuted, fontSize = 11.sp)
+        } else when {
             loading -> CircularProgressIndicator(color = JembeeAccent)
             failed -> Column {
                 Text("Live catalogue abhi available nahi hai.", color = JembeeMuted)
@@ -451,7 +495,7 @@ private fun LiveScreen(onBack: () -> Unit) {
             streams.isEmpty() -> Text("Abhi koi published live stream available nahi hai. Admin ke live_streams catalogue mein valid HTTPS HLS/DASH stream publish hone par yahan dikhegi.", color = JembeeMuted)
             else -> streams.forEach { stream ->
                 Surface(
-                    onClick = { context.startActivity(Intent(Intent.ACTION_VIEW, Uri.parse(stream.playbackUrl))) },
+                    onClick = { selectedStream = stream },
                     color = JembeeSurface,
                     shape = RoundedCornerShape(14.dp),
                     modifier = Modifier.fillMaxWidth().padding(vertical = 5.dp)
