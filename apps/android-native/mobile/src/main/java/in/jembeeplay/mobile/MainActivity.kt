@@ -369,7 +369,6 @@ private fun ShortsScreen(onBack: () -> Unit, onOpenWatch: (JembeeVideo) -> Unit)
 }
 
 @Composable
-@Composable
 private fun WatchScreen(video: JembeeVideo?, onBack: () -> Unit) {
     var videoAdConfig by remember(video?.streamUrl) { mutableStateOf(NativeVideoAdConfig()) }
     LaunchedEffect(video?.streamUrl) {
