@@ -1,6 +1,8 @@
 package `in`.jembeeplay.mobile
 
 import android.os.Bundle
+import android.content.Intent
+import android.net.Uri
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.BackHandler
@@ -60,12 +62,12 @@ private fun JembeeMobileApp() {
             bottomBar = {
                 if (selected != "Shorts" && selected != "Watch") {
                     NavigationBar(containerColor = Color(0xFF101621), contentColor = Color.White) {
-                        listOf("Home", "Shorts", "Learn", "Library", "You").forEach { item ->
+                        listOf("Home", "Shorts", "Learn", "Earn", "Library").forEach { item ->
                             NavigationBarItem(
                                 selected = selected == item,
-                                onClick = { selected = item },
+                                onClick = { if (item == "Earn") openJembeeWeb(context, "/login?redirect=%2Fvideos%2Freward-center") else selected = item },
                                 icon = { Text(when (item) { "Home" -> "⌂"; "Shorts" -> "▶"; "Learn" -> "▤"; "Library" -> "▣"; else -> "●" }, fontSize = 19.sp, fontWeight = FontWeight.Bold) },
-                                label = { Text(item, fontSize = 10.sp) },
+                                label = { Text(if (item == "Learn") "Learning" else item, fontSize = 10.sp) },
                                 colors = NavigationBarItemDefaults.colors(selectedIconColor = JembeeAccent, selectedTextColor = JembeeAccent, indicatorColor = Color(0xFF18384A), unselectedIconColor = JembeeMuted, unselectedTextColor = JembeeMuted)
                             )
                         }
@@ -86,8 +88,9 @@ private fun JembeeMobileApp() {
                     Text(remoteConfig.maintenanceMessage.ifBlank { "JEMBEE PLAY is temporarily under maintenance." }, Modifier.fillMaxWidth().padding(12.dp), color = colors.error)
                 }
                 when (selected) {
-                    "Home" -> HomeScreen(onOpenShorts = { selected = "Shorts" }, onOpenWatch = { video -> activeVideo = video; watchReturn = "Home"; selected = "Watch" }, onLearn = { selected = "Learn" })
+                    "Home" -> HomeScreen(onOpenShorts = { selected = "Shorts" }, onOpenWatch = { video -> activeVideo = video; watchReturn = "Home"; selected = "Watch" }, onLearn = { selected = "Learn" }, onLive = { selected = "Live" }, onUpload = { openJembeeWeb(context, "/login?redirect=%2Fvideos%2Fupload") }, onEarn = { openJembeeWeb(context, "/login?redirect=%2Fvideos%2Freward-center") })
                     "Shorts" -> ShortsScreen(onBack = { selected = "Home" }, onOpenWatch = { video -> activeVideo = video; watchReturn = "Shorts"; selected = "Watch" })
+                    "Live" -> LiveScreen(onBack = { selected = "Home" })
                     "Watch" -> WatchScreen(video = activeVideo, onBack = { selected = watchReturn })
                     "Learn" -> NativeLearningLibraryScreen()
                     "Library" -> SimpleScreen("Your Library", "Saved videos, watch history and downloads")
