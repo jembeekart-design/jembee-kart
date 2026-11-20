@@ -3,6 +3,26 @@ import { getAdminAuth, getAdminDb } from "@/firebase/admin";
 
 export const runtime = "nodejs";
 
+export const GET = async (req: Request) => {
+  try {
+    const authorization = req.headers.get("authorization");
+    if (!authorization?.startsWith("Bearer ")) {
+      return NextResponse.json({ success: false, message: "Unauthorized" }, { status: 401 });
+    }
+    const decoded = await getAdminAuth().verifyIdToken(authorization.slice(7).trim(), true);
+    const videoId = new URL(req.url).searchParams.get("videoId")?.trim() || "";
+    if (!videoId || videoId.length > 500) {
+      return NextResponse.json({ success: false, message: "Invalid request" }, { status: 400 });
+    }
+    const saveRef = getAdminDb().collection("savedWatchVideos").doc(`${videoId}_${decoded.uid}`);
+    const saveSnap = await saveRef.get();
+    return NextResponse.json({ success: true, saved: saveSnap.exists }, { headers: { "Cache-Control": "no-store" } });
+  } catch (error) {
+    console.error("[VideoSave] Status request failed:", error);
+    return NextResponse.json({ success: false, message: "Unable to load save status" }, { status: 500 });
+  }
+};
+
 export const POST = async (req: Request) => {
   try {
     const authorization = req.headers.get("authorization");
