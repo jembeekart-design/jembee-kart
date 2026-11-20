@@ -121,7 +121,7 @@ export default function VideoActions({
         pointer-events-auto
         absolute
         right-2
-        bottom-[calc(9.6rem+env(safe-area-inset-bottom))]
+        bottom-[calc(8.2rem+env(safe-area-inset-bottom))]
         z-40
         flex
         flex-col
@@ -253,7 +253,7 @@ export default function VideoActions({
           bg-[#071329]/60
           text-white
           backdrop-blur-[2px]
-          shadow-[0_0_14px_rgba(245,158,11,0.32)]
+          shadow-[0_3px_14px_rgba(0,0,0,0.35)]
         "
       >
         {isMuted ? (
