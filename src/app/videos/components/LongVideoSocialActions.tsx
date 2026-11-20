@@ -127,4 +127,6 @@ const LongVideoSocialActions = ({ videoId, creatorId, initialLikes, comments }: 
       <CommentDrawer open={commentsOpen} onClose={() => setCommentsOpen(false)} videoId={videoId} onCommentAdded={() => setCommentCount((value) => value + 1)}/>
     </section>
   );
-}
+};
+
+export default LongVideoSocialActions;
