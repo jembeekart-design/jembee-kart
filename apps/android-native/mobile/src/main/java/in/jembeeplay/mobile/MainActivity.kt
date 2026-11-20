@@ -102,22 +102,55 @@ private fun JembeeMobileApp() {
 }
 
 @Composable
-private fun HomeScreen(onOpenShorts: () -> Unit, onOpenWatch: (JembeeVideo) -> Unit, onLearn: () -> Unit) {
-    var videos by remember { mutableStateOf<List<JembeeVideo>>(emptyList()) }
-    var loading by remember { mutableStateOf(true) }
-    var error by remember { mutableStateOf<String?>(null) }
+private fun HomeScreen(
+    onOpenShorts: () -> Unit,
+    onOpenWatch: (JembeeVideo) -> Unit,
+    onLearn: () -> Unit,
+    onLive: () -> Unit,
+    onUpload: () -> Unit,
+    onEarn: () -> Unit
+) {
+    var shorts by remember { mutableStateOf<List<JembeeVideo>>(emptyList()) }
+    var longVideos by remember { mutableStateOf<List<JembeeVideo>>(emptyList()) }
+    var shortsLoading by remember { mutableStateOf(true) }
+    var longLoading by remember { mutableStateOf(true) }
+    var shortsError by remember { mutableStateOf<String?>(null) }
+    var longError by remember { mutableStateOf<String?>(null) }
     LaunchedEffect(Unit) {
-        VideoCatalogClient.fetch("long") { items, message -> videos = items; error = message; loading = false }
+        VideoCatalogClient.fetch("short") { items, message -> shorts = items; shortsError = message; shortsLoading = false }
+        VideoCatalogClient.fetch("long") { items, message -> longVideos = items; longError = message; longLoading = false }
     }
     Column(Modifier.fillMaxSize().verticalScroll(rememberScrollState()).padding(bottom = 20.dp)) {
-        SectionHeader("Shorts for you", "Real approved videos", onOpenShorts)
-        Button(onClick = onOpenShorts, modifier = Modifier.padding(horizontal = 18.dp)) { Text("Open Shorts feed  ▶") }
-        SectionHeader("Long videos", "From JEMBEE PLAY catalogue")
+        Row(Modifier.fillMaxWidth().padding(horizontal = 16.dp, vertical = 8.dp), horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+            Button(onClick = onLearn, modifier = Modifier.weight(1f)) { Text("Learning") }
+            Button(onClick = onOpenShorts, modifier = Modifier.weight(1f)) { Text("Shorts") }
+        }
+        Row(Modifier.fillMaxWidth().padding(horizontal = 16.dp), horizontalArrangement = Arrangement.spacedBy(6.dp)) {
+            OutlinedButton(onClick = onLive, modifier = Modifier.weight(1f)) { Text("Live") }
+            OutlinedButton(onClick = onUpload, modifier = Modifier.weight(1f)) { Text("Create Upload") }
+            OutlinedButton(onClick = onEarn, modifier = Modifier.weight(1f)) { Text("Earn Rewards") }
+        }
+        SectionHeader("Trending Shorts 🔥", "Short videos only", onOpenShorts)
         when {
-            loading -> CircularProgressIndicator(Modifier.padding(20.dp), color = JembeeAccent)
-            videos.isEmpty() -> Text(error ?: "Abhi koi approved free long video available nahi hai.", Modifier.padding(18.dp), color = JembeeMuted)
-            else -> videos.forEach { video ->
-                Row(Modifier.fillMaxWidth().padding(horizontal = 16.dp, vertical = 6.dp).background(JembeeSurface, RoundedCornerShape(14.dp)).clickable { onOpenWatch(video) }.padding(14.dp), verticalAlignment = Alignment.CenterVertically) {
+            shortsLoading -> CircularProgressIndicator(Modifier.padding(20.dp), color = JembeeAccent)
+            shorts.isEmpty() -> Text(shortsError ?: "Abhi koi approved Short available nahi hai.", Modifier.padding(horizontal = 18.dp, vertical = 8.dp), color = JembeeMuted)
+            else -> shorts.take(10).forEach { video ->
+                Row(Modifier.fillMaxWidth().padding(horizontal = 16.dp, vertical = 5.dp).background(JembeeSurface, RoundedCornerShape(14.dp)).clickable { onOpenShorts() }.padding(12.dp), verticalAlignment = Alignment.CenterVertically) {
+                    Column(Modifier.weight(1f)) {
+                        Text(video.caption.ifBlank { "JEMBEE PLAY Short" }, color = Color.White, fontWeight = FontWeight.Bold, fontSize = 14.sp)
+                        Text(video.creatorName, color = JembeeMuted, fontSize = 11.sp)
+                        Text("${video.views} views", color = JembeeMuted, fontSize = 10.sp)
+                    }
+                    Text("▶ Shorts", color = JembeeAccent, fontWeight = FontWeight.Bold)
+                }
+            }
+        }
+        SectionHeader("Trending Long Videos", "Long-form videos only")
+        when {
+            longLoading -> CircularProgressIndicator(Modifier.padding(20.dp), color = JembeeAccent)
+            longVideos.isEmpty() -> Text(longError ?: "Abhi koi approved long video available nahi hai.", Modifier.padding(horizontal = 18.dp, vertical = 8.dp), color = JembeeMuted)
+            else -> longVideos.forEach { video ->
+                Row(Modifier.fillMaxWidth().padding(horizontal = 16.dp, vertical = 5.dp).background(JembeeSurface, RoundedCornerShape(14.dp)).clickable { onOpenWatch(video) }.padding(14.dp), verticalAlignment = Alignment.CenterVertically) {
                     Column(Modifier.weight(1f)) {
                         Text(video.caption.ifBlank { "JEMBEE PLAY video" }, color = Color.White, fontWeight = FontWeight.Bold, fontSize = 14.sp)
                         Text(video.creatorName, color = JembeeMuted, fontSize = 11.sp)
