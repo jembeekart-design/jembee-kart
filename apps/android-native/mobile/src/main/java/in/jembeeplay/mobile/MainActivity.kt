@@ -352,10 +352,95 @@ private fun openJembeeWeb(context: android.content.Context, path: String) {
 
 @Composable
 private fun LiveScreen(onBack: () -> Unit) {
-    Column(Modifier.fillMaxSize().padding(24.dp), verticalArrangement = Arrangement.Center, horizontalAlignment = Alignment.CenterHorizontally) {
-        Text("◉", color = Color(0xFF45DCE7), fontSize = 52.sp, fontWeight = FontWeight.Bold)
-        Text("JEMBEE PLAY Live", color = Color.White, fontSize = 24.sp, fontWeight = FontWeight.Black)
-        Text("Public live-stream discovery and creator broadcasting are not connected to the mobile app yet. No fake live rooms are shown.", color = JembeeMuted, fontSize = 13.sp, lineHeight = 19.sp, modifier = Modifier.padding(top = 10.dp, bottom = 18.dp))
-        Button(onClick = onBack) { Text("Back to Home") }
+    var streams by remember { mutableStateOf<List<LiveStreamItem>>(emptyList()) }
+    var loading by remember { mutableStateOf(true) }
+    var failed by remember { mutableStateOf(false) }
+    var selected by remember { mutableStateOf<LiveStreamItem?>(null) }
+
+    fun refresh() {
+        loading = true
+        failed = false
+        LiveStreamClient.fetch { result ->
+            result.onSuccess { streams = it; failed = false }
+                .onFailure { failed = true }
+            loading = false
+        }
+    }
+
+    LaunchedEffect(Unit) { refresh() }
+
+    Column(
+        Modifier.fillMaxSize().verticalScroll(rememberScrollState()).padding(18.dp),
+        verticalArrangement = Arrangement.spacedBy(14.dp)
+    ) {
+        Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween, verticalAlignment = Alignment.CenterVertically) {
+            Column {
+                Text("◉  JEMBEE PLAY Live", color = Color.White, fontSize = 22.sp, fontWeight = FontWeight.Black)
+                Text("Scheduled and active live streams", color = JembeeMuted, fontSize = 12.sp)
+            }
+            TextButton(onClick = onBack) { Text("Back") }
+        }
+        when {
+            loading -> CircularProgressIndicator(color = Color(0xFFFF1978))
+            failed -> Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
+                Text("Live streams load nahi ho paaye.", color = Color.White)
+                OutlinedButton(onClick = { refresh() }) { Text("Retry") }
+            }
+            streams.isEmpty() -> Text("Abhi koi playable live stream available nahi hai. Admin ko direct HTTPS HLS (.m3u8) ya DASH (.mpd) stream URL publish karna hoga.", color = JembeeMuted, fontSize = 13.sp)
+            else -> streams.forEach { stream ->
+                Surface(
+                    onClick = { selected = stream },
+                    color = Color(0xFF15131E),
+                    shape = RoundedCornerShape(16.dp),
+                    modifier = Modifier.fillMaxWidth()
+                ) {
+                    Column(Modifier.padding(16.dp), verticalArrangement = Arrangement.spacedBy(5.dp)) {
+                        Text("● LIVE / SCHEDULED", color = Color(0xFFFF397F), fontSize = 10.sp, fontWeight = FontWeight.Bold)
+                        Text(stream.title, color = Color.White, fontSize = 17.sp, fontWeight = FontWeight.Bold)
+                        Text("By ${stream.streamer}", color = JembeeMuted, fontSize = 12.sp)
+                        Text("Start: ${stream.startTime}", color = JembeeMuted, fontSize = 11.sp)
+                        Text("Tap to watch", color = Color(0xFF45DCE7), fontSize = 12.sp)
+                    }
+                }
+            }
+        }
+    }
+
+    selected?.let { stream ->
+        val context = LocalContext.current
+        val player = remember(stream.id) {
+            androidx.media3.exoplayer.ExoPlayer.Builder(context).build().apply {
+                setMediaItem(androidx.media3.common.MediaItem.fromUri(stream.playbackUrl))
+                prepare()
+                playWhenReady = true
+            }
+        }
+        DisposableEffect(player) { onDispose { player.release() } }
+        androidx.compose.ui.window.Dialog(
+            onDismissRequest = { selected = null },
+            properties = androidx.compose.ui.window.DialogProperties(usePlatformDefaultWidth = false)
+        ) {
+            Column(Modifier.fillMaxSize().background(Color.Black).padding(12.dp), verticalArrangement = Arrangement.spacedBy(10.dp)) {
+                Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween, verticalAlignment = Alignment.CenterVertically) {
+                    Text(stream.title, Modifier.weight(1f), color = Color.White, fontWeight = FontWeight.Bold, maxLines = 2)
+                    TextButton(onClick = { selected = null }) { Text("Close") }
+                }
+                androidx.compose.ui.viewinterop.AndroidView(
+                    factory = { ctx ->
+                        androidx.media3.ui.PlayerView(ctx).apply {
+                            this.player = player
+                            useController = true
+                            layoutParams = android.view.ViewGroup.LayoutParams(
+                                android.view.ViewGroup.LayoutParams.MATCH_PARENT,
+                                android.view.ViewGroup.LayoutParams.MATCH_PARENT
+                            )
+                        }
+                    },
+                    update = { it.player = player },
+                    modifier = Modifier.fillMaxWidth().weight(1f)
+                )
+                Text("Live stream · ${stream.streamer}", color = Color.LightGray, fontSize = 12.sp)
+            }
+        }
     }
 }
