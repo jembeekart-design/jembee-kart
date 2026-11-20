@@ -41,11 +41,11 @@ export default function ProductionHeader() {
         className="pointer-events-none fixed inset-x-0 top-0 z-50 text-white"
         style={{ paddingTop: "env(safe-area-inset-top)" }}
       >
-        <div className="pointer-events-auto bg-gradient-to-b from-[#13091e]/85 via-[#13091e]/35 to-transparent px-5 pb-5 pt-4">
-          <div className="flex items-start justify-between">
-            <div className="flex flex-col gap-4">
+        <div className="pointer-events-auto bg-gradient-to-b from-[#090611]/90 via-[#090611]/45 to-transparent px-4 pb-3 pt-3">
+          <div className="flex items-center justify-between">
+            <div className="flex min-w-0 flex-col">
               <div className="flex items-center gap-1">
-                <span className="text-[25px] font-extrabold leading-none tracking-tight">
+                <span className="text-[23px] font-extrabold leading-none tracking-tight">
                   Jembee
                 </span>
                 <span className="text-[25px] font-extrabold leading-none tracking-tight text-pink-300">
@@ -59,12 +59,12 @@ export default function ProductionHeader() {
               </div>
             </div>
 
-            <div className="flex items-center gap-2">
+            <div className="flex shrink-0 items-center gap-2">
               <button
                 type="button"
                 onClick={() => setShowSearch(true)}
                 aria-label="Search"
-                className="flex h-11 w-11 items-center justify-center rounded-full border border-amber-200/20 bg-[#071329]/55 shadow-[0_4px_18px_rgba(0,0,0,0.28)] backdrop-blur-xl"
+                className="flex h-10 w-10 items-center justify-center rounded-full border border-white/15 bg-black/35 shadow-sm backdrop-blur-xl"
               >
                 <Search size={25} />
               </button>
