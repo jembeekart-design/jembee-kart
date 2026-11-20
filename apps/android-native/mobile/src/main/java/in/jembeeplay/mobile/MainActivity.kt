@@ -1,6 +1,9 @@
 package `in`.jembeeplay.mobile
 
 import android.os.Bundle
+import android.content.Intent
+import android.net.Uri
+import android.widget.Toast
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.background
@@ -69,20 +72,21 @@ private fun JembeeMobileApp() {
                     containerColor = MaterialTheme.colorScheme.surface,
                     tonalElevation = 8.dp
                 ) {
-                    listOf("Home", "Shorts", "Learn", "You", "Library").forEach { item ->
+                    listOf("Home", "Shorts", "Learn", "Earn", "Library").forEach { item ->
                         NavigationBarItem(
                             selected = selected == item,
-                            onClick = { selected = item },
+                            onClick = { if (item == "Earn") openJembeeWeb(context, "/videos/reward-center") else selected = item },
                             icon = {
                                 Icon(when (item) {
                                     "Home" -> Icons.Filled.Home
                                     "Shorts" -> Icons.Filled.PlayArrow
                                     "Learn" -> Icons.Filled.MenuBook
                                     "Library" -> Icons.Filled.VideoLibrary
-                                    else -> Icons.Filled.AccountBalanceWallet
+                                    "Earn" -> Icons.Filled.AccountBalanceWallet
+                                    else -> Icons.Filled.VideoLibrary
                                 }, contentDescription = item)
                             },
-                            label = { Text(when (item) { "Learn" -> "Learning"; "You" -> "Earn"; else -> item }, fontSize = 11.sp) },
+                            label = { Text(if (item == "Learn") "Learning" else item, fontSize = 11.sp) },
                             alwaysShowLabel = true
                         )
                     }
@@ -128,9 +132,16 @@ private fun JembeeMobileApp() {
                     }
                 }
                 when (selected) {
-                    "Home" -> HomeScreen(onLearn = { selected = "Learn" }, onShorts = { selected = "Shorts" })
+                    "Home" -> HomeScreen(
+                        onLearn = { selected = "Learn" },
+                        onShorts = { selected = "Shorts" },
+                        onLive = { selected = "Live" },
+                        onUpload = { openJembeeWeb(context, "/videos/upload") },
+                        onEarn = { openJembeeWeb(context, "/videos/reward-center") }
+                    )
                     "Shorts" -> ShortsScreen()
                     "Learn" -> LearnScreen()
+                    "Live" -> LiveScreen(onBack = { selected = "Home" })
                     "Library" -> LibraryScreen()
                     else -> YouScreen(onTheme = { dark = !dark }, dark = dark)
                 }
@@ -140,7 +151,13 @@ private fun JembeeMobileApp() {
 }
 
 @Composable
-private fun HomeScreen(onLearn: () -> Unit, onShorts: () -> Unit) {
+private fun HomeScreen(
+    onLearn: () -> Unit,
+    onShorts: () -> Unit,
+    onLive: () -> Unit,
+    onUpload: () -> Unit,
+    onEarn: () -> Unit
+) {
     var activeCategory by remember { mutableStateOf("All") }
     Column(
         Modifier.fillMaxSize().verticalScroll(rememberScrollState()).padding(bottom = 20.dp),
@@ -157,7 +174,7 @@ private fun HomeScreen(onLearn: () -> Unit, onShorts: () -> Unit) {
             }
         }
         PremiumHeroBanner(onWatch = onShorts)
-        ReferenceQuickActions(onLearn = onLearn, onShorts = onShorts)
+        ReferenceQuickActions(onLearn = onLearn, onShorts = onShorts, onLive = onLive, onUpload = onUpload, onEarn = onEarn)
         Column(Modifier.fillMaxWidth().padding(horizontal = 18.dp), verticalArrangement = Arrangement.spacedBy(9.dp)) {
             Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween, verticalAlignment = Alignment.CenterVertically) {
                 Text("Continue Learning", fontSize = 19.sp, fontWeight = FontWeight.Bold)
@@ -177,7 +194,8 @@ private fun HomeScreen(onLearn: () -> Unit, onShorts: () -> Unit) {
                 }
             }
         }
-        NativeCatalogSection(sectionTitle = "Trending Videos 🔥", sectionSubtitle = "Popular approved videos from JEMBEE PLAY")
+        NativeCatalogSection(sectionTitle = "Trending Shorts 🔥", sectionSubtitle = "Short videos only", videoFormat = "short")
+        NativeCatalogSection(sectionTitle = "Trending Long Videos", sectionSubtitle = "Long-form videos only", videoFormat = "long")
     }
 }
 
@@ -284,13 +302,19 @@ private fun PremiumHeroBanner(onWatch: () -> Unit) {
 }
 
 @Composable
-private fun ReferenceQuickActions(onLearn: () -> Unit, onShorts: () -> Unit) {
+private fun ReferenceQuickActions(
+    onLearn: () -> Unit,
+    onShorts: () -> Unit,
+    onLive: () -> Unit,
+    onUpload: () -> Unit,
+    onEarn: () -> Unit
+) {
     val actions = listOf(
         Triple("Learning\nLibrary", "▤", Color(0xFF29114E)) to onLearn,
         Triple("Shorts", "▶", Color(0xFF4A102B)) to onShorts,
-        Triple("Live", "◉", Color(0xFF103B43)) to null,
-        Triple("Create\nUpload", "☁", Color(0xFF103F45)) to null,
-        Triple("Earn\n& Rewards", "▥", Color(0xFF443516)) to null
+        Triple("Live", "◉", Color(0xFF103B43)) to onLive,
+        Triple("Create\nUpload", "☁", Color(0xFF103F45)) to onUpload,
+        Triple("Earn\n& Rewards", "▥", Color(0xFF443516)) to onEarn
     )
     LazyRow(contentPadding = PaddingValues(horizontal = 16.dp), horizontalArrangement = Arrangement.spacedBy(9.dp)) {
         items(actions) { (entry, action) ->
@@ -313,5 +337,25 @@ private fun ReferenceQuickActions(onLearn: () -> Unit, onShorts: () -> Unit) {
                 }
             }
         }
+    }
+}
+
+ 
+private fun openJembeeWeb(context: android.content.Context, path: String) {
+    val intent = Intent(Intent.ACTION_VIEW, Uri.parse("https://jembeeplay.in$path"))
+    try {
+        context.startActivity(intent)
+    } catch (_: Exception) {
+        Toast.makeText(context, "Browser app nahi mil raha. Kripya browser install karein.", Toast.LENGTH_LONG).show()
+    }
+}
+
+@Composable
+private fun LiveScreen(onBack: () -> Unit) {
+    Column(Modifier.fillMaxSize().padding(24.dp), verticalArrangement = Arrangement.Center, horizontalAlignment = Alignment.CenterHorizontally) {
+        Text("◉", color = Color(0xFF45DCE7), fontSize = 52.sp, fontWeight = FontWeight.Bold)
+        Text("JEMBEE PLAY Live", color = Color.White, fontSize = 24.sp, fontWeight = FontWeight.Black)
+        Text("Public live-stream discovery and creator broadcasting are not connected to the mobile app yet. No fake live rooms are shown.", color = JembeeMuted, fontSize = 13.sp, lineHeight = 19.sp, modifier = Modifier.padding(top = 10.dp, bottom = 18.dp))
+        Button(onClick = onBack) { Text("Back to Home") }
     }
 }
