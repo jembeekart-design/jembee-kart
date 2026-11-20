@@ -14,6 +14,7 @@ on:
     branches:
       - main
       - "native-mobile-tv-app-foundation-2026-11-15"
+      - "release/mobile-home-actions-surgical-2026-11-20"
     paths:
       - "apps/android-native/**"
       - "src/app/api/app/remote-config/**"
