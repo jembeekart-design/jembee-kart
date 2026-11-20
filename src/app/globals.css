@@ -2,19 +2,19 @@
 /* Jembee Shorts fixed brand palette — intentionally not admin/theme editable. */
 :root {
   color-scheme: dark;
-  --primary-color: #06B6D4;
+  --primary-color: #EC4899;
   --secondary-color: #8B5CF6;
-  --background-color: #05070B;
-  --card-color: #111827;
+  --background-color: #090611;
+  --card-color: #171024;
   --text-color: #F8FAFC;
-  --color-page-background: #05070B;
-  --color-surface: #111827;
-  --color-card-background: #111827;
-  --color-section-background: #0B1220;
-  --color-header: #05070B;
-  --color-input-background: #0F172A;
-  --color-border: #263244;
-  --color-primary-button: #06B6D4;
+  --color-page-background: #090611;
+  --color-surface: #171024;
+  --color-card-background: #171024;
+  --color-section-background: #120B1C;
+  --color-header: #090611;
+  --color-input-background: #1A1226;
+  --color-border: #3B2447;
+  --color-primary-button: #EC4899;
   --color-secondary-button: #8B5CF6;
   --text-primary: #F8FAFC;
   --text-secondary: #CBD5E1;
@@ -22,16 +22,16 @@
   --color-success: #22C55E;
   --color-warning: #F59E0B;
   --color-danger: #EF4444;
-  --button-text-color: #03131A;
-  --background: #05070B;
+  --button-text-color: #1B0B1C;
+  --background: #090611;
   --text: #F8FAFC;
-  --header-color: #05070B;
-  --search-bar-color: #0F172A;
-  --button-color: #06B6D4;
-  --border-color: #263244;
+  --header-color: #090611;
+  --search-bar-color: #1A1226;
+  --button-color: #EC4899;
+  --border-color: #3B2447;
   --text-on-header: #F8FAFC;
-  --text-on-primary: #03131A;
-  --button-hover-color: #0891B2;
+  --text-on-primary: #1B0B1C;
+  --button-hover-color: #DB2777;
 }
 
 @import "tailwindcss";

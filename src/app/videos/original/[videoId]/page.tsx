@@ -41,11 +41,11 @@ export default function OriginalPage() {
     fetchData();
   }, [originalVideoId]);
 
-  if (loading) return <main className="min-h-screen bg-black p-4 text-white">Loading...</main>;
+  if (loading) return <main className="min-h-screen bg-[#090611] p-4 text-white">Loading...</main>;
 
   return (
-    <main className="min-h-screen bg-black p-4 text-white">
-      <button onClick={() => router.back()} className="mb-4 flex items-center gap-2 text-sm text-gray-400">
+    <main className="min-h-screen bg-[#090611] p-4 text-white">
+      <button onClick={() => router.back()} className="mb-4 flex items-center gap-2 text-sm text-pink-300">
         <ArrowLeft size={16} /> Back
       </button>
       
