@@ -1,0 +1,14 @@
+<layer-list xmlns:android="http://schemas.android.com/apk/res/android">
+    <item>
+        <shape android:shape="rectangle">
+            <gradient android:angle="0" android:startColor="#FF0B1830" android:centerColor="#FF174A68" android:endColor="#FF512B68"/>
+        </shape>
+    </item>
+    <item android:drawable="@drawable/ic_jembee_mark" android:gravity="left|center_vertical" android:left="22dp" android:width="92dp" android:height="92dp"/>
+    <item android:gravity="right|center_vertical" android:right="28dp">
+        <shape android:shape="rectangle">
+            <size android:width="3dp" android:height="42dp"/>
+            <solid android:color="#FF39C6F4"/>
+        </shape>
+    </item>
+</layer-list>
