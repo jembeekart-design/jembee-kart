@@ -15,6 +15,7 @@ on:
       - main
       - "native-mobile-tv-app-foundation-2026-11-15"
       - "fix/mobile-actions-video-separation-2026-11-20"
+      - "fix/mobile-actions-video-separation-review-2026-11-20"
     paths:
       - "apps/android-native/**"
       - "src/app/api/app/remote-config/**"
