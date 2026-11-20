@@ -311,3 +311,55 @@ private fun SimpleScreen(title: String, subtitle: String) {
         Text(subtitle, color = JembeeMuted, fontSize = 12.sp, modifier = Modifier.padding(12.dp))
     }
 }
+
+ 
+private fun openJembeeWeb(context: android.content.Context, path: String) {
+    val intent = Intent(Intent.ACTION_VIEW, Uri.parse("https://jembeeplay.in$path"))
+    context.startActivity(intent)
+}
+
+@Composable
+private fun LiveScreen(onBack: () -> Unit) {
+    val context = LocalContext.current
+    var streams by remember { mutableStateOf<List<LiveStreamItem>>(emptyList()) }
+    var loading by remember { mutableStateOf(true) }
+    var failed by remember { mutableStateOf(false) }
+    var refresh by remember { mutableIntStateOf(0) }
+    LaunchedEffect(refresh) {
+        loading = true
+        LiveStreamClient.fetch { result ->
+            result.onSuccess { streams = it; failed = false }
+                .onFailure { failed = true }
+            loading = false
+        }
+    }
+    Column(Modifier.fillMaxSize().verticalScroll(rememberScrollState()).padding(18.dp)) {
+        Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween, verticalAlignment = Alignment.CenterVertically) {
+            Text("JEMBEE PLAY Live", color = Color.White, fontSize = 22.sp, fontWeight = FontWeight.Black)
+            TextButton(onClick = onBack) { Text("Back", color = JembeeAccent) }
+        }
+        when {
+            loading -> CircularProgressIndicator(color = JembeeAccent)
+            failed -> Column {
+                Text("Live catalogue abhi available nahi hai.", color = JembeeMuted)
+                TextButton(onClick = { refresh++ }) { Text("Retry", color = JembeeAccent) }
+            }
+            streams.isEmpty() -> Text("Abhi koi published live stream available nahi hai. Admin ke live_streams catalogue mein valid HTTPS HLS/DASH stream publish hone par yahan dikhegi.", color = JembeeMuted)
+            else -> streams.forEach { stream ->
+                Surface(
+                    onClick = { context.startActivity(Intent(Intent.ACTION_VIEW, Uri.parse(stream.playbackUrl))) },
+                    color = JembeeSurface,
+                    shape = RoundedCornerShape(14.dp),
+                    modifier = Modifier.fillMaxWidth().padding(vertical = 5.dp)
+                ) {
+                    Column(Modifier.padding(14.dp)) {
+                        Text("● LIVE / SCHEDULED", color = Color(0xFFFF397F), fontWeight = FontWeight.Bold, fontSize = 10.sp)
+                        Text(stream.title, color = Color.White, fontSize = 16.sp, fontWeight = FontWeight.Bold)
+                        Text("By ${stream.streamer} · ${stream.startTime}", color = JembeeMuted, fontSize = 11.sp)
+                        Text("Tap to watch", color = JembeeAccent, fontSize = 12.sp)
+                    }
+                }
+            }
+        }
+    }
+}
