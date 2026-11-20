@@ -5,7 +5,7 @@ export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
 
 function safeText(value: unknown, max = 160): string {
-  return typeof value === "string" ? value.trim().replace(/[\\u0000-\\u001F\\u007F]/g, "").slice(0, max) : "";
+  return typeof value === "string" ? value.trim().replace(/[\u0000-\u001F\u007F]/g, "").slice(0, max) : "";
 }
 
 function safePlaybackUrl(value: unknown): string | null {
