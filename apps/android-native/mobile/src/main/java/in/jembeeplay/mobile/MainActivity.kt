@@ -146,8 +146,52 @@ private fun HomeScreen(onOpenShorts: () -> Unit, onOpenWatch: (JembeeVideo) -> U
                 Text("Books  ·  Chapters  ·  Questions", color = JembeeMuted, fontSize = 11.sp)
             }
         }
+        MonetagAdCard("home-after-learning-banner")
         VideoShelf("Trending Shorts 🔥", "Popular approved Shorts from JEMBEE PLAY", shorts, shortsLoading, shortsError ?: "No approved Shorts are available yet.", { onOpenShorts() }, onOpenShorts)
+        MonetagAdCard("home-after-shorts")
         VideoShelf("Trending Long Videos", "Popular approved long videos from JEMBEE PLAY", longVideos, longLoading, longError ?: "No approved long videos are available yet.", onOpenWatch, { longVideos.firstOrNull()?.let(onOpenWatch) })
+        MonetagAdCard("home-after-video-grid")
+    }
+}
+
+
+@Composable
+private fun MonetagAdCard(placement: String) {
+    val context = LocalContext.current
+    var slot by remember(placement) { mutableStateOf<MonetagAdSlot?>(null) }
+    LaunchedEffect(placement) {
+        MonetagAdsClient.fetch(placement) { result -> slot = result.getOrNull() }
+    }
+    val ad = slot ?: return
+    Surface(
+        onClick = {
+            runCatching { context.startActivity(Intent(Intent.ACTION_VIEW, Uri.parse(ad.url))) }
+        },
+        color = Color(0xFFF7F8FC),
+        shape = RoundedCornerShape(18.dp),
+        modifier = Modifier.fillMaxWidth().padding(horizontal = 16.dp, vertical = 10.dp)
+    ) {
+        Column(Modifier.padding(14.dp)) {
+            Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(10.dp)) {
+                if (!ad.logoImageUrl.isNullOrBlank()) {
+                    AsyncImage(model = ad.logoImageUrl, contentDescription = null, modifier = Modifier.size(38.dp), contentScale = ContentScale.Fit)
+                }
+                Column(Modifier.weight(1f)) {
+                    Text(ad.title, color = Color(0xFF111827), fontWeight = FontWeight.Bold, fontSize = 15.sp, maxLines = 2)
+                    Text(ad.advertiserName.ifBlank { ad.name }, color = Color(0xFF64748B), fontSize = 11.sp, maxLines = 1)
+                }
+                Text("Sponsored", color = Color(0xFF475569), fontSize = 10.sp, fontWeight = FontWeight.Bold)
+            }
+            if (!ad.creativeImageUrl.isNullOrBlank()) {
+                AsyncImage(model = ad.creativeImageUrl, contentDescription = null, modifier = Modifier.fillMaxWidth().padding(top = 10.dp).heightIn(max = 170.dp), contentScale = ContentScale.Crop)
+            }
+            if (ad.description.isNotBlank()) {
+                Text(ad.description, color = Color(0xFF475569), fontSize = 12.sp, modifier = Modifier.padding(top = 9.dp), maxLines = 3)
+            }
+            Text(ad.ctaLabel, color = Color.White, fontWeight = FontWeight.Bold, fontSize = 12.sp,
+                modifier = Modifier.fillMaxWidth().padding(top = 11.dp).background(Color(0xFF101827), RoundedCornerShape(24.dp)).padding(vertical = 12.dp),
+                textAlign = androidx.compose.ui.text.style.TextAlign.Center)
+        }
     }
 }
 
