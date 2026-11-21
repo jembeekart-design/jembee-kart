@@ -8,6 +8,7 @@ import { useSearchParams } from "next/navigation";
 import Link from "next/link";
 import {
   signInWithEmailAndPassword,
+  onAuthStateChanged,
   GoogleAuthProvider,
   signInWithPopup,
   User, // Strict User type implementation
@@ -30,6 +31,17 @@ function LoginCard() {
   const redirect =
     searchParams.get("redirect") ||
     "/shorts";
+
+  // Reuse an existing Firebase session in the app's WebView instead of
+  // showing the login form again whenever a native action opens this route.
+  useEffect(() => {
+    const unsubscribe = onAuthStateChanged(auth, (user) => {
+      if (user && user.emailVerified) {
+        window.location.replace(redirect || "/shorts");
+      }
+    });
+    return () => unsubscribe();
+  }, [redirect]);
 
   /* ======================================================
   VERIFY & TELEMETRY SYNC (STRICT EXISTING USERS ONLY)
