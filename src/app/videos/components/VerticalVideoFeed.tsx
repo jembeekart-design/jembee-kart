@@ -25,7 +25,7 @@ import CommentDrawer
 
 import Toast from "./Toast";
 import BottomQuickActions from "./BottomQuickActions";
-import { getWatchVideos, WatchVideo } from "../services/watchVideos.service";
+import type { WatchVideo } from "../services/watchVideos.service";
 import ExoClickShortsAd from "./ExoClickShortsAd";
 import { getExoClickShortsVastUrl } from "@/lib/ads/exoclick";
 
@@ -226,37 +226,82 @@ export default function VerticalVideoFeed({
     async function loadVideos() {
       try {
         setLoading(true);
+        setError(null);
 
-        const result = await getWatchVideos();
+        // Use the same server-approved catalogue as the native Mobile/TV app.
+        // The client Firestore query can be unavailable in WebView when its
+        // Firebase web session/config differs from the native app session.
+        const response = await fetch("/api/app/video-catalog?limit=40", {
+          method: "GET",
+          cache: "no-store",
+          headers: { Accept: "application/json" },
+        });
+        const result = await response.json() as {
+          success?: boolean;
+          error?: string;
+          videos?: Array<{
+            id: string;
+            creatorId?: string;
+            username?: string;
+            displayName?: string;
+            photoURL?: string;
+            caption?: string;
+            hashtags?: string[];
+            music?: string;
+            verified?: boolean;
+            likes?: number;
+            comments?: number;
+            shares?: number;
+            views?: number;
+            sponsor?: boolean;
+            videoAccess?: "free" | "paid";
+            videoFormat?: "short" | "long";
+            durationSeconds?: number | null;
+            createdAt?: number;
+          }>;
+        };
 
         if (!isMounted) return;
-
-        if (
-          result &&
-          result.success &&
-          Array.isArray(result.videos)
-        ) {
-          const shortsOnly = result.videos.filter((video) => video.videoFormat !== "long");
-          setVideos(shortsOnly);
-          if (shortsOnly.length === 0) {
-            setError(
-              "Firebase is connected, but no approved videos were found in the watchEarnVideos collection yet."
-            );
-          }
-        } else {
-          setVideos([]);
-          setError(
-            "JEMBEE PLAY could not load videos. Check Firebase configuration, Firestore access rules, and the watchEarnVideos collection."
-          );
+        if (!response.ok || result.success !== true || !Array.isArray(result.videos)) {
+          throw new Error(result.error || "Video catalogue is unavailable.");
         }
-      } catch {
-        if (!isMounted) return;
 
-        setError("Failed to load videos");
+        const shortsOnly: WatchVideo[] = result.videos
+          .filter((video) => video.videoFormat !== "long")
+          .map((video) => ({
+            id: video.id,
+            creatorId: video.creatorId || "",
+            username: video.username || "",
+            displayName: video.displayName || "JEMBEE PLAY Creator",
+            photoURL: video.photoURL || "",
+            caption: video.caption || "",
+            hashtags: Array.isArray(video.hashtags) ? video.hashtags : [],
+            music: video.music || "",
+            verified: video.verified === true,
+            video: `/api/shorts/video-stream/${encodeURIComponent(video.id)}`,
+            thumbnail: `/api/shorts/video-thumbnail/${encodeURIComponent(video.id)}`,
+            coins: 0,
+            likes: Number.isFinite(video.likes) ? Number(video.likes) : 0,
+            comments: Number.isFinite(video.comments) ? Number(video.comments) : 0,
+            shares: Number.isFinite(video.shares) ? Number(video.shares) : 0,
+            views: Number.isFinite(video.views) ? Number(video.views) : 0,
+            sponsor: video.sponsor === true,
+            videoAccess: video.videoAccess === "paid" ? "paid" : "free",
+            videoFormat: "short",
+            durationSeconds: video.durationSeconds || undefined,
+            createdAt: video.createdAt || 0,
+          }));
+        setVideos(shortsOnly);
+        if (shortsOnly.length === 0) {
+          setError("Abhi koi approved Short available nahi hai.");
+        }
+      } catch (loadError) {
+        if (!isMounted) return;
+        console.error("Unable to load Shorts catalogue:", loadError);
+        setVideos([]);
+        setError("JEMBEE PLAY Shorts abhi load nahi ho paaye. Internet connection check karke dobara try karein.");
       } finally {
-        if (isMounted) {
-          setLoading(false);
-        }
+        if (isMounted) setLoading(false);
       }
     }
 
