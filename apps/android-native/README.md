@@ -73,3 +73,18 @@ debug APKs use runner debug signing and are QA-only, not a permanent auto-update
 channel. Existing QA installs may need to be uninstalled before the first
 consistently signed release install. Keep the keystore and passwords in protected
 GitHub Actions secrets; never commit them.
+
+## Signed release APK CI
+
+The Android workflow builds signed Mobile and TV release APKs when all four
+repository Actions secrets are configured:
+
+- `ANDROID_RELEASE_KEYSTORE_BASE64`
+- `ANDROID_RELEASE_STORE_PASSWORD`
+- `ANDROID_RELEASE_KEY_ALIAS`
+- `ANDROID_RELEASE_KEY_PASSWORD`
+
+The keystore must remain backed up securely and must be reused for every
+subsequent update. The workflow publishes the signed APKs as the
+`jembee-play-android-signed-release-apks` artifact. Debug APKs are for QA only.
+
