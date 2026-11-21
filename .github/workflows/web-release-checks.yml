@@ -32,6 +32,8 @@ jobs:
         run: npm ci --no-audit --no-fund
       - name: TypeScript check
         run: npx tsc --noEmit --incremental false --pretty false
+      - name: Admin APK release and Storage policy contract tests
+        run: node --test src/app/api/admin/app-releases/__tests__/route-contract.test.mjs src/firebase/__tests__/storage-apk-release-rules.test.mjs
       - name: Admin Media Library regression tests
         run: npm run test:admin-media-library
       - name: Admin School Management regression tests
@@ -54,6 +56,11 @@ jobs:
           src/app/api/admin/delete-video/route.ts
           src/services/videoDeletionService.ts
           src/app/api/app/remote-config/route.ts
+          src/app/api/admin/app-releases/route.ts
+          'src/app/api/app/releases/[platform]/route.ts'
+          'src/app/api/app/releases/[platform]/download/route.ts'
+          src/app/admin/apk-manager/page.tsx
+          src/components/admin/AdminSidebar.tsx
           src/app/api/shorts/paid-video/create-order/route.ts
           src/app/api/shorts/paid-video/playback-session/route.ts
           src/app/download/page.tsx

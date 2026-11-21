@@ -16,9 +16,27 @@ service firebase.storage {
       return firestore.get(/databases/(default)/documents/watchVideoPaymentOrders/$(orderId)).data.status == 'paid';
     }
 
+    // APK release objects are immutable and private to clients. Admin SDK APIs
+    // verify and issue short-lived signed download URLs after publication.
+    match /app-releases/{platform}/{versionCode}/{fileName} {
+      allow create: if isAdmin()
+        && platform in ['mobile', 'tv']
+        && versionCode.matches('^[1-9][0-9]{0,8}$')
+        && fileName == platform + '-' + versionCode + '.apk'
+        && request.resource.size > 0
+        && request.resource.size <= 250 * 1024 * 1024
+        && request.resource.contentType == 'application/vnd.android.package-archive'
+        && request.resource.metadata.platform == platform
+        && request.resource.metadata.versionCode == versionCode
+        && request.resource.metadata.packageName == (platform == 'mobile' ? 'in.jembeeplay.mobile' : 'in.jembeeplay.tv')
+        && request.resource.metadata.sha256.matches('^[a-f0-9]{64}$')
+        && request.resource.metadata.uploadedByUid == request.auth.uid;
+
+      allow read, update, delete: if false;
+    }
+
     // Invoice evidence is write-once, admin-uploaded, scoped to a verified
     // paid-video order, and never directly readable/deletable by clients.
-    // The Super Admin verification API reads it with the Admin SDK.
     match /shorts-expense-evidence/{orderId}/{fileName} {
       allow create: if isAdmin()
         && isPaidVideoOrder(orderId)
