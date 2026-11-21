@@ -16,6 +16,8 @@ test("APK publishing validates fixed package IDs, increasing version code and pr
   assert.match(route, /in\.jembeeplay\.mobile/);
   assert.match(route, /in\.jembeeplay\.tv/);
   assert.match(route, /VERSION_CODE_NOT_INCREASING/);
+  assert.match(route, /VERSION_NAME_NOT_INCREASING/);
+  assert.match(route, /custom\.uploadedByUid !== identity\.uid/);
   assert.match(route, /app-releases/);
 });
 
