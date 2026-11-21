@@ -5,7 +5,7 @@ import { usePathname } from "next/navigation";
 import {
   LayoutDashboard, Video, ShieldCheck, GraduationCap, ChartNoAxesCombined,
   Users, Bell, Wallet, Smartphone, HardDrive, Settings, Radio, Megaphone,
-  FileVideo, Bot, Layers3,
+  FileVideo, Bot, Layers3, Package,
 } from "lucide-react";
 
 const items = [
@@ -22,6 +22,7 @@ const items = [
   ["Users", "/admin/users", Users],
   ["Notifications", "/admin/notifications", Bell],
   ["Mobile app", "/admin/mobile-app", Smartphone],
+  ["APK Update Manager", "/admin/apk-manager", Package],
   ["Storage", "/admin/storage", HardDrive],
   ["Security", "/admin/security", ShieldCheck],
   ["ChatGPT integration", "/admin/integrations/chatgpt", Bot],
