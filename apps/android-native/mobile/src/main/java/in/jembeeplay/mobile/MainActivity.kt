@@ -34,6 +34,7 @@ import androidx.compose.material.icons.filled.Home
 import androidx.compose.material.icons.filled.MenuBook
 import androidx.compose.material.icons.filled.Notifications
 import androidx.compose.material.icons.filled.Person
+import androidx.compose.material.icons.filled.Pause
 import androidx.compose.material.icons.filled.PlayArrow
 import androidx.compose.material.icons.filled.Search
 import androidx.compose.material.icons.filled.VideoLibrary
@@ -344,6 +345,7 @@ private fun ShortsScreen(onBack: () -> Unit, onOpenWatch: (JembeeVideo) -> Unit,
     var loading by remember { mutableStateOf(true) }
     var muted by remember { mutableStateOf(false) }
     var liked by remember { mutableStateOf<Set<String>>(emptySet()) }
+    var playingById by remember { mutableStateOf<Map<String, Boolean>>(emptyMap()) }
     LaunchedEffect(Unit) {
         VideoCatalogClient.fetch("short") { items, message ->
             videos = items
@@ -364,7 +366,11 @@ private fun ShortsScreen(onBack: () -> Unit, onOpenWatch: (JembeeVideo) -> Unit,
                 val video = videos[page]
                 val isLiked = video.id in liked
                 Box(Modifier.fillMaxSize().background(Color.Black)) {
-                    RealVideoPlayer(video.streamUrl, Modifier.fillMaxSize(), autoplay = pagerState.currentPage == page, isMuted = muted, showController = false, fillVideo = true)
+                    val isPlaying = playingById[video.id] ?: (pagerState.currentPage == page)
+                    RealVideoPlayer(video.streamUrl, Modifier.fillMaxSize(), autoplay = pagerState.currentPage == page && isPlaying, isMuted = muted, showController = false, fillVideo = true)
+                    Surface(onClick = { playingById = playingById + (video.id to !isPlaying) }, color = Color(0x66000000), shape = CircleShape, modifier = Modifier.align(Alignment.Center).size(66.dp)) {
+                        Box(contentAlignment = Alignment.Center) { Icon(if (isPlaying) Icons.Filled.Pause else Icons.Filled.PlayArrow, contentDescription = if (isPlaying) "Pause video" else "Play video", tint = Color.White, modifier = Modifier.size(38.dp)) }
+                    }
                     Box(Modifier.fillMaxWidth().height(210.dp).align(Alignment.TopCenter).background(Brush.verticalGradient(listOf(Color(0x9906060B), Color.Transparent))))
                     Box(Modifier.fillMaxWidth().height(310.dp).align(Alignment.BottomCenter).background(Brush.verticalGradient(listOf(Color.Transparent, Color(0xAA050509), Color(0xDD050509)))))
                     Row(Modifier.align(Alignment.TopEnd).padding(top = 18.dp, end = 16.dp), horizontalArrangement = Arrangement.spacedBy(12.dp), verticalAlignment = Alignment.CenterVertically) {
@@ -373,8 +379,8 @@ private fun ShortsScreen(onBack: () -> Unit, onOpenWatch: (JembeeVideo) -> Unit,
                         ShortsHeaderButton("♧", "Notifications") { onOpenWeb("/videos/notifications", "Notifications") }
                     }
                     Column(Modifier.align(Alignment.CenterEnd).padding(end = 12.dp, top = 74.dp, bottom = 112.dp), horizontalAlignment = Alignment.CenterHorizontally, verticalArrangement = Arrangement.spacedBy(13.dp)) {
-                        ShortsRailAction(if (isLiked) "♥" else "♡", compactCount(video.likes)) { onOpenWeb("/videos/original/${video.id}", "Video & Likes") }
-                        ShortsRailAction("▤", "Comment") { onOpenWeb("/videos/original/${video.id}", "Video & Comments") }
+                        ShortsRailAction(if (isLiked) "♥" else "♡", compactCount(video.likes)) { onOpenWeb("/shorts?v=${Uri.encode(video.id)}&nativeAction=like", "JEMBEE PLAY Shorts") }
+                        ShortsRailAction("▤", "Comment") { onOpenWeb("/shorts?v=${Uri.encode(video.id)}&nativeAction=comment", "JEMBEE PLAY Comments") }
                         ShortsRailAction("🎁", "Support") { onOpenWeb("/login?redirect=%2Fvideos%2Freward-center", "Creator Support") }
                         ShortsRailAction("↗", "Share") {
                             val send = Intent(Intent.ACTION_SEND).apply {
@@ -383,7 +389,7 @@ private fun ShortsScreen(onBack: () -> Unit, onOpenWatch: (JembeeVideo) -> Unit,
                             }
                             context.startActivity(Intent.createChooser(send, "Share Jembee Short"))
                         }
-                        ShortsRailAction("⋮", "More") { onOpenWatch(video) }
+                        ShortsRailAction("⋮", "More") { onOpenWeb("/shorts?v=${Uri.encode(video.id)}&nativeAction=more", "JEMBEE PLAY Options") }
                         ShortsRailAction(if (muted) "◖" else "◖))", "Sound") { muted = !muted }
                     }
                     Column(Modifier.align(Alignment.BottomStart).fillMaxWidth().padding(start = 22.dp, end = 104.dp, bottom = 30.dp), verticalArrangement = Arrangement.spacedBy(9.dp)) {
@@ -404,10 +410,7 @@ private fun ShortsScreen(onBack: () -> Unit, onOpenWatch: (JembeeVideo) -> Unit,
                                 }
                             }
                             Column(Modifier.weight(1f).clickable { onOpenWeb("/login?redirect=%2Fvideos%2Fprofile", "Creator Profile") }) {
-                                val rawHandle = video.username.substringBefore("@").removePrefix("@").trim()
-                                val handle = rawHandle.ifBlank { video.creatorName.lowercase().replace(Regex("[^a-z0-9]+"), "_").trim('_') }.ifBlank { "creator" }
-                                Text("@$handle", color = Color.White, fontSize = 15.sp, fontWeight = FontWeight.Bold, maxLines = 1)
-                                Text(video.creatorName, color = Color.White.copy(alpha = .72f), fontSize = 11.sp, maxLines = 1)
+                                Text(video.creatorName.ifBlank { video.username.substringBefore("@").ifBlank { "JEMBEE PLAY Creator" } }, color = Color.White, fontSize = 15.sp, fontWeight = FontWeight.Bold, maxLines = 1)
                             }
                             TextButton(onClick = { onOpenWeb("/login", "Follow Creator") }, colors = ButtonDefaults.textButtonColors(contentColor = Color.White), modifier = Modifier.background(Color(0xFF8D25C8), RoundedCornerShape(24.dp))) {
                                 Text("Follow", fontWeight = FontWeight.Bold)
