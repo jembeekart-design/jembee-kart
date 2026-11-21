@@ -6,6 +6,7 @@ import path from "node:path";
 const route = fs.readFileSync(path.join(process.cwd(), "src/app/api/admin/app-releases/route.ts"), "utf8");
 const publicRoute = fs.readFileSync(path.join(process.cwd(), "src/app/api/app/releases/[platform]/route.ts"), "utf8");
 const page = fs.readFileSync(path.join(process.cwd(), "src/app/admin/apk-manager/page.tsx"), "utf8");
+const publicDownload = fs.readFileSync(path.join(process.cwd(), "src/app/api/app/releases/[platform]/download/route.ts"), "utf8");
 
 test("APK publishing requires an admin token", () => {
   assert.match(route, /requireAdmin\(request\)/);
