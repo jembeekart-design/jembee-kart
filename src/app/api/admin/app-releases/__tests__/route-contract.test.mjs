@@ -19,7 +19,7 @@ test("APK publishing verifies a published GitHub Release in the official reposit
   assert.ok(route.includes("releases/tags/"));
   assert.ok(route.includes("ghRelease.draft || ghRelease.prerelease"));
   assert.ok(route.includes("browser_download_url"));
-  assert.ok(route.includes("target.pathname.startsWith"));
+  assert.ok(route.includes("url.pathname.startsWith"));
 });
 
 test("APK publishing requires GitHub SHA-256 digest, valid size and fixed package IDs", () => {
