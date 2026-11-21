@@ -139,53 +139,6 @@ private fun HomeScreen(onOpenShorts: () -> Unit, onOpenWatch: (JembeeVideo) -> U
     var longLoading by remember { mutableStateOf(true) }
     var shortsError by remember { mutableStateOf<String?>(null) }
     var longError by remember { mutableStateOf<String?>(null) }
-    fun toggleFollow(video: JembeeVideo) {
-        val token = authToken
-        if (token.isNullOrBlank()) {
-            Toast.makeText(context, "Follow karne ke liye pehle login karein", Toast.LENGTH_SHORT).show()
-            return
-        }
-        if (video.creatorId.isBlank() || video.creatorId in followBusy) {
-            if (video.creatorId.isBlank()) Toast.makeText(context, "Creator profile unavailable", Toast.LENGTH_SHORT).show()
-            return
-        }
-        val isFollowing = video.creatorId in following
-        followBusy = followBusy + video.creatorId
-        Thread {
-            val result = runCatching {
-                val connection = (URL("https://jembeeplay.in/api/app/follow").openConnection() as HttpURLConnection).apply {
-                    requestMethod = "POST"
-                    connectTimeout = 10000
-                    readTimeout = 15000
-                    doOutput = true
-                    setRequestProperty("Authorization", "Bearer $token")
-                    setRequestProperty("Content-Type", "application/json")
-                    setRequestProperty("Accept", "application/json")
-                }
-                try {
-                    val payload = JSONObject().put("creatorId", video.creatorId)
-                        .put("action", if (isFollowing) "unfollow" else "follow").toString()
-                    connection.outputStream.use { it.write(payload.toByteArray(Charsets.UTF_8)) }
-                    val status = connection.responseCode
-                    val body = (if (status in 200..299) connection.inputStream else connection.errorStream)
-                        ?.bufferedReader()?.use { it.readText() }.orEmpty()
-                    val json = JSONObject(body.ifBlank { "{}" })
-                    Triple(status, json.optBoolean("success"), json.optString("message"))
-                } finally { connection.disconnect() }
-            }
-            android.os.Handler(android.os.Looper.getMainLooper()).post {
-                followBusy = followBusy - video.creatorId
-                val (status, success, message) = result.getOrElse { Triple(0, false, it.message ?: "Network error") }
-                if (success) {
-                    following = if (isFollowing) following - video.creatorId else following + video.creatorId
-                    Toast.makeText(context, if (isFollowing) "Unfollowed" else "Following creator", Toast.LENGTH_SHORT).show()
-                } else {
-                    Toast.makeText(context, if (status == 401 || status == 403) "Session expire hai, dobara login karein" else message.ifBlank { "Follow update nahi hua" }, Toast.LENGTH_SHORT).show()
-                }
-            }
-        }.start()
-    }
-
     LaunchedEffect(Unit) {
         VideoCatalogClient.fetch("short") { items, message -> shorts = items; shortsError = message; shortsLoading = false }
         VideoCatalogClient.fetch("long") { items, message -> longVideos = items; longError = message; longLoading = false }
@@ -480,6 +433,53 @@ private fun ShortsScreen(onBack: () -> Unit, onOpenWatch: (JembeeVideo) -> Unit,
                     }
                 } else {
                     Toast.makeText(context, if (status == 401 || status == 403) "Session expire hai, dobara login karein" else message.ifBlank { "Like update nahi hua" }, Toast.LENGTH_SHORT).show()
+                }
+            }
+        }.start()
+    }
+
+    fun toggleFollow(video: JembeeVideo) {
+        val token = authToken
+        if (token.isNullOrBlank()) {
+            Toast.makeText(context, "Follow karne ke liye pehle login karein", Toast.LENGTH_SHORT).show()
+            return
+        }
+        if (video.creatorId.isBlank() || video.creatorId in followBusy) {
+            if (video.creatorId.isBlank()) Toast.makeText(context, "Creator profile unavailable", Toast.LENGTH_SHORT).show()
+            return
+        }
+        val isFollowing = video.creatorId in following
+        followBusy = followBusy + video.creatorId
+        Thread {
+            val result = runCatching {
+                val connection = (URL("https://jembeeplay.in/api/app/follow").openConnection() as HttpURLConnection).apply {
+                    requestMethod = "POST"
+                    connectTimeout = 10000
+                    readTimeout = 15000
+                    doOutput = true
+                    setRequestProperty("Authorization", "Bearer $token")
+                    setRequestProperty("Content-Type", "application/json")
+                    setRequestProperty("Accept", "application/json")
+                }
+                try {
+                    val payload = JSONObject().put("creatorId", video.creatorId)
+                        .put("action", if (isFollowing) "unfollow" else "follow").toString()
+                    connection.outputStream.use { it.write(payload.toByteArray(Charsets.UTF_8)) }
+                    val status = connection.responseCode
+                    val body = (if (status in 200..299) connection.inputStream else connection.errorStream)
+                        ?.bufferedReader()?.use { it.readText() }.orEmpty()
+                    val json = JSONObject(body.ifBlank { "{}" })
+                    Triple(status, json.optBoolean("success"), json.optString("message"))
+                } finally { connection.disconnect() }
+            }
+            android.os.Handler(android.os.Looper.getMainLooper()).post {
+                followBusy = followBusy - video.creatorId
+                val (status, success, message) = result.getOrElse { Triple(0, false, it.message ?: "Network error") }
+                if (success) {
+                    following = if (isFollowing) following - video.creatorId else following + video.creatorId
+                    Toast.makeText(context, if (isFollowing) "Unfollowed" else "Following creator", Toast.LENGTH_SHORT).show()
+                } else {
+                    Toast.makeText(context, if (status == 401 || status == 403) "Session expire hai, dobara login karein" else message.ifBlank { "Follow update nahi hua" }, Toast.LENGTH_SHORT).show()
                 }
             }
         }.start()
