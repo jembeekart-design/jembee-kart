@@ -8,8 +8,6 @@ export const metadata: Metadata = {
 };
 
 export default function DownloadPage() {
-  const mobileUrl = process.env.NEXT_PUBLIC_JEMBEE_ANDROID_MOBILE_APK_URL || "";
-  const tvUrl = process.env.NEXT_PUBLIC_JEMBEE_ANDROID_TV_APK_URL || "";
 
   return (
     <main className="min-h-screen bg-white text-slate-950">
