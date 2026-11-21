@@ -846,7 +846,6 @@ export default function VerticalVideoFeed({
                 }}
 
                 currentPlaybackSpeed={playbackSpeeds[video.id] || 1}
-                initialMenuOpen={requestedNativeAction === "more"}
               />
             </section>
 
