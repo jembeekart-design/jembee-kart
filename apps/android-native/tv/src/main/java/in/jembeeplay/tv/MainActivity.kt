@@ -10,8 +10,6 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.runtime.*
-import androidx.compose.material3.AlertDialog
-import androidx.compose.material3.TextButton
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -69,17 +67,17 @@ private fun JembeeTvApp() {
 
     MaterialTheme(colorScheme = darkColorScheme(primary = TvAccent, background = Color(0xFF080B12), surface = Color(0xFF151B27))) {
         if (showUpdatePrompt) {
-            AlertDialog(
+            androidx.tv.material3.AlertDialog(
                 onDismissRequest = { if (!updateIsMandatory) showUpdatePrompt = false },
-                title = { androidx.compose.material3.Text(if (updateIsMandatory) "Update required" else "JEMBEE PLAY TV update available") },
+                title = { Text(if (updateIsMandatory) "Update required" else "JEMBEE PLAY TV update available") },
                 text = { androidx.compose.material3.Text("Naya version ${remoteConfig.latestVersion} available hai. TV app update karein.") },
                 confirmButton = {
-                    TextButton(onClick = { AndroidUpdateClient.downloadAndInstall(context, remoteConfig.updateUrl) }) {
+                    Button(onClick = { AndroidUpdateClient.downloadAndInstall(context, remoteConfig.updateUrl) }) {
                         androidx.compose.material3.Text("Update now")
                     }
                 },
                 dismissButton = if (updateIsMandatory) null else ({
-                    TextButton(onClick = { showUpdatePrompt = false }) { androidx.compose.material3.Text("Later") }
+                    Button(onClick = { showUpdatePrompt = false }) { androidx.compose.material3.Text("Later") }
                 })
             )
         }
