@@ -13,6 +13,7 @@ import androidx.media3.exoplayer.ExoPlayer
 import androidx.media3.exoplayer.ima.ImaAdsLoader
 import androidx.media3.exoplayer.source.DefaultMediaSourceFactory
 import androidx.media3.ui.PlayerView
+import androidx.media3.ui.AspectRatioFrameLayout
 
 @OptIn(UnstableApi::class)
 @Composable
@@ -22,11 +23,12 @@ fun RealVideoPlayer(
     autoplay: Boolean = true,
     adTagUrl: String? = null,
     isMuted: Boolean = false,
-    showController: Boolean = true
+    showController: Boolean = true,
+    fillVideo: Boolean = false
 ) {
     val context = LocalContext.current
     val playerView = remember(context) {
-        PlayerView(context).apply { useController = showController }
+        PlayerView(context).apply { useController = showController; resizeMode = if (fillVideo) AspectRatioFrameLayout.RESIZE_MODE_ZOOM else AspectRatioFrameLayout.RESIZE_MODE_FIT }
     }
     val imaAdsLoader = remember(context, adTagUrl) {
         if (adTagUrl.isNullOrBlank()) null else ImaAdsLoader.Builder(context)
@@ -70,6 +72,7 @@ fun RealVideoPlayer(
         factory = { playerView.apply { this.player = player } },
         update = {
             it.useController = showController
+            it.resizeMode = if (fillVideo) AspectRatioFrameLayout.RESIZE_MODE_ZOOM else AspectRatioFrameLayout.RESIZE_MODE_FIT
             it.player = player
             player.playWhenReady = autoplay
             player.volume = if (isMuted) 0f else 1f
