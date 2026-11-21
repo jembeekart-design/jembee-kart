@@ -9,6 +9,8 @@ export const dynamic = "force-dynamic";
 
 const VERSION = /^\d{1,4}\.\d{1,4}\.\d{1,4}$/;
 const MAX_APK_BYTES = 250 * 1024 * 1024;
+const CURRENT_APP_VERSION_CODE = 2;
+const CURRENT_APP_VERSION_NAME = "0.2.0";
 const PACKAGES = { mobile: "in.jembeeplay.mobile", tv: "in.jembeeplay.tv" } as const;
 const UPDATE_PAGE = { mobile: "https://jembeeplay.in/download#android-mobile", tv: "https://jembeeplay.in/download#android-tv" } as const;
 
@@ -88,8 +90,10 @@ export async function POST(request: Request) {
     const published = await db.runTransaction(async (tx) => {
       const [releaseSnap, configSnap] = await Promise.all([tx.get(releaseRef), tx.get(configRef)]);
       const currentRelease = releaseSnap.data();
-      if (currentRelease && Number(currentRelease.versionCode || 0) >= Number(versionCode)) throw new Error("VERSION_CODE_NOT_INCREASING");
-      if (currentRelease && typeof currentRelease.versionName === "string" && compareVersions(versionName, currentRelease.versionName) <= 0) throw new Error("VERSION_NAME_NOT_INCREASING");
+      const currentVersionCode = Number(currentRelease?.versionCode || CURRENT_APP_VERSION_CODE);
+      const currentVersionName = typeof currentRelease?.versionName === "string" ? currentRelease.versionName : CURRENT_APP_VERSION_NAME;
+      if (currentVersionCode >= Number(versionCode)) throw new Error("VERSION_CODE_NOT_INCREASING");
+      if (compareVersions(versionName, currentVersionName) <= 0) throw new Error("VERSION_NAME_NOT_INCREASING");
       const minimumParts = minimumVersionName.split(".").map(Number);
       const releaseParts = versionName.split(".").map(Number);
       const minimumGreater = minimumParts.some((part, index) => {
