@@ -348,7 +348,82 @@ private fun ShortsScreen(onBack: () -> Unit, onOpenWatch: (JembeeVideo) -> Unit,
     var loading by remember { mutableStateOf(true) }
     var muted by remember { mutableStateOf(false) }
     var liked by remember { mutableStateOf<Set<String>>(emptySet()) }
+    var likeCounts by remember { mutableStateOf<Map<String, Int>>(emptyMap()) }
+    var authToken by remember { mutableStateOf<String?>(null) }
+    var likeBusy by remember { mutableStateOf<Set<String>>(emptySet()) }
     var playingById by remember { mutableStateOf<Map<String, Boolean>>(emptyMap()) }
+
+    AndroidView(
+        modifier = Modifier.size(1.dp),
+        factory = { viewContext ->
+            WebView(viewContext).apply {
+                settings.javaScriptEnabled = true
+                settings.domStorageEnabled = true
+                addJavascriptInterface(object {
+                    @android.webkit.JavascriptInterface
+                    fun onToken(token: String) {
+                        android.os.Handler(android.os.Looper.getMainLooper()).post {
+                            authToken = token.takeIf { it.isNotBlank() }
+                        }
+                    }
+                    @android.webkit.JavascriptInterface
+                    fun onSignedOut() {
+                        android.os.Handler(android.os.Looper.getMainLooper()).post { authToken = null }
+                    }
+                }, "JembeeNativeAuth")
+                webViewClient = WebViewClient()
+                loadUrl("https://jembeeplay.in/native-auth-bridge")
+            }
+        },
+        update = {}
+    )
+
+    fun submitLike(video: JembeeVideo, currentlyLiked: Boolean) {
+        val token = authToken
+        if (token.isNullOrBlank()) {
+            Toast.makeText(context, "Like karne ke liye pehle login karein", Toast.LENGTH_SHORT).show()
+            return
+        }
+        if (video.id in likeBusy) return
+        likeBusy = likeBusy + video.id
+        Thread {
+            val result = runCatching {
+                val connection = (URL("https://jembeeplay.in/api/shorts/video-like").openConnection() as HttpURLConnection).apply {
+                    requestMethod = "POST"
+                    connectTimeout = 10000
+                    readTimeout = 15000
+                    doOutput = true
+                    setRequestProperty("Content-Type", "application/json")
+                    setRequestProperty("Accept", "application/json")
+                }
+                try {
+                    val payload = JSONObject().put("videoId", video.id)
+                        .put("action", if (currentlyLiked) "unlike" else "like")
+                        .put("token", token).toString()
+                    connection.outputStream.use { it.write(payload.toByteArray(Charsets.UTF_8)) }
+                    val status = connection.responseCode
+                    val stream = if (status in 200..299) connection.inputStream else connection.errorStream
+                    val body = stream?.bufferedReader()?.use { it.readText() }.orEmpty()
+                    val json = JSONObject(body.ifBlank { "{}" })
+                    Triple(status, json.optBoolean("success"), json.optString("message"))
+                } finally { connection.disconnect() }
+            }
+            android.os.Handler(android.os.Looper.getMainLooper()).post {
+                likeBusy = likeBusy - video.id
+                val (status, success, message) = result.getOrElse { Triple(0, false, it.message ?: "Network error") }
+                val alreadyInTargetState = (currentlyLiked && status == 409 && message == "Not liked") ||
+                    (!currentlyLiked && status == 409 && message == "Already liked")
+                if (success || alreadyInTargetState) {
+                    liked = if (currentlyLiked) liked - video.id else liked + video.id
+                    val current = likeCounts[video.id] ?: video.likes
+                    likeCounts = likeCounts + (video.id to (current + if (currentlyLiked) -1 else 1).coerceAtLeast(0))
+                } else {
+                    Toast.makeText(context, if (status == 401 || status == 403) "Session expire hai, dobara login karein" else message.ifBlank { "Like update nahi hua" }, Toast.LENGTH_SHORT).show()
+                }
+            }
+        }.start()
+    }
+
     LaunchedEffect(Unit) {
         VideoCatalogClient.fetch("short") { items, message ->
             videos = items
@@ -382,7 +457,9 @@ private fun ShortsScreen(onBack: () -> Unit, onOpenWatch: (JembeeVideo) -> Unit,
                         ShortsHeaderButton("♧", "Notifications") { onOpenWeb("/videos/notifications", "Notifications") }
                     }
                     Column(Modifier.align(Alignment.CenterEnd).padding(end = 12.dp, top = 74.dp, bottom = 112.dp), horizontalAlignment = Alignment.CenterHorizontally, verticalArrangement = Arrangement.spacedBy(13.dp)) {
-                        ShortsRailAction(if (isLiked) "♥" else "♡", compactCount(video.likes)) { onOpenWeb("/shorts?v=${Uri.encode(video.id)}&nativeAction=like", "JEMBEE PLAY · Like") }
+                        ShortsRailAction(if (isLiked) "♥" else "♡", compactCount(likeCounts[video.id] ?: video.likes)) {
+                            submitLike(video, isLiked)
+                        }
                         ShortsRailAction("▤", "Comment") { onOpenWeb("/shorts?v=${Uri.encode(video.id)}&nativeAction=comment", "JEMBEE PLAY · Comments") }
                         ShortsRailAction("🎁", "Support") { onOpenWeb("/login?redirect=%2Fvideos%2Freward-center", "Creator Support") }
                         ShortsRailAction("↗", "Share") {
