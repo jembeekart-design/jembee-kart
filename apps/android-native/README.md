@@ -53,19 +53,19 @@ Never commit service-account keys, signing keystores, passwords, payment secrets
 
 Both native apps check the public remote config for their own `latestVersions`,
 `minimumVersions`, and `updateUrls` channel. When a newer version and a valid
-HTTPS APK URL are configured, the app shows an update prompt, downloads the
-matching APK with Android DownloadManager, and opens Android's package installer.
-Android still requires the user to approve installation; a normal app cannot
-silently install an APK.
+HTTPS update page URL are configured, the app shows an update prompt and opens
+that page in the browser. The native apps intentionally do not request
+`REQUEST_INSTALL_PACKAGES` or sideload APKs. For seamless and trusted in-app
+updates, distribute the apps through Google Play and use Play In-App Updates.
 
 Configure the Firestore document `app_remote_config/current`:
 - `latestVersions.mobile` / `latestVersions.tv`: currently published version
 - `minimumVersions.mobile` / `minimumVersions.tv`: minimum supported version
-- `updateUrls.mobile` / `updateUrls.tv`: permanent HTTPS URL for the matching APK
+- `updateUrls.mobile` / `updateUrls.tv`: HTTPS update page (prefer official Play Store listing)
 
 The API defaults both latest versions to `0.2.0` (the current native app version),
 minimum versions to `0.1.0`, and update URLs to empty. Therefore no update prompt
-is shown until a newer version AND its matching HTTPS APK URL are published.
+is shown until a newer version AND its HTTPS update page URL are published.
 
 Only publish APKs signed with the same persistent release keystore. Android
 rejects an in-place update if the signing certificate changes. GitHub Actions
