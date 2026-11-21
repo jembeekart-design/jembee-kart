@@ -373,7 +373,6 @@ private fun ShortsScreen(onBack: () -> Unit, onOpenWatch: (JembeeVideo) -> Unit,
                         ShortsHeaderButton("♧", "Notifications") { onOpenWeb("/videos/notifications", "Notifications") }
                     }
                     Column(Modifier.align(Alignment.CenterEnd).padding(end = 12.dp, top = 74.dp, bottom = 112.dp), horizontalAlignment = Alignment.CenterHorizontally, verticalArrangement = Arrangement.spacedBy(13.dp)) {
-                        ShortsRailAction("▣", "Video") { onOpenWatch(video) }
                         ShortsRailAction(if (isLiked) "♥" else "♡", compactCount(video.likes)) { onOpenWeb("/videos/original/${video.id}", "Video & Likes") }
                         ShortsRailAction("▤", "Comment") { onOpenWeb("/videos/original/${video.id}", "Video & Comments") }
                         ShortsRailAction("🎁", "Support") { onOpenWeb("/login?redirect=%2Fvideos%2Freward-center", "Creator Support") }
@@ -389,11 +388,25 @@ private fun ShortsScreen(onBack: () -> Unit, onOpenWatch: (JembeeVideo) -> Unit,
                     }
                     Column(Modifier.align(Alignment.BottomStart).fillMaxWidth().padding(start = 22.dp, end = 104.dp, bottom = 30.dp), verticalArrangement = Arrangement.spacedBy(9.dp)) {
                         Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(10.dp)) {
-                            Box(Modifier.size(48.dp).background(Color(0xFF30253B), CircleShape), contentAlignment = Alignment.Center) {
-                                Text(video.creatorName.take(1).uppercase(), color = Color.White, fontSize = 19.sp, fontWeight = FontWeight.Bold)
+                            Surface(
+                                onClick = { onOpenWeb("/login?redirect=%2Fvideos%2Fprofile", "Upload Profile Photo") },
+                                color = Color(0xFF30253B),
+                                shape = CircleShape,
+                                border = androidx.compose.foundation.BorderStroke(1.dp, Color.White.copy(alpha = .35f)),
+                                modifier = Modifier.size(48.dp)
+                            ) {
+                                Box(contentAlignment = Alignment.Center) {
+                                    if (video.photoUrl.isNotBlank()) {
+                                        AsyncImage(model = video.photoUrl, contentDescription = "Creator profile photo", contentScale = ContentScale.Crop, modifier = Modifier.fillMaxSize())
+                                    } else {
+                                        Icon(Icons.Filled.Person, contentDescription = "Upload profile photo", tint = Color.White, modifier = Modifier.size(27.dp))
+                                    }
+                                }
                             }
-                            Column(Modifier.weight(1f)) {
-                                Text(video.username.ifBlank { video.creatorName }, color = Color.White, fontSize = 15.sp, fontWeight = FontWeight.Bold, maxLines = 1)
+                            Column(Modifier.weight(1f).clickable { onOpenWeb("/login?redirect=%2Fvideos%2Fprofile", "Creator Profile") }) {
+                                val rawHandle = video.username.substringBefore("@").removePrefix("@").trim()
+                                val handle = rawHandle.ifBlank { video.creatorName.lowercase().replace(Regex("[^a-z0-9]+"), "_").trim('_') }.ifBlank { "creator" }
+                                Text("@$handle", color = Color.White, fontSize = 15.sp, fontWeight = FontWeight.Bold, maxLines = 1)
                                 Text(video.creatorName, color = Color.White.copy(alpha = .72f), fontSize = 11.sp, maxLines = 1)
                             }
                             TextButton(onClick = { onOpenWeb("/login", "Follow Creator") }, colors = ButtonDefaults.textButtonColors(contentColor = Color.White), modifier = Modifier.background(Color(0xFF8D25C8), RoundedCornerShape(24.dp))) {
