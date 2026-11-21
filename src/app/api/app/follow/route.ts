@@ -4,6 +4,26 @@ import { getAdminAuth, getAdminDb } from "@/firebase/admin";
 
 export const runtime = "nodejs";
 
+
+export async function GET(req: Request) {
+  try {
+    const authorization = req.headers.get("authorization");
+    if (!authorization?.startsWith("Bearer ")) {
+      return NextResponse.json({ success: false, message: "Authentication required" }, { status: 401 });
+    }
+    const decoded = await getAdminAuth().verifyIdToken(authorization.slice(7).trim(), true);
+    const db = getAdminDb();
+    const snapshot = await db.collection("users").doc(decoded.uid).collection("following").get();
+    return NextResponse.json({
+      success: true,
+      following: snapshot.docs.map((item) => item.id),
+    });
+  } catch (error) {
+    console.error("[NativeFollow] Unable to load following list:", error);
+    return NextResponse.json({ success: false, message: "Unable to load following list" }, { status: 500 });
+  }
+}
+
 export async function POST(req: Request) {
   try {
     const authorization = req.headers.get("authorization");
