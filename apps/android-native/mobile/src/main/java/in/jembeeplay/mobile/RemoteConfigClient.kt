@@ -15,8 +15,8 @@ data class JembeeRemoteConfig(
     val paidVideoEnabled: Boolean = false,
     val adsEnabled: Boolean = false,
     val notificationsEnabled: Boolean = false,
-    val latestVersion: String = "0.1.0",
-    val minimumVersion: String = "0.1.0",
+    val latestVersion: String = "0.2.0",
+    val minimumVersion: String = "0.2.0",
     val updateUrl: String = ""
 )
 
@@ -75,8 +75,8 @@ object RemoteConfigClient {
             paidVideoEnabled = features.optBoolean("paidVideo", false),
             adsEnabled = features.optBoolean("videoAds", false),
             notificationsEnabled = features.optBoolean("notifications", false),
-            latestVersion = latest.optString("mobile", "0.1.0").take(20),
-            minimumVersion = minimum.optString("mobile", "0.1.0").take(20),
+            latestVersion = latest.optString("mobile", "0.2.0").take(20),
+            minimumVersion = minimum.optString("mobile", "0.2.0").take(20),
             updateUrl = safeUpdateUrl
         )
     }
