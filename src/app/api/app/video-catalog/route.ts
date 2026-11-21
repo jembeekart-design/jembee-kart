@@ -70,12 +70,19 @@ export async function GET(request: Request) {
       const data = doc.data();
       const creatorId = safeString(data.userId || data.creatorId, 160);
       const profile = creatorProfiles.get(creatorId) || {};
+      const rawUsername = safeString(data.username || profile.username || profile.userName || profile.handle, 80);
+      const username = rawUsername.includes("@") ? "" : rawUsername;
+      const rawDisplayName = safeString(data.displayName || profile.displayName || profile.name || profile.fullName, 120);
+      const displayName = rawDisplayName.includes("@")
+        ? (username || "JEMBEE PLAY Creator")
+        : (rawDisplayName || username || "JEMBEE PLAY Creator");
+      const photoURL = safeString(data.photoURL || data.photo || profile.photoURL || profile.photoUrl || profile.photo || profile.avatarUrl || profile.profileImage, 2048);
       return {
         id: doc.id,
         creatorId,
-        username: safeString(data.username || profile.username || profile.userName, 80),
-        displayName: safeString(data.displayName || profile.displayName || profile.name, 120),
-        photoURL: safeString(data.photoURL || data.photo || profile.photoURL || profile.photoUrl || profile.photo, 2048),
+        username,
+        displayName,
+        photoURL,
         caption: safeString(data.caption),
         hashtags: safeTags(data.hashtags),
         music: safeString(data.music, 160),
