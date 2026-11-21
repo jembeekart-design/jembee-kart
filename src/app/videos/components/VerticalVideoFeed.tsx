@@ -142,26 +142,38 @@ export default function VerticalVideoFeed({
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
-    if (!currentUserId) return;
+    if (!currentUserId) {
+      setFollowingState(null);
+      return;
+    }
 
-    const followingRef = collection(
-      db,
-      'users',
-      currentUserId,
-      'following'
-    );
-
-    const unsubscribe = onSnapshot(
-      followingRef,
-      (snapshot) => setFollowingState({ userId: currentUserId, ids: snapshot.docs.map((item) => item.id) }),
-      (snapshotError) => {
-        console.error("Unable to load following list:", snapshotError);
-        setFollowingState({ userId: currentUserId, ids: [] });
-        setToastMessage("Following list is temporarily unavailable.");
+    let cancelled = false;
+    async function loadFollowingList() {
+      try {
+        const user = auth.currentUser;
+        if (!user) throw new Error("Sign in to load your following list.");
+        const token = await user.getIdToken();
+        const response = await fetch("/api/app/follow", {
+          method: "GET",
+          cache: "no-store",
+          headers: { Authorization: `Bearer ${token}`, Accept: "application/json" },
+        });
+        const result = await response.json() as { success?: boolean; following?: string[]; message?: string };
+        if (!response.ok || result.success !== true || !Array.isArray(result.following)) {
+          throw new Error(result.message || "Unable to load following list.");
+        }
+        if (!cancelled) setFollowingState({ userId: currentUserId, ids: result.following });
+      } catch (loadError) {
+        console.error("Unable to load following list:", loadError);
+        if (!cancelled) {
+          setFollowingState({ userId: currentUserId, ids: [] });
+          setToastMessage("Following list is temporarily unavailable. Please try again.");
+        }
       }
-    );
+    }
 
-    return () => unsubscribe();
+    void loadFollowingList();
+    return () => { cancelled = true; };
   }, [currentUserId]);
 
   const filteredVideos = useMemo(() => {
