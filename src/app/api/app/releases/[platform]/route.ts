@@ -15,11 +15,7 @@ export async function GET(_request: Request, context: { params: Promise<{ platfo
     if (!snap.exists || !release || release.active !== true || typeof release.storagePath !== "string") {
       return NextResponse.json({ success: true, available: false }, { headers: { "Cache-Control": "no-store" } });
     }
-    const file = getAdminStorage().bucket().file(release.storagePath);
-    const [exists] = await file.exists();
-    if (!exists) return NextResponse.json({ success: true, available: false }, { headers: { "Cache-Control": "no-store" } });
-    const filename = "jembee-play-" + platform + "-" + String(release.versionName) + ".apk";
-    const [downloadUrl] = await file.getSignedUrl({ action: "read", expires: Date.now() + 15 * 60 * 1000, responseDisposition: 'attachment; filename="' + filename + '"' });
+    const downloadUrl = "/api/app/releases/" + platform + "/download";
     return NextResponse.json({
       success: true, available: true, platform, packageName: release.packageName,
       versionName: release.versionName, versionCode: release.versionCode,
