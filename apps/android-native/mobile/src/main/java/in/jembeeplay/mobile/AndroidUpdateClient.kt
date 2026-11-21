@@ -10,6 +10,16 @@ import android.widget.Toast
 import java.net.URL
 
 object AndroidUpdateClient {
+    fun isNewerVersion(remote: String, local: String): Boolean {
+        val remoteParts = remote.split(".").map { it.toIntOrNull() ?: 0 }
+        val localParts = local.split(".").map { it.toIntOrNull() ?: 0 }
+        for (index in 0 until maxOf(remoteParts.size, localParts.size)) {
+            val comparison = (remoteParts.getOrElse(index) { 0 }).compareTo(localParts.getOrElse(index) { 0 })
+            if (comparison != 0) return comparison > 0
+        }
+        return false
+    }
+
     fun downloadAndInstall(context: Context, apkUrl: String) {
         val uri = runCatching { Uri.parse(apkUrl) }.getOrNull()
         if (uri == null || uri.scheme != "https" || uri.host.isNullOrBlank()) {
