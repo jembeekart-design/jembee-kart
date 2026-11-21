@@ -66,22 +66,39 @@ private fun JembeeTvApp() {
     }
 
     MaterialTheme(colorScheme = darkColorScheme(primary = TvAccent, background = Color(0xFF080B12), surface = Color(0xFF151B27))) {
-        if (showUpdatePrompt) {
-            androidx.tv.material3.AlertDialog(
-                onDismissRequest = { if (!updateIsMandatory) showUpdatePrompt = false },
-                title = { Text(if (updateIsMandatory) "Update required" else "JEMBEE PLAY TV update available") },
-                text = { androidx.compose.material3.Text("Naya version ${remoteConfig.latestVersion} available hai. TV app update karein.") },
-                confirmButton = {
-                    Button(onClick = { AndroidUpdateClient.downloadAndInstall(context, remoteConfig.updateUrl) }) {
-                        androidx.compose.material3.Text("Update now")
-                    }
-                },
-                dismissButton = if (updateIsMandatory) null else ({
-                    Button(onClick = { showUpdatePrompt = false }) { androidx.compose.material3.Text("Later") }
-                })
-            )
-        }
         Box(Modifier.fillMaxSize().background(Color(0xFF080B12))) {
+            if (showUpdatePrompt) {
+                Box(
+                    Modifier.fillMaxSize().background(Color(0xCC000000)),
+                    contentAlignment = Alignment.Center
+                ) {
+                    Column(
+                        Modifier.widthIn(max = 620.dp)
+                            .background(Color(0xFF182333))
+                            .padding(32.dp),
+                        horizontalAlignment = Alignment.CenterHorizontally,
+                        verticalArrangement = Arrangement.spacedBy(18.dp)
+                    ) {
+                        Text(
+                            if (updateIsMandatory) "Update required" else "JEMBEE PLAY TV update available",
+                            color = Color.White,
+                            fontSize = 24.sp,
+                            fontWeight = FontWeight.Bold
+                        )
+                        Text(
+                            "Naya version ${remoteConfig.latestVersion} available hai. TV app update karein.",
+                            color = Color(0xFFCBD5E1),
+                            fontSize = 17.sp
+                        )
+                        Button(onClick = { AndroidUpdateClient.downloadAndInstall(context, remoteConfig.updateUrl) }) {
+                            Text("Update now")
+                        }
+                        if (!updateIsMandatory) {
+                            Button(onClick = { showUpdatePrompt = false }) { Text("Later") }
+                        }
+                    }
+                }
+            }
             when (selected) {
                 "Shorts" -> TvShortsScreen(videos = shorts, error = shortError, onBack = { selected = "Home" }, onWatch = { activeVideo = it; watchReturn = "Shorts"; selected = "Watch" })
                 "Watch" -> TvWatchScreen(video = activeVideo, onBack = { selected = watchReturn })
