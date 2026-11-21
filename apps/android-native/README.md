@@ -49,28 +49,27 @@ The GitHub Actions workflow `.github/workflows/android-native.yml` builds both d
 Never commit service-account keys, signing keystores, passwords, payment secrets, or other private credentials. Do not enable paid checkout or payouts from native clients. Do not publish debug APKs as production releases.
 
 
-## Mobile APK update channel
+## Android APK update channel (Mobile + TV)
 
-The mobile app now checks the public remote config for `latestVersions.mobile`,
-`minimumVersions.mobile`, and `updateUrls.mobile`. When a newer version and a
-valid HTTPS APK URL are configured, the app offers an update, downloads the APK
-with Android DownloadManager, and opens Android's package installer. Android
-still requires the user to approve installation; the app cannot silently install
-an APK on a normal non-rooted device.
+Both native apps check the public remote config for their own `latestVersions`,
+`minimumVersions`, and `updateUrls` channel. When a newer version and a valid
+HTTPS APK URL are configured, the app shows an update prompt, downloads the
+matching APK with Android DownloadManager, and opens Android's package installer.
+Android still requires the user to approve installation; a normal app cannot
+silently install an APK.
 
-Configure the current remote config document `app_remote_config/current` with:
-- `latestVersions.mobile`: latest published version, e.g. `0.2.0`
-- `minimumVersions.mobile`: minimum supported version, e.g. `0.1.0`
-- `updateUrls.mobile`: permanent HTTPS URL to the matching `mobile` APK
+Configure the Firestore document `app_remote_config/current`:
+- `latestVersions.mobile` / `latestVersions.tv`: currently published version
+- `minimumVersions.mobile` / `minimumVersions.tv`: minimum supported version
+- `updateUrls.mobile` / `updateUrls.tv`: permanent HTTPS URL for the matching APK
+
+The API defaults both latest versions to `0.2.0` (the current native app version),
+minimum versions to `0.1.0`, and update URLs to empty. Therefore no update prompt
+is shown until a newer version AND its matching HTTPS APK URL are published.
 
 Only publish APKs signed with the same persistent release keystore. Android
-rejects an in-place update if the signing certificate changes. The current
-GitHub Actions debug APK workflow uses runner debug signing and is for QA only;
-it is not a permanent auto-update distribution channel. Before enabling updates
-for existing QA installs, install the first consistently signed release build
-(the first install may require uninstalling the old debug APK). Keep the release
-keystore and passwords in protected GitHub Actions secrets; never commit them.
-
-The TV app has not yet been wired to this mobile update prompt. Its update channel
-must be implemented and tested separately before configuring `latestVersions.tv`
-or `updateUrls.tv`.
+rejects an in-place update if the signing certificate changes. GitHub Actions
+debug APKs use runner debug signing and are QA-only, not a permanent auto-update
+channel. Existing QA installs may need to be uninstalled before the first
+consistently signed release install. Keep the keystore and passwords in protected
+GitHub Actions secrets; never commit them.
