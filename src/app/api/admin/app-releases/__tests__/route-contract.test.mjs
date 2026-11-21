@@ -18,6 +18,8 @@ test("APK publishing validates fixed package IDs, increasing versions and publis
   assert.ok(route.includes("in.jembeeplay.tv"));
   assert.ok(route.includes("VERSION_CODE_NOT_INCREASING"));
   assert.ok(route.includes("VERSION_NAME_NOT_INCREASING"));
+  assert.ok(route.includes("CURRENT_APP_VERSION_CODE = 2"));
+  assert.ok(route.includes("CURRENT_APP_VERSION_NAME = \"0.2.0\""));
   assert.ok(route.includes("custom.uploadedByUid !== identity.uid"));
   assert.ok(route.includes("app-releases/"));
 });
