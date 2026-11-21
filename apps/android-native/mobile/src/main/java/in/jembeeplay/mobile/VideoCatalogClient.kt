@@ -12,6 +12,7 @@ data class JembeeVideo(
     val caption: String,
     val creatorName: String,
     val username: String,
+    val photoUrl: String,
     val thumbnailUrl: String,
     val streamUrl: String,
     val likes: Int,
@@ -126,6 +127,7 @@ object VideoCatalogClient {
                                     item.optString("username").ifBlank { "JEMBEE PLAY creator" }
                                 },
                                 username = item.optString("username"),
+                                photoUrl = item.optString("photoURL").ifBlank { item.optString("photoUrl") }.takeIf { it.startsWith("https://") }.orEmpty(),
                                 thumbnailUrl = "$BASE$thumbnail",
                                 streamUrl = "$BASE$playback",
                                 likes = item.optInt("likes", 0).coerceAtLeast(0),
