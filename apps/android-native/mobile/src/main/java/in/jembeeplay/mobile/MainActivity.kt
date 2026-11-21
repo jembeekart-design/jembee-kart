@@ -71,6 +71,18 @@ private fun JembeeMobileApp() {
     val context = LocalContext.current
     var remoteConfig by remember { mutableStateOf(JembeeRemoteConfig()) }
     LaunchedEffect(Unit) { RemoteConfigClient.fetch(context) { remoteConfig = it } }
+    var showUpdatePrompt by remember { mutableStateOf(false) }
+    var updateIsMandatory by remember { mutableStateOf(false) }
+    LaunchedEffect(remoteConfig.latestVersion, remoteConfig.minimumVersion, remoteConfig.updateUrl) {
+        val installedVersion = runCatching {
+            @Suppress("DEPRECATION")
+            context.packageManager.getPackageInfo(context.packageName, 0).versionName ?: "0.1.0"
+        }.getOrDefault("0.1.0")
+        val hasUpdateLink = remoteConfig.updateUrl.isNotBlank()
+        val available = hasUpdateLink && AndroidUpdateClient.isNewerVersion(remoteConfig.latestVersion, installedVersion)
+        updateIsMandatory = AndroidUpdateClient.isNewerVersion(remoteConfig.minimumVersion, installedVersion)
+        showUpdatePrompt = available
+    }
     var selected by remember { mutableStateOf("Home") }
     var webReturn by remember { mutableStateOf("Home") }
     var watchReturn by remember { mutableStateOf("Home") }
@@ -86,6 +98,21 @@ private fun JembeeMobileApp() {
     }
     val colors = darkColorScheme(primary = JembeeAccent, background = JembeeBackground, surface = JembeeSurface)
     MaterialTheme(colorScheme = colors) {
+        if (showUpdatePrompt) {
+            AlertDialog(
+                onDismissRequest = { if (!updateIsMandatory) showUpdatePrompt = false },
+                title = { Text(if (updateIsMandatory) "Update required" else "JEMBEE PLAY update available") },
+                text = { Text("Naya version ${remoteConfig.latestVersion} available hai. Behtar experience aur security ke liye app update karein.") },
+                confirmButton = {
+                    TextButton(onClick = { AndroidUpdateClient.downloadAndInstall(context, remoteConfig.updateUrl) }) {
+                        Text("Update now")
+                    }
+                },
+                dismissButton = if (updateIsMandatory) null else ({
+                    TextButton(onClick = { showUpdatePrompt = false }) { Text("Later") }
+                })
+            )
+        }
         Scaffold(
             containerColor = colors.background,
             bottomBar = {
