@@ -56,14 +56,33 @@ export async function GET(request: Request) {
     const snapshot = await videosQuery.get();
     const hasMore = snapshot.docs.length > pageSize;
     const pageDocs = snapshot.docs.slice(0, pageSize);
+    const creatorIds = [...new Set(pageDocs.map((item) => safeString(item.data().userId || item.data().creatorId, 160)).filter(Boolean))];
+    const creatorProfiles = new Map<string, Record<string, unknown>>();
+    await Promise.all(creatorIds.map(async (uid) => {
+      try {
+        const profile = await db.collection("users").doc(uid).get();
+        if (profile.exists) creatorProfiles.set(uid, profile.data() || {});
+      } catch {
+        // Keep public video metadata as a safe fallback when a profile is unavailable.
+      }
+    }));
     const videos = pageDocs.map((doc) => {
       const data = doc.data();
+      const creatorId = safeString(data.userId || data.creatorId, 160);
+      const profile = creatorProfiles.get(creatorId) || {};
+      const rawUsername = safeString(data.username || profile.username || profile.userName || profile.handle, 80);
+      const username = rawUsername.includes("@") ? "" : rawUsername;
+      const rawDisplayName = safeString(data.displayName || profile.displayName || profile.name || profile.fullName, 120);
+      const displayName = rawDisplayName.includes("@")
+        ? (username || "JEMBEE PLAY Creator")
+        : (rawDisplayName || username || "JEMBEE PLAY Creator");
+      const photoURL = safeString(data.photoURL || data.photo || profile.photoURL || profile.photoUrl || profile.photo || profile.avatarUrl || profile.profileImage, 2048);
       return {
         id: doc.id,
-        creatorId: safeString(data.userId || data.creatorId, 160),
-        username: safeString(data.username, 80),
-        displayName: safeString(data.displayName, 120),
-        photoURL: safeString(data.photoURL || data.photo, 2048),
+        creatorId,
+        username,
+        displayName,
+        photoURL,
         caption: safeString(data.caption),
         hashtags: safeTags(data.hashtags),
         music: safeString(data.music, 160),

@@ -143,7 +143,7 @@ export default function BottomQuickActions({
               via-cyan-400
               to-teal-400
               text-black
-              shadow-[0_0_30px_rgba(34,211,238,0.8)]
+              shadow-[0_0_22px_rgba(34,211,238,0.55)]
             "
           >
             <Plus
