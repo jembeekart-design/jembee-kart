@@ -47,3 +47,30 @@ The GitHub Actions workflow `.github/workflows/android-native.yml` builds both d
 - Produce separately signed Mobile and TV release APKs/AABs using protected signing secrets; record SHA-256 checksums and verify installs.
 
 Never commit service-account keys, signing keystores, passwords, payment secrets, or other private credentials. Do not enable paid checkout or payouts from native clients. Do not publish debug APKs as production releases.
+
+
+## Mobile APK update channel
+
+The mobile app now checks the public remote config for `latestVersions.mobile`,
+`minimumVersions.mobile`, and `updateUrls.mobile`. When a newer version and a
+valid HTTPS APK URL are configured, the app offers an update, downloads the APK
+with Android DownloadManager, and opens Android's package installer. Android
+still requires the user to approve installation; the app cannot silently install
+an APK on a normal non-rooted device.
+
+Configure the current remote config document `app_remote_config/current` with:
+- `latestVersions.mobile`: latest published version, e.g. `0.2.0`
+- `minimumVersions.mobile`: minimum supported version, e.g. `0.1.0`
+- `updateUrls.mobile`: permanent HTTPS URL to the matching `mobile` APK
+
+Only publish APKs signed with the same persistent release keystore. Android
+rejects an in-place update if the signing certificate changes. The current
+GitHub Actions debug APK workflow uses runner debug signing and is for QA only;
+it is not a permanent auto-update distribution channel. Before enabling updates
+for existing QA installs, install the first consistently signed release build
+(the first install may require uninstalling the old debug APK). Keep the release
+keystore and passwords in protected GitHub Actions secrets; never commit them.
+
+The TV app has not yet been wired to this mobile update prompt. Its update channel
+must be implemented and tested separately before configuring `latestVersions.tv`
+or `updateUrls.tv`.
