@@ -89,7 +89,7 @@ private fun JembeeMobileApp() {
         Scaffold(
             containerColor = colors.background,
             bottomBar = {
-                if (selected != "Shorts" && selected != "Watch") {
+                if (selected != "Shorts" && selected != "Watch" && selected != "Web") {
                     JembeeBottomBar(selected = selected, onSelect = { item ->
                         when (item) {
                             "Earn" -> { activeWebPath = "/login?redirect=%2Fvideos%2Freward-center"; activeWebTitle = "Earn & Rewards"; selected = "Web" }
@@ -101,10 +101,10 @@ private fun JembeeMobileApp() {
             }
         ) { padding ->
             Column(Modifier.fillMaxSize().then(if (selected == "Shorts" || selected == "Watch") Modifier else Modifier.padding(padding))) {
-                if (selected != "Shorts" && selected != "Watch") {
+                if (selected != "Shorts" && selected != "Watch" && selected != "Web") {
                     HomeTopBar(
                         onProfile = { activeWebPath = "/login"; activeWebTitle = "Profile & Login"; webReturn = "Home"; selected = "Web" },
-                        onSearch = { activeWebPath = "/search"; activeWebTitle = "Search"; webReturn = "Home"; selected = "Web" },
+                        onSearch = { activeWebPath = "/shorts?nativeAction=search"; activeWebTitle = "Search JEMBEE PLAY"; webReturn = "Home"; selected = "Web" },
                         onNotifications = { activeWebPath = "/videos/notifications"; activeWebTitle = "Notifications"; webReturn = "Home"; selected = "Web" },
                         onCast = {
                             val castIntent = Intent("android.settings.CAST_SETTINGS")
