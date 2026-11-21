@@ -3,7 +3,7 @@
 // Force Next.js to bypass static prerendering for this route to eliminate useSearchParams compilation flags
 export const dynamic = "force-dynamic";
 
-import { useState, Suspense } from "react";
+import { useState, useEffect, Suspense } from "react";
 import { useSearchParams } from "next/navigation";
 import Link from "next/link";
 import {
