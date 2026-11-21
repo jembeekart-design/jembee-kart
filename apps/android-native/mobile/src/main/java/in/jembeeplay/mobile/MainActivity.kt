@@ -105,7 +105,7 @@ private fun JembeeMobileApp() {
                 }
                 when (selected) {
                     "Home" -> HomeScreen(onOpenShorts = { selected = "Shorts" }, onOpenWatch = { video -> activeVideo = video; watchReturn = "Home"; selected = "Watch" }, onLearn = { selected = "Learn" }, onLive = { selected = "Live" }, onUpload = { activeWebPath = "/login?redirect=%2Fvideos%2Fupload"; activeWebTitle = "Create & Upload"; selected = "Web" }, onEarn = { activeWebPath = "/login?redirect=%2Fvideos%2Freward-center"; activeWebTitle = "Earn & Rewards"; selected = "Web" })
-                    "Shorts" -> ShortsScreen(onBack = { selected = "Home" }, onOpenWatch = { video -> activeVideo = video; watchReturn = "Shorts"; selected = "Watch" })
+                    "Shorts" -> ShortsScreen(onBack = { selected = "Home" }, onOpenWatch = { video -> activeVideo = video; watchReturn = "Shorts"; selected = "Watch" }, onOpenWeb = { path, title -> activeWebPath = path; activeWebTitle = title; selected = "Web" })
                     "Live" -> LiveScreen(onBack = { selected = "Home" })
                     "Watch" -> WatchScreen(video = activeVideo, onBack = { selected = watchReturn })
                     "Web" -> JembeeWebScreen(path = activeWebPath, title = activeWebTitle, onClose = { selected = "Home" })
@@ -337,7 +337,7 @@ private fun SectionHeader(title: String, subtitle: String, onClick: (() -> Unit)
 }
 
 @Composable
-private fun ShortsScreen(onBack: () -> Unit, onOpenWatch: (JembeeVideo) -> Unit) {
+private fun ShortsScreen(onBack: () -> Unit, onOpenWatch: (JembeeVideo) -> Unit, onOpenWeb: (String, String) -> Unit) {
     val context = LocalContext.current
     var videos by remember { mutableStateOf<List<JembeeVideo>>(emptyList()) }
     var error by remember { mutableStateOf<String?>(null) }
@@ -364,19 +364,19 @@ private fun ShortsScreen(onBack: () -> Unit, onOpenWatch: (JembeeVideo) -> Unit)
                 val video = videos[page]
                 val isLiked = video.id in liked
                 Box(Modifier.fillMaxSize().background(Color.Black)) {
-                    RealVideoPlayer(video.streamUrl, Modifier.fillMaxSize(), autoplay = pagerState.currentPage == page, isMuted = muted)
+                    RealVideoPlayer(video.streamUrl, Modifier.fillMaxSize(), autoplay = pagerState.currentPage == page, isMuted = muted, showController = false)
                     Box(Modifier.fillMaxWidth().height(210.dp).align(Alignment.TopCenter).background(Brush.verticalGradient(listOf(Color(0x9906060B), Color.Transparent))))
                     Box(Modifier.fillMaxWidth().height(310.dp).align(Alignment.BottomCenter).background(Brush.verticalGradient(listOf(Color.Transparent, Color(0xAA050509), Color(0xDD050509)))))
                     Row(Modifier.align(Alignment.TopEnd).padding(top = 18.dp, end = 16.dp), horizontalArrangement = Arrangement.spacedBy(12.dp), verticalAlignment = Alignment.CenterVertically) {
-                        ShortsHeaderButton("⌕", "Search") { context.startActivity(Intent(Intent.ACTION_VIEW, Uri.parse("https://jembeeplay.in/search"))) }
-                        ShortsHeaderButton("♙+", "Find creators") { context.startActivity(Intent(Intent.ACTION_VIEW, Uri.parse("https://jembeeplay.in/followers"))) }
-                        ShortsHeaderButton("♧", "Notifications") { context.startActivity(Intent(Intent.ACTION_VIEW, Uri.parse("https://jembeeplay.in/videos/notifications"))) }
+                        ShortsHeaderButton("⌕", "Search") { onOpenWeb("/search", "Search JEMBEE PLAY") }
+                        ShortsHeaderButton("♙+", "Find creators") { onOpenWeb("/followers", "Find Creators") }
+                        ShortsHeaderButton("♧", "Notifications") { onOpenWeb("/videos/notifications", "Notifications") }
                     }
                     Column(Modifier.align(Alignment.CenterEnd).padding(end = 12.dp, top = 74.dp, bottom = 112.dp), horizontalAlignment = Alignment.CenterHorizontally, verticalArrangement = Arrangement.spacedBy(13.dp)) {
                         ShortsRailAction("▣", "Video") { onOpenWatch(video) }
                         ShortsRailAction(if (isLiked) "♥" else "♡", if (isLiked) "Liked" else compactCount(video.likes)) { liked = if (isLiked) liked - video.id else liked + video.id }
-                        ShortsRailAction("▤", "Comment") { Toast.makeText(context, "Comments will open with the full video details.", Toast.LENGTH_SHORT).show() }
-                        ShortsRailAction("🎁", "Support") { context.startActivity(Intent(Intent.ACTION_VIEW, Uri.parse("https://jembeeplay.in/login?redirect=%2Fvideos%2Freward-center"))) }
+                        ShortsRailAction("▤", "Comment") { onOpenWeb("/videos/${video.id}", "Video & Comments") }
+                        ShortsRailAction("🎁", "Support") { onOpenWeb("/login?redirect=%2Fvideos%2Freward-center", "Creator Support") }
                         ShortsRailAction("↗", "Share") {
                             val send = Intent(Intent.ACTION_SEND).apply {
                                 type = "text/plain"
@@ -396,7 +396,7 @@ private fun ShortsScreen(onBack: () -> Unit, onOpenWatch: (JembeeVideo) -> Unit)
                                 Text(video.username.ifBlank { video.creatorName }, color = Color.White, fontSize = 15.sp, fontWeight = FontWeight.Bold, maxLines = 1)
                                 Text(video.creatorName, color = Color.White.copy(alpha = .72f), fontSize = 11.sp, maxLines = 1)
                             }
-                            TextButton(onClick = { context.startActivity(Intent(Intent.ACTION_VIEW, Uri.parse("https://jembeeplay.in/login"))) }, colors = ButtonDefaults.textButtonColors(contentColor = Color.White), modifier = Modifier.background(Color(0xFF8D25C8), RoundedCornerShape(24.dp))) {
+                            TextButton(onClick = { onOpenWeb("/login", "Follow Creator") }, colors = ButtonDefaults.textButtonColors(contentColor = Color.White), modifier = Modifier.background(Color(0xFF8D25C8), RoundedCornerShape(24.dp))) {
                                 Text("Follow", fontWeight = FontWeight.Bold)
                             }
                         }
