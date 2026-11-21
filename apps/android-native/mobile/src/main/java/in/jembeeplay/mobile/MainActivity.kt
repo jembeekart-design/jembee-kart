@@ -9,6 +9,9 @@ import android.webkit.WebChromeClient
 import android.webkit.WebResourceRequest
 import android.webkit.WebView
 import android.webkit.WebViewClient
+import java.net.HttpURLConnection
+import java.net.URL
+import org.json.JSONObject
 import androidx.compose.ui.viewinterop.AndroidView
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import androidx.activity.ComponentActivity
@@ -415,8 +418,10 @@ private fun ShortsScreen(onBack: () -> Unit, onOpenWatch: (JembeeVideo) -> Unit,
                     (!currentlyLiked && status == 409 && message == "Already liked")
                 if (success || alreadyInTargetState) {
                     liked = if (currentlyLiked) liked - video.id else liked + video.id
-                    val current = likeCounts[video.id] ?: video.likes
-                    likeCounts = likeCounts + (video.id to (current + if (currentlyLiked) -1 else 1).coerceAtLeast(0))
+                    if (success) {
+                        val current = likeCounts[video.id] ?: video.likes
+                        likeCounts = likeCounts + (video.id to (current + if (currentlyLiked) -1 else 1).coerceAtLeast(0))
+                    }
                 } else {
                     Toast.makeText(context, if (status == 401 || status == 403) "Session expire hai, dobara login karein" else message.ifBlank { "Like update nahi hua" }, Toast.LENGTH_SHORT).show()
                 }
