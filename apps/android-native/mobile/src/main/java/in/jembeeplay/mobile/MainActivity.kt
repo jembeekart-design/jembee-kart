@@ -69,6 +69,7 @@ private fun JembeeMobileApp() {
     var remoteConfig by remember { mutableStateOf(JembeeRemoteConfig()) }
     LaunchedEffect(Unit) { RemoteConfigClient.fetch(context) { remoteConfig = it } }
     var selected by remember { mutableStateOf("Home") }
+    var webReturn by remember { mutableStateOf("Home") }
     var watchReturn by remember { mutableStateOf("Home") }
     var activeVideo by remember { mutableStateOf<JembeeVideo?>(null) }
     var activeWebPath by remember { mutableStateOf("/login") }
@@ -76,6 +77,7 @@ private fun JembeeMobileApp() {
     BackHandler(enabled = selected != "Home") {
         selected = when (selected) {
             "Watch" -> watchReturn
+            "Web" -> webReturn
             else -> "Home"
         }
     }
@@ -106,10 +108,10 @@ private fun JembeeMobileApp() {
                 }
                 when (selected) {
                     "Home" -> HomeScreen(onOpenShorts = { selected = "Shorts" }, onOpenWatch = { video -> activeVideo = video; watchReturn = "Home"; selected = "Watch" }, onLearn = { selected = "Learn" }, onLive = { selected = "Live" }, onUpload = { activeWebPath = "/login?redirect=%2Fvideos%2Fupload"; activeWebTitle = "Create & Upload"; selected = "Web" }, onEarn = { activeWebPath = "/login?redirect=%2Fvideos%2Freward-center"; activeWebTitle = "Earn & Rewards"; selected = "Web" })
-                    "Shorts" -> ShortsScreen(onBack = { selected = "Home" }, onOpenWatch = { video -> activeVideo = video; watchReturn = "Shorts"; selected = "Watch" }, onOpenWeb = { path, title -> activeWebPath = path; activeWebTitle = title; selected = "Web" })
+                    "Shorts" -> ShortsScreen(onBack = { selected = "Home" }, onOpenWatch = { video -> activeVideo = video; watchReturn = "Shorts"; selected = "Watch" }, onOpenWeb = { path, title -> webReturn = "Shorts"; activeWebPath = path; activeWebTitle = title; selected = "Web" })
                     "Live" -> LiveScreen(onBack = { selected = "Home" })
                     "Watch" -> WatchScreen(video = activeVideo, onBack = { selected = watchReturn })
-                    "Web" -> JembeeWebScreen(path = activeWebPath, title = activeWebTitle, onClose = { selected = "Home" })
+                    "Web" -> JembeeWebScreen(path = activeWebPath, title = activeWebTitle, onClose = { selected = webReturn })
                     "Learn" -> NativeLearningLibraryScreen()
                     "Library" -> SimpleScreen("Your Library", "Saved videos, watch history and downloads")
                     else -> SimpleScreen("JEMBEE PLAY", "Choose a section to continue")
