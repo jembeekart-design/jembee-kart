@@ -8,6 +8,7 @@ import java.net.URL
 
 data class JembeeVideo(
     val id: String,
+    val creatorId: String,
     val format: String,
     val caption: String,
     val creatorName: String,
@@ -121,6 +122,7 @@ object VideoCatalogClient {
                             if (!thumbnail.startsWith("/api/shorts/video-thumbnail/")) continue
                             add(JembeeVideo(
                                 id = id,
+                                creatorId = item.optString("creatorId").ifBlank { item.optString("userId") },
                                 format = itemFormat,
                                 caption = item.optString("caption"),
                                 creatorName = item.optString("displayName").ifBlank {
