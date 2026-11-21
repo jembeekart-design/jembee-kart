@@ -14,7 +14,10 @@ data class JembeeRemoteConfig(
     val uploadsEnabled: Boolean = false,
     val paidVideoEnabled: Boolean = false,
     val adsEnabled: Boolean = false,
-    val notificationsEnabled: Boolean = false
+    val notificationsEnabled: Boolean = false,
+    val latestVersion: String = "0.1.0",
+    val minimumVersion: String = "0.1.0",
+    val updateUrl: String = ""
 )
 
 object RemoteConfigClient {
@@ -57,6 +60,10 @@ object RemoteConfigClient {
         require(config.optInt("schemaVersion", -1) == 1)
         val maintenance = config.optJSONObject("maintenance") ?: JSONObject()
         val features = config.optJSONObject("features") ?: JSONObject()
+        val latest = config.optJSONObject("latestVersions") ?: JSONObject()
+        val minimum = config.optJSONObject("minimumVersions") ?: JSONObject()
+        val urls = config.optJSONObject("updateUrls") ?: JSONObject()
+        val safeUpdateUrl = urls.optString("tv", "").takeIf { runCatching { URL(it).protocol == "https" }.getOrDefault(false) } ?: ""
         return JembeeRemoteConfig(
             configVersion = config.optInt("configVersion", 1).coerceAtLeast(1),
             maintenanceEnabled = maintenance.optBoolean("enabled", false),
@@ -66,7 +73,10 @@ object RemoteConfigClient {
             uploadsEnabled = features.optBoolean("creatorUploads", false),
             paidVideoEnabled = features.optBoolean("paidVideo", false),
             adsEnabled = features.optBoolean("videoAds", false),
-            notificationsEnabled = features.optBoolean("notifications", false)
+            notificationsEnabled = features.optBoolean("notifications", false),
+            latestVersion = latest.optString("tv", "0.1.0").take(20),
+            minimumVersion = minimum.optString("tv", "0.1.0").take(20),
+            updateUrl = safeUpdateUrl
         )
     }
 }
