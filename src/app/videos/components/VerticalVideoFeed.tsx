@@ -33,6 +33,7 @@ import { getExoClickShortsVastUrl } from "@/lib/ads/exoclick";
 import { auth, db, isFirebaseConfigured } from "@/firebase/config";
 import { likeVideo } from "@/lib/videos/watch-earn/likeVideo";
 import { unlikeVideo } from "@/lib/videos/watch-earn/unlikeVideo";
+import { saveVideo } from "@/lib/videos/watch-earn/saveVideo";
 import { shareVideo } from "@/lib/videos/watch-earn/shareVideo";
 import { reportVideo } from "@/lib/videos/watch-earn/reportVideo";
 import { setVideoPreference } from "@/lib/videos/watch-earn/setVideoPreference";
@@ -762,27 +763,33 @@ export default function VerticalVideoFeed({
                 }}
 
                 onComment={() => {
-                  setSelectedVideo(
-                    video.id
-                  );
-
-                  setCommentOpen(
-                    true
-                  );
+                  if (!auth.currentUser) {
+                    const redirect = `/shorts?v=${encodeURIComponent(video.id)}&nativeAction=comment`;
+                    window.location.assign(`/login?redirect=${encodeURIComponent(redirect)}`);
+                    return;
+                  }
+                  setSelectedVideo(video.id);
+                  setCommentOpen(true);
                 }}
 
                 onShare={() => {
                   handleShare(video);
                 }}
 
-                onSave={() => {
-                  setSavedVideos(
-                    prev => ({
-                      ...prev,
-                      [video.id]:
-                        !prev[video.id]
-                    })
-                  );
+                onSave={async () => {
+                  const user = auth.currentUser;
+                  if (!user) {
+                    const redirect = `/shorts?v=${encodeURIComponent(video.id)}&nativeAction=more`;
+                    window.location.assign(`/login?redirect=${encodeURIComponent(redirect)}`);
+                    return;
+                  }
+                  const result = await saveVideo({ videoId: video.id, userId: user.uid });
+                  if (result.success) {
+                    setSavedVideos(previous => ({ ...previous, [video.id]: Boolean(result.saved) }));
+                    setToastMessage(result.saved ? "Saved to your library." : "Removed from your saved videos.");
+                  } else {
+                    setToastMessage("Could not update saved videos. Please try again.");
+                  }
                 }}
 
                 onReport={async (reason) => {
