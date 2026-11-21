@@ -485,6 +485,38 @@ private fun ShortsScreen(onBack: () -> Unit, onOpenWatch: (JembeeVideo) -> Unit,
         }.start()
     }
 
+    LaunchedEffect(authToken) {
+        val token = authToken ?: return@LaunchedEffect
+        Thread {
+            val result = runCatching {
+                val connection = (URL("https://jembeeplay.in/api/app/follow").openConnection() as HttpURLConnection).apply {
+                    requestMethod = "GET"
+                    connectTimeout = 10000
+                    readTimeout = 15000
+                    setRequestProperty("Authorization", "Bearer $token")
+                    setRequestProperty("Accept", "application/json")
+                }
+                try {
+                    val status = connection.responseCode
+                    val body = (if (status in 200..299) connection.inputStream else connection.errorStream)
+                        ?.bufferedReader()?.use { it.readText() }.orEmpty()
+                    val json = JSONObject(body.ifBlank { "{}" })
+                    if (status !in 200..299 || !json.optBoolean("success")) {
+                        throw IllegalStateException(json.optString("message", "Following list unavailable"))
+                    }
+                    val ids = json.optJSONArray("following")
+                    buildSet {
+                        if (ids != null) for (index in 0 until ids.length()) add(ids.optString(index))
+                    }
+                } finally { connection.disconnect() }
+            }
+            android.os.Handler(android.os.Looper.getMainLooper()).post {
+                result.onSuccess { following = it }
+                    .onFailure { Toast.makeText(context, "Following list load nahi ho saki", Toast.LENGTH_SHORT).show() }
+            }
+        }.start()
+    }
+
     LaunchedEffect(Unit) {
         VideoCatalogClient.fetch("short") { items, message ->
             videos = items
@@ -513,7 +545,7 @@ private fun ShortsScreen(onBack: () -> Unit, onOpenWatch: (JembeeVideo) -> Unit,
                     Box(Modifier.fillMaxWidth().height(210.dp).align(Alignment.TopCenter).background(Brush.verticalGradient(listOf(Color(0x9906060B), Color.Transparent))))
                     Box(Modifier.fillMaxWidth().height(310.dp).align(Alignment.BottomCenter).background(Brush.verticalGradient(listOf(Color.Transparent, Color(0xAA050509), Color(0xDD050509)))))
                     Row(Modifier.align(Alignment.TopEnd).padding(top = 18.dp, end = 16.dp), horizontalArrangement = Arrangement.spacedBy(12.dp), verticalAlignment = Alignment.CenterVertically) {
-                        ShortsHeaderButton("⌕", "Search") { onOpenWeb("/search", "Search JEMBEE PLAY") }
+                        ShortsHeaderButton("⌕", "Search") { onOpenWeb("/shorts?nativeAction=search", "Search JEMBEE PLAY") }
                         ShortsHeaderButton("♙+", "Find creators") { onOpenWeb("/followers", "Find Creators") }
                         ShortsHeaderButton("♧", "Notifications") { onOpenWeb("/videos/notifications", "Notifications") }
                     }
