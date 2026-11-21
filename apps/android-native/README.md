@@ -33,7 +33,7 @@ Expected outputs:
 - `mobile/build/outputs/apk/debug/mobile-debug.apk`
 - `tv/build/outputs/apk/debug/tv-debug.apk`
 
-The GitHub Actions workflow `.github/workflows/android-native-apk.yml` builds both debug APKs and uploads them as a short-lived workflow artifact. These are internal QA builds only, not signed public releases.
+The GitHub Actions workflow `.github/workflows/android-native.yml` builds both debug APKs and uploads them as a short-lived workflow artifact. These are internal QA builds only, not signed public releases. A documentation-only commit may be used to rerun this build after a native source fix; it does not change app behavior.
 
 ## Release acceptance checklist
 
