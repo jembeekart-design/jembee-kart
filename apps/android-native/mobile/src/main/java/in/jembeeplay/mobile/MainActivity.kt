@@ -528,7 +528,29 @@ private fun ShortsScreen(onBack: () -> Unit, onOpenWatch: (JembeeVideo) -> Unit,
                                 type = "text/plain"
                                 putExtra(Intent.EXTRA_TEXT, "https://jembeeplay.in/shorts?v=" + Uri.encode(video.id))
                             }
-                            context.startActivity(Intent.createChooser(send, "Share Jembee Short"))
+                            runCatching { context.startActivity(Intent.createChooser(send, "Share Jembee Short")) }
+                                .onFailure { Toast.makeText(context, "Share unavailable on this device", Toast.LENGTH_SHORT).show() }
+                            val token = authToken
+                            if (!token.isNullOrBlank()) {
+                                Thread {
+                                    runCatching {
+                                        val connection = (URL("https://jembeeplay.in/api/shorts/video-share").openConnection() as HttpURLConnection).apply {
+                                            requestMethod = "POST"
+                                            connectTimeout = 8000
+                                            readTimeout = 10000
+                                            doOutput = true
+                                            setRequestProperty("Authorization", "Bearer $token")
+                                            setRequestProperty("Content-Type", "application/json")
+                                            setRequestProperty("Accept", "application/json")
+                                        }
+                                        try {
+                                            val payload = JSONObject().put("videoId", video.id).toString()
+                                            connection.outputStream.use { it.write(payload.toByteArray(Charsets.UTF_8)) }
+                                            require(connection.responseCode in 200..299) { "Share count could not be updated" }
+                                        } finally { connection.disconnect() }
+                                    }
+                                }.start()
+                            }
                         }
                         ShortsRailAction("⋮", "More") { onOpenWeb("/shorts?v=${Uri.encode(video.id)}&nativeAction=more", "JEMBEE PLAY · Options") }
                         ShortsRailAction(if (muted) "◖" else "◖))", "Sound") { muted = !muted }
