@@ -40,8 +40,10 @@ private fun JembeeTvApp() {
             context.packageManager.getPackageInfo(context.packageName, 0).versionName ?: "0.1.0"
         }.getOrDefault("0.1.0")
         val hasUpdateLink = remoteConfig.updateUrl.isNotBlank()
-        showUpdatePrompt = hasUpdateLink && AndroidUpdateClient.isNewerVersion(remoteConfig.latestVersion, installedVersion)
+        val available = hasUpdateLink && AndroidUpdateClient.isNewerVersion(remoteConfig.latestVersion, installedVersion)
         updateIsMandatory = AndroidUpdateClient.isNewerVersion(remoteConfig.minimumVersion, installedVersion)
+        // Mandatory minimum-version enforcement must not depend on the URL being present.
+        showUpdatePrompt = updateIsMandatory || available
     }
     var shorts by remember { mutableStateOf<List<JembeeVideo>>(emptyList()) }
     var longVideos by remember { mutableStateOf<List<JembeeVideo>>(emptyList()) }
@@ -86,13 +88,16 @@ private fun JembeeTvApp() {
                             fontWeight = FontWeight.Bold
                         )
                         Text(
-                            "Naya version ${remoteConfig.latestVersion} available hai. TV app update karein.",
+                            if (remoteConfig.updateUrl.isBlank() && updateIsMandatory)
+                                "Naya version zaroori hai, lekin update link abhi configure nahi hua. Kripya baad mein dobara try karein."
+                            else "Naya version ${remoteConfig.latestVersion} available hai. TV app update karein.",
                             color = Color(0xFFCBD5E1),
                             fontSize = 17.sp
                         )
-                        Button(onClick = { AndroidUpdateClient.downloadAndInstall(context, remoteConfig.updateUrl) }) {
-                            Text("Update now")
-                        }
+                        Button(
+                            enabled = remoteConfig.updateUrl.isNotBlank(),
+                            onClick = { AndroidUpdateClient.downloadAndInstall(context, remoteConfig.updateUrl) }
+                        ) { Text("Update now") }
                         if (!updateIsMandatory) {
                             Button(onClick = { showUpdatePrompt = false }) { Text("Later") }
                         }
