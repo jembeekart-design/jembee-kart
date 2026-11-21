@@ -93,6 +93,7 @@ private fun JembeeMobileApp() {
                     JembeeBottomBar(selected = selected, onSelect = { item ->
                         when (item) {
                             "Earn" -> { activeWebPath = "/login?redirect=%2Fvideos%2Freward-center"; activeWebTitle = "Earn & Rewards"; selected = "Web" }
+                            "Library" -> { activeWebPath = "/videos/history"; activeWebTitle = "Your Library & Watch History"; webReturn = "Home"; selected = "Web" }
                             else -> selected = item
                         }
                     })
@@ -102,8 +103,14 @@ private fun JembeeMobileApp() {
             Column(Modifier.fillMaxSize().then(if (selected == "Shorts" || selected == "Watch") Modifier else Modifier.padding(padding))) {
                 if (selected != "Shorts" && selected != "Watch") {
                     HomeTopBar(
-                        onProfile = { activeWebPath = "/login"; activeWebTitle = "Profile & Login"; selected = "Web" },
-                        onSearch = { activeWebPath = "/search"; activeWebTitle = "Search"; selected = "Web" }
+                        onProfile = { activeWebPath = "/login"; activeWebTitle = "Profile & Login"; webReturn = "Home"; selected = "Web" },
+                        onSearch = { activeWebPath = "/search"; activeWebTitle = "Search"; webReturn = "Home"; selected = "Web" },
+                        onNotifications = { activeWebPath = "/videos/notifications"; activeWebTitle = "Notifications"; webReturn = "Home"; selected = "Web" },
+                        onCast = {
+                            val castIntent = Intent("android.settings.CAST_SETTINGS")
+                            runCatching { context.startActivity(castIntent) }
+                                .onFailure { Toast.makeText(context, "Cast settings are not available on this device.", Toast.LENGTH_SHORT).show() }
+                        }
                     )
                 }
                 if (remoteConfig.maintenanceEnabled) {
@@ -218,7 +225,7 @@ private fun PremiumHeroBanner(onWatch: () -> Unit) {
 }
 
 @Composable
-private fun HomeTopBar(onProfile: () -> Unit, onSearch: () -> Unit) {
+private fun HomeTopBar(onProfile: () -> Unit, onSearch: () -> Unit, onNotifications: () -> Unit, onCast: () -> Unit) {
     Row(
         Modifier.fillMaxWidth().background(Color(0xFF07080D)).padding(horizontal = 18.dp, vertical = 16.dp),
         verticalAlignment = Alignment.CenterVertically,
@@ -234,8 +241,8 @@ private fun HomeTopBar(onProfile: () -> Unit, onSearch: () -> Unit) {
             Icon(Icons.Filled.PlayArrow, contentDescription = "JEMBEE PLAY", tint = Color.White, modifier = Modifier.size(38.dp))
         }
         Text("JEMBEE PLAY", color = Color.White, fontSize = 20.sp, fontWeight = FontWeight.Black, modifier = Modifier.weight(1f), maxLines = 1)
-        IconButton(onClick = { }) { Icon(Icons.Filled.Cast, contentDescription = "Cast", tint = Color.White, modifier = Modifier.size(28.dp)) }
-        IconButton(onClick = { }) { Icon(Icons.Filled.Notifications, contentDescription = "Notifications", tint = Color.White, modifier = Modifier.size(27.dp)) }
+        IconButton(onClick = onCast) { Icon(Icons.Filled.Cast, contentDescription = "Cast", tint = Color.White, modifier = Modifier.size(28.dp)) }
+        IconButton(onClick = onNotifications) { Icon(Icons.Filled.Notifications, contentDescription = "Notifications", tint = Color.White, modifier = Modifier.size(27.dp)) }
         IconButton(onClick = onSearch) { Icon(Icons.Filled.Search, contentDescription = "Search", tint = Color.White, modifier = Modifier.size(28.dp)) }
         IconButton(onClick = onProfile, modifier = Modifier.size(48.dp).background(Color(0xFF211F2B), CircleShape)) {
             Icon(Icons.Filled.Person, contentDescription = "Profile", tint = Color.White, modifier = Modifier.size(27.dp))
