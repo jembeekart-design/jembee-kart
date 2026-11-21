@@ -1,28 +1,24 @@
-# JEMBEE PLAY — Admin-controlled direct APK release channel
+# JEMBEE PLAY — Firestore-controlled GitHub APK release channel
 
-## Scope
-The web Admin APK Manager publishes separately signed Android Mobile and Android TV APKs to a private Firebase Storage path. A server-only API verifies the object metadata and SHA-256 stream checksum, enforces increasing Android version codes, writes the active release record and updates the existing public remote-config document transactionally.
+## Architecture
+APK binary files are uploaded as assets to published, stable GitHub Releases in the official repository. Firestore stores the active release metadata and controls the versions exposed to the mobile app, Android TV app and website. Firebase Storage is not used by the APK release manager.
 
-## Release path
-1. Admin signs in and uploads a .apk to app-releases/{mobile|tv}/{versionCode}/{platform}-{versionCode}.apk.
-2. Firebase Storage rules allow create-only writes from an authenticated admin or super_admin; clients cannot read, overwrite or delete release files.
-3. Admin API verifies package ID, platform, version code, object size/type/custom metadata and independently calculates SHA-256 from the stored object stream.
-4. A Firestore transaction publishes app_releases/{platform}, increments app_remote_config/current.configVersion, updates latest/minimum versions and sets the official website update page URL. An audit event is appended.
-5. Public /api/app/releases/{platform} returns release metadata and a 15-minute signed download URL only for an active published release.
-6. Native clients already read remote config and open the HTTPS update page. The website download cards resolve the active release at request time.
+## Admin publishing workflow
+1. Build and sign the Mobile or Android TV APK using the same permanent signing certificate used by previous releases.
+2. Create a stable, non-draft and non-prerelease GitHub Release.
+3. Upload the APK asset with the exact name `jembee-play-mobile-{versionName}.apk` or `jembee-play-tv-{versionName}.apk`.
+4. In Admin > APK Manager, select platform and enter version name, increasing version code, minimum supported version and GitHub Release tag.
+5. The server verifies the tag against the official repository, finds the exact asset, requires GitHub's SHA-256 digest, validates asset size and URL, and then transactionally writes `app_releases/{platform}`, `app_remote_config/current` and an audit event in Firestore.
+6. Public release lookup reads metadata from Firestore; the download endpoint redirects only to a GitHub Release asset under the official repository.
 
-## Safety
-- APK maximum size: 250 MiB.
-- APK package IDs are fixed to in.jembeeplay.mobile and in.jembeeplay.tv.
-- SHA-256 is independently recomputed server-side.
-- Version code must increase; rollback is a new build with a higher version code.
-- The same persistent signing certificate must be used for in-place updates. Debug APKs must never be published as releases.
-- Android installation still requires user confirmation and permission for installs from the chosen source.
-- No arbitrary code or configuration is downloaded/executed by remote config.
-
-## Required environment verification before production
-- Confirm the Firebase Storage bucket configured for the target Firebase project.
-- Run Storage Emulator rules tests and route contract tests.
-- Verify admin upload, denied non-admin upload, size/type rejection, checksum mismatch, monotonic version code, signed URL expiry and Android in-place update on real devices.
-- Configure persistent Android signing secrets in GitHub Actions. Never commit keystore files or passwords.
-- Keep all changes preview-only until the existing 2–3 day review gate is complete.
+## Security and limitations
+- GitHub API is queried server-side; no GitHub credential is exposed to the browser or app.
+- Only published stable releases and exact expected APK filenames are accepted.
+- APK asset size must be between 1 byte and 250 MiB.
+- GitHub API must expose a `sha256:{64 hex}` asset digest; publishing fails closed if the digest is unavailable.
+- Version code and version name must increase. Rollback requires a newly signed build with a higher version code.
+- Package IDs remain fixed to `in.jembeeplay.mobile` and `in.jembeeplay.tv`.
+- APK binaries are public GitHub Release assets. Do not use this approach for confidential/private APK distribution.
+- Android still requires the user to approve installation. This is not a silent updater.
+- Real GitHub asset digest availability, release download, signed in-place Android update, Firestore transaction and full CI build remain QA gates.
+- Keep the change in preview/review only. Do not merge or deploy to production during the existing review gate.

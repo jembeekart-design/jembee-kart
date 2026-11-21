@@ -13,50 +13,49 @@ test("APK publishing requires an admin token", () => {
   assert.ok(route.includes("isAdminIdentity(identity)"));
 });
 
-test("APK publishing validates fixed package IDs, increasing versions and publisher identity", () => {
+test("APK publishing verifies a published GitHub Release in the official repository", () => {
+  assert.ok(route.includes('const OWNER = "jembeekart-design"'));
+  assert.ok(route.includes('const REPO = "jembee-kart"'));
+  assert.ok(route.includes("releases/tags/"));
+  assert.ok(route.includes("ghRelease.draft || ghRelease.prerelease"));
+  assert.ok(route.includes("browser_download_url"));
+  assert.ok(route.includes("url.pathname.startsWith"));
+});
+
+test("APK publishing requires GitHub SHA-256 digest, valid size and fixed package IDs", () => {
+  assert.ok(route.includes("sha256:[a-f0-9]{64}"));
+  assert.ok(route.includes("MAX_APK_BYTES"));
   assert.ok(route.includes("in.jembeeplay.mobile"));
   assert.ok(route.includes("in.jembeeplay.tv"));
+});
+
+test("APK publishing enforces increasing versions and publishes Firestore transactionally", () => {
   assert.ok(route.includes("VERSION_CODE_NOT_INCREASING"));
   assert.ok(route.includes("VERSION_NAME_NOT_INCREASING"));
   assert.ok(route.includes("CURRENT_APP_VERSION_CODE = 2"));
-  assert.ok(route.includes("CURRENT_APP_VERSION_NAME = \"0.2.0\""));
-  assert.ok(route.includes("custom.uploadedByUid !== identity.uid"));
-  assert.ok(route.includes("app-releases/"));
-});
-
-test("APK object size, type, metadata and SHA-256 are verified server-side", () => {
-  assert.ok(route.includes("MAX_APK_BYTES"));
-  assert.ok(route.includes("application/vnd.android.package-archive"));
-  assert.ok(route.includes("sha256StorageObject"));
-  assert.ok(route.includes("actualHash !== expectedHash"));
-});
-
-test("publishing updates remote config and writes an audit record transactionally", () => {
   assert.ok(route.includes("app_remote_config"));
-  assert.ok(route.includes("latestVersions"));
-  assert.ok(route.includes("minimumVersions"));
-  assert.ok(route.includes("updateUrls"));
   assert.ok(route.includes("app_remote_config_audit"));
   assert.ok(route.includes("runTransaction"));
+  assert.ok(route.includes("githubAssetUrl"));
 });
 
-test("public release metadata exposes a stable download endpoint without leaking a signed URL", () => {
+test("public release metadata exposes a stable download endpoint without leaking private credentials", () => {
   assert.ok(publicRoute.includes("release.active !== true"));
   assert.ok(publicRoute.includes("/api/app/releases/"));
-  assert.ok(!publicRoute.includes("getSignedUrl"));
   assert.ok(publicRoute.includes("Cache-Control"));
 });
 
-test("APK download redirect creates a short-lived signed URL on demand", () => {
-  assert.ok(publicDownload.includes("getSignedUrl"));
-  assert.ok(publicDownload.includes("5 * 60 * 1000"));
+test("APK download redirects only to an official repository GitHub Release asset", () => {
+  assert.ok(publicDownload.includes("githubAssetUrl"));
+  assert.ok(publicDownload.includes('target.hostname !== "github.com"'));
+  assert.ok(publicDownload.includes("/jembeekart-design/jembee-kart/releases/download/"));
   assert.ok(publicDownload.includes("NextResponse.redirect"));
-  assert.ok(publicDownload.includes("Cache-Control"));
 });
 
-test("admin UI uploads APKs to Firebase Storage and publishes through authenticated API", () => {
-  assert.ok(page.includes("uploadBytesResumable"));
-  assert.ok(page.includes('Authorization: "Bearer "'));
-  assert.ok(page.includes("Upload & Publish Release"));
-  assert.ok(page.includes('crypto.subtle.digest("SHA-256"'));
+test("admin UI uses GitHub Releases and does not upload through Firebase Storage", () => {
+  assert.ok(page.includes("releases/new"));
+  assert.ok(page.includes("Verify & Publish to Firestore"));
+  assert.ok(page.includes("releaseTag"));
+  assert.ok(!page.includes("uploadBytesResumable"));
+  assert.ok(!page.includes('from "firebase/storage"'));
 });
