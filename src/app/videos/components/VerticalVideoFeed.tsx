@@ -147,6 +147,7 @@ export default function VerticalVideoFeed({
       return;
     }
 
+    const followingUserId = currentUserId;
     let cancelled = false;
     async function loadFollowingList() {
       try {
@@ -162,11 +163,11 @@ export default function VerticalVideoFeed({
         if (!response.ok || result.success !== true || !Array.isArray(result.following)) {
           throw new Error(result.message || "Unable to load following list.");
         }
-        if (!cancelled) setFollowingState({ userId: currentUserId, ids: result.following });
+        if (!cancelled) setFollowingState({ userId: followingUserId, ids: result.following });
       } catch (loadError) {
         console.error("Unable to load following list:", loadError);
         if (!cancelled) {
-          setFollowingState({ userId: currentUserId, ids: [] });
+          setFollowingState({ userId: followingUserId, ids: [] });
           setToastMessage("Following list is temporarily unavailable. Please try again.");
         }
       }
