@@ -330,6 +330,13 @@ export default function VerticalVideoFeed({
     handledNativeActionRef.current = actionKey;
 
     if (requestedNativeAction === "comment") {
+      // Authenticate inside the same-origin WebView, then return to this exact
+      // video/action so the comment drawer opens after sign-in.
+      if (!auth.currentUser) {
+        const redirect = `/shorts?v=${encodeURIComponent(libraryVideoId)}&nativeAction=comment`;
+        window.location.replace(`/login?redirect=${encodeURIComponent(redirect)}`);
+        return;
+      }
       setSelectedVideo(libraryVideoId);
       setCommentOpen(true);
       return;
