@@ -21,11 +21,12 @@ fun RealVideoPlayer(
     modifier: Modifier = Modifier,
     autoplay: Boolean = true,
     adTagUrl: String? = null,
-    isMuted: Boolean = false
+    isMuted: Boolean = false,
+    showController: Boolean = true
 ) {
     val context = LocalContext.current
     val playerView = remember(context) {
-        PlayerView(context).apply { useController = true }
+        PlayerView(context).apply { useController = showController }
     }
     val imaAdsLoader = remember(context, adTagUrl) {
         if (adTagUrl.isNullOrBlank()) null else ImaAdsLoader.Builder(context)
@@ -68,6 +69,7 @@ fun RealVideoPlayer(
         modifier = modifier,
         factory = { playerView.apply { this.player = player } },
         update = {
+            it.useController = showController
             it.player = player
             player.playWhenReady = autoplay
             player.volume = if (isMuted) 0f else 1f
