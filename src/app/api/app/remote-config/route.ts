@@ -9,8 +9,8 @@ const DEFAULTS = {
   schemaVersion: 1,
   configVersion: 1,
   maintenance: { enabled: false, message: "" },
-  minimumVersions: { mobile: "0.1.0", tv: "0.1.0" },
-  latestVersions: { mobile: "0.1.0", tv: "0.1.0" },
+  minimumVersions: { mobile: "0.2.0", tv: "0.2.0" },
+  latestVersions: { mobile: "0.2.0", tv: "0.2.0" },
   updateUrls: { mobile: "", tv: "" },
   features: {
     shorts: true,
