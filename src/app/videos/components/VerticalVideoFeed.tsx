@@ -67,6 +67,7 @@ export default function VerticalVideoFeed({
   const libraryVideoId = requestedLibraryVideoId && /^[^/]{1,200}$/.test(requestedLibraryVideoId)
     ? requestedLibraryVideoId
     : null;
+  const requestedNativeAction = searchParams.get("nativeAction");
   const [authorizedPaidVideos, setAuthorizedPaidVideos] = useState<Record<string, boolean>>(
     () => paidVideoId ? { [paidVideoId]: true } : {}
   );
@@ -298,6 +299,7 @@ export default function VerticalVideoFeed({
 
   const containerRef =
     useRef<HTMLElement>(null);
+  const handledNativeActionRef = useRef<string>("");
 
   useEffect(() => {
     if (!libraryVideoId || videos.length === 0) return;
@@ -318,6 +320,42 @@ export default function VerticalVideoFeed({
 
     return () => window.cancelAnimationFrame(frameId);
   }, [libraryVideoId, videos]);
+
+  useEffect(() => {
+    if (!libraryVideoId || !requestedNativeAction || videos.length === 0) return;
+    const actionKey = `${libraryVideoId}:${requestedNativeAction}`;
+    if (handledNativeActionRef.current === actionKey) return;
+    const targetVideo = videos.find((video) => video.id === libraryVideoId);
+    if (!targetVideo) return;
+    handledNativeActionRef.current = actionKey;
+
+    if (requestedNativeAction === "comment") {
+      setSelectedVideo(libraryVideoId);
+      setCommentOpen(true);
+      return;
+    }
+    if (requestedNativeAction === "like") {
+      const user = auth.currentUser;
+      if (!user) {
+        const redirect = `/shorts?v=${encodeURIComponent(libraryVideoId)}&nativeAction=like`;
+        window.location.assign(`/login?redirect=${encodeURIComponent(redirect)}`);
+        return;
+      }
+      void (async () => {
+        try {
+          const result = await likeVideo({ videoId: libraryVideoId, userId: user.uid });
+          if (result?.success) {
+            setLikedVideos((previous) => ({ ...previous, [libraryVideoId]: true }));
+            setVideos((previous) => previous.map((video) => video.id === libraryVideoId ? { ...video, likes: video.likes + 1 } : video));
+          } else {
+            setToastMessage("Like update nahi ho paya. Dobara try karein.");
+          }
+        } catch {
+          setToastMessage("Like update nahi ho paya. Dobara try karein.");
+        }
+      })();
+    }
+  }, [libraryVideoId, requestedNativeAction, videos]);
 
   useEffect(() => {
     const container = containerRef.current;
@@ -780,6 +818,7 @@ export default function VerticalVideoFeed({
                 }}
 
                 onWhySeeing={() => setShowWhySeeingModal(true)}
+                initialMenuOpen={requestedNativeAction === "more"}
 
                 toggleMute={() =>
                   setIsMuted(!isMuted)
