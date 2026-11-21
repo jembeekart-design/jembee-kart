@@ -9,6 +9,12 @@ on:
       - "src/app/admin/system-health/**"
       - "src/app/api/admin/system-health/**"
       - "src/app/api/shorts/paid-video/**"
+      - "src/app/admin/apk-manager/**"
+      - "src/app/api/admin/app-releases/**"
+      - "src/app/api/app/releases/**"
+      - "src/components/download/AppInstallActions.tsx"
+      - "src/app/download/page.tsx"
+      - "storage.rules"
       - ".github/workflows/android-native.yml"
   push:
     branches:
@@ -18,6 +24,12 @@ on:
     paths:
       - "apps/android-native/**"
       - "src/app/api/app/remote-config/**"
+      - "src/app/admin/apk-manager/**"
+      - "src/app/api/admin/app-releases/**"
+      - "src/app/api/app/releases/**"
+      - "src/components/download/AppInstallActions.tsx"
+      - "src/app/download/page.tsx"
+      - "storage.rules"
       - ".github/workflows/android-native.yml"
   workflow_dispatch:
 
