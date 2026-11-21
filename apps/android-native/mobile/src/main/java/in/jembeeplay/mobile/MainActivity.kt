@@ -822,7 +822,15 @@ private fun LiveScreen(onBack: () -> Unit) {
                 Text("Live catalogue abhi available nahi hai.", color = JembeeMuted)
                 TextButton(onClick = { refresh++ }) { Text("Retry", color = JembeeAccent) }
             }
-            streams.isEmpty() -> Text("Abhi koi published live stream available nahi hai. Admin ke live_streams catalogue mein valid HTTPS HLS/DASH stream publish hone par yahan dikhegi.", color = JembeeMuted)
+            streams.isEmpty() -> Column(
+                modifier = Modifier.fillMaxWidth().padding(top = 42.dp),
+                horizontalAlignment = Alignment.CenterHorizontally,
+                verticalArrangement = Arrangement.spacedBy(10.dp)
+            ) {
+                Text("Abhi koi published live stream available nahi hai.", color = Color.White, fontSize = 17.sp, fontWeight = FontWeight.Bold)
+                Text("Admin ke Live Streams catalogue mein valid HTTPS HLS/DASH stream publish hone ke baad yahan dikhai degi.", color = JembeeMuted)
+                TextButton(onClick = { refresh++ }) { Text("Refresh Live", color = JembeeAccent) }
+            }
             else -> streams.forEach { stream ->
                 Surface(
                     onClick = { selectedStream = stream },
