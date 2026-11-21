@@ -346,6 +346,10 @@ private fun ShortsScreen(onBack: () -> Unit, onOpenWatch: (JembeeVideo) -> Unit,
     var muted by remember { mutableStateOf(false) }
     var liked by remember { mutableStateOf<Set<String>>(emptySet()) }
     var playingById by remember { mutableStateOf<Map<String, Boolean>>(emptyMap()) }
+    var activeAction by remember { mutableStateOf<String?>(null) }
+    var commentDraft by remember { mutableStateOf("") }
+    var savedVideoIds by remember { mutableStateOf<Set<String>>(emptySet()) }
+    var playbackSpeed by remember { mutableFloatStateOf(1f) }
     LaunchedEffect(Unit) {
         VideoCatalogClient.fetch("short") { items, message ->
             videos = items
@@ -379,8 +383,8 @@ private fun ShortsScreen(onBack: () -> Unit, onOpenWatch: (JembeeVideo) -> Unit,
                         ShortsHeaderButton("♧", "Notifications") { onOpenWeb("/videos/notifications", "Notifications") }
                     }
                     Column(Modifier.align(Alignment.CenterEnd).padding(end = 12.dp, top = 74.dp, bottom = 112.dp), horizontalAlignment = Alignment.CenterHorizontally, verticalArrangement = Arrangement.spacedBy(13.dp)) {
-                        ShortsRailAction(if (isLiked) "♥" else "♡", compactCount(video.likes)) { onOpenWeb("/shorts?v=${Uri.encode(video.id)}&nativeAction=like", "JEMBEE PLAY Shorts") }
-                        ShortsRailAction("▤", "Comment") { onOpenWeb("/shorts?v=${Uri.encode(video.id)}&nativeAction=comment", "JEMBEE PLAY Comments") }
+                        ShortsRailAction(if (isLiked) "♥" else "♡", compactCount(video.likes)) { activeAction = "like" }
+                        ShortsRailAction("▤", "Comment") { activeAction = "comment" }
                         ShortsRailAction("🎁", "Support") { onOpenWeb("/login?redirect=%2Fvideos%2Freward-center", "Creator Support") }
                         ShortsRailAction("↗", "Share") {
                             val send = Intent(Intent.ACTION_SEND).apply {
@@ -389,7 +393,7 @@ private fun ShortsScreen(onBack: () -> Unit, onOpenWatch: (JembeeVideo) -> Unit,
                             }
                             context.startActivity(Intent.createChooser(send, "Share Jembee Short"))
                         }
-                        ShortsRailAction("⋮", "More") { onOpenWeb("/shorts?v=${Uri.encode(video.id)}&nativeAction=more", "JEMBEE PLAY Options") }
+                        ShortsRailAction("⋮", "More") { activeAction = "more" }
                         ShortsRailAction(if (muted) "◖" else "◖))", "Sound") { muted = !muted }
                     }
                     Column(Modifier.align(Alignment.BottomStart).fillMaxWidth().padding(start = 22.dp, end = 104.dp, bottom = 30.dp), verticalArrangement = Arrangement.spacedBy(9.dp)) {
@@ -418,6 +422,57 @@ private fun ShortsScreen(onBack: () -> Unit, onOpenWatch: (JembeeVideo) -> Unit,
                         }
                         Text(video.caption.ifBlank { "Watch more on JEMBEE PLAY" }, color = Color.White, fontSize = 15.sp, lineHeight = 21.sp, maxLines = 3)
                         Text("${compactCount(video.views)} views  •  ${page + 1}/${videos.size}", color = Color.White.copy(alpha = .7f), fontSize = 11.sp)
+                    }
+                }
+            }
+        }
+    }
+
+    val activeVideo = videos.getOrNull(pagerState.currentPage)
+    if (activeAction != null && activeVideo != null) {
+        ModalBottomSheet(
+            onDismissRequest = { activeAction = null },
+            containerColor = Color(0xFF11131D),
+            contentColor = Color.White
+        ) {
+            Column(Modifier.fillMaxWidth().padding(horizontal = 22.dp).padding(bottom = 28.dp), verticalArrangement = Arrangement.spacedBy(12.dp)) {
+                Text(
+                    when (activeAction) { "like" -> "Like this Short"; "comment" -> "Comments"; else -> "Short options" },
+                    color = Color.White, fontSize = 20.sp, fontWeight = FontWeight.Bold
+                )
+                when (activeAction) {
+                    "like" -> {
+                        Text("Like/Unlike ko account ke saath sync karne ke liye sign in zaroori hai.", color = JembeeMuted, fontSize = 13.sp)
+                        Button(onClick = { activeAction = null; onOpenWeb("/login?redirect=%2Fshorts", "Sign in to JEMBEE PLAY") }, modifier = Modifier.fillMaxWidth()) { Text("Sign in to like") }
+                    }
+                    "comment" -> {
+                        Text("Comment karne ke liye apne JEMBEE PLAY account se sign in karein.", color = JembeeMuted, fontSize = 13.sp)
+                        OutlinedTextField(
+                            value = commentDraft,
+                            onValueChange = { commentDraft = it.take(500) },
+                            modifier = Modifier.fillMaxWidth(),
+                            placeholder = { Text("Write a comment…") },
+                            minLines = 2,
+                            maxLines = 4
+                        )
+                        Button(
+                            onClick = { activeAction = null; onOpenWeb("/login?redirect=%2Fshorts", "Sign in to comment") },
+                            enabled = commentDraft.isNotBlank(),
+                            modifier = Modifier.fillMaxWidth()
+                        ) { Text("Sign in and post comment") }
+                    }
+                    "more" -> {
+                        TextButton(onClick = { savedVideoIds = if (activeVideo.id in savedVideoIds) savedVideoIds - activeVideo.id else savedVideoIds + activeVideo.id; activeAction = null }) {
+                            Text(if (activeVideo.id in savedVideoIds) "Remove from saved" else "Save video", color = Color.White)
+                        }
+                        Text("Playback speed", color = JembeeMuted, fontSize = 12.sp)
+                        Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+                            listOf(0.5f, 0.75f, 1f, 1.25f, 1.5f, 2f).forEach { speed ->
+                                FilterChip(selected = playbackSpeed == speed, onClick = { playbackSpeed = speed }, label = { Text("${speed}x") })
+                            }
+                        }
+                        TextButton(onClick = { activeAction = null; onOpenWeb("/login?redirect=%2Fshorts", "Sign in to report video") }) { Text("Report video", color = Color.White) }
+                        TextButton(onClick = { activeAction = null }) { Text("Close", color = JembeeAccent) }
                     }
                 }
             }
