@@ -22,7 +22,7 @@ export async function GET(_request: Request, context: { params: Promise<{ platfo
       expires: Date.now() + 5 * 60 * 1000,
       responseDisposition: 'attachment; filename="' + filename + '"',
     });
-    return NextResponse.redirect(signedUrl, 302, { headers: { "Cache-Control": "no-store" } });
+    return NextResponse.redirect(signedUrl, { status: 302, headers: { "Cache-Control": "no-store" } });
   } catch (error) {
     console.error("APK download redirect failed:", error);
     return NextResponse.json({ success: false, error: "Download temporarily unavailable" }, { status: 503, headers: { "Cache-Control": "no-store" } });
