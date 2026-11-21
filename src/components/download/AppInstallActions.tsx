@@ -27,7 +27,6 @@ export default function AppInstallActions({ platform, downloadUrl = "" }: { plat
   useEffect(() => {
     if (platform === "web" || downloadUrl) return;
     let active = true;
-    setReleaseLoading(true);
     fetch("/api/app/releases/" + platform, { cache: "no-store" })
       .then(async (response) => {
         if (!response.ok) throw new Error("Release unavailable");
