@@ -431,6 +431,7 @@ private fun ShortsScreen(onBack: () -> Unit, onOpenWatch: (JembeeVideo) -> Unit,
 
     val activeVideo = videos.getOrNull(pagerState.currentPage)
     if (activeAction != null && activeVideo != null) {
+        @OptIn(ExperimentalMaterial3Api::class)
         ModalBottomSheet(
             onDismissRequest = { activeAction = null },
             containerColor = Color(0xFF11131D),
