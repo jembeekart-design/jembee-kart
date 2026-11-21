@@ -31,6 +31,7 @@ export interface VideoActionsProps {
   isSaved: boolean;
   onPlaybackSpeedChange?: (speed: number) => void;
   currentPlaybackSpeed?: number;
+  initialMenuOpen?: boolean;
 }
 
 export default function VideoActions({
@@ -51,8 +52,10 @@ export default function VideoActions({
   isSaved,
   onPlaybackSpeedChange,
   currentPlaybackSpeed,
+  initialMenuOpen = false,
 }: VideoActionsProps) {
   const [menuOpen, setMenuOpen] = React.useState(false);
+  React.useEffect(() => { if (initialMenuOpen) setMenuOpen(true); }, [initialMenuOpen]);
   const actions = [
     {
       key: "like",
