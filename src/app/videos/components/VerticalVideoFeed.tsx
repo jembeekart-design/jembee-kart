@@ -343,19 +343,24 @@ export default function VerticalVideoFeed({
       }
       void (async () => {
         try {
-          const result = await likeVideo({ videoId: libraryVideoId, userId: user.uid });
+          const alreadyLiked = Boolean(likedVideos[libraryVideoId]);
+          const result = alreadyLiked
+            ? await unlikeVideo({ videoId: libraryVideoId, userId: user.uid })
+            : await likeVideo({ videoId: libraryVideoId, userId: user.uid });
           if (result?.success) {
-            setLikedVideos((previous) => ({ ...previous, [libraryVideoId]: true }));
-            setVideos((previous) => previous.map((video) => video.id === libraryVideoId ? { ...video, likes: video.likes + 1 } : video));
+            setLikedVideos((previous) => ({ ...previous, [libraryVideoId]: !alreadyLiked }));
+            setVideos((previous) => previous.map((video) => video.id === libraryVideoId
+              ? { ...video, likes: Math.max(0, video.likes + (alreadyLiked ? -1 : 1)) }
+              : video));
           } else {
-            setToastMessage("Like update nahi ho paya. Dobara try karein.");
+            setToastMessage(alreadyLiked ? "Unlike update nahi ho paya. Dobara try karein." : "Like update nahi ho paya. Dobara try karein.");
           }
         } catch {
           setToastMessage("Like update nahi ho paya. Dobara try karein.");
         }
       })();
     }
-  }, [libraryVideoId, requestedNativeAction, videos]);
+  }, [libraryVideoId, requestedNativeAction, videos, likedVideos]);
 
   useEffect(() => {
     const container = containerRef.current;
@@ -841,6 +846,7 @@ export default function VerticalVideoFeed({
                 }}
 
                 currentPlaybackSpeed={playbackSpeeds[video.id] || 1}
+                initialMenuOpen={requestedNativeAction === "more"}
               />
             </section>
 
