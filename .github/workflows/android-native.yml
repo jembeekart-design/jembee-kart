@@ -85,7 +85,7 @@ jobs:
         run: gradle --no-daemon :mobile:assembleRelease :tv:assembleRelease
 
       - name: Upload signed release APKs
-        if: ${{ secrets.ANDROID_RELEASE_KEYSTORE_BASE64 != '' && secrets.ANDROID_RELEASE_STORE_PASSWORD != '' && secrets.ANDROID_RELEASE_KEY_ALIAS != '' && secrets.ANDROID_RELEASE_KEY_PASSWORD != '' }}
+        if: ${{ env.ANDROID_RELEASE_KEYSTORE_BASE64 != '' && env.ANDROID_RELEASE_STORE_PASSWORD != '' && env.ANDROID_RELEASE_KEY_ALIAS != '' && env.ANDROID_RELEASE_KEY_PASSWORD != '' }}
         uses: actions/upload-artifact@v4
         with:
           name: jembee-play-android-signed-release-apks
