@@ -12,6 +12,15 @@ const MAX_APK_BYTES = 250 * 1024 * 1024;
 const PACKAGES = { mobile: "in.jembeeplay.mobile", tv: "in.jembeeplay.tv" } as const;
 const UPDATE_PAGE = { mobile: "https://jembeeplay.in/download#android-mobile", tv: "https://jembeeplay.in/download#android-tv" } as const;
 
+function compareVersions(left: string, right: string): number {
+  const a = left.split(".").map(Number);
+  const b = right.split(".").map(Number);
+  for (let index = 0; index < 3; index++) {
+    if (a[index] !== b[index]) return a[index] > b[index] ? 1 : -1;
+  }
+  return 0;
+}
+
 function reply(error: string, status: number) {
   return NextResponse.json({ success: false, error }, { status, headers: { "Cache-Control": "no-store" } });
 }
@@ -30,7 +39,14 @@ export async function POST(request: Request) {
   try {
     const raw = await request.text();
     if (Buffer.byteLength(raw, "utf8") > 16 * 1024) return reply("Request too large", 413);
-    const body = JSON.parse(raw) as Record<string, unknown>;
+    let body: Record<string, unknown>;
+    try {
+      const parsed: unknown = JSON.parse(raw);
+      if (typeof parsed !== "object" || parsed === null || Array.isArray(parsed)) return reply("Invalid request body", 400);
+      body = parsed as Record<string, unknown>;
+    } catch {
+      return reply("Invalid JSON", 400);
+    }
     const platform = body.platform;
     if (platform !== "mobile" && platform !== "tv") return reply("Invalid platform", 400);
     const versionName = typeof body.versionName === "string" ? body.versionName.trim() : "";
@@ -58,7 +74,7 @@ export async function POST(request: Request) {
     if (!Number.isSafeInteger(size) || size < 1 || size > MAX_APK_BYTES ||
         !["application/vnd.android.package-archive", "application/octet-stream"].includes(contentType) ||
         custom.platform !== platform || custom.versionCode !== String(versionCode) ||
-        custom.packageName !== packageName || custom.sha256 !== expectedHash) {
+        custom.packageName !== packageName || custom.sha256 !== expectedHash || custom.uploadedByUid !== identity.uid) {
       return reply("APK object metadata failed validation", 422);
     }
 
@@ -73,6 +89,7 @@ export async function POST(request: Request) {
       const [releaseSnap, configSnap] = await Promise.all([tx.get(releaseRef), tx.get(configRef)]);
       const currentRelease = releaseSnap.data();
       if (currentRelease && Number(currentRelease.versionCode || 0) >= Number(versionCode)) throw new Error("VERSION_CODE_NOT_INCREASING");
+      if (currentRelease && typeof currentRelease.versionName === "string" && compareVersions(versionName, currentRelease.versionName) <= 0) throw new Error("VERSION_NAME_NOT_INCREASING");
       const minimumParts = minimumVersionName.split(".").map(Number);
       const releaseParts = versionName.split(".").map(Number);
       const minimumGreater = minimumParts.some((part, index) => {
@@ -114,6 +131,7 @@ export async function POST(request: Request) {
   } catch (error) {
     const code = error instanceof Error ? error.message : "";
     if (code === "VERSION_CODE_NOT_INCREASING") return reply("Version code must be higher than the current release", 409);
+    if (code === "VERSION_NAME_NOT_INCREASING") return reply("Version name must be higher than the current release", 409);
     if (code === "MINIMUM_VERSION_ABOVE_RELEASE") return reply("Minimum supported version cannot exceed this release", 400);
     console.error("APK release publish failed:", error);
     return reply("Could not publish APK release", 500);
