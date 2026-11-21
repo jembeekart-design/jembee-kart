@@ -81,7 +81,8 @@ private fun JembeeMobileApp() {
         val hasUpdateLink = remoteConfig.updateUrl.isNotBlank()
         val available = hasUpdateLink && AndroidUpdateClient.isNewerVersion(remoteConfig.latestVersion, installedVersion)
         updateIsMandatory = AndroidUpdateClient.isNewerVersion(remoteConfig.minimumVersion, installedVersion)
-        showUpdatePrompt = available
+        // Mandatory minimum-version enforcement must not depend on the URL being present.
+        showUpdatePrompt = updateIsMandatory || available
     }
     var selected by remember { mutableStateOf("Home") }
     var webReturn by remember { mutableStateOf("Home") }
@@ -102,11 +103,19 @@ private fun JembeeMobileApp() {
             AlertDialog(
                 onDismissRequest = { if (!updateIsMandatory) showUpdatePrompt = false },
                 title = { Text(if (updateIsMandatory) "Update required" else "JEMBEE PLAY update available") },
-                text = { Text("Naya version ${remoteConfig.latestVersion} available hai. Behtar experience aur security ke liye app update karein.") },
+                text = {
+                    Text(
+                        if (remoteConfig.updateUrl.isBlank() && updateIsMandatory)
+                            "App ka naya version zaroori hai, lekin update link abhi configure nahi hua. Kripya baad mein dobara try karein."
+                        else
+                            "Naya version ${remoteConfig.latestVersion} available hai. Behtar experience aur security ke liye app update karein."
+                    )
+                },
                 confirmButton = {
-                    TextButton(onClick = { AndroidUpdateClient.downloadAndInstall(context, remoteConfig.updateUrl) }) {
-                        Text("Update now")
-                    }
+                    TextButton(
+                        enabled = remoteConfig.updateUrl.isNotBlank(),
+                        onClick = { AndroidUpdateClient.downloadAndInstall(context, remoteConfig.updateUrl) }
+                    ) { Text("Update now") }
                 },
                 dismissButton = if (updateIsMandatory) null else ({
                     TextButton(onClick = { showUpdatePrompt = false }) { Text("Later") }
