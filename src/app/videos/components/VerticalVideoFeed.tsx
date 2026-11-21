@@ -27,6 +27,7 @@ import Toast from "./Toast";
 import BottomQuickActions from "./BottomQuickActions";
 import type { WatchVideo } from "../services/watchVideos.service";
 import ExoClickShortsAd from "./ExoClickShortsAd";
+import ShortsSearch from "./ShortsSearch";
 import { getExoClickShortsVastUrl } from "@/lib/ads/exoclick";
 
 // New imports for persistence and auth
@@ -73,6 +74,11 @@ export default function VerticalVideoFeed({
     () => paidVideoId ? { [paidVideoId]: true } : {}
   );
   const [toastMessage, setToastMessage] = useState<string | null>(null);
+  const [showNativeSearch, setShowNativeSearch] = useState(false);
+
+  useEffect(() => {
+    if (requestedNativeAction === "search") setShowNativeSearch(true);
+  }, [requestedNativeAction]);
   const [activeVideoId, setActiveVideoId] = useState<string>(paidVideoId ?? libraryVideoId ?? "");
   const [activeAdId, setActiveAdId] = useState<string>("");
   const [shortsAdsEnabled, setShortsAdsEnabled] = useState(false);
@@ -1001,6 +1007,8 @@ export default function VerticalVideoFeed({
       )}
 
       {/* Toast */}
+
+      {showNativeSearch && <ShortsSearch onClose={() => setShowNativeSearch(false)} />}
 
       <Toast
         message={toastMessage}
