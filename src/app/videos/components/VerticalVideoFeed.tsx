@@ -383,6 +383,9 @@ export default function VerticalVideoFeed({
   }, [libraryVideoId, videos]);
 
   useEffect(() => {
+    // Firebase restores the persisted WebView session asynchronously. Do not
+    // consume a native action until the first auth-state check has completed.
+    if (isAuthenticated === null) return;
     if (!libraryVideoId || !requestedNativeAction || videos.length === 0) return;
     const actionKey = `${libraryVideoId}:${requestedNativeAction}`;
     if (handledNativeActionRef.current === actionKey) return;
@@ -428,7 +431,7 @@ export default function VerticalVideoFeed({
         }
       })();
     }
-  }, [libraryVideoId, requestedNativeAction, videos, likedVideos]);
+  }, [libraryVideoId, requestedNativeAction, videos, likedVideos, isAuthenticated]);
 
   useEffect(() => {
     const container = containerRef.current;
