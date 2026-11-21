@@ -41,7 +41,7 @@ import { setVideoPreference } from "@/lib/videos/watch-earn/setVideoPreference";
 
 
 import { useRequireAuth } from "@/hooks/useRequireAuth";
-import { collection, doc, onSnapshot } from "firebase/firestore";
+import { collection, doc, getDoc, onSnapshot } from "firebase/firestore";
 import { useSearchParams } from "next/navigation";
 
 function getVideoThumbnailUrl(video: WatchVideo): string {
@@ -293,6 +293,21 @@ export default function VerticalVideoFeed({
     savedVideos,
     setSavedVideos
   ] = useState<Record<string, boolean>>({});
+
+  useEffect(() => {
+    if (!currentUserId || videos.length === 0) return;
+    let cancelled = false;
+    Promise.all(videos.map(async (video) => {
+      const savedRef = doc(db, "savedWatchVideos", `${video.id}_${currentUserId}`);
+      const snapshot = await getDoc(savedRef);
+      return [video.id, snapshot.exists()] as const;
+    })).then((entries) => {
+      if (!cancelled) setSavedVideos(Object.fromEntries(entries));
+    }).catch((error) => {
+      console.error("Unable to load saved Shorts:", error);
+    });
+    return () => { cancelled = true; };
+  }, [currentUserId, videos]);
 
   const [playbackSpeeds, setPlaybackSpeeds] = useState<Record<string, number>>({});
   
