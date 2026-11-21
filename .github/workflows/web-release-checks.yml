@@ -58,6 +58,7 @@ jobs:
           src/app/api/app/remote-config/route.ts
           src/app/api/admin/app-releases/route.ts
           'src/app/api/app/releases/[platform]/route.ts'
+          'src/app/api/app/releases/[platform]/download/route.ts'
           src/app/admin/apk-manager/page.tsx
           src/components/admin/AdminSidebar.tsx
           src/app/api/shorts/paid-video/create-order/route.ts
