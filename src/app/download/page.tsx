@@ -33,7 +33,7 @@ export default function DownloadPage() {
           <h2 className="mt-5 text-2xl font-extrabold">JEMBEE PLAY Mobile</h2>
           <p className="mt-2 text-sm leading-6 text-slate-600">A touch-first Android experience for Shorts, long videos, learning, creator tools and your personal library.</p>
           <ul className="mt-5 space-y-2 text-sm text-slate-700"><li>• Android phone and tablet layout</li><li>• Mobile video player and upload flow</li><li>• Light, dark and system theme support planned across app surfaces</li></ul>
-          <div className="mt-7"><AppInstallActions platform="mobile" downloadUrl={mobileUrl} /></div>
+          <div className="mt-7"><AppInstallActions platform="mobile"  /></div>
         </article>
 
         <article id="android-tv" className="scroll-mt-8 rounded-3xl border border-slate-200 bg-white p-7 shadow-xl shadow-slate-900/[0.04]">
@@ -41,7 +41,7 @@ export default function DownloadPage() {
           <h2 className="mt-5 text-2xl font-extrabold">JEMBEE PLAY for TV</h2>
           <p className="mt-2 text-sm leading-6 text-slate-600">A separate ten-foot interface designed for Android TV and Google TV, with remote-first navigation and readable playback controls.</p>
           <ul className="mt-5 space-y-2 text-sm text-slate-700"><li>• D-pad and focus-state navigation</li><li>• TV-friendly discovery and learning rows</li><li>• Dedicated TV playback experience</li></ul>
-          <div className="mt-7"><AppInstallActions platform="tv" downloadUrl={tvUrl} /></div>
+          <div className="mt-7"><AppInstallActions platform="tv"  /></div>
         </article>
       </section>
 
