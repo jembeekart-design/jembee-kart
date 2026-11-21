@@ -82,7 +82,7 @@ jobs:
           ANDROID_RELEASE_STORE_PASSWORD: ${{ secrets.ANDROID_RELEASE_STORE_PASSWORD }}
           ANDROID_RELEASE_KEY_ALIAS: ${{ secrets.ANDROID_RELEASE_KEY_ALIAS }}
           ANDROID_RELEASE_KEY_PASSWORD: ${{ secrets.ANDROID_RELEASE_KEY_PASSWORD }}
-        run: gradle --no-daemon :mobile:assembleRelease :tv:assembleRelease
+        run: gradle --no-daemon :mobile:assembleRelease :tv:assembleRelease :mobile:bundleRelease :tv:bundleRelease
 
       - name: Upload signed release APKs
         if: ${{ env.ANDROID_RELEASE_KEYSTORE_BASE64 != '' && env.ANDROID_RELEASE_STORE_PASSWORD != '' && env.ANDROID_RELEASE_KEY_ALIAS != '' && env.ANDROID_RELEASE_KEY_PASSWORD != '' }}
@@ -92,6 +92,8 @@ jobs:
           path: |
             apps/android-native/mobile/build/outputs/apk/release/*.apk
             apps/android-native/tv/build/outputs/apk/release/*.apk
+            apps/android-native/mobile/build/outputs/bundle/release/*.aab
+            apps/android-native/tv/build/outputs/bundle/release/*.aab
           if-no-files-found: error
           retention-days: 30
 
