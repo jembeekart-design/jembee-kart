@@ -56,14 +56,26 @@ export async function GET(request: Request) {
     const snapshot = await videosQuery.get();
     const hasMore = snapshot.docs.length > pageSize;
     const pageDocs = snapshot.docs.slice(0, pageSize);
+    const creatorIds = [...new Set(pageDocs.map((item) => safeString(item.data().userId || item.data().creatorId, 160)).filter(Boolean))];
+    const creatorProfiles = new Map<string, Record<string, unknown>>();
+    await Promise.all(creatorIds.map(async (uid) => {
+      try {
+        const profile = await db.collection("users").doc(uid).get();
+        if (profile.exists) creatorProfiles.set(uid, profile.data() || {});
+      } catch {
+        // Keep public video metadata as a safe fallback when a profile is unavailable.
+      }
+    }));
     const videos = pageDocs.map((doc) => {
       const data = doc.data();
+      const creatorId = safeString(data.userId || data.creatorId, 160);
+      const profile = creatorProfiles.get(creatorId) || {};
       return {
         id: doc.id,
-        creatorId: safeString(data.userId || data.creatorId, 160),
-        username: safeString(data.username, 80),
-        displayName: safeString(data.displayName, 120),
-        photoURL: safeString(data.photoURL || data.photo, 2048),
+        creatorId,
+        username: safeString(data.username || profile.username || profile.userName, 80),
+        displayName: safeString(data.displayName || profile.displayName || profile.name, 120),
+        photoURL: safeString(data.photoURL || data.photo || profile.photoURL || profile.photoUrl || profile.photo, 2048),
         caption: safeString(data.caption),
         hashtags: safeTags(data.hashtags),
         music: safeString(data.music, 160),
