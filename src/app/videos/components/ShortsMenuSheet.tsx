@@ -1,8 +1,6 @@
 "use client";
 
-import {
-  useState
-} from "react";
+import { useEffect, useState } from "react";
 import {
   Bookmark,
   Gauge,
@@ -40,11 +38,12 @@ export default function ShortsMenuSheet({
 }: ShortsMenuSheetProps) {
 
   const [activeTab, setActiveTab] = useState<'main' | 'playback' | 'report'>('main');
+  useEffect(() => { if (open) setActiveTab('main'); }, [open]);
 
   return (
     <div
       className={`
-        fixed bottom-[150px] left-0 right-0 z-[99999] max-h-[calc(100dvh-150px)] pb-6 overflow-y-auto
+        fixed inset-x-0 bottom-0 z-[100001] max-h-[82dvh] overflow-y-auto pb-[max(1.5rem,env(safe-area-inset-bottom))]
         rounded-t-[20px] bg-neutral-900 text-white
         transition-all duration-300
         ${open ? "block translate-y-0 opacity-100 pointer-events-auto" : "hidden"}
