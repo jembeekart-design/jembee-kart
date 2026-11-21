@@ -337,6 +337,7 @@ private fun SectionHeader(title: String, subtitle: String, onClick: (() -> Unit)
     }
 }
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 private fun ShortsScreen(onBack: () -> Unit, onOpenWatch: (JembeeVideo) -> Unit, onOpenWeb: (String, String) -> Unit) {
     val context = LocalContext.current
